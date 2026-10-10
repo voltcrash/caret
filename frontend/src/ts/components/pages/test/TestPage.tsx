@@ -14,6 +14,7 @@ import { cn } from "../../../utils/cn";
 import { CapsWarning } from "./CapsWarning";
 import { Caret } from "./Caret";
 import { CompositionDisplay } from "./CompositionDisplay";
+import { FinishZenButton } from "./FinishZenButton";
 import { FunboxTimers } from "./FunboxTimer";
 import { Keymap } from "./Keymap";
 import { LiveStatsMini } from "./live-stats/LiveStatsMini";
@@ -136,6 +137,7 @@ export function TestPage(
         <CompositionDisplay />
         <Keymap />
         <RestartTestButton />
+        <FinishZenButton />
         <LiveStatsTextBottom />
       </div>
       <TestPageLifecycle input={refs.wordsInput} />
