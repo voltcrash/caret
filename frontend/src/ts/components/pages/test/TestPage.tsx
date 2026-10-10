@@ -24,6 +24,7 @@ import { TestModesNotice } from "./modes-notice/TestModesNotice";
 import { OutOfFocusWarning } from "./OutOfFocusWarning";
 import { RestartTestButton } from "./RestartTestButton";
 import { Result } from "./result/Result";
+import { SaveProgressButton } from "./SaveProgressButton";
 import { TestConfig } from "./TestConfig";
 import { TestInitFailed } from "./TestInitFailed";
 import { TestLoading } from "./TestLoading";
@@ -138,6 +139,7 @@ export function TestPage(
         <Keymap />
         <RestartTestButton />
         <FinishZenButton />
+        <SaveProgressButton />
         <LiveStatsTextBottom />
       </div>
       <TestPageLifecycle input={refs.wordsInput} />
