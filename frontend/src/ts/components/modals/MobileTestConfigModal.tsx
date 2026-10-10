@@ -6,12 +6,14 @@ import { For, JSXElement, ParentProps, Show } from "solid-js";
 import { setConfig, setQuoteLengthAll } from "../../config/setters";
 import { getConfig } from "../../config/store";
 import { restartTestEvent } from "../../events/test";
-import { isAuthenticated } from "../../states/core";
+import { isAuthenticated, showCommandLineForConfig } from "../../states/core";
 import { hideModal, showModal } from "../../states/modals";
 import { areUnsortedArraysEqual } from "../../utils/arrays";
 import { cn } from "../../utils/cn";
+import { getLanguageDisplayString } from "../../utils/strings";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Button } from "../common/Button";
+import { Fa } from "../common/Fa";
 
 const modes: Mode[] = ["time", "words", "quote", "zen", "custom"];
 const times = [15, 30, 60, 120];
@@ -71,6 +73,10 @@ const mode2Labels: Partial<Record<Mode, string>> = {
 
 const isPunctuationDisabled = () =>
   getConfig.mode === "quote" || getConfig.mode === "zen";
+
+// same condition as the language notice in modes-notice
+const showLanguageRow = () =>
+  getConfig.mode !== "zen" && !getConfig.funbox.includes("polyglot");
 
 export function MobileTestConfigModal(): JSXElement {
   const handleModeClick = (mode: Mode) => {
@@ -240,6 +246,22 @@ export function MobileTestConfigModal(): JSXElement {
             }}
           />
         </div>
+        <Show when={showLanguageRow()}>
+          <Button
+            variant="button"
+            class="min-h-11 justify-between"
+            onClick={() => showCommandLineForConfig("language")}
+          >
+            <span class="min-w-0 truncate">
+              language:{" "}
+              {getLanguageDisplayString(
+                getConfig.language,
+                getConfig.mode === "quote",
+              )}
+            </span>
+            <Fa icon="fa-chevron-right" fixedWidth />
+          </Button>
+        </Show>
       </Section>
 
       <div class="grid gap-2">
