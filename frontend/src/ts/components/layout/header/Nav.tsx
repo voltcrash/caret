@@ -48,8 +48,13 @@ export function Nav(): JSXElement {
   document.addEventListener("click", handleClickOutside);
   onCleanup(() => document.removeEventListener("click", handleClickOutside));
 
+  // touch: the icon stays 36px so the row fits 320px, the invisible ring
+  // around it makes the tap target 44px
+  const touchTargetClass =
+    "pointer-coarse:relative pointer-coarse:before:absolute pointer-coarse:before:-inset-1 pointer-coarse:before:content-['']";
+
   const buttonClass = () =>
-    cn("aspect-square", {
+    cn("aspect-square", touchTargetClass, {
       "opacity-(--nav-focus-opacity)": getFocus(),
     });
 
@@ -73,7 +78,8 @@ export function Nav(): JSXElement {
     serverConfig.data?.users.signUp ?? true;
 
   return (
-    <nav class={cn("z-5 flex w-full items-center gap-1 md:gap-2")}>
+    // phones under 426px: no gaps so the row fits 320px with touch targets
+    <nav class={cn("z-5 flex w-full items-center gap-0 xs:gap-1 md:gap-2")}>
       <Button
         variant="text"
         fa={{
@@ -216,6 +222,7 @@ export function Nav(): JSXElement {
                   variant="text"
                   class={cn(
                     "h-full",
+                    touchTargetClass,
                     "hover:**:data-[ui-element='userLevel']:bg-(--themable-button-hover-text)",
                     { "opacity-(--nav-focus-opacity)": getFocus() },
                   )}
