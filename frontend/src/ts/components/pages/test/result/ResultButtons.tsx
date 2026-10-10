@@ -57,6 +57,7 @@ export function ResultButtons(): JSXElement {
       id: "nextTestButton",
       label: "Next test",
       shortLabel: "next test",
+      class: "max-md:col-span-full",
       icon: () => ({ icon: "fa-chevron-right" }),
       onClick: () => void TestLogic.restart(),
     },
@@ -140,7 +141,8 @@ export function ResultButtons(): JSXElement {
       </Show>
       <div
         class={cn(
-          "buttons col-[1/3] grid grid-flow-col justify-center gap-4 max-sm:flex max-sm:flex-wrap max-sm:gap-2",
+          // phones: 6 columns; next test spans the row, the five others get 2 or 3 cols each
+          "buttons col-[1/3] grid grid-flow-col justify-center gap-4 max-md:grid-flow-row max-md:grid-cols-6 max-md:gap-2",
           getIsScreenshotting() && "hidden",
         )}
       >
@@ -151,7 +153,7 @@ export function ResultButtons(): JSXElement {
               id={button.id}
               fa={{ ...button.icon(), fixedWidth: true }}
               class={cn(
-                "max-md:min-h-11 max-md:min-w-11 max-md:flex-col max-md:gap-1 max-md:px-[0.25em]! max-md:py-[0.5em]! max-md:text-[0.75rem]",
+                "max-md:col-span-2 max-md:nth-[n+5]:col-span-3 max-md:min-h-11 max-md:min-w-11 max-md:flex-col max-md:gap-1 max-md:px-[0.25em]! max-md:py-[0.5em]! max-md:text-[0.75rem]",
                 button.class,
                 button.noStressHidden && resultState.noStress && "hidden",
               )}
