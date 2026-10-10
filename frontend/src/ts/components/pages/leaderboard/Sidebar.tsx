@@ -96,14 +96,14 @@ function Group<T>(props: {
     typeof a === "object" ? JSON.stringify(a) === JSON.stringify(b) : a === b;
 
   return (
-    <div class="mb-2 flex flex-wrap gap-2 rounded-xl bg-sub-alt p-2 lg:mb-4 lg:grid lg:gap-4 lg:p-4">
+    <div class="mb-2 flex gap-2 overflow-x-auto overscroll-x-contain rounded-xl bg-sub-alt p-2 lg:mb-4 lg:grid lg:gap-4 lg:overflow-visible lg:p-4">
       <For each={props.items}>
         {(item) => (
           <Button
             onClick={() => props.onSelect(item.id)}
             fa={{ icon: item.icon }}
             text={item.text}
-            class="justify-start px-[0.75em]"
+            class="shrink-0 justify-start px-[0.75em] whitespace-nowrap max-lg:min-h-11"
             active={isEqual(item.id, props.selected)}
           />
         )}
