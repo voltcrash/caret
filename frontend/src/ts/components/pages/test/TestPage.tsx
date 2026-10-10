@@ -104,7 +104,10 @@ export function TestPage(
             )}
             style={getWordsInputStyle()}
             autocomplete="off"
-            autoCapitalize="none"
+            autoCapitalize="off"
+            inputMode="text"
+            // oxlint-disable-next-line react/no-unknown-property -- Solid types use lowercase enterkeyhint
+            enterkeyhint="done"
             // oxlint-disable-next-line react/no-unknown-property -- Solid uses lowercase autocorrect
             autocorrect="off"
             data-gramm="false"
