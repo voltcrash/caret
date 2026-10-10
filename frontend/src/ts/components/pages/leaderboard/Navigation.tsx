@@ -16,7 +16,8 @@ export function Navigation(props: {
   isLoading?: boolean;
   class?: string;
 }): JSXElement {
-  const buttonClass = "px-2 xs:px-3 sm:px-4 text-em-base";
+  const buttonClass =
+    "px-2 xs:px-3 sm:px-4 text-em-base pointer-coarse:min-h-11 pointer-coarse:min-w-11";
 
   return (
     <div
