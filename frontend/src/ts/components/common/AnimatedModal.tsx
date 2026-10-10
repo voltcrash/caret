@@ -338,7 +338,7 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
       id={props.domId ?? `${props.id as string}Modal`}
       ref={dialogRef}
       class={cn(
-        "fixed top-0 left-0 z-1000 m-0 hidden max-h-dvh max-w-screen border-none bg-[rgba(0,0,0,0.5)] p-2 xs:p-4 sm:p-8 backdrop:bg-transparent",
+        "fixed top-0 left-0 z-1000 m-0 hidden max-h-dvh max-w-screen border-none bg-[rgba(0,0,0,0.5)] p-2 xs:p-4 sm:p-8 backdrop:bg-transparent outline-none",
         // Native open state survives reactive wrapperClass updates after hide.
         "h-dvh w-full items-center justify-center open:flex",
         props.wrapperClass,
@@ -353,7 +353,7 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
       <Show when={isModalOpen(props.id)}>
         <div
           class={cn(
-            "modal pointer-events-auto grid h-max max-h-full w-full max-w-md gap-4 overflow-auto overscroll-y-none rounded-double bg-bg p-4 text-text ring-4 ring-sub-alt sm:p-8",
+            "modal pointer-events-auto grid outline-none h-max max-h-full w-full max-w-md gap-4 overflow-auto overscroll-y-none rounded-double bg-bg p-4 text-text ring-4 ring-sub-alt sm:p-8",
             props.modalClass,
           )}
           ref={modalRef}
