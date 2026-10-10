@@ -91,16 +91,20 @@ export function SettingsPage(): JSXElement {
               {/* padded like the buttons: inset to line up with the item icons,
                     and space below to match the gap above the tip */}
               <div class="grid gap-2 px-2 pb-2 text-em-xs text-sub">
-                <div>
+                {/* keyboard shortcuts are hidden on touch, where they can't be used */}
+                <div class="pointer-coarse:hidden">
                   tip: you can also change all these settings quickly via the
                   command palette (<CommandPaletteHotkey />)
                 </div>
-                <div>
+                <div class="pointer-coarse:hidden">
                   tip: press{" "}
                   <Kbd
                     text={`${detectPlatform() === "mac" ? "cmd" : "ctrl"} + 1-9`}
                   />{" "}
                   to jump to a section
+                </div>
+                <div class="hidden pointer-coarse:block">
+                  tip: tap the terminal icon in the nav to search every setting
                 </div>
               </div>
             </>
