@@ -110,6 +110,8 @@ export function SidebarLayout<T extends string>(props: {
                 active={props.active === key}
                 class={cn(
                   "min-w-0 justify-start text-left [--themable-button-active:var(--themable-button-text)]",
+                  // 44px minimum tap target on touch screens
+                  "pointer-coarse:min-h-11",
                   (props.counts !== undefined || showHotkeys()) && "w-full",
                   props.counts !== undefined &&
                     (props.counts[key] ?? 0) === 0 &&
