@@ -1412,7 +1412,9 @@ export function onTestRestart(source: "testPage" | "resultPage"): void {
     seconds: undefined,
   });
   LayoutfluidFunboxTimer.instantHide();
-  focusWords(true);
+  // force blur drops the keyboard on iOS (refocus without a gesture won't reopen it),
+  // so on touch keep the input focused; value was already reset in test-logic restart
+  focusWords(!window.matchMedia("(pointer: coarse)").matches);
   MonkeyPower.reset();
   Caret.resetPosition();
   setTestInitError(null);
