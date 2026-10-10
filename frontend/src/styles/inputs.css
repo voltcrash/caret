@@ -25,7 +25,8 @@ textarea {
     [type="submit"],
     [type="reset"]
   ),
-  textarea {
+  textarea,
+  select {
     font-size: max(16px, 1em) !important;
   }
 }
