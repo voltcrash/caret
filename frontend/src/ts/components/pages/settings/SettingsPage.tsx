@@ -398,7 +398,7 @@ function Section(props: {
       <H2
         text={settingsSections[props.section].text}
         fa={{ icon: settingsSections[props.section].icon }}
-        class="pb-0"
+        class="pb-0 text-[1.5em]"
       />
       <SettingsSectionContext.Provider value={section}>
         {props.children}
