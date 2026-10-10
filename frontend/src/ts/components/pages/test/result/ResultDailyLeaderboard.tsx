@@ -20,7 +20,7 @@ export function ResultDailyLeaderboard(props: {
             duration: applyReducedMotion(250),
           });
         }}
-        class="group dailyLeaderboard max-w-[13rem] whitespace-nowrap max-md:whitespace-normal"
+        class="group dailyLeaderboard max-w-[13rem] whitespace-nowrap max-md:col-span-full max-md:whitespace-normal"
       >
         <div class={props.topClass}>daily leaderboard</div>
         <div
