@@ -23,11 +23,13 @@ export function Slider(props: Props): JSXElement {
   };
 
   return (
-    <div class="grid grid-cols-[3ch_1fr] items-center gap-4">
+    <div class="grid w-full min-w-0 grid-cols-[3ch_minmax(0,1fr)] items-center gap-4">
       <div>{textToDisplay()}</div>
       <input
         ref={props.ref}
         type="range"
+        // horizontal drags go to the slider on touch; vertical swipes still scroll the page
+        class="touch-pan-y"
         min={props.min}
         max={props.max}
         value={value()}
