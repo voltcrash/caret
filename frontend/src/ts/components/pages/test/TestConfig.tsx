@@ -63,7 +63,7 @@ export function TestConfig(): JSXElement {
       </div>
       <Button
         class={cn(
-          "mx-auto flex min-h-10 max-w-full place-self-center px-4 py-2 text-sub md:hidden",
+          "mx-auto flex min-h-11 max-w-full place-self-center px-4 py-2 text-sub md:hidden",
           getFocus() || getResultVisible()
             ? "pointer-events-none opacity-0"
             : "",
