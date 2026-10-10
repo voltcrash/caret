@@ -57,7 +57,9 @@ export function ResultButtons(): JSXElement {
       id: "nextTestButton",
       label: "Next test",
       shortLabel: "next test",
-      class: "max-md:col-span-full",
+      // phones: primary action, main-colored and tall
+      class:
+        "max-md:col-span-full max-md:py-[0.75em]! max-md:bg-main max-md:text-[1.125rem] max-md:text-bg max-md:hover:bg-main max-md:hover:text-bg",
       icon: () => ({ icon: "fa-chevron-right" }),
       onClick: () => void TestLogic.restart(),
     },
