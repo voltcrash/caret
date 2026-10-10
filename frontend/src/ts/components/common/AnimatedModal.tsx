@@ -73,7 +73,34 @@ function animateElement(
 }
 
 const DEFAULT_ANIMATION_DURATION = 125;
+const SHEET_ANIMATION_DURATION = 200;
 const MODAL_ONLY_ANIMATION_MULTIPLIER = 0.75;
+const SHEET_MEDIA_QUERY = "(max-width: 720.98px)";
+
+type ModalMotion = {
+  enter: { style: Record<string, string>; params: Record<string, unknown> };
+  exit: Record<string, unknown>;
+};
+
+const CARD_MOTION: ModalMotion = {
+  enter: {
+    style: { opacity: "0", marginTop: "1rem" },
+    params: { opacity: [0, 1], marginTop: ["1rem", "0"] },
+  },
+  exit: { opacity: [1, 0], marginTop: ["0", "1rem"] },
+};
+
+const SHEET_MOTION: ModalMotion = {
+  enter: {
+    style: { transform: "translateY(100%)" },
+    params: { translateY: ["100%", "0%"] },
+  },
+  exit: { translateY: ["0%", "100%"] },
+};
+
+function isSheetViewport(): boolean {
+  return matchMedia?.(SHEET_MEDIA_QUERY)?.matches;
+}
 
 export function AnimatedModal(props: AnimatedModalProps): JSXElement {
   // Refs are assigned by SolidJS via the ref attribute
@@ -87,6 +114,9 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
   });
 
   const visibility = (): boolean => isModalOpen(props.id);
+
+  const usesSheetAnimation = (): boolean =>
+    props.mobileSheet !== false && isSheetViewport();
 
   // Handle open/close with animations
   createEffectOn(
@@ -121,9 +151,11 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
       dialogEl()?.showModal();
     }
 
+    const sheet = usesSheetAnimation();
+    const motion = sheet ? SHEET_MOTION : CARD_MOTION;
     const modalAnimDuration = applyReducedMotion(
       (props.customAnimations?.show?.modal?.duration ??
-        DEFAULT_ANIMATION_DURATION) *
+        (sheet ? SHEET_ANIMATION_DURATION : DEFAULT_ANIMATION_DURATION)) *
         (isChained ? MODAL_ONLY_ANIMATION_MULTIPLIER : 1),
     );
 
@@ -149,12 +181,10 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
       if (animMode !== "none") {
         const customModal = props.customAnimations?.show?.modal;
         const initialStyle: Record<string, string> = {
-          opacity: "0",
-          marginTop: "1rem",
+          ...motion.enter.style,
         };
         const animParams: Record<string, unknown> = {
-          opacity: [0, 1],
-          marginTop: ["1rem", "0"],
+          ...motion.enter.params,
         };
         if (customModal) {
           if (customModal.opacity !== undefined) {
@@ -200,13 +230,9 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
         opacity: "1",
       });
 
-      setStyle(modalEl(), {
-        opacity: "0",
-        marginTop: "1rem",
-      });
+      setStyle(modalEl(), motion.enter.style);
       animateElement(modalEl(), {
-        opacity: [0, 1],
-        marginTop: ["1rem", "0"],
+        ...motion.enter.params,
         duration: modalAnimDuration,
         onComplete: () => {
           focusFirstInput();
@@ -222,9 +248,11 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
 
     await props.beforeHide?.();
 
+    const sheet = usesSheetAnimation();
+    const motion = sheet ? SHEET_MOTION : CARD_MOTION;
     const modalAnimDuration = applyReducedMotion(
       (props.customAnimations?.hide?.modal?.duration ??
-        DEFAULT_ANIMATION_DURATION) *
+        (sheet ? SHEET_ANIMATION_DURATION : DEFAULT_ANIMATION_DURATION)) *
         (isChained ? MODAL_ONLY_ANIMATION_MULTIPLIER : 1),
     );
 
@@ -240,8 +268,7 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
       if (animMode !== "none") {
         const customModal = props.customAnimations?.hide?.modal;
         const hideAnimParams: Record<string, unknown> = {
-          opacity: [1, 0],
-          marginTop: ["0", "1rem"],
+          ...motion.exit,
         };
         if (customModal) {
           if (customModal.opacity !== undefined) {
@@ -274,8 +301,7 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
       }
     } else if (animMode === "modalOnly") {
       animateElement(modalEl(), {
-        opacity: [1, 0],
-        marginTop: ["0", "1rem"],
+        ...motion.exit,
         duration: modalAnimDuration,
         onComplete: async () => {
           dialogEl()?.close();
