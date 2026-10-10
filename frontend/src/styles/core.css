@@ -119,6 +119,7 @@ html {
   @apply overflow-y-scroll scroll-smooth;
   line-height: 1.25;
   /* Keep text size stable on landscape rotation (iOS/Android). */
+  /* stylelint-disable-next-line property-no-vendor-prefix -- iOS Safari still needs the prefix */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
