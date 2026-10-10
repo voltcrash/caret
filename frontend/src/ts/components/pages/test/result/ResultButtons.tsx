@@ -44,6 +44,8 @@ export function ResultButtons(): JSXElement {
   const buttons: {
     id: string;
     label: string;
+    // visible text under the icon on phones (no hover balloons on touch)
+    shortLabel: string;
     icon: () => FaObject;
     class?: string;
     // hidden in glarses mode
@@ -54,12 +56,14 @@ export function ResultButtons(): JSXElement {
     {
       id: "nextTestButton",
       label: "Next test",
+      shortLabel: "next test",
       icon: () => ({ icon: "fa-chevron-right" }),
       onClick: () => void TestLogic.restart(),
     },
     {
       id: "restartTestButtonWithSameWordset",
       label: "Repeat test",
+      shortLabel: "repeat",
       icon: () => ({ icon: "fa-sync-alt" }),
       onClick: () => {
         if (getConfig.mode === "zen") {
@@ -74,6 +78,7 @@ export function ResultButtons(): JSXElement {
     {
       id: "practiseWordsButton",
       label: "Practice words",
+      shortLabel: "practice",
       icon: () => ({ icon: "fa-exclamation-triangle" }),
       onClick: () => {
         if (getConfig.mode === "zen") {
@@ -86,6 +91,7 @@ export function ResultButtons(): JSXElement {
     {
       id: "showWordHistoryButton",
       label: "Toggle words history",
+      shortLabel: "words",
       icon: () => ({ icon: "fa-align-left" }),
       noStressHidden: true,
       onClick: () => toggleResultWords(),
@@ -93,6 +99,7 @@ export function ResultButtons(): JSXElement {
     {
       id: "watchReplayButton",
       label: "Watch replay",
+      shortLabel: "replay",
       icon: () => ({ icon: "fa-backward" }),
       noStressHidden: true,
       onClick: () => toggleReplayDisplay(),
@@ -100,6 +107,7 @@ export function ResultButtons(): JSXElement {
     {
       id: "saveScreenshotButton",
       label: "Copy screenshot to clipboard\n(shift click to download)",
+      shortLabel: "screenshot",
       icon: () =>
         shiftHeld()
           ? { icon: "fa-download" }
@@ -143,7 +151,7 @@ export function ResultButtons(): JSXElement {
               id={button.id}
               fa={{ ...button.icon(), fixedWidth: true }}
               class={cn(
-                "max-sm:min-h-10 max-sm:min-w-10 max-sm:items-center",
+                "max-md:min-h-11 max-md:min-w-11 max-md:flex-col max-md:gap-1 max-md:px-[0.25em]! max-md:py-[0.5em]! max-md:text-[0.75rem]",
                 button.class,
                 button.noStressHidden && resultState.noStress && "hidden",
               )}
@@ -153,7 +161,9 @@ export function ResultButtons(): JSXElement {
                 break: button.balloonBreak,
               }}
               onClick={(event) => button.onClick(event)}
-            />
+            >
+              <span class="hidden max-md:block">{button.shortLabel}</span>
+            </Button>
           )}
         </For>
       </div>
