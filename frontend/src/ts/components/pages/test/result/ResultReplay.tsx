@@ -64,7 +64,7 @@ export function ResultReplay(): JSXElement {
           <div
             id="replayWords"
             class={cn(
-              "words flex w-full cursor-pointer flex-wrap content-start select-none",
+              "words flex w-full cursor-pointer flex-wrap content-start select-none max-md:[overflow-wrap:anywhere]",
               resultState.rightToLeft && "rightToLeftTest [direction:rtl]",
               resultState.joiningScript && "joiningScript",
             )}

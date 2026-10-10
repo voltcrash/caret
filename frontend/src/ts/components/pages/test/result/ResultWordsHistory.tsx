@@ -297,7 +297,7 @@ export function ResultWordsHistory(): JSXElement {
         </For>
         <div
           class={cn(
-            "heatmapLegend ml-2 inline-grid w-min grid-cols-[auto_auto_auto] gap-4 text-[0.75rem] text-sub",
+            "heatmapLegend ml-2 inline-grid w-min grid-cols-[auto_auto_auto] gap-4 text-[0.75rem] text-sub max-md:w-full max-md:gap-x-0",
             heatmap() === undefined && "hidden",
           )}
         >
@@ -306,7 +306,7 @@ export function ResultWordsHistory(): JSXElement {
               {(index) => (
                 <div
                   class={cn(
-                    `box box${index} grid h-4 place-content-center px-2 py-[0.1rem] leading-[0.75rem] whitespace-nowrap text-bg`,
+                    `box box${index} grid h-4 place-content-center px-2 py-[0.1rem] leading-[0.75rem] whitespace-nowrap text-bg max-md:px-1 max-md:text-[0.625rem]`,
                     index === 0 && "rounded-l",
                     index === 4 && "rounded-r",
                   )}
@@ -323,7 +323,7 @@ export function ResultWordsHistory(): JSXElement {
       </div>
       <div
         class={cn(
-          "words flex w-full flex-wrap content-start",
+          "words flex w-full flex-wrap content-start max-md:[overflow-wrap:anywhere]",
           resultState.rightToLeft && "rightToLeftTest [direction:rtl]",
           resultState.joiningScript && "joiningScript",
         )}
