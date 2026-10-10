@@ -12,7 +12,7 @@ export function Keytips(): JSXElement {
       <div
         class={cn(
           // keyboard shortcuts are useless on touch devices
-          "mb-8 hidden flex-col items-center gap-2 transition-opacity sm:flex",
+          "mb-8 hidden flex-col items-center gap-2 transition-opacity pointer-fine:sm:flex",
           getFocus() && "opacity-0",
         )}
       >
