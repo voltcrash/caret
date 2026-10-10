@@ -63,19 +63,63 @@ export function TestConfig(): JSXElement {
       </div>
       <Button
         class={cn(
-          "mx-auto flex min-h-10 place-self-center px-4 py-2 text-sub md:hidden",
+          "mx-auto flex min-h-10 max-w-full place-self-center px-4 py-2 text-sub md:hidden",
         )}
         variant="button"
         onClick={() => {
           showModal("MobileTestConfig");
         }}
-        text="test settings"
         fa={{
           icon: "fa-cog",
+          class: "shrink-0",
         }}
-      />
+      >
+        <span class="sr-only">test settings: </span>
+        <span class="min-w-0 truncate">{getMobileSummary()}</span>
+      </Button>
     </>
   );
+}
+
+const quoteLengthLabels: Partial<Record<number, string>> = {
+  [-3]: "favorite",
+  [-2]: "search",
+  0: "short",
+  1: "medium",
+  2: "long",
+  3: "thicc",
+};
+
+function getQuoteLengthSummary(): string {
+  const lengths = getConfig.quoteLength;
+  if (areUnsortedArraysEqual(lengths, [0, 1, 2, 3])) return "all";
+  return lengths
+    .map((length) => quoteLengthLabels[length])
+    .filter((label) => label !== undefined)
+    .join(", ");
+}
+
+function getMode2Summary(): string {
+  switch (getConfig.mode) {
+    case "time":
+      return `time ${getConfig.time}`;
+    case "words":
+      return `words ${getConfig.words}`;
+    case "quote":
+      return `quote ${getQuoteLengthSummary()}`;
+    default:
+      return getConfig.mode;
+  }
+}
+
+function getMobileSummary(): string {
+  const parts = [getMode2Summary()];
+  const extrasDisabled = getConfig.mode === "quote" || getConfig.mode === "zen";
+  if (!extrasDisabled) {
+    if (getConfig.punctuation) parts.push("punctuation");
+    if (getConfig.numbers) parts.push("numbers");
+  }
+  return parts.join(" · ");
 }
 
 function TCButton(props: {
