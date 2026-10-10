@@ -23,7 +23,7 @@ export function Notice(
   const ButtonNotice = () => (
     <Button
       class={cn(
-        "max-w-full gap-3 text-center [overflow-wrap:anywhere]",
+        "max-w-full gap-3 text-center [overflow-wrap:anywhere] pointer-coarse:min-h-11",
         props.class,
       )}
       variant="text"
