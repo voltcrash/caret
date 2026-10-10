@@ -34,7 +34,8 @@ export function RestartTestButton(): JSXElement {
         "col-[content] mx-auto mt-4 flex px-[2em] py-[1em] text-[1rem]",
         getConfig.quickRestart !== "off" && "hidden",
         "pointer-coarse:max-[778px]:block!",
-        getFocus() && "opacity-0! focus-visible:opacity-100!",
+        getFocus() &&
+          "opacity-0! focus-visible:opacity-100! pointer-coarse:opacity-50!",
       )}
       balloon={{ text: "Restart Test", position: "down" }}
       fa={{ icon: "fa-redo-alt", fixedWidth: true }}
