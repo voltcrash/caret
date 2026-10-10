@@ -111,6 +111,8 @@ export function SearchableAutoSetting<T extends ConfigKey>(props: {
             {(option) => (
               <Button
                 class={cn(
+                  // 44px minimum tap target on touch screens
+                  "min-w-0 pointer-coarse:min-h-11",
                   hasManyOptions() && !props.wide && "flex-1 whitespace-nowrap",
                 )}
                 active={getConfig[props.key] === option}
