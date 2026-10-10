@@ -93,7 +93,7 @@ export function AboutPage(): JSXElement {
             )}
           </AsyncContent>
         </section>
-        <section class="h-48 w-full">
+        <section class="w-full">
           <AsyncContent
             alwaysShowContent
             queries={{ speedHistogram }}
@@ -101,76 +101,78 @@ export function AboutPage(): JSXElement {
           >
             {({ speedHistogramData }) => (
               <>
-                <ChartJs
-                  name="SpeedHistogram"
-                  type="bar"
-                  data={{
-                    labels: speedHistogramData()?.labels ?? [],
-                    datasets: [
-                      {
-                        yAxisID: "count",
-                        label: "Users",
-                        data: speedHistogramData()?.data ?? [],
-                        minBarLength: 2,
-                        backgroundColor: getTheme().main,
-                        borderColor: getTheme().main,
-                      },
-                    ],
-                  }}
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    hover: {
-                      mode: "nearest",
-                      intersect: false,
-                    },
-                    scales: {
-                      x: {
-                        axis: "x",
-                        bounds: "ticks",
-                        display: true,
-                        title: {
-                          display: false,
-                          text: "Bucket",
+                <div class="h-48 w-full">
+                  <ChartJs
+                    name="SpeedHistogram"
+                    type="bar"
+                    data={{
+                      labels: speedHistogramData()?.labels ?? [],
+                      datasets: [
+                        {
+                          yAxisID: "count",
+                          label: "Users",
+                          data: speedHistogramData()?.data ?? [],
+                          minBarLength: 2,
+                          backgroundColor: getTheme().main,
+                          borderColor: getTheme().main,
                         },
-                        offset: true,
-                      },
-                      count: {
-                        axis: "y",
-                        beginAtZero: true,
-                        min: 0,
-                        ticks: {
-                          autoSkip: true,
-                          autoSkipPadding: 20,
-                          stepSize: 10,
-                        },
-                        display: true,
-                        title: {
-                          display: true,
-                          text: "Users",
-                        },
-                      },
-                    },
-                    plugins: {
-                      annotation: {
-                        annotations: [],
-                      },
-                      tooltip: {
-                        animation: { duration: 250 },
+                      ],
+                    }}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      hover: {
+                        mode: "nearest",
                         intersect: false,
-                        mode: "index",
-                        callbacks: {
-                          afterLabel: (context) => {
-                            return (
-                              (context.raw as { topPercentage?: string })
-                                .topPercentage ?? ""
-                            );
+                      },
+                      scales: {
+                        x: {
+                          axis: "x",
+                          bounds: "ticks",
+                          display: true,
+                          title: {
+                            display: false,
+                            text: "Bucket",
+                          },
+                          offset: true,
+                        },
+                        count: {
+                          axis: "y",
+                          beginAtZero: true,
+                          min: 0,
+                          ticks: {
+                            autoSkip: true,
+                            autoSkipPadding: 20,
+                            stepSize: 10,
+                          },
+                          display: true,
+                          title: {
+                            display: true,
+                            text: "Users",
                           },
                         },
                       },
-                    },
-                  }}
-                />
+                      plugins: {
+                        annotation: {
+                          annotations: [],
+                        },
+                        tooltip: {
+                          animation: { duration: 250 },
+                          intersect: false,
+                          mode: "index",
+                          callbacks: {
+                            afterLabel: (context) => {
+                              return (
+                                (context.raw as { topPercentage?: string })
+                                  .topPercentage ?? ""
+                              );
+                            },
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </div>
                 <div class="text-right text-xs text-sub">
                   distribution of time 60 leaderboard results (wpm) <br />
                   {numberOfHistogramRecords(speedHistogramData()?.data)} total
