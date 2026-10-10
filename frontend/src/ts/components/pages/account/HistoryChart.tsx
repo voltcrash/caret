@@ -133,7 +133,7 @@ export function HistoryChart(props: {
 
   return (
     <>
-      <div style={{ height: "400px" }}>
+      <div class="h-[280px] sm:h-[400px]">
         <ChartJs
           name="History"
           type="line"
