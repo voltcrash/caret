@@ -206,7 +206,7 @@ export function Nav(): JSXElement {
                 class={cn(
                   "relative",
                   !getFocus() &&
-                    "hover:**:data-[ui-element='accountMenu']:pointer-events-auto hover:**:data-[ui-element='accountMenu']:opacity-100",
+                    "pointer-fine:hover:**:data-[ui-element='accountMenu']:pointer-events-auto pointer-fine:hover:**:data-[ui-element='accountMenu']:opacity-100",
                   "has-focus-visible:**:data-[ui-element='accountMenu']:pointer-events-auto has-focus-visible:**:data-[ui-element='accountMenu']:opacity-100",
                   getAccountMenuOpen() &&
                     "**:data-[ui-element='accountMenu']:pointer-events-auto **:data-[ui-element='accountMenu']:opacity-100",
