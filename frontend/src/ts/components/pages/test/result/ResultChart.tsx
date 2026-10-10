@@ -157,6 +157,29 @@ export function ResultChart(props: {
   const options: ChartOptions<"line" | "scatter"> = {
     responsive: true,
     maintainAspectRatio: false,
+    onResize: (c, size) => {
+      // phones: rotated axis titles and dense ticks eat the plot width
+      if (size.width === 0) return;
+      const narrow = size.width < 360;
+      let changed = false;
+      for (const key of ["wpm", "error"] as const) {
+        const scale = c.options.scales?.[key] as
+          | CartesianScaleOptions
+          | undefined;
+        if (scale === undefined) continue;
+        const display = !narrow;
+        if (scale.title.display !== display) {
+          scale.title.display = display;
+          changed = true;
+        }
+        const maxTicksLimit = narrow ? 4 : 11;
+        if (scale.ticks.maxTicksLimit !== maxTicksLimit) {
+          scale.ticks.maxTicksLimit = maxTicksLimit;
+          changed = true;
+        }
+      }
+      if (changed) c.update("none");
+    },
     scales: {
       x: {
         axis: "x",
@@ -304,7 +327,7 @@ export function ResultChart(props: {
   return (
     <div
       class={cn(
-        "chart group/chart relative h-[200px] max-h-[200px] w-full [grid-area:chart]",
+        "chart group/chart relative h-[200px] max-h-[200px] w-full [grid-area:chart] max-md:h-[min(15rem,70vw)] max-md:max-h-[min(15rem,70vw)]",
         resultState.noStress && "hidden",
       )}
     >
