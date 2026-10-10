@@ -7,7 +7,7 @@ import { setConfig, setQuoteLengthAll } from "../../config/setters";
 import { getConfig } from "../../config/store";
 import { restartTestEvent } from "../../events/test";
 import { isAuthenticated } from "../../states/core";
-import { showModal } from "../../states/modals";
+import { hideModal, showModal } from "../../states/modals";
 import { areUnsortedArraysEqual } from "../../utils/arrays";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Button } from "../common/Button";
@@ -114,7 +114,11 @@ export function MobileTestConfigModal(): JSXElement {
   };
 
   return (
-    <AnimatedModal id="MobileTestConfig" modalClass="grid gap-4">
+    <AnimatedModal
+      id="MobileTestConfig"
+      title="test settings"
+      modalClass="grid gap-4"
+    >
       <div class="grid grid-cols-2 gap-2">
         <MCButton
           text="punctuation"
@@ -206,6 +210,11 @@ export function MobileTestConfigModal(): JSXElement {
 
       <div class="grid gap-2">
         <MCButton text="share" onClick={() => showModal("ShareTestSettings")} />
+        <MCButton
+          text="done"
+          active
+          onClick={() => hideModal("MobileTestConfig")}
+        />
       </div>
     </AnimatedModal>
   );
