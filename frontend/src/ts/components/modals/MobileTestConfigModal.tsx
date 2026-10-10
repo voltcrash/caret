@@ -91,6 +91,7 @@ export function MobileTestConfigModal(): JSXElement {
     } else {
       setConfig("time", time);
       restartTestEvent.dispatch();
+      hideModal("MobileTestConfig");
     }
   };
 
@@ -100,6 +101,7 @@ export function MobileTestConfigModal(): JSXElement {
     } else {
       setConfig("words", words);
       restartTestEvent.dispatch();
+      hideModal("MobileTestConfig");
     }
   };
 
@@ -107,6 +109,7 @@ export function MobileTestConfigModal(): JSXElement {
     if (value === "all") {
       if (setQuoteLengthAll()) {
         restartTestEvent.dispatch();
+        hideModal("MobileTestConfig");
       }
     } else if (value === "-2") {
       showModal("QuoteSearch");
@@ -122,6 +125,8 @@ export function MobileTestConfigModal(): JSXElement {
 
       if (setConfig("quoteLength", arr)) {
         restartTestEvent.dispatch();
+        // shift-click builds a multi-select, so keep the modal open
+        if (!e.shiftKey) hideModal("MobileTestConfig");
       }
     }
   };
