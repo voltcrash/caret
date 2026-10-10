@@ -133,7 +133,7 @@ function PbCard<M extends "time" | "words">(props: {
   );
 
   return (
-    <div class="grid grid-cols-[1fr_minmax(0,2rem)] rounded bg-sub-alt">
+    <div class="grid grid-cols-[1fr_minmax(0,2rem)] pointer-coarse:grid-cols-[1fr_minmax(0,2.75rem)] rounded bg-sub-alt">
       <div class="grid grid-cols-2 gap-4 p-4 sm:gap-8 md:grid-cols-4">
         <For each={bests()}>
           {(item) => (

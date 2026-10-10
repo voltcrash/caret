@@ -58,7 +58,7 @@ export function UserDetails(props: {
   };
 
   return (
-    <div class="grid grid-cols-[1fr_minmax(0,2rem)] rounded bg-sub-alt">
+    <div class="grid grid-cols-[1fr_minmax(0,2rem)] pointer-coarse:grid-cols-[1fr_minmax(0,2.75rem)] rounded bg-sub-alt">
       <div
         class={cn(
           "grid grid-cols-[minmax(0,1fr)] items-center gap-4 p-4",
