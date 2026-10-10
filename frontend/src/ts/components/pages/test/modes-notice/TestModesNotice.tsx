@@ -148,7 +148,10 @@ function LoadedChallenge() {
 function ZenMode() {
   return (
     <Notice when={getConfig.mode === "zen"}>
-      <Kbd hotkey="Shift+Enter" /> to finish zen
+      <span class="pointer-coarse:hidden">
+        <Kbd hotkey="Shift+Enter" /> to finish zen
+      </span>
+      <span class="hidden pointer-coarse:inline">tap finish when done</span>
     </Notice>
   );
 }
