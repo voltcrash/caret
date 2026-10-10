@@ -19,6 +19,7 @@ import * as TestLogic from "../../../../test/test-logic";
 import * as TestScreenshot from "../../../../test/test-screenshot";
 import { FaObject } from "../../../../types/font-awesome";
 import { cn } from "../../../../utils/cn";
+import { Button } from "../../../common/Button";
 import { Fa } from "../../../common/Fa";
 
 export function ResultButtons(): JSXElement {
@@ -137,22 +138,22 @@ export function ResultButtons(): JSXElement {
       >
         <For each={buttons}>
           {(button) => (
-            <button
-              type="button"
+            <Button
+              variant="text"
+              id={button.id}
+              fa={{ ...button.icon(), fixedWidth: true }}
               class={cn(
-                "text max-sm:min-h-10 max-sm:min-w-10 max-sm:items-center",
+                "max-sm:min-h-10 max-sm:min-w-10 max-sm:items-center",
                 button.class,
                 button.noStressHidden && resultState.noStress && "hidden",
               )}
-              id={button.id}
-              aria-label={button.label}
-              role="button"
-              data-balloon-pos="down"
-              data-balloon-break={button.balloonBreak ? "" : undefined}
+              balloon={{
+                text: button.label,
+                position: "down",
+                break: button.balloonBreak,
+              }}
               onClick={(event) => button.onClick(event)}
-            >
-              <Fa {...button.icon()} fixedWidth />
-            </button>
+            />
           )}
         </For>
       </div>
