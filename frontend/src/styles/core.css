@@ -130,8 +130,10 @@ a {
     color 0.125s,
     opacity 0.125s,
     background 0.125s;
-  &:hover {
-    @apply text-text;
+  @media (hover: hover) {
+    &:hover {
+      @apply text-text;
+    }
   }
   &:focus-visible {
     @apply outline-none;
