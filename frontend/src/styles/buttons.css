@@ -1,6 +1,7 @@
 /* No grey tap flash; touch-action: manipulation drops the double-tap zoom delay. */
 a,
 button,
+[role="button"],
 .button,
 .textButton,
 input[type="button"],
