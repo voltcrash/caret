@@ -1,3 +1,8 @@
+/* inner scroll lists stop at their edges instead of chaining into the page */
+.ffscroll {
+  overscroll-behavior: contain;
+}
+
 /* width */
 ::-webkit-scrollbar {
   @apply w-[7px];
