@@ -88,6 +88,8 @@ export function ProfileSearchPage(): JSXElement {
                     field={field}
                     placeholder="username"
                     autocomplete="new-username"
+                    autoCapitalize="none"
+                    spellCheck={false}
                     disabled={!isEditable()}
                   />
                 )}

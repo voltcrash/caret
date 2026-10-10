@@ -11,6 +11,17 @@ export function InputField(props: {
   field: Accessor<AnyFieldApi>;
   placeholder?: string;
   autocomplete?: string;
+  inputMode?:
+    | "none"
+    | "text"
+    | "email"
+    | "numeric"
+    | "decimal"
+    | "search"
+    | "tel"
+    | "url";
+  autoCapitalize?: "off" | "none" | "on" | "sentences" | "words" | "characters";
+  spellCheck?: boolean;
   type?: string;
   disabled?: boolean;
   readOnly?: boolean;
@@ -68,6 +79,10 @@ export function InputField(props: {
         type={props.type ?? "text"}
         placeholder={props.placeholder ?? ""}
         autocomplete={props.autocomplete}
+        inputMode={props.inputMode}
+        autoCapitalize={props.autoCapitalize}
+        // oxlint-disable-next-line react/no-unknown-property -- Solid uses lowercase spellcheck.
+        spellcheck={props.spellCheck}
         name={props.field().name as string}
         value={convertValueToString(props.field().state.value)}
         onBlur={() => {
