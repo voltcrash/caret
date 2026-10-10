@@ -100,7 +100,7 @@ export function TestPage(
             id="wordsInput"
             ref={(el) => (refs.wordsInput = el)}
             class={cn(
-              "full-width pointer-events-none absolute -z-1 mx-auto block h-[1em] w-0 cursor-default resize-none overflow-hidden rounded-none border-none p-0 text-[1em] [caret-color:transparent] opacity-0 [contain:strict] outline-none [text-wrap-mode:nowrap]",
+              "full-width pointer-events-none absolute -z-1 mx-auto block h-[1em] w-0 cursor-default resize-none overflow-hidden rounded-none border-none p-0 text-[1em] pointer-coarse:[font-size:max(16px,1em)] [caret-color:transparent] opacity-0 [contain:strict] outline-none [text-wrap-mode:nowrap]",
             )}
             style={getWordsInputStyle()}
             autocomplete="off"
