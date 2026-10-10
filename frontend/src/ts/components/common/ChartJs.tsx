@@ -55,6 +55,17 @@ Chart.register(
 Chart.defaults.elements.line.tension = 0.5;
 Chart.defaults.elements.line.fill = "origin";
 
+// Touch screens cannot hover a single data point, so tooltips should follow
+// the nearest point and chart text should be a little larger.
+const isCoarsePointer =
+  typeof window !== "undefined" &&
+  window.matchMedia?.("(pointer: coarse)").matches;
+if (isCoarsePointer) {
+  Chart.defaults.interaction.mode = "nearest";
+  Chart.defaults.interaction.intersect = false;
+  Chart.defaults.font.size = 13;
+}
+
 configEvent.subscribe(({ key, newValue }) => {
   if (key === "fontFamily") {
     Chart.defaults.font.family = newValue.replace(/_/g, " ");
