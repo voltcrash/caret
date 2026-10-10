@@ -129,7 +129,12 @@ function LongText() {
       icon="fa-book"
     >
       {getCustomTextIndicator()?.name} (
-      <Kbd hotkey="Shift+Enter" /> to save progress)
+      <span class="pointer-coarse:hidden">
+        <Kbd hotkey="Shift+Enter" /> to save progress)
+      </span>
+      <span class="hidden pointer-coarse:inline">
+        tap save progress when done)
+      </span>
     </Notice>
   );
 }
