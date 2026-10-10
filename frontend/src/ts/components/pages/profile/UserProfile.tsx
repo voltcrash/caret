@@ -19,7 +19,7 @@ export function UserProfile(props: {
   client?: Client;
 }): JSXElement {
   return (
-    <div class="grid w-full gap-8">
+    <div class="grid w-full grid-cols-1 gap-8">
       <UserDetails
         profile={props.profile}
         isAccountPage={props.isAccountPage}
