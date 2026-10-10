@@ -94,7 +94,10 @@ function ResultSaving() {
 function QuickRestart() {
   return (
     <>
-      <Notice when={wordsHaveTab() && hotkeys.commandPalette === "Shift+Tab"}>
+      <Notice
+        when={wordsHaveTab() && hotkeys.commandPalette === "Shift+Tab"}
+        class="pointer-coarse:hidden"
+      >
         <Kbd hotkey={hotkeys.commandPalette} /> to open command palette
       </Notice>
       <Notice
@@ -102,6 +105,7 @@ function QuickRestart() {
           wordsHaveTab() &&
           (getConfig.quickRestart === "tab" || getConfig.quickRestart === "esc")
         }
+        class="pointer-coarse:hidden"
       >
         <Kbd hotkey={hotkeys.quickRestart} /> to restart
       </Notice>
