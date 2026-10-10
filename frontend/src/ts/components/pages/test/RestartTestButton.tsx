@@ -1,6 +1,7 @@
 import { JSXElement } from "solid-js";
 
 import { getConfig } from "../../../config/store";
+import { focusInputElement } from "../../../input/input-element";
 import {
   getFocus,
   isResultCalculating,
@@ -13,6 +14,10 @@ import { Button } from "../../common/Button";
 export function RestartTestButton(): JSXElement {
   const onClick = (): void => {
     if (isResultCalculating()) return;
+    // Focus inside the tap gesture so the on-screen keyboard can stay up across restart.
+    if (window.matchMedia("(pointer: coarse)").matches) {
+      focusInputElement(true);
+    }
     if (
       isTestActive() &&
       getConfig.repeatQuotes === "typing" &&
