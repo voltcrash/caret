@@ -167,7 +167,7 @@ export function CustomBackground(): JSXElement {
               />
             </form>
           </Show>
-          <div class="grid grid-cols-[repeat(auto-fit,minmax(4rem,1fr))] gap-2">
+          <div class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,4rem),1fr))] gap-2">
             <For each={getOptions(ConfigSchema.shape.customBackgroundSize)}>
               {(option) => {
                 const optionMeta = configMetadata.customBackgroundSize
