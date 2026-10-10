@@ -68,7 +68,7 @@ function Banner(props: BannerType): JSXElement {
           fallback={
             <button
               type="button"
-              class="text -mr-2 min-h-9 min-w-9 items-center self-center text-bg hover:text-text sm:min-h-0 sm:min-w-0 sm:items-baseline"
+              class="text -mr-2 min-h-11 min-w-11 items-center self-center text-bg hover:text-text sm:min-h-0 sm:min-w-0 sm:items-baseline"
               onClick={() => {
                 remove();
               }}
