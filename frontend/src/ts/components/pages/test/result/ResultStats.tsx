@@ -9,8 +9,18 @@ import { ResultTags } from "./ResultTags";
 
 const topClass = "top mb-1 text-[1rem] leading-[1rem] text-sub";
 const bottomClass = "bottom text-[2rem] leading-[2rem] text-main";
-const bigTopClass = "top mb-1 text-[2rem] leading-[1.5rem] text-sub";
+// phones: wpm and acc sit side by side as a scoreboard, sized to fit 320px
+const bigTopClass =
+  "top mb-1 text-[2rem] leading-[1.5rem] text-sub max-md:mb-0 max-md:text-[0.875rem] max-md:leading-[1rem]";
 const bigBottomClass = "bottom text-[4rem] leading-[4rem] text-main";
+const wpmBigBottomClass = cn(
+  bigBottomClass,
+  "max-md:leading-none max-md:[font-size:clamp(3.5rem,20vw,4.75rem)]",
+);
+const accBigBottomClass = cn(
+  bigBottomClass,
+  "max-md:leading-none max-md:text-text max-md:[font-size:clamp(2.25rem,12vw,3rem)]",
+);
 const smallTopClass = cn(topClass, "flex flex-wrap items-center");
 const smallBottomClass = "bottom text-[1rem] leading-[1rem] text-main";
 // balloons would overflow the screen on narrow layouts
@@ -48,27 +58,26 @@ export function ResultStats(): JSXElement {
         class={cn(
           "stats grid items-center justify-center gap-2 [grid-area:stats] [grid-template-areas:'wpm'_'acc']",
           "max-md:grid-cols-[1fr_1fr] max-md:justify-items-center max-md:[grid-template-areas:'wpm_acc']",
-          "max-sm:w-max max-sm:grid-cols-[1fr] max-sm:justify-items-start max-sm:justify-self-center max-sm:[grid-template-areas:'wpm'_'acc']",
           resultState.noStress && "hidden",
         )}
       >
-        <div class="group wpm [grid-area:wpm]">
-          <div class={cn(bigTopClass, "flex")}>
+        <div class="group wpm max-md:text-center [grid-area:wpm]">
+          <div class={cn(bigTopClass, "flex max-md:justify-center")}>
             <div class="text">{stats()?.typingSpeedUnit ?? "wpm"}</div>
             <ResultCrown />
           </div>
           <div
-            class={bigBottomClass}
+            class={wpmBigBottomClass}
             aria-label={stats()?.wpm.ariaLabel}
             data-balloon-pos="up"
           >
             {stats()?.wpm.text ?? "-"}
           </div>
         </div>
-        <div class="group acc [grid-area:acc]">
+        <div class="group acc max-md:text-center [grid-area:acc]">
           <div class={bigTopClass}>acc</div>
           <div
-            class={bigBottomClass}
+            class={accBigBottomClass}
             aria-label={stats()?.acc.ariaLabel}
             data-balloon-pos="up"
             data-balloon-break={stats()?.acc.balloonBreak ? "" : undefined}
