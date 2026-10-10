@@ -74,7 +74,7 @@ export function Result(): JSXElement {
       </Show>
       <div
         ref={(el) => (wrapperEl = el)}
-        class="wrapper grid grid-cols-[auto_1fr] items-center gap-4 [grid-template-areas:'stats_chart'_'morestats_morestats'] max-md:grid-cols-[1fr] max-md:[grid-template-areas:'stats'_'chart'_'morestats'] [:where(&)_button]:p-[1em_2em]"
+        class="wrapper grid grid-cols-[auto_1fr] items-center gap-4 [grid-template-areas:'stats_chart'_'morestats_morestats'] max-md:grid-cols-[minmax(0,1fr)] max-md:[grid-template-areas:'stats'_'chart'_'morestats'] [:where(&)_button]:p-[1em_2em]"
       >
         <ResultStats />
         <Show when={chartRequested()}>
