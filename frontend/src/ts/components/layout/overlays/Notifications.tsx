@@ -121,7 +121,9 @@ export function Notifications(): JSXElement {
     <div
       data-ui-element="notifications"
       class={cn(
-        "fixed top-0 right-4 left-4 z-99999999 grid w-auto pt-4 transition-opacity duration-125 sm:left-auto sm:w-87.5",
+        // phones: bottom edge, above the command palette and scroll to top
+        // buttons, so toasts don't cover the nav
+        "fixed right-4 bottom-24 left-4 z-99999999 grid w-auto pt-4 transition-opacity duration-125 sm:top-0 sm:bottom-auto sm:left-auto sm:w-87.5",
         getIsScreenshotting() && "pointer-events-none opacity-0",
       )}
       style={{ "margin-top": `${getGlobalOffsetTop()}px` }}
