@@ -128,9 +128,9 @@ function Suggestion(props: {
   return (
     <div
       class={cn(
-        "command grid cursor-pointer grid-cols-[auto_minmax(0,1fr)] px-4 py-2 text-xs leading-3 text-sub select-none [&_i]:text-sub",
+        "command grid cursor-pointer grid-cols-[auto_minmax(0,1fr)] px-4 py-2 text-sm leading-4 text-sub select-none sm:text-xs sm:leading-3 [&_i]:text-sub",
         "last:rounded-b-[var(--roundness)] [&>div]:pointer-events-none",
-        "min-h-10 items-center [overflow-wrap:anywhere] sm:min-h-0",
+        "min-h-11 items-center [overflow-wrap:anywhere] sm:min-h-0",
         commandlineState.activeIndex === props.index &&
           "active bg-text text-bg [&_i]:text-bg!",
         theme() &&
@@ -219,7 +219,7 @@ export function Commandline(): JSXElement {
       onBackdropClick={onCommandlineBackdropClick}
       mobileSheet={false}
       wrapperClass={cn(
-        "items-start px-2 pt-12 pb-2 transition-[background-color] duration-125 xs:px-4 sm:px-8 sm:py-24",
+        "items-start px-2 pt-[max(0.5rem,env(safe-area-inset-top))] pb-2 transition-[background-color] duration-125 xs:px-4 sm:px-8 sm:py-24",
         commandlineState.noBackground && "bg-transparent",
       )}
       modalClass={cn(
@@ -248,6 +248,10 @@ export function Commandline(): JSXElement {
             inputEl = el;
           }}
           type="text"
+          autocomplete="off"
+          autoCapitalize="none"
+          // oxlint-disable-next-line react/no-unknown-property -- Solid uses lowercase spellcheck
+          spellcheck={false}
           class="col-start-2 w-full rounded-[var(--roundness)] border-0 bg-bg py-4 pr-4 pl-0 text-base text-text outline-none focus-visible:shadow-none"
           placeholder={commandlineState.inputPlaceholder}
           value={commandlineState.inputValue}
@@ -265,7 +269,7 @@ export function Commandline(): JSXElement {
       </Show>
       <div
         class={cn(
-          "suggestions ffscroll grid max-h-[calc(100dvh-12rem)] cursor-pointer overflow-y-scroll select-none sm:max-h-[calc(100dvh-15rem)]",
+          "suggestions ffscroll grid max-h-[calc(100dvh-12rem)] cursor-pointer overflow-y-scroll overscroll-contain select-none sm:max-h-[calc(100dvh-15rem)]",
           commandlineState.suggestions.length > 0 && "pb-2",
         )}
         ref={(el) => {
