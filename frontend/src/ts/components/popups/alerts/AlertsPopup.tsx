@@ -12,6 +12,7 @@ export function AlertsPopup(): JSXElement {
   return (
     <AnimatedModal
       id="Alerts"
+      mobileSheet={false}
       modalClass="h-dvh absolute right-0 top-0 w-full max-w-[calc(100vw-2rem)] sm:max-w-[calc(350px+2rem)] rounded-l bg-bg sm:p-4 p-4 sm:pt-8 pt-8 flex flex-col overflow-hidden"
       customAnimations={{
         show: {

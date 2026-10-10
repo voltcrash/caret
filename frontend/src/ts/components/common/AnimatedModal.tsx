@@ -46,6 +46,13 @@ type AnimatedModalProps = ParentProps<{
   closeOnWrapperClick?: boolean;
   closeOnEscape?: boolean;
 
+  /**
+   * Below the sm breakpoint (phones) present as a bottom sheet instead of a
+   * centered card. Defaults to true; set false for panels with their own
+   * mobile layout.
+   */
+  mobileSheet?: boolean;
+
   title?: string;
   modalClass?: string;
   wrapperClass?: string;
@@ -338,9 +345,12 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
       id={props.domId ?? `${props.id as string}Modal`}
       ref={dialogRef}
       class={cn(
-        "fixed top-0 left-0 z-1000 m-0 hidden max-h-dvh max-w-screen border-none bg-[rgba(0,0,0,0.5)] p-2 xs:p-4 sm:p-8 backdrop:bg-transparent outline-none",
+        "fixed top-0 left-0 z-1000 m-0 hidden max-h-dvh max-w-screen border-none bg-[rgba(0,0,0,0.5)] backdrop:bg-transparent outline-none",
         // Native open state survives reactive wrapperClass updates after hide.
-        "h-dvh w-full items-center justify-center open:flex",
+        "h-dvh w-full justify-center open:flex",
+        props.mobileSheet === false
+          ? "items-center p-2 xs:p-4 sm:p-8"
+          : "items-end p-0 sm:items-center sm:p-8",
         props.wrapperClass,
       )}
       onKeyDown={handleKeyDown}
@@ -353,13 +363,22 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
       <Show when={isModalOpen(props.id)}>
         <div
           class={cn(
-            "modal pointer-events-auto grid outline-none h-max max-h-full w-full max-w-md gap-4 overflow-auto overscroll-y-none rounded-double bg-bg p-4 text-text ring-4 ring-sub-alt sm:p-8",
+            "modal pointer-events-auto grid outline-none h-max w-full max-w-md gap-4 overflow-auto overscroll-y-none bg-bg p-4 text-text ring-4 ring-sub-alt sm:p-8",
+            props.mobileSheet === false
+              ? "max-h-full rounded-double"
+              : "sm:max-h-full sm:rounded-double max-sm:max-h-[85dvh] max-sm:rounded-t-[calc(var(--roundness)*2)] max-sm:rounded-b-none max-sm:pb-[max(1rem,env(safe-area-inset-bottom))]",
             props.modalClass,
           )}
           ref={modalRef}
           tabIndex={-1}
           onScroll={(e) => props.onScroll?.(e)}
         >
+          <Show when={props.mobileSheet !== false}>
+            <div
+              aria-hidden="true"
+              class="mx-auto -mb-2 h-1.5 w-10 shrink-0 rounded-full bg-sub-alt sm:hidden"
+            ></div>
+          </Show>
           <Show when={props.title !== undefined && props.title !== ""}>
             <div class="text-xl text-sub sm:text-2xl">{props.title}</div>
           </Show>

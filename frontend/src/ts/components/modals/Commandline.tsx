@@ -217,6 +217,7 @@ export function Commandline(): JSXElement {
       afterHide={afterHideCommandline}
       onEscape={onCommandlineEscape}
       onBackdropClick={onCommandlineBackdropClick}
+      mobileSheet={false}
       wrapperClass={cn(
         "items-start px-2 pt-12 pb-2 transition-[background-color] duration-125 xs:px-4 sm:px-8 sm:py-24",
         commandlineState.noBackground && "bg-transparent",
