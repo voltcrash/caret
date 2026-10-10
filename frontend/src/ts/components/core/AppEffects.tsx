@@ -16,6 +16,7 @@ import { configLoadPromise } from "../../config/lifecycle";
 import { Config } from "../../config/store";
 import { getAcceptedCookies } from "../../cookies";
 import { configEvent } from "../../events/config";
+import { isInputElementFocused } from "../../input/input-element";
 import {
   getFontFace,
   getFontFamily,
@@ -232,7 +233,14 @@ export function AppEffects(props: AppElements): JSXElement {
         const timer = setTimeout(() => {
           timers.delete(timer);
           TestUI.updateWordsInputPosition();
-          TestUI.focusWords();
+          // on touch, mobile URL bar/keyboard resizes must not reopen the keyboard
+          // the user dismissed, so only refocus if the input already has focus
+          if (
+            !window.matchMedia("(pointer: coarse)").matches ||
+            isInputElementFocused()
+          ) {
+            TestUI.focusWords();
+          }
           Caret.show();
         }, 250);
         timers.add(timer);
