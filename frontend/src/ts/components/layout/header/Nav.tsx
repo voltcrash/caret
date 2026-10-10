@@ -91,6 +91,7 @@ export function Nav(): JSXElement {
         class={buttonClass()}
         dataset={{
           "data-nav-item": "test",
+          "aria-label": "Test",
         }}
         onClick={() => {
           if (getActivePage() === "test") restartTestEvent.dispatch();
@@ -105,6 +106,7 @@ export function Nav(): JSXElement {
         router-link
         dataset={{
           "data-nav-item": "leaderboards",
+          "aria-label": "Leaderboards",
         }}
         class={buttonClass()}
         href="/leaderboards"
@@ -121,6 +123,7 @@ export function Nav(): JSXElement {
         class={buttonClass()}
         dataset={{
           "data-nav-item": "about",
+          "aria-label": "About",
         }}
         href="/about"
         router-link
@@ -138,6 +141,7 @@ export function Nav(): JSXElement {
         href="/settings"
         dataset={{
           "data-nav-item": "settings",
+          "aria-label": "Settings",
         }}
         router-link
       />
@@ -150,6 +154,7 @@ export function Nav(): JSXElement {
         }}
         dataset={{
           "data-nav-item": "alerts",
+          "aria-label": "Alerts",
         }}
         onClick={() => {
           showModal("Alerts");
@@ -176,6 +181,7 @@ export function Nav(): JSXElement {
                   href="/login"
                   dataset={{
                     "data-nav-item": "login",
+                    "aria-label": "Sign in",
                   }}
                   fa={{
                     icon: "fa-user",
@@ -230,6 +236,7 @@ export function Nav(): JSXElement {
                   router-link
                   dataset={{
                     "data-nav-item": "account",
+                    "aria-label": "Account",
                   }}
                 >
                   <User
