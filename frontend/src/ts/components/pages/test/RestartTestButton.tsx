@@ -31,7 +31,7 @@ export function RestartTestButton(): JSXElement {
       id="restartTestButton"
       variant="text"
       class={cn(
-        "col-[content] mx-auto mt-4 flex px-[2em] py-[1em] text-[1rem]",
+        "col-[content] mx-auto mt-4 flex px-[2em] py-[1em] text-[1rem] pointer-coarse:min-h-11 pointer-coarse:min-w-11",
         getConfig.quickRestart !== "off" && "hidden",
         "pointer-coarse:max-[778px]:block!",
         getFocus() &&
