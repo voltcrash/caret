@@ -8,10 +8,17 @@ import {
 import { Fa } from "../../common/Fa";
 
 export function OutOfFocusWarning() {
-  const message = () =>
-    testFocusState() === "unfocusedWindow"
-      ? "Click anywhere to focus the window"
+  const message = () => {
+    const isCoarse = window.matchMedia("(pointer: coarse)").matches;
+    if (testFocusState() === "unfocusedWindow") {
+      return isCoarse
+        ? "Tap anywhere to focus the window"
+        : "Click anywhere to focus the window";
+    }
+    return isCoarse
+      ? "Tap here to start typing"
       : "Click here or press any key to focus";
+  };
 
   return (
     <Show when={showOutOfFocusWarning()}>
