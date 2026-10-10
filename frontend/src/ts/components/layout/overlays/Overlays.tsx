@@ -24,11 +24,12 @@ export function Overlays(): JSXElement {
         type="button"
         id="commandLineMobileButton"
         class={cn(
-          "fixed bottom-8 left-8 z-99 hidden h-12 w-12 rounded-full bg-main text-center leading-12 text-bg [@media(hover:none)_and_(pointer:coarse)]:grid!",
+          "fixed bottom-8 left-8 z-99 hidden h-12 w-12 rounded-full bg-main text-center leading-12 text-bg pointer-coarse:grid!",
           {
             "opacity-0": getIsScreenshotting(),
           },
         )}
+        aria-label="Command palette"
         onClick={() => {
           showModal("Commandline");
         }}
