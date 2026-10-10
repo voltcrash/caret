@@ -94,13 +94,19 @@ export function SettingsPage(): JSXElement {
                 {/* keyboard shortcuts are hidden on touch, where they can't be used */}
                 <div class="pointer-coarse:hidden">
                   tip: you can also change all these settings quickly via the
-                  command palette (<CommandPaletteHotkey />)
+                  command palette (
+                  <span class="whitespace-nowrap">
+                    <CommandPaletteHotkey />
+                  </span>
+                  )
                 </div>
                 <div class="pointer-coarse:hidden">
                   tip: press{" "}
-                  <Kbd
-                    text={`${detectPlatform() === "mac" ? "cmd" : "ctrl"} + 1-9`}
-                  />{" "}
+                  <span class="whitespace-nowrap">
+                    <Kbd
+                      text={`${detectPlatform() === "mac" ? "cmd" : "ctrl"} + 1-9`}
+                    />
+                  </span>{" "}
                   to jump to a section
                 </div>
                 <div class="hidden pointer-coarse:block">
