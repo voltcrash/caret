@@ -59,7 +59,7 @@ export function ResultButtons(): JSXElement {
       shortLabel: "next test",
       // phones: primary action, main-colored and tall
       class:
-        "max-md:col-span-full max-md:py-[0.75em]! max-md:bg-main max-md:text-[1.125rem] max-md:text-bg max-md:hover:bg-main max-md:hover:text-bg",
+        "max-md:col-span-full max-md:flex-row max-md:gap-2 max-md:px-[1em]! max-md:py-[0.75em]! max-md:bg-main max-md:text-[1.125rem] max-md:text-bg max-md:hover:bg-main max-md:hover:text-bg",
       icon: () => ({ icon: "fa-chevron-right" }),
       onClick: () => void TestLogic.restart(),
     },
