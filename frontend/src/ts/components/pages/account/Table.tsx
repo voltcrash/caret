@@ -121,23 +121,20 @@ function getColumns<M extends Mode>({
       cell: (info) =>
         format.typingSpeed(info.getValue(), { showDecimalPlaces: true }),
       meta: {
-        breakpoint: "xs",
+        breakpoint: "sm",
       },
     }),
     defineColumn("acc", {
       header: "accuracy",
       cell: (info) =>
         format.percentage(info.getValue(), { showDecimalPlaces: true }),
-      meta: {
-        breakpoint: "xs",
-      },
     }),
     defineColumn("consistency", {
       header: "consistency",
       cell: (info) =>
         format.percentage(info.getValue(), { showDecimalPlaces: true }),
       meta: {
-        breakpoint: "xs",
+        breakpoint: "md",
       },
     }),
     defineColumn("charStats", {
@@ -153,9 +150,6 @@ function getColumns<M extends Mode>({
       enableSorting: false,
       cell: (info) =>
         `${info.getValue()} ${info.row.original.mode2 === "custom" ? "" : info.row.original.mode2}`,
-      meta: {
-        breakpoint: "md",
-      },
     }),
     defineColumn("_id", {
       header: "info",
