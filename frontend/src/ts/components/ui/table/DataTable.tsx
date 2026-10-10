@@ -188,195 +188,199 @@ export function DataTable<TData extends RowData>(
       when={table.getRowModel().rows?.length || props.noDataRow !== undefined}
       fallback={props.fallback}
     >
-      <Table id={props.id} class={props.class} ref={props.ref}>
-        <Show when={!props.hideHeader}>
-          <TableHeader>
-            <For each={table.getHeaderGroups()}>
-              {(headerGroup) => (
-                <TableRow>
-                  <For each={headerGroup.headers}>
-                    {(header) => (
-                      <Show
-                        when={header.column.getCanSort()}
-                        fallback={
+      <div class="w-full overflow-x-auto overscroll-x-contain">
+        <Table id={props.id} class={props.class} ref={props.ref}>
+          <Show when={!props.hideHeader}>
+            <TableHeader>
+              <For each={table.getHeaderGroups()}>
+                {(headerGroup) => (
+                  <TableRow>
+                    <For each={headerGroup.headers}>
+                      {(header) => (
+                        <Show
+                          when={header.column.getCanSort()}
+                          fallback={
+                            <TableHead
+                              colSpan={header.colSpan}
+                              class={cn(
+                                {
+                                  "text-left":
+                                    (header.column.columnDef.meta?.align ??
+                                      "left") === "left",
+                                  "text-center":
+                                    header.column.columnDef.meta?.align ===
+                                    "center",
+                                  "text-right":
+                                    header.column.columnDef.meta?.align ===
+                                    "right",
+                                },
+                                columnVisibility()[header.column.id],
+                                props.headerCellClass,
+                              )}
+                              {...(header.column.columnDef.meta?.headerMeta ??
+                                {})}
+                            >
+                              <Show when={!header.isPlaceholder}>
+                                {flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext(),
+                                )}
+                              </Show>
+                            </TableHead>
+                          }
+                        >
                           <TableHead
                             colSpan={header.colSpan}
+                            aria-sort={
+                              header.column.getIsSorted() === "asc"
+                                ? "ascending"
+                                : header.column.getIsSorted() === "desc"
+                                  ? "descending"
+                                  : "none"
+                            }
                             class={cn(
-                              {
-                                "text-left":
-                                  (header.column.columnDef.meta?.align ??
-                                    "left") === "left",
-                                "text-center":
-                                  header.column.columnDef.meta?.align ===
-                                  "center",
-                                "text-right":
-                                  header.column.columnDef.meta?.align ===
-                                  "right",
-                              },
+                              "p-0",
                               columnVisibility()[header.column.id],
-                              props.headerCellClass,
                             )}
-                            {...(header.column.columnDef.meta?.headerMeta ??
-                              {})}
                           >
-                            <Show when={!header.isPlaceholder}>
-                              {flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
+                            <button
+                              type="button"
+                              role="button"
+                              onClick={(e) => {
+                                header.column.getToggleSortingHandler()?.(e);
+                              }}
+                              class={cn(
+                                "m-0 box-border flex h-full w-full cursor-pointer items-start rounded-none border-0 bg-transparent p-2 font-normal whitespace-nowrap text-sub hover:bg-sub-alt",
+                                {
+                                  "justify-start text-left":
+                                    (header.column.columnDef.meta?.align ??
+                                      "left") === "left",
+                                  "justify-center text-center":
+                                    header.column.columnDef.meta?.align ===
+                                    "center",
+                                  "justify-end text-right":
+                                    header.column.columnDef.meta?.align ===
+                                    "right",
+                                },
+                                props.headerCellClass,
+                                header.column.columnDef.meta?.headerClass,
                               )}
-                            </Show>
+                              {...(header.column.columnDef.meta?.headerMeta ??
+                                {})}
+                            >
+                              <Show when={!header.isPlaceholder}>
+                                {flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext(),
+                                )}
+                              </Show>
+
+                              <Switch fallback={<span class="fa-fw"></span>}>
+                                <Match
+                                  when={header.column.getIsSorted() === "asc"}
+                                >
+                                  <Fa
+                                    icon={"fa-sort-up"}
+                                    fixedWidth
+                                    aria-hidden="true"
+                                  />
+                                </Match>
+                                <Match
+                                  when={header.column.getIsSorted() === "desc"}
+                                >
+                                  <Fa
+                                    icon={"fa-sort-down"}
+                                    fixedWidth
+                                    aria-hidden="true"
+                                  />
+                                </Match>
+                              </Switch>
+                            </button>
                           </TableHead>
-                        }
-                      >
-                        <TableHead
-                          colSpan={header.colSpan}
-                          aria-sort={
-                            header.column.getIsSorted() === "asc"
-                              ? "ascending"
-                              : header.column.getIsSorted() === "desc"
-                                ? "descending"
-                                : "none"
-                          }
+                        </Show>
+                      )}
+                    </For>
+                  </TableRow>
+                )}
+              </For>
+            </TableHeader>
+          </Show>
+          <TableBody>
+            <For each={table.getRowModel().rows}>
+              {(row) => (
+                <TableRow
+                  {...{
+                    "data-state": row.getIsSelected() ? "selected" : undefined,
+                  }}
+                  class={
+                    row.getIsSelected() && props.rowSelection
+                      ? props.rowSelection.class
+                      : ""
+                  }
+                >
+                  <For each={row.getVisibleCells()}>
+                    {(cell) => {
+                      const [cellClass, cellMeta] = splitProps(
+                        typeof cell.column.columnDef.meta?.cellMeta ===
+                          "function"
+                          ? cell.column.columnDef.meta.cellMeta({
+                              value: cell.getValue(),
+                              row: cell.row.original,
+                            })
+                          : (cell.column.columnDef.meta?.cellMeta ?? {}),
+                        ["class"],
+                      );
+                      return (
+                        <TableCell
+                          {...cellMeta}
                           class={cn(
-                            "p-0",
-                            columnVisibility()[header.column.id],
+                            "",
+                            {
+                              "text-left":
+                                (cell.column.columnDef.meta?.align ??
+                                  "left") === "left",
+                              "text-center":
+                                cell.column.columnDef.meta?.align === "center",
+                              "text-right":
+                                cell.column.columnDef.meta?.align === "right",
+                            },
+                            columnVisibility()[cell.column.id],
+                            props.bodyCellClass,
+                            cellClass.class,
                           )}
                         >
-                          <button
-                            type="button"
-                            role="button"
-                            onClick={(e) => {
-                              header.column.getToggleSortingHandler()?.(e);
-                            }}
-                            class={cn(
-                              "m-0 box-border flex h-full w-full cursor-pointer items-start rounded-none border-0 bg-transparent p-2 font-normal whitespace-nowrap text-sub hover:bg-sub-alt",
-                              {
-                                "justify-start text-left":
-                                  (header.column.columnDef.meta?.align ??
-                                    "left") === "left",
-                                "justify-center text-center":
-                                  header.column.columnDef.meta?.align ===
-                                  "center",
-                                "justify-end text-right":
-                                  header.column.columnDef.meta?.align ===
-                                  "right",
-                              },
-                              props.headerCellClass,
-                              header.column.columnDef.meta?.headerClass,
-                            )}
-                            {...(header.column.columnDef.meta?.headerMeta ??
-                              {})}
-                          >
-                            <Show when={!header.isPlaceholder}>
-                              {flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                              )}
-                            </Show>
-
-                            <Switch fallback={<span class="fa-fw"></span>}>
-                              <Match
-                                when={header.column.getIsSorted() === "asc"}
-                              >
-                                <Fa
-                                  icon={"fa-sort-up"}
-                                  fixedWidth
-                                  aria-hidden="true"
-                                />
-                              </Match>
-                              <Match
-                                when={header.column.getIsSorted() === "desc"}
-                              >
-                                <Fa
-                                  icon={"fa-sort-down"}
-                                  fixedWidth
-                                  aria-hidden="true"
-                                />
-                              </Match>
-                            </Switch>
-                          </button>
-                        </TableHead>
-                      </Show>
-                    )}
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </TableCell>
+                      );
+                    }}
                   </For>
                 </TableRow>
               )}
             </For>
-          </TableHeader>
-        </Show>
-        <TableBody>
-          <For each={table.getRowModel().rows}>
-            {(row) => (
-              <TableRow
-                {...{
-                  "data-state": row.getIsSelected() ? "selected" : undefined,
-                }}
-                class={
-                  row.getIsSelected() && props.rowSelection
-                    ? props.rowSelection.class
-                    : ""
-                }
-              >
-                <For each={row.getVisibleCells()}>
-                  {(cell) => {
-                    const [cellClass, cellMeta] = splitProps(
-                      typeof cell.column.columnDef.meta?.cellMeta === "function"
-                        ? cell.column.columnDef.meta.cellMeta({
-                            value: cell.getValue(),
-                            row: cell.row.original,
-                          })
-                        : (cell.column.columnDef.meta?.cellMeta ?? {}),
-                      ["class"],
-                    );
-                    return (
-                      <TableCell
-                        {...cellMeta}
-                        class={cn(
-                          "",
-                          {
-                            "text-left":
-                              (cell.column.columnDef.meta?.align ?? "left") ===
-                              "left",
-                            "text-center":
-                              cell.column.columnDef.meta?.align === "center",
-                            "text-right":
-                              cell.column.columnDef.meta?.align === "right",
-                          },
-                          columnVisibility()[cell.column.id],
-                          props.bodyCellClass,
-                          cellClass.class,
-                        )}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    );
-                  }}
-                </For>
+            <Show
+              when={
+                !table.getRowModel().rows?.length &&
+                props.noDataRow !== undefined
+              }
+            >
+              <TableRow>
+                <TableCell
+                  colSpan={table.getAllColumns().length}
+                  class="text-center text-sub"
+                >
+                  {props.noDataRow !== undefined &&
+                    (props.noDataRow === true
+                      ? "No data"
+                      : props.noDataRow.content)}
+                </TableCell>
               </TableRow>
-            )}
-          </For>
-          <Show
-            when={
-              !table.getRowModel().rows?.length && props.noDataRow !== undefined
-            }
-          >
-            <TableRow>
-              <TableCell
-                colSpan={table.getAllColumns().length}
-                class="text-center text-sub"
-              >
-                {props.noDataRow !== undefined &&
-                  (props.noDataRow === true
-                    ? "No data"
-                    : props.noDataRow.content)}
-              </TableCell>
-            </TableRow>
-          </Show>
-        </TableBody>
-      </Table>
+            </Show>
+          </TableBody>
+        </Table>
+      </div>
     </Show>
   );
 }
