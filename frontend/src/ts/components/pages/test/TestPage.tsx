@@ -94,6 +94,13 @@ export function TestPage(
           )}
           style={{ height: getWordsWrapperHeight() }}
           translate="no"
+          onMouseDown={(e) => {
+            // Keep focus on the hidden input so tapping words does not blur it
+            // (which closes and reopens the keyboard) or move its caret.
+            if (window.matchMedia("(pointer: coarse)").matches) {
+              e.preventDefault();
+            }
+          }}
           onClick={() => focusWords()}
         >
           <textarea
