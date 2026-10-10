@@ -89,7 +89,7 @@ export function TestPage(
           id="wordsWrapper"
           ref={(el) => (refs.wordsWrapper = el)}
           class={cn(
-            "content-grid full-width relative [overflow:visible_clip] [--c-dot--error:var(--error-color)] [--c-dot:var(--text-color)]",
+            "content-grid full-width relative [overflow:visible_clip] [--c-dot--error:var(--error-color)] [--c-dot:var(--text-color)] pointer-coarse:select-none pointer-coarse:[-webkit-touch-callout:none]",
             "[&.tape]:overflow-hidden [&.tape]:[mask-image:linear-gradient(90deg,transparent_1%,black_10%,black_90%,transparent_99%)]",
           )}
           style={{ height: getWordsWrapperHeight() }}
