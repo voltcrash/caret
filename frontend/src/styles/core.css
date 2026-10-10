@@ -119,7 +119,9 @@ html {
   @apply overflow-y-scroll scroll-smooth;
   line-height: 1.25;
   /* Keep text size stable on landscape rotation (iOS/Android). */
+  -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
 
 a {
