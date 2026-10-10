@@ -74,20 +74,24 @@ input[type="checkbox"] {
   &:checked::after {
     @apply text-main;
   }
-  &:hover::after {
-    @apply text-bg;
-  }
-  &:hover:checked::after {
-    @apply text-text;
+  @media (hover: hover) {
+    &:hover::after {
+      @apply text-bg;
+    }
+    &:hover:checked::after {
+      @apply text-text;
+    }
   }
 
   &[disabled] {
     @apply opacity-[0.33] pointer-events-none;
-    &:hover::after {
-      @apply text-sub-alt;
-    }
-    &:hover:checked::after {
-      @apply text-main;
+    @media (hover: hover) {
+      &:hover::after {
+        @apply text-sub-alt;
+      }
+      &:hover:checked::after {
+        @apply text-main;
+      }
     }
   }
 }
