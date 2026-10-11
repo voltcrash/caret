@@ -19,6 +19,7 @@ allowBuilds:
   workerd: true
 
 overrides:
+  "yaml@^1": "1.10.3"
   "source-map-js": "1.2.2"
   "browserslist": "4.28.7"
   "brace-expansion@^2": "2.1.7"
