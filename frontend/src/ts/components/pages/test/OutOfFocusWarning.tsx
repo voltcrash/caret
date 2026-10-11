@@ -33,7 +33,10 @@ export function OutOfFocusWarning() {
         }}
       >
         <div>
-          <Fa icon="fa-mouse-pointer" fixedWidth />
+          <Fa
+            icon={isCoarsePointer() ? "fa-hand-pointer" : "fa-mouse-pointer"}
+            fixedWidth
+          />
         </div>
         <div>{message()}</div>
       </div>
