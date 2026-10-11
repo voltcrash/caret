@@ -610,7 +610,8 @@ function calcTimeTyping(result: ResultMinified): number {
   } else if (result.restartCount !== undefined && result.restartCount > 0) {
     tt += (tt / 4) * result.restartCount;
   }
-  return tt;
+  tt -= result.afkDuration ?? 0;
+  return Number.isFinite(tt) ? Math.max(0, tt) : 0;
 }
 
 // oxlint-disable-next-line typescript/explicit-function-return-type
