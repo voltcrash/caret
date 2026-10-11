@@ -70,6 +70,7 @@ import {
 } from "../../../utils/debounced-animation-frame";
 import * as Misc from "../../../utils/misc";
 import { convertRemToPixels } from "../../../utils/numbers";
+import { isCoarsePointer } from "../../../utils/pointer";
 import * as Strings from "../../../utils/strings";
 import * as MonkeyPower from "./MonkeyPower";
 
@@ -1414,7 +1415,7 @@ export function onTestRestart(source: "testPage" | "resultPage"): void {
   LayoutfluidFunboxTimer.instantHide();
   // force blur drops the keyboard on iOS (refocus without a gesture won't reopen it),
   // so on touch keep the input focused; value was already reset in test-logic restart
-  focusWords(!window.matchMedia("(pointer: coarse)").matches);
+  focusWords(!isCoarsePointer());
   MonkeyPower.reset();
   Caret.resetPosition();
   setTestInitError(null);

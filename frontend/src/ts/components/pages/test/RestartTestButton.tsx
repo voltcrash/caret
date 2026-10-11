@@ -9,13 +9,14 @@ import {
 } from "../../../states/test";
 import * as TestLogic from "../../../test/test-logic";
 import { cn } from "../../../utils/cn";
+import { isCoarsePointer } from "../../../utils/pointer";
 import { Button } from "../../common/Button";
 
 export function RestartTestButton(): JSXElement {
   const onClick = (): void => {
     if (isResultCalculating()) return;
     // Focus inside the tap gesture so the on-screen keyboard can stay up across restart.
-    if (window.matchMedia("(pointer: coarse)").matches) {
+    if (isCoarsePointer()) {
       focusInputElement(true);
     }
     if (

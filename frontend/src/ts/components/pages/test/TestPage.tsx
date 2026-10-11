@@ -11,6 +11,7 @@ import {
 } from "../../../states/words-layout";
 import { focusWords } from "../../../test/test-ui";
 import { cn } from "../../../utils/cn";
+import { isCoarsePointer } from "../../../utils/pointer";
 import { CapsWarning } from "./CapsWarning";
 import { Caret } from "./Caret";
 import { CompositionDisplay } from "./CompositionDisplay";
@@ -99,7 +100,7 @@ export function TestPage(
           onMouseDown={(e) => {
             // Keep focus on the hidden input so tapping words does not blur it
             // (which closes and reopens the keyboard) or move its caret.
-            if (window.matchMedia("(pointer: coarse)").matches) {
+            if (isCoarsePointer()) {
               e.preventDefault();
             }
           }}

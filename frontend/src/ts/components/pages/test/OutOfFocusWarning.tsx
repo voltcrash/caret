@@ -5,11 +5,12 @@ import {
   showOutOfFocusWarning,
   testFocusState,
 } from "../../../states/test";
+import { isCoarsePointer } from "../../../utils/pointer";
 import { Fa } from "../../common/Fa";
 
 export function OutOfFocusWarning() {
   const message = () => {
-    const isCoarse = window.matchMedia("(pointer: coarse)").matches;
+    const isCoarse = isCoarsePointer();
     if (testFocusState() === "unfocusedWindow") {
       return isCoarse
         ? "Tap anywhere to focus the window"

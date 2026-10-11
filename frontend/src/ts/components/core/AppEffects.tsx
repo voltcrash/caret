@@ -49,6 +49,7 @@ import { onDOMReady } from "../../utils/dom-ready";
 import { isDevEnvironment } from "../../utils/env";
 import { applyReducedMotion } from "../../utils/misc";
 import { convertRemToPixels } from "../../utils/numbers";
+import { isCoarsePointer } from "../../utils/pointer";
 import { canQuickRestart } from "../../utils/quick-restart";
 import { GlobalEvents } from "./GlobalEvents";
 import { NoCssFallback } from "./NoCssFallback";
@@ -235,10 +236,7 @@ export function AppEffects(props: AppElements): JSXElement {
           TestUI.updateWordsInputPosition();
           // on touch, mobile URL bar/keyboard resizes must not reopen the keyboard
           // the user dismissed, so only refocus if the input already has focus
-          if (
-            !window.matchMedia("(pointer: coarse)").matches ||
-            isInputElementFocused()
-          ) {
+          if (!isCoarsePointer() || isInputElementFocused()) {
             TestUI.focusWords();
           }
           Caret.show();

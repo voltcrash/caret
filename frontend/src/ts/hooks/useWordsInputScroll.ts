@@ -1,6 +1,7 @@
 import { onCleanup } from "solid-js";
 
 import { centerWordsInputEvent } from "../states/words-layout";
+import { isCoarsePointer } from "../utils/pointer";
 
 // Band (fractions of the visible viewport) the active line should stay in while typing on touch.
 const LINE_BAND_MIN = 0.2;
@@ -9,10 +10,6 @@ const LINE_TARGET = 0.35;
 
 function getVisibleViewportHeight(): number {
   return window.visualViewport?.height ?? window.innerHeight;
-}
-
-function isCoarsePointer(): boolean {
-  return window.matchMedia("(pointer: coarse)").matches;
 }
 
 // iOS does not shrink window.innerHeight when the keyboard opens, so the

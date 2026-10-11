@@ -33,6 +33,7 @@ import {
 import { setTestFocusState } from "../states/test";
 import { commandlineState, type InputModeParams } from "../states/commandline";
 import { hotkeys } from "../states/hotkeys";
+import { isCoarsePointer } from "../utils/pointer";
 
 const MODAL_STORE_ID = "Commandline";
 
@@ -181,7 +182,7 @@ export function afterHideCommandline(): void {
 // the single list stays empty until something is typed. touch users often
 // have no keyboard open, so they browse the grouped list until they search
 function isBrowsingOnTouch(value: string): boolean {
-  return value === "" && window.matchMedia("(pointer: coarse)").matches;
+  return value === "" && isCoarsePointer();
 }
 
 async function goBackOrHide(): Promise<void> {

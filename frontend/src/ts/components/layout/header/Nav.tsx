@@ -26,6 +26,7 @@ import { getSnapshot } from "../../../states/snapshot";
 import { getFocus } from "../../../states/test";
 import { cn } from "../../../utils/cn";
 import { getLevelFromTotalXp } from "../../../utils/levels";
+import { isCoarsePointer } from "../../../utils/pointer";
 import { Anime } from "../../common/anime";
 import { AnimePresence } from "../../common/anime/AnimePresence";
 import { Button } from "../../common/Button";
@@ -36,7 +37,6 @@ import { AccountXpBar } from "./AccountXpBar";
 
 export function Nav(): JSXElement {
   const [getAccountMenuOpen, setAccountMenuOpen] = createSignal(false);
-  const isCoarse = () => window.matchMedia("(pointer: coarse)").matches;
   const [accountMenuRef, accountMenuEl] = useRef<HTMLDivElement>();
 
   const handleClickOutside = (e: MouseEvent) => {
@@ -229,7 +229,7 @@ export function Nav(): JSXElement {
                 )}
                 // oxlint-disable-next-line react/no-unknown-property
                 on:click={(e: MouseEvent) => {
-                  if (isCoarse()) {
+                  if (isCoarsePointer()) {
                     if (e.target instanceof HTMLAnchorElement) {
                       if (e.target.dataset["navItem"] === "account") {
                         e.preventDefault();
