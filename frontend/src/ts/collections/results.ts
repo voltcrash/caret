@@ -192,6 +192,8 @@ function normalizeResult(
   resultDate.setMinutes(0);
   resultDate.setHours(0);
   resultDate.setMilliseconds(0);
+  // Estimate historical durations before stripped fields receive defaults.
+  const timeTyping = calcTimeTyping(result);
 
   //results strip default values, add them back
   result.client ??= "web";
@@ -215,7 +217,7 @@ function normalizeResult(
   result.isPb ??= false;
   return {
     ...result,
-    timeTyping: calcTimeTyping(result),
+    timeTyping,
     words: Math.round((result.wpm / 60) * result.testDuration),
     dayTimestamp: resultDate.getTime(),
   } as SnapshotResult<Mode>;
@@ -607,7 +609,11 @@ function calcTimeTyping(result: ResultMinified): number {
   }
   if (result.incompleteTestSeconds !== undefined) {
     tt += result.incompleteTestSeconds;
-  } else if (result.restartCount !== undefined && result.restartCount > 0) {
+  } else if (
+    result.testDuration === undefined &&
+    result.restartCount !== undefined &&
+    result.restartCount > 0
+  ) {
     tt += (tt / 4) * result.restartCount;
   }
   tt -= result.afkDuration ?? 0;
