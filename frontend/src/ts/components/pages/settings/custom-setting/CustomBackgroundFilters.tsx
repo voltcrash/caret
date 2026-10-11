@@ -1,4 +1,4 @@
-import { JSXElement } from "solid-js";
+import { createUniqueId, JSXElement } from "solid-js";
 
 import { configMetadata } from "../../../../config/metadata";
 import { setConfig } from "../../../../config/setters";
@@ -8,6 +8,10 @@ import { Slider } from "../../../common/Slider";
 import { SearchableSetting } from "../SearchableSetting";
 
 export function CustomBackgroundFilters(): JSXElement {
+  const blurId = createUniqueId();
+  const brightnessId = createUniqueId();
+  const saturateId = createUniqueId();
+  const opacityId = createUniqueId();
   let refBlur: HTMLInputElement | undefined = undefined;
   let refBrightness: HTMLInputElement | undefined = undefined;
   let refSaturate: HTMLInputElement | undefined = undefined;
@@ -34,8 +38,10 @@ export function CustomBackgroundFilters(): JSXElement {
       fullWidthInputs={
         <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
           <div class="grid grid-cols-[7rem_1fr] items-center gap-2">
-            <div>blur</div>
+            <label for={blurId}>blur</label>
             <Slider
+              id={blurId}
+              label="Background blur"
               ref={(el) => (refBlur = el)}
               min={0}
               max={5}
@@ -57,8 +63,10 @@ export function CustomBackgroundFilters(): JSXElement {
             />
           </div>
           <div class="grid grid-cols-[7rem_1fr] items-center gap-2">
-            <div>brightness</div>
+            <label for={brightnessId}>brightness</label>
             <Slider
+              id={brightnessId}
+              label="Background brightness"
               ref={(el) => (refBrightness = el)}
               min={0}
               max={2}
@@ -80,8 +88,10 @@ export function CustomBackgroundFilters(): JSXElement {
             />
           </div>
           <div class="grid grid-cols-[7rem_1fr] items-center gap-2">
-            <div>saturate</div>
+            <label for={saturateId}>saturate</label>
             <Slider
+              id={saturateId}
+              label="Background saturation"
               ref={(el) => (refSaturate = el)}
               min={0}
               max={2}
@@ -103,8 +113,10 @@ export function CustomBackgroundFilters(): JSXElement {
             />
           </div>
           <div class="grid grid-cols-[7rem_1fr] items-center gap-2">
-            <div>opacity</div>
+            <label for={opacityId}>opacity</label>
             <Slider
+              id={opacityId}
+              label="Background opacity"
               ref={(el) => (refOpacity = el)}
               min={0}
               max={1}
