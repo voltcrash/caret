@@ -79,7 +79,10 @@ export function InputField(props: {
         type={props.type ?? "text"}
         placeholder={props.placeholder ?? ""}
         autocomplete={props.autocomplete}
-        inputMode={props.inputMode}
+        // phones: number pad instead of the full keyboard for number fields
+        inputMode={
+          props.inputMode ?? (props.type === "number" ? "numeric" : undefined)
+        }
         autoCapitalize={props.autoCapitalize}
         // oxlint-disable-next-line react/no-unknown-property -- Solid uses lowercase spellcheck.
         spellcheck={props.spellCheck}

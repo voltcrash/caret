@@ -538,6 +538,7 @@ export function CustomTextModal(): JSXElement {
                   {(field) => (
                     <input
                       type="number"
+                      inputMode="numeric"
                       class={cn("w-full", !showWordLimit() && "hidden")}
                       min="0"
                       placeholder="words"
@@ -555,6 +556,7 @@ export function CustomTextModal(): JSXElement {
                   {(field) => (
                     <input
                       type="number"
+                      inputMode="numeric"
                       class={cn("w-full", !showSectionLimit() && "hidden")}
                       min="0"
                       placeholder="sections"
@@ -573,6 +575,7 @@ export function CustomTextModal(): JSXElement {
                   {(field) => (
                     <input
                       type="number"
+                      inputMode="numeric"
                       class="w-full"
                       min="0"
                       placeholder="time"
