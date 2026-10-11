@@ -53,6 +53,7 @@ import { applyReducedMotion } from "../../utils/misc";
 import { convertRemToPixels } from "../../utils/numbers";
 import { isCoarsePointer } from "../../utils/pointer";
 import { canQuickRestart } from "../../utils/quick-restart";
+import { BreakpointEvents } from "./BreakpointEvents";
 import { GlobalEvents } from "./GlobalEvents";
 import { ModifierEvents } from "./ModifierEvents";
 import { NoCssFallback } from "./NoCssFallback";
@@ -331,6 +332,7 @@ export function AppEffects(props: AppElements): JSXElement {
         <Style class="customFont">{getFontFace()}</Style>
       </MetaProvider>
       <GlobalEvents />
+      <BreakpointEvents />
       <ModifierEvents />
       <NoCssFallback element={props.noCssWarning} />
     </>
