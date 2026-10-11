@@ -12,6 +12,35 @@ migrations with `vp run --filter @oxytype/backend db:migrate`, then `vp run dev-
 Wrangler serves the API with local D1 on port 5005.
 `vp run dev` starts the full workspace. Stop servers with Ctrl+C.
 
+### Lightweight frontend development
+
+`vp run dev-fe` keeps HMR enabled and skips automatic linting, signal tracking,
+Solid/TanStack devtools, Vite inspection, CSS sourcemaps and bulk modal prefetching.
+Dev options and the event-log viewer load when first opened. Production retains
+idle modal prefetching and its build plugins.
+
+Enable diagnostics as needed, through environment variables or `frontend/.env`:
+
+- `DEV_LINT=fast`: automatic lint without type checking.
+- `DEV_LINT=true`: automatic lint plus type-aware/type checks.
+- `DEV_TOOLS=true`: Solid/TanStack devtools and signal tracking.
+- `DEV_INSPECT=true`: Vite plugin inspection at `/__inspect/`.
+- `DEV_CSS_SOURCEMAPS=true`: original CSS locations in browser devtools.
+
+Restart the server after changing these flags. Automatic lint uses a 750 ms
+debounce. Run `vp run lint-fe` for full frontend checks on demand; commit hooks
+and CI also check changes.
+
+```sh
+DEV_TOOLS=true vp run dev-fe
+DEV_LINT=fast DEV_INSPECT=true vp run dev-fe
+```
+
+Use one server per actively edited checkout. Additional tabs on that server share
+its transform cache; separate worktrees need separate servers. For a reference
+checkout, build once and run `vp run --filter @oxytype/frontend start`; rebuilding
+is required to see subsequent changes.
+
 Google/GitHub login requires deployment-owned OAuth credentials/callbacks.
 Email/password/reset flows remain disabled. See
 [Cloudflare operations](CLOUDFLARE_OPERATIONS.md) for authentication, configuration,

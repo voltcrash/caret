@@ -1,9 +1,11 @@
 import { defineConfig, TestProjectInlineConfiguration } from "vite-plus";
 import { languageHashes } from "./vite-plugins/language-hashes";
 import { envConfig } from "./vite-plugins/env-config";
+import { devtoolsEntry } from "./vite-plugins/devtools-entry";
 import solidPlugin from "vite-plugin-solid";
 
 const plugins = [
+  devtoolsEntry({ enabled: false }),
   languageHashes({ skip: true }),
   envConfig({ isDevelopment: true, clientVersion: "TESTING", env: {} }),
   solidPlugin({ hot: false }),

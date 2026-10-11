@@ -1,8 +1,5 @@
-// register signal tracking hook before any signals are created
-import "./dev/signal-tracker";
-
-//enable solidjs-devtools
-import "solid-devtools";
+// Opt-in instrumentation registers before application signals are created.
+import "virtual:devtools";
 
 import { init } from "./auth-client";
 import * as Logger from "./utils/logger";

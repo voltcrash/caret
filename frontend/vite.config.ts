@@ -11,21 +11,11 @@ import path from "node:path";
 import injectHTML from "vite-plugin-html-inject";
 import childProcess from "child_process";
 import { fontStyles } from "./vite-plugins/font-styles";
-import { fontawesomeSubset } from "./vite-plugins/fontawesome-subset";
-import { fontPreview } from "./vite-plugins/font-preview";
 import { envConfig } from "./vite-plugins/env-config";
 import { languageHashes } from "./vite-plugins/language-hashes";
-import { minifyJson } from "./vite-plugins/minify-json";
-import { versionFile } from "./vite-plugins/version-file";
-import { oxlintChecker } from "./vite-plugins/oxlint-checker";
-import { injectPreload } from "./vite-plugins/inject-preload";
 import { standaloneHtml } from "./vite-plugins/standalone-html";
-import Inspect from "vite-plugin-inspect";
-import { ViteMinifyPlugin } from "vite-plugin-minify";
-import { VitePWA } from "vite-plugin-pwa";
-import { sentryVitePlugin } from "@sentry/vite-plugin";
+import { devtoolsEntry } from "./vite-plugins/devtools-entry";
 import solidPlugin from "vite-plugin-solid";
-import devtools from "solid-devtools/vite";
 import tailwindcss from "@tailwindcss/vite";
 
 function pad(
@@ -64,7 +54,7 @@ function getClientVersion(isDevelopment: boolean): string {
   }
 }
 
-function getPlugins({
+async function getPlugins({
   isDevelopment,
   env,
   useSentry,
@@ -72,11 +62,12 @@ function getPlugins({
   isDevelopment: boolean;
   env: Record<string, string>;
   useSentry: boolean;
-}): PluginOption[] {
+}): Promise<PluginOption[]> {
   const clientVersion = getClientVersion(isDevelopment);
 
   const plugins: PluginOption[] = [
     envConfig({ isDevelopment, clientVersion, env }),
+    devtoolsEntry({ enabled: isDevelopment && env["DEV_TOOLS"] === "true" }),
     languageHashes({ skip: isDevelopment }),
     injectHTML() as PluginOption,
     fontStyles({ isDevelopment }),
@@ -84,19 +75,47 @@ function getPlugins({
 
     solidPlugin({ ssr: true }),
     standaloneHtml(),
-    devtools({
-      autoname: true,
-    }),
   ];
 
-  const devPlugins: PluginOption[] = [
-    oxlintChecker({
-      debounceDelay: 125,
-      typeAware: true,
-      overlay: isDevelopment,
-    }),
-    Inspect(),
-  ];
+  if (isDevelopment) {
+    if (env["DEV_TOOLS"] === "true") {
+      const { default: devtools } = await import("solid-devtools/vite");
+      plugins.push(devtools({ autoname: true }));
+    }
+    if (env["DEV_LINT"] === "true" || env["DEV_LINT"] === "fast") {
+      const { oxlintChecker } = await import("./vite-plugins/oxlint-checker");
+      plugins.push(
+        oxlintChecker({
+          debounceDelay: 750,
+          typeAware: env["DEV_LINT"] === "true",
+          overlay: true,
+        }),
+      );
+    }
+    if (env["DEV_INSPECT"] === "true") {
+      const { default: Inspect } = await import("vite-plugin-inspect");
+      plugins.push(Inspect());
+    }
+    return plugins;
+  }
+
+  const [
+    { fontPreview },
+    { fontawesomeSubset },
+    { versionFile },
+    { ViteMinifyPlugin },
+    { VitePWA },
+    { injectPreload },
+    { minifyJson },
+  ] = await Promise.all([
+    import("./vite-plugins/font-preview"),
+    import("./vite-plugins/fontawesome-subset"),
+    import("./vite-plugins/version-file"),
+    import("vite-plugin-minify"),
+    import("vite-plugin-pwa"),
+    import("./vite-plugins/inject-preload"),
+    import("./vite-plugins/minify-json"),
+  ]);
 
   const prodPlugins: PluginOption[] = [
     fontPreview(),
@@ -182,7 +201,7 @@ function getPlugins({
       },
     }),
     useSentry
-      ? sentryVitePlugin({
+      ? (await import("@sentry/vite-plugin")).sentryVitePlugin({
           authToken: env["SENTRY_AUTH_TOKEN"],
           org: env["SENTRY_ORG"],
           project: env["SENTRY_PROJECT"],
@@ -196,9 +215,7 @@ function getPlugins({
     minifyJson(),
   ];
 
-  return [...plugins, ...(isDevelopment ? devPlugins : prodPlugins)].filter(
-    (it) => it !== null,
-  );
+  return [...plugins, ...prodPlugins].filter((it) => it !== null);
 }
 
 function getBuildOptions({
@@ -262,13 +279,13 @@ function getBuildOptions({
   };
 }
 
-function getCssOptions(): CSSOptions {
+function getCssOptions(env: Record<string, string>): CSSOptions {
   return {
-    devSourcemap: true,
+    devSourcemap: env["DEV_CSS_SOURCEMAPS"] === "true",
   };
 }
 
-export default defineConfig(({ mode }): UserConfig => {
+export default defineConfig(async ({ mode }): Promise<UserConfig> => {
   const env = loadEnv(mode, process.cwd(), "");
   const useSentry = Boolean(env["SENTRY_AUTH_TOKEN"]);
   const isDevelopment = mode !== "production";
@@ -295,9 +312,9 @@ export default defineConfig(({ mode }): UserConfig => {
 
   return {
     lint: { ...frontendLint },
-    plugins: getPlugins({ isDevelopment, useSentry: useSentry, env }),
+    plugins: await getPlugins({ isDevelopment, useSentry: useSentry, env }),
     build: getBuildOptions({ enableSourceMaps: useSentry }),
-    css: getCssOptions(),
+    css: getCssOptions(env),
     server: {
       open: env["SERVER_OPEN"] === "true",
       port: 3000,

@@ -1,11 +1,13 @@
 import { cleanup, render, screen, waitFor } from "@solidjs/testing-library";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
-const { contactMounts, idleCallbacks } = vi.hoisted(() => ({
+const { contactMounts, idleCallbacks, environment } = vi.hoisted(() => ({
   contactMounts: vi.fn(),
   idleCallbacks: [] as (() => void)[],
+  environment: { isDevelopment: true },
 }));
 
+vi.mock("virtual:env-config", () => ({ envConfig: environment }));
 vi.mock("../../../src/ts/utils/idle", () => ({
   runWhenIdle: (fn: () => void) => {
     idleCallbacks.push(fn);
@@ -33,6 +35,7 @@ describe("Modals", () => {
   afterEach(() => {
     cleanup();
     hideModal("Contact");
+    environment.isDevelopment = true;
   });
 
   it("mounts eager modals immediately and lazy modals on first open", async () => {
@@ -55,9 +58,13 @@ describe("Modals", () => {
     expect(contactMounts).toHaveBeenCalledTimes(1);
   });
 
-  it("schedules lazy modal prefetching when idle", () => {
-    idleCallbacks.length = 0;
-    render(() => <Modals />);
-    expect(idleCallbacks).toHaveLength(1);
-  });
+  it.each([true, false])(
+    "prefetches only in production (development=%s)",
+    (isDevelopment) => {
+      environment.isDevelopment = isDevelopment;
+      idleCallbacks.length = 0;
+      render(() => <Modals />);
+      expect(idleCallbacks).toHaveLength(isDevelopment ? 0 : 1);
+    },
+  );
 });
