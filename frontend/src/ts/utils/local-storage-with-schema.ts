@@ -13,6 +13,7 @@ export class LocalStorageWithSchema<T> {
     zodIssues?: ZodIssue[],
   ) => T;
   private cache?: T;
+  private storageDirty = false;
 
   constructor(options: {
     key: string;
@@ -36,7 +37,15 @@ export class LocalStorageWithSchema<T> {
     }
 
     console.debug(`LS ${this.key} Getting value from localStorage`);
-    const value = window.localStorage.getItem(this.key);
+    const { data: value, error: readError } = tryCatchSync(() =>
+      window.localStorage.getItem(this.key),
+    );
+    if (readError) {
+      this.storageDirty = true;
+      console.error(`LS ${this.key} Storage unavailable: ${readError.message}`);
+      this.cache = this.fallback;
+      return structuredClone(this.cache);
+    }
 
     if (value === null) {
       console.debug(`LS ${this.key} No value found, returning fallback`);
@@ -72,14 +81,14 @@ export class LocalStorageWithSchema<T> {
       console.error(
         `LS ${this.key} Failed to parse from localStorage: ${error.message}`,
       );
-      window.localStorage.setItem(this.key, JSON.stringify(this.fallback));
+      this.repair(this.fallback);
       this.cache = this.fallback;
       return structuredClone(this.cache);
     }
 
     if (migrated || parsed === this.fallback) {
       console.debug(`LS ${this.key} Setting in localStorage`);
-      window.localStorage.setItem(this.key, JSON.stringify(parsed));
+      this.repair(parsed as T);
     }
 
     console.debug(`LS ${this.key} Got value:`, parsed);
@@ -87,15 +96,29 @@ export class LocalStorageWithSchema<T> {
     return structuredClone(this.cache);
   }
 
+  private repair(data: T): void {
+    const { error } = tryCatchSync(() =>
+      window.localStorage.setItem(this.key, JSON.stringify(data)),
+    );
+    this.storageDirty = error !== null;
+    if (error) {
+      console.error(
+        `LS ${this.key} Repair could not be persisted: ${error.message}`,
+      );
+    }
+  }
+
   public set(data: T): boolean {
     try {
       console.debug(`LS ${this.key} Parsing to set in localStorage`);
       const parsed = this.schema.parse(data);
       const newValue = JSON.stringify(parsed);
-      if (newValue !== JSON.stringify(this.cache)) {
+      if (newValue !== JSON.stringify(this.cache) || this.storageDirty) {
         console.debug(`LS ${this.key} Setting in localStorage`);
-        window.localStorage.setItem(this.key, newValue);
         this.cache = parsed;
+        this.storageDirty = true;
+        window.localStorage.setItem(this.key, newValue);
+        this.storageDirty = false;
       }
       return true;
     } catch (e) {
@@ -108,7 +131,11 @@ export class LocalStorageWithSchema<T> {
         //   .join(", ");
         message = "Schema validation failed";
       } else {
-        if ((e as Error).message.includes("exceeded the quota")) {
+        if (
+          e instanceof Error &&
+          (e.name === "QuotaExceededError" ||
+            e.message.includes("exceeded the quota"))
+        ) {
           message =
             "Local storage is full. Please clear some space and try again.";
         }
