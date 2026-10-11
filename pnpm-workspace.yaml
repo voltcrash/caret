@@ -19,6 +19,7 @@ allowBuilds:
   workerd: true
 
 overrides:
+  "sharp@^0.35": "0.35.5"
   "baseline-browser-mapping": "2.11.0"
   "fast-uri": "3.1.8"
   "@humanfs/node": "0.16.8"
