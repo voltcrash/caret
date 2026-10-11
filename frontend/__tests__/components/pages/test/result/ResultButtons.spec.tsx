@@ -12,6 +12,7 @@ const mocks = vi.hoisted(() => ({
   restart: vi.fn(),
   retrySavingResult: vi.fn(),
   download: vi.fn(),
+  share: vi.fn(),
   copyToClipboard: vi.fn(),
   toggleReplayDisplay: vi.fn(),
   toggleResultWords: vi.fn(),
@@ -25,6 +26,7 @@ vi.mock("../../../../../src/ts/test/test-logic", () => ({
 }));
 vi.mock("../../../../../src/ts/test/test-screenshot", () => ({
   download: mocks.download,
+  share: mocks.share,
   copyToClipboard: mocks.copyToClipboard,
 }));
 vi.mock("../../../../../src/ts/test/replay", () => ({
@@ -56,6 +58,7 @@ import { ResultButtons } from "../../../../../src/ts/components/pages/test/resul
 import { setConfigStore } from "../../../../../src/ts/config/store";
 import { setIsScreenshotting } from "../../../../../src/ts/states/core";
 import { setResultState } from "../../../../../src/ts/states/result";
+import { getKeyboardProxyElement } from "../../../../../src/ts/states/test-dom";
 
 function renderButtons(): HTMLElement {
   return render(() => <ResultButtons />).container;
@@ -72,6 +75,7 @@ describe("ResultButtons", () => {
   afterEach(() => {
     cleanup();
     vi.clearAllMocks();
+    vi.restoreAllMocks();
     setResultState({ retrySaving: false, noStress: false });
   });
 
@@ -164,5 +168,51 @@ describe("ResultButtons", () => {
     setResultState("retrySaving", true);
     fireEvent.click(byId(c, "retrySavingResultButton"));
     expect(mocks.retrySavingResult).toHaveBeenCalled();
+  });
+
+  it("focuses the keyboard proxy during next and repeat taps on touch", () => {
+    vi.mocked(window.matchMedia).mockImplementation((query) =>
+      Object.assign(new EventTarget(), {
+        matches: query === "(pointer: coarse)",
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+      }),
+    );
+    const focus = vi.spyOn(getKeyboardProxyElement(), "focus");
+    const c = renderButtons();
+    mocks.restart.mockImplementationOnce(() =>
+      expect(focus).toHaveBeenCalledOnce(),
+    );
+    fireEvent.click(byId(c, "nextTestButton"));
+    mocks.restart.mockImplementationOnce(() =>
+      expect(focus).toHaveBeenCalledTimes(2),
+    );
+    fireEvent.click(byId(c, "restartTestButtonWithSameWordset"));
+
+    expect(focus).toHaveBeenCalledWith({ preventScroll: true });
+    expect(mocks.restart).toHaveBeenCalledTimes(2);
+  });
+
+  it("uses native sharing on touch and preserves shift-download", () => {
+    vi.mocked(window.matchMedia).mockImplementation((query) =>
+      Object.assign(new EventTarget(), {
+        matches: query === "(pointer: coarse)",
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+      }),
+    );
+    const c = renderButtons();
+    const button = byId(c, "saveScreenshotButton");
+    expect(button).toHaveAttribute("aria-label", "Share screenshot");
+    fireEvent.click(button);
+    expect(mocks.share).toHaveBeenCalledOnce();
+    expect(mocks.copyToClipboard).not.toHaveBeenCalled();
+    fireEvent.click(button, { shiftKey: true });
+    expect(mocks.download).toHaveBeenCalledOnce();
+    expect(mocks.share).toHaveBeenCalledOnce();
   });
 });
