@@ -44,7 +44,9 @@ async function fetchJson<T>(url: string): Promise<T> {
  * @param url - The URL used to fetch JSON data.
  * @returns A promise that resolves to the cached JSON data.
  */
-export const cachedFetchJson = memoizeAsync(fetchJson);
+export const cachedFetchJson = memoizeAsync(fetchJson, undefined, {
+  maxEntries: 16,
+});
 
 /**
  * Fetches a layout by name from the server.
@@ -67,6 +69,7 @@ export function getLanguageUrl(lang: Language): string {
 }
 
 const languageLoader = createLanguageLoader({
+  maxEntries: 8,
   fetchJson,
   getUrl: getLanguageUrl,
   verify: async (lang, loaded) => {
