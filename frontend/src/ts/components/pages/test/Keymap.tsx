@@ -87,7 +87,9 @@ function Keyboard(props: { displayName: string; layoutData: LayoutObject }) {
   return (
     <div
       data-ui-element="keymap"
-      class="flex w-full flex-col items-center py-8 text-sm text-sub"
+      // phones show their own keyboard right below, a second one only takes
+      // the room the words need above it
+      class="flex w-full flex-col items-center py-8 text-sm text-sub max-sm:pointer-coarse:hidden"
     >
       <Show when={keyboardDef()} fallback={<div>Loading...</div>}>
         <KeyboardDefinitionRenderer
