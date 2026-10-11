@@ -1,6 +1,7 @@
 import { createSignal, JSXElement, onCleanup, Show } from "solid-js";
 
 import { getConfig } from "../../../config/store";
+import { createEffectOn } from "../../../hooks/effects";
 import { getCustomTextIndicator } from "../../../states/core";
 import { isTestActive, setBailedOut } from "../../../states/test";
 import * as CustomText from "../../../test/custom-text";
@@ -28,6 +29,12 @@ export function EndTestButton(): JSXElement {
       CustomText.getData(),
       false,
     );
+
+  createEffectOn(canBailOut, (available) => {
+    if (available) return;
+    clearTimeout(confirmTimeout);
+    setConfirming(false);
+  });
 
   return (
     <Show when={canBailOut()}>
