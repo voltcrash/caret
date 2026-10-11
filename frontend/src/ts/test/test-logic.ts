@@ -1093,56 +1093,69 @@ const debouncedZipfCheck = debounce(250, async () => {
   }
 });
 
-restartTestEvent.subscribe((event) => void restart(event));
+restartTestEvent.subscribe((event) => void restart(event), import.meta.hot);
 
 // ===============================
 
-configEvent.subscribe(({ key, newValue, nosave }) => {
-  if (getActivePage() === "test") {
-    if (key === "language") {
-      //automatically enable lazy mode for arabic
-      if (
-        (newValue as string)?.startsWith("arabic") &&
-        LazyModeState.getArabicPref()
-      ) {
-        setConfig("lazyMode", true, {
-          nosave: true,
-        });
+configEvent.subscribe(
+  ({ key, newValue, nosave }) => {
+    if (getActivePage() === "test") {
+      if (key === "language") {
+        //automatically enable lazy mode for arabic
+        if (
+          (newValue as string)?.startsWith("arabic") &&
+          LazyModeState.getArabicPref()
+        ) {
+          setConfig("lazyMode", true, {
+            nosave: true,
+          });
+        }
+        void restart();
       }
-      void restart();
-    }
-    if (key === "difficulty" && !nosave) void restart();
-    if (key === "customLayoutfluid" && Config.funbox.includes("layoutfluid")) {
-      void restart();
-    }
+      if (key === "difficulty" && !nosave) void restart();
+      if (
+        key === "customLayoutfluid" &&
+        Config.funbox.includes("layoutfluid")
+      ) {
+        void restart();
+      }
 
-    if (key === "keymapMode" && newValue === "next" && Config.mode !== "zen") {
-      setTimeout(() => {
-        highlight(
-          nthElementFromArray(
-            // ignoring for now but this might need a different approach
-            // oxlint-disable-next-line no-misused-spread
-            [...(TestWords.words.getCurrent()?.text ?? "")],
-            0,
-          ) as string,
-        );
-      }, 0);
+      if (
+        key === "keymapMode" &&
+        newValue === "next" &&
+        Config.mode !== "zen"
+      ) {
+        setTimeout(() => {
+          highlight(
+            nthElementFromArray(
+              // ignoring for now but this might need a different approach
+              // oxlint-disable-next-line no-misused-spread
+              [...(TestWords.words.getCurrent()?.text ?? "")],
+              0,
+            ) as string,
+          );
+        }, 0);
+      }
+      if (
+        (key === "language" || key === "funbox") &&
+        Config.funbox.includes("zipf")
+      ) {
+        debouncedZipfCheck();
+      }
     }
-    if (
-      (key === "language" || key === "funbox") &&
-      Config.funbox.includes("zipf")
-    ) {
-      debouncedZipfCheck();
+    if (key === "lazyMode" && !nosave) {
+      if (Config.language.startsWith("arabic")) {
+        LazyModeState.setArabicPref(newValue);
+      }
     }
-  }
-  if (key === "lazyMode" && !nosave) {
-    if (Config.language.startsWith("arabic")) {
-      LazyModeState.setArabicPref(newValue);
-    }
-  }
-});
+  },
+  import.meta.hot,
+);
 
-timerEvent.subscribe(({ key: eventKey, value: eventValue }) => {
-  if (eventKey === "fail" && eventValue !== undefined) fail(eventValue);
-  if (eventKey === "finish") void finish();
-});
+timerEvent.subscribe(
+  ({ key: eventKey, value: eventValue }) => {
+    if (eventKey === "fail" && eventValue !== undefined) fail(eventValue);
+    if (eventKey === "finish") void finish();
+  },
+  import.meta.hot,
+);

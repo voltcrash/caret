@@ -62,16 +62,19 @@ export function getCaret(): Caret {
   return (caret ??= new Caret(getCaretElement(), Config.caretStyle));
 }
 
-configEvent.subscribe(({ key }) => {
-  if (!areTestElementsMounted()) return;
-  if (key === "caretStyle") {
-    getCaret().setStyle(Config.caretStyle);
-    updatePosition(true);
-  }
-  if (key === "smoothCaret") {
-    getCaret().updateBlinkingAnimation();
-  }
-});
+configEvent.subscribe(
+  ({ key }) => {
+    if (!areTestElementsMounted()) return;
+    if (key === "caretStyle") {
+      getCaret().setStyle(Config.caretStyle);
+      updatePosition(true);
+    }
+    if (key === "smoothCaret") {
+      getCaret().updateBlinkingAnimation();
+    }
+  },
+  import.meta.hot,
+);
 
 export function show(noAnim = false): void {
   getCaret().show();
