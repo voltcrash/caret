@@ -1,5 +1,5 @@
 import type { Client } from "@oxytype/schemas/shared";
-import { and, desc, eq, gte } from "drizzle-orm";
+import { and, desc, eq, gte, inArray } from "drizzle-orm";
 import MonkeyError from "../utils/error";
 import { database, encode, statement } from "../db/client";
 import { stage } from "../db/mutation";
@@ -13,6 +13,19 @@ function unpack(row: typeof results.$inferSelect): DBResult {
     uid: row.uid,
     client: row.client,
   } as DBResult);
+}
+export async function hasSubmissionHash(
+  uid: string,
+  hashes: string[],
+): Promise<boolean> {
+  return (
+    (await database()
+      .select({ id: results.id })
+      .from(results)
+      .where(and(eq(results.uid, uid), inArray(results.submissionHash, hashes)))
+      .limit(1)
+      .get()) !== undefined
+  );
 }
 export async function addResult(
   uid: string,
