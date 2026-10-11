@@ -258,6 +258,9 @@ async function addResultAtomic(
   }
 
   const resulthash = completedEvent.hash;
+  // Transport state changes on reconnect; submission identity must not.
+  // Compute before server timestamps and anticheat normalization mutate it.
+  const submissionHash = objectHash(omit(completedEvent, ["hash", "offline"]));
   if (req.ctx.configuration.results.objectHashCheckEnabled) {
     const objectToHash = omit(completedEvent, ["hash"]);
     const serverhash = objectHash(objectToHash);
@@ -719,7 +722,7 @@ async function addResultAtomic(
 
   const dbresult = buildDbResult(completedEvent, user.name, isPb);
   (dbresult as typeof dbresult & { submissionHash: string }).submissionHash =
-    resulthash;
+    submissionHash;
   if (keySpacingStats !== undefined) {
     dbresult.keySpacingStats = keySpacingStats;
   }
