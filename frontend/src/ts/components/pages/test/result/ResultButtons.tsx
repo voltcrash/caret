@@ -8,6 +8,7 @@ import {
 } from "solid-js";
 
 import { getConfig } from "../../../../config/store";
+import { holdKeyboardForRestart } from "../../../../input/input-element";
 import { getActivePage, getIsScreenshotting } from "../../../../states/core";
 import { showModal } from "../../../../states/modals";
 import { showNoticeNotification } from "../../../../states/notifications";
@@ -61,7 +62,10 @@ export function ResultButtons(): JSXElement {
       class:
         "max-md:col-span-full max-md:flex-row max-md:gap-2 max-md:px-[1em]! max-md:py-[0.75em]! max-md:bg-main max-md:text-[1.125rem] max-md:text-bg max-md:hover:bg-main max-md:hover:text-bg",
       icon: () => ({ icon: "fa-chevron-right" }),
-      onClick: () => void TestLogic.restart(),
+      onClick: () => {
+        holdKeyboardForRestart();
+        void TestLogic.restart();
+      },
     },
     {
       id: "restartTestButtonWithSameWordset",
@@ -73,6 +77,7 @@ export function ResultButtons(): JSXElement {
           showNoticeNotification("Repeat test disabled in zen mode");
           return;
         }
+        holdKeyboardForRestart();
         void TestLogic.restart({
           withSameWordset: true,
         });

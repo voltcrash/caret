@@ -143,6 +143,18 @@ export function TestPage(
         <SaveProgressButton />
         <LiveStatsTextBottom />
       </div>
+      {/* see holdKeyboardForRestart. 16px so ios doesn't zoom on focus */}
+      <input
+        ref={(el) => (refs.keyboardProxy = el)}
+        type="text"
+        class="pointer-events-none fixed top-0 left-0 size-px p-0 text-[16px] opacity-0"
+        tabIndex={-1}
+        aria-hidden="true"
+        autocomplete="off"
+        autoCapitalize="off"
+        // oxlint-disable-next-line react/no-unknown-property -- Solid uses lowercase autocorrect
+        autocorrect="off"
+      />
       <TestPageLifecycle input={refs.wordsInput} />
       <TestLoading />
       <Result />
