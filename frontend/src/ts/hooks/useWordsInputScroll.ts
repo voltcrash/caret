@@ -18,7 +18,7 @@ function keepInputAboveKeyboard(input: HTMLTextAreaElement): void {
   if (!isCoarsePointer()) return;
   if (document.activeElement !== input) return;
   const viewport = window.visualViewport;
-  if (viewport === null) return;
+  if (!viewport) return;
 
   const visibleTop = viewport.offsetTop;
   const visibleHeight = viewport.height;
@@ -56,7 +56,7 @@ export function useWordsInputScroll(
 
   // Keyboard open/close on touch: re-band the active line inside the visible area.
   const viewport = window.visualViewport;
-  if (viewport !== null) {
+  if (viewport) {
     const onViewportResize = (): void => keepInputAboveKeyboard(input);
     viewport.addEventListener("resize", onViewportResize);
     onCleanup(() => viewport.removeEventListener("resize", onViewportResize));
