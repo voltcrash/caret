@@ -1,3 +1,4 @@
+import { createModuleRoot } from "../hooks/effects";
 import { LanguageSchema } from "@oxytype/schemas/languages";
 import { ClientSchema, ModeSchema } from "@oxytype/schemas/shared";
 import { Accessor, createSignal, Setter } from "solid-js";
@@ -44,7 +45,10 @@ export const LeaderboardUrlParamsSchema = z
   .partial();
 export type LeaderboardUrlParams = z.infer<typeof LeaderboardUrlParamsSchema>;
 
-const [getSelectionLs, setSelection] = lsSelection();
+const [getSelectionLs, setSelection] = createModuleRoot(
+  import.meta.hot,
+  lsSelection,
+);
 export const [getPage, setPage] = createSignal(0);
 export const [getGoToUserPage, setGoToUserPage] = createSignal(false);
 

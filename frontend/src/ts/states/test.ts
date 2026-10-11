@@ -252,11 +252,15 @@ export const __nonReactive = {
   },
 };
 
-export const [getSelectedQuoteId, setSelectedQuoteId] = useLocalStorage({
-  key: "selectedQuoteId",
-  schema: z.number().int().min(1),
-  fallback: 1,
-});
+export const [getSelectedQuoteId, setSelectedQuoteId] = createModuleRoot(
+  import.meta.hot,
+  () =>
+    useLocalStorage({
+      key: "selectedQuoteId",
+      schema: z.number().int().min(1),
+      fallback: 1,
+    }),
+);
 
 export const [isLanguageRightToLeft, setIsLanguageRightToLeft] =
   createSignal(false);

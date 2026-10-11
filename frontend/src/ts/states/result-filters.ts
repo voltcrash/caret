@@ -1,3 +1,4 @@
+import { createModuleRoot } from "../hooks/effects";
 import { ResultFilters, ResultFiltersSchema } from "@oxytype/schemas/users";
 import { mergeWithDefaultFilters } from "../components/pages/account/utils";
 import defaultResultFilters from "../constants/default-result-filters";
@@ -5,12 +6,14 @@ import { useLocalStorageStore } from "../hooks/useLocalStorageStore";
 import { isObject } from "../utils/misc";
 import { sanitize } from "@oxytype/util/sanitize";
 
-export const [filters, setFilters] = useLocalStorageStore({
-  key: "resultFilters",
-  schema: ResultFiltersSchema,
-  fallback: defaultResultFilters,
-  migrate: migrateFilterStorage,
-});
+export const [filters, setFilters] = createModuleRoot(import.meta.hot, () =>
+  useLocalStorageStore({
+    key: "resultFilters",
+    schema: ResultFiltersSchema,
+    fallback: defaultResultFilters,
+    migrate: migrateFilterStorage,
+  }),
+);
 
 function migrateFilterStorage(input: unknown): ResultFilters {
   if (!isObject(input)) {
