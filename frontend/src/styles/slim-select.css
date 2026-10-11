@@ -124,6 +124,13 @@
   .ss-content .ss-list .ss-option:not(.ss-disabled) {
     padding-block: 0.75em;
   }
+  .ss-main {
+    min-height: 2.75rem;
+    /* the 1em line height clips descenders at the bigger touch font size */
+    .ss-values .ss-placeholder {
+      line-height: 1.25;
+    }
+  }
   /* chips and the clear button: 18x13 by default, too small for a finger */
   .ss-main .ss-values .ss-value {
     min-height: 2.25rem;
