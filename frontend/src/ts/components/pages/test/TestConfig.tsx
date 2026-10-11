@@ -50,6 +50,8 @@ export function TestConfig(): JSXElement {
         class={cn(
           variables,
           "group relative mb-8 hidden w-max grid-cols-[1fr_auto_1fr] justify-center place-self-center [font-size:var(--font-size)] md:grid",
+          // tablets: these targets are too small for fingers, use the button below
+          "pointer-coarse:hidden!",
           "mx-auto transition-opacity duration-125",
           getFocus() || getResultVisible()
             ? "pointer-events-none opacity-0"
@@ -63,7 +65,7 @@ export function TestConfig(): JSXElement {
       </div>
       <Button
         class={cn(
-          "mx-auto flex min-h-11 max-w-full place-self-center px-4 py-2 text-sub md:hidden",
+          "mx-auto flex min-h-11 max-w-full place-self-center px-4 py-2 text-sub md:hidden pointer-coarse:flex!",
           getFocus() || getResultVisible()
             ? "pointer-events-none opacity-0"
             : "",
