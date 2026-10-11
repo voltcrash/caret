@@ -36,7 +36,14 @@ export class LocalStorageWithSchema<T> {
     }
 
     console.debug(`LS ${this.key} Getting value from localStorage`);
-    const value = window.localStorage.getItem(this.key);
+    const { data: value, error: readError } = tryCatchSync(() =>
+      window.localStorage.getItem(this.key),
+    );
+    if (readError) {
+      console.error(`LS ${this.key} Storage unavailable: ${readError.message}`);
+      this.cache = this.fallback;
+      return structuredClone(this.cache);
+    }
 
     if (value === null) {
       console.debug(`LS ${this.key} No value found, returning fallback`);
