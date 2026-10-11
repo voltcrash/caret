@@ -79,7 +79,11 @@ export function AppEffects(props: AppElements): JSXElement {
       get style() {
         return {
           display: isFixingSkillIssue() ? "none" : undefined,
-          "padding-top": `${getGlobalOffsetTop() + convertRemToPixels(2)}px`,
+          // banners already cover the notch, see Banners
+          "padding-top":
+            getGlobalOffsetTop() > 0
+              ? `${getGlobalOffsetTop() + convertRemToPixels(2)}px`
+              : "max(2rem, env(safe-area-inset-top, 0px))",
         };
       },
     },

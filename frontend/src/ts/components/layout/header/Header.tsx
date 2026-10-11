@@ -38,7 +38,8 @@ export function Header(): JSXElement {
         // above the page content scroll container. padded into #app's top
         // padding and the gap below it (negative margins keep the layout
         // unchanged) so its background covers the content scrolling under it
-        isFixed() && "relative z-20 -mt-8 -mb-4 pt-8 pb-4",
+        isFixed() &&
+          "relative z-20 -mt-[max(2rem,env(safe-area-inset-top,0px))] -mb-4 pt-[max(2rem,env(safe-area-inset-top,0px))] pb-4",
       )}
       data-ui-element="header"
       data-focused={getFocus() ? "" : undefined}

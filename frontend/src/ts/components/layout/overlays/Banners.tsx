@@ -141,7 +141,11 @@ export function Banners(): JSXElement {
   createEffectOn(() => getBanners().length, setGlobalOffsetSignal);
 
   return (
-    <div ref={ref} class="fixed top-0 left-0 z-1000 w-full">
+    // the first banner fills the status bar area of installed apps (notch)
+    <div
+      ref={ref}
+      class="fixed top-0 left-0 z-1000 w-full [&>:first-child]:pt-[env(safe-area-inset-top,0px)]"
+    >
       <For each={getBanners()}>{(banner) => <Banner {...banner} />}</For>
     </div>
   );
