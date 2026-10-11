@@ -23,7 +23,7 @@ export function AutoSwitchTheme(): JSXElement {
       inputs={
         <div
           class={cn(
-            "grid grid-cols-[repeat(auto-fit,minmax(4.5rem,1fr))] gap-2",
+            "grid grid-cols-[repeat(auto-fit,minmax(min(100%,4.5rem),1fr))] gap-2",
           )}
         >
           <Button

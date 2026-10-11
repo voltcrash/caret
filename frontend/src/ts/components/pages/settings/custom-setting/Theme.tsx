@@ -343,6 +343,7 @@ function CustomThemeButton(props: { theme: CustomTheme }): JSXElement {
       }}
       class={cn(
         "group/theme grid grid-cols-[auto_1fr_auto] justify-between p-0 ring-4 ring-transparent",
+        "pointer-coarse:min-h-11",
         "bg-(--bg) text-(--main)",
         "hover:ring-(--main)",
         "transition-[opacity,color,background,box-shadow] duration-125",
@@ -476,6 +477,7 @@ function ThemeButton(props: { theme: ThemeWithName }): JSXElement {
       }}
       class={cn(
         "group/theme relative grid cursor-pointer place-items-center overflow-hidden rounded px-1 py-2 leading-[1.25] ring-4 ring-transparent select-none",
+        "pointer-coarse:min-h-11",
         "focus-visible:shadow-control-focus focus-visible:outline-none",
         "bg-(--bg) text-(--main)",
         // "hover:bg-(--text) hover:text-(--bg)",
@@ -599,7 +601,7 @@ function Picker(props: { color: ColorName }): JSXElement {
 
   return (
     <div
-      class="grid w-full grid-cols-[1fr_1fr_min-content] items-center gap-2"
+      class="grid w-full grid-cols-[minmax(0,1fr)_minmax(0,1fr)_min-content] items-center gap-2"
       style={{
         "--picker-bg": getTheme().bg,
         "--picker-main": getTheme().main,

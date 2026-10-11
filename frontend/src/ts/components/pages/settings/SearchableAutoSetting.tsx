@@ -96,20 +96,23 @@ export function SearchableAutoSetting<T extends ConfigKey>(props: {
       return (
         <div
           class={cn(
-            "grid grid-cols-[repeat(auto-fit,minmax(4.5rem,1fr))] gap-2",
+            // min() keeps a track from exceeding narrow (320px) containers
+            "grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,4.5rem),1fr))] gap-2",
             // 4 options don't fit in one row of the input column, so use a 2x2
             // grid instead of leaving a single option on its own row
             options.length === 4 && "grid-cols-2",
             // labels stay on one line; rows fill up and stretch to full width
             hasManyOptions() && !props.wide && "flex flex-wrap",
             props.wide &&
-              "grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(13.5rem,1fr))]",
+              "grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(min(100%,13.5rem),1fr))]",
           )}
         >
           <For each={options}>
             {(option) => (
               <Button
                 class={cn(
+                  // 44px minimum tap target on touch screens
+                  "min-w-0 pointer-coarse:min-h-11",
                   hasManyOptions() && !props.wide && "flex-1 whitespace-nowrap",
                 )}
                 active={getConfig[props.key] === option}

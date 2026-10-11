@@ -5,6 +5,7 @@ type TestElements = {
   caret: HTMLDivElement;
   paceCaret: HTMLDivElement;
   typingTest: HTMLDivElement;
+  keyboardProxy: HTMLInputElement;
 };
 
 let elements: TestElements | undefined;
@@ -33,3 +34,5 @@ export const getPaceCaretElement = (): HTMLDivElement =>
   getElement("paceCaret");
 export const getTypingTestElement = (): HTMLDivElement =>
   getElement("typingTest");
+export const getKeyboardProxyElement = (): HTMLInputElement =>
+  getElement("keyboardProxy");

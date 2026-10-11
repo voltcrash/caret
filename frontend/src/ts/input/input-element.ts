@@ -1,4 +1,8 @@
-import { getWordsInputElement } from "../states/test-dom";
+import {
+  getKeyboardProxyElement,
+  getWordsInputElement,
+} from "../states/test-dom";
+import { isCoarsePointer } from "../utils/pointer";
 
 export function getInputElement(): HTMLTextAreaElement {
   return getWordsInputElement();
@@ -42,6 +46,23 @@ export function focusInputElement(preventScroll = false): void {
   getInputElement().focus({
     preventScroll,
   });
+}
+
+// ios only raises the keyboard for focus() inside a tap. restarting from the
+// result screen focuses the words input after its fade, so a visible proxy
+// takes the focus during the tap and hands it over (keyboard stays up)
+export function holdKeyboardForRestart(): void {
+  if (!isCoarsePointer()) return;
+  getKeyboardProxyElement().focus({ preventScroll: true });
+}
+
+// on touch the keyboard is only up if the user focused the input (or the
+// proxy) with a tap. focus() outside a tap focuses without a keyboard
+export function isTouchKeyboardFocused(): boolean {
+  return (
+    document.activeElement === getInputElement() ||
+    document.activeElement === getKeyboardProxyElement()
+  );
 }
 
 export function blurInputElement(): void {

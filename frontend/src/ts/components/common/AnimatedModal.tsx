@@ -46,6 +46,13 @@ type AnimatedModalProps = ParentProps<{
   closeOnWrapperClick?: boolean;
   closeOnEscape?: boolean;
 
+  /**
+   * Below the sm breakpoint (phones) present as a bottom sheet instead of a
+   * centered card. Defaults to true; set false for panels with their own
+   * mobile layout.
+   */
+  mobileSheet?: boolean;
+
   title?: string;
   modalClass?: string;
   wrapperClass?: string;
@@ -66,7 +73,39 @@ function animateElement(
 }
 
 const DEFAULT_ANIMATION_DURATION = 125;
+const SHEET_ANIMATION_DURATION = 200;
 const MODAL_ONLY_ANIMATION_MULTIPLIER = 0.75;
+const SHEET_MEDIA_QUERY = "(max-width: 720.98px)";
+// how far a sheet has to be dragged down by its handle to close
+const SHEET_DISMISS_DRAG_PX = 80;
+// or flicked down faster than this (px per ms), past tap jitter
+const SHEET_DISMISS_VELOCITY = 0.5;
+const SHEET_FLICK_MIN_PX = 16;
+
+type ModalMotion = {
+  enter: { style: Record<string, string>; params: Record<string, unknown> };
+  exit: Record<string, unknown>;
+};
+
+const CARD_MOTION: ModalMotion = {
+  enter: {
+    style: { opacity: "0", marginTop: "1rem" },
+    params: { opacity: [0, 1], marginTop: ["1rem", "0"] },
+  },
+  exit: { opacity: [1, 0], marginTop: ["0", "1rem"] },
+};
+
+const SHEET_MOTION: ModalMotion = {
+  enter: {
+    style: { transform: "translateY(100%)" },
+    params: { translateY: ["100%", "0%"] },
+  },
+  exit: { translateY: ["0%", "100%"] },
+};
+
+function isSheetViewport(): boolean {
+  return matchMedia?.(SHEET_MEDIA_QUERY)?.matches;
+}
 
 export function AnimatedModal(props: AnimatedModalProps): JSXElement {
   // Refs are assigned by SolidJS via the ref attribute
@@ -80,6 +119,60 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
   });
 
   const visibility = (): boolean => isModalOpen(props.id);
+
+  const usesSheetAnimation = (): boolean =>
+    props.mobileSheet !== false && isSheetViewport();
+
+  // swipe the sheet down by its handle to close it, like native sheets
+  let dragStartY: number | undefined;
+  let dragStartTime = 0;
+  let dragOffset = 0;
+
+  const resetSheetDrag = (): void => {
+    dragStartY = undefined;
+    animateElement(modalEl(), {
+      translateY: [`${dragOffset}px`, "0px"],
+      duration: applyReducedMotion(DEFAULT_ANIMATION_DURATION),
+    });
+    dragOffset = 0;
+  };
+
+  const onHandlePointerDown = (e: PointerEvent): void => {
+    if (!usesSheetAnimation() || props.closeOnWrapperClick === false) return;
+    dragStartY = e.clientY;
+    dragStartTime = e.timeStamp;
+    dragOffset = 0;
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const onHandlePointerMove = (e: PointerEvent): void => {
+    if (dragStartY === undefined) return;
+    dragOffset = Math.max(0, e.clientY - dragStartY);
+    setStyle(modalEl(), { transform: `translateY(${dragOffset}px)` });
+  };
+
+  const onHandlePointerUp = (e: PointerEvent): void => {
+    if (dragStartY === undefined) return;
+    dragStartY = undefined;
+    const velocity = dragOffset / Math.max(1, e.timeStamp - dragStartTime);
+    if (
+      dragOffset >= SHEET_DISMISS_DRAG_PX ||
+      (dragOffset >= SHEET_FLICK_MIN_PX && velocity >= SHEET_DISMISS_VELOCITY)
+    ) {
+      if (props.onBackdropClick) {
+        props.onBackdropClick(e);
+      } else {
+        storeHideModal(props.id);
+      }
+      if (visibility()) resetSheetDrag();
+      return;
+    }
+    resetSheetDrag();
+  };
+
+  const onHandlePointerCancel = (): void => {
+    if (dragStartY !== undefined) resetSheetDrag();
+  };
 
   // Handle open/close with animations
   createEffectOn(
@@ -114,9 +207,11 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
       dialogEl()?.showModal();
     }
 
+    const sheet = usesSheetAnimation();
+    const motion = sheet ? SHEET_MOTION : CARD_MOTION;
     const modalAnimDuration = applyReducedMotion(
       (props.customAnimations?.show?.modal?.duration ??
-        DEFAULT_ANIMATION_DURATION) *
+        (sheet ? SHEET_ANIMATION_DURATION : DEFAULT_ANIMATION_DURATION)) *
         (isChained ? MODAL_ONLY_ANIMATION_MULTIPLIER : 1),
     );
 
@@ -142,12 +237,10 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
       if (animMode !== "none") {
         const customModal = props.customAnimations?.show?.modal;
         const initialStyle: Record<string, string> = {
-          opacity: "0",
-          marginTop: "1rem",
+          ...motion.enter.style,
         };
         const animParams: Record<string, unknown> = {
-          opacity: [0, 1],
-          marginTop: ["1rem", "0"],
+          ...motion.enter.params,
         };
         if (customModal) {
           if (customModal.opacity !== undefined) {
@@ -193,13 +286,9 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
         opacity: "1",
       });
 
-      setStyle(modalEl(), {
-        opacity: "0",
-        marginTop: "1rem",
-      });
+      setStyle(modalEl(), motion.enter.style);
       animateElement(modalEl(), {
-        opacity: [0, 1],
-        marginTop: ["1rem", "0"],
+        ...motion.enter.params,
         duration: modalAnimDuration,
         onComplete: () => {
           focusFirstInput();
@@ -215,9 +304,21 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
 
     await props.beforeHide?.();
 
+    const sheet = usesSheetAnimation();
+    // a dragged sheet slides out from where the finger let go
+    const motion: ModalMotion =
+      sheet && dragOffset > 0
+        ? {
+            ...SHEET_MOTION,
+            exit: { translateY: [`${dragOffset}px`, "100%"] },
+          }
+        : sheet
+          ? SHEET_MOTION
+          : CARD_MOTION;
+    dragOffset = 0;
     const modalAnimDuration = applyReducedMotion(
       (props.customAnimations?.hide?.modal?.duration ??
-        DEFAULT_ANIMATION_DURATION) *
+        (sheet ? SHEET_ANIMATION_DURATION : DEFAULT_ANIMATION_DURATION)) *
         (isChained ? MODAL_ONLY_ANIMATION_MULTIPLIER : 1),
     );
 
@@ -233,8 +334,7 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
       if (animMode !== "none") {
         const customModal = props.customAnimations?.hide?.modal;
         const hideAnimParams: Record<string, unknown> = {
-          opacity: [1, 0],
-          marginTop: ["0", "1rem"],
+          ...motion.exit,
         };
         if (customModal) {
           if (customModal.opacity !== undefined) {
@@ -267,8 +367,7 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
       }
     } else if (animMode === "modalOnly") {
       animateElement(modalEl(), {
-        opacity: [1, 0],
-        marginTop: ["0", "1rem"],
+        ...motion.exit,
         duration: modalAnimDuration,
         onComplete: async () => {
           dialogEl()?.close();
@@ -338,9 +437,12 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
       id={props.domId ?? `${props.id as string}Modal`}
       ref={dialogRef}
       class={cn(
-        "fixed top-0 left-0 z-1000 m-0 hidden max-h-dvh max-w-screen border-none bg-[rgba(0,0,0,0.5)] p-2 xs:p-4 sm:p-8 backdrop:bg-transparent",
+        "fixed top-0 left-0 z-1000 m-0 hidden max-h-dvh max-w-screen border-none bg-[rgba(0,0,0,0.5)] backdrop:bg-transparent outline-none",
         // Native open state survives reactive wrapperClass updates after hide.
-        "h-dvh w-full items-center justify-center open:flex",
+        "h-dvh w-full justify-center open:flex",
+        props.mobileSheet === false
+          ? "items-center p-2 xs:p-4 sm:p-8"
+          : "items-end p-0 sm:items-center sm:p-8",
         props.wrapperClass,
       )}
       onKeyDown={handleKeyDown}
@@ -353,13 +455,28 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
       <Show when={isModalOpen(props.id)}>
         <div
           class={cn(
-            "modal pointer-events-auto grid h-max max-h-full w-full max-w-md gap-4 overflow-auto overscroll-y-none rounded-double bg-bg p-4 text-text ring-4 ring-sub-alt sm:p-8",
+            "modal pointer-events-auto grid outline-none h-max w-full max-w-md gap-4 overflow-auto overscroll-y-none bg-bg p-4 text-text ring-4 ring-sub-alt sm:p-8",
+            props.mobileSheet === false
+              ? "max-h-full rounded-double"
+              : "sm:max-h-full sm:rounded-double max-sm:max-h-[85dvh] max-sm:rounded-t-[calc(var(--roundness)*2)] max-sm:rounded-b-none max-sm:pb-[max(1rem,env(safe-area-inset-bottom))]",
             props.modalClass,
           )}
           ref={modalRef}
           tabIndex={-1}
           onScroll={(e) => props.onScroll?.(e)}
         >
+          <Show when={props.mobileSheet !== false}>
+            <div
+              aria-hidden="true"
+              class="-mx-4 -mt-4 -mb-2 grid shrink-0 touch-none place-items-center py-3 sm:hidden"
+              onPointerDown={onHandlePointerDown}
+              onPointerMove={onHandlePointerMove}
+              onPointerUp={onHandlePointerUp}
+              onPointerCancel={onHandlePointerCancel}
+            >
+              <div class="h-1.5 w-10 rounded-full bg-sub-alt"></div>
+            </div>
+          </Show>
           <Show when={props.title !== undefined && props.title !== ""}>
             <div class="text-xl text-sub sm:text-2xl">{props.title}</div>
           </Show>

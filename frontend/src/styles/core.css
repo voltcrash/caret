@@ -30,6 +30,12 @@
 
   --balloon-font-size: 1rem;
   --balloon-border-radius: calc(var(--roundness) / 2);
+
+  /* phones: fit more of each line, see getWordsFontSize */
+  --words-font-scale: 1;
+  @media (max-width: 480px) {
+    --words-font-scale: 0.8;
+  }
 }
 
 ::placeholder {
@@ -119,7 +125,12 @@ html {
   @apply overflow-y-scroll scroll-smooth;
   line-height: 1.25;
   /* Keep text size stable on landscape rotation (iOS/Android). */
+  /* stylelint-disable-next-line property-no-vendor-prefix -- iOS Safari still needs the prefix */
+  -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  /* quick taps on the words must not double-tap zoom, pinch zoom still works */
+  touch-action: manipulation;
 }
 
 a {
@@ -128,8 +139,10 @@ a {
     color 0.125s,
     opacity 0.125s,
     background 0.125s;
-  &:hover {
-    @apply text-text;
+  @media (hover: hover) {
+    &:hover {
+      @apply text-text;
+    }
   }
   &:focus-visible {
     @apply outline-none;
@@ -145,7 +158,7 @@ a[router-link] * {
 }
 
 body {
-  @apply m-0 p-0 min-h-screen font-(family-name:--font) text-text overflow-x-clip bg-bg;
+  @apply m-0 p-0 min-h-dvh font-(family-name:--font) text-text overflow-x-clip bg-bg;
 }
 
 kbd {

@@ -8,4 +8,5 @@ setTestElements({
   caret: document.createElement("div"),
   paceCaret: document.createElement("div"),
   typingTest: document.createElement("div"),
+  keyboardProxy: document.createElement("input"),
 });

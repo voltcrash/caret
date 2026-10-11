@@ -6,6 +6,7 @@ import { getConfig } from "../../config/store";
 import { restartTestEvent } from "../../events/test";
 import { hideModalAndClearChain } from "../../states/modals";
 import { showNoticeNotification } from "../../states/notifications";
+import { getBailOutHint } from "../../utils/bail-out";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { InputField } from "../ui/form/InputField";
 import { SubmitButton } from "../ui/form/SubmitButton";
@@ -29,10 +30,9 @@ export function CustomTestDurationModal(): JSXElement {
       if (val >= 1800) {
         showNoticeNotification("Stay safe and take breaks!");
       } else if (val === 0) {
-        showNoticeNotification(
-          "Infinite time! Make sure to use Bail Out from the command palette to save your result.",
-          { durationMs: 7000 },
-        );
+        showNoticeNotification(`Infinite time! ${getBailOutHint()}`, {
+          durationMs: 7000,
+        });
       }
 
       hideModalAndClearChain("TestDuration");
@@ -90,10 +90,15 @@ export function CustomTestDurationModal(): JSXElement {
           for example &ldquo;1h30m&rdquo;.
           <br />
           <br />
-          You can start an infinite test by inputting 0. Then, to stop the test,
-          use the Bail Out feature:
-          <br />(<kbd>esc</kbd> or <kbd>ctrl/cmd</kbd> + <kbd>shift</kbd> +{" "}
-          <kbd>p</kbd> &gt; Bail Out)
+          You can start an infinite test by inputting 0.{" "}
+          <span class="pointer-coarse:hidden">
+            Then, to stop the test, use the Bail Out feature:
+            <br />(<kbd>esc</kbd> or <kbd>ctrl/cmd</kbd> + <kbd>shift</kbd> +{" "}
+            <kbd>p</kbd> &gt; Bail Out)
+          </span>
+          <span class="hidden pointer-coarse:inline">
+            Then, to stop the test, tap end test under the words.
+          </span>
         </div>
         <SubmitButton
           form={form}

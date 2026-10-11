@@ -7,6 +7,7 @@ import {
   hasFixedHeader,
   setPageScroller,
 } from "../../states/page-layout";
+import { isTestActive } from "../../states/test";
 import { cn } from "../../utils/cn";
 
 // wraps the page content and footer. normally it takes their place in the app
@@ -21,11 +22,11 @@ export function PageScroller(props: ParentProps): JSXElement {
     setPageScroller(isScroller() ? element() : undefined);
   });
 
-  // the window no longer scrolls on these pages, so don't let it rubber band
+  // the window no longer scrolls on these pages, so don't let it rubber band.
+  // during a test a stray swipe must not pull to refresh and lose the run
   createEffect(() => {
-    document.documentElement.style.overscrollBehaviorY = isScroller()
-      ? "none"
-      : "";
+    document.documentElement.style.overscrollBehaviorY =
+      isScroller() || isTestActive() ? "none" : "";
   });
 
   onCleanup(() => {
@@ -40,7 +41,7 @@ export function PageScroller(props: ParentProps): JSXElement {
         "content-grid grid-rows-[1fr_auto] gap-y-8",
         // keep the scrollport full screen for the soft header edge
         isScroller()
-          ? "fixed inset-0 z-10 grid-rows-[1fr] overflow-y-auto overscroll-y-contain pb-8 [&>main]:mt-(--content-top) [&>main]:h-auto"
+          ? "fixed inset-0 z-10 grid-rows-[1fr] touch-manipulation overflow-y-auto overscroll-y-contain pr-[env(safe-area-inset-right,0px)] pb-[max(2rem,env(safe-area-inset-bottom,0px))] pl-[env(safe-area-inset-left,0px)] [&>main]:mt-(--content-top) [&>main]:h-auto"
           : "full-width row-[content-start/top-end]",
       )}
       // the header's bottom edge includes its own bottom padding (1rem), so

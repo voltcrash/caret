@@ -33,6 +33,7 @@ import {
 import { setTestFocusState } from "../states/test";
 import { commandlineState, type InputModeParams } from "../states/commandline";
 import { hotkeys } from "../states/hotkeys";
+import { isCoarsePointer } from "../utils/pointer";
 
 const MODAL_STORE_ID = "Commandline";
 
@@ -106,7 +107,8 @@ export async function prepareCommandline(): Promise<void> {
     commandlineState.usingSingleList = false;
   } else {
     commandlineState.subgroupOverride = null;
-    commandlineState.usingSingleList = Config.singleListCommandLine === "on";
+    commandlineState.usingSingleList =
+      Config.singleListCommandLine === "on" && !isBrowsingOnTouch("");
   }
 
   let showInputCommand: Command | undefined = undefined;
@@ -175,6 +177,12 @@ export function afterHideCommandline(): void {
   commandlineState.subgroupOverride = null;
   commandlineState.open = false;
   setCommandlineSubgroup(null);
+}
+
+// the single list stays empty until something is typed. touch users often
+// have no keyboard open, so they browse the grouped list until they search
+function isBrowsingOnTouch(value: string): boolean {
+  return value === "" && isCoarsePointer();
 }
 
 async function goBackOrHide(): Promise<void> {
@@ -505,7 +513,8 @@ const filterInput = debounce(50, async (value: string) => {
   commandlineState.inputValue = value;
   if (commandlineState.subgroupOverride === null) {
     commandlineState.usingSingleList =
-      Config.singleListCommandLine === "on" || value.startsWith(">");
+      (Config.singleListCommandLine === "on" || value.startsWith(">")) &&
+      !isBrowsingOnTouch(value);
   }
   if (commandlineState.mode !== "search") return;
   commandlineState.mouseMode = false;
@@ -631,4 +640,15 @@ export function onCommandlineBackdropClick(): void {
 
 export function onCommandlineEscape(): void {
   void goBackOrHide();
+}
+
+export function onCommandlineBack(): void {
+  void goBackOrHide();
+}
+
+export function canCommandlineGoBack(): boolean {
+  return (
+    commandlineState.mode === "input" ||
+    commandlineState.subgroupStack.length > 1
+  );
 }

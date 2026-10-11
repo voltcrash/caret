@@ -133,7 +133,7 @@ export function HistoryChart(props: {
 
   return (
     <>
-      <div style={{ height: "400px" }}>
+      <div class="h-[280px] sm:h-[400px]">
         <ChartJs
           name="History"
           type="line"
@@ -319,7 +319,7 @@ export function HistoryChart(props: {
       </div>
       <div class="grid grid-cols-1 items-center lg:grid-cols-[1fr_30rem]">
         <Trend results={props.results} />
-        <div class="grid grid-cols-4 gap-2 text-em-xs max-[475px]:grid-cols-2">
+        <div class="grid grid-cols-4 gap-2 text-em-xs max-[475px]:grid-cols-2 pointer-coarse:[&>button]:min-h-11">
           <Button
             fa={{ icon: "fa-tachometer-alt", fixedWidth: true }}
             text="Speed"

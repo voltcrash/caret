@@ -12,6 +12,7 @@ import { useWordsFocus } from "../../../hooks/useWordsFocus";
 import {
   blurInputElement,
   focusInputElement,
+  isTouchKeyboardFocused,
   getInputElement,
   isInputElementFocused,
 } from "../../../input/input-element";
@@ -70,7 +71,9 @@ import {
 } from "../../../utils/debounced-animation-frame";
 import * as Misc from "../../../utils/misc";
 import { convertRemToPixels } from "../../../utils/numbers";
+import { isCoarsePointer } from "../../../utils/pointer";
 import * as Strings from "../../../utils/strings";
+import { getWordsFontScale, getWordsFontSize } from "../../../utils/words-font";
 import * as MonkeyPower from "./MonkeyPower";
 
 export const updateHintsPositionDebounced = Misc.debounceUntilResolved(
@@ -411,10 +414,11 @@ function updateWordWrapperClasses(): void {
     getCaretElement(),
     getPaceCaretElement(),
     getTypingTestElement(),
-    getWordsInputElement(),
   ]) {
-    element.style.fontSize = `${Config.fontSize}rem`;
+    element.style.fontSize = getWordsFontSize(Config.fontSize);
   }
+  // under 16px ios zooms the page in when the input is focused
+  getWordsInputElement().style.fontSize = `max(16px, ${getWordsFontSize(Config.fontSize)})`;
 
   if (isLanguageRightToLeft()) {
     setClass(getWordsEl(), "rightToLeftTest", true);
@@ -505,7 +509,8 @@ export function updateWordsInputPosition(): void {
     return;
   }
 
-  const letterHeight = convertRemToPixels(Config.fontSize);
+  const letterHeight =
+    convertRemToPixels(Config.fontSize) * getWordsFontScale();
   const targetTop =
     activeWord.offsetTop + letterHeight / 2 - el.offsetHeight / 2 + 1; //+1 for half of border
 
@@ -1412,7 +1417,16 @@ export function onTestRestart(source: "testPage" | "resultPage"): void {
     seconds: undefined,
   });
   LayoutfluidFunboxTimer.instantHide();
-  focusWords(true);
+  // force blur drops the keyboard on iOS (refocus without a gesture won't reopen it),
+  // so on touch keep the input focused; value was already reset in test-logic restart.
+  // without a keyboard up (first load), stay unfocused so the tap to type hint shows
+  if (!isCoarsePointer()) {
+    focusWords(true);
+  } else if (isTouchKeyboardFocused()) {
+    focusWords();
+  } else {
+    scrollToCenterOrTop(getTypingTestElement());
+  }
   MonkeyPower.reset();
   Caret.resetPosition();
   setTestInitError(null);

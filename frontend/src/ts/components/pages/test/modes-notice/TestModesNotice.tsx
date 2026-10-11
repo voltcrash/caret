@@ -94,7 +94,10 @@ function ResultSaving() {
 function QuickRestart() {
   return (
     <>
-      <Notice when={wordsHaveTab() && hotkeys.commandPalette === "Shift+Tab"}>
+      <Notice
+        when={wordsHaveTab() && hotkeys.commandPalette === "Shift+Tab"}
+        class="pointer-coarse:hidden"
+      >
         <Kbd hotkey={hotkeys.commandPalette} /> to open command palette
       </Notice>
       <Notice
@@ -102,6 +105,7 @@ function QuickRestart() {
           wordsHaveTab() &&
           (getConfig.quickRestart === "tab" || getConfig.quickRestart === "esc")
         }
+        class="pointer-coarse:hidden"
       >
         <Kbd hotkey={hotkeys.quickRestart} /> to restart
       </Notice>
@@ -125,7 +129,12 @@ function LongText() {
       icon="fa-book"
     >
       {getCustomTextIndicator()?.name} (
-      <Kbd hotkey="Shift+Enter" /> to save progress)
+      <span class="pointer-coarse:hidden">
+        <Kbd hotkey="Shift+Enter" /> to save progress)
+      </span>
+      <span class="hidden pointer-coarse:inline">
+        tap save progress when done)
+      </span>
     </Notice>
   );
 }
@@ -144,7 +153,10 @@ function LoadedChallenge() {
 function ZenMode() {
   return (
     <Notice when={getConfig.mode === "zen"}>
-      <Kbd hotkey="Shift+Enter" /> to finish zen
+      <span class="pointer-coarse:hidden">
+        <Kbd hotkey="Shift+Enter" /> to finish zen
+      </span>
+      <span class="hidden pointer-coarse:inline">tap finish when done</span>
     </Notice>
   );
 }

@@ -76,7 +76,9 @@ export function Setting(props: SettingProps): JSXElement {
     <div
       ref={ref}
       class={cn(
-        "group grid gap-2",
+        // single track capped at the card width so wide children can't push
+        // the card (and its option rows) past the screen on phones
+        "group grid min-w-0 grid-cols-[minmax(0,1fr)] gap-2 max-md:gap-3",
         "-m-4 rounded-double p-4",
         // "animate-[ring-flash_4s_ease-in_forwards]",
         props.class,
@@ -88,7 +90,7 @@ export function Setting(props: SettingProps): JSXElement {
         ? { "data-setting-key": props.key }
         : {})}
     >
-      <div class="flex items-center gap-2">
+      <div class="flex flex-wrap items-center gap-2">
         <H3 text={props.title} fa={props.fa} class="pb-0" />
         {props.titleActions}
         <Show when={props.showDeepLink !== false}>
@@ -134,9 +136,11 @@ export function Setting(props: SettingProps): JSXElement {
 function DeepLinkButton(props: { key: string }) {
   return (
     <Button
-      class="-m-2 p-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+      // tablets have no hover, keep it visible there
+      class="-m-2 p-2 opacity-100 sm:pointer-fine:opacity-0 sm:pointer-fine:group-hover:opacity-100 sm:pointer-fine:focus-visible:opacity-100"
       variant="text"
       fa={{ icon: "fa-link" }}
+      dataset={{ "aria-label": "Copy link to setting" }}
       onClick={() => {
         const urlParams = serialize({
           schema: z.object({

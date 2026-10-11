@@ -46,7 +46,7 @@ export function Filters(props: {
       <Show when={props.presets.length > 0}>
         <div>
           <H3 fa={{ icon: "fa-sliders-h" }} text="filter presets" />
-          <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 pointer-coarse:[&_button]:min-h-11">
             <For each={props.presets}>
               {(preset) => (
                 <div class="flex w-full flex-row gap-2">
@@ -182,7 +182,7 @@ export function Filters(props: {
         <div
           class={
             options.classOverride ??
-            "grid grid-cols-2 justify-evenly gap-2 md:flex [&>button]:w-full [&>button]:last:col-span-2"
+            "grid grid-cols-2 justify-evenly gap-2 md:flex [&>button]:w-full pointer-coarse:[&>button]:min-h-11 [&>button]:last:col-span-2"
           }
         >
           <For each={items()}>
@@ -241,7 +241,7 @@ export function Filters(props: {
       </AsyncContent>
       <div>
         <H3 fa={{ icon: "fa-filter" }} text="filters" />
-        <div class="mb-4 grid grid-cols-2 gap-4 lg:flex lg:justify-evenly [&>button]:w-full">
+        <div class="mb-4 grid grid-cols-2 gap-4 lg:flex lg:justify-evenly [&>button]:w-full pointer-coarse:[&>button]:min-h-11">
           <Button
             text="all"
             onClick={() => props.onChangeFilters(fromDefaultSettings(tags()))}
@@ -297,7 +297,7 @@ export function Filters(props: {
         <Separator class="mb-4 block lg:hidden" />
         <ButtonGroup
           singleSelect
-          classOverride="grid grid-cols-2 gap-4 lg:flex lg:justify-evenly [&>button]:w-full [&>button]:last:col-span-2"
+          classOverride="grid grid-cols-2 gap-4 lg:flex lg:justify-evenly [&>button]:w-full pointer-coarse:[&>button]:min-h-11 [&>button]:last:col-span-2"
           group="date"
           format={(val) => {
             if (val === "all") return "all time";

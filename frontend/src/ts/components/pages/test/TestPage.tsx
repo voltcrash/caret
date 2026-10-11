@@ -2,6 +2,7 @@ import { JSXElement, onMount } from "solid-js";
 import { spread } from "solid-js/web";
 
 import { useWordsInputScroll } from "../../../hooks/useWordsInputScroll";
+import { isInputElementFocused } from "../../../input/input-element";
 import { isWordsWrapperVisible } from "../../../states/funbox";
 import { getPageView } from "../../../states/page-transition";
 import { setTestElements } from "../../../states/test-dom";
@@ -11,9 +12,12 @@ import {
 } from "../../../states/words-layout";
 import { focusWords } from "../../../test/test-ui";
 import { cn } from "../../../utils/cn";
+import { isCoarsePointer } from "../../../utils/pointer";
 import { CapsWarning } from "./CapsWarning";
 import { Caret } from "./Caret";
 import { CompositionDisplay } from "./CompositionDisplay";
+import { EndTestButton } from "./EndTestButton";
+import { FinishZenButton } from "./FinishZenButton";
 import { FunboxTimers } from "./FunboxTimer";
 import { Keymap } from "./Keymap";
 import { LiveStatsMini } from "./live-stats/LiveStatsMini";
@@ -23,6 +27,7 @@ import { TestModesNotice } from "./modes-notice/TestModesNotice";
 import { OutOfFocusWarning } from "./OutOfFocusWarning";
 import { RestartTestButton } from "./RestartTestButton";
 import { Result } from "./result/Result";
+import { SaveProgressButton } from "./SaveProgressButton";
 import { TestConfig } from "./TestConfig";
 import { TestInitFailed } from "./TestInitFailed";
 import { TestLoading } from "./TestLoading";
@@ -89,12 +94,23 @@ export function TestPage(
           id="wordsWrapper"
           ref={(el) => (refs.wordsWrapper = el)}
           class={cn(
-            "content-grid full-width relative [overflow:visible_clip] [--c-dot--error:var(--error-color)] [--c-dot:var(--text-color)]",
+            "content-grid full-width relative [overflow:visible_clip] [--c-dot--error:var(--error-color)] [--c-dot:var(--text-color)] pointer-coarse:select-none pointer-coarse:[-webkit-touch-callout:none]",
             "[&.tape]:overflow-hidden [&.tape]:[mask-image:linear-gradient(90deg,transparent_1%,black_10%,black_90%,transparent_99%)]",
           )}
           style={{ height: getWordsWrapperHeight() }}
           translate="no"
-          onClick={() => focusWords()}
+          onMouseDown={(e) => {
+            // Keep focus on the hidden input so tapping words does not blur it
+            // (which closes and reopens the keyboard) or move its caret.
+            if (isCoarsePointer()) {
+              e.preventDefault();
+            }
+          }}
+          // a keyboard dismissed with android's back button leaves the input
+          // focused, and focus() on a focused input won't bring it back
+          onClick={() =>
+            focusWords(isCoarsePointer() && isInputElementFocused())
+          }
         >
           <textarea
             id="wordsInput"
@@ -104,7 +120,10 @@ export function TestPage(
             )}
             style={getWordsInputStyle()}
             autocomplete="off"
-            autoCapitalize="none"
+            autoCapitalize="off"
+            inputMode="text"
+            // oxlint-disable-next-line react/no-unknown-property -- Solid types use lowercase enterkeyhint
+            enterkeyhint="done"
             // oxlint-disable-next-line react/no-unknown-property -- Solid uses lowercase autocorrect
             autocorrect="off"
             data-gramm="false"
@@ -126,8 +145,23 @@ export function TestPage(
         <CompositionDisplay />
         <Keymap />
         <RestartTestButton />
+        <FinishZenButton />
+        <SaveProgressButton />
+        <EndTestButton />
         <LiveStatsTextBottom />
       </div>
+      {/* see holdKeyboardForRestart. 16px so ios doesn't zoom on focus */}
+      <input
+        ref={(el) => (refs.keyboardProxy = el)}
+        type="text"
+        class="pointer-events-none fixed top-0 left-0 size-px p-0 text-[16px] opacity-0"
+        tabIndex={-1}
+        aria-hidden="true"
+        autocomplete="off"
+        autoCapitalize="off"
+        // oxlint-disable-next-line react/no-unknown-property -- Solid uses lowercase autocorrect
+        autocorrect="off"
+      />
       <TestPageLifecycle input={refs.wordsInput} />
       <TestLoading />
       <Result />

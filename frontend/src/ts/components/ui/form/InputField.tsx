@@ -7,10 +7,35 @@ import { cn } from "../../../utils/cn";
 import { getZodType, unwrapSchema } from "../../../utils/zod";
 import { FieldIndicator } from "./FieldIndicator";
 
+// phones: a number pad instead of the full keyboard for number fields. the
+// ios number pad has no minus key, so fields allowing negatives keep the
+// default keyboard. Only use a number pad for nonnegative fields.
+function getNumberInputMode(
+  type: string | undefined,
+  min: number | undefined,
+  step: string | number | undefined,
+): "numeric" | "decimal" | undefined {
+  if (type !== "number") return undefined;
+  if (min === undefined || min < 0) return undefined;
+  if (step === undefined || Number.isInteger(Number(step))) return "numeric";
+  return "decimal";
+}
+
 export function InputField(props: {
   field: Accessor<AnyFieldApi>;
   placeholder?: string;
   autocomplete?: string;
+  inputMode?:
+    | "none"
+    | "text"
+    | "email"
+    | "numeric"
+    | "decimal"
+    | "search"
+    | "tel"
+    | "url";
+  autoCapitalize?: "off" | "none" | "on" | "sentences" | "words" | "characters";
+  spellCheck?: boolean;
   type?: string;
   disabled?: boolean;
   readOnly?: boolean;
@@ -30,6 +55,7 @@ export function InputField(props: {
   alwaysShowFieldIndicator?: boolean;
 }): JSXElement {
   const [shake, setShake] = createSignal(false);
+  const numberOptions = () => getNumberOptions(props.schema);
 
   const shakeItIfYouWantIt = () => {
     if (
@@ -68,6 +94,18 @@ export function InputField(props: {
         type={props.type ?? "text"}
         placeholder={props.placeholder ?? ""}
         autocomplete={props.autocomplete}
+        // phones: number pad instead of the full keyboard for number fields
+        inputMode={
+          props.inputMode ??
+          getNumberInputMode(
+            props.type,
+            props.min ?? numberOptions().min,
+            props.step ?? numberOptions().step,
+          )
+        }
+        autoCapitalize={props.autoCapitalize}
+        // oxlint-disable-next-line react/no-unknown-property -- Solid uses lowercase spellcheck.
+        spellcheck={props.spellCheck}
         name={props.field().name as string}
         value={convertValueToString(props.field().state.value)}
         onBlur={() => {
@@ -104,7 +142,7 @@ export function InputField(props: {
         onFocus={() => props.onFocus?.()}
         dir={props.dir}
         maxLength={props.maxLength}
-        {...getNumberOptions(props.schema)}
+        {...numberOptions()}
         {...getDateOptions(props.schema, formatDate)}
         min={props.min}
         max={props.max}

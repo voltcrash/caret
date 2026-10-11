@@ -76,7 +76,7 @@ export function Title(props: {
     <div>
       <H2
         text={title()}
-        class="p-0 text-2xl text-text md:text-3xl xl:text-4xl"
+        class="p-0 text-xl text-text sm:text-2xl md:text-3xl xl:text-4xl"
       />
       <Show when={subTitle() !== null}>
         <div class="flex flex-wrap items-center gap-x-2 gap-y-1">

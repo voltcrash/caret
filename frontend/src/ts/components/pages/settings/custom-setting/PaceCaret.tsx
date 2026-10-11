@@ -81,7 +81,7 @@ export function PaceCaret(): JSXElement {
               )}
             />
           </form>
-          <div class="grid grid-cols-[repeat(auto-fit,minmax(6rem,1fr))] gap-2">
+          <div class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,6rem),1fr))] gap-2">
             <For each={getOptions(ConfigSchema.shape.paceCaret)}>
               {(option) => {
                 const optionMeta = configMetadata.paceCaret

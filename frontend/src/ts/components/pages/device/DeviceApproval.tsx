@@ -90,6 +90,7 @@ export function DeviceApproval(props: { initialCode?: string }): JSXElement {
                   required
                   maxLength={32}
                   autocomplete="off"
+                  autoCapitalize="characters"
                   // oxlint-disable-next-line react/no-unknown-property -- Solid uses lowercase spellcheck.
                   spellcheck={false}
                   disabled={busy()}

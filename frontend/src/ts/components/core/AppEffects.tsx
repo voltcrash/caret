@@ -16,6 +16,7 @@ import { configLoadPromise } from "../../config/lifecycle";
 import { Config } from "../../config/store";
 import { getAcceptedCookies } from "../../cookies";
 import { configEvent } from "../../events/config";
+import { isInputElementFocused } from "../../input/input-element";
 import {
   getFontFace,
   getFontFamily,
@@ -48,6 +49,7 @@ import { onDOMReady } from "../../utils/dom-ready";
 import { isDevEnvironment } from "../../utils/env";
 import { applyReducedMotion } from "../../utils/misc";
 import { convertRemToPixels } from "../../utils/numbers";
+import { isCoarsePointer } from "../../utils/pointer";
 import { canQuickRestart } from "../../utils/quick-restart";
 import { GlobalEvents } from "./GlobalEvents";
 import { NoCssFallback } from "./NoCssFallback";
@@ -77,7 +79,11 @@ export function AppEffects(props: AppElements): JSXElement {
       get style() {
         return {
           display: isFixingSkillIssue() ? "none" : undefined,
-          "padding-top": `${getGlobalOffsetTop() + convertRemToPixels(2)}px`,
+          // banners already cover the notch, see Banners
+          "padding-top":
+            getGlobalOffsetTop() > 0
+              ? `${getGlobalOffsetTop() + convertRemToPixels(2)}px`
+              : "max(2rem, env(safe-area-inset-top, 0px))",
         };
       },
     },
@@ -232,7 +238,11 @@ export function AppEffects(props: AppElements): JSXElement {
         const timer = setTimeout(() => {
           timers.delete(timer);
           TestUI.updateWordsInputPosition();
-          TestUI.focusWords();
+          // on touch, mobile URL bar/keyboard resizes must not reopen the keyboard
+          // the user dismissed, so only refocus if the input already has focus
+          if (!isCoarsePointer() || isInputElementFocused()) {
+            TestUI.focusWords();
+          }
           Caret.show();
         }, 250);
         timers.add(timer);

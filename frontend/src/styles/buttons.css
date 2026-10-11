@@ -1,6 +1,7 @@
 /* No grey tap flash; touch-action: manipulation drops the double-tap zoom delay. */
 a,
 button,
+[role="button"],
 .button,
 .textButton,
 input[type="button"],
@@ -51,8 +52,11 @@ input[type="submit"] {
 
   &.active {
     @apply bg-main text-bg;
-    &:hover {
-      @apply bg-text;
+    /* hover only on pointer devices so a tapped button doesn't stay lit */
+    @media (hover: hover) {
+      &:hover {
+        @apply bg-text;
+      }
     }
     &:active {
       @apply bg-sub text-bg;
@@ -62,16 +66,20 @@ input[type="submit"] {
   &[disabled],
   &.disabled {
     @apply opacity-[0.33] pointer-events-none;
-    &:hover {
-      @apply bg-text outline-none;
+    @media (hover: hover) {
+      &:hover {
+        @apply bg-text outline-none;
+      }
     }
     &:active {
       @apply bg-sub text-bg;
     }
   }
 
-  &:hover {
-    @apply text-bg bg-text outline-none;
+  @media (hover: hover) {
+    &:hover {
+      @apply text-bg bg-text outline-none;
+    }
   }
   &:focus-visible {
     @apply shadow-control-focus;
@@ -98,8 +106,10 @@ button.text,
 
   &.active {
     @apply text-main bg-none bg-transparent;
-    &:hover {
-      @apply text-text bg-none bg-transparent;
+    @media (hover: hover) {
+      &:hover {
+        @apply text-text bg-none bg-transparent;
+      }
     }
     &:active {
       @apply text-sub bg-none bg-transparent;
@@ -108,16 +118,20 @@ button.text,
 
   &[disabled],
   &.disabled {
-    &:hover {
-      @apply text-text outline-none;
+    @media (hover: hover) {
+      &:hover {
+        @apply text-text outline-none;
+      }
     }
     &:active {
       @apply bg-sub text-bg;
     }
   }
 
-  &:hover {
-    @apply text-text bg-none bg-transparent outline-none;
+  @media (hover: hover) {
+    &:hover {
+      @apply text-text bg-none bg-transparent outline-none;
+    }
   }
   &:focus-visible {
     @apply shadow-text-focus;

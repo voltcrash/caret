@@ -223,6 +223,50 @@ describe("InputField", () => {
     expect(input).toHaveAttribute("step", "any");
   });
 
+  it.each([undefined, -11])("keeps the minus key when min is %s", (min) => {
+    const field = makeField("offset", 0);
+    render(() => <InputField field={() => field} type="number" min={min} />);
+
+    expect(screen.getByRole("spinbutton")).not.toHaveAttribute("inputmode");
+  });
+
+  it.each([
+    { schema: z.number().nonnegative().int(), mode: "numeric" },
+    { schema: z.number().nonnegative(), mode: "decimal" },
+    { schema: z.number().min(-11), mode: null },
+  ])("uses schema bounds to choose the $mode keyboard", ({ schema, mode }) => {
+    const field = makeField("value", 0);
+    render(() => (
+      <InputField field={() => field} type="number" schema={schema} />
+    ));
+
+    expect(screen.getByRole("spinbutton").getAttribute("inputmode")).toBe(mode);
+  });
+
+  it("uses explicit constraints and keyboard hints over schema defaults", () => {
+    const field = makeField("value", 0);
+    const schema = z.number().min(-11);
+    const { unmount } = render(() => (
+      <InputField
+        field={() => field}
+        type="number"
+        schema={schema}
+        min={0}
+        step={1}
+      />
+    ));
+    expect(screen.getByRole("spinbutton")).toHaveAttribute(
+      "inputmode",
+      "numeric",
+    );
+    unmount();
+
+    render(() => (
+      <InputField field={() => field} type="number" min={0} inputMode="text" />
+    ));
+    expect(screen.getByRole("spinbutton")).toHaveAttribute("inputmode", "text");
+  });
+
   it("applies date schema constraints", async () => {
     const field = makeField("date", new Date("2024-01-15"));
     const schema = z

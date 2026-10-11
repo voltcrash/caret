@@ -20,7 +20,10 @@
     });
   </script>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"
+  />
   <title>Oxytype | A minimalistic, customizable typing test</title>
   <!-- fallback theme colors -->
   <style>
@@ -70,6 +73,15 @@
     rel="apple-touch-icon"
     sizes="180x180"
     href="/images/icons/oxytype-180.png"
+  />
+  <!-- ios turns stats like "51/0/0/0" into phone number links -->
+  <meta name="format-detection" content="telephone=no" />
+  <!-- added to the home screen: open full screen like an app -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Oxytype" />
+  <meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="black-translucent"
   />
   <meta
     name="keywords"

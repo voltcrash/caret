@@ -7,17 +7,28 @@ import { ResultDailyLeaderboard } from "./ResultDailyLeaderboard";
 import { ResultQuoteActions } from "./ResultQuoteActions";
 import { ResultTags } from "./ResultTags";
 
-const topClass = "top mb-1 text-[1rem] leading-[1rem] text-sub";
+const topClass =
+  "top mb-1 text-[1rem] leading-[1rem] text-sub max-md:text-[0.8125rem]";
 const bottomClass = "bottom text-[2rem] leading-[2rem] text-main";
-const bigTopClass = "top mb-1 text-[2rem] leading-[1.5rem] text-sub";
+// phones: wpm and acc sit side by side as a scoreboard, sized to fit 320px
+const bigTopClass =
+  "top mb-1 text-[2rem] leading-[1.5rem] text-sub max-md:mb-0 max-md:text-[0.875rem] max-md:leading-[1rem]";
 const bigBottomClass = "bottom text-[4rem] leading-[4rem] text-main";
+const wpmBigBottomClass = cn(
+  bigBottomClass,
+  "max-md:leading-none max-md:[font-size:clamp(3.5rem,20vw,4.75rem)]",
+);
+const accBigBottomClass = cn(
+  bigBottomClass,
+  "max-md:leading-none max-md:text-text max-md:[font-size:clamp(2.25rem,12vw,3rem)]",
+);
 const smallTopClass = cn(topClass, "flex flex-wrap items-center");
 const smallBottomClass = "bottom text-[1rem] leading-[1rem] text-main";
 // balloons would overflow the screen on narrow layouts
 const moreStatsBottomClass =
   "max-sm:after:left-0! max-sm:after:transform-none!";
 // two phone columns are ~136px wide on 320px screens
-const valueClass = "max-xxs:text-[1.5rem] max-xxs:leading-[1.5rem]";
+const valueClass = "max-md:text-[1.5rem] max-md:leading-[1.5rem]";
 const subTextClass = "ml-[0.2rem] text-[0.75rem] leading-[0.75rem] text-sub";
 
 function Lines(props: { lines: string[] | undefined }): JSXElement {
@@ -48,27 +59,26 @@ export function ResultStats(): JSXElement {
         class={cn(
           "stats grid items-center justify-center gap-2 [grid-area:stats] [grid-template-areas:'wpm'_'acc']",
           "max-md:grid-cols-[1fr_1fr] max-md:justify-items-center max-md:[grid-template-areas:'wpm_acc']",
-          "max-sm:w-max max-sm:grid-cols-[1fr] max-sm:justify-items-start max-sm:justify-self-center max-sm:[grid-template-areas:'wpm'_'acc']",
           resultState.noStress && "hidden",
         )}
       >
-        <div class="group wpm [grid-area:wpm]">
-          <div class={cn(bigTopClass, "flex")}>
+        <div class="group wpm max-md:text-center [grid-area:wpm]">
+          <div class={cn(bigTopClass, "flex max-md:justify-center")}>
             <div class="text">{stats()?.typingSpeedUnit ?? "wpm"}</div>
             <ResultCrown />
           </div>
           <div
-            class={bigBottomClass}
+            class={wpmBigBottomClass}
             aria-label={stats()?.wpm.ariaLabel}
             data-balloon-pos="up"
           >
             {stats()?.wpm.text ?? "-"}
           </div>
         </div>
-        <div class="group acc [grid-area:acc]">
+        <div class="group acc max-md:text-center [grid-area:acc]">
           <div class={bigTopClass}>acc</div>
           <div
-            class={bigBottomClass}
+            class={accBigBottomClass}
             aria-label={stats()?.acc.ariaLabel}
             data-balloon-pos="up"
             data-balloon-break={stats()?.acc.balloonBreak ? "" : undefined}
@@ -81,13 +91,12 @@ export function ResultStats(): JSXElement {
         class={cn(
           "stats morestats grid grid-flow-col items-start justify-between gap-x-8 gap-y-2 [grid-area:morestats]",
           "max-lg:grid-cols-[repeat(3,max-content)] max-lg:grid-rows-[1fr_1fr]",
-          "max-md:grid-cols-[repeat(2,minmax(0,1fr))] max-md:grid-rows-[1fr_1fr_1fr] max-md:justify-items-start max-md:gap-4 max-md:[grid-template-areas:'wpm_acc'] max-md:[overflow-wrap:anywhere]",
-          "max-sm:[grid-template-areas:'wpm'_'acc']",
-          "max-xs:grid-flow-row max-xs:grid-cols-[repeat(2,minmax(0,1fr))] max-xs:grid-rows-none max-xs:gap-x-4 max-xs:gap-y-3",
+          // phones: two columns, row-major; wide rows span both
+          "max-md:grid-flow-row max-md:grid-cols-[repeat(2,minmax(0,1fr))] max-md:grid-rows-none max-md:justify-items-start max-md:gap-x-4 max-md:gap-y-3 max-md:[overflow-wrap:anywhere]",
           resultState.noStress && "hidden",
         )}
       >
-        <div class="group testType">
+        <div class="group testType max-md:col-span-full">
           <div class={topClass}>test type</div>
           <div
             class={cn(
@@ -107,7 +116,7 @@ export function ResultStats(): JSXElement {
         </div>
         <div
           class={cn(
-            "group info",
+            "group info max-md:col-span-full",
             (stats()?.other.length ?? 0) === 0 && "hidden",
           )}
         >
@@ -167,7 +176,7 @@ export function ResultStats(): JSXElement {
         />
         <div
           class={cn(
-            "group source max-w-[30rem]",
+            "group source max-w-[30rem] max-md:col-span-full",
             stats()?.source === undefined && "hidden",
           )}
         >

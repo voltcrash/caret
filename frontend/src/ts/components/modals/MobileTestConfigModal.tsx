@@ -1,17 +1,19 @@
 import type { QuoteLength, QuoteLengthConfig } from "@oxytype/schemas/configs";
 import type { Mode } from "@oxytype/schemas/shared";
 
-import { For, JSXElement, Show } from "solid-js";
+import { For, JSXElement, ParentProps, Show } from "solid-js";
 
 import { setConfig, setQuoteLengthAll } from "../../config/setters";
 import { getConfig } from "../../config/store";
 import { restartTestEvent } from "../../events/test";
-import { isAuthenticated } from "../../states/core";
-import { showModal } from "../../states/modals";
+import { isAuthenticated, showCommandLineForConfig } from "../../states/core";
+import { hideModal, showModal } from "../../states/modals";
 import { areUnsortedArraysEqual } from "../../utils/arrays";
+import { cn } from "../../utils/cn";
+import { getLanguageDisplayString } from "../../utils/strings";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Button } from "../common/Button";
-import { Separator } from "../common/Separator";
+import { Fa } from "../common/Fa";
 
 const modes: Mode[] = ["time", "words", "quote", "zen", "custom"];
 const times = [15, 30, 60, 120];
@@ -33,6 +35,7 @@ const quoteLengths: {
 
 function MCButton(props: {
   text: string;
+  class?: string;
   active?: boolean;
   disabled?: boolean;
   onClick: (e: MouseEvent) => void;
@@ -40,7 +43,7 @@ function MCButton(props: {
   return (
     <Button
       variant="button"
-      class="min-h-10"
+      class={cn("min-h-11", props.class)}
       text={props.text}
       active={props.active}
       disabled={props.disabled}
@@ -49,8 +52,31 @@ function MCButton(props: {
   );
 }
 
+// flex-wrap with basis 30%: 3 per row, a short last row stretches to fill
+const optionClass = "grow basis-[30%]";
+
+function Section(props: ParentProps<{ label: string }>): JSXElement {
+  return (
+    <div class="grid gap-2">
+      <div class="text-sm text-sub">{props.label}</div>
+      {props.children}
+    </div>
+  );
+}
+
+const mode2Labels: Partial<Record<Mode, string>> = {
+  time: "duration",
+  words: "word count",
+  quote: "quote length",
+  custom: "custom text",
+};
+
 const isPunctuationDisabled = () =>
   getConfig.mode === "quote" || getConfig.mode === "zen";
+
+// same condition as the language notice in modes-notice
+const showLanguageRow = () =>
+  getConfig.mode !== "zen" && !getConfig.funbox.includes("polyglot");
 
 export function MobileTestConfigModal(): JSXElement {
   const handleModeClick = (mode: Mode) => {
@@ -65,6 +91,7 @@ export function MobileTestConfigModal(): JSXElement {
     } else {
       setConfig("time", time);
       restartTestEvent.dispatch();
+      hideModal("MobileTestConfig");
     }
   };
 
@@ -74,6 +101,7 @@ export function MobileTestConfigModal(): JSXElement {
     } else {
       setConfig("words", words);
       restartTestEvent.dispatch();
+      hideModal("MobileTestConfig");
     }
   };
 
@@ -81,6 +109,7 @@ export function MobileTestConfigModal(): JSXElement {
     if (value === "all") {
       if (setQuoteLengthAll()) {
         restartTestEvent.dispatch();
+        hideModal("MobileTestConfig");
       }
     } else if (value === "-2") {
       showModal("QuoteSearch");
@@ -96,6 +125,8 @@ export function MobileTestConfigModal(): JSXElement {
 
       if (setConfig("quoteLength", arr)) {
         restartTestEvent.dispatch();
+        // shift-click builds a multi-select, so keep the modal open
+        if (!e.shiftKey) hideModal("MobileTestConfig");
       }
     }
   };
@@ -114,98 +145,137 @@ export function MobileTestConfigModal(): JSXElement {
   };
 
   return (
-    <AnimatedModal id="MobileTestConfig" modalClass="grid gap-4">
-      <div class="grid grid-cols-2 gap-2">
-        <MCButton
-          text="punctuation"
-          active={getConfig.punctuation && !isPunctuationDisabled()}
-          disabled={isPunctuationDisabled()}
-          onClick={() => {
-            setConfig("punctuation", !getConfig.punctuation);
-            restartTestEvent.dispatch();
-          }}
-        />
-        <MCButton
-          text="numbers"
-          active={getConfig.numbers && !isPunctuationDisabled()}
-          disabled={isPunctuationDisabled()}
-          onClick={() => {
-            setConfig("numbers", !getConfig.numbers);
-            restartTestEvent.dispatch();
-          }}
-        />
-      </div>
-
-      <Separator />
-
-      <div class="grid grid-cols-3 gap-2">
-        <For each={modes}>
-          {(mode) => (
-            <MCButton
-              text={mode}
-              active={getConfig.mode === mode}
-              onClick={() => handleModeClick(mode)}
-            />
-          )}
-        </For>
-      </div>
-
-      <Separator />
+    <AnimatedModal
+      id="MobileTestConfig"
+      title="test settings"
+      modalClass="grid gap-4"
+    >
+      <Section label="mode">
+        <div class="flex flex-wrap gap-2">
+          <For each={modes}>
+            {(mode) => (
+              <MCButton
+                class={optionClass}
+                text={mode}
+                active={getConfig.mode === mode}
+                onClick={() => handleModeClick(mode)}
+              />
+            )}
+          </For>
+        </div>
+      </Section>
 
       <Show when={getConfig.mode !== "zen"}>
-        <div class="grid grid-cols-3 gap-2">
-          <Show when={getConfig.mode === "time"}>
-            <For each={times}>
-              {(time) => (
-                <MCButton
-                  text={String(time)}
-                  active={getConfig.time === time}
-                  onClick={() => handleTimeClick(time)}
-                />
-              )}
-            </For>
-            <MCButton text="custom" onClick={() => handleTimeClick("custom")} />
-          </Show>
-
-          <Show when={getConfig.mode === "words"}>
-            <For each={wordCounts}>
-              {(words) => (
-                <MCButton
-                  text={String(words)}
-                  active={getConfig.words === words}
-                  onClick={() => handleWordsClick(words)}
-                />
-              )}
-            </For>
-            <MCButton
-              text="custom"
-              onClick={() => handleWordsClick("custom")}
-            />
-          </Show>
-
-          <Show when={getConfig.mode === "quote"}>
-            <For each={quoteLengths}>
-              {(ql) => (
-                <Show when={!("loginRequired" in ql) || isAuthenticated()}>
+        <Section label={mode2Labels[getConfig.mode] ?? ""}>
+          <div class="flex flex-wrap gap-2">
+            <Show when={getConfig.mode === "time"}>
+              <For each={times}>
+                {(time) => (
                   <MCButton
-                    text={ql.label}
-                    active={isQuoteLengthActive(ql.value)}
-                    onClick={(e) => handleQuoteLengthClick(ql.value, e)}
+                    class={optionClass}
+                    text={String(time)}
+                    active={getConfig.time === time}
+                    onClick={() => handleTimeClick(time)}
                   />
-                </Show>
-              )}
-            </For>
-          </Show>
+                )}
+              </For>
+              <MCButton
+                class={optionClass}
+                text="custom"
+                onClick={() => handleTimeClick("custom")}
+              />
+            </Show>
 
-          <Show when={getConfig.mode === "custom"}>
-            <MCButton text="change" onClick={() => showModal("CustomText")} />
-          </Show>
-        </div>
-        <Separator />
+            <Show when={getConfig.mode === "words"}>
+              <For each={wordCounts}>
+                {(words) => (
+                  <MCButton
+                    class={optionClass}
+                    text={String(words)}
+                    active={getConfig.words === words}
+                    onClick={() => handleWordsClick(words)}
+                  />
+                )}
+              </For>
+              <MCButton
+                class={optionClass}
+                text="custom"
+                onClick={() => handleWordsClick("custom")}
+              />
+            </Show>
+
+            <Show when={getConfig.mode === "quote"}>
+              <For each={quoteLengths}>
+                {(ql) => (
+                  <Show when={!("loginRequired" in ql) || isAuthenticated()}>
+                    <MCButton
+                      class={optionClass}
+                      text={ql.label}
+                      active={isQuoteLengthActive(ql.value)}
+                      onClick={(e) => handleQuoteLengthClick(ql.value, e)}
+                    />
+                  </Show>
+                )}
+              </For>
+            </Show>
+
+            <Show when={getConfig.mode === "custom"}>
+              <MCButton
+                class={optionClass}
+                text="change"
+                onClick={() => showModal("CustomText")}
+              />
+            </Show>
+          </div>
+        </Section>
       </Show>
+
+      <Section label="extras">
+        <div class="grid grid-cols-2 gap-2">
+          <MCButton
+            text="punctuation"
+            active={getConfig.punctuation && !isPunctuationDisabled()}
+            disabled={isPunctuationDisabled()}
+            onClick={() => {
+              setConfig("punctuation", !getConfig.punctuation);
+              restartTestEvent.dispatch();
+            }}
+          />
+          <MCButton
+            text="numbers"
+            active={getConfig.numbers && !isPunctuationDisabled()}
+            disabled={isPunctuationDisabled()}
+            onClick={() => {
+              setConfig("numbers", !getConfig.numbers);
+              restartTestEvent.dispatch();
+            }}
+          />
+        </div>
+        <Show when={showLanguageRow()}>
+          <Button
+            variant="button"
+            class="min-h-11 justify-between"
+            onClick={() => showCommandLineForConfig("language")}
+          >
+            <span class="min-w-0 truncate">
+              language:{" "}
+              {getLanguageDisplayString(
+                getConfig.language,
+                getConfig.mode === "quote",
+              )}
+            </span>
+            <Fa icon="fa-chevron-right" fixedWidth />
+          </Button>
+        </Show>
+      </Section>
 
       <div class="grid gap-2">
         <MCButton text="share" onClick={() => showModal("ShareTestSettings")} />
+        <MCButton
+          text="done"
+          active
+          onClick={() => hideModal("MobileTestConfig")}
+        />
       </div>
     </AnimatedModal>
   );

@@ -265,6 +265,37 @@ async function getBlob(): Promise<Blob | null> {
   });
 }
 
+function getFilename(): string {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+  return `oxytype-result-${timestamp}.png`;
+}
+
+/**
+ * Opens the system share sheet with the screenshot (save to photos, send to
+ * an app). Phones can't copy images to the clipboard after an async render.
+ * Falls back to a download where files can't be shared.
+ */
+export async function share(): Promise<void> {
+  const data = await getBlob();
+  if (!data) return;
+  const filename = getFilename();
+  const file = new File([data], filename, { type: "image/png" });
+
+  if (navigator.canShare?.({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file] });
+      return;
+    } catch (e) {
+      // closing the share sheet is not an error
+      if (e instanceof DOMException && e.name === "AbortError") return;
+      console.error("Error sharing screenshot", e);
+    }
+  }
+
+  downloadFile({ data, filename });
+  showSuccessNotification("Screenshot download started");
+}
+
 export async function download(): Promise<void> {
   try {
     const data = await getBlob();
@@ -273,8 +304,7 @@ export async function download(): Promise<void> {
       showErrorNotification("Failed to generate screenshot data");
       return;
     }
-    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-    const filename = `oxytype-result-${timestamp}.png`;
+    const filename = getFilename();
 
     downloadFile({ data, filename });
 

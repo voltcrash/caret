@@ -5,7 +5,7 @@ import { getSnapshot } from "../../../states/snapshot";
 import { Button } from "../../common/Button";
 export function AccountMenu(): JSXElement {
   const buttonClass =
-    "w-full justify-start px-3 py-2 whitespace-nowrap gap-2 bg-transparent";
+    "w-full justify-start px-3 py-2 whitespace-nowrap gap-2 bg-transparent pointer-coarse:min-h-11";
 
   return (
     <div

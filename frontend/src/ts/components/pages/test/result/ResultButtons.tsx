@@ -8,6 +8,7 @@ import {
 } from "solid-js";
 
 import { getConfig } from "../../../../config/store";
+import { holdKeyboardForRestart } from "../../../../input/input-element";
 import { getActivePage, getIsScreenshotting } from "../../../../states/core";
 import { showModal } from "../../../../states/modals";
 import { showNoticeNotification } from "../../../../states/notifications";
@@ -19,6 +20,8 @@ import * as TestLogic from "../../../../test/test-logic";
 import * as TestScreenshot from "../../../../test/test-screenshot";
 import { FaObject } from "../../../../types/font-awesome";
 import { cn } from "../../../../utils/cn";
+import { isCoarsePointer } from "../../../../utils/pointer";
+import { Button } from "../../../common/Button";
 import { Fa } from "../../../common/Fa";
 
 export function ResultButtons(): JSXElement {
@@ -43,6 +46,8 @@ export function ResultButtons(): JSXElement {
   const buttons: {
     id: string;
     label: string;
+    // visible text under the icon on phones (no hover balloons on touch)
+    shortLabel: string;
     icon: () => FaObject;
     class?: string;
     // hidden in glarses mode
@@ -53,18 +58,27 @@ export function ResultButtons(): JSXElement {
     {
       id: "nextTestButton",
       label: "Next test",
+      shortLabel: "next test",
+      // phones: primary action, main-colored and tall
+      class:
+        "max-md:col-span-full max-md:flex-row max-md:gap-2 max-md:px-[1em]! max-md:py-[0.75em]! max-md:bg-main max-md:text-[1.125rem] max-md:text-bg max-md:hover:bg-main max-md:hover:text-bg",
       icon: () => ({ icon: "fa-chevron-right" }),
-      onClick: () => void TestLogic.restart(),
+      onClick: () => {
+        holdKeyboardForRestart();
+        void TestLogic.restart();
+      },
     },
     {
       id: "restartTestButtonWithSameWordset",
       label: "Repeat test",
+      shortLabel: "repeat",
       icon: () => ({ icon: "fa-sync-alt" }),
       onClick: () => {
         if (getConfig.mode === "zen") {
           showNoticeNotification("Repeat test disabled in zen mode");
           return;
         }
+        holdKeyboardForRestart();
         void TestLogic.restart({
           withSameWordset: true,
         });
@@ -73,6 +87,7 @@ export function ResultButtons(): JSXElement {
     {
       id: "practiseWordsButton",
       label: "Practice words",
+      shortLabel: "practice",
       icon: () => ({ icon: "fa-exclamation-triangle" }),
       onClick: () => {
         if (getConfig.mode === "zen") {
@@ -85,6 +100,7 @@ export function ResultButtons(): JSXElement {
     {
       id: "showWordHistoryButton",
       label: "Toggle words history",
+      shortLabel: "words",
       icon: () => ({ icon: "fa-align-left" }),
       noStressHidden: true,
       onClick: () => toggleResultWords(),
@@ -92,13 +108,17 @@ export function ResultButtons(): JSXElement {
     {
       id: "watchReplayButton",
       label: "Watch replay",
+      shortLabel: "replay",
       icon: () => ({ icon: "fa-backward" }),
       noStressHidden: true,
       onClick: () => toggleReplayDisplay(),
     },
     {
       id: "saveScreenshotButton",
-      label: "Copy screenshot to clipboard\n(shift click to download)",
+      label: isCoarsePointer()
+        ? "Share screenshot"
+        : "Copy screenshot to clipboard\n(shift click to download)",
+      shortLabel: "screenshot",
       icon: () =>
         shiftHeld()
           ? { icon: "fa-download" }
@@ -108,6 +128,8 @@ export function ResultButtons(): JSXElement {
       onClick: (event) => {
         if (event.shiftKey) {
           void TestScreenshot.download();
+        } else if (isCoarsePointer()) {
+          void TestScreenshot.share();
         } else {
           void TestScreenshot.copyToClipboard();
         }
@@ -131,28 +153,31 @@ export function ResultButtons(): JSXElement {
       </Show>
       <div
         class={cn(
-          "buttons col-[1/3] grid grid-flow-col justify-center gap-4 max-sm:flex max-sm:flex-wrap max-sm:gap-2",
+          // phones: 6 columns; next test spans the row, the five others get 2 or 3 cols each
+          "buttons col-[1/3] grid grid-flow-col justify-center gap-4 max-md:grid-flow-row max-md:grid-cols-6 max-md:gap-2",
           getIsScreenshotting() && "hidden",
         )}
       >
         <For each={buttons}>
           {(button) => (
-            <button
-              type="button"
+            <Button
+              variant="text"
+              id={button.id}
+              fa={{ ...button.icon(), fixedWidth: true }}
               class={cn(
-                "text max-sm:min-h-10 max-sm:min-w-10 max-sm:items-center",
+                "max-md:col-span-2 max-md:nth-[n+5]:col-span-3 max-md:min-h-11 max-md:min-w-11 max-md:flex-col max-md:gap-1 max-md:px-[0.25em]! max-md:py-[0.5em]! max-md:text-[0.75rem]",
                 button.class,
                 button.noStressHidden && resultState.noStress && "hidden",
               )}
-              id={button.id}
-              aria-label={button.label}
-              role="button"
-              data-balloon-pos="down"
-              data-balloon-break={button.balloonBreak ? "" : undefined}
+              balloon={{
+                text: button.label,
+                position: "down",
+                break: button.balloonBreak,
+              }}
               onClick={(event) => button.onClick(event)}
             >
-              <Fa {...button.icon()} fixedWidth />
-            </button>
+              <span class="hidden max-md:block">{button.shortLabel}</span>
+            </Button>
           )}
         </For>
       </div>

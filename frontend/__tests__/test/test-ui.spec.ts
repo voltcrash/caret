@@ -124,6 +124,7 @@ beforeAll(async () => {
     caret: document.createElement("div"),
     paceCaret: document.createElement("div"),
     typingTest: document.createElement("div"),
+    keyboardProxy: document.createElement("input"),
   });
   TestUI = await import("../../src/ts/test/test-ui");
 });

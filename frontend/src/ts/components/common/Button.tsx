@@ -68,6 +68,8 @@ export function Button(props: ButtonProps | AnchorProps): JSXElement {
         "[--themable-button-bg:transparent] [--themable-button-hover-bg:transparent] [--themable-button-hover-text:var(--text-color)] [--themable-button-text:var(--sub-color)] active:text-sub",
       variant() === "button" &&
         "[--themable-button-bg:var(--sub-alt-color)] [--themable-button-hover-bg:var(--text-color)] [--themable-button-hover-text:var(--bg-color)] [--themable-button-text:var(--text-color)] active:bg-sub",
+      // fingers need ~44px, filled buttons are often only ~27px tall
+      variant() === "button" && "pointer-coarse:min-h-11",
       variant() === "button" &&
         isActive() &&
         "[--themable-button-bg:var(--themable-button-active)] [--themable-button-hover-bg:var(--text-color)] [--themable-button-hover-text:var(--bg-color)] [--themable-button-text:var(--bg-color)]",

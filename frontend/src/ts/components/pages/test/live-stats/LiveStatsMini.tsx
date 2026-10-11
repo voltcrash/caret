@@ -8,6 +8,7 @@ import {
   showLiveStats,
 } from "../../../../states/live-stats";
 import { cn } from "../../../../utils/cn";
+import { getWordsFontSize } from "../../../../utils/words-font";
 import { AnimeShow } from "../../../common/anime";
 import { liveStatsTextColor } from "./styles";
 
@@ -23,7 +24,7 @@ export function LiveStatsMini() {
           ...liveStatsTextColor(),
         })}
         style={{
-          "font-size": `${getConfig.fontSize}rem`,
+          "font-size": getWordsFontSize(getConfig.fontSize),
           opacity: getConfig.timerOpacity,
           "margin-left": isTape() ? `${getConfig.tapeMargin}%` : "0.25em",
         }}

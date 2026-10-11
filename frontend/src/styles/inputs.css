@@ -2,6 +2,7 @@ input,
 textarea {
   @apply outline-none border-none rounded bg-sub-alt text-text p-[0.5em] text-[1em] font-(family-name:--font) caret-main;
   line-height: 1.25em;
+  touch-action: manipulation;
   &:focus-visible {
     @apply shadow-control-focus;
   }
@@ -24,8 +25,21 @@ textarea {
     [type="submit"],
     [type="reset"]
   ),
-  textarea {
+  textarea,
+  select {
     font-size: max(16px, 1em) !important;
+  }
+
+  /* 44px tall text fields, same as touch buttons */
+  input:not(
+    [type="checkbox"],
+    [type="radio"],
+    [type="range"],
+    [type="color"],
+    [type="file"],
+    [type="hidden"]
+  ) {
+    min-height: 2.75rem;
   }
 }
 
@@ -72,20 +86,24 @@ input[type="checkbox"] {
   &:checked::after {
     @apply text-main;
   }
-  &:hover::after {
-    @apply text-bg;
-  }
-  &:hover:checked::after {
-    @apply text-text;
+  @media (hover: hover) {
+    &:hover::after {
+      @apply text-bg;
+    }
+    &:hover:checked::after {
+      @apply text-text;
+    }
   }
 
   &[disabled] {
     @apply opacity-[0.33] pointer-events-none;
-    &:hover::after {
-      @apply text-sub-alt;
-    }
-    &:hover:checked::after {
-      @apply text-main;
+    @media (hover: hover) {
+      &:hover::after {
+        @apply text-sub-alt;
+      }
+      &:hover:checked::after {
+        @apply text-main;
+      }
     }
   }
 }

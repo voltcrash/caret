@@ -12,7 +12,8 @@ export function AlertsPopup(): JSXElement {
   return (
     <AnimatedModal
       id="Alerts"
-      modalClass="h-dvh absolute right-0 top-0 w-full max-w-[calc(100vw-2rem)] sm:max-w-[calc(350px+2rem)] rounded-l bg-bg sm:p-4 p-4 sm:pt-8 pt-8 flex flex-col overflow-hidden"
+      mobileSheet={false}
+      modalClass="h-dvh absolute right-0 top-0 w-full sm:max-w-[calc(350px+2rem)] rounded-none sm:rounded-l bg-bg p-4 pt-[max(2rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-4 sm:pt-8 flex flex-col overflow-hidden"
       customAnimations={{
         show: {
           modal: {
@@ -34,7 +35,7 @@ export function AlertsPopup(): JSXElement {
       }}
     >
       <MobileClose />
-      <div class="grid min-h-0 flex-1 grid-cols-[minmax(0,1fr)] content-baseline gap-8 overflow-y-scroll px-4 text-xs">
+      <div class="grid min-h-0 flex-1 grid-cols-[minmax(0,1fr)] content-baseline gap-8 overflow-y-scroll overscroll-contain px-4 text-xs">
         <Inbox />
         <Separator />
         <Psas />
