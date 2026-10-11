@@ -23,7 +23,7 @@ import * as LayoutfluidFunboxTimer from "../test/funbox/layoutfluid-funbox-timer
 import { KeymapLayout, Layout } from "@oxytype/schemas/configs";
 import * as SoundController from "../controllers/sound-controller";
 import { clearLowFpsMode, setLowFpsMode } from "../anim";
-import { createTimer } from "animejs";
+import { createTimerScheduler } from "./timer-scheduler";
 import { buildEventLog, getCurrentInput, logTestEvent } from "./events/data";
 import { roundTo2 } from "@oxytype/util/numbers";
 import {
@@ -52,16 +52,8 @@ const clock = createTestTimer({
     });
   },
 });
-const newTimer = createTimer({
-  duration: 1000,
-  autoplay: false,
-  onComplete: () => {
-    const delay = clock.advance(performance.now());
-    if (delay === null) return;
-    newTimer.duration = delay;
-    newTimer.restart();
-  },
-});
+const scheduler = createTimerScheduler(clock);
+import.meta.hot?.dispose(scheduler.stop);
 
 type TimerStats = {
   dateNow: number;
@@ -87,9 +79,8 @@ export function enableTimerDebug(): void {
 }
 
 export function clear(logEnd = false, now = performance.now()): void {
-  clock.stop();
+  scheduler.stop();
   clearLowFpsMode();
-  newTimer.reset();
   if (timer !== null) clearTimeout(timer);
   if (logEnd) {
     logTestEvent("timer", now, {
@@ -297,9 +288,7 @@ export async function start(now: number): Promise<void> {
 }
 
 async function _startNew(now: number): Promise<void> {
-  clock.start(now);
-  newTimer.duration = 1000;
-  newTimer.play();
+  scheduler.start(now);
   logTestEvent("timer", now, {
     event: "start",
     timer: 0,
