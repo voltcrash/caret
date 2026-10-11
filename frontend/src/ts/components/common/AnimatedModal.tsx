@@ -78,6 +78,9 @@ const MODAL_ONLY_ANIMATION_MULTIPLIER = 0.75;
 const SHEET_MEDIA_QUERY = "(max-width: 720.98px)";
 // how far a sheet has to be dragged down by its handle to close
 const SHEET_DISMISS_DRAG_PX = 80;
+// or flicked down faster than this (px per ms), past tap jitter
+const SHEET_DISMISS_VELOCITY = 0.5;
+const SHEET_FLICK_MIN_PX = 16;
 
 type ModalMotion = {
   enter: { style: Record<string, string>; params: Record<string, unknown> };
@@ -122,11 +125,13 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
 
   // swipe the sheet down by its handle to close it, like native sheets
   let dragStartY: number | undefined;
+  let dragStartTime = 0;
   let dragOffset = 0;
 
   const onHandlePointerDown = (e: PointerEvent): void => {
     if (!usesSheetAnimation() || props.closeOnWrapperClick === false) return;
     dragStartY = e.clientY;
+    dragStartTime = e.timeStamp;
     dragOffset = 0;
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   };
@@ -140,7 +145,11 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
   const onHandlePointerUp = (e: PointerEvent): void => {
     if (dragStartY === undefined) return;
     dragStartY = undefined;
-    if (dragOffset >= SHEET_DISMISS_DRAG_PX) {
+    const velocity = dragOffset / Math.max(1, e.timeStamp - dragStartTime);
+    if (
+      dragOffset >= SHEET_DISMISS_DRAG_PX ||
+      (dragOffset >= SHEET_FLICK_MIN_PX && velocity >= SHEET_DISMISS_VELOCITY)
+    ) {
       if (props.onBackdropClick) {
         props.onBackdropClick(e);
       } else {
