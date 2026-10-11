@@ -112,6 +112,80 @@ describe("local-storage-with-schema.ts", () => {
     });
 
     describe("get", () => {
+      it("returns a cached fallback when storage reads are denied", () => {
+        getItemMock.mockImplementationOnce(() => {
+          throw new DOMException("Denied", "SecurityError");
+        });
+        const value = ls.get();
+        expect(value).toEqual(defaultObject);
+        value.fontSize = 999;
+        expect(ls.get()).toEqual(defaultObject);
+        expect(getItemMock).toHaveBeenCalledOnce();
+      });
+
+      it("handles a throwing localStorage getter", () => {
+        const descriptor = Object.getOwnPropertyDescriptor(
+          window,
+          "localStorage",
+        );
+        if (descriptor === undefined) {
+          throw new Error("Missing localStorage descriptor");
+        }
+        try {
+          Object.defineProperty(window, "localStorage", {
+            configurable: true,
+            get: () => {
+              throw new DOMException("Denied", "SecurityError");
+            },
+          });
+          expect(ls.get()).toEqual(defaultObject);
+        } finally {
+          Object.defineProperty(window, "localStorage", descriptor);
+        }
+      });
+
+      it("keeps the fallback when malformed-data repair cannot be persisted", () => {
+        getItemMock.mockReturnValue("badjson");
+        setItemMock.mockImplementationOnce(() => {
+          throw new DOMException("Full", "QuotaExceededError");
+        });
+        expect(ls.get()).toEqual(defaultObject);
+        expect(ls.get()).toEqual(defaultObject);
+        expect(getItemMock).toHaveBeenCalledOnce();
+      });
+
+      it("keeps migrated settings when a repair write is denied", () => {
+        getItemMock.mockReturnValue(JSON.stringify({ old: true }));
+        setItemMock.mockImplementationOnce(() => {
+          throw new DOMException("Denied", "SecurityError");
+        });
+        const migrated = { ...defaultObject, fontSize: 20 };
+        const storage = new LocalStorageWithSchema({
+          key: "config",
+          schema: objectSchema,
+          fallback: defaultObject,
+          migrate: () => migrated,
+        });
+        expect(storage.get()).toEqual(migrated);
+        expect(storage.get()).toEqual(migrated);
+        expect(getItemMock).toHaveBeenCalledOnce();
+      });
+
+      it("retains validated writes in memory and retries persistence", () => {
+        const changed = { ...defaultObject, fontSize: 24 };
+        setItemMock.mockImplementationOnce(() => {
+          throw new DOMException("Denied", "SecurityError");
+        });
+        expect(ls.set(changed)).toBe(false);
+        expect(ls.get()).toEqual(changed);
+        expect(ls.set(changed)).toBe(true);
+        expect(setItemMock).toHaveBeenCalledTimes(2);
+        expect(setItemMock).toHaveBeenLastCalledWith(
+          "config",
+          JSON.stringify(changed),
+        );
+      });
+
       it("should revert to the fallback value if localstorage is null", () => {
         getItemMock.mockReturnValue(null);
 
