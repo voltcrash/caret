@@ -145,6 +145,22 @@ export function Nav(): JSXElement {
         }}
         router-link
       />
+      {/* touch has no ctrl+shift+p or esc, so the palette gets a nav button */}
+      <Button
+        variant="text"
+        fa={{
+          icon: "fa-terminal",
+          fixedWidth: true,
+        }}
+        class={cn(buttonClass(), "hidden pointer-coarse:inline-flex")}
+        dataset={{
+          "data-nav-item": "commandline",
+          "aria-label": "Command palette",
+        }}
+        onClick={() => {
+          showModal("Commandline");
+        }}
+      />
       <div class="grow"></div>
       <Button
         variant="text"
