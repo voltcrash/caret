@@ -8,7 +8,11 @@ const state = vi.hoisted(() => ({
 vi.mock("../../src/ts/ape", () => ({ default: { users: { get: state.get } } }));
 vi.mock("../../src/ts/states/core", () => ({ getUserId: () => state.userId }));
 vi.mock("../../src/ts/hooks/effects", () => ({
-  createEffectOn: (_get: unknown, reset: (userId: string | null) => void) => {
+  createModuleEffectOn: (
+    _hot: unknown,
+    _get: unknown,
+    reset: (userId: string | null) => void,
+  ) => {
     state.reset = vi.fn(() => reset(state.userId));
   },
 }));
