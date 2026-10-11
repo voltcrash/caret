@@ -8,7 +8,7 @@ import { envConfig } from "virtual:env-config";
 import {
   COMPATIBILITY_CHECK,
   COMPATIBILITY_CHECK_HEADER,
-} from "@oxytype/contracts";
+} from "@oxytype/contracts/compatibility";
 import { addBanner } from "../../states/banners";
 
 let bannerShownThisSession = false;

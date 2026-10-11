@@ -29,9 +29,7 @@ export const contract = c.router({
   quotes: quotesContract,
 });
 
-/**
- * Whenever there is a breaking change with old frontend clients increase this number.
- * This will inform the frontend to refresh.
- */
-export const COMPATIBILITY_CHECK = 9;
-export const COMPATIBILITY_CHECK_HEADER = "X-Compatibility-Check";
+export {
+  COMPATIBILITY_CHECK,
+  COMPATIBILITY_CHECK_HEADER,
+} from "./compatibility";
