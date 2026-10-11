@@ -76,6 +76,8 @@ const DEFAULT_ANIMATION_DURATION = 125;
 const SHEET_ANIMATION_DURATION = 200;
 const MODAL_ONLY_ANIMATION_MULTIPLIER = 0.75;
 const SHEET_MEDIA_QUERY = "(max-width: 720.98px)";
+// how far a sheet has to be dragged down by its handle to close
+const SHEET_DISMISS_DRAG_PX = 80;
 
 type ModalMotion = {
   enter: { style: Record<string, string>; params: Record<string, unknown> };
@@ -117,6 +119,41 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
 
   const usesSheetAnimation = (): boolean =>
     props.mobileSheet !== false && isSheetViewport();
+
+  // swipe the sheet down by its handle to close it, like native sheets
+  let dragStartY: number | undefined;
+  let dragOffset = 0;
+
+  const onHandlePointerDown = (e: PointerEvent): void => {
+    if (!usesSheetAnimation() || props.closeOnWrapperClick === false) return;
+    dragStartY = e.clientY;
+    dragOffset = 0;
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const onHandlePointerMove = (e: PointerEvent): void => {
+    if (dragStartY === undefined) return;
+    dragOffset = Math.max(0, e.clientY - dragStartY);
+    setStyle(modalEl(), { transform: `translateY(${dragOffset}px)` });
+  };
+
+  const onHandlePointerUp = (e: PointerEvent): void => {
+    if (dragStartY === undefined) return;
+    dragStartY = undefined;
+    if (dragOffset >= SHEET_DISMISS_DRAG_PX) {
+      if (props.onBackdropClick) {
+        props.onBackdropClick(e);
+      } else {
+        storeHideModal(props.id);
+      }
+      return;
+    }
+    animateElement(modalEl(), {
+      translateY: [`${dragOffset}px`, "0px"],
+      duration: applyReducedMotion(DEFAULT_ANIMATION_DURATION),
+    });
+    dragOffset = 0;
+  };
 
   // Handle open/close with animations
   createEffectOn(
@@ -249,7 +286,17 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
     await props.beforeHide?.();
 
     const sheet = usesSheetAnimation();
-    const motion = sheet ? SHEET_MOTION : CARD_MOTION;
+    // a dragged sheet slides out from where the finger let go
+    const motion: ModalMotion =
+      sheet && dragOffset > 0
+        ? {
+            ...SHEET_MOTION,
+            exit: { translateY: [`${dragOffset}px`, "100%"] },
+          }
+        : sheet
+          ? SHEET_MOTION
+          : CARD_MOTION;
+    dragOffset = 0;
     const modalAnimDuration = applyReducedMotion(
       (props.customAnimations?.hide?.modal?.duration ??
         (sheet ? SHEET_ANIMATION_DURATION : DEFAULT_ANIMATION_DURATION)) *
@@ -402,8 +449,14 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
           <Show when={props.mobileSheet !== false}>
             <div
               aria-hidden="true"
-              class="mx-auto -mb-2 h-1.5 w-10 shrink-0 rounded-full bg-sub-alt sm:hidden"
-            ></div>
+              class="-mx-4 -mt-4 -mb-2 grid shrink-0 touch-none place-items-center py-3 sm:hidden"
+              onPointerDown={onHandlePointerDown}
+              onPointerMove={onHandlePointerMove}
+              onPointerUp={onHandlePointerUp}
+              onPointerCancel={onHandlePointerUp}
+            >
+              <div class="h-1.5 w-10 rounded-full bg-sub-alt"></div>
+            </div>
           </Show>
           <Show when={props.title !== undefined && props.title !== ""}>
             <div class="text-xl text-sub sm:text-2xl">{props.title}</div>
