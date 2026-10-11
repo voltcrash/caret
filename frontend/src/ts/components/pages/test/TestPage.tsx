@@ -2,6 +2,7 @@ import { JSXElement, onMount } from "solid-js";
 import { spread } from "solid-js/web";
 
 import { useWordsInputScroll } from "../../../hooks/useWordsInputScroll";
+import { isInputElementFocused } from "../../../input/input-element";
 import { isWordsWrapperVisible } from "../../../states/funbox";
 import { getPageView } from "../../../states/page-transition";
 import { setTestElements } from "../../../states/test-dom";
@@ -104,7 +105,11 @@ export function TestPage(
               e.preventDefault();
             }
           }}
-          onClick={() => focusWords()}
+          // a keyboard dismissed with android's back button leaves the input
+          // focused, and focus() on a focused input won't bring it back
+          onClick={() =>
+            focusWords(isCoarsePointer() && isInputElementFocused())
+          }
         >
           <textarea
             id="wordsInput"
