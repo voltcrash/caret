@@ -1,6 +1,10 @@
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 
-const config = vi.hoisted(() => ({ backendUrl: "/api", clientVersion: "7" }));
+const config = vi.hoisted(() => ({
+  backendUrl: "/api",
+  clientVersion: "7",
+  devOffline: false,
+}));
 const preloadUser = vi.hoisted(() => vi.fn());
 vi.unmock("../src/ts/auth-client");
 vi.mock("virtual:env-config", () => ({ envConfig: config }));
@@ -9,6 +13,33 @@ vi.mock("../src/ts/ape/user", () => ({ fetchUserFromApi: preloadUser }));
 beforeEach(() => {
   preloadUser.mockReset();
   config.backendUrl = "/api";
+  config.devOffline = false;
+});
+
+it("initializes frontend-only mode without sessions, refresh subscriptions or OAuth requests", async () => {
+  config.devOffline = true;
+  const fetch = vi.fn<typeof globalThis.fetch>();
+  vi.stubGlobal("fetch", fetch);
+  const {
+    init,
+    authPromise,
+    authClient,
+    observeAuthSession,
+    isAuthAvailable,
+    getAuthenticatedUser,
+    requestOAuth,
+  } = await import("../src/ts/auth-client");
+  const callback = vi.fn(async () => undefined);
+  await init(callback);
+  await authPromise;
+  observeAuthSession()();
+  expect(isAuthAvailable()).toBe(false);
+  expect(getAuthenticatedUser()).toBeNull();
+  expect(callback).toHaveBeenCalledWith(true, null);
+  expect(preloadUser).not.toHaveBeenCalled();
+  expect((await authClient.getSession()).error?.status).toBe(503);
+  await expect(requestOAuth("google")).rejects.toThrow("frontend-only");
+  expect(fetch).not.toHaveBeenCalled();
 });
 afterEach(() => {
   vi.unstubAllGlobals();

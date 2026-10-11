@@ -17,7 +17,21 @@ const authURL = new URL(
 export const authClient = createAuthClient({
   baseURL: authURL.href,
   basePath: authURL.pathname,
-  fetchOptions: { credentials: "include" },
+  fetchOptions: {
+    credentials: "include",
+    ...(envConfig.devOffline
+      ? {
+          customFetchImpl: async () =>
+            Response.json(
+              {
+                message:
+                  "Authentication is unavailable in frontend-only development",
+              },
+              { status: 503 },
+            ),
+        }
+      : {}),
+  },
   plugins: [dashClient(), deviceAuthorizationClient()],
 });
 import type { AuthUser, SocialProvider } from "./auth-types";
@@ -81,6 +95,12 @@ export async function refreshSession(notify = true): Promise<AuthUser | null> {
 export async function init(callback: ReadyCallback): Promise<void> {
   readyCallback = callback;
   try {
+    if (envConfig.devOffline) {
+      available = false;
+      setUserState(null);
+      await callback(true, null);
+      return;
+    }
     available = true;
     const user = await refreshSession(false);
     if (user !== null) {
@@ -146,6 +166,11 @@ export async function requestOAuth(
   link = false,
   rememberMe = true,
 ): Promise<void> {
+  if (envConfig.devOffline) {
+    throw new Error(
+      "Authentication is unavailable in frontend-only development",
+    );
+  }
   return new Promise((resolve, reject) =>
     oauthRequestEvent.dispatch({ provider, link, rememberMe, resolve, reject }),
   );
@@ -180,6 +205,7 @@ export async function signInWithPopup(
 
 /** Better Auth refreshes and broadcasts sessions while a component owns this subscription. */
 export function observeAuthSession(): () => void {
+  if (envConfig.devOffline) return () => undefined;
   let syncing = false;
   return authClient.useSession.subscribe((state) => {
     if (
