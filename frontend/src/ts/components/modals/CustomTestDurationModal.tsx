@@ -90,10 +90,15 @@ export function CustomTestDurationModal(): JSXElement {
           for example &ldquo;1h30m&rdquo;.
           <br />
           <br />
-          You can start an infinite test by inputting 0. Then, to stop the test,
-          use the Bail Out feature:
-          <br />(<kbd>esc</kbd> or <kbd>ctrl/cmd</kbd> + <kbd>shift</kbd> +{" "}
-          <kbd>p</kbd> &gt; Bail Out)
+          You can start an infinite test by inputting 0.{" "}
+          <span class="pointer-coarse:hidden">
+            Then, to stop the test, use the Bail Out feature:
+            <br />(<kbd>esc</kbd> or <kbd>ctrl/cmd</kbd> + <kbd>shift</kbd> +{" "}
+            <kbd>p</kbd> &gt; Bail Out)
+          </span>
+          <span class="hidden pointer-coarse:inline">
+            Then, to stop the test, tap end test under the words.
+          </span>
         </div>
         <SubmitButton
           form={form}
