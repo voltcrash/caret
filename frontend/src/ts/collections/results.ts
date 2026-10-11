@@ -226,7 +226,9 @@ function createResultsCollection(client: Client) {
   const collection = createCollection(
     queryCollectionOptions({
       staleTime: Infinity,
-      gcTime: Infinity, //remove when __nonReactive is removed
+      // Web's synchronous typing/PB consumers still require retained data.
+      // Terminal history can refetch after five minutes without subscribers.
+      gcTime: client === "web" ? Infinity : 5 * 60 * 1000,
       queryKey: queryKeys.root(client),
       enabled: isAuthenticated,
       queryFn: async () => {
