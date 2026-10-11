@@ -10,9 +10,15 @@ import { VersionButton } from "./VersionButton";
 export function Footer(): JSXElement {
   return (
     <footer
-      class={cn("relative text-sm text-sub sm:text-xs", getFocus() && "focus", {
-        "opacity-0": getIsScreenshotting(),
-      })}
+      class={cn(
+        "relative text-sm text-sub sm:text-xs",
+        // footer buttons are tapped, not read
+        "pointer-coarse:select-none",
+        getFocus() && "focus",
+        {
+          "opacity-0": getIsScreenshotting(),
+        },
+      )}
     >
       <Keytips />
 
