@@ -7,6 +7,20 @@ import { cn } from "../../../utils/cn";
 import { getZodType, unwrapSchema } from "../../../utils/zod";
 import { FieldIndicator } from "./FieldIndicator";
 
+// phones: a number pad instead of the full keyboard for number fields. the
+// ios number pad has no minus key, so fields allowing negatives keep the
+// default keyboard. decimal unless the field only takes whole steps
+function getNumberInputMode(
+  type: string | undefined,
+  min: number | undefined,
+  step: string | number | undefined,
+): "numeric" | "decimal" | undefined {
+  if (type !== "number") return undefined;
+  if (min !== undefined && min < 0) return undefined;
+  if (step !== undefined && Number.isInteger(Number(step))) return "numeric";
+  return "decimal";
+}
+
 export function InputField(props: {
   field: Accessor<AnyFieldApi>;
   placeholder?: string;
@@ -81,7 +95,8 @@ export function InputField(props: {
         autocomplete={props.autocomplete}
         // phones: number pad instead of the full keyboard for number fields
         inputMode={
-          props.inputMode ?? (props.type === "number" ? "numeric" : undefined)
+          props.inputMode ??
+          getNumberInputMode(props.type, props.min, props.step)
         }
         autoCapitalize={props.autoCapitalize}
         // oxlint-disable-next-line react/no-unknown-property -- Solid uses lowercase spellcheck.
