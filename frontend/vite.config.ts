@@ -108,9 +108,14 @@ function getPlugins({
       injectRegister: null,
       registerType: "autoUpdate",
       manifest: {
+        id: "/",
         short_name: "Oxytype",
         name: "Oxytype",
+        description: "A minimalistic, customizable typing test",
         start_url: "/",
+        scope: "/",
+        orientation: "any",
+        categories: ["education", "productivity"],
         icons: [
           {
             src: "/images/icons/oxytype-192.png",
