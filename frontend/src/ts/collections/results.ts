@@ -269,6 +269,9 @@ function createResultsCollection(client: Client) {
     indexType: BTreeIndex,
   });
 
+  import.meta.hot?.dispose(() => {
+    void collection.cleanup();
+  });
   return collection;
 }
 

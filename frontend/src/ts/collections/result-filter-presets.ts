@@ -128,3 +128,7 @@ export async function deleteResultFilterPreset(
   const transaction = actions.deleteResultFilterPreset(params);
   await transaction.isPersisted.promise;
 }
+
+import.meta.hot?.dispose(() => {
+  void resultFilterPresetsCollection.cleanup();
+});
