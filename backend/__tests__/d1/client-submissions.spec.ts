@@ -229,6 +229,73 @@ describe("web, terminal and offline result submissions", () => {
     });
     expect(response.status, await response.clone().text()).toBe(200);
   });
+  it.each([false, true])(
+    "deduplicates lost-response offline retries (legacy hash: %s)",
+    async (legacyHash) => {
+      await test.env.DB.prepare(
+        "UPDATE results SET timestamp=timestamp-120000 WHERE uid=?",
+      )
+        .bind(uid)
+        .run();
+      const fixture = JSON.parse(
+        readFileSync(
+          resolve(__dirname, "../__testData__/terminal-words-10.json"),
+          "utf8",
+        ),
+      ) as { result: CompletedEvent };
+      const result = {
+        ...fixture.result,
+        uid,
+        timestamp: Date.now(),
+        offline: false,
+      };
+      const response = await submit(result);
+      expect(response.status, await response.clone().text()).toBe(200);
+      const { data } = (await response.json()) as {
+        data: { insertedId: string };
+      };
+      if (legacyHash) {
+        const { hash: _hash, ...payload } = result;
+        await test.env.DB.prepare(
+          "UPDATE results SET submission_hash=? WHERE id=?",
+        )
+          .bind(objectHash(payload), data.insertedId)
+          .run();
+      }
+      const before = await withRuntime(
+        test.env,
+        async () => await Users.getUser(uid, "before retry", "tui"),
+      );
+      const count = await test.env.DB.prepare(
+        "SELECT count(*) AS n FROM results WHERE uid=?",
+      )
+        .bind(uid)
+        .first("n");
+      const retry = await submit({ ...result, offline: true });
+      expect(retry.status, await retry.clone().text()).toBe(466);
+      expect(
+        await test.env.DB.prepare(
+          "SELECT count(*) AS n FROM results WHERE uid=?",
+        )
+          .bind(uid)
+          .first("n"),
+      ).toBe(count);
+      const after = await withRuntime(
+        test.env,
+        async () => await Users.getUser(uid, "after retry", "tui"),
+      );
+      for (const field of [
+        "completedTests",
+        "startedTests",
+        "timeTyping",
+        "xp",
+        "personalBests",
+        "testActivity",
+      ] as const) {
+        expect(after[field]).toEqual(before[field]);
+      }
+    },
+  );
   it("applies terminal bot detection at high speeds without needing key releases", async () => {
     await test.env.DB.prepare(
       "UPDATE results SET timestamp=timestamp-120000 WHERE uid=?",
