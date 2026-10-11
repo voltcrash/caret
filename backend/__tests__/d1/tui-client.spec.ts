@@ -132,6 +132,7 @@ describe("actual terminal client against D1", () => {
         }),
     );
     let approval = Promise.resolve();
+    let loseResultResponse = false;
     const options: Parameters<typeof openAccount>[0] = {
       paths: paths(),
       config,
@@ -143,9 +144,19 @@ describe("actual terminal client against D1", () => {
         const native = new Request(input, init);
         expect(native.headers.has("origin")).toBe(false);
         expect(native.headers.has("cookie")).toBe(false);
-        return await Worker.fetch(native, runtime.env, {
+        const response = await Worker.fetch(native, runtime.env, {
           waitUntil: () => undefined,
         } as unknown as ExecutionContext);
+        if (
+          loseResultResponse &&
+          native.method === "POST" &&
+          new URL(native.url).pathname === "/api/results" &&
+          response.status === 200
+        ) {
+          loseResultResponse = false;
+          throw new Error("Connection lost after result committed");
+        }
+        return response;
       },
       browser: async (url) => {
         approval = (async () => {
@@ -246,6 +257,52 @@ describe("actual terminal client against D1", () => {
     );
     expect(afterOffline.xp).toBe(beforeOffline.xp);
     expect(afterOffline.personalBests).toEqual(beforeOffline.personalBests);
+
+    await runtime.env.DB.prepare(
+      "UPDATE results SET timestamp=timestamp-120000 WHERE uid=?",
+    )
+      .bind(uid)
+      .run();
+    loseResultResponse = true;
+    await account.uploads.accept(await finished(owner));
+    expect(account.uploads.last()?.state).toBe("queued");
+    expect(account.queue.entries()).toHaveLength(1);
+    const committed = await withRuntime(
+      runtime.env,
+      async () => await Users.getUser(uid, "lost response", "tui"),
+    );
+    const committedResults = await withRuntime(
+      runtime.env,
+      async () => await Results.getResults(uid, { client: "tui" }),
+    );
+    expect(committedResults).toHaveLength(3);
+    await account.flush();
+    account.stop();
+    online = false;
+    account = await openAccount(options);
+    expect(account.queue.entries()).toHaveLength(1);
+    online = true;
+    expect(await account.auth.check()).toBe(true);
+    expect(account.queue.entries()).toHaveLength(0);
+    expect(
+      await withRuntime(
+        runtime.env,
+        async () => await Results.getResults(uid, { client: "tui" }),
+      ),
+    ).toHaveLength(3);
+    const retried = await withRuntime(
+      runtime.env,
+      async () => await Users.getUser(uid, "retried response", "tui"),
+    );
+    for (const field of [
+      "completedTests",
+      "startedTests",
+      "timeTyping",
+      "xp",
+      "personalBests",
+    ] as const) {
+      expect(retried[field]).toEqual(committed[field]);
+    }
     await account.auth.logout();
     expect(account.auth.state()).toBe("guest");
     expect(
