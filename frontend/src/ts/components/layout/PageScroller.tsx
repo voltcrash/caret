@@ -7,6 +7,7 @@ import {
   hasFixedHeader,
   setPageScroller,
 } from "../../states/page-layout";
+import { isTestActive } from "../../states/test";
 import { cn } from "../../utils/cn";
 
 // wraps the page content and footer. normally it takes their place in the app
@@ -21,11 +22,11 @@ export function PageScroller(props: ParentProps): JSXElement {
     setPageScroller(isScroller() ? element() : undefined);
   });
 
-  // the window no longer scrolls on these pages, so don't let it rubber band
+  // the window no longer scrolls on these pages, so don't let it rubber band.
+  // during a test a stray swipe must not pull to refresh and lose the run
   createEffect(() => {
-    document.documentElement.style.overscrollBehaviorY = isScroller()
-      ? "none"
-      : "";
+    document.documentElement.style.overscrollBehaviorY =
+      isScroller() || isTestActive() ? "none" : "";
   });
 
   onCleanup(() => {
