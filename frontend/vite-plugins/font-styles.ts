@@ -5,7 +5,6 @@ import { fileURLToPath, URL as NodeURL } from "node:url";
 import type { Plugin } from "vite";
 
 import { Fonts } from "../src/ts/constants/fonts";
-import { getFontawesomeConfig } from "./fontawesome-subset";
 
 /**
  * Drops `.fa-name { --fa: "..." }` rules for icons missing from the subset
@@ -40,7 +39,7 @@ export function fontStyles(options: { isDevelopment: boolean }): Plugin {
     config() {
       return { resolve: { alias: imports } };
     },
-    configResolved() {
+    async configResolved() {
       mkdirSync(output, { recursive: true });
       const face = (family: string, file: string, weight = 400): string => `
 @font-face {
@@ -81,6 +80,7 @@ export function fontStyles(options: { isDevelopment: boolean }): Plugin {
       );
       let fontawesome = styles.join("\n");
       if (!options.isDevelopment) {
+        const { getFontawesomeConfig } = await import("./fontawesome-subset");
         const { solid, regular, brands } = getFontawesomeConfig();
         fontawesome = pruneIconRules(
           fontawesome,
