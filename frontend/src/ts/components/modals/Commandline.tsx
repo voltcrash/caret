@@ -19,6 +19,7 @@ import {
   type CommandlineSuggestion,
 } from "../../states/commandline";
 import { cn } from "../../utils/cn";
+import { isCoarsePointer } from "../../utils/pointer";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Fa, type FaProps } from "../common/Fa";
 
@@ -179,6 +180,8 @@ export function Commandline(): JSXElement {
       () => {
         queueMicrotask(() => {
           if (!inputEl?.isConnected) return;
+          // touch opens without focus, so input commands focus it themselves
+          if (commandlineState.mode === "input") inputEl.focus();
           if (commandlineState.selectAll) {
             inputEl.select();
           } else {
@@ -213,7 +216,8 @@ export function Commandline(): JSXElement {
     <AnimatedModal
       id="Commandline"
       domId="commandLine"
-      focusFirstInput
+      // on touch the keyboard would cover the list being browsed
+      focusFirstInput={isCoarsePointer() ? undefined : true}
       beforeShow={prepareCommandline}
       beforeHide={onCommandlineBeforeHide}
       afterHide={afterHideCommandline}
