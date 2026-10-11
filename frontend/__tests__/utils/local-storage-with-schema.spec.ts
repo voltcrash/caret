@@ -109,6 +109,15 @@ describe("local-storage-with-schema.ts", () => {
 
         expect(setItemMock).not.toHaveBeenCalled();
       });
+
+      it("handles storage failures that throw a non-Error value", () => {
+        setItemMock.mockImplementationOnce(() => {
+          // oxlint-disable-next-line eslint/no-throw-literal, typescript/only-throw-error
+          throw "denied";
+        });
+        expect(ls.set(defaultObject)).toBe(false);
+        expect(ls.get()).toEqual(defaultObject);
+      });
     });
 
     describe("get", () => {
@@ -152,6 +161,8 @@ describe("local-storage-with-schema.ts", () => {
         expect(ls.get()).toEqual(defaultObject);
         expect(ls.get()).toEqual(defaultObject);
         expect(getItemMock).toHaveBeenCalledOnce();
+        expect(ls.set(defaultObject)).toBe(true);
+        expect(setItemMock).toHaveBeenCalledTimes(2);
       });
 
       it("keeps migrated settings when a repair write is denied", () => {
