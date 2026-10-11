@@ -7,6 +7,7 @@ import {
   onMount,
   Show,
 } from "solid-js";
+import { envConfig } from "virtual:env-config";
 
 import { ModalId, getModalVisibility } from "../../states/modals";
 import { runWhenIdle } from "../../utils/idle";
@@ -96,6 +97,7 @@ const lazyModals = [
 
 export function Modals(): JSXElement {
   onMount(() => {
+    if (envConfig.isDevelopment) return;
     const cancel = runWhenIdle(() => {
       for (const modal of lazyModals) void modal.Component.preload();
     }, 5000);
