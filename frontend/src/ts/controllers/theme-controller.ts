@@ -283,93 +283,96 @@ window
 
 let ignoreConfigEvent = false;
 
-configEvent.subscribe(async ({ key, newValue, nosave }) => {
-  if (key === "fullConfigChange") {
-    ignoreConfigEvent = true;
-  }
-  if (key === "fullConfigChangeFinished") {
-    ignoreConfigEvent = false;
+configEvent.subscribe(
+  async ({ key, newValue, nosave }) => {
+    if (key === "fullConfigChange") {
+      ignoreConfigEvent = true;
+    }
+    if (key === "fullConfigChangeFinished") {
+      ignoreConfigEvent = false;
 
-    await clearRandom();
-    await clearPreview(false);
+      await clearRandom();
+      await clearPreview(false);
 
-    if (Config.autoSwitchTheme) {
-      if (prefersColorSchemeDark()) {
-        await set(Config.themeDark, true);
+      if (Config.autoSwitchTheme) {
+        if (prefersColorSchemeDark()) {
+          await set(Config.themeDark, true);
+        } else {
+          await set(Config.themeLight, true);
+        }
       } else {
-        await set(Config.themeLight, true);
+        if (Config.customTheme) {
+          await set("custom");
+        } else {
+          await set(Config.theme);
+        }
       }
-    } else {
-      if (Config.customTheme) {
-        await set("custom");
+      await applyCustomBackground();
+    }
+
+    // this is here to prevent calling set / preview multiple times during a full config loading
+    // once the full config is loaded, we can apply everything once
+    if (ignoreConfigEvent) return;
+
+    if (key === "randomTheme") {
+      void changeThemeList();
+    }
+    if (key === "customTheme") {
+      newValue ? await set("custom") : await set(Config.theme);
+    }
+    if (key === "customThemeColors") {
+      nosave ? preview("custom") : await set("custom");
+    }
+    if (key === "theme") {
+      await clearRandom();
+      await clearPreview(false);
+      await set(newValue);
+    }
+    if (key === "randomTheme" && newValue === "off") await clearRandom();
+    if (key === "customBackground") await applyCustomBackground();
+
+    if (key === "customBackgroundSize") applyCustomBackgroundSize();
+    if (key === "autoSwitchTheme") {
+      if (newValue) {
+        if (prefersColorSchemeDark()) {
+          await set(Config.themeDark, true);
+        } else {
+          await set(Config.themeLight, true);
+        }
       } else {
         await set(Config.theme);
       }
     }
-    await applyCustomBackground();
-  }
-
-  // this is here to prevent calling set / preview multiple times during a full config loading
-  // once the full config is loaded, we can apply everything once
-  if (ignoreConfigEvent) return;
-
-  if (key === "randomTheme") {
-    void changeThemeList();
-  }
-  if (key === "customTheme") {
-    newValue ? await set("custom") : await set(Config.theme);
-  }
-  if (key === "customThemeColors") {
-    nosave ? preview("custom") : await set("custom");
-  }
-  if (key === "theme") {
-    await clearRandom();
-    await clearPreview(false);
-    await set(newValue);
-  }
-  if (key === "randomTheme" && newValue === "off") await clearRandom();
-  if (key === "customBackground") await applyCustomBackground();
-
-  if (key === "customBackgroundSize") applyCustomBackgroundSize();
-  if (key === "autoSwitchTheme") {
-    if (newValue) {
-      if (prefersColorSchemeDark()) {
-        await set(Config.themeDark, true);
-      } else {
-        await set(Config.themeLight, true);
-      }
-    } else {
-      await set(Config.theme);
+    if (
+      key === "themeLight" &&
+      Config.autoSwitchTheme &&
+      !prefersColorSchemeDark() &&
+      !nosave
+    ) {
+      await set(Config.themeLight, true);
     }
-  }
-  if (
-    key === "themeLight" &&
-    Config.autoSwitchTheme &&
-    !prefersColorSchemeDark() &&
-    !nosave
-  ) {
-    await set(Config.themeLight, true);
-  }
-  if (
-    key === "themeDark" &&
-    Config.autoSwitchTheme &&
-    window.matchMedia?.("(prefers-color-scheme: dark)")?.matches &&
-    !nosave
-  ) {
-    await set(Config.themeDark, true);
-  }
-  if (
-    [
-      "theme",
-      "customTheme",
-      "customThemeColors",
-      "randomTheme",
-      "favThemes",
-    ].includes(key)
-  ) {
-    updateThemeIndicator();
-  }
-});
+    if (
+      key === "themeDark" &&
+      Config.autoSwitchTheme &&
+      window.matchMedia?.("(prefers-color-scheme: dark)")?.matches &&
+      !nosave
+    ) {
+      await set(Config.themeDark, true);
+    }
+    if (
+      [
+        "theme",
+        "customTheme",
+        "customThemeColors",
+        "randomTheme",
+        "favThemes",
+      ].includes(key)
+    ) {
+      updateThemeIndicator();
+    }
+  },
+  import.meta.hot,
+);
 
 window.addEventListener("customBackgroundFailed", () => {
   showNoticeNotification(

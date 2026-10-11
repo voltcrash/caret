@@ -422,9 +422,12 @@ function extractScaleSounds(
   );
 }
 
-configEvent.subscribe(({ key, newValue }) => {
-  if (key === "playSoundOnClick" && newValue !== "off") void init();
-  if (key === "soundVolume") {
-    void setVolume(newValue);
-  }
-});
+configEvent.subscribe(
+  ({ key, newValue }) => {
+    if (key === "playSoundOnClick" && newValue !== "off") void init();
+    if (key === "soundVolume") {
+      void setVolume(newValue);
+    }
+  },
+  import.meta.hot,
+);

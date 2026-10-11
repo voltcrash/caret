@@ -296,15 +296,18 @@ async function loadChallengeFromUrl(getOverride?: string): Promise<void> {
     });
 }
 
-authEvent.subscribe(async (event) => {
-  if (event.type === "authStateChanged") {
-    const search = window.location.search;
+authEvent.subscribe(
+  async (event) => {
+    if (event.type === "authStateChanged") {
+      const search = window.location.search;
 
-    await event.data.loadPromise;
+      await event.data.loadPromise;
 
-    loadCustomThemeFromUrl(search);
-    loadTestSettingsFromUrl(search);
-    void loadChallengeFromUrl(search);
-    void loadBrowserHandoff(search, event.data.isUserSignedIn);
-  }
-});
+      loadCustomThemeFromUrl(search);
+      loadTestSettingsFromUrl(search);
+      void loadChallengeFromUrl(search);
+      void loadBrowserHandoff(search, event.data.isUserSignedIn);
+    }
+  },
+  import.meta.hot,
+);
