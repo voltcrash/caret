@@ -100,9 +100,14 @@ export function SaveCustomTextModal(props: {
           )}
         />
         <div class="text-xs text-sub">
-          Disables editing this text but allows you to save progress by pressing
-          shift + enter or bailing out. You can then load this text again to
-          continue where you left off.
+          Disables editing this text but allows you to save progress by{" "}
+          <span class="pointer-coarse:hidden">
+            pressing shift + enter or bailing out.
+          </span>
+          <span class="hidden pointer-coarse:inline">
+            tapping save progress under the words.
+          </span>{" "}
+          You can then load this text again to continue where you left off.
         </div>
         <SubmitButton form={form} variant="button" text="save" />
       </form>
