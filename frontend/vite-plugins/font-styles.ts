@@ -1,10 +1,15 @@
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath, URL as NodeURL } from "node:url";
 import type { Plugin } from "vite";
 
 import { Fonts } from "../src/ts/constants/fonts";
+
+function writeIfChanged(file: string, content: string): void {
+  if (existsSync(file) && readFileSync(file, "utf8") === content) return;
+  writeFileSync(file, content);
+}
 
 /**
  * Drops `.fa-name { --fa: "..." }` rules for icons missing from the subset
@@ -64,7 +69,7 @@ export function fontStyles(options: { isDevelopment: boolean }): Plugin {
           ),
         );
       }
-      writeFileSync(imports["oxytype-fonts.css"], faces.join("\n"));
+      writeIfChanged(imports["oxytype-fonts.css"], faces.join("\n"));
 
       const require = createRequire(import.meta.url);
       const styles = ["fontawesome", "solid", "regular", "brands"].map(
@@ -87,7 +92,7 @@ export function fontStyles(options: { isDevelopment: boolean }): Plugin {
           new Set([...solid, ...regular, ...brands]),
         );
       }
-      writeFileSync(imports["oxytype-fontawesome.css"], fontawesome);
+      writeIfChanged(imports["oxytype-fontawesome.css"], fontawesome);
     },
   };
 }
