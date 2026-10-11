@@ -181,6 +181,7 @@ catalogs:
       version: 5.0.3
 
 overrides:
+  '@anatine/zod-openapi>ts-deepmerge': 8.0.0
   shell-quote: 1.11.0
   sharp@^0.35: 0.35.5
   baseline-browser-mapping: 2.11.0
@@ -220,7 +221,7 @@ overrides:
   '@vitest/utils': 5.0.3
 
 patchedDependencies:
-  '@anatine/zod-openapi@1.14.2': 83879486c397b68e10c38da068e628dbdb3c239f95c8f02cabfc16f256f3a37b
+  '@anatine/zod-openapi@1.14.2': 0c380a8fd265e10a7641b3ccbad4a79e8216bc90cf48ce8a463b6c05df23e92a
   '@ts-rest/core@3.52.1': 1d87a2612f7f1b57f89a06c50f4f92ae56858711540f5baa09c18e79ee6eca4b
   zod-urlsearchparams@0.0.16: 844d68f59b3bd6e7471097cc2d879f3ac6f178048deac1ce1485301818376b29
 
@@ -8292,8 +8293,8 @@ packages:
     resolution: {integrity: sha512-JfJeIHke7y2egdGGgRAvpCwYFUsHlM2gPcrVOxFkznt/4uzQ7HFmvE63iFHVLBJNDuyDOQgijDK/tXH/f6Msjg==}
     engines: {node: '>=6.10'}
 
-  ts-deepmerge@6.2.1:
-    resolution: {integrity: sha512-8CYSLazCyj0DJDpPIxOFzJG46r93uh6EynYjuey+bxcLltBeqZL7DMfaE5ZPzZNFlav7wx+2TDa/mBl8gkTYzw==}
+  ts-deepmerge@8.0.0:
+    resolution: {integrity: sha512-133O+10nJmVI8w5xeVZPEv5PIrv7iaUae07wv1aH8XJH95Ur6YIhWAPhPyP1YPlbPS9fCVcNIZTu7m8urRVF0A==}
     engines: {node: '>=14.13.1'}
 
   ts-graphviz@2.1.2:
@@ -8903,10 +8904,10 @@ snapshots:
 
   '@adobe/css-tools@4.4.4': {}
 
-  '@anatine/zod-openapi@1.14.2(patch_hash=83879486c397b68e10c38da068e628dbdb3c239f95c8f02cabfc16f256f3a37b)(openapi3-ts@2.0.2)(zod@4.6.5)':
+  '@anatine/zod-openapi@1.14.2(patch_hash=0c380a8fd265e10a7641b3ccbad4a79e8216bc90cf48ce8a463b6c05df23e92a)(openapi3-ts@2.0.2)(zod@4.6.5)':
     dependencies:
       openapi3-ts: 2.0.2
-      ts-deepmerge: 6.2.1
+      ts-deepmerge: 8.0.0
       zod: 4.6.5
 
   '@apideck/better-ajv-errors@0.3.7(ajv@8.20.0)':
@@ -11897,7 +11898,7 @@ snapshots:
 
   '@ts-rest/open-api@3.52.1(@ts-rest/core@3.52.1(patch_hash=1d87a2612f7f1b57f89a06c50f4f92ae56858711540f5baa09c18e79ee6eca4b)(@types/node@24.19.0)(zod@4.6.5))(zod@4.6.5)':
     dependencies:
-      '@anatine/zod-openapi': 1.14.2(patch_hash=83879486c397b68e10c38da068e628dbdb3c239f95c8f02cabfc16f256f3a37b)(openapi3-ts@2.0.2)(zod@4.6.5)
+      '@anatine/zod-openapi': 1.14.2(patch_hash=0c380a8fd265e10a7641b3ccbad4a79e8216bc90cf48ce8a463b6c05df23e92a)(openapi3-ts@2.0.2)(zod@4.6.5)
       '@ts-rest/core': 3.52.1(patch_hash=1d87a2612f7f1b57f89a06c50f4f92ae56858711540f5baa09c18e79ee6eca4b)(@types/node@24.19.0)(zod@4.6.5)
       openapi3-ts: 2.0.2
       zod: 4.6.5
@@ -16471,7 +16472,7 @@ snapshots:
 
   ts-dedent@2.3.0: {}
 
-  ts-deepmerge@6.2.1: {}
+  ts-deepmerge@8.0.0: {}
 
   ts-graphviz@2.1.2:
     dependencies:
