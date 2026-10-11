@@ -2,6 +2,7 @@ import { QueryClientProvider } from "@tanstack/solid-query";
 import { JSXElement, Show } from "solid-js";
 import { Portal } from "solid-js/web";
 
+import { Config } from "../config/store";
 import { queryClient } from "../queries";
 import { getActivePage } from "../states/core";
 import { isFixingSkillIssue } from "../states/skill-issue";
@@ -58,7 +59,9 @@ export function App(props: AppElements): JSXElement {
             <Popups />
           </div>
           <DevTools />
-          <MonkeyPower />
+          <Show when={Config.monkeyPowerLevel !== "off"}>
+            <MonkeyPower />
+          </Show>
         </Portal>
         <Header />
         <PageScroller>

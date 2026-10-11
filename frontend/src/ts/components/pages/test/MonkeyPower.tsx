@@ -25,6 +25,8 @@ type CTX = {
   lastFrame?: number;
   deltaTime?: number;
   resetTimeOut?: number;
+  frame?: number;
+  restoreTimeout?: ReturnType<typeof setTimeout>;
 };
 
 const ctx: CTX = {
@@ -118,7 +120,7 @@ function render(): void {
   ctx.particles = keep;
 
   if (ctx.particles.length) {
-    requestAnimationFrame(render);
+    ctx.frame = requestAnimationFrame(render);
   } else {
     ctx.context2d.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     ctx.rendering = false;
@@ -126,20 +128,22 @@ function render(): void {
 }
 
 export function reset(immediate = false): void {
-  if (!isSafeNumber(ctx.resetTimeOut)) return;
-  delete ctx.resetTimeOut;
-
+  if (!isSafeNumber(ctx.resetTimeOut) && ctx.restoreTimeout === undefined) {
+    return;
+  }
   clearTimeout(ctx.resetTimeOut);
+  delete ctx.resetTimeOut;
+  clearTimeout(ctx.restoreTimeout);
   document.body.style.transition = "all .25s, transform 0.8s";
   document.body.style.transform = "translate(0,0)";
-  setTimeout(
-    () => {
-      document.body.style.transition = "all .25s, transform .05s";
-      document.documentElement.style.overflow = "inherit";
-      document.documentElement.style.overflowY = "scroll";
-    },
-    immediate ? 0 : 1000,
-  );
+  const restore = (): void => {
+    ctx.restoreTimeout = undefined;
+    document.body.style.transition = "all .25s, transform .05s";
+    document.documentElement.style.overflow = "inherit";
+    document.documentElement.style.overflowY = "scroll";
+  };
+  if (immediate) restore();
+  else ctx.restoreTimeout = setTimeout(restore, 1000);
 }
 
 function startRender(): void {
@@ -163,6 +167,7 @@ export async function addPower(good = true, extra = false): Promise<void> {
   if (Config.monkeyPowerLevel === "off" || SlowTimer.get()) return;
 
   requestDebouncedAnimationFrame("monkey-power.addPower", async () => {
+    if (ctx.canvas === undefined || Config.monkeyPowerLevel === "off") return;
     if (Config.blindMode) good = true;
 
     // Shake
@@ -227,6 +232,15 @@ export function MonkeyPower(): JSXElement {
 
   onCleanup(() => {
     window.removeEventListener("resize", resize);
+    reset(true);
+    if (ctx.frame !== undefined) cancelAnimationFrame(ctx.frame);
+    ctx.frame = undefined;
+    ctx.particles = [];
+    ctx.rendering = false;
+    ctx.caret = undefined;
+    ctx.canvas = undefined;
+    ctx.context2d = undefined;
+    ctx.lastFrame = undefined;
   });
 
   return (
