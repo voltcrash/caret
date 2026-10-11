@@ -4,8 +4,6 @@ import {
 } from "@leonabcd123/modern-caps-lock";
 import { createSignalWithSetters } from "../hooks/createSignalWithSetters";
 import { createSignal } from "solid-js";
-import { createEffectOn } from "../hooks/effects";
-import { getActivePage } from "./core";
 
 type ModifierState = {
   shift: boolean;
@@ -47,37 +45,26 @@ export function resetModifierState(): void {
 const [isCapsLockOn, setCapsLockOn] = createSignal<boolean>(checkCapsLockOn());
 export { isCapsLockOn };
 
-onCapsLockChange((state) => setCapsLockOn(state));
-
-const listeners: Array<{ remove: () => void }> = [];
-
-createEffectOn(getActivePage, (page) => {
-  // Clean up listeners from previous page.
-  for (const listener of listeners) {
-    listener.remove();
-  }
-  // Ensure modifier state doesn't get stuck if keyup happens off-page.
-  listeners.length = 0;
-
-  resetModifierState();
-
-  if (page === "test") {
-    const onKeyDown = (e: KeyboardEvent): void => handleModifierState(e, true);
-    const onKeyUp = (e: KeyboardEvent): void => handleModifierState(e, false);
-
-    document.addEventListener("keydown", onKeyDown);
-    document.addEventListener("keyup", onKeyUp);
-
-    listeners.push(
-      {
-        remove: (): void => document.removeEventListener("keydown", onKeyDown),
-      },
-      { remove: (): void => document.removeEventListener("keyup", onKeyUp) },
-    );
-  }
+// The caps-lock library has no unsubscribe API. Reuse one bridge across HMR.
+type CapsLockBridge = { update?: (state: boolean) => void };
+const hotData = import.meta.hot?.data as
+  | { capsLockBridge?: CapsLockBridge }
+  | undefined;
+const retainedBridge = hotData?.capsLockBridge;
+const capsLockBridge: CapsLockBridge = retainedBridge ?? {};
+capsLockBridge.update = setCapsLockOn;
+if (retainedBridge === undefined) {
+  onCapsLockChange((state) => capsLockBridge.update?.(state));
+}
+import.meta.hot?.dispose(() => {
+  capsLockBridge.update = undefined;
+  if (hotData !== undefined) hotData.capsLockBridge = capsLockBridge;
 });
 
-function handleModifierState(e: KeyboardEvent, updateValue: boolean): void {
+export function handleModifierState(
+  e: KeyboardEvent,
+  updateValue: boolean,
+): void {
   if (e.code === "ShiftLeft") updateModifierState({ leftShift: updateValue });
   if (e.code === "ShiftRight") updateModifierState({ rightShift: updateValue });
   if (e.code === "AltRight" || e.code === "AltLeft") {
