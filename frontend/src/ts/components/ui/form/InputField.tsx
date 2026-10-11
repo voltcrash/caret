@@ -9,15 +9,15 @@ import { FieldIndicator } from "./FieldIndicator";
 
 // phones: a number pad instead of the full keyboard for number fields. the
 // ios number pad has no minus key, so fields allowing negatives keep the
-// default keyboard. decimal unless the field only takes whole steps
+// default keyboard. Only use a number pad for nonnegative fields.
 function getNumberInputMode(
   type: string | undefined,
   min: number | undefined,
   step: string | number | undefined,
 ): "numeric" | "decimal" | undefined {
   if (type !== "number") return undefined;
-  if (min !== undefined && min < 0) return undefined;
-  if (step !== undefined && Number.isInteger(Number(step))) return "numeric";
+  if (min === undefined || min < 0) return undefined;
+  if (step === undefined || Number.isInteger(Number(step))) return "numeric";
   return "decimal";
 }
 
@@ -55,6 +55,7 @@ export function InputField(props: {
   alwaysShowFieldIndicator?: boolean;
 }): JSXElement {
   const [shake, setShake] = createSignal(false);
+  const numberOptions = () => getNumberOptions(props.schema);
 
   const shakeItIfYouWantIt = () => {
     if (
@@ -96,7 +97,11 @@ export function InputField(props: {
         // phones: number pad instead of the full keyboard for number fields
         inputMode={
           props.inputMode ??
-          getNumberInputMode(props.type, props.min, props.step)
+          getNumberInputMode(
+            props.type,
+            props.min ?? numberOptions().min,
+            props.step ?? numberOptions().step,
+          )
         }
         autoCapitalize={props.autoCapitalize}
         // oxlint-disable-next-line react/no-unknown-property -- Solid uses lowercase spellcheck.
@@ -137,7 +142,7 @@ export function InputField(props: {
         onFocus={() => props.onFocus?.()}
         dir={props.dir}
         maxLength={props.maxLength}
-        {...getNumberOptions(props.schema)}
+        {...numberOptions()}
         {...getDateOptions(props.schema, formatDate)}
         min={props.min}
         max={props.max}
