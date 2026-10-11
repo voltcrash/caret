@@ -19,6 +19,7 @@ allowBuilds:
   workerd: true
 
 overrides:
+  "@babel/core@^7": "7.29.6"
   "yaml@^1": "1.10.3"
   "source-map-js": "1.2.2"
   "browserslist": "4.28.7"
