@@ -20,6 +20,7 @@ import * as TestLogic from "../../../../test/test-logic";
 import * as TestScreenshot from "../../../../test/test-screenshot";
 import { FaObject } from "../../../../types/font-awesome";
 import { cn } from "../../../../utils/cn";
+import { isCoarsePointer } from "../../../../utils/pointer";
 import { Button } from "../../../common/Button";
 import { Fa } from "../../../common/Fa";
 
@@ -114,7 +115,9 @@ export function ResultButtons(): JSXElement {
     },
     {
       id: "saveScreenshotButton",
-      label: "Copy screenshot to clipboard\n(shift click to download)",
+      label: isCoarsePointer()
+        ? "Share screenshot"
+        : "Copy screenshot to clipboard\n(shift click to download)",
       shortLabel: "screenshot",
       icon: () =>
         shiftHeld()
@@ -125,6 +128,8 @@ export function ResultButtons(): JSXElement {
       onClick: (event) => {
         if (event.shiftKey) {
           void TestScreenshot.download();
+        } else if (isCoarsePointer()) {
+          void TestScreenshot.share();
         } else {
           void TestScreenshot.copyToClipboard();
         }
