@@ -268,9 +268,9 @@ function getBuildOptions({
   };
 }
 
-function getCssOptions(): CSSOptions {
+function getCssOptions(env: Record<string, string>): CSSOptions {
   return {
-    devSourcemap: true,
+    devSourcemap: env["DEV_CSS_SOURCEMAPS"] === "true",
   };
 }
 
@@ -303,7 +303,7 @@ export default defineConfig(({ mode }): UserConfig => {
     lint: { ...frontendLint },
     plugins: getPlugins({ isDevelopment, useSentry: useSentry, env }),
     build: getBuildOptions({ enableSourceMaps: useSentry }),
-    css: getCssOptions(),
+    css: getCssOptions(env),
     server: {
       open: env["SERVER_OPEN"] === "true",
       port: 3000,
