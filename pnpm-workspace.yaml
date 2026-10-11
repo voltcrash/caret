@@ -19,6 +19,7 @@ allowBuilds:
   workerd: true
 
 overrides:
+  "fast-uri": "3.1.8"
   "@humanfs/node": "0.16.8"
   "undici@^6": "6.28.1"
   "form-data@^4": "4.0.6"
