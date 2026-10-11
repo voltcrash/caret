@@ -101,7 +101,7 @@ function getPlugins({
           }),
         ]
       : []),
-    Inspect(),
+    ...(env["DEV_INSPECT"] === "true" ? [Inspect()] : []),
   ];
 
   const prodPlugins: PluginOption[] = [
