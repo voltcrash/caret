@@ -40,6 +40,16 @@ export function createDebouncedEffectOn<
 }
 
 /** Own module effects so hot replacement can release their subscriptions. */
+export function createModuleRoot<T>(
+  hot: ModuleHotContext | undefined,
+  fn: () => T,
+): T {
+  return createRoot((dispose) => {
+    hot?.dispose(dispose);
+    return fn();
+  });
+}
+
 export function createModuleEffectOn<
   T extends Accessor | readonly Accessor[],
   U = void,
@@ -49,8 +59,7 @@ export function createModuleEffectOn<
   fn: (value: OnValue<T>, prev: OnValue<T> | undefined, prevValue?: U) => U,
   options: { defer?: boolean } = {},
 ): void {
-  createRoot((dispose) => {
-    hot?.dispose(dispose);
+  createModuleRoot(hot, () => {
     createEffectOn(deps, fn, options);
   });
 }
