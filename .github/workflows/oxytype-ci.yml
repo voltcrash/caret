@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   pre-ci:
-    if: github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'force-ci') || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'force-ci') || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
     name: pre-ci
     runs-on: ubuntu-latest
     outputs:
@@ -31,6 +31,7 @@ jobs:
       should-build-pkg: ${{ steps.export-changes.outputs.should-build-pkg }}
       should-build-tui: ${{ steps.export-changes.outputs.should-build-tui }}
       assets-or-styles: ${{ steps.export-changes.outputs.assets-or-styles }}
+      shared-inputs: ${{ steps.filter.outputs.shared-src }}
 
     steps:
       - name: Full checkout
@@ -43,6 +44,20 @@ jobs:
         id: filter
         with:
           filters: |
+            shared-src:
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+              - 'pnpm-workspace.yaml'
+              - 'vite.config.ts'
+              - 'vitest.config.ts'
+              - 'stylelint.config.mjs'
+              - '.oxfmtrc-editor.json'
+              - '.editorconfig'
+              - '.nvmrc'
+              - '.npmrc'
+              - 'patches/**'
+              - '.github/actions/**'
+              - '.github/workflows/oxytype-ci.yml'
             assets-or-styles:
               - 'frontend/static/**/*'
               - '**/*.{scss,css}'
@@ -67,17 +82,17 @@ jobs:
       - name: Export changes
         id: export-changes
         run: |
-          echo "should-build-pkg=${{ steps.filter.outputs.pkg-src }}" >> $GITHUB_OUTPUT
-          echo "should-build-tui=${{ steps.filter.outputs.tui-src }}" >> $GITHUB_OUTPUT
-          echo "should-build-be=${{ steps.filter.outputs.be-src }}" >> $GITHUB_OUTPUT
-          echo "should-build-fe=${{ steps.filter.outputs.fe-src }}" >> $GITHUB_OUTPUT
-          echo "assets-or-styles=${{ steps.filter.outputs.assets-or-styles }}" >> $GITHUB_OUTPUT
+          echo "should-build-pkg=${{ steps.filter.outputs.pkg-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
+          echo "should-build-tui=${{ steps.filter.outputs.tui-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
+          echo "should-build-be=${{ steps.filter.outputs.be-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
+          echo "should-build-fe=${{ steps.filter.outputs.fe-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
+          echo "assets-or-styles=${{ steps.filter.outputs.assets-or-styles == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
 
   prime-cache:
     name: prime-cache
     runs-on: ubuntu-latest
     needs: [pre-ci]
-    if: github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'force-ci') || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'force-ci') || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -91,7 +106,7 @@ jobs:
   check-format:
     name: check-format
     needs: [prime-cache]
-    if: github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'force-ci') || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'force-ci') || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
     runs-on: ubuntu-latest
     steps:
       - name: Full checkout
@@ -226,11 +241,11 @@ jobs:
           cache-save: false
 
       - name: Lint styles
-        if: steps.filter.outputs.styles == 'true'
+        if: steps.filter.outputs.styles == 'true' || needs.pre-ci.outputs.shared-inputs == 'true'
         run: vp run lint-styles
 
       - name: Lint JSON
-        if: steps.filter.outputs.json == 'true'
+        if: steps.filter.outputs.json == 'true' || needs.pre-ci.outputs.shared-inputs == 'true'
         run: vp run lint-json-assets
 
       - name: Validate language assets
@@ -238,7 +253,7 @@ jobs:
         run: vp run check-assets-languages
 
       - name: Validate quote assets
-        if: steps.filter.outputs.quotes == 'true'
+        if: steps.filter.outputs.quotes == 'true' || needs.pre-ci.outputs.shared-inputs == 'true'
         run: vp run check-assets-quotes
 
       - name: Validate other assets

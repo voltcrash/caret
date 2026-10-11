@@ -414,6 +414,24 @@ it("wires scheduled/manual production deployment before publication and always c
   const steps = job.steps;
   const plan = steps.findIndex((step) => step.id === "plan");
   expect(plan).toBeGreaterThan(0);
+  const validation = steps.findIndex((step) => step.id === "validate-ci");
+  expect(workflow.permissions.actions).toBe("read");
+  expect(validation).toBeGreaterThan(plan);
+  expect(steps[validation].env.RELEASE_SHA).toBe(
+    "${{ steps.plan.outputs.sha }}",
+  );
+  expect(steps[validation].with.script).toContain(
+    "requireSuccessfulProductionCI({ github, context, sha: process.env.RELEASE_SHA })",
+  );
+  expect(
+    steps.findIndex(
+      (step) =>
+        step.name === "Prepare production credentials and build settings",
+    ),
+  ).toBeGreaterThan(validation);
+  expect(
+    steps.findIndex((step) => step.name === "Apply production D1 migrations"),
+  ).toBeGreaterThan(validation);
   for (const step of steps.slice(plan + 1, -1)) {
     expect(step.if, step.name).toBe(
       "steps.plan.outputs.shouldDeploy == 'true'",
