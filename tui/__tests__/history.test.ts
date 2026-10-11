@@ -34,6 +34,48 @@ async function finishedTest(): Promise<
 }
 
 describe("local result history", () => {
+  test("daily pace includes the previous evening after midnight", async () => {
+    const now = new Date(2026, 9, 11, 0, 30).getTime();
+    const history = createHistoryStore();
+    const finished = await finishedTest();
+    await history.add({
+      ...finished,
+      result: { ...finished.result, wpm: 80, timestamp: now - 3600_000 },
+    });
+    const { store } = await typingTest();
+    store.set("mode", "words");
+    store.set("words", 10);
+    store.set("paceCaret", "daily");
+    expect(localPaceSpeed(history.entries(), store.config, "10", now)).toBe(80);
+    await store.flush();
+  });
+  test("daily pace includes the 24-hour boundary and excludes older results", async () => {
+    const now = new Date(2026, 9, 11, 12).getTime();
+    const history = createHistoryStore();
+    const finished = await finishedTest();
+    await history.add({
+      ...finished,
+      result: { ...finished.result, wpm: 80, timestamp: now - 24 * 3600_000 },
+    });
+    await history.add({
+      ...finished,
+      result: {
+        ...finished.result,
+        wpm: 200,
+        timestamp: now - 24 * 3600_000 - 1,
+      },
+    });
+    const { store } = await typingTest();
+    store.set("mode", "words");
+    store.set("words", 10);
+    store.set("paceCaret", "pb");
+    expect(localPaceSpeed(history.entries(), store.config, "10", now)).toBe(
+      200,
+    );
+    store.set("paceCaret", "daily");
+    expect(localPaceSpeed(history.entries(), store.config, "10", now)).toBe(80);
+    await store.flush();
+  });
   test("reports a failed disk save and rejects schema-invalid result data", async () => {
     const directory = await tempDir();
     const blocked = join(directory, "blocked");
