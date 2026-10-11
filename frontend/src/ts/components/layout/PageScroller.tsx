@@ -41,7 +41,7 @@ export function PageScroller(props: ParentProps): JSXElement {
         "content-grid grid-rows-[1fr_auto] gap-y-8",
         // keep the scrollport full screen for the soft header edge
         isScroller()
-          ? "fixed inset-0 z-10 grid-rows-[1fr] overflow-y-auto overscroll-y-contain pr-[env(safe-area-inset-right,0px)] pb-[max(2rem,env(safe-area-inset-bottom,0px))] pl-[env(safe-area-inset-left,0px)] [&>main]:mt-(--content-top) [&>main]:h-auto"
+          ? "fixed inset-0 z-10 grid-rows-[1fr] touch-manipulation overflow-y-auto overscroll-y-contain pr-[env(safe-area-inset-right,0px)] pb-[max(2rem,env(safe-area-inset-bottom,0px))] pl-[env(safe-area-inset-left,0px)] [&>main]:mt-(--content-top) [&>main]:h-auto"
           : "full-width row-[content-start/top-end]",
       )}
       // the header's bottom edge includes its own bottom padding (1rem), so

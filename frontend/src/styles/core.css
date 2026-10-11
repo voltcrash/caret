@@ -129,6 +129,8 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
+  /* quick taps on the words must not double-tap zoom, pinch zoom still works */
+  touch-action: manipulation;
 }
 
 a {
