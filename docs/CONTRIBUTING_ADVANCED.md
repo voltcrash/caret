@@ -16,8 +16,17 @@ Wrangler serves the API with local D1 on port 5005.
 
 `vp run dev-fe` keeps HMR enabled and skips automatic linting, signal tracking,
 Solid/TanStack devtools, Vite inspection, CSS sourcemaps and bulk modal prefetching.
-Dev options and the event-log viewer load when first opened. Production retains
-idle modal prefetching and its build plugins.
+Command palette, dev options and the event-log viewer load when first opened.
+API routers initialize on their first request. Development also skips hover page
+prefetching and chart warmup; the first visit/open may take longer. Production
+retains speculative prefetching and its build plugins.
+
+For UI/typing work without a backend, run `DEV_OFFLINE=true vp run dev-fe`.
+This uses shared local configuration defaults, skips auth/session subscriptions,
+blocks API requests and disables query retries. A banner identifies this mode.
+Login, saved results, account data and server features require normal development
+with a backend. Local assets/languages still load normally; network-dependent
+funboxes still require their external services. Production builds ignore this flag.
 
 Enable diagnostics as needed, through environment variables or `frontend/.env`:
 
@@ -26,6 +35,8 @@ Enable diagnostics as needed, through environment variables or `frontend/.env`:
 - `DEV_TOOLS=true`: Solid/TanStack devtools and signal tracking.
 - `DEV_INSPECT=true`: Vite plugin inspection at `/__inspect/`.
 - `DEV_CSS_SOURCEMAPS=true`: original CSS locations in browser devtools.
+- `DEV_PREFETCH=true`: hover page prefetching and result-chart warmup.
+- `DEV_OFFLINE=true`: frontend-only configuration with backend traffic disabled.
 
 Restart the server after changing these flags. Automatic lint uses a 750 ms
 debounce. Run `vp run lint-fe` for full frontend checks on demand; commit hooks
@@ -34,12 +45,27 @@ and CI also check changes.
 ```sh
 DEV_TOOLS=true vp run dev-fe
 DEV_LINT=fast DEV_INSPECT=true vp run dev-fe
+DEV_OFFLINE=true vp run dev-fe
+DEV_PREFETCH=true vp run dev-fe
 ```
 
 Use one server per actively edited checkout. Additional tabs on that server share
 its transform cache; separate worktrees need separate servers. For a reference
 checkout, build once and run `vp run --filter @oxytype/frontend start`; rebuilding
 is required to see subsequent changes.
+For a separate preview port, run `vp preview --port 3101` from `frontend` after
+`vp run build-fe` completes at the repository root. A production build requires
+`TURNSTILE_SITE_KEY`; built previews use production configuration.
+
+Keep browser devtools' **Disable cache** unchecked for routine development.
+Close unused tabs. Hidden development tabs pause cosmetic anime.js animations;
+the typing clock uses independent, wall-clock-anchored timeouts and still detects
+timer drift. Power-effect canvases allocate only while that effect is enabled.
+Language JSON caches retain eight entries; shared JSON/layout caches retain
+sixteen. Evicted assets reload on demand, and failed loads can retry. Inactive
+terminal-history queries expire after five minutes; web history stays retained
+for synchronous typing/PB consumers. HMR disposes module subscriptions, derived
+state, collections, audio and component-owned DOM watchers.
 
 Google/GitHub login requires deployment-owned OAuth credentials/callbacks.
 Email/password/reset flows remain disabled. See
