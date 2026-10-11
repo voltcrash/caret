@@ -29,6 +29,18 @@ textarea {
   select {
     font-size: max(16px, 1em) !important;
   }
+
+  /* 44px tall text fields, same as touch buttons */
+  input:not(
+    [type="checkbox"],
+    [type="radio"],
+    [type="range"],
+    [type="color"],
+    [type="file"],
+    [type="hidden"]
+  ) {
+    min-height: 2.75rem;
+  }
 }
 
 input[type="range"] {
