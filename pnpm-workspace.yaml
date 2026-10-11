@@ -19,6 +19,7 @@ allowBuilds:
   workerd: true
 
 overrides:
+  "seroval": "1.6.3"
   # Authentication uses Drizzle; exclude the unused adapter and optional driver.
   "better-auth>@better-auth/mongo-adapter": "-"
   "better-auth>mongodb": "-"
