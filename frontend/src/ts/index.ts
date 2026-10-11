@@ -24,7 +24,6 @@ import { AppRouter } from "./components/AppRouter";
 import { setVersion } from "./states/core";
 import { loadFromLocalStorage } from "./config/lifecycle";
 
-import "./input/hotkeys";
 import { getLastEventLog } from "./states/test";
 import { buildEventLog } from "./test/events/data";
 

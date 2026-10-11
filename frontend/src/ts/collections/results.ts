@@ -24,7 +24,7 @@ import { queryOptions } from "@tanstack/solid-query";
 import { Accessor, createMemo } from "solid-js";
 import Ape from "../ape";
 import { SnapshotResult } from "../constants/default-snapshot";
-import { createEffectOn } from "../hooks/effects";
+import { createModuleEffectOn } from "../hooks/effects";
 import { queryClient } from "../queries";
 import { baseKey } from "../queries/utils/keys";
 import { isAuthenticated } from "../states/core";
@@ -226,7 +226,9 @@ function createResultsCollection(client: Client) {
   const collection = createCollection(
     queryCollectionOptions({
       staleTime: Infinity,
-      gcTime: Infinity, //remove when __nonReactive is removed
+      // Web's synchronous typing/PB consumers still require retained data.
+      // Terminal history can refetch after five minutes without subscribers.
+      gcTime: client === "web" ? Infinity : 5 * 60 * 1000,
       queryKey: queryKeys.root(client),
       enabled: isAuthenticated,
       queryFn: async () => {
@@ -267,6 +269,9 @@ function createResultsCollection(client: Client) {
     indexType: BTreeIndex,
   });
 
+  import.meta.hot?.dispose(() => {
+    void collection.cleanup();
+  });
   return collection;
 }
 
@@ -752,7 +757,7 @@ export async function waitForResultsReady(): Promise<void> {
 /**
  *
  */
-createEffectOn(isAuthenticated, (hasUser) => {
+createModuleEffectOn(import.meta.hot, isAuthenticated, (hasUser) => {
   if (hasUser) {
     void resultsCollection.utils.refetch();
     if (resultsByClient.tui.isReady()) void resultsByClient.tui.utils.refetch();

@@ -11,7 +11,6 @@ import { envConfig } from "virtual:env-config";
 
 import { ModalId, getModalVisibility } from "../../states/modals";
 import { runWhenIdle } from "../../utils/idle";
-import { Commandline } from "./Commandline";
 import { CookiesModal } from "./CookiesModal";
 import "./modal-triggers";
 
@@ -25,6 +24,9 @@ function lazyModal(
 // Loaded on first open (and prefetched when idle) to keep them out of the
 // startup bundle. Nested modals live in their parent's chunk.
 const lazyModals = [
+  lazyModal("Commandline", async () =>
+    import("./Commandline").then((m) => m.Commandline),
+  ),
   lazyModal("VersionHistory", async () =>
     import("./VersionHistoryModal").then((m) => m.VersionHistoryModal),
   ),
@@ -106,7 +108,6 @@ export function Modals(): JSXElement {
 
   return (
     <>
-      <Commandline />
       <CookiesModal />
       <For each={lazyModals}>
         {(modal) => (

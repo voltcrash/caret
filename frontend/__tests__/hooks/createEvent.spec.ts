@@ -3,6 +3,20 @@ import { describe, expect, it, vi } from "vite-plus/test";
 import { createEvent } from "../../src/ts/hooks/createEvent";
 
 describe("createEvent", () => {
+  it("removes stale module subscriptions on hot disposal", () => {
+    const event = createEvent<string>();
+    const dispose = vi.fn<(callback: () => void) => void>();
+    const oldListener = vi.fn();
+    event.subscribe(oldListener, { dispose });
+    event.dispatch("before");
+    dispose.mock.calls[0]?.[0]();
+    const newListener = vi.fn();
+    event.subscribe(newListener);
+    event.dispatch("after");
+    expect(oldListener).toHaveBeenCalledExactlyOnceWith("before");
+    expect(newListener).toHaveBeenCalledExactlyOnceWith("after");
+  });
+
   it("dispatch notifies subscribers", () => {
     const event = createEvent<string>();
     const fn = vi.fn();

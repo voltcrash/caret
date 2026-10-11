@@ -77,20 +77,23 @@ function update(themes: ThemeWithName[]): void {
 }
 
 // subscribe to theme-related config events to update the theme command list
-configEvent.subscribe(({ key }) => {
-  if (key === "favThemes") {
-    // update themes list when favorites change
-    try {
-      update(ThemesList);
-    } catch (e: unknown) {
-      console.error(
-        getErrorMessage.createErrorMessage(
-          e,
-          "Failed to update themes commands",
-        ),
-      );
+configEvent.subscribe(
+  ({ key }) => {
+    if (key === "favThemes") {
+      // update themes list when favorites change
+      try {
+        update(ThemesList);
+      } catch (e: unknown) {
+        console.error(
+          getErrorMessage.createErrorMessage(
+            e,
+            "Failed to update themes commands",
+          ),
+        );
+      }
     }
-  }
-});
+  },
+  import.meta.hot,
+);
 
 export default commands;

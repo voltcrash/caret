@@ -1,3 +1,4 @@
+import { createModuleRoot } from "../hooks/effects";
 import { createMemo } from "solid-js";
 
 import * as LiveStats from "@oxytype/typing-core/live-stats";
@@ -91,37 +92,47 @@ export function getBarTarget(): {
   };
 }
 
-export const showLiveStats = createMemo(() => isTestActive() && getFocus());
-export const getLiveSpeedText = createMemo(() =>
-  LiveStats.getLiveSpeedText(Format, getConfig.blindMode, currentLiveStats),
+export const showLiveStats = createModuleRoot(import.meta.hot, () =>
+  createMemo(() => isTestActive() && getFocus()),
 );
-export const getLiveAccText = createMemo(() =>
-  LiveStats.getLiveAccText(getConfig.blindMode, currentLiveStats),
+export const getLiveSpeedText = createModuleRoot(import.meta.hot, () =>
+  createMemo(() =>
+    LiveStats.getLiveSpeedText(Format, getConfig.blindMode, currentLiveStats),
+  ),
 );
-export const getLiveBurstText = createMemo(() =>
-  LiveStats.getLiveBurstText(Format, currentLiveStats),
+export const getLiveAccText = createModuleRoot(import.meta.hot, () =>
+  createMemo(() =>
+    LiveStats.getLiveAccText(getConfig.blindMode, currentLiveStats),
+  ),
+);
+export const getLiveBurstText = createModuleRoot(import.meta.hot, () =>
+  createMemo(() => LiveStats.getLiveBurstText(Format, currentLiveStats)),
 );
 
 /** Countdown / word counter shown by the timer displays. */
-export const getTimerText = createMemo(() =>
-  LiveStats.getTimerText({
-    config: getConfig,
-    customLimit: getCustomLimit(),
-    seconds: currentLiveStats.seconds,
-    // read the signal first so the memo subscribes to it on every branch
-    activeWordIndex: getActiveWordIndex(),
-    wordCount: getCurrentWordCount(),
-    wordsTotal: getWordsTotal(),
-  }),
+export const getTimerText = createModuleRoot(import.meta.hot, () =>
+  createMemo(() =>
+    LiveStats.getTimerText({
+      config: getConfig,
+      customLimit: getCustomLimit(),
+      seconds: currentLiveStats.seconds,
+      // read the signal first so the memo subscribes to it on every branch
+      activeWordIndex: getActiveWordIndex(),
+      wordCount: getCurrentWordCount(),
+      wordsTotal: getWordsTotal(),
+    }),
+  ),
 );
 /**
  * The flash timer styles only reveal the time every 15 seconds. Only the flash
  * styles hide, and only on time limited tests — a word counter is always shown.
  */
-export const isTimerFlashHidden = createMemo(() =>
-  LiveStats.isTimerFlashHidden(
-    getConfig,
-    getCustomLimit(),
-    currentLiveStats.seconds,
+export const isTimerFlashHidden = createModuleRoot(import.meta.hot, () =>
+  createMemo(() =>
+    LiveStats.isTimerFlashHidden(
+      getConfig,
+      getCustomLimit(),
+      currentLiveStats.seconds,
+    ),
   ),
 );

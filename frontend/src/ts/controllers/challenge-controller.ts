@@ -220,26 +220,29 @@ export async function setup(challengeName: ChallengeName): Promise<boolean> {
   }
 }
 
-configEvent.subscribe(({ key }) => {
-  if (
-    [
-      "difficulty",
-      "numbers",
-      "punctuation",
-      "mode",
-      "funbox",
-      "paceCaret",
-      "showAllLines",
-      "showLiveWpm",
-      "highlightMode",
-      "time",
-      "words",
-      "keymapMode",
-      "keymapLayout",
-      "layout",
-      "fontFamily",
-    ].includes(key)
-  ) {
-    clearActive();
-  }
-});
+configEvent.subscribe(
+  ({ key }) => {
+    if (
+      [
+        "difficulty",
+        "numbers",
+        "punctuation",
+        "mode",
+        "funbox",
+        "paceCaret",
+        "showAllLines",
+        "showLiveWpm",
+        "highlightMode",
+        "time",
+        "words",
+        "keymapMode",
+        "keymapLayout",
+        "layout",
+        "fontFamily",
+      ].includes(key)
+    ) {
+      clearActive();
+    }
+  },
+  import.meta.hot,
+);

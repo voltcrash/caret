@@ -1,3 +1,4 @@
+import { createModuleRoot } from "../hooks/effects";
 import { createEffect, createMemo, createSignal } from "solid-js";
 import { z } from "zod/v3";
 import { getConfig } from "../config/store";
@@ -58,8 +59,10 @@ export const [testFocusState, { setTestFocusState }] =
     },
   });
 
-export const showOutOfFocusWarning = createMemo(
-  () => getConfig.showOutOfFocusWarning && testFocusState() !== "focused",
+export const showOutOfFocusWarning = createModuleRoot(import.meta.hot, () =>
+  createMemo(
+    () => getConfig.showOutOfFocusWarning && testFocusState() !== "focused",
+  ),
 );
 
 // max-height of the warning, kept in sync with the words wrapper by test-ui.
@@ -82,9 +85,13 @@ export const [
   push: (set, val: IncompleteTest) => set((arr) => [...arr, val]),
   reset: (set) => set([]),
 });
-export const getRestartCount = createMemo(() => getIncompleteTests().length);
-export const getIncompleteSeconds = createMemo(() =>
-  getIncompleteTests().reduce((sum, test) => sum + test.seconds, 0),
+export const getRestartCount = createModuleRoot(import.meta.hot, () =>
+  createMemo(() => getIncompleteTests().length),
+);
+export const getIncompleteSeconds = createModuleRoot(import.meta.hot, () =>
+  createMemo(() =>
+    getIncompleteTests().reduce((sum, test) => sum + test.seconds, 0),
+  ),
 );
 
 export const [isRepeated, setIsRepeated] = createSignal(false);
@@ -127,33 +134,37 @@ export const [currentLiveStats, setCurrentLiveStats] = createStore<{
   seconds?: number;
 }>({});
 
-createEffect(() => {
-  getActivePage(); // depend on active page
-  setIsLongTest(
-    !canQuickRestart(
-      getConfig.mode,
-      getConfig.words,
-      getConfig.time,
-      CustomText.getData(),
-      getCustomTextIndicator()?.isLong ?? false,
-    ),
-  );
-});
+createModuleRoot(import.meta.hot, () =>
+  createEffect(() => {
+    getActivePage(); // depend on active page
+    setIsLongTest(
+      !canQuickRestart(
+        getConfig.mode,
+        getConfig.words,
+        getConfig.time,
+        CustomText.getData(),
+        getCustomTextIndicator()?.isLong ?? false,
+      ),
+    );
+  }),
+);
 
-export const getKeymapLayout = createMemo<{
-  layout: string;
-  layoutNameDisplayString: string;
-  isMirrored: boolean;
-}>(() => {
-  const isOverride = getConfig.keymapLayout === "overrideSync";
-  const raw = isOverride ? getConfig.layout : getConfig.keymapLayout;
+export const getKeymapLayout = createModuleRoot(import.meta.hot, () =>
+  createMemo<{
+    layout: string;
+    layoutNameDisplayString: string;
+    isMirrored: boolean;
+  }>(() => {
+    const isOverride = getConfig.keymapLayout === "overrideSync";
+    const raw = isOverride ? getConfig.layout : getConfig.keymapLayout;
 
-  const layout = raw === "default" ? "qwerty" : raw;
-  const layoutNameDisplayString = replaceUnderscoresWithSpaces(raw);
-  const isMirrored = getConfig.funbox.includes("layout_mirror");
+    const layout = raw === "default" ? "qwerty" : raw;
+    const layoutNameDisplayString = replaceUnderscoresWithSpaces(raw);
+    const isMirrored = getConfig.funbox.includes("layout_mirror");
 
-  return { layout: layout, layoutNameDisplayString, isMirrored };
-});
+    return { layout: layout, layoutNameDisplayString, isMirrored };
+  }),
+);
 
 const [getKeymapHighlightKey, setKeymapHighlightKey] = createSignal<
   string | undefined
@@ -182,36 +193,40 @@ keymapEvent.useListener(({ mode, key, correct }) => {
   }
 });
 
-const getInputLayout = createMemo<{
-  layout: string;
-  isMirrored: boolean;
-}>(() => {
-  return {
-    layout: getConfig.layout === "default" ? "qwerty" : getConfig.layout,
-    isMirrored: getConfig.funbox.includes("layout_mirror"),
-  };
-});
-
-const [inputLayoutObject, inputLayoutPromise] = useResourceWithPromise(
-  getInputLayout,
-  async (layout) => {
-    const result = await getLayout(layout.layout);
-    if (layout.isMirrored) {
-      return mirrorLayoutKeys(result);
-    }
-    return result;
-  },
+const getInputLayout = createModuleRoot(import.meta.hot, () =>
+  createMemo<{
+    layout: string;
+    isMirrored: boolean;
+  }>(() => {
+    return {
+      layout: getConfig.layout === "default" ? "qwerty" : getConfig.layout,
+      isMirrored: getConfig.funbox.includes("layout_mirror"),
+    };
+  }),
 );
 
-const [keymapLayoutObject, keymapLayoutPromise] = useResourceWithPromise(
-  getKeymapLayout,
-  async (layout) => {
-    const result = await getLayout(layout.layout);
-    if (layout.isMirrored) {
-      return mirrorLayoutKeys(result);
-    }
-    return result;
-  },
+const [inputLayoutObject, inputLayoutPromise] = createModuleRoot(
+  import.meta.hot,
+  () =>
+    useResourceWithPromise(getInputLayout, async (layout) => {
+      const result = await getLayout(layout.layout);
+      if (layout.isMirrored) {
+        return mirrorLayoutKeys(result);
+      }
+      return result;
+    }),
+);
+
+const [keymapLayoutObject, keymapLayoutPromise] = createModuleRoot(
+  import.meta.hot,
+  () =>
+    useResourceWithPromise(getKeymapLayout, async (layout) => {
+      const result = await getLayout(layout.layout);
+      if (layout.isMirrored) {
+        return mirrorLayoutKeys(result);
+      }
+      return result;
+    }),
 );
 export { keymapLayoutObject };
 
@@ -237,11 +252,15 @@ export const __nonReactive = {
   },
 };
 
-export const [getSelectedQuoteId, setSelectedQuoteId] = useLocalStorage({
-  key: "selectedQuoteId",
-  schema: z.number().int().min(1),
-  fallback: 1,
-});
+export const [getSelectedQuoteId, setSelectedQuoteId] = createModuleRoot(
+  import.meta.hot,
+  () =>
+    useLocalStorage({
+      key: "selectedQuoteId",
+      schema: z.number().int().min(1),
+      fallback: 1,
+    }),
+);
 
 export const [isLanguageRightToLeft, setIsLanguageRightToLeft] =
   createSignal(false);

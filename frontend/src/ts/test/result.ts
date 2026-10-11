@@ -957,31 +957,34 @@ export function toggleResultWords(noAnimation = false): void {
   }
 }
 
-configEvent.subscribe(async ({ key }) => {
-  if (
-    ["typingSpeedUnit", "startGraphsAtZero"].includes(key) &&
-    getResultVisible()
-  ) {
-    resultAnnotation = [];
+configEvent.subscribe(
+  async ({ key }) => {
+    if (
+      ["typingSpeedUnit", "startGraphsAtZero"].includes(key) &&
+      getResultVisible()
+    ) {
+      resultAnnotation = [];
 
-    setResultState(
-      "stats",
-      (stats) =>
-        stats && {
-          ...stats,
-          ...buildSpeedStats(result, getEventLogAccuracy()),
-        },
-    );
-    await updateChartData();
-    await updateChartPBLine();
-    updateResultChartDataVisibility();
-    updateMinMaxChartValues();
-    applyMinMaxChartValues();
+      setResultState(
+        "stats",
+        (stats) =>
+          stats && {
+            ...stats,
+            ...buildSpeedStats(result, getEventLogAccuracy()),
+          },
+      );
+      await updateChartData();
+      await updateChartPBLine();
+      updateResultChartDataVisibility();
+      updateMinMaxChartValues();
+      applyMinMaxChartValues();
 
-    ((getResultChart().options as PluginChartOptions<"line" | "scatter">)
-      .plugins.annotation.annotations as AnnotationOptions<"line">[]) =
-      resultAnnotation;
-    getResultChart().update();
-    getResultChart().resize();
-  }
-});
+      ((getResultChart().options as PluginChartOptions<"line" | "scatter">)
+        .plugins.annotation.annotations as AnnotationOptions<"line">[]) =
+        resultAnnotation;
+      getResultChart().update();
+      getResultChart().resize();
+    }
+  },
+  import.meta.hot,
+);

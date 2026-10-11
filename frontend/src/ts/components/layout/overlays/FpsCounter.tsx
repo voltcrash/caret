@@ -17,6 +17,7 @@ export function FpsCounter(): JSX.Element {
   let stopLoop = true;
   let frameCount = 0;
   let startTime: number;
+  let frame: number | undefined;
 
   const loop = (timestamp: number): void => {
     if (stopLoop) return;
@@ -30,15 +31,17 @@ export function FpsCounter(): JSX.Element {
       setFps(currentFps);
     }
 
-    window.requestAnimationFrame(loop);
+    frame = window.requestAnimationFrame(loop);
   };
 
   createEffect(() => {
+    if (frame !== undefined) window.cancelAnimationFrame(frame);
+    frame = undefined;
     if (isVisible()) {
       stopLoop = false;
       frameCount = 0;
       startTime = performance.now();
-      window.requestAnimationFrame(loop);
+      frame = window.requestAnimationFrame(loop);
     } else {
       stopLoop = true;
     }
@@ -46,6 +49,7 @@ export function FpsCounter(): JSX.Element {
 
   onCleanup(() => {
     stopLoop = true;
+    if (frame !== undefined) window.cancelAnimationFrame(frame);
   });
 
   const fpsColor = (): string =>

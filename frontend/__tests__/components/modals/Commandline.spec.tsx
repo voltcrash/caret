@@ -88,6 +88,8 @@ import { ThemeIndicator } from "../../../src/ts/components/layout/footer/ThemeIn
 import { Commandline } from "../../../src/ts/components/modals/Commandline";
 import { Config } from "../../../src/ts/config/store";
 import { restartTestEvent } from "../../../src/ts/events/test";
+import { useCommandPaletteHotkeys } from "../../../src/ts/input/hotkeys/command-palette";
+import { useQuickRestartHotkeys } from "../../../src/ts/input/hotkeys/quickrestart";
 import { commandlineState } from "../../../src/ts/states/commandline";
 import {
   setActivePage,
@@ -95,8 +97,6 @@ import {
 } from "../../../src/ts/states/core";
 import { hideModalAndClearChain } from "../../../src/ts/states/modals";
 import { isAnyPopupVisible } from "../../../src/ts/states/overlay-visibility";
-import "../../../src/ts/input/hotkeys/command-palette";
-import "../../../src/ts/input/hotkeys/quickrestart";
 
 describe("theme picker lifecycle", () => {
   let displayStyles: HTMLStyleElement;
@@ -111,6 +111,8 @@ describe("theme picker lifecycle", () => {
     command.id = "changeThemeAether";
     command.display = "aether";
     vi.clearAllMocks();
+    useCommandPaletteHotkeys();
+    useQuickRestartHotkeys();
 
     HTMLDialogElement.prototype.showModal = vi.fn(function (
       this: HTMLDialogElement,

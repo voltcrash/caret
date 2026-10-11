@@ -1,3 +1,4 @@
+import { createModuleRoot } from "../hooks/effects";
 import { createMemo, createSignal } from "solid-js";
 import { CommandlineSubgroupKey } from "../commandline/types";
 import { PageName } from "../pages/page";
@@ -51,9 +52,11 @@ export const [getCustomTextIndicator, setCustomTextIndicator] = createSignal<
   { name: string; isLong: boolean } | undefined
 >(undefined);
 
-export const getFormatting = createMemo(() => {
-  return new Formatting({
-    alwaysShowDecimalPlaces: getConfig.alwaysShowDecimalPlaces,
-    typingSpeedUnit: getConfig.typingSpeedUnit,
-  });
-});
+export const getFormatting = createModuleRoot(import.meta.hot, () =>
+  createMemo(() => {
+    return new Formatting({
+      alwaysShowDecimalPlaces: getConfig.alwaysShowDecimalPlaces,
+      typingSpeedUnit: getConfig.typingSpeedUnit,
+    });
+  }),
+);

@@ -2,6 +2,7 @@ import { animate, AnimationParams, engine } from "animejs";
 import { LocalStorageWithSchema } from "./utils/local-storage-with-schema";
 import { z } from "zod/v3";
 import { createSignal } from "solid-js";
+import { envConfig } from "virtual:env-config";
 
 export const fpsLimitSchema = z.number().int().min(15).max(1000);
 
@@ -27,7 +28,7 @@ export function getfpsLimit(): number {
 }
 
 export function applyEngineSettings(): void {
-  engine.pauseOnDocumentHidden = false;
+  engine.pauseOnDocumentHidden = envConfig.isDevelopment;
   engine.fps = fpsLimit.get();
   engine.defaults.frameRate = fpsLimit.get();
 }

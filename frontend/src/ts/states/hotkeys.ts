@@ -1,3 +1,4 @@
+import { createModuleRoot } from "../hooks/effects";
 import { QuickRestart } from "@oxytype/schemas/configs";
 import { Hotkey } from "@tanstack/solid-hotkeys";
 import { createEffect } from "solid-js";
@@ -26,10 +27,12 @@ type Hotkeys = {
 const [hotkeys, setHotkeys] = createStore<Hotkeys>(updateHotkeys());
 export { hotkeys };
 
-createEffect(() => {
-  getActivePage(); // depend on active page
-  setHotkeys(updateHotkeys());
-});
+createModuleRoot(import.meta.hot, () =>
+  createEffect(() => {
+    getActivePage(); // depend on active page
+    setHotkeys(updateHotkeys());
+  }),
+);
 
 function updateHotkeys(): Hotkeys {
   const isOnTestPage = getActivePage() === "test";

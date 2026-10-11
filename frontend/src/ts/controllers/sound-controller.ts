@@ -136,9 +136,9 @@ export async function previewError(val: PlaySoundOnError): Promise<void> {
 
 let currentCode = "KeyA";
 
-document.addEventListener("keydown", (event) => {
+export function updateCurrentCode(event: KeyboardEvent): void {
   currentCode = event.code || "KeyA";
-});
+}
 
 const notes: Record<ValidNotes, ValidFrequencies> = {
   C: [16.35, 32.7, 65.41, 130.81, 261.63, 523.25, 1046.5, 2093.0, 4186.01],
@@ -422,9 +422,25 @@ function extractScaleSounds(
   );
 }
 
-configEvent.subscribe(({ key, newValue }) => {
-  if (key === "playSoundOnClick" && newValue !== "off") void init();
-  if (key === "soundVolume") {
-    void setVolume(newValue);
+configEvent.subscribe(
+  ({ key, newValue }) => {
+    if (key === "playSoundOnClick" && newValue !== "off") void init();
+    if (key === "soundVolume") {
+      void setVolume(newValue);
+    }
+  },
+  import.meta.hot,
+);
+
+import.meta.hot?.dispose(() => {
+  for (const request of Object.values(howlers)) {
+    void request
+      .then((howl) => {
+        howl.unload();
+      })
+      .catch(() => undefined);
+  }
+  if (audioCtx !== undefined && audioCtx !== null) {
+    void audioCtx.close().catch(() => undefined);
   }
 });

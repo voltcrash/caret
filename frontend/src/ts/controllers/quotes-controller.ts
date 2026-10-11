@@ -83,10 +83,13 @@ class QuotesController extends CoreQuotesController {
 
 const quoteController = new QuotesController();
 
-configEvent.subscribe(({ key, newValue }) => {
-  if (key === "quoteLength") {
-    quoteController.updateQuoteQueue(newValue);
-  }
-});
+configEvent.subscribe(
+  ({ key, newValue }) => {
+    if (key === "quoteLength") {
+      quoteController.updateQuoteQueue(newValue);
+    }
+  },
+  import.meta.hot,
+);
 
 export default quoteController;

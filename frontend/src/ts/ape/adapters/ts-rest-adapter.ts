@@ -8,7 +8,7 @@ import { envConfig } from "virtual:env-config";
 import {
   COMPATIBILITY_CHECK,
   COMPATIBILITY_CHECK_HEADER,
-} from "@oxytype/contracts";
+} from "@oxytype/contracts/compatibility";
 import { addBanner } from "../../states/banners";
 
 let bannerShownThisSession = false;
@@ -27,6 +27,16 @@ function buildApi(timeout: number): (args: ApiFetcherArgs) => Promise<{
   headers: Headers;
 }> {
   return async (request: ApiFetcherArgs) => {
+    if (envConfig.devOffline) {
+      return {
+        status: 503,
+        body: {
+          message:
+            "Backend requests are unavailable in frontend-only development",
+        },
+        headers: new Headers(),
+      };
+    }
     try {
       const usePolyfill = AbortSignal?.timeout === undefined;
 

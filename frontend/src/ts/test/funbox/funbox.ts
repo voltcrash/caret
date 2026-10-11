@@ -207,15 +207,18 @@ async function applyFunboxCSS(): Promise<boolean> {
   return true;
 }
 
-configEvent.subscribe(async ({ key }) => {
-  if (key === "funbox") {
-    const active = getActiveFunboxNames();
-    getAllFunboxes()
-      .filter((it) => !active.includes(it.name))
-      .forEach((it) => it.functions?.clearGlobal?.());
+configEvent.subscribe(
+  async ({ key }) => {
+    if (key === "funbox") {
+      const active = getActiveFunboxNames();
+      getAllFunboxes()
+        .filter((it) => !active.includes(it.name))
+        .forEach((it) => it.functions?.clearGlobal?.());
 
-    for (const fb of getActiveFunboxesWithFunction("applyGlobalCSS")) {
-      fb.functions.applyGlobalCSS();
+      for (const fb of getActiveFunboxesWithFunction("applyGlobalCSS")) {
+        fb.functions.applyGlobalCSS();
+      }
     }
-  }
-});
+  },
+  import.meta.hot,
+);

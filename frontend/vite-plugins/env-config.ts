@@ -34,6 +34,8 @@ export function envConfig(options: {
         const devConfig: EnvConfig = {
           isDevelopment: true,
           devTools: options.env["DEV_TOOLS"] === "true",
+          devPrefetch: options.env["DEV_PREFETCH"] === "true",
+          devOffline: options.env["DEV_OFFLINE"] === "true",
           authProviders,
           backendUrl: fallback(
             options.env["BACKEND_URL"],
@@ -53,6 +55,8 @@ export function envConfig(options: {
         const prodConfig: EnvConfig = {
           isDevelopment: false,
           devTools: false,
+          devPrefetch: false,
+          devOffline: false,
           authProviders,
           backendUrl: fallback(options.env["BACKEND_URL"], "/api"),
           turnstileSiteKey: options.env["TURNSTILE_SITE_KEY"] ?? "",

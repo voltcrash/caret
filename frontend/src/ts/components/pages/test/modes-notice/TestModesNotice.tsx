@@ -1,7 +1,7 @@
 import { createMemo, Show } from "solid-js";
 
 import { useActiveTagsLiveQuery } from "../../../../collections/tags";
-import * as Commandline from "../../../../commandline/commandline";
+import * as Commandline from "../../../../commandline/open";
 import { getConfig } from "../../../../config/store";
 import {
   getCustomTextIndicator,

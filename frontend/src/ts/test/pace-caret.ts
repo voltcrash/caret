@@ -209,10 +209,13 @@ export function start(): void {
   void update((settings?.spc ?? 0) * 1000);
 }
 
-configEvent.subscribe(({ key }) => {
-  if (!areTestElementsMounted()) return;
-  if (key === "paceCaret") void init();
-  if (key === "paceCaretStyle") {
-    getCaret().setStyle(Config.paceCaretStyle);
-  }
-});
+configEvent.subscribe(
+  ({ key }) => {
+    if (!areTestElementsMounted()) return;
+    if (key === "paceCaret") void init();
+    if (key === "paceCaretStyle") {
+      getCaret().setStyle(Config.paceCaretStyle);
+    }
+  },
+  import.meta.hot,
+);

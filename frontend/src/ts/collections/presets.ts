@@ -205,3 +205,7 @@ export const __nonReactive = {
   getPresets,
   getPreset,
 };
+
+import.meta.hot?.dispose(() => {
+  void presetsCollection.cleanup();
+});

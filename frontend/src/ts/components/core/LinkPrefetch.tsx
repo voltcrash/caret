@@ -1,4 +1,5 @@
 import { onCleanup, onMount } from "solid-js";
+import { envConfig } from "virtual:env-config";
 
 import { getPageForPath } from "../../navigation/routes";
 import { preloadPage } from "../pages/lazy-pages";
@@ -6,6 +7,7 @@ import { preloadPage } from "../pages/lazy-pages";
 /** Starts loading a lazy page's code when the user points at or focuses its link. */
 export function LinkPrefetch(): null {
   onMount(() => {
+    if (envConfig.isDevelopment && !envConfig.devPrefetch) return;
     const prefetch = (event: Event): void => {
       if (!(event.target instanceof Element)) return;
       const link = event.target.closest("a[router-link]");

@@ -76,6 +76,9 @@ export function resetBefore(): void {
   before.customText = null;
 }
 
-configEvent.subscribe(({ key }) => {
-  if (key === "mode") resetBefore();
-});
+configEvent.subscribe(
+  ({ key }) => {
+    if (key === "mode") resetBefore();
+  },
+  import.meta.hot,
+);

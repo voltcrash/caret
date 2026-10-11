@@ -1,9 +1,11 @@
 import { cleanup, render, waitFor } from "@solidjs/testing-library";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
-const { stub } = vi.hoisted(() => ({
+const { stub, environment } = vi.hoisted(() => ({
   stub: (name: string) => () => <div data-stub={name} />,
+  environment: { isDevelopment: false, devPrefetch: false },
 }));
+vi.mock("virtual:env-config", () => ({ envConfig: environment }));
 vi.mock("../../../../../src/ts/states/test", async () => {
   const { createSignal } = await import("solid-js");
   const [isTestActive, setTestActive] = createSignal(false);
@@ -76,6 +78,8 @@ describe("Result", () => {
     setResultState("noStress", false);
     setTestActive(false);
     setResultChart(undefined);
+    environment.isDevelopment = false;
+    environment.devPrefetch = false;
   });
 
   it("renders the result layout and exposes its elements", () => {
@@ -120,6 +124,26 @@ describe("Result", () => {
     await prepareResultChart();
     expect(container.querySelector("[data-stub=chart]")).not.toBeNull();
   });
+
+  it.each([false, true])(
+    "makes development chart warmup opt-in (%s)",
+    async (enabled) => {
+      environment.isDevelopment = true;
+      environment.devPrefetch = enabled;
+      const { container } = render(() => <Result />);
+      setTestActive(true);
+      if (enabled) {
+        await waitFor(() =>
+          expect(container.querySelector("[data-stub=chart]")).not.toBeNull(),
+        );
+      } else {
+        await Promise.resolve();
+        expect(container.querySelector("[data-stub=chart]")).toBeNull();
+      }
+      await prepareResultChart();
+      expect(container.querySelector("[data-stub=chart]")).not.toBeNull();
+    },
+  );
 
   it("shows the glarses mode check mark", () => {
     const { container } = render(() => <Result />);

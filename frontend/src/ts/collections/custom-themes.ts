@@ -173,3 +173,7 @@ export const __nonReactive = {
   getCustomThemes,
   getCustomTheme,
 };
+
+import.meta.hot?.dispose(() => {
+  void customThemesCollection.cleanup();
+});

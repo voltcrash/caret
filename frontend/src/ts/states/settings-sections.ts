@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js";
 import { z } from "zod/v3";
 import { serialize as serializeUrlSearchParams } from "zod-urlsearchparams";
-import { createEffectOn } from "../hooks/effects";
+import { createModuleEffectOn } from "../hooks/effects";
 import { replaceUrl } from "../navigation/navigation";
 import { FaSolidIcon } from "../types/font-awesome";
 import { getActivePage, isAuthenticated } from "./core";
@@ -81,13 +81,13 @@ export function readSettingsGetParameters(
   setCurrentSettingsSection(isSectionAvailable(section) ? section : "behavior");
 }
 
-createEffectOn(isAuthenticated, () => {
+createModuleEffectOn(import.meta.hot, isAuthenticated, () => {
   if (!isSectionAvailable(getCurrentSettingsSection())) {
     setCurrentSettingsSection("behavior");
   }
 });
 
-createEffectOn(getCurrentSettingsSection, (tab) => {
+createModuleEffectOn(import.meta.hot, getCurrentSettingsSection, (tab) => {
   //only replace the url while on the settings page, otherwise the url-handler breaks
   if (getActivePage() !== "settings") return;
   const urlParams = serializeUrlSearchParams({

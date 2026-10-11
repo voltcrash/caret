@@ -1,6 +1,6 @@
 import { GetUserResponse } from "@oxytype/contracts/users";
 import Ape from ".";
-import { createEffectOn } from "../hooks/effects";
+import { createModuleEffectOn } from "../hooks/effects";
 import { getUserId } from "../states/core";
 import { SnapshotInitError } from "../utils/snapshot-init-error";
 
@@ -38,6 +38,6 @@ export async function fetchUserFromApi(
 }
 
 // clear cache + reset promise on logout
-createEffectOn(getUserId, (userId) => {
+createModuleEffectOn(import.meta.hot, getUserId, (userId) => {
   if (cache?.userId !== userId) cache = undefined;
 });

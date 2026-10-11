@@ -186,3 +186,7 @@ export function useInboxQuery(enabled: Accessor<boolean>) {
       .orderBy(({ inbox }) => inbox.subject, "asc");
   });
 }
+
+import.meta.hot?.dispose(() => {
+  void inboxCollection.cleanup();
+});

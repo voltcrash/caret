@@ -10,6 +10,7 @@ import {
 } from "solid-js";
 import { spread } from "solid-js/web";
 import { debounce, throttle } from "throttle-debounce";
+import { envConfig } from "virtual:env-config";
 
 import * as ServerConfiguration from "../../ape/server-configuration";
 import { configLoadPromise } from "../../config/lifecycle";
@@ -24,6 +25,7 @@ import {
   isAppLoading,
   isFocusCursorHidden,
 } from "../../states/app";
+import { addBanner, removeBanner } from "../../states/banners";
 import {
   getActivePage,
   getCustomTextIndicator,
@@ -51,7 +53,9 @@ import { applyReducedMotion } from "../../utils/misc";
 import { convertRemToPixels } from "../../utils/numbers";
 import { isCoarsePointer } from "../../utils/pointer";
 import { canQuickRestart } from "../../utils/quick-restart";
+import { BreakpointEvents } from "./BreakpointEvents";
 import { GlobalEvents } from "./GlobalEvents";
+import { ModifierEvents } from "./ModifierEvents";
 import { NoCssFallback } from "./NoCssFallback";
 import { OAuthRuntime } from "./OAuthRuntime";
 
@@ -62,6 +66,14 @@ export type AppElements = {
 };
 
 export function AppEffects(props: AppElements): JSXElement {
+  onMount(() => {
+    if (!envConfig.devOffline) return;
+    const banner = addBanner({
+      level: "notice",
+      text: "Frontend-only development: authentication and backend requests are disabled.",
+    });
+    onCleanup(() => removeBanner(banner));
+  });
   const [isReady, setReady] = createSignal(false);
   // Bootstrap supplies stable host refs for the lifetime of this root.
   const { element, body } = untrack(() => props);
@@ -320,6 +332,8 @@ export function AppEffects(props: AppElements): JSXElement {
         <Style class="customFont">{getFontFace()}</Style>
       </MetaProvider>
       <GlobalEvents />
+      <BreakpointEvents />
+      <ModifierEvents />
       <NoCssFallback element={props.noCssWarning} />
     </>
   );

@@ -571,3 +571,7 @@ export const __nonReactive = {
   getTag,
   getActiveTags,
 };
+
+import.meta.hot?.dispose(() => {
+  void tagsCollection.cleanup();
+});

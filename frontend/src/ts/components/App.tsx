@@ -2,6 +2,7 @@ import { QueryClientProvider } from "@tanstack/solid-query";
 import { JSXElement, Show } from "solid-js";
 import { Portal } from "solid-js/web";
 
+import { getConfig } from "../config/store";
 import { queryClient } from "../queries";
 import { getActivePage } from "../states/core";
 import { isFixingSkillIssue } from "../states/skill-issue";
@@ -12,10 +13,12 @@ import { FilePicker } from "./common/FilePicker";
 import { AppEffects, AppElements } from "./core/AppEffects";
 import { CustomBackground } from "./core/CustomBackground";
 import { FunboxEffects } from "./core/FunboxEffects";
+import { HotkeyEvents } from "./core/HotkeyEvents";
 import { LinkPrefetch } from "./core/LinkPrefetch";
 import { PageHead } from "./core/PageHead";
 import { SkillIssue } from "./core/SkillIssue";
 import { Theme } from "./core/Theme";
+import { ThemeEvents } from "./core/ThemeEvents";
 import { DevTools } from "./dev/DevTools";
 import { Footer } from "./layout/footer/Footer";
 import { Header } from "./layout/header/Header";
@@ -34,6 +37,8 @@ export function App(props: AppElements): JSXElement {
         <PageHead />
         <AppEffects {...props} />
         <Theme />
+        <ThemeEvents />
+        <HotkeyEvents />
         <LinkPrefetch />
       </Portal>
       <Show
@@ -58,7 +63,9 @@ export function App(props: AppElements): JSXElement {
             <Popups />
           </div>
           <DevTools />
-          <MonkeyPower />
+          <Show when={getConfig.monkeyPowerLevel !== "off"}>
+            <MonkeyPower />
+          </Show>
         </Portal>
         <Header />
         <PageScroller>
