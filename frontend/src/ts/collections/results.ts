@@ -1,4 +1,5 @@
 import { ResultMinified } from "@oxytype/schemas/results";
+import { FunboxName } from "@oxytype/schemas/configs";
 import { Client, Difficulty, Mode, Mode2 } from "@oxytype/schemas/shared";
 import { ResultFilters } from "@oxytype/schemas/users";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
@@ -636,6 +637,7 @@ export type CurrentSettingsFilter = {
   language: string;
   difficulty: Difficulty;
   lazyMode: boolean;
+  funbox: FunboxName[];
 };
 
 // oxlint-disable-next-line typescript/explicit-function-return-type
@@ -722,6 +724,7 @@ function buildSettingsResultsQuery(
   options?: { tagIds?: string[] },
 ) {
   const tagIds = options?.tagIds;
+  const funbox = [...new Set(filter.funbox)];
 
   let query = new Query()
     .from({ r: resultsCollection })
@@ -731,7 +734,13 @@ function buildSettingsResultsQuery(
     .where(({ r }) => eq(r.numbers, filter.numbers))
     .where(({ r }) => eq(r.language, filter.language))
     .where(({ r }) => eq(r.difficulty, filter.difficulty))
-    .where(({ r }) => eq(r.lazyMode, filter.lazyMode));
+    .where(({ r }) => eq(r.lazyMode, filter.lazyMode))
+    .where(({ r }) => eq(length(r.funbox), funbox.length));
+
+  // Exact set equality: order must not mix or exclude equivalent combinations.
+  for (const name of funbox) {
+    query = query.where(({ r }) => inArray(name, r.funbox));
+  }
 
   if (tagIds !== undefined) {
     query = query.where(({ r }) =>
