@@ -68,6 +68,12 @@ and a hash that includes that flag. These uploads affect history/typing stats,
 with no PBs, XP, streak progression or leaderboard eligibility. Completion
 timestamps survive delayed uploads.
 
+The backend derives submission identity from the original payload without its
+transport hash or `offline` flag. An online save retried as offline after a lost
+response returns duplicate status 466 and cannot increment statistics twice.
+Previously stored online/offline hashes are recognized for retained queues;
+the transport hash still covers the complete submitted payload.
+
 Draining is serialized, matches the original account and API server, and stops
 on network/auth/rate-limit/server failures. Permanent rejections are retained
 with their error instead of retried repeatedly. Backend duplicate responses
