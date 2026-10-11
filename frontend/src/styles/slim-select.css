@@ -124,4 +124,21 @@
   .ss-content .ss-list .ss-option:not(.ss-disabled) {
     padding-block: 0.75em;
   }
+  /* chips and the clear button: 18x13 by default, too small for a finger */
+  .ss-main .ss-values .ss-value {
+    min-height: 2.25rem;
+    .ss-value-text {
+      align-self: stretch;
+      height: auto;
+      font-size: 0.875rem;
+    }
+    .ss-value-delete {
+      align-self: stretch;
+      height: auto;
+      padding-inline: 0.75rem;
+    }
+  }
+  .ss-main .ss-deselect {
+    @apply min-h-9 min-w-9;
+  }
 }
