@@ -59,6 +59,7 @@ beforeEach(() => {
     caret: element,
     paceCaret: document.createElement("div"),
     typingTest: document.createElement("div"),
+    keyboardProxy: document.createElement("input"),
   });
 });
 
