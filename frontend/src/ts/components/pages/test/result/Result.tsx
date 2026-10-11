@@ -8,6 +8,7 @@ import {
   Show,
   Suspense,
 } from "solid-js";
+import { envConfig } from "virtual:env-config";
 
 import { showErrorNotification } from "../../../../states/notifications";
 import {
@@ -44,7 +45,7 @@ export function Result(): JSXElement {
   onCleanup(bindResultChartLoader(prepareChart));
   createEffect(() => {
     // Warm the chart while typing; completing a short test still awaits mounting.
-    if (isTestActive()) {
+    if (isTestActive() && (!envConfig.isDevelopment || envConfig.devPrefetch)) {
       void prepareChart().catch((error: unknown) =>
         showErrorNotification("Could not load result chart", { error }),
       );
