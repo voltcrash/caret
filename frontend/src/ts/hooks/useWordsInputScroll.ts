@@ -30,8 +30,11 @@ function keepInputAboveKeyboard(input: HTMLTextAreaElement): void {
   if (lineCenter >= minY && lineCenter <= maxY) return;
 
   // Only scrolls when the line leaves the band, so typing within a line never jitters.
+  // instant: html's smooth scrolling would still be moving on the next
+  // keystroke, and measuring mid scroll makes it overshoot
   window.scrollBy({
     top: lineCenter - (visibleTop + visibleHeight * LINE_TARGET),
+    behavior: "instant",
   });
 }
 
