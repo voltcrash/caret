@@ -40,11 +40,11 @@ it("requires successful CI for the exact main-push snapshot", async () => {
   });
 });
 it.each([
-  [],
-  [run({ head_sha: "other-sha" })],
-  [run({ event: "pull_request" })],
-  [run({ head_branch: "feature" })],
-])("rejects missing or unrelated CI (%j)", async (runs) => {
+  { name: "missing", runs: [] },
+  { name: "other commit", runs: [run({ head_sha: "other-sha" })] },
+  { name: "pull request", runs: [run({ event: "pull_request" })] },
+  { name: "other branch", runs: [run({ head_branch: "feature" })] },
+])("rejects $name CI", async ({ runs }) => {
   await expect(requireSuccessfulProductionCI(validation(runs))).rejects.toThrow(
     "No main-push",
   );

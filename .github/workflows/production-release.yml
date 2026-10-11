@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: oxytype-production-release
@@ -49,6 +50,18 @@ jobs:
                 : `Release ${plan.tag} already deployed; skipping this run.`;
               await core.summary.addRaw(message).write();
             }
+
+      - name: Require successful CI for the release commit
+        id: validate-ci
+        if: steps.plan.outputs.shouldDeploy == 'true'
+        uses: actions/github-script@v9.0.0
+        env:
+          RELEASE_SHA: ${{ steps.plan.outputs.sha }}
+        with:
+          script: |
+            const { requireSuccessfulProductionCI } = await import(`${process.env.GITHUB_WORKSPACE}/packages/release/src/production-validation.js`);
+            const run = await requireSuccessfulProductionCI({ github, context, sha: process.env.RELEASE_SHA });
+            await core.summary.addLink('Validated Oxytype CI', run.html_url).write();
 
       - name: Set up Vite+
         if: steps.plan.outputs.shouldDeploy == 'true'
