@@ -30,7 +30,9 @@ it("initializes frontend-only mode without sessions, refresh subscriptions or OA
     requestOAuth,
   } = await import("../src/ts/auth-client");
   const callback = vi.fn(async () => undefined);
-  await init(callback);
+  const initialized = init(callback);
+  expect(callback).not.toHaveBeenCalled();
+  await initialized;
   await authPromise;
   observeAuthSession()();
   expect(isAuthAvailable()).toBe(false);

@@ -98,6 +98,8 @@ export async function init(callback: ReadyCallback): Promise<void> {
     if (envConfig.devOffline) {
       available = false;
       setUserState(null);
+      // Match asynchronous network initialization so the app can mount listeners.
+      await Promise.resolve();
       await callback(true, null);
       return;
     }
