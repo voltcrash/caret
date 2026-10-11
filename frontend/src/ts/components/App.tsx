@@ -13,6 +13,7 @@ import { FilePicker } from "./common/FilePicker";
 import { AppEffects, AppElements } from "./core/AppEffects";
 import { CustomBackground } from "./core/CustomBackground";
 import { FunboxEffects } from "./core/FunboxEffects";
+import { HotkeyEvents } from "./core/HotkeyEvents";
 import { LinkPrefetch } from "./core/LinkPrefetch";
 import { PageHead } from "./core/PageHead";
 import { SkillIssue } from "./core/SkillIssue";
@@ -37,6 +38,7 @@ export function App(props: AppElements): JSXElement {
         <AppEffects {...props} />
         <Theme />
         <ThemeEvents />
+        <HotkeyEvents />
         <LinkPrefetch />
       </Portal>
       <Show

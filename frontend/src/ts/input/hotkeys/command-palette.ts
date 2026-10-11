@@ -9,8 +9,10 @@ function openCommandPalette(): void {
   showModal("Commandline");
 }
 
-createHotkey(() => hotkeys.commandPalette, openCommandPalette);
-createHotkey(SECONDARY_COMMAND_PALETTE_HOTKEY, openCommandPalette, () => ({
-  // the configured hotkey already registers it
-  enabled: hotkeys.commandPalette !== SECONDARY_COMMAND_PALETTE_HOTKEY,
-}));
+export function useCommandPaletteHotkeys(): void {
+  createHotkey(() => hotkeys.commandPalette, openCommandPalette);
+  createHotkey(SECONDARY_COMMAND_PALETTE_HOTKEY, openCommandPalette, () => ({
+    // the configured hotkey already registers it
+    enabled: hotkeys.commandPalette !== SECONDARY_COMMAND_PALETTE_HOTKEY,
+  }));
+}
