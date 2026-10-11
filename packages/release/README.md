@@ -50,3 +50,13 @@ date-named release containing all changes since that release. Delayed runs and
 retries use the UTC date when release planning executes, while retaining the
 run's original `main` snapshot. See [production automation setup](../../docs/PRODUCTION_SETUP.md#production-releases)
 for required Actions inputs and first-release behavior.
+
+Before preparing credentials or deploying, the production workflow requires the
+latest **Oxytype CI** main-push run for its exact commit to finish successfully.
+Missing, pending, failed or cancelled CI blocks deployment; retry the production
+run after that commit's CI succeeds. Older successful runs and PR merge snapshots
+cannot satisfy this check. The workflow token has Actions read permission.
+
+Shared root manifests, lockfile, tool configuration and patches trigger all
+component validation jobs, including asset checks. Component-only changes retain
+selective CI routing.
