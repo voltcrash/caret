@@ -2,7 +2,7 @@ import { createEffect, createSignal, JSXElement } from "solid-js";
 
 type Props = {
   id?: string;
-  label?: string;
+  label: string;
   ref?: (el: HTMLInputElement) => void;
   value: number;
   min: number;
