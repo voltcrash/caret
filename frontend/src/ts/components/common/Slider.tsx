@@ -1,6 +1,8 @@
 import { createEffect, createSignal, JSXElement } from "solid-js";
 
 type Props = {
+  id?: string;
+  label: string;
   ref?: (el: HTMLInputElement) => void;
   value: number;
   min: number;
@@ -26,6 +28,8 @@ export function Slider(props: Props): JSXElement {
     <div class="grid w-full min-w-0 grid-cols-[3ch_minmax(0,1fr)] items-center gap-4">
       <div>{textToDisplay()}</div>
       <input
+        id={props.id}
+        aria-label={props.label}
         ref={props.ref}
         type="range"
         // horizontal drags go to the slider on touch; vertical swipes still scroll the page
