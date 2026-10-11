@@ -258,11 +258,11 @@ async function addResultAtomic(
   }
 
   const resulthash = completedEvent.hash;
+  const objectToHash = omit(completedEvent, ["hash"]);
   // Transport state changes on reconnect; submission identity must not.
   // Compute before server timestamps and anticheat normalization mutate it.
-  const submissionHash = objectHash(omit(completedEvent, ["hash", "offline"]));
+  const submissionHash = objectHash(omit(objectToHash, ["offline"]));
   if (req.ctx.configuration.results.objectHashCheckEnabled) {
-    const objectToHash = omit(completedEvent, ["hash"]);
     const serverhash = objectHash(objectToHash);
     // Older web clients hashed before the client discriminator existed.
     const legacyWebHash =
@@ -284,6 +284,20 @@ async function addResultAtomic(
     }
   } else {
     Logger.warning("Object hash check is disabled, skipping hash check");
+  }
+
+  // Retained queues may retry results saved before stable hashes were deployed.
+  // Match their original online/offline payload hashes too, before progression.
+  if (
+    await ResultDAL.hasSubmissionHash(uid, [
+      submissionHash,
+      resulthash,
+      objectHash({ ...objectToHash, offline: false }),
+      objectHash({ ...objectToHash, offline: true }),
+    ])
+  ) {
+    const status = MonkeyStatusCodes.DUPLICATE_RESULT;
+    throw new MonkeyError(status.code, "Duplicate result");
   }
 
   if (completedEvent.funbox.length !== new Set(completedEvent.funbox).size) {
