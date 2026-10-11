@@ -79,19 +79,30 @@ export class LocalStorageWithSchema<T> {
       console.error(
         `LS ${this.key} Failed to parse from localStorage: ${error.message}`,
       );
-      window.localStorage.setItem(this.key, JSON.stringify(this.fallback));
+      this.repair(this.fallback);
       this.cache = this.fallback;
       return structuredClone(this.cache);
     }
 
     if (migrated || parsed === this.fallback) {
       console.debug(`LS ${this.key} Setting in localStorage`);
-      window.localStorage.setItem(this.key, JSON.stringify(parsed));
+      this.repair(parsed as T);
     }
 
     console.debug(`LS ${this.key} Got value:`, parsed);
     this.cache = parsed as T;
     return structuredClone(this.cache);
+  }
+
+  private repair(data: T): void {
+    const { error } = tryCatchSync(() =>
+      window.localStorage.setItem(this.key, JSON.stringify(data)),
+    );
+    if (error) {
+      console.error(
+        `LS ${this.key} Repair could not be persisted: ${error.message}`,
+      );
+    }
   }
 
   public set(data: T): boolean {
