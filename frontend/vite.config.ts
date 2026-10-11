@@ -90,11 +90,15 @@ function getPlugins({
   ];
 
   const devPlugins: PluginOption[] = [
-    oxlintChecker({
-      debounceDelay: 125,
-      typeAware: true,
-      overlay: isDevelopment,
-    }),
+    ...(env["DEV_LINT"] === "true" || env["DEV_LINT"] === "fast"
+      ? [
+          oxlintChecker({
+            debounceDelay: 750,
+            typeAware: env["DEV_LINT"] === "true",
+            overlay: isDevelopment,
+          }),
+        ]
+      : []),
     Inspect(),
   ];
 
