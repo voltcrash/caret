@@ -66,11 +66,14 @@ if (isCoarsePointer) {
   Chart.defaults.font.size = 13;
 }
 
-configEvent.subscribe(({ key, newValue }) => {
-  if (key === "fontFamily") {
-    Chart.defaults.font.family = newValue.replace(/_/g, " ");
-  }
-});
+configEvent.subscribe(
+  ({ key, newValue }) => {
+    if (key === "fontFamily") {
+      Chart.defaults.font.family = newValue.replace(/_/g, " ");
+    }
+  },
+  import.meta.hot,
+);
 
 type ChartJSProps<
   T extends ChartType = ChartType,

@@ -45,10 +45,13 @@ const throttledHandleState = debounce(5000, () => {
   }
 });
 
-connectionEvent.subscribe((newState) => {
-  setState(newState);
-  throttledHandleState();
-});
+connectionEvent.subscribe(
+  (newState) => {
+    setState(newState);
+    throttledHandleState();
+  },
+  import.meta.hot,
+);
 
 onDOMReady(() => {
   setState(navigator.onLine);

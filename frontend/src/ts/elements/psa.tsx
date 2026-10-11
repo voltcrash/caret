@@ -121,8 +121,11 @@ async function show(): Promise<void> {
   });
 }
 
-authEvent.subscribe((event) => {
-  if (event.type === "authStateChanged") {
-    void show();
-  }
-});
+authEvent.subscribe(
+  (event) => {
+    if (event.type === "authStateChanged") {
+      void show();
+    }
+  },
+  import.meta.hot,
+);
