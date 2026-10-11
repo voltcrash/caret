@@ -20,6 +20,7 @@ import {
 import { getLoadedChallenge, setLoadedChallenge } from "../../states/test";
 import * as CustomText from "../../test/custom-text";
 import * as PractiseWords from "../../test/practise-words";
+import { getBailOutHint } from "../../utils/bail-out";
 import { cn } from "../../utils/cn";
 import * as Strings from "../../utils/strings";
 import { AnimatedModal } from "../common/AnimatedModal";
@@ -112,10 +113,9 @@ export function CustomTextModal(): JSXElement {
         value.limitWord === "0" ||
         value.limitTime === "0"
       ) {
-        showNoticeNotification(
-          "Infinite test! Make sure to use Bail Out from the command palette to save your result.",
-          { durationMs: 7000 },
-        );
+        showNoticeNotification(`Infinite test! ${getBailOutHint()}`, {
+          durationMs: 7000,
+        });
       }
 
       const text = cleanUpText();

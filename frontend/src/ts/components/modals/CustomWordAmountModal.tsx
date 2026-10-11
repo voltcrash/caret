@@ -7,6 +7,7 @@ import { getConfig } from "../../config/store";
 import { restartTestEvent } from "../../events/test";
 import { hideModalAndClearChain } from "../../states/modals";
 import { showNoticeNotification } from "../../states/notifications";
+import { getBailOutHint } from "../../utils/bail-out";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { InputField } from "../ui/form/InputField";
 import { SubmitButton } from "../ui/form/SubmitButton";
@@ -25,10 +26,9 @@ export function CustomWordAmountModal(): JSXElement {
       if (val > 2000) {
         showNoticeNotification("Stay safe and take breaks!");
       } else if (val === 0) {
-        showNoticeNotification(
-          "Infinite words! Make sure to use Bail Out from the command palette to save your result.",
-          { durationMs: 7000 },
-        );
+        showNoticeNotification(`Infinite words! ${getBailOutHint()}`, {
+          durationMs: 7000,
+        });
       }
 
       hideModalAndClearChain("CustomWordAmount");
