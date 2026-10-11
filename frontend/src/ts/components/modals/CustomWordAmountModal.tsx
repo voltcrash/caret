@@ -58,7 +58,13 @@ export function CustomWordAmountModal(): JSXElement {
             onChange: fromSchema(z.number().nonnegative().safe()),
           }}
           children={(field) => (
-            <InputField field={field} type="number" placeholder="word amount" />
+            <InputField
+              field={field}
+              type="number"
+              min={0}
+              step={1}
+              placeholder="word amount"
+            />
           )}
         />
         <div class="text-xs">
