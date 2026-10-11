@@ -4,13 +4,11 @@ import {
   createMemo,
   JSXElement,
   onCleanup,
-  onMount,
   Show,
 } from "solid-js";
 import { debounce } from "throttle-debounce";
 
 import { Theme as ThemeColors, themes } from "../../constants/themes";
-import { handleColorSchemeChange } from "../../controllers/theme-controller";
 import { createEffectOn } from "../../hooks/effects";
 import { useRef } from "../../hooks/useRef";
 import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
@@ -45,13 +43,6 @@ function toCss(colors: ThemeColors): string {
 }
 
 export function Theme(): JSXElement {
-  onMount(() => {
-    const query = window.matchMedia?.("(prefers-color-scheme: dark)");
-    query?.addEventListener?.("change", handleColorSchemeChange);
-    onCleanup(() =>
-      query?.removeEventListener?.("change", handleColorSchemeChange),
-    );
-  });
   // Refs are assigned by SolidJS via the ref attribute
   const [styleRef, styleEl] = useRef<HTMLStyleElement>();
   const [linkRef, linkEl] = useRef<HTMLLinkElement>();
