@@ -710,6 +710,9 @@ export async function updateProfile(
     });
     if (updates.bio !== undefined) current.bio = updates.bio;
     if (updates.keyboard !== undefined) current.keyboard = updates.keyboard;
+    if (updates.showActivityOnPublicProfile !== undefined) {
+      current.showActivityOnPublicProfile = updates.showActivityOnPublicProfile;
+    }
     if (updates.socialProfiles) {
       current.socialProfiles = {
         ...current.socialProfiles,
