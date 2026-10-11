@@ -30,6 +30,12 @@
 
   --balloon-font-size: 1rem;
   --balloon-border-radius: calc(var(--roundness) / 2);
+
+  /* phones: fit more of each line, see getWordsFontSize */
+  --words-font-scale: 1;
+  @media (max-width: 480px) {
+    --words-font-scale: 0.8;
+  }
 }
 
 ::placeholder {

@@ -72,6 +72,7 @@ import * as Misc from "../../../utils/misc";
 import { convertRemToPixels } from "../../../utils/numbers";
 import { isCoarsePointer } from "../../../utils/pointer";
 import * as Strings from "../../../utils/strings";
+import { getWordsFontScale, getWordsFontSize } from "../../../utils/words-font";
 import * as MonkeyPower from "./MonkeyPower";
 
 export const updateHintsPositionDebounced = Misc.debounceUntilResolved(
@@ -412,10 +413,11 @@ function updateWordWrapperClasses(): void {
     getCaretElement(),
     getPaceCaretElement(),
     getTypingTestElement(),
-    getWordsInputElement(),
   ]) {
-    element.style.fontSize = `${Config.fontSize}rem`;
+    element.style.fontSize = getWordsFontSize(Config.fontSize);
   }
+  // under 16px ios zooms the page in when the input is focused
+  getWordsInputElement().style.fontSize = `max(16px, ${getWordsFontSize(Config.fontSize)})`;
 
   if (isLanguageRightToLeft()) {
     setClass(getWordsEl(), "rightToLeftTest", true);
@@ -506,7 +508,8 @@ export function updateWordsInputPosition(): void {
     return;
   }
 
-  const letterHeight = convertRemToPixels(Config.fontSize);
+  const letterHeight =
+    convertRemToPixels(Config.fontSize) * getWordsFontScale();
   const targetTop =
     activeWord.offsetTop + letterHeight / 2 - el.offsetHeight / 2 + 1; //+1 for half of border
 

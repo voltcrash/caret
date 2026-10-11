@@ -3,6 +3,7 @@ import { Show } from "solid-js";
 import { getConfig } from "../../../config/store";
 import { getCompositionText, testFocusState } from "../../../states/test";
 import { cn } from "../../../utils/cn";
+import { getWordsFontSize } from "../../../utils/words-font";
 
 export function CompositionDisplay() {
   const isOutOfFocus = () => testFocusState() !== "focused";
@@ -13,7 +14,7 @@ export function CompositionDisplay() {
           "opacity-25 blur-xs": isOutOfFocus(),
         })}
         style={{
-          "font-size": `${getConfig.fontSize}rem`,
+          "font-size": getWordsFontSize(getConfig.fontSize),
           // instant unblur, 0.25s fade to blur — matches the imperative #words path
           transition: isOutOfFocus() ? "0.25s" : "none",
         }}
