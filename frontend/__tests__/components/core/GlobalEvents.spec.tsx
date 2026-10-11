@@ -58,6 +58,7 @@ vi.mock("../../../src/ts/states/notifications", () => ({
 vi.mock("../../../src/ts/test/focus", () => ({ set: unfocus }));
 
 import { GlobalEvents } from "../../../src/ts/components/core/GlobalEvents";
+import { connectionEvent } from "../../../src/ts/events/connection";
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -88,6 +89,18 @@ function press(
 }
 
 describe("Global events", () => {
+  it("owns online/offline listeners even when mounted after window load", () => {
+    const dispatch = vi.spyOn(connectionEvent, "dispatch");
+    const { unmount } = render(() => <GlobalEvents />);
+    window.dispatchEvent(new Event("offline"));
+    window.dispatchEvent(new Event("online"));
+    expect(dispatch.mock.calls).toEqual([[false], [true]]);
+    unmount();
+    window.dispatchEvent(new Event("offline"));
+    expect(dispatch).toHaveBeenCalledTimes(2);
+    dispatch.mockRestore();
+  });
+
   it("unfocuses only for positive mouse movement above the legacy threshold", () => {
     const { unmount } = render(() => <GlobalEvents />);
     state.focus = true;

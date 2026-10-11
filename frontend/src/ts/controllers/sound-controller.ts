@@ -136,9 +136,9 @@ export async function previewError(val: PlaySoundOnError): Promise<void> {
 
 let currentCode = "KeyA";
 
-document.addEventListener("keydown", (event) => {
+export function updateCurrentCode(event: KeyboardEvent): void {
   currentCode = event.code || "KeyA";
-});
+}
 
 const notes: Record<ValidNotes, ValidFrequencies> = {
   C: [16.35, 32.7, 65.41, 130.81, 261.63, 523.25, 1046.5, 2093.0, 4186.01],

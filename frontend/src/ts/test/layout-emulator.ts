@@ -34,5 +34,6 @@ export function getIsAltGrPressed(): boolean {
   return isAltGrPressed;
 }
 
-document.addEventListener("keydown", updateAltGrState);
-document.addEventListener("keyup", updateAltGrState);
+export function resetAltGrState(): void {
+  isAltGrPressed = false;
+}
