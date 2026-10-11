@@ -1,10 +1,12 @@
 import { onCleanup } from "solid-js";
 
+export type ModuleHotContext = { dispose: (callback: () => void) => void };
+
 type Listener<T> = (value: T) => void;
 
 type EventBus<T> = {
   dispatch: (...args: T extends undefined ? [] : [value: T]) => void;
-  subscribe: (fn: Listener<T>) => () => void;
+  subscribe: (fn: Listener<T>, hot?: ModuleHotContext) => () => void;
   useListener: (fn: Listener<T>) => void;
 };
 
@@ -41,9 +43,13 @@ export function createEvent<T = undefined>(): EventBus<T> {
     }
   }
 
-  function subscribe(fn: Listener<T>): () => void {
+  function subscribe(fn: Listener<T>, hot?: ModuleHotContext): () => void {
     listeners.add(fn);
-    return () => listeners.delete(fn);
+    const unsubscribe = (): void => {
+      listeners.delete(fn);
+    };
+    hot?.dispose(unsubscribe);
+    return unsubscribe;
   }
 
   // Auto-unsubscribes when the Solid owner scope is disposed
