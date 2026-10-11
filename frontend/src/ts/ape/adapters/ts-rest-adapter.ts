@@ -27,6 +27,16 @@ function buildApi(timeout: number): (args: ApiFetcherArgs) => Promise<{
   headers: Headers;
 }> {
   return async (request: ApiFetcherArgs) => {
+    if (envConfig.devOffline) {
+      return {
+        status: 503,
+        body: {
+          message:
+            "Backend requests are unavailable in frontend-only development",
+        },
+        headers: new Headers(),
+      };
+    }
     try {
       const usePolyfill = AbortSignal?.timeout === undefined;
 
