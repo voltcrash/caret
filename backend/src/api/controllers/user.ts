@@ -99,30 +99,25 @@ export async function createNewUser(
   // Expired challenges and verification outages can be retried in this session.
   await verifyCaptcha(captcha, "signup");
 
-  try {
-    if (email.endsWith("@tidal.lol") || email.endsWith("@selfbot.cc")) {
-      throw new MonkeyError(400, "Invalid domain");
-    }
-
-    const available = await UserDAL.isNameAvailable(name, uid);
-    if (!available) {
-      throw new MonkeyError(409, "Username unavailable");
-    }
-
-    const blocklisted = await BlocklistDal.contains({ name, email });
-    if (blocklisted) {
-      throw new MonkeyError(409, "Username or email blocked");
-    }
-
-    await UserDAL.addUser(name, email, uid);
-    void addImportantLog("user_created", `${name} ${email}`, uid);
-
-    return new MonkeyResponse("User created", null);
-  } catch (e) {
-    // Remove an unfinished authentication account after registration fails.
-    await authDeleteUserIgnoreError(uid);
-    throw e;
+  // Profile conflicts must preserve the authenticated onboarding session.
+  if (email.endsWith("@tidal.lol") || email.endsWith("@selfbot.cc")) {
+    throw new MonkeyError(400, "Invalid domain");
   }
+
+  const available = await UserDAL.isNameAvailable(name, uid);
+  if (!available) {
+    throw new MonkeyError(409, "Username unavailable");
+  }
+
+  const blocklisted = await BlocklistDal.contains({ name, email });
+  if (blocklisted) {
+    throw new MonkeyError(409, "Username or email blocked");
+  }
+
+  await UserDAL.addUser(name, email, uid);
+  void addImportantLog("user_created", `${name} ${email}`, uid);
+
+  return new MonkeyResponse("User created", null);
 }
 
 export async function deleteUser(req: MonkeyRequest): Promise<MonkeyResponse> {
@@ -892,14 +887,6 @@ export async function getTestActivity(
     "Test activity data retrieved",
     user.testActivity ?? null,
   );
-}
-
-async function authDeleteUserIgnoreError(uid: string): Promise<void> {
-  try {
-    await AuthUtil.deleteUser(uid);
-  } catch (e) {
-    //ignore
-  }
 }
 
 export async function getCurrentTestActivity(

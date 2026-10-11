@@ -76,8 +76,8 @@ describe("user controller test", () => {
         email: "newuser@mail.com",
       });
 
-      //user will be created in Better Auth from the frontend, make sure we remove it
-      expect(authDeleteUserMock).toHaveBeenCalledWith(uid);
+      // Preserve the authenticated identity for a corrected onboarding request.
+      expect(authDeleteUserMock).not.toHaveBeenCalled();
       expect(verifyCaptchaMock).toHaveBeenCalledWith("captcha", "signup");
     });
 
@@ -109,8 +109,8 @@ describe("user controller test", () => {
         //THEN
         expect(result.body.message).toEqual("Invalid domain");
 
-        //user will be created in Better Auth from the frontend, make sure we remove it
-        expect(authDeleteUserMock).toHaveBeenCalledWith(uid);
+        // Preserve the authenticated identity for a corrected onboarding request.
+        expect(authDeleteUserMock).not.toHaveBeenCalled();
       }
     });
 
@@ -137,8 +137,8 @@ describe("user controller test", () => {
       expect(result.body.message).toEqual("Username unavailable");
       expect(usernameAvailableMock).toHaveBeenCalledWith("NewUser", uid);
 
-      //user will be created in Better Auth from the frontend, make sure we remove it
-      expect(authDeleteUserMock).toHaveBeenCalledWith(uid);
+      // Preserve the authenticated identity for a corrected onboarding request.
+      expect(authDeleteUserMock).not.toHaveBeenCalled();
     });
     it("should fail if capture is invalid", async () => {
       //GIVEN
