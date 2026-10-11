@@ -3,6 +3,7 @@ export type EnvConfig = {
   isDevelopment: boolean;
   devTools: boolean;
   devPrefetch: boolean;
+  devOffline: boolean;
   clientVersion: string;
   turnstileSiteKey: string;
   authProviders: ("google" | "github")[];
