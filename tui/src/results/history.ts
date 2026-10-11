@@ -183,12 +183,13 @@ export function localPaceSpeed(
           last10.reduce((sum, result) => sum + result.wpm, 0) / last10.length,
         );
   }
-  const today = new Date(now).setHours(0, 0, 0, 0);
+  const dailyCutoff = now - 24 * 60 * 60 * 1000;
   return Math.max(
     0,
     ...results
       .filter(
-        (result) => config.paceCaret !== "daily" || result.timestamp >= today,
+        (result) =>
+          config.paceCaret !== "daily" || result.timestamp >= dailyCutoff,
       )
       .map((result) => result.wpm),
   );
