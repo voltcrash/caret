@@ -19,6 +19,9 @@ allowBuilds:
   workerd: true
 
 overrides:
+  "brace-expansion@^2": "2.1.7"
+  "brace-expansion@^5": "5.0.12"
+  "brace-expansion@^1": "1.1.21"
   "seroval": "1.6.3"
   # Authentication uses Drizzle; exclude the unused adapter and optional driver.
   "better-auth>@better-auth/mongo-adapter": "-"
