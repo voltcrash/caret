@@ -128,6 +128,15 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
   let dragStartTime = 0;
   let dragOffset = 0;
 
+  const resetSheetDrag = (): void => {
+    dragStartY = undefined;
+    animateElement(modalEl(), {
+      translateY: [`${dragOffset}px`, "0px"],
+      duration: applyReducedMotion(DEFAULT_ANIMATION_DURATION),
+    });
+    dragOffset = 0;
+  };
+
   const onHandlePointerDown = (e: PointerEvent): void => {
     if (!usesSheetAnimation() || props.closeOnWrapperClick === false) return;
     dragStartY = e.clientY;
@@ -155,13 +164,14 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
       } else {
         storeHideModal(props.id);
       }
+      if (visibility()) resetSheetDrag();
       return;
     }
-    animateElement(modalEl(), {
-      translateY: [`${dragOffset}px`, "0px"],
-      duration: applyReducedMotion(DEFAULT_ANIMATION_DURATION),
-    });
-    dragOffset = 0;
+    resetSheetDrag();
+  };
+
+  const onHandlePointerCancel = (): void => {
+    if (dragStartY !== undefined) resetSheetDrag();
   };
 
   // Handle open/close with animations
@@ -462,7 +472,7 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
               onPointerDown={onHandlePointerDown}
               onPointerMove={onHandlePointerMove}
               onPointerUp={onHandlePointerUp}
-              onPointerCancel={onHandlePointerUp}
+              onPointerCancel={onHandlePointerCancel}
             >
               <div class="h-1.5 w-10 rounded-full bg-sub-alt"></div>
             </div>

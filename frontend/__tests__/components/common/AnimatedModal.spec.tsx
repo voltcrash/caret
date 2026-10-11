@@ -29,6 +29,7 @@ import { AnimatedModal } from "../../../src/ts/components/common/AnimatedModal";
 import {
   hideModal,
   hideModalAndClearChain,
+  isModalOpen,
   showModal,
 } from "../../../src/ts/states/modals";
 import { isAnyPopupVisible } from "../../../src/ts/states/overlay-visibility";
@@ -353,5 +354,61 @@ describe("AnimatedModal", () => {
     expect(support.open).toBe(false);
     expect(getComputedStyle(support).display).toBe("none");
     expect(getComputedStyle(contact).display).toBe("none");
+  });
+
+  describe("sheet gestures", () => {
+    beforeEach(() => {
+      vi.stubGlobal(
+        "matchMedia",
+        vi.fn(() => ({ matches: true })),
+      );
+    });
+
+    afterEach(() => vi.unstubAllGlobals());
+
+    async function openSheet(onBackdropClick = vi.fn()): Promise<{
+      handle: HTMLElement;
+      dialog: HTMLDialogElement;
+      onBackdropClick: ReturnType<typeof vi.fn>;
+    }> {
+      const { dialog, modalDiv } = renderModal({ onBackdropClick });
+      await waitFor(() => expect(dialog.open).toBe(true));
+      await completeAnimation();
+      animations.length = 0;
+      const handle = modalDiv.querySelector(
+        "[aria-hidden='true']",
+      ) as HTMLElement;
+      handle.setPointerCapture = vi.fn();
+      return { handle, dialog, onBackdropClick };
+    }
+
+    function pointer(handle: HTMLElement, type: string, clientY: number): void {
+      const event = new MouseEvent(type, { bubbles: true, clientY });
+      Object.defineProperty(event, "pointerId", { value: 1 });
+      fireEvent(handle, event);
+    }
+
+    it("snaps a cancelled drag back without dismissing the sheet", async () => {
+      const { handle, dialog, onBackdropClick } = await openSheet();
+      pointer(handle, "pointerdown", 100);
+      pointer(handle, "pointermove", 220);
+      pointer(handle, "pointercancel", 220);
+
+      expect(onBackdropClick).not.toHaveBeenCalled();
+      expect(isModalOpen("Support")).toBe(true);
+      expect(dialog.open).toBe(true);
+      expect(animations.at(-1)?.params["translateY"]).toEqual(["120px", "0px"]);
+    });
+
+    it("snaps back when a dismissal callback keeps the sheet open", async () => {
+      const { handle, onBackdropClick } = await openSheet();
+      pointer(handle, "pointerdown", 100);
+      pointer(handle, "pointermove", 220);
+      pointer(handle, "pointerup", 220);
+
+      expect(onBackdropClick).toHaveBeenCalledOnce();
+      expect(isModalOpen("Support")).toBe(true);
+      expect(animations.at(-1)?.params["translateY"]).toEqual(["120px", "0px"]);
+    });
   });
 });
