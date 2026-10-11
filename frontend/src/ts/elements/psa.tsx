@@ -2,6 +2,7 @@ import { PSA } from "@oxytype/schemas/psas";
 import { IdSchema } from "@oxytype/schemas/util";
 import { isSafeNumber } from "@oxytype/util/numbers";
 import { format } from "date-fns/format";
+import { envConfig } from "virtual:env-config";
 import { z } from "zod/v3";
 
 import Ape from "../ape";
@@ -33,6 +34,8 @@ function setMemory(id: string): void {
 }
 
 async function getLatest(): Promise<PSA[] | null> {
+  // No server announcements exist in frontend-only development.
+  if (envConfig.devOffline) return null;
   const response = await Ape.psas.get();
 
   if (response.status === 500) {
