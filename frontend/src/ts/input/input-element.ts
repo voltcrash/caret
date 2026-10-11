@@ -56,6 +56,15 @@ export function holdKeyboardForRestart(): void {
   getKeyboardProxyElement().focus({ preventScroll: true });
 }
 
+// on touch the keyboard is only up if the user focused the input (or the
+// proxy) with a tap. focus() outside a tap focuses without a keyboard
+export function isTouchKeyboardFocused(): boolean {
+  return (
+    document.activeElement === getInputElement() ||
+    document.activeElement === getKeyboardProxyElement()
+  );
+}
+
 export function blurInputElement(): void {
   getInputElement().blur();
 }

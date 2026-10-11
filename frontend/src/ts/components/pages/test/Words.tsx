@@ -12,6 +12,7 @@ import { useWordsFocus } from "../../../hooks/useWordsFocus";
 import {
   blurInputElement,
   focusInputElement,
+  isTouchKeyboardFocused,
   getInputElement,
   isInputElementFocused,
 } from "../../../input/input-element";
@@ -1417,8 +1418,15 @@ export function onTestRestart(source: "testPage" | "resultPage"): void {
   });
   LayoutfluidFunboxTimer.instantHide();
   // force blur drops the keyboard on iOS (refocus without a gesture won't reopen it),
-  // so on touch keep the input focused; value was already reset in test-logic restart
-  focusWords(!isCoarsePointer());
+  // so on touch keep the input focused; value was already reset in test-logic restart.
+  // without a keyboard up (first load), stay unfocused so the tap to type hint shows
+  if (!isCoarsePointer()) {
+    focusWords(true);
+  } else if (isTouchKeyboardFocused()) {
+    focusWords();
+  } else {
+    scrollToCenterOrTop(getTypingTestElement());
+  }
   MonkeyPower.reset();
   Caret.resetPosition();
   setTestInitError(null);
