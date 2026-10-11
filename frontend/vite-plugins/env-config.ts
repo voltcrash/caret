@@ -33,6 +33,7 @@ export function envConfig(options: {
       if (id === resolvedVirtualModuleId) {
         const devConfig: EnvConfig = {
           isDevelopment: true,
+          devTools: options.env["DEV_TOOLS"] === "true",
           authProviders,
           backendUrl: fallback(
             options.env["BACKEND_URL"],
@@ -51,6 +52,7 @@ export function envConfig(options: {
 
         const prodConfig: EnvConfig = {
           isDevelopment: false,
+          devTools: false,
           authProviders,
           backendUrl: fallback(options.env["BACKEND_URL"], "/api"),
           turnstileSiteKey: options.env["TURNSTILE_SITE_KEY"] ?? "",

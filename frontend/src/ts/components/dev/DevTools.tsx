@@ -1,4 +1,5 @@
-import { JSXElement, lazy, onMount, Suspense } from "solid-js";
+import { JSXElement, lazy, onMount, Show, Suspense } from "solid-js";
+import { envConfig } from "virtual:env-config";
 
 let DevComponents: (() => JSXElement) | undefined;
 
@@ -36,10 +37,12 @@ if (import.meta.env.DEV) {
 
   DevComponents = () => (
     <Suspense>
-      <LazyTanstackDevtools />
+      <Show when={envConfig.devTools}>
+        <LazyTanstackDevtools />
+        <LazySolidDevtoolsOverlay />
+      </Show>
       <LazyDevOptionsModal />
       <LazyEventLogViewerModal />
-      <LazySolidDevtoolsOverlay />
     </Suspense>
   );
 }

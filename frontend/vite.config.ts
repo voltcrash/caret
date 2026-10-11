@@ -20,6 +20,7 @@ import { versionFile } from "./vite-plugins/version-file";
 import { oxlintChecker } from "./vite-plugins/oxlint-checker";
 import { injectPreload } from "./vite-plugins/inject-preload";
 import { standaloneHtml } from "./vite-plugins/standalone-html";
+import { devtoolsEntry } from "./vite-plugins/devtools-entry";
 import Inspect from "vite-plugin-inspect";
 import { ViteMinifyPlugin } from "vite-plugin-minify";
 import { VitePWA } from "vite-plugin-pwa";
@@ -77,6 +78,7 @@ function getPlugins({
 
   const plugins: PluginOption[] = [
     envConfig({ isDevelopment, clientVersion, env }),
+    devtoolsEntry({ enabled: isDevelopment && env["DEV_TOOLS"] === "true" }),
     languageHashes({ skip: isDevelopment }),
     injectHTML() as PluginOption,
     fontStyles({ isDevelopment }),
@@ -84,9 +86,9 @@ function getPlugins({
 
     solidPlugin({ ssr: true }),
     standaloneHtml(),
-    devtools({
-      autoname: true,
-    }),
+    ...(isDevelopment && env["DEV_TOOLS"] === "true"
+      ? [devtools({ autoname: true })]
+      : []),
   ];
 
   const devPlugins: PluginOption[] = [
