@@ -28,11 +28,12 @@ import { isInputElementFocused } from "../input/input-element";
 import {
   hideModal as storeHideModal,
   hideModalAndClearChain as storeClearChain,
-  showModal,
 } from "../states/modals";
 import { setTestFocusState } from "../states/test";
 import { commandlineState, type InputModeParams } from "../states/commandline";
 import { hotkeys } from "../states/hotkeys";
+import { takePendingSettings } from "./open";
+export { show } from "./open";
 import { isCoarsePointer } from "../utils/pointer";
 
 const MODAL_STORE_ID = "Commandline";
@@ -51,22 +52,8 @@ function addCommandlineBackground(): void {
   }
 }
 
-type ShowSettings = {
-  subgroupOverride?: CommandsSubgroup | CommandlineSubgroupKey;
-  commandOverride?: string;
-  singleListOverride?: boolean;
-};
-
-let pendingSettings: ShowSettings | undefined;
-
-export function show(settings?: ShowSettings): void {
-  pendingSettings = settings;
-  showModal(MODAL_STORE_ID);
-}
-
 export async function prepareCommandline(): Promise<void> {
-  const settings = pendingSettings;
-  pendingSettings = undefined;
+  const settings = takePendingSettings();
   commandlineState.open = true;
   commandlineState.mouseMode = false;
   commandlineState.inputValue = "";
