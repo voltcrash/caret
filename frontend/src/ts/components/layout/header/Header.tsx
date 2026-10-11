@@ -32,6 +32,8 @@ export function Header(): JSXElement {
       ref={ref}
       class={cn(
         "flex place-items-center gap-2",
+        // a long press on the nav icons selects them instead of tapping
+        "pointer-coarse:select-none pointer-coarse:[-webkit-touch-callout:none]",
         {
           "opacity-0": getIsScreenshotting(),
         },
