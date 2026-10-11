@@ -2,6 +2,8 @@ import { For, JSXElement, Show, createEffect, on } from "solid-js";
 
 import {
   afterHideCommandline,
+  canCommandlineGoBack,
+  onCommandlineBack,
   onCommandlineBackdropClick,
   onCommandlineBeforeHide,
   onCommandlineEscape,
@@ -242,6 +244,17 @@ export function Commandline(): JSXElement {
           <div class="col-start-1 row-start-1 mx-4 mt-px bg-bg text-sub">
             <Fa icon="fa-circle-notch" fixedWidth spin />
           </div>
+        </Show>
+        {/* touch has no esc or backspace to leave a group */}
+        <Show when={canCommandlineGoBack()}>
+          <button
+            type="button"
+            class="col-start-1 row-start-1 hidden size-11 place-items-center justify-self-center bg-bg text-sub pointer-coarse:grid"
+            aria-label="Back"
+            onClick={onCommandlineBack}
+          >
+            <Fa icon="fa-chevron-left" fixedWidth />
+          </button>
         </Show>
         <input
           ref={(el) => {

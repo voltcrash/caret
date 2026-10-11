@@ -640,3 +640,14 @@ export function onCommandlineBackdropClick(): void {
 export function onCommandlineEscape(): void {
   void goBackOrHide();
 }
+
+export function onCommandlineBack(): void {
+  void goBackOrHide();
+}
+
+export function canCommandlineGoBack(): boolean {
+  return (
+    commandlineState.mode === "input" ||
+    commandlineState.subgroupStack.length > 1
+  );
+}
