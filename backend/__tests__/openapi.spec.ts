@@ -54,19 +54,18 @@ describe("OpenAPI dependency compatibility", () => {
     });
   });
 
-  it("supports a schema property named hasOwnProperty", () => {
+  it("preserves both sides of nested response intersections", () => {
     const contract = c.router({
       read: {
         method: "GET",
         path: "/audit",
         responses: {
-          200: z.object({
-            hasOwnProperty: z.string(),
-            config: z.object({
-              hasOwnProperty: z.boolean(),
-              value: z.number(),
+          200: z.intersection(
+            z.object({ config: z.object({ name: z.string() }) }),
+            z.object({
+              config: z.object({ enabled: z.boolean(), value: z.number() }),
             }),
-          }),
+          ),
         },
       },
     });
@@ -75,15 +74,23 @@ describe("OpenAPI dependency compatibility", () => {
       content: {
         "application/json": {
           schema: {
-            properties: {
-              hasOwnProperty: { type: "string" },
-              config: {
+            allOf: [
+              {
                 properties: {
-                  hasOwnProperty: { type: "boolean" },
-                  value: { type: "number" },
+                  config: { properties: { name: { type: "string" } } },
                 },
               },
-            },
+              {
+                properties: {
+                  config: {
+                    properties: {
+                      enabled: { type: "boolean" },
+                      value: { type: "number" },
+                    },
+                  },
+                },
+              },
+            ],
           },
         },
       },
