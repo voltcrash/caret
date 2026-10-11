@@ -139,6 +139,7 @@ function DeepLinkButton(props: { key: string }) {
       class="-m-2 p-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
       variant="text"
       fa={{ icon: "fa-link" }}
+      dataset={{ "aria-label": "Copy link to setting" }}
       onClick={() => {
         const urlParams = serialize({
           schema: z.object({
