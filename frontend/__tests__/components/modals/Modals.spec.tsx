@@ -38,14 +38,19 @@ describe("Modals", () => {
     environment.isDevelopment = true;
   });
 
-  it("mounts eager modals immediately and lazy modals on first open", async () => {
+  it("loads the command palette and other modals only on first open", async () => {
     render(() => <Modals />);
 
-    expect(screen.getByTestId("commandline")).toBeInTheDocument();
+    expect(screen.queryByTestId("commandline")).not.toBeInTheDocument();
     expect(screen.getByTestId("cookies")).toBeInTheDocument();
     expect(screen.queryByTestId("contact")).not.toBeInTheDocument();
     expect(contactMounts).not.toHaveBeenCalled();
 
+    showModal("Commandline");
+    await waitFor(() =>
+      expect(screen.getByTestId("commandline")).toBeInTheDocument(),
+    );
+    hideModal("Commandline");
     showModal("Contact");
 
     await waitFor(() =>
