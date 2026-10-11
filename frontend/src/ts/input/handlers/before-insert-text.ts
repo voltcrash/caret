@@ -73,9 +73,15 @@ export function onBeforeInsertText(data: string): boolean {
   const inputIsLongerThanOrEqualToWord =
     getCurrentInput().length >= currentWordTextDisplay.length;
 
+  // multi character data (swipe typing, " word" from android keyboards, paste)
+  // is split up and every character runs through this check on its own. as a
+  // whole it would look like it overflows the line and get dropped
+  const isMultiCharacter = data.length > 1;
+
   if (
     !SlowTimer.get() && // don't do this check if slow timer is active
     dataIsNotFalsy &&
+    !isMultiCharacter &&
     !Config.blindMode &&
     !Config.hideExtraLetters &&
     !Config.deleteOnError.includes("hard") &&
