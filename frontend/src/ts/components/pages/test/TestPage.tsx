@@ -16,6 +16,7 @@ import { isCoarsePointer } from "../../../utils/pointer";
 import { CapsWarning } from "./CapsWarning";
 import { Caret } from "./Caret";
 import { CompositionDisplay } from "./CompositionDisplay";
+import { EndTestButton } from "./EndTestButton";
 import { FinishZenButton } from "./FinishZenButton";
 import { FunboxTimers } from "./FunboxTimer";
 import { Keymap } from "./Keymap";
@@ -146,6 +147,7 @@ export function TestPage(
         <RestartTestButton />
         <FinishZenButton />
         <SaveProgressButton />
+        <EndTestButton />
         <LiveStatsTextBottom />
       </div>
       {/* see holdKeyboardForRestart. 16px so ios doesn't zoom on focus */}
