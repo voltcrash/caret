@@ -15,7 +15,6 @@ import { envConfig } from "virtual:env-config";
 import * as ServerConfiguration from "../../ape/server-configuration";
 import { configLoadPromise } from "../../config/lifecycle";
 import { Config } from "../../config/store";
-import { handleColorSchemeChange } from "../../controllers/theme-controller";
 import { getAcceptedCookies } from "../../cookies";
 import { configEvent } from "../../events/config";
 import { isInputElementFocused } from "../../input/input-element";
@@ -74,13 +73,6 @@ export function AppEffects(props: AppElements): JSXElement {
       text: "Frontend-only development: authentication and backend requests are disabled.",
     });
     onCleanup(() => removeBanner(banner));
-  });
-  onMount(() => {
-    const query = window.matchMedia?.("(prefers-color-scheme: dark)");
-    query?.addEventListener?.("change", handleColorSchemeChange);
-    onCleanup(() =>
-      query?.removeEventListener?.("change", handleColorSchemeChange),
-    );
   });
   const [isReady, setReady] = createSignal(false);
   // Bootstrap supplies stable host refs for the lifetime of this root.
