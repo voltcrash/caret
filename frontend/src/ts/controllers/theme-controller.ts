@@ -270,16 +270,10 @@ export function applyCustomBackgroundFilters(
   setBackgroundStyle(css);
 }
 
-window
-  .matchMedia?.("(prefers-color-scheme: dark)")
-  ?.addEventListener?.("change", (event) => {
-    if (!Config.autoSwitchTheme || Config.customTheme) return;
-    if (event.matches) {
-      void set(Config.themeDark, true);
-    } else {
-      void set(Config.themeLight, true);
-    }
-  });
+export function handleColorSchemeChange(event: MediaQueryListEvent): void {
+  if (!Config.autoSwitchTheme || Config.customTheme) return;
+  void set(event.matches ? Config.themeDark : Config.themeLight, true);
+}
 
 let ignoreConfigEvent = false;
 
@@ -374,13 +368,8 @@ configEvent.subscribe(
   import.meta.hot,
 );
 
-window.addEventListener("customBackgroundFailed", () => {
-  showNoticeNotification(
-    "Custom background link is either temporarily unavailable or expired. Please make sure the URL is correct or change it",
-    { durationMs: 5000 },
-  );
-});
-
 function prefersColorSchemeDark(): boolean {
   return window.matchMedia?.("(prefers-color-scheme: dark)").matches;
 }
+
+import.meta.hot?.dispose(() => debouncedPreview.cancel());

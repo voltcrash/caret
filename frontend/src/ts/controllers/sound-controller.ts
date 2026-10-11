@@ -431,3 +431,16 @@ configEvent.subscribe(
   },
   import.meta.hot,
 );
+
+import.meta.hot?.dispose(() => {
+  for (const request of Object.values(howlers)) {
+    void request
+      .then((howl) => {
+        howl.unload();
+      })
+      .catch(() => undefined);
+  }
+  if (audioCtx !== undefined && audioCtx !== null) {
+    void audioCtx.close().catch(() => undefined);
+  }
+});

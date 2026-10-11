@@ -59,3 +59,5 @@ onDOMReady(() => {
     showOfflineBanner();
   }
 });
+
+import.meta.hot?.dispose(() => throttledHandleState.cancel());
