@@ -16,7 +16,7 @@ import { AssetUnavailableError } from "../assets/source";
 /** Always bundled, so a test can start without downloads. */
 const fallbackLanguage: Language = "english";
 
-export type LoadedLanguage = {
+type LoadedLanguage = {
   language: LanguageObject;
   /** Set when the configured language was unavailable offline. */
   missing?: Language;
