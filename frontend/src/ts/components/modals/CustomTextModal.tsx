@@ -1,3 +1,4 @@
+import { modeOptions, delimiterOptions } from "./custom-text/options";
 import { CustomTextIncomingData, Mode } from "./custom-text/types";
 export { type CustomTextIncomingData } from "./custom-text/types";
 
@@ -32,18 +33,6 @@ import { CustomGeneratorModal } from "./CustomGeneratorModal";
 import { SaveCustomTextModal } from "./SaveCustomTextModal";
 import { SavedTextsModal } from "./SavedTextsModal";
 import { WordFilterModal } from "./WordFilterModal";
-
-const modeOptions = [
-  { value: "simple", label: "simple" },
-  { value: "repeat", label: "repeat" },
-  { value: "shuffle", label: "shuffle" },
-  { value: "random", label: "random" },
-];
-
-const delimiterOptions = [
-  { value: "true", label: "pipe" },
-  { value: "false", label: "space" },
-];
 
 export function CustomTextModal(): JSXElement {
   const [longTextWarning, setLongTextWarning] = createSignal(false);
