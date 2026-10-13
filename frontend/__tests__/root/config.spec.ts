@@ -23,6 +23,23 @@ describe("Config", () => {
     replaceConfig({});
   });
 
+  it("extracts changed scalar and collection settings without mutating config", () => {
+    replaceConfig({
+      mode: "words",
+      words: 0,
+      showKeyTips: false,
+      funbox: ["no_quit"],
+    });
+    const previous = structuredClone(getConfig());
+    expect(ConfigUtils.getConfigChanges()).toMatchObject({
+      mode: "words",
+      words: 0,
+      showKeyTips: false,
+      funbox: ["no_quit"],
+    });
+    expect(getConfig()).toEqual(previous);
+  });
+
   describe("test with mocks", () => {
     const canSetConfigWithCurrentFunboxesMock = vi.spyOn(
       FunboxValidation,
