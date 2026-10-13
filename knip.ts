@@ -1,4 +1,9 @@
+/// <reference types="node" />
 import type { KnipConfig } from "knip";
+import process from "node:process";
+
+// Only Knip loads this file. Real production builds retain their missing-key guard.
+process.env.TURNSTILE_SITE_KEY ??= "1x00000000000000000000AA";
 
 export default {
   workspaces: {
