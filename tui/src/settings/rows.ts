@@ -21,7 +21,7 @@ import {
 
 type Key = keyof Config;
 
-export type Choice = { label: string; active: boolean; select: () => void };
+type Choice = { label: string; active: boolean; select: () => void };
 
 export type SettingRow = {
   id: string;
@@ -42,7 +42,7 @@ export type SettingRow = {
   available?: () => boolean;
 };
 
-export type SettingGroup = {
+type SettingGroup = {
   title: string;
   rows: SettingRow[];
   available?: () => boolean;
