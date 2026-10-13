@@ -1,6 +1,5 @@
 import { Config } from "../../config/store";
 import { Keycode } from "../../constants/keys";
-export * from "@oxytype/typing-core/events/helpers";
 export function getTestEventCode(event: KeyboardEvent): Keycode | "NoCode" {
   if (event.code === "NumpadEnter" && Config.funbox.includes("58008")) {
     return "Space";
