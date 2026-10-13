@@ -2,12 +2,17 @@ import { expect, it, vi } from "vite-plus/test";
 import type { FunboxName } from "@oxytype/schemas/configs";
 import type { ResultMinified } from "@oxytype/schemas/results";
 
-const { get } = vi.hoisted(() => ({ get: vi.fn() }));
+const { get, updateTagsApi } = vi.hoisted(() => ({
+  get: vi.fn(),
+  updateTagsApi: vi.fn(),
+}));
 vi.mock("../../src/ts/states/core", () => ({
   isAuthenticated: () => true,
   getUserId: () => "settings-user",
 }));
-vi.mock("../../src/ts/ape", () => ({ default: { results: { get } } }));
+vi.mock("../../src/ts/ape", () => ({
+  default: { results: { get, updateTags: updateTagsApi } },
+}));
 vi.mock("../../src/ts/collections/tags", () => ({
   getTagsOnce: async () => [],
   getActiveTagsOnce: async () => [],
@@ -27,8 +32,14 @@ import {
   type CurrentSettingsFilter,
   createResultsQueryState,
   getResultsQueryOnce,
+  insertLocalResult,
+  deleteLocalTag,
+  waitForResultsReady,
+  updateTags,
 } from "../../src/ts/collections/results";
 import defaultResultFilters from "../../src/ts/constants/default-result-filters";
+import type { SnapshotResult } from "../../src/ts/constants/default-snapshot";
+import type { Mode } from "@oxytype/schemas/shared";
 
 function result(
   _id: string,
@@ -146,4 +157,44 @@ it("uses the first selected date filter and retains client selection", () => {
   } finally {
     vi.restoreAllMocks();
   }
+});
+
+it("normalizes inserted results and persists optimistic tag edits", async () => {
+  await waitForResultsReady();
+  const local = {
+    ...result("local", 110, []),
+    tags: ["a", "b"],
+    client: "web",
+    afkDuration: 5,
+    incompleteTestSeconds: 2,
+  } as SnapshotResult<Mode>;
+  await insertLocalResult({ result: local });
+  const queryState = createResultsQueryState(defaultResultFilters);
+  queryState.tags = ["none", "a", "b", "c"];
+  const selected = async (): ReturnType<typeof getResultsQueryOnce> =>
+    await getResultsQueryOnce({
+      queryState: () => queryState,
+      sorting: () => ({ field: "wpm", direction: "desc" }),
+    });
+  expect(
+    (await selected())?.find((item) => item._id === "local"),
+  ).toMatchObject({ tags: ["a", "b"], timeTyping: 12 });
+  updateTagsApi.mockResolvedValue({
+    status: 200,
+    body: { data: { tagPbs: ["c"] } },
+  });
+  expect(
+    await updateTags({
+      resultId: "local",
+      currentTagIds: ["a", "b"],
+      newTagIds: ["b", "c"],
+    }),
+  ).toEqual({ tagPbs: ["c"] });
+  expect(updateTagsApi).toHaveBeenCalledWith({
+    body: { resultId: "local", tagIds: ["b", "c"] },
+  });
+  await deleteLocalTag({ tagId: "b" });
+  expect(
+    (await selected())?.find((item) => item._id === "local")?.tags,
+  ).toEqual(["c"]);
 });
