@@ -21,6 +21,7 @@ import { DBResult } from "../../../src/utils/result";
 import { omit } from "../../../src/utils/misc";
 import { CompletedEvent } from "@oxytype/schemas/results";
 import MonkeyError from "../../../src/utils/error";
+import objectHash from "object-hash";
 
 const { mockApp, uid } = setup();
 const configuration = Configuration.getCachedConfiguration();
@@ -549,7 +550,6 @@ describe("result controller test", () => {
     });
   });
   describe("addResult", () => {
-    //TODO improve test coverage for addResult
     const insertedId = newId();
     const userGetMock = vi.spyOn(UserDal, "getUser");
     const userUpdateStreakMock = vi.spyOn(UserDal, "updateStreak");
@@ -564,6 +564,7 @@ describe("result controller test", () => {
       ResultDal,
       "getLastResultTimestamp",
     );
+    const hasSubmissionHashMock = vi.spyOn(ResultDal, "hasSubmissionHash");
     const publicUpdateStatsMock = vi.spyOn(PublicDal, "updateStats");
     const weeklyXpAddResultMock = vi.spyOn(
       WeeklyXpLeaderboard.prototype,
@@ -577,6 +578,7 @@ describe("result controller test", () => {
     beforeEach(async () => {
       await enableResultsSaving(true);
       await enableUsersXpGain(true);
+      await setResultsConfig({ objectHashCheckEnabled: false });
 
       [
         userGetMock,
@@ -587,6 +589,7 @@ describe("result controller test", () => {
         userUpdateTypingStatsMock,
         resultAddMock,
         resultGetLastTimestampMock,
+        hasSubmissionHashMock,
         publicUpdateStatsMock,
         weeklyXpAddResultMock,
         dailyAddResultMock,
@@ -597,6 +600,7 @@ describe("result controller test", () => {
       userCheckIfTagPbMock.mockResolvedValue([]);
       userCheckIfPbMock.mockResolvedValue(true);
       resultAddMock.mockResolvedValue({ insertedId });
+      hasSubmissionHashMock.mockResolvedValue(false);
       //a prior result exists so incomplete-test time is credited (not zeroed)
       resultGetLastTimestampMock.mockResolvedValue(0);
       userIncrementXpMock.mockResolvedValue();
@@ -855,24 +859,163 @@ describe("result controller test", () => {
       expect(body.message).toEqual("Duplicate funboxes");
     });
 
-    // it("should fail invalid properties ", async () => {
-    //GIVEN
-    //WHEN
-    // const { body } = await mockApp
-    //   .post("/results")
-    //   .set("Authorization", `Bearer ${uid}`)
-    //   //TODO add all properties
-    //   .send({ result: { acc: 25 } })
-    //   .expect(422);
-    //THEN
-    /*
+    it("should fail with invalid properties", async () => {
+      //WHEN
+      const { body } = await mockApp
+        .post("/results")
+        .set("Authorization", `Bearer ${uid}`)
+        .send({
+          result: buildCompletedEvent({
+            acc: 101,
+            wpm: -1,
+            mode: "invalid" as any,
+            difficulty: "insane" as any,
+            charStats: [1, 2] as any,
+          }),
+        })
+        .expect(422);
+
+      //THEN
       expect(body).toEqual({
         message: "Invalid request data schema",
         validationErrors: [
+          '"result.wpm" Number must be greater than or equal to 0',
+          '"result.charStats" Array must contain at least 4 element(s)',
+          '"result.acc" Number must be less than or equal to 100',
+          `"result.mode" Invalid enum value. Expected 'time' | 'words' | 'quote' | 'custom' | 'zen', received 'invalid'`,
+          `"result.difficulty" Invalid enum value. Expected 'normal' | 'expert' | 'master', received 'insane'`,
         ],
       });
-      */
-    // });
+      expect(resultAddMock).not.toHaveBeenCalled();
+    });
+    it("should fail if user needs to change name", async () => {
+      //GIVEN
+      userGetMock.mockResolvedValue({
+        name: "bob",
+        needsToChangeName: true,
+      } as any);
+
+      //WHEN
+      const { body } = await mockApp
+        .post("/results")
+        .set("Authorization", `Bearer ${uid}`)
+        .send({ result: buildCompletedEvent() })
+        .expect(403);
+
+      //THEN
+      expect(body.message).toEqual(
+        "Please change your name before submitting a result",
+      );
+      expect(resultAddMock).not.toHaveBeenCalled();
+    });
+    it("should fail if test is too short", async () => {
+      //WHEN
+      const { body } = await mockApp
+        .post("/results")
+        .set("Authorization", `Bearer ${uid}`)
+        .send({ result: buildCompletedEvent({ mode2: "10" }) })
+        .expect(460);
+
+      //THEN
+      expect(body.message).toEqual("Test too short");
+      expect(resultAddMock).not.toHaveBeenCalled();
+    });
+    it("should fail with too low accuracy", async () => {
+      //WHEN
+      const { body } = await mockApp
+        .post("/results")
+        .set("Authorization", `Bearer ${uid}`)
+        .send({ result: buildCompletedEvent({ acc: 74 }) })
+        .expect(400);
+
+      //THEN
+      expect(body.message).toEqual("Accuracy too low");
+      expect(resultAddMock).not.toHaveBeenCalled();
+    });
+    it("should fail with impossible funbox combination", async () => {
+      //WHEN
+      const { body } = await mockApp
+        .post("/results")
+        .set("Authorization", `Bearer ${uid}`)
+        .send({
+          result: buildCompletedEvent({ funbox: ["plus_one", "plus_two"] }),
+        })
+        .expect(400);
+
+      //THEN
+      expect(body.message).toEqual("Impossible funbox combination");
+      expect(resultAddMock).not.toHaveBeenCalled();
+    });
+    it("should fail with offline results older than 30 days", async () => {
+      //WHEN
+      const { body } = await mockApp
+        .post("/results")
+        .set("Authorization", `Bearer ${uid}`)
+        .send({
+          result: buildCompletedEvent({
+            offline: true,
+            timestamp: Date.now() - 31 * 86400000,
+          }),
+        })
+        .expect(400);
+
+      //THEN
+      expect(body.message).toEqual(
+        "Offline results must be within the last 30 days",
+      );
+      expect(resultAddMock).not.toHaveBeenCalled();
+    });
+    it("should fail with incorrect result hash", async () => {
+      //GIVEN
+      await setResultsConfig({ objectHashCheckEnabled: true });
+
+      //WHEN
+      const { body } = await mockApp
+        .post("/results")
+        .set("Authorization", `Bearer ${uid}`)
+        .send({ result: buildCompletedEvent({ hash: "wrong" }) })
+        .expect(461);
+
+      //THEN
+      expect(body.message).toEqual("Incorrect result hash");
+      expect(addLogMock).toHaveBeenCalledWith(
+        "incorrect_result_hash",
+        expect.objectContaining({ resulthash: "wrong" }),
+        uid,
+      );
+      expect(resultAddMock).not.toHaveBeenCalled();
+    });
+    it("should accept a valid result hash", async () => {
+      //GIVEN
+      await setResultsConfig({ objectHashCheckEnabled: true });
+      const { hash: _hash, ...result } = buildCompletedEvent();
+
+      //WHEN
+      await mockApp
+        .post("/results")
+        .set("Authorization", `Bearer ${uid}`)
+        .send({ result: { ...result, hash: objectHash(result) } })
+        .expect(200);
+
+      //THEN
+      expect(resultAddMock).toHaveBeenCalled();
+    });
+    it("should fail with duplicate submission", async () => {
+      //GIVEN
+      hasSubmissionHashMock.mockResolvedValue(true);
+
+      //WHEN
+      const { body } = await mockApp
+        .post("/results")
+        .set("Authorization", `Bearer ${uid}`)
+        .send({ result: buildCompletedEvent() })
+        .expect(466);
+
+      //THEN
+      expect(body.message).toEqual("Duplicate result");
+      expect(resultAddMock).not.toHaveBeenCalled();
+      expect(userIncrementXpMock).not.toHaveBeenCalled();
+    });
   });
 });
 
@@ -981,6 +1124,16 @@ async function enableResultsSaving(enabled: boolean): Promise<void> {
 async function enableUsersXpGain(enabled: boolean): Promise<void> {
   const mockConfig = await configuration;
   mockConfig.users.xp = { ...mockConfig.users.xp, enabled, funboxBonus: 1 };
+
+  vi.spyOn(Configuration, "getCachedConfiguration").mockResolvedValue(
+    mockConfig,
+  );
+}
+async function setResultsConfig(
+  results: Partial<Awaited<typeof configuration>["results"]>,
+): Promise<void> {
+  const mockConfig = await configuration;
+  mockConfig.results = { ...mockConfig.results, ...results };
 
   vi.spyOn(Configuration, "getCachedConfiguration").mockResolvedValue(
     mockConfig,
