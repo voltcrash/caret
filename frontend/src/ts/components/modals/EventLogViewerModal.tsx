@@ -3,20 +3,7 @@ import {
   computeCrossStats,
   computeDistStats,
 } from "@oxytype/util/timing-stats";
-import {
-  BarController,
-  BarElement,
-  CategoryScale,
-  Chart,
-  LinearScale,
-  LineElement,
-  PointElement,
-  ScatterController,
-  Tooltip,
-} from "chart.js";
-import chartAnnotation, {
-  type AnnotationOptions,
-} from "chartjs-plugin-annotation";
+import { type AnnotationOptions } from "chartjs-plugin-annotation";
 import {
   createDeferred,
   createEffect,
@@ -113,6 +100,7 @@ import {
   percentileOf,
   type ScatterPoint,
 } from "./event-log-viewer/scatter-points";
+import "./event-log-viewer/chart-setup";
 import { Stat } from "./event-log-viewer/Stat";
 import {
   formatPercent,
@@ -158,20 +146,6 @@ import {
   type VideoMapping,
   videoMsToTestMs as toTestMs,
 } from "./event-log-viewer/video-sync";
-
-// this modal is lazy loaded on its own, so it cannot rely on whatever else
-// happens to have registered these. register is idempotent
-Chart.register(
-  BarController,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  LineElement,
-  PointElement,
-  ScatterController,
-  Tooltip,
-  chartAnnotation,
-);
 
 const TYPE_BG: Record<TestEventType, string> = {
   keydown: "bg-text",
