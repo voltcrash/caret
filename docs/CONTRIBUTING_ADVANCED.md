@@ -82,6 +82,12 @@ Run a single test with `vp test run path/to/test.ts` from its package. Backend
 checks. Frontend imperative DOM work belongs in component refs/lifecycles; styling
 uses Tailwind classes, `cn` and configured colors; icons use `Fa`.
 
+Run the web typing smoke test with `vp run test-e2e`. Install its browser once:
+`vp -C frontend exec playwright install chromium`. The single spec starts a fresh
+offline dev server on port 4173, types 15 displayed words and checks WPM/accuracy.
+No backend is needed; stop any other server using port 4173 first. Failed runs
+retain traces and screenshots in `frontend/test-results/`.
+
 Check unused code and dependencies:
 
 ```sh
