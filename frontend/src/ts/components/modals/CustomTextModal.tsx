@@ -29,7 +29,7 @@ import { Separator } from "../common/Separator";
 import { SubmitButton } from "../ui/form/SubmitButton";
 import { TextareaField } from "../ui/form/TextareaField";
 import { SettingsGroup } from "./custom-text/SettingsGroup";
-import { cleanCustomText } from "./custom-text/text";
+import { cleanCustomText, replaceCustomTextNewlines } from "./custom-text/text";
 import { CustomGeneratorModal } from "./CustomGeneratorModal";
 import { SaveCustomTextModal } from "./SaveCustomTextModal";
 import { SavedTextsModal } from "./SavedTextsModal";
@@ -180,16 +180,10 @@ export function CustomTextModal(): JSXElement {
   };
 
   const applyReplaceNewlines = (mode: "space" | "periodSpace") => {
-    let text = form.getFieldValue("text");
-    if (mode === "periodSpace") {
-      text = text.replace(/\n/gm, ". ");
-      text = text.replace(/\.\. /gm, ". ");
-      text = text.replace(/ +/gm, " ");
-    } else {
-      text = text.replace(/\n/gm, " ");
-      text = text.replace(/ +/gm, " ");
-    }
-    form.setFieldValue("text", text);
+    form.setFieldValue(
+      "text",
+      replaceCustomTextNewlines(form.getFieldValue("text"), mode),
+    );
   };
 
   const handleDelimiterChange = (newPipeDelimiter: boolean) => {
