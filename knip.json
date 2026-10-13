@@ -45,6 +45,9 @@
     "packages/release": {
       "entry": ["src/production-release.js", "__tests__/*.spec.js"]
     },
+    "tui": {
+      "entry": ["bin/*.ts"]
+    },
     "packages/oxlint-config": {
       "entry": ["plugins/*.js"],
       "project": ["plugins/*.js"]
