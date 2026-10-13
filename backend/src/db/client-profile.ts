@@ -21,7 +21,7 @@ export type ClientProfile = {
   lbMemory?: UserLbMemory;
   tagPersonalBests?: Record<string, PersonalBests>;
 };
-export function emptyPersonalBests(): PersonalBests {
+function emptyPersonalBests(): PersonalBests {
   return { time: {}, words: {}, quote: {}, zen: {}, custom: {} };
 }
 export function clientProfile(
