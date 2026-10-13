@@ -366,3 +366,17 @@ function withWebMetadata<K extends keyof ConfigSchemas.Config>(
 export const configMetadata = Object.fromEntries(
   typedKeys(sharedConfigMetadata).map((key) => [key, withWebMetadata(key)]),
 ) as ConfigMetadataObject;
+
+export function getCommandlineOptionLabel<K extends keyof ConfigSchemas.Config>(
+  metadata: ConfigMetadata<K>,
+  value: ConfigSchemas.Config[K],
+): string {
+  const options: Partial<Record<string, OptionMetadata>> | undefined =
+    metadata.optionsMetadata;
+  const option = options?.[String(value)];
+  const label = option?.commandlineLabel ?? option?.displayString;
+  if (label !== undefined) return label;
+  if (value === true) return "on";
+  if (value === false) return "off";
+  return value.toString();
+}

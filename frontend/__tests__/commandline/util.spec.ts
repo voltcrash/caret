@@ -11,7 +11,10 @@ import { Command } from "../../src/ts/commandline/types";
 
 const buildCommandForConfigKey = Util.__testing._buildCommandForConfigKey;
 
-vi.mock("../../src/ts/config/metadata", () => ({ configMetadata: [] }));
+vi.mock("../../src/ts/config/metadata", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  configMetadata: [],
+}));
 vi.mock("../../src/ts/commandline/commandline-metadata", () => ({
   commandlineConfigMetadata: [],
 }));

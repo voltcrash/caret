@@ -1,6 +1,10 @@
 import { Config } from "../config/store";
 import { setConfig } from "../config/setters";
-import { ConfigMetadata, configMetadata } from "../config/metadata";
+import {
+  ConfigMetadata,
+  configMetadata,
+  getCommandlineOptionLabel,
+} from "../config/metadata";
 import { capitalizeFirstLetter } from "../utils/strings";
 import {
   CommandlineConfigMetadata,
@@ -95,6 +99,7 @@ function buildCommandWithSubgroup<K extends keyof ConfigSchemas.Config>(
 
   const display =
     rootDisplay ??
+    configMeta.commandline?.title ??
     `${capitalizeFirstLetter(configMeta?.displayString ?? key)}...`;
 
   let values =
@@ -110,7 +115,7 @@ function buildCommandWithSubgroup<K extends keyof ConfigSchemas.Config>(
     );
   }
   const list = values.map((value) =>
-    buildSubgroupCommand<K>(key, value, subgroupProps),
+    buildSubgroupCommand<K>(key, value, subgroupProps, configMeta),
   );
 
   list.sort((a, b) => {
@@ -145,20 +150,12 @@ function buildSubgroupCommand<K extends keyof ConfigSchemas.Config>(
     isAvailable: isCommandAvailable,
     customData: commandCustomData,
   }: SubgroupProps<K>,
+  configMeta: ConfigMetadata<K>,
 ): Command {
   const val = value;
 
-  let displayString = commandDisplay?.(value);
-
-  if (displayString === undefined) {
-    if (value === true) {
-      displayString = "on";
-    } else if (value === false) {
-      displayString = "off";
-    } else {
-      displayString = value.toString();
-    }
-  }
+  const displayString =
+    commandDisplay?.(value) ?? getCommandlineOptionLabel(configMeta, value);
 
   return {
     id: `set${capitalizeFirstLetter(key)}${capitalizeFirstLetter(
@@ -201,6 +198,7 @@ function buildInputCommand<K extends keyof ConfigSchemas.Config>({
 
   const displayString =
     inputProps?.display ??
+    configMeta.commandline?.inputTitle ??
     (isPartOfSubgroup
       ? "custom..."
       : `${capitalizeFirstLetter(configMeta.displayString ?? key)}...`);
