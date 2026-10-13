@@ -1,3 +1,5 @@
+import { toggleResultWords } from "./result/history";
+export { toggleResultWords } from "./result/history";
 import { updateCrown, hideCrown, resultCanGetPb } from "./result/crown";
 export { showCrown, showErrorCrownIfNeeded } from "./result/crown";
 import { showConfetti } from "./result/confetti";
@@ -59,21 +61,16 @@ import { getTheme } from "../states/theme";
 import {
   getLastEventLog,
   getCurrentQuote,
-  getKoreanStatus,
   getResultVisible,
   isTestInvalid,
   setResultCalculating,
   setResultLoading,
 } from "../states/test";
 import {
-  getCorrectedWordsHistory,
-  getInputHistory,
   getRawHistory,
   getTimerBoundaryLabels,
-  getWordBurstHistory,
 } from "@oxytype/typing-core/events/stats";
-import * as TestWords from "./test-words";
-import { buildWordsHistory } from "./word-markup";
+
 import {
   getResultChart,
   prepareResultChart,
@@ -781,48 +778,6 @@ export function toggleResultChartLegend(
   updateMinMaxChartValues();
   applyMinMaxChartValues();
   getResultChart().update();
-}
-
-function loadWordsHistory(): boolean {
-  setResultState("wordsHistory", "items", []);
-
-  const eventLog = getLastEventLog();
-  if (eventLog === null) {
-    return false;
-  }
-
-  setResultState(
-    "wordsHistory",
-    "items",
-    buildWordsHistory({
-      inputHistory: getInputHistory(eventLog),
-      correctedHistory: getCorrectedWordsHistory(eventLog),
-      burstHistory: getWordBurstHistory(eventLog),
-      getTargetWord: (i) => TestWords.words.get(i)?.textWithCommit ?? "",
-      zen: Config.mode === "zen",
-      timed:
-        Config.mode === "time" ||
-        (Config.mode === "custom" && CustomText.getLimitMode() === "time") ||
-        (Config.mode === "custom" && CustomText.getLimitValue() === 0),
-      korean: getKoreanStatus(),
-    }),
-  );
-
-  return true;
-}
-
-export function toggleResultWords(noAnimation = false): void {
-  if (!getResultVisible()) return;
-
-  const slideDuration = noAnimation ? 0 : 250;
-  if (!resultState.wordsHistory.visible) {
-    if (resultState.wordsHistory.items.length === 0) {
-      loadWordsHistory();
-    }
-    setResultState("wordsHistory", { visible: true, slideDuration });
-  } else {
-    setResultState("wordsHistory", { visible: false, slideDuration });
-  }
 }
 
 configEvent.subscribe(
