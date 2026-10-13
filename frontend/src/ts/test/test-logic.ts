@@ -127,7 +127,13 @@ import { nthElementFromArray } from "../utils/arrays";
 import { hasKoreanCharacters } from "@oxytype/typing-core/strings";
 import { shouldRepeatQuote } from "@oxytype/typing-core/restart";
 
-let failReason = "";
+type TestLogicState = {
+  failReason: string;
+};
+
+const testLogicState: TestLogicState = {
+  failReason: "",
+};
 
 const invalidMessages: Record<
   Exclude<InvalidResultReason, "failed">,
@@ -267,7 +273,7 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
     shouldRepeatQuote(Config) &&
     currentQuote !== null &&
     Config.language.startsWith(currentQuote.language) &&
-    (isTestActive() || failReason !== "")
+    (isTestActive() || testLogicState.failReason !== "")
   ) {
     options.withSameWordset = true;
   }
@@ -314,7 +320,7 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
   CompositionState.setData("");
   Strings.clearWordDirectionCache();
   testReinitCount = 0;
-  failReason = "";
+  testLogicState.failReason = "";
 
   const repeatWithPace =
     (Config.repeatedPace && options.withSameWordset) ?? false;
@@ -810,7 +816,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
   });
   const tooShort = invalidReason === "too short";
   if (invalidReason === "failed") {
-    showNoticeNotification(`Test failed - ${failReason}`, {
+    showNoticeNotification(`Test failed - ${testLogicState.failReason}`, {
       durationMs: 1000,
     });
     dontSave = true;
@@ -930,7 +936,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
   const resultUpdatePromise = Result.update(
     completedEvent,
     difficultyFailed,
-    failReason,
+    testLogicState.failReason,
     afkDetected,
     isRepeated(),
     tooShort,
@@ -1059,7 +1065,7 @@ async function saveResult(
 }
 
 export function fail(reason: string): void {
-  failReason = reason;
+  testLogicState.failReason = reason;
   void finish(true);
 }
 
