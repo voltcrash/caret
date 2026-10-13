@@ -5,7 +5,6 @@ import {
   createOptimisticAction,
   useLiveQuery,
 } from "@tanstack/solid-db";
-import { untrack } from "solid-js";
 import Ape from "../ape";
 import { queryClient } from "../queries";
 import { baseKey } from "../queries/utils/keys";
@@ -34,7 +33,6 @@ export function usePresetsLiveQuery() {
 const presetsCollection = createCollection(
   queryCollectionOptions({
     staleTime: Infinity,
-    gcTime: Infinity, //remove when __nonReactive is removed
     queryKey: queryKeys.root(),
     queryClient,
     enabled: isAuthenticated,
@@ -204,15 +202,6 @@ export async function deletePreset(
   const transaction = actions.deletePreset(params);
   await transaction.isPersisted.promise;
 }
-
-/**
- * Used for non reactive access. Do not use in Solid components.
- */
-export const __nonReactive = {
-  getPresets: (): PresetItem[] => untrack(getPresets),
-  getPreset: (id: string): PresetItem | undefined =>
-    untrack(() => getPreset(id)),
-};
 
 import.meta.hot?.dispose(() => {
   void presetsCollection.cleanup();
