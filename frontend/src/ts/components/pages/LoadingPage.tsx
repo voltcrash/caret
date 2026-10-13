@@ -30,10 +30,17 @@ export function LoadingPage(): JSXElement {
       setProgress(0);
       return;
     }
+    const duration = applyReducedMotion(bar.duration);
+    if (duration === 0) {
+      // Don't wait a frame for progress that is already known.
+      setProgress(bar.percentage);
+      bar.onComplete();
+      return;
+    }
     const target = { percentage: untrack(getProgress) };
     const animation = animate(target, {
       percentage: bar.percentage,
-      duration: applyReducedMotion(bar.duration),
+      duration,
       ease: "linear",
       onUpdate: () => setProgress(target.percentage),
       onComplete: () => {

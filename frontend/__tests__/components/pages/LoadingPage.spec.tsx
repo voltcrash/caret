@@ -121,12 +121,19 @@ describe("LoadingPage", () => {
 
   it("completes progress immediately with reduced motion", async () => {
     motion.reduced = true;
-    renderPage();
+    const { loader } = renderPage();
+    await LoadingPageState.showBar();
     await LoadingPageState.updateBar(100, 1000);
-    expect(mockAnimate).toHaveBeenLastCalledWith(
-      expect.anything(),
-      expect.objectContaining({ percentage: 100, duration: 0 }),
-    );
+    expect(mockAnimate).not.toHaveBeenCalled();
+    expect(typedWidth(loader)).toBe("7ch");
+  });
+
+  it("settles instant progress without waiting for a frame", async () => {
+    const { loader } = renderPage();
+    await LoadingPageState.showBar();
+    await LoadingPageState.updateBar(100, 0);
+    expect(mockAnimate).not.toHaveBeenCalled();
+    expect(typedWidth(loader)).toBe("7ch");
   });
 
   it("announces loading status and failure details", () => {
