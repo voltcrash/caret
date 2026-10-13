@@ -60,7 +60,7 @@ import { terminalFunboxes } from "./funboxes";
 import { createGenerator } from "./generator";
 import { inputAction, keyData } from "./input";
 
-export type TestStatus = "loading" | "ready" | "running" | "finished" | "error";
+type TestStatus = "loading" | "ready" | "running" | "finished" | "error";
 export type LocalResult = ReturnType<TestSession["complete"]>;
 export type FinishedTest = {
   result: LocalResult;
