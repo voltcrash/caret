@@ -7,6 +7,7 @@ import {
   queryOnce,
   useLiveQuery,
 } from "@tanstack/solid-db";
+import { untrack } from "solid-js";
 import { z } from "zod/v3";
 import Ape from "../ape";
 import { queryClient } from "../queries";
@@ -23,6 +24,7 @@ import {
 import { Difficulty } from "@oxytype/schemas/configs";
 import { Language } from "@oxytype/schemas/languages";
 import { applyIdWorkaround, isTempId, tempId } from "./utils/misc";
+import { createCollectionReader } from "./utils/reader";
 import { fetchUserFromApi } from "../ape/user";
 import { updateTagsInFilterStorage } from "../states/result-filters";
 import { isAuthenticated } from "../states/core";
@@ -60,6 +62,8 @@ const tagsCollection = createCollection(
     },
   }),
 );
+
+const tagsReader = createCollectionReader(import.meta.hot, tagsCollection);
 
 // oxlint-disable-next-line typescript/explicit-function-return-type
 export function useTagsLiveQuery() {
@@ -321,17 +325,18 @@ export async function clearActiveTags(
   await transaction.isPersisted.promise;
 }
 
-function getTags(): TagItem[] {
-  return [...tagsCollection.values()].sort((a, b) =>
-    a.name.localeCompare(b.name),
-  );
+/** Reactive. Sorted by name. */
+export function getTags(): TagItem[] {
+  return tagsReader.values().sort((a, b) => a.name.localeCompare(b.name));
 }
 
-function getTag(id: string): TagItem | undefined {
-  return tagsCollection.get(id);
+/** Reactive. */
+export function getTag(id: string): TagItem | undefined {
+  return tagsReader.get(id);
 }
 
-function getActiveTags(): TagItem[] {
+/** Reactive. Sorted by name. */
+export function getActiveTags(): TagItem[] {
   return getTags().filter((tag) => tag.active);
 }
 
@@ -363,7 +368,7 @@ export function getLocalTagPB<M extends Mode>(
   difficulty: Difficulty,
   lazyMode: boolean,
 ): number {
-  const tag = getTag(tagId);
+  const tag = tagsCollection.get(tagId);
   if (tag === undefined) return 0;
 
   const personalBests = (tag.personalBests?.[mode]?.[mode2] ??
@@ -492,7 +497,7 @@ export function reconcileLocalTagPB<M extends Mode>(
   lazyMode: boolean,
   results: SnapshotResult<Mode>[],
 ): void {
-  const tag = getTag(tagId);
+  const tag = tagsCollection.get(tagId);
   if (tag === undefined) return;
 
   const pb = {
@@ -547,7 +552,7 @@ export function getActiveTagsPB<M extends Mode>(
   lazyMode: boolean,
 ): number {
   let tagPbWpm = 0;
-  for (const tag of getActiveTags()) {
+  for (const tag of untrack(getActiveTags)) {
     const currTagPB = getLocalTagPB(
       tag._id,
       mode,
@@ -567,9 +572,9 @@ export function getActiveTagsPB<M extends Mode>(
  * Used for non reactive access. Do not use in Solid components.
  */
 export const __nonReactive = {
-  getTags,
-  getTag,
-  getActiveTags,
+  getTags: (): TagItem[] => untrack(getTags),
+  getTag: (id: string): TagItem | undefined => untrack(() => getTag(id)),
+  getActiveTags: (): TagItem[] => untrack(getActiveTags),
 };
 
 import.meta.hot?.dispose(() => {
