@@ -29,7 +29,11 @@ import { Separator } from "../common/Separator";
 import { SubmitButton } from "../ui/form/SubmitButton";
 import { TextareaField } from "../ui/form/TextareaField";
 import { SettingsGroup } from "./custom-text/SettingsGroup";
-import { cleanCustomText, replaceCustomTextNewlines } from "./custom-text/text";
+import {
+  cleanCustomText,
+  replaceCustomTextNewlines,
+  convertCustomTextDelimiter,
+} from "./custom-text/text";
 import { CustomGeneratorModal } from "./CustomGeneratorModal";
 import { SaveCustomTextModal } from "./SaveCustomTextModal";
 import { SavedTextsModal } from "./SavedTextsModal";
@@ -188,11 +192,11 @@ export function CustomTextModal(): JSXElement {
 
   const handleDelimiterChange = (newPipeDelimiter: boolean) => {
     const currentPipeDelimiter = form.getFieldValue("pipeDelimiter");
-    let newtext = form
-      .getFieldValue("text")
-      .split(currentPipeDelimiter ? "|" : " ")
-      .join(newPipeDelimiter ? "|" : " ");
-    newtext = newtext.replace(/\n /g, "\n");
+    const newtext = convertCustomTextDelimiter(
+      form.getFieldValue("text"),
+      currentPipeDelimiter,
+      newPipeDelimiter,
+    );
 
     batch(() => {
       form.setFieldValue("text", newtext);

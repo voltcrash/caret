@@ -10,6 +10,17 @@ export function cleanCustomText(
   return text.split(pipeDelimiter ? "|" : " ").filter((word) => word !== "");
 }
 
+export function convertCustomTextDelimiter(
+  text: string,
+  currentPipeDelimiter: boolean,
+  newPipeDelimiter: boolean,
+): string {
+  return text
+    .split(currentPipeDelimiter ? "|" : " ")
+    .join(newPipeDelimiter ? "|" : " ")
+    .replace(/\n /g, "\n");
+}
+
 export function replaceCustomTextNewlines(
   text: string,
   mode: "space" | "periodSpace",
