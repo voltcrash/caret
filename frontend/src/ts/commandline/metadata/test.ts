@@ -1,7 +1,6 @@
 import { CommandlineConfigMetadataObject } from "./types";
 import * as TestLogic from "../../test/test-logic";
-import { getLanguageDisplayString } from "../../utils/strings";
-import { areUnsortedArraysEqual } from "../../utils/arrays";
+
 import { isAuthenticated } from "../../states/core";
 
 export const testMetadata = {
@@ -70,21 +69,7 @@ export const testMetadata = {
         }
         return undefined;
       },
-      display: (value) => {
-        if (areUnsortedArraysEqual(value, [0, 1, 2, 3])) {
-          return "all";
-        }
 
-        const map: Record<number, string> = {
-          0: "short",
-          1: "medium",
-          2: "long",
-          3: "thicc",
-          "-3": "favorite",
-        };
-
-        return map[value[0] as number] as string;
-      },
       afterExec: () => {
         void TestLogic.restart();
       },
@@ -93,9 +78,6 @@ export const testMetadata = {
   language: {
     subgroup: {
       options: "fromSchema",
-      display: (value) => {
-        return getLanguageDisplayString(value);
-      },
     },
   },
 } satisfies Pick<
