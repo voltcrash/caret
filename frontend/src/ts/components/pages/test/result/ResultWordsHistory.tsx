@@ -1,4 +1,9 @@
 import {
+  getInputHistory,
+  getMissedWords,
+  getWordBurstHistory,
+} from "@oxytype/typing-core/events/stats";
+import {
   createMemo,
   createEffect,
   createSelector,
@@ -30,11 +35,6 @@ import { resultState } from "../../../../states/result";
 import { showSimpleModal } from "../../../../states/simple-modal";
 import { getLastEventLog, getResultVisible } from "../../../../states/test";
 import { getTheme } from "../../../../states/theme";
-import {
-  getInputHistory,
-  getMissedWords,
-  getWordBurstHistory,
-} from "@oxytype/typing-core/events/stats";
 import {
   buildBurstHeatmap,
   getBurstHeatmapWordColor,

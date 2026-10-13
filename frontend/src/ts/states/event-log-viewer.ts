@@ -1,6 +1,9 @@
 import { createSignal } from "solid-js";
 
-import type { EventLog, TestEventType } from "@oxytype/typing-core/events/types";
+import type {
+  EventLog,
+  TestEventType,
+} from "@oxytype/typing-core/events/types";
 
 /**
  * State for the dev event log viewer, deliberately kept outside the component.
