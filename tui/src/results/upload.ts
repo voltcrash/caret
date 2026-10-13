@@ -17,7 +17,7 @@ import { errorMessage } from "../auth/store";
 import type { FinishedTest, LocalResult } from "../test/typing-test";
 import type { QueueEntry, UploadQueue } from "./upload-queue";
 
-export type UploadStatus = {
+type UploadStatus = {
   result: LocalResult;
   state: "uploading" | "uploaded" | "queued" | "error";
   message: string;

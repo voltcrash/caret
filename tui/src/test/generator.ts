@@ -34,9 +34,7 @@ export type GeneratorOptions = {
   setCurrentQuote: (quote: QuoteWithTextSplit | null) => void;
 };
 
-export function customTextSource(
-  settings: CustomTextSettings,
-): CustomTextSource {
+function customTextSource(settings: CustomTextSettings): CustomTextSource {
   return {
     getText: () => settings.text,
     getMode: () => settings.mode,

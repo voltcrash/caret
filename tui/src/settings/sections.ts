@@ -6,7 +6,7 @@ import {
   convertThemeToCustomColors,
   themes,
 } from "@oxytype/typing-core/themes";
-import { openCommand, configRow, settingTitle } from "./rows";
+import { openCommand, configRow } from "./rows";
 import { LanguageSchema } from "@oxytype/schemas/languages";
 import { get as getTypingSpeedUnit } from "@oxytype/typing-core/typing-speed-units";
 
@@ -502,12 +502,3 @@ export function settingSections(context: SectionContext): SettingSection[] {
     dangerSection(context),
   ];
 }
-
-/** Rows in display order, for search across every section. */
-export function allRows(sections: SettingSection[]): SettingRow[] {
-  return sections.flatMap((section) =>
-    section.groups.flatMap((group) => group.rows),
-  );
-}
-
-export { settingTitle };

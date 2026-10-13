@@ -8,9 +8,6 @@ import {
   memoizeAsync,
 } from "@oxytype/typing-core/languages";
 
-// still read by the wikipedia funbox until it moves to typing-core
-export { Section } from "@oxytype/typing-core/languages";
-
 //pin implementation
 const fetch = window.fetch;
 const cryptoSubtle = window.crypto.subtle;

@@ -140,7 +140,7 @@ export async function openHistoryStore(file: string): Promise<HistoryStore> {
   );
 }
 
-export function matchingResults(
+function matchingResults(
   entries: readonly HistoryEntry[],
   config: Config,
   mode2: string,
