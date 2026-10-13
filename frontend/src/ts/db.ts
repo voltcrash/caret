@@ -18,7 +18,6 @@ import {
 import {
   getDefaultSnapshot,
   Snapshot,
-  SnapshotResult,
   SavedResult,
 } from "./constants/default-snapshot";
 import { getFirstDayOfTheWeek } from "./utils/date-and-time";
@@ -303,7 +302,7 @@ export type SaveLocalResultData = {
   xp?: number;
   xpBreakdown?: XpBreakdown;
   streak?: number;
-  result?: SnapshotResult<Mode> | SavedResult;
+  result?: SavedResult;
   isPb?: boolean;
 };
 
