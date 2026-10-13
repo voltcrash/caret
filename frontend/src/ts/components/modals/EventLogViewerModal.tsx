@@ -43,6 +43,7 @@ import {
   parseContext,
   visualizeWhitespace,
 } from "./event-log-viewer/event-log";
+import { MarksList } from "./event-log-viewer/MarksList";
 import { ScatterPanel } from "./event-log-viewer/ScatterPanel";
 import { Timeline } from "./event-log-viewer/Timeline";
 import {
@@ -50,7 +51,7 @@ import {
   getTimelineMaxMs,
   getTimelineMinMs,
 } from "./event-log-viewer/timeline-lanes";
-import { marksForEvent, unassignedMarks } from "./event-log-viewer/video-sync";
+import { marksForEvent } from "./event-log-viewer/video-sync";
 
 export function EventLogViewerModal(): JSXElement {
   const stage = getStage;
@@ -173,9 +174,6 @@ function PreviewContent(props: {
     driftData,
     onPickVideo,
     clearVideo,
-    addMark,
-    removeMark,
-    updateMarkVideoMs,
     assignMarkToEvent,
     createMarkAndAssignToEvent,
     createSyncMarkAndAssignToEvent,
@@ -424,69 +422,7 @@ function PreviewContent(props: {
             </div>
           </Show>
           <Show when={videoUrl() !== null}>
-            <div class="flex flex-wrap items-center gap-2 border-t border-bg pt-2">
-              <div class="text-xs tracking-wider text-sub uppercase">Marks</div>
-              <Button
-                variant="text"
-                text="+ mark"
-                class="text-xs"
-                disabled={!isSynced()}
-                balloon={{
-                  text: isSynced()
-                    ? "Add a generic mark at the current video frame"
-                    : "Add and assign both sync marks first",
-                }}
-                onClick={() => addMark()}
-              />
-              <Button
-                variant="text"
-                text="+ start sync"
-                class="text-xs"
-                disabled={syncStartMark() !== undefined}
-                balloon={{
-                  text: "Add the start sync mark at the current video frame",
-                }}
-                onClick={() => addMark("start")}
-              />
-              <Button
-                variant="text"
-                text="+ end sync"
-                class="text-xs"
-                disabled={syncEndMark() !== undefined}
-                balloon={{
-                  text: "Add the end sync mark at the current video frame",
-                }}
-                onClick={() => addMark("end")}
-              />
-              <Show when={unassignedMarks(marks(), eventToMark()).length > 0}>
-                <For each={unassignedMarks(marks(), eventToMark())}>
-                  {(mark) => (
-                    <div class="flex items-center gap-1 rounded bg-bg p-1 font-mono text-xs">
-                      <span class="text-text">{mark.sync ?? mark.id}</span>
-                      <input
-                        type="number"
-                        value={mark.videoMs}
-                        onInput={(e) =>
-                          updateMarkVideoMs(
-                            mark.id,
-                            Number(e.currentTarget.value),
-                          )
-                        }
-                        class="bg-bg-secondary w-20 rounded p-1 text-text"
-                      />
-                      <button
-                        type="button"
-                        class="cursor-pointer px-1 text-error"
-                        onClick={() => removeMark(mark.id)}
-                        title="Remove mark"
-                      >
-                        ×
-                      </button>
-                    </div>
-                  )}
-                </For>
-              </Show>
-            </div>
+            <MarksList sync={sync} />
           </Show>
         </div>
 
