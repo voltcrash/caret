@@ -30,14 +30,15 @@ export function migrateConfig(config: PartialConfig | object): ConfigSchema {
   return mergeWithDefaultConfig(sanitizeConfig(replaceLegacyValues(config)));
 }
 
-function mergeWithDefaultConfig(config: PartialConfig): ConfigSchema {
+function mergeWithDefaultConfig(config: Partial<ConfigSchema>): ConfigSchema {
   const defaultConfig = getDefaultConfig();
   const mergedConfig = {} as ConfigSchema;
-  for (const key of typedKeys(defaultConfig)) {
+  function mergeValue<K extends keyof ConfigSchema>(key: K): ConfigSchema[K] {
     const newValue = config[key] ?? defaultConfig[key];
-    //@ts-expect-error cant be bothered to deal with this
     mergedConfig[key] = newValue;
+    return newValue;
   }
+  for (const key of typedKeys(defaultConfig)) mergeValue(key);
   return mergedConfig;
 }
 
