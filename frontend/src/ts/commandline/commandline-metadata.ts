@@ -1,3 +1,4 @@
+import { behaviorMetadata } from "./metadata/behavior";
 import { testMetadata } from "./metadata/test";
 import { CommandlineConfigMetadataObject } from "./metadata/types";
 export {
@@ -13,7 +14,7 @@ import { replaceUnderscoresWithSpaces } from "../utils/strings";
 
 import { Config } from "../config/store";
 import { get as getTypingSpeedUnit } from "../utils/typing-speed-units";
-import { getActivePage, isAuthenticated } from "../states/core";
+import { isAuthenticated } from "../states/core";
 import { Fonts } from "../constants/fonts";
 import { KnownFontName } from "@oxytype/schemas/fonts";
 import * as UI from "../ui";
@@ -24,107 +25,7 @@ export const commandlineConfigMetadata: CommandlineConfigMetadataObject = {
   //test
   ...testMetadata,
   //behavior
-  difficulty: {
-    subgroup: {
-      options: "fromSchema",
-    },
-  },
-  quickRestart: {
-    subgroup: {
-      options: "fromSchema",
-    },
-  },
-  repeatQuotes: {
-    subgroup: {
-      options: "fromSchema",
-    },
-  },
-  resultSaving: {
-    subgroup: {
-      options: "fromSchema",
-      alias: (val) => (val ? "enabled" : "disabled"),
-    },
-    alias: "results practice incognito",
-  },
-  blindMode: {
-    subgroup: {
-      options: "fromSchema",
-    },
-  },
-  alwaysShowWordsHistory: {
-    subgroup: {
-      options: "fromSchema",
-    },
-  },
-  singleListCommandLine: {
-    subgroup: {
-      options: "fromSchema",
-    },
-  },
-  minWpm: {
-    display: "Minimum speed...",
-    alias: "wpm",
-    subgroup: {
-      options: ["off"],
-    },
-    input: {
-      configValue: "custom",
-      display: "custom...",
-      secondKey: "minWpmCustomSpeed",
-      inputValueConvert: (value) => {
-        let newVal = Number(value);
-        newVal = getTypingSpeedUnit(Config.typingSpeedUnit).toWpm(newVal);
-        return newVal;
-      },
-    },
-  },
-  minAcc: {
-    display: "Minimum accuracy...",
-    subgroup: {
-      options: ["off"],
-    },
-    input: {
-      configValue: "custom",
-      display: "custom...",
-      secondKey: "minAccCustom",
-      inputValueConvert: (value) => {
-        return Number(value);
-      },
-    },
-  },
-  // minBurst: null,
-  britishEnglish: {
-    subgroup: {
-      options: "fromSchema",
-      afterExec: () => {
-        void TestLogic.restart();
-      },
-    },
-  },
-  // funbox: null,
-  customLayoutfluid: {
-    input: {
-      defaultValue: () => {
-        return Config.customLayoutfluid.join(" ");
-      },
-      inputValueConvert: (val) =>
-        val.trim().split(" ") as ConfigSchemas.CustomLayoutFluid,
-    },
-  },
-  customPolyglot: {
-    input: {
-      defaultValue: () => {
-        return Config.customPolyglot.join(" ");
-      },
-      inputValueConvert: (val) =>
-        val.trim().split(" ") as ConfigSchemas.CustomPolyglot,
-      afterExec: () => {
-        if (getActivePage() === "test") {
-          void TestLogic.restart();
-        }
-      },
-    },
-  },
+  ...behaviorMetadata,
   //input
   freedomMode: {
     subgroup: {
