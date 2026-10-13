@@ -1,7 +1,7 @@
-import { updateWordsMargin } from "./words/margins";
 import { scrollTape } from "./words/tape";
+import { updateWordWrapperClasses } from "./words/wrapper-classes";
 export { scrollTape } from "./words/tape";
-import { centerActiveLine, lineJump } from "./words/line-jumping";
+import { lineJump } from "./words/line-jumping";
 export { centerActiveLine } from "./words/line-jumping";
 import {
   activeWordTop,
@@ -9,11 +9,7 @@ import {
   updateActiveWordGeometry,
 } from "./words/line-state";
 export { activeWordTop, activeWordHeight } from "./words/line-state";
-import {
-  updateWordsInputPosition,
-  updateWordsWrapperHeight,
-  updateWordsWidth,
-} from "./words/sizing";
+import { updateWordsInputPosition } from "./words/sizing";
 export {
   updateWordsInputPosition,
   updateWordsWrapperHeight,
@@ -45,19 +41,15 @@ import * as ThemeController from "../../../controllers/theme-controller";
 import { configEvent } from "../../../events/config";
 import { highlight } from "../../../events/keymap";
 import { useWordsFocus } from "../../../hooks/useWordsFocus";
-import {
-  isTouchKeyboardFocused,
-  isInputElementFocused,
-} from "../../../input/input-element";
+import { isTouchKeyboardFocused } from "../../../input/input-element";
 import { getBackground } from "../../../states/background";
 import * as CompositionState from "../../../states/composition";
 import * as ConnectionState from "../../../states/connection";
 import { getActivePage } from "../../../states/core";
 import { skipBreakdownEvent } from "../../../states/header";
-import { getResultElement, setResultState } from "../../../states/result";
+import { getResultElement } from "../../../states/result";
 import * as SlowTimer from "../../../states/slow-timer";
 import {
-  isLanguageRightToLeft,
   getActiveWordIndex,
   setCompositionText,
   setCurrentLiveStats,
@@ -67,10 +59,6 @@ import {
 import {
   areTestElementsMounted,
   getWordsElement as getWordsEl,
-  getWordsWrapperElement as getWordsWrapperEl,
-  getWordsInputElement,
-  getCaretElement,
-  getPaceCaretElement,
   getTypingTestElement,
 } from "../../../states/test-dom";
 import { setWordsInputStyle } from "../../../states/words-layout";
@@ -94,7 +82,6 @@ import {
 } from "../../../utils/debounced-animation-frame";
 import * as Misc from "../../../utils/misc";
 import { isCoarsePointer } from "../../../utils/pointer";
-import { getWordsFontSize } from "../../../utils/words-font";
 import * as MonkeyPower from "./MonkeyPower";
 
 export function updateActiveElement(
@@ -162,103 +149,6 @@ function buildWordHTML(word: string, wordIndex: number): string {
     wordIndex,
     findSingleActiveFunboxWithFunction("getWordHtml")?.functions.getWordHtml,
   );
-}
-
-function updateWordWrapperClasses(): void {
-  // outoffocus applies transition, need to remove it
-  setTestFocusState("focused");
-
-  if (Config.tapeMode !== "off") {
-    setClass(getWordsEl(), "tape", true);
-    setClass(getWordsWrapperEl(), "tape", true);
-  } else {
-    setClass(getWordsEl(), "tape", false);
-    setClass(getWordsWrapperEl(), "tape", false);
-  }
-
-  if (Config.blindMode) {
-    setClass(getWordsEl(), "blind", true);
-    setClass(getWordsWrapperEl(), "blind", true);
-  } else {
-    setClass(getWordsEl(), "blind", false);
-    setClass(getWordsWrapperEl(), "blind", false);
-  }
-
-  if (Config.indicateTypos === "below" || Config.indicateTypos === "both") {
-    setClass(getWordsEl(), "indicateTyposBelow", true);
-    setClass(getWordsWrapperEl(), "indicateTyposBelow", true);
-  } else {
-    setClass(getWordsEl(), "indicateTyposBelow", false);
-    setClass(getWordsWrapperEl(), "indicateTyposBelow", false);
-  }
-
-  if (Config.hideExtraLetters) {
-    setClass(getWordsEl(), "hideExtraLetters", true);
-    setClass(getWordsWrapperEl(), "hideExtraLetters", true);
-  } else {
-    setClass(getWordsEl(), "hideExtraLetters", false);
-    setClass(getWordsWrapperEl(), "hideExtraLetters", false);
-  }
-
-  if (Config.flipTestColors) {
-    setClass(getWordsEl(), "flipped", true);
-  } else {
-    setClass(getWordsEl(), "flipped", false);
-  }
-
-  if (Config.colorfulMode) {
-    setClass(getWordsEl(), "colorfulMode", true);
-  } else {
-    setClass(getWordsEl(), "colorfulMode", false);
-  }
-
-  for (const element of [
-    getCaretElement(),
-    getPaceCaretElement(),
-    getTypingTestElement(),
-  ]) {
-    element.style.fontSize = getWordsFontSize(Config.fontSize);
-  }
-  // under 16px ios zooms the page in when the input is focused
-  getWordsInputElement().style.fontSize = `max(16px, ${getWordsFontSize(Config.fontSize)})`;
-
-  if (isLanguageRightToLeft()) {
-    setClass(getWordsEl(), "rightToLeftTest", true);
-  } else {
-    setClass(getWordsEl(), "rightToLeftTest", false);
-  }
-  setResultState("rightToLeft", isLanguageRightToLeft());
-
-  const existing =
-    getWordsEl()
-      .className.split(/\s+/)
-      .filter(
-        (className) =>
-          !className.startsWith("highlight-") &&
-          !className.startsWith("typed-effect-"),
-      ) ?? [];
-  if (Config.highlightMode !== null) {
-    existing.push(`highlight-${Config.highlightMode.replaceAll("_", "-")}`);
-  }
-  if (Config.typedEffect !== null) {
-    existing.push(`typed-effect-${Config.typedEffect.replaceAll("_", "-")}`);
-  }
-
-  getWordsEl().className = existing.join(" ");
-
-  updateWordsWidth();
-  updateWordsWrapperHeight(true);
-  if (!Config.showAllLines) {
-    void centerActiveLine();
-  }
-  updateWordsMargin();
-  updateWordsInputPosition();
-  void updateHintsPositionDebounced();
-  Caret.updatePosition(true);
-
-  if (!isInputElementFocused()) {
-    setTestFocusState("unfocused");
-  }
 }
 
 function showWords(): void {
