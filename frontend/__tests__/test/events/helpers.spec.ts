@@ -10,7 +10,7 @@ import {
   getInputFromDom,
   getTestEventCode,
 } from "../../../src/ts/test/events/helpers";
-import type { InputEvent } from "../../../src/ts/test/events/types";
+import type { InputEvent } from "@oxytype/typing-core/events/types";
 import type { InsertInputType } from "../../../src/ts/input/helpers/input-type";
 
 let nextMs = 0;

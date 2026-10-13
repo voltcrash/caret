@@ -6,7 +6,7 @@ import { CompletedEvent } from "@oxytype/schemas/results";
 import { Config } from "@oxytype/schemas/configs";
 import { buildCompletedEvent } from "@oxytype/typing-core/completed-event";
 import { hashResult } from "../../src/ts/utils/result-hash";
-import { EventLog } from "../../src/ts/test/events/types";
+import { EventLog } from "@oxytype/typing-core/events/types";
 import {
   getCorrectedWordsHistory,
   getIncompleteTestSeconds,

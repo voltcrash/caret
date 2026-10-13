@@ -139,7 +139,7 @@ import {
   findInputValueMismatches,
   getEventsForWord,
 } from "../../../src/ts/test/events/helpers";
-import type { InputEventNoMs } from "../../../src/ts/test/events/types";
+import type { InputEventNoMs } from "@oxytype/typing-core/events/types";
 import { words as TestWords } from "../../../src/ts/test/test-words";
 import { __testing } from "../../../src/ts/config/testing";
 import { DeleteInputType } from "../../../src/ts/input/helpers/input-type";

@@ -91,7 +91,7 @@ import type {
   KeydownEventData,
   KeyupEventData,
   TimerEventData,
-} from "../../../src/ts/test/events/types";
+} from "@oxytype/typing-core/events/types";
 import { Config } from "../../../src/ts/config/store";
 import { Keycode } from "../../../src/ts/constants/keys";
 import { words as TestWords } from "../../../src/ts/test/test-words";
