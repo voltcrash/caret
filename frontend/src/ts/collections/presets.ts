@@ -5,11 +5,13 @@ import {
   createOptimisticAction,
   useLiveQuery,
 } from "@tanstack/solid-db";
+import { untrack } from "solid-js";
 import Ape from "../ape";
 import { queryClient } from "../queries";
 import { baseKey } from "../queries/utils/keys";
 import { ConfigGroupName } from "@oxytype/schemas/configs";
 import { applyIdWorkaround, tempId } from "./utils/misc";
+import { createCollectionReader } from "./utils/reader";
 import { isAuthenticated } from "../states/core";
 import { replaceUnderscoresWithSpaces } from "../utils/strings";
 
@@ -52,6 +54,11 @@ const presetsCollection = createCollection(
         .map(applyIdWorkaround);
     },
   }),
+);
+
+const presetsReader = createCollectionReader(
+  import.meta.hot,
+  presetsCollection,
 );
 
 type ActionType = {
@@ -167,14 +174,14 @@ export async function waitForPresetsReady(): Promise<void> {
   await presetsCollection.stateWhenReady();
 }
 
-function getPresets(): PresetItem[] {
-  return [...presetsCollection.values()].sort((a, b) =>
-    a.name.localeCompare(b.name),
-  );
+/** Reactive. Sorted by name. */
+export function getPresets(): PresetItem[] {
+  return presetsReader.values().sort((a, b) => a.name.localeCompare(b.name));
 }
 
-function getPreset(id: string): PresetItem | undefined {
-  return presetsCollection.get(id);
+/** Reactive. */
+export function getPreset(id: string): PresetItem | undefined {
+  return presetsReader.get(id);
 }
 
 export async function addPreset(
@@ -202,8 +209,9 @@ export async function deletePreset(
  * Used for non reactive access. Do not use in Solid components.
  */
 export const __nonReactive = {
-  getPresets,
-  getPreset,
+  getPresets: (): PresetItem[] => untrack(getPresets),
+  getPreset: (id: string): PresetItem | undefined =>
+    untrack(() => getPreset(id)),
 };
 
 import.meta.hot?.dispose(() => {
