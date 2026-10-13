@@ -83,6 +83,19 @@ it("builds a result from a finish listener without re-emitting finish", async ()
 });
 
 describe("headless lifecycle", () => {
+  it.each([
+    ["hello", false],
+    ["한글", true],
+    ["한", true],
+    ["ㄱ", true],
+    ["\ua960", true],
+    ["\ud7b0", true],
+    ["日本語", false],
+  ] as const)("records Korean status for %s", (text, expected) => {
+    const session = createTestSession(sessionConfig(), { words: [text] });
+    expect(session.buildEventLog().context.koreanStatus).toBe(expected);
+  });
+
   it("emits input, word, tick, finish and resets isolated state", async () => {
     const session = createTestSession(sessionConfig(), {
       words: ["one ", "two"],
