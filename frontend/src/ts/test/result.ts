@@ -1,3 +1,4 @@
+import { updateChartPBLine } from "./result/chart-pb";
 import { updateChartData } from "./result/chart-data";
 export {
   toggleSmoothedBurst,
@@ -31,7 +32,6 @@ import type { PluginChartOptions } from "chart.js";
 import { Config } from "../config/store";
 import { setConfig } from "../config/setters";
 import { Quote } from "../controllers/quotes-controller";
-import * as DB from "../db";
 
 import { showNoticeNotification } from "../states/notifications";
 import { getCustomTextIndicator, isAuthenticated } from "../states/core";
@@ -53,7 +53,6 @@ import type {
 } from "chartjs-plugin-annotation";
 import { CompletedEvent } from "@oxytype/schemas/results";
 
-import { getFunbox } from "@oxytype/funbox";
 import {
   getActiveTags,
   getLocalTagPB,
@@ -86,53 +85,6 @@ import {
   type ResultTag,
 } from "../states/result";
 import { buildResultStats, buildSpeedStats } from "./result-view-model";
-
-async function updateChartPBLine(): Promise<void> {
-  const { Chart } = await import("chart.js");
-  const themecolors = getTheme();
-  const localPb = DB.getLocalPB(
-    result.mode,
-    result.mode2,
-    result.punctuation ?? false,
-    result.numbers ?? false,
-    result.language,
-    result.difficulty,
-    result.lazyMode ?? false,
-    getFunbox(result.funbox),
-  );
-  const localPbWpm = localPb?.wpm ?? 0;
-  if (localPbWpm === 0) return;
-  const typingSpeedUnit = getTypingSpeedUnit(Config.typingSpeedUnit);
-  const chartlpb = Numbers.roundTo2(
-    typingSpeedUnit.fromWpm(localPbWpm),
-  ).toFixed(2);
-  resultAnnotation.push({
-    display: true,
-    type: "line",
-    id: "lpb",
-    scaleID: "wpm",
-    value: chartlpb,
-    borderColor: `${themecolors.sub}55`,
-    borderWidth: 1,
-    // borderDash: [4, 16],
-    label: {
-      backgroundColor: themecolors.sub,
-      font: {
-        family: Config.fontFamily.replace(/_/g, " "),
-        size: 11,
-        style: "normal",
-        weight: Chart.defaults.font.weight,
-        lineHeight: Chart.defaults.font.lineHeight as number,
-      },
-      color: themecolors.bg,
-      padding: 3,
-      borderRadius: 3,
-      position: "center",
-      content: ` PB: ${chartlpb} `,
-      display: true,
-    },
-  });
-}
 
 export function updateTodayTracker(): void {
   setResultState("timeToday", TodayTracker.getString());
