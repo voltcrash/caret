@@ -1,5 +1,6 @@
 import { setOpenGraphUrl, setPageTitle } from "../states/page-head";
 import { highlightSetting } from "../states/settings-highlight";
+import { isAppLoading } from "../states/app";
 import { isDevEnvironment } from "../utils/env";
 import * as Misc from "../utils/misc";
 import * as Strings from "../utils/strings";
@@ -242,7 +243,9 @@ export async function change(
 
   const previousPage = pages[getActivePage()];
   const nextPage = pages[pageName];
-  const totalDuration = Misc.applyReducedMotion(250);
+  // The startup screen covers navigation until the app has loaded, so fades
+  // behind it would only delay the first page.
+  const totalDuration = isAppLoading() ? 0 : Misc.applyReducedMotion(250);
 
   //start
   PageTransition.set(true);
