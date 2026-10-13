@@ -2,10 +2,8 @@ import {
   createDeferred,
   createEffect,
   createMemo,
-  createSignal,
   For,
   JSXElement,
-  onCleanup,
   Show,
   untrack,
 } from "solid-js";
@@ -33,6 +31,7 @@ import { getLastEventLog } from "../../states/test";
 import { cn } from "../../utils/cn";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Button } from "../common/Button";
+import { createPlayback } from "./event-log-viewer/createPlayback";
 import { createVideoSync } from "./event-log-viewer/createVideoSync";
 import { DistributionPanel } from "./event-log-viewer/DistributionPanel";
 import { DriftChart } from "./event-log-viewer/DriftChart";
@@ -40,8 +39,6 @@ import {
   getCurrentEventIndex,
   getCurrentWordIndex,
   getMaxTestMs,
-  getNextEventMs,
-  getPreviousEventMs,
   inputsPerWord,
   parseContext,
   visualizeWhitespace,
@@ -149,9 +146,9 @@ function PreviewContent(props: {
   onBack: () => void;
 }): JSXElement {
   const maxMs = untrack(() => getMaxTestMs(props.ctx.events));
+  const sync = createVideoSync(() => props.ctx.events);
   const {
     videoUrl,
-    videoEl,
     setVideoEl,
     videoDurationMs,
     setVideoDurationMs,
@@ -185,7 +182,7 @@ function PreviewContent(props: {
     seekVideoMs,
     toggleVideoPlay,
     videoStepFrame,
-  } = createVideoSync(() => props.ctx.events);
+  } = sync;
 
   const timelineMinMs = createMemo(() => getTimelineMinMs(videoBarRange()));
   const timelineMaxMs = createMemo(() =>
@@ -288,101 +285,20 @@ function PreviewContent(props: {
     scrollRowIntoView(eventsScrollEl, currentEventIndex());
   });
 
-  const [timelinePlaying, setTimelinePlaying] = createSignal(false);
-  let rafId: number | undefined;
-  let lastFrame: number | undefined;
-
-  const playing = createMemo(() =>
-    isSynced() ? videoPlayState() : timelinePlaying(),
-  );
-
-  const stopTimelinePlay = (): void => {
-    if (rafId !== undefined) cancelAnimationFrame(rafId);
-    rafId = undefined;
-    lastFrame = undefined;
-    setTimelinePlaying(false);
-  };
-
-  const tick = (now: number): void => {
-    if (lastFrame === undefined) {
-      lastFrame = now;
-      rafId = requestAnimationFrame(tick);
-      return;
-    }
-    const dt = now - lastFrame;
-    lastFrame = now;
-    const next = currentMs() + dt;
-    if (next >= timelineMaxMs()) {
-      setCurrentMs(timelineMaxMs());
-      stopTimelinePlay();
-      return;
-    }
-    setCurrentMs(Math.round(next));
-    rafId = requestAnimationFrame(tick);
-  };
-
-  const togglePlay = (): void => {
-    if (isSynced()) {
-      const el = videoEl();
-      if (el === undefined) return;
-      if (el.paused) {
-        if (currentMs() >= timelineMaxMs()) setCurrentMs(timelineMinMs());
-        void el.play().catch(() => undefined);
-      } else {
-        el.pause();
-      }
-      return;
-    }
-    if (timelinePlaying()) {
-      stopTimelinePlay();
-    } else {
-      if (currentMs() >= timelineMaxMs()) setCurrentMs(timelineMinMs());
-      setTimelinePlaying(true);
-      lastFrame = undefined;
-      rafId = requestAnimationFrame(tick);
-    }
-  };
-
-  onCleanup(stopTimelinePlay);
-
-  const stopAllPlay = (): void => {
-    stopTimelinePlay();
-    const el = videoEl();
-    if (el !== undefined && isSynced() && !el.paused) el.pause();
-  };
-
-  const step = (delta: number): void => {
-    stopAllPlay();
-    const next = Math.max(
-      timelineMinMs(),
-      Math.min(timelineMaxMs(), currentMs() + delta),
-    );
-    setCurrentMs(next);
-  };
-
-  const goToStart = (): void => {
-    stopAllPlay();
-    setCurrentMs(timelineMinMs());
-  };
-
-  const goToEnd = (): void => {
-    stopAllPlay();
-    setCurrentMs(timelineMaxMs());
-  };
-
-  const goNextEvent = (): void => {
-    stopAllPlay();
-    setCurrentMs(
-      getNextEventMs(filteredEvents(), currentMs()) ?? timelineMaxMs(),
-    );
-  };
-
-  const goPrevEvent = (): void => {
-    stopAllPlay();
-    setCurrentMs(
-      getPreviousEventMs(filteredEvents(), currentMs()) ?? timelineMinMs(),
-    );
-  };
+  const {
+    playing,
+    togglePlay,
+    step,
+    goToStart,
+    goToEnd,
+    goNextEvent,
+    goPrevEvent,
+  } = createPlayback({
+    sync,
+    events: filteredEvents,
+    minMs: timelineMinMs,
+    maxMs: timelineMaxMs,
+  });
 
   return (
     <div class="flex min-h-0 flex-1 flex-col gap-3">
