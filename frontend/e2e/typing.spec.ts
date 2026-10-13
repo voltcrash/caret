@@ -23,4 +23,14 @@ test("completes a 15-word typing test", async ({ page }) => {
   // Key events exercise the input pipeline; a modest delay keeps WPM realistic.
   await page.keyboard.type(words.join(" "), { delay: 60 });
   await expect(page.locator("#result")).toBeVisible();
+
+  const result = page.locator("#result");
+  await expect(result.locator(".wpm .text")).toHaveText("wpm");
+  const wpm = result.locator(".wpm .bottom");
+  await expect(wpm).toHaveText(/^\d+$/);
+  expect(Number(await wpm.textContent())).toBeGreaterThan(0);
+  await expect(result.locator(".acc .bottom")).toHaveText("100%");
+  await expect(result.locator(".testType .bottom").first()).toContainText(
+    "words 15",
+  );
 });
