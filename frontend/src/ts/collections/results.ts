@@ -795,9 +795,3 @@ createModuleEffectOn(import.meta.hot, isAuthenticated, (hasUser) => {
 function getResults(client: Client = "web"): SnapshotResult<Mode>[] {
   return [...resultsByClient[client].values()];
 }
-/**
- * Used for non reactive access. Do not use in Solid components.
- */
-export const __nonReactive = {
-  getResults,
-};
