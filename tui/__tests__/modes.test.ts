@@ -123,4 +123,22 @@ describe("offline modes and restarts", () => {
     expect(typing.inputFor(1)).toBe("\t");
     await store.flush();
   });
+  test("quote restarts retain repeatQuotes=off without marking the next test repeated", async () => {
+    const { test: typing, store } = await typingTest({ now: () => 1000 });
+    store.set("mode", "quote");
+    store.set("repeatQuotes", "off");
+    await typing.restart();
+    await typing.insert("x", 1000);
+    await typing.restart();
+    let timestamp = 5000;
+    for (const word of typing.words()) {
+      for (const char of word) {
+        await typing.insert(char, timestamp);
+        timestamp += 100;
+      }
+    }
+    expect(typing.status()).toBe("finished");
+    expect(typing.result()?.invalid).not.toBe("repeated");
+    await store.flush();
+  });
 });
