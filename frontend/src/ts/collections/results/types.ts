@@ -1,6 +1,6 @@
 import { FunboxName } from "@oxytype/schemas/configs";
 import { Client, Difficulty, Mode, Mode2 } from "@oxytype/schemas/shared";
-import { SnapshotResult } from "../../constants/default-snapshot";
+import { SnapshotResult, SavedResult } from "../../constants/default-snapshot";
 
 export type ResultsQueryState = {
   client?: Client;
@@ -44,7 +44,7 @@ export type ActionType = {
     newTagIds: string[];
   };
   insertLocalResult: {
-    result: SnapshotResult<Mode>;
+    result: SnapshotResult<Mode> | SavedResult;
   };
   deleteLocalTag: {
     tagId: string;

@@ -1,5 +1,9 @@
 import { createStore, reconcile, unwrap } from "solid-js/store";
-import { Snapshot, SnapshotResult } from "../constants/default-snapshot";
+import {
+  Snapshot,
+  SnapshotResult,
+  SavedResult,
+} from "../constants/default-snapshot";
 import { createSignal } from "solid-js";
 import { Mode } from "@oxytype/schemas/shared";
 
@@ -37,5 +41,5 @@ export function getSnapshot(): MiniSnapshot | undefined {
 }
 
 export const [getLastResult, setLastResult] = createSignal<
-  SnapshotResult<Mode> | undefined
+  SnapshotResult<Mode> | SavedResult | undefined
 >(undefined);
