@@ -16,4 +16,11 @@ test("completes a 15-word typing test", async ({ page }) => {
   const displayedWords = page.locator("#words .word");
   await expect(displayedWords).toHaveCount(15);
   await expect(page.locator("#words")).toBeVisible();
+
+  const words = await displayedWords.allTextContents();
+  await page.locator("#words").click();
+  await expect(page.locator("#wordsInput")).toBeFocused();
+  // Key events exercise the input pipeline; a modest delay keeps WPM realistic.
+  await page.keyboard.type(words.join(" "), { delay: 60 });
+  await expect(page.locator("#result")).toBeVisible();
 });
