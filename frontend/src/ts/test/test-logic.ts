@@ -125,6 +125,7 @@ import { isDevEnvironment } from "../utils/env";
 import { resetModifierState } from "../states/modifiers";
 import { nthElementFromArray } from "../utils/arrays";
 import { hasKoreanCharacters } from "@oxytype/typing-core/strings";
+import { shouldRepeatQuote } from "@oxytype/typing-core/restart";
 
 let failReason = "";
 
@@ -263,10 +264,9 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
 
   const currentQuote = getCurrentQuote();
   if (
-    Config.mode === "quote" &&
+    shouldRepeatQuote(Config) &&
     currentQuote !== null &&
     Config.language.startsWith(currentQuote.language) &&
-    Config.repeatQuotes === "typing" &&
     (isTestActive() || failReason !== "")
   ) {
     options.withSameWordset = true;
