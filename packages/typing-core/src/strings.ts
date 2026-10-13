@@ -1,5 +1,11 @@
 import { Language } from "@oxytype/schemas/languages";
 
+export function hasKoreanCharacters(text: string): boolean {
+  return /[\uac00-\ud7af\u1100-\u11ff\u3130-\u318f\ua960-\ua97f\ud7b0-\ud7ff]/.test(
+    text,
+  );
+}
+
 /**
  * Removes accents from a string.
  * https://ricardometring.com/javascript-replace-special-characters

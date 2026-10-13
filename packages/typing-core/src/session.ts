@@ -29,6 +29,7 @@ import {
 import { getCommitCharacterType } from "./input/util";
 import { getMode2 } from "./mode";
 import { calculateWpm } from "./stats-math";
+import { hasKoreanCharacters } from "./strings";
 import {
   createTestTimer,
   getTimeLimit,
@@ -182,11 +183,7 @@ export class TestSession {
         targetWords: [...this.words],
         mode: config.mode,
         mode2: getMode2(config, this.deps.getCurrentQuote?.() ?? null),
-        koreanStatus: this.words.some((word) =>
-          /[\uac00-\ud7af\u1100-\u11ff\u3130-\u318f\ua960-\ua97f\ud7b0-\ud7ff]/.test(
-            word,
-          ),
-        ),
+        koreanStatus: this.words.some(hasKoreanCharacters),
         bailedOut: false,
         customTextLimitMode: this.deps.customLimit?.().mode,
         customTextLimitValue: this.deps.customLimit?.().value,
