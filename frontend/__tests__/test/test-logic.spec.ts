@@ -374,3 +374,50 @@ describe("test lifecycle state", () => {
     });
   });
 });
+
+describe("shared test decisions", () => {
+  it.each([
+    ["hello", false],
+    ["한글", true],
+    ["한", true],
+    ["ㄱ", true],
+    ["\ua960", true],
+    ["\ud7b0", true],
+    ["日本語", false],
+  ] as const)("detects Korean text in %s", async (text, expected) => {
+    mocks.generatedWords = [text];
+    await restart();
+    expect(mocks.korean).toHaveBeenLastCalledWith(expected);
+  });
+
+  it.each(["off", "typing"] as const)(
+    "preserves repeatQuotes=%s on an active quote restart",
+    async (repeatQuotes) => {
+      Config.mode = "quote";
+      Config.repeatQuotes = repeatQuotes;
+      mocks.quote = { language: "english", id: 1 } as QuoteWithTextSplit;
+      mocks.active = true;
+      await restart();
+      expect(mocks.repeated).toBe(repeatQuotes === "typing");
+    },
+  );
+
+  it("does not repeat a quote after changing its language", async () => {
+    Config.mode = "quote";
+    Config.repeatQuotes = "typing";
+    mocks.quote = { language: "spanish", id: 1 } as QuoteWithTextSplit;
+    mocks.active = true;
+    await restart();
+    expect(mocks.repeated).toBe(false);
+  });
+
+  it("rejects undefined and NaN completed fields before saving", async () => {
+    mocks.complete.mockReturnValue({ wpm: NaN, nested: [undefined] });
+    mocks.active = true;
+    await finish();
+    expect(mocks.error).toHaveBeenCalledWith(
+      "Failed to build result object: One of the fields is undefined or NaN",
+    );
+    expect(mocks.signedOut).not.toHaveBeenCalled();
+  });
+});
