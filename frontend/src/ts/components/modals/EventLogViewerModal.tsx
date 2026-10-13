@@ -16,7 +16,6 @@ import {
   getStage,
   getVisibleTypes,
   resetEventLogViewer,
-  setCurrentMs,
   setError,
   setEventLog,
   setRaw,
@@ -29,7 +28,6 @@ import { Button } from "../common/Button";
 import { createPlayback } from "./event-log-viewer/createPlayback";
 import { createVideoSync } from "./event-log-viewer/createVideoSync";
 import { DistributionPanel } from "./event-log-viewer/DistributionPanel";
-import { DriftChart } from "./event-log-viewer/DriftChart";
 import {
   getCurrentEventIndex,
   getCurrentWordIndex,
@@ -41,12 +39,12 @@ import {
 import { EventsPanel } from "./event-log-viewer/EventsPanel";
 import { ScatterPanel } from "./event-log-viewer/ScatterPanel";
 import { SimulatedInputPanel } from "./event-log-viewer/SimulatedInputPanel";
-import { Timeline } from "./event-log-viewer/Timeline";
 import {
   buildLanes,
   getTimelineMaxMs,
   getTimelineMinMs,
 } from "./event-log-viewer/timeline-lanes";
+import { TimelinePanel } from "./event-log-viewer/TimelinePanel";
 import { VideoPanel } from "./event-log-viewer/VideoPanel";
 import { WordsPanel } from "./event-log-viewer/WordsPanel";
 
@@ -145,8 +143,7 @@ function PreviewContent(props: {
 }): JSXElement {
   const maxMs = untrack(() => getMaxTestMs(props.ctx.events));
   const sync = createVideoSync(() => props.ctx.events);
-  const { isSynced, videoMapping, videoBarRange, timelineMarks, driftData } =
-    sync;
+  const { isSynced, videoMapping, videoBarRange } = sync;
 
   const timelineMinMs = createMemo(() => getTimelineMinMs(videoBarRange()));
   const timelineMaxMs = createMemo(() =>
@@ -210,15 +207,7 @@ function PreviewContent(props: {
     getCurrentEventIndex(filteredEvents(), currentMs()),
   );
 
-  const {
-    playing,
-    togglePlay,
-    step,
-    goToStart,
-    goToEnd,
-    goNextEvent,
-    goPrevEvent,
-  } = createPlayback({
+  const playback = createPlayback({
     sync,
     events: filteredEvents,
     minMs: timelineMinMs,
@@ -276,87 +265,14 @@ function PreviewContent(props: {
       <ScatterPanel ctx={statsLog()} fullCtx={props.ctx} />
 
       {/* TIMELINE PANEL */}
-      <div class="bg-bg-secondary flex shrink-0 flex-col gap-2 rounded-lg p-3">
-        <div class="flex items-center justify-between">
-          <div class="text-xs tracking-wider text-sub uppercase">Timeline</div>
-          <div class="font-mono text-xs text-sub">
-            {currentMs().toFixed(2)} / {maxMs} ms
-          </div>
-        </div>
-        <div class="flex items-center justify-center gap-1">
-          <Button
-            variant="text"
-            balloon={{ text: "Go to start" }}
-            fa={{ icon: "fa-fast-backward" }}
-            onClick={goToStart}
-          />
-          <Button
-            variant="text"
-            balloon={{ text: "-10ms" }}
-            fa={{ icon: "fa-backward" }}
-            onClick={() => step(-10)}
-          />
-          <Button
-            variant="text"
-            balloon={{ text: "-1ms" }}
-            fa={{ icon: "fa-chevron-left" }}
-            onClick={() => step(-1)}
-          />
-          <Button
-            variant="text"
-            balloon={{ text: "Previous event" }}
-            fa={{ icon: "fa-step-backward" }}
-            onClick={goPrevEvent}
-          />
-          <Button
-            variant="button"
-            balloon={{ text: playing() ? "Pause" : "Play" }}
-            fa={{ icon: playing() ? "fa-pause" : "fa-play" }}
-            onClick={togglePlay}
-          />
-          <Button
-            variant="text"
-            balloon={{ text: "Next event" }}
-            fa={{ icon: "fa-step-forward" }}
-            onClick={goNextEvent}
-          />
-          <Button
-            variant="text"
-            balloon={{ text: "+1ms" }}
-            fa={{ icon: "fa-chevron-right" }}
-            onClick={() => step(1)}
-          />
-          <Button
-            variant="text"
-            balloon={{ text: "+10ms" }}
-            fa={{ icon: "fa-forward" }}
-            onClick={() => step(10)}
-          />
-          <Button
-            variant="text"
-            balloon={{ text: "Go to end" }}
-            fa={{ icon: "fa-fast-forward" }}
-            onClick={goToEnd}
-          />
-        </div>
-        <Show when={driftData().length > 0}>
-          <DriftChart
-            data={driftData()}
-            minMs={timelineMinMs()}
-            maxMs={timelineMaxMs()}
-          />
-        </Show>
-        <Timeline
-          segments={timelineLanes().segments}
-          totalHeight={timelineLanes().totalHeight}
-          minMs={timelineMinMs()}
-          maxMs={timelineMaxMs()}
-          currentMs={currentMs()}
-          onSeek={setCurrentMs}
-          videoBar={videoBarRange()}
-          marks={timelineMarks()}
-        />
-      </div>
+      <TimelinePanel
+        sync={sync}
+        playback={playback}
+        lanes={timelineLanes()}
+        testMaxMs={maxMs}
+        minMs={timelineMinMs()}
+        maxMs={timelineMaxMs()}
+      />
     </div>
   );
 }
