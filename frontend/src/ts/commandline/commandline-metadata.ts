@@ -1,3 +1,4 @@
+import { testMetadata } from "./metadata/test";
 import { CommandlineConfigMetadataObject } from "./metadata/types";
 export {
   type CommandlineConfigMetadataObject,
@@ -8,12 +9,8 @@ export {
 import * as ConfigSchemas from "@oxytype/schemas/configs";
 import * as SoundController from "../controllers/sound-controller";
 import * as TestLogic from "../test/test-logic";
-import {
-  getLanguageDisplayString,
-  replaceUnderscoresWithSpaces,
-} from "../utils/strings";
+import { replaceUnderscoresWithSpaces } from "../utils/strings";
 
-import { areUnsortedArraysEqual } from "../utils/arrays";
 import { Config } from "../config/store";
 import { get as getTypingSpeedUnit } from "../utils/typing-speed-units";
 import { getActivePage, isAuthenticated } from "../states/core";
@@ -25,99 +22,7 @@ import { typedKeys } from "@oxytype/util/objects";
 
 export const commandlineConfigMetadata: CommandlineConfigMetadataObject = {
   //test
-  punctuation: {
-    subgroup: {
-      options: "fromSchema",
-      afterExec: () => {
-        void TestLogic.restart();
-      },
-    },
-  },
-  numbers: {
-    subgroup: {
-      options: "fromSchema",
-      afterExec: () => {
-        void TestLogic.restart();
-      },
-    },
-  },
-  words: {
-    alias: "words",
-    subgroup: {
-      options: [10, 25, 50, 100],
-      afterExec: () => {
-        void TestLogic.restart();
-      },
-    },
-    input: {
-      inputValueConvert: Number,
-
-      afterExec: () => {
-        void TestLogic.restart();
-      },
-    },
-  },
-  time: {
-    subgroup: {
-      options: [15, 30, 60, 120],
-      afterExec: () => {
-        void TestLogic.restart();
-      },
-    },
-    input: {
-      inputValueConvert: Number,
-      afterExec: () => {
-        void TestLogic.restart();
-      },
-    },
-  },
-  mode: {
-    subgroup: {
-      options: "fromSchema",
-      afterExec: () => {
-        void TestLogic.restart();
-      },
-    },
-  },
-  quoteLength: {
-    alias: "quotes",
-    subgroup: {
-      options: [[0, 1, 2, 3], [0], [1], [2], [3], [-3]],
-      configValueMode: () => "include",
-      isAvailable: (value) => {
-        if (value[0] === -3) {
-          return isAuthenticated;
-        }
-        return undefined;
-      },
-      display: (value) => {
-        if (areUnsortedArraysEqual(value, [0, 1, 2, 3])) {
-          return "all";
-        }
-
-        const map: Record<number, string> = {
-          0: "short",
-          1: "medium",
-          2: "long",
-          3: "thicc",
-          "-3": "favorite",
-        };
-
-        return map[value[0] as number] as string;
-      },
-      afterExec: () => {
-        void TestLogic.restart();
-      },
-    },
-  },
-  language: {
-    subgroup: {
-      options: "fromSchema",
-      display: (value) => {
-        return getLanguageDisplayString(value);
-      },
-    },
-  },
+  ...testMetadata,
   //behavior
   difficulty: {
     subgroup: {
