@@ -1,3 +1,4 @@
+import { queryKeys } from "./results/keys";
 import { normalizeResult } from "./results/normalize";
 import {
   ResultsQueryState,
@@ -38,7 +39,7 @@ import Ape from "../ape";
 import { SnapshotResult } from "../constants/default-snapshot";
 import { createModuleEffectOn } from "../hooks/effects";
 import { queryClient } from "../queries";
-import { baseKey } from "../queries/utils/keys";
+
 import { isAuthenticated } from "../states/core";
 import { getLastResult, setLastResult } from "../states/snapshot";
 import {
@@ -53,14 +54,6 @@ import { getConfig } from "../config/store";
 import { getMode2 } from "../utils/misc";
 import { getCurrentQuote } from "../states/test";
 import { removeLanguageSize } from "../utils/strings";
-
-const queryKeys = {
-  root: (client: Client = "web") => [
-    ...baseKey("results", { isUserSpecific: true }),
-    client,
-  ],
-  fullResult: (_id: string) => [...queryKeys.root(), _id],
-};
 
 /**
  * get aggregated statistics for the current result selection
