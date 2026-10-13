@@ -86,7 +86,7 @@ vi.mock("../../src/ts/states/test", async (importOriginal) => ({
   getKoreanStatus: () => false,
   isTestInvalid: () => state.testInvalid,
 }));
-vi.mock("../../src/ts/test/events/stats", () => ({
+vi.mock("@oxytype/typing-core/events/stats", () => ({
   getAccuracy: () => state.accuracy,
   getRawHistory: () => [],
   getTimerBoundaryLabels: () => [],

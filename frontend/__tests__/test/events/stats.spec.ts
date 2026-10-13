@@ -64,7 +64,7 @@ import {
   findInputValueMismatches,
   getEventsForWord,
   getEventsPerWord,
-} from "../../../src/ts/test/events/helpers";
+} from "@oxytype/typing-core/events/helpers";
 import {
   getStartToFirstKeypressMs,
   getLastKeypressToEndMs,
@@ -84,14 +84,14 @@ import {
   getCorrectedWordsHistory,
   getKeypressSpacing,
   getMissedWords,
-} from "../../../src/ts/test/events/stats";
+} from "@oxytype/typing-core/events/stats";
 import type {
   InputEventData,
   InputEventNoMs,
   KeydownEventData,
   KeyupEventData,
   TimerEventData,
-} from "../../../src/ts/test/events/types";
+} from "@oxytype/typing-core/events/types";
 import { Config } from "../../../src/ts/config/store";
 import { Keycode } from "../../../src/ts/constants/keys";
 import { words as TestWords } from "../../../src/ts/test/test-words";

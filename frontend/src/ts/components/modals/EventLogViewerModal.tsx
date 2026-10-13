@@ -1,3 +1,16 @@
+import type {
+  EventLog,
+  InputEventNoMs,
+  TestEventNoMs,
+  TestEventType,
+} from "@oxytype/typing-core/events/types";
+
+import { getInputFromDom } from "@oxytype/typing-core/events/helpers";
+import {
+  getKeypressDurations,
+  getKeypressSpacing,
+} from "@oxytype/typing-core/events/stats";
+import { EVENT_LOG_VERSION } from "@oxytype/typing-core/events/types";
 import {
   computeBellness,
   computeCrossStats,
@@ -31,13 +44,6 @@ import {
   Show,
   untrack,
 } from "solid-js";
-
-import type {
-  EventLog,
-  InputEventNoMs,
-  TestEventNoMs,
-  TestEventType,
-} from "../../test/events/types";
 
 import {
   EVENT_TYPES,
@@ -75,12 +81,6 @@ import {
 import { hideModal } from "../../states/modals";
 import { getLastEventLog } from "../../states/test";
 import { getTheme } from "../../states/theme";
-import { getInputFromDom } from "../../test/events/helpers";
-import {
-  getKeypressDurations,
-  getKeypressSpacing,
-} from "../../test/events/stats";
-import { EVENT_LOG_VERSION } from "../../test/events/types";
 import { cn } from "../../utils/cn";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Balloon } from "../common/Balloon";

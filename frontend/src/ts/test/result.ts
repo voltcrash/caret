@@ -59,7 +59,7 @@ import {
   getRawHistory,
   getTimerBoundaryLabels,
   getWordBurstHistory,
-} from "./events/stats";
+} from "@oxytype/typing-core/events/stats";
 import * as TestWords from "./test-words";
 import { buildWordsHistory } from "./word-markup";
 import {

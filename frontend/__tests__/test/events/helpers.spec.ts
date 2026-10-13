@@ -8,9 +8,9 @@ vi.mock("../../../src/ts/config/store", () => ({
 import {
   findInputValueMismatches,
   getInputFromDom,
-  getTestEventCode,
-} from "../../../src/ts/test/events/helpers";
-import type { InputEvent } from "../../../src/ts/test/events/types";
+} from "@oxytype/typing-core/events/helpers";
+import { getTestEventCode } from "../../../src/ts/test/events/helpers";
+import type { InputEvent } from "@oxytype/typing-core/events/types";
 import type { InsertInputType } from "../../../src/ts/input/helpers/input-type";
 
 let nextMs = 0;

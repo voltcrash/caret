@@ -114,7 +114,7 @@ import {
   getIncompleteTestSeconds,
   getDateBasedTestDurationMs,
   getInputHistory,
-} from "./events/stats";
+} from "@oxytype/typing-core/events/stats";
 import {
   getInvalidResultReason,
   InvalidResultReason,

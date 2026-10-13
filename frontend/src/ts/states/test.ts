@@ -3,7 +3,7 @@ import { createEffect, createMemo, createSignal } from "solid-js";
 import { z } from "zod/v3";
 import { getConfig } from "../config/store";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-import { EventLog } from "../test/events/types";
+import { EventLog } from "@oxytype/typing-core/events/types";
 
 import { Challenge } from "@oxytype/challenges";
 import { LayoutObject } from "@oxytype/schemas/layouts";

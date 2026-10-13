@@ -14,7 +14,7 @@ import { calculateWpm } from "@oxytype/typing-core/stats-math";
 import type {
   EventLog,
   TestEventNoMs,
-} from "../../../src/ts/test/events/types";
+} from "@oxytype/typing-core/events/types";
 import {
   getChars,
   getAccuracy,
@@ -28,7 +28,7 @@ import {
   getWpmHistory,
   getBurstHistory,
   getErrorCountHistory,
-} from "../../../src/ts/test/events/stats";
+} from "@oxytype/typing-core/events/stats";
 
 vi.mock("../../../src/ts/config/store", () => ({
   Config: { mode: "time", funbox: [] },
