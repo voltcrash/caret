@@ -1,50 +1,3 @@
-import { onWordsConfigChange } from "./words/config";
-export {
-  afterTestTextInput,
-  afterTestCompositionUpdate,
-  afterTestDelete,
-  beforeTestWordChange,
-  afterTestWordChange,
-  onTestStart,
-  fadeOutForRestart,
-  fadeInAfterRestart,
-  onTestRestart,
-  onTestFinish,
-} from "./words/lifecycle";
-import { disposeWordRendering } from "./words/rendering";
-export {
-  updateActiveElement,
-  appendEmptyWordElement,
-  addWord,
-  pendingWordData,
-  updateWordLetters,
-  highlightBadWord,
-  highlightAllLettersAsCorrect,
-  getActiveWordTopAndHeightWithDifferentData,
-  clearWords,
-  clearWordsBlur,
-} from "./words/rendering";
-
-export { scrollTape } from "./words/tape";
-
-export { centerActiveLine } from "./words/line-jumping";
-
-export { activeWordTop, activeWordHeight } from "./words/line-state";
-
-export {
-  updateWordsInputPosition,
-  updateWordsWrapperHeight,
-} from "./words/sizing";
-
-export { setJoiningClass } from "./words/joining";
-
-export { updateHintsPositionDebounced } from "./words/hints";
-
-export { focusWords, keepWordsInputInTheCenter } from "./words/focus";
-
-import { setClass } from "./words/elements";
-export { getWordElement, getActiveWordElement } from "./words/elements";
-
 import { createEffect, JSXElement, onCleanup, onMount } from "solid-js";
 
 import { configEvent } from "../../../events/config";
@@ -52,6 +5,9 @@ import { useWordsFocus } from "../../../hooks/useWordsFocus";
 import { getBackground } from "../../../states/background";
 import { cn } from "../../../utils/cn";
 import { cancelPendingAnimationFramesStartingWith } from "../../../utils/debounced-animation-frame";
+import { onWordsConfigChange } from "./words/config";
+import { setClass } from "./words/elements";
+import { disposeWordRendering } from "./words/rendering";
 
 // because of the requestAnimationFrame, multiple calls to updateWordLetters
 // can be made before the actual update happens. This map keeps track of the
