@@ -16,7 +16,6 @@ export const caretMetadata = {
     },
   },
   paceCaret: {
-    display: "Pace caret mode...",
     subgroup: {
       options: ["off", "pb", "tagPb", "last", "average", "daily"],
       afterExec: () => {
