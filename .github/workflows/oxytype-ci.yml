@@ -50,6 +50,7 @@ jobs:
               - 'pnpm-workspace.yaml'
               - 'vite.config.ts'
               - 'vitest.config.ts'
+              - 'knip.ts'
               - 'stylelint.config.mjs'
               - '.oxfmtrc-editor.json'
               - '.editorconfig'
