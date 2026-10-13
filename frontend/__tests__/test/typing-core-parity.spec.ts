@@ -4,9 +4,9 @@ import { resolve } from "path";
 import { fileURLToPath } from "url";
 import { CompletedEvent } from "@oxytype/schemas/results";
 import { Config } from "@oxytype/schemas/configs";
-import { buildCompletedEvent } from "../../src/ts/test/completed-event";
+import { buildCompletedEvent } from "@oxytype/typing-core/completed-event";
 import { hashResult } from "../../src/ts/utils/result-hash";
-import { EventLog } from "../../src/ts/test/events/types";
+import { EventLog } from "@oxytype/typing-core/events/types";
 import {
   getCorrectedWordsHistory,
   getIncompleteTestSeconds,
@@ -15,7 +15,7 @@ import {
   getMissedWords,
   getRawHistory,
   getWordBurstHistory,
-} from "../../src/ts/test/events/stats";
+} from "@oxytype/typing-core/events/stats";
 
 // Parity harness for the typing-core extraction. The fixtures were recorded
 // from the real web test (packages/typing-core/scripts/record-fixtures.ts).

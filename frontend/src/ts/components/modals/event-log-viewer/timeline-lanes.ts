@@ -1,5 +1,8 @@
 import type { SyncKind } from "../../../states/event-log-viewer";
-import type { TestEventNoMs, TestEventType } from "../../../test/events/types";
+import type {
+  TestEventNoMs,
+  TestEventType,
+} from "@oxytype/typing-core/events/types";
 
 import { EVENT_TYPES } from "../../../states/event-log-viewer";
 

@@ -8,6 +8,7 @@ import { createForm } from "@tanstack/solid-form";
 import { For } from "solid-js";
 
 import Ape from "../../ape";
+import { NO_BADGE_ID } from "../../controllers/badge-controller";
 import { getSnapshot, setSnapshot } from "../../db";
 import { invalidateMyProfile } from "../../queries/profile";
 import { hideModal } from "../../states/modals";
@@ -40,7 +41,7 @@ export function EditProfile() {
       website: snapshot.details?.socialProfiles?.website ?? "",
       showActivityOnPublicProfile:
         snapshot.details?.showActivityOnPublicProfile ?? true,
-      badgeId: badges.find((b) => b.selected)?.id ?? -1,
+      badgeId: badges.find((b) => b.selected)?.id,
     },
     onSubmit: async ({ value }) => {
       const updates = {
@@ -219,7 +220,7 @@ export function EditProfile() {
           <form.Field name="badgeId">
             {(field) => (
               <div class="flex flex-wrap gap-2">
-                <For each={[{ id: -1 }, ...badges]}>
+                <For each={[{ id: undefined }, ...badges]}>
                   {(badge) => (
                     <Button
                       class={cn(
@@ -232,7 +233,7 @@ export function EditProfile() {
                       onClick={() => field().handleChange(badge.id)}
                     >
                       <UserBadge
-                        id={badge.id}
+                        id={badge.id ?? NO_BADGE_ID}
                         class="p-1.5 text-em-sm"
                         hideDescription
                       />

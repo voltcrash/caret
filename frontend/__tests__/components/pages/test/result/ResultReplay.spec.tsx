@@ -39,7 +39,7 @@ vi.mock("../../../../../src/ts/test/events/data", () => ({
   getAllTestEvents: () => mocks.events,
   getInputForWord: () => mocks.inputForWord,
 }));
-vi.mock("../../../../../src/ts/test/events/stats", () => ({
+vi.mock("@oxytype/typing-core/events/stats", () => ({
   getInputHistory: () => [],
   getWpmHistory: () => [60, 70],
 }));

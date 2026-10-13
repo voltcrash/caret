@@ -5,8 +5,6 @@ import { RankAndCount } from "@oxytype/schemas/users";
 import { roundTo2 } from "@oxytype/util/numbers";
 import { download } from "../components/common/Download";
 
-export { whorf } from "@oxytype/typing-core/mode";
-
 export function findGetParameter(
   parameterName: string,
   getOverride?: string,

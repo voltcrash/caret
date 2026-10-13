@@ -42,17 +42,103 @@
 
   --radius: var(--roundness);
 
-  --animate-loading-indicator: loading-indicator 1.6s ease-in-out infinite;
+  --animate-typing-loader-typed: typing-loader-typed 2s infinite;
+  --animate-typing-loader-caret: typing-loader-caret 2s infinite;
 
-  @keyframes loading-indicator {
-    0% {
-      transform: translateX(-40%) scaleX(0.35);
+  /* Types the 7-column wordmark with an uneven human rhythm, idles with a
+     caret blink, then restarts. Both keyframes share one timeline. */
+  @keyframes typing-loader-typed {
+    0%,
+    2.5% {
+      width: 0;
     }
-    50% {
-      transform: translateX(30%) scaleX(0.5);
+    6%,
+    9% {
+      width: 1ch;
     }
+    12.5%,
+    17.5% {
+      width: 2ch;
+    }
+    21%,
+    23% {
+      width: 3ch;
+    }
+    26.5%,
+    28.5% {
+      width: 4ch;
+    }
+    32%,
+    36.5% {
+      width: 5ch;
+    }
+    40%,
+    41% {
+      width: 6ch;
+    }
+    44.5%,
+    75% {
+      width: 7ch;
+      opacity: 1;
+    }
+    85% {
+      width: 7ch;
+      opacity: 0;
+    }
+    85.1%,
     100% {
-      transform: translateX(100%) scaleX(0.35);
+      width: 0;
+      opacity: 1;
+    }
+  }
+
+  @keyframes typing-loader-caret {
+    0%,
+    2.5% {
+      transform: translateX(0);
+    }
+    6%,
+    9% {
+      transform: translateX(1ch);
+    }
+    12.5%,
+    17.5% {
+      transform: translateX(2ch);
+    }
+    21%,
+    23% {
+      transform: translateX(3ch);
+    }
+    26.5%,
+    28.5% {
+      transform: translateX(4ch);
+    }
+    32%,
+    36.5% {
+      transform: translateX(5ch);
+    }
+    40%,
+    41% {
+      transform: translateX(6ch);
+    }
+    44.5% {
+      transform: translateX(7ch);
+      opacity: 1;
+    }
+    52% {
+      opacity: 1;
+    }
+    60% {
+      opacity: 0;
+    }
+    68%,
+    75% {
+      transform: translateX(7ch);
+      opacity: 1;
+    }
+    87.5%,
+    100% {
+      transform: translateX(0);
     }
   }
 

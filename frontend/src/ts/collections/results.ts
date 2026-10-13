@@ -284,14 +284,14 @@ const resultsByClient = {
 };
 const resultsCollection = resultsByClient.web;
 
+type UpdateTagsResult = { tagPbs: string[] };
+
 type ActionType = {
   updateTags: {
     client?: Client;
     resultId: string;
     currentTagIds: string[];
     newTagIds: string[];
-    //TODO: remove when result page  is migrated to solidjs
-    afterUpdate?: (params: { tagPbs: string[] }) => void;
   };
   insertLocalResult: {
     result: SnapshotResult<Mode>;
@@ -305,18 +305,15 @@ type ActionType = {
 function createActions(client: Client) {
   const resultsCollection = resultsByClient[client];
   const actions = {
-    updateTags: createOptimisticAction<ActionType["updateTags"]>({
+    updateTags: createOptimisticAction<
+      ActionType["updateTags"] & { persisted: UpdateTagsResult }
+    >({
       onMutate: ({ resultId, newTagIds }) => {
         resultsCollection.update(resultId, (result) => {
           result.tags = newTagIds;
         });
       },
-      mutationFn: async ({
-        resultId,
-        currentTagIds,
-        newTagIds,
-        afterUpdate,
-      }) => {
+      mutationFn: async ({ resultId, currentTagIds, newTagIds, persisted }) => {
         const response = await Ape.results.updateTags({
           body: { resultId, tagIds: newTagIds },
         });
@@ -357,7 +354,7 @@ function createActions(client: Client) {
           tags: newTagIds,
         });
 
-        afterUpdate?.({ tagPbs: response.body.data.tagPbs });
+        persisted.tagPbs = response.body.data.tagPbs;
       },
     }),
     insertLocalResult: createOptimisticAction<ActionType["insertLocalResult"]>({
@@ -393,9 +390,12 @@ const actionsByClient = {
   tui: createActions("tui"),
 };
 // --- Public API ---
+/**
+ * @returns ids of tags that got a new personal best from this result
+ */
 export async function updateTags(
   params: ActionType["updateTags"],
-): Promise<void> {
+): Promise<UpdateTagsResult> {
   const resultsCollection = resultsByClient[params.client ?? "web"];
   if (!resultsCollection.isReady()) {
     // if its not ready yet, send the api request to update the tags
@@ -408,8 +408,7 @@ export async function updateTags(
     }
 
     if (params.client === "tui") {
-      params.afterUpdate?.({ tagPbs: response.body.data.tagPbs });
-      return;
+      return { tagPbs: response.body.data.tagPbs };
     }
 
     const result = getLastResult();
@@ -441,13 +440,16 @@ export async function updateTags(
       );
     });
 
-    params.afterUpdate?.({ tagPbs: response.body.data.tagPbs });
-    return;
+    return { tagPbs: response.body.data.tagPbs };
   }
 
-  const transaction =
-    actionsByClient[params.client ?? "web"].updateTags(params);
+  const persisted: UpdateTagsResult = { tagPbs: [] };
+  const transaction = actionsByClient[params.client ?? "web"].updateTags({
+    ...params,
+    persisted,
+  });
   await transaction.isPersisted.promise;
+  return persisted;
 }
 
 export async function insertLocalResult(
@@ -685,6 +687,18 @@ export function useUserAverage10LiveQuery(options: {
   });
 }
 
+/**
+ * web results from the local day starting at `dayTimestamp` onwards
+ */
+// oxlint-disable-next-line typescript/explicit-function-return-type
+export async function getResultsSinceDayOnce(dayTimestamp: number) {
+  return queryOnce((q) =>
+    q
+      .from({ r: resultsCollection })
+      .where(({ r }) => gte(r.dayTimestamp, dayTimestamp)),
+  );
+}
+
 export async function getUserAverage10Once(
   options: CurrentSettingsFilter,
 ): Promise<{ wpm: number; acc: number }> {
@@ -783,9 +797,3 @@ createModuleEffectOn(import.meta.hot, isAuthenticated, (hasUser) => {
 function getResults(client: Client = "web"): SnapshotResult<Mode>[] {
   return [...resultsByClient[client].values()];
 }
-/**
- * Used for non reactive access. Do not use in Solid components.
- */
-export const __nonReactive = {
-  getResults,
-};

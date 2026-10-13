@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "full-check": "vp run lint && vp run build && vp run test && vp run lint-styles && vp run lint-json-assets && vp run check-assets",
+    "full-check": "vp run lint && vp run build && vp run test && vp run lint-styles && vp run check-assets",
     "prepare": "husky",
     "pre-commit": "lint-staged",
     "ts-check": "vp run --filter \"!oxytype\" ts-check",
@@ -44,11 +44,11 @@
     "format-fix": "vp fmt .",
     "lint-styles": "stylelint \"**/*.css\"",
     "lint-styles-fix": "stylelint \"**/*.css\" --fix",
-    "lint-json-assets": "vp run --filter @oxytype/frontend lint-json",
     "check-assets": "vp run --filter @oxytype/frontend check-assets",
     "check-assets-quotes": "vp run --filter @oxytype/frontend check-assets quotes",
     "check-assets-languages": "vp run --filter @oxytype/frontend check-assets languages",
     "check-assets-others": "vp run --filter @oxytype/frontend check-assets others",
+    "check-assets-json": "vp run --filter @oxytype/frontend check-assets json",
     "knip": "knip",
     "oxlint": "vp lint"
   },

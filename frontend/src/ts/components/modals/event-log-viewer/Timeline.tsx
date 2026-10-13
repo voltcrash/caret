@@ -1,6 +1,6 @@
-import { For, JSXElement, Show } from "solid-js";
+import type { TestEventType } from "@oxytype/typing-core/events/types";
 
-import type { TestEventType } from "../../../test/events/types";
+import { For, JSXElement, Show } from "solid-js";
 
 import {
   getTimelineZoom,

@@ -10,7 +10,7 @@ export type Logger = {
 };
 
 /** No error messages, request bodies, URLs, tokens or typed text enter logs. */
-export function errorDetails(error: unknown): Metadata {
+function errorDetails(error: unknown): Metadata {
   if (!(error instanceof Error)) return { name: "UnknownError" };
   const name = /^[a-zA-Z]+Error$/.test(error.name) ? error.name : "Error";
   return {

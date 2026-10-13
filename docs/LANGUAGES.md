@@ -23,5 +23,5 @@ For local validation, follow [development setup](CONTRIBUTING_ADVANCED.md), then
 run from the repository root:
 
 ```sh
-vp run --filter @oxytype/frontend check-assets languages
+vp run --filter @oxytype/frontend check-assets languages json
 ```

@@ -10,6 +10,7 @@ import { queryClient } from "../queries";
 import { baseKey } from "../queries/utils/keys";
 import { ConfigGroupName } from "@oxytype/schemas/configs";
 import { applyIdWorkaround, tempId } from "./utils/misc";
+import { createCollectionReader } from "./utils/reader";
 import { isAuthenticated } from "../states/core";
 import { replaceUnderscoresWithSpaces } from "../utils/strings";
 
@@ -32,7 +33,6 @@ export function usePresetsLiveQuery() {
 const presetsCollection = createCollection(
   queryCollectionOptions({
     staleTime: Infinity,
-    gcTime: Infinity, //remove when __nonReactive is removed
     queryKey: queryKeys.root(),
     queryClient,
     enabled: isAuthenticated,
@@ -52,6 +52,11 @@ const presetsCollection = createCollection(
         .map(applyIdWorkaround);
     },
   }),
+);
+
+const presetsReader = createCollectionReader(
+  import.meta.hot,
+  presetsCollection,
 );
 
 type ActionType = {
@@ -167,14 +172,14 @@ export async function waitForPresetsReady(): Promise<void> {
   await presetsCollection.stateWhenReady();
 }
 
-function getPresets(): PresetItem[] {
-  return [...presetsCollection.values()].sort((a, b) =>
-    a.name.localeCompare(b.name),
-  );
+/** Reactive. Sorted by name. */
+export function getPresets(): PresetItem[] {
+  return presetsReader.values().sort((a, b) => a.name.localeCompare(b.name));
 }
 
-function getPreset(id: string): PresetItem | undefined {
-  return presetsCollection.get(id);
+/** Reactive. */
+export function getPreset(id: string): PresetItem | undefined {
+  return presetsReader.get(id);
 }
 
 export async function addPreset(
@@ -197,14 +202,6 @@ export async function deletePreset(
   const transaction = actions.deletePreset(params);
   await transaction.isPersisted.promise;
 }
-
-/**
- * Used for non reactive access. Do not use in Solid components.
- */
-export const __nonReactive = {
-  getPresets,
-  getPreset,
-};
 
 import.meta.hot?.dispose(() => {
   void presetsCollection.cleanup();

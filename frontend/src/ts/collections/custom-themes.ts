@@ -9,6 +9,7 @@ import Ape from "../ape";
 import { queryClient } from "../queries";
 import { baseKey } from "../queries/utils/keys";
 import { applyIdWorkaround, tempId } from "./utils/misc";
+import { createCollectionReader } from "./utils/reader";
 import { isAuthenticated } from "../states/core";
 
 type CustomThemeItem = CustomTheme;
@@ -29,7 +30,6 @@ export function useCustomThemesLiveQuery() {
 const customThemesCollection = createCollection(
   queryCollectionOptions({
     staleTime: Infinity,
-    gcTime: Infinity, //remove when __nonReactive is removed
     startSync: true,
     queryKey: queryKeys.root(),
     queryClient,
@@ -46,6 +46,11 @@ const customThemesCollection = createCollection(
       return response.body.data.map(applyIdWorkaround);
     },
   }),
+);
+
+const customThemesReader = createCollectionReader(
+  import.meta.hot,
+  customThemesCollection,
 );
 
 type ActionType = {
@@ -135,14 +140,16 @@ const actions = {
 
 // --- Public API ---
 
-function getCustomThemes(): CustomThemeItem[] {
-  return [...customThemesCollection.values()].sort((a, b) =>
-    a.name.localeCompare(b.name),
-  );
+/** Reactive. Sorted by name. */
+export function getCustomThemes(): CustomThemeItem[] {
+  return customThemesReader
+    .values()
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
 
-function getCustomTheme(id: string): CustomThemeItem | undefined {
-  return customThemesCollection.get(id);
+/** Reactive. */
+export function getCustomTheme(id: string): CustomThemeItem | undefined {
+  return customThemesReader.get(id);
 }
 
 export async function addCustomTheme(
@@ -165,14 +172,6 @@ export async function deleteCustomTheme(
   const transaction = actions.deleteCustomTheme(params);
   await transaction.isPersisted.promise;
 }
-
-/**
- * Used for non reactive access. Do not use in Solid components.
- */
-export const __nonReactive = {
-  getCustomThemes,
-  getCustomTheme,
-};
 
 import.meta.hot?.dispose(() => {
   void customThemesCollection.cleanup();

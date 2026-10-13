@@ -2,10 +2,10 @@ import type {
   EventLog,
   InputEventNoMs,
   TestEventNoMs,
-} from "../../../test/events/types";
+} from "@oxytype/typing-core/events/types";
 
-import { getInputFromDom } from "../../../test/events/helpers";
-import { EVENT_LOG_VERSION } from "../../../test/events/types";
+import { getInputFromDom } from "@oxytype/typing-core/events/helpers";
+import { EVENT_LOG_VERSION } from "@oxytype/typing-core/events/types";
 
 export function parseContext(raw: string): EventLog {
   const parsed = JSON.parse(raw) as unknown;

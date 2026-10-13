@@ -49,6 +49,7 @@ vi.mock("../../src/ts/utils/misc", () => ({
 }));
 
 import { change } from "../../src/ts/controllers/page-controller";
+import { setAppLoading } from "../../src/ts/states/app";
 import { setActivePage } from "../../src/ts/states/core";
 
 beforeEach(() => {
@@ -57,6 +58,7 @@ beforeEach(() => {
   transition.mockResolvedValue(undefined);
   results.mockResolvedValue(undefined);
   setActivePage("test");
+  setAppLoading(false);
 });
 
 it("keeps combined user-data and results stages moving forward", async () => {
@@ -77,15 +79,14 @@ it("keeps combined user-data and results stages moving forward", async () => {
     "",
     "Downloading user data...",
     "Downloading results...",
-    "Done",
   ]);
 });
 
-it("waits for the completed fill before fading out the loading page", async () => {
+it("completes progress instantly before fading out the loading page", async () => {
   const completion = Promise.withResolvers<undefined>();
   const filling = Promise.withResolvers<undefined>();
   progress.mockImplementation(async (percentage, duration) => {
-    if (percentage === 100 && duration === 125) {
+    if (percentage === 100 && duration === 0) {
       filling.resolve(undefined);
       await completion.promise;
     }
@@ -96,4 +97,16 @@ it("waits for the completed fill before fading out the loading page", async () =
   completion.resolve(undefined);
   await navigation;
   expect(transition).toHaveBeenCalledWith("loading", false, 125);
+});
+
+it("skips fades hidden behind the startup screen", async () => {
+  setAppLoading(true);
+  await change("account");
+  expect(transition).toHaveBeenCalledWith("loading", false, 0);
+  expect(transition).toHaveBeenCalledWith("account", true, 0);
+  expect(transition).not.toHaveBeenCalledWith(
+    expect.anything(),
+    expect.anything(),
+    125,
+  );
 });

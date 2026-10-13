@@ -1,7 +1,10 @@
 import { initContract } from "@ts-rest/core";
 import { z } from "zod/v3";
 
-import { ConfigurationSchema } from "@oxytype/schemas/configuration";
+import {
+  ConfigurationFormObjectSchema,
+  ConfigurationSchema,
+} from "@oxytype/schemas/configuration";
 import {
   CommonResponses,
   meta,
@@ -30,7 +33,9 @@ export type PatchConfigurationRequest = z.infer<
   typeof PatchConfigurationRequestSchema
 >;
 
-export const ConfigurationSchemaResponseSchema = responseWithData(z.object({})); //TODO define schema?
+export const ConfigurationSchemaResponseSchema = responseWithData(
+  ConfigurationFormObjectSchema,
+);
 export type ConfigurationSchemaResponse = z.infer<
   typeof ConfigurationSchemaResponseSchema
 >;

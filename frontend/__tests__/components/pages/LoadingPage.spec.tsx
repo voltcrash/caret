@@ -29,45 +29,45 @@ describe("LoadingPage", () => {
     LoadingPageState.showSpinner();
   });
 
-  function renderPage(): Record<
-    "spinner" | "error" | "bar" | "text",
-    HTMLElement
-  > {
+  function renderPage(): Record<"loader" | "error" | "text", HTMLElement> {
     const { container } = render(() => <LoadingPage />);
     const children = (container.firstElementChild as HTMLElement)
       .children as HTMLCollectionOf<HTMLElement>;
     return {
-      spinner: children[0] as HTMLElement,
+      loader: children[0] as HTMLElement,
       error: children[1] as HTMLElement,
-      bar: children[2] as HTMLElement,
-      text: children[3] as HTMLElement,
+      text: children[2] as HTMLElement,
     };
   }
 
-  it("shows spinner by default", () => {
-    const { spinner, error, bar, text } = renderPage();
-    expect(spinner).not.toHaveClass("invisible");
+  const typedWidth = (loader: HTMLElement): string =>
+    (loader.firstElementChild as HTMLElement).style.width;
+
+  it("loops the typing loader by default", () => {
+    const { loader, error, text } = renderPage();
+    expect(loader).not.toHaveClass("invisible");
+    expect(loader.firstElementChild).toHaveClass("animate-typing-loader-typed");
     expect(error).toHaveClass("invisible");
-    expect(bar).toHaveClass("invisible");
     expect(text).toHaveClass("invisible");
     expect(text).toHaveTextContent("Loading...");
   });
 
-  it("switches between error, bar and spinner", async () => {
-    const { spinner, error, bar, text } = renderPage();
+  it("switches between error, progress and looping", async () => {
+    const { loader, error, text } = renderPage();
 
     LoadingPageState.showError();
-    expect(spinner).toHaveClass("invisible");
+    expect(loader).toHaveClass("invisible");
     expect(error).not.toHaveClass("invisible");
-    expect(bar).toHaveClass("invisible");
 
     await LoadingPageState.showBar();
     expect(error).toHaveClass("invisible");
-    expect(bar).not.toHaveClass("invisible");
+    expect(loader).not.toHaveClass("invisible");
+    expect(loader.firstElementChild).not.toHaveClass(
+      "animate-typing-loader-typed",
+    );
 
     LoadingPageState.showSpinner();
-    expect(spinner).not.toHaveClass("invisible");
-    expect(bar).toHaveClass("invisible");
+    expect(loader.firstElementChild).toHaveClass("animate-typing-loader-typed");
     expect(text).toHaveClass("invisible");
   });
 
@@ -82,15 +82,21 @@ describe("LoadingPage", () => {
     expect(text).toHaveClass("invisible");
   });
 
-  it("updateBar animates fill and resolves on complete", async () => {
-    const { bar } = renderPage();
+  it("updateBar types letters for the progress and resolves on complete", async () => {
+    const { loader } = renderPage();
+    await LoadingPageState.showBar();
 
-    await LoadingPageState.updateBar(42, 500);
+    await LoadingPageState.updateBar(45, 500);
 
     expect(mockAnimate).toHaveBeenLastCalledWith(
-      bar.firstElementChild,
-      expect.objectContaining({ scaleX: 0.42, duration: 500, ease: "linear" }),
+      expect.any(Object),
+      expect.objectContaining({
+        percentage: 45,
+        duration: 500,
+        ease: "linear",
+      }),
     );
+    expect(typedWidth(loader)).toBe("3ch");
   });
 
   it("settles an unfinished keyframe when the component is disposed", async () => {
@@ -103,25 +109,31 @@ describe("LoadingPage", () => {
     expect(cancel).toHaveBeenCalledOnce();
   });
 
-  it("starts a new bar at zero after leaving the previous load", async () => {
-    const { bar } = renderPage();
+  it("starts new progress at zero after leaving the previous load", async () => {
+    const { loader } = renderPage();
     await LoadingPageState.showBar();
     await LoadingPageState.updateBar(90, 1000);
+    expect(typedWidth(loader)).toBe("6ch");
     LoadingPageState.showSpinner();
     await LoadingPageState.showBar();
-    expect((bar.firstElementChild as HTMLElement).style.transform).toBe(
-      "scaleX(0)",
-    );
+    expect(typedWidth(loader)).toBe("0ch");
   });
 
   it("completes progress immediately with reduced motion", async () => {
     motion.reduced = true;
-    const { bar } = renderPage();
+    const { loader } = renderPage();
+    await LoadingPageState.showBar();
     await LoadingPageState.updateBar(100, 1000);
-    expect(mockAnimate).toHaveBeenLastCalledWith(
-      bar.firstElementChild,
-      expect.objectContaining({ scaleX: 1, duration: 0 }),
-    );
+    expect(mockAnimate).not.toHaveBeenCalled();
+    expect(typedWidth(loader)).toBe("7ch");
+  });
+
+  it("settles instant progress without waiting for a frame", async () => {
+    const { loader } = renderPage();
+    await LoadingPageState.showBar();
+    await LoadingPageState.updateBar(100, 0);
+    expect(mockAnimate).not.toHaveBeenCalled();
+    expect(typedWidth(loader)).toBe("7ch");
   });
 
   it("announces loading status and failure details", () => {

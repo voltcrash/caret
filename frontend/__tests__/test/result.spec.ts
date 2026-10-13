@@ -67,12 +67,10 @@ vi.mock("../../src/ts/states/glarses-mode", () => ({
 vi.mock("../../src/ts/collections/tags", () => ({
   getLocalTagPB: () => state.tagPbWpm,
   saveLocalTagPB: vi.fn(),
-  __nonReactive: {
-    getActiveTags: () =>
-      state.tags.filter((t) => state.activeTagIds.includes(t._id)),
-    getTags: () => state.tags,
-    getTag: (id: string) => state.tags.find((t) => t._id === id),
-  },
+  getActiveTags: () =>
+    state.tags.filter((t) => state.activeTagIds.includes(t._id)),
+  getTags: () => state.tags,
+  getTag: (id: string) => state.tags.find((t) => t._id === id),
 }));
 vi.mock("../../src/ts/states/core", async (importOriginal) => ({
   ...(await importOriginal<object>()),
@@ -86,7 +84,7 @@ vi.mock("../../src/ts/states/test", async (importOriginal) => ({
   getKoreanStatus: () => false,
   isTestInvalid: () => state.testInvalid,
 }));
-vi.mock("../../src/ts/test/events/stats", () => ({
+vi.mock("@oxytype/typing-core/events/stats", () => ({
   getAccuracy: () => state.accuracy,
   getRawHistory: () => [],
   getTimerBoundaryLabels: () => [],

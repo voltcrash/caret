@@ -76,15 +76,13 @@ export function EditResultTagsModal() {
             resultId: selected._id,
             currentTagIds,
             newTagIds,
-            afterUpdate: ({ tagPbs }) => {
+          })
+            .then(({ tagPbs }) => {
               if (selected.source === "resultPage") {
                 updateTagsAfterEdit(newTagIds, tagPbs);
               }
-            },
-          })
-            .then(() =>
-              showSuccessNotification("Tags updated", { durationMs: 2000 }),
-            )
+              showSuccessNotification("Tags updated", { durationMs: 2000 });
+            })
             .catch((e: unknown) => {
               const message = createErrorMessage(e, "Failed to update tags");
               showErrorNotification(message);

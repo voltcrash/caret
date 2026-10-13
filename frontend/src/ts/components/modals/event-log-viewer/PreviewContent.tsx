@@ -1,3 +1,5 @@
+import type { EventLog } from "@oxytype/typing-core/events/types";
+
 import {
   createDeferred,
   createMemo,
@@ -5,8 +7,6 @@ import {
   Show,
   untrack,
 } from "solid-js";
-
-import type { EventLog } from "../../../test/events/types";
 
 import {
   getCurrentMs,

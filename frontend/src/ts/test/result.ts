@@ -32,10 +32,12 @@ import { CompletedEvent } from "@oxytype/schemas/results";
 import { getActiveFunboxes } from "./funbox/list";
 import { getFunbox } from "@oxytype/funbox";
 import {
+  getActiveTags,
   getLocalTagPB,
+  getTag,
+  getTags,
   saveLocalTagPB,
   type TagItem,
-  __nonReactive,
 } from "../collections/tags";
 import { canQuickRestart as canQuickRestartFn } from "../utils/quick-restart";
 import { LocalStorageWithSchema } from "../utils/local-storage-with-schema";
@@ -59,7 +61,7 @@ import {
   getRawHistory,
   getTimerBoundaryLabels,
   getWordBurstHistory,
-} from "./events/stats";
+} from "@oxytype/typing-core/events/stats";
 import * as TestWords from "./test-words";
 import { buildWordsHistory } from "./word-markup";
 import {
@@ -479,8 +481,8 @@ export function updateSavedResultId(resultId: string): void {
 
 async function updateTags(dontSave: boolean): Promise<void> {
   const { Chart } = await import("chart.js");
-  const activeTags: TagItem[] = __nonReactive.getActiveTags();
-  const userTagsCount = __nonReactive.getTags().length;
+  const activeTags: TagItem[] = getActiveTags();
+  const userTagsCount = getTags().length;
   const items: ResultTag[] = [];
 
   let annotationSide: LabelPosition = "start";
@@ -890,7 +892,7 @@ export function updateTagsAfterEdit(
     .filter((id) => !kept.some((tag) => tag.id === id))
     .map((id) => ({
       id,
-      name: __nonReactive.getTag(id)?.name ?? "",
+      name: getTag(id)?.name ?? "",
       pb: tagPbIds.includes(id),
     }));
 

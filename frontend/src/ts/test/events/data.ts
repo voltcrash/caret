@@ -1,5 +1,5 @@
 import { createTestSession } from "@oxytype/typing-core/session";
-import { EventLogContext } from "./types";
+import { EventLogContext } from "@oxytype/typing-core/events/types";
 import { liveCache } from "./live-cache";
 import * as TestWords from "../test-words";
 import { Config } from "../../config/store";

@@ -1,4 +1,4 @@
-import type { TestEventNoMs } from "../../../test/events/types";
+import type { TestEventNoMs } from "@oxytype/typing-core/events/types";
 
 import { probit } from "@oxytype/util/timing-stats";
 
@@ -6,7 +6,7 @@ export type ScatterPoint = { x: number; y: number };
 
 export type InsertKeystroke = { testMs: number; charIndex: number };
 
-export const KEY_ORDER = [
+const KEY_ORDER = [
   "Backquote",
   "Digit1",
   "Digit2",
@@ -60,7 +60,7 @@ export const KEY_ORDER = [
   "Enter",
 ];
 
-export const KEY_LABELS: Record<string, string> = {
+const KEY_LABELS: Record<string, string> = {
   Space: "␣",
   Enter: "⏎",
   Tab: "⇥",

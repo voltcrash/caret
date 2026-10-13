@@ -1,4 +1,4 @@
-import { __nonReactive } from "../collections/results";
+import { getResultsSinceDayOnce } from "../collections/results";
 import * as DateTime from "../utils/date-and-time";
 
 let seconds = 0;
@@ -21,7 +21,7 @@ export function getString(): string {
   return secString + (addedAllToday ? " today" : " session");
 }
 
-export function addAllFromToday(): void {
+export async function addAllFromToday(): Promise<void> {
   const todayDate = new Date();
   todayDate.setSeconds(0);
   todayDate.setMinutes(0);
@@ -30,21 +30,12 @@ export function addAllFromToday(): void {
   dayToday = todayDate.getDate();
   const todayDateMS = todayDate.getTime();
 
+  const results = await getResultsSinceDayOnce(todayDateMS);
+
   seconds = 0;
-  const results = __nonReactive.getResults();
-
   for (const result of results) {
-    const resultDate = new Date(result.timestamp);
-    resultDate.setSeconds(0);
-    resultDate.setMinutes(0);
-    resultDate.setHours(0);
-    resultDate.setMilliseconds(0);
-    const resultDateMS = resultDate.getTime();
-
-    if (resultDateMS >= todayDateMS) {
-      seconds +=
-        result.testDuration + result.incompleteTestSeconds - result.afkDuration;
-    }
+    seconds +=
+      result.testDuration + result.incompleteTestSeconds - result.afkDuration;
   }
 
   addedAllToday = true;

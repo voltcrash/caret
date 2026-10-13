@@ -18,7 +18,7 @@ import { showLoaderBar, hideLoaderBar } from "../../states/loader-bar";
 import { setInputElementValue } from "../input-element";
 import { setAwaitingNextWord } from "../state";
 import { DeleteInputType } from "./input-type";
-import { getWordBurst } from "../../test/events/stats";
+import { getWordBurst } from "@oxytype/typing-core/events/stats";
 import { buildEventLog, getInputForWord } from "../../test/events/data";
 
 type GoToNextWordParams = {

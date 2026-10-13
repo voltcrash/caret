@@ -21,6 +21,7 @@ import { LayoutObject, LayoutObjectSchema } from "@oxytype/schemas/layouts";
 import { QuoteDataSchema, QuoteData } from "@oxytype/schemas/quotes";
 import { clickSoundConfig } from "../src/ts/constants/sounds";
 import * as ghCore from "@actions/core";
+import { lintJson } from "./json-lint";
 
 const stepSummary =
   process.env["GITHUB_STEP_SUMMARY"] !== undefined ? ghCore.summary : undefined;
@@ -464,6 +465,28 @@ async function validateSounds(): Promise<void> {
   }
 }
 
+async function validateJson(): Promise<void> {
+  const problems = new Problems<string, never>("JSON files", {});
+
+  const jsonFiles = fs
+    .readdirSync("./static", { recursive: true, encoding: "utf8" })
+    .filter((it) => it.endsWith(".json"))
+    .sort();
+
+  for (const file of jsonFiles) {
+    const source = fs.readFileSync(`./static/${file}`, "utf8");
+    for (const { line, column, message } of lintJson(source)) {
+      problems.add(`frontend/static/${file}`, `${line}:${column} ${message}`);
+    }
+  }
+
+  console.log(problems.toString());
+
+  if (problems.hasError()) {
+    throw new Error("json files with errors");
+  }
+}
+
 type Validator = () => Promise<void>;
 
 async function main(): Promise<void> {
@@ -479,6 +502,7 @@ async function main(): Promise<void> {
     fonts: [validateFonts],
     themes: [validateThemes],
     sounds: [validateSounds],
+    json: [validateJson],
     others: [validateLayouts, validateFonts, validateThemes, validateSounds],
   };
 

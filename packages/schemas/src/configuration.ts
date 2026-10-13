@@ -144,3 +144,77 @@ export const ConfigurationSchema = z.object({
   }),
 });
 export type Configuration = z.infer<typeof ConfigurationSchema>;
+
+/* Describes the configuration fields for the admin configuration editor. */
+type ConfigurationFormBase = {
+  label?: string;
+  hint?: string;
+};
+export type ConfigurationFormNumber = ConfigurationFormBase & {
+  type: "number";
+  min?: number;
+};
+export type ConfigurationFormBoolean = ConfigurationFormBase & {
+  type: "boolean";
+};
+export type ConfigurationFormString = ConfigurationFormBase & {
+  type: "string";
+};
+export type ConfigurationFormArray = ConfigurationFormBase & {
+  type: "array";
+  items: ConfigurationFormField;
+};
+export type ConfigurationFormObject = ConfigurationFormBase & {
+  type: "object";
+  fields: Record<string, ConfigurationFormField>;
+};
+export type ConfigurationFormField =
+  | ConfigurationFormNumber
+  | ConfigurationFormBoolean
+  | ConfigurationFormString
+  | ConfigurationFormArray
+  | ConfigurationFormObject;
+
+const ConfigurationFormBaseSchema = z.object({
+  label: z.string().optional(),
+  hint: z.string().optional(),
+});
+
+export const ConfigurationFormObjectSchema: z.ZodType<ConfigurationFormObject> =
+  ConfigurationFormBaseSchema.extend({
+    type: z.literal("object"),
+    fields: z.record(z.lazy(() => ConfigurationFormFieldSchema)),
+  }).strict();
+
+export const ConfigurationFormFieldSchema: z.ZodType<ConfigurationFormField> =
+  z.union([
+    ConfigurationFormBaseSchema.extend({
+      type: z.literal("number"),
+      min: z.number().optional(),
+    }).strict(),
+    ConfigurationFormBaseSchema.extend({ type: z.literal("boolean") }).strict(),
+    ConfigurationFormBaseSchema.extend({ type: z.literal("string") }).strict(),
+    ConfigurationFormBaseSchema.extend({
+      type: z.literal("array"),
+      items: z.lazy(() => ConfigurationFormFieldSchema),
+    }).strict(),
+    z.lazy(() => ConfigurationFormObjectSchema),
+  ]);
+
+/* Form fields typed against the shape of T, so every configuration value is described. */
+export type ConfigurationFormFields<T> = {
+  [P in keyof T]: T[P] extends unknown[]
+    ? ConfigurationFormArray & { items: ConfigurationFormFields<T[P]>[number] }
+    : T[P] extends number
+      ? ConfigurationFormNumber
+      : T[P] extends boolean
+        ? ConfigurationFormBoolean
+        : T[P] extends string
+          ? ConfigurationFormString
+          : T[P] extends object
+            ? ConfigurationFormObjectOf<T[P]>
+            : never;
+};
+export type ConfigurationFormObjectOf<T> = ConfigurationFormObject & {
+  fields: ConfigurationFormFields<T>;
+};

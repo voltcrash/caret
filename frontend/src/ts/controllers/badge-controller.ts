@@ -11,9 +11,12 @@ export type UserBadge = {
   customStyle?: JSX.CSSProperties;
 };
 
+/** Display-only "none" option, never sent to the API. */
+export const NO_BADGE_ID = -1;
+
 export const badges: Record<number, UserBadge> = {
-  "-1": {
-    id: -1,
+  [NO_BADGE_ID]: {
+    id: NO_BADGE_ID,
     name: "none",
     description: "",
     icon: "fa-frown-open",

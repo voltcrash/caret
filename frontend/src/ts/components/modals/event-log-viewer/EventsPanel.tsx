@@ -1,6 +1,10 @@
+import type {
+  TestEventNoMs,
+  TestEventType,
+} from "@oxytype/typing-core/events/types";
+
 import { createEffect, For, JSXElement } from "solid-js";
 
-import type { TestEventNoMs, TestEventType } from "../../../test/events/types";
 import type { VideoSync } from "./createVideoSync";
 
 import {

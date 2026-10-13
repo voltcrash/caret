@@ -106,7 +106,7 @@ const authenticationMemos = Object.fromEntries(
 async function getDataAndInit(): Promise<boolean> {
   try {
     console.log("getting account data");
-    //TODO: preload collections for now, remove when __nonReactive is removed from collections
+    // collections sync on their own; waiting keeps tags and presets inside the account loading gate
     const accountReady = Promise.all([
       DB.initSnapshot(),
       waitForPresetsReady(),

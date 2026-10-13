@@ -5,8 +5,8 @@ import {
   type Accessor,
 } from "solid-js";
 
-export type NotificationLevel = "success" | "notice" | "error";
-export type Notification = {
+type NotificationLevel = "success" | "notice" | "error";
+type Notification = {
   id: number;
   message: string;
   level: NotificationLevel;

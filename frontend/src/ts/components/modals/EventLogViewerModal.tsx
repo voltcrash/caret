@@ -1,6 +1,6 @@
-import { JSXElement, Show } from "solid-js";
+import type { EventLog } from "@oxytype/typing-core/events/types";
 
-import type { EventLog } from "../../test/events/types";
+import { JSXElement, Show } from "solid-js";
 
 import {
   getError,

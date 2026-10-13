@@ -15,7 +15,7 @@ import { EVENT_TYPES } from "../../../../src/ts/states/event-log-viewer";
 import type {
   TestEventNoMs,
   TestEventType,
-} from "../../../../src/ts/test/events/types";
+} from "@oxytype/typing-core/events/types";
 
 function key(
   type: "keydown" | "keyup",

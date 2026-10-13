@@ -13,7 +13,7 @@ const mocks = vi.hoisted(() => ({
 vi.mock("../../../../../src/ts/test/result", () => ({
   toggleResultChartLegend: mocks.toggleResultChartLegend,
 }));
-vi.mock("../../../../../src/ts/test/events/stats", () => ({
+vi.mock("@oxytype/typing-core/events/stats", () => ({
   getWordIndexesForSecond: mocks.getWordIndexesForSecond,
 }));
 vi.mock("../../../../../src/ts/states/test", () => ({

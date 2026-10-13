@@ -12,7 +12,7 @@ import {
   keyLabel,
   percentileOf,
 } from "../../../../src/ts/components/modals/event-log-viewer/scatter-points";
-import type { TestEventNoMs } from "../../../../src/ts/test/events/types";
+import type { TestEventNoMs } from "@oxytype/typing-core/events/types";
 
 function keydown(testMs: number, code: string): TestEventNoMs {
   return { type: "keydown", testMs, data: { code } } as TestEventNoMs;

@@ -3,7 +3,7 @@ import { createEffect, createMemo, createSignal } from "solid-js";
 import { z } from "zod/v3";
 import { getConfig } from "../config/store";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-import { EventLog } from "../test/events/types";
+import { EventLog } from "@oxytype/typing-core/events/types";
 
 import { Challenge } from "@oxytype/challenges";
 import { LayoutObject } from "@oxytype/schemas/layouts";
@@ -230,27 +230,25 @@ const [keymapLayoutObject, keymapLayoutPromise] = createModuleRoot(
 );
 export { keymapLayoutObject };
 
-/**
- * Used for non reactive access. Do not use in Solid components.
- */
-export const __nonReactive = {
-  getKeymapLayout: async (): Promise<LayoutObject> => {
-    await keymapLayoutPromise.promise;
-    const result = keymapLayoutObject();
-    if (result === undefined) {
-      throw new Error("Failed to load keymap layout");
-    }
-    return result;
-  },
-  getInputLayout: async (): Promise<LayoutObject> => {
-    await inputLayoutPromise.promise;
-    const result = inputLayoutObject();
-    if (result === undefined) {
-      throw new Error("Failed to load input layout");
-    }
-    return result;
-  },
-};
+/** Resolves once the current keymap layout has loaded. */
+export async function waitForKeymapLayout(): Promise<LayoutObject> {
+  await keymapLayoutPromise.promise;
+  const result = keymapLayoutObject();
+  if (result === undefined) {
+    throw new Error("Failed to load keymap layout");
+  }
+  return result;
+}
+
+/** Resolves once the current input layout has loaded. */
+export async function waitForInputLayout(): Promise<LayoutObject> {
+  await inputLayoutPromise.promise;
+  const result = inputLayoutObject();
+  if (result === undefined) {
+    throw new Error("Failed to load input layout");
+  }
+  return result;
+}
 
 export const [getSelectedQuoteId, setSelectedQuoteId] = createModuleRoot(
   import.meta.hot,

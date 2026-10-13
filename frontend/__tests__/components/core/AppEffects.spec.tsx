@@ -229,9 +229,10 @@ describe("App effects", () => {
     setAppLoading(false);
     expect(services.animate).toHaveBeenLastCalledWith(
       startup,
-      expect.objectContaining({ opacity: [1, 0], duration: 200 }),
+      expect.objectContaining({ opacity: [1, 0], duration: 150 }),
     );
     expect(startup.isConnected).toBe(true);
+    expect(startup.style.pointerEvents).toBe("none");
     const options = services.animate.mock.lastCall?.[1] as {
       onComplete: () => void;
     };

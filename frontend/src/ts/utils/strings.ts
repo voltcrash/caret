@@ -3,10 +3,7 @@ import { removeLanguageSize } from "@oxytype/typing-core/strings";
 
 export {
   capitalizeFirstLetterOfEachWord,
-  getLastChar,
   removeLanguageSize,
-  replaceCharAt,
-  replaceSpecialChars,
   splitIntoCharacters,
 } from "@oxytype/typing-core/strings";
 
@@ -197,7 +194,7 @@ export function replaceSpacesWithUnderscores(text: string): string {
   return text.replace(/ /g, "_");
 }
 
-export { countChars, type CharCounts } from "@oxytype/typing-core/strings";
+export { countChars } from "@oxytype/typing-core/strings";
 
 // Export testing utilities for unit tests
 export const __testing = {

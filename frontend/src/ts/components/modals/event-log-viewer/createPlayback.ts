@@ -1,6 +1,6 @@
 import { Accessor, createMemo, createSignal, onCleanup } from "solid-js";
 
-import type { TestEventNoMs } from "../../../test/events/types";
+import type { TestEventNoMs } from "@oxytype/typing-core/events/types";
 import type { VideoSync } from "./createVideoSync";
 
 import { getCurrentMs, setCurrentMs } from "../../../states/event-log-viewer";

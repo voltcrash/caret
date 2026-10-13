@@ -18,7 +18,7 @@ import {
   videoMsToTestMs,
 } from "../../../../src/ts/components/modals/event-log-viewer/video-sync";
 import type { Mark } from "../../../../src/ts/states/event-log-viewer";
-import type { TestEventNoMs } from "../../../../src/ts/test/events/types";
+import type { TestEventNoMs } from "@oxytype/typing-core/events/types";
 
 function event(testMs: number): TestEventNoMs {
   return { type: "keydown", testMs, data: { code: "KeyA" } };

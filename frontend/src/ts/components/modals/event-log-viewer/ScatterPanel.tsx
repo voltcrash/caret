@@ -1,15 +1,15 @@
-import { createMemo, JSXElement, Show } from "solid-js";
+import type { EventLog } from "@oxytype/typing-core/events/types";
 
-import type { EventLog } from "../../../test/events/types";
+import {
+  getKeypressDurations,
+  getKeypressSpacing,
+} from "@oxytype/typing-core/events/stats";
+import { createMemo, JSXElement, Show } from "solid-js";
 
 import {
   getScatterOpen,
   setScatterOpen,
 } from "../../../states/event-log-viewer";
-import {
-  getKeypressDurations,
-  getKeypressSpacing,
-} from "../../../test/events/stats";
 import { Balloon } from "../../common/Balloon";
 import { Button } from "../../common/Button";
 import {
