@@ -121,6 +121,7 @@ vi.mock("animejs", () => ({ animate: vi.fn() }));
 import { Words } from "../../../../src/ts/components/pages/test/Words";
 import { Config } from "../../../../src/ts/config/store";
 import { configEvent } from "../../../../src/ts/events/config";
+import { setCurrentLiveStats } from "../../../../src/ts/states/test";
 import { setTestElements } from "../../../../src/ts/states/test-dom";
 import {
   getWordsInputStyle,
@@ -486,5 +487,49 @@ describe("Words hints and joining", () => {
     Config.typedEffect = "keep";
     configEvent.dispatch({ key: "fontSize", newValue: 1, previousValue: 1 });
     expect(word(0)).not.toHaveClass("needs-wrap", "broken-joining");
+  });
+});
+
+describe("Words lifecycle", () => {
+  it("updates accuracy, sound and the next key after text input", async () => {
+    await layout();
+    Config.keymapMode = "next";
+    mocks.input = "h";
+    ui.afterTestTextInput(true);
+    expect(mocks.power).toHaveBeenCalledWith(true);
+    expect(mocks.sound.playClick).toHaveBeenCalledOnce();
+    expect(setCurrentLiveStats).toHaveBeenCalledWith({ acc: 97.46 });
+    expect(mocks.highlight).toHaveBeenCalledWith("e");
+    await flushFrames();
+    expect(word(0).querySelector("letter")).toHaveClass("correct");
+  });
+
+  it("uses error sound for incorrect input and click sound for delete and composition", async () => {
+    await layout();
+    ui.afterTestTextInput(false);
+    expect(mocks.sound.playError).toHaveBeenCalledOnce();
+    ui.afterTestDelete();
+    ui.afterTestCompositionUpdate();
+    expect(mocks.sound.playClick).toHaveBeenCalledTimes(2);
+    await flushFrames();
+  });
+
+  it("starts live stats and records the burst on word changes", async () => {
+    await layout();
+    ui.onTestStart();
+    expect(setCurrentLiveStats).toHaveBeenCalledWith({
+      wpm: 0,
+      acc: 100,
+      raw: 0,
+      burst: 0,
+      seconds: 0,
+    });
+    mocks.activeIndex = 1;
+    await ui.afterTestWordChange("forward", 123.6);
+    await flushFrames();
+    expect(setCurrentLiveStats).toHaveBeenCalledWith({ burst: 124 });
+    ui.beforeTestWordChange("forward", false);
+    await flushFrames();
+    expect(word(1)).toHaveClass("error");
   });
 });
