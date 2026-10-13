@@ -20,7 +20,7 @@ import {
 } from "../../../../states/result";
 import { getLastEventLog } from "../../../../states/test";
 import { getTheme } from "../../../../states/theme";
-import { getWordIndexesForSecond } from "../../../../test/events/stats";
+import { getWordIndexesForSecond } from "@oxytype/typing-core/events/stats";
 import { toggleResultChartLegend } from "../../../../test/result";
 import { FaSolidIcon } from "../../../../types/font-awesome";
 import * as Arrays from "../../../../utils/arrays";

@@ -79,7 +79,7 @@ import { getInputFromDom } from "../../test/events/helpers";
 import {
   getKeypressDurations,
   getKeypressSpacing,
-} from "../../test/events/stats";
+} from "@oxytype/typing-core/events/stats";
 import { EVENT_LOG_VERSION } from "@oxytype/typing-core/events/types";
 import { cn } from "../../utils/cn";
 import { AnimatedModal } from "../common/AnimatedModal";

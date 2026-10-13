@@ -31,7 +31,7 @@ import {
   getLiveCachedTestDurationMs,
   getLiveCachedTestSeconds,
 } from "./events/live-cache";
-import { getChars } from "./events/stats";
+import { getChars } from "@oxytype/typing-core/events/stats";
 import { calculateWpm } from "@oxytype/typing-core/stats-math";
 import {
   getActiveWordIndex,

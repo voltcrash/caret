@@ -34,7 +34,7 @@ import {
   getInputHistory,
   getMissedWords,
   getWordBurstHistory,
-} from "../../../../test/events/stats";
+} from "@oxytype/typing-core/events/stats";
 import {
   buildBurstHeatmap,
   getBurstHeatmapWordColor,
