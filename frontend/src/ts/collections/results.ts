@@ -1,4 +1,5 @@
-import { buildResultsQuery } from "./results/queries";
+export { useResultStatsLiveQuery } from "./results/stats";
+
 export {
   getResultsQueryOnce,
   useResultsLiveQuery,
@@ -14,7 +15,7 @@ export {
 import { resultsByClient, resultsCollection } from "./results/store";
 export { isResultsReady, waitForResultsReady } from "./results/store";
 
-import { ResultsQueryState, CurrentSettingsFilter } from "./results/types";
+import { CurrentSettingsFilter } from "./results/types";
 export {
   type ResultsQueryState,
   type ResultStats,
@@ -23,16 +24,13 @@ export {
 
 import {
   avg,
-  count,
   eq,
   gte,
   inArray,
   length,
-  max,
   or,
   Query,
   queryOnce,
-  sum,
   useLiveQuery,
 } from "@tanstack/solid-db";
 
@@ -48,59 +46,6 @@ import { getConfig } from "../config/store";
 import { getMode2 } from "../utils/misc";
 import { getCurrentQuote } from "../states/test";
 import { removeLanguageSize } from "../utils/strings";
-
-/**
- * get aggregated statistics for the current result selection
- * @param queryState
- * @param options
- * @returns
- */
-// oxlint-disable-next-line typescript/explicit-function-return-type
-export function useResultStatsLiveQuery(
-  queryState: Accessor<ResultsQueryState | undefined>,
-  options?: { lastTen?: true } | { groupByDay?: true },
-) {
-  return useLiveQuery((q) => {
-    if (!isAuthenticated()) return undefined;
-    const state = queryState();
-    if (state === undefined) return undefined;
-
-    const isLastTen =
-      options !== undefined && "lastTen" in options && options.lastTen;
-    const isGroupByDay =
-      options !== undefined && "groupByDay" in options && options.groupByDay;
-
-    let query = isLastTen
-      ? //for lastTen we need a sub-query to apply the sort+limit first and then run the aggregations
-        q.from({
-          r: q
-            .from({ r: buildResultsQuery(state) })
-            .orderBy(({ r }) => r.timestamp, "desc")
-            .limit(10),
-        })
-      : q.from({ r: buildResultsQuery(state) });
-
-    if (isGroupByDay) {
-      query = query.groupBy(({ r }) => r.dayTimestamp);
-    }
-
-    return query.select(({ r }) => ({
-      dayTimestamp: isGroupByDay ? r.dayTimestamp : undefined,
-      words: sum(r.words),
-      completed: count(r._id),
-      restarted: sum(r.restartCount),
-      timeTyping: sum(r.timeTyping),
-      maxWpm: max(r.wpm),
-      avgWpm: avg(r.wpm),
-      maxRaw: max(r.rawWpm),
-      avgRaw: avg(r.rawWpm),
-      maxAcc: max(r.acc),
-      avgAcc: avg(r.acc),
-      maxConsistency: max(r.consistency),
-      avgConsistency: avg(r.consistency),
-    }));
-  });
-}
 
 // oxlint-disable-next-line typescript/explicit-function-return-type
 export function useUserAverage10LiveQuery(options: {
