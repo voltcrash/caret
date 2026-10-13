@@ -1,3 +1,4 @@
+import { onWordsConfigChange } from "./words/config";
 export {
   afterTestTextInput,
   afterTestCompositionUpdate,
@@ -10,7 +11,7 @@ export {
   onTestRestart,
   onTestFinish,
 } from "./words/lifecycle";
-import { updateWordLetters, disposeWordRendering } from "./words/rendering";
+import { disposeWordRendering } from "./words/rendering";
 export {
   updateActiveElement,
   appendEmptyWordElement,
@@ -24,7 +25,6 @@ export {
   clearWordsBlur,
 } from "./words/rendering";
 
-import { updateWordWrapperClasses } from "./words/wrapper-classes";
 export { scrollTape } from "./words/tape";
 
 export { centerActiveLine } from "./words/line-jumping";
@@ -35,9 +35,9 @@ export {
   updateWordsInputPosition,
   updateWordsWrapperHeight,
 } from "./words/sizing";
-import { updateWordJoining } from "./words/joining";
+
 export { setJoiningClass } from "./words/joining";
-import { updateHintsPositionDebounced } from "./words/hints";
+
 export { updateHintsPositionDebounced } from "./words/hints";
 
 export { focusWords, keepWordsInputInTheCenter } from "./words/focus";
@@ -50,18 +50,6 @@ import { createEffect, JSXElement, onCleanup, onMount } from "solid-js";
 import { configEvent } from "../../../events/config";
 import { useWordsFocus } from "../../../hooks/useWordsFocus";
 import { getBackground } from "../../../states/background";
-import * as CompositionState from "../../../states/composition";
-import { getActivePage } from "../../../states/core";
-import {
-  getActiveWordIndex,
-  setCompositionText,
-  setTestFocusState,
-} from "../../../states/test";
-import {
-  areTestElementsMounted,
-  getWordsElement as getWordsEl,
-} from "../../../states/test-dom";
-import { getCurrentInput } from "../../../test/events/data";
 import { cn } from "../../../utils/cn";
 import { cancelPendingAnimationFramesStartingWith } from "../../../utils/debounced-animation-frame";
 
@@ -75,57 +63,6 @@ import { cancelPendingAnimationFramesStartingWith } from "../../../utils/debounc
 // (for example if the newline is typed incorrectly, or there are any extra letters after it)
 
 // this means input, delete or composition
-
-function onWordsConfigChange({
-  key,
-  newValue,
-}: Parameters<Parameters<typeof configEvent.subscribe>[0]>[0]): void {
-  if (!areTestElementsMounted()) return;
-  if (key === "showOutOfFocusWarning" && !newValue) {
-    setTestFocusState("focused");
-  }
-  if (key === "compositionDisplay" && newValue === "below") {
-    setCompositionText(" ");
-  }
-  if (
-    ["fontSize", "fontFamily", "blindMode", "hideExtraLetters"].includes(
-      key ?? "",
-    )
-  ) {
-    void updateHintsPositionDebounced();
-  }
-  if (key === "highlightMode") {
-    if (getActivePage() === "test") {
-      void updateWordLetters({
-        input: getCurrentInput(),
-        wordIndex: getActiveWordIndex(),
-        compositionData: CompositionState.getData(),
-      });
-    }
-  }
-  if (
-    [
-      "highlightMode",
-      "typedEffect",
-      "blindMode",
-      "indicateTypos",
-      "tapeMode",
-      "hideExtraLetters",
-      "flipTestColors",
-      "colorfulMode",
-      "showAllLines",
-      "fontSize",
-      "fontFamily",
-      "maxLineWidth",
-      "tapeMargin",
-    ].includes(key)
-  ) {
-    if (key !== "fontFamily") updateWordWrapperClasses();
-    if (["typedEffect", "fontFamily", "fontSize"].includes(key)) {
-      updateWordJoining(key, getWordsEl());
-    }
-  }
-}
 
 // D1: Solid owns this container; letter updates and positioning stay imperative.
 export function Words(props: {
