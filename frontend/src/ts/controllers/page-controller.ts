@@ -1,5 +1,6 @@
 import { setOpenGraphUrl, setPageTitle } from "../states/page-head";
 import { highlightSetting } from "../states/settings-highlight";
+import { isAppLoading } from "../states/app";
 import { isDevEnvironment } from "../utils/env";
 import * as Misc from "../utils/misc";
 import * as Strings from "../utils/strings";
@@ -152,13 +153,9 @@ async function showSyncLoading({
         fillDivider,
         currentOffset,
       );
-      if (i === loadingOptions.length - 1) PageLoading.updateText("Done");
-      // Each stage owns only its share of the bar. Finish the visible fill
-      // before fading out, including when the request resolves immediately.
-      await PageLoading.updateBar(
-        fillOffset * (i + 1),
-        Misc.applyReducedMotion(125),
-      );
+      // Each stage owns only its share of the progress. Complete it at once:
+      // the data is ready, so animating the remainder only delays the page.
+      await PageLoading.updateBar(fillOffset * (i + 1), 0);
     } else {
       await options.loadingPromise();
     }
@@ -246,7 +243,9 @@ export async function change(
 
   const previousPage = pages[getActivePage()];
   const nextPage = pages[pageName];
-  const totalDuration = Misc.applyReducedMotion(250);
+  // The startup screen covers navigation until the app has loaded, so fades
+  // behind it would only delay the first page.
+  const totalDuration = isAppLoading() ? 0 : Misc.applyReducedMotion(250);
 
   //start
   PageTransition.set(true);

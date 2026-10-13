@@ -173,9 +173,11 @@ export function AppEffects(props: AppElements): JSXElement {
         return;
       }
       if (startupScreen === null) return;
+      // The app is ready: accept input while the cover fades.
+      startupScreen.style.pointerEvents = "none";
       handoff = animate(startupScreen, {
         opacity: [1, 0],
-        duration: applyReducedMotion(200),
+        duration: applyReducedMotion(150),
         onComplete: () => {
           startupScreen.remove();
           setStartupFinished(true);

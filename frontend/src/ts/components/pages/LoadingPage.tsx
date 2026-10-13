@@ -1,7 +1,12 @@
 import { animate } from "animejs";
-import { createEffect, JSXElement, onCleanup } from "solid-js";
+import {
+  createEffect,
+  createSignal,
+  JSXElement,
+  onCleanup,
+  untrack,
+} from "solid-js";
 
-import { useRef } from "../../hooks/useRef";
 import {
   getBarAnimation,
   getMode,
@@ -11,23 +16,37 @@ import {
 import { cn } from "../../utils/cn";
 import { applyReducedMotion } from "../../utils/misc";
 import { Fa } from "../common/Fa";
-import { LoadingIndicator } from "../common/LoadingIndicator";
+import { LOADER_WORD, TypingLoader } from "../common/TypingLoader";
 
 export function LoadingPage(): JSXElement {
-  const [ref, fill] = useRef<HTMLDivElement>();
+  // Progress percentage, typed out one letter per share of the word.
+  const [getProgress, setProgress] = createSignal(0);
+  const typed = (): number =>
+    Math.floor((getProgress() / 100) * LOADER_WORD.length);
+
   createEffect(() => {
     const bar = getBarAnimation();
-    const element = fill();
-    if (element === undefined) return;
     if (bar === undefined) {
-      element.style.transform = "scaleX(0)";
+      setProgress(0);
       return;
     }
-    const animation = animate(element, {
-      scaleX: bar.percentage / 100,
-      duration: applyReducedMotion(bar.duration),
+    const duration = applyReducedMotion(bar.duration);
+    if (duration === 0) {
+      // Don't wait a frame for progress that is already known.
+      setProgress(bar.percentage);
+      bar.onComplete();
+      return;
+    }
+    const target = { percentage: untrack(getProgress) };
+    const animation = animate(target, {
+      percentage: bar.percentage,
+      duration,
       ease: "linear",
-      onComplete: () => bar.onComplete(),
+      onUpdate: () => setProgress(target.percentage),
+      onComplete: () => {
+        setProgress(bar.percentage);
+        bar.onComplete();
+      },
     });
     onCleanup(() => {
       animation.cancel();
@@ -43,11 +62,12 @@ export function LoadingPage(): JSXElement {
       aria-atomic="true"
       aria-label={getMode() === "error" ? "Loading failed" : "Loading"}
     >
-      <LoadingIndicator
+      <TypingLoader
         class={cn(
           "col-start-1 row-start-1 self-center",
-          getMode() !== "spinner" && "invisible",
+          getMode() === "error" && "invisible",
         )}
+        typed={getMode() === "bar" ? typed() : undefined}
       />
       <div
         class={cn(
@@ -58,20 +78,10 @@ export function LoadingPage(): JSXElement {
       >
         <Fa icon="fa-times" fixedWidth />
       </div>
-      <LoadingIndicator
-        class={cn(
-          "col-start-1 row-start-1 self-center",
-          getMode() !== "bar" && "invisible",
-        )}
-      >
-        <div
-          ref={ref}
-          class="h-full w-full origin-left scale-x-0 rounded bg-main"
-        ></div>
-      </LoadingIndicator>
       <div
         class={cn(
           "row-start-2 min-h-[1.25em] w-full wrap-break-word",
+          getMode() !== "error" && "text-sub",
           !isTextVisible() && "invisible",
         )}
       >
