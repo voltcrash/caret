@@ -16,7 +16,7 @@ const librarySchema = z.object({
   current: CustomTextSettingsSchema,
   texts: z.array(savedTextSchema),
 });
-export type SavedText = z.infer<typeof savedTextSchema>;
+type SavedText = z.infer<typeof savedTextSchema>;
 export type TextLibrary = {
   current: () => CustomTextSettings;
   texts: () => SavedText[];
