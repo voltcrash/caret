@@ -93,6 +93,17 @@ import {
   parseContext,
   visualizeWhitespace,
 } from "./event-log-viewer/event-log";
+import {
+  buildLanes,
+  getNextTimelineZoom,
+  getTimelineMaxMs,
+  getTimelineMinMs,
+  TIMELINE_LANE_GAP,
+  TIMELINE_TRACK_HEIGHT,
+  type TimelineMark,
+  type TimelineSegment,
+  type VideoBar,
+} from "./event-log-viewer/timeline-lanes";
 
 // this modal is lazy loaded on its own, so it cannot rely on whatever else
 // happens to have registered these. register is idempotent
@@ -108,14 +119,6 @@ Chart.register(
   chartAnnotation,
 );
 
-const TIMELINE_TRACK_HEIGHT = 8;
-const TIMELINE_TRACK_GAP = 2;
-const TIMELINE_LANE_GAP = 6;
-const TIMELINE_PADDING_MS = 125;
-// enough to separate events a fraction of a millisecond apart - a 60s test at
-// this zoom is roughly 0.06ms per pixel
-const TIMELINE_MAX_ZOOM = 1000;
-
 const TYPE_BG: Record<TestEventType, string> = {
   keydown: "bg-text",
   keyup: "bg-error",
@@ -123,140 +126,6 @@ const TYPE_BG: Record<TestEventType, string> = {
   timer: "bg-sub",
   composition: "bg-sub-alt",
 };
-
-type TimelineSegment = {
-  start: number;
-  end: number;
-  kind: "bar" | "dot";
-  type: TestEventType;
-  label?: string;
-  topPx: number;
-  bg?: string;
-};
-
-type RawSegment = Omit<TimelineSegment, "topPx">;
-
-function buildLanes(
-  events: TestEventNoMs[],
-  visible: Set<TestEventType>,
-): { segments: TimelineSegment[]; totalHeight: number } {
-  const byType = new Map<TestEventType, RawSegment[]>();
-  for (const t of EVENT_TYPES) byType.set(t, []);
-
-  const pairKeys = visible.has("keydown") && visible.has("keyup");
-  const pendingDown = new Map<string, number>();
-
-  for (const e of events) {
-    if (e.type === "keydown") {
-      if (pairKeys) {
-        pendingDown.set(e.data.code, e.testMs);
-      } else if (visible.has("keydown")) {
-        byType.get("keydown")?.push({
-          start: e.testMs,
-          end: e.testMs,
-          kind: "dot",
-          type: "keydown",
-          label: e.data.code,
-        });
-      }
-    } else if (e.type === "keyup") {
-      if (pairKeys) {
-        const start = pendingDown.get(e.data.code);
-        if (start !== undefined) {
-          byType.get("keydown")?.push({
-            start,
-            end: e.testMs,
-            kind: "bar",
-            type: "keydown",
-            label: e.data.code,
-          });
-          pendingDown.delete(e.data.code);
-        } else {
-          byType.get("keyup")?.push({
-            start: e.testMs,
-            end: e.testMs,
-            kind: "dot",
-            type: "keyup",
-            label: e.data.code,
-          });
-        }
-      } else if (visible.has("keyup")) {
-        byType.get("keyup")?.push({
-          start: e.testMs,
-          end: e.testMs,
-          kind: "dot",
-          type: "keyup",
-          label: e.data.code,
-        });
-      }
-    } else if (visible.has(e.type)) {
-      const seg: RawSegment = {
-        start: e.testMs,
-        end: e.testMs,
-        kind: "dot",
-        type: e.type,
-      };
-      if (e.type === "input" && e.data.inputType.startsWith("delete")) {
-        seg.bg = "bg-error";
-      }
-      byType.get(e.type)?.push(seg);
-    }
-  }
-
-  if (pairKeys) {
-    for (const [code, start] of pendingDown) {
-      byType.get("keydown")?.push({
-        start,
-        end: start,
-        kind: "dot",
-        type: "keydown",
-        label: code,
-      });
-    }
-  }
-
-  const segments: TimelineSegment[] = [];
-  let y = 0;
-  let firstLane = true;
-
-  for (const t of EVENT_TYPES) {
-    const segs = byType.get(t) ?? [];
-    if (segs.length === 0) continue;
-    if (!firstLane) y += TIMELINE_LANE_GAP;
-    firstLane = false;
-
-    const sorted = [...segs].sort((a, b) => a.start - b.start);
-    let tracksUsed = 1;
-
-    if (t === "keydown") {
-      const trackEnds: number[] = [];
-      for (const seg of sorted) {
-        let track = trackEnds.findIndex((end) => end < seg.start);
-        if (track === -1) {
-          track = trackEnds.length;
-          trackEnds.push(seg.end);
-        } else {
-          trackEnds[track] = seg.end;
-        }
-        segments.push({
-          ...seg,
-          topPx: y + track * (TIMELINE_TRACK_HEIGHT + TIMELINE_TRACK_GAP),
-        });
-      }
-      tracksUsed = Math.max(1, trackEnds.length);
-    } else {
-      for (const seg of sorted) {
-        segments.push({ ...seg, topPx: y });
-      }
-    }
-
-    y +=
-      tracksUsed * TIMELINE_TRACK_HEIGHT +
-      (tracksUsed - 1) * TIMELINE_TRACK_GAP;
-  }
-
-  return { segments, totalHeight: Math.max(y, TIMELINE_TRACK_HEIGHT) };
-}
 
 export function EventLogViewerModal(): JSXElement {
   const stage = getStage;
@@ -440,16 +309,14 @@ function PreviewContent(props: {
     return { start, end };
   });
 
-  const timelineMarks = createMemo(
-    (): { testMs: number; label: string; sync?: SyncKind }[] => {
-      if (!isSynced()) return [];
-      return marks().map((m) => ({
-        testMs: videoMsToTestMs(m.videoMs),
-        label: m.sync ?? m.id,
-        sync: m.sync,
-      }));
-    },
-  );
+  const timelineMarks = createMemo((): TimelineMark[] => {
+    if (!isSynced()) return [];
+    return marks().map((m) => ({
+      testMs: videoMsToTestMs(m.videoMs),
+      label: m.sync ?? m.id,
+      sync: m.sync,
+    }));
+  });
 
   const driftData = createMemo(
     (): { eventTestMs: number; driftMs: number; label: string }[] => {
@@ -474,22 +341,10 @@ function PreviewContent(props: {
     },
   );
 
-  const timelineMinMs = createMemo(() => {
-    const bar = videoBarRange();
-    let min = -TIMELINE_PADDING_MS;
-    if (bar !== undefined) {
-      min = Math.min(min, bar.start - TIMELINE_PADDING_MS);
-    }
-    return min;
-  });
-  const timelineMaxMs = createMemo(() => {
-    const bar = videoBarRange();
-    let max = maxMs + TIMELINE_PADDING_MS;
-    if (bar !== undefined) {
-      max = Math.max(max, bar.end + TIMELINE_PADDING_MS);
-    }
-    return max;
-  });
+  const timelineMinMs = createMemo(() => getTimelineMinMs(videoBarRange()));
+  const timelineMaxMs = createMemo(() =>
+    getTimelineMaxMs(maxMs, videoBarRange()),
+  );
 
   const currentMs = getCurrentMs;
 
@@ -1316,8 +1171,8 @@ function Timeline(props: {
   maxMs: number;
   currentMs: number;
   onSeek: (ms: number) => void;
-  videoBar?: { start: number; end: number };
-  marks?: { testMs: number; label: string; sync?: "start" | "end" }[];
+  videoBar?: VideoBar;
+  marks?: TimelineMark[];
 }): JSXElement {
   const range = (): number => Math.max(props.maxMs - props.minMs, 1);
   const scale = (ms: number): number => ((ms - props.minMs) / range()) * 100;
@@ -1367,8 +1222,7 @@ function Timeline(props: {
     const viewX = e.clientX - rect.left;
     const contentX = viewX + scrollEl.scrollLeft;
     const oldZoom = zoom();
-    const factor = e.deltaY > 0 ? 1 / 1.2 : 1.2;
-    const newZoom = Math.max(1, Math.min(TIMELINE_MAX_ZOOM, oldZoom * factor));
+    const newZoom = getNextTimelineZoom(oldZoom, e.deltaY);
     if (newZoom === oldZoom) return;
     setZoom(newZoom);
     requestAnimationFrame(() => {
