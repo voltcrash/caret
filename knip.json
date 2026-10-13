@@ -48,6 +48,9 @@
     "tui": {
       "entry": ["bin/*.ts"]
     },
+    "packages/typing-core": {
+      "entry": ["scripts/*.ts"]
+    },
     "packages/oxlint-config": {
       "entry": ["plugins/*.js"],
       "project": ["plugins/*.js"]
