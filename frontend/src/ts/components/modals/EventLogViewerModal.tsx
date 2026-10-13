@@ -37,7 +37,7 @@ import type {
   InputEventNoMs,
   TestEventNoMs,
   TestEventType,
-} from "../../test/events/types";
+} from "@oxytype/typing-core/events/types";
 
 import {
   EVENT_TYPES,
@@ -80,7 +80,7 @@ import {
   getKeypressDurations,
   getKeypressSpacing,
 } from "../../test/events/stats";
-import { EVENT_LOG_VERSION } from "../../test/events/types";
+import { EVENT_LOG_VERSION } from "@oxytype/typing-core/events/types";
 import { cn } from "../../utils/cn";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Balloon } from "../common/Balloon";
