@@ -1,12 +1,12 @@
 import { CompletedEvent } from "@oxytype/schemas/results";
-import { Mode } from "@oxytype/schemas/shared";
 import objectHash from "object-hash";
 import { createMemo, JSX } from "solid-js";
+
+import type { SavedResult } from "../../constants/default-snapshot";
 
 import Ape from "../../ape";
 import { getAuthenticatedUser } from "../../auth-client";
 import { getConfig } from "../../config/store";
-import { SnapshotResult } from "../../constants/default-snapshot";
 import { saveLocalResult, SaveLocalResultData } from "../../db";
 import { hideModal } from "../../states/modals";
 import {
@@ -168,12 +168,9 @@ async function syncLastSignedOutResult(): Promise<void> {
     return;
   }
 
-  //TODO - this type cast was not needed before because we were using JSON cloning
-  // but now with the stronger types it shows that we are forcing completed event
-  // into a snapshot result - might not cause issues but worth investigating
-  const result = structuredClone(
-    updatedResult,
-  ) as unknown as SnapshotResult<Mode>;
+  const result: SavedResult = Object.assign(structuredClone(updatedResult), {
+    _id: response.body.data.insertedId,
+  });
 
   const dataToSave: SaveLocalResultData = {
     xp: response.body.data.xp,
@@ -182,7 +179,6 @@ async function syncLastSignedOutResult(): Promise<void> {
     isPb: response.body.data.isPb,
   };
 
-  result._id = response.body.data.insertedId;
   if (response.body.data.isPb) {
     result.isPb = true;
   }
