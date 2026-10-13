@@ -44,14 +44,13 @@ export const behaviorMetadata = {
     },
   },
   minWpm: {
-    display: "Minimum speed...",
     alias: "wpm",
     subgroup: {
       options: ["off"],
     },
     input: {
       configValue: "custom",
-      display: "custom...",
+
       secondKey: "minWpmCustomSpeed",
       inputValueConvert: (value) => {
         let newVal = Number(value);
@@ -61,13 +60,12 @@ export const behaviorMetadata = {
     },
   },
   minAcc: {
-    display: "Minimum accuracy...",
     subgroup: {
       options: ["off"],
     },
     input: {
       configValue: "custom",
-      display: "custom...",
+
       secondKey: "minAccCustom",
       inputValueConvert: (value) => {
         return Number(value);
