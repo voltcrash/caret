@@ -25,7 +25,6 @@ export const inputMetadata = {
   deleteOnError: {
     subgroup: {
       options: "fromSchema",
-      display: (deleteOnError) => deleteOnError.replace(/_/g, " "),
     },
   },
   confidenceMode: {
@@ -62,8 +61,7 @@ export const inputMetadata = {
   layout: {
     subgroup: {
       options: "fromSchema",
-      display: (layout) =>
-        layout === "default" ? "off" : layout.replace(/_/g, " "),
+
       afterExec: () => void TestLogic.restart(),
     },
   },
