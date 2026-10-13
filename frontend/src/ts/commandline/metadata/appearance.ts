@@ -1,5 +1,5 @@
 import { CommandlineConfigMetadataObject } from "./types";
-import { replaceUnderscoresWithSpaces } from "../../utils/strings";
+
 import { Fonts } from "../../constants/fonts";
 import { KnownFontName } from "@oxytype/schemas/fonts";
 import * as UI from "../../ui";
@@ -27,12 +27,10 @@ export const appearanceMetadata = {
   timerStyle: {
     subgroup: {
       options: "fromSchema",
-      display: replaceUnderscoresWithSpaces,
     },
     alias: "timer",
   },
   timerColor: {
-    display: "Live progress color...",
     alias: "timer speed wpm burst acc",
     subgroup: {
       options: "fromSchema",
@@ -40,7 +38,6 @@ export const appearanceMetadata = {
     },
   },
   timerOpacity: {
-    display: "Live progress opacity...",
     alias: "timer speed wpm burst acc",
     subgroup: {
       options: "fromSchema",
@@ -50,7 +47,6 @@ export const appearanceMetadata = {
   highlightMode: {
     subgroup: {
       options: "fromSchema",
-      display: replaceUnderscoresWithSpaces,
     },
   },
   typedEffect: {
@@ -112,8 +108,7 @@ export const appearanceMetadata = {
           Fonts[b]?.display ?? b.replace(/_/g, " "),
         ),
       ),
-      display: (name) =>
-        Fonts[name as KnownFontName]?.display ?? name.replaceAll(/_/g, " "),
+
       customData: (name) => {
         const fontConfig = Fonts[name as KnownFontName];
         if (fontConfig === undefined) return {};
