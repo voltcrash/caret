@@ -1,11 +1,10 @@
 import { debounce } from "throttle-debounce";
 import type { Validation, ValidationResult } from "../types/validation";
 
-// oxlint-disable-next-line no-explicit-any
-function debounceIfNeeded<T extends (...args: any[]) => any>(
+function debounceIfNeeded<A extends unknown[], R>(
   delay: number,
-  callback: T,
-): T | debounce<T> {
+  callback: (...args: A) => R,
+): ((...args: A) => R) | debounce<(...args: A) => R> {
   if (delay <= 0) {
     return callback;
   }
