@@ -1,3 +1,5 @@
+import { focusWords, keepWordsInputInTheCenter } from "./words/focus";
+export { focusWords, keepWordsInputInTheCenter } from "./words/focus";
 import {
   outerWidth,
   outerHeight,
@@ -21,8 +23,6 @@ import { configEvent } from "../../../events/config";
 import { highlight } from "../../../events/keymap";
 import { useWordsFocus } from "../../../hooks/useWordsFocus";
 import {
-  blurInputElement,
-  focusInputElement,
   isTouchKeyboardFocused,
   getInputElement,
   isInputElementFocused,
@@ -39,7 +39,6 @@ import {
   isDirectionReversed,
   isLanguageRightToLeft,
   getActiveWordIndex,
-  isTestActive,
   setCompositionText,
   setCurrentLiveStats,
   setOutOfFocusMaxHeight,
@@ -58,7 +57,6 @@ import {
   getTypingTestElement,
 } from "../../../states/test-dom";
 import {
-  centerWordsInputEvent,
   setWordsInputStyle,
   setWordsWrapperHeight,
 } from "../../../states/words-layout";
@@ -98,23 +96,6 @@ let wordTopBeforeLineJump = 0;
 let lineTransition = false;
 
 let currentTestLine = 0;
-
-export function focusWords(force = false): void {
-  if (force) {
-    blurInputElement();
-  }
-  focusInputElement(true);
-  if (isTestActive()) {
-    keepWordsInputInTheCenter(true);
-  } else {
-    const typingTest = getTypingTestElement();
-    scrollToCenterOrTop(typingTest);
-  }
-}
-
-export function keepWordsInputInTheCenter(force = false): void {
-  centerWordsInputEvent.dispatch(force);
-}
 
 export function updateActiveElement(
   options:
