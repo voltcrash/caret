@@ -503,11 +503,4 @@ export function settingSections(context: SectionContext): SettingSection[] {
   ];
 }
 
-/** Rows in display order, for search across every section. */
-export function allRows(sections: SettingSection[]): SettingRow[] {
-  return sections.flatMap((section) =>
-    section.groups.flatMap((group) => group.rows),
-  );
-}
-
 export { settingTitle };
