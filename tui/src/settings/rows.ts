@@ -60,7 +60,7 @@ export type RowContext = {
   palette?: Palette;
 };
 
-export function settingTitle(key: Key): string {
+function settingTitle(key: Key): string {
   return sharedConfigMetadata[key].displayString ?? key;
 }
 
