@@ -108,12 +108,14 @@ describe("account result partitions", () => {
   it("updates terminal tags without changing web history or web tag PBs", async () => {
     await history("web");
     await history("tui");
-    await updateTags({
-      client: "tui",
-      resultId: "tui-row",
-      currentTagIds: ["tag"],
-      newTagIds: [],
-    });
+    await expect(
+      updateTags({
+        client: "tui",
+        resultId: "tui-row",
+        currentTagIds: ["tag"],
+        newTagIds: [],
+      }),
+    ).resolves.toEqual({ tagPbs: ["tag"] });
     expect(
       (await history("tui"))?.find((row) => row._id === "tui-row")?.tags,
     ).toEqual([]);
@@ -123,11 +125,13 @@ describe("account result partitions", () => {
   it("preserves web tag PB updates and shared tag deletion across both histories", async () => {
     await history("web");
     await history("tui");
-    await updateTags({
-      resultId: "web-row",
-      currentTagIds: ["tag"],
-      newTagIds: [],
-    });
+    await expect(
+      updateTags({
+        resultId: "web-row",
+        currentTagIds: ["tag"],
+        newTagIds: [],
+      }),
+    ).resolves.toEqual({ tagPbs: ["tag"] });
     expect(reconcile).toHaveBeenCalled();
     await deleteLocalTag({ tagId: "tag" });
     for (const client of ["web", "tui"] as const) {

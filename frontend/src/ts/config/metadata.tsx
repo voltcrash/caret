@@ -7,7 +7,7 @@ import {
   type ConfigOptionMetadata,
 } from "@oxytype/typing-core/config/metadata";
 import { typedKeys } from "@oxytype/util/objects";
-import { JSXElement } from "solid-js";
+import { JSXElement, untrack } from "solid-js";
 
 import * as CustomThemes from "../collections/custom-themes";
 import {
@@ -272,7 +272,7 @@ const webConfigMetadata: {
           );
           return true;
         }
-        if (CustomThemes.__nonReactive.getCustomThemes().length === 0) {
+        if (untrack(CustomThemes.getCustomThemes).length === 0) {
           showNoticeNotification(
             "Random theme 'custom' requires at least one custom theme to be saved",
           );
