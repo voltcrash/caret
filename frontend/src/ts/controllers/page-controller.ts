@@ -152,13 +152,9 @@ async function showSyncLoading({
         fillDivider,
         currentOffset,
       );
-      if (i === loadingOptions.length - 1) PageLoading.updateText("Done");
-      // Each stage owns only its share of the bar. Finish the visible fill
-      // before fading out, including when the request resolves immediately.
-      await PageLoading.updateBar(
-        fillOffset * (i + 1),
-        Misc.applyReducedMotion(125),
-      );
+      // Each stage owns only its share of the progress. Complete it at once:
+      // the data is ready, so animating the remainder only delays the page.
+      await PageLoading.updateBar(fillOffset * (i + 1), 0);
     } else {
       await options.loadingPromise();
     }

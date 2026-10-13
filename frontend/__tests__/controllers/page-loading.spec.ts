@@ -77,15 +77,14 @@ it("keeps combined user-data and results stages moving forward", async () => {
     "",
     "Downloading user data...",
     "Downloading results...",
-    "Done",
   ]);
 });
 
-it("waits for the completed fill before fading out the loading page", async () => {
+it("completes progress instantly before fading out the loading page", async () => {
   const completion = Promise.withResolvers<undefined>();
   const filling = Promise.withResolvers<undefined>();
   progress.mockImplementation(async (percentage, duration) => {
-    if (percentage === 100 && duration === 125) {
+    if (percentage === 100 && duration === 0) {
       filling.resolve(undefined);
       await completion.promise;
     }
