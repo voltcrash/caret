@@ -121,6 +121,10 @@ vi.mock("animejs", () => ({ animate: vi.fn() }));
 import { Words } from "../../../../src/ts/components/pages/test/Words";
 import { Config } from "../../../../src/ts/config/store";
 import { setTestElements } from "../../../../src/ts/states/test-dom";
+import {
+  getWordsInputStyle,
+  getWordsWrapperHeight,
+} from "../../../../src/ts/states/words-layout";
 import * as ui from "../../../../src/ts/test/test-ui";
 import { words } from "../../../../src/ts/test/test-words";
 
@@ -135,6 +139,8 @@ function size(
     Record<"offsetTop" | "offsetLeft" | "offsetWidth" | "offsetHeight", number>
   >,
 ): void {
+  el.getBoundingClientRect = () =>
+    new DOMRect(el.offsetLeft, el.offsetTop, el.offsetWidth, el.offsetHeight);
   for (const [key, value] of Object.entries(values)) {
     Object.defineProperty(el, key, { configurable: true, value });
   }
@@ -155,6 +161,7 @@ async function flushFrames(): Promise<void> {
 }
 
 beforeEach(() => {
+  document.documentElement.style.fontSize = "16px";
   vi.clearAllMocks();
   Object.assign(mocks, {
     activeIndex: 0,
@@ -176,7 +183,7 @@ beforeEach(() => {
     hideExtraLetters: false,
     indicateTypos: "off",
     compositionDisplay: "off",
-    typedEffect: "off",
+    typedEffect: "keep",
     keymapMode: "off",
     playSoundOnError: "1",
   });
@@ -275,5 +282,150 @@ describe("Words rendering", () => {
     cleanup();
     expect(frames.size).toBe(0);
     expect(ui.pendingWordData.size).toBe(0);
+  });
+});
+
+async function layout(): Promise<void> {
+  ui.onTestRestart("testPage");
+  await flushFrames();
+  for (let index = 0; index < words.length; index++) {
+    const el = word(index);
+    Object.assign(el.style, {
+      marginTop: "0px",
+      marginBottom: "0px",
+      marginLeft: "0px",
+      marginRight: "0px",
+    });
+    size(el, {
+      offsetTop: 10,
+      offsetLeft: 50 + 110 * index,
+      offsetWidth: 100,
+      offsetHeight: 20,
+    });
+  }
+  size(element, { offsetWidth: 400, offsetHeight: 20 });
+}
+
+describe("Words layout", () => {
+  it("positions the input over its active word", async () => {
+    await layout();
+    ui.updateWordsInputPosition();
+    expect(getWordsInputStyle()).toMatchObject({
+      top: "9px",
+      left: "50px",
+      width: "100px",
+      "max-width": "",
+    });
+  });
+
+  it("respects tape margin and right-to-left narrow words", async () => {
+    await layout();
+    Config.tapeMode = "word";
+    Config.tapeMargin = 25;
+    ui.updateWordsInputPosition();
+    expect(getWordsInputStyle()).toMatchObject({
+      left: "100px",
+      "max-width": "75%",
+    });
+    Config.tapeMode = "off";
+    mocks.rtl = true;
+    size(word(0), { offsetWidth: 4 });
+    ui.updateWordsInputPosition();
+    expect(getWordsInputStyle()).toMatchObject({ left: "34px", width: "16px" });
+    mocks.reversed = true;
+    ui.updateWordsInputPosition();
+    expect(getWordsInputStyle().left).toBe("50px");
+  });
+
+  it("resets missing active word coordinates and ignores other pages", async () => {
+    await layout();
+    ui.updateWordsInputPosition();
+    mocks.activePage = "account";
+    ui.clearWords();
+    ui.updateWordsInputPosition();
+    expect(getWordsInputStyle().left).toBe("50px");
+    mocks.activePage = "test";
+    ui.updateWordsInputPosition();
+    expect(getWordsInputStyle()).toMatchObject({ top: "0px", left: "0px" });
+  });
+
+  it("keeps three lines, grows with show-all-lines, and uses two for zen", async () => {
+    await layout();
+    ui.updateWordsWrapperHeight(true);
+    expect(getWordsWrapperHeight()).toBe("60px");
+    Config.showAllLines = true;
+    ui.updateWordsWrapperHeight(true);
+    expect(getWordsWrapperHeight()).toBe("");
+    Config.showAllLines = false;
+    Config.mode = "zen";
+    ui.updateWordsWrapperHeight(true);
+    expect(getWordsWrapperHeight()).toBe("40px");
+    Config.tapeMode = "word";
+    Config.mode = "words";
+    ui.updateWordsWrapperHeight(true);
+    expect(getWordsWrapperHeight()).toBe("20px");
+  });
+
+  it("scrolls tape and both carets by the configured margin", async () => {
+    await layout();
+    Config.tapeMode = "word";
+    Config.tapeMargin = 25;
+    mocks.activeIndex = 1;
+    await ui.scrollTape(true);
+    expect(element.style.marginLeft).toBe("0px");
+    expect(mocks.caret.handleTapeScroll).toHaveBeenLastCalledWith({
+      newValue: -100,
+      duration: 0,
+      ease: "inOut(1.25)",
+    });
+    mocks.resultVisible = true;
+    mocks.caret.handleTapeScroll.mockClear();
+    await ui.scrollTape();
+    expect(mocks.caret.handleTapeScroll).not.toHaveBeenCalled();
+  });
+
+  it("scrolls tape by typed letter widths", async () => {
+    await layout();
+    Config.tapeMode = "letter";
+    Config.tapeMargin = 25;
+    mocks.input = "he";
+    for (const letter of word(0).querySelectorAll<HTMLElement>("letter")) {
+      size(letter, { offsetWidth: 10 });
+    }
+    await ui.scrollTape(true);
+    expect(element.style.marginLeft).toBe("80px");
+  });
+
+  it("removes completed lines after the first line jump", async () => {
+    words.push("third", 0);
+    await layout();
+    size(word(1), { offsetTop: 30 });
+    size(word(2), { offsetTop: 50 });
+    mocks.activeIndex = 1;
+    ui.updateActiveElement({ direction: "forward" });
+    await flushFrames();
+    expect(word(0)).not.toBeNull();
+    mocks.activeIndex = 2;
+    ui.updateActiveElement({ direction: "forward" });
+    await flushFrames();
+    expect(word(0)).toBeNull();
+    expect(word(2)).toHaveClass("active");
+    expect(ui.activeWordTop).toBe(50);
+    expect(ui.activeWordHeight).toBe(20);
+    expect(mocks.caret.handleLineJump).toHaveBeenCalledWith({
+      newMarginTop: -20,
+      duration: 0,
+    });
+  });
+
+  it("centers an active line on demand", async () => {
+    words.push("third", 0);
+    await layout();
+    size(word(1), { offsetTop: 30 });
+    size(word(2), { offsetTop: 50 });
+    mocks.activeIndex = 2;
+    await ui.centerActiveLine();
+    expect(word(0)).toBeNull();
+    expect(word(1)).not.toBeNull();
   });
 });
