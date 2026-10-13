@@ -29,7 +29,6 @@ export default {
         "scripts/**/*.{ts,cjs}",
         "__tests__/**/*.{ts,tsx}",
       ],
-      ignore: ["src/ts/utils/debug.ts"],
       ignoreDependencies: [
         "@oxytype/oxlint-config",
         "@tanstack/eslint-plugin-query",
