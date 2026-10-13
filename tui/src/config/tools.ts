@@ -6,7 +6,7 @@ import type { ConfigStore } from "./store";
 import type { Notifications } from "../notifications";
 import type { Command } from "../palette/types";
 
-export function parseConfigJson(value: string): object {
+function parseConfigJson(value: string): object {
   const parsed: unknown = JSON.parse(value);
   if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
     throw new Error("Settings JSON must be an object");
