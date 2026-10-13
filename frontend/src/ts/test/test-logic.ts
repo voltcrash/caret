@@ -132,6 +132,7 @@ type TestLogicState = {
   lastInitError: Error | null;
   showedLazyModeNotification: boolean;
   testReinitCount: number;
+  retrySaving: RetrySaving;
 };
 
 const testLogicState: TestLogicState = {
@@ -139,6 +140,7 @@ const testLogicState: TestLogicState = {
   lastInitError: null,
   showedLazyModeNotification: false,
   testReinitCount: 0,
+  retrySaving: { completedEvent: null, canRetry: false },
 };
 
 const invalidMessages: Record<
@@ -680,13 +682,8 @@ type RetrySaving = {
   canRetry: boolean;
 };
 
-const retrySaving: RetrySaving = {
-  completedEvent: null,
-  canRetry: false,
-};
-
 export async function retrySavingResult(): Promise<void> {
-  const { completedEvent } = retrySaving;
+  const { completedEvent } = testLogicState.retrySaving;
 
   if (completedEvent === null) {
     showNoticeNotification(
@@ -700,11 +697,11 @@ export async function retrySavingResult(): Promise<void> {
     return;
   }
 
-  if (!retrySaving.canRetry) {
+  if (!testLogicState.retrySaving.canRetry) {
     return;
   }
 
-  retrySaving.canRetry = false;
+  testLogicState.retrySaving.canRetry = false;
   Result.updateRetrySaving(false);
 
   showNoticeNotification("Retrying to save...");
@@ -982,10 +979,10 @@ async function saveResult(
   if (response.status !== 200) {
     //only allow retry if status is not in this list
     if (![460, 461, 463, 464, 465, 466].includes(response.status)) {
-      retrySaving.canRetry = true;
+      testLogicState.retrySaving.canRetry = true;
       Result.updateRetrySaving(true);
       if (!isRetrying) {
-        retrySaving.completedEvent = result;
+        testLogicState.retrySaving.completedEvent = result;
       }
     }
     console.log("Error saving result", result);
