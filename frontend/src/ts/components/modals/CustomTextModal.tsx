@@ -3,8 +3,6 @@ import type { CustomTextMode } from "@oxytype/schemas/util";
 import { createForm } from "@tanstack/solid-form";
 import { batch, createSignal, For, JSXElement, Show, untrack } from "solid-js";
 
-import type { FaSolidIcon } from "../../types/font-awesome";
-
 import { setConfig } from "../../config/setters";
 import { Config } from "../../config/store";
 import { restartTestEvent } from "../../events/test";
@@ -25,10 +23,10 @@ import { cn } from "../../utils/cn";
 import * as Strings from "../../utils/strings";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Button } from "../common/Button";
-import { Fa } from "../common/Fa";
 import { Separator } from "../common/Separator";
 import { SubmitButton } from "../ui/form/SubmitButton";
 import { TextareaField } from "../ui/form/TextareaField";
+import { SettingsGroup } from "./custom-text/SettingsGroup";
 import { CustomGeneratorModal } from "./CustomGeneratorModal";
 import { SaveCustomTextModal } from "./SaveCustomTextModal";
 import { SavedTextsModal } from "./SavedTextsModal";
@@ -714,24 +712,5 @@ export function CustomTextModal(): JSXElement {
       <WordFilterModal setChainedData={setIncomingChainedData} />
       <CustomGeneratorModal setChainedData={setIncomingChainedData} />
     </>
-  );
-}
-
-function SettingsGroup(props: {
-  title: string;
-  icon: FaSolidIcon;
-  iconClass?: string;
-  sub: string;
-  children: JSXElement;
-}): JSXElement {
-  return (
-    <div class="grid w-full">
-      <div class="flex items-center gap-2 text-sub lowercase">
-        <Fa icon={props.icon} fixedWidth class={props.iconClass} />
-        {props.title}
-      </div>
-      <div class="mt-1 mb-2 text-text">{props.sub}</div>
-      {props.children}
-    </div>
   );
 }
