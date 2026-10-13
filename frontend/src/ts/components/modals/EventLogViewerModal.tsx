@@ -94,6 +94,17 @@ import {
   visualizeWhitespace,
 } from "./event-log-viewer/event-log";
 import {
+  bucketLabels,
+  bucketRangeLabel,
+  bucketRangeMs,
+  BUCKETS,
+  type BucketSpec,
+  buildHistogram,
+  categoryPosition,
+  getBucketDivisor,
+  histogramTooltipLines,
+} from "./event-log-viewer/histogram";
+import {
   isLowStat,
   type MetricKind,
   MIN_SAMPLE_FOR_FLAGS,
@@ -1296,87 +1307,6 @@ function Timeline(props: {
 
 const HISTOGRAM_HEIGHT = 160;
 
-type BucketSpec = {
-  /** lower edge of each bucket. the last one is open ended */
-  edges: number[];
-  axisTitle: string;
-  /** divide every value by the median before bucketing */
-  relativeToMedian: boolean;
-};
-
-/**
- * Fixed buckets, so histograms are directly comparable between event logs.
- * Spacing is bucketed as a multiple of its own median because the gap between
- * keys scales with typing speed - 12000/wpm ms - so absolute edges would put a
- * fast typist and a slow one in completely different buckets. Hold times do not
- * scale that way, they sit around 60-120ms whoever is typing, so duration uses
- * absolute milliseconds where the boundaries are physical.
- */
-const BUCKETS: Record<MetricKind, BucketSpec> = {
-  spacing: {
-    edges: [
-      0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4,
-      1.5, 1.6, 1.7, 1.8, 1.9, 2, 3,
-    ],
-    axisTitle: "× median",
-    relativeToMedian: true,
-  },
-  duration: {
-    edges: [
-      0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160,
-      170, 180, 190, 200,
-    ],
-    axisTitle: "ms",
-    relativeToMedian: false,
-  },
-};
-
-function bucketLabels(spec: BucketSpec): string[] {
-  return spec.edges.map((edge, i) =>
-    i === spec.edges.length - 1 ? `${edge}+` : `${edge}`,
-  );
-}
-
-function bucketRangeLabel(spec: BucketSpec, index: number): string {
-  const lower = spec.edges[index] as number;
-  const upper = spec.edges[index + 1];
-  const unit = spec.relativeToMedian ? "× median" : "ms";
-  if (upper === undefined) return `${lower}${unit} and over`;
-  return `${lower} - ${upper}${unit}`;
-}
-
-function bucketRangeMs(
-  spec: BucketSpec,
-  index: number,
-  medianMs: number,
-): string {
-  const lower = (spec.edges[index] as number) * medianMs;
-  const upper = spec.edges[index + 1];
-  if (upper === undefined) return `${lower.toFixed(0)}ms and over`;
-  return `${lower.toFixed(0)} - ${(upper * medianMs).toFixed(0)}ms`;
-}
-
-function bucketIndex(spec: BucketSpec, value: number): number {
-  for (let i = spec.edges.length - 1; i >= 0; i--) {
-    if (value >= (spec.edges[i] as number)) return i;
-  }
-  return 0;
-}
-
-/**
- * Position on the category axis for an exact value, interpolated inside its
- * bucket so the percentile markers do not just snap to bucket centres. Category
- * i spans i-0.5 to i+0.5 in index space.
- */
-function categoryPosition(spec: BucketSpec, value: number): number {
-  const index = bucketIndex(spec, value);
-  const lower = spec.edges[index] as number;
-  const upper = spec.edges[index + 1];
-  if (upper === undefined) return index;
-  const fraction = upper > lower ? (value - lower) / (upper - lower) : 0.5;
-  return index - 0.5 + fraction;
-}
-
 function DistributionPanel(props: {
   ctx: EventLog;
   /** the whole log - only used to pin the bucket scale so it holds still */
@@ -1502,28 +1432,11 @@ function DistributionChart(props: {
   // before being bucketed. taken from the whole log rather than what is
   // currently visible, so the buckets do not slide around underneath the bars
   // while the timeline plays
-  const divisor = createMemo(() => {
-    if (!spec().relativeToMedian) return 1;
-    const scale = computeDistStats(props.scaleValues);
-    return scale !== null && scale.p50 > 0 ? scale.p50 : 1;
-  });
+  const divisor = createMemo(() => getBucketDivisor(spec(), props.scaleValues));
 
-  const histogram = createMemo(() => {
-    const bucketSpec = spec();
-    const scale = divisor();
-    const bins = new Array<number>(bucketSpec.edges.length).fill(0);
-    for (const value of props.values) {
-      const index = bucketIndex(bucketSpec, value / scale);
-      bins[index] = (bins[index] as number) + 1;
-    }
-    const cumulative: number[] = [];
-    let running = 0;
-    for (const count of bins) {
-      running += count;
-      cumulative.push(running);
-    }
-    return { bins, cumulative, total: props.values.length };
-  });
+  const histogram = createMemo(() =>
+    buildHistogram(spec(), props.values, divisor()),
+  );
 
   // gaps between keys are multiplicative so the bell is expected on their
   // logs, hold times are already on the scale they are symmetric on
@@ -1641,16 +1554,10 @@ function DistributionChart(props: {
                           return bucketRangeLabel(spec(), index);
                         },
                         label: (item) => {
-                          const h = histogram();
-                          const count = h.bins[item.dataIndex] ?? 0;
-                          const cumulative = h.cumulative[item.dataIndex] ?? 0;
-                          const pct = h.total > 0 ? (count / h.total) * 100 : 0;
-                          const cumulativePct =
-                            h.total > 0 ? (cumulative / h.total) * 100 : 0;
-                          const lines = [
-                            `${count} of ${h.total} (${pct.toFixed(1)}%)`,
-                            `cumulative ${cumulativePct.toFixed(1)}%`,
-                          ];
+                          const lines = histogramTooltipLines(
+                            histogram(),
+                            item.dataIndex,
+                          );
                           if (spec().relativeToMedian) {
                             lines.unshift(
                               `median ${s().p50.toFixed(1)}ms, so ${bucketRangeMs(spec(), item.dataIndex, divisor())}`,
