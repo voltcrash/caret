@@ -1,6 +1,6 @@
 import { QuotesController as CoreQuotesController } from "@oxytype/typing-core/quote-source";
 import { Quote } from "@oxytype/typing-core/quotes";
-export type { Quote, QuoteWithTextSplit } from "@oxytype/typing-core/quotes";
+export type { Quote } from "@oxytype/typing-core/quotes";
 import { removeLanguageSize } from "../utils/strings";
 import { cachedFetchJson } from "../utils/json-data";
 import { configEvent } from "../events/config";
