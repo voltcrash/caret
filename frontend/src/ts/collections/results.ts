@@ -1,6 +1,17 @@
+import {
+  ResultsQueryState,
+  CurrentSettingsFilter,
+  UpdateTagsResult,
+  ActionType,
+} from "./results/types";
+export {
+  type ResultsQueryState,
+  type ResultStats,
+  type CurrentSettingsFilter,
+} from "./results/types";
 import { ResultMinified } from "@oxytype/schemas/results";
-import { FunboxName } from "@oxytype/schemas/configs";
-import { Client, Difficulty, Mode, Mode2 } from "@oxytype/schemas/shared";
+
+import { Client, Mode } from "@oxytype/schemas/shared";
 import { ResultFilters } from "@oxytype/schemas/users";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import {
@@ -43,44 +54,12 @@ import { getMode2 } from "../utils/misc";
 import { getCurrentQuote } from "../states/test";
 import { removeLanguageSize } from "../utils/strings";
 
-export type ResultsQueryState = {
-  client?: Client;
-  difficulty: SnapshotResult<Mode>["difficulty"][];
-  pb: SnapshotResult<Mode>["isPb"][];
-  mode: SnapshotResult<Mode>["mode"][];
-  words: ("10" | "25" | "50" | "100" | "custom")[];
-  time: ("15" | "30" | "60" | "120" | "custom")[];
-  punctuation: SnapshotResult<Mode>["punctuation"][];
-  numbers: SnapshotResult<Mode>["numbers"][];
-  timestamp: SnapshotResult<Mode>["timestamp"];
-  quoteLength: SnapshotResult<Mode>["quoteLength"][];
-  tags: SnapshotResult<Mode>["tags"];
-  funbox: SnapshotResult<Mode>["funbox"];
-  language: SnapshotResult<Mode>["language"][];
-};
-
 const queryKeys = {
   root: (client: Client = "web") => [
     ...baseKey("results", { isUserSpecific: true }),
     client,
   ],
   fullResult: (_id: string) => [...queryKeys.root(), _id],
-};
-
-export type ResultStats = {
-  words: number;
-  restarted: number;
-  completed: number;
-  maxWpm: number;
-  avgWpm: number;
-  maxRaw: number;
-  avgRaw: number;
-  maxAcc: number;
-  avgAcc: number;
-  maxConsistency: number;
-  avgConsistency: number;
-  timeTyping: number;
-  dayTimestamp?: number;
 };
 
 /**
@@ -283,23 +262,6 @@ const resultsByClient = {
   tui: createResultsCollection("tui"),
 };
 const resultsCollection = resultsByClient.web;
-
-type UpdateTagsResult = { tagPbs: string[] };
-
-type ActionType = {
-  updateTags: {
-    client?: Client;
-    resultId: string;
-    currentTagIds: string[];
-    newTagIds: string[];
-  };
-  insertLocalResult: {
-    result: SnapshotResult<Mode>;
-  };
-  deleteLocalTag: {
-    tagId: string;
-  };
-};
 
 // oxlint-disable-next-line typescript/explicit-function-return-type
 function createActions(client: Client) {
@@ -637,17 +599,6 @@ export const getSingleResultQueryOptions = (_id: string) =>
     },
     staleTime: Infinity,
   });
-
-export type CurrentSettingsFilter = {
-  mode: Mode;
-  mode2: Mode2<Mode>;
-  punctuation: boolean;
-  numbers: boolean;
-  language: string;
-  difficulty: Difficulty;
-  lazyMode: boolean;
-  funbox: FunboxName[];
-};
 
 // oxlint-disable-next-line typescript/explicit-function-return-type
 export function useUserAverage10LiveQuery(options: {
