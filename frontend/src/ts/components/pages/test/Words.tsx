@@ -1,4 +1,10 @@
 import {
+  activeWordTop,
+  lineState,
+  updateActiveWordGeometry,
+} from "./words/line-state";
+export { activeWordTop, activeWordHeight } from "./words/line-state";
+import {
   updateWordsInputPosition,
   updateWordsWrapperHeight,
   updateWordsWidth,
@@ -93,13 +99,6 @@ import { isCoarsePointer } from "../../../utils/pointer";
 import { getWordsFontSize } from "../../../utils/words-font";
 import * as MonkeyPower from "./MonkeyPower";
 
-export let activeWordTop = 0;
-export let activeWordHeight = 0;
-let wordTopBeforeLineJump = 0;
-let lineTransition = false;
-
-let currentTestLine = 0;
-
 export function updateActiveElement(
   options:
     | { direction: "forward" | "back"; initial?: undefined }
@@ -135,8 +134,7 @@ export function updateActiveElement(
     setClass(newActiveWord, "typed", false);
     setWordJoining(newActiveWord, false);
 
-    activeWordTop = newActiveWord.offsetTop;
-    activeWordHeight = newActiveWord.offsetHeight;
+    updateActiveWordGeometry(newActiveWord);
 
     if (previousActiveWordTop !== null) {
       const isTimedTest =
@@ -294,15 +292,13 @@ export function appendEmptyWordElement(index: number): void {
   );
 }
 
-let centeringActiveLine: Promise<void> = Promise.resolve();
-
 export async function centerActiveLine(): Promise<void> {
   if (Config.showAllLines) {
     return;
   }
 
   const { resolve, promise } = Misc.promiseWithResolvers();
-  centeringActiveLine = promise;
+  lineState.centeringActiveLine = promise;
 
   const activeWordEl = getActiveWordElement();
   if (!activeWordEl) {
@@ -468,10 +464,10 @@ export async function updateWordLetters({
           const wordTopAfterUpdate = wordAtIndex.offsetTop;
           if (wordTopAfterUpdate > activeWordTop) {
             let jump = false;
-            if (!lineTransition) {
-              wordTopBeforeLineJump = wordTopAfterUpdate;
+            if (!lineState.lineTransition) {
+              lineState.wordTopBeforeLineJump = wordTopAfterUpdate;
               jump = true;
-            } else if (wordTopAfterUpdate > wordTopBeforeLineJump) {
+            } else if (wordTopAfterUpdate > lineState.wordTopBeforeLineJump) {
               jump = true;
             }
             if (jump) await lineJump(activeWordTop);
@@ -511,7 +507,7 @@ function getNlCharWidth(
 export async function scrollTape(noAnimation = false): Promise<void> {
   if (getActivePage() !== "test" || getResultVisible()) return;
 
-  await centeringActiveLine;
+  await lineState.centeringActiveLine;
 
   const isTestRightToLeft = isDirectionReversed()
     ? !isLanguageRightToLeft()
@@ -735,11 +731,9 @@ function removeTestElements(lastElementIndexToRemove: number): void {
   }
 }
 
-let currentLinesJumping = 0;
-
 async function lineJump(currentTop: number, force = false): Promise<void> {
   //last word of the line
-  if (currentTestLine > 0 || force) {
+  if (lineState.currentTestLine > 0 || force) {
     const hideBound = currentTop;
 
     const activeWordEl = getActiveWordElement();
@@ -770,15 +764,15 @@ async function lineJump(currentTop: number, force = false): Promise<void> {
     }
 
     if (lastElementIndexToRemove === undefined) {
-      currentTestLine++;
+      lineState.currentTestLine++;
       updateWordsWrapperHeight();
       return;
     }
 
-    currentLinesJumping++;
+    lineState.currentLinesJumping++;
 
     const wordHeight = outerHeight(activeWordEl);
-    const newMarginTop = -1 * wordHeight * currentLinesJumping;
+    const newMarginTop = -1 * wordHeight * lineState.currentLinesJumping;
     const duration = 125;
 
     const caretLineJumpOptions = {
@@ -789,23 +783,22 @@ async function lineJump(currentTop: number, force = false): Promise<void> {
     PaceCaret.getCaret().handleLineJump(caretLineJumpOptions);
 
     if (Config.smoothLineScroll) {
-      lineTransition = true;
+      lineState.lineTransition = true;
       await animateAsync(getWordsEl(), {
         marginTop: newMarginTop,
         duration,
       });
-      currentLinesJumping = 0;
-      activeWordTop = activeWordEl.offsetTop;
-      activeWordHeight = activeWordEl.offsetHeight;
+      lineState.currentLinesJumping = 0;
+      updateActiveWordGeometry(activeWordEl);
       removeTestElements(lastElementIndexToRemove);
       Object.assign(getWordsEl().style, { marginTop: "0" });
-      lineTransition = false;
+      lineState.lineTransition = false;
     } else {
-      currentLinesJumping = 0;
+      lineState.currentLinesJumping = 0;
       removeTestElements(lastElementIndexToRemove);
     }
   }
-  currentTestLine++;
+  lineState.currentTestLine++;
   updateWordsWrapperHeight();
   return;
 }
@@ -1087,7 +1080,7 @@ export function onTestRestart(source: "testPage" | "resultPage"): void {
     skipBreakdownEvent.dispatch();
   }
 
-  currentTestLine = 0;
+  lineState.currentTestLine = 0;
   if (Config.compositionDisplay === "below") {
     setCompositionText(" ");
   }
