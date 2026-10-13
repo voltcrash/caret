@@ -25,6 +25,25 @@ describe("CommandlineUtils", () => {
     vi.restoreAllMocks();
   });
   describe("buildCommandWithSubgroup", () => {
+    it("uses config metadata for titles and option labels", () => {
+      const command = buildCommand({
+        key: "showKeyTips",
+        cmdMeta: { subgroup: { options: "fromSchema" } },
+        configMeta: {
+          commandline: { title: "Key tips..." },
+          optionsMetadata: {
+            true: { displayString: "show", commandlineLabel: "on" },
+            false: { displayString: "hide" },
+          },
+        },
+        schema: z.boolean(),
+      });
+      expect(command.display).toBe("Key tips...");
+      expect(command.subgroup?.list.map((item) => item.display)).toEqual([
+        "hide",
+        "on",
+      ]);
+    });
     describe("type subgroup", () => {
       it("detects options for boolean schema", () => {
         //GIVEN
@@ -152,13 +171,13 @@ describe("CommandlineUtils", () => {
               options: [0.25, 0.75],
             },
             input: {
-              display: "custom test...",
               inputValueConvert: Number,
               afterExec,
               alias: "alias",
             },
           },
           configMeta: {
+            commandline: { inputTitle: "custom test..." },
             fa: {
               icon: "fa-keyboard",
             },
@@ -202,12 +221,12 @@ describe("CommandlineUtils", () => {
         key: "test" as any,
         cmdMeta: {
           input: {
-            display: "custom test...",
             afterExec,
             alias: "alias",
           },
         },
         configMeta: {
+          commandline: { inputTitle: "custom test..." },
           fa: {
             icon: "fa-keyboard",
           },
@@ -240,17 +259,18 @@ describe("CommandlineUtils", () => {
       expect(cmd.display).toEqual("My Setting...");
     });
 
-    it("uses display string from command meta if provided", () => {
+    it("uses input title from config metadata if provided", () => {
       //GIVEN
 
       //WHEN
       const cmd = buildCommand({
         cmdMeta: {
-          input: {
-            display: "Input setting...",
-          },
+          input: {},
         },
-        configMeta: { displayString: "My Setting" },
+        configMeta: {
+          commandline: { inputTitle: "Input setting..." },
+          displayString: "My Setting",
+        },
       });
 
       //THEN
@@ -263,9 +283,7 @@ describe("CommandlineUtils", () => {
       //WHEN
       const cmd = buildCommand({
         cmdMeta: {
-          input: {
-            // display: "Input setting...",
-          },
+          input: {},
           subgroup: {
             options: [],
           },
@@ -283,14 +301,15 @@ describe("CommandlineUtils", () => {
       //WHEN
       const cmd = buildCommand({
         cmdMeta: {
-          input: {
-            display: "Input setting...",
-          },
+          input: {},
           subgroup: {
             options: [],
           },
         },
-        configMeta: { displayString: "My Setting" },
+        configMeta: {
+          commandline: { inputTitle: "Input setting..." },
+          displayString: "My Setting",
+        },
       });
 
       //THEN
