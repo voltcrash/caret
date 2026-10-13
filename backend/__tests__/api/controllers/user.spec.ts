@@ -701,18 +701,23 @@ describe("user controller test", () => {
         uid,
       );
     });
-    // it("should fail with unknown properties", async () => {
-    //WHEN
-    // const { body } = await mockApp
-    //   .post("/users/optOutOfLeaderboards")
-    //   .set("Authorization", `Bearer ${uid}`)
-    //   .send({ extra: "value" });
-    //TODO.expect(422);
-    //THEN
-    /* TODO:
-        expect(body).toEqual({});
-        */
-    // });
+    it("should ignore a request body", async () => {
+      //GIVEN no body is declared, so the body is not validated
+
+      //WHEN
+      const { body } = await mockApp
+        .post("/users/optOutOfLeaderboards")
+        .set("Authorization", `Bearer ${uid}`)
+        .send({ extra: "value" })
+        .expect(200);
+
+      //THEN
+      expect(body).toEqual({
+        message: "User opted out of leaderboards",
+        data: null,
+      });
+      expect(optOutOfLeaderboardsMock).toHaveBeenCalledWith(uid);
+    });
   });
   describe("add result filter preset", () => {
     const validPreset = {
@@ -2404,7 +2409,7 @@ describe("user controller test", () => {
   describe("report user", () => {
     const createReportMock = vi.spyOn(ReportDal, "createReport");
     const verifyCaptchaMock = vi.spyOn(Captcha, "verify");
-    const getPartialUserMock = vi.spyOn(UserDal, "getPartialUser"); //todo replace with getPartialUser
+    const getPartialUserMock = vi.spyOn(UserDal, "getPartialUser");
     beforeEach(async () => {
       vi.useFakeTimers();
       vi.setSystemTime(125000);
@@ -2508,10 +2513,12 @@ describe("user controller test", () => {
         .expect(422);
 
       //THEN
-      expect(body.message).toEqual("Captcha challenge failed");
-      /* TODO
-      expect(body).toEqual({});
-      */
+      expect(body).toEqual({
+        message: "Captcha challenge failed",
+        data: { uid },
+      });
+      expect(verifyCaptchaMock).toHaveBeenCalledWith("captcha", "user-report");
+      expect(createReportMock).not.toHaveBeenCalled();
     });
     it("should fail with invalid properties", async () => {
       //WHEN
