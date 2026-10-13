@@ -1,17 +1,14 @@
 import {
   createDeferred,
-  createEffect,
   createMemo,
-  For,
   JSXElement,
   Show,
   untrack,
 } from "solid-js";
 
-import type { EventLog, TestEventType } from "../../test/events/types";
+import type { EventLog } from "../../test/events/types";
 
 import {
-  EVENT_TYPES,
   getCurrentMs,
   getError,
   getEventLog,
@@ -24,11 +21,9 @@ import {
   setEventLog,
   setRaw,
   setStage,
-  setVisibleTypes,
 } from "../../states/event-log-viewer";
 import { hideModal } from "../../states/modals";
 import { getLastEventLog } from "../../states/test";
-import { cn } from "../../utils/cn";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Button } from "../common/Button";
 import { createPlayback } from "./event-log-viewer/createPlayback";
@@ -43,9 +38,8 @@ import {
   parseContext,
   visualizeWhitespace,
 } from "./event-log-viewer/event-log";
-import { EventMarkSelect } from "./event-log-viewer/EventMarkSelect";
+import { EventsPanel } from "./event-log-viewer/EventsPanel";
 import { ScatterPanel } from "./event-log-viewer/ScatterPanel";
-import { scrollRowIntoView } from "./event-log-viewer/scroll-row";
 import { Timeline } from "./event-log-viewer/Timeline";
 import {
   buildLanes,
@@ -197,15 +191,6 @@ function PreviewContent(props: {
 
   const visibleTypes = getVisibleTypes;
 
-  const toggleType = (t: TestEventType): void => {
-    setVisibleTypes((prev) => {
-      const next = new Set(prev);
-      if (next.has(t)) next.delete(t);
-      else next.add(t);
-      return next;
-    });
-  };
-
   const filteredEvents = createMemo(() =>
     props.ctx.events.filter((e) => visibleTypes().has(e.type)),
   );
@@ -223,12 +208,6 @@ function PreviewContent(props: {
   const currentEventIndex = createMemo(() =>
     getCurrentEventIndex(filteredEvents(), currentMs()),
   );
-
-  let eventsScrollEl: HTMLDivElement | undefined;
-
-  createEffect(() => {
-    scrollRowIntoView(eventsScrollEl, currentEventIndex());
-  });
 
   const {
     playing,
@@ -278,69 +257,12 @@ function PreviewContent(props: {
         />
 
         {/* INSPECTOR: events */}
-        <div class="bg-bg-secondary flex min-h-0 w-0 flex-[1.5] flex-col gap-2 rounded-lg p-3">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div class="text-xs tracking-wider text-sub uppercase">
-              Events ({filteredEvents().length}/{props.ctx.events.length})
-            </div>
-            <div class="flex flex-wrap gap-2">
-              <For each={EVENT_TYPES}>
-                {(t) => (
-                  <Button
-                    variant="button"
-                    active={visibleTypes().has(t)}
-                    onClick={() => toggleType(t)}
-                    text={t}
-                    class="text-xs"
-                  />
-                )}
-              </For>
-            </div>
-          </div>
-          <div
-            ref={(el) => (eventsScrollEl = el)}
-            class="min-h-0 flex-1 overflow-auto rounded bg-bg"
-          >
-            <table class="w-full text-xs">
-              <thead class="sticky top-0 bg-bg">
-                <tr class="text-sub">
-                  <th class="w-24 p-2 text-right">time</th>
-                  <th class="w-24 p-2 text-left">type</th>
-                  <th class="w-32 p-2 text-left">mark</th>
-                  <th class="p-2 text-left">data</th>
-                </tr>
-              </thead>
-              <tbody>
-                <For each={filteredEventsWithIndex()}>
-                  {({ event, originalIndex }, i) => (
-                    <tr
-                      data-row={i()}
-                      class={cn(
-                        "border-t border-bg",
-                        i() === currentEventIndex() && "bg-main/20",
-                        event.testMs > currentMs() && "opacity-40",
-                      )}
-                    >
-                      <td class="p-2 text-right font-mono">
-                        {event.testMs.toFixed(2)}
-                      </td>
-                      <td class="p-2 font-mono">{event.type}</td>
-                      <td class="p-2">
-                        <EventMarkSelect
-                          sync={sync}
-                          eventIndex={originalIndex}
-                        />
-                      </td>
-                      <td class="p-2 font-mono break-all">
-                        {JSON.stringify(event.data)}
-                      </td>
-                    </tr>
-                  )}
-                </For>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <EventsPanel
+          sync={sync}
+          rows={filteredEventsWithIndex()}
+          totalCount={props.ctx.events.length}
+          currentEventIndex={currentEventIndex()}
+        />
       </div>
 
       {/* INSPECTOR: simulated input */}
