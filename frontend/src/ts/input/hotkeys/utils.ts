@@ -50,9 +50,7 @@ function isInteractiveElementFocused(): boolean {
     document.activeElement?.tagName === "TEXTAREA" ||
     document.activeElement?.tagName === "SELECT" ||
     document.activeElement?.tagName === "BUTTON" ||
-    document.activeElement?.classList.contains("button") === true ||
-    document.activeElement?.classList.contains("textButton") === true ||
-    document.activeElement?.classList.contains("modal") === true
+    document.activeElement?.matches(".button, .textButton, .modal") === true
   );
 }
 
