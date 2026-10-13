@@ -5,10 +5,12 @@ import {
   createOptimisticAction,
   useLiveQuery,
 } from "@tanstack/solid-db";
+import { untrack } from "solid-js";
 import Ape from "../ape";
 import { queryClient } from "../queries";
 import { baseKey } from "../queries/utils/keys";
 import { applyIdWorkaround, tempId } from "./utils/misc";
+import { createCollectionReader } from "./utils/reader";
 import { isAuthenticated } from "../states/core";
 
 type CustomThemeItem = CustomTheme;
@@ -46,6 +48,11 @@ const customThemesCollection = createCollection(
       return response.body.data.map(applyIdWorkaround);
     },
   }),
+);
+
+const customThemesReader = createCollectionReader(
+  import.meta.hot,
+  customThemesCollection,
 );
 
 type ActionType = {
@@ -135,14 +142,16 @@ const actions = {
 
 // --- Public API ---
 
-function getCustomThemes(): CustomThemeItem[] {
-  return [...customThemesCollection.values()].sort((a, b) =>
-    a.name.localeCompare(b.name),
-  );
+/** Reactive. Sorted by name. */
+export function getCustomThemes(): CustomThemeItem[] {
+  return customThemesReader
+    .values()
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
 
-function getCustomTheme(id: string): CustomThemeItem | undefined {
-  return customThemesCollection.get(id);
+/** Reactive. */
+export function getCustomTheme(id: string): CustomThemeItem | undefined {
+  return customThemesReader.get(id);
 }
 
 export async function addCustomTheme(
@@ -170,8 +179,9 @@ export async function deleteCustomTheme(
  * Used for non reactive access. Do not use in Solid components.
  */
 export const __nonReactive = {
-  getCustomThemes,
-  getCustomTheme,
+  getCustomThemes: (): CustomThemeItem[] => untrack(getCustomThemes),
+  getCustomTheme: (id: string): CustomThemeItem | undefined =>
+    untrack(() => getCustomTheme(id)),
 };
 
 import.meta.hot?.dispose(() => {
