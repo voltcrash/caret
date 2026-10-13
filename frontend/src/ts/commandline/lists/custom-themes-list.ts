@@ -30,7 +30,7 @@ function update(): void {
 
   subgroup.list = [];
 
-  const customThemes = CustomThemes.__nonReactive.getCustomThemes();
+  const customThemes = CustomThemes.getCustomThemes();
   for (const theme of customThemes) {
     subgroup.list.push({
       id: `setCustomThemeId${theme._id}`,
