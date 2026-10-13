@@ -120,6 +120,7 @@ vi.mock("animejs", () => ({ animate: vi.fn() }));
 
 import { Words } from "../../../../src/ts/components/pages/test/Words";
 import { Config } from "../../../../src/ts/config/store";
+import { configEvent } from "../../../../src/ts/events/config";
 import { setTestElements } from "../../../../src/ts/states/test-dom";
 import {
   getWordsInputStyle,
@@ -427,5 +428,63 @@ describe("Words layout", () => {
     await ui.centerActiveLine();
     expect(word(0)).toBeNull();
     expect(word(1)).not.toBeNull();
+  });
+});
+
+describe("Words hints and joining", () => {
+  it.each(["below", "both"] as const)(
+    "shows typo hints in %s mode",
+    async (mode) => {
+      await layout();
+      Config.indicateTypos = mode;
+      await ui.updateWordLetters({
+        wordIndex: 0,
+        input: "hxllo",
+        compositionData: "",
+      });
+      await flushFrames();
+      const hint = word(0).querySelector("hint");
+      expect(hint?.getAttribute("data-chars-index")).toBe("1");
+      expect(hint?.textContent).toBe(mode === "below" ? "x" : "e");
+      expect(word(0).querySelector(".hints")).not.toBeNull();
+      await ui.updateHintsPositionDebounced();
+      expect(word(0).querySelector("hint")?.textContent).toBe(
+        mode === "below" ? "x" : "e",
+      );
+    },
+  );
+
+  it("breaks typed joining words for dots and restores them on backtracking", async () => {
+    await layout();
+    Config.typedEffect = "dots";
+    ui.setJoiningClass(true);
+    vi.spyOn(word(0), "getBoundingClientRect").mockReturnValue({
+      width: 100,
+    } as DOMRect);
+    mocks.activeIndex = 1;
+    ui.updateActiveElement({ direction: "forward" });
+    await flushFrames();
+    expect(word(0)).toHaveClass("typed", "broken-joining");
+    expect(word(0).style.width).toBe("100px");
+    mocks.activeIndex = 0;
+    ui.updateActiveElement({ direction: "back" });
+    await flushFrames();
+    expect(word(0)).not.toHaveClass("typed", "broken-joining");
+    expect(word(0).style.width).toBe("");
+  });
+
+  it("marks wrapped joining words and resets when the font changes", async () => {
+    await layout();
+    Config.typedEffect = "dots";
+    ui.setJoiningClass(true);
+    const letters = word(0).querySelectorAll<HTMLElement>("letter");
+    size(letters[1] as HTMLElement, { offsetTop: 20 });
+    mocks.activeIndex = 1;
+    ui.updateActiveElement({ direction: "forward" });
+    await flushFrames();
+    expect(word(0)).toHaveClass("needs-wrap", "broken-joining");
+    Config.typedEffect = "keep";
+    configEvent.dispatch({ key: "fontSize", newValue: 1, previousValue: 1 });
+    expect(word(0)).not.toHaveClass("needs-wrap", "broken-joining");
   });
 });
