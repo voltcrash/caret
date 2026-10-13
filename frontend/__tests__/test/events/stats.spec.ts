@@ -64,7 +64,7 @@ import {
   findInputValueMismatches,
   getEventsForWord,
   getEventsPerWord,
-} from "../../../src/ts/test/events/helpers";
+} from "@oxytype/typing-core/events/helpers";
 import {
   getStartToFirstKeypressMs,
   getLastKeypressToEndMs,

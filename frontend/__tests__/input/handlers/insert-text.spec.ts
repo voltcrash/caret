@@ -138,7 +138,7 @@ import {
 import {
   findInputValueMismatches,
   getEventsForWord,
-} from "../../../src/ts/test/events/helpers";
+} from "@oxytype/typing-core/events/helpers";
 import type { InputEventNoMs } from "@oxytype/typing-core/events/types";
 import { words as TestWords } from "../../../src/ts/test/test-words";
 import { __testing } from "../../../src/ts/config/testing";
