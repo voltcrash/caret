@@ -5,6 +5,25 @@ import { z } from "zod/v3";
 import { sanitize } from "../src/sanitize";
 
 describe("sanitize function", () => {
+  it("cleans nested array members without mutating the input", () => {
+    const input = { nested: [{ tags: ["valid", 123] }, { tags: [456] }] };
+    const schema = z.object({
+      nested: z.array(z.object({ tags: z.array(z.string()).optional() })),
+    });
+    expect(sanitize(schema, input as any)).toEqual({
+      nested: [{ tags: ["valid"] }, {}],
+    });
+    expect(input).toEqual({
+      nested: [{ tags: ["valid", 123] }, { tags: [456] }],
+    });
+  });
+
+  it("returns the schema transform output after validation", () => {
+    const schema = z
+      .object({ count: z.number() })
+      .transform(({ count }) => String(count));
+    expect(sanitize(schema, { count: 2 } as any)).toBe("2");
+  });
   describe("arrays", () => {
     const numberArraySchema = z.array(z.number());
     const numbersArrayMin2Schema = numberArraySchema.min(2);
