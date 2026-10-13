@@ -105,6 +105,7 @@
     "jsdom": "30.1.1",
     "madge": "8.0.0",
     "normalize.css": "8.0.1",
+    "playwright": "catalog:",
     "solid-devtools": "0.34.5",
     "solid-js": "1.9.15",
     "subset-font": "2.9.0",
