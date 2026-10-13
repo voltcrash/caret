@@ -26,7 +26,7 @@
     "@types/node": "24.19.0",
     "@types/object-hash": "3.0.6",
     "madge": "8.0.0",
-    "playwright": "1.63.0",
+    "playwright": "catalog:",
     "typescript": "7.0.2",
     "vite-plus": "catalog:"
   }
