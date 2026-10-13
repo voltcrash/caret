@@ -1,3 +1,9 @@
+import {
+  getWordElement,
+  getActiveWordElement,
+  setClass,
+} from "./words/elements";
+export { getWordElement, getActiveWordElement } from "./words/elements";
 import * as Numbers from "@oxytype/util/numbers";
 import { animate } from "animejs";
 import { createEffect, JSXElement, onCleanup, onMount } from "solid-js";
@@ -64,7 +70,7 @@ import {
   buildInitialWordMarkup,
   buildLiveWordMarkup,
 } from "../../../test/word-markup";
-import { cn, updateClassNames } from "../../../utils/cn";
+import { cn } from "../../../utils/cn";
 import {
   cancelPendingAnimationFramesStartingWith,
   requestDebouncedAnimationFrame,
@@ -103,17 +109,6 @@ export function focusWords(force = false): void {
 
 export function keepWordsInputInTheCenter(force = false): void {
   centerWordsInputEvent.dispatch(force);
-}
-
-export function getWordElement(index: number): HTMLElement | null {
-  const el = getWordsEl().querySelector<HTMLElement>(
-    `.word[data-wordindex='${index}']`,
-  );
-  return el;
-}
-
-export function getActiveWordElement(): HTMLElement | null {
-  return getWordElement(getActiveWordIndex());
 }
 
 export function updateActiveElement(
@@ -1596,20 +1591,6 @@ function updateWordJoining(key: string, wordsEl: HTMLElement): void {
     words.forEach(reset);
   }
   words.forEach(applyIfNeeded);
-}
-
-function setClass(
-  element: HTMLElement | undefined | null,
-  names: string | string[],
-  enabled: boolean,
-): void {
-  if (element) {
-    element.className = updateClassNames(
-      element.className,
-      Array.isArray(names) ? names.join(" ") : names,
-      enabled,
-    );
-  }
 }
 
 function outerWidth(element: HTMLElement): number {
