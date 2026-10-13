@@ -2,7 +2,6 @@ import {
   computeBellness,
   computeCrossStats,
   computeDistStats,
-  probit,
 } from "@oxytype/util/timing-stats";
 import {
   BarController,
@@ -102,6 +101,18 @@ import {
   getBucketDivisor,
   histogramTooltipLines,
 } from "./event-log-viewer/histogram";
+import {
+  getCharPositionPoints,
+  getHoldFlightPoints,
+  getIndexPoints,
+  getInsertKeystrokes,
+  getKeydownCodes,
+  getLagPoints,
+  getLognormalFit,
+  getPerKeyPoints,
+  percentileOf,
+  type ScatterPoint,
+} from "./event-log-viewer/scatter-points";
 import {
   formatPercent,
   formatQuantum,
@@ -1652,94 +1663,6 @@ function DistributionChart(props: {
 
 const SCATTER_HEIGHT = 170;
 
-const KEY_ORDER = [
-  "Backquote",
-  "Digit1",
-  "Digit2",
-  "Digit3",
-  "Digit4",
-  "Digit5",
-  "Digit6",
-  "Digit7",
-  "Digit8",
-  "Digit9",
-  "Digit0",
-  "Minus",
-  "Equal",
-  "Tab",
-  "KeyQ",
-  "KeyW",
-  "KeyE",
-  "KeyR",
-  "KeyT",
-  "KeyY",
-  "KeyU",
-  "KeyI",
-  "KeyO",
-  "KeyP",
-  "BracketLeft",
-  "BracketRight",
-  "Backslash",
-  "KeyA",
-  "KeyS",
-  "KeyD",
-  "KeyF",
-  "KeyG",
-  "KeyH",
-  "KeyJ",
-  "KeyK",
-  "KeyL",
-  "Semicolon",
-  "Quote",
-  "IntlBackslash",
-  "KeyZ",
-  "KeyX",
-  "KeyC",
-  "KeyV",
-  "KeyB",
-  "KeyN",
-  "KeyM",
-  "Comma",
-  "Period",
-  "Slash",
-  "Space",
-  "Enter",
-];
-
-const KEY_LABELS: Record<string, string> = {
-  Space: "␣",
-  Enter: "⏎",
-  Tab: "⇥",
-  Comma: ",",
-  Period: ".",
-  Slash: "/",
-  Semicolon: ";",
-  Quote: "'",
-  BracketLeft: "[",
-  BracketRight: "]",
-  Backslash: "\\",
-  IntlBackslash: "\\",
-  Minus: "-",
-  Equal: "=",
-  Backquote: "`",
-};
-
-function keyLabel(code: string): string {
-  if (code.startsWith("Key")) return code.slice(3);
-  if (code.startsWith("Digit")) return code.slice(5);
-  return KEY_LABELS[code] ?? code;
-}
-
-function percentileOf(values: number[], p: number): number {
-  if (values.length === 0) return 1;
-  const sorted = [...values].sort((a, b) => a - b);
-  return Math.max(sorted[Math.floor(p * (sorted.length - 1))] as number, 1);
-}
-
-// Acklam's inverse normal CDF, used to place the theoretical quantiles on the
-// Q-Q plot
-type ScatterPoint = { x: number; y: number };
-
 function ScatterPanel(props: {
   ctx: EventLog;
   /** the whole log - only used to fix the axis bounds so they hold still */
@@ -1756,146 +1679,28 @@ function ScatterPanel(props: {
   const allSpacing = createMemo(() => getKeypressSpacing(props.fullCtx));
   const allDurations = createMemo(() => getKeypressDurations(props.fullCtx));
 
-  const keydownCodes = createMemo(() => {
-    const codes: string[] = [];
-    for (const event of props.ctx.events) {
-      if (event.type === "keydown") codes.push(event.data.code);
-    }
-    return codes;
-  });
+  const keydownCodes = createMemo(() => getKeydownCodes(props.ctx.events));
 
-  // real keystrokes only - automatic inputs (delete on error, auto indent) have
-  // no keypress behind them and reuse the triggering keystroke's timestamp
-  const inserts = createMemo(() => {
-    const list: { testMs: number; charIndex: number }[] = [];
-    for (const event of props.ctx.events) {
-      if (
-        event.type === "input" &&
-        event.data.inputType.startsWith("insert") &&
-        event.data.automatic !== true
-      ) {
-        list.push({ testMs: event.testMs, charIndex: event.data.charIndex });
-      }
-    }
-    return list;
-  });
+  const inserts = createMemo(() => getInsertKeystrokes(props.ctx.events));
 
-  const lagPoints = (): ScatterPoint[] => {
-    const points: ScatterPoint[] = [];
-    const values = spacing();
-    for (let i = 0; i + 1 < values.length; i++) {
-      points.push({
-        x: values[i] as number,
-        y: values[i + 1] as number,
-      });
-    }
-    return points;
-  };
+  const lagPoints = (): ScatterPoint[] => getLagPoints(spacing());
 
-  const indexPoints = (): ScatterPoint[] =>
-    spacing().map((value, i) => ({ x: i, y: value }));
+  const indexPoints = (): ScatterPoint[] => getIndexPoints(spacing());
 
-  const holdFlightPoints = (): ScatterPoint[] => {
-    const points: ScatterPoint[] = [];
-    const gaps = spacing();
-    const holds = durations();
-    for (let i = 0; i < gaps.length; i++) {
-      const hold = holds[i];
-      if (hold === undefined || hold <= 0) continue;
-      points.push({ x: gaps[i] as number, y: hold });
-    }
-    return points;
-  };
+  const holdFlightPoints = (): ScatterPoint[] =>
+    getHoldFlightPoints(spacing(), durations());
 
-  /**
-   * One column per physical key. Takes the values rather than reading holds
-   * directly, because both arrays are indexed by keypress: durations[i] is the
-   * hold of key i and spacing[i] is the gap that follows it, so the same
-   * grouping works for either.
-   */
-  const perKey = (
-    values: number[],
-  ): { labels: string[]; points: ScatterPoint[] } => {
-    const byCode = new Map<string, number[]>();
-    const codes = keydownCodes();
-    for (let i = 0; i < codes.length; i++) {
-      const value = values[i];
-      const code = codes[i];
-      if (value === undefined || value <= 0 || code === undefined) continue;
-      const list = byCode.get(code) ?? [];
-      list.push(value);
-      byCode.set(code, list);
-    }
-    const columns = [...byCode.keys()]
-      .filter((code) => (byCode.get(code) as number[]).length >= 3)
-      .sort((a, b) => {
-        const ai = KEY_ORDER.indexOf(a);
-        const bi = KEY_ORDER.indexOf(b);
-        return (
-          (ai === -1 ? KEY_ORDER.length : ai) -
-          (bi === -1 ? KEY_ORDER.length : bi)
-        );
-      });
-    const points: ScatterPoint[] = [];
-    columns.forEach((code, columnIndex) => {
-      (byCode.get(code) as number[]).forEach((value, occurrence) => {
-        // deterministic spread so repeats on the same key do not stack into one
-        // dot and hide how wide that key's spread is
-        points.push({
-          x: columnIndex + ((occurrence % 5) - 2) * 0.07,
-          y: value,
-        });
-      });
-    });
-    return { labels: columns.map(keyLabel), points };
-  };
+  const lognormalFit = createMemo(() => getLognormalFit(spacing()));
 
-  /**
-   * The lognormal being compared against, fitted straight from the log mean and
-   * log spread of the sample. Sigma comes back with the points because it is
-   * the parameter of this fit - it belongs on this chart as context, not in the
-   * stat row where it reads as a verdict.
-   */
-  const lognormalFit = createMemo(
-    (): {
-      points: ScatterPoint[];
-      sigma: number | null;
-    } => {
-      const values = spacing()
-        .filter((v) => v > 0)
-        .sort((a, b) => a - b);
-      if (values.length < 5) return { points: [], sigma: null };
-      const logs = values.map((v) => Math.log(v));
-      const mean = logs.reduce((a, b) => a + b, 0) / logs.length;
-      const sigma = Math.sqrt(
-        logs.reduce((a, b) => a + (b - mean) ** 2, 0) / logs.length,
-      );
-      return {
-        points: values.map((value, i) => ({
-          x: Math.exp(mean + sigma * probit((i + 0.5) / values.length)),
-          y: value,
-        })),
-        sigma,
-      };
-    },
+  const charPositionPoints = (): ScatterPoint[] =>
+    getCharPositionPoints(inserts());
+
+  const holdPerKey = createMemo(() =>
+    getPerKeyPoints(durations(), keydownCodes()),
   );
-
-  const charPositionPoints = (): ScatterPoint[] => {
-    const points: ScatterPoint[] = [];
-    const list = inserts();
-    for (let i = 1; i < list.length; i++) {
-      const previous = list[i - 1] as { testMs: number; charIndex: number };
-      const current = list[i] as { testMs: number; charIndex: number };
-      points.push({
-        x: current.charIndex,
-        y: current.testMs - previous.testMs,
-      });
-    }
-    return points;
-  };
-
-  const holdPerKey = createMemo(() => perKey(durations()));
-  const spacingPerKey = createMemo(() => perKey(spacing()));
+  const spacingPerKey = createMemo(() =>
+    getPerKeyPoints(spacing(), keydownCodes()),
+  );
 
   const spacingUpper = (): number => percentileOf(allSpacing(), 0.95);
   const durationUpper = (): number =>
