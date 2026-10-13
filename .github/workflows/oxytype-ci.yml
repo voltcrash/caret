@@ -156,6 +156,24 @@ jobs:
         run: |
           xargs -0 vp fmt --check --no-error-on-unmatched-pattern < /tmp/changed-files.txt
 
+  knip:
+    name: knip
+    needs: [prime-cache]
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'force-ci') || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Set up Vite+ and install dependencies
+        uses: voidzero-dev/setup-vp@v1.21.1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: true
+          cache-save: false
+
+      - name: Find unused code and dependencies
+        run: vp run knip
+
   ci-be:
     name: ci-be
     needs: [pre-ci, prime-cache]
