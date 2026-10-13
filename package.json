@@ -49,6 +49,7 @@
     "check-assets-quotes": "vp run --filter @oxytype/frontend check-assets quotes",
     "check-assets-languages": "vp run --filter @oxytype/frontend check-assets languages",
     "check-assets-others": "vp run --filter @oxytype/frontend check-assets others",
+    "check-assets-json": "vp run --filter @oxytype/frontend check-assets json",
     "knip": "knip",
     "oxlint": "vp lint"
   },
