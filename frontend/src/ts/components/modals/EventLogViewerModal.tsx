@@ -1,10 +1,4 @@
 import {
-  computeBellness,
-  computeCrossStats,
-  computeDistStats,
-} from "@oxytype/util/timing-stats";
-import { type AnnotationOptions } from "chartjs-plugin-annotation";
-import {
   createDeferred,
   createEffect,
   createMemo,
@@ -25,7 +19,6 @@ import type {
 import {
   EVENT_TYPES,
   getCurrentMs,
-  getDistributionOpen,
   getError,
   getEventLog,
   getEventToMark,
@@ -40,7 +33,6 @@ import {
   nextMarkId,
   resetEventLogViewer,
   setCurrentMs,
-  setDistributionOpen,
   setError,
   setEventLog,
   setEventToMark,
@@ -55,16 +47,10 @@ import {
 } from "../../states/event-log-viewer";
 import { hideModal } from "../../states/modals";
 import { getLastEventLog } from "../../states/test";
-import { getTheme } from "../../states/theme";
-import {
-  getKeypressDurations,
-  getKeypressSpacing,
-} from "../../test/events/stats";
 import { cn } from "../../utils/cn";
 import { AnimatedModal } from "../common/AnimatedModal";
-import { Balloon } from "../common/Balloon";
 import { Button } from "../common/Button";
-import { ChartJs } from "../common/ChartJs";
+import { DistributionPanel } from "./event-log-viewer/DistributionPanel";
 import {
   getCurrentEventIndex,
   getCurrentWordIndex,
@@ -75,34 +61,7 @@ import {
   parseContext,
   visualizeWhitespace,
 } from "./event-log-viewer/event-log";
-import {
-  bucketLabels,
-  bucketRangeLabel,
-  bucketRangeMs,
-  BUCKETS,
-  type BucketSpec,
-  buildHistogram,
-  categoryPosition,
-  getBucketDivisor,
-  histogramTooltipLines,
-} from "./event-log-viewer/histogram";
-import "./event-log-viewer/chart-setup";
 import { ScatterPanel } from "./event-log-viewer/ScatterPanel";
-import { Stat } from "./event-log-viewer/Stat";
-import {
-  formatPercent,
-  formatQuantum,
-  formatSignificant,
-  formatSigmas,
-} from "./event-log-viewer/stat-format";
-import {
-  isLowStat,
-  type MetricKind,
-  MIN_SAMPLE_FOR_FLAGS,
-  statBalloon,
-  SUSPICIOUS,
-  type SuspicionLimits,
-} from "./event-log-viewer/stat-notes";
 import {
   buildLanes,
   getNextTimelineZoom,
@@ -1278,347 +1237,6 @@ function Timeline(props: {
           }}
         ></div>
       </div>
-    </div>
-  );
-}
-
-const HISTOGRAM_HEIGHT = 160;
-
-function DistributionPanel(props: {
-  ctx: EventLog;
-  /** the whole log - only used to pin the bucket scale so it holds still */
-  fullCtx: EventLog;
-}): JSXElement {
-  const spacing = createMemo(() => getKeypressSpacing(props.ctx));
-  // durations are seeded with a 0 placeholder on keydown and filled in on
-  // keyup, so a leftover 0 means the key was never released. mid playback that
-  // also covers the key currently being held
-  const durationsRaw = createMemo(() => getKeypressDurations(props.ctx));
-  const unreleased = (): number => durationsRaw().filter((d) => d === 0).length;
-  const durations = createMemo(() => durationsRaw().filter((d) => d > 0));
-
-  const allSpacing = createMemo(() => getKeypressSpacing(props.fullCtx));
-  const allDurations = createMemo(() =>
-    getKeypressDurations(props.fullCtx).filter((d) => d > 0),
-  );
-
-  // these need both arrays at once, so they sit under the two charts rather
-  // than inside either. durationsRaw keeps its 0 placeholders here on purpose -
-  // dropping them would shift every later index out of alignment with spacing
-  const cross = createMemo(() => computeCrossStats(spacing(), durationsRaw()));
-
-  const open = getDistributionOpen;
-  const setOpen = setDistributionOpen;
-
-  return (
-    <div class="bg-bg-secondary flex shrink-0 flex-col gap-2 rounded-lg p-3">
-      <div class="flex items-center justify-between">
-        <Balloon
-          class="cursor-help text-xs tracking-wider text-sub uppercase"
-          text="Hover any stat for what it measures and what human versus generated data looks like. Red means the value sits below the human range and is worth a look; amber on n means the sample is too small to flag anything. Every threshold is one sided - nothing above the human range is suspicious, a long tail is just someone thinking."
-          position="up"
-          length="xlarge"
-          break
-        >
-          Key timing distribution
-        </Balloon>
-        <Button
-          variant="text"
-          fa={{ icon: open() ? "fa-chevron-up" : "fa-chevron-down" }}
-          balloon={{ text: open() ? "Collapse" : "Expand" }}
-          onClick={() => setOpen(!open())}
-        />
-      </div>
-      <Show when={open()}>
-        <div class="flex flex-wrap gap-3">
-          <DistributionChart
-            label="keySpacing"
-            kind="spacing"
-            values={spacing()}
-            scaleValues={allSpacing()}
-          />
-          <DistributionChart
-            label="keyDuration"
-            kind="duration"
-            values={durations()}
-            scaleValues={allDurations()}
-            note={
-              unreleased() > 0
-                ? `${unreleased()} unreleased excluded`
-                : undefined
-            }
-          />
-        </div>
-        <div class="flex flex-wrap gap-x-3 gap-y-1 border-t border-bg pt-2 font-mono text-xs">
-          <span class="text-sub">keySpacing × keyDuration</span>
-          <Stat
-            label="xcorr0"
-            value={formatSignificant(cross().lag0)}
-            balloon="Correlation between how long a key was held and the gap that followed it, on logs. The two arrays are index aligned - duration[i] and spacing[i] describe the same keypress - so one shared speed state in a hand should couple them. A generator drawing the two arrays from separate distributions sits at zero. Not flagged: the generator side is exact but nobody has measured the human side yet."
-          />
-          <Stat
-            label="xcorr1"
-            value={formatSignificant(cross().lag1)}
-            balloon="The same correlation shifted by one key: the gap before a key against that key's hold. This is the part that is awkward to fake. Matching a single correlation is easy; being non zero at several lags at once needs the two series to actually come from one process rather than two."
-          />
-          <Stat
-            label="overlap"
-            value={formatPercent(cross().overlapRate)}
-            balloon="Share of keypresses still held when the next key went down - genuine rollover, derived from duration[i] > spacing[i]. Rollover is not optional at speed: gaps shrink as 12000/wpm while holds stay near 70ms, so most keystrokes must overlap at 200wpm and almost none at 60wpm. A fast result with no overlap describes a physically impossible hand."
-          />
-          <Stat
-            label="ovl runs"
-            value={formatSigmas(cross().overlapRunsZ)}
-            balloon="Runs test on that overlap series. Rolling comes in bursts - through a familiar sequence you roll, elsewhere you do not - so the binary series should clump, giving a negative z. A generator whose holds and gaps are independent produces overlaps at random and sits near zero. Being binary this gets the exact runs test null for free."
-          />
-        </div>
-      </Show>
-    </div>
-  );
-}
-
-function DistributionChart(props: {
-  label: string;
-  kind: MetricKind;
-  values: number[];
-  /** the whole log's values, used only to fix the bucket scale */
-  scaleValues: number[];
-  note?: string;
-}): JSXElement {
-  const stats = createMemo(() => computeDistStats(props.values));
-
-  const spec = (): BucketSpec => BUCKETS[props.kind];
-
-  // spacing buckets are multiples of the median, so every value is scaled by it
-  // before being bucketed. taken from the whole log rather than what is
-  // currently visible, so the buckets do not slide around underneath the bars
-  // while the timeline plays
-  const divisor = createMemo(() => getBucketDivisor(spec(), props.scaleValues));
-
-  const histogram = createMemo(() =>
-    buildHistogram(spec(), props.values, divisor()),
-  );
-
-  // gaps between keys are multiplicative so the bell is expected on their
-  // logs, hold times are already on the scale they are symmetric on
-  const bell = createMemo(() =>
-    computeBellness(props.values, props.kind === "spacing"),
-  );
-
-  const limits = (): SuspicionLimits => SUSPICIOUS[props.kind];
-
-  const isLow = (value: number | null, limit: number): boolean =>
-    isLowStat(value, limit, stats()?.n ?? 0);
-
-  const chartData = createMemo(() => ({
-    labels: bucketLabels(spec()),
-    datasets: [
-      {
-        label: props.label,
-        data: histogram().bins,
-        backgroundColor: getTheme().main,
-        borderColor: getTheme().main,
-        barPercentage: 1,
-        categoryPercentage: 1,
-      },
-    ],
-  }));
-
-  const percentileAnnotations = createMemo(() => {
-    const s = stats();
-    if (s === null) return {};
-    const theme = getTheme();
-    const line = (
-      value: number,
-      label: string,
-      color: string,
-    ): AnnotationOptions => ({
-      type: "line",
-      xMin: categoryPosition(spec(), value / divisor()),
-      xMax: categoryPosition(spec(), value / divisor()),
-      borderColor: color,
-      borderWidth: 1,
-      label: {
-        display: true,
-        content: label,
-        position: "start",
-        backgroundColor: theme.bg,
-        color: theme.sub,
-        font: { size: 9 },
-        padding: 2,
-      },
-    });
-    return {
-      p10: line(s.p10, "p10", theme.sub),
-      p50: line(s.p50, "p50", theme.text),
-      p90: line(s.p90, "p90", theme.sub),
-    };
-  });
-
-  return (
-    <div class="flex min-w-0 flex-1 flex-col gap-1 sm:min-w-80">
-      <div class="flex items-baseline justify-between gap-2">
-        <div class="font-mono text-xs text-text">{props.label}</div>
-        <Show when={props.note}>
-          <div class="text-xs text-sub">{props.note}</div>
-        </Show>
-      </div>
-      <Show
-        when={stats()}
-        fallback={
-          <div
-            class="flex items-center justify-center rounded bg-bg text-xs text-sub"
-            style={{ height: `${HISTOGRAM_HEIGHT}px` }}
-          >
-            No data
-          </div>
-        }
-      >
-        {(s) => (
-          <>
-            <div style={{ height: `${HISTOGRAM_HEIGHT}px` }}>
-              <ChartJs
-                name={`${props.label}-distribution`}
-                type="bar"
-                data={chartData()}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  scales: {
-                    x: {
-                      type: "category",
-                      title: { display: true, text: spec().axisTitle },
-                      grid: { offset: false },
-                      // every bucket keeps its label, including empty ones -
-                      // an empty bucket is itself a finding
-                      ticks: {
-                        autoSkip: false,
-                        maxRotation: 0,
-                        minRotation: 0,
-                      },
-                    },
-                    y: {
-                      beginAtZero: true,
-                      title: { display: true, text: "count" },
-                      ticks: { precision: 0, maxTicksLimit: 5 },
-                    },
-                  },
-                  plugins: {
-                    legend: { display: false },
-                    annotation: { annotations: percentileAnnotations() },
-                    tooltip: {
-                      displayColors: false,
-                      callbacks: {
-                        title: (items) => {
-                          const index = items[0]?.dataIndex;
-                          if (index === undefined) return "";
-                          return bucketRangeLabel(spec(), index);
-                        },
-                        label: (item) => {
-                          const lines = histogramTooltipLines(
-                            histogram(),
-                            item.dataIndex,
-                          );
-                          if (spec().relativeToMedian) {
-                            lines.unshift(
-                              `median ${s().p50.toFixed(1)}ms, so ${bucketRangeMs(spec(), item.dataIndex, divisor())}`,
-                            );
-                          }
-                          return lines;
-                        },
-                      },
-                    },
-                  },
-                }}
-              />
-            </div>
-            <div class="flex flex-wrap gap-x-3 gap-y-1 font-mono text-xs">
-              <Stat
-                label="n"
-                value={String(s().n)}
-                balloon={statBalloon("n", props.kind)}
-                warn={s().n < MIN_SAMPLE_FOR_FLAGS}
-              />
-              <Stat
-                label="p10/50/90"
-                value={`${s().p10.toFixed(1)}/${s().p50.toFixed(1)}/${s().p90.toFixed(1)}ms`}
-                balloon={statBalloon("percentiles", props.kind)}
-                bad={isLow(s().p50, limits().median)}
-              />
-              <Stat
-                label="max"
-                value={`${s().max.toFixed(0)}ms`}
-                balloon="Largest value in the sample. The last bucket is open ended, so this is the only place an extreme outlier shows up - a long pause, or a key that was held down while the typist did something else."
-              />
-              <Stat
-                label="mean"
-                value={`${s().mean.toFixed(1)}ms`}
-                balloon={statBalloon("mean", props.kind)}
-              />
-              <Stat
-                label="sd"
-                value={`${s().sd.toFixed(1)}ms`}
-                balloon={statBalloon("sd", props.kind)}
-              />
-              <Stat
-                label="cv"
-                value={s().cv.toFixed(2)}
-                balloon={statBalloon("cv", props.kind)}
-                bad={isLow(s().cv, limits().cv)}
-              />
-              <Stat
-                label="lo"
-                value={s().spreadLow?.toFixed(2) ?? "-"}
-                balloon={statBalloon("spreadLow", props.kind)}
-                bad={isLow(s().spreadLow, limits().spreadLow)}
-              />
-              <Stat
-                label="hi"
-                value={s().spreadHigh?.toFixed(2) ?? "-"}
-                balloon={statBalloon("spreadHigh", props.kind)}
-              />
-              <Stat
-                label="acf1"
-                value={formatSignificant(s().autocorrelation)}
-                balloon={statBalloon("acf1", props.kind)}
-              />
-              <Stat
-                label="runs"
-                value={formatSigmas(s().runsZ)}
-                balloon={statBalloon("runs", props.kind)}
-              />
-              <Stat
-                label="drift"
-                value={s().drift?.toFixed(2) ?? "-"}
-                balloon={statBalloon("drift", props.kind)}
-              />
-              <Stat
-                label="quantum"
-                value={formatQuantum(s().quantum)}
-                balloon={statBalloon("quantum", props.kind)}
-              />
-              <Stat
-                label="distinct"
-                value={String(s().distinctCount)}
-                balloon={statBalloon("distinct", props.kind)}
-                bad={isLow(s().distinctCount, limits().distinct)}
-              />
-              <Stat
-                label="bell"
-                value={bell()?.toFixed(3) ?? "-"}
-                balloon={statBalloon("bell", props.kind)}
-                bad={isLow(bell(), limits().bell)}
-              />
-              <Stat
-                label="skew"
-                value={s().skew.toFixed(2)}
-                balloon={statBalloon("skew", props.kind)}
-                bad={isLow(s().skew, limits().skew)}
-              />
-            </div>
-          </>
-        )}
-      </Show>
     </div>
   );
 }
