@@ -12,7 +12,9 @@ import * as ResultDal from "../../../src/dal/result";
 import * as UserDal from "../../../src/dal/user";
 import * as PublicDal from "../../../src/dal/public";
 import * as LogsDal from "../../../src/dal/logs";
+import * as WeeklyXpLeaderboardModule from "../../../src/services/weekly-xp-leaderboard";
 import { WeeklyXpLeaderboard } from "../../../src/services/weekly-xp-leaderboard";
+import * as DailyLeaderboards from "../../../src/utils/daily-leaderboards";
 import { DailyLeaderboard } from "../../../src/utils/daily-leaderboards";
 import { newId } from "../../../src/utils/id";
 import { mockAuthenticateWithApeKey } from "../../__testData__/auth";
@@ -22,6 +24,10 @@ import { omit } from "../../../src/utils/misc";
 import { CompletedEvent } from "@oxytype/schemas/results";
 import MonkeyError from "../../../src/utils/error";
 import objectHash from "object-hash";
+import { BASE_CONFIGURATION } from "../../../src/constants/base-configuration";
+import { consistency } from "../../../src/anticheat/result";
+import { getTimingFingerprint } from "../../../src/anticheat/replay";
+import { completedEvent as typedEvent } from "../../__testData__/completed-event";
 
 const { mockApp, uid } = setup();
 const configuration = Configuration.getCachedConfiguration();
@@ -565,6 +571,20 @@ describe("result controller test", () => {
       "getLastResultTimestamp",
     );
     const hasSubmissionHashMock = vi.spyOn(ResultDal, "hasSubmissionHash");
+    const userUpdateLastTimingHashesMock = vi.spyOn(
+      UserDal,
+      "updateLastTimingHashes",
+    );
+    const userRecordAutoBanEventMock = vi.spyOn(UserDal, "recordAutoBanEvent");
+    const userAddToInboxMock = vi.spyOn(UserDal, "addToInbox");
+    const purgeDailyMock = vi.spyOn(
+      DailyLeaderboards,
+      "purgeUserFromDailyLeaderboards",
+    );
+    const purgeWeeklyMock = vi.spyOn(
+      WeeklyXpLeaderboardModule,
+      "purgeUserFromXpLeaderboards",
+    );
     const publicUpdateStatsMock = vi.spyOn(PublicDal, "updateStats");
     const weeklyXpAddResultMock = vi.spyOn(
       WeeklyXpLeaderboard.prototype,
@@ -579,6 +599,8 @@ describe("result controller test", () => {
       await enableResultsSaving(true);
       await enableUsersXpGain(true);
       await setResultsConfig({ objectHashCheckEnabled: false });
+      await setAnticheatConfig(BASE_CONFIGURATION.anticheat);
+      await setAutoBanConfig(BASE_CONFIGURATION.users.autoBan);
 
       [
         userGetMock,
@@ -590,6 +612,11 @@ describe("result controller test", () => {
         resultAddMock,
         resultGetLastTimestampMock,
         hasSubmissionHashMock,
+        userUpdateLastTimingHashesMock,
+        userRecordAutoBanEventMock,
+        userAddToInboxMock,
+        purgeDailyMock,
+        purgeWeeklyMock,
         publicUpdateStatsMock,
         weeklyXpAddResultMock,
         dailyAddResultMock,
@@ -601,6 +628,11 @@ describe("result controller test", () => {
       userCheckIfPbMock.mockResolvedValue(true);
       resultAddMock.mockResolvedValue({ insertedId });
       hasSubmissionHashMock.mockResolvedValue(false);
+      userUpdateLastTimingHashesMock.mockResolvedValue();
+      userRecordAutoBanEventMock.mockResolvedValue(false);
+      userAddToInboxMock.mockResolvedValue();
+      purgeDailyMock.mockResolvedValue();
+      purgeWeeklyMock.mockResolvedValue();
       //a prior result exists so incomplete-test time is credited (not zeroed)
       resultGetLastTimestampMock.mockResolvedValue(0);
       userIncrementXpMock.mockResolvedValue();
@@ -1016,6 +1048,280 @@ describe("result controller test", () => {
       expect(resultAddMock).not.toHaveBeenCalled();
       expect(userIncrementXpMock).not.toHaveBeenCalled();
     });
+
+    describe("anticheat", () => {
+      const fixedTimings = (): Partial<CompletedEvent> => {
+        const keySpacing = Array.from({ length: 219 }, () => 120);
+        return {
+          keySpacing,
+          keyDuration: Array.from({ length: 220 }, () => 50),
+          keyConsistency: consistency(keySpacing.slice(0, -1)),
+          lastKeyToEnd: 30_000 - 219 * 120,
+        };
+      };
+      const expectNoProgress = (): void => {
+        expect(resultAddMock).not.toHaveBeenCalled();
+        expect(userCheckIfPbMock).not.toHaveBeenCalled();
+        expect(userIncrementXpMock).not.toHaveBeenCalled();
+        expect(userUpdateTypingStatsMock).not.toHaveBeenCalled();
+        expect(weeklyXpAddResultMock).not.toHaveBeenCalled();
+        expect(dailyAddResultMock).not.toHaveBeenCalled();
+      };
+      const expectRejected = (reason: string): void => {
+        expect(addImportantLogMock).toHaveBeenCalledWith(
+          "anticheat_rejected",
+          expect.objectContaining({ reason }),
+          uid,
+        );
+      };
+
+      it("should reject inconsistent scores", async () => {
+        //WHEN
+        const { body } = await mockApp
+          .post("/results")
+          .set("Authorization", `Bearer ${uid}`)
+          .send({ result: buildCompletedEvent({ wpm: 200 }) })
+          .expect(463);
+
+        //THEN
+        expect(body.message).toEqual("Result data doesn't make sense");
+        expect(addImportantLogMock).toHaveBeenCalledWith(
+          "anticheat_rejected",
+          expect.objectContaining({
+            reason: expect.any(String),
+            mode: "time",
+            mode2: "15",
+          }),
+          uid,
+        );
+        expectNoProgress();
+      });
+      it("should reject inconsistent key data", async () => {
+        //WHEN
+        const { body } = await mockApp
+          .post("/results")
+          .set("Authorization", `Bearer ${uid}`)
+          .send({ result: buildCompletedEvent({ keyDuration: [1, 2] }) })
+          .expect(463);
+
+        //THEN
+        expect(body.message).toEqual("Result data doesn't make sense");
+        expectRejected("key-count-mismatch");
+        expectNoProgress();
+      });
+      it("should reject invalid result spacing", async () => {
+        //GIVEN
+        resultGetLastTimestampMock.mockResolvedValue(Date.now());
+
+        //WHEN
+        const { body } = await mockApp
+          .post("/results")
+          .set("Authorization", `Bearer ${uid}`)
+          .send({ result: buildCompletedEvent() })
+          .expect(462);
+
+        //THEN
+        expect(body.message).toEqual("Invalid result spacing");
+        expect(addLogMock).toHaveBeenCalledWith(
+          "invalid_result_spacing",
+          expect.any(Object),
+          uid,
+        );
+        expectNoProgress();
+      });
+
+      describe("bot check", () => {
+        beforeEach(async () => {
+          //80 wpm results enter the bot check
+          await setAnticheatConfig({ botCheckMinWpm: 50 });
+        });
+
+        it("should reject missing key data", async () => {
+          //WHEN
+          const { body } = await mockApp
+            .post("/results")
+            .set("Authorization", `Bearer ${uid}`)
+            .send({
+              result: typedEvent({
+                keySpacing: [],
+                keyDuration: [],
+                keyConsistency: 0,
+              }),
+            })
+            .expect(464);
+
+          //THEN
+          expect(body.message).toEqual("Missing key data");
+          expectRejected("missing-key-data");
+          expectNoProgress();
+        });
+        it("should reject fixed key timings", async () => {
+          //WHEN
+          const { body } = await mockApp
+            .post("/results")
+            .set("Authorization", `Bearer ${uid}`)
+            .send({ result: typedEvent(fixedTimings()) })
+            .expect(465);
+
+          //THEN
+          expect(body.message).toEqual("Possible bot detected");
+          expectRejected("uniform-key-timing");
+          expect(userRecordAutoBanEventMock).not.toHaveBeenCalled();
+          expectNoProgress();
+        });
+        it("should record a strike without banning", async () => {
+          //GIVEN
+          await setAutoBanConfig({ enabled: true, maxCount: 5, maxHours: 1 });
+
+          //WHEN
+          await mockApp
+            .post("/results")
+            .set("Authorization", `Bearer ${uid}`)
+            .send({ result: typedEvent(fixedTimings()) })
+            .expect(465);
+
+          //THEN
+          expect(userRecordAutoBanEventMock).toHaveBeenCalledWith(uid, 5, 1);
+          expect(userAddToInboxMock).not.toHaveBeenCalled();
+          expect(purgeDailyMock).not.toHaveBeenCalled();
+          expect(purgeWeeklyMock).not.toHaveBeenCalled();
+        });
+        it("should auto ban after too many strikes", async () => {
+          //GIVEN
+          await setAutoBanConfig({ enabled: true, maxCount: 5, maxHours: 1 });
+          userRecordAutoBanEventMock.mockResolvedValue(true);
+
+          //WHEN
+          await mockApp
+            .post("/results")
+            .set("Authorization", `Bearer ${uid}`)
+            .send({ result: typedEvent(fixedTimings()) })
+            .expect(465);
+
+          //THEN
+          expect(userAddToInboxMock).toHaveBeenCalledWith(
+            uid,
+            [expect.objectContaining({ subject: "Banned" })],
+            expect.anything(),
+          );
+          expect(purgeDailyMock).toHaveBeenCalledWith(uid, expect.anything());
+          expect(purgeWeeklyMock).toHaveBeenCalledWith(uid, expect.anything());
+          expectNoProgress();
+        });
+        it("should save varied key timings", async () => {
+          //WHEN
+          await mockApp
+            .post("/results")
+            .set("Authorization", `Bearer ${uid}`)
+            .send({ result: typedEvent() })
+            .expect(200);
+
+          //THEN
+          expect(resultAddMock).toHaveBeenCalled();
+        });
+        it.for([
+          { name: "verified", user: { verified: true } },
+          { name: "leaderboard opt out", user: { lbOptOut: true } },
+        ])("should exempt $name users", async ({ user }) => {
+          //GIVEN
+          userGetMock.mockResolvedValue({ name: "bob", ...user } as any);
+
+          //WHEN
+          await mockApp
+            .post("/results")
+            .set("Authorization", `Bearer ${uid}`)
+            .send({ result: typedEvent(fixedTimings()) })
+            .expect(200);
+
+          //THEN
+          expect(resultAddMock).toHaveBeenCalled();
+        });
+        it("should skip results below the minimum wpm", async () => {
+          //GIVEN
+          await setAnticheatConfig({ botCheckMinWpm: 130 });
+
+          //WHEN
+          await mockApp
+            .post("/results")
+            .set("Authorization", `Bearer ${uid}`)
+            .send({ result: typedEvent(fixedTimings()) })
+            .expect(200);
+
+          //THEN
+          expect(resultAddMock).toHaveBeenCalled();
+        });
+      });
+
+      describe("replay check", () => {
+        it("should reject replayed key timings", async () => {
+          //GIVEN
+          const result = typedEvent();
+          userGetMock.mockResolvedValue({
+            name: "bob",
+            lastTimingHashes: [getTimingFingerprint(result)],
+          } as any);
+
+          //WHEN
+          const { body } = await mockApp
+            .post("/results")
+            .set("Authorization", `Bearer ${uid}`)
+            .send({ result: { ...result, timestamp: 2000, punctuation: true } })
+            .expect(466);
+
+          //THEN
+          expect(body.message).toEqual("Duplicate result");
+          expectRejected("replayed-key-timing");
+          expect(userRecordAutoBanEventMock).not.toHaveBeenCalled();
+          expect(userUpdateLastTimingHashesMock).not.toHaveBeenCalled();
+          expectNoProgress();
+        });
+        it("should store new fingerprints", async () => {
+          //GIVEN
+          await setAnticheatConfig({
+            replayCheck: { enabled: true, maxFingerprints: 2 },
+          });
+          const result = typedEvent();
+          userGetMock.mockResolvedValue({
+            name: "bob",
+            lastTimingHashes: ["a", "b"],
+          } as any);
+
+          //WHEN
+          await mockApp
+            .post("/results")
+            .set("Authorization", `Bearer ${uid}`)
+            .send({ result })
+            .expect(200);
+
+          //THEN
+          expect(userUpdateLastTimingHashesMock).toHaveBeenCalledWith(uid, [
+            getTimingFingerprint(result),
+            "a",
+          ]);
+        });
+        it("should not check when disabled", async () => {
+          //GIVEN
+          await setAnticheatConfig({
+            replayCheck: { enabled: false, maxFingerprints: 50 },
+          });
+          const result = typedEvent();
+          userGetMock.mockResolvedValue({
+            name: "bob",
+            lastTimingHashes: [getTimingFingerprint(result)],
+          } as any);
+
+          //WHEN
+          await mockApp
+            .post("/results")
+            .set("Authorization", `Bearer ${uid}`)
+            .send({ result })
+            .expect(200);
+
+          //THEN
+          expect(userUpdateLastTimingHashesMock).not.toHaveBeenCalled();
+        });
+      });
+    });
   });
 });
 
@@ -1134,6 +1440,26 @@ async function setResultsConfig(
 ): Promise<void> {
   const mockConfig = await configuration;
   mockConfig.results = { ...mockConfig.results, ...results };
+
+  vi.spyOn(Configuration, "getCachedConfiguration").mockResolvedValue(
+    mockConfig,
+  );
+}
+async function setAnticheatConfig(
+  anticheat: Partial<Awaited<typeof configuration>["anticheat"]>,
+): Promise<void> {
+  const mockConfig = await configuration;
+  mockConfig.anticheat = { ...mockConfig.anticheat, ...anticheat };
+
+  vi.spyOn(Configuration, "getCachedConfiguration").mockResolvedValue(
+    mockConfig,
+  );
+}
+async function setAutoBanConfig(
+  autoBan: Awaited<typeof configuration>["users"]["autoBan"],
+): Promise<void> {
+  const mockConfig = await configuration;
+  mockConfig.users = { ...mockConfig.users, autoBan };
 
   vi.spyOn(Configuration, "getCachedConfiguration").mockResolvedValue(
     mockConfig,
