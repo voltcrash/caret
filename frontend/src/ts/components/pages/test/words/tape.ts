@@ -17,6 +17,9 @@ import * as Caret from "../../../../test/caret";
 import { getCurrentInput } from "../../../../test/events/data";
 import * as PaceCaret from "../../../../test/pace-caret";
 
+// this is needed in tape mode because sometimes we want the newline character to appear above the next line
+// and sometimes we want it to be shifted to the left
+// (for example if the newline is typed incorrectly, or there are any extra letters after it)
 function getNlCharWidth(
   lastWordInLine?: HTMLElement,
   checkIfIncorrect = true,

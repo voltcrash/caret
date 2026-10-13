@@ -41,8 +41,9 @@ import * as TestWords from "../../../../test/test-words";
 import { cancelPendingAnimationFramesStartingWith } from "../../../../utils/debounced-animation-frame";
 import * as Misc from "../../../../utils/misc";
 import { isCoarsePointer } from "../../../../utils/pointer";
-import * as MonkeyPower from ".././MonkeyPower";
+import * as MonkeyPower from "../MonkeyPower";
 
+// this means input, delete or composition
 function afterAnyTestInput(
   type: "textInput" | "delete" | "compositionUpdate",
   correctInput: boolean | null,

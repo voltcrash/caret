@@ -9,17 +9,6 @@ import { onWordsConfigChange } from "./words/config";
 import { setClass } from "./words/elements";
 import { disposeWordRendering } from "./words/rendering";
 
-// because of the requestAnimationFrame, multiple calls to updateWordLetters
-// can be made before the actual update happens. This map keeps track of the
-// latest input for each word and is used in before-insert-text to
-// make sure the currently typed word will not overflow to the next line
-
-// this is needed in tape mode because sometimes we want the newline character to appear above the next line
-// and sometimes we want it to be shifted to the left
-// (for example if the newline is typed incorrectly, or there are any extra letters after it)
-
-// this means input, delete or composition
-
 // D1: Solid owns this container; letter updates and positioning stay imperative.
 export function Words(props: {
   ref: (element: HTMLDivElement) => void;

@@ -164,6 +164,10 @@ export function addWord(
   // });
 }
 
+// because of the requestAnimationFrame, multiple calls to updateWordLetters
+// can be made before the actual update happens. This map keeps track of the
+// latest input for each word and is used in before-insert-text to
+// make sure the currently typed word will not overflow to the next line
 export let pendingWordData: Map<number, string> = new Map();
 
 export async function updateWordLetters({
