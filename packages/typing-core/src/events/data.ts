@@ -301,13 +301,11 @@ export function createEventRecorder(deps: EventRecorderDeps): EventRecorder {
     console.table(
       getAllTestEvents().map((event) => {
         const d = event.data;
-        let e = {
+        let e: Record<string, unknown> = {
           ...event,
           ...event.data,
         };
-        //@ts-expect-error just for logging
-        delete e.data;
-        //@ts-expect-error just for logging
+        delete e["data"];
         e = {
           ...e,
           ...d,
