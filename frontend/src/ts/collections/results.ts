@@ -1,3 +1,9 @@
+import {
+  resultsByClient,
+  resultsCollection,
+  getResults,
+} from "./results/store";
+export { isResultsReady, waitForResultsReady } from "./results/store";
 import { queryKeys } from "./results/keys";
 import { normalizeResult } from "./results/normalize";
 import {
@@ -14,12 +20,10 @@ export {
 
 import { Client, Mode } from "@oxytype/schemas/shared";
 import { ResultFilters } from "@oxytype/schemas/users";
-import { queryCollectionOptions } from "@tanstack/query-db-collection";
+
 import {
   avg,
-  BTreeIndex,
   count,
-  createCollection,
   createOptimisticAction,
   eq,
   gte,
@@ -38,18 +42,16 @@ import { Accessor, createMemo } from "solid-js";
 import Ape from "../ape";
 import { SnapshotResult } from "../constants/default-snapshot";
 import { createModuleEffectOn } from "../hooks/effects";
-import { queryClient } from "../queries";
 
 import { isAuthenticated } from "../states/core";
-import { getLastResult, setLastResult } from "../states/snapshot";
+import { getLastResult } from "../states/snapshot";
 import {
   getActiveTagsOnce,
-  getTagsOnce,
   reconcileLocalTagPB,
   saveLocalTagPB,
   useActiveTagsLiveQuery,
 } from "./tags";
-import { applyIdWorkaround } from "./utils/misc";
+
 import { getConfig } from "../config/store";
 import { getMode2 } from "../utils/misc";
 import { getCurrentQuote } from "../states/test";
@@ -155,66 +157,6 @@ export function useResultsLiveQuery(options: {
       .limit(limit);
   });
 }
-
-// oxlint-disable-next-line typescript/explicit-function-return-type
-function createResultsCollection(client: Client) {
-  const collection = createCollection(
-    queryCollectionOptions({
-      staleTime: Infinity,
-      // Web's synchronous typing/PB consumers still require retained data.
-      // Terminal history can refetch after five minutes without subscribers.
-      gcTime: client === "web" ? Infinity : 5 * 60 * 1000,
-      queryKey: queryKeys.root(client),
-      enabled: isAuthenticated,
-      queryFn: async () => {
-        const tagIds = await getTagsOnce();
-        const knownTagIds = new Set([...tagIds.map((it) => it._id)]);
-        //const options = parseLoadSubsetOptions(ctx.meta?.loadSubsetOptions);
-
-        const response = await Ape.results.get({
-          query: { client },
-        });
-
-        if (response.status !== 200) {
-          throw new Error(`Error fetching results:${response.body.message}`);
-        }
-
-        const results = response.body.data
-          .map((result) => normalizeResult(result, knownTagIds))
-          .map(applyIdWorkaround);
-
-        if (
-          client === "web" &&
-          getLastResult() === undefined &&
-          results.length > 0
-        ) {
-          const lastResult = results.reduce((acc, cur) =>
-            acc === undefined || acc.timestamp < cur.timestamp ? cur : acc,
-          );
-          setLastResult(lastResult);
-        }
-        return results;
-      },
-      queryClient,
-      getKey: (it) => it._id,
-    }),
-  );
-
-  collection.createIndex((row) => row.timestamp, {
-    indexType: BTreeIndex,
-  });
-
-  import.meta.hot?.dispose(() => {
-    void collection.cleanup();
-  });
-  return collection;
-}
-
-const resultsByClient = {
-  web: createResultsCollection("web"),
-  tui: createResultsCollection("tui"),
-};
-const resultsCollection = resultsByClient.web;
 
 // oxlint-disable-next-line typescript/explicit-function-return-type
 function createActions(client: Client) {
@@ -651,14 +593,6 @@ function buildSettingsResultsQuery(
   return query;
 }
 
-export function isResultsReady(): boolean {
-  return resultsCollection.isReady();
-}
-
-export async function waitForResultsReady(): Promise<void> {
-  await resultsCollection.stateWhenReady();
-}
-
 /**
  *
  */
@@ -668,7 +602,3 @@ createModuleEffectOn(import.meta.hot, isAuthenticated, (hasUser) => {
     if (resultsByClient.tui.isReady()) void resultsByClient.tui.utils.refetch();
   }
 });
-
-function getResults(client: Client = "web"): SnapshotResult<Mode>[] {
-  return [...resultsByClient[client].values()];
-}
