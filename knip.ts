@@ -65,5 +65,10 @@ export default {
       project: ["plugins/*.js"],
     },
   },
-  ignoreDependencies: ["caniuse-lite", "@commitlint/cli"],
+  ignoreDependencies: [
+    // Browserslist uses the pinned database indirectly for compatibility linting.
+    "caniuse-lite",
+    // .husky/commit-msg invokes the commitlint binary.
+    "@commitlint/cli",
+  ],
 } satisfies KnipConfig;
