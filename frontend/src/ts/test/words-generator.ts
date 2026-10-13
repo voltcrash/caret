@@ -3,7 +3,7 @@ import { Config } from "../config/store";
 import { setConfig, setQuoteLengthAll, toggleFunbox } from "../config/setters";
 import * as CustomText from "./custom-text";
 import QuotesController from "../controllers/quotes-controller";
-import * as LazyMode from "./lazy-mode";
+import * as LazyMode from "@oxytype/typing-core/lazy-mode";
 import * as EnglishPunctuation from "./english-punctuation";
 import * as PractiseWords from "./practise-words";
 import { getActiveFunboxes } from "./funbox/list";
