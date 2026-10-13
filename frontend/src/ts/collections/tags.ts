@@ -38,7 +38,6 @@ const queryKeys = {
 const tagsCollection = createCollection(
   queryCollectionOptions({
     staleTime: Infinity,
-    gcTime: Infinity, //remove when __nonReactive is removed
     queryKey: queryKeys.root(),
     queryClient,
     enabled: isAuthenticated,
@@ -567,15 +566,6 @@ export function getActiveTagsPB<M extends Mode>(
   }
   return tagPbWpm;
 }
-
-/**
- * Used for non reactive access. Do not use in Solid components.
- */
-export const __nonReactive = {
-  getTags: (): TagItem[] => untrack(getTags),
-  getTag: (id: string): TagItem | undefined => untrack(() => getTag(id)),
-  getActiveTags: (): TagItem[] => untrack(getActiveTags),
-};
 
 import.meta.hot?.dispose(() => {
   void tagsCollection.cleanup();
