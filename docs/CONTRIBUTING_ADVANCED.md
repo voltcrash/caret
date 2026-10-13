@@ -85,14 +85,13 @@ uses Tailwind classes, `cn` and configured colors; icons use `Fa`.
 Check unused code and dependencies:
 
 ```sh
-TURNSTILE_SITE_KEY=1x00000000000000000000AA vp run knip
+vp run knip
 ```
 
-Knip loads the production Vite config, which requires a Turnstile site key.
-The test key above is sufficient for analysis. Its workspace graph includes
-tests, build plugins, CSS and maintenance scripts; review callers before removing
-reported exports. Generated font CSS modules and the manual debug utility have
-intentional ignores in `knip.json`.
+`knip.ts` supplies a public Turnstile test key only during analysis. Production
+builds still require their own key. The workspace graph includes tests, build
+plugins, CSS and maintenance scripts; review callers before removing reported
+exports. Scoped ignores explain tooling dependencies and generated font CSS.
 
 See [contribution guidelines](CONTRIBUTING.md) and [architecture](ARCHITECTURE.md).
 
