@@ -3,10 +3,7 @@ import { removeLanguageSize } from "@oxytype/typing-core/strings";
 
 export {
   capitalizeFirstLetterOfEachWord,
-  getLastChar,
   removeLanguageSize,
-  replaceCharAt,
-  replaceSpecialChars,
   splitIntoCharacters,
 } from "@oxytype/typing-core/strings";
 
