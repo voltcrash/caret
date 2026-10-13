@@ -2030,10 +2030,7 @@ describe("user controller test", () => {
       const { body } = await mockApp
         .patch("/users/profile")
         .set("Authorization", `Bearer ${uid}`)
-        .send({
-          ...newProfile,
-          selectedBadgeId: -1,
-        })
+        .send(newProfile)
         .expect(200);
 
       //THEN
@@ -2056,6 +2053,23 @@ describe("user controller test", () => {
           badges: [{ id: 4 }, { id: 2 }, { id: 3 }],
         },
       );
+    });
+    it("should fail with the legacy no badge sentinel", async () => {
+      //WHEN
+      const { body } = await mockApp
+        .patch("/users/profile")
+        .set("Authorization", `Bearer ${uid}`)
+        .send({ selectedBadgeId: -1 })
+        .expect(422);
+
+      //THEN
+      expect(body).toEqual({
+        message: "Invalid request data schema",
+        validationErrors: [
+          '"selectedBadgeId" Number must be greater than or equal to 0',
+        ],
+      });
+      expect(updateProfileMock).not.toHaveBeenCalled();
     });
     it("should fail with unknown properties", async () => {
       //WHEN
