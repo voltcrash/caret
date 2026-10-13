@@ -1,0 +1,5292 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`commandline metadata > preserves every command title and option label 1`] = `
+{
+  "alwaysShowDecimalPlaces": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Always show decimal places...",
+  },
+  "alwaysShowWordsHistory": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Always show words history...",
+  },
+  "blindMode": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Blind mode...",
+  },
+  "britishEnglish": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "British english...",
+  },
+  "capsLockWarning": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Caps lock warning...",
+  },
+  "caretStyle": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "default",
+        "value": "default",
+      },
+      {
+        "label": "block",
+        "value": "block",
+      },
+      {
+        "label": "outline",
+        "value": "outline",
+      },
+      {
+        "label": "underline",
+        "value": "underline",
+      },
+      {
+        "label": "carrot",
+        "value": "carrot",
+      },
+      {
+        "label": "banana",
+        "value": "banana",
+      },
+      {
+        "label": "monkey",
+        "value": "monkey",
+      },
+    ],
+    "title": "Caret style...",
+  },
+  "codeUnindentOnBackspace": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Code unindent on backspace...",
+  },
+  "colorfulMode": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Colorful mode...",
+  },
+  "compositionDisplay": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "below",
+        "value": "below",
+      },
+      {
+        "label": "replace",
+        "value": "replace",
+      },
+    ],
+    "title": "Composition display...",
+  },
+  "confidenceMode": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "on",
+        "value": "on",
+      },
+      {
+        "label": "max",
+        "value": "max",
+      },
+    ],
+    "title": "Confidence mode...",
+  },
+  "customBackground": {
+    "options": undefined,
+    "title": "Custom background...",
+  },
+  "customBackgroundSize": {
+    "options": [
+      {
+        "label": "cover",
+        "value": "cover",
+      },
+      {
+        "label": "contain",
+        "value": "contain",
+      },
+      {
+        "label": "max",
+        "value": "max",
+      },
+    ],
+    "title": "Custom background size...",
+  },
+  "customLayoutfluid": {
+    "options": undefined,
+    "title": "Custom layoutfluid...",
+  },
+  "customPolyglot": {
+    "options": undefined,
+    "title": "Polyglot languages...",
+  },
+  "customTheme": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Custom theme...",
+  },
+  "deleteOnError": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "letter",
+        "value": "letter",
+      },
+      {
+        "label": "letter hard",
+        "value": "letter_hard",
+      },
+      {
+        "label": "word",
+        "value": "word",
+      },
+      {
+        "label": "word hard",
+        "value": "word_hard",
+      },
+    ],
+    "title": "Delete on error...",
+  },
+  "difficulty": {
+    "options": [
+      {
+        "label": "normal",
+        "value": "normal",
+      },
+      {
+        "label": "expert",
+        "value": "expert",
+      },
+      {
+        "label": "master",
+        "value": "master",
+      },
+    ],
+    "title": "Difficulty...",
+  },
+  "flipTestColors": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Flip test colors...",
+  },
+  "fontFamily": {
+    "options": [
+      {
+        "label": "0xProto",
+        "value": "Proto",
+      },
+      {
+        "label": "Adwaita Mono",
+        "value": "Adwaita_Mono",
+      },
+      {
+        "label": "Atkinson Hyperlegible",
+        "value": "Atkinson_Hyperlegible",
+      },
+      {
+        "label": "Boon (ไทย)",
+        "value": "Boon",
+      },
+      {
+        "label": "Cascadia Mono",
+        "value": "Cascadia_Mono",
+      },
+      {
+        "label": "Comfortaa",
+        "value": "Comfortaa",
+      },
+      {
+        "label": "Coming Soon",
+        "value": "Coming_Soon",
+      },
+      {
+        "label": "CommitMono",
+        "value": "CommitMono",
+      },
+      {
+        "label": "Courier",
+        "value": "Courier",
+      },
+      {
+        "label": "Fira Code",
+        "value": "Fira_Code",
+      },
+      {
+        "label": "Geist",
+        "value": "Geist",
+      },
+      {
+        "label": "Geist Mono",
+        "value": "Geist_Mono",
+      },
+      {
+        "label": "Georgia",
+        "value": "Georgia",
+      },
+      {
+        "label": "Hack",
+        "value": "Hack",
+      },
+      {
+        "label": "Helvetica",
+        "value": "Comic_Sans_MS",
+      },
+      {
+        "label": "IBM Plex Mono",
+        "value": "IBM_Plex_Mono",
+      },
+      {
+        "label": "IBM Plex Sans",
+        "value": "IBM_Plex_Sans",
+      },
+      {
+        "label": "Inconsolata",
+        "value": "Inconsolata",
+      },
+      {
+        "label": "Inter Tight",
+        "value": "Inter_Tight",
+      },
+      {
+        "label": "Iosevka",
+        "value": "Iosevka",
+      },
+      {
+        "label": "Itim",
+        "value": "Itim",
+      },
+      {
+        "label": "JetBrains Mono",
+        "value": "JetBrains_Mono",
+      },
+      {
+        "label": "Kanit",
+        "value": "Kanit",
+      },
+      {
+        "label": "Lalezar",
+        "value": "Lalezar",
+      },
+      {
+        "label": "Lato",
+        "value": "Lato",
+      },
+      {
+        "label": "Lexend Deca",
+        "value": "Lexend_Deca",
+      },
+      {
+        "label": "Mononoki",
+        "value": "Mononoki",
+      },
+      {
+        "label": "Montserrat",
+        "value": "Montserrat",
+      },
+      {
+        "label": "Noto Naskh Arabic",
+        "value": "Noto_Naskh_Arabic",
+      },
+      {
+        "label": "Noto Sans Lao (ລາວ)",
+        "value": "Noto_Sans_Lao",
+      },
+      {
+        "label": "Nunito",
+        "value": "Nunito",
+      },
+      {
+        "label": "Open Dyslexic",
+        "value": "Open_Dyslexic",
+      },
+      {
+        "label": "Overpass Mono",
+        "value": "Overpass_Mono",
+      },
+      {
+        "label": "Oxygen",
+        "value": "Oxygen",
+      },
+      {
+        "label": "Parkinsans",
+        "value": "Parkinsans",
+      },
+      {
+        "label": "Roboto",
+        "value": "Roboto",
+      },
+      {
+        "label": "Roboto Mono",
+        "value": "Roboto_Mono",
+      },
+      {
+        "label": "Sarabun",
+        "value": "Sarabun",
+      },
+      {
+        "label": "Source Code Pro",
+        "value": "Source_Code_Pro",
+      },
+      {
+        "label": "Space Grotesk",
+        "value": "Space_Grotesk",
+      },
+      {
+        "label": "Titillium Web",
+        "value": "Titillium_Web",
+      },
+      {
+        "label": "Ubuntu",
+        "value": "Ubuntu",
+      },
+      {
+        "label": "Ubuntu Mono",
+        "value": "Ubuntu_Mono",
+      },
+    ],
+    "title": "Font family...",
+  },
+  "fontSize": {
+    "options": undefined,
+    "title": "Font size...",
+  },
+  "freedomMode": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Freedom mode...",
+  },
+  "hideExtraLetters": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Hide extra letters...",
+  },
+  "highlightMode": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "letter",
+        "value": "letter",
+      },
+      {
+        "label": "word",
+        "value": "word",
+      },
+      {
+        "label": "next word",
+        "value": "next_word",
+      },
+      {
+        "label": "next two words",
+        "value": "next_two_words",
+      },
+      {
+        "label": "next three words",
+        "value": "next_three_words",
+      },
+    ],
+    "title": "Highlight mode...",
+  },
+  "indicateTypos": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "below",
+        "value": "below",
+      },
+      {
+        "label": "replace",
+        "value": "replace",
+      },
+      {
+        "label": "both",
+        "value": "both",
+      },
+    ],
+    "title": "Indicate typos...",
+  },
+  "keymapKeys": {
+    "options": [
+      {
+        "label": "minimal",
+        "value": "minimal",
+      },
+      {
+        "label": "minimal numrow",
+        "value": "minimal_numrow",
+      },
+      {
+        "label": "full",
+        "value": "full",
+      },
+    ],
+    "title": "Keymap keys...",
+  },
+  "keymapLayout": {
+    "options": [
+      {
+        "label": "emulator sync",
+        "value": "overrideSync",
+      },
+      {
+        "label": "qwerty",
+        "value": "qwerty",
+      },
+      {
+        "label": "dvorak",
+        "value": "dvorak",
+      },
+      {
+        "label": "colemak",
+        "value": "colemak",
+      },
+      {
+        "label": "colemak angle",
+        "value": "colemak_angle",
+      },
+      {
+        "label": "colemak wide",
+        "value": "colemak_wide",
+      },
+      {
+        "label": "colemak dh",
+        "value": "colemak_dh",
+      },
+      {
+        "label": "colemak dh iso",
+        "value": "colemak_dh_iso",
+      },
+      {
+        "label": "colemak dh wide",
+        "value": "colemak_dh_wide",
+      },
+      {
+        "label": "colemak dh iso wide",
+        "value": "colemak_dh_iso_wide",
+      },
+      {
+        "label": "colemak dhk",
+        "value": "colemak_dhk",
+      },
+      {
+        "label": "colemak dh matrix",
+        "value": "colemak_dh_matrix",
+      },
+      {
+        "label": "colemak dhk iso",
+        "value": "colemak_dhk_iso",
+      },
+      {
+        "label": "colemak dhv",
+        "value": "colemak_dhv",
+      },
+      {
+        "label": "qwertz",
+        "value": "qwertz",
+      },
+      {
+        "label": "swiss german",
+        "value": "swiss_german",
+      },
+      {
+        "label": "swiss french",
+        "value": "swiss_french",
+      },
+      {
+        "label": "workman",
+        "value": "workman",
+      },
+      {
+        "label": "prog workman",
+        "value": "prog_workman",
+      },
+      {
+        "label": "turkish q",
+        "value": "turkish_q",
+      },
+      {
+        "label": "turkish f",
+        "value": "turkish_f",
+      },
+      {
+        "label": "turkish e",
+        "value": "turkish_e",
+      },
+      {
+        "label": "MTGAP ASRT",
+        "value": "MTGAP_ASRT",
+      },
+      {
+        "label": "norman",
+        "value": "norman",
+      },
+      {
+        "label": "halmak",
+        "value": "halmak",
+      },
+      {
+        "label": "QGMLWB",
+        "value": "QGMLWB",
+      },
+      {
+        "label": "QGMLWY",
+        "value": "QGMLWY",
+      },
+      {
+        "label": "qwpr",
+        "value": "qwpr",
+      },
+      {
+        "label": "uk qwerty",
+        "value": "uk_qwerty",
+      },
+      {
+        "label": "spanish qwerty",
+        "value": "spanish_qwerty",
+      },
+      {
+        "label": "italian qwerty",
+        "value": "italian_qwerty",
+      },
+      {
+        "label": "latam qwerty",
+        "value": "latam_qwerty",
+      },
+      {
+        "label": "prog dvorak",
+        "value": "prog_dvorak",
+      },
+      {
+        "label": "prog dvorak prime",
+        "value": "prog_dvorak_prime",
+      },
+      {
+        "label": "german dvorak",
+        "value": "german_dvorak",
+      },
+      {
+        "label": "german dvorak imp",
+        "value": "german_dvorak_imp",
+      },
+      {
+        "label": "spanish dvorak",
+        "value": "spanish_dvorak",
+      },
+      {
+        "label": "swedish colemak",
+        "value": "swedish_colemak",
+      },
+      {
+        "label": "swedish dvorak",
+        "value": "swedish_dvorak",
+      },
+      {
+        "label": "dvorak L",
+        "value": "dvorak_L",
+      },
+      {
+        "label": "dvorak R",
+        "value": "dvorak_R",
+      },
+      {
+        "label": "dvorak fr",
+        "value": "dvorak_fr",
+      },
+      {
+        "label": "azerty",
+        "value": "azerty",
+      },
+      {
+        "label": "azerty AFNOR",
+        "value": "azerty_AFNOR",
+      },
+      {
+        "label": "bepo",
+        "value": "bepo",
+      },
+      {
+        "label": "bepo AFNOR",
+        "value": "bepo_AFNOR",
+      },
+      {
+        "label": "alpha",
+        "value": "alpha",
+      },
+      {
+        "label": "handsdown",
+        "value": "handsdown",
+      },
+      {
+        "label": "hungarian",
+        "value": "hungarian",
+      },
+      {
+        "label": "handsdown alt",
+        "value": "handsdown_alt",
+      },
+      {
+        "label": "handsdown promethium",
+        "value": "handsdown_promethium",
+      },
+      {
+        "label": "handsdown neu",
+        "value": "handsdown_neu",
+      },
+      {
+        "label": "handsdown neu inverted",
+        "value": "handsdown_neu_inverted",
+      },
+      {
+        "label": "typehack",
+        "value": "typehack",
+      },
+      {
+        "label": "MTGAP",
+        "value": "MTGAP",
+      },
+      {
+        "label": "MTGAP full",
+        "value": "MTGAP_full",
+      },
+      {
+        "label": "ina",
+        "value": "ina",
+      },
+      {
+        "label": "soul",
+        "value": "soul",
+      },
+      {
+        "label": "niro",
+        "value": "niro",
+      },
+      {
+        "label": "mongolian",
+        "value": "mongolian",
+      },
+      {
+        "label": "JCUKEN",
+        "value": "JCUKEN",
+      },
+      {
+        "label": "statica 3x5",
+        "value": "statica_3x5",
+      },
+      {
+        "label": "Vestnik",
+        "value": "Vestnik",
+      },
+      {
+        "label": "Diktor",
+        "value": "Diktor",
+      },
+      {
+        "label": "Diktor VoronovMod",
+        "value": "Diktor_VoronovMod",
+      },
+      {
+        "label": "Redaktor",
+        "value": "Redaktor",
+      },
+      {
+        "label": "JUIYAF",
+        "value": "JUIYAF",
+      },
+      {
+        "label": "Zubachev",
+        "value": "Zubachev",
+      },
+      {
+        "label": "ISRT",
+        "value": "ISRT",
+      },
+      {
+        "label": "ISRT Angle",
+        "value": "ISRT_Angle",
+      },
+      {
+        "label": "colemak Qix",
+        "value": "colemak_Qix",
+      },
+      {
+        "label": "colemak Qi",
+        "value": "colemak_Qi",
+      },
+      {
+        "label": "colemaQ",
+        "value": "colemaQ",
+      },
+      {
+        "label": "colemaQ F",
+        "value": "colemaQ_F",
+      },
+      {
+        "label": "engram",
+        "value": "engram",
+      },
+      {
+        "label": "engrammer",
+        "value": "engrammer",
+      },
+      {
+        "label": "semimak",
+        "value": "semimak",
+      },
+      {
+        "label": "semimak jq",
+        "value": "semimak_jq",
+      },
+      {
+        "label": "semimak jqc",
+        "value": "semimak_jqc",
+      },
+      {
+        "label": "canary",
+        "value": "canary",
+      },
+      {
+        "label": "canary matrix",
+        "value": "canary_matrix",
+      },
+      {
+        "label": "japanese hiragana",
+        "value": "japanese_hiragana",
+      },
+      {
+        "label": "boo",
+        "value": "boo",
+      },
+      {
+        "label": "boo mangle",
+        "value": "boo_mangle",
+      },
+      {
+        "label": "APT",
+        "value": "APT",
+      },
+      {
+        "label": "APT angle",
+        "value": "APT_angle",
+      },
+      {
+        "label": "middlemak",
+        "value": "middlemak",
+      },
+      {
+        "label": "middlemak-nh",
+        "value": "middlemak-nh",
+      },
+      {
+        "label": "hindi inscript",
+        "value": "hindi_inscript",
+      },
+      {
+        "label": "thai kedmanee",
+        "value": "thai_kedmanee",
+      },
+      {
+        "label": "thai pattachote",
+        "value": "thai_pattachote",
+      },
+      {
+        "label": "thai manoonchai",
+        "value": "thai_manoonchai",
+      },
+      {
+        "label": "persian standard",
+        "value": "persian_standard",
+      },
+      {
+        "label": "persian farsi",
+        "value": "persian_farsi",
+      },
+      {
+        "label": "arabic 101",
+        "value": "arabic_101",
+      },
+      {
+        "label": "arabic 102",
+        "value": "arabic_102",
+      },
+      {
+        "label": "arabic mac",
+        "value": "arabic_mac",
+      },
+      {
+        "label": "hebrew",
+        "value": "hebrew",
+      },
+      {
+        "label": "urdu phonetic",
+        "value": "urdu_phonetic",
+      },
+      {
+        "label": "brasileiro nativo",
+        "value": "brasileiro_nativo",
+      },
+      {
+        "label": "Foalmak",
+        "value": "Foalmak",
+      },
+      {
+        "label": "quartz",
+        "value": "quartz",
+      },
+      {
+        "label": "arensito",
+        "value": "arensito",
+      },
+      {
+        "label": "ARTS",
+        "value": "ARTS",
+      },
+      {
+        "label": "beakl 15",
+        "value": "beakl_15",
+      },
+      {
+        "label": "beakl 19",
+        "value": "beakl_19",
+      },
+      {
+        "label": "beakl 19 bis",
+        "value": "beakl_19_bis",
+      },
+      {
+        "label": "capewell dvorak",
+        "value": "capewell_dvorak",
+      },
+      {
+        "label": "colman",
+        "value": "colman",
+      },
+      {
+        "label": "heart",
+        "value": "heart",
+      },
+      {
+        "label": "klauser",
+        "value": "klauser",
+      },
+      {
+        "label": "oneproduct",
+        "value": "oneproduct",
+      },
+      {
+        "label": "pine",
+        "value": "pine",
+      },
+      {
+        "label": "pine v4",
+        "value": "pine_v4",
+      },
+      {
+        "label": "real",
+        "value": "real",
+      },
+      {
+        "label": "rolll",
+        "value": "rolll",
+      },
+      {
+        "label": "stndc",
+        "value": "stndc",
+      },
+      {
+        "label": "three",
+        "value": "three",
+      },
+      {
+        "label": "uciea",
+        "value": "uciea",
+      },
+      {
+        "label": "asset",
+        "value": "asset",
+      },
+      {
+        "label": "dwarf",
+        "value": "dwarf",
+      },
+      {
+        "label": "flaw",
+        "value": "flaw",
+      },
+      {
+        "label": "whorf",
+        "value": "whorf",
+      },
+      {
+        "label": "whorf6",
+        "value": "whorf6",
+      },
+      {
+        "label": "whorfmax",
+        "value": "whorfmax",
+      },
+      {
+        "label": "whorfmax ortho",
+        "value": "whorfmax_ortho",
+      },
+      {
+        "label": "sertain",
+        "value": "sertain",
+      },
+      {
+        "label": "ctgap",
+        "value": "ctgap",
+      },
+      {
+        "label": "octa8",
+        "value": "octa8",
+      },
+      {
+        "label": "polish programmers",
+        "value": "polish_programmers",
+      },
+      {
+        "label": "bulgarian",
+        "value": "bulgarian",
+      },
+      {
+        "label": "bulgarian phonetic traditional",
+        "value": "bulgarian_phonetic_traditional",
+      },
+      {
+        "label": "belarusian",
+        "value": "belarusian",
+      },
+      {
+        "label": "ukrainian",
+        "value": "ukrainian",
+      },
+      {
+        "label": "russian",
+        "value": "russian",
+      },
+      {
+        "label": "neo",
+        "value": "neo",
+      },
+      {
+        "label": "bone",
+        "value": "bone",
+      },
+      {
+        "label": "AdNW",
+        "value": "AdNW",
+      },
+      {
+        "label": "mine",
+        "value": "mine",
+      },
+      {
+        "label": "noted",
+        "value": "noted",
+      },
+      {
+        "label": "koy",
+        "value": "koy",
+      },
+      {
+        "label": "3l",
+        "value": "3l",
+      },
+      {
+        "label": "korean",
+        "value": "korean",
+      },
+      {
+        "label": "ekverto b",
+        "value": "ekverto_b",
+      },
+      {
+        "label": "nerps",
+        "value": "nerps",
+      },
+      {
+        "label": "sturdy angle ansi",
+        "value": "sturdy_angle_ansi",
+      },
+      {
+        "label": "sturdy angle iso",
+        "value": "sturdy_angle_iso",
+      },
+      {
+        "label": "sturdy ortho",
+        "value": "sturdy_ortho",
+      },
+      {
+        "label": "ABNT2",
+        "value": "ABNT2",
+      },
+      {
+        "label": "HiYou",
+        "value": "HiYou",
+      },
+      {
+        "label": "xenia",
+        "value": "xenia",
+      },
+      {
+        "label": "xenia alt",
+        "value": "xenia_alt",
+      },
+      {
+        "label": "burmese",
+        "value": "burmese",
+      },
+      {
+        "label": "gallium",
+        "value": "gallium",
+      },
+      {
+        "label": "gallium angle",
+        "value": "gallium_angle",
+      },
+      {
+        "label": "gallium v2",
+        "value": "gallium_v2",
+      },
+      {
+        "label": "gallium v2 matrix",
+        "value": "gallium_v2_matrix",
+      },
+      {
+        "label": "gallium nl",
+        "value": "gallium_nl",
+      },
+      {
+        "label": "maya",
+        "value": "maya",
+      },
+      {
+        "label": "gallaya angle ansi",
+        "value": "gallaya_angle_ansi",
+      },
+      {
+        "label": "gallaya angle iso",
+        "value": "gallaya_angle_iso",
+      },
+      {
+        "label": "gallaya matrix",
+        "value": "gallaya_matrix",
+      },
+      {
+        "label": "nila",
+        "value": "nila",
+      },
+      {
+        "label": "minimak 4k",
+        "value": "minimak_4k",
+      },
+      {
+        "label": "minimak 8k",
+        "value": "minimak_8k",
+      },
+      {
+        "label": "minimak 12k",
+        "value": "minimak_12k",
+      },
+      {
+        "label": "optimot",
+        "value": "optimot",
+      },
+      {
+        "label": "norwegian qwerty",
+        "value": "norwegian_qwerty",
+      },
+      {
+        "label": "portuguese pt qwerty iso",
+        "value": "portuguese_pt_qwerty_iso",
+      },
+      {
+        "label": "portuguese pt qwerty ansi",
+        "value": "portuguese_pt_qwerty_ansi",
+      },
+      {
+        "label": "swedish qwerty",
+        "value": "swedish_qwerty",
+      },
+      {
+        "label": "danish qwerty",
+        "value": "danish_qwerty",
+      },
+      {
+        "label": "noctum",
+        "value": "noctum",
+      },
+      {
+        "label": "graphite",
+        "value": "graphite",
+      },
+      {
+        "label": "graphite angle",
+        "value": "graphite_angle",
+      },
+      {
+        "label": "graphite angle vc",
+        "value": "graphite_angle_vc",
+      },
+      {
+        "label": "graphite angle kp",
+        "value": "graphite_angle_kp",
+      },
+      {
+        "label": "graphite matrix",
+        "value": "graphite_matrix",
+      },
+      {
+        "label": "macedonian",
+        "value": "macedonian",
+      },
+      {
+        "label": "UGJRMV",
+        "value": "UGJRMV",
+      },
+      {
+        "label": "pashto",
+        "value": "pashto",
+      },
+      {
+        "label": "ORNATE",
+        "value": "ORNATE",
+      },
+      {
+        "label": "estonian",
+        "value": "estonian",
+      },
+      {
+        "label": "stronk",
+        "value": "stronk",
+      },
+      {
+        "label": "dhorf",
+        "value": "dhorf",
+      },
+      {
+        "label": "gust",
+        "value": "gust",
+      },
+      {
+        "label": "recurva",
+        "value": "recurva",
+      },
+      {
+        "label": "seht-drai",
+        "value": "seht-drai",
+      },
+      {
+        "label": "ints",
+        "value": "ints",
+      },
+      {
+        "label": "rollla",
+        "value": "rollla",
+      },
+      {
+        "label": "wreathy",
+        "value": "wreathy",
+      },
+      {
+        "label": "saiga",
+        "value": "saiga",
+      },
+      {
+        "label": "saiga-e",
+        "value": "saiga-e",
+      },
+      {
+        "label": "krai",
+        "value": "krai",
+      },
+      {
+        "label": "mir",
+        "value": "mir",
+      },
+      {
+        "label": "ergol",
+        "value": "ergol",
+      },
+      {
+        "label": "cascade",
+        "value": "cascade",
+      },
+      {
+        "label": "vylet",
+        "value": "vylet",
+      },
+      {
+        "label": "hyperroll",
+        "value": "hyperroll",
+      },
+      {
+        "label": "romak",
+        "value": "romak",
+      },
+      {
+        "label": "scythe",
+        "value": "scythe",
+      },
+      {
+        "label": "inqwerted",
+        "value": "inqwerted",
+      },
+      {
+        "label": "rain",
+        "value": "rain",
+      },
+      {
+        "label": "night",
+        "value": "night",
+      },
+      {
+        "label": "night stic",
+        "value": "night_stic",
+      },
+      {
+        "label": "whix2",
+        "value": "whix2",
+      },
+      {
+        "label": "haruka",
+        "value": "haruka",
+      },
+      {
+        "label": "kuntum",
+        "value": "kuntum",
+      },
+      {
+        "label": "anishtro",
+        "value": "anishtro",
+      },
+      {
+        "label": "Kuntem",
+        "value": "Kuntem",
+      },
+      {
+        "label": "kuntem-jq",
+        "value": "kuntem-jq",
+      },
+      {
+        "label": "BEAKL Zi",
+        "value": "BEAKL_Zi",
+      },
+      {
+        "label": "snorkle",
+        "value": "snorkle",
+      },
+      {
+        "label": "MALTRON",
+        "value": "MALTRON",
+      },
+      {
+        "label": "PRSTEN",
+        "value": "PRSTEN",
+      },
+      {
+        "label": "RSTHD",
+        "value": "RSTHD",
+      },
+      {
+        "label": "dusk",
+        "value": "dusk",
+      },
+      {
+        "label": "zenith",
+        "value": "zenith",
+      },
+      {
+        "label": "focal",
+        "value": "focal",
+      },
+      {
+        "label": "panini",
+        "value": "panini",
+      },
+      {
+        "label": "panini wide",
+        "value": "panini_wide",
+      },
+      {
+        "label": "ergopti",
+        "value": "ergopti",
+      },
+      {
+        "label": "sword",
+        "value": "sword",
+      },
+      {
+        "label": "opy",
+        "value": "opy",
+      },
+      {
+        "label": "tarmak 1",
+        "value": "tarmak_1",
+      },
+      {
+        "label": "tarmak 2",
+        "value": "tarmak_2",
+      },
+      {
+        "label": "tarmak 3",
+        "value": "tarmak_3",
+      },
+      {
+        "label": "tarmak 4",
+        "value": "tarmak_4",
+      },
+      {
+        "label": "rulemak",
+        "value": "rulemak",
+      },
+      {
+        "label": "persian farsi colemak",
+        "value": "persian_farsi_colemak",
+      },
+      {
+        "label": "persian standard colemak",
+        "value": "persian_standard_colemak",
+      },
+      {
+        "label": "ergo split46",
+        "value": "ergo_split46",
+      },
+      {
+        "label": "tamil99",
+        "value": "tamil99",
+      },
+      {
+        "label": "Gralmak",
+        "value": "Gralmak",
+      },
+      {
+        "label": "GralmakS",
+        "value": "GralmakS",
+      },
+      {
+        "label": "vitrimak",
+        "value": "vitrimak",
+      },
+      {
+        "label": "miligram",
+        "value": "miligram",
+      },
+      {
+        "label": "nokwts",
+        "value": "nokwts",
+      },
+      {
+        "label": "vylet v4",
+        "value": "vylet_v4",
+      },
+      {
+        "label": "armenian hm qwerty",
+        "value": "armenian_hm_qwerty",
+      },
+    ],
+    "title": "Keymap layout...",
+  },
+  "keymapLegendStyle": {
+    "options": [
+      {
+        "label": "lowercase",
+        "value": "lowercase",
+      },
+      {
+        "label": "uppercase",
+        "value": "uppercase",
+      },
+      {
+        "label": "blank",
+        "value": "blank",
+      },
+      {
+        "label": "dynamic",
+        "value": "dynamic",
+      },
+    ],
+    "title": "Keymap legend style...",
+  },
+  "keymapMode": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "static",
+        "value": "static",
+      },
+      {
+        "label": "react",
+        "value": "react",
+      },
+      {
+        "label": "next",
+        "value": "next",
+      },
+    ],
+    "title": "Keymap mode...",
+  },
+  "keymapSize": {
+    "options": undefined,
+    "title": "Keymap size...",
+  },
+  "keymapStyle": {
+    "options": [
+      {
+        "label": "staggered",
+        "value": "staggered",
+      },
+      {
+        "label": "alice",
+        "value": "alice",
+      },
+      {
+        "label": "matrix",
+        "value": "matrix",
+      },
+      {
+        "label": "split",
+        "value": "split",
+      },
+      {
+        "label": "split matrix",
+        "value": "split_matrix",
+      },
+      {
+        "label": "steno",
+        "value": "steno",
+      },
+      {
+        "label": "steno matrix",
+        "value": "steno_matrix",
+      },
+    ],
+    "title": "Keymap style...",
+  },
+  "language": {
+    "options": [
+      {
+        "label": "english",
+        "value": "english",
+      },
+      {
+        "label": "english 1k",
+        "value": "english_1k",
+      },
+      {
+        "label": "english 5k",
+        "value": "english_5k",
+      },
+      {
+        "label": "english 10k",
+        "value": "english_10k",
+      },
+      {
+        "label": "english 25k",
+        "value": "english_25k",
+      },
+      {
+        "label": "english 450k",
+        "value": "english_450k",
+      },
+      {
+        "label": "english commonly misspelled",
+        "value": "english_commonly_misspelled",
+      },
+      {
+        "label": "english contractions",
+        "value": "english_contractions",
+      },
+      {
+        "label": "english doubleletter",
+        "value": "english_doubleletter",
+      },
+      {
+        "label": "english shakespearean",
+        "value": "english_shakespearean",
+      },
+      {
+        "label": "english old",
+        "value": "english_old",
+      },
+      {
+        "label": "english medical",
+        "value": "english_medical",
+      },
+      {
+        "label": "spanish",
+        "value": "spanish",
+      },
+      {
+        "label": "spanish 1k",
+        "value": "spanish_1k",
+      },
+      {
+        "label": "spanish 10k",
+        "value": "spanish_10k",
+      },
+      {
+        "label": "spanish 650k",
+        "value": "spanish_650k",
+      },
+      {
+        "label": "french",
+        "value": "french",
+      },
+      {
+        "label": "french 1k",
+        "value": "french_1k",
+      },
+      {
+        "label": "french 2k",
+        "value": "french_2k",
+      },
+      {
+        "label": "french 10k",
+        "value": "french_10k",
+      },
+      {
+        "label": "french 600k",
+        "value": "french_600k",
+      },
+      {
+        "label": "french bitoduc",
+        "value": "french_bitoduc",
+      },
+      {
+        "label": "nepali",
+        "value": "nepali",
+      },
+      {
+        "label": "nepali 1k",
+        "value": "nepali_1k",
+      },
+      {
+        "label": "nepali romanized",
+        "value": "nepali_romanized",
+      },
+      {
+        "label": "sanskrit",
+        "value": "sanskrit",
+      },
+      {
+        "label": "sanskrit roman",
+        "value": "sanskrit_roman",
+      },
+      {
+        "label": "santali",
+        "value": "santali",
+      },
+      {
+        "label": "azerbaijani",
+        "value": "azerbaijani",
+      },
+      {
+        "label": "azerbaijani 1k",
+        "value": "azerbaijani_1k",
+      },
+      {
+        "label": "arabic",
+        "value": "arabic",
+      },
+      {
+        "label": "arabic 10k",
+        "value": "arabic_10k",
+      },
+      {
+        "label": "arabic egypt",
+        "value": "arabic_egypt",
+      },
+      {
+        "label": "arabic egypt 1k",
+        "value": "arabic_egypt_1k",
+      },
+      {
+        "label": "arabic morocco",
+        "value": "arabic_morocco",
+      },
+      {
+        "label": "malagasy",
+        "value": "malagasy",
+      },
+      {
+        "label": "malagasy 1k",
+        "value": "malagasy_1k",
+      },
+      {
+        "label": "malay",
+        "value": "malay",
+      },
+      {
+        "label": "malay 1k",
+        "value": "malay_1k",
+      },
+      {
+        "label": "mongolian",
+        "value": "mongolian",
+      },
+      {
+        "label": "mongolian 10k",
+        "value": "mongolian_10k",
+      },
+      {
+        "label": "kannada",
+        "value": "kannada",
+      },
+      {
+        "label": "korean",
+        "value": "korean",
+      },
+      {
+        "label": "korean 1k",
+        "value": "korean_1k",
+      },
+      {
+        "label": "korean 5k",
+        "value": "korean_5k",
+      },
+      {
+        "label": "khmer",
+        "value": "khmer",
+      },
+      {
+        "label": "chinese simplified",
+        "value": "chinese_simplified",
+      },
+      {
+        "label": "chinese simplified 1k",
+        "value": "chinese_simplified_1k",
+      },
+      {
+        "label": "chinese simplified 5k",
+        "value": "chinese_simplified_5k",
+      },
+      {
+        "label": "chinese simplified 10k",
+        "value": "chinese_simplified_10k",
+      },
+      {
+        "label": "chinese simplified 50k",
+        "value": "chinese_simplified_50k",
+      },
+      {
+        "label": "chinese traditional",
+        "value": "chinese_traditional",
+      },
+      {
+        "label": "chinese traditional 1k",
+        "value": "chinese_traditional_1k",
+      },
+      {
+        "label": "chinese traditional 5k",
+        "value": "chinese_traditional_5k",
+      },
+      {
+        "label": "chinese traditional 10k",
+        "value": "chinese_traditional_10k",
+      },
+      {
+        "label": "chinese traditional 50k",
+        "value": "chinese_traditional_50k",
+      },
+      {
+        "label": "russian",
+        "value": "russian",
+      },
+      {
+        "label": "russian 1k",
+        "value": "russian_1k",
+      },
+      {
+        "label": "russian 5k",
+        "value": "russian_5k",
+      },
+      {
+        "label": "russian 10k",
+        "value": "russian_10k",
+      },
+      {
+        "label": "russian 25k",
+        "value": "russian_25k",
+      },
+      {
+        "label": "russian 50k",
+        "value": "russian_50k",
+      },
+      {
+        "label": "russian 375k",
+        "value": "russian_375k",
+      },
+      {
+        "label": "russian contractions",
+        "value": "russian_contractions",
+      },
+      {
+        "label": "russian contractions 1k",
+        "value": "russian_contractions_1k",
+      },
+      {
+        "label": "russian abbreviations",
+        "value": "russian_abbreviations",
+      },
+      {
+        "label": "ukrainian",
+        "value": "ukrainian",
+      },
+      {
+        "label": "ukrainian 1k",
+        "value": "ukrainian_1k",
+      },
+      {
+        "label": "ukrainian 10k",
+        "value": "ukrainian_10k",
+      },
+      {
+        "label": "ukrainian 50k",
+        "value": "ukrainian_50k",
+      },
+      {
+        "label": "ukrainian endings",
+        "value": "ukrainian_endings",
+      },
+      {
+        "label": "ukrainian latynka",
+        "value": "ukrainian_latynka",
+      },
+      {
+        "label": "ukrainian latynka 1k",
+        "value": "ukrainian_latynka_1k",
+      },
+      {
+        "label": "ukrainian latynka 10k",
+        "value": "ukrainian_latynka_10k",
+      },
+      {
+        "label": "ukrainian latynka 50k",
+        "value": "ukrainian_latynka_50k",
+      },
+      {
+        "label": "ukrainian latynka endings",
+        "value": "ukrainian_latynka_endings",
+      },
+      {
+        "label": "portuguese",
+        "value": "portuguese",
+      },
+      {
+        "label": "portuguese acentos e cedilha",
+        "value": "portuguese_acentos_e_cedilha",
+      },
+      {
+        "label": "portuguese 1k",
+        "value": "portuguese_1k",
+      },
+      {
+        "label": "portuguese 3k",
+        "value": "portuguese_3k",
+      },
+      {
+        "label": "portuguese 5k",
+        "value": "portuguese_5k",
+      },
+      {
+        "label": "portuguese 320k",
+        "value": "portuguese_320k",
+      },
+      {
+        "label": "portuguese 550k",
+        "value": "portuguese_550k",
+      },
+      {
+        "label": "indonesian",
+        "value": "indonesian",
+      },
+      {
+        "label": "indonesian 1k",
+        "value": "indonesian_1k",
+      },
+      {
+        "label": "indonesian 10k",
+        "value": "indonesian_10k",
+      },
+      {
+        "label": "kurdish central",
+        "value": "kurdish_central",
+      },
+      {
+        "label": "kurdish central 2k",
+        "value": "kurdish_central_2k",
+      },
+      {
+        "label": "kurdish central 4k",
+        "value": "kurdish_central_4k",
+      },
+      {
+        "label": "german",
+        "value": "german",
+      },
+      {
+        "label": "german 1k",
+        "value": "german_1k",
+      },
+      {
+        "label": "german 10k",
+        "value": "german_10k",
+      },
+      {
+        "label": "german 250k",
+        "value": "german_250k",
+      },
+      {
+        "label": "swiss german",
+        "value": "swiss_german",
+      },
+      {
+        "label": "swiss german 1k",
+        "value": "swiss_german_1k",
+      },
+      {
+        "label": "swiss german 2k",
+        "value": "swiss_german_2k",
+      },
+      {
+        "label": "afrikaans",
+        "value": "afrikaans",
+      },
+      {
+        "label": "afrikaans 1k",
+        "value": "afrikaans_1k",
+      },
+      {
+        "label": "afrikaans 10k",
+        "value": "afrikaans_10k",
+      },
+      {
+        "label": "georgian",
+        "value": "georgian",
+      },
+      {
+        "label": "tamil",
+        "value": "tamil",
+      },
+      {
+        "label": "tamil 1k",
+        "value": "tamil_1k",
+      },
+      {
+        "label": "tanglish",
+        "value": "tanglish",
+      },
+      {
+        "label": "tamil old",
+        "value": "tamil_old",
+      },
+      {
+        "label": "telugu",
+        "value": "telugu",
+      },
+      {
+        "label": "telugu 1k",
+        "value": "telugu_1k",
+      },
+      {
+        "label": "greek",
+        "value": "greek",
+      },
+      {
+        "label": "greek 1k",
+        "value": "greek_1k",
+      },
+      {
+        "label": "greek 5k",
+        "value": "greek_5k",
+      },
+      {
+        "label": "greek 10k",
+        "value": "greek_10k",
+      },
+      {
+        "label": "greek 25k",
+        "value": "greek_25k",
+      },
+      {
+        "label": "greek koine",
+        "value": "greek_koine",
+      },
+      {
+        "label": "greeklish",
+        "value": "greeklish",
+      },
+      {
+        "label": "greeklish 1k",
+        "value": "greeklish_1k",
+      },
+      {
+        "label": "greeklish 5k",
+        "value": "greeklish_5k",
+      },
+      {
+        "label": "greeklish 10k",
+        "value": "greeklish_10k",
+      },
+      {
+        "label": "greeklish 25k",
+        "value": "greeklish_25k",
+      },
+      {
+        "label": "turkish",
+        "value": "turkish",
+      },
+      {
+        "label": "turkish 1k",
+        "value": "turkish_1k",
+      },
+      {
+        "label": "turkish 5k",
+        "value": "turkish_5k",
+      },
+      {
+        "label": "irish",
+        "value": "irish",
+      },
+      {
+        "label": "irish 1k",
+        "value": "irish_1k",
+      },
+      {
+        "label": "italian",
+        "value": "italian",
+      },
+      {
+        "label": "italian 1k",
+        "value": "italian_1k",
+      },
+      {
+        "label": "italian 7k",
+        "value": "italian_7k",
+      },
+      {
+        "label": "italian 60k",
+        "value": "italian_60k",
+      },
+      {
+        "label": "italian 280k",
+        "value": "italian_280k",
+      },
+      {
+        "label": "friulian",
+        "value": "friulian",
+      },
+      {
+        "label": "latin",
+        "value": "latin",
+      },
+      {
+        "label": "galician",
+        "value": "galician",
+      },
+      {
+        "label": "thai",
+        "value": "thai",
+      },
+      {
+        "label": "thai 1k",
+        "value": "thai_1k",
+      },
+      {
+        "label": "thai 5k",
+        "value": "thai_5k",
+      },
+      {
+        "label": "thai 10k",
+        "value": "thai_10k",
+      },
+      {
+        "label": "thai 20k",
+        "value": "thai_20k",
+      },
+      {
+        "label": "thai 50k",
+        "value": "thai_50k",
+      },
+      {
+        "label": "thai 60k",
+        "value": "thai_60k",
+      },
+      {
+        "label": "polish",
+        "value": "polish",
+      },
+      {
+        "label": "polish 2k",
+        "value": "polish_2k",
+      },
+      {
+        "label": "polish 5k",
+        "value": "polish_5k",
+      },
+      {
+        "label": "polish 10k",
+        "value": "polish_10k",
+      },
+      {
+        "label": "polish 20k",
+        "value": "polish_20k",
+      },
+      {
+        "label": "polish 40k",
+        "value": "polish_40k",
+      },
+      {
+        "label": "polish 200k",
+        "value": "polish_200k",
+      },
+      {
+        "label": "czech",
+        "value": "czech",
+      },
+      {
+        "label": "czech 1k",
+        "value": "czech_1k",
+      },
+      {
+        "label": "czech 10k",
+        "value": "czech_10k",
+      },
+      {
+        "label": "slovak",
+        "value": "slovak",
+      },
+      {
+        "label": "slovak 1k",
+        "value": "slovak_1k",
+      },
+      {
+        "label": "slovak 10k",
+        "value": "slovak_10k",
+      },
+      {
+        "label": "slovenian",
+        "value": "slovenian",
+      },
+      {
+        "label": "slovenian 1k",
+        "value": "slovenian_1k",
+      },
+      {
+        "label": "slovenian 5k",
+        "value": "slovenian_5k",
+      },
+      {
+        "label": "croatian",
+        "value": "croatian",
+      },
+      {
+        "label": "croatian 1k",
+        "value": "croatian_1k",
+      },
+      {
+        "label": "dutch",
+        "value": "dutch",
+      },
+      {
+        "label": "dutch 1k",
+        "value": "dutch_1k",
+      },
+      {
+        "label": "dutch 10k",
+        "value": "dutch_10k",
+      },
+      {
+        "label": "filipino",
+        "value": "filipino",
+      },
+      {
+        "label": "filipino 1k",
+        "value": "filipino_1k",
+      },
+      {
+        "label": "danish",
+        "value": "danish",
+      },
+      {
+        "label": "danish 1k",
+        "value": "danish_1k",
+      },
+      {
+        "label": "danish 10k",
+        "value": "danish_10k",
+      },
+      {
+        "label": "hungarian",
+        "value": "hungarian",
+      },
+      {
+        "label": "hungarian 1k",
+        "value": "hungarian_1k",
+      },
+      {
+        "label": "hungarian 2k",
+        "value": "hungarian_2k",
+      },
+      {
+        "label": "norwegian bokmal",
+        "value": "norwegian_bokmal",
+      },
+      {
+        "label": "norwegian bokmal 1k",
+        "value": "norwegian_bokmal_1k",
+      },
+      {
+        "label": "norwegian bokmal 5k",
+        "value": "norwegian_bokmal_5k",
+      },
+      {
+        "label": "norwegian bokmal 10k",
+        "value": "norwegian_bokmal_10k",
+      },
+      {
+        "label": "norwegian bokmal 150k",
+        "value": "norwegian_bokmal_150k",
+      },
+      {
+        "label": "norwegian bokmal 600k",
+        "value": "norwegian_bokmal_600k",
+      },
+      {
+        "label": "norwegian nynorsk",
+        "value": "norwegian_nynorsk",
+      },
+      {
+        "label": "norwegian nynorsk 1k",
+        "value": "norwegian_nynorsk_1k",
+      },
+      {
+        "label": "norwegian nynorsk 5k",
+        "value": "norwegian_nynorsk_5k",
+      },
+      {
+        "label": "norwegian nynorsk 10k",
+        "value": "norwegian_nynorsk_10k",
+      },
+      {
+        "label": "norwegian nynorsk 100k",
+        "value": "norwegian_nynorsk_100k",
+      },
+      {
+        "label": "norwegian nynorsk 400k",
+        "value": "norwegian_nynorsk_400k",
+      },
+      {
+        "label": "hebrew",
+        "value": "hebrew",
+      },
+      {
+        "label": "hebrew 1k",
+        "value": "hebrew_1k",
+      },
+      {
+        "label": "hebrew 5k",
+        "value": "hebrew_5k",
+      },
+      {
+        "label": "hebrew 10k",
+        "value": "hebrew_10k",
+      },
+      {
+        "label": "icelandic",
+        "value": "icelandic",
+      },
+      {
+        "label": "icelandic 1k",
+        "value": "icelandic_1k",
+      },
+      {
+        "label": "romanian",
+        "value": "romanian",
+      },
+      {
+        "label": "romanian 1k",
+        "value": "romanian_1k",
+      },
+      {
+        "label": "romanian 5k",
+        "value": "romanian_5k",
+      },
+      {
+        "label": "romanian 10k",
+        "value": "romanian_10k",
+      },
+      {
+        "label": "romanian 25k",
+        "value": "romanian_25k",
+      },
+      {
+        "label": "romanian 50k",
+        "value": "romanian_50k",
+      },
+      {
+        "label": "romanian 100k",
+        "value": "romanian_100k",
+      },
+      {
+        "label": "romanian 200k",
+        "value": "romanian_200k",
+      },
+      {
+        "label": "lorem ipsum",
+        "value": "lorem_ipsum",
+      },
+      {
+        "label": "finnish",
+        "value": "finnish",
+      },
+      {
+        "label": "finnish 1k",
+        "value": "finnish_1k",
+      },
+      {
+        "label": "finnish 10k",
+        "value": "finnish_10k",
+      },
+      {
+        "label": "estonian",
+        "value": "estonian",
+      },
+      {
+        "label": "estonian 1k",
+        "value": "estonian_1k",
+      },
+      {
+        "label": "estonian 5k",
+        "value": "estonian_5k",
+      },
+      {
+        "label": "estonian 10k",
+        "value": "estonian_10k",
+      },
+      {
+        "label": "udmurt",
+        "value": "udmurt",
+      },
+      {
+        "label": "welsh",
+        "value": "welsh",
+      },
+      {
+        "label": "welsh 1k",
+        "value": "welsh_1k",
+      },
+      {
+        "label": "persian",
+        "value": "persian",
+      },
+      {
+        "label": "persian 1k",
+        "value": "persian_1k",
+      },
+      {
+        "label": "persian 5k",
+        "value": "persian_5k",
+      },
+      {
+        "label": "persian 20k",
+        "value": "persian_20k",
+      },
+      {
+        "label": "persian romanized",
+        "value": "persian_romanized",
+      },
+      {
+        "label": "marathi",
+        "value": "marathi",
+      },
+      {
+        "label": "kazakh",
+        "value": "kazakh",
+      },
+      {
+        "label": "kazakh 1k",
+        "value": "kazakh_1k",
+      },
+      {
+        "label": "vietnamese",
+        "value": "vietnamese",
+      },
+      {
+        "label": "vietnamese 1k",
+        "value": "vietnamese_1k",
+      },
+      {
+        "label": "vietnamese 5k",
+        "value": "vietnamese_5k",
+      },
+      {
+        "label": "jyutping",
+        "value": "jyutping",
+      },
+      {
+        "label": "pinyin",
+        "value": "pinyin",
+      },
+      {
+        "label": "pinyin 1k",
+        "value": "pinyin_1k",
+      },
+      {
+        "label": "pinyin 10k",
+        "value": "pinyin_10k",
+      },
+      {
+        "label": "hausa",
+        "value": "hausa",
+      },
+      {
+        "label": "hausa 1k",
+        "value": "hausa_1k",
+      },
+      {
+        "label": "bemba",
+        "value": "bemba",
+      },
+      {
+        "label": "bemba 1k",
+        "value": "bemba_1k",
+      },
+      {
+        "label": "bemba 10k",
+        "value": "bemba_10k",
+      },
+      {
+        "label": "swedish",
+        "value": "swedish",
+      },
+      {
+        "label": "swedish 1k",
+        "value": "swedish_1k",
+      },
+      {
+        "label": "swedish diacritics",
+        "value": "swedish_diacritics",
+      },
+      {
+        "label": "serbian latin",
+        "value": "serbian_latin",
+      },
+      {
+        "label": "serbian latin 10k",
+        "value": "serbian_latin_10k",
+      },
+      {
+        "label": "serbian",
+        "value": "serbian",
+      },
+      {
+        "label": "serbian 10k",
+        "value": "serbian_10k",
+      },
+      {
+        "label": "yoruba 1k",
+        "value": "yoruba_1k",
+      },
+      {
+        "label": "swahili 1k",
+        "value": "swahili_1k",
+      },
+      {
+        "label": "maori 1k",
+        "value": "maori_1k",
+      },
+      {
+        "label": "catalan",
+        "value": "catalan",
+      },
+      {
+        "label": "catalan 1k",
+        "value": "catalan_1k",
+      },
+      {
+        "label": "lojban gismu",
+        "value": "lojban_gismu",
+      },
+      {
+        "label": "lojban cmavo",
+        "value": "lojban_cmavo",
+      },
+      {
+        "label": "lithuanian",
+        "value": "lithuanian",
+      },
+      {
+        "label": "lithuanian 1k",
+        "value": "lithuanian_1k",
+      },
+      {
+        "label": "lithuanian 3k",
+        "value": "lithuanian_3k",
+      },
+      {
+        "label": "bulgarian",
+        "value": "bulgarian",
+      },
+      {
+        "label": "bulgarian 1k",
+        "value": "bulgarian_1k",
+      },
+      {
+        "label": "bulgarian latin",
+        "value": "bulgarian_latin",
+      },
+      {
+        "label": "bulgarian latin 1k",
+        "value": "bulgarian_latin_1k",
+      },
+      {
+        "label": "bangla",
+        "value": "bangla",
+      },
+      {
+        "label": "bangla letters",
+        "value": "bangla_letters",
+      },
+      {
+        "label": "bangla 10k",
+        "value": "bangla_10k",
+      },
+      {
+        "label": "bosnian",
+        "value": "bosnian",
+      },
+      {
+        "label": "bosnian 4k",
+        "value": "bosnian_4k",
+      },
+      {
+        "label": "toki pona",
+        "value": "toki_pona",
+      },
+      {
+        "label": "toki pona ku suli",
+        "value": "toki_pona_ku_suli",
+      },
+      {
+        "label": "toki pona ku lili",
+        "value": "toki_pona_ku_lili",
+      },
+      {
+        "label": "esperanto",
+        "value": "esperanto",
+      },
+      {
+        "label": "esperanto 1k",
+        "value": "esperanto_1k",
+      },
+      {
+        "label": "esperanto 10k",
+        "value": "esperanto_10k",
+      },
+      {
+        "label": "esperanto 25k",
+        "value": "esperanto_25k",
+      },
+      {
+        "label": "esperanto 36k",
+        "value": "esperanto_36k",
+      },
+      {
+        "label": "esperanto x sistemo",
+        "value": "esperanto_x_sistemo",
+      },
+      {
+        "label": "esperanto x sistemo 1k",
+        "value": "esperanto_x_sistemo_1k",
+      },
+      {
+        "label": "esperanto x sistemo 10k",
+        "value": "esperanto_x_sistemo_10k",
+      },
+      {
+        "label": "esperanto x sistemo 25k",
+        "value": "esperanto_x_sistemo_25k",
+      },
+      {
+        "label": "esperanto x sistemo 36k",
+        "value": "esperanto_x_sistemo_36k",
+      },
+      {
+        "label": "esperanto h sistemo",
+        "value": "esperanto_h_sistemo",
+      },
+      {
+        "label": "esperanto h sistemo 1k",
+        "value": "esperanto_h_sistemo_1k",
+      },
+      {
+        "label": "esperanto h sistemo 10k",
+        "value": "esperanto_h_sistemo_10k",
+      },
+      {
+        "label": "esperanto h sistemo 25k",
+        "value": "esperanto_h_sistemo_25k",
+      },
+      {
+        "label": "esperanto h sistemo 36k",
+        "value": "esperanto_h_sistemo_36k",
+      },
+      {
+        "label": "kyrgyz",
+        "value": "kyrgyz",
+      },
+      {
+        "label": "kyrgyz 1k",
+        "value": "kyrgyz_1k",
+      },
+      {
+        "label": "urdu",
+        "value": "urdu",
+      },
+      {
+        "label": "urdu 1k",
+        "value": "urdu_1k",
+      },
+      {
+        "label": "urdu 5k",
+        "value": "urdu_5k",
+      },
+      {
+        "label": "urdu roman",
+        "value": "urdu_roman",
+      },
+      {
+        "label": "urdish",
+        "value": "urdish",
+      },
+      {
+        "label": "albanian",
+        "value": "albanian",
+      },
+      {
+        "label": "albanian 1k",
+        "value": "albanian_1k",
+      },
+      {
+        "label": "shona",
+        "value": "shona",
+      },
+      {
+        "label": "shona 1k",
+        "value": "shona_1k",
+      },
+      {
+        "label": "armenian",
+        "value": "armenian",
+      },
+      {
+        "label": "armenian 1k",
+        "value": "armenian_1k",
+      },
+      {
+        "label": "armenian western",
+        "value": "armenian_western",
+      },
+      {
+        "label": "armenian western 1k",
+        "value": "armenian_western_1k",
+      },
+      {
+        "label": "myanmar burmese",
+        "value": "myanmar_burmese",
+      },
+      {
+        "label": "japanese hiragana",
+        "value": "japanese_hiragana",
+      },
+      {
+        "label": "japanese katakana",
+        "value": "japanese_katakana",
+      },
+      {
+        "label": "japanese romaji",
+        "value": "japanese_romaji",
+      },
+      {
+        "label": "japanese romaji 1k",
+        "value": "japanese_romaji_1k",
+      },
+      {
+        "label": "sinhala",
+        "value": "sinhala",
+      },
+      {
+        "label": "latvian",
+        "value": "latvian",
+      },
+      {
+        "label": "latvian 1k",
+        "value": "latvian_1k",
+      },
+      {
+        "label": "maltese",
+        "value": "maltese",
+      },
+      {
+        "label": "maltese 1k",
+        "value": "maltese_1k",
+      },
+      {
+        "label": "twitch emotes",
+        "value": "twitch_emotes",
+      },
+      {
+        "label": "git",
+        "value": "git",
+      },
+      {
+        "label": "pig latin",
+        "value": "pig_latin",
+      },
+      {
+        "label": "hindi",
+        "value": "hindi",
+      },
+      {
+        "label": "hindi 1k",
+        "value": "hindi_1k",
+      },
+      {
+        "label": "hinglish",
+        "value": "hinglish",
+      },
+      {
+        "label": "gujarati",
+        "value": "gujarati",
+      },
+      {
+        "label": "gujarati 1k",
+        "value": "gujarati_1k",
+      },
+      {
+        "label": "macedonian",
+        "value": "macedonian",
+      },
+      {
+        "label": "macedonian 1k",
+        "value": "macedonian_1k",
+      },
+      {
+        "label": "macedonian 10k",
+        "value": "macedonian_10k",
+      },
+      {
+        "label": "macedonian 75k",
+        "value": "macedonian_75k",
+      },
+      {
+        "label": "belarusian",
+        "value": "belarusian",
+      },
+      {
+        "label": "belarusian 1k",
+        "value": "belarusian_1k",
+      },
+      {
+        "label": "belarusian 5k",
+        "value": "belarusian_5k",
+      },
+      {
+        "label": "belarusian 10k",
+        "value": "belarusian_10k",
+      },
+      {
+        "label": "belarusian 25k",
+        "value": "belarusian_25k",
+      },
+      {
+        "label": "belarusian 50k",
+        "value": "belarusian_50k",
+      },
+      {
+        "label": "belarusian 100k",
+        "value": "belarusian_100k",
+      },
+      {
+        "label": "belarusian lacinka",
+        "value": "belarusian_lacinka",
+      },
+      {
+        "label": "belarusian lacinka 1k",
+        "value": "belarusian_lacinka_1k",
+      },
+      {
+        "label": "tatar",
+        "value": "tatar",
+      },
+      {
+        "label": "tatar 1k",
+        "value": "tatar_1k",
+      },
+      {
+        "label": "tatar 5k",
+        "value": "tatar_5k",
+      },
+      {
+        "label": "tatar 9k",
+        "value": "tatar_9k",
+      },
+      {
+        "label": "tatar crimean",
+        "value": "tatar_crimean",
+      },
+      {
+        "label": "tatar crimean 1k",
+        "value": "tatar_crimean_1k",
+      },
+      {
+        "label": "tatar crimean 5k",
+        "value": "tatar_crimean_5k",
+      },
+      {
+        "label": "tatar crimean 10k",
+        "value": "tatar_crimean_10k",
+      },
+      {
+        "label": "tatar crimean 15k",
+        "value": "tatar_crimean_15k",
+      },
+      {
+        "label": "tatar crimean cyrillic",
+        "value": "tatar_crimean_cyrillic",
+      },
+      {
+        "label": "tatar crimean cyrillic 1k",
+        "value": "tatar_crimean_cyrillic_1k",
+      },
+      {
+        "label": "tatar crimean cyrillic 5k",
+        "value": "tatar_crimean_cyrillic_5k",
+      },
+      {
+        "label": "tatar crimean cyrillic 10k",
+        "value": "tatar_crimean_cyrillic_10k",
+      },
+      {
+        "label": "tatar crimean cyrillic 15k",
+        "value": "tatar_crimean_cyrillic_15k",
+      },
+      {
+        "label": "uzbek",
+        "value": "uzbek",
+      },
+      {
+        "label": "uzbek 1k",
+        "value": "uzbek_1k",
+      },
+      {
+        "label": "uzbek 70k",
+        "value": "uzbek_70k",
+      },
+      {
+        "label": "malayalam",
+        "value": "malayalam",
+      },
+      {
+        "label": "amharic",
+        "value": "amharic",
+      },
+      {
+        "label": "amharic 1k",
+        "value": "amharic_1k",
+      },
+      {
+        "label": "amharic 5k",
+        "value": "amharic_5k",
+      },
+      {
+        "label": "oromo",
+        "value": "oromo",
+      },
+      {
+        "label": "oromo 1k",
+        "value": "oromo_1k",
+      },
+      {
+        "label": "oromo 5k",
+        "value": "oromo_5k",
+      },
+      {
+        "label": "wordle",
+        "value": "wordle",
+      },
+      {
+        "label": "league of legends",
+        "value": "league_of_legends",
+      },
+      {
+        "label": "wordle 1k",
+        "value": "wordle_1k",
+      },
+      {
+        "label": "typing of the dead",
+        "value": "typing_of_the_dead",
+      },
+      {
+        "label": "yiddish",
+        "value": "yiddish",
+      },
+      {
+        "label": "frisian",
+        "value": "frisian",
+      },
+      {
+        "label": "frisian 1k",
+        "value": "frisian_1k",
+      },
+      {
+        "label": "pashto",
+        "value": "pashto",
+      },
+      {
+        "label": "euskera",
+        "value": "euskera",
+      },
+      {
+        "label": "klingon",
+        "value": "klingon",
+      },
+      {
+        "label": "klingon 1k",
+        "value": "klingon_1k",
+      },
+      {
+        "label": "quenya",
+        "value": "quenya",
+      },
+      {
+        "label": "occitan",
+        "value": "occitan",
+      },
+      {
+        "label": "occitan 1k",
+        "value": "occitan_1k",
+      },
+      {
+        "label": "occitan 2k",
+        "value": "occitan_2k",
+      },
+      {
+        "label": "occitan 5k",
+        "value": "occitan_5k",
+      },
+      {
+        "label": "occitan 10k",
+        "value": "occitan_10k",
+      },
+      {
+        "label": "bashkir",
+        "value": "bashkir",
+      },
+      {
+        "label": "zulu",
+        "value": "zulu",
+      },
+      {
+        "label": "kabyle",
+        "value": "kabyle",
+      },
+      {
+        "label": "kabyle 1k",
+        "value": "kabyle_1k",
+      },
+      {
+        "label": "kabyle 2k",
+        "value": "kabyle_2k",
+      },
+      {
+        "label": "kabyle 5k",
+        "value": "kabyle_5k",
+      },
+      {
+        "label": "kabyle 10k",
+        "value": "kabyle_10k",
+      },
+      {
+        "label": "hawaiian",
+        "value": "hawaiian",
+      },
+      {
+        "label": "hawaiian 1k",
+        "value": "hawaiian_1k",
+      },
+      {
+        "label": "code python",
+        "value": "code_python",
+      },
+      {
+        "label": "code python 1k",
+        "value": "code_python_1k",
+      },
+      {
+        "label": "code python 2k",
+        "value": "code_python_2k",
+      },
+      {
+        "label": "code python 5k",
+        "value": "code_python_5k",
+      },
+      {
+        "label": "code fsharp",
+        "value": "code_fsharp",
+      },
+      {
+        "label": "code c",
+        "value": "code_c",
+      },
+      {
+        "label": "code csharp",
+        "value": "code_csharp",
+      },
+      {
+        "label": "code css",
+        "value": "code_css",
+      },
+      {
+        "label": "code c++",
+        "value": "code_c++",
+      },
+      {
+        "label": "code dart",
+        "value": "code_dart",
+      },
+      {
+        "label": "code brainfck",
+        "value": "code_brainfck",
+      },
+      {
+        "label": "code javascript",
+        "value": "code_javascript",
+      },
+      {
+        "label": "code javascript 1k",
+        "value": "code_javascript_1k",
+      },
+      {
+        "label": "code javascript react",
+        "value": "code_javascript_react",
+      },
+      {
+        "label": "code jule",
+        "value": "code_jule",
+      },
+      {
+        "label": "code julia",
+        "value": "code_julia",
+      },
+      {
+        "label": "code haskell",
+        "value": "code_haskell",
+      },
+      {
+        "label": "code html",
+        "value": "code_html",
+      },
+      {
+        "label": "code nim",
+        "value": "code_nim",
+      },
+      {
+        "label": "code nix",
+        "value": "code_nix",
+      },
+      {
+        "label": "code pascal",
+        "value": "code_pascal",
+      },
+      {
+        "label": "code java",
+        "value": "code_java",
+      },
+      {
+        "label": "code kotlin",
+        "value": "code_kotlin",
+      },
+      {
+        "label": "code go",
+        "value": "code_go",
+      },
+      {
+        "label": "code rockstar",
+        "value": "code_rockstar",
+      },
+      {
+        "label": "code rust",
+        "value": "code_rust",
+      },
+      {
+        "label": "code ruby",
+        "value": "code_ruby",
+      },
+      {
+        "label": "code r",
+        "value": "code_r",
+      },
+      {
+        "label": "code r 2k",
+        "value": "code_r_2k",
+      },
+      {
+        "label": "code swift",
+        "value": "code_swift",
+      },
+      {
+        "label": "code scala",
+        "value": "code_scala",
+      },
+      {
+        "label": "code bash",
+        "value": "code_bash",
+      },
+      {
+        "label": "code powershell",
+        "value": "code_powershell",
+      },
+      {
+        "label": "code lua",
+        "value": "code_lua",
+      },
+      {
+        "label": "code luau",
+        "value": "code_luau",
+      },
+      {
+        "label": "code latex",
+        "value": "code_latex",
+      },
+      {
+        "label": "code typst",
+        "value": "code_typst",
+      },
+      {
+        "label": "code matlab",
+        "value": "code_matlab",
+      },
+      {
+        "label": "code sql",
+        "value": "code_sql",
+      },
+      {
+        "label": "code perl",
+        "value": "code_perl",
+      },
+      {
+        "label": "code php",
+        "value": "code_php",
+      },
+      {
+        "label": "code vim",
+        "value": "code_vim",
+      },
+      {
+        "label": "code vimscript",
+        "value": "code_vimscript",
+      },
+      {
+        "label": "code opencl",
+        "value": "code_opencl",
+      },
+      {
+        "label": "code visual basic",
+        "value": "code_visual_basic",
+      },
+      {
+        "label": "code arduino",
+        "value": "code_arduino",
+      },
+      {
+        "label": "code systemverilog",
+        "value": "code_systemverilog",
+      },
+      {
+        "label": "code elixir",
+        "value": "code_elixir",
+      },
+      {
+        "label": "code gleam",
+        "value": "code_gleam",
+      },
+      {
+        "label": "code zig",
+        "value": "code_zig",
+      },
+      {
+        "label": "code gdscript",
+        "value": "code_gdscript",
+      },
+      {
+        "label": "code gdscript 2",
+        "value": "code_gdscript_2",
+      },
+      {
+        "label": "code assembly",
+        "value": "code_assembly",
+      },
+      {
+        "label": "code v",
+        "value": "code_v",
+      },
+      {
+        "label": "code ook",
+        "value": "code_ook",
+      },
+      {
+        "label": "code typescript",
+        "value": "code_typescript",
+      },
+      {
+        "label": "code ocaml",
+        "value": "code_ocaml",
+      },
+      {
+        "label": "code odin",
+        "value": "code_odin",
+      },
+      {
+        "label": "xhosa",
+        "value": "xhosa",
+      },
+      {
+        "label": "xhosa 3k",
+        "value": "xhosa_3k",
+      },
+      {
+        "label": "tibetan",
+        "value": "tibetan",
+      },
+      {
+        "label": "tibetan 1k",
+        "value": "tibetan_1k",
+      },
+      {
+        "label": "code cobol",
+        "value": "code_cobol",
+      },
+      {
+        "label": "code clojure",
+        "value": "code_clojure",
+      },
+      {
+        "label": "code common lisp",
+        "value": "code_common_lisp",
+      },
+      {
+        "label": "code erlang",
+        "value": "code_erlang",
+      },
+      {
+        "label": "docker file",
+        "value": "docker_file",
+      },
+      {
+        "label": "code fortran",
+        "value": "code_fortran",
+      },
+      {
+        "label": "viossa",
+        "value": "viossa",
+      },
+      {
+        "label": "viossa njutro",
+        "value": "viossa_njutro",
+      },
+      {
+        "label": "code abap",
+        "value": "code_abap",
+      },
+      {
+        "label": "code abap 1k",
+        "value": "code_abap_1k",
+      },
+      {
+        "label": "code yoptascript",
+        "value": "code_yoptascript",
+      },
+      {
+        "label": "code cuda",
+        "value": "code_cuda",
+      },
+      {
+        "label": "kinyarwanda",
+        "value": "kinyarwanda",
+      },
+      {
+        "label": "pokemon 1k",
+        "value": "pokemon_1k",
+      },
+      {
+        "label": "kokanu",
+        "value": "kokanu",
+      },
+      {
+        "label": "likanu",
+        "value": "likanu",
+      },
+      {
+        "label": "code vhdl",
+        "value": "code_vhdl",
+      },
+      {
+        "label": "lao",
+        "value": "lao",
+      },
+      {
+        "label": "code 6502 assembly",
+        "value": "code_6502_assembly",
+      },
+      {
+        "label": "english legal",
+        "value": "english_legal",
+      },
+      {
+        "label": "sindhi",
+        "value": "sindhi",
+      },
+    ],
+    "title": "Language...",
+  },
+  "layout": {
+    "options": [
+      {
+        "label": "off",
+        "value": "default",
+      },
+      {
+        "label": "qwerty",
+        "value": "qwerty",
+      },
+      {
+        "label": "dvorak",
+        "value": "dvorak",
+      },
+      {
+        "label": "colemak",
+        "value": "colemak",
+      },
+      {
+        "label": "colemak angle",
+        "value": "colemak_angle",
+      },
+      {
+        "label": "colemak wide",
+        "value": "colemak_wide",
+      },
+      {
+        "label": "colemak dh",
+        "value": "colemak_dh",
+      },
+      {
+        "label": "colemak dh iso",
+        "value": "colemak_dh_iso",
+      },
+      {
+        "label": "colemak dh wide",
+        "value": "colemak_dh_wide",
+      },
+      {
+        "label": "colemak dh iso wide",
+        "value": "colemak_dh_iso_wide",
+      },
+      {
+        "label": "colemak dhk",
+        "value": "colemak_dhk",
+      },
+      {
+        "label": "colemak dh matrix",
+        "value": "colemak_dh_matrix",
+      },
+      {
+        "label": "colemak dhk iso",
+        "value": "colemak_dhk_iso",
+      },
+      {
+        "label": "colemak dhv",
+        "value": "colemak_dhv",
+      },
+      {
+        "label": "qwertz",
+        "value": "qwertz",
+      },
+      {
+        "label": "swiss german",
+        "value": "swiss_german",
+      },
+      {
+        "label": "swiss french",
+        "value": "swiss_french",
+      },
+      {
+        "label": "workman",
+        "value": "workman",
+      },
+      {
+        "label": "prog workman",
+        "value": "prog_workman",
+      },
+      {
+        "label": "turkish q",
+        "value": "turkish_q",
+      },
+      {
+        "label": "turkish f",
+        "value": "turkish_f",
+      },
+      {
+        "label": "turkish e",
+        "value": "turkish_e",
+      },
+      {
+        "label": "MTGAP ASRT",
+        "value": "MTGAP_ASRT",
+      },
+      {
+        "label": "norman",
+        "value": "norman",
+      },
+      {
+        "label": "halmak",
+        "value": "halmak",
+      },
+      {
+        "label": "QGMLWB",
+        "value": "QGMLWB",
+      },
+      {
+        "label": "QGMLWY",
+        "value": "QGMLWY",
+      },
+      {
+        "label": "qwpr",
+        "value": "qwpr",
+      },
+      {
+        "label": "uk qwerty",
+        "value": "uk_qwerty",
+      },
+      {
+        "label": "spanish qwerty",
+        "value": "spanish_qwerty",
+      },
+      {
+        "label": "italian qwerty",
+        "value": "italian_qwerty",
+      },
+      {
+        "label": "latam qwerty",
+        "value": "latam_qwerty",
+      },
+      {
+        "label": "prog dvorak",
+        "value": "prog_dvorak",
+      },
+      {
+        "label": "prog dvorak prime",
+        "value": "prog_dvorak_prime",
+      },
+      {
+        "label": "german dvorak",
+        "value": "german_dvorak",
+      },
+      {
+        "label": "german dvorak imp",
+        "value": "german_dvorak_imp",
+      },
+      {
+        "label": "spanish dvorak",
+        "value": "spanish_dvorak",
+      },
+      {
+        "label": "swedish colemak",
+        "value": "swedish_colemak",
+      },
+      {
+        "label": "swedish dvorak",
+        "value": "swedish_dvorak",
+      },
+      {
+        "label": "dvorak L",
+        "value": "dvorak_L",
+      },
+      {
+        "label": "dvorak R",
+        "value": "dvorak_R",
+      },
+      {
+        "label": "dvorak fr",
+        "value": "dvorak_fr",
+      },
+      {
+        "label": "azerty",
+        "value": "azerty",
+      },
+      {
+        "label": "azerty AFNOR",
+        "value": "azerty_AFNOR",
+      },
+      {
+        "label": "bepo",
+        "value": "bepo",
+      },
+      {
+        "label": "bepo AFNOR",
+        "value": "bepo_AFNOR",
+      },
+      {
+        "label": "alpha",
+        "value": "alpha",
+      },
+      {
+        "label": "handsdown",
+        "value": "handsdown",
+      },
+      {
+        "label": "hungarian",
+        "value": "hungarian",
+      },
+      {
+        "label": "handsdown alt",
+        "value": "handsdown_alt",
+      },
+      {
+        "label": "handsdown promethium",
+        "value": "handsdown_promethium",
+      },
+      {
+        "label": "handsdown neu",
+        "value": "handsdown_neu",
+      },
+      {
+        "label": "handsdown neu inverted",
+        "value": "handsdown_neu_inverted",
+      },
+      {
+        "label": "typehack",
+        "value": "typehack",
+      },
+      {
+        "label": "MTGAP",
+        "value": "MTGAP",
+      },
+      {
+        "label": "MTGAP full",
+        "value": "MTGAP_full",
+      },
+      {
+        "label": "ina",
+        "value": "ina",
+      },
+      {
+        "label": "soul",
+        "value": "soul",
+      },
+      {
+        "label": "niro",
+        "value": "niro",
+      },
+      {
+        "label": "mongolian",
+        "value": "mongolian",
+      },
+      {
+        "label": "JCUKEN",
+        "value": "JCUKEN",
+      },
+      {
+        "label": "statica 3x5",
+        "value": "statica_3x5",
+      },
+      {
+        "label": "Vestnik",
+        "value": "Vestnik",
+      },
+      {
+        "label": "Diktor",
+        "value": "Diktor",
+      },
+      {
+        "label": "Diktor VoronovMod",
+        "value": "Diktor_VoronovMod",
+      },
+      {
+        "label": "Redaktor",
+        "value": "Redaktor",
+      },
+      {
+        "label": "JUIYAF",
+        "value": "JUIYAF",
+      },
+      {
+        "label": "Zubachev",
+        "value": "Zubachev",
+      },
+      {
+        "label": "ISRT",
+        "value": "ISRT",
+      },
+      {
+        "label": "ISRT Angle",
+        "value": "ISRT_Angle",
+      },
+      {
+        "label": "colemak Qix",
+        "value": "colemak_Qix",
+      },
+      {
+        "label": "colemak Qi",
+        "value": "colemak_Qi",
+      },
+      {
+        "label": "colemaQ",
+        "value": "colemaQ",
+      },
+      {
+        "label": "colemaQ F",
+        "value": "colemaQ_F",
+      },
+      {
+        "label": "engram",
+        "value": "engram",
+      },
+      {
+        "label": "engrammer",
+        "value": "engrammer",
+      },
+      {
+        "label": "semimak",
+        "value": "semimak",
+      },
+      {
+        "label": "semimak jq",
+        "value": "semimak_jq",
+      },
+      {
+        "label": "semimak jqc",
+        "value": "semimak_jqc",
+      },
+      {
+        "label": "canary",
+        "value": "canary",
+      },
+      {
+        "label": "canary matrix",
+        "value": "canary_matrix",
+      },
+      {
+        "label": "japanese hiragana",
+        "value": "japanese_hiragana",
+      },
+      {
+        "label": "boo",
+        "value": "boo",
+      },
+      {
+        "label": "boo mangle",
+        "value": "boo_mangle",
+      },
+      {
+        "label": "APT",
+        "value": "APT",
+      },
+      {
+        "label": "APT angle",
+        "value": "APT_angle",
+      },
+      {
+        "label": "middlemak",
+        "value": "middlemak",
+      },
+      {
+        "label": "middlemak-nh",
+        "value": "middlemak-nh",
+      },
+      {
+        "label": "hindi inscript",
+        "value": "hindi_inscript",
+      },
+      {
+        "label": "thai kedmanee",
+        "value": "thai_kedmanee",
+      },
+      {
+        "label": "thai pattachote",
+        "value": "thai_pattachote",
+      },
+      {
+        "label": "thai manoonchai",
+        "value": "thai_manoonchai",
+      },
+      {
+        "label": "persian standard",
+        "value": "persian_standard",
+      },
+      {
+        "label": "persian farsi",
+        "value": "persian_farsi",
+      },
+      {
+        "label": "arabic 101",
+        "value": "arabic_101",
+      },
+      {
+        "label": "arabic 102",
+        "value": "arabic_102",
+      },
+      {
+        "label": "arabic mac",
+        "value": "arabic_mac",
+      },
+      {
+        "label": "hebrew",
+        "value": "hebrew",
+      },
+      {
+        "label": "urdu phonetic",
+        "value": "urdu_phonetic",
+      },
+      {
+        "label": "brasileiro nativo",
+        "value": "brasileiro_nativo",
+      },
+      {
+        "label": "Foalmak",
+        "value": "Foalmak",
+      },
+      {
+        "label": "quartz",
+        "value": "quartz",
+      },
+      {
+        "label": "arensito",
+        "value": "arensito",
+      },
+      {
+        "label": "ARTS",
+        "value": "ARTS",
+      },
+      {
+        "label": "beakl 15",
+        "value": "beakl_15",
+      },
+      {
+        "label": "beakl 19",
+        "value": "beakl_19",
+      },
+      {
+        "label": "beakl 19 bis",
+        "value": "beakl_19_bis",
+      },
+      {
+        "label": "capewell dvorak",
+        "value": "capewell_dvorak",
+      },
+      {
+        "label": "colman",
+        "value": "colman",
+      },
+      {
+        "label": "heart",
+        "value": "heart",
+      },
+      {
+        "label": "klauser",
+        "value": "klauser",
+      },
+      {
+        "label": "oneproduct",
+        "value": "oneproduct",
+      },
+      {
+        "label": "pine",
+        "value": "pine",
+      },
+      {
+        "label": "pine v4",
+        "value": "pine_v4",
+      },
+      {
+        "label": "real",
+        "value": "real",
+      },
+      {
+        "label": "rolll",
+        "value": "rolll",
+      },
+      {
+        "label": "stndc",
+        "value": "stndc",
+      },
+      {
+        "label": "three",
+        "value": "three",
+      },
+      {
+        "label": "uciea",
+        "value": "uciea",
+      },
+      {
+        "label": "asset",
+        "value": "asset",
+      },
+      {
+        "label": "dwarf",
+        "value": "dwarf",
+      },
+      {
+        "label": "flaw",
+        "value": "flaw",
+      },
+      {
+        "label": "whorf",
+        "value": "whorf",
+      },
+      {
+        "label": "whorf6",
+        "value": "whorf6",
+      },
+      {
+        "label": "whorfmax",
+        "value": "whorfmax",
+      },
+      {
+        "label": "whorfmax ortho",
+        "value": "whorfmax_ortho",
+      },
+      {
+        "label": "sertain",
+        "value": "sertain",
+      },
+      {
+        "label": "ctgap",
+        "value": "ctgap",
+      },
+      {
+        "label": "octa8",
+        "value": "octa8",
+      },
+      {
+        "label": "polish programmers",
+        "value": "polish_programmers",
+      },
+      {
+        "label": "bulgarian",
+        "value": "bulgarian",
+      },
+      {
+        "label": "bulgarian phonetic traditional",
+        "value": "bulgarian_phonetic_traditional",
+      },
+      {
+        "label": "belarusian",
+        "value": "belarusian",
+      },
+      {
+        "label": "ukrainian",
+        "value": "ukrainian",
+      },
+      {
+        "label": "russian",
+        "value": "russian",
+      },
+      {
+        "label": "neo",
+        "value": "neo",
+      },
+      {
+        "label": "bone",
+        "value": "bone",
+      },
+      {
+        "label": "AdNW",
+        "value": "AdNW",
+      },
+      {
+        "label": "mine",
+        "value": "mine",
+      },
+      {
+        "label": "noted",
+        "value": "noted",
+      },
+      {
+        "label": "koy",
+        "value": "koy",
+      },
+      {
+        "label": "3l",
+        "value": "3l",
+      },
+      {
+        "label": "korean",
+        "value": "korean",
+      },
+      {
+        "label": "ekverto b",
+        "value": "ekverto_b",
+      },
+      {
+        "label": "nerps",
+        "value": "nerps",
+      },
+      {
+        "label": "sturdy angle ansi",
+        "value": "sturdy_angle_ansi",
+      },
+      {
+        "label": "sturdy angle iso",
+        "value": "sturdy_angle_iso",
+      },
+      {
+        "label": "sturdy ortho",
+        "value": "sturdy_ortho",
+      },
+      {
+        "label": "ABNT2",
+        "value": "ABNT2",
+      },
+      {
+        "label": "HiYou",
+        "value": "HiYou",
+      },
+      {
+        "label": "xenia",
+        "value": "xenia",
+      },
+      {
+        "label": "xenia alt",
+        "value": "xenia_alt",
+      },
+      {
+        "label": "burmese",
+        "value": "burmese",
+      },
+      {
+        "label": "gallium",
+        "value": "gallium",
+      },
+      {
+        "label": "gallium angle",
+        "value": "gallium_angle",
+      },
+      {
+        "label": "gallium v2",
+        "value": "gallium_v2",
+      },
+      {
+        "label": "gallium v2 matrix",
+        "value": "gallium_v2_matrix",
+      },
+      {
+        "label": "gallium nl",
+        "value": "gallium_nl",
+      },
+      {
+        "label": "maya",
+        "value": "maya",
+      },
+      {
+        "label": "gallaya angle ansi",
+        "value": "gallaya_angle_ansi",
+      },
+      {
+        "label": "gallaya angle iso",
+        "value": "gallaya_angle_iso",
+      },
+      {
+        "label": "gallaya matrix",
+        "value": "gallaya_matrix",
+      },
+      {
+        "label": "nila",
+        "value": "nila",
+      },
+      {
+        "label": "minimak 4k",
+        "value": "minimak_4k",
+      },
+      {
+        "label": "minimak 8k",
+        "value": "minimak_8k",
+      },
+      {
+        "label": "minimak 12k",
+        "value": "minimak_12k",
+      },
+      {
+        "label": "optimot",
+        "value": "optimot",
+      },
+      {
+        "label": "norwegian qwerty",
+        "value": "norwegian_qwerty",
+      },
+      {
+        "label": "portuguese pt qwerty iso",
+        "value": "portuguese_pt_qwerty_iso",
+      },
+      {
+        "label": "portuguese pt qwerty ansi",
+        "value": "portuguese_pt_qwerty_ansi",
+      },
+      {
+        "label": "swedish qwerty",
+        "value": "swedish_qwerty",
+      },
+      {
+        "label": "danish qwerty",
+        "value": "danish_qwerty",
+      },
+      {
+        "label": "noctum",
+        "value": "noctum",
+      },
+      {
+        "label": "graphite",
+        "value": "graphite",
+      },
+      {
+        "label": "graphite angle",
+        "value": "graphite_angle",
+      },
+      {
+        "label": "graphite angle vc",
+        "value": "graphite_angle_vc",
+      },
+      {
+        "label": "graphite angle kp",
+        "value": "graphite_angle_kp",
+      },
+      {
+        "label": "graphite matrix",
+        "value": "graphite_matrix",
+      },
+      {
+        "label": "macedonian",
+        "value": "macedonian",
+      },
+      {
+        "label": "UGJRMV",
+        "value": "UGJRMV",
+      },
+      {
+        "label": "pashto",
+        "value": "pashto",
+      },
+      {
+        "label": "ORNATE",
+        "value": "ORNATE",
+      },
+      {
+        "label": "estonian",
+        "value": "estonian",
+      },
+      {
+        "label": "stronk",
+        "value": "stronk",
+      },
+      {
+        "label": "dhorf",
+        "value": "dhorf",
+      },
+      {
+        "label": "gust",
+        "value": "gust",
+      },
+      {
+        "label": "recurva",
+        "value": "recurva",
+      },
+      {
+        "label": "seht-drai",
+        "value": "seht-drai",
+      },
+      {
+        "label": "ints",
+        "value": "ints",
+      },
+      {
+        "label": "rollla",
+        "value": "rollla",
+      },
+      {
+        "label": "wreathy",
+        "value": "wreathy",
+      },
+      {
+        "label": "saiga",
+        "value": "saiga",
+      },
+      {
+        "label": "saiga-e",
+        "value": "saiga-e",
+      },
+      {
+        "label": "krai",
+        "value": "krai",
+      },
+      {
+        "label": "mir",
+        "value": "mir",
+      },
+      {
+        "label": "ergol",
+        "value": "ergol",
+      },
+      {
+        "label": "cascade",
+        "value": "cascade",
+      },
+      {
+        "label": "vylet",
+        "value": "vylet",
+      },
+      {
+        "label": "hyperroll",
+        "value": "hyperroll",
+      },
+      {
+        "label": "romak",
+        "value": "romak",
+      },
+      {
+        "label": "scythe",
+        "value": "scythe",
+      },
+      {
+        "label": "inqwerted",
+        "value": "inqwerted",
+      },
+      {
+        "label": "rain",
+        "value": "rain",
+      },
+      {
+        "label": "night",
+        "value": "night",
+      },
+      {
+        "label": "night stic",
+        "value": "night_stic",
+      },
+      {
+        "label": "whix2",
+        "value": "whix2",
+      },
+      {
+        "label": "haruka",
+        "value": "haruka",
+      },
+      {
+        "label": "kuntum",
+        "value": "kuntum",
+      },
+      {
+        "label": "anishtro",
+        "value": "anishtro",
+      },
+      {
+        "label": "Kuntem",
+        "value": "Kuntem",
+      },
+      {
+        "label": "kuntem-jq",
+        "value": "kuntem-jq",
+      },
+      {
+        "label": "BEAKL Zi",
+        "value": "BEAKL_Zi",
+      },
+      {
+        "label": "snorkle",
+        "value": "snorkle",
+      },
+      {
+        "label": "MALTRON",
+        "value": "MALTRON",
+      },
+      {
+        "label": "PRSTEN",
+        "value": "PRSTEN",
+      },
+      {
+        "label": "RSTHD",
+        "value": "RSTHD",
+      },
+      {
+        "label": "dusk",
+        "value": "dusk",
+      },
+      {
+        "label": "zenith",
+        "value": "zenith",
+      },
+      {
+        "label": "focal",
+        "value": "focal",
+      },
+      {
+        "label": "panini",
+        "value": "panini",
+      },
+      {
+        "label": "panini wide",
+        "value": "panini_wide",
+      },
+      {
+        "label": "ergopti",
+        "value": "ergopti",
+      },
+      {
+        "label": "sword",
+        "value": "sword",
+      },
+      {
+        "label": "opy",
+        "value": "opy",
+      },
+      {
+        "label": "tarmak 1",
+        "value": "tarmak_1",
+      },
+      {
+        "label": "tarmak 2",
+        "value": "tarmak_2",
+      },
+      {
+        "label": "tarmak 3",
+        "value": "tarmak_3",
+      },
+      {
+        "label": "tarmak 4",
+        "value": "tarmak_4",
+      },
+      {
+        "label": "rulemak",
+        "value": "rulemak",
+      },
+      {
+        "label": "persian farsi colemak",
+        "value": "persian_farsi_colemak",
+      },
+      {
+        "label": "persian standard colemak",
+        "value": "persian_standard_colemak",
+      },
+      {
+        "label": "ergo split46",
+        "value": "ergo_split46",
+      },
+      {
+        "label": "tamil99",
+        "value": "tamil99",
+      },
+      {
+        "label": "Gralmak",
+        "value": "Gralmak",
+      },
+      {
+        "label": "GralmakS",
+        "value": "GralmakS",
+      },
+      {
+        "label": "vitrimak",
+        "value": "vitrimak",
+      },
+      {
+        "label": "miligram",
+        "value": "miligram",
+      },
+      {
+        "label": "nokwts",
+        "value": "nokwts",
+      },
+      {
+        "label": "vylet v4",
+        "value": "vylet_v4",
+      },
+      {
+        "label": "armenian hm qwerty",
+        "value": "armenian_hm_qwerty",
+      },
+    ],
+    "title": "Layout...",
+  },
+  "lazyMode": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Lazy mode...",
+  },
+  "liveAccStyle": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "text",
+        "value": "text",
+      },
+      {
+        "label": "mini",
+        "value": "mini",
+      },
+    ],
+    "title": "Live accuracy style...",
+  },
+  "liveBurstStyle": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "text",
+        "value": "text",
+      },
+      {
+        "label": "mini",
+        "value": "mini",
+      },
+    ],
+    "title": "Live word burst style...",
+  },
+  "liveSpeedStyle": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "text",
+        "value": "text",
+      },
+      {
+        "label": "mini",
+        "value": "mini",
+      },
+    ],
+    "title": "Live speed style...",
+  },
+  "maxLineWidth": {
+    "options": undefined,
+    "title": "Max line width...",
+  },
+  "minAcc": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "custom...",
+        "value": "custom",
+      },
+    ],
+    "title": "Minimum accuracy...",
+  },
+  "minWpm": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "custom...",
+        "value": "custom",
+      },
+    ],
+    "title": "Minimum speed...",
+  },
+  "mode": {
+    "options": [
+      {
+        "label": "time",
+        "value": "time",
+      },
+      {
+        "label": "words",
+        "value": "words",
+      },
+      {
+        "label": "quote",
+        "value": "quote",
+      },
+      {
+        "label": "custom",
+        "value": "custom",
+      },
+      {
+        "label": "zen",
+        "value": "zen",
+      },
+    ],
+    "title": "Mode...",
+  },
+  "monkeyPowerLevel": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "mellow",
+        "value": "1",
+      },
+      {
+        "label": "high",
+        "value": "2",
+      },
+      {
+        "label": "ultra",
+        "value": "3",
+      },
+      {
+        "label": "over 9000",
+        "value": "4",
+      },
+    ],
+    "title": "Typing power level...",
+  },
+  "numbers": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Numbers...",
+  },
+  "oppositeShiftMode": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "on",
+        "value": "on",
+      },
+      {
+        "label": "keymap",
+        "value": "keymap",
+      },
+    ],
+    "title": "Opposite shift mode...",
+  },
+  "paceCaret": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "pb",
+        "value": "pb",
+      },
+      {
+        "label": "tagPb",
+        "value": "tagPb",
+      },
+      {
+        "label": "last",
+        "value": "last",
+      },
+      {
+        "label": "average",
+        "value": "average",
+      },
+      {
+        "label": "daily",
+        "value": "daily",
+      },
+      {
+        "label": "custom...",
+        "value": "custom",
+      },
+    ],
+    "title": "Pace caret mode...",
+  },
+  "paceCaretStyle": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "default",
+        "value": "default",
+      },
+      {
+        "label": "block",
+        "value": "block",
+      },
+      {
+        "label": "outline",
+        "value": "outline",
+      },
+      {
+        "label": "underline",
+        "value": "underline",
+      },
+      {
+        "label": "carrot",
+        "value": "carrot",
+      },
+      {
+        "label": "banana",
+        "value": "banana",
+      },
+      {
+        "label": "monkey",
+        "value": "monkey",
+      },
+    ],
+    "title": "Pace caret style...",
+  },
+  "playSoundOnClick": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "click",
+        "value": "1",
+      },
+      {
+        "label": "beep",
+        "value": "2",
+      },
+      {
+        "label": "pop",
+        "value": "3",
+      },
+      {
+        "label": "nk creams",
+        "value": "4",
+      },
+      {
+        "label": "typewriter",
+        "value": "5",
+      },
+      {
+        "label": "osu",
+        "value": "6",
+      },
+      {
+        "label": "hitmarker",
+        "value": "7",
+      },
+      {
+        "label": "sine",
+        "value": "8",
+      },
+      {
+        "label": "sawtooth",
+        "value": "9",
+      },
+      {
+        "label": "square",
+        "value": "10",
+      },
+      {
+        "label": "triangle",
+        "value": "11",
+      },
+      {
+        "label": "pentatonic",
+        "value": "12",
+      },
+      {
+        "label": "wholetone",
+        "value": "13",
+      },
+      {
+        "label": "fist fight",
+        "value": "14",
+      },
+      {
+        "label": "rubber keys",
+        "value": "15",
+      },
+      {
+        "label": "fart",
+        "value": "16",
+      },
+      {
+        "label": "akko lavenders",
+        "value": "17",
+      },
+      {
+        "label": "cherrymx black abs",
+        "value": "18",
+      },
+      {
+        "label": "cherrymx black pbt",
+        "value": "19",
+      },
+      {
+        "label": "cherrymx blue abs",
+        "value": "20",
+      },
+      {
+        "label": "cherrymx blue pbt",
+        "value": "21",
+      },
+      {
+        "label": "cherrymx brown pbt",
+        "value": "22",
+      },
+      {
+        "label": "kalih box white",
+        "value": "23",
+      },
+      {
+        "label": "razer green",
+        "value": "24",
+      },
+      {
+        "label": "tealios v2",
+        "value": "25",
+      },
+      {
+        "label": "trust gxt",
+        "value": "26",
+      },
+    ],
+    "title": "Sound on click...",
+  },
+  "playSoundOnError": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "damage",
+        "value": "1",
+      },
+      {
+        "label": "triangle",
+        "value": "2",
+      },
+      {
+        "label": "square",
+        "value": "3",
+      },
+      {
+        "label": "punch miss",
+        "value": "4",
+      },
+    ],
+    "title": "Sound on error...",
+  },
+  "playTimeWarning": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "1 second",
+        "value": "1",
+      },
+      {
+        "label": "3 seconds",
+        "value": "3",
+      },
+      {
+        "label": "5 seconds",
+        "value": "5",
+      },
+      {
+        "label": "10 seconds",
+        "value": "10",
+      },
+    ],
+    "title": "Play time warning...",
+  },
+  "punctuation": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Punctuation...",
+  },
+  "quickEnd": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Quick end...",
+  },
+  "quickRestart": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "esc",
+        "value": "esc",
+      },
+      {
+        "label": "tab",
+        "value": "tab",
+      },
+      {
+        "label": "enter",
+        "value": "enter",
+      },
+    ],
+    "title": "Quick restart...",
+  },
+  "quoteLength": {
+    "options": [
+      {
+        "label": "all",
+        "value": [
+          0,
+          1,
+          2,
+          3,
+        ],
+      },
+      {
+        "label": "short",
+        "value": [
+          0,
+        ],
+      },
+      {
+        "label": "medium",
+        "value": [
+          1,
+        ],
+      },
+      {
+        "label": "long",
+        "value": [
+          2,
+        ],
+      },
+      {
+        "label": "thicc",
+        "value": [
+          3,
+        ],
+      },
+      {
+        "label": "favorite",
+        "value": [
+          -3,
+        ],
+      },
+    ],
+    "title": "Quote length...",
+  },
+  "randomTheme": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "on",
+        "value": "on",
+      },
+      {
+        "label": "fav",
+        "value": "fav",
+      },
+      {
+        "label": "light",
+        "value": "light",
+      },
+      {
+        "label": "dark",
+        "value": "dark",
+      },
+      {
+        "label": "custom",
+        "value": "custom",
+      },
+      {
+        "label": "auto",
+        "value": "auto",
+      },
+    ],
+    "title": "Random theme...",
+  },
+  "repeatQuotes": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "typing",
+        "value": "typing",
+      },
+    ],
+    "title": "Repeat quotes...",
+  },
+  "repeatedPace": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Repeated pace...",
+  },
+  "resultSaving": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Result saving...",
+  },
+  "showAllLines": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Show all lines...",
+  },
+  "showAverage": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "speed",
+        "value": "speed",
+      },
+      {
+        "label": "acc",
+        "value": "acc",
+      },
+      {
+        "label": "both",
+        "value": "both",
+      },
+    ],
+    "title": "Show average...",
+  },
+  "showKeyTips": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Key tips...",
+  },
+  "showOutOfFocusWarning": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Out of focus warning...",
+  },
+  "showPb": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Show personal best...",
+  },
+  "showTestModesNotice": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Test modes notice...",
+  },
+  "singleListCommandLine": {
+    "options": [
+      {
+        "label": "manual",
+        "value": "manual",
+      },
+      {
+        "label": "on",
+        "value": "on",
+      },
+    ],
+    "title": "Single list command palette...",
+  },
+  "smoothCaret": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "slow",
+        "value": "slow",
+      },
+      {
+        "label": "medium",
+        "value": "medium",
+      },
+      {
+        "label": "fast",
+        "value": "fast",
+      },
+    ],
+    "title": "Smooth caret...",
+  },
+  "smoothLineScroll": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Smooth line scroll...",
+  },
+  "soundVolume": {
+    "options": [
+      {
+        "label": "quiet",
+        "value": 0.1,
+      },
+      {
+        "label": "medium",
+        "value": 0.5,
+      },
+      {
+        "label": "loud",
+        "value": 1,
+      },
+      {
+        "label": "custom...",
+        "value": undefined,
+      },
+    ],
+    "title": "Sound volume...",
+  },
+  "startGraphsAtZero": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Start graphs at zero...",
+  },
+  "stopOnError": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "word",
+        "value": "word",
+      },
+      {
+        "label": "letter",
+        "value": "letter",
+      },
+    ],
+    "title": "Stop on error...",
+  },
+  "strictSpace": {
+    "options": [
+      {
+        "label": "off",
+        "value": false,
+      },
+      {
+        "label": "on",
+        "value": true,
+      },
+    ],
+    "title": "Strict space...",
+  },
+  "tapeMargin": {
+    "options": undefined,
+    "title": "Tape margin...",
+  },
+  "tapeMode": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "letter",
+        "value": "letter",
+      },
+      {
+        "label": "word",
+        "value": "word",
+      },
+    ],
+    "title": "Tape mode...",
+  },
+  "time": {
+    "options": [
+      {
+        "label": "15",
+        "value": 15,
+      },
+      {
+        "label": "30",
+        "value": 30,
+      },
+      {
+        "label": "60",
+        "value": 60,
+      },
+      {
+        "label": "120",
+        "value": 120,
+      },
+      {
+        "label": "custom...",
+        "value": undefined,
+      },
+    ],
+    "title": "Time...",
+  },
+  "timerColor": {
+    "options": [
+      {
+        "label": "black",
+        "value": "black",
+      },
+      {
+        "label": "sub",
+        "value": "sub",
+      },
+      {
+        "label": "text",
+        "value": "text",
+      },
+      {
+        "label": "main",
+        "value": "main",
+      },
+    ],
+    "title": "Live progress color...",
+  },
+  "timerOpacity": {
+    "options": [
+      {
+        "label": "0.25",
+        "value": "0.25",
+      },
+      {
+        "label": "0.5",
+        "value": "0.5",
+      },
+      {
+        "label": "0.75",
+        "value": "0.75",
+      },
+      {
+        "label": "1",
+        "value": "1",
+      },
+    ],
+    "title": "Live progress opacity...",
+  },
+  "timerStyle": {
+    "options": [
+      {
+        "label": "off",
+        "value": "off",
+      },
+      {
+        "label": "bar",
+        "value": "bar",
+      },
+      {
+        "label": "text",
+        "value": "text",
+      },
+      {
+        "label": "mini",
+        "value": "mini",
+      },
+      {
+        "label": "flash text",
+        "value": "flash_text",
+      },
+      {
+        "label": "flash mini",
+        "value": "flash_mini",
+      },
+    ],
+    "title": "Live progress style...",
+  },
+  "typedEffect": {
+    "options": [
+      {
+        "label": "keep",
+        "value": "keep",
+      },
+      {
+        "label": "hide",
+        "value": "hide",
+      },
+      {
+        "label": "fade",
+        "value": "fade",
+      },
+      {
+        "label": "dots",
+        "value": "dots",
+      },
+    ],
+    "title": "Typed effect...",
+  },
+  "typingSpeedUnit": {
+    "options": [
+      {
+        "label": "wpm",
+        "value": "wpm",
+      },
+      {
+        "label": "cpm",
+        "value": "cpm",
+      },
+      {
+        "label": "wps",
+        "value": "wps",
+      },
+      {
+        "label": "cps",
+        "value": "cps",
+      },
+      {
+        "label": "wph",
+        "value": "wph",
+      },
+    ],
+    "title": "Typing speed unit...",
+  },
+  "words": {
+    "options": [
+      {
+        "label": "10",
+        "value": 10,
+      },
+      {
+        "label": "25",
+        "value": 25,
+      },
+      {
+        "label": "50",
+        "value": 50,
+      },
+      {
+        "label": "100",
+        "value": 100,
+      },
+      {
+        "label": "custom...",
+        "value": undefined,
+      },
+    ],
+    "title": "Word count...",
+  },
+}
+`;
