@@ -3,6 +3,8 @@ import { UserProfile as UserProfileType } from "@oxytype/schemas/users";
 import preview from "#.storybook/preview";
 
 import { UserProfile } from "../../src/ts/components/pages/profile/UserProfile";
+import { getDefaultSnapshot } from "../../src/ts/constants/default-snapshot";
+import { getSnapshot, setSnapshot } from "../../src/ts/db";
 
 const baseProfile: UserProfileType = {
   uid: "user123",
@@ -167,6 +169,20 @@ export const Default = meta.story({
 });
 
 export const AccountPage = meta.story({
+  beforeEach: () => {
+    const previous = getSnapshot();
+    setSnapshot(
+      {
+        ...getDefaultSnapshot(),
+        uid: baseProfile.uid ?? "user123",
+        name: baseProfile.name,
+        details: baseProfile.details,
+        inventory: baseProfile.inventory,
+      },
+      { dispatchEvent: false },
+    );
+    return () => setSnapshot(previous, { dispatchEvent: false });
+  },
   render: () => <UserProfile profile={baseProfile} isAccountPage />,
 });
 
