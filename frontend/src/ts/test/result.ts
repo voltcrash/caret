@@ -1,3 +1,5 @@
+import { updateResultChartDataVisibility } from "./result/chart-visibility";
+export { toggleResultChartLegend } from "./result/chart-visibility";
 import { updateChartPBLine } from "./result/chart-pb";
 import { updateChartData } from "./result/chart-data";
 export {
@@ -30,7 +32,7 @@ import { showResultScreen } from "../components/pages/test/result/useResultScree
 import type { PluginChartOptions } from "chart.js";
 
 import { Config } from "../config/store";
-import { setConfig } from "../config/setters";
+
 import { Quote } from "../controllers/quotes-controller";
 
 import { showNoticeNotification } from "../states/notifications";
@@ -62,8 +64,7 @@ import {
   type TagItem,
 } from "../collections/tags";
 import { canQuickRestart as canQuickRestartFn } from "../utils/quick-restart";
-import { LocalStorageWithSchema } from "../utils/local-storage-with-schema";
-import { z } from "zod/v3";
+
 import { blurInputElement } from "../input/input-element";
 import * as ConnectionState from "../states/connection";
 import { getTheme } from "../states/theme";
@@ -78,10 +79,8 @@ import {
 import {
   getResultChart,
   prepareResultChart,
-  getResultChartDataset,
   resultState,
   setResultState,
-  type ResultChartLegendId,
   type ResultTag,
 } from "../states/result";
 import { buildResultStats, buildSpeedStats } from "./result-view-model";
@@ -332,52 +331,6 @@ export async function update(
   getResultChart().resize();
 }
 
-const resultChartDataVisibility = new LocalStorageWithSchema({
-  key: "resultChartDataVisibility",
-  schema: z
-    .object({
-      raw: z.boolean(),
-      burst: z.boolean(),
-      errors: z.boolean(),
-      pbLine: z.boolean(),
-      tagPbLine: z.boolean(),
-    })
-    .strict(),
-  fallback: {
-    raw: true,
-    burst: true,
-    errors: true,
-    pbLine: true,
-    tagPbLine: true,
-  },
-});
-
-function updateResultChartDataVisibility(): void {
-  const vis = resultChartDataVisibility.get();
-  getResultChartDataset("raw").hidden = !vis.raw;
-  getResultChartDataset("burst").hidden = !vis.burst;
-  getResultChartDataset("error").hidden = !vis.errors;
-
-  for (const annotation of resultAnnotation) {
-    if (annotation.id === "lpb") {
-      annotation.display = vis.pbLine;
-    } else if (annotation.id === "tpb") {
-      annotation.display = vis.tagPbLine;
-    }
-  }
-
-  // Check if there are any tag PB annotations
-  const hasTagPbAnnotations = resultAnnotation.some(
-    (annotation) => annotation.id === "tpb",
-  );
-
-  setResultState("chartLegend", {
-    visibility: vis,
-    pbLineVisible: isAuthenticated(),
-    tagPbLineVisible: isAuthenticated() && hasTagPbAnnotations,
-  });
-}
-
 export function updateTagsAfterEdit(
   tagIds: string[],
   tagPbIds: string[],
@@ -392,24 +345,6 @@ export function updateTagsAfterEdit(
     }));
 
   setResultState("tags", "items", [...kept, ...added]);
-}
-
-export function toggleResultChartLegend(
-  id: "scale" | ResultChartLegendId,
-): void {
-  if (id === "scale") {
-    setConfig("startGraphsAtZero", !Config.startGraphsAtZero);
-    return;
-  }
-
-  const vis = resultChartDataVisibility.get();
-  vis[id] = !vis[id];
-  resultChartDataVisibility.set(vis);
-
-  updateResultChartDataVisibility();
-  updateMinMaxChartValues();
-  applyMinMaxChartValues();
-  getResultChart().update();
 }
 
 configEvent.subscribe(
