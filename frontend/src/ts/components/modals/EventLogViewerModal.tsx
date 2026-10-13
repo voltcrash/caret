@@ -44,6 +44,7 @@ import {
   visualizeWhitespace,
 } from "./event-log-viewer/event-log";
 import { ScatterPanel } from "./event-log-viewer/ScatterPanel";
+import { scrollRowIntoView } from "./event-log-viewer/scroll-row";
 import { Timeline } from "./event-log-viewer/Timeline";
 import {
   buildLanes,
@@ -237,25 +238,6 @@ function PreviewContent(props: {
 
   let wordsScrollEl: HTMLDivElement | undefined;
   let eventsScrollEl: HTMLDivElement | undefined;
-
-  const scrollRowIntoView = (
-    container: HTMLDivElement | undefined,
-    idx: number,
-  ): void => {
-    if (container === undefined || idx < 0) return;
-    const row = container.querySelector<HTMLElement>(`[data-row="${idx}"]`);
-    if (row === null) return;
-    const containerRect = container.getBoundingClientRect();
-    const rowRect = row.getBoundingClientRect();
-    const stickyHead =
-      container.querySelector<HTMLElement>("thead")?.getBoundingClientRect()
-        .height ?? 0;
-    if (rowRect.top < containerRect.top + stickyHead) {
-      container.scrollTop -= containerRect.top + stickyHead - rowRect.top;
-    } else if (rowRect.bottom > containerRect.bottom) {
-      container.scrollTop += rowRect.bottom - containerRect.bottom;
-    }
-  };
 
   createEffect(() => {
     scrollRowIntoView(wordsScrollEl, currentWordIndex());
