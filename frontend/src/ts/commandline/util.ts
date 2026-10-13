@@ -46,7 +46,6 @@ function _buildCommandForConfigKey<
   if ("subgroup" in commandMeta && commandMeta.subgroup !== undefined) {
     result = buildCommandWithSubgroup(
       key,
-      commandMeta.display,
       commandMeta.alias,
       commandMeta.subgroup,
       configMeta,
@@ -87,7 +86,6 @@ function _buildCommandForConfigKey<
 
 function buildCommandWithSubgroup<K extends keyof ConfigSchemas.Config>(
   key: K,
-  rootDisplay: string | undefined,
   rootAlias: string | undefined,
   subgroupProps: SubgroupProps<K>,
   configMeta: ConfigMetadata<K>,
@@ -98,7 +96,6 @@ function buildCommandWithSubgroup<K extends keyof ConfigSchemas.Config>(
   }
 
   const display =
-    rootDisplay ??
     configMeta.commandline?.title ??
     `${capitalizeFirstLetter(configMeta?.displayString ?? key)}...`;
 
@@ -143,7 +140,6 @@ function buildSubgroupCommand<K extends keyof ConfigSchemas.Config>(
   {
     afterExec,
     hover,
-    display: commandDisplay,
     alias: commandAlias,
     configValueMode: commandConfigValueMode,
     isVisible: isCommandVisible,
@@ -154,8 +150,7 @@ function buildSubgroupCommand<K extends keyof ConfigSchemas.Config>(
 ): Command {
   const val = value;
 
-  const displayString =
-    commandDisplay?.(value) ?? getCommandlineOptionLabel(configMeta, value);
+  const displayString = getCommandlineOptionLabel(configMeta, value);
 
   return {
     id: `set${capitalizeFirstLetter(key)}${capitalizeFirstLetter(
@@ -197,7 +192,6 @@ function buildInputCommand<K extends keyof ConfigSchemas.Config>({
   const validation = inputProps?.validation ?? { schema: true };
 
   const displayString =
-    inputProps?.display ??
     configMeta.commandline?.inputTitle ??
     (isPartOfSubgroup
       ? "custom..."

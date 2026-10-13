@@ -2,7 +2,6 @@ import * as ConfigSchemas from "@oxytype/schemas/configs";
 
 import { Validation } from "../../types/validation";
 
-//TODO: remove display property and instead use optionsMetadata from configMetadata
 // eventually this file should be fully merged into config metadata, probably under the 'commandline' property
 
 type ConfigKeysWithoutCommands =
@@ -39,7 +38,6 @@ export type CommandlineConfigMetadataObject = {
 
 export type InputProps<T extends keyof ConfigSchemas.Config> = {
   alias?: string;
-  display?: string;
   afterExec?: (value: ConfigSchemas.Config[T]) => void;
   defaultValue?: () => string;
   /**
@@ -64,7 +62,6 @@ export type CommandlineConfigMetadata<
   T2 extends keyof ConfigSchemas.Config,
 > = {
   alias?: string;
-  display?: string;
   isVisible?: boolean;
   input?: InputProps<T> | SecondaryInputProps<T2> | Record<never, never>;
   subgroup?: SubgroupProps<T>;
@@ -72,7 +69,6 @@ export type CommandlineConfigMetadata<
 
 export type SubgroupProps<T extends keyof ConfigSchemas.Config> = {
   alias?: (value: ConfigSchemas.Config[T]) => string;
-  display?: (value: ConfigSchemas.Config[T]) => string;
   configValueMode?: (value: ConfigSchemas.Config[T]) => "include" | undefined;
   isVisible?: (value: ConfigSchemas.Config[T]) => boolean;
   isAvailable?: (value: ConfigSchemas.Config[T]) => (() => boolean) | undefined;
