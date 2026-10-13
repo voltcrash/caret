@@ -8,6 +8,9 @@ import type { ConfigKey } from "@oxytype/schemas/configs";
 import type { ConfigMetadata } from "../../src/ts/config/metadata";
 import { z, ZodSchema } from "zod/v3";
 import { Command } from "../../src/ts/commandline/types";
+import { setConfig } from "../../src/ts/config/setters";
+
+vi.mock("../../src/ts/config/setters", () => ({ setConfig: vi.fn() }));
 
 const buildCommandForConfigKey = Util.__testing._buildCommandForConfigKey;
 
@@ -212,6 +215,19 @@ describe("CommandlineUtils", () => {
   });
 
   describe("type input", () => {
+    it("executes converted input and preserves callbacks without submitting missing input", () => {
+      const afterExec = vi.fn();
+      const command = buildCommand({
+        key: "fontSize",
+        cmdMeta: { input: { inputValueConvert: Number, afterExec } },
+        schema: z.number(),
+      });
+      command.exec?.({ input: 1.5 as any });
+      expect(setConfig).toHaveBeenLastCalledWith("fontSize", 1.5);
+      expect(afterExec).toHaveBeenCalledExactlyOnceWith(1.5);
+      command.exec?.({});
+      expect(afterExec).toHaveBeenCalledOnce();
+    });
     it("has basic properties", () => {
       //GIVEN
       const afterExec = (): string => "test";
