@@ -1,3 +1,4 @@
+import { updateWordsMargin } from "./words/margins";
 import { scrollTape } from "./words/tape";
 export { scrollTape } from "./words/tape";
 import { centerActiveLine, lineJump } from "./words/line-jumping";
@@ -287,23 +288,6 @@ export function appendEmptyWordElement(index: number): void {
     "beforeend",
     `<div class='word' data-wordindex='${index}'><letter class='invisible'>_</letter></div>`,
   );
-}
-
-function updateWordsMargin(): void {
-  if (Config.tapeMode !== "off") {
-    Object.assign(getWordsEl().style, { marginLeft: "0" });
-    void scrollTape(true);
-  } else {
-    const afterNewlineEls = Array.from(
-      getWordsEl().querySelectorAll<HTMLElement>(".afterNewline"),
-    );
-    Object.assign(getWordsEl().style, { marginLeft: "0", marginTop: "0" });
-    for (const afterNewline of afterNewlineEls) {
-      Object.assign(afterNewline.style, {
-        marginLeft: "0",
-      });
-    }
-  }
 }
 
 const appendFrames = new Set<number>();
