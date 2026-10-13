@@ -1,15 +1,22 @@
 import { createEffect, createRoot, on, onCleanup } from "solid-js";
 import { debounce } from "throttle-debounce";
 import type { ModuleHotContext } from "./createEvent";
+import type { AccessorArray } from "solid-js";
 
 type Accessor<T = unknown> = () => T;
 
 type OnValue<T> = T extends readonly Accessor[]
-  ? //@ts-expect-error huh?
-    { [K in keyof T]: ReturnType<T[K]> }
+  ? { [K in keyof T]: T[K] extends Accessor<infer V> ? V : never }
   : T extends Accessor
     ? ReturnType<T>
     : never;
+
+function onDependencies<T extends Accessor | readonly Accessor[]>(
+  deps: T,
+): Accessor<OnValue<T>> | AccessorArray<OnValue<T>> {
+  // Solid reads accessor arrays without mutating them; preserve readonly tuple inference.
+  return deps as Accessor<OnValue<T>> | AccessorArray<OnValue<T>>;
+}
 
 export function createEffectOn<
   T extends Accessor | readonly Accessor[],
@@ -19,8 +26,7 @@ export function createEffectOn<
   fn: (value: OnValue<T>, prev: OnValue<T> | undefined, prevValue?: U) => U,
   options: { defer?: boolean } = {},
 ): void {
-  //@ts-expect-error huh?
-  createEffect(on(deps as unknown, fn as unknown, options));
+  createEffect<U | undefined>(on(onDependencies(deps), fn, options));
 }
 
 export function createDebouncedEffectOn<
@@ -35,8 +41,16 @@ export function createDebouncedEffectOn<
 ): void {
   const debouncedFn = debounce(delay, fn, debounceOptions);
   onCleanup(() => debouncedFn.cancel());
-  //@ts-expect-error huh?
-  createEffect(on(deps as unknown, debouncedFn as unknown, options));
+  createEffect(
+    on<OnValue<T>, undefined, U | undefined>(
+      onDependencies(deps),
+      (value, previous, result) => {
+        debouncedFn(value, previous, result);
+        return undefined;
+      },
+      options,
+    ),
+  );
 }
 
 /** Own module effects so hot replacement can release their subscriptions. */
