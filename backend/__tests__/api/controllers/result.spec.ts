@@ -1138,6 +1138,72 @@ describe("result controller test", () => {
       });
     });
 
+    describe("tags", () => {
+      it("should return tag pbs", async () => {
+        //GIVEN
+        userCheckIfTagPbMock.mockResolvedValue(["tagOneId"]);
+
+        //WHEN
+        const { body } = await mockApp
+          .post("/results")
+          .set("Authorization", `Bearer ${uid}`)
+          .send({ result: buildCompletedEvent() })
+          .expect(200);
+
+        //THEN
+        expect(body.data.tagPbs).toEqual(["tagOneId"]);
+        expect(userCheckIfTagPbMock).toHaveBeenCalledWith(
+          uid,
+          expect.objectContaining({ name: "bob" }),
+          expect.objectContaining({ tags: ["tagOneId", "tagTwoId"] }),
+        );
+      });
+      it("should save the result tags", async () => {
+        //WHEN
+        await mockApp
+          .post("/results")
+          .set("Authorization", `Bearer ${uid}`)
+          .send({ result: buildCompletedEvent({ tags: ["tagTwoId"] }) })
+          .expect(200);
+
+        //THEN
+        expect(resultAddMock).toHaveBeenCalledWith(
+          uid,
+          expect.objectContaining({ tags: ["tagTwoId"] }),
+        );
+      });
+      it("should omit empty tags", async () => {
+        //WHEN
+        const { body } = await mockApp
+          .post("/results")
+          .set("Authorization", `Bearer ${uid}`)
+          .send({ result: buildCompletedEvent({ tags: [] }) })
+          .expect(200);
+
+        //THEN
+        expect(body.data.tagPbs).toEqual([]);
+        expect(resultAddMock).toHaveBeenCalledWith(
+          uid,
+          expect.not.objectContaining({ tags: expect.anything() }),
+        );
+      });
+      it("should fail with invalid tag ids", async () => {
+        //WHEN
+        const { body } = await mockApp
+          .post("/results")
+          .set("Authorization", `Bearer ${uid}`)
+          .send({ result: buildCompletedEvent({ tags: ["invalid id"] }) })
+          .expect(422);
+
+        //THEN
+        expect(body).toEqual({
+          message: "Invalid request data schema",
+          validationErrors: ['"result.tags.0" Invalid'],
+        });
+        expect(resultAddMock).not.toHaveBeenCalled();
+      });
+    });
+
     describe("anticheat", () => {
       const fixedTimings = (): Partial<CompletedEvent> => {
         const keySpacing = Array.from({ length: 219 }, () => 120);
