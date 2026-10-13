@@ -1,30 +1,31 @@
 import { z } from "zod/v3";
 
-function removeProblems<T extends object | unknown[]>(
-  obj: T | undefined,
-  problems: (number | string)[],
-): T | undefined {
+function removeProblems(obj: unknown, problems: (number | string)[]): unknown {
   //already removed
   if (obj === undefined) return undefined;
 
   if (Array.isArray(obj)) {
     if (problems.length === obj.length) return undefined;
 
-    return obj.filter((_, index) => !problems.includes(index)) as T;
+    return obj.filter((_, index) => !problems.includes(index));
   } else {
-    const entries = Object.entries(obj);
+    const entries = Object.entries(obj as Record<string, unknown>);
     if (problems.length === entries.length) return undefined;
 
     return Object.fromEntries(
       entries.filter(([key]) => !problems.includes(key)),
-    ) as T;
+    );
   }
 }
 
-function getNestedValue(obj: [] | object, path: string[]): [] | object {
-  //@ts-expect-error can be array or object
-  // oxlint-disable-next-line no-unsafe-return
-  return path.slice(0, -1).reduce((acc, it: string) => acc[it], obj);
+function getNestedValue(obj: unknown, path: string[]): Record<string, unknown> {
+  // Zod issue paths address members of cloned objects/arrays; numeric keys also index arrays.
+  return path
+    .slice(0, -1)
+    .reduce(
+      (acc, key) => acc[key] as Record<string, unknown>,
+      obj as Record<string, unknown>,
+    );
 }
 
 /**
@@ -33,10 +34,10 @@ function getNestedValue(obj: [] | object, path: string[]): [] | object {
  * @param obj object
  * @returns sanitized object
  */
-export function sanitize<T extends z.ZodTypeAny>(
-  schema: T,
-  obj: z.infer<T>,
-): z.infer<T> {
+export function sanitize<T>(
+  schema: z.ZodType<T, z.ZodTypeDef, unknown>,
+  obj: unknown,
+): T {
   const maxAttempts = 2;
   let result;
   let current = structuredClone(obj);
@@ -46,8 +47,7 @@ export function sanitize<T extends z.ZodTypeAny>(
 
     if (result.success) {
       //use the parsed data, not the obj. keys might been removed
-      // oxlint-disable-next-line no-unsafe-return
-      return result.data as z.infer<T>;
+      return result.data;
     }
     if (attempt === maxAttempts) {
       //exit loop and throw error
@@ -61,10 +61,7 @@ export function sanitize<T extends z.ZodTypeAny>(
         acc.set(parent, [...(acc.get(parent) ?? []), element]);
       }
       return acc;
-    }, new Map<string, Array<string | number>>()) as Map<
-      string, //parent path
-      string[] | number[] //childs with problems
-    >;
+    }, new Map<string, Array<string | number>>());
 
     for (const [pathString, problems] of pathsWithProblems.entries()) {
       if (pathString === "") {
@@ -76,17 +73,12 @@ export function sanitize<T extends z.ZodTypeAny>(
         const parent = getNestedValue(current, path);
         const key = path.at(-1) as string;
 
-        //@ts-expect-error can be object or array
-        // oxlint-disable-next-line no-unsafe-assignment
         const cleaned = removeProblems(parent[key], problems);
 
         if (cleaned === undefined) {
-          //@ts-expect-error can be object or array
-          // oxlint-disable-next-line no-dynamic-delete
+          // oxlint-disable-next-line no-dynamic-delete -- Zod supplies the invalid member's key at runtime.
           delete parent[key];
         } else {
-          //@ts-expect-error can be object or array
-          // oxlint-disable-next-line no-unsafe-assignment
           parent[key] = cleaned;
         }
       }
