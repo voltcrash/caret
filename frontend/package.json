@@ -17,6 +17,7 @@
     "start": "vp preview --port 3000",
     "dev": "vp dev",
     "test": "vp test run",
+    "test-e2e": "playwright test",
     "test-coverage": "vp test run --coverage",
     "dev-test": "concurrently --kill-others \"vp dev\" \"vp test watch\"",
     "tsc": "tsc",
