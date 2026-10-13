@@ -8,7 +8,6 @@
     "lint-fast": "vp lint . --format agent",
     "lint-styles": "stylelint \"**/*.css\"",
     "lint-styles-fix": "stylelint \"**/*.css\" --fix",
-    "lint-json": "eslint static/**/*.json",
     "check-assets": "tsx ./scripts/check-assets.ts",
     "audit": "vite-bundle-visualizer",
     "dep-graph": "madge -c -i \"dep-graph.png\" ./src/ts",
