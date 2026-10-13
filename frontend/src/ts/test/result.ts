@@ -1,3 +1,4 @@
+import { getEventLogAccuracy } from "./result/accuracy";
 import {
   result,
   resultAnnotation,
@@ -61,7 +62,6 @@ import {
   setResultLoading,
 } from "../states/test";
 import {
-  getAccuracy,
   getCorrectedWordsHistory,
   getInputHistory,
   getRawHistory,
@@ -337,11 +337,6 @@ async function updateChartPBLine(): Promise<void> {
       display: true,
     },
   });
-}
-
-function getEventLogAccuracy(): { correct: number; incorrect: number } | null {
-  const eventLog = getLastEventLog();
-  return eventLog === null ? null : getAccuracy(eventLog);
 }
 
 export function updateTodayTracker(): void {
