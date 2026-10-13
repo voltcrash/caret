@@ -5,7 +5,6 @@ import {
   createOptimisticAction,
   useLiveQuery,
 } from "@tanstack/solid-db";
-import { untrack } from "solid-js";
 import Ape from "../ape";
 import { queryClient } from "../queries";
 import { baseKey } from "../queries/utils/keys";
@@ -31,7 +30,6 @@ export function useCustomThemesLiveQuery() {
 const customThemesCollection = createCollection(
   queryCollectionOptions({
     staleTime: Infinity,
-    gcTime: Infinity, //remove when __nonReactive is removed
     startSync: true,
     queryKey: queryKeys.root(),
     queryClient,
@@ -174,15 +172,6 @@ export async function deleteCustomTheme(
   const transaction = actions.deleteCustomTheme(params);
   await transaction.isPersisted.promise;
 }
-
-/**
- * Used for non reactive access. Do not use in Solid components.
- */
-export const __nonReactive = {
-  getCustomThemes: (): CustomThemeItem[] => untrack(getCustomThemes),
-  getCustomTheme: (id: string): CustomThemeItem | undefined =>
-    untrack(() => getCustomTheme(id)),
-};
 
 import.meta.hot?.dispose(() => {
   void customThemesCollection.cleanup();
