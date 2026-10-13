@@ -951,8 +951,8 @@ async function saveResult(
     result.keySpacing = "toolong";
     result.keyDuration = "toolong";
   }
-  //@ts-expect-error just in case this is repeated and already has a hash
-  delete result.hash;
+  const unhashed: Omit<CompletedEvent, "hash"> & { hash?: string } = result;
+  delete unhashed.hash;
   result.hash = await hashResult(result);
 
   setAccountButtonSpinner(true);
