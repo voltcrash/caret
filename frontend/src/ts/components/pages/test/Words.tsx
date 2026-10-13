@@ -1,3 +1,12 @@
+import {
+  updateWordsInputPosition,
+  updateWordsWrapperHeight,
+  updateWordsWidth,
+} from "./words/sizing";
+export {
+  updateWordsInputPosition,
+  updateWordsWrapperHeight,
+} from "./words/sizing";
 import { setWordJoining, updateWordJoining } from "./words/joining";
 export { setJoiningClass } from "./words/joining";
 import {
@@ -6,7 +15,7 @@ import {
   joinOverlappingHints,
 } from "./words/hints";
 export { updateHintsPositionDebounced } from "./words/hints";
-import { focusWords, keepWordsInputInTheCenter } from "./words/focus";
+import { focusWords } from "./words/focus";
 export { focusWords, keepWordsInputInTheCenter } from "./words/focus";
 import {
   outerWidth,
@@ -32,14 +41,12 @@ import { highlight } from "../../../events/keymap";
 import { useWordsFocus } from "../../../hooks/useWordsFocus";
 import {
   isTouchKeyboardFocused,
-  getInputElement,
   isInputElementFocused,
 } from "../../../input/input-element";
 import { getBackground } from "../../../states/background";
 import * as CompositionState from "../../../states/composition";
 import * as ConnectionState from "../../../states/connection";
 import { getActivePage } from "../../../states/core";
-import { setWordsWrapperVisible } from "../../../states/funbox";
 import { skipBreakdownEvent } from "../../../states/header";
 import { getResultElement, setResultState } from "../../../states/result";
 import * as SlowTimer from "../../../states/slow-timer";
@@ -49,8 +56,6 @@ import {
   getActiveWordIndex,
   setCompositionText,
   setCurrentLiveStats,
-  setOutOfFocusMaxHeight,
-  wordsHaveNewline,
   setTestFocusState,
   getResultVisible,
   setTestInitError,
@@ -64,10 +69,7 @@ import {
   getPaceCaretElement,
   getTypingTestElement,
 } from "../../../states/test-dom";
-import {
-  setWordsInputStyle,
-  setWordsWrapperHeight,
-} from "../../../states/words-layout";
+import { setWordsInputStyle } from "../../../states/words-layout";
 import * as Caret from "../../../test/caret";
 import * as CustomText from "../../../test/custom-text";
 import { getCurrentInput } from "../../../test/events/data";
@@ -87,9 +89,8 @@ import {
   requestDebouncedAnimationFrame,
 } from "../../../utils/debounced-animation-frame";
 import * as Misc from "../../../utils/misc";
-import { convertRemToPixels } from "../../../utils/numbers";
 import { isCoarsePointer } from "../../../utils/pointer";
-import { getWordsFontScale, getWordsFontSize } from "../../../utils/words-font";
+import { getWordsFontSize } from "../../../utils/words-font";
 import * as MonkeyPower from "./MonkeyPower";
 
 export let activeWordTop = 0;
@@ -293,51 +294,6 @@ export function appendEmptyWordElement(index: number): void {
   );
 }
 
-export function updateWordsInputPosition(): void {
-  if (getActivePage() !== "test") return;
-  const isTestRightToLeft = isDirectionReversed()
-    ? !isLanguageRightToLeft()
-    : isLanguageRightToLeft();
-
-  const el = getInputElement();
-
-  if (el === null) return;
-
-  const activeWord = getActiveWordElement();
-
-  if (!activeWord) {
-    setWordsInputStyle((previous) => ({
-      ...previous,
-      top: "0px",
-      left: "0px",
-    }));
-    return;
-  }
-
-  const letterHeight =
-    convertRemToPixels(Config.fontSize) * getWordsFontScale();
-  const targetTop =
-    activeWord.offsetTop + letterHeight / 2 - el.offsetHeight / 2 + 1; //+1 for half of border
-
-  const wordWidth = activeWord.offsetWidth;
-  const left =
-    Config.tapeMode !== "off"
-      ? getWordsWrapperEl().offsetWidth * (Config.tapeMargin / 100)
-      : wordWidth < letterHeight && isTestRightToLeft
-        ? activeWord.offsetLeft - letterHeight
-        : Math.max(0, activeWord.offsetLeft);
-
-  // Publish one layout update so input styles settle before scrolling.
-  setWordsInputStyle({
-    "max-width": Config.tapeMode !== "off" ? `${100 - Config.tapeMargin}%` : "",
-    width: `${Math.max(letterHeight, wordWidth)}px`,
-    top: `${targetTop}px`,
-    left: `${left}px`,
-  });
-
-  keepWordsInputInTheCenter();
-}
-
 let centeringActiveLine: Promise<void> = Promise.resolve();
 
 export async function centerActiveLine(): Promise<void> {
@@ -366,73 +322,6 @@ export async function centerActiveLine(): Promise<void> {
   }
 
   resolve();
-}
-
-export function updateWordsWrapperHeight(force = false): void {
-  if (getActivePage() !== "test" || getResultVisible()) return;
-  if (!force && Config.mode !== "custom") return;
-  const activeWordEl = getActiveWordElement();
-  if (!activeWordEl) return;
-
-  setWordsWrapperVisible(true);
-
-  const wordComputedStyle = window.getComputedStyle(activeWordEl);
-  const wordMargin =
-    parseInt(wordComputedStyle.marginTop) +
-    parseInt(wordComputedStyle.marginBottom);
-  const wordHeight = activeWordEl.offsetHeight + wordMargin;
-
-  const timedTest =
-    Config.mode === "time" ||
-    (Config.mode === "custom" && CustomText.getLimitMode() === "time") ||
-    (Config.mode === "custom" && CustomText.getLimitValue() === 0);
-
-  const showAllLines = Config.showAllLines && !timedTest;
-
-  if (showAllLines) {
-    //allow the wrapper to grow and shink with the words
-    setWordsWrapperHeight("");
-  } else if (Config.mode === "zen") {
-    //zen mode, showAllLines off
-    setWordsWrapperHeight(`${wordHeight * 2}px`);
-  } else {
-    if (Config.tapeMode === "off") {
-      //tape off, showAllLines off, non-zen mode
-      const wordElements = Array.from(
-        getWordsEl().querySelectorAll<HTMLElement>(".word"),
-      );
-      let lines = 0;
-      let lastTop = 0;
-      let wordIndex = 0;
-      let wrapperHeight = 0;
-
-      while (lines < 3) {
-        const word = wordElements[wordIndex];
-        if (!word) break;
-        const top = word.offsetTop;
-        if (top > lastTop) {
-          lines++;
-          wrapperHeight += word.offsetHeight + wordMargin;
-          lastTop = top;
-        }
-        wordIndex++;
-      }
-      if (lines < 3) wrapperHeight = wrapperHeight * (3 / lines);
-
-      //limit to 3 lines
-      setWordsWrapperHeight(`${wrapperHeight}px`);
-    } else {
-      //show 3 lines if tape mode is on and has newlines, otherwise use words height (because of indicate typos: below)
-      if (wordsHaveNewline()) {
-        setWordsWrapperHeight(`${wordHeight * 3}px`);
-      } else {
-        const wordsHeight = getWordsEl().offsetHeight ?? wordHeight;
-        setWordsWrapperHeight(`${wordsHeight}px`);
-      }
-    }
-  }
-
-  setOutOfFocusMaxHeight(wordHeight * 3);
 }
 
 function updateWordsMargin(): void {
@@ -939,44 +828,6 @@ export function highlightAllLettersAsCorrect(wordIndex: number): void {
       }
     },
   );
-}
-
-function updateWordsWidth(): void {
-  let css: Record<string, string> = {};
-  if (Config.tapeMode === "off") {
-    if (Config.maxLineWidth === 0) {
-      css = {
-        "max-width": "100%",
-      };
-    } else {
-      css = {
-        "max-width": `${Config.maxLineWidth}ch`,
-      };
-    }
-  } else {
-    if (Config.maxLineWidth === 0) {
-      css = {
-        "max-width": "100%",
-      };
-    } else {
-      css = {
-        "max-width": "100%",
-      };
-    }
-  }
-  const el = getTypingTestElement();
-  if (Object.keys(css).length === 0) {
-    el.style.cssText = "";
-  } else {
-    Object.assign(el.style, css);
-  }
-  if (Config.maxLineWidth === 0) {
-    setClass(el, "full-width-padding", false);
-    setClass(el, "content", true);
-  } else {
-    setClass(el, "content", false);
-    setClass(el, "full-width-padding", true);
-  }
 }
 
 export function getActiveWordTopAndHeightWithDifferentData(data: string): {
