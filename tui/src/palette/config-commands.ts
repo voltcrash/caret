@@ -46,7 +46,7 @@ export function optionLabel<K extends Key>(key: K, value: Config[K]): string {
 }
 
 /** Setting label used by the web palette, e.g. "Quick restart...". */
-export function configDisplay(key: Key): string {
+function configDisplay(key: Key): string {
   return `${capitalize(sharedConfigMetadata[key].displayString ?? key)}...`;
 }
 
