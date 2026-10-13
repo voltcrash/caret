@@ -8,6 +8,7 @@ import { migrateConfig } from "./utils";
 import { LocalStorageWithSchema } from "../utils/local-storage-with-schema";
 import { isObject } from "../utils/misc";
 import { debounce } from "throttle-debounce";
+import { setProperty } from "@oxytype/util/objects";
 
 let configToSend: Partial<ConfigSchemas.Config> = {};
 
@@ -32,8 +33,7 @@ export function saveToLocalStorage(
   if (nosave) return;
   configLS.set(Config);
   if (!noDbCheck) {
-    //@ts-expect-error this is fine
-    configToSend[key] = Config[key];
+    setProperty(configToSend, key, Config[key]);
     saveToDatabase();
   }
 }
