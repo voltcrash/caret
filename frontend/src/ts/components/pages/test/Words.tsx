@@ -1,4 +1,9 @@
 import {
+  outerWidth,
+  outerHeight,
+  scrollToCenterOrTop,
+} from "./words/dimensions";
+import {
   getWordElement,
   getActiveWordElement,
   setClass,
@@ -1591,34 +1596,6 @@ function updateWordJoining(key: string, wordsEl: HTMLElement): void {
     words.forEach(reset);
   }
   words.forEach(applyIfNeeded);
-}
-
-function outerWidth(element: HTMLElement): number {
-  const style = getComputedStyle(element);
-  return (
-    element.getBoundingClientRect().width +
-    parseFloat(style.marginLeft) +
-    parseFloat(style.marginRight)
-  );
-}
-function outerHeight(element: HTMLElement): number {
-  const style = getComputedStyle(element);
-  return (
-    element.getBoundingClientRect().height +
-    parseFloat(style.marginTop) +
-    parseFloat(style.marginBottom)
-  );
-}
-
-function scrollToCenterOrTop(el: HTMLElement | null): void {
-  if (!el) return;
-
-  const elementHeight = el.offsetHeight;
-  const windowHeight = window.innerHeight;
-
-  el.scrollIntoView({
-    block: elementHeight < windowHeight ? "center" : "start",
-  });
 }
 
 export function clearWords(): void {
