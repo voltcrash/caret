@@ -129,10 +129,12 @@ import { shouldRepeatQuote } from "@oxytype/typing-core/restart";
 
 type TestLogicState = {
   failReason: string;
+  lastInitError: Error | null;
 };
 
 const testLogicState: TestLogicState = {
   failReason: "",
+  lastInitError: null,
 };
 
 const invalidMessages: Record<
@@ -362,7 +364,6 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
   setIsTestRestarting(false);
 }
 
-let lastInitError: Error | null = null;
 let showedLazyModeNotification: boolean = false;
 let testReinitCount = 0;
 
@@ -370,12 +371,12 @@ async function init(): Promise<boolean> {
   console.debug("Initializing test");
   testReinitCount++;
   if (testReinitCount > 3) {
-    if (lastInitError) {
-      void Sentry.captureException(lastInitError);
+    if (testLogicState.lastInitError) {
+      void Sentry.captureException(testLogicState.lastInitError);
     }
     setTestInitError({
-      message: lastInitError
-        ? `${lastInitError.name}: ${lastInitError.message}`
+      message: testLogicState.lastInitError
+        ? `${testLogicState.lastInitError.name}: ${testLogicState.lastInitError.message}`
         : undefined,
     });
     const typingTest = getTypingTestElement();
@@ -510,7 +511,7 @@ async function init(): Promise<boolean> {
   } catch (e) {
     hideLoaderBar();
     if (e instanceof WordGenError || e instanceof Error) {
-      lastInitError = e;
+      testLogicState.lastInitError = e;
     }
     console.error(e);
     if (e instanceof WordGenError) {
