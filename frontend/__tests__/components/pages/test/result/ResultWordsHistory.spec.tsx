@@ -29,7 +29,7 @@ vi.mock("../../../../../src/ts/states/test", () => ({
   getResultVisible: () => true,
   getLastEventLog: () => [],
 }));
-vi.mock("../../../../../src/ts/test/events/stats", () => ({
+vi.mock("@oxytype/typing-core/events/stats", () => ({
   getInputHistory: () => mocks.inputHistory,
   getMissedWords: () => ({ hello: 1 }),
   getWordBurstHistory: () => mocks.burstHistory,

@@ -15,7 +15,7 @@ import {
   getMissedWords,
   getRawHistory,
   getWordBurstHistory,
-} from "../../src/ts/test/events/stats";
+} from "@oxytype/typing-core/events/stats";
 
 // Parity harness for the typing-core extraction. The fixtures were recorded
 // from the real web test (packages/typing-core/scripts/record-fixtures.ts).

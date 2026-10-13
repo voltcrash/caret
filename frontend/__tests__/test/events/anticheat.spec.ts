@@ -28,7 +28,7 @@ import {
   getWpmHistory,
   getBurstHistory,
   getErrorCountHistory,
-} from "../../../src/ts/test/events/stats";
+} from "@oxytype/typing-core/events/stats";
 
 vi.mock("../../../src/ts/config/store", () => ({
   Config: { mode: "time", funbox: [] },

@@ -84,7 +84,7 @@ import {
   getCorrectedWordsHistory,
   getKeypressSpacing,
   getMissedWords,
-} from "../../../src/ts/test/events/stats";
+} from "@oxytype/typing-core/events/stats";
 import type {
   InputEventData,
   InputEventNoMs,
