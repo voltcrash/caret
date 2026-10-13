@@ -1,4 +1,4 @@
-export type CommandInput = {
+type CommandInput = {
   placeholder?: string;
   defaultValue?: () => string;
   /** Returns an error to keep the palette open on the input. */
