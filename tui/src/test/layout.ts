@@ -22,9 +22,9 @@ export type WordsLayout = {
 export type LineWindow = { start: number; end: number };
 
 /** Lines visible while typing, like the web's three-line words box. */
-export const visibleLineCount = 3;
+const visibleLineCount = 3;
 
-export function charWidth(char: string): number {
+function charWidth(char: string): number {
   return Math.max(1, Bun.stringWidth(char));
 }
 
