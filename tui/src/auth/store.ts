@@ -20,7 +20,7 @@ const sessionSchema = z
   })
   .nullable();
 type User = Credential["user"];
-export type AuthState =
+type AuthState =
   | "guest"
   | "checking"
   | "authorizing"
