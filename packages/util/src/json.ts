@@ -16,17 +16,17 @@ function prettyErrorMessage(issue: ZodIssue | undefined): string {
  * @throws Error if JSON does not match schema and no migration function is provided
  * @returns  The parsed JSON object
  */
-export function parseWithSchema<T extends z.ZodTypeAny>(
+export function parseWithSchema<T>(
   json: string,
-  schema: T,
+  schema: z.ZodType<T, z.ZodTypeDef, unknown>,
   fallbackAndMigrate?: {
-    fallback?: z.infer<T>;
+    fallback?: T;
     migrate?: (
       value: Record<string, unknown> | unknown[],
       zodIssues?: ZodIssue[],
-    ) => z.infer<T>;
+    ) => T;
   },
-): z.infer<T> {
+): T {
   const { fallback, migrate } = fallbackAndMigrate ?? {};
 
   const { data: jsonParsed, error } = tryCatchSync(
@@ -38,13 +38,12 @@ export function parseWithSchema<T extends z.ZodTypeAny>(
       throw new Error(`Invalid JSON: ${error.message}`);
     }
 
-    // oxlint-disable-next-line typescript/no-unsafe-return
     return fallback;
   }
 
   const safeParse = schema.safeParse(jsonParsed);
   if (safeParse.success) {
-    return safeParse.data as T;
+    return safeParse.data;
   }
 
   if (migrate === undefined) {
@@ -66,9 +65,8 @@ export function parseWithSchema<T extends z.ZodTypeAny>(
           .join(", ")}`,
       );
     }
-    // oxlint-disable-next-line typescript/no-unsafe-return
     return fallback;
   }
 
-  return safeParseMigrated.data as T;
+  return safeParseMigrated.data;
 }
