@@ -25,7 +25,10 @@ import {
   getUserAverage10Once,
   getUserDailyBestOnce,
   type CurrentSettingsFilter,
+  createResultsQueryState,
+  getResultsQueryOnce,
 } from "../../src/ts/collections/results";
+import defaultResultFilters from "../../src/ts/constants/default-result-filters";
 
 function result(
   _id: string,
@@ -93,4 +96,54 @@ it("matches equivalent funbox orders without changing the caller's config", asyn
 });
 it("keeps plain daily pace separate from modified results", async () => {
   expect((await getUserDailyBestOnce(settings([]))).wpm).toBe(100);
+});
+
+it("normalizes filters and preserves sorted selections", async () => {
+  const filters = structuredClone(defaultResultFilters);
+  filters.funbox = { none: true };
+  const queryState = createResultsQueryState(filters);
+  expect(queryState.punctuation).toEqual([true, false]);
+  expect(queryState.quoteLength).toEqual([0, 1, 2, 3, -1]);
+  expect(queryState.timestamp).toBe(0);
+  const selected = await getResultsQueryOnce({
+    queryState: () => queryState,
+    sorting: () => ({ field: "wpm", direction: "desc" }),
+  });
+  expect(selected?.map((item) => item._id)).toEqual(["plain", "legacy-plain"]);
+  expect(selected?.[0]).toMatchObject({
+    language: "english",
+    difficulty: "normal",
+    client: "web",
+    timeTyping: 15,
+    funbox: [],
+  });
+});
+
+it("keeps disabled query states empty", async () => {
+  expect(
+    await getResultsQueryOnce({
+      queryState: () => undefined,
+      sorting: () => ({ field: "wpm", direction: "desc" }),
+    }),
+  ).toBeUndefined();
+});
+
+it("uses the first selected date filter and retains client selection", () => {
+  vi.spyOn(Date, "now").mockReturnValue(1_000_000_000);
+  try {
+    const filters = structuredClone(defaultResultFilters);
+    filters.date = {
+      all: false,
+      last_day: true,
+      last_week: true,
+      last_month: false,
+      last_3months: false,
+    };
+    expect(createResultsQueryState(filters, "tui")).toMatchObject({
+      client: "tui",
+      timestamp: 1_000_000_000 - 86_400_000,
+    });
+  } finally {
+    vi.restoreAllMocks();
+  }
 });
