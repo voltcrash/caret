@@ -88,17 +88,6 @@ export function getActiveFunboxesWithFunction<F extends keyof FunboxFunctions>(
 }
 
 /**
- * Check if there is an active funbox implementing the given function
- * @param functionName function name
- * @returns
- */
-export function isFunboxActiveWithFunction(
-  functionName: keyof FunboxFunctions,
-): boolean {
-  return getActiveFunboxesWithFunction(functionName).length > 0;
-}
-
-/**
  * Find a single active funbox implementing the given function name
  * @param functionName
  * @returns the active funbox if any, `undefined`  otherwise.
