@@ -32,7 +32,6 @@ import {
 import { XpBreakdown } from "@oxytype/schemas/results";
 import { setXpBarData } from "./states/header";
 import { FunboxMetadata } from "@oxytype/funbox";
-import { __nonReactive } from "./collections/tags";
 import { fetchUserFromApi } from "./ape/user";
 import { SnapshotInitError } from "./utils/snapshot-init-error";
 import { updateTagsInFilterStorage } from "./states/result-filters";
