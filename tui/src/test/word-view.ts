@@ -3,7 +3,7 @@ import { splitIntoCharacters } from "@oxytype/typing-core/strings";
 
 export type LetterState = "untyped" | "correct" | "incorrect" | "extra";
 
-export type Letter = { char: string; state: LetterState };
+type Letter = { char: string; state: LetterState };
 
 export type WordView = {
   letters: Letter[];
