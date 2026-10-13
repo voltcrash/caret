@@ -1,3 +1,9 @@
+import {
+  result,
+  resultAnnotation,
+  setCurrentResult,
+  resetResultAnnotations,
+} from "./result/context";
 import { clearWords, clearWordsBlur } from "./test-ui";
 import { showResultScreen } from "../components/pages/test/result/useResultScreen";
 import type { PluginChartOptions } from "chart.js";
@@ -82,7 +88,6 @@ import {
   type CanGetPb,
 } from "./result-view-model";
 
-let result: CompletedEvent;
 let minChartVal: number;
 let maxChartVal: number;
 
@@ -108,8 +113,6 @@ export function toggleUserFakeChartData(): void {
     });
   }
 }
-
-let resultAnnotation: AnnotationOptions<"line">[] = [];
 
 async function updateChartData(): Promise<void> {
   const { Chart } = await import("chart.js");
@@ -652,8 +655,8 @@ export async function update(
   dontSave: boolean,
 ): Promise<void> {
   await prepareResultChart();
-  resultAnnotation = [];
-  result = structuredClone(res);
+  resetResultAnnotations();
+  setCurrentResult(structuredClone(res));
   hideCrown();
   setResultState("wordsHistory", {
     items: [],
@@ -965,7 +968,7 @@ configEvent.subscribe(
       ["typingSpeedUnit", "startGraphsAtZero"].includes(key) &&
       getResultVisible()
     ) {
-      resultAnnotation = [];
+      resetResultAnnotations();
 
       setResultState(
         "stats",
