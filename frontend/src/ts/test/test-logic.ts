@@ -131,12 +131,14 @@ type TestLogicState = {
   failReason: string;
   lastInitError: Error | null;
   showedLazyModeNotification: boolean;
+  testReinitCount: number;
 };
 
 const testLogicState: TestLogicState = {
   failReason: "",
   lastInitError: null,
   showedLazyModeNotification: false,
+  testReinitCount: 0,
 };
 
 const invalidMessages: Record<
@@ -323,7 +325,7 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
   CompositionState.setComposing(false);
   CompositionState.setData("");
   Strings.clearWordDirectionCache();
-  testReinitCount = 0;
+  testLogicState.testReinitCount = 0;
   testLogicState.failReason = "";
 
   const repeatWithPace =
@@ -366,12 +368,10 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
   setIsTestRestarting(false);
 }
 
-let testReinitCount = 0;
-
 async function init(): Promise<boolean> {
   console.debug("Initializing test");
-  testReinitCount++;
-  if (testReinitCount > 3) {
+  testLogicState.testReinitCount++;
+  if (testLogicState.testReinitCount > 3) {
     if (testLogicState.lastInitError) {
       void Sentry.captureException(testLogicState.lastInitError);
     }
