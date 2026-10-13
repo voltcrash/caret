@@ -1,6 +1,5 @@
 import { CommandlineConfigMetadataObject } from "./types";
 import * as TestLogic from "../../test/test-logic";
-import { replaceUnderscoresWithSpaces } from "../../utils/strings";
 
 export const keymapMetadata = {
   keymapMode: {
@@ -13,7 +12,6 @@ export const keymapMetadata = {
   keymapStyle: {
     subgroup: {
       options: "fromSchema",
-      display: replaceUnderscoresWithSpaces,
     },
     alias: "keyboard",
   },
@@ -34,15 +32,13 @@ export const keymapMetadata = {
     subgroup: {
       options: "fromSchema",
       alias: (val) => (val === "overrideSync" ? "default" : ""),
-      display: (layout) =>
-        layout === "overrideSync" ? "emulator sync" : layout.replace(/_/g, " "),
+
       afterExec: () => void TestLogic.restart(),
     },
   },
   keymapKeys: {
     subgroup: {
       options: "fromSchema",
-      display: replaceUnderscoresWithSpaces,
     },
     alias: "keyboard",
   },
