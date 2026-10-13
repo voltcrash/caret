@@ -17,6 +17,7 @@ import { Command } from "./types";
 import * as ConfigSchemas from "@oxytype/schemas/configs";
 import { ZodSchema, ZodFirstPartySchemaTypes } from "zod/v3";
 import { getOptions } from "../utils/zod";
+import type { Validation } from "../types/validation";
 
 export function buildCommandForConfigKey<
   K extends keyof CommandlineConfigMetadataObject,
@@ -197,7 +198,11 @@ function buildInputCommand<K extends keyof ConfigSchemas.Config>({
       ? "custom..."
       : `${capitalizeFirstLetter(configMeta.displayString ?? key)}...`);
 
-  const result = {
+  const result: Omit<Command, "exec"> & {
+    exec: (options: { input?: ConfigSchemas.Config[K] }) => void;
+    inputValueConvert?: InputProps<K>["inputValueConvert"];
+    validation?: Validation<ConfigSchemas.Config[K]>;
+  } = {
     id: `set${capitalizeFirstLetter(key)}Custom`,
     defaultValue:
       inputProps?.defaultValue ?? (() => Config[key]?.toString() ?? ""),
@@ -210,22 +215,19 @@ function buildInputCommand<K extends keyof ConfigSchemas.Config>({
     input: true,
     icon: configMeta?.fa?.icon ?? "fa-cog",
 
-    //@ts-expect-error this is fine
     exec: ({ input }): void => {
       if (input === undefined) return;
-      setConfig(key, input as ConfigSchemas.Config[K]);
-      inputProps?.afterExec?.(input as ConfigSchemas.Config[K]);
+      setConfig(key, input);
+      inputProps?.afterExec?.(input);
     },
     hover: inputProps?.hover,
   };
 
   if (inputProps?.inputValueConvert !== undefined) {
-    //@ts-expect-error this is fine
-    result["inputValueConvert"] = inputProps.inputValueConvert;
+    result.inputValueConvert = inputProps.inputValueConvert;
   }
 
-  //@ts-expect-error this is fine
-  result["validation"] = {
+  result.validation = {
     schema: validation.schema === true ? schema : undefined,
     isValid: validation.isValid,
   };
