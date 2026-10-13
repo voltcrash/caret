@@ -43,7 +43,6 @@ import {
   parseContext,
   visualizeWhitespace,
 } from "./event-log-viewer/event-log";
-import { MarksList } from "./event-log-viewer/MarksList";
 import { ScatterPanel } from "./event-log-viewer/ScatterPanel";
 import { Timeline } from "./event-log-viewer/Timeline";
 import {
@@ -52,6 +51,7 @@ import {
   getTimelineMinMs,
 } from "./event-log-viewer/timeline-lanes";
 import { marksForEvent } from "./event-log-viewer/video-sync";
+import { VideoPanel } from "./event-log-viewer/VideoPanel";
 
 export function EventLogViewerModal(): JSXElement {
   const stage = getStage;
@@ -150,36 +150,18 @@ function PreviewContent(props: {
   const sync = createVideoSync(() => props.ctx.events);
   const {
     videoUrl,
-    setVideoEl,
-    videoDurationMs,
-    setVideoDurationMs,
-    videoPlayState,
-    setVideoPlayState,
-    videoCurrentMs,
-    setVideoCurrentMs,
-    videoFrameTimeMs,
-    videoFps,
-    currentFrameIndex,
     marks,
     eventToMark,
     syncStartMark,
     syncEndMark,
-    isSyncable,
     isSynced,
-    toggleSync,
     videoMapping,
-    videoMsToTestMs,
     videoBarRange,
     timelineMarks,
     driftData,
-    onPickVideo,
-    clearVideo,
     assignMarkToEvent,
     createMarkAndAssignToEvent,
     createSyncMarkAndAssignToEvent,
-    seekVideoMs,
-    toggleVideoPlay,
-    videoStepFrame,
   } = sync;
 
   const timelineMinMs = createMemo(() => getTimelineMinMs(videoBarRange()));
@@ -321,110 +303,7 @@ function PreviewContent(props: {
       {/* SIDE-BY-SIDE: video | words | events */}
       <div class="flex min-h-0 flex-1 gap-3">
         {/* VIDEO VIEWER PANEL */}
-        <div class="bg-bg-secondary flex min-h-0 w-0 flex-1 flex-col gap-2 overflow-auto rounded-lg p-3">
-          <div class="flex items-center justify-between gap-2">
-            <div class="text-xs tracking-wider text-sub uppercase">Viewer</div>
-            <div class="flex items-center gap-2">
-              <input
-                type="file"
-                accept="video/*"
-                onChange={onPickVideo}
-                class="text-xs text-text"
-              />
-              <Show when={videoUrl() !== null}>
-                <Button
-                  variant="text"
-                  text="Clear"
-                  class="text-xs"
-                  onClick={clearVideo}
-                />
-              </Show>
-            </div>
-          </div>
-          <Show
-            when={videoUrl() !== null}
-            fallback={
-              <div class="flex h-64 items-center justify-center rounded bg-bg text-xs text-sub">
-                No video loaded
-              </div>
-            }
-          >
-            <div class="flex justify-center">
-              <video
-                ref={(el) => setVideoEl(el)}
-                src={videoUrl() ?? undefined}
-                class="max-h-[60vh] w-full max-w-3xl rounded bg-bg object-contain"
-                muted
-                onLoadedMetadata={(e) =>
-                  setVideoDurationMs(e.currentTarget.duration * 1000)
-                }
-                onPlay={() => setVideoPlayState(true)}
-                onPause={() => setVideoPlayState(false)}
-                onTimeUpdate={(e) => {
-                  const ct = e.currentTarget.currentTime * 1000;
-                  setVideoCurrentMs(ct);
-                  if (isSynced()) setCurrentMs(videoMsToTestMs(ct));
-                }}
-              ></video>
-            </div>
-            <input
-              type="range"
-              min="0"
-              max={videoDurationMs() ?? 0}
-              step="1"
-              value={videoCurrentMs()}
-              onInput={(e) => seekVideoMs(Number(e.currentTarget.value))}
-              class="w-full"
-            />
-            <div class="flex items-center justify-between gap-2">
-              <div
-                class="font-mono text-xs text-sub"
-                title="current video frame index / time @ detected fps"
-              >
-                {currentFrameIndex() !== null
-                  ? `${currentFrameIndex()} (${(videoFrameTimeMs() ?? 0).toFixed(2)}ms @ ${videoFps().toFixed(2)}fps)`
-                  : "—"}
-              </div>
-              <div class="flex items-center gap-1">
-                <Button
-                  variant="text"
-                  balloon={{ text: "Previous frame" }}
-                  fa={{ icon: "fa-step-backward" }}
-                  onClick={() => videoStepFrame(-1)}
-                />
-                <Button
-                  variant="button"
-                  balloon={{ text: videoPlayState() ? "Pause" : "Play" }}
-                  fa={{ icon: videoPlayState() ? "fa-pause" : "fa-play" }}
-                  onClick={toggleVideoPlay}
-                />
-                <Button
-                  variant="text"
-                  balloon={{ text: "Next frame" }}
-                  fa={{ icon: "fa-step-forward" }}
-                  onClick={() => videoStepFrame(1)}
-                />
-              </div>
-              <Button
-                variant="button"
-                text={isSynced() ? "Synced" : "Sync"}
-                active={isSynced()}
-                disabled={!isSyncable()}
-                balloon={{
-                  text: isSyncable()
-                    ? isSynced()
-                      ? "Click to unsync"
-                      : "Lock video to timeline"
-                    : "Both sync marks must be placed and assigned to events",
-                }}
-                onClick={toggleSync}
-              />
-            </div>
-          </Show>
-          <Show when={videoUrl() !== null}>
-            <MarksList sync={sync} />
-          </Show>
-        </div>
+        <VideoPanel sync={sync} />
 
         {/* INSPECTOR: words */}
         <div class="bg-bg-secondary flex min-h-0 w-0 flex-1 flex-col gap-2 rounded-lg p-3">
