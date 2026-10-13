@@ -1,50 +1,12 @@
-import { Configuration } from "@oxytype/schemas/configuration";
+import {
+  Configuration,
+  ConfigurationFormObjectOf,
+} from "@oxytype/schemas/configuration";
 export { BASE_CONFIGURATION } from "@oxytype/schemas/default-configuration";
 
-type BaseSchema = {
-  type: string;
-  label?: string;
-  hint?: string;
-};
+type FormSchema = ConfigurationFormObjectOf<Configuration>;
 
-type NumberSchema = {
-  type: "number";
-  min?: number;
-} & BaseSchema;
-
-type BooleanSchema = {
-  type: "boolean";
-} & BaseSchema;
-
-type StringSchema = {
-  type: "string";
-} & BaseSchema;
-
-type ArraySchema<T extends unknown[]> = {
-  type: "array";
-  items: Schema<T>[number];
-} & BaseSchema;
-
-type ObjectSchema<T> = {
-  type: "object";
-  fields: Schema<T>;
-} & BaseSchema;
-
-type Schema<T> = {
-  [P in keyof T]: T[P] extends unknown[]
-    ? ArraySchema<T[P]>
-    : T[P] extends number
-      ? NumberSchema
-      : T[P] extends boolean
-        ? BooleanSchema
-        : T[P] extends string
-          ? StringSchema
-          : T[P] extends object
-            ? ObjectSchema<T[P]>
-            : never;
-};
-
-export const CONFIGURATION_FORM_SCHEMA: ObjectSchema<Configuration> = {
+export const CONFIGURATION_FORM_SCHEMA: FormSchema = {
   type: "object",
   label: "Server Configuration",
   fields: {
