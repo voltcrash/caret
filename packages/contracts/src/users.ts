@@ -213,7 +213,6 @@ export const GetProfilePathParamsSchema = z.object({
 });
 export type GetProfilePathParams = z.infer<typeof GetProfilePathParamsSchema>;
 
-//TODO test?!
 export const GetProfileQuerySchema = z.object({
   client: ClientSchema.optional(),
   isUid: z
@@ -234,7 +233,7 @@ export const UpdateUserProfileRequestSchema = UserProfileDetailsSchema.extend({
     .int()
     .nonnegative()
     .optional()
-    .or(z.literal(-1).describe("no badge selected")), //TODO remove the -1, use optional?
+    .describe("omit to select no badge"),
 });
 export type UpdateUserProfileRequest = z.infer<
   typeof UpdateUserProfileRequestSchema

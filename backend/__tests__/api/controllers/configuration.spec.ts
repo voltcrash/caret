@@ -5,7 +5,12 @@ import {
   CONFIGURATION_FORM_SCHEMA,
 } from "../../../src/constants/base-configuration";
 import * as Configuration from "../../../src/init/configuration";
-import type { Configuration as ConfigurationType } from "@oxytype/schemas/configuration";
+import {
+  type Configuration as ConfigurationType,
+  type ConfigurationFormField,
+  ConfigurationFormObjectSchema,
+} from "@oxytype/schemas/configuration";
+import { ConfigurationSchemaResponseSchema } from "@oxytype/contracts/configuration";
 import * as Misc from "../../../src/utils/misc";
 import * as AdminUuids from "../../../src/dal/admin-uids";
 
@@ -41,6 +46,52 @@ describe("Configuration Controller", () => {
   });
 
   describe("getConfigurationSchema", () => {
+    it("should match the response schema", async () => {
+      //WHEN
+      const { body } = await mockApp.get("/configuration/schema").expect(200);
+
+      //THEN
+      expect(ConfigurationSchemaResponseSchema.safeParse(body).success).toBe(
+        true,
+      );
+    });
+    it("should describe every configuration value", () => {
+      const parsed = ConfigurationFormObjectSchema.parse(
+        CONFIGURATION_FORM_SCHEMA,
+      );
+      const describes = (
+        field: ConfigurationFormField,
+        value: unknown,
+      ): void => {
+        if (Array.isArray(value)) {
+          expect(field.type).toEqual("array");
+          if (field.type !== "array") return;
+          value.forEach((item) => describes(field.items, item));
+        } else if (typeof value === "object" && value !== null) {
+          expect(field.type).toEqual("object");
+          if (field.type !== "object") return;
+          expect(Object.keys(field.fields).sort()).toEqual(
+            Object.keys(value).sort(),
+          );
+          for (const [key, child] of Object.entries(value)) {
+            const childField = field.fields[key];
+            if (childField !== undefined) describes(childField, child);
+          }
+        } else {
+          expect(field.type).toEqual(typeof value);
+        }
+      };
+
+      describes(parsed, BASE_CONFIGURATION);
+    });
+    it("should reject unknown form field types", () => {
+      expect(
+        ConfigurationFormObjectSchema.safeParse({
+          type: "object",
+          fields: { foo: { type: "date" } },
+        }).success,
+      ).toBe(false);
+    });
     it("should get without authentication on dev", async () => {
       //GIVEN
       mockAuth.noAuth();

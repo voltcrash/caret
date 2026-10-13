@@ -701,18 +701,23 @@ describe("user controller test", () => {
         uid,
       );
     });
-    // it("should fail with unknown properties", async () => {
-    //WHEN
-    // const { body } = await mockApp
-    //   .post("/users/optOutOfLeaderboards")
-    //   .set("Authorization", `Bearer ${uid}`)
-    //   .send({ extra: "value" });
-    //TODO.expect(422);
-    //THEN
-    /* TODO:
-        expect(body).toEqual({});
-        */
-    // });
+    it("should ignore a request body", async () => {
+      //GIVEN no body is declared, so the body is not validated
+
+      //WHEN
+      const { body } = await mockApp
+        .post("/users/optOutOfLeaderboards")
+        .set("Authorization", `Bearer ${uid}`)
+        .send({ extra: "value" })
+        .expect(200);
+
+      //THEN
+      expect(body).toEqual({
+        message: "User opted out of leaderboards",
+        data: null,
+      });
+      expect(optOutOfLeaderboardsMock).toHaveBeenCalledWith(uid);
+    });
   });
   describe("add result filter preset", () => {
     const validPreset = {
@@ -1942,6 +1947,59 @@ describe("user controller test", () => {
         undefined,
       );
     });
+    it("should get by uid with json query flag", async () => {
+      //GIVEN
+      const uid = foundUser.uid;
+      getUserMock.mockResolvedValue(foundUser as any);
+      leaderboardGetRankMock.mockResolvedValue({
+        rank: 24,
+      } as LeaderboardDal.DBLeaderboardEntry);
+      leaderboardGetCountMock.mockResolvedValue(100);
+
+      //WHEN
+      await mockApp
+        .get(`/users/${uid}/profile`)
+        .query({ isUid: true })
+        .expect(200);
+
+      //THEN
+      expect(getUserByNameMock).not.toHaveBeenCalled();
+      expect(getUserMock).toHaveBeenCalledWith(
+        uid,
+        "get user profile",
+        undefined,
+      );
+    });
+    it("should get by name with json query flag false", async () => {
+      //GIVEN
+      getUserByNameMock.mockResolvedValue(foundUser as any);
+
+      //WHEN
+      await mockApp
+        .get(`/users/bob/profile`)
+        .query({ isUid: false })
+        .expect(200);
+
+      //THEN
+      expect(getUserByNameMock).toHaveBeenCalledWith(
+        "bob",
+        "get user profile",
+        undefined,
+      );
+      expect(getUserMock).not.toHaveBeenCalled();
+    });
+    it("should fail with invalid isUid", async () => {
+      //WHEN
+      const { body } = await mockApp
+        .get(`/users/bob/profile`)
+        .query({ isUid: "yes" })
+        .expect(422);
+
+      //THEN
+      expect(body.message).toEqual("Invalid query schema");
+      expect(getUserByNameMock).not.toHaveBeenCalled();
+      expect(getUserMock).not.toHaveBeenCalled();
+    });
     it("should fail if feature is disabled", async () => {
       //GIVEN
       await enableProfiles(false);
@@ -2030,10 +2088,7 @@ describe("user controller test", () => {
       const { body } = await mockApp
         .patch("/users/profile")
         .set("Authorization", `Bearer ${uid}`)
-        .send({
-          ...newProfile,
-          selectedBadgeId: -1,
-        })
+        .send(newProfile)
         .expect(200);
 
       //THEN
@@ -2056,6 +2111,23 @@ describe("user controller test", () => {
           badges: [{ id: 4 }, { id: 2 }, { id: 3 }],
         },
       );
+    });
+    it("should fail with the legacy no badge sentinel", async () => {
+      //WHEN
+      const { body } = await mockApp
+        .patch("/users/profile")
+        .set("Authorization", `Bearer ${uid}`)
+        .send({ selectedBadgeId: -1 })
+        .expect(422);
+
+      //THEN
+      expect(body).toEqual({
+        message: "Invalid request data schema",
+        validationErrors: [
+          '"selectedBadgeId" Number must be greater than or equal to 0',
+        ],
+      });
+      expect(updateProfileMock).not.toHaveBeenCalled();
     });
     it("should fail with unknown properties", async () => {
       //WHEN
@@ -2337,7 +2409,7 @@ describe("user controller test", () => {
   describe("report user", () => {
     const createReportMock = vi.spyOn(ReportDal, "createReport");
     const verifyCaptchaMock = vi.spyOn(Captcha, "verify");
-    const getPartialUserMock = vi.spyOn(UserDal, "getPartialUser"); //todo replace with getPartialUser
+    const getPartialUserMock = vi.spyOn(UserDal, "getPartialUser");
     beforeEach(async () => {
       vi.useFakeTimers();
       vi.setSystemTime(125000);
@@ -2441,10 +2513,12 @@ describe("user controller test", () => {
         .expect(422);
 
       //THEN
-      expect(body.message).toEqual("Captcha challenge failed");
-      /* TODO
-      expect(body).toEqual({});
-      */
+      expect(body).toEqual({
+        message: "Captcha challenge failed",
+        data: { uid },
+      });
+      expect(verifyCaptchaMock).toHaveBeenCalledWith("captcha", "user-report");
+      expect(createReportMock).not.toHaveBeenCalled();
     });
     it("should fail with invalid properties", async () => {
       //WHEN
