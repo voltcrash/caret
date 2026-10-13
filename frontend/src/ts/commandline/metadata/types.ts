@@ -27,13 +27,22 @@ type SkippedConfigKeys =
 
 //is using a special non schema command at the top to clear funboxes
 
+type SecondaryInputKey<K extends keyof ConfigSchemas.Config> =
+  K extends "minWpm"
+    ? "minWpmCustomSpeed"
+    : K extends "minAcc"
+      ? "minAccCustom"
+      : K extends "paceCaret"
+        ? "paceCaretCustomSpeed"
+        : never;
+
 export type CommandlineConfigMetadataObject = {
   [
     K in keyof Omit<
       ConfigSchemas.Config,
       ConfigKeysWithoutCommands | SkippedConfigKeys
     >
-  ]: CommandlineConfigMetadata<K, any>; // oxlint-disable-line typescript/no-explicit-any
+  ]: CommandlineConfigMetadata<K, SecondaryInputKey<K>>;
 };
 
 export type InputProps<T extends keyof ConfigSchemas.Config> = {

@@ -7,7 +7,6 @@ import {
 } from "../config/metadata";
 import { capitalizeFirstLetter } from "../utils/strings";
 import {
-  CommandlineConfigMetadata,
   commandlineConfigMetadata,
   CommandlineConfigMetadataObject,
   InputProps,
@@ -33,9 +32,7 @@ function _buildCommandForConfigKey<
 >(
   key: K,
   configMeta: ConfigMetadata<K>,
-  commandMeta:
-    | CommandlineConfigMetadata<K, keyof ConfigSchemas.Config>
-    | undefined,
+  commandMeta: CommandlineConfigMetadataObject[K] | undefined,
   schema: ZodSchema,
 ): Command {
   if (commandMeta === undefined || commandMeta === null) {
