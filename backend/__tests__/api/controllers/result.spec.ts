@@ -1049,6 +1049,95 @@ describe("result controller test", () => {
       expect(userIncrementXpMock).not.toHaveBeenCalled();
     });
 
+    describe("personal bests", () => {
+      it("should check pb with the saved result", async () => {
+        //WHEN
+        await mockApp
+          .post("/results")
+          .set("Authorization", `Bearer ${uid}`)
+          .send({ result: buildCompletedEvent() })
+          .expect(200);
+
+        //THEN
+        expect(userCheckIfPbMock).toHaveBeenCalledWith(
+          uid,
+          expect.objectContaining({ name: "bob" }),
+          expect.objectContaining({ uid, wpm: 79.47, mode: "time" }),
+        );
+      });
+      it("should log a new pb", async () => {
+        //WHEN
+        const { body } = await mockApp
+          .post("/results")
+          .set("Authorization", `Bearer ${uid}`)
+          .send({ result: buildCompletedEvent() })
+          .expect(200);
+
+        //THEN
+        expect(body.data.isPb).toBe(true);
+        expect(addLogMock).toHaveBeenCalledWith(
+          "user_new_pb",
+          `time 15 79.47 86% 99.34 95.11% (${insertedId})`,
+          uid,
+        );
+      });
+      it("should not log when result is no pb", async () => {
+        //GIVEN
+        userCheckIfPbMock.mockResolvedValue(false);
+
+        //WHEN
+        const { body } = await mockApp
+          .post("/results")
+          .set("Authorization", `Bearer ${uid}`)
+          .send({ result: buildCompletedEvent() })
+          .expect(200);
+
+        //THEN
+        expect(body.data.isPb).toBe(false);
+        expect(resultAddMock).toHaveBeenCalledWith(
+          uid,
+          expect.not.objectContaining({ isPb: expect.anything() }),
+        );
+        expect(addLogMock).not.toHaveBeenCalledWith(
+          "user_new_pb",
+          expect.anything(),
+          uid,
+        );
+      });
+      it("should not check pb for bailed out results", async () => {
+        //WHEN
+        const { body } = await mockApp
+          .post("/results")
+          .set("Authorization", `Bearer ${uid}`)
+          .send({ result: buildCompletedEvent({ bailedOut: true }) })
+          .expect(200);
+
+        //THEN
+        expect(body.data).toMatchObject({ isPb: false, tagPbs: [] });
+        expect(userCheckIfPbMock).not.toHaveBeenCalled();
+        expect(userCheckIfTagPbMock).not.toHaveBeenCalled();
+        expect(dailyAddResultMock).not.toHaveBeenCalled();
+      });
+      it("should not check pb for offline results", async () => {
+        //WHEN
+        const { body } = await mockApp
+          .post("/results")
+          .set("Authorization", `Bearer ${uid}`)
+          .send({
+            result: buildCompletedEvent({
+              offline: true,
+              timestamp: Date.now() - 60_000,
+            }),
+          })
+          .expect(200);
+
+        //THEN
+        expect(body.data).toMatchObject({ isPb: false, tagPbs: [], xp: 0 });
+        expect(userCheckIfPbMock).not.toHaveBeenCalled();
+        expect(userCheckIfTagPbMock).not.toHaveBeenCalled();
+      });
+    });
+
     describe("anticheat", () => {
       const fixedTimings = (): Partial<CompletedEvent> => {
         const keySpacing = Array.from({ length: 219 }, () => 120);
