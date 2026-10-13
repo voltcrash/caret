@@ -1,3 +1,5 @@
+import { updateRateQuote, updateQuoteFavorite } from "./result/quotes";
+export { updateQuoteRating } from "./result/quotes";
 import { toggleResultWords } from "./result/history";
 export { toggleResultWords } from "./result/history";
 import { updateCrown, hideCrown, resultCanGetPb } from "./result/crown";
@@ -17,7 +19,7 @@ import type { PluginChartOptions } from "chart.js";
 
 import { Config } from "../config/store";
 import { setConfig } from "../config/setters";
-import QuotesController, { Quote } from "../controllers/quotes-controller";
+import { Quote } from "../controllers/quotes-controller";
 import * as DB from "../db";
 
 import {
@@ -25,7 +27,7 @@ import {
   showSuccessNotification,
 } from "../states/notifications";
 import { getCustomTextIndicator, isAuthenticated } from "../states/core";
-import { getQuoteStats } from "../states/quote-rate";
+
 import * as GlarsesMode from "../states/glarses-mode";
 
 import * as Misc from "../utils/misc";
@@ -439,60 +441,6 @@ async function updateTags(dontSave: boolean): Promise<void> {
     visible: userTagsCount > 0,
     items,
     savedResultId: undefined,
-  });
-}
-
-export function updateQuoteRating(rating: string): void {
-  setResultState("quote", { rated: true, rating });
-}
-
-function updateRateQuote(randomQuote: Quote | null): void {
-  if (Config.mode === "quote") {
-    if (randomQuote === null) {
-      console.error(
-        "Failed to update quote rating button: randomQuote is null",
-      );
-      return;
-    }
-
-    const userqr =
-      DB.getSnapshot()?.quoteRatings?.[randomQuote.language]?.[randomQuote.id];
-    if (Numbers.isSafeNumber(userqr)) {
-      setResultState("quote", "rated", true);
-    }
-    getQuoteStats(randomQuote)
-      .then((quoteStats) => {
-        setResultState(
-          "quote",
-          "rating",
-          quoteStats?.average?.toFixed(1) ?? "",
-        );
-      })
-      .catch((_e: unknown) => {
-        setResultState("quote", "rating", "?");
-      });
-    setResultState("quote", "rateVisible", true);
-  }
-}
-
-function updateQuoteFavorite(randomQuote: Quote | null): void {
-  if (Config.mode !== "quote" || !isAuthenticated()) {
-    setResultState("quote", "favoriteVisible", false);
-    return;
-  }
-
-  if (randomQuote === null) {
-    console.error(
-      "Failed to update quote favorite button: randomQuote is null",
-    );
-    return;
-  }
-
-  setResultState("quote", {
-    language: randomQuote.language,
-    id: randomQuote.id.toString(),
-    favorite: QuotesController.isQuoteFavorite(randomQuote),
-    favoriteVisible: true,
   });
 }
 
