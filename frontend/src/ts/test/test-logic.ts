@@ -126,6 +126,7 @@ import { resetModifierState } from "../states/modifiers";
 import { nthElementFromArray } from "../utils/arrays";
 import { hasKoreanCharacters } from "@oxytype/typing-core/strings";
 import { shouldRepeatQuote } from "@oxytype/typing-core/restart";
+import { countInvalidResultFields } from "@oxytype/typing-core/result-fields";
 
 type TestLogicState = {
   failReason: string;
@@ -771,24 +772,9 @@ export async function finish(difficultyFailed = false): Promise<void> {
 
   console.debug("Completed event object", ce);
 
-  function countUndefined(input: unknown): number {
-    if (typeof input === "number") {
-      return isNaN(input) ? 1 : 0;
-    } else if (typeof input === "undefined") {
-      return 1;
-    } else if (typeof input === "object" && input !== null) {
-      return Object.values(input).reduce(
-        (a, b) => (a + countUndefined(b)) as number,
-        0,
-      ) as number;
-    } else {
-      return 0;
-    }
-  }
-
   let dontSave = false;
 
-  if (countUndefined(ce) > 0) {
+  if (countInvalidResultFields(ce) > 0) {
     console.log(ce);
     showErrorNotification(
       "Failed to build result object: One of the fields is undefined or NaN",
