@@ -29,6 +29,7 @@ import { Separator } from "../common/Separator";
 import { SubmitButton } from "../ui/form/SubmitButton";
 import { TextareaField } from "../ui/form/TextareaField";
 import { SettingsGroup } from "./custom-text/SettingsGroup";
+import { cleanCustomText } from "./custom-text/text";
 import { CustomGeneratorModal } from "./CustomGeneratorModal";
 import { SaveCustomTextModal } from "./SaveCustomTextModal";
 import { SavedTextsModal } from "./SavedTextsModal";
@@ -151,17 +152,10 @@ export function CustomTextModal(): JSXElement {
   const showSectionLimit = () => formValues().pipeDelimiter;
 
   const cleanUpText = (): string[] => {
-    let text = form.getFieldValue("text");
-    if (text === "") return [];
-
-    text = text.normalize();
-    text = text.replace(/[\u2000-\u200A\u202F\u205F\u00A0]/g, " ");
-    text = text.replace(/ +/gm, " ");
-    text = text.replace(/( *(\r\n|\r|\n) *)/g, "\n ");
-
-    return text
-      .split(form.getFieldValue("pipeDelimiter") ? "|" : " ")
-      .filter((word) => word !== "");
+    return cleanCustomText(
+      form.getFieldValue("text"),
+      form.getFieldValue("pipeDelimiter"),
+    );
   };
 
   const applyRemoveZeroWidth = () => {
