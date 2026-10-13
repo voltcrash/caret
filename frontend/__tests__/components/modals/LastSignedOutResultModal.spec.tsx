@@ -43,7 +43,10 @@ vi.mock("../../../src/ts/components/common/AnimatedModal", () => ({
 }));
 
 import fixture from "../../../../packages/typing-core/__fixtures__/keystrokes/words-10-clean.json";
-import { LastSignedOutResultModal } from "../../../src/ts/components/modals/LastSignedOutResultModal";
+import {
+  LastSignedOutResultModal,
+  updateUidAndHash,
+} from "../../../src/ts/components/modals/LastSignedOutResultModal";
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -60,6 +63,15 @@ beforeEach(() => {
 afterEach(cleanup);
 
 describe("signed-out result saving", () => {
+  it("rehashes repeatedly without including an existing hash or replacing the event", () => {
+    const event = mocks.result as CompletedEvent;
+    expect(updateUidAndHash("user", event)).toBe(event);
+    const hash = event.hash;
+    event.hash = "stale hash";
+    updateUidAndHash("user", event);
+    expect(event.hash).toBe(hash);
+    expect(event.uid).toBe("user");
+  });
   it("saves a cloned completed event with its ID and PB flag", async () => {
     const previous = mocks.result;
     const view = render(() => <LastSignedOutResultModal />);
