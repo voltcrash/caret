@@ -99,10 +99,17 @@ import {
   showErrorCrownIfNeeded,
   toggleResultChartLegend,
   toggleResultWords,
+  toggleSmoothedBurst,
+  toggleUserFakeChartData,
   update,
   updateTagsAfterEdit,
 } from "../../src/ts/test/result";
-import { resultState, type ResultStats } from "../../src/ts/states/result";
+import {
+  resultState,
+  getResultChart,
+  getResultChartDataset,
+  type ResultStats,
+} from "../../src/ts/states/result";
 import { __testing } from "../../src/ts/config/testing";
 import { Config } from "../../src/ts/config/store";
 import type { CompletedEvent } from "@oxytype/schemas/results";
@@ -537,6 +544,24 @@ describe("result update", () => {
   });
 
   describe("chart legend", () => {
+    it("updates chart data when smoothing and fake data are toggled", async () => {
+      config();
+      await runUpdate(completedEvent());
+      toggleSmoothedBurst();
+      await vi.waitFor(() =>
+        expect(getResultChart().update).toHaveBeenCalledWith("resize"),
+      );
+      toggleSmoothedBurst();
+      toggleUserFakeChartData();
+      await vi.waitFor(() =>
+        expect(getResultChartDataset("wpm").data).toHaveLength(30),
+      );
+      expect(getResultChartDataset("error").data).toHaveLength(30);
+      toggleUserFakeChartData();
+      await vi.waitFor(() =>
+        expect(getResultChartDataset("wpm").data).toEqual([100, 102]),
+      );
+    });
     beforeEach(() => {
       localStorage.removeItem("resultChartDataVisibility");
     });
