@@ -20,11 +20,9 @@ import { getCurrentInput } from "../../test/events/data";
 import { areAllWordsGenerated } from "../../test/words-generator";
 
 export function bindInputListeners(inputEl: HTMLTextAreaElement): void {
-  useInputListener(inputEl, "beforeinput", async (event) => {
+  useInputListener(inputEl, "beforeinput", async (event: Event) => {
     if (!(event instanceof InputEvent)) {
       //beforeinput is typed as inputevent but input is not?
-      //@ts-expect-error just doing this as a sanity check
-      // oxlint-disable-next-line no-unsafe-call
       event.preventDefault();
       return;
     }
@@ -74,12 +72,10 @@ export function bindInputListeners(inputEl: HTMLTextAreaElement): void {
     }
   });
 
-  useInputListener(inputEl, "input", async (event) => {
+  useInputListener(inputEl, "input", async (event: Event) => {
     if (!(event instanceof InputEvent)) {
       //since the listener is on an input element, this should never trigger
       //but its here to narrow the type of "event"
-      //@ts-expect-error type narrowing
-      // oxlint-disable-next-line typescript/no-unsafe-call
       event.preventDefault();
       return;
     }
