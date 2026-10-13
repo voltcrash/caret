@@ -1942,6 +1942,59 @@ describe("user controller test", () => {
         undefined,
       );
     });
+    it("should get by uid with json query flag", async () => {
+      //GIVEN
+      const uid = foundUser.uid;
+      getUserMock.mockResolvedValue(foundUser as any);
+      leaderboardGetRankMock.mockResolvedValue({
+        rank: 24,
+      } as LeaderboardDal.DBLeaderboardEntry);
+      leaderboardGetCountMock.mockResolvedValue(100);
+
+      //WHEN
+      await mockApp
+        .get(`/users/${uid}/profile`)
+        .query({ isUid: true })
+        .expect(200);
+
+      //THEN
+      expect(getUserByNameMock).not.toHaveBeenCalled();
+      expect(getUserMock).toHaveBeenCalledWith(
+        uid,
+        "get user profile",
+        undefined,
+      );
+    });
+    it("should get by name with json query flag false", async () => {
+      //GIVEN
+      getUserByNameMock.mockResolvedValue(foundUser as any);
+
+      //WHEN
+      await mockApp
+        .get(`/users/bob/profile`)
+        .query({ isUid: false })
+        .expect(200);
+
+      //THEN
+      expect(getUserByNameMock).toHaveBeenCalledWith(
+        "bob",
+        "get user profile",
+        undefined,
+      );
+      expect(getUserMock).not.toHaveBeenCalled();
+    });
+    it("should fail with invalid isUid", async () => {
+      //WHEN
+      const { body } = await mockApp
+        .get(`/users/bob/profile`)
+        .query({ isUid: "yes" })
+        .expect(422);
+
+      //THEN
+      expect(body.message).toEqual("Invalid query schema");
+      expect(getUserByNameMock).not.toHaveBeenCalled();
+      expect(getUserMock).not.toHaveBeenCalled();
+    });
     it("should fail if feature is disabled", async () => {
       //GIVEN
       await enableProfiles(false);
