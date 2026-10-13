@@ -31,6 +31,7 @@ const mocks = vi.hoisted(() => ({
   signedOut: vi.fn(),
   addResult: vi.fn(),
   capture: vi.fn(),
+  saveLocal: vi.fn(),
 }));
 
 vi.mock("../../src/ts/states/test", () => ({
@@ -187,7 +188,7 @@ vi.mock("../../src/ts/config/setters", async () => {
 });
 vi.mock("../../src/ts/db", () => ({
   getSnapshot: () => undefined,
-  saveLocalResult: vi.fn(),
+  saveLocalResult: mocks.saveLocal,
   getLocalPB: () => undefined,
 }));
 vi.mock("../../src/ts/ape", () => ({
@@ -281,6 +282,26 @@ beforeEach(() => {
 });
 
 describe("test lifecycle state", () => {
+  it("saves the completed payload with its server ID before collection normalization", async () => {
+    mocks.user = { uid: "user" };
+    mocks.active = true;
+    mocks.addResult.mockResolvedValue({
+      status: 200,
+      body: { data: { insertedId: "saved-result", isPb: true } },
+    });
+    await finish();
+    const saved = mocks.saveLocal.mock.calls[0]?.[0].result;
+    expect(saved).toMatchObject({
+      _id: "saved-result",
+      uid: "user",
+      hash: "hash",
+      isPb: true,
+      wpm: 80,
+    });
+    expect(saved).not.toHaveProperty("words");
+    expect(saved).not.toHaveProperty("timeTyping");
+    expect(saved).not.toHaveProperty("dayTimestamp");
+  });
   it("rejects starts during page transitions", () => {
     mocks.transition = true;
     expect(startTest(100)).toBe(false);
