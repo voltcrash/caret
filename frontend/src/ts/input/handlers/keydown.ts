@@ -17,7 +17,11 @@ import {
 } from "../state";
 import { getActiveFunboxesWithFunction } from "../../test/funbox/list";
 import { Keycode } from "../../constants/keys";
-import { __nonReactive, setBailedOut, wordsHaveTab } from "../../states/test";
+import {
+  setBailedOut,
+  waitForKeymapLayout,
+  wordsHaveTab,
+} from "../../states/test";
 
 import { getCustomTextIndicator } from "../../states/core";
 import { logTestEvent } from "../../test/events/data";
@@ -73,9 +77,7 @@ async function handleOppositeShift(event: KeyboardEvent): Promise<void> {
     Config.oppositeShiftMode === "keymap" &&
     Config.keymapLayout !== "overrideSync"
   ) {
-    let keymapLayout = await __nonReactive
-      .getKeymapLayout()
-      .catch(() => undefined);
+    let keymapLayout = await waitForKeymapLayout().catch(() => undefined);
     if (keymapLayout === undefined) {
       showErrorNotification("Failed to load keymap layout");
 

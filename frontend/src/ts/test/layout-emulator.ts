@@ -1,14 +1,14 @@
 import { isCapsLockOn } from "@leonabcd123/modern-caps-lock";
 import { getCharFromLayout } from "@oxytype/typing-core/layout-emulator";
 import { showErrorNotification } from "../states/notifications";
-import { __nonReactive } from "../states/test";
+import { waitForInputLayout } from "../states/test";
 
 let isAltGrPressed = false;
 export async function getCharFromEvent(
   event: KeyboardEvent,
 ): Promise<string | null> {
   try {
-    const layout = await __nonReactive.getInputLayout();
+    const layout = await waitForInputLayout();
     return getCharFromLayout(layout, {
       code: event.code,
       shift: event.shiftKey,
