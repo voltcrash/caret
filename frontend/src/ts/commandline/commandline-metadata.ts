@@ -1,3 +1,4 @@
+import { themesMetadata } from "./metadata/themes";
 import { keymapMetadata } from "./metadata/keymap";
 import { appearanceMetadata } from "./metadata/appearance";
 import { caretMetadata } from "./metadata/caret";
@@ -13,8 +14,6 @@ export {
   type SubgroupProps,
 } from "./metadata/types";
 import * as ConfigSchemas from "@oxytype/schemas/configs";
-
-import { isAuthenticated } from "../states/core";
 
 export const commandlineConfigMetadata: CommandlineConfigMetadataObject = {
   //test
@@ -33,36 +32,7 @@ export const commandlineConfigMetadata: CommandlineConfigMetadataObject = {
   ...keymapMetadata,
 
   //themes
-  customTheme: {
-    subgroup: {
-      options: "fromSchema",
-    },
-  },
-  flipTestColors: {
-    subgroup: {
-      options: "fromSchema",
-    },
-  },
-  colorfulMode: {
-    subgroup: {
-      options: "fromSchema",
-    },
-  },
-  customBackground: {
-    input: {},
-  },
-  customBackgroundSize: {
-    subgroup: {
-      options: "fromSchema",
-    },
-  },
-  randomTheme: {
-    subgroup: {
-      options: "fromSchema",
-      isAvailable: (value) =>
-        value === "custom" ? isAuthenticated : undefined,
-    },
-  },
+  ...themesMetadata,
 
   //showhide
   showKeyTips: {
