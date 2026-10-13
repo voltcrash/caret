@@ -195,8 +195,9 @@ export function updateUidAndHash(
   notSignedInLastResult: CompletedEvent,
 ): CompletedEvent {
   notSignedInLastResult.uid = uid;
-  //@ts-expect-error really need to delete this
-  delete notSignedInLastResult.hash;
+  const unhashed: Omit<CompletedEvent, "hash"> & { hash?: string } =
+    notSignedInLastResult;
+  delete unhashed.hash;
   notSignedInLastResult.hash = objectHash(notSignedInLastResult);
   return notSignedInLastResult;
 }
