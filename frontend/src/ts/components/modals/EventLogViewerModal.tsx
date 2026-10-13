@@ -3,8 +3,6 @@ import {
   computeCrossStats,
   computeDistStats,
   probit,
-  type QuantumFit,
-  type Significant,
 } from "@oxytype/util/timing-stats";
 import {
   BarController,
@@ -104,6 +102,12 @@ import {
   getBucketDivisor,
   histogramTooltipLines,
 } from "./event-log-viewer/histogram";
+import {
+  formatPercent,
+  formatQuantum,
+  formatSignificant,
+  formatSigmas,
+} from "./event-log-viewer/stat-format";
 import {
   isLowStat,
   type MetricKind,
@@ -1376,38 +1380,22 @@ function DistributionPanel(props: {
           <span class="text-sub">keySpacing × keyDuration</span>
           <Stat
             label="xcorr0"
-            value={
-              cross().lag0 === null
-                ? "-"
-                : `${(cross().lag0 as Significant).r.toFixed(2)} (${(cross().lag0 as Significant).sigmas.toFixed(1)}σ)`
-            }
+            value={formatSignificant(cross().lag0)}
             balloon="Correlation between how long a key was held and the gap that followed it, on logs. The two arrays are index aligned - duration[i] and spacing[i] describe the same keypress - so one shared speed state in a hand should couple them. A generator drawing the two arrays from separate distributions sits at zero. Not flagged: the generator side is exact but nobody has measured the human side yet."
           />
           <Stat
             label="xcorr1"
-            value={
-              cross().lag1 === null
-                ? "-"
-                : `${(cross().lag1 as Significant).r.toFixed(2)} (${(cross().lag1 as Significant).sigmas.toFixed(1)}σ)`
-            }
+            value={formatSignificant(cross().lag1)}
             balloon="The same correlation shifted by one key: the gap before a key against that key's hold. This is the part that is awkward to fake. Matching a single correlation is easy; being non zero at several lags at once needs the two series to actually come from one process rather than two."
           />
           <Stat
             label="overlap"
-            value={
-              cross().overlapRate === null
-                ? "-"
-                : `${((cross().overlapRate as number) * 100).toFixed(0)}%`
-            }
+            value={formatPercent(cross().overlapRate)}
             balloon="Share of keypresses still held when the next key went down - genuine rollover, derived from duration[i] > spacing[i]. Rollover is not optional at speed: gaps shrink as 12000/wpm while holds stay near 70ms, so most keystrokes must overlap at 200wpm and almost none at 60wpm. A fast result with no overlap describes a physically impossible hand."
           />
           <Stat
             label="ovl runs"
-            value={
-              cross().overlapRunsZ === null
-                ? "-"
-                : `${(cross().overlapRunsZ as number).toFixed(1)}σ`
-            }
+            value={formatSigmas(cross().overlapRunsZ)}
             balloon="Runs test on that overlap series. Rolling comes in bursts - through a familiar sequence you roll, elsewhere you do not - so the binary series should clump, giving a negative z. A generator whose holds and gaps are independent produces overlaps at random and sits near zero. Being binary this gets the exact runs test null for free."
           />
         </div>
@@ -1618,20 +1606,12 @@ function DistributionChart(props: {
               />
               <Stat
                 label="acf1"
-                value={
-                  s().autocorrelation === null
-                    ? "-"
-                    : `${(s().autocorrelation as { r: number; sigmas: number }).r.toFixed(2)} (${(s().autocorrelation as { r: number; sigmas: number }).sigmas.toFixed(1)}σ)`
-                }
+                value={formatSignificant(s().autocorrelation)}
                 balloon={statBalloon("acf1", props.kind)}
               />
               <Stat
                 label="runs"
-                value={
-                  s().runsZ === null
-                    ? "-"
-                    : `${(s().runsZ as number).toFixed(1)}σ`
-                }
+                value={formatSigmas(s().runsZ)}
                 balloon={statBalloon("runs", props.kind)}
               />
               <Stat
@@ -1641,11 +1621,7 @@ function DistributionChart(props: {
               />
               <Stat
                 label="quantum"
-                value={
-                  s().quantum === null
-                    ? "-"
-                    : `${(s().quantum as NonNullable<QuantumFit>).periodMs.toFixed(2)}ms (${(s().quantum as NonNullable<QuantumFit>).strength.toFixed(2)})`
-                }
+                value={formatQuantum(s().quantum)}
                 balloon={statBalloon("quantum", props.kind)}
               />
               <Stat
