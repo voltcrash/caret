@@ -40,6 +40,7 @@ import {
 } from "./event-log-viewer/event-log";
 import { EventsPanel } from "./event-log-viewer/EventsPanel";
 import { ScatterPanel } from "./event-log-viewer/ScatterPanel";
+import { SimulatedInputPanel } from "./event-log-viewer/SimulatedInputPanel";
 import { Timeline } from "./event-log-viewer/Timeline";
 import {
   buildLanes,
@@ -266,14 +267,7 @@ function PreviewContent(props: {
       </div>
 
       {/* INSPECTOR: simulated input */}
-      <div class="bg-bg-secondary flex shrink-0 flex-col gap-2 rounded-lg p-3">
-        <div class="text-xs tracking-wider text-sub uppercase">
-          Simulated input
-        </div>
-        <div class="max-h-24 min-h-10 overflow-auto rounded bg-bg p-2 font-mono text-sm break-all whitespace-pre-wrap">
-          {simulatedInput()}
-        </div>
-      </div>
+      <SimulatedInputPanel text={simulatedInput()} />
 
       {/* KEY TIMING DISTRIBUTION PANEL */}
       <DistributionPanel ctx={statsLog()} fullCtx={props.ctx} />
