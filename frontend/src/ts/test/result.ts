@@ -1,3 +1,5 @@
+import { showConfetti } from "./result/confetti";
+export { showConfetti } from "./result/confetti";
 import { getEventLogAccuracy } from "./result/accuracy";
 import {
   result,
@@ -21,7 +23,7 @@ import {
 import { getCustomTextIndicator, isAuthenticated } from "../states/core";
 import { getQuoteStats } from "../states/quote-rate";
 import * as GlarsesMode from "../states/glarses-mode";
-import * as SlowTimer from "../states/slow-timer";
+
 import * as Misc from "../utils/misc";
 import * as Numbers from "@oxytype/util/numbers";
 import * as Arrays from "../utils/arrays";
@@ -438,39 +440,6 @@ async function resultCanGetPb(): Promise<CanGetPb> {
       reason: "unknown",
     };
   }
-}
-
-export async function showConfetti(): Promise<void> {
-  if (SlowTimer.get()) return;
-  const { default: confetti } = await import("canvas-confetti");
-  const style = getComputedStyle(document.body);
-  const colors = [
-    style.getPropertyValue("--main-color"),
-    style.getPropertyValue("--text-color"),
-    style.getPropertyValue("--sub-color"),
-  ];
-  const duration = Date.now() + 125;
-
-  (function f(): void {
-    void confetti({
-      particleCount: 5,
-      angle: 60,
-      spread: 75,
-      origin: { x: 0 },
-      colors: colors,
-    });
-    void confetti({
-      particleCount: 5,
-      angle: 120,
-      spread: 75,
-      origin: { x: 1 },
-      colors: colors,
-    });
-
-    if (Date.now() < duration) {
-      requestAnimationFrame(f);
-    }
-  })();
 }
 
 export function updateSavedResultId(resultId: string): void {
