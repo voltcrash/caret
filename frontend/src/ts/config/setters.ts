@@ -1,7 +1,7 @@
 import * as ConfigSchemas from "@oxytype/schemas/configs";
 import { ZodType as ZodSchema } from "zod/v3";
 import { saveToLocalStorage } from "../config/persistence";
-import { configEvent } from "../events/config";
+import { configEvent, type ConfigEventData } from "../events/config";
 import { showNoticeNotification } from "../states/notifications";
 import {
   canSetConfigWithCurrentFunboxes,
@@ -124,13 +124,13 @@ export function setConfig<T extends keyof ConfigSchemas.Config>(
   Config[key] = value;
   if (!options?.nosave) saveToLocalStorage(key, options?.nosave);
 
-  // @ts-expect-error i can't figure this out
+  // The generic key and both values share Config[T]; preserve that pair in the event union.
   configEvent.dispatch({
     key: key,
     newValue: value,
     nosave: options?.nosave ?? false,
     previousValue: previousValue,
-  });
+  } as ConfigEventData);
 
   if (!options?.partOfFullConfigChange) {
     setConfigStore(key, value);
