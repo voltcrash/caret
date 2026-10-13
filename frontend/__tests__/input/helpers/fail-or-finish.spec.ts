@@ -19,7 +19,8 @@ vi.mock("@oxytype/typing-core/mode", async (importOriginal) => {
   };
 });
 
-vi.mock("../../../src/ts/utils/strings", () => ({
+vi.mock("../../../src/ts/utils/strings", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
   isSpace: vi.fn(),
 }));
 
