@@ -18,7 +18,6 @@ export default {
     },
     frontend: {
       entry: [
-        "src/ts/index.ts",
         "src/ts/{oauth-callback,not-found,privacy-policy,standalone-renderer}.tsx",
         "src/ts/types/*.d.ts",
         "src/styles/{tailwind,standalone}.css",
