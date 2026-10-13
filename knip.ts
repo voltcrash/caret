@@ -14,6 +14,7 @@ export default {
     backend: {
       entry: ["scripts/*.ts"],
       project: ["src/**/*.ts", "scripts/**/*.ts", "__tests__/**/*.ts"],
+      // Shared lint config is consumed through Vite+ rather than application imports.
       ignoreDependencies: ["@oxytype/oxlint-config"],
     },
     frontend: {
