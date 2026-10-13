@@ -53,6 +53,7 @@ import {
 } from "./event-log-viewer/timeline-lanes";
 import { marksForEvent } from "./event-log-viewer/video-sync";
 import { VideoPanel } from "./event-log-viewer/VideoPanel";
+import { WordsPanel } from "./event-log-viewer/WordsPanel";
 
 export function EventLogViewerModal(): JSXElement {
   const stage = getStage;
@@ -236,12 +237,7 @@ function PreviewContent(props: {
     getCurrentEventIndex(filteredEvents(), currentMs()),
   );
 
-  let wordsScrollEl: HTMLDivElement | undefined;
   let eventsScrollEl: HTMLDivElement | undefined;
-
-  createEffect(() => {
-    scrollRowIntoView(wordsScrollEl, currentWordIndex());
-  });
 
   createEffect(() => {
     scrollRowIntoView(eventsScrollEl, currentEventIndex());
@@ -288,42 +284,11 @@ function PreviewContent(props: {
         <VideoPanel sync={sync} />
 
         {/* INSPECTOR: words */}
-        <div class="bg-bg-secondary flex min-h-0 w-0 flex-1 flex-col gap-2 rounded-lg p-3">
-          <div class="text-xs tracking-wider text-sub uppercase">Words</div>
-          <div
-            ref={(el) => (wordsScrollEl = el)}
-            class="min-h-0 flex-1 overflow-auto rounded bg-bg"
-          >
-            <table class="w-full text-xs">
-              <thead class="sticky top-0 bg-bg">
-                <tr class="text-sub">
-                  <th class="w-10 p-2 text-right">#</th>
-                  <th class="p-2 text-left">target</th>
-                  <th class="p-2 text-left">input</th>
-                </tr>
-              </thead>
-              <tbody>
-                <For each={props.ctx.context.targetWords}>
-                  {(word, i) => (
-                    <tr
-                      data-row={i()}
-                      class={cn(
-                        "border-t border-bg",
-                        i() === currentWordIndex() && "bg-main/20",
-                      )}
-                    >
-                      <td class="p-2 text-right font-mono text-sub">{i()}</td>
-                      <td class="p-2 font-mono">{visualizeWhitespace(word)}</td>
-                      <td class="p-2 font-mono">
-                        {visualizeWhitespace(finalInputs[i()] ?? "")}
-                      </td>
-                    </tr>
-                  )}
-                </For>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <WordsPanel
+          targetWords={props.ctx.context.targetWords}
+          finalInputs={finalInputs}
+          currentWordIndex={currentWordIndex()}
+        />
 
         {/* INSPECTOR: events */}
         <div class="bg-bg-secondary flex min-h-0 w-0 flex-[1.5] flex-col gap-2 rounded-lg p-3">
