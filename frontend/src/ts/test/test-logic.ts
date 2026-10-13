@@ -124,6 +124,7 @@ import { getLiveCachedAccuracy } from "./events/live-cache";
 import { isDevEnvironment } from "../utils/env";
 import { resetModifierState } from "../states/modifiers";
 import { nthElementFromArray } from "../utils/arrays";
+import { hasKoreanCharacters } from "@oxytype/typing-core/strings";
 
 let failReason = "";
 
@@ -534,14 +535,7 @@ async function init(): Promise<boolean> {
   setWordsHaveTab(wordsHaveTab);
   setWordsHaveNewline(wordsHaveNewline);
 
-  if (
-    generatedWords
-      .join()
-      .normalize()
-      .match(
-        /[\uac00-\ud7af]|[\u1100-\u11ff]|[\u3130-\u318f]|[\ua960-\ua97f]|[\ud7b0-\ud7ff]/g,
-      )
-  ) {
+  if (hasKoreanCharacters(generatedWords.join().normalize())) {
     setKoreanStatus(true);
   }
 
