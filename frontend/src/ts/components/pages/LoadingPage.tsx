@@ -81,6 +81,7 @@ export function LoadingPage(): JSXElement {
       <div
         class={cn(
           "row-start-2 min-h-[1.25em] w-full wrap-break-word",
+          getMode() !== "error" && "text-sub",
           !isTextVisible() && "invisible",
         )}
       >
