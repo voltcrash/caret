@@ -12,6 +12,7 @@ import {
 } from "@oxytype/typing-core/events/stats";
 import type { EventLog } from "@oxytype/typing-core/events/types";
 import { canQuickRestart } from "@oxytype/typing-core/quick-restart";
+import { shouldRepeatQuote } from "@oxytype/typing-core/restart";
 import { getMode2 } from "@oxytype/typing-core/mode";
 import {
   advancePace,
@@ -527,7 +528,10 @@ export function createTypingTest(options: TypingTestOptions): TypingTest {
       }
       repeat ||=
         repeated ||
-        (config().mode === "quote" && store.config.repeatQuotes === "typing");
+        shouldRepeatQuote({
+          mode: config().mode,
+          repeatQuotes: store.config.repeatQuotes,
+        });
       abandoning = true;
       session.finish(now());
       abandoning = false;
