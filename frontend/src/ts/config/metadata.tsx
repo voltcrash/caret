@@ -18,11 +18,16 @@ import {
 import { isAuthenticated } from "../states/core";
 import { showNoticeNotification } from "../states/notifications";
 import { FaObject } from "../types/font-awesome";
+import {
+  commandlineOptionLabels,
+  commandlineTitles,
+} from "./commandline-labels";
 
 export { getOptionLabel, getOptionSearchKeywords, getVisibleOptions };
 
 type OptionMetadata = ConfigOptionMetadata & {
   fa?: FaObject;
+  commandlineLabel?: string;
 };
 
 export type ConfigMetadata<K extends keyof ConfigSchemas.Config> = {
@@ -35,6 +40,7 @@ export type ConfigMetadata<K extends keyof ConfigSchemas.Config> = {
    * Optional display string for the config key.
    */
   displayString?: string;
+  commandline?: { title?: string; inputTitle?: string };
   /**
    * Should the config change trigger a resize event? handled in ui.ts:108
    */
@@ -54,7 +60,9 @@ export type ConfigMetadata<K extends keyof ConfigSchemas.Config> = {
           true: OptionMetadata;
           false: OptionMetadata;
         }>
-      : never;
+      : ConfigSchemas.Config[K] extends readonly unknown[]
+        ? Partial<Record<string, OptionMetadata>>
+        : never;
 
   /**
    * Group that this config belongs to. Used for partial presets
@@ -310,10 +318,17 @@ function withWebMetadata<K extends keyof ConfigSchemas.Config>(
   const options = optionsMetadata as
     | Record<string, ConfigOptionMetadata>
     | undefined;
+  const paletteOptions = commandlineOptionLabels[key];
+  const paletteTitle = commandlineTitles[key];
   return {
     ...shared,
     ...web,
-    ...(options === undefined && webOptions === undefined
+    ...(paletteTitle === undefined
+      ? {}
+      : { commandline: { title: paletteTitle } }),
+    ...(options === undefined &&
+    webOptions === undefined &&
+    paletteOptions === undefined
       ? {}
       : {
           optionsMetadata: Object.fromEntries(
@@ -321,10 +336,15 @@ function withWebMetadata<K extends keyof ConfigSchemas.Config>(
               ...new Set([
                 ...Object.keys(options ?? {}),
                 ...Object.keys(webOptions ?? {}),
+                ...Object.keys(paletteOptions ?? {}),
               ]),
             ].map((option) => [
               option,
-              { ...options?.[option], ...webOptions?.[option] },
+              {
+                ...options?.[option],
+                ...webOptions?.[option],
+                ...paletteOptions?.[option],
+              },
             ]),
           ) as ConfigMetadata<K>["optionsMetadata"],
         }),
