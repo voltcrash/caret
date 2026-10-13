@@ -74,7 +74,6 @@
   },
   "devDependencies": {
     "@actions/core": "3.0.1",
-    "@eslint/json": "2.1.0",
     "@fortawesome/fontawesome-free": "7.3.1",
     "@oxytype/oxlint-config": "workspace:*",
     "@oxytype/typescript-config": "workspace:*",
@@ -99,7 +98,6 @@
     "@vitest/coverage-v8": "catalog:",
     "caniuse-lite": "1.0.30001814",
     "concurrently": "10.0.5",
-    "eslint": "10.11.0",
     "eslint-plugin-compat": "7.0.2",
     "eslint-plugin-solid": "0.18.0",
     "fontawesome-subset": "4.6.0",
