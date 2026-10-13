@@ -1,3 +1,4 @@
+import { subscribeResultConfigChanges } from "./result/chart-config";
 import { updateTags } from "./result/tags";
 export { updateSavedResultId, updateTagsAfterEdit } from "./result/tags";
 import { updateResultChartDataVisibility } from "./result/chart-visibility";
@@ -47,7 +48,7 @@ import * as Misc from "../utils/misc";
 import * as Arrays from "../utils/arrays";
 
 import * as TodayTracker from "./today-tracker";
-import { configEvent } from "../events/config";
+
 import * as Focus from "./focus";
 import * as CustomText from "./custom-text";
 import * as Funbox from "./funbox/funbox";
@@ -61,7 +62,6 @@ import * as ConnectionState from "../states/connection";
 
 import {
   getCurrentQuote,
-  getResultVisible,
   isTestInvalid,
   setResultCalculating,
   setResultLoading,
@@ -72,7 +72,7 @@ import {
   prepareResultChart,
   setResultState,
 } from "../states/result";
-import { buildResultStats, buildSpeedStats } from "./result-view-model";
+import { buildResultStats } from "./result-view-model";
 
 export function updateTodayTracker(): void {
   setResultState("timeToday", TodayTracker.getString());
@@ -216,34 +216,4 @@ export async function update(
   getResultChart().resize();
 }
 
-configEvent.subscribe(
-  async ({ key }) => {
-    if (
-      ["typingSpeedUnit", "startGraphsAtZero"].includes(key) &&
-      getResultVisible()
-    ) {
-      resetResultAnnotations();
-
-      setResultState(
-        "stats",
-        (stats) =>
-          stats && {
-            ...stats,
-            ...buildSpeedStats(result, getEventLogAccuracy()),
-          },
-      );
-      await updateChartData();
-      await updateChartPBLine();
-      updateResultChartDataVisibility();
-      updateMinMaxChartValues();
-      applyMinMaxChartValues();
-
-      ((getResultChart().options as PluginChartOptions<"line" | "scatter">)
-        .plugins.annotation.annotations as AnnotationOptions<"line">[]) =
-        resultAnnotation;
-      getResultChart().update();
-      getResultChart().resize();
-    }
-  },
-  import.meta.hot,
-);
+subscribeResultConfigChanges(import.meta.hot);
