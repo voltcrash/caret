@@ -34,7 +34,6 @@ import {
 
 import type {
   EventLog,
-  InputEventNoMs,
   TestEventNoMs,
   TestEventType,
 } from "../../test/events/types";
@@ -75,17 +74,25 @@ import {
 import { hideModal } from "../../states/modals";
 import { getLastEventLog } from "../../states/test";
 import { getTheme } from "../../states/theme";
-import { getInputFromDom } from "../../test/events/helpers";
 import {
   getKeypressDurations,
   getKeypressSpacing,
 } from "../../test/events/stats";
-import { EVENT_LOG_VERSION } from "../../test/events/types";
 import { cn } from "../../utils/cn";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Balloon } from "../common/Balloon";
 import { Button } from "../common/Button";
 import { ChartJs } from "../common/ChartJs";
+import {
+  getCurrentEventIndex,
+  getCurrentWordIndex,
+  getMaxTestMs,
+  getNextEventMs,
+  getPreviousEventMs,
+  inputsPerWord,
+  parseContext,
+  visualizeWhitespace,
+} from "./event-log-viewer/event-log";
 
 // this modal is lazy loaded on its own, so it cannot rely on whatever else
 // happens to have registered these. register is idempotent
@@ -251,56 +258,6 @@ function buildLanes(
   return { segments, totalHeight: Math.max(y, TIMELINE_TRACK_HEIGHT) };
 }
 
-function parseContext(raw: string): EventLog {
-  const parsed = JSON.parse(raw) as unknown;
-  if (typeof parsed !== "object" || parsed === null) {
-    throw new Error("Expected an EventLog object");
-  }
-  if (
-    !("version" in parsed) ||
-    !("events" in parsed) ||
-    !("context" in parsed)
-  ) {
-    throw new Error(
-      `Expected EventLog { version: ${EVENT_LOG_VERSION}, events, context }`,
-    );
-  }
-  if (parsed.version !== EVENT_LOG_VERSION) {
-    throw new Error(
-      `Unsupported EventLog version ${String(parsed.version)} (expected ${EVENT_LOG_VERSION})`,
-    );
-  }
-  if (!Array.isArray((parsed as EventLog).events)) {
-    throw new Error("EventLog.events must be an array");
-  }
-  const ctx = (parsed as EventLog).context as unknown;
-  if (
-    typeof ctx !== "object" ||
-    ctx === null ||
-    !Array.isArray((ctx as { targetWords?: unknown }).targetWords)
-  ) {
-    throw new Error("EventLog.context.targetWords must be a string array");
-  }
-  return parsed as EventLog;
-}
-
-function visualizeWhitespace(s: string): string {
-  return s.replace(/ /g, "␣").replace(/\t/g, "→").replace(/\n/g, "↵");
-}
-
-function inputsPerWord(events: TestEventNoMs[], wordCount: number): string[] {
-  const buckets = new Map<number, InputEventNoMs[]>();
-  for (const e of events) {
-    if (e.type !== "input") continue;
-    const bucket = buckets.get(e.data.wordIndex) ?? [];
-    bucket.push(e);
-    buckets.set(e.data.wordIndex, bucket);
-  }
-  return Array.from({ length: wordCount }, (_, i) =>
-    getInputFromDom(buckets.get(i) ?? []),
-  );
-}
-
 export function EventLogViewerModal(): JSXElement {
   const stage = getStage;
   const raw = getRaw;
@@ -394,11 +351,7 @@ function PreviewContent(props: {
   ctx: EventLog;
   onBack: () => void;
 }): JSXElement {
-  const maxMs = untrack(() =>
-    Math.ceil(
-      props.ctx.events.reduce((m, e) => (e.testMs > m ? e.testMs : m), 0),
-    ),
-  );
+  const maxMs = untrack(() => getMaxTestMs(props.ctx.events));
   const videoUrl = getVideoUrl;
   const [videoEl, setVideoEl] = createSignal<HTMLVideoElement | undefined>(
     undefined,
@@ -571,14 +524,9 @@ function PreviewContent(props: {
     ),
   );
 
-  const currentWordIndex = createMemo(() => {
-    const ev = visibleEvents();
-    for (let i = ev.length - 1; i >= 0; i--) {
-      const e = ev[i];
-      if (e?.type === "input") return e.data.wordIndex;
-    }
-    return -1;
-  });
+  const currentWordIndex = createMemo(() =>
+    getCurrentWordIndex(visibleEvents()),
+  );
 
   const visibleTypes = getVisibleTypes;
 
@@ -605,19 +553,9 @@ function PreviewContent(props: {
     buildLanes(props.ctx.events, visibleTypes()),
   );
 
-  const currentEventIndex = createMemo(() => {
-    const events = filteredEvents();
-    let idx = -1;
-    let best = -Infinity;
-    for (let i = 0; i < events.length; i++) {
-      const ms = (events[i] as TestEventNoMs).testMs;
-      if (ms <= currentMs() && ms > best) {
-        idx = i;
-        best = ms;
-      }
-    }
-    return idx;
-  });
+  const currentEventIndex = createMemo(() =>
+    getCurrentEventIndex(filteredEvents(), currentMs()),
+  );
 
   let wordsScrollEl: HTMLDivElement | undefined;
   let eventsScrollEl: HTMLDivElement | undefined;
@@ -733,26 +671,16 @@ function PreviewContent(props: {
 
   const goNextEvent = (): void => {
     stopAllPlay();
-    const events = filteredEvents();
-    let bestMs: number | null = null;
-    for (const e of events) {
-      if (e.testMs > currentMs() && (bestMs === null || e.testMs < bestMs)) {
-        bestMs = e.testMs;
-      }
-    }
-    setCurrentMs(bestMs ?? timelineMaxMs());
+    setCurrentMs(
+      getNextEventMs(filteredEvents(), currentMs()) ?? timelineMaxMs(),
+    );
   };
 
   const goPrevEvent = (): void => {
     stopAllPlay();
-    const events = filteredEvents();
-    let bestMs: number | null = null;
-    for (const e of events) {
-      if (e.testMs < currentMs() && (bestMs === null || e.testMs > bestMs)) {
-        bestMs = e.testMs;
-      }
-    }
-    setCurrentMs(bestMs ?? timelineMinMs());
+    setCurrentMs(
+      getPreviousEventMs(filteredEvents(), currentMs()) ?? timelineMinMs(),
+    );
   };
 
   const onPickVideo = (e: Event): void => {
