@@ -153,7 +153,7 @@ function AsyncContent<T extends Record<string, unknown>>(
     });
   }
 
-  // oxlint-disable solid/reactivity
+  // oxlint-disable solid/reactivity -- Source keys are fixed at mount; each stored accessor tracks its value.
   const eagerAccessorMap = Object.fromEntries(
     typedKeys(source()).map((key) => [
       `${String(key)}Data`,
@@ -192,16 +192,12 @@ function AsyncContent<T extends Record<string, unknown>>(
               fallback={
                 <Show when={hasResolved()}>
                   {(_) =>
-                    // oxlint-disable-next-line typescript/no-explicit-any
-                    (props.children as (data: any) => JSXElement)(
-                      deferredAccessorMap,
-                    )
+                    (props as DeferredChildren<T>).children(deferredAccessorMap)
                   }
                 </Show>
               }
             >
-              {/* oxlint-disable-next-line typescript/no-explicit-any */}
-              {(props.children as (data: any) => JSXElement)(eagerAccessorMap)}
+              {(props as EagerChildren<T>).children(eagerAccessorMap)}
             </Show>
           </>
         }
