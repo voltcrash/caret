@@ -16,7 +16,7 @@ import { migrateConfig } from "./utils";
 import { isObject, promiseWithResolvers } from "../utils/misc";
 import { setConfig } from "./setters";
 import { deleteConfig } from "../ape/config";
-import { typedKeys } from "@oxytype/util/objects";
+import { setProperty, typedKeys } from "@oxytype/util/objects";
 import { lastConfigsToApply } from "@oxytype/typing-core/config/setter";
 
 export async function applyConfigFromJson(json: string): Promise<boolean> {
@@ -68,8 +68,7 @@ export async function applyConfig(
 
   const defaultConfig = getDefaultConfig();
   for (const key of typedKeys(fullConfig)) {
-    //@ts-expect-error this is fine, both are of type config
-    Config[key] = defaultConfig[key];
+    setProperty(Config, key, defaultConfig[key]);
   }
 
   const configKeysToReset: (keyof ConfigSchemas.Config)[] = [];
