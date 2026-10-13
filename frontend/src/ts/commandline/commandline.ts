@@ -339,12 +339,11 @@ function handleInputSubmit(): void {
   }
 
   if ("inputValueConvert" in commandlineState.inputModeParams.command) {
-    commandlineState.inputModeParams.command.exec?.({
-      // @ts-expect-error this is fine
-      // oxlint-disable-next-line no-unsafe-assignment
-      input: commandlineState.inputModeParams.command.inputValueConvert(
-        commandlineState.inputValue,
-      ),
+    // withValidation pairs each converter with an executor accepting its output.
+    const command = commandlineState.inputModeParams
+      .command as CommandWithValidation<unknown>;
+    command.exec?.({
+      input: command.inputValueConvert(commandlineState.inputValue),
     });
   } else {
     commandlineState.inputModeParams.command.exec?.({
