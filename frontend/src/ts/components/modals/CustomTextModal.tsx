@@ -1,4 +1,5 @@
-import type { CustomTextMode } from "@oxytype/schemas/util";
+import { CustomTextIncomingData, Mode } from "./custom-text/types";
+export { type CustomTextIncomingData } from "./custom-text/types";
 
 import { createForm } from "@tanstack/solid-form";
 import { batch, createSignal, For, JSXElement, Show, untrack } from "solid-js";
@@ -31,15 +32,6 @@ import { CustomGeneratorModal } from "./CustomGeneratorModal";
 import { SaveCustomTextModal } from "./SaveCustomTextModal";
 import { SavedTextsModal } from "./SavedTextsModal";
 import { WordFilterModal } from "./WordFilterModal";
-
-export type CustomTextIncomingData =
-  | ({ set?: boolean; long?: boolean } & (
-      | { text: string; splitText?: never }
-      | { text?: never; splitText: string[] }
-    ))
-  | null;
-
-type Mode = "simple" | CustomTextMode;
 
 const modeOptions = [
   { value: "simple", label: "simple" },
