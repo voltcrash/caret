@@ -104,6 +104,25 @@ import {
   type TimelineSegment,
   type VideoBar,
 } from "./event-log-viewer/timeline-lanes";
+import {
+  assignMark,
+  clampVideoSeconds,
+  computeVideoMapping,
+  type DriftPoint,
+  eventIndexForMark as eventIndexForMarkIn,
+  getDriftPoints,
+  getFrameIndex,
+  getTimelineMarks,
+  getVideoBarRange,
+  identityMapping,
+  marksForEvent,
+  medianFps,
+  testMsToVideoMs as toVideoMs,
+  unassignedMarks,
+  unassignMark,
+  type VideoMapping,
+  videoMsToTestMs as toTestMs,
+} from "./event-log-viewer/video-sync";
 
 // this modal is lazy loaded on its own, so it cannot rely on whatever else
 // happens to have registered these. register is idempotent
@@ -238,13 +257,8 @@ function PreviewContent(props: {
   );
   const syncEndMark = createMemo(() => marks().find((m) => m.sync === "end"));
 
-  const eventIndexForMark = (id: string): number | undefined => {
-    const assignments = eventToMark();
-    for (const [k, v] of Object.entries(assignments)) {
-      if (v === id) return Number(k);
-    }
-    return undefined;
-  };
+  const eventIndexForMark = (id: string): number | undefined =>
+    eventIndexForMarkIn(eventToMark(), id);
 
   const syncStartEvent = createMemo(() => {
     const m = syncStartMark();
@@ -276,70 +290,43 @@ function PreviewContent(props: {
     setSyncEnabled(!syncEnabled());
   };
 
-  const videoMapping = createMemo((): { startEff: number; slope: number } => {
-    if (!isSynced()) return { startEff: 0, slope: 1 };
-    const sM = syncStartMark() as Mark;
-    const eM = syncEndMark() as Mark;
-    const sE = syncStartEvent() as TestEventNoMs;
-    const eE = syncEndEvent() as TestEventNoMs;
-    const a = sE.testMs;
-    const b = eE.testMs;
-    if (b === a) return { startEff: sM.videoMs, slope: 1 };
-    const slope = (eM.videoMs - sM.videoMs) / (b - a);
-    return { startEff: sM.videoMs - a * slope, slope };
+  const videoMapping = createMemo((): VideoMapping => {
+    if (!isSynced()) return identityMapping();
+    return computeVideoMapping(
+      syncStartMark() as Mark,
+      syncEndMark() as Mark,
+      syncStartEvent() as TestEventNoMs,
+      syncEndEvent() as TestEventNoMs,
+    );
   });
 
-  const testMsToVideoMs = (testMs: number): number => {
-    const { startEff, slope } = videoMapping();
-    return startEff + testMs * slope;
-  };
+  const testMsToVideoMs = (testMs: number): number =>
+    toVideoMs(videoMapping(), testMs);
 
-  const videoMsToTestMs = (videoMs: number): number => {
-    const { startEff, slope } = videoMapping();
-    if (slope === 0) return 0;
-    return (videoMs - startEff) / slope;
-  };
+  const videoMsToTestMs = (videoMs: number): number =>
+    toTestMs(videoMapping(), videoMs);
 
   const videoBarRange = createMemo(() => {
     if (!isSynced()) return undefined;
     const dur = videoDurationMs();
     if (dur === null) return undefined;
-    const start = videoMsToTestMs(0);
-    const end = videoMsToTestMs(dur);
-    return { start, end };
+    return getVideoBarRange(videoMapping(), dur);
   });
 
   const timelineMarks = createMemo((): TimelineMark[] => {
     if (!isSynced()) return [];
-    return marks().map((m) => ({
-      testMs: videoMsToTestMs(m.videoMs),
-      label: m.sync ?? m.id,
-      sync: m.sync,
-    }));
+    return getTimelineMarks(marks(), videoMapping());
   });
 
-  const driftData = createMemo(
-    (): { eventTestMs: number; driftMs: number; label: string }[] => {
-      if (!isSynced()) return [];
-      const points: { eventTestMs: number; driftMs: number; label: string }[] =
-        [];
-      for (const mark of marks()) {
-        if (mark.sync !== undefined) continue;
-        const idx = eventIndexForMark(mark.id);
-        if (idx === undefined) continue;
-        const event = props.ctx.events[idx];
-        if (event === undefined) continue;
-        const mappedTestMs = videoMsToTestMs(mark.videoMs);
-        points.push({
-          eventTestMs: event.testMs,
-          driftMs: mappedTestMs - event.testMs,
-          label: mark.id,
-        });
-      }
-      points.sort((a, b) => a.eventTestMs - b.eventTestMs);
-      return points;
-    },
-  );
+  const driftData = createMemo((): DriftPoint[] => {
+    if (!isSynced()) return [];
+    return getDriftPoints(
+      marks(),
+      eventToMark(),
+      props.ctx.events,
+      videoMapping(),
+    );
+  });
 
   const timelineMinMs = createMemo(() => getTimelineMinMs(videoBarRange()));
   const timelineMaxMs = createMemo(() =>
@@ -575,11 +562,7 @@ function PreviewContent(props: {
 
   const removeMark = (id: string): void => {
     setMarks(marks().filter((m) => m.id !== id));
-    const next: Record<number, string> = {};
-    for (const [k, v] of Object.entries(eventToMark())) {
-      if (v !== id) next[Number(k)] = v;
-    }
-    setEventToMark(next);
+    setEventToMark(unassignMark(eventToMark(), id));
   };
 
   const updateMarkVideoMs = (id: string, videoMs: number): void => {
@@ -590,15 +573,7 @@ function PreviewContent(props: {
     eventIndex: number,
     markId: string | null,
   ): void => {
-    const next: Record<number, string> = {};
-    for (const [k, v] of Object.entries(eventToMark())) {
-      const ki = Number(k);
-      if (ki === eventIndex) continue;
-      if (markId !== null && v === markId) continue;
-      next[ki] = v;
-    }
-    if (markId !== null) next[eventIndex] = markId;
-    setEventToMark(next);
+    setEventToMark(assignMark(eventToMark(), eventIndex, markId));
   };
 
   const createMarkAndAssignToEvent = (eventIndex: number): void => {
@@ -634,7 +609,7 @@ function PreviewContent(props: {
   const currentFrameIndex = (): number | null => {
     const t = videoFrameTimeMs();
     if (t === null) return null;
-    return Math.round((t / 1000) * videoFps());
+    return getFrameIndex(t, videoFps());
   };
 
   createEffect(() => {
@@ -658,8 +633,7 @@ function PreviewContent(props: {
         if (dt > 0 && dt < 0.1) {
           samples.push(1 / dt);
           if (samples.length > 30) samples.shift();
-          const sorted = [...samples].sort((a, b) => a - b);
-          const median = sorted[Math.floor(sorted.length / 2)];
+          const median = medianFps(samples);
           if (median !== undefined) setVideoFps(median);
         }
       }
@@ -672,8 +646,7 @@ function PreviewContent(props: {
   const seekVideoMs = (videoMs: number): void => {
     const el = videoEl();
     if (el === undefined) return;
-    const dur = Number.isFinite(el.duration) ? el.duration : videoMs / 1000;
-    el.currentTime = Math.max(0, Math.min(dur, videoMs / 1000));
+    el.currentTime = clampVideoSeconds(videoMs / 1000, el.duration);
   };
 
   const toggleVideoPlay = (): void => {
@@ -691,10 +664,7 @@ function PreviewContent(props: {
     if (el === undefined) return;
     el.pause();
     const t = el.currentTime + (delta * frameMs()) / 1000;
-    el.currentTime = Math.max(
-      0,
-      Math.min(Number.isFinite(el.duration) ? el.duration : t, t),
-    );
+    el.currentTime = clampVideoSeconds(t, el.duration);
   };
 
   return (
@@ -855,17 +825,8 @@ function PreviewContent(props: {
                 }}
                 onClick={() => addMark("end")}
               />
-              <Show
-                when={
-                  marks().filter((m) => eventIndexForMark(m.id) === undefined)
-                    .length > 0
-                }
-              >
-                <For
-                  each={marks().filter(
-                    (m) => eventIndexForMark(m.id) === undefined,
-                  )}
-                >
+              <Show when={unassignedMarks(marks(), eventToMark()).length > 0}>
+                <For each={unassignedMarks(marks(), eventToMark())}>
                   {(mark) => (
                     <div class="flex items-center gap-1 rounded bg-bg p-1 font-mono text-xs">
                       <span class="text-text">{mark.sync ?? mark.id}</span>
@@ -1011,10 +972,11 @@ function PreviewContent(props: {
                         >
                           <option value="">(none)</option>
                           <For
-                            each={marks().filter((m) => {
-                              const idx = eventIndexForMark(m.id);
-                              return idx === undefined || idx === originalIndex;
-                            })}
+                            each={marksForEvent(
+                              marks(),
+                              eventToMark(),
+                              originalIndex,
+                            )}
                           >
                             {(mark) => (
                               <option value={mark.id}>
@@ -2469,7 +2431,7 @@ function Stat(props: {
 }
 
 function DriftChart(props: {
-  data: { eventTestMs: number; driftMs: number; label: string }[];
+  data: DriftPoint[];
   minMs: number;
   maxMs: number;
 }): JSXElement {
