@@ -685,6 +685,18 @@ export function useUserAverage10LiveQuery(options: {
   });
 }
 
+/**
+ * web results from the local day starting at `dayTimestamp` onwards
+ */
+// oxlint-disable-next-line typescript/explicit-function-return-type
+export async function getResultsSinceDayOnce(dayTimestamp: number) {
+  return queryOnce((q) =>
+    q
+      .from({ r: resultsCollection })
+      .where(({ r }) => gte(r.dayTimestamp, dayTimestamp)),
+  );
+}
+
 export async function getUserAverage10Once(
   options: CurrentSettingsFilter,
 ): Promise<{ wpm: number; acc: number }> {

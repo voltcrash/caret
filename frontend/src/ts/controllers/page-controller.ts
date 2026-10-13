@@ -71,7 +71,7 @@ const pages = {
           );
         }
         await waitForResultsReady();
-        TodayTracker.addAllFromToday();
+        await TodayTracker.addAllFromToday();
       },
       style: "bar",
       keyframes: [
