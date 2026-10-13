@@ -75,7 +75,6 @@ import { hashResult, preloadResultHasher } from "../utils/result-hash";
 import { getAuthenticatedUser } from "../auth-client";
 import { highlight } from "../events/keymap";
 import * as LazyModeState from "../states/remember-lazy-mode";
-import { Mode } from "@oxytype/schemas/shared";
 import {
   CompletedEvent,
   CompletedEventCustomText,
@@ -90,7 +89,7 @@ import {
 } from "./funbox/list";
 import { getFunbox } from "@oxytype/funbox";
 import * as CompositionState from "../states/composition";
-import { SnapshotResult } from "../constants/default-snapshot";
+import { SavedResult } from "../constants/default-snapshot";
 import { WordGenError } from "@oxytype/typing-core/errors";
 import { tryCatch } from "@oxytype/util/trycatch";
 import * as Sentry from "../sentry";
@@ -1003,13 +1002,9 @@ async function saveResult(
   }
 
   if (data.insertedId !== undefined) {
-    //TODO - this type cast was not needed before because we were using JSON cloning
-    // but now with the stronger types it shows that we are forcing completed event
-    // into a snapshot result - might not cuase issues but worth investigating
-    const snapshotResult = structuredClone(
-      result,
-    ) as unknown as SnapshotResult<Mode>;
-    snapshotResult._id = data.insertedId;
+    const snapshotResult: SavedResult = Object.assign(structuredClone(result), {
+      _id: data.insertedId,
+    });
     if (data.isPb !== undefined && data.isPb) {
       snapshotResult.isPb = true;
     }
