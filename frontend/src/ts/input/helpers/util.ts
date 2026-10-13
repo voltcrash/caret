@@ -1,7 +1,6 @@
 import * as Core from "@oxytype/typing-core/input/util";
 import { isFunboxActiveWithProperty } from "../../test/funbox/list";
 import { Config } from "../../config/store";
-export type { CommitCharacterType } from "@oxytype/typing-core/input/util";
 export function getCommitCharacterType(
   options: Parameters<typeof Core.getCommitCharacterType>[0],
 ): ReturnType<typeof Core.getCommitCharacterType> {
