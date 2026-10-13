@@ -6,7 +6,9 @@ import {
 } from "@oxytype/schemas/configs";
 import { PresetType } from "@oxytype/schemas/presets";
 
-import { __nonReactive as __nonReactiveTags } from "../../../collections/tags";
+import { untrack } from "solid-js";
+
+import { getActiveTags } from "../../../collections/tags";
 import { configMetadata } from "../../../config/metadata";
 import { getConfigChanges as getConfigChangesFromConfig } from "../../../config/utils";
 import { getDefaultConfig } from "../../../constants/default-config";
@@ -48,9 +50,7 @@ export function getConfigChanges(
     presetType === "partial"
       ? getPartialConfigChanges(getConfigChangesFromConfig(), checkboxes)
       : getConfigChangesFromConfig();
-  const activeTagIds: string[] = __nonReactiveTags
-    .getActiveTags()
-    .map((tag) => tag._id);
+  const activeTagIds: string[] = untrack(getActiveTags).map((tag) => tag._id);
 
   const setTags = presetType === "full" || checkboxes.behavior;
   return {
