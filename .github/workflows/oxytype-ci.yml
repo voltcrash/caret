@@ -246,7 +246,7 @@ jobs:
 
       - name: Lint JSON
         if: steps.filter.outputs.json == 'true' || needs.pre-ci.outputs.shared-inputs == 'true'
-        run: vp run lint-json-assets
+        run: vp run check-assets-json
 
       - name: Validate language assets
         if: steps.filter.outputs.languages == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true'
