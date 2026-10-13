@@ -213,7 +213,6 @@ export const GetProfilePathParamsSchema = z.object({
 });
 export type GetProfilePathParams = z.infer<typeof GetProfilePathParamsSchema>;
 
-//TODO test?!
 export const GetProfileQuerySchema = z.object({
   client: ClientSchema.optional(),
   isUid: z
