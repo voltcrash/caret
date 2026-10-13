@@ -1,3 +1,4 @@
+import { keymapMetadata } from "./metadata/keymap";
 import { appearanceMetadata } from "./metadata/appearance";
 import { caretMetadata } from "./metadata/caret";
 import { soundMetadata } from "./metadata/sound";
@@ -12,9 +13,6 @@ export {
   type SubgroupProps,
 } from "./metadata/types";
 import * as ConfigSchemas from "@oxytype/schemas/configs";
-
-import * as TestLogic from "../test/test-logic";
-import { replaceUnderscoresWithSpaces } from "../utils/strings";
 
 import { isAuthenticated } from "../states/core";
 
@@ -32,49 +30,7 @@ export const commandlineConfigMetadata: CommandlineConfigMetadataObject = {
 
   //appearence
   ...appearanceMetadata,
-  keymapMode: {
-    alias: "keyboard",
-    subgroup: {
-      options: "fromSchema",
-      alias: (val) => (val === "react" ? "flash" : ""),
-    },
-  },
-  keymapStyle: {
-    subgroup: {
-      options: "fromSchema",
-      display: replaceUnderscoresWithSpaces,
-    },
-    alias: "keyboard",
-  },
-  keymapLegendStyle: {
-    subgroup: {
-      options: "fromSchema",
-    },
-    alias: "keyboard",
-  },
-  keymapSize: {
-    input: {
-      alias: "keyboard",
-      inputValueConvert: Number,
-    },
-  },
-  keymapLayout: {
-    alias: "keyboard",
-    subgroup: {
-      options: "fromSchema",
-      alias: (val) => (val === "overrideSync" ? "default" : ""),
-      display: (layout) =>
-        layout === "overrideSync" ? "emulator sync" : layout.replace(/_/g, " "),
-      afterExec: () => void TestLogic.restart(),
-    },
-  },
-  keymapKeys: {
-    subgroup: {
-      options: "fromSchema",
-      display: replaceUnderscoresWithSpaces,
-    },
-    alias: "keyboard",
-  },
+  ...keymapMetadata,
 
   //themes
   customTheme: {
