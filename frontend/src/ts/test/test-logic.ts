@@ -130,11 +130,13 @@ import { shouldRepeatQuote } from "@oxytype/typing-core/restart";
 type TestLogicState = {
   failReason: string;
   lastInitError: Error | null;
+  showedLazyModeNotification: boolean;
 };
 
 const testLogicState: TestLogicState = {
   failReason: "",
   lastInitError: null,
+  showedLazyModeNotification: false,
 };
 
 const invalidMessages: Record<
@@ -364,7 +366,6 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
   setIsTestRestarting(false);
 }
 
-let showedLazyModeNotification: boolean = false;
 let testReinitCount = 0;
 
 async function init(): Promise<boolean> {
@@ -439,36 +440,36 @@ async function init(): Promise<boolean> {
 
     if (Config.lazyMode && !anySupportsLazyMode) {
       LazyModeState.setRemember(true);
-      if (!showedLazyModeNotification) {
+      if (!testLogicState.showedLazyModeNotification) {
         showNoticeNotification(
           "None of the selected polyglot languages support lazy mode.",
           {
             important: true,
           },
         );
-        showedLazyModeNotification = true;
+        testLogicState.showedLazyModeNotification = true;
       }
       setConfig("lazyMode", false);
     } else if (LazyModeState.getRemember() && anySupportsLazyMode) {
       setConfig("lazyMode", true);
       LazyModeState.setRemember(false);
-      showedLazyModeNotification = false;
+      testLogicState.showedLazyModeNotification = false;
     }
   } else {
     // normal mode
     if (Config.lazyMode && !allowLazyMode) {
       LazyModeState.setRemember(true);
-      if (!showedLazyModeNotification) {
+      if (!testLogicState.showedLazyModeNotification) {
         showNoticeNotification("This language does not support lazy mode.", {
           important: true,
         });
-        showedLazyModeNotification = true;
+        testLogicState.showedLazyModeNotification = true;
       }
       setConfig("lazyMode", false);
     } else if (LazyModeState.getRemember() && allowLazyMode) {
       setConfig("lazyMode", true);
       LazyModeState.setRemember(false);
-      showedLazyModeNotification = false;
+      testLogicState.showedLazyModeNotification = false;
     }
   }
 
