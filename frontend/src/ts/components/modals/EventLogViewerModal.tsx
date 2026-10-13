@@ -43,6 +43,7 @@ import {
   parseContext,
   visualizeWhitespace,
 } from "./event-log-viewer/event-log";
+import { EventMarkSelect } from "./event-log-viewer/EventMarkSelect";
 import { ScatterPanel } from "./event-log-viewer/ScatterPanel";
 import { scrollRowIntoView } from "./event-log-viewer/scroll-row";
 import { Timeline } from "./event-log-viewer/Timeline";
@@ -51,7 +52,6 @@ import {
   getTimelineMaxMs,
   getTimelineMinMs,
 } from "./event-log-viewer/timeline-lanes";
-import { marksForEvent } from "./event-log-viewer/video-sync";
 import { VideoPanel } from "./event-log-viewer/VideoPanel";
 import { WordsPanel } from "./event-log-viewer/WordsPanel";
 
@@ -150,21 +150,8 @@ function PreviewContent(props: {
 }): JSXElement {
   const maxMs = untrack(() => getMaxTestMs(props.ctx.events));
   const sync = createVideoSync(() => props.ctx.events);
-  const {
-    videoUrl,
-    marks,
-    eventToMark,
-    syncStartMark,
-    syncEndMark,
-    isSynced,
-    videoMapping,
-    videoBarRange,
-    timelineMarks,
-    driftData,
-    assignMarkToEvent,
-    createMarkAndAssignToEvent,
-    createSyncMarkAndAssignToEvent,
-  } = sync;
+  const { isSynced, videoMapping, videoBarRange, timelineMarks, driftData } =
+    sync;
 
   const timelineMinMs = createMemo(() => getTimelineMinMs(videoBarRange()));
   const timelineMaxMs = createMemo(() =>
@@ -339,73 +326,10 @@ function PreviewContent(props: {
                       </td>
                       <td class="p-2 font-mono">{event.type}</td>
                       <td class="p-2">
-                        <select
-                          class="w-full rounded bg-bg p-1 font-mono text-xs text-text"
-                          value={eventToMark()[originalIndex] ?? ""}
-                          onChange={(e) => {
-                            const v = e.currentTarget.value;
-                            if (v === "") {
-                              assignMarkToEvent(originalIndex, null);
-                            } else if (v === "__new__") {
-                              createMarkAndAssignToEvent(originalIndex);
-                            } else if (v === "__new_start__") {
-                              createSyncMarkAndAssignToEvent(
-                                originalIndex,
-                                "start",
-                              );
-                            } else if (v === "__new_end__") {
-                              createSyncMarkAndAssignToEvent(
-                                originalIndex,
-                                "end",
-                              );
-                            } else {
-                              assignMarkToEvent(originalIndex, v);
-                            }
-                            e.currentTarget.value =
-                              eventToMark()[originalIndex] ?? "";
-                          }}
-                        >
-                          <option value="">(none)</option>
-                          <For
-                            each={marksForEvent(
-                              marks(),
-                              eventToMark(),
-                              originalIndex,
-                            )}
-                          >
-                            {(mark) => (
-                              <option value={mark.id}>
-                                {mark.sync ?? mark.id} (
-                                {mark.videoMs.toFixed(0)}
-                                ms)
-                              </option>
-                            )}
-                          </For>
-                          <Show
-                            when={
-                              videoUrl() !== null &&
-                              syncStartMark() === undefined
-                            }
-                          >
-                            <option value="__new_start__">
-                              + start sync mark @ frame
-                            </option>
-                          </Show>
-                          <Show
-                            when={
-                              videoUrl() !== null && syncEndMark() === undefined
-                            }
-                          >
-                            <option value="__new_end__">
-                              + end sync mark @ frame
-                            </option>
-                          </Show>
-                          <Show when={isSynced()}>
-                            <option value="__new__">
-                              + new mark at playhead
-                            </option>
-                          </Show>
-                        </select>
+                        <EventMarkSelect
+                          sync={sync}
+                          eventIndex={originalIndex}
+                        />
                       </td>
                       <td class="p-2 font-mono break-all">
                         {JSON.stringify(event.data)}
