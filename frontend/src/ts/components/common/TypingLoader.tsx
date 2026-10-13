@@ -35,8 +35,9 @@ export function TypingLoader(props: {
       <span
         class={cn(
           "absolute -top-[0.1em] left-0 -ml-[0.05em] h-[1.2em] w-[0.1em] rounded-[0.05em] bg-caret",
+          // Reduced motion keeps only a blink; preloader opts out of its reset.
           looping()
-            ? "animate-typing-loader-caret"
+            ? "preloader animate-typing-loader-caret motion-reduce:animate-[caretFlashSmooth_1s_ease-in-out_infinite]"
             : "transition-transform duration-75",
         )}
         style={
