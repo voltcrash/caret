@@ -11,11 +11,11 @@ const FIXTURES_DIR = join(
   "../__fixtures__/keystrokes",
 );
 
-export type FixtureKeystroke =
+type FixtureKeystroke =
   | { kind: "key"; key: string; gap: number; hold: number }
   | { kind: "pause"; ms: number };
 
-export type KeystrokeFixture = {
+type KeystrokeFixture = {
   name: string;
   description: string;
   recordedWith: "web";
@@ -30,7 +30,7 @@ export type KeystrokeFixture = {
   completedEvent: Record<string, unknown>;
 };
 
-export type ParitySnapshot = {
+type ParitySnapshot = {
   completedEvent: Record<string, unknown>;
   hash: string;
   derived: {
