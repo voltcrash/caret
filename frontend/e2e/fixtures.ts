@@ -1,5 +1,5 @@
 import type { Config } from "@oxytype/schemas/configs";
-import type { CustomTheme } from "@oxytype/schemas/users";
+import type { CustomTheme, UserTag } from "@oxytype/schemas/users";
 import { GetUserResponseSchema } from "@oxytype/contracts/users";
 import { BASE_CONFIGURATION } from "@oxytype/schemas/default-configuration";
 import { expect, Page, test as base } from "playwright/test";
@@ -10,14 +10,22 @@ export const test = base.extend<{
   config: Partial<Config>;
   authenticated: boolean;
   customThemes: CustomTheme[];
+  tags: UserTag[];
 }>({
   config: [
-    { mode: "words", words: 15, quickRestart: "off", smoothCaret: "off" },
+    {
+      mode: "words",
+      words: 15,
+      quickRestart: "off",
+      smoothCaret: "off",
+      singleListCommandLine: "on",
+    },
     { option: true },
   ],
   authenticated: [false, { option: true }],
   customThemes: [[], { option: true }],
-  page: async ({ page, config, authenticated, customThemes }, use) => {
+  tags: [[], { option: true }],
+  page: async ({ page, config, authenticated, customThemes, tags }, use) => {
     const user = GetUserResponseSchema.parse({
       message: "OK",
       data: {
@@ -28,7 +36,7 @@ export const test = base.extend<{
         personalBests: { time: {}, words: {}, quote: {}, zen: {}, custom: {} },
         allTimeLbs: { time: {} },
         inventory: { badges: [] },
-        tags: [],
+        tags,
         xp: 0,
         completedTests: 0,
         startedTests: 0,
@@ -152,18 +160,19 @@ export async function openTest(page: Page): Promise<void> {
   await page.goto("/");
   await expect(page.locator("#words")).toBeVisible();
   await expect(page.locator("#words .word").first()).toBeVisible();
+  await expect(page.locator("#typingTest")).toHaveCSS("opacity", "1");
 }
 
 export async function completeWords(page: Page): Promise<void> {
   const words = await page.locator("#words .word").allTextContents();
-  await page.locator("#words").click();
+  await page.locator("#words .word").first().click();
   await expect(page.locator("#wordsInput")).toBeFocused();
   await page.keyboard.type(words.join(" "), { delay: 60 });
   await expect(page.locator("#result")).toBeVisible();
 }
 
 export async function openCommandline(page: Page): Promise<void> {
-  await page.keyboard.press("Escape");
+  await page.keyboard.press("ControlOrMeta+k");
   await expect(page.locator("#commandLine")).toBeVisible();
   await expect(page.locator("#commandLine input")).toBeFocused();
 }
@@ -186,5 +195,6 @@ export async function assertRestarted(page: Page): Promise<void> {
   await expect(
     page.locator("#words letter.correct, #words letter.incorrect"),
   ).toHaveCount(0);
-  await expect(page.locator("#wordsInput")).toHaveValue("");
+  await expect(page.locator("#wordsInput")).toHaveValue(" ");
+  await expect(page.locator("#typingTest")).toHaveCSS("opacity", "1");
 }
