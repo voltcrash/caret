@@ -41,4 +41,47 @@ describe("D1 personal-best and progression policies", () => {
       });
     },
   );
+
+  it("clears PBs and tag PBs for one client, then removes shared tag history from both", async () => {
+    await seedUser(test.env, "clearPbs");
+    await withRuntime(test.env, async () => {
+      const tag = await Users.addTag("clearPbs", "before");
+      for (const client of ["web", "tui"] as const) {
+        const user = await Users.getUser("clearPbs", "test");
+        const result = scoreEvent(user.uid, 80, 0, { client, tags: [tag._id] });
+        expect(await Users.checkIfPb(user.uid, user, result)).toBe(true);
+        expect(await Users.checkIfTagPb(user.uid, user, result)).toEqual([
+          tag._id,
+        ]);
+      }
+      await Users.editTag("clearPbs", tag._id, "after");
+      await Users.removeTagPb("clearPbs", tag._id, "tui");
+      await Users.clearPb("clearPbs", "tui");
+      expect(
+        (await Users.getTags("clearPbs", "tui"))[0]?.personalBests.time,
+      ).toEqual({});
+      expect((await Users.getTags("clearPbs"))[0]).toMatchObject({
+        name: "after",
+        personalBests: { time: { 15: [{ wpm: 80 }] } },
+      });
+      expect(
+        (await Users.getUser("clearPbs", "test", "tui")).personalBests.time,
+      ).toEqual({});
+      expect(
+        await statement(
+          "SELECT board FROM leaderboard_bests WHERE uid='clearPbs'",
+        ).all<{ board: string }>(),
+      ).toMatchObject({ results: [{ board: "english_time_15" }] });
+      await Users.removeTagPb("clearPbs", tag._id);
+      expect((await Users.getTags("clearPbs"))[0]?.personalBests.time).toEqual(
+        {},
+      );
+      await Users.removeTag("clearPbs", tag._id);
+      expect(await Users.getTags("clearPbs")).toEqual([]);
+      expect(await Users.getTags("clearPbs", "tui")).toEqual([]);
+      await expect(
+        Users.editTag("clearPbs", tag._id, "missing"),
+      ).rejects.toThrow("Tag not found");
+    });
+  });
 });
