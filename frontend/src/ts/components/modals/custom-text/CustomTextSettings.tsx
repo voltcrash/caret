@@ -49,6 +49,7 @@ export function CustomTextSettings(props: {
           <props.controller.form.Field name="limitWord">
             {(field) => (
               <input
+                aria-label="Word limit"
                 type="number"
                 inputMode="numeric"
                 class={cn(
@@ -70,6 +71,7 @@ export function CustomTextSettings(props: {
           <props.controller.form.Field name="limitSection">
             {(field) => (
               <input
+                aria-label="Section limit"
                 type="number"
                 inputMode="numeric"
                 class={cn(
@@ -88,10 +90,11 @@ export function CustomTextSettings(props: {
               />
             )}
           </props.controller.form.Field>
-          <span class="text-sub">or</span>
+          <span class="text-text">or</span>
           <props.controller.form.Field name="limitTime">
             {(field) => (
               <input
+                aria-label="Time limit in seconds"
                 type="number"
                 inputMode="numeric"
                 class="w-full"
@@ -137,6 +140,7 @@ export function CustomTextSettings(props: {
       <Separator />
       <div class="grid gap-2">
         <input
+          aria-label="Choose custom text file"
           ref={props.controller.fileInputRef}
           type="file"
           class="hidden"
