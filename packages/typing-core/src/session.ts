@@ -12,7 +12,7 @@ import {
   TestEventType,
   TestEventData,
 } from "./events/types";
-import { getAccuracy, getChars, getWordBurst } from "./events/stats";
+import { getChars, getWordBurst } from "./events/stats";
 import { InputConfig } from "./input/config";
 import {
   canDelete,
@@ -274,7 +274,7 @@ export class TestSession {
       raw: Math.round(
         calculateWpm(chars.allCorrect + chars.extra + chars.incorrect, seconds),
       ),
-      acc: getAccuracy(log).percentage,
+      acc: this.liveCache.getLiveCachedAccuracy(),
       seconds: tick.timer,
     };
     this.emit("tick", { ...tick, ...stats });

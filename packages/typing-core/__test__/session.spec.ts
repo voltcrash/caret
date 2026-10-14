@@ -245,3 +245,16 @@ describe("timer failures", () => {
     expect(reasons).toEqual(["min speed"]);
   });
 });
+
+it("treats a tick before any input as fully accurate", () => {
+  const session = createTestSession(
+    sessionConfig({ minAcc: "custom", minAccCustom: 90 }),
+    { words: ["one ", "two"] },
+  );
+  const ticks: number[] = [];
+  session.on("tick", ({ acc }) => ticks.push(acc));
+  session.start(0);
+  session.advance(1000);
+  expect(ticks).toEqual([100]);
+  expect(session.isActive()).toBe(true);
+});
