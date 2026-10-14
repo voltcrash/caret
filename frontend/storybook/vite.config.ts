@@ -1,11 +1,9 @@
 /// <reference types="vite-plus" />
 import path from "path";
 import { fileURLToPath } from "url";
-// oxlint-disable-next-line vite-plus/prefer-vite-plus-imports -- Match the config and browser provider to Storybook's installed Vitest peer instance; root Vite+ resolves another instance.
-import { defineConfig } from "vitest/config";
+import { defineConfig } from "vite-plus/test/config";
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
-// oxlint-disable-next-line vite-plus/prefer-vite-plus-imports -- Use the provider from the same Vitest peer instance as defineConfig above.
-import { playwright } from "@vitest/browser-playwright";
+import { playwright } from "vite-plus/test/browser-playwright";
 
 const dirname =
   typeof __dirname !== "undefined"
