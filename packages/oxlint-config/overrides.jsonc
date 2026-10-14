@@ -2,6 +2,14 @@
   "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
   "overrides": [
     {
+      // Ambient augmentations require mergeable interfaces/namespaces.
+      "files": ["**/*.d.ts"],
+      "rules": {
+        "typescript/consistent-type-definitions": "off",
+        "typescript/no-namespace": "off",
+      },
+    },
+    {
       // Factory inference preserves TanStack/Drizzle/ts-rest generic metadata.
       // These modules expose inferred factory results, not untyped API values.
       "files": [
