@@ -96,6 +96,7 @@ export function SidebarLayout<T extends string>(props: {
       >
         {/* items are laid out in two columns on mobile to keep the sidebar short */}
         <nav
+          aria-label="Page sections"
           ref={navRef}
           class="grid grid-cols-2 gap-2 rounded-double bg-sub-alt p-4 md:fixed md:top-[max(calc(var(--header-bottom)+1rem),calc(50vh-var(--sidebar-height)/2))] md:z-20 md:flex md:max-h-[calc(100vh-var(--header-bottom)-2rem)] md:w-60 md:flex-col md:items-start md:gap-4 md:overflow-y-auto md:overscroll-y-none"
         >
