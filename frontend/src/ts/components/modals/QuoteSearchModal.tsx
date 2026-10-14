@@ -42,7 +42,7 @@ import { AnimatedModal } from "../common/AnimatedModal";
 import { Button } from "../common/Button";
 import { HighlightedText } from "../common/HighlightedText";
 import { InputField } from "../ui/form/InputField";
-import SlimSelect from "../ui/SlimSelect";
+import Select from "../ui/Select";
 import { QuoteApproveModal } from "./QuoteApproveModal";
 import { QuoteSubmitModal } from "./QuoteSubmitModal";
 
@@ -490,8 +490,8 @@ export function QuoteSearchModal(): JSXElement {
             )}
           />
           <div class="grow">
-            <SlimSelect
-              appendTo="container"
+            <Select
+              label="Quote length"
               multiple
               options={[
                 { value: "0", text: "short" },
