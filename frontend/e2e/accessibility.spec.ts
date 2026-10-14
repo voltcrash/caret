@@ -2,7 +2,7 @@ import { AxeBuilder } from "@axe-core/playwright";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { Page, TestInfo } from "playwright/test";
-import { expect, openTest, test } from "./fixtures";
+import { completeWords, expect, openTest, test } from "./fixtures";
 
 async function checkAccessibility(
   page: Page,
@@ -43,5 +43,14 @@ test("test page has no serious or critical axe violations", async ({
   page,
 }, testInfo) => {
   await openTest(page);
+  await checkAccessibility(page, testInfo);
+});
+
+test("result screen has no serious or critical axe violations", async ({
+  page,
+}, testInfo) => {
+  await openTest(page);
+  await completeWords(page);
+  await expect(page.locator("#result")).toHaveCSS("opacity", "1");
   await checkAccessibility(page, testInfo);
 });
