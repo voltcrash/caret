@@ -474,3 +474,62 @@ describe("failure", () => {
     now.mockRestore();
   });
 });
+
+describe("restart", () => {
+  it("records an abandoned test with its accuracy and active seconds", async () => {
+    Config.time = 30;
+    const start = performance.now();
+    startTest(start);
+    type(start + 100, 0, "h");
+    type(start + 200, 0, "hx", false);
+    type(start + 300, 0, "hxl");
+    vi.advanceTimersByTime(2500);
+    await restart();
+    expect(mocks.incomplete).toHaveBeenCalledWith({ acc: 66.67, seconds: 1.5 });
+    expect(getAllTestEvents()).toEqual([]);
+    expect(mocks.active).toBe(false);
+    vi.advanceTimersByTime(5000);
+    expect(getAllTestEvents()).toEqual([]);
+  });
+
+  it("does not record an abandoned test when result saving is off", async () => {
+    Config.resultSaving = false;
+    startTest(performance.now());
+    vi.advanceTimersByTime(1500);
+    await restart();
+    expect(mocks.incomplete).not.toHaveBeenCalled();
+  });
+
+  it("starts the next test from a fresh clock", async () => {
+    Config.time = 30;
+    startTest(performance.now());
+    vi.advanceTimersByTime(2500);
+    await restart();
+    vi.advanceTimersByTime(700);
+    const start = performance.now();
+    startTest(start);
+    vi.advanceTimersByTime(1000);
+    expect(timerEvents()).toEqual(["start:0@0", "step:1@1000"]);
+  });
+
+  it("resets the pace caret and clears the failure reason", async () => {
+    Config.minAcc = "custom";
+    Config.minAccCustom = 90;
+    const start = performance.now();
+    startTest(start);
+    type(start + 100, 0, "x", false);
+    vi.advanceTimersByTime(1000);
+    await vi.waitFor(() => expect(failReason()).toBe("min accuracy"));
+    mocks.calculating = false;
+    Config.minAcc = "off";
+    await restart();
+    expect(mocks.paceReset).toHaveBeenCalled();
+    expect(mocks.paceInit).toHaveBeenCalled();
+    const next = performance.now();
+    startTest(next);
+    type(next + 100, 0, "h");
+    vi.advanceTimersByTime(3000);
+    await vi.waitFor(() => expect(mocks.resultUpdate).toHaveBeenCalledTimes(2));
+    expect(failReason()).toBe("");
+  });
+});
