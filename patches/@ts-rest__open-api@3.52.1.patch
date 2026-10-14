@@ -1,0 +1,36 @@
+diff --git a/index.cjs.js b/index.cjs.js
+index 6ea2bc87c880f3a4d30bbe018019ca604d61c07b..91498fcf89138e003510ee5368f51e068b1ffbfe 100644
+--- a/index.cjs.js
++++ b/index.cjs.js
+@@ -89,10 +89,10 @@ const getQueryParametersFromZod = (zodObject, jsonQuery = false) => {
+     return Object.entries(zodShape).map(([key, value]) => {
+         const { description, mediaExamples: examples, ...schema } = getOpenApiSchemaFromZod(value);
+         const isObject = (obj) => {
+-            while (obj._def.innerType) {
+-                obj = obj._def.innerType;
++            while (obj._zod.def.innerType) {
++                obj = obj._zod.def.innerType;
+             }
+-            return obj._def.typeName === 'ZodObject';
++            return obj._zod.def.type === 'object';
+         };
+         const isRequired = !value.isOptional();
+         return {
+diff --git a/index.esm.mjs b/index.esm.mjs
+index 4be25c5db4ef40afea2e21d2543263e2a0868ca1..a71ad754b2115ed14fc21d3e87c569ef4867d106 100644
+--- a/index.esm.mjs
++++ b/index.esm.mjs
+@@ -85,10 +85,10 @@ const getQueryParametersFromZod = (zodObject, jsonQuery = false) => {
+     return Object.entries(zodShape).map(([key, value]) => {
+         const { description, mediaExamples: examples, ...schema } = getOpenApiSchemaFromZod(value);
+         const isObject = (obj) => {
+-            while (obj._def.innerType) {
+-                obj = obj._def.innerType;
++            while (obj._zod.def.innerType) {
++                obj = obj._zod.def.innerType;
+             }
+-            return obj._def.typeName === 'ZodObject';
++            return obj._zod.def.type === 'object';
+         };
+         const isRequired = !value.isOptional();
+         return {

@@ -1,64 +1,154 @@
-diff --git a/index.cjs.js b/index.cjs.js
-index 06f054818f430f65daa1d8daf49114fa41fb5a89..d2966cdfa98b408184d0b794e4defb37bc3a6eb1 100644
---- a/index.cjs.js
-+++ b/index.cjs.js
-@@ -2,7 +2,7 @@
- 
- Object.defineProperty(exports, '__esModule', { value: true });
- 
--var zod = require('zod');
-+var zod = require('zod/v3');
- 
- const isZodType = (obj) => {
-     return typeof (obj === null || obj === void 0 ? void 0 : obj.safeParse) === 'function';
-diff --git a/index.esm.mjs b/index.esm.mjs
-index eafef1eece35d2af103ae2be81139fd428d9b9d6..14a502a9a84ddf83cc019e28127d71f9cba397a7 100644
---- a/index.esm.mjs
-+++ b/index.esm.mjs
-@@ -1,4 +1,4 @@
--import { z } from 'zod';
-+import { z } from 'zod/v3';
- 
- const isZodType = (obj) => {
-     return typeof (obj === null || obj === void 0 ? void 0 : obj.safeParse) === 'function';
 diff --git a/src/lib/dsl.d.ts b/src/lib/dsl.d.ts
-index 0e141c8f46765f33b6efb3d459c08dc7c7551bd9..86deed96f40d60110fb81640673fdc803b94847f 100644
+index 0e141c8f46765f33b6efb3d459c08dc7c7551bd9..1ac1a6f05c458c9b3b24e898ff11250d24c80e3f 100644
 --- a/src/lib/dsl.d.ts
 +++ b/src/lib/dsl.d.ts
-@@ -1,5 +1,5 @@
- import { Merge, Opaque, Prettify, WithoutUnknown } from './type-utils';
--import { z } from 'zod';
-+import { z } from 'zod/v3';
- type MixedZodError<A, B> = Opaque<{
-     a: A;
-     b: B;
-diff --git a/src/lib/response-validation-error.d.ts b/src/lib/response-validation-error.d.ts
-index aad609673db0890f47f12bae2c57baa5f0c1e96d..f88dd28cfeacfa41e911e4f4732ff01d56a218c3 100644
---- a/src/lib/response-validation-error.d.ts
-+++ b/src/lib/response-validation-error.d.ts
-@@ -1,4 +1,4 @@
--import { z } from 'zod';
-+import { z } from 'zod/v3';
- import { AppRoute } from './dsl';
- export declare class ResponseValidationError extends Error {
-     appRoute: AppRoute;
-diff --git a/src/lib/type-utils.d.ts b/src/lib/type-utils.d.ts
-index 23d37b67fa93d2c10f00c459ff34338afbee3179..3fb6296bb7690c451d10f809899a79999387c831 100644
---- a/src/lib/type-utils.d.ts
-+++ b/src/lib/type-utils.d.ts
-@@ -1,4 +1,4 @@
--import { z } from 'zod';
-+import { z } from 'zod/v3';
- import { ContractNoBodyType, ContractNullType, ContractPlainType } from './dsl';
- type GetIndexedField<T, K> = K extends keyof T ? T[K] : K extends `${number}` ? '0' extends keyof T ? undefined : number extends keyof T ? T[number] : undefined : undefined;
- type FieldWithPossiblyUndefined<T, Key> = GetFieldType<Exclude<T, undefined>, Key> | Extract<T, undefined>;
+@@ -74,7 +74,7 @@ type RecursivelyProcessAppRouter<T extends AppRouter, TOptions extends RouterOpt
+ type RecursivelyApplyOptions<TRouter extends AppRouter, TOptions extends RouterOptions> = {
+     [TRouterKey in keyof TRouter]: TRouter[TRouterKey] extends AppRoute ? Prettify<ApplyOptions<TRouter[TRouterKey], TOptions>> : TRouter[TRouterKey] extends AppRouter ? RecursivelyApplyOptions<TRouter[TRouterKey], TOptions> : TRouter[TRouterKey];
+ };
+-type UniversalMerge<A, B> = A extends z.AnyZodObject ? B extends z.AnyZodObject ? z.ZodObject<z.objectUtil.MergeShapes<A['shape'], B['shape']>, B['_def']['unknownKeys'], B['_def']['catchall']> : unknown extends B ? A : MixedZodError<A, B> : unknown extends A ? B : B extends z.AnyZodObject ? MixedZodError<A, B> : unknown extends B ? A : Prettify<Merge<A extends ContractPlainType<infer APlain> ? APlain : A, B extends ContractPlainType<infer BPlain> ? BPlain : B>>;
++type UniversalMerge<A, B> = A extends z.ZodObject ? B extends z.ZodObject ? z.ZodObject<z.core.util.Extend<A['shape'], B['shape']>, B['_zod']['config']> : unknown extends B ? A : MixedZodError<A, B> : unknown extends A ? B : B extends z.ZodObject ? MixedZodError<A, B> : unknown extends B ? A : Prettify<Merge<A extends ContractPlainType<infer APlain> ? APlain : A, B extends ContractPlainType<infer BPlain> ? BPlain : B>>;
+ type ApplyOptions<TRoute extends AppRoute, TOptions extends RouterOptions> = Omit<TRoute, 'headers' | 'path' | 'responses'> & WithoutUnknown<{
+     path: TOptions['pathPrefix'] extends string ? `${TOptions['pathPrefix']}${TRoute['path']}` : TRoute['path'];
+     headers: UniversalMerge<TOptions['baseHeaders'], TRoute['headers']>;
 diff --git a/src/lib/zod-utils.d.ts b/src/lib/zod-utils.d.ts
-index 960163ce69ac3f79840dabb50b97f72c4a800edb..c16a2ce0e8222ebfebbad92c8760c68bd1a6048a 100644
+index 960163ce69ac3f79840dabb50b97f72c4a800edb..9ab4675262829a8b2045eae36cb5e74d6cde6155 100644
 --- a/src/lib/zod-utils.d.ts
 +++ b/src/lib/zod-utils.d.ts
-@@ -1,4 +1,4 @@
--import { z } from 'zod';
-+import { z } from 'zod/v3';
- export declare const isZodType: (obj: unknown) => obj is z.ZodTypeAny;
- export declare const isZodObject: (obj: unknown) => obj is z.AnyZodObject | z.ZodEffects<z.AnyZodObject, {
-     [x: string]: any;
+@@ -1,12 +1,8 @@
+ import { z } from 'zod';
+-export declare const isZodType: (obj: unknown) => obj is z.ZodTypeAny;
+-export declare const isZodObject: (obj: unknown) => obj is z.AnyZodObject | z.ZodEffects<z.AnyZodObject, {
+-    [x: string]: any;
+-}, {
+-    [x: string]: any;
+-}>;
+-export declare const isZodObjectStrict: (obj: unknown) => obj is z.AnyZodObject;
+-export declare const extractZodObjectShape: <T extends z.AnyZodObject | z.ZodEffects<z.ZodTypeAny, any, any>>(obj: T) => any;
++export declare const isZodType: (obj: unknown) => obj is z.ZodType;
++export declare const isZodObject: (obj: unknown) => obj is z.ZodObject;
++export declare const isZodObjectStrict: (obj: unknown) => obj is z.ZodObject;
++export declare const extractZodObjectShape: <T extends z.ZodType>(obj: T) => any;
+ export declare const zodMerge: (objectA: unknown, objectB: unknown) => {};
+ export declare const checkZodSchema: (data: unknown, schema: unknown, { passThroughExtraKeys }?: {
+     passThroughExtraKeys?: boolean | undefined;
+@@ -21,115 +17,8 @@ export declare const zodErrorResponse: (error: z.ZodError) => Pick<z.ZodError, '
+ export declare const ZodErrorSchema: z.ZodObject<{
+     name: z.ZodLiteral<"ZodError">;
+     issues: z.ZodArray<z.ZodObject<{
+-        path: z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber]>, "many">;
++        path: z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber]>>;
+         message: z.ZodOptional<z.ZodString>;
+-        code: z.ZodNativeEnum<{
+-            invalid_type: "invalid_type";
+-            invalid_literal: "invalid_literal";
+-            custom: "custom";
+-            invalid_union: "invalid_union";
+-            invalid_union_discriminator: "invalid_union_discriminator";
+-            invalid_enum_value: "invalid_enum_value";
+-            unrecognized_keys: "unrecognized_keys";
+-            invalid_arguments: "invalid_arguments";
+-            invalid_return_type: "invalid_return_type";
+-            invalid_date: "invalid_date";
+-            invalid_string: "invalid_string";
+-            too_small: "too_small";
+-            too_big: "too_big";
+-            invalid_intersection_types: "invalid_intersection_types";
+-            not_multiple_of: "not_multiple_of";
+-            not_finite: "not_finite";
+-        }>;
+-    }, "strip", z.ZodAny, z.objectOutputType<{
+-        path: z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber]>, "many">;
+-        message: z.ZodOptional<z.ZodString>;
+-        code: z.ZodNativeEnum<{
+-            invalid_type: "invalid_type";
+-            invalid_literal: "invalid_literal";
+-            custom: "custom";
+-            invalid_union: "invalid_union";
+-            invalid_union_discriminator: "invalid_union_discriminator";
+-            invalid_enum_value: "invalid_enum_value";
+-            unrecognized_keys: "unrecognized_keys";
+-            invalid_arguments: "invalid_arguments";
+-            invalid_return_type: "invalid_return_type";
+-            invalid_date: "invalid_date";
+-            invalid_string: "invalid_string";
+-            too_small: "too_small";
+-            too_big: "too_big";
+-            invalid_intersection_types: "invalid_intersection_types";
+-            not_multiple_of: "not_multiple_of";
+-            not_finite: "not_finite";
+-        }>;
+-    }, z.ZodAny, "strip">, z.objectInputType<{
+-        path: z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber]>, "many">;
+-        message: z.ZodOptional<z.ZodString>;
+-        code: z.ZodNativeEnum<{
+-            invalid_type: "invalid_type";
+-            invalid_literal: "invalid_literal";
+-            custom: "custom";
+-            invalid_union: "invalid_union";
+-            invalid_union_discriminator: "invalid_union_discriminator";
+-            invalid_enum_value: "invalid_enum_value";
+-            unrecognized_keys: "unrecognized_keys";
+-            invalid_arguments: "invalid_arguments";
+-            invalid_return_type: "invalid_return_type";
+-            invalid_date: "invalid_date";
+-            invalid_string: "invalid_string";
+-            too_small: "too_small";
+-            too_big: "too_big";
+-            invalid_intersection_types: "invalid_intersection_types";
+-            not_multiple_of: "not_multiple_of";
+-            not_finite: "not_finite";
+-        }>;
+-    }, z.ZodAny, "strip">>, "many">;
+-}, "strip", z.ZodTypeAny, {
+-    name: "ZodError";
+-    issues: z.objectOutputType<{
+-        path: z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber]>, "many">;
+-        message: z.ZodOptional<z.ZodString>;
+-        code: z.ZodNativeEnum<{
+-            invalid_type: "invalid_type";
+-            invalid_literal: "invalid_literal";
+-            custom: "custom";
+-            invalid_union: "invalid_union";
+-            invalid_union_discriminator: "invalid_union_discriminator";
+-            invalid_enum_value: "invalid_enum_value";
+-            unrecognized_keys: "unrecognized_keys";
+-            invalid_arguments: "invalid_arguments";
+-            invalid_return_type: "invalid_return_type";
+-            invalid_date: "invalid_date";
+-            invalid_string: "invalid_string";
+-            too_small: "too_small";
+-            too_big: "too_big";
+-            invalid_intersection_types: "invalid_intersection_types";
+-            not_multiple_of: "not_multiple_of";
+-            not_finite: "not_finite";
+-        }>;
+-    }, z.ZodAny, "strip">[];
+-}, {
+-    name: "ZodError";
+-    issues: z.objectInputType<{
+-        path: z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber]>, "many">;
+-        message: z.ZodOptional<z.ZodString>;
+-        code: z.ZodNativeEnum<{
+-            invalid_type: "invalid_type";
+-            invalid_literal: "invalid_literal";
+-            custom: "custom";
+-            invalid_union: "invalid_union";
+-            invalid_union_discriminator: "invalid_union_discriminator";
+-            invalid_enum_value: "invalid_enum_value";
+-            unrecognized_keys: "unrecognized_keys";
+-            invalid_arguments: "invalid_arguments";
+-            invalid_return_type: "invalid_return_type";
+-            invalid_date: "invalid_date";
+-            invalid_string: "invalid_string";
+-            too_small: "too_small";
+-            too_big: "too_big";
+-            invalid_intersection_types: "invalid_intersection_types";
+-            not_multiple_of: "not_multiple_of";
+-            not_finite: "not_finite";
+-        }>;
+-    }, z.ZodAny, "strip">[];
+-}>;
++        code: z.ZodEnum<typeof z.ZodIssueCode>;
++    }, z.core.$catchall<z.ZodAny>>>;
++}, z.core.$strip>;

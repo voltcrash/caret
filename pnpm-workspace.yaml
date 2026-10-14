@@ -107,4 +107,5 @@ minimumReleaseAgeExclude:
 patchedDependencies:
   "@anatine/zod-openapi@1.14.2": patches/@anatine__zod-openapi@1.14.2.patch
   "@ts-rest/core@3.52.1": patches/@ts-rest__core@3.52.1.patch
+  "@ts-rest/open-api@3.52.1": patches/@ts-rest__open-api@3.52.1.patch
   zod-urlsearchparams@0.0.16: patches/zod-urlsearchparams@0.0.16.patch
