@@ -1,4 +1,5 @@
-import { z } from "zod/v3";
+import { z } from "zod";
+import "./zod-messages";
 
 function removeProblems(obj: unknown, problems: (number | string)[]): unknown {
   //already removed
@@ -41,10 +42,7 @@ function depth(pathString: string): number {
  * @param obj object
  * @returns sanitized object
  */
-export function sanitize<T>(
-  schema: z.ZodType<T, z.ZodTypeDef, unknown>,
-  obj: unknown,
-): T {
+export function sanitize<T>(schema: z.ZodType<T>, obj: unknown): T {
   const maxAttempts = 2;
   let result;
   let current = structuredClone(obj);
@@ -60,11 +58,11 @@ export function sanitize<T>(
       //exit loop and throw error
       break;
     }
-    const pathsWithProblems = result.error.errors.reduce((acc, { path }) => {
-      const parent = path.slice(0, -1).join(".");
+    const pathsWithProblems = result.error.issues.reduce((acc, { path }) => {
+      const parent = path.slice(0, -1).map(String).join(".");
       const element = path.at(-1);
 
-      if (element !== undefined) {
+      if (element !== undefined && typeof element !== "symbol") {
         acc.set(parent, [...(acc.get(parent) ?? []), element]);
       }
       return acc;
@@ -96,7 +94,7 @@ export function sanitize<T>(
       }
     }
   }
-  const errorsString = result?.error.errors
+  const errorsString = result?.error.issues
     .map((e) => `${e.path.join(".")}: ${e.message}`)
     .join(", ");
   throw new Error(`unable to sanitize: ${errorsString}`);

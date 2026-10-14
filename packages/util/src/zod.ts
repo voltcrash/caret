@@ -1,4 +1,4 @@
-import { z, ZodError, type ZodSchema } from "zod/v3";
+import { z, ZodError } from "zod";
 
 //from https://github.com/colinhacks/zod/pull/3819
 export function isZodError(error: unknown): error is ZodError {
@@ -12,7 +12,7 @@ export function isZodError(error: unknown): error is ZodError {
 }
 
 /** Every value a literal, enum, boolean or union of them accepts. */
-export function getOptions<T extends ZodSchema>(
+export function getOptions<T extends z.ZodType>(
   schema: T,
 ): undefined | z.infer<T>[] {
   if (schema instanceof z.ZodLiteral) {
@@ -22,7 +22,7 @@ export function getOptions<T extends ZodSchema>(
   } else if (schema instanceof z.ZodBoolean) {
     return [false, true] as z.infer<T>[];
   } else if (schema instanceof z.ZodUnion) {
-    return (schema.options as ZodSchema[])
+    return (schema.options as z.ZodType[])
       .flatMap(getOptions)
       .filter((it) => it !== undefined) as z.infer<T>[];
   }

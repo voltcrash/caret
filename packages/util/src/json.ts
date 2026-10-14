@@ -1,4 +1,7 @@
-import { z, ZodIssue } from "zod/v3";
+import { z } from "zod";
+import "./zod-messages";
+
+type ZodIssue = z.core.$ZodIssue;
 import { tryCatchSync } from "./trycatch";
 
 function prettyErrorMessage(issue: ZodIssue | undefined): string {
@@ -18,7 +21,7 @@ function prettyErrorMessage(issue: ZodIssue | undefined): string {
  */
 export function parseWithSchema<T>(
   json: string,
-  schema: z.ZodType<T, z.ZodTypeDef, unknown>,
+  schema: z.ZodType<T>,
   fallbackAndMigrate?: {
     fallback?: T;
     migrate?: (

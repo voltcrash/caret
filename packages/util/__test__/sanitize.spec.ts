@@ -1,6 +1,6 @@
 // Sanitize tests deliberately pass values that violate their schemas.
 import { describe, it, expect } from "vite-plus/test";
-import { z } from "zod/v3";
+import { z } from "zod";
 import { sanitize } from "../src/sanitize";
 
 describe("sanitize function", () => {
