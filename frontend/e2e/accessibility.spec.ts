@@ -2,7 +2,14 @@ import { AxeBuilder } from "@axe-core/playwright";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { Page, TestInfo } from "playwright/test";
-import { completeWords, expect, openTest, test } from "./fixtures";
+import {
+  completeWords,
+  expect,
+  openCommandline,
+  openTest,
+  runCommand,
+  test,
+} from "./fixtures";
 
 async function checkAccessibility(
   page: Page,
@@ -61,5 +68,19 @@ test("settings have no serious or critical axe violations", async ({
   await openTest(page);
   await page.goto("/settings");
   await expect(page.locator('[data-setting-key="quickRestart"]')).toBeVisible();
+  await checkAccessibility(page, testInfo);
+});
+
+test("custom text modal has no serious or critical axe violations", async ({
+  page,
+}, testInfo) => {
+  await openTest(page);
+  await openCommandline(page);
+  await runCommand(page, "changeCustomModeText", "change custom text");
+  await expect(page.locator("#CustomTextModal textarea")).toBeVisible();
+  await expect(page.locator("#CustomTextModal .modal")).toHaveCSS(
+    "opacity",
+    "1",
+  );
   await checkAccessibility(page, testInfo);
 });
