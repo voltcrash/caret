@@ -4,6 +4,16 @@ import { fileURLToPath } from "url";
 import { defineConfig } from "vite-plus/test/config";
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
 import { playwright } from "vite-plus/test/browser-playwright";
+import type { TestProjectInlineConfiguration } from "vite-plus";
+
+type BrowserConfig = NonNullable<
+  NonNullable<TestProjectInlineConfiguration["test"]>["browser"]
+>;
+// The runtime runner/provider are both overridden to 5.0.3; Vite+ 1.0 ships
+// provider declarations from 5.0.1. Bind that boundary to the runner's config type.
+const browserProvider = playwright() as unknown as NonNullable<
+  BrowserConfig["provider"]
+>;
 
 const dirname =
   typeof __dirname !== "undefined"
@@ -49,7 +59,7 @@ export default defineConfig({
             },
             enabled: true,
             headless: true,
-            provider: playwright(),
+            provider: browserProvider,
             instances: [
               {
                 browser: "chromium",
