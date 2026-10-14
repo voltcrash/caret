@@ -452,9 +452,7 @@ configEvent.subscribe(
         setTimeout(() => {
           highlight(
             nthElementFromArray(
-              // ignoring for now but this might need a different approach
-              // oxlint-disable-next-line no-misused-spread -- String iteration intentionally preserves the existing Unicode code-point behavior.
-              [...(TestWords.words.getCurrent()?.text ?? "")],
+              Array.from(TestWords.words.getCurrent()?.text ?? ""),
               0,
             ) as string,
           );
