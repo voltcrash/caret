@@ -101,13 +101,19 @@ export type UserTag = z.infer<typeof UserTagSchema>;
 
 function profileDetailsBase<T extends z.ZodType<string, string>>(
   schema: T,
-): z.ZodPipe<
-  ZodOptional<T>,
-  z.ZodTransform<string | undefined, string | undefined>
+): ZodOptional<
+  z.ZodPipe<
+    ZodOptional<T>,
+    z.ZodTransform<string | undefined, string | undefined>
+  >
 > {
-  return doesNotContainDisallowedWords("word", schema)
-    .optional()
-    .transform((value) => (value === null ? undefined : value));
+  return (
+    doesNotContainDisallowedWords("word", schema)
+      .optional()
+      .transform((value) => (value === null ? undefined : value))
+      // Zod 4 only marks keys optional when the output schema is optional.
+      .optional()
+  );
 }
 
 export const TwitterProfileSchema = profileDetailsBase(slug().max(15)).or(

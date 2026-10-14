@@ -61,8 +61,10 @@ export const CustomTextLimitModeSchema = z.enum(["word", "time", "section"]);
 export type CustomTextLimitMode = z.infer<typeof CustomTextLimitModeSchema>;
 
 export function customEnumErrorHandler(message: string): z.core.$ZodErrorMap {
+  // Zod 3 only used the custom message for strings; other input was a
+  // type error, which this handler reported as "Required".
   return (issue) =>
-    issue.code === "invalid_value"
+    issue.code === "invalid_value" && typeof issue.input === "string"
       ? `Invalid enum value. ${message}`
       : (issue.message ?? "Required");
 }
