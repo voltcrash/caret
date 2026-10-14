@@ -8,11 +8,11 @@ import { ResultQuoteActions } from "./ResultQuoteActions";
 import { ResultTags } from "./ResultTags";
 
 const topClass =
-  "top mb-1 text-[1rem] leading-[1rem] text-sub max-md:text-[0.8125rem]";
+  "top mb-1 text-[1rem] leading-[1rem] text-text max-md:text-[0.8125rem]";
 const bottomClass = "bottom text-[2rem] leading-[2rem] text-main";
 // phones: wpm and acc sit side by side as a scoreboard, sized to fit 320px
 const bigTopClass =
-  "top mb-1 text-[2rem] leading-[1.5rem] text-sub max-md:mb-0 max-md:text-[0.875rem] max-md:leading-[1rem]";
+  "top mb-1 text-[2rem] leading-[1.5rem] text-text max-md:mb-0 max-md:text-[0.875rem] max-md:leading-[1rem]";
 const bigBottomClass = "bottom text-[4rem] leading-[4rem] text-main";
 const wpmBigBottomClass = cn(
   bigBottomClass,
@@ -29,7 +29,7 @@ const moreStatsBottomClass =
   "max-sm:after:left-0! max-sm:after:transform-none!";
 // two phone columns are ~136px wide on 320px screens
 const valueClass = "max-md:text-[1.5rem] max-md:leading-[1.5rem]";
-const subTextClass = "ml-[0.2rem] text-[0.75rem] leading-[0.75rem] text-sub";
+const subTextClass = "ml-[0.2rem] text-[0.75rem] leading-[0.75rem] text-text";
 
 function Lines(props: { lines: string[] | undefined }): JSXElement {
   return (
