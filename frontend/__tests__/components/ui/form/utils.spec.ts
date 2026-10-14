@@ -11,6 +11,15 @@ import {
 import { AnyFieldApi } from "@tanstack/solid-form";
 
 describe("fromSchema", () => {
+  it("validates converted form input and reports conversion failures", () => {
+    const validate = fromSchema(z.number(), {
+      convert: (value) => Number(String(value)),
+    });
+    expect(validate({ value: "2" as unknown as number })).toBeUndefined();
+    expect(validate({ value: "invalid" as unknown as number })).toEqual([
+      "Expected number, received nan",
+    ]);
+  });
   const schema = z.string().min(3, "too short").max(10, "too long");
   const validate = fromSchema(schema);
 
