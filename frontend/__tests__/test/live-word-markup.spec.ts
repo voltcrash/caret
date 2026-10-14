@@ -128,4 +128,11 @@ describe("live word node builders", () => {
         .textContent,
     ).toBe("c");
   });
+  it("renders tab and newline icons through Fa without shared node ownership", () => {
+    const first = buildInitialWordNodes("\t\n", 0);
+    const second = buildInitialWordNodes("\t\n", 1);
+    expect(first.querySelectorAll("i.fa-fw")).toHaveLength(2);
+    expect(second.querySelectorAll("i.fa-fw")).toHaveLength(2);
+    expect(first.querySelector("i")).not.toBe(second.querySelector("i"));
+  });
 });
