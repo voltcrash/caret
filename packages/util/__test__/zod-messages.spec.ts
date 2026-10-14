@@ -69,8 +69,9 @@ describe("zod 3 messages", () => {
   });
 
   it("uses the key's own message for record keys", () => {
-    expect(message(z.record(z.enum(["a"]), z.number()), { b: 1 })).toEqual([
-      "Invalid enum value. Expected 'a', received 'b'",
+    const key = z.string().startsWith("a");
+    expect(message(z.record(key, z.number()), { b: 1 })).toEqual([
+      'Invalid input: must start with "a"',
     ]);
   });
 
