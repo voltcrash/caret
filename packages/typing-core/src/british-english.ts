@@ -50,7 +50,7 @@ export async function replace(
       RegExp(`^(?:([\\W]*)(${cleanedWord})([\\W]*))$`, "gi"),
       (_, $1, $2, $3) =>
         $1 +
-        // oxlint-disable-next-line typescript/prefer-string-starts-ends-with
+        // oxlint-disable-next-line typescript/prefer-string-starts-ends-with -- charAt preserves empty-string behavior when checking capitalization.
         (($2 as string).charAt(0) === ($2 as string).charAt(0).toUpperCase()
           ? $2 === ($2 as string).toUpperCase()
             ? britishWord.toUpperCase()
