@@ -1,5 +1,4 @@
 import { IndexHtmlTransformContext, Plugin } from "vite";
-// eslint-disable-next-line import/no-unresolved
 import UnpluginInjectPreload from "unplugin-inject-preload/vite";
 import { basename } from "node:path";
 export function injectPreload(): Plugin {
