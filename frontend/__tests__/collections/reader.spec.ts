@@ -29,7 +29,7 @@ function setup(): {
   };
 }
 
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack's inferred fixture collection/query types.
 function createItems() {
   return createCollection(
     localOnlyCollectionOptions<Item>({
