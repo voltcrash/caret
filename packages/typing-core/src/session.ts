@@ -281,7 +281,10 @@ export class TestSession {
     const config = this.getConfig();
     const failure = tick.catchup
       ? undefined
-      : getTimerFailure(config, { ...stats, wordIndex: this.wordIndex });
+      : getTimerFailure(config, {
+          ...stats,
+          wordIndex: this.getActiveWordIndex(),
+        });
     const limit = getTimeLimit(config, this.deps.customLimit?.());
     if (failure || (limit !== undefined && limit > 0 && tick.timer >= limit)) {
       this.finish(tick.now, failure);

@@ -227,3 +227,21 @@ describe("timer", () => {
     ]);
   });
 });
+
+describe("timer failures", () => {
+  it("checks minimum speed against the client's active word", () => {
+    let wordIndex = 3;
+    const session = createTestSession(
+      sessionConfig({ minWpm: "custom", minWpmCustomSpeed: 100 }),
+      { words: ["one ", "two"], getActiveWordIndex: () => wordIndex },
+    );
+    const reasons: (string | undefined)[] = [];
+    session.on("finish", ({ reason }) => reasons.push(reason));
+    session.start(0);
+    session.advance(1000);
+    expect(reasons).toEqual([]);
+    wordIndex = 4;
+    session.advance(2000);
+    expect(reasons).toEqual(["min speed"]);
+  });
+});
