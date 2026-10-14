@@ -168,7 +168,6 @@ beforeEach(() => {
 describe("words generator parity", () => {
   it.each(cases.map((c) => [c.name, c] as const))("%s", async (name, c) => {
     // json round trip on purpose: drops undefined just like the file
-    // oxlint-disable-next-line unicorn/prefer-structured-clone -- Match fixture/wire JSON serialization, including omission of undefined fields.
     const actual = JSON.parse(JSON.stringify(await run(c))) as unknown;
     const file = resolve(WORDS_DIR, "__snapshots__", `${name}.json`);
     if (process.env["UPDATE_PARITY_SNAPSHOTS"] === "1" || !existsSync(file)) {
