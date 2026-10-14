@@ -1,3 +1,5 @@
+import type { EventLog } from "@oxytype/typing-core/events/types";
+
 import { cleanup, fireEvent, render } from "@solidjs/testing-library";
 import {
   afterEach,
@@ -26,18 +28,27 @@ vi.mock("../../../../../src/ts/controllers/sound-controller", () => ({
   playClick: vi.fn(),
   playError: vi.fn(),
 }));
-vi.mock("../../../../../src/ts/test/test-words", () => ({
-  words: {
-    get: (i?: number) => {
-      const list = [{ textWithCommit: "ab " }, { textWithCommit: "cd" }];
-      return i === undefined ? list : list[i];
+vi.mock("../../../../../src/ts/test/events/data", async () => {
+  const { getReplaySteps } = await import("@oxytype/typing-core/replay");
+  const targetWords = ["ab ", "cd"];
+  return {
+    buildEventLog: () => [],
+    testSession: {
+      getReplay: () => ({
+        words: targetWords,
+        steps: getReplaySteps(
+          { context: { targetWords }, events: mocks.events } as EventLog,
+          false,
+        ),
+      }),
     },
-  },
-}));
-vi.mock("../../../../../src/ts/test/events/data", () => ({
-  buildEventLog: () => [],
-  getAllTestEvents: () => mocks.events,
-  getInputForWord: () => mocks.inputForWord,
+  };
+});
+vi.mock("@oxytype/typing-core/events/helpers", async (importOriginal) => ({
+  ...(await importOriginal<
+    typeof import("@oxytype/typing-core/events/helpers")
+  >()),
+  getInputFromDom: () => mocks.inputForWord,
 }));
 vi.mock("@oxytype/typing-core/events/stats", () => ({
   getInputHistory: () => [],
