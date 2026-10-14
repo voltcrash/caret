@@ -1,5 +1,5 @@
 import { AnimationParams } from "animejs";
-import { For, JSXElement, Show } from "solid-js";
+import { For, JSXElement } from "solid-js";
 
 import { getGlobalOffsetTop, getIsScreenshotting } from "../../../states/core";
 import {
@@ -14,6 +14,7 @@ import { Anime } from "../../common/anime/Anime";
 import { AnimePresence } from "../../common/anime/AnimePresence";
 import { AnimeShow } from "../../common/anime/AnimeShow";
 import { Fa, FaProps } from "../../common/Fa";
+import { TextContent } from "../../common/TextContent";
 
 const levelConfig = {
   notice: {
@@ -96,13 +97,9 @@ function NotificationItem(props: { notification: Notification }): JSXElement {
             <Fa {...iconProps()} class="mr-2 inline" />
             {title()}
           </div>
-          <Show
-            when={props.notification.useInnerHtml}
-            fallback={<div>{props.notification.message}</div>}
-          >
-            {/* oxlint-disable-next-line solid/no-innerhtml -- Legacy notification callers explicitly opt into preformatted HTML. */}
-            <div innerHTML={props.notification.message}></div>
-          </Show>
+          <div>
+            <TextContent content={props.notification.message} />
+          </div>
         </div>
       </Anime>
     </div>

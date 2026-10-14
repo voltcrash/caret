@@ -48,9 +48,8 @@ export function DevOptionsModal(): JSXElement {
           durationMs: 0,
           details: { test: true, error: "Example error message" },
         });
-        showNoticeNotification("useInnerHtml<br>test", {
+        showNoticeNotification(["Structured lines", "test"], {
           durationMs: 0,
-          useInnerHtml: true,
         });
         hideModal("DevOptions");
       },

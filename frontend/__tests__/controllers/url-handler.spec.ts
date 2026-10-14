@@ -238,7 +238,6 @@ describe("url-handler", () => {
       //THEN
       expect(notifySuccessMock).toHaveBeenCalledWith(expect.anything(), {
         durationMs: 10000,
-        useInnerHtml: true,
       });
     });
     it("rejects invalid values", () => {

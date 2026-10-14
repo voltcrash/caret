@@ -7,7 +7,6 @@ import {
   canSetConfigWithCurrentFunboxes,
   canSetFunboxWithConfig,
 } from "./funbox-validation";
-import { escapeHTML } from "../utils/misc";
 import { camelCaseToWords, capitalizeFirstLetter } from "../utils/strings";
 import { configMetadata } from "./metadata";
 import { Config, setConfigStore } from "./store";
@@ -173,8 +172,8 @@ export function toggleFunbox(funbox: FunboxName, nosave?: boolean): boolean {
         )} cannot be set to ${String(e.value)}.`,
     );
     showNoticeNotification(
-      `You can't enable ${escapeHTML(funbox.replace(/_/g, " "))}:<br />${errorStrings.map((s) => escapeHTML(s)).join("<br />")}`,
-      { durationMs: 5000, useInnerHtml: true },
+      [`You can't enable ${funbox.replace(/_/g, " ")}:`, ...errorStrings],
+      { durationMs: 5000 },
     );
     return false;
   }
