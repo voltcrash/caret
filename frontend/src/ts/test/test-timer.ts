@@ -25,7 +25,6 @@ import * as SoundController from "../controllers/sound-controller";
 import { clearLowFpsMode, setLowFpsMode } from "../anim";
 import { createTimerScheduler } from "./timer-scheduler";
 import { buildEventLog, getCurrentInput, logTestEvent } from "./events/data";
-import { roundTo2 } from "@oxytype/util/numbers";
 import {
   getLiveCachedAccuracy,
   getLiveCachedTestDurationMs,
@@ -33,11 +32,7 @@ import {
 } from "./events/live-cache";
 import { getChars } from "@oxytype/typing-core/events/stats";
 import { calculateWpm } from "@oxytype/typing-core/stats-math";
-import {
-  getActiveWordIndex,
-  isTestActive,
-  setCurrentLiveStats,
-} from "../states/test";
+import { getActiveWordIndex, setCurrentLiveStats } from "../states/test";
 
 const clock = createTestTimer({
   onDrift: checkIfTimerIsSlow,
@@ -55,18 +50,8 @@ const clock = createTestTimer({
 const scheduler = createTimerScheduler(clock);
 import.meta.hot?.dispose(scheduler.stop);
 
-type TimerStats = {
-  dateNow: number;
-  now: number;
-  expected: number;
-  nextDelay: number;
-};
-
 let slowTimerCount = 0;
 let slowTimerNotifIds: number[] = [];
-let timer: NodeJS.Timeout | null = null;
-const interval = 1000;
-let expected = 0;
 
 let slowTimerFailEnabled = true;
 export function disableSlowTimerFail(): void {
@@ -81,7 +66,6 @@ export function enableTimerDebug(): void {
 export function clear(logEnd = false, now = performance.now()): void {
   scheduler.stop();
   clearLowFpsMode();
-  if (timer !== null) clearTimeout(timer);
   if (logEnd) {
     logTestEvent("timer", now, {
       event: "end",
@@ -148,7 +132,6 @@ function checkIfFailed(
     wordIndex: getActiveWordIndex(),
   });
   if (reason !== undefined) {
-    if (timer !== null) clearTimeout(timer);
     SlowTimer.clear();
     slowTimerCount = 0;
     timerEvent.dispatch({ key: "fail", value: reason });
@@ -164,7 +147,6 @@ function checkIfTimeIsUp(testTime: number): void {
   const maxTime = getTimeLimit(Config, CustomText.getLimit());
   if (maxTime !== undefined && maxTime !== 0 && testTime >= maxTime) {
     //times up
-    if (timer !== null) clearTimeout(timer);
     Caret.hide();
     SlowTimer.clear();
     slowTimerCount = 0;
@@ -187,14 +169,6 @@ function playTimeWarning(testTime: number): void {
     void SoundController.playTimeWarning();
   }
   if (timerDebug) console.timeEnd("play timer warning");
-}
-
-// ---------------------------------------
-
-let timerStats: TimerStats[] = [];
-
-export function getTimerStats(): TimerStats[] {
-  return timerStats;
 }
 
 function timerStep(now: number, catchingUp: boolean, testTime: number): void {
@@ -284,7 +258,6 @@ export async function start(now: number): Promise<void> {
   }
   slowTimerNotifIds = [];
   void _startNew(now);
-  // void _startOld(now);
 }
 
 async function _startNew(now: number): Promise<void> {
@@ -294,47 +267,4 @@ async function _startNew(now: number): Promise<void> {
     timer: 0,
     date: new Date().getTime(),
   });
-}
-
-async function _startOld(now: number): Promise<void> {
-  timerStats = [];
-  expected = now + interval;
-  logTestEvent("timer", now, {
-    event: "start",
-    timer: 0,
-    date: new Date().getTime(),
-  });
-  (function loop(): void {
-    const delay = expected - performance.now();
-    timerStats.push({
-      dateNow: Date.now(),
-      now: performance.now(),
-      expected: expected,
-      nextDelay: delay,
-    });
-    const drift = roundTo2(Math.abs(interval - delay));
-    checkIfTimerIsSlow(drift);
-    timer = setTimeout(function () {
-      if (!isTestActive()) {
-        if (timer !== null) clearTimeout(timer);
-        SlowTimer.clear();
-        slowTimerCount = 0;
-        return;
-      }
-
-      const now = performance.now();
-
-      logTestEvent("timer", now, {
-        event: "step",
-        timer: getLiveCachedTestSeconds(now),
-        drift: drift,
-        slowTimer: SlowTimer.get() ? true : undefined,
-      });
-
-      timerStep(now, false, getLiveCachedTestSeconds(now));
-
-      expected += interval;
-      loop();
-    }, delay);
-  })();
 }
