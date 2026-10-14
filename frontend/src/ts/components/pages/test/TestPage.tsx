@@ -26,7 +26,7 @@ import { LiveStatsTextTop } from "./live-stats/LiveStatsTextTop";
 import { TestModesNotice } from "./modes-notice/TestModesNotice";
 import { OutOfFocusWarning } from "./OutOfFocusWarning";
 import { RestartTestButton } from "./RestartTestButton";
-import { Result } from "./result/Result";
+import { LazyResult } from "./result/LazyResult";
 import { SaveProgressButton } from "./SaveProgressButton";
 import { TestConfig } from "./TestConfig";
 import { TestInitFailed } from "./TestInitFailed";
@@ -164,7 +164,7 @@ export function TestPage(
       />
       <TestPageLifecycle input={refs.wordsInput} />
       <TestLoading />
-      <Result />
+      <LazyResult />
     </div>
   );
 }

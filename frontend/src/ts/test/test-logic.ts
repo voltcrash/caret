@@ -22,7 +22,7 @@ import { getActiveTags } from "../collections/tags";
 import * as TodayTracker from "./today-tracker";
 import * as ChallengeContoller from "../controllers/challenge-controller";
 import { clearQuoteStats } from "../states/quote-rate";
-import * as Result from "./result";
+import { prepareResultScreen } from "../states/result";
 import {
   getActivePage,
   getCustomTextIndicator,
@@ -702,6 +702,7 @@ export async function retrySavingResult(): Promise<void> {
   }
 
   testLogicState.retrySaving.canRetry = false;
+  const Result = await import("./result");
   Result.updateRetrySaving(false);
 
   showNoticeNotification("Retrying to save...");
@@ -725,6 +726,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
   setResultCalculating(true);
   const now = performance.now();
   TestTimer.clear(true, now);
+  const resultReady = Promise.all([import("./result"), prepareResultScreen()]);
 
   // fade out the test and show loading
   // because the css animation has a delay,
@@ -750,6 +752,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
   setTestActive(false);
 
   cleanupData();
+  const [Result] = await resultReady;
 
   if (isDevEnvironment()) {
     logEventsDataToTheConsoleTable();
@@ -958,6 +961,7 @@ async function saveResult(
   setAccountButtonSpinner(true);
 
   const response = await Ape.results.add({ body: { result } });
+  const Result = await import("./result");
 
   setAccountButtonSpinner(false);
 

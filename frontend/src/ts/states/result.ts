@@ -248,6 +248,26 @@ export const [getScreenshotWatermark, setScreenshotWatermark] =
 // show/hide, animate and measure these imperatively
 let resultElement: HTMLDivElement | undefined;
 let resultWrapperElement: HTMLDivElement | undefined;
+let screenLoader: (() => Promise<void>) | undefined;
+const screenWaiters = new Set<() => void>();
+
+export function bindResultScreenLoader(
+  loader: () => Promise<void>,
+): () => void {
+  screenLoader = loader;
+  return () => {
+    if (screenLoader === loader) screenLoader = undefined;
+  };
+}
+
+export async function prepareResultScreen(): Promise<void> {
+  await screenLoader?.();
+}
+
+export async function waitForResultScreen(): Promise<void> {
+  if (resultElement !== undefined) return;
+  await new Promise<void>((resolve) => screenWaiters.add(resolve));
+}
 
 export function setResultElements(
   result: HTMLDivElement,
@@ -255,6 +275,8 @@ export function setResultElements(
 ): void {
   resultElement = result;
   resultWrapperElement = wrapper;
+  for (const resolve of screenWaiters) resolve();
+  screenWaiters.clear();
 }
 
 // #result
