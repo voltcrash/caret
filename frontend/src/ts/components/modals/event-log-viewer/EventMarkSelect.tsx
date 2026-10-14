@@ -16,6 +16,7 @@ export function EventMarkSelect(props: {
 }): JSXElement {
   return (
     <select
+      aria-label={`Sync mark for event ${props.eventIndex + 1}`}
       class="w-full rounded bg-bg p-1 font-mono text-xs text-text"
       value={props.sync.eventToMark()[props.eventIndex] ?? ""}
       onChange={(e) => {
