@@ -54,3 +54,12 @@ test("result screen has no serious or critical axe violations", async ({
   await expect(page.locator("#result")).toHaveCSS("opacity", "1");
   await checkAccessibility(page, testInfo);
 });
+
+test("settings have no serious or critical axe violations", async ({
+  page,
+}, testInfo) => {
+  await openTest(page);
+  await page.goto("/settings");
+  await expect(page.locator('[data-setting-key="quickRestart"]')).toBeVisible();
+  await checkAccessibility(page, testInfo);
+});
