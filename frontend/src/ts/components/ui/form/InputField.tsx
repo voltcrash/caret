@@ -104,7 +104,6 @@ export function InputField(props: {
           )
         }
         autoCapitalize={props.autoCapitalize}
-        // oxlint-disable-next-line react/no-unknown-property -- Solid uses lowercase spellcheck.
         spellcheck={props.spellCheck}
         name={props.field().name as string}
         value={convertValueToString(props.field().state.value)}
