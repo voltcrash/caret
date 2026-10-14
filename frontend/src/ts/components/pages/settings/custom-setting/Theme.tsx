@@ -590,7 +590,7 @@ function Picker(props: { color: ColorName }): JSXElement {
     "bg-(--picker-colorfulErrorExtra)",
   ];
 
-  // oxlint-disable-next-line solid/reactivity
+  // oxlint-disable-next-line solid/reactivity -- The debounced event callback reads the current color prop when invoked.
   const debouncedInput = debounce(125, (e: InputEvent) => {
     const target = e.target as HTMLInputElement;
     const color = target.value;
