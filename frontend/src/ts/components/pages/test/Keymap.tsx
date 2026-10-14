@@ -276,7 +276,6 @@ function Key(
         color: "var(--keycolor)",
       }}
       // Don't apply reduced motion. If the user activates react/next they want animations.
-      respectReducedMotion={false}
       animation={{
         "--keybgcolor": animKeyBgColor(),
         "--keycolor": animKeyColor(),
