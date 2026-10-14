@@ -117,4 +117,30 @@ describe("shared accessible controls", () => {
       screen.getByRole("textbox", { name: "Custom text" }),
     ).toBeInTheDocument();
   });
+
+  it("supplies descriptive names for standalone fields", () => {
+    render(() => {
+      const form = createForm(() => ({
+        defaultValues: { wordLimit: 10, notes: "" },
+      }));
+      return (
+        <>
+          <form.Field name="wordLimit">
+            {(field) => (
+              <InputField field={field} type="number" placeholder="" />
+            )}
+          </form.Field>
+          <form.Field name="notes">
+            {(field) => <TextareaField field={field} label="Test notes" />}
+          </form.Field>
+        </>
+      );
+    });
+    expect(
+      screen.getByRole("spinbutton", { name: "word Limit" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("textbox", { name: "Test notes" }),
+    ).toBeInTheDocument();
+  });
 });
