@@ -84,4 +84,15 @@ describe("live word node builders", () => {
     expect(result.nodes.textContent).toBe("AB");
     expect(result.nodes.querySelector("letter.correct")?.textContent).toBe("A");
   });
+  it.each(["<&\"'", "שלום", "عربي", "👩‍💻"])(
+    "renders literal special characters: %s",
+    (word) => {
+      const initial = buildInitialWordNodes(word, 0);
+      expect(initial.textContent).toBe(word);
+      expect(initial.querySelector("script, img, b")).toBeNull();
+      const live = build({ currentWord: word, input: word }).nodes;
+      expect(live.textContent).toBe(word);
+      expect(live.querySelector("script, img, b")).toBeNull();
+    },
+  );
 });
