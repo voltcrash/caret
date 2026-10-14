@@ -76,3 +76,26 @@ test("result summary stays silent during typing and clears on restart", async ({
   await assertRestarted(page);
   await expect(summary).toHaveText("");
 });
+
+test.describe("reduced motion", () => {
+  test.use({ reducedMotion: "reduce" });
+  test("disables control transitions and caret animations while dialogs and restart work", async ({
+    page,
+  }) => {
+    await openTest(page);
+    await expect(page.locator("#restartTestButton")).toHaveCSS(
+      "transition-duration",
+      "0s",
+    );
+    await expect(page.locator("#caret")).toHaveCSS("animation-name", "none");
+    await page
+      .getByRole("button", { name: "Custom word count", exact: true })
+      .click();
+    const dialog = page.getByRole("dialog", { name: "Custom Word Amount" });
+    await expect(dialog.getByRole("spinbutton")).toBeFocused();
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+    await page.locator("#restartTestButton").click();
+    await assertRestarted(page);
+  });
+});
