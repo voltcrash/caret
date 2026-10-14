@@ -261,6 +261,11 @@ export function Commandline(): JSXElement {
           </button>
         </Show>
         <input
+          aria-label={
+            commandlineState.mode === "input"
+              ? commandlineState.inputPlaceholder
+              : "Search commands"
+          }
           ref={(el) => {
             inputEl = el;
           }}
