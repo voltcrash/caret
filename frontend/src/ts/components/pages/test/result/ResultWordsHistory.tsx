@@ -340,11 +340,9 @@ export function ResultWordsHistory(): JSXElement {
                   "pb-[2px] [overflow-wrap:anywhere]",
               )}
               style={{ color: wordHeat(item)?.color }}
-              // oxlint-disable-next-line react/no-unknown-property -- Solid uses the lowercase HTML attribute.
               attr:burst={
                 item.burst === undefined ? undefined : String(item.burst)
               }
-              // oxlint-disable-next-line react/no-unknown-property -- Solid uses the lowercase HTML attribute.
               attr:input={item.input}
               onMouseEnter={() => {
                 if (!getResultVisible()) return;
