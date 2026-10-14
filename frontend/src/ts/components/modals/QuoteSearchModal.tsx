@@ -1,5 +1,6 @@
 import { createForm } from "@tanstack/solid-form";
 import {
+  untrack,
   JSXElement,
   createSignal,
   createEffect,
@@ -108,8 +109,9 @@ function Item(props: {
 }): JSXElement {
   const loggedOut = (): boolean => !isAuthenticated();
   const [isFav, setIsFav] = createSignal(
-    // oxlint-disable-next-line solid/reactivity -- intentionally reading once as initial value
-    !loggedOut() && QuotesController.isQuoteFavorite(props.quote),
+    untrack(
+      () => !loggedOut() && QuotesController.isQuoteFavorite(props.quote),
+    ),
   );
 
   const handleToggleFavorite = async (): Promise<void> => {
