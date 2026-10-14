@@ -48,6 +48,13 @@ describe("zod 3 messages", () => {
     [z.union([z.string(), z.number()]), true, "Invalid input"],
     [z.string().refine(() => false), "a", "Invalid input"],
     [z.object({ a: z.string() }).required(), {}, "Required"],
+    [z.enum(["a", "b"]), undefined, "Required"],
+    [z.enum(["a", "b"]), 1, "Expected 'a' | 'b', received number"],
+    [
+      z.literal(["a", "b"]),
+      "c",
+      "Invalid enum value. Expected 'a' | 'b', received 'c'",
+    ],
   ] as const)("%s %j", (schema, input, expected) => {
     expect(message(schema, input)).toEqual([expected]);
   });

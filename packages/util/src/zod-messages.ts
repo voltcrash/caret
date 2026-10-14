@@ -117,7 +117,12 @@ export const zod3Messages: z.core.$ZodErrorMap = (issue) => {
       if (kind === "literal" && issue.values.length === 1) {
         return `Invalid literal value, expected ${stringify(issue.values[0])}`;
       }
-      return `Invalid enum value. Expected ${joinValues(issue.values)}, received '${String(issue.input)}'`;
+      // Zod 3 enums type-checked first: non-strings were invalid_type issues.
+      if (typeof issue.input !== "string") {
+        if (issue.input === undefined) return "Required";
+        return `Expected ${joinValues(issue.values)}, received ${parsedType(issue.input)}`;
+      }
+      return `Invalid enum value. Expected ${joinValues(issue.values)}, received '${issue.input}'`;
     }
     case "unrecognized_keys":
       return `Unrecognized key(s) in object: ${joinValues(issue.keys, ", ")}`;
