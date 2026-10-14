@@ -144,7 +144,7 @@ export function createApi(options: ApiOptions) {
         if (!parsed.success) {
           throw new ApiError("Server returned invalid data", response.status);
         }
-        return { ...response, body: parsed.data as unknown };
+        return { ...response, body: parsed.data };
       }
       return response;
     },

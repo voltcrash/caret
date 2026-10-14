@@ -3,14 +3,14 @@ import {
   type CompletedEvent,
 } from "@oxytype/schemas/results";
 import { createSignal, type Accessor } from "solid-js";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 import { readJson, writeJson } from "../storage/json";
 
 const entrySchema = z
   .object({
-    id: z.string().uuid(),
-    apiUrl: z.string().url(),
+    id: z.guid(),
+    apiUrl: z.url(),
     result: CompletedEventSchema,
     state: z.enum(["pending", "rejected"]),
     error: z.string().optional(),

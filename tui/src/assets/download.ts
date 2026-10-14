@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { LayoutObjectSchema } from "@oxytype/schemas/layouts";
 import { LanguageObjectSchema } from "@oxytype/schemas/languages";
 import { QuoteDataSchema } from "@oxytype/schemas/quotes";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 import type { Fetch } from "../api/client";
 import { readJson, writeJson } from "../storage/json";

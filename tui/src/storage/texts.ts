@@ -1,4 +1,4 @@
-import { z } from "zod/v3";
+import { z } from "zod";
 import {
   CustomTextSettingsSchema,
   type CustomTextSettings,
@@ -8,7 +8,7 @@ import { createSignal } from "solid-js";
 import { readJson, writeJson } from "./json";
 
 const savedTextSchema = z.object({
-  id: z.string().uuid(),
+  id: z.guid(),
   name: z.string().trim().min(1).max(64),
   settings: CustomTextSettingsSchema,
 });
