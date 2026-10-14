@@ -25,7 +25,7 @@ import {
   fieldMandatory,
   fromSchema,
 } from "../ui/form/utils";
-import SlimSelect from "../ui/SlimSelect";
+import Select from "../ui/Select";
 
 export function QuoteSubmitModal(): JSXElement {
   const languageOptions = LanguageGroupNames.filter(
@@ -161,8 +161,8 @@ export function QuoteSubmitModal(): JSXElement {
           name="language"
           children={(field) => (
             <LabeledField label="language">
-              <SlimSelect
-                appendTo="container"
+              <Select
+                label="Quote language"
                 options={languageOptions}
                 selected={field().state.value}
                 onChange={(val) => field().handleChange(val ?? "")}
