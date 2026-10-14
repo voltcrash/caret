@@ -16,7 +16,7 @@ export function getOptions<T extends z.ZodType>(
   schema: T,
 ): undefined | z.infer<T>[] {
   if (schema instanceof z.ZodLiteral) {
-    return [schema.value] as z.infer<T>[];
+    return [...schema.values] as z.infer<T>[];
   } else if (schema instanceof z.ZodEnum) {
     return schema.options as z.infer<T>[];
   } else if (schema instanceof z.ZodBoolean) {

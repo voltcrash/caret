@@ -114,7 +114,7 @@ export const zod3Messages: z.core.$ZodErrorMap = (issue) => {
     case "invalid_value": {
       const def = issue.inst?._zod.def as { type?: string } | undefined;
       const kind = def?.type;
-      if (kind === "literal") {
+      if (kind === "literal" && issue.values.length === 1) {
         return `Invalid literal value, expected ${stringify(issue.values[0])}`;
       }
       return `Invalid enum value. Expected ${joinValues(issue.values)}, received '${String(issue.input)}'`;
