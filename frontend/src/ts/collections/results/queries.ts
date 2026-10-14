@@ -19,7 +19,7 @@ import Ape from "../../ape";
 import { SnapshotResult } from "../../constants/default-snapshot";
 import { isAuthenticated } from "../../states/core";
 
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export async function getResultsQueryOnce(options: {
   queryState: Accessor<ResultsQueryState | undefined>;
   sorting: Accessor<{
@@ -44,7 +44,7 @@ export async function getResultsQueryOnce(options: {
  * @param queryState
  * @returns
  */
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export function useResultsLiveQuery(options: {
   queryState: Accessor<ResultsQueryState | undefined>;
   sorting: Accessor<{
@@ -67,7 +67,7 @@ export function useResultsLiveQuery(options: {
   });
 }
 
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export function buildResultsQuery(state: ResultsQueryState) {
   const applyMode2Filter = <T extends "time" | "words">(
     key: T,
@@ -126,7 +126,7 @@ export function buildResultsQuery(state: ResultsQueryState) {
   return query;
 }
 
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export const getSingleResultQueryOptions = (_id: string) =>
   queryOptions({
     queryKey: queryKeys.fullResult(_id),
