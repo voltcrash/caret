@@ -98,4 +98,11 @@ describe("result announcements", () => {
     setResultVisible(true);
     expect(screen.getByRole("status")).toHaveTextContent("100 wpm");
   });
+
+  it("respects no-stress mode by omitting numeric statistics", () => {
+    render(() => <ResultAnnouncement />);
+    setResultState("noStress", true);
+    setResultVisible(true);
+    expect(screen.getByRole("status").textContent).toBe("Test complete.");
+  });
 });
