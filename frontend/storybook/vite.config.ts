@@ -1,10 +1,9 @@
 /// <reference types="vite-plus" />
 import path from "path";
 import { fileURLToPath } from "url";
-import { defineConfig } from "vite-plus/test/config";
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
 import { playwright } from "vite-plus/test/browser-playwright";
-import type { TestProjectInlineConfiguration } from "vite-plus";
+import type { TestProjectInlineConfiguration, ViteUserConfig } from "vite-plus";
 
 type BrowserConfig = NonNullable<
   NonNullable<TestProjectInlineConfiguration["test"]>["browser"]
@@ -21,7 +20,9 @@ const dirname =
     : path.dirname(fileURLToPath(import.meta.url));
 
 // https://vite.dev/config/
-export default defineConfig({
+// Keep all config declarations in one type family. The CLI's config helper can
+// resolve a different bundled Vitest version from the workspace provider types.
+export default {
   plugins: [],
   define: {
     "process.env": {},
@@ -70,4 +71,4 @@ export default defineConfig({
       },
     ],
   },
-});
+} satisfies ViteUserConfig;
