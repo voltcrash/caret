@@ -109,7 +109,7 @@ export type ExecReturn = {
     }
 );
 
-export type InputsFromSchema<S extends ModalSchema> = {
+type InputsFromSchema<S extends ModalSchema> = {
   [K in keyof S["shape"]]: SimpleModalInput<z.infer<S["shape"][K]>>;
 };
 
