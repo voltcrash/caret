@@ -122,9 +122,7 @@ export function TestPage(
             autocomplete="off"
             autoCapitalize="off"
             inputMode="text"
-            // oxlint-disable-next-line react/no-unknown-property -- Solid types use lowercase enterkeyhint
             enterkeyhint="done"
-            // oxlint-disable-next-line react/no-unknown-property -- Solid uses lowercase autocorrect
             autocorrect="off"
             data-gramm="false"
             data-gramm_editor="false"
@@ -134,7 +132,6 @@ export function TestPage(
             data-lpignore="true"
             data-form-type="other"
             {...{ list: "autocompleteOff" }}
-            // oxlint-disable-next-line react/no-unknown-property -- Solid uses lowercase spellcheck
             spellcheck={false}
           ></textarea>
           <OutOfFocusWarning />
@@ -159,7 +156,6 @@ export function TestPage(
         aria-hidden="true"
         autocomplete="off"
         autoCapitalize="off"
-        // oxlint-disable-next-line react/no-unknown-property -- Solid uses lowercase autocorrect
         autocorrect="off"
       />
       <TestPageLifecycle input={refs.wordsInput} />
