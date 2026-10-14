@@ -391,7 +391,7 @@ describe("Misc Utils", () => {
     });
 
     it("should return false for objects with different prototypes", () => {
-      // oxlint-disable-next-line no-extraneous-class
+      // oxlint-disable-next-line no-extraneous-class -- Constructor/function fixtures exercise runtime class/object detection.
       class MyClass {}
       expect(Misc.isPlainObject(new MyClass())).toBe(false);
       expect(Misc.isPlainObject(Object.create(null))).toBe(false);
@@ -401,9 +401,9 @@ describe("Misc Utils", () => {
     });
 
     it("should return false for functions", () => {
-      // oxlint-disable-next-line no-empty-function
+      // oxlint-disable-next-line no-empty-function -- Constructor/function fixtures exercise runtime class/object detection.
       expect(Misc.isPlainObject(function () {})).toBe(false);
-      // oxlint-disable-next-line no-empty-function
+      // oxlint-disable-next-line no-empty-function -- Constructor/function fixtures exercise runtime class/object detection.
       expect(Misc.isPlainObject(() => {})).toBe(false);
     });
   });
