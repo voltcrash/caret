@@ -104,4 +104,28 @@ describe("live word node builders", () => {
     expect(nodes.textContent).toBe('<&"');
     expect(nodes.querySelector("letter.extra")?.textContent).toBe('"');
   });
+  it("keeps cached word nodes independent of typing mutations and indices", () => {
+    const first = buildInitialWordNodes("safe", 1);
+    const letter = first.querySelector("letter");
+    if (letter === null) throw new Error("Missing letter");
+    letter.textContent = "changed";
+    letter.className = "incorrect";
+    const second = buildInitialWordNodes("safe", 2);
+    expect(second.textContent).toBe("safe");
+    expect(second.querySelector(".incorrect")).toBeNull();
+    expect(second.querySelector(".word")?.getAttribute("data-wordindex")).toBe(
+      "2",
+    );
+  });
+  it("never caches funbox callbacks", () => {
+    expect(buildInitialWordNodes("a", 0).textContent).toBe("a");
+    expect(
+      buildInitialWordNodes("a", 0, () => document.createTextNode("b"))
+        .textContent,
+    ).toBe("b");
+    expect(
+      buildInitialWordNodes("a", 0, () => document.createTextNode("c"))
+        .textContent,
+    ).toBe("c");
+  });
 });
