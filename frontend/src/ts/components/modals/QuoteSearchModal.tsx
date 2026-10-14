@@ -128,7 +128,7 @@ function Item(props: {
       <div
         class="text-text [&_.highlight]:text-main"
         dir="auto"
-        // oxlint-disable-next-line solid/no-innerhtml
+        // oxlint-disable-next-line solid/no-innerhtml -- Quote fields are escaped before the existing highlight markup is added.
         innerHTML={highlightMatches(
           Misc.escapeHTML(props.quote.text),
           props.matchedTerms,
@@ -139,7 +139,7 @@ function Item(props: {
           <div class="opacity-50">id</div>
           <span
             class="[&_.highlight]:text-main"
-            // oxlint-disable-next-line solid/no-innerhtml
+            // oxlint-disable-next-line solid/no-innerhtml -- Quote fields are escaped before the existing highlight markup is added.
             innerHTML={highlightMatches(
               Misc.escapeHTML(props.quote.id.toString()),
               props.matchedTerms,
@@ -155,7 +155,7 @@ function Item(props: {
             <div class="opacity-50">source</div>
             <span
               class="[&_.highlight]:text-main"
-              // oxlint-disable-next-line solid/no-innerhtml
+              // oxlint-disable-next-line solid/no-innerhtml -- Quote fields are escaped before the existing highlight markup is added.
               innerHTML={highlightMatches(
                 Misc.escapeHTML(props.quote.source),
                 props.matchedTerms,
@@ -539,8 +539,7 @@ export function QuoteSearchModal(): JSXElement {
                 isRtl={isRtl()}
                 onSelect={() => applyQuote(quote.id)}
                 onReport={() => showQuoteReportModal(quote.id)}
-                // oxlint-disable-next-line solid/reactivity, typescript-eslint/promise-function-async -- fire-and-forget, no reactive tracking needed
-                onToggleFavorite={() => toggleFavorite(quote)}
+                onToggleFavorite={toggleFavorite.bind(null, quote)}
               />
             )}
           </For>
