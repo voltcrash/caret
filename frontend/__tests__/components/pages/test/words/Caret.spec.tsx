@@ -1,19 +1,36 @@
 import { cleanup, render } from "@solidjs/testing-library";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
+import type { CaretController } from "../../../../../src/ts/components/pages/test/words/caret-controller";
+
 const bindings = vi.hoisted(() => ({
-  main: vi.fn(),
-  pace: vi.fn(),
-  disposeMain: vi.fn(),
-  disposePace: vi.fn(),
+  main: undefined as CaretController | undefined,
+  pace: undefined as CaretController | undefined,
+  unregisterMain: vi.fn(),
+  unregisterPace: vi.fn(),
+  cancelFrame: vi.fn(),
 }));
 vi.mock("../../../../../src/ts/test/caret", () => ({
-  bindCaret: bindings.main,
+  setCaret: (controller: CaretController) => {
+    bindings.main = controller;
+    return bindings.unregisterMain;
+  },
 }));
 vi.mock("../../../../../src/ts/test/pace-caret", () => ({
-  bindCaret: bindings.pace,
+  setCaret: (controller: CaretController) => {
+    bindings.pace = controller;
+    return bindings.unregisterPace;
+  },
+}));
+vi.mock("../../../../../src/ts/test/test-words", () => ({
+  words: { get: () => undefined },
+}));
+vi.mock("../../../../../src/ts/utils/debounced-animation-frame", () => ({
+  cancelPendingAnimationFrame: bindings.cancelFrame,
+  requestDebouncedAnimationFrame: vi.fn(),
 }));
 import { Caret } from "../../../../../src/ts/components/pages/test/words/Caret";
+import { Config } from "../../../../../src/ts/config/store";
 
 afterEach(() => {
   cleanup();
@@ -21,9 +38,9 @@ afterEach(() => {
 });
 
 describe("Caret ownership", () => {
-  it("binds the supplied nodes and disposes both animation controllers", () => {
-    bindings.main.mockReturnValue(bindings.disposeMain);
-    bindings.pace.mockReturnValue(bindings.disposePace);
+  it("creates a controller per node and disposes it on unmount", () => {
+    Config.caretStyle = "block";
+    Config.paceCaretStyle = "underline";
     const mainRef = vi.fn();
     const paceRef = vi.fn();
     const { container, unmount } = render(() => (
@@ -36,11 +53,20 @@ describe("Caret ownership", () => {
     const pace = container.querySelector("#paceCaret");
     expect(mainRef).toHaveBeenCalledWith(main);
     expect(paceRef).toHaveBeenCalledWith(pace);
-    expect(bindings.main).toHaveBeenCalledWith(main);
-    expect(bindings.pace).toHaveBeenCalledWith(pace);
-    expect(pace).toHaveClass("hidden");
+    expect(main).toHaveClass("block");
+    expect(pace).toHaveClass("underline", "hidden");
+    expect(bindings.main?.isFullWidth()).toBe(true);
+    expect(bindings.pace?.isHidden()).toBe(true);
+
+    const stopMain = vi.spyOn(
+      bindings.main as CaretController,
+      "stopAllAnimations",
+    );
     unmount();
-    expect(bindings.disposeMain).toHaveBeenCalledOnce();
-    expect(bindings.disposePace).toHaveBeenCalledOnce();
+    expect(stopMain).toHaveBeenCalledOnce();
+    expect(bindings.cancelFrame).toHaveBeenCalledWith("caret.caret.goTo");
+    expect(bindings.cancelFrame).toHaveBeenCalledWith("caret.paceCaret.goTo");
+    expect(bindings.unregisterMain).toHaveBeenCalledOnce();
+    expect(bindings.unregisterPace).toHaveBeenCalledOnce();
   });
 });

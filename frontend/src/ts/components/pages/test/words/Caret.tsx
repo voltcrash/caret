@@ -1,8 +1,11 @@
 import { JSXElement, onCleanup, onMount } from "solid-js";
 
-import { bindCaret as bindMainCaret } from "../../../../test/caret";
-import { bindCaret as bindPaceCaret } from "../../../../test/pace-caret";
+import { Config } from "../../../../config/store";
+import { setCaret as setMainCaret } from "../../../../test/caret";
+import { setCaret as setPaceCaret } from "../../../../test/pace-caret";
 import { cn } from "../../../../utils/cn";
+import { cancelPendingAnimationFrame } from "../../../../utils/debounced-animation-frame";
+import { CaretController } from "./caret-controller";
 
 export function Caret(props: {
   pace?: boolean;
@@ -10,8 +13,16 @@ export function Caret(props: {
 }): JSXElement {
   let element!: HTMLDivElement;
   onMount(() => {
-    const dispose = (props.pace ? bindPaceCaret : bindMainCaret)(element);
-    onCleanup(dispose);
+    const controller = new CaretController(
+      element,
+      props.pace ? Config.paceCaretStyle : Config.caretStyle,
+    );
+    const unregister = (props.pace ? setPaceCaret : setMainCaret)(controller);
+    onCleanup(() => {
+      controller.stopAllAnimations();
+      cancelPendingAnimationFrame(`caret.${element.id}.goTo`);
+      unregister();
+    });
   });
 
   return (

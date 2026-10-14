@@ -1,4 +1,3 @@
-import { cancelPendingAnimationFrame } from "../utils/debounced-animation-frame";
 import { Config } from "../config/store";
 import { getCurrentInput } from "./events/data";
 import {
@@ -47,14 +46,11 @@ export function updatePosition(noAnim = false): void {
 
 let caret: CaretController | undefined;
 
-// The component owns the node and cancels its animations on disposal.
-export function bindCaret(element: HTMLDivElement): () => void {
-  const instance = new CaretController(element, Config.caretStyle);
-  caret = instance;
+// The Caret component creates and disposes the controller.
+export function setCaret(controller: CaretController): () => void {
+  caret = controller;
   return () => {
-    instance.stopAllAnimations();
-    cancelPendingAnimationFrame(`caret.${element.id}.goTo`);
-    if (caret === instance) caret = undefined;
+    if (caret === controller) caret = undefined;
   };
 }
 
