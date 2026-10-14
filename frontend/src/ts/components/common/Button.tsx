@@ -22,6 +22,9 @@ type BaseProps = {
   dataset?: Record<string, string>;
   active?: boolean;
   tabIndex?: number;
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
+  "aria-pressed"?: boolean;
 };
 
 export type ButtonProps = BaseProps & {
@@ -65,7 +68,7 @@ export function Button(props: ButtonProps | AnchorProps): JSXElement {
       "bg-(--themable-button-bg) text-(--themable-button-text) hover:bg-(--themable-button-hover-bg) hover:text-(--themable-button-hover-text)",
       "[--themable-button-active:var(--main-color)]",
       variant() === "text" &&
-        "[--themable-button-bg:transparent] [--themable-button-hover-bg:transparent] [--themable-button-hover-text:var(--text-color)] [--themable-button-text:var(--sub-color)] active:text-sub",
+        "[--themable-button-bg:transparent] [--themable-button-hover-bg:transparent] [--themable-button-hover-text:var(--text-color)] [--themable-button-text:var(--text-color)] active:text-text",
       variant() === "button" &&
         "[--themable-button-bg:var(--sub-alt-color)] [--themable-button-hover-bg:var(--text-color)] [--themable-button-hover-text:var(--bg-color)] [--themable-button-text:var(--text-color)] active:bg-sub",
       // fingers need ~44px, filled buttons are often only ~27px tall
@@ -97,6 +100,9 @@ export function Button(props: ButtonProps | AnchorProps): JSXElement {
           type={(props as ButtonProps).type ?? "button"}
           id={props.id}
           class={getClasses()}
+          aria-label={props["aria-label"]}
+          aria-labelledby={props["aria-labelledby"]}
+          aria-pressed={props["aria-pressed"]}
           onClick={(e: MouseEvent) => props.onClick?.(e)}
           onMouseEnter={(e) => props.onMouseEnter?.(e)}
           onMouseLeave={(e) => props.onMouseLeave?.(e)}
@@ -116,6 +122,8 @@ export function Button(props: ButtonProps | AnchorProps): JSXElement {
         component={props["router-link"] ? Link : "a"}
         id={props.id}
         class={getClasses()}
+        aria-label={props["aria-label"]}
+        aria-labelledby={props["aria-labelledby"]}
         href={props.href}
         target={
           props["router-link"] || props.href?.startsWith("#")
