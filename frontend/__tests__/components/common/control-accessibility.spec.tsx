@@ -51,4 +51,23 @@ describe("shared accessible controls", () => {
       "/settings",
     );
   });
+
+  it("preserves existing tooltip and dataset names", () => {
+    render(() => (
+      <>
+        <Button
+          fa={{ icon: "fa-crown" }}
+          balloon={{ text: "Personal bests" }}
+        />
+        <Button
+          fa={{ icon: "fa-user" }}
+          dataset={{ "aria-label": "Account" }}
+        />
+      </>
+    ));
+    expect(
+      screen.getByRole("button", { name: "Personal bests" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Account" })).toBeInTheDocument();
+  });
 });
