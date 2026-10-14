@@ -88,4 +88,14 @@ describe("modal focus", () => {
       screen.getByRole("dialog", { name: "Support settings" }),
     ).toHaveAttribute("aria-modal", "true");
   });
+
+  it("wraps Shift+Tab from the first control to the last enabled control", async () => {
+    renderFocusModal();
+    await openSupport();
+    fireEvent.keyDown(screen.getByRole("textbox"), {
+      key: "Tab",
+      shiftKey: true,
+    });
+    expect(screen.getByRole("button", { name: "Close support" })).toHaveFocus();
+  });
 });
