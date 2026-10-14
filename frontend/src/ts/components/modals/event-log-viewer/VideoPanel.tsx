@@ -17,6 +17,7 @@ export function VideoPanel(props: { sync: VideoSync }): JSXElement {
         <div class="text-xs tracking-wider text-sub uppercase">Viewer</div>
         <div class="flex items-center gap-2">
           <input
+            aria-label="Choose event log video"
             type="file"
             accept="video/*"
             onChange={(e) => props.sync.onPickVideo(e)}
@@ -61,6 +62,7 @@ export function VideoPanel(props: { sync: VideoSync }): JSXElement {
           ></video>
         </div>
         <input
+          aria-label="Video position"
           type="range"
           min="0"
           max={props.sync.videoDurationMs() ?? 0}
