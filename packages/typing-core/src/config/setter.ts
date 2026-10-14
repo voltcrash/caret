@@ -1,7 +1,7 @@
 import type { Config } from "@oxytype/schemas/configs";
 import { ConfigSchema } from "@oxytype/schemas/configs";
 import { typedKeys } from "@oxytype/util/objects";
-import type { ZodTypeAny } from "zod/v3";
+import type { ZodType } from "zod";
 
 import { getDefaultConfig } from "./default-config";
 import { canSetConfigWithCurrentFunboxes } from "./funbox-validation";
@@ -26,7 +26,7 @@ export type ConfigChangeResult =
 
 export type ConfigChangeOptions = {
   /** Value schema, e.g. `supportedConfigSchema`; defaults to the web schema. */
-  schema?: { shape: Partial<Record<string, ZodTypeAny>> };
+  schema?: { shape: Partial<Record<string, ZodType>> };
   /** A running test with the no_quit funbox blocks restarting settings. */
   testActive?: boolean;
   /** Client-only block reasons, checked after the shared rules. */
