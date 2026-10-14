@@ -1,9 +1,10 @@
 /// <reference types="vite-plus" />
 import path from "path";
 import { fileURLToPath } from "url";
-import { defineConfig, lazyPlugins } from "vite-plus";
+// oxlint-disable-next-line vite-plus/prefer-vite-plus-imports -- Match the config and browser provider to Storybook's installed Vitest peer instance; root Vite+ resolves another instance.
+import { defineConfig } from "vitest/config";
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
-// oxlint-disable-next-line vite-plus/prefer-vite-plus-imports -- Installed Vitest 5.0.3 requires its matching provider types; Vite+ bundles the incompatible 5.0.1 declarations.
+// oxlint-disable-next-line vite-plus/prefer-vite-plus-imports -- Use the provider from the same Vitest peer instance as defineConfig above.
 import { playwright } from "@vitest/browser-playwright";
 
 const dirname =
@@ -13,7 +14,7 @@ const dirname =
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: lazyPlugins(() => []),
+  plugins: [],
   define: {
     "process.env": {},
   },
