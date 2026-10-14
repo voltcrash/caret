@@ -32,7 +32,7 @@ describe("checkIfFailedDueToMinBurst", () => {
       mode: "time",
       minBurstCustomSpeed: 100,
     });
-    // oxlint-disable-next-line typescript/no-unsafe-call
+    // oxlint-disable-next-line typescript/no-unsafe-call -- Mock control methods target functions replaced with vi.fn.
     (Misc.whorf as any).mockReturnValue(0);
   });
 
@@ -82,7 +82,7 @@ describe("checkIfFailedDueToMinBurst", () => {
   ])("$desc", ({ config, lastBurst, whorfRet, expected }) => {
     replaceConfig(config as any);
     if (whorfRet !== undefined) {
-      // oxlint-disable-next-line typescript/no-unsafe-call
+      // oxlint-disable-next-line typescript/no-unsafe-call -- Mock control methods target functions replaced with vi.fn.
       (Misc.whorf as any).mockReturnValue(whorfRet);
     }
 
@@ -339,7 +339,7 @@ describe("checkIfFinished", () => {
       stopOnError: "off",
       deleteOnError: "off",
     });
-    // oxlint-disable-next-line typescript/no-unsafe-call
+    // oxlint-disable-next-line typescript/no-unsafe-call -- Mock control methods target functions replaced with vi.fn.
     (Strings.isSpace as any).mockReturnValue(false);
   });
 
