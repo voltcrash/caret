@@ -10,7 +10,7 @@ import { InputField } from "../ui/form/InputField";
 import { LabeledField } from "../ui/form/LabeledField";
 import { SubmitButton } from "../ui/form/SubmitButton";
 import { TextareaField } from "../ui/form/TextareaField";
-import SlimSelect from "../ui/SlimSelect";
+import Select from "../ui/Select";
 
 type CustomTextIncomingData =
   | ({ set?: boolean; long?: boolean } & (
@@ -162,8 +162,8 @@ export function CustomGeneratorModal(props: {
       >
         <LabeledField label="presets">
           <div class="grid grid-cols-[1fr_auto] gap-2">
-            <SlimSelect
-              appendTo="container"
+            <Select
+              label="Generator preset"
               options={presetOptions}
               selected={selectedPreset()}
               onChange={setSelectedPreset}
