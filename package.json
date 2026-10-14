@@ -38,7 +38,6 @@
     "dev-tui": "vp run --filter @voltcrash/oxytype dev",
     "storybook": "vp run --filter @oxytype/frontend storybook",
     "start": "vp run build && vp run --filter @oxytype/frontend --filter @oxytype/backend --parallel start",
-    "start-be": "vp run build-be && vp run --filter @oxytype/backend start",
     "start-fe": "vp run build-fe && vp run --filter @oxytype/frontend start",
     "audit-fe": "vp run --filter @oxytype/frontend audit",
     "format-check": "vp fmt . --check",
