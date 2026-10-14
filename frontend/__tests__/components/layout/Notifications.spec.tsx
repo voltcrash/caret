@@ -36,6 +36,19 @@ afterEach(() => {
   clearAllNotifications();
 });
 
+it("renders structured notification lines as text in both views", () => {
+  const lines = ["<script>alert(1)</script>", "", '<img onerror="alert(1)">'];
+  showNoticeNotification(lines, { durationMs: 0 });
+  const toast = render(() => <Notifications />);
+  const history = render(() => <NotificationHistory />);
+  for (const view of [toast, history]) {
+    expect(view.container.textContent).toContain(lines[0]);
+    expect(view.container.textContent).toContain(lines[2]);
+    expect(view.container.querySelectorAll("br")).toHaveLength(2);
+    expect(view.container.querySelector("script, img")).toBeNull();
+  }
+});
+
 it.each(["<script>alert(1)</script>", '<img src="x" onerror="alert(1)">'])(
   "renders notification input as text: %s",
   (message) => {
