@@ -1,5 +1,5 @@
 import { detectPlatform } from "@tanstack/solid-hotkeys";
-import { createResource, JSXElement, Show } from "solid-js";
+import { untrack, createResource, JSXElement, Show } from "solid-js";
 
 import { resetConfig } from "../../../config/lifecycle";
 import { getConfig } from "../../../config/store";
@@ -379,8 +379,7 @@ function Section(props: {
   section: SettingsSection;
   children: JSXElement;
 }): JSXElement {
-  // oxlint-disable-next-line solid/reactivity -- each section is static
-  const section = props.section;
+  const section = untrack(() => props.section);
   return (
     <div
       id={`group_${props.section}`}
