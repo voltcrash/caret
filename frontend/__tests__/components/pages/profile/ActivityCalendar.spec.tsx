@@ -1,15 +1,13 @@
 import type { Client } from "@oxytype/schemas/shared";
 import type { TestActivity } from "@oxytype/schemas/users";
 
-import { cleanup, render } from "@solidjs/testing-library";
+import { cleanup, render, waitFor } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
 import { afterEach, expect, it, vi } from "vite-plus/test";
 const mocks = vi.hoisted(() => ({
   query: vi.fn(),
   webCalendar: vi.fn(),
-  selectYear: undefined as
-    | ((value: { value: string }[]) => Promise<void>)
-    | undefined,
+  selectYear: undefined as ((value: string | undefined) => void) | undefined,
 }));
 vi.mock("../../../../src/ts/db", () => ({
   getSnapshot: () => undefined,
@@ -24,11 +22,9 @@ vi.mock("../../../../src/ts/queries/account", () => ({
 vi.mock("../../../../src/ts/ape/server-configuration", () => ({
   get: () => undefined,
 }));
-vi.mock("../../../../src/ts/components/ui/SlimSelect", () => ({
-  default: (props: {
-    events: { afterChange: NonNullable<typeof mocks.selectYear> };
-  }) => {
-    mocks.selectYear = props.events.afterChange;
+vi.mock("../../../../src/ts/components/ui/Select", () => ({
+  default: (props: { onChange: NonNullable<typeof mocks.selectYear> }) => {
+    mocks.selectYear = props.onChange;
     return null;
   },
 }));
@@ -88,16 +84,18 @@ it("loads terminal year archives independently and restores current activity", a
     <ActivityCalendar isAccountPage client="tui" testActivity={activity} />
   ));
   expect(container.querySelector(".title")?.textContent).toBe("5 tests");
-  await mocks.selectYear?.([{ value: "2024" }]);
+  mocks.selectYear?.("2024");
   expect(mocks.query).toHaveBeenCalledWith({ client: "tui" });
   expect(mocks.webCalendar).not.toHaveBeenCalled();
-  expect(container.querySelector(".title")?.textContent).toBe("9 tests");
+  await waitFor(() =>
+    expect(container.querySelector(".title")?.textContent).toBe("9 tests"),
+  );
   expect(
     container.querySelector(
       '.activity [aria-label="4 tests on Monday 01 Jan 2024"]',
     ),
   ).not.toBeNull();
-  await mocks.selectYear?.([{ value: "current" }]);
+  mocks.selectYear?.("current");
   expect(container.querySelector(".title")?.textContent).toBe("5 tests");
   expect(mocks.query).toHaveBeenCalledTimes(1);
 });
@@ -109,8 +107,10 @@ it("shows empty terminal activity and archive failures", async () => {
   expect(container.querySelector(".testActivity")).not.toHaveClass("hidden");
   expect(container.querySelector(".nodata")).not.toHaveClass("hidden");
   mocks.query.mockRejectedValueOnce(new Error("Archive unavailable"));
-  await mocks.selectYear?.([{ value: "2024" }]);
-  expect(getByRole("alert")).toHaveTextContent("Archive unavailable");
+  mocks.selectYear?.("2024");
+  await waitFor(() =>
+    expect(getByRole("alert")).toHaveTextContent("Archive unavailable"),
+  );
   expect(container.querySelector(".activity")?.children).toHaveLength(0);
 });
 
@@ -130,10 +130,10 @@ it("ignores a terminal archive response after switching back to web", async () =
   const { container } = render(() => (
     <ActivityCalendar isAccountPage client={client()} testActivity={activity} />
   ));
-  const pending = mocks.selectYear?.([{ value: "2024" }]);
+  mocks.selectYear?.("2024");
   setClient("web");
   resolveArchive?.({ "2024": [99] });
-  await pending;
+  await Promise.resolve();
   expect(container.querySelector(".testActivity")).toHaveClass("hidden");
   expect(container.querySelector(".activity")?.children).toHaveLength(0);
 });

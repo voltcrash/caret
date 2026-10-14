@@ -18,7 +18,7 @@ vi.mock("../../../src/ts/components/modals/QuoteSubmitModal", () => ({
 vi.mock("../../../src/ts/components/modals/QuoteApproveModal", () => ({
   QuoteApproveModal: () => null,
 }));
-vi.mock("../../../src/ts/components/ui/SlimSelect", () => ({
+vi.mock("../../../src/ts/components/ui/Select", () => ({
   default: () => null,
 }));
 vi.mock("../../../src/ts/utils/json-data", () => ({
