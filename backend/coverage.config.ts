@@ -27,6 +27,7 @@ export default {
         "src/api/controllers/result.ts",
         "src/api/controllers/result/**/*.ts",
         "src/dal/user.ts",
+        "src/dal/user/**/*.ts",
         "src/api/controllers/user.ts",
       ],
       reporter: ["text", "json-summary"],
