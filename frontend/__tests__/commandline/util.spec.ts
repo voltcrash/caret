@@ -140,7 +140,7 @@ describe("CommandlineUtils", () => {
         //GIVEN
         const schema = z.boolean();
         const isAvailable = (val: any): (() => true) | undefined =>
-          // oxlint-disable-next-line typescript/strict-boolean-expressions
+          // oxlint-disable-next-line typescript/strict-boolean-expressions -- Exercise truthiness of unvalidated mock values.
           val ? () => true : undefined;
 
         //WHEN
