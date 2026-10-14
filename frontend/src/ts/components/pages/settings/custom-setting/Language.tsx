@@ -1,5 +1,4 @@
 import { Language as LanguageSchema } from "@oxytype/schemas/languages";
-import { Optgroup } from "slim-select";
 import { JSXElement } from "solid-js";
 
 import { configMetadata } from "../../../../config/metadata";
@@ -10,7 +9,7 @@ import {
   LanguageGroups,
 } from "../../../../constants/languages";
 import { getLanguageDisplayString } from "../../../../utils/strings";
-import SlimSelect from "../../../ui/SlimSelect";
+import Select, { SelectOptionGroup } from "../../../ui/Select";
 import { SearchableSetting } from "../SearchableSetting";
 
 export function Language(): JSXElement {
@@ -21,7 +20,8 @@ export function Language(): JSXElement {
       description={configMetadata.language.description}
       fa={configMetadata.language.fa}
       inputs={
-        <SlimSelect
+        <Select
+          label="Language"
           optionGroups={LanguageGroupNames.map(
             (group) =>
               ({
@@ -30,7 +30,7 @@ export function Language(): JSXElement {
                   text: getLanguageDisplayString(language),
                   value: language,
                 })),
-              }) as Optgroup,
+              }) as SelectOptionGroup,
           )}
           selected={getConfig.language}
           onChange={(val) => {
