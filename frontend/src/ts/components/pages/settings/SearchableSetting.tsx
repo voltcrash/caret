@@ -1,5 +1,5 @@
 import { ConfigKey, ConfigKeySchema } from "@oxytype/schemas/configs";
-import { createMemo, JSXElement, useContext } from "solid-js";
+import { untrack, createMemo, JSXElement, useContext } from "solid-js";
 
 import {
   registerSearchable,
@@ -52,9 +52,7 @@ export function SearchableSetting(props: SearchableSettingProps): JSXElement {
   );
 
   const section = useContext(SettingsSectionContext);
-
-  // oxlint-disable-next-line solid/reactivity -- getter stored, called in a tracked memo
-  registerSearchable(index, section);
+  untrack(() => registerSearchable(index, section));
 
   return (
     <Setting
