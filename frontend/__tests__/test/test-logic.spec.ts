@@ -32,6 +32,8 @@ const mocks = vi.hoisted(() => ({
   addResult: vi.fn(),
   capture: vi.fn(),
   saveLocal: vi.fn(),
+  finishReason: undefined as string | undefined,
+  onFinish: undefined as ((event: { reason?: string }) => void) | undefined,
 }));
 
 vi.mock("../../src/ts/states/test", () => ({
@@ -110,8 +112,19 @@ vi.mock("../../src/ts/test/events/data", () => ({
     complete: mocks.complete,
     end: vi.fn(),
     abandon: () => ({ acc: mocks.inputAccuracy, seconds: 0 }),
+    finish: (_now: number, reason?: string) => {
+      mocks.finishReason = reason;
+      mocks.onFinish?.({ reason });
+    },
+    getFinishReason: () => mocks.finishReason,
+    on: (_type: "finish", listener: (event: { reason?: string }) => void) => {
+      mocks.onFinish = listener;
+      return () => undefined;
+    },
   },
-  resetTestEvents: vi.fn(),
+  resetTestEvents: () => {
+    mocks.finishReason = undefined;
+  },
   cleanupData: vi.fn(),
   logEventsDataToTheConsoleTable: vi.fn(),
   forceReleaseAllKeys: vi.fn(),

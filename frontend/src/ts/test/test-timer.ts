@@ -12,7 +12,6 @@ import {
 } from "../states/notifications";
 import * as Caret from "./caret";
 import * as SlowTimer from "../states/slow-timer";
-import { timerEvent } from "../events/timer";
 import { highlight } from "../events/keymap";
 import * as LayoutfluidFunboxTimer from "../test/funbox/layoutfluid-funbox-timer";
 import { KeymapLayout, Layout } from "@oxytype/schemas/configs";
@@ -158,12 +157,7 @@ function checkIfTimerIsSlow(drift: number, now: number): void {
 function onFinish(reason: string | undefined): void {
   SlowTimer.clear();
   slowTimerCount = 0;
-  if (reason === undefined) {
-    Caret.hide();
-    timerEvent.dispatch({ key: "finish" });
-  } else {
-    timerEvent.dispatch({ key: "fail", value: reason });
-  }
+  if (reason === undefined) Caret.hide();
 }
 
 const unsubscribe = [

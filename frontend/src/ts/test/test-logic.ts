@@ -46,7 +46,6 @@ import * as TestWords from "./test-words";
 import * as WordsGenerator from "./words-generator";
 import * as PageTransition from "../states/page-transition";
 import { configEvent } from "../events/config";
-import { timerEvent } from "../events/timer";
 import * as AnalyticsController from "../controllers/analytics-controller";
 import { preloadResultHasher } from "../utils/result-hash";
 
@@ -200,7 +199,7 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
     shouldRepeatQuote(Config) &&
     currentQuote !== null &&
     Config.language.startsWith(currentQuote.language) &&
-    (isTestActive() || testLogicState.failReason !== "")
+    (isTestActive() || testSession.getFinishReason() !== undefined)
   ) {
     options.withSameWordset = true;
   }
@@ -247,7 +246,6 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
   CompositionState.setData("");
   Strings.clearWordDirectionCache();
   testLogicState.testReinitCount = 0;
-  testLogicState.failReason = "";
 
   const repeatWithPace =
     (Config.repeatedPace && options.withSameWordset) ?? false;
@@ -363,7 +361,7 @@ export async function addWord(): Promise<void> {
     );
     TestUI.addWord(newWord.display);
   } catch (e) {
-    timerEvent.dispatch({ key: "fail", value: "word generation error" });
+    fail("word generation error");
     showErrorNotification(
       "Error while getting next word. Please try again later",
       {
@@ -381,8 +379,7 @@ export async function addWord(): Promise<void> {
 }
 
 export function fail(reason: string): void {
-  testLogicState.failReason = reason;
-  void finish(true);
+  testSession.finish(performance.now(), reason);
 }
 
 const debouncedZipfCheck = debounce(250, async () => {
@@ -466,10 +463,8 @@ configEvent.subscribe(
   import.meta.hot,
 );
 
-timerEvent.subscribe(
-  ({ key: eventKey, value: eventValue }) => {
-    if (eventKey === "fail" && eventValue !== undefined) fail(eventValue);
-    if (eventKey === "finish") void finish();
-  },
-  import.meta.hot,
-);
+// Time limits, timer failures and fail() all end the session first.
+const unsubscribeFinish = testSession.on("finish", ({ reason }) => {
+  void finish(reason !== undefined);
+});
+import.meta.hot?.dispose(unsubscribeFinish);
