@@ -227,7 +227,7 @@ export function Nav(): JSXElement {
                   getAccountMenuOpen() &&
                     "**:data-[ui-element='accountMenu']:pointer-events-auto **:data-[ui-element='accountMenu']:opacity-100",
                 )}
-                // oxlint-disable-next-line react/no-unknown-property
+                // oxlint-disable-next-line react/no-unknown-property -- Solid uses the lowercase HTML attribute.
                 on:click={(e: MouseEvent) => {
                   if (isCoarsePointer()) {
                     if (e.target instanceof HTMLAnchorElement) {
