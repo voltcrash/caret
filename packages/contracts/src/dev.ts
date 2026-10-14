@@ -1,5 +1,5 @@
 import { initContract } from "@ts-rest/core";
-import { z } from "zod/v3";
+import { z } from "zod";
 import {
   CommonResponses,
   meta,
@@ -20,7 +20,7 @@ export type GenerateDataRequest = z.infer<typeof GenerateDataRequestSchema>;
 export const GenerateDataResponseSchema = responseWithData(
   z.object({
     uid: UidSchema,
-    email: z.string().email(),
+    email: z.email(),
   }),
 );
 export type GenerateDataResponse = z.infer<typeof GenerateDataResponseSchema>;

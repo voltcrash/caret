@@ -1,5 +1,5 @@
 import { initContract } from "@ts-rest/core";
-import { z } from "zod/v3";
+import { z } from "zod";
 import { CommonResponses, meta, responseWithData } from "./util/api";
 import {
   SpeedHistogramSchema,

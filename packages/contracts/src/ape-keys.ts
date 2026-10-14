@@ -1,5 +1,5 @@
 import { initContract } from "@ts-rest/core";
-import { z } from "zod/v3";
+import { z } from "zod";
 import {
   CommonResponses,
   meta,
@@ -22,7 +22,7 @@ export type AddApeKeyRequest = z.infer<typeof AddApeKeyRequestSchema>;
 export const AddApeKeyResponseSchema = responseWithData(
   z.object({
     apeKeyId: IdSchema,
-    apeKey: z.string().base64(),
+    apeKey: z.base64(),
     apeKeyDetails: ApeKeySchema,
   }),
 );

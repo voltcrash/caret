@@ -1,5 +1,5 @@
 import { initContract } from "@ts-rest/core";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 import {
   ConfigurationFormObjectSchema,
@@ -19,9 +19,7 @@ export type GetConfigurationResponse = z.infer<
   typeof GetConfigurationResponseSchema
 >;
 
-// marked as deprecated but zod team might reconsider according to https://github.com/colinhacks/zod/issues/2854#issuecomment-3100623150
-// oxlint-disable-next-line no-deprecated -- deepPartial preserves nested optional fields in the existing PATCH contract.
-export const PartialConfigurationSchema = ConfigurationSchema.deepPartial();
+export const PartialConfigurationSchema = z.deepPartial(ConfigurationSchema);
 export type PartialConfiguration = z.infer<typeof PartialConfigurationSchema>;
 
 export const PatchConfigurationRequestSchema = z

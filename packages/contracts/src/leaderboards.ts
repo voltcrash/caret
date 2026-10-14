@@ -1,4 +1,4 @@
-import { z } from "zod/v3";
+import { z } from "zod";
 import {
   CommonResponses,
   meta,
@@ -24,7 +24,16 @@ const LanguageAndModeQuerySchema = z.object({
 
 const PaginationQuerySchema = z.object({
   page: PageNumberSchema,
-  pageSize: z.number().int().safe().positive().min(10).max(200).default(50),
+  pageSize: z
+    .number()
+    .int()
+    // zod 3's .safe()
+    .min(Number.MIN_SAFE_INTEGER)
+    .max(Number.MAX_SAFE_INTEGER)
+    .positive()
+    .min(10)
+    .max(200)
+    .default(50),
 });
 
 export type PaginationQuery = z.infer<typeof PaginationQuerySchema>;
@@ -36,8 +45,8 @@ const LeaderboardResponseSchema = z.object({
 
 //--------------------------------------------------------------------------
 
-export const GetLeaderboardQuerySchema = LanguageAndModeQuerySchema.merge(
-  PaginationQuerySchema,
+export const GetLeaderboardQuerySchema = LanguageAndModeQuerySchema.extend(
+  PaginationQuerySchema.shape,
 );
 export type GetLeaderboardQuery = z.infer<typeof GetLeaderboardQuerySchema>;
 
@@ -70,9 +79,8 @@ export const DailyLeaderboardQuerySchema = LanguageAndModeQuerySchema.extend({
 });
 export type DailyLeaderboardQuery = z.infer<typeof DailyLeaderboardQuerySchema>;
 
-export const GetDailyLeaderboardQuerySchema = DailyLeaderboardQuerySchema.merge(
-  PaginationQuerySchema,
-);
+export const GetDailyLeaderboardQuerySchema =
+  DailyLeaderboardQuerySchema.extend(PaginationQuerySchema.shape);
 export type GetDailyLeaderboardQuery = z.infer<
   typeof GetDailyLeaderboardQuerySchema
 >;
@@ -109,7 +117,7 @@ const WeeklyXpLeaderboardQuerySchema = z.object({
 });
 
 export const GetWeeklyXpLeaderboardQuerySchema =
-  WeeklyXpLeaderboardQuerySchema.merge(PaginationQuerySchema);
+  WeeklyXpLeaderboardQuerySchema.extend(PaginationQuerySchema.shape);
 
 export type GetWeeklyXpLeaderboardQuery = z.infer<
   typeof GetWeeklyXpLeaderboardQuerySchema
