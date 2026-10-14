@@ -64,7 +64,6 @@ const tagsCollection = createCollection(
 
 const tagsReader = createCollectionReader(import.meta.hot, tagsCollection);
 
-// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export function useTagsLiveQuery() {
   return useLiveQuery((q) => {
     if (!isAuthenticated()) return undefined;
@@ -74,7 +73,6 @@ export function useTagsLiveQuery() {
   });
 }
 
-// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export async function getActiveTagsOnce() {
   return queryOnce((q) => {
     return q
@@ -84,14 +82,12 @@ export async function getActiveTagsOnce() {
   });
 }
 
-// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export async function getTagsOnce() {
   return queryOnce((q) => {
     return q.from({ tag: tagsCollection });
   });
 }
 
-// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export function useActiveTagsLiveQuery() {
   return useLiveQuery((q) => {
     if (!isAuthenticated()) return undefined;

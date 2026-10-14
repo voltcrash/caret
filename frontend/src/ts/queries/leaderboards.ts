@@ -37,7 +37,7 @@ const queryKeys = {
 export const getLeaderboardQueryOptions = (
   options: Selection & {
     page: number;
-  }, // oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
+  },
 ) =>
   queryOptions({
     queryKey: queryKeys.data(options),
@@ -111,7 +111,6 @@ export const getLeaderboardQueryOptions = (
     staleTime: options.type === "allTime" ? 1000 * 60 * 5 : 1000 * 60,
   });
 
-// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export const getRankQueryOptions = (options: Selection) =>
   queryOptions({
     queryKey: queryKeys.rank(options),

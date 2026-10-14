@@ -30,6 +30,7 @@ export function Navigation(props: {
         <LoadingCircle color="sub" class="text-2xl" />
       </Show>
       <Button
+        aria-label="First leaderboard page"
         onClick={() => props.onPageChange(0)}
         fa={{ icon: "fa-crown", fixedWidth: true }}
         disabled={props.currentPage === 0}
@@ -37,6 +38,7 @@ export function Navigation(props: {
       />
       <Show when={props.userPage !== undefined}>
         <Button
+          aria-label="Show my leaderboard rank"
           onClick={() => {
             props.onPageChange(props.userPage as number);
             props.onScrollToUser(true);
@@ -49,6 +51,7 @@ export function Navigation(props: {
         />
       </Show>
       <Button
+        aria-label="Previous leaderboard page"
         onClick={() => {
           const lastPage = props.lastPage;
           props.onPageChange((old) => Math.max(0, Math.min(old, lastPage) - 1));
@@ -89,6 +92,7 @@ export function Navigation(props: {
         {props.currentPage + 1}
       </Button>
       <Button
+        aria-label="Next leaderboard page"
         onClick={() => props.onPageChange((old) => old + 1)}
         fa={{ icon: "fa-chevron-right", fixedWidth: true }}
         disabled={props.currentPage + 1 >= props.lastPage}

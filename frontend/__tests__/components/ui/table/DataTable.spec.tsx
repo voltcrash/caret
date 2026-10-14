@@ -1,8 +1,14 @@
+import type { CellContext } from "@tanstack/solid-table";
+
 import { render, screen, fireEvent } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
 import { describe, it, expect, vi, beforeEach } from "vite-plus/test";
 
-import { DataTable } from "../../../../src/ts/components/ui/table/DataTable";
+import {
+  DataTable,
+  type DataTableColumnDef,
+} from "../../../../src/ts/components/ui/table/DataTable";
+import { dataTableFeatures } from "../../../../src/ts/components/ui/table/features";
 
 const [localStorage, setLocalStorage] = createSignal([]);
 vi.mock("../../../../src/ts/hooks/useLocalStorage", () => {
@@ -28,21 +34,21 @@ type Person = {
   age: number;
 };
 
-const columns = [
+const columns: DataTableColumnDef<Person>[] = [
   {
     id: "name",
     accessorKey: "name",
     header: "Name",
-    // oxlint-disable-next-line typescript/no-unsafe-return typescript/no-unsafe-call -- TanStack renderer stubs retain the generic callback signature.
-    cell: (info: any) => info.getValue(),
+    cell: (info: CellContext<typeof dataTableFeatures, Person, string>) =>
+      info.getValue(),
     meta: { maxBreakpoint: "sm" },
   },
   {
     id: "age",
     accessorKey: "age",
     header: "Age",
-    // oxlint-disable-next-line typescript/no-unsafe-return typescript/no-unsafe-call -- TanStack renderer stubs retain the generic callback signature.
-    cell: (info: any) => info.getValue(),
+    cell: (info: CellContext<typeof dataTableFeatures, Person, number>) =>
+      info.getValue(),
     meta: { breakpoint: "sm" },
   },
 ];

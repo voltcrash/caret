@@ -139,9 +139,8 @@ describe("CommandlineUtils", () => {
       it("sets available", () => {
         //GIVEN
         const schema = z.boolean();
-        const isAvailable = (val: any): (() => true) | undefined =>
-          // oxlint-disable-next-line typescript/strict-boolean-expressions -- Exercise truthiness of unvalidated mock values.
-          val ? () => true : undefined;
+        const isAvailable = (val: unknown): (() => true) | undefined =>
+          Boolean(val) ? () => true : undefined;
 
         //WHEN
         const cmd = buildCommand({

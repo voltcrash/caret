@@ -15,18 +15,18 @@ export const updateHintsPositionDebounced = Misc.debounceUntilResolved(
   { rejectSkippedCalls: false },
 );
 
-export function createHintsHtml(
+export function createHintsNodes(
   incorrectLettersIndices: number[][],
   activeWordLetters: HTMLElement[],
   input: string | string[],
   wrapWithDiv: boolean = true,
-): string {
+): DocumentFragment {
   // if input is an array, it contains only incorrect letters input.
   // if input is a string, it contains the whole word input.
   const isFullWord = typeof input === "string";
   const inputChars = isFullWord ? Strings.splitIntoCharacters(input) : input;
 
-  let hintsHtml = "";
+  const nodes = document.createDocumentFragment();
   let currentHint = 0;
 
   for (const adjacentLetters of incorrectLettersIndices) {
@@ -37,13 +37,20 @@ export function createHintsHtml(
         ? inputChars[letterIndex]
         : inputChars[currentHint++];
 
-      hintsHtml += `<hint data-chars-index=${blockIndices} style="left:${
-        letter.offsetLeft + letter.offsetWidth / 2
-      }px;">${blockChars}</hint>`;
+      const hint = document.createElement("hint");
+      hint.dataset["charsIndex"] = blockIndices;
+      hint.style.left = `${letter.offsetLeft + letter.offsetWidth / 2}px`;
+      hint.textContent = blockChars ?? "";
+      nodes.append(hint);
     }
   }
-  if (wrapWithDiv) hintsHtml = `<div class="hints">${hintsHtml}</div>`;
-  return hintsHtml;
+  if (!wrapWithDiv) return nodes;
+  const container = document.createElement("div");
+  container.className = "hints";
+  container.append(nodes);
+  const wrapped = document.createDocumentFragment();
+  wrapped.append(container);
+  return wrapped;
 }
 
 export async function joinOverlappingHints(
@@ -111,7 +118,7 @@ export async function joinOverlappingHints(
         hintBlock2.offsetLeft - hintBlock1.offsetLeft;
       hintBlock1.style.left = `${block1Letter1Pos + bothBlocksLettersWidthHalved}px`;
 
-      hintBlock1.insertAdjacentHTML("beforeend", hintBlock2.innerHTML);
+      hintBlock1.append(...hintBlock2.childNodes);
       hintBlock2.remove();
 
       // after joining blocks, the sequence is shorter
@@ -166,7 +173,7 @@ async function updateHintsPosition(): Promise<void> {
       }
     }
 
-    hintText.push(...Strings.splitIntoCharacters(hintEl.innerHTML));
+    hintText.push(...Strings.splitIntoCharacters(hintEl.textContent ?? ""));
   }
   await adjustHintsContainer(previousHintsContainer, hintIndices, hintText);
 
@@ -182,11 +189,8 @@ async function updateHintsPosition(): Promise<void> {
       wordElement.querySelectorAll<HTMLElement>("letter"),
     );
 
-    hintsContainer.innerHTML = createHintsHtml(
-      hintIndices,
-      letterElements,
-      hintText,
-      false,
+    hintsContainer.replaceChildren(
+      createHintsNodes(hintIndices, letterElements, hintText, false),
     );
     const wordHintsElements = wordElement.getElementsByTagName("hint");
     await joinOverlappingHints(hintIndices, letterElements, wordHintsElements);

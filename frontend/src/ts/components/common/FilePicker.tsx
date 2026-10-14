@@ -16,6 +16,7 @@ function Picker(props: PickRequest & { cleanup: () => void }): JSXElement {
   onMount(() => input()?.click());
   return (
     <input
+      aria-label="Choose file"
       ref={ref}
       type="file"
       accept={props.accept}

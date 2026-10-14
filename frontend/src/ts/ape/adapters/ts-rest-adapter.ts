@@ -99,7 +99,6 @@ function buildApi(timeout: number): (args: ApiFetcherArgs) => Promise<{
   };
 }
 
-// oxlint-disable-next-line explicit-function-return-type -- Preserve ts-rest's inferred client methods and response types.
 export function buildClient<T extends AppRouter>(
   contract: T,
   baseUrl: string,

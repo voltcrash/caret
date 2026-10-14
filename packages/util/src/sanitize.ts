@@ -76,8 +76,7 @@ export function sanitize<T>(
         const cleaned = removeProblems(parent[key], problems);
 
         if (cleaned === undefined) {
-          // oxlint-disable-next-line no-dynamic-delete -- Zod supplies the invalid member's key at runtime.
-          delete parent[key];
+          Reflect.deleteProperty(parent, key);
         } else {
           parent[key] = cleaned;
         }

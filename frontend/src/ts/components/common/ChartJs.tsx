@@ -152,6 +152,8 @@ export function ChartJs<T extends ChartType, TData = DefaultDataPoint<T>>(
 
   return (
     <canvas
+      role="img"
+      aria-label={`${props.name} chart`}
       id={props.id}
       class={cn("chartCanvas", props.class)}
       ref={canvasRef}

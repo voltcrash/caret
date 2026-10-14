@@ -17,7 +17,7 @@ import { LabeledField } from "../ui/form/LabeledField";
 import { SubmitButton } from "../ui/form/SubmitButton";
 import { TextareaField } from "../ui/form/TextareaField";
 import { allFieldsMandatory, fromSchema } from "../ui/form/utils";
-import SlimSelect from "../ui/SlimSelect";
+import Select from "../ui/Select";
 
 export function UserReportModal() {
   const form = createForm(() => ({
@@ -66,8 +66,8 @@ export function UserReportModal() {
           name="reason"
           children={(field) => (
             <LabeledField label="reason">
-              <SlimSelect
-                appendTo="container"
+              <Select
+                label="Report reason"
                 options={[
                   { value: "Inappropriate name", text: "Inappropriate name" },
                   { value: "Inappropriate bio", text: "Inappropriate bio" },

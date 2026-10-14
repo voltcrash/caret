@@ -1,3 +1,4 @@
+import { applyReducedMotion } from "../utils/misc";
 import { updateClassNames } from "../utils/cn";
 import { CaretStyle } from "@oxytype/schemas/configs";
 import { Config } from "../config/store";
@@ -197,7 +198,7 @@ export class Caret {
 
     this.marginLeftAnimation = animate(this.element, {
       marginLeft: newMarginLeft,
-      duration: options.duration,
+      duration: applyReducedMotion(options.duration),
       ease: options.ease,
       onComplete: () => {
         this.readyToResetMarginLeft = true;
@@ -239,7 +240,7 @@ export class Caret {
 
     this.marginTopAnimation = animate(this.element, {
       marginTop: options.newMarginTop,
-      duration: options.duration,
+      duration: applyReducedMotion(options.duration),
       onComplete: () => {
         this.readyToResetMarginTop = true;
       },
@@ -264,7 +265,9 @@ export class Caret {
               ? 85
               : 0;
 
-    const finalDuration = options.duration ?? smoothCaretSpeed;
+    const finalDuration = applyReducedMotion(
+      options.duration ?? smoothCaretSpeed,
+    );
 
     const animation: Record<string, number> = {
       left: options.left,

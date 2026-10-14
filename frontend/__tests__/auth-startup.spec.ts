@@ -13,6 +13,9 @@ vi.mock("../src/ts/collections/presets", () => ({
 vi.mock("../src/ts/collections/tags", () => ({
   waitForTagsReady: services.tags,
 }));
+vi.mock("../src/ts/collections/custom-themes", () => ({}));
+vi.mock("../src/ts/collections/inbox", () => ({}));
+vi.mock("../src/ts/collections/results", () => ({}));
 vi.mock("../src/ts/config/remote", () => ({
   updateFromServer: services.config,
 }));
@@ -43,7 +46,7 @@ it("starts account dependencies together and waits for all before publishing the
     displayName: "User",
     providerData: [],
   });
-  expect(releases).toHaveLength(4);
+  await vi.waitFor(() => expect(releases).toHaveLength(4));
   releases[0]?.();
   await Promise.resolve();
   expect(dispatch).not.toHaveBeenCalled();

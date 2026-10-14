@@ -21,7 +21,7 @@ import { LabeledField } from "../ui/form/LabeledField";
 import { SubmitButton } from "../ui/form/SubmitButton";
 import { TextareaField } from "../ui/form/TextareaField";
 import { allFieldsMandatory, fieldMandatory } from "../ui/form/utils";
-import SlimSelect from "../ui/SlimSelect";
+import Select from "../ui/Select";
 
 export function QuoteReportModal(): JSXElement {
   const [quoteText, setQuoteText] = createSignal("");
@@ -134,8 +134,8 @@ export function QuoteReportModal(): JSXElement {
           name="reason"
           children={(field) => (
             <LabeledField label="reason">
-              <SlimSelect
-                appendTo="container"
+              <Select
+                label="Report reason"
                 options={[
                   { value: "Grammatical error", text: "Grammatical error" },
                   { value: "Duplicate quote", text: "Duplicate quote" },

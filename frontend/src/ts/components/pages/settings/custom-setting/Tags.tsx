@@ -42,6 +42,7 @@ export function Tags(): JSXElement {
                   <span class="min-w-0 truncate">{tag.name}</span>
                 </Button>
                 <Button
+                  aria-label={`Clear personal bests for ${tag.name}`}
                   fa={{
                     icon: "fa-crown",
                   }}
@@ -62,6 +63,7 @@ export function Tags(): JSXElement {
                   }}
                 />
                 <Button
+                  aria-label={`Edit tag ${tag.name}`}
                   fa={{
                     icon: "fa-pen",
                   }}
@@ -93,6 +95,7 @@ export function Tags(): JSXElement {
                   }}
                 />
                 <Button
+                  aria-label={`Delete tag ${tag.name}`}
                   fa={{
                     icon: "fa-trash",
                   }}

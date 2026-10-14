@@ -15,8 +15,6 @@ import {
   isAuthAvailable,
   signInWithPopup,
 } from "./auth-client";
-import { waitForPresetsReady } from "./collections/presets";
-import { waitForTagsReady } from "./collections/tags";
 import { updateFromServer as updateConfigFromServer } from "./config/remote";
 import * as DB from "./db";
 import { authEvent } from "./events/auth";
@@ -109,8 +107,13 @@ async function getDataAndInit(): Promise<boolean> {
     // collections sync on their own; waiting keeps tags and presets inside the account loading gate
     const accountReady = Promise.all([
       DB.initSnapshot(),
-      waitForPresetsReady(),
-      waitForTagsReady(),
+      import("./collections/presets").then(async (m) =>
+        m.waitForPresetsReady(),
+      ),
+      import("./collections/tags").then(async (m) => m.waitForTagsReady()),
+      import("./collections/custom-themes"),
+      import("./collections/inbox"),
+      import("./collections/results"),
     ]).then(([snapshot]) => {
       if (snapshot === false) {
         throw new Error(

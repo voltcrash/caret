@@ -45,24 +45,6 @@ import { cn, updateClassNames } from "../../../../utils/cn";
 import { get as getTypingSpeedUnit } from "../../../../utils/typing-speed-units";
 import { Fa } from "../../../common/Fa";
 
-declare module "solid-js" {
-  // oxlint-disable-next-line typescript/no-namespace -- Solid JSX augmentation requires namespace/interface declaration merging.
-  namespace JSX {
-    // interfaces are required for declaration merging
-    // oxlint-disable-next-line typescript/consistent-type-definitions -- Solid JSX augmentation requires namespace/interface declaration merging.
-    interface IntrinsicElements {
-      // word letters, targeted by themes and funbox css
-      letter: HTMLAttributes<HTMLElement>;
-    }
-    // oxlint-disable-next-line typescript/consistent-type-definitions -- Solid JSX augmentation requires namespace/interface declaration merging.
-    interface ExplicitAttributes {
-      // word attributes, read by useResultWordHighlight
-      input: string;
-      burst: string;
-    }
-  }
-}
-
 async function copyToClipboard(
   content: string,
   customMessage?: string,
@@ -340,11 +322,9 @@ export function ResultWordsHistory(): JSXElement {
                   "pb-[2px] [overflow-wrap:anywhere]",
               )}
               style={{ color: wordHeat(item)?.color }}
-              // oxlint-disable-next-line react/no-unknown-property -- Solid uses the lowercase HTML attribute.
               attr:burst={
                 item.burst === undefined ? undefined : String(item.burst)
               }
-              // oxlint-disable-next-line react/no-unknown-property -- Solid uses the lowercase HTML attribute.
               attr:input={item.input}
               onMouseEnter={() => {
                 if (!getResultVisible()) return;

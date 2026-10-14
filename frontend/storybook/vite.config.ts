@@ -1,11 +1,21 @@
 /// <reference types="vite-plus" />
 import path from "path";
 import { fileURLToPath } from "url";
-// oxlint-disable-next-line vite-plus/prefer-vite-plus-imports -- Match the config and browser provider to Storybook's installed Vitest peer instance; root Vite+ resolves another instance.
-import { defineConfig } from "vitest/config";
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
-// oxlint-disable-next-line vite-plus/prefer-vite-plus-imports -- Use the provider from the same Vitest peer instance as defineConfig above.
-import { playwright } from "@vitest/browser-playwright";
+import { playwright } from "vite-plus/test/browser-playwright";
+import type { ViteUserConfig } from "vite-plus";
+
+type InlineProject = Extract<
+  NonNullable<NonNullable<ViteUserConfig["test"]>["projects"]>[number],
+  { test?: unknown }
+>;
+
+type BrowserConfig = NonNullable<NonNullable<InlineProject["test"]>["browser"]>;
+// Storybook and Vite+ can resolve separate copies of Vitest's private provider
+// classes. Bind the runtime constructor to this config's exact provider type.
+const browserProvider = playwright() as unknown as NonNullable<
+  BrowserConfig["provider"]
+>;
 
 const dirname =
   typeof __dirname !== "undefined"
@@ -13,7 +23,9 @@ const dirname =
     : path.dirname(fileURLToPath(import.meta.url));
 
 // https://vite.dev/config/
-export default defineConfig({
+// Keep all config declarations in one type family. The CLI's config helper can
+// resolve a different bundled Vitest version from the workspace provider types.
+export default {
   plugins: [],
   define: {
     "process.env": {},
@@ -51,7 +63,7 @@ export default defineConfig({
             },
             enabled: true,
             headless: true,
-            provider: playwright(),
+            provider: browserProvider,
             instances: [
               {
                 browser: "chromium",
@@ -62,4 +74,4 @@ export default defineConfig({
       },
     ],
   },
-});
+} satisfies ViteUserConfig;

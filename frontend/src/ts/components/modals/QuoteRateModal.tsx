@@ -179,6 +179,7 @@ export function QuoteRateModal(): JSXElement {
               <For each={[1, 2, 3, 4, 5]}>
                 {(star) => (
                   <Button
+                    aria-label={`Rate ${star} ${star === 1 ? "star" : "stars"}`}
                     variant="text"
                     class={cn(
                       "min-h-9 min-w-9 p-0 text-2xl sm:min-h-0 sm:min-w-0",
@@ -197,6 +198,7 @@ export function QuoteRateModal(): JSXElement {
           </div>
         </div>
         <Button
+          aria-label="Submit quote rating"
           variant="text"
           class="text-3xl"
           fa={{ icon: "fa-chevron-right" }}

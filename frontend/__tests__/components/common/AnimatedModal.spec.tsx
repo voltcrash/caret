@@ -97,7 +97,7 @@ describe("AnimatedModal", () => {
   }): {
     container: HTMLElement;
     dialog: HTMLDialogElement;
-    modalDiv: HTMLDivElement;
+    modalDiv: HTMLDivElement | null;
   } {
     const { container } = render(() => (
       <AnimatedModal id="Support" {...props} wrapperClass={props.wrapperClass}>
@@ -105,7 +105,8 @@ describe("AnimatedModal", () => {
       </AnimatedModal>
     ));
 
-    const dialog = container.querySelector("dialog") as HTMLDialogElement;
+    const dialog = container.querySelector("dialog");
+    if (dialog === null) throw new Error("Missing fixture dialog");
     vi.spyOn(dialog, "getClientRects").mockImplementation(
       () =>
         ({
@@ -113,13 +114,12 @@ describe("AnimatedModal", () => {
         }) as DOMRectList,
     );
 
-    return {
-      // oxlint-disable-next-line no-non-null-assertion -- Test setup/assertions guarantee this fixture element or mock call exists.
-      container: container.children[0]! as HTMLElement,
-      dialog,
-      // oxlint-disable-next-line no-non-null-assertion -- Test setup/assertions guarantee this fixture element or mock call exists.
-      modalDiv: container.querySelector(".modal")!,
-    };
+    const wrapper = container.firstElementChild;
+    const modalDiv = container.querySelector<HTMLDivElement>(".modal");
+    if (!(wrapper instanceof HTMLElement)) {
+      throw new Error("Missing fixture modal content");
+    }
+    return { container: wrapper, dialog, modalDiv };
   }
 
   it("renders dialog with correct id and class", () => {
@@ -130,6 +130,7 @@ describe("AnimatedModal", () => {
 
   it("renders children inside modal div", () => {
     const { modalDiv } = renderModal({});
+    if (modalDiv === null) throw new Error("Missing fixture modal content");
 
     expect(
       modalDiv.querySelector("[data-testid='modal-content']"),
@@ -375,6 +376,7 @@ describe("AnimatedModal", () => {
       await waitFor(() => expect(dialog.open).toBe(true));
       await completeAnimation();
       animations.length = 0;
+      if (modalDiv === null) throw new Error("Missing fixture sheet content");
       const handle = modalDiv.querySelector(
         "[aria-hidden='true']",
       ) as HTMLElement;

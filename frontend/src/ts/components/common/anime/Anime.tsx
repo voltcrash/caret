@@ -14,7 +14,7 @@ import {
 } from "solid-js";
 import { Dynamic } from "solid-js/web";
 
-import { applyReducedMotion } from "../../../utils/misc";
+import { reduceMotionParams } from "../../../utils/motion";
 import { AnimePresenceContext } from "./AnimePresence";
 
 /**
@@ -213,12 +213,9 @@ export function Anime(props: AnimeProps): JSXElement {
     }
 
     // Apply reduced motion if enabled
-    const exitParams =
-      local.respectReducedMotion &&
-      local.exit.duration !== undefined &&
-      typeof local.exit.duration === "number"
-        ? { ...local.exit, duration: applyReducedMotion(local.exit.duration) }
-        : local.exit;
+    const exitParams = local.respectReducedMotion
+      ? reduceMotionParams(local.exit)
+      : local.exit;
 
     // Play exit animation and wait for completion
     exitAnimation = animejsAnimate(element, exitParams);
@@ -284,15 +281,9 @@ export function Anime(props: AnimeProps): JSXElement {
     }
 
     // Apply reduced motion if enabled
-    const animParams =
-      local.respectReducedMotion &&
-      resolvedParams.duration !== undefined &&
-      typeof resolvedParams.duration === "number"
-        ? {
-            ...resolvedParams,
-            duration: applyReducedMotion(resolvedParams.duration),
-          }
-        : resolvedParams;
+    const animParams = local.respectReducedMotion
+      ? reduceMotionParams(resolvedParams)
+      : resolvedParams;
 
     currentAnimation = animejsAnimate(element, animParams);
     return currentAnimation;

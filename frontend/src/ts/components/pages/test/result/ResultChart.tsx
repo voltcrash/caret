@@ -26,6 +26,7 @@ import { FaSolidIcon } from "../../../../types/font-awesome";
 import * as Arrays from "../../../../utils/arrays";
 import { cn } from "../../../../utils/cn";
 import { blendTwoHexColors } from "../../../../utils/colors";
+import { applyReducedMotion } from "../../../../utils/misc";
 import { ChartJs } from "../../../common/ChartJs";
 import { Fa } from "../../../common/Fa";
 
@@ -268,7 +269,7 @@ export function ResultChart(props: {
         annotations: [],
       },
       tooltip: {
-        animation: { duration: 250 },
+        animation: { duration: applyReducedMotion(250) },
         mode: "index",
         intersect: false,
         callbacks: {
@@ -331,7 +332,7 @@ export function ResultChart(props: {
         resultState.noStress && "hidden",
       )}
     >
-      <div class="chartLegend pointer-events-none absolute right-0 bottom-[-0.75em] flex cursor-pointer max-sm:flex-wrap max-sm:justify-end rounded bg-bg p-[0.25em] text-[0.75em] opacity-0 transition-[opacity] duration-125 ease-[ease] group-hover/chart:pointer-events-auto group-hover/chart:opacity-100">
+      <div class="chartLegend pointer-events-none absolute right-0 bottom-[-0.75em] flex cursor-pointer max-sm:flex-wrap max-sm:justify-end rounded bg-bg p-[0.25em] text-[0.75em] opacity-0 transition-[opacity] duration-125 ease-[ease] group-hover/chart:pointer-events-auto group-hover/chart:opacity-100 focus-within:pointer-events-auto focus-within:opacity-100">
         <For each={legendButtons}>
           {(button) => (
             <button

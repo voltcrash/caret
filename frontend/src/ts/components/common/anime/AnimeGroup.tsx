@@ -6,7 +6,7 @@ import {
 import { JSXElement, ParentProps, onCleanup, onMount } from "solid-js";
 import { Dynamic } from "solid-js/web";
 
-import { applyReducedMotion } from "../../../utils/misc";
+import { reduceMotionParams } from "../../../utils/motion";
 
 /**
  * Props for the AnimeGroup component
@@ -204,16 +204,12 @@ export function AnimeGroup(props: AnimeGroupProps): JSXElement {
         delay: totalDelay,
       };
 
-      // Apply reduced motion if enabled
-      if (
-        (props.respectReducedMotion ?? true) &&
-        animParams.duration !== undefined &&
-        typeof animParams.duration === "number"
-      ) {
-        animParams.duration = applyReducedMotion(animParams.duration);
-      }
-
-      const animation = animejsAnimate(child, animParams);
+      const animation = animejsAnimate(
+        child,
+        (props.respectReducedMotion ?? true)
+          ? reduceMotionParams(animParams)
+          : animParams,
+      );
       animations.push(animation);
       initializedChildren.add(child);
     });
@@ -270,13 +266,10 @@ export function AnimeGroup(props: AnimeGroupProps): JSXElement {
               el.appendChild(node);
             }
 
-            const exitParams: AnimationParams = { ...props.exit };
-            if (
-              (props.respectReducedMotion ?? true) &&
-              typeof exitParams.duration === "number"
-            ) {
-              exitParams.duration = applyReducedMotion(exitParams.duration);
-            }
+            const exitParams =
+              (props.respectReducedMotion ?? true)
+                ? reduceMotionParams(props.exit)
+                : props.exit;
 
             const anim = animejsAnimate(node, {
               ...exitParams,

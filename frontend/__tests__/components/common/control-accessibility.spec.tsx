@@ -1,0 +1,146 @@
+import { fireEvent, render, screen } from "@solidjs/testing-library";
+import { createForm } from "@tanstack/solid-form";
+import { createSignal } from "solid-js";
+import { describe, expect, it } from "vite-plus/test";
+
+import { Button } from "../../../src/ts/components/common/Button";
+import { InputField } from "../../../src/ts/components/ui/form/InputField";
+import { LabeledField } from "../../../src/ts/components/ui/form/LabeledField";
+import { TextareaField } from "../../../src/ts/components/ui/form/TextareaField";
+
+describe("shared accessible controls", () => {
+  it("keeps inherited labels reactive", () => {
+    render(() => {
+      const [label, setLabel] = createSignal("Word limit");
+      const form = createForm(() => ({ defaultValues: { count: 10 } }));
+      return (
+        <>
+          <button type="button" onClick={() => setLabel("New limit")}>
+            Rename label
+          </button>
+          <LabeledField label={label()}>
+            <form.Field name="count">
+              {(field) => <InputField field={field} type="number" />}
+            </form.Field>
+          </LabeledField>
+        </>
+      );
+    });
+    expect(
+      screen.getByRole("spinbutton", { name: "Word limit" }),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Rename label" }));
+    expect(
+      screen.getByRole("spinbutton", { name: "New limit" }),
+    ).toBeInTheDocument();
+  });
+
+  it("names icon-only buttons and hides decorative icons", () => {
+    render(() => (
+      <Button fa={{ icon: "fa-trash" }} aria-label="Delete saved text" />
+    ));
+    const button = screen.getByRole("button", { name: "Delete saved text" });
+    expect(button.querySelector("i")).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("names icon links independently of their tooltip", () => {
+    render(() => (
+      <Button href="/settings" fa={{ icon: "fa-cog" }} aria-label="Settings" />
+    ));
+    expect(screen.getByRole("link", { name: "Settings" })).toHaveAttribute(
+      "href",
+      "/settings",
+    );
+  });
+
+  it("preserves existing tooltip and dataset names", () => {
+    render(() => (
+      <>
+        <Button
+          fa={{ icon: "fa-crown" }}
+          balloon={{ text: "Personal bests" }}
+        />
+        <Button
+          fa={{ icon: "fa-user" }}
+          dataset={{ "aria-label": "Account" }}
+        />
+      </>
+    ));
+    expect(
+      screen.getByRole("button", { name: "Personal bests" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Account" })).toBeInTheDocument();
+  });
+
+  it("exposes toggle state with its name", () => {
+    render(() => (
+      <Button
+        fa={{ icon: "fa-heart" }}
+        aria-label="Favorite quotes"
+        aria-pressed={true}
+      />
+    ));
+    expect(
+      screen.getByRole("button", { name: "Favorite quotes" }),
+    ).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("associates a visible label with a nested numeric field", () => {
+    render(() => {
+      const form = createForm(() => ({ defaultValues: { count: 10 } }));
+      return (
+        <LabeledField label="Word limit">
+          <form.Field name="count">
+            {(field) => <InputField field={field} type="number" />}
+          </form.Field>
+        </LabeledField>
+      );
+    });
+    expect(
+      screen.getByRole("spinbutton", { name: "Word limit" }),
+    ).toHaveAttribute("id", "count");
+    expect(screen.getByLabelText("Word limit")).toBeInTheDocument();
+  });
+
+  it("associates a visible label with a textarea", () => {
+    render(() => {
+      const form = createForm(() => ({ defaultValues: { text: "" } }));
+      return (
+        <LabeledField label="Custom text">
+          <form.Field name="text">
+            {(field) => <TextareaField field={field} />}
+          </form.Field>
+        </LabeledField>
+      );
+    });
+    expect(
+      screen.getByRole("textbox", { name: "Custom text" }),
+    ).toBeInTheDocument();
+  });
+
+  it("supplies descriptive names for standalone fields", () => {
+    render(() => {
+      const form = createForm(() => ({
+        defaultValues: { wordLimit: 10, notes: "" },
+      }));
+      return (
+        <>
+          <form.Field name="wordLimit">
+            {(field) => (
+              <InputField field={field} type="number" placeholder="" />
+            )}
+          </form.Field>
+          <form.Field name="notes">
+            {(field) => <TextareaField field={field} label="Test notes" />}
+          </form.Field>
+        </>
+      );
+    });
+    expect(
+      screen.getByRole("spinbutton", { name: "word Limit" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("textbox", { name: "Test notes" }),
+    ).toBeInTheDocument();
+  });
+});

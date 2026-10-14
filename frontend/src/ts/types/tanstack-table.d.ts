@@ -4,7 +4,6 @@ import { BreakpointKey } from "../states/breakpoints";
 
 declare module "@tanstack/solid-table" {
   //This needs to be an interface
-  // oxlint-disable-next-line typescript/consistent-type-definitions -- TanStack metadata augmentation requires interface declaration merging.
   interface ColumnMeta<
     TFeatures extends TableFeatures,
     TData extends RowData,

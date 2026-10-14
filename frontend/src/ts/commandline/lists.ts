@@ -58,6 +58,7 @@ const commands: CommandsSubgroup = {
       id: "changeCustomModeText",
       display: "Change custom text",
       icon: "fa-align-left",
+      opensModal: true,
       exec: (): void => {
         showModal("CustomText");
       },

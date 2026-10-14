@@ -119,7 +119,6 @@ export async function updateTags(dontSave: boolean): Promise<void> {
   setResultState("tags", {
     visible: userTagsCount > 0,
     items,
-    savedResultId: undefined,
   });
 }
 

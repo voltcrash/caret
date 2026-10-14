@@ -1,3 +1,4 @@
+import { applyReducedMotion } from "../utils/misc";
 import { animate, JSAnimation } from "animejs";
 import { Accessor, onCleanup } from "solid-js";
 
@@ -15,7 +16,7 @@ export function useSlideAnimation(options: {
     (visible) => {
       const el = options.element();
       if (!el) return;
-      const duration = options.duration();
+      const duration = applyReducedMotion(options.duration());
       if (!visible && duration === 0) {
         el.className = updateClassNames(el.className, "hidden", true);
         return;

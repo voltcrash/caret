@@ -6,6 +6,7 @@ import { createEffectOn } from "../../hooks/effects";
 import { PageName } from "../../pages/page";
 import { getPageView } from "../../states/page-transition";
 import { cn } from "../../utils/cn";
+import { applyReducedMotion } from "../../utils/misc";
 import { lazyPages } from "./lazy-pages";
 import { LoadingPage } from "./LoadingPage";
 import { TestPage } from "./test/TestPage";
@@ -84,7 +85,7 @@ export function AppPages(): JSXElement {
     const entering = state.phase === "in";
     const animation = animate(element, {
       opacity: entering ? [0, 1] : [1, 0],
-      duration: request.duration,
+      duration: applyReducedMotion(request.duration),
       onComplete: request.complete,
     });
     onCleanup(() => {

@@ -1,13 +1,16 @@
 import { AnyFieldApi } from "@tanstack/solid-form";
-import { Accessor, JSXElement, Show } from "solid-js";
+import { Accessor, JSXElement, Show, useContext } from "solid-js";
 
 import { cn } from "../../../utils/cn";
+import { FieldLabelContext } from "./field-label";
 import { FieldIndicator } from "./FieldIndicator";
 
 export function TextareaField(props: {
   field: Accessor<AnyFieldApi>;
   ref?: HTMLTextAreaElement | ((el: HTMLTextAreaElement) => void);
   placeholder?: string;
+  label?: string;
+  autofocus?: boolean;
   autocomplete?: string;
   disabled?: boolean;
   class?: string;
@@ -15,9 +18,17 @@ export function TextareaField(props: {
   onKeyDown?: (e: KeyboardEvent) => void;
   onKeyPress?: (e: KeyboardEvent) => void;
 }): JSXElement {
+  const standaloneLabel = (): string => {
+    const placeholder = props.placeholder?.trim();
+    return placeholder !== undefined && placeholder !== ""
+      ? placeholder
+      : (props.field().name as string).replace(/([a-z])([A-Z])/g, "$1 $2");
+  };
+  const inheritedLabel = useContext(FieldLabelContext);
   return (
     <div class="grid w-full">
       <textarea
+        autofocus={props.autofocus}
         ref={props.ref}
         class={cn(
           "col-start-1 row-start-1 w-full resize-y",
@@ -27,6 +38,7 @@ export function TextareaField(props: {
           props.class,
         )}
         id={props.field().name as string}
+        aria-label={props.label ?? inheritedLabel?.() ?? standaloneLabel()}
         name={props.field().name as string}
         placeholder={props.placeholder ?? ""}
         autocomplete={props.autocomplete}

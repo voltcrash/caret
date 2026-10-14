@@ -19,12 +19,12 @@ describe("ScrollToTop", () => {
   } {
     const { container } = render(() => <ScrollToTop />);
 
-    return {
-      // oxlint-disable-next-line no-non-null-assertion -- Test setup/assertions guarantee this fixture element or mock call exists.
-      container: container.children[0]! as HTMLElement,
-      // oxlint-disable-next-line no-non-null-assertion -- Test setup/assertions guarantee this fixture element or mock call exists.
-      button: container.querySelector("button")!,
-    };
+    const wrapper = container.firstElementChild;
+    const button = container.querySelector("button");
+    if (!(wrapper instanceof HTMLElement) || button === null) {
+      throw new Error("Missing fixture scroll control");
+    }
+    return { container: wrapper, button };
   }
 
   it("renders with correct classes and structure", () => {

@@ -10,7 +10,6 @@ import {
 } from "vite-plus/test";
 
 import { Theme } from "../../../src/ts/components/core/Theme";
-import { ThemeWithName } from "../../../src/ts/constants/themes";
 import * as Loader from "../../../src/ts/states/loader-bar";
 import * as Notifications from "../../../src/ts/states/notifications";
 import * as ThemeSignal from "../../../src/ts/states/theme";
@@ -18,7 +17,7 @@ import * as ThemeSignal from "../../../src/ts/states/theme";
 vi.mock("../../../src/ts/constants/themes", () => ({
   themes: {
     dark: { hasCss: true },
-    light: {},
+    serika: {},
   },
 }));
 
@@ -27,7 +26,21 @@ vi.mock("./FavIcon", () => ({
 }));
 
 describe("Theme component", () => {
-  const [themeSignal, setThemeSignal] = createSignal<ThemeWithName>({} as any);
+  const darkTheme: ReturnType<typeof ThemeSignal.getTheme> = {
+    name: "dark",
+    bg: "#000",
+    main: "#fff",
+    caret: "#fff",
+    sub: "#aaa",
+    subAlt: "#888",
+    text: "#fff",
+    error: "#f00",
+    errorExtra: "#c00",
+    colorfulError: "#f55",
+    colorfulErrorExtra: "#c55",
+  };
+  const [themeSignal, setThemeSignal] =
+    createSignal<ReturnType<typeof ThemeSignal.getTheme>>(darkTheme);
   const themeSignalMock = vi.spyOn(ThemeSignal, "getTheme");
   const loaderShowMock = vi.spyOn(Loader, "showLoaderBar");
   const loaderHideMock = vi.spyOn(Loader, "hideLoaderBar");
@@ -44,19 +57,7 @@ describe("Theme component", () => {
     loaderHideMock.mockClear();
     notificationAddMock.mockClear();
     themeSignalMock.mockImplementation(() => themeSignal());
-    setThemeSignal({
-      name: "dark",
-      bg: "#000",
-      main: "#fff",
-      caret: "#fff",
-      sub: "#aaa",
-      subAlt: "#888",
-      text: "#fff",
-      error: "#f00",
-      errorExtra: "#c00",
-      colorfulError: "#f55",
-      colorfulErrorExtra: "#c55",
-    });
+    setThemeSignal({ ...darkTheme });
   });
 
   it("injects CSS variables based on theme", () => {
@@ -78,7 +79,7 @@ describe("Theme component", () => {
   });
 
   it("updates CSS variables based on signal", () => {
-    setThemeSignal({ name: "light", bg: "#f00" } as any);
+    setThemeSignal({ ...themeSignal(), name: "serika", bg: "#f00" });
     const { style } = renderComponent();
 
     expect(style.innerHTML).toContain("--bg-color: #f00;");
@@ -87,6 +88,7 @@ describe("Theme component", () => {
   it("loads CSS file and shows loader when theme has CSS", () => {
     const { css } = renderComponent();
 
+    if (css === null) throw new Error("Missing fixture theme stylesheet");
     expect(css.getAttribute("href")).toBe("/themes/dark.css");
     expect(loaderShowMock).toHaveBeenCalledOnce();
     fireEvent.load(css);
@@ -94,15 +96,19 @@ describe("Theme component", () => {
   });
 
   it("removes CSS when theme has no CSS", async () => {
-    // oxlint-disable-next-line typescript/no-unsafe-return -- Theme mocks return fixtures in place of the persistence API.
-    themeSignalMock.mockImplementation(() => ({ name: "light" }) as any);
+    themeSignalMock.mockImplementation(() => ({
+      ...themeSignal(),
+      name: "serika",
+    }));
     const { css } = renderComponent();
     expect(css).not.toBeInTheDocument();
   });
 
   it("removes CSS when theme is custom", async () => {
-    // oxlint-disable-next-line typescript/no-unsafe-return -- Theme mocks return fixtures in place of the persistence API.
-    themeSignalMock.mockImplementation(() => ({ name: "custom" }) as any);
+    themeSignalMock.mockImplementation(() => ({
+      ...themeSignal(),
+      name: "custom",
+    }));
     const { css } = renderComponent();
     expect(css).not.toBeInTheDocument();
   });
@@ -110,6 +116,7 @@ describe("Theme component", () => {
   it("handles CSS load error", () => {
     const { css } = renderComponent();
     expect(loaderShowMock).toHaveBeenCalledOnce();
+    if (css === null) throw new Error("Missing fixture theme stylesheet");
     fireEvent.error(css);
     expect(loaderHideMock).toHaveBeenCalledOnce();
     expect(notificationAddMock).toHaveBeenCalledWith("Failed to load theme");
@@ -159,7 +166,7 @@ describe("Theme component", () => {
 
   function renderComponent(): {
     style: HTMLStyleElement;
-    css: HTMLLinkElement;
+    css: HTMLLinkElement | null;
     metaThemeColor: HTMLMetaElement;
     favIcon: HTMLElement;
   } {
@@ -171,15 +178,15 @@ describe("Theme component", () => {
     //make sure content is rendered to the head, not the body
     const head = document.head;
 
-    return {
-      // oxlint-disable-next-line typescript/no-non-null-assertion -- Test setup/assertions guarantee this fixture element or mock call exists.
-      style: head.querySelector("style#theme")!,
-      // oxlint-disable-next-line typescript/no-non-null-assertion -- Test setup/assertions guarantee this fixture element or mock call exists.
-      css: head.querySelector("link#currentTheme")!,
-      // oxlint-disable-next-line typescript/no-non-null-assertion -- Test setup/assertions guarantee this fixture element or mock call exists.
-      metaThemeColor: head.querySelector("meta#metaThemeColor")!,
-      // oxlint-disable-next-line typescript/no-non-null-assertion -- Test setup/assertions guarantee this fixture element or mock call exists.
-      favIcon: head.querySelector("#favicon")!,
-    };
+    const style = head.querySelector<HTMLStyleElement>("style#theme");
+    const css = head.querySelector<HTMLLinkElement>("link#currentTheme");
+    const metaThemeColor = head.querySelector<HTMLMetaElement>(
+      "meta#metaThemeColor",
+    );
+    const favIcon = head.querySelector<HTMLElement>("#favicon");
+    if (style === null || metaThemeColor === null || favIcon === null) {
+      throw new Error("Missing fixture theme metadata");
+    }
+    return { style, css, metaThemeColor, favIcon };
   }
 });

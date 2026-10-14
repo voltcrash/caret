@@ -52,7 +52,6 @@ export type ApiOptions = {
   logger?: Logger;
 };
 
-// oxlint-disable-next-line explicit-function-return-type -- infer the contracts client
 export function createApi(options: ApiOptions) {
   const fetcher = options.fetch ?? (async (input, init) => fetch(input, init));
   async function request(

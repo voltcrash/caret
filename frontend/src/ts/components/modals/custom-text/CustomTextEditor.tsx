@@ -68,6 +68,7 @@ export function CustomTextEditor(props: {
         <props.controller.form.Field name="text">
           {(field) => (
             <TextareaField
+              autofocus={!props.controller.isDisabled()}
               field={field}
               ref={props.controller.textareaRef}
               placeholder="type or paste your custom text"

@@ -29,7 +29,7 @@ import {
 import { configurationPromise as serverConfigurationPromise } from "../ape/server-configuration";
 import { getSnapshot } from "../db";
 import * as TodayTracker from "../test/today-tracker";
-import { isResultsReady, waitForResultsReady } from "../collections/results";
+import { isResultsReady } from "../states/results-ready";
 import {
   readSettingsGetParameters,
   SettingsUrlParamsSchema,
@@ -57,19 +57,14 @@ const pages = {
   about: solidPage("about"),
   account: solidPage("account", {
     loadingOptions: {
-      loadingMode: () => {
-        if (isResultsReady()) {
-          return "none";
-        } else {
-          return "sync";
-        }
-      },
+      loadingMode: () => (isResultsReady() ? "none" : "sync"),
       loadingPromise: async () => {
         if (getSnapshot() === null || getSnapshot() === undefined) {
           throw new Error(
             "Looks like your account data didn't download correctly. Please refresh the page.<br>If this error persists, please contact support.",
           );
         }
+        const { waitForResultsReady } = await import("../collections/results");
         await waitForResultsReady();
         await TodayTracker.addAllFromToday();
       },

@@ -1,5 +1,5 @@
 import { Dynamic, useRenderer } from "@opentui/solid";
-import { createEffect, on, onCleanup, onMount } from "solid-js";
+import { untrack, createEffect, on, onCleanup, onMount } from "solid-js";
 
 import type { ConfigStore } from "./config/store";
 import type { ScreenId } from "./router/screens";
@@ -48,12 +48,15 @@ export type AppProps = {
 };
 
 export function App(props: AppProps) {
-  // oxlint-disable-next-line solid/reactivity -- read once at startup
-  const { config, initialScreen, testOptions, auth, account } = props;
+  const { config, initialScreen, testOptions, auth, account } = untrack(() => ({
+    config: props.config,
+    initialScreen: props.initialScreen,
+    testOptions: props.testOptions,
+    auth: props.auth,
+    account: props.account,
+  }));
   const dispatcher = createKeyDispatcher();
-
-  // oxlint-disable-next-line solid/reactivity -- app-owned store initialized once
-  const history = props.history ?? createHistoryStore();
+  const history = untrack(() => props.history) ?? createHistoryStore();
   const test = createTypingTest({
     store: config,
     sources: createTestSources(createAssetSource(), () => ({
@@ -76,8 +79,8 @@ export function App(props: AppProps) {
     config.config,
     createRandomTheme(config.config, () => test.status() === "ready"),
   );
-  // oxlint-disable-next-line solid/reactivity -- app-owned store initialized once
-  const notifications = props.notifications ?? createNotifications();
+  const notifications =
+    untrack(() => props.notifications) ?? createNotifications();
   config.setTestActive(() => test.status() === "running");
   onCleanup(
     config.onReject((failure) => notifications.notify(failure.message)),

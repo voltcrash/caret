@@ -79,7 +79,10 @@ export function Nav(): JSXElement {
 
   return (
     // phones under 426px: no gaps so the row fits 320px with touch targets
-    <nav class={cn("z-5 flex w-full items-center gap-0 xs:gap-1 md:gap-2")}>
+    <nav
+      aria-label="Main navigation"
+      class={cn("z-5 flex w-full items-center gap-0 xs:gap-1 md:gap-2")}
+    >
       <Button
         variant="text"
         fa={{
@@ -227,7 +230,6 @@ export function Nav(): JSXElement {
                   getAccountMenuOpen() &&
                     "**:data-[ui-element='accountMenu']:pointer-events-auto **:data-[ui-element='accountMenu']:opacity-100",
                 )}
-                // oxlint-disable-next-line react/no-unknown-property -- Solid uses the lowercase HTML attribute.
                 on:click={(e: MouseEvent) => {
                   if (isCoarsePointer()) {
                     if (e.target instanceof HTMLAnchorElement) {

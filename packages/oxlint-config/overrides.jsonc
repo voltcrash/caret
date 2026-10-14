@@ -2,6 +2,40 @@
   "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
   "overrides": [
     {
+      // Wire/parity fixtures must omit undefined fields exactly like JSON transport.
+      "files": [
+        "**/__tests__/test/typing-core-parity.spec.ts",
+        "**/__tests__/test/words-generator-parity.spec.ts",
+        "**/__test__/fixtures.ts",
+        "**/__test__/completed-event.spec.ts",
+        "**/__test__/words-generator.spec.ts",
+      ],
+      "rules": { "unicorn/prefer-structured-clone": "off" },
+    },
+    {
+      // Ambient augmentations require mergeable interfaces/namespaces.
+      "files": ["**/*.d.ts"],
+      "rules": {
+        "typescript/consistent-type-definitions": "off",
+        "typescript/no-namespace": "off",
+      },
+    },
+    {
+      // Factory inference preserves TanStack/Drizzle/ts-rest generic metadata.
+      // These modules expose inferred factory results, not untyped API values.
+      "files": [
+        "**/src/ts/collections/**/*.ts",
+        "**/src/ts/queries/**/*.ts",
+        "**/src/db/schema.ts",
+        "**/src/ts/ape/adapters/ts-rest-adapter.ts",
+        "**/src/api/client.ts",
+        "**/createCustomTextController.ts",
+        "**/__tests__/collections/reader.spec.ts",
+        "**/__tests__/collections/client-history.spec.ts",
+      ],
+      "rules": { "typescript/explicit-function-return-type": "off" },
+    },
+    {
       "files": ["**/*.js", "**/*.cjs"],
       "rules": {
         "typescript/strict-boolean-expressions": "off",
@@ -49,7 +83,9 @@
       },
     },
     {
-      "files": ["**/__tests__/**"],
+      // Both test-directory spellings use deliberately invalid schema fixtures.
+      // Keep unsafe calls/returns checked; only fixture input construction is exempt.
+      "files": ["**/__tests__/**", "**/__test__/**"],
       "plugins": [
         "typescript",
         "unicorn",

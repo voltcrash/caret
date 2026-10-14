@@ -188,6 +188,7 @@ function SignalRow(props: { signal: TrackedSignal }): JSXElement {
           }
         >
           <input
+            aria-label="Signal value"
             type="text"
             value={editValue()}
             onInput={(e) => {
@@ -294,6 +295,7 @@ function SignalsPanel(): JSXElement {
     >
       <div class="sticky top-0 z-10 bg-bg p-3 pb-0">
         <input
+          aria-label="Filter signals"
           type="text"
           placeholder="Filter by signal or file name..."
           value={search()}

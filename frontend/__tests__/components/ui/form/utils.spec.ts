@@ -42,7 +42,12 @@ describe("fromSchema", () => {
 });
 
 describe("handleResult", () => {
-  const mockSetMeta = vi.fn();
+  const mockSetMeta =
+    vi.fn<
+      (
+        update: (meta: Record<string, unknown>) => Record<string, unknown>,
+      ) => void
+    >();
 
   function makeField(): AnyFieldApi {
     mockSetMeta.mockClear();
@@ -77,10 +82,8 @@ describe("handleResult", () => {
 
     expect(result).toBeUndefined();
     expect(mockSetMeta).toHaveBeenCalledOnce();
-
-    // oxlint-disable-next-line typescript/no-non-null-assertion -- Test setup/assertions guarantee this fixture element or mock call exists.
-    const updater = mockSetMeta.mock.calls[0]![0];
-    // oxlint-disable-next-line typescript/no-unsafe-call -- The asserted mock callback mirrors TanStack's metadata updater.
+    const updater = mockSetMeta.mock.calls[0]?.[0];
+    if (updater === undefined) throw new Error("Missing metadata updater");
     const newMeta = updater({ existing: true });
     expect(newMeta).toEqual({
       existing: true,

@@ -192,8 +192,7 @@ export function omit<T extends object, K extends keyof T>(
 ): Omit<T, K> {
   const result = { ...obj };
   for (const key of keys) {
-    // oxlint-disable-next-line no-dynamic-delete -- The omit API receives the property keys to remove at runtime.
-    delete result[key];
+    Reflect.deleteProperty(result, key);
   }
   return result;
 }

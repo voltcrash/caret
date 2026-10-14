@@ -93,7 +93,7 @@ input[type="submit"] {
 button.text,
 .button.text,
 .textButton {
-  @apply text-sub cursor-pointer;
+  @apply text-text cursor-pointer;
   @apply transition-[background,color,opacity] duration-125 ease-[ease];
   @apply p-[0.5em] rounded bg-none bg-transparent;
   @apply text-center;

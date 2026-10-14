@@ -240,6 +240,7 @@ export function ShareTestSettings(): JSXElement {
         )}
       </form.Field>
       <textarea
+        aria-label="Test settings URL"
         class="w-full max-w-full [overflow-wrap:anywhere]"
         placeholder="url"
         value={url()}

@@ -433,8 +433,7 @@ function countCharsForWordIndex(
   // the regular space the target word uses as a separator. Normalize them so
   // the comparison matches the live input path, which treats them via isSpace.
   // Preserve the existing code-point normalization for IME spaces.
-  // oxlint-disable-next-line typescript/no-misused-spread -- Normalize IME spaces by code point to match the live input path.
-  simulatedInput = [...simulatedInput]
+  simulatedInput = Array.from(simulatedInput)
     .map((c) => (isSpace(c) ? " " : c))
     .join("");
   if (eventLog.context.koreanStatus) {

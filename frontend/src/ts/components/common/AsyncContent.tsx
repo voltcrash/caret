@@ -1,6 +1,7 @@
 import { typedKeys } from "@oxytype/util/objects";
 import { UseQueryResult } from "@tanstack/solid-query";
 import {
+  untrack,
   Accessor,
   createEffect,
   createMemo,
@@ -137,8 +138,7 @@ function AsyncContent<T extends Record<string, unknown>>(
 
   // Keys are stable for the component lifetime; per-key closures track
   // reactivity internally via value()/lastResolvedValue().
-  // oxlint-disable-next-line solid/reactivity -- intentional snapshot of initial keys
-  const keys = typedKeys(source());
+  const keys = untrack(() => typedKeys(source()));
   if (import.meta.env.DEV) {
     createEffect(() => {
       const currentKeys = typedKeys(source());
@@ -152,22 +152,25 @@ function AsyncContent<T extends Record<string, unknown>>(
       }
     });
   }
-
-  // oxlint-disable solid/reactivity -- Source keys are fixed at mount; each stored accessor tracks its value.
   const eagerAccessorMap = Object.fromEntries(
-    typedKeys(source()).map((key) => [
+    keys.map((key) => [
       `${String(key)}Data`,
-      () => value()?.[key],
+      keyAccessor(
+        untrack(() => value),
+        key,
+      ),
     ]),
   ) as unknown as AccessorMap<DataKeys<{ [K in keyof T]: T[K] | undefined }>>;
 
   const deferredAccessorMap = Object.fromEntries(
-    typedKeys(source()).map((key) => [
+    keys.map((key) => [
       `${String(key)}Data`,
-      () => lastResolvedValue()?.[key],
+      keyAccessor(
+        untrack(() => lastResolvedValue),
+        key,
+      ),
     ]),
   ) as unknown as AccessorMap<DataKeys<{ [K in keyof T]: T[K] }>>;
-  // oxlint-enable solid/reactivity
 
   const loader = (): JSXElement =>
     props.loader ?? <LoadingCircle class="p-4 text-center text-2xl" />;
@@ -242,3 +245,10 @@ function fromCollections<T extends Record<string, unknown>>(collections: {
 }
 
 export default AsyncContent;
+
+function keyAccessor<T, K extends keyof T>(
+  getData: Accessor<T | undefined>,
+  key: K,
+): Accessor<T[K] | undefined> {
+  return () => getData()?.[key];
+}

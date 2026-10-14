@@ -8,7 +8,6 @@ import { cancelPendingAnimationFrame } from "../utils/debounced-animation-frame"
 import * as TestWords from "./test-words";
 import { Config } from "../config/store";
 import * as DB from "../db";
-import { getActiveTagsPB } from "../collections/tags";
 import * as Misc from "../utils/misc";
 import { configEvent } from "../events/config";
 import { getActiveFunboxes } from "./funbox/list";
@@ -17,10 +16,6 @@ import {
   areTestElementsMounted,
   getPaceCaretElement,
 } from "../states/test-dom";
-import {
-  getUserAverage10Once,
-  getUserDailyBestOnce,
-} from "../collections/results";
 import {
   isDirectionReversed,
   isLanguageRightToLeft,
@@ -97,6 +92,7 @@ export async function init(): Promise<void> {
         getActiveFunboxes(),
       )?.wpm ?? 0;
   } else if (Config.paceCaret === "tagPb") {
+    const { getActiveTagsPB } = await import("../collections/tags");
     wpm = getActiveTagsPB(
       Config.mode,
       mode2,
@@ -107,8 +103,10 @@ export async function init(): Promise<void> {
       Config.lazyMode,
     );
   } else if (Config.paceCaret === "average") {
+    const { getUserAverage10Once } = await import("../collections/results");
     wpm = Math.round((await getUserAverage10Once({ ...Config, mode2 })).wpm);
   } else if (Config.paceCaret === "daily") {
+    const { getUserDailyBestOnce } = await import("../collections/results");
     wpm = Math.round((await getUserDailyBestOnce({ ...Config, mode2 })).wpm);
   } else if (Config.paceCaret === "custom") {
     wpm = Config.paceCaretCustomSpeed;

@@ -36,6 +36,7 @@ export function Presets(): JSXElement {
                   <span class="min-w-0 truncate">{preset.name}</span>
                 </Button>
                 <Button
+                  aria-label={`Edit preset ${preset.name}`}
                   fa={{
                     icon: "fa-pen",
                   }}
@@ -47,6 +48,7 @@ export function Presets(): JSXElement {
                   }}
                 />
                 <Button
+                  aria-label={`Delete preset ${preset.name}`}
                   fa={{
                     icon: "fa-trash",
                   }}

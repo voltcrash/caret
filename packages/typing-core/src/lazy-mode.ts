@@ -46,9 +46,9 @@ const accents: Accents = [
 ];
 
 const accentsMap = new Map<string, string>(
-  // ignoring for now but this might need a different approach
-  // oxlint-disable-next-line no-misused-spread -- String iteration intentionally preserves the existing Unicode code-point behavior.
-  accents.flatMap((rule) => [...rule[0]].map((accent) => [accent, rule[1]])),
+  accents.flatMap((rule) =>
+    Array.from(rule[0]).map((accent) => [accent, rule[1]]),
+  ),
 );
 
 function findAccent(
@@ -59,9 +59,7 @@ function findAccent(
 
   const additionalAccentsMap = new Map<string, string>(
     additionalAccents?.flatMap((rule) =>
-      // ignoring for now but this might need a different approach
-      // oxlint-disable-next-line no-misused-spread -- String iteration intentionally preserves the existing Unicode code-point behavior.
-      [...rule[0]].map((accent) => [accent, rule[1]]),
+      Array.from(rule[0]).map((accent) => [accent, rule[1]]),
     ) ?? [],
   );
 
@@ -87,9 +85,7 @@ export function replaceAccents(
 ): string {
   if (!word) return word;
   const uppercased = word.toUpperCase();
-  // ignoring for now but this might need a different approach
-  // oxlint-disable-next-line no-misused-spread -- String iteration intentionally preserves the existing Unicode code-point behavior.
-  const cases = [...word].map((it, i) => it === uppercased[i]);
+  const cases = Array.from(word).map((it, i) => it === uppercased[i]);
   const newWordArray: string[] = [];
 
   let offset = 0;

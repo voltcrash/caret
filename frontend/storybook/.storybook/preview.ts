@@ -6,8 +6,6 @@ import "../stories/tailwind.css";
 import "../stories/storybook-theme.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "balloon-css/balloon.min.css";
-//@ts-expect-error this works i think
-import "slim-select/styles";
 
 import { ThemesList } from "../../src/ts/constants/themes";
 import { ThemeDecorator } from "./ThemeDecorator";

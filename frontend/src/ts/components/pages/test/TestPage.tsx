@@ -26,7 +26,8 @@ import { LiveStatsTextTop } from "./live-stats/LiveStatsTextTop";
 import { TestModesNotice } from "./modes-notice/TestModesNotice";
 import { OutOfFocusWarning } from "./OutOfFocusWarning";
 import { RestartTestButton } from "./RestartTestButton";
-import { Result } from "./result/Result";
+import { LazyResult } from "./result/LazyResult";
+import { ResultAnnouncement } from "./result/ResultAnnouncement";
 import { SaveProgressButton } from "./SaveProgressButton";
 import { TestConfig } from "./TestConfig";
 import { TestInitFailed } from "./TestInitFailed";
@@ -114,6 +115,7 @@ export function TestPage(
         >
           <textarea
             id="wordsInput"
+            aria-label="Typing input"
             ref={(el) => (refs.wordsInput = el)}
             class={cn(
               "full-width pointer-events-none absolute -z-1 mx-auto block h-[1em] w-0 cursor-default resize-none overflow-hidden rounded-none border-none p-0 text-[1em] [caret-color:transparent] opacity-0 [contain:strict] outline-none [text-wrap-mode:nowrap]",
@@ -122,9 +124,7 @@ export function TestPage(
             autocomplete="off"
             autoCapitalize="off"
             inputMode="text"
-            // oxlint-disable-next-line react/no-unknown-property -- Solid types use lowercase enterkeyhint
             enterkeyhint="done"
-            // oxlint-disable-next-line react/no-unknown-property -- Solid uses lowercase autocorrect
             autocorrect="off"
             data-gramm="false"
             data-gramm_editor="false"
@@ -134,7 +134,6 @@ export function TestPage(
             data-lpignore="true"
             data-form-type="other"
             {...{ list: "autocompleteOff" }}
-            // oxlint-disable-next-line react/no-unknown-property -- Solid uses lowercase spellcheck
             spellcheck={false}
           ></textarea>
           <OutOfFocusWarning />
@@ -154,17 +153,18 @@ export function TestPage(
       <input
         ref={(el) => (refs.keyboardProxy = el)}
         type="text"
+        aria-label="Keyboard restart input"
         class="pointer-events-none fixed top-0 left-0 size-px p-0 text-[16px] opacity-0"
         tabIndex={-1}
         aria-hidden="true"
         autocomplete="off"
         autoCapitalize="off"
-        // oxlint-disable-next-line react/no-unknown-property -- Solid uses lowercase autocorrect
         autocorrect="off"
       />
       <TestPageLifecycle input={refs.wordsInput} />
       <TestLoading />
-      <Result />
+      <ResultAnnouncement />
+      <LazyResult />
     </div>
   );
 }

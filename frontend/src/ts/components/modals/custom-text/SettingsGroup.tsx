@@ -13,7 +13,7 @@ export function SettingsGroup(props: {
 }): JSXElement {
   return (
     <div class="grid w-full">
-      <div class="flex items-center gap-2 text-sub lowercase">
+      <div class="flex items-center gap-2 text-text lowercase">
         <Fa icon={props.icon} fixedWidth class={props.iconClass} />
         {props.title}
       </div>

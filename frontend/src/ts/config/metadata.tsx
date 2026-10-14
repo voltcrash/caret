@@ -9,13 +9,13 @@ import {
 import { typedKeys } from "@oxytype/util/objects";
 import { JSXElement, untrack } from "solid-js";
 
-import * as CustomThemes from "../collections/custom-themes";
 import {
   DEFAULT_COMMAND_PALETTE_HOTKEY,
   getCommandPaletteHotkeyError,
   normalizeCommandPaletteHotkey,
 } from "../input/hotkeys/command-palette-hotkey";
 import { isAuthenticated } from "../states/core";
+import * as CustomThemes from "../states/custom-themes";
 import { showNoticeNotification } from "../states/notifications";
 import { FaObject } from "../types/font-awesome";
 import {

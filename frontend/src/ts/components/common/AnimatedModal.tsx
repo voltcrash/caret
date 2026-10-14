@@ -111,6 +111,7 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
   // Refs are assigned by SolidJS via the ref attribute
   const [dialogRef, dialogEl] = useRef<HTMLDialogElement>();
   const [modalRef, modalEl] = useRef<HTMLDivElement>();
+  let returnFocus: HTMLElement | undefined;
   onMount(() => {
     const unregister = registerOverlayVisibility(
       () => (dialogEl()?.getClientRects().length ?? 0) > 0,
@@ -193,10 +194,14 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
     if (dialogEl() === undefined || modalEl() === undefined) return;
     if (dialogEl()?.open) return;
 
+    if (!isChained && document.activeElement instanceof HTMLElement) {
+      returnFocus = document.activeElement;
+    }
+
     await props.beforeShow?.(isChained);
 
     // After await, the element may have been removed from the DOM
-    if (!dialogEl()?.isConnected) return;
+    if (!dialogEl()?.isConnected || !visibility()) return;
 
     // Open the dialog
     const dialog = dialogEl();
@@ -357,21 +362,18 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
           opacity: [1, 0],
           duration: wrapperDuration,
           onComplete: async () => {
-            dialogEl()?.close();
-            await handleAfterHide();
+            await closeDialog(isChained);
           },
         });
       } else {
-        dialogEl()?.close();
-        await handleAfterHide();
+        await closeDialog(isChained);
       }
     } else if (animMode === "modalOnly") {
       animateElement(modalEl(), {
         ...motion.exit,
         duration: modalAnimDuration,
         onComplete: async () => {
-          dialogEl()?.close();
-          await handleAfterHide();
+          await closeDialog(isChained);
         },
       });
     }
@@ -382,16 +384,37 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
     storeHideModal(props.id);
   };
 
+  const closeDialog = async (isChained: boolean): Promise<void> => {
+    dialogEl()?.close();
+    await handleAfterHide();
+    if (
+      !isChained &&
+      returnFocus?.isConnected &&
+      document.querySelector("dialog[open]") === null
+    ) {
+      returnFocus.focus({ preventScroll: true });
+    }
+  };
+
   const handleAfterShow = async (): Promise<void> => {
     await props.afterShow?.();
   };
 
   const focusFirstInput = (): void => {
     if (modalEl() === undefined || dialogEl() === undefined) return;
-    if (props.focusFirstInput === undefined) return;
+    if (!visibility() || !dialogEl()?.open) return;
+    if (props.focusFirstInput === undefined) {
+      // Native modal dialogs select their initial focus. Keep it unless the
+      // content contains no focusable control; then focus its owned container.
+      if (!modalEl()?.contains(document.activeElement)) modalEl()?.focus();
+      return;
+    }
 
-    const input =
-      modalEl()?.querySelector<HTMLInputElement>("input:not(.hidden)");
+    const input = modalEl()?.querySelector<
+      HTMLInputElement | HTMLTextAreaElement
+    >(
+      "input:not([type=hidden]):not([disabled]):not(.hidden), textarea:not([disabled]):not(.hidden)",
+    );
     if (input) {
       if (props.focusFirstInput === true) {
         input.focus();
@@ -403,6 +426,39 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
   };
 
   const handleKeyDown = (e: KeyboardEvent): void => {
+    if (
+      e.key === "Tab" &&
+      !e.defaultPrevented &&
+      visibility() &&
+      props.mode !== "dialog"
+    ) {
+      const focusable = Array.from(
+        modalEl()?.querySelectorAll<HTMLElement>(
+          "button, a[href], input, textarea, select, [tabindex]",
+        ) ?? [],
+      ).filter(
+        (element) =>
+          element.tabIndex >= 0 &&
+          !element.hasAttribute("disabled") &&
+          element.getClientRects().length > 0,
+      );
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (first === undefined) {
+        e.preventDefault();
+        modalEl()?.focus();
+      } else if (
+        e.shiftKey &&
+        (document.activeElement === first ||
+          document.activeElement === modalEl())
+      ) {
+        e.preventDefault();
+        last?.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
     if (e.key === "Escape" && visibility()) {
       if (props.closeOnEscape === false) return;
       e.preventDefault();
@@ -434,6 +490,10 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
 
   return (
     <dialog
+      aria-label={
+        props.title ?? (props.id as string).replace(/([a-z])([A-Z])/g, "$1 $2")
+      }
+      aria-modal={props.mode === "dialog" ? undefined : true}
       id={props.domId ?? `${props.id as string}Modal`}
       ref={dialogRef}
       class={cn(

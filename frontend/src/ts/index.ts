@@ -6,7 +6,6 @@ import * as Logger from "./utils/logger";
 import * as DB from "./db";
 import { Config } from "./config/store";
 import * as TestTimer from "./test/test-timer";
-import * as Result from "./test/result";
 import { onAuthStateChanged } from "./auth";
 import { enable } from "./states/glarses-mode";
 import "./states/connection";
@@ -67,7 +66,10 @@ addToGlobal({
   glarsesMode: enable,
   enableTimerDebug: TestTimer.enableTimerDebug,
   getTimerStats: TestTimer.getTimerStats,
-  toggleSmoothedBurst: Result.toggleSmoothedBurst,
+  toggleSmoothedBurst: async () => {
+    const Result = await import("./test/result");
+    Result.toggleSmoothedBurst();
+  },
   toggleDebugLogs: Logger.toggleDebugLogs,
   toggleSentryDebug: Sentry.toggleDebug,
   lastEventLog: () => getLastEventLog(),

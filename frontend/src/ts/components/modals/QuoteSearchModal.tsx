@@ -1,5 +1,6 @@
 import { createForm } from "@tanstack/solid-form";
 import {
+  untrack,
   JSXElement,
   createSignal,
   createEffect,
@@ -42,7 +43,7 @@ import { AnimatedModal } from "../common/AnimatedModal";
 import { Button } from "../common/Button";
 import { HighlightedText } from "../common/HighlightedText";
 import { InputField } from "../ui/form/InputField";
-import SlimSelect from "../ui/SlimSelect";
+import Select from "../ui/Select";
 import { QuoteApproveModal } from "./QuoteApproveModal";
 import { QuoteSubmitModal } from "./QuoteSubmitModal";
 
@@ -108,8 +109,9 @@ function Item(props: {
 }): JSXElement {
   const loggedOut = (): boolean => !isAuthenticated();
   const [isFav, setIsFav] = createSignal(
-    // oxlint-disable-next-line solid/reactivity -- intentionally reading once as initial value
-    !loggedOut() && QuotesController.isQuoteFavorite(props.quote),
+    untrack(
+      () => !loggedOut() && QuotesController.isQuoteFavorite(props.quote),
+    ),
   );
 
   const handleToggleFavorite = async (): Promise<void> => {
@@ -490,8 +492,8 @@ export function QuoteSearchModal(): JSXElement {
             )}
           />
           <div class="grow">
-            <SlimSelect
-              appendTo="container"
+            <Select
+              label="Quote length"
               multiple
               options={[
                 { value: "0", text: "short" },
@@ -510,6 +512,7 @@ export function QuoteSearchModal(): JSXElement {
           </div>
           <Show when={isAuthenticated()}>
             <Button
+              aria-label="Show favorite quotes only"
               variant="button"
               fa={{ icon: "fa-heart", fixedWidth: true }}
               active={showFavoritesOnly()}
@@ -541,6 +544,7 @@ export function QuoteSearchModal(): JSXElement {
           )}
         >
           <Button
+            aria-label="Previous quote page"
             class="justify-self-end px-10 sm:w-max"
             fa={{ icon: "fa-chevron-left", fixedWidth: true }}
             disabled={currentPage() <= 1}
@@ -555,6 +559,7 @@ export function QuoteSearchModal(): JSXElement {
             {pageInfo()}
           </div>
           <Button
+            aria-label="Next quote page"
             class="px-10 sm:w-max"
             fa={{ icon: "fa-chevron-right", fixedWidth: true }}
             disabled={currentPage() >= totalPages()}

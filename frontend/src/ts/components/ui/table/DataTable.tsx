@@ -8,6 +8,7 @@ import {
   type RowData,
 } from "@tanstack/solid-table";
 import {
+  untrack,
   Accessor,
   createEffect,
   createMemo,
@@ -74,8 +75,7 @@ export function DataTable<TData extends RowData>(
   props: DataTableProps<TData>,
 ): JSXElement {
   const [sorting, setSorting] = useLocalStorage<SortingState>({
-    //oxlint-disable-next-line solid/reactivity -- Table identity/sorting mode are fixed at mount; data and selection have tracked accessors.
-    key: `${props.id}Sort`,
+    key: untrack(() => `${props.id}Sort`),
     schema: SortingStateSchema,
     fallback: [],
     //migrate old state from sorted-table
@@ -118,9 +118,7 @@ export function DataTable<TData extends RowData>(
       setSorting(it);
       props.onSortingChange?.(sorting());
     },
-
-    //oxlint-disable-next-line solid/reactivity -- Table identity/sorting mode are fixed at mount; data and selection have tracked accessors.
-    manualSorting: props.onSortingChange !== undefined,
+    manualSorting: untrack(() => props.onSortingChange !== undefined),
     enableRowSelection: () => props.rowSelection !== undefined,
     getRowId: (row, index) =>
       props.rowSelection !== undefined

@@ -9,7 +9,7 @@ import { isColorDark, isColorLight } from "../utils/colors";
 import { Config, getConfig } from "../config/store";
 import { setConfig } from "../config/setters";
 import { configEvent } from "../events/config";
-import * as CustomThemes from "../collections/custom-themes";
+import * as CustomThemes from "../states/custom-themes";
 import { showNoticeNotification } from "../states/notifications";
 import { debounce } from "throttle-debounce";
 import { untrack } from "solid-js";

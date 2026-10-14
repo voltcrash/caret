@@ -7,7 +7,7 @@ import { getConfig } from "../../../../config/store";
 import { ThemesList } from "../../../../constants/themes";
 import { cn } from "../../../../utils/cn";
 import { Button } from "../../../common/Button";
-import SlimSelect from "../../../ui/SlimSelect";
+import Select from "../../../ui/Select";
 import { SearchableSetting } from "../SearchableSetting";
 
 export function AutoSwitchTheme(): JSXElement {
@@ -49,7 +49,8 @@ export function AutoSwitchTheme(): JSXElement {
           <div class="mt-4 grid grid-cols-1 gap-8 md:grid-cols-2">
             <div class="grid grid-cols-[7rem_1fr] items-center gap-2">
               <div>light</div>
-              <SlimSelect
+              <Select
+                label="Light theme"
                 options={ThemesList.map((theme) => ({
                   text: theme.name.replace(/_/g, " "),
                   value: theme.name,
@@ -62,7 +63,8 @@ export function AutoSwitchTheme(): JSXElement {
             </div>
             <div class="grid grid-cols-[7rem_1fr] items-center gap-2">
               <div>dark</div>
-              <SlimSelect
+              <Select
+                label="Dark theme"
                 options={ThemesList.map((theme) => ({
                   text: theme.name.replace(/_/g, " "),
                   value: theme.name,

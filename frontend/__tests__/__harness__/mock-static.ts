@@ -12,11 +12,13 @@ async function readJson<T>(filePath: string): Promise<T> {
 }
 
 vi.mock("../../src/ts/utils/json-data", async (importOriginal) => {
-  const original = (await importOriginal()) as any;
-
-  // oxlint-disable-next-line typescript/no-unsafe-return -- Asset fixtures use the loader's runtime module shape.
+  const original =
+    await importOriginal<typeof import("../../src/ts/utils/json-data")>();
   return {
     ...original,
-    getLayout: async (name: string) => readJson(`/layouts/${name}.json`),
+    getLayout: async (name: string): ReturnType<typeof original.getLayout> =>
+      readJson<Awaited<ReturnType<typeof original.getLayout>>>(
+        `/layouts/${name}.json`,
+      ),
   };
 });

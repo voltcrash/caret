@@ -64,6 +64,7 @@ export function EventLogViewerModal(): JSXElement {
       <Show when={stage() === "input"}>
         <div class="flex flex-col gap-4">
           <textarea
+            aria-label="Event log JSON"
             class="bg-bg-secondary h-64 w-full rounded p-2 font-mono text-xs text-text"
             placeholder='{"version": 1, "events": [...], "context": {...}}'
             value={raw()}

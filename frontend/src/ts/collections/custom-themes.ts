@@ -11,6 +11,7 @@ import { baseKey } from "../queries/utils/keys";
 import { applyIdWorkaround, tempId } from "./utils/misc";
 import { createCollectionReader } from "./utils/reader";
 import { isAuthenticated } from "../states/core";
+import { bindCustomThemesReader } from "../states/custom-themes";
 
 type CustomThemeItem = CustomTheme;
 
@@ -18,7 +19,6 @@ const queryKeys = {
   root: () => [...baseKey("customThemes", { isUserSpecific: true })],
 };
 
-// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export function useCustomThemesLiveQuery() {
   return useLiveQuery((q) => {
     return q
@@ -151,6 +151,8 @@ export function getCustomThemes(): CustomThemeItem[] {
 export function getCustomTheme(id: string): CustomThemeItem | undefined {
   return customThemesReader.get(id);
 }
+
+bindCustomThemesReader(getCustomThemes);
 
 export async function addCustomTheme(
   params: ActionType["addCustomTheme"],

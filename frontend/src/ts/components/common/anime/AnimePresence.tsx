@@ -2,6 +2,7 @@ import { resolveFirst } from "@solid-primitives/refs";
 import { createSwitchTransition } from "@solid-primitives/transition-group";
 import { AnimationParams } from "animejs";
 import {
+  untrack,
   JSXElement,
   ParentProps,
   createSignal,
@@ -215,8 +216,7 @@ export function AnimePresence(props: AnimePresenceProps): JSXElement {
   };
 
   // List mode: Watch for DOM changes in the container
-  // oxlint-disable-next-line solid/reactivity -- mode controls component structure at mount time; treated as stable
-  if (props.mode === "list") {
+  if (untrack(() => props.mode) === "list") {
     onMount(() => {
       if (!containerRef) return;
 

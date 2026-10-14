@@ -31,7 +31,7 @@ import AsyncContent from "../../common/AsyncContent";
 import { Button } from "../../common/Button";
 import { H3 } from "../../common/Headers";
 import { Separator } from "../../common/Separator";
-import SlimSelect from "../../ui/SlimSelect";
+import Select from "../../ui/Select";
 import { verifyResultFiltersStructure } from "./utils";
 
 export function Filters(props: {
@@ -60,6 +60,7 @@ export function Filters(props: {
                     }
                   />
                   <Button
+                    aria-label={`Delete filter preset ${preset.name}`}
                     fa={{ icon: "fa-trash", fixedWidth: true }}
                     onClick={() =>
                       showSimpleModal({
@@ -125,7 +126,8 @@ export function Filters(props: {
     return (
       <div class={cn(`w-full`, options.class)}>
         <H3 fa={{ icon: options.icon, fixedWidth: true }} text={options.text} />
-        <SlimSelect
+        <Select
+          label={`${options.group} filters`}
           multiple
           settings={{
             showSearch: true,
@@ -134,7 +136,6 @@ export function Filters(props: {
             closeOnSelect: false,
             maxValuesShown: 4,
             addAllOption: true,
-            scrollToTop: true,
           }}
           onChange={(selectedValues) => {
             setFilter(

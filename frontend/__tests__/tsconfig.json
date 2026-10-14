@@ -8,7 +8,7 @@
     "jsxImportSource": "solid-js",
     "types": ["node"]
   },
-  "files": ["vitest.d.ts"],
+  "files": ["vitest.d.ts", "../src/ts/types/word-elements.d.ts"],
   "include": [
     "./__harness__/**/*.ts",
     "./**/*.spec.ts",

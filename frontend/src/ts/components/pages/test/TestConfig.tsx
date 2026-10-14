@@ -13,6 +13,7 @@ import { getResultVisible, getFocus } from "../../../states/test";
 import { FaObject } from "../../../types/font-awesome";
 import { areUnsortedArraysEqual } from "../../../utils/arrays";
 import { cn, updateClassNames } from "../../../utils/cn";
+import { applyReducedMotion } from "../../../utils/misc";
 import { Anime, AnimeShow } from "../../common/anime";
 import { Button } from "../../common/Button";
 
@@ -131,6 +132,7 @@ function TCButton(props: {
   class?: string;
   fa?: FaObject;
   text?: string;
+  label?: string;
   active?: boolean;
   disabled?: boolean;
   onClick: () => void;
@@ -141,6 +143,7 @@ function TCButton(props: {
       class={cn(buttonClass, props.class)}
       fa={props.fa ? { ...props.fa, fixedWidth: true } : undefined}
       text={props.text}
+      aria-label={props.label}
       active={props.active}
       onClick={props.onClick}
       disabled={getFocus() || getResultVisible() || props.disabled}
@@ -157,7 +160,7 @@ function PuncAndNum(): JSXElement {
       animation={{
         opacity: getConfig.mode === "zen" ? 0 : 1,
         // marginRight: getConfig.mode === "zen" ? "0" : "var(--card-gap)",
-        duration: durationMs,
+        duration: applyReducedMotion(durationMs),
       }}
     >
       <AnimeShow when={getConfig.mode !== "zen"} duration={durationMs}>
@@ -260,7 +263,7 @@ function Mode2(): JSXElement {
 
       animate(wrapperEl, {
         width: [`${previousWidth}px`, `${newWidth}px`],
-        duration: durationMs,
+        duration: applyReducedMotion(durationMs),
         onComplete: () => {
           wrapperEl.style.width = "";
         },
@@ -269,7 +272,7 @@ function Mode2(): JSXElement {
       if (prev) {
         animate(prev, {
           opacity: [1, 0],
-          duration: durationMs,
+          duration: applyReducedMotion(durationMs),
           onComplete: () => setHidden(prev, true),
         });
       }
@@ -277,7 +280,7 @@ function Mode2(): JSXElement {
       if (next) {
         animate(next, {
           opacity: [0, 1],
-          duration: durationMs,
+          duration: applyReducedMotion(durationMs),
         });
       }
     },
@@ -291,7 +294,7 @@ function Mode2(): JSXElement {
           opacity: getConfig.mode === "zen" ? 0 : 1,
           // marginLeft:
           // getConfig.mode === "zen" ? "calc(-1*var(--card-gap))" : "0",
-          duration: durationMs,
+          duration: applyReducedMotion(durationMs),
         }}
       >
         <Mode2Time class={cn(cardClass, sClass)} ref={timeRef} />
@@ -300,8 +303,9 @@ function Mode2(): JSXElement {
         <Mode2Custom class={cn(cardClass, sClass)} ref={customRef} />
       </Anime>
       <TCButton
+        label="Share test settings"
         class={
-          "pointer-events-none absolute right-0 self-center px-(--horizontal-padding) opacity-0 transition-[margin-right,background-color,opacity] duration-125 group-hover:pointer-events-auto group-hover:mr-[calc((1.25em+(var(--horizontal-padding)*2))*-1)] group-hover:opacity-100 hover:mr-[calc((1.25em+(var(--horizontal-padding)*2))*-1)] hover:opacity-100"
+          "pointer-events-none absolute right-0 self-center px-(--horizontal-padding) opacity-0 transition-[margin-right,background-color,opacity] duration-125 group-hover:pointer-events-auto group-hover:mr-[calc((1.25em+(var(--horizontal-padding)*2))*-1)] group-hover:opacity-100 focus-visible:opacity-100 focus-visible:pointer-events-auto focus-visible:mr-[calc((1.25em+(var(--horizontal-padding)*2))*-1)] hover:mr-[calc((1.25em+(var(--horizontal-padding)*2))*-1)] hover:opacity-100"
         }
         fa={{ icon: "fa-share" }}
         onClick={() => showModal("ShareTestSettings")}
@@ -328,6 +332,7 @@ function Mode2Time(props: ComponentProps<"div">): JSXElement {
         )}
       </For>
       <TCButton
+        label="Custom test duration"
         active={!times.includes(getConfig.time as (typeof times)[number])}
         fa={{
           icon: "fa-tools",
@@ -358,6 +363,7 @@ function Mode2Words(props: ComponentProps<"div">): JSXElement {
         )}
       </For>
       <TCButton
+        label="Custom word count"
         active={
           !wordCounts.includes(getConfig.words as (typeof wordCounts)[number])
         }
@@ -404,6 +410,7 @@ function Mode2Quote(props: ComponentProps<"div">): JSXElement {
       </For>
       <Show when={isAuthenticated()}>
         <TCButton
+          label="Favorite quotes"
           fa={{
             icon: "fa-heart",
           }}
@@ -415,6 +422,7 @@ function Mode2Quote(props: ComponentProps<"div">): JSXElement {
         />
       </Show>
       <TCButton
+        label="Search quotes"
         fa={{
           icon: "fa-search",
         }}

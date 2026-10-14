@@ -4,6 +4,7 @@ import { createEffect } from "solid-js";
 import { getConfig } from "../../../../config/store";
 import { getBarTarget, showLiveStats } from "../../../../states/live-stats";
 import { cn } from "../../../../utils/cn";
+import { reduceMotionParams } from "../../../../utils/motion";
 import { Anime } from "../../../common/anime";
 import { liveStatsBgColor } from "./styles";
 
@@ -13,7 +14,7 @@ export function BarTimerProgress() {
   createEffect(() => {
     const target = getBarTarget();
     if (barEl === undefined) return;
-    animate(barEl, target);
+    animate(barEl, reduceMotionParams(target));
   });
 
   const shown = () =>

@@ -1,3 +1,4 @@
+import { applyReducedMotion } from "../../../../utils/misc";
 import { lineState } from "./line-state";
 import { outerWidth } from "./dimensions";
 import { getActiveWordElement } from "./elements";
@@ -217,7 +218,7 @@ export async function scrollTape(noAnimation = false): Promise<void> {
     newMargin = wordRightMargin - newMargin;
   }
 
-  const duration = noAnimation ? 0 : 125;
+  const duration = applyReducedMotion(noAnimation ? 0 : 125);
   const ease = "inOut(1.25)";
 
   const caretScrollOptions = {

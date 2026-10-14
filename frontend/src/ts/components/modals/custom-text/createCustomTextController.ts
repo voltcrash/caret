@@ -24,7 +24,6 @@ import {
   convertCustomTextDelimiter,
 } from "./text";
 
-// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack's inferred form generics in the component-owned controller.
 export function createCustomTextController() {
   const [longTextWarning, setLongTextWarning] = createSignal(false);
   const [challengeWarning, setChallengeWarning] = createSignal(false);
@@ -34,9 +33,7 @@ export function createCustomTextController() {
 
   const [textToSave, setTextToSave] = createSignal<string[]>([]);
 
-  // oxlint-disable-next-line no-unassigned-vars -- assigned via SolidJS ref
   let fileInputRef!: HTMLInputElement;
-  // oxlint-disable-next-line no-unassigned-vars -- assigned via SolidJS ref
   let textareaRef: HTMLTextAreaElement | undefined;
 
   const form = createForm(() => ({
