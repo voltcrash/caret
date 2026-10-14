@@ -65,9 +65,7 @@ export default defineMain({
   ],
   viteFinal(config) {
     config.plugins ??= [];
-    config.plugins.push(
-      fontStyles({ isDevelopment: true }) as unknown as Plugin,
-    );
+    config.plugins.push(fontStyles({ isDevelopment: true }));
     config.plugins.push(tailwindcss());
     config.plugins.push(stubVirtualEnvConfig());
     config.plugins.push(stubVirtualLanguageHashes());
