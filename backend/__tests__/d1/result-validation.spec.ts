@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
-import { resultRuntime } from "./result-support";
+import { resultRuntime, scoreEvent } from "./result-support";
 import { withRuntime } from "../../src/runtime/env";
 import * as Users from "../../src/dal/user";
 
@@ -16,6 +16,22 @@ describe("result submission validation with D1", () => {
       result: { mode: "unknown" },
     });
     expect(response.status, await response.clone().text()).toBe(422);
+    expect(
+      (
+        await withRuntime(
+          test.env,
+          async () => await Users.getUser(account.uid, "test"),
+        )
+      ).completedTests,
+    ).toBeUndefined();
+  });
+
+  it("rejects a forged hash on an otherwise valid submission", async () => {
+    const account = await test.account();
+    const response = await test.request(account, "/results", "POST", {
+      result: { ...scoreEvent(account.uid, 80), hash: "forged" },
+    });
+    expect(response.status, await response.clone().text()).toBe(461);
     expect(
       (
         await withRuntime(
