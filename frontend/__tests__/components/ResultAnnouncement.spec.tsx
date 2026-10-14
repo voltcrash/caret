@@ -105,4 +105,11 @@ describe("result announcements", () => {
     setResultVisible(true);
     expect(screen.getByRole("status").textContent).toBe("Test complete.");
   });
+
+  it("stays silent when no completed statistics exist", () => {
+    setResultState("stats", undefined);
+    render(() => <ResultAnnouncement />);
+    setResultVisible(true);
+    expect(screen.getByRole("status").textContent).toBe("");
+  });
 });
