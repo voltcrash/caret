@@ -406,3 +406,71 @@ describe("completion", () => {
     expect(mocks.todaySeconds).toHaveBeenCalledWith(1);
   });
 });
+
+describe("failure", () => {
+  it("fails on minimum accuracy at the next second", async () => {
+    Config.minAcc = "custom";
+    Config.minAccCustom = 90;
+    const start = performance.now();
+    startTest(start);
+    type(start + 100, 0, "h");
+    type(start + 200, 0, "hx", false);
+    vi.advanceTimersByTime(1000);
+    await vi.waitFor(() => expect(mocks.resultUpdate).toHaveBeenCalled());
+    expect(failReason()).toBe("min accuracy");
+    expect(mocks.notice).toHaveBeenCalledWith("Test failed - min accuracy", {
+      durationMs: 1000,
+    });
+    expect(timerEvents()).toEqual(["end:1@1000", "start:0@0", "step:1@1000"]);
+  });
+
+  it("does not fail minimum accuracy before any input", () => {
+    Config.minAcc = "custom";
+    Config.minAccCustom = 90;
+    startTest(performance.now());
+    vi.advanceTimersByTime(2000);
+    expect(mocks.resultUpdate).not.toHaveBeenCalled();
+  });
+
+  it("fails on minimum speed only after the fourth word", async () => {
+    Config.minWpm = "custom";
+    Config.minWpmCustomSpeed = 100;
+    const start = performance.now();
+    startTest(start);
+    type(start + 100, 0, "h");
+    mocks.wordIndex = 3;
+    vi.advanceTimersByTime(1000);
+    expect(mocks.resultUpdate).not.toHaveBeenCalled();
+    mocks.wordIndex = 4;
+    vi.advanceTimersByTime(1000);
+    await vi.waitFor(() => expect(mocks.resultUpdate).toHaveBeenCalled());
+    expect(failReason()).toBe("min speed");
+  });
+
+  it("fails a slow timer and flags slow steps", async () => {
+    Config.time = 10;
+    const start = performance.now();
+    startTest(start);
+    const now = vi.spyOn(performance, "now").mockReturnValue(start + 1150);
+    vi.advanceTimersByTime(1000);
+    expect(SlowTimer.get()).toBe(true);
+    expect(mocks.lowFps).toHaveBeenCalled();
+    const step = getAllTestEvents().find(
+      (event) => event.type === "timer" && event.data.event === "step",
+    );
+    expect(step?.data).toEqual({
+      event: "step",
+      timer: 1,
+      drift: 150,
+      slowTimer: true,
+    });
+    now.mockReturnValue(start + 2700);
+    vi.advanceTimersByTime(1000);
+    await vi.waitFor(() => expect(mocks.resultUpdate).toHaveBeenCalled());
+    expect(failReason()).toBe("slow timer");
+    expect(mocks.error).toHaveBeenCalledWith(
+      "Stopping the test due to bad performance. This would cause test calculations to be incorrect. If this happens a lot, please report this.",
+    );
+    now.mockRestore();
+  });
+});
