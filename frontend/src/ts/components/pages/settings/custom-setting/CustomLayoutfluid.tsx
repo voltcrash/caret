@@ -6,7 +6,7 @@ import { setConfig } from "../../../../config/setters";
 import { getConfig } from "../../../../config/store";
 import { LayoutsList } from "../../../../constants/layouts";
 import { areUnsortedArraysEqual } from "../../../../utils/arrays";
-import SlimSelect from "../../../ui/SlimSelect";
+import Select from "../../../ui/Select";
 import { SearchableSetting } from "../SearchableSetting";
 
 export function CustomLayoutfluid(): JSXElement {
@@ -17,7 +17,8 @@ export function CustomLayoutfluid(): JSXElement {
       description={configMetadata.customLayoutfluid.description}
       fa={configMetadata.customLayoutfluid.fa}
       inputs={
-        <SlimSelect
+        <Select
+          label="Layoutfluid layouts"
           multiple
           settings={{
             closeOnSelect: false,
