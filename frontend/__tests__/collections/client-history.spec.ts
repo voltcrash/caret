@@ -73,7 +73,7 @@ get.mockImplementation(async ({ query }: { query: { client: string } }) => ({
 }));
 update.mockResolvedValue({ status: 200, body: { data: { tagPbs: ["tag"] } } });
 
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack's inferred fixture collection/query types.
 async function history(client: "web" | "tui") {
   const filters = { ...defaultFilters, tags: { none: true, tag: true } };
   return await getResultsQueryOnce({
