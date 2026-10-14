@@ -95,7 +95,8 @@ export type RandomTheme = z.infer<typeof RandomThemeSchema>;
 export const TimerColorSchema = z.enum(["black", "sub", "text", "main"]);
 export type TimerColor = z.infer<typeof TimerColorSchema>;
 
-export const TimerOpacitySchema = z.enum(["0.25", "0.5", "0.75", "1"]);
+// z.literal keeps member order; z.enum would sort integer-like members first.
+export const TimerOpacitySchema = z.literal(["0.25", "0.5", "0.75", "1"]);
 export type TimerOpacity = z.infer<typeof TimerOpacitySchema>;
 
 export const StopOnErrorSchema = z.enum(["off", "word", "letter"]);
@@ -145,10 +146,12 @@ export type KeymapSize = z.infer<typeof KeymapSizeSchema>;
 export const SingleListCommandLineSchema = z.enum(["manual", "on"]);
 export type SingleListCommandLine = z.infer<typeof SingleListCommandLineSchema>;
 
-export const PlaySoundOnErrorSchema = z.enum(["off", "1", "2", "3", "4"]);
+// z.literal keeps member order; z.enum would sort integer-like members first.
+export const PlaySoundOnErrorSchema = z.literal(["off", "1", "2", "3", "4"]);
 export type PlaySoundOnError = z.infer<typeof PlaySoundOnErrorSchema>;
 
-export const PlaySoundOnClickSchema = z.enum([
+// z.literal keeps member order; z.enum would sort integer-like members first.
+export const PlaySoundOnClickSchema = z.literal([
   "off",
   "1",
   "2",
@@ -263,7 +266,8 @@ export type CustomLayoutFluid = z.infer<typeof CustomLayoutFluidSchema>;
 export const CustomPolyglotSchema = z.array(LanguageSchema).min(2);
 export type CustomPolyglot = z.infer<typeof CustomPolyglotSchema>;
 
-export const MonkeyPowerLevelSchema = z.enum(["off", "1", "2", "3", "4"]);
+// z.literal keeps member order; z.enum would sort integer-like members first.
+export const MonkeyPowerLevelSchema = z.literal(["off", "1", "2", "3", "4"]);
 export type MonkeyPowerLevel = z.infer<typeof MonkeyPowerLevelSchema>;
 
 export const MinimumBurstSchema = z.enum(["off", "fixed", "flex"]);
@@ -399,8 +403,9 @@ export const CustomBackgroundSchema = z
   .or(z.literal(""));
 export type CustomBackground = z.infer<typeof CustomBackgroundSchema>;
 
+// z.literal keeps member order; z.enum would sort integer-like members first.
 export const PlayTimeWarningSchema = z
-  .enum(["off", "1", "3", "5", "10"])
+  .literal(["off", "1", "3", "5", "10"])
   .describe(
     "How many seconds before the end of the test to play a warning sound.",
   );
