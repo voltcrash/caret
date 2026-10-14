@@ -12,7 +12,7 @@ import {
 import { cn } from "../../utils/cn";
 import { Fa } from "../common/Fa";
 
-export type SelectOption = { value: string; text: string; disabled?: boolean };
+type SelectOption = { value: string; text: string; disabled?: boolean };
 export type SelectOptionGroup = { label: string; options: SelectOption[] };
 
 export type SelectProps = {
