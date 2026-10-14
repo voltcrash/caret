@@ -18,7 +18,8 @@ export default defineConfig({
     url: "http://127.0.0.1:4173",
     reuseExistingServer: false,
     env: {
-      DEV_OFFLINE: "true",
+      DEV_OFFLINE: "false",
+      BACKEND_URL: "http://127.0.0.1:4173/api",
       SERVER_OPEN: "false",
       DEV_TOOLS: "false",
       DEV_LINT: "false",
