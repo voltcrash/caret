@@ -3,13 +3,16 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
 import { playwright } from "vite-plus/test/browser-playwright";
-import type { TestProjectInlineConfiguration, ViteUserConfig } from "vite-plus";
+import type { ViteUserConfig } from "vite-plus";
 
-type BrowserConfig = NonNullable<
-  NonNullable<TestProjectInlineConfiguration["test"]>["browser"]
+type InlineProject = Extract<
+  NonNullable<NonNullable<ViteUserConfig["test"]>["projects"]>[number],
+  { test?: unknown }
 >;
-// The runtime runner/provider are both overridden to 5.0.3; Vite+ 1.0 ships
-// provider declarations from 5.0.1. Bind that boundary to the runner's config type.
+
+type BrowserConfig = NonNullable<NonNullable<InlineProject["test"]>["browser"]>;
+// Storybook and Vite+ can resolve separate copies of Vitest's private provider
+// classes. Bind the runtime constructor to this config's exact provider type.
 const browserProvider = playwright() as unknown as NonNullable<
   BrowserConfig["provider"]
 >;
