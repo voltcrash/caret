@@ -29,7 +29,7 @@ export function Logo(): JSXElement {
         class={cn(
           "h-full fill-none stroke-current stroke-[6] text-main transition-colors",
           {
-            "text-sub": getFocus(),
+            "text-text": getFocus(),
           },
         )}
       >
@@ -43,7 +43,7 @@ export function Logo(): JSXElement {
       <div class="hidden h-6 place-content-center text-[2rem] leading-0 sm:grid">
         <div
           class={cn(
-            "-mt-[1.65em] hidden pl-[0.5em] text-[0.315em] leading-0 text-sub transition-colors duration-125 lg:block",
+            "-mt-[1.65em] hidden pl-[0.5em] text-[0.315em] leading-0 text-text transition-colors duration-125 lg:block",
             {
               "text-transparent": getFocus(),
             },
@@ -54,7 +54,7 @@ export function Logo(): JSXElement {
         </div>
         <h1
           class={cn("-mt-[0.11em] text-text transition-colors duration-250", {
-            "text-sub": getFocus(),
+            "text-text": getFocus(),
           })}
           data-ui-element="logoText"
         >
