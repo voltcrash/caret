@@ -227,7 +227,7 @@ patchedDependencies:
   '@anatine/zod-openapi@1.14.2': 87ffbdb63ed393948f5f41cfb3f08de61e39089c617f0e5a657b4f059754364e
   '@ts-rest/core@3.52.1': 7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9
   '@ts-rest/open-api@3.52.1': 1b17f624fc76d19e735fd05983e021f9a23658352ab73f7823c42393e4ab6515
-  zod-urlsearchparams@0.0.16: 844d68f59b3bd6e7471097cc2d879f3ac6f178048deac1ce1485301818376b29
+  zod-urlsearchparams@0.0.16: fb358f83a64054e0d671e63228b67dba7797af76b1432115460eec4a4ad2f4e8
 
 importers:
 
@@ -533,7 +533,7 @@ importers:
         version: 4.6.5
       zod-urlsearchparams:
         specifier: 0.0.16
-        version: 0.0.16(patch_hash=844d68f59b3bd6e7471097cc2d879f3ac6f178048deac1ce1485301818376b29)(zod@4.6.5)
+        version: 0.0.16(patch_hash=fb358f83a64054e0d671e63228b67dba7797af76b1432115460eec4a4ad2f4e8)(zod@4.6.5)
     devDependencies:
       '@actions/core':
         specifier: 3.0.1
@@ -17629,7 +17629,7 @@ snapshots:
 
   zigpty@0.2.1: {}
 
-  zod-urlsearchparams@0.0.16(patch_hash=844d68f59b3bd6e7471097cc2d879f3ac6f178048deac1ce1485301818376b29)(zod@4.6.5):
+  zod-urlsearchparams@0.0.16(patch_hash=fb358f83a64054e0d671e63228b67dba7797af76b1432115460eec4a4ad2f4e8)(zod@4.6.5):
     dependencies:
       zod: 4.6.5
 

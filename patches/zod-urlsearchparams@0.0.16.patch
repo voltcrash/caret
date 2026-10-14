@@ -1,44 +1,112 @@
-diff --git a/dist/index.d.mts b/dist/index.d.mts
-index b815f05134922e2e112fcc0b2fcb0564c9ee1b0e..3d75ee3370fbf349d314c4b14cd9668351b29b35 100644
---- a/dist/index.d.mts
-+++ b/dist/index.d.mts
-@@ -1,4 +1,4 @@
--import { z } from 'zod';
-+import { z } from 'zod/v3';
- 
- type Schema = z.ZodObject<Record<string, z.ZodTypeAny>>;
- type ParseArgs<T extends Schema> = {
-diff --git a/dist/index.d.ts b/dist/index.d.ts
-index b815f05134922e2e112fcc0b2fcb0564c9ee1b0e..3d75ee3370fbf349d314c4b14cd9668351b29b35 100644
---- a/dist/index.d.ts
-+++ b/dist/index.d.ts
-@@ -1,4 +1,4 @@
--import { z } from 'zod';
-+import { z } from 'zod/v3';
- 
- type Schema = z.ZodObject<Record<string, z.ZodTypeAny>>;
- type ParseArgs<T extends Schema> = {
 diff --git a/dist/index.js b/dist/index.js
-index cc69a1110c965b09c8707d4335b7e0afd2eb585c..c224a5ed54815ba05a17d71f9f8a677523744088 100644
+index cc69a1110c965b09c8707d4335b7e0afd2eb585c..48bfdf2641ff60e376e06d693b112805221aacad 100644
 --- a/dist/index.js
 +++ b/dist/index.js
-@@ -28,7 +28,7 @@ __export(src_exports, {
-   shape: () => shape
- });
- module.exports = __toCommonJS(src_exports);
--var import_zod = require("zod");
-+var import_zod = require("zod/v3");
- function isScalar(value) {
-   return typeof value === "string" || typeof value === "number" || typeof value === "boolean" || typeof value === "bigint" || value instanceof Date;
+@@ -87,8 +87,10 @@ function parseValue(value, schemaType) {
+   if (schemaType instanceof import_zod.z.ZodBigInt) {
+     return stringToBigInt.parse(value);
+   }
+-  if (schemaType instanceof import_zod.z.ZodEffects) {
+-    return parseValue(value, schemaType._def.schema);
++  if (schemaType instanceof import_zod.z.ZodPipe) {
++    // zod 4 transforms pipe into a transform; preprocess pipes out of one
++    const def = schemaType._zod.def;
++    return parseValue(value, def.in instanceof import_zod.z.ZodTransform ? def.out : def.in);
+   }
+   if (schemaType instanceof import_zod.z.ZodDefault) {
+     return parseValue(value, schemaType._def.innerType);
+@@ -96,16 +98,16 @@ function parseValue(value, schemaType) {
+   if (schemaType instanceof import_zod.z.ZodOptional) {
+     return parseValue(value, schemaType._def.innerType);
+   }
+-  if (schemaType instanceof import_zod.z.ZodEnum || schemaType instanceof import_zod.z.ZodNativeEnum || schemaType instanceof import_zod.z.ZodLiteral || schemaType instanceof import_zod.z.ZodUnion && schemaType._def.options.every(
+-    (option) => option instanceof import_zod.z.ZodLiteral || option instanceof import_zod.z.ZodEnum || option instanceof import_zod.z.ZodNativeEnum
++  if (schemaType instanceof import_zod.z.ZodEnum || schemaType instanceof import_zod.z.ZodLiteral || schemaType instanceof import_zod.z.ZodUnion && schemaType._def.options.every(
++    (option) => option instanceof import_zod.z.ZodLiteral || option instanceof import_zod.z.ZodEnum
+   )) {
+     return value;
+   }
+   return stringToOther.parse(value);
  }
+ function serializeValue(value, schemaType) {
+-  if (schemaType instanceof import_zod.z.ZodString || schemaType instanceof import_zod.z.ZodEnum || schemaType instanceof import_zod.z.ZodNativeEnum || schemaType instanceof import_zod.z.ZodLiteral || schemaType instanceof import_zod.z.ZodUnion && schemaType._def.options.every(
+-    (option) => option instanceof import_zod.z.ZodLiteral || option instanceof import_zod.z.ZodEnum || option instanceof import_zod.z.ZodNativeEnum
++  if (schemaType instanceof import_zod.z.ZodString || schemaType instanceof import_zod.z.ZodEnum || schemaType instanceof import_zod.z.ZodLiteral || schemaType instanceof import_zod.z.ZodUnion && schemaType._def.options.every(
++    (option) => option instanceof import_zod.z.ZodLiteral || option instanceof import_zod.z.ZodEnum
+   )) {
+     return value;
+   }
+@@ -121,12 +123,14 @@ function serializeValue(value, schemaType) {
+   if (schemaType instanceof import_zod.z.ZodBigInt) {
+     return bigIntToString.parse(value);
+   }
+-  if (schemaType instanceof import_zod.z.ZodEffects) {
+-    return serializeValue(value, schemaType._def.schema);
++  if (schemaType instanceof import_zod.z.ZodPipe) {
++    // zod 4 transforms pipe into a transform; preprocess pipes out of one
++    const def = schemaType._zod.def;
++    return serializeValue(value, def.in instanceof import_zod.z.ZodTransform ? def.out : def.in);
+   }
+   if (schemaType instanceof import_zod.z.ZodDefault) {
+     let serialized = serializeValue(value, schemaType._def.innerType);
+-    let defaultValue = serializeValue(schemaType._def.defaultValue(), schemaType._def.innerType);
++    let defaultValue = serializeValue(schemaType._zod.def.defaultValue, schemaType._def.innerType);
+     if (serialized === defaultValue) return void 0;
+     return serialized;
+   }
 diff --git a/dist/index.mjs b/dist/index.mjs
-index 192aa4e419b2c9bee7f9275a120bf130e04a6614..41d8c30c9dba6e381385564e381251131c9e6842 100644
+index 192aa4e419b2c9bee7f9275a120bf130e04a6614..1ce9959d675dc02fca612bb39a04ae2cd8b31274 100644
 --- a/dist/index.mjs
 +++ b/dist/index.mjs
-@@ -1,5 +1,5 @@
- // src/index.ts
--import { z } from "zod";
-+import { z } from "zod/v3";
- function isScalar(value) {
-   return typeof value === "string" || typeof value === "number" || typeof value === "boolean" || typeof value === "bigint" || value instanceof Date;
+@@ -58,8 +58,10 @@ function parseValue(value, schemaType) {
+   if (schemaType instanceof z.ZodBigInt) {
+     return stringToBigInt.parse(value);
+   }
+-  if (schemaType instanceof z.ZodEffects) {
+-    return parseValue(value, schemaType._def.schema);
++  if (schemaType instanceof z.ZodPipe) {
++    // zod 4 transforms pipe into a transform; preprocess pipes out of one
++    const def = schemaType._zod.def;
++    return parseValue(value, def.in instanceof z.ZodTransform ? def.out : def.in);
+   }
+   if (schemaType instanceof z.ZodDefault) {
+     return parseValue(value, schemaType._def.innerType);
+@@ -67,16 +69,16 @@ function parseValue(value, schemaType) {
+   if (schemaType instanceof z.ZodOptional) {
+     return parseValue(value, schemaType._def.innerType);
+   }
+-  if (schemaType instanceof z.ZodEnum || schemaType instanceof z.ZodNativeEnum || schemaType instanceof z.ZodLiteral || schemaType instanceof z.ZodUnion && schemaType._def.options.every(
+-    (option) => option instanceof z.ZodLiteral || option instanceof z.ZodEnum || option instanceof z.ZodNativeEnum
++  if (schemaType instanceof z.ZodEnum || schemaType instanceof z.ZodLiteral || schemaType instanceof z.ZodUnion && schemaType._def.options.every(
++    (option) => option instanceof z.ZodLiteral || option instanceof z.ZodEnum
+   )) {
+     return value;
+   }
+   return stringToOther.parse(value);
  }
+ function serializeValue(value, schemaType) {
+-  if (schemaType instanceof z.ZodString || schemaType instanceof z.ZodEnum || schemaType instanceof z.ZodNativeEnum || schemaType instanceof z.ZodLiteral || schemaType instanceof z.ZodUnion && schemaType._def.options.every(
+-    (option) => option instanceof z.ZodLiteral || option instanceof z.ZodEnum || option instanceof z.ZodNativeEnum
++  if (schemaType instanceof z.ZodString || schemaType instanceof z.ZodEnum || schemaType instanceof z.ZodLiteral || schemaType instanceof z.ZodUnion && schemaType._def.options.every(
++    (option) => option instanceof z.ZodLiteral || option instanceof z.ZodEnum
+   )) {
+     return value;
+   }
+@@ -92,12 +94,14 @@ function serializeValue(value, schemaType) {
+   if (schemaType instanceof z.ZodBigInt) {
+     return bigIntToString.parse(value);
+   }
+-  if (schemaType instanceof z.ZodEffects) {
+-    return serializeValue(value, schemaType._def.schema);
++  if (schemaType instanceof z.ZodPipe) {
++    // zod 4 transforms pipe into a transform; preprocess pipes out of one
++    const def = schemaType._zod.def;
++    return serializeValue(value, def.in instanceof z.ZodTransform ? def.out : def.in);
+   }
+   if (schemaType instanceof z.ZodDefault) {
+     let serialized = serializeValue(value, schemaType._def.innerType);
+-    let defaultValue = serializeValue(schemaType._def.defaultValue(), schemaType._def.innerType);
++    let defaultValue = serializeValue(schemaType._zod.def.defaultValue, schemaType._def.innerType);
+     if (serialized === defaultValue) return void 0;
+     return serialized;
+   }
