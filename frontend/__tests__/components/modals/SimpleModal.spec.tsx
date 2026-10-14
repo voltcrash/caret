@@ -28,6 +28,20 @@ import {
 import { showSimpleModal } from "../../../src/ts/states/simple-modal";
 afterEach(cleanup);
 
+it.each(["<script>alert(1)</script>", '<img src="x" onerror="alert(1)">'])(
+  "renders modal input as text: %s",
+  (text) => {
+    showSimpleModal({
+      title: "Message",
+      text,
+      execFn: async () => ({ status: "success", showNotification: false }),
+    });
+    const view = render(() => <SimpleModal />);
+    expect(view.container.textContent).toContain(text);
+    expect(view.container.querySelector("script, img")).toBeNull();
+  },
+);
+
 it("converts wrapped number, boolean and date schemas and preserves invalid values", () => {
   const number = convertFn<number>(
     { type: "number", preprocess: (value) => value * 2 },
