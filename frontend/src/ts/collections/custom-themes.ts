@@ -18,7 +18,7 @@ const queryKeys = {
   root: () => [...baseKey("customThemes", { isUserSpecific: true })],
 };
 
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export function useCustomThemesLiveQuery() {
   return useLiveQuery((q) => {
     return q
