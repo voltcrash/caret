@@ -106,6 +106,20 @@ describe("notifications store", () => {
       expect(getNotifications()[0]?.message).toBe("plain");
     });
 
+    it("appends response and error text to the last structured line", () => {
+      const lines = ["Request", "", "failed"];
+      addNotificationWithLevel(lines, "error", {
+        response: { status: 400, body: { message: "<img onerror=x>" } },
+        error: new Error("<script>failure</script>"),
+      });
+      expect(getNotifications()[0]?.message).toEqual([
+        "Request",
+        "",
+        "failed: <img onerror=x>: <script>failure</script>",
+      ]);
+      expect(lines).toEqual(["Request", "", "failed"]);
+    });
+
     it("sets customTitle and customIcon", () => {
       addNotificationWithLevel("msg", "notice", {
         customTitle: "Custom",
