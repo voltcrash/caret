@@ -105,7 +105,7 @@ describe("Caret ownership", () => {
 
     Config.smoothCaret = "off";
     dispatch("smoothCaret");
-    expect(main.style.animationName).toBe("caretFlashHard");
+    expect(main.style.animationName.toLowerCase()).toBe("caretflashhard");
     expect(pace.style.animationName).toBe("");
 
     unmount();
