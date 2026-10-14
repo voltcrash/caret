@@ -107,4 +107,15 @@ describe("modal focus", () => {
     fireEvent.keyDown(last, { key: "Tab" });
     expect(screen.getByRole("textbox")).toHaveFocus();
   });
+
+  it("returns focus to the connected trigger on close", async () => {
+    renderFocusModal();
+    await openSupport();
+    fireEvent.click(screen.getByRole("button", { name: "Close support" }));
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: "Open support" }),
+      ).toHaveFocus(),
+    );
+  });
 });
