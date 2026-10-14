@@ -23,7 +23,14 @@
           "error",
           {
             "ignore": [
+              // Solid uses HTML casing and explicit attribute namespaces.
+              "autocorrect",
               "autocomplete",
+              "enterkeyhint",
+              "spellcheck",
+              "referrerpolicy",
+              "attr:burst",
+              "attr:input",
               "class",
               "classList",
               "innerHTML",
