@@ -1,4 +1,3 @@
-// oxlint-disable typescript/consistent-type-definitions -- Vitest matcher augmentation requires interface declaration merging.
 import type { TestingLibraryMatchers } from "@testing-library/jest-dom/matchers";
 import type { TestActivityDay } from "../src/ts/elements/test-activity-calendar";
 
