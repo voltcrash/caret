@@ -11,7 +11,7 @@ export function Footer(): JSXElement {
   return (
     <footer
       class={cn(
-        "relative text-sm text-sub sm:text-xs",
+        "relative text-sm text-text sm:text-xs",
         // footer buttons are tapped, not read
         "pointer-coarse:select-none",
         getFocus() && "focus",
