@@ -118,4 +118,13 @@ describe("modal focus", () => {
       ).toHaveFocus(),
     );
   });
+
+  it("keeps non-modal dialogs outside the modal Tab trap", async () => {
+    renderFocusModal("dialog");
+    await openSupport();
+    const last = screen.getByRole("button", { name: "Close support" });
+    last.focus();
+    expect(fireEvent.keyDown(last, { key: "Tab" })).toBe(true);
+    expect(screen.getByRole("dialog")).not.toHaveAttribute("aria-modal");
+  });
 });
