@@ -1,5 +1,5 @@
 import type { MessageBatch } from "@cloudflare/workers-types";
-import { z } from "zod/v3";
+import { z } from "zod";
 import { statement, binding } from "../db/client";
 import { runtime } from "./env";
 import { jobHandler } from "../workers/later-worker";

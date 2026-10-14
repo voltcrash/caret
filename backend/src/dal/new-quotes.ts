@@ -8,7 +8,7 @@ import { newId } from "../utils/id";
 import { envValue, runtime } from "../runtime/env";
 import { integration } from "../utils/integration";
 import MonkeyError from "../utils/error";
-import { z } from "zod/v3";
+import { z } from "zod";
 const QuoteDataSchema = z.object({
   quotes: z.array(z.object({ id: z.number(), text: z.string() })),
 });
