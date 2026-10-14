@@ -1,8 +1,29 @@
-import { describe, it, expect } from "vite-plus/test";
+import { describe, it, expect, expectTypeOf } from "vite-plus/test";
 import { createRoot } from "solid-js";
 import { createSignalWithSetters } from "../../src/ts/hooks/createSignalWithSetters";
 
 describe("createSignalWithSetters", () => {
+  it("preserves mixed, optional and variadic named setter arguments", () => {
+    createRoot((dispose) => {
+      const [text, { append }] = createSignalWithSetters("")({
+        append: (
+          set,
+          label: string,
+          repeat: number = 1,
+          ...suffixes: string[]
+        ) =>
+          set((prev) => `${prev}${label.repeat(repeat)}${suffixes.join("")}`),
+      });
+      expectTypeOf(append).parameters.toEqualTypeOf<
+        [label: string, repeat?: number, ...suffixes: string[]]
+      >();
+      append("a", 2, "b", "c");
+      append("d");
+      expect(text()).toBe("aabcd");
+      dispose();
+    });
+  });
+
   it("returns default value from getter", () => {
     createRoot((dispose) => {
       const [count] = createSignalWithSetters(42)({});
