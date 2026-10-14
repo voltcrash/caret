@@ -90,7 +90,7 @@ export function SettingsPage(): JSXElement {
             <>
               {/* padded like the buttons: inset to line up with the item icons,
                     and space below to match the gap above the tip */}
-              <div class="grid gap-2 px-2 pb-2 text-em-xs text-sub">
+              <div class="grid gap-2 px-2 pb-2 text-em-xs text-text">
                 {/* keyboard shortcuts are hidden on touch, where they can't be used */}
                 <div class="pointer-coarse:hidden">
                   tip: you can also change all these settings quickly via the
@@ -123,7 +123,7 @@ export function SettingsPage(): JSXElement {
             Object.keys(getSearchMatchCounts()).length === 0
           }
         >
-          <div class="text-center text-sub">
+          <div class="text-center text-text">
             No settings match &quot;{getSettingsSearch().trim()}&quot;.
           </div>
         </Show>
