@@ -1,5 +1,5 @@
 // Sanitize tests deliberately pass values that violate their schemas.
-// oxlint-disable typescript/no-explicit-any, typescript/no-unsafe-argument, typescript/no-unsafe-assignment
+// oxlint-disable typescript/no-explicit-any, typescript/no-unsafe-argument, typescript/no-unsafe-assignment -- Fixtures intentionally pass values that violate their schemas.
 import { describe, it, expect } from "vite-plus/test";
 import { z } from "zod/v3";
 import { sanitize } from "../src/sanitize";
