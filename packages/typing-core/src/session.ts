@@ -32,6 +32,7 @@ import {
 } from "./input/fail-or-finish";
 import { getCommitCharacterType } from "./input/util";
 import { getMode2 } from "./mode";
+import { PaceTracker } from "./pace-caret";
 import { calculateWpm } from "./stats-math";
 import { hasKoreanCharacters } from "./strings";
 import {
@@ -86,6 +87,7 @@ export class TestSession {
   public readonly recorder: EventRecorder;
   public readonly liveCache: LiveCache;
   public readonly weakSpot: ReturnType<typeof createWeakSpot>;
+  public readonly pace = new PaceTracker();
   private readonly getConfig: () => SessionConfig;
   private readonly deps: TestSessionDeps;
   /** Clients schedule `advance`; the session owns start, stop and ticks. */
@@ -212,6 +214,7 @@ export class TestSession {
     if (this.active || this.ended) return;
     this.active = true;
     this.clock.start(now);
+    this.pace.start(now);
     if (logTimer) {
       this.record("timer", now, {
         event: "start",
@@ -226,6 +229,7 @@ export class TestSession {
     this.ended = false;
     this.wordIndex = 0;
     this.finishReason = undefined;
+    this.pace.reset();
     this.recorder.resetTestEvents();
   }
   advance(now: number): number | null {
@@ -391,6 +395,14 @@ export class TestSession {
     };
     this.record("input", now, event);
     this.emit("input", event);
+    if (decision.advance) {
+      this.pace.correct(
+        index,
+        decision.inputValue === target,
+        target,
+        config.blindMode,
+      );
+    }
     this.weakSpot.updateScore(
       decision.data,
       decision.correct,

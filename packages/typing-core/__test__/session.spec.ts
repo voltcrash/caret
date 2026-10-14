@@ -312,3 +312,22 @@ describe("ending", () => {
     expect(session.isActive()).toBe(false);
   });
 });
+
+describe("pace", () => {
+  it("anchors to the test start and corrects for mistyped words", async () => {
+    const session = createTestSession(sessionConfig(), {
+      words: ["one ", "two ", "six"],
+    });
+    session.pace.reset(60);
+    const getWord = (index: number): string | undefined =>
+      session.getWords()[index];
+    await session.insert("x", 1000);
+    await session.insert("ne ", 1100);
+    expect(session.pace.advanceTo(1200, getWord, false)).toMatchObject({
+      wordIndex: 1,
+      letterIndex: 0,
+    });
+    session.reset();
+    expect(session.pace.isEnabled()).toBe(false);
+  });
+});
