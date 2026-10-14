@@ -14,7 +14,6 @@ const queryClient = new QueryClient({
 
 const meta = preview.meta({
   title: "Common/AsyncContent",
-  // oxlint-disable-next-line typescript/no-unsafe-assignment -- generic component
   component: AsyncContent<{ query: string }>,
   parameters: {
     layout: "centered",
