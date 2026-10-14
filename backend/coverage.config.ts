@@ -25,6 +25,7 @@ export default {
       provider: "v8",
       include: [
         "src/api/controllers/result.ts",
+        "src/api/controllers/result/**/*.ts",
         "src/dal/user.ts",
         "src/api/controllers/user.ts",
       ],
