@@ -98,4 +98,13 @@ describe("modal focus", () => {
     });
     expect(screen.getByRole("button", { name: "Close support" })).toHaveFocus();
   });
+
+  it("wraps Tab from the last control to the first", async () => {
+    renderFocusModal();
+    await openSupport();
+    const last = screen.getByRole("button", { name: "Close support" });
+    last.focus();
+    fireEvent.keyDown(last, { key: "Tab" });
+    expect(screen.getByRole("textbox")).toHaveFocus();
+  });
 });
