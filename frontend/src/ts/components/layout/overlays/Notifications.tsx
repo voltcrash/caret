@@ -100,7 +100,7 @@ function NotificationItem(props: { notification: Notification }): JSXElement {
             when={props.notification.useInnerHtml}
             fallback={<div>{props.notification.message}</div>}
           >
-            {/* oxlint-disable-next-line solid/no-innerhtml */}
+            {/* oxlint-disable-next-line solid/no-innerhtml -- Legacy notification callers explicitly opt into preformatted HTML. */}
             <div innerHTML={props.notification.message}></div>
           </Show>
         </div>
