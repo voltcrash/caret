@@ -12,7 +12,6 @@ import { getLastResult, setLastResult } from "../../states/snapshot";
 import { getTagsOnce } from "../tags";
 import { applyIdWorkaround } from "../utils/misc";
 
-// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 function createResultsCollection(client: Client) {
   const collection = createCollection(
     queryCollectionOptions({
