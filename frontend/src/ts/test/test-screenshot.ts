@@ -195,7 +195,7 @@ export async function copyToClipboard(): Promise<void> {
     }
     try {
       // Attempt to copy using ClipboardItem API
-      // oxlint-disable-next-line compat/compat
+      // oxlint-disable-next-line compat/compat -- ClipboardItem failures are caught and shown as a notification.
       const clipItem = new ClipboardItem(
         Object.defineProperty({}, blob.type, {
           value: blob,
