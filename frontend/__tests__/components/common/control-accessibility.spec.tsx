@@ -70,4 +70,17 @@ describe("shared accessible controls", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Account" })).toBeInTheDocument();
   });
+
+  it("exposes toggle state with its name", () => {
+    render(() => (
+      <Button
+        fa={{ icon: "fa-heart" }}
+        aria-label="Favorite quotes"
+        aria-pressed={true}
+      />
+    ));
+    expect(
+      screen.getByRole("button", { name: "Favorite quotes" }),
+    ).toHaveAttribute("aria-pressed", "true");
+  });
 });
