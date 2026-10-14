@@ -7,7 +7,7 @@ import Ape from "../../ape";
 import { getLastResult } from "../../states/snapshot";
 import { reconcileLocalTagPB, saveLocalTagPB } from "../tags";
 
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 function createActions(client: Client) {
   const resultsCollection = resultsByClient[client];
   const actions = {
