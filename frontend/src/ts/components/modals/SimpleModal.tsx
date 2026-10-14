@@ -27,6 +27,7 @@ import {
 import { cn } from "../../utils/cn";
 import { getZodType, unwrapSchema } from "../../utils/zod";
 import { AnimatedModal } from "../common/AnimatedModal";
+import { TextContent } from "../common/TextContent";
 import { Checkbox } from "../ui/form/Checkbox";
 import { InputField } from "../ui/form/InputField";
 import { SubmitButton } from "../ui/form/SubmitButton";
@@ -259,12 +260,9 @@ export function SimpleModal(): JSXElement {
       >
         <Show when={config()?.text}>
           {(text) => (
-            <div
-              class={cn("text-text", config()?.textClass)}
-              {...(config()?.textAllowHtml === true
-                ? { innerHTML: text() }
-                : { textContent: text() })}
-            ></div>
+            <div class={cn("text-text", config()?.textClass)}>
+              <TextContent content={text()} />
+            </div>
           )}
         </Show>
 

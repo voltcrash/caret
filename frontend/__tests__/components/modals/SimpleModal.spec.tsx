@@ -28,6 +28,19 @@ import {
 import { showSimpleModal } from "../../../src/ts/states/simple-modal";
 afterEach(cleanup);
 
+it("renders structured modal lines as text with explicit breaks", () => {
+  const lines = ["<script>alert(1)</script>", "", '<img onerror="alert(1)">'];
+  showSimpleModal({
+    title: "Message",
+    text: lines,
+    execFn: async () => ({ status: "success", showNotification: false }),
+  });
+  const view = render(() => <SimpleModal />);
+  expect(view.container.textContent).toBe(lines.join(""));
+  expect(view.container.querySelectorAll("br")).toHaveLength(2);
+  expect(view.container.querySelector("script, img")).toBeNull();
+});
+
 it.each(["<script>alert(1)</script>", '<img src="x" onerror="alert(1)">'])(
   "renders modal input as text: %s",
   (text) => {

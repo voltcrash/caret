@@ -4,6 +4,7 @@ import { showModal, hideModal } from "./modals";
 import { AddNotificationOptions } from "./notifications";
 
 import { Validation } from "../types/validation";
+import { MessageContent } from "../types/message-content";
 import { z, ZodTypeAny } from "zod/v3";
 
 type InferSchema<T extends ZodTypeAny> = z.infer<T>;
@@ -115,9 +116,8 @@ type InputsFromSchema<S extends ModalSchema> = {
 
 type SimpleModalOptions = {
   title: string;
-  text?: string;
+  text?: MessageContent;
   textClass?: string;
-  textAllowHtml?: boolean;
   buttonText?: string;
   buttonAlwaysEnabled?: boolean;
 
