@@ -19,7 +19,7 @@ import { getMode2 } from "../../utils/misc";
 import { getCurrentQuote } from "../../states/test";
 import { removeLanguageSize } from "../../utils/strings";
 
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export function useUserAverage10LiveQuery(options: {
   isEnabled: Accessor<boolean>;
 }) {
@@ -60,7 +60,7 @@ export function useUserAverage10LiveQuery(options: {
 /**
  * web results from the local day starting at `dayTimestamp` onwards
  */
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export async function getResultsSinceDayOnce(dayTimestamp: number) {
   return queryOnce((q) =>
     q
@@ -109,7 +109,7 @@ export async function getUserDailyBestOnce(
   return result ?? { wpm: 0, acc: 0 };
 }
 
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 function buildSettingsResultsQuery(
   filter: CurrentSettingsFilter,
   options?: { tagIds?: string[] },
