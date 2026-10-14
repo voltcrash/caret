@@ -319,6 +319,9 @@ jobs:
       - name: Check shared lint configuration
         run: vp run lint-check-config
 
+      - name: Check lint suppression reasons
+        run: vp run lint-suppressions
+
       - name: Check lint
         run: vp run lint-fast-pkg && vp run lint-pkg
 
