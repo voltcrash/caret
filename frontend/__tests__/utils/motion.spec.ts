@@ -22,4 +22,12 @@ describe("reduced motion parameters", () => {
       loop: false,
     });
   });
+
+  it("replaces callback timing while retaining completion handlers", () => {
+    state.reduced = true;
+    const onComplete = vi.fn();
+    expect(
+      reduceMotionParams({ duration: () => 300, delay: () => 100, onComplete }),
+    ).toEqual({ duration: 0, delay: 0, loop: false, onComplete });
+  });
 });
