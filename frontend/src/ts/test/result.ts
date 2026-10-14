@@ -96,7 +96,6 @@ export async function update(
   randomQuote: Quote | null,
   dontSave: boolean,
 ): Promise<void> {
-  await prepareResultChart();
   resetResultAnnotations();
   setCurrentResult(structuredClone(res));
   hideCrown();
@@ -112,6 +111,8 @@ export async function update(
     words: [],
   });
   updateRetrySaving(false);
+  updateDailyLeaderboardRank(undefined);
+  setResultState("tags", "savedResultId", undefined);
   setResultState("quote", { rateVisible: false, rated: false, rating: "" });
   clearWordsBlur();
   blurInputElement();
@@ -135,6 +136,9 @@ export async function update(
   );
   updateQuoteFavorite(randomQuote);
   await updateCrown(dontSave);
+  // Establish pending save UI before loading the chart. A fast acknowledgement
+  // must not be overwritten by late result initialization.
+  await prepareResultChart();
   await updateChartData();
   updateResultChartDataVisibility();
   updateMinMaxChartValues();
@@ -166,7 +170,6 @@ export async function update(
       updateRateQuote(getCurrentQuote());
       setResultState("quote", "reportVisible", true);
     }
-    updateDailyLeaderboardRank(undefined);
   }
 
   if (res.wpm === 0 && !difficultyFailed && res.testDuration >= 5) {
