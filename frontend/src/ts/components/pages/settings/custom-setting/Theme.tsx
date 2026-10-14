@@ -333,8 +333,7 @@ function CustomThemeButton(props: { theme: CustomTheme }): JSXElement {
   const themeColors = () => convertCustomColorsToTheme(props.theme.colors);
 
   return (
-    <button
-      type="button"
+    <div
       style={{
         "--bg": themeColors().bg,
         "--main": themeColors().main,
@@ -348,12 +347,10 @@ function CustomThemeButton(props: { theme: CustomTheme }): JSXElement {
         "hover:ring-(--main)",
         "transition-[opacity,color,background,box-shadow] duration-125",
       )}
-      onClick={() => {
-        setConfig("customThemeColors", props.theme.colors);
-      }}
       data-theme-id={props.theme._id}
     >
       <Button
+        aria-label={`Edit theme ${props.theme.name}`}
         variant="text"
         fa={{
           icon: "fa-pen",
@@ -362,7 +359,7 @@ function CustomThemeButton(props: { theme: CustomTheme }): JSXElement {
         class={cn(
           "mx-1 p-2",
           "[--themable-button-hover-text:var(--main)] [--themable-button-text:var(--sub)]",
-          "opacity-0 group-hover/theme:opacity-100 pointer-coarse:opacity-100",
+          "opacity-0 group-hover/theme:opacity-100 group-focus-within/theme:opacity-100 pointer-coarse:opacity-100",
         )}
         onClick={(e) => {
           e.stopPropagation();
@@ -417,10 +414,18 @@ function CustomThemeButton(props: { theme: CustomTheme }): JSXElement {
           });
         }}
       />
-      <div class="min-w-0 truncate">
-        {replaceUnderscoresWithSpaces(props.theme.name)}
-      </div>
       <Button
+        variant="text"
+        aria-label={`Apply theme ${props.theme.name}`}
+        class="min-w-0 p-2 [--themable-button-text:var(--main)] [--themable-button-hover-text:var(--text)]"
+        onClick={() => setConfig("customThemeColors", props.theme.colors)}
+      >
+        <span class="min-w-0 truncate">
+          {replaceUnderscoresWithSpaces(props.theme.name)}
+        </span>
+      </Button>
+      <Button
+        aria-label={`Delete theme ${props.theme.name}`}
         variant="text"
         fa={{
           icon: "fa-trash",
@@ -429,7 +434,7 @@ function CustomThemeButton(props: { theme: CustomTheme }): JSXElement {
         class={cn(
           "mx-1 p-2",
           "[--themable-button-hover-text:var(--main)] [--themable-button-text:var(--sub)]",
-          "opacity-0 group-hover/theme:opacity-100 pointer-coarse:opacity-100",
+          "opacity-0 group-hover/theme:opacity-100 group-focus-within/theme:opacity-100 pointer-coarse:opacity-100",
         )}
         onClick={(e) => {
           e.stopPropagation();
@@ -449,7 +454,7 @@ function CustomThemeButton(props: { theme: CustomTheme }): JSXElement {
           });
         }}
       />
-    </button>
+    </div>
   );
 }
 
@@ -462,13 +467,22 @@ function ThemeButton(props: { theme: ThemeWithName }): JSXElement {
     setConfig("theme", props.theme.name);
   };
 
+  const toggleFavorite = (): void => {
+    if (isFav()) {
+      setConfig(
+        "favThemes",
+        getConfig.favThemes.filter((t) => t !== props.theme.name),
+      );
+    } else {
+      setConfig("favThemes", [...getConfig.favThemes, props.theme.name]);
+    }
+  };
+
   // not a <button>: many theme css files style button:hover (colors,
   // animations, gradients) outside of the tailwind layers. while previewing
   // one of those themes it would restyle these cards, so avoid matching it
   return (
     <div
-      role="button"
-      tabIndex={0}
       style={{
         "--bg": props.theme.bg,
         "--main": props.theme.main,
@@ -492,27 +506,46 @@ function ThemeButton(props: { theme: ThemeWithName }): JSXElement {
           preview(props.theme.name);
         }
       }}
-      onClick={select}
-      onKeyDown={(e) => {
-        if (e.key !== "Enter" && e.key !== " ") return;
-        e.preventDefault();
-        select();
+      onClick={(e) => {
+        if (e.target === e.currentTarget) select();
       }}
     >
       {/* the name spans the whole button on one line; the star and colors
           overlay its ends and fade it out instead of squeezing it */}
-      <div class="w-full px-2 text-center whitespace-nowrap">
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label={`Apply theme ${replaceUnderscoresWithSpaces(props.theme.name)}`}
+        aria-pressed={isActive()}
+        class="w-full px-2 text-center whitespace-nowrap focus-visible:shadow-control-focus"
+        onClick={select}
+        onKeyDown={(e) => {
+          if (e.key !== "Enter" && e.key !== " ") return;
+          e.preventDefault();
+          select();
+        }}
+      >
         {replaceUnderscoresWithSpaces(props.theme.name)}
       </div>
       <div
         class={cn(
           "absolute inset-y-0 left-0 flex items-center pr-6 pl-1",
           "bg-linear-to-r from-(--bg) from-60% to-transparent",
-          "opacity-0 transition-[opacity,color,background] duration-125 group-hover/theme:opacity-100 pointer-coarse:opacity-100",
+          "opacity-0 transition-[opacity,color,background] duration-125 group-hover/theme:opacity-100 group-focus-within/theme:opacity-100 pointer-coarse:opacity-100",
           isFav() && "opacity-100",
         )}
       >
         <div
+          role="button"
+          tabIndex={0}
+          aria-label={`Favorite theme ${replaceUnderscoresWithSpaces(props.theme.name)}`}
+          aria-pressed={isFav()}
+          onKeyDown={(e) => {
+            if (e.key !== "Enter" && e.key !== " ") return;
+            e.preventDefault();
+            e.stopPropagation();
+            toggleFavorite();
+          }}
           class={cn(
             "grid justify-center",
             "rounded-full p-1",
@@ -521,17 +554,7 @@ function ThemeButton(props: { theme: ThemeWithName }): JSXElement {
           )}
           onClick={(e) => {
             e.stopPropagation();
-            if (isFav()) {
-              setConfig(
-                "favThemes",
-                getConfig.favThemes.filter((t) => t !== props.theme.name),
-              );
-            } else {
-              setConfig("favThemes", [
-                ...getConfig.favThemes,
-                props.theme.name,
-              ]);
-            }
+            toggleFavorite();
           }}
         >
           <Fa
@@ -544,9 +567,9 @@ function ThemeButton(props: { theme: ThemeWithName }): JSXElement {
       </div>
       <div
         class={cn(
-          "absolute inset-y-0 right-0 flex items-center pr-1.5 pl-8",
+          "pointer-events-none absolute inset-y-0 right-0 flex items-center pr-1.5 pl-8",
           "bg-linear-to-l from-(--bg) from-70% to-transparent",
-          "opacity-0 transition-opacity duration-125 group-hover/theme:opacity-100 pointer-coarse:opacity-100",
+          "opacity-0 transition-opacity duration-125 group-hover/theme:opacity-100 group-focus-within/theme:opacity-100 pointer-coarse:opacity-100",
           isActive() && "opacity-100",
         )}
       >
@@ -615,6 +638,7 @@ function Picker(props: { color: ColorName }): JSXElement {
     >
       <div>{text()}</div>
       <input
+        aria-label={`${props.color} color value`}
         class="w-full"
         type="text"
         value={getTheme()[props.color]}
@@ -630,6 +654,7 @@ function Picker(props: { color: ColorName }): JSXElement {
       />
       <div class="grid">
         <input
+          aria-label={`${props.color} color picker`}
           ref={(el) => (colorInputRef = el)}
           type="color"
           value={getTheme()[props.color]}
@@ -645,6 +670,7 @@ function Picker(props: { color: ColorName }): JSXElement {
           // }}
         />
         <Button
+          aria-label={`Choose ${props.color} color`}
           class={cn(
             `col-[1/1] row-[1/1]`,
             `bg-(--picker-${props.color}) text-(--picker-bg)`,
