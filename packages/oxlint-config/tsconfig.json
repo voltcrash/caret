@@ -3,5 +3,9 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": ["config.ts", "check-application-defaults.ts"]
+  "include": [
+    "config.ts",
+    "check-application-defaults.ts",
+    "audit-suppressions.ts"
+  ]
 }

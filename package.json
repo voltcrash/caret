@@ -12,6 +12,7 @@
     "ts-check": "vp run --filter \"!oxytype\" ts-check",
     "lint": "vp run --filter \"!oxytype\" lint",
     "lint-check-config": "node packages/oxlint-config/check-application-defaults.ts",
+    "lint-suppressions": "vp exec node packages/oxlint-config/audit-suppressions.ts",
     "lint-be": "vp run --filter @oxytype/backend lint",
     "lint-fe": "vp run --filter @oxytype/frontend lint",
     "lint-pkg": "vp run --filter \"./packages/*\" lint",
