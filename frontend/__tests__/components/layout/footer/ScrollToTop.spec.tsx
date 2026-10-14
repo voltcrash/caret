@@ -20,9 +20,9 @@ describe("ScrollToTop", () => {
     const { container } = render(() => <ScrollToTop />);
 
     return {
-      // oxlint-disable-next-line no-non-null-assertion
+      // oxlint-disable-next-line no-non-null-assertion -- Test setup/assertions guarantee this fixture element or mock call exists.
       container: container.children[0]! as HTMLElement,
-      // oxlint-disable-next-line no-non-null-assertion
+      // oxlint-disable-next-line no-non-null-assertion -- Test setup/assertions guarantee this fixture element or mock call exists.
       button: container.querySelector("button")!,
     };
   }
