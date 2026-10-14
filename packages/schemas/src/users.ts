@@ -211,7 +211,9 @@ export type UserInventory = z.infer<typeof UserInventorySchema>;
 export const QuoteModSchema = z
   .boolean()
   .describe("Admin for all languages if true")
-  .or(LanguageSchema.describe("Admin for the given language"));
+  .or(LanguageSchema.describe("Admin for the given language"))
+  // Zod 3 carried the first option's description onto the union.
+  .describe("Admin for all languages if true");
 export type QuoteMod = z.infer<typeof QuoteModSchema>;
 
 export const TestActivitySchema = z

@@ -67,7 +67,14 @@ export function customEnumErrorHandler(message: string): z.core.$ZodErrorMap {
       : (issue.message ?? "Required");
 }
 
-export const PageNumberSchema = z.number().int().nonnegative().default(0);
+export const PageNumberSchema = z
+  .number()
+  .int()
+  // zod 3's .safe()
+  .min(Number.MIN_SAFE_INTEGER)
+  .max(Number.MAX_SAFE_INTEGER)
+  .nonnegative()
+  .default(0);
 
 /**
  * A record keyed by an enum or literals, with Zod 3 semantics: every key is
