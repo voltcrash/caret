@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
 import {
   createHintsNodes,
   joinOverlappingHints,
+  updateHintsPositionDebounced,
 } from "../../src/ts/components/pages/test/words/hints";
 import * as TestWords from "../../src/ts/test/test-words";
 
@@ -133,5 +134,28 @@ describe("word hints", () => {
       word.getElementsByTagName("hint"),
     );
     expect(word.querySelectorAll("hint")).toHaveLength(3);
+  });
+  it("repositions joined special characters without reading encoded HTML", async () => {
+    const letters = createLetters();
+    const word = attachHints(letters, '<&"');
+    measureHints(word);
+    await joinOverlappingHints(
+      [[0, 1, 2]],
+      letters,
+      word.getElementsByTagName("hint"),
+    );
+    await updateHintsPositionDebounced();
+    expect(word.querySelector(".hints")?.textContent).toBe('<&"');
+    expect(
+      Array.from(word.querySelectorAll("hint"), (hint) => hint.textContent),
+    ).toEqual(["<", "&", '"']);
+    expect(word.querySelector("script, img")).toBeNull();
+  });
+  it("leaves hints alone when the result is visible", async () => {
+    const word = attachHints(createLetters(), "abc");
+    const first = word.querySelector("hint");
+    state.result = true;
+    await updateHintsPositionDebounced();
+    expect(word.querySelector("hint")).toBe(first);
   });
 });
