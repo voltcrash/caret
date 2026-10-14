@@ -1,4 +1,4 @@
-// oxlint-disable no-require-imports
+// oxlint-disable no-require-imports -- This maintenance script is a CommonJS entry point.
 const fs = require("fs");
 
 function fixQuoteLengths() {
