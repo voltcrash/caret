@@ -257,6 +257,10 @@ function timerEvents(): string[] {
     .sort();
 }
 
+function failReason(): unknown {
+  return mocks.resultUpdate.mock.calls.at(-1)?.[2];
+}
+
 beforeEach(async () => {
   vi.useFakeTimers({
     toFake: ["setTimeout", "clearTimeout", "performance", "Date"],
@@ -349,5 +353,56 @@ describe("timing", () => {
     ]);
     expect(mocks.liveStats).toHaveLength(1);
     now.mockRestore();
+  });
+});
+
+describe("completion", () => {
+  it("finishes once when time runs out with a single end event", async () => {
+    const start = performance.now();
+    startTest(start);
+    type(start + 100, 0, "h");
+    vi.advanceTimersByTime(3000);
+    await vi.waitFor(() => expect(mocks.resultUpdate).toHaveBeenCalled());
+    expect(mocks.caretHide).toHaveBeenCalled();
+    expect(timerEvents()).toEqual([
+      "end:3@3000",
+      "start:0@0",
+      "step:1@1000",
+      "step:2@2000",
+      "step:3@3000",
+    ]);
+    expect(failReason()).toBe("");
+    expect(mocks.lastEventLog?.events).toEqual(getAllTestEvents());
+    vi.advanceTimersByTime(5000);
+    expect(mocks.resultUpdate).toHaveBeenCalledOnce();
+    expect(timerEvents()).toHaveLength(5);
+  });
+
+  it("counts custom time limits", async () => {
+    Config.mode = "custom";
+    CustomText.setLimitMode("time");
+    CustomText.setLimitValue(2);
+    startTest(performance.now());
+    vi.advanceTimersByTime(2000);
+    await vi.waitFor(() => expect(mocks.resultUpdate).toHaveBeenCalled());
+    expect(timerEvents()).toContain("end:2@2000");
+  });
+
+  it("keeps running without a time limit", () => {
+    Config.mode = "words";
+    Config.words = 10;
+    startTest(performance.now());
+    vi.advanceTimersByTime(30_000);
+    expect(mocks.resultUpdate).not.toHaveBeenCalled();
+    expect(timerEvents()).toHaveLength(31);
+  });
+
+  it("adds active, non-AFK seconds to today's typing time", async () => {
+    const start = performance.now();
+    startTest(start);
+    type(start + 100, 0, "h");
+    vi.advanceTimersByTime(3000);
+    await vi.waitFor(() => expect(mocks.todaySeconds).toHaveBeenCalled());
+    expect(mocks.todaySeconds).toHaveBeenCalledWith(1);
   });
 });
