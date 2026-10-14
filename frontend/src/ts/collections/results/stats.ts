@@ -10,7 +10,7 @@ import { isAuthenticated } from "../../states/core";
  * @param options
  * @returns
  */
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export function useResultStatsLiveQuery(
   queryState: Accessor<ResultsQueryState | undefined>,
   options?: { lastTen?: true } | { groupByDay?: true },
