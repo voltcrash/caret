@@ -1,3 +1,71 @@
+diff --git a/dist/index.d.mts b/dist/index.d.mts
+index b815f05134922e2e112fcc0b2fcb0564c9ee1b0e..eba1c3b626b7833ad19f46be78cbeda342dd1f1d 100644
+--- a/dist/index.d.mts
++++ b/dist/index.d.mts
+@@ -1,6 +1,6 @@
+ import { z } from 'zod';
+ 
+-type Schema = z.ZodObject<Record<string, z.ZodTypeAny>>;
++type Schema = z.ZodObject<Record<string, z.ZodType>>;
+ type ParseArgs<T extends Schema> = {
+     schema: T;
+     input: URLSearchParams;
+@@ -11,7 +11,7 @@ type ParseArgs<T extends Schema> = {
+ };
+ declare function shape<T extends Schema>({ schema, input, defaultData, }: ParseArgs<T>): Record<string, unknown>;
+ declare function parse<T extends Schema>({ schema, input, defaultData }: ParseArgs<T>): z.infer<T>;
+-declare function safeParse<T extends Schema>({ schema, input, defaultData, }: ParseArgs<T>): z.SafeParseReturnType<z.infer<T>, z.infer<T>>;
++declare function safeParse<T extends Schema>({ schema, input, defaultData, }: ParseArgs<T>): z.ZodSafeParseResult<z.infer<T>>;
+ declare function lenientParse<T extends Schema>({ schema, input, defaultData, }: Omit<ParseArgs<T>, "defaultData"> & {
+     defaultData: z.infer<T>;
+ }): z.infer<T>;
+@@ -29,9 +29,9 @@ declare class ZodURLSearchParamSerializer<T extends Schema> {
+     private defaultData?;
+     constructor(schema: T, defaultData?: Readonly<Partial<z.infer<T>>> | undefined);
+     serialize(data: Readonly<z.infer<T>>): URLSearchParams;
+-    parse(input: URLSearchParams): z.TypeOf<T>;
+-    safeParse(input: URLSearchParams): z.SafeParseReturnType<z.TypeOf<T>, z.TypeOf<T>>;
+-    lenientParse(input: URLSearchParams, defaultData: z.infer<T>): z.TypeOf<T>;
++    parse(input: URLSearchParams): z.infer<T>;
++    safeParse(input: URLSearchParams): z.ZodSafeParseResult<z.infer<T>>;
++    lenientParse(input: URLSearchParams, defaultData: z.infer<T>): z.infer<T>;
+ }
+ 
+ export { type ParseArgs, type SerializeArgs, ZodURLSearchParamSerializer, lenientParse, parse, safeParse, serialize, shape };
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+index b815f05134922e2e112fcc0b2fcb0564c9ee1b0e..eba1c3b626b7833ad19f46be78cbeda342dd1f1d 100644
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -1,6 +1,6 @@
+ import { z } from 'zod';
+ 
+-type Schema = z.ZodObject<Record<string, z.ZodTypeAny>>;
++type Schema = z.ZodObject<Record<string, z.ZodType>>;
+ type ParseArgs<T extends Schema> = {
+     schema: T;
+     input: URLSearchParams;
+@@ -11,7 +11,7 @@ type ParseArgs<T extends Schema> = {
+ };
+ declare function shape<T extends Schema>({ schema, input, defaultData, }: ParseArgs<T>): Record<string, unknown>;
+ declare function parse<T extends Schema>({ schema, input, defaultData }: ParseArgs<T>): z.infer<T>;
+-declare function safeParse<T extends Schema>({ schema, input, defaultData, }: ParseArgs<T>): z.SafeParseReturnType<z.infer<T>, z.infer<T>>;
++declare function safeParse<T extends Schema>({ schema, input, defaultData, }: ParseArgs<T>): z.ZodSafeParseResult<z.infer<T>>;
+ declare function lenientParse<T extends Schema>({ schema, input, defaultData, }: Omit<ParseArgs<T>, "defaultData"> & {
+     defaultData: z.infer<T>;
+ }): z.infer<T>;
+@@ -29,9 +29,9 @@ declare class ZodURLSearchParamSerializer<T extends Schema> {
+     private defaultData?;
+     constructor(schema: T, defaultData?: Readonly<Partial<z.infer<T>>> | undefined);
+     serialize(data: Readonly<z.infer<T>>): URLSearchParams;
+-    parse(input: URLSearchParams): z.TypeOf<T>;
+-    safeParse(input: URLSearchParams): z.SafeParseReturnType<z.TypeOf<T>, z.TypeOf<T>>;
+-    lenientParse(input: URLSearchParams, defaultData: z.infer<T>): z.TypeOf<T>;
++    parse(input: URLSearchParams): z.infer<T>;
++    safeParse(input: URLSearchParams): z.ZodSafeParseResult<z.infer<T>>;
++    lenientParse(input: URLSearchParams, defaultData: z.infer<T>): z.infer<T>;
+ }
+ 
+ export { type ParseArgs, type SerializeArgs, ZodURLSearchParamSerializer, lenientParse, parse, safeParse, serialize, shape };
 diff --git a/dist/index.js b/dist/index.js
 index cc69a1110c965b09c8707d4335b7e0afd2eb585c..48bfdf2641ff60e376e06d693b112805221aacad 100644
 --- a/dist/index.js
