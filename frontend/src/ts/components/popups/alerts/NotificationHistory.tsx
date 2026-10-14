@@ -29,7 +29,6 @@ async function copyDetails(
     await navigator.clipboard.writeText(text);
     window.alert("Copied notification details to clipboard.");
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error("Failed to copy notification details:", error);
     window.alert("Failed to copy notification details.");
   }
