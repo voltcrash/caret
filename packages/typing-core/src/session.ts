@@ -57,6 +57,7 @@ export type SessionEvents = {
   word: { index: number; word: string };
   input: InputEventData;
   tick: TimerTick & LiveStats;
+  drift: { now: number; drift: number };
   finish: { eventLog: EventLog; reason?: string };
 };
 export type TestSessionDeps = {
@@ -72,6 +73,8 @@ export type TestSessionDeps = {
   allWordsGenerated?: () => boolean;
   generator?: WordsGenerator;
   getCurrentQuote?: () => { id: number } | null;
+  /** Flags timer steps that ran while the client was rendering slowly. */
+  isSlowTimer?: () => boolean;
 };
 
 /** Headless state and events. Clients own scheduling, rendering, storage and transport. */
@@ -92,6 +95,7 @@ export class TestSession {
     word: new Set(),
     input: new Set(),
     tick: new Set(),
+    drift: new Set(),
     finish: new Set(),
   };
 
@@ -109,7 +113,10 @@ export class TestSession {
       isResultCalculating: deps.isResultCalculating,
       liveCache: this.liveCache,
     });
-    this.clock = createTestTimer({ onTick: (tick) => this.tick(tick) });
+    this.clock = createTestTimer({
+      onTick: (tick) => this.tick(tick),
+      onDrift: (drift, now) => this.emit("drift", { now, drift }),
+    });
   }
 
   on<K extends keyof SessionEvents>(
@@ -256,6 +263,7 @@ export class TestSession {
       event: "step",
       timer: tick.timer,
       drift: tick.drift,
+      slowTimer: this.deps.isSlowTimer?.() === true ? true : undefined,
       catchup: tick.catchup,
     });
     const log = this.buildEventLog();

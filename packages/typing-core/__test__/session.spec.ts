@@ -196,3 +196,34 @@ describe("headless lifecycle", () => {
     ).toEqual(["\t", "\t\t"]);
   });
 });
+
+describe("timer", () => {
+  it("reports drift before the step and flags slow steps", () => {
+    let slow = false;
+    const session = createTestSession(sessionConfig(), {
+      words: ["one ", "two"],
+      isSlowTimer: () => slow,
+    });
+    const drifts: { now: number; drift: number }[] = [];
+    session.on("drift", (event) => {
+      drifts.push(event);
+      slow = event.drift > 100;
+    });
+    session.start(0);
+    session.advance(1000);
+    session.advance(2150);
+    expect(drifts).toEqual([
+      { now: 1000, drift: 0 },
+      { now: 2150, drift: 150 },
+    ]);
+    const steps = session
+      .buildEventLog()
+      .events.filter(
+        (event) => event.type === "timer" && event.data.event === "step",
+      );
+    expect(steps.map((event) => event.data)).toEqual([
+      { event: "step", timer: 1, drift: 0 },
+      { event: "step", timer: 2, drift: 150, slowTimer: true },
+    ]);
+  });
+});

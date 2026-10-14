@@ -18,7 +18,7 @@ export type TestTimer = {
 /** Clients schedule advance; the core anchors ticks to the start and catches up stalls. */
 export function createTestTimer(deps: {
   onTick: (tick: TimerTick) => void;
-  onDrift?: (drift: number) => void;
+  onDrift?: (drift: number, now: number) => void;
 }): TestTimer {
   let startMs = 0;
   let emittedTicks = 0;
@@ -38,7 +38,7 @@ export function createTestTimer(deps: {
       const expected = startMs + (emittedTicks + 1) * 1000;
       const drift = roundTo2(now - expected);
       if (drift < 0) return expected - now;
-      deps.onDrift?.(drift);
+      deps.onDrift?.(drift, now);
       const ticksDue = Math.floor((now - startMs) / 1000);
       // onTick may synchronously stop the clock when the test ends.
       // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- onTick can synchronously stop the clock through its closure.
