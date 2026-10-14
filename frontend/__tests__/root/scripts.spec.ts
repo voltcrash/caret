@@ -27,4 +27,31 @@ describe("root scripts", () => {
         .map((file) => resolve(workflows, file)),
     );
   });
+
+  it("keeps commands documented for contributors and hooks", () => {
+    const docs = resolve(root, "docs");
+    const hooks = resolve(root, ".husky");
+    // Some examples first change into a package (e.g. TUI's assets command).
+    const available = { ...scripts };
+    for (const directory of ["backend", "frontend", "tui"]) {
+      const pkg = JSON.parse(
+        readFileSync(resolve(root, directory, "package.json"), "utf8"),
+      ) as { scripts: Record<string, string> };
+      Object.assign(available, pkg.scripts);
+    }
+    assertCommandsExist(
+      [
+        resolve(root, "README.md"),
+        resolve(root, "tui/README.md"),
+        resolve(root, "AGENTS.md"),
+        ...readdirSync(docs)
+          .filter((file) => file.endsWith(".md"))
+          .map((file) => resolve(docs, file)),
+        ...readdirSync(hooks)
+          .filter((file) => !file.startsWith(".") && file !== "_")
+          .map((file) => resolve(hooks, file)),
+      ],
+      available,
+    );
+  });
 });
