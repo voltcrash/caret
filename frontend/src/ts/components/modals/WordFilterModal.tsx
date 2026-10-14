@@ -29,7 +29,7 @@ import { Checkbox } from "../ui/form/Checkbox";
 import { InputField } from "../ui/form/InputField";
 import { LabeledField } from "../ui/form/LabeledField";
 import { SubmitButton } from "../ui/form/SubmitButton";
-import SlimSelect from "../ui/SlimSelect";
+import Select from "../ui/Select";
 
 type CustomTextIncomingData =
   | ({ set?: boolean; long?: boolean } & (
@@ -289,8 +289,8 @@ export function WordFilterModal(props: {
       >
         <fieldset disabled={loading()} class="grid gap-4">
           <LabeledField label="language">
-            <SlimSelect
-              appendTo="container"
+            <Select
+              label="Language"
               options={languageOptions}
               selected={language()}
               onChange={setLanguage}
@@ -365,8 +365,8 @@ export function WordFilterModal(props: {
 
             <div class="grid gap-4 self-start">
               <LabeledField label="presets">
-                <SlimSelect
-                  appendTo="container"
+                <Select
+                  label="Filter preset"
                   options={presetOptions}
                   selected={preset()}
                   onChange={setPreset}
@@ -374,8 +374,8 @@ export function WordFilterModal(props: {
                 />
               </LabeledField>
               <LabeledField label="layout">
-                <SlimSelect
-                  appendTo="container"
+                <Select
+                  label="Layout"
                   options={layoutOptions}
                   selected={layout()}
                   onChange={setLayout}
