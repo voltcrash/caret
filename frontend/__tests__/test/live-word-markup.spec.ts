@@ -95,4 +95,13 @@ describe("live word node builders", () => {
       expect(live.querySelector("script, img, b")).toBeNull();
     },
   );
+  it("renders replaced and extra input literally", () => {
+    const nodes = build({
+      currentWord: "ab",
+      input: '<&"',
+      indicateTypos: "replace",
+    }).nodes;
+    expect(nodes.textContent).toBe('<&"');
+    expect(nodes.querySelector("letter.extra")?.textContent).toBe('"');
+  });
 });
