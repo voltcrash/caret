@@ -107,6 +107,17 @@ export function SearchableAutoSetting<T extends ConfigKey>(props: {
           <For each={options}>
             {(option) => (
               <Button
+                aria-label={
+                  getOptionLabel(props.key, option)
+                    .replace(/\u2800/g, "")
+                    .trim() ||
+                  (typeof option === "boolean"
+                    ? option
+                      ? "on"
+                      : "off"
+                    : String(option))
+                }
+                aria-pressed={getConfig[props.key] === option}
                 class={cn(
                   // 44px minimum tap target on touch screens
                   "min-w-0 pointer-coarse:min-h-11",
