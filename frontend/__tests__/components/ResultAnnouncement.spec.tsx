@@ -88,4 +88,14 @@ describe("result announcements", () => {
     setResultState("stats", "acc", "text", "99%");
     expect(screen.getByRole("status").textContent).toBe(initial);
   });
+
+  it("clears on restart and announces the next completion", () => {
+    render(() => <ResultAnnouncement />);
+    setResultVisible(true);
+    setResultVisible(false);
+    expect(screen.getByRole("status").textContent).toBe("");
+    setResultState("stats", "wpm", "text", "100");
+    setResultVisible(true);
+    expect(screen.getByRole("status")).toHaveTextContent("100 wpm");
+  });
 });
