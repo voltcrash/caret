@@ -6,7 +6,7 @@ test("render 1,000 words with browser layout", async ({ page }) => {
   const measurements = await page.evaluate(async () => {
     const renderingUrl = "/ts/components/pages/test/words/rendering.ts";
     const wordsUrl = "/ts/test/test-words.ts";
-    const { showWords } = (await import(
+    const { showWords, updateWordLetters } = (await import(
       /* @vite-ignore */ renderingUrl
     )) as typeof import("../src/ts/components/pages/test/words/rendering");
     const { words } = (await import(
@@ -37,12 +37,47 @@ test("render 1,000 words with browser layout", async ({ page }) => {
       samples.sort((a, b) => a - b);
       return { median: samples[25] ?? 0, p95: samples[47] ?? 0 };
     };
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => resolve()),
+    );
+    const typing: number[] = [];
+    const originalRequest = window.requestAnimationFrame;
+    const originalCancel = window.cancelAnimationFrame;
+    const frames = new Map<number, FrameRequestCallback>();
+    let nextFrame = 0;
+    window.requestAnimationFrame = (callback) => {
+      frames.set(++nextFrame, callback);
+      return nextFrame;
+    };
+    window.cancelAnimationFrame = (id) => {
+      frames.delete(id);
+    };
+    try {
+      for (let sample = 0; sample < 60; sample++) {
+        const start = performance.now();
+        for (let update = 0; update < 100; update++) {
+          await updateWordLetters({
+            wordIndex: 0,
+            input: "rendering000".slice(0, (update % 12) + 1),
+            compositionData: "",
+          });
+          const callbacks = Array.from(frames.values());
+          frames.clear();
+          for (const callback of callbacks) callback(performance.now());
+        }
+        if (sample >= 10) typing.push((performance.now() - start) / 100);
+      }
+    } finally {
+      window.requestAnimationFrame = originalRequest;
+      window.cancelAnimationFrame = originalCancel;
+    }
     return {
       words: words.length,
       letters: 12_000,
       samples: 50,
       dom: summarize(dom),
       layout: summarize(layout),
+      typing: summarize(typing),
     };
   });
   await expect(page.locator("#words .word")).toHaveCount(1_000);
