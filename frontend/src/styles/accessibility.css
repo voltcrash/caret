@@ -15,22 +15,22 @@ body {
 }
 
 @variant motion-reduce {
-  body:not(.ignore-reduced-motion)
-    *:not(
-      .fa-spin,
-      .animate-\[loader\],
-      .preloader,
-      .typed-effect-fade .word.typed
-    ) {
-    @apply animate-none! transition-none!;
+  body * {
+    @apply animate-none! transition-none! duration-0! delay-0!;
 
     &::after,
     &::before {
-      @apply animate-none! transition-none!;
+      @apply animate-none! transition-none! duration-0! delay-0!;
     }
   }
 
   html {
     @apply scroll-auto!;
   }
+}
+
+:where(a[href], button, input, textarea, select, [tabindex]):not(
+    #wordsInput
+  ):focus-visible {
+  @apply outline-2! outline-solid! outline-offset-4! outline-text!;
 }
