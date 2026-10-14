@@ -12,7 +12,11 @@ import {
   TestEventType,
   TestEventData,
 } from "./events/types";
-import { getChars, getWordBurst } from "./events/stats";
+import {
+  getChars,
+  getIncompleteTestSeconds,
+  getWordBurst,
+} from "./events/stats";
 import { InputConfig } from "./input/config";
 import {
   canDelete,
@@ -84,11 +88,13 @@ export class TestSession {
   public readonly weakSpot: ReturnType<typeof createWeakSpot>;
   private readonly getConfig: () => SessionConfig;
   private readonly deps: TestSessionDeps;
-  private readonly clock: TestTimer;
+  /** Clients schedule `advance`; the session owns start, stop and ticks. */
+  public readonly clock: TestTimer;
   private words: string[];
   private wordIndex = 0;
   private active = false;
   private ended = false;
+  private finishReason: string | undefined;
   private readonly listeners: {
     [K in keyof SessionEvents]: Set<(event: SessionEvents[K]) => void>;
   } = {
@@ -219,13 +225,15 @@ export class TestSession {
     this.active = false;
     this.ended = false;
     this.wordIndex = 0;
+    this.finishReason = undefined;
     this.recorder.resetTestEvents();
   }
   advance(now: number): number | null {
     return this.clock.advance(now);
   }
-  finish(now: number, reason?: string): void {
-    if (!this.active || this.ended) return;
+  /** Ends the test without notifying finish listeners. */
+  end(now: number): boolean {
+    if (!this.active || this.ended) return false;
     this.active = false;
     this.ended = true;
     this.clock.stop();
@@ -234,7 +242,24 @@ export class TestSession {
       timer: this.liveCache.getLiveCachedTestSeconds(now),
       date: this.deps.dateNow?.() ?? Date.now(),
     });
+    return true;
+  }
+  finish(now: number, reason?: string): void {
+    if (!this.end(now)) return;
+    this.finishReason = reason;
     this.emit("finish", { eventLog: this.buildEventLog(), reason });
+  }
+  /** Why the last test failed, until the next reset. */
+  getFinishReason(): string | undefined {
+    return this.finishReason;
+  }
+  /** Ends a test the user restarted and measures it as an incomplete test. */
+  abandon(now: number): { acc: number; seconds: number } {
+    this.end(now);
+    return {
+      acc: this.liveCache.getLiveCachedAccuracy(),
+      seconds: getIncompleteTestSeconds(this.buildEventLog()),
+    };
   }
   complete(
     eventLog: EventLog,

@@ -258,3 +258,57 @@ it("treats a tick before any input as fully accurate", () => {
   expect(ticks).toEqual([100]);
   expect(session.isActive()).toBe(true);
 });
+
+describe("ending", () => {
+  it("ends silently once and logs a single end event", () => {
+    const session = createTestSession(sessionConfig(), {
+      words: ["one ", "two"],
+      dateNow: () => 5,
+    });
+    const finishes: unknown[] = [];
+    session.on("finish", (event) => finishes.push(event));
+    expect(session.end(0)).toBe(false);
+    session.start(0);
+    expect(session.end(1500)).toBe(true);
+    expect(session.end(1600)).toBe(false);
+    session.finish(1700, "late");
+    expect(finishes).toEqual([]);
+    expect(session.getFinishReason()).toBeUndefined();
+    expect(
+      session.buildEventLog().events.filter((event) => event.type === "timer"),
+    ).toEqual([
+      { type: "timer", testMs: 0, data: { event: "start", timer: 0, date: 5 } },
+      {
+        type: "timer",
+        testMs: 1500,
+        data: { event: "end", timer: 1, date: 5 },
+      },
+    ]);
+    session.advance(5000);
+    expect(session.buildEventLog().events).toHaveLength(2);
+  });
+
+  it("remembers the finish reason until reset", () => {
+    const session = createTestSession(sessionConfig(), { words: ["one"] });
+    session.start(0);
+    session.finish(100, "min burst");
+    expect(session.getFinishReason()).toBe("min burst");
+    session.reset();
+    expect(session.getFinishReason()).toBeUndefined();
+  });
+
+  it("measures an abandoned test without notifying finish listeners", async () => {
+    const session = createTestSession(sessionConfig(), {
+      words: ["one ", "two"],
+    });
+    let finished = false;
+    session.on("finish", () => {
+      finished = true;
+    });
+    await session.insert("o", 0);
+    await session.insert("x", 500);
+    expect(session.abandon(1500)).toEqual({ acc: 50, seconds: 0.5 });
+    expect(finished).toBe(false);
+    expect(session.isActive()).toBe(false);
+  });
+});
