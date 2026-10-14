@@ -1,10 +1,5 @@
-import {
-  createTestTimer,
-  getTimeLimit,
-  getTimerFailure,
-} from "@oxytype/typing-core/timer";
-//most of the code is thanks to
-//https://stackoverflow.com/questions/29971898/how-to-create-an-accurate-timer-in-javascript
+import type { SessionEvents } from "@oxytype/typing-core/session";
+import { getTimeLimit } from "@oxytype/typing-core/timer";
 
 import { Config } from "../config/store";
 import { setConfig } from "../config/setters";
@@ -24,30 +19,11 @@ import { KeymapLayout, Layout } from "@oxytype/schemas/configs";
 import * as SoundController from "../controllers/sound-controller";
 import { clearLowFpsMode, setLowFpsMode } from "../anim";
 import { createTimerScheduler } from "./timer-scheduler";
-import { buildEventLog, getCurrentInput, logTestEvent } from "./events/data";
-import {
-  getLiveCachedAccuracy,
-  getLiveCachedTestDurationMs,
-  getLiveCachedTestSeconds,
-} from "./events/live-cache";
-import { getChars } from "@oxytype/typing-core/events/stats";
-import { calculateWpm } from "@oxytype/typing-core/stats-math";
-import { getActiveWordIndex, setCurrentLiveStats } from "../states/test";
+import { getCurrentInput, testSession } from "./events/data";
+import { setCurrentLiveStats } from "../states/test";
 
-const clock = createTestTimer({
-  onDrift: checkIfTimerIsSlow,
-  onTick: (tick) => {
-    timerStep(tick.now, tick.catchup === true, tick.timer);
-    logTestEvent("timer", tick.now, {
-      event: "step",
-      timer: tick.timer,
-      slowTimer: SlowTimer.get() ? true : undefined,
-      catchup: tick.catchup,
-      drift: tick.drift,
-    });
-  },
-});
-const scheduler = createTimerScheduler(clock);
+// The session owns the clock, failures and time limit; the web schedules it.
+const scheduler = createTimerScheduler(testSession.clock);
 import.meta.hot?.dispose(scheduler.stop);
 
 let slowTimerCount = 0;
@@ -63,16 +39,9 @@ export function enableTimerDebug(): void {
   timerDebug = true;
 }
 
-export function clear(logEnd = false, now = performance.now()): void {
+export function clear(): void {
   scheduler.stop();
   clearLowFpsMode();
-  if (logEnd) {
-    logTestEvent("timer", now, {
-      event: "end",
-      timer: getLiveCachedTestSeconds(now),
-      date: new Date().getTime(),
-    });
-  }
 }
 
 function layoutfluid(time: number): void {
@@ -121,42 +90,6 @@ function layoutfluid(time: number): void {
   if (timerDebug) console.timeEnd("layoutfluid");
 }
 
-function checkIfFailed(
-  wpmAndRaw: { wpm: number; raw: number },
-  acc: number,
-): boolean {
-  if (timerDebug) console.time("fail conditions");
-  const reason = getTimerFailure(Config, {
-    wpm: wpmAndRaw.wpm,
-    acc,
-    wordIndex: getActiveWordIndex(),
-  });
-  if (reason !== undefined) {
-    SlowTimer.clear();
-    slowTimerCount = 0;
-    timerEvent.dispatch({ key: "fail", value: reason });
-    return true;
-  }
-  if (timerDebug) console.timeEnd("fail conditions");
-  return false;
-}
-
-function checkIfTimeIsUp(testTime: number): void {
-  if (timerDebug) console.time("times up check");
-
-  const maxTime = getTimeLimit(Config, CustomText.getLimit());
-  if (maxTime !== undefined && maxTime !== 0 && testTime >= maxTime) {
-    //times up
-    Caret.hide();
-    SlowTimer.clear();
-    slowTimerCount = 0;
-    timerEvent.dispatch({ key: "finish" });
-    return;
-  }
-
-  if (timerDebug) console.timeEnd("times up check");
-}
-
 function playTimeWarning(testTime: number): void {
   if (timerDebug) console.time("play timer warning");
 
@@ -171,53 +104,25 @@ function playTimeWarning(testTime: number): void {
   if (timerDebug) console.timeEnd("play timer warning");
 }
 
-function timerStep(now: number, catchingUp: boolean, testTime: number): void {
+function timerStep(tick: SessionEvents["tick"]): void {
   if (timerDebug) console.time("timer step -----------------------------");
 
-  if (catchingUp) {
-    // cheap per-tick side effects — must run for every missed tick during catch-up
-    // so warnings/layout switches still fire on the correct seconds
-    if (Config.playTimeWarning !== "off") playTimeWarning(testTime);
-    layoutfluid(testTime);
-    checkIfTimeIsUp(testTime);
-  } else {
-    //calc — only the final, real-time tick pays for these
-    const eventLog = buildEventLog();
-
-    const chars = getChars(eventLog, true);
-
-    const currentTestDurationMs = getLiveCachedTestDurationMs(now);
-    const acc = getLiveCachedAccuracy();
-    const wpmAndRaw = {
-      wpm: Math.round(
-        calculateWpm(chars.correctWord, currentTestDurationMs / 1000),
-      ),
-      raw: Math.round(
-        calculateWpm(
-          chars.allCorrect + chars.extra + chars.incorrect,
-          currentTestDurationMs / 1000,
-        ),
-      ),
-    };
-
+  // catch-up ticks only run the cheap per-second side effects
+  if (tick.catchup !== true) {
     setCurrentLiveStats({
-      wpm: wpmAndRaw.wpm,
-      acc,
-      raw: wpmAndRaw.raw,
-      seconds: getLiveCachedTestSeconds(now),
+      wpm: tick.wpm,
+      acc: tick.acc,
+      raw: tick.raw,
+      seconds: tick.seconds,
     });
-
-    //logic
-    if (Config.playTimeWarning !== "off") playTimeWarning(testTime);
-    layoutfluid(testTime);
-    const failed = checkIfFailed(wpmAndRaw, acc);
-    if (!failed) checkIfTimeIsUp(testTime);
   }
+  if (Config.playTimeWarning !== "off") playTimeWarning(tick.timer);
+  layoutfluid(tick.timer);
 
   if (timerDebug) console.timeEnd("timer step -----------------------------");
 }
 
-function checkIfTimerIsSlow(drift: number): void {
+function checkIfTimerIsSlow(drift: number, now: number): void {
   if (!slowTimerFailEnabled) return;
   if (
     (Config.mode === "time" && Config.time < 130 && Config.time > 0) ||
@@ -245,26 +150,37 @@ function checkIfTimerIsSlow(drift: number): void {
         ),
       );
 
-      timerEvent.dispatch({ key: "fail", value: "slow timer" });
+      testSession.finish(now, "slow timer");
     }
   }
 }
 
-export async function start(now: number): Promise<void> {
+function onFinish(reason: string | undefined): void {
+  SlowTimer.clear();
+  slowTimerCount = 0;
+  if (reason === undefined) {
+    Caret.hide();
+    timerEvent.dispatch({ key: "finish" });
+  } else {
+    timerEvent.dispatch({ key: "fail", value: reason });
+  }
+}
+
+const unsubscribe = [
+  testSession.on("drift", ({ drift, now }) => checkIfTimerIsSlow(drift, now)),
+  testSession.on("tick", timerStep),
+  testSession.on("finish", ({ reason }) => onFinish(reason)),
+];
+import.meta.hot?.dispose(() => {
+  for (const off of unsubscribe) off();
+});
+
+export function start(now: number): void {
   SlowTimer.clear();
   slowTimerCount = 0;
   for (const id of slowTimerNotifIds) {
     removeNotification(id, "clear");
   }
   slowTimerNotifIds = [];
-  void _startNew(now);
-}
-
-async function _startNew(now: number): Promise<void> {
   scheduler.start(now);
-  logTestEvent("timer", now, {
-    event: "start",
-    timer: 0,
-    date: new Date().getTime(),
-  });
 }

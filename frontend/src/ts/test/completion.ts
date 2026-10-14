@@ -109,7 +109,8 @@ export async function finish(difficultyFailed = false): Promise<void> {
   if (!isTestActive()) return;
   setResultCalculating(true);
   const now = performance.now();
-  TestTimer.clear(true, now);
+  TestTimer.clear();
+  testSession.end(now);
   const resultReady = Promise.all([import("./result"), prepareResultScreen()]);
 
   // fade out the test and show loading

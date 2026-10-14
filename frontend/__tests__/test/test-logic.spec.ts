@@ -108,6 +108,8 @@ vi.mock("../../src/ts/test/events/data", () => ({
     start: mocks.sessionStart,
     generate: mocks.generate,
     complete: mocks.complete,
+    end: vi.fn(),
+    abandon: () => ({ acc: mocks.inputAccuracy, seconds: 0 }),
   },
   resetTestEvents: vi.fn(),
   cleanupData: vi.fn(),
@@ -120,9 +122,6 @@ vi.mock("../../src/ts/test/events/data", () => ({
 }));
 vi.mock("../../src/ts/test/words-generator", () => ({
   areAllWordsGenerated: () => true,
-}));
-vi.mock("../../src/ts/test/events/live-cache", () => ({
-  getLiveCachedAccuracy: () => mocks.inputAccuracy,
 }));
 vi.mock("../../src/ts/test/funbox/list", () => ({
   getActiveFunboxes: () => [],
@@ -308,7 +307,7 @@ describe("test lifecycle state", () => {
     expect(mocks.sessionStart).not.toHaveBeenCalled();
     mocks.transition = false;
     expect(startTest(100)).toBe(true);
-    expect(mocks.sessionStart).toHaveBeenCalledWith(100, false);
+    expect(mocks.sessionStart).toHaveBeenCalledWith(100);
     expect(mocks.uiStart).toHaveBeenCalledOnce();
   });
 

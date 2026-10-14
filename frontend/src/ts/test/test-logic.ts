@@ -68,10 +68,7 @@ import { debounce } from "throttle-debounce";
 
 import { Config } from "../config/store";
 import { toggleFunbox, setConfig } from "../config/setters";
-import { testSession, resetTestEvents, buildEventLog } from "./events/data";
-import { getIncompleteTestSeconds } from "@oxytype/typing-core/events/stats";
-
-import { getLiveCachedAccuracy } from "./events/live-cache";
+import { testSession, resetTestEvents } from "./events/data";
 
 import { resetModifierState } from "../states/modifiers";
 import { nthElementFromArray } from "../utils/arrays";
@@ -98,7 +95,7 @@ export function startTest(now: number): boolean {
 
   setTestActive(true);
   TestTimer.clear();
-  testSession.start(now, false);
+  testSession.start(now);
 
   for (const fb of getActiveFunboxesWithFunction("start")) {
     fb.functions.start();
@@ -109,8 +106,7 @@ export function startTest(now: number): boolean {
       PaceCaret.start();
     }
   } catch (e) {}
-  //use a recursive self-adjusting timer to avoid time drift
-  void TestTimer.start(now);
+  TestTimer.start(now);
   TestUI.onTestStart();
   return true;
 }
@@ -191,15 +187,11 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
     }
 
     if (Config.resultSaving) {
-      // Finalize the abandoned test before measuring it: logging the timer
-      // "end" event gives getAfkDuration its interval boundaries, so idle time
-      // is actually subtracted. Without it AFK is always 0 and the full
-      // wall-clock lifetime (incl. unbounded idle) leaks into the result.
-      TestTimer.clear(true);
-      const liveEventLog = buildEventLog();
-      const tt = getIncompleteTestSeconds(liveEventLog);
-      const acc = Numbers.roundTo2(getLiveCachedAccuracy());
-      pushIncompleteTest({ acc, seconds: tt });
+      // Abandoning logs the timer "end" event before measuring, so idle time
+      // is subtracted instead of the whole wall-clock lifetime.
+      TestTimer.clear();
+      const { acc, seconds } = testSession.abandon(performance.now());
+      pushIncompleteTest({ acc: Numbers.roundTo2(acc), seconds });
     }
   }
 
