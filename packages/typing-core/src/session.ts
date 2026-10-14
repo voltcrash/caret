@@ -33,6 +33,7 @@ import {
 import { getCommitCharacterType } from "./input/util";
 import { getMode2 } from "./mode";
 import { PaceTracker } from "./pace-caret";
+import { getReplaySteps, getReplayWords, ReplayStep } from "./replay";
 import { calculateWpm } from "./stats-math";
 import { hasKoreanCharacters } from "./strings";
 import {
@@ -204,6 +205,16 @@ export class TestSession {
         customTextLimitValue: this.deps.customLimit?.().value,
         isFunboxWithNospacePropertyActive: this.isNospace(),
       },
+    };
+  }
+
+  /** Replay steps for the finished test, read from its event log. */
+  getReplay(): { words: string[]; steps: ReplayStep[] } {
+    const log = this.buildEventLog();
+    const zen = this.getConfig().mode === "zen";
+    return {
+      words: getReplayWords(log, zen),
+      steps: getReplaySteps(log, zen),
     };
   }
 

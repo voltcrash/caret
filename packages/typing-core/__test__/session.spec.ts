@@ -331,3 +331,17 @@ describe("pace", () => {
     expect(session.pace.isEnabled()).toBe(false);
   });
 });
+
+it("builds the replay from its own event log", async () => {
+  const session = createTestSession(sessionConfig(), {
+    words: ["one ", "two"],
+  });
+  await session.insert("on", 0);
+  expect(session.getReplay()).toEqual({
+    words: ["one ", "two"],
+    steps: [
+      { action: "correctLetter", value: "o", time: 0 },
+      { action: "correctLetter", value: "n", time: 0 },
+    ],
+  });
+});
