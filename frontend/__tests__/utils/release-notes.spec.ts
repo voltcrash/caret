@@ -2,6 +2,16 @@ import { describe, expect, it } from "vite-plus/test";
 import { releaseNotesToHtml } from "../../src/ts/utils/release-notes";
 
 describe("releaseNotesToHtml", () => {
+  it.each(["<script>alert(1)</script>", '<img src="x" onerror="alert(1)">'])(
+    "renders release input as text: %s",
+    (input) => {
+      const body = document.createElement("div");
+      body.innerHTML = releaseNotesToHtml(input);
+      expect(body.textContent).toBe(input);
+      expect(body.querySelector("script, img")).toBeNull();
+    },
+  );
+
   it("renders headings, lists and paragraphs with unix newlines", () => {
     expect(
       releaseNotesToHtml(

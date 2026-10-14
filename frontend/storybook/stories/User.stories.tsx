@@ -13,7 +13,6 @@ const meta = preview.meta({
   tags: ["autodocs"],
 });
 
-// oxlint-disable-next-line no-unused-vars
 function SpinnerCycleUser(props: {
   data: Record<string, unknown>;
 }): ReturnType<typeof User> {

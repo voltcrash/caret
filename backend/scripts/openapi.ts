@@ -210,16 +210,17 @@ function addRateLimit(
   metadata: EndpointMetadata | undefined,
 ): void {
   if (metadata?.rateLimit === undefined) return;
-  // oxlint-disable-next-line no-unsafe-assignment
-  const okResponse = operation.responses["200"];
+  const okResponse = operation.responses["200"] as
+    | {
+        headers?: Record<string, unknown>;
+      }
+    | undefined;
   if (okResponse === undefined) return;
 
   operation.description += getRateLimitDescription(metadata.rateLimit);
 
-  // oxlint-disable-next-line no-unsafe-assignment no-unsafe-member-access
-  okResponse["headers"] = {
-    // oxlint-disable-next-line no-unsafe-member-access
-    ...okResponse["headers"],
+  okResponse.headers = {
+    ...okResponse.headers,
     "x-ratelimit-limit": {
       schema: { type: "integer" },
       description: "The number of allowed requests in the current period",

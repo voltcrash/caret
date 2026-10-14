@@ -183,7 +183,7 @@ export function setCustomText(
 export function deleteCustomText(name: string, long: boolean): void {
   const customText = long ? getLocalStorageLong() : getLocalStorage();
 
-  // oxlint-disable-next-line no-dynamic-delete
+  // oxlint-disable-next-line no-dynamic-delete -- The custom-text name is the runtime storage key being removed.
   delete customText[name];
 
   if (long) {

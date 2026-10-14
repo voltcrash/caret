@@ -41,7 +41,7 @@ export function createTestTimer(deps: {
       deps.onDrift?.(drift);
       const ticksDue = Math.floor((now - startMs) / 1000);
       // onTick may synchronously stop the clock when the test ends.
-      // oxlint-disable-next-line eslint/no-unmodified-loop-condition
+      // oxlint-disable-next-line eslint/no-unmodified-loop-condition -- onTick can synchronously stop the clock through its closure.
       while (!stopped && emittedTicks + 1 < ticksDue) {
         emittedTicks++;
         deps.onTick({ now, timer: emittedTicks, catchup: true });

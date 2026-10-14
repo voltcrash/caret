@@ -247,64 +247,69 @@ export function AnimePresence(props: AnimePresenceProps): JSXElement {
     done: () => void;
   } | null = null;
 
+  const PresenceChildren = (): JSXElement => {
+    const elements = createSwitchTransition(
+      // Solid renders native HTML/SVG nodes; the refs helper exposes the broader Element type.
+      resolveFirst(() => props.children) as Accessor<
+        HTMLElement | SVGElement | null
+      >,
+      {
+        appear: state.initial,
+        mode: props.exitBeforeEnter ? "out-in" : "parallel",
+        onExit(el: Element, done: () => void) {
+          const htmlEl = el as HTMLElement;
+          const api = exitRegistry.get(htmlEl);
+
+          batch(() => {
+            setMount(false);
+            if (api?.exit) {
+              // Store reference to currently exiting element and its done callback
+              currentlyExiting = { element: htmlEl, api, done };
+
+              // Listen for animation completion event, similar to solid-motionone
+              htmlEl.addEventListener(
+                "animecomplete",
+                () => {
+                  done();
+                  if (currentlyExiting?.element === htmlEl) {
+                    currentlyExiting = null;
+                  }
+                },
+                { once: true },
+              );
+              void api.playExitAnimation().then(() => {
+                exitRegistry.delete(htmlEl);
+              });
+            } else {
+              done();
+            }
+          });
+        },
+        onEnter(_: Element, done: () => void) {
+          batch(() => {
+            // If exitBeforeEnter is false and there's an element exiting,
+            // cancel the exit animation and complete the transition immediately
+            if (!props.exitBeforeEnter && currentlyExiting) {
+              const { element, api, done: exitDone } = currentlyExiting;
+              api.cancelExitAnimation();
+              exitRegistry.delete(element);
+              // Complete the exit transition so SolidJS can clean up properly
+              exitDone();
+              currentlyExiting = null;
+            }
+
+            setMount(true);
+          });
+          done();
+        },
+      },
+    );
+    return <>{elements()}</>;
+  };
+
   const render = (
     <AnimePresenceContext.Provider value={state}>
-      {
-        // @ts-expect-error - createSwitchTransition type incompatibility
-        createSwitchTransition(
-          resolveFirst(() => props.children),
-          {
-            appear: state.initial,
-            mode: props.exitBeforeEnter ? "out-in" : "parallel",
-            onExit(el: Element, done: () => void) {
-              const htmlEl = el as HTMLElement;
-              const api = exitRegistry.get(htmlEl);
-
-              batch(() => {
-                setMount(false);
-                if (api?.exit) {
-                  // Store reference to currently exiting element and its done callback
-                  currentlyExiting = { element: htmlEl, api, done };
-
-                  // Listen for animation completion event, similar to solid-motionone
-                  htmlEl.addEventListener(
-                    "animecomplete",
-                    () => {
-                      done();
-                      if (currentlyExiting?.element === htmlEl) {
-                        currentlyExiting = null;
-                      }
-                    },
-                    { once: true },
-                  );
-                  void api.playExitAnimation().then(() => {
-                    exitRegistry.delete(htmlEl);
-                  });
-                } else {
-                  done();
-                }
-              });
-            },
-            onEnter(_: Element, done: () => void) {
-              batch(() => {
-                // If exitBeforeEnter is false and there's an element exiting,
-                // cancel the exit animation and complete the transition immediately
-                if (!props.exitBeforeEnter && currentlyExiting) {
-                  const { element, api, done: exitDone } = currentlyExiting;
-                  api.cancelExitAnimation();
-                  exitRegistry.delete(element);
-                  // Complete the exit transition so SolidJS can clean up properly
-                  exitDone();
-                  currentlyExiting = null;
-                }
-
-                setMount(true);
-              });
-              done();
-            },
-          },
-        ) as JSXElement
-      }
+      <PresenceChildren />
     </AnimePresenceContext.Provider>
   );
 

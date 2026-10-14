@@ -23,6 +23,23 @@ describe("Config", () => {
     replaceConfig({});
   });
 
+  it("extracts changed scalar and collection settings without mutating config", () => {
+    replaceConfig({
+      mode: "words",
+      words: 0,
+      showKeyTips: false,
+      funbox: ["no_quit"],
+    });
+    const previous = structuredClone(getConfig());
+    expect(ConfigUtils.getConfigChanges()).toMatchObject({
+      mode: "words",
+      words: 0,
+      showKeyTips: false,
+      funbox: ["no_quit"],
+    });
+    expect(getConfig()).toEqual(previous);
+  });
+
   describe("test with mocks", () => {
     const canSetConfigWithCurrentFunboxesMock = vi.spyOn(
       FunboxValidation,
@@ -94,13 +111,36 @@ describe("Config", () => {
       );
     });
 
-    //TODO isBlocked
-    it("should fail if config is blocked", () => {
-      //GIVEN
-      replaceConfig({ tapeMode: "letter" });
+    it.each(["letter", "word"] as const)(
+      "leaves config and effects untouched when showAllLines is blocked in %s tape mode",
+      async (tapeMode) => {
+        replaceConfig({ tapeMode, showAllLines: false });
+        const previous = structuredClone(getConfig());
+        const previousStoredValue = getConfigStore.showAllLines;
+        expect(Config.setConfig("showAllLines", true)).toBe(false);
+        expect(getConfig()).toEqual(previous);
+        expect(getConfigStore.showAllLines).toBe(previousStoredValue);
+        expect(notificationAddMock).toHaveBeenCalledWith(
+          "Show all lines doesn't support tape mode.",
+        );
+        expect(dispatchConfigEventMock).not.toHaveBeenCalled();
+        expect(miscTriggerResizeMock).not.toHaveBeenCalled();
+        await vi.advanceTimersByTimeAsync(2500);
+        expect(dbSaveConfigMock).not.toHaveBeenCalled();
+      },
+    );
 
-      //WHEN / THEN
-      expect(Config.setConfig("showAllLines", true)).toBe(false);
+    it("allows disabling showAllLines in tape mode", () => {
+      replaceConfig({ tapeMode: "word", showAllLines: true });
+      expect(Config.setConfig("showAllLines", false)).toBe(true);
+      expect(getConfig().showAllLines).toBe(false);
+      expect(notificationAddMock).not.toHaveBeenCalled();
+      expect(dispatchConfigEventMock).toHaveBeenCalledWith({
+        key: "showAllLines",
+        newValue: false,
+        previousValue: true,
+        nosave: false,
+      });
     });
 
     it("blocks reserved command palette hotkeys", () => {

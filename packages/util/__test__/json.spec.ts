@@ -4,6 +4,17 @@ import { z } from "zod/v3";
 
 describe("json", () => {
   describe("parseWithSchema", () => {
+    it("returns transformed schema output for parsed and migrated values", () => {
+      const transformed = z
+        .object({ count: z.number() })
+        .transform(({ count }) => String(count));
+      expect(parseWithSchema('{"count":2}', transformed)).toBe("2");
+      expect(
+        parseWithSchema('{"legacy":true}', transformed, {
+          migrate: () => ({ count: 3 }) as unknown as string,
+        }),
+      ).toBe("3");
+    });
     const schema = z.object({
       test: z.boolean().optional(),
       name: z.string(),

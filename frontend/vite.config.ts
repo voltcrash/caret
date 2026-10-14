@@ -258,7 +258,7 @@ function getBuildOptions({
           ) {
             return `webfonts/[name].[hash].${extType}`;
           }
-          // oxlint-disable-next-line no-deprecated
+          // oxlint-disable-next-line no-deprecated -- Keep the existing vendor CSS naming contract while the legacy asset name is supported.
           if (assetInfo.name === "misc.css") {
             return `${extType}/vendor.[hash][extname]`;
           }

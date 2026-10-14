@@ -112,7 +112,7 @@ describe("local-storage-with-schema.ts", () => {
 
       it("handles storage failures that throw a non-Error value", () => {
         setItemMock.mockImplementationOnce(() => {
-          // oxlint-disable-next-line eslint/no-throw-literal, typescript/only-throw-error
+          // oxlint-disable-next-line eslint/no-throw-literal, typescript/only-throw-error -- Exercise storage failures that throw non-Error values.
           throw "denied";
         });
         expect(ls.set(defaultObject)).toBe(false);
@@ -275,7 +275,7 @@ describe("local-storage-with-schema.ts", () => {
           fontSize: 1,
         };
 
-        // oxlint-disable-next-line typescript/no-unsafe-return
+        // oxlint-disable-next-line typescript/no-unsafe-return -- Storage/migration fixtures deliberately supply values outside the validated schema.
         const migrateFnMock = vi.fn(() => migrated as any);
 
         const ls = new LocalStorageWithSchema({
@@ -364,7 +364,7 @@ describe("local-storage-with-schema.ts", () => {
           fontSize: 1,
         };
 
-        // oxlint-disable-next-line typescript/no-unsafe-return
+        // oxlint-disable-next-line typescript/no-unsafe-return -- Storage/migration fixtures deliberately supply values outside the validated schema.
         const migrateFnMock = vi.fn(() => invalidMigrated as any);
 
         const ls = new LocalStorageWithSchema({

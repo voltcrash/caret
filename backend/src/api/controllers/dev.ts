@@ -228,12 +228,12 @@ async function updateUser(uid: string): Promise<void> {
     (personalBests[mode.mode][mode.mode2] as PersonalBest[]).push(entry);
 
     if (mode.mode === "time") {
-      if (lbPersonalBests[mode.mode][mode.mode2] === undefined) {
-        lbPersonalBests[mode.mode][mode.mode2] = {};
-      }
-
-      // oxlint-disable-next-line no-unsafe-member-access
-      lbPersonalBests[mode.mode][mode.mode2][mode.language] = entry;
+      const timeBests: Record<
+        string,
+        Record<string, PersonalBest> | undefined
+      > = lbPersonalBests.time;
+      const group = (timeBests[mode.mode2] ??= {});
+      group[mode.language] = entry;
     }
 
     //update testActivity

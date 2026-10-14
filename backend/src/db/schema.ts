@@ -1,5 +1,5 @@
 // Column-builder return types must retain Drizzle's inferred column metadata.
-/* oxlint-disable typescript/explicit-function-return-type */
+/* oxlint-disable typescript/explicit-function-return-type -- Retain Drizzle's inferred column metadata in builder helpers. */
 import { sql } from "drizzle-orm";
 import {
   sqliteTable,

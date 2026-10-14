@@ -7,7 +7,10 @@ import {
   getAllTestEvents,
   getInputForWord,
 } from "./events/data";
-import { getInputHistory, getWpmHistory } from "@oxytype/typing-core/events/stats";
+import {
+  getInputHistory,
+  getWpmHistory,
+} from "@oxytype/typing-core/events/stats";
 import { batch } from "solid-js";
 import { produce } from "solid-js/store";
 import { resultState, setResultState } from "../states/result";

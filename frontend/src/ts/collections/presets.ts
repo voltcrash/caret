@@ -20,7 +20,7 @@ const queryKeys = {
   root: () => [...baseKey("presets", { isUserSpecific: true })],
 };
 
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export function usePresetsLiveQuery() {
   return useLiveQuery((q) => {
     if (!isAuthenticated()) return undefined;

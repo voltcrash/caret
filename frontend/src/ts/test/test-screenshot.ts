@@ -115,13 +115,13 @@ async function generateCanvas(): Promise<HTMLCanvasElement | null> {
       filter: (el: Node): boolean => {
         if (!(el instanceof HTMLElement)) return true;
         const cs = getComputedStyle(el);
-        return !(el.classList.contains("hidden") || cs.display === "none");
+        return !(el.matches(".hidden") || cs.display === "none");
       },
       // Normalize the background layer so its negative z-index doesn't get hidden
       onCloneEachNode: (cloned) => {
         if (cloned instanceof HTMLElement) {
           const el = cloned;
-          if (el.classList.contains("customBackground")) {
+          if (el.matches(".customBackground")) {
             el.style.zIndex = "0";
             el.style.width = `${targetWidth}px`;
             el.style.height = `${targetHeight}px`;
@@ -195,7 +195,7 @@ export async function copyToClipboard(): Promise<void> {
     }
     try {
       // Attempt to copy using ClipboardItem API
-      // oxlint-disable-next-line compat/compat
+      // oxlint-disable-next-line compat/compat -- ClipboardItem failures are caught and shown as a notification.
       const clipItem = new ClipboardItem(
         Object.defineProperty({}, blob.type, {
           value: blob,

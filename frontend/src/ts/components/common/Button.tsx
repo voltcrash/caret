@@ -93,7 +93,7 @@ export function Button(props: ButtonProps | AnchorProps): JSXElement {
       when={isAnchor()}
       fallback={
         <button
-          // oxlint-disable-next-line button-has-type
+          // oxlint-disable-next-line button-has-type -- Typed button props restrict type to button/submit/reset and default to button.
           type={(props as ButtonProps).type ?? "button"}
           id={props.id}
           class={getClasses()}

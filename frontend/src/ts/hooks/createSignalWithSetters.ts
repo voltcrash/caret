@@ -7,8 +7,10 @@ type OriginalSetter<T> = (value: T | ((prev: T) => T)) => void;
  * A named setter definition. Receives the raw setter as its first argument,
  * followed by any custom arguments.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type SetterFn<T> = (originalSetter: OriginalSetter<T>, ...args: any[]) => void;
+type SetterFn<T> = (
+  originalSetter: OriginalSetter<T>,
+  ...args: never[]
+) => void;
 
 /** Extracts the custom argument types from a {@link SetterFn}, dropping the leading `originalSetter`. */
 type SetterArgs<T, S extends SetterFn<T>> = S extends (

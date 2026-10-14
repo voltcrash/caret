@@ -36,7 +36,7 @@ export function SearchableAutoSetting<T extends ConfigKey>(props: {
   const form = createForm(() => ({
     defaultValues: {
       [props.key]: getConfig[props.key],
-    },
+    } as Record<string, Config[ConfigKey]>,
     onSubmit: ({ value }) => {
       const val = value[props.key];
       if (val === getConfig[props.key]) return;
@@ -60,12 +60,9 @@ export function SearchableAutoSetting<T extends ConfigKey>(props: {
             }}
           >
             <form.Field
-              //@ts-expect-error -- i think because props.key is a key of config, which is a zod schema, the typechecker gives up (too complex to infer or something)
               name={props.key}
               validators={{
-                onChange: fromSchema(
-                  ConfigSchema.shape[props.key] as z.ZodNumber,
-                ),
+                onChange: fromSchema<unknown>(ConfigSchema.shape[props.key]),
                 onBlur: () => {
                   void form.handleSubmit();
                 },

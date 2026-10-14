@@ -235,7 +235,7 @@ export function AppEffects(props: AppElements): JSXElement {
       ) {
         event.preventDefault();
         // Included for legacy support, e.g. Chrome/Edge < 119.
-        // oxlint-disable-next-line no-deprecated
+        // oxlint-disable-next-line no-deprecated -- beforeunload returnValue preserves confirmation in legacy browsers.
         event.returnValue = "";
       }
     };

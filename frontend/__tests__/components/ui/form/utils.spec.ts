@@ -11,6 +11,15 @@ import {
 import { AnyFieldApi } from "@tanstack/solid-form";
 
 describe("fromSchema", () => {
+  it("validates converted form input and reports conversion failures", () => {
+    const validate = fromSchema(z.number(), {
+      convert: (value) => Number(String(value)),
+    });
+    expect(validate({ value: "2" as unknown as number })).toBeUndefined();
+    expect(validate({ value: "invalid" as unknown as number })).toEqual([
+      "Expected number, received nan",
+    ]);
+  });
   const schema = z.string().min(3, "too short").max(10, "too long");
   const validate = fromSchema(schema);
 
@@ -69,9 +78,9 @@ describe("handleResult", () => {
     expect(result).toBeUndefined();
     expect(mockSetMeta).toHaveBeenCalledOnce();
 
-    // oxlint-disable-next-line typescript/no-non-null-assertion
+    // oxlint-disable-next-line typescript/no-non-null-assertion -- Test setup/assertions guarantee this fixture element or mock call exists.
     const updater = mockSetMeta.mock.calls[0]![0];
-    // oxlint-disable-next-line typescript/no-unsafe-call
+    // oxlint-disable-next-line typescript/no-unsafe-call -- The asserted mock callback mirrors TanStack's metadata updater.
     const newMeta = updater({ existing: true });
     expect(newMeta).toEqual({
       existing: true,

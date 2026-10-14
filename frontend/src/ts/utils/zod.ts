@@ -9,8 +9,8 @@ import {
 } from "zod/v3";
 
 export function getZodType(schema: ZodTypeAny): ZodFirstPartyTypeKind {
-  // oxlint-disable-next-line typescript/no-unsafe-assignment typescript/no-unsafe-member-access
-  return schema._def["typeName"] as ZodFirstPartyTypeKind;
+  const definition = schema._def as { typeName: ZodFirstPartyTypeKind };
+  return definition.typeName;
 }
 
 /**

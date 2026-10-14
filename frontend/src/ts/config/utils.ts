@@ -3,7 +3,7 @@ import {
   migrateConfig,
   supportedConfigSchema,
 } from "@oxytype/typing-core/config/migrate";
-import { typedKeys } from "@oxytype/util/objects";
+import { setProperty, typedKeys } from "@oxytype/util/objects";
 import { getDefaultConfig } from "../constants/default-config";
 import { Config } from "./store";
 
@@ -24,8 +24,7 @@ export function getConfigChanges(): Partial<ConfigSchema> {
       return Config[key] !== getDefaultConfig()[key];
     })
     .forEach((key) => {
-      //@ts-expect-error this is fine
-      configChanges[key] = Config[key];
+      setProperty(configChanges, key, Config[key]);
     });
   return configChanges;
 }

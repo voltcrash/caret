@@ -15,79 +15,124 @@ describe("string utils", () => {
         description: "word at the beginning",
         text: "Start here.",
         matches: ["Start"],
-        expected: '<span class="highlight">Start</span> here.',
+        expected: [
+          { text: "Start", matched: true },
+          { text: " here.", matched: false },
+        ],
       },
       {
         description: "word at the end",
         text: "reach the end",
         matches: ["end"],
-        expected: 'reach the <span class="highlight">end</span>',
+        expected: [
+          { text: "reach the ", matched: false },
+          { text: "end", matched: true },
+        ],
       },
       {
         description: "mutliple matches",
         text: "one two three",
         matches: ["one", "three"],
-        expected:
-          '<span class="highlight">one</span> two <span class="highlight">three</span>',
+        expected: [
+          { text: "one", matched: true },
+          { text: " two ", matched: false },
+          { text: "three", matched: true },
+        ],
       },
       {
         description: "repeated matches",
         text: "one two two",
         matches: ["two"],
-        expected:
-          'one <span class="highlight">two</span> <span class="highlight">two</span>',
+        expected: [
+          { text: "one ", matched: false },
+          { text: "two", matched: true },
+          { text: " ", matched: false },
+          { text: "two", matched: true },
+        ],
       },
       {
         description: "longest possible  match",
         text: "abc ab",
         matches: ["ab", "abc"],
-        expected:
-          '<span class="highlight">abc</span> <span class="highlight">ab</span>',
+        expected: [
+          { text: "abc", matched: true },
+          { text: " ", matched: false },
+          { text: "ab", matched: true },
+        ],
       },
       {
         description: "if wrapped in parenthesis",
         text: "(test)",
         matches: ["test"],
-        expected: '(<span class="highlight">test</span>)',
+        expected: [
+          { text: "(", matched: false },
+          { text: "test", matched: true },
+          { text: ")", matched: false },
+        ],
       },
       {
         description: "if wrapped in commas",
         text: ",test,",
         matches: ["test"],
-        expected: ',<span class="highlight">test</span>,',
+        expected: [
+          { text: ",", matched: false },
+          { text: "test", matched: true },
+          { text: ",", matched: false },
+        ],
       },
       {
         description: "if wrapped in underscores",
         text: "_test_",
         matches: ["test"],
-        expected: '_<span class="highlight">test</span>_',
+        expected: [
+          { text: "_", matched: false },
+          { text: "test", matched: true },
+          { text: "_", matched: false },
+        ],
       },
       {
         description: "words in russian",
         text: "Привет, мир!",
         matches: ["Привет", "мир"],
-        expected:
-          '<span class="highlight">Привет</span>, <span class="highlight">мир</span>!',
+        expected: [
+          { text: "Привет", matched: true },
+          { text: ", ", matched: false },
+          { text: "мир", matched: true },
+          { text: "!", matched: false },
+        ],
       },
       {
         description: "words with chinese punctuation",
         text: "你好，世界！",
         matches: ["你好", "世界"],
-        expected:
-          '<span class="highlight">你好</span>，<span class="highlight">世界</span>！',
+        expected: [
+          { text: "你好", matched: true },
+          { text: "，", matched: false },
+          { text: "世界", matched: true },
+          { text: "！", matched: false },
+        ],
       },
       {
         description: "words with arabic punctuation",
         text: "؟مرحبا، بكم؛",
         matches: ["مرحبا", "بكم"],
-        expected:
-          '؟<span class="highlight">مرحبا</span>، <span class="highlight">بكم</span>؛',
+        expected: [
+          { text: "؟", matched: false },
+          { text: "مرحبا", matched: true },
+          { text: "، ", matched: false },
+          { text: "بكم", matched: true },
+          { text: "؛", matched: false },
+        ],
       },
       {
         description: "standalone numbers",
         text: "My number is 1234.",
         matches: ["1234"],
-        expected: 'My number is <span class="highlight">1234</span>.',
+        expected: [
+          { text: "My number is ", matched: false },
+          { text: "1234", matched: true },
+          { text: ".", matched: false },
+        ],
       },
     ];
     const shouldNotHighlight = [
@@ -142,19 +187,23 @@ describe("string utils", () => {
     it.each(shouldHighlight)(
       "should highlight $description",
       ({ text, matches, expected }) => {
-        expect(Strings.highlightMatches(text, matches)).toBe(expected);
+        expect(Strings.highlightMatches(text, matches)).toEqual(expected);
       },
     );
     it.each(shouldNotHighlight)(
       "should not highlight $description",
       ({ text, matches }) => {
-        expect(Strings.highlightMatches(text, matches)).toBe(text);
+        expect(Strings.highlightMatches(text, matches)).toEqual([
+          { text, matched: false },
+        ]);
       },
     );
     it.each(returnOriginal)(
       "should return original text $description",
       ({ text, matches }) => {
-        expect(Strings.highlightMatches(text, matches)).toBe(text);
+        expect(Strings.highlightMatches(text, matches)).toEqual([
+          { text, matched: false },
+        ]);
       },
     );
   });

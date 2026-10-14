@@ -10,7 +10,7 @@ const queryKeys = {
 //only refetch once on site load
 const staleTime = Infinity;
 
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export const getServerConfigurationQueryOptions = () =>
   queryOptions({
     queryKey: queryKeys.root(),

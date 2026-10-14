@@ -317,7 +317,6 @@ export async function change(
   PageTransition.preparePage(nextPage.id);
   await nextPage?.beforeShow({
     params: options.params,
-    // @ts-expect-error for the future (i think)
     data: options.data,
   });
 
@@ -345,30 +344,30 @@ function solidPage(
     path?: string;
     urlParamsSchema?: never;
     loadingOptions?: LoadingOptions;
-    beforeShow?: PageProperties<undefined>["beforeShow"];
+    beforeShow?: PageProperties<unknown>["beforeShow"];
     afterHide?: () => Promise<void>;
   },
-): Page<undefined>;
+): Page<unknown>;
 function solidPage<U extends UrlParamsSchema>(
   id: PageName,
   props: {
     path?: string;
     urlParamsSchema: U;
     loadingOptions?: LoadingOptions;
-    beforeShow?: (options: OptionsWithUrlParams<undefined, U>) => Promise<void>;
+    beforeShow?: (options: OptionsWithUrlParams<unknown, U>) => Promise<void>;
     afterHide?: () => Promise<void>;
   },
-): PageWithUrlParams<undefined, U>;
+): PageWithUrlParams<unknown, U>;
 function solidPage<U extends UrlParamsSchema>(
   id: PageName,
   props?: {
     path?: string;
     urlParamsSchema?: U;
     loadingOptions?: LoadingOptions;
-    beforeShow?: (options: OptionsWithUrlParams<undefined, U>) => Promise<void>;
+    beforeShow?: (options: OptionsWithUrlParams<unknown, U>) => Promise<void>;
     afterHide?: () => Promise<void>;
   },
-): Page<undefined> | PageWithUrlParams<undefined, U> {
+): Page<unknown> | PageWithUrlParams<unknown, U> {
   const path = props?.path ?? `/${id}`;
 
   const shared = {

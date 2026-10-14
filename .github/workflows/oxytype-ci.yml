@@ -50,6 +50,7 @@ jobs:
               - 'pnpm-workspace.yaml'
               - 'vite.config.ts'
               - 'vitest.config.ts'
+              - 'knip.ts'
               - 'stylelint.config.mjs'
               - '.oxfmtrc-editor.json'
               - '.editorconfig'
@@ -155,6 +156,24 @@ jobs:
         run: |
           xargs -0 vp fmt --check --no-error-on-unmatched-pattern < /tmp/changed-files.txt
 
+  knip:
+    name: knip
+    needs: [prime-cache]
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'force-ci') || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Set up Vite+ and install dependencies
+        uses: voidzero-dev/setup-vp@v1.21.1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: true
+          cache-save: false
+
+      - name: Find unused code and dependencies
+        run: vp run knip
+
   ci-be:
     name: ci-be
     needs: [pre-ci, prime-cache]
@@ -204,6 +223,27 @@ jobs:
 
       - name: Test
         run: vp run test-fe
+
+  test-e2e:
+    name: test-e2e
+    needs: [pre-ci, prime-cache]
+    runs-on: ubuntu-latest
+    if: needs.pre-ci.outputs.should-build-fe == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true' || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Set up Vite+ and install dependencies
+        uses: voidzero-dev/setup-vp@v1.21.1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: true
+          cache-save: false
+
+      - name: Install Chromium and its system dependencies
+        run: vp -C frontend exec playwright install --with-deps chromium
+
+      - name: Smoke the typing flow
+        run: vp run test-e2e
 
   ci-assets:
     name: ci-assets

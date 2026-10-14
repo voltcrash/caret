@@ -12,10 +12,12 @@ export type FieldIndicatorProps = {
 };
 
 export function FieldIndicator(props: FieldIndicatorProps) {
-  //@ts-expect-error custom meta attributes
-  const hasWarning = () => props.field.getMeta().hasWarning as boolean;
-  //@ts-expect-error custom meta attributes
-  const getWarnings = () => props.field.getMeta().warnings as string[];
+  const meta = (): ReturnType<AnyFieldApi["getMeta"]> & {
+    hasWarning?: boolean;
+    warnings?: string[];
+  } => props.field.getMeta();
+  const hasWarning = () => meta().hasWarning;
+  const getWarnings = () => meta().warnings as string[];
   return (
     <div class="col-start-1 row-start-1 self-center justify-self-end pr-[0.40em]">
       <Switch>

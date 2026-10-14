@@ -54,6 +54,19 @@ function renderHistory(): ReturnType<typeof render> {
   ));
 }
 
+it.each(["<script>alert(1)</script>", '<img src="x" onerror="alert(1)">'])(
+  "renders release input as text: %s",
+  async (input) => {
+    history.mockResolvedValue(
+      releases.slice(0, 1).map((release) => ({ ...release, body: input })),
+    );
+    const view = renderHistory();
+    showModal("VersionHistory");
+    expect(await view.findByText(input)).toBeInTheDocument();
+    expect(view.container.querySelector("script, img")).toBeNull();
+  },
+);
+
 it("waits for opening, renders ten releases, and never fetches more on scroll", async () => {
   const view = renderHistory();
   expect(history).not.toHaveBeenCalled();

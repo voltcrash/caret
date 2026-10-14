@@ -31,6 +31,16 @@ describe("date-and-time", () => {
     });
 
     describe("with weekInfo", () => {
+      it("normalizes Sunday and prefers weekInfo when both browser APIs exist", () => {
+        languageMock.mockReturnValue("en-US");
+        localeMock.mockImplementationOnce(function (this: any) {
+          return {
+            weekInfo: { firstDay: 7 },
+            getWeekInfo: () => ({ firstDay: 1 }),
+          };
+        });
+        expect(DateAndTime.getFirstDayOfTheWeek()).toBe(0);
+      });
       it.for(testCases)(`$locale`, ({ locale, firstDayOfWeek }) => {
         //GIVEN
         languageMock.mockReturnValue(locale);

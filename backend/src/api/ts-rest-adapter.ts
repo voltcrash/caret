@@ -2,18 +2,10 @@ import { HttpRequest } from "./http";
 import { MonkeyResponse } from "../utils/monkey-response";
 import { MonkeyRequest } from "./types";
 
-export function callController<
-  TQuery,
-  TBody,
-  TParams,
-  TResponse,
-  //ignoring as it might be used in the future
-  // oxlint-disable-next-line no-unnecessary-type-parameters
-  TStatus = 200,
->(
+export function callController<TQuery, TBody, TParams, TResponse>(
   handler: MonkeyHandler<TQuery, TBody, TParams, TResponse>,
 ): (all: TypeSafeTsRestRequest<TQuery, TBody, TParams>) => Promise<{
-  status: TStatus;
+  status: 200;
   body: MonkeyResponse<TResponse>;
 }> {
   return async (all) => {
@@ -27,7 +19,7 @@ export function callController<
 
     const result = await handler(req);
     const response = {
-      status: 200 as TStatus,
+      status: 200 as const,
       body: {
         message: result.message,
         data: result.data,

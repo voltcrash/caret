@@ -119,7 +119,7 @@ export function FontFamily(): JSXElement {
               />
               {/* i cant figure out how to trigger the file input with a Button component */}
               <label
-                // oxlint-disable-next-line react/no-unknown-property
+                // oxlint-disable-next-line react/no-unknown-property -- Solid uses the lowercase HTML attribute.
                 for="customFontUploadSolid"
                 class="inline-flex w-full cursor-pointer items-center justify-center gap-[0.5em] rounded border-0 bg-sub-alt p-[0.5em] text-text transition-[color,background,opacity] duration-125 hover:bg-text hover:text-bg"
               >

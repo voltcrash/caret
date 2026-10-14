@@ -2,12 +2,12 @@ import { AnyFieldApi } from "@tanstack/solid-form";
 import { ZodSchema } from "zod/v3";
 
 export type ValidationResult = { type: "error" | "warning"; message: string };
-export function fromSchema<T>(
+export function fromSchema<T, Input = T>(
   schema: ZodSchema<T>,
   options?: {
-    convert?: (value: T) => T;
+    convert?: (value: Input) => unknown;
   },
-): (args: { value: T }) => undefined | string[] {
+): (args: { value: Input }) => undefined | string[] {
   return ({ value }) => {
     const convertedValue = options?.convert?.(value) ?? value;
     const result = schema.safeParse(convertedValue);

@@ -32,7 +32,7 @@ export async function updateTerminalLeaderboardMemory(
   );
 }
 
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export function getAccountQueryOptions(client: Client) {
   return queryOptions({
     queryKey: [
@@ -60,7 +60,7 @@ export function getAccountQueryOptions(client: Client) {
   });
 }
 
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export function getAccountActivityQueryOptions(client: Client) {
   return queryOptions({
     queryKey: [

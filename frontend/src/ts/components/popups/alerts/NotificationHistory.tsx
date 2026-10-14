@@ -8,6 +8,7 @@ import {
 import { cn } from "../../../utils/cn";
 import { Button } from "../../common/Button";
 import { H3 } from "../../common/Headers";
+import { TextContent } from "../../common/TextContent";
 import { AlertsSection } from "./AlertsSection";
 
 function levelClass(level: NotificationLevel): string {
@@ -29,7 +30,6 @@ async function copyDetails(
     await navigator.clipboard.writeText(text);
     window.alert("Copied notification details to clipboard.");
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error("Failed to copy notification details:", error);
     window.alert("Failed to copy notification details.");
   }
@@ -88,20 +88,9 @@ function NotificationEntry(props: {
           />
         </Show>
       </div>
-      <Show
-        when={props.notification.useInnerHtml}
-        fallback={
-          <div class="text-xs wrap-break-word text-text">
-            {props.notification.message}
-          </div>
-        }
-      >
-        <div
-          class="text-xs wrap-break-word text-text"
-          // oxlint-disable-next-line solid/no-innerhtml
-          innerHTML={props.notification.message}
-        ></div>
-      </Show>
+      <div class="text-xs wrap-break-word text-text">
+        <TextContent content={props.notification.message} />
+      </div>
     </div>
   );
 }

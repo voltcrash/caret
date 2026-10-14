@@ -12,6 +12,7 @@ import { getActiveTags } from "../../../collections/tags";
 import { configMetadata } from "../../../config/metadata";
 import { getConfigChanges as getConfigChangesFromConfig } from "../../../config/utils";
 import { getDefaultConfig } from "../../../constants/default-config";
+import { setProperty } from "@oxytype/util/objects";
 
 function getSettingGroup(configFieldName: ConfigKey): ConfigGroupName {
   return configMetadata[configFieldName].group;
@@ -28,8 +29,7 @@ function getPartialConfigChanges(
     .filter((settingName) => checkboxes[getSettingGroup(settingName)])
     .forEach((settingName) => {
       const newValue = configChanges[settingName] ?? defaultConfig[settingName];
-      // @ts-expect-error cant figure this one out, but it works
-      activeConfigChanges[settingName] = newValue;
+      setProperty(activeConfigChanges, settingName, newValue);
     });
   return activeConfigChanges;
 }

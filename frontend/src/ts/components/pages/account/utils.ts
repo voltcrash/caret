@@ -9,6 +9,13 @@ export function mergeWithDefaultFilters(
 ): ResultFilters {
   try {
     const merged = {} as ResultFilters;
+    const mergeGroup = <K extends Exclude<keyof ResultFilters, "_id" | "name">>(
+      key: K,
+    ): ResultFilters[K] => {
+      const group = { ...defaultResultFilters[key], ...filters[key] };
+      merged[key] = group;
+      return group;
+    };
     for (const groupKey of typedKeys(defaultResultFilters)) {
       if (groupKey === "_id") {
         let id = filters[groupKey] ?? defaultResultFilters[groupKey];
@@ -19,11 +26,7 @@ export function mergeWithDefaultFilters(
       } else if (groupKey === "name") {
         merged[groupKey] = filters[groupKey] ?? defaultResultFilters[groupKey];
       } else {
-        // @ts-expect-error i cant figure this out
-        merged[groupKey] = {
-          ...defaultResultFilters[groupKey],
-          ...filters[groupKey],
-        };
+        mergeGroup(groupKey);
       }
     }
     return merged;

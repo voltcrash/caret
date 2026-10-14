@@ -7,6 +7,43 @@ const defaultConfig = getDefaultConfig();
 
 describe("config migration", () => {
   describe("migrateConfig", () => {
+    it("preserves explicit false, zero and empty-array values when merging defaults", () => {
+      expect(
+        migrateConfig({ words: 0, showKeyTips: false, funbox: [] }),
+      ).toMatchObject({
+        words: 0,
+        showKeyTips: false,
+        funbox: [],
+      });
+    });
+
+    it("migrates legacy tuples and keeps its existing input mutation", () => {
+      const input = {
+        quickTab: true,
+        swapEscAndTab: true,
+        customThemeColors: Array.from({ length: 9 }, () => "#ffffff"),
+        customBackgroundFilter: [1, 2, 3, 4, 5],
+        keymapShowTopRow: "always",
+      };
+      const result = migrateConfig(input);
+      expect(result.quickRestart).toBe("tab");
+      expect(result.customThemeColors).toEqual([
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#000000",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+        "#ffffff",
+      ]);
+      expect(result.customBackgroundFilter).toEqual([1, 2, 3, 4]);
+      expect(result.keymapKeys).toBe("minimal_numrow");
+      expect(input.customThemeColors).toHaveLength(10);
+      expect(input).not.toHaveProperty("keymapShowTopRow");
+    });
     it.for(["off", "result", "on", "sellout"])(
       "drops legacy ads value %s while preserving supported settings",
       (ads) => {

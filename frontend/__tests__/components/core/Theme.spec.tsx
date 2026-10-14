@@ -94,14 +94,14 @@ describe("Theme component", () => {
   });
 
   it("removes CSS when theme has no CSS", async () => {
-    // oxlint-disable-next-line typescript/no-unsafe-return
+    // oxlint-disable-next-line typescript/no-unsafe-return -- Theme mocks return fixtures in place of the persistence API.
     themeSignalMock.mockImplementation(() => ({ name: "light" }) as any);
     const { css } = renderComponent();
     expect(css).not.toBeInTheDocument();
   });
 
   it("removes CSS when theme is custom", async () => {
-    // oxlint-disable-next-line typescript/no-unsafe-return
+    // oxlint-disable-next-line typescript/no-unsafe-return -- Theme mocks return fixtures in place of the persistence API.
     themeSignalMock.mockImplementation(() => ({ name: "custom" }) as any);
     const { css } = renderComponent();
     expect(css).not.toBeInTheDocument();
@@ -172,13 +172,13 @@ describe("Theme component", () => {
     const head = document.head;
 
     return {
-      // oxlint-disable-next-line typescript/no-non-null-assertion
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- Test setup/assertions guarantee this fixture element or mock call exists.
       style: head.querySelector("style#theme")!,
-      // oxlint-disable-next-line typescript/no-non-null-assertion
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- Test setup/assertions guarantee this fixture element or mock call exists.
       css: head.querySelector("link#currentTheme")!,
-      // oxlint-disable-next-line typescript/no-non-null-assertion
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- Test setup/assertions guarantee this fixture element or mock call exists.
       metaThemeColor: head.querySelector("meta#metaThemeColor")!,
-      // oxlint-disable-next-line typescript/no-non-null-assertion
+      // oxlint-disable-next-line typescript/no-non-null-assertion -- Test setup/assertions guarantee this fixture element or mock call exists.
       favIcon: head.querySelector("#favicon")!,
     };
   }

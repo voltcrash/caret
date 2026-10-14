@@ -75,7 +75,6 @@ import { hashResult, preloadResultHasher } from "../utils/result-hash";
 import { getAuthenticatedUser } from "../auth-client";
 import { highlight } from "../events/keymap";
 import * as LazyModeState from "../states/remember-lazy-mode";
-import { Mode } from "@oxytype/schemas/shared";
 import {
   CompletedEvent,
   CompletedEventCustomText,
@@ -90,7 +89,7 @@ import {
 } from "./funbox/list";
 import { getFunbox } from "@oxytype/funbox";
 import * as CompositionState from "../states/composition";
-import { SnapshotResult } from "../constants/default-snapshot";
+import { SavedResult } from "../constants/default-snapshot";
 import { WordGenError } from "@oxytype/typing-core/errors";
 import { tryCatch } from "@oxytype/util/trycatch";
 import * as Sentry from "../sentry";
@@ -124,8 +123,25 @@ import { getLiveCachedAccuracy } from "./events/live-cache";
 import { isDevEnvironment } from "../utils/env";
 import { resetModifierState } from "../states/modifiers";
 import { nthElementFromArray } from "../utils/arrays";
+import { hasKoreanCharacters } from "@oxytype/typing-core/strings";
+import { shouldRepeatQuote } from "@oxytype/typing-core/restart";
+import { countInvalidResultFields } from "@oxytype/typing-core/result-fields";
 
-let failReason = "";
+type TestLogicState = {
+  failReason: string;
+  lastInitError: Error | null;
+  showedLazyModeNotification: boolean;
+  testReinitCount: number;
+  retrySaving: RetrySaving;
+};
+
+const testLogicState: TestLogicState = {
+  failReason: "",
+  lastInitError: null,
+  showedLazyModeNotification: false,
+  testReinitCount: 0,
+  retrySaving: { completedEvent: null, canRetry: false },
+};
 
 const invalidMessages: Record<
   Exclude<InvalidResultReason, "failed">,
@@ -262,11 +278,10 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
 
   const currentQuote = getCurrentQuote();
   if (
-    Config.mode === "quote" &&
+    shouldRepeatQuote(Config) &&
     currentQuote !== null &&
     Config.language.startsWith(currentQuote.language) &&
-    Config.repeatQuotes === "typing" &&
-    (isTestActive() || failReason !== "")
+    (isTestActive() || testLogicState.failReason !== "")
   ) {
     options.withSameWordset = true;
   }
@@ -312,8 +327,8 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
   CompositionState.setComposing(false);
   CompositionState.setData("");
   Strings.clearWordDirectionCache();
-  testReinitCount = 0;
-  failReason = "";
+  testLogicState.testReinitCount = 0;
+  testLogicState.failReason = "";
 
   const repeatWithPace =
     (Config.repeatedPace && options.withSameWordset) ?? false;
@@ -355,20 +370,16 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
   setIsTestRestarting(false);
 }
 
-let lastInitError: Error | null = null;
-let showedLazyModeNotification: boolean = false;
-let testReinitCount = 0;
-
 async function init(): Promise<boolean> {
   console.debug("Initializing test");
-  testReinitCount++;
-  if (testReinitCount > 3) {
-    if (lastInitError) {
-      void Sentry.captureException(lastInitError);
+  testLogicState.testReinitCount++;
+  if (testLogicState.testReinitCount > 3) {
+    if (testLogicState.lastInitError) {
+      void Sentry.captureException(testLogicState.lastInitError);
     }
     setTestInitError({
-      message: lastInitError
-        ? `${lastInitError.name}: ${lastInitError.message}`
+      message: testLogicState.lastInitError
+        ? `${testLogicState.lastInitError.name}: ${testLogicState.lastInitError.message}`
         : undefined,
     });
     const typingTest = getTypingTestElement();
@@ -431,36 +442,36 @@ async function init(): Promise<boolean> {
 
     if (Config.lazyMode && !anySupportsLazyMode) {
       LazyModeState.setRemember(true);
-      if (!showedLazyModeNotification) {
+      if (!testLogicState.showedLazyModeNotification) {
         showNoticeNotification(
           "None of the selected polyglot languages support lazy mode.",
           {
             important: true,
           },
         );
-        showedLazyModeNotification = true;
+        testLogicState.showedLazyModeNotification = true;
       }
       setConfig("lazyMode", false);
     } else if (LazyModeState.getRemember() && anySupportsLazyMode) {
       setConfig("lazyMode", true);
       LazyModeState.setRemember(false);
-      showedLazyModeNotification = false;
+      testLogicState.showedLazyModeNotification = false;
     }
   } else {
     // normal mode
     if (Config.lazyMode && !allowLazyMode) {
       LazyModeState.setRemember(true);
-      if (!showedLazyModeNotification) {
+      if (!testLogicState.showedLazyModeNotification) {
         showNoticeNotification("This language does not support lazy mode.", {
           important: true,
         });
-        showedLazyModeNotification = true;
+        testLogicState.showedLazyModeNotification = true;
       }
       setConfig("lazyMode", false);
     } else if (LazyModeState.getRemember() && allowLazyMode) {
       setConfig("lazyMode", true);
       LazyModeState.setRemember(false);
-      showedLazyModeNotification = false;
+      testLogicState.showedLazyModeNotification = false;
     }
   }
 
@@ -503,7 +514,7 @@ async function init(): Promise<boolean> {
   } catch (e) {
     hideLoaderBar();
     if (e instanceof WordGenError || e instanceof Error) {
-      lastInitError = e;
+      testLogicState.lastInitError = e;
     }
     console.error(e);
     if (e instanceof WordGenError) {
@@ -534,14 +545,7 @@ async function init(): Promise<boolean> {
   setWordsHaveTab(wordsHaveTab);
   setWordsHaveNewline(wordsHaveNewline);
 
-  if (
-    generatedWords
-      .join()
-      .normalize()
-      .match(
-        /[\uac00-\ud7af]|[\u1100-\u11ff]|[\u3130-\u318f]|[\ua960-\ua97f]|[\ud7b0-\ud7ff]/g,
-      )
-  ) {
+  if (hasKoreanCharacters(generatedWords.join().normalize())) {
     setKoreanStatus(true);
   }
 
@@ -560,7 +564,7 @@ async function init(): Promise<boolean> {
     highlight(
       nthElementFromArray(
         // ignoring for now but this might need a different approach
-        // oxlint-disable-next-line no-misused-spread
+        // oxlint-disable-next-line no-misused-spread -- String iteration intentionally preserves the existing Unicode code-point behavior.
         [...(TestWords.words.getCurrent()?.text ?? "")],
         0,
       ) as string,
@@ -678,13 +682,8 @@ type RetrySaving = {
   canRetry: boolean;
 };
 
-const retrySaving: RetrySaving = {
-  completedEvent: null,
-  canRetry: false,
-};
-
 export async function retrySavingResult(): Promise<void> {
-  const { completedEvent } = retrySaving;
+  const { completedEvent } = testLogicState.retrySaving;
 
   if (completedEvent === null) {
     showNoticeNotification(
@@ -698,11 +697,11 @@ export async function retrySavingResult(): Promise<void> {
     return;
   }
 
-  if (!retrySaving.canRetry) {
+  if (!testLogicState.retrySaving.canRetry) {
     return;
   }
 
-  retrySaving.canRetry = false;
+  testLogicState.retrySaving.canRetry = false;
   Result.updateRetrySaving(false);
 
   showNoticeNotification("Retrying to save...");
@@ -772,24 +771,9 @@ export async function finish(difficultyFailed = false): Promise<void> {
 
   console.debug("Completed event object", ce);
 
-  function countUndefined(input: unknown): number {
-    if (typeof input === "number") {
-      return isNaN(input) ? 1 : 0;
-    } else if (typeof input === "undefined") {
-      return 1;
-    } else if (typeof input === "object" && input !== null) {
-      return Object.values(input).reduce(
-        (a, b) => (a + countUndefined(b)) as number,
-        0,
-      ) as number;
-    } else {
-      return 0;
-    }
-  }
-
   let dontSave = false;
 
-  if (countUndefined(ce) > 0) {
+  if (countInvalidResultFields(ce) > 0) {
     console.log(ce);
     showErrorNotification(
       "Failed to build result object: One of the fields is undefined or NaN",
@@ -816,7 +800,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
   });
   const tooShort = invalidReason === "too short";
   if (invalidReason === "failed") {
-    showNoticeNotification(`Test failed - ${failReason}`, {
+    showNoticeNotification(`Test failed - ${testLogicState.failReason}`, {
       durationMs: 1000,
     });
     dontSave = true;
@@ -936,7 +920,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
   const resultUpdatePromise = Result.update(
     completedEvent,
     difficultyFailed,
-    failReason,
+    testLogicState.failReason,
     afkDetected,
     isRepeated(),
     tooShort,
@@ -967,8 +951,8 @@ async function saveResult(
     result.keySpacing = "toolong";
     result.keyDuration = "toolong";
   }
-  //@ts-expect-error just in case this is repeated and already has a hash
-  delete result.hash;
+  const unhashed: Omit<CompletedEvent, "hash"> & { hash?: string } = result;
+  delete unhashed.hash;
   result.hash = await hashResult(result);
 
   setAccountButtonSpinner(true);
@@ -980,10 +964,10 @@ async function saveResult(
   if (response.status !== 200) {
     //only allow retry if status is not in this list
     if (![460, 461, 463, 464, 465, 466].includes(response.status)) {
-      retrySaving.canRetry = true;
+      testLogicState.retrySaving.canRetry = true;
       Result.updateRetrySaving(true);
       if (!isRetrying) {
-        retrySaving.completedEvent = result;
+        testLogicState.retrySaving.completedEvent = result;
       }
     }
     console.log("Error saving result", result);
@@ -1018,13 +1002,9 @@ async function saveResult(
   }
 
   if (data.insertedId !== undefined) {
-    //TODO - this type cast was not needed before because we were using JSON cloning
-    // but now with the stronger types it shows that we are forcing completed event
-    // into a snapshot result - might not cuase issues but worth investigating
-    const snapshotResult = structuredClone(
-      result,
-    ) as unknown as SnapshotResult<Mode>;
-    snapshotResult._id = data.insertedId;
+    const snapshotResult: SavedResult = Object.assign(structuredClone(result), {
+      _id: data.insertedId,
+    });
     if (data.isPb !== undefined && data.isPb) {
       snapshotResult.isPb = true;
     }
@@ -1065,7 +1045,7 @@ async function saveResult(
 }
 
 export function fail(reason: string): void {
-  failReason = reason;
+  testLogicState.failReason = reason;
   void finish(true);
 }
 
@@ -1129,7 +1109,7 @@ configEvent.subscribe(
           highlight(
             nthElementFromArray(
               // ignoring for now but this might need a different approach
-              // oxlint-disable-next-line no-misused-spread
+              // oxlint-disable-next-line no-misused-spread -- String iteration intentionally preserves the existing Unicode code-point behavior.
               [...(TestWords.words.getCurrent()?.text ?? "")],
               0,
             ) as string,

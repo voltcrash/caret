@@ -2,16 +2,16 @@ import { createStore } from "solid-js/store";
 
 import { CommonResponsesType } from "@oxytype/contracts/util/api";
 import { createErrorMessage } from "../utils/error";
+import { MessageContent } from "../types/message-content";
 
 export type NotificationLevel = "error" | "notice" | "success";
 
 export type Notification = {
   id: number;
-  message: string;
+  message: MessageContent;
   level: NotificationLevel;
   important: boolean;
   durationMs: number;
-  useInnerHtml: boolean;
   customTitle?: string;
   customIcon?: string;
   onDismiss?: (reason: "click" | "timeout" | "clear") => void;
@@ -20,10 +20,9 @@ export type Notification = {
 export type NotificationHistoryEntry = {
   id: string;
   title: string;
-  message: string;
+  message: MessageContent;
   level: NotificationLevel;
   details?: string | object;
-  useInnerHtml: boolean;
 };
 
 let id = 0;
@@ -98,12 +97,7 @@ export function getNotificationHistory(): NotificationHistoryEntry[] {
 export type AddNotificationOptions = Partial<
   Pick<
     Notification,
-    | "important"
-    | "durationMs"
-    | "customTitle"
-    | "customIcon"
-    | "onDismiss"
-    | "useInnerHtml"
+    "important" | "durationMs" | "customTitle" | "customIcon" | "onDismiss"
   >
 > & {
   details?: object | string;
@@ -111,8 +105,18 @@ export type AddNotificationOptions = Partial<
   error?: unknown;
 };
 
+function updateLastLine(
+  message: MessageContent,
+  update: (line: string) => string,
+): MessageContent {
+  if (typeof message === "string") return update(message);
+  const lines = [...message];
+  const last = lines.pop() ?? "";
+  return [...lines, update(last)];
+}
+
 export function addNotificationWithLevel(
-  message: string,
+  message: MessageContent,
   level: NotificationLevel,
   options: AddNotificationOptions = {},
 ): number {
@@ -127,11 +131,14 @@ export function addNotificationWithLevel(
           ? options.response.body.validationErrors
           : undefined,
     };
-    message = `${message}: ${options.response.body.message}`;
+    const responseMessage = options.response.body.message;
+    message = updateLastLine(message, (line) => `${line}: ${responseMessage}`);
   }
 
   if (options.error !== undefined) {
-    message = createErrorMessage(options.error, message);
+    message = updateLastLine(message, (line) =>
+      createErrorMessage(options.error, line),
+    );
   }
 
   const title =
@@ -147,7 +154,6 @@ export function addNotificationWithLevel(
         message,
         level,
         details,
-        useInnerHtml: options.useInnerHtml ?? false,
       },
     ];
     return next.length > 25 ? next.slice(-25) : next;
@@ -160,7 +166,6 @@ export function addNotificationWithLevel(
     level,
     important: options.important ?? false,
     durationMs,
-    useInnerHtml: options.useInnerHtml ?? false,
     customTitle: options.customTitle,
     customIcon: options.customIcon,
     onDismiss: options.onDismiss,
@@ -179,21 +184,21 @@ export function addNotificationWithLevel(
 }
 
 export function showNoticeNotification(
-  message: string,
+  message: MessageContent,
   options?: AddNotificationOptions,
 ): number {
   return addNotificationWithLevel(message, "notice", options);
 }
 
 export function showSuccessNotification(
-  message: string,
+  message: MessageContent,
   options?: AddNotificationOptions,
 ): number {
   return addNotificationWithLevel(message, "success", options);
 }
 
 export function showErrorNotification(
-  message: string,
+  message: MessageContent,
   options?: AddNotificationOptions,
 ): number {
   return addNotificationWithLevel(message, "error", options);

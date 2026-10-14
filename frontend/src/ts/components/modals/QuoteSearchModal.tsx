@@ -38,9 +38,9 @@ import {
   SearchService,
   TextExtractor,
 } from "../../utils/search-service";
-import { highlightMatches } from "../../utils/strings";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Button } from "../common/Button";
+import { HighlightedText } from "../common/HighlightedText";
 import { InputField } from "../ui/form/InputField";
 import SlimSelect from "../ui/SlimSelect";
 import { QuoteApproveModal } from "./QuoteApproveModal";
@@ -79,7 +79,7 @@ function exactSearch(quotes: Quote[], captured: RegExp[]): [Quote[], string[]] {
         noMatch = true;
         break;
       }
-      currentMatches.push(Misc.escapeRegExp(match[0]));
+      currentMatches.push(match[0]);
     }
 
     if (!noMatch) {
@@ -125,26 +125,18 @@ function Item(props: {
       class="grid min-w-0 cursor-pointer gap-2 rounded p-4 transition-[background-color] duration-125 select-none [overflow-wrap:anywhere] hover:bg-sub-alt"
       onClick={() => props.onSelect()}
     >
-      <div
-        class="text-text [&_.highlight]:text-main"
-        dir="auto"
-        // oxlint-disable-next-line solid/no-innerhtml
-        innerHTML={highlightMatches(
-          Misc.escapeHTML(props.quote.text),
-          props.matchedTerms,
-        )}
-      ></div>
+      <div class="text-text [&_.highlight]:text-main" dir="auto">
+        <HighlightedText text={props.quote.text} matches={props.matchedTerms} />
+      </div>
       <div class="grid grid-cols-2 gap-2 sm:grid-cols-[1fr_1fr_3fr]">
         <div class="text-xs text-sub">
           <div class="opacity-50">id</div>
-          <span
-            class="[&_.highlight]:text-main"
-            // oxlint-disable-next-line solid/no-innerhtml
-            innerHTML={highlightMatches(
-              Misc.escapeHTML(props.quote.id.toString()),
-              props.matchedTerms,
-            )}
-          ></span>
+          <span class="[&_.highlight]:text-main">
+            <HighlightedText
+              text={props.quote.id.toString()}
+              matches={props.matchedTerms}
+            />
+          </span>
         </div>
         <div class="text-xs text-sub">
           <div class="opacity-50">length</div>
@@ -153,14 +145,12 @@ function Item(props: {
         <div class="col-span-2 flex min-w-0 sm:col-span-1">
           <div class="min-w-0 grow text-xs text-sub">
             <div class="opacity-50">source</div>
-            <span
-              class="[&_.highlight]:text-main"
-              // oxlint-disable-next-line solid/no-innerhtml
-              innerHTML={highlightMatches(
-                Misc.escapeHTML(props.quote.source),
-                props.matchedTerms,
-              )}
-            ></span>
+            <span class="[&_.highlight]:text-main">
+              <HighlightedText
+                text={props.quote.source}
+                matches={props.matchedTerms}
+              />
+            </span>
           </div>
           <Show when={!loggedOut()}>
             <div class="flex shrink">
@@ -298,7 +288,7 @@ export function QuoteSearchModal(): JSXElement {
 
     setSearchResults({
       quotes: matches,
-      matchedTerms: matchedQueryTerms.map(Misc.escapeHTML),
+      matchedTerms: matchedQueryTerms,
     });
   };
 
@@ -539,8 +529,7 @@ export function QuoteSearchModal(): JSXElement {
                 isRtl={isRtl()}
                 onSelect={() => applyQuote(quote.id)}
                 onReport={() => showQuoteReportModal(quote.id)}
-                // oxlint-disable-next-line solid/reactivity, typescript-eslint/promise-function-async -- fire-and-forget, no reactive tracking needed
-                onToggleFavorite={() => toggleFavorite(quote)}
+                onToggleFavorite={toggleFavorite.bind(null, quote)}
               />
             )}
           </For>

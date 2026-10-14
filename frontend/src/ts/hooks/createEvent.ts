@@ -3,9 +3,14 @@ import { onCleanup } from "solid-js";
 export type ModuleHotContext = { dispose: (callback: () => void) => void };
 
 type Listener<T> = (value: T) => void;
+type EventArgs<T> = [T] extends [undefined]
+  ? []
+  : undefined extends T
+    ? [value?: T]
+    : [value: T];
 
 type EventBus<T> = {
-  dispatch: (...args: T extends undefined ? [] : [value: T]) => void;
+  dispatch: (...args: EventArgs<T>) => void;
   subscribe: (fn: Listener<T>, hot?: ModuleHotContext) => () => void;
   useListener: (fn: Listener<T>) => void;
 };
@@ -32,7 +37,7 @@ type EventBus<T> = {
 export function createEvent<T = undefined>(): EventBus<T> {
   const listeners = new Set<Listener<T>>();
 
-  function dispatch(...args: T extends undefined ? [] : [value: T]): void {
+  function dispatch(...args: EventArgs<T>): void {
     const value = args[0] as T;
     for (const fn of listeners) {
       try {

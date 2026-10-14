@@ -1,0 +1,54 @@
+import { result, resultAnnotation } from "./context";
+import { Config } from "../../config/store";
+import * as DB from "../../db";
+import * as Numbers from "@oxytype/util/numbers";
+import { get as getTypingSpeedUnit } from "../../utils/typing-speed-units";
+import { getFunbox } from "@oxytype/funbox";
+import { getTheme } from "../../states/theme";
+
+export async function updateChartPBLine(): Promise<void> {
+  const { Chart } = await import("chart.js");
+  const themecolors = getTheme();
+  const localPb = DB.getLocalPB(
+    result.mode,
+    result.mode2,
+    result.punctuation ?? false,
+    result.numbers ?? false,
+    result.language,
+    result.difficulty,
+    result.lazyMode ?? false,
+    getFunbox(result.funbox),
+  );
+  const localPbWpm = localPb?.wpm ?? 0;
+  if (localPbWpm === 0) return;
+  const typingSpeedUnit = getTypingSpeedUnit(Config.typingSpeedUnit);
+  const chartlpb = Numbers.roundTo2(
+    typingSpeedUnit.fromWpm(localPbWpm),
+  ).toFixed(2);
+  resultAnnotation.push({
+    display: true,
+    type: "line",
+    id: "lpb",
+    scaleID: "wpm",
+    value: chartlpb,
+    borderColor: `${themecolors.sub}55`,
+    borderWidth: 1,
+    // borderDash: [4, 16],
+    label: {
+      backgroundColor: themecolors.sub,
+      font: {
+        family: Config.fontFamily.replace(/_/g, " "),
+        size: 11,
+        style: "normal",
+        weight: Chart.defaults.font.weight,
+        lineHeight: Chart.defaults.font.lineHeight as number,
+      },
+      color: themecolors.bg,
+      padding: 3,
+      borderRadius: 3,
+      position: "center",
+      content: ` PB: ${chartlpb} `,
+      display: true,
+    },
+  });
+}

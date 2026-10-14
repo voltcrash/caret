@@ -1,12 +1,35 @@
 import type {
   Config as ConfigSchema,
-  FunboxName,
   PartialConfig,
 } from "@oxytype/schemas/configs";
 import * as ConfigSchemas from "@oxytype/schemas/configs";
 import { typedKeys } from "@oxytype/util/objects";
 import { sanitize } from "@oxytype/util/sanitize";
 import { getDefaultConfig } from "./default-config";
+
+type LegacyValues = {
+  quickTab?: boolean;
+  swapEscAndTab?: boolean;
+  alwaysShowCPM?: boolean;
+  showTimerProgress?: boolean;
+  showLiveWpm?: boolean;
+  showLiveBurst?: boolean;
+  showLiveAcc?: boolean;
+  smoothCaret?: ConfigSchema["smoothCaret"] | boolean;
+  showAverage?: ConfigSchema["showAverage"] | "wpm";
+  playSoundOnError?: ConfigSchema["playSoundOnError"] | boolean;
+  soundVolume?: number | string;
+  funbox?: string[] | string;
+  customLayoutfluid?: string[] | string;
+  indicateTypos?: ConfigSchema["indicateTypos"] | boolean;
+  fontSize?: number | string;
+  customThemeColors?: unknown[];
+  customBackgroundFilter?: unknown[];
+  quoteLength?: number | number[];
+  keymapShowTopRow?: string;
+};
+
+type LegacyConfig = Omit<PartialConfig, keyof LegacyValues> & LegacyValues;
 
 // The shared schema retains removed features for saved-config compatibility.
 const supportedCaretStyleSchema = ConfigSchemas.CaretStyleSchema.refine(
@@ -30,30 +53,28 @@ export function migrateConfig(config: PartialConfig | object): ConfigSchema {
   return mergeWithDefaultConfig(sanitizeConfig(replaceLegacyValues(config)));
 }
 
-function mergeWithDefaultConfig(config: PartialConfig): ConfigSchema {
+function mergeWithDefaultConfig(config: Partial<ConfigSchema>): ConfigSchema {
   const defaultConfig = getDefaultConfig();
   const mergedConfig = {} as ConfigSchema;
-  for (const key of typedKeys(defaultConfig)) {
+  function mergeValue<K extends keyof ConfigSchema>(key: K): ConfigSchema[K] {
     const newValue = config[key] ?? defaultConfig[key];
-    //@ts-expect-error cant be bothered to deal with this
     mergedConfig[key] = newValue;
+    return newValue;
   }
+  for (const key of typedKeys(defaultConfig)) mergeValue(key);
   return mergedConfig;
 }
 
 /**
  * remove all values from the config which are not valid
  */
-function sanitizeConfig(
-  config: ConfigSchemas.PartialConfig,
-): ConfigSchemas.PartialConfig {
+function sanitizeConfig(config: LegacyConfig): ConfigSchemas.PartialConfig {
   return sanitize(supportedConfigSchema.partial(), config);
 }
 
-function replaceLegacyValues(
-  configObj: ConfigSchemas.PartialConfig,
-): ConfigSchemas.PartialConfig {
-  //@ts-expect-error legacy configs
+function replaceLegacyValues(config: object): LegacyConfig {
+  // Saved JSON may contain historical fields. sanitizeConfig validates the migrated shape.
+  const configObj = config as LegacyConfig;
   if (configObj.quickTab === true && configObj.quickRestart === undefined) {
     configObj.quickRestart = "tab";
   }
@@ -63,7 +84,6 @@ function replaceLegacyValues(
   }
 
   if (
-    //@ts-expect-error legacy configs
     configObj.swapEscAndTab === true &&
     configObj.quickRestart === undefined
   ) {
@@ -71,14 +91,12 @@ function replaceLegacyValues(
   }
 
   if (
-    //@ts-expect-error legacy configs
     configObj.alwaysShowCPM === true &&
     configObj.typingSpeedUnit === undefined
   ) {
     configObj.typingSpeedUnit = "cpm";
   }
 
-  //@ts-expect-error legacy configs
   if (configObj.showAverage === "wpm") {
     configObj.showAverage = "speed";
   }
@@ -88,7 +106,6 @@ function replaceLegacyValues(
   }
 
   if (
-    //@ts-expect-error legacy configs
     configObj.showTimerProgress === false &&
     configObj.timerStyle === undefined
   ) {
@@ -96,7 +113,6 @@ function replaceLegacyValues(
   }
 
   if (
-    //@ts-expect-error legacy configs
     configObj.showLiveWpm === true &&
     configObj.liveSpeedStyle === undefined
   ) {
@@ -108,7 +124,6 @@ function replaceLegacyValues(
   }
 
   if (
-    //@ts-expect-error legacy configs
     configObj.showLiveBurst === true &&
     configObj.liveBurstStyle === undefined
   ) {
@@ -119,11 +134,7 @@ function replaceLegacyValues(
     configObj.liveBurstStyle = val;
   }
 
-  if (
-    //@ts-expect-error legacy configs
-    configObj.showLiveAcc === true &&
-    configObj.liveAccStyle === undefined
-  ) {
+  if (configObj.showLiveAcc === true && configObj.liveAccStyle === undefined) {
     let val: ConfigSchemas.LiveSpeedAccBurstStyle = "mini";
     if (configObj.timerStyle !== "bar" && configObj.timerStyle !== "off") {
       val = configObj.timerStyle as ConfigSchemas.LiveSpeedAccBurstStyle;
@@ -139,21 +150,16 @@ function replaceLegacyValues(
     if (configObj.funbox === "none") {
       configObj.funbox = [];
     } else {
-      configObj.funbox = (configObj.funbox as string).split(
-        "#",
-      ) as FunboxName[];
+      configObj.funbox = configObj.funbox.split("#");
     }
   }
 
   if (typeof configObj.customLayoutfluid === "string") {
-    configObj.customLayoutfluid = (configObj.customLayoutfluid as string).split(
-      "#",
-    ) as ConfigSchemas.CustomLayoutFluid;
+    configObj.customLayoutfluid = configObj.customLayoutfluid.split("#");
   }
 
   if (typeof configObj.indicateTypos === "boolean") {
-    configObj.indicateTypos =
-      configObj.indicateTypos === false ? "off" : "replace";
+    configObj.indicateTypos = configObj.indicateTypos ? "replace" : "off";
   }
 
   if (typeof configObj.fontSize === "string") {
@@ -188,7 +194,6 @@ function replaceLegacyValues(
 
   if (
     Array.isArray(configObj.customThemeColors) &&
-    //@ts-expect-error legacy configs
     configObj.customThemeColors.length === 9
   ) {
     // migrate existing configs missing sub alt color
@@ -199,7 +204,6 @@ function replaceLegacyValues(
 
   if (
     Array.isArray(configObj.customBackgroundFilter) &&
-    //@ts-expect-error legacy configs
     configObj.customBackgroundFilter.length === 5
   ) {
     const arr = configObj.customBackgroundFilter;

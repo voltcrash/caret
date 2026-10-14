@@ -90,16 +90,34 @@ describe("notifications store", () => {
       expect(getNotifications()[0]?.message).toContain("underlying cause");
     });
 
-    it("sets useInnerHtml when specified", () => {
-      addNotificationWithLevel("html <b>bold</b>", "notice", {
-        useInnerHtml: true,
-      });
-      expect(getNotifications()[0]?.useInnerHtml).toBe(true);
+    it("stores structured lines in notifications and history", () => {
+      const lines = [
+        "<script>alert(1)</script>",
+        "",
+        '<img onerror="alert(1)">',
+      ];
+      addNotificationWithLevel(lines, "notice");
+      expect(getNotifications()[0]?.message).toEqual(lines);
+      expect(getNotificationHistory()[0]?.message).toEqual(lines);
     });
 
-    it("defaults useInnerHtml to false", () => {
+    it("preserves plain string messages", () => {
       addNotificationWithLevel("plain", "notice");
-      expect(getNotifications()[0]?.useInnerHtml).toBe(false);
+      expect(getNotifications()[0]?.message).toBe("plain");
+    });
+
+    it("appends response and error text to the last structured line", () => {
+      const lines = ["Request", "", "failed"];
+      addNotificationWithLevel(lines, "error", {
+        response: { status: 400, body: { message: "<img onerror=x>" } },
+        error: new Error("<script>failure</script>"),
+      });
+      expect(getNotifications()[0]?.message).toEqual([
+        "Request",
+        "",
+        "failed: <img onerror=x>: <script>failure</script>",
+      ]);
+      expect(lines).toEqual(["Request", "", "failed"]);
     });
 
     it("sets customTitle and customIcon", () => {

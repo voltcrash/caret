@@ -236,10 +236,17 @@ describe("url-handler", () => {
       loadTestSettingsFromUrl("");
 
       //THEN
-      expect(notifySuccessMock).toHaveBeenCalledWith(expect.anything(), {
-        durationMs: 10000,
-        useInnerHtml: true,
-      });
+      expect(notifySuccessMock).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          "Settings applied from URL:",
+          "",
+          "mode: time",
+          "mode2: 60",
+        ]),
+        {
+          durationMs: 10000,
+        },
+      );
     });
     it("rejects invalid values", () => {
       //GIVEN

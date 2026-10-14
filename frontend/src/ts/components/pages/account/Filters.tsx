@@ -204,8 +204,9 @@ export function Filters(props: {
                         string,
                         boolean
                       >),
-                      // oxlint-disable-next-line typescript/strict-boolean-expressions
-                      [item.id]: !props.filters[options.group][item.id],
+                      [item.id]: !Boolean(
+                        props.filters[options.group][item.id],
+                      ),
                     });
                   }
                 }}

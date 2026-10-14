@@ -21,13 +21,13 @@ import {
 import {
   GenericSimpleModalInput,
   hideSimpleModal,
-  InputsFromSchema,
   simpleModalConfig,
   SimpleModalInput,
 } from "../../states/simple-modal";
 import { cn } from "../../utils/cn";
 import { getZodType, unwrapSchema } from "../../utils/zod";
 import { AnimatedModal } from "../common/AnimatedModal";
+import { TextContent } from "../common/TextContent";
 import { Checkbox } from "../ui/form/Checkbox";
 import { InputField } from "../ui/form/InputField";
 import { SubmitButton } from "../ui/form/SubmitButton";
@@ -50,9 +50,8 @@ type SimpleModalValidators = {
 };
 
 function getDefaultValues(
-  // oxlint-disable-next-line typescript/no-explicit-any
-  inputs: InputsFromSchema<any> | undefined,
-): Object {
+  inputs: Record<string, GenericSimpleModalInput> | undefined,
+): Record<string, unknown> {
   if (inputs === undefined || Object.keys(inputs).length === 0) {
     return {};
   }
@@ -81,8 +80,7 @@ function getValidators(
   const convert = convertFn(input, schema);
 
   if (schema !== undefined) {
-    // oxlint-disable-next-line typescript/no-unsafe-argument
-    validators.onChange = fromSchema(schema, {
+    validators.onChange = fromSchema<unknown, string | boolean>(schema, {
       convert,
     });
   } else if (required) {
@@ -190,18 +188,18 @@ export function SimpleModal(): JSXElement {
   const form = createForm(() => ({
     defaultValues: untrack(() => getDefaultValues(config()?.inputs)),
     onSubmit: async ({ value }) => {
-      const schema = config()?.schema as z.Schema;
-      // oxlint-disable-next-line typescript/no-explicit-any
-      const inputs = config()?.inputs as InputsFromSchema<any>;
       const simpleConfig = config();
       if (simpleConfig === null) return;
+      const schema = simpleConfig.schema;
+      const inputs = simpleConfig.inputs;
 
       const converted = Object.fromEntries(
         Object.entries(value).map(([key, value]) => [
           key,
-          // @ts-expect-error this is fine
-          // oxlint-disable-next-line typescript/no-unsafe-member-access typescript/no-unsafe-argument
-          convertFn(inputs[key], schema.shape[key])(value as string | boolean),
+          convertFn(
+            inputs?.[key] as GenericSimpleModalInput,
+            schema?.shape[key] as z.ZodTypeAny,
+          )(value as string | boolean),
         ]),
       );
 
@@ -242,7 +240,6 @@ export function SimpleModal(): JSXElement {
   };
 
   const getSchema = (key: string) =>
-    // oxlint-disable-next-line typescript/no-unsafe-member-access
     config()?.schema?.shape[key] as z.ZodTypeAny;
 
   return (
@@ -263,12 +260,9 @@ export function SimpleModal(): JSXElement {
       >
         <Show when={config()?.text}>
           {(text) => (
-            <div
-              class={cn("text-text", config()?.textClass)}
-              {...(config()?.textAllowHtml === true
-                ? { innerHTML: text() }
-                : { textContent: text() })}
-            ></div>
+            <div class={cn("text-text", config()?.textClass)}>
+              <TextContent content={text()} />
+            </div>
           )}
         </Show>
 
@@ -361,6 +355,14 @@ export function SimpleModal(): JSXElement {
  */
 export function convertFn<T>(
   input: SimpleModalInput<T>,
+  rawSchema: z.ZodTypeAny,
+): (val: string | boolean) => T | undefined;
+export function convertFn(
+  input: GenericSimpleModalInput,
+  rawSchema: z.ZodTypeAny,
+): (val: string | boolean) => unknown;
+export function convertFn<T>(
+  input: SimpleModalInput<T> | GenericSimpleModalInput,
   rawSchema: z.ZodTypeAny,
 ): (val: string | boolean) => T | undefined {
   const schema = unwrapSchema(rawSchema);

@@ -1,4 +1,4 @@
-// oxlint-disable typescript/consistent-type-definitions
+// oxlint-disable typescript/consistent-type-definitions -- Vitest matcher augmentation requires interface declaration merging.
 import type { Assertion, AsymmetricMatchersContaining } from "vite-plus/test";
 import type { Test as SuperTest } from "supertest";
 import MonkeyError from "../src/utils/error";

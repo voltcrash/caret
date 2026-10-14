@@ -131,3 +131,7 @@ frontend/scripts/keylog-report.ts
 
 # Font CSS generated for Tailwind by Vite
 frontend/src/styles/generated/
+
+# Playwright failure diagnostics
+frontend/test-results/
+frontend/playwright-report/

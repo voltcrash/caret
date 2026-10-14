@@ -505,16 +505,18 @@ export function getFunbox(
 ): FunboxMetadata | FunboxMetadata[] {
   if (nameOrNames === undefined) return [];
   if (Array.isArray(nameOrNames)) {
-    const out = nameOrNames.map((name) => getObject()[name]);
+    const out: (FunboxMetadata | undefined)[] = nameOrNames.map(
+      (name) => getObject()[name],
+    );
 
-    //@ts-expect-error sanity check
     if (out.includes(undefined)) {
       throw new Error(
         `One of the funboxes is invalid: ${nameOrNames.toString()}`,
       );
     }
 
-    return out;
+    // includes(undefined) rejects missing entries and sparse input arrays.
+    return out as FunboxMetadata[];
   } else {
     const out = getObject()[nameOrNames];
 

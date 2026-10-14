@@ -1,9 +1,12 @@
 import { Config } from "../config/store";
 import { setConfig } from "../config/setters";
-import { ConfigMetadata, configMetadata } from "../config/metadata";
+import {
+  ConfigMetadata,
+  configMetadata,
+  getCommandlineOptionLabel,
+} from "../config/metadata";
 import { capitalizeFirstLetter } from "../utils/strings";
 import {
-  CommandlineConfigMetadata,
   commandlineConfigMetadata,
   CommandlineConfigMetadataObject,
   InputProps,
@@ -13,6 +16,7 @@ import { Command } from "./types";
 import * as ConfigSchemas from "@oxytype/schemas/configs";
 import { ZodSchema, ZodFirstPartySchemaTypes } from "zod/v3";
 import { getOptions } from "../utils/zod";
+import type { Validation } from "../types/validation";
 
 export function buildCommandForConfigKey<
   K extends keyof CommandlineConfigMetadataObject,
@@ -28,9 +32,7 @@ function _buildCommandForConfigKey<
 >(
   key: K,
   configMeta: ConfigMetadata<K>,
-  commandMeta:
-    | CommandlineConfigMetadata<K, keyof ConfigSchemas.Config>
-    | undefined,
+  commandMeta: CommandlineConfigMetadataObject[K] | undefined,
   schema: ZodSchema,
 ): Command {
   if (commandMeta === undefined || commandMeta === null) {
@@ -42,7 +44,6 @@ function _buildCommandForConfigKey<
   if ("subgroup" in commandMeta && commandMeta.subgroup !== undefined) {
     result = buildCommandWithSubgroup(
       key,
-      commandMeta.display,
       commandMeta.alias,
       commandMeta.subgroup,
       configMeta,
@@ -83,7 +84,6 @@ function _buildCommandForConfigKey<
 
 function buildCommandWithSubgroup<K extends keyof ConfigSchemas.Config>(
   key: K,
-  rootDisplay: string | undefined,
   rootAlias: string | undefined,
   subgroupProps: SubgroupProps<K>,
   configMeta: ConfigMetadata<K>,
@@ -94,7 +94,7 @@ function buildCommandWithSubgroup<K extends keyof ConfigSchemas.Config>(
   }
 
   const display =
-    rootDisplay ??
+    configMeta.commandline?.title ??
     `${capitalizeFirstLetter(configMeta?.displayString ?? key)}...`;
 
   let values =
@@ -110,7 +110,7 @@ function buildCommandWithSubgroup<K extends keyof ConfigSchemas.Config>(
     );
   }
   const list = values.map((value) =>
-    buildSubgroupCommand<K>(key, value, subgroupProps),
+    buildSubgroupCommand<K>(key, value, subgroupProps, configMeta),
   );
 
   list.sort((a, b) => {
@@ -138,27 +138,17 @@ function buildSubgroupCommand<K extends keyof ConfigSchemas.Config>(
   {
     afterExec,
     hover,
-    display: commandDisplay,
     alias: commandAlias,
     configValueMode: commandConfigValueMode,
     isVisible: isCommandVisible,
     isAvailable: isCommandAvailable,
     customData: commandCustomData,
   }: SubgroupProps<K>,
+  configMeta: ConfigMetadata<K>,
 ): Command {
   const val = value;
 
-  let displayString = commandDisplay?.(value);
-
-  if (displayString === undefined) {
-    if (value === true) {
-      displayString = "on";
-    } else if (value === false) {
-      displayString = "off";
-    } else {
-      displayString = value.toString();
-    }
-  }
+  const displayString = getCommandlineOptionLabel(configMeta, value);
 
   return {
     id: `set${capitalizeFirstLetter(key)}${capitalizeFirstLetter(
@@ -200,12 +190,16 @@ function buildInputCommand<K extends keyof ConfigSchemas.Config>({
   const validation = inputProps?.validation ?? { schema: true };
 
   const displayString =
-    inputProps?.display ??
+    configMeta.commandline?.inputTitle ??
     (isPartOfSubgroup
       ? "custom..."
       : `${capitalizeFirstLetter(configMeta.displayString ?? key)}...`);
 
-  const result = {
+  const result: Omit<Command, "exec"> & {
+    exec: (options: { input?: ConfigSchemas.Config[K] }) => void;
+    inputValueConvert?: InputProps<K>["inputValueConvert"];
+    validation?: Validation<ConfigSchemas.Config[K]>;
+  } = {
     id: `set${capitalizeFirstLetter(key)}Custom`,
     defaultValue:
       inputProps?.defaultValue ?? (() => Config[key]?.toString() ?? ""),
@@ -218,22 +212,19 @@ function buildInputCommand<K extends keyof ConfigSchemas.Config>({
     input: true,
     icon: configMeta?.fa?.icon ?? "fa-cog",
 
-    //@ts-expect-error this is fine
     exec: ({ input }): void => {
       if (input === undefined) return;
-      setConfig(key, input as ConfigSchemas.Config[K]);
-      inputProps?.afterExec?.(input as ConfigSchemas.Config[K]);
+      setConfig(key, input);
+      inputProps?.afterExec?.(input);
     },
     hover: inputProps?.hover,
   };
 
   if (inputProps?.inputValueConvert !== undefined) {
-    //@ts-expect-error this is fine
-    result["inputValueConvert"] = inputProps.inputValueConvert;
+    result.inputValueConvert = inputProps.inputValueConvert;
   }
 
-  //@ts-expect-error this is fine
-  result["validation"] = {
+  result.validation = {
     schema: validation.schema === true ? schema : undefined,
     isValid: validation.isValid,
   };

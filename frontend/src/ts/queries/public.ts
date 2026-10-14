@@ -21,7 +21,7 @@ const queryKeys = {
 //cache results for one hour
 const staleTime = 1000 * 60 * 60;
 
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export const getContributorsQueryOptions = () =>
   queryOptions({
     queryKey: queryKeys.contributors(),
@@ -29,7 +29,7 @@ export const getContributorsQueryOptions = () =>
     staleTime,
   });
 
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export const getTypingStatsQueryOptions = () =>
   queryOptions({
     queryKey: queryKeys.typingStats(),
@@ -37,7 +37,7 @@ export const getTypingStatsQueryOptions = () =>
     staleTime,
   });
 
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export const getSpeedHistogramQueryOptions = () =>
   queryOptions({
     queryKey: queryKeys.speedHistogram(),
@@ -45,7 +45,7 @@ export const getSpeedHistogramQueryOptions = () =>
     staleTime,
   });
 
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export const getVersionHistoryQueryOptions = () =>
   queryOptions({
     queryKey: queryKeys.versionHistory(),

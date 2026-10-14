@@ -58,7 +58,7 @@ export function createAuth(
   const options: BetterAuthOptions = {
     appName: "Oxytype",
     // Better Auth accepts adapter factories through its database option.
-    // oxlint-disable-next-line typescript/no-unsafe-assignment
+    // oxlint-disable-next-line typescript/no-unsafe-assignment -- Better Auth's database option includes untyped drivers; this value uses its adapter API.
     database: adapter,
     baseURL,
     basePath: new URL(baseURL).pathname,

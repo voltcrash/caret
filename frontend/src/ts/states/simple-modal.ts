@@ -4,6 +4,7 @@ import { showModal, hideModal } from "./modals";
 import { AddNotificationOptions } from "./notifications";
 
 import { Validation } from "../types/validation";
+import { MessageContent } from "../types/message-content";
 import { z, ZodTypeAny } from "zod/v3";
 
 type InferSchema<T extends ZodTypeAny> = z.infer<T>;
@@ -80,8 +81,17 @@ export type SimpleModalInput<T> = T extends string
         ? DateTypeInput<T>
         : never;
 
-// oxlint-disable-next-line typescript/no-explicit-any
-export type GenericSimpleModalInput = SimpleModalInput<any>;
+export type GenericSimpleModalInput = CommonInput<
+  SimpleModalInput<string | number | boolean | Date>["type"],
+  unknown
+> & {
+  readOnly?: boolean;
+  clickToSelect?: boolean;
+  step?: number;
+  description?: string;
+};
+
+type ModalSchema = z.ZodObject<z.ZodRawShape>;
 
 export type ExecReturn = {
   status: "success" | "notice" | "error";
@@ -100,40 +110,50 @@ export type ExecReturn = {
     }
 );
 
-// oxlint-disable-next-line typescript/no-explicit-any
-export type InputsFromSchema<S extends z.ZodObject<any>> = {
+type InputsFromSchema<S extends ModalSchema> = {
   [K in keyof S["shape"]]: SimpleModalInput<z.infer<S["shape"][K]>>;
 };
 
-// oxlint-disable-next-line typescript/no-explicit-any
-export type SimpleModalConfig<S extends z.ZodObject<any>> = {
+type SimpleModalOptions = {
   title: string;
-  text?: string;
+  text?: MessageContent;
   textClass?: string;
-  textAllowHtml?: boolean;
   buttonText?: string;
   buttonAlwaysEnabled?: boolean;
 
   focusFirstInput?: true | "focusAndSelect";
   class?: string;
+};
 
+export type SimpleModalConfig<S extends ModalSchema> = SimpleModalOptions & {
   execFn: (values: InferSchema<S>) => Promise<ExecReturn>;
 } & (
-  | { schema: S; inputs: InputsFromSchema<S> }
-  | { schema?: never; inputs?: never }
-);
+    | { schema: S; inputs: InputsFromSchema<S> }
+    | { schema?: never; inputs?: never }
+  );
+
+type StoredSimpleModalConfig = SimpleModalOptions & {
+  schema?: ModalSchema;
+  inputs?: Record<string, GenericSimpleModalInput>;
+  execFn: (values: Record<string, unknown>) => Promise<ExecReturn>;
+};
 
 const [simpleModalConfig, setSimpleModalConfig] =
-  // oxlint-disable-next-line typescript/no-explicit-any
-  createSignal<SimpleModalConfig<any> | null>(null);
+  createSignal<StoredSimpleModalConfig | null>(null);
 
 export { simpleModalConfig };
 
-// oxlint-disable-next-line typescript/no-explicit-any
-export function showSimpleModal<T extends z.ZodObject<any>>(
+export function showSimpleModal<T extends ModalSchema>(
   config: SimpleModalConfig<T>,
 ): void {
-  setSimpleModalConfig(config);
+  // Rendering crosses heterogeneous schemas; each configured input converts its own value.
+  setSimpleModalConfig({
+    ...config,
+    inputs: config.inputs as
+      | Record<string, GenericSimpleModalInput>
+      | undefined,
+    execFn: async (values) => config.execFn(values as InferSchema<T>),
+  });
   showModal("SimpleModal");
 }
 

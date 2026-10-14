@@ -188,7 +188,7 @@ export function promiseWithResolvers<T = void>(): {
    */
 
   const promiseLike = {
-    // oxlint-disable-next-line no-thenable promise-function-async require-await
+    // oxlint-disable-next-line no-thenable -- This PromiseLike forwards then() to the current resettable promise.
     async then<TResult1 = T, TResult2 = never>(
       onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | null,
       onrejected?:
@@ -299,7 +299,7 @@ export function debounceUntilResolved<TArgs extends unknown[], TResult>(
 }
 
 function isPlatform(searchTerm: string | RegExp): boolean {
-  // oxlint-disable-next-line no-deprecated
+  // oxlint-disable-next-line no-deprecated -- Keep the existing platform-based keyboard labels in older browsers.
   const platform = navigator.platform;
   if (typeof searchTerm === "string") {
     return platform.includes(searchTerm);
@@ -363,8 +363,7 @@ export function formatTypingStatsRatio(stats: {
 
 export function addToGlobal(items: Record<string, unknown>): void {
   for (const [name, item] of Object.entries(items)) {
-    //@ts-expect-error dev
-    window[name] = item;
+    Object.assign(window, { [name]: item });
   }
 }
 

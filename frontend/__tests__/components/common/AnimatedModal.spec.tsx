@@ -114,10 +114,10 @@ describe("AnimatedModal", () => {
     );
 
     return {
-      // oxlint-disable-next-line no-non-null-assertion
+      // oxlint-disable-next-line no-non-null-assertion -- Test setup/assertions guarantee this fixture element or mock call exists.
       container: container.children[0]! as HTMLElement,
       dialog,
-      // oxlint-disable-next-line no-non-null-assertion
+      // oxlint-disable-next-line no-non-null-assertion -- Test setup/assertions guarantee this fixture element or mock call exists.
       modalDiv: container.querySelector(".modal")!,
     };
   }
