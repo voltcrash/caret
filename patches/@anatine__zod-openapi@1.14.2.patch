@@ -46,10 +46,10 @@ index 9d16b1ca05b0b17d523774d79ae582b13ab1b77f..ff00b946b1a2fd7159f5a4a17b05e3de
  }
  export declare function extendApi<T extends OpenApiZodAny>(schema: T, SchemaObject?: SchemaObject): T;
 diff --git a/src/lib/zod-openapi.js b/src/lib/zod-openapi.js
-index cc71afb4d872b755908f03b9cf441112240405de..4907acc522b3fa83745af9f35b7f7f1b668222a4 100644
+index cc71afb4d872b755908f03b9cf441112240405de..66d227e395d3546938a6cf3181f5a11ff9799890 100644
 --- a/src/lib/zod-openapi.js
 +++ b/src/lib/zod-openapi.js
-@@ -2,296 +2,403 @@
+@@ -2,296 +2,405 @@
  Object.defineProperty(exports, "__esModule", { value: true });
  exports.generateSchema = exports.extendApi = void 0;
  const ts_deepmerge_1 = require("ts-deepmerge");
@@ -644,6 +644,8 @@ index cc71afb4d872b755908f03b9cf441112240405de..4907acc522b3fa83745af9f35b7f7f1b
 +  null: parseNull,
 +  optional: parseOptionalNullable,
 +  nullable: parseOptionalNullable,
++  // `.required()` wraps optional fields instead of unwrapping them
++  nonoptional: parseOptionalNullable,
 +  default: parseDefault,
 +  array: parseArray,
 +  literal: parseLiteral,

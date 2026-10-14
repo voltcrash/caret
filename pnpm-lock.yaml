@@ -224,7 +224,7 @@ overrides:
   '@vitest/utils': 5.0.3
 
 patchedDependencies:
-  '@anatine/zod-openapi@1.14.2': bab16676934f01605f4513f15bd8b30a31f68aa65b11dd7c4321a33f979ddad1
+  '@anatine/zod-openapi@1.14.2': 87ffbdb63ed393948f5f41cfb3f08de61e39089c617f0e5a657b4f059754364e
   '@ts-rest/core@3.52.1': 7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9
   '@ts-rest/open-api@3.52.1': 1b17f624fc76d19e735fd05983e021f9a23658352ab73f7823c42393e4ab6515
   zod-urlsearchparams@0.0.16: 844d68f59b3bd6e7471097cc2d879f3ac6f178048deac1ce1485301818376b29
@@ -8893,7 +8893,7 @@ snapshots:
 
   '@adobe/css-tools@4.4.4': {}
 
-  '@anatine/zod-openapi@1.14.2(patch_hash=bab16676934f01605f4513f15bd8b30a31f68aa65b11dd7c4321a33f979ddad1)(openapi3-ts@2.0.2)(zod@4.6.5)':
+  '@anatine/zod-openapi@1.14.2(patch_hash=87ffbdb63ed393948f5f41cfb3f08de61e39089c617f0e5a657b4f059754364e)(openapi3-ts@2.0.2)(zod@4.6.5)':
     dependencies:
       openapi3-ts: 2.0.2
       ts-deepmerge: 8.0.0
@@ -11883,7 +11883,7 @@ snapshots:
 
   '@ts-rest/open-api@3.52.1(patch_hash=1b17f624fc76d19e735fd05983e021f9a23658352ab73f7823c42393e4ab6515)(@ts-rest/core@3.52.1(patch_hash=7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9)(@types/node@24.19.0)(zod@4.6.5))(zod@4.6.5)':
     dependencies:
-      '@anatine/zod-openapi': 1.14.2(patch_hash=bab16676934f01605f4513f15bd8b30a31f68aa65b11dd7c4321a33f979ddad1)(openapi3-ts@2.0.2)(zod@4.6.5)
+      '@anatine/zod-openapi': 1.14.2(patch_hash=87ffbdb63ed393948f5f41cfb3f08de61e39089c617f0e5a657b4f059754364e)(openapi3-ts@2.0.2)(zod@4.6.5)
       '@ts-rest/core': 3.52.1(patch_hash=7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9)(@types/node@24.19.0)(zod@4.6.5)
       openapi3-ts: 2.0.2
       zod: 4.6.5
