@@ -19,6 +19,24 @@ function assertCommandsExist(files: string[], available = scripts): void {
 }
 
 describe("root scripts", () => {
+  it("preserves aggregate command forwarding and flags", () => {
+    expect(
+      Object.fromEntries(
+        [
+          "full-check",
+          "ts-check",
+          "lint",
+          "lint-fix",
+          "lint-fast",
+          "build",
+          "test",
+          "dev",
+          "start",
+        ].map((name) => [name, scripts[name]]),
+      ),
+    ).toMatchSnapshot();
+  });
+
   it("keeps every root command invoked by CI", () => {
     const workflows = resolve(root, ".github/workflows");
     assertCommandsExist(
