@@ -117,4 +117,35 @@ describe("D1 personal-best and progression policies", () => {
       ).toBeUndefined();
     });
   });
+
+  it("awards bananas at the 60-second PB threshold and records leap-day activity", async () => {
+    await seedUser(test.env, "bananasProgress");
+    await withRuntime(test.env, async () => {
+      let user = await Users.getUser("bananasProgress", "test");
+      await Users.incrementBananas(user.uid, 100);
+      expect((await Users.getUser(user.uid, "test")).bananas).toBeUndefined();
+      await Users.checkIfPb(
+        user.uid,
+        user,
+        scoreEvent(user.uid, 80, 0, { mode2: "60" }),
+      );
+      await Users.incrementBananas(user.uid, 59);
+      await Users.incrementBananas(user.uid, 60);
+      expect((await Users.getUser(user.uid, "test")).bananas).toBe(1);
+      user = await Users.getUser(user.uid, "test");
+      const day = Date.UTC(2024, 1, 29, 12);
+      await Users.incrementTestActivity(user, day);
+      await Users.incrementTestActivity(user, day);
+      expect(
+        (await Users.getUser(user.uid, "test")).testActivity?.[2024]?.[59],
+      ).toBe(2);
+      expect(
+        await statement(
+          "SELECT count FROM user_activity WHERE uid=? AND day=?",
+          user.uid,
+          Math.floor(day / 86400000),
+        ).first("count"),
+      ).toBe(2);
+    });
+  });
 });
