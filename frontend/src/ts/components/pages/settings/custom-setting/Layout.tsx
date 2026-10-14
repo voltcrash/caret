@@ -5,7 +5,7 @@ import { configMetadata } from "../../../../config/metadata";
 import { setConfig } from "../../../../config/setters";
 import { getConfig } from "../../../../config/store";
 import { LayoutsList } from "../../../../constants/layouts";
-import SlimSelect from "../../../ui/SlimSelect";
+import Select from "../../../ui/Select";
 import { SearchableSetting } from "../SearchableSetting";
 
 export function Layout(): JSXElement {
@@ -16,7 +16,8 @@ export function Layout(): JSXElement {
       description={configMetadata.layout.description}
       fa={configMetadata.layout.fa}
       inputs={
-        <SlimSelect
+        <Select
+          label="Layout"
           options={LayoutsList.map((layout) => ({
             text: layout.replace(/_/g, " "),
             value: layout,
