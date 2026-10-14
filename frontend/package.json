@@ -10,6 +10,7 @@
     "lint-styles-fix": "stylelint \"**/*.css\" --fix",
     "check-assets": "tsx ./scripts/check-assets.ts",
     "audit": "vite-bundle-visualizer",
+    "measure-eager-js": "tsx scripts/measure-eager-js.ts",
     "dep-graph": "madge -c -i \"dep-graph.png\" ./src/ts",
     "ts-check": "vp lint . --type-aware --type-check --format agent",
     "build": "vp run madge && vp build",
