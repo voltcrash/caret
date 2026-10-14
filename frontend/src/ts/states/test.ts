@@ -1,6 +1,6 @@
 import { createModuleRoot } from "../hooks/effects";
 import { createEffect, createMemo, createSignal } from "solid-js";
-import { z } from "zod/v3";
+import { z } from "zod";
 import { getConfig } from "../config/store";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { EventLog } from "@oxytype/typing-core/events/types";

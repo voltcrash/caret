@@ -8,7 +8,7 @@ import {
   Show,
   on,
 } from "solid-js";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 import Ape from "../../ape";
 import { setConfig } from "../../config/setters";
@@ -354,8 +354,8 @@ export function QuoteSearchModal(): JSXElement {
           title: "Enter minimum and maximum number of words",
           buttonText: "save",
           schema: z.object({
-            min: z.number().int().safe().positive(),
-            max: z.number().int().safe().positive(),
+            min: z.number().int().positive(),
+            max: z.number().int().positive(),
           }),
           inputs: {
             min: { type: "number", placeholder: "1" },

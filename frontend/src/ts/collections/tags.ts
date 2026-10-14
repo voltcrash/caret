@@ -8,7 +8,7 @@ import {
   useLiveQuery,
 } from "@tanstack/solid-db";
 import { untrack } from "solid-js";
-import { z } from "zod/v3";
+import { z } from "zod";
 import Ape from "../ape";
 import { queryClient } from "../queries";
 import { baseKey } from "../queries/utils/keys";

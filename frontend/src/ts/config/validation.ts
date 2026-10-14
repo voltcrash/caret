@@ -1,5 +1,5 @@
 import { showErrorNotification } from "../states/notifications";
-import { ZodSchema, z } from "zod/v3";
+import { z } from "zod";
 import * as Sentry from "../sentry";
 
 // function isConfigKeyValid(name: string): boolean {
@@ -27,7 +27,7 @@ export function invalid(
 export function isConfigValueValid<T>(
   key: string,
   val: T,
-  schema: ZodSchema<T>,
+  schema: z.ZodType<T>,
 ): boolean {
   const isValid = schema.safeParse(val).success;
   if (!isValid) invalid(key, val, undefined);

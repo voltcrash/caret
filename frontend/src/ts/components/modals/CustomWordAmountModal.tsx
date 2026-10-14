@@ -1,6 +1,6 @@
 import { createForm } from "@tanstack/solid-form";
 import { JSXElement } from "solid-js";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 import { setConfig } from "../../config/setters";
 import { getConfig } from "../../config/store";
@@ -55,7 +55,9 @@ export function CustomWordAmountModal(): JSXElement {
         <form.Field
           name="words"
           validators={{
-            onChange: fromSchema(z.number().nonnegative().safe()),
+            onChange: fromSchema(
+              z.number().nonnegative().max(Number.MAX_SAFE_INTEGER),
+            ),
           }}
           children={(field) => (
             <InputField

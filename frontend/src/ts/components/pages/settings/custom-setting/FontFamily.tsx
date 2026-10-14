@@ -1,7 +1,7 @@
 import { ConfigSchema } from "@oxytype/schemas/configs";
 import { FontNameSchema } from "@oxytype/schemas/fonts";
 import { createResource, For, JSXElement, Show } from "solid-js";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 import {
   configMetadata,

@@ -6,7 +6,7 @@ import {
   afterEach,
   vi,
 } from "vite-plus/test";
-import { z } from "zod/v3";
+import { z } from "zod";
 import { LocalStorageWithSchema } from "../../src/ts/utils/local-storage-with-schema";
 
 describe("local-storage-with-schema.ts", () => {

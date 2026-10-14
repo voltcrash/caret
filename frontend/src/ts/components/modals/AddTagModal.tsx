@@ -1,5 +1,5 @@
 import { TagNameSchema } from "@oxytype/schemas/users";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 import { insertTag } from "../../collections/tags";
 import { showSimpleModal } from "../../states/simple-modal";

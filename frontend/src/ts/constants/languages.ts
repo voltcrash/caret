@@ -1,6 +1,6 @@
 import { Language, LanguageSchema } from "@oxytype/schemas/languages";
 
-export const LanguageList: Language[] = LanguageSchema._def.values;
+export const LanguageList: Language[] = LanguageSchema.options;
 
 export const LanguageGroups: Record<string, Language[]> = {
   english: [

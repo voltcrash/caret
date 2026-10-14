@@ -20,7 +20,7 @@ import {
   splitProps,
   Switch,
 } from "solid-js";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 import { useLocalStorage } from "../../../hooks/useLocalStorage";
 import { cn } from "../../../utils/cn";

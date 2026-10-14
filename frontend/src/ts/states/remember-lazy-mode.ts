@@ -1,5 +1,5 @@
 import { createSignal } from "solid-js";
-import { z } from "zod/v3";
+import { z } from "zod";
 import { LocalStorageWithSchema } from "../utils/local-storage-with-schema";
 
 const rememberLazyModeLS = new LocalStorageWithSchema({

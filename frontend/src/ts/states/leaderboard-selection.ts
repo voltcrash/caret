@@ -2,7 +2,7 @@ import { createModuleRoot } from "../hooks/effects";
 import { LanguageSchema } from "@oxytype/schemas/languages";
 import { ClientSchema, ModeSchema } from "@oxytype/schemas/shared";
 import { Accessor, createSignal, Setter } from "solid-js";
-import { z } from "zod/v3";
+import { z } from "zod";
 import { serialize as serializeUrlSearchParams } from "zod-urlsearchparams";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { replaceUrl } from "../navigation/navigation";

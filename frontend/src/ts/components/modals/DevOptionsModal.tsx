@@ -1,6 +1,6 @@
 import { UserNameSchema } from "@oxytype/schemas/users";
 import { createSignal, For, JSXElement } from "solid-js";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 import Ape from "../../ape";
 import { refetchInboxCollection } from "../../collections/inbox";
@@ -213,8 +213,8 @@ function showGenerateDataModal(): void {
       username: UserNameSchema,
       firstTestTimestamp: z.date().max(new Date()).optional(),
       lastTestTimestamp: z.date().max(new Date()).optional(),
-      minTestsPerDay: z.number().safe().int().min(0).max(200),
-      maxTestsPerDay: z.number().safe().int().min(0).max(200),
+      minTestsPerDay: z.number().int().min(0).max(200),
+      maxTestsPerDay: z.number().int().min(0).max(200),
     }),
     inputs: {
       username: {

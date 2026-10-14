@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vite-plus/test";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 import { useInputValidation } from "../../src/ts/hooks/useInputValidation";
 import type {

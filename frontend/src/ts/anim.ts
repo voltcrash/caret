@@ -1,7 +1,7 @@
 import { reduceMotionParams } from "./utils/motion";
 import { animate, AnimationParams, engine } from "animejs";
 import { LocalStorageWithSchema } from "./utils/local-storage-with-schema";
-import { z } from "zod/v3";
+import { z } from "zod";
 import { createSignal } from "solid-js";
 import { envConfig } from "virtual:env-config";
 

@@ -1,4 +1,4 @@
-import { z } from "zod/v3";
+import { z } from "zod";
 
 export type ValidationResult =
   | {
@@ -18,7 +18,7 @@ export type Validation<T> = {
    * Zod schema to validate the input value against.
    * The indicator will show the error messages from the schema.
    */
-  schema?: z.Schema<T>;
+  schema?: z.ZodType<T>;
 
   /**
    * Custom async validation method.

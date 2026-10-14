@@ -2,7 +2,7 @@ import type { ParentProps } from "solid-js";
 
 import { cleanup, fireEvent, render, waitFor } from "@solidjs/testing-library";
 import { afterEach, expect, it, vi } from "vite-plus/test";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 vi.mock("../../../src/ts/components/common/AnimatedModal", () => ({
   AnimatedModal: (props: ParentProps) => <div>{props.children}</div>,
