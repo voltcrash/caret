@@ -8,7 +8,7 @@ import {
 } from "./line-state";
 import { updateWordsInputPosition } from "./sizing";
 import { setWordJoining } from "./joining";
-import { createHintsHtml, joinOverlappingHints } from "./hints";
+import { createHintsNodes, joinOverlappingHints } from "./hints";
 import { getWordElement, getActiveWordElement, setClass } from "./elements";
 import { Config } from "../../../../config/store";
 import * as SlowTimer from "../../../../states/slow-timer";
@@ -18,10 +18,9 @@ import * as CustomText from "../../../../test/custom-text";
 import { findSingleActiveFunboxWithFunction } from "../../../../test/funbox/list";
 import * as PaceCaret from "../../../../test/pace-caret";
 import * as TestWords from "../../../../test/test-words";
-import {
-  buildInitialWordMarkup,
-  buildLiveWordMarkup,
-} from "../../../../test/word-markup";
+import { appendInitialWordNodes, clearWordTemplates } from "./initial";
+import { buildLiveWordNodes } from "./live";
+import { createLetter, createNewlineSpacers } from "./letters";
 import { requestDebouncedAnimationFrame } from "../../../../utils/debounced-animation-frame";
 
 export function updateActiveElement(
@@ -83,27 +82,32 @@ export function updateActiveElement(
   });
 }
 
-function buildWordHTML(word: string, wordIndex: number): string {
-  return buildInitialWordMarkup(
+function appendWordNodes(
+  parent: HTMLElement | DocumentFragment,
+  word: string,
+  wordIndex: number,
+): void {
+  appendInitialWordNodes(
+    parent,
     word,
     wordIndex,
-    findSingleActiveFunboxWithFunction("getWordHtml")?.functions.getWordHtml,
+    findSingleActiveFunboxWithFunction("getWordNode")?.functions.getWordNode,
   );
 }
 
 export function showWords(): void {
-  getWordsEl().innerHTML = "";
+  getWordsEl().replaceChildren();
 
   if (Config.mode === "zen") {
     appendEmptyWordElement(0);
   } else {
-    let wordsHTML = "";
+    const words = document.createDocumentFragment();
     for (let i = 0; i < TestWords.words.length; i++) {
       const word = TestWords.words.get(i);
       if (word === undefined) continue; // won't happen, but ts complains
-      wordsHTML += buildWordHTML(word.display, i);
+      appendWordNodes(words, word.display, i);
     }
-    getWordsEl().innerHTML = wordsHTML;
+    getWordsEl().append(words);
   }
 
   updateActiveElement({
@@ -114,10 +118,11 @@ export function showWords(): void {
 }
 
 export function appendEmptyWordElement(index: number): void {
-  getWordsEl().insertAdjacentHTML(
-    "beforeend",
-    `<div class='word' data-wordindex='${index}'><letter class='invisible'>_</letter></div>`,
-  );
+  const word = document.createElement("div");
+  word.className = "word";
+  word.dataset["wordindex"] = `${index}`;
+  word.append(createLetter("_", "invisible"));
+  getWordsEl().append(word);
 }
 
 const appendFrames = new Set<number>();
@@ -129,39 +134,14 @@ export function addWord(
   // if the current active word is the last word, we need to NOT use raf
   // because other ui parts depend on the word existing
   if (getActiveWordIndex() === wordIndex - 1) {
-    getWordsEl().insertAdjacentHTML(
-      "beforeend",
-      buildWordHTML(word, wordIndex),
-    );
+    appendWordNodes(getWordsEl(), word, wordIndex);
   } else {
     const frame = requestAnimationFrame(() => {
       appendFrames.delete(frame);
-      getWordsEl().insertAdjacentHTML(
-        "beforeend",
-        buildWordHTML(word, wordIndex),
-      );
+      appendWordNodes(getWordsEl(), word, wordIndex);
     });
     appendFrames.add(frame);
   }
-
-  // maybe ill come back to this
-  // requestAnimationFrame(async () => {
-  //   getWordsEl().insertAdjacentHTML("beforeend", buildWordHTML(word, wordIndex));
-  //   // in case word addition took a long time and some input happened in the mean time
-  //   // we need to update word letters for that word
-  //   const inputHistory = [
-  //     ...getInputHistory(),
-  //     getCurrentInput(),
-  //   ];
-  //   const input = inputHistory[wordIndex];
-  //   if (input !== undefined && input !== "") {
-  //     await updateWordLetters({
-  //       wordIndex,
-  //       input,
-  //       compositionData: CompositionState.getData(),
-  //     });
-  //   }
-  // });
 }
 
 // because of the requestAnimationFrame, multiple calls to updateWordLetters
@@ -188,39 +168,35 @@ export async function updateWordLetters({
       if (currentWord === undefined && Config.mode !== "zen") return;
       const wordAtIndex = getWordElement(wordIndex);
       if (!wordAtIndex) return;
-      const {
-        html: ret,
-        hintIndices,
-        newlineafter,
-      } = buildLiveWordMarkup({
+      const { nodes, hintIndices, newlineafter } = buildLiveWordNodes({
         currentWord,
         input,
         compositionData,
         zen: Config.mode === "zen",
         indicateTypos: Config.indicateTypos,
         compositionDisplay: Config.compositionDisplay,
-        getWordHtml:
-          findSingleActiveFunboxWithFunction("getWordHtml")?.functions
-            .getWordHtml,
+        getWordNode:
+          findSingleActiveFunboxWithFunction("getWordNode")?.functions
+            .getWordNode,
       });
 
-      wordAtIndex.innerHTML = ret;
+      wordAtIndex.replaceChildren(nodes);
 
       if (hintIndices?.length) {
         const wordAtIndexLetters = Array.from(
           wordAtIndex.querySelectorAll<HTMLElement>("letter"),
         );
-        let hintsHtml;
+        let hints;
         if (Config.indicateTypos === "both") {
-          hintsHtml = createHintsHtml(
+          hints = createHintsNodes(
             hintIndices,
             wordAtIndexLetters,
             currentWord ?? "",
           );
         } else {
-          hintsHtml = createHintsHtml(hintIndices, wordAtIndexLetters, input);
+          hints = createHintsNodes(hintIndices, wordAtIndexLetters, input);
         }
-        wordAtIndex.insertAdjacentHTML("beforeend", hintsHtml);
+        wordAtIndex.append(hints);
         const hintElements = wordAtIndex.getElementsByTagName("hint");
         await joinOverlappingHints(
           hintIndices,
@@ -230,10 +206,7 @@ export async function updateWordLetters({
       }
 
       if (newlineafter) {
-        wordAtIndex.insertAdjacentHTML(
-          "afterend",
-          "<div class='beforeNewline'></div><div class='newline'></div><div class='afterNewline'></div>",
-        );
+        wordAtIndex.after(createNewlineSpacers());
       }
       if (Config.tapeMode !== "off") {
         void scrollTape();
@@ -321,6 +294,7 @@ export function clearWordsBlur(): void {
 }
 
 export function disposeWordRendering(): void {
+  clearWordTemplates();
   pendingWordData.clear();
   for (const frame of appendFrames) cancelAnimationFrame(frame);
   appendFrames.clear();

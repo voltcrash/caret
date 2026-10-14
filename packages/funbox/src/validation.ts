@@ -179,7 +179,7 @@ export function checkCompatibility(
       f.frontendFunctions?.includes("getEmulatedChar"),
     ).length <= 1;
   const oneCharReplacerMax =
-    funboxesToCheck.filter((f) => f.frontendFunctions?.includes("getWordHtml"))
+    funboxesToCheck.filter((f) => f.frontendFunctions?.includes("getWordNode"))
       .length <= 1;
   const oneChangesCapitalisationMax =
     funboxesToCheck.filter((f) =>

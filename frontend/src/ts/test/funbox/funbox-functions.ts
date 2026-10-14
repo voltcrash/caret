@@ -1,3 +1,4 @@
+import { createWordIcon } from "../../components/pages/test/words/icons";
 import { FunboxWordFunctions } from "@oxytype/typing-core/active-funboxes";
 import { createFunboxWordFunctions } from "@oxytype/typing-core/funbox-word-functions";
 import {
@@ -38,7 +39,7 @@ export type FunboxFunctions = FunboxWordFunctions & {
   getResultContent?: () => string;
   start?: () => void;
   restart?: () => void;
-  getWordHtml?: (char: string, letterTag?: boolean) => string;
+  getWordNode?: (char: string) => Node | undefined;
 };
 
 async function readAheadHandleKeydown(event: KeyboardEvent): Promise<void> {
@@ -129,29 +130,12 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
       }
       return null;
     },
-    getWordHtml(char: string, letterTag?: boolean): string {
-      let retval = "";
-      if (char === "↑") {
-        if (letterTag) retval += `<letter>`;
-        retval += `<i class="fas fa-arrow-up"></i>`;
-        if (letterTag) retval += `</letter>`;
-      }
-      if (char === "↓") {
-        if (letterTag) retval += `<letter>`;
-        retval += `<i class="fas fa-arrow-down"></i>`;
-        if (letterTag) retval += `</letter>`;
-      }
-      if (char === "←") {
-        if (letterTag) retval += `<letter>`;
-        retval += `<i class="fas fa-arrow-left"></i>`;
-        if (letterTag) retval += `</letter>`;
-      }
-      if (char === "→") {
-        if (letterTag) retval += `<letter>`;
-        retval += `<i class="fas fa-arrow-right"></i>`;
-        if (letterTag) retval += `</letter>`;
-      }
-      return retval;
+    getWordNode(char: string): Node | undefined {
+      if (char === "↑") return createWordIcon({ icon: "fa-arrow-up" });
+      if (char === "↓") return createWordIcon({ icon: "fa-arrow-down" });
+      if (char === "←") return createWordIcon({ icon: "fa-arrow-left" });
+      if (char === "→") return createWordIcon({ icon: "fa-arrow-right" });
+      return undefined;
     },
   },
   rAnDoMcAsE: {},
