@@ -97,7 +97,7 @@ export async function lineJump(
 
     const wordHeight = outerHeight(activeWordEl);
     const newMarginTop = -1 * wordHeight * lineState.currentLinesJumping;
-    const duration = 125;
+    const duration = Misc.applyReducedMotion(125);
 
     const caretLineJumpOptions = {
       newMarginTop,
