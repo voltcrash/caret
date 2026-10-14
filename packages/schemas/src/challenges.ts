@@ -1,4 +1,4 @@
-import { z } from "zod/v3";
+import { z } from "zod";
 import { customEnumErrorHandler } from "./util";
 
 export const ChallengeNameSchema = z.enum(
@@ -58,7 +58,7 @@ export const ChallengeNameSchema = z.enum(
     "wingdings",
   ],
   {
-    errorMap: customEnumErrorHandler("Must be a known challenge name"),
+    error: customEnumErrorHandler("Must be a known challenge name"),
   },
 );
 

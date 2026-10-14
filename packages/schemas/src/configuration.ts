@@ -1,4 +1,4 @@
-import { z } from "zod/v3";
+import { z } from "zod";
 
 /* ValidModeRuleSchema allows complex rules like `"mode2": "(15|60)"`. We don't want a strict validation here. */
 export const ValidModeRuleSchema = z
@@ -183,7 +183,10 @@ const ConfigurationFormBaseSchema = z.object({
 export const ConfigurationFormObjectSchema: z.ZodType<ConfigurationFormObject> =
   ConfigurationFormBaseSchema.extend({
     type: z.literal("object"),
-    fields: z.record(z.lazy(() => ConfigurationFormFieldSchema)),
+    fields: z.record(
+      z.string(),
+      z.lazy(() => ConfigurationFormFieldSchema),
+    ),
   }).strict();
 
 export const ConfigurationFormFieldSchema: z.ZodType<ConfigurationFormField> =

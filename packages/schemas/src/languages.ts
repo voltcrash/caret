@@ -1,4 +1,4 @@
-import { z } from "zod/v3";
+import { z } from "zod";
 import { KnownFontNameSchema } from "./fonts";
 import { customEnumErrorHandler } from "./util";
 
@@ -452,7 +452,7 @@ export const LanguageSchema = z.enum(
     "sindhi",
   ],
   {
-    errorMap: customEnumErrorHandler("Must be a supported language"),
+    error: customEnumErrorHandler("Must be a supported language"),
   },
 );
 

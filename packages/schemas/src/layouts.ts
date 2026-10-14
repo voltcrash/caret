@@ -1,4 +1,4 @@
-import { z } from "zod/v3";
+import { z } from "zod";
 import { customEnumErrorHandler } from "./util";
 
 export const LayoutNameSchema = z.enum(
@@ -244,7 +244,7 @@ export const LayoutNameSchema = z.enum(
     "armenian_hm_qwerty",
   ],
   {
-    errorMap: customEnumErrorHandler("Must be a supported layout"),
+    error: customEnumErrorHandler("Must be a supported layout"),
   },
 );
 

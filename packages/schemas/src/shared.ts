@@ -1,4 +1,4 @@
-import { literal, z } from "zod/v3";
+import { literal, z } from "zod";
 import { StringNumberSchema } from "./util";
 import { LanguageSchema } from "./languages";
 
@@ -71,9 +71,7 @@ export type Mode = z.infer<typeof ModeSchema>;
 export const Mode2Schema = z.union(
   [StringNumberSchema, literal("zen"), literal("custom")],
   {
-    errorMap: () => ({
-      message: 'Needs to be either a number, "zen" or "custom".',
-    }),
+    error: 'Needs to be either a number, "zen" or "custom".',
   },
 );
 

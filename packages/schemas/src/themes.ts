@@ -1,4 +1,4 @@
-import { z } from "zod/v3";
+import { z } from "zod";
 import { customEnumErrorHandler } from "./util";
 
 export const ThemeNameSchema = z.enum(
@@ -192,6 +192,6 @@ export const ThemeNameSchema = z.enum(
     "spiderman",
   ],
   {
-    errorMap: customEnumErrorHandler("Must be a known theme"),
+    error: customEnumErrorHandler("Must be a known theme"),
   },
 );

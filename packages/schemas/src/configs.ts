@@ -1,4 +1,4 @@
-import { z, ZodSchema } from "zod/v3";
+import { z } from "zod";
 import * as Shared from "./shared";
 import * as Themes from "./themes";
 import * as Layouts from "./layouts";
@@ -139,7 +139,7 @@ export const KeymapKeysSchema = z.enum([
 ]);
 export type KeymapKeys = z.infer<typeof KeymapKeysSchema>;
 
-export const KeymapSizeSchema = z.number().min(0.5).max(3.5).step(0.1);
+export const KeymapSizeSchema = z.number().min(0.5).max(3.5).multipleOf(0.1);
 export type KeymapSize = z.infer<typeof KeymapSizeSchema>;
 
 export const SingleListCommandLineSchema = z.enum(["manual", "on"]);
@@ -391,7 +391,6 @@ export const MaxLineWidthSchema = z.number().min(20).max(1000).or(z.literal(0));
 export type MaxLineWidth = z.infer<typeof MaxLineWidthSchema>;
 
 export const CustomBackgroundSchema = z
-  .string()
   .url("Needs to be an URI")
   .regex(/^(https|http):\/\/.*/, "Unsupported protocol")
   .regex(/^[^`'"]*$/, "May not contain quotes")
@@ -521,7 +520,7 @@ export const ConfigSchema = z
     accountChart: AccountChartSchema,
     monkey: z.boolean(),
     monkeyPowerLevel: MonkeyPowerLevelSchema,
-  } satisfies Record<string, ZodSchema>)
+  } satisfies Record<string, z.ZodType>)
   .strict();
 
 export type Config = z.infer<typeof ConfigSchema>;

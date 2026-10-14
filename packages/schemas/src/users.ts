@@ -1,4 +1,4 @@
-import { z, ZodEffects, ZodOptional, ZodString } from "zod/v3";
+import { z, ZodOptional } from "zod";
 import { IdSchema, nameWithSeparators, slug, StringNumberSchema } from "./util";
 import { LanguageSchema } from "./languages";
 import {
@@ -59,7 +59,11 @@ export const ResultFiltersSchema = z.object({
 export type ResultFilters = z.infer<typeof ResultFiltersSchema>;
 export type ResultFiltersKeys = keyof Omit<ResultFilters, "_id" | "name">;
 
-export const StreakHourOffsetSchema = z.number().min(-11).max(12).step(0.5);
+export const StreakHourOffsetSchema = z
+  .number()
+  .min(-11)
+  .max(12)
+  .multipleOf(0.5);
 export type StreakHourOffset = z.infer<typeof StreakHourOffsetSchema>;
 
 export const UserStreakSchema = z
@@ -83,9 +87,12 @@ export const UserTagSchema = z
   .strict();
 export type UserTag = z.infer<typeof UserTagSchema>;
 
-function profileDetailsBase(
-  schema: ZodString,
-): ZodEffects<ZodOptional<ZodEffects<ZodString>>> {
+function profileDetailsBase<T extends z.ZodType<string, string>>(
+  schema: T,
+): z.ZodPipe<
+  ZodOptional<T>,
+  z.ZodTransform<string | undefined, string | undefined>
+> {
   return doesNotContainDisallowedWords("word", schema)
     .optional()
     .transform((value) => (value === null ? undefined : value));
@@ -100,7 +107,7 @@ export const GithubProfileSchema = profileDetailsBase(slug().max(39)).or(
 );
 
 export const WebsiteSchema = profileDetailsBase(
-  z.string().url().max(200).startsWith("https://"),
+  z.url().max(200).startsWith("https://"),
 ).or(z.literal(""));
 
 export const UserProfileDetailsSchema = z
@@ -233,7 +240,7 @@ export const FavoriteQuotesSchema = z.record(
 );
 export type FavoriteQuotes = z.infer<typeof FavoriteQuotesSchema>;
 
-export const UserEmailSchema = z.string().email();
+export const UserEmailSchema = z.email();
 
 /**
  * username schema without profanity check
@@ -342,7 +349,7 @@ export type BadgeReward = z.infer<typeof BadgeRewardSchema>;
 export const AllRewardsSchema = XpRewardSchema.or(BadgeRewardSchema);
 export type AllRewards = z.infer<typeof AllRewardsSchema>;
 
-export const MailIdSchema = IdSchema.max(128).or(z.string().uuid());
+export const MailIdSchema = IdSchema.max(128).or(z.guid());
 export const MonkeyMailSchema = z.object({
   id: MailIdSchema,
   subject: z.string(),

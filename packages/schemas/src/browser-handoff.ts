@@ -1,4 +1,4 @@
-import { z } from "zod/v3";
+import { z } from "zod";
 import { LanguageSchema } from "./languages";
 import { UserNameWithoutFilterSchema } from "./users";
 

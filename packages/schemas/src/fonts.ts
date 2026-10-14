@@ -1,4 +1,4 @@
-import { z } from "zod/v3";
+import { z } from "zod";
 import { customEnumErrorHandler } from "./util";
 
 export const KnownFontNameSchema = z.enum(
@@ -48,7 +48,7 @@ export const KnownFontNameSchema = z.enum(
     "Noto_Sans_Lao",
   ],
   {
-    errorMap: customEnumErrorHandler("Must be a known font family"),
+    error: customEnumErrorHandler("Must be a known font family"),
   },
 );
 export type KnownFontName = z.infer<typeof KnownFontNameSchema>;
