@@ -114,10 +114,7 @@ export function InputField(props: {
             (props.field().state.value === undefined ||
               props.field().state.value === "")
           ) {
-            props.field().setValue(
-              // oxlint-disable-next-line typescript/no-unsafe-member-access
-              props.field().form.options.defaultValues?.[props.field().name],
-            );
+            props.field().setValue(getDefaultFieldValue(props.field()));
           }
           shakeItIfYouWantIt();
           props.field().handleBlur();
@@ -208,12 +205,17 @@ function convertStringToValue<T extends unknown | undefined>(
   field: AnyFieldApi,
   newValue: string,
 ): T | undefined {
-  const defaultValue: unknown =
-    // oxlint-disable-next-line typescript/no-unsafe-member-access
-    field.form.options.defaultValues?.[field.name];
+  const defaultValue = getDefaultFieldValue(field);
   if (defaultValue === undefined || defaultValue === null) return newValue as T;
   if (newValue === "" && typeof defaultValue !== "string") return undefined;
   if (typeof defaultValue === "number") return Number.parseFloat(newValue) as T;
 
   return newValue as T;
+}
+
+function getDefaultFieldValue(field: AnyFieldApi): unknown {
+  const defaults = field.form.options.defaultValues as
+    | Record<string, unknown>
+    | undefined;
+  return defaults?.[field.name as string];
 }
