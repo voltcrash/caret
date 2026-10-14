@@ -35,12 +35,10 @@ describe("isCharCorrect", () => {
       difficulty: "normal",
       strictSpace: false,
     });
-    // oxlint-disable-next-line typescript/no-unsafe-call -- Mock control methods target functions replaced with vi.fn.
-    (FunboxList.findSingleActiveFunboxWithFunction as any).mockReturnValue(
-      null,
+    vi.mocked(FunboxList.findSingleActiveFunboxWithFunction).mockReturnValue(
+      undefined,
     );
-    // oxlint-disable-next-line typescript/no-unsafe-call -- Mock control methods target functions replaced with vi.fn.
-    (Strings.areCharactersVisuallyEqual as any).mockReturnValue(false);
+    vi.mocked(Strings.areCharactersVisuallyEqual).mockReturnValue(false);
   });
 
   afterAll(() => {
