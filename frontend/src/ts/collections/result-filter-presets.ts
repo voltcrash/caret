@@ -42,7 +42,6 @@ const resultFilterPresetsCollection = createCollection(
   }),
 );
 
-// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export function useResultFilterPresetsLiveQuery() {
   return useLiveQuery((q) => {
     if (!isAuthenticated()) return undefined;
