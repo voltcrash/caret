@@ -1,3 +1,4 @@
+import { reduceMotionParams } from "./utils/motion";
 import { animate, AnimationParams, engine } from "animejs";
 import { LocalStorageWithSchema } from "./utils/local-storage-with-schema";
 import { z } from "zod/v3";
@@ -49,12 +50,15 @@ export async function animateAsync(
 ): Promise<void> {
   if (!element) return;
   await new Promise<void>((resolve) => {
-    animate(element, {
-      ...options,
-      onComplete: (self) => {
-        options.onComplete?.(self);
-        resolve();
-      },
-    });
+    animate(
+      element,
+      reduceMotionParams({
+        ...options,
+        onComplete: (self) => {
+          options.onComplete?.(self);
+          resolve();
+        },
+      }),
+    );
   });
 }
