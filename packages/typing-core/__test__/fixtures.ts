@@ -59,7 +59,7 @@ function readJson(path: string): unknown {
  * Drops undefined fields and turns non finite numbers into null.
  */
 export function asJsonData(value: unknown): unknown {
-  // oxlint-disable-next-line unicorn/prefer-structured-clone
+  // oxlint-disable-next-line unicorn/prefer-structured-clone -- Match fixture/wire JSON serialization, including omission of undefined fields.
   return JSON.parse(JSON.stringify(value)) as unknown;
 }
 
