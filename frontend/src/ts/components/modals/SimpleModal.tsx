@@ -10,7 +10,7 @@ import {
   Switch,
   untrack,
 } from "solid-js";
-import { z, ZodFirstPartyTypeKind } from "zod/v3";
+import { z } from "zod";
 
 import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
 import {
@@ -66,10 +66,12 @@ function getDefaultValues(
 
 function getValidators(
   input: GenericSimpleModalInput,
-  schema: z.Schema,
+  schema: z.ZodType,
 ): SimpleModalValidators | undefined {
   const required =
-    !input.hidden && !schema.isOptional() && input.type !== "checkbox";
+    !input.hidden &&
+    !schema.safeParse(undefined).success &&
+    input.type !== "checkbox";
   const isValid = input.validation?.isValid;
 
   if (schema === undefined && isValid === undefined && !required) {
@@ -109,7 +111,7 @@ function getValidators(
 function FieldInput(props: {
   field: Accessor<AnyFieldApi>;
   input: GenericSimpleModalInput;
-  schema: z.ZodTypeAny;
+  schema: z.ZodType;
 }): JSXElement {
   return (
     <Switch
@@ -198,7 +200,7 @@ export function SimpleModal(): JSXElement {
           key,
           convertFn(
             inputs?.[key] as GenericSimpleModalInput,
-            schema?.shape[key] as z.ZodTypeAny,
+            schema?.shape[key] as z.ZodType,
           )(value as string | boolean),
         ]),
       );
@@ -239,8 +241,7 @@ export function SimpleModal(): JSXElement {
     form.reset();
   };
 
-  const getSchema = (key: string) =>
-    config()?.schema?.shape[key] as z.ZodTypeAny;
+  const getSchema = (key: string) => config()?.schema?.shape[key] as z.ZodType;
 
   return (
     <AnimatedModal
@@ -355,15 +356,15 @@ export function SimpleModal(): JSXElement {
  */
 export function convertFn<T>(
   input: SimpleModalInput<T>,
-  rawSchema: z.ZodTypeAny,
+  rawSchema: z.ZodType,
 ): (val: string | boolean) => T | undefined;
 export function convertFn(
   input: GenericSimpleModalInput,
-  rawSchema: z.ZodTypeAny,
+  rawSchema: z.ZodType,
 ): (val: string | boolean) => unknown;
 export function convertFn<T>(
   input: SimpleModalInput<T> | GenericSimpleModalInput,
-  rawSchema: z.ZodTypeAny,
+  rawSchema: z.ZodType,
 ): (val: string | boolean) => T | undefined {
   const schema = unwrapSchema(rawSchema);
   const type = getZodType(schema);
@@ -378,7 +379,7 @@ export function convertFn<T>(
   };
 
   switch (type) {
-    case ZodFirstPartyTypeKind.ZodBoolean:
+    case "boolean":
       return (val) => {
         if (val === null || val === undefined) return undefined;
         const bool =
@@ -386,14 +387,14 @@ export function convertFn<T>(
         return preprocess(bool);
       };
 
-    case ZodFirstPartyTypeKind.ZodNumber:
+    case "number":
       return (val) => {
         if (val === null || val === undefined) return undefined;
         const num = typeof val === "string" ? parseFloat(val) : Number(val);
         return preprocess(num);
       };
 
-    case ZodFirstPartyTypeKind.ZodDate:
+    case "date":
       return (val) => {
         if (val === null || val === undefined) return undefined;
         const date = new Date(val as string);

@@ -6,7 +6,7 @@ import * as Util from "../../src/ts/commandline/util";
 import type { CommandlineConfigMetadata } from "../../src/ts/commandline/commandline-metadata";
 import type { ConfigKey } from "@oxytype/schemas/configs";
 import type { ConfigMetadata } from "../../src/ts/config/metadata";
-import { z, ZodSchema } from "zod/v3";
+import { z } from "zod";
 import { Command } from "../../src/ts/commandline/types";
 import { setConfig } from "../../src/ts/config/setters";
 
@@ -451,7 +451,7 @@ function buildCommand<K extends ConfigKey>({
 }: {
   cmdMeta: Partial<CommandlineConfigMetadata<any, any>>;
   configMeta?: Partial<ConfigMetadata<K>>;
-  schema?: ZodSchema;
+  schema?: z.ZodType;
   key?: K;
 }): Command {
   return buildCommandForConfigKey(

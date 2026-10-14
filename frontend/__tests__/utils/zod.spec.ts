@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vite-plus/test";
-import { z, ZodString, ZodNumber } from "zod/v3";
+import { z, ZodString, ZodNumber } from "zod";
 import { unwrapSchema } from "../../src/ts/utils/zod";
 
 describe("unwrapSchema", () => {
@@ -41,7 +41,6 @@ describe("unwrapSchema", () => {
   it("unwraps multiple nested wrappers", () => {
     const schema = z
       .string()
-      .brand("X")
       .optional()
       .nullable()
       .default("test")

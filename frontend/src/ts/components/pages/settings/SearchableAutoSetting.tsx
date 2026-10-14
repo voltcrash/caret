@@ -1,7 +1,6 @@
 import { Config, ConfigKey, ConfigSchema } from "@oxytype/schemas/configs";
 import { createForm } from "@tanstack/solid-form";
 import { For, JSXElement } from "solid-js";
-import { z } from "zod/v3";
 
 import {
   configMetadata,
@@ -46,10 +45,7 @@ export function SearchableAutoSetting<T extends ConfigKey>(props: {
   }));
 
   const autoInputs = () => {
-    if (
-      ConfigSchema.shape[props.key]._def.typeName ===
-      z.ZodFirstPartyTypeKind.ZodNumber
-    ) {
+    if (ConfigSchema.shape[props.key].def.type === "number") {
       return (
         <div class="grid w-full gap-2">
           <form

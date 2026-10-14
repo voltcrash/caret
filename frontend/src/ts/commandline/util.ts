@@ -14,7 +14,7 @@ import {
 } from "./commandline-metadata";
 import { Command } from "./types";
 import * as ConfigSchemas from "@oxytype/schemas/configs";
-import { ZodSchema, ZodFirstPartySchemaTypes } from "zod/v3";
+import type { z } from "zod";
 import { getOptions } from "../utils/zod";
 import type { Validation } from "../types/validation";
 
@@ -33,7 +33,7 @@ function _buildCommandForConfigKey<
   key: K,
   configMeta: ConfigMetadata<K>,
   commandMeta: CommandlineConfigMetadataObject[K] | undefined,
-  schema: ZodSchema,
+  schema: z.ZodType,
 ): Command {
   if (commandMeta === undefined || commandMeta === null) {
     throw new Error(`No commandline metadata found for config key "${key}".`);
@@ -87,7 +87,7 @@ function buildCommandWithSubgroup<K extends keyof ConfigSchemas.Config>(
   rootAlias: string | undefined,
   subgroupProps: SubgroupProps<K>,
   configMeta: ConfigMetadata<K>,
-  schema: ZodSchema,
+  schema: z.ZodType,
 ): Command {
   if (subgroupProps === null) {
     throw new Error(`No commandline metadata found for config key "${key}".`);
@@ -106,7 +106,7 @@ function buildCommandWithSubgroup<K extends keyof ConfigSchemas.Config>(
 
   if (values === undefined) {
     throw new Error(
-      `Unsupported schema type for key "${key}": ${(schema as ZodFirstPartySchemaTypes)._def.typeName}`,
+      `Unsupported schema type for key "${key}": ${schema.def.type}`,
     );
   }
   const list = values.map((value) =>
@@ -185,7 +185,7 @@ function buildInputCommand<K extends keyof ConfigSchemas.Config>({
   isPartOfSubgroup: boolean;
   inputProps?: InputProps<K>;
   configMeta: ConfigMetadata<K>;
-  schema?: ZodSchema;
+  schema?: z.ZodType;
 }): Command {
   const validation = inputProps?.validation ?? { schema: true };
 
@@ -225,7 +225,11 @@ function buildInputCommand<K extends keyof ConfigSchemas.Config>({
   }
 
   result.validation = {
-    schema: validation.schema === true ? schema : undefined,
+    // schema is ConfigSchema.shape[key], which validates Config[K]
+    schema:
+      validation.schema === true
+        ? (schema as z.ZodType<ConfigSchemas.Config[K]> | undefined)
+        : undefined,
     isValid: validation.isValid,
   };
 
