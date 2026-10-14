@@ -99,7 +99,7 @@ export function EditProfile() {
         }}
       >
         <div>
-          <label class="mb-[0.25em] block text-sub">name</label>
+          <div class="mb-[0.25em] block text-text">name</div>
           <div>
             To update your name, go to Account Settings &gt; Account &gt; Update
             account name
@@ -107,7 +107,9 @@ export function EditProfile() {
         </div>
 
         <div>
-          <label class="mb-[0.25em] block text-sub">bio</label>
+          <label for="bio" class="mb-[0.25em] block text-text">
+            bio
+          </label>
           <form.Field
             name="bio"
             validators={{
@@ -126,7 +128,9 @@ export function EditProfile() {
         </div>
 
         <div>
-          <label class="mb-[0.25em] block text-sub">keyboard</label>
+          <label for="keyboard" class="mb-[0.25em] block text-text">
+            keyboard
+          </label>
           <form.Field
             name="keyboard"
             validators={{
@@ -145,7 +149,9 @@ export function EditProfile() {
         </div>
 
         <div>
-          <label class="mb-[0.25em] block text-sub">github</label>
+          <label for="github" class="mb-[0.25em] block text-text">
+            github
+          </label>
           <div class="flex flex-wrap items-center sm:flex-nowrap">
             <p class="my-2 mr-2 min-w-0 [overflow-wrap:anywhere]">
               https://github.com/
@@ -171,7 +177,9 @@ export function EditProfile() {
         </div>
 
         <div>
-          <label class="mb-[0.25em] block text-sub">twitter</label>
+          <label for="twitter" class="mb-[0.25em] block text-text">
+            twitter
+          </label>
           <div class="flex flex-wrap items-center sm:flex-nowrap">
             <p class="my-2 mr-2 min-w-0 [overflow-wrap:anywhere]">
               https://x.com/
@@ -197,7 +205,9 @@ export function EditProfile() {
         </div>
 
         <div>
-          <label class="mb-[0.25em] block text-sub">website</label>
+          <label for="website" class="mb-[0.25em] block text-text">
+            website
+          </label>
           <form.Field
             name="website"
             validators={{
@@ -216,7 +226,7 @@ export function EditProfile() {
         </div>
 
         <div>
-          <label class="mb-[0.25em] block text-sub">badge</label>
+          <div class="mb-[0.25em] block text-text">badge</div>
           <form.Field name="badgeId">
             {(field) => (
               <div class="flex flex-wrap gap-2">
@@ -246,7 +256,7 @@ export function EditProfile() {
         </div>
 
         <div>
-          <label class="mb-[0.25em] block text-sub">public activity</label>
+          <div class="mb-[0.25em] block text-text">public activity</div>
           <form.Field name="showActivityOnPublicProfile">
             {(field) => (
               <Checkbox
