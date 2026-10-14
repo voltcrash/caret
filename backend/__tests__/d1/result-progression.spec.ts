@@ -3,7 +3,10 @@ import { resultRuntime, scoreEvent } from "./result-support";
 import { withRuntime } from "../../src/runtime/env";
 import { statement } from "../../src/db/client";
 import * as Users from "../../src/dal/user";
-import { AddResultResponseSchema } from "@oxytype/contracts/results";
+import {
+  AddResultResponseSchema,
+  UpdateResultTagsResponseSchema,
+} from "@oxytype/contracts/results";
 
 describe("result PBs, rankings and progression with D1", () => {
   let test: Awaited<ReturnType<typeof resultRuntime>>;
@@ -92,5 +95,43 @@ describe("result PBs, rankings and progression with D1", () => {
       "/users/personalBests?mode=time&mode2=15",
     );
     expect(await pbs.json()).toMatchObject({ data: [{ wpm: 96 }] });
+  });
+
+  it("updates tag PBs through the controller without granting progression again", async () => {
+    const account = await test.account();
+    const saved = await test.submit(account);
+    expect(saved.status, await saved.clone().text()).toBe(200);
+    const { insertedId, xp } = AddResultResponseSchema.parse(
+      await saved.json(),
+    ).data;
+    const tag = await withRuntime(
+      test.env,
+      async () => await Users.addTag(account.uid, "late"),
+    );
+    const response = await test.request(account, "/results/tags", "PATCH", {
+      resultId: insertedId,
+      tagIds: [tag._id],
+    });
+    expect(response.status, await response.clone().text()).toBe(200);
+    expect(
+      UpdateResultTagsResponseSchema.parse(await response.json()).data.tagPbs,
+    ).toEqual([tag._id]);
+    await withRuntime(test.env, async () => {
+      expect(
+        (await Users.getTags(account.uid))[0]?.personalBests.time[15]?.[0]?.wpm,
+      ).toBe(80);
+      const profile = await Users.getUser(account.uid, "test");
+      expect(profile.completedTests).toBe(1);
+      expect(profile.xp).toBe(xp);
+    });
+    const other = await test.account();
+    expect(
+      (
+        await test.request(other, "/results/tags", "PATCH", {
+          resultId: insertedId,
+          tagIds: [],
+        })
+      ).status,
+    ).toBe(404);
   });
 });
