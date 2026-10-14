@@ -127,4 +127,16 @@ describe("modal focus", () => {
     expect(fireEvent.keyDown(last, { key: "Tab" })).toBe(true);
     expect(screen.getByRole("dialog")).not.toHaveAttribute("aria-modal");
   });
+
+  it("focuses the owned container when a modal has no controls", async () => {
+    const { container } = render(() => (
+      <AnimatedModal id="Support" animationMode="none">
+        <p>Read this message</p>
+      </AnimatedModal>
+    ));
+    showModal("Support");
+    await waitFor(() =>
+      expect(container.querySelector(".modal")).toHaveFocus(),
+    );
+  });
 });
