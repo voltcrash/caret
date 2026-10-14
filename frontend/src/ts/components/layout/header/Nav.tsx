@@ -79,7 +79,10 @@ export function Nav(): JSXElement {
 
   return (
     // phones under 426px: no gaps so the row fits 320px with touch targets
-    <nav class={cn("z-5 flex w-full items-center gap-0 xs:gap-1 md:gap-2")}>
+    <nav
+      aria-label="Main navigation"
+      class={cn("z-5 flex w-full items-center gap-0 xs:gap-1 md:gap-2")}
+    >
       <Button
         variant="text"
         fa={{
