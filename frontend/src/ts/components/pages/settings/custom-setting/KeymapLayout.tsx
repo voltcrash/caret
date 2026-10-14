@@ -5,7 +5,7 @@ import { configMetadata } from "../../../../config/metadata";
 import { setConfig } from "../../../../config/setters";
 import { getConfig } from "../../../../config/store";
 import { LayoutsList } from "../../../../constants/layouts";
-import SlimSelect from "../../../ui/SlimSelect";
+import Select from "../../../ui/Select";
 import { SearchableSetting } from "../SearchableSetting";
 
 export function KeymapLayout(): JSXElement {
@@ -16,7 +16,8 @@ export function KeymapLayout(): JSXElement {
       description={configMetadata.keymapLayout.description}
       fa={configMetadata.keymapLayout.fa}
       inputs={
-        <SlimSelect
+        <Select
+          label="Keymap layout"
           options={[
             {
               text: "emulator sync",
