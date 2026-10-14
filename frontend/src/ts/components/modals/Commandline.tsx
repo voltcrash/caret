@@ -268,9 +268,7 @@ export function Commandline(): JSXElement {
           autocomplete="off"
           autoCapitalize="none"
           // label for the enter key on phone keyboards
-          // oxlint-disable-next-line react/no-unknown-property -- Solid types use lowercase enterkeyhint
           enterkeyhint={commandlineState.mode === "input" ? "done" : "go"}
-          // oxlint-disable-next-line react/no-unknown-property -- Solid uses lowercase spellcheck
           spellcheck={false}
           class="col-start-2 w-full rounded-[var(--roundness)] border-0 bg-bg py-4 pr-4 pl-0 text-base text-text outline-none focus-visible:shadow-none"
           placeholder={commandlineState.inputPlaceholder}
