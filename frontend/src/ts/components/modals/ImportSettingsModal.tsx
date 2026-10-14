@@ -203,7 +203,6 @@ export function ImportSettingsModal(): JSXElement {
             aria-label="settings JSON"
             class="h-40 min-h-32 w-full resize-y rounded border-none bg-sub-alt p-3 text-sm leading-relaxed caret-main outline-none focus-visible:shadow-text-focus sm:h-48"
             placeholder={'{\n  "theme": "serika_dark",\n  "time": 30\n}'}
-            // oxlint-disable-next-line react/no-unknown-property -- Solid uses the lowercase HTML attribute.
             spellcheck={false}
             value={json()}
             disabled={isBusy()}
