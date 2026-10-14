@@ -58,6 +58,7 @@ export function MarksList(props: { sync: VideoSync }): JSXElement {
             <div class="flex items-center gap-1 rounded bg-bg p-1 font-mono text-xs">
               <span class="text-text">{mark.sync ?? mark.id}</span>
               <input
+                aria-label={`Video time for mark ${mark.id}`}
                 type="number"
                 value={mark.videoMs}
                 onInput={(e) =>
