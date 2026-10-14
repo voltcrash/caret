@@ -13,6 +13,40 @@ describe("D1 optimistic version guards", () => {
   });
   afterAll(async () => await test?.dispose());
 
+  it("exhausts eight conflicts without leaving rewards or partial user updates", async () => {
+    await seedUser(test.env, "exhaust");
+    await withRuntime(test.env, async () => {
+      let attempts = 0;
+      await expect(
+        atomicUser("exhaust", async () => {
+          attempts++;
+          await Users.incrementXp("exhaust", 100);
+          await new MonkeyQueue("reward").add(
+            "reward",
+            { uid: "exhaust" },
+            { jobId: `exhaust${attempts}` },
+          );
+          await statement(
+            "UPDATE users SET version=version+1 WHERE uid='exhaust'",
+          ).run();
+        }),
+      ).rejects.toMatchObject({
+        status: 409,
+        message: "Concurrent update; please retry",
+      });
+      expect(attempts).toBe(8);
+      expect((await Users.getUser("exhaust", "test")).xp).toBeUndefined();
+      expect(
+        await statement(
+          "SELECT count(*) AS n FROM outbox WHERE id LIKE 'exhaust%'",
+        ).first("n"),
+      ).toBe(0);
+      expect(
+        await statement("SELECT count(*) AS n FROM mutation_guards").first("n"),
+      ).toBe(0);
+    });
+  });
+
   it("retries a stale snapshot and commits its progression and outbox only once", async () => {
     await seedUser(test.env, "retry");
     await withRuntime(test.env, async () => {
