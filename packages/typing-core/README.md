@@ -21,10 +21,19 @@ commit separators; omit the last separator for a finite test), or call
   apply input rules. Serialize input calls when generation awaits an asset.
 - `session.record(type, timestamp, data)` records physical key events and IME
   metadata; terminal clients decide how to represent missing key-up signals.
-- `session.advance(timestamp)` emits due ticks; clients own the scheduler.
-- `session.on("word" | "input" | "tick" | "finish", listener)` returns an
-  unsubscribe function. `finish(timestamp)` ends manually; `reset()` restarts
-  state while retaining target words for repeat/practice.
+- `session.advance(timestamp)` emits due ticks; clients own the scheduler and
+  may drive `session.clock` directly. Ticks check the time limit and minimum
+  speed/accuracy and finish with a reason; `deps.isSlowTimer` flags slow steps.
+- `session.on("word" | "input" | "tick" | "drift" | "finish", listener)` returns
+  an unsubscribe function. `finish(timestamp, reason?)` ends and notifies;
+  `end(timestamp)` ends silently; `abandon(timestamp)` ends silently and
+  measures an incomplete test. `getFinishReason()` reads the failure reason
+  until `reset()`, which restarts state while retaining target words.
+- `session.pace` tracks the pace caret: `reset(wpm)`, `step()` or
+  `advanceTo(timestamp)`, and word corrections on commit. It remembers the last
+  test's speed across resets.
+- `session.getReplay()` returns letter-level replay steps; `replay` applies and
+  seeks them. `typing-time` counts time typed this session or today.
 - Finalize held keys with `recorder.forceReleaseAllKeys()` and
   `recorder.cleanupData()`, then use `buildEventLog()` and
   `complete(log, context)` to build the result. `hashResult({...result, uid})`
@@ -46,9 +55,10 @@ protection; `result-validity` shares save eligibility. `custom-text` supplies th
 default text, and `strings` supplies character splitting. Duration formatting
 lives in `@oxytype/util/date-and-time`. The web re-exports these helpers too.
 
-The web uses this facade for event state, word generation and results. Its input
-handlers use the same pure insertion/deletion/validation rules; rendering,
-composition lifecycle, scrolling and browser key handling stay with the web.
+The web uses this facade for event state, the timer, pace caret, replay, word
+generation and results. Its input handlers use the same pure
+insertion/deletion/validation rules; scheduling, rendering, composition
+lifecycle, scrolling and browser key handling stay with the web.
 
 Parity tests retain eight real web keystroke recordings and 61 seeded generator
 snapshots. Core tests run in Node. From the root:
