@@ -72,7 +72,9 @@
       },
     },
     {
-      "files": ["**/__tests__/**"],
+      // Both test-directory spellings use deliberately invalid schema fixtures.
+      // Keep unsafe calls/returns checked; only fixture input construction is exempt.
+      "files": ["**/__tests__/**", "**/__test__/**"],
       "plugins": [
         "typescript",
         "unicorn",
