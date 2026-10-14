@@ -1,4 +1,4 @@
-import { COMPATIBILITY_CHECK } from "@oxytype/contracts";
+import { COMPATIBILITY_CHECK } from "@oxytype/contracts/compatibility";
 import { JSXElement, Show, createSignal } from "solid-js";
 import { envConfig } from "virtual:env-config";
 
