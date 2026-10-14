@@ -3,7 +3,11 @@ import { onCleanup } from "solid-js";
 export type ModuleHotContext = { dispose: (callback: () => void) => void };
 
 type Listener<T> = (value: T) => void;
-type EventArgs<T> = [T] extends [undefined] ? [] : [value: T];
+type EventArgs<T> = [T] extends [undefined]
+  ? []
+  : undefined extends T
+    ? [value?: T]
+    : [value: T];
 
 type EventBus<T> = {
   dispatch: (...args: EventArgs<T>) => void;

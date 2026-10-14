@@ -3,6 +3,14 @@ import { describe, expect, it, vi } from "vite-plus/test";
 import { createEvent } from "../../src/ts/hooks/createEvent";
 
 describe("createEvent", () => {
+  it("allows omitted payloads for optional event values", () => {
+    const event = createEvent<boolean | undefined>();
+    const listener = vi.fn();
+    event.subscribe(listener);
+    event.dispatch();
+    event.dispatch(true);
+    expect(listener.mock.calls).toEqual([[undefined], [true]]);
+  });
   it("delivers discriminated payloads unchanged", () => {
     const event = createEvent<
       { type: "number"; value: number } | { type: "text"; value: string }
