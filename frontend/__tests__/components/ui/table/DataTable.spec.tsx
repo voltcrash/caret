@@ -33,7 +33,7 @@ const columns = [
     id: "name",
     accessorKey: "name",
     header: "Name",
-    // oxlint-disable-next-line typescript/no-unsafe-return typescript/no-unsafe-call
+    // oxlint-disable-next-line typescript/no-unsafe-return typescript/no-unsafe-call -- TanStack renderer stubs retain the generic callback signature.
     cell: (info: any) => info.getValue(),
     meta: { maxBreakpoint: "sm" },
   },
@@ -41,7 +41,7 @@ const columns = [
     id: "age",
     accessorKey: "age",
     header: "Age",
-    // oxlint-disable-next-line typescript/no-unsafe-return typescript/no-unsafe-call
+    // oxlint-disable-next-line typescript/no-unsafe-return typescript/no-unsafe-call -- TanStack renderer stubs retain the generic callback signature.
     cell: (info: any) => info.getValue(),
     meta: { breakpoint: "sm" },
   },
