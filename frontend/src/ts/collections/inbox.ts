@@ -175,7 +175,7 @@ async function flushPendingChanges({
   return { refetch: false };
 }
 
-// oxlint-disable-next-line typescript/explicit-function-return-type
+// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export function useInboxQuery(enabled: Accessor<boolean>) {
   return useLiveQuery((q) => {
     if (!isAuthenticated() || !enabled()) return undefined;
