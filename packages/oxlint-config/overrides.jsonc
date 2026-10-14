@@ -2,6 +2,17 @@
   "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
   "overrides": [
     {
+      // Wire/parity fixtures must omit undefined fields exactly like JSON transport.
+      "files": [
+        "**/__tests__/test/typing-core-parity.spec.ts",
+        "**/__tests__/test/words-generator-parity.spec.ts",
+        "**/__test__/fixtures.ts",
+        "**/__test__/completed-event.spec.ts",
+        "**/__test__/words-generator.spec.ts",
+      ],
+      "rules": { "unicorn/prefer-structured-clone": "off" },
+    },
+    {
       // Ambient augmentations require mergeable interfaces/namespaces.
       "files": ["**/*.d.ts"],
       "rules": {
