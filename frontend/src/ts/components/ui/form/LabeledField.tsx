@@ -11,11 +11,7 @@ export function LabeledField(props: {
 }): JSXElement {
   return (
     <div class={cn("grid gap-1", props.class)}>
-      <label
-        // oxlint-disable-next-line react/no-unknown-property -- Solid uses the lowercase HTML attribute.
-        for={props.id}
-        class="text-sub lowercase"
-      >
+      <label for={props.id} class="text-sub lowercase">
         {props.label}
       </label>
       <Show when={props.subLabel}>
