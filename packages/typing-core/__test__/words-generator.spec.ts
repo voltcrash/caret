@@ -187,7 +187,6 @@ async function run(c: GeneratorCase): Promise<unknown> {
 describe("words generator parity", () => {
   it.each(cases.map((c) => [c.name, c] as const))("%s", async (name, c) => {
     // json round trip on purpose: drops undefined just like the file
-    // oxlint-disable-next-line unicorn/prefer-structured-clone -- Match fixture/wire JSON serialization, including omission of undefined fields.
     const actual = JSON.parse(JSON.stringify(await run(c))) as unknown;
     const file = resolve(WORDS_DIR, "__snapshots__", `${name}.json`);
     expect(actual).toEqual(JSON.parse(readFileSync(file, "utf-8")));
