@@ -195,7 +195,7 @@ export function SimpleModal(): JSXElement {
       const converted = Object.fromEntries(
         Object.entries(value).map(([key, value]) => [
           key,
-          convertFn<unknown>(
+          convertFn(
             inputs?.[key] as GenericSimpleModalInput,
             schema?.shape[key] as z.ZodTypeAny,
           )(value as string | boolean),
@@ -355,6 +355,14 @@ export function SimpleModal(): JSXElement {
  * @returns A function that accepts a raw value (string | boolean)
  *          and returns a validated value of type `T`.
  */
+export function convertFn<T>(
+  input: SimpleModalInput<T>,
+  rawSchema: z.ZodTypeAny,
+): (val: string | boolean) => T | undefined;
+export function convertFn(
+  input: GenericSimpleModalInput,
+  rawSchema: z.ZodTypeAny,
+): (val: string | boolean) => unknown;
 export function convertFn<T>(
   input: SimpleModalInput<T> | GenericSimpleModalInput,
   rawSchema: z.ZodTypeAny,
