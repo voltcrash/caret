@@ -9,17 +9,17 @@ const config = vi.hoisted(() => ({
   blindMode: false,
   hideExtraLetters: false,
 }));
-vi.mock("../../src/ts/config/store", () => ({ Config: config }));
-vi.mock("../../src/ts/test/test-words", () => ({
+vi.mock("../../../../../src/ts/config/store", () => ({ Config: config }));
+vi.mock("../../../../../src/ts/test/test-words", () => ({
   words: { get: () => ({ display: "ab" }) },
 }));
-vi.mock("../../src/ts/utils/debounced-animation-frame", () => ({
+vi.mock("../../../../../src/ts/utils/debounced-animation-frame", () => ({
   requestDebouncedAnimationFrame: (_key: string, callback: () => void) =>
     callback(),
 }));
 
-import { Caret } from "../../src/ts/elements/caret";
-import { setTestElements } from "../../src/ts/states/test-dom";
+import { CaretController } from "../../../../../src/ts/components/pages/test/words/caret-controller";
+import { setTestElements } from "../../../../../src/ts/states/test-dom";
 
 let element: HTMLDivElement;
 
@@ -72,7 +72,7 @@ const target = {
 describe("native caret", () => {
   it("keeps saved upstream skins visible and supports subsequent style changes", () => {
     element.className += " monkey block";
-    const caret = new Caret(element, "monkey");
+    const caret = new CaretController(element, "monkey");
     caret.show();
     expect(element.className.split(/\s+/)).toContain("default");
     expect(element.className.split(/\s+/)).not.toContain("monkey");
@@ -89,7 +89,7 @@ describe("native caret", () => {
   });
 
   it("preserves classes and positions before/after letters", () => {
-    const caret = new Caret(element, "default");
+    const caret = new CaretController(element, "default");
     caret.show();
     expect(element.className).toContain("absolute");
     expect(element.className).toContain("custom");
@@ -104,7 +104,7 @@ describe("native caret", () => {
   });
 
   it("positions full-width underlines and locked letter tape", () => {
-    const caret = new Caret(element, "underline");
+    const caret = new CaretController(element, "underline");
     caret.goTo({ ...target, letterIndex: 1 });
     expect(element.style.left).toBe("18px");
     expect(element.style.top).toBe("44px");

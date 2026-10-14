@@ -43,8 +43,8 @@ vi.mock("../../../src/ts/states/test-dom", () => ({
   areTestElementsMounted: () => false,
   getPaceCaretElement: () => document.createElement("div"),
 }));
-vi.mock("../../../src/ts/elements/caret", () => ({
-  Caret: class {
+vi.mock("../../../src/ts/components/pages/test/words/caret-controller", () => ({
+  CaretController: class {
     hide(): void {
       mocks.hidden = true;
     }

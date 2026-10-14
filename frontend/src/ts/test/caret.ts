@@ -7,7 +7,7 @@ import {
   getActiveWordIndex,
 } from "../states/test";
 import { configEvent } from "../events/config";
-import { Caret } from "../elements/caret";
+import { CaretController } from "../components/pages/test/words/caret-controller";
 import * as CompositionState from "../states/composition";
 import { areTestElementsMounted, getCaretElement } from "../states/test-dom";
 
@@ -45,11 +45,11 @@ export function updatePosition(noAnim = false): void {
   });
 }
 
-let caret: Caret | undefined;
+let caret: CaretController | undefined;
 
 // The component owns the node and cancels its animations on disposal.
 export function bindCaret(element: HTMLDivElement): () => void {
-  const instance = new Caret(element, Config.caretStyle);
+  const instance = new CaretController(element, Config.caretStyle);
   caret = instance;
   return () => {
     instance.stopAllAnimations();
@@ -58,8 +58,8 @@ export function bindCaret(element: HTMLDivElement): () => void {
   };
 }
 
-export function getCaret(): Caret {
-  return (caret ??= new Caret(getCaretElement(), Config.caretStyle));
+export function getCaret(): CaretController {
+  return (caret ??= new CaretController(getCaretElement(), Config.caretStyle));
 }
 
 configEvent.subscribe(

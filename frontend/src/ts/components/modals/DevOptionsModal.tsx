@@ -5,7 +5,6 @@ import { z } from "zod/v3";
 import Ape from "../../ape";
 import { refetchInboxCollection } from "../../collections/inbox";
 import { addXp } from "../../db";
-import { toggleCaretDebug } from "../../elements/caret";
 import { getInputElement } from "../../input/input-element";
 import { hideModal, showModal } from "../../states/modals";
 import {
@@ -22,6 +21,7 @@ import { isProfilerMode, setProfilerMode } from "../../utils/profiler-mode";
 import { remoteValidation } from "../../utils/remote-validation";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Button } from "../common/Button";
+import { toggleCaretDebug } from "../pages/test/words/caret-controller";
 
 const [mediaQueryDebugLevel, setLocalMediaQueryDebugLevel] = createSignal(0);
 

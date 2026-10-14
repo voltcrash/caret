@@ -6,7 +6,7 @@ import * as DB from "../db";
 import * as Misc from "../utils/misc";
 import { configEvent } from "../events/config";
 import { getActiveFunboxes } from "./funbox/list";
-import { Caret } from "../elements/caret";
+import { CaretController } from "../components/pages/test/words/caret-controller";
 import {
   areTestElementsMounted,
   getPaceCaretElement,
@@ -25,11 +25,11 @@ import {
 // The session owns pace state; this module schedules steps and renders them.
 let timeout: NodeJS.Timeout | undefined;
 
-let caret: Caret | undefined;
+let caret: CaretController | undefined;
 
 // The component owns the node and cancels its animations on disposal.
 export function bindCaret(element: HTMLDivElement): () => void {
-  const instance = new Caret(element, Config.paceCaretStyle);
+  const instance = new CaretController(element, Config.paceCaretStyle);
   caret = instance;
   return () => {
     instance.stopAllAnimations();
@@ -38,8 +38,11 @@ export function bindCaret(element: HTMLDivElement): () => void {
   };
 }
 
-export function getCaret(): Caret {
-  return (caret ??= new Caret(getPaceCaretElement(), Config.paceCaretStyle));
+export function getCaret(): CaretController {
+  return (caret ??= new CaretController(
+    getPaceCaretElement(),
+    Config.paceCaretStyle,
+  ));
 }
 
 export function setLastTestWpm(wpm: number): void {
