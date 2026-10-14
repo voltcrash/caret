@@ -98,7 +98,7 @@ function NotificationEntry(props: {
       >
         <div
           class="text-xs wrap-break-word text-text"
-          // oxlint-disable-next-line solid/no-innerhtml
+          // oxlint-disable-next-line solid/no-innerhtml -- Legacy notification callers explicitly opt into preformatted HTML.
           innerHTML={props.notification.message}
         ></div>
       </Show>
