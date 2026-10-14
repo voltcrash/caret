@@ -119,7 +119,7 @@ describe("typing-core parity fixtures", () => {
         };
         // compared as data, the files are reformatted by the formatter.
         // json round trip on purpose: drops undefined just like the file
-        // oxlint-disable-next-line unicorn/prefer-structured-clone
+        // oxlint-disable-next-line unicorn/prefer-structured-clone -- Match fixture/wire JSON serialization, including omission of undefined fields.
         const actual = JSON.parse(JSON.stringify(snapshot)) as unknown;
         const file = resolve(FIXTURES_DIR, "__snapshots__", `${name}.json`);
         expect(actual).toEqual(JSON.parse(readFileSync(file, "utf-8")));
