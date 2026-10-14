@@ -14,7 +14,6 @@ export function SkillIssue(): JSXElement {
         src="https://www.youtube.com/embed/dQw4w9WgXcQ?si=Kr48u8WHcwvX95G7&controls=0&autoplay=1&mute=0&disablekb=1&fs=0&modestbranding=1"
         title="YouTube video player"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        // oxlint-disable-next-line react/no-unknown-property -- Solid's lowercase attribute
         referrerpolicy="strict-origin-when-cross-origin"
         allowfullscreen
       ></iframe>
