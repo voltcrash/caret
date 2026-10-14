@@ -1,18 +1,8 @@
 import { cleanup, render, screen, waitFor } from "@solidjs/testing-library";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
-const { contactMounts, idleCallbacks, environment } = vi.hoisted(() => ({
+const { contactMounts } = vi.hoisted(() => ({
   contactMounts: vi.fn(),
-  idleCallbacks: [] as (() => void)[],
-  environment: { isDevelopment: true },
-}));
-
-vi.mock("virtual:env-config", () => ({ envConfig: environment }));
-vi.mock("../../../src/ts/utils/idle", () => ({
-  runWhenIdle: (fn: () => void) => {
-    idleCallbacks.push(fn);
-    return () => undefined;
-  },
 }));
 vi.mock("../../../src/ts/components/modals/modal-triggers", () => ({}));
 vi.mock("../../../src/ts/components/modals/Commandline", () => ({
@@ -35,7 +25,6 @@ describe("Modals", () => {
   afterEach(() => {
     cleanup();
     hideModal("Contact");
-    environment.isDevelopment = true;
   });
 
   it("loads the command palette and other modals only on first open", async () => {
@@ -62,14 +51,4 @@ describe("Modals", () => {
     expect(screen.getByTestId("contact")).toBeInTheDocument();
     expect(contactMounts).toHaveBeenCalledTimes(1);
   });
-
-  it.each([true, false])(
-    "prefetches only in production (development=%s)",
-    (isDevelopment) => {
-      environment.isDevelopment = isDevelopment;
-      idleCallbacks.length = 0;
-      render(() => <Modals />);
-      expect(idleCallbacks).toHaveLength(isDevelopment ? 0 : 1);
-    },
-  );
 });

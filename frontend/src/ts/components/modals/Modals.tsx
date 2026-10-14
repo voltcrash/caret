@@ -1,16 +1,6 @@
-import {
-  Component,
-  For,
-  JSXElement,
-  lazy,
-  onCleanup,
-  onMount,
-  Show,
-} from "solid-js";
-import { envConfig } from "virtual:env-config";
+import { Component, For, JSXElement, lazy, Show } from "solid-js";
 
 import { ModalId, getModalVisibility } from "../../states/modals";
-import { runWhenIdle } from "../../utils/idle";
 import { CookiesModal } from "./CookiesModal";
 import "./modal-triggers";
 
@@ -21,7 +11,7 @@ function lazyModal(
   return { id, Component: lazy(async () => ({ default: await load() })) };
 }
 
-// Loaded on first open (and prefetched when idle) to keep them out of the
+// Loaded on first open to keep them out of the
 // startup bundle. Nested modals live in their parent's chunk.
 const lazyModals = [
   lazyModal("Commandline", async () =>
@@ -98,14 +88,6 @@ const lazyModals = [
 ];
 
 export function Modals(): JSXElement {
-  onMount(() => {
-    if (envConfig.isDevelopment) return;
-    const cancel = runWhenIdle(() => {
-      for (const modal of lazyModals) void modal.Component.preload();
-    }, 5000);
-    onCleanup(cancel);
-  });
-
   return (
     <>
       <CookiesModal />
