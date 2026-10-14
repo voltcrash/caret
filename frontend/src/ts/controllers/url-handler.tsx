@@ -1,4 +1,4 @@
-import { getChallenges } from "@oxytype/challenges";
+import { ChallengeNameSchema } from "@oxytype/schemas/challenges";
 import {
   CustomBackgroundFilter,
   CustomBackgroundFilterSchema,
@@ -262,8 +262,9 @@ export function loadTestSettingsFromUrl(getOverride?: string): void {
   }
 }
 
+// Challenge definitions load with the first challenge; their names are known up front.
 const challengeNameLookup = Object.fromEntries(
-  getChallenges().map((it) => [it.name.toLowerCase(), it.name]),
+  [...ChallengeNameSchema.values].map((name) => [name.toLowerCase(), name]),
 );
 
 async function loadChallengeFromUrl(getOverride?: string): Promise<void> {
