@@ -79,4 +79,13 @@ describe("result announcements", () => {
       "Test complete. 80 wpm. Accuracy 95%. Time 15s.",
     );
   });
+
+  it("does not announce live or replay speed ticks", () => {
+    render(() => <ResultAnnouncement />);
+    setResultVisible(true);
+    const initial = screen.getByRole("status").textContent;
+    setResultState("stats", "wpm", "text", "120");
+    setResultState("stats", "acc", "text", "99%");
+    expect(screen.getByRole("status").textContent).toBe(initial);
+  });
 });
