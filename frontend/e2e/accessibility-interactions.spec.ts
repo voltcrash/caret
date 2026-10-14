@@ -99,3 +99,65 @@ test.describe("reduced motion", () => {
     await assertRestarted(page);
   });
 });
+
+test.describe("theme actions", () => {
+  test.use({
+    authenticated: true,
+    customThemes: [
+      {
+        _id: "accessible_theme",
+        name: "accessible",
+        colors: [
+          "#323437",
+          "#e2b714",
+          "#e2b714",
+          "#d1d0c5",
+          "#646669",
+          "#2c2e31",
+          "#ca4754",
+          "#7e2a33",
+          "#ca4754",
+          "#7e2a33",
+        ],
+      },
+    ],
+  });
+  test("theme and favorite actions support keyboard focus without nested buttons", async ({
+    page,
+  }) => {
+    await openTest(page);
+    await page.goto("/settings");
+    await page.getByRole("button", { name: "theme", exact: true }).click();
+    const favorite = page.getByRole("button", {
+      name: "Favorite theme dracula",
+      exact: true,
+    });
+    await favorite.focus();
+    await expect(favorite.locator("..")).toHaveCSS("opacity", "1");
+    await page.keyboard.press("Space");
+    await expect(favorite).toHaveAttribute("aria-pressed", "true");
+    const preset = page.getByRole("button", {
+      name: "Apply theme dracula",
+      exact: true,
+    });
+    await preset.focus();
+    await page.keyboard.press("Enter");
+    await expect(preset).toHaveAttribute("aria-pressed", "true");
+    await page
+      .locator('[data-setting-key="theme"]')
+      .getByRole("button", { name: "custom", exact: true })
+      .click();
+    const custom = page.getByRole("button", {
+      name: "Apply theme accessible",
+      exact: true,
+    });
+    await expect(custom).toBeVisible();
+    await custom.focus();
+    await expect(
+      page.getByRole("button", { name: "Edit theme accessible", exact: true }),
+    ).toHaveCSS("opacity", "1");
+    await expect(
+      page.locator("button button, [role=button] [role=button]"),
+    ).toHaveCount(0);
+  });
+});
