@@ -167,9 +167,6 @@ configEvent.subscribe(
   ({ key }) => {
     if (!areTestElementsMounted()) return;
     if (key === "paceCaret") void init();
-    if (key === "paceCaretStyle") {
-      getCaret().setStyle(Config.paceCaretStyle);
-    }
   },
   import.meta.hot,
 );

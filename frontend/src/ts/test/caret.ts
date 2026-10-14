@@ -5,10 +5,9 @@ import {
   isLanguageRightToLeft,
   getActiveWordIndex,
 } from "../states/test";
-import { configEvent } from "../events/config";
 import { CaretController } from "../components/pages/test/words/caret-controller";
 import * as CompositionState from "../states/composition";
-import { areTestElementsMounted, getCaretElement } from "../states/test-dom";
+import { getCaretElement } from "../states/test-dom";
 
 export function stopAnimation(): void {
   getCaret().stopBlinking();
@@ -57,20 +56,6 @@ export function setCaret(controller: CaretController): () => void {
 export function getCaret(): CaretController {
   return (caret ??= new CaretController(getCaretElement(), Config.caretStyle));
 }
-
-configEvent.subscribe(
-  ({ key }) => {
-    if (!areTestElementsMounted()) return;
-    if (key === "caretStyle") {
-      getCaret().setStyle(Config.caretStyle);
-      updatePosition(true);
-    }
-    if (key === "smoothCaret") {
-      getCaret().updateBlinkingAnimation();
-    }
-  },
-  import.meta.hot,
-);
 
 export function show(noAnim = false): void {
   getCaret().show();

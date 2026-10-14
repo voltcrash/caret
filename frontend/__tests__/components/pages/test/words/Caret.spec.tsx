@@ -9,12 +9,17 @@ const bindings = vi.hoisted(() => ({
   unregisterMain: vi.fn(),
   unregisterPace: vi.fn(),
   cancelFrame: vi.fn(),
+  updatePosition: vi.fn(),
 }));
 vi.mock("../../../../../src/ts/test/caret", () => ({
   setCaret: (controller: CaretController) => {
     bindings.main = controller;
     return bindings.unregisterMain;
   },
+  updatePosition: bindings.updatePosition,
+}));
+vi.mock("../../../../../src/ts/states/test-dom", () => ({
+  areTestElementsMounted: () => true,
 }));
 vi.mock("../../../../../src/ts/test/pace-caret", () => ({
   setCaret: (controller: CaretController) => {
@@ -31,6 +36,7 @@ vi.mock("../../../../../src/ts/utils/debounced-animation-frame", () => ({
 }));
 import { Caret } from "../../../../../src/ts/components/pages/test/words/Caret";
 import { Config } from "../../../../../src/ts/config/store";
+import { configEvent } from "../../../../../src/ts/events/config";
 
 afterEach(() => {
   cleanup();
@@ -68,5 +74,43 @@ describe("Caret ownership", () => {
     expect(bindings.cancelFrame).toHaveBeenCalledWith("caret.paceCaret.goTo");
     expect(bindings.unregisterMain).toHaveBeenCalledOnce();
     expect(bindings.unregisterPace).toHaveBeenCalledOnce();
+  });
+
+  it("applies style and smooth caret changes until unmounted", () => {
+    Config.caretStyle = "default";
+    Config.paceCaretStyle = "default";
+    const { container, unmount } = render(() => (
+      <>
+        <Caret ref={vi.fn()} />
+        <Caret pace ref={vi.fn()} />
+      </>
+    ));
+    const main = container.querySelector("#caret") as HTMLElement;
+    const pace = container.querySelector("#paceCaret") as HTMLElement;
+    const dispatch = (key: string): void =>
+      configEvent.dispatch({ key } as Parameters<
+        typeof configEvent.dispatch
+      >[0]);
+
+    Config.caretStyle = "outline";
+    dispatch("caretStyle");
+    expect(main).toHaveClass("outline");
+    expect(pace).toHaveClass("default");
+    expect(bindings.updatePosition).toHaveBeenCalledWith(true);
+
+    Config.paceCaretStyle = "block";
+    dispatch("paceCaretStyle");
+    expect(pace).toHaveClass("block");
+    expect(main).toHaveClass("outline");
+
+    Config.smoothCaret = "off";
+    dispatch("smoothCaret");
+    expect(main.style.animationName).toBe("caretFlashHard");
+    expect(pace.style.animationName).toBe("");
+
+    unmount();
+    Config.caretStyle = "underline";
+    dispatch("caretStyle");
+    expect(main).toHaveClass("outline");
   });
 });

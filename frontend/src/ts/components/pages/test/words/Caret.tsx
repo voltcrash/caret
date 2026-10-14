@@ -1,7 +1,12 @@
 import { JSXElement, onCleanup, onMount } from "solid-js";
 
 import { Config } from "../../../../config/store";
-import { setCaret as setMainCaret } from "../../../../test/caret";
+import { configEvent } from "../../../../events/config";
+import { areTestElementsMounted } from "../../../../states/test-dom";
+import {
+  setCaret as setMainCaret,
+  updatePosition as updateMainCaretPosition,
+} from "../../../../test/caret";
 import { setCaret as setPaceCaret } from "../../../../test/pace-caret";
 import { cn } from "../../../../utils/cn";
 import { cancelPendingAnimationFrame } from "../../../../utils/debounced-animation-frame";
@@ -13,12 +18,28 @@ export function Caret(props: {
 }): JSXElement {
   let element!: HTMLDivElement;
   onMount(() => {
+    const pace = props.pace === true;
     const controller = new CaretController(
       element,
-      props.pace ? Config.paceCaretStyle : Config.caretStyle,
+      pace ? Config.paceCaretStyle : Config.caretStyle,
     );
-    const unregister = (props.pace ? setPaceCaret : setMainCaret)(controller);
+    const unregister = (pace ? setPaceCaret : setMainCaret)(controller);
+    const unsubscribe = configEvent.subscribe(({ key }) => {
+      if (!areTestElementsMounted()) return;
+      if (pace) {
+        if (key === "paceCaretStyle") {
+          controller.setStyle(Config.paceCaretStyle);
+        }
+        return;
+      }
+      if (key === "caretStyle") {
+        controller.setStyle(Config.caretStyle);
+        updateMainCaretPosition(true);
+      }
+      if (key === "smoothCaret") controller.updateBlinkingAnimation();
+    });
     onCleanup(() => {
+      unsubscribe();
       controller.stopAllAnimations();
       cancelPendingAnimationFrame(`caret.${element.id}.goTo`);
       unregister();
