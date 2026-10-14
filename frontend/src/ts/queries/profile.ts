@@ -16,7 +16,6 @@ const queryKeys = {
 
 const staleTime = 1000 * 60 * 60;
 
-// oxlint-disable-next-line typescript/explicit-function-return-type -- Preserve TanStack’s inferred collection/query generics.
 export const getUserProfile = (username: string, client: Client = "web") =>
   queryOptions({
     queryKey: queryKeys.profile(username, client),
