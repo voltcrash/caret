@@ -11,7 +11,7 @@ permissions:
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, "stack/**"]
     types: [opened, reopened, synchronize, ready_for_review]
   push:
     branches: [main]
@@ -242,7 +242,7 @@ jobs:
       - name: Install Chromium and its system dependencies
         run: vp -C frontend exec playwright install --with-deps chromium
 
-      - name: Smoke the typing flow
+      - name: Run browser regression suite
         run: vp run test-e2e
 
   ci-assets:
