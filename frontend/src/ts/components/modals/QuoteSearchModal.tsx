@@ -512,6 +512,7 @@ export function QuoteSearchModal(): JSXElement {
           </div>
           <Show when={isAuthenticated()}>
             <Button
+              aria-label="Show favorite quotes only"
               variant="button"
               fa={{ icon: "fa-heart", fixedWidth: true }}
               active={showFavoritesOnly()}
@@ -543,6 +544,7 @@ export function QuoteSearchModal(): JSXElement {
           )}
         >
           <Button
+            aria-label="Previous quote page"
             class="justify-self-end px-10 sm:w-max"
             fa={{ icon: "fa-chevron-left", fixedWidth: true }}
             disabled={currentPage() <= 1}
@@ -557,6 +559,7 @@ export function QuoteSearchModal(): JSXElement {
             {pageInfo()}
           </div>
           <Button
+            aria-label="Next quote page"
             class="px-10 sm:w-max"
             fa={{ icon: "fa-chevron-right", fixedWidth: true }}
             disabled={currentPage() >= totalPages()}
