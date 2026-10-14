@@ -1,10 +1,11 @@
 import { AnyFieldApi } from "@tanstack/solid-form";
 import { format as dateFormat } from "date-fns/format";
-import { Accessor, createSignal, JSXElement, Show } from "solid-js";
+import { Accessor, createSignal, JSXElement, Show, useContext } from "solid-js";
 import { ZodDate, ZodFirstPartyTypeKind, ZodNumber, ZodTypeAny } from "zod/v3";
 
 import { cn } from "../../../utils/cn";
 import { getZodType, unwrapSchema } from "../../../utils/zod";
+import { FieldLabelContext } from "./field-label";
 import { FieldIndicator } from "./FieldIndicator";
 
 // phones: a number pad instead of the full keyboard for number fields. the
@@ -24,6 +25,7 @@ function getNumberInputMode(
 export function InputField(props: {
   field: Accessor<AnyFieldApi>;
   placeholder?: string;
+  label?: string;
   autocomplete?: string;
   inputMode?:
     | "none"
@@ -54,6 +56,13 @@ export function InputField(props: {
   step?: string | number;
   alwaysShowFieldIndicator?: boolean;
 }): JSXElement {
+  const standaloneLabel = (): string => {
+    const placeholder = props.placeholder?.trim();
+    return placeholder !== undefined && placeholder !== ""
+      ? placeholder
+      : (props.field().name as string).replace(/([a-z])([A-Z])/g, "$1 $2");
+  };
+  const inheritedLabel = useContext(FieldLabelContext);
   const [shake, setShake] = createSignal(false);
   const numberOptions = () => getNumberOptions(props.schema);
 
@@ -92,6 +101,8 @@ export function InputField(props: {
           props.class,
         )}
         type={props.type ?? "text"}
+        aria-label={props.label ?? inheritedLabel?.() ?? standaloneLabel()}
+        id={props.field().name as string}
         placeholder={props.placeholder ?? ""}
         autocomplete={props.autocomplete}
         // phones: number pad instead of the full keyboard for number fields
