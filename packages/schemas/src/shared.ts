@@ -1,5 +1,5 @@
 import { literal, z } from "zod";
-import { StringNumberSchema } from "./util";
+import { partialRecord, StringNumberSchema } from "./util";
 import { LanguageSchema } from "./languages";
 
 //used by config and shared
@@ -32,8 +32,8 @@ export const PersonalBestsSchema = z.object({
     z.array(PersonalBestSchema),
   ),
   quote: z.record(StringNumberSchema, z.array(PersonalBestSchema)),
-  custom: z.record(z.literal("custom"), z.array(PersonalBestSchema)),
-  zen: z.record(z.literal("zen"), z.array(PersonalBestSchema)),
+  custom: partialRecord(z.literal("custom"), z.array(PersonalBestSchema)),
+  zen: partialRecord(z.literal("zen"), z.array(PersonalBestSchema)),
 });
 export type PersonalBests = z.infer<typeof PersonalBestsSchema>;
 

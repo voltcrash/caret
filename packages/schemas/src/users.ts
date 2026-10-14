@@ -1,5 +1,11 @@
 import { z, ZodOptional } from "zod";
-import { IdSchema, nameWithSeparators, slug, StringNumberSchema } from "./util";
+import {
+  IdSchema,
+  nameWithSeparators,
+  partialRecord,
+  slug,
+  StringNumberSchema,
+} from "./util";
 import { LanguageSchema } from "./languages";
 import {
   ClientSchema,
@@ -26,11 +32,17 @@ export const ResultFiltersSchema = z.object({
       yes: z.boolean(),
     })
     .strict(),
-  difficulty: z.record(DifficultySchema, z.boolean()),
-  mode: z.record(ModeSchema, z.boolean()),
-  words: z.record(DefaultWordsModeSchema.or(z.literal("custom")), z.boolean()),
-  time: z.record(DefaultTimeModeSchema.or(z.literal("custom")), z.boolean()),
-  quoteLength: z.record(QuoteLengthSchema, z.boolean()),
+  difficulty: partialRecord(DifficultySchema, z.boolean()),
+  mode: partialRecord(ModeSchema, z.boolean()),
+  words: partialRecord(
+    DefaultWordsModeSchema.or(z.literal("custom")),
+    z.boolean(),
+  ),
+  time: partialRecord(
+    DefaultTimeModeSchema.or(z.literal("custom")),
+    z.boolean(),
+  ),
+  quoteLength: partialRecord(QuoteLengthSchema, z.boolean()),
   punctuation: z
     .object({
       on: z.boolean(),
@@ -53,8 +65,8 @@ export const ResultFiltersSchema = z.object({
     })
     .strict(),
   tags: z.record(IdSchema.or(NoneFilterSchema), z.boolean()),
-  language: z.record(LanguageSchema, z.boolean()),
-  funbox: z.record(FunboxNameSchema.or(NoneFilterSchema), z.boolean()),
+  language: partialRecord(LanguageSchema, z.boolean()),
+  funbox: partialRecord(FunboxNameSchema.or(NoneFilterSchema), z.boolean()),
 });
 export type ResultFilters = z.infer<typeof ResultFiltersSchema>;
 export type ResultFiltersKeys = keyof Omit<ResultFilters, "_id" | "name">;
@@ -149,7 +161,7 @@ export const PremiumInfoSchema = z.object({
 });
 export type PremiumInfo = z.infer<typeof PremiumInfoSchema>;
 
-export const UserQuoteRatingsSchema = z.record(
+export const UserQuoteRatingsSchema = partialRecord(
   LanguageSchema,
   z.record(
     StringNumberSchema.describe("quoteId as string"),
@@ -158,11 +170,11 @@ export const UserQuoteRatingsSchema = z.record(
 );
 export type UserQuoteRatings = z.infer<typeof UserQuoteRatingsSchema>;
 
-export const UserLbMemorySchema = z.record(
+export const UserLbMemorySchema = partialRecord(
   ModeSchema,
   z.record(
     Mode2Schema,
-    z.record(LanguageSchema, z.number().int().nonnegative()),
+    partialRecord(LanguageSchema, z.number().int().nonnegative()),
   ),
 );
 export type UserLbMemory = z.infer<typeof UserLbMemorySchema>;
@@ -176,7 +188,7 @@ export type RankAndCount = z.infer<typeof RankAndCountSchema>;
 export const AllTimeLbsSchema = z.object({
   time: z.record(
     Mode2Schema,
-    z.record(LanguageSchema, RankAndCountSchema.optional()),
+    partialRecord(LanguageSchema, RankAndCountSchema.optional()),
   ),
 });
 export type AllTimeLbs = z.infer<typeof AllTimeLbsSchema>;
@@ -234,7 +246,7 @@ export const CountByYearAndDaySchema = z.record(
 export type CountByYearAndDay = z.infer<typeof CountByYearAndDaySchema>;
 
 //Record<language, array with quoteIds as string
-export const FavoriteQuotesSchema = z.record(
+export const FavoriteQuotesSchema = partialRecord(
   LanguageSchema,
   z.array(StringNumberSchema),
 );

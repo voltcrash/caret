@@ -68,3 +68,23 @@ export function customEnumErrorHandler(message: string): z.core.$ZodErrorMap {
 }
 
 export const PageNumberSchema = z.number().int().nonnegative().default(0);
+
+/**
+ * A record keyed by an enum or literals, with Zod 3 semantics: every key is
+ * optional and an unknown key fails at its own path, so sanitize drops just
+ * that key instead of the whole record.
+ */
+export function partialRecord<
+  K extends z.ZodType<PropertyKey, PropertyKey>,
+  V extends z.ZodType,
+>(
+  key: K,
+  value: V,
+): z.ZodRecord<z.ZodCustom<z.output<K>, z.output<K>> & z.core.$partial, V> {
+  return z.partialRecord(
+    z.custom<z.output<K>>((input) => key.safeParse(input).success, {
+      error: (issue) => key.safeParse(issue.input).error?.issues[0]?.message,
+    }),
+    value,
+  );
+}
