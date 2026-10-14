@@ -44,7 +44,7 @@ export type SelectProps = {
     }
 );
 
-export default function Select(props: SelectProps): JSXElement {
+function Select(props: SelectProps): JSXElement {
   const id = createUniqueId();
   let container: HTMLDivElement | undefined;
   let input: HTMLInputElement | undefined;
@@ -365,3 +365,5 @@ export default function Select(props: SelectProps): JSXElement {
     </Show>
   );
 }
+
+export default Select;
