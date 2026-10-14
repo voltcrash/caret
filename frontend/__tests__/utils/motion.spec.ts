@@ -12,4 +12,14 @@ describe("reduced motion parameters", () => {
     const params = { opacity: 1, duration: 300, delay: 100, loop: true };
     expect(reduceMotionParams(params)).toBe(params);
   });
+
+  it("removes default duration, delays and loops under reduced motion", () => {
+    state.reduced = true;
+    expect(reduceMotionParams({ opacity: 1, delay: 200, loop: true })).toEqual({
+      opacity: 1,
+      duration: 0,
+      delay: 0,
+      loop: false,
+    });
+  });
 });
