@@ -6,6 +6,7 @@ import { describe, expect, it } from "vite-plus/test";
 import { Button } from "../../../src/ts/components/common/Button";
 import { InputField } from "../../../src/ts/components/ui/form/InputField";
 import { LabeledField } from "../../../src/ts/components/ui/form/LabeledField";
+import { TextareaField } from "../../../src/ts/components/ui/form/TextareaField";
 
 describe("shared accessible controls", () => {
   it("keeps inherited labels reactive", () => {
@@ -99,5 +100,21 @@ describe("shared accessible controls", () => {
       screen.getByRole("spinbutton", { name: "Word limit" }),
     ).toHaveAttribute("id", "count");
     expect(screen.getByLabelText("Word limit")).toBeInTheDocument();
+  });
+
+  it("associates a visible label with a textarea", () => {
+    render(() => {
+      const form = createForm(() => ({ defaultValues: { text: "" } }));
+      return (
+        <LabeledField label="Custom text">
+          <form.Field name="text">
+            {(field) => <TextareaField field={field} />}
+          </form.Field>
+        </LabeledField>
+      );
+    });
+    expect(
+      screen.getByRole("textbox", { name: "Custom text" }),
+    ).toBeInTheDocument();
   });
 });
