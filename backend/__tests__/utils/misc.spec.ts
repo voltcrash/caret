@@ -401,10 +401,12 @@ describe("Misc Utils", () => {
     });
 
     it("should return false for functions", () => {
-      // oxlint-disable-next-line no-empty-function -- Constructor/function fixtures exercise runtime class/object detection.
-      expect(Misc.isPlainObject(function () {})).toBe(false);
-      // oxlint-disable-next-line no-empty-function -- Constructor/function fixtures exercise runtime class/object detection.
-      expect(Misc.isPlainObject(() => {})).toBe(false);
+      expect(
+        Misc.isPlainObject(function () {
+          return undefined;
+        }),
+      ).toBe(false);
+      expect(Misc.isPlainObject(() => undefined)).toBe(false);
     });
   });
 });
