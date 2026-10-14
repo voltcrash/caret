@@ -1,8 +1,8 @@
 import { JSXElement, onCleanup, onMount } from "solid-js";
 
-import { bindCaret as bindMainCaret } from "../../../test/caret";
-import { bindCaret as bindPaceCaret } from "../../../test/pace-caret";
-import { cn } from "../../../utils/cn";
+import { bindCaret as bindMainCaret } from "../../../../test/caret";
+import { bindCaret as bindPaceCaret } from "../../../../test/pace-caret";
+import { cn } from "../../../../utils/cn";
 
 export function Caret(props: {
   pace?: boolean;

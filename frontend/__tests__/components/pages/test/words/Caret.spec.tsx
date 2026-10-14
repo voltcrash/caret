@@ -7,13 +7,13 @@ const bindings = vi.hoisted(() => ({
   disposeMain: vi.fn(),
   disposePace: vi.fn(),
 }));
-vi.mock("../../../../src/ts/test/caret", () => ({
+vi.mock("../../../../../src/ts/test/caret", () => ({
   bindCaret: bindings.main,
 }));
-vi.mock("../../../../src/ts/test/pace-caret", () => ({
+vi.mock("../../../../../src/ts/test/pace-caret", () => ({
   bindCaret: bindings.pace,
 }));
-import { Caret } from "../../../../src/ts/components/pages/test/Caret";
+import { Caret } from "../../../../../src/ts/components/pages/test/words/Caret";
 
 afterEach(() => {
   cleanup();
