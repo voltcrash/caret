@@ -3,7 +3,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { defineConfig, lazyPlugins } from "vite-plus";
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
-import { playwright } from "vite-plus/test/browser-playwright";
+// oxlint-disable-next-line vite-plus/prefer-vite-plus-imports -- Installed Vitest 5.0.3 requires its matching provider types; Vite+ bundles the incompatible 5.0.1 declarations.
+import { playwright } from "@vitest/browser-playwright";
 
 const dirname =
   typeof __dirname !== "undefined"
