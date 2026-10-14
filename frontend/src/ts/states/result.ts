@@ -5,6 +5,7 @@ import { Language } from "@oxytype/schemas/languages";
 import { TypingSpeedUnit } from "@oxytype/schemas/configs";
 import type { WordsHistoryItem } from "../test/word-markup";
 import { createEvent } from "../hooks/createEvent";
+import type { ReplayWord } from "@oxytype/typing-core/replay";
 import type { SupportsFlags } from "../controllers/user-flag-controller";
 
 export type ResultCrownType =
@@ -56,18 +57,6 @@ export type ResultChartLegendId =
 
 // start = not started or finished
 type ReplayPlayback = "start" | "playing" | "paused";
-
-export type ReplayLetter = {
-  char: string;
-  correct: boolean;
-  incorrect: boolean;
-  extra: boolean;
-};
-
-export type ReplayWord = {
-  letters: ReplayLetter[];
-  error: boolean;
-};
 
 export type ResultState = {
   stats: ResultStats | undefined;

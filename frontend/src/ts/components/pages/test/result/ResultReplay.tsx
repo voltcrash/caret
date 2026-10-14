@@ -1,6 +1,6 @@
-import { For, JSXElement } from "solid-js";
+import type { ReplayLetter } from "@oxytype/typing-core/replay";
 
-import type { ReplayLetter } from "../../../../states/result";
+import { For, JSXElement } from "solid-js";
 
 import { useRef } from "../../../../hooks/useRef";
 import { useSlideAnimation } from "../../../../hooks/useSlideAnimation";
