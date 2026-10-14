@@ -70,7 +70,7 @@ function ReleaseItem(props: {
           "[&_code]:rounded [&_code]:bg-sub-alt [&_code]:px-1",
           "[&_pre]:max-w-full [&_pre]:overflow-x-auto",
         )}
-        // oxlint-disable-next-line solid/no-innerhtml
+        // oxlint-disable-next-line solid/no-innerhtml -- bodyHTML comes from releaseNotesToHtml, which escapes release text before adding markup.
         innerHTML={props.bodyHTML}
       ></div>
       <div class="mt-4 mb-8 h-1 w-full rounded bg-sub-alt sm:mb-16"></div>
