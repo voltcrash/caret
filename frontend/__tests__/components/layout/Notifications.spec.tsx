@@ -20,6 +20,7 @@ vi.mock("../../../src/ts/states/core", () => ({
 vi.mock("../../../src/ts/states/test", () => ({ getFocus: () => false }));
 
 import { Notifications } from "../../../src/ts/components/layout/overlays/Notifications";
+import { NotificationHistory } from "../../../src/ts/components/popups/alerts/NotificationHistory";
 import {
   __testing,
   clearAllNotifications,
@@ -40,6 +41,17 @@ it.each(["<script>alert(1)</script>", '<img src="x" onerror="alert(1)">'])(
   (message) => {
     showNoticeNotification(message, { durationMs: 0 });
     const view = render(() => <Notifications />);
+    expect(view.container.textContent).toContain(message);
+    expect(view.container.querySelector("script, img")).toBeNull();
+  },
+);
+
+it.each(["<script>alert(1)</script>", '<img src="x" onerror="alert(1)">'])(
+  "renders notification history input as text: %s",
+  (message) => {
+    showNoticeNotification(message, { durationMs: 0 });
+    clearAllNotifications();
+    const view = render(() => <NotificationHistory />);
     expect(view.container.textContent).toContain(message);
     expect(view.container.querySelector("script, img")).toBeNull();
   },
