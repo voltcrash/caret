@@ -4,12 +4,7 @@ import type {
   CustomTextSettings,
   IncompleteTest,
 } from "@oxytype/schemas/results";
-import {
-  getAccuracy,
-  getIncompleteTestSeconds,
-  getRawHistory,
-  getWordBurst,
-} from "@oxytype/typing-core/events/stats";
+import { getRawHistory, getWordBurst } from "@oxytype/typing-core/events/stats";
 import type { EventLog } from "@oxytype/typing-core/events/types";
 import { canQuickRestart } from "@oxytype/typing-core/quick-restart";
 import { shouldRepeatQuote } from "@oxytype/typing-core/restart";
@@ -160,7 +155,6 @@ export function createTypingTest(options: TypingTestOptions): TypingTest {
   let disposed = false;
   let repeated = false;
   let bailedOut = false;
-  let abandoning = false;
   let restartCount = 0;
   let activeTags: string[] = [];
   let selectedQuoteId = 1;
@@ -215,7 +209,6 @@ export function createTypingTest(options: TypingTestOptions): TypingTest {
     session.on("finish", ({ reason }) => {
       stopTimer();
       setPace(undefined);
-      if (abandoning) return;
       session.recorder.cleanupData();
       const eventLog = session.buildEventLog();
       eventLog.context.bailedOut = bailedOut;
@@ -489,16 +482,10 @@ export function createTypingTest(options: TypingTestOptions): TypingTest {
           mode: config().mode,
           repeatQuotes: store.config.repeatQuotes,
         });
-      abandoning = true;
-      session.finish(now());
-      abandoning = false;
-      const log = session.buildEventLog();
-      if (store.config.resultSaving) {
-        incompleteTests.push({
-          acc: getAccuracy(log).percentage,
-          seconds: getIncompleteTestSeconds(log),
-        });
-      }
+      stopTimer();
+      setPace(undefined);
+      const incomplete = session.abandon(now());
+      if (store.config.resultSaving) incompleteTests.push(incomplete);
       restartCount++;
     }
     await load(repeat);
