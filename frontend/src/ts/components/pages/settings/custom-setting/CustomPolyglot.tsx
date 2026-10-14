@@ -1,5 +1,4 @@
 import { CustomPolyglot as CustomPolyglotType } from "@oxytype/schemas/configs";
-import { Optgroup } from "slim-select";
 import { JSXElement } from "solid-js";
 
 import { configMetadata } from "../../../../config/metadata";
@@ -11,7 +10,7 @@ import {
 } from "../../../../constants/languages";
 import { areUnsortedArraysEqual } from "../../../../utils/arrays";
 import { getLanguageDisplayString } from "../../../../utils/strings";
-import SlimSelect from "../../../ui/SlimSelect";
+import Select, { SelectOptionGroup } from "../../../ui/Select";
 import { SearchableSetting } from "../SearchableSetting";
 
 export function CustomPolyglot(): JSXElement {
@@ -22,7 +21,8 @@ export function CustomPolyglot(): JSXElement {
       description={configMetadata.customPolyglot.description}
       fa={configMetadata.customPolyglot.fa}
       inputs={
-        <SlimSelect
+        <Select
+          label="Polyglot languages"
           multiple
           settings={{
             closeOnSelect: false,
@@ -37,7 +37,7 @@ export function CustomPolyglot(): JSXElement {
                   text: getLanguageDisplayString(language),
                   value: language,
                 })),
-              }) as Optgroup,
+              }) as SelectOptionGroup,
           )}
           selected={getConfig.customPolyglot}
           onChange={(val) => {
