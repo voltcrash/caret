@@ -41,7 +41,7 @@ const SortingStateSchema = z.array(
   }),
 );
 
-// oxlint-disable-next-line typescript/no-explicit-any
+// oxlint-disable-next-line typescript/no-explicit-any -- TanStack column callbacks are invariant; heterogeneous columns retain their individual value types.
 export type DataTableColumnDef<TData extends RowData, TValue = any> =
   | ColumnDef<typeof dataTableFeatures, TData, TValue>
   | AccessorFnColumnDef<typeof dataTableFeatures, TData, TValue>
@@ -74,7 +74,7 @@ export function DataTable<TData extends RowData>(
   props: DataTableProps<TData>,
 ): JSXElement {
   const [sorting, setSorting] = useLocalStorage<SortingState>({
-    //oxlint-disable-next-line solid/reactivity
+    //oxlint-disable-next-line solid/reactivity -- Table identity/sorting mode are fixed at mount; data and selection have tracked accessors.
     key: `${props.id}Sort`,
     schema: SortingStateSchema,
     fallback: [],
@@ -119,7 +119,7 @@ export function DataTable<TData extends RowData>(
       props.onSortingChange?.(sorting());
     },
 
-    //oxlint-disable-next-line solid/reactivity
+    //oxlint-disable-next-line solid/reactivity -- Table identity/sorting mode are fixed at mount; data and selection have tracked accessors.
     manualSorting: props.onSortingChange !== undefined,
     enableRowSelection: () => props.rowSelection !== undefined,
     getRowId: (row, index) =>
