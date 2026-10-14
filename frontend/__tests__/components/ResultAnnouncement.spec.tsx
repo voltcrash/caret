@@ -71,4 +71,12 @@ describe("result announcements", () => {
     setResultState("stats", "wpm", "text", "100");
     expect(status.textContent).toBe("");
   });
+
+  it("announces completed speed, accuracy and elapsed time", () => {
+    render(() => <ResultAnnouncement />);
+    setResultVisible(true);
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Test complete. 80 wpm. Accuracy 95%. Time 15s.",
+    );
+  });
 });
