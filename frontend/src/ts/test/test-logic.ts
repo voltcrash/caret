@@ -18,7 +18,6 @@ import * as PaceCaret from "./pace-caret";
 import * as TestTimer from "./test-timer";
 import * as DB from "../db";
 import * as Replay from "./replay";
-import { getActiveTags } from "../collections/tags";
 import * as TodayTracker from "./today-tracker";
 import * as ChallengeContoller from "../controllers/challenge-controller";
 import { clearQuoteStats } from "../states/quote-rate";
@@ -759,11 +758,16 @@ export async function finish(difficultyFailed = false): Promise<void> {
   }
 
   const eventLog = buildEventLog();
+  const tags = isAuthenticated()
+    ? (await import("../collections/tags"))
+        .getActiveTags()
+        .map((tag) => tag._id)
+    : [];
   const ce = testSession.complete(eventLog, {
     config: Config,
     currentQuote: getCurrentQuote(),
     customText: getCompletedEventCustomText(),
-    tags: getActiveTags().map((tag) => tag._id),
+    tags,
     bailedOut: getBailedOut(),
     restartCount: getRestartCount(),
     incompleteTests: getIncompleteTests(),

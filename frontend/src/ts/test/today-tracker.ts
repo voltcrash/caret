@@ -1,4 +1,3 @@
-import { getResultsSinceDayOnce } from "../collections/results";
 import * as DateTime from "../utils/date-and-time";
 
 let seconds = 0;
@@ -22,6 +21,7 @@ export function getString(): string {
 }
 
 export async function addAllFromToday(): Promise<void> {
+  const { getResultsSinceDayOnce } = await import("../collections/results");
   const todayDate = new Date();
   todayDate.setSeconds(0);
   todayDate.setMinutes(0);

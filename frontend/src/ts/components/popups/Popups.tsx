@@ -1,7 +1,17 @@
-import { JSXElement } from "solid-js";
+import { JSXElement, lazy, Show, Suspense } from "solid-js";
 
-import { AlertsPopup } from "./alerts/AlertsPopup";
+import { getModalVisibility } from "../../states/modals";
+
+const AlertsPopup = lazy(async () =>
+  import("./alerts/AlertsPopup").then((m) => ({ default: m.AlertsPopup })),
+);
 
 export function Popups(): JSXElement {
-  return <AlertsPopup />;
+  return (
+    <Show when={getModalVisibility("Alerts") !== null}>
+      <Suspense>
+        <AlertsPopup />
+      </Suspense>
+    </Show>
+  );
 }

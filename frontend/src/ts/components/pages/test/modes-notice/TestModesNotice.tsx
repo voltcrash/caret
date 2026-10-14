@@ -1,12 +1,12 @@
-import { createMemo, Show } from "solid-js";
+import { createMemo, lazy, Show, Suspense } from "solid-js";
 
-import { useActiveTagsLiveQuery } from "../../../../collections/tags";
 import * as Commandline from "../../../../commandline/open";
 import { getConfig } from "../../../../config/store";
 import {
   getCustomTextIndicator,
   getFormatting,
   showCommandLineForConfig,
+  isAuthenticated,
 } from "../../../../states/core";
 import { hotkeys } from "../../../../states/hotkeys";
 import {
@@ -25,9 +25,15 @@ import {
   replaceUnderscoresWithSpaces,
 } from "../../../../utils/strings";
 import { Kbd } from "../../../common/Kbd";
-import { AverageNotice } from "./AverageNotice";
 import { Notice } from "./Notice";
 import { PbNotice } from "./PbNotice";
+
+const AverageNotice = lazy(async () =>
+  import("./AverageNotice").then((m) => ({ default: m.AverageNotice })),
+);
+const TagsNotice = lazy(async () =>
+  import("./TagsNotice").then((m) => ({ default: m.TagsNotice })),
+);
 
 export function TestModesNotice() {
   return (
@@ -51,7 +57,11 @@ export function TestModesNotice() {
         <BlindMode />
         <LazyMode />
         <PaceCaretNotice />
-        <AverageNotice />
+        <Show when={isAuthenticated() && getConfig.showAverage !== "off"}>
+          <Suspense>
+            <AverageNotice />
+          </Suspense>
+        </Show>
         <PbNotice />
         <MinSpeed />
         <MinAcc />
@@ -62,7 +72,11 @@ export function TestModesNotice() {
         <DeleteOnError />
         <Layout />
         <OppositeShift />
-        <Tags />
+        <Show when={isAuthenticated()}>
+          <Suspense>
+            <TagsNotice />
+          </Suspense>
+        </Show>
       </div>
     </Show>
   );
@@ -391,21 +405,6 @@ function OppositeShift() {
       icon="fa-exchange-alt"
       openCommandline="oppositeShiftMode"
       text={`opposite shift${getConfig.oppositeShiftMode === "keymap" ? " (keymap)" : ""}`}
-    />
-  );
-}
-
-function Tags() {
-  const tags = useActiveTagsLiveQuery();
-
-  return (
-    <Notice
-      when={tags().length > 0}
-      icon={tags().length === 1 ? "fa-tag" : "fa-tags"}
-      openCommandline="tags"
-      text={tags()
-        .map((tag) => tag.name)
-        .join(", ")}
     />
   );
 }

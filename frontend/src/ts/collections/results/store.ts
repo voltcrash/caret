@@ -3,6 +3,7 @@ import { normalizeResult } from "./normalize";
 import { Client, Mode } from "@oxytype/schemas/shared";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import { BTreeIndex, createCollection } from "@tanstack/solid-db";
+import { bindResultsReady } from "../../states/results-ready";
 import Ape from "../../ape";
 import { SnapshotResult } from "../../constants/default-snapshot";
 import { queryClient } from "../../queries";
@@ -75,6 +76,8 @@ export const resultsCollection = resultsByClient.web;
 export function isResultsReady(): boolean {
   return resultsCollection.isReady();
 }
+
+bindResultsReady(isResultsReady);
 
 export async function waitForResultsReady(): Promise<void> {
   await resultsCollection.stateWhenReady();

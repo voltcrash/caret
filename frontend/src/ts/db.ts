@@ -24,7 +24,6 @@ import { getFirstDayOfTheWeek } from "./utils/date-and-time";
 import { Language } from "@oxytype/schemas/languages";
 import { authEvent } from "./events/auth";
 import { configurationPromise } from "./ape/server-configuration";
-import { insertLocalResult } from "./collections/results";
 import {
   setLastResult,
   _setSnapshot as setSolidSnapshot,
@@ -311,7 +310,10 @@ export function saveLocalResult(data: SaveLocalResultData): void {
   if (!snapshot) return;
 
   if (data.result !== undefined) {
-    void insertLocalResult({ result: data.result });
+    const result = data.result;
+    void import("./collections/results").then(async (m) =>
+      m.insertLocalResult({ result }),
+    );
     setLastResult(data.result);
     if (snapshot.testActivity !== undefined) {
       snapshot.testActivity.increment(new Date(data.result.timestamp));
