@@ -26,6 +26,7 @@
               // Solid uses HTML casing and explicit attribute namespaces.
               "autocorrect",
               "autocomplete",
+              "autofocus",
               "enterkeyhint",
               "spellcheck",
               "referrerpolicy",
