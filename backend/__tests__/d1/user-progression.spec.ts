@@ -84,4 +84,37 @@ describe("D1 personal-best and progression policies", () => {
       ).rejects.toThrow("Tag not found");
     });
   });
+
+  it("advances UTC streaks once per day, preserves the maximum and ignores delayed uploads", async () => {
+    await seedUser(test.env, "streakProgress");
+    await withRuntime(test.env, async () => {
+      const day = Date.UTC(2024, 1, 28, 12);
+      expect(await Users.updateStreak("streakProgress", day)).toBe(1);
+      expect(await Users.updateStreak("streakProgress", day + 1000)).toBe(1);
+      expect(await Users.updateStreak("streakProgress", day + 86400000)).toBe(
+        2,
+      );
+      expect(await Users.updateStreak("streakProgress", day)).toBe(2);
+      expect(
+        await Users.updateStreak("streakProgress", day + 3 * 86400000),
+      ).toBe(1);
+      expect(
+        (await Users.getUser("streakProgress", "test")).streak,
+      ).toMatchObject({
+        length: 1,
+        maxLength: 2,
+        lastResultTimestamp: day + 3 * 86400000,
+      });
+      await Users.setStreakHourOffset("streakProgress", 5, "tui");
+      await Users.setStreakHourOffset("streakProgress", -3);
+      await Users.clearStreakHourOffset("streakProgress");
+      expect(
+        (await Users.getUser("streakProgress", "test")).streak?.hourOffset,
+      ).toBeUndefined();
+      expect(
+        (await Users.getUser("streakProgress", "test", "tui")).streak
+          ?.hourOffset,
+      ).toBeUndefined();
+    });
+  });
 });
