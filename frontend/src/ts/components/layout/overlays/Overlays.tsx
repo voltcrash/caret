@@ -32,7 +32,11 @@ export function Overlays(): JSXElement {
 
 function DevButtons(): JSXElement {
   return (
-    <div class="fixed top-30 left-0 z-10000 flex w-max flex-col gap-2 text-xs">
+    <div
+      role="region"
+      aria-label="Development tools"
+      class="fixed top-30 left-0 z-10000 flex w-max flex-col gap-2 text-xs"
+    >
       <Button
         href={`${envConfig.backendUrl}/configure/`}
         balloon={{
