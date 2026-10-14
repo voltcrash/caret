@@ -83,4 +83,21 @@ describe("shared accessible controls", () => {
       screen.getByRole("button", { name: "Favorite quotes" }),
     ).toHaveAttribute("aria-pressed", "true");
   });
+
+  it("associates a visible label with a nested numeric field", () => {
+    render(() => {
+      const form = createForm(() => ({ defaultValues: { count: 10 } }));
+      return (
+        <LabeledField label="Word limit">
+          <form.Field name="count">
+            {(field) => <InputField field={field} type="number" />}
+          </form.Field>
+        </LabeledField>
+      );
+    });
+    expect(
+      screen.getByRole("spinbutton", { name: "Word limit" }),
+    ).toHaveAttribute("id", "count");
+    expect(screen.getByLabelText("Word limit")).toBeInTheDocument();
+  });
 });
