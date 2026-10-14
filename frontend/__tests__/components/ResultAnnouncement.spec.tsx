@@ -61,4 +61,14 @@ describe("result announcements", () => {
     setResultCalculating(false);
     expect(screen.getByRole("status")).toHaveTextContent("80 wpm");
   });
+
+  it("mounts an empty polite atomic region before typing finishes", () => {
+    render(() => <ResultAnnouncement />);
+    const status = screen.getByRole("status");
+    expect(status).toHaveAttribute("aria-live", "polite");
+    expect(status).toHaveAttribute("aria-atomic", "true");
+    expect(status).toHaveTextContent("");
+    setResultState("stats", "wpm", "text", "100");
+    expect(status.textContent).toBe("");
+  });
 });
