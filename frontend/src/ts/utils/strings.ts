@@ -1,5 +1,6 @@
 import { Language } from "@oxytype/schemas/languages";
 import { removeLanguageSize } from "@oxytype/typing-core/strings";
+import { escapeRegExp } from "./misc";
 
 export {
   capitalizeFirstLetterOfEachWord,
@@ -36,26 +37,43 @@ export function normalizeName(name: string): string {
   return name.trim().replace(/\s+/g, "_");
 }
 
+type HighlightSegment = { text: string; matched: boolean };
+
 /**
  * Highlights all occurrences of specified words within a given text.
- * Each match is wrapped in a <span class="highlight"> element.
+ * Returns literal text segments and marks matching words for JSX rendering.
  * Matches are ignored if they appear as part of a larger word
  * not included in the matches array.
  * @param text The full text in which to highlight words.
  * @param matches An array of words to highlight.
- * @return The full text with all matching words highlighted.
+ * @return Text segments with a matched flag, without generating HTML.
  */
-export function highlightMatches(text: string, matches: string[]): string {
+export function highlightMatches(
+  text: string,
+  matches: string[],
+): HighlightSegment[] {
   matches = matches.filter((match) => match !== "");
-  if (matches.length === 0) return text;
+  if (matches.length === 0) return [{ text, matched: false }];
 
   // matches that don't have a letter before or after them
   const pattern = new RegExp(
-    `(?<!\\p{L})(?:${matches.join("|")})(?!\\p{L})`,
+    `(?<!\\p{L})(?:${matches.map(escapeRegExp).join("|")})(?!\\p{L})`,
     "gu",
   );
 
-  return text.replace(pattern, '<span class="highlight">$&</span>');
+  const segments: HighlightSegment[] = [];
+  let end = 0;
+  for (const match of text.matchAll(pattern)) {
+    if (match.index > end) {
+      segments.push({ text: text.slice(end, match.index), matched: false });
+    }
+    segments.push({ text: match[0], matched: true });
+    end = match.index + match[0].length;
+  }
+  if (end < text.length || segments.length === 0) {
+    segments.push({ text: text.slice(end), matched: false });
+  }
+  return segments;
 }
 
 /**
