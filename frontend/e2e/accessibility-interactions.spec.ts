@@ -1,4 +1,6 @@
 import {
+  assertRestarted,
+  completeWords,
   expect,
   openCommandline,
   openTest,
@@ -52,4 +54,25 @@ test("chained modals return focus through their parent to the typing input", asy
   await page.keyboard.press("Escape");
   await expect(page.locator("#commandLine")).toBeHidden();
   await expect(page.locator("#wordsInput")).toBeFocused();
+});
+
+test("result summary stays silent during typing and clears on restart", async ({
+  page,
+}) => {
+  await openTest(page);
+  const summary = page.locator("#resultSummary");
+  await expect(summary).toHaveAttribute("aria-live", "polite");
+  await expect(summary).toHaveText("");
+  await page.locator("#words .word").first().click();
+  await page.keyboard.type("x");
+  await expect(summary).toHaveText("");
+  await page.locator("#restartTestButton").click();
+  await assertRestarted(page);
+  await completeWords(page);
+  await expect(summary).toContainText("Test complete.");
+  await expect(summary).toContainText("Accuracy 100%");
+  await page.keyboard.press("Tab");
+  await page.keyboard.press("Enter");
+  await assertRestarted(page);
+  await expect(summary).toHaveText("");
 });
