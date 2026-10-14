@@ -106,6 +106,7 @@ function QuoteApproveItem(props: {
         name="text"
         children={(field) => (
           <textarea
+            aria-label="Quote text"
             class="w-full rounded bg-bg p-2 text-text"
             value={field().state.value}
             onInput={(e) => field().handleChange(e.currentTarget.value)}
