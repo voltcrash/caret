@@ -269,14 +269,12 @@ describe("local-storage-with-schema.ts", () => {
 
         getItemMock.mockReturnValue(JSON.stringify(existingValue));
 
-        const migrated = {
+        const migrated: z.infer<typeof objectSchema> = {
           punctuation: false,
           mode: "time",
           fontSize: 1,
         };
-
-        // oxlint-disable-next-line typescript/no-unsafe-return -- Storage/migration fixtures deliberately supply values outside the validated schema.
-        const migrateFnMock = vi.fn(() => migrated as any);
+        const migrateFnMock = vi.fn(() => migrated);
 
         const ls = new LocalStorageWithSchema({
           key: "config",
@@ -363,9 +361,9 @@ describe("local-storage-with-schema.ts", () => {
           mode: "time",
           fontSize: 1,
         };
-
-        // oxlint-disable-next-line typescript/no-unsafe-return -- Storage/migration fixtures deliberately supply values outside the validated schema.
-        const migrateFnMock = vi.fn(() => invalidMigrated as any);
+        const migrateFnMock = vi.fn(
+          () => invalidMigrated as unknown as z.infer<typeof objectSchema>,
+        );
 
         const ls = new LocalStorageWithSchema({
           key: "config",
