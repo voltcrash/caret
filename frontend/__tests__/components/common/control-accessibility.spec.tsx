@@ -41,4 +41,14 @@ describe("shared accessible controls", () => {
     const button = screen.getByRole("button", { name: "Delete saved text" });
     expect(button.querySelector("i")).toHaveAttribute("aria-hidden", "true");
   });
+
+  it("names icon links independently of their tooltip", () => {
+    render(() => (
+      <Button href="/settings" fa={{ icon: "fa-cog" }} aria-label="Settings" />
+    ));
+    expect(screen.getByRole("link", { name: "Settings" })).toHaveAttribute(
+      "href",
+      "/settings",
+    );
+  });
 });
