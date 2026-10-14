@@ -6,7 +6,11 @@ import { isDevEnvironment } from "../../../utils/env";
 export function MediaQueryDebugger(): JSXElement {
   return (
     <Show when={isDevEnvironment()}>
-      <div class="fixed top-2 z-999999999999999 flex flex-col gap-2 font-mono text-xs text-text">
+      <div
+        role="region"
+        aria-label="Viewport diagnostics"
+        class="fixed top-2 z-999999999999999 flex flex-col gap-2 font-mono text-xs text-text"
+      >
         <div class="flex w-min rounded-r bg-sub-alt px-2 py-1">
           <div class="mr-2">OLD</div>
           <div class="hidden 2xl:block">red</div>
