@@ -350,6 +350,9 @@ importers:
       '@redocly/cli':
         specifier: 2.57.0
         version: 2.57.0
+      '@types/etag':
+        specifier: 1.8.4
+        version: 1.8.4
       '@types/node':
         specifier: 24.19.0
         version: 24.19.0
@@ -4367,6 +4370,9 @@ packages:
 
   '@types/estree@1.0.9':
     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
+
+  '@types/etag@1.8.4':
+    resolution: {integrity: sha512-f1z/UMth8gQ6636NBqhFmJ3zES7EuDcUnV6K1gl1osHp+85KPKX+VixYWUpqLkw1fftCagyHJjJOZjZkEi2rHw==}
 
   '@types/howler@2.2.13':
     resolution: {integrity: sha512-40+EBjqIHHrC4VShlz/7i0lBUsE3QkgzZinQQji74Hd8sBkJZUBaT7LWFLK6rcabsDOOQpoMbEJvtaFQwxOu/g==}
@@ -11940,6 +11946,10 @@ snapshots:
   '@types/estree@1.0.8': {}
 
   '@types/estree@1.0.9': {}
+
+  '@types/etag@1.8.4':
+    dependencies:
+      '@types/node': 24.19.0
 
   '@types/howler@2.2.13': {}
 

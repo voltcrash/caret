@@ -61,6 +61,7 @@
     "@oxytype/oxlint-config": "workspace:*",
     "@oxytype/typescript-config": "workspace:*",
     "@redocly/cli": "2.57.0",
+    "@types/etag": "1.8.4",
     "@types/node": "24.19.0",
     "@types/object-hash": "3.0.6",
     "@types/qs": "6.15.1",
