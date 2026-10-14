@@ -3,6 +3,7 @@ import { createForm } from "@tanstack/solid-form";
 import { createSignal } from "solid-js";
 import { describe, expect, it } from "vite-plus/test";
 
+import { Button } from "../../../src/ts/components/common/Button";
 import { InputField } from "../../../src/ts/components/ui/form/InputField";
 import { LabeledField } from "../../../src/ts/components/ui/form/LabeledField";
 
@@ -31,5 +32,13 @@ describe("shared accessible controls", () => {
     expect(
       screen.getByRole("spinbutton", { name: "New limit" }),
     ).toBeInTheDocument();
+  });
+
+  it("names icon-only buttons and hides decorative icons", () => {
+    render(() => (
+      <Button fa={{ icon: "fa-trash" }} aria-label="Delete saved text" />
+    ));
+    const button = screen.getByRole("button", { name: "Delete saved text" });
+    expect(button.querySelector("i")).toHaveAttribute("aria-hidden", "true");
   });
 });
