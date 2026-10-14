@@ -1,5 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
-import { createHintsNodes } from "../../src/ts/components/pages/test/words/hints";
+import {
+  createHintsNodes,
+  joinOverlappingHints,
+} from "../../src/ts/components/pages/test/words/hints";
 import * as TestWords from "../../src/ts/test/test-words";
 
 const state = vi.hoisted(() => ({ rtl: false, result: false }));
@@ -31,6 +34,22 @@ function createLetters(count = 3): HTMLElement[] {
     return letter;
   });
 }
+function attachHints(letters: HTMLElement[], input: string): HTMLDivElement {
+  const word = document.createElement("div");
+  word.className = "word";
+  word.append(...letters, createHintsNodes([[0, 1, 2]], letters, input));
+  document.getElementById("words")?.append(word);
+  return word;
+}
+function measureHints(word: HTMLElement): void {
+  for (const hint of word.querySelectorAll<HTMLElement>("hint")) {
+    Object.defineProperties(hint, {
+      offsetLeft: { get: () => parseFloat(hint.style.left) },
+      offsetWidth: { get: () => (hint.textContent?.length ?? 0) * 20 },
+    });
+  }
+}
+
 beforeEach(() => {
   state.rtl = false;
   state.result = false;
@@ -75,5 +94,44 @@ describe("word hints", () => {
     expect(hints.querySelector(".hints")).toBeNull();
     expect(hints.textContent).toBe("<&");
     expect(hints.children).toHaveLength(2);
+  });
+  it.each([false, true])(
+    "joins overlapping hints without parsing their text (RTL=%s)",
+    async (rtl) => {
+      state.rtl = rtl;
+      if (rtl) {
+        TestWords.words.reset();
+        TestWords.words.push("אבג ", 0);
+      }
+      const letters = createLetters();
+      const word = attachHints(letters, '<&"');
+      measureHints(word);
+      const originalTextNode = word.querySelector("hint")?.firstChild;
+      await joinOverlappingHints(
+        [[0, 1, 2]],
+        letters,
+        word.getElementsByTagName("hint"),
+      );
+      expect(word.querySelectorAll("hint")).toHaveLength(1);
+      expect(word.querySelector("hint")?.textContent).toBe('<&"');
+      expect(
+        word.querySelector<HTMLElement>("hint")?.dataset["charsIndex"],
+      ).toBe("0,1,2");
+      expect(word.querySelector("hint")?.firstChild).toBe(originalTextNode);
+    },
+  );
+  it("keeps hints on different lines separate", async () => {
+    const letters = createLetters();
+    const second = letters[1];
+    if (second === undefined) throw new Error("Missing letter fixture");
+    Object.defineProperty(second, "offsetTop", { value: 20 });
+    const word = attachHints(letters, "abc");
+    measureHints(word);
+    await joinOverlappingHints(
+      [[0, 1, 2]],
+      letters,
+      word.getElementsByTagName("hint"),
+    );
+    expect(word.querySelectorAll("hint")).toHaveLength(3);
   });
 });
