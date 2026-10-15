@@ -1,5 +1,5 @@
-import { generateCurrentTestActivity } from "../../../api/controllers/user/activity";
-import { getAllTimeLbs } from "../../../api/controllers/user/leaderboards";
+import { generateCurrentTestActivity } from "./activity";
+import { getAllTimeLbs } from "./leaderboards";
 import type { ClientQuery } from "@oxytype/schemas/shared";
 import * as UserDAL from "../../../dal/user";
 import { MonkeyResponse } from "../../../utils/monkey-response";
