@@ -14,7 +14,12 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { mulberry32, scriptedKey, type Rng } from "./lib/keystroke-plan.ts";
 
-type Timeline = { keySpacing: number[]; keyDuration: number[] };
+type Timeline = {
+  keySpacing: number[];
+  keyDuration: number[];
+  // overrides the fixture label for one sample
+  label?: "model";
+};
 type Fixture = {
   name: string;
   label: "bot" | "model";
@@ -209,8 +214,10 @@ const fixtures: Fixture[] = [
     label: "bot",
     client: "web",
     description:
-      "One modelled timeline submitted twice by the same user, the second with ±0.3 ms noise.",
+      "One modelled timeline uploaded by the same user, resubmitted exactly and then with ±0.3 ms noise.",
     samples: [
+      // the first upload is ordinary typing; only the resubmissions are bots
+      { ...recorded, label: "model" },
       recorded,
       (() => {
         const rng = mulberry32(10);
