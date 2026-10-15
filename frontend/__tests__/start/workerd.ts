@@ -1,4 +1,5 @@
-import { Miniflare } from "miniflare";
+import { createHmac } from "node:crypto";
+import { Miniflare, Response as FixtureResponse } from "miniflare";
 import { readdirSync, readFileSync } from "node:fs";
 import { resolve, relative } from "node:path";
 import { withRuntime, type WorkerEnv } from "@oxytype/backend/runtime";
@@ -10,6 +11,7 @@ const testSecret = "stage-one-local-only-secret-at-least-32-characters";
 export async function createWorkerd(
   testEntry = false,
   port?: number,
+  captcha = false,
 ): Promise<Miniflare> {
   const dir = resolve(
     root,
@@ -26,6 +28,8 @@ export async function createWorkerd(
         },
       ]),
   );
+  const origin =
+    port === undefined ? "http://localhost:3000" : `http://127.0.0.1:${port}`;
   const mf = new Miniflare({
     ...(port === undefined ? {} : { port, host: "127.0.0.1" }),
     workers: ["a", "b"].map((name) => ({
@@ -43,15 +47,23 @@ export async function createWorkerd(
         manifest: { mainModule: "index.js", modules },
         env: {
           DB: { type: "d1" as const, name, id: name },
+          ...(captcha
+            ? {
+                TURNSTILE_SECRET_KEY: {
+                  type: "text" as const,
+                  value: "local-test-turnstile",
+                },
+              }
+            : {}),
           MODE: { type: "text" as const, value: "production" },
           VERSION: { type: "text" as const, value: name },
           FRONTEND_URL: {
             type: "text" as const,
-            value: "http://localhost:3000",
+            value: origin,
           },
           BETTER_AUTH_URL: {
             type: "text" as const,
-            value: "http://localhost:3000/api/auth",
+            value: `${origin}/api/auth`,
           },
           BETTER_AUTH_SECRET: { type: "text" as const, value: testSecret },
         },
@@ -60,6 +72,17 @@ export async function createWorkerd(
         outboundService: {
           type: "fetcher" as const,
           handler: (request: { url: string }) => {
+            if (
+              captcha &&
+              request.url ===
+                "https://challenges.cloudflare.com/turnstile/v0/siteverify"
+            ) {
+              return FixtureResponse.json({
+                success: true,
+                hostname: "localhost",
+                action: "signup",
+              });
+            }
             throw new Error(`Unexpected outbound HTTP: ${request.url}`);
           },
         },
@@ -83,6 +106,10 @@ export async function createWorkerd(
       );
     }
     await db
+      .prepare("INSERT INTO configuration(id,data) VALUES('main',?)")
+      .bind(JSON.stringify({ users: { signUp: true } }))
+      .run();
+    await db
       .prepare(
         "INSERT INTO public_stats(id,tests_completed,tests_started,time_typing) VALUES('stats',?,?,?)",
       )
@@ -98,7 +125,7 @@ export async function createWorkerd(
 export async function seedSession(
   mf: Miniflare,
   worker: string,
-): Promise<{ uid: string; token: string }> {
+): Promise<{ uid: string; token: string; cookie: string }> {
   const db = await mf.getD1Database("DB", worker);
   const env = {
     DB: db,
@@ -119,6 +146,10 @@ export async function seedSession(
     );
     const session = await auth.internalAdapter.createSession(user.id, false);
     if (session === null) throw new Error("Missing fixture session");
-    return { uid: user.id, token: session.token };
+    return {
+      uid: user.id,
+      token: session.token,
+      cookie: `oxytype.session_token=${encodeURIComponent(`${session.token}.${createHmac("sha256", testSecret).update(session.token).digest("base64")}`)}`,
+    };
   });
 }

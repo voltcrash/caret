@@ -9,9 +9,10 @@ function functionPath(): string {
     file.includes("server-fn-resolver"),
   );
   if (file === undefined) throw new Error("Missing function manifest");
-  const id = /"([a-f0-9]{64})"/.exec(
-    readFileSync(resolve(dir, file), "utf8"),
-  )?.[1];
+  const id =
+    /"([a-f0-9]{64})":\s*\{\s*functionName:\s*"getTypingStats_createServerFn_handler"/.exec(
+      readFileSync(resolve(dir, file), "utf8"),
+    )?.[1];
   if (id === undefined) throw new Error("Missing function ID");
   return `/_serverFn/${id}`;
 }

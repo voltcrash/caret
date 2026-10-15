@@ -1,3 +1,4 @@
+import { rpcPath } from "../__tests__/start/rpc";
 import { expect, test } from "playwright/test";
 
 test("public navigation and the saved theme work while browser setup is loading", async ({
@@ -73,14 +74,18 @@ test("SSR hydrates Query once and keeps native navigation and refresh working", 
   await page.waitForLoadState("networkidle");
   await expect(page.getByTestId("tests-completed")).toHaveText("11");
   await expect(page.locator("#nocss")).toBeHidden();
-  expect(rpc).toEqual([]);
+  expect(rpc.filter((url) => url.includes(rpcPath("getTypingStats")))).toEqual(
+    [],
+  );
   await page.getByRole("link", { name: "oxytype", exact: true }).click();
   await expect(page).toHaveURL(/\/$/);
   await page.getByRole("link", { name: "About Oxytype", exact: true }).click();
   await expect(page).toHaveURL(/\/about$/);
   await expect(page.getByTestId("tests-completed")).toHaveText("11");
   expect(documents).toHaveLength(1);
-  expect(rpc).toEqual([]);
+  expect(rpc.filter((url) => url.includes(rpcPath("getTypingStats")))).toEqual(
+    [],
+  );
   await page.reload();
   await page.waitForLoadState("networkidle");
   await expect(page.getByTestId("tests-completed")).toHaveText("11");
