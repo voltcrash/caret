@@ -2,7 +2,7 @@ import { createSignal, onCleanup } from "solid-js";
 
 import { createAppOwned } from "./application";
 
-export type ReadinessState =
+type ReadinessState =
   | { status: "idle" | "loading" | "ready" | "disposed" }
   | { status: "error"; error: unknown };
 

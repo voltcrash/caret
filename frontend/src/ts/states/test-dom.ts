@@ -1,3 +1,4 @@
+import { createAppOwned } from "../../app/application";
 type TestElements = {
   words: HTMLDivElement;
   wordsWrapper: HTMLDivElement;
@@ -8,18 +9,25 @@ type TestElements = {
   keyboardProxy: HTMLInputElement;
 };
 
-let elements: TestElements | undefined;
+const getState = createAppOwned(() => ({
+  elements: undefined as TestElements | undefined,
+}));
 
 // TestPage owns these native nodes for its lifetime.
-export function setTestElements(refs: TestElements): void {
-  elements = refs;
+export function setTestElements(refs: TestElements): () => void {
+  const state = getState();
+  state.elements = refs;
+  return () => {
+    if (state.elements === refs) state.elements = undefined;
+  };
 }
 
 export function areTestElementsMounted(): boolean {
-  return elements !== undefined;
+  return getState().elements !== undefined;
 }
 
 function getElement<K extends keyof TestElements>(key: K): TestElements[K] {
+  const elements = getState().elements;
   if (elements === undefined) throw new Error("Test page is not mounted");
   return elements[key];
 }

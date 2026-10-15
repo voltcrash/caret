@@ -1,3 +1,4 @@
+import { createAppOwned } from "../../app/application";
 import { createAppStore, createAppSignal } from "../../app/state";
 import type { CartesianScaleOptions, Chart, ChartDataset } from "chart.js";
 
@@ -166,39 +167,41 @@ export type ResultChartType = Chart<"line" | "scatter", number[]>;
 export type ResultChartDatasetId = "wpm" | "raw" | "error" | "burst";
 
 // set by ResultChart once the canvas is mounted
-let resultChart: ResultChartType | undefined;
-let chartLoader: (() => Promise<void>) | undefined;
-const chartWaiters = new Set<() => void>();
 
 export function bindResultChartLoader(loader: () => Promise<void>): () => void {
-  chartLoader = loader;
+  const state = resultRefs();
+  state.chartLoader = loader;
   return () => {
-    if (chartLoader === loader) chartLoader = undefined;
+    if (state.chartLoader === loader) state.chartLoader = undefined;
   };
 }
 
 export async function prepareResultChart(): Promise<void> {
-  await chartLoader?.();
+  const state = resultRefs();
+  await state.chartLoader?.();
 }
 
 export async function waitForResultChart(): Promise<void> {
-  if (resultChart !== undefined) return;
-  await new Promise<void>((resolve) => chartWaiters.add(resolve));
+  const state = resultRefs();
+  if (state.resultChart !== undefined) return;
+  await new Promise<void>((resolve) => state.chartWaiters.add(resolve));
 }
 
 export function setResultChart(chart: ResultChartType | undefined): void {
-  resultChart = chart;
+  const state = resultRefs();
+  state.resultChart = chart;
   if (chart !== undefined) {
-    for (const resolve of chartWaiters) resolve();
-    chartWaiters.clear();
+    for (const resolve of state.chartWaiters) resolve();
+    state.chartWaiters.clear();
   }
 }
 
 export function getResultChart(): ResultChartType {
-  if (resultChart === undefined) {
+  const state = resultRefs();
+  if (state.resultChart === undefined) {
     throw new Error("Result chart is not mounted");
   }
-  return resultChart;
+  return state.resultChart;
 }
 
 export function getResultChartDataset(
@@ -235,45 +238,63 @@ export const [getScreenshotWatermark, setScreenshotWatermark] =
 
 // set by Result once mounted; result.ts, test-ui and test-screenshot still
 // show/hide, animate and measure these imperatively
-let resultElement: HTMLDivElement | undefined;
-let resultWrapperElement: HTMLDivElement | undefined;
-let screenLoader: (() => Promise<void>) | undefined;
-const screenWaiters = new Set<() => void>();
 
 export function bindResultScreenLoader(
   loader: () => Promise<void>,
 ): () => void {
-  screenLoader = loader;
+  const state = resultRefs();
+  state.screenLoader = loader;
   return () => {
-    if (screenLoader === loader) screenLoader = undefined;
+    if (state.screenLoader === loader) state.screenLoader = undefined;
   };
 }
 
 export async function prepareResultScreen(): Promise<void> {
-  await screenLoader?.();
+  const state = resultRefs();
+  await state.screenLoader?.();
 }
 
 export async function waitForResultScreen(): Promise<void> {
-  if (resultElement !== undefined) return;
-  await new Promise<void>((resolve) => screenWaiters.add(resolve));
+  const state = resultRefs();
+  if (state.resultElement !== undefined) return;
+  await new Promise<void>((resolve) => state.screenWaiters.add(resolve));
 }
 
 export function setResultElements(
   result: HTMLDivElement,
   wrapper: HTMLDivElement,
-): void {
-  resultElement = result;
-  resultWrapperElement = wrapper;
-  for (const resolve of screenWaiters) resolve();
-  screenWaiters.clear();
+): () => void {
+  const state = resultRefs();
+  state.resultElement = result;
+  state.resultWrapperElement = wrapper;
+  for (const resolve of state.screenWaiters) resolve();
+  state.screenWaiters.clear();
+  return () => {
+    if (state.resultElement === result) {
+      state.resultElement = undefined;
+      state.resultWrapperElement = undefined;
+    }
+  };
 }
 
 // #result
 export function getResultElement(): HTMLDivElement | undefined {
-  return resultElement;
+  const state = resultRefs();
+  return state.resultElement;
 }
 
 // #result .wrapper, the screenshot area
 export function getResultWrapperElement(): HTMLDivElement | undefined {
-  return resultWrapperElement;
+  const state = resultRefs();
+  return state.resultWrapperElement;
 }
+
+const resultRefs = createAppOwned(() => ({
+  resultChart: undefined as ResultChartType | undefined,
+  chartLoader: undefined as (() => Promise<void>) | undefined,
+  chartWaiters: new Set<() => void>(),
+  resultElement: undefined as HTMLDivElement | undefined,
+  resultWrapperElement: undefined as HTMLDivElement | undefined,
+  screenLoader: undefined as (() => Promise<void>) | undefined,
+  screenWaiters: new Set<() => void>(),
+}));

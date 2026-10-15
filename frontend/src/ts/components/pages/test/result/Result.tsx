@@ -56,7 +56,12 @@ export function Result(): JSXElement {
   useResultScreen(() => resultEl);
 
   onMount(() => {
-    setResultElements(resultEl as HTMLDivElement, wrapperEl as HTMLDivElement);
+    onCleanup(
+      setResultElements(
+        resultEl as HTMLDivElement,
+        wrapperEl as HTMLDivElement,
+      ),
+    );
   });
 
   return (

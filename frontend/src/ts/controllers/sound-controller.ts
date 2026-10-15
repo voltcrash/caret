@@ -25,7 +25,6 @@ function createAudio(): {
   clearAllSounds: typeof clearAllSounds;
   playClick: typeof playClick;
   playError: typeof playError;
-  disposeAudio: typeof disposeAudio;
   useSoundEvents: typeof useSoundEvents;
 } {
   let howlerModulePromise: Promise<typeof import("howler")> | null = null;
@@ -429,7 +428,6 @@ function createAudio(): {
     clearAllSounds,
     playClick,
     playError,
-    disposeAudio,
     useSoundEvents,
   };
 }
@@ -457,9 +455,6 @@ export async function playClick(codeOverride?: string): Promise<void> {
 }
 export async function playError(): Promise<void> {
   return audio().playError();
-}
-export function disposeAudio(): void {
-  audio().disposeAudio();
 }
 export function useSoundEvents(): void {
   audio().useSoundEvents();

@@ -1,4 +1,4 @@
-import { JSXElement, onMount } from "solid-js";
+import { JSXElement, onCleanup, onMount } from "solid-js";
 import { spread } from "solid-js/web";
 
 import { useWordsInputScroll } from "../../../hooks/useWordsInputScroll";
@@ -41,7 +41,7 @@ export function TestPage(
   const refs = {} as Parameters<typeof setTestElements>[0];
 
   onMount(() => {
-    setTestElements(refs);
+    onCleanup(setTestElements(refs));
     useWordsInputScroll(refs.wordsWrapper, refs.wordsInput);
     spread(
       refs.wordsWrapper,

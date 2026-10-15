@@ -1,5 +1,6 @@
 import { openDB, DBSchema, IDBPDatabase } from "idb";
-import { createSignal } from "solid-js";
+import { createSignal, onCleanup } from "solid-js";
+import { createAppOwned } from "../../app/application";
 
 type FileDB = DBSchema & {
   files: {
@@ -11,20 +12,31 @@ type FileDB = DBSchema & {
 type Filename = "LocalBackgroundFile" | "LocalFontFamilyFile";
 
 class FileStorage {
-  private dbPromise: Promise<IDBPDatabase<FileDB>>;
+  private dbPromise: Promise<IDBPDatabase<FileDB>> | undefined;
+  private closed = false;
   private signals = new Map<
     Filename,
     [get: () => number, set: (v: number | ((prev: number) => number)) => void]
   >();
 
-  constructor(dbName = "file-storage-db") {
-    this.dbPromise = openDB<FileDB>(dbName, 1, {
+  private async database(): Promise<IDBPDatabase<FileDB>> {
+    this.dbPromise ??= openDB<FileDB>("file-storage-db", 1, {
       upgrade(db) {
         if (!db.objectStoreNames.contains("files")) {
           db.createObjectStore("files");
         }
       },
     });
+    const db = await this.dbPromise;
+    if (this.closed) {
+      throw new DOMException("Application disposed", "AbortError");
+    }
+    return db;
+  }
+
+  dispose(): void {
+    this.closed = true;
+    void this.dbPromise?.then((db) => db.close()).catch(() => undefined);
   }
 
   private getSignal(
@@ -42,6 +54,7 @@ class FileStorage {
   }
 
   private notify(filename: Filename): void {
+    if (this.closed) return;
     const signal = this.signals.get(filename);
     if (signal) {
       signal[1]((v) => v + 1);
@@ -54,24 +67,24 @@ class FileStorage {
   }
 
   async storeFile(filename: Filename, dataUrl: string): Promise<void> {
-    const db = await this.dbPromise;
+    const db = await this.database();
     await db.put("files", dataUrl, filename);
     this.notify(filename);
   }
 
   async getFile(filename: Filename): Promise<string | undefined> {
-    const db = await this.dbPromise;
+    const db = await this.database();
     return db.get("files", filename);
   }
 
   async deleteFile(filename: Filename): Promise<void> {
-    const db = await this.dbPromise;
+    const db = await this.database();
     await db.delete("files", filename);
     this.notify(filename);
   }
 
   async listFilenames(): Promise<Filename[]> {
-    const db = await this.dbPromise;
+    const db = await this.database();
     return db.getAllKeys("files") as Promise<Filename[]>;
   }
 
@@ -80,4 +93,21 @@ class FileStorage {
   }
 }
 
-export default new FileStorage();
+const storage = createAppOwned(() => {
+  const value = new FileStorage();
+  onCleanup(() => value.dispose());
+  return value;
+});
+
+export default {
+  track: (filename: Filename): number => storage().track(filename),
+  storeFile: async (filename: Filename, dataUrl: string): Promise<void> =>
+    storage().storeFile(filename, dataUrl),
+  getFile: async (filename: Filename): Promise<string | undefined> =>
+    storage().getFile(filename),
+  deleteFile: async (filename: Filename): Promise<void> =>
+    storage().deleteFile(filename),
+  listFilenames: async (): Promise<Filename[]> => storage().listFilenames(),
+  hasFile: async (filename: Filename): Promise<boolean> =>
+    storage().hasFile(filename),
+};

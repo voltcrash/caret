@@ -182,7 +182,7 @@ function addColorsToOptions<TType extends ChartType = ChartType>(
   return options;
 }
 
-export function useChartEvents(): void {
+function useChartEvents(): void {
   configEvent.useListener(({ key, newValue }) => {
     if (key === "fontFamily") {
       Chart.defaults.font.family = newValue.replace(/_/g, " ");
