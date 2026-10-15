@@ -1,39 +1,37 @@
 // import joi from "joi";
 
-import * as AdminController from "../controllers/admin";
+import * as AdminService from "../../services/operations/admin";
 import { adminContract } from "@oxytype/contracts/admin";
 import { initServer } from "../hono-adapter";
-import { callController } from "../ts-rest-adapter";
+import { callService } from "../ts-rest-adapter";
 
 const s = initServer();
 export default s.router(adminContract, {
   test: {
-    handler: async (r) => callController(AdminController.test)(r),
+    handler: async (r) => callService(AdminService.test)(r),
   },
   toggleBan: {
-    handler: async (r) => callController(AdminController.toggleBan)(r),
+    handler: async (r) => callService(AdminService.toggleBan)(r),
   },
   clearStreakHourOffset: {
-    handler: async (r) =>
-      callController(AdminController.clearStreakHourOffset)(r),
+    handler: async (r) => callService(AdminService.clearStreakHourOffset)(r),
   },
   deleteUser: {
-    handler: async (r) => callController(AdminController.deleteUser)(r),
+    handler: async (r) => callService(AdminService.deleteUser)(r),
   },
   acceptReports: {
-    handler: async (r) => callController(AdminController.acceptReports)(r),
+    handler: async (r) => callService(AdminService.acceptReports)(r),
   },
   rejectReports: {
-    handler: async (r) => callController(AdminController.rejectReports)(r),
+    handler: async (r) => callService(AdminService.rejectReports)(r),
   },
   clearSuspicious: {
-    handler: async (r) => callController(AdminController.clearSuspicious)(r),
+    handler: async (r) => callService(AdminService.clearSuspicious)(r),
   },
   getAnticheatAudits: {
-    handler: async (r) => callController(AdminController.getAnticheatAudits)(r),
+    handler: async (r) => callService(AdminService.getAnticheatAudits)(r),
   },
   getAnticheatSummary: {
-    handler: async (r) =>
-      callController(AdminController.getAnticheatSummary)(r),
+    handler: async (r) => callService(AdminService.getAnticheatSummary)(r),
   },
 });

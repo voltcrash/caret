@@ -22,22 +22,18 @@ function sources(directory: string): string[] {
 function serviceOwner(routeFile: string, key: string): string {
   const route = readFileSync(resolve(root, routeFile), "utf8");
   const handler = new RegExp(
-    `\\n  ${key}: \\{[\\s\\S]*?callController\\(\\w+\\.(\\w+)\\)`,
+    `\\n  ${key}: \\{[\\s\\S]*?callService\\(\\w+\\.(\\w+)\\)`,
   ).exec(route)?.[1];
-  const controller = /from ["'](\.\.\/controllers\/[^"']+)["']/.exec(
-    route,
-  )?.[1];
+  const controller =
+    /from ["'](\.\.\/\.\.\/services\/operations\/[^"']+)["']/.exec(route)?.[1];
   if (handler === undefined || controller === undefined) {
     throw new Error(`Missing service adapter ${routeFile}:${key}`);
   }
   let file = resolve(root, dirname(routeFile), `${controller}.ts`);
   for (let depth = 0; depth < 4; depth++) {
     const source = readFileSync(file, "utf8");
-    const service = /import \* as services from ["']([^"']+)["']/.exec(
-      source,
-    )?.[1];
-    if (service !== undefined) {
-      return `${relative(root, resolve(dirname(file), `${service}.ts`))}#${handler}`;
+    if (new RegExp(`export (?:async )?function ${handler}\\b`).test(source)) {
+      return `${relative(root, file)}#${handler}`;
     }
     const reexport = [
       ...source.matchAll(/export \{([^}]+)\} from ["']([^"']+)["']/g),

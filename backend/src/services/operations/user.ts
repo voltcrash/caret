@@ -1,6 +1,5 @@
 export {
   setStreakHourOffset,
-  generateCurrentTestActivity,
   getTestActivity,
   getCurrentTestActivity,
   getStreak,

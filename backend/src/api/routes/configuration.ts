@@ -1,20 +1,19 @@
 import { configurationContract } from "@oxytype/contracts/configuration";
 import { initServer } from "../hono-adapter";
-import * as ConfigurationController from "../controllers/configuration";
-import { callController } from "../ts-rest-adapter";
+import * as ConfigurationService from "../../services/operations/configuration";
+import { callService } from "../ts-rest-adapter";
 
 const s = initServer();
 
 export default s.router(configurationContract, {
   get: {
-    handler: async (r) =>
-      callController(ConfigurationController.getConfiguration)(r),
+    handler: async (r) => callService(ConfigurationService.getConfiguration)(r),
   },
   update: {
     handler: async (r) =>
-      callController(ConfigurationController.updateConfiguration)(r),
+      callService(ConfigurationService.updateConfiguration)(r),
   },
   getSchema: {
-    handler: async (r) => callController(ConfigurationController.getSchema)(r),
+    handler: async (r) => callService(ConfigurationService.getSchema)(r),
   },
 });

@@ -1,20 +1,20 @@
 import { apeKeysContract } from "@oxytype/contracts/ape-keys";
 import { initServer } from "../hono-adapter";
-import * as ApeKeyController from "../controllers/ape-key";
-import { callController } from "../ts-rest-adapter";
+import * as ApeKeyService from "../../services/operations/ape-key";
+import { callService } from "../ts-rest-adapter";
 
 const s = initServer();
 export default s.router(apeKeysContract, {
   get: {
-    handler: async (r) => callController(ApeKeyController.getApeKeys)(r),
+    handler: async (r) => callService(ApeKeyService.getApeKeys)(r),
   },
   add: {
-    handler: async (r) => callController(ApeKeyController.generateApeKey)(r),
+    handler: async (r) => callService(ApeKeyService.generateApeKey)(r),
   },
   save: {
-    handler: async (r) => callController(ApeKeyController.editApeKey)(r),
+    handler: async (r) => callService(ApeKeyService.editApeKey)(r),
   },
   delete: {
-    handler: async (r) => callController(ApeKeyController.deleteApeKey)(r),
+    handler: async (r) => callService(ApeKeyService.deleteApeKey)(r),
   },
 });

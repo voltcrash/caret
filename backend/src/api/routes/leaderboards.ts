@@ -1,32 +1,31 @@
 import { initServer } from "../hono-adapter";
-import * as LeaderboardController from "../controllers/leaderboard";
+import * as LeaderboardService from "../../services/operations/leaderboard";
 import { leaderboardsContract } from "@oxytype/contracts/leaderboards";
-import { callController } from "../ts-rest-adapter";
+import { callService } from "../ts-rest-adapter";
 
 const s = initServer();
 export default s.router(leaderboardsContract, {
   get: {
-    handler: async (r) =>
-      callController(LeaderboardController.getLeaderboard)(r),
+    handler: async (r) => callService(LeaderboardService.getLeaderboard)(r),
   },
   getRank: {
     handler: async (r) =>
-      callController(LeaderboardController.getRankFromLeaderboard)(r),
+      callService(LeaderboardService.getRankFromLeaderboard)(r),
   },
   getDaily: {
     handler: async (r) =>
-      callController(LeaderboardController.getDailyLeaderboard)(r),
+      callService(LeaderboardService.getDailyLeaderboard)(r),
   },
   getDailyRank: {
     handler: async (r) =>
-      callController(LeaderboardController.getDailyLeaderboardRank)(r),
+      callService(LeaderboardService.getDailyLeaderboardRank)(r),
   },
   getWeeklyXp: {
     handler: async (r) =>
-      callController(LeaderboardController.getWeeklyXpLeaderboard)(r),
+      callService(LeaderboardService.getWeeklyXpLeaderboard)(r),
   },
   getWeeklyXpRank: {
     handler: async (r) =>
-      callController(LeaderboardController.getWeeklyXpLeaderboardRank)(r),
+      callService(LeaderboardService.getWeeklyXpLeaderboardRank)(r),
   },
 });

@@ -11,11 +11,15 @@ import { isDevEnvironment } from "../utils/misc";
 import MonkeyError from "../utils/error";
 import statuses from "../constants/monkey-status-codes";
 
+export type RateContext = Pick<
+  ServiceContext,
+  "actor" | "configuration" | "client"
+>;
 export type SetPolicyHeader = (name: string, value: string) => void;
 export async function enforceLimit(
   id: string,
   options: RateLimitOptions,
-  context: ServiceContext,
+  context: RateContext,
   header: SetPolicyHeader,
   useUid = true,
 ): Promise<void> {
@@ -61,7 +65,7 @@ export async function enforceLimit(
 /** Named limits retain the legacy shared buckets (e.g. userGet), across transports. */
 export async function enforceOperationLimit(
   metadata: EndpointMetadata,
-  context: ServiceContext,
+  context: RateContext,
   header: SetPolicyHeader,
 ): Promise<void> {
   const limit = metadata.rateLimit;
@@ -85,7 +89,7 @@ export async function enforceOperationLimit(
 }
 
 export async function checkBadAuthentication(
-  context: ServiceContext,
+  context: RateContext,
 ): Promise<void> {
   if (!context.configuration.rateLimiting.badAuthentication.enabled) return;
   const result = await statement(
@@ -104,7 +108,7 @@ export async function checkBadAuthentication(
   }
 }
 export async function recordBadAuthentication(
-  context: ServiceContext,
+  context: RateContext,
   status: number,
 ): Promise<void> {
   const options = context.configuration.rateLimiting.badAuthentication;

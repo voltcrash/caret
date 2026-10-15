@@ -1,33 +1,23 @@
-import type { ServiceContext, OperationInput } from "../services/context";
-import type { MonkeyRequest } from "./types";
+import type { ServiceContext } from "../services/context";
 import { runtime, background } from "../runtime/env";
 import type { HttpRequest } from "./http";
 
-export function serviceContext(
+/** Policies need identity/config/client data without initializing infrastructure. */
+export function policyContext(
   req: HttpRequest,
-  context = req.ctx,
-): ServiceContext {
+): Pick<ServiceContext, "actor" | "configuration" | "client"> {
   return {
-    actor: context.decodedToken,
-    runtime: runtime(),
-    requestId: runtime().request?.requestId ?? crypto.randomUUID(),
-    background,
-    configuration: context.configuration,
+    actor: req.ctx.decodedToken,
+    configuration: req.ctx.configuration,
     client: { ip: req.ip, userAgent: req.headers["user-agent"] },
   };
 }
-
-/** Rollback transport only. Business services never receive legacy requests. */
-export function adaptService<Q, B, P, R>(
-  service: (
-    context: ServiceContext,
-    input: OperationInput<Q, B, P>,
-  ) => Promise<R>,
-): (req: MonkeyRequest<Q, B, P>) => Promise<R> {
-  return async (req) =>
-    await service(serviceContext(req.raw, req.ctx), {
-      query: req.query,
-      body: req.body,
-      params: req.params,
-    });
+export function serviceContext(req: HttpRequest): ServiceContext {
+  const scope = runtime();
+  return {
+    ...policyContext(req),
+    runtime: scope,
+    requestId: scope.request?.requestId ?? crypto.randomUUID(),
+    background,
+  };
 }

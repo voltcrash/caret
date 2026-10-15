@@ -8,7 +8,7 @@ import {
   checkBadAuthentication,
   recordBadAuthentication,
 } from "../policies/rate-limit";
-import { serviceContext } from "../api/service-adapter";
+import { policyContext } from "../api/service-adapter";
 import { getMetadata } from "./utility";
 
 export const REQUEST_MULTIPLIER = 100;
@@ -32,7 +32,7 @@ export function createRateLimiter(
       await enforceLimit(
         id ?? `http:${req.method}:${req.path}`,
         options,
-        serviceContext(req),
+        policyContext(req),
         (key, value) => c.header(key, value),
         useUid,
       );
@@ -55,7 +55,7 @@ export function rateLimitRequest(): ApiMiddleware {
     const req = c.get("request");
     await enforceOperationLimit(
       getMetadata(req),
-      serviceContext(req),
+      policyContext(req),
       (key, value) => c.header(key, value),
     );
     await next();
@@ -68,7 +68,7 @@ export const rootRateLimiter = createRateLimiter(
   "root",
 );
 export const badAuthRateLimiterHandler: ApiMiddleware = async (c, next) => {
-  await checkBadAuthentication(serviceContext(c.get("request")));
+  await checkBadAuthentication(policyContext(c.get("request")));
   await next();
 };
 export async function incrementBadAuth(
@@ -76,6 +76,6 @@ export async function incrementBadAuth(
   status: number,
 ): Promise<void> {
   if (req !== undefined) {
-    await recordBadAuthentication(serviceContext(req), status);
+    await recordBadAuthentication(policyContext(req), status);
   }
 }

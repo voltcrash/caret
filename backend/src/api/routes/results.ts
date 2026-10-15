@@ -1,23 +1,23 @@
 import { resultsContract } from "@oxytype/contracts/results";
 import { initServer } from "../hono-adapter";
-import * as ResultController from "../controllers/result";
-import { callController } from "../ts-rest-adapter";
+import * as ResultService from "../../services/operations/result";
+import { callService } from "../ts-rest-adapter";
 
 const s = initServer();
 export default s.router(resultsContract, {
   get: {
-    handler: async (r) => callController(ResultController.getResults)(r),
+    handler: async (r) => callService(ResultService.getResults)(r),
   },
   getById: {
-    handler: async (r) => callController(ResultController.getResultById)(r),
+    handler: async (r) => callService(ResultService.getResultById)(r),
   },
   add: {
-    handler: async (r) => callController(ResultController.addResult)(r),
+    handler: async (r) => callService(ResultService.addResult)(r),
   },
   updateTags: {
-    handler: async (r) => callController(ResultController.updateTags)(r),
+    handler: async (r) => callService(ResultService.updateTags)(r),
   },
   getLast: {
-    handler: async (r) => callController(ResultController.getLastResult)(r),
+    handler: async (r) => callService(ResultService.getLastResult)(r),
   },
 });

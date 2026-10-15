@@ -24,11 +24,11 @@ export default {
     coverage: {
       provider: "v8",
       include: [
-        "src/api/controllers/result.ts",
-        "src/api/controllers/result/**/*.ts",
+        "src/services/operations/result.ts",
+        "src/services/operations/result/**/*.ts",
         "src/dal/user.ts",
         "src/dal/user/**/*.ts",
-        "src/api/controllers/user.ts",
+        "src/services/operations/user/**/*.ts",
       ],
       reporter: ["text", "json-summary"],
     },

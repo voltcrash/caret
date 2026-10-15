@@ -1,117 +1,113 @@
 import { usersContract } from "@oxytype/contracts/users";
 import { initServer } from "../hono-adapter";
-import * as UserController from "../controllers/user";
-import { callController } from "../ts-rest-adapter";
+import * as UserService from "../../services/operations/user";
+import { callService } from "../ts-rest-adapter";
 
 const s = initServer();
 export default s.router(usersContract, {
   get: {
-    handler: async (r) => callController(UserController.getUser)(r),
+    handler: async (r) => callService(UserService.getUser)(r),
   },
   create: {
-    handler: async (r) => callController(UserController.createNewUser)(r),
+    handler: async (r) => callService(UserService.createNewUser)(r),
   },
   getNameAvailability: {
-    handler: async (r) => callController(UserController.checkName)(r),
+    handler: async (r) => callService(UserService.checkName)(r),
   },
   delete: {
-    handler: async (r) => callController(UserController.deleteUser)(r),
+    handler: async (r) => callService(UserService.deleteUser)(r),
   },
   reset: {
-    handler: async (r) => callController(UserController.resetUser)(r),
+    handler: async (r) => callService(UserService.resetUser)(r),
   },
   updateName: {
-    handler: async (r) => callController(UserController.updateName)(r),
+    handler: async (r) => callService(UserService.updateName)(r),
   },
   updateLeaderboardMemory: {
-    handler: async (r) => callController(UserController.updateLbMemory)(r),
+    handler: async (r) => callService(UserService.updateLbMemory)(r),
   },
   getPersonalBests: {
-    handler: async (r) => callController(UserController.getPersonalBests)(r),
+    handler: async (r) => callService(UserService.getPersonalBests)(r),
   },
   deletePersonalBests: {
-    handler: async (r) => callController(UserController.clearPb)(r),
+    handler: async (r) => callService(UserService.clearPb)(r),
   },
   optOutOfLeaderboards: {
-    handler: async (r) =>
-      callController(UserController.optOutOfLeaderboards)(r),
+    handler: async (r) => callService(UserService.optOutOfLeaderboards)(r),
   },
   addResultFilterPreset: {
-    handler: async (r) =>
-      callController(UserController.addResultFilterPreset)(r),
+    handler: async (r) => callService(UserService.addResultFilterPreset)(r),
   },
   removeResultFilterPreset: {
-    handler: async (r) =>
-      callController(UserController.removeResultFilterPreset)(r),
+    handler: async (r) => callService(UserService.removeResultFilterPreset)(r),
   },
   getTags: {
-    handler: async (r) => callController(UserController.getTags)(r),
+    handler: async (r) => callService(UserService.getTags)(r),
   },
   createTag: {
-    handler: async (r) => callController(UserController.addTag)(r),
+    handler: async (r) => callService(UserService.addTag)(r),
   },
   editTag: {
-    handler: async (r) => callController(UserController.editTag)(r),
+    handler: async (r) => callService(UserService.editTag)(r),
   },
   deleteTag: {
-    handler: async (r) => callController(UserController.removeTag)(r),
+    handler: async (r) => callService(UserService.removeTag)(r),
   },
   deleteTagPersonalBest: {
-    handler: async (r) => callController(UserController.clearTagPb)(r),
+    handler: async (r) => callService(UserService.clearTagPb)(r),
   },
   getCustomThemes: {
-    handler: async (r) => callController(UserController.getCustomThemes)(r),
+    handler: async (r) => callService(UserService.getCustomThemes)(r),
   },
   addCustomTheme: {
-    handler: async (r) => callController(UserController.addCustomTheme)(r),
+    handler: async (r) => callService(UserService.addCustomTheme)(r),
   },
   deleteCustomTheme: {
-    handler: async (r) => callController(UserController.removeCustomTheme)(r),
+    handler: async (r) => callService(UserService.removeCustomTheme)(r),
   },
   editCustomTheme: {
-    handler: async (r) => callController(UserController.editCustomTheme)(r),
+    handler: async (r) => callService(UserService.editCustomTheme)(r),
   },
   getStats: {
-    handler: async (r) => callController(UserController.getStats)(r),
+    handler: async (r) => callService(UserService.getStats)(r),
   },
   setStreakHourOffset: {
-    handler: async (r) => callController(UserController.setStreakHourOffset)(r),
+    handler: async (r) => callService(UserService.setStreakHourOffset)(r),
   },
   getFavoriteQuotes: {
-    handler: async (r) => callController(UserController.getFavoriteQuotes)(r),
+    handler: async (r) => callService(UserService.getFavoriteQuotes)(r),
   },
   addQuoteToFavorites: {
-    handler: async (r) => callController(UserController.addFavoriteQuote)(r),
+    handler: async (r) => callService(UserService.addFavoriteQuote)(r),
   },
   removeQuoteFromFavorites: {
-    handler: async (r) => callController(UserController.removeFavoriteQuote)(r),
+    handler: async (r) => callService(UserService.removeFavoriteQuote)(r),
   },
   getProfile: {
-    handler: async (r) => callController(UserController.getProfile)(r),
+    handler: async (r) => callService(UserService.getProfile)(r),
   },
   updateProfile: {
-    handler: async (r) => callController(UserController.updateProfile)(r),
+    handler: async (r) => callService(UserService.updateProfile)(r),
   },
   getInbox: {
-    handler: async (r) => callController(UserController.getInbox)(r),
+    handler: async (r) => callService(UserService.getInbox)(r),
   },
   updateInbox: {
-    handler: async (r) => callController(UserController.updateInbox)(r),
+    handler: async (r) => callService(UserService.updateInbox)(r),
   },
   report: {
-    handler: async (r) => callController(UserController.reportUser)(r),
+    handler: async (r) => callService(UserService.reportUser)(r),
   },
   revokeAllTokens: {
-    handler: async (r) => callController(UserController.revokeAllTokens)(r),
+    handler: async (r) => callService(UserService.revokeAllTokens)(r),
   },
   getTestActivity: {
-    handler: async (r) => callController(UserController.getTestActivity)(r),
+    handler: async (r) => callService(UserService.getTestActivity)(r),
   },
   getCurrentTestActivity: {
-    handler: async (r) =>
-      callController(UserController.getCurrentTestActivity)(r),
+    handler: async (r) => callService(UserService.getCurrentTestActivity)(r),
   },
   getStreak: {
-    handler: async (r) => callController(UserController.getStreak)(r),
+    handler: async (r) => callService(UserService.getStreak)(r),
   },
 });

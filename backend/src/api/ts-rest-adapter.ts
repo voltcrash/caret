@@ -1,23 +1,20 @@
 import { HttpRequest } from "./http";
 import { MonkeyResponse } from "../utils/monkey-response";
-import { MonkeyRequest } from "./types";
+import type { ServiceContext, OperationInput } from "../services/context";
+import { serviceContext } from "./service-adapter";
 
-export function callController<TQuery, TBody, TParams, TResponse>(
+export function callService<TQuery, TBody, TParams, TResponse>(
   handler: MonkeyHandler<TQuery, TBody, TParams, TResponse>,
 ): (all: TypeSafeTsRestRequest<TQuery, TBody, TParams>) => Promise<{
   status: 200;
   body: MonkeyResponse<TResponse>;
 }> {
   return async (all) => {
-    const req: MonkeyRequest<TQuery, TBody, TParams> = {
+    const result = await handler(serviceContext(all.req), {
       body: all.body as TBody,
       query: all.query as TQuery,
       params: all.params as TParams,
-      raw: all.req,
-      ctx: all.req.ctx,
-    };
-
-    const result = await handler(req);
+    });
     const response = {
       status: 200 as const,
       body: {
@@ -52,7 +49,8 @@ type WithoutParams = {
 };
 
 type MonkeyHandler<TQuery, TBody, TParams, TResponse> = (
-  req: MonkeyRequest<TQuery, TBody, TParams>,
+  context: ServiceContext,
+  input: OperationInput<TQuery, TBody, TParams>,
 ) => Promise<MonkeyResponse<TResponse>>;
 
 type TypeSafeTsRestRequest<TQuery, TBody, TParams> = {

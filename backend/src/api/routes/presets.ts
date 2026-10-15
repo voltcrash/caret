@@ -1,20 +1,20 @@
 import { presetsContract } from "@oxytype/contracts/presets";
 import { initServer } from "../hono-adapter";
-import * as PresetController from "../controllers/preset";
-import { callController } from "../ts-rest-adapter";
+import * as PresetService from "../../services/operations/preset";
+import { callService } from "../ts-rest-adapter";
 
 const s = initServer();
 export default s.router(presetsContract, {
   get: {
-    handler: async (r) => callController(PresetController.getPresets)(r),
+    handler: async (r) => callService(PresetService.getPresets)(r),
   },
   add: {
-    handler: async (r) => callController(PresetController.addPreset)(r),
+    handler: async (r) => callService(PresetService.addPreset)(r),
   },
   save: {
-    handler: async (r) => callController(PresetController.editPreset)(r),
+    handler: async (r) => callService(PresetService.editPreset)(r),
   },
   delete: {
-    handler: async (r) => callController(PresetController.removePreset)(r),
+    handler: async (r) => callService(PresetService.removePreset)(r),
   },
 });

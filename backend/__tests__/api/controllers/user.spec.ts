@@ -11,7 +11,7 @@ import {
 } from "vite-plus/test";
 import { setup } from "../../__testData__/controller-test";
 import * as Configuration from "../../../src/init/configuration";
-import { generateCurrentTestActivity } from "../../../src/api/controllers/user";
+import { generateCurrentTestActivity } from "../../../src/services/operations/user/activity";
 import * as UserDal from "../../../src/dal/user";
 import * as AuthUtils from "../../../src/utils/auth";
 import * as BlocklistDal from "../../../src/dal/blocklist";
