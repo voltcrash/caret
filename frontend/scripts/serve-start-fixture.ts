@@ -3,7 +3,12 @@ import { createWorkerd, seedSession } from "../__tests__/start/workerd";
 async function main(): Promise<void> {
   const mf = await createWorkerd(false, 4185);
   const db = await mf.getD1Database("DB", "a");
-  for (const token of ["browser-login", "browser-expiry", "browser-pending"]) {
+  for (const token of [
+    "browser-login",
+    "browser-expiry",
+    "browser-pending",
+    "browser-dismissal",
+  ]) {
     const session = await seedSession(mf, "a");
     await db
       .prepare("UPDATE auth_sessions SET token=? WHERE token=?")
