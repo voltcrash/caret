@@ -1,13 +1,11 @@
+import { getAllTimeLbs } from "./user/leaderboards";
 import { verifyCaptcha } from "./user/captcha";
-import type { Client, ClientQuery } from "@oxytype/schemas/shared";
+import type { ClientQuery } from "@oxytype/schemas/shared";
 import { atomicUser } from "../../db/mutation";
 import * as UserDAL from "../../dal/user";
 import MonkeyError from "../../utils/error";
 import { MonkeyResponse } from "../../utils/monkey-response";
 import { buildAgentLog, omit, sanitizeString } from "../../utils/misc";
-import * as LeaderboardsDAL from "../../dal/leaderboards";
-import { purgeUserFromDailyLeaderboards } from "../../utils/daily-leaderboards";
-import { purgeUserFromXpLeaderboards } from "../../services/weekly-xp-leaderboard";
 import { deleteUserAccount } from "../../services/user-deletion";
 import { randomUUID } from "node:crypto";
 import { newId } from "../../utils/id";
@@ -17,7 +15,6 @@ import * as Dates from "date-fns";
 import { UTCDateMini } from "@date-fns/utc";
 import * as BlocklistDal from "../../dal/blocklist";
 import {
-  AllTimeLbs,
   ResultFilters,
   User,
   UserProfile,
@@ -59,7 +56,6 @@ import {
   ReportUserRequest,
   SetStreakHourOffsetRequest,
   TagIdPathParams,
-  UpdateLeaderboardMemoryRequest,
   UpdateUserInboxRequest,
   UpdateUserNameRequest,
   UpdateUserProfileRequest,
@@ -174,41 +170,6 @@ export async function updateName(
   );
 
   return new MonkeyResponse("User's name updated", null);
-}
-
-export async function clearPb(
-  req: MonkeyRequest<ClientQuery>,
-): Promise<MonkeyResponse> {
-  const { uid } = req.ctx.decodedToken;
-
-  await UserDAL.clearPb(uid, req.query?.client);
-  await purgeUserFromDailyLeaderboards(
-    uid,
-    req.ctx.configuration.dailyLeaderboards,
-    req.query?.client ?? "web",
-  );
-  void addImportantLog("user_cleared_pbs", "", uid);
-
-  return new MonkeyResponse("User's PB cleared", null);
-}
-
-export async function optOutOfLeaderboards(
-  req: MonkeyRequest,
-): Promise<MonkeyResponse> {
-  const { uid } = req.ctx.decodedToken;
-
-  await UserDAL.optOutOfLeaderboards(uid);
-  await purgeUserFromDailyLeaderboards(
-    uid,
-    req.ctx.configuration.dailyLeaderboards,
-  );
-  await purgeUserFromXpLeaderboards(
-    uid,
-    req.ctx.configuration.leaderboards.weeklyXp,
-  );
-  void addImportantLog("user_opted_out_of_leaderboards", "", uid);
-
-  return new MonkeyResponse("User opted out of leaderboards", null);
 }
 
 export async function checkName(
@@ -392,24 +353,6 @@ export async function getTags(
 
   const tags = await UserDAL.getTags(uid, req.query?.client);
   return new MonkeyResponse("Tags retrieved", tags);
-}
-
-export async function updateLbMemory(
-  req: MonkeyRequest<ClientQuery, UpdateLeaderboardMemoryRequest>,
-): Promise<MonkeyResponse> {
-  const { uid } = req.ctx.decodedToken;
-  const { mode, language, rank } = req.body;
-  const mode2 = req.body.mode2;
-
-  await UserDAL.updateLbMemory(
-    uid,
-    mode,
-    mode2,
-    language,
-    rank,
-    req.query?.client,
-  );
-  return new MonkeyResponse("Leaderboard memory updated", null);
 }
 
 export async function getCustomThemes(
@@ -745,68 +688,6 @@ export async function revokeAllTokens(
   return new MonkeyResponse("All tokens revoked", null);
 }
 
-async function getAllTimeLbs(
-  uid: string,
-  client: Client = "web",
-): Promise<AllTimeLbs> {
-  const allTime15English = await LeaderboardsDAL.getRank(
-    "time",
-    "15",
-    "english",
-    uid,
-    client,
-  );
-
-  const allTime15EnglishCount = await LeaderboardsDAL.getCount(
-    "time",
-    "15",
-    "english",
-    client,
-  );
-
-  const allTime60English = await LeaderboardsDAL.getRank(
-    "time",
-    "60",
-    "english",
-    uid,
-    client,
-  );
-
-  const allTime60EnglishCount = await LeaderboardsDAL.getCount(
-    "time",
-    "60",
-    "english",
-    client,
-  );
-
-  const english15 =
-    allTime15English === null
-      ? undefined
-      : {
-          rank: allTime15English.rank,
-          count: allTime15EnglishCount,
-        };
-
-  const english60 =
-    allTime60English === null
-      ? undefined
-      : {
-          rank: allTime60English.rank,
-          count: allTime60EnglishCount,
-        };
-
-  return {
-    time: {
-      "15": {
-        english: english15,
-      },
-      "60": {
-        english: english60,
-      },
-    },
-  };
-}
-
 export function generateCurrentTestActivity(
   testActivity: CountByYearAndDay | undefined,
 ): TestActivity | undefined {
@@ -903,3 +784,9 @@ export async function getStreak(
 
   return new MonkeyResponse("Streak data retrieved", user.streak ?? null);
 }
+
+export {
+  clearPb,
+  optOutOfLeaderboards,
+  updateLbMemory,
+} from "./user/leaderboards";
