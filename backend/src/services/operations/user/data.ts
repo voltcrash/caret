@@ -64,8 +64,12 @@ export async function getUser(
   };
 
   const agentLog = buildAgentLog(context.client);
-  void addLog("user_data_requested", agentLog, uid);
-  void UserDAL.logIpAddress(uid, agentLog.ip, userInfo);
+  context.background(
+    Promise.all([
+      addLog("user_data_requested", agentLog, uid),
+      UserDAL.logIpAddress(uid, agentLog.ip, userInfo),
+    ]),
+  );
 
   let inboxUnreadSize = 0;
   if (context.configuration.users.inbox.enabled) {

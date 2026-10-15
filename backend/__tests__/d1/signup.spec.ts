@@ -1,8 +1,8 @@
 import { afterAll, beforeAll, expect, it, vi } from "vite-plus/test";
 import { createTestRuntime, seedUser } from "./helpers";
-import { withRuntime } from "../../src/runtime/env";
+import { withRuntime, runtime, background } from "../../src/runtime/env";
 import { getAuth } from "../../src/init/auth";
-import { createNewUser } from "../../src/services/operations/user";
+import { createNewUser } from "../../src/services/operations/user/account";
 import { getCachedConfiguration } from "../../src/init/configuration";
 import { verifySession } from "../../src/utils/auth";
 import * as UserDAL from "../../src/dal/user";
@@ -50,6 +50,9 @@ async function onboarding(email: string): Promise<{
     signup: async (name: string) =>
       await createNewUser(
         {
+          runtime: runtime(),
+          requestId: "test-request",
+          background,
           actor: { type: "Session", uid: user.id, email },
           configuration: await getCachedConfiguration(),
           client: { ip: "127.0.0.1" },

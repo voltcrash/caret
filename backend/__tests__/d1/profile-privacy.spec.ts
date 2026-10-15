@@ -1,7 +1,10 @@
 import { afterAll, beforeAll, expect, it } from "vite-plus/test";
 import { createTestRuntime, seedUser } from "./helpers";
-import { withRuntime } from "../../src/runtime/env";
-import { getProfile, updateProfile } from "../../src/services/operations/user";
+import { withRuntime, runtime, background } from "../../src/runtime/env";
+import {
+  getProfile,
+  updateProfile,
+} from "../../src/services/operations/user/profile";
 import { getCachedConfiguration } from "../../src/init/configuration";
 import type { ServiceContext } from "../../src/services/context";
 import * as UserDAL from "../../src/dal/user";
@@ -17,6 +20,9 @@ afterAll(async () => await test?.dispose());
 it("persists both privacy values and applies them to public profile reads", async () => {
   await withRuntime(test.env, async () => {
     const context: ServiceContext = {
+      runtime: runtime(),
+      requestId: "test-request",
+      background,
       actor: { type: "Session", uid, email: "" },
       configuration: await getCachedConfiguration(),
       client: { ip: "127.0.0.1" },

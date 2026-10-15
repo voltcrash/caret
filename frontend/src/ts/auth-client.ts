@@ -177,7 +177,7 @@ export async function deleteUnfinishedUser(): Promise<void> {
 }
 
 import { requestOAuth } from "../features/auth/popup.client";
-export { requestOAuth, oauthRequestEvent } from "../features/auth/popup.client";
+export { requestOAuth } from "../features/auth/popup.client";
 export async function signInWithPopup(
   provider: SocialProvider,
   rememberMe: boolean,
