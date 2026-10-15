@@ -1,3 +1,4 @@
+import { onCleanup } from "solid-js";
 import * as TestUI from "./test-ui";
 import * as Strings from "../utils/strings";
 
@@ -67,7 +68,7 @@ import { debounce } from "throttle-debounce";
 
 import { getMutableConfig } from "../config/store";
 import { toggleFunbox, setConfig } from "../config/setters";
-import { testSession, resetTestEvents } from "./events/data";
+import { getTestSession, resetTestEvents } from "./events/data";
 
 import { resetModifierState } from "../states/modifiers";
 import { nthElementFromArray } from "../utils/arrays";
@@ -94,7 +95,7 @@ export function startTest(now: number): boolean {
 
   setTestActive(true);
   TestTimer.clear();
-  testSession.start(now);
+  getTestSession().start(now);
 
   for (const fb of getActiveFunboxesWithFunction("start")) {
     fb.functions.start();
@@ -192,7 +193,7 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
       // Abandoning logs the timer "end" event before measuring, so idle time
       // is subtracted instead of the whole wall-clock lifetime.
       TestTimer.clear();
-      const { acc, seconds } = testSession.abandon(performance.now());
+      const { acc, seconds } = getTestSession().abandon(performance.now());
       pushIncompleteTest({ acc: Numbers.roundTo2(acc), seconds });
     }
   }
@@ -202,7 +203,7 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
     shouldRepeatQuote(getMutableConfig()) &&
     currentQuote !== null &&
     getMutableConfig().language.startsWith(currentQuote.language) &&
-    (isTestActive() || testSession.getFinishReason() !== undefined)
+    (isTestActive() || getTestSession().getFinishReason() !== undefined)
   ) {
     options.withSameWordset = true;
   }
@@ -353,7 +354,7 @@ export async function addWord(): Promise<void> {
   }
 
   try {
-    const randomWord = await testSession.nextWord(
+    const randomWord = await getTestSession().nextWord(
       TestWords.words.length,
       bound,
       TestWords.words.get(TestWords.words.length - 1)?.text ?? "",
@@ -385,7 +386,7 @@ export async function addWord(): Promise<void> {
 }
 
 export function fail(reason: string): void {
-  testSession.finish(performance.now(), reason);
+  getTestSession().finish(performance.now(), reason);
 }
 
 const debouncedZipfCheck = debounce(250, async () => {
@@ -417,12 +418,13 @@ const debouncedZipfCheck = debounce(250, async () => {
 // ===============================
 
 // Time limits, timer failures and fail() all end the session first.
-const unsubscribeFinish = testSession.on("finish", ({ reason }) => {
-  void finish(reason !== undefined);
-});
-import.meta.hot?.dispose(unsubscribeFinish);
-
 export function useTestLogicEvents(): void {
+  onCleanup(
+    getTestSession().on("finish", ({ reason }) => {
+      void finish(reason !== undefined);
+    }),
+  );
+
   restartTestEvent.useListener((event) => void restart(event));
   configEvent.useListener(({ key, newValue, nosave }) => {
     if (getActivePage() === "test") {

@@ -33,15 +33,18 @@ vi.mock("../../../../../src/ts/test/events/data", async () => {
   const targetWords = ["ab ", "cd"];
   return {
     buildEventLog: () => [],
-    testSession: {
-      getReplay: () => ({
-        words: targetWords,
-        steps: getReplaySteps(
-          { context: { targetWords }, events: mocks.events } as EventLog,
-          false,
-        ),
-      }),
-    },
+    getTestSession: (() => {
+      const session = {
+        getReplay: () => ({
+          words: targetWords,
+          steps: getReplaySteps(
+            { context: { targetWords }, events: mocks.events } as EventLog,
+            false,
+          ),
+        }),
+      };
+      return () => session;
+    })(),
   };
 });
 vi.mock("@oxytype/typing-core/events/helpers", async (importOriginal) => ({

@@ -1,3 +1,5 @@
+import { createAppOwned } from "../../app/application";
+import { appObject } from "../../app/state";
 import { getActiveWordIndex } from "../states/test";
 
 type CommitChar = " " | "\n" | "";
@@ -88,4 +90,4 @@ class Words {
   }
 }
 
-export const words = new Words();
+export const words = appObject(createAppOwned(() => new Words()));

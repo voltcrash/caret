@@ -1,6 +1,7 @@
+import { onCleanup } from "solid-js";
+import { createAppOwned } from "../../app/application";
 import type { SessionEvents } from "@oxytype/typing-core/session";
 import { getTimeLimit } from "@oxytype/typing-core/timer";
-
 import { getMutableConfig } from "../config/store";
 import { setConfig } from "../config/setters";
 import * as CustomText from "./custom-text";
@@ -18,170 +19,182 @@ import { KeymapLayout, Layout } from "@oxytype/schemas/configs";
 import * as SoundController from "../controllers/sound-controller";
 import { clearLowFpsMode, setLowFpsMode } from "../anim";
 import { createTimerScheduler } from "./timer-scheduler";
-import { getCurrentInput, testSession } from "./events/data";
+import { getCurrentInput, getTestSession } from "./events/data";
 import { setCurrentLiveStats } from "../states/test";
+function createTiming(): {
+  disableSlowTimerFail: typeof disableSlowTimerFail;
+  enableTimerDebug: typeof enableTimerDebug;
+  clear: typeof clear;
+  start: typeof start;
+} {
+  const scheduler = createTimerScheduler(getTestSession().clock);
+  let slowTimerCount = 0;
+  let slowTimerNotifIds: number[] = [];
+  let slowTimerFailEnabled = true;
+  function disableSlowTimerFail(): void {
+    slowTimerFailEnabled = false;
+  }
+  let timerDebug = false;
+  function enableTimerDebug(): void {
+    timerDebug = true;
+  }
+  function clear(): void {
+    scheduler.stop();
+    clearLowFpsMode();
+  }
+  function layoutfluid(time: number): void {
+    if (timerDebug) console.time("layoutfluid");
 
-// The session owns the clock, failures and time limit; the web schedules it.
-const scheduler = createTimerScheduler(testSession.clock);
-import.meta.hot?.dispose(scheduler.stop);
+    if (
+      getMutableConfig().funbox.includes("layoutfluid") &&
+      getMutableConfig().mode === "time"
+    ) {
+      const layouts = getMutableConfig().customLayoutfluid;
+      const switchTime = getMutableConfig().time / layouts.length;
+      const index = Math.floor(time / switchTime);
+      const layout = layouts[index];
+      const flooredSwitchTimes = [];
 
-let slowTimerCount = 0;
-let slowTimerNotifIds: number[] = [];
+      for (let i = 1; i < layouts.length; i++) {
+        flooredSwitchTimes.push(Math.floor(switchTime * i));
+      }
 
-let slowTimerFailEnabled = true;
-export function disableSlowTimerFail(): void {
-  slowTimerFailEnabled = false;
-}
+      if (flooredSwitchTimes.includes(time + 3)) {
+        LayoutfluidFunboxTimer.show();
+        LayoutfluidFunboxTimer.updateTime(3, layouts[index + 1] as string);
+      } else if (flooredSwitchTimes.includes(time + 2)) {
+        LayoutfluidFunboxTimer.updateTime(2, layouts[index + 1] as string);
+      } else if (flooredSwitchTimes.includes(time + 1)) {
+        LayoutfluidFunboxTimer.updateTime(1, layouts[index + 1] as string);
+      }
 
-let timerDebug = false;
-export function enableTimerDebug(): void {
-  timerDebug = true;
-}
+      if (getMutableConfig().layout !== layout && layout !== undefined) {
+        LayoutfluidFunboxTimer.hide();
+        setConfig("layout", layout as Layout, {
+          nosave: true,
+        });
+        setConfig("keymapLayout", layout as KeymapLayout, {
+          nosave: true,
+        });
 
-export function clear(): void {
-  scheduler.stop();
-  clearLowFpsMode();
-}
-
-function layoutfluid(time: number): void {
-  if (timerDebug) console.time("layoutfluid");
-
-  if (
-    getMutableConfig().funbox.includes("layoutfluid") &&
-    getMutableConfig().mode === "time"
-  ) {
-    const layouts = getMutableConfig().customLayoutfluid;
-    const switchTime = getMutableConfig().time / layouts.length;
-    const index = Math.floor(time / switchTime);
-    const layout = layouts[index];
-    const flooredSwitchTimes = [];
-
-    for (let i = 1; i < layouts.length; i++) {
-      flooredSwitchTimes.push(Math.floor(switchTime * i));
+        if (getMutableConfig().keymapMode === "next") {
+          setTimeout(() => {
+            highlight(
+              TestWords.words
+                .getCurrent()
+                ?.text.charAt(getCurrentInput().length) ?? "",
+            );
+          }, 1);
+        }
+      }
     }
+    if (timerDebug) console.timeEnd("layoutfluid");
+  }
+  function playTimeWarning(testTime: number): void {
+    if (timerDebug) console.time("play timer warning");
 
-    if (flooredSwitchTimes.includes(time + 3)) {
-      LayoutfluidFunboxTimer.show();
-      LayoutfluidFunboxTimer.updateTime(3, layouts[index + 1] as string);
-    } else if (flooredSwitchTimes.includes(time + 2)) {
-      LayoutfluidFunboxTimer.updateTime(2, layouts[index + 1] as string);
-    } else if (flooredSwitchTimes.includes(time + 1)) {
-      LayoutfluidFunboxTimer.updateTime(1, layouts[index + 1] as string);
+    const maxTime = getTimeLimit(getMutableConfig(), CustomText.getLimit());
+
+    if (
+      maxTime !== undefined &&
+      testTime === maxTime - parseInt(getMutableConfig().playTimeWarning, 10)
+    ) {
+      void SoundController.playTimeWarning();
     }
+    if (timerDebug) console.timeEnd("play timer warning");
+  }
+  function timerStep(tick: SessionEvents["tick"]): void {
+    if (timerDebug) console.time("timer step -----------------------------");
 
-    if (getMutableConfig().layout !== layout && layout !== undefined) {
-      LayoutfluidFunboxTimer.hide();
-      setConfig("layout", layout as Layout, {
-        nosave: true,
+    // catch-up ticks only run the cheap per-second side effects
+    if (tick.catchup !== true) {
+      setCurrentLiveStats({
+        wpm: tick.wpm,
+        acc: tick.acc,
+        raw: tick.raw,
+        seconds: tick.seconds,
       });
-      setConfig("keymapLayout", layout as KeymapLayout, {
-        nosave: true,
-      });
+    }
+    if (getMutableConfig().playTimeWarning !== "off") {
+      playTimeWarning(tick.timer);
+    }
+    layoutfluid(tick.timer);
 
-      if (getMutableConfig().keymapMode === "next") {
-        setTimeout(() => {
-          highlight(
-            TestWords.words
-              .getCurrent()
-              ?.text.charAt(getCurrentInput().length) ?? "",
-          );
-        }, 1);
+    if (timerDebug) console.timeEnd("timer step -----------------------------");
+  }
+  function checkIfTimerIsSlow(drift: number, now: number): void {
+    if (!slowTimerFailEnabled) return;
+    if (
+      (getMutableConfig().mode === "time" &&
+        getMutableConfig().time < 130 &&
+        getMutableConfig().time > 0) ||
+      (getMutableConfig().mode === "words" &&
+        getMutableConfig().words < 250 &&
+        getMutableConfig().words > 0)
+    ) {
+      if (drift > 125) {
+        //slow timer
+        SlowTimer.set();
+        setLowFpsMode();
+      }
+      if (drift > 250) {
+        slowTimerCount++;
+      }
+
+      if (drift > 500 || slowTimerCount > 5) {
+        //slow timer
+
+        showNoticeNotification(
+          'This could be caused by "efficiency mode" on Microsoft Edge.',
+        );
+
+        slowTimerNotifIds.push(
+          showErrorNotification(
+            "Stopping the test due to bad performance. This would cause test calculations to be incorrect. If this happens a lot, please report this.",
+          ),
+        );
+
+        getTestSession().finish(now, "slow timer");
       }
     }
   }
-  if (timerDebug) console.timeEnd("layoutfluid");
-}
-
-function playTimeWarning(testTime: number): void {
-  if (timerDebug) console.time("play timer warning");
-
-  const maxTime = getTimeLimit(getMutableConfig(), CustomText.getLimit());
-
-  if (
-    maxTime !== undefined &&
-    testTime === maxTime - parseInt(getMutableConfig().playTimeWarning, 10)
-  ) {
-    void SoundController.playTimeWarning();
+  function onFinish(reason: string | undefined): void {
+    SlowTimer.clear();
+    slowTimerCount = 0;
+    if (reason === undefined) Caret.hide();
   }
-  if (timerDebug) console.timeEnd("play timer warning");
-}
-
-function timerStep(tick: SessionEvents["tick"]): void {
-  if (timerDebug) console.time("timer step -----------------------------");
-
-  // catch-up ticks only run the cheap per-second side effects
-  if (tick.catchup !== true) {
-    setCurrentLiveStats({
-      wpm: tick.wpm,
-      acc: tick.acc,
-      raw: tick.raw,
-      seconds: tick.seconds,
-    });
+  const unsubscribe = [
+    getTestSession().on("drift", ({ drift, now }) =>
+      checkIfTimerIsSlow(drift, now),
+    ),
+    getTestSession().on("tick", timerStep),
+    getTestSession().on("finish", ({ reason }) => onFinish(reason)),
+  ];
+  onCleanup(() => {
+    scheduler.stop();
+    for (const off of unsubscribe) off();
+  });
+  function start(now: number): void {
+    SlowTimer.clear();
+    slowTimerCount = 0;
+    for (const id of slowTimerNotifIds) {
+      removeNotification(id, "clear");
+    }
+    slowTimerNotifIds = [];
+    scheduler.start(now);
   }
-  if (getMutableConfig().playTimeWarning !== "off") playTimeWarning(tick.timer);
-  layoutfluid(tick.timer);
-
-  if (timerDebug) console.timeEnd("timer step -----------------------------");
+  return { disableSlowTimerFail, enableTimerDebug, clear, start };
 }
-
-function checkIfTimerIsSlow(drift: number, now: number): void {
-  if (!slowTimerFailEnabled) return;
-  if (
-    (getMutableConfig().mode === "time" &&
-      getMutableConfig().time < 130 &&
-      getMutableConfig().time > 0) ||
-    (getMutableConfig().mode === "words" &&
-      getMutableConfig().words < 250 &&
-      getMutableConfig().words > 0)
-  ) {
-    if (drift > 125) {
-      //slow timer
-      SlowTimer.set();
-      setLowFpsMode();
-    }
-    if (drift > 250) {
-      slowTimerCount++;
-    }
-
-    if (drift > 500 || slowTimerCount > 5) {
-      //slow timer
-
-      showNoticeNotification(
-        'This could be caused by "efficiency mode" on Microsoft Edge.',
-      );
-
-      slowTimerNotifIds.push(
-        showErrorNotification(
-          "Stopping the test due to bad performance. This would cause test calculations to be incorrect. If this happens a lot, please report this.",
-        ),
-      );
-
-      testSession.finish(now, "slow timer");
-    }
-  }
+const timing = createAppOwned(createTiming);
+export function disableSlowTimerFail(): void {
+  timing().disableSlowTimerFail();
 }
-
-function onFinish(reason: string | undefined): void {
-  SlowTimer.clear();
-  slowTimerCount = 0;
-  if (reason === undefined) Caret.hide();
+export function enableTimerDebug(): void {
+  timing().enableTimerDebug();
 }
-
-const unsubscribe = [
-  testSession.on("drift", ({ drift, now }) => checkIfTimerIsSlow(drift, now)),
-  testSession.on("tick", timerStep),
-  testSession.on("finish", ({ reason }) => onFinish(reason)),
-];
-import.meta.hot?.dispose(() => {
-  for (const off of unsubscribe) off();
-});
-
+export function clear(): void {
+  timing().clear();
+}
 export function start(now: number): void {
-  SlowTimer.clear();
-  slowTimerCount = 0;
-  for (const id of slowTimerNotifIds) {
-    removeNotification(id, "clear");
-  }
-  slowTimerNotifIds = [];
-  scheduler.start(now);
+  timing().start(now);
 }

@@ -1,3 +1,4 @@
+import { createRoot } from "solid-js";
 import type { LanguageObject } from "@oxytype/schemas/languages";
 import type { EventLog } from "@oxytype/typing-core/events/types";
 import {
@@ -231,7 +232,11 @@ import {
 } from "../../../src/ts/test/events/data";
 import * as SlowTimer from "../../../src/ts/states/slow-timer";
 import * as CustomText from "../../../src/ts/test/custom-text";
-import { restart, startTest } from "../../../src/ts/test/test-logic";
+import {
+  restart,
+  startTest,
+  useTestLogicEvents,
+} from "../../../src/ts/test/test-logic";
 
 function type(
   now: number,
@@ -264,11 +269,17 @@ function failReason(): unknown {
   return mocks.resultUpdate.mock.calls.at(-1)?.[2];
 }
 
+let disposeRuntime: () => void;
+afterEach(() => disposeRuntime());
 beforeEach(async () => {
   vi.useFakeTimers({
     toFake: ["setTimeout", "clearTimeout", "performance", "Date"],
   });
   vi.clearAllMocks();
+  disposeRuntime = createRoot((dispose) => {
+    useTestLogicEvents();
+    return dispose;
+  });
   Object.assign(mocks, {
     active: false,
     restarting: false,

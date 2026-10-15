@@ -4,6 +4,16 @@ import { createStore, type SetStoreFunction } from "solid-js/store";
 import { createAppOwned } from "./application";
 import { createAccountOwned } from "./account-scope";
 
+/** Preserve generic/overloaded signatures while resolving a method at call time. */
+export function appMethod<T extends (...args: never[]) => unknown>(
+  read: () => T,
+): T {
+  return new Proxy((() => undefined) as unknown as T, {
+    apply: (_target, receiver, args) =>
+      Reflect.apply(read(), receiver, args) as unknown,
+  });
+}
+
 /** Stable compatibility accessors; the value itself belongs to the mounted app. */
 export function createAppSignal<T>(): Signal<T | undefined>;
 export function createAppSignal<T>(

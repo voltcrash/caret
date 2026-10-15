@@ -9,7 +9,7 @@ import {
   getAllTestEvents,
   cleanupData,
   resetTestEvents,
-  __testing,
+  getTestSession,
   forceReleaseAllKeys,
 } from "../../../src/ts/test/events/data";
 import type {
@@ -63,7 +63,7 @@ function timerData(
 describe("data.ts", () => {
   beforeEach(() => {
     resetTestEvents();
-    __testing.resetPressedKeys();
+    getTestSession().recorder.__testing.resetPressedKeys();
   });
 
   describe("logTestEvent + getAllTestEvents", () => {

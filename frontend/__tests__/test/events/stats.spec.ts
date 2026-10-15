@@ -66,7 +66,7 @@ import {
   getAllTestEvents,
   cleanupData,
   buildEventLog,
-  __testing,
+  getTestSession,
 } from "../../../src/ts/test/events/data";
 import {
   findInputValueMismatches,
@@ -203,7 +203,7 @@ function setupBasicTest(): void {
 describe("stats.ts", () => {
   beforeEach(() => {
     resetTestEvents();
-    __testing.resetPressedKeys();
+    getTestSession().recorder.__testing.resetPressedKeys();
     (getMutableConfig() as { mode: string }).mode = "words";
     (getMutableConfig() as { funbox: string[] }).funbox = [];
     (getMutableConfig() as { words: number }).words = 25;

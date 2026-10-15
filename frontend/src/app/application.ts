@@ -35,8 +35,8 @@ export function createApplicationRoot(): ApplicationRoot {
       owner: getOwner() as Owner,
       state,
       dispose: () => {
-        state.dispose();
         disposeOwner();
+        state.dispose();
       },
     };
   });

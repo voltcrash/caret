@@ -1,3 +1,5 @@
+import { createAppOwned } from "../../app/application";
+import { appObject } from "../../app/state";
 import { QuotesController as CoreQuotesController } from "@oxytype/typing-core/quote-source";
 import { Quote } from "@oxytype/typing-core/quotes";
 export type { Quote } from "@oxytype/typing-core/quotes";
@@ -81,7 +83,7 @@ class QuotesController extends CoreQuotesController {
   }
 }
 
-const quoteController = new QuotesController();
+const quoteController = appObject(createAppOwned(() => new QuotesController()));
 
 export default quoteController;
 

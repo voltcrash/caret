@@ -47,7 +47,7 @@ import { getTypingTestElement } from "../states/test-dom";
 
 import { getMutableConfig } from "../config/store";
 import { setQuoteLengthAll, setConfig } from "../config/setters";
-import { testSession } from "./events/data";
+import { getTestSession } from "./events/data";
 
 import { nthElementFromArray } from "../utils/arrays";
 import { hasKoreanCharacters } from "@oxytype/typing-core/strings";
@@ -189,7 +189,7 @@ export async function init(): Promise<boolean> {
   let generatedWords: string[] = [];
   let generatedSectionIndexes: number[] = [];
   try {
-    const gen = await testSession.generate(language, WordsGenerator);
+    const gen = await getTestSession().generate(language, WordsGenerator);
     generatedWords = gen.words;
     generatedSectionIndexes = gen.sectionIndexes;
     wordsHaveTab = gen.hasTab;

@@ -1,7 +1,7 @@
 import * as Sound from "../controllers/sound-controller";
 import * as Arrays from "../utils/arrays";
 import { getMutableConfig } from "../config/store";
-import { buildEventLog, testSession } from "./events/data";
+import { buildEventLog, getTestSession } from "./events/data";
 import { getWpmHistory } from "@oxytype/typing-core/events/stats";
 import {
   applyReplayStep,
@@ -100,7 +100,7 @@ export function toggleReplayDisplay(): void {
 }
 
 function refreshReplayFromEvents(): void {
-  ({ words, steps } = testSession.getReplay());
+  ({ words, steps } = getTestSession().getReplay());
   wpmHistory = getWpmHistory(buildEventLog());
   target = { wordIndex: 0, letterIndex: 0 };
 }

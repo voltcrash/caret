@@ -58,7 +58,7 @@ import { getTypingTestElement } from "../states/test-dom";
 import { getMutableConfig } from "../config/store";
 
 import {
-  testSession,
+  getTestSession,
   cleanupData,
   logEventsDataToTheConsoleTable,
   forceReleaseAllKeys,
@@ -109,7 +109,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
   setResultCalculating(true);
   const now = performance.now();
   TestTimer.clear();
-  testSession.end(now);
+  getTestSession().end(now);
   const resultReady = Promise.all([import("./result"), prepareResultScreen()]);
 
   // fade out the test and show loading
@@ -148,7 +148,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
         .getActiveTags()
         .map((tag) => tag._id)
     : [];
-  const ce = testSession.complete(eventLog, {
+  const ce = getTestSession().complete(eventLog, {
     config: getMutableConfig(),
     currentQuote: getCurrentQuote(),
     customText: getCompletedEventCustomText(),
@@ -180,7 +180,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
 
   ///////// completed event ready
 
-  const failReason = testSession.getFinishReason() ?? "";
+  const failReason = getTestSession().getFinishReason() ?? "";
   const afkDetected = isAfkResult(eventLog, getBailedOut());
   const invalidReason = getInvalidResultReason({
     result: completedEvent,

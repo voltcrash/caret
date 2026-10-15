@@ -1,6 +1,14 @@
+import { createRoot } from "solid-js";
 import type { QuoteWithTextSplit } from "@oxytype/typing-core/quotes";
 import type { LanguageObject } from "@oxytype/schemas/languages";
-import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vite-plus/test";
 
 const mocks = vi.hoisted(() => ({
   active: false,
@@ -106,22 +114,25 @@ vi.mock("../../src/ts/test/test-ui", () => ({
   addWord: vi.fn(),
 }));
 vi.mock("../../src/ts/test/events/data", () => ({
-  testSession: {
-    start: mocks.sessionStart,
-    generate: mocks.generate,
-    complete: mocks.complete,
-    end: vi.fn(),
-    abandon: () => ({ acc: mocks.inputAccuracy, seconds: 0 }),
-    finish: (_now: number, reason?: string) => {
-      mocks.finishReason = reason;
-      mocks.onFinish?.({ reason });
-    },
-    getFinishReason: () => mocks.finishReason,
-    on: (_type: "finish", listener: (event: { reason?: string }) => void) => {
-      mocks.onFinish = listener;
-      return () => undefined;
-    },
-  },
+  getTestSession: (() => {
+    const session = {
+      start: mocks.sessionStart,
+      generate: mocks.generate,
+      complete: mocks.complete,
+      end: vi.fn(),
+      abandon: () => ({ acc: mocks.inputAccuracy, seconds: 0 }),
+      finish: (_now: number, reason?: string) => {
+        mocks.finishReason = reason;
+        mocks.onFinish?.({ reason });
+      },
+      getFinishReason: () => mocks.finishReason,
+      on: (_type: "finish", listener: (event: { reason?: string }) => void) => {
+        mocks.onFinish = listener;
+        return () => undefined;
+      },
+    };
+    return () => session;
+  })(),
   resetTestEvents: () => {
     mocks.finishReason = undefined;
   },
@@ -248,10 +259,17 @@ import {
   restart,
   retrySavingResult,
   startTest,
+  useTestLogicEvents,
 } from "../../src/ts/test/test-logic";
 
+let disposeRuntime: () => void;
+afterEach(() => disposeRuntime());
 beforeEach(() => {
   vi.clearAllMocks();
+  disposeRuntime = createRoot((dispose) => {
+    useTestLogicEvents();
+    return dispose;
+  });
   Object.assign(mocks, {
     active: false,
     restarting: false,

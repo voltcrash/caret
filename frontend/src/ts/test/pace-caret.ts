@@ -1,5 +1,5 @@
 import * as TestWords from "./test-words";
-import { testSession } from "./events/data";
+import { getTestSession } from "./events/data";
 import { getMutableConfig } from "../config/store";
 import * as DB from "../db";
 import * as Misc from "../utils/misc";
@@ -42,7 +42,7 @@ export function getCaret(): CaretController {
 }
 
 export function setLastTestWpm(wpm: number): void {
-  testSession.pace.rememberWpm(wpm, isPaceRepeat());
+  getTestSession().pace.rememberWpm(wpm, isPaceRepeat());
 }
 
 export function resetCaretPosition(): void {
@@ -103,13 +103,17 @@ export async function init(): Promise<void> {
   } else if (getMutableConfig().paceCaret === "custom") {
     wpm = getMutableConfig().paceCaretCustomSpeed;
   } else if (getMutableConfig().paceCaret === "last" || isPaceRepeat()) {
-    wpm = testSession.pace.getLastWpm();
+    wpm = getTestSession().pace.getLastWpm();
   }
-  setPaceCaretWpm(testSession.pace.reset(wpm) ? wpm : undefined);
+  setPaceCaretWpm(getTestSession().pace.reset(wpm) ? wpm : undefined);
 }
 
 function update(): void {
-  if (!testSession.pace.isEnabled() || !isTestActive() || getResultVisible()) {
+  if (
+    !getTestSession().pace.isEnabled() ||
+    !isTestActive() ||
+    getResultVisible()
+  ) {
     return;
   }
 
@@ -117,7 +121,7 @@ function update(): void {
     getCaret().show();
   }
 
-  const position = testSession.pace.step(
+  const position = getTestSession().pace.step(
     (index) => TestWords.words.get(index)?.text,
     getMutableConfig().blindMode,
   );
@@ -127,7 +131,7 @@ function update(): void {
   }
 
   try {
-    const duration = testSession.pace.getStepEnd() - performance.now();
+    const duration = getTestSession().pace.getStepEnd() - performance.now();
 
     getCaret().goTo({
       wordIndex: position.wordIndex,
@@ -150,11 +154,11 @@ function update(): void {
 
 export function reset(): void {
   clearTimeout(timeout);
-  testSession.pace.reset();
+  getTestSession().pace.reset();
 }
 
 export function handleSpace(correct: boolean, currentWord: string): void {
-  testSession.pace.correct(
+  getTestSession().pace.correct(
     getActiveWordIndex(),
     correct,
     currentWord,
@@ -163,7 +167,7 @@ export function handleSpace(correct: boolean, currentWord: string): void {
 }
 
 export function start(): void {
-  testSession.pace.start(performance.now());
+  getTestSession().pace.start(performance.now());
   update();
 }
 

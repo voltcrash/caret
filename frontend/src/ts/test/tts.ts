@@ -6,7 +6,6 @@ import { configEvent } from "../events/config";
 import { ttsEvent } from "../events/tts";
 function createSpeech(): {
   useTtsEvents: typeof useTtsEvents;
-  disposeSpeech: typeof disposeSpeech;
 } {
   let voice: SpeechSynthesisUtterance | undefined;
   async function setLanguage(
@@ -55,12 +54,9 @@ function createSpeech(): {
     clear();
   }
   onCleanup(disposeSpeech);
-  return { useTtsEvents, disposeSpeech };
+  return { useTtsEvents };
 }
 const speech = createAppOwned(createSpeech);
 export function useTtsEvents(): void {
   speech().useTtsEvents();
-}
-export function disposeSpeech(): void {
-  speech().disposeSpeech();
 }
