@@ -80,6 +80,13 @@ auth/functions/mutations/private data, and deliberately preserves guest offline
 typing. Service-worker update/activation and page refresh must wait for active
 typing and pending saves; never auto-replay a failed result on update/reconnect.
 
+Cloudflare's [rollback contract](https://developers.cloudflare.com/workers/versions-and-deployments/rollbacks/)
+currently permits the 100 most recent versions and does not restore connected
+resources. Preserve the current anchor explicitly before it ages out; do not
+assume a dated deployment stays rollback-capable indefinitely. Installed Wrangler
+read-only `versions view` confirmed version 13, script ETag and runtime asset
+configuration; sanitized metadata is included in the rollback evidence.
+
 No unresolved product-scope decision blocks Stage 1. Actual package compatibility,
 edge metrics, final release IDs, migration staging and old-tab acceptance are
 explicit Stage 1/7 implementation gates, not silently completed by this document.

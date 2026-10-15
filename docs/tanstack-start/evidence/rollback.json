@@ -19,5 +19,21 @@
     "successfulRun": "https://github.com/voltcrash/oxytype/actions/runs/38683451809",
     "githubReleaseAssets": []
   },
-  "mappingEvidence": "Release workflow deploys then publishes same SHA; timestamps align. Cloudflare version ID independently observed; re-observe immediately before cutover."
+  "mappingEvidence": "Release workflow deploys then publishes same SHA; timestamps align. Cloudflare version ID independently observed; re-observe immediately before cutover.",
+  "versionMetadata": {
+    "id": "ad9a94aa-739f-4a95-bb20-c7782f4c5770",
+    "number": 13,
+    "created_on": "2026-10-15T04:50:12.398025Z",
+    "scriptEtag": "236f50200c49d71c2a2a8d832814959f3dec0338dd0203a218c0f6004c9a1c2f",
+    "runtime": {
+      "assets": {
+        "html_handling": "none",
+        "serve_directly": false,
+        "raw_run_worker_first": true,
+        "base_path": "/"
+      },
+      "compatibility_date": "2026-10-02",
+      "usage_model": "standard"
+    }
+  }
 }
