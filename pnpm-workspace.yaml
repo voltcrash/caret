@@ -36,7 +36,7 @@ overrides:
   "brace-expansion@^2": "2.1.7"
   "brace-expansion@^5": "5.0.12"
   "brace-expansion@^1": "1.1.21"
-  "seroval": "1.6.3"
+  "seroval": "1.6.9"
   # Authentication uses Drizzle; exclude the unused adapter and optional driver.
   "better-auth>@better-auth/mongo-adapter": "-"
   "better-auth>mongodb": "-"
@@ -104,6 +104,13 @@ minimumReleaseAgeExclude:
   - better-auth@1.7.7
   - miniflare@5.20261001.0-alpha
   - wrangler@4.146.0
+  - "@tanstack/router-generator@1.167.44"
+  - "@tanstack/router-plugin@1.168.46"
+  - "@tanstack/router-utils@1.162.4"
+  - "@tanstack/solid-start-server@1.167.48"
+  - "@tanstack/solid-start@1.169.2"
+  - "@tanstack/start-plugin-core@1.171.53"
+  - "@tanstack/start-server-core@1.169.43"
 patchedDependencies:
   "@anatine/zod-openapi@1.14.2": patches/@anatine__zod-openapi@1.14.2.patch
   "@ts-rest/core@3.52.1": patches/@ts-rest__core@3.52.1.patch
