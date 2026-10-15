@@ -12,6 +12,11 @@ const files = [
     ),
   ),
 ];
+if (files.length === 0) {
+  throw new Error(
+    "No eager JS found; update asset discovery for the current build before comparing migration budgets",
+  );
+}
 const entries = files.map((file) => {
   const bytes = fs.readFileSync(path.join(dist, file));
   return { file, raw: bytes.length, gzip: gzipSync(bytes).length };

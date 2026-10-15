@@ -182,7 +182,15 @@ async function main(): Promise<void> {
             `${path}: ${response.status} ${JSON.stringify(data)}`,
           );
         }
-        return Number(response.headers.get("X-Baseline-Queries"));
+        const count = response.headers.get("X-Baseline-Queries");
+        if (
+          count === null ||
+          !Number.isSafeInteger(Number(count)) ||
+          Number(count) < 0
+        ) {
+          throw new Error(`Missing or invalid D1 instrumentation for ${path}`);
+        }
+        return Number(count);
       };
       for (const path of [
         "/configuration",
