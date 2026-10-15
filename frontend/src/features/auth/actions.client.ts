@@ -1,7 +1,7 @@
 import type { QueryClient } from "@tanstack/solid-query";
 import type { UiSession } from "@oxytype/schemas/auth-session";
 import { getAuthClient } from "./client.client";
-import { setUserState } from "../../ts/auth-client";
+import { setUserState } from "./state.client";
 import { checkAuthResult } from "./result";
 import { requestOAuth } from "./popup.client";
 import { sessionOptions, sessionKey } from "./session";

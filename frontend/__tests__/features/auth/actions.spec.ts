@@ -21,7 +21,9 @@ vi.mock("../../../src/functions/signup", () => ({
 vi.mock("../../../src/features/auth/popup.client", () => ({
   requestOAuth: mocks.popup,
 }));
-vi.mock("../../../src/ts/auth-client", () => ({ setUserState: mocks.setUser }));
+vi.mock("../../../src/features/auth/state.client", () => ({
+  setUserState: mocks.setUser,
+}));
 vi.mock("../../../src/features/auth/client.client", () => ({
   getAuthClient: () => ({
     signOut: mocks.signOut,

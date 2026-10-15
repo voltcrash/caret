@@ -1,8 +1,8 @@
-import { onCleanup, onMount } from "solid-js";
+import { createEffect, onCleanup, onMount } from "solid-js";
 import { type JSXElement } from "solid-js";
 
 import { onAuthStateChanged } from "../ts/auth";
-import { init } from "../ts/auth-client";
+import { init, observeAuthSession } from "../ts/auth-client";
 import { getMutableConfig } from "../ts/config/store";
 import { useUrlEvents } from "../ts/controllers/url-handler";
 import * as DB from "../ts/db";
@@ -17,10 +17,16 @@ import * as TestTimer from "../ts/test/test-timer";
 import * as Logger from "../ts/utils/logger";
 import { addToGlobal } from "../ts/utils/misc";
 import BrowserRuntime from "./platform-runtime.client";
+import { authReadiness } from "./readiness";
 import { TypingRuntime } from "./typing-runtime.client";
 
 /** Rollback-only page/account wiring. Retires with Stages 3–5. */
 export function LegacyRuntime(): JSXElement {
+  createEffect(() => {
+    if (authReadiness().state().status === "ready") {
+      onCleanup(observeAuthSession());
+    }
+  });
   useConnectionEvents();
   usePsaEvents();
   useUrlEvents();
@@ -49,7 +55,7 @@ export function LegacyRuntime(): JSXElement {
   return (
     <>
       <TypingRuntime />
-      <BrowserRuntime legacyAuth />
+      <BrowserRuntime />
     </>
   );
 }

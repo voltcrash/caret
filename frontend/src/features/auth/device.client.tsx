@@ -1,12 +1,12 @@
 import { createSignal, JSXElement, onCleanup, Show } from "solid-js";
 
 import { decideDeviceCode, reviewDeviceCode } from "../../ts/ape/device-auth";
-import { getAuthenticatedUser } from "../../ts/auth-client";
 import { Button } from "../../ts/components/common/Button";
 import { H3 } from "../../ts/components/common/Headers";
 import { LoadingCircle } from "../../ts/components/common/LoadingCircle";
 import { createEffectOn } from "../../ts/hooks/effects";
 import { createErrorMessage } from "../../ts/utils/error";
+import { getAuthenticatedUser } from "./state.client";
 
 export function DeviceApproval(props: { initialCode?: string }): JSXElement {
   const [code, setCode] = createSignal("");

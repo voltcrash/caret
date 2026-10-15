@@ -1,4 +1,4 @@
-import { getAuthClient } from "../auth-client";
+import { getAuthClient } from "../../features/auth/client.client";
 
 export type DeviceRequest = {
   user_code: string;

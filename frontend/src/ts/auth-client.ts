@@ -1,10 +1,8 @@
 import { captureAccount } from "../app/account-scope";
-import { batch, onCleanup, createSignal } from "solid-js";
+import { onCleanup } from "solid-js";
 import { envConfig } from "virtual:env-config";
 import { createAppOwned } from "../app/application";
 import { authReadiness } from "../app/readiness";
-import { appSignal } from "../app/state";
-import { setUserId } from "./states/core";
 import { googleSignUpEvent } from "./events/google-sign-up";
 import { SnapshotInitError } from "./utils/snapshot-init-error";
 
@@ -12,10 +10,11 @@ import { getAuthClient } from "../features/auth/client.client";
 export { getAuthClient };
 import type { AuthUser, SocialProvider } from "./auth-types";
 export type { AuthUser, SocialProvider } from "./auth-types";
-const [getAuthenticatedUser, setAuthenticatedUser] = appSignal(() =>
-  createSignal<AuthUser | null>(null),
-);
-export { getAuthenticatedUser };
+import {
+  getAuthenticatedUser,
+  setUserState,
+} from "../features/auth/state.client";
+export { getAuthenticatedUser, setUserState };
 
 type ReadyCallback = (success: boolean, user: AuthUser | null) => Promise<void>;
 const authState = createAppOwned(() => {
@@ -33,13 +32,6 @@ const authState = createAppOwned(() => {
 
 import { checkAuthResult } from "../features/auth/result";
 export { checkAuthResult };
-
-export function setUserState(user: AuthUser | null): void {
-  batch(() => {
-    setUserId(user?.uid ?? null);
-    setAuthenticatedUser(user);
-  });
-}
 
 export async function refreshSession(notify = true): Promise<AuthUser | null> {
   const state = authState();

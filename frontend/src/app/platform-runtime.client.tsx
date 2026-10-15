@@ -2,7 +2,6 @@ import { createEffect, onCleanup, onMount } from "solid-js";
 import { type JSXElement } from "solid-js";
 
 import { applyEngineSettings } from "../ts/anim";
-import { observeAuthSession } from "../ts/auth-client";
 import { Theme } from "../ts/components/core/Theme";
 import { ThemeEvents } from "../ts/components/core/ThemeEvents";
 import { loadFromLocalStorage } from "../ts/config/lifecycle";
@@ -16,20 +15,9 @@ import { fetchLatestVersion } from "../ts/utils/version";
 import { currentApplication, requireApplication } from "./application";
 import { lockMath } from "./browser-integrity";
 import { FontRuntime } from "./font-runtime.client";
-import { authReadiness } from "./readiness";
 
 /** Platform/preferences only. Never waits for authentication or account history. */
-export default function BrowserRuntime(props: {
-  legacyAuth?: boolean;
-}): JSXElement {
-  createEffect(() => {
-    if (
-      props.legacyAuth === true &&
-      authReadiness().state().status === "ready"
-    ) {
-      onCleanup(observeAuthSession());
-    }
-  });
+export default function BrowserRuntime(): JSXElement {
   useThemeEvents();
   createEffect(() => {
     getAcceptedCookies();
