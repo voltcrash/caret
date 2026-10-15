@@ -20,8 +20,12 @@ const serverMarkers = [
   "withRuntime",
   "consumeBatch",
 ];
-// Legacy browser bootstrap literals; Start must never mount it.
-const legacyMarkers = ["App mount not found", "toggleSmoothedBurst"];
+// Legacy bootstrap/page-lifecycle literals; Start must never mount them.
+const legacyMarkers = [
+  "App mount not found",
+  "stoped, page already active",
+  "Missing page ref",
+];
 
 describe("built Start bundle boundaries", () => {
   const client = read("client/assets");
@@ -35,7 +39,7 @@ describe("built Start bundle boundaries", () => {
     for (const marker of serverMarkers) expect(client).not.toContain(marker);
   });
 
-  it("never bundles the legacy browser bootstrap", () => {
+  it("never bundles the legacy bootstrap, page controller or page cache", () => {
     for (const marker of legacyMarkers) {
       expect(client).not.toContain(marker);
       expect(server).not.toContain(marker);

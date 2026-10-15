@@ -93,14 +93,14 @@ describe("Start document and response policy in workerd", () => {
     expect(response.headers.get("Cache-Control")).toBe("no-store");
   });
 
-  it("renders root errors without exposing database details or secrets", async () => {
+  it("degrades public reads inline without exposing database details", async () => {
     const db = await mf.getD1Database("DB", "b");
     await db.prepare("DROP TABLE public_stats").run();
     const worker = await mf.getWorker("b");
     const response = await worker.fetch("http://localhost:3000/about");
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(200);
     const html = await response.text();
-    expect(html).toContain("Unable to load Oxytype");
+    expect(html).toContain('data-testid="tests-completed">-');
     expect(html).not.toContain("no such table");
     expect(html).not.toContain("stage-one-local-only-secret");
     expect(response.headers.get("Cache-Control")).toBe("no-store");
