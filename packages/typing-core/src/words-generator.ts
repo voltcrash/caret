@@ -1,3 +1,4 @@
+import { createGeneratorState } from "./words-generator/state";
 import { getQuoteWordList } from "./words-generator/quotes";
 import { getGenerationLimit } from "./words-generator/limits";
 import { createWordTransforms } from "./words-generator/transforms";
@@ -18,16 +19,17 @@ import {
 import * as Arrays from "./arrays";
 import { WordGenError } from "./errors";
 import { QuoteWithTextSplit } from "./quotes";
-import { PolyglotWordset, Wordset, withWords } from "./wordset";
+import { PolyglotWordset, withWords } from "./wordset";
 
 //pin implementation
 const random = Math.random;
 
 export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
   const config = (): WordsGeneratorConfig => deps.getConfig();
+  const state = createGeneratorState();
 
   const { applyBritishEnglishToWord, applyLazyModeToWord, applyNumbersToWord } =
-    createWordTransforms(deps, () => currentWordset, random);
+    createWordTransforms(deps, () => state.currentWordset, random);
   const punctuateWord = createPunctuation(deps, random);
   const {
     getFunboxWordsFrequency,
@@ -38,24 +40,20 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
     appendCommitCharacter,
   } = createFunboxWords(deps);
 
-  let currentWordset: Wordset | null = null;
-  let currentLanguage: LanguageObject | null = null;
-  let isCurrentlyUsingFunboxSection = false;
-
   let previousRandomQuote: QuoteWithTextSplit | null = null;
 
   async function generateWords(
     language: LanguageObject,
   ): Promise<GenerateWordsReturn> {
     if (!deps.isRepeated()) {
-      previousGetNextWordReturns = [];
+      state.previousGetNextWordReturns = [];
     }
     previousRandomQuote = deps.getCurrentQuote();
     deps.setCurrentQuote(null);
-    currentSection = [];
-    sectionIndex = 0;
-    sectionHistory = [];
-    currentLanguage = language;
+    state.currentSection = [];
+    state.sectionIndex = 0;
+    state.sectionHistory = [];
+    state.currentLanguage = language;
     const rawWordList: string[] = [];
     const ret: GenerateWordsReturn = {
       words: [],
@@ -66,7 +64,7 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
       allJoiningScript: language.joiningScript ?? false,
     };
 
-    isCurrentlyUsingFunboxSection =
+    state.isCurrentlyUsingFunboxSection =
       getFunboxesWithFunction(deps.getActiveFunboxes(), "pullSection").length >
       0;
 
@@ -79,7 +77,7 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
       wordList = await getQuoteWordList(
         deps,
         language,
-        currentWordset,
+        state.currentWordset,
         previousRandomQuote,
         wordOrder,
       );
@@ -105,16 +103,16 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
       // PolyglotWordset if polyglot otherwise Wordset
       if (result instanceof PolyglotWordset) {
         const polyglotResult = result;
-        currentWordset = polyglotResult;
+        state.currentWordset = polyglotResult;
         // set allJoiningScript if any language in languageProperties has joiningScript: true
         ret.allJoiningScript = Array.from(
           polyglotResult.languageProperties.values(),
         ).some((props) => !!props.joiningScript);
       } else {
-        currentWordset = result;
+        state.currentWordset = result;
       }
     } else {
-      currentWordset = await withWords(wordList);
+      state.currentWordset = await withWords(wordList);
     }
 
     if (limit === 0) {
@@ -137,7 +135,7 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
       if (customAndUsingPipeDelimiter) {
         //generate a given number of sections, make sure to not cut a section off
         const sectionFinishedAndOverLimit =
-          currentSection.length === 0 && sectionIndex >= limit;
+          state.currentSection.length === 0 && state.sectionIndex >= limit;
         //make sure we dont go over a hard limit, in cases where the sections are very large
         const upperWordLimit = ret.words.length >= 100;
         if (sectionFinishedAndOverLimit || upperWordLimit) {
@@ -157,24 +155,18 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
 
     ret.hasTab =
       ret.words.some((w) => w.includes("\t")) ||
-      currentWordset.words.some((w) => w.includes("\t")) ||
+      state.currentWordset.words.some((w) => w.includes("\t")) ||
       (config().mode === "quote" &&
         (quote as QuoteWithTextSplit).textSplit.some((w) => w.includes("\t")));
     ret.hasNewline =
       ret.words.some((w) => w.includes("\n")) ||
-      currentWordset.words.some((w) => w.includes("\n")) ||
+      state.currentWordset.words.some((w) => w.includes("\n")) ||
       (config().mode === "quote" &&
         (quote as QuoteWithTextSplit).textSplit.some((w) => w.includes("\n")));
 
-    sectionHistory = []; //free up a bit of memory? is that even a thing?
+    state.sectionHistory = []; //free up a bit of memory? is that even a thing?
     return ret;
   }
-
-  let sectionIndex = 0;
-  let currentSection: string[] = [];
-  let sectionHistory: string[] = [];
-
-  let previousGetNextWordReturns: GetNextWordReturn[] = [];
 
   //generate next word
   async function getNextWord(
@@ -183,19 +175,19 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
     previousWord: string | undefined,
     previousWord2: string | undefined,
   ): Promise<GetNextWordReturn> {
-    if (currentWordset === null) {
+    if (state.currentWordset === null) {
       throw new WordGenError("Current wordset is null");
     }
 
-    if (currentLanguage === null) {
+    if (state.currentLanguage === null) {
       throw new WordGenError("Current language is null");
     }
 
     //because quote test can be repeated in the middle of a test
-    //we cant rely on data inside previousGetNextWordReturns
+    //we cant rely on data inside state.previousGetNextWordReturns
     //because it might not include the full quote
     if (deps.isRepeated() && config().mode !== "quote") {
-      const repeated = previousGetNextWordReturns[wordIndex];
+      const repeated = state.previousGetNextWordReturns[wordIndex];
 
       if (repeated === undefined) {
         // if the repeated word is undefined, that means we are out of words from the previous test
@@ -213,7 +205,7 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
             wordIndex < deps.customText.getLimitValue()) ||
           (config().mode === "custom" &&
             deps.customText.getLimitMode() === "section" &&
-            sectionIndex < deps.customText.getLimitValue()) ||
+            state.sectionIndex < deps.customText.getLimitValue()) ||
           (config().mode === "words" && wordIndex < config().words)
         ) {
           continueRandomGeneration = true;
@@ -223,13 +215,13 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
           throw new WordGenError("Repeated word is undefined");
         }
       } else {
-        sectionIndex++;
+        state.sectionIndex++;
         return repeated;
       }
     }
 
     const funboxFrequency = getFunboxWordsFrequency() ?? "normal";
-    let randomWord = currentWordset.randomWord(funboxFrequency);
+    let randomWord = state.currentWordset.randomWord(funboxFrequency);
     const previousWordRaw = previousWord
       ?.replace(/[.?!":\-,]/g, "")
       .toLowerCase();
@@ -237,35 +229,41 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
       ?.replace(/[.?!":\-,']/g, "")
       .toLowerCase();
 
-    if (currentSection.length === 0) {
+    if (state.currentSection.length === 0) {
       const funboxSection = await getFunboxSection();
 
       if (config().mode === "quote") {
-        randomWord = currentWordset.nextWord();
+        randomWord = state.currentWordset.nextWord();
       } else if (
         config().mode === "custom" &&
         deps.customText.getMode() === "repeat"
       ) {
-        randomWord = currentWordset.nextWord();
+        randomWord = state.currentWordset.nextWord();
       } else if (
         config().mode === "custom" &&
         deps.customText.getMode() === "random" &&
-        (currentWordset.length < 4 || deps.isPractiseWordsActive())
+        (state.currentWordset.length < 4 || deps.isPractiseWordsActive())
       ) {
-        randomWord = currentWordset.randomWord(funboxFrequency);
+        randomWord = state.currentWordset.randomWord(funboxFrequency);
       } else if (
         config().mode === "custom" &&
         deps.customText.getMode() === "shuffle"
       ) {
-        randomWord = currentWordset.shuffledWord();
+        randomWord = state.currentWordset.shuffledWord();
       } else if (
         config().mode === "custom" &&
         deps.customText.getLimitMode() === "section"
       ) {
-        randomWord = currentWordset.randomWord(funboxFrequency);
+        randomWord = state.currentWordset.randomWord(funboxFrequency);
 
-        const previousSection = Arrays.nthElementFromArray(sectionHistory, -1);
-        const previousSection2 = Arrays.nthElementFromArray(sectionHistory, -2);
+        const previousSection = Arrays.nthElementFromArray(
+          state.sectionHistory,
+          -1,
+        );
+        const previousSection2 = Arrays.nthElementFromArray(
+          state.sectionHistory,
+          -2,
+        );
 
         let regenerationCount = 0;
         while (
@@ -273,9 +271,9 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
           (previousSection === randomWord || previousSection2 === randomWord)
         ) {
           regenerationCount++;
-          randomWord = currentWordset.randomWord(funboxFrequency);
+          randomWord = state.currentWordset.randomWord(funboxFrequency);
         }
-      } else if (isCurrentlyUsingFunboxSection) {
+      } else if (state.isCurrentlyUsingFunboxSection) {
         randomWord = funboxSection.join(" ");
       } else {
         let regenarationCount = 0; //infinite loop emergency stop button
@@ -284,7 +282,7 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
         ).toLowerCase();
         let firstAfterSplitLazy = applyLazyModeToWord(
           firstAfterSplit,
-          currentLanguage,
+          state.currentLanguage,
         );
         while (
           regenarationCount < 100 &&
@@ -302,25 +300,25 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
               /[0-9]/i.test(randomWord)))
         ) {
           regenarationCount++;
-          randomWord = currentWordset.randomWord(funboxFrequency);
+          randomWord = state.currentWordset.randomWord(funboxFrequency);
           firstAfterSplit = randomWord.split(" ")[0] as string;
           firstAfterSplitLazy = applyLazyModeToWord(
             firstAfterSplit,
-            currentLanguage,
+            state.currentLanguage,
           );
         }
       }
       randomWord = randomWord.replace(/ +/g, " ");
       randomWord = randomWord.replace(/(^ )|( $)/g, "");
 
-      randomWord = getFunboxWord(randomWord, wordIndex, currentWordset);
+      randomWord = getFunboxWord(randomWord, wordIndex, state.currentWordset);
 
-      currentSection = [...randomWord.split(" ")];
-      sectionHistory.push(randomWord);
-      randomWord = currentSection.shift() as string;
-      sectionIndex++;
+      state.currentSection = [...randomWord.split(" ")];
+      state.sectionHistory.push(randomWord);
+      randomWord = state.currentSection.shift() as string;
+      state.sectionIndex++;
     } else {
-      randomWord = currentSection.shift() as string;
+      randomWord = state.currentSection.shift() as string;
     }
 
     if (randomWord === undefined) {
@@ -338,8 +336,8 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
     const usingFunboxWithGetWord =
       getFunboxesWithFunction(deps.getActiveFunboxes(), "getWord").length > 0;
     const randomWordLanguage =
-      (currentWordset instanceof PolyglotWordset
-        ? currentWordset.wordsWithLanguage.get(randomWord)
+      (state.currentWordset instanceof PolyglotWordset
+        ? state.currentWordset.wordsWithLanguage.get(randomWord)
         : config().language) ?? config().language; // Fall back to Config language if per-word language is unavailable
 
     if (
@@ -351,7 +349,7 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
       !randomWordLanguage.startsWith("swiss_german") &&
       !randomWordLanguage.startsWith("code") &&
       !randomWordLanguage.startsWith("klingon") &&
-      !isCurrentlyUsingFunboxSection &&
+      !state.isCurrentlyUsingFunboxSection &&
       !usingFunboxWithGetWord
     ) {
       randomWord = randomWord.toLowerCase();
@@ -359,7 +357,7 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
 
     randomWord = randomWord.replace(/ +/gm, " ");
     randomWord = randomWord.replace(/(^ )|( $)/gm, "");
-    randomWord = applyLazyModeToWord(randomWord, currentLanguage);
+    randomWord = applyLazyModeToWord(randomWord, state.currentLanguage);
 
     if (config().language.startsWith("swiss_german")) {
       randomWord = randomWord.replace(/ß/g, "ss");
@@ -367,8 +365,8 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
 
     if (
       config().punctuation &&
-      !currentLanguage.originalPunctuation &&
-      !isCurrentlyUsingFunboxSection
+      !state.currentLanguage.originalPunctuation &&
+      !state.isCurrentlyUsingFunboxSection
     ) {
       randomWord = await punctuateWord(
         previousWord,
@@ -387,10 +385,10 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
     const ret = {
       word: appendCommitCharacter(randomWord),
       wordRaw: randomWord,
-      sectionIndex: sectionIndex,
+      sectionIndex: state.sectionIndex,
     };
 
-    previousGetNextWordReturns.push(ret);
+    state.previousGetNextWordReturns.push(ret);
 
     return ret;
   }
@@ -409,8 +407,8 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
           (deps.getCurrentQuote()?.textSplit?.length ?? 0)) ||
       (config().mode === "custom" &&
         deps.customText.getLimitMode() === "section" &&
-        sectionIndex >= deps.customText.getLimitValue() &&
-        currentSection.length === 0 &&
+        state.sectionIndex >= deps.customText.getLimitValue() &&
+        state.currentSection.length === 0 &&
         deps.customText.getLimitValue() !== 0)
     );
   }
