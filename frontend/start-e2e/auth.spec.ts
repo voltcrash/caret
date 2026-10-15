@@ -1,4 +1,4 @@
-import { expect, test } from "playwright/test";
+import { expect, test } from "./fixtures";
 import { authCookie } from "./auth-fixtures";
 
 test("popup login and logout update native routes without reloading the document", async ({
@@ -100,7 +100,7 @@ test("leaving incomplete signup cancels its session without changing the documen
   await expect(
     page.getByRole("button", { name: "cancel sign up" }),
   ).toBeVisible();
-  await page.getByRole("link", { name: "about", exact: true }).click();
+  await page.getByRole("link", { name: "About", exact: true }).click();
   await expect(page).toHaveURL(/\/about$/);
   await expect
     .poll(

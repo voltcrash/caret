@@ -3,9 +3,16 @@
 @import "../styles/vendor.css";
 @import "../styles/theme.css";
 @import "../styles/standalone-theme.css" layer(custom-styles);
+@import "../styles/buttons.css" layer(custom-styles);
+@import "../styles/caret.css" layer(custom-styles);
 @import "../styles/core.css" layer(custom-styles);
+@import "../styles/inputs.css" layer(custom-styles);
+@import "../styles/scroll.css" layer(custom-styles);
+@import "../styles/test.css" layer(custom-styles);
+@import "../styles/accessibility.css" layer(custom-styles);
+@import "../styles/compatibility.css";
 @source ".";
 @source "../routes";
 @source "../components";
-@source "../ts/components/standalone";
-@source "../ts/components/common/Fa.tsx";
+@source "../features";
+@source "../ts";

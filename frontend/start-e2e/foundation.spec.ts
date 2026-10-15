@@ -1,5 +1,5 @@
 import { rpcPath } from "../__tests__/start/rpc";
-import { expect, test } from "playwright/test";
+import { expect, test } from "./fixtures";
 
 test("public navigation and the saved theme work while browser setup is loading", async ({
   page,
@@ -41,7 +41,7 @@ test("public navigation and the saved theme work while browser setup is loading"
         .locator("html")
         .evaluate((el) => getComputedStyle(el).getPropertyValue("--bg-color")),
     ).toBe("#123456");
-    await page.getByRole("link", { name: "oxytype", exact: true }).click();
+    await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
     await expect(page).toHaveURL(/\/$/);
     expect(history).toEqual([]);
     expect(documents).toHaveLength(1);
@@ -77,7 +77,7 @@ test("SSR hydrates Query once and keeps native navigation and refresh working", 
   expect(rpc.filter((url) => url.includes(rpcPath("getTypingStats")))).toEqual(
     [],
   );
-  await page.getByRole("link", { name: "oxytype", exact: true }).click();
+  await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
   await expect(page).toHaveURL(/\/$/);
   await page.getByRole("link", { name: "About Oxytype", exact: true }).click();
   await expect(page).toHaveURL(/\/about$/);
