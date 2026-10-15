@@ -4,9 +4,9 @@ import { timingFingerprint } from "./replay";
 import { type ReviewSignal, reviewKeyTimings } from "./signals";
 
 /** Every timing detector: the rejecting checks and the log-only signals. */
-export type Detector = "fixed-timing" | "replayed-timing" | ReviewSignal;
+type Detector = "fixed-timing" | "replayed-timing" | ReviewSignal;
 
-export const DETECTORS: readonly Detector[] = [
+const DETECTORS: readonly Detector[] = [
   "fixed-timing",
   "replayed-timing",
   "uniform-gaps",
@@ -101,7 +101,7 @@ export function labelKind(label: string): LabelKind {
 
 type Rate = { applicable: number; flagged: number; rate: number | null };
 
-export type DetectorLabelReport = {
+type DetectorLabelReport = {
   kind: LabelKind;
   samples: number;
   detectors: Record<Detector, Rate>;
