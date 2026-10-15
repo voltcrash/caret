@@ -231,11 +231,18 @@ export function Anime(props: AnimeProps): JSXElement {
     });
   };
 
+  // Cleanup has no owner: reading a derived `exit` prop there would create an
+  // unowned memo, so remember the latest value observed by the effect.
+  let hasExit = false;
+
   // Register with presence context after element is available
   createEffect(() => {
-    if (presenceContext && local.exit && element) {
+    if (!presenceContext) return;
+    const exit = local.exit;
+    hasExit = Boolean(exit);
+    if (exit && element) {
       presenceContext.register(element, {
-        exit: local.exit,
+        exit,
         playExitAnimation,
         cancelExitAnimation,
       });
@@ -245,7 +252,7 @@ export function Anime(props: AnimeProps): JSXElement {
   // Cleanup registration on unmount
   // Don't unregister if we have exit animation - let AnimePresence handle it
   onCleanup(() => {
-    if (presenceContext && element && !local.exit) {
+    if (presenceContext && element && !hasExit) {
       presenceContext.unregister(element);
     }
   });

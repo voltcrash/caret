@@ -55,6 +55,27 @@ describe("AnimeSwitch", () => {
     expect(screen.queryByTestId("match-b")).not.toBeInTheDocument();
   });
 
+  it("unmounts exit-animated matches without unowned computations", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const [tab, setTab] = createSignal<"a" | "b">("a");
+    const view = render(() => (
+      <AnimeSwitch animeProps={{ exit: { opacity: 0, duration: 10 } }}>
+        <AnimeMatch when={tab() === "a"}>
+          <div>A</div>
+        </AnimeMatch>
+        <AnimeMatch when={tab() === "b"}>
+          <div>B</div>
+        </AnimeMatch>
+      </AnimeSwitch>
+    ));
+    setTab("b");
+    view.unmount();
+    expect(
+      warn.mock.calls.filter((args) => String(args[0]).includes("createRoot")),
+    ).toEqual([]);
+    warn.mockRestore();
+  });
+
   it("switches to the next matched child reactively", () => {
     const [tab, setTab] = createSignal<"a" | "b">("a");
 
