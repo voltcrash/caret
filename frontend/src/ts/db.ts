@@ -34,6 +34,7 @@ import { FunboxMetadata } from "@oxytype/funbox";
 import { fetchUserFromApi } from "./ape/user";
 import { SnapshotInitError } from "./utils/snapshot-init-error";
 import { updateTagsInFilterStorage } from "./states/result-filters";
+import { emptyPersonalBests, personalBestList } from "./utils/personal-bests";
 
 let dbSnapshot: Snapshot | undefined;
 const firstDayOfTheWeek = getFirstDayOfTheWeek();
@@ -201,58 +202,39 @@ function saveLocalPB<M extends Mode>(
   if (!dbSnapshot) return;
   function cont(): void {
     if (!dbSnapshot) return;
-    let found = false;
-
-    dbSnapshot.personalBests ??= {
-      time: {},
-      words: {},
-      quote: {},
-      zen: {},
-      custom: {},
-    };
-
-    dbSnapshot.personalBests[mode] ??= {
-      [mode2]: [],
-    };
-
-    dbSnapshot.personalBests[mode][mode2] ??=
-      [] as unknown as PersonalBests[M][Mode2<M>];
-
-    (
-      dbSnapshot.personalBests[mode][mode2] as unknown as PersonalBest[]
-    ).forEach((pb) => {
-      if (
+    dbSnapshot.personalBests ??= emptyPersonalBests();
+    const list = personalBestList(dbSnapshot.personalBests, mode, mode2);
+    const matching = list.filter(
+      (pb) =>
         (pb.punctuation ?? false) === punctuation &&
         (pb.numbers ?? false) === numbers &&
         pb.difficulty === difficulty &&
         pb.language === language &&
-        (pb.lazyMode ?? false) === lazyMode
-      ) {
-        found = true;
-        pb.wpm = wpm;
-        pb.acc = acc;
-        pb.raw = raw;
-        pb.timestamp = Date.now();
-        pb.consistency = consistency;
-        pb.lazyMode = lazyMode;
-      }
-    });
-    if (!found) {
-      //nothing found
-      (dbSnapshot.personalBests[mode][mode2] as unknown as PersonalBest[]).push(
-        {
-          language,
-          difficulty,
-          lazyMode,
-          punctuation,
-          numbers,
-          wpm,
-          acc,
-          raw,
-          timestamp: Date.now(),
-          consistency,
-        },
-      );
+        (pb.lazyMode ?? false) === lazyMode,
+    );
+    for (const pb of matching) {
+      Object.assign(pb, {
+        wpm,
+        acc,
+        raw,
+        timestamp: Date.now(),
+        consistency,
+        lazyMode,
+      });
+    }
+    if (matching.length === 0) {
+      list.push({
+        language,
+        difficulty,
+        lazyMode,
+        punctuation,
+        numbers,
+        wpm,
+        acc,
+        raw,
+        timestamp: Date.now(),
+        consistency,
+      });
     }
   }
 

@@ -15,12 +15,7 @@ import { baseKey } from "../queries/utils/keys";
 import { LocalStorageWithSchema } from "../utils/local-storage-with-schema";
 import { IdSchema } from "@oxytype/schemas/util";
 import { SnapshotResult } from "../constants/default-snapshot";
-import {
-  Mode,
-  Mode2,
-  PersonalBest,
-  PersonalBests,
-} from "@oxytype/schemas/shared";
+import { Mode, Mode2, PersonalBest } from "@oxytype/schemas/shared";
 import { Difficulty } from "@oxytype/schemas/configs";
 import { Language } from "@oxytype/schemas/languages";
 import { applyIdWorkaround, isTempId, tempId } from "./utils/misc";
@@ -28,6 +23,7 @@ import { createCollectionReader } from "./utils/reader";
 import { fetchUserFromApi } from "../ape/user";
 import { updateTagsInFilterStorage } from "../states/result-filters";
 import { isAuthenticated } from "../states/core";
+import { emptyPersonalBests, personalBestList } from "../utils/personal-bests";
 
 export type TagItem = UserTag & { active: boolean };
 
@@ -379,22 +375,6 @@ export function getLocalTagPB<M extends Mode>(
         (pb.lazyMode === lazyMode || (pb.lazyMode === undefined && !lazyMode)),
     )?.wpm ?? 0
   );
-}
-
-function emptyPersonalBests(): PersonalBests {
-  return { time: {}, words: {}, quote: {}, zen: {}, custom: {} };
-}
-
-/** The personal bests for one mode2, created on first use. */
-function personalBestList(
-  bests: PersonalBests,
-  mode: Mode,
-  mode2: string | number,
-): PersonalBest[] {
-  const byMode2: Partial<Record<string | number, PersonalBest[]>> = (bests[
-    mode
-  ] ??= {});
-  return (byMode2[mode2] ??= []);
 }
 
 export function saveLocalTagPB<M extends Mode>(
