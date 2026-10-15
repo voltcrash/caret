@@ -127,6 +127,7 @@
     "miniflare": "5.20261001.0-alpha",
     "normalize.css": "8.0.1",
     "playwright": "catalog:",
+    "seroval": "1.6.9",
     "solid-devtools": "0.34.5",
     "solid-js": "1.9.15",
     "subset-font": "2.9.0",

@@ -45,6 +45,7 @@ export function createApplicationWorker(
           const nonce = crypto.randomUUID().replaceAll("-", "");
           const requestId = crypto.randomUUID();
           runtime().request = { nonce, requestId };
+          const started = Date.now();
           let response: Response;
           try {
             const bounded = await boundedRequest(request);
@@ -56,6 +57,16 @@ export function createApplicationWorker(
             console.error("Application request failed", { requestId, error });
             response = new Response("Internal Server Error", { status: 500 });
           }
+          console.info(
+            JSON.stringify({
+              event: "request",
+              requestId,
+              method: request.method,
+              path: new URL(request.url).pathname,
+              status: response.status,
+              durationMs: Date.now() - started,
+            }),
+          );
           return applyResponsePolicy(
             response,
             nonce,

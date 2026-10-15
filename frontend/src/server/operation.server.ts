@@ -76,16 +76,20 @@ export async function runOperation<Q, B, P, R>(
     await enforceOperationLimit(operation.metadata, context, setResponseHeader);
     verifyConfiguration(context.configuration, operation.metadata);
     await verifyPermissions(context.actor, operation.metadata);
-    for (const [value, schema] of [
-      [input.query, operation.route.query],
-      [input.params, operation.route.pathParams],
-      [input.body, "body" in operation.route ? operation.route.body : null],
-    ] as const) {
-      if (!checkZodSchema(value, schema).success) {
-        throw new MonkeyError(422, "Invalid operation input");
-      }
+    const query = checkZodSchema(input.query, operation.route.query);
+    const params = checkZodSchema(input.params, operation.route.pathParams);
+    const body = checkZodSchema(
+      input.body,
+      "body" in operation.route ? operation.route.body : null,
+    );
+    if (!query.success || !params.success || !body.success) {
+      throw new MonkeyError(422, "Invalid operation input");
     }
-    const result = await service(context, input);
+    const result = await service(context, {
+      query: query.data,
+      params: params.data,
+      body: body.data,
+    } as OperationInput<Q, B, P>);
     const validated = checkZodSchema(result, operation.route.responses[200]);
     if (!validated.success) {
       throw new MonkeyError(500, "Invalid service response");

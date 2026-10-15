@@ -21,7 +21,9 @@
     "./services/public-operations": "./src/services/operations/public.ts",
     "./services/user-data": "./src/services/operations/user/data.ts",
     "./errors": "./src/utils/error.ts",
-    "./audit": "./src/dal/logs.ts"
+    "./audit": "./src/dal/logs.ts",
+    "./services/account": "./src/services/operations/user/account.ts",
+    "./services/admin": "./src/services/operations/admin.ts"
   },
   "scripts": {
     "lint": "vp lint . --type-aware --type-check --format agent",

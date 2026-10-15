@@ -3,5 +3,5 @@ import { z } from "zod";
 import { readTypingStats } from "../server/public.server";
 
 export const getTypingStats = createServerFn({ method: "GET" })
-  .validator(z.undefined())
+  .validator((input: unknown) => z.undefined().parse(input))
   .handler(async ({ context }) => await readTypingStats(context.services));

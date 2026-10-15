@@ -1,4 +1,5 @@
 import "@tanstack/solid-start/server-only";
+import { gunzipSync, inflateSync, brotliDecompressSync } from "node:zlib";
 
 /** Preserve the legacy 100 KiB ceiling without parsing Better Auth's payload. */
 export async function boundedRequest(
@@ -28,5 +29,42 @@ export async function boundedRequest(
     body.set(chunk, offset);
     offset += chunk.byteLength;
   }
-  return new Request(request, { body });
+  // Better Auth owns its body/cookie protocol; never decode/rewrite its payload.
+  if (new URL(request.url).pathname.startsWith("/api/auth/")) {
+    return new Request(request, { body });
+  }
+  const charset = request.headers
+    .get("content-type")
+    ?.match(/charset=([^;]+)/i)?.[1]
+    ?.replaceAll('"', "")
+    .toLowerCase();
+  if (charset !== undefined && charset !== "utf-8" && charset !== "utf8") {
+    return new Response("Unsupported request charset", { status: 415 });
+  }
+  const encoding =
+    request.headers.get("content-encoding")?.toLowerCase() ?? "identity";
+  if (encoding === "identity") return new Request(request, { body });
+  const decode = {
+    gzip: gunzipSync,
+    deflate: inflateSync,
+    br: brotliDecompressSync,
+  }[encoding];
+  if (decode === undefined) {
+    return new Response("Unsupported content encoding", { status: 415 });
+  }
+  try {
+    const decoded = decode(body, { maxOutputLength: limit });
+    const headers = new Headers(request.headers);
+    headers.delete("content-encoding");
+    headers.delete("content-length");
+    return new Request(request, { headers, body: decoded });
+  } catch (error) {
+    const exceeded =
+      error instanceof RangeError ||
+      (error as NodeJS.ErrnoException).code === "ERR_BUFFER_TOO_LARGE";
+    return new Response(
+      exceeded ? "Request body too large" : "Invalid compressed request body",
+      { status: exceeded ? 413 : 400 },
+    );
+  }
 }

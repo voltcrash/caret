@@ -4,13 +4,29 @@ import { getAuth } from "@oxytype/backend/auth/session";
 import { createServiceContext } from "../../src/server/context.server";
 import { createApplicationWorker } from "../../src/server/worker.server";
 import server from "../../src/server";
+import { adminProbe, freshProbe } from "./policy-functions";
 import { getAccountStats } from "../../src/functions/account";
 
 export default createApplicationWorker(async (request, options) => {
   const url = new URL(request.url);
+  const probe =
+    url.pathname === "/__test/admin"
+      ? adminProbe
+      : url.pathname === "/__test/fresh"
+        ? freshProbe
+        : undefined;
+  if (probe !== undefined) {
+    return await server.fetch(
+      new Request(new URL(probe.url, request.url), request),
+      options,
+    );
+  }
   if (url.pathname === "/__test/account") {
     return await server.fetch(
-      new Request(new URL(getAccountStats.url, request.url), request),
+      new Request(
+        new URL(getAccountStats.url + url.search, request.url),
+        request,
+      ),
       options,
     );
   }
