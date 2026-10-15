@@ -6,7 +6,7 @@ const { device, approve, deny } = vi.hoisted(() => ({
   deny: vi.fn(),
 }));
 vi.mock("../../src/ts/auth-client", () => ({
-  authClient: { device: Object.assign(device, { approve, deny }) },
+  getAuthClient: () => ({ device: Object.assign(device, { approve, deny }) }),
 }));
 
 import {

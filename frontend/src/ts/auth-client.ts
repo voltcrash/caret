@@ -10,30 +10,39 @@ import { createEvent } from "./hooks/createEvent";
 import { fetchUserFromApi } from "./ape/user";
 import { SnapshotInitError } from "./utils/snapshot-init-error";
 
-const authURL = new URL(
-  `${envConfig.backendUrl.replace(/\/$/, "")}/auth`,
-  window.location.origin,
-);
-export const authClient = createAuthClient({
-  baseURL: authURL.href,
-  basePath: authURL.pathname,
-  fetchOptions: {
-    credentials: "include",
-    ...(envConfig.devOffline
-      ? {
-          customFetchImpl: async () =>
-            Response.json(
-              {
-                message:
-                  "Authentication is unavailable in frontend-only development",
-              },
-              { status: 503 },
-            ),
-        }
-      : {}),
-  },
-  plugins: [dashClient(), deviceAuthorizationClient()],
-});
+function createOxytypeAuthClient() {
+  const authURL = new URL(
+    `${envConfig.backendUrl.replace(/\/$/, "")}/auth`,
+    window.location.origin,
+  );
+  return createAuthClient({
+    baseURL: authURL.href,
+    basePath: authURL.pathname,
+    fetchOptions: {
+      credentials: "include",
+      ...(envConfig.devOffline
+        ? {
+            customFetchImpl: async () =>
+              Response.json(
+                {
+                  message:
+                    "Authentication is unavailable in frontend-only development",
+                },
+                { status: 503 },
+              ),
+          }
+        : {}),
+    },
+    plugins: [dashClient(), deviceAuthorizationClient()],
+  });
+}
+type OxytypeAuthClient = ReturnType<typeof createOxytypeAuthClient>;
+let authClient: OxytypeAuthClient | undefined;
+/** Built on first browser use, never while the module is evaluated. */
+export function getAuthClient(): OxytypeAuthClient {
+  authClient ??= createOxytypeAuthClient();
+  return authClient;
+}
 import type { AuthUser, SocialProvider } from "./auth-types";
 export type { AuthUser, SocialProvider } from "./auth-types";
 const [getAuthenticatedUser, setAuthenticatedUser] =
@@ -64,10 +73,10 @@ export function setUserState(user: AuthUser | null): void {
 
 export async function refreshSession(notify = true): Promise<AuthUser | null> {
   const previous = getAuthenticatedUser();
-  const session = checkAuthResult(await authClient.getSession());
+  const session = checkAuthResult(await getAuthClient().getSession());
   let user: AuthUser | null = null;
   if (session) {
-    const accounts = checkAuthResult(await authClient.listAccounts());
+    const accounts = checkAuthResult(await getAuthClient().listAccounts());
     user = {
       uid: session.user.id,
       email: session.user.email,
@@ -137,7 +146,7 @@ export function isAuthAvailable(): boolean {
   return available;
 }
 export async function signOut(): Promise<void> {
-  checkAuthResult(await authClient.signOut());
+  checkAuthResult(await getAuthClient().signOut());
   setUserState(null);
   ignoreAuthCallback = false;
   await readyCallback?.(true, null);
@@ -146,12 +155,12 @@ export function resetIgnoreAuthCallback(): void {
   ignoreAuthCallback = false;
 }
 export async function updateProfile(name: string): Promise<void> {
-  checkAuthResult(await authClient.updateUser({ name }));
+  checkAuthResult(await getAuthClient().updateUser({ name }));
   await refreshSession(false);
 }
 export async function deleteUnfinishedUser(): Promise<void> {
   checkAuthResult(
-    await authClient.$fetch("/cancel-sign-up", { method: "POST" }),
+    await getAuthClient().$fetch("/cancel-sign-up", { method: "POST" }),
   );
 }
 
@@ -209,7 +218,7 @@ export async function signInWithPopup(
 export function observeAuthSession(): () => void {
   if (envConfig.devOffline) return () => undefined;
   let syncing = false;
-  return authClient.useSession.subscribe((state) => {
+  return getAuthClient().useSession.subscribe((state) => {
     if (
       state.isPending ||
       state.isRefetching ||

@@ -28,6 +28,7 @@
         "**/src/ts/queries/**/*.ts",
         "**/src/db/schema.ts",
         "**/src/ts/ape/adapters/ts-rest-adapter.ts",
+        "**/src/ts/auth-client.ts",
         "**/src/api/client.ts",
         "**/createCustomTextController.ts",
         "**/__tests__/collections/reader.spec.ts",

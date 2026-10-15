@@ -6,7 +6,7 @@ vi.mock("../../src/ts/auth-client", () => ({
   observeAuthSession: () => () => undefined,
   oauthRequestEvent: { subscribe: () => () => undefined, dispatch: vi.fn() },
   signOut: vi.fn(),
-  authClient: {},
+  getAuthClient: () => ({}),
   checkAuthResult: vi.fn(),
   refreshSession: vi.fn(),
   requestOAuth: vi.fn(),

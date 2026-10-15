@@ -23,7 +23,7 @@ it("initializes frontend-only mode without sessions, refresh subscriptions or OA
   const {
     init,
     authPromise,
-    authClient,
+    getAuthClient,
     observeAuthSession,
     isAuthAvailable,
     getAuthenticatedUser,
@@ -39,7 +39,7 @@ it("initializes frontend-only mode without sessions, refresh subscriptions or OA
   expect(getAuthenticatedUser()).toBeNull();
   expect(callback).toHaveBeenCalledWith(true, null);
   expect(preloadUser).not.toHaveBeenCalled();
-  expect((await authClient.getSession()).error?.status).toBe(503);
+  expect((await getAuthClient().getSession()).error?.status).toBe(503);
   await expect(requestOAuth("google")).rejects.toThrow("frontend-only");
   expect(fetch).not.toHaveBeenCalled();
 });
@@ -64,8 +64,8 @@ it.each([
       .fn<typeof globalThis.fetch>()
       .mockResolvedValue(Response.json(null));
     vi.stubGlobal("fetch", fetch);
-    const { authClient } = await import("../src/ts/auth-client");
-    const session = await authClient.getSession();
+    const { getAuthClient } = await import("../src/ts/auth-client");
+    const session = await getAuthClient().getSession();
     expect(session.error).toBeNull();
     expect(fetch).toHaveBeenCalledOnce();
     const input = fetch.mock.calls[0]?.[0];

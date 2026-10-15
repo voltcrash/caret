@@ -1,4 +1,4 @@
-import { authClient } from "../auth-client";
+import { getAuthClient } from "../auth-client";
 
 export type DeviceRequest = {
   user_code: string;
@@ -10,7 +10,9 @@ export type DeviceRequest = {
 export async function reviewDeviceCode(
   userCode: string,
 ): Promise<DeviceRequest> {
-  const result = await authClient.device({ query: { user_code: userCode } });
+  const result = await getAuthClient().device({
+    query: { user_code: userCode },
+  });
   if (result.error !== null) throw new Error(result.error.error_description);
   const request = result.data;
   if (request === null) throw new Error("Could not load device request");
@@ -24,7 +26,7 @@ export async function decideDeviceCode(
   userCode: string,
   decision: "approve" | "deny",
 ): Promise<void> {
-  const result = await authClient.device[decision]({ userCode });
+  const result = await getAuthClient().device[decision]({ userCode });
   if (result.error !== null) throw new Error(result.error.error_description);
   if (!result.data?.success) {
     throw new Error("Could not process device request");

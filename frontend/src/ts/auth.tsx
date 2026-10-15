@@ -3,7 +3,7 @@ import { tryCatch } from "@oxytype/util/trycatch";
 import { createMemo } from "solid-js";
 
 import {
-  authClient,
+  getAuthClient,
   checkAuthResult,
   refreshSession,
   requestOAuth,
@@ -250,10 +250,12 @@ export async function removeAuthProvider(
     };
   }
   try {
-    const accounts = checkAuthResult(await authClient.listAccounts());
+    const accounts = checkAuthResult(await getAuthClient().listAccounts());
     const account = accounts?.find((entry) => entry.providerId === authMethod);
     if (!account) throw new Error("Authentication method not found");
-    checkAuthResult(await authClient.unlinkAccount({ accountId: account.id }));
+    checkAuthResult(
+      await getAuthClient().unlinkAccount({ accountId: account.id }),
+    );
     await refreshSession(false);
   } catch (e) {
     const message = createErrorMessage(
