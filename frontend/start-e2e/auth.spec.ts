@@ -82,3 +82,30 @@ test("unfinished signup cancellation preserves the native login flow", async ({
     page.getByRole("button", { name: "sign in with GitHub" }),
   ).toBeVisible();
 });
+
+test("leaving incomplete signup cancels its session without changing the document", async ({
+  page,
+  context,
+}) => {
+  const value =
+    authCookie("browser-dismissal")
+      .split(";")[0]
+      ?.split("=")
+      .slice(1)
+      .join("=") ?? "";
+  await context.addCookies([
+    { name: "oxytype.session_token", value, url: "http://127.0.0.1:4185" },
+  ]);
+  await page.goto("/login");
+  await expect(
+    page.getByRole("button", { name: "cancel sign up" }),
+  ).toBeVisible();
+  await page.getByRole("link", { name: "about", exact: true }).click();
+  await expect(page).toHaveURL(/\/about$/);
+  await expect
+    .poll(
+      async () =>
+        await (await page.request.get("/api/auth/get-session")).text(),
+    )
+    .toBe("null");
+});

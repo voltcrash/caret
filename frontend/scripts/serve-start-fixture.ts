@@ -9,7 +9,7 @@ async function main(): Promise<void> {
       .prepare("UPDATE auth_sessions SET token=? WHERE token=?")
       .bind(token, session.token)
       .run();
-    if (token !== "browser-pending") {
+    if (["browser-login", "browser-expiry"].includes(token)) {
       await db
         .prepare(
           "INSERT INTO users(uid,id,name,name_key,email,added_at,data) VALUES(?,?,?,?,?,0,?)",

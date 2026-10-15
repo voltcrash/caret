@@ -3,9 +3,10 @@ import type { SessionState } from "@oxytype/schemas/auth-session";
 import { createForm } from "@tanstack/solid-form";
 import { useQuery, useQueryClient } from "@tanstack/solid-query";
 import { useRouter } from "@tanstack/solid-router";
-import { createSignal, For, Show } from "solid-js";
+import { createSignal, For, Show, onCleanup, createEffect } from "solid-js";
 import { envConfig } from "virtual:env-config";
 
+import { currentApplication, requireApplication } from "../../app/application";
 import { Fa } from "../../ts/components/common/Fa";
 import { Captcha } from "../../ts/components/ui/form/Captcha";
 import { createAuthActions } from "./actions.client";
@@ -22,6 +23,31 @@ export function AuthPanel(props: { initial: SessionState; redirect?: string }) {
     client,
     async () => await router.invalidate(),
   );
+  const application = requireApplication();
+  // Match the old signup dialog's dismissal behavior on route exit. A completed
+  // profile or a different actor must never be cancelled by this page's cleanup.
+  let signupActor: string | undefined;
+  createEffect(() => {
+    const user = session.data.user;
+    signupActor = user?.registered === false ? user.uid : undefined;
+  });
+  onCleanup(() => {
+    const user = client.getQueryData<SessionState>(
+      sessionOptions().queryKey,
+    )?.user;
+    if (
+      currentApplication() !== application ||
+      user?.registered !== false ||
+      user.uid !== signupActor
+    ) {
+      return;
+    }
+    void actions
+      .cancel()
+      .catch((error: unknown) =>
+        console.error("Failed to cancel sign up", error),
+      );
+  });
   const [busy, setBusy] = createSignal(false);
   const [error, setError] = createSignal<string>();
   const [rememberMe, setRememberMe] = createSignal(true);
