@@ -7,7 +7,25 @@ ledger, CI gates and handoff prerequisites verified before editing. Baseline
 Phases in order: 2.1 factories/import boundaries → 2.2 providers/browser
 runtime → 2.3 preferences/data identity. Status: **in progress**.
 
-## 2.1 Browser side-effect inventory
+## 2.1 Factories and import boundaries — complete
+
+- `app/application.ts`: one mounted browser application per document;
+  mounting during SSR throws, reads outside a mount fail explicitly.
+- Legacy module `QueryClient` deleted; `createQueryClient` factory (Start
+  router per request, legacy app per mount) provided by `AppProviders`.
+- Collections/readers construct on first use inside the app's account-data
+  scope (`app/account-data.ts`, `app/scope.ts`) and dispose with it.
+- `lockMath` (`app/browser-integrity.ts`) is browser-only and idempotent.
+  Better Auth client is built on first browser use (`getAuthClient`).
+- Import protection fixed: Start matches root-relative paths, so Stage 1's
+  `**/frontend/src/ts/...` server denials never matched, and a custom client
+  list had replaced the default `.server` denial. Now: all `src/ts/**` denied
+  on the server except `vite-plugins/import-boundaries.ts` allowlist;
+  `**/*.server.*` + backend denied in the client. Negative builds prove both.
+- Source layer test: server ↛ app/legacy/routes; legacy ↛ server/backend;
+  SSR-rendered app/routes import only the SSR-safe legacy allowlist.
+
+### Browser side-effect inventory
 
 Reachable from the legacy entry (`src/ts/index.ts`), `auth-client.ts`,
 collections, `hooks/effects.ts`, test modules and virtual configuration
