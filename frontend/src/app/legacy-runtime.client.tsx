@@ -16,7 +16,7 @@ import * as Focus from "../ts/test/focus";
 import * as TestTimer from "../ts/test/test-timer";
 import * as Logger from "../ts/utils/logger";
 import { addToGlobal } from "../ts/utils/misc";
-import BrowserRuntime from "./browser-runtime.client";
+import BrowserRuntime from "./platform-runtime.client";
 import { TypingRuntime } from "./typing-runtime.client";
 
 /** Rollback-only page/account wiring. Retires with Stages 3–5. */

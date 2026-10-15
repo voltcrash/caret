@@ -62,7 +62,7 @@ vi.mock("../../src/ts/utils/version", () => ({
 }));
 vi.mock("../../src/ts/states/core", () => ({ setVersion: state.setVersion }));
 
-import BrowserRuntime from "../../src/app/browser-runtime.client";
+import BrowserRuntime from "../../src/app/platform-runtime.client";
 import { configEvent } from "../../src/ts/events/config";
 
 afterEach(() => {
@@ -78,11 +78,11 @@ it("mounts without waiting for preferences/history and releases integrations bef
   for (let i = 0; i < 2; i++) {
     const view = render(() => <BrowserRuntime />);
     expect(view.getByTestId("theme")).toBeInTheDocument();
-    expect(state.init).toHaveBeenLastCalledWith(expect.any(Function), false);
+    expect(state.init).not.toHaveBeenCalled();
     configEvent.dispatch({ key: "fullConfigChange" });
     expect(state.theme).toHaveBeenCalledTimes(i + 1);
     view.unmount();
-    expect(state.stop).toHaveBeenCalledTimes(i + 1);
+    expect(state.stop).not.toHaveBeenCalled();
     expect(state.restore).toHaveBeenCalledTimes(i + 1);
     expect(state.disposeSentry).toHaveBeenCalledTimes(i + 1);
     configEvent.dispatch({ key: "fullConfigChange" });
