@@ -69,6 +69,7 @@ jobs:
             fe-src:
               - 'frontend/**/*.{ts,tsx,js,scss,html}'
               - 'frontend/**/package.json'
+              - 'frontend/wrangler.jsonc'
             pkg-src:
               - 'packages/**/*'
               - '.github/workflows/production-release.yml'
@@ -244,6 +245,41 @@ jobs:
 
       - name: Run browser regression suite
         run: vp run test-e2e
+
+  # TanStack Start migration build; legacy checks above still own unmigrated code.
+  ci-start:
+    name: ci-start
+    needs: [pre-ci, prime-cache]
+    runs-on: ubuntu-latest
+    if: needs.pre-ci.outputs.should-build-fe == 'true' || needs.pre-ci.outputs.should-build-be == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true' || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Set up Vite+ and install dependencies
+        uses: voidzero-dev/setup-vp@v1.21.1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: true
+          cache-save: false
+
+      - name: Build Start Worker and runtime-test entry
+        run: vp run --filter @oxytype/frontend build:start && vp run --filter @oxytype/frontend build:start:test
+
+      - name: Worker dry-run
+        run: vp run --filter @oxytype/frontend dry-run:start
+
+      - name: SSR, workerd and bundle-boundary suites
+        run: vp run --filter @oxytype/frontend test:start
+
+      - name: Install Chromium and its system dependencies
+        run: vp -C frontend exec playwright install --with-deps chromium
+
+      - name: Production-Worker browser checks
+        run: vp run --filter @oxytype/frontend test:start:browser
+
+      # Last: overwrites dist/start with the migration staging configuration.
+      - name: Migration staging build and dry-run
+        run: vp run --filter @oxytype/frontend build:start:staging && vp run --filter @oxytype/frontend dry-run:start
 
   ci-assets:
     name: ci-assets
