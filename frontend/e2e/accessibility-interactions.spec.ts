@@ -56,6 +56,28 @@ test("chained modals return focus through their parent to the typing input", asy
   await expect(page.locator("#wordsInput")).toBeFocused();
 });
 
+test("command palette input shows no focus outline", async ({ page }) => {
+  await openTest(page);
+  await openCommandline(page);
+  await expect(page.locator("#commandLine input")).toHaveCSS(
+    "outline-style",
+    "none",
+  );
+});
+
+test("other text inputs keep the focus outline", async ({ page }) => {
+  await openTest(page);
+  await page
+    .getByRole("button", { name: "Custom word count", exact: true })
+    .focus();
+  await page.keyboard.press("Enter");
+  const input = page
+    .getByRole("dialog", { name: "Custom Word Amount" })
+    .getByRole("spinbutton");
+  await expect(input).toBeFocused();
+  await expect(input).toHaveCSS("outline-style", "solid");
+});
+
 test("result summary stays silent during typing and clears on restart", async ({
   page,
 }) => {

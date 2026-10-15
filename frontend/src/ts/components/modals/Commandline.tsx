@@ -261,6 +261,7 @@ export function Commandline(): JSXElement {
           </button>
         </Show>
         <input
+          id="commandLineInput"
           aria-label={
             commandlineState.mode === "input"
               ? commandlineState.inputPlaceholder
