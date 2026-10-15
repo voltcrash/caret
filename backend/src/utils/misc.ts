@@ -4,7 +4,7 @@ import { MILLISECONDS_IN_DAY } from "@oxytype/util/date-and-time";
 import { roundTo2 } from "@oxytype/util/numbers";
 export { sanitizeString } from "@oxytype/util/strings";
 import { UAParser } from "ua-parser-js";
-import { MonkeyRequest } from "../api/types";
+import type { ServiceContext } from "../services/context";
 
 //todo split this file into smaller util files (grouped by functionality)
 
@@ -29,17 +29,11 @@ type AgentLog = {
   device?: string;
 };
 
-export function buildAgentLog(
-  req: Pick<MonkeyRequest, "raw" | "ctx">,
-): AgentLog {
-  const agent = new UAParser(req.raw.headers["user-agent"]).getResult();
+export function buildAgentLog(client: ServiceContext["client"]): AgentLog {
+  const agent = new UAParser(client.userAgent).getResult();
 
   const agentLog: AgentLog = {
-    ip:
-      (req.raw.headers["cf-connecting-ip"] as string) ||
-      (req.raw.headers["x-forwarded-for"] as string) ||
-      req.raw.ip ||
-      "255.255.255.255",
+    ip: client.ip,
     agent: `${agent.os.name} ${agent.os.version} ${agent.browser.name} ${agent.browser.version}`,
   };
 

@@ -20,3 +20,10 @@ export type ServiceContext = {
   /** Trusted client address (see `policies/client-ip`) and agent, for audit logs. */
   client: { ip: string; userAgent?: string };
 };
+
+/** Validated operation input; no transport or raw request data. */
+export type OperationInput<Q = undefined, B = undefined, P = undefined> = {
+  query: Readonly<Q>;
+  body: Readonly<B>;
+  params: Readonly<P>;
+};
