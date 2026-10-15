@@ -1,4 +1,10 @@
-import { assertRestarted, expect, openTest, test } from "./fixtures";
+import {
+  assertRestarted,
+  completeWords,
+  expect,
+  openTest,
+  test,
+} from "./fixtures";
 
 for (const method of ["tab+enter", "button"] as const) {
   test(`restart with ${method} clears an active test`, async ({ page }) => {
@@ -17,5 +23,49 @@ for (const method of ["tab+enter", "button"] as const) {
     await page.locator("#words").click();
     await page.keyboard.type("y");
     await expect(page.locator("#wordsInput")).toHaveValue(" y");
+  });
+}
+
+for (const [setting, key] of [
+  ["tab", "Tab"],
+  ["esc", "Escape"],
+  ["enter", "Enter"],
+] as const) {
+  test.describe(`${setting} quick restart`, () => {
+    test.use({
+      config: {
+        mode: "words",
+        words: 15,
+        quickRestart: setting,
+        smoothCaret: "off",
+      },
+    });
+
+    test("clears active tests and keeps the typing input focused", async ({
+      page,
+    }) => {
+      await openTest(page);
+      await page.locator("#words").click();
+      for (const input of ["x", "y"]) {
+        await page.keyboard.type(input);
+        await expect(page.locator("#wordsInput")).toHaveValue(` ${input}`);
+        await page.keyboard.press(key);
+        await assertRestarted(page);
+        await expect(page.locator("#wordsInput")).toBeFocused();
+      }
+    });
+
+    test("starts another test from the result screen", async ({ page }) => {
+      await openTest(page);
+      await completeWords(page);
+      // restart is ignored until the result fade-in finishes
+      await expect(page.locator("#result")).toHaveCSS("opacity", "1");
+      await page.keyboard.press(key);
+      await assertRestarted(page);
+      await expect(page.locator("#result")).toBeHidden();
+      await expect(page.locator("#wordsInput")).toBeFocused();
+      await page.keyboard.type("x");
+      await expect(page.locator("#wordsInput")).toHaveValue(" x");
+    });
   });
 }

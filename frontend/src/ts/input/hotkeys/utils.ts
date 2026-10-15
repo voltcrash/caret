@@ -29,15 +29,21 @@ export function createHotkey(
       e.preventDefault();
       callback(e, context);
     },
-    () => ({
-      ignoreInputs: false, //hotkeys are active on the words input, but not on other interactive elements
-      stopPropagation: false, //we set stopPropagation in the callback if the hotkey executes
-      preventDefault: false, //we set preventDefault in the callback if the hotkey executes
-      requireReset: true,
-      conflictBehavior: "replace",
-      enabled: (typeof hotkey === "function" ? hotkey() : hotkey) !== NoKey,
-      ...options(),
-    }),
+    () => {
+      const resolvedOptions = {
+        ignoreInputs: false, //hotkeys are active on the words input, but not on other interactive elements
+        stopPropagation: false, //we set stopPropagation in the callback if the hotkey executes
+        preventDefault: false, //we set preventDefault in the callback if the hotkey executes
+        requireReset: true,
+        conflictBehavior: "replace" as const,
+        enabled: (typeof hotkey === "function" ? hotkey() : hotkey) !== NoKey,
+        ...options(),
+      };
+      // Disabled registrations still replace active shortcuts with the same key.
+      return resolvedOptions.enabled
+        ? resolvedOptions
+        : { ...resolvedOptions, target: null };
+    },
   );
 }
 
