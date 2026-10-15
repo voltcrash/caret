@@ -23,10 +23,12 @@ export function AppProviders(props: {
     queryClient: props.queryClient,
     accountData: createAccountDataOwner(),
   };
-  if (!isServer) onCleanup(mountApplication(application));
+  const release = isServer ? undefined : mountApplication(application);
   onCleanup(() => {
     application.accountData.dispose();
     root.dispose();
+    if (!isServer) application.queryClient.clear();
+    release?.();
   });
   return (
     <QueryClientProvider client={application.queryClient}>
