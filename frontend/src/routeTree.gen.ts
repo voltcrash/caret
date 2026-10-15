@@ -14,6 +14,8 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as OauthCallbackDothtmlRouteImport } from './routes/oauth-callback[.]html'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppAboutRouteImport } from './routes/_app.about'
+import { Route as AppDeviceRouteImport } from './routes/_app.device'
+import { Route as AppLoginRouteImport } from './routes/_app.login'
 import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
 
 const R404DothtmlRoute = R404DothtmlRouteImport.update({
@@ -40,6 +42,16 @@ const AppAboutRoute = AppAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDeviceRoute = AppDeviceRouteImport.update({
+  id: '/device',
+  path: '/device',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLoginRoute = AppLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AppRoute,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -51,12 +63,16 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/oauth-callback.html': typeof OauthCallbackDothtmlRoute
   '/about': typeof AppAboutRoute
+  '/device': typeof AppDeviceRoute
+  '/login': typeof AppLoginRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
   '/404.html': typeof R404DothtmlRoute
   '/oauth-callback.html': typeof OauthCallbackDothtmlRoute
   '/about': typeof AppAboutRoute
+  '/device': typeof AppDeviceRoute
+  '/login': typeof AppLoginRoute
   '/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
@@ -66,21 +82,38 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/oauth-callback.html': typeof OauthCallbackDothtmlRoute
   '/_app/about': typeof AppAboutRoute
+  '/_app/device': typeof AppDeviceRoute
+  '/_app/login': typeof AppLoginRoute
   '/_app/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/404.html' | '/' | '/oauth-callback.html' | '/about' | '/api/auth/$'
+    | '/404.html'
+    | '/'
+    | '/oauth-callback.html'
+    | '/about'
+    | '/device'
+    | '/login'
+    | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/404.html' | '/oauth-callback.html' | '/about' | '/' | '/api/auth/$'
+  to:
+    | '/404.html'
+    | '/oauth-callback.html'
+    | '/about'
+    | '/device'
+    | '/login'
+    | '/'
+    | '/api/auth/$'
   id:
     | '__root__'
     | '/404.html'
     | '/_app'
     | '/oauth-callback.html'
     | '/_app/about'
+    | '/_app/device'
+    | '/_app/login'
     | '/_app/'
     | '/api/auth/$'
   fileRoutesById: FileRoutesById
@@ -129,6 +162,20 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof AppAboutRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/device': {
+      id: '/_app/device'
+      path: '/device'
+      fullPath: '/device'
+      preLoaderRoute: typeof AppDeviceRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/login': {
+      id: '/_app/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof AppLoginRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -141,11 +188,15 @@ declare module '@tanstack/solid-router' {
 
 interface AppRouteChildren {
   AppAboutRoute: typeof AppAboutRoute
+  AppDeviceRoute: typeof AppDeviceRoute
+  AppLoginRoute: typeof AppLoginRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppAboutRoute: AppAboutRoute,
+  AppDeviceRoute: AppDeviceRoute,
+  AppLoginRoute: AppLoginRoute,
   AppIndexRoute: AppIndexRoute,
 }
 

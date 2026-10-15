@@ -30,12 +30,13 @@ export function applyResponsePolicy(
       "base-uri 'self'",
       "frame-ancestors 'self'",
       "object-src 'none'",
-      `script-src 'self' 'nonce-${nonce}'${development ? " 'unsafe-eval'" : ""}`,
+      "frame-src https://challenges.cloudflare.com",
+      `script-src 'self' https://challenges.cloudflare.com 'nonce-${nonce}'${development ? " 'unsafe-eval'" : ""}`,
       `script-src-attr 'unsafe-hashes' 'sha256-${recoveryHash}'`,
       "style-src 'self' 'unsafe-inline'",
       "font-src 'self' data:",
       "img-src 'self' data:",
-      `connect-src 'self'${development ? " ws: wss:" : ""}`,
+      `connect-src 'self' https://challenges.cloudflare.com${development ? " ws: wss:" : ""}`,
     ].join("; "),
   );
   return result;

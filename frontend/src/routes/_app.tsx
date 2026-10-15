@@ -10,6 +10,9 @@ function Layout() {
             oxytype
           </Link>
           <Link to="/about">about</Link>
+          <Link to="/login" search={{ redirect: "/" }}>
+            account
+          </Link>
         </nav>
       </header>
       <main>
