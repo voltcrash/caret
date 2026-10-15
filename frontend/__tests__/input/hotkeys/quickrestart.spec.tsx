@@ -74,6 +74,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   mocks.popup = false;
   setConfigStore("quickRestart", "tab");
+  setConfigStore("funbox", []);
   setActivePage("test");
   setIsLongTest(false);
   setWordsHaveTab(false);
@@ -163,4 +164,55 @@ it("reserves Shift+Enter for bail out in long tests", () => {
   setIsLongTest(false);
   expect(press("Enter")).toBe(false);
   expect(mocks.restart).toHaveBeenCalledTimes(2);
+});
+
+it.each([false, true])("preserves literal tabs in long=%s tests", (long) => {
+  setIsLongTest(long);
+  setWordsHaveTab(true);
+  render(() => <Shortcuts />);
+  expect(press("Tab")).toBe(true);
+  expect(mocks.restart).not.toHaveBeenCalled();
+  expect(press("Tab", true)).toBe(false);
+  expect(mocks.restart).toHaveBeenCalledExactlyOnceWith({
+    isQuickRestart: false,
+  });
+
+  setIsLongTest(false);
+  setWordsHaveTab(false);
+  expect(press("Tab")).toBe(false);
+  expect(mocks.restart).toHaveBeenLastCalledWith({ isQuickRestart: true });
+});
+
+it("preserves literal newlines and restores Enter after switching text", () => {
+  setConfigStore("quickRestart", "enter");
+  setWordsHaveNewline(true);
+  render(() => <Shortcuts />);
+  expect(press("Enter")).toBe(true);
+  expect(mocks.restart).not.toHaveBeenCalled();
+  expect(press("Enter", true)).toBe(false);
+  expect(mocks.restart).toHaveBeenCalledExactlyOnceWith({
+    isQuickRestart: false,
+  });
+
+  setIsLongTest(true);
+  expect(press("Enter")).toBe(true);
+  expect(press("Enter", true)).toBe(true);
+  expect(mocks.restart).toHaveBeenCalledTimes(1);
+
+  setIsLongTest(false);
+  setWordsHaveNewline(false);
+  expect(press("Enter")).toBe(false);
+  expect(mocks.restart).toHaveBeenLastCalledWith({ isQuickRestart: true });
+});
+
+it("keeps Enter available to the 58008 funbox", () => {
+  setConfigStore("quickRestart", "enter");
+  setConfigStore("funbox", ["58008"]);
+  render(() => <Shortcuts />);
+  expect(press("Enter")).toBe(true);
+  expect(mocks.restart).not.toHaveBeenCalled();
+  expect(press("Enter", true)).toBe(false);
+  expect(mocks.restart).toHaveBeenCalledExactlyOnceWith({
+    isQuickRestart: false,
+  });
 });
