@@ -74,7 +74,7 @@ describe("Start document and response policy in workerd", () => {
     expect(await popup.text()).toContain("Sign in | Oxytype");
     const missing = await mf.dispatchFetch("http://localhost:3000/404.html");
     expect(missing.status).toBe(404);
-    expect(await missing.text()).toContain("Page not found");
+    expect(await missing.text()).toContain("Ooops! Looks like this page");
   });
 
   it("bounds streamed auth bodies without dropping response policy", async () => {

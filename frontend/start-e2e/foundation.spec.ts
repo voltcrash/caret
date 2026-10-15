@@ -140,9 +140,10 @@ test("unknown URLs retain HTTP 404 and popup validation retains its URL", async 
 }) => {
   const missing = await page.goto("/unknown-route");
   expect(missing?.status()).toBe(404);
-  await expect(
-    page.getByRole("heading", { name: "Page not found" }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "404" })).toBeVisible();
+  await expect(page).toHaveTitle("404 | Oxytype");
+  await page.getByRole("link", { name: "Go Home" }).click();
+  await expect(page).toHaveURL(/\/$/);
   const popup = await page.goto("/oauth-callback.html");
   expect(popup?.status()).toBe(200);
   await expect(

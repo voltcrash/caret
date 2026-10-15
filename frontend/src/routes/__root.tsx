@@ -1,20 +1,18 @@
 import type { QueryClient } from "@tanstack/solid-query";
 
-import {
-  Outlet,
-  createRootRouteWithContext,
-  Link,
-} from "@tanstack/solid-router";
+import { Outlet, createRootRouteWithContext } from "@tanstack/solid-router";
 
 import appCss from "../app/app.css?url";
 import { BrowserRuntime } from "../app/browser-runtime";
 import { Document } from "../app/document";
+import { AppLayout } from "../app/layout";
 import { AppProviders } from "../app/providers";
 import { AppError } from "../components/app-error";
+import { NotFoundPage } from "../features/not-found/page";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
-    head: () => ({
+    head: ({ matches }) => ({
       meta: [
         { charset: "utf-8" },
         {
@@ -22,7 +20,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           content:
             "width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content",
         },
-        { title: "Oxytype" },
+        {
+          title: matches.some(
+            (match) => match.status === "notFound" || match._notFound === true,
+          )
+            ? "404 | Oxytype"
+            : "Oxytype",
+        },
         {
           name: "description",
           content: "A minimalistic, customizable typing test.",
@@ -65,10 +69,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     shellComponent: Document,
     component: Root,
     notFoundComponent: () => (
-      <main class="p-8">
-        <h1>Page not found</h1>
-        <Link to="/about">About Oxytype</Link>
-      </main>
+      <AppLayout>
+        <NotFoundPage />
+      </AppLayout>
     ),
     errorComponent: AppError,
   },

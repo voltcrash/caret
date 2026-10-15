@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as R404DothtmlRouteImport } from './routes/404[.]html'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as OauthCallbackDothtmlRouteImport } from './routes/oauth-callback[.]html'
+import { Route as PrivacyPolicyDothtmlRouteImport } from './routes/privacy-policy[.]html'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppAboutRouteImport } from './routes/_app.about'
 import { Route as AppDeviceRouteImport } from './routes/_app.device'
@@ -31,6 +32,11 @@ const AppRoute = AppRouteImport.update({
 const OauthCallbackDothtmlRoute = OauthCallbackDothtmlRouteImport.update({
   id: '/oauth-callback.html',
   path: '/oauth-callback.html',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyDothtmlRoute = PrivacyPolicyDothtmlRouteImport.update({
+  id: '/privacy-policy.html',
+  path: '/privacy-policy.html',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/404.html': typeof R404DothtmlRoute
   '/': typeof AppIndexRoute
   '/oauth-callback.html': typeof OauthCallbackDothtmlRoute
+  '/privacy-policy.html': typeof PrivacyPolicyDothtmlRoute
   '/about': typeof AppAboutRoute
   '/device': typeof AppDeviceRoute
   '/login': typeof AppLoginRoute
@@ -77,6 +84,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/404.html': typeof R404DothtmlRoute
   '/oauth-callback.html': typeof OauthCallbackDothtmlRoute
+  '/privacy-policy.html': typeof PrivacyPolicyDothtmlRoute
   '/about': typeof AppAboutRoute
   '/device': typeof AppDeviceRoute
   '/login': typeof AppLoginRoute
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/404.html': typeof R404DothtmlRoute
   '/_app': typeof AppRouteWithChildren
   '/oauth-callback.html': typeof OauthCallbackDothtmlRoute
+  '/privacy-policy.html': typeof PrivacyPolicyDothtmlRoute
   '/_app/about': typeof AppAboutRoute
   '/_app/device': typeof AppDeviceRoute
   '/_app/login': typeof AppLoginRoute
@@ -102,6 +111,7 @@ export interface FileRouteTypes {
     | '/404.html'
     | '/'
     | '/oauth-callback.html'
+    | '/privacy-policy.html'
     | '/about'
     | '/device'
     | '/login'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
   to:
     | '/404.html'
     | '/oauth-callback.html'
+    | '/privacy-policy.html'
     | '/about'
     | '/device'
     | '/login'
@@ -122,6 +133,7 @@ export interface FileRouteTypes {
     | '/404.html'
     | '/_app'
     | '/oauth-callback.html'
+    | '/privacy-policy.html'
     | '/_app/about'
     | '/_app/device'
     | '/_app/login'
@@ -134,6 +146,7 @@ export interface RootRouteChildren {
   R404DothtmlRoute: typeof R404DothtmlRoute
   AppRoute: typeof AppRouteWithChildren
   OauthCallbackDothtmlRoute: typeof OauthCallbackDothtmlRoute
+  PrivacyPolicyDothtmlRoute: typeof PrivacyPolicyDothtmlRoute
   ApiSplatRoute: typeof ApiSplatRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
@@ -159,6 +172,13 @@ declare module '@tanstack/solid-router' {
       path: '/oauth-callback.html'
       fullPath: '/oauth-callback.html'
       preLoaderRoute: typeof OauthCallbackDothtmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy.html': {
+      id: '/privacy-policy.html'
+      path: '/privacy-policy.html'
+      fullPath: '/privacy-policy.html'
+      preLoaderRoute: typeof PrivacyPolicyDothtmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/': {
@@ -226,6 +246,7 @@ const rootRouteChildren: RootRouteChildren = {
   R404DothtmlRoute: R404DothtmlRoute,
   AppRoute: AppRouteWithChildren,
   OauthCallbackDothtmlRoute: OauthCallbackDothtmlRoute,
+  PrivacyPolicyDothtmlRoute: PrivacyPolicyDothtmlRoute,
   ApiSplatRoute: ApiSplatRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }

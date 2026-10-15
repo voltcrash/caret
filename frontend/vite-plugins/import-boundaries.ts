@@ -5,6 +5,7 @@
  */
 export const ssrSafeLegacyFiles = [
   "src/ts/components/standalone/StandaloneHeader.tsx",
+  "src/ts/components/standalone/PrivacyPolicy.tsx",
   "src/ts/components/common/Fa.tsx",
   "src/ts/components/common/Balloon.tsx",
   "src/ts/components/common/Button.tsx",
