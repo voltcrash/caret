@@ -111,8 +111,9 @@ async function getDataAndInit(): Promise<boolean> {
         m.waitForPresetsReady(),
       ),
       import("./collections/tags").then(async (m) => m.waitForTagsReady()),
-      import("./collections/custom-themes"),
-      import("./collections/inbox"),
+      import("./collections/custom-themes").then((m) =>
+        m.startCustomThemesSync(),
+      ),
       import("./collections/results"),
     ]).then(([snapshot]) => {
       if (snapshot === false) {

@@ -11,6 +11,7 @@ import { untrack } from "solid-js";
 import { z } from "zod";
 import Ape from "../ape";
 import { queryClient } from "../queries";
+import { defineCollection } from "./utils/scope";
 import { baseKey } from "../queries/utils/keys";
 import { LocalStorageWithSchema } from "../utils/local-storage-with-schema";
 import { IdSchema } from "@oxytype/schemas/util";
@@ -31,40 +32,42 @@ const queryKeys = {
   root: () => [...baseKey("tags", { isUserSpecific: true })],
 };
 
-const tagsCollection = createCollection(
-  queryCollectionOptions({
-    staleTime: Infinity,
-    queryKey: queryKeys.root(),
-    queryClient,
-    enabled: isAuthenticated,
-    getKey: (it) => it._id,
-    queryFn: async () => {
-      const activeIds = activeTagsLS.get();
-      const userData = await fetchUserFromApi();
+const tagsCollection = defineCollection(import.meta.hot, () =>
+  createCollection(
+    queryCollectionOptions({
+      staleTime: Infinity,
+      queryKey: queryKeys.root(),
+      queryClient,
+      enabled: isAuthenticated,
+      getKey: (it) => it._id,
+      queryFn: async () => {
+        const activeIds = activeTagsLS.get();
+        const userData = await fetchUserFromApi();
 
-      if (userData === undefined) return [];
+        if (userData === undefined) return [];
 
-      const results = (userData.tags ?? [])
-        .map((tag) => ({
-          ...tag,
-          name: tag.name.replace(/_/g, " "),
-          active: activeIds.includes(tag._id),
-        }))
-        .map(applyIdWorkaround);
+        const results = (userData.tags ?? [])
+          .map((tag) => ({
+            ...tag,
+            name: tag.name.replace(/_/g, " "),
+            active: activeIds.includes(tag._id),
+          }))
+          .map(applyIdWorkaround);
 
-      updateTagsInFilterStorage(results.map((it) => it._id) ?? []);
-      return results;
-    },
-  }),
+        updateTagsInFilterStorage(results.map((it) => it._id) ?? []);
+        return results;
+      },
+    }),
+  ),
 );
 
-const tagsReader = createCollectionReader(import.meta.hot, tagsCollection);
+const tagsReader = createCollectionReader(tagsCollection);
 
 export function useTagsLiveQuery() {
   return useLiveQuery((q) => {
     if (!isAuthenticated()) return undefined;
     return q
-      .from({ tag: tagsCollection })
+      .from({ tag: tagsCollection() })
       .orderBy(({ tag }) => tag.name, "asc");
   });
 }
@@ -72,7 +75,7 @@ export function useTagsLiveQuery() {
 export async function getActiveTagsOnce() {
   return queryOnce((q) => {
     return q
-      .from({ tag: tagsCollection })
+      .from({ tag: tagsCollection() })
       .where(({ tag }) => eq(tag.active, true))
       .orderBy(({ tag }) => tag.name, "asc");
   });
@@ -80,7 +83,7 @@ export async function getActiveTagsOnce() {
 
 export async function getTagsOnce() {
   return queryOnce((q) => {
-    return q.from({ tag: tagsCollection });
+    return q.from({ tag: tagsCollection() });
   });
 }
 
@@ -88,7 +91,7 @@ export function useActiveTagsLiveQuery() {
   return useLiveQuery((q) => {
     if (!isAuthenticated()) return undefined;
     return q
-      .from({ tag: tagsCollection })
+      .from({ tag: tagsCollection() })
       .where(({ tag }) => eq(tag.active, true))
       .orderBy(({ tag }) => tag.name, "asc");
   });
@@ -125,7 +128,7 @@ type ActionType = {
 const actions = {
   insertTag: createOptimisticAction<ActionType["insertTag"]>({
     onMutate: ({ name }) => {
-      tagsCollection.insert({
+      tagsCollection().insert({
         _id: tempId(),
         name: name.replace(/_/g, " "),
         personalBests: { time: {}, words: {}, quote: {}, zen: {}, custom: {} },
@@ -145,9 +148,9 @@ const actions = {
         active: false,
       };
 
-      tagsCollection.utils.writeInsert(newTag);
+      tagsCollection().utils.writeInsert(newTag);
       updateTagsInFilterStorage(
-        [...tagsCollection.values()]
+        [...tagsCollection().values()]
           .filter((it) => !isTempId(it._id))
           .map((it) => it._id),
       );
@@ -155,7 +158,7 @@ const actions = {
   }),
   updateTagName: createOptimisticAction<ActionType["updateTagName"]>({
     onMutate: ({ tagId, newName }) => {
-      tagsCollection.update(tagId, (tag) => {
+      tagsCollection().update(tagId, (tag) => {
         tag.name = newName.replace(/_/g, " ");
       });
     },
@@ -167,7 +170,7 @@ const actions = {
         throw new Error(`Failed to update tag: ${response.body.message}`);
       }
 
-      tagsCollection.utils.writeUpdate({
+      tagsCollection().utils.writeUpdate({
         _id: tagId,
         name: newName.replace(/_/g, " "),
       });
@@ -175,7 +178,7 @@ const actions = {
   }),
   clearTagPBs: createOptimisticAction<ActionType["clearTagPBs"]>({
     onMutate: ({ tagId }) => {
-      tagsCollection.update(tagId, (tag) => {
+      tagsCollection().update(tagId, (tag) => {
         tag.personalBests = {
           time: {},
           words: {},
@@ -193,7 +196,7 @@ const actions = {
         throw new Error(`Failed to clear tag PBs: ${response.body.message}`);
       }
 
-      tagsCollection.utils.writeUpdate({
+      tagsCollection().utils.writeUpdate({
         _id: tagId,
         personalBests: {
           time: {},
@@ -207,7 +210,7 @@ const actions = {
   }),
   deleteTag: createOptimisticAction<ActionType["deleteTag"]>({
     onMutate: ({ tagId }) => {
-      tagsCollection.delete(tagId);
+      tagsCollection().delete(tagId);
     },
     mutationFn: async ({ tagId }) => {
       const response = await Ape.users.deleteTag({
@@ -216,17 +219,17 @@ const actions = {
       if (response.status !== 200) {
         throw new Error(`Failed to delete tag: ${response.body.message}`);
       }
-      tagsCollection.utils.writeDelete(tagId);
+      tagsCollection().utils.writeDelete(tagId);
       updateTagsInFilterStorage(
-        [...tagsCollection.values()].map((it) => it._id),
+        [...tagsCollection().values()].map((it) => it._id),
       );
     },
   }),
   toggleTagActive: createOptimisticAction<ActionType["toggleTagActive"]>({
     onMutate: ({ tagId, noSave }) => {
-      const tag = tagsCollection.get(tagId);
+      const tag = tagsCollection().get(tagId);
       if (tag === undefined) return;
-      tagsCollection.utils.writeUpdate({ ...tag, active: !tag.active });
+      tagsCollection().utils.writeUpdate({ ...tag, active: !tag.active });
       if (!noSave) saveActiveToLocalStorage();
     },
     mutationFn: async () => {
@@ -235,9 +238,9 @@ const actions = {
   }),
   setTagActive: createOptimisticAction<ActionType["setTagActive"]>({
     onMutate: ({ tagId, active, noSave }) => {
-      const tag = tagsCollection.get(tagId);
+      const tag = tagsCollection().get(tagId);
       if (tag === undefined) return;
-      tagsCollection.utils.writeUpdate({ ...tag, active });
+      tagsCollection().utils.writeUpdate({ ...tag, active });
       if (!noSave) saveActiveToLocalStorage();
     },
     mutationFn: async () => {
@@ -246,10 +249,10 @@ const actions = {
   }),
   clearActiveTags: createOptimisticAction<ActionType["clearActiveTags"]>({
     onMutate: ({ noSave }) => {
-      tagsCollection.utils.writeBatch(() => {
-        tagsCollection.forEach((tag) => {
+      tagsCollection().utils.writeBatch(() => {
+        tagsCollection().forEach((tag) => {
           if (tag.active) {
-            tagsCollection.utils.writeUpdate({ ...tag, active: false });
+            tagsCollection().utils.writeUpdate({ ...tag, active: false });
           }
         });
       });
@@ -264,7 +267,7 @@ const actions = {
 // --- Public API ---
 
 export async function waitForTagsReady(): Promise<void> {
-  await tagsCollection.stateWhenReady();
+  await tagsCollection().stateWhenReady();
 }
 
 export async function insertTag(
@@ -341,7 +344,7 @@ const activeTagsLS = new LocalStorageWithSchema({
 
 export function saveActiveToLocalStorage(): void {
   const activeIds: string[] = [];
-  tagsCollection.forEach((t) => {
+  tagsCollection().forEach((t) => {
     if (t.active) activeIds.push(t._id);
   });
   activeTagsLS.set(activeIds);
@@ -359,7 +362,7 @@ export function getLocalTagPB<M extends Mode>(
   difficulty: Difficulty,
   lazyMode: boolean,
 ): number {
-  const tag = tagsCollection.get(tagId);
+  const tag = tagsCollection().get(tagId);
   if (tag === undefined) return 0;
 
   const personalBests = (tag.personalBests?.[mode]?.[mode2] ??
@@ -393,7 +396,7 @@ export function saveLocalTagPB<M extends Mode>(
 ): void {
   if (mode === "quote") return;
 
-  const collectionTag = tagsCollection.get(tagId);
+  const collectionTag = tagsCollection().get(tagId);
   if (collectionTag === undefined) return;
   const tag = structuredClone(collectionTag);
 
@@ -439,7 +442,7 @@ export function saveLocalTagPB<M extends Mode>(
 
   // using utils.writeUpdate instead of collection.update because we dont need to send this to the API
   // the result saving already updates the tag pb in the db
-  tagsCollection.utils.writeUpdate(tag);
+  tagsCollection().utils.writeUpdate(tag);
 }
 
 export function reconcileLocalTagPB<M extends Mode>(
@@ -453,7 +456,7 @@ export function reconcileLocalTagPB<M extends Mode>(
   lazyMode: boolean,
   results: SnapshotResult<Mode>[],
 ): void {
-  const tag = tagsCollection.get(tagId);
+  const tag = tagsCollection().get(tagId);
   if (tag === undefined) return;
 
   const pb = {
@@ -523,7 +526,3 @@ export function getActiveTagsPB<M extends Mode>(
   }
   return tagPbWpm;
 }
-
-import.meta.hot?.dispose(() => {
-  void tagsCollection.cleanup();
-});

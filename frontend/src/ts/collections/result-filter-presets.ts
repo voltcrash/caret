@@ -7,6 +7,7 @@ import {
 } from "@tanstack/solid-db";
 import Ape from "../ape";
 import { queryClient } from "../queries";
+import { defineCollection } from "./utils/scope";
 import { baseKey } from "../queries/utils/keys";
 import {
   replaceSpacesWithUnderscores,
@@ -20,32 +21,34 @@ const queryKeys = {
   root: () => [...baseKey("resultFilterPresets", { isUserSpecific: true })],
 };
 
-const resultFilterPresetsCollection = createCollection(
-  queryCollectionOptions({
-    staleTime: Infinity,
-    startSync: true,
-    queryKey: queryKeys.root(),
-    queryClient,
-    enabled: isAuthenticated,
-    getKey: (it) => it._id,
-    queryFn: async () => {
-      const userData = await fetchUserFromApi();
-      if (userData === undefined) return [];
+const resultFilterPresetsCollection = defineCollection(import.meta.hot, () =>
+  createCollection(
+    queryCollectionOptions({
+      staleTime: Infinity,
+      startSync: true,
+      queryKey: queryKeys.root(),
+      queryClient,
+      enabled: isAuthenticated,
+      getKey: (it) => it._id,
+      queryFn: async () => {
+        const userData = await fetchUserFromApi();
+        if (userData === undefined) return [];
 
-      return (userData.resultFilterPresets ?? [])
-        .map((it) => ({
-          ...it,
-          name: replaceUnderscoresWithSpaces(it.name),
-        }))
-        .map(applyIdWorkaround);
-    },
-  }),
+        return (userData.resultFilterPresets ?? [])
+          .map((it) => ({
+            ...it,
+            name: replaceUnderscoresWithSpaces(it.name),
+          }))
+          .map(applyIdWorkaround);
+      },
+    }),
+  ),
 );
 
 export function useResultFilterPresetsLiveQuery() {
   return useLiveQuery((q) => {
     if (!isAuthenticated()) return undefined;
-    return q.from({ presets: resultFilterPresetsCollection });
+    return q.from({ presets: resultFilterPresetsCollection() });
   });
 }
 
@@ -64,7 +67,7 @@ const actions = {
     ActionType["insertResultFilterPreset"]
   >({
     onMutate: ({ name, filters }) => {
-      resultFilterPresetsCollection.insert({
+      resultFilterPresetsCollection().insert({
         ...structuredClone(filters),
         _id: tempId(),
         name,
@@ -89,14 +92,14 @@ const actions = {
         name,
       };
 
-      resultFilterPresetsCollection.utils.writeInsert(newPreset);
+      resultFilterPresetsCollection().utils.writeInsert(newPreset);
     },
   }),
   deleteResultFilterPreset: createOptimisticAction<
     ActionType["deleteResultFilterPreset"]
   >({
     onMutate: ({ presetId }) => {
-      resultFilterPresetsCollection.delete(presetId);
+      resultFilterPresetsCollection().delete(presetId);
     },
     mutationFn: async ({ presetId }) => {
       const response = await Ape.users.removeResultFilterPreset({
@@ -109,7 +112,7 @@ const actions = {
         );
       }
 
-      resultFilterPresetsCollection.utils.writeDelete(presetId);
+      resultFilterPresetsCollection().utils.writeDelete(presetId);
     },
   }),
 };
@@ -127,7 +130,3 @@ export async function deleteResultFilterPreset(
   const transaction = actions.deleteResultFilterPreset(params);
   await transaction.isPersisted.promise;
 }
-
-import.meta.hot?.dispose(() => {
-  void resultFilterPresetsCollection.cleanup();
-});

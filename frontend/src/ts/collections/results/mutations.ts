@@ -14,7 +14,7 @@ function createActions(client: Client) {
       ActionType["updateTags"] & { persisted: UpdateTagsResult }
     >({
       onMutate: ({ resultId, newTagIds }) => {
-        resultsCollection.update(resultId, (result) => {
+        resultsCollection().update(resultId, (result) => {
           result.tags = newTagIds;
         });
       },
@@ -54,7 +54,7 @@ function createActions(client: Client) {
           });
         }
 
-        resultsCollection.utils.writeUpdate({
+        resultsCollection().utils.writeUpdate({
           _id: resultId,
           tags: newTagIds,
         });
@@ -64,7 +64,7 @@ function createActions(client: Client) {
     }),
     insertLocalResult: createOptimisticAction<ActionType["insertLocalResult"]>({
       onMutate: ({ result }) => {
-        resultsCollection.utils.writeInsert(normalizeResult(result));
+        resultsCollection().utils.writeInsert(normalizeResult(result));
       },
       mutationFn: async () => {
         //we don't sync the changes back to the backend here, it is done already
@@ -73,10 +73,10 @@ function createActions(client: Client) {
     }),
     deleteLocalTag: createOptimisticAction<ActionType["deleteLocalTag"]>({
       onMutate: ({ tagId }) => {
-        for (const result of [...resultsCollection.values()].filter((it) =>
+        for (const result of [...resultsCollection().values()].filter((it) =>
           it.tags.includes(tagId),
         )) {
-          resultsCollection.utils.writeUpdate({
+          resultsCollection().utils.writeUpdate({
             ...result,
             tags: result.tags.filter((it) => it !== tagId),
           });
@@ -104,7 +104,7 @@ export async function updateTags(
   params: ActionType["updateTags"],
 ): Promise<UpdateTagsResult> {
   const resultsCollection = resultsByClient[params.client ?? "web"];
-  if (!resultsCollection.isReady()) {
+  if (!resultsCollection().isReady()) {
     // if its not ready yet, send the api request to update the tags
     const response = await Ape.results.updateTags({
       body: { resultId: params.resultId, tagIds: params.newTagIds },
@@ -163,7 +163,7 @@ export async function insertLocalResult(
   params: ActionType["insertLocalResult"],
 ): Promise<void> {
   const client = params.result.client ?? "web";
-  if (!resultsByClient[client].isReady()) {
+  if (!resultsByClient[client]().isReady()) {
     //not loaded yet, don't need to insert
     return;
   }
@@ -175,7 +175,7 @@ export async function deleteLocalTag(
   params: ActionType["deleteLocalTag"],
 ): Promise<void> {
   for (const client of ["web", "tui"] as const) {
-    if (!resultsByClient[client].isReady()) continue;
+    if (!resultsByClient[client]().isReady()) continue;
     const transaction = actionsByClient[client].deleteLocalTag(params);
     await transaction.isPersisted.promise;
   }

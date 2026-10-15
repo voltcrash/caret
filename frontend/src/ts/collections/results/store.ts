@@ -11,6 +11,7 @@ import { isAuthenticated } from "../../states/core";
 import { getLastResult, setLastResult } from "../../states/snapshot";
 import { getTagsOnce } from "../tags";
 import { applyIdWorkaround } from "../utils/misc";
+import { defineCollection } from "../utils/scope";
 
 function createResultsCollection(client: Client) {
   const collection = createCollection(
@@ -59,29 +60,26 @@ function createResultsCollection(client: Client) {
     indexType: BTreeIndex,
   });
 
-  import.meta.hot?.dispose(() => {
-    void collection.cleanup();
-  });
   return collection;
 }
 
 export const resultsByClient = {
-  web: createResultsCollection("web"),
-  tui: createResultsCollection("tui"),
+  web: defineCollection(import.meta.hot, () => createResultsCollection("web")),
+  tui: defineCollection(import.meta.hot, () => createResultsCollection("tui")),
 };
 
 export const resultsCollection = resultsByClient.web;
 
 export function isResultsReady(): boolean {
-  return resultsCollection.isReady();
+  return resultsCollection().isReady();
 }
 
 bindResultsReady(isResultsReady);
 
 export async function waitForResultsReady(): Promise<void> {
-  await resultsCollection.stateWhenReady();
+  await resultsCollection().stateWhenReady();
 }
 
 export function getResults(client: Client = "web"): SnapshotResult<Mode>[] {
-  return [...resultsByClient[client].values()];
+  return [...resultsByClient[client]().values()];
 }

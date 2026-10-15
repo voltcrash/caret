@@ -36,7 +36,9 @@ import { isAuthenticated } from "../states/core";
  */
 createModuleEffectOn(import.meta.hot, isAuthenticated, (hasUser) => {
   if (hasUser) {
-    void resultsCollection.utils.refetch();
-    if (resultsByClient.tui.isReady()) void resultsByClient.tui.utils.refetch();
+    void resultsCollection().utils.refetch();
+    if (resultsByClient.tui().isReady()) {
+      void resultsByClient.tui().utils.refetch();
+    }
   }
 });

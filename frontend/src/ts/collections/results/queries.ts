@@ -88,7 +88,7 @@ export function buildResultsQuery(state: ResultsQueryState) {
   };
 
   let query = new Query()
-    .from({ r: resultsByClient[state.client ?? "web"] })
+    .from({ r: resultsByClient[state.client ?? "web"]() })
     .where(({ r }) => gte(r.timestamp, state.timestamp))
     .where(({ r }) => inArray(r.difficulty, state.difficulty))
     .where(({ r }) => inArray(r.isPb, state.pb))
