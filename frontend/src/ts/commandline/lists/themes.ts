@@ -1,4 +1,4 @@
-import { createAppOwned } from "../../../app/application";
+import { createAccountOwned } from "../../../app/account-scope";
 import { appObject } from "../../../app/state";
 import { getMutableConfig } from "../../config/store";
 import { setConfig } from "../../config/setters";
@@ -51,7 +51,7 @@ const sortThemesByFavorite = (themes: ThemeWithName[]): ThemeWithName[] => [
   ...themes.filter(not(isFavorite)),
 ];
 
-const getSubgroup = createAppOwned<CommandsSubgroup>(() => ({
+const getSubgroup = createAccountOwned<CommandsSubgroup>(() => ({
   title: "Theme...",
   configKey: "theme",
   list: sortThemesByFavorite(ThemesList).map((theme) =>
@@ -60,7 +60,7 @@ const getSubgroup = createAppOwned<CommandsSubgroup>(() => ({
 }));
 
 const commands = appObject(
-  createAppOwned<Command[]>(() => [
+  createAccountOwned<Command[]>(() => [
     {
       id: "changeTheme",
       display: "Theme...",

@@ -1,3 +1,5 @@
+import { getCommandlineState } from "../states/commandline";
+import { captureAccount, createAccountOwned } from "../../app/account-scope";
 import * as CommandlineLists from "./lists";
 import { matchCommands } from "./matching";
 import { getMutableConfig } from "../config/store";
@@ -13,11 +15,11 @@ import { intersect } from "@oxytype/util/arrays";
 import { isInputElementFocused } from "../input/input-element";
 
 import { setTestFocusState } from "../states/test";
-import { commandlineState } from "../states/commandline";
 
 import { isCoarsePointer } from "../utils/pointer";
 
 function removeCommandlineBackground(): void {
+  const commandlineState = getCommandlineState();
   commandlineState.noBackground = true;
   if (getMutableConfig().showOutOfFocusWarning) {
     setTestFocusState("focused");
@@ -25,6 +27,7 @@ function removeCommandlineBackground(): void {
 }
 
 export function addCommandlineBackground(): void {
+  const commandlineState = getCommandlineState();
   commandlineState.noBackground = false;
   if (!isInputElementFocused()) {
     setTestFocusState("unfocused");
@@ -36,13 +39,17 @@ export function isBrowsingOnTouch(value: string): boolean {
 }
 
 export async function filterSubgroup(): Promise<void> {
+  const commandlineState = getCommandlineState();
+  const lease = captureAccount();
   const subgroup = await getSubgroup();
+  if (!lease.isCurrent()) return;
   subgroup.beforeList?.();
   const list = subgroup.list;
   const availability: boolean[] = [];
   for (const command of list) {
     availability.push((await command.available?.()) ?? true);
   }
+  if (!lease.isCurrent()) return;
   const found = matchCommands(
     list,
     availability,
@@ -55,21 +62,26 @@ export async function filterSubgroup(): Promise<void> {
 }
 
 export function hideCommands(): void {
+  const commandlineState = getCommandlineState();
   commandlineState.suggestions = [];
 }
 
-let cachedSingleSubgroup: CommandsSubgroup | null = null;
+const cache = createAccountOwned(() => ({
+  singleSubgroup: null as CommandsSubgroup | null,
+}));
 
 export async function getSubgroup(): Promise<CommandsSubgroup> {
+  const commandlineState = getCommandlineState();
+  const current = cache();
   if (commandlineState.subgroupOverride !== null) {
     return commandlineState.subgroupOverride;
   }
 
   if (commandlineState.usingSingleList) {
-    if (cachedSingleSubgroup === null) {
-      cachedSingleSubgroup = await CommandlineLists.getSingleSubgroup();
+    if (current.singleSubgroup === null) {
+      current.singleSubgroup = await CommandlineLists.getSingleSubgroup();
     } else {
-      return cachedSingleSubgroup;
+      return current.singleSubgroup;
     }
   }
 
@@ -81,6 +93,8 @@ export async function getList(): Promise<Command[]> {
 }
 
 export async function showCommands(): Promise<void> {
+  const commandlineState = getCommandlineState();
+  const lease = captureAccount();
   if (commandlineState.inputValue === "" && commandlineState.usingSingleList) {
     hideCommands();
     return;
@@ -88,6 +102,7 @@ export async function showCommands(): Promise<void> {
 
   const subgroup = await getSubgroup();
 
+  if (!lease.isCurrent()) return;
   const list = subgroup.list
     .filter((c) => c.found === true)
     .map((command) => {
@@ -128,6 +143,7 @@ export async function showCommands(): Promise<void> {
 }
 
 export async function updateActiveCommand(): Promise<void> {
+  const commandlineState = getCommandlineState();
   if (commandlineState.isAnimating) return;
 
   const command = commandlineState.suggestions[commandlineState.activeIndex];
@@ -153,6 +169,7 @@ export async function updateActiveCommand(): Promise<void> {
 }
 
 export async function incrementActiveIndex(): Promise<void> {
+  const commandlineState = getCommandlineState();
   commandlineState.activeIndex++;
   if (
     commandlineState.activeIndex >=
@@ -164,6 +181,7 @@ export async function incrementActiveIndex(): Promise<void> {
 }
 
 export async function decrementActiveIndex(): Promise<void> {
+  const commandlineState = getCommandlineState();
   commandlineState.activeIndex--;
   if (commandlineState.activeIndex < 0) {
     commandlineState.activeIndex =
@@ -173,5 +191,5 @@ export async function decrementActiveIndex(): Promise<void> {
 }
 
 export function resetSingleSubgroup(): void {
-  cachedSingleSubgroup = null;
+  cache().singleSubgroup = null;
 }

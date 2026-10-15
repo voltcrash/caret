@@ -1,38 +1,42 @@
+import { createAccountOwned } from "../../../app/account-scope";
+import { appObject } from "../../../app/state";
 import { setConfig } from "../../config/setters";
 import { isAuthenticated } from "../../states/core";
 import * as CustomThemes from "../../collections/custom-themes";
 import * as ThemeController from "../../controllers/theme-controller";
 import { Command, CommandsSubgroup } from "../types";
 
-const subgroup: CommandsSubgroup = {
+const getSubgroup = createAccountOwned<CommandsSubgroup>(() => ({
   title: "Custom themes list...",
   // configKey: "customThemeId",
   beforeList: (): void => update(),
   list: [],
-};
+}));
 
-const commands: Command[] = [
-  {
-    id: "setCustomThemeId",
-    display: "Custom themes...",
-    icon: "fa-palette",
-    subgroup,
-    available: (): boolean => {
-      return isAuthenticated();
+const commands = appObject(
+  createAccountOwned<Command[]>(() => [
+    {
+      id: "setCustomThemeId",
+      display: "Custom themes...",
+      icon: "fa-palette",
+      subgroup: getSubgroup(),
+      available: (): boolean => {
+        return isAuthenticated();
+      },
     },
-  },
-];
+  ]),
+  true,
+);
 
 function update(): void {
+  getSubgroup().list = [];
   if (!isAuthenticated()) {
     return;
   }
 
-  subgroup.list = [];
-
   const customThemes = CustomThemes.getCustomThemes();
   for (const theme of customThemes) {
-    subgroup.list.push({
+    getSubgroup().list.push({
       id: `setCustomThemeId${theme._id}`,
       display: theme.name.replace(/_/gi, " "),
       configValue: theme._id,

@@ -1,3 +1,4 @@
+import { getCommandlineState } from "../states/commandline";
 import * as ThemeController from "../controllers/theme-controller";
 import { clearFontPreview } from "../ui";
 
@@ -8,14 +9,13 @@ import {
   hideModalAndClearChain as storeClearChain,
 } from "../states/modals";
 
-import { commandlineState } from "../states/commandline";
-
 import { addCommandlineBackground } from "./suggestions";
 import { hideWarning } from "./input-validation";
 
 const MODAL_STORE_ID = "Commandline";
 
 export function hide(clearModalChain = false): void {
+  const commandlineState = getCommandlineState();
   clearFontPreview();
   void ThemeController.clearPreview();
   commandlineState.isAnimating = true;
@@ -27,6 +27,7 @@ export function hide(clearModalChain = false): void {
 }
 
 export function afterHideCommandline(): void {
+  const commandlineState = getCommandlineState();
   hideWarning();
   addCommandlineBackground();
   if (getActivePage() !== "test") {
@@ -41,6 +42,7 @@ export function afterHideCommandline(): void {
 // the single list stays empty until something is typed. touch users often
 // have no keyboard open, so they browse the grouped list until they search
 export function onCommandlineBeforeHide(): void {
+  const commandlineState = getCommandlineState();
   clearFontPreview();
   void ThemeController.clearPreview();
   commandlineState.isAnimating = true;

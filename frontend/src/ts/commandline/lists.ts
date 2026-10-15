@@ -1,4 +1,4 @@
-import { createAppOwned } from "../../app/application";
+import { createAccountOwned } from "../../app/account-scope";
 import { setFixingSkillIssue } from "../states/skill-issue";
 import MinBurstCommands from "./lists/min-burst";
 import BailOutCommands from "./lists/bail-out";
@@ -39,7 +39,7 @@ import { applyConfigFromJson } from "../config/lifecycle";
 import { getLastEventLog } from "../states/test";
 import { commandlineState } from "../states/commandline";
 
-const getCommands = createAppOwned<CommandsSubgroup>(() => ({
+const getCommands = createAccountOwned<CommandsSubgroup>(() => ({
   title: "",
   list: [
     //result
@@ -338,7 +338,7 @@ const getCommands = createAppOwned<CommandsSubgroup>(() => ({
   ],
 }));
 
-const getLists = createAppOwned<
+const getLists = createAccountOwned<
   Record<CommandlineListKey, CommandsSubgroup | undefined>
 >(() => ({
   themes: ThemesCommands[0]?.subgroup,
@@ -348,7 +348,7 @@ const getLists = createAppOwned<
   tags: TagsCommands[0]?.subgroup,
 }));
 
-const getSubgroupByConfigKey = createAppOwned(
+const getSubgroupByConfigKey = createAccountOwned(
   () =>
     Object.fromEntries(
       getCommands()
