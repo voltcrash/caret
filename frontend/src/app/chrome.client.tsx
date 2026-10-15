@@ -17,6 +17,7 @@ import { Popups } from "../ts/components/popups/Popups";
 import { getAcceptedCookies } from "../ts/cookies";
 import { showModal } from "../ts/states/modals";
 import { getHeaderBottom } from "../ts/states/page-layout";
+import { RouterNavigation } from "./navigation.client";
 import { preferencesReadiness } from "./readiness";
 
 /**
@@ -61,6 +62,7 @@ function ChromeRuntime(props: {
   });
   return (
     <>
+      <RouterNavigation />
       <HotkeyEvents />
       <BreakpointEvents />
       <Portal>

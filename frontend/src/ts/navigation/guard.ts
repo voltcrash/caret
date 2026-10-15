@@ -1,5 +1,4 @@
 import type { NavigateOptions } from "./navigation";
-import * as PageTransition from "../states/page-transition";
 import { showNoticeNotification } from "../states/notifications";
 import {
   isTestActive,
@@ -8,11 +7,9 @@ import {
 } from "../states/test";
 import { isFunboxActive } from "../test/funbox/list";
 
+/** Router-independent test guard; hosts add their own transition state. */
 export function canNavigate(options: NavigateOptions = {}): boolean {
-  if (
-    !options.force &&
-    (isTestRestarting() || isResultCalculating() || PageTransition.get())
-  ) {
+  if (!options.force && (isTestRestarting() || isResultCalculating())) {
     return false;
   }
 

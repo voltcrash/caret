@@ -21,6 +21,7 @@ import { AppRouteInfo } from "../../navigation/routes";
 import { setAppLoading } from "../../states/app";
 import { isAuthenticated } from "../../states/core";
 import { showErrorNotification } from "../../states/notifications";
+import * as PageTransition from "../../states/page-transition";
 
 type NavigationRequest = {
   options: NavigateOptions;
@@ -57,7 +58,12 @@ export function NavigationRuntime(): null {
   };
 
   const allowed = (options: NavigateOptions): boolean => {
-    if (!options.force && (isRouting() || transitions > 0)) return false;
+    if (
+      !options.force &&
+      (isRouting() || transitions > 0 || PageTransition.get())
+    ) {
+      return false;
+    }
     return canNavigate(options);
   };
   const routeTo = (

@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
 const state = vi.hoisted(() => ({
   restarting: false,
   calculating: false,
-  transition: false,
   active: false,
   noQuit: false,
   notice: vi.fn(),
@@ -13,9 +12,6 @@ vi.mock("../../src/ts/states/test", () => ({
   isTestRestarting: () => state.restarting,
   isResultCalculating: () => state.calculating,
   isTestActive: () => state.active,
-}));
-vi.mock("../../src/ts/states/page-transition", () => ({
-  get: () => state.transition,
 }));
 vi.mock("../../src/ts/test/funbox/list", () => ({
   isFunboxActive: () => state.noQuit,
@@ -31,14 +27,13 @@ describe("navigation guard", () => {
     Object.assign(state, {
       restarting: false,
       calculating: false,
-      transition: false,
       active: false,
       noQuit: false,
     });
     state.notice.mockClear();
   });
 
-  it.each(["restarting", "calculating", "transition"] as const)(
+  it.each(["restarting", "calculating"] as const)(
     "blocks while %s, except forced navigation",
     (key) => {
       state[key] = true;
