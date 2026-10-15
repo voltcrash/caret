@@ -2,7 +2,7 @@ import { contract } from "@oxytype/contracts";
 import type { EndpointMetadata } from "@oxytype/contracts/util/api";
 import { isAppRoute, type AppRouter } from "@ts-rest/core";
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { resolve, relative } from "node:path";
+import { resolve, relative, dirname } from "node:path";
 import { isDeepStrictEqual } from "node:util";
 
 const root = resolve(__dirname, "../..");
@@ -16,6 +16,38 @@ function sources(directory: string): string[] {
         ? [path]
         : [];
   });
+}
+
+/** Resolve the surviving transport adapter to its sole business implementation. */
+function serviceOwner(routeFile: string, key: string): string {
+  const route = readFileSync(resolve(root, routeFile), "utf8");
+  const handler = new RegExp(
+    `\\n  ${key}: \\{[\\s\\S]*?callController\\(\\w+\\.(\\w+)\\)`,
+  ).exec(route)?.[1];
+  const controller = /from ["'](\.\.\/controllers\/[^"']+)["']/.exec(
+    route,
+  )?.[1];
+  if (handler === undefined || controller === undefined) {
+    throw new Error(`Missing service adapter ${routeFile}:${key}`);
+  }
+  let file = resolve(root, dirname(routeFile), `${controller}.ts`);
+  for (let depth = 0; depth < 4; depth++) {
+    const source = readFileSync(file, "utf8");
+    const service = /import \* as services from ["']([^"']+)["']/.exec(
+      source,
+    )?.[1];
+    if (service !== undefined) {
+      return `${relative(root, resolve(dirname(file), `${service}.ts`))}#${handler}`;
+    }
+    const reexport = [
+      ...source.matchAll(/export \{([^}]+)\} from ["']([^"']+)["']/g),
+    ].find((match) =>
+      match[1]?.split(",").some((name) => name.trim() === handler),
+    )?.[2];
+    if (reexport === undefined) break;
+    file = resolve(dirname(file), `${reexport}.ts`);
+  }
+  throw new Error(`Missing business service for ${routeFile}:${key}`);
 }
 
 /** Source evidence, not proof that a public endpoint has no external users. */
@@ -56,7 +88,19 @@ export function inventory(): object[] {
         id,
         method: route.method,
         path: `/api${route.path}`,
-        currentOwner: `backend/src/api/routes/${group === "public" ? "public" : group === "apeKeys" ? "ape-keys" : group}.ts`,
+        currentOwner: `backend/src/api/routes/${group === "apeKeys" ? "ape-keys" : group}.ts`,
+        serviceOwner: serviceOwner(
+          `backend/src/api/routes/${group === "apeKeys" ? "ape-keys" : group}.ts`,
+          key,
+        ),
+        startAdapter:
+          (
+            {
+              "public.getTypingStats": "frontend/src/functions/public.ts",
+              "users.getStats": "frontend/src/functions/account.ts (pilot)",
+              "users.create": "frontend/src/functions/signup.ts",
+            } as Record<string, string>
+          )[id] ?? null,
         policy,
         validation: {
           params: "pathParams" in route,
