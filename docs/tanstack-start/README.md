@@ -7,8 +7,8 @@ No preceding implementation stage or handoff exists. Prerequisite: merged
 | Phase | Status | Evidence |
 | --- | --- | --- |
 | 0.1 Behavior/consumer inventory | Complete | [Behavior](behavior.md), generated operations ledger |
-| 0.2 Repeated baselines/budgets | In progress | Capture before framework changes |
-| 0.3 Architecture/release contract | Pending | Confirm after baseline |
+| 0.2 Repeated baselines/budgets | Complete | [Measurements, budgets, checks](baseline.md) |
+| 0.3 Architecture/release contract | In progress | Confirm after baseline |
 | Stage 0 exit | Pending | All three phases required |
 | Stages 1–8 | Not started | Separate assignments |
 
