@@ -1,5 +1,56 @@
 import { expect, test } from "playwright/test";
 
+test("public navigation and the saved theme work while browser setup is loading", async ({
+  page,
+}) => {
+  let release!: () => void;
+  let blocked = false;
+  const documents: string[] = [];
+  page.on("request", (request) => {
+    if (request.isNavigationRequest() && request.frame() === page.mainFrame()) {
+      documents.push(request.url());
+    }
+  });
+  const held = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await page.addInitScript(() =>
+    localStorage.setItem(
+      "themeColors",
+      JSON.stringify({ "bg-color": "#123456" }),
+    ),
+  );
+  await page.route("**/assets/browser-runtime.client-*.js", async (route) => {
+    blocked = true;
+    await held;
+    await route.continue();
+  });
+  const history: string[] = [];
+  page.on("request", (request) => {
+    if (/\/api\/(results|users|presets)(?:[/?]|$)/.test(request.url())) {
+      history.push(request.url());
+    }
+  });
+  try {
+    await page.goto("/about", { waitUntil: "domcontentloaded" });
+    await expect.poll(() => blocked).toBe(true);
+    await expect(page.getByTestId("tests-completed")).toHaveText("11");
+    expect(
+      await page
+        .locator("html")
+        .evaluate((el) => getComputedStyle(el).getPropertyValue("--bg-color")),
+    ).toBe("#123456");
+    await page.getByRole("link", { name: "oxytype", exact: true }).click();
+    await expect(page).toHaveURL(/\/$/);
+    expect(history).toEqual([]);
+    expect(documents).toHaveLength(1);
+  } finally {
+    release();
+  }
+  await page.waitForLoadState("networkidle");
+  expect(history).toEqual([]);
+});
+
 test("SSR hydrates Query once and keeps native navigation and refresh working", async ({
   page,
 }) => {

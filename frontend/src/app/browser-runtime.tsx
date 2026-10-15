@@ -1,6 +1,6 @@
 import { ClientOnly } from "@tanstack/solid-router";
 import { createClientOnlyFn } from "@tanstack/solid-start";
-import { lazy, type JSXElement } from "solid-js";
+import { lazy, Suspense, type JSXElement } from "solid-js";
 
 const Runtime = lazy(
   createClientOnlyFn(async () => import("./browser-runtime.client")),
@@ -10,7 +10,9 @@ const Runtime = lazy(
 export function BrowserRuntime(): JSXElement {
   return (
     <ClientOnly>
-      <Runtime />
+      <Suspense fallback={null}>
+        <Runtime />
+      </Suspense>
     </ClientOnly>
   );
 }

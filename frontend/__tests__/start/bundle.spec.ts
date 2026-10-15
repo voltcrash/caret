@@ -11,10 +11,10 @@ function read(dir: string): string {
     .join("\n");
 }
 
-// Server-only identifiers that survive minification (literals/exports).
+// App server identifiers that survive minification (literals/exports).
+// The supported Better Auth infra client imports core/env (getter names only);
+// its generic BETTER_AUTH_SECRET string is not an application binding leak.
 const serverMarkers = [
-  "better-auth",
-  "BETTER_AUTH_SECRET",
   "public_stats",
   "sqlite_master",
   "withRuntime",
@@ -31,13 +31,24 @@ describe("built Start bundle boundaries", () => {
     for (const marker of serverMarkers) expect(server).toContain(marker);
   });
 
-  it("keeps server code and secret names out of browser JS", () => {
+  it("keeps application server code out of browser JS", () => {
     for (const marker of serverMarkers) expect(client).not.toContain(marker);
   });
 
   it("never bundles the legacy browser bootstrap", () => {
     for (const marker of legacyMarkers) {
       expect(client).not.toContain(marker);
+      expect(server).not.toContain(marker);
+    }
+  });
+
+  it("includes browser setup only in client chunks", () => {
+    for (const marker of [
+      "loading localStorage config",
+      "Activating Sentry",
+      "Debug logs automatically enabled on localhost",
+    ]) {
+      expect(client).toContain(marker);
       expect(server).not.toContain(marker);
     }
   });
