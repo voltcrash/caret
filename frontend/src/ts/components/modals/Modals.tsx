@@ -1,7 +1,6 @@
 import { Component, For, JSXElement, lazy, Show } from "solid-js";
 
 import { ModalId, getModalVisibility } from "../../states/modals";
-import { CookiesModal } from "./CookiesModal";
 import { useModalTriggers } from "./modal-triggers";
 
 function lazyModal(
@@ -14,6 +13,9 @@ function lazyModal(
 // Loaded on first open to keep them out of the
 // startup bundle. Nested modals live in their parent's chunk.
 const lazyModals = [
+  lazyModal("Cookies", async () =>
+    import("./CookiesModal").then((m) => m.CookiesModal),
+  ),
   lazyModal("Commandline", async () =>
     import("./Commandline").then((m) => m.Commandline),
   ),
@@ -90,15 +92,12 @@ const lazyModals = [
 export function Modals(): JSXElement {
   useModalTriggers();
   return (
-    <>
-      <CookiesModal />
-      <For each={lazyModals}>
-        {(modal) => (
-          <Show when={getModalVisibility(modal.id) !== null}>
-            <modal.Component />
-          </Show>
-        )}
-      </For>
-    </>
+    <For each={lazyModals}>
+      {(modal) => (
+        <Show when={getModalVisibility(modal.id) !== null}>
+          <modal.Component />
+        </Show>
+      )}
+    </For>
   );
 }

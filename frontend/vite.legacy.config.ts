@@ -234,6 +234,10 @@ function getBuildOptions({
         codeSplitting: {
           groups: [
             {
+              name: "app-owners",
+              test: /src\/app\/(?:application|account-data|account-scope|scope|state|readiness|query-client)\.ts$/,
+            },
+            {
               name: "vendor-sentry",
               test: /node_modules\/@sentry\//,
             },
