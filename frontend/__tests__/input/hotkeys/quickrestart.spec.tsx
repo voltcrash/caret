@@ -216,3 +216,60 @@ it("keeps Enter available to the 58008 funbox", () => {
     isQuickRestart: false,
   });
 });
+
+it("restarts from the typing input while leaving other controls usable", () => {
+  const view = render(() => (
+    <>
+      <Shortcuts />
+      <textarea id="wordsInput" aria-label="Typing input" />
+      <input aria-label="Settings search" />
+      <button>Setting</button>
+    </>
+  ));
+  const input = view.getByRole("textbox", { name: "Typing input" });
+  input.focus();
+  expect(press("Tab")).toBe(false);
+  expect(mocks.restart).toHaveBeenCalledTimes(1);
+
+  view.getByRole("textbox", { name: "Settings search" }).focus();
+  expect(press("Tab")).toBe(true);
+  view.getByRole("button", { name: "Setting" }).focus();
+  expect(press("Tab")).toBe(true);
+  setConfigStore("quickRestart", "enter");
+  expect(press("Enter")).toBe(true);
+  expect(mocks.restart).toHaveBeenCalledTimes(1);
+
+  input.focus();
+  expect(press("Enter")).toBe(false);
+  expect(mocks.restart).toHaveBeenCalledTimes(2);
+});
+
+it.each([
+  ["tab", "Tab"],
+  ["esc", "Escape"],
+  ["enter", "Enter"],
+] as const)("restores %s after a popup closes", (setting, key) => {
+  setConfigStore("quickRestart", setting);
+  render(() => <Shortcuts />);
+  mocks.popup = true;
+  press(key);
+  expect(mocks.restart).not.toHaveBeenCalled();
+  mocks.popup = false;
+  expect(press(key)).toBe(false);
+  expect(mocks.restart).toHaveBeenCalledExactlyOnceWith({
+    isQuickRestart: true,
+  });
+});
+
+it("jumps from settings to the test page and then restarts", () => {
+  setActivePage("settings");
+  render(() => <Shortcuts />);
+  expect(press("Tab")).toBe(false);
+  expect(mocks.navigate).toHaveBeenCalledExactlyOnceWith("");
+  expect(mocks.restart).not.toHaveBeenCalled();
+  setActivePage("test");
+  expect(press("Tab")).toBe(false);
+  expect(mocks.restart).toHaveBeenCalledExactlyOnceWith({
+    isQuickRestart: true,
+  });
+});
