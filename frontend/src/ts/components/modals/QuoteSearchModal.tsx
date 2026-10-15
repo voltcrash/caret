@@ -51,18 +51,15 @@ const PAGE_SIZE = 100;
 
 const searchServiceCache: Record<string, SearchService<Quote>> = {};
 
-function getSearchService<T>(
+function getSearchService(
   language: string,
-  data: T[],
-  textExtractor: TextExtractor<T>,
-): SearchService<T> {
-  if (language in searchServiceCache) {
-    return searchServiceCache[language] as unknown as SearchService<T>;
-  }
-  const newSearchService = buildSearchService<T>(data, textExtractor);
-  searchServiceCache[language] =
-    newSearchService as unknown as (typeof searchServiceCache)[typeof language];
-  return newSearchService;
+  data: Quote[],
+  textExtractor: TextExtractor<Quote>,
+): SearchService<Quote> {
+  return (searchServiceCache[language] ??= buildSearchService(
+    data,
+    textExtractor,
+  ));
 }
 
 function exactSearch(quotes: Quote[], captured: RegExp[]): [Quote[], string[]] {
@@ -267,7 +264,7 @@ export function QuoteSearchModal(): JSXElement {
       );
     }
 
-    const quoteSearchService = getSearchService<Quote>(
+    const quoteSearchService = getSearchService(
       Config.language,
       allQuotes,
       (quote: Quote) => `${quote.text} ${quote.id} ${quote.source}`,
