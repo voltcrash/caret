@@ -3,6 +3,7 @@ import { setupRouterSsrQueryIntegration } from "@tanstack/solid-router-ssr-query
 import { createIsomorphicFn } from "@tanstack/solid-start";
 
 import { createQueryClient } from "./app/query-client";
+import { parseSearch, stringifySearch } from "./app/search";
 import { AppError } from "./components/app-error";
 import { routeTree } from "./routeTree.gen";
 import { requestNonce } from "./server/nonce.server";
@@ -19,6 +20,8 @@ export function getRouter() {
     routeTree,
     context: { queryClient },
     defaultPreload: "intent",
+    parseSearch,
+    stringifySearch,
     scrollRestoration: true,
   });
   setupRouterSsrQueryIntegration({ router, queryClient });
