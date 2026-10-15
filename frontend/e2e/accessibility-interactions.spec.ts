@@ -65,6 +65,19 @@ test("command palette input shows no focus outline", async ({ page }) => {
   );
 });
 
+test("other text inputs keep the focus outline", async ({ page }) => {
+  await openTest(page);
+  await page
+    .getByRole("button", { name: "Custom word count", exact: true })
+    .focus();
+  await page.keyboard.press("Enter");
+  const input = page
+    .getByRole("dialog", { name: "Custom Word Amount" })
+    .getByRole("spinbutton");
+  await expect(input).toBeFocused();
+  await expect(input).toHaveCSS("outline-style", "solid");
+});
+
 test("result summary stays silent during typing and clears on restart", async ({
   page,
 }) => {
