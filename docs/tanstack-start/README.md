@@ -15,7 +15,11 @@ No preceding implementation stage or handoff exists. Prerequisite: merged
 | 1.3 Document/assets/response policy | Complete | [Stage 1](stage-1.md), document suite |
 | 1.4 CI and staging build | Complete | [Stage 1](stage-1.md), `ci-start`, browser suite |
 | Stage 1 exit | Complete | [Stage 1 handoff](stage-1.md#next-stage-prerequisites) |
-| Stages 2–8 | Not started | Separate assignments |
+| 2.1 Factories/import boundaries | Complete | [Stage 2](stage-2.md), protection + layer suites |
+| 2.2 Providers/browser runtime | Complete | [Stage 2](stage-2.md), owner/runtime suites |
+| 2.3 Preferences/data identity | Complete | [Stage 2](stage-2.md), actor-isolation suites |
+| Stage 2 exit | Complete | [Stage 2 handoff](stage-2.md#next-stage-prerequisites) |
+| Stages 3–8 | Not started | Separate assignments |
 
 Stage 0 moves responsibility for migration evidence from an unverified proposal
 to this versioned ledger and reproducible checks. It moves no application

@@ -1,7 +1,7 @@
 # TanStack Start migration: architecture and execution plan
 
-Status: Stages 0–1 complete; [ledger and handoffs](tanstack-start/README.md).
-Stage 2 not started. Production still serves the legacy app (rollback build).
+Status: Stages 0–2 complete; [ledger and handoffs](tanstack-start/README.md).
+Stage 3 not started. Production still serves the legacy app (rollback build).
 Prepared: 2026-10-15. Scope: Oxytype web application and its server/runtime.
 
 ## Outcome
@@ -363,6 +363,8 @@ the wrong bundle. Resolve foundation incompatibilities before mass file movement
 
 ### 2.1 Define factories and import boundaries
 
+Status: complete. [Stage 2 ledger](tanstack-start/stage-2.md).
+
 - Replace module-level QueryClient/router/user snapshot initialization with factories.
   Convert SSR-reachable mutable stores to request/app-owned state.
 - Keep SSR owners limited to safe state; instantiate browser integrations only
@@ -375,6 +377,8 @@ the wrong bundle. Resolve foundation incompatibilities before mass file movement
 
 ### 2.2 Build providers and browser runtime
 
+Status: complete. [Stage 2 ledger](tanstack-start/stage-2.md).
+
 - Introduce preferences, auth observation, collections, overlays, and typing-session
   owners with typed accessors. Keep domain signals where useful, but give their
   lifetime and teardown a concrete owner.
@@ -384,6 +388,8 @@ the wrong bundle. Resolve foundation incompatibilities before mass file movement
   Public pages do not wait for history downloads or unrelated auth synchronization.
 
 ### 2.3 Preserve preferences and data identity
+
+Status: complete. [Stage 2 ledger](tanstack-start/stage-2.md).
 
 - Keep existing localStorage/IndexedDB schemas, migrations, language hashes,
   config metadata, and local/server/URL precedence.
