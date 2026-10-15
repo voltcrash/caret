@@ -4,6 +4,7 @@ import { createRootRouteWithContext, Link } from "@tanstack/solid-router";
 
 import appCss from "../app/app.css?url";
 import { Document } from "../app/document";
+import { AppError } from "../components/app-error";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -62,11 +63,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         <Link to="/about">About Oxytype</Link>
       </main>
     ),
-    errorComponent: () => (
-      <main role="alert" class="p-8">
-        <h1>Unable to load Oxytype</h1>
-        <a href="/about">Try again</a>
-      </main>
-    ),
+    errorComponent: AppError,
   },
 );
