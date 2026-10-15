@@ -1,7 +1,7 @@
 import { findSingleFunboxWithFunction } from "../active-funboxes";
 import * as Arrays from "../arrays";
 import * as Strings from "../strings";
-import type { WordsGeneratorDeps } from "./types";
+import type { WordsGeneratorDeps, WordsGeneratorConfig } from "./types";
 
 type PunctuateWord = (
   previousWord: string | undefined,
@@ -18,7 +18,7 @@ export function createPunctuation(
   deps: WordsGeneratorDeps,
   random: () => number,
 ): PunctuateWord {
-  const config = deps.getConfig;
+  const config = (): WordsGeneratorConfig => deps.getConfig();
 
   let spanishSentenceTracker = "";
   async function punctuateWord(

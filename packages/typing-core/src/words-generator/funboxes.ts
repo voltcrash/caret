@@ -5,7 +5,7 @@ import {
 } from "../active-funboxes";
 import type { FunboxWordOrder } from "../languages";
 import type { FunboxWordsFrequency, Wordset } from "../wordset";
-import type { WordsGeneratorDeps } from "./types";
+import type { WordsGeneratorDeps, WordsGeneratorConfig } from "./types";
 
 export function createFunboxWords(deps: WordsGeneratorDeps): {
   getFunboxWordsFrequency: () => FunboxWordsFrequency | undefined;
@@ -19,7 +19,7 @@ export function createFunboxWords(deps: WordsGeneratorDeps): {
   getWordOrder: () => FunboxWordOrder;
   appendCommitCharacter: (word: string) => string;
 } {
-  const config = deps.getConfig;
+  const config = (): WordsGeneratorConfig => deps.getConfig();
 
   function getFunboxWordsFrequency(): FunboxWordsFrequency | undefined {
     const funbox = findSingleFunboxWithFunction(

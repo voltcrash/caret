@@ -1,3 +1,4 @@
+import { createWordTransforms } from "./words-generator/transforms";
 import { createFunboxWords } from "./words-generator/funboxes";
 import { createPunctuation } from "./words-generator/punctuation";
 import type {
@@ -14,9 +15,7 @@ import {
 } from "./active-funboxes";
 import * as Arrays from "./arrays";
 import { WordGenError } from "./errors";
-import * as GetText from "./generate";
 import { FunboxWordOrder } from "./languages";
-import * as Numerals from "./numerals";
 import { Quote, QuoteWithTextSplit } from "./quotes";
 import * as Strings from "./strings";
 import { PolyglotWordset, Wordset, withWords } from "./wordset";
@@ -27,6 +26,8 @@ const random = Math.random;
 export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
   const config = (): WordsGeneratorConfig => deps.getConfig();
 
+  const { applyBritishEnglishToWord, applyLazyModeToWord, applyNumbersToWord } =
+    createWordTransforms(deps, () => currentWordset, random);
   const punctuateWord = createPunctuation(deps, random);
   const {
     getFunboxWordsFrequency,
@@ -36,51 +37,6 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
     getWordOrder,
     appendCommitCharacter,
   } = createFunboxWords(deps);
-
-  async function applyBritishEnglishToWord(
-    word: string,
-    previousWord: string | undefined,
-  ): Promise<string> {
-    if (!config().britishEnglish) return word;
-    if (!config().language.includes("english")) return word;
-    const currentQuote = deps.getCurrentQuote();
-    if (
-      config().mode === "quote" &&
-      currentQuote?.britishText !== undefined &&
-      currentQuote?.britishText !== ""
-    ) {
-      return word;
-    }
-
-    return await deps.transforms.britishEnglish(word, previousWord);
-  }
-
-  function applyLazyModeToWord(word: string, language: LanguageObject): string {
-    // polyglot mode, use the word's actual language
-    if (currentWordset && currentWordset instanceof PolyglotWordset) {
-      const langName = currentWordset.wordsWithLanguage.get(word);
-      const langProps = langName
-        ? currentWordset.languageProperties.get(langName)
-        : undefined;
-      const allowLazyMode =
-        (langProps && !langProps.noLazyMode) === true ||
-        config().mode === "custom";
-      if (config().lazyMode && allowLazyMode && langProps) {
-        word = deps.transforms.replaceAccents(
-          word,
-          langProps.additionalAccents,
-        );
-      }
-      return word;
-    }
-
-    // normal mode
-    const allowLazyMode = !language.noLazyMode || config().mode === "custom";
-    if (config().lazyMode && allowLazyMode) {
-      word = deps.transforms.replaceAccents(word, language.additionalAccents);
-    }
-    return word;
-  }
 
   function getLimit(): number {
     if (config().mode === "zen") {
@@ -600,21 +556,7 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
 
     randomWord = await applyBritishEnglishToWord(randomWord, previousWordRaw);
 
-    if (config().numbers) {
-      if (random() < 0.1) {
-        randomWord = GetText.getNumbers(4);
-
-        if (config().language.startsWith("kurdish")) {
-          randomWord = Numerals.convertNumberToArabic(randomWord);
-        } else if (config().language.startsWith("nepali")) {
-          randomWord = Numerals.convertNumberToNepali(randomWord);
-        } else if (config().language.startsWith("bangla")) {
-          randomWord = Numerals.convertNumberToBangla(randomWord);
-        } else if (config().language.startsWith("hindi")) {
-          randomWord = Numerals.convertNumberToHindi(randomWord);
-        }
-      }
-    }
+    randomWord = applyNumbersToWord(randomWord);
 
     randomWord = applyFunboxesToWord(randomWord, wordIndex, wordsBound);
 
