@@ -206,4 +206,5 @@ export type {
   WordsGeneratorDeps,
   WordsGenerator,
   GenerateWordsReturn,
+  GetNextWordReturn,
 } from "./words-generator/types";

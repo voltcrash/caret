@@ -1,8 +1,11 @@
-import { Config, FunboxName } from "@oxytype/schemas/configs";
-import { Language, LanguageObject } from "@oxytype/schemas/languages";
-import { CustomTextLimitMode, CustomTextMode } from "@oxytype/schemas/util";
-import { ActiveFunbox } from ".././active-funboxes";
-import { Quote, QuoteWithTextSplit } from ".././quotes";
+import type { Config, FunboxName } from "@oxytype/schemas/configs";
+import type { Language, LanguageObject } from "@oxytype/schemas/languages";
+import type {
+  CustomTextLimitMode,
+  CustomTextMode,
+} from "@oxytype/schemas/util";
+import type { ActiveFunbox } from "../active-funboxes";
+import type { Quote, QuoteWithTextSplit } from "../quotes";
 
 export type WordsGeneratorConfig = Pick<
   Config,

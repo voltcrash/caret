@@ -6,6 +6,7 @@ import { enduranceChallenges } from "./endurance";
 import type { Challenge } from "../types";
 import { ChallengeName } from "@oxytype/schemas/challenges";
 
+// Integer-like "69" stays first in Object.entries, including after these spreads.
 export const challenges: Record<ChallengeName, Omit<Challenge, "name">> = {
   ...enduranceChallenges,
   ...typingChallenges,
