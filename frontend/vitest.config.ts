@@ -19,13 +19,23 @@ const tanstackSolidNoExternal: (string | RegExp)[] = [
 
 export const projects = [
   {
+    extends: false,
+    test: {
+      name: "start",
+      include: ["__tests__/start/**/*.spec.ts"],
+      environment: "node",
+      testTimeout: 30_000,
+      hookTimeout: 30_000,
+    },
+  },
+  {
     ssr: {
       noExternal: tanstackSolidNoExternal,
     },
     test: {
       name: { label: "unit", color: "blue" },
       include: ["__tests__/**/*.spec.ts"],
-      exclude: ["__tests__/**/*.jsdom-spec.ts"],
+      exclude: ["__tests__/**/*.jsdom-spec.ts", "__tests__/start/**"],
       environment: "happy-dom",
       globalSetup: "__tests__/global-setup.ts",
       setupFiles: [
