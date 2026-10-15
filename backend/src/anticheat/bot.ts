@@ -31,13 +31,21 @@ export function getBotFailure(result: CompletedEvent): BotFailure | undefined {
   if (keyDuration.length < result.charTotal) {
     return undefined;
   }
+  return hasFixedTimingSignature(keySpacing, keyDuration, result.client)
+    ? "uniform-key-timing"
+    : undefined;
+}
+
+/** The signature on bare arrays, as stored in timing samples. */
+export function hasFixedTimingSignature(
+  keySpacing: number[],
+  keyDuration: number[],
+  client: CompletedEvent["client"],
+): boolean {
   // Ignore endpoints: the first key may predate start; the final release can
   // be estimated. Both channels must be fixed across at least 100 samples.
-  if (
+  return (
     fixedPositiveTimings(keySpacing.slice(1, -1)) &&
-    (result.client === "tui" || fixedPositiveTimings(keyDuration.slice(1, -1)))
-  ) {
-    return "uniform-key-timing";
-  }
-  return undefined;
+    (client === "tui" || fixedPositiveTimings(keyDuration.slice(1, -1)))
+  );
 }
