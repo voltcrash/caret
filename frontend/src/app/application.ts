@@ -1,14 +1,45 @@
 import type { QueryClient } from "@tanstack/solid-query";
-import { createSignal, untrack } from "solid-js";
+import {
+  createMemo,
+  createRoot,
+  createSignal,
+  getOwner,
+  type Owner,
+  runWithOwner,
+  untrack,
+} from "solid-js";
 import { isServer } from "solid-js/web";
 
 import type { AccountDataOwner } from "./account-data";
+import { createOwnedScope, type OwnedScope } from "./scope";
 
 /** Owners of one mounted browser application; SSR renders never register one. */
 export type Application = {
+  /** Reactive root for app-owned computations; disposed on unmount. */
+  owner: Owner;
+  /** App-lifetime lazily created state; survives route remounts. */
+  state: OwnedScope;
   queryClient: QueryClient;
   accountData: AccountDataOwner;
 };
+
+export type ApplicationRoot = Pick<Application, "owner" | "state"> & {
+  dispose: () => void;
+};
+
+export function createApplicationRoot(): ApplicationRoot {
+  return createRoot((disposeOwner) => {
+    const state = createOwnedScope();
+    return {
+      owner: getOwner() as Owner,
+      state,
+      dispose: () => {
+        state.dispose();
+        disposeOwner();
+      },
+    };
+  });
+}
 
 const [mounted, setMounted] = createSignal<Application | undefined>();
 
@@ -41,4 +72,26 @@ export function requireApplication(): Application {
     );
   }
   return application;
+}
+
+/**
+ * Created on first use under the mounted application's root, so its
+ * computations, listeners and cleanups end with that application.
+ */
+export function createAppOwned<T>(create: () => T): () => T {
+  const key = {};
+  return () => {
+    const application = requireApplication();
+    return application.state.use(
+      key,
+      () => runWithOwner(application.owner, create) as T,
+      () => undefined,
+    );
+  };
+}
+
+/** An app-owned memo; reads return its current value. */
+export function createAppMemo<T>(fn: () => T): () => T {
+  const memo = createAppOwned(() => createMemo(fn));
+  return () => memo()();
 }

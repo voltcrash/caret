@@ -1,15 +1,25 @@
 import { QueryClient } from "@tanstack/solid-query";
-import { createRoot, createEffect } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createRoot,
+  createSignal,
+  onCleanup,
+} from "solid-js";
 import { afterEach, describe, expect, it } from "vite-plus/test";
 
-import { createAccountDataOwner } from "../../src/app/account-data";
 import {
   type Application,
+  createAppMemo,
+  createAppOwned,
   currentApplication,
   mountApplication,
   requireApplication,
 } from "../../src/app/application";
-import { releaseTestApplication } from "../__harness__/mock-application";
+import {
+  createTestApplication,
+  releaseTestApplication,
+} from "../__harness__/mock-application";
 
 releaseTestApplication();
 
@@ -19,15 +29,14 @@ afterEach(() => {
 });
 
 function create(): Application {
-  return {
-    queryClient: new QueryClient(),
-    accountData: createAccountDataOwner(),
-  };
+  const { application, dispose } = createTestApplication();
+  releases.push(dispose);
+  return application;
 }
 
 function mount(): Application {
   const application = create();
-  releases.push(mountApplication(application));
+  releases.unshift(mountApplication(application));
   return application;
 }
 
@@ -37,7 +46,7 @@ describe("browser application owner", () => {
     expect(() => requireApplication()).toThrow("No Oxytype application");
     const application = mount();
     expect(requireApplication()).toBe(application);
-    releases.pop()?.();
+    releases.shift()?.();
     expect(currentApplication()).toBeUndefined();
   });
 
@@ -61,8 +70,32 @@ describe("browser application owner", () => {
       return dispose;
     });
     const application = mount();
-    releases.pop()?.();
+    releases.shift()?.();
     dispose();
     expect(seen).toEqual([undefined, application.queryClient, undefined]);
+  });
+
+  it("creates owned values once per application and disposes them with it", () => {
+    let created = 0;
+    let cleaned = 0;
+    const [source, setSource] = createSignal(1);
+    const owned = createAppOwned(() => {
+      created++;
+      onCleanup(() => cleaned++);
+      return createMemo(() => source() * 2);
+    });
+    const doubled = createAppMemo(() => source() * 2);
+    mount();
+    expect(owned()()).toBe(2);
+    expect(owned()()).toBe(2);
+    expect(doubled()).toBe(2);
+    setSource(2);
+    expect(doubled()).toBe(4);
+    expect(created).toBe(1);
+    for (const release of releases.splice(0)) release();
+    expect(cleaned).toBe(1);
+    mount();
+    expect(owned()()).toBe(4);
+    expect(created).toBe(2);
   });
 });
