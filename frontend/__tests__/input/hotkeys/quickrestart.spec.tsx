@@ -93,3 +93,74 @@ it.each([
     isQuickRestart: true,
   });
 });
+
+it("updates shortcuts when quick restart changes without remounting", () => {
+  render(() => <Shortcuts />);
+  expect(press("Tab")).toBe(false);
+
+  setConfigStore("quickRestart", "off");
+  expect(press("Tab")).toBe(true);
+  expect(press("Enter")).toBe(true);
+  expect(press("Escape")).toBe(true);
+  expect(mocks.restart).toHaveBeenCalledTimes(1);
+
+  setConfigStore("quickRestart", "enter");
+  expect(press("Tab")).toBe(true);
+  expect(press("Enter")).toBe(false);
+  expect(mocks.restart).toHaveBeenCalledTimes(2);
+
+  setConfigStore("quickRestart", "tab");
+  expect(press("Enter")).toBe(true);
+  expect(press("Tab")).toBe(false);
+  expect(mocks.restart).toHaveBeenCalledTimes(3);
+});
+
+it("unregisters quick restart on disposal and registers once after remount", () => {
+  const view = render(() => <Shortcuts />);
+  press("Tab");
+  expect(mocks.restart).toHaveBeenCalledTimes(1);
+  view.unmount();
+  expect(press("Tab")).toBe(true);
+  expect(mocks.restart).toHaveBeenCalledTimes(1);
+  render(() => <Shortcuts />);
+  press("Tab");
+  expect(mocks.restart).toHaveBeenCalledTimes(2);
+});
+
+it.each([
+  ["tab", "Tab"],
+  ["esc", "Escape"],
+] as const)(
+  "restores %s after switching between short and long tests",
+  (setting, key) => {
+    setConfigStore("quickRestart", setting);
+    render(() => <Shortcuts />);
+    for (let cycle = 0; cycle < 2; cycle++) {
+      setIsLongTest(true);
+      expect(press(key)).toBe(false);
+      expect(mocks.restart).toHaveBeenLastCalledWith({ isQuickRestart: true });
+      expect(press(key, true)).toBe(false);
+      expect(mocks.restart).toHaveBeenLastCalledWith({ isQuickRestart: false });
+
+      setIsLongTest(false);
+      expect(press(key)).toBe(false);
+      expect(mocks.restart).toHaveBeenLastCalledWith({ isQuickRestart: true });
+    }
+    expect(mocks.restart).toHaveBeenCalledTimes(6);
+  },
+);
+
+it("reserves Shift+Enter for bail out in long tests", () => {
+  setConfigStore("quickRestart", "enter");
+  render(() => <Shortcuts />);
+  setIsLongTest(true);
+  expect(press("Enter", true)).toBe(true);
+  expect(mocks.restart).not.toHaveBeenCalled();
+  expect(press("Enter")).toBe(false);
+  expect(mocks.restart).toHaveBeenCalledExactlyOnceWith({
+    isQuickRestart: true,
+  });
+  setIsLongTest(false);
+  expect(press("Enter")).toBe(false);
+  expect(mocks.restart).toHaveBeenCalledTimes(2);
+});
