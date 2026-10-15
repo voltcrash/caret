@@ -1,13 +1,9 @@
 import { generateCurrentTestActivity } from "./user/activity";
 import { getAllTimeLbs } from "./user/leaderboards";
-import { verifyCaptcha } from "./user/captcha";
 import type { ClientQuery } from "@oxytype/schemas/shared";
 import * as UserDAL from "../../dal/user";
 import { MonkeyResponse } from "../../utils/monkey-response";
 import { buildAgentLog, omit } from "../../utils/misc";
-import { randomUUID } from "node:crypto";
-import { newId } from "../../utils/id";
-import * as ReportDAL from "../../dal/report";
 import { ResultFilters, User } from "@oxytype/schemas/users";
 import { addLog } from "../../dal/logs";
 import {
@@ -15,7 +11,6 @@ import {
   GetPersonalBestsResponse,
   GetStatsResponse,
   GetUserResponse,
-  ReportUserRequest,
 } from "@oxytype/contracts/users";
 import { MonkeyRequest } from "../types";
 
@@ -136,34 +131,6 @@ export async function getStats(
   return new MonkeyResponse("Personal stats retrieved", data);
 }
 
-export async function reportUser(
-  req: MonkeyRequest<undefined, ReportUserRequest>,
-): Promise<MonkeyResponse> {
-  const { uid } = req.ctx.decodedToken;
-  const {
-    reporting: { maxReports, contentReportLimit },
-  } = req.ctx.configuration.quotes;
-
-  const { uid: uidToReport, reason, comment, captcha } = req.body;
-
-  await verifyCaptcha(captcha, "user-report");
-
-  const newReport: ReportDAL.DBReport = {
-    _id: newId(),
-    id: randomUUID(),
-    type: "user",
-    timestamp: new Date().getTime(),
-    uid,
-    contentId: `${uidToReport}`,
-    reason,
-    comment: comment ?? "",
-  };
-
-  await ReportDAL.createReport(newReport, maxReports, contentReportLimit);
-
-  return new MonkeyResponse("User reported", null);
-}
-
 export {
   setStreakHourOffset,
   generateCurrentTestActivity,
@@ -210,3 +177,5 @@ export {
 export { getProfile, updateProfile } from "./user/profile";
 
 export { getInbox, updateInbox } from "./user/inbox";
+
+export { reportUser } from "./user/report";
