@@ -111,8 +111,12 @@ function updateOverlay(data: {
 // Initialize overlay on load
 createOverlay();
 
-if (import.meta.hot) {
-  import.meta.hot.on(
+// Start declares a narrower global HotContext; this module uses Vite's event API.
+const hot = import.meta.hot as unknown as
+  | import("vite-plus/types/hot.js").ViteHotContext
+  | undefined;
+if (hot !== undefined) {
+  hot.on(
     "vite-plugin-oxlint",
     (data: {
       errorCount?: number;

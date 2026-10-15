@@ -5,9 +5,10 @@ import { getAuth } from "../init/auth";
 import { getFrontendUrl } from "../utils/misc";
 
 export async function handleAuthRequest(
-  request: Request,
+  incoming: Request,
   ip: string,
 ): Promise<Response> {
+  const request = new Request(incoming);
   const auth = getAuth();
   const base = new URL(
     envValue("BETTER_AUTH_URL") ?? "http://localhost:5005/auth",
