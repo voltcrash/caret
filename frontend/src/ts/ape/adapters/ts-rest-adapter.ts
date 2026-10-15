@@ -14,12 +14,6 @@ import { setLastSeenServerCompatibility } from "../server-compatibility";
 
 let bannerShownThisSession = false;
 
-function timeoutSignal(ms: number): AbortSignal {
-  const ctrl = new AbortController();
-  setTimeout(() => ctrl.abort(new Error("request timed out")), ms);
-  return ctrl.signal;
-}
-
 function buildApi(timeout: number): (args: ApiFetcherArgs) => Promise<{
   status: number;
   body: unknown;
@@ -36,15 +30,20 @@ function buildApi(timeout: number): (args: ApiFetcherArgs) => Promise<{
         headers: new Headers(),
       };
     }
+    const controller = new AbortController();
+    const source = request.fetchOptions?.signal;
+    const abort = (): void => controller.abort(source?.reason);
+    if (source?.aborted) abort();
+    else source?.addEventListener("abort", abort, { once: true });
+    const timer = setTimeout(
+      () => controller.abort(new Error("request timed out")),
+      timeout,
+    );
     try {
-      const usePolyfill = AbortSignal?.timeout === undefined;
-
       request.fetchOptions = {
         ...request.fetchOptions,
         credentials: "include",
-        signal: usePolyfill
-          ? timeoutSignal(timeout)
-          : AbortSignal.timeout(timeout),
+        signal: controller.signal,
       };
       const response = await tsRestFetchApi(request);
       if (response.status >= 400) {
@@ -94,6 +93,9 @@ function buildApi(timeout: number): (args: ApiFetcherArgs) => Promise<{
         body: { message },
         headers: new Headers(),
       };
+    } finally {
+      clearTimeout(timer);
+      source?.removeEventListener("abort", abort);
     }
   };
 }
