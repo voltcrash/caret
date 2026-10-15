@@ -387,3 +387,10 @@ export const ReportUserReasonSchema = z.enum([
   "Suspected cheating",
 ]);
 export type ReportUserReason = z.infer<typeof ReportUserReasonSchema>;
+
+export const ReportUserCommentSchema = z
+  .string()
+  .regex(/^([.]|[^/<>])+$/)
+  .max(250)
+  .optional()
+  .or(z.string().length(0));

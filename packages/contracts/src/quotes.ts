@@ -15,6 +15,7 @@ import {
   QuoteRatingSchema,
   QuoteReportReasonSchema,
   QuoteSchema,
+  QuoteTextSchema,
 } from "@oxytype/schemas/quotes";
 import { IdSchema, NullableStringSchema } from "@oxytype/schemas/util";
 import { LanguageSchema } from "@oxytype/schemas/languages";
@@ -31,7 +32,7 @@ export type IsSubmissionEnabledResponse = z.infer<
   typeof IsSubmissionEnabledResponseSchema
 >;
 
-export const QuoteTextSchema = z.string().min(60);
+export { QuoteTextSchema };
 export const AddQuoteRequestSchema = z.object({
   text: QuoteTextSchema,
   source: z.string(),

@@ -28,6 +28,7 @@ import {
   UserTagSchema,
   UserEmailSchema,
   UserNameSchema,
+  ReportUserCommentSchema,
 } from "@oxytype/schemas/users";
 import {
   ClientSchema,
@@ -262,12 +263,7 @@ export type UpdateUserInboxRequest = z.infer<
   typeof UpdateUserInboxRequestSchema
 >;
 
-export const ReportUserCommentSchema = z
-  .string()
-  .regex(/^([.]|[^/<>])+$/)
-  .max(250)
-  .optional()
-  .or(z.string().length(0));
+export { ReportUserCommentSchema };
 
 export const ReportUserRequestSchema = z.object({
   uid: z.string(),
