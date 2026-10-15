@@ -1,7 +1,40 @@
 import { describe, it, expect } from "vite-plus/test";
-import { hexToRgb, blendTwoHexColors } from "../../src/ts/utils/colors";
+import {
+  hexToHSL,
+  hexToRgb,
+  blendTwoHexColors,
+} from "../../src/ts/utils/colors";
 
 describe("colors.ts", () => {
+  describe("hexToHSL", () => {
+    it.each([
+      ["#f00", { hue: 0, sat: 100, lgt: 50, string: "hsl(0, 100%, 50%)" }],
+      [
+        "#00ff00",
+        { hue: 120, sat: 100, lgt: 50, string: "hsl(120, 100%, 50%)" },
+      ],
+      ["#3366cc", { hue: 220, sat: 60, lgt: 50, string: "hsl(220, 60%, 50%)" }],
+      ["#888", { hue: 0, sat: 0, lgt: 53.3, string: "hsl(0, 0%, 53.3%)" }],
+    ])("converts %s", (hex, expected) => {
+      expect(hexToHSL(hex)).toEqual(expected);
+    });
+
+    it.each([
+      ["#00f8", 136 / 255],
+      ["#0000ff80", 128 / 255],
+    ])("keeps the alpha of %s", (hex, alpha) => {
+      const result = hexToHSL(hex);
+      expect(result.hue).toBe(240);
+      expect(result.alpha).toBeCloseTo(alpha);
+      expect(result.string).toBe(`hsla(240, 100%, 50%, ${alpha.toFixed(3)})`);
+    });
+
+    it("treats unsupported lengths as black and invalid digits as NaN", () => {
+      expect(hexToHSL("#12345").string).toBe("hsl(0, 0%, 0%)");
+      expect(hexToHSL("#zzz").hue).toBeNaN();
+    });
+  });
+
   describe("hexToRgb", () => {
     it("Invalid hex values", () => {
       expect(hexToRgb("ffff")).toEqual(undefined);
