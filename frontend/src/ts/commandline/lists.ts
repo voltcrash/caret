@@ -1,3 +1,4 @@
+import { createAppOwned } from "../../app/application";
 import { setFixingSkillIssue } from "../states/skill-issue";
 import MinBurstCommands from "./lists/min-burst";
 import BailOutCommands from "./lists/bail-out";
@@ -38,7 +39,7 @@ import { applyConfigFromJson } from "../config/lifecycle";
 import { getLastEventLog } from "../states/test";
 import { commandlineState } from "../states/commandline";
 
-const commands: CommandsSubgroup = {
+const getCommands = createAppOwned<CommandsSubgroup>(() => ({
   title: "",
   list: [
     //result
@@ -335,39 +336,44 @@ const commands: CommandsSubgroup = {
       },
     },
   ],
-};
+}));
 
-const lists: Record<CommandlineListKey, CommandsSubgroup | undefined> = {
+const getLists = createAppOwned<
+  Record<CommandlineListKey, CommandsSubgroup | undefined>
+>(() => ({
   themes: ThemesCommands[0]?.subgroup,
   loadChallenge: LoadChallengeCommands[0]?.subgroup,
   minBurst: MinBurstCommands[0]?.subgroup,
   funbox: FunboxCommands[0]?.subgroup,
   tags: TagsCommands[0]?.subgroup,
-};
+}));
 
-const subgroupByConfigKey = Object.fromEntries(
-  commands.list
-    .filter((it) => it.subgroup?.configKey !== undefined)
-    .map((it) => [it.subgroup?.configKey, it.subgroup]),
-) as Record<string, CommandsSubgroup>;
+const getSubgroupByConfigKey = createAppOwned(
+  () =>
+    Object.fromEntries(
+      getCommands()
+        .list.filter((it) => it.subgroup?.configKey !== undefined)
+        .map((it) => [it.subgroup?.configKey, it.subgroup]),
+    ) as Record<string, CommandsSubgroup>,
+);
 
 export function doesListExist(listName: string): boolean {
-  if (subgroupByConfigKey[listName] !== undefined) {
+  if (getSubgroupByConfigKey()[listName] !== undefined) {
     return true;
   }
 
-  return lists[listName as CommandlineListKey] !== undefined;
+  return getLists()[listName as CommandlineListKey] !== undefined;
 }
 
 export async function getList(
   listName: CommandlineListKey | ConfigKey,
 ): Promise<CommandsSubgroup> {
-  const subGroup = subgroupByConfigKey[listName];
+  const subGroup = getSubgroupByConfigKey()[listName];
   if (subGroup !== undefined) {
     return subGroup;
   }
 
-  const list = lists[listName as CommandlineListKey];
+  const list = getLists()[listName as CommandlineListKey];
   if (!list) {
     showErrorNotification(`List not found: ${listName}`);
     throw new Error(`List ${listName} not found`);
@@ -375,14 +381,12 @@ export async function getList(
   return list;
 }
 
-commandlineState.subgroupStack = [commands];
-
 export function getStackLength(): number {
   return commandlineState.subgroupStack.length;
 }
 
 export function setStackToDefault(): void {
-  setStack([commands]);
+  setStack([getCommands()]);
 }
 
 function setStack(val: CommandsSubgroup[]): void {
@@ -402,19 +406,17 @@ export function getTopOfStack(): CommandsSubgroup {
   return stack[stack.length - 1] as CommandsSubgroup;
 }
 
-let singleList: CommandsSubgroup | undefined;
 export async function getSingleSubgroup(): Promise<CommandsSubgroup> {
   const singleCommands: Command[] = [];
-  for (const command of commands.list) {
+  for (const command of getCommands().list) {
     const ret = buildSingleListCommands(command);
     singleCommands.push(...ret);
   }
 
-  singleList = {
+  return {
     title: "",
     list: singleCommands,
   };
-  return singleList;
 }
 
 function buildSingleListCommands(

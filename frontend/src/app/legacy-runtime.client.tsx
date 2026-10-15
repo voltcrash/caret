@@ -3,7 +3,6 @@ import { type JSXElement } from "solid-js";
 
 import { onAuthStateChanged } from "../ts/auth";
 import { init } from "../ts/auth-client";
-import { useThemeCommandEvents } from "../ts/commandline/lists/themes";
 import { getMutableConfig } from "../ts/config/store";
 import { useUrlEvents } from "../ts/controllers/url-handler";
 import * as DB from "../ts/db";
@@ -25,7 +24,6 @@ export function LegacyRuntime(): JSXElement {
   useConnectionEvents();
   usePsaEvents();
   useUrlEvents();
-  useThemeCommandEvents();
   onMount(() => {
     Focus.set(true, true);
     void init(onAuthStateChanged).catch((error: unknown) =>

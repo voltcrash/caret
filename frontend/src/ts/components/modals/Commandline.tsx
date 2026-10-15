@@ -13,6 +13,7 @@ import {
   onSuggestionMouseMove,
   prepareCommandline,
 } from "../../commandline/commandline";
+import { useThemeCommandEvents } from "../../commandline/lists/themes";
 import { COMMAND_SEPARATOR_HTML } from "../../commandline/util";
 import {
   commandlineState,
@@ -171,6 +172,7 @@ function Suggestion(props: {
 }
 
 export function Commandline(): JSXElement {
+  useThemeCommandEvents();
   let inputEl: HTMLInputElement | undefined;
   let suggestionsEl: HTMLDivElement | undefined;
 

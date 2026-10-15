@@ -1,3 +1,5 @@
+import { createAppOwned } from "../../../app/application";
+import { appObject } from "../../../app/state";
 import { getMutableConfig } from "../../config/store";
 import { setConfig } from "../../config/setters";
 import { capitalizeFirstLetterOfEachWord } from "../../utils/strings";
@@ -49,29 +51,32 @@ const sortThemesByFavorite = (themes: ThemeWithName[]): ThemeWithName[] => [
   ...themes.filter(not(isFavorite)),
 ];
 
-const subgroup: CommandsSubgroup = {
+const getSubgroup = createAppOwned<CommandsSubgroup>(() => ({
   title: "Theme...",
   configKey: "theme",
   list: sortThemesByFavorite(ThemesList).map((theme) =>
     createThemeCommand(theme),
   ),
-};
+}));
 
-const commands: Command[] = [
-  {
-    id: "changeTheme",
-    display: "Theme...",
-    icon: "fa-palette",
-    subgroup,
-  },
-];
+const commands = appObject(
+  createAppOwned<Command[]>(() => [
+    {
+      id: "changeTheme",
+      display: "Theme...",
+      icon: "fa-palette",
+      subgroup: getSubgroup(),
+    },
+  ]),
+  true,
+);
 
 function update(themes: ThemeWithName[]): void {
   // clear the current list
-  subgroup.list = [];
+  getSubgroup().list = [];
 
   // rebuild with favorites first, then non-favorites
-  subgroup.list = sortThemesByFavorite(themes).map((theme) =>
+  getSubgroup().list = sortThemesByFavorite(themes).map((theme) =>
     createThemeCommand(theme),
   );
 }
