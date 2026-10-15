@@ -57,3 +57,23 @@ imports at `3178bc19b`. "Import" = runs when the module is evaluated.
 | `dev/signal-tracker.ts`, `virtual:devtools` | Opt-in dev instrumentation | Accepted: dev-only, legacy entry only |
 | `virtual:env-config`, `virtual:language-hashes` | Pure build-time constants | Allowlisted browser config; no secrets |
 | Standalone `oauth-callback/not-found/privacy-policy.tsx` | Hydrate on import | Legacy standalone entries only |
+
+## 2.2 Providers and browser runtime — complete
+
+- Start root mounts app providers with its router-owned QueryClient. Browser
+  runtime loads through Start's client-only boundary, after hydration. Rollback
+  uses the same owners; its entry now only renders and disposes on HMR.
+- Preferences, auth observation, domain signals/stores/memos, overlay state and
+  typing-session signals are lazy app-owned state. Removed module effect roots
+  and auth/config startup promises; readiness exposes idle/loading/ready/error.
+- Component lifecycles own event subscriptions, consent activation, logger/debug
+  installation, version checks, speech/audio and their teardown. Audio closures
+  belong to one app; cleanup unloads sounds and closes its audio context.
+- LegacyRuntime retains page/auth-event wiring until Stages 3–5; TypingRuntime
+  moves into the native typing leaf in Stage 5. Engine/DOM algorithms unchanged.
+- Validation: frontend 215 files / 2,248 tests pass; focused owner/readiness and
+  runtime remount/late-version checks pass. Start production build passes;
+  client-only boundary removes browser runtime from SSR. Final stage gate reruns
+  builds and workerd/browser checks after Phase 2.3.
+- APIs checked against installed Start 1.169.2 / Router 1.170.41 / Solid 1.9.15
+  and official execution-model, onMount and runWithOwner documentation.
