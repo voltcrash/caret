@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/solid-router";
 
-import { OAuthCallback } from "../ts/components/standalone/OAuthCallback";
+import { OAuthCallback } from "../features/auth/callback";
 
 export const Route = createFileRoute("/oauth-callback.html")({
   head: () => ({

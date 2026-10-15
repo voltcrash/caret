@@ -79,7 +79,7 @@ describe("source layer boundaries", () => {
     expect(
       has(
         "src/routes/oauth-callback[.]html.tsx",
-        "src/ts/components/standalone/OAuthCallback.tsx",
+        "src/features/auth/callback.tsx",
       ),
     ).toBe(true);
     expect(has("src/ts/auth.tsx", "src/ts/collections/tags.ts", true)).toBe(
@@ -110,7 +110,13 @@ describe("source layer boundaries", () => {
   it("keeps SSR-rendered app owners free of legacy browser state", () => {
     expect(
       violations(
-        ["src/app/**", "src/routes/**", "src/components/**", "src/router.tsx"],
+        [
+          "src/app/**",
+          "src/routes/**",
+          "src/components/**",
+          "src/features/**",
+          "src/router.tsx",
+        ],
         (edge) =>
           !is(edge.from, "**/*.client.*") &&
           is(edge.to, "src/ts/**") &&
