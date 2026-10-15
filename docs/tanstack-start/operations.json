@@ -1,0 +1,2122 @@
+[
+  {
+    "id": "admin.acceptReports",
+    "method": "POST",
+    "path": "/api/admin/report/accept",
+    "currentOwner": "backend/src/api/routes/admin.ts",
+    "policy": {
+      "openApiTags": "admin",
+      "authenticationOptions": {
+        "noCache": true
+      },
+      "rateLimit": "adminLimit",
+      "requirePermission": "admin",
+      "requireConfiguration": {
+        "path": "admin.endpointsEnabled",
+        "invalidMessage": "Admin endpoints are currently disabled."
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "admin.clearStreakHourOffset",
+    "method": "POST",
+    "path": "/api/admin/clearStreakHourOffset",
+    "currentOwner": "backend/src/api/routes/admin.ts",
+    "policy": {
+      "openApiTags": "admin",
+      "authenticationOptions": {
+        "noCache": true
+      },
+      "rateLimit": "adminLimit",
+      "requirePermission": "admin",
+      "requireConfiguration": {
+        "path": "admin.endpointsEnabled",
+        "invalidMessage": "Admin endpoints are currently disabled."
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "admin.clearSuspicious",
+    "method": "POST",
+    "path": "/api/admin/clearSuspicious",
+    "currentOwner": "backend/src/api/routes/admin.ts",
+    "policy": {
+      "openApiTags": "admin",
+      "authenticationOptions": {
+        "noCache": true
+      },
+      "rateLimit": "adminLimit",
+      "requirePermission": "admin",
+      "requireConfiguration": {
+        "path": "admin.endpointsEnabled",
+        "invalidMessage": "Admin endpoints are currently disabled."
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "admin.deleteUser",
+    "method": "POST",
+    "path": "/api/admin/deleteUser",
+    "currentOwner": "backend/src/api/routes/admin.ts",
+    "policy": {
+      "openApiTags": "admin",
+      "authenticationOptions": {
+        "noCache": true
+      },
+      "rateLimit": "adminLimit",
+      "requirePermission": "admin",
+      "requireConfiguration": {
+        "path": "admin.endpointsEnabled",
+        "invalidMessage": "Admin endpoints are currently disabled."
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "admin.getAnticheatAudits",
+    "method": "GET",
+    "path": "/api/admin/anticheat/audits",
+    "currentOwner": "backend/src/api/routes/admin.ts",
+    "policy": {
+      "openApiTags": "admin",
+      "authenticationOptions": {
+        "noCache": true
+      },
+      "rateLimit": "adminLimit",
+      "requirePermission": "admin",
+      "requireConfiguration": {
+        "path": "admin.endpointsEnabled",
+        "invalidMessage": "Admin endpoints are currently disabled."
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "admin.getAnticheatSummary",
+    "method": "GET",
+    "path": "/api/admin/anticheat/summary",
+    "currentOwner": "backend/src/api/routes/admin.ts",
+    "policy": {
+      "openApiTags": "admin",
+      "authenticationOptions": {
+        "noCache": true
+      },
+      "rateLimit": "adminLimit",
+      "requirePermission": "admin",
+      "requireConfiguration": {
+        "path": "admin.endpointsEnabled",
+        "invalidMessage": "Admin endpoints are currently disabled."
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "admin.rejectReports",
+    "method": "POST",
+    "path": "/api/admin/report/reject",
+    "currentOwner": "backend/src/api/routes/admin.ts",
+    "policy": {
+      "openApiTags": "admin",
+      "authenticationOptions": {
+        "noCache": true
+      },
+      "rateLimit": "adminLimit",
+      "requirePermission": "admin",
+      "requireConfiguration": {
+        "path": "admin.endpointsEnabled",
+        "invalidMessage": "Admin endpoints are currently disabled."
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "admin.test",
+    "method": "GET",
+    "path": "/api/admin",
+    "currentOwner": "backend/src/api/routes/admin.ts",
+    "policy": {
+      "openApiTags": "admin",
+      "authenticationOptions": {
+        "noCache": true
+      },
+      "rateLimit": "adminLimit",
+      "requirePermission": "admin",
+      "requireConfiguration": {
+        "path": "admin.endpointsEnabled",
+        "invalidMessage": "Admin endpoints are currently disabled."
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "admin.toggleBan",
+    "method": "POST",
+    "path": "/api/admin/toggleBan",
+    "currentOwner": "backend/src/api/routes/admin.ts",
+    "policy": {
+      "openApiTags": "admin",
+      "authenticationOptions": {
+        "noCache": true
+      },
+      "rateLimit": "adminLimit",
+      "requirePermission": "admin",
+      "requireConfiguration": {
+        "path": "admin.endpointsEnabled",
+        "invalidMessage": "Admin endpoints are currently disabled."
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "apeKeys.add",
+    "method": "POST",
+    "path": "/api/ape-keys",
+    "currentOwner": "backend/src/api/routes/ape-keys.ts",
+    "policy": {
+      "openApiTags": "ape-keys",
+      "requirePermission": "canManageApeKeys",
+      "requireConfiguration": {
+        "path": "apeKeys.endpointsEnabled",
+        "invalidMessage": "ApeKeys are currently disabled."
+      },
+      "rateLimit": "apeKeysGenerate"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "apeKeys.delete",
+    "method": "DELETE",
+    "path": "/api/ape-keys/:apeKeyId",
+    "currentOwner": "backend/src/api/routes/ape-keys.ts",
+    "policy": {
+      "openApiTags": "ape-keys",
+      "requirePermission": "canManageApeKeys",
+      "requireConfiguration": {
+        "path": "apeKeys.endpointsEnabled",
+        "invalidMessage": "ApeKeys are currently disabled."
+      },
+      "rateLimit": "apeKeysGenerate"
+    },
+    "validation": {
+      "params": true,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "apeKeys.get",
+    "method": "GET",
+    "path": "/api/ape-keys",
+    "currentOwner": "backend/src/api/routes/ape-keys.ts",
+    "policy": {
+      "openApiTags": "ape-keys",
+      "requirePermission": "canManageApeKeys",
+      "requireConfiguration": {
+        "path": "apeKeys.endpointsEnabled",
+        "invalidMessage": "ApeKeys are currently disabled."
+      },
+      "rateLimit": "apeKeysGet"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "apeKeys.save",
+    "method": "PATCH",
+    "path": "/api/ape-keys/:apeKeyId",
+    "currentOwner": "backend/src/api/routes/ape-keys.ts",
+    "policy": {
+      "openApiTags": "ape-keys",
+      "requirePermission": "canManageApeKeys",
+      "requireConfiguration": {
+        "path": "apeKeys.endpointsEnabled",
+        "invalidMessage": "ApeKeys are currently disabled."
+      },
+      "rateLimit": "apeKeysGenerate"
+    },
+    "validation": {
+      "params": true,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "configs.delete",
+    "method": "DELETE",
+    "path": "/api/configs",
+    "currentOwner": "backend/src/api/routes/configs.ts",
+    "policy": {
+      "openApiTags": "configs",
+      "rateLimit": "configDelete"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/ape/config.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "configs.get",
+    "method": "GET",
+    "path": "/api/configs",
+    "currentOwner": "backend/src/api/routes/configs.ts",
+    "policy": {
+      "openApiTags": "configs",
+      "rateLimit": "configGet"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/config/remote.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "configs.save",
+    "method": "PATCH",
+    "path": "/api/configs",
+    "currentOwner": "backend/src/api/routes/configs.ts",
+    "policy": {
+      "openApiTags": "configs",
+      "rateLimit": "configUpdate"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/ape/config.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "configuration.get",
+    "method": "GET",
+    "path": "/api/configuration",
+    "currentOwner": "backend/src/api/routes/configuration.ts",
+    "policy": {
+      "openApiTags": "configuration",
+      "authenticationOptions": {
+        "isPublic": true
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/queries/server-configuration.ts"],
+    "target": "retained server route over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "configuration.getSchema",
+    "method": "GET",
+    "path": "/api/configuration/schema",
+    "currentOwner": "backend/src/api/routes/configuration.ts",
+    "policy": {
+      "openApiTags": "configuration",
+      "authenticationOptions": {
+        "isPublicOnDev": true,
+        "noCache": true
+      },
+      "rateLimit": "adminLimit",
+      "requirePermission": "admin"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "configuration.update",
+    "method": "PATCH",
+    "path": "/api/configuration",
+    "currentOwner": "backend/src/api/routes/configuration.ts",
+    "policy": {
+      "openApiTags": "configuration",
+      "authenticationOptions": {
+        "noCache": true,
+        "isPublicOnDev": true
+      },
+      "rateLimit": "adminLimit",
+      "requirePermission": "admin"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "dev.addDebugInboxItem",
+    "method": "POST",
+    "path": "/api/dev/addDebugInboxItem",
+    "currentOwner": "backend/src/api/routes/dev.ts",
+    "policy": {
+      "openApiTags": "development",
+      "authenticationOptions": {
+        "isPublicOnDev": true
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/components/modals/DevOptionsModal.tsx"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "dev.generateData",
+    "method": "POST",
+    "path": "/api/dev/generateData",
+    "currentOwner": "backend/src/api/routes/dev.ts",
+    "policy": {
+      "openApiTags": "development",
+      "authenticationOptions": {
+        "isPublicOnDev": true
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/components/modals/DevOptionsModal.tsx"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "leaderboards.get",
+    "method": "GET",
+    "path": "/api/leaderboards",
+    "currentOwner": "backend/src/api/routes/leaderboards.ts",
+    "policy": {
+      "openApiTags": "leaderboards",
+      "rateLimit": "leaderboardsGet",
+      "authenticationOptions": {
+        "isPublic": true
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": false,
+      "statuses": [
+        200, 400, 401, 403, 404, 422, 429, 470, 471, 472, 479, 500, 503
+      ],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/queries/leaderboards.ts"],
+    "target": "retained server route over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "leaderboards.getDaily",
+    "method": "GET",
+    "path": "/api/leaderboards/daily",
+    "currentOwner": "backend/src/api/routes/leaderboards.ts",
+    "policy": {
+      "openApiTags": "leaderboards",
+      "rateLimit": "leaderboardsGet",
+      "authenticationOptions": {
+        "isPublic": true
+      },
+      "requireConfiguration": {
+        "path": "dailyLeaderboards.enabled",
+        "invalidMessage": "Daily leaderboards are not available at this time."
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/queries/leaderboards.ts"],
+    "target": "retained server route over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "leaderboards.getDailyRank",
+    "method": "GET",
+    "path": "/api/leaderboards/daily/rank",
+    "currentOwner": "backend/src/api/routes/leaderboards.ts",
+    "policy": {
+      "openApiTags": "leaderboards",
+      "rateLimit": "leaderboardsGet",
+      "requireConfiguration": {
+        "path": "dailyLeaderboards.enabled",
+        "invalidMessage": "Daily leaderboards are not available at this time."
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/queries/leaderboards.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "leaderboards.getRank",
+    "method": "GET",
+    "path": "/api/leaderboards/rank",
+    "currentOwner": "backend/src/api/routes/leaderboards.ts",
+    "policy": {
+      "openApiTags": "leaderboards",
+      "rateLimit": "leaderboardsGet",
+      "authenticationOptions": {
+        "acceptApeKeys": true
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/queries/leaderboards.ts"],
+    "target": "retained server route over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "leaderboards.getWeeklyXp",
+    "method": "GET",
+    "path": "/api/leaderboards/xp/weekly",
+    "currentOwner": "backend/src/api/routes/leaderboards.ts",
+    "policy": {
+      "openApiTags": "leaderboards",
+      "rateLimit": "leaderboardsGet",
+      "authenticationOptions": {
+        "isPublic": true
+      },
+      "requireConfiguration": {
+        "path": "leaderboards.weeklyXp.enabled",
+        "invalidMessage": "Weekly XP leaderboards are not available at this time."
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/queries/leaderboards.ts"],
+    "target": "retained server route over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "leaderboards.getWeeklyXpRank",
+    "method": "GET",
+    "path": "/api/leaderboards/xp/weekly/rank",
+    "currentOwner": "backend/src/api/routes/leaderboards.ts",
+    "policy": {
+      "openApiTags": "leaderboards",
+      "rateLimit": "leaderboardsGet",
+      "requireConfiguration": {
+        "path": "leaderboards.weeklyXp.enabled",
+        "invalidMessage": "Weekly XP leaderboards are not available at this time."
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/queries/leaderboards.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "presets.add",
+    "method": "POST",
+    "path": "/api/presets",
+    "currentOwner": "backend/src/api/routes/presets.ts",
+    "policy": {
+      "openApiTags": "presets",
+      "rateLimit": "presetsAdd"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/collections/presets.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "presets.delete",
+    "method": "DELETE",
+    "path": "/api/presets/:presetId",
+    "currentOwner": "backend/src/api/routes/presets.ts",
+    "policy": {
+      "openApiTags": "presets",
+      "rateLimit": "presetsRemove"
+    },
+    "validation": {
+      "params": true,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/collections/presets.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "presets.get",
+    "method": "GET",
+    "path": "/api/presets",
+    "currentOwner": "backend/src/api/routes/presets.ts",
+    "policy": {
+      "openApiTags": "presets",
+      "rateLimit": "presetsGet"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/collections/presets.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "presets.save",
+    "method": "PATCH",
+    "path": "/api/presets",
+    "currentOwner": "backend/src/api/routes/presets.ts",
+    "policy": {
+      "openApiTags": "presets",
+      "rateLimit": "presetsEdit"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/collections/presets.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "psas.get",
+    "method": "GET",
+    "path": "/api/psas",
+    "currentOwner": "backend/src/api/routes/psas.ts",
+    "policy": {
+      "openApiTags": "psas",
+      "authenticationOptions": {
+        "isPublic": true
+      },
+      "rateLimit": "psaGet"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/elements/psa.tsx"],
+    "target": "retained server route over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "public.getSpeedHistogram",
+    "method": "GET",
+    "path": "/api/public/speedHistogram",
+    "currentOwner": "backend/src/api/routes/public.ts",
+    "policy": {
+      "openApiTags": "public",
+      "authenticationOptions": {
+        "isPublic": true
+      },
+      "rateLimit": "publicStatsGet"
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/queries/public.ts"],
+    "target": "retained server route over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "public.getTypingStats",
+    "method": "GET",
+    "path": "/api/public/typingStats",
+    "currentOwner": "backend/src/api/routes/public.ts",
+    "policy": {
+      "openApiTags": "public",
+      "authenticationOptions": {
+        "isPublic": true
+      },
+      "rateLimit": "publicStatsGet"
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/queries/public.ts"],
+    "target": "retained server route over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "quotes.add",
+    "method": "POST",
+    "path": "/api/quotes",
+    "currentOwner": "backend/src/api/routes/quotes.ts",
+    "policy": {
+      "openApiTags": "quotes",
+      "rateLimit": "newQuotesAdd",
+      "requireConfiguration": {
+        "path": "quotes.submissionsEnabled",
+        "invalidMessage": "Quote submission is disabled temporarily. The queue is quite long and we need some time to catch up."
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/components/modals/QuoteSubmitModal.tsx"
+    ],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "quotes.addRating",
+    "method": "POST",
+    "path": "/api/quotes/rating",
+    "currentOwner": "backend/src/api/routes/quotes.ts",
+    "policy": {
+      "openApiTags": "quotes",
+      "rateLimit": "quoteRatingsSubmit"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/components/modals/QuoteRateModal.tsx"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "quotes.approveSubmission",
+    "method": "POST",
+    "path": "/api/quotes/approve",
+    "currentOwner": "backend/src/api/routes/quotes.ts",
+    "policy": {
+      "openApiTags": "quotes",
+      "rateLimit": "newQuotesAction",
+      "requirePermission": "quoteMod"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/components/modals/QuoteApproveModal.tsx"
+    ],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "quotes.get",
+    "method": "GET",
+    "path": "/api/quotes",
+    "currentOwner": "backend/src/api/routes/quotes.ts",
+    "policy": {
+      "openApiTags": "quotes",
+      "rateLimit": "newQuotesGet",
+      "requirePermission": "quoteMod"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/components/modals/QuoteApproveModal.tsx"
+    ],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "quotes.getRating",
+    "method": "GET",
+    "path": "/api/quotes/rating",
+    "currentOwner": "backend/src/api/routes/quotes.ts",
+    "policy": {
+      "openApiTags": "quotes",
+      "rateLimit": "quoteRatingsGet"
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/states/quote-rate.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "quotes.isSubmissionEnabled",
+    "method": "GET",
+    "path": "/api/quotes/isSubmissionEnabled",
+    "currentOwner": "backend/src/api/routes/quotes.ts",
+    "policy": {
+      "openApiTags": "quotes",
+      "authenticationOptions": {
+        "isPublic": true
+      },
+      "rateLimit": "newQuotesIsSubmissionEnabled"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/components/modals/QuoteSearchModal.tsx"
+    ],
+    "target": "retained server route over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "quotes.rejectSubmission",
+    "method": "POST",
+    "path": "/api/quotes/reject",
+    "currentOwner": "backend/src/api/routes/quotes.ts",
+    "policy": {
+      "openApiTags": "quotes",
+      "rateLimit": "newQuotesAction",
+      "requirePermission": "quoteMod"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/components/modals/QuoteApproveModal.tsx"
+    ],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "quotes.report",
+    "method": "POST",
+    "path": "/api/quotes/report",
+    "currentOwner": "backend/src/api/routes/quotes.ts",
+    "policy": {
+      "openApiTags": "quotes",
+      "rateLimit": "quoteReportSubmit",
+      "requirePermission": "canReport",
+      "requireConfiguration": {
+        "path": "quotes.reporting.enabled",
+        "invalidMessage": "Quote reporting is unavailable."
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/components/modals/QuoteReportModal.tsx"
+    ],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "results.add",
+    "method": "POST",
+    "path": "/api/results",
+    "currentOwner": "backend/src/api/routes/results.ts",
+    "policy": {
+      "openApiTags": "results",
+      "rateLimit": "resultsAdd",
+      "requireConfiguration": {
+        "path": "results.savingEnabled",
+        "invalidMessage": "Results are not being saved at this time."
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [
+        200, 400, 401, 403, 422, 429, 460, 461, 462, 463, 464, 465, 466, 470,
+        471, 472, 479, 500, 503
+      ],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/components/modals/LastSignedOutResultModal.tsx",
+      "frontend/src/ts/test/result-saving.ts"
+    ],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "results.get",
+    "method": "GET",
+    "path": "/api/results",
+    "currentOwner": "backend/src/api/routes/results.ts",
+    "policy": {
+      "openApiTags": "results",
+      "authenticationOptions": {
+        "acceptApeKeys": true
+      },
+      "rateLimit": {
+        "normal": "resultsGet",
+        "apeKey": "resultsGetApe"
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/collections/results/store.ts"],
+    "target": "retained server route over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "results.getById",
+    "method": "GET",
+    "path": "/api/results/id/:resultId",
+    "currentOwner": "backend/src/api/routes/results.ts",
+    "policy": {
+      "openApiTags": "results",
+      "authenticationOptions": {
+        "acceptApeKeys": true
+      },
+      "rateLimit": {
+        "normal": "resultByIdGet",
+        "apeKey": "resultByIdGetApe"
+      }
+    },
+    "validation": {
+      "params": true,
+      "query": false,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/collections/results/queries.ts"],
+    "target": "retained server route over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "results.getLast",
+    "method": "GET",
+    "path": "/api/results/last",
+    "currentOwner": "backend/src/api/routes/results.ts",
+    "policy": {
+      "openApiTags": "results",
+      "authenticationOptions": {
+        "acceptApeKeys": true
+      },
+      "rateLimit": "resultsGet"
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "results.updateTags",
+    "method": "PATCH",
+    "path": "/api/results/tags",
+    "currentOwner": "backend/src/api/routes/results.ts",
+    "policy": {
+      "openApiTags": "results",
+      "rateLimit": "resultsTagsUpdate"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/collections/results/mutations.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.addCustomTheme",
+    "method": "POST",
+    "path": "/api/users/customThemes",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "userCustomThemeAdd"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/collections/custom-themes.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.addQuoteToFavorites",
+    "method": "POST",
+    "path": "/api/users/favoriteQuotes",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "quoteFavoritePost"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/components/pages/test/result/ResultQuoteActions.tsx",
+      "frontend/src/ts/controllers/quotes-controller.ts"
+    ],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.addResultFilterPreset",
+    "method": "POST",
+    "path": "/api/users/resultFilterPresets",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "userCustomFilterAdd",
+      "requireConfiguration": {
+        "path": "results.filterPresets.enabled",
+        "invalidMessage": "Result filter presets are not available at this time."
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/collections/result-filter-presets.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.create",
+    "method": "POST",
+    "path": "/api/users/signup",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "userSignup",
+      "requireConfiguration": {
+        "path": "users.signUp",
+        "invalidMessage": "Sign up is temporarily disabled"
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/components/modals/GoogleSignUpModal.tsx"
+    ],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.createTag",
+    "method": "POST",
+    "path": "/api/users/tags",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "userTagsAdd"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/collections/tags.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.delete",
+    "method": "DELETE",
+    "path": "/api/users",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "authenticationOptions": {
+        "requireFreshToken": true
+      },
+      "rateLimit": "userDelete"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/components/modals/account-settings/ReauthConfirmModals.tsx"
+    ],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.deleteCustomTheme",
+    "method": "DELETE",
+    "path": "/api/users/customThemes",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "userCustomThemeRemove"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/collections/custom-themes.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.deletePersonalBests",
+    "method": "DELETE",
+    "path": "/api/users/personalBests",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "authenticationOptions": {
+        "requireFreshToken": true
+      },
+      "rateLimit": "userClearPB"
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/components/modals/account-settings/ReauthConfirmModals.tsx"
+    ],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.deleteTag",
+    "method": "DELETE",
+    "path": "/api/users/tags/:tagId",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "userTagsRemove"
+    },
+    "validation": {
+      "params": true,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/collections/tags.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.deleteTagPersonalBest",
+    "method": "DELETE",
+    "path": "/api/users/tags/:tagId/personalBest",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "userTagsClearPB"
+    },
+    "validation": {
+      "params": true,
+      "query": true,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/collections/tags.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.editCustomTheme",
+    "method": "PATCH",
+    "path": "/api/users/customThemes",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "userCustomThemeEdit"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/collections/custom-themes.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.editTag",
+    "method": "PATCH",
+    "path": "/api/users/tags",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "userTagsEdit"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/collections/tags.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.get",
+    "method": "GET",
+    "path": "/api/users",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "userGet"
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/ape/user.ts",
+      "frontend/src/ts/auth-client.ts",
+      "frontend/src/ts/queries/account.ts"
+    ],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.getCurrentTestActivity",
+    "method": "GET",
+    "path": "/api/users/currentTestActivity",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "authenticationOptions": {
+        "acceptApeKeys": true
+      },
+      "rateLimit": "userCurrentTestActivity"
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "users.getCustomThemes",
+    "method": "GET",
+    "path": "/api/users/customThemes",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "userCustomThemeGet"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/collections/custom-themes.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.getFavoriteQuotes",
+    "method": "GET",
+    "path": "/api/users/favoriteQuotes",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "quoteFavoriteGet"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "users.getInbox",
+    "method": "GET",
+    "path": "/api/users/inbox",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "userMailGet",
+      "requireConfiguration": {
+        "path": "users.inbox.enabled",
+        "invalidMessage": "Your inbox is not available at this time."
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/collections/inbox.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.getNameAvailability",
+    "method": "GET",
+    "path": "/api/users/checkName/:name",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "authenticationOptions": {
+        "isPublic": true
+      },
+      "rateLimit": "userCheckName"
+    },
+    "validation": {
+      "params": true,
+      "query": false,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/components/modals/DevOptionsModal.tsx",
+      "frontend/src/ts/components/modals/GoogleSignUpModal.tsx",
+      "frontend/src/ts/components/modals/account-settings/UpdateNameModal.tsx"
+    ],
+    "target": "retained server route over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "users.getPersonalBests",
+    "method": "GET",
+    "path": "/api/users/personalBests",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "authenticationOptions": {
+        "acceptApeKeys": true
+      },
+      "rateLimit": "userGet"
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "users.getProfile",
+    "method": "GET",
+    "path": "/api/users/:uidOrName/profile",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "authenticationOptions": {
+        "isPublic": true
+      },
+      "rateLimit": "userProfileGet",
+      "requireConfiguration": {
+        "path": "users.profiles.enabled",
+        "invalidMessage": "Profiles are not available at this time"
+      }
+    },
+    "validation": {
+      "params": true,
+      "query": true,
+      "body": false,
+      "statuses": [
+        200, 400, 401, 403, 404, 422, 429, 470, 471, 472, 479, 500, 503
+      ],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/commandline/lists/navigation.ts",
+      "frontend/src/ts/controllers/browser-handoff.ts",
+      "frontend/src/ts/queries/profile.ts"
+    ],
+    "target": "retained server route over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "users.getStats",
+    "method": "GET",
+    "path": "/api/users/stats",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "authenticationOptions": {
+        "acceptApeKeys": true
+      },
+      "rateLimit": "userGet"
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "users.getStreak",
+    "method": "GET",
+    "path": "/api/users/streak",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "authenticationOptions": {
+        "acceptApeKeys": true
+      },
+      "rateLimit": "userStreak"
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "users.getTags",
+    "method": "GET",
+    "path": "/api/users/tags",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "authenticationOptions": {
+        "acceptApeKeys": true
+      },
+      "rateLimit": "userTagsGet"
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [],
+    "target": "retained server route over backend service",
+    "webTarget": null,
+    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+  },
+  {
+    "id": "users.getTestActivity",
+    "method": "GET",
+    "path": "/api/users/testActivity",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "userTestActivity"
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": false,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/db.ts",
+      "frontend/src/ts/queries/account.ts"
+    ],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.optOutOfLeaderboards",
+    "method": "POST",
+    "path": "/api/users/optOutOfLeaderboards",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "authenticationOptions": {
+        "requireFreshToken": true
+      },
+      "rateLimit": "userOptOutOfLeaderboards"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/components/modals/account-settings/ReauthConfirmModals.tsx"
+    ],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.removeQuoteFromFavorites",
+    "method": "DELETE",
+    "path": "/api/users/favoriteQuotes",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "quoteFavoriteDelete"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/components/pages/test/result/ResultQuoteActions.tsx",
+      "frontend/src/ts/controllers/quotes-controller.ts"
+    ],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.removeResultFilterPreset",
+    "method": "DELETE",
+    "path": "/api/users/resultFilterPresets/:presetId",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "userCustomFilterRemove",
+      "requireConfiguration": {
+        "path": "results.filterPresets.enabled",
+        "invalidMessage": "Result filter presets are not available at this time."
+      }
+    },
+    "validation": {
+      "params": true,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/collections/result-filter-presets.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.report",
+    "method": "POST",
+    "path": "/api/users/report",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "quoteReportSubmit",
+      "requirePermission": "canReport",
+      "requireConfiguration": {
+        "path": "quotes.reporting.enabled",
+        "invalidMessage": "User reporting is unavailable."
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/components/modals/UserReportModal.tsx"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.reset",
+    "method": "PATCH",
+    "path": "/api/users/reset",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "authenticationOptions": {
+        "requireFreshToken": true
+      },
+      "rateLimit": "userReset"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/components/modals/account-settings/ReauthConfirmModals.tsx"
+    ],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.revokeAllTokens",
+    "method": "POST",
+    "path": "/api/users/revokeAllTokens",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "authenticationOptions": {
+        "requireFreshToken": true,
+        "noCache": true
+      },
+      "rateLimit": "userRevokeAllTokens"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/components/modals/account-settings/ReauthConfirmModals.tsx"
+    ],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.setStreakHourOffset",
+    "method": "POST",
+    "path": "/api/users/setStreakHourOffset",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "setStreakHourOffset"
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/components/modals/StreakHourOffsetModal.tsx"
+    ],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.updateInbox",
+    "method": "PATCH",
+    "path": "/api/users/inbox",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "userMailUpdate",
+      "requireConfiguration": {
+        "path": "users.inbox.enabled",
+        "invalidMessage": "Your inbox is not available at this time."
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": ["frontend/src/ts/collections/inbox.ts"],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.updateLeaderboardMemory",
+    "method": "PATCH",
+    "path": "/api/users/leaderboardMemory",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "userUpdateLBMemory"
+    },
+    "validation": {
+      "params": false,
+      "query": true,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/db.ts",
+      "frontend/src/ts/queries/account.ts"
+    ],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.updateName",
+    "method": "PATCH",
+    "path": "/api/users/name",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "authenticationOptions": {
+        "requireFreshToken": true
+      },
+      "rateLimit": "userUpdateName"
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/components/modals/account-settings/UpdateNameModal.tsx"
+    ],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  },
+  {
+    "id": "users.updateProfile",
+    "method": "PATCH",
+    "path": "/api/users/profile",
+    "currentOwner": "backend/src/api/routes/users.ts",
+    "policy": {
+      "openApiTags": "users",
+      "rateLimit": "userProfileUpdate",
+      "requireConfiguration": {
+        "path": "users.profiles.enabled",
+        "invalidMessage": "Profiles are not available at this time"
+      }
+    },
+    "validation": {
+      "params": false,
+      "query": false,
+      "body": true,
+      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+    },
+    "browserCallers": [
+      "frontend/src/ts/components/modals/EditProfileModal.tsx"
+    ],
+    "target": "web server function over backend service",
+    "webTarget": "server function",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
+    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+  }
+]
