@@ -16,6 +16,7 @@ import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppAboutRouteImport } from './routes/_app.about'
 import { Route as AppDeviceRouteImport } from './routes/_app.device'
 import { Route as AppLoginRouteImport } from './routes/_app.login'
+import { Route as ApiSplatRouteImport } from './routes/api.$'
 import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
 
 const R404DothtmlRoute = R404DothtmlRouteImport.update({
@@ -52,6 +53,11 @@ const AppLoginRoute = AppLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiSplatRoute = ApiSplatRouteImport.update({
+  id: '/api/$',
+  path: '/api/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AppAboutRoute
   '/device': typeof AppDeviceRoute
   '/login': typeof AppLoginRoute
+  '/api/$': typeof ApiSplatRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
@@ -73,6 +80,7 @@ export interface FileRoutesByTo {
   '/about': typeof AppAboutRoute
   '/device': typeof AppDeviceRoute
   '/login': typeof AppLoginRoute
+  '/api/$': typeof ApiSplatRoute
   '/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/_app/about': typeof AppAboutRoute
   '/_app/device': typeof AppDeviceRoute
   '/_app/login': typeof AppLoginRoute
+  '/api/$': typeof ApiSplatRoute
   '/_app/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/device'
     | '/login'
+    | '/api/$'
     | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -104,6 +114,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/device'
     | '/login'
+    | '/api/$'
     | '/'
     | '/api/auth/$'
   id:
@@ -114,6 +125,7 @@ export interface FileRouteTypes {
     | '/_app/about'
     | '/_app/device'
     | '/_app/login'
+    | '/api/$'
     | '/_app/'
     | '/api/auth/$'
   fileRoutesById: FileRoutesById
@@ -122,6 +134,7 @@ export interface RootRouteChildren {
   R404DothtmlRoute: typeof R404DothtmlRoute
   AppRoute: typeof AppRouteWithChildren
   OauthCallbackDothtmlRoute: typeof OauthCallbackDothtmlRoute
+  ApiSplatRoute: typeof ApiSplatRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -176,6 +189,13 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof AppLoginRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/$': {
+      id: '/api/$'
+      path: '/api/$'
+      fullPath: '/api/$'
+      preLoaderRoute: typeof ApiSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -206,6 +226,7 @@ const rootRouteChildren: RootRouteChildren = {
   R404DothtmlRoute: R404DothtmlRoute,
   AppRoute: AppRouteWithChildren,
   OauthCallbackDothtmlRoute: OauthCallbackDothtmlRoute,
+  ApiSplatRoute: ApiSplatRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

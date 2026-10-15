@@ -113,12 +113,45 @@ describe("built Start application in workerd", () => {
     ).toBe(403);
   });
 
-  it("owns unknown-route 404s and leaves legacy HTTP unmounted", async () => {
-    for (const path of ["/missing", "/api/public/typingStats"]) {
-      const response = await mf.dispatchFetch(`http://localhost:3000${path}`);
-      expect(response.status).toBe(404);
-      expect(await response.text()).toContain("Page not found");
-    }
+  it("owns unknown-route 404s", async () => {
+    const response = await mf.dispatchFetch("http://localhost:3000/missing");
+    expect(response.status).toBe(404);
+    expect(await response.text()).toContain("Page not found");
+  });
+
+  it("serves retained HTTP contracts in-process with their legacy policies", async () => {
+    const worker = await mf.getWorker("b");
+    const health = await worker.fetch("http://localhost:3000/api");
+    expect(health.status).toBe(200);
+    expect(await health.json()).toMatchObject({ message: "ok" });
+    const stats = await worker.fetch(
+      "http://localhost:3000/api/public/typingStats",
+      { headers: { "cf-connecting-ip": "192.0.2.9" } },
+    );
+    expect(stats.status).toBe(200);
+    expect(stats.headers.get("x-compatibility-check")).not.toBeNull();
+    expect(await stats.json()).toMatchObject({
+      data: { testsCompleted: 22 },
+    });
+    const missing = await worker.fetch("http://localhost:3000/api/missing");
+    expect(missing.status).toBe(404);
+    expect(await missing.text()).not.toContain("Page not found");
+    const privateRead = await worker.fetch("http://localhost:3000/api/users");
+    expect(privateRead.status).toBe(401);
+    const session = await seedSession(mf, "b");
+    const crossSite = await worker.fetch(
+      "http://localhost:3000/api/users/tags",
+      {
+        method: "POST",
+        headers: {
+          cookie: session.cookie,
+          origin: "https://attacker.test",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ tagName: "x" }),
+      },
+    );
+    expect(crossSite.status).toBe(403);
   });
 
   it("exports working queue and scheduled handlers with D1", async () => {
