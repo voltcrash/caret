@@ -5,7 +5,7 @@ import { getConfig } from "../config/store";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { EventLog } from "@oxytype/typing-core/events/types";
 
-import { Challenge } from "@oxytype/challenges";
+import type { Challenge } from "@oxytype/challenges";
 import { LayoutObject } from "@oxytype/schemas/layouts";
 import { CompletedEvent, IncompleteTest } from "@oxytype/schemas/results";
 import { createStore } from "solid-js/store";
