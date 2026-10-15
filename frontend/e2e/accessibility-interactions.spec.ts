@@ -56,6 +56,15 @@ test("chained modals return focus through their parent to the typing input", asy
   await expect(page.locator("#wordsInput")).toBeFocused();
 });
 
+test("command palette input shows no focus outline", async ({ page }) => {
+  await openTest(page);
+  await openCommandline(page);
+  await expect(page.locator("#commandLine input")).toHaveCSS(
+    "outline-style",
+    "none",
+  );
+});
+
 test("result summary stays silent during typing and clears on restart", async ({
   page,
 }) => {
