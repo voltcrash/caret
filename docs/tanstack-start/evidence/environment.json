@@ -1,0 +1,18 @@
+{
+  "baselineCommit": "d6e5be3e9",
+  "platform": "Darwin arm64",
+  "cpu": "Apple M1",
+  "memoryBytes": 8589934592,
+  "node": "v24.21.0",
+  "vp": "vp v1.0.0\n\nLocal vite-plus:\n  vite-plus  v1.0.0\n\nTools:\n  vite             v8.3.1\n  rolldown         v1.2.11\n  vitest           v5.0.1\n  oxfmt            v0.70.0\n  oxlint           v1.85.0\n  oxlint-tsgolint  v7.0.2003\n  tsdown           v0.23.0",
+  "frontendVersion": {
+    "version": "2026.10.15_12.44_b698260fd"
+  },
+  "sha256": {
+    "pnpm-lock.yaml": "1a01a3b2c236b19d6f6d554aafb18662eb0605d47d3b0c69159cf4ef53fd2c69",
+    "frontend/vite.config.ts": "1c77298fff65731e639296255e6e2f321b33a8179bf38382ba97ffdc2161954a",
+    "backend/wrangler.jsonc": "be0fd2a2f7768fd0449f2469f0abe519593dab09246f7c157b6fcb03f210f46c",
+    "backend/wrangler.production.json": "28ad4033b7c5c0f2d081a6f2d49f4d4034a194403aa631de81c470007fa5223f",
+    "backend/dist/worker/worker.js": "0432e1e8b48e0ddcdbc94b37337c60692b60c879a679e256836cc0c6d8ba480f"
+  }
+}
