@@ -14,10 +14,8 @@ import {
   GetPersonalBestsQuery,
   GetPersonalBestsResponse,
   GetStatsResponse,
-  GetUserInboxResponse,
   GetUserResponse,
   ReportUserRequest,
-  UpdateUserInboxRequest,
 } from "@oxytype/contracts/users";
 import { MonkeyRequest } from "../types";
 
@@ -138,34 +136,6 @@ export async function getStats(
   return new MonkeyResponse("Personal stats retrieved", data);
 }
 
-export async function getInbox(
-  req: MonkeyRequest,
-): Promise<GetUserInboxResponse> {
-  const { uid } = req.ctx.decodedToken;
-
-  const inbox = await UserDAL.getInbox(uid);
-
-  return new MonkeyResponse("Inbox retrieved", {
-    inbox,
-    maxMail: req.ctx.configuration.users.inbox.maxMail,
-  });
-}
-
-export async function updateInbox(
-  req: MonkeyRequest<undefined, UpdateUserInboxRequest>,
-): Promise<MonkeyResponse> {
-  const { uid } = req.ctx.decodedToken;
-  const { mailIdsToMarkRead, mailIdsToDelete } = req.body;
-
-  await UserDAL.updateInbox(
-    uid,
-    mailIdsToMarkRead ?? [],
-    mailIdsToDelete ?? [],
-  );
-
-  return new MonkeyResponse("Inbox updated", null);
-}
-
 export async function reportUser(
   req: MonkeyRequest<undefined, ReportUserRequest>,
 ): Promise<MonkeyResponse> {
@@ -238,3 +208,5 @@ export {
 } from "./user/favorite-quotes";
 
 export { getProfile, updateProfile } from "./user/profile";
+
+export { getInbox, updateInbox } from "./user/inbox";
