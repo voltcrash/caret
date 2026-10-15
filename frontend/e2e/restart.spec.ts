@@ -19,3 +19,34 @@ for (const method of ["tab+enter", "button"] as const) {
     await expect(page.locator("#wordsInput")).toHaveValue(" y");
   });
 }
+
+for (const [setting, key] of [
+  ["tab", "Tab"],
+  ["esc", "Escape"],
+  ["enter", "Enter"],
+] as const) {
+  test.describe(`${setting} quick restart`, () => {
+    test.use({
+      config: {
+        mode: "words",
+        words: 15,
+        quickRestart: setting,
+        smoothCaret: "off",
+      },
+    });
+
+    test("clears active tests and keeps the typing input focused", async ({
+      page,
+    }) => {
+      await openTest(page);
+      await page.locator("#words").click();
+      for (const input of ["x", "y"]) {
+        await page.keyboard.type(input);
+        await expect(page.locator("#wordsInput")).toHaveValue(` ${input}`);
+        await page.keyboard.press(key);
+        await assertRestarted(page);
+        await expect(page.locator("#wordsInput")).toBeFocused();
+      }
+    });
+  });
+}
