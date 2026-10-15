@@ -1,11 +1,11 @@
-import { createStore } from "solid-js/store";
+import { createAppStore } from "../../app/state";
 
 export type AlertPsa = {
   message: string;
   level: number;
 };
 
-const [psas, setPsas] = createStore<AlertPsa[]>([]);
+const [psas, setPsas] = createAppStore<AlertPsa[]>([]);
 
 export function addPsa(message: string, level: number): void {
   setPsas((prev) => [...prev, { message, level }]);

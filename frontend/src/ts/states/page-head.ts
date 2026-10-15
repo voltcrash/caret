@@ -1,4 +1,4 @@
-import { createSignal } from "solid-js";
+import { createAppSignal } from "../../app/state";
 
-export const [getOpenGraphUrl, setOpenGraphUrl] = createSignal<string>();
-export const [getPageTitle, setPageTitle] = createSignal<string>();
+export const [getOpenGraphUrl, setOpenGraphUrl] = createAppSignal<string>();
+export const [getPageTitle, setPageTitle] = createAppSignal<string>();

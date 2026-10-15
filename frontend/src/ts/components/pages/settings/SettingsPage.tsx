@@ -17,6 +17,7 @@ import {
   setSettingsSearch,
 } from "../../../states/settings-search";
 import {
+  useSettingsSectionEffects,
   getAvailableSettingsSections,
   getCurrentSettingsSection,
   SettingsSection,
@@ -65,6 +66,7 @@ import { SettingsGroup } from "./SettingsGroup";
 import { SettingsSearch } from "./SettingsSearch";
 
 export function SettingsPage(): JSXElement {
+  useSettingsSectionEffects();
   const [hasLocalBg] = createResource(
     () => fileStorage.track("LocalBackgroundFile"),
     async () => fileStorage.hasFile("LocalBackgroundFile"),

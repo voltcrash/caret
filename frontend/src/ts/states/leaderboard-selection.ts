@@ -1,7 +1,7 @@
-import { createModuleRoot } from "../hooks/effects";
+import { createAppSignal, appSignal } from "../../app/state";
 import { LanguageSchema } from "@oxytype/schemas/languages";
 import { ClientSchema, ModeSchema } from "@oxytype/schemas/shared";
-import { Accessor, createSignal, Setter } from "solid-js";
+import { Accessor, Setter } from "solid-js";
 import { z } from "zod";
 import { serialize as serializeUrlSearchParams } from "zod-urlsearchparams";
 import { useLocalStorage } from "../hooks/useLocalStorage";
@@ -45,12 +45,9 @@ export const LeaderboardUrlParamsSchema = z
   .partial();
 export type LeaderboardUrlParams = z.infer<typeof LeaderboardUrlParamsSchema>;
 
-const [getSelectionLs, setSelection] = createModuleRoot(
-  import.meta.hot,
-  lsSelection,
-);
-export const [getPage, setPage] = createSignal(0);
-export const [getGoToUserPage, setGoToUserPage] = createSignal(false);
+const [getSelectionLs, setSelection] = appSignal(lsSelection);
+export const [getPage, setPage] = createAppSignal(0);
+export const [getGoToUserPage, setGoToUserPage] = createAppSignal(false);
 
 export const getSelection = (): Selection => {
   return getSelectionLs();

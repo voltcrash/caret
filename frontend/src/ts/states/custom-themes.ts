@@ -1,7 +1,7 @@
+import { createAppSignal } from "../../app/state";
 import type { CustomTheme } from "@oxytype/schemas/users";
-import { createSignal } from "solid-js";
 
-const [getReader, setReader] = createSignal<
+const [getReader, setReader] = createAppSignal<
   (() => CustomTheme[]) | undefined
 >();
 

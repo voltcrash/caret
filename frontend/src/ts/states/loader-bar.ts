@@ -1,4 +1,4 @@
-import { createSignalWithSetters } from "../hooks/createSignalWithSetters";
+import { createAppSignalWithSetters } from "../hooks/createSignalWithSetters";
 
 type LoaderSignal = null | {
   visible: boolean;
@@ -6,7 +6,7 @@ type LoaderSignal = null | {
 };
 
 export const [getLoaderBarSignal, { showLoaderBar, hideLoaderBar }] =
-  createSignalWithSetters<LoaderSignal>(null)({
+  createAppSignalWithSetters<LoaderSignal>(null)({
     showLoaderBar: (set, instant: boolean = false) =>
       set({ visible: true, instant }),
     hideLoaderBar: (set) => set({ visible: false }),

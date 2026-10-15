@@ -1,7 +1,8 @@
-import { createSignal } from "solid-js";
+import { createAppSignal } from "../../app/state";
+
 import { z } from "zod";
 import { serialize as serializeUrlSearchParams } from "zod-urlsearchparams";
-import { createModuleEffectOn } from "../hooks/effects";
+import { createEffectOn } from "../hooks/effects";
 import { replaceUrl } from "../navigation/navigation";
 import { FaSolidIcon } from "../types/font-awesome";
 import { getActivePage, isAuthenticated } from "./core";
@@ -51,7 +52,7 @@ export const SettingsUrlParamsSchema = z
 type SettingsUrlParams = z.infer<typeof SettingsUrlParamsSchema>;
 
 export const [getCurrentSettingsSection, setCurrentSettingsSection] =
-  createSignal<SettingsSection>("behavior");
+  createAppSignal<SettingsSection>("behavior");
 
 export function getAvailableSettingsSections(): Partial<
   typeof settingsSections
@@ -81,18 +82,20 @@ export function readSettingsGetParameters(
   setCurrentSettingsSection(isSectionAvailable(section) ? section : "behavior");
 }
 
-createModuleEffectOn(import.meta.hot, isAuthenticated, () => {
-  if (!isSectionAvailable(getCurrentSettingsSection())) {
-    setCurrentSettingsSection("behavior");
-  }
-});
-
-createModuleEffectOn(import.meta.hot, getCurrentSettingsSection, (tab) => {
-  //only replace the url while on the settings page, otherwise the url-handler breaks
-  if (getActivePage() !== "settings") return;
-  const urlParams = serializeUrlSearchParams({
-    schema: SettingsUrlParamsSchema,
-    data: { tab },
+export function useSettingsSectionEffects(): void {
+  createEffectOn(isAuthenticated, () => {
+    if (!isSectionAvailable(getCurrentSettingsSection())) {
+      setCurrentSettingsSection("behavior");
+    }
   });
-  void replaceUrl(`${window.location.pathname}?${urlParams.toString()}`);
-});
+
+  createEffectOn(getCurrentSettingsSection, (tab) => {
+    //only replace the url while on the settings page, otherwise the url-handler breaks
+    if (getActivePage() !== "settings") return;
+    const urlParams = serializeUrlSearchParams({
+      schema: SettingsUrlParamsSchema,
+      data: { tab },
+    });
+    void replaceUrl(`${window.location.pathname}?${urlParams.toString()}`);
+  });
+}

@@ -1,15 +1,15 @@
+import { createAppSignal } from "../../app/state";
 import { Result } from "@oxytype/schemas/results";
 import { Mode } from "@oxytype/schemas/shared";
-import { createSignal } from "solid-js";
+
 import { showModal } from "./modals";
 import { showErrorNotification } from "./notifications";
 
 type IdAndTags = Pick<Result<Mode>, "_id" | "tags" | "client"> & {
   source?: "resultPage";
 };
-const [getSelectedResult, setSelectedResult] = createSignal<IdAndTags | null>(
-  null,
-);
+const [getSelectedResult, setSelectedResult] =
+  createAppSignal<IdAndTags | null>(null);
 
 export { getSelectedResult };
 

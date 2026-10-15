@@ -1,9 +1,10 @@
-import { createSignal } from "solid-js";
+import { createAppSignal } from "../../app/state";
 
-export const [isAppLoading, setAppLoading] = createSignal(true);
-export const [getFontFamily, setFontFamily] = createSignal<string>();
-export const [getFontFace, setFontFace] = createSignal("");
+export const [isAppLoading, setAppLoading] = createAppSignal(true);
+export const [getFontFamily, setFontFamily] = createAppSignal<string>();
+export const [getFontFace, setFontFace] = createAppSignal("");
 export const [getMediaQueryDebugLevel, setMediaQueryDebugLevel] =
-  createSignal(0);
+  createAppSignal(0);
 
-export const [isFocusCursorHidden, setFocusCursorHidden] = createSignal(false);
+export const [isFocusCursorHidden, setFocusCursorHidden] =
+  createAppSignal(false);

@@ -1,9 +1,9 @@
-import { createSignalWithSetters } from "../hooks/createSignalWithSetters";
+import { createAppSignalWithSetters } from "../hooks/createSignalWithSetters";
 
 export const [
   getLoginPageInputsEnabled,
   { enableLoginPageInputs, disableLoginPageInputs },
-] = createSignalWithSetters(true)({
+] = createAppSignalWithSetters(true)({
   enableLoginPageInputs: (set) => set(true),
   disableLoginPageInputs: (set) => set(false),
 });

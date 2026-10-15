@@ -1,13 +1,14 @@
-import { createModuleRoot } from "../hooks/effects";
-import { createMemo, createSignal } from "solid-js";
+import { createAppMemo } from "../../app/application";
+import { createAppSignal } from "../../app/state";
 import { CommandlineSubgroupKey } from "../commandline/types";
 import { PageName } from "../pages/page";
 import { showModal } from "./modals";
 import { Formatting } from "../utils/format";
 import { getConfig } from "../config/store";
 
-export const [getActivePage, setActivePage] = createSignal<PageName>("loading");
-export const [getVersion, setVersion] = createSignal<{
+export const [getActivePage, setActivePage] =
+  createAppSignal<PageName>("loading");
+export const [getVersion, setVersion] = createAppSignal<{
   text: string;
   isNew: boolean;
 }>({
@@ -15,7 +16,7 @@ export const [getVersion, setVersion] = createSignal<{
   isNew: false,
 });
 
-export const [getThemeIndicator, setThemeIndicator] = createSignal<{
+export const [getThemeIndicator, setThemeIndicator] = createAppSignal<{
   /**
    * human readable display name, this is not the ThemeName.
    * e.g. the display is `serika dark` for the ThemeName `serika_dark`
@@ -27,17 +28,18 @@ export const [getThemeIndicator, setThemeIndicator] = createSignal<{
   isFavorite: false,
 });
 
-export const [getCommandlineSubgroup, setCommandlineSubgroup] = createSignal<
+export const [getCommandlineSubgroup, setCommandlineSubgroup] = createAppSignal<
   string | null
 >(null);
 
-export const [getGlobalOffsetTop, setGlobalOffsetTop] = createSignal(0);
-export const [getIsScreenshotting, setIsScreenshotting] = createSignal(false);
+export const [getGlobalOffsetTop, setGlobalOffsetTop] = createAppSignal(0);
+export const [getIsScreenshotting, setIsScreenshotting] =
+  createAppSignal(false);
 
-export const [getUserId, setUserId] = createSignal<string | null>(null);
+export const [getUserId, setUserId] = createAppSignal<string | null>(null);
 export const isAuthenticated = (): boolean => getUserId() !== null;
 
-export const [getSelectedProfileName, setSelectedProfileName] = createSignal<
+export const [getSelectedProfileName, setSelectedProfileName] = createAppSignal<
   string | undefined
 >(undefined);
 
@@ -48,15 +50,13 @@ export function showCommandLineForConfig(
   showModal("Commandline");
 }
 
-export const [getCustomTextIndicator, setCustomTextIndicator] = createSignal<
+export const [getCustomTextIndicator, setCustomTextIndicator] = createAppSignal<
   { name: string; isLong: boolean } | undefined
 >(undefined);
 
-export const getFormatting = createModuleRoot(import.meta.hot, () =>
-  createMemo(() => {
-    return new Formatting({
-      alwaysShowDecimalPlaces: getConfig.alwaysShowDecimalPlaces,
-      typingSpeedUnit: getConfig.typingSpeedUnit,
-    });
-  }),
-);
+export const getFormatting = createAppMemo(() => {
+  return new Formatting({
+    alwaysShowDecimalPlaces: getConfig.alwaysShowDecimalPlaces,
+    typingSpeedUnit: getConfig.typingSpeedUnit,
+  });
+});

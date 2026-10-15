@@ -1,4 +1,5 @@
-import { batch, createSignal } from "solid-js";
+import { createAppSignal } from "../../app/state";
+import { batch } from "solid-js";
 
 type LoadingPageMode = "spinner" | "error" | "bar";
 
@@ -8,10 +9,10 @@ type BarAnimation = {
   onComplete: () => void;
 };
 
-const [getMode, setMode] = createSignal<LoadingPageMode>("spinner");
-const [getText, setText] = createSignal("Loading...");
-const [isTextVisible, setTextVisible] = createSignal(false);
-const [getBarAnimation, setBarAnimation] = createSignal<BarAnimation>();
+const [getMode, setMode] = createAppSignal<LoadingPageMode>("spinner");
+const [getText, setText] = createAppSignal("Loading...");
+const [isTextVisible, setTextVisible] = createAppSignal(false);
+const [getBarAnimation, setBarAnimation] = createAppSignal<BarAnimation>();
 
 export { getMode, getText, isTextVisible, getBarAnimation };
 

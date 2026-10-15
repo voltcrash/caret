@@ -1,9 +1,10 @@
+import { onCleanup, onMount } from "solid-js";
+import { createAppSignal } from "../../app/state";
 import {
   isCapsLockOn as checkCapsLockOn,
   onCapsLockChange,
 } from "@leonabcd123/modern-caps-lock";
-import { createSignalWithSetters } from "../hooks/createSignalWithSetters";
-import { createSignal } from "solid-js";
+import { createAppSignalWithSetters } from "../hooks/createSignalWithSetters";
 
 type ModifierState = {
   shift: boolean;
@@ -13,7 +14,7 @@ type ModifierState = {
 };
 
 export const [getModifierState, { updateModifierState }] =
-  createSignalWithSetters<ModifierState>({
+  createAppSignalWithSetters<ModifierState>({
     shift: false,
     alt: false,
     leftShift: false,
@@ -42,7 +43,7 @@ export function resetModifierState(): void {
   });
 }
 
-const [isCapsLockOn, setCapsLockOn] = createSignal<boolean>(checkCapsLockOn());
+const [isCapsLockOn, setCapsLockOn] = createAppSignal<boolean>(false);
 export { isCapsLockOn };
 
 // The caps-lock library has no unsubscribe API. Reuse one bridge across HMR.
@@ -52,9 +53,19 @@ const hotData = import.meta.hot?.data as
   | undefined;
 const retainedBridge = hotData?.capsLockBridge;
 const capsLockBridge: CapsLockBridge = retainedBridge ?? {};
-capsLockBridge.update = setCapsLockOn;
-if (retainedBridge === undefined) {
-  onCapsLockChange((state) => capsLockBridge.update?.(state));
+let bridgeInstalled = retainedBridge !== undefined;
+export function useCapsLockEvents(): void {
+  onMount(() => {
+    setCapsLockOn(checkCapsLockOn());
+    capsLockBridge.update = setCapsLockOn;
+    if (!bridgeInstalled) {
+      bridgeInstalled = true;
+      onCapsLockChange((state) => capsLockBridge.update?.(state));
+    }
+    onCleanup(() => {
+      capsLockBridge.update = undefined;
+    });
+  });
 }
 import.meta.hot?.dispose(() => {
   capsLockBridge.update = undefined;

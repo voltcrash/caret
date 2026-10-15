@@ -1,3 +1,3 @@
-import { createSignal } from "solid-js";
+import { createAppSignal } from "../../app/state";
 
-export const [isFixingSkillIssue, setFixingSkillIssue] = createSignal(false);
+export const [isFixingSkillIssue, setFixingSkillIssue] = createAppSignal(false);

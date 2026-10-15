@@ -1,6 +1,6 @@
-import { createSignal } from "solid-js";
+import { createAppSignal } from "../../app/state";
 
-const [getSlowTimer, setSlowTimer] = createSignal(false);
+const [getSlowTimer, setSlowTimer] = createAppSignal(false);
 
 export function set(): void {
   if (getSlowTimer()) return;

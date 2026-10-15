@@ -1,5 +1,6 @@
-import { createSignal } from "solid-js";
-export const [getHighlightedSetting, setHighlightedSetting] = createSignal<
+import { createAppSignal } from "../../app/state";
+
+export const [getHighlightedSetting, setHighlightedSetting] = createAppSignal<
   string | null
 >(null);
 const settings = new Map<string, () => void>();

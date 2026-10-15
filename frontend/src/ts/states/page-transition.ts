@@ -1,7 +1,8 @@
-import { createSignal } from "solid-js";
+import { createAppSignal } from "../../app/state";
+
 import { PageName } from "../pages/page";
 
-const [getTransition, setTransition] = createSignal(true);
+const [getTransition, setTransition] = createAppSignal(true);
 
 export function set(val: boolean): void {
   setTransition(val);
@@ -18,7 +19,7 @@ type PageView = {
   animation?: { duration: number; complete: () => void };
 };
 
-const [getPageView, setPageView] = createSignal<PageView>({
+const [getPageView, setPageView] = createAppSignal<PageView>({
   id: "loading",
   phase: "idle",
 });

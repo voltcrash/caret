@@ -1,5 +1,5 @@
+import { createAppStore } from "../../app/state";
 import { JSXElement } from "solid-js";
-import { createStore } from "solid-js/store";
 
 export type Banner = {
   id: number;
@@ -20,7 +20,7 @@ export type Banner = {
 );
 
 let id = 0;
-const [banners, setBanners] = createStore<Banner[]>([]);
+const [banners, setBanners] = createAppStore<Banner[]>([]);
 
 export function addBanner(banner: Omit<Banner, "id">): number {
   const newid = id++;

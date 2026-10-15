@@ -4,11 +4,13 @@ import { createEffectOn } from "../../hooks/effects";
 import { getActivePage } from "../../states/core";
 import {
   handleModifierState,
+  useCapsLockEvents,
   resetModifierState,
 } from "../../states/modifiers";
 import { updateAltGrState, resetAltGrState } from "../../test/layout-emulator";
 
 export function ModifierEvents(): null {
+  useCapsLockEvents();
   createEffectOn(getActivePage, (page) => {
     resetModifierState();
     resetAltGrState();

@@ -1,4 +1,5 @@
-import { createSignal } from "solid-js";
+import { createAppSignal } from "../../app/state";
+
 import { ColorName, Theme } from "../constants/themes";
 import { ThemeName } from "@oxytype/schemas/configs";
 
@@ -17,7 +18,7 @@ const defaultTheme: Theme & { name: ThemeIdentifier } = {
   colorfulErrorExtra: "#7e2a33",
 };
 
-export const [getTheme, setTheme] = createSignal(defaultTheme);
+export const [getTheme, setTheme] = createAppSignal(defaultTheme);
 
 export function updateThemeColor(key: ColorName, color: string): void {
   setTheme((prev) => ({

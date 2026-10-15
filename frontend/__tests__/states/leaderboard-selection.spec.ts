@@ -1,12 +1,23 @@
 import { safeParse } from "zod-urlsearchparams";
-import { afterEach, describe, expect, it, vi } from "vite-plus/test";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vite-plus/test";
 
 const { replaceUrl } = vi.hoisted(() => ({
   replaceUrl: vi.fn(async (_url: string) => undefined),
 }));
 vi.mock("../../src/ts/navigation/navigation", () => ({ replaceUrl }));
 
-afterEach(() => {
+beforeEach(async () => {
+  await import("../__harness__/mock-application");
+});
+afterEach(async () => {
+  (await import("../__harness__/mock-application")).releaseTestApplication();
   localStorage.removeItem("leaderboardSelector");
   vi.resetModules();
   replaceUrl.mockClear();

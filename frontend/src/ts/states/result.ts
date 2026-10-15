@@ -1,6 +1,6 @@
+import { createAppStore, createAppSignal } from "../../app/state";
 import type { CartesianScaleOptions, Chart, ChartDataset } from "chart.js";
-import { createSignal } from "solid-js";
-import { createStore } from "solid-js/store";
+
 import { Language } from "@oxytype/schemas/languages";
 import { TypingSpeedUnit } from "@oxytype/schemas/configs";
 import type { WordsHistoryItem } from "../test/word-markup";
@@ -116,7 +116,7 @@ export type ResultState = {
   noStress: boolean;
 };
 
-export const [resultState, setResultState] = createStore<ResultState>({
+export const [resultState, setResultState] = createAppStore<ResultState>({
   stats: undefined,
   crown: { visible: false, type: "normal", text: "", wide: false },
   tags: { visible: false, items: [], savedResultId: undefined },
@@ -231,7 +231,7 @@ export type ScreenshotWatermark = {
 
 // shown under the result while screenshotting
 export const [getScreenshotWatermark, setScreenshotWatermark] =
-  createSignal<ScreenshotWatermark>();
+  createAppSignal<ScreenshotWatermark>();
 
 // set by Result once mounted; result.ts, test-ui and test-screenshot still
 // show/hide, animate and measure these imperatively

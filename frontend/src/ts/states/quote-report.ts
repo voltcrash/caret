@@ -1,7 +1,8 @@
-import { createSignal } from "solid-js";
+import { createAppSignal } from "../../app/state";
+
 import { showModal } from "./modals";
 
-const [quoteId, setQuoteId] = createSignal(0);
+const [quoteId, setQuoteId] = createAppSignal(0);
 
 export { quoteId };
 

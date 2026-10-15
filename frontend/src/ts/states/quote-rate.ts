@@ -1,4 +1,5 @@
-import { createSignal } from "solid-js";
+import { createAppSignal } from "../../app/state";
+
 import { Language } from "@oxytype/schemas/languages";
 import Ape from "../ape";
 import { Quote } from "../controllers/quotes-controller";
@@ -14,8 +15,8 @@ type QuoteStats = {
   language?: Language;
 };
 
-const [selectedQuote, setSelectedQuote] = createSignal<Quote | null>(null);
-const [quoteStats, setQuoteStats] = createSignal<
+const [selectedQuote, setSelectedQuote] = createAppSignal<Quote | null>(null);
+const [quoteStats, setQuoteStats] = createAppSignal<
   QuoteStats | null | Record<string, never>
 >(null);
 

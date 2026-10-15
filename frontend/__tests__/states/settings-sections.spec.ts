@@ -1,3 +1,4 @@
+import { createRoot } from "solid-js";
 import { afterEach, describe, expect, it } from "vite-plus/test";
 // Browser entry shares the schema's ESM Zod constructors.
 import { safeParse, serialize } from "zod-urlsearchparams/dist/index.mjs";
@@ -9,6 +10,7 @@ import {
   readSettingsGetParameters,
   setCurrentSettingsSection,
   SettingsUrlParamsSchema,
+  useSettingsSectionEffects,
 } from "../../src/ts/states/settings-sections";
 
 afterEach(() => {
@@ -90,11 +92,16 @@ describe("settings sections", () => {
   it.each(accountSections)(
     "returns to general settings after signing out of %s",
     async (tab) => {
+      const dispose = createRoot((dispose) => {
+        useSettingsSectionEffects();
+        return dispose;
+      });
       setUserId("settings-user");
       readSettingsGetParameters({ tab });
       setUserId(null);
       await Promise.resolve();
       expect(getCurrentSettingsSection()).toBe("behavior");
+      dispose();
     },
   );
 
