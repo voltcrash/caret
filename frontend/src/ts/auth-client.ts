@@ -1,8 +1,5 @@
 import { captureAccount } from "../app/account-scope";
 import { batch, onCleanup, createSignal } from "solid-js";
-import { createAuthClient } from "better-auth/client";
-import { deviceAuthorizationClient } from "better-auth/client/plugins";
-import { dashClient } from "@better-auth/infra/client";
 import { envConfig } from "virtual:env-config";
 import { createAppOwned } from "../app/application";
 import { authReadiness } from "../app/readiness";
@@ -12,38 +9,8 @@ import { googleSignUpEvent } from "./events/google-sign-up";
 import { createEvent } from "./hooks/createEvent";
 import { SnapshotInitError } from "./utils/snapshot-init-error";
 
-function createOxytypeAuthClient() {
-  const authURL = new URL(
-    `${envConfig.backendUrl.replace(/\/$/, "")}/auth`,
-    window.location.origin,
-  );
-  return createAuthClient({
-    baseURL: authURL.href,
-    basePath: authURL.pathname,
-    fetchOptions: {
-      credentials: "include",
-      ...(envConfig.devOffline
-        ? {
-            customFetchImpl: async () =>
-              Response.json(
-                {
-                  message:
-                    "Authentication is unavailable in frontend-only development",
-                },
-                { status: 503 },
-              ),
-          }
-        : {}),
-    },
-    plugins: [dashClient(), deviceAuthorizationClient()],
-  });
-}
-type OxytypeAuthClient = ReturnType<typeof createOxytypeAuthClient>;
-const authClient = createAppOwned(createOxytypeAuthClient);
-/** Built on first browser use, never while the module is evaluated. */
-export function getAuthClient(): OxytypeAuthClient {
-  return authClient();
-}
+import { getAuthClient } from "../features/auth/client.client";
+export { getAuthClient };
 import type { AuthUser, SocialProvider } from "./auth-types";
 export type { AuthUser, SocialProvider } from "./auth-types";
 const [getAuthenticatedUser, setAuthenticatedUser] = appSignal(() =>
