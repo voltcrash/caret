@@ -6,6 +6,16 @@ import tailwindcss from "@tailwindcss/vite";
 import { frontendLint } from "./lint.config";
 import { fontStyles } from "./vite-plugins/font-styles";
 
+// Legacy `src/ts` modules are browser state unless explicitly SSR-safe (pure
+// standalone presentation). Patterns match root-relative paths.
+const ssrSafeLegacyFiles = [
+  "src/ts/components/standalone/OAuthCallback.tsx",
+  "src/ts/components/standalone/StandaloneHeader.tsx",
+  "src/ts/components/common/Fa.tsx",
+  "src/ts/utils/cn.ts",
+  "src/ts/types/**",
+];
+
 export default defineConfig(({ mode }) => ({
   lint: { ...frontendLint },
   publicDir: "static",
@@ -13,7 +23,9 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     dedupe: ["solid-js", "@tanstack/solid-router", "@tanstack/solid-query"],
   },
-  ssr: { noExternal: ["solid-js", "@tanstack/solid-router", "@solidjs/meta"] },
+  ssr: {
+    noExternal: ["solid-js", "@tanstack/solid-router", "@solidjs/meta"],
+  },
   environments: {
     ssr: {
       optimizeDeps: {
@@ -50,14 +62,12 @@ export default defineConfig(({ mode }) => ({
         behavior: "error",
         client: {
           specifiers: [/^@oxytype\/backend/],
-          files: ["**/backend/src/**"],
+          // User file lists replace Start's defaults; keep `.server` denied.
+          files: ["**/backend/src/**", "**/*.server.*"],
         },
         server: {
-          files: [
-            "**/frontend/src/ts/index.ts",
-            "**/frontend/src/ts/test/**",
-            "**/*.client.ts",
-          ],
+          files: ["src/ts/**", "**/*.client.*"],
+          excludeFiles: ["**/node_modules/**", ...ssrSafeLegacyFiles],
         },
       },
     }),
@@ -69,7 +79,9 @@ export default defineConfig(({ mode }) => ({
   define: {
     "import.meta.env.OXYTYPE_OFFLINE": JSON.stringify(mode === "offline"),
   },
-  build: { outDir: mode === "runtime-test" ? "dist/start-test" : "dist/start" },
+  build: {
+    outDir: mode === "runtime-test" ? "dist/start-test" : "dist/start",
+  },
   server: { port: 3000, strictPort: true },
   clearScreen: false,
 }));
