@@ -1,6 +1,6 @@
 import { BASE_CONFIGURATION } from "@oxytype/schemas/default-configuration";
 import { defineConfig, mergeConfig, type PreviewServer } from "vite-plus";
-import config from "./vite.config";
+import config from "./vite.legacy.config";
 
 /** Server-side fixtures preserve browser HTTP caching during measurements. */
 export default defineConfig(async (env) =>

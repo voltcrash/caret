@@ -3,6 +3,10 @@
   "version": "1.14.3",
   "private": true,
   "license": "GPL-3.0",
+  "exports": {
+    "./runtime": "./src/runtime/env.ts",
+    "./jobs": "./src/runtime/tasks.ts"
+  },
   "scripts": {
     "lint": "vp lint . --type-aware --type-check --format agent",
     "lint-fast": "vp lint . --format agent",

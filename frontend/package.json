@@ -13,9 +13,9 @@
     "measure-eager-js": "tsx scripts/measure-eager-js.ts",
     "dep-graph": "madge -c -i \"dep-graph.png\" ./src/ts",
     "ts-check": "vp lint . --type-aware --type-check --format agent",
-    "build": "vp run madge && vp build",
+    "build": "vp run madge && vp build --config vite.legacy.config.ts",
     "madge": "madge --circular --extensions ts,tsx ./src",
-    "start": "vp preview --port 3000",
+    "start": "vp preview --config vite.legacy.config.ts --port 3000",
     "dev": "vp dev",
     "test": "vp test run",
     "test-e2e": "playwright test",
@@ -27,7 +27,10 @@
     "generate-icon-types": "tsx scripts/generate-fontawesome-types.ts",
     "benchmark-word-rendering": "playwright test --config playwright.benchmark.config.ts",
     "benchmark-migration": "playwright test --config playwright.migration.config.ts",
-    "migration-performance": "tsx scripts/migration-performance.ts"
+    "migration-performance": "tsx scripts/migration-performance.ts",
+    "build:start": "vp build",
+    "dev:legacy": "vp dev --config vite.legacy.config.ts",
+    "dev:offline": "vp dev --mode offline"
   },
   "dependencies": {
     "@better-auth/infra": "0.4.14",
