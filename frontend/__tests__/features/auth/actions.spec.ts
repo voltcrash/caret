@@ -131,3 +131,35 @@ it("guards private routes and preserves local redirect search/hash", async () =>
     expect(authRedirect(value)).toBe("/");
   }
 });
+
+it("reauthenticates with the remaining provider before unlinking and refreshes provider UI", async () => {
+  state = {
+    ...state,
+    user: {
+      ...user,
+      providerData: [
+        ...user.providerData,
+        { providerId: "google", email: user.email },
+      ],
+    },
+  };
+  mocks.accounts.mockResolvedValue({
+    data: [{ id: "linked-github", providerId: "github" }],
+    error: null,
+  });
+  mocks.unlink.mockImplementation(async () => {
+    state = {
+      ...state,
+      user: {
+        ...user,
+        providerData: [{ providerId: "google", email: user.email }],
+      },
+    };
+    return { data: { success: true }, error: null };
+  });
+  await createAuthActions(client, invalidated).unlink("github");
+  expect(mocks.popup).toHaveBeenCalledWith("google");
+  expect(mocks.unlink).toHaveBeenCalledWith({ accountId: "linked-github" });
+  expect(client.getQueryData(sessionKey)).toEqual(state);
+  expect(invalidated).toHaveBeenCalledTimes(2);
+});
