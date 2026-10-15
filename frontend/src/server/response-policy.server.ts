@@ -2,7 +2,7 @@ import "@tanstack/solid-start/server-only";
 
 // The only permitted inline event is the static fallback's cache recovery action.
 // SHA-256 of the exact warnings.html onclick body, checked by the boundary suite.
-export const recoveryHash = "iiia5AKJZAREDabTiAT6lsvuOYHKDHC9Rnk0lyzkrZo=";
+const recoveryHash = "iiia5AKJZAREDabTiAT6lsvuOYHKDHC9Rnk0lyzkrZo=";
 
 export function applyResponsePolicy(
   response: Response,

@@ -23,6 +23,11 @@ export default {
         "src/ts/types/*.d.ts",
         "src/styles/{tailwind,standalone}.css",
         "scripts/*.{ts,cjs}",
+        // Legacy rollback build (Stage 7 retires it) and its HTML entry graph.
+        "vite.legacy.config.ts",
+        "src/ts/index.ts",
+        // Built-Worker test entry, selected by `vp build --mode runtime-test`.
+        "__tests__/start/worker-entry.ts",
       ],
       project: [
         "src/**/*.{ts,tsx,css}",

@@ -5,7 +5,7 @@ import { withRuntime, type WorkerEnv } from "@oxytype/backend/runtime";
 import { getAuth } from "@oxytype/backend/auth/session";
 
 const root = resolve(import.meta.dirname, "../../..");
-export const testSecret = "stage-one-local-only-secret-at-least-32-characters";
+const testSecret = "stage-one-local-only-secret-at-least-32-characters";
 
 export async function createWorkerd(
   testEntry = false,
