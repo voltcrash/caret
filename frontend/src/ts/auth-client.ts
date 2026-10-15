@@ -6,7 +6,6 @@ import { authReadiness } from "../app/readiness";
 import { appSignal } from "../app/state";
 import { setUserId } from "./states/core";
 import { googleSignUpEvent } from "./events/google-sign-up";
-import { createEvent } from "./hooks/createEvent";
 import { SnapshotInitError } from "./utils/snapshot-init-error";
 
 import { getAuthClient } from "../features/auth/client.client";
@@ -32,15 +31,8 @@ const authState = createAppOwned(() => {
   return state;
 });
 
-export function checkAuthResult<T>(result: {
-  data: T;
-  error: { message?: string } | null;
-}): T {
-  if (result.error !== null) {
-    throw new Error(result.error.message ?? "Authentication failed");
-  }
-  return result.data;
-}
+import { checkAuthResult } from "../features/auth/result";
+export { checkAuthResult };
 
 export function setUserState(user: AuthUser | null): void {
   batch(() => {
@@ -184,28 +176,8 @@ export async function deleteUnfinishedUser(): Promise<void> {
   );
 }
 
-type OAuthRequest = {
-  provider: SocialProvider;
-  link: boolean;
-  rememberMe: boolean;
-  resolve: () => void;
-  reject: (error: Error) => void;
-};
-export const oauthRequestEvent = createEvent<OAuthRequest>();
-export async function requestOAuth(
-  provider: SocialProvider,
-  link = false,
-  rememberMe = true,
-): Promise<void> {
-  if (envConfig.devOffline) {
-    throw new Error(
-      "Authentication is unavailable in frontend-only development",
-    );
-  }
-  return new Promise((resolve, reject) =>
-    oauthRequestEvent.dispatch({ provider, link, rememberMe, resolve, reject }),
-  );
-}
+import { requestOAuth } from "../features/auth/popup.client";
+export { requestOAuth, oauthRequestEvent } from "../features/auth/popup.client";
 export async function signInWithPopup(
   provider: SocialProvider,
   rememberMe: boolean,
