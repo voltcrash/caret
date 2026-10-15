@@ -22,6 +22,7 @@ import {
   getActiveTagsPB,
   getTag,
   getTags,
+  saveLocalTagPB,
   toggleTagActive,
   waitForTagsReady,
 } from "../../src/ts/collections/tags";
@@ -74,5 +75,72 @@ describe("tags getters", () => {
     await toggleTagActive({ tagId: "b", noSave: true });
     expect(runs).toBe(1);
     dispose();
+  });
+});
+
+describe("saveLocalTagPB", () => {
+  const save = (wpm: number, punctuation = false): void =>
+    saveLocalTagPB(
+      "a",
+      "time",
+      "15",
+      punctuation,
+      false,
+      "english",
+      "normal",
+      false,
+      wpm,
+      95,
+      wpm + 5,
+      80,
+    );
+
+  it("creates the mode, updates matching bests and adds new settings", async () => {
+    await waitForTagsReady();
+    save(70);
+    expect(getTag("a")?.personalBests?.time["15"]).toEqual([
+      expect.objectContaining({ wpm: 70, raw: 75, punctuation: false }),
+    ]);
+    save(90);
+    save(60, true);
+    expect(getTag("a")?.personalBests?.time["15"]).toEqual([
+      expect.objectContaining({ wpm: 90, raw: 95, punctuation: false }),
+      expect.objectContaining({ wpm: 60, punctuation: true }),
+    ]);
+    expect(getTag("a")?.personalBests?.words).toBeUndefined();
+  });
+
+  it("ignores quote mode and unknown tags", async () => {
+    await waitForTagsReady();
+    const before = structuredClone(getTag("a")?.personalBests);
+    saveLocalTagPB(
+      "a",
+      "quote",
+      "1",
+      false,
+      false,
+      "english",
+      "normal",
+      false,
+      1,
+      1,
+      1,
+      1,
+    );
+    saveLocalTagPB(
+      "missing",
+      "time",
+      "15",
+      false,
+      false,
+      "english",
+      "normal",
+      false,
+      1,
+      1,
+      1,
+      1,
+    );
+    expect(getTag("a")?.personalBests).toEqual(before);
   });
 });
