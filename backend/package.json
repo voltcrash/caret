@@ -5,7 +5,13 @@
   "license": "GPL-3.0",
   "exports": {
     "./runtime": "./src/runtime/env.ts",
-    "./jobs": "./src/runtime/tasks.ts"
+    "./jobs": "./src/runtime/tasks.ts",
+    "./services/public": "./src/services/public.ts",
+    "./rate-counter": "./src/policies/rate-counter.ts",
+    "./client-ip": "./src/policies/client-ip.ts",
+    "./auth": "./src/auth/handler.ts",
+    "./ip-key": "./src/policies/ip-key.ts",
+    "./auth/session": "./src/init/auth.ts"
   },
   "scripts": {
     "lint": "vp lint . --type-aware --type-check --format agent",

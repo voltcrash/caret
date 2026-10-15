@@ -1,8 +1,6 @@
 import MonkeyError from "../utils/error";
 import { statement } from "../db/client";
 import { envValue } from "../runtime/env";
-import { Address6 } from "ip-address";
-import { isIP } from "net";
 import { isDevEnvironment } from "../utils/misc";
 import {
   limits,
@@ -16,43 +14,19 @@ import { ApiContext, ApiMiddleware, HttpRequest } from "../api/http";
 
 export const REQUEST_MULTIPLIER = 100;
 let limiterSequence = 0;
-type CounterResult = { points: number; expiresAt: number };
-async function consume(
-  key: string,
-  duration: number,
-  points = 1,
-): Promise<CounterResult> {
-  const now = Date.now();
-  const result = await statement(
-    "INSERT INTO rate_counters(key,points,expires_at) VALUES(?,?,?) ON CONFLICT(key) DO UPDATE SET points=CASE WHEN expires_at<=? THEN excluded.points ELSE points+excluded.points END,expires_at=CASE WHEN expires_at<=? THEN excluded.expires_at ELSE expires_at END RETURNING points,expires_at AS expiresAt",
-    key,
-    points,
-    now + duration,
-    now,
-    now,
-  ).first<CounterResult>();
-  if (result === null) throw new Error("Rate counter missing");
-  return result;
-}
+import { consume, type CounterResult } from "../policies/rate-counter";
+import { clientIp } from "../policies/client-ip";
 
 export function getClientIp(c: ApiContext): string {
-  // One trusted proxy: the rightmost forwarded address is the immediate client.
-  const forwarded = c.req.header("x-forwarded-for")?.split(",").pop()?.trim();
-  const candidates = [
-    c.req.header("cf-connecting-ip"),
-    envValue("MODE") === "dev" ? forwarded : undefined,
+  return clientIp(
+    c.req.raw.headers,
+    envValue("MODE") === "dev",
     c.env?.incoming?.socket.remoteAddress,
-  ];
-  return (
-    candidates.find((ip) => ip !== undefined && ip !== "") ?? "255.255.255.255"
   );
 }
 
-export function getIpKey(ip: string): string {
-  return isIP(ip) === 6
-    ? `${new Address6(`${ip}/56`).startAddress().correctForm()}/56`
-    : ip;
-}
+export { getIpKey } from "../policies/ip-key";
+import { getIpKey } from "../policies/ip-key";
 
 function getKey(req: HttpRequest): string {
   return getIpKey(req.ip);
