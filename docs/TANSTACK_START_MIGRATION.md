@@ -1,7 +1,7 @@
 # TanStack Start migration: architecture and execution plan
 
-Status: Stage 0 complete; [ledger and handoff](tanstack-start/README.md).
-Stage 1 not started. No application runtime migration performed yet.
+Status: Stages 0–1 complete; [ledger and handoffs](tanstack-start/README.md).
+Stage 2 not started. Production still serves the legacy app (rollback build).
 Prepared: 2026-10-15. Scope: Oxytype web application and its server/runtime.
 
 ## Outcome
@@ -305,6 +305,8 @@ no unresolved product-scope decision blocks foundation work.
 
 ### 1.1 Add the real Start foundation
 
+Status: complete. [Stage 1 ledger](tanstack-start/stage-1.md).
+
 - Pin compatible Start/Solid Router/build packages; adapt `frontend/vite.config.ts`
   for Start, Solid, Tailwind, static directory, workspace aliases, and generated routes.
 - Provide one local Start/Cloudflare development entry with same-origin functions,
@@ -319,6 +321,8 @@ no unresolved product-scope decision blocks foundation work.
 
 ### 1.2 Prove one Worker handles all invocation types
 
+Status: complete. [Stage 1 ledger](tanstack-start/stage-1.md).
+
 - Bind Start fetch to `withRuntime`; wire queue/scheduled exports to existing jobs.
   Reuse the local D1 persistence location or migrate its dev configuration explicitly.
 - Exercise one real read service through a server function, including during SSR;
@@ -329,6 +333,8 @@ no unresolved product-scope decision blocks foundation work.
   callbacks; keep references explicit where runtime lifetime requires it.
 
 ### 1.3 Port document, assets, and response policy
+
+Status: complete. [Stage 1 ledger](tanstack-start/stage-1.md).
 
 - Bring over fonts, semantic theme CSS, metadata, icons, manifest, public assets,
   and route-independent shell. Keep SSR markup stable before browser preferences load.
@@ -341,6 +347,8 @@ no unresolved product-scope decision blocks foundation work.
   allowlisting. Secrets come from runtime bindings, not public build-time config.
 
 ### 1.4 Establish migration CI and staging build
+
+Status: complete. [Stage 1 ledger](tanstack-start/stage-1.md).
 
 - Add Start build + Worker dry-run and SSR/workerd checks to CI while retaining
   existing checks for code not yet migrated. Use a migration-only staging target.
@@ -688,9 +696,10 @@ and whitespace directly instead of treating a skipped formatter run as validatio
 
 No blocking product-scope questions. Stage 0 recorded measured budgets, published
 and uncertain external contracts (conservatively retained), and the old-client
-compatibility window. Stage 1 must prove pinned Solid Query SSR support and
-Vite+/Cloudflare integration. Record version/proof findings in the ledger; ask
-only if evidence requires a product decision outside these defaults.
+compatibility window. Stage 1 proved pinned Solid Query SSR support and
+Vite+/Cloudflare integration ([evidence](tanstack-start/stage-1.md)). Record
+later findings in the ledger; ask only if evidence requires a product decision
+outside these defaults.
 
 ## Official references
 

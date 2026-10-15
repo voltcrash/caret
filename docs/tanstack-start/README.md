@@ -10,7 +10,12 @@ No preceding implementation stage or handoff exists. Prerequisite: merged
 | 0.2 Repeated baselines/budgets | Complete | [Measurements, budgets, checks](baseline.md) |
 | 0.3 Architecture/release contract | Complete | [Compatibility](contract.md), [rollback/old tabs](release.md) |
 | Stage 0 exit | Complete | [Handoff](stage-0-handoff.md); no unresolved required checks/product questions |
-| Stages 1–8 | Not started | Separate assignments |
+| 1.1 Start foundation | Complete | [Stage 1](stage-1.md) |
+| 1.2 One Worker, all invocations | Complete | [Stage 1](stage-1.md), workerd suite |
+| 1.3 Document/assets/response policy | Complete | [Stage 1](stage-1.md), document suite |
+| 1.4 CI and staging build | Complete | [Stage 1](stage-1.md), `ci-start`, browser suite |
+| Stage 1 exit | Complete | [Stage 1 handoff](stage-1.md#next-stage-prerequisites) |
+| Stages 2–8 | Not started | Separate assignments |
 
 Stage 0 moves responsibility for migration evidence from an unverified proposal
 to this versioned ledger and reproducible checks. It moves no application
