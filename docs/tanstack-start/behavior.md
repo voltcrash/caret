@@ -18,7 +18,7 @@ Paths below are repo-relative. Start route names refer to the target architectur
 | `/privacy-policy.html` | standalone `src/privacy-policy.html` | SSR public route with literal-dot URL | direct URL/content/status Stage 1/4 |
 | `/oauth-callback.html` | standalone HTML + callback script; popup handshake | minimal Start route, client completion | origin + popup source + random request ID verified; preserve URL Stage 3 |
 | `/404.html`, unknown URL | standalone page; extensionless SPA fallback can return 200 | Start not-found document with HTTP 404 | deliberate status correction in plan; direct document checks Stage 4 |
-| `/index.html`, `/privacy-policy`, `/oauth-callback`, `/404` | public build entries / Worker extensionless `.html` lookup | explicit redirects to canonical `/`, `.html` routes | preserve query/hash; no additional standalone source entries found |
+| `/index.html`, `/index`, `/privacy-policy`, `/oauth-callback`, `/404` | public build entries / Worker extensionless `.html` lookup | explicit redirects to canonical `/`, `.html` routes | preserve query/hash; no additional standalone source entries found |
 | Trailing slash, encoded profile ID, hashes | Router + `api/path.ts` case/path normalization; Worker rejects encoded separators/dot escape | validated Router params/search + server-route normalization | navigation/path HTTP tests; preserve malformed URL rejection |
 | External/modified/download links | `Link`, router-marked buttons, LinkPrefetch + global events | Router links and native anchors | keyboard/back/forward/modifier/accessibility; delete custom prefetch Stage 4 |
 | Downloads | client-generated results CSV, settings JSON, saved text, event log and screenshot; static language/quote/font/theme assets | feature-owned client download/canvas; public static assets | existing modal/screenshot checks; no invented HTTP download endpoint |
@@ -96,7 +96,7 @@ they are unused. No endpoint is approved for unconditional deletion in Stage 0.
 | `/api/auth/*` | Better Auth; social signin/link/unlink, get-session/list-accounts, signout, device/code/token/review/approve/deny, dashboard | auth server route; delegate untouched body/cookies, preserve all Set-Cookie; direct auth + device D1 suites Stage 3 |
 | `/api/auth/cancel-sign-up` POST | session required; origin checks, 409 if application user exists | auth route over shared service; retain cancellation semantics |
 | `/api` GET (API-only `/`) | health/version/uptime; maintenance + root limiter/context | retained health route, HTTP tests; remove legacy dispatcher Stage 7 |
-| `/api/docs/{internal,internal.json,public,public.json}` | static OpenAPI/Redoc; docs root redirect | retained docs/download routes, regenerate external contract only Stage 6 |
+| `/api/docs/{internal,internal.json,public,public.json}` | static OpenAPI/Redoc; docs root serves public HTML | retained docs/download routes, regenerate external contract only Stage 6 |
 | `/api/configure[/*]` | dev-only static config UI; uses configuration GET/schema/PATCH | dev server route/static asset; retain dev/admin policy; exclude prod |
 | Queue consumer | `runtime/tasks.ts`: validated outbox/job IDs, leases, retries/idempotency, `withRuntime` per invocation | Worker queue → jobs/services; tasks/reward D1 tests Stage 1/2/7 |
 | Scheduled consumer | every minute dispatch/recovery, 15-minute aggregates, hourly cleanup | Worker scheduled → jobs/services; preserve Cron, IDs, claims, retention |
@@ -111,7 +111,7 @@ audit and response status/envelope/ETag behavior. Better Auth bypasses legacy
 body parsing, owns its CSRF/cookie/rate behavior, adds explicit origin checks with
 validated native device/bearer and signed dashboard exceptions. Preserve trusted
 CF IP policy (dev-only forwarded fallback), IPv6 /56 and fresh-session <60s rules.
-The request limiter currently numbers identities by construction order: replace
+Developer operations also require `onlyAvailableOnDev()` in `api/routes/dev.ts`; controller checks (captcha, bans, privacy, quota and validation) must move into services alongside metadata policy. The request limiter currently numbers identities by construction order: replace
 with stable operation keys in Stage 3; do not accidentally reset limits per request.
 
 Remaining adapters: Hono entry + path/ts-rest/controller adapters (Stage 2/3/6/7),
