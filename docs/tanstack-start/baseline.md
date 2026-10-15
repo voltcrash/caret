@@ -89,7 +89,10 @@ Measurement definitions/limits:
   passes separately; production readiness passes; rendering passes all three runs.
 - Frontend production fixture build and backend docs/assets/Worker dry-run pass.
   Frontend/backend/shared lint + typecheck pass, using agent format. Inventory
-  freshness, frozen-budget comparison and commit formatting/lint checks pass.
+  freshness, frozen-budget comparison, unused-code/dependency analysis (`vp run knip`),
+  changed-file formatting, local Markdown links and whitespace checks pass. Empty
+  eager asset graphs now fail explicitly; the negative fixture and actual artifact
+  were checked after the guard change.
 - No pre-existing test failure was observed. Existing warnings: duplicated Solid
   test plugins, deprecated Vitest optimizer config, jsdom navigation, module-owned
   Solid roots/cleanups, Node module-type and NO_COLOR warnings. Not migration

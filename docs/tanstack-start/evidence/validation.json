@@ -70,5 +70,44 @@
     "exitCode": 0,
     "result": "5 local workerd instances, 50 persisted valid saves, D1 counts, CPU batches",
     "logSha256": "5c78969eafbcba8e8e69e83b43ddf89d9d5df81e4566f28a4bfe399d52ef19f2"
+  },
+  {
+    "command": "vp -C backend test run __tests__/migration-inventory.spec.ts",
+    "exitCode": 0,
+    "result": "3 inventory tests pass",
+    "logSha256": "a106f70ee2afa7c2e964b360f8e1af0e548f896e8b3df3bdd462e4236e6717d5"
+  },
+  {
+    "command": "vp -C frontend test run __tests__/utils/migration-performance.spec.ts",
+    "exitCode": 0,
+    "result": "4 performance gate tests pass",
+    "logSha256": "02ed27a38ec40d67bc57c3fe8bfd9af7fbabe2ce4f42e495e2ae4cf9e0c0d97e"
+  },
+  {
+    "command": "vp run knip",
+    "exitCode": 0,
+    "result": "unused-code/dependency analysis passes",
+    "logSha256": "f5ecb38db5e9ab7ee6bc00e0c7dec9330059c71d6b56a1d0e7f064170818307f"
+  },
+  {
+    "command": "vp fmt --check --no-error-on-unmatched-pattern <changed files>",
+    "exitCode": 0,
+    "result": "All 25 matched files formatted; markdown links and whitespace checked separately"
+  },
+  {
+    "command": "vp run --filter @oxytype/backend migration-inventory --check",
+    "exitCode": 0,
+    "result": "82-operation ledger fresh"
+  },
+  {
+    "command": "vp run --filter @oxytype/frontend migration-performance check ../docs/tanstack-start/evidence/budgets.json ../docs/tanstack-start/evidence/measurements.json",
+    "exitCode": 0,
+    "result": "All frozen budgets pass"
+  },
+  {
+    "command": "vp exec node <temporary empty-build copy of measure-eager-js.ts>",
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "result": "Negative check passes: empty eager graph explicitly rejected; real artifact still reports 922918 raw / 321462 gzip bytes"
   }
 ]
