@@ -78,6 +78,7 @@ test("render 1,000 words with browser layout", async ({ page }) => {
       dom: summarize(dom),
       layout: summarize(layout),
       typing: summarize(typing),
+      raw: { dom, layout, typing },
     };
   });
   await expect(page.locator("#words .word")).toHaveCount(1_000);
