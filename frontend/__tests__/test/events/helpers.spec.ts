@@ -2,7 +2,10 @@ import { describe, it, expect, beforeEach, vi } from "vite-plus/test";
 
 const mockConfig = vi.hoisted(() => ({ funbox: "" }));
 vi.mock("../../../src/ts/config/store", () => ({
-  Config: mockConfig,
+  getMutableConfig: (() => {
+    const storedConfig = mockConfig;
+    return () => storedConfig;
+  })(),
 }));
 
 import {

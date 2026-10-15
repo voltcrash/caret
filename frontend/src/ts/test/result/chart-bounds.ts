@@ -1,5 +1,5 @@
 import { resultAnnotation } from "./context";
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import { get as getTypingSpeedUnit } from "../../utils/typing-speed-units";
 import {
   getResultChartDataset,
@@ -45,7 +45,9 @@ export function updateMinMaxChartValues(): void {
   }
 
   if (maxAnnotation !== null) {
-    const typingSpeedUnit = getTypingSpeedUnit(Config.typingSpeedUnit);
+    const typingSpeedUnit = getTypingSpeedUnit(
+      getMutableConfig().typingSpeedUnit,
+    );
     const lpbRange = typingSpeedUnit.fromWpm(20);
     if (
       maxChartVal >= maxAnnotation - lpbRange &&
@@ -59,7 +61,7 @@ export function updateMinMaxChartValues(): void {
 
   minChartVal = 0;
 
-  if (!Config.startGraphsAtZero) {
+  if (!getMutableConfig().startGraphsAtZero) {
     minChartVal = Math.min(...values);
 
     // Round down to nearest multiple of 10

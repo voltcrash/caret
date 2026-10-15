@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach } from "vite-plus/test";
 import { replace } from "../../src/ts/test/british-english";
-import { Config } from "../../src/ts/config/store";
+import { getMutableConfig } from "../../src/ts/config/store";
 
 describe("british-english", () => {
   describe("replace", () => {
-    beforeEach(() => (Config.mode = "time"));
+    beforeEach(() => (getMutableConfig().mode = "time"));
 
     it("should not replace words with no rule", async () => {
       await expect(replace("test", "")).resolves.toEqual("test");
@@ -23,7 +23,7 @@ describe("british-english", () => {
 
     it("should not replace in quote mode if previousWord matches excepted words", async () => {
       //GIVEN
-      Config.mode = "quote";
+      getMutableConfig().mode = "quote";
 
       //WHEN/THEN
       await expect(replace("tire", "will")).resolves.toEqual("tire");

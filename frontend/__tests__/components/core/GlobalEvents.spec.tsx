@@ -24,11 +24,14 @@ const { state, focusWords, unfocus, popupVisible, notify } = vi.hoisted(() => ({
   notify: vi.fn(),
 }));
 vi.mock("../../../src/ts/config/store", () => ({
-  Config: {
-    get showOutOfFocusWarning() {
-      return state.warning;
-    },
-  },
+  getMutableConfig: (() => {
+    const storedConfig = {
+      get showOutOfFocusWarning() {
+        return state.warning;
+      },
+    };
+    return () => storedConfig;
+  })(),
 }));
 vi.mock("../../../src/ts/states/core", () => ({
   getActivePage: () => state.page,

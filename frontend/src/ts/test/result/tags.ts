@@ -1,6 +1,6 @@
 import { resultCanGetPb } from "./crown";
 import { result, resultAnnotation } from "./context";
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import * as Numbers from "@oxytype/util/numbers";
 import { get as getTypingSpeedUnit } from "../../utils/typing-speed-units";
 import type { LabelPosition } from "chartjs-plugin-annotation";
@@ -34,13 +34,13 @@ export async function updateTags(dontSave: boolean): Promise<void> {
   for (const tag of activeTags) {
     const tpb = getLocalTagPB(
       tag._id,
-      Config.mode,
+      getMutableConfig().mode,
       result.mode2,
-      Config.punctuation,
-      Config.numbers,
-      Config.language,
-      Config.difficulty,
-      Config.lazyMode,
+      getMutableConfig().punctuation,
+      getMutableConfig().numbers,
+      getMutableConfig().language,
+      getMutableConfig().difficulty,
+      getMutableConfig().lazyMode,
     );
     const item: ResultTag = {
       id: tag._id,
@@ -49,9 +49,11 @@ export async function updateTags(dontSave: boolean): Promise<void> {
       pb: false,
     };
     items.push(item);
-    const typingSpeedUnit = getTypingSpeedUnit(Config.typingSpeedUnit);
+    const typingSpeedUnit = getTypingSpeedUnit(
+      getMutableConfig().typingSpeedUnit,
+    );
     if (
-      Config.mode !== "quote" &&
+      getMutableConfig().mode !== "quote" &&
       !dontSave &&
       (await resultCanGetPb()).value
     ) {
@@ -59,13 +61,13 @@ export async function updateTags(dontSave: boolean): Promise<void> {
         //new pb for that tag
         saveLocalTagPB(
           tag._id,
-          Config.mode,
+          getMutableConfig().mode,
           result.mode2,
-          Config.punctuation,
-          Config.numbers,
-          Config.language,
-          Config.difficulty,
-          Config.lazyMode,
+          getMutableConfig().punctuation,
+          getMutableConfig().numbers,
+          getMutableConfig().language,
+          getMutableConfig().difficulty,
+          getMutableConfig().lazyMode,
           result.wpm,
           result.acc,
           result.rawWpm,
@@ -88,7 +90,7 @@ export async function updateTags(dontSave: boolean): Promise<void> {
           label: {
             backgroundColor: themecolors.sub,
             font: {
-              family: Config.fontFamily.replace(/_/g, " "),
+              family: getMutableConfig().fontFamily.replace(/_/g, " "),
               size: 11,
               style: "normal",
               weight: Chart.defaults.font.weight,

@@ -1,4 +1,4 @@
-import { Config } from "../config/store";
+import { getMutableConfig } from "../config/store";
 import { getCurrentInput } from "./events/data";
 import {
   isDirectionReversed,
@@ -39,7 +39,7 @@ export function updatePosition(noAnim = false): void {
     letterIndex: getCurrentInput().length + CompositionState.getData().length,
     isLanguageRightToLeft: isLanguageRightToLeft(),
     isDirectionReversed: isDirectionReversed(),
-    animate: Config.smoothCaret !== "off" && !noAnim,
+    animate: getMutableConfig().smoothCaret !== "off" && !noAnim,
   });
 }
 
@@ -54,7 +54,10 @@ export function setCaret(controller: CaretController): () => void {
 }
 
 export function getCaret(): CaretController {
-  return (caret ??= new CaretController(getCaretElement(), Config.caretStyle));
+  return (caret ??= new CaretController(
+    getCaretElement(),
+    getMutableConfig().caretStyle,
+  ));
 }
 
 export function show(noAnim = false): void {

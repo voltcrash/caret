@@ -1,6 +1,6 @@
 import * as CommandlineLists from "./lists";
 
-import { Config } from "../config/store";
+import { getMutableConfig } from "../config/store";
 import * as AnalyticsController from "../controllers/analytics-controller";
 
 import { CommandWithValidation } from "./types";
@@ -112,7 +112,7 @@ export async function runActiveCommand(): Promise<void> {
     await updateActiveCommand();
   } else {
     command.exec?.({});
-    if (Config.singleListCommandLine === "on") {
+    if (getMutableConfig().singleListCommandLine === "on") {
       commandlineState.lastSingleListModeInputValue =
         commandlineState.inputValue;
     }

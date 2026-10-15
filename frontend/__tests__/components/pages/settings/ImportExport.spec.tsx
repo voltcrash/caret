@@ -4,7 +4,7 @@ import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 import "../../../__harness__/mock-static";
 import { Download } from "../../../../src/ts/components/common/Download";
 import { ImportExport } from "../../../../src/ts/components/pages/settings/custom-setting/ImportExport";
-import { Config } from "../../../../src/ts/config/store";
+import { getMutableConfig } from "../../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../../src/ts/constants/default-config";
 import {
   hideModalAndClearChain,
@@ -21,7 +21,7 @@ const writeText = vi.fn<(text: string) => Promise<void>>();
 const createObjectURL = vi.fn((_data: Blob) => "blob:settings");
 
 beforeEach(() => {
-  Object.assign(Config, getDefaultConfig());
+  Object.assign(getMutableConfig(), getDefaultConfig());
   writeText.mockReset().mockResolvedValue();
   createObjectURL.mockClear();
   vi.stubGlobal("navigator", { clipboard: { writeText } });
@@ -67,7 +67,11 @@ async function readBlob(blob: Blob): Promise<string> {
 }
 
 it("copies clean JSON, then downloads that same snapshot as settings.json", async () => {
-  Object.assign(Config, { theme: "miami_nights", ads: "result", monkey: true });
+  Object.assign(getMutableConfig(), {
+    theme: "miami_nights",
+    ads: "result",
+    monkey: true,
+  });
   const click = vi
     .spyOn(HTMLAnchorElement.prototype, "click")
     .mockImplementation(function (this: HTMLAnchorElement) {
@@ -90,7 +94,7 @@ it("copies clean JSON, then downloads that same snapshot as settings.json", asyn
   expect(copied).toContain('"customLayoutfluid": [\n    "qwerty",');
   expect(copied).not.toContain('"ads":');
   expect(copied).not.toContain('"monkey":');
-  Config.theme = "nord";
+  getMutableConfig().theme = "nord";
 
   fireEvent.click(view.getByRole("button", { name: "download" }));
   const blob = createObjectURL.mock.calls[0]?.[0];

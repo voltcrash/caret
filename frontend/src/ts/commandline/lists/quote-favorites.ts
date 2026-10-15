@@ -1,4 +1,4 @@
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import QuotesController, { Quote } from "../../controllers/quotes-controller";
 import {
   showErrorNotification,
@@ -19,7 +19,7 @@ const commands: Command[] = [
       return (
         isAuthenticated() &&
         quote !== null &&
-        Config.mode === "quote" &&
+        getMutableConfig().mode === "quote" &&
         !QuotesController.isQuoteFavorite(quote)
       );
     },
@@ -47,7 +47,7 @@ const commands: Command[] = [
       return (
         isAuthenticated() &&
         quote !== null &&
-        Config.mode === "quote" &&
+        getMutableConfig().mode === "quote" &&
         QuotesController.isQuoteFavorite(quote)
       );
     },

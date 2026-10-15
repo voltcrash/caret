@@ -6,7 +6,7 @@ import {
 import * as Arrays from "../utils/arrays";
 import { isColorDark, isColorLight } from "../utils/colors";
 
-import { Config, getConfig } from "../config/store";
+import { getMutableConfig, getConfig } from "../config/store";
 import { setConfig } from "../config/setters";
 import { configEvent } from "../events/config";
 import * as CustomThemes from "../states/custom-themes";
@@ -46,7 +46,7 @@ async function apply(
 
   const themeColors = isCustom
     ? convertCustomColorsToTheme(
-        customColorsOverride ?? Config.customThemeColors,
+        customColorsOverride ?? getMutableConfig().customThemeColors,
       )
     : themes[themeName];
 
@@ -57,13 +57,16 @@ async function apply(
 
 function updateThemeIndicator(nameOverride?: string): void {
   //text
-  let str: string = Config.theme;
+  let str: string = getMutableConfig().theme;
   if (randomTheme !== null) str = randomTheme;
 
-  if (Config.customTheme && nameOverride === undefined) {
+  if (getMutableConfig().customTheme && nameOverride === undefined) {
     // Match current custom theme by colors since Config does not store custom theme IDs
     const matchedTheme = untrack(CustomThemes.getCustomThemes).find((ct) =>
-      Arrays.areSortedArraysEqual(ct.colors, Config.customThemeColors),
+      Arrays.areSortedArraysEqual(
+        ct.colors,
+        getMutableConfig().customThemeColors,
+      ),
     );
 
     if (matchedTheme) {
@@ -77,11 +80,11 @@ function updateThemeIndicator(nameOverride?: string): void {
   str = str.replace(/_/g, " ");
 
   //fav icon
-  const currentTheme = nameOverride ?? randomTheme ?? Config.theme;
+  const currentTheme = nameOverride ?? randomTheme ?? getMutableConfig().theme;
   const isFavorite =
-    !Config.customTheme &&
+    !getMutableConfig().customTheme &&
     currentTheme !== null &&
-    Config.favThemes.includes(currentTheme as ThemeName);
+    getMutableConfig().favThemes.includes(currentTheme as ThemeName);
 
   setThemeIndicator({ text: str, isFavorite });
 }
@@ -117,7 +120,7 @@ async function set(
   });
   await apply(themeIdentifier, undefined, isAutoSwitch);
 
-  if (!isAutoSwitch && Config.autoSwitchTheme) {
+  if (!isAutoSwitch && getMutableConfig().autoSwitchTheme) {
     setConfig("autoSwitchTheme", false);
     showNoticeNotification("Auto switch theme disabled");
   }
@@ -131,10 +134,10 @@ export async function clearPreview(applyTheme = true): Promise<void> {
     if (applyTheme) {
       if (randomTheme !== null) {
         await apply(randomTheme);
-      } else if (Config.customTheme) {
+      } else if (getMutableConfig().customTheme) {
         await apply("custom");
       } else {
-        await apply(Config.theme);
+        await apply(getMutableConfig().theme);
       }
     }
   }
@@ -144,17 +147,23 @@ let themesList: (ThemeName | string)[] = [];
 
 async function changeThemeList(): Promise<void> {
   const themes = ThemesList;
-  if (Config.randomTheme === "fav" && Config.favThemes.length > 0) {
-    themesList = Config.favThemes;
-  } else if (Config.randomTheme === "light") {
+  if (
+    getMutableConfig().randomTheme === "fav" &&
+    getMutableConfig().favThemes.length > 0
+  ) {
+    themesList = getMutableConfig().favThemes;
+  } else if (getMutableConfig().randomTheme === "light") {
     themesList = themes.filter((t) => isColorLight(t.bg)).map((t) => t.name);
-  } else if (Config.randomTheme === "dark") {
+  } else if (getMutableConfig().randomTheme === "dark") {
     themesList = themes.filter((t) => isColorDark(t.bg)).map((t) => t.name);
-  } else if (Config.randomTheme === "on" || Config.randomTheme === "auto") {
+  } else if (
+    getMutableConfig().randomTheme === "on" ||
+    getMutableConfig().randomTheme === "auto"
+  ) {
     themesList = themes.map((t) => {
       return t.name;
     });
-  } else if (Config.randomTheme === "custom") {
+  } else if (getMutableConfig().randomTheme === "custom") {
     themesList = untrack(CustomThemes.getCustomThemes).map((ct) => ct._id);
   }
   Arrays.shuffle(themesList);
@@ -168,7 +177,7 @@ export async function randomizeTheme(): Promise<void> {
   }
 
   let filter = (_: string): boolean => true;
-  if (Config.randomTheme === "auto") {
+  if (getMutableConfig().randomTheme === "auto") {
     filter = prefersColorSchemeDark() ? isColorDark : isColorLight;
   }
 
@@ -185,7 +194,7 @@ export async function randomizeTheme(): Promise<void> {
 
   let colorsOverride: CustomThemeColors | undefined;
 
-  if (Config.randomTheme === "custom") {
+  if (getMutableConfig().randomTheme === "custom") {
     const themeId = randomTheme;
     const theme = untrack(() => CustomThemes.getCustomTheme(themeId));
     colorsOverride = theme?.colors;
@@ -200,7 +209,7 @@ export async function randomizeTheme(): Promise<void> {
   if (randomThemeIndex >= themesList.length) {
     const themeId = randomTheme;
     let name = themeId.replace(/_/g, " ");
-    if (Config.randomTheme === "custom") {
+    if (getMutableConfig().randomTheme === "custom") {
       name = (
         untrack(() => CustomThemes.getCustomTheme(themeId))?.name ?? "custom"
       ).replace(/_/g, " ");
@@ -212,22 +221,21 @@ export async function randomizeTheme(): Promise<void> {
 async function clearRandom(): Promise<void> {
   if (randomTheme === null) return;
   randomTheme = null;
-  if (Config.customTheme) {
+  if (getMutableConfig().customTheme) {
     await apply("custom");
   } else {
-    await apply(Config.theme);
+    await apply(getMutableConfig().theme);
   }
 }
 
 function applyCustomBackgroundSize(): void {
-  setBackgroundSize(
-    Config.customBackgroundSize === "max" ? "" : Config.customBackgroundSize,
-  );
+  const size = getMutableConfig().customBackgroundSize;
+  setBackgroundSize(size === "max" ? "" : size);
 }
 
 export async function applyCustomBackground(): Promise<void> {
   const localBackgroundFile = await fileStorage.getFile("LocalBackgroundFile");
-  const url = localBackgroundFile ?? Config.customBackground;
+  const url = localBackgroundFile ?? getMutableConfig().customBackground;
   setBackground({ url });
   if (url !== "") {
     applyCustomBackgroundFilters();
@@ -270,14 +278,27 @@ export function applyCustomBackgroundFilters(
 }
 
 export function handleColorSchemeChange(event: MediaQueryListEvent): void {
-  if (!Config.autoSwitchTheme || Config.customTheme) return;
-  void set(event.matches ? Config.themeDark : Config.themeLight, true);
+  if (!getMutableConfig().autoSwitchTheme || getMutableConfig().customTheme) {
+    return;
+  }
+  void set(
+    event.matches
+      ? getMutableConfig().themeDark
+      : getMutableConfig().themeLight,
+    true,
+  );
 }
 
 let ignoreConfigEvent = false;
 
-configEvent.subscribe(
-  async ({ key, newValue, nosave }) => {
+function prefersColorSchemeDark(): boolean {
+  return window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+}
+
+import.meta.hot?.dispose(() => debouncedPreview.cancel());
+
+export function useThemeEvents(): void {
+  configEvent.useListener(async ({ key, newValue, nosave }) => {
     if (key === "fullConfigChange") {
       ignoreConfigEvent = true;
     }
@@ -287,17 +308,17 @@ configEvent.subscribe(
       await clearRandom();
       await clearPreview(false);
 
-      if (Config.autoSwitchTheme) {
+      if (getMutableConfig().autoSwitchTheme) {
         if (prefersColorSchemeDark()) {
-          await set(Config.themeDark, true);
+          await set(getMutableConfig().themeDark, true);
         } else {
-          await set(Config.themeLight, true);
+          await set(getMutableConfig().themeLight, true);
         }
       } else {
-        if (Config.customTheme) {
+        if (getMutableConfig().customTheme) {
           await set("custom");
         } else {
-          await set(Config.theme);
+          await set(getMutableConfig().theme);
         }
       }
       await applyCustomBackground();
@@ -311,7 +332,7 @@ configEvent.subscribe(
       void changeThemeList();
     }
     if (key === "customTheme") {
-      newValue ? await set("custom") : await set(Config.theme);
+      newValue ? await set("custom") : await set(getMutableConfig().theme);
     }
     if (key === "customThemeColors") {
       nosave ? preview("custom") : await set("custom");
@@ -328,29 +349,29 @@ configEvent.subscribe(
     if (key === "autoSwitchTheme") {
       if (newValue) {
         if (prefersColorSchemeDark()) {
-          await set(Config.themeDark, true);
+          await set(getMutableConfig().themeDark, true);
         } else {
-          await set(Config.themeLight, true);
+          await set(getMutableConfig().themeLight, true);
         }
       } else {
-        await set(Config.theme);
+        await set(getMutableConfig().theme);
       }
     }
     if (
       key === "themeLight" &&
-      Config.autoSwitchTheme &&
+      getMutableConfig().autoSwitchTheme &&
       !prefersColorSchemeDark() &&
       !nosave
     ) {
-      await set(Config.themeLight, true);
+      await set(getMutableConfig().themeLight, true);
     }
     if (
       key === "themeDark" &&
-      Config.autoSwitchTheme &&
+      getMutableConfig().autoSwitchTheme &&
       window.matchMedia?.("(prefers-color-scheme: dark)")?.matches &&
       !nosave
     ) {
-      await set(Config.themeDark, true);
+      await set(getMutableConfig().themeDark, true);
     }
     if (
       [
@@ -363,12 +384,5 @@ configEvent.subscribe(
     ) {
       updateThemeIndicator();
     }
-  },
-  import.meta.hot,
-);
-
-function prefersColorSchemeDark(): boolean {
-  return window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+  });
 }
-
-import.meta.hot?.dispose(() => debouncedPreview.cancel());

@@ -1,5 +1,5 @@
 import { createWordsGenerator } from "@oxytype/typing-core/words-generator";
-import { Config } from "../config/store";
+import { getMutableConfig } from "../config/store";
 import { setConfig, setQuoteLengthAll, toggleFunbox } from "../config/setters";
 import * as CustomText from "./custom-text";
 import QuotesController from "../controllers/quotes-controller";
@@ -17,7 +17,7 @@ import {
 import * as TestWords from "./test-words";
 
 const generator = createWordsGenerator({
-  getConfig: () => Config,
+  getConfig: () => getMutableConfig(),
   getActiveFunboxes,
   customText: CustomText,
   quotes: QuotesController,

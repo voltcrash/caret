@@ -1,6 +1,6 @@
 import { FontName } from "@oxytype/schemas/fonts";
 
-import { Config } from "./config/store";
+import { getMutableConfig } from "./config/store";
 import {
   setFontFace,
   setFontFamily,
@@ -21,7 +21,7 @@ export function previewFontFamily(font: FontName): void {
 }
 
 export async function applyFontFamily(): Promise<void> {
-  let font = replaceUnderscoresWithSpaces(Config.fontFamily);
+  let font = replaceUnderscoresWithSpaces(getMutableConfig().fontFamily);
 
   const localFont = await fileStorage.getFile("LocalFontFamilyFile");
   if (localFont === undefined) {
@@ -40,7 +40,8 @@ export async function applyFontFamily(): Promise<void> {
       }`);
   }
 
-  const preferredFont = (await getLanguage(Config.language))?.preferredFont;
+  const preferredFont = (await getLanguage(getMutableConfig().language))
+    ?.preferredFont;
 
   const fonts = [
     `"${font}"`,
@@ -57,7 +58,7 @@ export async function applyFontFamily(): Promise<void> {
 
 export function clearFontPreview(): void {
   if (!isPreviewingFont) return;
-  previewFontFamily(Config.fontFamily);
+  previewFontFamily(getMutableConfig().fontFamily);
   isPreviewingFont = false;
 }
 

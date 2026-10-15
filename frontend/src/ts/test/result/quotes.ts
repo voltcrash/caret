@@ -1,4 +1,4 @@
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import QuotesController, { Quote } from "../../controllers/quotes-controller";
 import * as DB from "../../db";
 import { isAuthenticated } from "../../states/core";
@@ -11,7 +11,7 @@ export function updateQuoteRating(rating: string): void {
 }
 
 export function updateRateQuote(randomQuote: Quote | null): void {
-  if (Config.mode === "quote") {
+  if (getMutableConfig().mode === "quote") {
     if (randomQuote === null) {
       console.error(
         "Failed to update quote rating button: randomQuote is null",
@@ -40,7 +40,7 @@ export function updateRateQuote(randomQuote: Quote | null): void {
 }
 
 export function updateQuoteFavorite(randomQuote: Quote | null): void {
-  if (Config.mode !== "quote" || !isAuthenticated()) {
+  if (getMutableConfig().mode !== "quote" || !isAuthenticated()) {
     setResultState("quote", "favoriteVisible", false);
     return;
   }

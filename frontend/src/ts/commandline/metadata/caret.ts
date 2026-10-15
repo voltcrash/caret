@@ -1,6 +1,6 @@
 import { CommandlineConfigMetadataObject } from "./types";
 import * as TestLogic from "../../test/test-logic";
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import { get as getTypingSpeedUnit } from "../../utils/typing-speed-units";
 
 export const caretMetadata = {
@@ -27,7 +27,9 @@ export const caretMetadata = {
       configValue: "custom",
       inputValueConvert: (value) => {
         let newVal = Number(value);
-        newVal = getTypingSpeedUnit(Config.typingSpeedUnit).toWpm(newVal);
+        newVal = getTypingSpeedUnit(getMutableConfig().typingSpeedUnit).toWpm(
+          newVal,
+        );
         return newVal;
       },
       afterExec: () => {

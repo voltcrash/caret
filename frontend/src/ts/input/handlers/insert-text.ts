@@ -14,7 +14,7 @@ import {
 } from "../helpers/fail-or-finish";
 import { removeLanguageSize } from "../../utils/strings";
 import * as TestLogic from "../../test/test-logic";
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import { flash } from "../../events/keymap";
 import * as WeakSpot from "../../test/weak-spot";
 import * as CompositionState from "../../states/composition";
@@ -83,10 +83,11 @@ function logDeleteOnErrorEvent(
  */
 function handleDeleteOnError(now: number): void {
   const deleteWholeWord =
-    Config.deleteOnError === "word" || Config.deleteOnError === "word_hard";
+    getMutableConfig().deleteOnError === "word" ||
+    getMutableConfig().deleteOnError === "word_hard";
   const goBackAWord =
-    Config.deleteOnError === "letter_hard" ||
-    Config.deleteOnError === "word_hard";
+    getMutableConfig().deleteOnError === "letter_hard" ||
+    getMutableConfig().deleteOnError === "word_hard";
 
   //the incorrect character has already been inserted and logged at this point
   const inputLength = getCurrentInput().length;
@@ -168,7 +169,7 @@ export async function onInsertText(options: OnInsertTextParams): Promise<void> {
   }
 
   const languageOverrides = languageCharOverrides.get(
-    removeLanguageSize(Config.language),
+    removeLanguageSize(getMutableConfig().language),
   );
   if (languageOverrides !== undefined) {
     for (const [targetChar, overrideChar] of languageOverrides) {
@@ -214,14 +215,16 @@ export async function onInsertText(options: OnInsertTextParams): Promise<void> {
     lastInMultiIndex === true || lastInMultiIndex === undefined;
   const wordIndex = getActiveWordIndex();
   const correctShiftUsed =
-    Config.oppositeShiftMode === "off" ? null : isCorrectShiftUsed();
+    getMutableConfig().oppositeShiftMode === "off"
+      ? null
+      : isCorrectShiftUsed();
   const commitCharacterType = getCommitCharacterType({
     data,
     inputValue: testInput,
     targetWord: currentWord,
   });
 
-  const decision = evaluateInsert(Config, {
+  const decision = evaluateInsert(getMutableConfig(), {
     data,
     inputValue: testInput,
     targetWord: currentWord,
@@ -246,7 +249,7 @@ export async function onInsertText(options: OnInsertTextParams): Promise<void> {
     resetIncorrectShiftsInARow();
   }
 
-  if (Config.keymapMode === "react") {
+  if (getMutableConfig().keymapMode === "react") {
     flash(data, correct);
   }
 
@@ -282,7 +285,11 @@ export async function onInsertText(options: OnInsertTextParams): Promise<void> {
   // delete on error
   // skipped when the input was stopped - nothing was inserted to delete
   // before the UI update so it renders the input after the deletion, in one go
-  if (Config.deleteOnError !== "off" && !correct && !removeLastChar) {
+  if (
+    getMutableConfig().deleteOnError !== "off" &&
+    !correct &&
+    !removeLastChar
+  ) {
     handleDeleteOnError(now);
   }
 
@@ -296,7 +303,9 @@ export async function onInsertText(options: OnInsertTextParams): Promise<void> {
   if (goingToNextWord) {
     const result = await goToNextWord({
       correctInsert:
-        Config.mode === "zen" ? true : testInput + data === currentWord,
+        getMutableConfig().mode === "zen"
+          ? true
+          : testInput + data === currentWord,
       now,
     });
     lastBurst = result.lastBurst;
@@ -310,7 +319,7 @@ export async function onInsertText(options: OnInsertTextParams): Promise<void> {
 
   //code mode - auto insert tabs
   if (
-    Config.language.startsWith("code") &&
+    getMutableConfig().language.startsWith("code") &&
     correct &&
     doesNextWordHaveTab &&
     isCurrentCharTab

@@ -45,7 +45,7 @@ import { showLoaderBar, hideLoaderBar } from "../states/loader-bar";
 
 import { getTypingTestElement } from "../states/test-dom";
 
-import { Config } from "../config/store";
+import { getMutableConfig } from "../config/store";
 import { setQuoteLengthAll, setConfig } from "../config/setters";
 import { testSession } from "./events/data";
 
@@ -80,7 +80,7 @@ export async function init(): Promise<boolean> {
 
   showLoaderBar();
   const { data: language, error } = await tryCatch(
-    JSONData.getLanguage(Config.language),
+    JSONData.getLanguage(getMutableConfig().language),
   );
   hideLoaderBar();
 
@@ -88,7 +88,7 @@ export async function init(): Promise<boolean> {
     showErrorNotification("Failed to load language", { error });
   }
 
-  if (!language || language.name !== Config.language) {
+  if (!language || language.name !== getMutableConfig().language) {
     return await init();
   }
 
@@ -96,17 +96,18 @@ export async function init(): Promise<boolean> {
     await Funbox.activate();
   }
 
-  if (Config.mode === "quote") {
-    if (Config.quoteLength.includes(-3) && !isAuthenticated()) {
+  if (getMutableConfig().mode === "quote") {
+    if (getMutableConfig().quoteLength.includes(-3) && !isAuthenticated()) {
       setQuoteLengthAll();
     }
   }
 
-  const allowLazyMode = !language.noLazyMode || Config.mode === "custom";
+  const allowLazyMode =
+    !language.noLazyMode || getMutableConfig().mode === "custom";
 
   // polyglot mode, check to enable lazy mode if any support it
   if (getActiveFunboxNames().includes("polyglot")) {
-    const polyglotLanguages = Config.customPolyglot;
+    const polyglotLanguages = getMutableConfig().customPolyglot;
     const languagePromises = polyglotLanguages.map(async (langName) => {
       const { data: lang, error } = await tryCatch(
         JSONData.getLanguage(langName),
@@ -123,7 +124,7 @@ export async function init(): Promise<boolean> {
       .filter((lang) => lang !== null)
       .some((lang) => !lang.noLazyMode);
 
-    if (Config.lazyMode && !anySupportsLazyMode) {
+    if (getMutableConfig().lazyMode && !anySupportsLazyMode) {
       LazyModeState.setRemember(true);
       if (!testLogicState.showedLazyModeNotification) {
         showNoticeNotification(
@@ -142,7 +143,7 @@ export async function init(): Promise<boolean> {
     }
   } else {
     // normal mode
-    if (Config.lazyMode && !allowLazyMode) {
+    if (getMutableConfig().lazyMode && !allowLazyMode) {
       LazyModeState.setRemember(true);
       if (!testLogicState.showedLazyModeNotification) {
         showNoticeNotification("This language does not support lazy mode.", {
@@ -158,11 +159,11 @@ export async function init(): Promise<boolean> {
     }
   }
 
-  if (!Config.lazyMode && !language.noLazyMode) {
+  if (!getMutableConfig().lazyMode && !language.noLazyMode) {
     LazyModeState.setRemember(false);
   }
 
-  if (Config.mode === "custom") {
+  if (getMutableConfig().mode === "custom") {
     console.debug("Custom text", CustomText.getData());
   }
 
@@ -175,9 +176,9 @@ export async function init(): Promise<boolean> {
       ...CustomText.getData(),
       text: `${CustomText.getText().length} words`,
     },
-    mode: Config.mode,
-    mode2: Misc.getMode2(Config, null),
-    funbox: Config.funbox,
+    mode: getMutableConfig().mode,
+    mode2: Misc.getMode2(getMutableConfig(), null),
+    funbox: getMutableConfig().funbox,
     currentQuote: getCurrentQuote(),
   });
 
@@ -243,7 +244,10 @@ export async function init(): Promise<boolean> {
     TestWords.words.removeCommitCharacterFromLastWord();
   }
 
-  if (Config.keymapMode === "next" && Config.mode !== "zen") {
+  if (
+    getMutableConfig().keymapMode === "next" &&
+    getMutableConfig().mode !== "zen"
+  ) {
     highlight(
       nthElementFromArray(
         Array.from(TestWords.words.getCurrent()?.text ?? ""),

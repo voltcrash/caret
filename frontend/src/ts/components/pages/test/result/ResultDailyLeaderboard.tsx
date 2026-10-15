@@ -1,7 +1,7 @@
 import { animate } from "animejs";
 import { JSXElement, Show } from "solid-js";
 
-import { Config } from "../../../../config/store";
+import { getMutableConfig } from "../../../../config/store";
 import { navigate } from "../../../../navigation/navigation";
 import Format from "../../../../singletons/format";
 import { resultState } from "../../../../states/result";
@@ -30,8 +30,8 @@ export function ResultDailyLeaderboard(props: {
           class={props.bottomClass}
           onClick={() => {
             void navigate(
-              `/leaderboards?type=daily&language=${Config.language}&mode2=${getMode2(
-                Config,
+              `/leaderboards?type=daily&language=${getMutableConfig().language}&mode2=${getMode2(
+                getMutableConfig(),
                 null,
               )}&goToUserPage=true`,
             );

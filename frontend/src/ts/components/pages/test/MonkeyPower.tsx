@@ -1,7 +1,7 @@
 import { isSafeNumber } from "@oxytype/util/numbers";
 import { JSXElement, onCleanup, onMount } from "solid-js";
 
-import { Config } from "../../../config/store";
+import { getMutableConfig } from "../../../config/store";
 import * as SlowTimer from "../../../states/slow-timer";
 import { getCaretElement } from "../../../states/test-dom";
 import { getTheme } from "../../../states/theme";
@@ -164,14 +164,19 @@ function randomColor(): string {
  * @param {boolean} good Good power or not?
  */
 export async function addPower(good = true, extra = false): Promise<void> {
-  if (Config.monkeyPowerLevel === "off" || SlowTimer.get()) return;
+  if (getMutableConfig().monkeyPowerLevel === "off" || SlowTimer.get()) return;
 
   requestDebouncedAnimationFrame("monkey-power.addPower", async () => {
-    if (ctx.canvas === undefined || Config.monkeyPowerLevel === "off") return;
-    if (Config.blindMode) good = true;
+    if (
+      ctx.canvas === undefined ||
+      getMutableConfig().monkeyPowerLevel === "off"
+    ) {
+      return;
+    }
+    if (getMutableConfig().blindMode) good = true;
 
     // Shake
-    if (["3", "4"].includes(Config.monkeyPowerLevel)) {
+    if (["3", "4"].includes(getMutableConfig().monkeyPowerLevel)) {
       document.documentElement.style.overflow = "hidden";
       const shake = [
         Math.round(shakeAmount - Math.random() * shakeAmount),
@@ -198,7 +203,7 @@ export async function addPower(good = true, extra = false): Promise<void> {
       i--
     ) {
       const { caret, error } = getTheme();
-      const color = ["2", "4"].includes(Config.monkeyPowerLevel)
+      const color = ["2", "4"].includes(getMutableConfig().monkeyPowerLevel)
         ? randomColor()
         : good
           ? caret

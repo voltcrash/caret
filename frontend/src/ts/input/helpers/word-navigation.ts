@@ -1,5 +1,5 @@
 import { getPreviousWordInput } from "@oxytype/typing-core/input/engine";
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import * as TestUI from "../../test/test-ui";
 import * as PaceCaret from "../../test/pace-caret";
 import {
@@ -46,7 +46,10 @@ export async function goToNextWord({
     fb.functions.handleSpace();
   }
 
-  if (Config.minBurst !== "off" || Config.liveBurstStyle !== "off") {
+  if (
+    getMutableConfig().minBurst !== "off" ||
+    getMutableConfig().liveBurstStyle !== "off"
+  ) {
     const burst = getWordBurst(buildEventLog(), getActiveWordIndex(), now);
     ret.lastBurst = burst;
   }
@@ -72,7 +75,7 @@ export async function goToNextWord({
 
   if (
     getActiveWordIndex() < TestWords.words.length - 1 ||
-    Config.mode === "zen"
+    getMutableConfig().mode === "zen"
   ) {
     ret.increasedWordIndex = true;
     increaseActiveWordIndex();

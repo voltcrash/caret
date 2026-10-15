@@ -2,7 +2,7 @@ import { createTestSession } from "@oxytype/typing-core/session";
 import { EventLogContext } from "@oxytype/typing-core/events/types";
 import { liveCache } from "./live-cache";
 import * as TestWords from "../test-words";
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import * as CustomText from "../custom-text";
 import { getMode2 } from "../../utils/misc";
 import {
@@ -14,7 +14,7 @@ import {
 } from "../../states/test";
 import { isFunboxActiveWithProperty } from "../funbox/active";
 import * as SlowTimer from "../../states/slow-timer";
-export const testSession = createTestSession(() => Config, {
+export const testSession = createTestSession(() => getMutableConfig(), {
   getContext,
   getActiveWordIndex: () => getActiveWordIndex(),
   isResultCalculating: () => isResultCalculating(),
@@ -35,15 +35,15 @@ export const {
 function getContext(): EventLogContext {
   const context = {
     targetWords: [...TestWords.words.get().map((w) => w.textWithCommit)],
-    mode: Config.mode,
-    mode2: getMode2(Config, getCurrentQuote()),
+    mode: getMutableConfig().mode,
+    mode2: getMode2(getMutableConfig(), getCurrentQuote()),
     koreanStatus: getKoreanStatus(),
     bailedOut: getBailedOut(),
-    ...(Config.mode === "custom" && {
+    ...(getMutableConfig().mode === "custom" && {
       customTextLimitMode: CustomText.getLimit().mode,
       customTextLimitValue: CustomText.getLimit().value,
     }),
-    ...(Config.funbox.length !== 0 && {
+    ...(getMutableConfig().funbox.length !== 0 && {
       isFunboxWithNospacePropertyActive: isFunboxActiveWithProperty("nospace"),
     }),
   };

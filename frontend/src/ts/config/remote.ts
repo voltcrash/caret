@@ -1,24 +1,25 @@
 import * as ConfigSchemas from "@oxytype/schemas/configs";
 
 import { migrateConfig } from "./utils";
-import { applyConfig, configLoadPromise } from "./lifecycle";
+import { applyConfig } from "./lifecycle";
+import { preferencesReadiness } from "../../app/readiness";
 import { saveFullConfigToLocalStorage } from "./persistence";
 import Ape from "../ape";
 import { SnapshotInitError } from "../utils/snapshot-init-error";
 import { getDefaultConfig } from "../constants/default-config";
-import { Config } from "./store";
+import { getMutableConfig } from "./store";
 
 export async function updateFromServer(
   accountReady?: Promise<unknown>,
 ): Promise<void> {
   const remoteConfig = await getRemoteConfig();
   // Fetch remotely in parallel, but local settings must finish applying first.
-  await Promise.all([configLoadPromise, accountReady]);
+  await Promise.all([preferencesReadiness().wait(), accountReady]);
 
   const areConfigsEqual =
-    JSON.stringify(Config) === JSON.stringify(remoteConfig);
+    JSON.stringify(getMutableConfig()) === JSON.stringify(remoteConfig);
 
-  if (Config === undefined || !areConfigsEqual) {
+  if (getMutableConfig() === undefined || !areConfigsEqual) {
     console.log(
       "no local config or local and db configs are different - applying db",
     );

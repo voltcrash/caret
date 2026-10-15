@@ -1,7 +1,7 @@
 import { applyReducedMotion } from "../../../../utils/misc";
 import { updateClassNames } from "../../../../utils/cn";
 import { CaretStyle } from "@oxytype/schemas/configs";
-import { Config } from "../../../../config/store";
+import { getMutableConfig } from "../../../../config/store";
 import { isWordRightToLeft } from "../../../../utils/strings";
 import { requestDebouncedAnimationFrame } from "../../../../utils/debounced-animation-frame";
 import { animate, EasingParam, JSAnimation } from "animejs";
@@ -131,7 +131,7 @@ export class CaretController {
   }
 
   public startBlinking(): void {
-    if (Config.smoothCaret !== "off") {
+    if (getMutableConfig().smoothCaret !== "off") {
       Object.assign(this.element.style, { animationName: "caretFlashSmooth" });
     } else {
       Object.assign(this.element.style, { animationName: "caretFlashHard" });
@@ -143,7 +143,7 @@ export class CaretController {
   }
 
   public updateBlinkingAnimation(): void {
-    if (Config.smoothCaret === "off") {
+    if (getMutableConfig().smoothCaret === "off") {
       Object.assign(this.element.style, { animationName: "caretFlashHard" });
     } else {
       Object.assign(this.element.style, { animationName: "caretFlashSmooth" });
@@ -256,13 +256,13 @@ export class CaretController {
     width?: number;
   }): void {
     const smoothCaretSpeed =
-      Config.smoothCaret === "off"
+      getMutableConfig().smoothCaret === "off"
         ? 0
-        : Config.smoothCaret === "slow"
+        : getMutableConfig().smoothCaret === "slow"
           ? 150
-          : Config.smoothCaret === "medium"
+          : getMutableConfig().smoothCaret === "medium"
             ? 100
-            : Config.smoothCaret === "fast"
+            : getMutableConfig().smoothCaret === "fast"
               ? 85
               : 0;
 
@@ -312,7 +312,7 @@ export class CaretController {
       // we also clamp the letterIndex to be within the range of actual letters
       // anything beyond just goes to the edge of the word
       let side: "beforeLetter" | "afterLetter" = "beforeLetter";
-      if (Config.mode === "zen") {
+      if (getMutableConfig().mode === "zen") {
         if (options.letterIndex > 0) {
           side = "afterLetter";
           options.letterIndex -= 1;
@@ -321,7 +321,10 @@ export class CaretController {
         if (options.letterIndex >= wordLength) {
           side = "afterLetter";
 
-          if (Config.blindMode || Config.hideExtraLetters) {
+          if (
+            getMutableConfig().blindMode ||
+            getMutableConfig().hideExtraLetters
+          ) {
             options.letterIndex = wordLength - 1;
           } else {
             options.letterIndex -= 1;
@@ -441,9 +444,9 @@ export class CaretController {
 
     // in zen, custom or polyglot mode we need to check per-letter
     const checkRtlByLetter =
-      Config.mode === "zen" ||
-      Config.mode === "custom" ||
-      Config.funbox.includes("polyglot");
+      getMutableConfig().mode === "zen" ||
+      getMutableConfig().mode === "custom" ||
+      getMutableConfig().funbox.includes("polyglot");
     const [isWordRTL, isFullMatch] = isWordRightToLeft(
       checkRtlByLetter ? (letter.textContent ?? "") : options.wordText,
       options.isLanguageRightToLeft,
@@ -477,7 +480,8 @@ export class CaretController {
     let top = 0;
 
     const tapeOffset =
-      getWordsWrapperCache().offsetWidth * (Config.tapeMargin / 100);
+      getWordsWrapperCache().offsetWidth *
+      (getMutableConfig().tapeMargin / 100);
 
     // yes, this is all super verbose, but its easier to maintain and understand
     if (isWordRTL) {
@@ -492,14 +496,14 @@ export class CaretController {
           afterLetterCorrection += letter.offsetWidth * -1;
         }
       }
-      if (Config.tapeMode === "off") {
+      if (getMutableConfig().tapeMode === "off") {
         if (!this.isFullWidth()) {
           left += letter.offsetWidth;
         }
         left += letter.offsetLeft;
         left += options.word.offsetLeft;
         left += afterLetterCorrection;
-      } else if (Config.tapeMode === "word") {
+      } else if (getMutableConfig().tapeMode === "word") {
         if (!this.isFullWidth()) {
           left += letter.offsetWidth;
         }
@@ -512,7 +516,7 @@ export class CaretController {
           left += options.word.offsetLeft;
           left += options.word.offsetWidth;
         }
-      } else if (Config.tapeMode === "letter") {
+      } else if (getMutableConfig().tapeMode === "letter") {
         if (this.isFullWidth()) {
           left += width * -1;
         }
@@ -530,11 +534,11 @@ export class CaretController {
       if (options.side === "afterLetter") {
         afterLetterCorrection += letter.offsetWidth;
       }
-      if (Config.tapeMode === "off") {
+      if (getMutableConfig().tapeMode === "off") {
         left += letter.offsetLeft;
         left += options.word.offsetLeft;
         left += afterLetterCorrection;
-      } else if (Config.tapeMode === "word") {
+      } else if (getMutableConfig().tapeMode === "word") {
         left += letter.offsetLeft;
         left += afterLetterCorrection;
         if (this.isMainCaret && lockedMainCaretInTape) {
@@ -542,7 +546,7 @@ export class CaretController {
         } else {
           left += options.word.offsetLeft;
         }
-      } else if (Config.tapeMode === "letter") {
+      } else if (getMutableConfig().tapeMode === "letter") {
         if (this.isMainCaret && lockedMainCaretInTape) {
           left += tapeOffset;
         } else {

@@ -1,5 +1,5 @@
 import { shouldBlockInsertion } from "@oxytype/typing-core/input/engine";
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import * as TestUI from "../../test/test-ui";
 import * as TestWords from "../../test/test-words";
 import { isFunboxActiveWithProperty } from "../../test/funbox/list";
@@ -50,7 +50,7 @@ export function onBeforeInsertText(data: string): boolean {
   });
 
   if (
-    shouldBlockInsertion(Config, {
+    shouldBlockInsertion(getMutableConfig(), {
       data,
       inputValue,
       targetWord: currentWordTextWithCommit,
@@ -82,12 +82,12 @@ export function onBeforeInsertText(data: string): boolean {
     !SlowTimer.get() && // don't do this check if slow timer is active
     dataIsNotFalsy &&
     !isMultiCharacter &&
-    !Config.blindMode &&
-    !Config.hideExtraLetters &&
-    !Config.deleteOnError.includes("hard") &&
+    !getMutableConfig().blindMode &&
+    !getMutableConfig().hideExtraLetters &&
+    !getMutableConfig().deleteOnError.includes("hard") &&
     inputIsLongerThanOrEqualToWord &&
     !goingToNextWord &&
-    Config.mode !== "zen"
+    getMutableConfig().mode !== "zen"
   ) {
     // make sure to only check this when really necessary
     // because this check is expensive (causes layout reflows)

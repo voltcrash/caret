@@ -3,7 +3,7 @@ import * as PresetController from "../../src/ts/controllers/preset-controller";
 import { Preset } from "@oxytype/schemas/presets";
 import * as DB from "../../src/ts/db";
 import { setConfig } from "../../src/ts/config/setters";
-import { Config } from "../../src/ts/config/store";
+import { getMutableConfig } from "../../src/ts/config/store";
 import * as Lifecycle from "../../src/ts/config/lifecycle";
 import * as ConfigUtils from "../../src/ts/config/utils";
 import * as Persistence from "../../src/ts/config/persistence";
@@ -118,7 +118,7 @@ describe("PresetController", () => {
       });
 
       setConfig("numbers", true);
-      const oldConfig = structuredClone(Config);
+      const oldConfig = structuredClone(getMutableConfig());
 
       //WHEN
       await PresetController.apply(preset._id);

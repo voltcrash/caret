@@ -3,7 +3,7 @@ import { updateWordsWrapperHeight } from "./sizing";
 import { outerHeight } from "./dimensions";
 import { getWordElement, getActiveWordElement } from "./elements";
 import { animateAsync } from "../../../../anim";
-import { Config } from "../../../../config/store";
+import { getMutableConfig } from "../../../../config/store";
 import { getActiveWordIndex } from "../../../../states/test";
 import { getWordsElement as getWordsEl } from "../../../../states/test-dom";
 import * as Caret from "../../../../test/caret";
@@ -11,7 +11,7 @@ import * as PaceCaret from "../../../../test/pace-caret";
 import * as Misc from "../../../../utils/misc";
 
 export async function centerActiveLine(): Promise<void> {
-  if (Config.showAllLines) {
+  if (getMutableConfig().showAllLines) {
     return;
   }
 
@@ -101,12 +101,12 @@ export async function lineJump(
 
     const caretLineJumpOptions = {
       newMarginTop,
-      duration: Config.smoothLineScroll ? duration : 0,
+      duration: getMutableConfig().smoothLineScroll ? duration : 0,
     };
     Caret.getCaret().handleLineJump(caretLineJumpOptions);
     PaceCaret.getCaret().handleLineJump(caretLineJumpOptions);
 
-    if (Config.smoothLineScroll) {
+    if (getMutableConfig().smoothLineScroll) {
       lineState.lineTransition = true;
       await animateAsync(getWordsEl(), {
         marginTop: newMarginTop,

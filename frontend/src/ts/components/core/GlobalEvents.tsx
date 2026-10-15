@@ -1,6 +1,6 @@
 import { onCleanup, onMount } from "solid-js";
 
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import { ModifierKeys } from "../../constants/modifier-keys";
 import { updateCurrentCode } from "../../controllers/sound-controller";
 import { connectionEvent } from "../../events/connection";
@@ -40,7 +40,7 @@ export function GlobalEvents(): null {
           !e.ctrlKey
         ) {
           focusWords();
-          if (Config.showOutOfFocusWarning) e.preventDefault();
+          if (getMutableConfig().showOutOfFocusWarning) e.preventDefault();
         }
       }
     };

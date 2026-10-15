@@ -1,3 +1,4 @@
+import { preferencesReadiness } from "../../app/readiness";
 import * as ConfigSchemas from "@oxytype/schemas/configs";
 import { parseWithSchema as parseJsonWithSchema } from "@oxytype/util/json";
 import {
@@ -9,11 +10,11 @@ import {
   saveToLocalStorage,
   saveFullConfigToLocalStorage,
 } from "./persistence";
-import { Config, setFullConfigStore } from "./store";
+import { getMutableConfig, setFullConfigStore } from "./store";
 import { getDefaultConfig } from "../constants/default-config";
 import { configEvent } from "../events/config";
 import { migrateConfig } from "./utils";
-import { isObject, promiseWithResolvers } from "../utils/misc";
+import { isObject } from "../utils/misc";
 import { setConfig } from "./setters";
 import { deleteConfig } from "../ape/config";
 import { setProperty, typedKeys } from "@oxytype/util/objects";
@@ -45,15 +46,16 @@ export async function applyConfigFromJson(json: string): Promise<boolean> {
 }
 
 export async function loadFromLocalStorage(): Promise<void> {
-  console.log("loading localStorage config");
-  const newConfig = configLS.get();
-  if (newConfig === undefined) {
-    await resetConfig();
-  } else {
-    await applyConfig(newConfig);
-    saveFullConfigToLocalStorage(true);
-  }
-  loadDone();
+  return preferencesReadiness().start(async () => {
+    console.log("loading localStorage config");
+    const newConfig = configLS.get();
+    if (newConfig === undefined) {
+      await resetConfig();
+    } else {
+      await applyConfig(newConfig);
+      saveFullConfigToLocalStorage(true);
+    }
+  });
 }
 
 export async function applyConfig(
@@ -68,7 +70,7 @@ export async function applyConfig(
 
   const defaultConfig = getDefaultConfig();
   for (const key of typedKeys(fullConfig)) {
-    setProperty(Config, key, defaultConfig[key]);
+    setProperty(getMutableConfig(), key, defaultConfig[key]);
   }
 
   const configKeysToReset: (keyof ConfigSchemas.Config)[] = [];
@@ -103,8 +105,3 @@ export async function resetConfig(): Promise<void> {
   await deleteConfig();
   saveFullConfigToLocalStorage(true);
 }
-
-const { promise: configLoadPromise, resolve: loadDone } =
-  promiseWithResolvers();
-
-export { configLoadPromise };

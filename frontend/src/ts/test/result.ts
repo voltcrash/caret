@@ -1,4 +1,3 @@
-import { subscribeResultConfigChanges } from "./result/chart-config";
 import { updateTags } from "./result/tags";
 export { updateSavedResultId, updateTagsAfterEdit } from "./result/tags";
 import { updateResultChartDataVisibility } from "./result/chart-visibility";
@@ -34,7 +33,7 @@ import { clearWords, clearWordsBlur } from "./test-ui";
 import { showResultScreen } from "../components/pages/test/result/useResultScreen";
 import type { PluginChartOptions } from "chart.js";
 
-import { Config } from "../config/store";
+import { getMutableConfig } from "../config/store";
 
 import { Quote } from "../controllers/quotes-controller";
 
@@ -199,14 +198,18 @@ export async function update(
   Focus.set(false);
 
   const canQuickRestart = canQuickRestartFn(
-    Config.mode,
-    Config.words,
-    Config.time,
+    getMutableConfig().mode,
+    getMutableConfig().words,
+    getMutableConfig().time,
     CustomText.getData(),
     getCustomTextIndicator()?.isLong ?? false,
   );
 
-  if (Config.alwaysShowWordsHistory && canQuickRestart && !noStress) {
+  if (
+    getMutableConfig().alwaysShowWordsHistory &&
+    canQuickRestart &&
+    !noStress
+  ) {
     toggleResultWords(true);
   }
   void Funbox.clear();
@@ -218,5 +221,3 @@ export async function update(
   clearWords();
   getResultChart().resize();
 }
-
-subscribeResultConfigChanges(import.meta.hot);

@@ -1,5 +1,5 @@
 import { result, resultAnnotation } from "./context";
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import * as DB from "../../db";
 import * as Numbers from "@oxytype/util/numbers";
 import { get as getTypingSpeedUnit } from "../../utils/typing-speed-units";
@@ -21,7 +21,9 @@ export async function updateChartPBLine(): Promise<void> {
   );
   const localPbWpm = localPb?.wpm ?? 0;
   if (localPbWpm === 0) return;
-  const typingSpeedUnit = getTypingSpeedUnit(Config.typingSpeedUnit);
+  const typingSpeedUnit = getTypingSpeedUnit(
+    getMutableConfig().typingSpeedUnit,
+  );
   const chartlpb = Numbers.roundTo2(
     typingSpeedUnit.fromWpm(localPbWpm),
   ).toFixed(2);
@@ -37,7 +39,7 @@ export async function updateChartPBLine(): Promise<void> {
     label: {
       backgroundColor: themecolors.sub,
       font: {
-        family: Config.fontFamily.replace(/_/g, " "),
+        family: getMutableConfig().fontFamily.replace(/_/g, " "),
         size: 11,
         style: "normal",
         weight: Chart.defaults.font.weight,

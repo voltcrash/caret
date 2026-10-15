@@ -13,18 +13,25 @@ const state = vi.hoisted(() => {
   };
 });
 vi.mock("../../src/ts/config/lifecycle", () => ({
-  configLoadPromise: state.local,
   applyConfig: state.apply,
 }));
 vi.mock("../../src/ts/config/persistence", () => ({
   saveFullConfigToLocalStorage: state.save,
 }));
-vi.mock("../../src/ts/config/store", () => ({ Config: { theme: "local" } }));
+vi.mock("../../src/ts/config/store", () => ({
+  getMutableConfig: (() => {
+    const storedConfig = { theme: "local" };
+    return () => storedConfig;
+  })(),
+}));
 vi.mock("../../src/ts/config/utils", () => ({
   migrateConfig: (config: unknown) => config,
 }));
 vi.mock("../../src/ts/ape", () => ({
   default: { configs: { get: state.get } },
+}));
+vi.mock("../../src/app/readiness", () => ({
+  preferencesReadiness: () => ({ wait: async () => state.local }),
 }));
 beforeEach(() => vi.clearAllMocks());
 

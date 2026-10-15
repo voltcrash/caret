@@ -1,7 +1,7 @@
 import * as Focus from "../test/focus";
 import * as CommandlineLists from "./lists";
 
-import { Config } from "../config/store";
+import { getMutableConfig } from "../config/store";
 
 import { showNoticeNotification } from "../states/notifications";
 import { getCommandlineSubgroup } from "../states/core";
@@ -77,7 +77,7 @@ export async function prepareCommandline(): Promise<void> {
       } else {
         commandlineState.subgroupOverride = null;
         commandlineState.usingSingleList =
-          Config.singleListCommandLine === "on";
+          getMutableConfig().singleListCommandLine === "on";
         showNoticeNotification(
           `Command list ${overrideStringOrGroup} not found`,
         );
@@ -89,7 +89,8 @@ export async function prepareCommandline(): Promise<void> {
   } else {
     commandlineState.subgroupOverride = null;
     commandlineState.usingSingleList =
-      Config.singleListCommandLine === "on" && !isBrowsingOnTouch("");
+      getMutableConfig().singleListCommandLine === "on" &&
+      !isBrowsingOnTouch("");
   }
 
   let showInputCommand: Command | undefined = undefined;
@@ -142,7 +143,8 @@ const filterInput = debounce(50, async (value: string) => {
   commandlineState.inputValue = value;
   if (commandlineState.subgroupOverride === null) {
     commandlineState.usingSingleList =
-      (Config.singleListCommandLine === "on" || value.startsWith(">")) &&
+      (getMutableConfig().singleListCommandLine === "on" ||
+        value.startsWith(">")) &&
       !isBrowsingOnTouch(value);
   }
   if (commandlineState.mode !== "search") return;
@@ -180,7 +182,7 @@ export async function onCommandlineKeyDown(e: KeyboardEvent): Promise<void> {
     (e.ctrlKey && (e.key.toLowerCase() === "k" || e.key.toLowerCase() === "p"))
   ) {
     if (
-      Config.singleListCommandLine === "on" &&
+      getMutableConfig().singleListCommandLine === "on" &&
       commandlineState.subgroupOverride === null &&
       commandlineState.inputValue === "" &&
       commandlineState.lastSingleListModeInputValue !== ""

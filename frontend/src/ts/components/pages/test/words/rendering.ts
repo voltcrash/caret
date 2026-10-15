@@ -10,7 +10,7 @@ import { updateWordsInputPosition } from "./sizing";
 import { setWordJoining } from "./joining";
 import { createHintsNodes, joinOverlappingHints } from "./hints";
 import { getWordElement, getActiveWordElement, setClass } from "./elements";
-import { Config } from "../../../../config/store";
+import { getMutableConfig } from "../../../../config/store";
 import * as SlowTimer from "../../../../states/slow-timer";
 import { getActiveWordIndex } from "../../../../states/test";
 import { getWordsElement as getWordsEl } from "../../../../states/test-dom";
@@ -62,11 +62,13 @@ export function updateActiveElement(
 
     if (previousActiveWordTop !== null) {
       const isTimedTest =
-        Config.mode === "time" ||
-        (Config.mode === "custom" && CustomText.getLimitMode() === "time") ||
-        (Config.mode === "custom" && CustomText.getLimitValue() === 0);
+        getMutableConfig().mode === "time" ||
+        (getMutableConfig().mode === "custom" &&
+          CustomText.getLimitMode() === "time") ||
+        (getMutableConfig().mode === "custom" &&
+          CustomText.getLimitValue() === 0);
 
-      if (isTimedTest || !Config.showAllLines) {
+      if (isTimedTest || !getMutableConfig().showAllLines) {
         const newActiveWordTop = newActiveWord.offsetTop;
         if (newActiveWordTop > previousActiveWordTop) {
           await lineJump(previousActiveWordTop);
@@ -74,7 +76,7 @@ export function updateActiveElement(
       }
     }
 
-    if (!initial && Config.tapeMode !== "off") {
+    if (!initial && getMutableConfig().tapeMode !== "off") {
       await scrollTape();
     }
 
@@ -98,7 +100,7 @@ function appendWordNodes(
 export function showWords(): void {
   getWordsEl().replaceChildren();
 
-  if (Config.mode === "zen") {
+  if (getMutableConfig().mode === "zen") {
     appendEmptyWordElement(0);
   } else {
     const words = document.createDocumentFragment();
@@ -165,16 +167,18 @@ export async function updateWordLetters({
     async () => {
       pendingWordData.delete(wordIndex);
       const currentWord = TestWords.words.get(wordIndex)?.display;
-      if (currentWord === undefined && Config.mode !== "zen") return;
+      if (currentWord === undefined && getMutableConfig().mode !== "zen") {
+        return;
+      }
       const wordAtIndex = getWordElement(wordIndex);
       if (!wordAtIndex) return;
       const { nodes, hintIndices, newlineafter } = buildLiveWordNodes({
         currentWord,
         input,
         compositionData,
-        zen: Config.mode === "zen",
-        indicateTypos: Config.indicateTypos,
-        compositionDisplay: Config.compositionDisplay,
+        zen: getMutableConfig().mode === "zen",
+        indicateTypos: getMutableConfig().indicateTypos,
+        compositionDisplay: getMutableConfig().compositionDisplay,
         getWordNode:
           findSingleActiveFunboxWithFunction("getWordNode")?.functions
             .getWordNode,
@@ -187,7 +191,7 @@ export async function updateWordLetters({
           wordAtIndex.querySelectorAll<HTMLElement>("letter"),
         );
         let hints;
-        if (Config.indicateTypos === "both") {
+        if (getMutableConfig().indicateTypos === "both") {
           hints = createHintsNodes(
             hintIndices,
             wordAtIndexLetters,
@@ -208,15 +212,15 @@ export async function updateWordLetters({
       if (newlineafter) {
         wordAtIndex.after(createNewlineSpacers());
       }
-      if (Config.tapeMode !== "off") {
+      if (getMutableConfig().tapeMode !== "off") {
         void scrollTape();
       }
-      if (Config.mode === "zen" || SlowTimer.get()) {
+      if (getMutableConfig().mode === "zen" || SlowTimer.get()) {
         // because we block word jumps in before-insert-text
         // this check only needs to happen in zen mode
         // unless slow timer is on, then it needs to happen
         // because the word jump check is disabled
-        if (!Config.showAllLines) {
+        if (!getMutableConfig().showAllLines) {
           const wordTopAfterUpdate = wordAtIndex.offsetTop;
           if (wordTopAfterUpdate > activeWordTop) {
             let jump = false;

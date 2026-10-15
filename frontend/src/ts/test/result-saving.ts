@@ -19,7 +19,7 @@ import { getFunbox } from "@oxytype/funbox";
 import { SavedResult } from "../constants/default-snapshot";
 
 import { setAccountButtonSpinner } from "../states/header";
-import { Config } from "../config/store";
+import { getMutableConfig } from "../config/store";
 
 const retrySavingState: RetrySaving = { completedEvent: null, canRetry: false };
 type RetrySaving = {
@@ -59,7 +59,7 @@ export async function saveResult(
   completedEvent: CompletedEvent,
   isRetrying: boolean,
 ): Promise<null | Awaited<ReturnType<typeof Ape.results.add>>> {
-  if (!Config.resultSaving) {
+  if (!getMutableConfig().resultSaving) {
     showErrorNotification("Result not saved: disabled by user", {
       durationMs: 3000,
       customTitle: "Notice",

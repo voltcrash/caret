@@ -1,6 +1,6 @@
 import { JSXElement, onCleanup, onMount } from "solid-js";
 
-import { Config } from "../../../../config/store";
+import { getMutableConfig } from "../../../../config/store";
 import { configEvent } from "../../../../events/config";
 import { areTestElementsMounted } from "../../../../states/test-dom";
 import {
@@ -21,19 +21,19 @@ export function Caret(props: {
     const pace = props.pace === true;
     const controller = new CaretController(
       element,
-      pace ? Config.paceCaretStyle : Config.caretStyle,
+      pace ? getMutableConfig().paceCaretStyle : getMutableConfig().caretStyle,
     );
     const unregister = (pace ? setPaceCaret : setMainCaret)(controller);
     const unsubscribe = configEvent.subscribe(({ key }) => {
       if (!areTestElementsMounted()) return;
       if (pace) {
         if (key === "paceCaretStyle") {
-          controller.setStyle(Config.paceCaretStyle);
+          controller.setStyle(getMutableConfig().paceCaretStyle);
         }
         return;
       }
       if (key === "caretStyle") {
-        controller.setStyle(Config.caretStyle);
+        controller.setStyle(getMutableConfig().caretStyle);
         updateMainCaretPosition(true);
       }
       if (key === "smoothCaret") controller.updateBlinkingAnimation();

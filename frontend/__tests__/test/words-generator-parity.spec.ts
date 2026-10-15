@@ -50,7 +50,13 @@ function readStatic(path: string): unknown {
 vi.mock("../../src/ts/config/store", async () => {
   const { getDefaultConfig } =
     await import("../../src/ts/constants/default-config");
-  return { Config: getDefaultConfig(), getConfig: {} };
+  return {
+    getMutableConfig: (() => {
+      const storedConfig = getDefaultConfig();
+      return () => storedConfig;
+    })(),
+    getConfig: {},
+  };
 });
 vi.mock("../../src/ts/config/setters", () => ({
   setConfig: vi.fn(),
@@ -88,7 +94,7 @@ vi.mock("../../src/ts/utils/json-data", async (importOriginal) => ({
   cachedFetchJson: async (url: string) => readStatic(url),
 }));
 
-import { Config } from "../../src/ts/config/store";
+import { getMutableConfig } from "../../src/ts/config/store";
 import { getDefaultConfig } from "../../src/ts/constants/default-config";
 import * as WordsGenerator from "../../src/ts/test/words-generator";
 import * as TestWords from "../../src/ts/test/test-words";
@@ -116,7 +122,7 @@ const cases = JSON.parse(
 ) as GeneratorCase[];
 
 async function run(c: GeneratorCase): Promise<unknown> {
-  Object.assign(Config, getDefaultConfig(), c.config);
+  Object.assign(getMutableConfig(), getDefaultConfig(), c.config);
   state.rng = state.seeded(c.seed);
   state.repeated = false;
   state.currentQuote = null;
@@ -125,13 +131,13 @@ async function run(c: GeneratorCase): Promise<unknown> {
     state.customText = structuredClone(c.customText);
   }
 
-  const language = await JSONData.getLanguage(Config.language);
+  const language = await JSONData.getLanguage(getMutableConfig().language);
 
   let gen = await WordsGenerator.generateWords(language);
   if (c.repeat === true) {
     state.repeated = true;
     gen = await WordsGenerator.generateWords(
-      await JSONData.getLanguage(Config.language),
+      await JSONData.getLanguage(getMutableConfig().language),
     );
   }
 

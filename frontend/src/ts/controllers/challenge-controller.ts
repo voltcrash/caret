@@ -8,7 +8,7 @@ import * as CustomText from "../test/custom-text";
 import * as Funbox from "../test/funbox/funbox";
 
 import { setConfig } from "../config/setters";
-import { Config } from "../config/store";
+import { getMutableConfig } from "../config/store";
 import { configEvent } from "../events/config";
 
 import { ChallengeName } from "@oxytype/schemas/challenges";
@@ -40,7 +40,11 @@ export async function verify(
   if (loadedChallenge === null) return null;
   try {
     const { verifyChallenge } = await import("@oxytype/challenges");
-    const failReasons = verifyChallenge(result, Config, loadedChallenge);
+    const failReasons = verifyChallenge(
+      result,
+      getMutableConfig(),
+      loadedChallenge,
+    );
     if (failReasons.length === 0) {
       showSuccessNotification(`${loadedChallenge.display} challenge passed!`);
       return loadedChallenge.name;
@@ -223,8 +227,8 @@ export async function setup(challengeName: ChallengeName): Promise<boolean> {
   }
 }
 
-configEvent.subscribe(
-  ({ key }) => {
+export function useChallengeEvents(): void {
+  configEvent.useListener(({ key }) => {
     if (
       [
         "difficulty",
@@ -246,6 +250,5 @@ configEvent.subscribe(
     ) {
       clearActive();
     }
-  },
-  import.meta.hot,
-);
+  });
+}

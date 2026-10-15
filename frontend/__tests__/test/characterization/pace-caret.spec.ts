@@ -69,7 +69,7 @@ vi.mock("../../../src/ts/test/funbox/list", () => ({
   getActiveFunboxes: () => [],
 }));
 
-import { Config } from "../../../src/ts/config/store";
+import { getMutableConfig } from "../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../src/ts/constants/default-config";
 import * as PaceCaret from "../../../src/ts/test/pace-caret";
 import * as TestWords from "../../../src/ts/test/test-words";
@@ -92,7 +92,7 @@ beforeEach(() => {
     goTo: [],
     localPb: undefined,
   });
-  Object.assign(Config, getDefaultConfig(), {
+  Object.assign(getMutableConfig(), getDefaultConfig(), {
     mode: "words",
     words: 3,
     paceCaret: "custom",
@@ -155,7 +155,7 @@ describe("pace caret", () => {
   });
 
   it("ignores corrections in blind mode", async () => {
-    Config.blindMode = true;
+    getMutableConfig().blindMode = true;
     await PaceCaret.init();
     PaceCaret.start();
     PaceCaret.handleSpace(false, "hi ");
@@ -197,7 +197,7 @@ describe("pace caret", () => {
   });
 
   it("disables itself for speeds below one", async () => {
-    Config.paceCaretCustomSpeed = 0.5;
+    getMutableConfig().paceCaretCustomSpeed = 0.5;
     await PaceCaret.init();
     expect(mocks.paceWpm).toBeUndefined();
     PaceCaret.start();
@@ -205,14 +205,14 @@ describe("pace caret", () => {
   });
 
   it("uses the local personal best", async () => {
-    Config.paceCaret = "pb";
+    getMutableConfig().paceCaret = "pb";
     mocks.localPb = { wpm: 120 };
     await PaceCaret.init();
     expect(mocks.paceWpm).toBe(120);
   });
 
   it("keeps the last test speed, or the fastest one while repeating", async () => {
-    Config.paceCaret = "last";
+    getMutableConfig().paceCaret = "last";
     PaceCaret.setLastTestWpm(70);
     await PaceCaret.init();
     expect(mocks.paceWpm).toBe(70);

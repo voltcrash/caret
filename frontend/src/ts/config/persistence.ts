@@ -1,7 +1,7 @@
 import { Config as ConfigSchema } from "@oxytype/schemas/configs";
 import { saveConfig } from "../ape/config";
 import { setAccountButtonSpinner } from "../states/header";
-import { Config } from "./store";
+import { getMutableConfig } from "./store";
 import * as ConfigSchemas from "@oxytype/schemas/configs";
 import { getDefaultConfig } from "../constants/default-config";
 import { migrateConfig } from "./utils";
@@ -31,19 +31,19 @@ export function saveToLocalStorage(
   noDbCheck = false,
 ): void {
   if (nosave) return;
-  configLS.set(Config);
+  configLS.set(getMutableConfig());
   if (!noDbCheck) {
-    setProperty(configToSend, key, Config[key]);
+    setProperty(configToSend, key, getMutableConfig()[key]);
     saveToDatabase();
   }
 }
 
 export function saveFullConfigToLocalStorage(noDbCheck = false): void {
   console.log("saving full config to localStorage");
-  configLS.set(Config);
+  configLS.set(getMutableConfig());
   if (!noDbCheck) {
     setAccountButtonSpinner(true);
-    void saveConfig(Config).finally(() => {
+    void saveConfig(getMutableConfig()).finally(() => {
       setAccountButtonSpinner(false);
     });
   }

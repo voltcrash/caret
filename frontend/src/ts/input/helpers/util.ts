@@ -1,6 +1,6 @@
 import * as Core from "@oxytype/typing-core/input/util";
 import { isFunboxActiveWithProperty } from "../../test/funbox/list";
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 export function getCommitCharacterType(
   options: Parameters<typeof Core.getCommitCharacterType>[0],
 ): ReturnType<typeof Core.getCommitCharacterType> {
@@ -14,5 +14,10 @@ export function normalizeData(
   inputValue: string,
   targetWord: string,
 ): string {
-  return Core.normalizeData(data, inputValue, targetWord, Config.language);
+  return Core.normalizeData(
+    data,
+    inputValue,
+    targetWord,
+    getMutableConfig().language,
+  );
 }

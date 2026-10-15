@@ -7,7 +7,7 @@ import {
   setWordsVisible,
   setWordsWrapperVisible,
 } from "../../states/funbox";
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import { setConfig, toggleFunbox } from "../../config/setters";
 import { save } from "./funbox-memory";
 import { ttsEvent } from "../../events/tts";
@@ -63,7 +63,7 @@ async function readAheadHandleKeydown(event: KeyboardEvent): Promise<void> {
     (currentInput !== "" ||
       getInputForWord(getActiveWordIndex() - 1) !==
         TestWords.words.get(getActiveWordIndex() - 1)?.textWithCommit ||
-      Config.freedomMode)
+      getMutableConfig().freedomMode)
   ) {
     setReadAheadDisabled(true);
   } else if (event.key === " ") {
@@ -74,7 +74,7 @@ async function readAheadHandleKeydown(event: KeyboardEvent): Promise<void> {
 const list: Partial<Record<FunboxName, FunboxFunctions>> = {
   "58008": {
     rememberSettings(): void {
-      save("numbers", Config.numbers);
+      save("numbers", getMutableConfig().numbers);
     },
     getEmulatedChar(event: KeyboardEvent): string | null {
       if (event.key === "Enter") {
@@ -90,7 +90,7 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
       });
     },
     rememberSettings(): void {
-      save("keymapMode", Config.keymapMode);
+      save("keymapMode", getMutableConfig().keymapMode);
     },
   },
   tts: {
@@ -100,7 +100,7 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
       });
     },
     rememberSettings(): void {
-      save("keymapMode", Config.keymapMode);
+      save("keymapMode", getMutableConfig().keymapMode);
     },
     toggleScript(params: string[]): void {
       if (window.speechSynthesis === undefined) {
@@ -112,7 +112,7 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
   },
   arrows: {
     rememberSettings(): void {
-      save("highlightMode", Config.highlightMode);
+      save("highlightMode", getMutableConfig().highlightMode);
     },
     getEmulatedChar(event: KeyboardEvent): string | null {
       const ekey = event.key;
@@ -145,8 +145,8 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
   capitals: {},
   layout_mirror: {
     applyConfig(): void {
-      let layout = Config.layout;
-      if (Config.layout === "default") {
+      let layout = getMutableConfig().layout;
+      if (getMutableConfig().layout === "default") {
         layout = "qwerty";
       }
       setConfig("layout", layout, {
@@ -157,13 +157,13 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
       });
     },
     rememberSettings(): void {
-      save("keymapMode", Config.keymapMode);
-      save("layout", Config.layout);
+      save("keymapMode", getMutableConfig().keymapMode);
+      save("layout", getMutableConfig().layout);
     },
   },
   layoutfluid: {
     applyConfig(): void {
-      const layout = Config.customLayoutfluid[0] ?? "qwerty";
+      const layout = getMutableConfig().customLayoutfluid[0] ?? "qwerty";
 
       setConfig("layout", layout as Layout, {
         nosave: true,
@@ -173,13 +173,13 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
       });
     },
     rememberSettings(): void {
-      save("keymapMode", Config.keymapMode);
-      save("layout", Config.layout);
-      save("keymapLayout", Config.keymapLayout);
+      save("keymapMode", getMutableConfig().keymapMode);
+      save("layout", getMutableConfig().layout);
+      save("keymapLayout", getMutableConfig().keymapLayout);
     },
     handleSpace(): void {
-      if (Config.mode !== "time") {
-        const layouts = Config.customLayoutfluid;
+      if (getMutableConfig().mode !== "time") {
+        const layouts = getMutableConfig().customLayoutfluid;
         const outOf: number = TestWords.words.length;
         const wordsPerLayout = Math.floor(outOf / layouts.length);
         const index = Math.floor((getActiveWordIndex() + 1) / wordsPerLayout);
@@ -216,7 +216,7 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
       }
     },
     getResultContent(): string {
-      return Config.customLayoutfluid.join(" ");
+      return getMutableConfig().customLayoutfluid.join(" ");
     },
   },
   gibberish: {},
@@ -224,7 +224,7 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
   specials: {},
   read_ahead_easy: {
     rememberSettings(): void {
-      save("highlightMode", Config.highlightMode);
+      save("highlightMode", getMutableConfig().highlightMode);
     },
     async handleKeydown(event): Promise<void> {
       await readAheadHandleKeydown(event);
@@ -232,7 +232,7 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
   },
   read_ahead: {
     rememberSettings(): void {
-      save("highlightMode", Config.highlightMode);
+      save("highlightMode", getMutableConfig().highlightMode);
     },
     async handleKeydown(event): Promise<void> {
       await readAheadHandleKeydown(event);
@@ -240,7 +240,7 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
   },
   read_ahead_hard: {
     rememberSettings(): void {
-      save("highlightMode", Config.highlightMode);
+      save("highlightMode", getMutableConfig().highlightMode);
     },
     async handleKeydown(event): Promise<void> {
       await readAheadHandleKeydown(event);
@@ -252,17 +252,17 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
       setConfig("showAllLines", true, {
         nosave: true,
       });
-      if (Config.keymapMode === "next") {
+      if (getMutableConfig().keymapMode === "next") {
         setConfig("keymapMode", "react", {
           nosave: true,
         });
       }
     },
     rememberSettings(): void {
-      save("mode", Config.mode);
-      save("showAllLines", Config.showAllLines);
-      if (Config.keymapMode === "next") {
-        save("keymapMode", Config.keymapMode);
+      save("mode", getMutableConfig().mode);
+      save("showAllLines", getMutableConfig().showAllLines);
+      if (getMutableConfig().keymapMode === "next") {
+        save("keymapMode", getMutableConfig().keymapMode);
       }
     },
     start(): void {
@@ -272,14 +272,14 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
     restart(): void {
       MemoryTimer.start(Math.round(Math.pow(TestWords.words.length, 1.2)));
       setWordsVisible(true);
-      if (Config.keymapMode === "next") {
+      if (getMutableConfig().keymapMode === "next") {
         setConfig("keymapMode", "react");
       }
     },
   },
   nospace: {
     rememberSettings(): void {
-      save("highlightMode", Config.highlightMode);
+      save("highlightMode", getMutableConfig().highlightMode);
     },
   },
   poetry: {},
@@ -288,18 +288,18 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
   pseudolang: {},
   IPv4: {
     rememberSettings(): void {
-      save("numbers", Config.numbers);
+      save("numbers", getMutableConfig().numbers);
     },
   },
   IPv6: {
     rememberSettings(): void {
-      save("numbers", Config.numbers);
+      save("numbers", getMutableConfig().numbers);
     },
   },
   binary: {},
   hexadecimal: {
     rememberSettings(): void {
-      save("punctuation", Config.punctuation);
+      save("punctuation", getMutableConfig().punctuation);
     },
   },
   zipf: {},
@@ -344,7 +344,7 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
 
 export function getFunboxFunctions(): Record<FunboxName, FunboxFunctions> {
   const wordFunctions = createFunboxWordFunctions({
-    getConfig: () => Config,
+    getConfig: () => getMutableConfig(),
     getLanguage: JSONData.getLanguage,
     getPoem,
     getSection,

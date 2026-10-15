@@ -1,4 +1,4 @@
-import { Config } from "../../../../config/store";
+import { getMutableConfig } from "../../../../config/store";
 import { getActivePage } from "../../../../states/core";
 import {
   isDirectionReversed,
@@ -136,7 +136,8 @@ async function updateHintsPosition(): Promise<void> {
   if (
     getActivePage() !== "test" ||
     getResultVisible() ||
-    (Config.indicateTypos !== "below" && Config.indicateTypos !== "both")
+    (getMutableConfig().indicateTypos !== "below" &&
+      getMutableConfig().indicateTypos !== "both")
   ) {
     return;
   }

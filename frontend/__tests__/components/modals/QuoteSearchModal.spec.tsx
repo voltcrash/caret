@@ -25,7 +25,10 @@ vi.mock("../../../src/ts/utils/json-data", () => ({
   getLanguage: async () => ({ rightToLeft: false }),
 }));
 vi.mock("../../../src/ts/config/store", () => ({
-  Config: { language: "english" },
+  getMutableConfig: (() => {
+    const storedConfig = { language: "english" };
+    return () => storedConfig;
+  })(),
 }));
 vi.mock("../../../src/ts/config/setters", () => ({ setConfig: vi.fn() }));
 vi.mock("../../../src/ts/db", () => ({ getSnapshot: () => undefined }));

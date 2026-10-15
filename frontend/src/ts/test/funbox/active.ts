@@ -1,11 +1,11 @@
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import { FunboxProperty, getFunboxObject } from "@oxytype/funbox";
 import { FunboxName } from "@oxytype/schemas/configs";
 
 const metadata = getFunboxObject();
 
 export function getActiveFunboxNames(): FunboxName[] {
-  return Config.funbox ?? [];
+  return getMutableConfig().funbox ?? [];
 }
 
 export function isFunboxActive(funbox: FunboxName): boolean {

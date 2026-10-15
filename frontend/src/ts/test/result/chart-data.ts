@@ -1,6 +1,6 @@
 import { applyFakeChartData } from "./fake-chart";
 import { result, resultAnnotation } from "./context";
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import { showSuccessNotification } from "../../states/notifications";
 import * as Numbers from "@oxytype/util/numbers";
 import * as Arrays from "../../utils/arrays";
@@ -53,7 +53,9 @@ export async function updateChartData(): Promise<void> {
     return;
   }
 
-  const typingSpeedUnit = getTypingSpeedUnit(Config.typingSpeedUnit);
+  const typingSpeedUnit = getTypingSpeedUnit(
+    getMutableConfig().typingSpeedUnit,
+  );
   getResultChartScale("wpm").title.text = typingSpeedUnit.fullUnitString;
 
   const labels = getTimerBoundaryLabels(eventLog, false);
@@ -81,7 +83,7 @@ export async function updateChartData(): Promise<void> {
 
   const subcolor = getTheme().sub;
 
-  if (Config.funbox.length > 0) {
+  if (getMutableConfig().funbox.length > 0) {
     let content = "";
     for (const fb of getActiveFunboxes()) {
       content += fb.name;
@@ -103,7 +105,7 @@ export async function updateChartData(): Promise<void> {
       label: {
         backgroundColor: "transparent",
         font: {
-          family: Config.fontFamily.replace(/_/g, " "),
+          family: getMutableConfig().fontFamily.replace(/_/g, " "),
           size: 11,
           style: "normal",
           weight: Chart.defaults.font.weight,
@@ -122,7 +124,7 @@ export async function updateChartData(): Promise<void> {
   getResultChart().data.labels = labels;
 
   getResultChartDataset("wpm").data = chartData1;
-  getResultChartDataset("wpm").label = Config.typingSpeedUnit;
+  getResultChartDataset("wpm").label = getMutableConfig().typingSpeedUnit;
 
   getResultChartDataset("raw").data = chartData2;
 

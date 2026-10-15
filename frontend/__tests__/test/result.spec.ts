@@ -111,7 +111,7 @@ import {
   type ResultStats,
 } from "../../src/ts/states/result";
 import { __testing } from "../../src/ts/config/testing";
-import { Config } from "../../src/ts/config/store";
+import { getMutableConfig } from "../../src/ts/config/store";
 import type { CompletedEvent } from "@oxytype/schemas/results";
 import type { Config as ConfigType } from "@oxytype/schemas/configs";
 import type { Quote } from "../../src/ts/controllers/quotes-controller";
@@ -602,7 +602,7 @@ describe("result update", () => {
     it("toggles start graphs at zero with scale", () => {
       config({ startGraphsAtZero: true });
       toggleResultChartLegend("scale");
-      expect(Config.startGraphsAtZero).toBe(false);
+      expect(getMutableConfig().startGraphsAtZero).toBe(false);
     });
   });
 

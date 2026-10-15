@@ -19,7 +19,7 @@ vi.mock("../../../src/ts/controllers/sound-controller", () => ({
   playError: sounds.error,
 }));
 
-import { Config } from "../../../src/ts/config/store";
+import { getMutableConfig } from "../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../src/ts/constants/default-config";
 import { resultState, setResultState } from "../../../src/ts/states/result";
 import {
@@ -114,7 +114,10 @@ function remove(
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout", "performance"] });
   vi.clearAllMocks();
-  Object.assign(Config, getDefaultConfig(), { mode: "words", words: 3 });
+  Object.assign(getMutableConfig(), getDefaultConfig(), {
+    mode: "words",
+    words: 3,
+  });
   setResultState("replay", {
     visible: false,
     slideDuration: 0,
@@ -150,7 +153,7 @@ describe("replay", () => {
     `);
     expect(resultState.replay.stats).toBe("0wpm\t0s");
 
-    Config.playSoundOnError = "1";
+    getMutableConfig().playSoundOnError = "1";
     Replay.togglePlayback();
     expect(resultState.replay.playback).toBe("playing");
     vi.runAllTimers();
@@ -321,7 +324,7 @@ describe("replay", () => {
   });
 
   it("replays zen mode against what was typed", () => {
-    Config.mode = "zen";
+    getMutableConfig().mode = "zen";
     load(
       [],
       [

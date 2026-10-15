@@ -1,4 +1,4 @@
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import { setConfig } from "../../config/setters";
 import { capitalizeFirstLetterOfEachWord } from "../../utils/strings";
 import * as ThemeController from "../../controllers/theme-controller";
@@ -9,7 +9,7 @@ import { configEvent } from "../../events/config";
 import * as getErrorMessage from "../../utils/error";
 
 const isFavorite = (theme: ThemeWithName): boolean =>
-  Config.favThemes.includes(theme.name);
+  getMutableConfig().favThemes.includes(theme.name);
 
 /**
  * creates a theme command object for the given theme
@@ -77,8 +77,11 @@ function update(themes: ThemeWithName[]): void {
 }
 
 // subscribe to theme-related config events to update the theme command list
-configEvent.subscribe(
-  ({ key }) => {
+
+export default commands;
+
+export function useThemeCommandEvents(): void {
+  configEvent.useListener(({ key }) => {
     if (key === "favThemes") {
       // update themes list when favorites change
       try {
@@ -92,8 +95,5 @@ configEvent.subscribe(
         );
       }
     }
-  },
-  import.meta.hot,
-);
-
-export default commands;
+  });
+}

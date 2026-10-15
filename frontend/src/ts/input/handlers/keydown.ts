@@ -1,4 +1,4 @@
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import * as TestLogic from "../../test/test-logic";
 import { getCharFromEvent } from "../../test/layout-emulator";
 import { emulateInsertText } from "./insert-text";
@@ -37,14 +37,14 @@ async function handleTab(e: KeyboardEvent, now: number): Promise<void> {
 
 async function handleEnter(e: KeyboardEvent, _now: number): Promise<void> {
   if (e.shiftKey) {
-    if (Config.mode === "zen") {
+    if (getMutableConfig().mode === "zen") {
       void TestLogic.finish();
       return;
     } else if (
       !canQuickRestart(
-        Config.mode,
-        Config.words,
-        Config.time,
+        getMutableConfig().mode,
+        getMutableConfig().words,
+        getMutableConfig().time,
         CustomText.getData(),
         getCustomTextIndicator()?.isLong ?? false,
       )
@@ -74,8 +74,8 @@ async function handleEnter(e: KeyboardEvent, _now: number): Promise<void> {
 
 async function handleOppositeShift(event: KeyboardEvent): Promise<void> {
   if (
-    Config.oppositeShiftMode === "keymap" &&
-    Config.keymapLayout !== "overrideSync"
+    getMutableConfig().oppositeShiftMode === "keymap" &&
+    getMutableConfig().keymapLayout !== "overrideSync"
   ) {
     let keymapLayout = await waitForKeymapLayout().catch(() => undefined);
     if (keymapLayout === undefined) {
@@ -130,7 +130,7 @@ export async function onKeydown(event: KeyboardEvent): Promise<void> {
   });
 
   // allow arrows in arrows funbox
-  const arrowsActive = Config.funbox.includes("arrows");
+  const arrowsActive = getMutableConfig().funbox.includes("arrows");
   if (
     event.key === "Home" ||
     event.key === "End" ||
@@ -142,7 +142,7 @@ export async function onKeydown(event: KeyboardEvent): Promise<void> {
     return;
   }
 
-  if (Config.oppositeShiftMode !== "off") {
+  if (getMutableConfig().oppositeShiftMode !== "off") {
     await handleOppositeShift(event);
   }
 
@@ -152,7 +152,7 @@ export async function onKeydown(event: KeyboardEvent): Promise<void> {
     return;
   }
 
-  if (Config.layout !== "default") {
+  if (getMutableConfig().layout !== "default") {
     const emulatedChar = await getCharFromEvent(event);
     if (emulatedChar !== null) {
       await emulateInsertText({ data: emulatedChar, now });

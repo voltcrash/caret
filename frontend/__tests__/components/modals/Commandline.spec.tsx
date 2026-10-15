@@ -86,7 +86,7 @@ vi.mock("../../../src/ts/navigation/navigation", () => ({ navigate: vi.fn() }));
 import { show } from "../../../src/ts/commandline/commandline";
 import { ThemeIndicator } from "../../../src/ts/components/layout/footer/ThemeIndicator";
 import { Commandline } from "../../../src/ts/components/modals/Commandline";
-import { Config } from "../../../src/ts/config/store";
+import { getMutableConfig } from "../../../src/ts/config/store";
 import { restartTestEvent } from "../../../src/ts/events/test";
 import { useCommandPaletteHotkeys } from "../../../src/ts/input/hotkeys/command-palette";
 import { useQuickRestartHotkeys } from "../../../src/ts/input/hotkeys/quickrestart";
@@ -107,7 +107,7 @@ describe("theme picker lifecycle", () => {
     setActivePage("test");
     commandlineState.isAnimating = false;
     commandlineState.noBackground = false;
-    Config.customTheme = false;
+    getMutableConfig().customTheme = false;
     command.id = "changeThemeAether";
     command.display = "aether";
     vi.clearAllMocks();

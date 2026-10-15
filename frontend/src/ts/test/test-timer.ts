@@ -1,7 +1,7 @@
 import type { SessionEvents } from "@oxytype/typing-core/session";
 import { getTimeLimit } from "@oxytype/typing-core/timer";
 
-import { Config } from "../config/store";
+import { getMutableConfig } from "../config/store";
 import { setConfig } from "../config/setters";
 import * as CustomText from "./custom-text";
 import * as TestWords from "./test-words";
@@ -46,9 +46,12 @@ export function clear(): void {
 function layoutfluid(time: number): void {
   if (timerDebug) console.time("layoutfluid");
 
-  if (Config.funbox.includes("layoutfluid") && Config.mode === "time") {
-    const layouts = Config.customLayoutfluid;
-    const switchTime = Config.time / layouts.length;
+  if (
+    getMutableConfig().funbox.includes("layoutfluid") &&
+    getMutableConfig().mode === "time"
+  ) {
+    const layouts = getMutableConfig().customLayoutfluid;
+    const switchTime = getMutableConfig().time / layouts.length;
     const index = Math.floor(time / switchTime);
     const layout = layouts[index];
     const flooredSwitchTimes = [];
@@ -66,7 +69,7 @@ function layoutfluid(time: number): void {
       LayoutfluidFunboxTimer.updateTime(1, layouts[index + 1] as string);
     }
 
-    if (Config.layout !== layout && layout !== undefined) {
+    if (getMutableConfig().layout !== layout && layout !== undefined) {
       LayoutfluidFunboxTimer.hide();
       setConfig("layout", layout as Layout, {
         nosave: true,
@@ -75,7 +78,7 @@ function layoutfluid(time: number): void {
         nosave: true,
       });
 
-      if (Config.keymapMode === "next") {
+      if (getMutableConfig().keymapMode === "next") {
         setTimeout(() => {
           highlight(
             TestWords.words
@@ -92,11 +95,11 @@ function layoutfluid(time: number): void {
 function playTimeWarning(testTime: number): void {
   if (timerDebug) console.time("play timer warning");
 
-  const maxTime = getTimeLimit(Config, CustomText.getLimit());
+  const maxTime = getTimeLimit(getMutableConfig(), CustomText.getLimit());
 
   if (
     maxTime !== undefined &&
-    testTime === maxTime - parseInt(Config.playTimeWarning, 10)
+    testTime === maxTime - parseInt(getMutableConfig().playTimeWarning, 10)
   ) {
     void SoundController.playTimeWarning();
   }
@@ -115,7 +118,7 @@ function timerStep(tick: SessionEvents["tick"]): void {
       seconds: tick.seconds,
     });
   }
-  if (Config.playTimeWarning !== "off") playTimeWarning(tick.timer);
+  if (getMutableConfig().playTimeWarning !== "off") playTimeWarning(tick.timer);
   layoutfluid(tick.timer);
 
   if (timerDebug) console.timeEnd("timer step -----------------------------");
@@ -124,8 +127,12 @@ function timerStep(tick: SessionEvents["tick"]): void {
 function checkIfTimerIsSlow(drift: number, now: number): void {
   if (!slowTimerFailEnabled) return;
   if (
-    (Config.mode === "time" && Config.time < 130 && Config.time > 0) ||
-    (Config.mode === "words" && Config.words < 250 && Config.words > 0)
+    (getMutableConfig().mode === "time" &&
+      getMutableConfig().time < 130 &&
+      getMutableConfig().time > 0) ||
+    (getMutableConfig().mode === "words" &&
+      getMutableConfig().words < 250 &&
+      getMutableConfig().words > 0)
   ) {
     if (drift > 125) {
       //slow timer

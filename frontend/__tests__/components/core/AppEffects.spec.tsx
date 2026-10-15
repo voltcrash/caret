@@ -1,4 +1,4 @@
-import { cleanup, render } from "@solidjs/testing-library";
+import { cleanup, render, waitFor } from "@solidjs/testing-library";
 import {
   afterEach,
   beforeEach,
@@ -38,7 +38,7 @@ const { deferred, lifecycle, guards, ui, services } = vi.hoisted(() => {
       focus: vi.fn(),
     },
     services: {
-      sync: vi.fn(),
+      sync: vi.fn(async () => undefined),
       unregister: vi.fn(),
       cancel: vi.fn(),
       animate: vi.fn(),
@@ -46,10 +46,8 @@ const { deferred, lifecycle, guards, ui, services } = vi.hoisted(() => {
     },
   };
 });
-vi.mock("../../../src/ts/config/lifecycle", () => ({
-  get configLoadPromise() {
-    return lifecycle.config.promise;
-  },
+vi.mock("../../../src/app/readiness", () => ({
+  preferencesReadiness: () => ({ wait: async () => lifecycle.config.promise }),
 }));
 vi.mock("../../../src/ts/auth-client", () => ({
   observeAuthSession: () => () => undefined,
@@ -59,7 +57,15 @@ vi.mock("../../../src/ts/auth-client", () => ({
   },
 }));
 vi.mock("../../../src/ts/config/store", () => ({
-  Config: { mode: "words", words: 10, time: 15, tapeMode: "off" },
+  getMutableConfig: (() => {
+    const storedConfig = {
+      mode: "words",
+      words: 10,
+      time: 15,
+      tapeMode: "off",
+    };
+    return () => storedConfig;
+  })(),
 }));
 vi.mock("../../../src/ts/cookies", () => ({
   getAcceptedCookies: () => (guards.cookiesAccepted ? {} : null),
@@ -336,7 +342,8 @@ describe("App effects", () => {
     lifecycle.config.resolve();
     await Promise.resolve();
     await Promise.resolve();
-    expect(element).not.toHaveClass("hidden");
+    await Promise.resolve();
+    await waitFor(() => expect(element).not.toHaveClass("hidden"));
     expect(document.body.style.transition).toBe(
       "background .25s, transform .05s",
     );

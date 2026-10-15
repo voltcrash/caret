@@ -2,7 +2,7 @@ import { buildPracticeWords } from "@oxytype/typing-core/practise-words";
 import * as TestWords from "./test-words";
 import { showNoticeNotification } from "../states/notifications";
 
-import { Config } from "../config/store";
+import { getMutableConfig } from "../config/store";
 import { setConfig } from "../config/setters";
 import * as CustomText from "./custom-text";
 import { configEvent } from "../events/config";
@@ -31,7 +31,7 @@ export function init(
 ): boolean {
   const eventLog = getLastEventLog();
   if (eventLog === null) return false;
-  if (Config.mode === "zen") return false;
+  if (getMutableConfig().mode === "zen") return false;
   const practice = buildPracticeWords(
     eventLog,
     TestWords.words.get().map((word) => word.text),
@@ -41,12 +41,12 @@ export function init(
   );
   if (practice === null) return false;
 
-  const mode = before.mode ?? Config.mode;
-  const punctuation = before.punctuation ?? Config.punctuation;
-  const numbers = before.numbers ?? Config.numbers;
+  const mode = before.mode ?? getMutableConfig().mode;
+  const punctuation = before.punctuation ?? getMutableConfig().punctuation;
+  const numbers = before.numbers ?? getMutableConfig().numbers;
 
   let customText = null;
-  if (Config.mode === "custom") {
+  if (getMutableConfig().mode === "custom") {
     customText = CustomText.getData();
   }
 
@@ -76,9 +76,8 @@ export function resetBefore(): void {
   before.customText = null;
 }
 
-configEvent.subscribe(
-  ({ key }) => {
+export function usePractiseEvents(): void {
+  configEvent.useListener(({ key }) => {
     if (key === "mode") resetBefore();
-  },
-  import.meta.hot,
-);
+  });
+}

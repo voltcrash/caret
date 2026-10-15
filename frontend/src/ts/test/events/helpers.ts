@@ -1,11 +1,17 @@
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import { Keycode } from "../../constants/keys";
 export function getTestEventCode(event: KeyboardEvent): Keycode | "NoCode" {
-  if (event.code === "NumpadEnter" && Config.funbox.includes("58008")) {
+  if (
+    event.code === "NumpadEnter" &&
+    getMutableConfig().funbox.includes("58008")
+  ) {
     return "Space";
   }
 
-  if (event.code.includes("Arrow") && Config.funbox.includes("arrows")) {
+  if (
+    event.code.includes("Arrow") &&
+    getMutableConfig().funbox.includes("arrows")
+  ) {
     return "NoCode";
   }
 

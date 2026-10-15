@@ -27,14 +27,17 @@ const { state, callbacks } = vi.hoisted(() => ({
   },
 }));
 vi.mock("../../../../src/ts/config/store", () => ({
-  Config: {
-    get mode() {
-      return state.mode;
-    },
-    get showOutOfFocusWarning() {
-      return state.warning;
-    },
-  },
+  getMutableConfig: (() => {
+    const storedConfig = {
+      get mode() {
+        return state.mode;
+      },
+      get showOutOfFocusWarning() {
+        return state.warning;
+      },
+    };
+    return () => storedConfig;
+  })(),
 }));
 vi.mock("../../../../src/ts/input/input-element", () => ({
   isInputElementFocused: () => state.focused,

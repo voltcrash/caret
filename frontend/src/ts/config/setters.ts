@@ -9,7 +9,7 @@ import {
 } from "./funbox-validation";
 import { camelCaseToWords, capitalizeFirstLetter } from "../utils/strings";
 import { configMetadata } from "./metadata";
-import { Config, setConfigStore } from "./store";
+import { getMutableConfig, setConfigStore } from "./store";
 import { isConfigValueValid } from "./validation";
 import { FunboxName } from "@oxytype/schemas/configs";
 import { typedKeys } from "@oxytype/util/objects";
@@ -31,17 +31,17 @@ export function setConfig<T extends keyof ConfigSchemas.Config>(
   if (metadata.overrideValue) {
     value = metadata.overrideValue({
       value,
-      currentValue: Config[key],
-      currentConfig: Config,
+      currentValue: getMutableConfig()[key],
+      currentConfig: getMutableConfig(),
     });
   }
 
-  const previousValue = Config[key];
+  const previousValue = getMutableConfig()[key];
 
   if (
     metadata.changeRequiresRestart &&
     isTestActive() &&
-    Config.funbox.includes("no_quit")
+    getMutableConfig().funbox.includes("no_quit")
   ) {
     showNoticeNotification(
       "No quit funbox is active. Please finish the test.",
@@ -57,7 +57,7 @@ export function setConfig<T extends keyof ConfigSchemas.Config>(
     return false;
   }
 
-  if (metadata.isBlocked?.({ value, currentConfig: Config })) {
+  if (metadata.isBlocked?.({ value, currentConfig: getMutableConfig() })) {
     console.warn(
       `Could not set config key "${key}" with value "${JSON.stringify(
         value,
@@ -77,7 +77,7 @@ export function setConfig<T extends keyof ConfigSchemas.Config>(
     return false;
   }
 
-  if (!canSetConfigWithCurrentFunboxes(key, value, Config.funbox)) {
+  if (!canSetConfigWithCurrentFunboxes(key, value, getMutableConfig().funbox)) {
     if (key === "words" || key === "time") {
       showNoticeNotification("Active funboxes do not support infinite tests");
     } else {
@@ -99,7 +99,7 @@ export function setConfig<T extends keyof ConfigSchemas.Config>(
   if (metadata.overrideConfig) {
     const targetConfig = metadata.overrideConfig({
       value,
-      currentConfig: Config,
+      currentConfig: getMutableConfig(),
     });
 
     for (const targetKey of typedKeys(targetConfig)) {
@@ -107,7 +107,7 @@ export function setConfig<T extends keyof ConfigSchemas.Config>(
         targetKey
       ] as ConfigSchemas.Config[keyof typeof configMetadata];
 
-      if (Config[targetKey] === targetValue) {
+      if (getMutableConfig()[targetKey] === targetValue) {
         continue; // no need to set if the value is already the same
       }
 
@@ -120,7 +120,7 @@ export function setConfig<T extends keyof ConfigSchemas.Config>(
     }
   }
 
-  Config[key] = value;
+  getMutableConfig()[key] = value;
   if (!options?.nosave) saveToLocalStorage(key, options?.nosave);
 
   // The generic key and both values share Config[T]; preserve that pair in the event union.
@@ -141,7 +141,7 @@ export function setConfig<T extends keyof ConfigSchemas.Config>(
 
   metadata.afterSet?.({
     nosave: options?.nosave ?? false,
-    currentConfig: Config,
+    currentConfig: getMutableConfig(),
   });
   return true;
 }
@@ -153,7 +153,7 @@ export function setQuoteLengthAll(nosave?: boolean): boolean {
 }
 
 export function toggleFunbox(funbox: FunboxName, nosave?: boolean): boolean {
-  if (isTestActive() && Config.funbox.includes("no_quit")) {
+  if (isTestActive() && getMutableConfig().funbox.includes("no_quit")) {
     showNoticeNotification(
       "No quit funbox is active. Please finish the test.",
       {
@@ -163,7 +163,7 @@ export function toggleFunbox(funbox: FunboxName, nosave?: boolean): boolean {
     return false;
   }
 
-  const funboxCheck = canSetFunboxWithConfig(funbox, Config);
+  const funboxCheck = canSetFunboxWithConfig(funbox, getMutableConfig());
   if (!funboxCheck.ok) {
     const errorStrings = funboxCheck.errors.map(
       (e) =>
@@ -178,9 +178,9 @@ export function toggleFunbox(funbox: FunboxName, nosave?: boolean): boolean {
     return false;
   }
 
-  const previousValue = Config.funbox;
+  const previousValue = getMutableConfig().funbox;
 
-  let newConfig: FunboxName[] = Config.funbox;
+  let newConfig: FunboxName[] = getMutableConfig().funbox;
 
   if (newConfig.includes(funbox)) {
     newConfig = newConfig.filter((it) => it !== funbox);
@@ -192,11 +192,11 @@ export function toggleFunbox(funbox: FunboxName, nosave?: boolean): boolean {
     return false;
   }
 
-  Config.funbox = newConfig;
+  getMutableConfig().funbox = newConfig;
   saveToLocalStorage("funbox", nosave);
   configEvent.dispatch({
     key: "funbox",
-    newValue: Config.funbox,
+    newValue: getMutableConfig().funbox,
     nosave,
     previousValue,
   });

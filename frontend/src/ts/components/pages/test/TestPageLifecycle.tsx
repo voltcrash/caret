@@ -1,6 +1,6 @@
 import { onCleanup, onMount } from "solid-js";
 
-import { Config } from "../../../config/store";
+import { getMutableConfig } from "../../../config/store";
 import { isInputElementFocused } from "../../../input/input-element";
 import { bindInputListenersTo } from "../../../input/listeners";
 import {
@@ -15,7 +15,7 @@ export function TestPageLifecycle(props: { input: HTMLTextAreaElement }): null {
   onMount(() => {
     const focus = (): void => {
       if (!isInputElementFocused()) return;
-      if (!getResultVisible() && Config.showOutOfFocusWarning) {
+      if (!getResultVisible() && getMutableConfig().showOutOfFocusWarning) {
         setTestFocusState("focused");
       }
       Caret.show(true);
@@ -29,7 +29,8 @@ export function TestPageLifecycle(props: { input: HTMLTextAreaElement }): null {
       if (
         !isTestActive() &&
         !getResultVisible() &&
-        (Config.mode === "time" || Config.mode === "words")
+        (getMutableConfig().mode === "time" ||
+          getMutableConfig().mode === "words")
       ) {
         void restart({ noAnim: true });
       }

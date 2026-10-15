@@ -11,7 +11,7 @@ import { scrollToCenterOrTop } from "./dimensions";
 import { setClass } from "./elements";
 import * as Numbers from "@oxytype/util/numbers";
 import { animateAsync } from "../../../../anim";
-import { Config } from "../../../../config/store";
+import { getMutableConfig } from "../../../../config/store";
 import * as SoundController from "../../../../controllers/sound-controller";
 import * as ThemeController from "../../../../controllers/theme-controller";
 import { highlight } from "../../../../events/keymap";
@@ -51,8 +51,8 @@ function afterAnyTestInput(
   if (type === "textInput" || type === "compositionUpdate") {
     if (
       correctInput === true ||
-      Config.playSoundOnError === "off" ||
-      Config.blindMode
+      getMutableConfig().playSoundOnError === "off" ||
+      getMutableConfig().blindMode
     ) {
       void SoundController.playClick();
     } else {
@@ -67,7 +67,7 @@ function afterAnyTestInput(
     setCurrentLiveStats({ acc });
   }
 
-  if (Config.keymapMode === "next") {
+  if (getMutableConfig().keymapMode === "next") {
     const keyToHighlight =
       TestWords.words.getCurrent()?.textWithCommit[getCurrentInput().length];
     if (keyToHighlight !== undefined) {
@@ -140,7 +140,7 @@ export function beforeTestWordChange(
   }
 
   if (direction === "forward") {
-    if (Config.blindMode) {
+    if (getMutableConfig().blindMode) {
       highlightAllLettersAsCorrect(getActiveWordIndex());
     } else if (correct === false) {
       highlightBadWord(getActiveWordIndex());
@@ -161,7 +161,7 @@ export async function afterTestWordChange(
     setCurrentLiveStats({ burst: Math.round(lastBurst) });
   }
 
-  if (Config.keymapMode === "next") {
+  if (getMutableConfig().keymapMode === "next") {
     const keyToHighlight =
       TestWords.words.getCurrent()?.textWithCommit[getCurrentInput().length];
     if (keyToHighlight !== undefined) {
@@ -172,7 +172,7 @@ export async function afterTestWordChange(
   if (direction === "forward") {
     //
   } else if (direction === "back") {
-    if (Config.mode === "zen") {
+    if (getMutableConfig().mode === "zen") {
       // because we need to delete newline, beforenewline and afternewline elements which dont have wordindex attributes
       // we need to do this loop thingy and delete all elements after the active word
       let deleteElements = false;
@@ -265,14 +265,14 @@ export function onTestRestart(source: "testPage" | "resultPage"): void {
   }
 
   if (source === "resultPage") {
-    if (Config.randomTheme !== "off") {
+    if (getMutableConfig().randomTheme !== "off") {
       void ThemeController.randomizeTheme();
     }
     skipBreakdownEvent.dispatch();
   }
 
   lineState.currentTestLine = 0;
-  if (Config.compositionDisplay === "below") {
+  if (getMutableConfig().compositionDisplay === "below") {
     setCompositionText(" ");
   }
   void SoundController.clearAllSounds();
@@ -283,7 +283,7 @@ export function onTestRestart(source: "testPage" | "resultPage"): void {
 export function onTestFinish(): void {
   Caret.hide();
   setTestFocusState("focused");
-  if (Config.playSoundOnClick === "16") {
+  if (getMutableConfig().playSoundOnClick === "16") {
     void SoundController.playFartReverb();
   }
 }

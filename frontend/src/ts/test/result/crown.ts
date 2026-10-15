@@ -1,5 +1,5 @@
 import { result } from "./context";
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import * as DB from "../../db";
 import { getActiveFunboxes } from "../funbox/list";
 import { getFunbox } from "@oxytype/funbox";
@@ -19,7 +19,7 @@ function updateCrownText(text: string, wide = false): void {
 }
 
 export async function updateCrown(dontSave: boolean): Promise<void> {
-  if (Config.mode === "quote" || dontSave) {
+  if (getMutableConfig().mode === "quote" || dontSave) {
     hideCrown();
     return;
   }
@@ -29,13 +29,13 @@ export async function updateCrown(dontSave: boolean): Promise<void> {
   console.debug("Result can get PB:", canGetPb.value, canGetPb.reason ?? "");
 
   const localPb = DB.getLocalPB(
-    Config.mode,
+    getMutableConfig().mode,
     result.mode2,
-    Config.punctuation,
-    Config.numbers,
-    Config.language,
-    Config.difficulty,
-    Config.lazyMode,
+    getMutableConfig().punctuation,
+    getMutableConfig().numbers,
+    getMutableConfig().language,
+    getMutableConfig().difficulty,
+    getMutableConfig().lazyMode,
     canGetPb.value ? getActiveFunboxes() : [],
   );
   const localPbWpm = localPb?.wpm ?? 0;
@@ -74,7 +74,7 @@ export async function resultCanGetPb(): Promise<CanGetPb> {
   const funboxesOk = funboxes.length === 0 || allFunboxesCanGetPb;
   // allow stopOnError:letter to be PB only if 100% accuracy, since it doesn't affect gameplay
   const stopOnLetterTriggered =
-    Config.stopOnError === "letter" && result.acc < 100;
+    getMutableConfig().stopOnError === "letter" && result.acc < 100;
   const notBailedOut = !result.bailedOut;
 
   if (funboxesOk && !stopOnLetterTriggered && notBailedOut) {

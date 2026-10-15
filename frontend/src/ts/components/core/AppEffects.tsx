@@ -12,9 +12,9 @@ import { spread } from "solid-js/web";
 import { debounce, throttle } from "throttle-debounce";
 import { envConfig } from "virtual:env-config";
 
+import { preferencesReadiness } from "../../../app/readiness";
 import * as ServerConfiguration from "../../ape/server-configuration";
-import { configLoadPromise } from "../../config/lifecycle";
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import { getAcceptedCookies } from "../../cookies";
 import { configEvent } from "../../events/config";
 import { isInputElementFocused } from "../../input/input-element";
@@ -225,9 +225,9 @@ export function AppEffects(props: AppElements): JSXElement {
     const beforeUnload = (event: BeforeUnloadEvent): void => {
       if (
         !canQuickRestart(
-          Config.mode,
-          Config.words,
-          Config.time,
+          getMutableConfig().mode,
+          getMutableConfig().words,
+          getMutableConfig().time,
           CustomText.getData(),
           getCustomTextIndicator()?.isLong ?? false,
         ) &&
@@ -243,7 +243,7 @@ export function AppEffects(props: AppElements): JSXElement {
     const timers = new Set<ReturnType<typeof setTimeout>>();
     const debouncedEvent = debounce(250, () => {
       if (getActivePage() === "test" && !getResultVisible()) {
-        if (Config.tapeMode !== "off") {
+        if (getMutableConfig().tapeMode !== "off") {
           void TestUI.scrollTape();
         } else {
           void TestUI.centerActiveLine();
@@ -287,8 +287,10 @@ export function AppEffects(props: AppElements): JSXElement {
     };
     onDOMReady(async () => {
       // Server configuration and authentication are independent startup requests.
-      void ServerConfiguration.sync();
-      await configLoadPromise;
+      void ServerConfiguration.sync().catch((error: unknown) =>
+        console.error("Failed to synchronize server configuration", error),
+      );
+      await preferencesReadiness().wait();
       if (disposed) return;
 
       setReady(true);

@@ -1,4 +1,4 @@
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import * as CustomText from "../custom-text";
 import {
   getLastEventLog,
@@ -30,11 +30,13 @@ function loadWordsHistory(): boolean {
       correctedHistory: getCorrectedWordsHistory(eventLog),
       burstHistory: getWordBurstHistory(eventLog),
       getTargetWord: (i) => TestWords.words.get(i)?.textWithCommit ?? "",
-      zen: Config.mode === "zen",
+      zen: getMutableConfig().mode === "zen",
       timed:
-        Config.mode === "time" ||
-        (Config.mode === "custom" && CustomText.getLimitMode() === "time") ||
-        (Config.mode === "custom" && CustomText.getLimitValue() === 0),
+        getMutableConfig().mode === "time" ||
+        (getMutableConfig().mode === "custom" &&
+          CustomText.getLimitMode() === "time") ||
+        (getMutableConfig().mode === "custom" &&
+          CustomText.getLimitValue() === 0),
       korean: getKoreanStatus(),
     }),
   );

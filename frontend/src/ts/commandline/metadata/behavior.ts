@@ -1,7 +1,7 @@
 import { CommandlineConfigMetadataObject } from "./types";
 import * as ConfigSchemas from "@oxytype/schemas/configs";
 import * as TestLogic from "../../test/test-logic";
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import { get as getTypingSpeedUnit } from "../../utils/typing-speed-units";
 import { getActivePage } from "../../states/core";
 
@@ -54,7 +54,9 @@ export const behaviorMetadata = {
       secondKey: "minWpmCustomSpeed",
       inputValueConvert: (value) => {
         let newVal = Number(value);
-        newVal = getTypingSpeedUnit(Config.typingSpeedUnit).toWpm(newVal);
+        newVal = getTypingSpeedUnit(getMutableConfig().typingSpeedUnit).toWpm(
+          newVal,
+        );
         return newVal;
       },
     },
@@ -85,7 +87,7 @@ export const behaviorMetadata = {
   customLayoutfluid: {
     input: {
       defaultValue: () => {
-        return Config.customLayoutfluid.join(" ");
+        return getMutableConfig().customLayoutfluid.join(" ");
       },
       inputValueConvert: (val) =>
         val.trim().split(" ") as ConfigSchemas.CustomLayoutFluid,
@@ -94,7 +96,7 @@ export const behaviorMetadata = {
   customPolyglot: {
     input: {
       defaultValue: () => {
-        return Config.customPolyglot.join(" ");
+        return getMutableConfig().customPolyglot.join(" ");
       },
       inputValueConvert: (val) =>
         val.trim().split(" ") as ConfigSchemas.CustomPolyglot,

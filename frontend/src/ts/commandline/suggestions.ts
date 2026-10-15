@@ -1,6 +1,6 @@
 import * as CommandlineLists from "./lists";
 import { matchCommands } from "./matching";
-import { Config } from "../config/store";
+import { getMutableConfig } from "../config/store";
 
 import * as ThemeController from "../controllers/theme-controller";
 import { clearFontPreview } from "../ui";
@@ -19,7 +19,7 @@ import { isCoarsePointer } from "../utils/pointer";
 
 function removeCommandlineBackground(): void {
   commandlineState.noBackground = true;
-  if (Config.showOutOfFocusWarning) {
+  if (getMutableConfig().showOutOfFocusWarning) {
     setTestFocusState("focused");
   }
 }
@@ -100,16 +100,19 @@ export async function showCommands(): Promise<void> {
           if (command.configValueMode === "include") {
             if (Array.isArray(command.configValue)) {
               isActive = areUnsortedArraysEqual(
-                intersect(Config[configKey] as unknown[], command.configValue),
+                intersect(
+                  getMutableConfig()[configKey] as unknown[],
+                  command.configValue,
+                ),
                 command.configValue,
               );
             } else {
-              isActive = (Config[configKey] as unknown[]).includes(
+              isActive = (getMutableConfig()[configKey] as unknown[]).includes(
                 command.configValue,
               );
             }
           } else {
-            isActive = Config[configKey] === command.configValue;
+            isActive = getMutableConfig()[configKey] === command.configValue;
           }
         }
       }

@@ -6,7 +6,7 @@ import {
   showSuccessNotification,
 } from "../../states/notifications";
 import * as TestWords from "../../test/test-words";
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import * as PractiseWords from "../../test/practise-words";
 import { Command, CommandsSubgroup } from "../types";
 import * as TestScreenshot from "../../test/test-screenshot";
@@ -143,7 +143,7 @@ const commands: Command[] = [
 
       const inputHistory = getInputHistory(eventLog);
       const words =
-        Config.mode === "zen"
+        getMutableConfig().mode === "zen"
           ? inputHistory.join("")
           : TestWords.words
               .get()

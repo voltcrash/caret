@@ -8,7 +8,10 @@ import * as TestWords from "../../src/ts/test/test-words";
 
 const state = vi.hoisted(() => ({ rtl: false, result: false }));
 vi.mock("../../src/ts/config/store", () => ({
-  Config: { indicateTypos: "below" },
+  getMutableConfig: (() => {
+    const storedConfig = { indicateTypos: "below" };
+    return () => storedConfig;
+  })(),
 }));
 vi.mock("../../src/ts/states/core", () => ({ getActivePage: () => "test" }));
 vi.mock("../../src/ts/states/test", () => ({

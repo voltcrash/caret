@@ -1,5 +1,5 @@
 import { setMaxChartValue } from "./chart-bounds";
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import * as Numbers from "@oxytype/util/numbers";
 import { get as getTypingSpeedUnit } from "../../utils/typing-speed-units";
 import {
@@ -30,7 +30,9 @@ export function applyFakeChartData(): void {
 
   const labels = fakeChartData.wpm.map((_, i) => (i + 1).toString());
 
-  const typingSpeedUnit = getTypingSpeedUnit(Config.typingSpeedUnit);
+  const typingSpeedUnit = getTypingSpeedUnit(
+    getMutableConfig().typingSpeedUnit,
+  );
 
   const chartData1 = [
     ...fakeChartData.wpm.map((a) =>
@@ -62,7 +64,7 @@ export function applyFakeChartData(): void {
 
   let minChartVal = 0;
 
-  if (!Config.startGraphsAtZero) {
+  if (!getMutableConfig().startGraphsAtZero) {
     minChartVal = Math.min(
       ...[
         Math.min(...chartData1),
@@ -78,7 +80,7 @@ export function applyFakeChartData(): void {
   getResultChart().data.labels = labels;
 
   getResultChartDataset("wpm").data = chartData1;
-  getResultChartDataset("wpm").label = Config.typingSpeedUnit;
+  getResultChartDataset("wpm").label = getMutableConfig().typingSpeedUnit;
   getResultChartScale("wpm").min = minChartVal;
   getResultChartScale("wpm").max = maxChartVal;
 

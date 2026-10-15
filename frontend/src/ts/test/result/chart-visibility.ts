@@ -3,7 +3,7 @@ import {
   applyMinMaxChartValues,
 } from "./chart-bounds";
 import { resultAnnotation } from "./context";
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import { setConfig } from "../../config/setters";
 import { isAuthenticated } from "../../states/core";
 import { LocalStorageWithSchema } from "../../utils/local-storage-with-schema";
@@ -65,7 +65,7 @@ export function toggleResultChartLegend(
   id: "scale" | ResultChartLegendId,
 ): void {
   if (id === "scale") {
-    setConfig("startGraphsAtZero", !Config.startGraphsAtZero);
+    setConfig("startGraphsAtZero", !getMutableConfig().startGraphsAtZero);
     return;
   }
 

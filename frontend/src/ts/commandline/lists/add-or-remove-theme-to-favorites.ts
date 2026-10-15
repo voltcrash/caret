@@ -1,5 +1,5 @@
 import { ThemeName } from "@oxytype/schemas/configs";
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import { setConfig } from "../../config/setters";
 import { randomTheme } from "../../controllers/theme-controller";
 import { Command } from "../types";
@@ -11,12 +11,14 @@ const commands: Command[] = [
     icon: "fa-star",
     available: (): boolean => {
       return (
-        !Config.customTheme &&
-        !Config.favThemes.includes((randomTheme as ThemeName) ?? Config.theme)
+        !getMutableConfig().customTheme &&
+        !getMutableConfig().favThemes.includes(
+          (randomTheme as ThemeName) ?? getMutableConfig().theme,
+        )
       );
     },
     exec: (): void => {
-      const { theme, favThemes, customTheme } = Config;
+      const { theme, favThemes, customTheme } = getMutableConfig();
       const themeToUpdate = randomTheme ?? theme;
       if (!customTheme && !favThemes.includes(themeToUpdate as ThemeName)) {
         setConfig("favThemes", [...favThemes, themeToUpdate as ThemeName]);
@@ -30,12 +32,14 @@ const commands: Command[] = [
     iconType: "regular",
     available: (): boolean => {
       return (
-        !Config.customTheme &&
-        Config.favThemes.includes((randomTheme as ThemeName) ?? Config.theme)
+        !getMutableConfig().customTheme &&
+        getMutableConfig().favThemes.includes(
+          (randomTheme as ThemeName) ?? getMutableConfig().theme,
+        )
       );
     },
     exec: (): void => {
-      const { theme, favThemes, customTheme } = Config;
+      const { theme, favThemes, customTheme } = getMutableConfig();
       const themeToUpdate = (randomTheme as ThemeName) ?? theme;
       if (!customTheme && favThemes.includes(themeToUpdate)) {
         setConfig("favThemes", [

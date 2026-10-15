@@ -1,6 +1,6 @@
 import { keepWordsInputInTheCenter } from "./focus";
 import { getActiveWordElement, setClass } from "./elements";
-import { Config } from "../../../../config/store";
+import { getMutableConfig } from "../../../../config/store";
 import { getInputElement } from "../../../../input/input-element";
 import { getActivePage } from "../../../../states/core";
 import { setWordsWrapperVisible } from "../../../../states/funbox";
@@ -46,21 +46,24 @@ export function updateWordsInputPosition(): void {
   }
 
   const letterHeight =
-    convertRemToPixels(Config.fontSize) * getWordsFontScale();
+    convertRemToPixels(getMutableConfig().fontSize) * getWordsFontScale();
   const targetTop =
     activeWord.offsetTop + letterHeight / 2 - el.offsetHeight / 2 + 1; //+1 for half of border
 
   const wordWidth = activeWord.offsetWidth;
   const left =
-    Config.tapeMode !== "off"
-      ? getWordsWrapperEl().offsetWidth * (Config.tapeMargin / 100)
+    getMutableConfig().tapeMode !== "off"
+      ? getWordsWrapperEl().offsetWidth * (getMutableConfig().tapeMargin / 100)
       : wordWidth < letterHeight && isTestRightToLeft
         ? activeWord.offsetLeft - letterHeight
         : Math.max(0, activeWord.offsetLeft);
 
   // Publish one layout update so input styles settle before scrolling.
   setWordsInputStyle({
-    "max-width": Config.tapeMode !== "off" ? `${100 - Config.tapeMargin}%` : "",
+    "max-width":
+      getMutableConfig().tapeMode !== "off"
+        ? `${100 - getMutableConfig().tapeMargin}%`
+        : "",
     width: `${Math.max(letterHeight, wordWidth)}px`,
     top: `${targetTop}px`,
     left: `${left}px`,
@@ -71,7 +74,7 @@ export function updateWordsInputPosition(): void {
 
 export function updateWordsWrapperHeight(force = false): void {
   if (getActivePage() !== "test" || getResultVisible()) return;
-  if (!force && Config.mode !== "custom") return;
+  if (!force && getMutableConfig().mode !== "custom") return;
   const activeWordEl = getActiveWordElement();
   if (!activeWordEl) return;
 
@@ -84,20 +87,21 @@ export function updateWordsWrapperHeight(force = false): void {
   const wordHeight = activeWordEl.offsetHeight + wordMargin;
 
   const timedTest =
-    Config.mode === "time" ||
-    (Config.mode === "custom" && CustomText.getLimitMode() === "time") ||
-    (Config.mode === "custom" && CustomText.getLimitValue() === 0);
+    getMutableConfig().mode === "time" ||
+    (getMutableConfig().mode === "custom" &&
+      CustomText.getLimitMode() === "time") ||
+    (getMutableConfig().mode === "custom" && CustomText.getLimitValue() === 0);
 
-  const showAllLines = Config.showAllLines && !timedTest;
+  const showAllLines = getMutableConfig().showAllLines && !timedTest;
 
   if (showAllLines) {
     //allow the wrapper to grow and shink with the words
     setWordsWrapperHeight("");
-  } else if (Config.mode === "zen") {
+  } else if (getMutableConfig().mode === "zen") {
     //zen mode, showAllLines off
     setWordsWrapperHeight(`${wordHeight * 2}px`);
   } else {
-    if (Config.tapeMode === "off") {
+    if (getMutableConfig().tapeMode === "off") {
       //tape off, showAllLines off, non-zen mode
       const wordElements = Array.from(
         getWordsEl().querySelectorAll<HTMLElement>(".word"),
@@ -138,18 +142,18 @@ export function updateWordsWrapperHeight(force = false): void {
 
 export function updateWordsWidth(): void {
   let css: Record<string, string> = {};
-  if (Config.tapeMode === "off") {
-    if (Config.maxLineWidth === 0) {
+  if (getMutableConfig().tapeMode === "off") {
+    if (getMutableConfig().maxLineWidth === 0) {
       css = {
         "max-width": "100%",
       };
     } else {
       css = {
-        "max-width": `${Config.maxLineWidth}ch`,
+        "max-width": `${getMutableConfig().maxLineWidth}ch`,
       };
     }
   } else {
-    if (Config.maxLineWidth === 0) {
+    if (getMutableConfig().maxLineWidth === 0) {
       css = {
         "max-width": "100%",
       };
@@ -165,7 +169,7 @@ export function updateWordsWidth(): void {
   } else {
     Object.assign(el.style, css);
   }
-  if (Config.maxLineWidth === 0) {
+  if (getMutableConfig().maxLineWidth === 0) {
     setClass(el, "full-width-padding", false);
     setClass(el, "content", true);
   } else {
