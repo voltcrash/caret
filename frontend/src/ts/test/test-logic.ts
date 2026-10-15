@@ -1,3 +1,4 @@
+import { captureApplication, createAppOwned } from "../../app/application";
 import { onCleanup } from "solid-js";
 import * as TestUI from "./test-ui";
 import * as Strings from "../utils/strings";
@@ -389,30 +390,36 @@ export function fail(reason: string): void {
   getTestSession().finish(performance.now(), reason);
 }
 
-const debouncedZipfCheck = debounce(250, async () => {
-  const supports = await JSONData.checkIfLanguageSupportsZipf(
-    getMutableConfig().language,
-  );
-  if (supports === "no") {
-    showNoticeNotification(
-      `${Strings.capitalizeFirstLetter(
-        Strings.getLanguageDisplayString(getMutableConfig().language),
-      )} does not support Zipf funbox, because the list is not ordered by frequency. Please try another word list.`,
-      {
-        durationMs: 7000,
-      },
+const zipfCheck = createAppOwned(() => {
+  const check = debounce(250, async () => {
+    const lease = captureApplication();
+    const supports = await JSONData.checkIfLanguageSupportsZipf(
+      getMutableConfig().language,
     );
-  }
-  if (supports === "unknown") {
-    showNoticeNotification(
-      `${Strings.capitalizeFirstLetter(
-        Strings.getLanguageDisplayString(getMutableConfig().language),
-      )} may not support Zipf funbox, because we don't know if it's ordered by frequency or not. If you would like to add this label, please contact us.`,
-      {
-        durationMs: 7000,
-      },
-    );
-  }
+    if (lease.signal.aborted) return;
+    if (supports === "no") {
+      showNoticeNotification(
+        `${Strings.capitalizeFirstLetter(
+          Strings.getLanguageDisplayString(getMutableConfig().language),
+        )} does not support Zipf funbox, because the list is not ordered by frequency. Please try another word list.`,
+        {
+          durationMs: 7000,
+        },
+      );
+    }
+    if (supports === "unknown") {
+      showNoticeNotification(
+        `${Strings.capitalizeFirstLetter(
+          Strings.getLanguageDisplayString(getMutableConfig().language),
+        )} may not support Zipf funbox, because we don't know if it's ordered by frequency or not. If you would like to add this label, please contact us.`,
+        {
+          durationMs: 7000,
+        },
+      );
+    }
+  });
+  onCleanup(() => check.cancel());
+  return check;
 });
 
 // ===============================
@@ -466,7 +473,7 @@ export function useTestLogicEvents(): void {
         (key === "language" || key === "funbox") &&
         getMutableConfig().funbox.includes("zipf")
       ) {
-        debouncedZipfCheck();
+        zipfCheck()();
       }
     }
     if (key === "lazyMode" && !nosave) {

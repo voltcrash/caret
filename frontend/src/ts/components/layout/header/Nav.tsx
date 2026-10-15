@@ -3,6 +3,8 @@ import {
   createMemo,
   createSignal,
   JSXElement,
+  lazy,
+  Suspense,
   onCleanup,
   Show,
 } from "solid-js";
@@ -31,9 +33,15 @@ import { Anime } from "../../common/anime";
 import { AnimePresence } from "../../common/anime/AnimePresence";
 import { Button } from "../../common/Button";
 import { NotificationBubble } from "../../common/NotificationBubble";
-import { User } from "../../common/User";
-import { AccountMenu } from "./AccountMenu";
-import { AccountXpBar } from "./AccountXpBar";
+const User = lazy(async () =>
+  import("../../common/User").then((m) => ({ default: m.User })),
+);
+const AccountMenu = lazy(async () =>
+  import("./AccountMenu").then((m) => ({ default: m.AccountMenu })),
+);
+const AccountXpBar = lazy(async () =>
+  import("./AccountXpBar").then((m) => ({ default: m.AccountXpBar })),
+);
 
 export function Nav(): JSXElement {
   const [getAccountMenuOpen, setAccountMenuOpen] = createSignal(false);
@@ -257,20 +265,26 @@ export function Nav(): JSXElement {
                     "aria-label": "Account",
                   }}
                 >
-                  <User
-                    user={snap()}
-                    showAvatar={true}
-                    iconsOnly={true}
-                    hideNameOnSmallScreens={true}
-                    level={getAnimatedLevel()}
-                    showSpinner={getAccountButtonSpinner()}
-                    fontClass="text-em-xs"
-                  />
+                  <Suspense fallback={null}>
+                    <User
+                      user={snap()}
+                      showAvatar={true}
+                      iconsOnly={true}
+                      hideNameOnSmallScreens={true}
+                      level={getAnimatedLevel()}
+                      showSpinner={getAccountButtonSpinner()}
+                      fontClass="text-em-xs"
+                    />
+                  </Suspense>
                 </Button>
-                <AccountMenu />
+                <Suspense fallback={null}>
+                  <AccountMenu />
+                </Suspense>
               </div>
               <div class="relative">
-                <AccountXpBar />
+                <Suspense fallback={null}>
+                  <AccountXpBar />
+                </Suspense>
               </div>
             </Anime>
           )}

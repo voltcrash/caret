@@ -5,7 +5,6 @@ import { initializeTypingState, useKeymapEvents } from "../ts/states/test";
 import { useFunboxEvents } from "../ts/test/funbox/funbox";
 import { usePaceCaretEvents } from "../ts/test/pace-caret";
 import { usePractiseEvents } from "../ts/test/practise-words";
-import { subscribeResultConfigChanges } from "../ts/test/result/chart-config";
 import { useTestLogicEvents } from "../ts/test/test-logic";
 import { useTtsEvents } from "../ts/test/tts";
 
@@ -21,6 +20,5 @@ export function TypingRuntime(): null {
   usePractiseEvents();
   useTestLogicEvents();
   useTtsEvents();
-  subscribeResultConfigChanges();
   return null;
 }
