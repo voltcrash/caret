@@ -4,6 +4,7 @@ import { HeadContent, Scripts, useRouter } from "@tanstack/solid-router";
 import { HydrationScript } from "solid-js/web";
 
 import warnings from "../html/warnings.html?raw";
+import { themeBootstrap } from "./theme-bootstrap";
 
 /** Trusted static fallback source; rendered in the initial response and kept on hydration. */
 export function Document(props: { children: JSX.Element }): JSX.Element {
@@ -17,6 +18,8 @@ export function Document(props: { children: JSX.Element }): JSX.Element {
     <html lang="en">
       <head>
         <HydrationScript />
+        {/* oxlint-disable-next-line solid/no-innerhtml -- Trusted static head script; validates stored preference values and uses the response nonce. */}
+        <script nonce={nonce()} innerHTML={themeBootstrap}></script>
       </head>
       <body>
         <HeadContent />

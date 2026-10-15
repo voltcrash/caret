@@ -1,3 +1,6 @@
+vi.mock("../../src/app/font-runtime.client", () => ({
+  FontRuntime: () => null,
+}));
 import { cleanup, render } from "@solidjs/testing-library";
 import { afterEach, expect, it, vi } from "vite-plus/test";
 

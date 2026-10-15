@@ -1,4 +1,3 @@
-import { MetaProvider, Style } from "@solidjs/meta";
 import { animate } from "animejs";
 import {
   createEffect,
@@ -16,11 +15,8 @@ import { preferencesReadiness } from "../../../app/readiness";
 import * as ServerConfiguration from "../../ape/server-configuration";
 import { getMutableConfig } from "../../config/store";
 import { getAcceptedCookies } from "../../cookies";
-import { configEvent } from "../../events/config";
 import { isInputElementFocused } from "../../input/input-element";
 import {
-  getFontFace,
-  getFontFamily,
   getMediaQueryDebugLevel,
   isAppLoading,
   isFocusCursorHidden,
@@ -44,7 +40,6 @@ import { getTheme } from "../../states/theme";
 import * as Caret from "../../test/caret";
 import * as CustomText from "../../test/custom-text";
 import * as TestUI from "../../test/test-ui";
-import { applyFontFamily } from "../../ui";
 import { cn, updateClassNames } from "../../utils/cn";
 import { isColorDark } from "../../utils/colors";
 import { onDOMReady } from "../../utils/dom-ready";
@@ -146,16 +141,6 @@ export function AppEffects(props: AppElements): JSXElement {
     true,
   );
 
-  createEffect(() => {
-    const font = getFontFamily();
-    if (font !== undefined) {
-      document.documentElement.style.setProperty("--font", font);
-    }
-  });
-  configEvent.useListener(async ({ key }) => {
-    if (key === "fontFamily" || key === "language") await applyFontFamily();
-  });
-
   onMount(() => {
     // Keep the original animation running while config, auth and the first
     // page settle. Removing it at mount creates a blank frame between loaders.
@@ -218,8 +203,6 @@ export function AppEffects(props: AppElements): JSXElement {
         ? "auto"
         : "smooth";
     });
-    // Local config starts loading before render; catch its initial font events.
-    void applyFontFamily();
     if (isDevEnvironment()) document.title = `${document.title} (localhost)`;
 
     const beforeUnload = (event: BeforeUnloadEvent): void => {
@@ -332,9 +315,6 @@ export function AppEffects(props: AppElements): JSXElement {
   return (
     <>
       <OAuthRuntime />
-      <MetaProvider>
-        <Style class="customFont">{getFontFace()}</Style>
-      </MetaProvider>
       <GlobalEvents />
       <BreakpointEvents />
       <ModifierEvents />

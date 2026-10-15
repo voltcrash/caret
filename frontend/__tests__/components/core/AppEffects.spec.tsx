@@ -8,6 +8,8 @@ import {
   vi,
 } from "vite-plus/test";
 
+import { FontRuntime } from "../../../src/app/font-runtime.client";
+
 const { deferred, lifecycle, guards, ui, services } = vi.hoisted(() => {
   const deferred = (): { promise: Promise<void>; resolve: () => void } => {
     let resolve!: () => void;
@@ -28,7 +30,7 @@ const { deferred, lifecycle, guards, ui, services } = vi.hoisted(() => {
       cookiesAccepted: true,
     },
     ui: {
-      applyFont: vi.fn(),
+      applyFont: vi.fn(async () => undefined),
       hideCaret: vi.fn(),
       showCaret: vi.fn(),
       scrollTape: vi.fn(),
@@ -99,7 +101,9 @@ vi.mock("../../../src/ts/test/test-ui", () => ({
   updateWordsInputPosition: ui.positionInput,
   focusWords: ui.focus,
 }));
-vi.mock("../../../src/ts/ui", () => ({ applyFontFamily: ui.applyFont }));
+vi.mock("../../../src/app/fonts.client", () => ({
+  applyFontFamily: ui.applyFont,
+}));
 vi.mock("../../../src/ts/utils/dom-ready", () => ({
   onDOMReady: (callback: () => void) => callback(),
 }));
@@ -202,11 +206,14 @@ afterEach(() => {
 });
 function mount(): ReturnType<typeof render> {
   return render(() => (
-    <AppEffects
-      element={element}
-      body={document.body as HTMLBodyElement}
-      noCssWarning={null}
-    />
+    <>
+      <FontRuntime />
+      <AppEffects
+        element={element}
+        body={document.body as HTMLBodyElement}
+        noCssWarning={null}
+      />
+    </>
   ));
 }
 

@@ -15,6 +15,7 @@ import { installLogger } from "../ts/utils/logger";
 import { fetchLatestVersion } from "../ts/utils/version";
 import { currentApplication, requireApplication } from "./application";
 import { lockMath } from "./browser-integrity";
+import { FontRuntime } from "./font-runtime.client";
 import { authReadiness } from "./readiness";
 
 /** Platform/preferences only. Never waits for authentication or account history. */
@@ -68,6 +69,7 @@ export default function BrowserRuntime(props: {
   });
   return (
     <>
+      <FontRuntime />
       <Theme />
       <ThemeEvents />
     </>
