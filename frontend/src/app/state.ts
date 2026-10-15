@@ -2,6 +2,7 @@ import { createSignal, type Signal, type SignalOptions } from "solid-js";
 import { createStore, type SetStoreFunction } from "solid-js/store";
 
 import { createAppOwned } from "./application";
+import { createAccountOwned } from "./account-scope";
 
 /** Stable compatibility accessors; the value itself belongs to the mounted app. */
 export function createAppSignal<T>(): Signal<T | undefined>;
@@ -22,7 +23,16 @@ export function createAppSignal<T>(
 }
 
 export function appSignal<T>(create: () => Signal<T>): Signal<T> {
-  const signal = createAppOwned(create);
+  return ownedSignal(createAppOwned(create));
+}
+
+export function createAccountSignal<T>(value: T): Signal<T> {
+  return ownedSignal(
+    createAccountOwned(() => createSignal(copyInitial(value))),
+  );
+}
+
+function ownedSignal<T>(signal: () => Signal<T>): Signal<T> {
   return [
     () => signal()[0](),
     ((...args: unknown[]) =>
@@ -59,7 +69,22 @@ export function appStore<T extends object>(
   create: () => [T, SetStoreFunction<T>],
   array = false,
 ): [T, SetStoreFunction<T>] {
-  const store = createAppOwned(create);
+  return ownedStore(createAppOwned(create), array);
+}
+
+export function createAccountStore<T extends object>(
+  initial: T,
+): [T, SetStoreFunction<T>] {
+  return ownedStore(
+    createAccountOwned(() => createStore(copyInitial(initial))),
+    Array.isArray(initial),
+  );
+}
+
+function ownedStore<T extends object>(
+  store: () => [T, SetStoreFunction<T>],
+  array: boolean,
+): [T, SetStoreFunction<T>] {
   return [
     appObject(() => store()[0], array),
     (...args: unknown[]) =>

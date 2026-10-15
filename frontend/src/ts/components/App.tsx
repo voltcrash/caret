@@ -8,7 +8,6 @@ import { getFocus } from "../states/test";
 import { cn } from "../utils/cn";
 import { Download } from "./common/Download";
 import { FilePicker } from "./common/FilePicker";
-import { AccountRuntime } from "./core/AccountRuntime";
 import { AppEffects, AppElements } from "./core/AppEffects";
 import { CustomBackground } from "./core/CustomBackground";
 import { FunboxEffects } from "./core/FunboxEffects";
@@ -31,7 +30,6 @@ export function App(props: AppElements): JSXElement {
   return (
     <>
       <Portal mount={props.body}>
-        <AccountRuntime />
         <PageHead />
         <AppEffects {...props} />
         <HotkeyEvents />

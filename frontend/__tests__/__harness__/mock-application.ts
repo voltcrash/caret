@@ -12,11 +12,12 @@ export function createTestApplication(): {
   dispose: () => void;
 } {
   const root = createApplicationRoot();
+  const queryClient = createQueryClient({ staleTime: 0, retry: false });
   const application: Application = {
     owner: root.owner,
     state: root.state,
-    queryClient: createQueryClient({ staleTime: 0, retry: false }),
-    accountData: createAccountDataOwner(),
+    queryClient,
+    accountData: createAccountDataOwner(queryClient),
   };
   return {
     application,

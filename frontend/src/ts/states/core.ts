@@ -1,4 +1,4 @@
-import { createAppMemo } from "../../app/application";
+import { requireApplication, createAppMemo } from "../../app/application";
 import { createAppSignal } from "../../app/state";
 import { CommandlineSubgroupKey } from "../commandline/types";
 import { PageName } from "../pages/page";
@@ -36,7 +36,12 @@ export const [getGlobalOffsetTop, setGlobalOffsetTop] = createAppSignal(0);
 export const [getIsScreenshotting, setIsScreenshotting] =
   createAppSignal(false);
 
-export const [getUserId, setUserId] = createAppSignal<string | null>(null);
+export function getUserId(): string | null {
+  return requireApplication().accountData.actor();
+}
+export function setUserId(actor: string | null): void {
+  requireApplication().accountData.setActor(actor);
+}
 export const isAuthenticated = (): boolean => getUserId() !== null;
 
 export const [getSelectedProfileName, setSelectedProfileName] = createAppSignal<

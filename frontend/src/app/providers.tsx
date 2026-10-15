@@ -1,5 +1,5 @@
 import { QueryClientProvider, type QueryClient } from "@tanstack/solid-query";
-import { type JSXElement, onCleanup } from "solid-js";
+import { type JSXElement, onCleanup, untrack } from "solid-js";
 import { isServer } from "solid-js/web";
 
 import { createAccountDataOwner } from "./account-data";
@@ -21,7 +21,7 @@ export function AppProviders(props: {
     // The router/app owner supplies one client for this render's lifetime.
     // oxlint-disable-next-line solid/reactivity -- Owners bind once per mount.
     queryClient: props.queryClient,
-    accountData: createAccountDataOwner(),
+    accountData: createAccountDataOwner(untrack(() => props.queryClient)),
   };
   const release = isServer ? undefined : mountApplication(application);
   onCleanup(() => {

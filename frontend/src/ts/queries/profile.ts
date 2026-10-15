@@ -6,7 +6,7 @@ import { getQueryClient } from ".";
 import { getSnapshot } from "../states/snapshot";
 
 const queryKeys = {
-  root: () => baseKey("profiles"),
+  root: () => baseKey("profiles", { isUserSpecific: true }),
   profile: (username: string, client: Client) => [
     ...queryKeys.root(),
     username,

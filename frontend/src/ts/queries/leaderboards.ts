@@ -1,3 +1,4 @@
+import { baseKey } from "./utils/keys";
 import type {
   GetLeaderboardQuery,
   GetLeaderboardRankQuery,
@@ -15,7 +16,9 @@ import {
 const queryKeys = {
   root: (options: Selection & { userSpecific?: true }) => [
     //don't use baseKey, we require the key to have the options at the same position for user and non user specific
-    options.userSpecific === true ? "user" : "leaderboard",
+    ...(options.userSpecific === true
+      ? baseKey("leaderboard", { isUserSpecific: true })
+      : ["leaderboard"]),
     "leaderboard",
     options.type,
     {

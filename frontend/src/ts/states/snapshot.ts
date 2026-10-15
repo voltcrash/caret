@@ -1,4 +1,4 @@
-import { createAppStore, createAppSignal } from "../../app/state";
+import { createAccountStore, createAccountSignal } from "../../app/state";
 import { reconcile, unwrap } from "solid-js/store";
 import {
   Snapshot,
@@ -12,7 +12,7 @@ export type MiniSnapshot = Omit<
   Snapshot,
   "testActivity" | "testActivityByYear" | "isMiniSnapshot"
 > & { isMiniSnapshot: boolean };
-const [snapshot, updateSnapshot] = createAppStore<{
+const [snapshot, updateSnapshot] = createAccountStore<{
   value: MiniSnapshot | undefined;
 }>({ value: undefined });
 
@@ -41,6 +41,6 @@ export function getSnapshot(): MiniSnapshot | undefined {
   return snapshot.value;
 }
 
-export const [getLastResult, setLastResult] = createAppSignal<
+export const [getLastResult, setLastResult] = createAccountSignal<
   SnapshotResult<Mode> | SavedResult | undefined
 >(undefined);

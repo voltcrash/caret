@@ -4,6 +4,7 @@ import {
   createRoot,
   createSignal,
   getOwner,
+  onCleanup,
   type Owner,
   runWithOwner,
   untrack,
@@ -94,4 +95,20 @@ export function createAppOwned<T>(create: () => T): () => T {
 export function createAppMemo<T>(fn: () => T): () => T {
   const memo = createAppOwned(() => createMemo(fn));
   return () => memo()();
+}
+
+const applicationAbort = createAppOwned(() => {
+  const controller = new AbortController();
+  onCleanup(() =>
+    controller.abort(new DOMException("Application disposed", "AbortError")),
+  );
+  return controller;
+});
+
+export function captureApplication(): {
+  signal: AbortSignal;
+  assertCurrent: () => void;
+} {
+  const signal = applicationAbort().signal;
+  return { signal, assertCurrent: () => signal.throwIfAborted() };
 }
