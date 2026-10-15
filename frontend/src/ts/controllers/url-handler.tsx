@@ -21,6 +21,7 @@ import { tryCatchSync } from "@oxytype/util/trycatch";
 import { decompressFromURI } from "lz-ts";
 import { z } from "zod";
 
+import { captureAccount } from "../../app/account-scope";
 import { setConfig } from "../config/setters";
 import { getMutableConfig } from "../config/store";
 import { authEvent } from "../events/auth";
@@ -296,9 +297,11 @@ async function loadChallengeFromUrl(getOverride?: string): Promise<void> {
 export function useUrlEvents(): void {
   authEvent.useListener(async (event) => {
     if (event.type === "authStateChanged") {
+      const lease = captureAccount();
       const search = window.location.search;
 
       await event.data.loadPromise;
+      if (!lease.isCurrent()) return;
 
       loadCustomThemeFromUrl(search);
       loadTestSettingsFromUrl(search);

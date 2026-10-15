@@ -1,3 +1,6 @@
+import { createAccountOwned } from "../../app/account-scope";
+import { createAccountSignal } from "../../app/state";
+import { onCleanup, Accessor } from "solid-js";
 import { AllRewards, MonkeyMail } from "@oxytype/schemas/users";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import {
@@ -8,7 +11,6 @@ import {
   not,
   useLiveQuery,
 } from "@tanstack/solid-db";
-import { Accessor, createSignal } from "solid-js";
 import Ape from "../ape";
 import { getQueryClient } from "../queries";
 import { defineCollection } from "./utils/scope";
@@ -22,16 +24,20 @@ import {
 import * as BadgeController from "../controllers/badge-controller";
 import { addBadge, addXp } from "../db";
 
-const flushStrategy = flushDebounceStrategy({ maxWait: 1000 * 60 * 5 });
+const getFlushStrategy = createAccountOwned(() => {
+  const value = flushDebounceStrategy({ maxWait: 1000 * 60 * 5 });
+  onCleanup(() => value.strategy.cleanup());
+  return value;
+});
 export function applyPendingInboxActions(): void {
-  flushStrategy.flush();
+  getFlushStrategy().flush();
 }
 
 const queryKeys = {
   root: () => [...baseKey("inbox", { isUserSpecific: true })],
 };
 
-const [maxMailboxSize, setMaxMailboxSize] = createSignal(0);
+const [maxMailboxSize, setMaxMailboxSize] = createAccountSignal(0);
 
 export { maxMailboxSize };
 export type InboxItem = Omit<MonkeyMail, "read"> & {
@@ -76,31 +82,35 @@ export async function refetchInboxCollection(): Promise<void> {
   await inboxCollection().utils.refetch();
 }
 
-const inboxItemIdsToClaim: string[] = [];
-export const mutateInboxItem = createPacedMutations<
-  Pick<InboxItem, "id" | "status">,
-  InboxItem
->({
-  onMutate: ({ id, status }) => {
-    inboxCollection().update(id, (old) => {
-      if (old.status === "unclaimed") {
-        inboxItemIdsToClaim.push(old.id);
-      }
-      old.status = status;
-    });
-  },
-  mutationFn: async (changes) => {
-    await flushPendingChanges(changes);
+const getPendingIds = createAccountOwned(() => [] as string[]);
+const mutation = createAccountOwned(() =>
+  createPacedMutations<Pick<InboxItem, "id" | "status">, InboxItem>({
+    onMutate: ({ id, status }) => {
+      inboxCollection().update(id, (old) => {
+        if (old.status === "unclaimed") {
+          getPendingIds().push(old.id);
+        }
+        old.status = status;
+      });
+    },
+    mutationFn: async (changes) => {
+      await flushPendingChanges(changes);
 
-    const allRewards: AllRewards[] = changes.transaction.mutations
-      .map((it) => it.modified)
-      .filter((it) => inboxItemIdsToClaim.includes(it.id))
-      .flatMap((it) => it.rewards);
-    inboxItemIdsToClaim.length = 0;
-    claimRewards(allRewards);
-  },
-  strategy: flushStrategy.strategy,
-});
+      const allRewards: AllRewards[] = changes.transaction.mutations
+        .map((it) => it.modified)
+        .filter((it) => getPendingIds().includes(it.id))
+        .flatMap((it) => it.rewards);
+      getPendingIds().length = 0;
+      claimRewards(allRewards);
+    },
+    strategy: getFlushStrategy().strategy,
+  }),
+);
+export function mutateInboxItem(
+  params: Pick<InboxItem, "id" | "status">,
+): ReturnType<ReturnType<typeof mutation>> {
+  return mutation()(params);
+}
 
 function claimRewards(pendingRewards: AllRewards[]): void {
   if (pendingRewards.length === 0) return;

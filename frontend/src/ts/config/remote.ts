@@ -1,3 +1,4 @@
+import { captureAccount } from "../../app/account-scope";
 import * as ConfigSchemas from "@oxytype/schemas/configs";
 
 import { migrateConfig } from "./utils";
@@ -12,10 +13,12 @@ import { getMutableConfig } from "./store";
 export async function updateFromServer(
   accountReady?: Promise<unknown>,
 ): Promise<void> {
+  const lease = captureAccount();
   const remoteConfig = await getRemoteConfig();
   // Fetch remotely in parallel, but local settings must finish applying first.
   await Promise.all([preferencesReadiness().wait(), accountReady]);
 
+  lease.assertCurrent();
   const areConfigsEqual =
     JSON.stringify(getMutableConfig()) === JSON.stringify(remoteConfig);
 

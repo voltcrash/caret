@@ -28,9 +28,11 @@ export {
 } from "./results/types";
 
 /** Account sign-in refreshes web history and any loaded terminal history. */
-export function refetchResults(): void {
-  void resultsCollection().utils.refetch();
-  if (resultsByClient.tui().isReady()) {
-    void resultsByClient.tui().utils.refetch();
-  }
+export async function refetchResults(): Promise<void> {
+  await Promise.all([
+    resultsCollection().utils.refetch(),
+    ...(resultsByClient.tui().isReady()
+      ? [resultsByClient.tui().utils.refetch()]
+      : []),
+  ]);
 }

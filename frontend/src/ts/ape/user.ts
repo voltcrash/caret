@@ -1,12 +1,12 @@
+import { captureAccount, createAccountOwned } from "../../app/account-scope";
 import type { GetUserResponse } from "@oxytype/contracts/users";
 import Ape from ".";
-import { createAppOwned } from "../../app/application";
 import { getUserId } from "../states/core";
 import { SnapshotInitError } from "../utils/snapshot-init-error";
 
 type CacheType = GetUserResponse["data"];
 
-const state = createAppOwned(() => ({
+const state = createAccountOwned(() => ({
   cache: undefined as
     | { userId: string; promise: Promise<CacheType> }
     | undefined,
@@ -16,6 +16,7 @@ export async function fetchUserFromApi(
   userId = getUserId(),
 ): Promise<CacheType | undefined> {
   if (userId === null) return undefined;
+  const lease = captureAccount();
   const current = state();
   if (current.cache?.userId !== userId) {
     current.cache = {
@@ -34,7 +35,9 @@ export async function fetchUserFromApi(
   }
   const request = current.cache;
   try {
-    return await request.promise;
+    const data = await request.promise;
+    lease.assertCurrent();
+    return data;
   } catch (error) {
     // Failed or superseded requests must not poison another user's cache.
     if (current.cache === request) current.cache = undefined;

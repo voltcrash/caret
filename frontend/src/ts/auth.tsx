@@ -1,6 +1,7 @@
 import { typedKeys } from "@oxytype/util/objects";
 import { tryCatch } from "@oxytype/util/trycatch";
 
+import { captureAccount } from "../app/account-scope";
 import { createAppMemo } from "../app/application";
 import {
   getAuthClient,
@@ -102,19 +103,32 @@ const authenticationMemos = Object.fromEntries(
 );
 
 async function getDataAndInit(): Promise<boolean> {
+  const lease = captureAccount();
   try {
     console.log("getting account data");
     // collections sync on their own; waiting keeps tags and presets inside the account loading gate
     const accountReady = Promise.all([
       DB.initSnapshot(),
-      import("./collections/presets").then(async (m) =>
-        m.waitForPresetsReady(),
-      ),
-      import("./collections/tags").then(async (m) => m.waitForTagsReady()),
-      import("./collections/custom-themes").then((m) =>
-        m.startCustomThemesSync(),
-      ),
-      import("./collections/results"),
+      import("./collections/presets").then(async (m) => {
+        lease.assertCurrent();
+        return m.waitForPresetsReady();
+      }),
+      import("./collections/tags").then(async (m) => {
+        lease.assertCurrent();
+        return m.waitForTagsReady();
+      }),
+      import("./collections/custom-themes").then((m) => {
+        lease.assertCurrent();
+        m.startCustomThemesSync();
+        return undefined;
+      }),
+      import("./collections/results").then((m) => {
+        lease.assertCurrent();
+        void m.refetchResults().catch((error: unknown) => {
+          if (lease.isCurrent()) console.error(error);
+        });
+        return undefined;
+      }),
     ]).then(([snapshot]) => {
       if (snapshot === false) {
         throw new Error(
@@ -128,10 +142,12 @@ async function getDataAndInit(): Promise<boolean> {
       updateConfigFromServer(accountReady),
     ]);
 
+    lease.assertCurrent();
     void Sentry.setUser(snapshot.uid, snapshot.name);
 
     return true;
   } catch (error) {
+    if (!lease.isCurrent()) return false;
     console.error(error);
     if (error instanceof SnapshotInitError) {
       if (error.responseCode === 429) {
@@ -158,7 +174,10 @@ async function getDataAndInit(): Promise<boolean> {
 }
 
 export async function loadUser(_user: UserType): Promise<void> {
-  if (!(await getDataAndInit())) {
+  const lease = captureAccount();
+  const loaded = await getDataAndInit();
+  if (!lease.isCurrent()) return;
+  if (!loaded) {
     signOut();
     return;
   }

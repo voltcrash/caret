@@ -152,10 +152,9 @@ export function getCustomTheme(id: string): CustomThemeItem | undefined {
   return customThemesReader.get(id);
 }
 
-bindCustomThemesReader(getCustomThemes);
-
 /** Account loading starts this sync eagerly; themes apply before first use. */
 export function startCustomThemesSync(): void {
+  bindCustomThemesReader(getCustomThemes);
   customThemesCollection();
 }
 

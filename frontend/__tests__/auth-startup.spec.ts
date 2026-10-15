@@ -16,7 +16,9 @@ vi.mock("../src/ts/collections/tags", () => ({
 vi.mock("../src/ts/collections/custom-themes", () => ({
   startCustomThemesSync: vi.fn(),
 }));
-vi.mock("../src/ts/collections/results", () => ({}));
+vi.mock("../src/ts/collections/results", () => ({
+  refetchResults: vi.fn(async () => undefined),
+}));
 vi.mock("../src/ts/config/remote", () => ({
   updateFromServer: services.config,
 }));

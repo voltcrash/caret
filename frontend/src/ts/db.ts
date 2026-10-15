@@ -1,3 +1,4 @@
+import { createAccountOwned, captureAccount } from "../app/account-scope";
 import Ape from "./ape";
 import { showErrorNotification } from "./states/notifications";
 import { isAuthenticated } from "./states/core";
@@ -36,17 +37,20 @@ import { SnapshotInitError } from "./utils/snapshot-init-error";
 import { updateTagsInFilterStorage } from "./states/result-filters";
 import { emptyPersonalBests, personalBestList } from "./utils/personal-bests";
 
-let dbSnapshot: Snapshot | undefined;
+const snapshotState = createAccountOwned(() => ({
+  value: undefined as Snapshot | undefined,
+}));
 const firstDayOfTheWeek = getFirstDayOfTheWeek();
 
 export function getSnapshot(): Snapshot | undefined {
-  return dbSnapshot;
+  return snapshotState().value;
 }
 
 export function setSnapshot(
   newSnapshot: Snapshot | undefined,
   options?: { dispatchEvent?: boolean },
 ): void {
+  const dbSnapshot = getSnapshot();
   const originalBanned = dbSnapshot?.banned;
   const originalVerified = dbSnapshot?.verified;
   const lbOptOut = dbSnapshot?.lbOptOut;
@@ -61,11 +65,11 @@ export function setSnapshot(
   try {
     delete newSnapshot?.lbOptOut;
   } catch {}
-  dbSnapshot = newSnapshot;
-  if (dbSnapshot) {
-    dbSnapshot.banned = originalBanned;
-    dbSnapshot.verified = originalVerified;
-    dbSnapshot.lbOptOut = lbOptOut;
+  snapshotState().value = newSnapshot;
+  if (newSnapshot) {
+    newSnapshot.banned = originalBanned;
+    newSnapshot.verified = originalVerified;
+    newSnapshot.lbOptOut = lbOptOut;
   }
 
   if (options?.dispatchEvent !== false) {
@@ -77,6 +81,8 @@ export function setSnapshot(
 
 export async function initSnapshot(): Promise<Snapshot | false> {
   //send api request with token that returns tags, presets, and data needed for snap
+  const lease = captureAccount();
+  const current = snapshotState();
   const snap = getDefaultSnapshot();
 
   try {
@@ -87,6 +93,7 @@ export async function initSnapshot(): Promise<Snapshot | false> {
       syncServerConfiguration(),
     ]);
 
+    lease.assertCurrent();
     if (userData === null || userData === undefined) {
       throw new SnapshotInitError(
         `Request was successful but user data is null/undefined`,
@@ -147,14 +154,14 @@ export async function initSnapshot(): Promise<Snapshot | false> {
 
     updateTagsInFilterStorage(userData.tags?.map((it) => it._id) ?? []);
 
-    dbSnapshot = snap;
+    current.value = snap;
 
-    return dbSnapshot;
+    return current.value;
   } catch (e) {
-    dbSnapshot = getDefaultSnapshot();
+    if (lease.isCurrent()) current.value = getDefaultSnapshot();
     throw e;
   } finally {
-    setSolidSnapshot(dbSnapshot);
+    if (lease.isCurrent()) setSolidSnapshot(current.value);
   }
 }
 export function getLocalPB<M extends Mode>(
@@ -171,7 +178,7 @@ export function getLocalPB<M extends Mode>(
     return undefined;
   }
 
-  const pbs = dbSnapshot?.personalBests?.[mode]?.[mode2] as
+  const pbs = getSnapshot()?.personalBests?.[mode]?.[mode2] as
     | PersonalBest[]
     | undefined;
 
@@ -199,6 +206,7 @@ function saveLocalPB<M extends Mode>(
   consistency: number,
 ): void {
   if (mode === "quote") return;
+  const dbSnapshot = getSnapshot();
   if (!dbSnapshot) return;
   function cont(): void {
     if (!dbSnapshot) return;
@@ -288,13 +296,14 @@ export type SaveLocalResultData = {
 };
 
 export function saveLocalResult(data: SaveLocalResultData): void {
+  const lease = captureAccount();
   const snapshot = getSnapshot();
   if (!snapshot) return;
 
   if (data.result !== undefined) {
     const result = data.result;
     void import("./collections/results").then(async (m) =>
-      m.insertLocalResult({ result }),
+      lease.isCurrent() ? m.insertLocalResult({ result }) : undefined,
     );
     setLastResult(data.result);
     if (snapshot.testActivity !== undefined) {
@@ -395,6 +404,8 @@ export function addBadge(badge: Badge): void {
 export async function getTestActivityCalendar(
   yearString: string,
 ): Promise<TestActivityCalendar | undefined> {
+  const lease = captureAccount();
+  const dbSnapshot = getSnapshot();
   if (!isAuthenticated() || dbSnapshot === undefined) return undefined;
 
   if (yearString === "current") return dbSnapshot.testActivity;
@@ -413,6 +424,7 @@ export async function getTestActivityCalendar(
       return undefined;
     }
 
+    lease.assertCurrent();
     dbSnapshot.testActivityByYear = {};
     for (const year in response.body.data) {
       if (year === currentYear) continue;

@@ -1,3 +1,4 @@
+import { captureAccount } from "../app/account-scope";
 import { envConfig } from "virtual:env-config";
 
 async function getSentry(): Promise<typeof import("@sentry/browser")> {
@@ -134,7 +135,9 @@ export async function activateSentry(): Promise<void> {
 
 export async function setUser(uid: string, name: string): Promise<void> {
   if (!activated) return;
+  const lease = captureAccount();
   const Sentry = await getSentry();
+  if (!lease.isCurrent()) return;
   Sentry.setUser({
     id: uid,
     username: name,
@@ -143,7 +146,9 @@ export async function setUser(uid: string, name: string): Promise<void> {
 
 export async function clearUser(): Promise<void> {
   if (!activated) return;
+  const lease = captureAccount();
   const Sentry = await getSentry();
+  if (!lease.isCurrent()) return;
   Sentry.setUser(null);
 }
 

@@ -1,8 +1,9 @@
+import { captureAccount } from "../app/account-scope";
+import { batch, onCleanup, createSignal } from "solid-js";
 import { createAuthClient } from "better-auth/client";
 import { deviceAuthorizationClient } from "better-auth/client/plugins";
 import { dashClient } from "@better-auth/infra/client";
 import { envConfig } from "virtual:env-config";
-import { createSignal } from "solid-js";
 import { createAppOwned } from "../app/application";
 import { authReadiness } from "../app/readiness";
 import { appSignal } from "../app/state";
@@ -51,11 +52,18 @@ const [getAuthenticatedUser, setAuthenticatedUser] = appSignal(() =>
 export { getAuthenticatedUser };
 
 type ReadyCallback = (success: boolean, user: AuthUser | null) => Promise<void>;
-const authState = createAppOwned(() => ({
-  available: false,
-  ignoreAuthCallback: false,
-  readyCallback: undefined as ReadyCallback | undefined,
-}));
+const authState = createAppOwned(() => {
+  const state = {
+    revision: 0,
+    available: false,
+    ignoreAuthCallback: false,
+    readyCallback: undefined as ReadyCallback | undefined,
+  };
+  onCleanup(() => {
+    state.revision++;
+  });
+  return state;
+});
 
 export function checkAuthResult<T>(result: {
   data: T;
@@ -68,16 +76,36 @@ export function checkAuthResult<T>(result: {
 }
 
 export function setUserState(user: AuthUser | null): void {
-  setAuthenticatedUser(user);
-  setUserId(user?.uid ?? null);
+  batch(() => {
+    setUserId(user?.uid ?? null);
+    setAuthenticatedUser(user);
+  });
 }
 
 export async function refreshSession(notify = true): Promise<AuthUser | null> {
+  const state = authState();
+  const revision = ++state.revision;
+  const lease = captureAccount();
+  const assertCurrent = (): void => {
+    lease.assertCurrent();
+    if (state.revision !== revision) {
+      throw new DOMException("Session changed", "AbortError");
+    }
+  };
   const previous = getAuthenticatedUser();
-  const session = checkAuthResult(await getAuthClient().getSession());
+  const session = checkAuthResult(
+    await getAuthClient().getSession({
+      fetchOptions: { signal: lease.signal },
+    }),
+  );
+  assertCurrent();
   let user: AuthUser | null = null;
   if (session) {
-    const accounts = checkAuthResult(await getAuthClient().listAccounts());
+    const accounts = checkAuthResult(
+      await getAuthClient().listAccounts({
+        fetchOptions: { signal: lease.signal },
+      }),
+    );
     user = {
       uid: session.user.id,
       email: session.user.email,
@@ -90,7 +118,8 @@ export async function refreshSession(notify = true): Promise<AuthUser | null> {
         })),
     };
   }
-  setAuthenticatedUser(user);
+  assertCurrent();
+  setUserState(user);
   if (
     notify &&
     !authState().ignoreAuthCallback &&
@@ -107,6 +136,7 @@ export async function init(
   checkAccount = true,
 ): Promise<void> {
   return authReadiness().start(async () => {
+    let lease = captureAccount();
     authState().readyCallback = callback;
     try {
       if (envConfig.devOffline) {
@@ -119,12 +149,14 @@ export async function init(
       }
       authState().available = true;
       const user = await refreshSession(false);
+      lease = captureAccount();
       if (user !== null && checkAccount) {
         // A social sign-in can return before the username/captcha onboarding is complete.
         try {
           // Share the onboarding check with snapshot/config initialization.
           const { fetchUserFromApi } = await import("./ape/user");
           await fetchUserFromApi(user.uid);
+          lease.assertCurrent();
         } catch (error) {
           if (
             !(error instanceof SnapshotInitError) ||
@@ -140,9 +172,16 @@ export async function init(
           return;
         }
       }
+      lease.assertCurrent();
       setUserState(user);
       await callback(true, user);
     } catch (error) {
+      if (
+        !lease.isCurrent() ||
+        (error instanceof DOMException && error.name === "AbortError")
+      ) {
+        return;
+      }
       authState().available = false;
       console.error("Better Auth failed to initialize", error);
       setUserState(null);
@@ -154,7 +193,13 @@ export function isAuthAvailable(): boolean {
   return authState().available;
 }
 export async function signOut(): Promise<void> {
-  checkAuthResult(await getAuthClient().signOut());
+  const state = authState();
+  state.revision++;
+  const lease = captureAccount();
+  checkAuthResult(
+    await getAuthClient().signOut({ fetchOptions: { signal: lease.signal } }),
+  );
+  if (!lease.isCurrent()) return;
   setUserState(null);
   authState().ignoreAuthCallback = false;
   await authState().readyCallback?.(true, null);
