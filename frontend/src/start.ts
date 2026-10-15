@@ -8,8 +8,12 @@ import { setResponseStatus } from "@tanstack/solid-start/server";
 import { createServiceContext } from "./server/context.server";
 
 const services = createMiddleware().server(
-  async ({ request, next }) =>
-    await next({ context: { services: createServiceContext(request) } }),
+  async ({ request, handlerType, next }) =>
+    await next({
+      context: {
+        services: createServiceContext(request, handlerType === "serverFn"),
+      },
+    }),
 );
 
 const functionErrors = createMiddleware({ type: "function" }).server(

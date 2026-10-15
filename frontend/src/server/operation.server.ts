@@ -116,7 +116,7 @@ export async function runOperation<Q, B, P, R>(
         error,
       });
     }
-    setResponseStatus(status);
+    if (request.rpc) setResponseStatus(status);
     throw new Error(
       error instanceof MonkeyError
         ? error.message

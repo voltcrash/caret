@@ -33,7 +33,7 @@ export default createApplicationWorker(async (request, options) => {
   if (url.pathname !== "/__test/stream") {
     return await server.fetch(request, options);
   }
-  const services = createServiceContext(request);
+  const services = createServiceContext(request, false);
   const session = await getAuth().api.getSession({ headers: request.headers });
   const id = session?.user.id ?? "guest";
   const db = services.runtime.env.DB;

@@ -8,7 +8,7 @@ import { test } from "@oxytype/backend/services/admin";
 export const adminProbe = createServerFn({ method: "POST" }).handler(
   async () =>
     await runOperation(
-      createServiceContext(getRequest()),
+      createServiceContext(getRequest(), true),
       "admin.test",
       { query: undefined, body: undefined, params: undefined },
       test,
@@ -17,7 +17,7 @@ export const adminProbe = createServerFn({ method: "POST" }).handler(
 export const freshProbe = createServerFn({ method: "POST" }).handler(
   async () =>
     await runOperation(
-      createServiceContext(getRequest()),
+      createServiceContext(getRequest(), true),
       "users.revokeAllTokens",
       { query: undefined, body: undefined, params: undefined },
       revokeAllTokens,
