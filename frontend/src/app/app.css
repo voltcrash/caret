@@ -1,11 +1,11 @@
 @import "../styles/layers.css";
 @import "tailwindcss" source(none);
+@import "../styles/vendor.css";
+@import "../styles/theme.css";
+@import "../styles/standalone-theme.css" layer(custom-styles);
+@import "../styles/core.css" layer(custom-styles);
 @source ".";
 @source "../routes";
 @source "../components";
 @source "../ts/components/standalone";
 @source "../ts/components/common/Fa.tsx";
-@import "../styles/vendor.css";
-@import "../styles/theme.css";
-@import "../styles/standalone-theme.css" layer(custom-styles);
-@import "../styles/core.css" layer(custom-styles);
