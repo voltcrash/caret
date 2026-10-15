@@ -45,4 +45,23 @@ describe("calibration report", () => {
     ).toEqual([]);
     expect(extractSamples("nope")).toEqual([]);
   });
+  it("reads recorded and calibration fixtures with client and labels", () => {
+    const arrays = { keySpacing: [1, 2], keyDuration: [3, 4, 5] };
+    expect(
+      extractSamples({ completedEvent: { ...arrays, client: "web" } }),
+    ).toEqual([{ ...arrays, client: "web" }]);
+    expect(extractSamples({ result: { ...arrays, client: "tui" } })).toEqual([
+      { ...arrays, client: "tui" },
+    ]);
+    expect(
+      extractSamples({
+        label: "bot",
+        client: "tui",
+        samples: [arrays, { ...arrays, label: "model", client: "web" }],
+      }),
+    ).toEqual([
+      { ...arrays, client: "tui" },
+      { ...arrays, client: "web", label: "model" },
+    ]);
+  });
 });
