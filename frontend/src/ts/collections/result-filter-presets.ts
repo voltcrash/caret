@@ -6,7 +6,7 @@ import {
   useLiveQuery,
 } from "@tanstack/solid-db";
 import Ape from "../ape";
-import { queryClient } from "../queries";
+import { getQueryClient } from "../queries";
 import { defineCollection } from "./utils/scope";
 import { baseKey } from "../queries/utils/keys";
 import {
@@ -27,7 +27,7 @@ const resultFilterPresetsCollection = defineCollection(import.meta.hot, () =>
       staleTime: Infinity,
       startSync: true,
       queryKey: queryKeys.root(),
-      queryClient,
+      queryClient: getQueryClient(),
       enabled: isAuthenticated,
       getKey: (it) => it._id,
       queryFn: async () => {

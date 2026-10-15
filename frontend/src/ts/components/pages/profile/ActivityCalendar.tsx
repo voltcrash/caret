@@ -12,7 +12,7 @@ import {
 import { get as getSeverConfiguration } from "../../../ape/server-configuration";
 import { getSnapshot, getTestActivityCalendar } from "../../../db";
 import { TestActivityCalendar } from "../../../elements/test-activity-calendar";
-import { queryClient } from "../../../queries";
+import { getQueryClient } from "../../../queries";
 import { getAccountActivityQueryOptions } from "../../../queries/account";
 import { cn } from "../../../utils/cn";
 import { getFirstDayOfTheWeek } from "../../../utils/date-and-time";
@@ -141,7 +141,7 @@ export function ActivityCalendar(props: {
           );
         }
       } else {
-        const activity = await queryClient.query(
+        const activity = await getQueryClient().query(
           getAccountActivityQueryOptions("tui"),
         );
         const days = activity?.[year];

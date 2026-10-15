@@ -4,7 +4,7 @@ import { createEffect, createSignal, JSXElement } from "solid-js";
 
 import { useRef } from "../../../hooks/useRef";
 import { navigate } from "../../../navigation/navigation";
-import { queryClient } from "../../../queries";
+import { getQueryClient } from "../../../queries";
 import { getUserProfile } from "../../../queries/profile";
 import { getActivePage } from "../../../states/core";
 import { showNoticeNotification } from "../../../states/notifications";
@@ -74,7 +74,7 @@ export function ProfileSearchPage(): JSXElement {
                   onChangeAsyncDebounceMs: 1000,
                   onChangeAsync: async (field) => {
                     try {
-                      const result = await queryClient.query(
+                      const result = await getQueryClient().query(
                         getUserProfile(field.value),
                       );
                       return result !== null ? undefined : "Unknown user";

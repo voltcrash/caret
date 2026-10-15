@@ -3,7 +3,7 @@ import { queryOptions } from "@tanstack/solid-query";
 
 import Ape from "../ape";
 import { baseKey } from "./utils/keys";
-import { queryClient } from ".";
+import { getQueryClient } from ".";
 import { getUserId } from "../states/core";
 
 export async function updateTerminalLeaderboardMemory(
@@ -16,7 +16,7 @@ export async function updateTerminalLeaderboardMemory(
     body: { mode: "time", mode2, language: "english", rank },
   });
   if (response.status !== 200) throw new Error(response.body.message);
-  queryClient.setQueryData(key, (data) =>
+  getQueryClient().setQueryData(key, (data) =>
     data === undefined
       ? data
       : {

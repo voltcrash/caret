@@ -1,4 +1,4 @@
-import { queryClient } from ".";
+import { getQueryClient } from ".";
 import {
   getContributorsQueryOptions,
   getSpeedHistogramQueryOptions,
@@ -7,15 +7,19 @@ import {
 import { getLeaderboardQueryOptions } from "./leaderboards";
 
 export function prefetchAboutPage(): void {
-  void queryClient.query(getContributorsQueryOptions()).catch(() => undefined);
-  void queryClient.query(getTypingStatsQueryOptions()).catch(() => undefined);
-  void queryClient
+  void getQueryClient()
+    .query(getContributorsQueryOptions())
+    .catch(() => undefined);
+  void getQueryClient()
+    .query(getTypingStatsQueryOptions())
+    .catch(() => undefined);
+  void getQueryClient()
     .query(getSpeedHistogramQueryOptions())
     .catch(() => undefined);
 }
 
 export function prefetchLeaderboardPage(): void {
-  void queryClient
+  void getQueryClient()
     .query(
       getLeaderboardQueryOptions({
         type: "allTime",

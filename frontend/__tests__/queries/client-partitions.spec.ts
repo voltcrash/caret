@@ -78,12 +78,12 @@ import {
   getRankQueryOptions,
 } from "../../src/ts/queries/leaderboards";
 import { getUserProfile } from "../../src/ts/queries/profile";
-import { queryClient } from "../../src/ts/queries";
+import { getQueryClient } from "../../src/ts/queries";
 
 const client = new QueryClient();
 afterEach(() => {
   client.clear();
-  queryClient.clear();
+  getQueryClient().clear();
   calls.mockClear();
   state.uid = "one";
 });
@@ -183,9 +183,9 @@ describe("client query partitions", () => {
     },
   );
   it("updates terminal rank memory without writing the web cache", async () => {
-    await queryClient.query(getAccountQueryOptions("web"));
-    await queryClient.query(getAccountQueryOptions("tui"));
-    const web = queryClient.getQueryData(
+    await getQueryClient().query(getAccountQueryOptions("web"));
+    await getQueryClient().query(getAccountQueryOptions("tui"));
+    const web = getQueryClient().getQueryData(
       getAccountQueryOptions("web").queryKey,
     );
     await updateTerminalLeaderboardMemory("15", 7);
@@ -194,11 +194,11 @@ describe("client query partitions", () => {
       body: { mode: "time", mode2: "15", language: "english", rank: 7 },
     });
     expect(
-      queryClient.getQueryData(getAccountQueryOptions("tui").queryKey)
+      getQueryClient().getQueryData(getAccountQueryOptions("tui").queryKey)
         ?.lbMemory,
     ).toEqual({ time: { "15": { english: 7 } } });
     expect(
-      queryClient.getQueryData(getAccountQueryOptions("web").queryKey),
+      getQueryClient().getQueryData(getAccountQueryOptions("web").queryKey),
     ).toBe(web);
   });
 });

@@ -10,7 +10,7 @@ import {
 } from "@tanstack/solid-db";
 import { Accessor, createSignal } from "solid-js";
 import Ape from "../ape";
-import { queryClient } from "../queries";
+import { getQueryClient } from "../queries";
 import { defineCollection } from "./utils/scope";
 import { baseKey } from "../queries/utils/keys";
 import { isAuthenticated } from "../states/core";
@@ -66,7 +66,7 @@ const inboxCollection = defineCollection(import.meta.hot, () =>
         setMaxMailboxSize(response.body.data.maxMail);
         return response.body.data.inbox.map(addStatus);
       },
-      queryClient,
+      queryClient: getQueryClient(),
       getKey: (it) => it.id,
     }),
   ),

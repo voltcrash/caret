@@ -8,7 +8,12 @@ import {
   createCollectionReader,
   type CollectionReader,
 } from "../../src/ts/collections/utils/reader";
-import { collectionScope } from "../../src/ts/collections/utils/scope";
+import { createAccountDataOwner } from "../../src/app/account-data";
+import { mountApplication } from "../../src/app/application";
+import { createQueryClient } from "../../src/app/query-client";
+import { releaseTestApplication } from "../__harness__/mock-application";
+
+releaseTestApplication();
 
 type Item = { id: string; name: string };
 
@@ -17,12 +22,20 @@ function setup(): {
   reader: CollectionReader<Item, string>;
   dispose: () => void;
 } {
+  const accountData = createAccountDataOwner();
+  const release = mountApplication({
+    queryClient: createQueryClient(),
+    accountData,
+  });
   const collection = createItems();
   const reader = createCollectionReader(() => collection);
   return {
     collection,
     reader,
-    dispose: () => collectionScope().dispose(),
+    dispose: () => {
+      accountData.dispose();
+      release();
+    },
   };
 }
 

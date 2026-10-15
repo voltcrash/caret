@@ -1,6 +1,6 @@
 import { Configuration } from "@oxytype/schemas/configuration";
 import { promiseWithResolvers } from "../utils/misc";
-import { queryClient } from "../queries";
+import { getQueryClient } from "../queries";
 import { getServerConfigurationQueryOptions } from "../queries/server-configuration";
 
 const {
@@ -17,14 +17,14 @@ void configurationPromise.catch((error: unknown) => {
 export { configurationPromise };
 
 export function get(): Configuration | undefined {
-  return queryClient.getQueryData(
+  return getQueryClient().getQueryData(
     getServerConfigurationQueryOptions().queryKey,
   );
 }
 
 export async function sync(): Promise<void> {
   try {
-    await queryClient.query(getServerConfigurationQueryOptions());
+    await getQueryClient().query(getServerConfigurationQueryOptions());
     resolve(true);
   } catch (e) {
     reject(e);

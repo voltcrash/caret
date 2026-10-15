@@ -10,7 +10,7 @@ import {
 import { untrack } from "solid-js";
 import { z } from "zod";
 import Ape from "../ape";
-import { queryClient } from "../queries";
+import { getQueryClient } from "../queries";
 import { defineCollection } from "./utils/scope";
 import { baseKey } from "../queries/utils/keys";
 import { LocalStorageWithSchema } from "../utils/local-storage-with-schema";
@@ -37,7 +37,7 @@ const tagsCollection = defineCollection(import.meta.hot, () =>
     queryCollectionOptions({
       staleTime: Infinity,
       queryKey: queryKeys.root(),
-      queryClient,
+      queryClient: getQueryClient(),
       enabled: isAuthenticated,
       getKey: (it) => it._id,
       queryFn: async () => {

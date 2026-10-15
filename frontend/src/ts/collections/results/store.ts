@@ -6,7 +6,7 @@ import { BTreeIndex, createCollection } from "@tanstack/solid-db";
 import { bindResultsReady } from "../../states/results-ready";
 import Ape from "../../ape";
 import { SnapshotResult } from "../../constants/default-snapshot";
-import { queryClient } from "../../queries";
+import { getQueryClient } from "../../queries";
 import { isAuthenticated } from "../../states/core";
 import { getLastResult, setLastResult } from "../../states/snapshot";
 import { getTagsOnce } from "../tags";
@@ -51,7 +51,7 @@ function createResultsCollection(client: Client) {
         }
         return results;
       },
-      queryClient,
+      queryClient: getQueryClient(),
       getKey: (it) => it._id,
     }),
   );

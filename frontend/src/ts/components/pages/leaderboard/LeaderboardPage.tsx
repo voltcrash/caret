@@ -4,7 +4,7 @@ import { createEffect, createSignal, JSXElement, Show } from "solid-js";
 import { getSnapshot, updateLbMemory } from "../../../db";
 import { createEffectOn } from "../../../hooks/effects";
 import { PageName } from "../../../pages/page";
-import { queryClient } from "../../../queries";
+import { getQueryClient } from "../../../queries";
 import {
   getAccountQueryOptions,
   updateTerminalLeaderboardMemory,
@@ -61,7 +61,7 @@ export function LeaderboardPage(): JSXElement {
   //invalidate cache for daily and weekly lb on close
   createEffectOn(isOpen, (open) => {
     if (!open) {
-      void queryClient.invalidateQueries({
+      void getQueryClient().invalidateQueries({
         predicate: (query) =>
           query.queryKey.length >= 3 &&
           query.queryKey[1] === "leaderboard" &&
@@ -73,7 +73,7 @@ export function LeaderboardPage(): JSXElement {
   //prefetch next page
   createEffect(() => {
     if (isOpen()) {
-      void queryClient
+      void getQueryClient()
         .query(
           getLeaderboardQueryOptions({
             ...getSelection(),

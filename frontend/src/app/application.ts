@@ -2,9 +2,12 @@ import type { QueryClient } from "@tanstack/solid-query";
 import { createSignal, untrack } from "solid-js";
 import { isServer } from "solid-js/web";
 
+import type { AccountDataOwner } from "./account-data";
+
 /** Owners of one mounted browser application; SSR renders never register one. */
 export type Application = {
   queryClient: QueryClient;
+  accountData: AccountDataOwner;
 };
 
 const [mounted, setMounted] = createSignal<Application | undefined>();

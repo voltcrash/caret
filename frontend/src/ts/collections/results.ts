@@ -27,18 +27,10 @@ export {
   type CurrentSettingsFilter,
 } from "./results/types";
 
-import { createModuleEffectOn } from "../hooks/effects";
-
-import { isAuthenticated } from "../states/core";
-
-/**
- *
- */
-createModuleEffectOn(import.meta.hot, isAuthenticated, (hasUser) => {
-  if (hasUser) {
-    void resultsCollection().utils.refetch();
-    if (resultsByClient.tui().isReady()) {
-      void resultsByClient.tui().utils.refetch();
-    }
+/** Account sign-in refreshes web history and any loaded terminal history. */
+export function refetchResults(): void {
+  void resultsCollection().utils.refetch();
+  if (resultsByClient.tui().isReady()) {
+    void resultsByClient.tui().utils.refetch();
   }
-});
+}

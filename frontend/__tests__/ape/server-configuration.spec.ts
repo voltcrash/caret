@@ -10,7 +10,7 @@ import {
 const { query } = vi.hoisted(() => ({ query: vi.fn() }));
 
 vi.mock("../../src/ts/queries", () => ({
-  queryClient: { query },
+  getQueryClient: () => ({ query }),
 }));
 vi.mock("../../src/ts/queries/server-configuration", () => ({
   getServerConfigurationQueryOptions: () => ({

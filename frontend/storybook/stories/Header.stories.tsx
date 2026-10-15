@@ -1,12 +1,10 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
-
 import preview from "#.storybook/preview";
 
+import { AppProviders } from "../../src/app/providers";
+import { createQueryClient } from "../../src/app/query-client";
 import { Header } from "../../src/ts/components/layout/header/Header";
 
-const queryClient = new QueryClient({
-  defaultOptions: { queries: { retry: false } },
-});
+const queryClient = createQueryClient({ staleTime: 0, retry: false });
 
 const meta = preview.meta({
   title: "Layout/Header",
@@ -17,11 +15,11 @@ const meta = preview.meta({
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      <QueryClientProvider client={queryClient}>
+      <AppProviders queryClient={queryClient}>
         <div style={{ padding: "16px" }}>
           <Story />
         </div>
-      </QueryClientProvider>
+      </AppProviders>
     ),
   ],
 });
