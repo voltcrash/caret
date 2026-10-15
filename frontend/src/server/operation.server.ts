@@ -42,19 +42,20 @@ export async function runOperation<Q, B, P, R>(
   ) => Promise<R>,
 ): Promise<R> {
   const operation = getOperation(id);
-  const context: ServiceContext = {
-    actor: { ...GUEST },
-    runtime: request.runtime,
-    requestId: request.requestId,
-    background: request.background,
-    configuration: await getCachedConfiguration(true),
-    client: {
-      ip: request.clientIp,
-      userAgent: request.request.headers.get("user-agent") ?? undefined,
-    },
-  };
+  let context: ServiceContext | undefined;
   setResponseHeader(COMPATIBILITY_CHECK_HEADER, String(COMPATIBILITY_CHECK));
   try {
+    context = {
+      actor: { ...GUEST },
+      runtime: request.runtime,
+      requestId: request.requestId,
+      background: request.background,
+      configuration: await getCachedConfiguration(true),
+      client: {
+        ip: request.clientIp,
+        userAgent: request.request.headers.get("user-agent") ?? undefined,
+      },
+    };
     await checkBadAuthentication(context);
     await enforceLimit(
       "root",
@@ -100,13 +101,13 @@ export async function runOperation<Q, B, P, R>(
     return validated.data as R;
   } catch (error) {
     const status = error instanceof MonkeyError ? error.status : 500;
-    await recordBadAuthentication(context, status);
+    if (context !== undefined) await recordBadAuthentication(context, status);
     if (status >= 500 && status !== 503) {
       request.background(
         addLog(
           "system_error",
           `${status} ${request.requestId} ${String(error)}`,
-          context.actor.uid,
+          context?.actor.uid ?? "",
         ),
       );
       console.error("Operation failed", {

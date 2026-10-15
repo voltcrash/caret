@@ -17,16 +17,16 @@ import type { ServiceContext } from "./context.server";
 export async function readSessionState(
   request: ServiceContext,
 ): Promise<SessionState> {
-  const configuration = await getCachedConfiguration();
-  const context = {
-    actor: GUEST,
-    runtime: request.runtime,
-    requestId: request.requestId,
-    background: request.background,
-    configuration,
-    client: { ip: request.clientIp },
-  };
   try {
+    const configuration = await getCachedConfiguration();
+    const context = {
+      actor: GUEST,
+      runtime: request.runtime,
+      requestId: request.requestId,
+      background: request.background,
+      configuration,
+      client: { ip: request.clientIp },
+    };
     await checkBadAuthentication(context);
     await enforceLimit(
       "root",

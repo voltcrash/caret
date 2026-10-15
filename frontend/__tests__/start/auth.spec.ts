@@ -138,3 +138,21 @@ it("completes signup through real RPC/D1 and protects completed registration fro
       .first(),
   ).not.toBeNull();
 });
+
+it("redacts configuration failures on direct session and operation RPCs", async () => {
+  const worker = await mf.getWorker("b");
+  const db = await mf.getD1Database("DB", "b");
+  await db.prepare("DROP TABLE configuration").run();
+  for (const name of ["getSessionState", "getTypingStats"]) {
+    const response = await worker.fetch(
+      `http://localhost:3000${rpcPath(name)}`,
+      {
+        headers: { origin: "http://localhost:3000", "x-tsr-serverFn": "true" },
+      },
+    );
+    expect(response.status).toBe(500);
+    const text = await response.text();
+    expect(text).not.toContain("no such table");
+    expect(text).not.toContain("select ");
+  }
+});
