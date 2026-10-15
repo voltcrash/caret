@@ -21,7 +21,8 @@ No preceding implementation stage or handoff exists. Prerequisite: merged
 | Stage 2 exit | Complete | [Stage 2 handoff](stage-2.md#next-stage-prerequisites) |
 | 3.1 Services/policies | Complete | [Stage 3](stage-3.md) |
 | 3.2 Start policy adapters | Complete | [Stage 3](stage-3.md) |
-| 3.3 Authentication flows | In progress | [Stage 3](stage-3.md) |
+| 3.3 Authentication flows | Complete | [Stage 3](stage-3.md) |
+| Stage 3 exit | Complete, recorded byte deviation | [Validation and handoff](stage-3.md#exit-validation) |
 | Stages 4–8 | Not started | Separate assignments |
 
 Stage 0 moves responsibility for migration evidence from an unverified proposal

@@ -1,7 +1,7 @@
 # TanStack Start migration: architecture and execution plan
 
-Status: Stages 0–2 complete; [ledger and handoffs](tanstack-start/README.md).
-Stage 3 not started. Production still serves the legacy app (rollback build).
+Status: Stages 0–3 complete; [ledger and handoffs](tanstack-start/README.md).
+Stage 4 not started. Production still serves the legacy app (rollback build).
 Prepared: 2026-10-15. Scope: Oxytype web application and its server/runtime.
 
 ## Outcome
@@ -405,7 +405,11 @@ typing startup remains independent of full account/history loading.
 
 ## Stage 3 — Extract server services and integrate authentication
 
+Status: complete, with recorded Worker-byte deviation. [Validation and handoff](tanstack-start/stage-3.md).
+
 ### 3.1 Extract policies and operation services
+
+Status: complete.
 
 - Separate reusable rules from Hono middleware in `backend/src/middlewares` and
   controllers. Introduce typed service context, DTOs, errors, and operation IDs.
@@ -417,6 +421,8 @@ typing startup remains independent of full account/history loading.
 
 ### 3.2 Add Start policy adapters
 
+Status: complete.
+
 - Implement request logging/context/security headers and function-level auth,
   permission/config gates, input validation, rate limits, and error mapping.
 - Preserve body/telemetry limits, trusted proxy/IP policy, fresh-session checks,
@@ -426,6 +432,8 @@ typing startup remains independent of full account/history loading.
   direct calls without a page visit. Layout guards alone never authorize data.
 
 ### 3.3 Move Better Auth and session flows
+
+Status: complete.
 
 - Delegate `/api/auth/*` to Better Auth through a Start server route, with untouched
   request bodies, all `Set-Cookie` headers, trusted origins/IP handling, and existing
