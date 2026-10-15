@@ -381,6 +381,22 @@ export function getLocalTagPB<M extends Mode>(
   );
 }
 
+function emptyPersonalBests(): PersonalBests {
+  return { time: {}, words: {}, quote: {}, zen: {}, custom: {} };
+}
+
+/** The personal bests for one mode2, created on first use. */
+function personalBestList(
+  bests: PersonalBests,
+  mode: Mode,
+  mode2: string | number,
+): PersonalBest[] {
+  const byMode2: Partial<Record<string | number, PersonalBest[]>> = (bests[
+    mode
+  ] ??= {});
+  return (byMode2[mode2] ??= []);
+}
+
 export function saveLocalTagPB<M extends Mode>(
   tagId: string,
   mode: M,
@@ -401,79 +417,44 @@ export function saveLocalTagPB<M extends Mode>(
   if (collectionTag === undefined) return;
   const tag = structuredClone(collectionTag);
 
-  tag.personalBests ??= {
-    time: {},
-    words: {},
-    quote: {},
-    zen: {},
-    custom: {},
+  const entry: PersonalBest = {
+    language,
+    difficulty,
+    lazyMode,
+    punctuation,
+    numbers,
+    wpm,
+    acc,
+    raw,
+    timestamp: Date.now(),
+    consistency,
   };
-
-  tag.personalBests[mode] ??= {
-    [mode2]: [],
-  };
-
-  tag.personalBests[mode][mode2] ??=
-    [] as unknown as PersonalBests[M][Mode2<M>];
+  tag.personalBests ??= emptyPersonalBests();
 
   try {
-    let found = false;
-
-    (tag.personalBests[mode][mode2] as unknown as PersonalBest[]).forEach(
-      (pb) => {
-        if (
-          (pb.punctuation ?? false) === punctuation &&
-          (pb.numbers ?? false) === numbers &&
-          pb.difficulty === difficulty &&
-          pb.language === language &&
-          (pb.lazyMode === lazyMode || (pb.lazyMode === undefined && !lazyMode))
-        ) {
-          found = true;
-          pb.wpm = wpm;
-          pb.acc = acc;
-          pb.raw = raw;
-          pb.timestamp = Date.now();
-          pb.consistency = consistency;
-          pb.lazyMode = lazyMode;
-        }
-      },
+    const list = personalBestList(tag.personalBests, mode, mode2);
+    const matching = list.filter(
+      (pb) =>
+        (pb.punctuation ?? false) === punctuation &&
+        (pb.numbers ?? false) === numbers &&
+        pb.difficulty === difficulty &&
+        pb.language === language &&
+        (pb.lazyMode === lazyMode || (pb.lazyMode === undefined && !lazyMode)),
     );
-    if (!found) {
-      (tag.personalBests[mode][mode2] as unknown as PersonalBest[]).push({
-        language,
-        difficulty,
-        lazyMode,
-        punctuation,
-        numbers,
+    for (const pb of matching) {
+      Object.assign(pb, {
         wpm,
         acc,
         raw,
         timestamp: Date.now(),
         consistency,
+        lazyMode,
       });
     }
+    if (matching.length === 0) list.push(entry);
   } catch {
-    tag.personalBests = {
-      time: {},
-      words: {},
-      quote: {},
-      zen: {},
-      custom: {},
-    };
-    tag.personalBests[mode][mode2] = [
-      {
-        language,
-        difficulty,
-        lazyMode,
-        punctuation,
-        numbers,
-        wpm,
-        acc,
-        raw,
-        timestamp: Date.now(),
-        consistency,
-      },
-    ] as unknown as PersonalBests[M][Mode2<M>];
+    tag.personalBests = emptyPersonalBests();
+    personalBestList(tag.personalBests, mode, mode2).push(entry);
   }
 
   // using utils.writeUpdate instead of collection.update because we dont need to send this to the API
