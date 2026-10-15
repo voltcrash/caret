@@ -14,6 +14,11 @@ test("leaving and returning discards an incomplete typing attempt", async ({
   await expect(
     page.getByText("See contributor credits", { exact: true }),
   ).toBeVisible();
-  await page.goBack();
+  // The legacy runtime reverts history changes until its page transition and
+  // load finish, which has no DOM signal; retry Back until the test returns.
+  await expect(async () => {
+    if (new URL(page.url()).pathname !== "/") await page.goBack();
+    await expect(page.locator("#words")).toBeVisible({ timeout: 1000 });
+  }).toPass();
   await assertRestarted(page);
 });
