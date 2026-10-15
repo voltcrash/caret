@@ -10,10 +10,11 @@ import {
   primaryKey,
   check,
 } from "drizzle-orm/sqlite-core";
+import type { DBUser } from "../dal/user/types";
 
 const id = () => text("id").primaryKey();
-const json = (name = "data") =>
-  text(name, { mode: "json" }).$type<Record<string, unknown>>().notNull();
+const json = <T = Record<string, unknown>>(name = "data") =>
+  text(name, { mode: "json" }).$type<T>().notNull();
 const date = (name: string) =>
   integer(name, { mode: "timestamp_ms" }).notNull();
 
@@ -135,7 +136,7 @@ export const users = sqliteTable("users", {
     .notNull()
     .default(false),
   version: integer("version").notNull().default(0),
-  data: json(),
+  data: json<DBUser>(),
 });
 const owner = () =>
   text("uid")
