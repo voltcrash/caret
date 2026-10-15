@@ -5,7 +5,7 @@ ledger, CI gates and handoff prerequisites verified before editing. Baseline
 `vp run test-fe`: 207 files / 2,231 tests pass.
 
 Phases in order: 2.1 factories/import boundaries → 2.2 providers/browser
-runtime → 2.3 preferences/data identity. Status: **in progress**.
+runtime → 2.3 preferences/data identity. **Stage 2 complete.** Stage 3 not started.
 
 ## 2.1 Factories and import boundaries — complete
 
@@ -127,7 +127,52 @@ imports at `3178bc19b`. "Import" = runs when the module is evaluated.
   and installed 1.7.7 / infra 0.4.14 sources checked.
 - No server service/auth-policy transfer, schema change, deployment or TUI work.
 
-## Final validation
+## Exit criteria
 
-Exit validation in progress; do not treat Stage 2 as complete until the remaining
-production-like and repeated performance checks below are recorded.
+| Criterion | Evidence |
+| --- | --- |
+| Importing server routes cannot initialize browser stores | Import protection denies `src/ts/**` on the server (negative builds); layer test; browser setup markers only in client chunks |
+| Independent SSR requests cannot share user data | Request-local router/QueryClient; `mountApplication` throws under SSR; distinct concurrent actors in workerd |
+| Remount/HMR does not duplicate listeners | Owner/runtime remount tests; browser suite 0 unowned-computation warnings (120 at Stage 2 start) |
+| Guest typing independent of account/history | Runtime mounts without awaiting history; Start public hydration with setup blocked; readiness budgets below |
+
+## Final validation (head)
+
+| Check | Result |
+| --- | --- |
+| `vp run lint-fe` / `lint-be` / `lint-pkg` | pass |
+| `vp run test-fe` | 223 files / 2,264 tests pass |
+| `vp run test-be` | 44 / 801 unit + 30 / 124 real-D1 pass |
+| `vp run test-pkg` | pass |
+| `vp run test-e2e` | 31 pass; 0 unowned-computation warnings |
+| `vp run knip` / `lint-styles` / `check-assets` / `madge` | pass |
+| `vp fmt frontend/src backend/src --check` | pass |
+| Production rollback build (baseline env) + `build-be` | pass |
+| `build:start`, `build:start:test`, `dry-run:start` | pass |
+| `test:start` (foundation, layers, protection, worker, document, bundle) | 6 files / 25 tests pass |
+| `test:start:browser` | 5 pass |
+| `build:start:staging` + dry-run | pass |
+| Frozen budgets ([candidate](evidence/stage-2-measurements.json)) | all timing/query/eager budgets pass; Worker bytes see below |
+
+Medians (p95) vs budget: cold input 420.5 (575.5) / 788.1; warm 370.1 (400.8)
+/ 427.3; `/about` 332.8 (354.4) / 365.5; 1,000-word render 53.1 (80.8) / 85.2;
+letter update 0.011 (0.012) / 0.012. Eager JS 913,412 raw / 320,898 gzip
+(budget 922,918 / 321,462), now 81 entry/preload responses (was 63).
+
+- Worker bytes 4,517,700 raw / 823,567 gzip exceed the frozen 4,517,181 /
+  822,854. The legacy backend Worker is **byte-identical** to Stage 1 head
+  `3178bc19b` (rebuilt and compared); Stage 2 changes no backend source. This
+  is Stage 1's recorded shared-extraction deviation, not a Stage 2 regression;
+  budgets left unchanged.
+- Found and fixed at the gate: `Anime` read a derived `exit` prop during
+  cleanup, creating unowned memos (last browser warnings). Regression test added.
+- Intermittent: `settings.spec.ts` Tab quick restart failed 3 times right after
+  source edits (click during a still-loading dev page). Not reproduced in 120
+  later runs at head nor 80 at Stage 1 base; full suite passes.
+
+## Next stage prerequisites
+
+Stage 3 may start: app owners, actor-scoped private data, client-only browser
+runtime and enforced import boundaries are in place. Stage 3 keeps `ci-start`
+green, adds server services/policies behind `*.server.ts`, and replaces the
+browser-only auth observation adapters listed above with Start-owned flows.
