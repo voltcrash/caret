@@ -4,11 +4,12 @@ import { tanstackStart } from "@tanstack/solid-start/plugin/vite";
 import solid from "vite-plugin-solid";
 import tailwindcss from "@tailwindcss/vite";
 import { frontendLint } from "./lint.config";
+import { fontStyles } from "./vite-plugins/font-styles";
 
 export default defineConfig(({ mode }) => ({
   lint: { ...frontendLint },
   publicDir: "static",
-  envPrefix: "OXYTYPE_PUBLIC_",
+  envPrefix: [],
   resolve: {
     dedupe: ["solid-js", "@tanstack/solid-router", "@tanstack/solid-query"],
   },
@@ -61,6 +62,8 @@ export default defineConfig(({ mode }) => ({
       },
     }),
     solid({ ssr: true }),
+    // Existing full font assets; rollback subset generation remains independent.
+    fontStyles({ isDevelopment: true }),
     tailwindcss(),
   ],
   define: {

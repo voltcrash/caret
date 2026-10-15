@@ -9,13 +9,31 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as R404DothtmlRouteImport } from './routes/404[.]html'
 import { Route as AppRouteImport } from './routes/_app'
+import { Route as OauthCallbackDothtmlRouteImport } from './routes/oauth-callback[.]html'
+import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppAboutRouteImport } from './routes/_app.about'
 import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
 
+const R404DothtmlRoute = R404DothtmlRouteImport.update({
+  id: '/404.html',
+  path: '/404.html',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
+} as any)
+const OauthCallbackDothtmlRoute = OauthCallbackDothtmlRouteImport.update({
+  id: '/oauth-callback.html',
+  path: '/oauth-callback.html',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppAboutRoute = AppAboutRouteImport.update({
   id: '/about',
@@ -29,42 +47,80 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AppRouteWithChildren
+  '/404.html': typeof R404DothtmlRoute
+  '/': typeof AppIndexRoute
+  '/oauth-callback.html': typeof OauthCallbackDothtmlRoute
   '/about': typeof AppAboutRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof AppRouteWithChildren
+  '/404.html': typeof R404DothtmlRoute
+  '/oauth-callback.html': typeof OauthCallbackDothtmlRoute
   '/about': typeof AppAboutRoute
+  '/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/404.html': typeof R404DothtmlRoute
   '/_app': typeof AppRouteWithChildren
+  '/oauth-callback.html': typeof OauthCallbackDothtmlRoute
   '/_app/about': typeof AppAboutRoute
+  '/_app/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/api/auth/$'
+  fullPaths:
+    '/404.html' | '/' | '/oauth-callback.html' | '/about' | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/api/auth/$'
-  id: '__root__' | '/_app' | '/_app/about' | '/api/auth/$'
+  to: '/404.html' | '/oauth-callback.html' | '/about' | '/' | '/api/auth/$'
+  id:
+    | '__root__'
+    | '/404.html'
+    | '/_app'
+    | '/oauth-callback.html'
+    | '/_app/about'
+    | '/_app/'
+    | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  R404DothtmlRoute: typeof R404DothtmlRoute
   AppRoute: typeof AppRouteWithChildren
+  OauthCallbackDothtmlRoute: typeof OauthCallbackDothtmlRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/solid-router' {
   interface FileRoutesByPath {
+    '/404.html': {
+      id: '/404.html'
+      path: '/404.html'
+      fullPath: '/404.html'
+      preLoaderRoute: typeof R404DothtmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app': {
       id: '/_app'
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/oauth-callback.html': {
+      id: '/oauth-callback.html'
+      path: '/oauth-callback.html'
+      fullPath: '/oauth-callback.html'
+      preLoaderRoute: typeof OauthCallbackDothtmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/': {
+      id: '/_app/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
     }
     '/_app/about': {
       id: '/_app/about'
@@ -85,16 +141,20 @@ declare module '@tanstack/solid-router' {
 
 interface AppRouteChildren {
   AppAboutRoute: typeof AppAboutRoute
+  AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppAboutRoute: AppAboutRoute,
+  AppIndexRoute: AppIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  R404DothtmlRoute: R404DothtmlRoute,
   AppRoute: AppRouteWithChildren,
+  OauthCallbackDothtmlRoute: OauthCallbackDothtmlRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

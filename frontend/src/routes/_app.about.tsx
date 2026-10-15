@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/solid-query";
 import { createFileRoute } from "@tanstack/solid-router";
 
+import { publicEnv } from "../app/public-env";
 import { typingStatsOptions } from "../data/public";
 
 export const Route = createFileRoute("/_app/about")({
@@ -10,8 +11,11 @@ export const Route = createFileRoute("/_app/about")({
     }
   },
   head: () => ({
+    links: [{ rel: "canonical", href: `${publicEnv.origin}/about` }],
     meta: [
       { title: "About | Oxytype" },
+      { property: "og:title", content: "About | Oxytype" },
+      { property: "og:url", content: `${publicEnv.origin}/about` },
       {
         name: "description",
         content: "About Oxytype, an independent, customizable typing test.",

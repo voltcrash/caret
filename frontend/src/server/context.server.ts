@@ -15,7 +15,7 @@ export function createServiceContext(request: Request): ServiceContext {
   return {
     runtime: scope,
     request,
-    requestId: crypto.randomUUID(),
+    requestId: scope.request?.requestId ?? crypto.randomUUID(),
     clientIp: clientIp(request.headers, scope.env.MODE === "dev"),
     background: (task: Promise<unknown>): void => {
       scope.execution?.waitUntil(

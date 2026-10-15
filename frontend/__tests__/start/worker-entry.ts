@@ -5,9 +5,11 @@ import { createServiceContext } from "../../src/server/context.server";
 import { createApplicationWorker } from "../../src/server/worker.server";
 import server from "../../src/server";
 
-export default createApplicationWorker(async (request) => {
+export default createApplicationWorker(async (request, options) => {
   const url = new URL(request.url);
-  if (url.pathname !== "/__test/stream") return await server.fetch(request);
+  if (url.pathname !== "/__test/stream") {
+    return await server.fetch(request, options);
+  }
   const services = createServiceContext(request);
   const session = await getAuth().api.getSession({ headers: request.headers });
   const id = session?.user.id ?? "guest";

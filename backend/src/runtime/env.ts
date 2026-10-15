@@ -34,6 +34,7 @@ export type WorkerEnv = {
 };
 
 export type Runtime = {
+  request?: { nonce: string; requestId: string };
   auth?: ReturnType<typeof import("../init/auth").createAuth>;
   configuration?: import("@oxytype/schemas/configuration").Configuration;
   env: WorkerEnv;

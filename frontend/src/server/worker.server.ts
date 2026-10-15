@@ -4,9 +4,10 @@ import type {
   MessageBatch,
   ScheduledController,
 } from "@cloudflare/workers-types";
-import { withRuntime, type WorkerEnv } from "@oxytype/backend/runtime";
+import { runtime, withRuntime, type WorkerEnv } from "@oxytype/backend/runtime";
 import { consumeBatch, scheduled } from "@oxytype/backend/jobs";
 import { boundedRequest } from "./request-body.server";
+import { applyResponsePolicy } from "./response-policy.server";
 
 export type ApplicationWorker = {
   fetch: (
@@ -27,7 +28,10 @@ export type ApplicationWorker = {
 };
 
 export function createApplicationWorker(
-  handler: (request: Request) => Response | Promise<Response>,
+  handler: (
+    request: Request,
+    options: { context: { nonce: string } },
+  ) => Response | Promise<Response>,
 ): ApplicationWorker {
   return {
     async fetch(
@@ -38,8 +42,26 @@ export function createApplicationWorker(
       return await withRuntime(
         env,
         async () => {
-          const bounded = await boundedRequest(request);
-          return bounded instanceof Response ? bounded : await handler(bounded);
+          const nonce = crypto.randomUUID().replaceAll("-", "");
+          const requestId = crypto.randomUUID();
+          runtime().request = { nonce, requestId };
+          let response: Response;
+          try {
+            const bounded = await boundedRequest(request);
+            response =
+              bounded instanceof Response
+                ? bounded
+                : await handler(bounded, { context: { nonce } });
+          } catch (error) {
+            console.error("Application request failed", { requestId, error });
+            response = new Response("Internal Server Error", { status: 500 });
+          }
+          return applyResponsePolicy(
+            response,
+            nonce,
+            requestId,
+            env.MODE === "dev",
+          );
         },
         ctx,
       );

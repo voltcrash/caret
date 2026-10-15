@@ -12,6 +12,22 @@ import type { ServiceContext } from "./context.server";
 export async function readTypingStats(
   context: ServiceContext,
 ): Promise<TypingStats> {
+  try {
+    return await readWithPolicy(context);
+  } catch (error) {
+    if (error instanceof Error && "status" in error && error.status === 429) {
+      throw error;
+    }
+    console.error("Public stats read failed", {
+      requestId: context.requestId,
+      error,
+    });
+    setResponseStatus(500);
+    throw new Error("Unable to load Oxytype");
+  }
+}
+
+async function readWithPolicy(context: ServiceContext): Promise<TypingStats> {
   const multiplier = context.runtime.env.MODE === "dev" ? 100 : 1;
   for (const [operation, max, duration] of [
     ["root", 1000, 3_600_000],
@@ -36,7 +52,7 @@ export async function readTypingStats(
         "Retry-After",
         String(Math.max(1, Math.ceil((result.expiresAt - Date.now()) / 1000))),
       );
-      throw new Error("Request limit reached");
+      throw Object.assign(new Error("Request limit reached"), { status: 429 });
     }
   }
   return await read();
