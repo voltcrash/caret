@@ -5,16 +5,7 @@ import solid from "vite-plugin-solid";
 import tailwindcss from "@tailwindcss/vite";
 import { frontendLint } from "./lint.config";
 import { fontStyles } from "./vite-plugins/font-styles";
-
-// Legacy `src/ts` modules are browser state unless explicitly SSR-safe (pure
-// standalone presentation). Patterns match root-relative paths.
-const ssrSafeLegacyFiles = [
-  "src/ts/components/standalone/OAuthCallback.tsx",
-  "src/ts/components/standalone/StandaloneHeader.tsx",
-  "src/ts/components/common/Fa.tsx",
-  "src/ts/utils/cn.ts",
-  "src/ts/types/**",
-];
+import { ssrSafeLegacyFiles } from "./vite-plugins/import-boundaries";
 
 export default defineConfig(({ mode }) => ({
   lint: { ...frontendLint },
@@ -65,6 +56,8 @@ export default defineConfig(({ mode }) => ({
           // User file lists replace Start's defaults; keep `.server` denied.
           files: ["**/backend/src/**", "**/*.server.*"],
         },
+        // Legacy modules are browser state unless explicitly SSR-safe.
+        // Patterns match root-relative paths.
         server: {
           files: ["src/ts/**", "**/*.client.*"],
           excludeFiles: ["**/node_modules/**", ...ssrSafeLegacyFiles],
