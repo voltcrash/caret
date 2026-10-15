@@ -30,7 +30,11 @@
     "migration-performance": "tsx scripts/migration-performance.ts",
     "build:start": "vp build",
     "dev:legacy": "vp dev --config vite.legacy.config.ts",
-    "dev:offline": "vp dev --mode offline"
+    "dev:offline": "vp dev --mode offline",
+    "build:start:test": "vp build --mode runtime-test",
+    "test:start": "vp test run --config vitest.start.config.ts",
+    "test:start:browser": "playwright test --config playwright.start.config.ts",
+    "dry-run:start": "wrangler deploy --config dist/start/server/wrangler.json --dry-run --outdir dist/start-dry-run"
   },
   "dependencies": {
     "@better-auth/infra": "0.4.14",

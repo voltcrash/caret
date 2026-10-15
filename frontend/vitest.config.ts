@@ -22,7 +22,7 @@ export const projects = [
     extends: false,
     test: {
       name: "start",
-      include: ["__tests__/start/**/*.spec.ts"],
+      include: ["__tests__/start/foundation.spec.ts"],
       environment: "node",
       testTimeout: 30_000,
       hookTimeout: 30_000,
