@@ -1,7 +1,6 @@
 import { JSXElement, Show } from "solid-js";
 import { envConfig } from "virtual:env-config";
 
-import { getActivePage } from "../../../states/core";
 import { showModal } from "../../../states/modals";
 import { isDevEnvironment } from "../../../utils/env";
 import { Button } from "../../common/Button";
@@ -12,10 +11,10 @@ import { LoaderBar } from "./LoaderBar";
 import { MediaQueryDebugger } from "./MediaQueryDebugger";
 import { Notifications } from "./Notifications";
 
-export function Overlays(): JSXElement {
+export function Overlays(props: { scrollToTop: boolean }): JSXElement {
   return (
     <>
-      <Show when={getActivePage() !== "settings"}>
+      <Show when={props.scrollToTop}>
         <ScrollToTop />
       </Show>
       <Banners />

@@ -16,11 +16,7 @@ import * as ServerConfiguration from "../../ape/server-configuration";
 import { getMutableConfig } from "../../config/store";
 import { getAcceptedCookies } from "../../cookies";
 import { isInputElementFocused } from "../../input/input-element";
-import {
-  getMediaQueryDebugLevel,
-  isAppLoading,
-  isFocusCursorHidden,
-} from "../../states/app";
+import { isAppLoading } from "../../states/app";
 import { addBanner, removeBanner } from "../../states/banners";
 import {
   getActivePage,
@@ -28,26 +24,20 @@ import {
   getGlobalOffsetTop,
   getIsScreenshotting,
 } from "../../states/core";
-import {
-  getCrt,
-  getFunboxBodyClasses,
-  isFunboxReducedMotionIgnored,
-} from "../../states/funbox";
 import { isModalOpen, showModal } from "../../states/modals";
 import { isFixingSkillIssue } from "../../states/skill-issue";
 import { getResultVisible, isTestActive } from "../../states/test";
-import { getTheme } from "../../states/theme";
 import * as Caret from "../../test/caret";
 import * as CustomText from "../../test/custom-text";
 import * as TestUI from "../../test/test-ui";
 import { cn, updateClassNames } from "../../utils/cn";
-import { isColorDark } from "../../utils/colors";
 import { onDOMReady } from "../../utils/dom-ready";
 import { isDevEnvironment } from "../../utils/env";
 import { applyReducedMotion } from "../../utils/misc";
 import { convertRemToPixels } from "../../utils/numbers";
 import { isCoarsePointer } from "../../utils/pointer";
 import { canQuickRestart } from "../../utils/quick-restart";
+import { bodyClass } from "./body-classes";
 import { BreakpointEvents } from "./BreakpointEvents";
 import { GlobalEvents } from "./GlobalEvents";
 import { ModifierEvents } from "./ModifierEvents";
@@ -101,35 +91,7 @@ export function AppEffects(props: AppElements): JSXElement {
     body,
     {
       get class() {
-        return cn(
-          body.className
-            .split(/\s+/)
-            .filter(
-              (name) =>
-                !name.startsWith("fb-") &&
-                ![
-                  "loading",
-                  "darkMode",
-                  "crtmode",
-                  "ignore-reduced-motion",
-                  "mediaQueryDebugLevel1",
-                  "mediaQueryDebugLevel2",
-                  "mediaQueryDebugLevel3",
-                  "cursor-none",
-                  "[&_button]:cursor-none!",
-                  "[&_a]:cursor-none!",
-                ].includes(name),
-            ),
-          getFunboxBodyClasses(),
-          isColorDark(getTheme().bg) && "darkMode",
-          getCrt() !== null && "crtmode",
-          isFunboxReducedMotionIgnored() && "ignore-reduced-motion",
-          isAppLoading() && "loading",
-          isFocusCursorHidden() &&
-            "cursor-none [&_a]:cursor-none! [&_button]:cursor-none!",
-          getMediaQueryDebugLevel() > 0 &&
-            `mediaQueryDebugLevel${getMediaQueryDebugLevel()}`,
-        );
+        return bodyClass(body.className);
       },
       get style() {
         return {

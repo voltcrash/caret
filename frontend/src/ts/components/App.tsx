@@ -3,6 +3,7 @@ import { Portal } from "solid-js/web";
 
 import { getConfig } from "../config/store";
 import { getActivePage } from "../states/core";
+import { hasFixedHeader } from "../states/page-layout";
 import { isFixingSkillIssue } from "../states/skill-issue";
 import { getFocus } from "../states/test";
 import { cn } from "../utils/cn";
@@ -46,7 +47,7 @@ export function App(props: AppElements): JSXElement {
         <Portal mount={props.body}>
           <Download />
           <FilePicker />
-          <Overlays />
+          <Overlays scrollToTop={getActivePage() !== "settings"} />
           <CustomBackground />
           <FunboxEffects />
           <BarTimerProgress />
@@ -61,8 +62,8 @@ export function App(props: AppElements): JSXElement {
             <MonkeyPower />
           </Show>
         </Portal>
-        <Header />
-        <PageScroller>
+        <Header fixed={hasFixedHeader(getActivePage())} />
+        <PageScroller fixed={hasFixedHeader(getActivePage())}>
           <main
             class={cn("full-width content-grid h-full", getFocus() && "focus")}
           >
