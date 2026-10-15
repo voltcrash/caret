@@ -58,6 +58,8 @@ for (const [setting, key] of [
     test("starts another test from the result screen", async ({ page }) => {
       await openTest(page);
       await completeWords(page);
+      // restart is ignored until the result fade-in finishes
+      await expect(page.locator("#result")).toHaveCSS("opacity", "1");
       await page.keyboard.press(key);
       await assertRestarted(page);
       await expect(page.locator("#result")).toBeHidden();
