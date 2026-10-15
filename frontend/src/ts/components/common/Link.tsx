@@ -1,15 +1,10 @@
-import { JSX, JSXElement, splitProps } from "solid-js";
+import { JSXElement, splitProps, useContext } from "solid-js";
+import { Dynamic } from "solid-js/web";
 
+import { type HostLinkProps, LinkHost } from "../../../components/link-host";
 import { cn } from "../../utils/cn";
 
-type LinkProps = Omit<
-  JSX.AnchorHTMLAttributes<HTMLAnchorElement>,
-  "onClick"
-> & {
-  onClick?: (event: MouseEvent) => void;
-};
-
-export function Link(props: LinkProps): JSXElement {
+function RollbackLink(props: HostLinkProps): JSXElement {
   const [local, rest] = splitProps(props, ["onClick", "class"]);
   return (
     <a
@@ -22,4 +17,10 @@ export function Link(props: LinkProps): JSXElement {
       {props.children}
     </a>
   );
+}
+
+export function Link(props: HostLinkProps): JSXElement {
+  const host = useContext(LinkHost) ?? RollbackLink;
+  const [local, rest] = splitProps(props, ["class"]);
+  return <Dynamic component={host} {...rest} class={cn(local.class)} />;
 }

@@ -10,7 +10,7 @@ import { Link } from "../../common/Link";
 export function Logo(): JSXElement {
   return (
     <Link
-      href={`${location.origin}/`}
+      href="/"
       class="-m-2 flex h-6 w-max gap-2 rounded-[0.8rem] p-2 focus-visible:**:data-[ui-element='logoSubtext']:text-transparent"
       aria-label="Oxytype Home"
       style={{
