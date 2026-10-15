@@ -52,7 +52,7 @@ describe("built Start application in workerd", () => {
     const db = await mf.getD1Database("DB", "a");
     await db
       .prepare(
-        "UPDATE rate_counters SET points=60 WHERE key='start:publicStatsGet:192.0.2.1'",
+        "UPDATE rate_counters SET points=60 WHERE key='rate:publicStatsGet:192.0.2.1'",
       )
       .run();
     const limited = await worker.fetch(url, { headers });

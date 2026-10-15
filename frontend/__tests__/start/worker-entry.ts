@@ -4,9 +4,16 @@ import { getAuth } from "@oxytype/backend/auth/session";
 import { createServiceContext } from "../../src/server/context.server";
 import { createApplicationWorker } from "../../src/server/worker.server";
 import server from "../../src/server";
+import { getAccountStats } from "../../src/functions/account";
 
 export default createApplicationWorker(async (request, options) => {
   const url = new URL(request.url);
+  if (url.pathname === "/__test/account") {
+    return await server.fetch(
+      new Request(new URL(getAccountStats.url, request.url), request),
+      options,
+    );
+  }
   if (url.pathname !== "/__test/stream") {
     return await server.fetch(request, options);
   }

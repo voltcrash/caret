@@ -6,12 +6,22 @@
   "exports": {
     "./runtime": "./src/runtime/env.ts",
     "./jobs": "./src/runtime/tasks.ts",
-    "./services/public": "./src/services/public.ts",
     "./rate-counter": "./src/policies/rate-counter.ts",
     "./client-ip": "./src/policies/client-ip.ts",
     "./auth": "./src/auth/handler.ts",
     "./ip-key": "./src/policies/ip-key.ts",
-    "./auth/session": "./src/init/auth.ts"
+    "./auth/session": "./src/init/auth.ts",
+    "./policies/operations": "./src/policies/operations.ts",
+    "./policies/authentication": "./src/policies/authentication.ts",
+    "./policies/configuration": "./src/policies/configuration.ts",
+    "./policies/permission": "./src/policies/permission.ts",
+    "./policies/rate-limit": "./src/policies/rate-limit.ts",
+    "./configuration": "./src/init/configuration.ts",
+    "./services/context": "./src/services/context.ts",
+    "./services/public-operations": "./src/services/operations/public.ts",
+    "./services/user-data": "./src/services/operations/user/data.ts",
+    "./errors": "./src/utils/error.ts",
+    "./audit": "./src/dal/logs.ts"
   },
   "scripts": {
     "lint": "vp lint . --type-aware --type-check --format agent",
