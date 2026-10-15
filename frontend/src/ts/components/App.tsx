@@ -1,9 +1,6 @@
 import { JSXElement, Show } from "solid-js";
 import { Portal } from "solid-js/web";
-import { envConfig } from "virtual:env-config";
 
-import { AppProviders } from "../../app/providers";
-import { createQueryClient } from "../../app/query-client";
 import { getConfig } from "../config/store";
 import { getActivePage } from "../states/core";
 import { isFixingSkillIssue } from "../states/skill-issue";
@@ -19,8 +16,6 @@ import { HotkeyEvents } from "./core/HotkeyEvents";
 import { LinkPrefetch } from "./core/LinkPrefetch";
 import { PageHead } from "./core/PageHead";
 import { SkillIssue } from "./core/SkillIssue";
-import { Theme } from "./core/Theme";
-import { ThemeEvents } from "./core/ThemeEvents";
 import { DevTools } from "./dev/DevTools";
 import { Footer } from "./layout/footer/Footer";
 import { Header } from "./layout/header/Header";
@@ -34,18 +29,11 @@ import { Popups } from "./popups/Popups";
 
 export function App(props: AppElements): JSXElement {
   return (
-    <AppProviders
-      queryClient={createQueryClient({
-        staleTime: 0,
-        retry: envConfig.devOffline ? false : 3,
-      })}
-    >
+    <>
       <Portal mount={props.body}>
         <AccountRuntime />
         <PageHead />
         <AppEffects {...props} />
-        <Theme />
-        <ThemeEvents />
         <HotkeyEvents />
         <LinkPrefetch />
       </Portal>
@@ -87,6 +75,6 @@ export function App(props: AppElements): JSXElement {
           </Show>
         </PageScroller>
       </Show>
-    </AppProviders>
+    </>
   );
 }

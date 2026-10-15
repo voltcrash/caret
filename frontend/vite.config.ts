@@ -1,3 +1,6 @@
+import { envConfig } from "./vite-plugins/env-config";
+import { languageHashes } from "./vite-plugins/language-hashes";
+import { getClientVersion } from "./vite-plugins/client-version";
 import { defineConfig } from "vite-plus";
 import { cloudflare } from "@cloudflare/vite-plugin";
 import { tanstackStart } from "@tanstack/solid-start/plugin/vite";
@@ -33,6 +36,15 @@ export default defineConfig(({ mode }) => ({
     },
   },
   plugins: [
+    envConfig({
+      isDevelopment: mode !== "production",
+      clientVersion: getClientVersion(mode !== "production"),
+      env: {
+        BACKEND_URL: "/api",
+        DEV_OFFLINE: mode === "offline" ? "true" : "false",
+      },
+    }),
+    languageHashes({ skip: false }),
     cloudflare({
       configPath: "wrangler.jsonc",
       config:

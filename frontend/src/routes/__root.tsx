@@ -1,9 +1,15 @@
 import type { QueryClient } from "@tanstack/solid-query";
 
-import { createRootRouteWithContext, Link } from "@tanstack/solid-router";
+import {
+  Outlet,
+  createRootRouteWithContext,
+  Link,
+} from "@tanstack/solid-router";
 
 import appCss from "../app/app.css?url";
+import { BrowserRuntime } from "../app/browser-runtime";
 import { Document } from "../app/document";
+import { AppProviders } from "../app/providers";
 import { AppError } from "../components/app-error";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
@@ -57,6 +63,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       ],
     }),
     shellComponent: Document,
+    component: Root,
     notFoundComponent: () => (
       <main class="p-8">
         <h1>Page not found</h1>
@@ -66,3 +73,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     errorComponent: AppError,
   },
 );
+
+function Root() {
+  const context = Route.useRouteContext();
+  return (
+    <AppProviders queryClient={context().queryClient}>
+      <BrowserRuntime />
+      <Outlet />
+    </AppProviders>
+  );
+}
