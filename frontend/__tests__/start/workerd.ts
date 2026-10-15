@@ -110,7 +110,11 @@ export async function seedSession(
   return await withRuntime(env, async () => {
     const auth = await getAuth().$context;
     const user = await auth.internalAdapter.createUser(
-      { name: worker, email: `${worker}@example.test`, emailVerified: true },
+      {
+        name: worker,
+        email: `${worker}-${crypto.randomUUID()}@example.test`,
+        emailVerified: true,
+      },
       { method: "oauth", oauth: { providerId: "github" } },
     );
     const session = await auth.internalAdapter.createSession(user.id, false);

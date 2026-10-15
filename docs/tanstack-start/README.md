@@ -20,8 +20,8 @@ No preceding implementation stage or handoff exists. Prerequisite: merged
 | 2.3 Preferences/data identity | Complete | [Stage 2](stage-2.md), actor-isolation suites |
 | Stage 2 exit | Complete | [Stage 2 handoff](stage-2.md#next-stage-prerequisites) |
 | 3.1 Services/policies | Complete | [Stage 3](stage-3.md) |
-| 3.2 Start policy adapters | In progress | [Stage 3](stage-3.md) |
-| 3.3 Authentication flows | Pending | [Stage 3](stage-3.md) |
+| 3.2 Start policy adapters | Complete | [Stage 3](stage-3.md) |
+| 3.3 Authentication flows | In progress | [Stage 3](stage-3.md) |
 | Stages 4–8 | Not started | Separate assignments |
 
 Stage 0 moves responsibility for migration evidence from an unverified proposal

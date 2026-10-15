@@ -23,12 +23,23 @@ run; reviewed and completed. No unrelated changes. Production rollback retained.
   boundary tests pass. D1 fixtures updated to call services with typed contexts
   instead of incomplete cast legacy requests; signup/privacy checks pass.
 
-## 3.2 Start policy adapters — in progress
+## 3.2 Start policy adapters — complete
 
-Shared operation runner installed; remaining work: malformed/body/error policy
-coverage, request logging and complete workerd access/failure matrix.
+- Shared runner enforces authentication, fresh sessions, permission/config and
+  maintenance gates, root/named/bad-auth rates, parsed contract inputs and safe
+  response DTOs. Unknown failures are redacted and audited with request ID.
+- Start function validation maps malformed inputs to 422; explicit CSRF middleware
+  rejects direct originless/cross-site RPCs. No layout visit required.
+- Worker retains 100 KiB streamed/compressed ceilings, charset/encoding failures,
+  security/no-store headers, request IDs and structured request logs. Better Auth
+  receives its original body bytes. Rate/compatibility/retry headers retained.
+- Built workerd: guest/private/revoked/expired/fresh/admin, config/maintenance,
+  operation/root/bad-auth rates, trusted-IP spoofing, origin, malformed input,
+  gzip bomb/unsupported encoding checks pass. Worker + document + service suites:
+  3 files / 16 tests pass. Outbound HTTP rejected by the harness.
 
-## 3.3 Start authentication flows — pending
+
+## 3.3 Start authentication flows — in progress
 
 ## Remaining adapters
 

@@ -151,4 +151,68 @@ describe("pilot shared services in workerd", () => {
     );
     expect(response.status).toBe(422);
   });
+  it("uses trusted IP, rejects expired sessions and applies bad-auth/root/maintenance gates", async () => {
+    const worker = await mf.getWorker("a");
+    const db = await mf.getD1Database("DB", "a");
+    const session = await seedSession(mf, "a");
+    const url = "http://localhost:3000/__test/account";
+    const headers = {
+      origin: "http://localhost:3000",
+      "x-tsr-serverFn": "true",
+      authorization: `Bearer ${session.token}`,
+      "cf-connecting-ip": "192.0.2.83",
+      "x-forwarded-for": "1.2.3.4",
+    };
+    await db
+      .prepare("UPDATE auth_sessions SET expires_at=0 WHERE token=?")
+      .bind(session.token)
+      .run();
+    expect((await worker.fetch(url, { headers })).status).toBe(401);
+    expect(
+      await db
+        .prepare(
+          "SELECT key FROM rate_counters WHERE key='rate:root:192.0.2.83'",
+        )
+        .first(),
+    ).not.toBeNull();
+    expect(
+      await db
+        .prepare("SELECT key FROM rate_counters WHERE key LIKE '%1.2.3.4%'")
+        .first(),
+    ).toBeNull();
+    await db
+      .prepare(
+        "INSERT OR REPLACE INTO rate_counters(key,points,expires_at) VALUES('rate:root:192.0.2.83',1000,?)",
+      )
+      .bind(Date.now() + 60_000)
+      .run();
+    const limited = await worker.fetch(url, { headers });
+    expect(limited.status).toBe(429);
+    expect(limited.headers.get("Retry-After")).not.toBeNull();
+    await db.prepare("DELETE FROM rate_counters").run();
+    await db
+      .prepare(
+        "UPDATE configuration SET data=json_set(data,'$.rateLimiting.badAuthentication.enabled',json('true')) WHERE id='main'",
+      )
+      .run();
+    await db
+      .prepare(
+        "INSERT INTO rate_counters(key,points,expires_at) VALUES('bad-auth:192.0.2.83',30,?)",
+      )
+      .bind(Date.now() + 60_000)
+      .run();
+    expect((await worker.fetch(url, { headers })).status).toBe(429);
+    await db.prepare("DELETE FROM rate_counters").run();
+    await db
+      .prepare(
+        "UPDATE configuration SET data=json_set(data,'$.maintenance',json('true')) WHERE id='main'",
+      )
+      .run();
+    expect((await worker.fetch(url, { headers })).status).toBe(503);
+    await db
+      .prepare(
+        "UPDATE configuration SET data=json_set(data,'$.maintenance',json('false')) WHERE id='main'",
+      )
+      .run();
+  });
 });
