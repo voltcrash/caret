@@ -9,50 +9,14 @@ import {
 } from "vite-plus";
 import path from "node:path";
 import injectHTML from "vite-plugin-html-inject";
-import childProcess from "child_process";
 import { fontStyles } from "./vite-plugins/font-styles";
+import { getClientVersion } from "./vite-plugins/client-version";
 import { envConfig } from "./vite-plugins/env-config";
 import { languageHashes } from "./vite-plugins/language-hashes";
 import { standaloneHtml } from "./vite-plugins/standalone-html";
 import { devtoolsEntry } from "./vite-plugins/devtools-entry";
 import solidPlugin from "vite-plugin-solid";
 import tailwindcss from "@tailwindcss/vite";
-
-function pad(
-  numbers: number[],
-  maxLength: number,
-  fillString: string,
-): string[] {
-  return numbers.map((number) =>
-    number.toString().padStart(maxLength, fillString),
-  );
-}
-
-function getClientVersion(isDevelopment: boolean): string {
-  if (isDevelopment) {
-    return "DEVELOPMENT_CLIENT";
-  }
-  const date = new Date();
-  const versionPrefix = pad(
-    [date.getFullYear(), date.getMonth() + 1, date.getDate()],
-    2,
-    "0",
-  ).join(".");
-  const versionSuffix = pad([date.getHours(), date.getMinutes()], 2, "0").join(
-    ".",
-  );
-  const version = [versionPrefix, versionSuffix].join("_");
-
-  try {
-    const commitHash = childProcess
-      .execSync("git rev-parse --short HEAD")
-      .toString();
-
-    return `${version}_${commitHash}`.replace(/\n/g, "");
-  } catch (e) {
-    return `${version}_unknown-hash`;
-  }
-}
 
 async function getPlugins({
   isDevelopment,
