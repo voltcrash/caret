@@ -56,6 +56,8 @@ export default defineConfig({
       "coverage",
       "*.md",
       "tui/assets",
+      // Owned by the TanStack Router generator; rewritten on every build.
+      "frontend/src/routeTree.gen.ts",
     ],
     overrides: [
       {
