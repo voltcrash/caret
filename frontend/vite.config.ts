@@ -31,11 +31,20 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     cloudflare({
       configPath: "wrangler.jsonc",
+      config:
+        mode === "runtime-test"
+          ? { main: "__tests__/start/worker-entry.ts" }
+          : undefined,
       viteEnvironment: { name: "ssr" },
       persistState: { path: "../backend/.wrangler/state" },
     }),
     tanstackStart({
-      server: { entry: "worker.ts" },
+      server: {
+        entry:
+          mode === "runtime-test"
+            ? "../__tests__/start/worker-entry.ts"
+            : "worker.ts",
+      },
       importProtection: {
         behavior: "error",
         client: {
@@ -57,7 +66,7 @@ export default defineConfig(({ mode }) => ({
   define: {
     "import.meta.env.OXYTYPE_OFFLINE": JSON.stringify(mode === "offline"),
   },
-  build: { outDir: "dist/start" },
+  build: { outDir: mode === "runtime-test" ? "dist/start-test" : "dist/start" },
   server: { port: 3000, strictPort: true },
   clearScreen: false,
 }));
