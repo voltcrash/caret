@@ -1,4 +1,10 @@
-import { assertRestarted, expect, openTest, test } from "./fixtures";
+import {
+  assertRestarted,
+  completeWords,
+  expect,
+  openTest,
+  test,
+} from "./fixtures";
 
 for (const method of ["tab+enter", "button"] as const) {
   test(`restart with ${method} clears an active test`, async ({ page }) => {
@@ -47,6 +53,17 @@ for (const [setting, key] of [
         await assertRestarted(page);
         await expect(page.locator("#wordsInput")).toBeFocused();
       }
+    });
+
+    test("starts another test from the result screen", async ({ page }) => {
+      await openTest(page);
+      await completeWords(page);
+      await page.keyboard.press(key);
+      await assertRestarted(page);
+      await expect(page.locator("#result")).toBeHidden();
+      await expect(page.locator("#wordsInput")).toBeFocused();
+      await page.keyboard.type("x");
+      await expect(page.locator("#wordsInput")).toHaveValue(" x");
     });
   });
 }
