@@ -54,7 +54,7 @@ async function load(
           ? String(input.label)
           : basename(file, ".json");
     // each file is one user's history, so replays only match within a file
-    into.set(`${fileLabel}:${basename(file, ".json")}`, extractSamples(input));
+    into.set(`${fileLabel}:${resolve(file)}`, extractSamples(input));
   }
 }
 
@@ -80,7 +80,10 @@ async function main(): Promise<void> {
   const byLabel = new Map<string, TimingSample[]>();
   for (const [key, samples] of histories) {
     const label = key.slice(0, key.indexOf(":"));
-    byLabel.set(label, [...(byLabel.get(label) ?? []), ...samples]);
+    for (const sample of samples) {
+      const ownLabel = sample.label ?? label;
+      byLabel.set(ownLabel, [...(byLabel.get(ownLabel) ?? []), sample]);
+    }
   }
   const report = {
     detectors: calibrateDetectors(histories, (key) =>
