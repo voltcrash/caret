@@ -1,4 +1,5 @@
-import { createSignal } from "solid-js";
+import { createSignal, type Signal } from "solid-js";
+import { createAppSignal } from "../../app/state";
 
 /** The raw SolidJS setter, accepting a value or an updater function. */
 type OriginalSetter<T> = (value: T | ((prev: T) => T)) => void;
@@ -53,11 +54,14 @@ type MappedSetters<T, S extends SettersMap<T>> = {
  *   a `[getter, setters]` tuple, where `setters` contains each named setter
  *   plus a raw `set` passthrough.
  */
-export function createSignalWithSetters<T>(defaultValue: T) {
+export function createSignalWithSetters<T>(
+  defaultValue: T,
+  signal: (value: T) => Signal<T> = createSignal,
+) {
   return function <S extends SettersMap<T>>(
     setters: S,
   ): [() => T, MappedSetters<T, S>] {
-    const [get, _set] = createSignal(defaultValue);
+    const [get, _set] = signal(defaultValue);
     const mapped = Object.fromEntries(
       Object.entries(setters).map(([key, setter]) => [
         key,
@@ -66,4 +70,10 @@ export function createSignalWithSetters<T>(defaultValue: T) {
     ) as unknown as MappedSetters<T, S>;
     return [get, { ...mapped, set: _set }];
   };
+}
+
+export function createAppSignalWithSetters<T>(
+  defaultValue: T,
+): <S extends SettersMap<T>>(setters: S) => [() => T, MappedSetters<T, S>] {
+  return createSignalWithSetters<T>(defaultValue, createAppSignal);
 }
