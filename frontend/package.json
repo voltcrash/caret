@@ -34,7 +34,8 @@
     "build:start:test": "vp build --mode runtime-test",
     "test:start": "vp test run --config vitest.start.config.ts",
     "test:start:browser": "playwright test --config playwright.start.config.ts",
-    "dry-run:start": "wrangler deploy --config dist/start/server/wrangler.json --dry-run --outdir dist/start-dry-run"
+    "dry-run:start": "wrangler deploy --config dist/start/server/wrangler.json --dry-run --outdir dist/start-dry-run",
+    "build:start:staging": "CLOUDFLARE_ENV=migration vp build"
   },
   "dependencies": {
     "@better-auth/infra": "0.4.14",
