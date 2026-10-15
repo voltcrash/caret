@@ -124,6 +124,24 @@ describe("built Start application in workerd", () => {
     }
   });
 
+  it("redirects former entry URLs to canonical routes with their query", async () => {
+    for (const [path, location] of [
+      ["/index.html?mode=time", "/?mode=time"],
+      ["/index", "/"],
+      ["/privacy-policy", "/privacy-policy.html"],
+      ["/oauth-callback?requestId=a", "/oauth-callback.html?requestId=a"],
+      ["/404", "/404.html"],
+    ] as const) {
+      const response = await mf.dispatchFetch(`http://localhost:3000${path}`, {
+        redirect: "manual",
+      });
+      expect(response.status).toBe(301);
+      expect(
+        new URL(response.headers.get("location") ?? "", "http://x").href,
+      ).toBe(new URL(location, "http://x").href);
+    }
+  });
+
   it("server-renders the privacy policy at its published URL", async () => {
     const response = await mf.dispatchFetch(
       "http://localhost:3000/privacy-policy.html",

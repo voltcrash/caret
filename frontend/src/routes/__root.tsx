@@ -1,7 +1,12 @@
 import type { QueryClient } from "@tanstack/solid-query";
 
-import { Outlet, createRootRouteWithContext } from "@tanstack/solid-router";
+import {
+  Outlet,
+  createRootRouteWithContext,
+  redirect,
+} from "@tanstack/solid-router";
 
+import { canonicalHref } from "../app/aliases";
 import appCss from "../app/app.css?url";
 import { BrowserRuntime } from "../app/browser-runtime";
 import { Document } from "../app/document";
@@ -12,6 +17,13 @@ import { NotFoundPage } from "../features/not-found/page";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
+    beforeLoad: ({ location }) => {
+      const href = canonicalHref(location);
+      if (href !== undefined) {
+        // oxlint-disable-next-line typescript/only-throw-error -- Router consumes this redirect.
+        throw redirect({ href, statusCode: 301 });
+      }
+    },
     head: ({ matches }) => ({
       meta: [
         { charset: "utf-8" },

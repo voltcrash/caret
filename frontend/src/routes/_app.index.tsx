@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/solid-router";
 
 export const Route = createFileRoute("/_app/")({
+  head: () => ({
+    meta: [{ title: "Oxytype | A minimalistic, customizable typing test" }],
+  }),
   component: () => (
     <section class="grid gap-4">
       <h1 class="text-3xl">oxytype</h1>
