@@ -1,3 +1,4 @@
+import { getQuoteWordList } from "./words-generator/quotes";
 import { getGenerationLimit } from "./words-generator/limits";
 import { createWordTransforms } from "./words-generator/transforms";
 import { createFunboxWords } from "./words-generator/funboxes";
@@ -16,9 +17,7 @@ import {
 } from "./active-funboxes";
 import * as Arrays from "./arrays";
 import { WordGenError } from "./errors";
-import { FunboxWordOrder } from "./languages";
-import { Quote, QuoteWithTextSplit } from "./quotes";
-import * as Strings from "./strings";
+import { QuoteWithTextSplit } from "./quotes";
 import { PolyglotWordset, Wordset, withWords } from "./wordset";
 
 //pin implementation
@@ -38,104 +37,6 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
     getWordOrder,
     appendCommitCharacter,
   } = createFunboxWords(deps);
-
-  async function getQuoteWordList(
-    language: LanguageObject,
-    wordOrder?: FunboxWordOrder,
-  ): Promise<string[]> {
-    if (deps.isRepeated()) {
-      if (currentWordset === null) {
-        throw new WordGenError("Current wordset is null");
-      }
-
-      deps.setCurrentQuote(previousRandomQuote);
-
-      // need to re-reverse the words if the test is repeated
-      // because it will be reversed again in the generateWords function
-      if (wordOrder === "reverse") {
-        return currentWordset.words.reverse();
-      } else {
-        return currentWordset.words;
-      }
-    }
-    const languageToGet = language.name.startsWith("swiss_german")
-      ? "german"
-      : language.name;
-
-    deps.showLoader?.();
-    const quotesCollection = await deps.quotes.getQuotes(
-      languageToGet,
-      config().quoteLength,
-    );
-    deps.hideLoader?.();
-
-    if (quotesCollection.length === 0) {
-      deps.setMode("words");
-      throw new WordGenError(
-        `No ${config()
-          .language.replace(/_\d*k$/g, "")
-          .replace(/_/g, " ")} quotes found`,
-      );
-    }
-
-    let rq: Quote;
-    if (
-      config().quoteLength.includes(-2) &&
-      config().quoteLength.length === 1
-    ) {
-      const targetQuote = deps.quotes.getQuoteById(deps.getSelectedQuoteId());
-      if (targetQuote === undefined) {
-        deps.setQuoteLengthAll();
-        throw new WordGenError(
-          `Quote ${deps.getSelectedQuoteId()} does not exist`,
-        );
-      }
-      rq = targetQuote;
-    } else if (config().quoteLength.includes(-3)) {
-      const randomQuote = deps.quotes.getRandomFavoriteQuote(config().language);
-      if (randomQuote === null) {
-        deps.setQuoteLengthAll();
-        throw new WordGenError("No favorite quotes found");
-      }
-      rq = randomQuote;
-    } else {
-      const randomQuote = deps.quotes.getRandomQuote();
-      if (randomQuote === null) {
-        deps.setQuoteLengthAll();
-        throw new WordGenError("No quotes found for selected quote length");
-      }
-      rq = randomQuote;
-    }
-
-    rq.language = Strings.removeLanguageSize(config().language);
-    rq.text = rq.text.replace(/ +/gm, " ");
-    rq.text = rq.text.replace(/( *(\r\n|\r|\n) *)/g, "\n ");
-    rq.text = rq.text.replace(/…/g, "...");
-    rq.text = rq.text.trim();
-
-    if (
-      rq.britishText !== undefined &&
-      rq.britishText !== "" &&
-      config().britishEnglish
-    ) {
-      rq.textSplit = rq.britishText.split(" ");
-    } else {
-      rq.textSplit = rq.text.split(" ");
-    }
-
-    deps.setCurrentQuote(rq as QuoteWithTextSplit);
-
-    const currentQuote = deps.getCurrentQuote();
-    if (currentQuote === null) {
-      throw new WordGenError("Random quote is null");
-    }
-
-    if (currentQuote.textSplit === undefined) {
-      throw new WordGenError("Random quote textSplit is undefined");
-    }
-
-    return currentQuote.textSplit;
-  }
 
   let currentWordset: Wordset | null = null;
   let currentLanguage: LanguageObject | null = null;
@@ -175,7 +76,13 @@ export function createWordsGenerator(deps: WordsGeneratorDeps): WordsGenerator {
     if (config().mode === "custom") {
       wordList = deps.customText.getText();
     } else if (config().mode === "quote") {
-      wordList = await getQuoteWordList(language, wordOrder);
+      wordList = await getQuoteWordList(
+        deps,
+        language,
+        currentWordset,
+        previousRandomQuote,
+        wordOrder,
+      );
     } else if (config().mode === "zen") {
       wordList = [];
     }
