@@ -77,3 +77,57 @@ imports at `3178bc19b`. "Import" = runs when the module is evaluated.
   builds and workerd/browser checks after Phase 2.3.
 - APIs checked against installed Start 1.169.2 / Router 1.170.41 / Solid 1.9.15
   and official execution-model, onMount and runWithOwner documentation.
+
+## 2.3 Preferences and data identity — complete
+
+- Local config migration/schema, IndexedDB database/version/store names, language
+  hashes and config metadata remain unchanged. Local → server → URL precedence
+  remains explicit in the preferences/auth runtime; history prefetch is detached
+  from guest readiness. Start observes sessions without fetching legacy snapshots.
+- Account-data scope keys private queries by actor + generation, retaining the
+  existing web/TUI history dimension. Every UID transition (including direct A→B,
+  logout and re-login) aborts requests, cancels/removes private queries and disposes
+  collections/readers, raw + mini snapshots and private pending work. Public caches
+  survive. Leases reject late results even if an endpoint ignores AbortSignal.
+- Remote preferences, user load, result acknowledgement, inbox/reward work and
+  debounced private writes capture their actor. Mutable palette trees, private
+  suggestions, validation and pending input work also reset with the actor.
+- Actual TestSession, words, timer scheduler, formatting, event recorder, DOM
+  bridges and IndexedDB connection are lazy per app and released on unmount.
+  Module imports cannot create a session or open the database.
+- Start emits a small nonce-bearing early theme script using only the existing
+  validated palette cache. Font CSS/loading belongs to FontRuntime after mount.
+  Browser runtime has its own Suspense boundary so downloading setup cannot
+  suspend SSR public content/navigation. Static warnings.html remains unchanged.
+
+## Remaining adapters and retirement conditions
+
+| Adapter | Owner / retirement |
+| --- | --- |
+| LegacyRuntime auth callback, URL/PSA, debug/focus/page wiring | Owned browser lifecycle; replace during Stages 3–5 |
+| TypingRuntime, test DOM bridges and legacy signal accessors | Owned app/component resources; mount inside native typing leaf in Stage 5 |
+| Ape/ts-rest lazy HTTP clients with app/actor leases | Compatibility transport; replace by direct server functions in Stage 6 |
+| Browser Better Auth observation and auth routes | Server remains authority; Stage 3 owns auth policy/service migration |
+| Rollback router, page cache, legacy entry/build and Hono delivery | Production rollback until Stage 7; final deletion Stage 8 |
+| Caps-lock document/HMR bridge | Library has no unsubscribe; one bridge per document, owned callbacks detach |
+
+## Significant decisions
+
+- Audit expanded to actual typing engine/session state, IndexedDB connection and
+  palette caches: moving only reactive UI flags would leave mutable singletons.
+- Optional audio, account header, consent modal and result subscriptions load only
+  when used. Shared owner modules share a rollback chunk. This keeps the frozen
+  eager-byte budgets without changing typing algorithms or hiding eager imports
+  from the measurement tool.
+- Supported Better Auth client/infra imports include generic core/env getter
+  names (including BETTER_AUTH_SECRET), without Worker binding values. Bundle
+  guards check application-specific backend DB/runtime markers and browser-only
+  setup in the correct graph. Import protection and runtime secret-leak checks
+  remain enforced. [Official client API](https://better-auth.com/docs/concepts/client)
+  and installed 1.7.7 / infra 0.4.14 sources checked.
+- No server service/auth-policy transfer, schema change, deployment or TUI work.
+
+## Final validation
+
+Exit validation in progress; do not treat Stage 2 as complete until the remaining
+production-like and repeated performance checks below are recorded.
