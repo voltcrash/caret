@@ -124,11 +124,10 @@ async function show(): Promise<void> {
   });
 }
 
-authEvent.subscribe(
-  (event) => {
+export function usePsaEvents(): void {
+  authEvent.useListener((event) => {
     if (event.type === "authStateChanged") {
       void show();
     }
-  },
-  import.meta.hot,
-);
+  });
+}

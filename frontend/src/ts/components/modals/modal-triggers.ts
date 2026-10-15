@@ -7,23 +7,18 @@ import { getLastSignedOutResult } from "../../states/test";
 // Lives outside the lazily loaded modal modules so events fired before a
 // modal chunk loads still open it.
 
-googleSignUpEvent.subscribe(
-  (data) => {
+export function useModalTriggers(): void {
+  googleSignUpEvent.useListener((data) => {
     if (data.signedInUser !== undefined && data.isNewUser) {
       setPendingGoogleSignUpUser(data.signedInUser);
       showModal("GoogleSignup");
     }
-  },
-  import.meta.hot,
-);
-
-authEvent.subscribe(
-  (event) => {
+  });
+  authEvent.useListener((event) => {
     if (event.type === "snapshotUpdated" && event.data.isInitial) {
       if (getLastSignedOutResult() !== null) {
         showModal("LastSignedOutResult");
       }
     }
-  },
-  import.meta.hot,
-);
+  });
+}

@@ -1,4 +1,4 @@
-import { beforeEach, expect, it, vi } from "vite-plus/test";
+import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 
 const state = vi.hoisted(() => ({
   userId: "first" as string | null,
@@ -17,8 +17,9 @@ vi.mock("../../src/ts/hooks/effects", () => ({
   },
 }));
 
-beforeEach(() => {
+beforeEach(async () => {
   vi.resetModules();
+  await import("../__harness__/mock-application");
   state.get.mockReset();
   state.userId = "first";
 });
@@ -69,4 +70,8 @@ it("never reuses another user's data or a request completed after logout", async
   await first;
   await expect(fetchUserFromApi()).resolves.toEqual({ name: "second" });
   expect(state.get).toHaveBeenCalledTimes(2);
+});
+
+afterEach(async () => {
+  (await import("../__harness__/mock-application")).releaseTestApplication();
 });

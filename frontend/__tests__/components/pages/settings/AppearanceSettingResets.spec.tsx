@@ -1,4 +1,5 @@
 import { cleanup, fireEvent, render, waitFor } from "@solidjs/testing-library";
+import { createRoot } from "solid-js";
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 
 import "../../../__harness__/mock-static";
@@ -11,7 +12,10 @@ import { setConfig } from "../../../../src/ts/config/setters";
 import { getConfig, setFullConfigStore } from "../../../../src/ts/config/store";
 import { __testing } from "../../../../src/ts/config/testing";
 import { getDefaultConfig } from "../../../../src/ts/constants/default-config";
-import { applyCustomBackground } from "../../../../src/ts/controllers/theme-controller";
+import {
+  useThemeEvents,
+  applyCustomBackground,
+} from "../../../../src/ts/controllers/theme-controller";
 import { getFontFace, getFontFamily } from "../../../../src/ts/states/app";
 import { getBackground } from "../../../../src/ts/states/background";
 import { getTheme } from "../../../../src/ts/states/theme";
@@ -45,7 +49,12 @@ vi.mock("idb", () => {
   };
 });
 
+let disposeEvents: () => void;
 beforeEach(async () => {
+  disposeEvents = createRoot((dispose) => {
+    useThemeEvents();
+    return dispose;
+  });
   __testing.replaceConfig({});
   setFullConfigStore(getDefaultConfig());
   const save = Persistence.saveToLocalStorage;
@@ -61,6 +70,7 @@ beforeEach(async () => {
 });
 
 afterEach(() => {
+  disposeEvents();
   cleanup();
   vi.restoreAllMocks();
 });

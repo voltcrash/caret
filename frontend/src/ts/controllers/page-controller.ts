@@ -26,7 +26,7 @@ import {
   LeaderboardUrlParamsSchema,
   readLeaderboardGetParameters,
 } from "../states/leaderboard-selection";
-import { configurationPromise as serverConfigurationPromise } from "../ape/server-configuration";
+import { sync as syncServerConfiguration } from "../ape/server-configuration";
 import { getSnapshot } from "../db";
 import * as TodayTracker from "../test/today-tracker";
 import { isResultsReady } from "../states/results-ready";
@@ -93,7 +93,7 @@ const pages = {
       style: "spinner",
       loadingMode: () => "sync",
       loadingPromise: async () => {
-        await serverConfigurationPromise;
+        await syncServerConfiguration();
       },
     },
     beforeShow: async (options) => {

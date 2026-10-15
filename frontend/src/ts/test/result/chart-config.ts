@@ -13,12 +13,9 @@ import type { AnnotationOptions } from "chartjs-plugin-annotation";
 import { getResultVisible } from "../../states/test";
 import { getResultChart, setResultState } from "../../states/result";
 import { buildSpeedStats } from "../result-view-model";
-import type { ModuleHotContext } from "../../hooks/createEvent";
 
-export function subscribeResultConfigChanges(
-  hot: ModuleHotContext | undefined,
-): void {
-  configEvent.subscribe(async ({ key }) => {
+export function subscribeResultConfigChanges(): void {
+  configEvent.useListener(async ({ key }) => {
     if (
       ["typingSpeedUnit", "startGraphsAtZero"].includes(key) &&
       getResultVisible()
@@ -45,5 +42,5 @@ export function subscribeResultConfigChanges(
       getResultChart().update();
       getResultChart().resize();
     }
-  }, hot);
+  });
 }

@@ -4,7 +4,9 @@ import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 const { contactMounts } = vi.hoisted(() => ({
   contactMounts: vi.fn(),
 }));
-vi.mock("../../../src/ts/components/modals/modal-triggers", () => ({}));
+vi.mock("../../../src/ts/components/modals/modal-triggers", () => ({
+  useModalTriggers: () => undefined,
+}));
 vi.mock("../../../src/ts/components/modals/Commandline", () => ({
   Commandline: () => <div data-testid="commandline" />,
 }));

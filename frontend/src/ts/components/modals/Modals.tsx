@@ -2,7 +2,7 @@ import { Component, For, JSXElement, lazy, Show } from "solid-js";
 
 import { ModalId, getModalVisibility } from "../../states/modals";
 import { CookiesModal } from "./CookiesModal";
-import "./modal-triggers";
+import { useModalTriggers } from "./modal-triggers";
 
 function lazyModal(
   id: ModalId,
@@ -88,6 +88,7 @@ const lazyModals = [
 ];
 
 export function Modals(): JSXElement {
+  useModalTriggers();
   return (
     <>
       <CookiesModal />

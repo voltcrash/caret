@@ -1,6 +1,5 @@
-import { createEffect, createRoot, on, onCleanup } from "solid-js";
+import { createEffect, on, onCleanup } from "solid-js";
 import { debounce } from "throttle-debounce";
-import type { ModuleHotContext } from "./createEvent";
 import type { AccessorArray } from "solid-js";
 
 type Accessor<T = unknown> = () => T;
@@ -51,29 +50,4 @@ export function createDebouncedEffectOn<
       options,
     ),
   );
-}
-
-/** Own module effects so hot replacement can release their subscriptions. */
-export function createModuleRoot<T>(
-  hot: ModuleHotContext | undefined,
-  fn: () => T,
-): T {
-  return createRoot((dispose) => {
-    hot?.dispose(dispose);
-    return fn();
-  });
-}
-
-export function createModuleEffectOn<
-  T extends Accessor | readonly Accessor[],
-  U = void,
->(
-  hot: ModuleHotContext | undefined,
-  deps: T,
-  fn: (value: OnValue<T>, prev: OnValue<T> | undefined, prevValue?: U) => U,
-  options: { defer?: boolean } = {},
-): void {
-  createModuleRoot(hot, () => {
-    createEffectOn(deps, fn, options);
-  });
 }
