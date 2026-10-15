@@ -1,7 +1,7 @@
 import { typedKeys } from "@oxytype/util/objects";
 import { tryCatch } from "@oxytype/util/trycatch";
-import { createMemo } from "solid-js";
 
+import { createAppMemo } from "../app/application";
 import {
   getAuthClient,
   checkAuthResult,
@@ -81,7 +81,7 @@ type ReauthenticateOptions = {
 
 const authenticationMemos = Object.fromEntries(
   typedKeys(authMethods).map((authMethod) => {
-    const memo = createMemo(() => {
+    const memo = createAppMemo(() => {
       const providerId = getProviderId(authMethod);
 
       const user = getAuthenticatedUser();

@@ -4,22 +4,11 @@ import {
   getAuthClient,
   checkAuthResult,
   oauthRequestEvent,
-  authPromise,
-  observeAuthSession,
 } from "../../auth-client";
 
 /** Own popup windows and listeners for sign-in, linking, and reauthentication. */
 export function OAuthRuntime(): null {
   onMount(() => {
-    let disposed = false;
-    let stopObserving: (() => void) | undefined;
-    void authPromise.then(() => {
-      if (!disposed) stopObserving = observeAuthSession();
-    });
-    onCleanup(() => {
-      disposed = true;
-      stopObserving?.();
-    });
     const pending = new Set<() => void>();
     const unsubscribe = oauthRequestEvent.subscribe((request) => {
       const popup = window.open(

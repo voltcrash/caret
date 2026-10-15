@@ -19,40 +19,41 @@ vi.mock("../../src/ts/queries/server-configuration", () => ({
 }));
 
 describe("server configuration startup", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.resetModules();
+    await import("../__harness__/mock-application");
     query.mockReset();
     vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    (await import("../__harness__/mock-application")).releaseTestApplication();
     vi.restoreAllMocks();
   });
 
   it("resolves readiness after fetching configuration", async () => {
     query.mockResolvedValue({});
-    const { sync, configurationPromise } =
-      await import("../../src/ts/ape/server-configuration");
+    const { sync } = await import("../../src/ts/ape/server-configuration");
 
     await sync();
 
-    await expect(configurationPromise).resolves.toBe(true);
+    const { configurationReadiness } = await import("../../src/app/readiness");
+    expect(configurationReadiness().state()).toEqual({ status: "ready" });
     expect(console.error).not.toHaveBeenCalled();
   });
 
   it("handles offline startup before a page awaits configuration", async () => {
     const error = new Error("Could not fetch configuration: Failed to fetch");
     query.mockRejectedValue(error);
-    const { sync, configurationPromise } =
-      await import("../../src/ts/ape/server-configuration");
+    const { sync } = await import("../../src/ts/ape/server-configuration");
 
-    await sync();
-    await new Promise<void>((resolve) => setTimeout(resolve, 0));
+    await expect(sync()).rejects.toBe(error);
 
-    await expect(configurationPromise).rejects.toBe(error);
-    expect(console.error).toHaveBeenCalledWith(
-      "Failed to synchronize server configuration",
+    const { configurationReadiness } = await import("../../src/app/readiness");
+    expect(configurationReadiness().state()).toEqual({
+      status: "error",
       error,
-    );
+    });
+    await expect(configurationReadiness().wait()).rejects.toBe(error);
   });
 });
