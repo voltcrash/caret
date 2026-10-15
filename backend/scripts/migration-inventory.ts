@@ -3,6 +3,7 @@ import type { EndpointMetadata } from "@oxytype/contracts/util/api";
 import { isAppRoute, type AppRouter } from "@ts-rest/core";
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { resolve, relative } from "node:path";
+import { isDeepStrictEqual } from "node:util";
 
 const root = resolve(__dirname, "../..");
 
@@ -90,7 +91,12 @@ if (require.main === module) {
   const output = `${JSON.stringify(inventory(), null, 2)}\n`;
   const path = resolve(root, "docs/tanstack-start/operations.json");
   if (process.argv.includes("--check")) {
-    if (readFileSync(path, "utf8") !== output) {
+    if (
+      !isDeepStrictEqual(
+        JSON.parse(readFileSync(path, "utf8")),
+        JSON.parse(output),
+      )
+    ) {
       throw new Error("Operation ledger stale: run migration-inventory.ts");
     }
   } else {
