@@ -23,7 +23,8 @@
     "./errors": "./src/utils/error.ts",
     "./audit": "./src/dal/logs.ts",
     "./services/account": "./src/services/operations/user/account.ts",
-    "./services/admin": "./src/services/operations/admin.ts"
+    "./services/admin": "./src/services/operations/admin.ts",
+    "./auth/ui-session": "./src/auth/ui-session.ts"
   },
   "scripts": {
     "lint": "vp lint . --type-aware --type-check --format agent",
