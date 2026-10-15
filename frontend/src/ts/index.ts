@@ -19,6 +19,7 @@ import "./elements/psa";
 import "./controllers/url-handler";
 import { applyEngineSettings } from "./anim";
 import { render } from "solid-js/web";
+import { lockMath } from "../app/browser-integrity";
 import { AppRouter } from "./components/AppRouter";
 import { setVersion } from "./states/core";
 import { loadFromLocalStorage } from "./config/lifecycle";
@@ -26,25 +27,7 @@ import { loadFromLocalStorage } from "./config/lifecycle";
 import { getLastEventLog } from "./states/test";
 import { buildEventLog } from "./test/events/data";
 
-// Lock Math.random
-Object.defineProperty(Math, "random", {
-  value: Math.random,
-  writable: false,
-  configurable: false,
-  enumerable: true,
-});
-
-// Freeze Math object
-Object.freeze(Math);
-
-// Lock Math on window
-Object.defineProperty(window, "Math", {
-  value: Math,
-  writable: false,
-  configurable: false,
-  enumerable: true,
-});
-
+lockMath();
 applyEngineSettings();
 void loadFromLocalStorage();
 void fetchLatestVersion().then((data) => {
