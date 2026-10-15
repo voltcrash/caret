@@ -1,10 +1,20 @@
 import { writeFile } from "node:fs/promises";
-import { expect, test } from "./fixtures";
+import { expect, test } from "playwright/test";
 
 test("repeated production cold/warm input and public route readiness", async ({
   page,
   context,
 }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem(
+      "acceptedCookies",
+      JSON.stringify({ security: false, analytics: false, sentry: false }),
+    );
+    localStorage.setItem(
+      "config",
+      JSON.stringify({ mode: "words", words: 15, smoothCaret: "off" }),
+    );
+  });
   const session = await context.newCDPSession(page);
   await session.send("Network.enable");
   // HTTP cache only: keep service workers out of cold/warm comparisons.
@@ -12,16 +22,6 @@ test("repeated production cold/warm input and public route readiness", async ({
   const cold: number[] = [];
   const warm: number[] = [];
   const about: number[] = [];
-  await page.route(
-    "**/api/public/typingStats*",
-    async (route) =>
-      await route.fulfill({
-        json: {
-          message: "OK",
-          data: { testsStarted: 100, testsCompleted: 80, timeTyping: 1200 },
-        },
-      }),
-  );
   for (let sample = 0; sample < 10; sample++) {
     for (const [cacheDisabled, measurements] of [
       [true, cold],
