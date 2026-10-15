@@ -1,10 +1,11 @@
+import MonkeyError from "../utils/error";
 import { envValue } from "../runtime/env";
 import * as UserDAL from "../dal/user";
 import * as AuthUtils from "../utils/auth";
 import { getAuth } from "../init/auth";
 import { getFrontendUrl } from "../utils/misc";
 
-export async function handleAuthRequest(
+async function dispatchAuthRequest(
   incoming: Request,
   ip: string,
 ): Promise<Response> {
@@ -61,4 +62,22 @@ export async function handleAuthRequest(
     return Response.json({ status: true });
   }
   return auth.handler(request);
+}
+
+/** Both HTTP adapters retain auth status/error semantics. */
+export async function handleAuthRequest(
+  incoming: Request,
+  ip: string,
+): Promise<Response> {
+  try {
+    return await dispatchAuthRequest(incoming, ip);
+  } catch (error) {
+    if (error instanceof MonkeyError) {
+      return Response.json(
+        { message: error.message },
+        { status: error.status },
+      );
+    }
+    throw error;
+  }
 }
