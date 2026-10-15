@@ -1,0 +1,22 @@
+# Migration ledger
+
+Stage 0 baseline commit: `d6e5be3e9`. Working tree initially clean.
+No preceding implementation stage or handoff exists. Prerequisite: merged
+[architecture plan](../TANSTACK_START_MIGRATION.md), read in full before changes.
+
+| Phase | Status | Evidence |
+| --- | --- | --- |
+| 0.1 Behavior/consumer inventory | In progress | [Behavior](behavior.md), generated operations ledger |
+| 0.2 Repeated baselines/budgets | Pending | Capture before framework changes |
+| 0.3 Architecture/release contract | Pending | Confirm after baseline |
+| Stage 0 exit | Pending | All three phases required |
+| Stages 1–8 | Not started | Separate assignments |
+
+Stage 0 moves responsibility for migration evidence from an unverified proposal
+to this versioned ledger and reproducible checks. It moves no application
+functionality; deletes no production transport, UI, storage or runtime code.
+Installing Start or changing dispatch belongs to Stage 1, not this stage.
+
+Record each later phase here: moved files, removed responsibilities, remaining
+adapters with retirement conditions, tests/results and significant deviations.
+Never treat a missing measurement as a passing gate.
