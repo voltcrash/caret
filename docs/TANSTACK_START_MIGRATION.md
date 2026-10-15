@@ -1,6 +1,7 @@
 # TanStack Start migration: architecture and execution plan
 
-Status: proposed implementation plan. No application migration performed yet.
+Status: Stage 0 complete; [ledger and handoff](tanstack-start/README.md).
+Stage 1 not started. No application runtime migration performed yet.
 Prepared: 2026-10-15. Scope: Oxytype web application and its server/runtime.
 
 ## Outcome
@@ -256,6 +257,9 @@ potential server and client code; server-only work crosses a declared boundary.
 
 ### 0.1 Map behavior and consumers
 
+Status: complete. [Behavior/consumer inventory](tanstack-start/behavior.md) and
+[operation ledger](tanstack-start/operations.json).
+
 - Inventory routes, standalone HTML entries, deep links, redirects, URL encodings,
   auth flows, downloads, admin/config endpoints, and integration callbacks.
 - Create an operation ledger from `frontend/src/ts/ape`, backend route metadata,
@@ -271,6 +275,8 @@ callers, validation, and retirement condition.
 
 ### 0.2 Capture meaningful baselines
 
+Status: complete. [Measurements, frozen budgets and validation](tanstack-start/baseline.md).
+
 - Run current web, backend/D1, shared-package, and browser checks; record existing
   failures separately from migration regressions.
 - Record production-build eager JS, cold/warm input readiness, public page load,
@@ -281,6 +287,9 @@ callers, validation, and retirement condition.
   observed variance before implementation. No unexplained regression crosses a gate.
 
 ### 0.3 Freeze the architecture contract
+
+Status: complete. [Compatibility contract](tanstack-start/contract.md) and
+[release/rollback rules](tanstack-start/release.md).
 
 - Confirm this document's defaults: Solid 1.x, Vite+, Cloudflare, one origin/Worker,
   backend service package, selective SSR, existing storage and OAuth URLs.
@@ -628,8 +637,9 @@ the recorded acceptance budgets.
 
 ## Validation commands and evidence
 
-These commands describe implementation gates; this planning change does not run
-the application suites. Keep scripts working as package responsibilities move.
+These commands describe implementation gates. Stage 0 ran the existing application
+suites and captured evidence in the [baseline](tanstack-start/baseline.md).
+Keep scripts working as package responsibilities move.
 
 ```sh
 # Focused examples, run in the owning workspace.
@@ -676,11 +686,11 @@ and whitespace directly instead of treating a skipped formatter run as validatio
 
 ## Unresolved questions
 
-No blocking user questions. Recommended defaults are stated above.
-Stage 0/1 must resolve technical facts: actual external endpoint consumers,
-measured performance budgets, pinned Solid Query SSR support, Vite+/Cloudflare
-integration, and old-client compatibility window. Record findings in the ledger;
-ask only if evidence requires a product decision outside these defaults.
+No blocking product-scope questions. Stage 0 recorded measured budgets, published
+and uncertain external contracts (conservatively retained), and the old-client
+compatibility window. Stage 1 must prove pinned Solid Query SSR support and
+Vite+/Cloudflare integration. Record version/proof findings in the ledger; ask
+only if evidence requires a product decision outside these defaults.
 
 ## Official references
 
