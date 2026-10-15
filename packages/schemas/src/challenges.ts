@@ -1,7 +1,8 @@
-import { z } from "zod/v3";
+import { z } from "zod";
 import { customEnumErrorHandler } from "./util";
 
-export const ChallengeNameSchema = z.enum(
+// z.literal keeps member order; z.enum would sort integer-like members first.
+export const ChallengeNameSchema = z.literal(
   [
     "oneHourWarrior",
     "doubleDown",
@@ -58,7 +59,7 @@ export const ChallengeNameSchema = z.enum(
     "wingdings",
   ],
   {
-    errorMap: customEnumErrorHandler("Must be a known challenge name"),
+    error: customEnumErrorHandler("Must be a known challenge name"),
   },
 );
 

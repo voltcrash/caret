@@ -1,16 +1,16 @@
-import { applyReducedMotion } from "../utils/misc";
-import { updateClassNames } from "../utils/cn";
+import { applyReducedMotion } from "../../../../utils/misc";
+import { updateClassNames } from "../../../../utils/cn";
 import { CaretStyle } from "@oxytype/schemas/configs";
-import { Config } from "../config/store";
-import { isWordRightToLeft } from "../utils/strings";
-import { requestDebouncedAnimationFrame } from "../utils/debounced-animation-frame";
+import { Config } from "../../../../config/store";
+import { isWordRightToLeft } from "../../../../utils/strings";
+import { requestDebouncedAnimationFrame } from "../../../../utils/debounced-animation-frame";
 import { animate, EasingParam, JSAnimation } from "animejs";
 
 import {
   getWordsElement as getWordsCache,
   getWordsWrapperElement as getWordsWrapperCache,
-} from "../states/test-dom";
-import * as TestWords from "../test/test-words";
+} from "../../../../states/test-dom";
+import * as TestWords from "../../../../test/test-words";
 
 let lockedMainCaretInTape = true;
 let caretDebug = false;
@@ -34,7 +34,8 @@ export function toggleCaretDebug(): void {
   }
 }
 
-export class Caret {
+/** Positions and animates one caret node owned by the Caret component. */
+export class CaretController {
   private id: string;
   private element: HTMLElement;
   private style: CaretStyle = "default";

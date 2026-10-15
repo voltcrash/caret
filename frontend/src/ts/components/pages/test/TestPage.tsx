@@ -14,7 +14,6 @@ import { focusWords } from "../../../test/test-ui";
 import { cn } from "../../../utils/cn";
 import { isCoarsePointer } from "../../../utils/pointer";
 import { CapsWarning } from "./CapsWarning";
-import { Caret } from "./Caret";
 import { CompositionDisplay } from "./CompositionDisplay";
 import { EndTestButton } from "./EndTestButton";
 import { FinishZenButton } from "./FinishZenButton";
@@ -34,6 +33,7 @@ import { TestInitFailed } from "./TestInitFailed";
 import { TestLoading } from "./TestLoading";
 import { TestPageLifecycle } from "./TestPageLifecycle";
 import { Words } from "./Words";
+import { Caret } from "./words/Caret";
 
 export function TestPage(
   props: { ref?: (el: HTMLDivElement) => void } = {},

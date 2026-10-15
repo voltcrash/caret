@@ -1,4 +1,3 @@
-import { cancelPendingAnimationFrame } from "../utils/debounced-animation-frame";
 import { Config } from "../config/store";
 import { getCurrentInput } from "./events/data";
 import {
@@ -6,10 +5,9 @@ import {
   isLanguageRightToLeft,
   getActiveWordIndex,
 } from "../states/test";
-import { configEvent } from "../events/config";
-import { Caret } from "../elements/caret";
+import { CaretController } from "../components/pages/test/words/caret-controller";
 import * as CompositionState from "../states/composition";
-import { areTestElementsMounted, getCaretElement } from "../states/test-dom";
+import { getCaretElement } from "../states/test-dom";
 
 export function stopAnimation(): void {
   getCaret().stopBlinking();
@@ -45,36 +43,19 @@ export function updatePosition(noAnim = false): void {
   });
 }
 
-let caret: Caret | undefined;
+let caret: CaretController | undefined;
 
-// The component owns the node and cancels its animations on disposal.
-export function bindCaret(element: HTMLDivElement): () => void {
-  const instance = new Caret(element, Config.caretStyle);
-  caret = instance;
+// The Caret component creates and disposes the controller.
+export function setCaret(controller: CaretController): () => void {
+  caret = controller;
   return () => {
-    instance.stopAllAnimations();
-    cancelPendingAnimationFrame(`caret.${element.id}.goTo`);
-    if (caret === instance) caret = undefined;
+    if (caret === controller) caret = undefined;
   };
 }
 
-export function getCaret(): Caret {
-  return (caret ??= new Caret(getCaretElement(), Config.caretStyle));
+export function getCaret(): CaretController {
+  return (caret ??= new CaretController(getCaretElement(), Config.caretStyle));
 }
-
-configEvent.subscribe(
-  ({ key }) => {
-    if (!areTestElementsMounted()) return;
-    if (key === "caretStyle") {
-      getCaret().setStyle(Config.caretStyle);
-      updatePosition(true);
-    }
-    if (key === "smoothCaret") {
-      getCaret().updateBlinkingAnimation();
-    }
-  },
-  import.meta.hot,
-);
 
 export function show(noAnim = false): void {
   getCaret().show();

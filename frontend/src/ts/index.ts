@@ -65,7 +65,6 @@ addToGlobal({
   config: Config,
   glarsesMode: enable,
   enableTimerDebug: TestTimer.enableTimerDebug,
-  getTimerStats: TestTimer.getTimerStats,
   toggleSmoothedBurst: async () => {
     const Result = await import("./test/result");
     Result.toggleSmoothedBurst();

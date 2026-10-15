@@ -1,4 +1,4 @@
-import { z } from "zod/v3";
+import { z } from "zod";
 import { StringNumberSchema } from "./util";
 
 export const SpeedHistogramSchema = z.record(

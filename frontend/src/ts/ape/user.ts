@@ -1,4 +1,4 @@
-import { GetUserResponse } from "@oxytype/contracts/users";
+import type { GetUserResponse } from "@oxytype/contracts/users";
 import Ape from ".";
 import { createModuleEffectOn } from "../hooks/effects";
 import { getUserId } from "../states/core";

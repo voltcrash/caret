@@ -13,11 +13,14 @@ import {
   isResultCalculating,
 } from "../../states/test";
 import { isFunboxActiveWithProperty } from "../funbox/active";
+import * as SlowTimer from "../../states/slow-timer";
 export const testSession = createTestSession(() => Config, {
   getContext,
   getActiveWordIndex: () => getActiveWordIndex(),
   isResultCalculating: () => isResultCalculating(),
   liveCache,
+  customLimit: () => CustomText.getLimit(),
+  isSlowTimer: () => SlowTimer.get(),
 });
 export const {
   logTestEvent,

@@ -1,4 +1,4 @@
-import { z } from "zod/v3";
+import { z } from "zod";
 import type { LoadingOptions } from "./loading-options";
 
 export type { LoadingOptions } from "./loading-options";
@@ -71,7 +71,7 @@ export type OptionsWithUrlParams<T, U extends UrlParamsSchema> = Options<T> & {
   urlParams?: z.infer<U>;
 };
 
-export type UrlParamsSchema = z.ZodObject<Record<string, z.ZodTypeAny>>;
+export type UrlParamsSchema = z.ZodObject<Record<string, z.ZodType>>;
 type PagePropertiesWithUrlParams<T, U extends UrlParamsSchema> = Omit<
   PageProperties<T>,
   "beforeShow"

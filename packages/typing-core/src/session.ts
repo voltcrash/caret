@@ -12,7 +12,11 @@ import {
   TestEventType,
   TestEventData,
 } from "./events/types";
-import { getAccuracy, getChars, getWordBurst } from "./events/stats";
+import {
+  getChars,
+  getIncompleteTestSeconds,
+  getWordBurst,
+} from "./events/stats";
 import { InputConfig } from "./input/config";
 import {
   canDelete,
@@ -28,6 +32,8 @@ import {
 } from "./input/fail-or-finish";
 import { getCommitCharacterType } from "./input/util";
 import { getMode2 } from "./mode";
+import { PaceTracker } from "./pace-caret";
+import { getReplaySteps, getReplayWords, ReplayStep } from "./replay";
 import { calculateWpm } from "./stats-math";
 import { hasKoreanCharacters } from "./strings";
 import {
@@ -57,6 +63,7 @@ export type SessionEvents = {
   word: { index: number; word: string };
   input: InputEventData;
   tick: TimerTick & LiveStats;
+  drift: { now: number; drift: number };
   finish: { eventLog: EventLog; reason?: string };
 };
 export type TestSessionDeps = {
@@ -72,6 +79,8 @@ export type TestSessionDeps = {
   allWordsGenerated?: () => boolean;
   generator?: WordsGenerator;
   getCurrentQuote?: () => { id: number } | null;
+  /** Flags timer steps that ran while the client was rendering slowly. */
+  isSlowTimer?: () => boolean;
 };
 
 /** Headless state and events. Clients own scheduling, rendering, storage and transport. */
@@ -79,19 +88,23 @@ export class TestSession {
   public readonly recorder: EventRecorder;
   public readonly liveCache: LiveCache;
   public readonly weakSpot: ReturnType<typeof createWeakSpot>;
+  public readonly pace = new PaceTracker();
   private readonly getConfig: () => SessionConfig;
   private readonly deps: TestSessionDeps;
-  private readonly clock: TestTimer;
+  /** Clients schedule `advance`; the session owns start, stop and ticks. */
+  public readonly clock: TestTimer;
   private words: string[];
   private wordIndex = 0;
   private active = false;
   private ended = false;
+  private finishReason: string | undefined;
   private readonly listeners: {
     [K in keyof SessionEvents]: Set<(event: SessionEvents[K]) => void>;
   } = {
     word: new Set(),
     input: new Set(),
     tick: new Set(),
+    drift: new Set(),
     finish: new Set(),
   };
 
@@ -109,7 +122,10 @@ export class TestSession {
       isResultCalculating: deps.isResultCalculating,
       liveCache: this.liveCache,
     });
-    this.clock = createTestTimer({ onTick: (tick) => this.tick(tick) });
+    this.clock = createTestTimer({
+      onTick: (tick) => this.tick(tick),
+      onDrift: (drift, now) => this.emit("drift", { now, drift }),
+    });
   }
 
   on<K extends keyof SessionEvents>(
@@ -192,6 +208,16 @@ export class TestSession {
     };
   }
 
+  /** Replay steps for the finished test, read from its event log. */
+  getReplay(): { words: string[]; steps: ReplayStep[] } {
+    const log = this.buildEventLog();
+    const zen = this.getConfig().mode === "zen";
+    return {
+      words: getReplayWords(log, zen),
+      steps: getReplaySteps(log, zen),
+    };
+  }
+
   record(type: TestEventType, now: number, data: TestEventData): void {
     this.recorder.logTestEvent(type, now, data);
   }
@@ -199,6 +225,7 @@ export class TestSession {
     if (this.active || this.ended) return;
     this.active = true;
     this.clock.start(now);
+    this.pace.start(now);
     if (logTimer) {
       this.record("timer", now, {
         event: "start",
@@ -212,13 +239,16 @@ export class TestSession {
     this.active = false;
     this.ended = false;
     this.wordIndex = 0;
+    this.finishReason = undefined;
+    this.pace.reset();
     this.recorder.resetTestEvents();
   }
   advance(now: number): number | null {
     return this.clock.advance(now);
   }
-  finish(now: number, reason?: string): void {
-    if (!this.active || this.ended) return;
+  /** Ends the test without notifying finish listeners. */
+  end(now: number): boolean {
+    if (!this.active || this.ended) return false;
     this.active = false;
     this.ended = true;
     this.clock.stop();
@@ -227,7 +257,24 @@ export class TestSession {
       timer: this.liveCache.getLiveCachedTestSeconds(now),
       date: this.deps.dateNow?.() ?? Date.now(),
     });
+    return true;
+  }
+  finish(now: number, reason?: string): void {
+    if (!this.end(now)) return;
+    this.finishReason = reason;
     this.emit("finish", { eventLog: this.buildEventLog(), reason });
+  }
+  /** Why the last test failed, until the next reset. */
+  getFinishReason(): string | undefined {
+    return this.finishReason;
+  }
+  /** Ends a test the user restarted and measures it as an incomplete test. */
+  abandon(now: number): { acc: number; seconds: number } {
+    this.end(now);
+    return {
+      acc: this.liveCache.getLiveCachedAccuracy(),
+      seconds: getIncompleteTestSeconds(this.buildEventLog()),
+    };
   }
   complete(
     eventLog: EventLog,
@@ -256,6 +303,7 @@ export class TestSession {
       event: "step",
       timer: tick.timer,
       drift: tick.drift,
+      slowTimer: this.deps.isSlowTimer?.() === true ? true : undefined,
       catchup: tick.catchup,
     });
     const log = this.buildEventLog();
@@ -266,14 +314,17 @@ export class TestSession {
       raw: Math.round(
         calculateWpm(chars.allCorrect + chars.extra + chars.incorrect, seconds),
       ),
-      acc: getAccuracy(log).percentage,
+      acc: this.liveCache.getLiveCachedAccuracy(),
       seconds: tick.timer,
     };
     this.emit("tick", { ...tick, ...stats });
     const config = this.getConfig();
     const failure = tick.catchup
       ? undefined
-      : getTimerFailure(config, { ...stats, wordIndex: this.wordIndex });
+      : getTimerFailure(config, {
+          ...stats,
+          wordIndex: this.getActiveWordIndex(),
+        });
     const limit = getTimeLimit(config, this.deps.customLimit?.());
     if (failure || (limit !== undefined && limit > 0 && tick.timer >= limit)) {
       this.finish(tick.now, failure);
@@ -355,6 +406,14 @@ export class TestSession {
     };
     this.record("input", now, event);
     this.emit("input", event);
+    if (decision.advance) {
+      this.pace.correct(
+        index,
+        decision.inputValue === target,
+        target,
+        config.blindMode,
+      );
+    }
     this.weakSpot.updateScore(
       decision.data,
       decision.correct,

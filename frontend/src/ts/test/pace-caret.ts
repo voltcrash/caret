@@ -1,17 +1,11 @@
-import {
-  advancePace,
-  correctPace,
-  createPaceState,
-  PaceState,
-} from "@oxytype/typing-core/pace-caret";
-import { cancelPendingAnimationFrame } from "../utils/debounced-animation-frame";
 import * as TestWords from "./test-words";
+import { testSession } from "./events/data";
 import { Config } from "../config/store";
 import * as DB from "../db";
 import * as Misc from "../utils/misc";
 import { configEvent } from "../events/config";
 import { getActiveFunboxes } from "./funbox/list";
-import { Caret } from "../elements/caret";
+import { CaretController } from "../components/pages/test/words/caret-controller";
 import {
   areTestElementsMounted,
   getPaceCaretElement,
@@ -27,35 +21,28 @@ import {
   setPaceCaretWpm,
 } from "../states/test";
 
-type Settings = PaceState & { timeout: NodeJS.Timeout | null };
+// The session owns pace state; this module schedules steps and renders them.
+let timeout: NodeJS.Timeout | undefined;
 
-let startTimestamp = 0;
+let caret: CaretController | undefined;
 
-let settings: Settings | null = null;
-
-let caret: Caret | undefined;
-
-// The component owns the node and cancels its animations on disposal.
-export function bindCaret(element: HTMLDivElement): () => void {
-  const instance = new Caret(element, Config.paceCaretStyle);
-  caret = instance;
+// The Caret component creates and disposes the controller.
+export function setCaret(controller: CaretController): () => void {
+  caret = controller;
   return () => {
-    instance.stopAllAnimations();
-    cancelPendingAnimationFrame(`caret.${element.id}.goTo`);
-    if (caret === instance) caret = undefined;
+    if (caret === controller) caret = undefined;
   };
 }
 
-export function getCaret(): Caret {
-  return (caret ??= new Caret(getPaceCaretElement(), Config.paceCaretStyle));
+export function getCaret(): CaretController {
+  return (caret ??= new CaretController(
+    getPaceCaretElement(),
+    Config.paceCaretStyle,
+  ));
 }
 
-let lastTestWpm = 0;
-
 export function setLastTestWpm(wpm: number): void {
-  if (!isPaceRepeat() || (isPaceRepeat() && wpm > lastTestWpm)) {
-    lastTestWpm = wpm;
-  }
+  testSession.pace.rememberWpm(wpm, isPaceRepeat());
 }
 
 export function resetCaretPosition(): void {
@@ -76,6 +63,7 @@ export function resetCaretPosition(): void {
 }
 
 export async function init(): Promise<void> {
+  clearTimeout(timeout);
   getCaret().hide();
   const mode2 = Misc.getMode2(Config, getCurrentQuote());
   let wpm = 0;
@@ -111,21 +99,13 @@ export async function init(): Promise<void> {
   } else if (Config.paceCaret === "custom") {
     wpm = Config.paceCaretCustomSpeed;
   } else if (Config.paceCaret === "last" || isPaceRepeat()) {
-    wpm = lastTestWpm;
+    wpm = testSession.pace.getLastWpm();
   }
-  if (wpm === undefined || wpm < 1 || Number.isNaN(wpm)) {
-    settings = null;
-    setPaceCaretWpm(undefined);
-    return;
-  }
-
-  settings = { ...(createPaceState(wpm) as PaceState), timeout: null };
-  setPaceCaretWpm(wpm);
+  setPaceCaretWpm(testSession.pace.reset(wpm) ? wpm : undefined);
 }
 
-async function update(expectedStepEnd: number): Promise<void> {
-  const currentSettings = settings;
-  if (currentSettings === null || !isTestActive() || getResultVisible()) {
+function update(): void {
+  if (!testSession.pace.isEnabled() || !isTestActive() || getResultVisible()) {
     return;
   }
 
@@ -133,16 +113,21 @@ async function update(expectedStepEnd: number): Promise<void> {
     getCaret().show();
   }
 
-  incrementLetterIndex();
+  const position = testSession.pace.step(
+    (index) => TestWords.words.get(index)?.text,
+    Config.blindMode,
+  );
+  if (position === null) {
+    getCaret().hide();
+    return;
+  }
 
   try {
-    const now = performance.now();
-    const absoluteStepEnd = startTimestamp + expectedStepEnd;
-    const duration = absoluteStepEnd - now;
+    const duration = testSession.pace.getStepEnd() - performance.now();
 
     getCaret().goTo({
-      wordIndex: currentSettings.currentWordIndex,
-      letterIndex: currentSettings.currentLetterIndex,
+      wordIndex: position.wordIndex,
+      letterIndex: position.letterIndex,
       isLanguageRightToLeft: isLanguageRightToLeft(),
       isDirectionReversed: isDirectionReversed(),
       animate: true,
@@ -152,48 +137,20 @@ async function update(expectedStepEnd: number): Promise<void> {
       },
     });
 
-    currentSettings.timeout = setTimeout(
-      () => {
-        if (settings !== currentSettings) return;
-        update(expectedStepEnd + (currentSettings.spc ?? 0) * 1000).catch(
-          () => {
-            if (settings === currentSettings) settings = null;
-          },
-        );
-      },
-      Math.max(0, duration),
-    );
+    timeout = setTimeout(update, Math.max(0, duration));
   } catch (e) {
     console.error(e);
     getCaret().hide();
-    return;
   }
 }
 
 export function reset(): void {
-  if (settings?.timeout !== null && settings?.timeout !== undefined) {
-    clearTimeout(settings.timeout);
-  }
-  settings = null;
-  startTimestamp = 0;
+  clearTimeout(timeout);
+  testSession.pace.reset();
 }
 
-function incrementLetterIndex(): void {
-  if (settings === null) return;
-  if (
-    !advancePace(
-      settings,
-      (index) => TestWords.words.get(index)?.text,
-      Config.blindMode,
-    )
-  ) {
-    settings = null;
-    getCaret().hide();
-  }
-}
 export function handleSpace(correct: boolean, currentWord: string): void {
-  correctPace(
-    settings,
+  testSession.pace.correct(
     getActiveWordIndex(),
     correct,
     currentWord,
@@ -202,18 +159,14 @@ export function handleSpace(correct: boolean, currentWord: string): void {
 }
 
 export function start(): void {
-  const now = performance.now();
-  startTimestamp = now;
-  void update((settings?.spc ?? 0) * 1000);
+  testSession.pace.start(performance.now());
+  update();
 }
 
 configEvent.subscribe(
   ({ key }) => {
     if (!areTestElementsMounted()) return;
     if (key === "paceCaret") void init();
-    if (key === "paceCaretStyle") {
-      getCaret().setStyle(Config.paceCaretStyle);
-    }
   },
   import.meta.hot,
 );

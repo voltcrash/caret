@@ -79,7 +79,6 @@ import { isDevEnvironment } from "../utils/env";
 
 import { countInvalidResultFields } from "@oxytype/typing-core/result-fields";
 
-import { testLogicState } from "./logic-state";
 import { saveResult } from "./result-saving";
 const invalidMessages: Record<
   Exclude<InvalidResultReason, "failed">,
@@ -109,7 +108,8 @@ export async function finish(difficultyFailed = false): Promise<void> {
   if (!isTestActive()) return;
   setResultCalculating(true);
   const now = performance.now();
-  TestTimer.clear(true, now);
+  TestTimer.clear();
+  testSession.end(now);
   const resultReady = Promise.all([import("./result"), prepareResultScreen()]);
 
   // fade out the test and show loading
@@ -180,6 +180,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
 
   ///////// completed event ready
 
+  const failReason = testSession.getFinishReason() ?? "";
   const afkDetected = isAfkResult(eventLog, getBailedOut());
   const invalidReason = getInvalidResultReason({
     result: completedEvent,
@@ -192,7 +193,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
   });
   const tooShort = invalidReason === "too short";
   if (invalidReason === "failed") {
-    showNoticeNotification(`Test failed - ${testLogicState.failReason}`, {
+    showNoticeNotification(`Test failed - ${failReason}`, {
       durationMs: 1000,
     });
     dontSave = true;
@@ -286,7 +287,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
       resetIncompleteTests();
 
       if (!completedEvent.bailedOut) {
-        const challenge = ChallengeContoller.verify(completedEvent);
+        const challenge = await ChallengeContoller.verify(completedEvent);
         if (challenge !== null) completedEvent.challenge = challenge;
       }
 
@@ -312,7 +313,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
   const resultUpdatePromise = Result.update(
     completedEvent,
     difficultyFailed,
-    testLogicState.failReason,
+    failReason,
     afkDetected,
     isRepeated(),
     tooShort,

@@ -124,6 +124,11 @@ function rgbToHex(r: number, g: number, b: number, a?: number): string {
   return `#${hexR}${hexG}${hexB}`;
 }
 
+/** Parses two hex digits of `hex` as one byte; NaN if they are not hex. */
+function hexByte(hex: string, first: number, second: number): number {
+  return Number(`0x${hex.charAt(first)}${hex.charAt(second)}`);
+}
+
 /**
  * Converts a hexadecimal color string to its HSL (Hue, Saturation, Lightness) representation.
  * @param hex The hexadecimal color string (e.g., "#ff0000", "#f00", "#ff0000ff", or "#f00f").
@@ -144,26 +149,26 @@ export function hexToHSL(hex: string): {
 
   if (hex.length === 4) {
     // #RGB format
-    r = `0x${hex[1]}${hex[1]}` as unknown as number;
-    g = `0x${hex[2]}${hex[2]}` as unknown as number;
-    b = `0x${hex[3]}${hex[3]}` as unknown as number;
+    r = hexByte(hex, 1, 1);
+    g = hexByte(hex, 2, 2);
+    b = hexByte(hex, 3, 3);
   } else if (hex.length === 5) {
     // #RGBA format
-    r = `0x${hex[1]}${hex[1]}` as unknown as number;
-    g = `0x${hex[2]}${hex[2]}` as unknown as number;
-    b = `0x${hex[3]}${hex[3]}` as unknown as number;
-    a = (`0x${hex[4]}${hex[4]}` as unknown as number) / 255;
+    r = hexByte(hex, 1, 1);
+    g = hexByte(hex, 2, 2);
+    b = hexByte(hex, 3, 3);
+    a = hexByte(hex, 4, 4) / 255;
   } else if (hex.length === 7) {
     // #RRGGBB format
-    r = `0x${hex[1]}${hex[2]}` as unknown as number;
-    g = `0x${hex[3]}${hex[4]}` as unknown as number;
-    b = `0x${hex[5]}${hex[6]}` as unknown as number;
+    r = hexByte(hex, 1, 2);
+    g = hexByte(hex, 3, 4);
+    b = hexByte(hex, 5, 6);
   } else if (hex.length === 9) {
     // #RRGGBBAA format
-    r = `0x${hex[1]}${hex[2]}` as unknown as number;
-    g = `0x${hex[3]}${hex[4]}` as unknown as number;
-    b = `0x${hex[5]}${hex[6]}` as unknown as number;
-    a = (`0x${hex[7]}${hex[8]}` as unknown as number) / 255;
+    r = hexByte(hex, 1, 2);
+    g = hexByte(hex, 3, 4);
+    b = hexByte(hex, 5, 6);
+    a = hexByte(hex, 7, 8) / 255;
   } else {
     r = 0x00;
     g = 0x00;

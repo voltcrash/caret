@@ -1,6 +1,6 @@
 import { CustomTextLimitMode, CustomTextMode } from "@oxytype/schemas/util";
 import { LocalStorageWithSchema } from "../utils/local-storage-with-schema";
-import { z } from "zod/v3";
+import { z } from "zod";
 import {
   CustomTextSettings,
   CustomTextSettingsSchema,

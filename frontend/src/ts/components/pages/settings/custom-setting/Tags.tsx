@@ -1,6 +1,6 @@
 import { TagNameSchema } from "@oxytype/schemas/users";
 import { For, JSXElement } from "solid-js";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 import { deleteLocalTag } from "../../../../collections/results";
 import {

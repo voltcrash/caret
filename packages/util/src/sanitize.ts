@@ -1,4 +1,5 @@
-import { z } from "zod/v3";
+import { z } from "zod";
+import "./zod-messages";
 
 function removeProblems(obj: unknown, problems: (number | string)[]): unknown {
   //already removed
@@ -18,14 +19,21 @@ function removeProblems(obj: unknown, problems: (number | string)[]): unknown {
   }
 }
 
-function getNestedValue(obj: unknown, path: string[]): Record<string, unknown> {
+function getNestedValue(
+  obj: unknown,
+  path: string[],
+): Record<string, unknown> | undefined {
   // Zod issue paths address members of cloned objects/arrays; numeric keys also index arrays.
   return path
     .slice(0, -1)
-    .reduce(
-      (acc, key) => acc[key] as Record<string, unknown>,
+    .reduce<Record<string, unknown> | undefined>(
+      (acc, key) => acc?.[key] as Record<string, unknown> | undefined,
       obj as Record<string, unknown>,
     );
+}
+
+function depth(pathString: string): number {
+  return pathString === "" ? 0 : pathString.split(".").length;
 }
 
 /**
@@ -34,10 +42,7 @@ function getNestedValue(obj: unknown, path: string[]): Record<string, unknown> {
  * @param obj object
  * @returns sanitized object
  */
-export function sanitize<T>(
-  schema: z.ZodType<T, z.ZodTypeDef, unknown>,
-  obj: unknown,
-): T {
+export function sanitize<T>(schema: z.ZodType<T>, obj: unknown): T {
   const maxAttempts = 2;
   let result;
   let current = structuredClone(obj);
@@ -53,17 +58,22 @@ export function sanitize<T>(
       //exit loop and throw error
       break;
     }
-    const pathsWithProblems = result.error.errors.reduce((acc, { path }) => {
-      const parent = path.slice(0, -1).join(".");
+    const pathsWithProblems = result.error.issues.reduce((acc, { path }) => {
+      const parent = path.slice(0, -1).map(String).join(".");
       const element = path.at(-1);
 
-      if (element !== undefined) {
+      if (element !== undefined && typeof element !== "symbol") {
         acc.set(parent, [...(acc.get(parent) ?? []), element]);
       }
       return acc;
     }, new Map<string, Array<string | number>>());
 
-    for (const [pathString, problems] of pathsWithProblems.entries()) {
+    // Issue order differs between Zod versions. Clean parents first so a
+    // removed parent also drops its member problems.
+    const byDepth = [...pathsWithProblems.entries()].sort(
+      ([a], [b]) => depth(a) - depth(b),
+    );
+    for (const [pathString, problems] of byDepth) {
       if (pathString === "") {
         current =
           removeProblems(current, problems) ??
@@ -72,6 +82,7 @@ export function sanitize<T>(
         const path = pathString.split(".");
         const parent = getNestedValue(current, path);
         const key = path.at(-1) as string;
+        if (parent === undefined || parent === null) continue;
 
         const cleaned = removeProblems(parent[key], problems);
 
@@ -83,7 +94,7 @@ export function sanitize<T>(
       }
     }
   }
-  const errorsString = result?.error.errors
+  const errorsString = result?.error.issues
     .map((e) => `${e.path.join(".")}: ${e.message}`)
     .join(", ");
   throw new Error(`unable to sanitize: ${errorsString}`);

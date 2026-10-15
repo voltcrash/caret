@@ -1,5 +1,7 @@
-import { ReportUserCommentSchema } from "@oxytype/contracts/users";
-import { ReportUserReason } from "@oxytype/schemas/users";
+import {
+  ReportUserCommentSchema,
+  ReportUserReason,
+} from "@oxytype/schemas/users";
 import { createForm } from "@tanstack/solid-form";
 
 import Ape from "../../ape";

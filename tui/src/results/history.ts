@@ -1,6 +1,6 @@
 import { CompletedEventSchema } from "@oxytype/schemas/results";
 import type { Config } from "@oxytype/schemas/configs";
-import { z } from "zod/v3";
+import { z } from "zod";
 import {
   createContext,
   createSignal,
@@ -11,7 +11,7 @@ import {
 import { readJson, writeJson } from "../storage/json";
 import type { FinishedTest, LocalResult } from "../test/typing-test";
 
-const series = z.array(z.number().finite().nonnegative());
+const series = z.array(z.number().nonnegative());
 const localResultSchema = CompletedEventSchema.omit({
   uid: true,
   hash: true,
@@ -23,7 +23,7 @@ const localResultSchema = CompletedEventSchema.omit({
   keySpacing: series.or(z.literal("toolong")),
 });
 const entrySchema = z.object({
-  id: z.string().uuid(),
+  id: z.guid(),
   result: localResultSchema,
   rawHistory: series,
 });

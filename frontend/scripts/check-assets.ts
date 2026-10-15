@@ -16,7 +16,7 @@ import { LayoutsList } from "../src/ts/constants/layouts";
 import { KnownFontName } from "@oxytype/schemas/fonts";
 import { Fonts } from "../src/ts/constants/fonts";
 import { themes, ThemeSchema, ThemesList } from "../src/ts/constants/themes";
-import { z } from "zod/v3";
+import { z } from "zod";
 import { LayoutObject, LayoutObjectSchema } from "@oxytype/schemas/layouts";
 import { QuoteDataSchema, QuoteData } from "@oxytype/schemas/quotes";
 import { clickSoundConfig } from "../src/ts/constants/sounds";
@@ -42,10 +42,10 @@ class Problems<K extends string, T extends string> {
 
   public addValidation(
     key: K | T,
-    validationResult: z.SafeParseReturnType<unknown, unknown>,
+    validationResult: z.ZodSafeParseResult<unknown>,
   ): void {
     if (validationResult.success) return;
-    validationResult.error.errors.forEach((e) =>
+    validationResult.error.issues.forEach((e) =>
       this.add(key, `${e.path.join(".")}: ${e.message}`),
     );
   }

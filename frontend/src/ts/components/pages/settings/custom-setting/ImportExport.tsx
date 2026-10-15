@@ -1,5 +1,5 @@
 import { createSignal, JSXElement } from "solid-js";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 import { exportConfigToJson } from "../../../../config/utils";
 import { showModal } from "../../../../states/modals";

@@ -1,4 +1,4 @@
-import { z } from "zod/v3";
+import { z } from "zod";
 import { createSignal } from "solid-js";
 import { readJson, writeJson } from "../storage/json";
 

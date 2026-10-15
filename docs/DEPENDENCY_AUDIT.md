@@ -35,6 +35,29 @@ OpenAPI generation. Compatibility tests cover nested constraints, defaults,
 descriptions and intersection schemas. Security-related property filtering
 in ts-deepmerge remains enabled.
 
+## Zod 4
+
+All packages import `zod` (v4); nothing imports `zod/v3`. The patched
+dependencies still target Zod 3 upstream:
+
+- `@ts-rest/core` types and runtime import `zod`, and contract header merges
+  use Zod 4 object types.
+- `@ts-rest/open-api` detects deepObject query parameters through `_zod.def`.
+- `@anatine/zod-openapi` reads Zod 4 definitions (`_zod.def.type`) and keeps
+  its Zod 3 output: `.transform()` pipes, `.required()` fields, guid/uuid
+  formats, integer checks and catch-all fallbacks.
+- `zod-urlsearchparams` treats pipes like Zod 3 effects and types results with
+  `ZodSafeParseResult`.
+
+Run `tsx scripts/openapi.ts <file>` in `backend/` and diff the output against
+`main` after changing schemas or these patches. The Zod 4 migration kept the
+generated document byte-identical.
+
+`@oxytype/util/zod-messages` installs a global `customError` map with the Zod 3
+message wording; schema helpers load it. Records keyed by enums use
+`partialRecord` (optional keys, invalid keys reported per key), and enums with
+integer-like members use multi-value literals to keep their declared order.
+
 The esbuild override covers both the old Drizzle loader and the Vite toolchain;
 the frontend production build and backend documentation/Worker dry run passed.
 The lockfile remains frozen-installable. Major-specific overrides avoid upgrading

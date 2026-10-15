@@ -1,5 +1,5 @@
 import { CustomThemeColors, ThemeName } from "@oxytype/schemas/configs";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 const hexColorSchema = z
   .string()

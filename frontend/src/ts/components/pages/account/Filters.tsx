@@ -7,7 +7,7 @@ import {
 } from "@oxytype/schemas/users";
 import { createMemo, createSignal, For, JSXElement, Show } from "solid-js";
 import { SetStoreFunction, unwrap } from "solid-js/store";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 import {
   deleteResultFilterPreset,

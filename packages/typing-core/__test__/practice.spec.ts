@@ -1,7 +1,12 @@
 import { describe, it, expect } from "vite-plus/test";
 import { buildPracticeWords } from "../src/practise-words";
 import { createWeakSpot } from "../src/weak-spot";
-import { createPaceState, advancePace, correctPace } from "../src/pace-caret";
+import {
+  createPaceState,
+  advancePace,
+  correctPace,
+  PaceTracker,
+} from "../src/pace-caret";
 import { EventLog } from "../src/events/types";
 import { loadParityCases } from "./fixtures";
 import { Wordset } from "../src/wordset";
@@ -64,5 +69,70 @@ describe("pace math", () => {
     correctPace(state, 0, false, "abc ", true);
     expect(state.correction).toBe(0);
     expect(advancePace(state, () => undefined, true)).toBe(false);
+  });
+});
+
+describe("pace tracker", () => {
+  const words = ["hi ", "you ", "all"];
+  const getWord = (index: number): string | undefined =>
+    words[index]?.trimEnd();
+
+  it("steps one letter at a time anchored to the start", () => {
+    const pace = new PaceTracker();
+    expect(pace.reset(60)).toBe(true);
+    pace.start(1000);
+    expect(pace.step(getWord, false)).toEqual({
+      wordIndex: 0,
+      letterIndex: 1,
+      wpm: 60,
+    });
+    expect(pace.getStepEnd()).toBe(1200);
+    pace.step(getWord, false);
+    pace.step(getWord, false);
+    expect(pace.getPosition()).toMatchObject({ wordIndex: 1, letterIndex: 0 });
+    expect(pace.getStepEnd()).toBe(1600);
+  });
+
+  it("catches up every due step and stops when out of words", () => {
+    const pace = new PaceTracker();
+    pace.reset(60);
+    pace.start(0);
+    expect(pace.advanceTo(199, getWord, false)).toMatchObject({
+      wordIndex: 0,
+      letterIndex: 0,
+    });
+    expect(pace.advanceTo(1200, getWord, false)).toMatchObject({
+      wordIndex: 1,
+      letterIndex: 3,
+    });
+    expect(pace.advanceTo(5000, getWord, false)).toBeNull();
+    expect(pace.isEnabled()).toBe(false);
+  });
+
+  it("applies word corrections and disables slow speeds", () => {
+    const pace = new PaceTracker();
+    pace.reset(60);
+    pace.start(0);
+    pace.correct(0, false, "hi ", false);
+    expect(pace.step(getWord, false)).toMatchObject({
+      wordIndex: 1,
+      letterIndex: 1,
+    });
+    expect(pace.reset(0.5)).toBe(false);
+    expect(pace.step(getWord, false)).toBeNull();
+    expect(pace.reset()).toBe(false);
+  });
+
+  it("remembers the last speed, keeping the fastest while repeating", () => {
+    const pace = new PaceTracker();
+    pace.rememberWpm(70, false);
+    pace.rememberWpm(50, false);
+    expect(pace.getLastWpm()).toBe(50);
+    pace.rememberWpm(40, true);
+    expect(pace.getLastWpm()).toBe(50);
+    pace.rememberWpm(90, true);
+    expect(pace.getLastWpm()).toBe(90);
+    pace.reset(60);
+    expect(pace.getLastWpm()).toBe(90);
   });
 });

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vite-plus/test";
 import { initContract } from "@ts-rest/core";
 import { generateOpenApi } from "@ts-rest/open-api";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 const c = initContract();
 const info = { title: "Schema compatibility", version: "1.0.0" };

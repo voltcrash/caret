@@ -1,5 +1,5 @@
 import { createSignal } from "solid-js";
-import { z } from "zod/v3";
+import { z } from "zod";
 import { serialize as serializeUrlSearchParams } from "zod-urlsearchparams";
 import { createModuleEffectOn } from "../hooks/effects";
 import { replaceUrl } from "../navigation/navigation";

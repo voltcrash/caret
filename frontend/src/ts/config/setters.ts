@@ -1,5 +1,5 @@
 import * as ConfigSchemas from "@oxytype/schemas/configs";
-import { ZodType as ZodSchema } from "zod/v3";
+import { ZodType as ZodSchema } from "zod";
 import { saveToLocalStorage } from "../config/persistence";
 import { configEvent, type ConfigEventData } from "../events/config";
 import { showNoticeNotification } from "../states/notifications";

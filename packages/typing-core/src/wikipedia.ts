@@ -1,7 +1,7 @@
 import { Language, LanguageObject } from "@oxytype/schemas/languages";
 import { FetchJson, Section } from "./languages";
 import { cleanTypographySymbols } from "./strings";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 const sectionSchema = z.object({
   query: z.object({

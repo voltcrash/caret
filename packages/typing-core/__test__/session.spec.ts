@@ -196,3 +196,152 @@ describe("headless lifecycle", () => {
     ).toEqual(["\t", "\t\t"]);
   });
 });
+
+describe("timer", () => {
+  it("reports drift before the step and flags slow steps", () => {
+    let slow = false;
+    const session = createTestSession(sessionConfig(), {
+      words: ["one ", "two"],
+      isSlowTimer: () => slow,
+    });
+    const drifts: { now: number; drift: number }[] = [];
+    session.on("drift", (event) => {
+      drifts.push(event);
+      slow = event.drift > 100;
+    });
+    session.start(0);
+    session.advance(1000);
+    session.advance(2150);
+    expect(drifts).toEqual([
+      { now: 1000, drift: 0 },
+      { now: 2150, drift: 150 },
+    ]);
+    const steps = session
+      .buildEventLog()
+      .events.filter(
+        (event) => event.type === "timer" && event.data.event === "step",
+      );
+    expect(steps.map((event) => event.data)).toEqual([
+      { event: "step", timer: 1, drift: 0 },
+      { event: "step", timer: 2, drift: 150, slowTimer: true },
+    ]);
+  });
+});
+
+describe("timer failures", () => {
+  it("checks minimum speed against the client's active word", () => {
+    let wordIndex = 3;
+    const session = createTestSession(
+      sessionConfig({ minWpm: "custom", minWpmCustomSpeed: 100 }),
+      { words: ["one ", "two"], getActiveWordIndex: () => wordIndex },
+    );
+    const reasons: (string | undefined)[] = [];
+    session.on("finish", ({ reason }) => reasons.push(reason));
+    session.start(0);
+    session.advance(1000);
+    expect(reasons).toEqual([]);
+    wordIndex = 4;
+    session.advance(2000);
+    expect(reasons).toEqual(["min speed"]);
+  });
+});
+
+it("treats a tick before any input as fully accurate", () => {
+  const session = createTestSession(
+    sessionConfig({ minAcc: "custom", minAccCustom: 90 }),
+    { words: ["one ", "two"] },
+  );
+  const ticks: number[] = [];
+  session.on("tick", ({ acc }) => ticks.push(acc));
+  session.start(0);
+  session.advance(1000);
+  expect(ticks).toEqual([100]);
+  expect(session.isActive()).toBe(true);
+});
+
+describe("ending", () => {
+  it("ends silently once and logs a single end event", () => {
+    const session = createTestSession(sessionConfig(), {
+      words: ["one ", "two"],
+      dateNow: () => 5,
+    });
+    const finishes: unknown[] = [];
+    session.on("finish", (event) => finishes.push(event));
+    expect(session.end(0)).toBe(false);
+    session.start(0);
+    expect(session.end(1500)).toBe(true);
+    expect(session.end(1600)).toBe(false);
+    session.finish(1700, "late");
+    expect(finishes).toEqual([]);
+    expect(session.getFinishReason()).toBeUndefined();
+    expect(
+      session.buildEventLog().events.filter((event) => event.type === "timer"),
+    ).toEqual([
+      { type: "timer", testMs: 0, data: { event: "start", timer: 0, date: 5 } },
+      {
+        type: "timer",
+        testMs: 1500,
+        data: { event: "end", timer: 1, date: 5 },
+      },
+    ]);
+    session.advance(5000);
+    expect(session.buildEventLog().events).toHaveLength(2);
+  });
+
+  it("remembers the finish reason until reset", () => {
+    const session = createTestSession(sessionConfig(), { words: ["one"] });
+    session.start(0);
+    session.finish(100, "min burst");
+    expect(session.getFinishReason()).toBe("min burst");
+    session.reset();
+    expect(session.getFinishReason()).toBeUndefined();
+  });
+
+  it("measures an abandoned test without notifying finish listeners", async () => {
+    const session = createTestSession(sessionConfig(), {
+      words: ["one ", "two"],
+    });
+    let finished = false;
+    session.on("finish", () => {
+      finished = true;
+    });
+    await session.insert("o", 0);
+    await session.insert("x", 500);
+    expect(session.abandon(1500)).toEqual({ acc: 50, seconds: 0.5 });
+    expect(finished).toBe(false);
+    expect(session.isActive()).toBe(false);
+  });
+});
+
+describe("pace", () => {
+  it("anchors to the test start and corrects for mistyped words", async () => {
+    const session = createTestSession(sessionConfig(), {
+      words: ["one ", "two ", "six"],
+    });
+    session.pace.reset(60);
+    const getWord = (index: number): string | undefined =>
+      session.getWords()[index];
+    await session.insert("x", 1000);
+    await session.insert("ne ", 1100);
+    expect(session.pace.advanceTo(1200, getWord, false)).toMatchObject({
+      wordIndex: 1,
+      letterIndex: 0,
+    });
+    session.reset();
+    expect(session.pace.isEnabled()).toBe(false);
+  });
+});
+
+it("builds the replay from its own event log", async () => {
+  const session = createTestSession(sessionConfig(), {
+    words: ["one ", "two"],
+  });
+  await session.insert("on", 0);
+  expect(session.getReplay()).toEqual({
+    words: ["one ", "two"],
+    steps: [
+      { action: "correctLetter", value: "o", time: 0 },
+      { action: "correctLetter", value: "n", time: 0 },
+    ],
+  });
+});

@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from "@solidjs/testing-library";
 import { AnyFieldApi } from "@tanstack/solid-form";
 import { describe, it, expect, vi } from "vite-plus/test";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 import { InputField } from "../../../../src/ts/components/ui/form/InputField";
 

@@ -1,4 +1,6 @@
-import { ZodIssue, ZodType } from "zod/v3";
+import { z, ZodType } from "zod";
+
+type ZodIssue = z.core.$ZodIssue;
 import { isZodError } from "@oxytype/util/zod";
 import { showErrorNotification } from "../states/notifications";
 import { tryCatchSync } from "@oxytype/util/trycatch";

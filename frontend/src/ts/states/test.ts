@@ -1,11 +1,11 @@
 import { createModuleRoot } from "../hooks/effects";
 import { createEffect, createMemo, createSignal } from "solid-js";
-import { z } from "zod/v3";
+import { z } from "zod";
 import { getConfig } from "../config/store";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { EventLog } from "@oxytype/typing-core/events/types";
 
-import { Challenge } from "@oxytype/challenges";
+import type { Challenge } from "@oxytype/challenges";
 import { LayoutObject } from "@oxytype/schemas/layouts";
 import { CompletedEvent, IncompleteTest } from "@oxytype/schemas/results";
 import { createStore } from "solid-js/store";

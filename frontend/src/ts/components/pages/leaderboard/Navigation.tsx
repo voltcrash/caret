@@ -1,5 +1,5 @@
 import { JSXElement, Setter, Show } from "solid-js";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 import { setPage } from "../../../states/leaderboard-selection";
 import { showSimpleModal } from "../../../states/simple-modal";
@@ -66,7 +66,7 @@ export function Navigation(props: {
             title: "Go to page",
             schema: z.object({
               //not using PageNumberSchema because we don't allow zero here
-              pageNumber: z.number().int().safe().min(1),
+              pageNumber: z.number().int().min(1),
             }),
             inputs: {
               pageNumber: {

@@ -1,4 +1,11 @@
-import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vite-plus/test";
 
 const config = vi.hoisted(() => ({
   mode: "words",
@@ -9,17 +16,19 @@ const config = vi.hoisted(() => ({
   blindMode: false,
   hideExtraLetters: false,
 }));
-vi.mock("../../src/ts/config/store", () => ({ Config: config }));
-vi.mock("../../src/ts/test/test-words", () => ({
+vi.mock("../../../../../src/ts/config/store", () => ({ Config: config }));
+vi.mock("../../../../../src/ts/test/test-words", () => ({
   words: { get: () => ({ display: "ab" }) },
 }));
-vi.mock("../../src/ts/utils/debounced-animation-frame", () => ({
+const anime = vi.hoisted(() => ({ animate: vi.fn() }));
+vi.mock("animejs", () => ({ animate: anime.animate }));
+vi.mock("../../../../../src/ts/utils/debounced-animation-frame", () => ({
   requestDebouncedAnimationFrame: (_key: string, callback: () => void) =>
     callback(),
 }));
 
-import { Caret } from "../../src/ts/elements/caret";
-import { setTestElements } from "../../src/ts/states/test-dom";
+import { CaretController } from "../../../../../src/ts/components/pages/test/words/caret-controller";
+import { setTestElements } from "../../../../../src/ts/states/test-dom";
 
 let element: HTMLDivElement;
 
@@ -31,6 +40,8 @@ function dimensions(el: HTMLElement, values: Record<string, number>): void {
 
 beforeEach(() => {
   config.tapeMode = "off";
+  config.smoothCaret = "off";
+  anime.animate.mockClear();
   const words = document.createElement("div");
   words.innerHTML =
     '<div class="word" data-wordindex="0"><letter>a</letter><letter>b</letter></div>';
@@ -72,7 +83,7 @@ const target = {
 describe("native caret", () => {
   it("keeps saved upstream skins visible and supports subsequent style changes", () => {
     element.className += " monkey block";
-    const caret = new Caret(element, "monkey");
+    const caret = new CaretController(element, "monkey");
     caret.show();
     expect(element.className.split(/\s+/)).toContain("default");
     expect(element.className.split(/\s+/)).not.toContain("monkey");
@@ -89,7 +100,7 @@ describe("native caret", () => {
   });
 
   it("preserves classes and positions before/after letters", () => {
-    const caret = new Caret(element, "default");
+    const caret = new CaretController(element, "default");
     caret.show();
     expect(element.className).toContain("absolute");
     expect(element.className).toContain("custom");
@@ -104,7 +115,7 @@ describe("native caret", () => {
   });
 
   it("positions full-width underlines and locked letter tape", () => {
-    const caret = new Caret(element, "underline");
+    const caret = new CaretController(element, "underline");
     caret.goTo({ ...target, letterIndex: 1 });
     expect(element.style.left).toBe("18px");
     expect(element.style.top).toBe("44px");
@@ -114,5 +125,74 @@ describe("native caret", () => {
     caret.goTo({ ...target, letterIndex: 1 });
     expect(element.style.width).toBe("");
     expect(element.style.left).toBe("99px");
+  });
+});
+
+describe("caret animation", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  function reduceMotion(matches: boolean): void {
+    vi.stubGlobal("matchMedia", () => ({ matches }));
+  }
+
+  it.each([
+    ["slow", 150],
+    ["medium", 100],
+    ["fast", 85],
+  ] as const)("animates %s smooth caret moves in %ims", (speed, duration) => {
+    reduceMotion(false);
+    config.smoothCaret = speed;
+    const caret = new CaretController(element, "default");
+    caret.goTo({ ...target, letterIndex: 1, animate: true });
+    expect(anime.animate).toHaveBeenLastCalledWith(element, {
+      left: 17,
+      top: 20,
+      duration,
+      ease: "inOut(1.25)",
+    });
+  });
+
+  it("uses the pace caret's linear timing", () => {
+    reduceMotion(false);
+    config.smoothCaret = "off";
+    const caret = new CaretController(element, "default");
+    caret.goTo({
+      ...target,
+      letterIndex: 1,
+      animate: true,
+      animationOptions: { duration: 200, easing: "linear" },
+    });
+    expect(anime.animate).toHaveBeenLastCalledWith(
+      element,
+      expect.objectContaining({ duration: 200, ease: "linear" }),
+    );
+  });
+
+  it("drops animation time when reduced motion is preferred", () => {
+    reduceMotion(true);
+    config.smoothCaret = "slow";
+    const caret = new CaretController(element, "default");
+    caret.goTo({ ...target, letterIndex: 1, animate: true });
+    expect(anime.animate).toHaveBeenLastCalledWith(
+      element,
+      expect.objectContaining({ duration: 0 }),
+    );
+    caret.handleLineJump({ newMarginTop: 30, duration: 125 });
+    expect(anime.animate).toHaveBeenLastCalledWith(
+      element,
+      expect.objectContaining({ marginTop: 30, duration: 0 }),
+    );
+  });
+
+  it("blinks smoothly or hard depending on smooth caret", () => {
+    const caret = new CaretController(element, "default");
+    config.smoothCaret = "off";
+    caret.startBlinking();
+    expect(element.style.animationName).toBe("caretFlashHard");
+    config.smoothCaret = "fast";
+    caret.updateBlinkingAnimation();
+    expect(element.style.animationName).toBe("caretFlashSmooth");
+    caret.stopBlinking();
+    expect(element.style.animationName).toBe("none");
   });
 });

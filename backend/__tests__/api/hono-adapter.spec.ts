@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vite-plus/test";
 import { initContract, TsRestResponseError } from "@ts-rest/core";
 import { Hono } from "hono";
-import { z } from "zod/v3";
+import { z } from "zod";
 import { ApiEnv, ApiMiddleware } from "../../src/api/http";
 import { createHonoEndpoints, initServer } from "../../src/api/hono-adapter";
 import contextMiddleware from "../../src/middlewares/context";

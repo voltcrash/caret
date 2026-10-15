@@ -1,4 +1,6 @@
-import type { ZodIssue } from "zod/v3";
+import type { z } from "zod";
+
+type ZodIssue = z.core.$ZodIssue;
 import {
   type AppRoute,
   type AppRouter,
@@ -165,19 +167,34 @@ export function createHonoEndpoints<T extends AppRouter>(
   }
 }
 
-// Zod's compatibility API wraps failed optional-string refinements in a union.
-// Retain the useful validation errors when the other branch only accepts "".
+// Codes that made Zod 3 abort a union branch instead of marking it dirty.
+const abortingCodes = new Set<ZodIssue["code"]>([
+  "invalid_type",
+  "invalid_value",
+  "invalid_union",
+  "invalid_key",
+  "invalid_element",
+]);
+
+// Zod 3 reported the first union branch whose type matched but whose checks
+// failed (e.g. a too-long optional string next to a `""` literal). Zod 4
+// reports the union itself, so unwrap to keep the API's validation errors.
 function formatValidationIssue(issue: ZodIssue): ZodIssue[] {
-  if (issue.code === "invalid_union" && issue.unionErrors.length === 2) {
-    const [valueError, emptyError] = issue.unionErrors;
-    if (emptyError?.issues.length === 1) {
-      const emptyIssue = emptyError.issues[0];
-      if (
-        emptyIssue?.code === "invalid_literal" &&
-        emptyIssue.expected === ""
-      ) {
-        return valueError?.issues.flatMap(formatValidationIssue) ?? [issue];
-      }
+  if (issue.code === "invalid_union") {
+    const branches: ZodIssue[][] = issue.errors;
+    const dirty = branches.find(
+      (branch) =>
+        branch.length > 0 &&
+        branch.every((branchIssue) => !abortingCodes.has(branchIssue.code)),
+    );
+    if (dirty !== undefined) {
+      // Union branch issues are relative to the union.
+      return dirty.flatMap((branchIssue) =>
+        formatValidationIssue({
+          ...branchIssue,
+          path: [...issue.path, ...branchIssue.path],
+        }),
+      );
     }
   }
   return [issue];

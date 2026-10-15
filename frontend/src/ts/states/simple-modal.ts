@@ -5,9 +5,9 @@ import { AddNotificationOptions } from "./notifications";
 
 import { Validation } from "../types/validation";
 import { MessageContent } from "../types/message-content";
-import { z, ZodTypeAny } from "zod/v3";
+import { z } from "zod";
 
-type InferSchema<T extends ZodTypeAny> = z.infer<T>;
+type InferSchema<T extends z.ZodType> = z.infer<T>;
 
 type CommonInput<TType, TValue> = {
   type: TType;

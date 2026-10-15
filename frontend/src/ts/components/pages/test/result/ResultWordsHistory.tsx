@@ -12,7 +12,7 @@ import {
   JSXElement,
   Show,
 } from "solid-js";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 import type {
   WordLetter,
@@ -105,7 +105,7 @@ function copySlowWordsList(): void {
     buttonText: "copy",
     buttonAlwaysEnabled: true,
     schema: z.object({
-      speedThreshold: z.number().finite().positive(),
+      speedThreshold: z.number().positive(),
     }),
     inputs: {
       speedThreshold: {

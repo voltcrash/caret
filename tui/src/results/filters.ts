@@ -1,4 +1,4 @@
-import { z } from "zod/v3";
+import { z } from "zod";
 import { DifficultySchema, FunboxNameSchema } from "@oxytype/schemas/configs";
 import { LanguageSchema } from "@oxytype/schemas/languages";
 import { ModeSchema } from "@oxytype/schemas/shared";

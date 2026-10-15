@@ -1,6 +1,6 @@
 import { replaceHomoglyphs } from "./homoglyphs";
 import { sanitizeString } from "@oxytype/util/strings";
-import { ZodEffects, ZodString } from "zod/v3";
+import { z } from "zod";
 
 // Sorry for the bad words
 const disallowedWords = [
@@ -413,17 +413,17 @@ function containsDisallowedWords(
   return hasDisallowedWords;
 }
 
-export function doesNotContainDisallowedWords(
-  mode: "word" | "substring",
-  schema: ZodString,
-): ZodEffects<ZodString> {
+export function doesNotContainDisallowedWords<
+  T extends z.ZodType<string, string>,
+>(mode: "word" | "substring", schema: T): T {
   return schema.refine(
     (val) => {
       return !containsDisallowedWords(val, mode);
     },
-    (val) => ({
-      message: `Disallowed word detected. Please remove it. If you believe this is a mistake, please contact us (${val}).`,
-    }),
+    {
+      error: (issue) =>
+        `Disallowed word detected. Please remove it. If you believe this is a mistake, please contact us (${String(issue.input)}).`,
+    },
   );
 }
 

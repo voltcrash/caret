@@ -4,22 +4,11 @@ import type {
   CustomTextSettings,
   IncompleteTest,
 } from "@oxytype/schemas/results";
-import {
-  getAccuracy,
-  getIncompleteTestSeconds,
-  getRawHistory,
-  getWordBurst,
-} from "@oxytype/typing-core/events/stats";
+import { getRawHistory, getWordBurst } from "@oxytype/typing-core/events/stats";
 import type { EventLog } from "@oxytype/typing-core/events/types";
 import { canQuickRestart } from "@oxytype/typing-core/quick-restart";
 import { shouldRepeatQuote } from "@oxytype/typing-core/restart";
 import { getMode2 } from "@oxytype/typing-core/mode";
-import {
-  advancePace,
-  correctPace,
-  createPaceState,
-  type PaceState,
-} from "@oxytype/typing-core/pace-caret";
 import type { QuoteWithTextSplit } from "@oxytype/typing-core/quotes";
 import { buildPracticeWords } from "@oxytype/typing-core/practise-words";
 import { createWeakSpot } from "@oxytype/typing-core/weak-spot";
@@ -156,8 +145,6 @@ export function createTypingTest(options: TypingTestOptions): TypingTest {
     letterIndex: number;
     wpm: number;
   }>();
-  let paceState: PaceState | null = null;
-  let paceSteps = 0;
   let inputLayout: LayoutObject | undefined;
   let currentQuote: QuoteWithTextSplit | null = null;
   let generator: WordsGenerator | undefined;
@@ -168,7 +155,6 @@ export function createTypingTest(options: TypingTestOptions): TypingTest {
   let disposed = false;
   let repeated = false;
   let bailedOut = false;
-  let abandoning = false;
   let restartCount = 0;
   let activeTags: string[] = [];
   let selectedQuoteId = 1;
@@ -217,25 +203,12 @@ export function createTypingTest(options: TypingTestOptions): TypingTest {
       customLimit: () => customText.limit,
       getCurrentQuote: () => currentQuote,
     });
-    session.on("input", (input) => {
-      if (input.inputType === "insertText" && input.commitsWord) {
-        const word = session.getWords()[input.wordIndex] ?? "";
-        correctPace(
-          paceState,
-          input.wordIndex,
-          input.inputValue === word,
-          word,
-          config().blindMode,
-        );
-      }
-    });
     session.on("tick", (tick) =>
       setStats((previous) => ({ ...previous, ...tick })),
     );
     session.on("finish", ({ reason }) => {
       stopTimer();
       setPace(undefined);
-      if (abandoning) return;
       session.recorder.cleanupData();
       const eventLog = session.buildEventLog();
       eventLog.context.bailedOut = bailedOut;
@@ -390,19 +363,17 @@ export function createTypingTest(options: TypingTestOptions): TypingTest {
       }
       if (version !== generation || disposed) return;
       refresh();
-      paceState =
+      session.pace.reset(
         config().mode === "zen"
           ? null
-          : createPaceState(
-              options.getPaceSpeed?.(
-                config(),
-                getMode2(config(), currentQuote),
-              ) ??
-                (config().paceCaret === "custom"
-                  ? config().paceCaretCustomSpeed
-                  : 0),
-            );
-      paceSteps = 0;
+          : (options.getPaceSpeed?.(
+              config(),
+              getMode2(config(), currentQuote),
+            ) ??
+              (config().paceCaret === "custom"
+                ? config().paceCaretCustomSpeed
+                : 0)),
+      );
       setStatus("ready");
     } catch (error) {
       if (version !== generation || disposed) return;
@@ -423,35 +394,14 @@ export function createTypingTest(options: TypingTestOptions): TypingTest {
   }
   function advance(timestamp: number): void {
     session?.advance(timestamp);
-    const start = session?.liveCache.getLiveCachedTimerStartMs();
-    if (
-      !session?.isActive() ||
-      paceState === null ||
-      start === null ||
-      start === undefined
-    ) {
-      return;
-    }
-    const steps = Math.floor((timestamp - start) / (paceState.spc * 1000));
-    while (paceSteps < steps) {
-      if (
-        !advancePace(
-          paceState,
-          (index) => session.getWords()[index],
-          config().blindMode,
-        )
-      ) {
-        paceState = null;
-        setPace(undefined);
-        return;
-      }
-      paceSteps++;
-    }
-    setPace({
-      wordIndex: paceState.currentWordIndex,
-      letterIndex: paceState.currentLetterIndex,
-      wpm: paceState.wpm,
-    });
+    if (!session?.isActive() || !session.pace.isEnabled()) return;
+    setPace(
+      session.pace.advanceTo(
+        timestamp,
+        (index) => session.getWords()[index],
+        config().blindMode,
+      ) ?? undefined,
+    );
   }
   async function insert(text: string, timestamp: number): Promise<void> {
     if (status() !== "ready" && status() !== "running") return;
@@ -532,16 +482,10 @@ export function createTypingTest(options: TypingTestOptions): TypingTest {
           mode: config().mode,
           repeatQuotes: store.config.repeatQuotes,
         });
-      abandoning = true;
-      session.finish(now());
-      abandoning = false;
-      const log = session.buildEventLog();
-      if (store.config.resultSaving) {
-        incompleteTests.push({
-          acc: getAccuracy(log).percentage,
-          seconds: getIncompleteTestSeconds(log),
-        });
-      }
+      stopTimer();
+      setPace(undefined);
+      const incomplete = session.abandon(now());
+      if (store.config.resultSaving) incompleteTests.push(incomplete);
       restartCount++;
     }
     await load(repeat);
@@ -555,7 +499,6 @@ export function createTypingTest(options: TypingTestOptions): TypingTest {
   function cancel(): void {
     if (!canInterrupt()) return;
     stopTimer();
-    paceState = null;
     setPace(undefined);
     generation++;
     session?.reset();

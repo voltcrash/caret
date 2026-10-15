@@ -94,3 +94,85 @@ export function correctPace(
     }
   }
 }
+
+export type PacePosition = {
+  wordIndex: number;
+  letterIndex: number;
+  wpm: number;
+};
+
+/** One test's pace caret. Clients schedule steps and render the caret. */
+export class PaceTracker {
+  private state: PaceState | null = null;
+  private startMs = 0;
+  private steps = 0;
+  private lastWpm = 0;
+
+  /** Starts over at the given speed; speeds below one disable the caret. */
+  reset(wpm: number | null = null): boolean {
+    this.state = wpm === null ? null : createPaceState(wpm);
+    this.startMs = 0;
+    this.steps = 0;
+    return this.state !== null;
+  }
+  isEnabled(): boolean {
+    return this.state !== null;
+  }
+  start(now: number): void {
+    this.startMs = now;
+    this.steps = 0;
+  }
+  /** Moves one letter, or disables the caret once it runs out of words. */
+  step(
+    getWord: (index: number) => string | undefined,
+    blindMode: boolean,
+  ): PacePosition | null {
+    if (this.state === null) return null;
+    if (!advancePace(this.state, getWord, blindMode)) {
+      this.state = null;
+      return null;
+    }
+    this.steps++;
+    return this.getPosition();
+  }
+  /** Anchored to the start so per-step delays never accumulate. */
+  getStepEnd(): number {
+    return this.startMs + this.steps * (this.state?.spc ?? 0) * 1000;
+  }
+  /** Takes every step due by `now`. */
+  advanceTo(
+    now: number,
+    getWord: (index: number) => string | undefined,
+    blindMode: boolean,
+  ): PacePosition | null {
+    if (this.state === null) return null;
+    const due = Math.floor((now - this.startMs) / (this.state.spc * 1000));
+    while (this.steps < due) {
+      if (this.step(getWord, blindMode) === null) return null;
+    }
+    return this.getPosition();
+  }
+  getPosition(): PacePosition | null {
+    if (this.state === null) return null;
+    return {
+      wordIndex: this.state.currentWordIndex,
+      letterIndex: this.state.currentLetterIndex,
+      wpm: this.state.wpm,
+    };
+  }
+  correct(
+    wordIndex: number,
+    correct: boolean,
+    currentWord: string,
+    blindMode: boolean,
+  ): void {
+    correctPace(this.state, wordIndex, correct, currentWord, blindMode);
+  }
+  /** Repeated tests only raise the remembered speed. */
+  rememberWpm(wpm: number, repeating: boolean): void {
+    if (!repeating || wpm > this.lastWpm) this.lastWpm = wpm;
+  }
+  getLastWpm(): number {
+    return this.lastWpm;
+  }
+}

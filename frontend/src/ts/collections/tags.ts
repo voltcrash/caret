@@ -8,19 +8,14 @@ import {
   useLiveQuery,
 } from "@tanstack/solid-db";
 import { untrack } from "solid-js";
-import { z } from "zod/v3";
+import { z } from "zod";
 import Ape from "../ape";
 import { queryClient } from "../queries";
 import { baseKey } from "../queries/utils/keys";
 import { LocalStorageWithSchema } from "../utils/local-storage-with-schema";
 import { IdSchema } from "@oxytype/schemas/util";
 import { SnapshotResult } from "../constants/default-snapshot";
-import {
-  Mode,
-  Mode2,
-  PersonalBest,
-  PersonalBests,
-} from "@oxytype/schemas/shared";
+import { Mode, Mode2, PersonalBest } from "@oxytype/schemas/shared";
 import { Difficulty } from "@oxytype/schemas/configs";
 import { Language } from "@oxytype/schemas/languages";
 import { applyIdWorkaround, isTempId, tempId } from "./utils/misc";
@@ -28,6 +23,7 @@ import { createCollectionReader } from "./utils/reader";
 import { fetchUserFromApi } from "../ape/user";
 import { updateTagsInFilterStorage } from "../states/result-filters";
 import { isAuthenticated } from "../states/core";
+import { emptyPersonalBests, personalBestList } from "../utils/personal-bests";
 
 export type TagItem = UserTag & { active: boolean };
 
@@ -401,79 +397,44 @@ export function saveLocalTagPB<M extends Mode>(
   if (collectionTag === undefined) return;
   const tag = structuredClone(collectionTag);
 
-  tag.personalBests ??= {
-    time: {},
-    words: {},
-    quote: {},
-    zen: {},
-    custom: {},
+  const entry: PersonalBest = {
+    language,
+    difficulty,
+    lazyMode,
+    punctuation,
+    numbers,
+    wpm,
+    acc,
+    raw,
+    timestamp: Date.now(),
+    consistency,
   };
-
-  tag.personalBests[mode] ??= {
-    [mode2]: [],
-  };
-
-  tag.personalBests[mode][mode2] ??=
-    [] as unknown as PersonalBests[M][Mode2<M>];
+  tag.personalBests ??= emptyPersonalBests();
 
   try {
-    let found = false;
-
-    (tag.personalBests[mode][mode2] as unknown as PersonalBest[]).forEach(
-      (pb) => {
-        if (
-          (pb.punctuation ?? false) === punctuation &&
-          (pb.numbers ?? false) === numbers &&
-          pb.difficulty === difficulty &&
-          pb.language === language &&
-          (pb.lazyMode === lazyMode || (pb.lazyMode === undefined && !lazyMode))
-        ) {
-          found = true;
-          pb.wpm = wpm;
-          pb.acc = acc;
-          pb.raw = raw;
-          pb.timestamp = Date.now();
-          pb.consistency = consistency;
-          pb.lazyMode = lazyMode;
-        }
-      },
+    const list = personalBestList(tag.personalBests, mode, mode2);
+    const matching = list.filter(
+      (pb) =>
+        (pb.punctuation ?? false) === punctuation &&
+        (pb.numbers ?? false) === numbers &&
+        pb.difficulty === difficulty &&
+        pb.language === language &&
+        (pb.lazyMode === lazyMode || (pb.lazyMode === undefined && !lazyMode)),
     );
-    if (!found) {
-      (tag.personalBests[mode][mode2] as unknown as PersonalBest[]).push({
-        language,
-        difficulty,
-        lazyMode,
-        punctuation,
-        numbers,
+    for (const pb of matching) {
+      Object.assign(pb, {
         wpm,
         acc,
         raw,
         timestamp: Date.now(),
         consistency,
+        lazyMode,
       });
     }
+    if (matching.length === 0) list.push(entry);
   } catch {
-    tag.personalBests = {
-      time: {},
-      words: {},
-      quote: {},
-      zen: {},
-      custom: {},
-    };
-    tag.personalBests[mode][mode2] = [
-      {
-        language,
-        difficulty,
-        lazyMode,
-        punctuation,
-        numbers,
-        wpm,
-        acc,
-        raw,
-        timestamp: Date.now(),
-        consistency,
-      },
-    ] as unknown as PersonalBests[M][Mode2<M>];
+    tag.personalBests = emptyPersonalBests();
+    personalBestList(tag.personalBests, mode, mode2).push(entry);
   }
 
   // using utils.writeUpdate instead of collection.update because we dont need to send this to the API

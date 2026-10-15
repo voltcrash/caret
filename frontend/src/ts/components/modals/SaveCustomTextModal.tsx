@@ -1,6 +1,6 @@
 import { createForm } from "@tanstack/solid-form";
 import { Accessor, JSXElement } from "solid-js";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 import { setCustomTextIndicator } from "../../states/core";
 import { hideModal } from "../../states/modals";

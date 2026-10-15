@@ -18,6 +18,15 @@ export function getTimingFingerprint(
 ): string | undefined {
   const { keySpacing, keyDuration } = result;
   if (keySpacing === "toolong" || keyDuration === "toolong") return undefined;
+  return timingFingerprint(keySpacing, keyDuration, result.client);
+}
+
+/** The fingerprint of bare arrays, as stored in timing samples. */
+export function timingFingerprint(
+  keySpacing: number[],
+  keyDuration: number[],
+  client: CompletedEvent["client"],
+): string | undefined {
   const gaps = keySpacing.map(Math.round);
   if (
     gaps.length < MIN_REPLAY_KEYS ||
@@ -28,6 +37,6 @@ export function getTimingFingerprint(
   // Traditional terminals report presses, without trustworthy release times.
   return objectHash([
     gaps,
-    result.client === "tui" ? [] : keyDuration.map(Math.round),
+    client === "tui" ? [] : keyDuration.map(Math.round),
   ]);
 }

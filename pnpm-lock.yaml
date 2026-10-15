@@ -224,9 +224,10 @@ overrides:
   '@vitest/utils': 5.0.3
 
 patchedDependencies:
-  '@anatine/zod-openapi@1.14.2': 0c380a8fd265e10a7641b3ccbad4a79e8216bc90cf48ce8a463b6c05df23e92a
-  '@ts-rest/core@3.52.1': 1d87a2612f7f1b57f89a06c50f4f92ae56858711540f5baa09c18e79ee6eca4b
-  zod-urlsearchparams@0.0.16: 844d68f59b3bd6e7471097cc2d879f3ac6f178048deac1ce1485301818376b29
+  '@anatine/zod-openapi@1.14.2': 87ffbdb63ed393948f5f41cfb3f08de61e39089c617f0e5a657b4f059754364e
+  '@ts-rest/core@3.52.1': 7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9
+  '@ts-rest/open-api@3.52.1': 1b17f624fc76d19e735fd05983e021f9a23658352ab73f7823c42393e4ab6515
+  zod-urlsearchparams@0.0.16: 0322116a41bd32a5caa9d9181291addfe46d9b782adecdb42c9e161a9347cce4
 
 importers:
 
@@ -297,10 +298,10 @@ importers:
         version: link:../packages/util
       '@ts-rest/core':
         specifier: 3.52.1
-        version: 3.52.1(patch_hash=1d87a2612f7f1b57f89a06c50f4f92ae56858711540f5baa09c18e79ee6eca4b)(@types/node@24.19.0)(zod@4.6.5)
+        version: 3.52.1(patch_hash=7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9)(@types/node@24.19.0)(zod@4.6.5)
       '@ts-rest/open-api':
         specifier: 3.52.1
-        version: 3.52.1(@ts-rest/core@3.52.1(patch_hash=1d87a2612f7f1b57f89a06c50f4f92ae56858711540f5baa09c18e79ee6eca4b)(@types/node@24.19.0)(zod@4.6.5))(zod@4.6.5)
+        version: 3.52.1(patch_hash=1b17f624fc76d19e735fd05983e021f9a23658352ab73f7823c42393e4ab6515)(@ts-rest/core@3.52.1(patch_hash=7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9)(@types/node@24.19.0)(zod@4.6.5))(zod@4.6.5)
       better-auth:
         specifier: 1.7.7
         version: 1.7.7(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.11)(drizzle-orm@0.45.3(@cloudflare/workers-types@5.20261001.1)(@electric-sql/pglite@0.3.16)(@opentelemetry/api@1.9.1)(bun-types@1.4.2)(kysely@0.29.6)(pg@8.12.0))(pg@8.12.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(solid-js@1.9.15)(vitest@5.0.3)
@@ -466,7 +467,7 @@ importers:
         version: 9.2.4(solid-js@1.9.15)
       '@ts-rest/core':
         specifier: 3.52.1
-        version: 3.52.1(patch_hash=1d87a2612f7f1b57f89a06c50f4f92ae56858711540f5baa09c18e79ee6eca4b)(@types/node@24.19.0)(zod@4.6.5)
+        version: 3.52.1(patch_hash=7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9)(@types/node@24.19.0)(zod@4.6.5)
       animejs:
         specifier: 4.5.0
         version: 4.5.0
@@ -532,7 +533,7 @@ importers:
         version: 4.6.5
       zod-urlsearchparams:
         specifier: 0.0.16
-        version: 0.0.16(patch_hash=844d68f59b3bd6e7471097cc2d879f3ac6f178048deac1ce1485301818376b29)(zod@4.6.5)
+        version: 0.0.16(patch_hash=0322116a41bd32a5caa9d9181291addfe46d9b782adecdb42c9e161a9347cce4)(zod@4.6.5)
     devDependencies:
       '@actions/core':
         specifier: 3.0.1
@@ -759,7 +760,7 @@ importers:
         version: link:../schemas
       '@ts-rest/core':
         specifier: 3.52.1
-        version: 3.52.1(patch_hash=1d87a2612f7f1b57f89a06c50f4f92ae56858711540f5baa09c18e79ee6eca4b)(@types/node@24.19.0)(zod@4.6.5)
+        version: 3.52.1(patch_hash=7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9)(@types/node@24.19.0)(zod@4.6.5)
       zod:
         specifier: 4.6.5
         version: 4.6.5
@@ -945,7 +946,7 @@ importers:
         version: link:../packages/util
       '@ts-rest/core':
         specifier: 3.52.1
-        version: 3.52.1(patch_hash=1d87a2612f7f1b57f89a06c50f4f92ae56858711540f5baa09c18e79ee6eca4b)(@types/node@24.19.0)(zod@4.6.5)
+        version: 3.52.1(patch_hash=7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9)(@types/node@24.19.0)(zod@4.6.5)
       solid-js:
         specifier: 1.9.12
         version: 1.9.12
@@ -8892,7 +8893,7 @@ snapshots:
 
   '@adobe/css-tools@4.4.4': {}
 
-  '@anatine/zod-openapi@1.14.2(patch_hash=0c380a8fd265e10a7641b3ccbad4a79e8216bc90cf48ce8a463b6c05df23e92a)(openapi3-ts@2.0.2)(zod@4.6.5)':
+  '@anatine/zod-openapi@1.14.2(patch_hash=87ffbdb63ed393948f5f41cfb3f08de61e39089c617f0e5a657b4f059754364e)(openapi3-ts@2.0.2)(zod@4.6.5)':
     dependencies:
       openapi3-ts: 2.0.2
       ts-deepmerge: 8.0.0
@@ -11875,15 +11876,15 @@ snapshots:
       '@ts-graphviz/ast': 2.0.3
       '@ts-graphviz/common': 2.1.2
 
-  '@ts-rest/core@3.52.1(patch_hash=1d87a2612f7f1b57f89a06c50f4f92ae56858711540f5baa09c18e79ee6eca4b)(@types/node@24.19.0)(zod@4.6.5)':
+  '@ts-rest/core@3.52.1(patch_hash=7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9)(@types/node@24.19.0)(zod@4.6.5)':
     optionalDependencies:
       '@types/node': 24.19.0
       zod: 4.6.5
 
-  '@ts-rest/open-api@3.52.1(@ts-rest/core@3.52.1(patch_hash=1d87a2612f7f1b57f89a06c50f4f92ae56858711540f5baa09c18e79ee6eca4b)(@types/node@24.19.0)(zod@4.6.5))(zod@4.6.5)':
+  '@ts-rest/open-api@3.52.1(patch_hash=1b17f624fc76d19e735fd05983e021f9a23658352ab73f7823c42393e4ab6515)(@ts-rest/core@3.52.1(patch_hash=7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9)(@types/node@24.19.0)(zod@4.6.5))(zod@4.6.5)':
     dependencies:
-      '@anatine/zod-openapi': 1.14.2(patch_hash=0c380a8fd265e10a7641b3ccbad4a79e8216bc90cf48ce8a463b6c05df23e92a)(openapi3-ts@2.0.2)(zod@4.6.5)
-      '@ts-rest/core': 3.52.1(patch_hash=1d87a2612f7f1b57f89a06c50f4f92ae56858711540f5baa09c18e79ee6eca4b)(@types/node@24.19.0)(zod@4.6.5)
+      '@anatine/zod-openapi': 1.14.2(patch_hash=87ffbdb63ed393948f5f41cfb3f08de61e39089c617f0e5a657b4f059754364e)(openapi3-ts@2.0.2)(zod@4.6.5)
+      '@ts-rest/core': 3.52.1(patch_hash=7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9)(@types/node@24.19.0)(zod@4.6.5)
       openapi3-ts: 2.0.2
       zod: 4.6.5
 
@@ -17628,7 +17629,7 @@ snapshots:
 
   zigpty@0.2.1: {}
 
-  zod-urlsearchparams@0.0.16(patch_hash=844d68f59b3bd6e7471097cc2d879f3ac6f178048deac1ce1485301818376b29)(zod@4.6.5):
+  zod-urlsearchparams@0.0.16(patch_hash=0322116a41bd32a5caa9d9181291addfe46d9b782adecdb42c9e161a9347cce4)(zod@4.6.5):
     dependencies:
       zod: 4.6.5
 

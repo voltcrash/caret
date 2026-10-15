@@ -24,9 +24,7 @@ export async function readUser(uid: string): Promise<DBUser | undefined> {
     .from(users)
     .where(eq(users.uid, uid))
     .get();
-  return row
-    ? await attachClientProfiles(row.data as unknown as DBUser)
-    : undefined;
+  return row ? await attachClientProfiles(row.data) : undefined;
 }
 
 /** Enlist a write in the current user's atomic batch, or execute it directly. */
@@ -68,7 +66,7 @@ export async function atomicUser<T>(
       .where(eq(users.uid, uid))
       .get();
     if (!row) throw new MonkeyError(404, "User not found");
-    const user = await attachClientProfiles(row.data as unknown as DBUser);
+    const user = await attachClientProfiles(row.data);
     const draft: Draft = {
       uid,
       user,

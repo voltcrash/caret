@@ -7,7 +7,7 @@ import { Config } from "../../config/store";
 import { setConfig } from "../../config/setters";
 import { isAuthenticated } from "../../states/core";
 import { LocalStorageWithSchema } from "../../utils/local-storage-with-schema";
-import { z } from "zod/v3";
+import { z } from "zod";
 import {
   getResultChart,
   getResultChartDataset,

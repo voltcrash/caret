@@ -1,6 +1,8 @@
-import { z } from "zod/v3";
+import { z } from "zod";
 import { IdSchema } from "./util";
 import { LanguageSchema } from "./languages";
+
+export const QuoteTextSchema = z.string().min(60);
 
 export const QuoteIdSchema = z
   .number()

@@ -1,0 +1,25 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`replay > plays a recorded test back to its final state 2`] = `
+[
+  "ALL ",
+  "MAN ",
+  "WOULD ",
+  "!SCHOOLx +x+ ",
+  "WHERE ",
+  "DAY ",
+  "DO ",
+  "NEVER ",
+  "WELL ",
+  "AGAINST",
+]
+`;
+
+exports[`replay > plays a recorded test back to its final state 3`] = `"52wpm	10s"`;
+
+exports[`replay > replays zen mode against what was typed 1`] = `
+[
+  "Oxk ",
+  "N",
+]
+`;

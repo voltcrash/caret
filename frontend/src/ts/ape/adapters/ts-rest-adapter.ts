@@ -10,10 +10,9 @@ import {
   COMPATIBILITY_CHECK_HEADER,
 } from "@oxytype/contracts/compatibility";
 import { addBanner } from "../../states/banners";
+import { setLastSeenServerCompatibility } from "../server-compatibility";
 
 let bannerShownThisSession = false;
-
-export let lastSeenServerCompatibility: number | undefined;
 
 function timeoutSignal(ms: number): AbortSignal {
   const ctrl = new AbortController();
@@ -60,7 +59,7 @@ function buildApi(timeout: number): (args: ApiFetcherArgs) => Promise<{
       );
 
       if (compatibilityCheckHeader !== null) {
-        lastSeenServerCompatibility = parseInt(compatibilityCheckHeader);
+        setLastSeenServerCompatibility(parseInt(compatibilityCheckHeader));
       }
 
       if (compatibilityCheckHeader !== null && !bannerShownThisSession) {

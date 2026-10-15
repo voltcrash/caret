@@ -4,7 +4,13 @@ import {
   reviewKeyTimings,
 } from "./signals";
 
-export type TimingSample = { keySpacing: number[]; keyDuration: number[] };
+export type TimingSample = {
+  keySpacing: number[];
+  keyDuration: number[];
+  client?: "web" | "tui";
+  // overrides the file's label, e.g. the original upload of a replay
+  label?: string;
+};
 
 type Percentiles = { p5: number; p50: number; p95: number };
 
@@ -37,27 +43,53 @@ function isNumberArray(value: unknown): value is number[] {
   );
 }
 
+function toSample(
+  record: Record<string, unknown>,
+  inherited: Pick<TimingSample, "client" | "label">,
+): TimingSample[] {
+  const { keySpacing, keyDuration, client, label } = record;
+  if (!isNumberArray(keySpacing) || !isNumberArray(keyDuration)) return [];
+  const sample: TimingSample = { keySpacing, keyDuration };
+  const ownClient = client === "tui" || client === "web" ? client : undefined;
+  const sampleClient = ownClient ?? inherited.client;
+  if (sampleClient !== undefined) sample.client = sampleClient;
+  const sampleLabel = typeof label === "string" ? label : inherited.label;
+  if (sampleLabel !== undefined) sample.label = sampleLabel;
+  return [sample];
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
 /**
  * Pull timing samples out of an export: a bare array, the admin audits
- * response, or audit rows whose message holds the arrays. Anything else,
- * including long-test sentinels, is skipped.
+ * response, audit rows whose message holds the arrays, a recorded fixture
+ * (`completedEvent` or `result`) or a calibration fixture (`samples`).
+ * Anything else, including long-test sentinels, is skipped.
  */
 export function extractSamples(input: unknown): TimingSample[] {
-  const items =
-    typeof input === "object" && input !== null && "data" in input
-      ? input.data
-      : input;
+  if (isRecord(input)) {
+    if (Array.isArray(input["samples"])) {
+      const client =
+        input["client"] === "tui" || input["client"] === "web"
+          ? input["client"]
+          : undefined;
+      return input["samples"].flatMap((item: unknown) =>
+        isRecord(item) ? toSample(item, { client }) : [],
+      );
+    }
+    for (const key of ["completedEvent", "result"]) {
+      const record = input[key];
+      if (isRecord(record)) return toSample(record, {});
+    }
+  }
+  const items = isRecord(input) && "data" in input ? input["data"] : input;
   if (!Array.isArray(items)) return [];
   return items.flatMap((item: unknown) => {
-    if (typeof item !== "object" || item === null) return [];
-    const record =
-      "message" in item && typeof item.message === "object"
-        ? (item.message as Record<string, unknown>)
-        : (item as Record<string, unknown>);
-    const { keySpacing, keyDuration } = record;
-    return isNumberArray(keySpacing) && isNumberArray(keyDuration)
-      ? [{ keySpacing, keyDuration }]
-      : [];
+    if (!isRecord(item)) return [];
+    const message = item["message"];
+    return toSample(isRecord(message) ? message : item, {});
   });
 }
 

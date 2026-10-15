@@ -1,4 +1,4 @@
-import { getChallenges } from "@oxytype/challenges";
+import { ChallengeNameSchema } from "@oxytype/schemas/challenges";
 import {
   CustomBackgroundFilter,
   CustomBackgroundFilterSchema,
@@ -19,7 +19,7 @@ import {
 import { parseWithSchema as parseJsonWithSchema } from "@oxytype/util/json";
 import { tryCatchSync } from "@oxytype/util/trycatch";
 import { decompressFromURI } from "lz-ts";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 import { setConfig } from "../config/setters";
 import { Config } from "../config/store";
@@ -262,8 +262,9 @@ export function loadTestSettingsFromUrl(getOverride?: string): void {
   }
 }
 
+// Challenge definitions load with the first challenge; their names are known up front.
 const challengeNameLookup = Object.fromEntries(
-  getChallenges().map((it) => [it.name.toLowerCase(), it.name]),
+  [...ChallengeNameSchema.values].map((name) => [name.toLowerCase(), name]),
 );
 
 async function loadChallengeFromUrl(getOverride?: string): Promise<void> {

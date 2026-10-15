@@ -1,181 +1,710 @@
 diff --git a/src/lib/zod-extensions.d.ts b/src/lib/zod-extensions.d.ts
-index ccef4724ba4d9db17d8508cfceb12ef9a22d0349..039147c84b4be33b792d01d5f778593043d3f23e 100644
+index ccef4724ba4d9db17d8508cfceb12ef9a22d0349..1dfeb2fa2f9c58497822196a570e7712372268fd 100644
 --- a/src/lib/zod-extensions.d.ts
 +++ b/src/lib/zod-extensions.d.ts
-@@ -1,7 +1,7 @@
--import { z } from "zod";
-+import { z } from "zod/v3";
- import { SchemaObject } from "openapi3-ts/oas31";
- import { ZodTypeDef } from "zod/lib/types";
+@@ -1,9 +1,2 @@
+ import { z } from "zod";
+-import { SchemaObject } from "openapi3-ts/oas31";
+-import { ZodTypeDef } from "zod/lib/types";
 -declare module 'zod' {
-+declare module 'zod/v3' {
-     interface ZodSchema<Output = any, Def extends ZodTypeDef = ZodTypeDef, Input = Output> {
-         openapi<T extends ZodSchema<Output, Def, Input>>(this: T, metadata: Partial<SchemaObject>): T;
+-    interface ZodSchema<Output = any, Def extends ZodTypeDef = ZodTypeDef, Input = Output> {
+-        openapi<T extends ZodSchema<Output, Def, Input>>(this: T, metadata: Partial<SchemaObject>): T;
+-    }
+-}
+ export declare function extendZodWithOpenApi(zod: typeof z, forceOverride?: boolean): void;
+diff --git a/src/lib/zod-extensions.js b/src/lib/zod-extensions.js
+index 58b5f86486143e67fc398dd76a5102233d90f679..5d57a3c92f4ed6bb1e226e85290df6da46730422 100644
+--- a/src/lib/zod-extensions.js
++++ b/src/lib/zod-extensions.js
+@@ -6,13 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.extendZodWithOpenApi = void 0;
+ const zod_openapi_1 = require("./zod-openapi");
+ function extendZodWithOpenApi(zod, forceOverride = false) {
+-    if (!forceOverride && typeof zod.ZodSchema.prototype.openapi !== 'undefined') {
++    if (!forceOverride && typeof zod.ZodType.prototype.openapi !== 'undefined') {
+         // This zod instance is already extended with the required methods,
+         // doing it again will just result in multiple wrapper methods for
+         // `optional` and `nullable`
+         return;
      }
+-    zod.ZodSchema.prototype.openapi = function (metadata) {
++    zod.ZodType.prototype.openapi = function (metadata) {
+         return (0, zod_openapi_1.extendApi)(this, metadata);
+     };
+ }
 diff --git a/src/lib/zod-openapi.d.ts b/src/lib/zod-openapi.d.ts
-index 9d16b1ca05b0b17d523774d79ae582b13ab1b77f..0e54cc9603c0245abab4c80576fef8dae2b50c25 100644
+index 9d16b1ca05b0b17d523774d79ae582b13ab1b77f..ff00b946b1a2fd7159f5a4a17b05e3de2ee4c6dd 100644
 --- a/src/lib/zod-openapi.d.ts
 +++ b/src/lib/zod-openapi.d.ts
-@@ -1,5 +1,5 @@
+@@ -1,6 +1,6 @@
  import type { SchemaObject } from 'openapi3-ts/oas31';
 -import { ZodTypeAny } from 'zod';
-+import { ZodTypeAny } from 'zod/v3';
- export interface OpenApiZodAny extends ZodTypeAny {
+-export interface OpenApiZodAny extends ZodTypeAny {
++import type { ZodType } from 'zod';
++export interface OpenApiZodAny extends ZodType {
      metaOpenApi?: SchemaObject | SchemaObject[];
  }
+ export declare function extendApi<T extends OpenApiZodAny>(schema: T, SchemaObject?: SchemaObject): T;
 diff --git a/src/lib/zod-openapi.js b/src/lib/zod-openapi.js
-index cc71afb4d..2fcf77777 100644
+index cc71afb4d872b755908f03b9cf441112240405de..66d227e395d3546938a6cf3181f5a11ff9799890 100644
 --- a/src/lib/zod-openapi.js
 +++ b/src/lib/zod-openapi.js
-@@ -2,7 +2,7 @@
+@@ -2,296 +2,405 @@
  Object.defineProperty(exports, "__esModule", { value: true });
  exports.generateSchema = exports.extendApi = void 0;
  const ts_deepmerge_1 = require("ts-deepmerge");
 -const zod_1 = require("zod");
-+const zod_1 = require("zod/v3");
++// Patched for zod 4: schemas are read through `_zod.def` instead of zod 3's `_def.typeName`.
  function extendApi(schema, SchemaObject = {}) {
-     schema.metaOpenApi = Object.assign(schema.metaOpenApi || {}, SchemaObject);
-     return schema;
-@@ -38,7 +38,7 @@ function parseTransformation({ zodRef, schemas, useOutput, }) {
-             }
-         }
+-    schema.metaOpenApi = Object.assign(schema.metaOpenApi || {}, SchemaObject);
+-    return schema;
++  schema.metaOpenApi = Object.assign(schema.metaOpenApi || {}, SchemaObject);
++  return schema;
+ }
+ exports.extendApi = extendApi;
+-function iterateZodObject({ zodRef, useOutput, }) {
+-    return Object.keys(zodRef.shape).reduce((carry, key) => (Object.assign(Object.assign({}, carry), { [key]: generateSchema(zodRef.shape[key], useOutput) })), {});
++const defOf = (zodRef) => zodRef._zod.def;
++const typeOf = (zodRef) => defOf(zodRef).type;
++const describe = (zodRef) =>
++  zodRef.description ? { description: zodRef.description } : {};
++const checksOf = (zodRef) =>
++  (defOf(zodRef).checks || []).map((check) => check._zod.def);
++function iterateZodObject({ zodRef, useOutput }) {
++  return Object.keys(zodRef.shape).reduce(
++    (carry, key) =>
++      Object.assign(Object.assign({}, carry), {
++        [key]: generateSchema(zodRef.shape[key], useOutput),
++      }),
++    {},
++  );
+ }
+-function parseTransformation({ zodRef, schemas, useOutput, }) {
+-    const input = generateSchema(zodRef._def.schema, useOutput);
+-    let output = 'undefined';
+-    if (useOutput && zodRef._def.effect) {
+-        const effect = zodRef._def.effect.type === 'transform' ? zodRef._def.effect : null;
+-        if (effect && 'transform' in effect) {
+-            try {
+-                output = typeof effect.transform(['integer', 'number'].includes(`${input.type}`)
+-                    ? 0
+-                    : 'string' === input.type
+-                        ? ''
+-                        : 'boolean' === input.type
+-                            ? false
+-                            : 'object' === input.type
+-                                ? {}
+-                                : 'null' === input.type
+-                                    ? null
+-                                    : 'array' === input.type
+-                                        ? []
+-                                        : undefined, { addIssue: () => undefined, path: [] } // TODO: Discover if context is necessary here
+-                );
+-            }
+-            catch (e) {
+-                /**/
+-            }
+-        }
++function parsePipe({ zodRef, schemas, useOutput }) {
++  const def = defOf(zodRef);
++  // zod 3 effects: `.transform()` pipes into a transform, `z.preprocess()` out of one
++  if (typeOf(def.out) === "transform") {
++    return parseTransformation({ zodRef, schemas, useOutput });
++  }
++  if (typeOf(def.in) === "transform") {
++    return (0, ts_deepmerge_1.merge)(
++      Object.assign(Object.assign({}, describe(zodRef)), generateSchema(def.out, useOutput)),
++      ...schemas,
++    );
++  }
++  return catchAllParser({ zodRef, schemas });
++}
++function parseTransformation({ zodRef, schemas, useOutput }) {
++  const def = defOf(zodRef);
++  const input = generateSchema(def.in, useOutput);
++  let output = "undefined";
++  if (useOutput && typeOf(def.out) === "transform") {
++    try {
++      output = typeof defOf(def.out).transform(
++        ["integer", "number"].includes(`${input.type}`)
++          ? 0
++          : "string" === input.type
++            ? ""
++            : "boolean" === input.type
++              ? false
++              : "object" === input.type
++                ? {}
++                : "null" === input.type
++                  ? null
++                  : "array" === input.type
++                    ? []
++                    : undefined,
++        { addIssue: () => undefined, issues: [], value: undefined },
++      );
++    } catch (e) {
++      /**/
      }
 -    return (0, ts_deepmerge_1.default)(Object.assign(Object.assign(Object.assign({}, (zodRef.description ? { description: zodRef.description } : {})), input), (['number', 'string', 'boolean', 'null'].includes(output)
-+    return (0, ts_deepmerge_1.merge)(Object.assign(Object.assign(Object.assign({}, (zodRef.description ? { description: zodRef.description } : {})), input), (['number', 'string', 'boolean', 'null'].includes(output)
++  }
++  return (0, ts_deepmerge_1.merge)(
++    Object.assign(
++      Object.assign(Object.assign({}, describe(zodRef)), input),
++      ["number", "string", "boolean", "null"].includes(output)
          ? {
              type: output,
-         }
-@@ -81,7 +81,7 @@ function parseString({ zodRef, schemas, }) {
-                 break;
-         }
-     });
--    return (0, ts_deepmerge_1.default)(baseSchema, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
-+    return (0, ts_deepmerge_1.merge)(baseSchema, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+-        }
+-        : {})), ...schemas);
++          }
++        : {},
++    ),
++    ...schemas,
++  );
  }
- function parseNumber({ zodRef, schemas, }) {
-     const baseSchema = {
-@@ -108,7 +108,7 @@ function parseNumber({ zodRef, schemas, }) {
-                 baseSchema.multipleOf = item.value;
-         }
-     });
+-function parseString({ zodRef, schemas, }) {
+-    const baseSchema = {
+-        type: 'string',
+-    };
+-    const { checks = [] } = zodRef._def;
+-    checks.forEach((item) => {
+-        switch (item.kind) {
+-            case 'email':
+-                baseSchema.format = 'email';
+-                break;
+-            case 'uuid':
+-                baseSchema.format = 'uuid';
+-                break;
+-            case 'cuid':
+-                baseSchema.format = 'cuid';
+-                break;
+-            case 'url':
+-                baseSchema.format = 'uri';
+-                break;
+-            case 'datetime':
+-                baseSchema.format = 'date-time';
+-                break;
+-            case 'length':
+-                baseSchema.minLength = item.value;
+-                baseSchema.maxLength = item.value;
+-                break;
+-            case 'max':
+-                baseSchema.maxLength = item.value;
+-                break;
+-            case 'min':
+-                baseSchema.minLength = item.value;
+-                break;
+-            case 'regex':
+-                baseSchema.pattern = item.regex.source;
+-                break;
+-        }
+-    });
 -    return (0, ts_deepmerge_1.default)(baseSchema, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
-+    return (0, ts_deepmerge_1.merge)(baseSchema, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++const stringFormats = {
++  email: "email",
++  uuid: "uuid",
++  guid: "uuid",
++  cuid: "cuid",
++  url: "uri",
++  datetime: "date-time",
++};
++function parseString({ zodRef, schemas }) {
++  const baseSchema = {
++    type: "string",
++  };
++  const def = defOf(zodRef);
++  // z.email() and friends carry their format on the schema itself
++  const formats = def.format
++    ? [{ check: "string_format", format: def.format }]
++    : [];
++  [...formats, ...checksOf(zodRef)].forEach((item) => {
++    switch (item.check) {
++      case "string_format":
++        if (item.format === "regex") baseSchema.pattern = item.pattern.source;
++        else if (item.format in stringFormats)
++          baseSchema.format = stringFormats[item.format];
++        break;
++      case "length_equals":
++        baseSchema.minLength = item.length;
++        baseSchema.maxLength = item.length;
++        break;
++      case "max_length":
++        baseSchema.maxLength = item.maximum;
++        break;
++      case "min_length":
++        baseSchema.minLength = item.minimum;
++        break;
++    }
++  });
++  return (0, ts_deepmerge_1.merge)(baseSchema, describe(zodRef), ...schemas);
  }
- function parseObject({ zodRef, schemas, useOutput, }) {
-     var _a;
-@@ -131,14 +131,14 @@ function parseObject({ zodRef, schemas, useOutput, }) {
-             item._def.typeName === 'ZodDefault') && !(item instanceof zod_1.z.ZodNever || item._def.typeName === 'ZodDefault'));
-     });
-     const required = requiredProperties.length > 0 ? { required: requiredProperties } : {};
+-function parseNumber({ zodRef, schemas, }) {
+-    const baseSchema = {
+-        type: 'number',
+-    };
+-    const { checks = [] } = zodRef._def;
+-    checks.forEach((item) => {
+-        switch (item.kind) {
+-            case 'max':
+-                baseSchema.maximum = item.value;
+-                // TODO: option to make this always explicit? (false instead of non-existent)
+-                if (!item.inclusive)
+-                    baseSchema.exclusiveMaximum = item.value;
+-                break;
+-            case 'min':
+-                baseSchema.minimum = item.value;
+-                if (!item.inclusive)
+-                    baseSchema.exclusiveMinimum = item.value;
+-                break;
+-            case 'int':
+-                baseSchema.type = 'integer';
+-                break;
+-            case 'multipleOf':
+-                baseSchema.multipleOf = item.value;
+-        }
+-    });
+-    return (0, ts_deepmerge_1.default)(baseSchema, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++function parseNumber({ zodRef, schemas }) {
++  const baseSchema = {
++    type: "number",
++  };
++  if (["safeint", "int32", "uint32"].includes(defOf(zodRef).format)) baseSchema.type = "integer";
++  checksOf(zodRef).forEach((item) => {
++    switch (item.check) {
++      case "less_than":
++        baseSchema.maximum = item.value;
++        if (!item.inclusive) baseSchema.exclusiveMaximum = item.value;
++        break;
++      case "greater_than":
++        baseSchema.minimum = item.value;
++        if (!item.inclusive) baseSchema.exclusiveMinimum = item.value;
++        break;
++      case "number_format":
++        if (["safeint", "int32", "uint32"].includes(item.format))
++          baseSchema.type = "integer";
++        break;
++      case "multiple_of":
++        baseSchema.multipleOf = item.value;
++    }
++  });
++  return (0, ts_deepmerge_1.merge)(baseSchema, describe(zodRef), ...schemas);
+ }
+-function parseObject({ zodRef, schemas, useOutput, }) {
+-    var _a;
+-    let additionalProperties;
+-    // `catchall` obviates `strict`, `strip`, and `passthrough`
+-    if (!(zodRef._def.catchall instanceof zod_1.z.ZodNever ||
+-        ((_a = zodRef._def.catchall) === null || _a === void 0 ? void 0 : _a._def.typeName) === 'ZodNever'))
+-        additionalProperties = generateSchema(zodRef._def.catchall, useOutput);
+-    else if (zodRef._def.unknownKeys === 'passthrough')
+-        additionalProperties = true;
+-    else if (zodRef._def.unknownKeys === 'strict')
+-        additionalProperties = false;
+-    // So that `undefined` values don't end up in the schema and be weird
+-    additionalProperties =
+-        additionalProperties != null ? { additionalProperties } : {};
+-    const requiredProperties = Object.keys(zodRef.shape).filter((key) => {
+-        const item = zodRef.shape[key];
+-        return (!(item.isOptional() ||
+-            item instanceof zod_1.z.ZodDefault ||
+-            item._def.typeName === 'ZodDefault') && !(item instanceof zod_1.z.ZodNever || item._def.typeName === 'ZodDefault'));
+-    });
+-    const required = requiredProperties.length > 0 ? { required: requiredProperties } : {};
 -    return (0, ts_deepmerge_1.default)(Object.assign(Object.assign({ type: 'object', properties: iterateZodObject({
-+    return (0, ts_deepmerge_1.merge)(Object.assign(Object.assign({ type: 'object', properties: iterateZodObject({
++function parseObject({ zodRef, schemas, useOutput }) {
++  const catchall = defOf(zodRef).catchall;
++  let additionalProperties;
++  if (catchall === undefined) additionalProperties = undefined;
++  else if (typeOf(catchall) === "never") additionalProperties = false;
++  else if (typeOf(catchall) === "unknown") additionalProperties = true;
++  else additionalProperties = generateSchema(catchall, useOutput);
++  // So that `undefined` values don't end up in the schema and be weird
++  additionalProperties =
++    additionalProperties != null ? { additionalProperties } : {};
++  const requiredProperties = Object.keys(zodRef.shape).filter((key) => {
++    const item = zodRef.shape[key];
++    return (
++      !(item.safeParse(undefined).success || typeOf(item) === "default") &&
++      typeOf(item) !== "never"
++    );
++  });
++  const required =
++    requiredProperties.length > 0 ? { required: requiredProperties } : {};
++  return (0, ts_deepmerge_1.merge)(
++    Object.assign(
++      Object.assign(
++        {
++          type: "object",
++          properties: iterateZodObject({
              zodRef: zodRef,
              schemas,
              useOutput,
-         }) }, required), additionalProperties), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+-        }) }, required), additionalProperties), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++          }),
++        },
++        required,
++      ),
++      additionalProperties,
++    ),
++    describe(zodRef),
++    ...schemas,
++  );
  }
- function parseRecord({ zodRef, schemas, useOutput, }) {
+-function parseRecord({ zodRef, schemas, useOutput, }) {
 -    return (0, ts_deepmerge_1.default)({
-+    return (0, ts_deepmerge_1.merge)({
-         type: 'object',
-         additionalProperties: zodRef._def.valueType instanceof zod_1.z.ZodUnknown
-             ? {}
-@@ -146,26 +146,26 @@ function parseRecord({ zodRef, schemas, useOutput, }) {
-     }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+-        type: 'object',
+-        additionalProperties: zodRef._def.valueType instanceof zod_1.z.ZodUnknown
+-            ? {}
+-            : generateSchema(zodRef._def.valueType, useOutput),
+-    }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++function parseRecord({ zodRef, schemas, useOutput }) {
++  const valueType = defOf(zodRef).valueType;
++  return (0, ts_deepmerge_1.merge)(
++    {
++      type: "object",
++      additionalProperties:
++        typeOf(valueType) === "unknown"
++          ? {}
++          : generateSchema(valueType, useOutput),
++    },
++    describe(zodRef),
++    ...schemas,
++  );
  }
- function parseBigInt({ zodRef, schemas, }) {
+-function parseBigInt({ zodRef, schemas, }) {
 -    return (0, ts_deepmerge_1.default)({ type: 'integer', format: 'int64' }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
-+    return (0, ts_deepmerge_1.merge)({ type: 'integer', format: 'int64' }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++function parseBigInt({ zodRef, schemas }) {
++  return (0, ts_deepmerge_1.merge)(
++    { type: "integer", format: "int64" },
++    describe(zodRef),
++    ...schemas,
++  );
  }
- function parseBoolean({ zodRef, schemas, }) {
+-function parseBoolean({ zodRef, schemas, }) {
 -    return (0, ts_deepmerge_1.default)({ type: 'boolean' }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
-+    return (0, ts_deepmerge_1.merge)({ type: 'boolean' }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++function parseBoolean({ zodRef, schemas }) {
++  return (0, ts_deepmerge_1.merge)(
++    { type: "boolean" },
++    describe(zodRef),
++    ...schemas,
++  );
  }
  function parseDate({ zodRef, schemas }) {
 -    return (0, ts_deepmerge_1.default)({ type: 'string', format: 'date-time' }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
-+    return (0, ts_deepmerge_1.merge)({ type: 'string', format: 'date-time' }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++  return (0, ts_deepmerge_1.merge)(
++    { type: "string", format: "date-time" },
++    describe(zodRef),
++    ...schemas,
++  );
  }
  function parseNull({ zodRef, schemas }) {
 -    return (0, ts_deepmerge_1.default)({
-+    return (0, ts_deepmerge_1.merge)({
-         type: 'string',
-         format: 'null',
-         nullable: true,
-     }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+-        type: 'string',
+-        format: 'null',
+-        nullable: true,
+-    }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++  return (0, ts_deepmerge_1.merge)(
++    {
++      type: "string",
++      format: "null",
++      nullable: true,
++    },
++    describe(zodRef),
++    ...schemas,
++  );
  }
- function parseOptionalNullable({ schemas, zodRef, useOutput, }) {
+-function parseOptionalNullable({ schemas, zodRef, useOutput, }) {
 -    return (0, ts_deepmerge_1.default)(generateSchema(zodRef.unwrap(), useOutput), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
-+    return (0, ts_deepmerge_1.merge)(generateSchema(zodRef.unwrap(), useOutput), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++function parseOptionalNullable({ schemas, zodRef, useOutput }) {
++  return (0, ts_deepmerge_1.merge)(
++    generateSchema(defOf(zodRef).innerType, useOutput),
++    describe(zodRef),
++    ...schemas,
++  );
  }
- function parseDefault({ schemas, zodRef, useOutput, }) {
+-function parseDefault({ schemas, zodRef, useOutput, }) {
 -    return (0, ts_deepmerge_1.default)(Object.assign({ default: zodRef._def.defaultValue() }, generateSchema(zodRef._def.innerType, useOutput)), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
-+    return (0, ts_deepmerge_1.merge)(Object.assign({ default: zodRef._def.defaultValue() }, generateSchema(zodRef._def.innerType, useOutput)), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++function parseDefault({ schemas, zodRef, useOutput }) {
++  const def = defOf(zodRef);
++  return (0, ts_deepmerge_1.merge)(
++    Object.assign(
++      { default: def.defaultValue },
++      generateSchema(def.innerType, useOutput),
++    ),
++    describe(zodRef),
++    ...schemas,
++  );
  }
- function parseArray({ schemas, zodRef, useOutput, }) {
-     const constraints = {};
-@@ -177,22 +177,22 @@ function parseArray({ schemas, zodRef, useOutput, }) {
-         constraints.minItems = zodRef._def.minLength.value;
-     if (zodRef._def.maxLength != null)
-         constraints.maxItems = zodRef._def.maxLength.value;
--    return (0, ts_deepmerge_1.default)(Object.assign({ type: 'array', items: generateSchema(zodRef.element, useOutput) }, constraints), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
-+    return (0, ts_deepmerge_1.merge)(Object.assign({ type: 'array', items: generateSchema(zodRef.element, useOutput) }, constraints), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
- }
- function parseLiteral({ schemas, zodRef, }) {
--    return (0, ts_deepmerge_1.default)({
-+    return (0, ts_deepmerge_1.merge)({
-         type: typeof zodRef._def.value,
-         enum: [zodRef._def.value],
-     }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
- }
- function parseEnum({ schemas, zodRef, }) {
--    return (0, ts_deepmerge_1.default)({
-+    return (0, ts_deepmerge_1.merge)({
-         type: typeof Object.values(zodRef._def.values)[0],
-         enum: Object.values(zodRef._def.values),
-     }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
- }
- function parseIntersection({ schemas, zodRef, useOutput, }) {
--    return (0, ts_deepmerge_1.default)({
-+    return (0, ts_deepmerge_1.merge)({
-         allOf: [
-             generateSchema(zodRef._def.left, useOutput),
-             generateSchema(zodRef._def.right, useOutput),
-@@ -209,18 +209,18 @@ function parseUnion({ schemas, zodRef, useOutput, }) {
-             typeof content._def.value :
-             null, null);
-         if (type) {
--            return (0, ts_deepmerge_1.default)({
-+            return (0, ts_deepmerge_1.merge)({
-                 type: type,
-                 enum: literals.map((literal) => literal._def.value)
-             }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
-         }
+-function parseArray({ schemas, zodRef, useOutput, }) {
+-    const constraints = {};
+-    if (zodRef._def.exactLength != null) {
+-        constraints.minItems = zodRef._def.exactLength.value;
+-        constraints.maxItems = zodRef._def.exactLength.value;
++function parseArray({ schemas, zodRef, useOutput }) {
++  const constraints = {};
++  checksOf(zodRef).forEach((item) => {
++    if (item.check === "length_equals") {
++      constraints.minItems = item.length;
++      constraints.maxItems = item.length;
      }
--    return (0, ts_deepmerge_1.default)({
-+    return (0, ts_deepmerge_1.merge)({
-         oneOf: contents.map((schema) => generateSchema(schema, useOutput)),
-     }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+-    if (zodRef._def.minLength != null)
+-        constraints.minItems = zodRef._def.minLength.value;
+-    if (zodRef._def.maxLength != null)
+-        constraints.maxItems = zodRef._def.maxLength.value;
+-    return (0, ts_deepmerge_1.default)(Object.assign({ type: 'array', items: generateSchema(zodRef.element, useOutput) }, constraints), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++    if (item.check === "min_length") constraints.minItems = item.minimum;
++    if (item.check === "max_length") constraints.maxItems = item.maximum;
++  });
++  return (0, ts_deepmerge_1.merge)(
++    Object.assign(
++      {
++        type: "array",
++        items: generateSchema(defOf(zodRef).element, useOutput),
++      },
++      constraints,
++    ),
++    describe(zodRef),
++    ...schemas,
++  );
  }
- function parseDiscriminatedUnion({ schemas, zodRef, useOutput, }) {
+-function parseLiteral({ schemas, zodRef, }) {
 -    return (0, ts_deepmerge_1.default)({
-+    return (0, ts_deepmerge_1.merge)({
+-        type: typeof zodRef._def.value,
+-        enum: [zodRef._def.value],
+-    }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++function parseLiteral({ schemas, zodRef }) {
++  const values = defOf(zodRef).values;
++  return (0, ts_deepmerge_1.merge)(
++    {
++      type: typeof values[0],
++      enum: values,
++    },
++    describe(zodRef),
++    ...schemas,
++  );
+ }
+-function parseEnum({ schemas, zodRef, }) {
+-    return (0, ts_deepmerge_1.default)({
+-        type: typeof Object.values(zodRef._def.values)[0],
+-        enum: Object.values(zodRef._def.values),
+-    }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++function parseEnum({ schemas, zodRef }) {
++  const values = Object.values(defOf(zodRef).entries);
++  return (0, ts_deepmerge_1.merge)(
++    {
++      type: typeof values[0],
++      enum: values,
++    },
++    describe(zodRef),
++    ...schemas,
++  );
+ }
+-function parseIntersection({ schemas, zodRef, useOutput, }) {
+-    return (0, ts_deepmerge_1.default)({
+-        allOf: [
+-            generateSchema(zodRef._def.left, useOutput),
+-            generateSchema(zodRef._def.right, useOutput),
+-        ],
+-    }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++function parseIntersection({ schemas, zodRef, useOutput }) {
++  const def = defOf(zodRef);
++  return (0, ts_deepmerge_1.merge)(
++    {
++      allOf: [
++        generateSchema(def.left, useOutput),
++        generateSchema(def.right, useOutput),
++      ],
++    },
++    describe(zodRef),
++    ...schemas,
++  );
+ }
+-function parseUnion({ schemas, zodRef, useOutput, }) {
+-    const contents = zodRef._def.options;
+-    if (contents.reduce((prev, content) => prev && content._def.typeName === 'ZodLiteral', true)) {
+-        // special case to transform unions of literals into enums
+-        const literals = contents;
+-        const type = literals
+-            .reduce((prev, content) => !prev || prev === typeof content._def.value ?
+-            typeof content._def.value :
+-            null, null);
+-        if (type) {
+-            return (0, ts_deepmerge_1.default)({
+-                type: type,
+-                enum: literals.map((literal) => literal._def.value)
+-            }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+-        }
+-    }
+-    return (0, ts_deepmerge_1.default)({
+-        oneOf: contents.map((schema) => generateSchema(schema, useOutput)),
+-    }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+-}
+-function parseDiscriminatedUnion({ schemas, zodRef, useOutput, }) {
+-    return (0, ts_deepmerge_1.default)({
++function parseUnion({ schemas, zodRef, useOutput }) {
++  const def = defOf(zodRef);
++  const contents = def.options;
++  if (def.discriminator !== undefined) {
++    return (0, ts_deepmerge_1.merge)(
++      {
          discriminator: {
-             propertyName: zodRef._def.discriminator,
+-            propertyName: zodRef._def.discriminator,
++          propertyName: def.discriminator,
          },
-@@ -228,13 +228,13 @@ function parseDiscriminatedUnion({ schemas, zodRef, useOutput, }) {
-     }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
- }
- function parseNever({ zodRef, schemas, }) {
+-        oneOf: Array.from(zodRef._def.options.values()).map((schema) => generateSchema(schema, useOutput)),
+-    }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+-}
+-function parseNever({ zodRef, schemas, }) {
 -    return (0, ts_deepmerge_1.default)({ readOnly: true }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
-+    return (0, ts_deepmerge_1.merge)({ readOnly: true }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++        oneOf: contents.map((schema) => generateSchema(schema, useOutput)),
++      },
++      describe(zodRef),
++      ...schemas,
++    );
++  }
++  if (contents.every((content) => typeOf(content) === "literal")) {
++    // special case to transform unions of literals into enums
++    const values = contents.map((literal) => defOf(literal).values[0]);
++    const type = values.reduce(
++      (prev, value) => (!prev || prev === typeof value ? typeof value : null),
++      null,
++    );
++    if (type) {
++      return (0, ts_deepmerge_1.merge)(
++        {
++          type: type,
++          enum: values,
++        },
++        describe(zodRef),
++        ...schemas,
++      );
++    }
++  }
++  return (0, ts_deepmerge_1.merge)(
++    {
++      oneOf: contents.map((schema) => generateSchema(schema, useOutput)),
++    },
++    describe(zodRef),
++    ...schemas,
++  );
  }
- function parseBranded({ schemas, zodRef, }) {
+-function parseBranded({ schemas, zodRef, }) {
 -    return (0, ts_deepmerge_1.default)(generateSchema(zodRef._def.type), ...schemas);
-+    return (0, ts_deepmerge_1.merge)(generateSchema(zodRef._def.type), ...schemas);
++function parseNever({ zodRef, schemas }) {
++  return (0, ts_deepmerge_1.merge)(
++    { readOnly: true },
++    describe(zodRef),
++    ...schemas,
++  );
  }
- function catchAllParser({ zodRef, schemas, }) {
+-function catchAllParser({ zodRef, schemas, }) {
 -    return (0, ts_deepmerge_1.default)(zodRef.description ? { description: zodRef.description } : {}, ...schemas);
-+    return (0, ts_deepmerge_1.merge)(zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++function catchAllParser({ zodRef, schemas }) {
++  return (0, ts_deepmerge_1.merge)(describe(zodRef), ...schemas);
  }
  const workerMap = {
-     ZodObject: parseObject,
+-    ZodObject: parseObject,
+-    ZodRecord: parseRecord,
+-    ZodString: parseString,
+-    ZodNumber: parseNumber,
+-    ZodBigInt: parseBigInt,
+-    ZodBoolean: parseBoolean,
+-    ZodDate: parseDate,
+-    ZodNull: parseNull,
+-    ZodOptional: parseOptionalNullable,
+-    ZodNullable: parseOptionalNullable,
+-    ZodDefault: parseDefault,
+-    ZodArray: parseArray,
+-    ZodLiteral: parseLiteral,
+-    ZodEnum: parseEnum,
+-    ZodNativeEnum: parseEnum,
+-    ZodTransformer: parseTransformation,
+-    ZodEffects: parseTransformation,
+-    ZodIntersection: parseIntersection,
+-    ZodUnion: parseUnion,
+-    ZodDiscriminatedUnion: parseDiscriminatedUnion,
+-    ZodNever: parseNever,
+-    ZodBranded: parseBranded,
+-    // TODO Transform the rest to schemas
+-    ZodUndefined: catchAllParser,
+-    // TODO: `prefixItems` is allowed in OpenAPI 3.1 which can be used to create tuples
+-    ZodTuple: catchAllParser,
+-    ZodMap: catchAllParser,
+-    ZodFunction: catchAllParser,
+-    ZodLazy: catchAllParser,
+-    ZodPromise: catchAllParser,
+-    ZodAny: catchAllParser,
+-    ZodUnknown: catchAllParser,
+-    ZodVoid: catchAllParser,
++  object: parseObject,
++  record: parseRecord,
++  string: parseString,
++  number: parseNumber,
++  bigint: parseBigInt,
++  boolean: parseBoolean,
++  date: parseDate,
++  null: parseNull,
++  optional: parseOptionalNullable,
++  nullable: parseOptionalNullable,
++  // `.required()` wraps optional fields instead of unwrapping them
++  nonoptional: parseOptionalNullable,
++  default: parseDefault,
++  array: parseArray,
++  literal: parseLiteral,
++  enum: parseEnum,
++  pipe: parsePipe,
++  intersection: parseIntersection,
++  union: parseUnion,
++  never: parseNever,
++  // TODO Transform the rest to schemas
++  undefined: catchAllParser,
++  // TODO: `prefixItems` is allowed in OpenAPI 3.1 which can be used to create tuples
++  tuple: catchAllParser,
++  map: catchAllParser,
++  function: catchAllParser,
++  lazy: catchAllParser,
++  promise: catchAllParser,
++  any: catchAllParser,
++  unknown: catchAllParser,
++  void: catchAllParser,
+ };
+ function generateSchema(zodRef, useOutput) {
+-    const { metaOpenApi = {} } = zodRef;
+-    const schemas = [
+-        zodRef.isNullable && zodRef.isNullable() ? { nullable: true } : {},
+-        ...(Array.isArray(metaOpenApi) ? metaOpenApi : [metaOpenApi]),
+-    ];
+-    try {
+-        const typeName = zodRef._def.typeName;
+-        if (typeName in workerMap) {
+-            return workerMap[typeName]({
+-                zodRef: zodRef,
+-                schemas,
+-                useOutput,
+-            });
+-        }
+-        return catchAllParser({ zodRef, schemas });
+-    }
+-    catch (err) {
+-        console.error(err);
+-        return catchAllParser({ zodRef, schemas });
++  const { metaOpenApi = {} } = zodRef;
++  const schemas = [
++    zodRef.safeParse(null).success ? { nullable: true } : {},
++    ...(Array.isArray(metaOpenApi) ? metaOpenApi : [metaOpenApi]),
++  ];
++  try {
++    const typeName = typeOf(zodRef);
++    if (typeName in workerMap) {
++      return workerMap[typeName]({
++        zodRef: zodRef,
++        schemas,
++        useOutput,
++      });
+     }
++    return catchAllParser({ zodRef, schemas });
++  } catch (err) {
++    console.error(err);
++    return catchAllParser({ zodRef, schemas });
++  }
+ }
+ exports.generateSchema = generateSchema;
+ //# sourceMappingURL=zod-openapi.js.map

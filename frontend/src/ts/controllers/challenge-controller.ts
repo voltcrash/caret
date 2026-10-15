@@ -11,7 +11,6 @@ import { setConfig } from "../config/setters";
 import { Config } from "../config/store";
 import { configEvent } from "../events/config";
 
-import { verifyChallenge, getChallenge } from "@oxytype/challenges";
 import { ChallengeName } from "@oxytype/schemas/challenges";
 import { CompletedEvent } from "@oxytype/schemas/results";
 import { hideLoaderBar, showLoaderBar } from "../states/loader-bar";
@@ -34,10 +33,13 @@ function clearActive(): void {
   }
 }
 
-export function verify(result: CompletedEvent): ChallengeName | null {
+export async function verify(
+  result: CompletedEvent,
+): Promise<ChallengeName | null> {
   const loadedChallenge = getLoadedChallenge();
   if (loadedChallenge === null) return null;
   try {
+    const { verifyChallenge } = await import("@oxytype/challenges");
     const failReasons = verifyChallenge(result, Config, loadedChallenge);
     if (failReasons.length === 0) {
       showSuccessNotification(`${loadedChallenge.display} challenge passed!`);
@@ -61,6 +63,7 @@ export async function setup(challengeName: ChallengeName): Promise<boolean> {
 
   setConfig("funbox", []);
 
+  const { getChallenge } = await import("@oxytype/challenges");
   const challenge = getChallenge(challengeName);
   const settings = challenge.settings;
 

@@ -1,4 +1,4 @@
-import { z, ZodSchema } from "zod/v3";
+import { z } from "zod";
 import { RateLimitIds, RateLimiterId } from "../rate-limit";
 import { RequireConfiguration } from "../require-configuration";
 
@@ -82,10 +82,10 @@ export const MonkeyServerError = MonkeyClientError.extend({
 });
 export type MonkeyServerErrorType = z.infer<typeof MonkeyServerError>;
 
-export function responseWithNullableData<T extends ZodSchema>(
+export function responseWithNullableData<T extends z.ZodType>(
   dataSchema: T,
 ): z.ZodObject<
-  z.objectUtil.extendShape<
+  z.core.util.Extend<
     typeof MonkeyResponseSchema.shape,
     {
       data: z.ZodNullable<T>;
@@ -97,10 +97,10 @@ export function responseWithNullableData<T extends ZodSchema>(
   });
 }
 
-export function responseWithData<T extends ZodSchema>(
+export function responseWithData<T extends z.ZodType>(
   dataSchema: T,
 ): z.ZodObject<
-  z.objectUtil.extendShape<
+  z.core.util.Extend<
     typeof MonkeyResponseSchema.shape,
     {
       data: T;

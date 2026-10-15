@@ -1,4 +1,5 @@
 import { debounce } from "throttle-debounce";
+import "@oxytype/util/zod-messages";
 import type { Validation, ValidationResult } from "../types/validation";
 
 function debounceIfNeeded<A extends unknown[], R>(
@@ -78,7 +79,7 @@ export function useInputValidation<T>(
         callback({
           success: false,
           status: "failed",
-          errorMessage: `${schemaResult.error.errors
+          errorMessage: `${schemaResult.error.issues
             .map((err) =>
               err.message.at(-1) === "."
                 ? err.message.slice(0, -1)

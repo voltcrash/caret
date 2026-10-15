@@ -152,25 +152,23 @@ function AsyncContent<T extends Record<string, unknown>>(
       }
     });
   }
-  const eagerAccessorMap = Object.fromEntries(
-    keys.map((key) => [
-      `${String(key)}Data`,
-      keyAccessor(
-        untrack(() => value),
-        key,
-      ),
-    ]),
-  ) as unknown as AccessorMap<DataKeys<{ [K in keyof T]: T[K] | undefined }>>;
-
-  const deferredAccessorMap = Object.fromEntries(
-    keys.map((key) => [
-      `${String(key)}Data`,
-      keyAccessor(
-        untrack(() => lastResolvedValue),
-        key,
-      ),
-    ]),
-  ) as unknown as AccessorMap<DataKeys<{ [K in keyof T]: T[K] }>>;
+  const eagerAccessorMap = dataAccessors(
+    keys,
+    untrack(() => value),
+  );
+  const deferredAccessorMap = dataAccessors(
+    keys,
+    untrack(() => lastResolvedValue),
+  );
+  if (
+    !hasDataAccessors<{ [K in keyof T]: T[K] | undefined }>(
+      eagerAccessorMap,
+      keys,
+    ) ||
+    !hasDataAccessors<{ [K in keyof T]: T[K] }>(deferredAccessorMap, keys)
+  ) {
+    throw new Error("AsyncContent: missing data accessors");
+  }
 
   const loader = (): JSXElement =>
     props.loader ?? <LoadingCircle class="p-4 text-center text-2xl" />;
@@ -251,4 +249,21 @@ function keyAccessor<T, K extends keyof T>(
   key: K,
 ): Accessor<T[K] | undefined> {
   return () => getData()?.[key];
+}
+
+/** One `${key}Data` accessor per key, reading through `getData`. */
+function dataAccessors<T>(
+  keys: (keyof T)[],
+  getData: Accessor<T | undefined>,
+): Record<string, Accessor<unknown>> {
+  return Object.fromEntries(
+    keys.map((key) => [`${String(key)}Data`, keyAccessor(getData, key)]),
+  );
+}
+
+function hasDataAccessors<V>(
+  map: Record<string, Accessor<unknown>>,
+  keys: (keyof V)[],
+): map is AccessorMap<DataKeys<V>> {
+  return keys.every((key) => typeof map[`${String(key)}Data`] === "function");
 }

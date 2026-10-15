@@ -1,4 +1,4 @@
-import { z } from "zod/v3";
+import { z } from "zod";
 import { IdSchema, nameWithSeparators, TagSchema } from "./util";
 import {
   ConfigGroupName,
@@ -25,7 +25,7 @@ const PresetSettingsGroupsSchema = z
           ).length > 1;
         if (duplicateElemExits) {
           ctx.addIssue({
-            code: z.ZodIssueCode.custom,
+            code: "custom",
             message: `No duplicates allowed.`,
           });
         }

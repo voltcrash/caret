@@ -1,5 +1,5 @@
 import { UserNameSchema } from "@oxytype/schemas/users";
-import { z } from "zod/v3";
+import { z } from "zod";
 
 import Ape from "../../../ape";
 import { reauthenticate } from "../../../auth";

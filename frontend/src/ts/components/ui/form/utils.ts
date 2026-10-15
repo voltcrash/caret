@@ -1,9 +1,10 @@
 import { AnyFieldApi } from "@tanstack/solid-form";
-import { ZodSchema } from "zod/v3";
+import type { z } from "zod";
+import "@oxytype/util/zod-messages";
 
 export type ValidationResult = { type: "error" | "warning"; message: string };
 export function fromSchema<T, Input = T>(
-  schema: ZodSchema<T>,
+  schema: z.ZodType<T>,
   options?: {
     convert?: (value: Input) => unknown;
   },

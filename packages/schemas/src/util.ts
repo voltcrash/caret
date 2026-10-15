@@ -1,4 +1,5 @@
-import { z, ZodErrorMap, ZodString } from "zod/v3";
+import { z, ZodString } from "zod";
+import "@oxytype/util/zod-messages";
 
 export const StringNumberSchema = z
   .string()
@@ -59,18 +60,40 @@ export type CustomTextMode = z.infer<typeof CustomTextModeSchema>;
 export const CustomTextLimitModeSchema = z.enum(["word", "time", "section"]);
 export type CustomTextLimitMode = z.infer<typeof CustomTextLimitModeSchema>;
 
-export function customEnumErrorHandler(message: string): ZodErrorMap {
-  return (issue, _ctx) => ({
-    message:
-      issue.code === "invalid_enum_value"
-        ? `Invalid enum value. ${message}`
-        : (issue.message ?? "Required"),
-  });
+export function customEnumErrorHandler(message: string): z.core.$ZodErrorMap {
+  // Zod 3 only used the custom message for strings; other input was a
+  // type error, which this handler reported as "Required".
+  return (issue) =>
+    issue.code === "invalid_value" && typeof issue.input === "string"
+      ? `Invalid enum value. ${message}`
+      : (issue.message ?? "Required");
 }
 
 export const PageNumberSchema = z
   .number()
   .int()
-  .safe()
+  // zod 3's .safe()
+  .min(Number.MIN_SAFE_INTEGER)
+  .max(Number.MAX_SAFE_INTEGER)
   .nonnegative()
   .default(0);
+
+/**
+ * A record keyed by an enum or literals, with Zod 3 semantics: every key is
+ * optional and an unknown key fails at its own path, so sanitize drops just
+ * that key instead of the whole record.
+ */
+export function partialRecord<
+  K extends z.ZodType<PropertyKey, PropertyKey>,
+  V extends z.ZodType,
+>(
+  key: K,
+  value: V,
+): z.ZodRecord<z.ZodCustom<z.output<K>, z.output<K>> & z.core.$partial, V> {
+  return z.partialRecord(
+    z.custom<z.output<K>>((input) => key.safeParse(input).success, {
+      error: (issue) => key.safeParse(issue.input).error?.issues[0]?.message,
+    }),
+    value,
+  );
+}

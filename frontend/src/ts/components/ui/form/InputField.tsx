@@ -1,7 +1,7 @@
 import { AnyFieldApi } from "@tanstack/solid-form";
 import { format as dateFormat } from "date-fns/format";
 import { Accessor, createSignal, JSXElement, Show, useContext } from "solid-js";
-import { ZodDate, ZodFirstPartyTypeKind, ZodNumber, ZodTypeAny } from "zod/v3";
+import { z, ZodNumber } from "zod";
 
 import { cn } from "../../../utils/cn";
 import { getZodType, unwrapSchema } from "../../../utils/zod";
@@ -50,7 +50,7 @@ export function InputField(props: {
    * If user inputs empty string the field is resetted to the default value
    */
   resetToDefaultIfEmptyOnBlur?: boolean;
-  schema?: ZodTypeAny;
+  schema?: z.ZodType;
   min?: number;
   max?: number;
   step?: string | number;
@@ -165,25 +165,25 @@ export function InputField(props: {
   );
 }
 
-function getNumberOptions(rawSchema: ZodTypeAny | undefined): {
+function getNumberOptions(rawSchema: z.ZodType | undefined): {
   min?: number;
   max?: number;
   step?: string;
 } {
   if (rawSchema === undefined) return {};
   const schema = unwrapSchema(rawSchema);
-  if (getZodType(schema) !== ZodFirstPartyTypeKind.ZodNumber) return {};
+  if (getZodType(schema) !== "number") return {};
   const numberSchema = schema as ZodNumber;
 
   return {
     min: numberSchema.minValue ?? undefined,
     max: numberSchema.maxValue ?? undefined,
-    step: numberSchema.isInt ? "1" : "any",
+    step: numberSchema.format === "safeint" ? "1" : "any",
   };
 }
 
 function getDateOptions(
-  rawSchema: ZodTypeAny | undefined,
+  rawSchema: z.ZodType | undefined,
   format: (val: Date | undefined) => string | undefined,
 ): {
   min?: string;
@@ -191,15 +191,21 @@ function getDateOptions(
 } {
   if (rawSchema === undefined) return {};
   const schema = unwrapSchema(rawSchema);
-  if (getZodType(schema) !== ZodFirstPartyTypeKind.ZodDate) return {};
+  if (getZodType(schema) !== "date") return {};
 
-  const applyFormat = (it: Date | null) =>
-    it === null ? undefined : format(it);
+  let min: Date | undefined;
+  let max: Date | undefined;
+  for (const check of schema.def.checks ?? []) {
+    const def = check._zod.def;
+    if (def.check === "greater_than" && "value" in def) {
+      min = new Date(def.value as number | Date);
+    }
+    if (def.check === "less_than" && "value" in def) {
+      max = new Date(def.value as number | Date);
+    }
+  }
 
-  return {
-    min: applyFormat((schema as ZodDate).minDate),
-    max: applyFormat((schema as ZodDate).maxDate),
-  };
+  return { min: format(min), max: format(max) };
 }
 
 function convertValueToString(input: unknown | undefined): string {

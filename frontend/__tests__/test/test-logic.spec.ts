@@ -32,6 +32,8 @@ const mocks = vi.hoisted(() => ({
   addResult: vi.fn(),
   capture: vi.fn(),
   saveLocal: vi.fn(),
+  finishReason: undefined as string | undefined,
+  onFinish: undefined as ((event: { reason?: string }) => void) | undefined,
 }));
 
 vi.mock("../../src/ts/states/test", () => ({
@@ -108,8 +110,21 @@ vi.mock("../../src/ts/test/events/data", () => ({
     start: mocks.sessionStart,
     generate: mocks.generate,
     complete: mocks.complete,
+    end: vi.fn(),
+    abandon: () => ({ acc: mocks.inputAccuracy, seconds: 0 }),
+    finish: (_now: number, reason?: string) => {
+      mocks.finishReason = reason;
+      mocks.onFinish?.({ reason });
+    },
+    getFinishReason: () => mocks.finishReason,
+    on: (_type: "finish", listener: (event: { reason?: string }) => void) => {
+      mocks.onFinish = listener;
+      return () => undefined;
+    },
   },
-  resetTestEvents: vi.fn(),
+  resetTestEvents: () => {
+    mocks.finishReason = undefined;
+  },
   cleanupData: vi.fn(),
   logEventsDataToTheConsoleTable: vi.fn(),
   forceReleaseAllKeys: vi.fn(),
@@ -120,9 +135,6 @@ vi.mock("../../src/ts/test/events/data", () => ({
 }));
 vi.mock("../../src/ts/test/words-generator", () => ({
   areAllWordsGenerated: () => true,
-}));
-vi.mock("../../src/ts/test/events/live-cache", () => ({
-  getLiveCachedAccuracy: () => mocks.inputAccuracy,
 }));
 vi.mock("../../src/ts/test/funbox/list", () => ({
   getActiveFunboxes: () => [],
@@ -308,7 +320,7 @@ describe("test lifecycle state", () => {
     expect(mocks.sessionStart).not.toHaveBeenCalled();
     mocks.transition = false;
     expect(startTest(100)).toBe(true);
-    expect(mocks.sessionStart).toHaveBeenCalledWith(100, false);
+    expect(mocks.sessionStart).toHaveBeenCalledWith(100);
     expect(mocks.uiStart).toHaveBeenCalledOnce();
   });
 
