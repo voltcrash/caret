@@ -1,11 +1,10 @@
+import { verifyCaptcha } from "./user/captcha";
 import type { Client, ClientQuery } from "@oxytype/schemas/shared";
-import type { CaptchaAction } from "@oxytype/contracts/captcha";
 import { atomicUser } from "../../db/mutation";
 import * as UserDAL from "../../dal/user";
 import MonkeyError from "../../utils/error";
 import { MonkeyResponse } from "../../utils/monkey-response";
 import { buildAgentLog, omit, sanitizeString } from "../../utils/misc";
-import { verify } from "../../utils/captcha";
 import * as LeaderboardsDAL from "../../dal/leaderboards";
 import { purgeUserFromDailyLeaderboards } from "../../utils/daily-leaderboards";
 import { purgeUserFromXpLeaderboards } from "../../services/weekly-xp-leaderboard";
@@ -68,24 +67,7 @@ import {
 } from "@oxytype/contracts/users";
 import { MILLISECONDS_IN_DAY } from "@oxytype/util/date-and-time";
 import { MonkeyRequest } from "../types";
-import { tryCatch } from "@oxytype/util/trycatch";
 import { PersonalBest } from "@oxytype/schemas/shared";
-
-async function verifyCaptcha(
-  captcha: string,
-  action: CaptchaAction,
-): Promise<void> {
-  const { data: verified, error } = await tryCatch(verify(captcha, action));
-  if (error) {
-    throw new MonkeyError(
-      422,
-      "Request to the Captcha API failed, please try again later",
-    );
-  }
-  if (!verified) {
-    throw new MonkeyError(422, "Captcha challenge failed");
-  }
-}
 
 export async function createNewUser(
   req: MonkeyRequest<undefined, CreateUserRequest>,
