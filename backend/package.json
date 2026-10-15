@@ -31,7 +31,9 @@
     "db:migrate:production": "wrangler d1 migrations apply oxytype-production --remote --config wrangler.production.json",
     "db:bootstrap:production": "wrangler d1 execute oxytype-production --remote --config wrangler.production.json --file bootstrap/production.sql",
     "db:audit-ape-key-hashes": "wrangler d1 execute oxytype-staging --remote --command=\"$(cat scripts/audit-ape-key-hashes.sql)\" --json",
-    "db:audit-ape-key-hashes:production": "wrangler d1 execute oxytype-production --remote --config wrangler.production.json --command=\"$(cat scripts/audit-ape-key-hashes.sql)\" --json"
+    "db:audit-ape-key-hashes:production": "wrangler d1 execute oxytype-production --remote --config wrangler.production.json --command=\"$(cat scripts/audit-ape-key-hashes.sql)\" --json",
+    "migration-inventory": "tsx scripts/migration-inventory.ts",
+    "benchmark-migration": "tsx scripts/migration-baseline.ts"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "1.7.7",

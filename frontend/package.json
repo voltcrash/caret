@@ -25,7 +25,9 @@
     "storybook": "vp run @oxytype/frontend-storybook#storybook",
     "import-tree": "tsx ./scripts/import-tree.ts",
     "generate-icon-types": "tsx scripts/generate-fontawesome-types.ts",
-    "benchmark-word-rendering": "playwright test --config playwright.benchmark.config.ts"
+    "benchmark-word-rendering": "playwright test --config playwright.benchmark.config.ts",
+    "benchmark-migration": "playwright test --config playwright.migration.config.ts",
+    "migration-performance": "tsx scripts/migration-performance.ts"
   },
   "dependencies": {
     "@better-auth/infra": "0.4.14",
