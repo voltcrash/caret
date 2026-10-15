@@ -33,6 +33,13 @@ export async function createWorkerd(
         name,
         compatibilityDate: "2026-10-02",
         compatibilityFlags: ["nodejs_compat"],
+        assets: {
+          directory: resolve(dir, "../client"),
+          hasUserWorker: true,
+          htmlHandling: "none",
+          notFoundHandling: "none",
+          runWorkerFirst: false,
+        },
         manifest: { mainModule: "index.js", modules },
         env: {
           DB: { type: "d1" as const, name, id: name },
@@ -47,6 +54,14 @@ export async function createWorkerd(
             value: "http://localhost:3000/api/auth",
           },
           BETTER_AUTH_SECRET: { type: "text" as const, value: testSecret },
+        },
+      },
+      dev: {
+        outboundService: {
+          type: "fetcher" as const,
+          handler: (request: { url: string }) => {
+            throw new Error(`Unexpected outbound HTTP: ${request.url}`);
+          },
         },
       },
     })),
