@@ -79,6 +79,49 @@ describe("recorded fixtures", () => {
   });
 });
 
+describe("detector histories", () => {
+  it("keeps replays within one user and the retained history", () => {
+    const first = humanTimings(400, 1);
+    const samples = [first, humanTimings(400, 2), humanTimings(400, 3)];
+    expect(detect([...samples, first], 2)[3]?.flagged).not.toContain(
+      "replayed-timing",
+    );
+    expect(detect([first, first])[1]?.flagged).toContain("replayed-timing");
+    expect(detect([first, first], 0)[1]?.flagged).not.toContain(
+      "replayed-timing",
+    );
+    const report = calibrateDetectors(
+      new Map([
+        ["human:a", [first]],
+        ["human:b", [first]],
+      ]),
+      () => "human",
+    );
+    expect(report.falsePositiveRate["replayed-timing"]).toBe(0);
+  });
+
+  it("requires web hold telemetry but only gaps for terminal fixed timing", () => {
+    const keySpacing = Array<number>(150).fill(80);
+    const web = detect([{ keySpacing, keyDuration: [], client: "web" }])[0];
+    const tui = detect([{ keySpacing, keyDuration: [], client: "tui" }])[0];
+    expect(web?.applicable).not.toContain("fixed-timing");
+    expect(tui?.flagged).toContain("fixed-timing");
+    expect(tui?.applicable).not.toContain("uniform-holds");
+    expect(tui?.applicable).not.toContain("low-hold-variation");
+    expect(tui?.applicable).not.toContain("memoryless-timing");
+  });
+
+  it("reports unmeasured human rates as null", () => {
+    const report = calibrateDetectors(new Map());
+    expect(Object.values(report.falsePositiveRate)).toEqual(
+      Array(9).fill(null),
+    );
+    expect(Object.values(report.falseNegativeRate)).toEqual(
+      Array(9).fill(null),
+    );
+  });
+});
+
 describe("detector calibration", () => {
   const human = Array.from({ length: 4 }, (_, i) => humanTimings(400, i + 1));
   const recording = humanTimings(400, 9);

@@ -37,17 +37,25 @@ function interior(values: number[]): number[] {
 /**
  * Run every detector over one user's samples, in order. A sample counts as
  * replayed when an earlier sample in the same list has its fingerprint, as the
- * per-user replay check would see it.
+ * per-user replay check would see it. Retains the default 50 fingerprints;
+ * rejected replays do not refresh the history.
  */
-export function detect(samples: TimingSample[]): Verdict[] {
-  const seen = new Set<string>();
+export function detect(
+  samples: TimingSample[],
+  maxFingerprints = 50,
+): Verdict[] {
+  const seen: string[] = [];
   return samples.map(({ keySpacing, keyDuration, client = "web" }) => {
     const applicable: Detector[] = [];
     const flagged: Detector[] = [];
     const gaps = interior(keySpacing).length;
     const holds = interior(keyDuration).length;
 
-    if (keySpacing.slice(1, -1).length >= MIN_BOT_TIMING_SAMPLES) {
+    if (
+      keySpacing.slice(1, -1).length >= MIN_BOT_TIMING_SAMPLES &&
+      (client === "tui" ||
+        keyDuration.slice(1, -1).length >= MIN_BOT_TIMING_SAMPLES)
+    ) {
       applicable.push("fixed-timing");
       if (hasFixedTimingSignature(keySpacing, keyDuration, client)) {
         flagged.push("fixed-timing");
@@ -57,8 +65,12 @@ export function detect(samples: TimingSample[]): Verdict[] {
     const fingerprint = timingFingerprint(keySpacing, keyDuration, client);
     if (fingerprint !== undefined) {
       applicable.push("replayed-timing");
-      if (seen.has(fingerprint)) flagged.push("replayed-timing");
-      seen.add(fingerprint);
+      if (seen.includes(fingerprint)) {
+        flagged.push("replayed-timing");
+      } else if (maxFingerprints > 0) {
+        seen.unshift(fingerprint);
+        seen.length = Math.min(seen.length, maxFingerprints);
+      }
     }
 
     const review = reviewKeyTimings(keySpacing, keyDuration);
