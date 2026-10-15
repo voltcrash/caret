@@ -20,6 +20,9 @@ export async function readSessionState(
   const configuration = await getCachedConfiguration();
   const context = {
     actor: GUEST,
+    runtime: request.runtime,
+    requestId: request.requestId,
+    background: request.background,
     configuration,
     client: { ip: request.clientIp },
   };

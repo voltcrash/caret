@@ -1,5 +1,6 @@
 import type { ServiceContext, OperationInput } from "../services/context";
 import type { MonkeyRequest } from "./types";
+import { runtime, background } from "../runtime/env";
 import type { HttpRequest } from "./http";
 
 export function serviceContext(
@@ -8,6 +9,9 @@ export function serviceContext(
 ): ServiceContext {
   return {
     actor: context.decodedToken,
+    runtime: runtime(),
+    requestId: runtime().request?.requestId ?? crypto.randomUUID(),
+    background,
     configuration: context.configuration,
     client: { ip: req.ip, userAgent: req.headers["user-agent"] },
   };

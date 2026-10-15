@@ -1,3 +1,4 @@
+import type { Runtime } from "../runtime/env";
 import type { Configuration } from "@oxytype/schemas/configuration";
 
 /** Who an operation acts for; established by the authentication policy. */
@@ -16,6 +17,9 @@ export const GUEST: Actor = Object.freeze({ type: "None", uid: "", email: "" });
  */
 export type ServiceContext = {
   actor: Actor;
+  runtime: Runtime;
+  requestId: string;
+  background: (task: Promise<unknown>) => void;
   configuration: Configuration;
   /** Trusted client address (see `policies/client-ip`) and agent, for audit logs. */
   client: { ip: string; userAgent?: string };

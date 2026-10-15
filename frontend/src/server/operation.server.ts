@@ -44,6 +44,9 @@ export async function runOperation<Q, B, P, R>(
   const operation = getOperation(id);
   const context: ServiceContext = {
     actor: { ...GUEST },
+    runtime: request.runtime,
+    requestId: request.requestId,
+    background: request.background,
     configuration: await getCachedConfiguration(true),
     client: {
       ip: request.clientIp,
