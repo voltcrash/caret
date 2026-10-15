@@ -6,7 +6,7 @@
  * recordings. "model" fixtures come from a rough hand model (one drifting speed
  * state drives gaps and holds); they are not human samples. Run, then format:
  *
- *   node packages/typing-core/scripts/record-bot-fixtures.ts
+ *   vp exec node packages/typing-core/scripts/record-bot-fixtures.ts
  *   vp fmt packages/typing-core/__fixtures__/anticheat
  */
 import { mkdirSync, writeFileSync } from "node:fs";

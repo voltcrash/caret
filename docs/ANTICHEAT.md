@@ -111,23 +111,84 @@ With `admin.endpointsEnabled`, admins can read:
   one event (`anticheat_rejected`, `anticheat_flagged`, `anticheat_sample`),
   newest first; page with `before=<timestamp>` and filter with `uid`.
 
-To calibrate, export samples, split them by reviewed label and run:
+The calibration runner exercises the fixed-timing signature, replay fingerprint
+and every review signal using the production detector functions. From the root:
 
 ```sh
-cd backend
-vp run anticheat:calibrate human=reviewed-human.json bot=known-bot.json
+vp run --filter @oxytype/backend anticheat:calibrate
 ```
 
-It accepts admin audit responses, audit rows or arrays of
-`{ keySpacing, keyDuration }`, and prints per-label signal rates and feature
-percentiles. Tighten nothing until human false-positive rates are known.
+The default inputs are the eight scripted web recordings, the automated PTY
+recording, and the seeded bot/model fixtures in
+`packages/typing-core/__fixtures__/anticheat`. None is a labelled human sample.
+The web and PTY recordings are transport evidence, labelled `recorded-web` and
+`recorded-tui`. Modelled hands are labelled `model`, including the first upload
+in the replay fixture. These labels are excluded from human false-positive and
+bot false-negative rates.
+
+To calibrate on reviewed human web/TUI samples and known bots:
+
+```sh
+vp run --filter @oxytype/backend anticheat:calibrate \
+  human-web=/path/to/reviewed-web \
+  human-tui=/path/to/reviewed-tui \
+  bot=/path/to/known-bots
+```
+
+Each path is a JSON file or a directory of JSON files. Use **one user's history
+per file, oldest first**; split admin exports by user and reverse the API's
+newest-first ordering. A file accepts an admin audit response, audit rows with
+arrays in `message`, an array of `{ keySpacing, keyDuration, client? }`, a
+`record-fixtures.ts`/terminal fixture (`completedEvent`/`result`), or
+`{ label, client, samples }`. Set `client: "tui"` on terminal samples or the
+fixture wrapper: zero holds are unobserved releases. Without a client, web
+semantics apply. Per-sample `label` overrides the file label, so a legitimate
+original upload and its bot resubmissions can share one replay history. Invalid
+samples and long-test sentinels are skipped.
+
+Reports contain per-label sample counts, applicable/flagged counts and rates
+for all eight detectors, aggregate false-positive/false-negative rates, and
+review-feature percentiles. Labels beginning `human` or `bot` supply ground
+truth; other labels are descriptive only. Rates range from 0 to 1. A missing
+applicable denominator produces **null, never a measured zero**. `any` counts
+all labelled samples, including those too short for a detector. Replay compares
+only within each file and retains the default 50 accepted fingerprints; rejected
+replays do not refresh history. This evaluates timing evidence, not the full
+submission gates (WPM, mode, verification, opt-out, sparse compositions or server
+configuration). Per-detector miss rates include bots designed for other detectors.
+
+Regenerate deterministic bots with the plan helpers shared by the web recorder:
+
+```sh
+vp exec node packages/typing-core/scripts/record-bot-fixtures.ts
+vp fmt packages/typing-core/__fixtures__/anticheat
+```
+
+The fixtures cover fixed web/TUI timings, sub-ms and ±1 ms jitter, bounded random
+ranges, scripted web delays, small value pools, independent Gaussian/lognormal
+draws, and exact/noisy replays. The default report currently shows:
+
+| Set | Samples | Any detector flags |
+| --- | ---: | ---: |
+| Scripted web recordings | 8 | 0 (only 5 qualify for replay; none for review) |
+| Automated PTY recording | 1 | 0 (too short for all detectors) |
+| Synthetic bots | 11 | 10 (9.09% aggregate false negatives) |
+| Modelled hands | 6 | 1 (memoryless-timing; not a human false positive) |
+
+The noisy replay escapes: changing timings by less than a millisecond can still
+move individual values across rounding boundaries and change the fingerprint.
+The exact replay is caught. These tiny synthetic sets establish reproducibility
+and expose blind spots; they do not justify threshold changes. Human web/TUI
+false-positive rates remain **unmeasured (null)**. Collect and review real samples
+before tightening thresholds or enabling enforcement.
 
 ## Limits and monitoring
 
 This is consistency validation, a deliberately narrow bot heuristic, per-user
 replay detection and log-only review. Client telemetry remains forgeable;
 coherent fabricated scores, freshly generated human-like timing, recordings
-from another account and recordings perturbed by a millisecond or more can
+from another account and recordings whose perturbations cross whole-ms rounding
+boundaries can
 evade it. The public, unkeyed payload hash detects inconsistencies, not
 authenticity. No server-issued test challenge, source-text replay or
 classifier calibrated on a labelled human corpus is provided. High speed alone
