@@ -1,4 +1,4 @@
-import { onCleanup } from "solid-js";
+import { createComputed, createRoot, createSignal, onCleanup } from "solid-js";
 import { beforeEach, afterEach, expect, it, vi } from "vite-plus/test";
 
 import { mountApplication } from "../../src/app/application";
@@ -7,6 +7,7 @@ import {
   releaseTestApplication,
 } from "../__harness__/mock-application";
 import {
+  bindTypingActivity,
   captureTypingRoute,
   createTypingOwned,
   isTypingRouteActive,
@@ -59,4 +60,21 @@ it("recreates timers/subscriptions per mount and cleans each exactly once", () =
   second();
   second();
   expect(cleanup).toHaveBeenCalledTimes(2);
+});
+
+it("lets derived state observe mounts and the rollback binding", () => {
+  const values: boolean[] = [];
+  const stop = createRoot((dispose) => {
+    createComputed(() => values.push(isTypingRouteActive()));
+    return dispose;
+  });
+  const [page, setPage] = createSignal("test");
+  const unbind = bindTypingActivity(() => page() === "test");
+  setPage("settings");
+  setPage("test");
+  unbind();
+  const release = mountTypingScope();
+  release();
+  stop();
+  expect(values).toEqual([true, true, false, true, true, true, false]);
 });

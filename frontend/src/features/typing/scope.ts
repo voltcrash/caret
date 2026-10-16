@@ -1,8 +1,10 @@
 import {
   createRoot,
+  createSignal,
   getOwner,
   onCleanup,
   runWithOwner,
+  untrack,
   type Owner,
 } from "solid-js";
 
@@ -10,33 +12,40 @@ import { createAppOwned } from "../../app/application";
 import { createOwnedScope, type OwnedScope } from "../../app/scope";
 
 type RouteScope = { owner: Owner; values: OwnedScope; dispose: () => void };
-const state = createAppOwned(() => ({
-  route: undefined as RouteScope | undefined,
-  active: undefined as (() => boolean) | undefined,
-  generation: 0,
-  managed: false,
-}));
+const state = createAppOwned(() => {
+  // Reactive so derived state (hotkeys, palette behavior) follows mounts.
+  const [route, setRoute] = createSignal<RouteScope>();
+  const [active, setActive] = createSignal<() => boolean>();
+  return {
+    route,
+    setRoute,
+    active,
+    setActive,
+    generation: 0,
+    managed: false,
+  };
+});
 
 /** Rollback supplies its route observation; Start owns a real mounted scope. */
 export function bindTypingActivity(active: () => boolean): () => void {
   const current = state();
-  current.active = active;
+  current.setActive(() => active);
   return () => {
-    if (current.active === active) current.active = undefined;
+    if (untrack(current.active) === active) current.setActive(undefined);
   };
 }
 
 export function isTypingRouteActive(): boolean {
   const current = state();
-  return current.managed
-    ? current.route !== undefined
-    : (current.active?.() ?? true);
+  // Track the mount even before Start first manages it.
+  const mounted = current.route() !== undefined;
+  return current.managed ? mounted : (current.active()?.() ?? true);
 }
 
 /** Mount before constructing children; invalidate continuations before releasing refs. */
 export function mountTypingScope(): () => void {
   const current = state();
-  if (current.route !== undefined) {
+  if (current.route() !== undefined) {
     throw new Error("Typing route already mounted");
   }
   const route = createRoot((dispose) => ({
@@ -45,11 +54,11 @@ export function mountTypingScope(): () => void {
     dispose,
   }));
   current.managed = true;
-  current.route = route;
+  current.setRoute(route);
   current.generation++;
   return () => {
-    if (current.route !== route) return;
-    current.route = undefined;
+    if (current.route() !== route) return;
+    current.setRoute(undefined);
     current.generation++;
     route.dispose();
     route.values.dispose();
@@ -69,7 +78,7 @@ export function createTypingOwned<T>(create: () => T): () => T {
   const key = {};
   const rollback = createAppOwned(create);
   return () => {
-    const route = state().route;
+    const route = untrack(state().route);
     if (route === undefined) return rollback();
     return route.values.use(
       key,
