@@ -2,7 +2,10 @@ import { describe, expect, it } from "vite-plus/test";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, matchesGlob, relative, resolve } from "node:path";
 
-import { ssrSafeLegacyFiles } from "../../vite-plugins/import-boundaries";
+import {
+  clientOnlyFeatureFiles,
+  ssrSafeLegacyFiles,
+} from "../../vite-plugins/import-boundaries";
 
 const root = resolve(import.meta.dirname, "../..");
 const src = resolve(root, "src");
@@ -118,9 +121,26 @@ describe("source layer boundaries", () => {
           "src/router.tsx",
         ],
         (edge) =>
-          !is(edge.from, "**/*.client.*") &&
+          !is(edge.from, "**/*.client.*", ...clientOnlyFeatureFiles) &&
           is(edge.to, "src/ts/**") &&
           !is(edge.to, ...ssrSafeLegacyFiles),
+      ),
+    ).toEqual([]);
+  });
+
+  it("reaches client-only feature modules only from client code", () => {
+    expect(
+      violations(
+        [
+          "src/app/**",
+          "src/routes/**",
+          "src/components/**",
+          "src/features/**",
+          "src/router.tsx",
+        ],
+        (edge) =>
+          !is(edge.from, "**/*.client.*", ...clientOnlyFeatureFiles) &&
+          is(edge.to, ...clientOnlyFeatureFiles),
       ),
     ).toEqual([]);
   });

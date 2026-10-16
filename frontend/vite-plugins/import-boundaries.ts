@@ -16,3 +16,15 @@ export const ssrSafeLegacyFiles = [
   "src/ts/utils/cn.ts",
   "src/ts/types/**",
 ];
+
+/**
+ * Browser-only typing modules. Reachable solely through the client-only typing
+ * leaf (`*.client.*` entry), so server import protection denies them like
+ * legacy state and the layer test treats them as client code.
+ */
+export const clientOnlyFeatureFiles = [
+  "src/features/typing/components/**",
+  "src/features/typing/runtime/**",
+  "src/features/typing/lifecycle.ts",
+  "src/features/typing/scope.ts",
+];

@@ -9,7 +9,10 @@ import tailwindcss from "@tailwindcss/vite";
 import { frontendLint } from "./lint.config";
 import { fontStyles } from "./vite-plugins/font-styles";
 import { workerNodeBuiltins } from "./vite-plugins/worker-node-builtins";
-import { ssrSafeLegacyFiles } from "./vite-plugins/import-boundaries";
+import {
+  clientOnlyFeatureFiles,
+  ssrSafeLegacyFiles,
+} from "./vite-plugins/import-boundaries";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
@@ -77,7 +80,7 @@ export default defineConfig(({ mode }) => {
           // Legacy modules are browser state unless explicitly SSR-safe.
           // Patterns match root-relative paths.
           server: {
-            files: ["src/ts/**", "**/*.client.*"],
+            files: ["src/ts/**", "**/*.client.*", ...clientOnlyFeatureFiles],
             excludeFiles: ["**/node_modules/**", ...ssrSafeLegacyFiles],
           },
         },
