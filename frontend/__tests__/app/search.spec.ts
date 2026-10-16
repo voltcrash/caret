@@ -37,7 +37,14 @@ describe("router search codec", () => {
       page: 3,
       yesterday: true,
     });
-    expect(validate(parseSearch("?type=hourly&page=3"))).toEqual({});
+    expect(validate(parseSearch("?type=hourly&page=3"))).toEqual({
+      type: undefined,
+      mode2: undefined,
+      page: undefined,
+      yesterday: undefined,
+    });
+    // Unparsable values are cleared, never merged through from raw search.
+    expect(validate(parseSearch("?page=abc")).page).toBeUndefined();
     expect(validate({ page: 2, yesterday: false })).toEqual({
       page: 2,
       yesterday: false,

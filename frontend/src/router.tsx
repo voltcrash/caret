@@ -20,6 +20,8 @@ export function getRouter() {
     routeTree,
     context: { queryClient },
     defaultPreload: "intent",
+    // Unknown URLs are a 404 page, never a parent route's missing-item view.
+    notFoundMode: "root",
     parseSearch,
     stringifySearch,
     scrollRestoration: true,
