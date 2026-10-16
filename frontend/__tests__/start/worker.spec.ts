@@ -61,6 +61,38 @@ describe("built Start application in workerd", () => {
     expect(limited.headers.get("Retry-After")).not.toBeNull();
   });
 
+  it("answers another build's unknown function ID with an explicit stale-client conflict", async () => {
+    const worker = await mf.getWorker("a");
+    const url = `http://localhost:3000/_serverFn/${"0".repeat(64)}`;
+    const headers = {
+      "x-tsr-serverFn": "true",
+      origin: "http://localhost:3000",
+      "content-type": "application/json",
+      "X-Client-Version": "previous-build",
+    };
+    for (const method of ["GET", "POST"]) {
+      const response = await worker.fetch(url, {
+        method,
+        headers,
+        ...(method === "POST" ? { body: "{}" } : {}),
+      });
+      expect(response.status).toBe(409);
+      expect(response.headers.get("X-Oxytype-Stale-Client")).toBe("1");
+      expect(response.headers.get("Cache-Control")).toBe("no-store");
+      expect(await response.text()).toBe(
+        "Oxytype was updated. Refresh the page to continue.",
+      );
+    }
+    // Same-origin protection still applies before function lookup.
+    const crossSite = await worker.fetch(url, {
+      method: "POST",
+      body: "{}",
+      headers: { ...headers, origin: "https://attacker.test" },
+    });
+    expect(crossSite.status).toBe(403);
+    expect(crossSite.headers.has("X-Oxytype-Stale-Client")).toBe(false);
+  });
+
   it("SSR reads real D1 through the function and keeps binding-specific caches isolated", async () => {
     const [a, b] = await Promise.all([mf.getWorker("a"), mf.getWorker("b")]);
     const responses = await Promise.all(

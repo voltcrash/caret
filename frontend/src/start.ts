@@ -6,6 +6,8 @@ import {
 import { ZodError } from "zod";
 import { setResponseStatus } from "@tanstack/solid-start/server";
 import { createServiceContext } from "./server/context.server";
+import { staleFunctionResponse } from "./server/stale-functions.server";
+import { serverFunctionFetch } from "./app/server-function-fetch";
 
 const services = createMiddleware().server(
   async ({ request, handlerType, next }) =>
@@ -14,6 +16,19 @@ const services = createMiddleware().server(
         services: createServiceContext(request, handlerType === "serverFn"),
       },
     }),
+);
+
+const staleFunctions = createMiddleware().server(
+  async ({ handlerType, next }) => {
+    if (handlerType !== "serverFn") return await next();
+    try {
+      return await next();
+    } catch (error) {
+      const response = staleFunctionResponse(error);
+      if (response === undefined) throw error;
+      return response;
+    }
+  },
 );
 
 const functionErrors = createMiddleware({ type: "function" }).server(
@@ -42,5 +57,7 @@ export const startInstance = createStart(() => ({
     createCsrfMiddleware({
       filter: ({ handlerType }) => handlerType === "serverFn",
     }),
+    staleFunctions,
   ],
+  serverFns: { fetch: serverFunctionFetch },
 }));
