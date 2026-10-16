@@ -282,3 +282,18 @@ test("a terminal handoff waits for sign-in and opens its form once", async ({
   await expect(dialog).toBeHidden();
   expect(documents).toHaveLength(1);
 });
+
+test("result screenshots download from the native route", async ({ page }) => {
+  await useConfig(page, { mode: "words", words: 10 });
+  const errors = trackErrors(page);
+  await openTest(page);
+  const words = await page.locator("#words .word").allTextContents();
+  await page.locator("#words .word").first().click();
+  await page.keyboard.type(words.join(" "), { delay: 40 });
+  await expect(page.locator("#result")).toHaveCSS("opacity", "1");
+  const download = page.waitForEvent("download");
+  await page.locator("#saveScreenshotButton").click({ modifiers: ["Shift"] });
+  expect((await download).suggestedFilename()).toMatch(/\.png$/);
+  await expect(page.locator("#result")).toBeVisible();
+  expect(errors).toEqual([]);
+});
