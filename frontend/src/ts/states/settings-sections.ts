@@ -1,24 +1,20 @@
 import { createAppSignal } from "../../app/state";
 
-import { z } from "zod";
+import { createContext } from "solid-js";
 import { serialize as serializeUrlSearchParams } from "zod-urlsearchparams";
+import {
+  type SettingsSection,
+  sectionForTab,
+  type SettingsUrlParams,
+  SettingsUrlParamsSchema,
+} from "../../features/settings/tabs";
 import { createEffectOn } from "../hooks/effects";
 import { replaceUrl } from "../navigation/navigation";
 import { FaSolidIcon } from "../types/font-awesome";
 import { getActivePage, isAuthenticated } from "./core";
 
-const SettingsSectionSchema = z.enum([
-  "behavior",
-  "input",
-  "sound",
-  "caret",
-  "appearance",
-  "theme",
-  "hideElements",
-  "account",
-  "dangerZone",
-]);
-export type SettingsSection = z.infer<typeof SettingsSectionSchema>;
+export type { SettingsSection };
+export { SettingsUrlParamsSchema };
 
 export const settingsSections: Record<
   SettingsSection,
@@ -38,18 +34,6 @@ export const settingsSections: Record<
   },
   dangerZone: { text: "advanced", icon: "fa-sliders-h" },
 };
-
-export const SettingsUrlParamsSchema = z
-  .object({
-    tab: z.enum([
-      ...SettingsSectionSchema.options,
-      "authentication",
-      "blockedUsers",
-      "apeKeys",
-    ]),
-  })
-  .partial();
-type SettingsUrlParams = z.infer<typeof SettingsUrlParamsSchema>;
 
 export const [getCurrentSettingsSection, setCurrentSettingsSection] =
   createAppSignal<SettingsSection>("behavior");
@@ -71,16 +55,19 @@ function isSectionAvailable(section: SettingsSection): boolean {
 export function readSettingsGetParameters(
   params: SettingsUrlParams | undefined,
 ): void {
-  if (params?.tab === undefined) return;
-
-  const section =
-    params.tab === "authentication"
-      ? "account"
-      : params.tab === "blockedUsers" || params.tab === "apeKeys"
-        ? "behavior"
-        : params.tab;
-  setCurrentSettingsSection(isSectionAvailable(section) ? section : "behavior");
+  const section = sectionForTab(params?.tab, isAuthenticated());
+  if (section !== undefined) setCurrentSettingsSection(section);
 }
+
+/** Who owns the selected section: route search in Start, app state in rollback. */
+export type SettingsSectionHost = {
+  current: () => SettingsSection;
+  select: (section: SettingsSection) => void;
+};
+export const SettingsSectionHostContext = createContext<SettingsSectionHost>({
+  current: getCurrentSettingsSection,
+  select: setCurrentSettingsSection,
+});
 
 export function useSettingsSectionEffects(): void {
   createEffectOn(isAuthenticated, () => {

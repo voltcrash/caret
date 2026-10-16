@@ -9,10 +9,7 @@ import {
 } from "vite-plus/test";
 
 const { state } = vi.hoisted(() => ({
-  state: { page: "settings", popup: false },
-}));
-vi.mock("../../../../src/ts/states/core", () => ({
-  getActivePage: () => state.page,
+  state: { popup: false },
 }));
 vi.mock("../../../../src/ts/states/overlay-visibility", () => ({
   isAnyPopupVisible: () => state.popup,
@@ -22,7 +19,7 @@ import { SettingsSearch } from "../../../../src/ts/components/pages/settings/Set
 import { setSettingsSearch } from "../../../../src/ts/states/settings-search";
 
 beforeEach(() => {
-  Object.assign(state, { page: "settings", popup: false });
+  Object.assign(state, { popup: false });
 });
 afterEach(() => {
   cleanup();
@@ -79,7 +76,7 @@ describe("SettingsSearch type to search", () => {
     expect(document.activeElement).not.toBe(input);
   });
 
-  it("leaves other fields, popups and other pages alone", () => {
+  it("leaves other fields, popups and unmounted pages alone", () => {
     const input = renderSearch();
     const other = document.createElement("input");
     document.body.append(other);
@@ -93,7 +90,8 @@ describe("SettingsSearch type to search", () => {
     expect(document.activeElement).not.toBe(input);
     state.popup = false;
 
-    state.page = "test";
+    // The listener belongs to the mounted settings page only.
+    cleanup();
     press("a");
     expect(document.activeElement).not.toBe(input);
   });

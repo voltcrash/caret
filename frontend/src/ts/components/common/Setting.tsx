@@ -1,4 +1,11 @@
-import { JSXElement, ParentProps, Show, onMount, onCleanup } from "solid-js";
+import {
+  JSXElement,
+  ParentProps,
+  Show,
+  onMount,
+  onCleanup,
+  useContext,
+} from "solid-js";
 import { z } from "zod";
 import { serialize } from "zod-urlsearchparams";
 
@@ -14,6 +21,7 @@ import {
   registerSettingHighlight,
 } from "../../states/settings-highlight";
 import { cn } from "../../utils/cn";
+import { SettingsSectionContext } from "../pages/settings/settings-section-context";
 import { Button } from "./Button";
 import { FaProps } from "./Fa";
 import { H3 } from "./Headers";
@@ -134,6 +142,7 @@ export function Setting(props: SettingProps): JSXElement {
 }
 
 function DeepLinkButton(props: { key: string }) {
+  const section = useContext(SettingsSectionContext);
   return (
     <Button
       // tablets have no hover, keep it visible there
@@ -142,11 +151,14 @@ function DeepLinkButton(props: { key: string }) {
       fa={{ icon: "fa-link" }}
       dataset={{ "aria-label": "Copy link to setting" }}
       onClick={() => {
+        // the link opens this setting's section, then highlights it
         const urlParams = serialize({
           schema: z.object({
+            tab: z.string().optional(),
             highlight: z.string(),
           }),
           data: {
+            tab: section,
             highlight: props.key,
           },
         });

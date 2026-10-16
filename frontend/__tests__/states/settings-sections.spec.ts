@@ -124,10 +124,10 @@ describe("settings sections", () => {
     expect(getCurrentSettingsSection()).toBe("caret");
   });
 
-  it("accepts known sections and ignores other params", () => {
+  it("accepts known sections plus the highlight deep link, ignoring others", () => {
     expect(
-      SettingsUrlParamsSchema.parse({ tab: "sound", highlight: "x" }),
-    ).toEqual({ tab: "sound" });
+      SettingsUrlParamsSchema.parse({ tab: "sound", highlight: "x", y: 1 }),
+    ).toEqual({ tab: "sound", highlight: "x" });
     expect(SettingsUrlParamsSchema.safeParse({ tab: "nope" }).success).toBe(
       false,
     );
