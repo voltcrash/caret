@@ -1,10 +1,13 @@
-import { ClientOnly, useMatches } from "@tanstack/solid-router";
+import { ClientOnly, useMatches, useRouter } from "@tanstack/solid-router";
 import { createClientOnlyFn } from "@tanstack/solid-start";
 import {
   createSignal,
   lazy,
+  onCleanup,
+  onMount,
   Show,
   Suspense,
+  untrack,
   type JSXElement,
   type ParentProps,
 } from "solid-js";
@@ -37,6 +40,17 @@ declare module "@tanstack/solid-router" {
  * links render on the server; stateful chrome and overlays mount as client leaves.
  */
 export function AppLayout(props: ParentProps): JSXElement {
+  const router = useRouter();
+  const [main, setMain] = createSignal<HTMLElement>();
+  onMount(() => {
+    onCleanup(
+      router.subscribe("onResolved", (event) => {
+        if (event.pathChanged && event.toLocation.hash === "") {
+          untrack(main)?.focus({ preventScroll: true });
+        }
+      }),
+    );
+  });
   const fixed = useMatches({
     select: (matches) =>
       matches.some((match) => match.staticData.fixedHeader === true),
@@ -54,10 +68,17 @@ export function AppLayout(props: ParentProps): JSXElement {
         </ClientOnly>
         <div
           ref={setScroller}
+          data-scroll-restoration-id="page-content"
           class={scrollerClass(fixed())}
           style={scrollerStyle(fixed(), headerBottom())}
         >
-          <main class="full-width content-grid h-full">{props.children}</main>
+          <main
+            ref={setMain}
+            tabIndex={-1}
+            class="full-width content-grid h-full outline-none"
+          >
+            {props.children}
+          </main>
           <Show when={!fixed()}>
             <ClientOnly>
               <Suspense>
