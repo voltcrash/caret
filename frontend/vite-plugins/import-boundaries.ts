@@ -34,6 +34,7 @@ export const clientOnlyFeatureFiles = [
  * never bundle it; typing route entry/exit replaced its page lifecycle.
  */
 export const rollbackOnlyFiles = [
+  "src/rollback/**",
   "src/ts/controllers/page-controller.ts",
   "src/ts/components/pages/AppPages.tsx",
   "src/ts/components/core/NavigationRuntime.tsx",

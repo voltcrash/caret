@@ -10,9 +10,7 @@ vi.mock("../../src/ts/states/core", () => ({
   isAuthenticated: () => true,
   getUserId: () => "tags-user",
 }));
-vi.mock("../../src/ts/ape", () => ({
-  default: { results: { get, updateTags: update } },
-}));
+
 vi.mock("../../src/ts/collections/tags", () => ({
   getTagsOnce: async () => [],
   getActiveTagsOnce: async () => [],

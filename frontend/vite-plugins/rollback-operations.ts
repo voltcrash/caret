@@ -10,7 +10,7 @@ const startOperations = resolve(root, "src/functions/operations/index.ts");
  * tests a controllable fake. Start builds never use this plugin.
  */
 export function rollbackOperationTransport(
-  target = resolve(root, "src/ts/ape/operations.ts"),
+  target = resolve(root, "src/rollback/operations.ts"),
 ): Plugin {
   return {
     name: "rollback-operation-transport",

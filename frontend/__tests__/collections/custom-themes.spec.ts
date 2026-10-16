@@ -22,11 +22,6 @@ vi.mock("../../src/ts/states/core", () => ({
   isAuthenticated: () => true,
   getUserId: () => "themes-user",
 }));
-vi.mock("../../src/ts/ape", () => ({
-  default: {
-    users: { getCustomThemes: fetchThemes, deleteCustomTheme: remove },
-  },
-}));
 
 import {
   deleteCustomTheme,

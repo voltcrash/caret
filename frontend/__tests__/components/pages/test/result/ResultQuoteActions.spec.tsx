@@ -56,14 +56,6 @@ vi.mock("../../../../../src/ts/db", () => ({
       : ids.filter((value) => value !== id);
   },
 }));
-vi.mock("../../../../../src/ts/ape", () => ({
-  default: {
-    users: {
-      addQuoteToFavorites: mocks.addQuoteToFavorites,
-      removeQuoteFromFavorites: mocks.removeQuoteFromFavorites,
-    },
-  },
-}));
 
 import { ResultQuoteActions } from "../../../../../src/features/typing/components/result/ResultQuoteActions";
 import { setResultState } from "../../../../../src/ts/states/result";

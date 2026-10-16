@@ -21,9 +21,7 @@ const mocks = vi.hoisted(() => ({
   error: vi.fn(),
   success: vi.fn(),
 }));
-vi.mock("../../../src/ts/ape", () => ({
-  default: { results: { add: mocks.add } },
-}));
+
 vi.mock("../../../src/ts/auth-client", () => ({
   getAuthenticatedUser: () => ({ uid: "saved-user" }),
 }));

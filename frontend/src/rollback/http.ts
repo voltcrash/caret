@@ -5,14 +5,6 @@ import {
   type ApiFetcherArgs,
 } from "@ts-rest/core";
 import { envConfig } from "virtual:env-config";
-import {
-  COMPATIBILITY_CHECK,
-  COMPATIBILITY_CHECK_HEADER,
-} from "@oxytype/contracts/compatibility";
-import { addBanner } from "../../states/banners";
-import { setLastSeenServerCompatibility } from "../server-compatibility";
-
-let bannerShownThisSession = false;
 
 function buildApi(timeout: number): (args: ApiFetcherArgs) => Promise<{
   status: number;
@@ -51,29 +43,6 @@ function buildApi(timeout: number): (args: ApiFetcherArgs) => Promise<{
           status: response.status,
           ...(response.body as object),
         });
-      }
-
-      const compatibilityCheckHeader = response.headers.get(
-        COMPATIBILITY_CHECK_HEADER,
-      );
-
-      if (compatibilityCheckHeader !== null) {
-        setLastSeenServerCompatibility(parseInt(compatibilityCheckHeader));
-      }
-
-      if (compatibilityCheckHeader !== null && !bannerShownThisSession) {
-        const backendCheck = parseInt(compatibilityCheckHeader);
-        if (backendCheck !== COMPATIBILITY_CHECK) {
-          const message =
-            backendCheck > COMPATIBILITY_CHECK
-              ? `Looks like the client and server versions are mismatched (backend is newer). Please refresh the page.`
-              : `Server and client versions do not match. Refresh the page; if this persists, contact support.`;
-          addBanner({
-            level: "error",
-            text: message,
-          });
-          bannerShownThisSession = true;
-        }
       }
 
       return response;

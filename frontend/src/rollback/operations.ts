@@ -1,7 +1,7 @@
 import type { AppRouter } from "@ts-rest/core";
 import { envConfig } from "virtual:env-config";
-import type { OperationResult } from "../../data/operation-result";
-import type { webOperations as StartOperations } from "../../functions/operations";
+import type { OperationResult } from "../data/operation-result";
+import type { webOperations as StartOperations } from "../functions/operations";
 
 /**
  * Rollback build only: the same operation IDs over the legacy `/api` HTTP
@@ -45,7 +45,7 @@ async function client(group: string): Promise<Record<string, Endpoint>> {
     pending = (async () => {
       const [contract, { buildClient }] = await Promise.all([
         load(),
-        import("./adapters/ts-rest-adapter"),
+        import("./http"),
       ]);
       return buildClient(
         contract,

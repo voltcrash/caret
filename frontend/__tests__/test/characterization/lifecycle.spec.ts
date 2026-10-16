@@ -195,9 +195,7 @@ vi.mock("../../../src/ts/db", () => ({
   saveLocalResult: vi.fn(),
   getLocalPB: () => undefined,
 }));
-vi.mock("../../../src/ts/ape", () => ({
-  default: { results: { add: vi.fn() } },
-}));
+
 vi.mock("../../../src/ts/controllers/challenge-controller", () => ({
   verify: () => null,
 }));

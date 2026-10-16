@@ -32,7 +32,7 @@ vi.mock("../../../src/ts/config/store", () => ({
 }));
 vi.mock("../../../src/ts/config/setters", () => ({ setConfig: vi.fn() }));
 vi.mock("../../../src/ts/db", () => ({ getSnapshot: () => undefined }));
-vi.mock("../../../src/ts/ape", () => ({ default: {} }));
+
 vi.mock("../../../src/ts/states/core", () => ({
   isAuthenticated: () => false,
 }));

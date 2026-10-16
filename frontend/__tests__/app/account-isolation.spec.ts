@@ -5,9 +5,7 @@ const requests = vi.hoisted(() => ({
   config: vi.fn(),
   save: vi.fn(async () => undefined),
 }));
-vi.mock("../../src/ts/ape", () => ({
-  default: { configs: { get: requests.config } },
-}));
+
 vi.mock("../../src/ts/config/sync", () => ({ saveConfig: requests.save }));
 vi.mock("../../src/ts/states/server-configuration", () => ({
   sync: async () => undefined,

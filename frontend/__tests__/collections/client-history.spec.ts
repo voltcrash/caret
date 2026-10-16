@@ -11,9 +11,7 @@ vi.mock("../../src/ts/states/core", () => ({
   isAuthenticated: () => true,
   getUserId: () => "history-user",
 }));
-vi.mock("../../src/ts/ape", () => ({
-  default: { results: { get, updateTags: update } },
-}));
+
 vi.mock("../../src/ts/collections/tags", () => ({
   getTagsOnce: async () => [{ _id: "tag" }],
   reconcileLocalTagPB: reconcile,

@@ -28,9 +28,7 @@ vi.mock("../../src/ts/config/store", () => ({
 vi.mock("../../src/ts/config/utils", () => ({
   migrateConfig: (config: unknown) => config,
 }));
-vi.mock("../../src/ts/ape", () => ({
-  default: { configs: { get: state.get } },
-}));
+
 vi.mock("../../src/app/readiness", () => ({
   preferencesReadiness: () => ({ wait: async () => state.local }),
 }));

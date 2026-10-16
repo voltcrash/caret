@@ -7,9 +7,6 @@ vi.mock("../../src/ts/states/core", () => ({
   isAuthenticated: () => true,
   getUserId: () => "presets-user",
 }));
-vi.mock("../../src/ts/ape", () => ({
-  default: { presets: { get, delete: remove } },
-}));
 
 import {
   deletePreset,

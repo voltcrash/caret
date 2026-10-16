@@ -27,7 +27,7 @@
         "**/src/ts/collections/**/*.ts",
         "**/src/ts/queries/**/*.ts",
         "**/src/db/schema.ts",
-        "**/src/ts/ape/adapters/ts-rest-adapter.ts",
+        "**/src/rollback/http.ts",
         "**/src/ts/auth-client.ts",
         "**/src/api/client.ts",
         "**/createCustomTextController.ts",

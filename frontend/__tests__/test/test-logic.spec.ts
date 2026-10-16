@@ -225,9 +225,7 @@ vi.mock("../../src/ts/db", () => ({
   saveLocalResult: mocks.saveLocal,
   getLocalPB: () => undefined,
 }));
-vi.mock("../../src/ts/ape", () => ({
-  default: { results: { add: mocks.addResult } },
-}));
+
 vi.mock("../../src/ts/collections/tags", () => ({ getActiveTags: () => [] }));
 vi.mock("../../src/ts/controllers/challenge-controller", () => ({
   verify: () => null,
