@@ -3,7 +3,12 @@ import { builtinModules } from "node:module";
 import { envConfig } from "./vite-plugins/env-config";
 import { languageHashes } from "./vite-plugins/language-hashes";
 import { getClientVersion } from "./vite-plugins/client-version";
-import { defineConfig, esmExternalRequirePlugin, loadEnv } from "vite-plus";
+import {
+  defineConfig,
+  esmExternalRequirePlugin,
+  loadEnv,
+  perEnvironmentPlugin,
+} from "vite-plus";
 import { cloudflare } from "@cloudflare/vite-plugin";
 import { tanstackStart } from "@tanstack/solid-start/plugin/vite";
 import solid from "vite-plugin-solid";
@@ -26,17 +31,6 @@ export default defineConfig(({ mode }) => {
     },
     environments: {
       ssr: {
-        build: {
-          rolldownOptions: {
-            // workerd has ESM Node built-ins, never a runtime CommonJS require.
-            // Explicitly cover CJS dependencies reached by the retained HTTP adapter.
-            plugins: [
-              esmExternalRequirePlugin({
-                external: [...builtinModules, /^node:/],
-              }),
-            ],
-          },
-        },
         optimizeDeps: {
           exclude: [
             "solid-js",
@@ -51,6 +45,15 @@ export default defineConfig(({ mode }) => {
       },
     },
     plugins: [
+      // Install on the environment's plugin pipeline, including framework builds.
+      // workerd has ESM Node built-ins, never a runtime CommonJS require.
+      perEnvironmentPlugin("oxytype:worker-require", (environment) =>
+        environment.name === "ssr"
+          ? esmExternalRequirePlugin({
+              external: [...builtinModules, /^node:/],
+            })
+          : false,
+      ),
       envConfig({
         isDevelopment: mode !== "production",
         clientVersion: getClientVersion(mode !== "production"),
