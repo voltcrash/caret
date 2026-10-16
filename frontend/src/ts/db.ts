@@ -44,6 +44,26 @@ export function getSnapshot(): Snapshot | undefined {
   return getAccount();
 }
 
+/** Apply an accepted favorite mutation to the current canonical account. */
+export function updateLocalQuoteFavorite(
+  language: Language,
+  quoteId: string,
+  favorite: boolean,
+): void {
+  const snapshot = getSnapshot();
+  if (snapshot === undefined) return;
+  const ids = snapshot.favoriteQuotes?.[language] ?? [];
+  setSnapshot({
+    ...snapshot,
+    favoriteQuotes: {
+      ...snapshot.favoriteQuotes,
+      [language]: favorite
+        ? [...new Set([...ids, quoteId])]
+        : ids.filter((id) => id !== quoteId),
+    },
+  });
+}
+
 /**
  * Explicit cache write for a local acknowledgement or profile edit. Server
  * moderation fields (banned, verified, leaderboard opt-out) keep their

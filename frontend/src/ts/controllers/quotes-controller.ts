@@ -1,3 +1,4 @@
+import { operation } from "../../data/operations";
 import { createAppOwned } from "../../app/application";
 import { appObject } from "../../app/state";
 import { QuotesController as CoreQuotesController } from "@oxytype/typing-core/quote-source";
@@ -7,7 +8,6 @@ import { removeLanguageSize } from "../utils/strings";
 import { cachedFetchJson } from "../utils/json-data";
 import { configEvent } from "../events/config";
 import * as DB from "../db";
-import Ape from "../ape";
 import { Language } from "@oxytype/schemas/languages";
 
 class QuotesController extends CoreQuotesController {
@@ -48,36 +48,31 @@ class QuotesController extends CoreQuotesController {
 
     if (!isFavorite) {
       // Remove from favorites
-      const response = await Ape.users.removeQuoteFromFavorites({
+      const response = await operation("users.removeQuoteFromFavorites", {
         body: {
           language: quote.language,
           quoteId: `${quote.id}`,
         },
       });
 
-      if (response.status === 200) {
-        const quoteIndex = snapshot.favoriteQuotes?.[quote.language]?.indexOf(
-          `${quote.id}`,
-        ) as number;
-        snapshot.favoriteQuotes?.[quote.language]?.splice(quoteIndex, 1);
+      if (response.ok) {
+        DB.updateLocalQuoteFavorite(quote.language, `${quote.id}`, false);
       } else {
-        throw new Error(response.body.message);
+        throw new Error(response.message);
       }
     } else {
       // Remove from favorites
-      const response = await Ape.users.addQuoteToFavorites({
+      const response = await operation("users.addQuoteToFavorites", {
         body: {
           language: quote.language,
           quoteId: `${quote.id}`,
         },
       });
 
-      if (response.status === 200) {
-        snapshot.favoriteQuotes ??= {};
-        snapshot.favoriteQuotes[quote.language] ??= [];
-        snapshot.favoriteQuotes[quote.language]?.push(`${quote.id}`);
+      if (response.ok) {
+        DB.updateLocalQuoteFavorite(quote.language, `${quote.id}`, true);
       } else {
-        throw new Error(response.body.message);
+        throw new Error(response.message);
       }
     }
   }

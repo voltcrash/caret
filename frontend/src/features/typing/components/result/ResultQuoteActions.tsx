@@ -1,6 +1,6 @@
 import { JSXElement } from "solid-js";
 
-import Ape from "../../../../ts/ape";
+import { operation } from "../../../../data/operations";
 import { Fa } from "../../../../ts/components/common/Fa";
 import * as DB from "../../../../ts/db";
 import { hideLoaderBar, showLoaderBar } from "../../../../ts/states/loader-bar";
@@ -27,7 +27,7 @@ async function toggleFavorite(): Promise<void> {
   if (favorite) {
     // Remove from
     showLoaderBar();
-    const response = await Ape.users.removeQuoteFromFavorites({
+    const response = await operation("users.removeQuoteFromFavorites", {
       body: {
         language: quoteLang,
         quoteId,
@@ -36,35 +36,30 @@ async function toggleFavorite(): Promise<void> {
     hideLoaderBar();
 
     addNotificationWithLevel(
-      response.body.message,
-      response.status === 200 ? "success" : "error",
+      response.message,
+      response.ok ? "success" : "error",
     );
 
-    if (response.status === 200) {
+    if (response.ok) {
       setResultState("quote", "favorite", false);
-      const quoteIndex = dbSnapshot.favoriteQuotes?.[quoteLang]?.indexOf(
-        quoteId,
-      ) as number;
-      dbSnapshot.favoriteQuotes?.[quoteLang]?.splice(quoteIndex, 1);
+      DB.updateLocalQuoteFavorite(quoteLang, quoteId, false);
     }
   } else {
     // Add to favorites
     showLoaderBar();
-    const response = await Ape.users.addQuoteToFavorites({
+    const response = await operation("users.addQuoteToFavorites", {
       body: { language: quoteLang, quoteId },
     });
     hideLoaderBar();
 
     addNotificationWithLevel(
-      response.body.message,
-      response.status === 200 ? "success" : "error",
+      response.message,
+      response.ok ? "success" : "error",
     );
 
-    if (response.status === 200) {
+    if (response.ok) {
       setResultState("quote", "favorite", true);
-      dbSnapshot.favoriteQuotes ??= {};
-      dbSnapshot.favoriteQuotes[quoteLang] ??= [];
-      dbSnapshot.favoriteQuotes[quoteLang]?.push(quoteId);
+      DB.updateLocalQuoteFavorite(quoteLang, quoteId, true);
     }
   }
 }
