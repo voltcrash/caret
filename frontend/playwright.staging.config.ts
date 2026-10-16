@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "playwright/test";
 export default defineConfig({
   testDir: "./staging-e2e",
+  outputDir: "./playwright-report/staging-artifacts",
   workers: 1,
   retries: 0,
   use: {

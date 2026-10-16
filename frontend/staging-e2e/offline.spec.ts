@@ -1,9 +1,16 @@
-import { expect, test } from "../start-e2e/fixtures";
+import { expect, test } from "playwright/test";
 
 test("hosted Worker supports offline guest typing with a script-free private fallback", async ({
   page,
   context,
 }) => {
+  // Hosted Cloudflare supplies the client IP; never send local fixture headers.
+  await page.addInitScript(() => {
+    localStorage.setItem(
+      "acceptedCookies",
+      JSON.stringify({ security: false, analytics: false, sentry: false }),
+    );
+  });
   const cspErrors: string[] = [];
   page.on("console", (message) => {
     if (
