@@ -8,39 +8,24 @@ import {
   untrack,
 } from "solid-js";
 import { spread } from "solid-js/web";
-import { debounce, throttle } from "throttle-debounce";
 import { envConfig } from "virtual:env-config";
 
 import { preferencesReadiness } from "../../../app/readiness";
-import * as Caret from "../../../features/typing/runtime/caret";
-import * as CustomText from "../../../features/typing/runtime/custom-text";
-import * as TestUI from "../../../features/typing/runtime/test-ui";
 import * as ServerConfiguration from "../../ape/server-configuration";
-import { getMutableConfig } from "../../config/store";
 import { getAcceptedCookies } from "../../cookies";
-import { isInputElementFocused } from "../../input/input-element";
 import { isAppLoading } from "../../states/app";
 import { addBanner, removeBanner } from "../../states/banners";
-import {
-  getActivePage,
-  getCustomTextIndicator,
-  getGlobalOffsetTop,
-  getIsScreenshotting,
-} from "../../states/core";
+import { getGlobalOffsetTop, getIsScreenshotting } from "../../states/core";
 import { isModalOpen, showModal } from "../../states/modals";
 import { isFixingSkillIssue } from "../../states/skill-issue";
-import { getResultVisible, isTestActive } from "../../states/test";
 import { cn, updateClassNames } from "../../utils/cn";
 import { onDOMReady } from "../../utils/dom-ready";
 import { isDevEnvironment } from "../../utils/env";
 import { applyReducedMotion } from "../../utils/misc";
 import { convertRemToPixels } from "../../utils/numbers";
-import { isCoarsePointer } from "../../utils/pointer";
-import { canQuickRestart } from "../../utils/quick-restart";
 import { bodyClass } from "./body-classes";
 import { BreakpointEvents } from "./BreakpointEvents";
 import { GlobalEvents } from "./GlobalEvents";
-import { ModifierEvents } from "./ModifierEvents";
 import { NoCssFallback } from "./NoCssFallback";
 import { OAuthRuntime } from "./OAuthRuntime";
 
@@ -167,54 +152,6 @@ export function AppEffects(props: AppElements): JSXElement {
     });
     if (isDevEnvironment()) document.title = `${document.title} (localhost)`;
 
-    const beforeUnload = (event: BeforeUnloadEvent): void => {
-      if (
-        !canQuickRestart(
-          getMutableConfig().mode,
-          getMutableConfig().words,
-          getMutableConfig().time,
-          CustomText.getData(),
-          getCustomTextIndicator()?.isLong ?? false,
-        ) &&
-        isTestActive()
-      ) {
-        event.preventDefault();
-        // Included for legacy support, e.g. Chrome/Edge < 119.
-        // oxlint-disable-next-line no-deprecated -- beforeunload returnValue preserves confirmation in legacy browsers.
-        event.returnValue = "";
-      }
-    };
-
-    const timers = new Set<ReturnType<typeof setTimeout>>();
-    const debouncedEvent = debounce(250, () => {
-      if (getActivePage() === "test" && !getResultVisible()) {
-        if (getMutableConfig().tapeMode !== "off") {
-          void TestUI.scrollTape();
-        } else {
-          void TestUI.centerActiveLine();
-          void TestUI.updateHintsPositionDebounced();
-        }
-        const timer = setTimeout(() => {
-          timers.delete(timer);
-          TestUI.updateWordsInputPosition();
-          // on touch, mobile URL bar/keyboard resizes must not reopen the keyboard
-          // the user dismissed, so only refocus if the input already has focus
-          if (!isCoarsePointer() || isInputElementFocused()) {
-            TestUI.focusWords();
-          }
-          Caret.show();
-        }, 250);
-        timers.add(timer);
-      }
-    });
-    const throttledEvent = throttle(250, () => Caret.hide());
-    const resize = (): void => {
-      throttledEvent();
-      debouncedEvent();
-    };
-    window.addEventListener("beforeunload", beforeUnload);
-    window.addEventListener("resize", resize);
-
     let disposed = false;
     let animation: ReturnType<typeof animate> | undefined;
     const registerServiceWorker = (): void => {
@@ -265,12 +202,7 @@ export function AppEffects(props: AppElements): JSXElement {
     onCleanup(() => {
       disposed = true;
       animation?.cancel();
-      window.removeEventListener("beforeunload", beforeUnload);
-      window.removeEventListener("resize", resize);
       window.removeEventListener("load", registerServiceWorker);
-      debouncedEvent.cancel();
-      throttledEvent.cancel();
-      for (const timer of timers) clearTimeout(timer);
     });
   });
 
@@ -279,7 +211,6 @@ export function AppEffects(props: AppElements): JSXElement {
       <OAuthRuntime />
       <GlobalEvents />
       <BreakpointEvents />
-      <ModifierEvents />
       <NoCssFallback element={props.noCssWarning} />
     </>
   );

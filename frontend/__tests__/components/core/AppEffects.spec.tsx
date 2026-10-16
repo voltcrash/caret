@@ -426,28 +426,6 @@ describe("App effects", () => {
     expect(document.body).not.toHaveClass("mediaQueryDebugLevel2");
   });
 
-  it("guards active tests on unload and cancels resize work on disposal", () => {
-    vi.useFakeTimers();
-    const { unmount } = mount();
-    const unload = new Event("beforeunload", { cancelable: true });
-    window.dispatchEvent(unload);
-    expect(unload.defaultPrevented).toBe(true);
-    guards.quickRestart = true;
-    const quickUnload = new Event("beforeunload", { cancelable: true });
-    window.dispatchEvent(quickUnload);
-    expect(quickUnload.defaultPrevented).toBe(false);
-    window.dispatchEvent(new Event("resize"));
-    expect(ui.hideCaret).toHaveBeenCalledOnce();
-    vi.advanceTimersByTime(250);
-    expect(ui.centerLine).toHaveBeenCalledOnce();
-    unmount();
-    vi.advanceTimersByTime(1000);
-    expect(ui.positionInput).not.toHaveBeenCalled();
-    expect(ui.showCaret).not.toHaveBeenCalled();
-    window.dispatchEvent(new Event("resize"));
-    expect(ui.hideCaret).toHaveBeenCalledOnce();
-  });
-
   it("removes config listeners and ignores startup after disposal", async () => {
     const { unmount } = mount();
     expect(ui.applyFont).toHaveBeenCalledOnce();

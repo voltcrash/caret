@@ -31,6 +31,7 @@ import { TestConfig } from "./TestConfig";
 import { TestInitFailed } from "./TestInitFailed";
 import { TestLoading } from "./TestLoading";
 import { TestPageLifecycle } from "./TestPageLifecycle";
+import { TypingEvents } from "./TypingEvents";
 import { Words } from "./Words";
 import { Caret } from "./words/Caret";
 
@@ -155,6 +156,7 @@ export function TestPage(
         autocorrect="off"
       />
       <TestPageLifecycle input={refs.wordsInput} />
+      <TypingEvents />
       <TestLoading />
       <ResultAnnouncement />
       <LazyResult />

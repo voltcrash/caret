@@ -1,50 +1,12 @@
 import { onCleanup, onMount } from "solid-js";
 
-import * as Focus from "../../../features/typing/runtime/focus";
-import { focusWords } from "../../../features/typing/runtime/test-ui";
-import { getMutableConfig } from "../../config/store";
-import { ModifierKeys } from "../../constants/modifier-keys";
-import { updateCurrentCode } from "../../controllers/sound-controller";
 import { connectionEvent } from "../../events/connection";
-import { isInputElementFocused } from "../../input/input-element";
-import { getActivePage } from "../../states/core";
 import { showErrorNotification } from "../../states/notifications";
-import { isAnyPopupVisible } from "../../states/overlay-visibility";
-import * as PageTransition from "../../states/page-transition";
-import { getFocus, getResultVisible } from "../../states/test";
 import { isDevEnvironment } from "../../utils/env";
 
+/** Host-neutral document listeners: connection, space scrolling, dev errors. */
 export function GlobalEvents(): null {
   onMount(() => {
-    const autofocus = (e: KeyboardEvent): void => {
-      updateCurrentCode(e);
-      if (PageTransition.get() || e.key === undefined) return;
-      if (
-        isDevEnvironment() &&
-        (document.activeElement as HTMLElement | null)?.dataset["uiElement"] ===
-          "signalDevtoolsInput"
-      ) {
-        return;
-      }
-
-      if (
-        getActivePage() === "test" &&
-        !getResultVisible() &&
-        !isInputElementFocused()
-      ) {
-        // Keep the expensive popup check outside the focused keystroke path.
-        if (
-          !isAnyPopupVisible() &&
-          !["Enter", " ", "Escape", "Tab", ...ModifierKeys].includes(e.key) &&
-          !e.metaKey &&
-          !e.ctrlKey
-        ) {
-          focusWords();
-          if (getMutableConfig().showOutOfFocusWarning) e.preventDefault();
-        }
-      }
-    };
-
     const preventSpaceScroll = (e: KeyboardEvent): void => {
       if (
         e.code === "Space" &&
@@ -53,12 +15,6 @@ export function GlobalEvents(): null {
       ) {
         e.preventDefault();
       }
-    };
-
-    const mousemove = (event: MouseEvent): void => {
-      if (PageTransition.get() || !getFocus()) return;
-      // Ignore small desk/mouse vibrations, preserving the >3px guard.
-      if (event.movementX > 3 || event.movementY > 3) Focus.set(false);
     };
 
     const previousError = window.onerror;
@@ -92,20 +48,16 @@ export function GlobalEvents(): null {
       }
     };
 
-    document.addEventListener("keydown", autofocus);
     const online = (): void => connectionEvent.dispatch(true);
     const offline = (): void => connectionEvent.dispatch(false);
     window.addEventListener("online", online);
     window.addEventListener("offline", offline);
-    document.addEventListener("mousemove", mousemove);
     window.addEventListener("keydown", preventSpaceScroll);
     window.onerror = onError;
     window.onunhandledrejection = onRejection;
     onCleanup(() => {
-      document.removeEventListener("keydown", autofocus);
       window.removeEventListener("online", online);
       window.removeEventListener("offline", offline);
-      document.removeEventListener("mousemove", mousemove);
       window.removeEventListener("keydown", preventSpaceScroll);
       if (window.onerror === onError) window.onerror = previousError;
       if (window.onunhandledrejection === onRejection) {
