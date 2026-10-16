@@ -67,6 +67,7 @@ const bannerText = {
  */
 export function UpdateRuntime(props: { reload?: () => void }): JSXElement {
   const [waiting, setWaiting] = createSignal(false);
+  const [refreshRequested, setRefreshRequested] = createSignal(false);
   let updates: ServiceWorkerUpdates | undefined;
   let lastCheck = Date.now();
   let disposed = false;
@@ -76,15 +77,20 @@ export function UpdateRuntime(props: { reload?: () => void }): JSXElement {
     lastCheck = Date.now();
     const deployed = await deployedBuild();
     if (disposed || deployed === undefined || deployed === clientBuildId) {
-      return;
+      return deployed;
     }
     reportStaleClient(reason);
+    return deployed;
   };
 
   const reload = (): void => {
+    setRefreshRequested(true);
+  };
+  createEffect(() => {
+    if (!refreshRequested() || !isUpdateSafe()) return;
     if (props.reload === undefined) window.location.reload();
     else props.reload();
-  };
+  });
 
   const applyUpdate = (): void => {
     if (!isUpdateSafe()) {
@@ -117,7 +123,9 @@ export function UpdateRuntime(props: { reload?: () => void }): JSXElement {
           return;
         }
         // Classify the waiting build before anything activates.
-        void checkDeployment("deployed").then(() => setWaiting(true));
+        void checkDeployment("deployed").then((build) => {
+          if (!disposed) setWaiting(build === clientBuildId);
+        });
       },
       reload,
     });

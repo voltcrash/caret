@@ -86,7 +86,7 @@ describe("service-worker request policy", () => {
 describe("service-worker cache generations", () => {
   const current = buildCacheName("b3");
 
-  it("replaces the rollback worker at once and keeps its hashed assets one generation", () => {
+  it("waits for legacy tabs and keeps their hashed assets one generation", () => {
     const names = [
       "workbox-precache-v2-https://oxytype.voltcrash.com/",
       "oxytype-build-assets",
@@ -94,7 +94,7 @@ describe("service-worker cache generations", () => {
       "workbox-runtime-https://oxytype.voltcrash.com/",
       current,
     ];
-    expect(activatesImmediately(names, "b3")).toBe(true);
+    expect(activatesImmediately(true)).toBe(false);
     expect(obsoleteCaches(names, "b3")).toEqual([
       "workbox-precache-v2-https://oxytype.voltcrash.com/",
       "oxytype-languages",
@@ -110,15 +110,16 @@ describe("service-worker cache generations", () => {
       current,
       "unrelated-cache",
     ];
-    expect(activatesImmediately(names, "b3")).toBe(false);
+    expect(activatesImmediately(true)).toBe(false);
     expect(obsoleteCaches(names, "b3")).toEqual([
       "oxytype-build-assets",
       buildCacheName("b1"),
     ]);
   });
 
-  it("activates at once after caches were cleared", () => {
-    expect(activatesImmediately([current], "b3")).toBe(true);
+  it("activates only on first installation, regardless of evicted caches", () => {
+    expect(activatesImmediately(false)).toBe(true);
+    expect(activatesImmediately(true)).toBe(false);
     expect(obsoleteCaches([current], "b3")).toEqual([]);
   });
 });

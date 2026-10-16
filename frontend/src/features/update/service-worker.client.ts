@@ -22,12 +22,15 @@ export function registerServiceWorker(options: {
   let registration: ServiceWorkerRegistration | undefined;
   let reloadRequested = false;
   let disposed = false;
+  const watched = new Set<ServiceWorker>();
   const report = (): void => {
     if (!disposed) options.onWaiting((registration?.waiting ?? null) !== null);
   };
   const watch = (worker: ServiceWorker | null): void => {
+    if (worker !== null) watched.add(worker);
     worker?.addEventListener("statechange", report);
   };
+  const onUpdateFound = (): void => watch(registration?.installing ?? null);
   const onControllerChange = (): void => {
     report();
     if (reloadRequested && !disposed) options.reload();
@@ -38,9 +41,7 @@ export function registerServiceWorker(options: {
     .then((registered) => {
       registration = registered;
       if (disposed) return;
-      registered.addEventListener("updatefound", () => {
-        watch(registered.installing);
-      });
+      registered.addEventListener("updatefound", onUpdateFound);
       watch(registered.installing);
       report();
     })
@@ -61,6 +62,11 @@ export function registerServiceWorker(options: {
     dispose: () => {
       disposed = true;
       container.removeEventListener("controllerchange", onControllerChange);
+      registration?.removeEventListener("updatefound", onUpdateFound);
+      for (const worker of watched) {
+        worker.removeEventListener("statechange", report);
+      }
+      watched.clear();
     },
   };
 }

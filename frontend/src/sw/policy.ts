@@ -116,18 +116,11 @@ export function obsoleteCaches(names: string[], buildId: string): string[] {
 }
 
 /**
- * A waiting worker replacing another Start build waits for the page to ask
- * (never during typing or a save). Replacing the rollback service worker or
- * installing first activates at once, as the rollback autoUpdate worker did.
+ * Every replacement waits for the page to ask, including legacy workers and
+ * installations whose caches were evicted. Only a first install activates itself.
  */
-export function activatesImmediately(
-  names: string[],
-  buildId: string,
-): boolean {
-  const current = buildCacheName(buildId);
-  return !names.some(
-    (name) => name.startsWith(startCachePrefix) && name !== current,
-  );
+export function activatesImmediately(hasActiveWorker: boolean): boolean {
+  return !hasActiveWorker;
 }
 
 /** Message a page posts to let a waiting worker take over. */

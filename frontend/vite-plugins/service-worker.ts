@@ -89,7 +89,7 @@ export function precacheFromBundle(
   }
   for (const output of Object.values(bundle)) {
     // Document CSS is linked by URL from the root route, not imported.
-    if (output.type === "asset" && output.fileName.endsWith(".css")) {
+    if (output.type === "asset" && /\.(?:css|woff2)$/.test(output.fileName)) {
       files.add(output.fileName);
     }
   }

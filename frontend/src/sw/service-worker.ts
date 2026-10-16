@@ -47,7 +47,7 @@ const cacheName = buildCacheName(config.buildId);
 const origin = worker.location.origin;
 
 async function precache(): Promise<void> {
-  const immediate = activatesImmediately(await caches.keys(), config.buildId);
+  const immediate = activatesImmediately(worker.registration.active !== null);
   const cache = await caches.open(cacheName);
   await Promise.all(
     config.precache.map(async (path) => {
