@@ -9,6 +9,7 @@ import { TestPage } from "./components/TestPage";
 import { enterTypingRoute, exitTypingRoute } from "./lifecycle";
 import { TypingRuntime } from "./runtime.client";
 import { mountTypingScope } from "./scope";
+import { useUrlSettings } from "./url-settings.client";
 
 export default function TypingPage(): JSXElement {
   const release = mountTypingScope();
@@ -16,6 +17,7 @@ export default function TypingPage(): JSXElement {
     exitTypingRoute();
     release();
   });
+  useUrlSettings();
   onMount(() => {
     void enterTypingRoute().catch((error: unknown) =>
       console.error("Typing initialization failed", error),
