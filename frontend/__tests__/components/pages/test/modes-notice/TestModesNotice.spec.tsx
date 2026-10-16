@@ -9,7 +9,7 @@ import {
 } from "vite-plus/test";
 
 import "../../../../__harness__/mock-static";
-import { TestModesNotice } from "../../../../../src/ts/components/pages/test/modes-notice/TestModesNotice";
+import { TestModesNotice } from "../../../../../src/features/typing/components/modes-notice/TestModesNotice";
 import {
   setConfigStore,
   setFullConfigStore,

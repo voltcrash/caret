@@ -2,8 +2,8 @@ import { beforeEach, describe, expect, it } from "vite-plus/test";
 import {
   buildInitialWordNodes,
   clearWordTemplates,
-} from "../../src/ts/components/pages/test/words/initial";
-import { buildLiveWordNodes } from "../../src/ts/components/pages/test/words/live";
+} from "../../src/features/typing/components/words/initial";
+import { buildLiveWordNodes } from "../../src/features/typing/components/words/live";
 
 function build(
   options: Partial<Parameters<typeof buildLiveWordNodes>[0]>,

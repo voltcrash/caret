@@ -25,7 +25,7 @@ vi.mock("modern-screenshot", () => ({
   },
 }));
 vi.mock(
-  "../../src/ts/components/pages/test/result/useScreenshotCanvas",
+  "../../src/features/typing/components/result/useScreenshotCanvas",
   () => ({ createCroppedScreenshot: mocks.crop }),
 );
 vi.mock("../../src/ts/components/common/Download", () => ({

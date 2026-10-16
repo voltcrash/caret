@@ -8,7 +8,7 @@ test("render 1,000 words with browser layout", async ({ page }) => {
     const wordsUrl = "/ts/test/test-words.ts";
     const { showWords, updateWordLetters } = (await import(
       /* @vite-ignore */ renderingUrl
-    )) as typeof import("../src/ts/components/pages/test/words/rendering");
+    )) as typeof import("../src/features/typing/components/words/rendering");
     const { words } = (await import(
       /* @vite-ignore */ wordsUrl
     )) as typeof import("../src/features/typing/runtime/test-words");

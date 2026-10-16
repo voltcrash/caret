@@ -9,11 +9,11 @@ vi.mock("../../../../../src/ts/states/notifications", () => ({
 import {
   showResultScreen,
   useResultScreen,
-} from "../../../../../src/ts/components/pages/test/result/useResultScreen";
+} from "../../../../../src/features/typing/components/result/useResultScreen";
 import {
   createCroppedScreenshot,
   useScreenshotCanvas,
-} from "../../../../../src/ts/components/pages/test/result/useScreenshotCanvas";
+} from "../../../../../src/features/typing/components/result/useScreenshotCanvas";
 import { setIsScreenshotting } from "../../../../../src/ts/states/core";
 import { showErrorNotification } from "../../../../../src/ts/states/notifications";
 

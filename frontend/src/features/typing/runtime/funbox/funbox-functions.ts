@@ -1,4 +1,4 @@
-import { createWordIcon } from "../../../../ts/components/pages/test/words/icons";
+import { createWordIcon } from "../../components/words/icons";
 import { FunboxWordFunctions } from "@oxytype/typing-core/active-funboxes";
 import { createFunboxWordFunctions } from "@oxytype/typing-core/funbox-word-functions";
 import {

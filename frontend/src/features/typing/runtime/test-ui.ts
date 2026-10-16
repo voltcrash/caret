@@ -1,17 +1,17 @@
 // Logic callers retain their API; Words owns the imperative rendering lifecycle.
-export { updateHintsPositionDebounced } from "../../../ts/components/pages/test/words/hints";
+export { updateHintsPositionDebounced } from "../components/words/hints";
 export {
   activeWordTop,
   activeWordHeight,
-} from "../../../ts/components/pages/test/words/line-state";
+} from "../components/words/line-state";
 export {
   focusWords,
   keepWordsInputInTheCenter,
-} from "../../../ts/components/pages/test/words/focus";
+} from "../components/words/focus";
 export {
   getWordElement,
   getActiveWordElement,
-} from "../../../ts/components/pages/test/words/elements";
+} from "../components/words/elements";
 export {
   updateActiveElement,
   appendEmptyWordElement,
@@ -23,14 +23,14 @@ export {
   highlightBadWord,
   highlightAllLettersAsCorrect,
   getActiveWordTopAndHeightWithDifferentData,
-} from "../../../ts/components/pages/test/words/rendering";
+} from "../components/words/rendering";
 export {
   updateWordsInputPosition,
   updateWordsWrapperHeight,
-} from "../../../ts/components/pages/test/words/sizing";
-export { centerActiveLine } from "../../../ts/components/pages/test/words/line-jumping";
-export { scrollTape } from "../../../ts/components/pages/test/words/tape";
-export { setJoiningClass } from "../../../ts/components/pages/test/words/joining";
+} from "../components/words/sizing";
+export { centerActiveLine } from "../components/words/line-jumping";
+export { scrollTape } from "../components/words/tape";
+export { setJoiningClass } from "../components/words/joining";
 export {
   afterTestTextInput,
   afterTestCompositionUpdate,
@@ -42,4 +42,4 @@ export {
   fadeInAfterRestart,
   onTestRestart,
   onTestFinish,
-} from "../../../ts/components/pages/test/words/lifecycle";
+} from "../components/words/lifecycle";

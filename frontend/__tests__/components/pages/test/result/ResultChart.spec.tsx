@@ -39,7 +39,7 @@ vi.mock("../../../../../src/ts/components/common/ChartJs", () => ({
   },
 }));
 
-import { ResultChart } from "../../../../../src/ts/components/pages/test/result/ResultChart";
+import { ResultChart } from "../../../../../src/features/typing/components/result/ResultChart";
 import {
   getResultChart,
   setResultState,

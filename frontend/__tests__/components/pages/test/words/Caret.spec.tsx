@@ -1,7 +1,7 @@
 import { cleanup, render } from "@solidjs/testing-library";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
-import type { CaretController } from "../../../../../src/ts/components/pages/test/words/caret-controller";
+import type { CaretController } from "../../../../../src/features/typing/components/words/caret-controller";
 
 const bindings = vi.hoisted(() => ({
   main: undefined as CaretController | undefined,
@@ -34,7 +34,7 @@ vi.mock("../../../../../src/ts/utils/debounced-animation-frame", () => ({
   cancelPendingAnimationFrame: bindings.cancelFrame,
   requestDebouncedAnimationFrame: vi.fn(),
 }));
-import { Caret } from "../../../../../src/ts/components/pages/test/words/Caret";
+import { Caret } from "../../../../../src/features/typing/components/words/Caret";
 import { getMutableConfig } from "../../../../../src/ts/config/store";
 import { configEvent } from "../../../../../src/ts/events/config";
 

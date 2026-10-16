@@ -2,6 +2,7 @@ import { UserNameSchema } from "@oxytype/schemas/users";
 import { createSignal, For, JSXElement } from "solid-js";
 import { z } from "zod";
 
+import { toggleCaretDebug } from "../../../features/typing/components/words/caret-controller";
 import { toggleUserFakeChartData } from "../../../features/typing/runtime/result";
 import { disableSlowTimerFail } from "../../../features/typing/runtime/test-timer";
 import Ape from "../../ape";
@@ -21,7 +22,6 @@ import { isProfilerMode, setProfilerMode } from "../../utils/profiler-mode";
 import { remoteValidation } from "../../utils/remote-validation";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Button } from "../common/Button";
-import { toggleCaretDebug } from "../pages/test/words/caret-controller";
 
 const [mediaQueryDebugLevel, setLocalMediaQueryDebugLevel] = createSignal(0);
 

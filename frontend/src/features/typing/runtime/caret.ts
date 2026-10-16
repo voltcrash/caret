@@ -5,7 +5,7 @@ import {
   isLanguageRightToLeft,
   getActiveWordIndex,
 } from "../../../ts/states/test";
-import { CaretController } from "../../../ts/components/pages/test/words/caret-controller";
+import { CaretController } from "../components/words/caret-controller";
 import * as CompositionState from "../../../ts/states/composition";
 import { getCaretElement } from "../../../ts/states/test-dom";
 

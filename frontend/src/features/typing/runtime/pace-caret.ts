@@ -5,7 +5,7 @@ import * as DB from "../../../ts/db";
 import * as Misc from "../../../ts/utils/misc";
 import { configEvent } from "../../../ts/events/config";
 import { getActiveFunboxes } from "./funbox/list";
-import { CaretController } from "../../../ts/components/pages/test/words/caret-controller";
+import { CaretController } from "../components/words/caret-controller";
 import {
   areTestElementsMounted,
   getPaceCaretElement,

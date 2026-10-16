@@ -29,7 +29,7 @@ vi.mock("../../../../../src/ts/utils/debounced-animation-frame", () => ({
     callback(),
 }));
 
-import { CaretController } from "../../../../../src/ts/components/pages/test/words/caret-controller";
+import { CaretController } from "../../../../../src/features/typing/components/words/caret-controller";
 import { setTestElements } from "../../../../../src/ts/states/test-dom";
 
 let element: HTMLDivElement;

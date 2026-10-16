@@ -3,21 +3,21 @@ import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
 // children have their own specs
 vi.mock(
-  "../../../../../src/ts/components/pages/test/result/ResultQuoteActions",
+  "../../../../../src/features/typing/components/result/ResultQuoteActions",
   () => ({ ResultQuoteActions: () => null }),
 );
 vi.mock(
-  "../../../../../src/ts/components/pages/test/result/ResultTags",
+  "../../../../../src/features/typing/components/result/ResultTags",
   () => ({
     ResultTags: () => null,
   }),
 );
 vi.mock(
-  "../../../../../src/ts/components/pages/test/result/ResultDailyLeaderboard",
+  "../../../../../src/features/typing/components/result/ResultDailyLeaderboard",
   () => ({ ResultDailyLeaderboard: () => null }),
 );
 
-import { ResultStats } from "../../../../../src/ts/components/pages/test/result/ResultStats";
+import { ResultStats } from "../../../../../src/features/typing/components/result/ResultStats";
 import {
   setResultState,
   type ResultStats as ResultStatsType,

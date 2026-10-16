@@ -58,11 +58,11 @@ vi.mock("@oxytype/typing-core/events/stats", () => ({
   getWpmHistory: () => [60, 70],
 }));
 
+import { ResultReplay } from "../../../../../src/features/typing/components/result/ResultReplay";
 import {
   pauseReplay,
   toggleReplayDisplay,
 } from "../../../../../src/features/typing/runtime/replay";
-import { ResultReplay } from "../../../../../src/ts/components/pages/test/result/ResultReplay";
 import { setResultState } from "../../../../../src/ts/states/result";
 
 function input(testMs: number, data: Input): (typeof mocks.events)[number] {

@@ -13,7 +13,7 @@ vi.mock("../../../../../src/ts/collections/tags", () => ({
   useTagsLiveQuery: () => () => mocks.userTags,
 }));
 
-import { ResultTags } from "../../../../../src/ts/components/pages/test/result/ResultTags";
+import { ResultTags } from "../../../../../src/features/typing/components/result/ResultTags";
 import { setResultState } from "../../../../../src/ts/states/result";
 
 function renderTags(): HTMLElement {

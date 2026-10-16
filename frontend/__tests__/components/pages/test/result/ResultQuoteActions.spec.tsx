@@ -50,7 +50,7 @@ vi.mock("../../../../../src/ts/ape", () => ({
   },
 }));
 
-import { ResultQuoteActions } from "../../../../../src/ts/components/pages/test/result/ResultQuoteActions";
+import { ResultQuoteActions } from "../../../../../src/features/typing/components/result/ResultQuoteActions";
 import { setResultState } from "../../../../../src/ts/states/result";
 
 function renderActions(): Record<"report" | "favorite" | "rate", HTMLElement> {

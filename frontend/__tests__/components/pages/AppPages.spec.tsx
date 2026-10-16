@@ -55,7 +55,7 @@ vi.mock("../../../src/ts/components/pages/settings/SettingsPage", () => ({
     return <input aria-label="setting" />;
   },
 }));
-vi.mock("../../../src/ts/components/pages/test/TestPage", () => ({
+vi.mock("../../../src/features/typing/components/TestPage", () => ({
   TestPage: (props: { ref: (el: HTMLDivElement) => void }) => (
     <div ref={props.ref} class="pageTest">
       <textarea />

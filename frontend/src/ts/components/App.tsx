@@ -2,6 +2,8 @@ import { JSXElement, Show } from "solid-js";
 import { Portal } from "solid-js/web";
 
 import { TypingRouteHost } from "../../components/typing-route-host";
+import { BarTimerProgress } from "../../features/typing/components/live-stats/BarTimerProgress";
+import { MonkeyPower } from "../../features/typing/components/MonkeyPower";
 import { getConfig } from "../config/store";
 import { getActivePage } from "../states/core";
 import { hasFixedHeader } from "../states/page-layout";
@@ -24,8 +26,6 @@ import { Overlays } from "./layout/overlays/Overlays";
 import { PageScroller } from "./layout/PageScroller";
 import { Modals } from "./modals/Modals";
 import { AppPages } from "./pages/AppPages";
-import { BarTimerProgress } from "./pages/test/live-stats/BarTimerProgress";
-import { MonkeyPower } from "./pages/test/MonkeyPower";
 import { Popups } from "./popups/Popups";
 
 export function App(props: AppElements): JSXElement {

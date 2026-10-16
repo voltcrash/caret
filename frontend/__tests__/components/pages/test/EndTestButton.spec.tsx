@@ -28,7 +28,7 @@ vi.mock("../../../../src/features/typing/runtime/custom-text", () => ({
   getData: () => ({ limit: { mode: "word", value: 0 } }),
 }));
 
-import { EndTestButton } from "../../../../src/ts/components/pages/test/EndTestButton";
+import { EndTestButton } from "../../../../src/features/typing/components/EndTestButton";
 import { setTestActive } from "../../../../src/ts/states/test";
 
 describe("EndTestButton", () => {

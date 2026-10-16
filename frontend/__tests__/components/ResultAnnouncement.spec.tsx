@@ -8,7 +8,7 @@ import {
   vi,
 } from "vite-plus/test";
 
-import { ResultAnnouncement } from "../../src/ts/components/pages/test/result/ResultAnnouncement";
+import { ResultAnnouncement } from "../../src/features/typing/components/result/ResultAnnouncement";
 import { setResultState, type ResultStats } from "../../src/ts/states/result";
 import {
   setResultCalculating,

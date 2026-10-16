@@ -17,7 +17,7 @@ vi.mock("../../../src/ts/controllers/sound-controller", () => ({
 vi.mock("../../../src/ts/controllers/theme-controller", () => ({
   randomizeTheme: vi.fn(),
 }));
-vi.mock("../../../src/ts/components/pages/test/MonkeyPower", () => ({
+vi.mock("../../../src/features/typing/components/MonkeyPower", () => ({
   reset: vi.fn(),
 }));
 vi.mock("../../../src/features/typing/runtime/caret", () => ({

@@ -2,6 +2,7 @@ import { typedKeys } from "@oxytype/util/objects";
 import { animate } from "animejs";
 import { createSignal, For, JSXElement, onCleanup, Show } from "solid-js";
 
+import { TestPage } from "../../../features/typing/components/TestPage";
 import { createEffectOn } from "../../hooks/effects";
 import { PageName } from "../../pages/page";
 import { getPageView } from "../../states/page-transition";
@@ -9,7 +10,6 @@ import { cn } from "../../utils/cn";
 import { applyReducedMotion } from "../../utils/misc";
 import { lazyPages } from "./lazy-pages";
 import { LoadingPage } from "./LoadingPage";
-import { TestPage } from "./test/TestPage";
 
 export function AppPages(): JSXElement {
   const refs = new Map<PageName, HTMLElement>();

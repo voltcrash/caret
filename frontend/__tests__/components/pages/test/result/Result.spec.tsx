@@ -12,13 +12,13 @@ vi.mock("../../../../../src/ts/states/test", async () => {
   return { isTestActive, setTestActive };
 });
 vi.mock(
-  "../../../../../src/ts/components/pages/test/result/ResultStats",
+  "../../../../../src/features/typing/components/result/ResultStats",
   () => ({
     ResultStats: stub("stats"),
   }),
 );
 vi.mock(
-  "../../../../../src/ts/components/pages/test/result/ResultChart",
+  "../../../../../src/features/typing/components/result/ResultChart",
   async () => {
     const { onMount } = await import("solid-js");
     const { setResultChart } =
@@ -34,35 +34,35 @@ vi.mock(
   },
 );
 vi.mock(
-  "../../../../../src/ts/components/pages/test/result/ResultWordsHistory",
+  "../../../../../src/features/typing/components/result/ResultWordsHistory",
   () => ({ ResultWordsHistory: stub("history") }),
 );
 vi.mock(
-  "../../../../../src/ts/components/pages/test/result/ResultReplay",
+  "../../../../../src/features/typing/components/result/ResultReplay",
   () => ({
     ResultReplay: stub("replay"),
   }),
 );
 vi.mock(
-  "../../../../../src/ts/components/pages/test/result/ResultButtons",
+  "../../../../../src/features/typing/components/result/ResultButtons",
   () => ({
     ResultButtons: stub("buttons"),
   }),
 );
 vi.mock(
-  "../../../../../src/ts/components/pages/test/result/ResultLoginTip",
+  "../../../../../src/features/typing/components/result/ResultLoginTip",
   () => ({
     ResultLoginTip: stub("logintip"),
   }),
 );
 vi.mock(
-  "../../../../../src/ts/components/pages/test/result/ResultWatermark",
+  "../../../../../src/features/typing/components/result/ResultWatermark",
   () => ({
     ResultWatermark: stub("watermark"),
   }),
 );
 
-import { Result } from "../../../../../src/ts/components/pages/test/result/Result";
+import { Result } from "../../../../../src/features/typing/components/result/Result";
 import {
   getResultElement,
   getResultWrapperElement,

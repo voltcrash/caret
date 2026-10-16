@@ -114,7 +114,7 @@ vi.mock("../../../../src/features/typing/runtime/events/data", () => ({
 vi.mock("../../../../src/features/typing/runtime/events/live-cache", () => ({
   getLiveCachedAccuracy: () => mocks.accuracy,
 }));
-vi.mock("../../../../src/ts/components/pages/test/MonkeyPower", () => ({
+vi.mock("../../../../src/features/typing/components/MonkeyPower", () => ({
   addPower: mocks.power,
   reset: vi.fn(),
 }));
@@ -123,9 +123,9 @@ vi.mock("../../../../src/ts/anim", () => ({
 }));
 vi.mock("animejs", () => ({ animate: vi.fn() }));
 
+import { Words } from "../../../../src/features/typing/components/Words";
 import * as ui from "../../../../src/features/typing/runtime/test-ui";
 import { words } from "../../../../src/features/typing/runtime/test-words";
-import { Words } from "../../../../src/ts/components/pages/test/Words";
 import { getMutableConfig } from "../../../../src/ts/config/store";
 import { configEvent } from "../../../../src/ts/events/config";
 import { setCurrentLiveStats } from "../../../../src/ts/states/test";

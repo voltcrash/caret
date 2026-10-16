@@ -1,4 +1,4 @@
-import { createCroppedScreenshot } from "../../../ts/components/pages/test/result/useScreenshotCanvas";
+import { createCroppedScreenshot } from "../components/result/useScreenshotCanvas";
 import { showLoaderBar, hideLoaderBar } from "../../../ts/states/loader-bar";
 import * as Replay from "./replay";
 import { setIsScreenshotting } from "../../../ts/states/core";

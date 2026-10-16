@@ -1,7 +1,7 @@
 import { cleanup, render } from "@solidjs/testing-library";
 import { afterEach, describe, expect, it } from "vite-plus/test";
 
-import { ResultLoginTip } from "../../../../../src/ts/components/pages/test/result/ResultLoginTip";
+import { ResultLoginTip } from "../../../../../src/features/typing/components/result/ResultLoginTip";
 import { setIsScreenshotting } from "../../../../../src/ts/states/core";
 import { setResultState } from "../../../../../src/ts/states/result";
 

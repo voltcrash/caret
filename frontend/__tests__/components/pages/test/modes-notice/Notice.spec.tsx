@@ -1,7 +1,7 @@
 import { cleanup, render } from "@solidjs/testing-library";
 import { afterEach, describe, expect, it } from "vite-plus/test";
 
-import { Notice } from "../../../../../src/ts/components/pages/test/modes-notice/Notice";
+import { Notice } from "../../../../../src/features/typing/components/modes-notice/Notice";
 
 describe("Notice", () => {
   afterEach(() => {

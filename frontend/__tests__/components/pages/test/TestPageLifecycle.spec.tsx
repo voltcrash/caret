@@ -55,7 +55,7 @@ vi.mock("../../../../src/features/typing/runtime/test-logic", () => ({
   restart: callbacks.restart,
 }));
 
-import { TestPageLifecycle } from "../../../../src/ts/components/pages/test/TestPageLifecycle";
+import { TestPageLifecycle } from "../../../../src/features/typing/components/TestPageLifecycle";
 
 beforeEach(() => {
   vi.clearAllMocks();

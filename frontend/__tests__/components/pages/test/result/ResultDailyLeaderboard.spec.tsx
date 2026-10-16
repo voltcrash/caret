@@ -8,7 +8,7 @@ vi.mock("../../../../../src/ts/navigation/navigation", () => ({
   navigate: mocks.navigate,
 }));
 
-import { ResultDailyLeaderboard } from "../../../../../src/ts/components/pages/test/result/ResultDailyLeaderboard";
+import { ResultDailyLeaderboard } from "../../../../../src/features/typing/components/result/ResultDailyLeaderboard";
 import { __testing } from "../../../../../src/ts/config/testing";
 import { setResultState } from "../../../../../src/ts/states/result";
 
