@@ -51,7 +51,9 @@
     "db:migrate:production": "wrangler d1 migrations apply oxytype-production --remote --config wrangler.production.json",
     "build:staging-site": "tsx scripts/build-staging-site.ts",
     "check:staging": "tsx scripts/check-staging.ts",
-    "test:updates": "tsx scripts/build-update-fixtures.ts && playwright test --config playwright.update.config.ts"
+    "test:updates": "tsx scripts/build-update-fixtures.ts && playwright test --config playwright.update.config.ts",
+    "test:staging:browser": "playwright test --config playwright.staging.config.ts",
+    "check:staging:runtime": "tsx scripts/check-staging-runtime.ts"
   },
   "dependencies": {
     "@better-auth/infra": "0.4.14",
