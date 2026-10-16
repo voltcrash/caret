@@ -1,11 +1,11 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vite-plus/test";
-import { validateProductionInputs } from "../scripts/production-inputs";
+import { validateProductionInputs } from "../../scripts/production-inputs";
 
 function inputs(): Parameters<typeof validateProductionInputs>[0] {
   const config: unknown = JSON.parse(
-    readFileSync(resolve(__dirname, "../wrangler.production.json"), "utf8"),
+    readFileSync(resolve(__dirname, "../../wrangler.production.json"), "utf8"),
   );
   return {
     config,

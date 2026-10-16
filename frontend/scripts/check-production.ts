@@ -1,7 +1,8 @@
-import { readFile, readdir } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { parseEnv } from "node:util";
 import { validateProductionInputs } from "./production-inputs";
+import { validateArtifact } from "./production-artifact";
 
 async function main(): Promise<void> {
   const root = resolve(__dirname, "..");
@@ -9,7 +10,7 @@ async function main(): Promise<void> {
     await readFile(resolve(root, ".dev.vars.production"), "utf8"),
   );
   const frontend = parseEnv(
-    await readFile(resolve(root, "../frontend/.env.production.local"), "utf8"),
+    await readFile(resolve(root, ".env.production.local"), "utf8"),
   );
   const config: unknown = JSON.parse(
     await readFile(resolve(root, "wrangler.production.json"), "utf8"),
@@ -22,13 +23,12 @@ async function main(): Promise<void> {
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
   }
-  const directory = resolve(root, "../frontend/dist/js");
-  const bundles = await Promise.all(
-    (await readdir(directory))
-      .filter((file) => file.endsWith(".js"))
-      .map(async (file) => await readFile(resolve(directory, file), "utf8")),
-  );
-  validateProductionInputs({ config, backend, frontend, staging, bundles });
+  validateProductionInputs({ config, backend, frontend, staging });
+  await validateArtifact(resolve(root, "dist/start"), {
+    siteKey: frontend["TURNSTILE_SITE_KEY"] as string,
+    providers: frontend["AUTH_PROVIDERS"] as string,
+    config,
+  });
   console.log(
     "Production configuration, credentials and frontend build checked",
   );

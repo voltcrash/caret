@@ -12,7 +12,6 @@ const configSchema = z.object({
   vars: z.object({
     MODE: z.literal("production"),
     VERSION: z.literal("production"),
-    SERVE_FRONTEND: z.literal("true"),
     FRONTEND_URL: z.url(),
     BETTER_AUTH_URL: z.url(),
   }),
@@ -24,9 +23,8 @@ const configSchema = z.object({
       z.object({
         binding: z.literal("DB"),
         database_name: z.literal("oxytype-production"),
-        database_id: z
-          .uuid()
-          .refine((id) => id !== "17b0ae8b-92bf-4d7e-a29e-0ac4cc6f2b59"),
+        database_id: z.literal("43d104e9-2fef-43db-95d7-c64a08310714"),
+        migrations_dir: z.literal("../backend/migrations"),
       }),
     )
     .length(1),
@@ -86,7 +84,7 @@ export function validateProductionInputs(inputs: {
   for (const key of requiredSecrets) {
     const value = inputs.backend[key];
     if (!configured(value)) {
-      throw new Error(`Configure ${key} in backend/.dev.vars.production`);
+      throw new Error(`Configure ${key} in frontend/.dev.vars.production`);
     }
     if (value === inputs.staging?.[key]) {
       throw new Error(`${key} must be separate from staging`);

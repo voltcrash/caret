@@ -87,7 +87,7 @@ jobs:
           echo "should-build-pkg=${{ steps.filter.outputs.pkg-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
           echo "should-build-tui=${{ steps.filter.outputs.tui-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
           echo "should-build-be=${{ steps.filter.outputs.be-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
-          echo "should-build-fe=${{ steps.filter.outputs.fe-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
+          echo "should-build-fe=${{ steps.filter.outputs.fe-src == 'true' || steps.filter.outputs.be-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
           echo "assets-or-styles=${{ steps.filter.outputs.assets-or-styles == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
 
   prime-cache:
@@ -244,9 +244,9 @@ jobs:
         run: vp -C frontend exec playwright install --with-deps chromium
 
       - name: Run browser regression suite
-        run: vp run test-e2e
+        run: vp run --filter @oxytype/frontend test-e2e:legacy
 
-  # TanStack Start migration build; legacy checks above still own unmigrated code.
+  # Start owns delivery. Rollback UI/backend builds remain until Stage 8.
   ci-start:
     name: ci-start
     needs: [pre-ci, prime-cache]
@@ -280,9 +280,15 @@ jobs:
       - name: Production-Worker browser checks
         run: vp run --filter @oxytype/frontend test:start:browser
 
-      # Last: overwrites dist/start with the migration staging configuration.
-      - name: Migration staging build and dry-run
+      # Last: overwrites dist/start with the staging delivery configuration.
+      - name: Staging build and dry-run
         run: vp run --filter @oxytype/frontend build:start:staging && vp run --filter @oxytype/frontend dry-run:start
+
+      - name: Production configuration build and dry-run (fixture public settings)
+        env:
+          OXYTYPE_DEPLOY_ENV: production
+          OXYTYPE_BUILD_ID: ci-${{ github.sha }}
+        run: vp run --filter @oxytype/frontend build:start && vp run --filter @oxytype/frontend dry-run:start
 
   ci-assets:
     name: ci-assets

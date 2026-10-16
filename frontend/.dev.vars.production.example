@@ -1,0 +1,10 @@
+# Copy to .dev.vars.production, chmod 600; never commit actual secrets.
+# Generate once, preserve across redeployments. Do not reuse staging/local secrets.
+BETTER_AUTH_SECRET=replace-with-a-random-secret-at-least-32-characters
+# Optional Better Auth dashboard connection; separate from BETTER_AUTH_SECRET.
+# BETTER_AUTH_API_KEY=replace-with-private-dashboard-project-api-key
+TURNSTILE_SECRET_KEY=replace-with-production-widget-secret
+# OAuth homepage: https://oxytype.voltcrash.com
+# Callback: https://oxytype.voltcrash.com/api/auth/callback/github
+GITHUB_CLIENT_ID=replace-with-production-oauth-client-id
+GITHUB_CLIENT_SECRET=replace-with-production-oauth-client-secret

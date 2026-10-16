@@ -14,7 +14,7 @@ import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vite-plus/test";
 
-const repoRoot = resolve(__dirname, "../..");
+const repoRoot = resolve(__dirname, "../../..");
 const tsx = createRequire(__filename).resolve("tsx/cli");
 
 type Build = {
@@ -37,11 +37,16 @@ describe("production build command", () => {
   function run(env: NodeJS.ProcessEnv = {}): SpawnSyncReturns<string> {
     return spawnSync(
       process.execPath,
-      [tsx, resolve(root, "backend/scripts/build-production-site.ts")],
+      [tsx, resolve(root, "frontend/scripts/build-production-site.ts")],
       {
         // The script must locate its workspace independently of the caller.
         cwd: tmpdir(),
-        env: { ...process.env, CI: "true", ...env },
+        env: {
+          ...process.env,
+          CI: "true",
+          OXYTYPE_BUILD_ID: "fixture-build",
+          ...env,
+        },
         encoding: "utf8",
         timeout: 30_000,
       },
@@ -59,8 +64,8 @@ describe("production build command", () => {
 
   beforeEach(() => {
     root = mkdtempSync(resolve(tmpdir(), "oxytype-production-build-"));
-    mkdirSync(resolve(root, "backend/scripts"), { recursive: true });
-    mkdirSync(resolve(root, "frontend"));
+    mkdirSync(resolve(root, "frontend/scripts"), { recursive: true });
+    mkdirSync(resolve(root, "frontend/vite-plugins"));
     mkdirSync(resolve(root, "node_modules/.bin"), { recursive: true });
     symlinkSync(
       resolve(repoRoot, "node_modules/.bin/vp"),
@@ -72,19 +77,29 @@ describe("production build command", () => {
       "dir",
     );
     symlinkSync(
-      resolve(repoRoot, "backend/node_modules"),
-      resolve(root, "backend/node_modules"),
+      resolve(repoRoot, "frontend/node_modules"),
+      resolve(root, "frontend/node_modules"),
       "dir",
     );
-    for (const name of ["build-production-site.ts", "production-inputs.ts"]) {
+    for (const name of [
+      "build-production-site.ts",
+      "production-inputs.ts",
+      "production-artifact.ts",
+    ]) {
       copyFileSync(
-        resolve(repoRoot, "backend/scripts", name),
-        resolve(root, "backend/scripts", name),
+        resolve(repoRoot, "frontend/scripts", name),
+        resolve(root, "frontend/scripts", name),
+      );
+    }
+    for (const name of ["build-id.ts", "client-version.ts"]) {
+      copyFileSync(
+        resolve(repoRoot, "frontend/vite-plugins", name),
+        resolve(root, "frontend/vite-plugins", name),
       );
     }
     copyFileSync(
-      resolve(repoRoot, "backend/wrangler.production.json"),
-      resolve(root, "backend/wrangler.production.json"),
+      resolve(repoRoot, "frontend/wrangler.production.json"),
+      resolve(root, "frontend/wrangler.production.json"),
     );
     write("pnpm-workspace.yaml", "packages:\n  - frontend\n  - backend\n");
     write(
@@ -100,18 +115,18 @@ describe("production build command", () => {
     );
     // Enable caching to ensure the production command explicitly bypasses it.
     write("vite.config.mjs", "export default { run: { cache: true } };\n");
-    for (const target of ["frontend", "backend"]) {
+    for (const target of ["frontend"]) {
       write(
         `${target}/package.json`,
         JSON.stringify({
           name: `@oxytype/${target}`,
           private: true,
-          scripts: { build: `node ../fixture-build.mjs ${target}` },
+          scripts: { "build:start": `node ../fixture-build.mjs ${target}` },
         }),
       );
     }
     write(
-      "backend/.dev.vars.production",
+      "frontend/.dev.vars.production",
       "BETTER_AUTH_SECRET=production-auth-secret-fixture-32-characters\n" +
         "TURNSTILE_SECRET_KEY=production-turnstile-secret-fixture\n" +
         "GITHUB_CLIENT_ID=production-client-id\n" +
@@ -123,7 +138,7 @@ describe("production build command", () => {
     );
     write(
       "fixture-build.mjs",
-      `import { appendFileSync } from 'node:fs';
+      `import { appendFileSync, mkdirSync, writeFileSync } from 'node:fs';
 const target = process.argv[2];
 const args = process.argv.slice(3);
 if (args.length > 0) throw new Error('Unexpected build arguments: ' + args.join(' '));
@@ -136,6 +151,8 @@ appendFileSync(new URL('./builds.jsonl', import.meta.url), JSON.stringify({
   turnstileSecret: process.env.TURNSTILE_SECRET_KEY,
 }) + '\\n');
 if (process.env.FIXTURE_FAIL_BUILD === target) process.exit(1);
+mkdirSync(new URL("./frontend/dist/start/server", import.meta.url), { recursive: true });
+writeFileSync(new URL("./frontend/dist/start/server/index.js", import.meta.url), "export default {};");
 `,
     );
   });
@@ -144,13 +161,12 @@ if (process.env.FIXTURE_FAIL_BUILD === target) process.exit(1);
     rmSync(root, { recursive: true, force: true });
   });
 
-  it("runs frontend then backend through the real CLI without forwarding runner flags", () => {
+  it("builds one Start artifact through the real CLI without forwarding runner flags", () => {
     const result = run();
     expect(result.error).toBeUndefined();
     expect(result.status, result.stdout + result.stderr).toBe(0);
     expect(builds().map(({ target, args }) => ({ target, args }))).toEqual([
       { target: "frontend", args: [] },
-      { target: "backend", args: [] },
     ]);
   }, 30_000);
 
@@ -158,13 +174,11 @@ if (process.env.FIXTURE_FAIL_BUILD === target) process.exit(1);
     for (let attempt = 0; attempt < 2; attempt++) {
       const result = run();
       expect(result.status, result.stdout + result.stderr).toBe(0);
-      expect(result.stdout.match(/cache disabled/g)).toHaveLength(2);
+      expect(result.stdout.match(/cache disabled/g)).toHaveLength(1);
     }
     expect(builds().map(({ target }) => target)).toEqual([
       "frontend",
-      "backend",
       "frontend",
-      "backend",
     ]);
   }, 30_000);
 
@@ -188,10 +202,7 @@ if (process.env.FIXTURE_FAIL_BUILD === target) process.exit(1);
     }
   }, 30_000);
 
-  it.each([
-    ["frontend", "build-fe", ["frontend"]],
-    ["backend", "build-be", ["frontend", "backend"]],
-  ])(
+  it.each([["frontend", "build:start", ["frontend"]]])(
     "stops and reports a failed %s build",
     (target, script, expected) => {
       const result = run({ FIXTURE_FAIL_BUILD: target });
@@ -210,15 +221,15 @@ if (process.env.FIXTURE_FAIL_BUILD === target) process.exit(1);
     expect(result.error).toBeUndefined();
     expect(result.status).toBe(1);
     expect(result.stderr).toContain(
-      "build-fe failed; production was not deployed",
+      "build:start failed; production was not deployed",
     );
     expect(builds()).toEqual([]);
   }, 30_000);
 
   it.each([
-    "backend/.dev.vars.production",
+    "frontend/.dev.vars.production",
     "frontend/.env.production.local",
-    "backend/wrangler.production.json",
+    "frontend/wrangler.production.json",
   ])(
     "rejects a missing %s before starting builds",
     (path) => {
@@ -233,7 +244,7 @@ if (process.env.FIXTURE_FAIL_BUILD === target) process.exit(1);
 
   it.each([
     [
-      "backend/.dev.vars.production",
+      "frontend/.dev.vars.production",
       "BETTER_AUTH_SECRET=replace-with-production-secret\n",
       "BETTER_AUTH_SECRET",
     ],
