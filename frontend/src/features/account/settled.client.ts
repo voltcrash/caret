@@ -6,9 +6,10 @@ import { useSessionSettled } from "../auth/settled.client";
 import { sessionOptions } from "../auth/session";
 
 /** Registered actor whose initial account load (snapshot, collections, server preferences) finished. */
-export const [getLoadedAccount, setLoadedAccount] = createAppSignal<
-  string | null
->(null);
+const [getLoadedAccount, setLoadedAccount] = createAppSignal<string | null>(
+  null,
+);
+export { setLoadedAccount };
 
 /**
  * Undefined until the session and, for a registered actor, its initial

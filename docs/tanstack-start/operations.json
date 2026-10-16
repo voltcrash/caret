@@ -1207,8 +1207,8 @@
       "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
     },
     "browserCallers": [
-      "frontend/src/ts/components/modals/LastSignedOutResultModal.tsx",
-      "frontend/src/ts/test/result-saving.ts"
+      "frontend/src/features/typing/runtime/result-saving.ts",
+      "frontend/src/ts/components/modals/LastSignedOutResultModal.tsx"
     ],
     "target": "web server function over backend service",
     "webTarget": "server function",
@@ -1369,7 +1369,7 @@
       "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
     },
     "browserCallers": [
-      "frontend/src/ts/components/pages/test/result/ResultQuoteActions.tsx",
+      "frontend/src/features/typing/components/result/ResultQuoteActions.tsx",
       "frontend/src/ts/controllers/quotes-controller.ts"
     ],
     "target": "web server function over backend service",
@@ -2019,7 +2019,7 @@
       "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
     },
     "browserCallers": [
-      "frontend/src/ts/components/pages/test/result/ResultQuoteActions.tsx",
+      "frontend/src/features/typing/components/result/ResultQuoteActions.tsx",
       "frontend/src/ts/controllers/quotes-controller.ts"
     ],
     "target": "web server function over backend service",
