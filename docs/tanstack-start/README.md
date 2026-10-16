@@ -23,10 +23,10 @@ No preceding implementation stage or handoff exists. Prerequisite: merged
 | 3.2 Start policy adapters | Complete | [Stage 3](stage-3.md) |
 | 3.3 Authentication flows | Complete | [Stage 3](stage-3.md) |
 | Stage 3 exit | Complete, recorded byte deviation | [Validation and handoff](stage-3.md#exit-validation) |
-| 4.1 Public routes | Implemented | [Stage 4](stage-4.md) |
-| 4.2 Settings/private routes | Implemented | [Stage 4](stage-4.md) |
-| 4.3 Navigation | Implemented; validating | [Stage 4](stage-4.md) |
-| Stage 4 exit | In progress | [Checks and adapters](stage-4.md#exit-validation) |
+| 4.1 Public routes | Complete | [Stage 4](stage-4.md) |
+| 4.2 Settings/private routes | Complete | [Stage 4](stage-4.md) |
+| 4.3 Navigation | Complete | [Stage 4](stage-4.md) |
+| Stage 4 exit | Complete; intermediate Worker footprint recorded | [Validation and handoff](stage-4.md#exit-validation) |
 | Stages 5–8 | Not started | Separate assignments |
 
 Stage 0 moves responsibility for migration evidence from an unverified proposal

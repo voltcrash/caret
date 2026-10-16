@@ -1,7 +1,7 @@
 # TanStack Start migration: architecture and execution plan
 
-Status: Stages 0–3 complete; [ledger and handoffs](tanstack-start/README.md).
-Stage 4 implemented; exit validation in progress. Production still serves the legacy app (rollback build).
+Status: Stages 0–4 complete; [ledger and handoffs](tanstack-start/README.md).
+Stage 5 not started. Production still serves the legacy app (rollback build).
 Prepared: 2026-10-15. Scope: Oxytype web application and its server/runtime.
 
 ## Outcome
@@ -451,9 +451,11 @@ cache state without a global forced page reload pipeline.
 
 ## Stage 4 — Migrate routes and remove parallel page lifecycles
 
-Status: implemented; exit validation in progress. [Stage 4 ledger](tanstack-start/stage-4.md).
+Status: complete; intermediate Worker footprint recorded. [Stage 4 validation and handoff](tanstack-start/stage-4.md).
 
 ### 4.1 Migrate public pages
+
+Status: complete.
 
 - Move about, profile search/profile, leaderboards, privacy/standalone pages, and
   not-found handling into the route tree. Components live in features/shared UI.
@@ -464,6 +466,8 @@ Status: implemented; exit validation in progress. [Stage 4 ledger](tanstack-star
 
 ### 4.2 Migrate settings and authenticated pages
 
+Status: complete.
+
 - Move account and settings to native routes/layouts. Keep shared charts lazy and
   browser-only where required; avoid serializing all results for SSR.
 - Move tab/filter URL state into validated route search. Preserve settings highlight
@@ -473,6 +477,8 @@ Status: implemented; exit validation in progress. [Stage 4 ledger](tanstack-star
   feature state. Retain useful UI state through explicit owners/search/storage.
 
 ### 4.3 Replace navigation callers and transitions
+
+Status: complete.
 
 - Convert `Link`, router-marked buttons, command palette actions, modals, auth
   callbacks, and imperative callers to Router navigation.

@@ -4,10 +4,10 @@ Base: Stage 3 `54fc00fe9`, PR #138; ancestor and green remote CI verified.
 Inherited implementation through `5aaf6e7d9` reviewed; clean worktree at takeover.
 No unrelated changes. Production still uses the explicit rollback build.
 
-Phases implemented in order: 4.1 public routes → 4.2 private/settings routes →
-4.3 navigation. **Exit validation in progress; Stage 4 not yet complete.**
+Phases completed in order: 4.1 public routes → 4.2 private/settings routes →
+4.3 navigation. **Stage 4 complete. Stage 5 not started.**
 
-## 4.1 Public routes
+## 4.1 Public routes — complete
 
 - Native about, profile lookup/profile, leaderboards, privacy policy and not-found
   routes render useful public content with route-owned metadata and HTTP status.
@@ -26,7 +26,7 @@ Phases implemented in order: 4.1 public routes → 4.2 private/settings routes �
 - Former entry URLs redirect explicitly; published literal-dot standalone URLs,
   query/hash handling and static warnings source retained.
 
-## 4.2 Account and settings
+## 4.2 Account and settings — complete
 
 - Pathless authenticated layout uses the canonical server-verified session query;
   guests/unregistered users go to login with a safe return path. Sensitive services
@@ -44,7 +44,7 @@ Phases implemented in order: 4.1 public routes → 4.2 private/settings routes �
 - `/account-settings` guards first and replaces with `/settings?tab=account`, with
   original query keys overriding the default and hash preserved.
 
-## 4.3 Navigation and common layout
+## 4.3 Navigation and common layout — complete
 
 - Native common layout owns SSR header/content geometry, client chrome, overlays,
   modal/popup roots and scroller refs. Shared links/router-marked buttons use
@@ -94,19 +94,52 @@ Phases implemented in order: 4.1 public routes → 4.2 private/settings routes �
   [Solid Query prefetching](https://tanstack.com/query/latest/docs/framework/solid/guides/prefetching).
 - Linux CI exposed external built-in CommonJS requires (`crypto`, `util`, `fs`)
   in dependencies reached by the HTTP adapter. The local Cloudflare build had
-  converted them automatically. SSR now explicitly installs Vite+/Rolldown's
-  [ESM external-require plugin](https://rolldown.rs/builtin-plugins/esm-external-require)
-  for Node built-ins. Both production/test Worker bundles reject runtime require
-  calls; no global require shim or dependency source edits.
+  converted them automatically. Native-plugin configuration attempts still
+  failed Linux CI. `worker-node-builtins.ts` now resolves CJS built-in calls to
+  static ESM facades through ordinary Vite hooks, following the
+  [documented interop semantics](https://rolldown.rs/builtin-plugins/esm-external-require).
+  A focused built-CJS/workerd fixture verifies crypto hashes, crypto/node:crypto
+  identity, util formatting and fs exports. Both production/test Worker bundles
+  reject runtime require calls; no global require shim or dependency edits.
 
 ## Exit validation
 
-Pending final sequential runs. Initial overlapping builds/tests caused fixture
-asset replacement and resource-contention timeouts; those runs are not exit
-proof. Real regressions found by browser checks (same-tab highlight rewriting,
-late content scroll restoration, palette requiring mounted typing refs) fixed.
-Frozen budgets unchanged. Typing/runtime benchmarks belong to Stage 5; this
-stage changes no typing engine, result transport, D1 data or authentication policy.
+All required checks pass. [Command/results evidence](evidence/stage-4-validation.json).
+[Linux CI](https://github.com/voltcrash/oxytype/actions/runs/38837733179) is green
+on implementation `eae5edf16`: frontend/backend, browser, Start/workerd, format,
+knip and assets. Shared-package tests pass locally; CI skips unchanged packages
+and TUI by path filter. No TUI work or production deployment.
+
+| Check | Result |
+| --- | --- |
+| `vp run test-fe` | 229 files / 2,288 tests pass |
+| `vp run test-be` | 45 unit files / 803 tests + 30 real-D1 files / 124 tests pass |
+| `vp run test-pkg` | 7 workspaces / 54 files / 636 tests pass |
+| `vp run test-e2e` | 31 pass, including typing, restart, save, palette, modals and accessibility |
+| `test:start` | 10 files / 48 pass; real SSR/RPC, policies, isolation, CJS identity and both bundle variants |
+| `test:start:browser` | 19 pass; all non-typing routes, auth, search, history, keyboard/focus, scroll and static fallbacks |
+| `lint-fe`, `lint-be`, `lint-pkg` | Type-aware/type-check pass, `--format agent` |
+| `knip`, assets/styles, suppression audit, inventory freshness | Pass; all 82 operations retained in ledger |
+| Source/test/config/evidence formatting; diff whitespace | Pass |
+| Production rollback + backend docs/assets/Worker build | Pass; no circular imports or Start/server code in rollback JS |
+| Start production/runtime-test/staging builds and Worker dry-runs | Pass locally and in Linux CI |
+| Rollback eager JS | 81 responses; 914,164 raw / 321,202 gzip bytes, within 922,918 / 321,462 frozen budgets |
+
+Native staging Worker dry-run: **4,178.04 KiB raw / 931.66 KiB gzip**, versus
+Stage 3 **3,590.24 / 785.24**. Public SSR routes and the temporary full HTTP
+adapter add code. Record this intermediate footprint explicitly: Stage 6 retires
+the HTTP adapter, and Stage 7 reviews the final native artifact against budgets.
+These Wrangler figures do not replace the frozen backend benchmark or widen its
+thresholds. Stage 3's recorded backend Worker-byte exception remains explicit.
+No new timing claim is made: the typing/runtime comparison belongs to Stage 5.
+
+Initial overlapping builds/tests replaced fixture assets and caused contention
+timeouts; fresh sequential runs supply exit evidence. Browser checks found and
+fixed same-tab highlight rewriting, late-content scroll restoration and palette
+focus requiring typing refs. Linux CI found the CJS built-in issue described
+above; the final ordinary-hook facades pass workerd and browser checks. No
+unresolved functional failures. No changes to typing algorithms, result transport,
+D1 data, authentication policy, static warnings, or frozen performance budgets.
 
 ## Next stage prerequisites
 
