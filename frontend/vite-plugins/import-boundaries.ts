@@ -11,6 +11,7 @@ export const ssrSafeLegacyFiles = [
   "src/ts/components/common/Button.tsx",
   "src/ts/components/common/Link.tsx",
   "src/ts/components/common/Headers.tsx",
+  "src/ts/components/common/ClientToggle.tsx",
   "src/ts/utils/numbers.ts",
   "src/ts/utils/cn.ts",
   "src/ts/types/**",

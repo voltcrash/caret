@@ -18,6 +18,8 @@ import { Route as AppAboutRouteImport } from './routes/_app.about'
 import { Route as AppDeviceRouteImport } from './routes/_app.device'
 import { Route as AppLoginRouteImport } from './routes/_app.login'
 import { Route as ApiSplatRouteImport } from './routes/api.$'
+import { Route as AppProfileIndexRouteImport } from './routes/_app.profile.index'
+import { Route as AppProfileUidOrNameRouteImport } from './routes/_app.profile.$uidOrName'
 import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
 
 const R404DothtmlRoute = R404DothtmlRouteImport.update({
@@ -64,6 +66,16 @@ const ApiSplatRoute = ApiSplatRouteImport.update({
   path: '/api/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppProfileIndexRoute = AppProfileIndexRouteImport.update({
+  id: '/profile/',
+  path: '/profile/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProfileUidOrNameRoute = AppProfileUidOrNameRouteImport.update({
+  id: '/profile/$uidOrName',
+  path: '/profile/$uidOrName',
+  getParentRoute: () => AppRoute,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -79,7 +91,9 @@ export interface FileRoutesByFullPath {
   '/device': typeof AppDeviceRoute
   '/login': typeof AppLoginRoute
   '/api/$': typeof ApiSplatRoute
+  '/profile/$uidOrName': typeof AppProfileUidOrNameRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/profile/': typeof AppProfileIndexRoute
 }
 export interface FileRoutesByTo {
   '/404.html': typeof R404DothtmlRoute
@@ -90,7 +104,9 @@ export interface FileRoutesByTo {
   '/login': typeof AppLoginRoute
   '/api/$': typeof ApiSplatRoute
   '/': typeof AppIndexRoute
+  '/profile/$uidOrName': typeof AppProfileUidOrNameRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/profile': typeof AppProfileIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -103,7 +119,9 @@ export interface FileRoutesById {
   '/_app/login': typeof AppLoginRoute
   '/api/$': typeof ApiSplatRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/profile/$uidOrName': typeof AppProfileUidOrNameRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/_app/profile/': typeof AppProfileIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -116,7 +134,9 @@ export interface FileRouteTypes {
     | '/device'
     | '/login'
     | '/api/$'
+    | '/profile/$uidOrName'
     | '/api/auth/$'
+    | '/profile/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/404.html'
@@ -127,7 +147,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/api/$'
     | '/'
+    | '/profile/$uidOrName'
     | '/api/auth/$'
+    | '/profile'
   id:
     | '__root__'
     | '/404.html'
@@ -139,7 +161,9 @@ export interface FileRouteTypes {
     | '/_app/login'
     | '/api/$'
     | '/_app/'
+    | '/_app/profile/$uidOrName'
     | '/api/auth/$'
+    | '/_app/profile/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -216,6 +240,20 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof ApiSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/profile/': {
+      id: '/_app/profile/'
+      path: '/profile'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof AppProfileIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/profile/$uidOrName': {
+      id: '/_app/profile/$uidOrName'
+      path: '/profile/$uidOrName'
+      fullPath: '/profile/$uidOrName'
+      preLoaderRoute: typeof AppProfileUidOrNameRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -231,6 +269,8 @@ interface AppRouteChildren {
   AppDeviceRoute: typeof AppDeviceRoute
   AppLoginRoute: typeof AppLoginRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppProfileUidOrNameRoute: typeof AppProfileUidOrNameRoute
+  AppProfileIndexRoute: typeof AppProfileIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -238,6 +278,8 @@ const AppRouteChildren: AppRouteChildren = {
   AppDeviceRoute: AppDeviceRoute,
   AppLoginRoute: AppLoginRoute,
   AppIndexRoute: AppIndexRoute,
+  AppProfileUidOrNameRoute: AppProfileUidOrNameRoute,
+  AppProfileIndexRoute: AppProfileIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

@@ -24,6 +24,8 @@
     "./audit": "./src/dal/logs.ts",
     "./services/account": "./src/services/operations/user/account.ts",
     "./services/admin": "./src/services/operations/admin.ts",
+    "./services/profile": "./src/services/operations/user/profile.ts",
+    "./services/leaderboards": "./src/services/operations/leaderboard.ts",
     "./auth/ui-session": "./src/auth/ui-session.ts",
     "./legacy-http": "./src/app.ts"
   },

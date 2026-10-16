@@ -153,3 +153,72 @@ export async function seedSession(
     };
   });
 }
+
+/** A complete public user with one time 60 personal best. */
+export async function seedProfile(
+  mf: Miniflare,
+  worker: string,
+  name: string,
+): Promise<string> {
+  const db = await mf.getD1Database("DB", worker);
+  const uid = `profile-${name}`;
+  const pb = {
+    acc: 97.5,
+    consistency: 80,
+    difficulty: "normal",
+    language: "english",
+    raw: 130,
+    wpm: 123.4,
+    timestamp: 1_700_000_000_000,
+  };
+  const data = {
+    _id: uid.padStart(24, "0"),
+    uid,
+    name,
+    email: `${uid}@example.test`,
+    addedAt: 1_700_000_000_000,
+    personalBests: {
+      time: { "60": [pb] },
+      words: {},
+      quote: {},
+      zen: {},
+      custom: {},
+    },
+    completedTests: 5,
+    startedTests: 9,
+    timeTyping: 600,
+    profileDetails: { bio: `${name} public bio` },
+    testActivity: {},
+  };
+  await db
+    .prepare(
+      "INSERT INTO users(uid,id,name,name_key,email,added_at,data) VALUES(?,?,?,?,?,?,?)",
+    )
+    .bind(
+      uid,
+      data._id,
+      name,
+      name.toLowerCase(),
+      data.email,
+      data.addedAt,
+      JSON.stringify(data),
+    )
+    .run();
+  return uid;
+}
+
+/** Enables the public features a test exercises. */
+export async function enableConfiguration(
+  mf: Miniflare,
+  worker: string,
+  path: string,
+  value: unknown,
+): Promise<void> {
+  const db = await mf.getD1Database("DB", worker);
+  await db
+    .prepare(
+      "UPDATE configuration SET data=json_set(data,?,json(?)) WHERE id='main'",
+    )
+    .bind(path, JSON.stringify(value))
+    .run();
+}

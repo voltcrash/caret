@@ -39,8 +39,14 @@ export const getUserProfile = (username: string, client: Client = "web") =>
 export async function invalidateMyProfile(): Promise<void> {
   const username = getSnapshot()?.name;
   if (username !== undefined) {
-    await getQueryClient().resetQueries({
-      queryKey: [...queryKeys.root(), username],
-    });
+    await Promise.all([
+      getQueryClient().resetQueries({
+        queryKey: [...queryKeys.root(), username],
+      }),
+      // Start's public profile route cache.
+      getQueryClient().resetQueries({
+        queryKey: ["public", "profile", username],
+      }),
+    ]);
   }
 }
