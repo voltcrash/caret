@@ -1,4 +1,4 @@
-import { type JSXElement, onMount, Show } from "solid-js";
+import { createEffect, type JSXElement, on, onCleanup, Show } from "solid-js";
 
 import { SettingsContent } from "../../ts/components/pages/settings/SettingsContent";
 import { highlightSetting } from "../../ts/states/settings-highlight";
@@ -8,28 +8,25 @@ import {
 } from "../../ts/states/settings-sections";
 import { useSessionSettled } from "../auth/settled.client";
 
-/**
- * Preference UI (browser-owned config). The route owns the section; a
- * `highlight` deep link is applied once on entry, like the old page show.
- */
-function Mounted(props: { onMount: () => void }): null {
-  onMount(() => props.onMount());
-  return null;
-}
-
+/** Preference UI; route search owns the section and each highlight request. */
 export function SettingsView(props: {
   section: SettingsSection;
   highlight: string | undefined;
   onSection: (section: SettingsSection) => void;
 }): JSXElement {
-  let highlighted = false;
-  const highlight = (): void => {
-    const key = props.highlight;
-    if (highlighted || key === undefined) return;
-    highlighted = true;
-    requestAnimationFrame(() => highlightSetting(key));
-  };
   const settled = useSessionSettled();
+  createEffect(
+    on(
+      () => (settled() ? props.highlight : undefined),
+      (key) => {
+        if (key === undefined) return;
+        // Settings register their refs during mount; search-only navigation keeps
+        // them mounted and can request another highlight without a page lifecycle.
+        const frame = requestAnimationFrame(() => highlightSetting(key));
+        onCleanup(() => cancelAnimationFrame(frame));
+      },
+    ),
+  );
   return (
     <Show when={settled()}>
       <SettingsSectionHostContext.Provider
@@ -39,7 +36,6 @@ export function SettingsView(props: {
         }}
       >
         <SettingsContent />
-        <Mounted onMount={highlight} />
       </SettingsSectionHostContext.Provider>
     </Show>
   );

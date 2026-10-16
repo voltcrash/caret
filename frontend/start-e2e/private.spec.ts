@@ -60,3 +60,20 @@ test("settings sections are replace-only route search and deep links highlight",
     page.locator('[data-setting-key="quickRestart"].settings-highlight'),
   ).toBeVisible();
 });
+
+test("settings highlights follow search changes on the mounted route", async ({
+  page,
+}) => {
+  await page.goto("/settings?highlight=quickRestart");
+  await expect(
+    page.locator('[data-setting-key="quickRestart"].settings-highlight'),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "caret", exact: true }).click();
+  const caret = page.locator('[data-setting-key="caretStyle"]');
+  await caret.getByRole("button", { name: "Copy link to setting" }).click();
+  await expect(page).toHaveURL(/tab=caret&highlight=caretStyle$/);
+  await expect(caret).toHaveClass(/settings-highlight/);
+  await expect(
+    page.locator('[data-setting-key="quickRestart"]'),
+  ).not.toHaveClass(/settings-highlight/);
+});
