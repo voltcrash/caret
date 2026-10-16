@@ -7,14 +7,19 @@ import { bindTypingActivity } from "../../../features/typing/scope";
 import { createEffectOn } from "../../hooks/effects";
 import { PageName } from "../../pages/page";
 import { getActivePage } from "../../states/core";
-import { getPageView } from "../../states/page-transition";
+import {
+  get as isPageTransitioning,
+  getPageView,
+} from "../../states/page-transition";
 import { cn } from "../../utils/cn";
 import { applyReducedMotion } from "../../utils/misc";
 import { lazyPages } from "./lazy-pages";
 import { LoadingPage } from "./LoadingPage";
 
 export function AppPages(): JSXElement {
-  onCleanup(bindTypingActivity(() => getActivePage() === "test"));
+  onCleanup(
+    bindTypingActivity(() => getActivePage() === "test", isPageTransitioning),
+  );
   const refs = new Map<PageName, HTMLElement>();
   const [visited, setVisited] = createSignal(new Set<PageName>());
   createEffectOn(getPageView, ({ id }) => {

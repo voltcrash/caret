@@ -49,9 +49,7 @@ vi.mock("../../../src/ts/config/store", () => ({
 }));
 vi.mock("../../../src/features/typing/scope", () => ({
   isTypingRouteActive: () => state.route,
-}));
-vi.mock("../../../src/ts/states/page-transition", () => ({
-  get: () => state.transition,
+  isTypingRouteTransitioning: () => state.transition,
 }));
 vi.mock("../../../src/ts/states/test", () => ({
   getResultVisible: () => state.result,

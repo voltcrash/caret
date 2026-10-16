@@ -11,6 +11,7 @@ import {
   captureTypingRoute,
   createTypingOwned,
   isTypingRouteActive,
+  isTypingRouteTransitioning,
   mountTypingScope,
 } from "../../src/features/typing/scope";
 
@@ -77,4 +78,20 @@ it("lets derived state observe mounts and the rollback binding", () => {
   release();
   stop();
   expect(values).toEqual([true, true, false, true, true, true, false]);
+});
+
+it("reports rollback page fades but never transitions for the Start leaf", () => {
+  let fading = true;
+  const unbind = bindTypingActivity(
+    () => true,
+    () => fading,
+  );
+  expect(isTypingRouteTransitioning()).toBe(true);
+  fading = false;
+  expect(isTypingRouteTransitioning()).toBe(false);
+  fading = true;
+  const release = mountTypingScope();
+  expect(isTypingRouteTransitioning()).toBe(false);
+  release();
+  unbind();
 });

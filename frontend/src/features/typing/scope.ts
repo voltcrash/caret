@@ -16,23 +16,38 @@ const state = createAppOwned(() => {
   // Reactive so derived state (hotkeys, palette behavior) follows mounts.
   const [route, setRoute] = createSignal<RouteScope>();
   const [active, setActive] = createSignal<() => boolean>();
+  const [transitioning, setTransitioning] = createSignal<() => boolean>();
   return {
     route,
     setRoute,
     active,
     setActive,
+    transitioning,
+    setTransitioning,
     generation: 0,
     managed: false,
   };
 });
 
-/** Rollback supplies its route observation; Start owns a real mounted scope. */
-export function bindTypingActivity(active: () => boolean): () => void {
+/** Rollback supplies its route and page-transition observation; Start owns a real mounted scope. */
+export function bindTypingActivity(
+  active: () => boolean,
+  transitioning: () => boolean = () => false,
+): () => void {
   const current = state();
   current.setActive(() => active);
+  current.setTransitioning(() => transitioning);
   return () => {
-    if (untrack(current.active) === active) current.setActive(undefined);
+    if (untrack(current.active) !== active) return;
+    current.setActive(undefined);
+    current.setTransitioning(undefined);
   };
+}
+
+/** Rollback page fades; Start's leaf is simply mounted or not. */
+export function isTypingRouteTransitioning(): boolean {
+  const current = state();
+  return !current.managed && (current.transitioning()?.() ?? false);
 }
 
 export function isTypingRouteActive(): boolean {

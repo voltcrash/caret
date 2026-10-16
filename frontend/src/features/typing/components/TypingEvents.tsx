@@ -11,7 +11,6 @@ import {
   useCapsLockEvents,
 } from "../../../ts/states/modifiers";
 import { isAnyPopupVisible } from "../../../ts/states/overlay-visibility";
-import * as PageTransition from "../../../ts/states/page-transition";
 import {
   getFocus,
   getResultVisible,
@@ -25,7 +24,7 @@ import * as CustomText from "../runtime/custom-text";
 import * as Focus from "../runtime/focus";
 import { updateAltGrState } from "../runtime/layout-emulator";
 import * as TestUI from "../runtime/test-ui";
-import { isTypingRouteActive } from "../scope";
+import { isTypingRouteActive, isTypingRouteTransitioning } from "../scope";
 
 /**
  * Document/window listeners of the typing route. Owned by the test page and
@@ -37,7 +36,7 @@ export function TypingEvents(): null {
   onMount(() => {
     const autofocus = (e: KeyboardEvent): void => {
       updateCurrentCode(e);
-      if (PageTransition.get() || e.key === undefined) return;
+      if (isTypingRouteTransitioning() || e.key === undefined) return;
       if (
         isDevEnvironment() &&
         (document.activeElement as HTMLElement | null)?.dataset["uiElement"] ===
@@ -73,7 +72,7 @@ export function TypingEvents(): null {
       handleModifierState(event, false);
     };
     const mousemove = (event: MouseEvent): void => {
-      if (PageTransition.get() || !getFocus()) return;
+      if (isTypingRouteTransitioning() || !getFocus()) return;
       // Ignore small desk/mouse vibrations, preserving the >3px guard.
       if (event.movementX > 3 || event.movementY > 3) Focus.set(false);
     };
