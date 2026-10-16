@@ -15,3 +15,10 @@ export const resultsGetById = createServerFn({ method: "GET" })
     async ({ context, data }) =>
       await callOperation(context.services, "results.getById", data),
   );
+
+export const resultsUpdateTags = createServerFn({ method: "POST" })
+  .validator(operationInput)
+  .handler(
+    async ({ context, data }) =>
+      await callOperation(context.services, "results.updateTags", data),
+  );

@@ -8,3 +8,17 @@ export const configsGet = createServerFn({ method: "GET" })
     async ({ context, data }) =>
       await callOperation(context.services, "configs.get", data),
   );
+
+export const configsDelete = createServerFn({ method: "POST" })
+  .validator(operationInput)
+  .handler(
+    async ({ context, data }) =>
+      await callOperation(context.services, "configs.delete", data),
+  );
+
+export const configsSave = createServerFn({ method: "POST" })
+  .validator(operationInput)
+  .handler(
+    async ({ context, data }) =>
+      await callOperation(context.services, "configs.save", data),
+  );
