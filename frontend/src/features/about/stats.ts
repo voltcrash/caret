@@ -7,7 +7,7 @@ import {
   numberWithSpaces,
 } from "../../ts/utils/numbers";
 
-export type StatDisplay = { label: string; text: string; subText: string };
+type StatDisplay = { label: string; text: string; subText: string };
 
 export type TypingStatsDisplay = Record<
   "timeTyping" | "testsStarted" | "testsCompleted",

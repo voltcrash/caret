@@ -3,7 +3,7 @@ import { createServerFn } from "@tanstack/solid-start";
 import { z } from "zod";
 import { readProfile } from "../server/profile.server";
 
-export const ProfileInputSchema = z.object({
+const ProfileInputSchema = z.object({
   uidOrName: z.string().min(1).max(100),
   client: ClientSchema,
 });

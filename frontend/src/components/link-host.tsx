@@ -23,7 +23,7 @@ export type HostLinkProps = Omit<
 export const LinkHost = createContext<(props: HostLinkProps) => JSXElement>();
 
 /** Same-origin absolute URLs become Router paths; anything else stays native. */
-export function routerHref(href: string | undefined): string | undefined {
+function routerHref(href: string | undefined): string | undefined {
   if (href === undefined || isServer) return href;
   const url = new URL(href, window.location.origin);
   return url.origin === window.location.origin

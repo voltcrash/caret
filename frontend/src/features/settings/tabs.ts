@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const SettingsSectionSchema = z.enum([
+const SettingsSectionSchema = z.enum([
   "behavior",
   "input",
   "sound",
@@ -27,7 +27,7 @@ export const SettingsUrlParamsSchema = z
   .partial();
 export type SettingsUrlParams = z.infer<typeof SettingsUrlParamsSchema>;
 
-export const authenticatedSections: readonly SettingsSection[] = ["account"];
+const authenticatedSections: readonly SettingsSection[] = ["account"];
 
 /** Section a URL tab opens; unavailable sections fall back to behavior. */
 export function sectionForTab(
