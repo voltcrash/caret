@@ -4,7 +4,7 @@ import { GetUserResponseSchema } from "@oxytype/contracts/users";
 import { BASE_CONFIGURATION } from "@oxytype/schemas/default-configuration";
 import { expect, Page, test as base } from "playwright/test";
 
-import { authCookie } from "../start-e2e/auth-fixtures";
+import { authCookie, fixtureClientIp } from "../start-e2e/auth-fixtures";
 
 export const TEST_USER_ID = "e2e-user";
 
@@ -42,7 +42,14 @@ export const test = base.extend<{
       startSession,
     },
     use,
+    info,
   ) => {
+    if (startSession !== undefined) {
+      await context.setExtraHTTPHeaders({
+        ...info.project.use.extraHTTPHeaders,
+        "cf-connecting-ip": fixtureClientIp(info.testId),
+      });
+    }
     if (authenticated && startSession !== undefined) {
       const value =
         authCookie(startSession).split(";")[0]?.split("=").slice(1).join("=") ??
