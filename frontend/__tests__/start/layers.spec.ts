@@ -4,6 +4,7 @@ import { dirname, matchesGlob, relative, resolve } from "node:path";
 
 import {
   clientOnlyFeatureFiles,
+  rollbackOnlyFiles,
   ssrSafeLegacyFiles,
 } from "../../vite-plugins/import-boundaries";
 
@@ -146,15 +147,6 @@ describe("source layer boundaries", () => {
   });
 
   it("never reaches the rollback page system from Start routes", () => {
-    const rollback = [
-      "src/ts/controllers/page-controller.ts",
-      "src/ts/components/pages/AppPages.tsx",
-      "src/ts/components/core/NavigationRuntime.tsx",
-      "src/ts/components/AppRouter.tsx",
-      "src/ts/components/App.tsx",
-      "src/ts/pages/**",
-      "src/app/legacy-runtime.client.tsx",
-    ];
     const reached = new Map<string, string>();
     const queue = files(resolve(src, "routes")).map((file) =>
       relative(root, file),
@@ -175,7 +167,7 @@ describe("source layer boundaries", () => {
     };
     expect(
       [...reached.keys()]
-        .filter((file) => is(file, ...rollback))
+        .filter((file) => is(file, ...rollbackOnlyFiles))
         .map((file) => path(file).join(" → ")),
     ).toEqual([]);
     expect(reached.has("src/features/typing/page.client.tsx")).toBe(true);

@@ -11,6 +11,7 @@ import { fontStyles } from "./vite-plugins/font-styles";
 import { workerNodeBuiltins } from "./vite-plugins/worker-node-builtins";
 import {
   clientOnlyFeatureFiles,
+  rollbackOnlyFiles,
   ssrSafeLegacyFiles,
 } from "./vite-plugins/import-boundaries";
 
@@ -75,7 +76,7 @@ export default defineConfig(({ mode }) => {
           client: {
             specifiers: [/^@oxytype\/backend/],
             // User file lists replace Start's defaults; keep `.server` denied.
-            files: ["**/backend/src/**", "**/*.server.*"],
+            files: ["**/backend/src/**", "**/*.server.*", ...rollbackOnlyFiles],
           },
           // Legacy modules are browser state unless explicitly SSR-safe.
           // Patterns match root-relative paths.
