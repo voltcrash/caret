@@ -40,7 +40,10 @@ vi.mock("../../src/ts/cookies", () => ({
 vi.mock("../../src/ts/controllers/analytics-controller", () => ({
   deactivateAnalytics: state.deactivate,
 }));
-vi.mock("../../src/ts/sentry", () => ({ disposeSentry: state.disposeSentry }));
+vi.mock("../../src/ts/sentry", () => ({
+  disposeSentry: state.disposeSentry,
+  toggleDebug: vi.fn(),
+}));
 vi.mock("../../src/ts/controllers/theme-controller", async () => {
   const { configEvent } = await import("../../src/ts/events/config");
   return { useThemeEvents: () => configEvent.useListener(state.theme) };
@@ -56,6 +59,7 @@ vi.mock("../../src/ts/utils/logger", () => ({
     state.install();
     return state.restore;
   },
+  toggleDebugLogs: vi.fn(),
 }));
 vi.mock("../../src/ts/utils/version", () => ({
   fetchLatestVersion: state.version,
@@ -81,7 +85,9 @@ it("mounts without waiting for preferences/history and releases integrations bef
     expect(state.init).not.toHaveBeenCalled();
     configEvent.dispatch({ key: "fullConfigChange" });
     expect(state.theme).toHaveBeenCalledTimes(i + 1);
+    expect(Reflect.has(window, "toggleDebugLogs")).toBe(true);
     view.unmount();
+    expect(Reflect.has(window, "toggleDebugLogs")).toBe(false);
     expect(state.stop).not.toHaveBeenCalled();
     expect(state.restore).toHaveBeenCalledTimes(i + 1);
     expect(state.disposeSentry).toHaveBeenCalledTimes(i + 1);

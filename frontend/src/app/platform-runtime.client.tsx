@@ -5,13 +5,16 @@ import { applyEngineSettings } from "../ts/anim";
 import { Theme } from "../ts/components/core/Theme";
 import { ThemeEvents } from "../ts/components/core/ThemeEvents";
 import { loadFromLocalStorage } from "../ts/config/lifecycle";
+import { getMutableConfig } from "../ts/config/store";
 import { deactivateAnalytics } from "../ts/controllers/analytics-controller";
 import { useThemeEvents } from "../ts/controllers/theme-controller";
 import { activateWhatsAccepted, getAcceptedCookies } from "../ts/cookies";
-import { disposeSentry } from "../ts/sentry";
+import { disposeSentry, toggleDebug as toggleSentryDebug } from "../ts/sentry";
 import { useConnectionEvents } from "../ts/states/connection";
 import { setVersion } from "../ts/states/core";
-import { installLogger } from "../ts/utils/logger";
+import { enable as glarsesMode } from "../ts/states/glarses-mode";
+import { installLogger, toggleDebugLogs } from "../ts/utils/logger";
+import { addToGlobal } from "../ts/utils/misc";
 import { fetchLatestVersion } from "../ts/utils/version";
 import { currentApplication, requireApplication } from "./application";
 import { lockMath } from "./browser-integrity";
@@ -33,6 +36,14 @@ export default function BrowserRuntime(): JSXElement {
     });
     lockMath();
     onCleanup(installLogger());
+    onCleanup(
+      addToGlobal({
+        config: getMutableConfig(),
+        glarsesMode,
+        toggleDebugLogs,
+        toggleSentryDebug,
+      }),
+    );
     applyEngineSettings();
     void loadFromLocalStorage().catch((error: unknown) =>
       console.error("Failed to load preferences", error),
