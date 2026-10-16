@@ -12,10 +12,6 @@ import {
 import { restartTestEvent } from "../../../events/test";
 import { createEffectOn } from "../../../hooks/effects";
 import { useRef } from "../../../hooks/useRef";
-import {
-  prefetchAboutPage,
-  prefetchLeaderboardPage,
-} from "../../../queries/prefetch";
 import { getServerConfigurationQueryOptions } from "../../../queries/server-configuration";
 import { getActivePage } from "../../../states/core";
 import {
@@ -121,9 +117,6 @@ export function Nav(): JSXElement {
         }}
         class={buttonClass()}
         href="/leaderboards"
-        onMouseEnter={() => {
-          prefetchLeaderboardPage();
-        }}
       />
       <Button
         variant="text"
@@ -138,9 +131,6 @@ export function Nav(): JSXElement {
         }}
         href="/about"
         router-link
-        onMouseEnter={() => {
-          prefetchAboutPage();
-        }}
       />
       <Button
         variant="text"
