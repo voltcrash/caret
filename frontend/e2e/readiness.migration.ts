@@ -32,6 +32,8 @@ test("repeated production cold/warm input and public route readiness", async ({
       await expect(page.locator("#startupScreen")).toBeHidden();
       const word = page.locator("#words .word").first();
       await expect(word).toBeVisible();
+      // Start has no startup cover: input is ready once the restart fade ends.
+      await expect(page.locator("#typingTest")).toHaveCSS("opacity", "1");
       await word.click();
       await expect(page.locator("#wordsInput")).toBeFocused();
       const first = (await word.textContent())?.[0];

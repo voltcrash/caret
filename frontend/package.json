@@ -27,6 +27,7 @@
     "generate-icon-types": "tsx scripts/generate-fontawesome-types.ts",
     "benchmark-word-rendering": "playwright test --config playwright.benchmark.config.ts",
     "benchmark-migration": "playwright test --config playwright.migration.config.ts",
+    "benchmark-migration:start": "playwright test --config playwright.start-migration.config.ts",
     "migration-performance": "tsx scripts/migration-performance.ts",
     "build:start": "vp build",
     "dev:legacy": "vp dev --config vite.legacy.config.ts",
