@@ -4,6 +4,8 @@ import { GetUserResponseSchema } from "@oxytype/contracts/users";
 import { BASE_CONFIGURATION } from "@oxytype/schemas/default-configuration";
 import { expect, Page, test as base } from "playwright/test";
 
+import { authCookie } from "../start-e2e/auth-fixtures";
+
 export const TEST_USER_ID = "e2e-user";
 
 export const test = base.extend<{
@@ -11,6 +13,8 @@ export const test = base.extend<{
   authenticated: boolean;
   customThemes: CustomTheme[];
   tags: UserTag[];
+  /** Seeded Start session token; Start reads sessions on the server, not via REST. */
+  startSession: string | undefined;
 }>({
   config: [
     {
@@ -25,7 +29,28 @@ export const test = base.extend<{
   authenticated: [false, { option: true }],
   customThemes: [[], { option: true }],
   tags: [[], { option: true }],
-  page: async ({ page, config, authenticated, customThemes, tags }, use) => {
+  startSession: [undefined, { option: true }],
+  page: async (
+    {
+      page,
+      context,
+      baseURL,
+      config,
+      authenticated,
+      customThemes,
+      tags,
+      startSession,
+    },
+    use,
+  ) => {
+    if (authenticated && startSession !== undefined) {
+      const value =
+        authCookie(startSession).split(";")[0]?.split("=").slice(1).join("=") ??
+        "";
+      await context.addCookies([
+        { name: "oxytype.session_token", value, url: baseURL ?? "" },
+      ]);
+    }
     const user = GetUserResponseSchema.parse({
       message: "OK",
       data: {
