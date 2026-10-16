@@ -7,7 +7,11 @@ import {
   type Owner,
 } from "solid-js";
 
-import { createAppOwned } from "../../app/application";
+import {
+  createAppOwned,
+  currentApplication,
+  requireApplication,
+} from "../../app/application";
 import { createOwnedScope, type OwnedScope } from "../../app/scope";
 
 type RouteScope = {
@@ -98,8 +102,10 @@ export function mountTypingScope(): () => void {
 export function captureTypingMount(): { activate: () => boolean } {
   const current = state();
   const route = untrack(current.route);
+  const application = requireApplication();
   return {
     activate: () => {
+      if (currentApplication() !== application) return false;
       if (!current.managed) return isTypingRouteActive();
       if (route === undefined || untrack(current.route) !== route) return false;
       route.enter();
@@ -111,8 +117,12 @@ export function captureTypingMount(): { activate: () => boolean } {
 export function captureTypingRoute(): { isCurrent: () => boolean } {
   const current = state();
   const generation = current.generation;
+  const application = requireApplication();
   return {
-    isCurrent: () => current.generation === generation && isTypingRouteActive(),
+    isCurrent: () =>
+      currentApplication() === application &&
+      current.generation === generation &&
+      isTypingRouteActive(),
   };
 }
 

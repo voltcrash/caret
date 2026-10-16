@@ -1,3 +1,4 @@
+import { captureTypingRoute } from "../../scope";
 import {
   setFunboxBodyClasses as setBodyClasses,
   setFunboxStylesheets,
@@ -65,6 +66,7 @@ export async function clear(): Promise<boolean> {
   setBodyClasses([]);
   setFunboxStylesheets([]);
   setWordsWrapperVisible(true);
+  setFunboxReducedMotionIgnored(false);
   MemoryTimer.reset();
   return true;
 }
@@ -72,6 +74,8 @@ export async function clear(): Promise<boolean> {
 export async function activate(
   funbox?: FunboxName[],
 ): Promise<boolean | undefined> {
+  const lease = captureTypingRoute();
+  if (!lease.isCurrent()) return false;
   if (funbox === undefined || funbox === null) {
     funbox = getMutableConfig().funbox;
   } else if (getMutableConfig().funbox !== funbox) {
@@ -95,13 +99,16 @@ export async function activate(
 
   MemoryTimer.reset();
   await setFunboxBodyClasses();
+  if (!lease.isCurrent()) return false;
   await applyFunboxCSS();
+  if (!lease.isCurrent()) return false;
 
   setWordsWrapperVisible(true);
 
   const { data: language, error } = await tryCatch(
     JSONData.getCurrentLanguage(getMutableConfig().language),
   );
+  if (!lease.isCurrent()) return false;
   if (error) {
     showErrorNotification("Failed to activate funbox", { error });
     setConfig("funbox", [], {

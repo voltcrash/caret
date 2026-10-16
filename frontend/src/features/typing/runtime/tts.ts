@@ -1,5 +1,5 @@
 import { onCleanup } from "solid-js";
-import { createAppOwned } from "../../../app/application";
+import { createTypingOwned, captureTypingRoute } from "../scope";
 import { getMutableConfig } from "../../../ts/config/store";
 import * as JSONData from "../../../ts/utils/json-data";
 import { configEvent } from "../../../ts/events/config";
@@ -12,7 +12,9 @@ function createSpeech(): {
     lang = getMutableConfig().language,
   ): Promise<void> {
     if (!voice) return;
+    const target = voice;
     const language = await JSONData.getLanguage(lang);
+    if (voice !== target) return;
     const bcp = language.bcp47 ?? "en-US";
     voice.lang = bcp;
   }
@@ -24,10 +26,11 @@ function createSpeech(): {
     voice = undefined;
   }
   async function speak(text: string): Promise<void> {
+    const lease = captureTypingRoute();
     window.speechSynthesis.cancel();
     if (voice === undefined) await init();
 
-    if (voice !== undefined) {
+    if (lease.isCurrent() && voice !== undefined) {
       voice.text = text;
       window.speechSynthesis.speak(voice);
     }
@@ -56,7 +59,7 @@ function createSpeech(): {
   onCleanup(disposeSpeech);
   return { useTtsEvents };
 }
-const speech = createAppOwned(createSpeech);
+const speech = createTypingOwned(createSpeech);
 export function useTtsEvents(): void {
   speech().useTtsEvents();
 }

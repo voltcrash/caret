@@ -114,3 +114,23 @@ it("activates only the mount that waited for preferences", () => {
   release();
   expect(stale.activate()).toBe(false);
 });
+
+it("rejects callbacks from a disposed application after another app mounts", () => {
+  const leave = mountTypingScope();
+  const entry = captureTypingMount();
+  entry.activate();
+  const lease = captureTypingRoute();
+  dispose();
+  const next = createTestApplication();
+  const release = mountApplication(next.application);
+  dispose = () => {
+    release();
+    next.dispose();
+  };
+  const leaveNext = mountTypingScope();
+  captureTypingMount().activate();
+  expect(entry.activate()).toBe(false);
+  expect(lease.isCurrent()).toBe(false);
+  leave();
+  leaveNext();
+});

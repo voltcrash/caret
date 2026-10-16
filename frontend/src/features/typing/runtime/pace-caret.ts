@@ -1,3 +1,4 @@
+import { captureTypingRoute } from "../scope";
 import * as TestWords from "./test-words";
 import { getTestSession } from "./events/data";
 import { getMutableConfig } from "../../../ts/config/store";
@@ -63,6 +64,8 @@ export function resetCaretPosition(): void {
 }
 
 export async function init(): Promise<void> {
+  const lease = captureTypingRoute();
+  if (!lease.isCurrent()) return;
   clearTimeout(timeout);
   getCaret().hide();
   const mode2 = Misc.getMode2(getMutableConfig(), getCurrentQuote());
@@ -81,6 +84,7 @@ export async function init(): Promise<void> {
       )?.wpm ?? 0;
   } else if (getMutableConfig().paceCaret === "tagPb") {
     const { getActiveTagsPB } = await import("../../../ts/collections/tags");
+    if (!lease.isCurrent()) return;
     wpm = getActiveTagsPB(
       getMutableConfig().mode,
       mode2,
@@ -107,6 +111,7 @@ export async function init(): Promise<void> {
   } else if (getMutableConfig().paceCaret === "last" || isPaceRepeat()) {
     wpm = getTestSession().pace.getLastWpm();
   }
+  if (!lease.isCurrent()) return;
   setPaceCaretWpm(getTestSession().pace.reset(wpm) ? wpm : undefined);
 }
 
