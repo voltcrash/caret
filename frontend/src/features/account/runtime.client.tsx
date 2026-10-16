@@ -5,6 +5,7 @@ import { requireApplication } from "../../app/application";
 import { loadUser } from "../../ts/auth";
 import { setAuthAvailable } from "../../ts/auth-client";
 import { sessionOptions } from "../auth/session";
+import { setLoadedAccount } from "./settled.client";
 
 /**
  * Loads a registered actor's account snapshot, presets, tags, themes,
@@ -31,7 +32,12 @@ export function AccountRuntime(): null {
   createEffect(
     on(loadable, (uid) => {
       const user = registered();
-      if (uid !== undefined && user !== undefined) void loadUser(user);
+      setLoadedAccount(null);
+      if (uid === undefined || user === undefined) return;
+      const lease = account.capture();
+      void loadUser(user).then(() => {
+        if (lease.isCurrent()) setLoadedAccount(uid);
+      });
     }),
   );
   return null;

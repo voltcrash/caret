@@ -4,9 +4,14 @@ import { afterEach, expect, it, vi } from "vite-plus/test";
 
 const loads = vi.hoisted(() => vi.fn(async () => undefined));
 vi.mock("../../../src/ts/auth", () => ({ loadUser: loads }));
+// Session refetches stay pending; tests drive the cached session directly.
+vi.mock("../../../src/functions/session", () => ({
+  getSessionState: async () => new Promise(() => undefined),
+}));
 
 import { requireApplication } from "../../../src/app/application";
 import { AccountRuntime } from "../../../src/features/account/runtime.client";
+import { useAccountSettled } from "../../../src/features/account/settled.client";
 import { sessionKey } from "../../../src/features/auth/session";
 import { setUserState } from "../../../src/features/auth/state.client";
 import { isAuthAvailable } from "../../../src/ts/auth-client";
@@ -84,4 +89,56 @@ it("never loads account data for an unfinished signup", async () => {
   ));
   await tick();
   expect(loads).not.toHaveBeenCalled();
+});
+
+it("settles guests with the session and registered actors after their load", async () => {
+  const app = requireApplication();
+  let finish = (): void => undefined;
+  loads.mockImplementationOnce(
+    async () =>
+      new Promise<undefined>((resolve) => (finish = () => resolve(undefined))),
+  );
+  app.queryClient.setQueryData(sessionKey, { user: null, signUpEnabled: true });
+  let settled!: () => boolean | undefined;
+  function Probe(): null {
+    settled = useAccountSettled();
+    return null;
+  }
+  render(() => (
+    <QueryClientProvider client={app.queryClient}>
+      <AccountRuntime />
+      <Probe />
+    </QueryClientProvider>
+  ));
+  await tick();
+  expect(settled()).toBe(false);
+  app.queryClient.setQueryData(sessionKey, {
+    user: user("a"),
+    signUpEnabled: true,
+  });
+  setUserState(user("a"));
+  await tick();
+  expect(settled()).toBeUndefined();
+  finish();
+  await tick();
+  expect(settled()).toBe(true);
+  setUserState(null);
+  app.queryClient.setQueryData(sessionKey, { user: null, signUpEnabled: true });
+  await tick();
+  expect(settled()).toBe(false);
+  // Signing back in waits for a fresh load of the same account.
+  loads.mockImplementationOnce(
+    async () =>
+      new Promise<undefined>((resolve) => (finish = () => resolve(undefined))),
+  );
+  app.queryClient.setQueryData(sessionKey, {
+    user: user("a"),
+    signUpEnabled: true,
+  });
+  setUserState(user("a"));
+  await tick();
+  expect(settled()).toBeUndefined();
+  finish();
+  await tick();
+  expect(settled()).toBe(true);
 });
