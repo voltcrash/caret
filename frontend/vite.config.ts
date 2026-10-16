@@ -21,6 +21,14 @@ import {
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   const buildId = resolveBuildId(mode !== "production");
+  const deployment = process.env["OXYTYPE_DEPLOY_ENV"];
+  if (
+    deployment !== undefined &&
+    deployment !== "production" &&
+    deployment !== "staging"
+  ) {
+    throw new Error("OXYTYPE_DEPLOY_ENV must be production or staging");
+  }
   return {
     lint: { ...frontendLint },
     publicDir: "static",
@@ -62,16 +70,22 @@ export default defineConfig(({ mode }) => {
           BACKEND_URL: "/api",
           AUTH_PROVIDERS: env["AUTH_PROVIDERS"] ?? "google,github",
           TURNSTILE_SITE_KEY: env["TURNSTILE_SITE_KEY"] ?? "",
+          SENTRY_DSN: env["SENTRY_DSN"] ?? "",
           DEV_OFFLINE: mode === "offline" ? "true" : "false",
         },
       }),
       languageHashes({ skip: false }),
       cloudflare({
-        configPath: "wrangler.jsonc",
-        config:
-          mode === "runtime-test"
+        configPath:
+          deployment === undefined
+            ? "wrangler.jsonc"
+            : `wrangler.${deployment}.json`,
+        config: (config) => ({
+          ...(mode === "runtime-test"
             ? { main: "__tests__/start/worker-entry.ts" }
-            : undefined,
+            : {}),
+          vars: { ...config.vars, VERSION: buildId },
+        }),
         viteEnvironment: { name: "ssr" },
         persistState: { path: "../backend/.wrangler/state" },
       }),
