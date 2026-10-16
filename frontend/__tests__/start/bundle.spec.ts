@@ -46,6 +46,10 @@ describe("built Start bundle boundaries", () => {
     }
   });
 
+  it("never emits runtime require calls workerd cannot satisfy", () => {
+    expect(server.match(/__require\("[^"]+"\)/g) ?? []).toEqual([]);
+  });
+
   it("includes browser setup only in client chunks", () => {
     for (const marker of [
       "loading localStorage config",
