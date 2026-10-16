@@ -12,7 +12,7 @@ vi.mock("../../src/features/auth/client.client", () => ({
 import {
   decideDeviceCode,
   reviewDeviceCode,
-} from "../../src/ts/ape/device-auth";
+} from "../../src/features/auth/device-transport.client";
 
 beforeEach(() => {
   device.mockReset();

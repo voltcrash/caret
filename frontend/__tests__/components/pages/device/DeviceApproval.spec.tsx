@@ -20,7 +20,7 @@ const [user, setUser] = createSignal<{
 vi.mock("../../../../src/features/auth/state.client", () => ({
   getAuthenticatedUser: () => user(),
 }));
-vi.mock("../../../../src/ts/ape/device-auth", () => ({
+vi.mock("../../../../src/features/auth/device-transport.client", () => ({
   reviewDeviceCode: review,
   decideDeviceCode: decide,
 }));
