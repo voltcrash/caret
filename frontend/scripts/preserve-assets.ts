@@ -26,6 +26,7 @@ export async function snapshotAssets(
     await request(new URL(path, origin), {
       cache: "no-store",
       credentials: "omit",
+      signal: AbortSignal.timeout(30_000),
     });
   const version = async (): Promise<string> => {
     const response = await get("/version.json");
@@ -57,28 +58,39 @@ export async function snapshotAssets(
       throw new Error("Previous legacy asset graph is empty");
     }
   }
-  for (let path = pending.shift(); path !== undefined; path = pending.shift()) {
-    if (files.has(path)) continue;
-    if (files.size >= 18_000) {
+  while (pending.length > 0) {
+    const paths = [...new Set(pending.splice(0, 8))].filter(
+      (path) => !files.has(path),
+    );
+    if (files.size + paths.length > 18_000) {
       throw new Error(
         "Review asset compatibility retention before exceeding the delivery limit",
       );
     }
-    const response = await get(path);
-    if (!response.ok) throw new Error(`Previous asset unavailable: ${path}`);
-    const bytes = new Uint8Array(await response.arrayBuffer());
-    if (expected !== undefined && digest(bytes) !== expected[path]) {
-      throw new Error(`Previous asset changed: ${path}`);
-    }
-    files.set(path, bytes);
-    if (expected === undefined && /\.(?:js|css)$/.test(path)) {
-      pending.push(
-        ...references(
-          new TextDecoder().decode(bytes),
-          new URL(path, origin).href,
-          origin,
-        ),
-      );
+    const batch = await Promise.all(
+      paths.map(async (path) => {
+        const response = await get(path);
+        if (!response.ok) {
+          throw new Error(`Previous asset unavailable: ${path}`);
+        }
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        if (expected !== undefined && digest(bytes) !== expected[path]) {
+          throw new Error(`Previous asset changed: ${path}`);
+        }
+        return { path, bytes };
+      }),
+    );
+    for (const { path, bytes } of batch) {
+      files.set(path, bytes);
+      if (expected === undefined && /\.(?:js|css)$/.test(path)) {
+        pending.push(
+          ...references(
+            new TextDecoder().decode(bytes),
+            new URL(path, origin).href,
+            origin,
+          ),
+        );
+      }
     }
   }
   if ((await version()) !== before) {
