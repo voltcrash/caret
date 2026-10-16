@@ -6,7 +6,7 @@ import { speedHistogramOptions, typingStatsOptions } from "../data/public";
 import { AboutPage } from "../features/about/page";
 
 export const Route = createFileRoute("/_app/about")({
-  // Failures render inline like the old page; they never block navigation.
+  // Read failures render inline instead of failing the route.
   loader: async ({ context }) => {
     if (import.meta.env.OXYTYPE_OFFLINE) return;
     await prefetch(

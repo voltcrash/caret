@@ -44,11 +44,21 @@ describe("native public routes in workerd", () => {
 
   it("keeps configuration gates: disabled profiles degrade inline", async () => {
     const worker = await mf.getWorker("b");
-    const response = await worker.fetch(`${origin}/profile/anyone`);
+    const response = await worker.fetch(`${origin}/profile/anyone`, {
+      headers: { "cf-connecting-ip": "192.0.2.42" },
+    });
     expect(response.status).toBe(200);
     const html = await response.text();
     expect(html).not.toContain("Profile summary");
     expect(html).not.toContain("Profiles are not available");
+    const db = await mf.getD1Database("DB", "b");
+    expect(
+      await db
+        .prepare(
+          "SELECT points FROM rate_counters WHERE key='rate:root:192.0.2.42'",
+        )
+        .first<number>("points"),
+    ).toBe(1);
   });
 
   it("renders the profile lookup shell", async () => {

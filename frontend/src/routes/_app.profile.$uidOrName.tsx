@@ -2,11 +2,11 @@ import type { JSXElement } from "solid-js";
 
 import { ClientSchema } from "@oxytype/schemas/shared";
 import { createFileRoute, notFound } from "@tanstack/solid-router";
+import { isServer } from "solid-js/web";
 import { z } from "zod";
 
 import { publicEnv } from "../app/public-env";
 import { urlSearch } from "../app/search";
-import { prefetch } from "../data/prefetch";
 import { isUserNotFound, profileOptions } from "../data/profile";
 import { ProfileMissing } from "../features/profile/missing";
 import { ProfilePage } from "../features/profile/page";
@@ -26,8 +26,14 @@ export const Route = createFileRoute("/_app/profile/$uidOrName")({
         // oxlint-disable-next-line typescript/only-throw-error -- Router's not-found control signal.
         throw notFound();
       }
-      // Other failures render inline, like the previous page.
-      await prefetch(context.queryClient, options);
+      // Hydrate no failed read; the browser retries and renders errors inline.
+      // Retrying here would run the same service/policies twice during SSR.
+      if (isServer) {
+        context.queryClient.removeQueries({
+          queryKey: options.queryKey,
+          exact: true,
+        });
+      }
     }
   },
   head: ({ params }) => {

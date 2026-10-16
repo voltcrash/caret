@@ -8,7 +8,7 @@ type Prefetchable = {
 };
 
 /**
- * Route loader prefetch that never blocks the page: fresh data is reused,
+ * Route loaders coordinate Query: fresh data is reused,
  * failures render inline. A failed SSR read is dropped so the browser retries
  * it instead of hydrating an error.
  */

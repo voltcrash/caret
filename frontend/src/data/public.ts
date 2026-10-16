@@ -10,7 +10,7 @@ export const typingStatsOptions = (): ReturnType<
 > =>
   queryOptions<TypingStats>({
     queryKey: ["public", "typingStats", "web"],
-    queryFn: async () => await getTypingStats(),
+    queryFn: async ({ signal }) => await getTypingStats({ signal }),
     staleTime,
     meta: { ssrSafe: true },
   });
@@ -20,7 +20,7 @@ export const speedHistogramOptions = (): ReturnType<
 > =>
   queryOptions<SpeedHistogram>({
     queryKey: ["public", "speedHistogram", "web", "time", "60", "english"],
-    queryFn: async () => await getSpeedHistogram(),
+    queryFn: async ({ signal }) => await getSpeedHistogram({ signal }),
     staleTime,
     meta: { ssrSafe: true },
   });
