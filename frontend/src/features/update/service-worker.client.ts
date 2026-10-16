@@ -1,4 +1,4 @@
-import { skipWaitingMessage } from "../../sw/policy";
+import { skipWaitingMessage, updateSafetyRequest } from "../../sw/policy";
 
 export type ServiceWorkerUpdates = {
   /** Lets a waiting worker take over; reloads afterwards when asked to. */
@@ -17,6 +17,7 @@ export function registerServiceWorker(options: {
   container: ServiceWorkerContainer;
   onWaiting: (waiting: boolean) => void;
   reload: () => void;
+  isSafe: () => boolean;
 }): ServiceWorkerUpdates {
   const { container } = options;
   let registration: ServiceWorkerRegistration | undefined;
@@ -36,6 +37,12 @@ export function registerServiceWorker(options: {
     if (reloadRequested && !disposed) options.reload();
   };
   container.addEventListener("controllerchange", onControllerChange);
+  const onMessage = (event: MessageEvent): void => {
+    if (event.data === updateSafetyRequest) {
+      event.ports[0]?.postMessage(!disposed && options.isSafe());
+    }
+  };
+  container.addEventListener("message", onMessage);
   void container
     .register("/sw.js", { scope: "/", updateViaCache: "none" })
     .then((registered) => {
@@ -62,6 +69,7 @@ export function registerServiceWorker(options: {
     dispose: () => {
       disposed = true;
       container.removeEventListener("controllerchange", onControllerChange);
+      container.removeEventListener("message", onMessage);
       registration?.removeEventListener("updatefound", onUpdateFound);
       for (const worker of watched) {
         worker.removeEventListener("statechange", report);

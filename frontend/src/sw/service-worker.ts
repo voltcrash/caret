@@ -12,6 +12,7 @@ import {
   servesShell,
   shellPath,
   skipWaitingMessage,
+  updateSafetyRequest,
   type ServiceWorkerConfig,
   type Strategy,
 } from "./policy";
@@ -31,7 +32,15 @@ type WorkerScope = {
   registration: ServiceWorkerRegistration & {
     navigationPreload?: { enable: () => Promise<void> };
   };
-  clients: { claim: () => Promise<void> };
+  clients: {
+    claim: () => Promise<void>;
+    matchAll: (options: {
+      type: "window";
+      includeUncontrolled: boolean;
+    }) => Promise<
+      { postMessage: (message: string, transfer: MessagePort[]) => void }[]
+    >;
+  };
   skipWaiting: () => Promise<void>;
   addEventListener: ((
     type: "install" | "activate",
@@ -145,9 +154,34 @@ worker.addEventListener("activate", (event) => {
   event.waitUntil(activate());
 });
 
+async function activateWhenTabsAreSafe(): Promise<void> {
+  const tabs = await worker.clients.matchAll({
+    type: "window",
+    includeUncontrolled: true,
+  });
+  const safe = await Promise.all(
+    tabs.map(
+      async (tab) =>
+        await new Promise<boolean>((resolve) => {
+          const channel = new MessageChannel();
+          const finish = (safe: boolean): void => {
+            clearTimeout(timeout);
+            channel.port1.close();
+            resolve(safe);
+          };
+          // Unknown/legacy/frozen tabs are conservative: close or refresh them first.
+          const timeout = setTimeout(() => finish(false), 1000);
+          channel.port1.onmessage = (event) => finish(event.data === true);
+          tab.postMessage(updateSafetyRequest, [channel.port2]);
+        }),
+    ),
+  );
+  if (safe.every(Boolean)) await worker.skipWaiting();
+}
+
 worker.addEventListener("message", (event) => {
   if (event.data === skipWaitingMessage) {
-    event.waitUntil(worker.skipWaiting());
+    event.waitUntil(activateWhenTabsAreSafe());
   }
 });
 

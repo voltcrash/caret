@@ -35,6 +35,7 @@ function fixture(initialWaiting = false): Fixture {
     container: container as unknown as ServiceWorkerContainer,
     onWaiting,
     reload,
+    isSafe: () => true,
   });
   return { registration, container, onWaiting, reload, updates };
 }

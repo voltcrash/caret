@@ -128,6 +128,7 @@ export function UpdateRuntime(props: { reload?: () => void }): JSXElement {
         });
       },
       reload,
+      isSafe: isUpdateSafe,
     });
     updates = registered;
     onCleanup(() => registered.dispose());
@@ -176,7 +177,7 @@ export function UpdateRuntime(props: { reload?: () => void }): JSXElement {
   let bannerId: number | undefined;
   createEffect(() => {
     const reason = staleClient();
-    if (reason === undefined || bannerId !== undefined || isTestActive()) {
+    if (reason === undefined || bannerId !== undefined || !isUpdateSafe()) {
       return;
     }
     bannerId = addBanner({

@@ -129,6 +129,9 @@ export function startServiceWorker(options: {
       ];
     },
     async closeBundle() {
+      // Vite may close a config-only/test environment without generating a
+      // client bundle. Never emit an empty worker into the workspace root.
+      if (outDir === "") return;
       const config: ServiceWorkerConfig = {
         buildId: options.buildId,
         precache,
