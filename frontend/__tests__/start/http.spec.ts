@@ -153,7 +153,10 @@ describe("declared Start HTTP protocols without Hono", () => {
     expect(api.paths).not.toHaveProperty("/configs");
     expect(api.paths).not.toHaveProperty("/users/signup");
     const html = await worker.fetch("http://localhost:3000/api/docs");
-    expect(await html.text()).toContain('spec-url="/api/docs/public.json"');
+    const document = await html.text();
+    expect(document).toContain('spec-url="/api/docs/public.json"');
+    expect(document).toContain("/redoc/v2.5.4/bundles/redoc.standalone.js");
+    expect(document).toContain('integrity="sha384-');
     expect(html.headers.get("content-security-policy")).toContain(
       "https://cdn.redocly.com",
     );
