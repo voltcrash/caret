@@ -1,8 +1,8 @@
 # TanStack Start migration: architecture and execution plan
 
 Status: Stages 0–5 complete; [ledger and handoffs](tanstack-start/README.md).
-Stage 6 implemented; required exit validation in progress. Production still serves
-the legacy app (rollback build). See [Stage 6 ledger](tanstack-start/stage-6.md).
+Stage 6 complete; Stages 7–8 not started. Production still serves the legacy app
+(rollback build). See [Stage 6 ledger](tanstack-start/stage-6.md).
 Prepared: 2026-10-15. Scope: Oxytype web application and its server/runtime.
 
 ## Outcome

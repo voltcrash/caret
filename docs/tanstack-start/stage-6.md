@@ -6,7 +6,7 @@ Stage 5 prerequisites and exit evidence verified; working tree clean at takeover
 stacked on Stage 5, in small commits. No Stage 7 implementation or TUI work.
 
 Phases implemented in order: reads → ordinary mutations → result submission →
-transport retirement. Implementation complete; final exit validation in progress.
+transport retirement. **Phases 6.1–6.4 and Stage 6 exit complete.**
 Production still uses the preserved rollback build.
 
 ## 6.1 Read models and collections
@@ -107,7 +107,35 @@ CI checks both the ledger and generated route bindings.
 
 ## Exit validation
 
-Final checks running. Stage exit remains pending until required checks pass.
+[Command/result evidence](evidence/stage-6-validation.json).
+All 13 PR checks pass on implementation/evidence head `5ea03dc`:
+[CI run](https://github.com/voltcrash/oxytype/actions/runs/38910305413).
+Only documentation/evidence handoff commits follow that run.
+
+- Frontend: 236 files / 2,317 tests; backend: 804 unit + 124 D1 tests;
+  shared packages: 54 files / 736 tests. Type-aware lint passes.
+- Built Start/workerd: 14 files / 77 tests; browsers: 60 Start + 31 rollback.
+  Real browser result submission persists once through Start/D1.
+- Rollback, Start, runtime-test and staging builds pass; both Worker dry-runs
+  pass. No deployment or production resource mutation.
+- Knip, formatting, styles/assets, suppression/config checks, generated route
+  bindings and all 82 operation ledger entries pass. Start source/bundle graphs
+  contain no browser contract transport, rollback runtime or Hono dispatch.
+- All eight original frozen browser budgets pass without changed thresholds:
+  20 readiness samples per metric, 150 renderer/input samples and five eager-byte
+  samples. [Budgets](evidence/stage-6-browser-budgets.json) are exact records
+  from Stage 0; [measurements](evidence/stage-6-browser-measurements.json) and
+  raw samples remain checked in. Eager JS: 380,739 raw / 128,003 gzip bytes
+  (Stage 5: 382,366 / 128,635).
+- Intermediate Worker artifact: 4,201.64 KiB raw / 930.10 KiB gzip. Final edge
+  CPU/save latency/Worker footprint remain the Stage 7 cutover gate, as recorded
+  in prior-stage handoffs; missing measurements are not passing measurements.
+
+Earlier default-worker frontend runs hit the pre-existing commandline import
+timeout under concurrent tooling. Isolated checks and the complete four-worker
+suite pass without raising timeouts; full Linux CI also passes. No unresolved
+required failures. Corrected fixture, DTO compatibility, unused-code and format
+failures are recorded in the evidence.
 
 ## Remaining adapters and next-stage prerequisites
 

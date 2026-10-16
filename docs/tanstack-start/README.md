@@ -31,11 +31,11 @@ No preceding implementation stage or handoff exists. Prerequisite: merged
 | 5.2 Browser integrations/URLs | Complete | [Stage 5](stage-5.md) |
 | 5.3 Typing behavior/performance | Complete | [Stage 5 validation](stage-5.md#53-responsiveness-and-route-behavior) |
 | Stage 5 exit | Complete; intermediate Worker footprint recorded | [Validation and handoff](stage-5.md#remaining-adapters-and-next-stage) |
-| 6.1 Read models/collections | Implemented; exit checks running | [Stage 6](stage-6.md#61-read-models-and-collections) |
-| 6.2 Ordinary mutations | Implemented; exit checks running | [Stage 6](stage-6.md#62-ordinary-mutations) |
-| 6.3 Result submission | Implemented; exit checks running | [Stage 6](stage-6.md#63-result-submission) |
-| 6.4 Transport retirement | Implemented; exit checks running | [Stage 6](stage-6.md#64-transport-retirement) |
-| Stage 6 exit | Pending required validation | [Validation](stage-6.md#exit-validation) |
+| 6.1 Read models/collections | Complete | [Stage 6](stage-6.md#61-read-models-and-collections) |
+| 6.2 Ordinary mutations | Complete | [Stage 6](stage-6.md#62-ordinary-mutations) |
+| 6.3 Result submission | Complete | [Stage 6](stage-6.md#63-result-submission) |
+| 6.4 Transport retirement | Complete | [Stage 6](stage-6.md#64-transport-retirement) |
+| Stage 6 exit | Complete; old-tab/rollback lifetimes explicit | [Validation and handoff](stage-6.md#exit-validation) |
 | Stages 7–8 | Not started | Separate assignments |
 
 Stage 0 moves responsibility for migration evidence from an unverified proposal
