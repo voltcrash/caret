@@ -41,6 +41,7 @@ export default defineConfig(({ mode }) => {
     },
     environments: {
       ssr: {
+        build: { minify: true },
         optimizeDeps: {
           exclude: [
             "solid-js",

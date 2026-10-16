@@ -23,7 +23,7 @@
     "lint-fast-fe": "vp run --filter @oxytype/frontend lint-fast",
     "lint-fast-pkg": "vp run --filter \"./packages/*\" lint-fast",
     "lint-fast-tui": "vp run --filter @voltcrash/oxytype lint-fast",
-    "build": "vp run --filter @oxytype/frontend --filter @oxytype/backend build",
+    "build": "vp run --filter @oxytype/frontend build",
     "build-be": "vp run --filter @oxytype/backend build",
     "build-fe": "vp run --filter @oxytype/frontend build",
     "build-tui": "vp run --filter @voltcrash/oxytype build",
@@ -33,12 +33,12 @@
     "test-e2e": "vp run --filter @oxytype/frontend test-e2e",
     "test-pkg": "vp run --filter \"./packages/*\" test",
     "test-tui": "vp run --filter @voltcrash/oxytype test",
-    "dev": "vp run --filter \"!oxytype\" --filter \"!@voltcrash/oxytype\" --parallel dev",
+    "dev": "vp run dev-fe",
     "dev-be": "vp run --filter @oxytype/backend dev",
     "dev-fe": "vp run --filter @oxytype/frontend dev",
     "dev-tui": "vp run --filter @voltcrash/oxytype dev",
     "storybook": "vp run --filter @oxytype/frontend storybook",
-    "start": "vp run build && vp run --filter @oxytype/frontend --filter @oxytype/backend --parallel start",
+    "start": "vp run build && vp run --filter @oxytype/frontend start",
     "format-check": "vp fmt . --check",
     "format-fix": "vp fmt .",
     "lint-styles": "stylelint \"**/*.css\"",
@@ -49,7 +49,8 @@
     "check-assets-others": "vp run --filter @oxytype/frontend check-assets others",
     "check-assets-json": "vp run --filter @oxytype/frontend check-assets json",
     "knip": "knip",
-    "oxlint": "vp lint"
+    "oxlint": "vp lint",
+    "build:legacy": "vp run --filter @oxytype/frontend build:legacy && vp run build-be"
   },
   "devDependencies": {
     "@commitlint/cli": "21.2.3",
