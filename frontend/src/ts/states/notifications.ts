@@ -2,7 +2,6 @@ import { onCleanup } from "solid-js";
 import { createAppOwned } from "../../app/application";
 import { createAppStore } from "../../app/state";
 
-import { CommonResponsesType } from "@oxytype/contracts/util/api";
 import { createErrorMessage } from "../utils/error";
 import { MessageContent } from "../types/message-content";
 import type { OperationResult } from "../../data/operation-result";
@@ -111,7 +110,6 @@ export type AddNotificationOptions = Partial<
   >
 > & {
   details?: object | string;
-  response?: CommonResponsesType;
   operation?: OperationResult<unknown>;
   error?: unknown;
 };
@@ -132,19 +130,6 @@ export function addNotificationWithLevel(
   options: AddNotificationOptions = {},
 ): number {
   let details = options.details;
-
-  if (options.response !== undefined) {
-    details = {
-      status: options.response.status,
-      additionalDetails: options.details,
-      validationErrors:
-        options.response.status === 422
-          ? options.response.body.validationErrors
-          : undefined,
-    };
-    const responseMessage = options.response.body.message;
-    message = updateLastLine(message, (line) => `${line}: ${responseMessage}`);
-  }
 
   if (options.operation !== undefined) {
     const result = options.operation;
