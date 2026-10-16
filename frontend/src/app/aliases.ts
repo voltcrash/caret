@@ -17,3 +17,12 @@ export function canonicalHref(location: {
   if (target === undefined) return undefined;
   return `${target}${location.searchStr}${location.hash === "" ? "" : `#${location.hash}`}`;
 }
+
+/** `/account-settings` → `/settings?tab=account`, with the original query overriding. */
+export function accountSettingsHref(searchStr: string, hash: string): string {
+  const target = new URLSearchParams("tab=account");
+  new URLSearchParams(searchStr).forEach((value, key) => {
+    target.set(key, value);
+  });
+  return `/settings?${target.toString()}${hash === "" ? "" : `#${hash}`}`;
+}

@@ -14,11 +14,14 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as OauthCallbackDothtmlRouteImport } from './routes/oauth-callback[.]html'
 import { Route as PrivacyPolicyDothtmlRouteImport } from './routes/privacy-policy[.]html'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as AppAuthenticatedRouteImport } from './routes/_app._authenticated'
 import { Route as AppAboutRouteImport } from './routes/_app.about'
 import { Route as AppDeviceRouteImport } from './routes/_app.device'
 import { Route as AppLeaderboardsRouteImport } from './routes/_app.leaderboards'
 import { Route as AppLoginRouteImport } from './routes/_app.login'
 import { Route as ApiSplatRouteImport } from './routes/api.$'
+import { Route as AppAuthenticatedAccountRouteImport } from './routes/_app._authenticated.account'
+import { Route as AppAuthenticatedAccountSettingsRouteImport } from './routes/_app._authenticated.account-settings'
 import { Route as AppProfileIndexRouteImport } from './routes/_app.profile.index'
 import { Route as AppProfileUidOrNameRouteImport } from './routes/_app.profile.$uidOrName'
 import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
@@ -47,6 +50,10 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAuthenticatedRoute = AppAuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAboutRoute = AppAboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -72,6 +79,17 @@ const ApiSplatRoute = ApiSplatRouteImport.update({
   path: '/api/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppAuthenticatedAccountRoute = AppAuthenticatedAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => AppAuthenticatedRoute,
+} as any)
+const AppAuthenticatedAccountSettingsRoute =
+  AppAuthenticatedAccountSettingsRouteImport.update({
+    id: '/account-settings',
+    path: '/account-settings',
+    getParentRoute: () => AppAuthenticatedRoute,
+  } as any)
 const AppProfileIndexRoute = AppProfileIndexRouteImport.update({
   id: '/profile/',
   path: '/profile/',
@@ -98,6 +116,8 @@ export interface FileRoutesByFullPath {
   '/leaderboards': typeof AppLeaderboardsRoute
   '/login': typeof AppLoginRoute
   '/api/$': typeof ApiSplatRoute
+  '/account': typeof AppAuthenticatedAccountRoute
+  '/account-settings': typeof AppAuthenticatedAccountSettingsRoute
   '/profile/$uidOrName': typeof AppProfileUidOrNameRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/profile/': typeof AppProfileIndexRoute
@@ -106,12 +126,14 @@ export interface FileRoutesByTo {
   '/404.html': typeof R404DothtmlRoute
   '/oauth-callback.html': typeof OauthCallbackDothtmlRoute
   '/privacy-policy.html': typeof PrivacyPolicyDothtmlRoute
+  '/': typeof AppIndexRoute
   '/about': typeof AppAboutRoute
   '/device': typeof AppDeviceRoute
   '/leaderboards': typeof AppLeaderboardsRoute
   '/login': typeof AppLoginRoute
   '/api/$': typeof ApiSplatRoute
-  '/': typeof AppIndexRoute
+  '/account': typeof AppAuthenticatedAccountRoute
+  '/account-settings': typeof AppAuthenticatedAccountSettingsRoute
   '/profile/$uidOrName': typeof AppProfileUidOrNameRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/profile': typeof AppProfileIndexRoute
@@ -122,12 +144,15 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/oauth-callback.html': typeof OauthCallbackDothtmlRoute
   '/privacy-policy.html': typeof PrivacyPolicyDothtmlRoute
+  '/_app/_authenticated': typeof AppAuthenticatedRouteWithChildren
   '/_app/about': typeof AppAboutRoute
   '/_app/device': typeof AppDeviceRoute
   '/_app/leaderboards': typeof AppLeaderboardsRoute
   '/_app/login': typeof AppLoginRoute
   '/api/$': typeof ApiSplatRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/_authenticated/account': typeof AppAuthenticatedAccountRoute
+  '/_app/_authenticated/account-settings': typeof AppAuthenticatedAccountSettingsRoute
   '/_app/profile/$uidOrName': typeof AppProfileUidOrNameRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_app/profile/': typeof AppProfileIndexRoute
@@ -144,6 +169,8 @@ export interface FileRouteTypes {
     | '/leaderboards'
     | '/login'
     | '/api/$'
+    | '/account'
+    | '/account-settings'
     | '/profile/$uidOrName'
     | '/api/auth/$'
     | '/profile/'
@@ -152,12 +179,14 @@ export interface FileRouteTypes {
     | '/404.html'
     | '/oauth-callback.html'
     | '/privacy-policy.html'
+    | '/'
     | '/about'
     | '/device'
     | '/leaderboards'
     | '/login'
     | '/api/$'
-    | '/'
+    | '/account'
+    | '/account-settings'
     | '/profile/$uidOrName'
     | '/api/auth/$'
     | '/profile'
@@ -167,12 +196,15 @@ export interface FileRouteTypes {
     | '/_app'
     | '/oauth-callback.html'
     | '/privacy-policy.html'
+    | '/_app/_authenticated'
     | '/_app/about'
     | '/_app/device'
     | '/_app/leaderboards'
     | '/_app/login'
     | '/api/$'
     | '/_app/'
+    | '/_app/_authenticated/account'
+    | '/_app/_authenticated/account-settings'
     | '/_app/profile/$uidOrName'
     | '/api/auth/$'
     | '/_app/profile/'
@@ -224,6 +256,13 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/_authenticated': {
+      id: '/_app/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppAuthenticatedRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/about': {
       id: '/_app/about'
       path: '/about'
@@ -259,6 +298,20 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof ApiSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/_authenticated/account': {
+      id: '/_app/_authenticated/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AppAuthenticatedAccountRouteImport
+      parentRoute: typeof AppAuthenticatedRoute
+    }
+    '/_app/_authenticated/account-settings': {
+      id: '/_app/_authenticated/account-settings'
+      path: '/account-settings'
+      fullPath: '/account-settings'
+      preLoaderRoute: typeof AppAuthenticatedAccountSettingsRouteImport
+      parentRoute: typeof AppAuthenticatedRoute
+    }
     '/_app/profile/': {
       id: '/_app/profile/'
       path: '/profile'
@@ -283,7 +336,21 @@ declare module '@tanstack/solid-router' {
   }
 }
 
+interface AppAuthenticatedRouteChildren {
+  AppAuthenticatedAccountRoute: typeof AppAuthenticatedAccountRoute
+  AppAuthenticatedAccountSettingsRoute: typeof AppAuthenticatedAccountSettingsRoute
+}
+
+const AppAuthenticatedRouteChildren: AppAuthenticatedRouteChildren = {
+  AppAuthenticatedAccountRoute: AppAuthenticatedAccountRoute,
+  AppAuthenticatedAccountSettingsRoute: AppAuthenticatedAccountSettingsRoute,
+}
+
+const AppAuthenticatedRouteWithChildren =
+  AppAuthenticatedRoute._addFileChildren(AppAuthenticatedRouteChildren)
+
 interface AppRouteChildren {
+  AppAuthenticatedRoute: typeof AppAuthenticatedRouteWithChildren
   AppAboutRoute: typeof AppAboutRoute
   AppDeviceRoute: typeof AppDeviceRoute
   AppLeaderboardsRoute: typeof AppLeaderboardsRoute
@@ -294,6 +361,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAuthenticatedRoute: AppAuthenticatedRouteWithChildren,
   AppAboutRoute: AppAboutRoute,
   AppDeviceRoute: AppDeviceRoute,
   AppLeaderboardsRoute: AppLeaderboardsRoute,
