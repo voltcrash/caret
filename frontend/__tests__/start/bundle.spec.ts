@@ -2,9 +2,8 @@ import { describe, expect, it } from "vite-plus/test";
 import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-const dist = resolve(import.meta.dirname, "../../dist/start");
-
-function read(dir: string): string {
+function read(dir: string, build = "start"): string {
+  const dist = resolve(import.meta.dirname, `../../dist/${build}`);
   return readdirSync(resolve(dist, dir), { recursive: true, encoding: "utf8" })
     .filter((name) => name.endsWith(".js"))
     .map((name) => readFileSync(resolve(dist, dir, name), "utf8"))
@@ -46,9 +45,14 @@ describe("built Start bundle boundaries", () => {
     }
   });
 
-  it("never emits runtime require calls workerd cannot satisfy", () => {
-    expect(server.match(/__require\("[^"]+"\)/g) ?? []).toEqual([]);
-  });
+  it.each(["start", "start-test"])(
+    "never emits runtime require calls in %s",
+    (build) => {
+      expect(
+        read("server", build).match(/__require\("[^"]+"\)/g) ?? [],
+      ).toEqual([]);
+    },
+  );
 
   it("includes browser setup only in client chunks", () => {
     for (const marker of [
