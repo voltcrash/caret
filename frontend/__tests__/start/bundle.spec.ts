@@ -45,6 +45,11 @@ describe("built Start bundle boundaries", () => {
     }
   });
 
+  it("dispatches server routes without the Hono application", () => {
+    // Hono's dispatch error survives minification; the old API entry emitted it.
+    expect(server).not.toContain("Context is not finalized");
+  });
+
   it.each(["start", "start-test"])(
     "never emits runtime require calls in %s",
     (build) => {

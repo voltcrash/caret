@@ -180,4 +180,14 @@ describe("source layer boundaries", () => {
         .map((edge) => edge.from),
     ).toEqual([]);
   });
+
+  it("keeps client contract transports confined to the rollback build", () => {
+    expect(
+      edges.filter(
+        (edge) =>
+          !is(edge.from, ...rollbackOnlyFiles) &&
+          (edge.to === "@ts-rest/core" || edge.to.startsWith("hono")),
+      ),
+    ).toEqual([]);
+  });
 });

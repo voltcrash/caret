@@ -262,6 +262,9 @@ jobs:
           cache: true
           cache-save: false
 
+      - name: Check operation ownership and declared HTTP routes
+        run: vp -C backend exec tsx scripts/migration-inventory.ts --check && vp -C frontend exec tsx scripts/generate-http-routes.ts --check
+
       - name: Build Start Worker and runtime-test entry
         run: vp run --filter @oxytype/frontend build:start && vp run --filter @oxytype/frontend build:start:test
 
