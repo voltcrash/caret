@@ -1,10 +1,10 @@
+import { isTypingRouteActive } from "../../scope";
 import { updateWordLetters } from "./rendering";
 import { updateWordWrapperClasses } from "./wrapper-classes";
 import { updateWordJoining } from "./joining";
 import { updateHintsPositionDebounced } from "./hints";
 import { configEvent } from "../../../../ts/events/config";
 import * as CompositionState from "../../../../ts/states/composition";
-import { getActivePage } from "../../../../ts/states/core";
 import {
   getActiveWordIndex,
   setCompositionText,
@@ -35,7 +35,7 @@ export function onWordsConfigChange({
     void updateHintsPositionDebounced();
   }
   if (key === "highlightMode") {
-    if (getActivePage() === "test") {
+    if (isTypingRouteActive()) {
       void updateWordLetters({
         input: getCurrentInput(),
         wordIndex: getActiveWordIndex(),

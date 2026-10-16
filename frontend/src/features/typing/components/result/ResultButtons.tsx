@@ -11,7 +11,7 @@ import { Button } from "../../../../ts/components/common/Button";
 import { Fa } from "../../../../ts/components/common/Fa";
 import { getConfig } from "../../../../ts/config/store";
 import { holdKeyboardForRestart } from "../../../../ts/input/input-element";
-import { getActivePage, getIsScreenshotting } from "../../../../ts/states/core";
+import { getIsScreenshotting } from "../../../../ts/states/core";
 import { showModal } from "../../../../ts/states/modals";
 import { showNoticeNotification } from "../../../../ts/states/notifications";
 import { resultState } from "../../../../ts/states/result";
@@ -23,13 +23,14 @@ import { toggleReplayDisplay } from "../../runtime/replay";
 import { toggleResultWords } from "../../runtime/result";
 import * as TestLogic from "../../runtime/test-logic";
 import * as TestScreenshot from "../../runtime/test-screenshot";
+import { isTypingRouteActive } from "../../scope";
 
 export function ResultButtons(): JSXElement {
   // shift held: screenshot button downloads instead of copying
   const [shiftHeld, setShiftHeld] = createSignal(false);
 
   const onShift = (event: KeyboardEvent): void => {
-    if (!(getResultVisible() && getActivePage() === "test")) return;
+    if (!(getResultVisible() && isTypingRouteActive())) return;
     if (event.key !== "Shift") return;
     setShiftHeld(event.type === "keydown");
   };

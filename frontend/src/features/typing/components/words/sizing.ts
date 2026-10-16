@@ -1,8 +1,8 @@
+import { isTypingRouteActive } from "../../scope";
 import { keepWordsInputInTheCenter } from "./focus";
 import { getActiveWordElement, setClass } from "./elements";
 import { getMutableConfig } from "../../../../ts/config/store";
 import { getInputElement } from "../../../../ts/input/input-element";
-import { getActivePage } from "../../../../ts/states/core";
 import { setWordsWrapperVisible } from "../../../../ts/states/funbox";
 import {
   isDirectionReversed,
@@ -25,7 +25,7 @@ import { convertRemToPixels } from "../../../../ts/utils/numbers";
 import { getWordsFontScale } from "../../../../ts/utils/words-font";
 
 export function updateWordsInputPosition(): void {
-  if (getActivePage() !== "test") return;
+  if (!isTypingRouteActive()) return;
   const isTestRightToLeft = isDirectionReversed()
     ? !isLanguageRightToLeft()
     : isLanguageRightToLeft();
@@ -73,7 +73,7 @@ export function updateWordsInputPosition(): void {
 }
 
 export function updateWordsWrapperHeight(force = false): void {
-  if (getActivePage() !== "test" || getResultVisible()) return;
+  if (!isTypingRouteActive() || getResultVisible()) return;
   if (!force && getMutableConfig().mode !== "custom") return;
   const activeWordEl = getActiveWordElement();
   if (!activeWordEl) return;

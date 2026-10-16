@@ -1,4 +1,5 @@
-import { createRoot } from "solid-js";
+import { bindTypingActivity } from "../../src/features/typing/scope";
+import { createRoot, onCleanup } from "solid-js";
 import type { QuoteWithTextSplit } from "@oxytype/typing-core/quotes";
 import type { LanguageObject } from "@oxytype/schemas/languages";
 import {
@@ -271,6 +272,7 @@ afterEach(() => disposeRuntime());
 beforeEach(() => {
   vi.clearAllMocks();
   disposeRuntime = createRoot((dispose) => {
+    onCleanup(bindTypingActivity(() => !mocks.transition));
     useTestLogicEvents();
     return dispose;
   });
@@ -339,7 +341,7 @@ describe("test lifecycle state", () => {
     expect(saved).not.toHaveProperty("timeTyping");
     expect(saved).not.toHaveProperty("dayTimestamp");
   });
-  it("rejects starts during page transitions", () => {
+  it("rejects starts outside the active typing route", () => {
     mocks.transition = true;
     expect(startTest(100)).toBe(false);
     expect(mocks.sessionStart).not.toHaveBeenCalled();

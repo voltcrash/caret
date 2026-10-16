@@ -1,8 +1,8 @@
+import { isTypingRouteActive } from "../../../features/typing/scope";
 import { isAnyPopupVisible } from "../../states/overlay-visibility";
 
 import { navigate } from "../../navigation/navigation";
 import { restartTestEvent } from "../../events/test";
-import { getActivePage } from "../../states/core";
 import { hotkeys, quickRestartHotkeyMap } from "../../states/hotkeys";
 import { createHotkey } from "./utils";
 import { getConfig } from "../../config/store";
@@ -15,7 +15,7 @@ function quickRestart(e: KeyboardEvent): void {
 
   e.preventDefault();
 
-  if (getActivePage() === "test") {
+  if (isTypingRouteActive()) {
     restartTestEvent.dispatch({ isQuickRestart: !e.shiftKey });
   } else {
     void navigate("");

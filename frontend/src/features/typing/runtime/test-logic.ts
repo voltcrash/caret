@@ -1,4 +1,5 @@
-import { captureApplication, createAppOwned } from "../../../app/application";
+import { captureTypingRoute, isTypingRouteActive } from "../scope";
+import { createAppOwned } from "../../../app/application";
 import { onCleanup } from "solid-js";
 import * as TestUI from "./test-ui";
 import * as Strings from "../../../ts/utils/strings";
@@ -20,7 +21,6 @@ import * as Replay from "./replay";
 import { clearQuoteStats } from "../../../ts/states/quote-rate";
 
 import {
-  getActivePage,
   getCustomTextIndicator,
   isAuthenticated,
 } from "../../../ts/states/core";
@@ -46,7 +46,6 @@ import {
 import { restartTestEvent } from "../../../ts/events/test";
 import * as TestWords from "./test-words";
 import * as WordsGenerator from "./words-generator";
-import * as PageTransition from "../../../ts/states/page-transition";
 import { configEvent } from "../../../ts/events/config";
 import * as AnalyticsController from "../../../ts/controllers/analytics-controller";
 import { preloadResultHasher } from "../../../ts/utils/result-hash";
@@ -82,7 +81,7 @@ import { finish } from "./completion";
 export { finish } from "./completion";
 export { retrySavingResult } from "./result-saving";
 export function startTest(now: number): boolean {
-  if (PageTransition.get()) {
+  if (!isTypingRouteActive()) {
     return false;
   }
 
@@ -125,6 +124,8 @@ type RestartOptions = {
 };
 
 export async function restart(options = {} as RestartOptions): Promise<void> {
+  const lease = captureTypingRoute();
+  if (!lease.isCurrent()) return;
   const defaultOptions = {
     withSameWordset: false,
     practiseMissed: false,
@@ -267,13 +268,16 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
   setIsTestRestarting(true);
 
   await TestUI.fadeOutForRestart(source, noAnim);
+  if (!lease.isCurrent()) return;
 
   setResultVisible(false);
   setInputElementValue("");
 
   await Funbox.rememberSettings();
+  if (!lease.isCurrent()) return;
 
   const initResult = await init();
+  if (!lease.isCurrent()) return;
 
   if (!initResult) {
     setIsTestRestarting(false);
@@ -281,6 +285,7 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
   }
 
   await PaceCaret.init();
+  if (!lease.isCurrent()) return;
 
   for (const fb of getActiveFunboxesWithFunction("restart")) {
     fb.functions.restart();
@@ -289,11 +294,14 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
   TestUI.onTestRestart(source);
 
   await TestUI.fadeInAfterRestart(noAnim);
+  if (!lease.isCurrent()) return;
   setIsTestRestarting(false);
 }
 
 //add word during the test
 export async function addWord(): Promise<void> {
+  const lease = captureTypingRoute();
+  if (!lease.isCurrent()) return;
   if (getMutableConfig().mode === "zen") {
     TestUI.appendEmptyWordElement(getActiveWordIndex() + 1);
     return;
@@ -324,6 +332,7 @@ export async function addWord(): Promise<void> {
         getMutableConfig().language,
       );
 
+      if (!lease.isCurrent()) return;
       if (section === false) {
         showErrorNotification(
           "Error while getting section. Please try again later",
@@ -363,6 +372,7 @@ export async function addWord(): Promise<void> {
       WordsGenerator,
     );
 
+    if (!lease.isCurrent()) return;
     const newWord = TestWords.words.push(
       randomWord.word,
       randomWord.sectionIndex,
@@ -392,11 +402,11 @@ export function fail(reason: string): void {
 
 const zipfCheck = createAppOwned(() => {
   const check = debounce(250, async () => {
-    const lease = captureApplication();
+    const lease = captureTypingRoute();
     const supports = await JSONData.checkIfLanguageSupportsZipf(
       getMutableConfig().language,
     );
-    if (lease.signal.aborted) return;
+    if (!lease.isCurrent()) return;
     if (supports === "no") {
       showNoticeNotification(
         `${Strings.capitalizeFirstLetter(
@@ -434,7 +444,7 @@ export function useTestLogicEvents(): void {
 
   restartTestEvent.useListener((event) => void restart(event));
   configEvent.useListener(({ key, newValue, nosave }) => {
-    if (getActivePage() === "test") {
+    if (isTypingRouteActive()) {
       if (key === "language") {
         //automatically enable lazy mode for arabic
         if (

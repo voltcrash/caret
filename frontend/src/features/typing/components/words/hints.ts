@@ -1,5 +1,5 @@
+import { isTypingRouteActive } from "../../scope";
 import { getMutableConfig } from "../../../../ts/config/store";
-import { getActivePage } from "../../../../ts/states/core";
 import {
   isDirectionReversed,
   isLanguageRightToLeft,
@@ -134,7 +134,7 @@ export async function joinOverlappingHints(
 
 async function updateHintsPosition(): Promise<void> {
   if (
-    getActivePage() !== "test" ||
+    !isTypingRouteActive() ||
     getResultVisible() ||
     (getMutableConfig().indicateTypos !== "below" &&
       getMutableConfig().indicateTypos !== "both")

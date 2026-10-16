@@ -1,10 +1,10 @@
+import { isTypingRouteActive } from "../../scope";
 import { applyReducedMotion } from "../../../../ts/utils/misc";
 import { lineState } from "./line-state";
 import { outerWidth } from "./dimensions";
 import { getActiveWordElement } from "./elements";
 import { animate } from "animejs";
 import { getMutableConfig } from "../../../../ts/config/store";
-import { getActivePage } from "../../../../ts/states/core";
 import {
   isDirectionReversed,
   isLanguageRightToLeft,
@@ -45,7 +45,7 @@ function getNlCharWidth(
 }
 
 export async function scrollTape(noAnimation = false): Promise<void> {
-  if (getActivePage() !== "test" || getResultVisible()) return;
+  if (!isTypingRouteActive() || getResultVisible()) return;
 
   await lineState.centeringActiveLine;
 

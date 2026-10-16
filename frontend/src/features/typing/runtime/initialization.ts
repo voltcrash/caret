@@ -1,3 +1,4 @@
+import { captureTypingRoute, isTypingRouteActive } from "../scope";
 import { updateClassNames } from "../../../ts/utils/cn";
 
 import * as TestUI from "./test-ui";
@@ -13,7 +14,7 @@ import * as CustomText from "./custom-text";
 
 import * as Funbox from "./funbox/funbox";
 
-import { getActivePage, isAuthenticated } from "../../../ts/states/core";
+import { isAuthenticated } from "../../../ts/states/core";
 import {
   setIsDirectionReversed,
   setIsLanguageRightToLeft,
@@ -53,7 +54,8 @@ import { nthElementFromArray } from "../../../ts/utils/arrays";
 import { hasKoreanCharacters } from "@oxytype/typing-core/strings";
 
 import { testLogicState } from "./logic-state";
-export async function init(): Promise<boolean> {
+export async function init(lease = captureTypingRoute()): Promise<boolean> {
+  if (!lease.isCurrent()) return false;
   console.debug("Initializing test");
   testLogicState.testReinitCount++;
   if (testLogicState.testReinitCount > 3) {
@@ -82,6 +84,7 @@ export async function init(): Promise<boolean> {
   const { data: language, error } = await tryCatch(
     JSONData.getLanguage(getMutableConfig().language),
   );
+  if (!lease.isCurrent()) return false;
   hideLoaderBar();
 
   if (error) {
@@ -89,11 +92,12 @@ export async function init(): Promise<boolean> {
   }
 
   if (!language || language.name !== getMutableConfig().language) {
-    return await init();
+    return await init(lease);
   }
 
-  if (getActivePage() === "test") {
+  if (isTypingRouteActive()) {
     await Funbox.activate();
+    if (!lease.isCurrent()) return false;
   }
 
   if (getMutableConfig().mode === "quote") {
@@ -124,6 +128,7 @@ export async function init(): Promise<boolean> {
       .filter((lang) => lang !== null)
       .some((lang) => !lang.noLazyMode);
 
+    if (!lease.isCurrent()) return false;
     if (getMutableConfig().lazyMode && !anySupportsLazyMode) {
       LazyModeState.setRemember(true);
       if (!testLogicState.showedLazyModeNotification) {
@@ -190,12 +195,14 @@ export async function init(): Promise<boolean> {
   let generatedSectionIndexes: number[] = [];
   try {
     const gen = await getTestSession().generate(language, WordsGenerator);
+    if (!lease.isCurrent()) return false;
     generatedWords = gen.words;
     generatedSectionIndexes = gen.sectionIndexes;
     wordsHaveTab = gen.hasTab;
     wordsHaveNewline = gen.hasNewline;
     ({ allRightToLeft, allJoiningScript } = gen);
   } catch (e) {
+    if (!lease.isCurrent()) return false;
     hideLoaderBar();
     if (e instanceof WordGenError || e instanceof Error) {
       testLogicState.lastInitError = e;
@@ -214,7 +221,7 @@ export async function init(): Promise<boolean> {
       });
     }
 
-    return await init();
+    return await init(lease);
   }
 
   let hasNumbers = false;
