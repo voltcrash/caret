@@ -1,44 +1,38 @@
-import { createAccountStore, createAccountSignal } from "../../app/state";
-import { reconcile, unwrap } from "solid-js/store";
+import { QueryObserver } from "@tanstack/solid-query";
+import { createSignal, onCleanup } from "solid-js";
+import { createAccountOwned } from "../../app/account-scope";
+import { createAccountSignal } from "../../app/state";
 import {
   Snapshot,
   SnapshotResult,
   SavedResult,
 } from "../constants/default-snapshot";
+import { getQueryClient } from "../queries";
+import { getAccountQueryOptions } from "../queries/account";
 
 import { Mode } from "@oxytype/schemas/shared";
 
-export type MiniSnapshot = Omit<
+/** A reactive view of the actor's query-owned account; never a second copy. */
+const accountView = createAccountOwned(() => {
+  const observer = new QueryObserver(getQueryClient(), {
+    ...getAccountQueryOptions(),
+    enabled: false,
+  });
+  const [data, setData] = createSignal(observer.getCurrentResult().data, {
+    equals: false,
+  });
+  onCleanup(observer.subscribe((result) => setData(() => result.data)));
+  return data;
+});
+
+/** Calendars are read through `db.getTestActivityCalendar`. */
+export type ReactiveSnapshot = Omit<
   Snapshot,
-  "testActivity" | "testActivityByYear" | "isMiniSnapshot"
-> & { isMiniSnapshot: boolean };
-const [snapshot, updateSnapshot] = createAccountStore<{
-  value: MiniSnapshot | undefined;
-}>({ value: undefined });
+  "testActivity" | "testActivityByYear"
+>;
 
-/**
- * This does not update the DB.snapshot. Use DB.setSnapshot for now.
- */
-export function _setSnapshot(newValue: Snapshot | undefined): void {
-  if (newValue === undefined) {
-    updateSnapshot("value", undefined);
-  } else {
-    const snapshot = structuredClone(unwrap(newValue));
-
-    delete snapshot.testActivity;
-    delete snapshot.testActivityByYear;
-
-    const miniSnapshot = {
-      ...snapshot,
-      isMiniSnapshot: true,
-    };
-
-    updateSnapshot("value", reconcile(miniSnapshot, { merge: true }));
-  }
-}
-
-export function getSnapshot(): MiniSnapshot | undefined {
-  return snapshot.value;
+export function getSnapshot(): ReactiveSnapshot | undefined {
+  return accountView()();
 }
 
 export const [getLastResult, setLastResult] = createAccountSignal<

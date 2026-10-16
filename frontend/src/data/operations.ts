@@ -28,17 +28,8 @@ const timeouts: Partial<Record<ContractOperationId, number>> = {
   "dev.generateData": 240_000,
 };
 
-/** Members whose fields are all optional may be omitted, as with the HTTP client. */
-type Omittable<T> = [keyof T] extends [never]
-  ? true
-  : {
-        [P in keyof T]-?: Record<string, never> extends T[P] ? true : false;
-      }[keyof T] extends true
-    ? true
-    : false;
-
 type Input<K extends WebOperationId> =
-  Omittable<OperationRequest<K>> extends true
+  Record<string, never> extends OperationRequest<K>
     ? [input?: OperationRequest<K>]
     : [input: OperationRequest<K>];
 

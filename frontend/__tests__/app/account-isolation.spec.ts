@@ -6,7 +6,7 @@ const requests = vi.hoisted(() => ({
   save: vi.fn(async () => undefined),
 }));
 vi.mock("../../src/ts/ape", () => ({
-  default: { users: { get: requests.user }, configs: { get: requests.config } },
+  default: { configs: { get: requests.config } },
 }));
 vi.mock("../../src/ts/ape/config", () => ({ saveConfig: requests.save }));
 vi.mock("../../src/ts/states/server-configuration", () => ({
@@ -23,6 +23,21 @@ import * as DB from "../../src/ts/db";
 import { setUserId } from "../../src/ts/states/core";
 import { getSnapshot } from "../../src/ts/states/snapshot";
 import { getTags } from "../../src/ts/collections/tags";
+import { mockOperation } from "../__harness__/operations";
+
+mockOperation("users.get", async () => {
+  const response = (await requests.user()) as {
+    status: number;
+    body: { data?: unknown; message?: string };
+  };
+  return response.status === 200
+    ? { ok: true, status: 200, message: "", data: response.body.data }
+    : {
+        ok: false,
+        status: response.status,
+        message: response.body.message ?? "",
+      };
+});
 
 beforeEach(async () => {
   setUserId(null);

@@ -26,13 +26,31 @@ type ContractRequest<K extends ContractOperationId> = ClientInferRequest<
   RouteOf<K>
 >;
 
-/** Pre-validation input: the contract's query, body and path parameters. */
-export type OperationRequest<K extends ContractOperationId> = {
+type Members<K extends ContractOperationId> = {
   [
     P in keyof ContractRequest<K> as P extends "query" | "body" | "params"
       ? P
       : never
   ]: ContractRequest<K>[P];
+};
+
+/**
+ * Pre-validation input: the contract's query, body and path parameters.
+ * A member whose fields are all optional may be omitted, as with the former
+ * HTTP client.
+ */
+export type OperationRequest<K extends ContractOperationId> = {
+  [
+    P in keyof Members<K> as Record<string, never> extends Members<K>[P]
+      ? P
+      : never
+  ]?: Members<K>[P];
+} & {
+  [
+    P in keyof Members<K> as Record<string, never> extends Members<K>[P]
+      ? never
+      : P
+  ]: Members<K>[P];
 };
 
 /** The contract's validated success DTO. */

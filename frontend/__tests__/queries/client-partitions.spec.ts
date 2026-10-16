@@ -17,6 +17,7 @@ import { mockOperation, ok } from "../__harness__/operations";
 import {
   getAccountActivityQueryOptions,
   getAccountQueryOptions,
+  getTerminalAccountQueryOptions,
   updateTerminalLeaderboardMemory,
 } from "../../src/ts/queries/account";
 import {
@@ -84,8 +85,8 @@ describe("client query partitions", () => {
     });
   });
   it("keeps account caches separate by user and client and projects selected totals", async () => {
-    const web = getAccountQueryOptions("web");
-    const tui = getAccountQueryOptions("tui");
+    const web = getAccountQueryOptions();
+    const tui = getTerminalAccountQueryOptions();
     expect(web.queryKey).not.toEqual(tui.queryKey);
     const account = await client.query(tui);
     expect(account).toMatchObject({
@@ -96,7 +97,7 @@ describe("client query partitions", () => {
     });
     expect(calls).toHaveBeenCalledWith("account", { query: { client: "tui" } });
     state.uid = "two";
-    expect(getAccountQueryOptions("tui").queryKey).not.toEqual(tui.queryKey);
+    expect(getTerminalAccountQueryOptions().queryKey).not.toEqual(tui.queryKey);
   });
   it("partitions year archives by client", async () => {
     for (const selected of ["web", "tui"] as const) {
@@ -162,10 +163,10 @@ describe("client query partitions", () => {
     },
   );
   it("updates terminal rank memory without writing the web cache", async () => {
-    await getQueryClient().query(getAccountQueryOptions("web"));
-    await getQueryClient().query(getAccountQueryOptions("tui"));
+    await getQueryClient().query(getAccountQueryOptions());
+    await getQueryClient().query(getTerminalAccountQueryOptions());
     const web = getQueryClient().getQueryData(
-      getAccountQueryOptions("web").queryKey,
+      getAccountQueryOptions().queryKey,
     );
     await updateTerminalLeaderboardMemory("15", 7);
     expect(calls).toHaveBeenCalledWith("memory", {
@@ -173,11 +174,11 @@ describe("client query partitions", () => {
       body: { mode: "time", mode2: "15", language: "english", rank: 7 },
     });
     expect(
-      getQueryClient().getQueryData(getAccountQueryOptions("tui").queryKey)
+      getQueryClient().getQueryData(getTerminalAccountQueryOptions().queryKey)
         ?.lbMemory,
     ).toEqual({ time: { "15": { english: 7 } } });
     expect(
-      getQueryClient().getQueryData(getAccountQueryOptions("web").queryKey),
+      getQueryClient().getQueryData(getAccountQueryOptions().queryKey),
     ).toBe(web);
   });
 });

@@ -14,7 +14,7 @@ import {
   replaceUnderscoresWithSpaces,
 } from "../utils/strings";
 import { applyIdWorkaround, tempId } from "./utils/misc";
-import { fetchUserFromApi } from "../ape/user";
+import { loadAccountData } from "../queries/account";
 import { isAuthenticated } from "../states/core";
 
 const queryKeys = {
@@ -31,7 +31,7 @@ const resultFilterPresetsCollection = defineCollection(import.meta.hot, () =>
       enabled: isAuthenticated,
       getKey: (it) => it._id,
       queryFn: async () => {
-        const userData = await fetchUserFromApi();
+        const userData = await loadAccountData();
         if (userData === undefined) return [];
 
         return (userData.resultFilterPresets ?? [])

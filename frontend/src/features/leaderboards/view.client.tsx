@@ -26,7 +26,7 @@ import { Title } from "../../ts/components/pages/leaderboard/Title";
 import { UserRank } from "../../ts/components/pages/leaderboard/UserRank";
 import { getSnapshot, updateLbMemory } from "../../ts/db";
 import {
-  getAccountQueryOptions,
+  getTerminalAccountQueryOptions,
   updateTerminalLeaderboardMemory,
 } from "../../ts/queries/account";
 import { getServerConfigurationQueryOptions } from "../../ts/queries/server-configuration";
@@ -110,7 +110,7 @@ export function LeaderboardContent(props: {
     getServerConfigurationQueryOptions(),
   );
   const terminalAccount = useQuery(() => ({
-    ...getAccountQueryOptions("tui"),
+    ...getTerminalAccountQueryOptions(),
     enabled: isAuthenticated() && selection().client === "tui",
   }));
   const selectedAccount = () =>

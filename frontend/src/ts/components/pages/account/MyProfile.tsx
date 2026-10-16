@@ -2,7 +2,7 @@ import { Client } from "@oxytype/schemas/shared";
 import { useQuery } from "@tanstack/solid-query";
 import { JSXElement, Show } from "solid-js";
 
-import { getAccountQueryOptions } from "../../../queries/account";
+import { getTerminalAccountQueryOptions } from "../../../queries/account";
 import { getSnapshot } from "../../../states/snapshot";
 import AsyncContent from "../../common/AsyncContent";
 import { UserProfile } from "../profile/UserProfile";
@@ -10,7 +10,7 @@ import { UserProfile } from "../profile/UserProfile";
 export function MyProfile(props: { client: Client }): JSXElement {
   const profile = getSnapshot;
   const terminalProfile = useQuery(() => ({
-    ...getAccountQueryOptions("tui"),
+    ...getTerminalAccountQueryOptions(),
     enabled: profile() !== undefined && props.client === "tui",
   }));
   return (

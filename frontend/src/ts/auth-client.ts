@@ -105,8 +105,8 @@ export async function init(
         // A social sign-in can return before the username/captcha onboarding is complete.
         try {
           // Share the onboarding check with snapshot/config initialization.
-          const { fetchUserFromApi } = await import("./ape/user");
-          await fetchUserFromApi(user.uid);
+          const { loadAccountData } = await import("./queries/account");
+          await loadAccountData(user.uid);
           lease.assertCurrent();
         } catch (error) {
           if (

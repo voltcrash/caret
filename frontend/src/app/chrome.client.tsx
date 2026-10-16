@@ -1,7 +1,6 @@
 import { createEffect, onCleanup, onMount, type JSXElement } from "solid-js";
 import { Portal, spread } from "solid-js/web";
 
-import * as ServerConfiguration from "../ts/states/server-configuration";
 import { Download } from "../ts/components/common/Download";
 import { FilePicker } from "../ts/components/common/FilePicker";
 import { bodyClass } from "../ts/components/core/body-classes";
@@ -18,6 +17,7 @@ import { Popups } from "../ts/components/popups/Popups";
 import { getAcceptedCookies } from "../ts/cookies";
 import { showModal } from "../ts/states/modals";
 import { getHeaderBottom } from "../ts/states/page-layout";
+import * as ServerConfiguration from "../ts/states/server-configuration";
 import { RouterNavigation } from "./navigation.client";
 import { preferencesReadiness } from "./readiness";
 

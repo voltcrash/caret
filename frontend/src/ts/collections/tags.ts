@@ -21,7 +21,7 @@ import { Difficulty } from "@oxytype/schemas/configs";
 import { Language } from "@oxytype/schemas/languages";
 import { applyIdWorkaround, isTempId, tempId } from "./utils/misc";
 import { createCollectionReader } from "./utils/reader";
-import { fetchUserFromApi } from "../ape/user";
+import { loadAccountData } from "../queries/account";
 import { updateTagsInFilterStorage } from "../states/result-filters";
 import { isAuthenticated } from "../states/core";
 import { emptyPersonalBests, personalBestList } from "../utils/personal-bests";
@@ -42,7 +42,7 @@ const tagsCollection = defineCollection(import.meta.hot, () =>
       getKey: (it) => it._id,
       queryFn: async () => {
         const activeIds = activeTagsLS.get();
-        const userData = await fetchUserFromApi();
+        const userData = await loadAccountData();
 
         if (userData === undefined) return [];
 

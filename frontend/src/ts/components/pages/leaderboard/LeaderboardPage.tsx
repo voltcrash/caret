@@ -7,7 +7,7 @@ import { getSnapshot, updateLbMemory } from "../../../db";
 import { createEffectOn } from "../../../hooks/effects";
 import { getQueryClient } from "../../../queries";
 import {
-  getAccountQueryOptions,
+  getTerminalAccountQueryOptions,
   updateTerminalLeaderboardMemory,
 } from "../../../queries/account";
 import {
@@ -52,7 +52,7 @@ export function LeaderboardPage(): JSXElement {
 
   const [scrollToUser, setScrollToUser] = createSignal(false);
   const terminalAccount = useQuery(() => ({
-    ...getAccountQueryOptions("tui"),
+    ...getTerminalAccountQueryOptions(),
     enabled: isOpen() && isAuthenticated() && getSelection().client === "tui",
   }));
   const selectedAccount = () =>

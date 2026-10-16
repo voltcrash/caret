@@ -9,7 +9,7 @@ const preloadUser = vi.hoisted(() => vi.fn());
 vi.unmock("../src/ts/auth-client");
 vi.mock("virtual:env-config", () => ({ envConfig: config }));
 vi.mock("../src/ts/states/core", () => ({ setUserId: vi.fn() }));
-vi.mock("../src/ts/ape/user", () => ({ fetchUserFromApi: preloadUser }));
+vi.mock("../src/ts/queries/account", () => ({ loadAccountData: preloadUser }));
 beforeEach(async () => {
   await import("./__harness__/mock-application");
   preloadUser.mockReset();
