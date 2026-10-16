@@ -1,9 +1,11 @@
-import * as TestLogic from "../../features/typing/runtime/test-logic";
-import * as Funbox from "../../features/typing/runtime/funbox/funbox";
+import {
+  enterTypingRoute,
+  exitTypingRoute,
+} from "../../features/typing/lifecycle";
 import Page from "./page";
 import { blurInputElement } from "../input/input-element";
-import { resetIncompleteTests } from "../states/test";
 
+/** Rollback adapter: the cached page runs the typing route's commands. */
 export const page = new Page({
   id: "test",
   path: "/",
@@ -11,15 +13,11 @@ export const page = new Page({
     blurInputElement();
   },
   afterHide: async (): Promise<void> => {
-    void TestLogic.restart({
-      noAnim: true,
-    });
-    void Funbox.clear();
+    exitTypingRoute();
   },
   beforeShow: async (): Promise<void> => {
-    resetIncompleteTests();
-    void TestLogic.restart({
-      noAnim: true,
-    });
+    void enterTypingRoute().catch((error: unknown) =>
+      console.error("Typing initialization failed", error),
+    );
   },
 });
