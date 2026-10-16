@@ -68,7 +68,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           sizes: "180x180",
           href: "/images/icons/oxytype-180.png",
         },
-        { rel: "manifest", href: "/manifest.start.webmanifest" },
+        { rel: "manifest", href: "/manifest.json" },
         ...["RobotoMono-Regular", "LexendDeca-Regular"].map((font) => ({
           rel: "preload",
           href: `/webfonts/${font}.woff2`,

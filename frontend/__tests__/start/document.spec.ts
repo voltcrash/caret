@@ -54,7 +54,7 @@ describe("Start document and response policy in workerd", () => {
       "/webfonts/RobotoMono-Regular.woff2",
       "/webfonts/LexendDeca-Regular.woff2",
       "/images/favicon/oxytype.svg",
-      "/manifest.start.webmanifest",
+      "/manifest.json",
     ]) {
       const asset = await mf.dispatchFetch(`http://localhost:3000${path}`);
       expect(asset.status).toBe(200);
