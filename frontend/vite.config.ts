@@ -1,5 +1,5 @@
 import { envConfig } from "./vite-plugins/env-config";
-import { languageHashes } from "./vite-plugins/language-hashes";
+import { languageHash, languageHashes } from "./vite-plugins/language-hashes";
 import { resolveBuildId, startVersionFile } from "./vite-plugins/build-id";
 import { defineConfig, loadEnv } from "vite-plus";
 import { cloudflare } from "@cloudflare/vite-plugin";
@@ -11,6 +11,7 @@ import { fontStyles } from "./vite-plugins/font-styles";
 import { workerNodeBuiltins } from "./vite-plugins/worker-node-builtins";
 import { apiDocs } from "./vite-plugins/api-docs";
 import { startWebManifest } from "./vite-plugins/web-manifest";
+import { startServiceWorker } from "./vite-plugins/service-worker";
 import {
   clientOnlyFeatureFiles,
   rollbackOnlyFiles,
@@ -50,6 +51,10 @@ export default defineConfig(({ mode }) => {
       apiDocs(),
       startWebManifest(),
       startVersionFile(buildId),
+      startServiceWorker({
+        buildId,
+        englishHash: () => languageHash("english"),
+      }),
       envConfig({
         isDevelopment: mode !== "production",
         clientVersion: buildId,
