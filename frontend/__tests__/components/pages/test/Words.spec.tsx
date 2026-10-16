@@ -45,9 +45,6 @@ vi.mock("../../../../src/ts/states/test", () => ({
   setTestFocusState: vi.fn(),
   setTestInitError: vi.fn(),
 }));
-vi.mock("../../../../src/ts/states/core", () => ({
-  getActivePage: () => mocks.activePage,
-}));
 vi.mock("../../../../src/ts/states/background", () => ({
   getBackground: () => ({ url: "" }),
 }));
@@ -126,6 +123,7 @@ vi.mock("animejs", () => ({ animate: vi.fn() }));
 import { Words } from "../../../../src/features/typing/components/Words";
 import * as ui from "../../../../src/features/typing/runtime/test-ui";
 import { words } from "../../../../src/features/typing/runtime/test-words";
+import { bindTypingActivity } from "../../../../src/features/typing/scope";
 import { getMutableConfig } from "../../../../src/ts/config/store";
 import { configEvent } from "../../../../src/ts/events/config";
 import { setCurrentLiveStats } from "../../../../src/ts/states/test";
@@ -167,7 +165,9 @@ async function flushFrames(): Promise<void> {
   }
 }
 
+let unbind: () => void;
 beforeEach(() => {
+  unbind = bindTypingActivity(() => mocks.activePage === "test");
   document.documentElement.style.fontSize = "16px";
   vi.clearAllMocks();
   Object.assign(mocks, {
@@ -231,6 +231,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  unbind();
   cleanup();
   wrapper.remove();
   words.reset();
