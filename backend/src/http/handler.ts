@@ -165,10 +165,6 @@ async function handle(
       response = json({ message: "Untrusted origin" }, 403);
     } else {
       scope = await admit(invocation);
-      const slowdown = scope.configuration.dev.responseSlowdownMs;
-      if (invocation.runtime.env.MODE === "dev" && slowdown > 0) {
-        await new Promise((resolve) => setTimeout(resolve, slowdown));
-      }
       assertAvailable(invocation, scope, endpoint.startsWith("configuration."));
       response = await handler(invocation, scope, body);
     }

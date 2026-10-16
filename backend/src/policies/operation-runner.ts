@@ -83,6 +83,10 @@ export async function admit(invocation: Invocation): Promise<PolicyScope> {
     invocation.setHeader,
     false,
   );
+  const slowdown = scope.configuration.dev.responseSlowdownMs;
+  if (invocation.runtime.env.MODE === "dev" && slowdown > 0) {
+    await new Promise((resolve) => setTimeout(resolve, slowdown));
+  }
   return scope;
 }
 
