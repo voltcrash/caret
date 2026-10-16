@@ -2,7 +2,7 @@ import { envConfig } from "virtual:env-config";
 import { captureAccount } from "../app/account-scope";
 import { captureApplication } from "../app/application";
 import { webOperations } from "../functions/operations";
-import type { OperationResult } from "./operation-result";
+import { OperationError, type OperationResult } from "./operation-result";
 import type {
   ContractOperationId,
   OperationRequest,
@@ -110,6 +110,6 @@ export async function operationData<K extends WebOperationId>(
   ...input: Input<K>
 ): Promise<OperationResponse<K>> {
   const result = await operation(id, ...input);
-  if (!result.ok) throw new Error(result.message);
+  if (!result.ok) throw new OperationError(result);
   return result.data;
 }

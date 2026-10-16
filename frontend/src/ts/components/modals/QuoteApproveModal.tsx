@@ -1,9 +1,12 @@
 import { Quote } from "@oxytype/schemas/quotes";
 import { createForm } from "@tanstack/solid-form";
+import { useQuery } from "@tanstack/solid-query";
 import { format } from "date-fns/format";
 import { JSXElement, createSignal, For, Show } from "solid-js";
 
 import { operation } from "../../../data/operations";
+import { getQueryClient } from "../../queries";
+import { getQuoteSubmissionsQueryOptions } from "../../queries/quotes";
 import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
 import {
   showErrorNotification,
@@ -183,30 +186,30 @@ function QuoteApproveItem(props: {
 }
 
 export function QuoteApproveModal(): JSXElement {
-  const [quotes, setQuotes] = createSignal<Quote[]>([]);
+  const quotes = useQuery(() => ({
+    ...getQuoteSubmissionsQueryOptions(),
+    enabled: false,
+  }));
 
   const fetchQuotes = async (): Promise<void> => {
     showLoaderBar();
-    const response = await operation("quotes.get");
-    hideLoaderBar();
-
-    if (!response.ok) {
-      showErrorNotification("Failed to get new quotes", {
-        operation: response,
-      });
-      return;
+    try {
+      await quotes.refetch({ throwOnError: true });
+    } catch (error) {
+      showErrorNotification("Failed to get new quotes", { error });
+    } finally {
+      hideLoaderBar();
     }
-
-    setQuotes(response.data ?? []);
   };
 
   const handleBeforeShow = (): void => {
-    setQuotes([]);
     void fetchQuotes();
   };
-
   const removeQuote = (index: number): void => {
-    setQuotes((prev) => prev.filter((_, i) => i !== index));
+    getQueryClient().setQueryData(
+      getQuoteSubmissionsQueryOptions().queryKey,
+      (previous) => previous?.filter((_, i) => i !== index),
+    );
   };
 
   return (
@@ -222,13 +225,12 @@ export function QuoteApproveModal(): JSXElement {
           fa={{ icon: "fa-sync-alt" }}
           text="Refresh list"
           onClick={() => {
-            setQuotes([]);
             void fetchQuotes();
           }}
         />
       </div>
       <div class="grid gap-2">
-        <For each={quotes()}>
+        <For each={quotes.isFetching ? [] : (quotes.data ?? [])}>
           {(quote, index) => (
             <QuoteApproveItem
               quote={quote}

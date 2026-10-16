@@ -5,8 +5,10 @@ import { format } from "date-fns/format";
 import { envConfig } from "virtual:env-config";
 import { z } from "zod";
 
-import { operation } from "../../data/operations";
+import { OperationError } from "../../data/operation-result";
 import { authEvent } from "../events/auth";
+import { getQueryClient } from "../queries";
+import { getPsaQueryOptions } from "../queries/psas";
 import { addBanner } from "../states/banners";
 import { addPsa } from "../states/psas";
 import { secondsToString } from "../utils/date-and-time";
@@ -36,34 +38,33 @@ function setMemory(id: string): void {
 async function getLatest(): Promise<PSA[] | null> {
   // No server announcements exist in frontend-only development.
   if (envConfig.devOffline) return null;
-  const response = await operation("psas.get");
-
-  if (response.status === 500) {
-    if (isDevEnvironment()) {
-      addBanner({
-        level: "notice",
-        text: "Dev Info: Backend server not running",
-        icon: "fas fa-exclamation-triangle",
-      });
-    } else {
+  try {
+    return await getQueryClient().query(getPsaQueryOptions());
+  } catch (error) {
+    const status = error instanceof OperationError ? error.status : 500;
+    if (status === 500) {
+      addBanner(
+        isDevEnvironment()
+          ? {
+              level: "notice",
+              text: "Dev Info: Backend server not running",
+              icon: "fas fa-exclamation-triangle",
+            }
+          : {
+              level: "error",
+              text: "The Oxytype server is currently unavailable.",
+              icon: "fas fa-exclamation-triangle",
+            },
+      );
+    } else if (status === 503) {
       addBanner({
         level: "error",
-        text: "The Oxytype server is currently unavailable.",
-        icon: "fas fa-exclamation-triangle",
+        icon: "fas fa-bullhorn",
+        text: "The Oxytype server is currently under maintenance.",
       });
     }
     return null;
-  } else if (response.status === 503) {
-    addBanner({
-      level: "error",
-      icon: "fas fa-bullhorn",
-      text: "The Oxytype server is currently under maintenance.",
-    });
-    return null;
-  } else if (!response.ok) {
-    return null;
   }
-  return response.data;
 }
 
 async function show(): Promise<void> {
@@ -74,7 +75,8 @@ async function show(): Promise<void> {
     return;
   }
   const localmemory = getMemory();
-  latest.forEach((psa) => {
+  latest.forEach((item) => {
+    const psa = { ...item };
     if (isSafeNumber(psa.date)) {
       const dateObj = new Date(psa.date);
       const diff = psa.date - Date.now();

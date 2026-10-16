@@ -1,29 +1,73 @@
-import { operation } from "../../data/operations";
+import { createEffect, createSignal, onCleanup } from "solid-js";
+import { QueryObserver } from "@tanstack/solid-query";
+import { createAccountOwned } from "../../app/account-scope";
+import { getQueryClient } from "../queries";
+import { getQuoteRatingQueryOptions, type QuoteStats } from "../queries/quotes";
 import { createAppSignal } from "../../app/state";
 
-import { Language } from "@oxytype/schemas/languages";
 import { Quote } from "../controllers/quotes-controller";
 import { showErrorNotification } from "./notifications";
 import { showModal } from "./modals";
 import { isSafeNumber } from "@oxytype/util/numbers";
 
-type QuoteStats = {
-  average?: number;
-  ratings?: number;
-  totalRating?: number;
-  quoteId?: number;
-  language?: Language;
-};
-
 const [selectedQuote, setSelectedQuote] = createAppSignal<Quote | null>(null);
-const [quoteStats, setQuoteStats] = createAppSignal<
-  QuoteStats | null | Record<string, never>
->(null);
+export { selectedQuote };
 
-export { selectedQuote, quoteStats };
+function ratingOptions():
+  | ReturnType<typeof getQuoteRatingQueryOptions>
+  | undefined {
+  const quote = selectedQuote();
+  return quote === null
+    ? undefined
+    : getQuoteRatingQueryOptions(quote.id, quote.language);
+}
+
+function derivedStats(data: QuoteStats | null | undefined): QuoteStats | null {
+  if (data === undefined) return null;
+  if (data === null) return {};
+  return { ...data, average: data.average ?? getRatingAverage(data) };
+}
+
+/** A reactive view of Query data, recreated on account changes. */
+const observedStats = createAccountOwned(() => {
+  const observer = new QueryObserver<
+    QuoteStats | null,
+    Error,
+    QuoteStats | null,
+    QuoteStats | null,
+    unknown[]
+  >(getQueryClient(), {
+    queryKey: ["quoteRating", "none"],
+    enabled: false,
+  });
+  const [data, setData] = createSignal<QuoteStats | null>(null);
+  const publish = (): void => {
+    setData(derivedStats(observer.getCurrentResult().data));
+  };
+  onCleanup(observer.subscribe(publish));
+  onCleanup(() => observer.destroy());
+  createEffect(() => {
+    observer.setOptions({
+      ...(ratingOptions() ?? { queryKey: ["quoteRating", "none"] }),
+      enabled: false,
+    });
+    publish();
+  });
+  return data;
+});
+
+export function quoteStats(): QuoteStats | null {
+  return observedStats()();
+}
 
 export function clearQuoteStats(): void {
-  setQuoteStats(null);
+  const options = ratingOptions();
+  if (options !== undefined) {
+    void getQueryClient().resetQueries({
+      queryKey: options.queryKey,
+      exact: true,
+    });
+  }
 }
 
 export function getRatingAverage(stats: QuoteStats): number {
@@ -44,33 +88,22 @@ export async function getQuoteStats(
   if (!quote) return;
 
   setSelectedQuote(quote);
-  const response = await operation("quotes.getRating", {
-    query: { quoteId: quote.id, language: quote.language },
-  });
-
-  if (!response.ok) {
-    showErrorNotification("Failed to get quote ratings", {
-      operation: response,
-    });
+  try {
+    const data = await getQueryClient().query(
+      getQuoteRatingQueryOptions(quote.id, quote.language),
+    );
+    return derivedStats(data) ?? {};
+  } catch (error) {
+    showErrorNotification("Failed to get quote ratings", { error });
     return;
   }
-
-  if (response.data === null) {
-    setQuoteStats({});
-    return {};
-  }
-
-  const stats = response.data as QuoteStats;
-  if (stats !== undefined && stats.average === undefined) {
-    stats.average = getRatingAverage(stats);
-  }
-
-  setQuoteStats(stats);
-  return stats;
 }
 
 export function updateQuoteStats(stats: QuoteStats): void {
-  setQuoteStats(stats);
+  const options = ratingOptions();
+  if (options !== undefined) {
+    getQueryClient().setQueryData(options.queryKey, stats);
+  }
 }
 
 export function showQuoteRateModal(quote: Quote): void {

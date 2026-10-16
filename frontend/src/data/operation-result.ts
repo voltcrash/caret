@@ -11,3 +11,16 @@ export type OperationResult<T> =
       message: string;
       validationErrors?: string[];
     };
+
+/** Query errors retain policy status/validation details for existing error UX. */
+export class OperationError extends Error {
+  readonly status: number;
+  readonly validationErrors: string[] | undefined;
+
+  constructor(failure: Extract<OperationResult<never>, { ok: false }>) {
+    super(failure.message);
+    this.name = "OperationError";
+    this.status = failure.status;
+    this.validationErrors = failure.validationErrors;
+  }
+}
