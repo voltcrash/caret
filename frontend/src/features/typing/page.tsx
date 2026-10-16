@@ -4,6 +4,9 @@ import { lazy, Suspense, type JSXElement } from "solid-js";
 
 const load = createClientOnlyFn(async () => import("./page.client"));
 const TypingPage = lazy(load);
+// Fetch the engine with the route chunk instead of after hydration. Code only:
+// session commands still run when the leaf mounts, never on intent preload.
+if (!import.meta.env.SSR) void TypingPage.preload();
 
 /** Document and common shell stay SSR-capable; the engine only mounts in a browser. */
 export function TypingLeaf(): JSXElement {
