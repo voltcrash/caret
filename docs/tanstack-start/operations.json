@@ -3,9 +3,12 @@
     "id": "admin.acceptReports",
     "method": "POST",
     "path": "/api/admin/report/accept",
-    "currentOwner": "backend/src/api/routes/admin.ts",
+    "currentOwner": "frontend/src/routes/api.admin.report.accept.ts",
+    "legacyOwner": "backend/src/api/routes/admin.ts",
     "serviceOwner": "backend/src/services/operations/admin.ts#acceptReports",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "admin",
       "authenticationOptions": {
@@ -23,21 +26,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "admin.clearStreakHourOffset",
     "method": "POST",
     "path": "/api/admin/clearStreakHourOffset",
-    "currentOwner": "backend/src/api/routes/admin.ts",
+    "currentOwner": "frontend/src/routes/api.admin.clearStreakHourOffset.ts",
+    "legacyOwner": "backend/src/api/routes/admin.ts",
     "serviceOwner": "backend/src/services/operations/admin.ts#clearStreakHourOffset",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "admin",
       "authenticationOptions": {
@@ -55,21 +61,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "admin.clearSuspicious",
     "method": "POST",
     "path": "/api/admin/clearSuspicious",
-    "currentOwner": "backend/src/api/routes/admin.ts",
+    "currentOwner": "frontend/src/routes/api.admin.clearSuspicious.ts",
+    "legacyOwner": "backend/src/api/routes/admin.ts",
     "serviceOwner": "backend/src/services/operations/admin.ts#clearSuspicious",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "admin",
       "authenticationOptions": {
@@ -87,21 +96,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "admin.deleteUser",
     "method": "POST",
     "path": "/api/admin/deleteUser",
-    "currentOwner": "backend/src/api/routes/admin.ts",
+    "currentOwner": "frontend/src/routes/api.admin.deleteUser.ts",
+    "legacyOwner": "backend/src/api/routes/admin.ts",
     "serviceOwner": "backend/src/services/operations/admin.ts#deleteUser",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "admin",
       "authenticationOptions": {
@@ -119,21 +131,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "admin.getAnticheatAudits",
     "method": "GET",
     "path": "/api/admin/anticheat/audits",
-    "currentOwner": "backend/src/api/routes/admin.ts",
+    "currentOwner": "frontend/src/routes/api.admin.anticheat.audits.ts",
+    "legacyOwner": "backend/src/api/routes/admin.ts",
     "serviceOwner": "backend/src/services/operations/admin.ts#getAnticheatAudits",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "admin",
       "authenticationOptions": {
@@ -151,21 +166,24 @@
       "query": true,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "admin.getAnticheatSummary",
     "method": "GET",
     "path": "/api/admin/anticheat/summary",
-    "currentOwner": "backend/src/api/routes/admin.ts",
+    "currentOwner": "frontend/src/routes/api.admin.anticheat.summary.ts",
+    "legacyOwner": "backend/src/api/routes/admin.ts",
     "serviceOwner": "backend/src/services/operations/admin.ts#getAnticheatSummary",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "admin",
       "authenticationOptions": {
@@ -183,21 +201,24 @@
       "query": true,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "admin.rejectReports",
     "method": "POST",
     "path": "/api/admin/report/reject",
-    "currentOwner": "backend/src/api/routes/admin.ts",
+    "currentOwner": "frontend/src/routes/api.admin.report.reject.ts",
+    "legacyOwner": "backend/src/api/routes/admin.ts",
     "serviceOwner": "backend/src/services/operations/admin.ts#rejectReports",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "admin",
       "authenticationOptions": {
@@ -215,21 +236,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "admin.test",
     "method": "GET",
     "path": "/api/admin",
-    "currentOwner": "backend/src/api/routes/admin.ts",
+    "currentOwner": "frontend/src/routes/api.admin.ts",
+    "legacyOwner": "backend/src/api/routes/admin.ts",
     "serviceOwner": "backend/src/services/operations/admin.ts#test",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "admin",
       "authenticationOptions": {
@@ -247,21 +271,24 @@
       "query": false,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "admin.toggleBan",
     "method": "POST",
     "path": "/api/admin/toggleBan",
-    "currentOwner": "backend/src/api/routes/admin.ts",
+    "currentOwner": "frontend/src/routes/api.admin.toggleBan.ts",
+    "legacyOwner": "backend/src/api/routes/admin.ts",
     "serviceOwner": "backend/src/services/operations/admin.ts#toggleBan",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "admin",
       "authenticationOptions": {
@@ -279,21 +306,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "apeKeys.add",
     "method": "POST",
     "path": "/api/ape-keys",
-    "currentOwner": "backend/src/api/routes/ape-keys.ts",
+    "currentOwner": "frontend/src/routes/api.ape-keys.ts",
+    "legacyOwner": "backend/src/api/routes/ape-keys.ts",
     "serviceOwner": "backend/src/services/operations/ape-key.ts#generateApeKey",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "ape-keys",
       "requirePermission": "canManageApeKeys",
@@ -308,21 +338,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "apeKeys.delete",
     "method": "DELETE",
     "path": "/api/ape-keys/:apeKeyId",
-    "currentOwner": "backend/src/api/routes/ape-keys.ts",
+    "currentOwner": "frontend/src/routes/api.ape-keys.$apeKeyId.ts",
+    "legacyOwner": "backend/src/api/routes/ape-keys.ts",
     "serviceOwner": "backend/src/services/operations/ape-key.ts#deleteApeKey",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "ape-keys",
       "requirePermission": "canManageApeKeys",
@@ -337,21 +370,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "apeKeys.get",
     "method": "GET",
     "path": "/api/ape-keys",
-    "currentOwner": "backend/src/api/routes/ape-keys.ts",
+    "currentOwner": "frontend/src/routes/api.ape-keys.ts",
+    "legacyOwner": "backend/src/api/routes/ape-keys.ts",
     "serviceOwner": "backend/src/services/operations/ape-key.ts#getApeKeys",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "ape-keys",
       "requirePermission": "canManageApeKeys",
@@ -366,21 +402,24 @@
       "query": false,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "apeKeys.save",
     "method": "PATCH",
     "path": "/api/ape-keys/:apeKeyId",
-    "currentOwner": "backend/src/api/routes/ape-keys.ts",
+    "currentOwner": "frontend/src/routes/api.ape-keys.$apeKeyId.ts",
+    "legacyOwner": "backend/src/api/routes/ape-keys.ts",
     "serviceOwner": "backend/src/services/operations/ape-key.ts#editApeKey",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "ape-keys",
       "requirePermission": "canManageApeKeys",
@@ -395,21 +434,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "configs.delete",
     "method": "DELETE",
     "path": "/api/configs",
-    "currentOwner": "backend/src/api/routes/configs.ts",
+    "currentOwner": "frontend/src/routes/api.configs.ts",
+    "legacyOwner": "backend/src/api/routes/configs.ts",
     "serviceOwner": "backend/src/services/operations/config.ts#deleteConfig",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/configs.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "configs",
       "rateLimit": "configDelete"
@@ -419,21 +461,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/ape/config.ts"],
+    "browserCallers": ["frontend/src/ts/config/sync.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "configs.get",
     "method": "GET",
     "path": "/api/configs",
-    "currentOwner": "backend/src/api/routes/configs.ts",
+    "currentOwner": "frontend/src/routes/api.configs.ts",
+    "legacyOwner": "backend/src/api/routes/configs.ts",
     "serviceOwner": "backend/src/services/operations/config.ts#getConfig",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/configs.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "configs",
       "rateLimit": "configGet"
@@ -443,21 +488,24 @@
       "query": false,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/config/remote.ts"],
+    "browserCallers": ["frontend/src/ts/queries/preferences.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "configs.save",
     "method": "PATCH",
     "path": "/api/configs",
-    "currentOwner": "backend/src/api/routes/configs.ts",
+    "currentOwner": "frontend/src/routes/api.configs.ts",
+    "legacyOwner": "backend/src/api/routes/configs.ts",
     "serviceOwner": "backend/src/services/operations/config.ts#saveConfig",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/configs.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "configs",
       "rateLimit": "configUpdate"
@@ -467,21 +515,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/ape/config.ts"],
+    "browserCallers": ["frontend/src/ts/config/sync.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "configuration.get",
     "method": "GET",
     "path": "/api/configuration",
-    "currentOwner": "backend/src/api/routes/configuration.ts",
+    "currentOwner": "frontend/src/routes/api.configuration.ts",
+    "legacyOwner": "backend/src/api/routes/configuration.ts",
     "serviceOwner": "backend/src/services/operations/configuration.ts#getConfiguration",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/configuration.ts",
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "configuration",
       "authenticationOptions": {
@@ -493,21 +544,24 @@
       "query": false,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/queries/server-configuration.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "configuration.getSchema",
     "method": "GET",
     "path": "/api/configuration/schema",
-    "currentOwner": "backend/src/api/routes/configuration.ts",
+    "currentOwner": "frontend/src/routes/api.configuration.schema.ts",
+    "legacyOwner": "backend/src/api/routes/configuration.ts",
     "serviceOwner": "backend/src/services/operations/configuration.ts#getSchema",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "configuration",
       "authenticationOptions": {
@@ -522,21 +576,24 @@
       "query": false,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "configuration.update",
     "method": "PATCH",
     "path": "/api/configuration",
-    "currentOwner": "backend/src/api/routes/configuration.ts",
+    "currentOwner": "frontend/src/routes/api.configuration.ts",
+    "legacyOwner": "backend/src/api/routes/configuration.ts",
     "serviceOwner": "backend/src/services/operations/configuration.ts#updateConfiguration",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "configuration",
       "authenticationOptions": {
@@ -551,21 +608,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "dev.addDebugInboxItem",
     "method": "POST",
     "path": "/api/dev/addDebugInboxItem",
-    "currentOwner": "backend/src/api/routes/dev.ts",
+    "currentOwner": "frontend/src/routes/api.dev.addDebugInboxItem.ts",
+    "legacyOwner": "backend/src/api/routes/dev.ts",
     "serviceOwner": "backend/src/services/operations/dev.ts#addDebugInboxItem",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/dev.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "development",
       "authenticationOptions": {
@@ -577,21 +637,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/components/modals/DevOptionsModal.tsx"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "dev.generateData",
     "method": "POST",
     "path": "/api/dev/generateData",
-    "currentOwner": "backend/src/api/routes/dev.ts",
+    "currentOwner": "frontend/src/routes/api.dev.generateData.ts",
+    "legacyOwner": "backend/src/api/routes/dev.ts",
     "serviceOwner": "backend/src/services/operations/dev.ts#createTestData",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/dev.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "development",
       "authenticationOptions": {
@@ -603,21 +666,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/components/modals/DevOptionsModal.tsx"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "leaderboards.get",
     "method": "GET",
     "path": "/api/leaderboards",
-    "currentOwner": "backend/src/api/routes/leaderboards.ts",
+    "currentOwner": "frontend/src/routes/api.leaderboards.ts",
+    "legacyOwner": "backend/src/api/routes/leaderboards.ts",
     "serviceOwner": "backend/src/services/operations/leaderboard.ts#getLeaderboard",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/leaderboards.ts",
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "leaderboards",
       "rateLimit": "leaderboardsGet",
@@ -632,21 +698,27 @@
       "statuses": [
         200, 400, 401, 403, 404, 422, 429, 470, 471, 472, 479, 500, 503
       ],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/queries/leaderboards.ts"],
+    "browserCallers": [
+      "frontend/src/data/leaderboards.ts",
+      "frontend/src/ts/queries/leaderboards.ts"
+    ],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "leaderboards.getDaily",
     "method": "GET",
     "path": "/api/leaderboards/daily",
-    "currentOwner": "backend/src/api/routes/leaderboards.ts",
+    "currentOwner": "frontend/src/routes/api.leaderboards.daily.ts",
+    "legacyOwner": "backend/src/api/routes/leaderboards.ts",
     "serviceOwner": "backend/src/services/operations/leaderboard.ts#getDailyLeaderboard",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/leaderboards.ts",
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "leaderboards",
       "rateLimit": "leaderboardsGet",
@@ -663,21 +735,27 @@
       "query": true,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/queries/leaderboards.ts"],
+    "browserCallers": [
+      "frontend/src/data/leaderboards.ts",
+      "frontend/src/ts/queries/leaderboards.ts"
+    ],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "leaderboards.getDailyRank",
     "method": "GET",
     "path": "/api/leaderboards/daily/rank",
-    "currentOwner": "backend/src/api/routes/leaderboards.ts",
+    "currentOwner": "frontend/src/routes/api.leaderboards.daily.rank.ts",
+    "legacyOwner": "backend/src/api/routes/leaderboards.ts",
     "serviceOwner": "backend/src/services/operations/leaderboard.ts#getDailyLeaderboardRank",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/leaderboards.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "leaderboards",
       "rateLimit": "leaderboardsGet",
@@ -691,21 +769,27 @@
       "query": true,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/queries/leaderboards.ts"],
+    "browserCallers": [
+      "frontend/src/data/leaderboards.ts",
+      "frontend/src/ts/queries/leaderboards.ts"
+    ],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "leaderboards.getRank",
     "method": "GET",
     "path": "/api/leaderboards/rank",
-    "currentOwner": "backend/src/api/routes/leaderboards.ts",
+    "currentOwner": "frontend/src/routes/api.leaderboards.rank.ts",
+    "legacyOwner": "backend/src/api/routes/leaderboards.ts",
     "serviceOwner": "backend/src/services/operations/leaderboard.ts#getRankFromLeaderboard",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/leaderboards.ts",
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "leaderboards",
       "rateLimit": "leaderboardsGet",
@@ -718,21 +802,27 @@
       "query": true,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/queries/leaderboards.ts"],
+    "browserCallers": [
+      "frontend/src/data/leaderboards.ts",
+      "frontend/src/ts/queries/leaderboards.ts"
+    ],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "leaderboards.getWeeklyXp",
     "method": "GET",
     "path": "/api/leaderboards/xp/weekly",
-    "currentOwner": "backend/src/api/routes/leaderboards.ts",
+    "currentOwner": "frontend/src/routes/api.leaderboards.xp.weekly.ts",
+    "legacyOwner": "backend/src/api/routes/leaderboards.ts",
     "serviceOwner": "backend/src/services/operations/leaderboard.ts#getWeeklyXpLeaderboard",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/leaderboards.ts",
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "leaderboards",
       "rateLimit": "leaderboardsGet",
@@ -749,21 +839,27 @@
       "query": true,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/queries/leaderboards.ts"],
+    "browserCallers": [
+      "frontend/src/data/leaderboards.ts",
+      "frontend/src/ts/queries/leaderboards.ts"
+    ],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "leaderboards.getWeeklyXpRank",
     "method": "GET",
     "path": "/api/leaderboards/xp/weekly/rank",
-    "currentOwner": "backend/src/api/routes/leaderboards.ts",
+    "currentOwner": "frontend/src/routes/api.leaderboards.xp.weekly.rank.ts",
+    "legacyOwner": "backend/src/api/routes/leaderboards.ts",
     "serviceOwner": "backend/src/services/operations/leaderboard.ts#getWeeklyXpLeaderboardRank",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/leaderboards.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "leaderboards",
       "rateLimit": "leaderboardsGet",
@@ -777,21 +873,27 @@
       "query": true,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/queries/leaderboards.ts"],
+    "browserCallers": [
+      "frontend/src/data/leaderboards.ts",
+      "frontend/src/ts/queries/leaderboards.ts"
+    ],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "presets.add",
     "method": "POST",
     "path": "/api/presets",
-    "currentOwner": "backend/src/api/routes/presets.ts",
+    "currentOwner": "frontend/src/routes/api.presets.ts",
+    "legacyOwner": "backend/src/api/routes/presets.ts",
     "serviceOwner": "backend/src/services/operations/preset.ts#addPreset",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/presets.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "presets",
       "rateLimit": "presetsAdd"
@@ -801,21 +903,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/presets.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "presets.delete",
     "method": "DELETE",
     "path": "/api/presets/:presetId",
-    "currentOwner": "backend/src/api/routes/presets.ts",
+    "currentOwner": "frontend/src/routes/api.presets.$presetId.ts",
+    "legacyOwner": "backend/src/api/routes/presets.ts",
     "serviceOwner": "backend/src/services/operations/preset.ts#removePreset",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/presets.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "presets",
       "rateLimit": "presetsRemove"
@@ -825,21 +930,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/presets.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "presets.get",
     "method": "GET",
     "path": "/api/presets",
-    "currentOwner": "backend/src/api/routes/presets.ts",
+    "currentOwner": "frontend/src/routes/api.presets.ts",
+    "legacyOwner": "backend/src/api/routes/presets.ts",
     "serviceOwner": "backend/src/services/operations/preset.ts#getPresets",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/presets.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "presets",
       "rateLimit": "presetsGet"
@@ -849,21 +957,24 @@
       "query": false,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/presets.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "presets.save",
     "method": "PATCH",
     "path": "/api/presets",
-    "currentOwner": "backend/src/api/routes/presets.ts",
+    "currentOwner": "frontend/src/routes/api.presets.ts",
+    "legacyOwner": "backend/src/api/routes/presets.ts",
     "serviceOwner": "backend/src/services/operations/preset.ts#editPreset",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/presets.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "presets",
       "rateLimit": "presetsEdit"
@@ -873,21 +984,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/presets.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "psas.get",
     "method": "GET",
     "path": "/api/psas",
-    "currentOwner": "backend/src/api/routes/psas.ts",
+    "currentOwner": "frontend/src/routes/api.psas.ts",
+    "legacyOwner": "backend/src/api/routes/psas.ts",
     "serviceOwner": "backend/src/services/operations/psa.ts#getPsas",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/psas.ts",
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "psas",
       "authenticationOptions": {
@@ -900,21 +1014,24 @@
       "query": false,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/elements/psa.tsx"],
+    "browserCallers": ["frontend/src/ts/queries/psas.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "public.getSpeedHistogram",
     "method": "GET",
     "path": "/api/public/speedHistogram",
-    "currentOwner": "backend/src/api/routes/public.ts",
+    "currentOwner": "frontend/src/routes/api.public.speedHistogram.ts",
+    "legacyOwner": "backend/src/api/routes/public.ts",
     "serviceOwner": "backend/src/services/operations/public.ts#getSpeedHistogram",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/public.ts",
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "public",
       "authenticationOptions": {
@@ -927,21 +1044,27 @@
       "query": true,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/queries/public.ts"],
+    "browserCallers": [
+      "frontend/src/data/public.ts",
+      "frontend/src/ts/queries/public.ts"
+    ],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "public.getTypingStats",
     "method": "GET",
     "path": "/api/public/typingStats",
-    "currentOwner": "backend/src/api/routes/public.ts",
+    "currentOwner": "frontend/src/routes/api.public.typingStats.ts",
+    "legacyOwner": "backend/src/api/routes/public.ts",
     "serviceOwner": "backend/src/services/operations/public.ts#getTypingStats",
-    "startAdapter": "frontend/src/functions/public.ts",
+    "startAdapter": "frontend/src/functions/operations/public.ts",
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "public",
       "authenticationOptions": {
@@ -954,21 +1077,27 @@
       "query": true,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/queries/public.ts"],
+    "browserCallers": [
+      "frontend/src/data/public.ts",
+      "frontend/src/ts/queries/public.ts"
+    ],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "quotes.add",
     "method": "POST",
     "path": "/api/quotes",
-    "currentOwner": "backend/src/api/routes/quotes.ts",
+    "currentOwner": "frontend/src/routes/api.quotes.ts",
+    "legacyOwner": "backend/src/api/routes/quotes.ts",
     "serviceOwner": "backend/src/services/operations/quote.ts#addQuote",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/quotes.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "quotes",
       "rateLimit": "newQuotesAdd",
@@ -982,7 +1111,7 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
       "frontend/src/ts/components/modals/QuoteSubmitModal.tsx"
@@ -990,15 +1119,18 @@
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "quotes.addRating",
     "method": "POST",
     "path": "/api/quotes/rating",
-    "currentOwner": "backend/src/api/routes/quotes.ts",
+    "currentOwner": "frontend/src/routes/api.quotes.rating.ts",
+    "legacyOwner": "backend/src/api/routes/quotes.ts",
     "serviceOwner": "backend/src/services/operations/quote.ts#submitRating",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/quotes.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "quotes",
       "rateLimit": "quoteRatingsSubmit"
@@ -1008,21 +1140,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/components/modals/QuoteRateModal.tsx"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "quotes.approveSubmission",
     "method": "POST",
     "path": "/api/quotes/approve",
-    "currentOwner": "backend/src/api/routes/quotes.ts",
+    "currentOwner": "frontend/src/routes/api.quotes.approve.ts",
+    "legacyOwner": "backend/src/api/routes/quotes.ts",
     "serviceOwner": "backend/src/services/operations/quote.ts#approveQuote",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/quotes.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "quotes",
       "rateLimit": "newQuotesAction",
@@ -1033,7 +1168,7 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
       "frontend/src/ts/components/modals/QuoteApproveModal.tsx"
@@ -1041,15 +1176,18 @@
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "quotes.get",
     "method": "GET",
     "path": "/api/quotes",
-    "currentOwner": "backend/src/api/routes/quotes.ts",
+    "currentOwner": "frontend/src/routes/api.quotes.ts",
+    "legacyOwner": "backend/src/api/routes/quotes.ts",
     "serviceOwner": "backend/src/services/operations/quote.ts#getQuotes",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/quotes.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "quotes",
       "rateLimit": "newQuotesGet",
@@ -1060,23 +1198,24 @@
       "query": false,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": [
-      "frontend/src/ts/components/modals/QuoteApproveModal.tsx"
-    ],
+    "browserCallers": ["frontend/src/ts/queries/quotes.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "quotes.getRating",
     "method": "GET",
     "path": "/api/quotes/rating",
-    "currentOwner": "backend/src/api/routes/quotes.ts",
+    "currentOwner": "frontend/src/routes/api.quotes.rating.ts",
+    "legacyOwner": "backend/src/api/routes/quotes.ts",
     "serviceOwner": "backend/src/services/operations/quote.ts#getRating",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/quotes.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "quotes",
       "rateLimit": "quoteRatingsGet"
@@ -1086,21 +1225,24 @@
       "query": true,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/states/quote-rate.ts"],
+    "browserCallers": ["frontend/src/ts/queries/quotes.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "quotes.isSubmissionEnabled",
     "method": "GET",
     "path": "/api/quotes/isSubmissionEnabled",
-    "currentOwner": "backend/src/api/routes/quotes.ts",
+    "currentOwner": "frontend/src/routes/api.quotes.isSubmissionEnabled.ts",
+    "legacyOwner": "backend/src/api/routes/quotes.ts",
     "serviceOwner": "backend/src/services/operations/quote.ts#isSubmissionEnabled",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/quotes.ts",
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "quotes",
       "authenticationOptions": {
@@ -1113,23 +1255,24 @@
       "query": false,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": [
-      "frontend/src/ts/components/modals/QuoteSearchModal.tsx"
-    ],
+    "browserCallers": ["frontend/src/ts/queries/quotes.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "quotes.rejectSubmission",
     "method": "POST",
     "path": "/api/quotes/reject",
-    "currentOwner": "backend/src/api/routes/quotes.ts",
+    "currentOwner": "frontend/src/routes/api.quotes.reject.ts",
+    "legacyOwner": "backend/src/api/routes/quotes.ts",
     "serviceOwner": "backend/src/services/operations/quote.ts#refuseQuote",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/quotes.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "quotes",
       "rateLimit": "newQuotesAction",
@@ -1140,7 +1283,7 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
       "frontend/src/ts/components/modals/QuoteApproveModal.tsx"
@@ -1148,15 +1291,18 @@
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "quotes.report",
     "method": "POST",
     "path": "/api/quotes/report",
-    "currentOwner": "backend/src/api/routes/quotes.ts",
+    "currentOwner": "frontend/src/routes/api.quotes.report.ts",
+    "legacyOwner": "backend/src/api/routes/quotes.ts",
     "serviceOwner": "backend/src/services/operations/quote.ts#reportQuote",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/quotes.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "quotes",
       "rateLimit": "quoteReportSubmit",
@@ -1171,7 +1317,7 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
       "frontend/src/ts/components/modals/QuoteReportModal.tsx"
@@ -1179,15 +1325,18 @@
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "results.add",
     "method": "POST",
     "path": "/api/results",
-    "currentOwner": "backend/src/api/routes/results.ts",
+    "currentOwner": "frontend/src/routes/api.results.ts",
+    "legacyOwner": "backend/src/api/routes/results.ts",
     "serviceOwner": "backend/src/services/operations/result/submission.ts#addResult",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/results.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "results",
       "rateLimit": "resultsAdd",
@@ -1204,7 +1353,7 @@
         200, 400, 401, 403, 422, 429, 460, 461, 462, 463, 464, 465, 466, 470,
         471, 472, 479, 500, 503
       ],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
       "frontend/src/features/typing/runtime/result-saving.ts",
@@ -1213,15 +1362,18 @@
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "results.get",
     "method": "GET",
     "path": "/api/results",
-    "currentOwner": "backend/src/api/routes/results.ts",
+    "currentOwner": "frontend/src/routes/api.results.ts",
+    "legacyOwner": "backend/src/api/routes/results.ts",
     "serviceOwner": "backend/src/services/operations/result/queries.ts#getResults",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/results.ts",
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "results",
       "authenticationOptions": {
@@ -1237,21 +1389,24 @@
       "query": true,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/results/store.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "results.getById",
     "method": "GET",
     "path": "/api/results/id/:resultId",
-    "currentOwner": "backend/src/api/routes/results.ts",
+    "currentOwner": "frontend/src/routes/api.results.id.$resultId.ts",
+    "legacyOwner": "backend/src/api/routes/results.ts",
     "serviceOwner": "backend/src/services/operations/result/queries.ts#getResultById",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/results.ts",
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "results",
       "authenticationOptions": {
@@ -1267,21 +1422,24 @@
       "query": false,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/results/queries.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "results.getLast",
     "method": "GET",
     "path": "/api/results/last",
-    "currentOwner": "backend/src/api/routes/results.ts",
+    "currentOwner": "frontend/src/routes/api.results.last.ts",
+    "legacyOwner": "backend/src/api/routes/results.ts",
     "serviceOwner": "backend/src/services/operations/result/queries.ts#getLastResult",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "results",
       "authenticationOptions": {
@@ -1294,21 +1452,24 @@
       "query": true,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "results.updateTags",
     "method": "PATCH",
     "path": "/api/results/tags",
-    "currentOwner": "backend/src/api/routes/results.ts",
+    "currentOwner": "frontend/src/routes/api.results.tags.ts",
+    "legacyOwner": "backend/src/api/routes/results.ts",
     "serviceOwner": "backend/src/services/operations/result/queries.ts#updateTags",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/results.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "results",
       "rateLimit": "resultsTagsUpdate"
@@ -1318,21 +1479,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/results/mutations.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.addCustomTheme",
     "method": "POST",
     "path": "/api/users/customThemes",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.customThemes.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/themes.ts#addCustomTheme",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "userCustomThemeAdd"
@@ -1342,21 +1506,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/custom-themes.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.addQuoteToFavorites",
     "method": "POST",
     "path": "/api/users/favoriteQuotes",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.favoriteQuotes.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/favorite-quotes.ts#addFavoriteQuote",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "quoteFavoritePost"
@@ -1366,7 +1533,7 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
       "frontend/src/features/typing/components/result/ResultQuoteActions.tsx",
@@ -1375,15 +1542,18 @@
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.addResultFilterPreset",
     "method": "POST",
     "path": "/api/users/resultFilterPresets",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.resultFilterPresets.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/presets.ts#addResultFilterPreset",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "userCustomFilterAdd",
@@ -1397,21 +1567,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/result-filter-presets.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.create",
     "method": "POST",
     "path": "/api/users/signup",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.signup.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/account.ts#createNewUser",
-    "startAdapter": "frontend/src/functions/signup.ts",
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "userSignup",
@@ -1425,23 +1598,27 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
+      "frontend/src/features/auth/actions.client.ts",
       "frontend/src/ts/components/modals/GoogleSignUpModal.tsx"
     ],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.createTag",
     "method": "POST",
     "path": "/api/users/tags",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.tags.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/tags.ts#addTag",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "userTagsAdd"
@@ -1451,21 +1628,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/tags.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.delete",
     "method": "DELETE",
     "path": "/api/users",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/account.ts#deleteUser",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "authenticationOptions": {
@@ -1478,7 +1658,7 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
       "frontend/src/ts/components/modals/account-settings/ReauthConfirmModals.tsx"
@@ -1486,15 +1666,18 @@
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.deleteCustomTheme",
     "method": "DELETE",
     "path": "/api/users/customThemes",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.customThemes.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/themes.ts#removeCustomTheme",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "userCustomThemeRemove"
@@ -1504,21 +1687,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/custom-themes.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.deletePersonalBests",
     "method": "DELETE",
     "path": "/api/users/personalBests",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.personalBests.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/leaderboards.ts#clearPb",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "authenticationOptions": {
@@ -1531,7 +1717,7 @@
       "query": true,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
       "frontend/src/ts/components/modals/account-settings/ReauthConfirmModals.tsx"
@@ -1539,15 +1725,18 @@
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.deleteTag",
     "method": "DELETE",
     "path": "/api/users/tags/:tagId",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.tags.$tagId.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/tags.ts#removeTag",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "userTagsRemove"
@@ -1557,21 +1746,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/tags.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.deleteTagPersonalBest",
     "method": "DELETE",
     "path": "/api/users/tags/:tagId/personalBest",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.tags.$tagId.personalBest.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/tags.ts#clearTagPb",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "userTagsClearPB"
@@ -1581,21 +1773,24 @@
       "query": true,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/tags.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.editCustomTheme",
     "method": "PATCH",
     "path": "/api/users/customThemes",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.customThemes.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/themes.ts#editCustomTheme",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "userCustomThemeEdit"
@@ -1605,21 +1800,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/custom-themes.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.editTag",
     "method": "PATCH",
     "path": "/api/users/tags",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.tags.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/tags.ts#editTag",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "userTagsEdit"
@@ -1629,21 +1827,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/tags.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.get",
     "method": "GET",
     "path": "/api/users",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/data.ts#getUser",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "userGet"
@@ -1653,25 +1854,24 @@
       "query": true,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": [
-      "frontend/src/ts/ape/user.ts",
-      "frontend/src/ts/auth-client.ts",
-      "frontend/src/ts/queries/account.ts"
-    ],
+    "browserCallers": ["frontend/src/ts/queries/account.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.getCurrentTestActivity",
     "method": "GET",
     "path": "/api/users/currentTestActivity",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.currentTestActivity.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/activity.ts#getCurrentTestActivity",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "users",
       "authenticationOptions": {
@@ -1684,21 +1884,24 @@
       "query": true,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "users.getCustomThemes",
     "method": "GET",
     "path": "/api/users/customThemes",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.customThemes.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/themes.ts#getCustomThemes",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "userCustomThemeGet"
@@ -1708,21 +1911,24 @@
       "query": false,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/custom-themes.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.getFavoriteQuotes",
     "method": "GET",
     "path": "/api/users/favoriteQuotes",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.favoriteQuotes.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/favorite-quotes.ts#getFavoriteQuotes",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "users",
       "rateLimit": "quoteFavoriteGet"
@@ -1732,21 +1938,24 @@
       "query": false,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "users.getInbox",
     "method": "GET",
     "path": "/api/users/inbox",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.inbox.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/inbox.ts#getInbox",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "userMailGet",
@@ -1760,21 +1969,24 @@
       "query": false,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/inbox.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.getNameAvailability",
     "method": "GET",
     "path": "/api/users/checkName/:name",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.checkName.$name.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/account.ts#checkName",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "authenticationOptions": {
@@ -1787,7 +1999,7 @@
       "query": false,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
       "frontend/src/ts/components/modals/DevOptionsModal.tsx",
@@ -1797,15 +2009,18 @@
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "users.getPersonalBests",
     "method": "GET",
     "path": "/api/users/personalBests",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.personalBests.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/data.ts#getPersonalBests",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "users",
       "authenticationOptions": {
@@ -1818,21 +2033,24 @@
       "query": true,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "users.getProfile",
     "method": "GET",
     "path": "/api/users/:uidOrName/profile",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.$uidOrName.profile.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/profile.ts#getProfile",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "authenticationOptions": {
@@ -1851,9 +2069,10 @@
       "statuses": [
         200, 400, 401, 403, 404, 422, 429, 470, 471, 472, 479, 500, 503
       ],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
+      "frontend/src/data/profile.ts",
       "frontend/src/ts/commandline/lists/navigation.ts",
       "frontend/src/ts/controllers/browser-handoff.ts",
       "frontend/src/ts/queries/profile.ts"
@@ -1861,15 +2080,18 @@
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "users.getStats",
     "method": "GET",
     "path": "/api/users/stats",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.stats.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/data.ts#getStats",
-    "startAdapter": "frontend/src/functions/account.ts (pilot)",
+    "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "users",
       "authenticationOptions": {
@@ -1882,21 +2104,24 @@
       "query": true,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "users.getStreak",
     "method": "GET",
     "path": "/api/users/streak",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.streak.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/activity.ts#getStreak",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "users",
       "authenticationOptions": {
@@ -1909,21 +2134,24 @@
       "query": true,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "users.getTags",
     "method": "GET",
     "path": "/api/users/tags",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.tags.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/tags.ts#getTags",
     "startAdapter": null,
+    "httpLifetime": "retained external/operational protocol",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "users",
       "authenticationOptions": {
@@ -1936,21 +2164,24 @@
       "query": true,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
-    "retirement": "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
+    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
     "id": "users.getTestActivity",
     "method": "GET",
     "path": "/api/users/testActivity",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.testActivity.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/activity.ts#getTestActivity",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "userTestActivity"
@@ -1960,24 +2191,24 @@
       "query": true,
       "body": false,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": [
-      "frontend/src/ts/db.ts",
-      "frontend/src/ts/queries/account.ts"
-    ],
+    "browserCallers": ["frontend/src/ts/queries/account.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.optOutOfLeaderboards",
     "method": "POST",
     "path": "/api/users/optOutOfLeaderboards",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.optOutOfLeaderboards.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/leaderboards.ts#optOutOfLeaderboards",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "authenticationOptions": {
@@ -1990,7 +2221,7 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
       "frontend/src/ts/components/modals/account-settings/ReauthConfirmModals.tsx"
@@ -1998,15 +2229,18 @@
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.removeQuoteFromFavorites",
     "method": "DELETE",
     "path": "/api/users/favoriteQuotes",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.favoriteQuotes.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/favorite-quotes.ts#removeFavoriteQuote",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "quoteFavoriteDelete"
@@ -2016,7 +2250,7 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
       "frontend/src/features/typing/components/result/ResultQuoteActions.tsx",
@@ -2025,15 +2259,18 @@
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.removeResultFilterPreset",
     "method": "DELETE",
     "path": "/api/users/resultFilterPresets/:presetId",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.resultFilterPresets.$presetId.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/presets.ts#removeResultFilterPreset",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "userCustomFilterRemove",
@@ -2047,21 +2284,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/result-filter-presets.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.report",
     "method": "POST",
     "path": "/api/users/report",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.report.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/report.ts#reportUser",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "quoteReportSubmit",
@@ -2076,21 +2316,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/components/modals/UserReportModal.tsx"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.reset",
     "method": "PATCH",
     "path": "/api/users/reset",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.reset.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/account.ts#resetUser",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "authenticationOptions": {
@@ -2103,7 +2346,7 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
       "frontend/src/ts/components/modals/account-settings/ReauthConfirmModals.tsx"
@@ -2111,15 +2354,18 @@
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.revokeAllTokens",
     "method": "POST",
     "path": "/api/users/revokeAllTokens",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.revokeAllTokens.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/account.ts#revokeAllTokens",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "authenticationOptions": {
@@ -2133,7 +2379,7 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
       "frontend/src/ts/components/modals/account-settings/ReauthConfirmModals.tsx"
@@ -2141,15 +2387,18 @@
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.setStreakHourOffset",
     "method": "POST",
     "path": "/api/users/setStreakHourOffset",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.setStreakHourOffset.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/activity.ts#setStreakHourOffset",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "setStreakHourOffset"
@@ -2159,7 +2408,7 @@
       "query": true,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
       "frontend/src/ts/components/modals/StreakHourOffsetModal.tsx"
@@ -2167,15 +2416,18 @@
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.updateInbox",
     "method": "PATCH",
     "path": "/api/users/inbox",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.inbox.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/inbox.ts#updateInbox",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "userMailUpdate",
@@ -2189,21 +2441,24 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/inbox.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.updateLeaderboardMemory",
     "method": "PATCH",
     "path": "/api/users/leaderboardMemory",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.leaderboardMemory.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/leaderboards.ts#updateLbMemory",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "userUpdateLBMemory"
@@ -2213,7 +2468,7 @@
       "query": true,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
       "frontend/src/ts/db.ts",
@@ -2222,15 +2477,18 @@
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.updateName",
     "method": "PATCH",
     "path": "/api/users/name",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.name.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/account.ts#updateName",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "authenticationOptions": {
@@ -2243,7 +2501,7 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
       "frontend/src/ts/components/modals/account-settings/UpdateNameModal.tsx"
@@ -2251,15 +2509,18 @@
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   },
   {
     "id": "users.updateProfile",
     "method": "PATCH",
     "path": "/api/users/profile",
-    "currentOwner": "backend/src/api/routes/users.ts",
+    "currentOwner": "frontend/src/routes/api.users.profile.ts",
+    "legacyOwner": "backend/src/api/routes/users.ts",
     "serviceOwner": "backend/src/services/operations/user/profile.ts#updateProfile",
-    "startAdapter": null,
+    "startAdapter": "frontend/src/functions/operations/users.ts",
+    "httpLifetime": "old-tab compatibility window (release.md)",
+    "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "users",
       "rateLimit": "userProfileUpdate",
@@ -2273,7 +2534,7 @@
       "query": false,
       "body": true,
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6"
+      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
       "frontend/src/ts/components/modals/EditProfileModal.tsx"
@@ -2281,6 +2542,6 @@
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Remove HTTP endpoint after all browser callers migrate and old-tab window closes"
+    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
   }
 ]

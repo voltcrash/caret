@@ -1,4 +1,6 @@
 import { contract } from "@oxytype/contracts";
+import { isRetainedHttpOperation } from "../src/http/retention";
+import type { OperationId } from "../src/policies/operations";
 import type { EndpointMetadata } from "@oxytype/contracts/util/api";
 import { isAppRoute, type AppRouter } from "@ts-rest/core";
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
@@ -52,19 +54,41 @@ export function inventory(): object[] {
   for (const path of sources(resolve(root, "frontend/src"))) {
     const source = readFileSync(path, "utf8");
     for (const match of source.matchAll(
-      /\bApe\s*\.\s*(\w+)\s*\.\s*(\w+)\s*\(/g,
+      /\boperation(?:Data)?\(\s*["']([\w.]+)["']/g,
     )) {
-      const id = `${match[1]}.${match[2]}`;
+      const id = match[1] as string;
       const files = callers.get(id) ?? [];
       files.push(relative(root, path));
       callers.set(id, files);
     }
   }
-  // The OAuth signup probe uses fetch rather than Ape.
-  callers.set("users.get", [
-    ...(callers.get("users.get") ?? []),
-    "frontend/src/ts/auth-client.ts",
-  ]);
+  // Native SSR/browser factories also invoke dedicated, already-migrated functions.
+  const nativeFactories: Record<string, string[]> = {
+    "public.getTypingStats": ["frontend/src/data/public.ts"],
+    "public.getSpeedHistogram": ["frontend/src/data/public.ts"],
+    "users.getProfile": ["frontend/src/data/profile.ts"],
+    "users.create": ["frontend/src/features/auth/actions.client.ts"],
+    ...Object.fromEntries(
+      [
+        "get",
+        "getDaily",
+        "getDailyRank",
+        "getRank",
+        "getWeeklyXp",
+        "getWeeklyXpRank",
+      ].map((name) => [
+        `leaderboards.${name}`,
+        ["frontend/src/data/leaderboards.ts"],
+      ]),
+    ),
+  };
+  for (const [id, files] of Object.entries(nativeFactories)) {
+    callers.set(id, [...(callers.get(id) ?? []), ...files]);
+  }
+  const functionIndex = readFileSync(
+    resolve(root, "frontend/src/functions/operations/index.ts"),
+    "utf8",
+  );
   const operations: object[] = [];
   function visit(router: AppRouter, prefix = ""): void {
     for (const [key, route] of Object.entries(router)) {
@@ -79,31 +103,34 @@ export function inventory(): object[] {
         auth?.isPublic === true || auth?.acceptApeKeys === true;
       const browserCallers = [...new Set(callers.get(id) ?? [])].sort();
       const group = id.split(".")[0];
-      const retain = externalContract || browserCallers.length === 0;
+      const retain = isRetainedHttpOperation(id as OperationId);
+      const httpAdapter = `frontend/src/routes/${`api${route.path}`.replace(/:(\w+)/g, "$$$1").replaceAll("/", ".")}.ts`;
+      const functionAdapter = functionIndex.includes(`"${id}":`)
+        ? `frontend/src/functions/operations/${group}.ts`
+        : null;
       operations.push({
         id,
         method: route.method,
         path: `/api${route.path}`,
-        currentOwner: `backend/src/api/routes/${group === "apeKeys" ? "ape-keys" : group}.ts`,
+        currentOwner: httpAdapter,
+        legacyOwner: `backend/src/api/routes/${group === "apeKeys" ? "ape-keys" : group}.ts`,
         serviceOwner: serviceOwner(
           `backend/src/api/routes/${group === "apeKeys" ? "ape-keys" : group}.ts`,
           key,
         ),
-        startAdapter:
-          (
-            {
-              "public.getTypingStats": "frontend/src/functions/public.ts",
-              "users.getStats": "frontend/src/functions/account.ts (pilot)",
-              "users.create": "frontend/src/functions/signup.ts",
-            } as Record<string, string>
-          )[id] ?? null,
+        startAdapter: functionAdapter,
+        httpLifetime: retain
+          ? "retained external/operational protocol"
+          : "old-tab compatibility window (release.md)",
+        firstPartyTransport:
+          browserCallers.length > 0 ? "Start server function" : null,
         policy,
         validation: {
           params: "pathParams" in route,
           query: "query" in route,
           body: "body" in route,
           statuses: Object.keys(route.responses).map(Number),
-          gate: "backend D1 HTTP/policy suites; feature browser tests; direct-call parity at Stage 3/6",
+          gate: "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates",
         },
         browserCallers,
         target: retain
@@ -114,10 +141,10 @@ export function inventory(): object[] {
           ? "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract"
           : browserCallers.length > 0
             ? "Repository browser caller; old tabs require temporary HTTP adapter"
-            : "No Ape browser call found; operational/external usage uncertain; conservatively retain HTTP",
+            : "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
         retirement: retain
-          ? "Remove Hono adapter only after equivalent Start route policy/contract tests; endpoint remains"
-          : "Remove HTTP endpoint after all browser callers migrate and old-tab window closes",
+          ? "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
+          : "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)",
       });
     }
   }

@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vite-plus/test";
 import { inventory } from "../scripts/migration-inventory";
@@ -9,6 +9,8 @@ describe("Stage 0 operation ownership", () => {
     path: string;
     method: string;
     target: string;
+    currentOwner: string;
+    startAdapter: string | null;
     browserCallers: string[];
     policy: {
       authenticationOptions?: { isPublic?: boolean; acceptApeKeys?: boolean };
@@ -50,7 +52,7 @@ describe("Stage 0 operation ownership", () => {
     }
   });
 
-  it("captures multiline modal calls and the direct OAuth fetch", () => {
+  it("captures function callers after retiring the browser Ape client", () => {
     for (const id of ["quotes.add", "quotes.report"]) {
       expect(
         operations.find((operation) => operation.id === id)?.browserCallers,
@@ -59,6 +61,26 @@ describe("Stage 0 operation ownership", () => {
     expect(
       operations.find((operation) => operation.id === "users.get")
         ?.browserCallers,
-    ).toContain("frontend/src/ts/auth-client.ts");
+    ).toContain("frontend/src/ts/queries/account.ts");
+  });
+
+  it("assigns every browser capability to a function and every protocol to an existing Start route", () => {
+    const root = resolve(__dirname, "../..");
+    for (const operation of operations) {
+      expect(
+        existsSync(resolve(root, operation.currentOwner)),
+        operation.id,
+      ).toBe(true);
+      if (operation.browserCallers.length > 0) {
+        expect(operation.startAdapter, operation.id).not.toBeNull();
+        expect(
+          existsSync(resolve(root, operation.startAdapter ?? "missing")),
+          operation.id,
+        ).toBe(true);
+        for (const caller of operation.browserCallers) {
+          expect(existsSync(resolve(root, caller)), operation.id).toBe(true);
+        }
+      }
+    }
   });
 });
