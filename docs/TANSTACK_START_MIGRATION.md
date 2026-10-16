@@ -1,7 +1,7 @@
 # TanStack Start migration: architecture and execution plan
 
 Status: Stages 0–4 complete; [ledger and handoffs](tanstack-start/README.md).
-Stage 5 not started. Production still serves the legacy app (rollback build).
+Stage 5 phases 5.1–5.2 complete; 5.3 validation in progress. Production still serves the legacy app (rollback build).
 Prepared: 2026-10-15. Scope: Oxytype web application and its server/runtime.
 
 ## Outcome
@@ -497,6 +497,8 @@ page loading/metadata/URL state no longer depends on legacy page classes.
 
 ### 5.1 Introduce typing session and lifecycle boundaries
 
+Status: complete. [Stage 5 ledger](tanstack-start/stage-5.md).
+
 - Move browser orchestration around `packages/typing-core` into the typing feature;
   preserve engine algorithms, deterministic fixtures, and event/telemetry formats.
 - Replace `pages/test.ts` hide/show hooks with explicit route entry/exit/session
@@ -507,6 +509,8 @@ page loading/metadata/URL state no longer depends on legacy page classes.
 
 ### 5.2 Move browser integrations and URL settings
 
+Status: complete.
+
 - Integrate words/letters/caret, keymaps, IME/composition, hotkeys, focus, scroll,
   sound/TTS, charts, screenshots, funboxes, and challenges under owned refs/lifecycles.
 - Move shared test-settings/theme/challenge URLs from auth-event subscriptions
@@ -516,6 +520,8 @@ page loading/metadata/URL state no longer depends on legacy page classes.
   if exposed by the web app; no new TUI-side implementation is included.
 
 ### 5.3 Verify responsiveness and route behavior
+
+Status: in progress; required exit checks pending.
 
 - Run existing typing, quote, time, restart, command palette, modal, accessibility,
   screenshot, funbox, and typing-core parity checks against Start.

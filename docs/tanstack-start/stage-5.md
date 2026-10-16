@@ -13,7 +13,7 @@ AppPages, Page, page-controller or NavigationRuntime. Engine algorithms,
 telemetry, save transport and authentication policies stay unchanged.
 
 Phases run in order: 5.1 lifecycle → 5.2 integrations/URLs → 5.3 validation.
-Status: 5.1 complete; 5.2 in progress; 5.3 pending. Required checks pending.
+Status: 5.1 complete; 5.2 complete; 5.3 in progress. Required checks pending.
 
 ## 5.1 Session and lifecycle boundaries
 
@@ -48,3 +48,36 @@ Status: complete.
 
 Validation: route-scope, lifecycle, TypingEvents, quick-restart, layer and full
 web unit suites pass; Start build passes with the stricter protection.
+
+## 5.2 Browser integrations and URL settings
+
+Status: complete; full exit validation pending in 5.3.
+
+- Native typing owns its input/composition/keymap, hotkeys/focus/scroll, word and
+  caret refs, sound/TTS subscriptions, funboxes, challenges, result charts and
+  screenshots. Route-local resource factories dispose subscriptions/timers;
+  application state retains serializable session/preferences only.
+- `url-settings.client.ts` observes committed typing-route search, then waits for
+  local preferences, initial account/server preferences and entry restart. Raw
+  URL bytes retain legacy `+`, compressed tuple, custom text, quote and funbox
+  formats. Each search applies once; session refresh and intent preload never
+  restart or reapply it. Browser handoffs remain pending through sign-in and
+  open their form once. No TUI implementation changes.
+- Readiness is explicit in account/auth owners. Ordinary guest input does not
+  wait for authentication, account collections or history. The leaf activates
+  after local preferences; loading those preferences cannot launch a second
+  animated restart or discard the first typed letter. Code preloading only
+  fetches modules; lifecycle and URL commands still require mounting.
+- Generation/application leases reject late word generation, speech, pace/funbox,
+  script challenge and result/chart/screenshot work after disposal. Pending
+  result acknowledgements still persist for the same actor after navigation;
+  account switches discard them. Retry state and save spinner belong to the
+  account. Save transport, payload/hash, deduplication and policies unchanged.
+- Start client import protection and source graph tests reject the rollback
+  Page/controller/cache system. SSR protection rejects the whole browser typing
+  subtree. The SSR document/common shell remain enabled.
+
+Focused evidence: 20 feature/scope tests; 53 resource/funbox/pace tests; 153
+completion/result component tests pass. Native browser parity and all stage
+exit checks are rerun in 5.3. Performance fixtures now support built Start
+readiness and native Start renderer measurements without changing frozen budgets.
