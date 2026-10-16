@@ -21,6 +21,12 @@ describe("Start document and response policy in workerd", () => {
     expect(response.headers.get("Cache-Control")).toBe("no-store");
     expect(response.headers.get("X-Content-Type-Options")).toBe("nosniff");
     expect(response.headers.get("X-Request-Id")).not.toBeNull();
+    const version = await mf.dispatchFetch(
+      "http://localhost:3000/version.json",
+    );
+    expect(response.headers.get("X-Oxytype-Build")).toBe(
+      ((await version.json()) as { version: string }).version,
+    );
     expect(html).toContain("<noscript data-nosnippet>");
     expect(html).toContain('id="nocss"');
     expect(html).toContain("reinstallServiceWorker()");

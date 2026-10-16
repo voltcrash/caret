@@ -1,4 +1,5 @@
 import "@tanstack/solid-start/server-only";
+import { serverBuildId } from "./observability.server";
 
 // The only permitted inline event is the static fallback's cache recovery action.
 // SHA-256 of the exact warnings.html onclick body, checked by the boundary suite.
@@ -13,6 +14,8 @@ export function applyResponsePolicy(
   const result = new Response(response.body, response);
   result.headers.set("Cache-Control", "no-store");
   result.headers.set("X-Request-Id", requestId);
+  // Public, like /version.json: correlates a response with its client assets.
+  result.headers.set("X-Oxytype-Build", serverBuildId);
   result.headers.set("X-Content-Type-Options", "nosniff");
   result.headers.set("X-Frame-Options", "SAMEORIGIN");
   result.headers.set("Referrer-Policy", "same-origin");
