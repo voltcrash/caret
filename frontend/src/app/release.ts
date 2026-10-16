@@ -8,10 +8,11 @@ export const clientBuildId = import.meta.env.OXYTYPE_BUILD_ID;
 export const staleClientHeader = "X-Oxytype-Stale-Client";
 
 /**
- * Why this tab can no longer talk to the deployment: a server function or
- * code-split chunk from its build is gone. Only a refresh recovers.
+ * Why this tab is out of date: a server function or code-split chunk from its
+ * build is gone (it may already be failing), or a newer build is deployed.
+ * Only a refresh recovers.
  */
-export type StaleReason = "function" | "chunk";
+export type StaleReason = "function" | "chunk" | "deployed";
 
 const [staleClient, setStaleClient] = createAppSignal<StaleReason | undefined>(
   undefined,
@@ -19,8 +20,11 @@ const [staleClient, setStaleClient] = createAppSignal<StaleReason | undefined>(
 
 export { staleClient };
 
-/** First reason wins; reports outside a mounted browser app are ignored. */
+/** Broken builds outrank a merely newer one; ignored outside a mounted app. */
 export function reportStaleClient(reason: StaleReason): void {
   if (currentApplication() === undefined) return;
-  if (staleClient() === undefined) setStaleClient(reason);
+  const current = staleClient();
+  if (current === undefined || (current === "deployed" && reason !== current)) {
+    setStaleClient(reason);
+  }
 }

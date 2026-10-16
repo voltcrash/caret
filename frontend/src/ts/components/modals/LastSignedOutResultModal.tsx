@@ -4,6 +4,7 @@ import { createMemo, JSX } from "solid-js";
 
 import type { SavedResult } from "../../constants/default-snapshot";
 
+import { trackResultSave } from "../../../app/update-safety";
 import { operation } from "../../../data/operations";
 import { getAuthenticatedUser } from "../../auth-client";
 import { getConfig } from "../../config/store";
@@ -158,9 +159,9 @@ async function syncLastSignedOutResult(): Promise<void> {
   }
 
   const updatedResult = updateUidAndHash(user.uid, lastResult);
-  const response = await operation("results.add", {
-    body: { result: updatedResult },
-  });
+  const response = await trackResultSave(
+    operation("results.add", { body: { result: updatedResult } }),
+  );
 
   if (!response.ok) {
     showErrorNotification(`Failed to save last result`, {

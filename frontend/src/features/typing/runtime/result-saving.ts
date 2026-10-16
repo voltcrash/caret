@@ -2,6 +2,7 @@ import { captureAccount, createAccountOwned } from "../../../app/account-scope";
 import { appObject } from "../../../app/state";
 import { captureTypingRoute } from "../scope";
 import { operation } from "../../../data/operations";
+import { trackResultSave } from "../../../app/update-safety";
 import type { OperationResponse } from "../../../data/operation-types";
 import type { OperationResult } from "../../../data/operation-result";
 
@@ -96,7 +97,9 @@ export async function saveResult(
 
   let response: OperationResult<OperationResponse<"results.add">>;
   try {
-    response = await operation("results.add", { body: { result } });
+    response = await trackResultSave(
+      operation("results.add", { body: { result } }),
+    );
   } catch (error) {
     if (!account.isCurrent()) return null;
     throw error;
