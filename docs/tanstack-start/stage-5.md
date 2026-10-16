@@ -13,7 +13,7 @@ AppPages, Page, page-controller or NavigationRuntime. Engine algorithms,
 telemetry, save transport and authentication policies stay unchanged.
 
 Phases run in order: 5.1 lifecycle → 5.2 integrations/URLs → 5.3 validation.
-**5.1–5.2 complete. Final 5.3 CI rerun pending a random-word fixture correction.**
+**5.1–5.3 and Stage 5 exit complete.**
 Stage 6 not started.
 
 ## 5.1 Session and lifecycle boundaries
@@ -85,12 +85,13 @@ readiness and native Start renderer measurements without changing frozen budgets
 
 ## 5.3 Responsiveness and route behavior
 
-Status: final CI rerun pending. [Command/results evidence](evidence/stage-5-validation.json).
+Status: complete. [Command/results evidence](evidence/stage-5-validation.json).
 All 20 local gate commands, formatting/whitespace and eight frozen browser
-metrics pass. [Linux CI](https://github.com/voltcrash/oxytype/actions/runs/38867745186)
-is green on implementation `9d3eb57bf`: frontend, Start/workerd/browser, rollback
+metrics pass. [Linux CI](https://github.com/voltcrash/oxytype/actions/runs/38869928648)
+is green on `6d90361aa`: frontend, Start/workerd/browser, rollback
 browser, format and knip. Backend/shared/assets pass locally; CI skips them and
-TUI by path filter. Evidence/handoff commits follow without product code changes.
+TUI by path filter. Product code is unchanged from the earlier green implementation
+`9d3eb57bf`; the final fixture correction is included in this run.
 
 - Built Start browser suite: 59 pass (28 native route/auth/document checks,
   including 9 typing lifecycle cases, plus all 31 existing browser checks under
@@ -151,7 +152,9 @@ recorded intermediate Worker-byte deviation is unchanged.
 - A final Linux rerun exposed a test helper assuming the first random word has
   three letters. Two-letter words produced two correct letters before any auth
   change. The helper now asserts and returns the actual typed count; the auth
-  test still requires that same count to survive session loss. No retry added.
+  test uses supported custom text with a guaranteed two-letter first word and
+  requires that exact count to survive session loss. Twenty repeated local
+  auth-loss/navigation checks and the full corrected Linux run pass. No retry added.
 - No pre-existing required test failure was observed. Existing non-fatal Vitest
   plugin/deprecation, Node module-type/NO_COLOR and fixture warnings remain.
   The existing quote-submit handoff depends on QuoteSearch's nested form;
