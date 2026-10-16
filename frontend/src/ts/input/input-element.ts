@@ -1,4 +1,5 @@
 import {
+  areTestElementsMounted,
   getKeyboardProxyElement,
   getWordsInputElement,
 } from "../states/test-dom";
@@ -39,7 +40,9 @@ export function replaceInputElementLastValueChar(char: string): void {
 }
 
 export function isInputElementFocused(): boolean {
-  return document.activeElement === getInputElement();
+  return (
+    areTestElementsMounted() && document.activeElement === getInputElement()
+  );
 }
 
 export function focusInputElement(preventScroll = false): void {
@@ -60,8 +63,9 @@ export function holdKeyboardForRestart(): void {
 // proxy) with a tap. focus() outside a tap focuses without a keyboard
 export function isTouchKeyboardFocused(): boolean {
   return (
-    document.activeElement === getInputElement() ||
-    document.activeElement === getKeyboardProxyElement()
+    areTestElementsMounted() &&
+    (document.activeElement === getInputElement() ||
+      document.activeElement === getKeyboardProxyElement())
   );
 }
 
