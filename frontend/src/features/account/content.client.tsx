@@ -5,7 +5,9 @@ import { createResource, type JSXElement, Match, Switch } from "solid-js";
 import { LoadingCircle } from "../../ts/components/common/LoadingCircle";
 import { AccountContent } from "../../ts/components/pages/account/AccountContent";
 import { getSnapshot } from "../../ts/db";
+import { getUserId } from "../../ts/states/core";
 import * as TodayTracker from "../../ts/test/today-tracker";
+import { useSessionSettled } from "../auth/settled.client";
 
 /**
  * Waits for the actor's snapshot and result history (the old page's loading
@@ -15,13 +17,18 @@ export function AccountView(props: {
   client: Client;
   onClient: (client: Client) => void;
 }): JSXElement {
-  const [results] = createResource(async () => {
-    const { waitForResultsReady } =
-      await import("../../ts/collections/results");
-    await waitForResultsReady();
-    await TodayTracker.addAllFromToday();
-    return true;
-  });
+  const settled = useSessionSettled();
+  // Keyed by actor: history loads under the signed-in account's scope.
+  const [results] = createResource(
+    () => (settled() ? (getUserId() ?? undefined) : undefined),
+    async () => {
+      const { waitForResultsReady } =
+        await import("../../ts/collections/results");
+      await waitForResultsReady();
+      await TodayTracker.addAllFromToday();
+      return true;
+    },
+  );
   return (
     <Switch>
       <Match when={results.error !== undefined}>

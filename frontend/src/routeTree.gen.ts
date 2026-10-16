@@ -19,6 +19,7 @@ import { Route as AppAboutRouteImport } from './routes/_app.about'
 import { Route as AppDeviceRouteImport } from './routes/_app.device'
 import { Route as AppLeaderboardsRouteImport } from './routes/_app.leaderboards'
 import { Route as AppLoginRouteImport } from './routes/_app.login'
+import { Route as AppSettingsRouteImport } from './routes/_app.settings'
 import { Route as ApiSplatRouteImport } from './routes/api.$'
 import { Route as AppAuthenticatedAccountRouteImport } from './routes/_app._authenticated.account'
 import { Route as AppAuthenticatedAccountSettingsRouteImport } from './routes/_app._authenticated.account-settings'
@@ -74,6 +75,11 @@ const AppLoginRoute = AppLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
 const ApiSplatRoute = ApiSplatRouteImport.update({
   id: '/api/$',
   path: '/api/$',
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/device': typeof AppDeviceRoute
   '/leaderboards': typeof AppLeaderboardsRoute
   '/login': typeof AppLoginRoute
+  '/settings': typeof AppSettingsRoute
   '/api/$': typeof ApiSplatRoute
   '/account': typeof AppAuthenticatedAccountRoute
   '/account-settings': typeof AppAuthenticatedAccountSettingsRoute
@@ -131,6 +138,7 @@ export interface FileRoutesByTo {
   '/device': typeof AppDeviceRoute
   '/leaderboards': typeof AppLeaderboardsRoute
   '/login': typeof AppLoginRoute
+  '/settings': typeof AppSettingsRoute
   '/api/$': typeof ApiSplatRoute
   '/account': typeof AppAuthenticatedAccountRoute
   '/account-settings': typeof AppAuthenticatedAccountSettingsRoute
@@ -149,6 +157,7 @@ export interface FileRoutesById {
   '/_app/device': typeof AppDeviceRoute
   '/_app/leaderboards': typeof AppLeaderboardsRoute
   '/_app/login': typeof AppLoginRoute
+  '/_app/settings': typeof AppSettingsRoute
   '/api/$': typeof ApiSplatRoute
   '/_app/': typeof AppIndexRoute
   '/_app/_authenticated/account': typeof AppAuthenticatedAccountRoute
@@ -168,6 +177,7 @@ export interface FileRouteTypes {
     | '/device'
     | '/leaderboards'
     | '/login'
+    | '/settings'
     | '/api/$'
     | '/account'
     | '/account-settings'
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
     | '/device'
     | '/leaderboards'
     | '/login'
+    | '/settings'
     | '/api/$'
     | '/account'
     | '/account-settings'
@@ -201,6 +212,7 @@ export interface FileRouteTypes {
     | '/_app/device'
     | '/_app/leaderboards'
     | '/_app/login'
+    | '/_app/settings'
     | '/api/$'
     | '/_app/'
     | '/_app/_authenticated/account'
@@ -291,6 +303,13 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof AppLoginRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/settings': {
+      id: '/_app/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/api/$': {
       id: '/api/$'
       path: '/api/$'
@@ -355,6 +374,7 @@ interface AppRouteChildren {
   AppDeviceRoute: typeof AppDeviceRoute
   AppLeaderboardsRoute: typeof AppLeaderboardsRoute
   AppLoginRoute: typeof AppLoginRoute
+  AppSettingsRoute: typeof AppSettingsRoute
   AppIndexRoute: typeof AppIndexRoute
   AppProfileUidOrNameRoute: typeof AppProfileUidOrNameRoute
   AppProfileIndexRoute: typeof AppProfileIndexRoute
@@ -366,6 +386,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppDeviceRoute: AppDeviceRoute,
   AppLeaderboardsRoute: AppLeaderboardsRoute,
   AppLoginRoute: AppLoginRoute,
+  AppSettingsRoute: AppSettingsRoute,
   AppIndexRoute: AppIndexRoute,
   AppProfileUidOrNameRoute: AppProfileUidOrNameRoute,
   AppProfileIndexRoute: AppProfileIndexRoute,
