@@ -16,6 +16,8 @@ import {
 import type { OperationId } from "@oxytype/backend/policies/operations";
 import type { OperationResult } from "../data/operation-result";
 import type { ServiceContext as RequestContext } from "./context.server";
+import { migrateConfig } from "@oxytype/typing-core/config/migrate";
+import { PartialConfigSchema } from "@oxytype/schemas/configs";
 
 function invocation(request: RequestContext): Invocation {
   return {
@@ -44,11 +46,22 @@ export async function callOperation<K extends OperationId>(
     scope = await admit(call);
     assertAvailable(call, scope, id.startsWith("configuration."));
     const outcome = await execute(call, scope, id, input, {
-      validateResponse: true,
+      // Historical stored preferences must pass their existing migration before
+      // the modern strict response schema. HTTP keeps its original raw format.
+      validateResponse: id !== "configs.get",
     });
     if (!outcome.ok) {
       if (request.rpc) setResponseStatus(outcome.status);
       return outcome;
+    }
+    if (id === "configs.get" && outcome.data !== null) {
+      return {
+        ...outcome,
+        status: 200,
+        data: PartialConfigSchema.parse(
+          migrateConfig(outcome.data as object),
+        ) as OperationData<K>,
+      };
     }
     return { ...outcome, status: 200 };
   } catch (error) {

@@ -62,6 +62,16 @@ export async function getUser(
     zen: {},
     custom: {},
   };
+  // Historical records may predate a mode. Keep the browser's former fallback
+  // in the service DTO so every transport can validate the canonical shape.
+  for (const mode of ["time", "words", "quote", "zen", "custom"] as const) {
+    userInfo.personalBests[mode] ??= {};
+    for (const tag of userInfo.tags ?? []) {
+      if (tag.personalBests !== undefined) {
+        tag.personalBests[mode] ??= {};
+      }
+    }
+  }
 
   const agentLog = buildAgentLog(context.client);
   context.background(

@@ -1,9 +1,10 @@
 import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
-import { fromCrossJSON, toJSONAsync } from "seroval";
+import { fromCrossJSON, toJSONAsync, type SerovalNode } from "seroval";
 import objectHash from "object-hash";
 import { z } from "zod";
 import type { CompletedEvent } from "@oxytype/schemas/results";
 import { AddResultResponseSchema } from "@oxytype/contracts/results";
+import { GetUserResponseSchema } from "@oxytype/contracts/users";
 import { scoreEvent } from "../../../backend/__tests__/d1/result-support";
 import { createWorkerd, enableConfiguration, seedSession } from "./workerd";
 import { rpcPath } from "./rpc";
@@ -107,6 +108,51 @@ describe("result server function in the built Worker with real D1", () => {
       .bind(uid)
       .first<number>("n");
   }
+
+  it("validates sparse account calendars with the same JSON semantics as the former HTTP response", async () => {
+    const session = await account();
+    const db = await mf.getD1Database("DB", "a");
+    const year = new Date().getUTCFullYear();
+    await db
+      .prepare(
+        "UPDATE users SET data=json_set(data,'$.testActivity',json(?),'$.personalBests',json(?)) WHERE uid=?",
+      )
+      .bind(
+        JSON.stringify({ [year - 1]: [1], [year]: [2] }),
+        JSON.stringify({ time: {} }),
+        session.uid,
+      )
+      .run();
+    const worker = await mf.getWorker("a");
+    const payload = encodeURIComponent(
+      JSON.stringify(await toJSONAsync({ data: { query: { client: "web" } } })),
+    );
+    const response = await worker.fetch(
+      `http://localhost:3000${rpcPath("usersGet")}?payload=${payload}`,
+      {
+        headers: {
+          origin: "http://localhost:3000",
+          "x-tsr-serverFn": "true",
+          authorization: `Bearer ${session.token}`,
+        },
+      },
+    );
+    expect(response.status, await response.clone().text()).toBe(200);
+    const decoded = fromCrossJSON((await response.json()) as SerovalNode, {
+      refs: new Map(),
+    });
+    const profile = z.object({ result: GetUserResponseSchema }).parse(decoded)
+      .result.data;
+    expect(profile.testActivity?.testsByDays).toContain(null);
+    expect(profile.testActivity?.testsByDays.at(-1)).toBe(2);
+    expect(profile.personalBests).toEqual({
+      time: {},
+      words: {},
+      quote: {},
+      zen: {},
+      custom: {},
+    });
+  });
 
   it("persists one result with PB, XP, activity, streak and leaderboard acknowledgements", async () => {
     const session = await account();

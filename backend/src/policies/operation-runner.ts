@@ -158,12 +158,16 @@ export async function execute<K extends OperationId>(
   );
   const result = { message: response.message, data: response.data };
   if (options.validateResponse) {
-    const validated = checkZodSchema(result, operation.route.responses[200]);
+    // Keep the former JSON boundary: omit members, stringify dates, and turn
+    // sparse calendar entries into null before validation/Start serialization.
+    const serialized = JSON.stringify(result);
+    const dto = JSON.parse(serialized) as unknown;
+    const validated = checkZodSchema(dto, operation.route.responses[200]);
     if (!validated.success) {
       console.error("Invalid service response", {
         operation: id,
         issues: validated.error.issues.map(({ path, code }) => ({
-          path,
+          path: path.join("."),
           code,
         })),
       });
