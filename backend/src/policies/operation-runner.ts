@@ -160,6 +160,13 @@ export async function execute<K extends OperationId>(
   if (options.validateResponse) {
     const validated = checkZodSchema(result, operation.route.responses[200]);
     if (!validated.success) {
+      console.error("Invalid service response", {
+        operation: id,
+        issues: validated.error.issues.map(({ path, code }) => ({
+          path,
+          code,
+        })),
+      });
       throw new MonkeyError(500, "Invalid service response");
     }
     return {
