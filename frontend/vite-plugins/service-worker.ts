@@ -26,7 +26,7 @@ const shellRoutes = new Set(["_app", "_app.index"]);
  * repository-relative; a missing module fails the build instead of silently
  * dropping offline support.
  */
-export const offlineTypingModules = [
+const offlineTypingModules = [
   "src/app/browser-runtime.client.tsx",
   "src/app/chrome.client.tsx",
   "src/features/typing/page.client.tsx",

@@ -45,7 +45,7 @@ export const webManifest: Readonly<WebManifest> = {
 };
 
 /** Keeps the installed app's existing `/manifest.json` URL. */
-export const webManifestPath = "/manifest.json";
+const webManifestPath = "/manifest.json";
 
 export function startWebManifest(): Plugin {
   const source = JSON.stringify(webManifest);

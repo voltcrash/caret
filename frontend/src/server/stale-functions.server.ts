@@ -5,7 +5,7 @@ import { staleClientHeader } from "../features/update/contract";
 const unknownFunction =
   /^Server function (?:info not found|module not resolved|module export not resolved)/;
 
-export const staleFunctionMessage =
+const staleFunctionMessage =
   "Oxytype was updated. Refresh the page to continue.";
 
 /**

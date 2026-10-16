@@ -4,9 +4,6 @@ import { createAppSignal } from "./state";
 /** This tab's build; the Worker and `/version.json` report the deployed one. */
 export const clientBuildId = import.meta.env.OXYTYPE_BUILD_ID;
 
-/** Response header marking a request this build's Worker cannot serve. */
-export { staleClientHeader } from "../features/update/contract";
-
 /**
  * Why this tab is out of date: a server function or code-split chunk from its
  * build is gone (it may already be failing), or a newer build is deployed.

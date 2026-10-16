@@ -27,7 +27,7 @@ import {
 } from "./service-worker.client";
 
 /** Updates never interrupt typing, result calculation or a pending save. */
-export function isUpdateSafe(): boolean {
+function isUpdateSafe(): boolean {
   return (
     !isTestActive() &&
     !isTestRestarting() &&

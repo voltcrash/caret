@@ -31,6 +31,8 @@ export default {
         "__tests__/__harness__/operations.ts",
         // Built-Worker test entry, selected by `vp build --mode runtime-test`.
         "__tests__/start/worker-entry.ts",
+        // Compiled independently by the Start service-worker build plugin.
+        "src/sw/service-worker.ts",
       ],
       project: [
         "src/**/*.{ts,tsx,css}",
