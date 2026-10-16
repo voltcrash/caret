@@ -14,13 +14,16 @@ async function main(): Promise<void> {
     "browser-expiry",
     "browser-pending",
     "browser-dismissal",
+    "browser-private",
   ]) {
     const session = await seedSession(mf, "a");
     await db
       .prepare("UPDATE auth_sessions SET token=? WHERE token=?")
       .bind(token, session.token)
       .run();
-    if (["browser-login", "browser-expiry"].includes(token)) {
+    if (
+      ["browser-login", "browser-expiry", "browser-private"].includes(token)
+    ) {
       await db
         .prepare(
           "INSERT INTO users(uid,id,name,name_key,email,added_at,data) VALUES(?,?,?,?,?,0,?)",
