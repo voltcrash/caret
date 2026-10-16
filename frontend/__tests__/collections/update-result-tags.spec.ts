@@ -1,3 +1,4 @@
+import { mockHttpFixture } from "../__harness__/operations";
 import { expect, it, vi } from "vite-plus/test";
 
 const { get, update, saveLocalTagPB } = vi.hoisted(() => ({
@@ -80,3 +81,7 @@ it("returns tag PBs for terminal results without touching web PBs", async () => 
   ).resolves.toEqual({ tagPbs: ["pb-tag"] });
   expect(saveLocalTagPB).not.toHaveBeenCalled();
 });
+
+mockHttpFixture("results.get", async (input) => await get(input));
+
+mockHttpFixture("results.updateTags", async (input) => await update(input));

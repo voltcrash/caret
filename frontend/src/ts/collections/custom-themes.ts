@@ -6,7 +6,6 @@ import {
   createOptimisticAction,
   useLiveQuery,
 } from "@tanstack/solid-db";
-import Ape from "../ape";
 import { getQueryClient } from "../queries";
 import { defineCollection } from "./utils/scope";
 import { baseKey } from "../queries/utils/keys";
@@ -77,19 +76,19 @@ const actions = {
       });
     },
     mutationFn: async ({ name, colors }) => {
-      const response = await Ape.users.addCustomTheme({
+      const response = await operation("users.addCustomTheme", {
         body: { name, colors },
       });
-      if (response.status !== 200) {
-        throw new Error(`Failed to add custom theme: ${response.body.message}`);
+      if (!response.ok) {
+        throw new Error(`Failed to add custom theme: ${response.message}`);
       }
 
-      if (response.body.data === null) {
+      if (response.data === null) {
         throw new Error("Failed to add custom theme: No data returned");
       }
 
       customThemesCollection().utils.writeInsert({
-        _id: response.body.data._id,
+        _id: response.data._id,
         name,
         colors,
       });
@@ -103,13 +102,11 @@ const actions = {
       });
     },
     mutationFn: async ({ themeId, name, colors }) => {
-      const response = await Ape.users.editCustomTheme({
+      const response = await operation("users.editCustomTheme", {
         body: { themeId, theme: { name, colors } },
       });
-      if (response.status !== 200) {
-        throw new Error(
-          `Failed to edit custom theme: ${response.body.message}`,
-        );
+      if (!response.ok) {
+        throw new Error(`Failed to edit custom theme: ${response.message}`);
       }
 
       customThemesCollection().utils.writeUpdate({
@@ -124,13 +121,11 @@ const actions = {
       customThemesCollection().delete(themeId);
     },
     mutationFn: async ({ themeId }) => {
-      const response = await Ape.users.deleteCustomTheme({
+      const response = await operation("users.deleteCustomTheme", {
         body: { themeId },
       });
-      if (response.status !== 200) {
-        throw new Error(
-          `Failed to delete custom theme: ${response.body.message}`,
-        );
+      if (!response.ok) {
+        throw new Error(`Failed to delete custom theme: ${response.message}`);
       }
       customThemesCollection().utils.writeDelete(themeId);
     },

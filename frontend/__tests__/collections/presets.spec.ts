@@ -61,4 +61,25 @@ it("tracks deletions in reactive scopes but not untracked reads", async () => {
   dispose();
 });
 
+it("rolls back an optimistic deletion when the function rejects it", async () => {
+  await waitForPresetsReady();
+  let finish!: (value: unknown) => void;
+  remove.mockReturnValueOnce(
+    new Promise((resolve) => {
+      finish = resolve;
+    }),
+  );
+  const pending = deletePreset({ presetId: "s" });
+  const rejected = expect(pending).rejects.toThrow(
+    "Failed to delete preset: limited",
+  );
+  expect(getPreset("s")).toBeUndefined();
+  await vi.waitFor(() => expect(finish).toBeDefined());
+  finish({ status: 429, body: { message: "limited" } });
+  await rejected;
+  expect(getPreset("s")?.name).toBe("slow");
+});
+
 mockHttpFixture("presets.get", async (input) => await get(input));
+
+mockHttpFixture("presets.delete", async (input) => await remove(input));

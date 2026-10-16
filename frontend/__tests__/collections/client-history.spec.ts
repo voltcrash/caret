@@ -143,3 +143,5 @@ describe("account result partitions", () => {
 });
 
 mockHttpFixture("results.get", async (input) => await get(input));
+
+mockHttpFixture("results.updateTags", async (input) => await update(input));

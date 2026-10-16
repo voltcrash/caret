@@ -1,3 +1,4 @@
+import { operation } from "../../data/operations";
 import { UserTag } from "@oxytype/schemas/users";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import {
@@ -9,7 +10,6 @@ import {
 } from "@tanstack/solid-db";
 import { untrack } from "solid-js";
 import { z } from "zod";
-import Ape from "../ape";
 import { getQueryClient } from "../queries";
 import { defineCollection } from "./utils/scope";
 import { baseKey } from "../queries/utils/keys";
@@ -136,15 +136,15 @@ const actions = {
       });
     },
     mutationFn: async ({ name }) => {
-      const response = await Ape.users.createTag({
+      const response = await operation("users.createTag", {
         body: { tagName: name.replace(/ /g, "_") },
       });
-      if (response.status !== 200) {
-        throw new Error(`Failed to add tag: ${response.body.message}`);
+      if (!response.ok) {
+        throw new Error(`Failed to add tag: ${response.message}`);
       }
       const newTag = {
-        ...response.body.data,
-        name: response.body.data.name.replace(/_/g, " "),
+        ...response.data,
+        name: response.data.name.replace(/_/g, " "),
         active: false,
       };
 
@@ -163,11 +163,11 @@ const actions = {
       });
     },
     mutationFn: async ({ tagId, newName }) => {
-      const response = await Ape.users.editTag({
+      const response = await operation("users.editTag", {
         body: { tagId, newName: newName.replace(/ /g, "_") },
       });
-      if (response.status !== 200) {
-        throw new Error(`Failed to update tag: ${response.body.message}`);
+      if (!response.ok) {
+        throw new Error(`Failed to update tag: ${response.message}`);
       }
 
       tagsCollection().utils.writeUpdate({
@@ -189,11 +189,11 @@ const actions = {
       });
     },
     mutationFn: async ({ tagId }) => {
-      const response = await Ape.users.deleteTagPersonalBest({
+      const response = await operation("users.deleteTagPersonalBest", {
         params: { tagId },
       });
-      if (response.status !== 200) {
-        throw new Error(`Failed to clear tag PBs: ${response.body.message}`);
+      if (!response.ok) {
+        throw new Error(`Failed to clear tag PBs: ${response.message}`);
       }
 
       tagsCollection().utils.writeUpdate({
@@ -213,11 +213,11 @@ const actions = {
       tagsCollection().delete(tagId);
     },
     mutationFn: async ({ tagId }) => {
-      const response = await Ape.users.deleteTag({
+      const response = await operation("users.deleteTag", {
         params: { tagId },
       });
-      if (response.status !== 200) {
-        throw new Error(`Failed to delete tag: ${response.body.message}`);
+      if (!response.ok) {
+        throw new Error(`Failed to delete tag: ${response.message}`);
       }
       tagsCollection().utils.writeDelete(tagId);
       updateTagsInFilterStorage(

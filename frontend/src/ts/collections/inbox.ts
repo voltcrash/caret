@@ -12,7 +12,6 @@ import {
   not,
   useLiveQuery,
 } from "@tanstack/solid-db";
-import Ape from "../ape";
 import { getQueryClient } from "../queries";
 import { defineCollection } from "./utils/scope";
 import { baseKey } from "../queries/utils/keys";
@@ -163,18 +162,16 @@ async function flushPendingChanges({
     (it) => it.status,
   );
 
-  const response = await Ape.users.updateInbox({
+  const response = await operation("users.updateInbox", {
     body: {
       mailIdsToMarkRead: updatedStatus.read?.map((it) => it.id),
       mailIdsToDelete: updatedStatus.deleted?.map((it) => it.id),
     },
   });
 
-  if (response.status !== 200) {
-    showErrorNotification(
-      `Error updating user inbox: ${response.body.message}`,
-    );
-    throw new Error(`Error updating user inbox: ${response.body.message}`);
+  if (!response.ok) {
+    showErrorNotification(`Error updating user inbox: ${response.message}`);
+    throw new Error(`Error updating user inbox: ${response.message}`);
   }
 
   inboxCollection().utils.writeBatch(() => {

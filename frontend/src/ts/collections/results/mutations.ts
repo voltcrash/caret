@@ -1,9 +1,9 @@
+import { operation } from "../../../data/operations";
 import { resultsByClient, getResults } from "./store";
 import { normalizeResult } from "./normalize";
 import { UpdateTagsResult, ActionType } from "./types";
 import { Client } from "@oxytype/schemas/shared";
 import { createOptimisticAction } from "@tanstack/solid-db";
-import Ape from "../../ape";
 import { getLastResult } from "../../states/snapshot";
 import { reconcileLocalTagPB, saveLocalTagPB } from "../tags";
 
@@ -19,13 +19,11 @@ function createActions(client: Client) {
         });
       },
       mutationFn: async ({ resultId, currentTagIds, newTagIds, persisted }) => {
-        const response = await Ape.results.updateTags({
+        const response = await operation("results.updateTags", {
           body: { resultId, tagIds: newTagIds },
         });
-        if (response.status !== 200) {
-          throw new Error(
-            `Failed to update result tag: ${response.body.message}`,
-          );
+        if (!response.ok) {
+          throw new Error(`Failed to update result tag: ${response.message}`);
         }
         const results = getResults(client);
         const result = results.find((it) => it._id === resultId);
@@ -59,7 +57,7 @@ function createActions(client: Client) {
           tags: newTagIds,
         });
 
-        persisted.tagPbs = response.body.data.tagPbs;
+        persisted.tagPbs = response.data.tagPbs;
       },
     }),
     insertLocalResult: createOptimisticAction<ActionType["insertLocalResult"]>({
@@ -106,16 +104,16 @@ export async function updateTags(
   const resultsCollection = resultsByClient[params.client ?? "web"];
   if (!resultsCollection().isReady()) {
     // if its not ready yet, send the api request to update the tags
-    const response = await Ape.results.updateTags({
+    const response = await operation("results.updateTags", {
       body: { resultId: params.resultId, tagIds: params.newTagIds },
     });
 
-    if (response.status !== 200) {
-      throw new Error(`Failed to update result tag: ${response.body.message}`);
+    if (!response.ok) {
+      throw new Error(`Failed to update result tag: ${response.message}`);
     }
 
     if (params.client === "tui") {
-      return { tagPbs: response.body.data.tagPbs };
+      return { tagPbs: response.data.tagPbs };
     }
 
     const result = getLastResult();
@@ -130,7 +128,7 @@ export async function updateTags(
       );
     }
 
-    response.body.data.tagPbs.forEach((tag) => {
+    response.data.tagPbs.forEach((tag) => {
       saveLocalTagPB(
         tag,
         result.mode,
@@ -147,7 +145,7 @@ export async function updateTags(
       );
     });
 
-    return { tagPbs: response.body.data.tagPbs };
+    return { tagPbs: response.data.tagPbs };
   }
 
   const persisted: UpdateTagsResult = { tagPbs: [] };

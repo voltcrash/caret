@@ -6,7 +6,6 @@ import {
   createOptimisticAction,
   useLiveQuery,
 } from "@tanstack/solid-db";
-import Ape from "../ape";
 import { getQueryClient } from "../queries";
 import { defineCollection } from "./utils/scope";
 import { baseKey } from "../queries/utils/keys";
@@ -87,19 +86,19 @@ const actions = {
       });
     },
     mutationFn: async ({ name, config, settingGroups }) => {
-      const response = await Ape.presets.add({
+      const response = await operation("presets.add", {
         body: {
           name: name.replace(/ /g, "_"),
           config,
           ...(settingGroups !== undefined && { settingGroups }),
         },
       });
-      if (response.status !== 200) {
-        throw new Error(`Failed to add preset: ${response.body.message}`);
+      if (!response.ok) {
+        throw new Error(`Failed to add preset: ${response.message}`);
       }
 
       const newPreset = {
-        _id: response.body.data.presetId,
+        _id: response.data.presetId,
         name: name.replace(/_/g, " "),
         config,
         settingGroups,
@@ -128,7 +127,7 @@ const actions = {
         throw new Error("Preset not found");
       }
 
-      const response = await Ape.presets.save({
+      const response = await operation("presets.save", {
         body: {
           _id: presetId,
           name: name.replace(/ /g, "_"),
@@ -138,8 +137,8 @@ const actions = {
           }),
         },
       });
-      if (response.status !== 200) {
-        throw new Error(`Failed to edit preset: ${response.body.message}`);
+      if (!response.ok) {
+        throw new Error(`Failed to edit preset: ${response.message}`);
       }
 
       // if this is missing getPreset is out of sync
@@ -156,11 +155,11 @@ const actions = {
       presetsCollection().delete(presetId);
     },
     mutationFn: async ({ presetId }) => {
-      const response = await Ape.presets.delete({
+      const response = await operation("presets.delete", {
         params: { presetId },
       });
-      if (response.status !== 200) {
-        throw new Error(`Failed to delete preset: ${response.body.message}`);
+      if (!response.ok) {
+        throw new Error(`Failed to delete preset: ${response.message}`);
       }
       presetsCollection().utils.writeDelete(presetId);
     },

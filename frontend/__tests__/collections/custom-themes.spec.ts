@@ -54,3 +54,8 @@ mockHttpFixture(
   "users.getCustomThemes",
   async (input) => await fetchThemes(input),
 );
+
+mockHttpFixture(
+  "users.deleteCustomTheme",
+  async (input) => await remove(input),
+);
