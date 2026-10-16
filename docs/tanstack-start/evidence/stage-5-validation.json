@@ -1,6 +1,6 @@
 {
   "stage": 5,
-  "status": "complete",
+  "status": "Final CI rerun pending fixture correction",
   "base": "2a66d1577",
   "implementation": "9d3eb57bfcb7746f2081bb956504a4ab493aee36",
   "pr": "https://github.com/voltcrash/oxytype/pull/140",
@@ -184,7 +184,9 @@
     "status": "pass",
     "requiredChecks": ["ci-fe", "ci-start", "test-e2e", "check-format", "knip"],
     "skippedByPathFilter": ["ci-be", "ci-assets", "ci-pkg", "ci-tui"],
-    "note": "Backend, shared and asset gates all pass locally; no TUI work. This code revision is followed only by evidence/handoff commits."
+    "note": "Backend, shared and asset gates all pass locally; no TUI work. This code revision is followed only by evidence/handoff commits.",
+    "latestFailedRun": "https://github.com/voltcrash/oxytype/actions/runs/38868767591",
+    "pendingCorrection": "Count actual letters when the first randomly selected word has fewer than three characters; preserve exact count across auth loss."
   },
   "resolvedFailures": [
     "Preferences launched an animated restart before entry; activate the typing route after preferences.",

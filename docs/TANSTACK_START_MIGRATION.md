@@ -1,6 +1,6 @@
 # TanStack Start migration: architecture and execution plan
 
-Status: Stages 0–5 complete; [ledger and handoffs](tanstack-start/README.md).
+Status: Stages 0–4 complete; Stage 5 final CI rerun pending; [ledger and handoffs](tanstack-start/README.md).
 Stage 6 not started. Production still serves the legacy app (rollback build).
 Prepared: 2026-10-15. Scope: Oxytype web application and its server/runtime.
 
@@ -521,7 +521,7 @@ Status: complete.
 
 ### 5.3 Verify responsiveness and route behavior
 
-Status: complete. [Validation and handoff](tanstack-start/stage-5.md).
+Status: final CI rerun pending fixture correction. [Validation and handoff](tanstack-start/stage-5.md).
 
 - Run existing typing, quote, time, restart, command palette, modal, accessibility,
   screenshot, funbox, and typing-core parity checks against Start.

@@ -48,13 +48,16 @@ async function openTest(page: Page, url = "/"): Promise<void> {
   await expect(page.locator("#typingTest")).toHaveCSS("opacity", "1");
 }
 
-async function typeFirstLetters(page: Page, count: number): Promise<void> {
+async function typeFirstLetters(page: Page, count: number): Promise<number> {
   const word = page.locator("#words .word").first();
   await word.click();
-  await page.keyboard.type((await word.textContent())?.slice(0, count) ?? "");
+  const input = (await word.textContent())?.slice(0, count) ?? "";
+  expect(input.length).toBeGreaterThan(0);
+  await page.keyboard.type(input);
   await expect(
     page.locator("#words letter.correct, #words letter.incorrect"),
-  ).toHaveCount(count);
+  ).toHaveCount(input.length);
+  return input.length;
 }
 
 const nav = (page: Page, name: string): Locator =>
@@ -236,11 +239,25 @@ test("losing the session mid-test keeps the active attempt", async ({
   context,
 }) => {
   await signIn(context);
-  await useAccountConfig(page, { mode: "words", words: 15 });
+  await useAccountConfig(page, { mode: "custom" });
+  // Supported custom text makes the short first word deterministic, without
+  // replacing integrity-checked language assets.
+  await page.addInitScript(() => {
+    localStorage.setItem(
+      "customTextSettings",
+      JSON.stringify({
+        text: ["to", "be", "or", "not", "to", "be"],
+        mode: "repeat",
+        limit: { mode: "word", value: 6 },
+        pipeDelimiter: false,
+      }),
+    );
+  });
   await openTest(page);
   await expect(nav(page, "Sign in")).toHaveCount(0);
   await page.waitForLoadState("networkidle");
-  await typeFirstLetters(page, 3);
+  const typed = await typeFirstLetters(page, 3);
+  expect(typed).toBe(2);
   await context.clearCookies();
   await page.evaluate(() =>
     window.dispatchEvent(new Event("visibilitychange")),
@@ -248,7 +265,7 @@ test("losing the session mid-test keeps the active attempt", async ({
   await expect(nav(page, "Sign in")).toBeVisible();
   await expect(
     page.locator("#words letter.correct, #words letter.incorrect"),
-  ).toHaveCount(3);
+  ).toHaveCount(typed);
   await expect(page.locator("#wordsInput")).toBeFocused();
 });
 
