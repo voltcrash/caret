@@ -42,13 +42,11 @@ test("a real browser completion persists through Start/D1 and updates the accoun
   await page.keyboard.type(words.join(" "), { delay: 90 });
   const response = await pending;
   expect(response.status()).toBe(200);
-  const saved = z
-    .object({ result: AddResultResponseSchema })
-    .parse(
-      fromCrossJSON((await response.json()) as SerovalNode, {
-        refs: new Map(),
-      }),
-    ).result.data;
+  const saved = z.object({ result: AddResultResponseSchema }).parse(
+    fromCrossJSON((await response.json()) as SerovalNode, {
+      refs: new Map(),
+    }),
+  ).result.data;
   expect(saved.insertedId).toMatch(/^[a-f0-9]{24}$/);
   expect(saved.isPb).toBe(true);
   expect(saved.xp).toBeGreaterThan(0);
