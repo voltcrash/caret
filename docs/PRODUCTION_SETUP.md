@@ -3,7 +3,7 @@
 For Oxytype maintainers operating the official production site.
 
 One Worker serves the frontend and `/api` on `https://oxytype.voltcrash.com`.
-Use `backend/wrangler.production.json` explicitly. The default Wrangler config
+Use `frontend/wrangler.production.json` explicitly. The default Wrangler config
 targets staging; the production release workflow uses the production config.
 
 ## Resources
@@ -23,7 +23,7 @@ Quote publishing additionally requires the optional
 
 ## Private settings
 
-Save backend credentials in ignored `backend/.dev.vars.production`:
+Save backend credentials in ignored `frontend/.dev.vars.production`:
 
 ```dotenv
 BETTER_AUTH_SECRET=replace-with-a-new-private-production-secret
@@ -56,7 +56,7 @@ passed into the frontend build. Examples are checked in; actual files are ignore
 
 The backend connects to [Better Auth Infrastructure](https://better-auth.com/docs/infrastructure/plugins/dashboard)
 when `BETTER_AUTH_API_KEY` is configured. Add the private project API key to
-`backend/.dev.vars.production`, or save it as a separate GitHub Actions secret
+`frontend/.dev.vars.production`, or save it as a separate GitHub Actions secret
 named `BETTER_AUTH_API_KEY`. The daily workflow appends that secret to the private
 backend file before deploying it to the Worker. Preserve the other backend
 credentials; this API key does not replace `BETTER_AUTH_SECRET`.
@@ -77,7 +77,7 @@ basic dashboard connection requires no database migration.
 On a **new, empty** production D1 only:
 
 ```sh
-vp run --filter @oxytype/backend db:migrate:production
+vp run --filter @oxytype/frontend db:migrate:production
 vp run --filter @oxytype/backend db:bootstrap:production
 ```
 
@@ -93,22 +93,22 @@ From the repo root, with Node/pnpm versions in `package.json`:
 
 ```sh
 vp install --frozen-lockfile
-vp run --filter @oxytype/backend build:production-site
-vp run --filter @oxytype/backend deploy:production-dry-run
+vp run --filter @oxytype/frontend build:production-site
+vp run --filter @oxytype/frontend deploy:production-dry-run
 # Apply any newly added migrations before compatible code is deployed.
-vp run --filter @oxytype/backend db:migrate:production
-vp run --filter @oxytype/backend deploy:production-site
+vp run --filter @oxytype/frontend db:migrate:production
+vp run --filter @oxytype/frontend deploy:production-site
 ```
 
-Production builds run `vp run --no-cache build-fe`, then `vp run --no-cache build-be`.
-Keep `--no-cache` before the task name so the runner consumes it. Trailing flags
-reach the build tool; `vp build` rejects `--force`. The runner's cache bypass
-ensures fresh production assets even when workspace task caching is enabled.
-Builds stay sequential because shared package builds clean their output.
-Deployment checks isolated bindings, required secrets, the real Turnstile key,
-enabled providers and the built frontend's `/api` configuration before upload.
-The deploy command uploads secrets from the private file and packages the frontend
-under the Worker's public site prefix. Preserve other private values when editing.
+Production builds invoke one uncached Start compiler for matching client/Worker assets.
+The receipt in frontend/dist/start/artifact.json fingerprints the complete artifact.
+Deployment validates credentials, public settings, resource identity and every file;
+changed or mismatched builds fail before upload. Production secrets stay in their
+private file; local preview variables are removed from the archived artifact.
+
+Stage 7 transfers tooling only. Production remains on the retained legacy version
+until Stage 8 acceptance and cutover. The scheduled/manual workflow is gated by
+repository variable START_PRODUCTION_ENABLED=true; enable only after that gate.
 
 ## Production releases
 
@@ -127,19 +127,21 @@ environment before the first run:
 | Type | Name | Value |
 | --- | --- | --- |
 | Secret | `CLOUDFLARE_API_TOKEN` | Cloudflare token scoped to the production account, with Worker deployment, D1 migration, queue and custom-domain access. |
-| Secret | `PRODUCTION_BACKEND_ENV` | Full contents of the existing private `backend/.dev.vars.production` file, preserving the deployed auth/OAuth/Turnstile credentials. |
+| Secret | `PRODUCTION_BACKEND_ENV` | Full contents of the existing private `frontend/.dev.vars.production` file, preserving the deployed auth/OAuth/Turnstile credentials. |
 | Secret (optional) | `BETTER_AUTH_API_KEY` | Private Better Auth dashboard project key. Overrides the same key in `PRODUCTION_BACKEND_ENV`; uploaded only to the backend Worker. |
 | Variable | `PRODUCTION_FRONTEND_ENV` | Full contents of `frontend/.env.production.local`: real production site key, `BACKEND_URL=/api`, and enabled auth providers. |
 
-The account ID and isolated resource IDs come from `backend/wrangler.production.json`.
+The account ID and isolated resource IDs come from `frontend/wrangler.production.json`.
 The workflow writes credential files with mode `0600` for the validated production
 commands, then removes them even on failure. It never bootstraps or resets the database.
 
 Release versions use the release-planning execution date in `YY.MM.DD` format,
 with a `v`-prefixed tag at the exact deployed `main` commit. Delayed runs and
 retries use the current execution date rather than the workflow creation date.
-The workflow sets the Worker `VERSION` and the build checkout's package version
-to that date version, without pushing a version commit to `main`.
+The package version uses that date; Worker/client/SW/version.json use one build ID
+(date plus source SHA). No version commit is pushed to main. The workflow archives
+the complete matched artifact for 90 days before migrations/deployment; releases
+are published only after a successful deploy.
 The release notes list all commits added since the previous successful production
 release, including older branch commits merged during the day. They are grouped
 into Features (`feat`), Improvements (`impr`, `perf`), Fixes (`fix`) and Nerd

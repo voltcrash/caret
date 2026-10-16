@@ -5,20 +5,18 @@ For local contributors and maintainers operating Oxytype staging and production.
 Backend runtime: one Worker, D1, Queues and Cron. Node is used for builds only.
 Local workerd uses local D1 without a Cloudflare login.
 The [production setup](PRODUCTION_SETUP.md) uses an isolated database and
-`backend/wrangler.production.json`.
+`frontend/wrangler.production.json`.
 
 ## Local development
 
 ```sh
 vp install --frozen-lockfile
-cp backend/.dev.vars.example backend/.dev.vars
-vp run --filter @oxytype/backend db:migrate
-vp run dev-be
-# another terminal
-vp run dev-fe
+vp exec cp frontend/.dev.vars.example frontend/.dev.vars
+vp run --filter @oxytype/frontend db:migrate
+vp run dev
 ```
 
-Frontend: `http://localhost:3000`; API: `http://localhost:5005` (also `/api`).
+Start serves document, assets, functions and /api at http://localhost:3000.
 Wrangler persists local D1 in `backend/.wrangler`; local and remote migrations
 are separate commands. Result/telemetry validation runs in development and production;
 never copy the development secret/test captcha key into a production deployment.
@@ -26,7 +24,7 @@ Use `.dev.vars` for Worker settings, not Node `.env`.
 
 Google/GitHub social sign-in needs a provider's backend-only client ID/secret.
 Register `BETTER_AUTH_URL/callback/google` or `/github`; local URL is
-`http://localhost:5005/api/auth`. Email/password/reset flows stay disabled.
+`http://localhost:3000/api/auth`. Email/password/reset flows stay disabled.
 Signup and inbox default disabled in BASE_CONFIGURATION; enable deliberately
 through the admin configuration contract/D1, not by weakening guards. XP, the
 weekly XP leaderboard and daily leaderboards (English time 15/60) default
@@ -42,8 +40,8 @@ vp -C backend test run __tests__/d1/http.spec.ts
 vp run build-be
 ```
 
-Build generates docs and copies quote/config assets, then performs a Wrangler
-bundle dry-run. The D1 suite runs actual SQLite in workerd; unit tests preserve
+Start generates retained API docs and uses curated frontend/static assets.
+Private backend editor/config assets never enter the public asset directory. The D1 suite runs actual SQLite in workerd; unit tests preserve
 controller/HTTP contracts.
 
 ## Staging deployment
@@ -53,20 +51,14 @@ Worker: [oxytype-api-staging](https://oxytype-api-staging.voltcrash.workers.dev)
 Auth URL: `https://oxytype-api-staging.voltcrash.workers.dev/api/auth`. D1: `oxytype-staging`,
 `17b0ae8b-92bf-4d7e-a29e-0ac4cc6f2b59`, APAC placement hint.
 Queues: `oxytype-staging-tasks` and `oxytype-staging-dlq`.
-The default API-only config trusts `http://localhost:3000`; hosted staging uses
-the Worker origin. Production routes are isolated in `wrangler.production.json`.
-
-Wrangler uses `backend/wrangler.jsonc` for staging. Production has a separate
-config/resources; use its explicit commands or the daily production workflow.
-Both hosted sites serve frontend and API through the Worker assets binding.
+Start delivery uses frontend/wrangler.staging.json; production uses its separate
+frontend/wrangler.production.json. Preserve existing remote auth/OAuth secrets.
+The rollback Hono build remains a validation target until Stage 8.
 
 ```sh
-vp exec --filter @oxytype/backend -- wrangler login
-vp exec --filter @oxytype/backend -- wrangler whoami
-vp run build-be
-vp run --filter @oxytype/backend db:migrate:remote
-vp exec --filter @oxytype/backend -- wrangler secret put BETTER_AUTH_SECRET
-vp run --filter @oxytype/backend deploy:worker
+vp run --filter @oxytype/frontend build:staging-site
+vp run --filter @oxytype/frontend db:migrate:staging
+vp run --filter @oxytype/frontend deploy:staging-site
 ```
 
 Generate the secret privately (`openssl rand -base64 32`); preserve it across

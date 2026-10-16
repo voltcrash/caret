@@ -1,6 +1,10 @@
 # Root scripts
 
-Workspace aggregates remain unchanged. Package aliases stay when CI, contributor
+Start owns root build/dev/start and browser checks. build:legacy and the backend
+build remain rollback validation targets until Stage 8. Production/staging build,
+artifact checks and deployment commands live in @oxytype/frontend.
+
+Other workspace aggregates remain unchanged. Package aliases stay when CI, contributor
 docs, hooks, lint-staged, or AGENTS.md use them. All filtered root scripts were
 searched across tracked files before removing unused aliases.
 

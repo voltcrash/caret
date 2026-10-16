@@ -18,7 +18,7 @@ Create an **Oxytype Staging** OAuth app in
 | Homepage URL | `https://oxytype-api-staging.voltcrash.workers.dev` |
 | Callback URL | `https://oxytype-api-staging.voltcrash.workers.dev/api/auth/callback/github` |
 
-Save its client ID and generated client secret in `backend/.dev.vars.staging`:
+Save its client ID and generated client secret in `frontend/.dev.vars.staging`:
 
 ```dotenv
 GITHUB_CLIENT_ID=your-staging-client-id
@@ -42,8 +42,9 @@ Use its secret in the backend file above. Save the matching public site key in
 `frontend/.env.staging.local`:
 
 ```dotenv
-BACKEND_URL=https://oxytype-api-staging.voltcrash.workers.dev/api
+BACKEND_URL=/api
 TURNSTILE_SITE_KEY=your-staging-turnstile-site-key
+AUTH_PROVIDERS=github
 ```
 
 Development mode honors an explicit site key; ordinary local development uses
@@ -54,30 +55,15 @@ Cloudflare's test widget. Test secrets are rejected by production-mode Workers.
 Once all placeholders are replaced, run from the repo root:
 
 ```sh
-set -a
-. frontend/.env.staging.local
-set +a
-BACKEND_URL=/api AUTH_PROVIDERS=google,github vp run build-fe
-vp run build-be
-vp run --filter @oxytype/backend db:migrate:remote
-vp run --filter @oxytype/backend deploy:staging-site --secrets-file .dev.vars.staging
-vp exec --filter @oxytype/backend -- wrangler secret list
-vp exec --filter @oxytype/backend -- wrangler d1 execute oxytype-staging --remote \
-  --command "UPDATE configuration SET data=json_set(data,
-    '$.users.signUp',json('true'),
-    '$.users.profiles.enabled',json('true'),
-    '$.results.savingEnabled',json('true'),
-    '$.results.objectHashCheckEnabled',json('true')),
-    version=version+1 WHERE id='main';"
+vp run --filter @oxytype/frontend build:staging-site
+vp run --filter @oxytype/frontend db:migrate:staging
+vp run --filter @oxytype/frontend deploy:staging-site
 ```
 
-Secret upload is additive; it retains the existing auth secret. Keep automatic
-bans disabled during initial monitoring. No local backend is needed for this test.
-`deploy:staging-site` copies the built frontend under the private `site` asset
-prefix and enables frontend hosting with the HTTPS Worker origin. Public `/api/*`
-requests retain API routing; unknown APIs and missing files do not become SPA HTML.
-Standalone callback/legal HTML resolves before navigation fallback. HTML is not
-cached. Default `deploy:worker` remains API-only and restores its configured origin.
+Secret upload retains the existing auth secret. Build and deploy use Start's
+generated client/server artifact; the staging check rejects a production build
+or any changed file. Documents are rendered by native routes with no SPA fallback.
+D1 migrations keep their existing history; never bootstrap/reset retained data.
 
 ## 4. Test the browser
 
@@ -88,13 +74,13 @@ Verify the browser requests the staging host. Use an ordinary typing sample to
 check real-user anticheat compatibility.
 
 OAuth returns the popup to `/oauth-callback.html?requestId=...`. The staging Worker
-serves this standalone HTML page before the main app's SPA fallback. If the popup
+renders this standalone URL through its Start route. If the popup
 shows the app's 404 page, close it, check the staging site's assets, refresh `/login`
 and retry.
 
 Use the hosted URL for staging auth checks. Localhost calling the remote API can
 lose OAuth cookies under browser privacy protections; `SameSite=None` alone does
 not prevent partitioning/blocking. See [Better Auth's cookie guidance](https://better-auth.com/docs/concepts/cookies).
-Return to local backend testing with `vp run dev-be` and `vp run dev-fe`.
+Return to local Start testing with `vp run dev`.
 See [operations](CLOUDFLARE_OPERATIONS.md)
 and [anticheat limits](ANTICHEAT.md) for deployment and monitoring.
