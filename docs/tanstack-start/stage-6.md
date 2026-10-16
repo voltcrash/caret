@@ -90,7 +90,7 @@ CI checks both the ledger and generated route bindings.
   omitted members, date strings and sparse calendar entries represented as null.
 - Historical partial PB records receive missing empty modes in the service DTO,
   replacing the former browser fallback. Stored records remain untouched.
-- Historical preferences pass the existing shared pure config migration before
+- Historical preferences/preset settings pass the existing shared pure config migration before
   modern schema validation. Malformed wrapped preferences retain their visible
   error; migrations perform no D1 rewrite. HTTP keeps its historical raw format.
 - Docs use generated retained JSON and a small Redoc shell instead of embedding

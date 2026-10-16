@@ -149,6 +149,43 @@ describe("ordinary server-function mutations with real D1", () => {
     ).toEqual(legacy);
   });
 
+  it("loads saved presets containing historical settings without rewriting them", async () => {
+    const actor = await account();
+    const db = await mf.getD1Database("DB", "a");
+    const legacy = {
+      name: "historical",
+      config: {
+        theme: "nord",
+        smoothCaret: true,
+        tags: ["0123456789abcdef01234567"],
+      },
+    };
+    await db
+      .prepare("INSERT INTO presets(id,uid,timestamp,data) VALUES(?,?,0,?)")
+      .bind("abcdef0123456789abcdef01", actor.uid, JSON.stringify(legacy))
+      .run();
+    const response = await call(actor, "presetsGet", "GET");
+    expect(response.status, await response.clone().text()).toBe(200);
+    expect(
+      GetPresetResponseSchema.parse(await result(response)).data,
+    ).toMatchObject([
+      {
+        name: "historical",
+        config: {
+          theme: "nord",
+          smoothCaret: "medium",
+          tags: legacy.config.tags,
+        },
+      },
+    ]);
+    expect(
+      await db
+        .prepare("SELECT data FROM presets WHERE uid=?")
+        .bind(actor.uid)
+        .first("data"),
+    ).toBe(JSON.stringify(legacy));
+  });
+
   it("keeps malformed wrapped preferences visible instead of replacing them with defaults", async () => {
     const actor = await account();
     const db = await mf.getD1Database("DB", "a");

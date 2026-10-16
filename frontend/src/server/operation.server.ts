@@ -19,6 +19,10 @@ import type { ServiceContext as RequestContext } from "./context.server";
 import { migrateConfig } from "@oxytype/typing-core/config/migrate";
 import { PartialConfigSchema } from "@oxytype/schemas/configs";
 import MonkeyError from "@oxytype/backend/errors";
+import {
+  GetPresetResponseSchema,
+  type GetPresetResponse,
+} from "@oxytype/contracts/presets";
 
 function invocation(request: RequestContext): Invocation {
   return {
@@ -49,11 +53,26 @@ export async function callOperation<K extends OperationId>(
     const outcome = await execute(call, scope, id, input, {
       // Historical stored preferences must pass their existing migration before
       // the modern strict response schema. HTTP keeps its original raw format.
-      validateResponse: id !== "configs.get",
+      validateResponse: id !== "configs.get" && id !== "presets.get",
     });
     if (!outcome.ok) {
       if (request.rpc) setResponseStatus(outcome.status);
       return outcome;
+    }
+    if (id === "presets.get") {
+      const presets = outcome.data as GetPresetResponse["data"];
+      const data = presets.map((preset) => ({
+        ...preset,
+        config: PartialConfigSchema.safeParse(preset.config).success
+          ? preset.config
+          : { ...migrateConfig(preset.config), tags: preset.config.tags },
+      }));
+      return {
+        ...outcome,
+        status: 200,
+        data: GetPresetResponseSchema.parse({ message: outcome.message, data })
+          .data as OperationData<K>,
+      };
     }
     if (id === "configs.get" && outcome.data !== null) {
       if (typeof outcome.data === "object" && "config" in outcome.data) {
