@@ -10,6 +10,7 @@ import {
 } from "solid-js";
 import { envConfig } from "virtual:env-config";
 
+import { subscribeResultConfigChanges } from "../../../../../features/typing/runtime/result/chart-config";
 import { showErrorNotification } from "../../../../states/notifications";
 import {
   resultState,
@@ -19,7 +20,6 @@ import {
   waitForResultChart,
 } from "../../../../states/result";
 import { isTestActive } from "../../../../states/test";
-import { subscribeResultConfigChanges } from "../../../../test/result/chart-config";
 import { Fa } from "../../../common/Fa";
 import { ResultButtons } from "./ResultButtons";
 import { ResultLoginTip } from "./ResultLoginTip";

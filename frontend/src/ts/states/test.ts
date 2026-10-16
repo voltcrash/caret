@@ -12,7 +12,7 @@ import { CompletedEvent, IncompleteTest } from "@oxytype/schemas/results";
 
 import { keymapEvent } from "../events/keymap";
 import { createAppSignalWithSetters } from "../hooks/createSignalWithSetters";
-import * as CustomText from "../test/custom-text";
+import * as CustomText from "../../features/typing/runtime/custom-text";
 import { QuoteWithTextSplit } from "@oxytype/typing-core/quotes";
 import { getLayout } from "../utils/json-data";
 import { mirrorLayoutKeys } from "../utils/key-converter";

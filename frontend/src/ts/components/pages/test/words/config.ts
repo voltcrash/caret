@@ -14,7 +14,7 @@ import {
   areTestElementsMounted,
   getWordsElement as getWordsEl,
 } from "../../../../states/test-dom";
-import { getCurrentInput } from "../../../../test/events/data";
+import { getCurrentInput } from "../../../../../features/typing/runtime/events/data";
 
 export function onWordsConfigChange({
   key,

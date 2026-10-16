@@ -1,5 +1,5 @@
 import { CommandlineConfigMetadataObject } from "./types";
-import * as TestLogic from "../../test/test-logic";
+import * as TestLogic from "../../../features/typing/runtime/test-logic";
 
 export const inputMetadata = {
   freedomMode: {

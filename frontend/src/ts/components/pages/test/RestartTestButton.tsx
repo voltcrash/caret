@@ -1,5 +1,6 @@
 import { JSXElement } from "solid-js";
 
+import * as TestLogic from "../../../../features/typing/runtime/test-logic";
 import { getConfig } from "../../../config/store";
 import { focusInputElement } from "../../../input/input-element";
 import {
@@ -7,7 +8,6 @@ import {
   isResultCalculating,
   isTestActive,
 } from "../../../states/test";
-import * as TestLogic from "../../../test/test-logic";
 import { cn } from "../../../utils/cn";
 import { isCoarsePointer } from "../../../utils/pointer";
 import { Button } from "../../common/Button";

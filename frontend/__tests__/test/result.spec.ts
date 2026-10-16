@@ -45,15 +45,17 @@ vi.mock("../../src/ts/db", () => ({
     state.localPbWpm === 0 ? undefined : { wpm: state.localPbWpm },
   getSnapshot: () => undefined,
 }));
-vi.mock("../../src/ts/test/test-ui", () => ({
+vi.mock("../../src/features/typing/runtime/test-ui", () => ({
   clearWords: vi.fn(),
   clearWordsBlur: vi.fn(),
 }));
-vi.mock("../../src/ts/test/today-tracker", () => ({
+vi.mock("../../src/features/typing/runtime/today-tracker", () => ({
   getString: () => "",
 }));
-vi.mock("../../src/ts/test/focus", () => ({ set: vi.fn() }));
-vi.mock("../../src/ts/test/funbox/funbox", () => ({ clear: vi.fn() }));
+vi.mock("../../src/features/typing/runtime/focus", () => ({ set: vi.fn() }));
+vi.mock("../../src/features/typing/runtime/funbox/funbox", () => ({
+  clear: vi.fn(),
+}));
 vi.mock("../../src/ts/input/input-element", () => ({
   blurInputElement: vi.fn(),
 }));
@@ -103,7 +105,7 @@ import {
   toggleUserFakeChartData,
   update,
   updateTagsAfterEdit,
-} from "../../src/ts/test/result";
+} from "../../src/features/typing/runtime/result";
 import {
   resultState,
   getResultChart,

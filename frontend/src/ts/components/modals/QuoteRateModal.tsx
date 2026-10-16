@@ -1,6 +1,7 @@
 import { isSafeNumber } from "@oxytype/util/numbers";
 import { JSXElement, createSignal, For } from "solid-js";
 
+import { updateQuoteRating } from "../../../features/typing/runtime/result";
 import Ape from "../../ape";
 import * as DB from "../../db";
 import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
@@ -17,7 +18,6 @@ import {
   updateQuoteStats,
   getRatingAverage,
 } from "../../states/quote-rate";
-import { updateQuoteRating } from "../../test/result";
 import { cn } from "../../utils/cn";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Button } from "../common/Button";

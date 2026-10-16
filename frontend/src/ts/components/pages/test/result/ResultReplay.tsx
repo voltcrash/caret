@@ -2,11 +2,14 @@ import type { ReplayLetter } from "@oxytype/typing-core/replay";
 
 import { For, JSXElement } from "solid-js";
 
+import {
+  jumpToLetter,
+  togglePlayback,
+} from "../../../../../features/typing/runtime/replay";
 import { useRef } from "../../../../hooks/useRef";
 import { useSlideAnimation } from "../../../../hooks/useSlideAnimation";
 import { getIsScreenshotting } from "../../../../states/core";
 import { resultState } from "../../../../states/result";
-import { jumpToLetter, togglePlayback } from "../../../../test/replay";
 import { cn } from "../../../../utils/cn";
 import { Fa } from "../../../common/Fa";
 

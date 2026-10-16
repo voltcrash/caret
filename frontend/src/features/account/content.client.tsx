@@ -6,8 +6,8 @@ import { LoadingCircle } from "../../ts/components/common/LoadingCircle";
 import { AccountContent } from "../../ts/components/pages/account/AccountContent";
 import { getSnapshot } from "../../ts/db";
 import { getUserId } from "../../ts/states/core";
-import * as TodayTracker from "../../ts/test/today-tracker";
 import { useSessionSettled } from "../auth/settled.client";
+import * as TodayTracker from "../typing/runtime/today-tracker";
 
 /**
  * Waits for the actor's snapshot and result history (the old page's loading

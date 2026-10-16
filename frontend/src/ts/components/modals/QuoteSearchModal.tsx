@@ -10,6 +10,7 @@ import {
 } from "solid-js";
 import { z } from "zod";
 
+import * as TestLogic from "../../../features/typing/runtime/test-logic";
 import Ape from "../../ape";
 import { setConfig } from "../../config/setters";
 import { getMutableConfig } from "../../config/store";
@@ -30,7 +31,6 @@ import {
 import { showQuoteReportModal } from "../../states/quote-report";
 import { showSimpleModal } from "../../states/simple-modal";
 import { setSelectedQuoteId } from "../../states/test";
-import * as TestLogic from "../../test/test-logic";
 import { cn } from "../../utils/cn";
 import { getLanguage } from "../../utils/json-data";
 import * as Misc from "../../utils/misc";

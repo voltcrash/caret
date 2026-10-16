@@ -4,7 +4,7 @@ import type { CartesianScaleOptions, Chart, ChartDataset } from "chart.js";
 
 import { Language } from "@oxytype/schemas/languages";
 import { TypingSpeedUnit } from "@oxytype/schemas/configs";
-import type { WordsHistoryItem } from "../test/word-markup";
+import type { WordsHistoryItem } from "../../features/typing/runtime/word-markup";
 import { createEvent } from "../hooks/createEvent";
 import type { ReplayWord } from "@oxytype/typing-core/replay";
 import type { SupportsFlags } from "../controllers/user-flag-controller";

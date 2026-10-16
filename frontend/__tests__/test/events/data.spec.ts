@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vite-plus/test";
 
-vi.mock("../../../src/ts/test/test-stats", () => ({
+vi.mock("../../../src/features/typing/runtime/test-stats", () => ({
   start: 1000,
 }));
 
@@ -11,7 +11,7 @@ import {
   resetTestEvents,
   getTestSession,
   forceReleaseAllKeys,
-} from "../../../src/ts/test/events/data";
+} from "../../../src/features/typing/runtime/events/data";
 import type {
   InputEventData,
   KeydownEvent,

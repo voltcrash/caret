@@ -20,19 +20,19 @@ const mocks = vi.hoisted(() => ({
   showNoticeNotification: vi.fn(),
 }));
 
-vi.mock("../../../../../src/ts/test/test-logic", () => ({
+vi.mock("../../../../../src/features/typing/runtime/test-logic", () => ({
   restart: mocks.restart,
   retrySavingResult: mocks.retrySavingResult,
 }));
-vi.mock("../../../../../src/ts/test/test-screenshot", () => ({
+vi.mock("../../../../../src/features/typing/runtime/test-screenshot", () => ({
   download: mocks.download,
   share: mocks.share,
   copyToClipboard: mocks.copyToClipboard,
 }));
-vi.mock("../../../../../src/ts/test/replay", () => ({
+vi.mock("../../../../../src/features/typing/runtime/replay", () => ({
   toggleReplayDisplay: mocks.toggleReplayDisplay,
 }));
-vi.mock("../../../../../src/ts/test/result", () => ({
+vi.mock("../../../../../src/features/typing/runtime/result", () => ({
   toggleResultWords: mocks.toggleResultWords,
 }));
 vi.mock("../../../../../src/ts/states/modals", () => ({

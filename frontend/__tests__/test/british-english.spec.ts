@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vite-plus/test";
-import { replace } from "../../src/ts/test/british-english";
+import { replace } from "../../src/features/typing/runtime/british-english";
 import { getMutableConfig } from "../../src/ts/config/store";
 
 describe("british-english", () => {

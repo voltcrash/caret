@@ -20,7 +20,7 @@ import {
   setWordsInputStyle,
   setWordsWrapperHeight,
 } from "../../../../states/words-layout";
-import * as CustomText from "../../../../test/custom-text";
+import * as CustomText from "../../../../../features/typing/runtime/custom-text";
 import { convertRemToPixels } from "../../../../utils/numbers";
 import { getWordsFontScale } from "../../../../utils/words-font";
 

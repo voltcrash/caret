@@ -6,7 +6,7 @@ import {
   getResultVisible,
 } from "../../../../states/test";
 import { getWordsElement as getWordsEl } from "../../../../states/test-dom";
-import * as TestWords from "../../../../test/test-words";
+import * as TestWords from "../../../../../features/typing/runtime/test-words";
 import * as Misc from "../../../../utils/misc";
 import * as Strings from "../../../../utils/strings";
 

@@ -35,10 +35,10 @@ vi.mock("@oxytype/typing-core/events/stats", () => ({
   getWordBurstHistory: () => mocks.burstHistory,
 }));
 
+import { buildWordsHistory } from "../../../../../src/features/typing/runtime/word-markup";
 import { ResultWordsHistory } from "../../../../../src/ts/components/pages/test/result/ResultWordsHistory";
 import { setConfigStore } from "../../../../../src/ts/config/store";
 import { setResultState } from "../../../../../src/ts/states/result";
-import { buildWordsHistory } from "../../../../../src/ts/test/word-markup";
 
 const targets = ["hello ", "world ", "foo ", "bar"];
 

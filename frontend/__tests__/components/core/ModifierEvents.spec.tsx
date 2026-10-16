@@ -3,7 +3,7 @@ import { createSignal } from "solid-js";
 import { expect, it, vi } from "vite-plus/test";
 const { getPage } = vi.hoisted(() => ({ getPage: vi.fn() }));
 vi.mock("../../../src/ts/states/core", () => ({ getActivePage: getPage }));
-vi.mock("../../../src/ts/test/layout-emulator", () => ({
+vi.mock("../../../src/features/typing/runtime/layout-emulator", () => ({
   updateAltGrState: vi.fn(),
   resetAltGrState: vi.fn(),
 }));

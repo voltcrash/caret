@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vite-plus/test";
-import { getAllFunboxes } from "../../src/ts/test/funbox/list";
+import { getAllFunboxes } from "../../src/features/typing/runtime/funbox/list";
 
 describe("funbox", () => {
   describe("list", () => {

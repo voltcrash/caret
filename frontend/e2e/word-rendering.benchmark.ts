@@ -11,7 +11,7 @@ test("render 1,000 words with browser layout", async ({ page }) => {
     )) as typeof import("../src/ts/components/pages/test/words/rendering");
     const { words } = (await import(
       /* @vite-ignore */ wordsUrl
-    )) as typeof import("../src/ts/test/test-words");
+    )) as typeof import("../src/features/typing/runtime/test-words");
     await document.fonts.ready;
     words.reset();
     for (let i = 0; i < 1_000; i++) {

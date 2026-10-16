@@ -1,8 +1,8 @@
-import * as Funbox from "../../test/funbox/funbox";
-import * as TestLogic from "../../test/test-logic";
+import * as Funbox from "../../../features/typing/runtime/funbox/funbox";
+import * as TestLogic from "../../../features/typing/runtime/test-logic";
 import { getAllFunboxes, checkCompatibility } from "@oxytype/funbox";
 import { Command, CommandsSubgroup } from "../types";
-import { getActiveFunboxNames } from "../../test/funbox/list";
+import { getActiveFunboxNames } from "../../../features/typing/runtime/funbox/list";
 
 const list: Command[] = [
   {

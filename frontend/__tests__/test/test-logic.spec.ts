@@ -103,7 +103,7 @@ vi.mock("../../src/ts/utils/json-data", () => ({
   getLanguage: async () => mocks.language,
   checkIfLanguageSupportsZipf: async () => "yes",
 }));
-vi.mock("../../src/ts/test/test-ui", () => ({
+vi.mock("../../src/features/typing/runtime/test-ui", () => ({
   onTestStart: mocks.uiStart,
   fadeOutForRestart: vi.fn().mockResolvedValue(undefined),
   fadeInAfterRestart: vi.fn().mockResolvedValue(undefined),
@@ -113,7 +113,7 @@ vi.mock("../../src/ts/test/test-ui", () => ({
   appendEmptyWordElement: vi.fn(),
   addWord: vi.fn(),
 }));
-vi.mock("../../src/ts/test/events/data", () => ({
+vi.mock("../../src/features/typing/runtime/events/data", () => ({
   getTestSession: (() => {
     const session = {
       start: mocks.sessionStart,
@@ -144,10 +144,10 @@ vi.mock("../../src/ts/test/events/data", () => ({
     context: { targetWords: mocks.generatedWords },
   }),
 }));
-vi.mock("../../src/ts/test/words-generator", () => ({
+vi.mock("../../src/features/typing/runtime/words-generator", () => ({
   areAllWordsGenerated: () => true,
 }));
-vi.mock("../../src/ts/test/funbox/list", () => ({
+vi.mock("../../src/features/typing/runtime/funbox/list", () => ({
   getActiveFunboxes: () => [],
   getActiveFunboxesWithFunction: () => [],
   getActiveFunboxNames: () => [],
@@ -155,28 +155,32 @@ vi.mock("../../src/ts/test/funbox/list", () => ({
   isFunboxActive: (name: string) => name === "no_quit" && mocks.noQuit,
   isFunboxActiveWithProperty: () => false,
 }));
-vi.mock("../../src/ts/test/funbox/funbox", () => ({
+vi.mock("../../src/features/typing/runtime/funbox/funbox", () => ({
   rememberSettings: vi.fn().mockResolvedValue(undefined),
   activate: vi.fn().mockResolvedValue(undefined),
   toggleScript: vi.fn(),
 }));
-vi.mock("../../src/ts/test/pace-caret", () => ({
+vi.mock("../../src/features/typing/runtime/pace-caret", () => ({
   start: vi.fn(),
   reset: vi.fn(),
   init: vi.fn().mockResolvedValue(undefined),
   setLastTestWpm: vi.fn(),
 }));
-vi.mock("../../src/ts/test/test-timer", () => ({
+vi.mock("../../src/features/typing/runtime/test-timer", () => ({
   clear: vi.fn(),
   start: vi.fn().mockResolvedValue(undefined),
 }));
-vi.mock("../../src/ts/test/replay", () => ({ pauseReplay: vi.fn() }));
-vi.mock("../../src/ts/test/practise-words", () => ({
+vi.mock("../../src/features/typing/runtime/replay", () => ({
+  pauseReplay: vi.fn(),
+}));
+vi.mock("../../src/features/typing/runtime/practise-words", () => ({
   before: { mode: null },
   resetBefore: vi.fn(),
 }));
-vi.mock("../../src/ts/test/today-tracker", () => ({ addSeconds: vi.fn() }));
-vi.mock("../../src/ts/test/result", () => ({
+vi.mock("../../src/features/typing/runtime/today-tracker", () => ({
+  addSeconds: vi.fn(),
+}));
+vi.mock("../../src/features/typing/runtime/result", () => ({
   update: mocks.resultUpdate,
   updateRetrySaving: mocks.retryUpdate,
   updateTodayTracker: vi.fn(),
@@ -260,7 +264,7 @@ import {
   retrySavingResult,
   startTest,
   useTestLogicEvents,
-} from "../../src/ts/test/test-logic";
+} from "../../src/features/typing/runtime/test-logic";
 
 let disposeRuntime: () => void;
 afterEach(() => disposeRuntime());

@@ -89,12 +89,14 @@ vi.mock("../../../src/ts/states/test", () => ({
   getResultVisible: () => guards.result,
   isTestActive: () => guards.active,
 }));
-vi.mock("../../../src/ts/test/caret", () => ({
+vi.mock("../../../src/features/typing/runtime/caret", () => ({
   hide: ui.hideCaret,
   show: ui.showCaret,
 }));
-vi.mock("../../../src/ts/test/custom-text", () => ({ getData: () => ({}) }));
-vi.mock("../../../src/ts/test/test-ui", () => ({
+vi.mock("../../../src/features/typing/runtime/custom-text", () => ({
+  getData: () => ({}),
+}));
+vi.mock("../../../src/features/typing/runtime/test-ui", () => ({
   scrollTape: ui.scrollTape,
   centerActiveLine: ui.centerLine,
   updateHintsPositionDebounced: ui.hints,

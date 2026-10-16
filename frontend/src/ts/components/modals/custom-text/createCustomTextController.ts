@@ -14,8 +14,8 @@ import {
   showErrorNotification,
 } from "../../../states/notifications";
 import { getLoadedChallenge, setLoadedChallenge } from "../../../states/test";
-import * as CustomText from "../../../test/custom-text";
-import * as PractiseWords from "../../../test/practise-words";
+import * as CustomText from "../../../../features/typing/runtime/custom-text";
+import * as PractiseWords from "../../../../features/typing/runtime/practise-words";
 import { getBailOutHint } from "../../../utils/bail-out";
 import * as Strings from "../../../utils/strings";
 import {

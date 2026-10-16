@@ -31,7 +31,7 @@ vi.mock("animejs", () => ({
 vi.mock("../../../src/ts/utils/misc", () => ({
   applyReducedMotion: (duration: number) => duration,
 }));
-vi.mock("../../../src/ts/test/focus", () => ({ set: vi.fn() }));
+vi.mock("../../../src/features/typing/runtime/focus", () => ({ set: vi.fn() }));
 vi.mock("../../../src/ts/ui", () => ({ clearFontPreview: vi.fn() }));
 vi.mock("../../../src/ts/controllers/analytics-controller", () => ({
   log: vi.fn(),

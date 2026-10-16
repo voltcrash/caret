@@ -7,6 +7,10 @@ import {
   Show,
 } from "solid-js";
 
+import { toggleReplayDisplay } from "../../../../../features/typing/runtime/replay";
+import { toggleResultWords } from "../../../../../features/typing/runtime/result";
+import * as TestLogic from "../../../../../features/typing/runtime/test-logic";
+import * as TestScreenshot from "../../../../../features/typing/runtime/test-screenshot";
 import { getConfig } from "../../../../config/store";
 import { holdKeyboardForRestart } from "../../../../input/input-element";
 import { getActivePage, getIsScreenshotting } from "../../../../states/core";
@@ -14,10 +18,6 @@ import { showModal } from "../../../../states/modals";
 import { showNoticeNotification } from "../../../../states/notifications";
 import { resultState } from "../../../../states/result";
 import { getResultVisible } from "../../../../states/test";
-import { toggleReplayDisplay } from "../../../../test/replay";
-import { toggleResultWords } from "../../../../test/result";
-import * as TestLogic from "../../../../test/test-logic";
-import * as TestScreenshot from "../../../../test/test-screenshot";
 import { FaObject } from "../../../../types/font-awesome";
 import { cn } from "../../../../utils/cn";
 import { isCoarsePointer } from "../../../../utils/pointer";

@@ -17,8 +17,13 @@ import { z } from "zod";
 import type {
   WordLetter,
   WordsHistoryItem,
-} from "../../../../test/word-markup";
+} from "../../../../../features/typing/runtime/word-markup";
 
+import {
+  buildBurstHeatmap,
+  getBurstHeatmapWordColor,
+} from "../../../../../features/typing/runtime/result-view-model";
+import * as TestWords from "../../../../../features/typing/runtime/test-words";
 import { setConfig } from "../../../../config/setters";
 import { getConfig } from "../../../../config/store";
 import { useRef } from "../../../../hooks/useRef";
@@ -35,11 +40,6 @@ import { resultState } from "../../../../states/result";
 import { showSimpleModal } from "../../../../states/simple-modal";
 import { getLastEventLog, getResultVisible } from "../../../../states/test";
 import { getTheme } from "../../../../states/theme";
-import {
-  buildBurstHeatmap,
-  getBurstHeatmapWordColor,
-} from "../../../../test/result-view-model";
-import * as TestWords from "../../../../test/test-words";
 import { FaSolidIcon } from "../../../../types/font-awesome";
 import { cn, updateClassNames } from "../../../../utils/cn";
 import { get as getTypingSpeedUnit } from "../../../../utils/typing-speed-units";

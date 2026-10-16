@@ -1,8 +1,8 @@
 import { JSXElement, Show } from "solid-js";
 
+import * as TestLogic from "../../../../features/typing/runtime/test-logic";
 import { getConfig } from "../../../config/store";
 import { isTestActive } from "../../../states/test";
-import * as TestLogic from "../../../test/test-logic";
 import { Button } from "../../common/Button";
 
 // Touch-only equivalent of shift+enter finishing a zen test.

@@ -24,7 +24,7 @@ import {
   getResultsSinceDayOnce,
   waitForResultsReady,
 } from "../../src/ts/collections/results";
-import * as TodayTracker from "../../src/ts/test/today-tracker";
+import * as TodayTracker from "../../src/features/typing/runtime/today-tracker";
 
 const midnight = new Date();
 midnight.setHours(0, 0, 0, 0);

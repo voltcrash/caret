@@ -1,8 +1,8 @@
 import { shouldBlockInsertion } from "@oxytype/typing-core/input/engine";
 import { getMutableConfig } from "../../config/store";
-import * as TestUI from "../../test/test-ui";
-import * as TestWords from "../../test/test-words";
-import { isFunboxActiveWithProperty } from "../../test/funbox/list";
+import * as TestUI from "../../../features/typing/runtime/test-ui";
+import * as TestWords from "../../../features/typing/runtime/test-words";
+import { isFunboxActiveWithProperty } from "../../../features/typing/runtime/funbox/list";
 import { getInputElementValue } from "../input-element";
 import { isAwaitingNextWord } from "../state";
 import * as SlowTimer from "../../states/slow-timer";
@@ -14,7 +14,7 @@ import {
 } from "../../states/test";
 import { shouldGoToNextWord } from "../helpers/validation";
 import { getCommitCharacterType, normalizeData } from "../helpers/util";
-import { getCurrentInput } from "../../test/events/data";
+import { getCurrentInput } from "../../../features/typing/runtime/events/data";
 
 /**
  * Handles logic before inserting text into the input element.

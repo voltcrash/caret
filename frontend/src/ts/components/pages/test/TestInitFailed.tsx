@@ -1,7 +1,7 @@
 import { JSXElement, Show } from "solid-js";
 
+import * as TestLogic from "../../../../features/typing/runtime/test-logic";
 import { getTestInitError } from "../../../states/test";
-import * as TestLogic from "../../../test/test-logic";
 import { cn } from "../../../utils/cn";
 import { Button } from "../../common/Button";
 

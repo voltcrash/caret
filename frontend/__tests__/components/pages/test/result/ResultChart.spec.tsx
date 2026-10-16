@@ -10,7 +10,7 @@ const mocks = vi.hoisted(() => ({
   chart: { id: "chart" },
 }));
 
-vi.mock("../../../../../src/ts/test/result", () => ({
+vi.mock("../../../../../src/features/typing/runtime/result", () => ({
   toggleResultChartLegend: mocks.toggleResultChartLegend,
 }));
 vi.mock("@oxytype/typing-core/events/stats", () => ({

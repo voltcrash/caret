@@ -2,6 +2,8 @@ import { UserNameSchema } from "@oxytype/schemas/users";
 import { createSignal, For, JSXElement } from "solid-js";
 import { z } from "zod";
 
+import { toggleUserFakeChartData } from "../../../features/typing/runtime/result";
+import { disableSlowTimerFail } from "../../../features/typing/runtime/test-timer";
 import Ape from "../../ape";
 import { refetchInboxCollection } from "../../collections/inbox";
 import { addXp } from "../../db";
@@ -13,8 +15,6 @@ import {
   showSuccessNotification,
 } from "../../states/notifications";
 import { showSimpleModal } from "../../states/simple-modal";
-import { toggleUserFakeChartData } from "../../test/result";
-import { disableSlowTimerFail } from "../../test/test-timer";
 import { FaSolidIcon } from "../../types/font-awesome";
 import { setMediaQueryDebugLevel } from "../../ui";
 import { isProfilerMode, setProfilerMode } from "../../utils/profiler-mode";

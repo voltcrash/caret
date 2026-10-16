@@ -46,7 +46,7 @@ vi.mock("../../../src/ts/states/test", () => ({
 vi.mock("../../../src/ts/input/input-element", () => ({
   isInputElementFocused: () => state.inputFocused,
 }));
-vi.mock("../../../src/ts/test/test-ui", () => ({ focusWords }));
+vi.mock("../../../src/features/typing/runtime/test-ui", () => ({ focusWords }));
 vi.mock("../../../src/ts/states/overlay-visibility", () => ({
   isAnyPopupVisible: () => {
     popupVisible();
@@ -58,7 +58,7 @@ vi.mock("../../../src/ts/states/notifications", () => ({
   showErrorNotification: notify,
 }));
 
-vi.mock("../../../src/ts/test/focus", () => ({ set: unfocus }));
+vi.mock("../../../src/features/typing/runtime/focus", () => ({ set: unfocus }));
 
 import { GlobalEvents } from "../../../src/ts/components/core/GlobalEvents";
 import { connectionEvent } from "../../../src/ts/events/connection";

@@ -1,8 +1,8 @@
 import { getMutableConfig } from "../../config/store";
 import { getCustomTextIndicator } from "../../states/core";
-import * as CustomText from "../../test/custom-text";
+import * as CustomText from "../../../features/typing/runtime/custom-text";
 import { setBailedOut } from "../../states/test";
-import * as TestLogic from "../../test/test-logic";
+import * as TestLogic from "../../../features/typing/runtime/test-logic";
 import { Command, CommandsSubgroup } from "../types";
 
 function canBailOut(): boolean {

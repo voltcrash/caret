@@ -13,7 +13,7 @@ import * as PageTest from "../pages/test";
 import * as PageLoading from "../pages/loading";
 import * as PageTransition from "../states/page-transition";
 import { preloadPage } from "../components/pages/lazy-pages";
-import * as Focus from "../test/focus";
+import * as Focus from "../../features/typing/runtime/focus";
 import Page, {
   PageName,
   LoadingOptions,
@@ -28,7 +28,7 @@ import {
 } from "../states/leaderboard-selection";
 import { sync as syncServerConfiguration } from "../ape/server-configuration";
 import { getSnapshot } from "../db";
-import * as TodayTracker from "../test/today-tracker";
+import * as TodayTracker from "../../features/typing/runtime/today-tracker";
 import { isResultsReady } from "../states/results-ready";
 import {
   readSettingsGetParameters,

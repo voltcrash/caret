@@ -3,8 +3,8 @@ import { createAppMemo } from "../../app/application";
 import * as LiveStats from "@oxytype/typing-core/live-stats";
 import { getConfig } from "../config/store";
 import Format from "../singletons/format";
-import * as CustomText from "../test/custom-text";
-import * as TestWords from "../test/test-words";
+import * as CustomText from "../../features/typing/runtime/custom-text";
+import * as TestWords from "../../features/typing/runtime/test-words";
 import {
   currentLiveStats,
   getActiveWordIndex,

@@ -11,7 +11,7 @@ const bindings = vi.hoisted(() => ({
   cancelFrame: vi.fn(),
   updatePosition: vi.fn(),
 }));
-vi.mock("../../../../../src/ts/test/caret", () => ({
+vi.mock("../../../../../src/features/typing/runtime/caret", () => ({
   setCaret: (controller: CaretController) => {
     bindings.main = controller;
     return bindings.unregisterMain;
@@ -21,13 +21,13 @@ vi.mock("../../../../../src/ts/test/caret", () => ({
 vi.mock("../../../../../src/ts/states/test-dom", () => ({
   areTestElementsMounted: () => true,
 }));
-vi.mock("../../../../../src/ts/test/pace-caret", () => ({
+vi.mock("../../../../../src/features/typing/runtime/pace-caret", () => ({
   setCaret: (controller: CaretController) => {
     bindings.pace = controller;
     return bindings.unregisterPace;
   },
 }));
-vi.mock("../../../../../src/ts/test/test-words", () => ({
+vi.mock("../../../../../src/features/typing/runtime/test-words", () => ({
   words: { get: () => undefined },
 }));
 vi.mock("../../../../../src/ts/utils/debounced-animation-frame", () => ({

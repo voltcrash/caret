@@ -5,7 +5,7 @@ import {
   isTestRestarting,
   isResultCalculating,
 } from "../states/test";
-import { isFunboxActive } from "../test/funbox/list";
+import { isFunboxActive } from "../../features/typing/runtime/funbox/list";
 
 /** Router-independent test guard; hosts add their own transition state. */
 export function canNavigate(options: NavigateOptions = {}): boolean {

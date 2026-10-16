@@ -47,11 +47,11 @@ vi.mock("../../../../src/ts/states/test", () => ({
   isTestActive: () => state.active,
   setTestFocusState: callbacks.setFocus,
 }));
-vi.mock("../../../../src/ts/test/caret", () => ({
+vi.mock("../../../../src/features/typing/runtime/caret", () => ({
   show: callbacks.showCaret,
   hide: callbacks.hideCaret,
 }));
-vi.mock("../../../../src/ts/test/test-logic", () => ({
+vi.mock("../../../../src/features/typing/runtime/test-logic", () => ({
   restart: callbacks.restart,
 }));
 

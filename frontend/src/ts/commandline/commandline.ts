@@ -1,7 +1,7 @@
 import { getCommandlineState } from "../states/commandline";
 import { captureAccount, createAccountOwned } from "../../app/account-scope";
 import { onCleanup } from "solid-js";
-import * as Focus from "../test/focus";
+import * as Focus from "../../features/typing/runtime/focus";
 import * as CommandlineLists from "./lists";
 
 import { getMutableConfig } from "../config/store";

@@ -1,5 +1,7 @@
 import { onCleanup, onMount } from "solid-js";
 
+import * as Caret from "../../../../features/typing/runtime/caret";
+import { restart } from "../../../../features/typing/runtime/test-logic";
 import { getMutableConfig } from "../../../config/store";
 import { isInputElementFocused } from "../../../input/input-element";
 import { bindInputListenersTo } from "../../../input/listeners";
@@ -8,8 +10,6 @@ import {
   isTestActive,
   setTestFocusState,
 } from "../../../states/test";
-import * as Caret from "../../../test/caret";
-import { restart } from "../../../test/test-logic";
 
 export function TestPageLifecycle(props: { input: HTMLTextAreaElement }): null {
   onMount(() => {

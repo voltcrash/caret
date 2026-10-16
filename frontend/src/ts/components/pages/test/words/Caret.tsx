@@ -1,13 +1,13 @@
 import { JSXElement, onCleanup, onMount } from "solid-js";
 
-import { getMutableConfig } from "../../../../config/store";
-import { configEvent } from "../../../../events/config";
-import { areTestElementsMounted } from "../../../../states/test-dom";
 import {
   setCaret as setMainCaret,
   updatePosition as updateMainCaretPosition,
-} from "../../../../test/caret";
-import { setCaret as setPaceCaret } from "../../../../test/pace-caret";
+} from "../../../../../features/typing/runtime/caret";
+import { setCaret as setPaceCaret } from "../../../../../features/typing/runtime/pace-caret";
+import { getMutableConfig } from "../../../../config/store";
+import { configEvent } from "../../../../events/config";
+import { areTestElementsMounted } from "../../../../states/test-dom";
 import { cn } from "../../../../utils/cn";
 import { cancelPendingAnimationFrame } from "../../../../utils/debounced-animation-frame";
 import { CaretController } from "./caret-controller";

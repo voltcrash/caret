@@ -48,7 +48,9 @@ vi.mock("../../../src/ts/states/quote-report", () => ({
 vi.mock("../../../src/ts/states/simple-modal", () => ({
   showSimpleModal: vi.fn(),
 }));
-vi.mock("../../../src/ts/test/test-logic", () => ({ restart: vi.fn() }));
+vi.mock("../../../src/features/typing/runtime/test-logic", () => ({
+  restart: vi.fn(),
+}));
 
 import { QuoteSearchModal } from "../../../src/ts/components/modals/QuoteSearchModal";
 

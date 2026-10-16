@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vite-plus/test";
 
-vi.mock("../../../src/ts/test/test-stats", () => ({
+vi.mock("../../../src/features/typing/runtime/test-stats", () => ({
   start: 1000,
 }));
 
@@ -19,7 +19,7 @@ vi.mock("../../../src/ts/config/store", () => ({
   getConfig: {},
 }));
 
-vi.mock("../../../src/ts/test/test-words", () => {
+vi.mock("../../../src/features/typing/runtime/test-words", () => {
   type CommitChar = " " | "\n" | "";
   type Word = { text: string; textWithCommit: string; commit: CommitChar };
   const list: Word[] = [];
@@ -48,7 +48,7 @@ vi.mock("../../../src/ts/test/test-words", () => {
 });
 
 const customTextLimit = { mode: "words" as "words" | "time", value: 0 };
-vi.mock("../../../src/ts/test/custom-text", () => ({
+vi.mock("../../../src/features/typing/runtime/custom-text", () => ({
   getLimit: () => customTextLimit,
 }));
 
@@ -67,7 +67,7 @@ import {
   cleanupData,
   buildEventLog,
   getTestSession,
-} from "../../../src/ts/test/events/data";
+} from "../../../src/features/typing/runtime/events/data";
 import {
   findInputValueMismatches,
   getEventsForWord,
@@ -102,8 +102,8 @@ import type {
 } from "@oxytype/typing-core/events/types";
 import { getMutableConfig } from "../../../src/ts/config/store";
 import { Keycode } from "../../../src/ts/constants/keys";
-import { words as TestWords } from "../../../src/ts/test/test-words";
-import { isFunboxActiveWithProperty } from "../../../src/ts/test/funbox/list";
+import { words as TestWords } from "../../../src/features/typing/runtime/test-words";
+import { isFunboxActiveWithProperty } from "../../../src/features/typing/runtime/funbox/list";
 
 // mirror the generator: each word carries a trailing space separator unless it
 // already ends with a newline, the nospace funbox is active, or it's the last

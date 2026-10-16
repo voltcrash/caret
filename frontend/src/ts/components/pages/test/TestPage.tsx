@@ -1,6 +1,7 @@
 import { JSXElement, onCleanup, onMount } from "solid-js";
 import { spread } from "solid-js/web";
 
+import { focusWords } from "../../../../features/typing/runtime/test-ui";
 import { useWordsInputScroll } from "../../../hooks/useWordsInputScroll";
 import { isInputElementFocused } from "../../../input/input-element";
 import { isWordsWrapperVisible } from "../../../states/funbox";
@@ -10,7 +11,6 @@ import {
   getWordsWrapperHeight,
   getWordsInputStyle,
 } from "../../../states/words-layout";
-import { focusWords } from "../../../test/test-ui";
 import { cn } from "../../../utils/cn";
 import { isCoarsePointer } from "../../../utils/pointer";
 import { CapsWarning } from "./CapsWarning";

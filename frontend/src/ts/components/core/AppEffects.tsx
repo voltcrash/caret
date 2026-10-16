@@ -12,6 +12,9 @@ import { debounce, throttle } from "throttle-debounce";
 import { envConfig } from "virtual:env-config";
 
 import { preferencesReadiness } from "../../../app/readiness";
+import * as Caret from "../../../features/typing/runtime/caret";
+import * as CustomText from "../../../features/typing/runtime/custom-text";
+import * as TestUI from "../../../features/typing/runtime/test-ui";
 import * as ServerConfiguration from "../../ape/server-configuration";
 import { getMutableConfig } from "../../config/store";
 import { getAcceptedCookies } from "../../cookies";
@@ -27,9 +30,6 @@ import {
 import { isModalOpen, showModal } from "../../states/modals";
 import { isFixingSkillIssue } from "../../states/skill-issue";
 import { getResultVisible, isTestActive } from "../../states/test";
-import * as Caret from "../../test/caret";
-import * as CustomText from "../../test/custom-text";
-import * as TestUI from "../../test/test-ui";
 import { cn, updateClassNames } from "../../utils/cn";
 import { onDOMReady } from "../../utils/dom-ready";
 import { isDevEnvironment } from "../../utils/env";

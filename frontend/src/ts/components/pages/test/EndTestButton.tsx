@@ -1,11 +1,11 @@
 import { createSignal, JSXElement, onCleanup, Show } from "solid-js";
 
+import * as CustomText from "../../../../features/typing/runtime/custom-text";
+import * as TestLogic from "../../../../features/typing/runtime/test-logic";
 import { getConfig } from "../../../config/store";
 import { createEffectOn } from "../../../hooks/effects";
 import { getCustomTextIndicator } from "../../../states/core";
 import { isTestActive, setBailedOut } from "../../../states/test";
-import * as CustomText from "../../../test/custom-text";
-import * as TestLogic from "../../../test/test-logic";
 import { canQuickRestart } from "../../../utils/quick-restart";
 import { Button } from "../../common/Button";
 

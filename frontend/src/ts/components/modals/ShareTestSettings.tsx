@@ -6,10 +6,10 @@ import { createForm } from "@tanstack/solid-form";
 import { compressToURI } from "lz-ts";
 import { JSXElement, Show } from "solid-js";
 
+import * as CustomText from "../../../features/typing/runtime/custom-text";
 import { getConfig } from "../../config/store";
 import { showSuccessNotification } from "../../states/notifications";
 import { getCurrentQuote } from "../../states/test";
-import * as CustomText from "../../test/custom-text";
 import { cn } from "../../utils/cn";
 import { getMode2 } from "../../utils/misc";
 import { capitalizeFirstLetter } from "../../utils/strings";

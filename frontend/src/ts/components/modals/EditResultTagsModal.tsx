@@ -1,5 +1,6 @@
 import { createEffect, createSignal, For } from "solid-js";
 
+import { updateTagsAfterEdit } from "../../../features/typing/runtime/result";
 import { updateTags } from "../../collections/results";
 import { useTagsLiveQuery } from "../../collections/tags";
 import { getSelectedResult } from "../../states/edit-result-tags";
@@ -9,7 +10,6 @@ import {
   showErrorNotification,
   showSuccessNotification,
 } from "../../states/notifications";
-import { updateTagsAfterEdit } from "../../test/result";
 import { areUnsortedArraysEqual } from "../../utils/arrays";
 import { createErrorMessage } from "../../utils/error";
 import { AnimatedModal } from "../common/AnimatedModal";

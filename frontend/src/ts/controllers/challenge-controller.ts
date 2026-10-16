@@ -4,8 +4,8 @@ import {
   showNoticeNotification,
   showSuccessNotification,
 } from "../states/notifications";
-import * as CustomText from "../test/custom-text";
-import * as Funbox from "../test/funbox/funbox";
+import * as CustomText from "../../features/typing/runtime/custom-text";
+import * as Funbox from "../../features/typing/runtime/funbox/funbox";
 
 import { setConfig } from "../config/setters";
 import { getMutableConfig } from "../config/store";

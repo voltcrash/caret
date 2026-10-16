@@ -4,7 +4,7 @@ vi.mock("../../src/ts/states/test", () => ({
   getActiveWordIndex: () => 0,
 }));
 
-import { words } from "../../src/ts/test/test-words";
+import { words } from "../../src/features/typing/runtime/test-words";
 
 describe("test-words", () => {
   beforeEach(() => {

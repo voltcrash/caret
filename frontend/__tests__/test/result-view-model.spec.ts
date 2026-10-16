@@ -9,7 +9,7 @@ import {
   buildResultStats,
   buildSpeedStats,
   type ResultStatsOptions,
-} from "../../src/ts/test/result-view-model";
+} from "../../src/features/typing/runtime/result-view-model";
 
 const { replaceConfig } = __testing;
 

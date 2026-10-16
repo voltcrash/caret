@@ -32,12 +32,12 @@ import {
   getTypingTestElement,
 } from "../../../../states/test-dom";
 import { setWordsInputStyle } from "../../../../states/words-layout";
-import * as Caret from "../../../../test/caret";
-import { getCurrentInput } from "../../../../test/events/data";
-import { getLiveCachedAccuracy } from "../../../../test/events/live-cache";
-import * as Focus from "../../../../test/focus";
-import * as LayoutfluidFunboxTimer from "../../../../test/funbox/layoutfluid-funbox-timer";
-import * as TestWords from "../../../../test/test-words";
+import * as Caret from "../../../../../features/typing/runtime/caret";
+import { getCurrentInput } from "../../../../../features/typing/runtime/events/data";
+import { getLiveCachedAccuracy } from "../../../../../features/typing/runtime/events/live-cache";
+import * as Focus from "../../../../../features/typing/runtime/focus";
+import * as LayoutfluidFunboxTimer from "../../../../../features/typing/runtime/funbox/layoutfluid-funbox-timer";
+import * as TestWords from "../../../../../features/typing/runtime/test-words";
 import { cancelPendingAnimationFramesStartingWith } from "../../../../utils/debounced-animation-frame";
 import * as Misc from "../../../../utils/misc";
 import { isCoarsePointer } from "../../../../utils/pointer";

@@ -1,5 +1,5 @@
-import * as TestLogic from "../test/test-logic";
-import * as Funbox from "../test/funbox/funbox";
+import * as TestLogic from "../../features/typing/runtime/test-logic";
+import * as Funbox from "../../features/typing/runtime/funbox/funbox";
 import Page from "./page";
 import { blurInputElement } from "../input/input-element";
 import { resetIncompleteTests } from "../states/test";

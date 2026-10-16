@@ -1,5 +1,7 @@
 import { onCleanup, onMount } from "solid-js";
 
+import * as Focus from "../../../features/typing/runtime/focus";
+import { focusWords } from "../../../features/typing/runtime/test-ui";
 import { getMutableConfig } from "../../config/store";
 import { ModifierKeys } from "../../constants/modifier-keys";
 import { updateCurrentCode } from "../../controllers/sound-controller";
@@ -10,8 +12,6 @@ import { showErrorNotification } from "../../states/notifications";
 import { isAnyPopupVisible } from "../../states/overlay-visibility";
 import * as PageTransition from "../../states/page-transition";
 import { getFocus, getResultVisible } from "../../states/test";
-import * as Focus from "../../test/focus";
-import { focusWords } from "../../test/test-ui";
 import { isDevEnvironment } from "../../utils/env";
 
 export function GlobalEvents(): null {

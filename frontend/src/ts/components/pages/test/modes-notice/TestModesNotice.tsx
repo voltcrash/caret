@@ -1,5 +1,6 @@
 import { createMemo, lazy, Show, Suspense } from "solid-js";
 
+import { getActiveFunboxNames } from "../../../../../features/typing/runtime/funbox/list";
 import * as Commandline from "../../../../commandline/open";
 import { getConfig } from "../../../../config/store";
 import {
@@ -18,7 +19,6 @@ import {
   wordsHaveNewline,
   wordsHaveTab,
 } from "../../../../states/test";
-import { getActiveFunboxNames } from "../../../../test/funbox/list";
 import { cn } from "../../../../utils/cn";
 import {
   getLanguageDisplayString,

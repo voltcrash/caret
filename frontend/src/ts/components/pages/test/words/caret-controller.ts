@@ -10,7 +10,7 @@ import {
   getWordsElement as getWordsCache,
   getWordsWrapperElement as getWordsWrapperCache,
 } from "../../../../states/test-dom";
-import * as TestWords from "../../../../test/test-words";
+import * as TestWords from "../../../../../features/typing/runtime/test-words";
 
 let lockedMainCaretInTape = true;
 let caretDebug = false;

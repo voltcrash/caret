@@ -1,6 +1,6 @@
 import { evaluateInsert } from "@oxytype/typing-core/input/engine";
-import * as TestUI from "../../test/test-ui";
-import * as TestWords from "../../test/test-words";
+import * as TestUI from "../../../features/typing/runtime/test-ui";
+import * as TestWords from "../../../features/typing/runtime/test-words";
 import {
   getInputElementValue,
   replaceInputElementLastValueChar,
@@ -13,10 +13,10 @@ import {
   checkIfFinished,
 } from "../helpers/fail-or-finish";
 import { removeLanguageSize } from "../../utils/strings";
-import * as TestLogic from "../../test/test-logic";
+import * as TestLogic from "../../../features/typing/runtime/test-logic";
 import { getMutableConfig } from "../../config/store";
 import { flash } from "../../events/keymap";
-import * as WeakSpot from "../../test/weak-spot";
+import * as WeakSpot from "../../../features/typing/runtime/weak-spot";
 import * as CompositionState from "../../states/composition";
 import {
   isCorrectShiftUsed,
@@ -27,9 +27,12 @@ import {
 import { showNoticeNotification } from "../../states/notifications";
 import { goToNextWord, goToPreviousWord } from "../helpers/word-navigation";
 import { onBeforeInsertText } from "./before-insert-text";
-import { getCurrentInput, logTestEvent } from "../../test/events/data";
+import {
+  getCurrentInput,
+  logTestEvent,
+} from "../../../features/typing/runtime/events/data";
 import { getCommitCharacterType, normalizeData } from "../helpers/util";
-import { areAllWordsGenerated } from "../../test/words-generator";
+import { areAllWordsGenerated } from "../../../features/typing/runtime/words-generator";
 import { getActiveWordIndex, isTestActive } from "../../states/test";
 import { DeleteInputType } from "../helpers/input-type";
 

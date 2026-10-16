@@ -22,7 +22,7 @@ import {
   getPaceCaretElement,
   getTypingTestElement,
 } from "../../../../states/test-dom";
-import * as Caret from "../../../../test/caret";
+import * as Caret from "../../../../../features/typing/runtime/caret";
 import { getWordsFontSize } from "../../../../utils/words-font";
 
 export function updateWordWrapperClasses(): void {

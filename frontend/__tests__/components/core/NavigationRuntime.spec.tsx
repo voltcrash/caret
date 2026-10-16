@@ -43,7 +43,7 @@ vi.mock("../../../src/ts/states/test", () => ({
 vi.mock("../../../src/ts/states/page-transition", () => ({
   get: () => state.transition,
 }));
-vi.mock("../../../src/ts/test/funbox/list", () => ({
+vi.mock("../../../src/features/typing/runtime/funbox/list", () => ({
   isFunboxActive: () => state.noQuit,
 }));
 vi.mock("../../../src/ts/states/notifications", () => ({

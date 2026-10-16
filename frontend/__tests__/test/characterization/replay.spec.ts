@@ -25,9 +25,9 @@ import { resultState, setResultState } from "../../../src/ts/states/result";
 import {
   logTestEvent,
   resetTestEvents,
-} from "../../../src/ts/test/events/data";
-import * as Replay from "../../../src/ts/test/replay";
-import * as TestWords from "../../../src/ts/test/test-words";
+} from "../../../src/features/typing/runtime/events/data";
+import * as Replay from "../../../src/features/typing/runtime/replay";
+import * as TestWords from "../../../src/features/typing/runtime/test-words";
 
 const fixture = JSON.parse(
   readFileSync(

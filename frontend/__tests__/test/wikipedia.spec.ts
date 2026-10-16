@@ -19,7 +19,7 @@ vi.mock("../../src/ts/states/loader-bar", () => ({
 }));
 
 import { getLanguage } from "../../src/ts/utils/json-data";
-import { getSection } from "../../src/ts/test/wikipedia";
+import { getSection } from "../../src/features/typing/runtime/wikipedia";
 
 afterEach(() => {
   vi.unstubAllGlobals();

@@ -8,14 +8,14 @@ import * as Lifecycle from "../../src/ts/config/lifecycle";
 import * as ConfigUtils from "../../src/ts/config/utils";
 import * as Persistence from "../../src/ts/config/persistence";
 import * as Notifications from "../../src/ts/states/notifications";
-import * as TestLogic from "../../src/ts/test/test-logic";
+import * as TestLogic from "../../src/features/typing/runtime/test-logic";
 import * as Tags from "../../src/ts/collections/tags";
 import * as Presets from "../../src/ts/collections/presets";
 
-vi.mock("../../src/ts/test/test-logic", () => ({
+vi.mock("../../src/features/typing/runtime/test-logic", () => ({
   restart: vi.fn(),
 }));
-vi.mock("../../src/ts/test/pace-caret", () => ({
+vi.mock("../../src/features/typing/runtime/pace-caret", () => ({
   //
 }));
 

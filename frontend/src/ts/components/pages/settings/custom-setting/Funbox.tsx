@@ -1,11 +1,11 @@
 import { checkCompatibility, getAllFunboxes } from "@oxytype/funbox";
 import { For, JSXElement, type JSX } from "solid-js";
 
+import { getActiveFunboxNames } from "../../../../../features/typing/runtime/funbox/list";
 // import { canSetFunboxWithConfig } from "../../../../config/funbox-validation";
 import { configMetadata } from "../../../../config/metadata";
 import { toggleFunbox } from "../../../../config/setters";
 import { getConfig } from "../../../../config/store";
-import { getActiveFunboxNames } from "../../../../test/funbox/list";
 import { Button } from "../../../common/Button";
 import { SearchableSetting } from "../SearchableSetting";
 

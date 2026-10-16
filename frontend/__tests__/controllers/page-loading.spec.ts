@@ -40,10 +40,10 @@ vi.mock("../../src/ts/db", () => ({ getSnapshot: () => ({}) }));
 vi.mock("../../src/ts/ape/server-configuration", () => ({
   configurationPromise: Promise.resolve(),
 }));
-vi.mock("../../src/ts/test/today-tracker", () => ({
+vi.mock("../../src/features/typing/runtime/today-tracker", () => ({
   addAllFromToday: vi.fn(),
 }));
-vi.mock("../../src/ts/test/focus", () => ({ set: vi.fn() }));
+vi.mock("../../src/features/typing/runtime/focus", () => ({ set: vi.fn() }));
 vi.mock("../../src/ts/utils/misc", () => ({
   applyReducedMotion: (duration: number) => duration,
 }));

@@ -4,7 +4,7 @@ import {
   buildWordLetters,
   buildWordsHistory,
   type WordLetter,
-} from "../../src/ts/test/word-markup";
+} from "../../src/features/typing/runtime/word-markup";
 
 // ported from the P0.3 test-ui.spec words history baseline
 

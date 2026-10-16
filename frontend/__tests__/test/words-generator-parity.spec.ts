@@ -76,10 +76,10 @@ vi.mock("../../src/ts/states/loader-bar", () => ({
   showLoaderBar: vi.fn(),
   hideLoaderBar: vi.fn(),
 }));
-vi.mock("../../src/ts/test/practise-words", () => ({
+vi.mock("../../src/features/typing/runtime/practise-words", () => ({
   before: { mode: null },
 }));
-vi.mock("../../src/ts/test/custom-text", () => ({
+vi.mock("../../src/features/typing/runtime/custom-text", () => ({
   getText: () => state.customText.text,
   getMode: () => state.customText.mode,
   getLimit: () => state.customText.limit,
@@ -96,8 +96,8 @@ vi.mock("../../src/ts/utils/json-data", async (importOriginal) => ({
 
 import { getMutableConfig } from "../../src/ts/config/store";
 import { getDefaultConfig } from "../../src/ts/constants/default-config";
-import * as WordsGenerator from "../../src/ts/test/words-generator";
-import * as TestWords from "../../src/ts/test/test-words";
+import * as WordsGenerator from "../../src/features/typing/runtime/words-generator";
+import * as TestWords from "../../src/features/typing/runtime/test-words";
 import * as JSONData from "../../src/ts/utils/json-data";
 import { Config as ConfigType } from "@oxytype/schemas/configs";
 

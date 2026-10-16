@@ -1,5 +1,9 @@
 import { onCleanup } from "solid-js";
 
+import {
+  updateAltGrState,
+  resetAltGrState,
+} from "../../../features/typing/runtime/layout-emulator";
 import { createEffectOn } from "../../hooks/effects";
 import { getActivePage } from "../../states/core";
 import {
@@ -7,7 +11,6 @@ import {
   useCapsLockEvents,
   resetModifierState,
 } from "../../states/modifiers";
-import { updateAltGrState, resetAltGrState } from "../../test/layout-emulator";
 
 export function ModifierEvents(): null {
   useCapsLockEvents();

@@ -9,9 +9,11 @@ import {
 releaseTestApplication();
 
 it("imports typing adapters without a mounted app, then recreates and stops each session on remount", async () => {
-  const { getTestSession } = await import("../../src/ts/test/events/data");
-  const { words } = await import("../../src/ts/test/test-words");
-  await import("../../src/ts/test/test-timer");
+  const { getTestSession } =
+    await import("../../src/features/typing/runtime/events/data");
+  const { words } =
+    await import("../../src/features/typing/runtime/test-words");
+  await import("../../src/features/typing/runtime/test-timer");
   const first = createTestApplication();
   const release = mountApplication(first.application);
   const session = getTestSession();

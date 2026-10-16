@@ -1,6 +1,9 @@
 import { createEffect, onCleanup, onMount } from "solid-js";
 import { type JSXElement } from "solid-js";
 
+import { buildEventLog } from "../features/typing/runtime/events/data";
+import * as Focus from "../features/typing/runtime/focus";
+import * as TestTimer from "../features/typing/runtime/test-timer";
 import { onAuthStateChanged } from "../ts/auth";
 import { init, observeAuthSession } from "../ts/auth-client";
 import { getMutableConfig } from "../ts/config/store";
@@ -11,9 +14,6 @@ import * as Sentry from "../ts/sentry";
 import { useConnectionEvents } from "../ts/states/connection";
 import { enable } from "../ts/states/glarses-mode";
 import { getLastEventLog } from "../ts/states/test";
-import { buildEventLog } from "../ts/test/events/data";
-import * as Focus from "../ts/test/focus";
-import * as TestTimer from "../ts/test/test-timer";
 import * as Logger from "../ts/utils/logger";
 import { addToGlobal } from "../ts/utils/misc";
 import BrowserRuntime from "./platform-runtime.client";
@@ -42,7 +42,7 @@ export function LegacyRuntime(): JSXElement {
         glarsesMode: enable,
         enableTimerDebug: TestTimer.enableTimerDebug,
         toggleSmoothedBurst: async () => {
-          const Result = await import("../ts/test/result");
+          const Result = await import("../features/typing/runtime/result");
           Result.toggleSmoothedBurst();
         },
         toggleDebugLogs: Logger.toggleDebugLogs,

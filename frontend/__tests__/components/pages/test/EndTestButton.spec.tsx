@@ -10,7 +10,9 @@ import {
 
 const { finish } = vi.hoisted(() => ({ finish: vi.fn() }));
 
-vi.mock("../../../../src/ts/test/test-logic", () => ({ finish }));
+vi.mock("../../../../src/features/typing/runtime/test-logic", () => ({
+  finish,
+}));
 vi.mock("../../../../src/ts/config/store", () => ({
   getConfig: { mode: "time", time: 0, words: 10 },
 }));
@@ -22,7 +24,7 @@ vi.mock("../../../../src/ts/states/test", async () => {
   const [isTestActive, setTestActive] = createSignal(false);
   return { isTestActive, setTestActive, setBailedOut: vi.fn() };
 });
-vi.mock("../../../../src/ts/test/custom-text", () => ({
+vi.mock("../../../../src/features/typing/runtime/custom-text", () => ({
   getData: () => ({ limit: { mode: "word", value: 0 } }),
 }));
 

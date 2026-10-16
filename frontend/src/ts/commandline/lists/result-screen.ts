@@ -1,15 +1,15 @@
-import * as TestLogic from "../../test/test-logic";
-import { toggleResultWords } from "../../test/result";
+import * as TestLogic from "../../../features/typing/runtime/test-logic";
+import { toggleResultWords } from "../../../features/typing/runtime/result";
 import { showModal } from "../../states/modals";
 import {
   showErrorNotification,
   showSuccessNotification,
 } from "../../states/notifications";
-import * as TestWords from "../../test/test-words";
+import * as TestWords from "../../../features/typing/runtime/test-words";
 import { getMutableConfig } from "../../config/store";
-import * as PractiseWords from "../../test/practise-words";
+import * as PractiseWords from "../../../features/typing/runtime/practise-words";
 import { Command, CommandsSubgroup } from "../types";
-import * as TestScreenshot from "../../test/test-screenshot";
+import * as TestScreenshot from "../../../features/typing/runtime/test-screenshot";
 import { getInputHistory } from "@oxytype/typing-core/events/stats";
 import { getLastEventLog, getResultVisible } from "../../states/test";
 

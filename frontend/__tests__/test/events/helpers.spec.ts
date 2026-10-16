@@ -12,7 +12,7 @@ import {
   findInputValueMismatches,
   getInputFromDom,
 } from "@oxytype/typing-core/events/helpers";
-import { getTestEventCode } from "../../../src/ts/test/events/helpers";
+import { getTestEventCode } from "../../../src/features/typing/runtime/events/helpers";
 import type { InputEvent } from "@oxytype/typing-core/events/types";
 import type { InsertInputType } from "../../../src/ts/input/helpers/input-type";
 

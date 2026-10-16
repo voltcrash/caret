@@ -1,21 +1,21 @@
 import { getMutableConfig } from "../../config/store";
-import * as TestLogic from "../../test/test-logic";
-import { getCharFromEvent } from "../../test/layout-emulator";
+import * as TestLogic from "../../../features/typing/runtime/test-logic";
+import { getCharFromEvent } from "../../../features/typing/runtime/layout-emulator";
 import { emulateInsertText } from "./insert-text";
 import {
   showNoticeNotification,
   showErrorNotification,
 } from "../../states/notifications";
 import * as KeyConverter from "../../utils/key-converter";
-import * as ShiftTracker from "../../test/shift-tracker";
+import * as ShiftTracker from "../../../features/typing/runtime/shift-tracker";
 import { canQuickRestart } from "../../utils/quick-restart";
-import * as CustomText from "../../test/custom-text";
+import * as CustomText from "../../../features/typing/runtime/custom-text";
 import {
   getLastBailoutAttempt,
   setCorrectShiftUsed,
   setLastBailoutAttempt,
 } from "../state";
-import { getActiveFunboxesWithFunction } from "../../test/funbox/list";
+import { getActiveFunboxesWithFunction } from "../../../features/typing/runtime/funbox/list";
 import { Keycode } from "../../constants/keys";
 import {
   setBailedOut,
@@ -24,8 +24,8 @@ import {
 } from "../../states/test";
 
 import { getCustomTextIndicator } from "../../states/core";
-import { logTestEvent } from "../../test/events/data";
-import { getTestEventCode } from "../../test/events/helpers";
+import { logTestEvent } from "../../../features/typing/runtime/events/data";
+import { getTestEventCode } from "../../../features/typing/runtime/events/helpers";
 
 async function handleTab(e: KeyboardEvent, now: number): Promise<void> {
   if (wordsHaveTab() && !e.shiftKey) {

@@ -97,7 +97,7 @@ vi.mock("../../../src/ts/utils/json-data", () => ({
     ({ name: "english", words: ["hello", "world"] }) as LanguageObject,
   checkIfLanguageSupportsZipf: async () => "yes",
 }));
-vi.mock("../../../src/ts/test/test-ui", () => ({
+vi.mock("../../../src/features/typing/runtime/test-ui", () => ({
   onTestStart: vi.fn(),
   fadeOutForRestart: vi.fn().mockResolvedValue(undefined),
   fadeInAfterRestart: vi.fn().mockResolvedValue(undefined),
@@ -107,7 +107,7 @@ vi.mock("../../../src/ts/test/test-ui", () => ({
   appendEmptyWordElement: vi.fn(),
   addWord: vi.fn(),
 }));
-vi.mock("../../../src/ts/test/words-generator", () => ({
+vi.mock("../../../src/features/typing/runtime/words-generator", () => ({
   generateWords: async () => ({
     words: [...mocks.generatedWords],
     sectionIndexes: mocks.generatedWords.map(() => 0),
@@ -117,7 +117,7 @@ vi.mock("../../../src/ts/test/words-generator", () => ({
   areAllWordsGenerated: () => true,
   appendCommitCharacter: (word: string) => `${word} `,
 }));
-vi.mock("../../../src/ts/test/funbox/list", () => ({
+vi.mock("../../../src/features/typing/runtime/funbox/list", () => ({
   getActiveFunboxes: () => [],
   getActiveFunboxesWithFunction: () => [],
   getActiveFunboxNames: () => [],
@@ -125,30 +125,34 @@ vi.mock("../../../src/ts/test/funbox/list", () => ({
   isFunboxActive: () => false,
   isFunboxActiveWithProperty: () => false,
 }));
-vi.mock("../../../src/ts/test/funbox/active", () => ({
+vi.mock("../../../src/features/typing/runtime/funbox/active", () => ({
   isFunboxActiveWithProperty: () => false,
 }));
-vi.mock("../../../src/ts/test/funbox/funbox", () => ({
+vi.mock("../../../src/features/typing/runtime/funbox/funbox", () => ({
   rememberSettings: vi.fn().mockResolvedValue(undefined),
   activate: vi.fn().mockResolvedValue(undefined),
   toggleScript: vi.fn(),
 }));
-vi.mock("../../../src/ts/test/pace-caret", () => ({
+vi.mock("../../../src/features/typing/runtime/pace-caret", () => ({
   start: mocks.paceStart,
   reset: mocks.paceReset,
   init: mocks.paceInit,
   setLastTestWpm: mocks.paceLastWpm,
 }));
-vi.mock("../../../src/ts/test/caret", () => ({ hide: mocks.caretHide }));
-vi.mock("../../../src/ts/test/replay", () => ({ pauseReplay: vi.fn() }));
-vi.mock("../../../src/ts/test/practise-words", () => ({
+vi.mock("../../../src/features/typing/runtime/caret", () => ({
+  hide: mocks.caretHide,
+}));
+vi.mock("../../../src/features/typing/runtime/replay", () => ({
+  pauseReplay: vi.fn(),
+}));
+vi.mock("../../../src/features/typing/runtime/practise-words", () => ({
   before: { mode: null },
   resetBefore: vi.fn(),
 }));
-vi.mock("../../../src/ts/test/today-tracker", () => ({
+vi.mock("../../../src/features/typing/runtime/today-tracker", () => ({
   addSeconds: mocks.todaySeconds,
 }));
-vi.mock("../../../src/ts/test/result", () => ({
+vi.mock("../../../src/features/typing/runtime/result", () => ({
   update: mocks.resultUpdate,
   updateRetrySaving: vi.fn(),
   updateTodayTracker: vi.fn(),
@@ -229,14 +233,14 @@ import { getDefaultConfig } from "../../../src/ts/constants/default-config";
 import {
   getAllTestEvents,
   logTestEvent,
-} from "../../../src/ts/test/events/data";
+} from "../../../src/features/typing/runtime/events/data";
 import * as SlowTimer from "../../../src/ts/states/slow-timer";
-import * as CustomText from "../../../src/ts/test/custom-text";
+import * as CustomText from "../../../src/features/typing/runtime/custom-text";
 import {
   restart,
   startTest,
   useTestLogicEvents,
-} from "../../../src/ts/test/test-logic";
+} from "../../../src/features/typing/runtime/test-logic";
 
 function type(
   now: number,

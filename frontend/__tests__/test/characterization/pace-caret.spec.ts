@@ -65,14 +65,14 @@ vi.mock("../../../src/ts/components/pages/test/words/caret-controller", () => ({
 vi.mock("../../../src/ts/db", () => ({
   getLocalPB: () => mocks.localPb,
 }));
-vi.mock("../../../src/ts/test/funbox/list", () => ({
+vi.mock("../../../src/features/typing/runtime/funbox/list", () => ({
   getActiveFunboxes: () => [],
 }));
 
 import { getMutableConfig } from "../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../src/ts/constants/default-config";
-import * as PaceCaret from "../../../src/ts/test/pace-caret";
-import * as TestWords from "../../../src/ts/test/test-words";
+import * as PaceCaret from "../../../src/features/typing/runtime/pace-caret";
+import * as TestWords from "../../../src/features/typing/runtime/test-words";
 
 function positions(): string[] {
   return mocks.goTo

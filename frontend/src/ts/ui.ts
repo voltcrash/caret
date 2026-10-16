@@ -5,7 +5,7 @@ import {
   setFontFamily,
   setMediaQueryDebugLevel as setDebugLevel,
 } from "./states/app";
-import * as TestUI from "./test/test-ui";
+import * as TestUI from "../features/typing/runtime/test-ui";
 
 let isPreviewingFont = false;
 export function previewFontFamily(font: FontName): void {

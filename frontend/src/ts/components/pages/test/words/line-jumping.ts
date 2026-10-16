@@ -6,8 +6,8 @@ import { animateAsync } from "../../../../anim";
 import { getMutableConfig } from "../../../../config/store";
 import { getActiveWordIndex } from "../../../../states/test";
 import { getWordsElement as getWordsEl } from "../../../../states/test-dom";
-import * as Caret from "../../../../test/caret";
-import * as PaceCaret from "../../../../test/pace-caret";
+import * as Caret from "../../../../../features/typing/runtime/caret";
+import * as PaceCaret from "../../../../../features/typing/runtime/pace-caret";
 import * as Misc from "../../../../utils/misc";
 
 export async function centerActiveLine(): Promise<void> {

@@ -19,7 +19,7 @@ const config = vi.hoisted(() => ({
 vi.mock("../../../../../src/ts/config/store", () => ({
   getMutableConfig: () => config,
 }));
-vi.mock("../../../../../src/ts/test/test-words", () => ({
+vi.mock("../../../../../src/features/typing/runtime/test-words", () => ({
   words: { get: () => ({ display: "ab" }) },
 }));
 const anime = vi.hoisted(() => ({ animate: vi.fn() }));

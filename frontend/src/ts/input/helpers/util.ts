@@ -1,5 +1,5 @@
 import * as Core from "@oxytype/typing-core/input/util";
-import { isFunboxActiveWithProperty } from "../../test/funbox/list";
+import { isFunboxActiveWithProperty } from "../../../features/typing/runtime/funbox/list";
 import { getMutableConfig } from "../../config/store";
 export function getCommitCharacterType(
   options: Parameters<typeof Core.getCommitCharacterType>[0],

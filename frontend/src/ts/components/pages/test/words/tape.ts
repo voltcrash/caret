@@ -14,9 +14,9 @@ import {
   getWordsElement as getWordsEl,
   getWordsWrapperElement as getWordsWrapperEl,
 } from "../../../../states/test-dom";
-import * as Caret from "../../../../test/caret";
-import { getCurrentInput } from "../../../../test/events/data";
-import * as PaceCaret from "../../../../test/pace-caret";
+import * as Caret from "../../../../../features/typing/runtime/caret";
+import { getCurrentInput } from "../../../../../features/typing/runtime/events/data";
+import * as PaceCaret from "../../../../../features/typing/runtime/pace-caret";
 
 // this is needed in tape mode because sometimes we want the newline character to appear above the next line
 // and sometimes we want it to be shifted to the left
