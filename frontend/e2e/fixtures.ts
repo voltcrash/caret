@@ -1,3 +1,4 @@
+import { fulfillOperation, rpcPath } from "../start-e2e/rpc-fixtures";
 import type { Config } from "@oxytype/schemas/configs";
 import type { CustomTheme, UserTag } from "@oxytype/schemas/users";
 import { GetUserResponseSchema } from "@oxytype/contracts/users";
@@ -151,6 +152,39 @@ export const test = base.extend<{
           : { json: { message: "OK", data } },
       );
     });
+    if (startSession !== undefined) {
+      for (const [name, data] of [
+        ["usersGet", user.data],
+        ["configsGet", config],
+        ["usersGetCustomThemes", customThemes],
+        ["usersGetInbox", { inbox: [], maxMail: 100 }],
+        [
+          "configurationGet",
+          {
+            ...BASE_CONFIGURATION,
+            dailyLeaderboards: {
+              ...BASE_CONFIGURATION.dailyLeaderboards,
+              enabled: false,
+            },
+            leaderboards: {
+              ...BASE_CONFIGURATION.leaderboards,
+              weeklyXp: {
+                ...BASE_CONFIGURATION.leaderboards.weeklyXp,
+                enabled: false,
+              },
+            },
+          },
+        ],
+        ["presetsGet", []],
+        ["resultsGet", []],
+        ["psasGet", []],
+      ] as const) {
+        await page.route(
+          `**${rpcPath(name)}*`,
+          async (route) => await fulfillOperation(route, data),
+        );
+      }
+    }
     await page.route("**/quotes/english.json*", async (route) => {
       await route.fulfill({
         json: {

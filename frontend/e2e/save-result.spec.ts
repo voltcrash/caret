@@ -1,3 +1,4 @@
+import { fulfillOperation, rpcInput, rpcPath } from "../start-e2e/rpc-fixtures";
 import { AddResultResponseSchema } from "@oxytype/contracts/results";
 import { CompletedEventSchema } from "@oxytype/schemas/results";
 import {
@@ -21,6 +22,7 @@ test.use({
 
 test("logged-in completion submits a result and applies save acknowledgement", async ({
   page,
+  startSession,
 }) => {
   const saved = AddResultResponseSchema.parse({
     message: "Result saved",
@@ -34,23 +36,30 @@ test("logged-in completion submits a result and applies save acknowledgement", a
       streak: 1,
     },
   });
-  await page.route("**/api/results", async (route) => {
+  const submissionPath =
+    startSession === undefined ? "/api/results" : rpcPath("resultsAdd");
+  await page.route(`**${submissionPath}`, async (route) => {
     if (route.request().method() !== "POST") {
       await route.fallback();
       return;
     }
-    await route.fulfill({ json: saved });
+    if (startSession === undefined) await route.fulfill({ json: saved });
+    else await fulfillOperation(route, saved.data, saved.message);
   });
   await openTest(page);
   const submission = page.waitForRequest(
     (request) =>
-      new URL(request.url()).pathname === "/api/results" &&
+      new URL(request.url()).pathname === submissionPath &&
       request.method() === "POST",
   );
   await completeWords(page);
+  const request = await submission;
   const result = CompletedEventSchema.parse(
-    ((await submission).postDataJSON() as { result: unknown }).result,
+    startSession === undefined
+      ? (request.postDataJSON() as { result: unknown }).result
+      : (rpcInput(request) as { body: { result: unknown } }).body.result,
   );
+
   expect(result).toMatchObject({
     uid: TEST_USER_ID,
     mode: "words",

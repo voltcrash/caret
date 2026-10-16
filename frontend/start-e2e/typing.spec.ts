@@ -1,3 +1,4 @@
+import { fulfillOperation, rpcPath } from "./rpc-fixtures";
 import type { BrowserContext, Locator, Page } from "playwright/test";
 
 import lz from "lz-ts";
@@ -28,16 +29,15 @@ async function useConfig(page: Page, config: object): Promise<void> {
 /** Signed-in tests: the account's server preferences match the local ones. */
 async function useAccountConfig(page: Page, config: object): Promise<void> {
   await useConfig(page, config);
-  await page.route("**/api/configs", async (route) => {
+  await page.route(`**${rpcPath("configsGet")}*`, async (route) => {
     if (route.request().method() !== "GET") {
       await route.fallback();
       return;
     }
-    await route.fulfill({
-      json: {
-        message: "OK",
-        data: { quickRestart: "off", smoothCaret: "off", ...config },
-      },
+    await fulfillOperation(route, {
+      quickRestart: "off",
+      smoothCaret: "off",
+      ...config,
     });
   });
 }
@@ -191,27 +191,26 @@ test("an in-flight save neither blocks navigation nor submits twice", async ({
   const submissions: string[] = [];
   let release = (): void => undefined;
   const released = new Promise<void>((resolve) => (release = resolve));
-  await page.route("**/api/results", async (route) => {
+  await page.route(`**${rpcPath("resultsAdd")}*`, async (route) => {
     if (route.request().method() !== "POST") {
       await route.fallback();
       return;
     }
     submissions.push(route.request().url());
     await released;
-    await route.fulfill({
-      json: {
-        message: "Result saved",
-        data: {
-          insertedId: "saved_start_result",
-          isPb: false,
-          tagPbs: [],
-          xp: 10,
-          dailyXpBonus: false,
-          xpBreakdown: { base: 10 },
-          streak: 1,
-        },
+    await fulfillOperation(
+      route,
+      {
+        insertedId: "saved_start_result",
+        isPb: false,
+        tagPbs: [],
+        xp: 10,
+        dailyXpBonus: false,
+        xpBreakdown: { base: 10 },
+        streak: 1,
       },
-    });
+      "Result saved",
+    );
   });
   await openTest(page);
   await expect(nav(page, "Sign in")).toHaveCount(0);
