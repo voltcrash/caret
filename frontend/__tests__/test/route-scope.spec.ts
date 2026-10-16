@@ -8,6 +8,7 @@ import {
 } from "../__harness__/mock-application";
 import {
   bindTypingActivity,
+  captureTypingMount,
   captureTypingRoute,
   createTypingOwned,
   isTypingRouteActive,
@@ -29,6 +30,8 @@ afterEach(() => dispose());
 
 it("invalidates pending work before remount and rejects duplicate owners", () => {
   const release = mountTypingScope();
+  expect(isTypingRouteActive()).toBe(false);
+  expect(captureTypingMount().activate()).toBe(true);
   const previous = captureTypingRoute();
   expect(previous.isCurrent()).toBe(true);
   expect(() => mountTypingScope()).toThrow("already mounted");
@@ -36,6 +39,7 @@ it("invalidates pending work before remount and rejects duplicate owners", () =>
   expect(previous.isCurrent()).toBe(false);
   expect(isTypingRouteActive()).toBe(false);
   const releaseNext = mountTypingScope();
+  expect(captureTypingMount().activate()).toBe(true);
   expect(previous.isCurrent()).toBe(false);
   expect(captureTypingRoute().isCurrent()).toBe(true);
   release();
@@ -75,9 +79,11 @@ it("lets derived state observe mounts and the rollback binding", () => {
   setPage("test");
   unbind();
   const release = mountTypingScope();
+  expect(isTypingRouteActive()).toBe(false);
+  captureTypingMount().activate();
   release();
   stop();
-  expect(values).toEqual([true, true, false, true, true, true, false]);
+  expect(values).toEqual([true, true, false, true, true, false, true, false]);
 });
 
 it("reports rollback page fades but never transitions for the Start leaf", () => {
@@ -94,4 +100,17 @@ it("reports rollback page fades but never transitions for the Start leaf", () =>
   expect(isTypingRouteTransitioning()).toBe(false);
   release();
   unbind();
+});
+
+it("activates only the mount that waited for preferences", () => {
+  const leave = mountTypingScope();
+  const stale = captureTypingMount();
+  leave();
+  const release = mountTypingScope();
+  expect(stale.activate()).toBe(false);
+  expect(isTypingRouteActive()).toBe(false);
+  expect(captureTypingMount().activate()).toBe(true);
+  expect(isTypingRouteActive()).toBe(true);
+  release();
+  expect(stale.activate()).toBe(false);
 });

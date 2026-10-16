@@ -2,7 +2,6 @@ import {
   createRoot,
   createSignal,
   getOwner,
-  onCleanup,
   runWithOwner,
   untrack,
   type Owner,
@@ -11,7 +10,13 @@ import {
 import { createAppOwned } from "../../app/application";
 import { createOwnedScope, type OwnedScope } from "../../app/scope";
 
-type RouteScope = { owner: Owner; values: OwnedScope; dispose: () => void };
+type RouteScope = {
+  owner: Owner;
+  values: OwnedScope;
+  dispose: () => void;
+  entered: () => boolean;
+  enter: () => void;
+};
 const state = createAppOwned(() => {
   // Reactive so derived state (hotkeys, palette behavior) follows mounts.
   const [route, setRoute] = createSignal<RouteScope>();
@@ -50,11 +55,15 @@ export function isTypingRouteTransitioning(): boolean {
   return !current.managed && (current.transitioning()?.() ?? false);
 }
 
+/**
+ * The mounted leaf becomes the active route at entry, after preferences, like
+ * the rollback's page switch. Config loading before then never restarts.
+ */
 export function isTypingRouteActive(): boolean {
   const current = state();
   // Track the mount even before Start first manages it.
-  const mounted = current.route() !== undefined;
-  return current.managed ? mounted : (current.active()?.() ?? true);
+  const entered = current.route()?.entered() ?? false;
+  return current.managed ? entered : (current.active()?.() ?? true);
 }
 
 /** Mount before constructing children; invalidate continuations before releasing refs. */
@@ -63,20 +72,39 @@ export function mountTypingScope(): () => void {
   if (current.route() !== undefined) {
     throw new Error("Typing route already mounted");
   }
-  const route = createRoot((dispose) => ({
-    owner: getOwner() as Owner,
-    values: createOwnedScope(),
-    dispose,
-  }));
+  const route = createRoot((dispose): RouteScope => {
+    const [entered, setEntered] = createSignal(false);
+    return {
+      owner: getOwner() as Owner,
+      values: createOwnedScope(),
+      dispose,
+      entered,
+      enter: () => setEntered(true),
+    };
+  });
   current.managed = true;
-  current.setRoute(route);
   current.generation++;
+  current.setRoute(route);
   return () => {
     if (current.route() !== route) return;
-    current.setRoute(undefined);
     current.generation++;
+    current.setRoute(undefined);
     route.dispose();
     route.values.dispose();
+  };
+}
+
+/** Entry lease for the current mount; activation fails after remount or disposal. */
+export function captureTypingMount(): { activate: () => boolean } {
+  const current = state();
+  const route = untrack(current.route);
+  return {
+    activate: () => {
+      if (!current.managed) return isTypingRouteActive();
+      if (route === undefined || untrack(current.route) !== route) return false;
+      route.enter();
+      return true;
+    },
   };
 }
 
@@ -101,8 +129,4 @@ export function createTypingOwned<T>(create: () => T): () => T {
       () => undefined,
     );
   };
-}
-
-export function useTypingScope(): void {
-  onCleanup(mountTypingScope());
 }

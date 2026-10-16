@@ -18,7 +18,7 @@ import {
   cancelPendingAnimationFrame,
   cancelPendingAnimationFramesStartingWith,
 } from "../../ts/utils/debounced-animation-frame";
-import { captureTypingRoute } from "./scope";
+import { captureTypingMount } from "./scope";
 import { getTestSession } from "./runtime/events/data";
 import * as Funbox from "./runtime/funbox/funbox";
 import { getActiveFunboxesWithFunction } from "./runtime/funbox/list";
@@ -31,9 +31,9 @@ import { resetAltGrState } from "./runtime/layout-emulator";
 
 /** Returning always starts a new test; never resumes detached engine/DOM state. */
 export async function enterTypingRoute(): Promise<void> {
-  const lease = captureTypingRoute();
+  const mount = captureTypingMount();
   await preferencesReadiness().wait();
-  if (!lease.isCurrent()) return;
+  if (!mount.activate()) return;
   resetIncompleteTests();
   await restart({ noAnim: true });
 }
