@@ -37,7 +37,7 @@ vi.mock("../../src/ts/collections/results", () => ({
   waitForResultsReady: results,
 }));
 vi.mock("../../src/ts/db", () => ({ getSnapshot: () => ({}) }));
-vi.mock("../../src/ts/ape/server-configuration", () => ({
+vi.mock("../../src/ts/states/server-configuration", () => ({
   configurationPromise: Promise.resolve(),
 }));
 vi.mock("../../src/features/typing/runtime/today-tracker", () => ({

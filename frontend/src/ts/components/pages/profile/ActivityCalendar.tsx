@@ -9,11 +9,11 @@ import {
   Show,
 } from "solid-js";
 
-import { get as getSeverConfiguration } from "../../../ape/server-configuration";
 import { getSnapshot, getTestActivityCalendar } from "../../../db";
 import { TestActivityCalendar } from "../../../elements/test-activity-calendar";
 import { getQueryClient } from "../../../queries";
 import { getAccountActivityQueryOptions } from "../../../queries/account";
+import { get as getSeverConfiguration } from "../../../states/server-configuration";
 import { cn } from "../../../utils/cn";
 import { getFirstDayOfTheWeek } from "../../../utils/date-and-time";
 import { createErrorMessage } from "../../../utils/error";

@@ -24,7 +24,7 @@ import {
 import { getFirstDayOfTheWeek } from "./utils/date-and-time";
 import { Language } from "@oxytype/schemas/languages";
 import { authEvent } from "./events/auth";
-import { sync as syncServerConfiguration } from "./ape/server-configuration";
+import { sync as syncServerConfiguration } from "./states/server-configuration";
 import {
   setLastResult,
   _setSnapshot as setSolidSnapshot,

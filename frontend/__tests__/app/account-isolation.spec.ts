@@ -9,7 +9,7 @@ vi.mock("../../src/ts/ape", () => ({
   default: { users: { get: requests.user }, configs: { get: requests.config } },
 }));
 vi.mock("../../src/ts/ape/config", () => ({ saveConfig: requests.save }));
-vi.mock("../../src/ts/ape/server-configuration", () => ({
+vi.mock("../../src/ts/states/server-configuration", () => ({
   sync: async () => undefined,
 }));
 

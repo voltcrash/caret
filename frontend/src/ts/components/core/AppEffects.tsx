@@ -11,12 +11,12 @@ import { spread } from "solid-js/web";
 import { envConfig } from "virtual:env-config";
 
 import { preferencesReadiness } from "../../../app/readiness";
-import * as ServerConfiguration from "../../ape/server-configuration";
 import { getAcceptedCookies } from "../../cookies";
 import { isAppLoading } from "../../states/app";
 import { addBanner, removeBanner } from "../../states/banners";
 import { getGlobalOffsetTop, getIsScreenshotting } from "../../states/core";
 import { isModalOpen, showModal } from "../../states/modals";
+import * as ServerConfiguration from "../../states/server-configuration";
 import { isFixingSkillIssue } from "../../states/skill-issue";
 import { cn, updateClassNames } from "../../utils/cn";
 import { onDOMReady } from "../../utils/dom-ready";

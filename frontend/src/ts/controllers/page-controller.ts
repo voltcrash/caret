@@ -26,7 +26,7 @@ import {
   LeaderboardUrlParamsSchema,
   readLeaderboardGetParameters,
 } from "../states/leaderboard-selection";
-import { sync as syncServerConfiguration } from "../ape/server-configuration";
+import { sync as syncServerConfiguration } from "../states/server-configuration";
 import { getSnapshot } from "../db";
 import * as TodayTracker from "../../features/typing/runtime/today-tracker";
 import { isResultsReady } from "../states/results-ready";

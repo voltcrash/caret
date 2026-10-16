@@ -121,7 +121,7 @@ vi.mock("../../../src/ts/utils/numbers", () => ({
 vi.mock("../../../src/ts/utils/quick-restart", () => ({
   canQuickRestart: () => guards.quickRestart,
 }));
-vi.mock("../../../src/ts/ape/server-configuration", () => ({
+vi.mock("../../../src/ts/states/server-configuration", () => ({
   sync: services.sync,
 }));
 vi.mock("../../../src/ts/components/core/GlobalEvents", () => ({

@@ -1,7 +1,7 @@
 import { createEffect, onCleanup, onMount, type JSXElement } from "solid-js";
 import { Portal, spread } from "solid-js/web";
 
-import * as ServerConfiguration from "../ts/ape/server-configuration";
+import * as ServerConfiguration from "../ts/states/server-configuration";
 import { Download } from "../ts/components/common/Download";
 import { FilePicker } from "../ts/components/common/FilePicker";
 import { bodyClass } from "../ts/components/core/body-classes";

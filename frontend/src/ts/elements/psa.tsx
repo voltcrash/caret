@@ -5,7 +5,7 @@ import { format } from "date-fns/format";
 import { envConfig } from "virtual:env-config";
 import { z } from "zod";
 
-import Ape from "../ape";
+import { operation } from "../../data/operations";
 import { authEvent } from "../events/auth";
 import { addBanner } from "../states/banners";
 import { addPsa } from "../states/psas";
@@ -36,7 +36,7 @@ function setMemory(id: string): void {
 async function getLatest(): Promise<PSA[] | null> {
   // No server announcements exist in frontend-only development.
   if (envConfig.devOffline) return null;
-  const response = await Ape.psas.get();
+  const response = await operation("psas.get");
 
   if (response.status === 500) {
     if (isDevEnvironment()) {
@@ -60,10 +60,10 @@ async function getLatest(): Promise<PSA[] | null> {
       text: "The Oxytype server is currently under maintenance.",
     });
     return null;
-  } else if (response.status !== 200) {
+  } else if (!response.ok) {
     return null;
   }
-  return response.body.data;
+  return response.data;
 }
 
 async function show(): Promise<void> {

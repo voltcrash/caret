@@ -19,7 +19,7 @@ vi.mock("../../../../src/ts/queries", () => ({
 vi.mock("../../../../src/ts/queries/account", () => ({
   getAccountActivityQueryOptions: (client: Client) => ({ client }),
 }));
-vi.mock("../../../../src/ts/ape/server-configuration", () => ({
+vi.mock("../../../../src/ts/states/server-configuration", () => ({
   get: () => undefined,
 }));
 vi.mock("../../../../src/ts/components/ui/Select", () => ({

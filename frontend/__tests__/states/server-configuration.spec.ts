@@ -33,7 +33,7 @@ describe("server configuration startup", () => {
 
   it("resolves readiness after fetching configuration", async () => {
     query.mockResolvedValue({});
-    const { sync } = await import("../../src/ts/ape/server-configuration");
+    const { sync } = await import("../../src/ts/states/server-configuration");
 
     await sync();
 
@@ -45,7 +45,7 @@ describe("server configuration startup", () => {
   it("handles offline startup before a page awaits configuration", async () => {
     const error = new Error("Could not fetch configuration: Failed to fetch");
     query.mockRejectedValue(error);
-    const { sync } = await import("../../src/ts/ape/server-configuration");
+    const { sync } = await import("../../src/ts/states/server-configuration");
 
     await expect(sync()).rejects.toBe(error);
 
