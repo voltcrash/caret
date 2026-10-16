@@ -16,7 +16,7 @@ import { configEvent } from "../events/config";
 import { migrateConfig } from "./utils";
 import { isObject } from "../utils/misc";
 import { setConfig } from "./setters";
-import { deleteConfig } from "../ape/config";
+import { deleteConfig } from "./sync";
 import { setProperty, typedKeys } from "@oxytype/util/objects";
 import { lastConfigsToApply } from "@oxytype/typing-core/config/setter";
 

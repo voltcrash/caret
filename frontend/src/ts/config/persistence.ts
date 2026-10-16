@@ -1,7 +1,7 @@
 import { onCleanup } from "solid-js";
 import { createAccountOwned, captureAccount } from "../../app/account-scope";
 import { Config as ConfigSchema } from "@oxytype/schemas/configs";
-import { saveConfig } from "../ape/config";
+import { saveConfig } from "./sync";
 import { setAccountButtonSpinner } from "../states/header";
 import { getMutableConfig } from "./store";
 import * as ConfigSchemas from "@oxytype/schemas/configs";

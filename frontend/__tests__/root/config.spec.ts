@@ -11,7 +11,7 @@ import {
 import * as FunboxValidation from "../../src/ts/config/funbox-validation";
 import * as ConfigValidation from "../../src/ts/config/validation";
 import { configEvent } from "../../src/ts/events/config";
-import * as ApeConfig from "../../src/ts/ape/config";
+import * as ApeConfig from "../../src/ts/config/sync";
 import * as Notifications from "../../src/ts/states/notifications";
 import * as TestState from "../../src/ts/states/test";
 import { getConfig as getConfigStore } from "../../src/ts/config/store";
