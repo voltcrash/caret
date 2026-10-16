@@ -9,6 +9,7 @@ const queryClient = createQueryClient({ staleTime: 0, retry: false });
 const meta = preview.meta({
   title: "Layout/Header",
   component: Header,
+  args: { fixed: false },
   parameters: {
     layout: "fullscreen",
   },
