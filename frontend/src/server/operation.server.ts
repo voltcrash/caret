@@ -18,6 +18,7 @@ import type { OperationResult } from "../data/operation-result";
 import type { ServiceContext as RequestContext } from "./context.server";
 import { migrateConfig } from "@oxytype/typing-core/config/migrate";
 import { PartialConfigSchema } from "@oxytype/schemas/configs";
+import MonkeyError from "@oxytype/backend/errors";
 
 function invocation(request: RequestContext): Invocation {
   return {
@@ -55,6 +56,12 @@ export async function callOperation<K extends OperationId>(
       return outcome;
     }
     if (id === "configs.get" && outcome.data !== null) {
+      if (typeof outcome.data === "object" && "config" in outcome.data) {
+        throw new MonkeyError(
+          500,
+          "Config data is not in the correct format. Please refresh the page or contact support.",
+        );
+      }
       return {
         ...outcome,
         status: 200,

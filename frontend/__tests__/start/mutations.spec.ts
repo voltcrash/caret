@@ -149,6 +149,26 @@ describe("ordinary server-function mutations with real D1", () => {
     ).toEqual(legacy);
   });
 
+  it("keeps malformed wrapped preferences visible instead of replacing them with defaults", async () => {
+    const actor = await account();
+    const db = await mf.getD1Database("DB", "a");
+    await db
+      .prepare("INSERT INTO configs(uid,id,data) VALUES(?,?,?)")
+      .bind(
+        actor.uid,
+        "wrapped-config",
+        JSON.stringify({ config: { theme: "nord" } }),
+      )
+      .run();
+    const response = await call(actor, "configsGet", "GET");
+    expect(response.status).toBe(500);
+    expect(await result(response)).toMatchObject({
+      ok: false,
+      message:
+        "Config data is not in the correct format. Please refresh the page or contact support.",
+    });
+  });
+
   it("claims a reward once through repeated RPCs", async () => {
     const actor = await account();
     const db = await mf.getD1Database("DB", "a");
