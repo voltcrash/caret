@@ -1,5 +1,9 @@
 import { createHmac } from "node:crypto";
-import { Miniflare, Response as FixtureResponse } from "miniflare";
+import {
+  Miniflare,
+  Response as FixtureResponse,
+  type MiniflareOptions,
+} from "miniflare";
 import { readdirSync, readFileSync } from "node:fs";
 import { resolve, relative } from "node:path";
 import { withRuntime, type WorkerEnv } from "@oxytype/backend/runtime";
@@ -12,11 +16,22 @@ export async function createWorkerd(
   testEntry = false,
   port?: number,
   captcha = false,
-  overrides: Partial<Pick<WorkerEnv, "MODE" | "API_PATH_OVERRIDE">> = {},
+  overrides: Partial<
+    Pick<
+      WorkerEnv,
+      "MODE" | "API_PATH_OVERRIDE" | "FRONTEND_URL" | "BETTER_AUTH_URL"
+    >
+  > = {},
+  fixture: {
+    build?: string;
+    instrument?: string;
+    onReady?: (milliseconds: number) => void;
+    onOptions?: (options: MiniflareOptions) => void;
+  } = {},
 ): Promise<Miniflare> {
   const dir = resolve(
     root,
-    `frontend/dist/${testEntry ? "start-test" : "start"}/server`,
+    `frontend/dist/${fixture.build ?? (testEntry ? "start-test" : "start")}/server`,
   );
   const modules = Object.fromEntries(
     readdirSync(dir, { recursive: true, encoding: "utf8" })
@@ -31,7 +46,11 @@ export async function createWorkerd(
   );
   const origin =
     port === undefined ? "http://localhost:3000" : `http://127.0.0.1:${port}`;
-  const mf = new Miniflare({
+  if (fixture.instrument !== undefined) {
+    modules["instrument.js"] = { type: "esm", contents: fixture.instrument };
+  }
+  const started = performance.now();
+  const options: MiniflareOptions = {
     ...(port === undefined ? {} : { port, host: "127.0.0.1" }),
     workers: ["a", "b"].map((name) => ({
       config: {
@@ -45,7 +64,11 @@ export async function createWorkerd(
           notFoundHandling: "none",
           runWorkerFirst: false,
         },
-        manifest: { mainModule: "index.js", modules },
+        manifest: {
+          mainModule:
+            fixture.instrument === undefined ? "index.js" : "instrument.js",
+          modules,
+        },
         env: {
           DB: { type: "d1" as const, name, id: name },
           ASSETS: { type: "assets" as const },
@@ -97,7 +120,11 @@ export async function createWorkerd(
         },
       },
     })),
-  });
+  };
+  fixture.onOptions?.(options);
+  const mf = new Miniflare(options);
+  await mf.ready;
+  fixture.onReady?.(performance.now() - started);
   for (const name of ["a", "b"]) {
     const db = await mf.getD1Database("DB", name);
     for (const file of readdirSync(resolve(root, "backend/migrations"))
