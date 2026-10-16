@@ -16,6 +16,7 @@ async function main(): Promise<void> {
     "browser-dismissal",
     "browser-private",
     "browser-typing",
+    "browser-result-persistence",
   ]) {
     const session = await seedSession(mf, "a");
     await db
@@ -43,6 +44,7 @@ async function main(): Promise<void> {
         "browser-expiry",
         "browser-private",
         "browser-typing",
+        "browser-result-persistence",
       ].includes(token)
     ) {
       await db
@@ -57,19 +59,47 @@ async function main(): Promise<void> {
           `${token}@example.test`,
           JSON.stringify({
             uid,
-            name: token,
+            addedAt: 0,
+            name:
+              token === "browser-result-persistence" ? "persistence" : token,
             email: `${token}@example.test`,
-            personalBests: {},
+            personalBests: {
+              time: {},
+              words: {},
+              quote: {},
+              zen: {},
+              custom: {},
+            },
             startedTests: 0,
             completedTests: 0,
             timeTyping: 0,
           }),
         )
         .run();
+      if (token === "browser-result-persistence") {
+        await db
+          .prepare("INSERT INTO configs(uid,id,data) VALUES(?,?,?)")
+          .bind(
+            uid,
+            "result-persistence-config",
+            JSON.stringify({
+              mode: "words",
+              words: 15,
+              quickRestart: "off",
+              smoothCaret: "off",
+            }),
+          )
+          .run();
+      }
     }
   }
   // Public pages the browser suite exercises.
   await enableConfiguration(mf, "a", "$.users.profiles", { enabled: true });
+  await enableConfiguration(mf, "a", "$.results", {
+    savingEnabled: true,
+    objectHashCheckEnabled: true,
+  });
+  await enableConfiguration(mf, "a", "$.users.xp.enabled", true);
   await seedProfile(mf, "a", "fixture-profile");
   await seedLeaderboard(mf, "a", 60);
   console.log(`Start fixture ready: ${await mf.ready}`);
