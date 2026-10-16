@@ -1,5 +1,5 @@
 import { onCleanup } from "solid-js";
-import { createAppOwned } from "../../../app/application";
+import { createTypingOwned } from "../scope";
 import type { SessionEvents } from "@oxytype/typing-core/session";
 import { getTimeLimit } from "@oxytype/typing-core/timer";
 import { getMutableConfig } from "../../../ts/config/store";
@@ -185,7 +185,7 @@ function createTiming(): {
   }
   return { disableSlowTimerFail, enableTimerDebug, clear, start };
 }
-const timing = createAppOwned(createTiming);
+const timing = createTypingOwned(createTiming);
 export function disableSlowTimerFail(): void {
   timing().disableSlowTimerFail();
 }

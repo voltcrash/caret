@@ -4,7 +4,6 @@ import { spread } from "solid-js/web";
 import { useWordsInputScroll } from "../../../ts/hooks/useWordsInputScroll";
 import { isInputElementFocused } from "../../../ts/input/input-element";
 import { isWordsWrapperVisible } from "../../../ts/states/funbox";
-import { getPageView } from "../../../ts/states/page-transition";
 import { setTestElements } from "../../../ts/states/test-dom";
 import {
   getWordsWrapperHeight,
@@ -36,7 +35,7 @@ import { Words } from "./Words";
 import { Caret } from "./words/Caret";
 
 export function TestPage(
-  props: { ref?: (el: HTMLDivElement) => void } = {},
+  props: { ref?: (el: HTMLDivElement) => void; class?: string } = {},
 ): JSXElement {
   const refs = {} as Parameters<typeof setTestElements>[0];
 
@@ -67,13 +66,7 @@ export function TestPage(
       }}
       class={cn(
         "page pageTest full-width content-grid relative col-[full-width] grid h-full grid-rows-[1fr_auto_1fr]",
-        getPageView().id === "test" &&
-          getPageView().phase === "prepared" &&
-          !getPageView().revealed &&
-          "hidden",
-        getPageView().id === "test" &&
-          getPageView().phase === "active" &&
-          "active",
+        props.class,
       )}
       data-nosnippet
     >
