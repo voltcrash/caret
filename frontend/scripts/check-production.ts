@@ -5,7 +5,7 @@ import { validateProductionInputs } from "./production-inputs";
 import { validateArtifact } from "./production-artifact";
 
 async function main(): Promise<void> {
-  const root = resolve(__dirname, "..");
+  const root = resolve(import.meta.dirname, "..");
   const backend = parseEnv(
     await readFile(resolve(root, ".dev.vars.production"), "utf8"),
   );

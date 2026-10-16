@@ -82,6 +82,9 @@ export async function validateArtifact(
     "compatibility_date",
     "compatibility_flags",
     "secrets",
+    "workers_dev",
+    "preview_urls",
+    "observability",
   ]) {
     // Wrangler normalizes D1 migration paths and adds defaults; compare resource
     // identities below instead of requiring identical generated configuration.

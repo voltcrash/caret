@@ -45,10 +45,12 @@
     "build:production-site": "tsx scripts/build-production-site.ts",
     "deploy:production-site": "vp run check:production && wrangler deploy --config dist/start/server/wrangler.json --secrets-file .dev.vars.production",
     "deploy:production-dry-run": "vp run check:production && wrangler deploy --config dist/start/server/wrangler.json --dry-run --outdir dist/production-worker",
-    "deploy:staging-site": "wrangler deploy --config dist/start/server/wrangler.json",
+    "deploy:staging-site": "vp run check:staging && wrangler deploy --config dist/start/server/wrangler.json --secrets-file .dev.vars.staging",
     "db:migrate": "wrangler d1 migrations apply oxytype-staging --local --persist-to ../backend/.wrangler/state",
     "db:migrate:staging": "wrangler d1 migrations apply oxytype-staging --remote --config wrangler.staging.json",
-    "db:migrate:production": "wrangler d1 migrations apply oxytype-production --remote --config wrangler.production.json"
+    "db:migrate:production": "wrangler d1 migrations apply oxytype-production --remote --config wrangler.production.json",
+    "build:staging-site": "tsx scripts/build-staging-site.ts",
+    "check:staging": "tsx scripts/check-staging.ts"
   },
   "dependencies": {
     "@better-auth/infra": "0.4.14",
