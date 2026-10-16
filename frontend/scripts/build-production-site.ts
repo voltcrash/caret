@@ -5,6 +5,7 @@ import { parseEnv } from "node:util";
 import { validateProductionInputs } from "./production-inputs";
 import { writeArtifact } from "./production-artifact";
 import { resolveBuildId } from "../vite-plugins/build-id";
+import { preserveAssets, snapshotAssets } from "./preserve-assets";
 
 async function main(): Promise<void> {
   const frontendRoot = resolve(import.meta.dirname, "..");
@@ -18,6 +19,9 @@ async function main(): Promise<void> {
     await readFile(resolve(frontendRoot, "wrangler.production.json"), "utf8"),
   );
   validateProductionInputs({ config, backend, frontend });
+  const origin = (config as { vars: { FRONTEND_URL: string } }).vars
+    .FRONTEND_URL;
+  const previous = await snapshotAssets(origin);
 
   // Only public build settings are forwarded; backend secrets stay in their file.
   const env = {
@@ -39,6 +43,7 @@ async function main(): Promise<void> {
   if (result.error !== undefined || result.status !== 0) {
     throw new Error("build:start failed; production was not deployed");
   }
+  await preserveAssets(resolve(frontendRoot, "dist/start/client"), previous);
   await writeArtifact(resolve(frontendRoot, "dist/start"), {
     buildId: env.OXYTYPE_BUILD_ID,
     siteKey: frontend["TURNSTILE_SITE_KEY"] as string,

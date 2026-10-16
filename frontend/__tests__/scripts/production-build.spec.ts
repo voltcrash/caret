@@ -91,6 +91,12 @@ describe("production build command", () => {
         resolve(root, "frontend/scripts", name),
       );
     }
+    // Asset capture has its own HTTP/integrity suite; these subprocess tests
+    // exercise compiler invocation and public/private build settings offline.
+    write(
+      "frontend/scripts/preserve-assets.ts",
+      "export async function snapshotAssets(){return new Map();} export async function preserveAssets(){}\n",
+    );
     for (const name of ["build-id.ts", "client-version.ts"]) {
       copyFileSync(
         resolve(repoRoot, "frontend/vite-plugins", name),

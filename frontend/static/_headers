@@ -7,3 +7,5 @@
   Cache-Control: no-cache
 /release.json
   Cache-Control: no-store
+/_asset-history.json
+  Cache-Control: no-store

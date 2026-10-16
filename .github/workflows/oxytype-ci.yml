@@ -280,6 +280,9 @@ jobs:
       - name: Production-Worker browser checks
         run: vp run --filter @oxytype/frontend test:start:browser
 
+      - name: Multi-build service worker, real save and rollback checks
+        run: vp run --filter @oxytype/frontend test:updates
+
       # Last: overwrites dist/start with the staging delivery configuration.
       - name: Staging build and dry-run
         run: vp run --filter @oxytype/frontend build:start:staging && vp run --filter @oxytype/frontend dry-run:start

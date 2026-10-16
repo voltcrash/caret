@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 import { parseEnv } from "node:util";
 import { resolveBuildId } from "../vite-plugins/build-id";
 import { writeArtifact } from "./production-artifact";
+import { preserveAssets, snapshotAssets } from "./preserve-assets";
 
 async function main(): Promise<void> {
   const root = resolve(import.meta.dirname, "..");
@@ -20,6 +21,9 @@ async function main(): Promise<void> {
     );
   }
   const buildId = resolveBuildId(false);
+  const previous = await snapshotAssets(
+    "https://oxytype-api-staging.voltcrash.workers.dev",
+  );
   const result = spawnSync("vp", ["run", "--no-cache", "build:start:staging"], {
     cwd: root,
     stdio: "inherit",
@@ -33,6 +37,7 @@ async function main(): Promise<void> {
   if (result.error !== undefined || result.status !== 0) {
     throw new Error("Staging build failed; staging was not deployed");
   }
+  await preserveAssets(resolve(root, "dist/start/client"), previous);
   await writeArtifact(resolve(root, "dist/start"), {
     buildId,
     siteKey: settings["TURNSTILE_SITE_KEY"] as string,
