@@ -79,7 +79,10 @@ test("SSR hydrates Query once and keeps native navigation and refresh working", 
   );
   await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
   await expect(page).toHaveURL(/\/$/);
-  await page.getByRole("link", { name: "About Oxytype", exact: true }).click();
+  await page
+    .getByRole("navigation", { name: "Main navigation" })
+    .getByRole("link", { name: "About", exact: true })
+    .click();
   await expect(page).toHaveURL(/\/about$/);
   await expect(page.getByTestId("tests-completed")).toHaveText("11");
   expect(documents).toHaveLength(1);
