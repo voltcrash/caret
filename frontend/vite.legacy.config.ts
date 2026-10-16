@@ -15,6 +15,7 @@ import { envConfig } from "./vite-plugins/env-config";
 import { languageHashes } from "./vite-plugins/language-hashes";
 import { standaloneHtml } from "./vite-plugins/standalone-html";
 import { devtoolsEntry } from "./vite-plugins/devtools-entry";
+import { rollbackOperationTransport } from "./vite-plugins/rollback-operations";
 import solidPlugin from "vite-plugin-solid";
 import tailwindcss from "@tailwindcss/vite";
 
@@ -30,6 +31,7 @@ async function getPlugins({
   const clientVersion = getClientVersion(isDevelopment);
 
   const plugins: PluginOption[] = [
+    rollbackOperationTransport(),
     envConfig({ isDevelopment, clientVersion, env }),
     devtoolsEntry({ enabled: isDevelopment && env["DEV_TOOLS"] === "true" }),
     languageHashes({ skip: isDevelopment }),

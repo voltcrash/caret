@@ -1,6 +1,7 @@
 import { defineMain } from "storybook-solidjs-vite";
 import tailwindcss from "@tailwindcss/vite";
 import { fontStyles } from "../../vite-plugins/font-styles";
+import { rollbackOperationTransport } from "../../vite-plugins/rollback-operations";
 import type { Plugin } from "vite";
 
 function stubVirtualEnvConfig(): Plugin {
@@ -65,6 +66,8 @@ export default defineMain({
   ],
   viteFinal(config) {
     config.plugins ??= [];
+    // Stories run without a Start server; never bundle server functions.
+    config.plugins.push(rollbackOperationTransport());
     config.plugins.push(fontStyles({ isDevelopment: true }));
     config.plugins.push(tailwindcss());
     config.plugins.push(stubVirtualEnvConfig());
