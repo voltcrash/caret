@@ -31,6 +31,7 @@ export const projects = [
       include: [
         "__tests__/start/foundation.spec.ts",
         "__tests__/start/layers.spec.ts",
+        "__tests__/start/operation-functions.spec.ts",
       ],
       environment: "node",
       testTimeout: 30_000,
