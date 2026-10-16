@@ -12,7 +12,6 @@ import { useUrlEvents } from "../ts/controllers/url-handler";
 import * as DB from "../ts/db";
 import { usePsaEvents } from "../ts/elements/psa";
 import * as Sentry from "../ts/sentry";
-import { useConnectionEvents } from "../ts/states/connection";
 import { enable } from "../ts/states/glarses-mode";
 import { getLastEventLog } from "../ts/states/test";
 import * as Logger from "../ts/utils/logger";
@@ -27,7 +26,6 @@ export function LegacyRuntime(): JSXElement {
       onCleanup(observeAuthSession());
     }
   });
-  useConnectionEvents();
   usePsaEvents();
   useUrlEvents();
   onMount(() => {

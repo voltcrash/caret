@@ -7,6 +7,7 @@ import { FilePicker } from "../ts/components/common/FilePicker";
 import { bodyClass } from "../ts/components/core/body-classes";
 import { BreakpointEvents } from "../ts/components/core/BreakpointEvents";
 import { CustomBackground } from "../ts/components/core/CustomBackground";
+import { GlobalEvents } from "../ts/components/core/GlobalEvents";
 import { HotkeyEvents } from "../ts/components/core/HotkeyEvents";
 import { Footer } from "../ts/components/layout/footer/Footer";
 import { Header } from "../ts/components/layout/header/Header";
@@ -63,6 +64,7 @@ function ChromeRuntime(props: {
   return (
     <>
       <RouterNavigation />
+      <GlobalEvents />
       <HotkeyEvents />
       <BreakpointEvents />
       <Portal>

@@ -9,6 +9,7 @@ import { deactivateAnalytics } from "../ts/controllers/analytics-controller";
 import { useThemeEvents } from "../ts/controllers/theme-controller";
 import { activateWhatsAccepted, getAcceptedCookies } from "../ts/cookies";
 import { disposeSentry } from "../ts/sentry";
+import { useConnectionEvents } from "../ts/states/connection";
 import { setVersion } from "../ts/states/core";
 import { installLogger } from "../ts/utils/logger";
 import { fetchLatestVersion } from "../ts/utils/version";
@@ -19,6 +20,7 @@ import { FontRuntime } from "./font-runtime.client";
 /** Platform/preferences only. Never waits for authentication or account history. */
 export default function BrowserRuntime(): JSXElement {
   useThemeEvents();
+  useConnectionEvents();
   createEffect(() => {
     getAcceptedCookies();
     activateWhatsAccepted();
