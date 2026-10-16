@@ -10,6 +10,29 @@ import { boundedRequest } from "./request-body.server";
 import { applyResponsePolicy } from "./response-policy.server";
 import { requestLog, serverBuildId } from "./observability.server";
 
+async function observeJob(
+  event: "queue" | "scheduled",
+  env: WorkerEnv,
+  run: () => Promise<void>,
+): Promise<void> {
+  const started = Date.now();
+  let completed = false;
+  try {
+    await run();
+    completed = true;
+  } finally {
+    console.info(
+      JSON.stringify({
+        event,
+        build: serverBuildId,
+        release: env.VERSION,
+        outcome: completed ? "ok" : "error",
+        durationMs: Date.now() - started,
+      }),
+    );
+  }
+}
+
 export type ApplicationWorker = {
   fetch: (
     request: Request,
@@ -100,7 +123,12 @@ export function createApplicationWorker(
       env: WorkerEnv,
       ctx: ExecutionContext,
     ): Promise<void> {
-      await withRuntime(env, async () => await consumeBatch(batch), ctx);
+      await withRuntime(
+        env,
+        async () =>
+          await observeJob("queue", env, async () => await consumeBatch(batch)),
+        ctx,
+      );
     },
     async scheduled(
       controller: ScheduledController,
@@ -109,7 +137,12 @@ export function createApplicationWorker(
     ): Promise<void> {
       await withRuntime(
         env,
-        async () => await scheduled(controller.scheduledTime),
+        async () =>
+          await observeJob(
+            "scheduled",
+            env,
+            async () => await scheduled(controller.scheduledTime),
+          ),
         ctx,
       );
     },

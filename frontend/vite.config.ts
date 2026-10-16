@@ -12,6 +12,7 @@ import { workerNodeBuiltins } from "./vite-plugins/worker-node-builtins";
 import { apiDocs } from "./vite-plugins/api-docs";
 import { startWebManifest } from "./vite-plugins/web-manifest";
 import { startServiceWorker } from "./vite-plugins/service-worker";
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 import {
   clientOnlyFeatureFiles,
   rollbackOnlyFiles,
@@ -21,6 +22,11 @@ import {
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   const buildId = resolveBuildId(mode !== "production");
+  const sentryDsn = env["SENTRY_DSN"] ?? "";
+  const sentryOrigin = sentryDsn === "" ? "" : new URL(sentryDsn).origin;
+  if (sentryOrigin !== "" && !sentryOrigin.startsWith("https://")) {
+    throw new Error("SENTRY_DSN must use HTTPS");
+  }
   const deployment = process.env["OXYTYPE_DEPLOY_ENV"];
   if (
     deployment !== undefined &&
@@ -41,7 +47,7 @@ export default defineConfig(({ mode }) => {
     },
     environments: {
       ssr: {
-        build: { minify: true },
+        build: { minify: true, sourcemap: true },
         optimizeDeps: {
           exclude: [
             "solid-js",
@@ -116,11 +122,27 @@ export default defineConfig(({ mode }) => {
       // Existing full font assets; rollback subset generation remains independent.
       fontStyles({ isDevelopment: true }),
       tailwindcss(),
+      ...(sentryDsn === ""
+        ? []
+        : sentryVitePlugin({
+            authToken: env["SENTRY_AUTH_TOKEN"],
+            org: env["SENTRY_ORG"],
+            project: env["SENTRY_PROJECT"],
+            release: { name: buildId },
+            applicationKey: "oxytype-frontend",
+            telemetry: false,
+            sourcemaps: { disable: (env["SENTRY_AUTH_TOKEN"] ?? "") === "" },
+          }).map((plugin) => ({
+            ...plugin,
+            applyToEnvironment: (environment: { name: string }) =>
+              environment.name === "client",
+          }))),
     ],
     define: {
       "import.meta.env.OXYTYPE_OFFLINE": JSON.stringify(mode === "offline"),
       // Client and Worker share it; logs and error reports join on this ID.
       "import.meta.env.OXYTYPE_BUILD_ID": JSON.stringify(buildId),
+      "import.meta.env.OXYTYPE_SENTRY_ORIGIN": JSON.stringify(sentryOrigin),
     },
     build: {
       outDir: mode === "runtime-test" ? "dist/start-test" : "dist/start",
