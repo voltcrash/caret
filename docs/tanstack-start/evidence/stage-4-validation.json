@@ -1,0 +1,168 @@
+{
+  "date": "2026-10-16",
+  "base": "54fc00fe9",
+  "implementationHead": "eae5edf16",
+  "scope": "Stage 4 only; no production deploy, typing integration or TUI work",
+  "status": "pass",
+  "checks": [
+    {
+      "command": "vp run test-fe",
+      "result": "pass",
+      "files": 229,
+      "tests": 2288
+    },
+    {
+      "command": "vp run test-be",
+      "result": "pass",
+      "unitFiles": 45,
+      "unitTests": 803,
+      "d1Files": 30,
+      "d1Tests": 124
+    },
+    {
+      "command": "vp run test-pkg",
+      "result": "pass",
+      "workspaces": 7,
+      "files": 54,
+      "tests": 636
+    },
+    {
+      "command": "vp run test-e2e",
+      "result": "pass",
+      "tests": 31
+    },
+    {
+      "command": "vp run --filter @oxytype/frontend test:start",
+      "result": "pass",
+      "files": 10,
+      "tests": 48
+    },
+    {
+      "command": "vp run --filter @oxytype/frontend test:start:browser",
+      "result": "pass",
+      "tests": 19
+    },
+    {
+      "command": "vp run lint-fe",
+      "result": "pass"
+    },
+    {
+      "command": "vp run lint-be",
+      "result": "pass"
+    },
+    {
+      "command": "vp run lint-pkg",
+      "result": "pass"
+    },
+    {
+      "command": "vp run lint-styles",
+      "result": "pass"
+    },
+    {
+      "command": "vp run check-assets",
+      "result": "pass"
+    },
+    {
+      "command": "vp run knip",
+      "result": "pass"
+    },
+    {
+      "command": "vp run lint-suppressions",
+      "result": "pass"
+    },
+    {
+      "command": "vp fmt frontend/src frontend/__tests__ frontend/start-e2e frontend/scripts frontend/storybook frontend/vite.config.ts frontend/vite-plugins/worker-node-builtins.ts backend/src docs/tanstack-start/evidence/stage-4-validation.json --check",
+      "result": "pass",
+      "files": 1225
+    },
+    {
+      "command": "vp -C backend exec tsx scripts/migration-inventory.ts --check",
+      "result": "pass",
+      "operations": 82
+    },
+    {
+      "command": "vp exec env TURNSTILE_SITE_KEY=1x00000000000000000000AA BACKEND_URL=/api AUTH_PROVIDERS=github vp run build",
+      "result": "pass",
+      "details": "Production rollback JS, backend docs/assets and Worker dry-run; no circular imports"
+    },
+    {
+      "command": "vp run --filter @oxytype/frontend build:start",
+      "result": "pass"
+    },
+    {
+      "command": "vp run --filter @oxytype/frontend build:start:test",
+      "result": "pass"
+    },
+    {
+      "command": "vp run --filter @oxytype/frontend build:start:staging",
+      "result": "pass"
+    },
+    {
+      "command": "vp run --filter @oxytype/frontend dry-run:start",
+      "result": "pass in local and migration configurations",
+      "localUploadKiB": 4178.05,
+      "localGzipKiB": 931.64,
+      "stagingUploadKiB": 4178.04,
+      "stagingGzipKiB": 931.66
+    },
+    {
+      "command": "vp run --filter @oxytype/frontend measure-eager-js",
+      "result": "pass",
+      "evidence": "stage-4-eager.json",
+      "files": 81,
+      "raw": 914164,
+      "gzip": 321202,
+      "frozenRawBudget": 922918,
+      "frozenGzipBudget": 321462
+    },
+    {
+      "command": "rollback browser graph inspection",
+      "result": "pass",
+      "details": "No Start RPC path, public_stats, sqlite_master, withRuntime or consumeBatch in rollback JS"
+    }
+  ],
+  "ci": {
+    "status": "pass",
+    "firstFailedRun": "https://github.com/voltcrash/oxytype/actions/runs/38835943770",
+    "nestedPluginFailedRun": "https://github.com/voltcrash/oxytype/actions/runs/38836654432",
+    "cause": "External CommonJS built-in requires crashed workerd in Linux CI; native Rolldown plugin attempts also failed despite local builds converting them.",
+    "resolution": "Ordinary Vite resolve/load hooks emit static ESM facades with native CJS module identity. A built-CJS/workerd fixture covers crypto, util and fs; both Worker bundle variants reject runtime require calls.",
+    "pipelineNativePluginFailedRun": "https://github.com/voltcrash/oxytype/actions/runs/38837078857",
+    "workerd": "48 tests pass; all 19 production-Worker browser tests and staging build/dry-run pass",
+    "run": "https://github.com/voltcrash/oxytype/actions/runs/38837733179",
+    "head": "eae5edf165cfd050bfafdd1a9ca1edc32324c2cf",
+    "requiredChecks": [
+      "ci-fe",
+      "ci-be",
+      "test-e2e",
+      "ci-start",
+      "check-format",
+      "knip",
+      "ci-assets"
+    ],
+    "skippedByPathFilter": ["ci-pkg", "ci-tui"]
+  },
+  "fixedDuringValidation": [
+    "Removed committed debug capture script and supplied Header Storybook layout props.",
+    "Settings highlight updates now follow mounted-route search; selecting the same section preserves highlight URLs.",
+    "Router scroll cache reapplies after lazy settings content mounts; path navigation focuses owned main ref.",
+    "Shared command palette focus observation tolerates unmounted typing refs.",
+    "Inactive pages no longer always confirm document exit.",
+    "Failed SSR profile reads no longer execute the same service twice; Query cancellation signals forwarded.",
+    "Unused feature-only exports made private."
+  ],
+  "diagnostics": [
+    "Initial overlapping builds/tests replaced fixture assets and caused resource-contention timeouts. Fresh sequential runs are the exit evidence.",
+    "Pinned memory history skips POP/unload blockers; those tests use browser history.",
+    "One restored window scroll differed by two pixels after remount layout; browser assertion permits less than five pixels, while still testing exact container restoration. No frozen performance budget changed."
+  ],
+  "remainingAdapters": {
+    "rollback": "Legacy page/controller/cache wrappers retained only for production rollback; remove Stage 8.",
+    "typing": "Native index remains foundation placeholder; typing-specific active-page checks/lifecycles transfer Stage 5.",
+    "data": "Snapshot/Ape/config/history/mutations and command-palette validation retire Stage 6.",
+    "http": "In-process /api/$ Hono adapter retires Stage 6 as retained HTTP contracts and browser callers move to native transports.",
+    "delivery": "Deployment/PWA/static delivery retire Stages 7\u20138."
+  },
+  "performance": "Eager JS checked against frozen budgets. Engine/result algorithms and transport unchanged. Timing/typing migration comparison is Stage 5; final native Worker artifact review remains Stage 7. Stage 3 recorded backend Worker-byte exception remains explicit.",
+  "artifactNote": "Native Start dry-run: 4178.04 KiB raw / 931.66 KiB gzip versus Stage 3 3590.24 / 785.24. Temporary in-process HTTP adapter and native public route graph add code. Stage 6 retires the adapter; Stage 7 reviews the final native Worker footprint. These dry-run figures do not replace the frozen backend benchmark or change its thresholds."
+}
