@@ -6,7 +6,7 @@ import PlatformRuntime from "./platform-runtime.client";
 export default function BrowserRuntime() {
   return (
     <>
-      <PlatformRuntime />
+      <PlatformRuntime serviceWorkerOwnsCaches />
       <AuthRuntime />
       <AccountRuntime />
       <UpdateRuntime />

@@ -18,7 +18,14 @@ function purgeCaches(): void {
   });
 }
 
-export async function fetchLatestVersion(): Promise<{
+/**
+ * `purgeCaches` keeps the rollback build's release-change cache purge. The
+ * Start service worker versions its caches per build, so purging there would
+ * only discard the offline shell it just installed.
+ */
+export async function fetchLatestVersion(
+  options: { purgeCaches: boolean } = { purgeCaches: true },
+): Promise<{
   text: string;
   isNew: boolean;
 } | null> {
@@ -37,7 +44,7 @@ export async function fetchLatestVersion(): Promise<{
 
   if (isNew || memoryVersion === "") {
     memoryLS.set(currentVersion);
-    purgeCaches();
+    if (options.purgeCaches) purgeCaches();
   }
 
   return {

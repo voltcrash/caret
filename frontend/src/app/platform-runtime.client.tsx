@@ -21,7 +21,10 @@ import { lockMath } from "./browser-integrity";
 import { FontRuntime } from "./font-runtime.client";
 
 /** Platform/preferences only. Never waits for authentication or account history. */
-export default function BrowserRuntime(): JSXElement {
+export default function BrowserRuntime(props: {
+  /** Start's service worker owns cache lifetimes; rollback purges by release. */
+  serviceWorkerOwnsCaches?: boolean;
+}): JSXElement {
   useThemeEvents();
   useConnectionEvents();
   createEffect(() => {
@@ -48,7 +51,9 @@ export default function BrowserRuntime(): JSXElement {
     void loadFromLocalStorage().catch((error: unknown) =>
       console.error("Failed to load preferences", error),
     );
-    void fetchLatestVersion()
+    void fetchLatestVersion({
+      purgeCaches: props.serviceWorkerOwnsCaches !== true,
+    })
       .then((data) => {
         if (
           !disposed &&

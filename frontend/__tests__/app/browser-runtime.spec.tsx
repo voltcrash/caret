@@ -99,3 +99,12 @@ it("mounts without waiting for preferences/history and releases integrations bef
   await Promise.resolve();
   expect(state.setVersion).not.toHaveBeenCalled();
 });
+
+it("keeps the rollback release purge unless Start's service worker owns caches", () => {
+  state.version.mockResolvedValue(null);
+  render(() => <BrowserRuntime />);
+  expect(state.version).toHaveBeenLastCalledWith({ purgeCaches: true });
+  cleanup();
+  render(() => <BrowserRuntime serviceWorkerOwnsCaches />);
+  expect(state.version).toHaveBeenLastCalledWith({ purgeCaches: false });
+});
