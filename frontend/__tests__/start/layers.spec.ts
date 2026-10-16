@@ -145,6 +145,42 @@ describe("source layer boundaries", () => {
     ).toEqual([]);
   });
 
+  it("never reaches the rollback page system from Start routes", () => {
+    const rollback = [
+      "src/ts/controllers/page-controller.ts",
+      "src/ts/components/pages/AppPages.tsx",
+      "src/ts/components/core/NavigationRuntime.tsx",
+      "src/ts/components/AppRouter.tsx",
+      "src/ts/components/App.tsx",
+      "src/ts/pages/**",
+      "src/app/legacy-runtime.client.tsx",
+    ];
+    const reached = new Map<string, string>();
+    const queue = files(resolve(src, "routes")).map((file) =>
+      relative(root, file),
+    );
+    for (const file of queue) reached.set(file, file);
+    for (const file of queue) {
+      for (const edge of edges) {
+        if (edge.from !== file || reached.has(edge.to)) continue;
+        reached.set(edge.to, file);
+        queue.push(edge.to);
+      }
+    }
+    const path = (file: string): string[] => {
+      const parent = reached.get(file);
+      return parent === undefined || parent === file
+        ? [file]
+        : [...path(parent), file];
+    };
+    expect(
+      [...reached.keys()]
+        .filter((file) => is(file, ...rollback))
+        .map((file) => path(file).join(" → ")),
+    ).toEqual([]);
+    expect(reached.has("src/features/typing/page.client.tsx")).toBe(true);
+  });
+
   it("imports the backend only through narrow server-only subpaths", () => {
     expect(
       edges
