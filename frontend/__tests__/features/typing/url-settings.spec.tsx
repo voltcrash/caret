@@ -7,11 +7,13 @@ const mocks = vi.hoisted(() => ({
   handoff: vi.fn(async () => undefined),
 }));
 const [search, setSearch] = createSignal("");
+const [pathname, setPathname] = createSignal("/");
 const [signedIn, setSignedIn] = createSignal<boolean | undefined>();
 const [status, setStatus] = createSignal<"loading" | "ready">("loading");
 vi.mock("@tanstack/solid-router", () => ({
-  useLocation: (options: { select: (location: object) => string }) => () =>
-    options.select({ searchStr: search() }),
+  useLocation:
+    (options: { select: (location: object) => string | undefined }) => () =>
+      options.select({ pathname: pathname(), searchStr: search() }),
 }));
 vi.mock("../../../src/features/account/settled.client", () => ({
   useAccountSettled: () => signedIn,
@@ -35,8 +37,9 @@ import {
 
 releaseTestApplication();
 let dispose: () => void;
+const [entered, setEntered] = createSignal(false);
 function Probe(): null {
-  useUrlSettings();
+  useUrlSettings(entered);
   return null;
 }
 function navigate(value: string): void {
@@ -53,6 +56,7 @@ beforeEach(() => {
   };
   setSignedIn(undefined);
   setStatus("loading");
+  setEntered(true);
   navigate("?testSettings=abc+d$");
 });
 afterEach(() => {
@@ -61,9 +65,14 @@ afterEach(() => {
   navigate("");
 });
 
-it("waits for preferences and the account, then applies the raw URL once", () => {
+it("waits for entry, preferences and the account, then applies the raw URL once", () => {
+  setEntered(false);
   render(() => <Probe />);
   setStatus("ready");
+  setSignedIn(false);
+  expect(mocks.apply).not.toHaveBeenCalled();
+  setSignedIn(undefined);
+  setEntered(true);
   expect(mocks.apply).not.toHaveBeenCalled();
   setSignedIn(false);
   expect(mocks.apply).toHaveBeenCalledExactlyOnceWith("?testSettings=abc+d$");
@@ -93,4 +102,15 @@ it("resumes a pending handoff after sign-in without reapplying settings", () => 
   expect(mocks.handoff).toHaveBeenLastCalledWith("", true);
   navigate("?challenge=oneHourWarrior");
   expect(mocks.apply).toHaveBeenLastCalledWith("?challenge=oneHourWarrior");
+});
+
+it("ignores location changes for the route being navigated to", () => {
+  render(() => <Probe />);
+  setStatus("ready");
+  setSignedIn(false);
+  expect(mocks.handoff).toHaveBeenCalledOnce();
+  setPathname("/login");
+  setSearch("");
+  expect(mocks.handoff).toHaveBeenCalledOnce();
+  setPathname("/");
 });

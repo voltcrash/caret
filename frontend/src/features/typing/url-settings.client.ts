@@ -13,18 +13,24 @@ const applied = createAppOwned(() => ({
 
 /**
  * Shared theme/test-settings/challenge links and terminal handoffs on the
- * typing route. Each distinct search applies once, after local preferences
- * and the account's server preferences, so URL values win like before. Auth
- * refreshes never reapply; signing in only resumes a pending handoff.
+ * typing route. Each distinct search applies once, after route entry, local
+ * preferences and the account's server preferences, so URL values win like
+ * before. Auth refreshes never reapply; signing in only resumes a handoff.
  */
-export function useUrlSettings(): void {
-  const search = useLocation({ select: (location) => location.searchStr });
+export function useUrlSettings(entered: () => boolean): void {
+  // Leaving updates the location before the leaf unmounts; ignore other routes.
+  const search = useLocation({
+    select: (location) =>
+      location.pathname === "/" ? location.searchStr : undefined,
+  });
   const signedIn = useAccountSettled();
   createEffect(() => {
     const key = search();
     const registered = signedIn();
     if (
+      key === undefined ||
       registered === undefined ||
+      !entered() ||
       preferencesReadiness().state().status !== "ready"
     ) {
       return;
