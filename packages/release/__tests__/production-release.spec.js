@@ -411,6 +411,12 @@ it("wires scheduled/manual production deployment before publication and always c
   const job = workflow.jobs.release;
   expect(job.if).toContain("github.ref == 'refs/heads/main'");
   expect(job.environment.name).toBe("production");
+  expect(job.if).toContain("vars.START_PRODUCTION_ENABLED == 'true'");
+  expect(
+    job.steps.find(
+      (step) => step.name === "Retain matched Start release artifact",
+    ).with["include-hidden-files"],
+  ).toBe(true);
   const steps = job.steps;
   const plan = steps.findIndex((step) => step.id === "plan");
   expect(plan).toBeGreaterThan(0);
@@ -448,7 +454,7 @@ it("wires scheduled/manual production deployment before publication and always c
   );
   expect(publish).toBeGreaterThan(deploy);
   expect(steps[deploy].run).toContain(
-    'deploy:production-site --var "VERSION:$RELEASE_VERSION"',
+    "--filter @oxytype/frontend deploy:production-site",
   );
   expect(steps[publish].if).toBe("steps.plan.outputs.shouldDeploy == 'true'");
   expect(steps.at(-1).if).toBe("always()");
@@ -504,7 +510,7 @@ it.each(["", "ba_dashboard_workflow_fixture"])(
           RELEASE_VERSION: "26.10.04",
         },
       });
-      const backendPath = join(directory, "backend/.dev.vars.production");
+      const backendPath = join(directory, "frontend/.dev.vars.production");
       const backend = parseEnv(readFileSync(backendPath, "utf8"));
       expect(backend.BETTER_AUTH_SECRET).toBe("auth-secret-fixture");
       expect(backend.BETTER_AUTH_API_KEY).toBe(

@@ -91,3 +91,13 @@ it("retains selective routing for frontend source changes", () => {
     "should-build-tui": "false",
   });
 });
+
+it("rebuilds the application Worker when backend services change", () => {
+  expect(changes(["backend/src/services/operations/results.ts"])).toMatchObject(
+    {
+      "should-build-fe": "true",
+      "should-build-be": "true",
+      "should-build-tui": "false",
+    },
+  );
+});

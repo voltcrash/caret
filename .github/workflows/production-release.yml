@@ -19,7 +19,7 @@ env:
 
 jobs:
   release:
-    if: github.repository == 'voltcrash/oxytype' && github.ref == 'refs/heads/main'
+    if: github.repository == 'voltcrash/oxytype' && github.ref == 'refs/heads/main' && vars.START_PRODUCTION_ENABLED == 'true'
     name: Deploy production and publish release
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -87,7 +87,7 @@ jobs:
           }
           const dashboardApiKey = process.env.BETTER_AUTH_API_KEY?.trim();
           const backendEnv = process.env.PRODUCTION_BACKEND_ENV + (dashboardApiKey ? `\nBETTER_AUTH_API_KEY=${JSON.stringify(dashboardApiKey)}\n` : '');
-          writeFileSync('backend/.dev.vars.production', backendEnv, { mode: 0o600 });
+          writeFileSync('frontend/.dev.vars.production', backendEnv, { mode: 0o600 });
           writeFileSync('frontend/.env.production.local', process.env.PRODUCTION_FRONTEND_ENV, { mode: 0o600 });
           const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
           pkg.version = process.env.RELEASE_VERSION;
@@ -100,26 +100,40 @@ jobs:
 
       - name: Build production frontend and Worker
         if: steps.plan.outputs.shouldDeploy == 'true'
-        run: vp run --filter @oxytype/backend build:production-site
+        env:
+          OXYTYPE_BUILD_ID: ${{ steps.plan.outputs.version }}-${{ steps.plan.outputs.sha }}
+        run: vp run --filter @oxytype/frontend build:production-site
 
       - name: Check production deployment
         if: steps.plan.outputs.shouldDeploy == 'true'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: vp run --filter @oxytype/backend deploy:production-dry-run
+        run: vp run --filter @oxytype/frontend deploy:production-dry-run
+
+      - name: Retain matched Start release artifact
+        if: steps.plan.outputs.shouldDeploy == 'true'
+        uses: actions/upload-artifact@v6
+        with:
+          name: start-${{ steps.plan.outputs.version }}-${{ steps.plan.outputs.sha }}
+          include-hidden-files: true
+          retention-days: 90
+          path: |
+            frontend/dist/start
+            frontend/wrangler.production.json
+            pnpm-lock.yaml
 
       - name: Apply production D1 migrations
         if: steps.plan.outputs.shouldDeploy == 'true'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: vp run --filter @oxytype/backend db:migrate:production
+        run: vp run --filter @oxytype/frontend db:migrate:production
 
       - name: Deploy production with Wrangler
         if: steps.plan.outputs.shouldDeploy == 'true'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           RELEASE_VERSION: ${{ steps.plan.outputs.version }}
-        run: vp run --filter @oxytype/backend deploy:production-site --var "VERSION:$RELEASE_VERSION"
+        run: vp run --filter @oxytype/frontend deploy:production-site
 
       - name: Publish GitHub release after deployment
         if: steps.plan.outputs.shouldDeploy == 'true'
@@ -142,4 +156,4 @@ jobs:
 
       - name: Remove private settings
         if: always()
-        run: rm -f backend/.dev.vars.production frontend/.env.production.local
+        run: rm -f frontend/.dev.vars.production frontend/.env.production.local
