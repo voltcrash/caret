@@ -1,6 +1,6 @@
 {
   "stage": 5,
-  "status": "Final CI rerun pending fixture correction",
+  "status": "pass",
   "base": "2a66d1577",
   "implementation": "9d3eb57bfcb7746f2081bb956504a4ab493aee36",
   "pr": "https://github.com/voltcrash/oxytype/pull/140",
@@ -108,6 +108,12 @@
       "seconds": 101.88
     },
     {
+      "name": "typing-short-word-repeat",
+      "command": "vp -C frontend exec playwright test --config playwright.start.config.ts --project=start start-e2e/typing.spec.ts --grep 'losing the session|leaving mid-test' --repeat-each 10",
+      "exitCode": 0,
+      "tests": 20
+    },
+    {
       "name": "build-rollback",
       "command": "vp run build",
       "exitCode": 0,
@@ -179,21 +185,21 @@
     "nativeStagingWorkerGzipKiB": 931.71
   },
   "ci": {
-    "run": "https://github.com/voltcrash/oxytype/actions/runs/38867745186",
-    "head": "9d3eb57bfcb7746f2081bb956504a4ab493aee36",
+    "run": "https://github.com/voltcrash/oxytype/actions/runs/38869928648",
+    "head": "6d90361aa32ce8cb5d0e7451a26167f2328f382e",
     "status": "pass",
     "requiredChecks": ["ci-fe", "ci-start", "test-e2e", "check-format", "knip"],
     "skippedByPathFilter": ["ci-be", "ci-assets", "ci-pkg", "ci-tui"],
-    "note": "Backend, shared and asset gates all pass locally; no TUI work. This code revision is followed only by evidence/handoff commits.",
-    "latestFailedRun": "https://github.com/voltcrash/oxytype/actions/runs/38868767591",
-    "pendingCorrection": "Count actual letters when the first randomly selected word has fewer than three characters; preserve exact count across auth loss."
+    "note": "Backend, shared and asset gates all pass locally; no TUI work. Product code is unchanged from the earlier green implementation 9d3eb57bf; this run includes the deterministic short-word fixture correction. Evidence/handoff commits follow.",
+    "resolvedFixtureFailureRun": "https://github.com/voltcrash/oxytype/actions/runs/38868767591"
   },
   "resolvedFailures": [
     "Preferences launched an animated restart before entry; activate the typing route after preferences.",
     "Moved typing sources made operation caller paths stale; refreshed all 82 operations without policy changes.",
     "Unused account readiness export; made module-private.",
     "Expanded browser suite shared one session rate bucket and hit 429; per-context reserved edge IPs retain real limits.",
-    "Rollback build removed Start dist output before dry-run; rebuilt Start then reran both dry-runs."
+    "Rollback build removed Start dist output before dry-run; rebuilt Start then reran both dry-runs.",
+    "Random two-letter first words invalidated a three-letter test assumption before auth loss; assert actual input count and use supported deterministic short custom text. Twenty repeated local checks and corrected Linux CI pass."
   ],
   "preExistingRequiredTestFailures": [],
   "remainingAdapters": {
