@@ -297,3 +297,18 @@ test("result screenshots download from the native route", async ({ page }) => {
   await expect(page.locator("#result")).toBeVisible();
   expect(errors).toEqual([]);
 });
+
+test("a case-insensitive challenge link loads its test settings", async ({
+  page,
+}) => {
+  await useConfig(page, { mode: "words", words: 15 });
+  await openTest(page, "/?challenge=ONEHOURWARRIOR");
+  await expect(page.getByText(/Challenge .*loaded/).first()).toBeVisible();
+  await expect
+    .poll(async () =>
+      page.evaluate(
+        () => (window as unknown as { config: { mode: string } }).config.mode,
+      ),
+    )
+    .not.toBe("words");
+});
