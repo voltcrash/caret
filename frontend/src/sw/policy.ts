@@ -129,11 +129,13 @@ export const skipWaitingMessage = "oxytype:skip-waiting";
 export const updateSafetyRequest = "oxytype:update-safety";
 
 /** Script-free, user-independent fallback for documents other than `/`. */
-export const offlinePage = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Offline | Oxytype</title><style>body{margin:0;min-height:100vh;display:grid;place-content:center;gap:1rem;background:#323437;color:#d1d0c5;font-family:"Roboto Mono",monospace;text-align:center;padding:2rem;box-sizing:border-box}a{color:#e2b714}</style></head><body><h1>You're offline</h1><p>This page needs a connection. The typing test is available offline.</p><p><a href="/">Start typing</a></p></body></html>`;
+export function offlinePage(stylesheets: string[]): string {
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Offline | Oxytype</title>${stylesheets.map((href) => `<link rel="stylesheet" href="${href}">`).join("")}</head><body class="m-0 grid min-h-screen place-content-center gap-4 bg-bg p-8 text-center font-mono text-text"><h1>You're offline</h1><p>This page needs a connection. The typing test is available offline.</p><p><a class="text-main underline" href="/">Start typing</a></p></body></html>`;
+}
 
 export const offlinePageHeaders = {
   "Content-Type": "text/html; charset=utf-8",
   "Cache-Control": "no-store",
   "Content-Security-Policy":
-    "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'self'",
+    "default-src 'none'; style-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'self'",
 };

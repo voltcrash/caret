@@ -189,7 +189,9 @@ async function main(): Promise<void> {
       cpu.push((cpuMs(pid) - before) / 50);
       for (let index = 0; index < 10; index++) {
         const before = performance.now();
-        const response = await worker.fetch("http://localhost:3000/about");
+        const response = await worker.fetch("http://localhost:3000/about", {
+          headers: { "cf-connecting-ip": "192.0.2.42" },
+        });
         if (response.status !== 200) throw new Error("SSR failed");
         await response.text();
         ssr.push(performance.now() - before);

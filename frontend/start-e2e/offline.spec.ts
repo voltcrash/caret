@@ -56,6 +56,10 @@ test("one online visit installs guest typing; private documents and RPCs stay un
   await expect(
     page.getByRole("heading", { name: "You're offline" }),
   ).toBeVisible();
+  await expect(page.locator("body")).toHaveCSS(
+    "background-color",
+    "rgb(50, 52, 55)",
+  );
   await page.getByRole("link", { name: "Start typing" }).click();
   await expect(page.locator("#words .word").first()).toBeVisible();
   await expect(

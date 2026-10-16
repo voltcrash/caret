@@ -103,10 +103,13 @@ async function offlineDocument(url: string): Promise<Response> {
     const shell = await cache.match(new URL(shellPath, origin).href);
     if (shell !== undefined) return shell;
   }
-  return new Response(offlinePage, {
-    status: 503,
-    headers: offlinePageHeaders,
-  });
+  return new Response(
+    offlinePage(config.precache.filter((path) => path.endsWith(".css"))),
+    {
+      status: 503,
+      headers: offlinePageHeaders,
+    },
+  );
 }
 
 async function store(request: Request, response: Response): Promise<void> {
