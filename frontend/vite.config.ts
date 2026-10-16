@@ -1,6 +1,6 @@
 import { envConfig } from "./vite-plugins/env-config";
 import { languageHashes } from "./vite-plugins/language-hashes";
-import { getClientVersion } from "./vite-plugins/client-version";
+import { resolveBuildId, startVersionFile } from "./vite-plugins/build-id";
 import { defineConfig, loadEnv } from "vite-plus";
 import { cloudflare } from "@cloudflare/vite-plugin";
 import { tanstackStart } from "@tanstack/solid-start/plugin/vite";
@@ -19,6 +19,7 @@ import {
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
+  const buildId = resolveBuildId(mode !== "production");
   return {
     lint: { ...frontendLint },
     publicDir: "static",
@@ -48,9 +49,10 @@ export default defineConfig(({ mode }) => {
       workerNodeBuiltins(),
       apiDocs(),
       startWebManifest(),
+      startVersionFile(buildId),
       envConfig({
         isDevelopment: mode !== "production",
-        clientVersion: getClientVersion(mode !== "production"),
+        clientVersion: buildId,
         env: {
           BACKEND_URL: "/api",
           AUTH_PROVIDERS: env["AUTH_PROVIDERS"] ?? "google,github",
@@ -97,6 +99,8 @@ export default defineConfig(({ mode }) => {
     ],
     define: {
       "import.meta.env.OXYTYPE_OFFLINE": JSON.stringify(mode === "offline"),
+      // Client and Worker share it; logs and error reports join on this ID.
+      "import.meta.env.OXYTYPE_BUILD_ID": JSON.stringify(buildId),
     },
     build: {
       outDir: mode === "runtime-test" ? "dist/start-test" : "dist/start",
