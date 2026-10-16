@@ -1,3 +1,5 @@
+import { createAppOwned } from "../../app/application";
+import { captureTypingMount } from "../../features/typing/scope";
 import { revealPreparedTestPage } from "../states/page-transition";
 import {
   showErrorNotification,
@@ -20,12 +22,12 @@ import {
   setLoadedChallenge,
 } from "../states/test";
 
-let challengeLoading = false;
+const challengeState = createAppOwned(() => ({ loading: false, sequence: 0 }));
 
 function clearActive(): void {
   if (
     getLoadedChallenge() !== null &&
-    !challengeLoading &&
+    !challengeState().loading &&
     !isTestRestarting()
   ) {
     showNoticeNotification("Challenge cleared");
@@ -63,11 +65,20 @@ export async function verify(
 }
 
 export async function setup(challengeName: ChallengeName): Promise<boolean> {
-  challengeLoading = true;
+  const lease = captureTypingMount();
+  const state = challengeState();
+  const sequence = ++state.sequence;
+  const isCurrent = (): boolean =>
+    lease.isCurrent() && state.sequence === sequence;
+  state.loading = true;
 
   setConfig("funbox", []);
 
   const { getChallenge } = await import("@oxytype/challenges");
+  if (!isCurrent()) {
+    if (state.sequence === sequence) state.loading = false;
+    return false;
+  }
   const challenge = getChallenge(challengeName);
   const settings = challenge.settings;
 
@@ -126,11 +137,13 @@ export async function setup(challengeName: ChallengeName): Promise<boolean> {
     } else if (settings.type === "script") {
       showLoaderBar();
       const response = await fetch(`/challenges/${settings.parameters.script}`);
+      if (!isCurrent()) return false;
       hideLoaderBar();
       if (response.status !== 200) {
         throw new Error(`${response.status} ${response.statusText}`);
       }
       const scriptdata = await response.text();
+      if (!isCurrent()) return false;
       let text = scriptdata.trim();
       text = text.replace(/[\n\r\t ]/gm, " ");
       text = text.replace(/ +/gm, " ");
@@ -220,10 +233,12 @@ export async function setup(challengeName: ChallengeName): Promise<boolean> {
     setLoadedChallenge(challenge);
     return true;
   } catch (e) {
-    showErrorNotification("Failed to load challenge", { error: e });
+    if (isCurrent()) {
+      showErrorNotification("Failed to load challenge", { error: e });
+    }
     return false;
   } finally {
-    challengeLoading = false;
+    if (state.sequence === sequence) state.loading = false;
   }
 }
 

@@ -1,3 +1,4 @@
+import { captureTypingRoute } from "../../scope";
 import { updateResultChartDataVisibility } from "./chart-visibility";
 import { updateChartPBLine } from "./chart-pb";
 import { updateChartData } from "./chart-data";
@@ -16,6 +17,7 @@ import { buildSpeedStats } from "../result-view-model";
 
 export function subscribeResultConfigChanges(): void {
   configEvent.useListener(async ({ key }) => {
+    const lease = captureTypingRoute();
     if (
       ["typingSpeedUnit", "startGraphsAtZero"].includes(key) &&
       getResultVisible()
@@ -31,7 +33,9 @@ export function subscribeResultConfigChanges(): void {
           },
       );
       await updateChartData();
+      if (!lease.isCurrent()) return;
       await updateChartPBLine();
+      if (!lease.isCurrent()) return;
       updateResultChartDataVisibility();
       updateMinMaxChartValues();
       applyMinMaxChartValues();

@@ -99,11 +99,19 @@ export function mountTypingScope(): () => void {
 }
 
 /** Entry lease for the current mount; activation fails after remount or disposal. */
-export function captureTypingMount(): { activate: () => boolean } {
+export function captureTypingMount(): {
+  activate: () => boolean;
+  isCurrent: () => boolean;
+} {
   const current = state();
   const route = untrack(current.route);
   const application = requireApplication();
+  const isCurrent = (): boolean =>
+    currentApplication() === application &&
+    (!current.managed ||
+      (route !== undefined && untrack(current.route) === route));
   return {
+    isCurrent,
     activate: () => {
       if (currentApplication() !== application) return false;
       if (!current.managed) return isTypingRouteActive();

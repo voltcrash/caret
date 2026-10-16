@@ -1,3 +1,5 @@
+import { setIsScreenshotting } from "../../ts/states/core";
+import { setScreenshotWatermark } from "../../ts/states/result";
 import { preferencesReadiness } from "../../app/readiness";
 import { setFocusCursorHidden } from "../../ts/states/app";
 import { hideLoaderBar } from "../../ts/states/loader-bar";
@@ -60,6 +62,8 @@ export function exitTypingRoute(): void {
   setResultCalculating(false);
   setResultLoading(false);
   setResultVisible(false);
+  setIsScreenshotting(false);
+  setScreenshotWatermark(undefined);
   setFocus(false);
   setFocusCursorHidden(false);
   setTestFocusState("focused");

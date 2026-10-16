@@ -1,3 +1,4 @@
+import { captureTypingRoute } from "../scope";
 import { createCroppedScreenshot } from "../components/result/useScreenshotCanvas";
 import { showLoaderBar, hideLoaderBar } from "../../../ts/states/loader-bar";
 import * as Replay from "./replay";
@@ -35,7 +36,9 @@ let firefoxClipboardNotificationShown = false;
  * Handles its own loader and basic error notifications for canvas generation.
  */
 async function generateCanvas(): Promise<HTMLCanvasElement | null> {
+  const lease = captureTypingRoute();
   const { domToCanvas } = await import("modern-screenshot");
+  if (!lease.isCurrent()) return null;
   showLoaderBar(true);
 
   if (resultState.replay.visible) {
@@ -74,6 +77,7 @@ async function generateCanvas(): Promise<HTMLCanvasElement | null> {
   // Wait a frame to ensure all UI changes are rendered
   await new Promise((resolve) => requestAnimationFrame(resolve));
 
+  if (!lease.isCurrent()) return null;
   const sourceX = src.getBoundingClientRect().left ?? 0;
   const sourceY = src.getBoundingClientRect().top ?? 0;
 
@@ -142,6 +146,7 @@ async function generateCanvas(): Promise<HTMLCanvasElement | null> {
       },
     });
 
+    if (!lease.isCurrent()) return null;
     // Scale and create output canvas
     const scale = fullCanvas.width / targetWidth;
     const paddedWidth = sourceWidth + paddingX * 2;
@@ -171,7 +176,7 @@ async function generateCanvas(): Promise<HTMLCanvasElement | null> {
     showErrorNotification("Error creating screenshot canvas", { error: e });
     return null;
   } finally {
-    revert(); // Ensure UI is reverted on both success and error
+    if (lease.isCurrent()) revert(); // Route exit also resets screenshot state.
   }
 }
 
