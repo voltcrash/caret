@@ -3,6 +3,7 @@ import { createForm } from "@tanstack/solid-form";
 import { format } from "date-fns/format";
 import { JSXElement, createSignal, For, Show } from "solid-js";
 
+import { operation } from "../../../data/operations";
 import Ape from "../../ape";
 import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
 import {
@@ -187,15 +188,17 @@ export function QuoteApproveModal(): JSXElement {
 
   const fetchQuotes = async (): Promise<void> => {
     showLoaderBar();
-    const response = await Ape.quotes.get();
+    const response = await operation("quotes.get");
     hideLoaderBar();
 
-    if (response.status !== 200) {
-      showErrorNotification("Failed to get new quotes", { response });
+    if (!response.ok) {
+      showErrorNotification("Failed to get new quotes", {
+        operation: response,
+      });
       return;
     }
 
-    setQuotes(response.body.data ?? []);
+    setQuotes(response.data ?? []);
   };
 
   const handleBeforeShow = (): void => {

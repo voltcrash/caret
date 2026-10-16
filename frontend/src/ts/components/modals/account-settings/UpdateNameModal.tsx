@@ -1,6 +1,7 @@
 import { UserNameSchema } from "@oxytype/schemas/users";
 import { z } from "zod";
 
+import { operation } from "../../../../data/operations";
 import Ape from "../../../ape";
 import { reauthenticate } from "../../../auth";
 import { setSnapshot, getSnapshot } from "../../../db";
@@ -28,7 +29,7 @@ export function showUpdateNameModal(): void {
         validation: {
           isValid: remoteValidation(
             async (name: string) =>
-              Ape.users.getNameAvailability({ params: { name } }),
+              operation("users.getNameAvailability", { params: { name } }),
             { check: (data) => data.available || "Name not available" },
           ),
           debounceDelay: 1000,

@@ -2,6 +2,7 @@ import { UserNameSchema } from "@oxytype/schemas/users";
 import { createSignal, For, JSXElement } from "solid-js";
 import { z } from "zod";
 
+import { operation } from "../../../data/operations";
 import { toggleCaretDebug } from "../../../features/typing/components/words/caret-controller";
 import { toggleUserFakeChartData } from "../../../features/typing/runtime/result";
 import { disableSlowTimerFail } from "../../../features/typing/runtime/test-timer";
@@ -224,7 +225,7 @@ function showGenerateDataModal(): void {
         validation: {
           isValid: remoteValidation(
             async (name: string) =>
-              Ape.users.getNameAvailability({ params: { name } }),
+              operation("users.getNameAvailability", { params: { name } }),
             { check: (data) => !data.available || "Unknown user" },
           ),
           debounceDelay: 1000,

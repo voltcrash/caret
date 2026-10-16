@@ -1,8 +1,8 @@
+import { operation } from "../../data/operations";
 import {
   parseBrowserHandoff,
   type BrowserHandoff,
 } from "@oxytype/schemas/browser-handoff";
-import Ape from "../ape";
 import { setConfig } from "../config/setters";
 import { navigate } from "../navigation/navigation";
 import { showModal } from "../states/modals";
@@ -41,17 +41,17 @@ export async function loadBrowserHandoff(
   pending = undefined;
   try {
     if (handoff.action === "user-report") {
-      const response = await Ape.users.getProfile({
+      const response = await operation("users.getProfile", {
         params: { uidOrName: handoff.username },
         query: { isUid: false, client: "web" },
       });
-      if (response.status !== 200) {
+      if (!response.ok) {
         showErrorNotification(
           `Could not load the reported user (${response.status})`,
         );
         return;
       }
-      setUserToReport(response.body.data);
+      setUserToReport(response.data);
       showModal("UserReport");
     } else {
       setConfig("language", handoff.language, { nosave: true });

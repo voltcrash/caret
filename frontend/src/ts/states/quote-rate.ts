@@ -1,7 +1,7 @@
+import { operation } from "../../data/operations";
 import { createAppSignal } from "../../app/state";
 
 import { Language } from "@oxytype/schemas/languages";
-import Ape from "../ape";
 import { Quote } from "../controllers/quotes-controller";
 import { showErrorNotification } from "./notifications";
 import { showModal } from "./modals";
@@ -44,21 +44,23 @@ export async function getQuoteStats(
   if (!quote) return;
 
   setSelectedQuote(quote);
-  const response = await Ape.quotes.getRating({
+  const response = await operation("quotes.getRating", {
     query: { quoteId: quote.id, language: quote.language },
   });
 
-  if (response.status !== 200) {
-    showErrorNotification("Failed to get quote ratings", { response });
+  if (!response.ok) {
+    showErrorNotification("Failed to get quote ratings", {
+      operation: response,
+    });
     return;
   }
 
-  if (response.body.data === null) {
+  if (response.data === null) {
     setQuoteStats({});
     return {};
   }
 
-  const stats = response.body.data as QuoteStats;
+  const stats = response.data as QuoteStats;
   if (stats !== undefined && stats.average === undefined) {
     stats.average = getRatingAverage(stats);
   }

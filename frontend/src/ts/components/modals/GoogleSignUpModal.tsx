@@ -1,6 +1,7 @@
 import { UserNameSchema } from "@oxytype/schemas/users";
 import { createForm } from "@tanstack/solid-form";
 
+import { operation } from "../../../data/operations";
 import Ape from "../../ape";
 import { loadUser, signOut } from "../../auth";
 import {
@@ -74,7 +75,7 @@ export function GoogleSignupModal() {
             onChangeAsyncDebounceMs: 1000,
             onChangeAsync: remoteValidationForm(
               async (name: string) =>
-                Ape.users.getNameAvailability({ params: { name } }),
+                operation("users.getNameAvailability", { params: { name } }),
               { check: (data) => data.available || "Name not available" },
             ),
           }}

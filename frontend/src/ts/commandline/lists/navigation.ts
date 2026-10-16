@@ -1,9 +1,9 @@
+import { operation } from "../../../data/operations";
 import { navigate } from "../../navigation/navigation";
 import { isAuthenticated } from "../../states/core";
 import { Command, withValidation } from "../types";
 import { remoteValidation } from "../../utils/remote-validation";
 import { UserNameWithoutFilterSchema } from "@oxytype/schemas/users";
-import Ape from "../../ape";
 
 const commands: Command[] = [
   {
@@ -62,7 +62,8 @@ const commands: Command[] = [
       schema: UserNameWithoutFilterSchema,
       debounceDelay: 1000,
       isValid: remoteValidation(
-        async (name) => Ape.users.getProfile({ params: { uidOrName: name } }),
+        async (name) =>
+          operation("users.getProfile", { params: { uidOrName: name } }),
         {
           on4xx: () => "Unknown user",
         },

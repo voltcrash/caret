@@ -5,6 +5,7 @@ import { createAppStore } from "../../app/state";
 import { CommonResponsesType } from "@oxytype/contracts/util/api";
 import { createErrorMessage } from "../utils/error";
 import { MessageContent } from "../types/message-content";
+import type { OperationResult } from "../../data/operation-result";
 
 export type NotificationLevel = "error" | "notice" | "success";
 
@@ -111,6 +112,7 @@ export type AddNotificationOptions = Partial<
 > & {
   details?: object | string;
   response?: CommonResponsesType;
+  operation?: OperationResult<unknown>;
   error?: unknown;
 };
 
@@ -142,6 +144,16 @@ export function addNotificationWithLevel(
     };
     const responseMessage = options.response.body.message;
     message = updateLastLine(message, (line) => `${line}: ${responseMessage}`);
+  }
+
+  if (options.operation !== undefined) {
+    const result = options.operation;
+    details = {
+      status: result.status,
+      additionalDetails: options.details,
+      validationErrors: !result.ok ? result.validationErrors : undefined,
+    };
+    message = updateLastLine(message, (line) => `${line}: ${result.message}`);
   }
 
   if (options.error !== undefined) {

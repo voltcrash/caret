@@ -23,7 +23,7 @@ import * as DB from "../../src/ts/db";
 import { setUserId } from "../../src/ts/states/core";
 import { getSnapshot } from "../../src/ts/states/snapshot";
 import { getTags } from "../../src/ts/collections/tags";
-import { mockOperation } from "../__harness__/operations";
+import { mockHttpFixture, mockOperation } from "../__harness__/operations";
 
 mockOperation("users.get", async () => {
   const response = (await requests.user()) as {
@@ -118,3 +118,5 @@ it("replaces real collection readers and refuses a previous actor's late respons
   await Promise.resolve();
   expect(getTags().map((tag) => tag._id)).toEqual(["b"]);
 });
+
+mockHttpFixture("configs.get", async (input) => await requests.config(input));

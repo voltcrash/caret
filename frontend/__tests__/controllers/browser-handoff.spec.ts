@@ -8,13 +8,16 @@ const mocks = vi.hoisted(() => ({
   userReport: vi.fn(),
   error: vi.fn(),
   notice: vi.fn(),
-  profile: vi.fn(async () => ({
+  profile: vi.fn(async (_input?: unknown) => ({
     status: 200,
     body: { data: { name: "Tester", uid: "user" } },
   })),
 }));
-vi.mock("../../src/ts/ape", () => ({
-  default: { users: { getProfile: mocks.profile } },
+vi.mock("../../src/data/operations", () => ({
+  operation: async (_id: string, input: unknown) => {
+    const response = await mocks.profile(input);
+    return { ok: true, status: 200, data: response.body.data, message: "" };
+  },
 }));
 vi.mock("../../src/ts/config/setters", () => ({ setConfig: mocks.setConfig }));
 vi.mock("../../src/ts/navigation/navigation", () => ({
