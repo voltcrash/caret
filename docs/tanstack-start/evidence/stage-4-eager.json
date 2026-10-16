@@ -1,0 +1,412 @@
+{
+  "files": 81,
+  "raw": 914164,
+  "gzip": 321202,
+  "entries": [
+    {
+      "file": "/js/oxytype.gPf_MExW.js",
+      "raw": 235436,
+      "gzip": 77571
+    },
+    {
+      "file": "/js/rolldown-runtime.Dd_uD5pT.js",
+      "raw": 1106,
+      "gzip": 627
+    },
+    {
+      "file": "/js/modulepreload-polyfill.P2Xu9kJm.js",
+      "raw": 670,
+      "gzip": 389
+    },
+    {
+      "file": "/js/app-owners.nipyNziT.js",
+      "raw": 77848,
+      "gzip": 25410
+    },
+    {
+      "file": "/js/cn.DLyFV4qv.js",
+      "raw": 27805,
+      "gzip": 8757
+    },
+    {
+      "file": "/js/Fa.BuQOlxeX.js",
+      "raw": 486,
+      "gzip": 331
+    },
+    {
+      "file": "/js/_virtual_env-config.DSOfBIt3.js",
+      "raw": 211,
+      "gzip": 183
+    },
+    {
+      "file": "/js/objects.FcZ6BbR1.js",
+      "raw": 172,
+      "gzip": 130
+    },
+    {
+      "file": "/js/schemas.BOFtNHhs.js",
+      "raw": 98538,
+      "gzip": 27221
+    },
+    {
+      "file": "/js/zod-messages.DzcYWoTe.js",
+      "raw": 2774,
+      "gzip": 1095
+    },
+    {
+      "file": "/js/notifications.TkoPu_-u.js",
+      "raw": 2029,
+      "gzip": 979
+    },
+    {
+      "file": "/js/local-storage-with-schema.BN9X0TUh.js",
+      "raw": 3561,
+      "gzip": 1273
+    },
+    {
+      "file": "/js/createEvent.DaFFE3UF.js",
+      "raw": 321,
+      "gzip": 231
+    },
+    {
+      "file": "/js/store.DFNr3OAt.js",
+      "raw": 2231,
+      "gzip": 1182
+    },
+    {
+      "file": "/js/modals.C0HrCYZj.js",
+      "raw": 1084,
+      "gzip": 420
+    },
+    {
+      "file": "/js/numbers.DCTLyid8.js",
+      "raw": 604,
+      "gzip": 323
+    },
+    {
+      "file": "/js/core.CDw9DZJS.js",
+      "raw": 2223,
+      "gzip": 1005
+    },
+    {
+      "file": "/js/preload-helper.BZ1Pz5am.js",
+      "raw": 1218,
+      "gzip": 688
+    },
+    {
+      "file": "/js/ape.l3K4BK3a.js",
+      "raw": 6519,
+      "gzip": 2535
+    },
+    {
+      "file": "/js/user.IE80asMA.js",
+      "raw": 720,
+      "gzip": 459
+    },
+    {
+      "file": "/js/vendor-auth.BneIrTuE.js",
+      "raw": 31063,
+      "gzip": 11526
+    },
+    {
+      "file": "/js/auth-client.DKdck9xa.js",
+      "raw": 4394,
+      "gzip": 1950
+    },
+    {
+      "file": "/js/util.mw1j0kw6.js",
+      "raw": 1256,
+      "gzip": 709
+    },
+    {
+      "file": "/js/languages.D36gYebG.js",
+      "raw": 6634,
+      "gzip": 2458
+    },
+    {
+      "file": "/js/shared.CGKHekoR.js",
+      "raw": 1001,
+      "gzip": 530
+    },
+    {
+      "file": "/js/configs.BbL5P1eQ.js",
+      "raw": 9918,
+      "gzip": 4894
+    },
+    {
+      "file": "/js/languages.DrbOtxog.js",
+      "raw": 19710,
+      "gzip": 5653
+    },
+    {
+      "file": "/js/useRef.D_9PVFci.js",
+      "raw": 106,
+      "gzip": 121
+    },
+    {
+      "file": "/js/misc.Dq55TrqN.js",
+      "raw": 4168,
+      "gzip": 1996
+    },
+    {
+      "file": "/js/strings.B-1ygbvI.js",
+      "raw": 1717,
+      "gzip": 963
+    },
+    {
+      "file": "/js/strings.t5ZAtIBz.js",
+      "raw": 1690,
+      "gzip": 829
+    },
+    {
+      "file": "/js/command-palette-hotkey._N0Y6JDE.js",
+      "raw": 8397,
+      "gzip": 3530
+    },
+    {
+      "file": "/js/custom-themes.Om4O1ljV.js",
+      "raw": 186,
+      "gzip": 160
+    },
+    {
+      "file": "/js/metadata.7daGS0dh.js",
+      "raw": 41714,
+      "gzip": 11410
+    },
+    {
+      "file": "/js/header.BFW2sgwg.js",
+      "raw": 201,
+      "gzip": 169
+    },
+    {
+      "file": "/js/esm.qwAjXTTQ.js",
+      "raw": 625,
+      "gzip": 365
+    },
+    {
+      "file": "/js/config.Bs_sMAfn.js",
+      "raw": 66,
+      "gzip": 82
+    },
+    {
+      "file": "/js/sentry.B0iXohct.js",
+      "raw": 2465,
+      "gzip": 1266
+    },
+    {
+      "file": "/js/useLocalStorage.CSRwKPhU.js",
+      "raw": 679,
+      "gzip": 424
+    },
+    {
+      "file": "/js/createSignalWithSetters.C2qGhp7x.js",
+      "raw": 245,
+      "gzip": 188
+    },
+    {
+      "file": "/js/results.Ds1BbLNh.js",
+      "raw": 3654,
+      "gzip": 1477
+    },
+    {
+      "file": "/js/env.C3V7xSBQ.js",
+      "raw": 100,
+      "gzip": 115
+    },
+    {
+      "file": "/js/json-data.CDio75lu.js",
+      "raw": 37604,
+      "gzip": 20060
+    },
+    {
+      "file": "/js/test._-u08fUs.js",
+      "raw": 8401,
+      "gzip": 3401
+    },
+    {
+      "file": "/js/setters.D7vZi29y.js",
+      "raw": 4015,
+      "gzip": 1754
+    },
+    {
+      "file": "/js/arrays.7YxFeLYc.js",
+      "raw": 348,
+      "gzip": 252
+    },
+    {
+      "file": "/js/mode.BgIo3a2E.js",
+      "raw": 326,
+      "gzip": 214
+    },
+    {
+      "file": "/js/format.CKIWDPD_.js",
+      "raw": 19488,
+      "gzip": 5617
+    },
+    {
+      "file": "/js/normalizeInterval.Bphkwj_K.js",
+      "raw": 866,
+      "gzip": 449
+    },
+    {
+      "file": "/js/endOfYear.pmW2cf9F.js",
+      "raw": 418,
+      "gzip": 266
+    },
+    {
+      "file": "/js/loader-bar.DmiO-l4t.js",
+      "raw": 217,
+      "gzip": 175
+    },
+    {
+      "file": "/js/queries.5a24i3Kr.js",
+      "raw": 91,
+      "gzip": 107
+    },
+    {
+      "file": "/js/keys.mI6_sGBa.js",
+      "raw": 175,
+      "gzip": 162
+    },
+    {
+      "file": "/js/snapshot.KO7Kesl6.js",
+      "raw": 364,
+      "gzip": 259
+    },
+    {
+      "file": "/js/users.BmBlEonu.js",
+      "raw": 7965,
+      "gzip": 3716
+    },
+    {
+      "file": "/js/personal-bests.D4uiLmzz.js",
+      "raw": 2209,
+      "gzip": 1142
+    },
+    {
+      "file": "/js/db.CktbKXiI.js",
+      "raw": 14135,
+      "gzip": 5954
+    },
+    {
+      "file": "/js/date-and-time.BewH8e1G.js",
+      "raw": 949,
+      "gzip": 485
+    },
+    {
+      "file": "/js/pointer.C3UO0PzM.js",
+      "raw": 82,
+      "gzip": 95
+    },
+    {
+      "file": "/js/composition.BQM6zuQt.js",
+      "raw": 1325,
+      "gzip": 627
+    },
+    {
+      "file": "/js/stats.rbaRFX8J.js",
+      "raw": 14412,
+      "gzip": 4983
+    },
+    {
+      "file": "/js/animation.BxRzWO-_.js",
+      "raw": 30111,
+      "gzip": 11950
+    },
+    {
+      "file": "/js/numbers.k3GSZwqb.js",
+      "raw": 930,
+      "gzip": 559
+    },
+    {
+      "file": "/js/motion.C-olZ4mr.js",
+      "raw": 115,
+      "gzip": 129
+    },
+    {
+      "file": "/js/colors.DZXap-O5.js",
+      "raw": 2001,
+      "gzip": 779
+    },
+    {
+      "file": "/js/theme.KuQ800iF.js",
+      "raw": 309,
+      "gzip": 240
+    },
+    {
+      "file": "/js/banners.CfljT6QF.js",
+      "raw": 275,
+      "gzip": 203
+    },
+    {
+      "file": "/js/today-tracker.COfnhoBz.js",
+      "raw": 130681,
+      "gzip": 42965
+    },
+    {
+      "file": "/js/overlay-visibility.CFy4x6BB.js",
+      "raw": 180,
+      "gzip": 160
+    },
+    {
+      "file": "/js/hotkeys.fT6y0gLm.js",
+      "raw": 16113,
+      "gzip": 6203
+    },
+    {
+      "file": "/js/lifecycle.BbLUlXJ4.js",
+      "raw": 1409,
+      "gzip": 791
+    },
+    {
+      "file": "/js/compareAsc.CbxGcf7G.js",
+      "raw": 106,
+      "gzip": 123
+    },
+    {
+      "file": "/js/differenceInYears.BHJrNrAn.js",
+      "raw": 1428,
+      "gzip": 650
+    },
+    {
+      "file": "/js/intervalToDuration.eSTI2Jyl.js",
+      "raw": 757,
+      "gzip": 479
+    },
+    {
+      "file": "/js/practise-words.DO3tn4cl.js",
+      "raw": 2132,
+      "gzip": 1061
+    },
+    {
+      "file": "/js/analytics-controller.CW97fUHL.js",
+      "raw": 126,
+      "gzip": 115
+    },
+    {
+      "file": "/js/navigation.H3LNuvCa.js",
+      "raw": 268,
+      "gzip": 169
+    },
+    {
+      "file": "/js/dist.DAeO7HrH.js",
+      "raw": 2691,
+      "gzip": 1046
+    },
+    {
+      "file": "/js/CommandPaletteHotkey.BUc-NvXa.js",
+      "raw": 666,
+      "gzip": 410
+    },
+    {
+      "file": "/js/Button.newb9H7b.js",
+      "raw": 4293,
+      "gzip": 1464
+    },
+    {
+      "file": "/js/utils.DkDpMaoS.js",
+      "raw": 638,
+      "gzip": 364
+    }
+  ]
+}

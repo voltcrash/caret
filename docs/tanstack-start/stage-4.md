@@ -92,6 +92,12 @@ Phases implemented in order: 4.1 public routes â†’ 4.2 private/settings routes â
   [scroll restoration](https://tanstack.com/router/latest/docs/guide/scroll-restoration),
   [data loading](https://tanstack.com/router/latest/docs/guide/data-loading),
   [Solid Query prefetching](https://tanstack.com/query/latest/docs/framework/solid/guides/prefetching).
+- Linux CI exposed external built-in CommonJS requires (`crypto`, `util`, `fs`)
+  in dependencies reached by the HTTP adapter. The local Cloudflare build had
+  converted them automatically. SSR now explicitly installs Vite+/Rolldown's
+  [ESM external-require plugin](https://rolldown.rs/builtin-plugins/esm-external-require)
+  for Node built-ins. Both production/test Worker bundles reject runtime require
+  calls; no global require shim or dependency source edits.
 
 ## Exit validation
 
