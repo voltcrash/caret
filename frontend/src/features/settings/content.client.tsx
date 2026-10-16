@@ -1,5 +1,6 @@
 import { createEffect, type JSXElement, on, onCleanup, Show } from "solid-js";
 
+import { RestorePageScroll } from "../../components/page-scroll";
 import { SettingsContent } from "../../ts/components/pages/settings/SettingsContent";
 import { highlightSetting } from "../../ts/states/settings-highlight";
 import {
@@ -32,10 +33,13 @@ export function SettingsView(props: {
       <SettingsSectionHostContext.Provider
         value={{
           current: () => props.section,
-          select: (section) => props.onSection(section),
+          select: (section) => {
+            if (section !== props.section) props.onSection(section);
+          },
         }}
       >
         <SettingsContent />
+        <RestorePageScroll />
       </SettingsSectionHostContext.Provider>
     </Show>
   );

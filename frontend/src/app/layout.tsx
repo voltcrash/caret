@@ -19,6 +19,7 @@ import {
 } from "../components/layout/scroller";
 import { StaticHeader } from "../components/layout/static-header";
 import { LinkHost, RouterLink } from "../components/link-host";
+import { PageScrollHost } from "../components/page-scroll";
 import { TypingRouteHost } from "../components/typing-route-host";
 
 const load = createClientOnlyFn(
@@ -63,46 +64,56 @@ export function AppLayout(props: ParentProps): JSXElement {
   const [headerBottom, setHeaderBottom] = createSignal(0);
   const staticHeader = () => <StaticHeader fixed={fixed()} />;
   return (
-    <TypingRouteHost.Provider value={typing}>
-      <LinkHost.Provider value={RouterLink}>
-        <div id="app" class={appClass}>
-          <ClientOnly fallback={staticHeader()}>
-            <Suspense fallback={staticHeader()}>
-              <Header fixed={fixed()} />
+    <PageScrollHost.Provider
+      value={(position) => {
+        untrack(scroller)?.scrollTo({
+          left: position.scrollX,
+          top: position.scrollY,
+          behavior: "instant",
+        });
+      }}
+    >
+      <TypingRouteHost.Provider value={typing}>
+        <LinkHost.Provider value={RouterLink}>
+          <div id="app" class={appClass}>
+            <ClientOnly fallback={staticHeader()}>
+              <Suspense fallback={staticHeader()}>
+                <Header fixed={fixed()} />
+              </Suspense>
+            </ClientOnly>
+            <div
+              ref={setScroller}
+              data-scroll-restoration-id="page-content"
+              class={scrollerClass(fixed())}
+              style={scrollerStyle(fixed(), headerBottom())}
+            >
+              <main
+                ref={setMain}
+                tabIndex={-1}
+                class="full-width content-grid h-full outline-none"
+              >
+                {props.children}
+              </main>
+              <Show when={!fixed()}>
+                <ClientOnly>
+                  <Suspense>
+                    <Footer />
+                  </Suspense>
+                </ClientOnly>
+              </Show>
+            </div>
+          </div>
+          <ClientOnly>
+            <Suspense>
+              <ChromeRuntime
+                fixed={fixed()}
+                scroller={scroller()}
+                onHeaderBottom={setHeaderBottom}
+              />
             </Suspense>
           </ClientOnly>
-          <div
-            ref={setScroller}
-            data-scroll-restoration-id="page-content"
-            class={scrollerClass(fixed())}
-            style={scrollerStyle(fixed(), headerBottom())}
-          >
-            <main
-              ref={setMain}
-              tabIndex={-1}
-              class="full-width content-grid h-full outline-none"
-            >
-              {props.children}
-            </main>
-            <Show when={!fixed()}>
-              <ClientOnly>
-                <Suspense>
-                  <Footer />
-                </Suspense>
-              </ClientOnly>
-            </Show>
-          </div>
-        </div>
-        <ClientOnly>
-          <Suspense>
-            <ChromeRuntime
-              fixed={fixed()}
-              scroller={scroller()}
-              onHeaderBottom={setHeaderBottom}
-            />
-          </Suspense>
-        </ClientOnly>
-      </LinkHost.Provider>
-    </TypingRouteHost.Provider>
+        </LinkHost.Provider>
+      </TypingRouteHost.Provider>
+    </PageScrollHost.Provider>
   );
 }
