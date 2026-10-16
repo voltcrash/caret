@@ -47,6 +47,7 @@ export async function createWorkerd(
         manifest: { mainModule: "index.js", modules },
         env: {
           DB: { type: "d1" as const, name, id: name },
+          ASSETS: { type: "assets" as const },
           ...(captcha
             ? {
                 TURNSTILE_SECRET_KEY: {

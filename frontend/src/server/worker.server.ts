@@ -53,6 +53,16 @@ export function createApplicationWorker(
               bounded instanceof Response
                 ? bounded
                 : await handler(bounded, { context: { nonce } });
+            if (
+              bounded instanceof Response &&
+              new URL(request.url).pathname.startsWith("/api/") &&
+              !new URL(request.url).pathname.startsWith("/api/auth/")
+            ) {
+              response = Response.json(
+                { message: await bounded.text(), data: null },
+                { status: bounded.status },
+              );
+            }
           } catch (error) {
             console.error("Application request failed", { requestId, error });
             response = new Response("Internal Server Error", { status: 500 });

@@ -9,6 +9,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { frontendLint } from "./lint.config";
 import { fontStyles } from "./vite-plugins/font-styles";
 import { workerNodeBuiltins } from "./vite-plugins/worker-node-builtins";
+import { apiDocs } from "./vite-plugins/api-docs";
 import {
   clientOnlyFeatureFiles,
   rollbackOnlyFiles,
@@ -44,6 +45,7 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       workerNodeBuiltins(),
+      apiDocs(),
       envConfig({
         isDevelopment: mode !== "production",
         clientVersion: getClientVersion(mode !== "production"),

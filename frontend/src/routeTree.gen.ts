@@ -20,12 +20,81 @@ import { Route as AppDeviceRouteImport } from './routes/_app.device'
 import { Route as AppLeaderboardsRouteImport } from './routes/_app.leaderboards'
 import { Route as AppLoginRouteImport } from './routes/_app.login'
 import { Route as AppSettingsRouteImport } from './routes/_app.settings'
+import { Route as ApiIndexRouteImport } from './routes/api.index'
 import { Route as ApiSplatRouteImport } from './routes/api.$'
+import { Route as ApiAdminRouteImport } from './routes/api.admin'
+import { Route as ApiApeKeysRouteImport } from './routes/api.ape-keys'
+import { Route as ApiConfigsRouteImport } from './routes/api.configs'
+import { Route as ApiConfigurationRouteImport } from './routes/api.configuration'
+import { Route as ApiConfigureRouteImport } from './routes/api.configure'
+import { Route as ApiDocsRouteImport } from './routes/api.docs'
+import { Route as ApiLeaderboardsRouteImport } from './routes/api.leaderboards'
+import { Route as ApiPresetsRouteImport } from './routes/api.presets'
+import { Route as ApiPsasRouteImport } from './routes/api.psas'
+import { Route as ApiQuotesRouteImport } from './routes/api.quotes'
+import { Route as ApiResultsRouteImport } from './routes/api.results'
+import { Route as ApiUsersRouteImport } from './routes/api.users'
 import { Route as AppAuthenticatedAccountRouteImport } from './routes/_app._authenticated.account'
 import { Route as AppAuthenticatedAccountSettingsRouteImport } from './routes/_app._authenticated.account-settings'
 import { Route as AppProfileIndexRouteImport } from './routes/_app.profile.index'
 import { Route as AppProfileUidOrNameRouteImport } from './routes/_app.profile.$uidOrName'
+import { Route as ApiPrefixDocsRouteImport } from './routes/api.$prefix.docs'
+import { Route as ApiAdminClearStreakHourOffsetRouteImport } from './routes/api.admin.clearStreakHourOffset'
+import { Route as ApiAdminClearSuspiciousRouteImport } from './routes/api.admin.clearSuspicious'
+import { Route as ApiAdminDeleteUserRouteImport } from './routes/api.admin.deleteUser'
+import { Route as ApiAdminToggleBanRouteImport } from './routes/api.admin.toggleBan'
+import { Route as ApiApeKeysApeKeyIdRouteImport } from './routes/api.ape-keys.$apeKeyId'
 import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
+import { Route as ApiConfigurationSchemaRouteImport } from './routes/api.configuration.schema'
+import { Route as ApiConfigureSplatRouteImport } from './routes/api.configure.$'
+import { Route as ApiDevAddDebugInboxItemRouteImport } from './routes/api.dev.addDebugInboxItem'
+import { Route as ApiDevGenerateDataRouteImport } from './routes/api.dev.generateData'
+import { Route as ApiDocsSplatRouteImport } from './routes/api.docs.$'
+import { Route as ApiLeaderboardsDailyRouteImport } from './routes/api.leaderboards.daily'
+import { Route as ApiLeaderboardsRankRouteImport } from './routes/api.leaderboards.rank'
+import { Route as ApiPresetsPresetIdRouteImport } from './routes/api.presets.$presetId'
+import { Route as ApiPublicSpeedHistogramRouteImport } from './routes/api.public.speedHistogram'
+import { Route as ApiPublicTypingStatsRouteImport } from './routes/api.public.typingStats'
+import { Route as ApiQuotesApproveRouteImport } from './routes/api.quotes.approve'
+import { Route as ApiQuotesIsSubmissionEnabledRouteImport } from './routes/api.quotes.isSubmissionEnabled'
+import { Route as ApiQuotesRatingRouteImport } from './routes/api.quotes.rating'
+import { Route as ApiQuotesRejectRouteImport } from './routes/api.quotes.reject'
+import { Route as ApiQuotesReportRouteImport } from './routes/api.quotes.report'
+import { Route as ApiResultsLastRouteImport } from './routes/api.results.last'
+import { Route as ApiResultsTagsRouteImport } from './routes/api.results.tags'
+import { Route as ApiUsersCurrentTestActivityRouteImport } from './routes/api.users.currentTestActivity'
+import { Route as ApiUsersCustomThemesRouteImport } from './routes/api.users.customThemes'
+import { Route as ApiUsersFavoriteQuotesRouteImport } from './routes/api.users.favoriteQuotes'
+import { Route as ApiUsersInboxRouteImport } from './routes/api.users.inbox'
+import { Route as ApiUsersLeaderboardMemoryRouteImport } from './routes/api.users.leaderboardMemory'
+import { Route as ApiUsersNameRouteImport } from './routes/api.users.name'
+import { Route as ApiUsersOptOutOfLeaderboardsRouteImport } from './routes/api.users.optOutOfLeaderboards'
+import { Route as ApiUsersPersonalBestsRouteImport } from './routes/api.users.personalBests'
+import { Route as ApiUsersProfileRouteImport } from './routes/api.users.profile'
+import { Route as ApiUsersReportRouteImport } from './routes/api.users.report'
+import { Route as ApiUsersResetRouteImport } from './routes/api.users.reset'
+import { Route as ApiUsersResultFilterPresetsRouteImport } from './routes/api.users.resultFilterPresets'
+import { Route as ApiUsersRevokeAllTokensRouteImport } from './routes/api.users.revokeAllTokens'
+import { Route as ApiUsersSetStreakHourOffsetRouteImport } from './routes/api.users.setStreakHourOffset'
+import { Route as ApiUsersSignupRouteImport } from './routes/api.users.signup'
+import { Route as ApiUsersStatsRouteImport } from './routes/api.users.stats'
+import { Route as ApiUsersStreakRouteImport } from './routes/api.users.streak'
+import { Route as ApiUsersTagsRouteImport } from './routes/api.users.tags'
+import { Route as ApiUsersTestActivityRouteImport } from './routes/api.users.testActivity'
+import { Route as ApiPrefixDocsSplatRouteImport } from './routes/api.$prefix.docs.$'
+import { Route as ApiAdminAnticheatAuditsRouteImport } from './routes/api.admin.anticheat.audits'
+import { Route as ApiAdminAnticheatSummaryRouteImport } from './routes/api.admin.anticheat.summary'
+import { Route as ApiAdminReportAcceptRouteImport } from './routes/api.admin.report.accept'
+import { Route as ApiAdminReportRejectRouteImport } from './routes/api.admin.report.reject'
+import { Route as ApiLeaderboardsDailyRankRouteImport } from './routes/api.leaderboards.daily.rank'
+import { Route as ApiLeaderboardsXpWeeklyRouteImport } from './routes/api.leaderboards.xp.weekly'
+import { Route as ApiResultsIdResultIdRouteImport } from './routes/api.results.id.$resultId'
+import { Route as ApiUsersUidOrNameProfileRouteImport } from './routes/api.users.$uidOrName.profile'
+import { Route as ApiUsersCheckNameNameRouteImport } from './routes/api.users.checkName.$name'
+import { Route as ApiUsersResultFilterPresetsPresetIdRouteImport } from './routes/api.users.resultFilterPresets.$presetId'
+import { Route as ApiUsersTagsTagIdRouteImport } from './routes/api.users.tags.$tagId'
+import { Route as ApiLeaderboardsXpWeeklyRankRouteImport } from './routes/api.leaderboards.xp.weekly.rank'
+import { Route as ApiUsersTagsTagIdPersonalBestRouteImport } from './routes/api.users.tags.$tagId.personalBest'
 
 const R404DothtmlRoute = R404DothtmlRouteImport.update({
   id: '/404.html',
@@ -80,9 +149,74 @@ const AppSettingsRoute = AppSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiIndexRoute = ApiIndexRouteImport.update({
+  id: '/api/',
+  path: '/api/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiSplatRoute = ApiSplatRouteImport.update({
   id: '/api/$',
   path: '/api/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminRoute = ApiAdminRouteImport.update({
+  id: '/api/admin',
+  path: '/api/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiApeKeysRoute = ApiApeKeysRouteImport.update({
+  id: '/api/ape-keys',
+  path: '/api/ape-keys',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiConfigsRoute = ApiConfigsRouteImport.update({
+  id: '/api/configs',
+  path: '/api/configs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiConfigurationRoute = ApiConfigurationRouteImport.update({
+  id: '/api/configuration',
+  path: '/api/configuration',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiConfigureRoute = ApiConfigureRouteImport.update({
+  id: '/api/configure',
+  path: '/api/configure',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDocsRoute = ApiDocsRouteImport.update({
+  id: '/api/docs',
+  path: '/api/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiLeaderboardsRoute = ApiLeaderboardsRouteImport.update({
+  id: '/api/leaderboards',
+  path: '/api/leaderboards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPresetsRoute = ApiPresetsRouteImport.update({
+  id: '/api/presets',
+  path: '/api/presets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPsasRoute = ApiPsasRouteImport.update({
+  id: '/api/psas',
+  path: '/api/psas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiQuotesRoute = ApiQuotesRouteImport.update({
+  id: '/api/quotes',
+  path: '/api/quotes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiResultsRoute = ApiResultsRouteImport.update({
+  id: '/api/results',
+  path: '/api/results',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiUsersRoute = ApiUsersRouteImport.update({
+  id: '/api/users',
+  path: '/api/users',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppAuthenticatedAccountRoute = AppAuthenticatedAccountRouteImport.update({
@@ -106,11 +240,304 @@ const AppProfileUidOrNameRoute = AppProfileUidOrNameRouteImport.update({
   path: '/profile/$uidOrName',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiPrefixDocsRoute = ApiPrefixDocsRouteImport.update({
+  id: '/api/$prefix/docs',
+  path: '/api/$prefix/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminClearStreakHourOffsetRoute =
+  ApiAdminClearStreakHourOffsetRouteImport.update({
+    id: '/clearStreakHourOffset',
+    path: '/clearStreakHourOffset',
+    getParentRoute: () => ApiAdminRoute,
+  } as any)
+const ApiAdminClearSuspiciousRoute = ApiAdminClearSuspiciousRouteImport.update({
+  id: '/clearSuspicious',
+  path: '/clearSuspicious',
+  getParentRoute: () => ApiAdminRoute,
+} as any)
+const ApiAdminDeleteUserRoute = ApiAdminDeleteUserRouteImport.update({
+  id: '/deleteUser',
+  path: '/deleteUser',
+  getParentRoute: () => ApiAdminRoute,
+} as any)
+const ApiAdminToggleBanRoute = ApiAdminToggleBanRouteImport.update({
+  id: '/toggleBan',
+  path: '/toggleBan',
+  getParentRoute: () => ApiAdminRoute,
+} as any)
+const ApiApeKeysApeKeyIdRoute = ApiApeKeysApeKeyIdRouteImport.update({
+  id: '/$apeKeyId',
+  path: '/$apeKeyId',
+  getParentRoute: () => ApiApeKeysRoute,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiConfigurationSchemaRoute = ApiConfigurationSchemaRouteImport.update({
+  id: '/schema',
+  path: '/schema',
+  getParentRoute: () => ApiConfigurationRoute,
+} as any)
+const ApiConfigureSplatRoute = ApiConfigureSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => ApiConfigureRoute,
+} as any)
+const ApiDevAddDebugInboxItemRoute = ApiDevAddDebugInboxItemRouteImport.update({
+  id: '/api/dev/addDebugInboxItem',
+  path: '/api/dev/addDebugInboxItem',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDevGenerateDataRoute = ApiDevGenerateDataRouteImport.update({
+  id: '/api/dev/generateData',
+  path: '/api/dev/generateData',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDocsSplatRoute = ApiDocsSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => ApiDocsRoute,
+} as any)
+const ApiLeaderboardsDailyRoute = ApiLeaderboardsDailyRouteImport.update({
+  id: '/daily',
+  path: '/daily',
+  getParentRoute: () => ApiLeaderboardsRoute,
+} as any)
+const ApiLeaderboardsRankRoute = ApiLeaderboardsRankRouteImport.update({
+  id: '/rank',
+  path: '/rank',
+  getParentRoute: () => ApiLeaderboardsRoute,
+} as any)
+const ApiPresetsPresetIdRoute = ApiPresetsPresetIdRouteImport.update({
+  id: '/$presetId',
+  path: '/$presetId',
+  getParentRoute: () => ApiPresetsRoute,
+} as any)
+const ApiPublicSpeedHistogramRoute = ApiPublicSpeedHistogramRouteImport.update({
+  id: '/api/public/speedHistogram',
+  path: '/api/public/speedHistogram',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicTypingStatsRoute = ApiPublicTypingStatsRouteImport.update({
+  id: '/api/public/typingStats',
+  path: '/api/public/typingStats',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiQuotesApproveRoute = ApiQuotesApproveRouteImport.update({
+  id: '/approve',
+  path: '/approve',
+  getParentRoute: () => ApiQuotesRoute,
+} as any)
+const ApiQuotesIsSubmissionEnabledRoute =
+  ApiQuotesIsSubmissionEnabledRouteImport.update({
+    id: '/isSubmissionEnabled',
+    path: '/isSubmissionEnabled',
+    getParentRoute: () => ApiQuotesRoute,
+  } as any)
+const ApiQuotesRatingRoute = ApiQuotesRatingRouteImport.update({
+  id: '/rating',
+  path: '/rating',
+  getParentRoute: () => ApiQuotesRoute,
+} as any)
+const ApiQuotesRejectRoute = ApiQuotesRejectRouteImport.update({
+  id: '/reject',
+  path: '/reject',
+  getParentRoute: () => ApiQuotesRoute,
+} as any)
+const ApiQuotesReportRoute = ApiQuotesReportRouteImport.update({
+  id: '/report',
+  path: '/report',
+  getParentRoute: () => ApiQuotesRoute,
+} as any)
+const ApiResultsLastRoute = ApiResultsLastRouteImport.update({
+  id: '/last',
+  path: '/last',
+  getParentRoute: () => ApiResultsRoute,
+} as any)
+const ApiResultsTagsRoute = ApiResultsTagsRouteImport.update({
+  id: '/tags',
+  path: '/tags',
+  getParentRoute: () => ApiResultsRoute,
+} as any)
+const ApiUsersCurrentTestActivityRoute =
+  ApiUsersCurrentTestActivityRouteImport.update({
+    id: '/currentTestActivity',
+    path: '/currentTestActivity',
+    getParentRoute: () => ApiUsersRoute,
+  } as any)
+const ApiUsersCustomThemesRoute = ApiUsersCustomThemesRouteImport.update({
+  id: '/customThemes',
+  path: '/customThemes',
+  getParentRoute: () => ApiUsersRoute,
+} as any)
+const ApiUsersFavoriteQuotesRoute = ApiUsersFavoriteQuotesRouteImport.update({
+  id: '/favoriteQuotes',
+  path: '/favoriteQuotes',
+  getParentRoute: () => ApiUsersRoute,
+} as any)
+const ApiUsersInboxRoute = ApiUsersInboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
+  getParentRoute: () => ApiUsersRoute,
+} as any)
+const ApiUsersLeaderboardMemoryRoute =
+  ApiUsersLeaderboardMemoryRouteImport.update({
+    id: '/leaderboardMemory',
+    path: '/leaderboardMemory',
+    getParentRoute: () => ApiUsersRoute,
+  } as any)
+const ApiUsersNameRoute = ApiUsersNameRouteImport.update({
+  id: '/name',
+  path: '/name',
+  getParentRoute: () => ApiUsersRoute,
+} as any)
+const ApiUsersOptOutOfLeaderboardsRoute =
+  ApiUsersOptOutOfLeaderboardsRouteImport.update({
+    id: '/optOutOfLeaderboards',
+    path: '/optOutOfLeaderboards',
+    getParentRoute: () => ApiUsersRoute,
+  } as any)
+const ApiUsersPersonalBestsRoute = ApiUsersPersonalBestsRouteImport.update({
+  id: '/personalBests',
+  path: '/personalBests',
+  getParentRoute: () => ApiUsersRoute,
+} as any)
+const ApiUsersProfileRoute = ApiUsersProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => ApiUsersRoute,
+} as any)
+const ApiUsersReportRoute = ApiUsersReportRouteImport.update({
+  id: '/report',
+  path: '/report',
+  getParentRoute: () => ApiUsersRoute,
+} as any)
+const ApiUsersResetRoute = ApiUsersResetRouteImport.update({
+  id: '/reset',
+  path: '/reset',
+  getParentRoute: () => ApiUsersRoute,
+} as any)
+const ApiUsersResultFilterPresetsRoute =
+  ApiUsersResultFilterPresetsRouteImport.update({
+    id: '/resultFilterPresets',
+    path: '/resultFilterPresets',
+    getParentRoute: () => ApiUsersRoute,
+  } as any)
+const ApiUsersRevokeAllTokensRoute = ApiUsersRevokeAllTokensRouteImport.update({
+  id: '/revokeAllTokens',
+  path: '/revokeAllTokens',
+  getParentRoute: () => ApiUsersRoute,
+} as any)
+const ApiUsersSetStreakHourOffsetRoute =
+  ApiUsersSetStreakHourOffsetRouteImport.update({
+    id: '/setStreakHourOffset',
+    path: '/setStreakHourOffset',
+    getParentRoute: () => ApiUsersRoute,
+  } as any)
+const ApiUsersSignupRoute = ApiUsersSignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => ApiUsersRoute,
+} as any)
+const ApiUsersStatsRoute = ApiUsersStatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => ApiUsersRoute,
+} as any)
+const ApiUsersStreakRoute = ApiUsersStreakRouteImport.update({
+  id: '/streak',
+  path: '/streak',
+  getParentRoute: () => ApiUsersRoute,
+} as any)
+const ApiUsersTagsRoute = ApiUsersTagsRouteImport.update({
+  id: '/tags',
+  path: '/tags',
+  getParentRoute: () => ApiUsersRoute,
+} as any)
+const ApiUsersTestActivityRoute = ApiUsersTestActivityRouteImport.update({
+  id: '/testActivity',
+  path: '/testActivity',
+  getParentRoute: () => ApiUsersRoute,
+} as any)
+const ApiPrefixDocsSplatRoute = ApiPrefixDocsSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => ApiPrefixDocsRoute,
+} as any)
+const ApiAdminAnticheatAuditsRoute = ApiAdminAnticheatAuditsRouteImport.update({
+  id: '/anticheat/audits',
+  path: '/anticheat/audits',
+  getParentRoute: () => ApiAdminRoute,
+} as any)
+const ApiAdminAnticheatSummaryRoute =
+  ApiAdminAnticheatSummaryRouteImport.update({
+    id: '/anticheat/summary',
+    path: '/anticheat/summary',
+    getParentRoute: () => ApiAdminRoute,
+  } as any)
+const ApiAdminReportAcceptRoute = ApiAdminReportAcceptRouteImport.update({
+  id: '/report/accept',
+  path: '/report/accept',
+  getParentRoute: () => ApiAdminRoute,
+} as any)
+const ApiAdminReportRejectRoute = ApiAdminReportRejectRouteImport.update({
+  id: '/report/reject',
+  path: '/report/reject',
+  getParentRoute: () => ApiAdminRoute,
+} as any)
+const ApiLeaderboardsDailyRankRoute =
+  ApiLeaderboardsDailyRankRouteImport.update({
+    id: '/rank',
+    path: '/rank',
+    getParentRoute: () => ApiLeaderboardsDailyRoute,
+  } as any)
+const ApiLeaderboardsXpWeeklyRoute = ApiLeaderboardsXpWeeklyRouteImport.update({
+  id: '/xp/weekly',
+  path: '/xp/weekly',
+  getParentRoute: () => ApiLeaderboardsRoute,
+} as any)
+const ApiResultsIdResultIdRoute = ApiResultsIdResultIdRouteImport.update({
+  id: '/id/$resultId',
+  path: '/id/$resultId',
+  getParentRoute: () => ApiResultsRoute,
+} as any)
+const ApiUsersUidOrNameProfileRoute =
+  ApiUsersUidOrNameProfileRouteImport.update({
+    id: '/$uidOrName/profile',
+    path: '/$uidOrName/profile',
+    getParentRoute: () => ApiUsersRoute,
+  } as any)
+const ApiUsersCheckNameNameRoute = ApiUsersCheckNameNameRouteImport.update({
+  id: '/checkName/$name',
+  path: '/checkName/$name',
+  getParentRoute: () => ApiUsersRoute,
+} as any)
+const ApiUsersResultFilterPresetsPresetIdRoute =
+  ApiUsersResultFilterPresetsPresetIdRouteImport.update({
+    id: '/$presetId',
+    path: '/$presetId',
+    getParentRoute: () => ApiUsersResultFilterPresetsRoute,
+  } as any)
+const ApiUsersTagsTagIdRoute = ApiUsersTagsTagIdRouteImport.update({
+  id: '/$tagId',
+  path: '/$tagId',
+  getParentRoute: () => ApiUsersTagsRoute,
+} as any)
+const ApiLeaderboardsXpWeeklyRankRoute =
+  ApiLeaderboardsXpWeeklyRankRouteImport.update({
+    id: '/rank',
+    path: '/rank',
+    getParentRoute: () => ApiLeaderboardsXpWeeklyRoute,
+  } as any)
+const ApiUsersTagsTagIdPersonalBestRoute =
+  ApiUsersTagsTagIdPersonalBestRouteImport.update({
+    id: '/personalBest',
+    path: '/personalBest',
+    getParentRoute: () => ApiUsersTagsTagIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/404.html': typeof R404DothtmlRoute
@@ -123,11 +550,80 @@ export interface FileRoutesByFullPath {
   '/login': typeof AppLoginRoute
   '/settings': typeof AppSettingsRoute
   '/api/$': typeof ApiSplatRoute
+  '/api/admin': typeof ApiAdminRouteWithChildren
+  '/api/ape-keys': typeof ApiApeKeysRouteWithChildren
+  '/api/configs': typeof ApiConfigsRoute
+  '/api/configuration': typeof ApiConfigurationRouteWithChildren
+  '/api/configure': typeof ApiConfigureRouteWithChildren
+  '/api/docs': typeof ApiDocsRouteWithChildren
+  '/api/leaderboards': typeof ApiLeaderboardsRouteWithChildren
+  '/api/presets': typeof ApiPresetsRouteWithChildren
+  '/api/psas': typeof ApiPsasRoute
+  '/api/quotes': typeof ApiQuotesRouteWithChildren
+  '/api/results': typeof ApiResultsRouteWithChildren
+  '/api/users': typeof ApiUsersRouteWithChildren
+  '/api/': typeof ApiIndexRoute
   '/account': typeof AppAuthenticatedAccountRoute
   '/account-settings': typeof AppAuthenticatedAccountSettingsRoute
   '/profile/$uidOrName': typeof AppProfileUidOrNameRoute
+  '/api/$prefix/docs': typeof ApiPrefixDocsRouteWithChildren
+  '/api/admin/clearStreakHourOffset': typeof ApiAdminClearStreakHourOffsetRoute
+  '/api/admin/clearSuspicious': typeof ApiAdminClearSuspiciousRoute
+  '/api/admin/deleteUser': typeof ApiAdminDeleteUserRoute
+  '/api/admin/toggleBan': typeof ApiAdminToggleBanRoute
+  '/api/ape-keys/$apeKeyId': typeof ApiApeKeysApeKeyIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/configuration/schema': typeof ApiConfigurationSchemaRoute
+  '/api/configure/$': typeof ApiConfigureSplatRoute
+  '/api/dev/addDebugInboxItem': typeof ApiDevAddDebugInboxItemRoute
+  '/api/dev/generateData': typeof ApiDevGenerateDataRoute
+  '/api/docs/$': typeof ApiDocsSplatRoute
+  '/api/leaderboards/daily': typeof ApiLeaderboardsDailyRouteWithChildren
+  '/api/leaderboards/rank': typeof ApiLeaderboardsRankRoute
+  '/api/presets/$presetId': typeof ApiPresetsPresetIdRoute
+  '/api/public/speedHistogram': typeof ApiPublicSpeedHistogramRoute
+  '/api/public/typingStats': typeof ApiPublicTypingStatsRoute
+  '/api/quotes/approve': typeof ApiQuotesApproveRoute
+  '/api/quotes/isSubmissionEnabled': typeof ApiQuotesIsSubmissionEnabledRoute
+  '/api/quotes/rating': typeof ApiQuotesRatingRoute
+  '/api/quotes/reject': typeof ApiQuotesRejectRoute
+  '/api/quotes/report': typeof ApiQuotesReportRoute
+  '/api/results/last': typeof ApiResultsLastRoute
+  '/api/results/tags': typeof ApiResultsTagsRoute
+  '/api/users/currentTestActivity': typeof ApiUsersCurrentTestActivityRoute
+  '/api/users/customThemes': typeof ApiUsersCustomThemesRoute
+  '/api/users/favoriteQuotes': typeof ApiUsersFavoriteQuotesRoute
+  '/api/users/inbox': typeof ApiUsersInboxRoute
+  '/api/users/leaderboardMemory': typeof ApiUsersLeaderboardMemoryRoute
+  '/api/users/name': typeof ApiUsersNameRoute
+  '/api/users/optOutOfLeaderboards': typeof ApiUsersOptOutOfLeaderboardsRoute
+  '/api/users/personalBests': typeof ApiUsersPersonalBestsRoute
+  '/api/users/profile': typeof ApiUsersProfileRoute
+  '/api/users/report': typeof ApiUsersReportRoute
+  '/api/users/reset': typeof ApiUsersResetRoute
+  '/api/users/resultFilterPresets': typeof ApiUsersResultFilterPresetsRouteWithChildren
+  '/api/users/revokeAllTokens': typeof ApiUsersRevokeAllTokensRoute
+  '/api/users/setStreakHourOffset': typeof ApiUsersSetStreakHourOffsetRoute
+  '/api/users/signup': typeof ApiUsersSignupRoute
+  '/api/users/stats': typeof ApiUsersStatsRoute
+  '/api/users/streak': typeof ApiUsersStreakRoute
+  '/api/users/tags': typeof ApiUsersTagsRouteWithChildren
+  '/api/users/testActivity': typeof ApiUsersTestActivityRoute
   '/profile/': typeof AppProfileIndexRoute
+  '/api/$prefix/docs/$': typeof ApiPrefixDocsSplatRoute
+  '/api/admin/anticheat/audits': typeof ApiAdminAnticheatAuditsRoute
+  '/api/admin/anticheat/summary': typeof ApiAdminAnticheatSummaryRoute
+  '/api/admin/report/accept': typeof ApiAdminReportAcceptRoute
+  '/api/admin/report/reject': typeof ApiAdminReportRejectRoute
+  '/api/leaderboards/daily/rank': typeof ApiLeaderboardsDailyRankRoute
+  '/api/leaderboards/xp/weekly': typeof ApiLeaderboardsXpWeeklyRouteWithChildren
+  '/api/results/id/$resultId': typeof ApiResultsIdResultIdRoute
+  '/api/users/$uidOrName/profile': typeof ApiUsersUidOrNameProfileRoute
+  '/api/users/checkName/$name': typeof ApiUsersCheckNameNameRoute
+  '/api/users/resultFilterPresets/$presetId': typeof ApiUsersResultFilterPresetsPresetIdRoute
+  '/api/users/tags/$tagId': typeof ApiUsersTagsTagIdRouteWithChildren
+  '/api/leaderboards/xp/weekly/rank': typeof ApiLeaderboardsXpWeeklyRankRoute
+  '/api/users/tags/$tagId/personalBest': typeof ApiUsersTagsTagIdPersonalBestRoute
 }
 export interface FileRoutesByTo {
   '/404.html': typeof R404DothtmlRoute
@@ -140,11 +636,80 @@ export interface FileRoutesByTo {
   '/login': typeof AppLoginRoute
   '/settings': typeof AppSettingsRoute
   '/api/$': typeof ApiSplatRoute
+  '/api/admin': typeof ApiAdminRouteWithChildren
+  '/api/ape-keys': typeof ApiApeKeysRouteWithChildren
+  '/api/configs': typeof ApiConfigsRoute
+  '/api/configuration': typeof ApiConfigurationRouteWithChildren
+  '/api/configure': typeof ApiConfigureRouteWithChildren
+  '/api/docs': typeof ApiDocsRouteWithChildren
+  '/api/leaderboards': typeof ApiLeaderboardsRouteWithChildren
+  '/api/presets': typeof ApiPresetsRouteWithChildren
+  '/api/psas': typeof ApiPsasRoute
+  '/api/quotes': typeof ApiQuotesRouteWithChildren
+  '/api/results': typeof ApiResultsRouteWithChildren
+  '/api/users': typeof ApiUsersRouteWithChildren
+  '/api': typeof ApiIndexRoute
   '/account': typeof AppAuthenticatedAccountRoute
   '/account-settings': typeof AppAuthenticatedAccountSettingsRoute
   '/profile/$uidOrName': typeof AppProfileUidOrNameRoute
+  '/api/$prefix/docs': typeof ApiPrefixDocsRouteWithChildren
+  '/api/admin/clearStreakHourOffset': typeof ApiAdminClearStreakHourOffsetRoute
+  '/api/admin/clearSuspicious': typeof ApiAdminClearSuspiciousRoute
+  '/api/admin/deleteUser': typeof ApiAdminDeleteUserRoute
+  '/api/admin/toggleBan': typeof ApiAdminToggleBanRoute
+  '/api/ape-keys/$apeKeyId': typeof ApiApeKeysApeKeyIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/configuration/schema': typeof ApiConfigurationSchemaRoute
+  '/api/configure/$': typeof ApiConfigureSplatRoute
+  '/api/dev/addDebugInboxItem': typeof ApiDevAddDebugInboxItemRoute
+  '/api/dev/generateData': typeof ApiDevGenerateDataRoute
+  '/api/docs/$': typeof ApiDocsSplatRoute
+  '/api/leaderboards/daily': typeof ApiLeaderboardsDailyRouteWithChildren
+  '/api/leaderboards/rank': typeof ApiLeaderboardsRankRoute
+  '/api/presets/$presetId': typeof ApiPresetsPresetIdRoute
+  '/api/public/speedHistogram': typeof ApiPublicSpeedHistogramRoute
+  '/api/public/typingStats': typeof ApiPublicTypingStatsRoute
+  '/api/quotes/approve': typeof ApiQuotesApproveRoute
+  '/api/quotes/isSubmissionEnabled': typeof ApiQuotesIsSubmissionEnabledRoute
+  '/api/quotes/rating': typeof ApiQuotesRatingRoute
+  '/api/quotes/reject': typeof ApiQuotesRejectRoute
+  '/api/quotes/report': typeof ApiQuotesReportRoute
+  '/api/results/last': typeof ApiResultsLastRoute
+  '/api/results/tags': typeof ApiResultsTagsRoute
+  '/api/users/currentTestActivity': typeof ApiUsersCurrentTestActivityRoute
+  '/api/users/customThemes': typeof ApiUsersCustomThemesRoute
+  '/api/users/favoriteQuotes': typeof ApiUsersFavoriteQuotesRoute
+  '/api/users/inbox': typeof ApiUsersInboxRoute
+  '/api/users/leaderboardMemory': typeof ApiUsersLeaderboardMemoryRoute
+  '/api/users/name': typeof ApiUsersNameRoute
+  '/api/users/optOutOfLeaderboards': typeof ApiUsersOptOutOfLeaderboardsRoute
+  '/api/users/personalBests': typeof ApiUsersPersonalBestsRoute
+  '/api/users/profile': typeof ApiUsersProfileRoute
+  '/api/users/report': typeof ApiUsersReportRoute
+  '/api/users/reset': typeof ApiUsersResetRoute
+  '/api/users/resultFilterPresets': typeof ApiUsersResultFilterPresetsRouteWithChildren
+  '/api/users/revokeAllTokens': typeof ApiUsersRevokeAllTokensRoute
+  '/api/users/setStreakHourOffset': typeof ApiUsersSetStreakHourOffsetRoute
+  '/api/users/signup': typeof ApiUsersSignupRoute
+  '/api/users/stats': typeof ApiUsersStatsRoute
+  '/api/users/streak': typeof ApiUsersStreakRoute
+  '/api/users/tags': typeof ApiUsersTagsRouteWithChildren
+  '/api/users/testActivity': typeof ApiUsersTestActivityRoute
   '/profile': typeof AppProfileIndexRoute
+  '/api/$prefix/docs/$': typeof ApiPrefixDocsSplatRoute
+  '/api/admin/anticheat/audits': typeof ApiAdminAnticheatAuditsRoute
+  '/api/admin/anticheat/summary': typeof ApiAdminAnticheatSummaryRoute
+  '/api/admin/report/accept': typeof ApiAdminReportAcceptRoute
+  '/api/admin/report/reject': typeof ApiAdminReportRejectRoute
+  '/api/leaderboards/daily/rank': typeof ApiLeaderboardsDailyRankRoute
+  '/api/leaderboards/xp/weekly': typeof ApiLeaderboardsXpWeeklyRouteWithChildren
+  '/api/results/id/$resultId': typeof ApiResultsIdResultIdRoute
+  '/api/users/$uidOrName/profile': typeof ApiUsersUidOrNameProfileRoute
+  '/api/users/checkName/$name': typeof ApiUsersCheckNameNameRoute
+  '/api/users/resultFilterPresets/$presetId': typeof ApiUsersResultFilterPresetsPresetIdRoute
+  '/api/users/tags/$tagId': typeof ApiUsersTagsTagIdRouteWithChildren
+  '/api/leaderboards/xp/weekly/rank': typeof ApiLeaderboardsXpWeeklyRankRoute
+  '/api/users/tags/$tagId/personalBest': typeof ApiUsersTagsTagIdPersonalBestRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -159,12 +724,81 @@ export interface FileRoutesById {
   '/_app/login': typeof AppLoginRoute
   '/_app/settings': typeof AppSettingsRoute
   '/api/$': typeof ApiSplatRoute
+  '/api/admin': typeof ApiAdminRouteWithChildren
+  '/api/ape-keys': typeof ApiApeKeysRouteWithChildren
+  '/api/configs': typeof ApiConfigsRoute
+  '/api/configuration': typeof ApiConfigurationRouteWithChildren
+  '/api/configure': typeof ApiConfigureRouteWithChildren
+  '/api/docs': typeof ApiDocsRouteWithChildren
+  '/api/leaderboards': typeof ApiLeaderboardsRouteWithChildren
+  '/api/presets': typeof ApiPresetsRouteWithChildren
+  '/api/psas': typeof ApiPsasRoute
+  '/api/quotes': typeof ApiQuotesRouteWithChildren
+  '/api/results': typeof ApiResultsRouteWithChildren
+  '/api/users': typeof ApiUsersRouteWithChildren
   '/_app/': typeof AppIndexRoute
+  '/api/': typeof ApiIndexRoute
   '/_app/_authenticated/account': typeof AppAuthenticatedAccountRoute
   '/_app/_authenticated/account-settings': typeof AppAuthenticatedAccountSettingsRoute
   '/_app/profile/$uidOrName': typeof AppProfileUidOrNameRoute
+  '/api/$prefix/docs': typeof ApiPrefixDocsRouteWithChildren
+  '/api/admin/clearStreakHourOffset': typeof ApiAdminClearStreakHourOffsetRoute
+  '/api/admin/clearSuspicious': typeof ApiAdminClearSuspiciousRoute
+  '/api/admin/deleteUser': typeof ApiAdminDeleteUserRoute
+  '/api/admin/toggleBan': typeof ApiAdminToggleBanRoute
+  '/api/ape-keys/$apeKeyId': typeof ApiApeKeysApeKeyIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/configuration/schema': typeof ApiConfigurationSchemaRoute
+  '/api/configure/$': typeof ApiConfigureSplatRoute
+  '/api/dev/addDebugInboxItem': typeof ApiDevAddDebugInboxItemRoute
+  '/api/dev/generateData': typeof ApiDevGenerateDataRoute
+  '/api/docs/$': typeof ApiDocsSplatRoute
+  '/api/leaderboards/daily': typeof ApiLeaderboardsDailyRouteWithChildren
+  '/api/leaderboards/rank': typeof ApiLeaderboardsRankRoute
+  '/api/presets/$presetId': typeof ApiPresetsPresetIdRoute
+  '/api/public/speedHistogram': typeof ApiPublicSpeedHistogramRoute
+  '/api/public/typingStats': typeof ApiPublicTypingStatsRoute
+  '/api/quotes/approve': typeof ApiQuotesApproveRoute
+  '/api/quotes/isSubmissionEnabled': typeof ApiQuotesIsSubmissionEnabledRoute
+  '/api/quotes/rating': typeof ApiQuotesRatingRoute
+  '/api/quotes/reject': typeof ApiQuotesRejectRoute
+  '/api/quotes/report': typeof ApiQuotesReportRoute
+  '/api/results/last': typeof ApiResultsLastRoute
+  '/api/results/tags': typeof ApiResultsTagsRoute
+  '/api/users/currentTestActivity': typeof ApiUsersCurrentTestActivityRoute
+  '/api/users/customThemes': typeof ApiUsersCustomThemesRoute
+  '/api/users/favoriteQuotes': typeof ApiUsersFavoriteQuotesRoute
+  '/api/users/inbox': typeof ApiUsersInboxRoute
+  '/api/users/leaderboardMemory': typeof ApiUsersLeaderboardMemoryRoute
+  '/api/users/name': typeof ApiUsersNameRoute
+  '/api/users/optOutOfLeaderboards': typeof ApiUsersOptOutOfLeaderboardsRoute
+  '/api/users/personalBests': typeof ApiUsersPersonalBestsRoute
+  '/api/users/profile': typeof ApiUsersProfileRoute
+  '/api/users/report': typeof ApiUsersReportRoute
+  '/api/users/reset': typeof ApiUsersResetRoute
+  '/api/users/resultFilterPresets': typeof ApiUsersResultFilterPresetsRouteWithChildren
+  '/api/users/revokeAllTokens': typeof ApiUsersRevokeAllTokensRoute
+  '/api/users/setStreakHourOffset': typeof ApiUsersSetStreakHourOffsetRoute
+  '/api/users/signup': typeof ApiUsersSignupRoute
+  '/api/users/stats': typeof ApiUsersStatsRoute
+  '/api/users/streak': typeof ApiUsersStreakRoute
+  '/api/users/tags': typeof ApiUsersTagsRouteWithChildren
+  '/api/users/testActivity': typeof ApiUsersTestActivityRoute
   '/_app/profile/': typeof AppProfileIndexRoute
+  '/api/$prefix/docs/$': typeof ApiPrefixDocsSplatRoute
+  '/api/admin/anticheat/audits': typeof ApiAdminAnticheatAuditsRoute
+  '/api/admin/anticheat/summary': typeof ApiAdminAnticheatSummaryRoute
+  '/api/admin/report/accept': typeof ApiAdminReportAcceptRoute
+  '/api/admin/report/reject': typeof ApiAdminReportRejectRoute
+  '/api/leaderboards/daily/rank': typeof ApiLeaderboardsDailyRankRoute
+  '/api/leaderboards/xp/weekly': typeof ApiLeaderboardsXpWeeklyRouteWithChildren
+  '/api/results/id/$resultId': typeof ApiResultsIdResultIdRoute
+  '/api/users/$uidOrName/profile': typeof ApiUsersUidOrNameProfileRoute
+  '/api/users/checkName/$name': typeof ApiUsersCheckNameNameRoute
+  '/api/users/resultFilterPresets/$presetId': typeof ApiUsersResultFilterPresetsPresetIdRoute
+  '/api/users/tags/$tagId': typeof ApiUsersTagsTagIdRouteWithChildren
+  '/api/leaderboards/xp/weekly/rank': typeof ApiLeaderboardsXpWeeklyRankRoute
+  '/api/users/tags/$tagId/personalBest': typeof ApiUsersTagsTagIdPersonalBestRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -179,11 +813,80 @@ export interface FileRouteTypes {
     | '/login'
     | '/settings'
     | '/api/$'
+    | '/api/admin'
+    | '/api/ape-keys'
+    | '/api/configs'
+    | '/api/configuration'
+    | '/api/configure'
+    | '/api/docs'
+    | '/api/leaderboards'
+    | '/api/presets'
+    | '/api/psas'
+    | '/api/quotes'
+    | '/api/results'
+    | '/api/users'
+    | '/api/'
     | '/account'
     | '/account-settings'
     | '/profile/$uidOrName'
+    | '/api/$prefix/docs'
+    | '/api/admin/clearStreakHourOffset'
+    | '/api/admin/clearSuspicious'
+    | '/api/admin/deleteUser'
+    | '/api/admin/toggleBan'
+    | '/api/ape-keys/$apeKeyId'
     | '/api/auth/$'
+    | '/api/configuration/schema'
+    | '/api/configure/$'
+    | '/api/dev/addDebugInboxItem'
+    | '/api/dev/generateData'
+    | '/api/docs/$'
+    | '/api/leaderboards/daily'
+    | '/api/leaderboards/rank'
+    | '/api/presets/$presetId'
+    | '/api/public/speedHistogram'
+    | '/api/public/typingStats'
+    | '/api/quotes/approve'
+    | '/api/quotes/isSubmissionEnabled'
+    | '/api/quotes/rating'
+    | '/api/quotes/reject'
+    | '/api/quotes/report'
+    | '/api/results/last'
+    | '/api/results/tags'
+    | '/api/users/currentTestActivity'
+    | '/api/users/customThemes'
+    | '/api/users/favoriteQuotes'
+    | '/api/users/inbox'
+    | '/api/users/leaderboardMemory'
+    | '/api/users/name'
+    | '/api/users/optOutOfLeaderboards'
+    | '/api/users/personalBests'
+    | '/api/users/profile'
+    | '/api/users/report'
+    | '/api/users/reset'
+    | '/api/users/resultFilterPresets'
+    | '/api/users/revokeAllTokens'
+    | '/api/users/setStreakHourOffset'
+    | '/api/users/signup'
+    | '/api/users/stats'
+    | '/api/users/streak'
+    | '/api/users/tags'
+    | '/api/users/testActivity'
     | '/profile/'
+    | '/api/$prefix/docs/$'
+    | '/api/admin/anticheat/audits'
+    | '/api/admin/anticheat/summary'
+    | '/api/admin/report/accept'
+    | '/api/admin/report/reject'
+    | '/api/leaderboards/daily/rank'
+    | '/api/leaderboards/xp/weekly'
+    | '/api/results/id/$resultId'
+    | '/api/users/$uidOrName/profile'
+    | '/api/users/checkName/$name'
+    | '/api/users/resultFilterPresets/$presetId'
+    | '/api/users/tags/$tagId'
+    | '/api/leaderboards/xp/weekly/rank'
+    | '/api/users/tags/$tagId/personalBest'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/404.html'
@@ -196,11 +899,80 @@ export interface FileRouteTypes {
     | '/login'
     | '/settings'
     | '/api/$'
+    | '/api/admin'
+    | '/api/ape-keys'
+    | '/api/configs'
+    | '/api/configuration'
+    | '/api/configure'
+    | '/api/docs'
+    | '/api/leaderboards'
+    | '/api/presets'
+    | '/api/psas'
+    | '/api/quotes'
+    | '/api/results'
+    | '/api/users'
+    | '/api'
     | '/account'
     | '/account-settings'
     | '/profile/$uidOrName'
+    | '/api/$prefix/docs'
+    | '/api/admin/clearStreakHourOffset'
+    | '/api/admin/clearSuspicious'
+    | '/api/admin/deleteUser'
+    | '/api/admin/toggleBan'
+    | '/api/ape-keys/$apeKeyId'
     | '/api/auth/$'
+    | '/api/configuration/schema'
+    | '/api/configure/$'
+    | '/api/dev/addDebugInboxItem'
+    | '/api/dev/generateData'
+    | '/api/docs/$'
+    | '/api/leaderboards/daily'
+    | '/api/leaderboards/rank'
+    | '/api/presets/$presetId'
+    | '/api/public/speedHistogram'
+    | '/api/public/typingStats'
+    | '/api/quotes/approve'
+    | '/api/quotes/isSubmissionEnabled'
+    | '/api/quotes/rating'
+    | '/api/quotes/reject'
+    | '/api/quotes/report'
+    | '/api/results/last'
+    | '/api/results/tags'
+    | '/api/users/currentTestActivity'
+    | '/api/users/customThemes'
+    | '/api/users/favoriteQuotes'
+    | '/api/users/inbox'
+    | '/api/users/leaderboardMemory'
+    | '/api/users/name'
+    | '/api/users/optOutOfLeaderboards'
+    | '/api/users/personalBests'
+    | '/api/users/profile'
+    | '/api/users/report'
+    | '/api/users/reset'
+    | '/api/users/resultFilterPresets'
+    | '/api/users/revokeAllTokens'
+    | '/api/users/setStreakHourOffset'
+    | '/api/users/signup'
+    | '/api/users/stats'
+    | '/api/users/streak'
+    | '/api/users/tags'
+    | '/api/users/testActivity'
     | '/profile'
+    | '/api/$prefix/docs/$'
+    | '/api/admin/anticheat/audits'
+    | '/api/admin/anticheat/summary'
+    | '/api/admin/report/accept'
+    | '/api/admin/report/reject'
+    | '/api/leaderboards/daily/rank'
+    | '/api/leaderboards/xp/weekly'
+    | '/api/results/id/$resultId'
+    | '/api/users/$uidOrName/profile'
+    | '/api/users/checkName/$name'
+    | '/api/users/resultFilterPresets/$presetId'
+    | '/api/users/tags/$tagId'
+    | '/api/leaderboards/xp/weekly/rank'
+    | '/api/users/tags/$tagId/personalBest'
   id:
     | '__root__'
     | '/404.html'
@@ -214,12 +986,81 @@ export interface FileRouteTypes {
     | '/_app/login'
     | '/_app/settings'
     | '/api/$'
+    | '/api/admin'
+    | '/api/ape-keys'
+    | '/api/configs'
+    | '/api/configuration'
+    | '/api/configure'
+    | '/api/docs'
+    | '/api/leaderboards'
+    | '/api/presets'
+    | '/api/psas'
+    | '/api/quotes'
+    | '/api/results'
+    | '/api/users'
     | '/_app/'
+    | '/api/'
     | '/_app/_authenticated/account'
     | '/_app/_authenticated/account-settings'
     | '/_app/profile/$uidOrName'
+    | '/api/$prefix/docs'
+    | '/api/admin/clearStreakHourOffset'
+    | '/api/admin/clearSuspicious'
+    | '/api/admin/deleteUser'
+    | '/api/admin/toggleBan'
+    | '/api/ape-keys/$apeKeyId'
     | '/api/auth/$'
+    | '/api/configuration/schema'
+    | '/api/configure/$'
+    | '/api/dev/addDebugInboxItem'
+    | '/api/dev/generateData'
+    | '/api/docs/$'
+    | '/api/leaderboards/daily'
+    | '/api/leaderboards/rank'
+    | '/api/presets/$presetId'
+    | '/api/public/speedHistogram'
+    | '/api/public/typingStats'
+    | '/api/quotes/approve'
+    | '/api/quotes/isSubmissionEnabled'
+    | '/api/quotes/rating'
+    | '/api/quotes/reject'
+    | '/api/quotes/report'
+    | '/api/results/last'
+    | '/api/results/tags'
+    | '/api/users/currentTestActivity'
+    | '/api/users/customThemes'
+    | '/api/users/favoriteQuotes'
+    | '/api/users/inbox'
+    | '/api/users/leaderboardMemory'
+    | '/api/users/name'
+    | '/api/users/optOutOfLeaderboards'
+    | '/api/users/personalBests'
+    | '/api/users/profile'
+    | '/api/users/report'
+    | '/api/users/reset'
+    | '/api/users/resultFilterPresets'
+    | '/api/users/revokeAllTokens'
+    | '/api/users/setStreakHourOffset'
+    | '/api/users/signup'
+    | '/api/users/stats'
+    | '/api/users/streak'
+    | '/api/users/tags'
+    | '/api/users/testActivity'
     | '/_app/profile/'
+    | '/api/$prefix/docs/$'
+    | '/api/admin/anticheat/audits'
+    | '/api/admin/anticheat/summary'
+    | '/api/admin/report/accept'
+    | '/api/admin/report/reject'
+    | '/api/leaderboards/daily/rank'
+    | '/api/leaderboards/xp/weekly'
+    | '/api/results/id/$resultId'
+    | '/api/users/$uidOrName/profile'
+    | '/api/users/checkName/$name'
+    | '/api/users/resultFilterPresets/$presetId'
+    | '/api/users/tags/$tagId'
+    | '/api/leaderboards/xp/weekly/rank'
+    | '/api/users/tags/$tagId/personalBest'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -228,7 +1069,25 @@ export interface RootRouteChildren {
   OauthCallbackDothtmlRoute: typeof OauthCallbackDothtmlRoute
   PrivacyPolicyDothtmlRoute: typeof PrivacyPolicyDothtmlRoute
   ApiSplatRoute: typeof ApiSplatRoute
+  ApiAdminRoute: typeof ApiAdminRouteWithChildren
+  ApiApeKeysRoute: typeof ApiApeKeysRouteWithChildren
+  ApiConfigsRoute: typeof ApiConfigsRoute
+  ApiConfigurationRoute: typeof ApiConfigurationRouteWithChildren
+  ApiConfigureRoute: typeof ApiConfigureRouteWithChildren
+  ApiDocsRoute: typeof ApiDocsRouteWithChildren
+  ApiLeaderboardsRoute: typeof ApiLeaderboardsRouteWithChildren
+  ApiPresetsRoute: typeof ApiPresetsRouteWithChildren
+  ApiPsasRoute: typeof ApiPsasRoute
+  ApiQuotesRoute: typeof ApiQuotesRouteWithChildren
+  ApiResultsRoute: typeof ApiResultsRouteWithChildren
+  ApiUsersRoute: typeof ApiUsersRouteWithChildren
+  ApiIndexRoute: typeof ApiIndexRoute
+  ApiPrefixDocsRoute: typeof ApiPrefixDocsRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiDevAddDebugInboxItemRoute: typeof ApiDevAddDebugInboxItemRoute
+  ApiDevGenerateDataRoute: typeof ApiDevGenerateDataRoute
+  ApiPublicSpeedHistogramRoute: typeof ApiPublicSpeedHistogramRoute
+  ApiPublicTypingStatsRoute: typeof ApiPublicTypingStatsRoute
 }
 
 declare module '@tanstack/solid-router' {
@@ -310,11 +1169,102 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof AppSettingsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/': {
+      id: '/api/'
+      path: '/api'
+      fullPath: '/api/'
+      preLoaderRoute: typeof ApiIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/$': {
       id: '/api/$'
       path: '/api/$'
       fullPath: '/api/$'
       preLoaderRoute: typeof ApiSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin': {
+      id: '/api/admin'
+      path: '/api/admin'
+      fullPath: '/api/admin'
+      preLoaderRoute: typeof ApiAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ape-keys': {
+      id: '/api/ape-keys'
+      path: '/api/ape-keys'
+      fullPath: '/api/ape-keys'
+      preLoaderRoute: typeof ApiApeKeysRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/configs': {
+      id: '/api/configs'
+      path: '/api/configs'
+      fullPath: '/api/configs'
+      preLoaderRoute: typeof ApiConfigsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/configuration': {
+      id: '/api/configuration'
+      path: '/api/configuration'
+      fullPath: '/api/configuration'
+      preLoaderRoute: typeof ApiConfigurationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/configure': {
+      id: '/api/configure'
+      path: '/api/configure'
+      fullPath: '/api/configure'
+      preLoaderRoute: typeof ApiConfigureRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/docs': {
+      id: '/api/docs'
+      path: '/api/docs'
+      fullPath: '/api/docs'
+      preLoaderRoute: typeof ApiDocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/leaderboards': {
+      id: '/api/leaderboards'
+      path: '/api/leaderboards'
+      fullPath: '/api/leaderboards'
+      preLoaderRoute: typeof ApiLeaderboardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/presets': {
+      id: '/api/presets'
+      path: '/api/presets'
+      fullPath: '/api/presets'
+      preLoaderRoute: typeof ApiPresetsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/psas': {
+      id: '/api/psas'
+      path: '/api/psas'
+      fullPath: '/api/psas'
+      preLoaderRoute: typeof ApiPsasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/quotes': {
+      id: '/api/quotes'
+      path: '/api/quotes'
+      fullPath: '/api/quotes'
+      preLoaderRoute: typeof ApiQuotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/results': {
+      id: '/api/results'
+      path: '/api/results'
+      fullPath: '/api/results'
+      preLoaderRoute: typeof ApiResultsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/users': {
+      id: '/api/users'
+      path: '/api/users'
+      fullPath: '/api/users'
+      preLoaderRoute: typeof ApiUsersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/_authenticated/account': {
@@ -345,12 +1295,404 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof AppProfileUidOrNameRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/$prefix/docs': {
+      id: '/api/$prefix/docs'
+      path: '/api/$prefix/docs'
+      fullPath: '/api/$prefix/docs'
+      preLoaderRoute: typeof ApiPrefixDocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/clearStreakHourOffset': {
+      id: '/api/admin/clearStreakHourOffset'
+      path: '/clearStreakHourOffset'
+      fullPath: '/api/admin/clearStreakHourOffset'
+      preLoaderRoute: typeof ApiAdminClearStreakHourOffsetRouteImport
+      parentRoute: typeof ApiAdminRoute
+    }
+    '/api/admin/clearSuspicious': {
+      id: '/api/admin/clearSuspicious'
+      path: '/clearSuspicious'
+      fullPath: '/api/admin/clearSuspicious'
+      preLoaderRoute: typeof ApiAdminClearSuspiciousRouteImport
+      parentRoute: typeof ApiAdminRoute
+    }
+    '/api/admin/deleteUser': {
+      id: '/api/admin/deleteUser'
+      path: '/deleteUser'
+      fullPath: '/api/admin/deleteUser'
+      preLoaderRoute: typeof ApiAdminDeleteUserRouteImport
+      parentRoute: typeof ApiAdminRoute
+    }
+    '/api/admin/toggleBan': {
+      id: '/api/admin/toggleBan'
+      path: '/toggleBan'
+      fullPath: '/api/admin/toggleBan'
+      preLoaderRoute: typeof ApiAdminToggleBanRouteImport
+      parentRoute: typeof ApiAdminRoute
+    }
+    '/api/ape-keys/$apeKeyId': {
+      id: '/api/ape-keys/$apeKeyId'
+      path: '/$apeKeyId'
+      fullPath: '/api/ape-keys/$apeKeyId'
+      preLoaderRoute: typeof ApiApeKeysApeKeyIdRouteImport
+      parentRoute: typeof ApiApeKeysRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/api/configuration/schema': {
+      id: '/api/configuration/schema'
+      path: '/schema'
+      fullPath: '/api/configuration/schema'
+      preLoaderRoute: typeof ApiConfigurationSchemaRouteImport
+      parentRoute: typeof ApiConfigurationRoute
+    }
+    '/api/configure/$': {
+      id: '/api/configure/$'
+      path: '/$'
+      fullPath: '/api/configure/$'
+      preLoaderRoute: typeof ApiConfigureSplatRouteImport
+      parentRoute: typeof ApiConfigureRoute
+    }
+    '/api/dev/addDebugInboxItem': {
+      id: '/api/dev/addDebugInboxItem'
+      path: '/api/dev/addDebugInboxItem'
+      fullPath: '/api/dev/addDebugInboxItem'
+      preLoaderRoute: typeof ApiDevAddDebugInboxItemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/dev/generateData': {
+      id: '/api/dev/generateData'
+      path: '/api/dev/generateData'
+      fullPath: '/api/dev/generateData'
+      preLoaderRoute: typeof ApiDevGenerateDataRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/docs/$': {
+      id: '/api/docs/$'
+      path: '/$'
+      fullPath: '/api/docs/$'
+      preLoaderRoute: typeof ApiDocsSplatRouteImport
+      parentRoute: typeof ApiDocsRoute
+    }
+    '/api/leaderboards/daily': {
+      id: '/api/leaderboards/daily'
+      path: '/daily'
+      fullPath: '/api/leaderboards/daily'
+      preLoaderRoute: typeof ApiLeaderboardsDailyRouteImport
+      parentRoute: typeof ApiLeaderboardsRoute
+    }
+    '/api/leaderboards/rank': {
+      id: '/api/leaderboards/rank'
+      path: '/rank'
+      fullPath: '/api/leaderboards/rank'
+      preLoaderRoute: typeof ApiLeaderboardsRankRouteImport
+      parentRoute: typeof ApiLeaderboardsRoute
+    }
+    '/api/presets/$presetId': {
+      id: '/api/presets/$presetId'
+      path: '/$presetId'
+      fullPath: '/api/presets/$presetId'
+      preLoaderRoute: typeof ApiPresetsPresetIdRouteImport
+      parentRoute: typeof ApiPresetsRoute
+    }
+    '/api/public/speedHistogram': {
+      id: '/api/public/speedHistogram'
+      path: '/api/public/speedHistogram'
+      fullPath: '/api/public/speedHistogram'
+      preLoaderRoute: typeof ApiPublicSpeedHistogramRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/typingStats': {
+      id: '/api/public/typingStats'
+      path: '/api/public/typingStats'
+      fullPath: '/api/public/typingStats'
+      preLoaderRoute: typeof ApiPublicTypingStatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/quotes/approve': {
+      id: '/api/quotes/approve'
+      path: '/approve'
+      fullPath: '/api/quotes/approve'
+      preLoaderRoute: typeof ApiQuotesApproveRouteImport
+      parentRoute: typeof ApiQuotesRoute
+    }
+    '/api/quotes/isSubmissionEnabled': {
+      id: '/api/quotes/isSubmissionEnabled'
+      path: '/isSubmissionEnabled'
+      fullPath: '/api/quotes/isSubmissionEnabled'
+      preLoaderRoute: typeof ApiQuotesIsSubmissionEnabledRouteImport
+      parentRoute: typeof ApiQuotesRoute
+    }
+    '/api/quotes/rating': {
+      id: '/api/quotes/rating'
+      path: '/rating'
+      fullPath: '/api/quotes/rating'
+      preLoaderRoute: typeof ApiQuotesRatingRouteImport
+      parentRoute: typeof ApiQuotesRoute
+    }
+    '/api/quotes/reject': {
+      id: '/api/quotes/reject'
+      path: '/reject'
+      fullPath: '/api/quotes/reject'
+      preLoaderRoute: typeof ApiQuotesRejectRouteImport
+      parentRoute: typeof ApiQuotesRoute
+    }
+    '/api/quotes/report': {
+      id: '/api/quotes/report'
+      path: '/report'
+      fullPath: '/api/quotes/report'
+      preLoaderRoute: typeof ApiQuotesReportRouteImport
+      parentRoute: typeof ApiQuotesRoute
+    }
+    '/api/results/last': {
+      id: '/api/results/last'
+      path: '/last'
+      fullPath: '/api/results/last'
+      preLoaderRoute: typeof ApiResultsLastRouteImport
+      parentRoute: typeof ApiResultsRoute
+    }
+    '/api/results/tags': {
+      id: '/api/results/tags'
+      path: '/tags'
+      fullPath: '/api/results/tags'
+      preLoaderRoute: typeof ApiResultsTagsRouteImport
+      parentRoute: typeof ApiResultsRoute
+    }
+    '/api/users/currentTestActivity': {
+      id: '/api/users/currentTestActivity'
+      path: '/currentTestActivity'
+      fullPath: '/api/users/currentTestActivity'
+      preLoaderRoute: typeof ApiUsersCurrentTestActivityRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/users/customThemes': {
+      id: '/api/users/customThemes'
+      path: '/customThemes'
+      fullPath: '/api/users/customThemes'
+      preLoaderRoute: typeof ApiUsersCustomThemesRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/users/favoriteQuotes': {
+      id: '/api/users/favoriteQuotes'
+      path: '/favoriteQuotes'
+      fullPath: '/api/users/favoriteQuotes'
+      preLoaderRoute: typeof ApiUsersFavoriteQuotesRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/users/inbox': {
+      id: '/api/users/inbox'
+      path: '/inbox'
+      fullPath: '/api/users/inbox'
+      preLoaderRoute: typeof ApiUsersInboxRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/users/leaderboardMemory': {
+      id: '/api/users/leaderboardMemory'
+      path: '/leaderboardMemory'
+      fullPath: '/api/users/leaderboardMemory'
+      preLoaderRoute: typeof ApiUsersLeaderboardMemoryRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/users/name': {
+      id: '/api/users/name'
+      path: '/name'
+      fullPath: '/api/users/name'
+      preLoaderRoute: typeof ApiUsersNameRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/users/optOutOfLeaderboards': {
+      id: '/api/users/optOutOfLeaderboards'
+      path: '/optOutOfLeaderboards'
+      fullPath: '/api/users/optOutOfLeaderboards'
+      preLoaderRoute: typeof ApiUsersOptOutOfLeaderboardsRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/users/personalBests': {
+      id: '/api/users/personalBests'
+      path: '/personalBests'
+      fullPath: '/api/users/personalBests'
+      preLoaderRoute: typeof ApiUsersPersonalBestsRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/users/profile': {
+      id: '/api/users/profile'
+      path: '/profile'
+      fullPath: '/api/users/profile'
+      preLoaderRoute: typeof ApiUsersProfileRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/users/report': {
+      id: '/api/users/report'
+      path: '/report'
+      fullPath: '/api/users/report'
+      preLoaderRoute: typeof ApiUsersReportRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/users/reset': {
+      id: '/api/users/reset'
+      path: '/reset'
+      fullPath: '/api/users/reset'
+      preLoaderRoute: typeof ApiUsersResetRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/users/resultFilterPresets': {
+      id: '/api/users/resultFilterPresets'
+      path: '/resultFilterPresets'
+      fullPath: '/api/users/resultFilterPresets'
+      preLoaderRoute: typeof ApiUsersResultFilterPresetsRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/users/revokeAllTokens': {
+      id: '/api/users/revokeAllTokens'
+      path: '/revokeAllTokens'
+      fullPath: '/api/users/revokeAllTokens'
+      preLoaderRoute: typeof ApiUsersRevokeAllTokensRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/users/setStreakHourOffset': {
+      id: '/api/users/setStreakHourOffset'
+      path: '/setStreakHourOffset'
+      fullPath: '/api/users/setStreakHourOffset'
+      preLoaderRoute: typeof ApiUsersSetStreakHourOffsetRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/users/signup': {
+      id: '/api/users/signup'
+      path: '/signup'
+      fullPath: '/api/users/signup'
+      preLoaderRoute: typeof ApiUsersSignupRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/users/stats': {
+      id: '/api/users/stats'
+      path: '/stats'
+      fullPath: '/api/users/stats'
+      preLoaderRoute: typeof ApiUsersStatsRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/users/streak': {
+      id: '/api/users/streak'
+      path: '/streak'
+      fullPath: '/api/users/streak'
+      preLoaderRoute: typeof ApiUsersStreakRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/users/tags': {
+      id: '/api/users/tags'
+      path: '/tags'
+      fullPath: '/api/users/tags'
+      preLoaderRoute: typeof ApiUsersTagsRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/users/testActivity': {
+      id: '/api/users/testActivity'
+      path: '/testActivity'
+      fullPath: '/api/users/testActivity'
+      preLoaderRoute: typeof ApiUsersTestActivityRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/$prefix/docs/$': {
+      id: '/api/$prefix/docs/$'
+      path: '/$'
+      fullPath: '/api/$prefix/docs/$'
+      preLoaderRoute: typeof ApiPrefixDocsSplatRouteImport
+      parentRoute: typeof ApiPrefixDocsRoute
+    }
+    '/api/admin/anticheat/audits': {
+      id: '/api/admin/anticheat/audits'
+      path: '/anticheat/audits'
+      fullPath: '/api/admin/anticheat/audits'
+      preLoaderRoute: typeof ApiAdminAnticheatAuditsRouteImport
+      parentRoute: typeof ApiAdminRoute
+    }
+    '/api/admin/anticheat/summary': {
+      id: '/api/admin/anticheat/summary'
+      path: '/anticheat/summary'
+      fullPath: '/api/admin/anticheat/summary'
+      preLoaderRoute: typeof ApiAdminAnticheatSummaryRouteImport
+      parentRoute: typeof ApiAdminRoute
+    }
+    '/api/admin/report/accept': {
+      id: '/api/admin/report/accept'
+      path: '/report/accept'
+      fullPath: '/api/admin/report/accept'
+      preLoaderRoute: typeof ApiAdminReportAcceptRouteImport
+      parentRoute: typeof ApiAdminRoute
+    }
+    '/api/admin/report/reject': {
+      id: '/api/admin/report/reject'
+      path: '/report/reject'
+      fullPath: '/api/admin/report/reject'
+      preLoaderRoute: typeof ApiAdminReportRejectRouteImport
+      parentRoute: typeof ApiAdminRoute
+    }
+    '/api/leaderboards/daily/rank': {
+      id: '/api/leaderboards/daily/rank'
+      path: '/rank'
+      fullPath: '/api/leaderboards/daily/rank'
+      preLoaderRoute: typeof ApiLeaderboardsDailyRankRouteImport
+      parentRoute: typeof ApiLeaderboardsDailyRoute
+    }
+    '/api/leaderboards/xp/weekly': {
+      id: '/api/leaderboards/xp/weekly'
+      path: '/xp/weekly'
+      fullPath: '/api/leaderboards/xp/weekly'
+      preLoaderRoute: typeof ApiLeaderboardsXpWeeklyRouteImport
+      parentRoute: typeof ApiLeaderboardsRoute
+    }
+    '/api/results/id/$resultId': {
+      id: '/api/results/id/$resultId'
+      path: '/id/$resultId'
+      fullPath: '/api/results/id/$resultId'
+      preLoaderRoute: typeof ApiResultsIdResultIdRouteImport
+      parentRoute: typeof ApiResultsRoute
+    }
+    '/api/users/$uidOrName/profile': {
+      id: '/api/users/$uidOrName/profile'
+      path: '/$uidOrName/profile'
+      fullPath: '/api/users/$uidOrName/profile'
+      preLoaderRoute: typeof ApiUsersUidOrNameProfileRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/users/checkName/$name': {
+      id: '/api/users/checkName/$name'
+      path: '/checkName/$name'
+      fullPath: '/api/users/checkName/$name'
+      preLoaderRoute: typeof ApiUsersCheckNameNameRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/users/resultFilterPresets/$presetId': {
+      id: '/api/users/resultFilterPresets/$presetId'
+      path: '/$presetId'
+      fullPath: '/api/users/resultFilterPresets/$presetId'
+      preLoaderRoute: typeof ApiUsersResultFilterPresetsPresetIdRouteImport
+      parentRoute: typeof ApiUsersResultFilterPresetsRoute
+    }
+    '/api/users/tags/$tagId': {
+      id: '/api/users/tags/$tagId'
+      path: '/$tagId'
+      fullPath: '/api/users/tags/$tagId'
+      preLoaderRoute: typeof ApiUsersTagsTagIdRouteImport
+      parentRoute: typeof ApiUsersTagsRoute
+    }
+    '/api/leaderboards/xp/weekly/rank': {
+      id: '/api/leaderboards/xp/weekly/rank'
+      path: '/rank'
+      fullPath: '/api/leaderboards/xp/weekly/rank'
+      preLoaderRoute: typeof ApiLeaderboardsXpWeeklyRankRouteImport
+      parentRoute: typeof ApiLeaderboardsXpWeeklyRoute
+    }
+    '/api/users/tags/$tagId/personalBest': {
+      id: '/api/users/tags/$tagId/personalBest'
+      path: '/personalBest'
+      fullPath: '/api/users/tags/$tagId/personalBest'
+      preLoaderRoute: typeof ApiUsersTagsTagIdPersonalBestRouteImport
+      parentRoute: typeof ApiUsersTagsTagIdRoute
     }
   }
 }
@@ -394,13 +1736,295 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
+interface ApiAdminRouteChildren {
+  ApiAdminClearStreakHourOffsetRoute: typeof ApiAdminClearStreakHourOffsetRoute
+  ApiAdminClearSuspiciousRoute: typeof ApiAdminClearSuspiciousRoute
+  ApiAdminDeleteUserRoute: typeof ApiAdminDeleteUserRoute
+  ApiAdminToggleBanRoute: typeof ApiAdminToggleBanRoute
+  ApiAdminAnticheatAuditsRoute: typeof ApiAdminAnticheatAuditsRoute
+  ApiAdminAnticheatSummaryRoute: typeof ApiAdminAnticheatSummaryRoute
+  ApiAdminReportAcceptRoute: typeof ApiAdminReportAcceptRoute
+  ApiAdminReportRejectRoute: typeof ApiAdminReportRejectRoute
+}
+
+const ApiAdminRouteChildren: ApiAdminRouteChildren = {
+  ApiAdminClearStreakHourOffsetRoute: ApiAdminClearStreakHourOffsetRoute,
+  ApiAdminClearSuspiciousRoute: ApiAdminClearSuspiciousRoute,
+  ApiAdminDeleteUserRoute: ApiAdminDeleteUserRoute,
+  ApiAdminToggleBanRoute: ApiAdminToggleBanRoute,
+  ApiAdminAnticheatAuditsRoute: ApiAdminAnticheatAuditsRoute,
+  ApiAdminAnticheatSummaryRoute: ApiAdminAnticheatSummaryRoute,
+  ApiAdminReportAcceptRoute: ApiAdminReportAcceptRoute,
+  ApiAdminReportRejectRoute: ApiAdminReportRejectRoute,
+}
+
+const ApiAdminRouteWithChildren = ApiAdminRoute._addFileChildren(
+  ApiAdminRouteChildren,
+)
+
+interface ApiApeKeysRouteChildren {
+  ApiApeKeysApeKeyIdRoute: typeof ApiApeKeysApeKeyIdRoute
+}
+
+const ApiApeKeysRouteChildren: ApiApeKeysRouteChildren = {
+  ApiApeKeysApeKeyIdRoute: ApiApeKeysApeKeyIdRoute,
+}
+
+const ApiApeKeysRouteWithChildren = ApiApeKeysRoute._addFileChildren(
+  ApiApeKeysRouteChildren,
+)
+
+interface ApiConfigurationRouteChildren {
+  ApiConfigurationSchemaRoute: typeof ApiConfigurationSchemaRoute
+}
+
+const ApiConfigurationRouteChildren: ApiConfigurationRouteChildren = {
+  ApiConfigurationSchemaRoute: ApiConfigurationSchemaRoute,
+}
+
+const ApiConfigurationRouteWithChildren =
+  ApiConfigurationRoute._addFileChildren(ApiConfigurationRouteChildren)
+
+interface ApiConfigureRouteChildren {
+  ApiConfigureSplatRoute: typeof ApiConfigureSplatRoute
+}
+
+const ApiConfigureRouteChildren: ApiConfigureRouteChildren = {
+  ApiConfigureSplatRoute: ApiConfigureSplatRoute,
+}
+
+const ApiConfigureRouteWithChildren = ApiConfigureRoute._addFileChildren(
+  ApiConfigureRouteChildren,
+)
+
+interface ApiDocsRouteChildren {
+  ApiDocsSplatRoute: typeof ApiDocsSplatRoute
+}
+
+const ApiDocsRouteChildren: ApiDocsRouteChildren = {
+  ApiDocsSplatRoute: ApiDocsSplatRoute,
+}
+
+const ApiDocsRouteWithChildren =
+  ApiDocsRoute._addFileChildren(ApiDocsRouteChildren)
+
+interface ApiLeaderboardsDailyRouteChildren {
+  ApiLeaderboardsDailyRankRoute: typeof ApiLeaderboardsDailyRankRoute
+}
+
+const ApiLeaderboardsDailyRouteChildren: ApiLeaderboardsDailyRouteChildren = {
+  ApiLeaderboardsDailyRankRoute: ApiLeaderboardsDailyRankRoute,
+}
+
+const ApiLeaderboardsDailyRouteWithChildren =
+  ApiLeaderboardsDailyRoute._addFileChildren(ApiLeaderboardsDailyRouteChildren)
+
+interface ApiLeaderboardsXpWeeklyRouteChildren {
+  ApiLeaderboardsXpWeeklyRankRoute: typeof ApiLeaderboardsXpWeeklyRankRoute
+}
+
+const ApiLeaderboardsXpWeeklyRouteChildren: ApiLeaderboardsXpWeeklyRouteChildren =
+  {
+    ApiLeaderboardsXpWeeklyRankRoute: ApiLeaderboardsXpWeeklyRankRoute,
+  }
+
+const ApiLeaderboardsXpWeeklyRouteWithChildren =
+  ApiLeaderboardsXpWeeklyRoute._addFileChildren(
+    ApiLeaderboardsXpWeeklyRouteChildren,
+  )
+
+interface ApiLeaderboardsRouteChildren {
+  ApiLeaderboardsDailyRoute: typeof ApiLeaderboardsDailyRouteWithChildren
+  ApiLeaderboardsRankRoute: typeof ApiLeaderboardsRankRoute
+  ApiLeaderboardsXpWeeklyRoute: typeof ApiLeaderboardsXpWeeklyRouteWithChildren
+}
+
+const ApiLeaderboardsRouteChildren: ApiLeaderboardsRouteChildren = {
+  ApiLeaderboardsDailyRoute: ApiLeaderboardsDailyRouteWithChildren,
+  ApiLeaderboardsRankRoute: ApiLeaderboardsRankRoute,
+  ApiLeaderboardsXpWeeklyRoute: ApiLeaderboardsXpWeeklyRouteWithChildren,
+}
+
+const ApiLeaderboardsRouteWithChildren = ApiLeaderboardsRoute._addFileChildren(
+  ApiLeaderboardsRouteChildren,
+)
+
+interface ApiPresetsRouteChildren {
+  ApiPresetsPresetIdRoute: typeof ApiPresetsPresetIdRoute
+}
+
+const ApiPresetsRouteChildren: ApiPresetsRouteChildren = {
+  ApiPresetsPresetIdRoute: ApiPresetsPresetIdRoute,
+}
+
+const ApiPresetsRouteWithChildren = ApiPresetsRoute._addFileChildren(
+  ApiPresetsRouteChildren,
+)
+
+interface ApiQuotesRouteChildren {
+  ApiQuotesApproveRoute: typeof ApiQuotesApproveRoute
+  ApiQuotesIsSubmissionEnabledRoute: typeof ApiQuotesIsSubmissionEnabledRoute
+  ApiQuotesRatingRoute: typeof ApiQuotesRatingRoute
+  ApiQuotesRejectRoute: typeof ApiQuotesRejectRoute
+  ApiQuotesReportRoute: typeof ApiQuotesReportRoute
+}
+
+const ApiQuotesRouteChildren: ApiQuotesRouteChildren = {
+  ApiQuotesApproveRoute: ApiQuotesApproveRoute,
+  ApiQuotesIsSubmissionEnabledRoute: ApiQuotesIsSubmissionEnabledRoute,
+  ApiQuotesRatingRoute: ApiQuotesRatingRoute,
+  ApiQuotesRejectRoute: ApiQuotesRejectRoute,
+  ApiQuotesReportRoute: ApiQuotesReportRoute,
+}
+
+const ApiQuotesRouteWithChildren = ApiQuotesRoute._addFileChildren(
+  ApiQuotesRouteChildren,
+)
+
+interface ApiResultsRouteChildren {
+  ApiResultsLastRoute: typeof ApiResultsLastRoute
+  ApiResultsTagsRoute: typeof ApiResultsTagsRoute
+  ApiResultsIdResultIdRoute: typeof ApiResultsIdResultIdRoute
+}
+
+const ApiResultsRouteChildren: ApiResultsRouteChildren = {
+  ApiResultsLastRoute: ApiResultsLastRoute,
+  ApiResultsTagsRoute: ApiResultsTagsRoute,
+  ApiResultsIdResultIdRoute: ApiResultsIdResultIdRoute,
+}
+
+const ApiResultsRouteWithChildren = ApiResultsRoute._addFileChildren(
+  ApiResultsRouteChildren,
+)
+
+interface ApiUsersResultFilterPresetsRouteChildren {
+  ApiUsersResultFilterPresetsPresetIdRoute: typeof ApiUsersResultFilterPresetsPresetIdRoute
+}
+
+const ApiUsersResultFilterPresetsRouteChildren: ApiUsersResultFilterPresetsRouteChildren =
+  {
+    ApiUsersResultFilterPresetsPresetIdRoute:
+      ApiUsersResultFilterPresetsPresetIdRoute,
+  }
+
+const ApiUsersResultFilterPresetsRouteWithChildren =
+  ApiUsersResultFilterPresetsRoute._addFileChildren(
+    ApiUsersResultFilterPresetsRouteChildren,
+  )
+
+interface ApiUsersTagsTagIdRouteChildren {
+  ApiUsersTagsTagIdPersonalBestRoute: typeof ApiUsersTagsTagIdPersonalBestRoute
+}
+
+const ApiUsersTagsTagIdRouteChildren: ApiUsersTagsTagIdRouteChildren = {
+  ApiUsersTagsTagIdPersonalBestRoute: ApiUsersTagsTagIdPersonalBestRoute,
+}
+
+const ApiUsersTagsTagIdRouteWithChildren =
+  ApiUsersTagsTagIdRoute._addFileChildren(ApiUsersTagsTagIdRouteChildren)
+
+interface ApiUsersTagsRouteChildren {
+  ApiUsersTagsTagIdRoute: typeof ApiUsersTagsTagIdRouteWithChildren
+}
+
+const ApiUsersTagsRouteChildren: ApiUsersTagsRouteChildren = {
+  ApiUsersTagsTagIdRoute: ApiUsersTagsTagIdRouteWithChildren,
+}
+
+const ApiUsersTagsRouteWithChildren = ApiUsersTagsRoute._addFileChildren(
+  ApiUsersTagsRouteChildren,
+)
+
+interface ApiUsersRouteChildren {
+  ApiUsersCurrentTestActivityRoute: typeof ApiUsersCurrentTestActivityRoute
+  ApiUsersCustomThemesRoute: typeof ApiUsersCustomThemesRoute
+  ApiUsersFavoriteQuotesRoute: typeof ApiUsersFavoriteQuotesRoute
+  ApiUsersInboxRoute: typeof ApiUsersInboxRoute
+  ApiUsersLeaderboardMemoryRoute: typeof ApiUsersLeaderboardMemoryRoute
+  ApiUsersNameRoute: typeof ApiUsersNameRoute
+  ApiUsersOptOutOfLeaderboardsRoute: typeof ApiUsersOptOutOfLeaderboardsRoute
+  ApiUsersPersonalBestsRoute: typeof ApiUsersPersonalBestsRoute
+  ApiUsersProfileRoute: typeof ApiUsersProfileRoute
+  ApiUsersReportRoute: typeof ApiUsersReportRoute
+  ApiUsersResetRoute: typeof ApiUsersResetRoute
+  ApiUsersResultFilterPresetsRoute: typeof ApiUsersResultFilterPresetsRouteWithChildren
+  ApiUsersRevokeAllTokensRoute: typeof ApiUsersRevokeAllTokensRoute
+  ApiUsersSetStreakHourOffsetRoute: typeof ApiUsersSetStreakHourOffsetRoute
+  ApiUsersSignupRoute: typeof ApiUsersSignupRoute
+  ApiUsersStatsRoute: typeof ApiUsersStatsRoute
+  ApiUsersStreakRoute: typeof ApiUsersStreakRoute
+  ApiUsersTagsRoute: typeof ApiUsersTagsRouteWithChildren
+  ApiUsersTestActivityRoute: typeof ApiUsersTestActivityRoute
+  ApiUsersUidOrNameProfileRoute: typeof ApiUsersUidOrNameProfileRoute
+  ApiUsersCheckNameNameRoute: typeof ApiUsersCheckNameNameRoute
+}
+
+const ApiUsersRouteChildren: ApiUsersRouteChildren = {
+  ApiUsersCurrentTestActivityRoute: ApiUsersCurrentTestActivityRoute,
+  ApiUsersCustomThemesRoute: ApiUsersCustomThemesRoute,
+  ApiUsersFavoriteQuotesRoute: ApiUsersFavoriteQuotesRoute,
+  ApiUsersInboxRoute: ApiUsersInboxRoute,
+  ApiUsersLeaderboardMemoryRoute: ApiUsersLeaderboardMemoryRoute,
+  ApiUsersNameRoute: ApiUsersNameRoute,
+  ApiUsersOptOutOfLeaderboardsRoute: ApiUsersOptOutOfLeaderboardsRoute,
+  ApiUsersPersonalBestsRoute: ApiUsersPersonalBestsRoute,
+  ApiUsersProfileRoute: ApiUsersProfileRoute,
+  ApiUsersReportRoute: ApiUsersReportRoute,
+  ApiUsersResetRoute: ApiUsersResetRoute,
+  ApiUsersResultFilterPresetsRoute:
+    ApiUsersResultFilterPresetsRouteWithChildren,
+  ApiUsersRevokeAllTokensRoute: ApiUsersRevokeAllTokensRoute,
+  ApiUsersSetStreakHourOffsetRoute: ApiUsersSetStreakHourOffsetRoute,
+  ApiUsersSignupRoute: ApiUsersSignupRoute,
+  ApiUsersStatsRoute: ApiUsersStatsRoute,
+  ApiUsersStreakRoute: ApiUsersStreakRoute,
+  ApiUsersTagsRoute: ApiUsersTagsRouteWithChildren,
+  ApiUsersTestActivityRoute: ApiUsersTestActivityRoute,
+  ApiUsersUidOrNameProfileRoute: ApiUsersUidOrNameProfileRoute,
+  ApiUsersCheckNameNameRoute: ApiUsersCheckNameNameRoute,
+}
+
+const ApiUsersRouteWithChildren = ApiUsersRoute._addFileChildren(
+  ApiUsersRouteChildren,
+)
+
+interface ApiPrefixDocsRouteChildren {
+  ApiPrefixDocsSplatRoute: typeof ApiPrefixDocsSplatRoute
+}
+
+const ApiPrefixDocsRouteChildren: ApiPrefixDocsRouteChildren = {
+  ApiPrefixDocsSplatRoute: ApiPrefixDocsSplatRoute,
+}
+
+const ApiPrefixDocsRouteWithChildren = ApiPrefixDocsRoute._addFileChildren(
+  ApiPrefixDocsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   R404DothtmlRoute: R404DothtmlRoute,
   AppRoute: AppRouteWithChildren,
   OauthCallbackDothtmlRoute: OauthCallbackDothtmlRoute,
   PrivacyPolicyDothtmlRoute: PrivacyPolicyDothtmlRoute,
   ApiSplatRoute: ApiSplatRoute,
+  ApiAdminRoute: ApiAdminRouteWithChildren,
+  ApiApeKeysRoute: ApiApeKeysRouteWithChildren,
+  ApiConfigsRoute: ApiConfigsRoute,
+  ApiConfigurationRoute: ApiConfigurationRouteWithChildren,
+  ApiConfigureRoute: ApiConfigureRouteWithChildren,
+  ApiDocsRoute: ApiDocsRouteWithChildren,
+  ApiLeaderboardsRoute: ApiLeaderboardsRouteWithChildren,
+  ApiPresetsRoute: ApiPresetsRouteWithChildren,
+  ApiPsasRoute: ApiPsasRoute,
+  ApiQuotesRoute: ApiQuotesRouteWithChildren,
+  ApiResultsRoute: ApiResultsRouteWithChildren,
+  ApiUsersRoute: ApiUsersRouteWithChildren,
+  ApiIndexRoute: ApiIndexRoute,
+  ApiPrefixDocsRoute: ApiPrefixDocsRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiDevAddDebugInboxItemRoute: ApiDevAddDebugInboxItemRoute,
+  ApiDevGenerateDataRoute: ApiDevGenerateDataRoute,
+  ApiPublicSpeedHistogramRoute: ApiPublicSpeedHistogramRoute,
+  ApiPublicTypingStatsRoute: ApiPublicTypingStatsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
