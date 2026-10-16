@@ -14,6 +14,45 @@ describe("declared Start HTTP protocols without Hono", () => {
   });
   afterAll(async () => await mf?.dispose());
 
+  it("retains the development editor and configured docs prefix without publishing private assets", async () => {
+    const dev = await createWorkerd(false, undefined, false, {
+      MODE: "dev",
+      API_PATH_OVERRIDE: "v1",
+    });
+    try {
+      const worker = await dev.getWorker("a");
+      const editor = await worker.fetch("http://localhost:3000/api/configure");
+      expect(editor.status).toBe(200);
+      expect(await editor.text()).toContain('<base href="/api/configure/">');
+      const script = await worker.fetch(
+        "http://localhost:3000/api/configure/script.js",
+      );
+      expect(script.status).toBe(200);
+      expect(await script.text()).toContain(
+        'fetch("/api/configuration/schema")',
+      );
+      expect(
+        (await worker.fetch("http://localhost:3000/api/docs")).status,
+      ).toBe(404);
+      expect(
+        (await worker.fetch("http://localhost:3000/api/V1/DOCS/PUBLIC")).status,
+      ).toBe(200);
+      expect(
+        (await worker.fetch("http://localhost:3000/api/v1/docs/internal.json"))
+          .status,
+      ).toBe(200);
+      expect(
+        (await worker.fetch("http://localhost:3000/api/configuration")).status,
+      ).toBe(200);
+      expect(
+        (await worker.fetch("http://localhost:3000/api/v1/configuration"))
+          .status,
+      ).toBe(404);
+    } finally {
+      await dev.dispose();
+    }
+  });
+
   it("dispatches every ledger operation to a JSON service/policy response", async () => {
     const worker = await mf.getWorker("a");
     let index = 1;
