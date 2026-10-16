@@ -1,12 +1,8 @@
-import type { z } from "zod";
-
-type ZodIssue = z.core.$ZodIssue;
 import {
   type AppRoute,
   type AppRouter,
   type ServerInferRequest,
   type ServerInferResponses,
-  checkZodSchema,
   isAppRoute,
   isAppRouteNoBody,
   isAppRouteOtherResponse,
@@ -16,6 +12,7 @@ import {
 import type { Hono } from "hono";
 import type { ContentfulStatusCode, StatusCode } from "hono/utils/http-status";
 import type { ApiContext, ApiEnv, ApiMiddleware, HttpRequest } from "./http";
+import { validateOperationInput } from "../policies/validation";
 
 type RouteImplementation<T extends AppRoute> = {
   middleware?: ApiMiddleware[];
@@ -89,56 +86,29 @@ export function createHonoEndpoints<T extends AppRouter>(
         ...(endpoint.middleware ?? []),
         async (c) => {
           const req = c.get("request");
-          const params = checkZodSchema(req.params, route.pathParams, {
-            passThroughExtraKeys: true,
+          const validation = validateOperationInput(route, {
+            params: req.params,
+            headers: req.headers,
+            query: parseJsonQueryObject(req.query as Record<string, string>),
+            body: req.body,
           });
-          const headers = checkZodSchema(req.headers, route.headers, {
-            passThroughExtraKeys: true,
-          });
-          const query = checkZodSchema(
-            parseJsonQueryObject(req.query as Record<string, string>),
-            route.query,
-          );
-          const body = checkZodSchema(
-            req.body,
-            "body" in route ? route.body : null,
-          );
-          const failure = [
-            { result: params, message: "Invalid path parameter schema" },
-            { result: query, message: "Invalid query schema" },
-            { result: body, message: "Invalid request data schema" },
-            { result: headers, message: "Invalid header schema" },
-          ].find(({ result }) => !result.success);
-          if (failure !== undefined && !failure.result.success) {
+          if (!validation.success) {
             return c.json(
               {
-                message: failure.message,
-                validationErrors: failure.result.error.issues
-                  .flatMap(formatValidationIssue)
-                  .map(
-                    (issue) =>
-                      `${issue.path.length > 0 ? `"${issue.path.join(".")}" ` : ""}${issue.message}`,
-                  ),
+                message: validation.message,
+                validationErrors: validation.validationErrors,
               },
               422,
             );
-          }
-          if (
-            !params.success ||
-            !headers.success ||
-            !query.success ||
-            !body.success
-          ) {
-            throw new Error("Unrecognized contract validation failure");
           }
           let response: { status: number; body: unknown };
           try {
             response = await endpoint.handler({
               req,
-              params: params.data,
-              headers: headers.data,
-              query: query.data,
-              body: body.data,
+              params: validation.input.params,
+              headers: req.headers,
+              query: validation.input.query,
+              body: validation.input.body,
             });
           } catch (error) {
             if (!(error instanceof TsRestResponseError)) throw error;
@@ -165,37 +135,4 @@ export function createHonoEndpoints<T extends AppRouter>(
       );
     }
   }
-}
-
-// Codes that made Zod 3 abort a union branch instead of marking it dirty.
-const abortingCodes = new Set<ZodIssue["code"]>([
-  "invalid_type",
-  "invalid_value",
-  "invalid_union",
-  "invalid_key",
-  "invalid_element",
-]);
-
-// Zod 3 reported the first union branch whose type matched but whose checks
-// failed (e.g. a too-long optional string next to a `""` literal). Zod 4
-// reports the union itself, so unwrap to keep the API's validation errors.
-function formatValidationIssue(issue: ZodIssue): ZodIssue[] {
-  if (issue.code === "invalid_union") {
-    const branches: ZodIssue[][] = issue.errors;
-    const dirty = branches.find(
-      (branch) =>
-        branch.length > 0 &&
-        branch.every((branchIssue) => !abortingCodes.has(branchIssue.code)),
-    );
-    if (dirty !== undefined) {
-      // Union branch issues are relative to the union.
-      return dirty.flatMap((branchIssue) =>
-        formatValidationIssue({
-          ...branchIssue,
-          path: [...issue.path, ...branchIssue.path],
-        }),
-      );
-    }
-  }
-  return [issue];
 }
