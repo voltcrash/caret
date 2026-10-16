@@ -1,6 +1,7 @@
 import {
   createWorkerd,
   enableConfiguration,
+  seedLeaderboard,
   seedProfile,
   seedSession,
 } from "../__tests__/start/workerd";
@@ -46,6 +47,7 @@ async function main(): Promise<void> {
   // Public pages the browser suite exercises.
   await enableConfiguration(mf, "a", "$.users.profiles", { enabled: true });
   await seedProfile(mf, "a", "fixture-profile");
+  await seedLeaderboard(mf, "a", 60);
   console.log(`Start fixture ready: ${await mf.ready}`);
   for (const signal of ["SIGINT", "SIGTERM"] as const) {
     process.once(signal, () => {

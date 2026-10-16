@@ -1,5 +1,10 @@
 import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
-import { createWorkerd, enableConfiguration, seedProfile } from "./workerd";
+import {
+  createWorkerd,
+  enableConfiguration,
+  seedLeaderboard,
+  seedProfile,
+} from "./workerd";
 
 const origin = "http://localhost:3000";
 
@@ -9,6 +14,7 @@ describe("native public routes in workerd", () => {
     mf = await createWorkerd();
     await enableConfiguration(mf, "a", "$.users.profiles", { enabled: true });
     await seedProfile(mf, "a", "ssr-profile");
+    await seedLeaderboard(mf, "a", 60);
   });
   afterAll(async () => await mf?.dispose());
 
@@ -48,5 +54,26 @@ describe("native public routes in workerd", () => {
     const html = await response.text();
     expect(html).toContain("Profile Search | Oxytype");
     expect(html).toContain("Profile lookup");
+  });
+
+  it("server-renders the requested leaderboard page from validated search", async () => {
+    const worker = await mf.getWorker("a");
+    const first = await worker.fetch(`${origin}/leaderboards`);
+    expect(first.status).toBe(200);
+    const html = await first.text();
+    expect(html).toContain("Leaderboards | Oxytype");
+    expect(html).toContain("All-time english time 15 leaderboard");
+    expect(html).toContain("racer-1<");
+    expect(html).not.toContain("racer-51<");
+    const second = await worker.fetch(
+      `${origin}/leaderboards?type=allTime&mode2=15&page=2`,
+    );
+    const page2 = await second.text();
+    expect(page2).toContain("racer-51<");
+    expect(page2).not.toContain("racer-1<");
+    // Invalid search is ignored like the old page URL parser.
+    const invalid = await worker.fetch(`${origin}/leaderboards?type=hourly`);
+    expect(invalid.status).toBe(200);
+    expect(await invalid.text()).toContain("racer-1<");
   });
 });

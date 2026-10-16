@@ -1,6 +1,7 @@
 import type { Client } from "@oxytype/schemas/shared";
 import type { UserProfile } from "@oxytype/schemas/users";
 import { queryOptions } from "@tanstack/solid-query";
+import { isServer } from "solid-js/web";
 import { getProfile } from "../functions/profile";
 
 /** The service's 404 message, preserved across SSR calls and RPC. */
@@ -17,6 +18,8 @@ export const profileOptions = (
     queryFn: async ({ signal }) =>
       await getProfile({ data: { uidOrName, client }, signal }),
     staleTime: 3_600_000,
-    retry: (failures, error) => !isUserNotFound(error) && failures < 3,
+    // SSR answers once; the browser retries transient failures.
+    retry: (failures, error) =>
+      !isServer && !isUserNotFound(error) && failures < 3,
     meta: { ssrSafe: true },
   });

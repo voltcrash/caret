@@ -222,3 +222,56 @@ export async function enableConfiguration(
     .bind(path, JSON.stringify(value))
     .run();
 }
+
+/** All-time English time 15 board with `count` ranked entries. */
+export async function seedLeaderboard(
+  mf: Miniflare,
+  worker: string,
+  count: number,
+): Promise<void> {
+  const db = await mf.getD1Database("DB", worker);
+  const board = "english_time_15";
+  await db
+    .prepare(
+      "INSERT INTO leaderboard_generations(board,generation,updated_at) VALUES(?,'fixture',1)",
+    )
+    .bind(board)
+    .run();
+  await db.batch(
+    Array.from({ length: count }, (_, i) =>
+      db
+        .prepare(
+          "INSERT INTO users(uid,id,name,name_key,email,added_at,data) VALUES(?,?,?,?,?,0,'{}')",
+        )
+        .bind(
+          `racer-${i + 1}`,
+          `racer-${i + 1}`.padStart(24, "0"),
+          `racer-${i + 1}`,
+          `racer-${i + 1}`,
+          `racer-${i + 1}@example.test`,
+        ),
+    ),
+  );
+  await db.batch(
+    Array.from({ length: count }, (_, i) =>
+      db
+        .prepare(
+          "INSERT INTO leaderboard_snapshots(generation,board,uid,rank,data) VALUES('fixture',?,?,?,?)",
+        )
+        .bind(
+          board,
+          `racer-${i + 1}`,
+          i + 1,
+          JSON.stringify({
+            wpm: 200 - i,
+            acc: 99,
+            raw: 205 - i,
+            consistency: 80,
+            timestamp: 1_700_000_000_000,
+            uid: `racer-${i + 1}`,
+            name: `racer-${i + 1}`,
+          }),
+        ),
+    ),
+  );
+}
