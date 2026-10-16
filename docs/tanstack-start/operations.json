@@ -1856,7 +1856,10 @@
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/queries/account.ts"],
+    "browserCallers": [
+      "frontend/src/ts/auth-client.ts",
+      "frontend/src/ts/queries/account.ts"
+    ],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
