@@ -11,6 +11,8 @@ import {
   vi,
 } from "vite-plus/test";
 
+import { mockHttpFixture } from "../../__harness__/operations";
+
 const mocks = vi.hoisted(() => ({
   result: null as CompletedEvent | null,
   add: vi.fn(),
@@ -111,3 +113,5 @@ describe("signed-out result saving", () => {
     expect(mocks.hide).toHaveBeenCalledWith("LastSignedOutResult");
   });
 });
+
+mockHttpFixture("results.add", async (input) => await mocks.add(input));

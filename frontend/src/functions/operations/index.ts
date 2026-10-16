@@ -41,6 +41,7 @@ export const webOperations = {
   "quotes.isSubmissionEnabled": quotesFns.quotesIsSubmissionEnabled,
   "quotes.rejectSubmission": quotesFns.quotesRejectSubmission,
   "quotes.report": quotesFns.quotesReport,
+  "results.add": resultsFns.resultsAdd,
   "results.get": resultsFns.resultsGet,
   "results.getById": resultsFns.resultsGetById,
   "results.updateTags": resultsFns.resultsUpdateTags,

@@ -1,7 +1,9 @@
 import { captureAccount, createAccountOwned } from "../../../app/account-scope";
 import { appObject } from "../../../app/state";
 import { captureTypingRoute } from "../scope";
-import Ape from "../../../ts/ape";
+import { operation } from "../../../data/operations";
+import type { OperationResponse } from "../../../data/operation-types";
+import type { OperationResult } from "../../../data/operation-result";
 
 import {
   showNoticeNotification,
@@ -66,7 +68,7 @@ export async function retrySavingResult(): Promise<void> {
 export async function saveResult(
   completedEvent: CompletedEvent,
   isRetrying: boolean,
-): Promise<null | Awaited<ReturnType<typeof Ape.results.add>>> {
+): Promise<null | OperationResult<OperationResponse<"results.add">>> {
   const account = captureAccount();
   const presentation = captureTypingRoute();
   if (!getMutableConfig().resultSaving) {
@@ -92,13 +94,19 @@ export async function saveResult(
 
   setAccountButtonSpinner(true);
 
-  const response = await Ape.results.add({ body: { result } });
+  let response: OperationResult<OperationResponse<"results.add">>;
+  try {
+    response = await operation("results.add", { body: { result } });
+  } catch (error) {
+    if (!account.isCurrent()) return null;
+    throw error;
+  }
   const Result = await import("./result");
   if (!account.isCurrent()) return response;
 
   setAccountButtonSpinner(false);
 
-  if (response.status !== 200) {
+  if (!response.ok) {
     //only allow retry if status is not in this list
     if (![460, 461, 463, 464, 465, 466].includes(response.status)) {
       retrySavingState.canRetry = true;
@@ -108,21 +116,19 @@ export async function saveResult(
       }
     }
     console.log("Error saving result", result);
-    if (response.body.message === "Old key data format") {
-      response.body.message =
+    if (response.message === "Old key data format") {
+      response.message =
         "Old key data format. Please refresh the page to download the new update. If the problem persists, please contact support.";
     }
-    if (
-      /"result\..+" is (not allowed|required)/gi.test(response.body.message)
-    ) {
-      response.body.message =
+    if (/"result\..+" is (not allowed|required)/gi.test(response.message)) {
+      response.message =
         "Looks like your result data is using an incorrect schema. Please refresh the page to download the new update. If the problem persists, please contact support.";
     }
-    showErrorNotification("Failed to save result", { response });
+    showErrorNotification("Failed to save result", { operation: response });
     return response;
   }
 
-  const data = response.body.data;
+  const data = response.data;
   if (presentation.isCurrent()) Result.updateSavedResultId(data.insertedId);
 
   const localDataToSave: DB.SaveLocalResultData = {};

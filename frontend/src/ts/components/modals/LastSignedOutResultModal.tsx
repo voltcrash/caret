@@ -4,7 +4,7 @@ import { createMemo, JSX } from "solid-js";
 
 import type { SavedResult } from "../../constants/default-snapshot";
 
-import Ape from "../../ape";
+import { operation } from "../../../data/operations";
 import { getAuthenticatedUser } from "../../auth-client";
 import { getConfig } from "../../config/store";
 import { saveLocalResult, SaveLocalResultData } from "../../db";
@@ -158,34 +158,36 @@ async function syncLastSignedOutResult(): Promise<void> {
   }
 
   const updatedResult = updateUidAndHash(user.uid, lastResult);
-  const response = await Ape.results.add({ body: { result: updatedResult } });
+  const response = await operation("results.add", {
+    body: { result: updatedResult },
+  });
 
-  if (response.status !== 200) {
+  if (!response.ok) {
     showErrorNotification(`Failed to save last result`, {
-      response,
+      operation: response,
     });
     hideModal(modalId);
     return;
   }
 
   const result: SavedResult = Object.assign(structuredClone(updatedResult), {
-    _id: response.body.data.insertedId,
+    _id: response.data.insertedId,
   });
 
   const dataToSave: SaveLocalResultData = {
-    xp: response.body.data.xp,
-    streak: response.body.data.streak,
+    xp: response.data.xp,
+    streak: response.data.streak,
     result,
-    isPb: response.body.data.isPb,
+    isPb: response.data.isPb,
   };
 
-  if (response.body.data.isPb) {
+  if (response.data.isPb) {
     result.isPb = true;
   }
   saveLocalResult(dataToSave);
   setLastSignedOutResult(null);
   showSuccessNotification(
-    `Last test result saved ${response.body.data.isPb ? `(new pb!)` : ""}`,
+    `Last test result saved ${response.data.isPb ? `(new pb!)` : ""}`,
   );
   hideModal(modalId);
 }

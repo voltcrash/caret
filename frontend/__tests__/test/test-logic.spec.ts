@@ -1,3 +1,4 @@
+import { mockHttpFixture } from "../__harness__/operations";
 import { animateAsync } from "../../src/ts/anim";
 import { requireApplication } from "../../src/app/application";
 import { bindTypingActivity } from "../../src/features/typing/scope";
@@ -522,3 +523,5 @@ it("never applies a pending save acknowledgement to another actor", async () => 
   expect(mocks.saveLocal).not.toHaveBeenCalled();
   requireApplication().accountData.setActor(null);
 });
+
+mockHttpFixture("results.add", async (input) => await mocks.addResult(input));
