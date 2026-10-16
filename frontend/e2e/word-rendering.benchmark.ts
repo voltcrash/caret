@@ -1,11 +1,12 @@
 import { writeFile } from "node:fs/promises";
 import { expect, openTest, test } from "./fixtures";
 
-test("render 1,000 words with browser layout", async ({ page }) => {
+test("render 1,000 words with browser layout", async ({ page }, info) => {
   await openTest(page);
-  const measurements = await page.evaluate(async () => {
-    const renderingUrl = "/features/typing/components/words/rendering.ts";
-    const wordsUrl = "/features/typing/runtime/test-words.ts";
+  const prefix = info.project.name === "start-rendering" ? "/src" : "";
+  const measurements = await page.evaluate(async (prefix) => {
+    const renderingUrl = `${prefix}/features/typing/components/words/rendering.ts`;
+    const wordsUrl = `${prefix}/features/typing/runtime/test-words.ts`;
     const { showWords, updateWordLetters } = (await import(
       /* @vite-ignore */ renderingUrl
     )) as typeof import("../src/features/typing/components/words/rendering");
@@ -80,7 +81,7 @@ test("render 1,000 words with browser layout", async ({ page }) => {
       typing: summarize(typing),
       raw: { dom, layout, typing },
     };
-  });
+  }, prefix);
   await expect(page.locator("#words .word")).toHaveCount(1_000);
   await expect(page.locator("#words letter")).toHaveCount(12_000);
   const output = process.env["WORD_RENDERING_BENCHMARK_OUTPUT"];

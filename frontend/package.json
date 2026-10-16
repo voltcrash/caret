@@ -26,6 +26,7 @@
     "import-tree": "tsx ./scripts/import-tree.ts",
     "generate-icon-types": "tsx scripts/generate-fontawesome-types.ts",
     "benchmark-word-rendering": "playwright test --config playwright.benchmark.config.ts",
+    "benchmark-word-rendering:start": "playwright test --config playwright.start-benchmark.config.ts",
     "benchmark-migration": "playwright test --config playwright.migration.config.ts",
     "benchmark-migration:start": "playwright test --config playwright.start-migration.config.ts",
     "migration-performance": "tsx scripts/migration-performance.ts",
