@@ -1,20 +1,14 @@
-import { builtinModules } from "node:module";
-
 import { envConfig } from "./vite-plugins/env-config";
 import { languageHashes } from "./vite-plugins/language-hashes";
 import { getClientVersion } from "./vite-plugins/client-version";
-import {
-  defineConfig,
-  esmExternalRequirePlugin,
-  loadEnv,
-  perEnvironmentPlugin,
-} from "vite-plus";
+import { defineConfig, loadEnv } from "vite-plus";
 import { cloudflare } from "@cloudflare/vite-plugin";
 import { tanstackStart } from "@tanstack/solid-start/plugin/vite";
 import solid from "vite-plugin-solid";
 import tailwindcss from "@tailwindcss/vite";
 import { frontendLint } from "./lint.config";
 import { fontStyles } from "./vite-plugins/font-styles";
+import { workerNodeBuiltins } from "./vite-plugins/worker-node-builtins";
 import { ssrSafeLegacyFiles } from "./vite-plugins/import-boundaries";
 
 export default defineConfig(({ mode }) => {
@@ -45,15 +39,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     plugins: [
-      // Install on the environment's plugin pipeline, including framework builds.
-      // workerd has ESM Node built-ins, never a runtime CommonJS require.
-      perEnvironmentPlugin("oxytype:worker-require", (environment) =>
-        environment.name === "ssr"
-          ? esmExternalRequirePlugin({
-              external: [...builtinModules, /^node:/],
-            })
-          : false,
-      ),
+      workerNodeBuiltins(),
       envConfig({
         isDevelopment: mode !== "production",
         clientVersion: getClientVersion(mode !== "production"),
