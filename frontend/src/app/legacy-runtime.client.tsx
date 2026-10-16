@@ -1,6 +1,7 @@
 import { createEffect, onCleanup, onMount } from "solid-js";
 import { type JSXElement } from "solid-js";
 
+import { TypingRuntime } from "../features/typing/runtime.client";
 import { buildEventLog } from "../features/typing/runtime/events/data";
 import * as Focus from "../features/typing/runtime/focus";
 import * as TestTimer from "../features/typing/runtime/test-timer";
@@ -18,7 +19,6 @@ import * as Logger from "../ts/utils/logger";
 import { addToGlobal } from "../ts/utils/misc";
 import BrowserRuntime from "./platform-runtime.client";
 import { authReadiness } from "./readiness";
-import { TypingRuntime } from "./typing-runtime.client";
 
 /** Rollback-only page/account wiring. Retires with Stages 3–5. */
 export function LegacyRuntime(): JSXElement {
