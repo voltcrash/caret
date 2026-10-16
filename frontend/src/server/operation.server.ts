@@ -4,123 +4,68 @@ import {
   setResponseStatus,
 } from "@tanstack/solid-start/server";
 import {
-  COMPATIBILITY_CHECK,
-  COMPATIBILITY_CHECK_HEADER,
-} from "@oxytype/contracts";
-import {
-  getOperation,
-  type OperationId,
-} from "@oxytype/backend/policies/operations";
-import { authenticate } from "@oxytype/backend/policies/authentication";
-import { verifyConfiguration } from "@oxytype/backend/policies/configuration";
-import { verifyPermissions } from "@oxytype/backend/policies/permission";
-import {
-  enforceLimit,
-  enforceOperationLimit,
-  checkBadAuthentication,
-  recordBadAuthentication,
-} from "@oxytype/backend/policies/rate-limit";
-import { getCachedConfiguration } from "@oxytype/backend/configuration";
-import {
-  GUEST,
-  type ServiceContext,
-  type OperationInput,
-} from "@oxytype/backend/services/context";
-import MonkeyError from "@oxytype/backend/errors";
-import { addLog } from "@oxytype/backend/audit";
-import { checkZodSchema } from "@ts-rest/core";
+  admit,
+  assertAvailable,
+  describeFailure,
+  execute,
+  type Invocation,
+  type OperationData,
+  type PolicyScope,
+  type RawOperationInput,
+} from "@oxytype/backend/policies/operation-runner";
+import type { OperationId } from "@oxytype/backend/policies/operations";
+import type { OperationResult } from "../data/operation-result";
 import type { ServiceContext as RequestContext } from "./context.server";
 
-/** Identical policy/service path for SSR and direct RPC. No loopback HTTP. */
-export async function runOperation<Q, B, P, R>(
+function invocation(request: RequestContext): Invocation {
+  return {
+    runtime: request.runtime,
+    requestId: request.requestId,
+    background: request.background,
+    headers: request.request.headers,
+    clientIp: request.clientIp,
+    setHeader: setResponseHeader,
+  };
+}
+
+/**
+ * One operation through the shared policy runner and its registered service.
+ * Identical for SSR and direct RPC; no loopback HTTP. Responses are validated
+ * against the contract, so only declared DTO fields leave the server.
+ */
+export async function callOperation<K extends OperationId>(
   request: RequestContext,
-  id: OperationId,
-  input: OperationInput<Q, B, P>,
-  service: (
-    context: ServiceContext,
-    input: OperationInput<Q, B, P>,
-  ) => Promise<R>,
-): Promise<R> {
-  const operation = getOperation(id);
-  let context: ServiceContext | undefined;
-  setResponseHeader(COMPATIBILITY_CHECK_HEADER, String(COMPATIBILITY_CHECK));
+  id: K,
+  input: RawOperationInput,
+): Promise<OperationResult<OperationData<K>>> {
+  const call = invocation(request);
+  let scope: PolicyScope | undefined;
   try {
-    context = {
-      actor: { ...GUEST },
-      runtime: request.runtime,
-      requestId: request.requestId,
-      background: request.background,
-      configuration: await getCachedConfiguration(true),
-      client: {
-        ip: request.clientIp,
-        userAgent: request.request.headers.get("user-agent") ?? undefined,
-      },
-    };
-    await checkBadAuthentication(context);
-    await enforceLimit(
-      "root",
-      { window: "hour", max: 1000 },
-      context,
-      setResponseHeader,
-      false,
-    );
-    if (
-      (request.runtime.env.MAINTENANCE === "true" ||
-        context.configuration.maintenance) &&
-      !id.startsWith("configuration.")
-    ) {
-      throw new MonkeyError(503, "Server is down for maintenance");
-    }
-    context.actor = await authenticate({
-      headers: request.request.headers,
-      configuration: context.configuration,
-      options: operation.metadata.authenticationOptions,
-      endpoint: id,
+    scope = await admit(call);
+    assertAvailable(call, scope, id.startsWith("configuration."));
+    const outcome = await execute(call, scope, id, input, {
+      validateResponse: true,
     });
-    await enforceOperationLimit(operation.metadata, context, setResponseHeader);
-    verifyConfiguration(context.configuration, operation.metadata);
-    await verifyPermissions(context.actor, operation.metadata);
-    const query = checkZodSchema(input.query, operation.route.query);
-    const params = checkZodSchema(input.params, operation.route.pathParams);
-    const body = checkZodSchema(
-      input.body,
-      "body" in operation.route ? operation.route.body : null,
-    );
-    if (!query.success || !params.success || !body.success) {
-      throw new MonkeyError(422, "Invalid operation input");
+    if (!outcome.ok) {
+      if (request.rpc) setResponseStatus(outcome.status);
+      return outcome;
     }
-    const result = await service(context, {
-      query: query.data,
-      params: params.data,
-      body: body.data,
-    } as OperationInput<Q, B, P>);
-    const validated = checkZodSchema(result, operation.route.responses[200]);
-    if (!validated.success) {
-      throw new MonkeyError(500, "Invalid service response");
-    }
-    return validated.data as R;
+    return { ...outcome, status: 200 };
   } catch (error) {
-    const status = error instanceof MonkeyError ? error.status : 500;
-    if (context !== undefined) await recordBadAuthentication(context, status);
-    if (status >= 500 && status !== 503) {
-      request.background(
-        addLog(
-          "system_error",
-          `${status} ${request.requestId} ${String(error)}`,
-          context?.actor.uid ?? "",
-        ),
-      );
-      console.error("Operation failed", {
-        operation: id,
-        requestId: request.requestId,
-        error,
-      });
-    }
-    if (request.rpc) setResponseStatus(status);
-    throw new Error(
-      error instanceof MonkeyError
-        ? error.message
-        : `Internal Server Error ${request.requestId}`,
-    );
+    const failure = await describeFailure(error, call, scope, id);
+    // SSR calls share the document response; only a direct call owns a status.
+    if (request.rpc) setResponseStatus(failure.status);
+    return { ok: false, status: failure.status, message: failure.message };
   }
+}
+
+/** For loaders and pages whose query/route boundary handles a thrown error. */
+export async function runOperation<K extends OperationId>(
+  request: RequestContext,
+  id: K,
+  input: RawOperationInput,
+): Promise<OperationData<K>> {
+  const result = await callOperation(request, id, input);
+  if (!result.ok) throw new Error(result.message);
+  return result.data;
 }
