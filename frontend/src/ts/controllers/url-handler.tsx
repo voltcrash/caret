@@ -294,6 +294,14 @@ async function loadChallengeFromUrl(getOverride?: string): Promise<void> {
     });
 }
 
+/** Shared theme, test-settings and challenge links; raw search keeps legacy decoding. */
+export function applyUrlSettings(search: string): void {
+  loadCustomThemeFromUrl(search);
+  loadTestSettingsFromUrl(search);
+  void loadChallengeFromUrl(search);
+}
+
+/** Rollback: reapplies on every auth change. Start applies once from the typing route. */
 export function useUrlEvents(): void {
   authEvent.useListener(async (event) => {
     if (event.type === "authStateChanged") {
@@ -303,9 +311,7 @@ export function useUrlEvents(): void {
       await event.data.loadPromise;
       if (!lease.isCurrent()) return;
 
-      loadCustomThemeFromUrl(search);
-      loadTestSettingsFromUrl(search);
-      void loadChallengeFromUrl(search);
+      applyUrlSettings(search);
       void loadBrowserHandoff(search, event.data.isUserSignedIn);
     }
   });
