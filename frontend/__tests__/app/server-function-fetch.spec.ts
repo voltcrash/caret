@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
 import { staleClient } from "../../src/app/release";
-import { serverFunctionFetch } from "../../src/app/server-function-fetch";
+import { serverFunctionFetch } from "../../src/features/update/fetch.client";
 
 describe("server-function transport", () => {
   afterEach(() => {

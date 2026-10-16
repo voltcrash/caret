@@ -1,6 +1,7 @@
 import type { CustomFetch } from "@tanstack/solid-start";
 
-import { clientBuildId, reportStaleClient, staleClientHeader } from "./release";
+import { clientBuildId, reportStaleClient } from "../../app/release";
+import { staleClientHeader } from "./contract";
 
 /**
  * Browser transport for every server function: reports this tab's build for

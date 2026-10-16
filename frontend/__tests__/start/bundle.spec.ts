@@ -16,8 +16,8 @@ function read(dir: string, build = "start"): string {
 const serverMarkers = [
   "public_stats",
   "sqlite_master",
-  "withRuntime",
-  "consumeBatch",
+  "outbox",
+  "rate_counters",
 ];
 // Legacy bootstrap/page-lifecycle literals; Start must never mount them.
 const legacyMarkers = [
@@ -31,11 +31,15 @@ describe("built Start bundle boundaries", () => {
   const server = read("server");
 
   it("markers are meaningful in the server bundle", () => {
-    for (const marker of serverMarkers) expect(server).toContain(marker);
+    for (const marker of serverMarkers) {
+      expect(server.includes(marker), marker).toBe(true);
+    }
   });
 
   it("keeps application server code out of browser JS", () => {
-    for (const marker of serverMarkers) expect(client).not.toContain(marker);
+    for (const marker of serverMarkers) {
+      expect(client.includes(marker), marker).toBe(false);
+    }
   });
 
   it("never bundles the legacy bootstrap, page controller or page cache", () => {

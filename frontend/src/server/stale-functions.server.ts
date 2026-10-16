@@ -1,5 +1,5 @@
 import "@tanstack/solid-start/server-only";
-import { staleClientHeader } from "../app/release";
+import { staleClientHeader } from "../features/update/contract";
 
 // Start's resolver throws these for IDs absent from this build's manifest.
 const unknownFunction =

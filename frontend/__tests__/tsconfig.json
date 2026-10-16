@@ -9,11 +9,5 @@
     "types": ["node"]
   },
   "files": ["vitest.d.ts", "../src/ts/types/word-elements.d.ts"],
-  "include": [
-    "./__harness__/**/*.ts",
-    "./**/*.spec.ts",
-    "./**/*.spec.tsx",
-    "./**/*.jsdom-spec.ts",
-    "./setup-tests.ts"
-  ]
+  "include": ["./**/*.ts", "./**/*.tsx"]
 }

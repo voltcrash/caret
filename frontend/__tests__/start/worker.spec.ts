@@ -1,21 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
 import { createWorkerd, seedSession } from "./workerd";
-import { readdirSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
-
-function functionPath(): string {
-  const dir = resolve(import.meta.dirname, "../../dist/start/server/assets");
-  const file = readdirSync(dir).find((file) =>
-    file.includes("server-fn-resolver"),
-  );
-  if (file === undefined) throw new Error("Missing function manifest");
-  const id =
-    /"([a-f0-9]{64})":\s*\{\s*functionName:\s*"getTypingStats_createServerFn_handler"/.exec(
-      readFileSync(resolve(dir, file), "utf8"),
-    )?.[1];
-  if (id === undefined) throw new Error("Missing function ID");
-  return `/_serverFn/${id}`;
-}
+import { rpcPath } from "./rpc";
 
 describe("built Start application in workerd", () => {
   let mf: Awaited<ReturnType<typeof createWorkerd>>;
@@ -26,7 +11,7 @@ describe("built Start application in workerd", () => {
 
   it("executes real RPC with origin protection and stable rate limits", async () => {
     const worker = await mf.getWorker("a");
-    const url = `http://localhost:3000${functionPath()}`;
+    const url = `http://localhost:3000${rpcPath("getTypingStats")}`;
     const headers = {
       "x-tsr-serverFn": "true",
       origin: "http://localhost:3000",

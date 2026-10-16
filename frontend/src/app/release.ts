@@ -5,7 +5,7 @@ import { createAppSignal } from "./state";
 export const clientBuildId = import.meta.env.OXYTYPE_BUILD_ID;
 
 /** Response header marking a request this build's Worker cannot serve. */
-export const staleClientHeader = "X-Oxytype-Stale-Client";
+export { staleClientHeader } from "../features/update/contract";
 
 /**
  * Why this tab is out of date: a server function or code-split chunk from its

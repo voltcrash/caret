@@ -1,8 +1,17 @@
-import { describe, expect, it } from "vite-plus/test";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vite-plus/test";
 
 import { resolveBuildId, versionJson } from "../../vite-plugins/build-id";
 
 describe("build identity", () => {
+  beforeEach(() => vi.stubEnv("OXYTYPE_BUILD_ID", undefined));
+  afterEach(() => vi.unstubAllEnvs());
   it("uses the release-supplied build ID unchanged", () => {
     expect(resolveBuildId(false, " 26.10.16_0817_abc1234 ")).toBe(
       "26.10.16_0817_abc1234",

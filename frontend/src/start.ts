@@ -2,12 +2,13 @@ import {
   createStart,
   createCsrfMiddleware,
   createMiddleware,
+  createIsomorphicFn,
 } from "@tanstack/solid-start";
 import { ZodError } from "zod";
 import { setResponseStatus } from "@tanstack/solid-start/server";
 import { createServiceContext } from "./server/context.server";
 import { staleFunctionResponse } from "./server/stale-functions.server";
-import { serverFunctionFetch } from "./app/server-function-fetch";
+import { serverFunctionFetch } from "./features/update/fetch.client";
 
 const services = createMiddleware().server(
   async ({ request, handlerType, next }) =>
@@ -59,5 +60,7 @@ export const startInstance = createStart(() => ({
     }),
     staleFunctions,
   ],
-  serverFns: { fetch: serverFunctionFetch },
+  serverFns: {
+    fetch: createIsomorphicFn().client(serverFunctionFetch).server(fetch),
+  },
 }));
