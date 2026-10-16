@@ -15,6 +15,7 @@ import {
   waitForResultScreen,
 } from "../../../../ts/states/result";
 import { isTestActive } from "../../../../ts/states/test";
+import { captureTypingRoute } from "../../scope";
 
 const Result = lazy(async () =>
   import("./Result").then((m) => ({ default: m.Result })),
@@ -23,7 +24,9 @@ const Result = lazy(async () =>
 export function LazyResult(): JSXElement {
   const [requested, setRequested] = createSignal(false);
   const prepare = async (): Promise<void> => {
+    const lease = captureTypingRoute();
     await Result.preload();
+    if (!lease.isCurrent()) return;
     setRequested(true);
     await waitForResultScreen();
   };

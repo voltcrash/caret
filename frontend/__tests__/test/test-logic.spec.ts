@@ -1,3 +1,5 @@
+import { animateAsync } from "../../src/ts/anim";
+import { requireApplication } from "../../src/app/application";
 import { bindTypingActivity } from "../../src/features/typing/scope";
 import { createRoot, onCleanup } from "solid-js";
 import type { QuoteWithTextSplit } from "@oxytype/typing-core/quotes";
@@ -480,4 +482,43 @@ describe("shared test decisions", () => {
     );
     expect(mocks.signedOut).not.toHaveBeenCalled();
   });
+});
+
+it("drops completion presentation after forced navigation during the fade", async () => {
+  let resolve!: () => void;
+  vi.mocked(animateAsync).mockImplementationOnce(
+    async () =>
+      new Promise<void>((done) => {
+        resolve = done;
+      }),
+  );
+  mocks.active = true;
+  const completion = finish();
+  mocks.transition = true;
+  resolve();
+  await completion;
+  expect(mocks.resultUpdate).not.toHaveBeenCalled();
+  expect(mocks.addResult).not.toHaveBeenCalled();
+});
+
+it("never applies a pending save acknowledgement to another actor", async () => {
+  let resolve!: (value: {
+    status: number;
+    body: { data: { insertedId: string } };
+  }) => void;
+  mocks.addResult.mockImplementationOnce(
+    async () =>
+      new Promise((done) => {
+        resolve = done;
+      }),
+  );
+  mocks.user = { uid: "user" };
+  mocks.active = true;
+  const completion = finish();
+  await vi.waitFor(() => expect(mocks.addResult).toHaveBeenCalledOnce());
+  requireApplication().accountData.setActor("other-actor");
+  resolve({ status: 200, body: { data: { insertedId: "old-actor-result" } } });
+  await completion;
+  expect(mocks.saveLocal).not.toHaveBeenCalled();
+  requireApplication().accountData.setActor(null);
 });

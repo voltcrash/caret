@@ -1,3 +1,4 @@
+import { captureTypingRoute } from "../../scope";
 import { Accessor, createEffect, onCleanup, onMount } from "solid-js";
 
 import { animateAsync } from "../../../../ts/anim";
@@ -15,12 +16,14 @@ export function useResultScreen(
 ): void {
   onMount(() => {
     const showScreen = async (duration: number): Promise<void> => {
+      const lease = captureTypingRoute();
       const result = element();
       if (result) {
         result.className = updateClassNames(result.className, "hidden", false);
         result.focus({ preventScroll: true });
       }
       await animateAsync(result, { opacity: [0, 1], duration });
+      if (!lease.isCurrent()) return;
       result?.scrollIntoView({
         block: result.offsetHeight < window.innerHeight ? "center" : "start",
       });

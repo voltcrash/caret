@@ -1,3 +1,6 @@
+import { captureAccount, createAccountOwned } from "../../../app/account-scope";
+import { appObject } from "../../../app/state";
+import { captureTypingRoute } from "../scope";
 import Ape from "../../../ts/ape";
 
 import {
@@ -21,7 +24,12 @@ import { SavedResult } from "../../../ts/constants/default-snapshot";
 import { setAccountButtonSpinner } from "../../../ts/states/header";
 import { getMutableConfig } from "../../../ts/config/store";
 
-const retrySavingState: RetrySaving = { completedEvent: null, canRetry: false };
+const retrySavingState = appObject(
+  createAccountOwned<RetrySaving>(() => ({
+    completedEvent: null,
+    canRetry: false,
+  })),
+);
 type RetrySaving = {
   completedEvent: CompletedEvent | null;
   canRetry: boolean;
@@ -59,6 +67,8 @@ export async function saveResult(
   completedEvent: CompletedEvent,
   isRetrying: boolean,
 ): Promise<null | Awaited<ReturnType<typeof Ape.results.add>>> {
+  const account = captureAccount();
+  const presentation = captureTypingRoute();
   if (!getMutableConfig().resultSaving) {
     showErrorNotification("Result not saved: disabled by user", {
       durationMs: 3000,
@@ -78,11 +88,13 @@ export async function saveResult(
   const unhashed: Omit<CompletedEvent, "hash"> & { hash?: string } = result;
   delete unhashed.hash;
   result.hash = await hashResult(result);
+  if (!account.isCurrent()) return null;
 
   setAccountButtonSpinner(true);
 
   const response = await Ape.results.add({ body: { result } });
   const Result = await import("./result");
+  if (!account.isCurrent()) return response;
 
   setAccountButtonSpinner(false);
 
@@ -90,7 +102,7 @@ export async function saveResult(
     //only allow retry if status is not in this list
     if (![460, 461, 463, 464, 465, 466].includes(response.status)) {
       retrySavingState.canRetry = true;
-      Result.updateRetrySaving(true);
+      if (presentation.isCurrent()) Result.updateRetrySaving(true);
       if (!isRetrying) {
         retrySavingState.completedEvent = result;
       }
@@ -111,13 +123,13 @@ export async function saveResult(
   }
 
   const data = response.body.data;
-  Result.updateSavedResultId(data.insertedId);
+  if (presentation.isCurrent()) Result.updateSavedResultId(data.insertedId);
 
   const localDataToSave: DB.SaveLocalResultData = {};
 
   if (data.xp !== undefined) {
     localDataToSave.xp = data.xp;
-    if (getResultVisible()) {
+    if (presentation.isCurrent() && getResultVisible()) {
       localDataToSave.xpBreakdown = data.xpBreakdown;
     }
   }
@@ -149,19 +161,20 @@ export async function saveResult(
       getFunbox(result.funbox),
     );
 
-    if (localPb !== undefined) {
+    if (presentation.isCurrent() && localPb !== undefined) {
       void Result.showConfetti();
     }
-    Result.showCrown("normal");
+    if (presentation.isCurrent()) Result.showCrown("normal");
 
     localDataToSave.isPb = true;
-  } else {
+  } else if (presentation.isCurrent()) {
     Result.showErrorCrownIfNeeded();
   }
 
-  Result.updateDailyLeaderboardRank(data.dailyLeaderboardRank);
-
-  Result.updateRetrySaving(false);
+  if (presentation.isCurrent()) {
+    Result.updateDailyLeaderboardRank(data.dailyLeaderboardRank);
+    Result.updateRetrySaving(false);
+  }
   if (isRetrying) {
     showSuccessNotification("Result saved", { important: true });
   }

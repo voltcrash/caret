@@ -1,3 +1,4 @@
+import { captureTypingRoute } from "../scope";
 import { animateAsync } from "../../../ts/anim";
 import { updateClassNames } from "../../../ts/utils/cn";
 
@@ -108,7 +109,8 @@ function getCompletedEventCustomText(): CompletedEventCustomText | undefined {
 }
 
 export async function finish(difficultyFailed = false): Promise<void> {
-  if (!isTestActive()) return;
+  const lease = captureTypingRoute();
+  if (!isTestActive() || !lease.isCurrent()) return;
   setResultCalculating(true);
   const now = performance.now();
   TestTimer.clear();
@@ -122,10 +124,12 @@ export async function finish(difficultyFailed = false): Promise<void> {
     opacity: 0,
     duration: Misc.applyReducedMotion(125),
   });
+  if (!lease.isCurrent()) return;
   const typingTest = getTypingTestElement();
   typingTest.className = updateClassNames(typingTest.className, "hidden", true);
   setResultLoading(true);
   await Misc.sleep(0); //allow ui update
+  if (!lease.isCurrent()) return;
 
   TestUI.onTestFinish();
 
@@ -140,6 +144,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
 
   cleanupData();
   const [Result] = await resultReady;
+  if (!lease.isCurrent()) return;
 
   if (isDevEnvironment()) {
     logEventsDataToTheConsoleTable();
@@ -151,6 +156,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
         .getActiveTags()
         .map((tag) => tag._id)
     : [];
+  if (!lease.isCurrent()) return;
   const ce = getTestSession().complete(eventLog, {
     config: getMutableConfig(),
     currentQuote: getCurrentQuote(),
@@ -291,6 +297,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
 
       if (!completedEvent.bailedOut) {
         const challenge = await ChallengeContoller.verify(completedEvent);
+        if (!lease.isCurrent()) return;
         if (challenge !== null) completedEvent.challenge = challenge;
       }
 

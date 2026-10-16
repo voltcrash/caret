@@ -1,3 +1,4 @@
+import { captureTypingRoute } from "../../scope";
 import { result } from "./context";
 import { getMutableConfig } from "../../../../ts/config/store";
 import * as DB from "../../../../ts/db";
@@ -24,7 +25,9 @@ export async function updateCrown(dontSave: boolean): Promise<void> {
     return;
   }
 
+  const lease = captureTypingRoute();
   const canGetPb = await resultCanGetPb();
+  if (!lease.isCurrent()) return;
 
   console.debug("Result can get PB:", canGetPb.value, canGetPb.reason ?? "");
 

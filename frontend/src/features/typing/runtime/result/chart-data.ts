@@ -1,3 +1,4 @@
+import { captureTypingRoute } from "../../scope";
 import { applyFakeChartData } from "./fake-chart";
 import { result, resultAnnotation } from "./context";
 import { getMutableConfig } from "../../../../ts/config/store";
@@ -43,7 +44,9 @@ export function toggleUserFakeChartData(): void {
 }
 
 export async function updateChartData(): Promise<void> {
+  const lease = captureTypingRoute();
   const { Chart } = await import("chart.js");
+  if (!lease.isCurrent()) return;
   const eventLog = getLastEventLog();
   if (result.chartData === "toolong" || eventLog === null) {
     getResultChartDataset("wpm").data = [];

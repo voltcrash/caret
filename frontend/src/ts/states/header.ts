@@ -1,4 +1,4 @@
-import { createAccountSignal, createAppSignal } from "../../app/state";
+import { createAccountSignal } from "../../app/state";
 
 import { createEvent } from "../hooks/createEvent";
 import { XpBreakdown } from "@oxytype/schemas/results";
@@ -11,7 +11,7 @@ export type XpBarData = {
 
 export const [getAnimatedLevel, setAnimatedLevel] = createAccountSignal(0);
 export const [getAccountButtonSpinner, setAccountButtonSpinner] =
-  createAppSignal(false);
+  createAccountSignal(false);
 export const [getXpBarData, setXpBarData] =
   createAccountSignal<XpBarData | null>(null);
 

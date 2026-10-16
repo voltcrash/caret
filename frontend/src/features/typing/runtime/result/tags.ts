@@ -1,3 +1,4 @@
+import { captureTypingRoute } from "../../scope";
 import { resultCanGetPb } from "./crown";
 import { result, resultAnnotation } from "./context";
 import { getMutableConfig } from "../../../../ts/config/store";
@@ -24,7 +25,9 @@ export function updateSavedResultId(resultId: string): void {
 }
 
 export async function updateTags(dontSave: boolean): Promise<void> {
+  const lease = captureTypingRoute();
   const { Chart } = await import("chart.js");
+  if (!lease.isCurrent()) return;
   const activeTags: TagItem[] = getActiveTags();
   const userTagsCount = getTags().length;
   const items: ResultTag[] = [];

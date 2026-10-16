@@ -1,3 +1,4 @@
+import { captureTypingRoute } from "../../scope";
 import { result, resultAnnotation } from "./context";
 import { getMutableConfig } from "../../../../ts/config/store";
 import * as DB from "../../../../ts/db";
@@ -7,7 +8,9 @@ import { getFunbox } from "@oxytype/funbox";
 import { getTheme } from "../../../../ts/states/theme";
 
 export async function updateChartPBLine(): Promise<void> {
+  const lease = captureTypingRoute();
   const { Chart } = await import("chart.js");
+  if (!lease.isCurrent()) return;
   const themecolors = getTheme();
   const localPb = DB.getLocalPB(
     result.mode,

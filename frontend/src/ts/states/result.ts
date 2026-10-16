@@ -1,4 +1,5 @@
-import { createAppOwned } from "../../app/application";
+import { onCleanup } from "solid-js";
+import { createTypingOwned } from "../../features/typing/scope";
 import { createAppStore, createAppSignal } from "../../app/state";
 import type { CartesianScaleOptions, Chart, ChartDataset } from "chart.js";
 
@@ -289,12 +290,21 @@ export function getResultWrapperElement(): HTMLDivElement | undefined {
   return state.resultWrapperElement;
 }
 
-const resultRefs = createAppOwned(() => ({
-  resultChart: undefined as ResultChartType | undefined,
-  chartLoader: undefined as (() => Promise<void>) | undefined,
-  chartWaiters: new Set<() => void>(),
-  resultElement: undefined as HTMLDivElement | undefined,
-  resultWrapperElement: undefined as HTMLDivElement | undefined,
-  screenLoader: undefined as (() => Promise<void>) | undefined,
-  screenWaiters: new Set<() => void>(),
-}));
+const resultRefs = createTypingOwned(() => {
+  const state = {
+    resultChart: undefined as ResultChartType | undefined,
+    chartLoader: undefined as (() => Promise<void>) | undefined,
+    chartWaiters: new Set<() => void>(),
+    resultElement: undefined as HTMLDivElement | undefined,
+    resultWrapperElement: undefined as HTMLDivElement | undefined,
+    screenLoader: undefined as (() => Promise<void>) | undefined,
+    screenWaiters: new Set<() => void>(),
+  };
+  onCleanup(() => {
+    for (const resolve of state.chartWaiters) resolve();
+    for (const resolve of state.screenWaiters) resolve();
+    state.chartWaiters.clear();
+    state.screenWaiters.clear();
+  });
+  return state;
+});

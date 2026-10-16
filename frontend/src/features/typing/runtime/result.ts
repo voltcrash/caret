@@ -1,3 +1,4 @@
+import { captureTypingRoute } from "../scope";
 import { updateTags } from "./result/tags";
 export { updateSavedResultId, updateTagsAfterEdit } from "./result/tags";
 import { updateResultChartDataVisibility } from "./result/chart-visibility";
@@ -98,6 +99,8 @@ export async function update(
   randomQuote: Quote | null,
   dontSave: boolean,
 ): Promise<void> {
+  const lease = captureTypingRoute();
+  if (!lease.isCurrent()) return;
   resetResultAnnotations();
   setCurrentResult(structuredClone(res));
   hideCrown();
@@ -138,15 +141,20 @@ export async function update(
   );
   updateQuoteFavorite(randomQuote);
   await updateCrown(dontSave);
+  if (!lease.isCurrent()) return;
   // Establish pending save UI before loading the chart. A fast acknowledgement
   // must not be overwritten by late result initialization.
   await prepareResultChart();
+  if (!lease.isCurrent()) return;
   await updateChartData();
+  if (!lease.isCurrent()) return;
   updateResultChartDataVisibility();
   updateMinMaxChartValues();
   await updateChartPBLine();
+  if (!lease.isCurrent()) return;
   applyMinMaxChartValues();
   await updateTags(dontSave);
+  if (!lease.isCurrent()) return;
 
   ((getResultChart().options as PluginChartOptions<"line" | "scatter">).plugins
     .annotation.annotations as AnnotationOptions<"line">[]) = resultAnnotation;
@@ -219,6 +227,7 @@ export async function update(
 
   setResultLoading(false);
   await showResultScreen(Misc.applyReducedMotion(125));
+  if (!lease.isCurrent()) return;
 
   setResultCalculating(false);
   clearWords();

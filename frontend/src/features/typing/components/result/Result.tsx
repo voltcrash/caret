@@ -21,6 +21,7 @@ import {
 } from "../../../../ts/states/result";
 import { isTestActive } from "../../../../ts/states/test";
 import { subscribeResultConfigChanges } from "../../runtime/result/chart-config";
+import { captureTypingRoute } from "../../scope";
 import { ResultButtons } from "./ResultButtons";
 import { ResultLoginTip } from "./ResultLoginTip";
 import { ResultReplay } from "./ResultReplay";
@@ -40,7 +41,9 @@ export function Result(): JSXElement {
   let wrapperEl: HTMLDivElement | undefined;
   const [chartRequested, setChartRequested] = createSignal(false);
   const prepareChart = async (): Promise<void> => {
+    const lease = captureTypingRoute();
     await ResultChart.preload();
+    if (!lease.isCurrent()) return;
     setChartRequested(true);
     await waitForResultChart();
   };
