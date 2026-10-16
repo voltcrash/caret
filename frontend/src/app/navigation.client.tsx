@@ -22,7 +22,11 @@ export function navigationHref(url: string): string {
  */
 export function RouterNavigation(): null {
   const router = useRouter();
-  useBlocker({ shouldBlockFn: () => !canNavigate() });
+  useBlocker({
+    shouldBlockFn: () => !canNavigate(),
+    // Router defaults to confirming every document exit while mounted.
+    enableBeforeUnload: () => !canNavigate(),
+  });
   onCleanup(
     bindNavigation({
       navigate: async (url, options) => {

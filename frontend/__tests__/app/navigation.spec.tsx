@@ -2,6 +2,7 @@ import { cleanup, fireEvent, render, waitFor } from "@solidjs/testing-library";
 import {
   type AnyRoute,
   type AnyRouter,
+  createBrowserHistory,
   createMemoryHistory,
   createRootRoute,
   createRoute,
@@ -48,7 +49,11 @@ import { Button } from "../../src/ts/components/common/Button";
 import { Link } from "../../src/ts/components/common/Link";
 import { navigate, replaceUrl } from "../../src/ts/navigation/navigation";
 
-function mount(path = "/"): ReturnType<typeof render> & {
+function mount(
+  path = "/",
+  aboutLoader?: () => Promise<void>,
+  suppliedHistory?: ReturnType<typeof createMemoryHistory>,
+): ReturnType<typeof render> & {
   router: AnyRouter;
   history: ReturnType<typeof createMemoryHistory>;
 } {
@@ -70,8 +75,13 @@ function mount(path = "/"): ReturnType<typeof render> & {
     },
   });
   const page = (route: string): AnyRoute =>
-    createRoute({ getParentRoute: () => root, path: route });
-  const history = createMemoryHistory({ initialEntries: [path] });
+    createRoute({
+      getParentRoute: () => root,
+      path: route,
+      loader: route === "/about" ? aboutLoader : undefined,
+    });
+  const history =
+    suppliedHistory ?? createMemoryHistory({ initialEntries: [path] });
   const router = createRouter({
     routeTree: root.addChildren([
       page("/"),
@@ -162,6 +172,63 @@ describe("Router-owned navigation", () => {
     expect(router.state.location.href).toBe("/leaderboards?page=2");
     history.back();
     await waitFor(() => expect(router.state.location.pathname).toBe("/about"));
+  });
+
+  it("blocks browser history traversal during no_quit, then restores back/forward", async () => {
+    // Memory history deliberately skips POP blockers in this pinned version.
+    window.history.replaceState(null, "", "/settings");
+    const history = createBrowserHistory();
+    try {
+      const { findByRole, router } = mount("/settings", undefined, history);
+      await findByRole("status");
+      await navigate("/about");
+      state.active = state.noQuit = true;
+      history.back();
+      await waitFor(() => expect(state.notice).toHaveBeenCalled());
+      expect(router.state.location.pathname).toBe("/about");
+      state.active = false;
+      history.back();
+      await waitFor(() =>
+        expect(router.state.location.pathname).toBe("/settings"),
+      );
+      history.forward();
+      await waitFor(() =>
+        expect(router.state.location.pathname).toBe("/about"),
+      );
+    } finally {
+      cleanup();
+      history.destroy();
+    }
+  });
+
+  it("settles rapid imperative navigation at the latest target without waiting for an abandoned loader", async () => {
+    let release!: () => void;
+    const pending = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    const loader = vi.fn(async () => await pending);
+    const { findByRole, router } = mount("/", loader);
+    await findByRole("status");
+    const first = navigate("/about");
+    await waitFor(() => expect(loader).toHaveBeenCalled());
+    const last = navigate("/settings");
+    await Promise.all([first, last]);
+    expect(router.state.location.pathname).toBe("/settings");
+    release();
+    await pending;
+    expect(router.state.location.pathname).toBe("/settings");
+  });
+
+  it("only confirms document exit when the test guard blocks navigation", async () => {
+    const { findByRole } = mount();
+    await findByRole("status");
+    const allowed = new Event("beforeunload", { cancelable: true });
+    window.dispatchEvent(allowed);
+    expect(allowed.defaultPrevented).toBe(false);
+    state.active = state.noQuit = true;
+    const blocked = new Event("beforeunload", { cancelable: true });
+    window.dispatchEvent(blocked);
+    expect(blocked.defaultPrevented).toBe(true);
   });
 
   it("normalizes imperative URLs and rejects other origins", () => {
