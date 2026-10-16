@@ -27,7 +27,7 @@ export type AccountData = Snapshot &
 
 const firstDayOfTheWeek = getFirstDayOfTheWeek();
 
-export function toAccountData(userData: UserData): AccountData {
+function toAccountData(userData: UserData): AccountData {
   const personalBests: PersonalBests = userData.personalBests ?? {
     time: {},
     words: {},

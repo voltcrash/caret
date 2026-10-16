@@ -82,15 +82,6 @@ export function appStore<T extends object>(
   return ownedStore(createAppOwned(create), array);
 }
 
-export function createAccountStore<T extends object>(
-  initial: T,
-): [T, SetStoreFunction<T>] {
-  return ownedStore(
-    createAccountOwned(() => createStore(copyInitial(initial))),
-    Array.isArray(initial),
-  );
-}
-
 function ownedStore<T extends object>(
   store: () => [T, SetStoreFunction<T>],
   array: boolean,
