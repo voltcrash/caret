@@ -1,6 +1,7 @@
 import { ParentProps, Show } from "solid-js";
 
-import { PageName } from "../../pages/page";
+import type { PageName } from "../../pages/page";
+
 import { getActivePage, isAuthenticated } from "../../states/core";
 
 export function Page(

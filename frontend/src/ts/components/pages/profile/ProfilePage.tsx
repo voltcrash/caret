@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/solid-query";
 import { JSXElement, Show } from "solid-js";
 
+import type { PageName } from "../../../pages/page";
+
 import { useClientSelection } from "../../../hooks/useClientSelection";
-import { PageName } from "../../../pages/page";
 import { getUserProfile } from "../../../queries/profile";
 import { getActivePage, getSelectedProfileName } from "../../../states/core";
 import AsyncContent from "../../common/AsyncContent";

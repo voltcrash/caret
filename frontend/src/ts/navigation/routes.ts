@@ -1,6 +1,6 @@
 import { RouteDefinition } from "@solidjs/router";
 
-import { PageName } from "../pages/page";
+import type { PageName } from "../pages/page";
 
 export type AppRouteInfo = {
   page: PageName;

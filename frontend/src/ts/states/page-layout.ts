@@ -1,6 +1,6 @@
 import { createAppSignal } from "../../app/state";
 
-import { PageName } from "../pages/page";
+import type { PageName } from "../pages/page";
 
 // long pages with a sticky sidebar. the header stays in place and only the
 // page content scrolls, in its own scroll container, so overscroll (rubber

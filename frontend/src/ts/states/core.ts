@@ -1,7 +1,7 @@
 import { requireApplication, createAppMemo } from "../../app/application";
 import { createAppSignal } from "../../app/state";
 import { CommandlineSubgroupKey } from "../commandline/types";
-import { PageName } from "../pages/page";
+import type { PageName } from "../pages/page";
 import { showModal } from "./modals";
 import { Formatting } from "../utils/format";
 import { getConfig } from "../config/store";

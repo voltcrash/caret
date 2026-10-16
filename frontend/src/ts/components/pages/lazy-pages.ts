@@ -1,5 +1,5 @@
 import { lazy } from "solid-js";
-import { PageName } from "../../pages/page";
+import type { PageName } from "../../pages/page";
 
 export const lazyPages = {
   about: lazy(async () =>

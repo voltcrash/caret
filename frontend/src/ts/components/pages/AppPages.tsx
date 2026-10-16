@@ -2,10 +2,11 @@ import { typedKeys } from "@oxytype/util/objects";
 import { animate } from "animejs";
 import { createSignal, For, JSXElement, onCleanup, Show } from "solid-js";
 
+import type { PageName } from "../../pages/page";
+
 import { TestPage } from "../../../features/typing/components/TestPage";
 import { bindTypingActivity } from "../../../features/typing/scope";
 import { createEffectOn } from "../../hooks/effects";
-import { PageName } from "../../pages/page";
 import { getActivePage } from "../../states/core";
 import {
   get as isPageTransitioning,

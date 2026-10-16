@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/solid-query";
 import { createEffect, createSignal, JSXElement, Show } from "solid-js";
 
+import type { PageName } from "../../../pages/page";
+
 import { getSnapshot, updateLbMemory } from "../../../db";
 import { createEffectOn } from "../../../hooks/effects";
-import { PageName } from "../../../pages/page";
 import { getQueryClient } from "../../../queries";
 import {
   getAccountQueryOptions,

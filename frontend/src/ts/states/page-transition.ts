@@ -1,6 +1,6 @@
 import { createAppSignal } from "../../app/state";
 
-import { PageName } from "../pages/page";
+import type { PageName } from "../pages/page";
 
 const [getTransition, setTransition] = createAppSignal(true);
 
