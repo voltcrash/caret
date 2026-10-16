@@ -112,15 +112,22 @@ it("requires another supported method before unlinking", async () => {
   expect(mocks.unlink).not.toHaveBeenCalled();
 });
 it("guards private routes and preserves local redirect search/hash", async () => {
-  expect(await requireSession("/device?user_code=ABC#confirm")).toEqual(user);
+  expect(await requireSession(client, "/device?user_code=ABC#confirm")).toEqual(
+    user,
+  );
+  // A cached signed-in session is rechecked, never trusted for a guard.
   state = { user: null, signUpEnabled: true };
   await expect(
-    requireSession("/device?user_code=ABC#confirm"),
+    requireSession(client, "/device?user_code=ABC#confirm"),
   ).rejects.toMatchObject({
     options: {
       to: "/login",
       search: { redirect: "/device?user_code=ABC#confirm" },
     },
+  });
+  state = { user: { ...user, registered: false }, signUpEnabled: true };
+  await expect(requireSession(client, "/account")).rejects.toMatchObject({
+    options: { to: "/login", search: { redirect: "/account" } },
   });
   for (const value of [
     "https://evil.test",
