@@ -143,6 +143,10 @@ export async function init(
 export function isAuthAvailable(): boolean {
   return authState().available;
 }
+/** Start's session owner reports availability; the rollback entry uses init. */
+export function setAuthAvailable(available: boolean): void {
+  authState().available = available;
+}
 export async function signOut(): Promise<void> {
   const state = authState();
   state.revision++;
