@@ -1,7 +1,7 @@
 # TanStack Start migration: architecture and execution plan
 
 Status: Stages 0–3 complete; [ledger and handoffs](tanstack-start/README.md).
-Stage 4 not started. Production still serves the legacy app (rollback build).
+Stage 4 implemented; exit validation in progress. Production still serves the legacy app (rollback build).
 Prepared: 2026-10-15. Scope: Oxytype web application and its server/runtime.
 
 ## Outcome
@@ -450,6 +450,8 @@ origin/rate/config failures. Login/logout and session changes update route and
 cache state without a global forced page reload pipeline.
 
 ## Stage 4 — Migrate routes and remove parallel page lifecycles
+
+Status: implemented; exit validation in progress. [Stage 4 ledger](tanstack-start/stage-4.md).
 
 ### 4.1 Migrate public pages
 
