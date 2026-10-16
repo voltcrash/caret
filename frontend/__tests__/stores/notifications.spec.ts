@@ -72,12 +72,13 @@ describe("notifications store", () => {
     });
 
     it("appends response body message", () => {
-      const response = {
+      const operation = {
+        ok: false,
         status: 400,
-        body: { message: "Bad request" },
-      } as AddNotificationOptions["response"];
+        message: "Bad request",
+      } as AddNotificationOptions["operation"];
 
-      addNotificationWithLevel("Request failed", "error", { response });
+      addNotificationWithLevel("Request failed", "error", { operation });
       expect(getNotifications()[0]?.message).toBe(
         "Request failed: Bad request",
       );

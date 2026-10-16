@@ -2,7 +2,7 @@ import { vi } from "vite-plus/test";
 import type { OperationResult } from "../../src/data/operation-result";
 import type { WebOperationId } from "../../src/data/operations";
 
-type Handler = (data: Record<string, unknown>) => unknown;
+type Handler = (data: Record<string, unknown>, signal: AbortSignal) => unknown;
 
 const handlers = new Map<string, Handler>();
 
@@ -19,8 +19,8 @@ export function mockOperation(id: WebOperationId, handler: Handler): void {
 
 /** Reuse historical HTTP fixture data while exercising the real function client. */
 export function mockHttpFixture(id: WebOperationId, handler: Handler): void {
-  mockOperation(id, async (input) => {
-    const response = (await handler(input)) as {
+  mockOperation(id, async (input, signal) => {
+    const response = (await handler(input, signal)) as {
       status: number;
       body: { data?: unknown; message?: string; validationErrors?: string[] };
     };
@@ -58,13 +58,16 @@ export const webOperations = new Proxy(
     get: (_target, id) =>
       typeof id !== "string"
         ? undefined
-        : async (options: { data: Record<string, unknown> }) => {
+        : async (options: {
+            data: Record<string, unknown>;
+            signal: AbortSignal;
+          }) => {
             operationCalls(id, options.data);
             const handler = handlers.get(id);
             if (handler === undefined) {
               return fail(500, `Unmocked operation ${id}`);
             }
-            return await handler(options.data);
+            return await handler(options.data, options.signal);
           },
   },
 );

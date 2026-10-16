@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "vite-plus/test";
+import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 import { requireApplication } from "../../src/app/application";
 import { operation, operationData } from "../../src/data/operations";
 import {
@@ -10,11 +10,32 @@ import {
 } from "../__harness__/operations";
 
 afterEach(() => {
+  vi.useRealTimers();
   resetOperations();
   requireApplication().accountData.setActor(null);
 });
 
 describe("web operation client", () => {
+  it("times out a submission once and leaves retry to the explicit save UI", async () => {
+    vi.useFakeTimers();
+    mockOperation(
+      "results.add",
+      async (_data, signal) =>
+        await new Promise((_resolve, reject) => {
+          signal.addEventListener("abort", () => reject(signal.reason), {
+            once: true,
+          });
+        }),
+    );
+    const pending = operation("results.add", { body: { result: {} as never } });
+    await vi.advanceTimersByTimeAsync(10_000);
+    expect(await pending).toMatchObject({
+      ok: false,
+      status: 500,
+      message: "request took too long to complete",
+    });
+    expect(operationCalls).toHaveBeenCalledOnce();
+  });
   it("sends JSON-equivalent input and resolves legacy failures as values", async () => {
     mockOperation("results.get", () => ok([{ _id: "r" }]));
     const timestamp = new Date(0);
