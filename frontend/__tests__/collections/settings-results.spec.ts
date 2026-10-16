@@ -201,3 +201,8 @@ it("normalizes inserted results and persists optimistic tag edits", async () => 
 });
 
 mockHttpFixture("results.get", async (input) => await get(input));
+
+mockHttpFixture(
+  "results.updateTags",
+  async (input) => await updateTagsApi(input),
+);

@@ -2,7 +2,7 @@ import { QuoteReportReason } from "@oxytype/schemas/quotes";
 import { createForm } from "@tanstack/solid-form";
 import { JSXElement, createSignal } from "solid-js";
 
-import Ape from "../../ape";
+import { operation } from "../../../data/operations";
 import { getMutableConfig } from "../../config/store";
 import QuotesController from "../../controllers/quotes-controller";
 import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
@@ -55,23 +55,23 @@ export function QuoteReportModal(): JSXElement {
       }
 
       showLoaderBar();
-      const response = await Ape.quotes
-        .report({
-          body: {
-            quoteId: id,
-            quoteLanguage,
-            reason: value.reason,
-            comment: value.comment,
-            captcha: value.captcha,
-          },
-        })
-        .finally(() => {
-          form.setFieldValue("captcha", "");
-          hideLoaderBar();
-        });
+      const response = await operation("quotes.report", {
+        body: {
+          quoteId: id,
+          quoteLanguage,
+          reason: value.reason,
+          comment: value.comment,
+          captcha: value.captcha,
+        },
+      }).finally(() => {
+        form.setFieldValue("captcha", "");
+        hideLoaderBar();
+      });
 
-      if (response.status !== 200) {
-        showErrorNotification("Failed to report quote", { response });
+      if (!response.ok) {
+        showErrorNotification("Failed to report quote", {
+          operation: response,
+        });
         return;
       }
 

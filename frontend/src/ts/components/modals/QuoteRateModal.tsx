@@ -1,8 +1,8 @@
 import { isSafeNumber } from "@oxytype/util/numbers";
 import { JSXElement, createSignal, For } from "solid-js";
 
+import { operation } from "../../../data/operations";
 import { updateQuoteRating } from "../../../features/typing/runtime/result";
-import Ape from "../../ape";
 import * as DB from "../../db";
 import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
 import { hideModalAndClearChain } from "../../states/modals";
@@ -64,13 +64,15 @@ export function QuoteRateModal(): JSXElement {
     hideModalAndClearChain("QuoteRate");
 
     showLoaderBar();
-    const response = await Ape.quotes.addRating({
+    const response = await operation("quotes.addRating", {
       body: { quoteId: quote.id, language: quote.language, rating: rating() },
     });
     hideLoaderBar();
 
-    if (response.status !== 200) {
-      showErrorNotification("Failed to submit quote rating", { response });
+    if (!response.ok) {
+      showErrorNotification("Failed to submit quote rating", {
+        operation: response,
+      });
       return;
     }
 

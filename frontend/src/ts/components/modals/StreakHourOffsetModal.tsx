@@ -1,7 +1,7 @@
 import { StreakHourOffsetSchema } from "@oxytype/schemas/users";
 import { createForm } from "@tanstack/solid-form";
 
-import Ape from "../../ape";
+import { operation } from "../../../data/operations";
 import { Snapshot } from "../../constants/default-snapshot";
 import { getSnapshot, setSnapshot } from "../../db";
 import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
@@ -34,13 +34,15 @@ export function StreakHourOffsetModal() {
 
       showLoaderBar();
 
-      const response = await Ape.users.setStreakHourOffset({
+      const response = await operation("users.setStreakHourOffset", {
         body: { hourOffset },
       });
       hideLoaderBar();
 
-      if (response.status !== 200) {
-        showErrorNotification("Failed to set streak hour offset", { response });
+      if (!response.ok) {
+        showErrorNotification("Failed to set streak hour offset", {
+          operation: response,
+        });
         hideModal("StreakHourOffset");
         return;
       }

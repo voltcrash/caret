@@ -2,7 +2,6 @@ import { UserNameSchema } from "@oxytype/schemas/users";
 import { createForm } from "@tanstack/solid-form";
 
 import { operation } from "../../../data/operations";
-import Ape from "../../ape";
 import { loadUser, signOut } from "../../auth";
 import {
   updateProfile,
@@ -134,16 +133,18 @@ async function apply(options: {
   let closeModal = true;
   try {
     if (name.length === 0) throw new Error("Name cannot be empty");
-    const response = await Ape.users.create({ body: { name, captcha } });
+    const response = await operation("users.create", {
+      body: { name, captcha },
+    });
     if (response.status === 422) {
       closeModal = false;
       showErrorNotification("Verification failed. Please try again.", {
-        response,
+        operation: response,
       });
       return;
     }
-    if (response.status !== 200) {
-      throw new Error(`Failed to create user: ${response.body.message}`);
+    if (!response.ok) {
+      throw new Error(`Failed to create user: ${response.message}`);
     }
 
     setUserState(signedInUser.user);

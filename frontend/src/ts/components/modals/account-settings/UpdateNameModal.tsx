@@ -2,7 +2,6 @@ import { UserNameSchema } from "@oxytype/schemas/users";
 import { z } from "zod";
 
 import { operation } from "../../../../data/operations";
-import Ape from "../../../ape";
 import { reauthenticate } from "../../../auth";
 import { setSnapshot, getSnapshot } from "../../../db";
 import { isAuthenticated } from "../../../states/core";
@@ -46,20 +45,19 @@ export function showUpdateNameModal(): void {
         };
       }
 
-      const response = await Ape.users.updateName({
+      const response = await operation("users.updateName", {
         body: { name: newName },
       });
-      if (response.status !== 200) {
+      if (!response.ok) {
         return {
           status: "error",
           message: "Failed to update name",
-          notificationOptions: { response },
+          notificationOptions: { operation: response },
         };
       }
 
-      snapshot.name = newName;
-
-      setSnapshot(snapshot);
+      const current = getSnapshot();
+      if (current !== undefined) setSnapshot({ ...current, name: newName });
 
       return {
         status: "success",

@@ -4,7 +4,7 @@ import {
 } from "@oxytype/schemas/users";
 import { createForm } from "@tanstack/solid-form";
 
-import Ape from "../../ape";
+import { operation } from "../../../data/operations";
 import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
 import { hideModal } from "../../states/modals";
 import {
@@ -133,7 +133,7 @@ async function apply(options: {
   const { uid, reason, comment, captcha } = options;
 
   showLoaderBar();
-  const response = await Ape.users.report({
+  const response = await operation("users.report", {
     body: {
       uid,
       reason: reason as ReportUserReason,
@@ -143,8 +143,8 @@ async function apply(options: {
   });
   hideLoaderBar();
 
-  if (response.status !== 200) {
-    showErrorNotification("Failed to report user", { response });
+  if (!response.ok) {
+    showErrorNotification("Failed to report user", { operation: response });
     return;
   }
 

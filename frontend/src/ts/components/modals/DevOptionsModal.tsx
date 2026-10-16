@@ -6,7 +6,6 @@ import { operation } from "../../../data/operations";
 import { toggleCaretDebug } from "../../../features/typing/components/words/caret-controller";
 import { toggleUserFakeChartData } from "../../../features/typing/runtime/result";
 import { disableSlowTimerFail } from "../../../features/typing/runtime/test-timer";
-import Ape from "../../ape";
 import { refetchInboxCollection } from "../../collections/inbox";
 import { addXp } from "../../db";
 import { getInputElement } from "../../input/input-element";
@@ -149,18 +148,18 @@ export function DevOptionsModal(): JSXElement {
 
   const addDebugInboxItem = (rewardType: "xp" | "badge" | "none"): void => {
     hideModal("DevInboxPicker");
-    void Ape.dev
-      .addDebugInboxItem({ body: { rewardType } })
-      .then((response) => {
-        if (response.status !== 200) {
+    void operation("dev.addDebugInboxItem", { body: { rewardType } }).then(
+      (response) => {
+        if (!response.ok) {
           showErrorNotification("Failed to add inbox item", {
-            details: response.body,
+            details: response,
           });
           return;
         }
         showSuccessNotification("Debug inbox item added");
         void refetchInboxCollection();
-      });
+      },
+    );
   };
 
   return (
@@ -261,7 +260,7 @@ function showGenerateDataModal(): void {
       minTestsPerDay,
       maxTestsPerDay,
     }) => {
-      const result = await Ape.dev.generateData({
+      const result = await operation("dev.generateData", {
         body: {
           username,
           firstTestTimestamp: firstTestTimestamp?.getTime(),
@@ -272,8 +271,8 @@ function showGenerateDataModal(): void {
       });
 
       return {
-        status: result.status === 200 ? "success" : "error",
-        message: result.body.message,
+        status: result.ok ? "success" : "error",
+        message: result.message,
       };
     },
   });

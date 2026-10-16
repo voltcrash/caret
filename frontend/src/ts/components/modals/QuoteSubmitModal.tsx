@@ -3,7 +3,7 @@ import { QuoteTextSchema } from "@oxytype/schemas/quotes";
 import { createForm } from "@tanstack/solid-form";
 import { JSXElement } from "solid-js";
 
-import Ape from "../../ape";
+import { operation } from "../../../data/operations";
 import { getMutableConfig } from "../../config/store";
 import { LanguageGroupNames } from "../../constants/languages";
 import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
@@ -46,22 +46,22 @@ export function QuoteSubmitModal(): JSXElement {
     },
     onSubmit: async ({ value }) => {
       showLoaderBar();
-      const response = await Ape.quotes
-        .add({
-          body: {
-            text: value.text,
-            source: value.source,
-            language: value.language as Language,
-            captcha: value.captcha,
-          },
-        })
-        .finally(() => {
-          form.setFieldValue("captcha", "");
-          hideLoaderBar();
-        });
+      const response = await operation("quotes.add", {
+        body: {
+          text: value.text,
+          source: value.source,
+          language: value.language as Language,
+          captcha: value.captcha,
+        },
+      }).finally(() => {
+        form.setFieldValue("captcha", "");
+        hideLoaderBar();
+      });
 
-      if (response.status !== 200) {
-        showErrorNotification("Failed to submit quote", { response });
+      if (!response.ok) {
+        showErrorNotification("Failed to submit quote", {
+          operation: response,
+        });
         return;
       }
 

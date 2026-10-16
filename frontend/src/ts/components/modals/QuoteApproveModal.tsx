@@ -4,7 +4,6 @@ import { format } from "date-fns/format";
 import { JSXElement, createSignal, For, Show } from "solid-js";
 
 import { operation } from "../../../data/operations";
-import Ape from "../../ape";
 import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
 import {
   showErrorNotification,
@@ -40,18 +39,18 @@ function QuoteApproveItem(props: {
     setDisabled(true);
 
     showLoaderBar();
-    const response = await Ape.quotes.approveSubmission({
+    const response = await operation("quotes.approveSubmission", {
       body: { quoteId: props.quote._id },
     });
     hideLoaderBar();
 
-    if (response.status !== 200) {
+    if (!response.ok) {
       setDisabled(false);
-      showErrorNotification("Failed to approve quote", { response });
+      showErrorNotification("Failed to approve quote", { operation: response });
       return;
     }
 
-    showSuccessNotification(`Quote approved. ${response.body.message ?? ""}`);
+    showSuccessNotification(`Quote approved. ${response.message ?? ""}`);
     props.onRemove();
   };
 
@@ -60,14 +59,14 @@ function QuoteApproveItem(props: {
     setDisabled(true);
 
     showLoaderBar();
-    const response = await Ape.quotes.rejectSubmission({
+    const response = await operation("quotes.rejectSubmission", {
       body: { quoteId: props.quote._id },
     });
     hideLoaderBar();
 
-    if (response.status !== 200) {
+    if (!response.ok) {
       setDisabled(false);
-      showErrorNotification("Failed to refuse quote", { response });
+      showErrorNotification("Failed to refuse quote", { operation: response });
       return;
     }
 
@@ -80,7 +79,7 @@ function QuoteApproveItem(props: {
     setDisabled(true);
 
     showLoaderBar();
-    const response = await Ape.quotes.approveSubmission({
+    const response = await operation("quotes.approveSubmission", {
       body: {
         quoteId: props.quote._id,
         editText: form.state.values.text,
@@ -89,14 +88,14 @@ function QuoteApproveItem(props: {
     });
     hideLoaderBar();
 
-    if (response.status !== 200) {
+    if (!response.ok) {
       setDisabled(false);
-      showErrorNotification("Failed to approve quote", { response });
+      showErrorNotification("Failed to approve quote", { operation: response });
       return;
     }
 
     showSuccessNotification(
-      `Quote edited and approved. ${response.body.message ?? ""}`,
+      `Quote edited and approved. ${response.message ?? ""}`,
     );
     props.onRemove();
   };
