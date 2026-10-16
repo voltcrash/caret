@@ -6,14 +6,15 @@ rollback remains available. No TUI or Stage 6 transport migration.
 
 ## Prerequisites and responsibility map
 
-Stage 4 completed all phases and exit checks; native index is the remaining
+Stage 4 completed all phases and exit checks; its native index was the remaining
 placeholder. Stage 5 moves typing orchestration, input/rendering integration,
 route entry/exit and URL startup into `features/typing`. Start must never import
 AppPages, Page, page-controller or NavigationRuntime. Engine algorithms,
 telemetry, save transport and authentication policies stay unchanged.
 
 Phases run in order: 5.1 lifecycle → 5.2 integrations/URLs → 5.3 validation.
-Status: 5.1 complete; 5.2 complete; 5.3 in progress. Required checks pending.
+**Stage 5 complete: 5.1 → 5.2 → 5.3 and all required exit checks pass.**
+Stage 6 not started.
 
 ## 5.1 Session and lifecycle boundaries
 
@@ -51,7 +52,7 @@ web unit suites pass; Start build passes with the stricter protection.
 
 ## 5.2 Browser integrations and URL settings
 
-Status: complete; full exit validation pending in 5.3.
+Status: complete.
 
 - Native typing owns its input/composition/keymap, hotkeys/focus/scroll, word and
   caret refs, sound/TTS subscriptions, funboxes, challenges, result charts and
@@ -79,5 +80,115 @@ Status: complete; full exit validation pending in 5.3.
 
 Focused evidence: 20 feature/scope tests; 53 resource/funbox/pace tests; 153
 completion/result component tests pass. Native browser parity and all stage
-exit checks are rerun in 5.3. Performance fixtures now support built Start
+exit checks pass in 5.3. Performance fixtures now support built Start
 readiness and native Start renderer measurements without changing frozen budgets.
+
+## 5.3 Responsiveness and route behavior
+
+Status: complete. [Command/results evidence](evidence/stage-5-validation.json).
+All 20 local gate commands, formatting/whitespace and eight frozen browser
+metrics pass. [Linux CI](https://github.com/voltcrash/oxytype/actions/runs/38867745186)
+is green on implementation `9d3eb57bf`: frontend, Start/workerd/browser, rollback
+browser, format and knip. Backend/shared/assets pass locally; CI skips them and
+TUI by path filter. Evidence/handoff commits follow without product code changes.
+
+- Built Start browser suite: 59 pass (28 native route/auth/document checks,
+  including 9 typing lifecycle cases, plus all 31 existing browser checks under
+  Start). Covers words/quote/time, restart, command palette, modals, accessibility,
+  screenshots, funbox cleanup, no_quit, pending save, auth loss and deep links.
+- Focused tests cover disposal before preferences, application/remount isolation,
+  delayed speech/script responses, forced navigation during completion, and
+  cross-account acknowledgement suppression. Frontend: 234 files / 2,308 pass;
+  backend: 803 unit + 124 real-D1 pass; shared: 54 files / 636 pass; built
+  Start/workerd: 10 files / 50 pass.
+- Original budgets unchanged. `stage-5-browser-budgets.json` is an exact extraction
+  of eight original records for the Stage 5 browser gate; verified against
+  `budgets.json`. It is not a new freeze or wider threshold. Every metric passes
+  using the existing `migration-performance.ts check` command.
+- Built native readiness: two runs of 10 cold + 10 warm + 10 public-page samples, no throttling,
+  HTTP cache cold/warm and service workers bypassed. Native word rendering uses
+  the same 1,000-word/12,000-letter fixture, 10 warmups + 50 retained samples,
+  three sequential runs (150 samples); synchronous letter updates unchanged.
+
+| Metric | Median / p95 | Frozen maximum median / p95 |
+| --- | --- | --- |
+| Cold first correct input, ms | 368.0 / 448.9 | 788.1 / 1170.5 |
+| Warm first correct input, ms | 257.2 / 270.6 | 427.3 / 484.3 |
+| Public about content, ms | 151.5 / 178.1 | 365.53 / 383.83 |
+| 1,000-word render/layout, ms | 52.8 / 79.2 | 85.2 / 116.8 |
+| Letter update, ms | 0.011 / 0.012 | 0.012 / 0.014 |
+| Declared Start entry/preload JS, bytes | 382,366 raw / 128,635 gzip | 922,918 / 321,462 |
+
+Rollback eager JS is also within its original budget: 80 declared responses,
+916,624 raw / 321,106 gzip bytes. The Start staging Worker dry-run is
+4,178.51 KiB raw / 931.71 KiB gzip, essentially Stage 4's recorded intermediate
+4,178.04 / 931.66 KiB footprint.
+
+Entry bytes are five repeated reads/gzips of the built document's 33 declared
+entry/preload assets, matching Stage 0's definition. Lazy engine/chart chunks
+are excluded; this is not a claim about all bytes before typing. Correct-letter
+readiness measures the full observed startup. Worker CPU/D1/save benchmarks and
+final native Worker footprint remain the owning later-stage gates; Stage 3/4's
+recorded intermediate Worker-byte deviation is unchanged.
+
+## Validation fixes and decisions
+
+- Startup initially ran a config-triggered animated restart before entry's
+  instant restart. That could lose the first typed letter. Activate only after
+  local preferences; warm readiness falls from ~490 ms to ~256 ms. The benchmark
+  now explicitly waits for typing opacity 1, matching the existing `openTest`
+  helper and the baseline startup-cover behavior.
+- Moved source paths made the generated operation inventory stale. Regenerated
+  caller paths for the same 82 operations; policies, services and endpoints unchanged.
+- Knip found one unused account-readiness accessor; kept it module-private.
+- The expanded browser suite exceeded the real 60/minute session limiter when
+  every test shared one edge IP. Failure traces showed HTTP 429. Fixtures now
+  give each context a deterministic reserved test IP; all policies remain enabled.
+- The rollback build clears the parent `dist` directory, including Start output.
+  A dry-run attempted after it found no Wrangler file; rebuilt Start and reran
+  normal/staging dry-runs successfully. This is the known coexistence build
+  ordering, not an application regression.
+- No pre-existing required test failure was observed. Existing non-fatal Vitest
+  plugin/deprecation, Node module-type/NO_COLOR and fixture warnings remain.
+  The existing quote-submit handoff depends on QuoteSearch's nested form;
+  unchanged here. End-to-end handoff validation uses quote-report (opens once,
+  never auto-submits), retaining pending behavior through login.
+- Installed Solid 1.9.15, Router 1.170.41 and Start 1.169.2 source/types verified for
+  lazy preloading, client-only imports, ownership cleanup and Router blockers.
+  References: [Solid lazy preloading](https://docs.solidjs.com/solid-router/advanced-concepts/preloading),
+  [Start environment functions](https://tanstack.com/start/latest/docs/framework/solid/guide/environment-functions),
+  [Router blockers](https://tanstack.com/router/latest/docs/guide/navigation-blocking).
+
+## Remaining adapters and next stage
+
+| Adapter | Retirement condition |
+| --- | --- |
+| Rollback AppPages/Page/controller/NavigationRuntime; typing activity/transition binding and `pages/test.ts` command calls | Production rollback only; delete with old entry in Stage 8. Start cannot import this graph |
+| Rollback `useUrlEvents` auth subscription and prepared-page challenge reveal | Old build only; native URL startup uses route/readiness. Remove with rollback in Stage 8 |
+| App/account snapshot, Ape reads/mutations/result submission, browser handoff profile lookup and `/api/$` Hono handler | Stage 6 replaces callers with functions/shared services and ports retained external protocols; preserve result acknowledgement/deduplication policies |
+| Deployment ownership, old service worker/PWA and legacy static delivery | Stages 7–8; no cutover performed |
+
+Stage 6 can proceed from this PR after the stack lands: migrate remaining data,
+ordinary mutations and finally submission, then retire web transport glue.
+Retain the same result payload/hash, D1 transactions, auth/config/rate policy,
+local acknowledgement behavior and real Worker/D1 save gate. No Stage 6 work
+started here; no typing-core algorithm, TUI, backend service or static-warning
+source change.
+
+Reproduce browser performance with the commands below. Run sequentially on an
+idle machine; never overlap builds (the rollback build clears `frontend/dist`).
+The native renderer uses Start offline development to expose the same instrumented
+renderer modules; readiness uses the built/minified Worker, as in the baseline.
+
+```sh
+vp -C frontend run build:start
+vp exec env MIGRATION_BASELINE_OUTPUT=/tmp/readiness.json vp -C frontend run benchmark-migration:start
+vp exec env WORD_RENDERING_BENCHMARK_OUTPUT=/tmp/words-1.json vp -C frontend run benchmark-word-rendering:start
+# Repeat with words-2.json and words-3.json; concatenate all retained samples.
+vp -C frontend exec tsx scripts/measure-start-eager-js.ts /tmp/start-eager.json
+vp -C frontend exec tsx scripts/migration-performance.ts check ../docs/tanstack-start/evidence/stage-5-browser-budgets.json ../docs/tanstack-start/evidence/stage-5-browser-measurements.json
+```
+
+The checked-in sample comparison is reproducible from the versioned evidence;
+candidate runs must replace the measurement arrays, never budget thresholds.
+Production delivery and offline shell acceptance remain Stages 7–8.
