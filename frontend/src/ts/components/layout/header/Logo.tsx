@@ -1,13 +1,14 @@
 import { JSXElement } from "solid-js";
 
+import { useTypingRoute } from "../../../../components/typing-route-host";
 import { restartTestEvent } from "../../../events/test";
-import { getActivePage } from "../../../states/core";
 import { getFocus } from "../../../states/test";
 import { cn } from "../../../utils/cn";
 import { isDevEnvironment } from "../../../utils/env";
 import { Link } from "../../common/Link";
 
 export function Logo(): JSXElement {
+  const typing = useTypingRoute();
   return (
     <Link
       href="/"
@@ -19,7 +20,7 @@ export function Logo(): JSXElement {
       }}
       data-ui-element="logo"
       onClick={() => {
-        if (getActivePage() === "test") restartTestEvent.dispatch();
+        if (typing()) restartTestEvent.dispatch();
       }}
     >
       <svg

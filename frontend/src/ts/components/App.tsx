@@ -1,6 +1,7 @@
 import { JSXElement, Show } from "solid-js";
 import { Portal } from "solid-js/web";
 
+import { TypingRouteHost } from "../../components/typing-route-host";
 import { getConfig } from "../config/store";
 import { getActivePage } from "../states/core";
 import { hasFixedHeader } from "../states/page-layout";
@@ -29,7 +30,7 @@ import { Popups } from "./popups/Popups";
 
 export function App(props: AppElements): JSXElement {
   return (
-    <>
+    <TypingRouteHost.Provider value={() => getActivePage() === "test"}>
       <Portal mount={props.body}>
         <PageHead />
         <AppEffects {...props} />
@@ -74,6 +75,6 @@ export function App(props: AppElements): JSXElement {
           </Show>
         </PageScroller>
       </Show>
-    </>
+    </TypingRouteHost.Provider>
   );
 }

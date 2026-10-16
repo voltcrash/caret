@@ -220,15 +220,21 @@ describe("Router-owned navigation", () => {
   });
 
   it("only confirms document exit when the test guard blocks navigation", async () => {
-    const { findByRole } = mount();
-    await findByRole("status");
-    const allowed = new Event("beforeunload", { cancelable: true });
-    window.dispatchEvent(allowed);
-    expect(allowed.defaultPrevented).toBe(false);
-    state.active = state.noQuit = true;
-    const blocked = new Event("beforeunload", { cancelable: true });
-    window.dispatchEvent(blocked);
-    expect(blocked.defaultPrevented).toBe(true);
+    const history = createBrowserHistory();
+    try {
+      const { findByRole } = mount("/", undefined, history);
+      await findByRole("status");
+      const allowed = new Event("beforeunload", { cancelable: true });
+      window.dispatchEvent(allowed);
+      expect(allowed.defaultPrevented).toBe(false);
+      state.active = state.noQuit = true;
+      const blocked = new Event("beforeunload", { cancelable: true });
+      window.dispatchEvent(blocked);
+      expect(blocked.defaultPrevented).toBe(true);
+    } finally {
+      cleanup();
+      history.destroy();
+    }
   });
 
   it("normalizes imperative URLs and rejects other origins", () => {

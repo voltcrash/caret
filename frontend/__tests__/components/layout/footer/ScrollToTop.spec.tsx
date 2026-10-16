@@ -1,15 +1,16 @@
 import { render } from "@solidjs/testing-library";
 import { userEvent } from "@testing-library/user-event";
+import { createSignal } from "solid-js";
 import { describe, it, expect, vi, beforeEach } from "vite-plus/test";
 
+import { TypingRouteHost } from "../../../../src/components/typing-route-host";
 import { ScrollToTop } from "../../../../src/ts/components/layout/footer/ScrollToTop";
-import * as CoreSignals from "../../../../src/ts/states/core";
 import { setPageScroller } from "../../../../src/ts/states/page-layout";
 
 describe("ScrollToTop", () => {
-  const getActivePageMock = vi.spyOn(CoreSignals, "getActivePage");
+  const [typing, setTyping] = createSignal(false);
   beforeEach(() => {
-    getActivePageMock.mockClear().mockReturnValue("account");
+    setTyping(false);
     Object.defineProperty(window, "scrollY", { value: 0, writable: true });
   });
 
@@ -17,7 +18,11 @@ describe("ScrollToTop", () => {
     container: HTMLElement;
     button: HTMLButtonElement;
   } {
-    const { container } = render(() => <ScrollToTop />);
+    const { container } = render(() => (
+      <TypingRouteHost.Provider value={typing}>
+        <ScrollToTop />
+      </TypingRouteHost.Provider>
+    ));
 
     const wrapper = container.firstElementChild;
     const button = container.querySelector("button");
@@ -49,14 +54,14 @@ describe("ScrollToTop", () => {
   });
 
   it("stays invisible on test page at scroll 0", () => {
-    getActivePageMock.mockReturnValue("test");
+    setTyping(true);
     const { button } = renderElement();
 
     expect(button).toHaveClass("opacity-0");
   });
 
   it("stays invisible on test page even with scroll > 100", () => {
-    getActivePageMock.mockReturnValue("test");
+    setTyping(true);
     const { button } = renderElement();
     scrollTo(150);
 
@@ -89,7 +94,11 @@ describe("ScrollToTop", () => {
 
   it("cleans up scroll listener on unmount", () => {
     const removeEventListenerSpy = vi.spyOn(window, "removeEventListener");
-    const { unmount } = render(() => <ScrollToTop />);
+    const { unmount } = render(() => (
+      <TypingRouteHost.Provider value={typing}>
+        <ScrollToTop />
+      </TypingRouteHost.Provider>
+    ));
 
     unmount();
 

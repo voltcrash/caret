@@ -9,11 +9,11 @@ import {
   Show,
 } from "solid-js";
 
+import { useTypingRoute } from "../../../../components/typing-route-host";
 import { restartTestEvent } from "../../../events/test";
 import { createEffectOn } from "../../../hooks/effects";
 import { useRef } from "../../../hooks/useRef";
 import { getServerConfigurationQueryOptions } from "../../../queries/server-configuration";
-import { getActivePage } from "../../../states/core";
 import {
   getAccountButtonSpinner,
   getAnimatedLevel,
@@ -40,6 +40,7 @@ const AccountXpBar = lazy(async () =>
 );
 
 export function Nav(): JSXElement {
+  const typing = useTypingRoute();
   const [getAccountMenuOpen, setAccountMenuOpen] = createSignal(false);
   const [accountMenuRef, accountMenuEl] = useRef<HTMLDivElement>();
 
@@ -101,7 +102,7 @@ export function Nav(): JSXElement {
           "aria-label": "Test",
         }}
         onClick={() => {
-          if (getActivePage() === "test") restartTestEvent.dispatch();
+          if (typing()) restartTestEvent.dispatch();
         }}
       />
       <Button
