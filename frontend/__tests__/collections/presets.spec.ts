@@ -1,3 +1,4 @@
+import { mockHttpFixture } from "../__harness__/operations";
 import { createEffect, createRoot, untrack } from "solid-js";
 import { expect, it, vi } from "vite-plus/test";
 
@@ -59,3 +60,5 @@ it("tracks deletions in reactive scopes but not untracked reads", async () => {
   expect(untrackedRuns).toBe(1);
   dispose();
 });
+
+mockHttpFixture("presets.get", async (input) => await get(input));

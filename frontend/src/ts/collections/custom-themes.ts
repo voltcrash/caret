@@ -1,3 +1,4 @@
+import { operation } from "../../data/operations";
 import { CustomTheme } from "@oxytype/schemas/users";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import {
@@ -38,14 +39,12 @@ const customThemesCollection = defineCollection(import.meta.hot, () =>
       enabled: isAuthenticated,
       getKey: (it) => it._id,
       queryFn: async () => {
-        const response = await Ape.users.getCustomThemes();
+        const response = await operation("users.getCustomThemes");
 
-        if (response.status !== 200) {
-          throw new Error(
-            `Error fetching custom themes: ${response.body.message}`,
-          );
+        if (!response.ok) {
+          throw new Error(`Error fetching custom themes: ${response.message}`);
         }
-        return response.body.data.map(applyIdWorkaround);
+        return response.data.map(applyIdWorkaround);
       },
     }),
   ),

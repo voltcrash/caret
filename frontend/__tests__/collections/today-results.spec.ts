@@ -1,3 +1,4 @@
+import { mockHttpFixture } from "../__harness__/operations";
 import { expect, it, vi } from "vite-plus/test";
 import type { ResultMinified } from "@oxytype/schemas/results";
 
@@ -78,3 +79,5 @@ it("sums today's typing time from collection results", async () => {
   // midnight: 15, today: 15 + 8 - 5
   expect(TodayTracker.getString()).toBe("00:00:33 today");
 });
+
+mockHttpFixture("results.get", async (input) => await get(input));

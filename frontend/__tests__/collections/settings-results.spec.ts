@@ -1,3 +1,4 @@
+import { mockHttpFixture } from "../__harness__/operations";
 import { expect, it, vi } from "vite-plus/test";
 import type { FunboxName } from "@oxytype/schemas/configs";
 import type { ResultMinified } from "@oxytype/schemas/results";
@@ -198,3 +199,5 @@ it("normalizes inserted results and persists optimistic tag edits", async () => 
     (await selected())?.find((item) => item._id === "local")?.tags,
   ).toEqual(["c"]);
 });
+
+mockHttpFixture("results.get", async (input) => await get(input));

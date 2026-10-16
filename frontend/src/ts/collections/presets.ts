@@ -1,3 +1,4 @@
+import { operation } from "../../data/operations";
 import { Preset } from "@oxytype/schemas/presets";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import {
@@ -39,13 +40,13 @@ const presetsCollection = defineCollection(import.meta.hot, () =>
       enabled: isAuthenticated,
       getKey: (it) => it._id,
       queryFn: async () => {
-        const response = await Ape.presets.get();
+        const response = await operation("presets.get");
 
-        if (response.status !== 200) {
-          throw new Error(`Error fetching presets:${response.body.message}`);
+        if (!response.ok) {
+          throw new Error(`Error fetching presets:${response.message}`);
         }
 
-        return response.body.data
+        return response.data
           .map((it) => ({
             ...it,
             name: replaceUnderscoresWithSpaces(it.name),

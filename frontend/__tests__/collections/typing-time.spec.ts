@@ -1,3 +1,4 @@
+import { mockHttpFixture } from "../__harness__/operations";
 import { expect, it, vi } from "vite-plus/test";
 import type { ResultMinified } from "@oxytype/schemas/results";
 
@@ -104,3 +105,5 @@ it.each(cases)(
     expect(rows?.find((row) => row._id === name)?.timeTyping).toBe(expected);
   },
 );
+
+mockHttpFixture("results.get", async (input) => await get(input));

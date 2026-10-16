@@ -17,6 +17,23 @@ export function mockOperation(id: WebOperationId, handler: Handler): void {
   handlers.set(id, handler);
 }
 
+/** Reuse historical HTTP fixture data while exercising the real function client. */
+export function mockHttpFixture(id: WebOperationId, handler: Handler): void {
+  mockOperation(id, async (input) => {
+    const response = (await handler(input)) as {
+      status: number;
+      body: { data?: unknown; message?: string; validationErrors?: string[] };
+    };
+    return response.status === 200
+      ? ok(response.body.data, response.body.message)
+      : fail(
+          response.status,
+          response.body.message ?? "",
+          response.body.validationErrors,
+        );
+  });
+}
+
 export function resetOperations(): void {
   handlers.clear();
   operationCalls.mockClear();

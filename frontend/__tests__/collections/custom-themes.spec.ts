@@ -1,3 +1,4 @@
+import { mockHttpFixture } from "../__harness__/operations";
 import { createEffect, createRoot } from "solid-js";
 import { expect, it, vi } from "vite-plus/test";
 
@@ -48,3 +49,8 @@ it("reads custom themes sorted by name and tracks changes", async () => {
   expect(getCustomTheme("1")).toBeUndefined();
   dispose();
 });
+
+mockHttpFixture(
+  "users.getCustomThemes",
+  async (input) => await fetchThemes(input),
+);

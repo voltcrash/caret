@@ -1,10 +1,10 @@
+import { operation } from "../../../data/operations";
 import { queryKeys } from "./keys";
 import { normalizeResult } from "./normalize";
 import { Client, Mode } from "@oxytype/schemas/shared";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import { BTreeIndex, createCollection } from "@tanstack/solid-db";
 import { bindResultsReady } from "../../states/results-ready";
-import Ape from "../../ape";
 import { SnapshotResult } from "../../constants/default-snapshot";
 import { getQueryClient } from "../../queries";
 import { isAuthenticated } from "../../states/core";
@@ -27,15 +27,15 @@ function createResultsCollection(client: Client) {
         const knownTagIds = new Set([...tagIds.map((it) => it._id)]);
         //const options = parseLoadSubsetOptions(ctx.meta?.loadSubsetOptions);
 
-        const response = await Ape.results.get({
+        const response = await operation("results.get", {
           query: { client },
         });
 
-        if (response.status !== 200) {
-          throw new Error(`Error fetching results:${response.body.message}`);
+        if (!response.ok) {
+          throw new Error(`Error fetching results:${response.message}`);
         }
 
-        const results = response.body.data
+        const results = response.data
           .map((result) => normalizeResult(result, knownTagIds))
           .map(applyIdWorkaround);
 

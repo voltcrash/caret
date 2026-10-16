@@ -1,3 +1,4 @@
+import { operation } from "../../data/operations";
 import { createAccountOwned } from "../../app/account-scope";
 import { createAccountSignal } from "../../app/state";
 import { onCleanup, Accessor } from "solid-js";
@@ -60,17 +61,15 @@ const inboxCollection = defineCollection(import.meta.hot, () =>
                 : "unread",
         });
 
-        const response = await Ape.users.getInbox();
-        if (response.status !== 200) {
+        const response = await operation("users.getInbox");
+        if (!response.ok) {
           showErrorNotification(
-            `Error fetching user inbox: ${response.body.message}`,
+            `Error fetching user inbox: ${response.message}`,
           );
-          throw new Error(
-            `Error fetching user inbox: ${response.body.message}`,
-          );
+          throw new Error(`Error fetching user inbox: ${response.message}`);
         }
-        setMaxMailboxSize(response.body.data.maxMail);
-        return response.body.data.inbox.map(addStatus);
+        setMaxMailboxSize(response.data.maxMail);
+        return response.data.inbox.map(addStatus);
       },
       queryClient: getQueryClient(),
       getKey: (it) => it.id,

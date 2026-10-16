@@ -1,3 +1,4 @@
+import { mockHttpFixture } from "../__harness__/operations";
 import { ResultMinified } from "@oxytype/schemas/results";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
@@ -140,3 +141,5 @@ describe("account result partitions", () => {
     }
   });
 });
+
+mockHttpFixture("results.get", async (input) => await get(input));

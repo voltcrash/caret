@@ -1,3 +1,4 @@
+import { operation } from "../../../data/operations";
 import { resultsByClient } from "./store";
 import { queryKeys } from "./keys";
 import { ResultsQueryState } from "./types";
@@ -15,7 +16,6 @@ import {
 } from "@tanstack/solid-db";
 import { queryOptions } from "@tanstack/solid-query";
 import { Accessor } from "solid-js";
-import Ape from "../../ape";
 import { SnapshotResult } from "../../constants/default-snapshot";
 import { isAuthenticated } from "../../states/core";
 
@@ -127,12 +127,14 @@ export const getSingleResultQueryOptions = (_id: string) =>
   queryOptions({
     queryKey: queryKeys.fullResult(_id),
     queryFn: async () => {
-      const response = await Ape.results.getById({ params: { resultId: _id } });
+      const response = await operation("results.getById", {
+        params: { resultId: _id },
+      });
 
-      if (response.status !== 200) {
-        throw new Error(`Failed to load result: ${response.body.message}`);
+      if (!response.ok) {
+        throw new Error(`Failed to load result: ${response.message}`);
       }
-      return response.body.data;
+      return response.data;
     },
     staleTime: Infinity,
   });
