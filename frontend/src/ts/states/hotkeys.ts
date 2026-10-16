@@ -5,7 +5,7 @@ import { Hotkey } from "@tanstack/solid-hotkeys";
 
 import { getConfig } from "../config/store";
 import { wordsHaveNewline, wordsHaveTab, isLongTest } from "./test";
-import { getActivePage } from "./core";
+import { isTypingRouteActive } from "../../features/typing/scope";
 import { NoKey } from "../input/hotkeys/utils";
 import {
   DEFAULT_COMMAND_PALETTE_HOTKEY,
@@ -27,7 +27,7 @@ type Hotkeys = {
 export const hotkeys = appObject(createAppMemo(updateHotkeys));
 
 function updateHotkeys(): Hotkeys {
-  const isOnTestPage = getActivePage() === "test";
+  const isOnTestPage = isTypingRouteActive();
 
   const quickRestartIsTab = getConfig.quickRestart === "tab";
   const quickRestartIsEnter = getConfig.quickRestart === "enter";

@@ -3,7 +3,7 @@ import * as ConfigSchemas from "@oxytype/schemas/configs";
 import * as TestLogic from "../../../features/typing/runtime/test-logic";
 import { getMutableConfig } from "../../config/store";
 import { get as getTypingSpeedUnit } from "../../utils/typing-speed-units";
-import { getActivePage } from "../../states/core";
+import { isTypingRouteActive } from "../../../features/typing/scope";
 
 export const behaviorMetadata = {
   difficulty: {
@@ -101,7 +101,7 @@ export const behaviorMetadata = {
       inputValueConvert: (val) =>
         val.trim().split(" ") as ConfigSchemas.CustomPolyglot,
       afterExec: () => {
-        if (getActivePage() === "test") {
+        if (isTypingRouteActive()) {
           void TestLogic.restart();
         }
       },

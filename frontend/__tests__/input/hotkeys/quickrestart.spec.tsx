@@ -1,4 +1,5 @@
 import { cleanup, fireEvent, render } from "@solidjs/testing-library";
+import { createSignal } from "solid-js";
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 
 const mocks = vi.hoisted(() => ({
@@ -30,11 +31,6 @@ vi.mock("../../../src/ts/states/test", async () => {
     setWordsHaveNewline,
   };
 });
-vi.mock("../../../src/ts/states/core", async () => {
-  const { createSignal } = await import("solid-js");
-  const [getActivePage, setActivePage] = createSignal("test");
-  return { getActivePage, setActivePage };
-});
 vi.mock("../../../src/ts/states/overlay-visibility", () => ({
   isAnyPopupVisible: () => mocks.popup,
 }));
@@ -49,9 +45,9 @@ vi.mock("../../../src/ts/events/test", () => ({
   restartTestEvent: { dispatch: mocks.restart },
 }));
 
+import { bindTypingActivity } from "../../../src/features/typing/scope";
 import { setConfigStore } from "../../../src/ts/config/store";
 import { useQuickRestartHotkeys } from "../../../src/ts/input/hotkeys/quickrestart";
-import { setActivePage } from "../../../src/ts/states/core";
 import {
   setIsLongTest,
   setWordsHaveNewline,
@@ -70,17 +66,23 @@ function press(key: string, shiftKey = false): boolean {
   return allowed;
 }
 
+const [typingRoute, setTypingRoute] = createSignal(true);
+let unbind: () => void;
 beforeEach(() => {
   vi.clearAllMocks();
+  unbind = bindTypingActivity(typingRoute);
   mocks.popup = false;
   setConfigStore("quickRestart", "tab");
   setConfigStore("funbox", []);
-  setActivePage("test");
+  setTypingRoute(true);
   setIsLongTest(false);
   setWordsHaveTab(false);
   setWordsHaveNewline(false);
 });
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  unbind();
+});
 
 it.each([
   ["tab", "Tab"],
@@ -262,12 +264,12 @@ it.each([
 });
 
 it("jumps from settings to the test page and then restarts", () => {
-  setActivePage("settings");
+  setTypingRoute(false);
   render(() => <Shortcuts />);
   expect(press("Tab")).toBe(false);
   expect(mocks.navigate).toHaveBeenCalledExactlyOnceWith("");
   expect(mocks.restart).not.toHaveBeenCalled();
-  setActivePage("test");
+  setTypingRoute(true);
   expect(press("Tab")).toBe(false);
   expect(mocks.restart).toHaveBeenCalledExactlyOnceWith({
     isQuickRestart: true,

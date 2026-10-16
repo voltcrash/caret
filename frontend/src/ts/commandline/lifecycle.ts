@@ -2,7 +2,8 @@ import { getCommandlineState } from "../states/commandline";
 import * as ThemeController from "../controllers/theme-controller";
 import { clearFontPreview } from "../ui";
 
-import { getActivePage, setCommandlineSubgroup } from "../states/core";
+import { isTypingRouteActive } from "../../features/typing/scope";
+import { setCommandlineSubgroup } from "../states/core";
 
 import {
   hideModal as storeHideModal,
@@ -30,7 +31,7 @@ export function afterHideCommandline(): void {
   const commandlineState = getCommandlineState();
   hideWarning();
   addCommandlineBackground();
-  if (getActivePage() !== "test") {
+  if (!isTypingRouteActive()) {
     (document.activeElement as HTMLElement | undefined)?.blur();
   }
   commandlineState.isAnimating = false;
