@@ -4,8 +4,8 @@ import { expect, openTest, test } from "./fixtures";
 test("render 1,000 words with browser layout", async ({ page }) => {
   await openTest(page);
   const measurements = await page.evaluate(async () => {
-    const renderingUrl = "/ts/components/pages/test/words/rendering.ts";
-    const wordsUrl = "/ts/test/test-words.ts";
+    const renderingUrl = "/features/typing/components/words/rendering.ts";
+    const wordsUrl = "/features/typing/runtime/test-words.ts";
     const { showWords, updateWordLetters } = (await import(
       /* @vite-ignore */ renderingUrl
     )) as typeof import("../src/features/typing/components/words/rendering");
