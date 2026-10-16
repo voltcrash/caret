@@ -1,6 +1,7 @@
 import { envConfig } from "virtual:env-config";
 import { captureAccount } from "../app/account-scope";
 import { captureApplication } from "../app/application";
+import { webOperations } from "../functions/operations";
 import type { OperationResult } from "./operation-result";
 import type {
   ContractOperationId,
@@ -60,7 +61,6 @@ export async function operation<K extends WebOperationId>(
     timeouts[id] ?? 10_000,
   );
   try {
-    const { webOperations } = await import("../functions/operations");
     lease.assertCurrent();
     const call = webOperations[id] as (options: {
       data: unknown;
