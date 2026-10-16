@@ -13,61 +13,7 @@ vi.mock("../../src/ts/states/core", () => ({
 vi.mock("../../src/ts/states/snapshot", () => ({
   getSnapshot: () => undefined,
 }));
-vi.mock("../../src/ts/ape", () => ({
-  default: {
-    users: {
-      get: (args: unknown) => {
-        calls("account", args);
-        return {
-          status: 200,
-          body: {
-            data: {
-              uid: state.uid,
-              startedTests: 8,
-              completedTests: 6,
-              timeTyping: 180,
-              xp: 400,
-              streak: { length: 2, maxLength: 9 },
-              personalBests: { time: {}, words: {} },
-            },
-          },
-        };
-      },
-      getProfile: (args: unknown) => {
-        calls("profile", args);
-        return { status: 200, body: { data: { name: "Tester" } } };
-      },
-      getTestActivity: (args: unknown) => {
-        calls("activity", args);
-        return { status: 200, body: { data: { "2026": [1] } } };
-      },
-      updateLeaderboardMemory: (args: unknown) => {
-        calls("memory", args);
-        return { status: 200, body: {} };
-      },
-    },
-    leaderboards: Object.fromEntries(
-      [
-        "get",
-        "getDaily",
-        "getWeeklyXp",
-        "getRank",
-        "getDailyRank",
-        "getWeeklyXpRank",
-      ].map((method) => [
-        method,
-        (args: unknown) => {
-          calls(method, args);
-          return {
-            status: 200,
-            body: { data: { entries: [{ uid: "one" }], count: 1, rank: 1 } },
-          };
-        },
-      ]),
-    ),
-  },
-}));
-
+import { mockOperation, ok } from "../__harness__/operations";
 import {
   getAccountActivityQueryOptions,
   getAccountQueryOptions,
@@ -79,6 +25,39 @@ import {
 } from "../../src/ts/queries/leaderboards";
 import { getUserProfile } from "../../src/ts/queries/profile";
 import { getQueryClient } from "../../src/ts/queries";
+
+const answer = (name: string, data: unknown) => (args: unknown) => {
+  calls(name, args);
+  return ok(data);
+};
+mockOperation("users.get", (args) => {
+  calls("account", args);
+  return ok({
+    uid: state.uid,
+    startedTests: 8,
+    completedTests: 6,
+    timeTyping: 180,
+    xp: 400,
+    streak: { length: 2, maxLength: 9 },
+    personalBests: { time: {}, words: {} },
+  });
+});
+mockOperation("users.getProfile", answer("profile", { name: "Tester" }));
+mockOperation("users.getTestActivity", answer("activity", { "2026": [1] }));
+mockOperation("users.updateLeaderboardMemory", answer("memory", null));
+for (const method of [
+  "get",
+  "getDaily",
+  "getWeeklyXp",
+  "getRank",
+  "getDailyRank",
+  "getWeeklyXpRank",
+] as const) {
+  mockOperation(
+    `leaderboards.${method}`,
+    answer(method, { entries: [{ uid: "one" }], count: 1, rank: 1 }),
+  );
+}
 
 const client = new QueryClient();
 afterEach(() => {

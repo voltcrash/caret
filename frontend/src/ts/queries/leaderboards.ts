@@ -4,7 +4,7 @@ import type {
   GetLeaderboardRankQuery,
 } from "@oxytype/contracts/leaderboards";
 import { queryOptions } from "@tanstack/solid-query";
-import Ape from "../ape";
+import { operation } from "../../data/operations";
 import {
   getPage,
   getSelection,
@@ -54,7 +54,7 @@ export const getLeaderboardQueryOptions = (
       let request;
 
       if (options.type === "weekly") {
-        request = Ape.leaderboards.getWeeklyXp({
+        request = operation("leaderboards.getWeeklyXp", {
           query: {
             ...baseQuery,
             weeksBefore: options.previous ? 1 : undefined,
@@ -69,9 +69,9 @@ export const getLeaderboardQueryOptions = (
         };
 
         if (options.type === "allTime") {
-          request = Ape.leaderboards.get({ query: modeQuery });
+          request = operation("leaderboards.get", { query: modeQuery });
         } else {
-          request = Ape.leaderboards.getDaily({
+          request = operation("leaderboards.getDaily", {
             query: {
               ...modeQuery,
               daysBefore: options.previous ? 1 : undefined,
@@ -81,16 +81,14 @@ export const getLeaderboardQueryOptions = (
       }
 
       const response = await request;
-      if (response.status !== 200) {
+      if (!response.ok) {
         throw new Error(
-          `Failed to get ${options.type} leaderboard data: ${
-            response.body.message
-          }`,
+          `Failed to get ${options.type} leaderboard data: ${response.message}`,
         );
       }
 
       if (
-        response.body.data.entries.length === 0 &&
+        response.data.entries.length === 0 &&
         options.page !== 0 &&
         getPage() === options.page &&
         (getSelection().client ?? "web") === (options.client ?? "web") &&
@@ -100,15 +98,12 @@ export const getLeaderboardQueryOptions = (
         getSelection().mode2 === options.mode2 &&
         getSelection().language === options.language
       ) {
-        const page = Math.max(
-          0,
-          Math.ceil(response.body.data.count / pageSize) - 1,
-        );
+        const page = Math.max(0, Math.ceil(response.data.count / pageSize) - 1);
         if (page !== options.page) {
           setPage(page);
         }
       }
-      return response.body.data;
+      return response.data;
     },
     //5 minutes for alltime, one minute for others
     staleTime: options.type === "allTime" ? 1000 * 60 * 5 : 1000 * 60,
@@ -120,7 +115,7 @@ export const getRankQueryOptions = (options: Selection) =>
     queryFn: async () => {
       let request;
       if (options.type === "weekly") {
-        request = Ape.leaderboards.getWeeklyXpRank({
+        request = operation("leaderboards.getWeeklyXpRank", {
           query: {
             client: options.client ?? "web",
             weeksBefore: options.previous ? 1 : undefined,
@@ -134,9 +129,9 @@ export const getRankQueryOptions = (options: Selection) =>
           language: options.language,
         };
         if (options.type === "allTime") {
-          request = Ape.leaderboards.getRank({ query: baseQuery });
+          request = operation("leaderboards.getRank", { query: baseQuery });
         } else {
-          request = Ape.leaderboards.getDailyRank({
+          request = operation("leaderboards.getDailyRank", {
             query: {
               ...baseQuery,
               daysBefore: options.previous ? 1 : undefined,
@@ -146,14 +141,12 @@ export const getRankQueryOptions = (options: Selection) =>
       }
 
       const response = await request;
-      if (response.status !== 200) {
+      if (!response.ok) {
         throw new Error(
-          `Failed to get ${options.type} leaderboard rank: ${
-            response.body.message
-          }`,
+          `Failed to get ${options.type} leaderboard rank: ${response.message}`,
         );
       }
-      return response.body.data;
+      return response.data;
     },
     //5 minutes for alltime, one minute for others
     staleTime: options.type === "allTime" ? 1000 * 60 * 5 : 1000 * 60,

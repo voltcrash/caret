@@ -1,7 +1,7 @@
 import { Client } from "@oxytype/schemas/shared";
 import { queryOptions } from "@tanstack/solid-query";
 
-import Ape from "../ape";
+import { operation } from "../../data/operations";
 import { baseKey } from "./utils/keys";
 import { getQueryClient } from ".";
 import { getUserId } from "../states/core";
@@ -11,11 +11,11 @@ export async function updateTerminalLeaderboardMemory(
   rank: number,
 ): Promise<void> {
   const key = getAccountQueryOptions("tui").queryKey;
-  const response = await Ape.users.updateLeaderboardMemory({
+  const response = await operation("users.updateLeaderboardMemory", {
     query: { client: "tui" },
     body: { mode: "time", mode2, language: "english", rank },
   });
-  if (response.status !== 200) throw new Error(response.body.message);
+  if (!response.ok) throw new Error(response.message);
   getQueryClient().setQueryData(key, (data) =>
     data === undefined
       ? data
@@ -40,9 +40,9 @@ export function getAccountQueryOptions(client: Client) {
       client,
     ],
     queryFn: async () => {
-      const response = await Ape.users.get({ query: { client } });
-      if (response.status !== 200) throw new Error(response.body.message);
-      const data = response.body.data;
+      const response = await operation("users.get", { query: { client } });
+      if (!response.ok) throw new Error(response.message);
+      const data = response.data;
       return {
         ...data,
         details: data.profileDetails,
@@ -67,9 +67,11 @@ export function getAccountActivityQueryOptions(client: Client) {
       client,
     ],
     queryFn: async () => {
-      const response = await Ape.users.getTestActivity({ query: { client } });
-      if (response.status !== 200) throw new Error(response.body.message);
-      return response.body.data;
+      const response = await operation("users.getTestActivity", {
+        query: { client },
+      });
+      if (!response.ok) throw new Error(response.message);
+      return response.data;
     },
     staleTime: 30_000,
   });

@@ -4,7 +4,7 @@ import {
   formatTypingStats,
   type TypingStatsDisplay,
 } from "../../features/about/stats";
-import Ape from "../ape";
+import { operation } from "../../data/operations";
 import { getContributorsList, getReleaseHistory } from "../utils/json-data";
 import {
   releaseNotesToHtml,
@@ -56,7 +56,7 @@ export const getVersionHistoryQueryOptions = () =>
 async function fetchSpeedHistogram(): Promise<
   ReturnType<typeof bucketSpeedHistogram>
 > {
-  const response = await Ape.public.getSpeedHistogram({
+  const response = await operation("public.getSpeedHistogram", {
     query: {
       language: "english",
       mode: "time",
@@ -64,19 +64,19 @@ async function fetchSpeedHistogram(): Promise<
     },
   });
 
-  if (response.status !== 200) {
-    throw new Error(response.body.message);
+  if (!response.ok) {
+    throw new Error(response.message);
   }
-  return bucketSpeedHistogram(response.body.data);
+  return bucketSpeedHistogram(response.data);
 }
 
 async function fetchTypingStats(): Promise<TypingStatsDisplay> {
-  const response = await Ape.public.getTypingStats();
+  const response = await operation("public.getTypingStats");
 
-  if (response.status !== 200) {
-    throw new Error(response.body.message);
+  if (!response.ok) {
+    throw new Error(response.message);
   }
-  return formatTypingStats(response.body.data);
+  return formatTypingStats(response.data);
 }
 
 async function fetchVersionHistory(): Promise<VersionHistoryRelease[]> {
