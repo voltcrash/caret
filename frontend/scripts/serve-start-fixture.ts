@@ -24,7 +24,7 @@ async function main(): Promise<void> {
       .bind(token, session.token)
       .run();
     let uid = session.uid;
-    // The rollback typing suite's REST fixtures describe this account.
+    // The typing regression suite's fixtures describe this account.
     if (token === "browser-typing") {
       uid = "e2e-user";
       await db.batch([

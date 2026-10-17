@@ -79,7 +79,7 @@ export function registerServiceWorker(options: {
   };
 }
 
-/** Development never keeps a worker; matches the rollback behaviour. */
+/** Development never keeps a worker. */
 export async function unregisterServiceWorkers(
   container: ServiceWorkerContainer,
 ): Promise<void> {

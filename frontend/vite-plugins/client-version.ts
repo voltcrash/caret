@@ -4,7 +4,7 @@ function pad(numbers: number[], maxLength: number): string[] {
   return numbers.map((number) => number.toString().padStart(maxLength, "0"));
 }
 
-/** Build stamp shared by the rollback and Start builds. */
+/** Build stamp for client, Worker and release metadata. */
 export function getClientVersion(isDevelopment: boolean): string {
   if (isDevelopment) {
     return "DEVELOPMENT_CLIENT";

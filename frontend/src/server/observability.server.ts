@@ -34,7 +34,7 @@ export function requestKind(pathname: string): RequestKind {
   return "document";
 }
 
-/** Old tabs/rollback clients send X-Client-Version; keep only a safe token. */
+/** Pre-Start tabs send X-Client-Version; keep only a safe token. */
 export function clientBuildOf(headers: Headers): string | undefined {
   const value = headers.get("X-Client-Version");
   if (value === null) return undefined;

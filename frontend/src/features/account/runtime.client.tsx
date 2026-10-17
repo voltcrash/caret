@@ -13,7 +13,6 @@ import { setLoadedAccount } from "./settled.client";
  * results and server preferences (local → server precedence) once per
  * identity. Unregistered sessions stay in the signup flow. Account state is
  * actor-scoped, so sign-out and account switches drop it automatically.
- * Stage 6 replaces the snapshot with query-owned account data.
  */
 export function AccountRuntime(): null {
   const account = requireApplication().accountData;
