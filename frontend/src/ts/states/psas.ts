@@ -1,3 +1,5 @@
+import { reconcile } from "solid-js/store";
+
 import { createAppStore } from "../../app/state";
 
 export type AlertPsa = {
@@ -5,10 +7,11 @@ export type AlertPsa = {
   level: number;
 };
 
-const [psas, setPsas] = createAppStore<AlertPsa[]>([]);
+const [psas, setStore] = createAppStore<AlertPsa[]>([]);
 
-export function addPsa(message: string, level: number): void {
-  setPsas((prev) => [...prev, { message, level }]);
+/** Replaces the alerts list; a repeated fetch never duplicates entries. */
+export function setPsas(list: AlertPsa[]): void {
+  setStore(reconcile(list));
 }
 
 export function getPsas(): AlertPsa[] {

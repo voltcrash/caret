@@ -6,14 +6,13 @@ import { envConfig } from "virtual:env-config";
 import { z } from "zod";
 
 import { OperationError } from "../../data/operation-result";
-import { authEvent } from "../events/auth";
-import { getQueryClient } from "../queries";
-import { getPsaQueryOptions } from "../queries/psas";
-import { addBanner } from "../states/banners";
-import { addPsa } from "../states/psas";
-import { secondsToString } from "../utils/date-and-time";
-import { isDevEnvironment } from "../utils/env";
-import { LocalStorageWithSchema } from "../utils/local-storage-with-schema";
+import { operationData } from "../../data/operations";
+import { getQueryClient } from "../../ts/queries";
+import { addBanner } from "../../ts/states/banners";
+import { setPsas, type AlertPsa } from "../../ts/states/psas";
+import { secondsToString } from "../../ts/utils/date-and-time";
+import { isDevEnvironment } from "../../ts/utils/env";
+import { LocalStorageWithSchema } from "../../ts/utils/local-storage-with-schema";
 
 const confirmedPSAs = new LocalStorageWithSchema({
   key: "confirmedPSAs",
@@ -39,7 +38,12 @@ async function getLatest(): Promise<PSA[] | null> {
   // No server announcements exist in frontend-only development.
   if (envConfig.devOffline) return null;
   try {
-    return await getQueryClient().query(getPsaQueryOptions());
+    return await getQueryClient().query({
+      queryKey: ["psas"],
+      queryFn: async () => await operationData("psas.get"),
+      staleTime: 0,
+      retry: false,
+    });
   } catch (error) {
     const status = error instanceof OperationError ? error.status : 500;
     if (status === 500) {
@@ -67,14 +71,21 @@ async function getLatest(): Promise<PSA[] | null> {
   }
 }
 
-async function show(): Promise<void> {
+/**
+ * Fetches announcements, lists them in alerts and banners unconfirmed ones.
+ * `bannered` holds IDs already shown by this runtime, so refetching after an
+ * account change never stacks a second banner.
+ */
+export async function showPsas(bannered: Set<string>): Promise<void> {
   const latest = await getLatest();
   if (latest === null) return;
   if (latest.length === 0) {
+    setPsas([]);
     clearMemory();
     return;
   }
   const localmemory = getMemory();
+  const alerts: AlertPsa[] = [];
   latest.forEach((item) => {
     const psa = { ...item };
     if (isSafeNumber(psa.date)) {
@@ -99,11 +110,13 @@ async function show(): Promise<void> {
       );
     }
 
-    addPsa(psa.message, psa.level ?? -1);
+    alerts.push({ message: psa.message, level: psa.level ?? -1 });
 
     if (localmemory.includes(psa._id) && !(psa.sticky ?? false)) {
       return;
     }
+    if (bannered.has(psa._id)) return;
+    bannered.add(psa._id);
 
     let level: "error" | "notice" | "success";
     if (psa.level === -1) {
@@ -124,12 +137,5 @@ async function show(): Promise<void> {
       },
     });
   });
-}
-
-export function usePsaEvents(): void {
-  authEvent.useListener((event) => {
-    if (event.type === "authStateChanged") {
-      void show();
-    }
-  });
+  setPsas(alerts);
 }

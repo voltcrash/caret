@@ -1,4 +1,5 @@
 import { AccountRuntime } from "../features/account/runtime.client";
+import { AnnouncementsRuntime } from "../features/announcements/runtime.client";
 import { AuthRuntime } from "../features/auth/runtime.client";
 import { UpdateRuntime } from "../features/update/runtime.client";
 import PlatformRuntime from "./platform-runtime.client";
@@ -10,6 +11,7 @@ export default function BrowserRuntime() {
       <AuthRuntime />
       <AccountRuntime />
       <UpdateRuntime />
+      <AnnouncementsRuntime />
     </>
   );
 }
