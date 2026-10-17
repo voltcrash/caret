@@ -14,6 +14,12 @@ test("one online visit installs guest typing; private documents and RPCs stay un
   await context.addCookies([
     { name: "oxytype.session_token", value, url: "http://127.0.0.1:4185" },
   ]);
+  const signOuts: string[] = [];
+  context.on("request", (request) => {
+    if (new URL(request.url()).pathname === "/api/auth/sign-out") {
+      signOuts.push(request.url());
+    }
+  });
   await page.goto("/");
   await expect(page.locator("#words .word").first()).toBeVisible();
   await page.evaluate(async () => {
@@ -71,4 +77,9 @@ test("one online visit installs guest typing; private documents and RPCs stay un
   await word.click();
   await page.keyboard.type(letter);
   await expect(page.locator("#words letter.correct")).toHaveCount(1);
+  // Losing the network never ends the session.
+  await context.setOffline(false);
+  expect(signOuts).toEqual([]);
+  const session = await page.request.get("/api/auth/get-session");
+  expect(await session.text()).not.toBe("null");
 });
