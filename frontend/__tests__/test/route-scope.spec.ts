@@ -12,7 +12,6 @@ import {
   captureTypingRoute,
   createTypingOwned,
   isTypingRouteActive,
-  isTypingRouteTransitioning,
   mountTypingScope,
 } from "../../src/features/typing/scope";
 
@@ -67,7 +66,7 @@ it("recreates timers/subscriptions per mount and cleans each exactly once", () =
   expect(cleanup).toHaveBeenCalledTimes(2);
 });
 
-it("lets derived state observe mounts and the rollback binding", () => {
+it("lets derived state observe mounts and the unmounted test binding", () => {
   const values: boolean[] = [];
   const stop = createRoot((dispose) => {
     createComputed(() => values.push(isTypingRouteActive()));
@@ -84,22 +83,6 @@ it("lets derived state observe mounts and the rollback binding", () => {
   release();
   stop();
   expect(values).toEqual([true, true, false, true, true, false, true, false]);
-});
-
-it("reports rollback page fades but never transitions for the Start leaf", () => {
-  let fading = true;
-  const unbind = bindTypingActivity(
-    () => true,
-    () => fading,
-  );
-  expect(isTypingRouteTransitioning()).toBe(true);
-  fading = false;
-  expect(isTypingRouteTransitioning()).toBe(false);
-  fading = true;
-  const release = mountTypingScope();
-  expect(isTypingRouteTransitioning()).toBe(false);
-  release();
-  unbind();
 });
 
 it("activates only the mount that waited for preferences", () => {

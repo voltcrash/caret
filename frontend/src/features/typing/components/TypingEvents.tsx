@@ -24,19 +24,19 @@ import * as CustomText from "../runtime/custom-text";
 import * as Focus from "../runtime/focus";
 import { updateAltGrState } from "../runtime/layout-emulator";
 import * as TestUI from "../runtime/test-ui";
-import { isTypingRouteActive, isTypingRouteTransitioning } from "../scope";
+import { isTypingRouteActive } from "../scope";
 
 /**
  * Document/window listeners of the typing route. Owned by the test page and
- * removed with it; route exit resets modifier state. Rollback keeps the page
- * mounted, so every handler also checks route activity.
+ * removed with it; route exit resets modifier state. Handlers also check
+ * route activity, which starts only after entry.
  */
 export function TypingEvents(): null {
   useCapsLockEvents();
   onMount(() => {
     const autofocus = (e: KeyboardEvent): void => {
       updateCurrentCode(e);
-      if (isTypingRouteTransitioning() || e.key === undefined) return;
+      if (e.key === undefined) return;
       if (
         isDevEnvironment() &&
         (document.activeElement as HTMLElement | null)?.dataset["uiElement"] ===
@@ -72,7 +72,7 @@ export function TypingEvents(): null {
       handleModifierState(event, false);
     };
     const mousemove = (event: MouseEvent): void => {
-      if (isTypingRouteTransitioning() || !getFocus()) return;
+      if (!getFocus()) return;
       // Ignore small desk/mouse vibrations, preserving the >3px guard.
       if (event.movementX > 3 || event.movementY > 3) Focus.set(false);
     };

@@ -10,7 +10,6 @@ import {
 
 const { state, ui, popupVisible } = vi.hoisted(() => ({
   state: {
-    transition: false,
     focus: false,
     route: true,
     result: false,
@@ -49,7 +48,6 @@ vi.mock("../../../src/ts/config/store", () => ({
 }));
 vi.mock("../../../src/features/typing/scope", () => ({
   isTypingRouteActive: () => state.route,
-  isTypingRouteTransitioning: () => state.transition,
 }));
 vi.mock("../../../src/ts/states/test", () => ({
   getResultVisible: () => state.result,
@@ -99,7 +97,6 @@ beforeEach(() => {
   vi.clearAllMocks();
   resetModifierState();
   Object.assign(state, {
-    transition: false,
     focus: false,
     route: true,
     result: false,
@@ -142,9 +139,9 @@ describe("TypingEvents", () => {
     expect(ui.focusWords).toHaveBeenCalledTimes(2);
   });
 
-  it("skips inactive routes, transitions, results, focused inputs and popups", () => {
+  it("skips inactive routes, results, focused inputs and popups", () => {
     render(() => <TypingEvents />);
-    for (const field of ["transition", "result", "inputFocused"] as const) {
+    for (const field of ["result", "inputFocused"] as const) {
       state[field] = true;
       press("a");
       state[field] = false;
@@ -199,8 +196,6 @@ describe("TypingEvents", () => {
     expect(ui.unfocus).not.toHaveBeenCalled();
     move(4, 0);
     expect(ui.unfocus).toHaveBeenCalledWith(false);
-    state.transition = true;
-    move(10, 10);
     unmount();
     move(10, 10);
     expect(ui.unfocus).toHaveBeenCalledOnce();

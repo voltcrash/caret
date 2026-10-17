@@ -25,43 +25,25 @@ const state = createAppOwned(() => {
   // Reactive so derived state (hotkeys, palette behavior) follows mounts.
   const [route, setRoute] = createSignal<RouteScope>();
   const [active, setActive] = createSignal<() => boolean>();
-  const [transitioning, setTransitioning] = createSignal<() => boolean>();
-  return {
-    route,
-    setRoute,
-    active,
-    setActive,
-    transitioning,
-    setTransitioning,
-    generation: 0,
-    managed: false,
-  };
+  return { route, setRoute, active, setActive, generation: 0, managed: false };
 });
 
-/** Rollback supplies its route and page-transition observation; Start owns a real mounted scope. */
-export function bindTypingActivity(
-  active: () => boolean,
-  transitioning: () => boolean = () => false,
-): () => void {
+/**
+ * Isolated typing-module tests run without a mounted leaf and bind activity
+ * directly; once a leaf mounts, only its entry counts.
+ */
+export function bindTypingActivity(active: () => boolean): () => void {
   const current = state();
   current.setActive(() => active);
-  current.setTransitioning(() => transitioning);
   return () => {
     if (untrack(current.active) !== active) return;
     current.setActive(undefined);
-    current.setTransitioning(undefined);
   };
 }
 
-/** Rollback page fades; Start's leaf is simply mounted or not. */
-export function isTypingRouteTransitioning(): boolean {
-  const current = state();
-  return !current.managed && (current.transitioning()?.() ?? false);
-}
-
 /**
- * The mounted leaf becomes the active route at entry, after preferences, like
- * the rollback's page switch. Config loading before then never restarts.
+ * The mounted leaf becomes the active route at entry, after preferences.
+ * Config loading before then never restarts.
  */
 export function isTypingRouteActive(): boolean {
   const current = state();
@@ -137,10 +119,10 @@ export function captureTypingRoute(): { isCurrent: () => boolean } {
 /** Browser resources end with the typing leaf; serializable session stays app-owned. */
 export function createTypingOwned<T>(create: () => T): () => T {
   const key = {};
-  const rollback = createAppOwned(create);
+  const unmounted = createAppOwned(create);
   return () => {
     const route = untrack(state().route);
-    if (route === undefined) return rollback();
+    if (route === undefined) return unmounted();
     return route.values.use(
       key,
       () => runWithOwner(route.owner, create) as T,
