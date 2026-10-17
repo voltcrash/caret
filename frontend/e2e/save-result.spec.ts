@@ -22,7 +22,6 @@ test.use({
 
 test("logged-in completion submits a result and applies save acknowledgement", async ({
   page,
-  startSession,
 }) => {
   const saved = AddResultResponseSchema.parse({
     message: "Result saved",
@@ -36,15 +35,13 @@ test("logged-in completion submits a result and applies save acknowledgement", a
       streak: 1,
     },
   });
-  const submissionPath =
-    startSession === undefined ? "/api/results" : rpcPath("resultsAdd");
+  const submissionPath = rpcPath("resultsAdd");
   await page.route(`**${submissionPath}`, async (route) => {
     if (route.request().method() !== "POST") {
       await route.fallback();
       return;
     }
-    if (startSession === undefined) await route.fulfill({ json: saved });
-    else await fulfillOperation(route, saved.data, saved.message);
+    await fulfillOperation(route, saved.data, saved.message);
   });
   await openTest(page);
   const submission = page.waitForRequest(
@@ -55,9 +52,7 @@ test("logged-in completion submits a result and applies save acknowledgement", a
   await completeWords(page);
   const request = await submission;
   const result = CompletedEventSchema.parse(
-    startSession === undefined
-      ? (request.postDataJSON() as { result: unknown }).result
-      : (rpcInput(request) as { body: { result: unknown } }).body.result,
+    (rpcInput(request) as { body: { result: unknown } }).body.result,
   );
 
   expect(result).toMatchObject({
