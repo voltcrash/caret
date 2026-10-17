@@ -119,8 +119,7 @@ export default defineConfig(({ mode }) => {
         },
       }),
       solid({ ssr: true }),
-      // Existing full font assets; rollback subset generation remains independent.
-      fontStyles({ isDevelopment: true }),
+      fontStyles(),
       tailwindcss(),
       ...(sentryDsn === ""
         ? []

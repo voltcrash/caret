@@ -15,8 +15,8 @@ type WebManifest = {
   theme_color: string;
 };
 
-/** Installed-app identity shared by the rollback PWA and the Start build. */
-export const webManifest: Readonly<WebManifest> = {
+/** Installed-app identity; `/manifest.json` keeps the former PWA's id and scope. */
+const webManifest: Readonly<WebManifest> = {
   id: "/",
   short_name: "Oxytype",
   name: "Oxytype",

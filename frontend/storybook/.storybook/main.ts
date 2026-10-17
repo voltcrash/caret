@@ -68,7 +68,7 @@ export default defineMain({
     config.plugins ??= [];
     // Stories run without a Start server; never bundle server functions.
     config.plugins.push(rollbackOperationTransport());
-    config.plugins.push(fontStyles({ isDevelopment: true }));
+    config.plugins.push(fontStyles());
     config.plugins.push(tailwindcss());
     config.plugins.push(stubVirtualEnvConfig());
     config.plugins.push(stubVirtualLanguageHashes());
