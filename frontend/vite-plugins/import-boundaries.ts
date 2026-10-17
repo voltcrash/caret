@@ -38,8 +38,5 @@ export const rollbackOnlyFiles = [
   "src/ts/controllers/page-controller.ts",
   "src/ts/components/pages/AppPages.tsx",
   "src/ts/components/core/NavigationRuntime.tsx",
-  "src/ts/components/AppRouter.tsx",
-  "src/ts/components/App.tsx",
   "src/ts/pages/**",
-  "src/app/legacy-runtime.client.tsx",
 ];
