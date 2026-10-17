@@ -36,7 +36,11 @@ No preceding implementation stage or handoff exists. Prerequisite: merged
 | 6.3 Result submission | Complete | [Stage 6](stage-6.md#63-result-submission) |
 | 6.4 Transport retirement | Complete | [Stage 6](stage-6.md#64-transport-retirement) |
 | Stage 6 exit | Complete; old-tab/rollback lifetimes explicit | [Validation and handoff](stage-6.md#exit-validation) |
-| Stages 7–8 | Not started | Separate assignments |
+| 7.1 PWA/offline | Complete | [Stage 7](stage-7.md#71-offline-ownership) |
+| 7.2 Delivery ownership | Complete | [Stage 7](stage-7.md#72-delivery-ownership) |
+| 7.3 Production behaviour in staging | Complete | [Stage 7](stage-7.md#73-production-behaviour) |
+| Stage 7 exit | Complete; production gated until Stage 8 | [Validation and handoff](stage-7.md#validation) |
+| Stage 8 | Not started | Separate assignment |
 
 Stage 0 moves responsibility for migration evidence from an unverified proposal
 to this versioned ledger and reproducible checks. It moves no application

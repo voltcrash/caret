@@ -1,8 +1,9 @@
 # TanStack Start migration: architecture and execution plan
 
 Status: Stages 0–5 complete; [ledger and handoffs](tanstack-start/README.md).
-Stage 6 complete; Stages 7–8 not started. Production still serves the legacy app
-(rollback build). See [Stage 6 ledger](tanstack-start/stage-6.md).
+Stages 6–7 complete; Stage 8 not started. Production still serves the legacy app
+(rollback build); Start delivery is gated until cutover. See
+[Stage 7 ledger](tanstack-start/stage-7.md).
 Prepared: 2026-10-15. Scope: Oxytype web application and its server/runtime.
 
 ## Outcome
@@ -130,7 +131,8 @@ frontend/
     worker.ts                    # Cloudflare fetch + queue + scheduled entry
     html/warnings.html           # preserved static fallback source
   static/                        # existing assets; configured as public directory
-  wrangler.jsonc                 # deployment owner after Stage 7
+  wrangler.jsonc                 # local development
+  wrangler.staging.json          # deployment owner after Stage 7
   wrangler.production.json
 backend/
   src/
@@ -585,7 +587,11 @@ result persistence and rewards are unchanged; no web functionality requires Hono
 
 ## Stage 7 — Complete offline support, deployment, and observability
 
+Status: complete; production cutover gated to Stage 8. [Validation and handoff](tanstack-start/stage-7.md#validation).
+
 ### 7.1 Rebuild the PWA/offline contract
+
+Status: complete. [Stage 7 ledger](tanstack-start/stage-7.md#71-offline-ownership).
 
 - Adapt manifest/service-worker generation to Start output paths and code splitting.
   Version caches by build; never assume the old `/js` filename/hash pattern.
@@ -603,6 +609,8 @@ result persistence and rewards are unchanged; no web functionality requires Hono
 
 ### 7.2 Transfer delivery ownership to Start
 
+Status: complete. [Stage 7 ledger](tanstack-start/stage-7.md#72-delivery-ownership).
+
 - Move/retarget Wrangler staging/production configs to the application package.
   Preserve Worker names, origins, bindings, secrets, D1 IDs/migration directories,
   queue consumers, Cron, compatibility flags, and environment isolation.
@@ -616,6 +624,8 @@ result persistence and rewards are unchanged; no web functionality requires Hono
   publication ordering. No framework change requires destructive schema migration.
 
 ### 7.3 Exercise production behavior in staging
+
+Status: complete. [Stage 7 ledger](tanstack-start/stage-7.md#73-production-behaviour).
 
 - Run the built Worker in workerd and staging, not only Vite dev. Verify OAuth
   cookies, direct URLs, real result saves, queues/Cron, assets, offline revisit,
