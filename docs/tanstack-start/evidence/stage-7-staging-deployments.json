@@ -34,6 +34,13 @@
       "step": "matching Worker/assets rollback drill",
       "version": "e6e89497-a19c-4147-bd51-4f1b8346ace7",
       "result": "success; Worker header and /version.json both report 2026.10.17_00.07_361c6831d"
+    },
+    {
+      "step": "final Stage 7 artifact",
+      "version": "9b1fbf4e-592a-43b0-941a-1080aa7a346f",
+      "build": "2026.10.17_10.46_3d61217df",
+      "upload": "1972.25 KiB / gzip 559.97 KiB",
+      "checks": "check:staging artifact match; hosted routes, 490 assets, CSP, auth cookies, stale functions; hosted offline typing"
     }
   ],
   "queue": {
@@ -51,5 +58,6 @@
     "weekly_entries": 0,
     "client_profiles": 1,
     "matchesAnchorAfterMigrations": true
-  }
+  },
+  "current": "9b1fbf4e-592a-43b0-941a-1080aa7a346f"
 }
