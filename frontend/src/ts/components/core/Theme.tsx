@@ -16,7 +16,7 @@ import { showNoticeNotification } from "../../states/notifications";
 import { getTheme } from "../../states/theme";
 import { FavIcon } from "./FavIcon";
 
-// Read by the inline script in html/head.html to paint the last theme early.
+// Read by the document theme bootstrap script to paint the last theme early.
 const THEME_COLORS_KEY = "themeColors";
 const BOOTSTRAP_STYLE_ID = "themeBootstrap";
 

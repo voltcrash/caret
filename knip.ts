@@ -19,9 +19,8 @@ export default {
     },
     frontend: {
       entry: [
-        "src/ts/{oauth-callback,not-found,privacy-policy,standalone-renderer}.tsx",
         "src/ts/types/*.d.ts",
-        "src/styles/{tailwind,standalone}.css",
+        "src/styles/tailwind.css",
         "scripts/*.{ts,cjs}",
         // Vite's rollback binding and Vitest's operation map are aliased entries.
         "src/rollback/operations.ts",

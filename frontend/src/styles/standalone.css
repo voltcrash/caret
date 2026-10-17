@@ -1,8 +1,0 @@
-@import "./layers.css";
-@import "tailwindcss";
-@import "./theme.css";
-@import "oxytype-fontawesome.css" layer(vendor);
-@import "./icons.css" layer(vendor);
-@import "balloon-css/balloon.min.css" layer(vendor);
-@import "./core.css" layer(custom-styles);
-@import "./standalone-theme.css" layer(custom-styles);
