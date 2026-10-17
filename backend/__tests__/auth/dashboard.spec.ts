@@ -8,11 +8,10 @@ import {
   vi,
 } from "vite-plus/test";
 import { memoryAdapter } from "better-auth/adapters/memory";
-import { unitRuntime, wrapUnitApp } from "../setup-tests";
+import { unitApi, unitRuntime, type UnitApi } from "../setup-tests";
 import { createAuth } from "../../src/init/auth";
 import * as AuthInit from "../../src/init/auth";
 import { runtime, withRuntime } from "../../src/runtime/env";
-import { buildApp } from "../../src/app";
 
 const apiKey = "ba_dashboard_test_fixture";
 const { privateKey, publicKey } = generateKeyPairSync("rsa", {
@@ -43,7 +42,7 @@ function token(key = apiKey, claims: Record<string, string> = {}): string {
 
 describe("Better Auth dashboard", () => {
   let auth: ReturnType<typeof createAuth>;
-  let app: ReturnType<typeof buildApp>;
+  let app: UnitApi;
   let store: Record<string, unknown[]>;
 
   beforeEach(() => {
@@ -67,7 +66,7 @@ describe("Better Auth dashboard", () => {
     };
     auth = createAuth(memoryAdapter(store));
     vi.spyOn(AuthInit, "getAuth").mockImplementation(() => auth);
-    app = wrapUnitApp(buildApp());
+    app = unitApi;
   });
   afterEach(() => {
     vi.restoreAllMocks();

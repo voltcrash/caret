@@ -7,6 +7,7 @@ import { serveStatic } from "@hono/node-server/serve-static";
 import { createETagGenerator } from "../src/utils/etag";
 import { resolve } from "node:path";
 import { withRuntime, type WorkerEnv } from "../src/runtime/env";
+import { dispatchApi } from "./__testData__/http-worker";
 
 process.env["MODE"] = "dev";
 process.env["TZ"] = "UTC";
@@ -36,6 +37,17 @@ export function wrapUnitApp<T extends Hono<any>>(app: T): T {
     await unitRuntime(async () => await fetch(...args));
   return app;
 }
+/** Start's `/api` handlers in the unit runtime; relative paths use the dev origin. */
+export const unitApi = {
+  request: async (input: string, init?: RequestInit): Promise<Response> =>
+    await unitRuntime(
+      async () =>
+        await dispatchApi(
+          new Request(new URL(input, "http://localhost:5005"), init),
+        ),
+    ),
+};
+export type UnitApi = typeof unitApi;
 let testRuntime: Awaited<ReturnType<typeof createTestRuntime>>;
 export function unitRuntime<T>(fn: () => T): T {
   const env = {

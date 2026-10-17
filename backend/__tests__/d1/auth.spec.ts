@@ -5,7 +5,7 @@ import { getAuth } from "../../src/init/auth";
 import { verifySession } from "../../src/utils/auth";
 import { patchConfiguration } from "../../src/init/configuration";
 import * as UserDAL from "../../src/dal/user";
-import Worker from "../../src/worker";
+import Worker from "../__testData__/http-worker";
 import { GetUserResponseSchema } from "@oxytype/contracts/users";
 import type { ExecutionContext } from "@cloudflare/workers-types";
 

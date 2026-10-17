@@ -21,7 +21,7 @@ import * as Users from "../../src/dal/user";
 import * as Results from "../../src/dal/result";
 import * as Configs from "../../src/dal/config";
 import { consistency } from "../../src/anticheat/result";
-import Worker from "../../src/worker";
+import Worker from "../__testData__/http-worker";
 
 describe("actual terminal client against D1", () => {
   let runtime: Awaited<ReturnType<typeof createTestRuntime>>;

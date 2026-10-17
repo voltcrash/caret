@@ -1,4 +1,4 @@
-import { wrapUnitApp } from "../setup-tests";
+import { unitApi, type UnitApi } from "../setup-tests";
 import {
   afterEach,
   beforeEach,
@@ -11,11 +11,10 @@ import { memoryAdapter } from "better-auth/adapters/memory";
 import { createAuth } from "../../src/init/auth";
 import * as AuthInit from "../../src/init/auth";
 import * as AuthUtils from "../../src/utils/auth";
-import { buildApp } from "../../src/app";
 import { signInWithOAuth } from "../__testData__/oauth";
 
 let auth: ReturnType<typeof createAuth>;
-let app: ReturnType<typeof buildApp>;
+let app: UnitApi;
 let store: Record<string, unknown[]>;
 
 beforeEach(() => {
@@ -32,7 +31,7 @@ beforeEach(() => {
   };
   auth = createAuth(memoryAdapter(store));
   vi.spyOn(AuthInit, "getAuth").mockReturnValue(auth);
-  app = wrapUnitApp(buildApp());
+  app = unitApi;
 });
 afterEach(() => {
   vi.restoreAllMocks();
@@ -100,7 +99,7 @@ describe("Better Auth social-only HTTP flow", () => {
     expect(sessionCookie).toContain("Secure");
     expect(sessionCookie).toContain("SameSite=Lax");
     const session = await app.request(
-      "https://staging.example/auth/get-session",
+      "https://staging.example/api/auth/get-session",
       { headers: { cookie, origin: frontendUrl } },
     );
     expect(session.status).toBe(200);

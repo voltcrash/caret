@@ -5,7 +5,7 @@ import { withRuntime } from "../../src/runtime/env";
 import { scheduled } from "../../src/runtime/tasks";
 import { getAuth } from "../../src/init/auth";
 import * as Users from "../../src/dal/user";
-import Worker from "../../src/worker";
+import Worker from "../__testData__/http-worker";
 
 type DeviceCode = {
   device_code: string;

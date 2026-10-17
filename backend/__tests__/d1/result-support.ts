@@ -9,7 +9,7 @@ import * as Users from "../../src/dal/user";
 import { mutateUser } from "../../src/db/mutation";
 import { completedEvent } from "../__testData__/completed-event";
 import { consistency } from "../../src/anticheat/result";
-import Worker from "../../src/worker";
+import Worker from "../__testData__/http-worker";
 
 type Account = { uid: string; token: string };
 type ResultRuntime = Awaited<ReturnType<typeof createTestRuntime>> & {

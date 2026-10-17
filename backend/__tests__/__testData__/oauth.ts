@@ -1,6 +1,6 @@
 import { expect, vi } from "vite-plus/test";
 import type { createAuth } from "../../src/init/auth";
-import type { buildApp } from "../../src/app";
+import type { UnitApi } from "../setup-tests";
 
 function cookies(response: Response): string {
   return response.headers
@@ -12,7 +12,7 @@ function cookies(response: Response): string {
 /** Exercise real OAuth state, callbacks, and sessions; mock only provider APIs. */
 export async function signInWithOAuth(
   auth: ReturnType<typeof createAuth>,
-  app: ReturnType<typeof buildApp>,
+  app: UnitApi,
   options: {
     provider?: "google" | "github";
     email?: string;
@@ -35,7 +35,11 @@ export async function signInWithOAuth(
     user: { name: "NewUser", email, emailVerified: true },
     data: { sub: `${providerId}-${email}`, id: `${providerId}-${email}` },
   });
-  const start = await app.request("http://localhost:5005/auth/sign-in/social", {
+  // Requests reach the configured auth URL, like Start's /api/auth route.
+  const authUrl = (
+    process.env["BETTER_AUTH_URL"] ?? "http://localhost:5005/auth"
+  ).replace(/\/$/, "");
+  const start = await app.request(`${authUrl}/sign-in/social`, {
     method: "POST",
     headers: {
       origin: frontendUrl,
@@ -53,7 +57,7 @@ export async function signInWithOAuth(
   const state = new URL(data.url).searchParams.get("state");
   expect(state).toBeTruthy();
   const response = await app.request(
-    `http://localhost:5005/auth/callback/${providerId}?code=test-code&state=${state}`,
+    `${authUrl}/callback/${providerId}?code=test-code&state=${state}`,
     { headers: { cookie: cookies(start), ...options.headers } },
   );
   expect(response.status).toBe(302);
