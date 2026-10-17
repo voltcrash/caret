@@ -280,6 +280,15 @@ jobs:
       - name: Production-Worker browser checks
         run: vp run --filter @oxytype/frontend test:start:browser
 
+      - name: Upload browser traces
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: start-browser-traces
+          path: frontend/test-results
+          retention-days: 7
+          if-no-files-found: ignore
+
       - name: Multi-build service worker, real save and rollback checks
         run: vp run --filter @oxytype/frontend test:updates
 
