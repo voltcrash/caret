@@ -1,7 +1,7 @@
 import { envConfig } from "./vite-plugins/env-config";
 import { languageHash, languageHashes } from "./vite-plugins/language-hashes";
 import { resolveBuildId, startVersionFile } from "./vite-plugins/build-id";
-import { defineConfig, loadEnv } from "vite-plus";
+import { defineConfig, loadEnv, type Plugin } from "vite-plus";
 import { cloudflare } from "@cloudflare/vite-plugin";
 import { tanstackStart } from "@tanstack/solid-start/plugin/vite";
 import solid from "vite-plugin-solid";
@@ -18,7 +18,28 @@ import {
   ssrSafeLegacyFiles,
 } from "./vite-plugins/import-boundaries";
 
-export default defineConfig(({ mode }) => {
+/** Opt-in dev-server tooling: DEV_LINT=fast|true overlay, DEV_INSPECT=true. */
+async function devPlugins(env: Record<string, string>): Promise<Plugin[]> {
+  const plugins: Plugin[] = [];
+  const lint = env["DEV_LINT"];
+  if (lint === "true" || lint === "fast") {
+    const { oxlintChecker } = await import("./vite-plugins/oxlint-checker");
+    plugins.push(
+      oxlintChecker({
+        debounceDelay: 750,
+        typeAware: lint === "true",
+        overlay: true,
+      }),
+    );
+  }
+  if (env["DEV_INSPECT"] === "true") {
+    const { default: inspect } = await import("vite-plugin-inspect");
+    plugins.push(inspect());
+  }
+  return plugins;
+}
+
+export default defineConfig(async ({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), "");
   const buildId = resolveBuildId(mode !== "production");
   const sentryDsn = env["SENTRY_DSN"] ?? "";
@@ -137,6 +158,7 @@ export default defineConfig(({ mode }) => {
             applyToEnvironment: (environment: { name: string }) =>
               environment.name === "client",
           }))),
+      ...(command === "serve" ? await devPlugins(env) : []),
     ],
     define: {
       "import.meta.env.OXYTYPE_OFFLINE": JSON.stringify(mode === "offline"),
