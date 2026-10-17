@@ -1,7 +1,6 @@
 import { defineConfig, TestProjectInlineConfiguration } from "vite-plus";
 import { languageHashes } from "./vite-plugins/language-hashes";
 import { envConfig } from "./vite-plugins/env-config";
-import { devtoolsEntry } from "./vite-plugins/devtools-entry";
 import solidPlugin from "vite-plugin-solid";
 import { resolve } from "node:path";
 import { operationTransport } from "./vite-plugins/operation-transport";
@@ -11,7 +10,6 @@ const plugins = [
   operationTransport(
     resolve(import.meta.dirname, "__tests__/__harness__/operations.ts"),
   ),
-  devtoolsEntry({ enabled: false }),
   languageHashes({ skip: true }),
   envConfig({ isDevelopment: true, clientVersion: "TESTING", env: {} }),
   solidPlugin({ hot: false }),
