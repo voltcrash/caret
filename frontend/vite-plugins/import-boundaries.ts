@@ -35,7 +35,6 @@ export const clientOnlyFeatureFiles = [
  */
 export const rollbackOnlyFiles = [
   "src/rollback/**",
-  "src/ts/controllers/page-controller.ts",
   "src/ts/components/pages/AppPages.tsx",
   "src/ts/pages/**",
 ];
