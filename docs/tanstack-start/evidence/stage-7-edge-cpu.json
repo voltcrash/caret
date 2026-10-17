@@ -1,0 +1,43 @@
+{
+  "capturedAt": "2026-10-17T04:50:00Z",
+  "worker": "oxytype-api-staging",
+  "version": "e6e89497-a19c-4147-bd51-4f1b8346ace7",
+  "build": "2026.10.17_00.07_361c6831d",
+  "method": "wrangler tail JSON events while issuing sequential GETs from this host; cpuTime/wallTime are Cloudflare-reported per invocation (ms). Wall includes staging D1 round trips; staging D1 has an APAC placement hint, so wall is not a production latency claim.",
+  "byPath": {
+    "/about": {
+      "n": 30,
+      "cpuMedian": 24,
+      "cpuP95": 97,
+      "cpuMax": 100,
+      "wallMedian": 348,
+      "outcomes": ["ok"]
+    },
+    "cron": {
+      "n": 1,
+      "cpuMedian": 3,
+      "cpuP95": 3,
+      "cpuMax": 3,
+      "wallMedian": 452,
+      "outcomes": ["ok"]
+    },
+    "/": {
+      "n": 15,
+      "cpuMedian": 9,
+      "cpuP95": 15,
+      "cpuMax": 15,
+      "wallMedian": 10,
+      "outcomes": ["ok"]
+    },
+    "/api/public/typingStats": {
+      "n": 15,
+      "cpuMedian": 5,
+      "cpuP95": 11,
+      "cpuMax": 11,
+      "wallMedian": 239,
+      "outcomes": ["ok"]
+    }
+  },
+  "exceededLimits": 0,
+  "note": "Legacy served HTML as static assets, so Stage 0 has no SSR edge-CPU baseline; these are new reference values. p95/max for /about include cold isolates."
+}
