@@ -1,0 +1,44 @@
+{
+  "startedAt": "2026-10-16T18:58:25.610Z",
+  "finishedAt": "2026-10-16T18:58:55.502Z",
+  "origin": "https://oxytype-api-staging.voltcrash.workers.dev",
+  "build": "2026.10.17_00.25_52a107bac",
+  "routes": {
+    "/": 200,
+    "/about": 200,
+    "/settings": 200,
+    "/login": 200,
+    "/account": 307,
+    "/profile": 200,
+    "/privacy-policy.html": 200,
+    "/oauth-callback.html?requestId=stage7-check": 200,
+    "/404.html": 404,
+    "/api": 200,
+    "/api/public/typingStats": 200,
+    "/api/users": 401,
+    "/api/not-a-route": 404
+  },
+  "assets": {
+    "checked": 490,
+    "legacy": 13,
+    "allIntegrityChecksPass": true
+  },
+  "staleFunctionStatus": 409,
+  "csrfStatus": 403,
+  "oauth": {
+    "initiation": 200,
+    "providerHost": "github.com",
+    "callback": "https://oxytype-api-staging.voltcrash.workers.dev/api/auth/callback/github",
+    "secureHttpOnlyStateCookie": true,
+    "fullInteractiveSignIn": "separate browser acceptance"
+  },
+  "ssrNetworkWallMs": [
+    387.3274999999994, 353.59041699999943, 357.35949999999866,
+    358.27279199999975, 600.4855840000018, 405.231832999998, 354.9208749999998,
+    379.7485830000005, 372.13987500000076, 416.18554199999926,
+    422.7574160000004, 375.18708400000105, 360.3017919999984, 354.1373339999991,
+    359.2735829999983, 412.02487499999916, 412.2617079999982, 415.2349170000016,
+    378.26779199999874, 413.65029100000174
+  ],
+  "latencyDefinition": "Hosted staging /about wall time from this host, including network/D1; not comparable to frozen local workerd CPU or browser budgets"
+}
