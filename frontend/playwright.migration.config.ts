@@ -1,16 +1,11 @@
 import { defineConfig } from "playwright/test";
-import config from "./playwright.config";
+import config from "./playwright.start.config";
 
-/** Production assets, deterministic API fixtures; never contacts production. */
+/** Readiness benchmark against the built Start Worker and its D1 fixtures. */
 export default defineConfig({
   ...config,
+  projects: undefined,
+  testDir: "./e2e",
   testMatch: "**/*.migration.ts",
   timeout: 120_000,
-  webServer: {
-    command:
-      "vp preview --config vite.migration.config.ts --host 127.0.0.1 --port 4173 --strictPort",
-    url: "http://127.0.0.1:4173",
-    reuseExistingServer: false,
-    env: { TURNSTILE_SITE_KEY: "1x00000000000000000000AA" },
-  },
 });

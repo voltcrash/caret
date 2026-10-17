@@ -225,28 +225,7 @@ jobs:
       - name: Test
         run: vp run test-fe
 
-  test-e2e:
-    name: test-e2e
-    needs: [pre-ci, prime-cache]
-    runs-on: ubuntu-latest
-    if: needs.pre-ci.outputs.should-build-fe == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true' || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
-    steps:
-      - uses: actions/checkout@v7.0.1
-
-      - name: Set up Vite+ and install dependencies
-        uses: voidzero-dev/setup-vp@v1.21.1
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: true
-          cache-save: false
-
-      - name: Install Chromium and its system dependencies
-        run: vp -C frontend exec playwright install --with-deps chromium
-
-      - name: Run browser regression suite
-        run: vp run --filter @oxytype/frontend test-e2e:legacy
-
-  # Start owns delivery. Rollback UI/backend builds remain until Stage 8.
+  # Start owns delivery: Worker build, workerd, browser and update suites.
   ci-start:
     name: ci-start
     needs: [pre-ci, prime-cache]

@@ -15,7 +15,7 @@ export default defineConfig<{ startSession: string | undefined }>({
   projects: [
     { name: "start", testDir: "./start-e2e" },
     {
-      // The rollback typing suite, against the built Start Worker.
+      // Typing regression suite, against the built Start Worker.
       name: "typing-parity",
       testDir: "./e2e",
       testIgnore: ["**/*.migration.ts", "**/*.benchmark.ts"],
