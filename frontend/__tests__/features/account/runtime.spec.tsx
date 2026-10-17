@@ -4,6 +4,8 @@ import { afterEach, expect, it, vi } from "vite-plus/test";
 
 const loads = vi.hoisted(() => vi.fn(async () => undefined));
 vi.mock("../../../src/ts/auth", () => ({ loadUser: loads }));
+const clearSentryUser = vi.hoisted(() => vi.fn(async () => undefined));
+vi.mock("../../../src/ts/sentry", () => ({ clearUser: clearSentryUser }));
 // Session refetches stay pending; tests drive the cached session directly.
 vi.mock("../../../src/functions/session", () => ({
   getSessionState: async () => new Promise(() => undefined),
@@ -40,6 +42,7 @@ afterEach(() => {
   cleanup();
   setUserState(null);
   loads.mockClear();
+  clearSentryUser.mockClear();
 });
 
 it("loads account data once per registered actor after the actor switches", async () => {
@@ -166,4 +169,24 @@ it("retries a transient load failure once back online and stops after success", 
   window.dispatchEvent(new Event("online"));
   await tick();
   expect(loads).toHaveBeenCalledTimes(2);
+});
+
+it("clears the error-report identity when the account signs out", async () => {
+  const app = requireApplication();
+  app.queryClient.setQueryData(sessionKey, {
+    user: user("a"),
+    signUpEnabled: true,
+  });
+  setUserState(user("a"));
+  render(() => (
+    <QueryClientProvider client={app.queryClient}>
+      <AccountRuntime />
+    </QueryClientProvider>
+  ));
+  await tick();
+  clearSentryUser.mockClear();
+  app.queryClient.setQueryData(sessionKey, { user: null, signUpEnabled: true });
+  setUserState(null);
+  await tick();
+  expect(clearSentryUser).toHaveBeenCalledOnce();
 });

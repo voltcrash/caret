@@ -4,6 +4,7 @@ import { createEffect, createMemo, on, onCleanup } from "solid-js";
 import { requireApplication } from "../../app/application";
 import { loadUser, type AccountLoad } from "../../ts/auth";
 import { setAuthAvailable } from "../../ts/auth-client";
+import * as Sentry from "../../ts/sentry";
 import { sessionOptions } from "../auth/session";
 import { setLoadedAccount } from "./settled.client";
 
@@ -33,7 +34,11 @@ export function AccountRuntime(): null {
     on(loadable, (uid) => {
       const user = registered();
       setLoadedAccount(null);
-      if (uid === undefined || user === undefined) return;
+      if (uid === undefined || user === undefined) {
+        // Error reports never keep a signed-out or switched-away identity.
+        void Sentry.clearUser();
+        return;
+      }
       const lease = account.capture();
       let timer: ReturnType<typeof setTimeout> | undefined;
       let wake: (() => void) | undefined;
