@@ -6,10 +6,8 @@ import { loadUser, signOut } from "../../auth";
 import {
   updateProfile,
   deleteUnfinishedUser,
-  resetIgnoreAuthCallback,
   setUserState,
 } from "../../auth-client";
-import { authEvent } from "../../events/auth";
 import {
   getPendingGoogleSignUpUser,
   setPendingGoogleSignUpUser,
@@ -100,7 +98,6 @@ export function GoogleSignupModal() {
 }
 
 async function afterHide(): Promise<void> {
-  resetIgnoreAuthCallback();
   if (getPendingGoogleSignUpUser() !== undefined) {
     showNoticeNotification("Sign up process cancelled", {
       durationMs: 5000,
@@ -151,11 +148,6 @@ async function apply(options: {
     await updateProfile(name);
     showSuccessNotification("Account created");
     await loadUser(signedInUser.user);
-
-    authEvent.dispatch({
-      type: "authStateChanged",
-      data: { isUserSignedIn: true, loadPromise: Promise.resolve() },
-    });
     setPendingGoogleSignUpUser(undefined);
   } catch (e) {
     console.log(e);

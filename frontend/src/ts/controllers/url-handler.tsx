@@ -21,12 +21,10 @@ import { tryCatchSync } from "@oxytype/util/trycatch";
 import { decompressFromURI } from "lz-ts";
 import { z } from "zod";
 
-import { captureAccount } from "../../app/account-scope";
 import * as CustomText from "../../features/typing/runtime/custom-text";
 import { restart as restartTest } from "../../features/typing/runtime/test-logic";
 import { setConfig } from "../config/setters";
 import { getMutableConfig } from "../config/store";
-import { authEvent } from "../events/auth";
 import {
   showErrorNotification,
   showNoticeNotification,
@@ -34,7 +32,6 @@ import {
 } from "../states/notifications";
 import { setSelectedQuoteId } from "../states/test";
 import * as Misc from "../utils/misc";
-import { loadBrowserHandoff } from "./browser-handoff";
 import * as ChallengeController from "./challenge-controller";
 
 const customThemeUrlDataSchema = z.object({
@@ -299,20 +296,4 @@ export function applyUrlSettings(search: string): void {
   loadCustomThemeFromUrl(search);
   loadTestSettingsFromUrl(search);
   void loadChallengeFromUrl(search);
-}
-
-/** Rollback: reapplies on every auth change. Start applies once from the typing route. */
-export function useUrlEvents(): void {
-  authEvent.useListener(async (event) => {
-    if (event.type === "authStateChanged") {
-      const lease = captureAccount();
-      const search = window.location.search;
-
-      await event.data.loadPromise;
-      if (!lease.isCurrent()) return;
-
-      applyUrlSettings(search);
-      void loadBrowserHandoff(search, event.data.isUserSignedIn);
-    }
-  });
 }

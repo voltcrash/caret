@@ -52,7 +52,6 @@ vi.mock("../../../src/app/readiness", () => ({
   preferencesReadiness: () => ({ wait: async () => lifecycle.config.promise }),
 }));
 vi.mock("../../../src/ts/auth-client", () => ({
-  observeAuthSession: () => () => undefined,
   oauthRequestEvent: { subscribe: () => () => undefined },
   get authPromise() {
     return lifecycle.auth.promise;

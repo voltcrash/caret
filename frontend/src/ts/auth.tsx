@@ -20,7 +20,6 @@ import { updateFromServer as updateConfigFromServer } from "./config/remote";
 import * as DB from "./db";
 import { authEvent } from "./events/auth";
 import * as Sentry from "./sentry";
-import { setUserId } from "./states/core";
 import { hideLoaderBar, showLoaderBar } from "./states/loader-bar";
 import {
   showErrorNotification,
@@ -210,35 +209,6 @@ export async function loadUser(_user: UserType): Promise<AccountLoad> {
   return result;
 }
 
-export async function onAuthStateChanged(
-  authInitialisedAndConnected: boolean,
-  user: UserType | null,
-): Promise<void> {
-  console.debug(`account controller ready`);
-
-  let userPromise: Promise<void> = Promise.resolve();
-
-  if (authInitialisedAndConnected) {
-    console.debug(`auth state changed, user ${user ? "true" : "false"}`);
-    if (user) {
-      setUserId(user.uid);
-      userPromise = loadUser(user).then(() => undefined);
-    } else {
-      setUserId(null);
-      DB.setSnapshot(undefined);
-    }
-  }
-
-  if (!authInitialisedAndConnected || !user) {
-    void Sentry.clearUser();
-  }
-
-  authEvent.dispatch({
-    type: "authStateChanged",
-    data: { isUserSignedIn: user !== null, loadPromise: userPromise },
-  });
-}
-
 export async function signInWithProvider(
   authMethod: AuthMethod,
   options: { rememberMe: boolean },
@@ -270,7 +240,7 @@ export async function addAuthProvider(options: {
   showLoaderBar();
   try {
     await requestOAuth(getAuthProvider(options.authMethod), true);
-    await refreshSession(false);
+    await refreshSession();
     authEvent.dispatch({ type: "authConfigUpdated" });
     showSuccessNotification(`${providerName} authentication added`);
   } catch (error) {
@@ -301,7 +271,7 @@ export async function removeAuthProvider(
     checkAuthResult(
       await getAuthClient().unlinkAccount({ accountId: account.id }),
     );
-    await refreshSession(false);
+    await refreshSession();
   } catch (e) {
     const message = createErrorMessage(
       e,
@@ -362,7 +332,7 @@ export async function reauthenticate(
     }
 
     await requestOAuth(authMethod);
-    const refreshed = await refreshSession(false);
+    const refreshed = await refreshSession();
     if (refreshed?.uid !== user.uid) {
       await authSignOut();
       throw new Error("Reauthenticate with the same account");

@@ -6,9 +6,6 @@ import { afterEach, expect, it, vi } from "vite-plus/test";
 
 const state = vi.hoisted(() => ({
   load: vi.fn(async () => new Promise<void>(() => undefined)),
-  init: vi.fn(async () => undefined),
-  observe: vi.fn(),
-  stop: vi.fn(),
   install: vi.fn(),
   restore: vi.fn(),
   activate: vi.fn(),
@@ -19,16 +16,6 @@ const state = vi.hoisted(() => ({
   theme: vi.fn(),
 }));
 vi.mock("../../src/app/browser-integrity", () => ({ lockMath: vi.fn() }));
-vi.mock("../../src/app/readiness", () => ({
-  authReadiness: () => ({ state: () => ({ status: "ready" }) }),
-}));
-vi.mock("../../src/ts/auth-client", () => ({
-  init: state.init,
-  observeAuthSession: () => {
-    state.observe();
-    return state.stop;
-  },
-}));
 vi.mock("../../src/ts/anim", () => ({ applyEngineSettings: vi.fn() }));
 vi.mock("../../src/ts/config/lifecycle", () => ({
   loadFromLocalStorage: state.load,
@@ -82,13 +69,11 @@ it("mounts without waiting for preferences/history and releases integrations bef
   for (let i = 0; i < 2; i++) {
     const view = render(() => <BrowserRuntime />);
     expect(view.getByTestId("theme")).toBeInTheDocument();
-    expect(state.init).not.toHaveBeenCalled();
     configEvent.dispatch({ key: "fullConfigChange" });
     expect(state.theme).toHaveBeenCalledTimes(i + 1);
     expect(Reflect.has(window, "toggleDebugLogs")).toBe(true);
     view.unmount();
     expect(Reflect.has(window, "toggleDebugLogs")).toBe(false);
-    expect(state.stop).not.toHaveBeenCalled();
     expect(state.restore).toHaveBeenCalledTimes(i + 1);
     expect(state.disposeSentry).toHaveBeenCalledTimes(i + 1);
     configEvent.dispatch({ key: "fullConfigChange" });

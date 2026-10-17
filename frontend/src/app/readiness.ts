@@ -61,5 +61,4 @@ export function createReadiness(): Readiness {
 }
 
 export const preferencesReadiness = createAppOwned(createReadiness);
-export const authReadiness = createAppOwned(createReadiness);
 export const configurationReadiness = createAppOwned(createReadiness);

@@ -2,8 +2,6 @@ import { vi } from "vite-plus/test";
 vi.mock("../../src/ts/auth-client", () => ({
   getAuthenticatedUser: () => null,
   isAuthAvailable: () => false,
-  authPromise: Promise.resolve(),
-  observeAuthSession: () => () => undefined,
   oauthRequestEvent: { subscribe: () => () => undefined, dispatch: vi.fn() },
   signOut: vi.fn(),
   getAuthClient: () => ({}),
@@ -13,6 +11,5 @@ vi.mock("../../src/ts/auth-client", () => ({
   updateProfile: vi.fn(),
   setUserState: vi.fn(),
   deleteUnfinishedUser: vi.fn(),
-  resetIgnoreAuthCallback: vi.fn(),
   signInWithPopup: vi.fn(),
 }));

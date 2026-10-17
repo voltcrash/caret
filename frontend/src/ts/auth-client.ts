@@ -1,10 +1,7 @@
 import { captureAccount } from "../app/account-scope";
 import { onCleanup } from "solid-js";
-import { envConfig } from "virtual:env-config";
 import { createAppOwned } from "../app/application";
-import { authReadiness } from "../app/readiness";
 import { googleSignUpEvent } from "./events/google-sign-up";
-import { SnapshotInitError } from "./utils/snapshot-init-error";
 import { operation } from "../data/operations";
 
 import { getAuthClient } from "../features/auth/client.client";
@@ -17,14 +14,8 @@ import {
 } from "../features/auth/state.client";
 export { getAuthenticatedUser, setUserState };
 
-type ReadyCallback = (success: boolean, user: AuthUser | null) => Promise<void>;
 const authState = createAppOwned(() => {
-  const state = {
-    revision: 0,
-    available: false,
-    ignoreAuthCallback: false,
-    readyCallback: undefined as ReadyCallback | undefined,
-  };
+  const state = { revision: 0, available: false };
   onCleanup(() => {
     state.revision++;
   });
@@ -34,7 +25,8 @@ const authState = createAppOwned(() => {
 import { checkAuthResult } from "../features/auth/result";
 export { checkAuthResult };
 
-export async function refreshSession(notify = true): Promise<AuthUser | null> {
+/** Reads the Better Auth session and linked providers into the user state. */
+export async function refreshSession(): Promise<AuthUser | null> {
   const state = authState();
   const revision = ++state.revision;
   const lease = captureAccount();
@@ -44,7 +36,6 @@ export async function refreshSession(notify = true): Promise<AuthUser | null> {
       throw new DOMException("Session changed", "AbortError");
     }
   };
-  const previous = getAuthenticatedUser();
   const session = checkAuthResult(
     await getAuthClient().getSession({
       fetchOptions: { signal: lease.signal },
@@ -72,79 +63,13 @@ export async function refreshSession(notify = true): Promise<AuthUser | null> {
   }
   assertCurrent();
   setUserState(user);
-  if (
-    notify &&
-    !authState().ignoreAuthCallback &&
-    (previous?.uid !== user?.uid || previous?.email !== user?.email)
-  ) {
-    setUserState(user);
-    await authState().readyCallback?.(true, user);
-  }
   return user;
 }
 
-export async function init(
-  callback: ReadyCallback,
-  checkAccount = true,
-): Promise<void> {
-  return authReadiness().start(async () => {
-    let lease = captureAccount();
-    authState().readyCallback = callback;
-    try {
-      if (envConfig.devOffline) {
-        authState().available = false;
-        setUserState(null);
-        // Match asynchronous network initialization so the app can mount listeners.
-        await Promise.resolve();
-        await callback(true, null);
-        return;
-      }
-      authState().available = true;
-      const user = await refreshSession(false);
-      lease = captureAccount();
-      if (user !== null && checkAccount) {
-        // A social sign-in can return before the username/captcha onboarding is complete.
-        try {
-          // Share the onboarding check with snapshot/config initialization.
-          const { loadAccountData } = await import("./queries/account");
-          await loadAccountData(user.uid);
-          lease.assertCurrent();
-        } catch (error) {
-          if (
-            !(error instanceof SnapshotInitError) ||
-            error.responseCode !== 404
-          ) {
-            throw error;
-          }
-          authState().ignoreAuthCallback = true;
-          googleSignUpEvent.dispatch({
-            signedInUser: { user },
-            isNewUser: true,
-          });
-          return;
-        }
-      }
-      lease.assertCurrent();
-      setUserState(user);
-      await callback(true, user);
-    } catch (error) {
-      if (
-        !lease.isCurrent() ||
-        (error instanceof DOMException && error.name === "AbortError")
-      ) {
-        return;
-      }
-      authState().available = false;
-      console.error("Better Auth failed to initialize", error);
-      setUserState(null);
-      await callback(false, null);
-    }
-  });
-}
 export function isAuthAvailable(): boolean {
   return authState().available;
 }
-/** Start's session owner reports availability; the rollback entry uses init. */
+/** The session owner reports availability once the session query settles. */
 export function setAuthAvailable(available: boolean): void {
   authState().available = available;
 }
@@ -157,15 +82,10 @@ export async function signOut(): Promise<void> {
   );
   if (!lease.isCurrent()) return;
   setUserState(null);
-  authState().ignoreAuthCallback = false;
-  await authState().readyCallback?.(true, null);
-}
-export function resetIgnoreAuthCallback(): void {
-  authState().ignoreAuthCallback = false;
 }
 export async function updateProfile(name: string): Promise<void> {
   checkAuthResult(await getAuthClient().updateUser({ name }));
-  await refreshSession(false);
+  await refreshSession();
 }
 export async function deleteUnfinishedUser(): Promise<void> {
   checkAuthResult(
@@ -179,54 +99,13 @@ export async function signInWithPopup(
   provider: SocialProvider,
   rememberMe: boolean,
 ): Promise<void> {
-  authState().ignoreAuthCallback = true;
-  try {
-    await requestOAuth(provider, false, rememberMe);
-    const user = await refreshSession(false);
-    if (!user) throw new Error("Sign in did not create a session");
-    const response = await operation("users.get");
-    if (response.status === 404) {
-      googleSignUpEvent.dispatch({ signedInUser: { user }, isNewUser: true });
-    } else if (response.ok) {
-      authState().ignoreAuthCallback = false;
-      setUserState(user);
-      await authState().readyCallback?.(true, user);
-    } else {
-      throw new Error("Failed to load account");
-    }
-  } catch (error) {
-    authState().ignoreAuthCallback = false;
-    throw error;
+  await requestOAuth(provider, false, rememberMe);
+  const user = await refreshSession();
+  if (!user) throw new Error("Sign in did not create a session");
+  const response = await operation("users.get");
+  if (response.status === 404) {
+    googleSignUpEvent.dispatch({ signedInUser: { user }, isNewUser: true });
+  } else if (!response.ok) {
+    throw new Error("Failed to load account");
   }
-}
-
-/** Better Auth refreshes and broadcasts sessions while a component owns this subscription. */
-export function observeAuthSession(): () => void {
-  if (envConfig.devOffline) return () => undefined;
-  let syncing = false;
-  return getAuthClient().useSession.subscribe((state) => {
-    if (
-      state.isPending ||
-      state.isRefetching ||
-      state.error !== null ||
-      authState().ignoreAuthCallback ||
-      syncing ||
-      !authState().available
-    ) {
-      return;
-    }
-    const current = getAuthenticatedUser();
-    if (
-      (state.data?.user.id ?? null) === (current?.uid ?? null) &&
-      state.data?.user.email === current?.email
-    ) {
-      return;
-    }
-    syncing = true;
-    void refreshSession()
-      .catch((error: unknown) => console.error("Session refresh failed", error))
-      .finally(() => {
-        syncing = false;
-      });
-  });
 }
