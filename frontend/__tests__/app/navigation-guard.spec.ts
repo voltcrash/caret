@@ -20,7 +20,7 @@ vi.mock("../../src/ts/states/notifications", () => ({
   showNoticeNotification: state.notice,
 }));
 
-import { canNavigate } from "../../src/ts/navigation/guard";
+import { canNavigate } from "../../src/app/navigation-guard.client";
 
 describe("navigation guard", () => {
   beforeEach(() => {

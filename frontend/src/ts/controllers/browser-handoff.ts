@@ -4,7 +4,7 @@ import {
   type BrowserHandoff,
 } from "@oxytype/schemas/browser-handoff";
 import { setConfig } from "../config/setters";
-import { navigate } from "../navigation/navigation";
+import { navigate } from "../../app/navigate";
 import { showModal } from "../states/modals";
 import {
   showErrorNotification,

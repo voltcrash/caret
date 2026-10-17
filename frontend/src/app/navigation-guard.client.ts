@@ -1,11 +1,11 @@
-import type { NavigateOptions } from "./navigation";
-import { showNoticeNotification } from "../states/notifications";
+import type { NavigateOptions } from "./navigate";
+import { showNoticeNotification } from "../ts/states/notifications";
 import {
   isTestActive,
   isTestRestarting,
   isResultCalculating,
-} from "../states/test";
-import { isFunboxActive } from "../../features/typing/runtime/funbox/list";
+} from "../ts/states/test";
+import { isFunboxActive } from "../features/typing/runtime/funbox/list";
 
 /** Router-independent test guard; hosts add their own transition state. */
 export function canNavigate(options: NavigateOptions = {}): boolean {

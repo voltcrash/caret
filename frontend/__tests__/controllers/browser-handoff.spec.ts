@@ -20,7 +20,7 @@ vi.mock("../../src/data/operations", () => ({
   },
 }));
 vi.mock("../../src/ts/config/setters", () => ({ setConfig: mocks.setConfig }));
-vi.mock("../../src/ts/navigation/navigation", () => ({
+vi.mock("../../src/app/navigate", () => ({
   navigate: mocks.navigate,
 }));
 vi.mock("../../src/ts/states/modals", () => ({ showModal: mocks.showModal }));

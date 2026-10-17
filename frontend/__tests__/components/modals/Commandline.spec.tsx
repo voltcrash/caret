@@ -81,7 +81,7 @@ vi.mock("../../../src/ts/input/hotkeys/utils", () => ({
     );
   },
 }));
-vi.mock("../../../src/ts/navigation/navigation", () => ({ navigate: vi.fn() }));
+vi.mock("../../../src/app/navigate", () => ({ navigate: vi.fn() }));
 
 import { show } from "../../../src/ts/commandline/commandline";
 import { ThemeIndicator } from "../../../src/ts/components/layout/footer/ThemeIndicator";

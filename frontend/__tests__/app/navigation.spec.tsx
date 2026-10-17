@@ -40,6 +40,7 @@ vi.mock("../../src/ts/states/notifications", () => ({
   showNoticeNotification: state.notice,
 }));
 
+import { navigate, replaceUrl } from "../../src/app/navigate";
 import {
   navigationHref,
   RouterNavigation,
@@ -47,7 +48,6 @@ import {
 import { LinkHost, RouterLink } from "../../src/components/link-host";
 import { Button } from "../../src/ts/components/common/Button";
 import { Link } from "../../src/ts/components/common/Link";
-import { navigate, replaceUrl } from "../../src/ts/navigation/navigation";
 
 function mount(
   path = "/",

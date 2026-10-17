@@ -1,7 +1,7 @@
 import { isTypingRouteActive } from "../../../features/typing/scope";
 import { isAnyPopupVisible } from "../../states/overlay-visibility";
 
-import { navigate } from "../../navigation/navigation";
+import { navigate } from "../../../app/navigate";
 import { restartTestEvent } from "../../events/test";
 import { hotkeys, quickRestartHotkeyMap } from "../../states/hotkeys";
 import { createHotkey } from "./utils";

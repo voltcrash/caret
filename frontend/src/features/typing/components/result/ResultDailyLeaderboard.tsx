@@ -1,8 +1,8 @@
 import { animate } from "animejs";
 import { JSXElement, Show } from "solid-js";
 
+import { navigate } from "../../../../app/navigate";
 import { getMutableConfig } from "../../../../ts/config/store";
-import { navigate } from "../../../../ts/navigation/navigation";
 import Format from "../../../../ts/singletons/format";
 import { resultState } from "../../../../ts/states/result";
 import { applyReducedMotion, getMode2 } from "../../../../ts/utils/misc";

@@ -9,8 +9,8 @@ import {
 import { z } from "zod";
 import { serialize } from "zod-urlsearchparams";
 
+import { replaceUrl } from "../../../app/navigate";
 import { useRef } from "../../hooks/useRef";
-import { replaceUrl } from "../../navigation/navigation";
 import {
   showErrorNotification,
   showSuccessNotification,

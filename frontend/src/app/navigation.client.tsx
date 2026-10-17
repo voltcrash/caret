@@ -1,8 +1,8 @@
 import { useBlocker, useRouter } from "@tanstack/solid-router";
 import { onCleanup } from "solid-js";
 
-import { canNavigate } from "../ts/navigation/guard";
-import { bindNavigation } from "../ts/navigation/navigation";
+import { bindNavigation } from "./navigate";
+import { canNavigate } from "./navigation-guard.client";
 
 /** Same-origin URL to a Router href; trailing slashes collapse like before. */
 export function navigationHref(url: string): string {

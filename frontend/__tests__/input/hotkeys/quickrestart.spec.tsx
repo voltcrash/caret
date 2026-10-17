@@ -38,7 +38,7 @@ vi.mock("../../../src/ts/input/input-element", () => ({
   isInputElementFocused: () => document.activeElement?.id === "wordsInput",
 }));
 vi.mock("../../../src/ts/states/composition", () => ({ getData: () => "" }));
-vi.mock("../../../src/ts/navigation/navigation", () => ({
+vi.mock("../../../src/app/navigate", () => ({
   navigate: mocks.navigate,
 }));
 vi.mock("../../../src/ts/events/test", () => ({

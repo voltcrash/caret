@@ -1,5 +1,5 @@
 import { operation } from "../../../data/operations";
-import { navigate } from "../../navigation/navigation";
+import { navigate } from "../../../app/navigate";
 import { isAuthenticated } from "../../states/core";
 import { Command, withValidation } from "../types";
 import { remoteValidation } from "../../utils/remote-validation";

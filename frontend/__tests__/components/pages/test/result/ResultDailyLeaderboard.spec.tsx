@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 const mocks = vi.hoisted(() => ({ navigate: vi.fn() }));
 
 vi.mock("animejs", () => ({ animate: vi.fn() }));
-vi.mock("../../../../../src/ts/navigation/navigation", () => ({
+vi.mock("../../../../../src/app/navigate", () => ({
   navigate: mocks.navigate,
 }));
 

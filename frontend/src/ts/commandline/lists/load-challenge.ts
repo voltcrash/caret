@@ -1,6 +1,6 @@
 import { getChallenges } from "@oxytype/challenges";
 import * as ChallengeController from "../../controllers/challenge-controller";
-import { navigate } from "../../navigation/navigation";
+import { navigate } from "../../../app/navigate";
 import * as TestLogic from "../../../features/typing/runtime/test-logic";
 import { capitalizeFirstLetterOfEachWord } from "../../utils/strings";
 import { Command, CommandsSubgroup } from "../types";
