@@ -90,3 +90,21 @@ configuration; sanitized metadata is included in the rollback evidence.
 No unresolved product-scope decision blocks Stage 1. Actual package compatibility,
 edge metrics, final release IDs, migration staging and old-tab acceptance are
 explicit Stage 1/7 implementation gates, not silently completed by this document.
+
+## Stage 7 delivery state
+
+Start now owns the production/staging Wrangler configs, build, artifact receipt,
+validation, migrations and deployment commands; `production-release.yml` builds,
+archives (90 days) and deploys the matched Start artifact. It runs only when the
+repository variable `START_PRODUCTION_ENABLED` is `true`; Stage 8 sets it after
+acceptance. Until then production stays on the anchored legacy version above.
+
+The replacement `/sw.js` keeps the rollback worker's URL and scope, replaces it
+at once on first install, retires workbox caches and keeps rollback hashed
+assets for one generation. Start builds precache guest typing per build, keep
+one previous Start cache, exclude auth/functions/APIs/mutations/private HTML and
+never activate or reload during typing or a pending save. Builds retain the
+previous deployment's public chunk graph for open tabs. Staging rehearsed
+legacy → Start → legacy and Start → Start rollbacks with D1 rows unchanged
+([evidence](evidence/stage-7-staging-deployments.json)). Re-observe the
+production anchor's rollback availability immediately before Stage 8 cutover.
