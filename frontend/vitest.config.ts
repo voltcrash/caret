@@ -4,11 +4,11 @@ import { envConfig } from "./vite-plugins/env-config";
 import { devtoolsEntry } from "./vite-plugins/devtools-entry";
 import solidPlugin from "vite-plugin-solid";
 import { resolve } from "node:path";
-import { rollbackOperationTransport } from "./vite-plugins/rollback-operations";
+import { operationTransport } from "./vite-plugins/operation-transport";
 
 const plugins = [
   // Unit tests never load server functions; operations answer from a fake.
-  rollbackOperationTransport(
+  operationTransport(
     resolve(import.meta.dirname, "__tests__/__harness__/operations.ts"),
   ),
   devtoolsEntry({ enabled: false }),

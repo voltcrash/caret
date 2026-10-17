@@ -28,9 +28,3 @@ export const clientOnlyFeatureFiles = [
   "src/features/typing/lifecycle.ts",
   "src/features/typing/scope.ts",
 ];
-
-/**
- * Rollback-only page system (Stage 8 deletes it). Start's client build must
- * never bundle it; typing route entry/exit replaced its page lifecycle.
- */
-export const rollbackOnlyFiles = ["src/rollback/**"];

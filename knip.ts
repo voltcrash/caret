@@ -22,8 +22,7 @@ export default {
         "src/ts/types/*.d.ts",
         "src/styles/tailwind.css",
         "scripts/*.{ts,cjs}",
-        // Vite's rollback binding and Vitest's operation map are aliased entries.
-        "src/rollback/operations.ts",
+        // Vitest's operation map is an aliased entry (operation-transport).
         "__tests__/__harness__/operations.ts",
         // Built-Worker test entry, selected by `vp build --mode runtime-test`.
         "__tests__/start/worker-entry.ts",

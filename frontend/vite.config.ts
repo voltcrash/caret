@@ -15,7 +15,6 @@ import { startServiceWorker } from "./vite-plugins/service-worker";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import {
   clientOnlyFeatureFiles,
-  rollbackOnlyFiles,
   ssrSafeLegacyFiles,
 } from "./vite-plugins/import-boundaries";
 
@@ -110,7 +109,7 @@ export default defineConfig(({ mode }) => {
           client: {
             specifiers: [/^@oxytype\/backend/],
             // User file lists replace Start's defaults; keep `.server` denied.
-            files: ["**/backend/src/**", "**/*.server.*", ...rollbackOnlyFiles],
+            files: ["**/backend/src/**", "**/*.server.*"],
           },
           // Legacy modules are browser state unless explicitly SSR-safe.
           // Patterns match root-relative paths.

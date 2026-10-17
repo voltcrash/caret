@@ -4,7 +4,6 @@ import { dirname, matchesGlob, relative, resolve } from "node:path";
 
 import {
   clientOnlyFeatureFiles,
-  rollbackOnlyFiles,
   ssrSafeLegacyFiles,
 } from "../../vite-plugins/import-boundaries";
 
@@ -146,7 +145,7 @@ describe("source layer boundaries", () => {
     ).toEqual([]);
   });
 
-  it("never reaches the rollback page system from Start routes", () => {
+  it("reaches the typing leaf from Start routes", () => {
     const reached = new Map<string, string>();
     const queue = files(resolve(src, "routes")).map((file) =>
       relative(root, file),
@@ -159,17 +158,6 @@ describe("source layer boundaries", () => {
         queue.push(edge.to);
       }
     }
-    const path = (file: string): string[] => {
-      const parent = reached.get(file);
-      return parent === undefined || parent === file
-        ? [file]
-        : [...path(parent), file];
-    };
-    expect(
-      [...reached.keys()]
-        .filter((file) => is(file, ...rollbackOnlyFiles))
-        .map((file) => path(file).join(" → ")),
-    ).toEqual([]);
     expect(reached.has("src/features/typing/page.client.tsx")).toBe(true);
   });
 
@@ -181,12 +169,10 @@ describe("source layer boundaries", () => {
     ).toEqual([]);
   });
 
-  it("keeps client contract transports confined to the rollback build", () => {
+  it("keeps HTTP contract clients out of web code", () => {
     expect(
       edges.filter(
-        (edge) =>
-          !is(edge.from, ...rollbackOnlyFiles) &&
-          (edge.to === "@ts-rest/core" || edge.to.startsWith("hono")),
+        (edge) => edge.to === "@ts-rest/core" || edge.to.startsWith("hono"),
       ),
     ).toEqual([]);
   });
