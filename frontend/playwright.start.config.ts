@@ -24,7 +24,9 @@ export default defineConfig<{ startSession: string | undefined }>({
   ],
   webServer: {
     command: "vp exec tsx scripts/serve-start-fixture.ts",
-    url: "http://127.0.0.1:4185",
+    // The Worker listens before fixture sessions/config are seeded, so
+    // readiness is the fixture's own signal, not the first HTTP response.
+    wait: { stdout: /Start fixture ready/ },
     reuseExistingServer: false,
   },
 });
