@@ -700,10 +700,7 @@
       ],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": [
-      "frontend/src/data/leaderboards.ts",
-      "frontend/src/ts/queries/leaderboards.ts"
-    ],
+    "browserCallers": ["frontend/src/data/leaderboards.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
@@ -737,10 +734,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": [
-      "frontend/src/data/leaderboards.ts",
-      "frontend/src/ts/queries/leaderboards.ts"
-    ],
+    "browserCallers": ["frontend/src/data/leaderboards.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
@@ -771,10 +765,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": [
-      "frontend/src/data/leaderboards.ts",
-      "frontend/src/ts/queries/leaderboards.ts"
-    ],
+    "browserCallers": ["frontend/src/data/leaderboards.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -804,10 +795,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": [
-      "frontend/src/data/leaderboards.ts",
-      "frontend/src/ts/queries/leaderboards.ts"
-    ],
+    "browserCallers": ["frontend/src/data/leaderboards.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
@@ -841,10 +829,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": [
-      "frontend/src/data/leaderboards.ts",
-      "frontend/src/ts/queries/leaderboards.ts"
-    ],
+    "browserCallers": ["frontend/src/data/leaderboards.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
@@ -875,10 +860,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": [
-      "frontend/src/data/leaderboards.ts",
-      "frontend/src/ts/queries/leaderboards.ts"
-    ],
+    "browserCallers": ["frontend/src/data/leaderboards.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
@@ -1016,7 +998,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/ts/queries/psas.ts"],
+    "browserCallers": ["frontend/src/features/announcements/psas.client.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
@@ -1046,10 +1028,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": [
-      "frontend/src/data/public.ts",
-      "frontend/src/ts/queries/public.ts"
-    ],
+    "browserCallers": ["frontend/src/data/public.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
@@ -1079,10 +1058,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": [
-      "frontend/src/data/public.ts",
-      "frontend/src/ts/queries/public.ts"
-    ],
+    "browserCallers": ["frontend/src/data/public.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
