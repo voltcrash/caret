@@ -142,3 +142,28 @@ it("settles guests with the session and registered actors after their load", asy
   await tick();
   expect(settled()).toBe(true);
 });
+
+it("retries a transient load failure once back online and stops after success", async () => {
+  const app = requireApplication();
+  loads
+    .mockImplementationOnce(async () => "unavailable" as never)
+    .mockImplementationOnce(async () => "loaded" as never);
+  app.queryClient.setQueryData(sessionKey, {
+    user: user("retry"),
+    signUpEnabled: true,
+  });
+  render(() => (
+    <QueryClientProvider client={app.queryClient}>
+      <AccountRuntime />
+    </QueryClientProvider>
+  ));
+  setUserState(user("retry"));
+  await tick();
+  expect(loads).toHaveBeenCalledTimes(1);
+  window.dispatchEvent(new Event("online"));
+  await tick();
+  expect(loads).toHaveBeenCalledTimes(2);
+  window.dispatchEvent(new Event("online"));
+  await tick();
+  expect(loads).toHaveBeenCalledTimes(2);
+});

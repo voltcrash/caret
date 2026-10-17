@@ -102,7 +102,25 @@ const authenticationMemos = Object.fromEntries(
   }),
 );
 
-async function getDataAndInit(): Promise<boolean> {
+/**
+ * `unauthenticated`: the server rejected the session. `unavailable`: the data
+ * could not be loaded (offline, timeout, server error); the session stands.
+ */
+export type AccountLoad = "loaded" | "unauthenticated" | "unavailable";
+
+function isAuthenticationFailure(error: unknown): boolean {
+  if (error instanceof SnapshotInitError) {
+    return error.responseCode === 401 || error.responseCode === 403;
+  }
+  return (
+    error instanceof Error &&
+    error.message.startsWith(
+      "Snapshot didn't initialize due to lacking authentication",
+    )
+  );
+}
+
+async function getDataAndInit(): Promise<AccountLoad> {
   const lease = captureAccount();
   try {
     console.log("getting account data");
@@ -145,9 +163,9 @@ async function getDataAndInit(): Promise<boolean> {
     lease.assertCurrent();
     void Sentry.setUser(snapshot.uid, snapshot.name);
 
-    return true;
+    return "loaded";
   } catch (error) {
-    if (!lease.isCurrent()) return false;
+    if (!lease.isCurrent()) return "unavailable";
     console.error(error);
     if (error instanceof SnapshotInitError) {
       if (error.responseCode === 429) {
@@ -169,19 +187,27 @@ async function getDataAndInit(): Promise<boolean> {
     } else {
       showErrorNotification("Failed to get user data", { error });
     }
-    return false;
+    return isAuthenticationFailure(error) ? "unauthenticated" : "unavailable";
   }
 }
 
-export async function loadUser(_user: UserType): Promise<void> {
+/**
+ * Only a server rejection ends the session. A network loss, timeout or server
+ * error while loading (e.g. reconnecting after an offline start) keeps it, so
+ * the caller can retry instead of revoking a valid sign-in.
+ */
+export async function loadUser(_user: UserType): Promise<AccountLoad> {
   const lease = captureAccount();
-  const loaded = await getDataAndInit();
-  if (!lease.isCurrent()) return;
-  if (!loaded) {
+  const result = await getDataAndInit();
+  if (!lease.isCurrent()) return result;
+  if (result === "unauthenticated") {
     signOut();
-    return;
+    return result;
   }
-  authEvent.dispatch({ type: "snapshotUpdated", data: { isInitial: true } });
+  if (result === "loaded") {
+    authEvent.dispatch({ type: "snapshotUpdated", data: { isInitial: true } });
+  }
+  return result;
 }
 
 export async function onAuthStateChanged(
@@ -196,7 +222,7 @@ export async function onAuthStateChanged(
     console.debug(`auth state changed, user ${user ? "true" : "false"}`);
     if (user) {
       setUserId(user.uid);
-      userPromise = loadUser(user);
+      userPromise = loadUser(user).then(() => undefined);
     } else {
       setUserId(null);
       DB.setSnapshot(undefined);

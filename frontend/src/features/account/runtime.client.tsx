@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/solid-query";
-import { createEffect, createMemo, on } from "solid-js";
+import { createEffect, createMemo, on, onCleanup } from "solid-js";
 
 import { requireApplication } from "../../app/application";
-import { loadUser } from "../../ts/auth";
+import { loadUser, type AccountLoad } from "../../ts/auth";
 import { setAuthAvailable } from "../../ts/auth-client";
 import { sessionOptions } from "../auth/session";
 import { setLoadedAccount } from "./settled.client";
@@ -35,10 +35,38 @@ export function AccountRuntime(): null {
       setLoadedAccount(null);
       if (uid === undefined || user === undefined) return;
       const lease = account.capture();
-      void loadUser(user).then(() => {
-        if (lease.isCurrent()) setLoadedAccount(uid);
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      let wake: (() => void) | undefined;
+      onCleanup(() => {
+        clearTimeout(timer);
+        if (wake !== undefined) window.removeEventListener("online", wake);
       });
+      // Back online or after the delay, whichever comes first.
+      const retryAfter = async (delay: number): Promise<void> =>
+        new Promise((resolve) => {
+          wake = () => {
+            clearTimeout(timer);
+            window.removeEventListener("online", wake as () => void);
+            wake = undefined;
+            resolve();
+          };
+          timer = setTimeout(wake, delay);
+          window.addEventListener("online", wake);
+        });
+      void (async () => {
+        let result: AccountLoad = await loadUser(user);
+        if (lease.isCurrent()) setLoadedAccount(uid);
+        for (const delay of retryDelaysMs) {
+          if (result !== "unavailable" || !lease.isCurrent()) return;
+          await retryAfter(delay);
+          if (!lease.isCurrent()) return;
+          result = await loadUser(user);
+        }
+      })();
     }),
   );
   return null;
 }
+
+/** Bounded retries for transient account-load failures; no reload loop. */
+const retryDelaysMs = [5_000, 15_000, 45_000];
