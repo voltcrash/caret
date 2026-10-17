@@ -8,7 +8,7 @@ need no build.
 
 For frontend-only work, `vp run dev-fe` starts Solid/Vite on port 3000. To run the
 backend, copy `backend/.dev.vars.example` to `backend/.dev.vars`, apply local D1
-migrations with `vp run --filter @oxytype/backend db:migrate`, then `vp run dev-be`.
+migrations with `vp run --filter @oxytype/frontend db:migrate`, then `vp run dev-be`.
 Wrangler serves the API with local D1 on port 5005.
 `vp run dev` starts the full workspace. Stop servers with Ctrl+C.
 
