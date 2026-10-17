@@ -1,8 +1,6 @@
-import { createAppSignal, appSignal } from "../../app/state";
+import { appSignal } from "../../app/state";
 import { Accessor, Setter } from "solid-js";
-import { serialize as serializeUrlSearchParams } from "zod-urlsearchparams";
 import {
-  applyUrlParams,
   defaultSelection,
   type LeaderboardType,
   type LeaderboardUrlParams,
@@ -10,47 +8,21 @@ import {
   pageSize,
   type Selection,
   SelectionSchema,
-  urlParams,
 } from "../../features/leaderboards/selection";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-import { replaceUrl } from "../navigation/navigation";
 
 export { pageSize };
 export type { LeaderboardType, LeaderboardUrlParams, Selection };
 export { LeaderboardUrlParamsSchema };
 
+/** Last browsed board, remembered for bare `/leaderboards` visits. */
 const [getSelectionLs, setSelection] = appSignal(lsSelection);
-export const [getPage, setPage] = createAppSignal(0);
-export const [getGoToUserPage, setGoToUserPage] = createAppSignal(false);
 
 export const getSelection = (): Selection => {
   return getSelectionLs();
 };
 
 export { setSelection };
-
-export function readLeaderboardGetParameters(
-  params: LeaderboardUrlParams | undefined,
-): void {
-  const view = applyUrlParams(getSelection(), params ?? {}, getPage());
-  if (params?.type === undefined && params?.client === undefined) return;
-  setSelection(view.selection);
-  if (params.type !== undefined) setGoToUserPage(view.goToUserPage);
-  setPage(view.page);
-}
-
-export function updateGetParameters(
-  selection: Selection,
-  pageNumber: number,
-): void {
-  const params = urlParams(selection, pageNumber);
-  const search = serializeUrlSearchParams({
-    schema: LeaderboardUrlParamsSchema,
-    data: params,
-  });
-  const newUrl = `${window.location.pathname}?${search.toString()}`;
-  void replaceUrl(newUrl);
-}
 
 function lsSelection(): [Accessor<Selection>, Setter<Selection>] {
   return useLocalStorage<Selection>({

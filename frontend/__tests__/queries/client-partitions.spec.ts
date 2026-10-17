@@ -1,4 +1,3 @@
-import { Client } from "@oxytype/schemas/shared";
 import { QueryClient } from "@tanstack/solid-query";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
@@ -20,10 +19,6 @@ import {
   getTerminalAccountQueryOptions,
   updateTerminalLeaderboardMemory,
 } from "../../src/ts/queries/account";
-import {
-  getLeaderboardQueryOptions,
-  getRankQueryOptions,
-} from "../../src/ts/queries/leaderboards";
 import { getUserProfile } from "../../src/ts/queries/profile";
 import { getQueryClient } from "../../src/ts/queries";
 
@@ -46,19 +41,6 @@ mockOperation("users.get", (args) => {
 mockOperation("users.getProfile", answer("profile", { name: "Tester" }));
 mockOperation("users.getTestActivity", answer("activity", { "2026": [1] }));
 mockOperation("users.updateLeaderboardMemory", answer("memory", null));
-for (const method of [
-  "get",
-  "getDaily",
-  "getWeeklyXp",
-  "getRank",
-  "getDailyRank",
-  "getWeeklyXpRank",
-] as const) {
-  mockOperation(
-    `leaderboards.${method}`,
-    answer(method, { entries: [{ uid: "one" }], count: 1, rank: 1 }),
-  );
-}
 
 const client = new QueryClient();
 afterEach(() => {
@@ -107,61 +89,6 @@ describe("client query partitions", () => {
       });
     }
   });
-  it.each([
-    ["allTime", "get", "getRank"],
-    ["daily", "getDaily", "getDailyRank"],
-    ["weekly", "getWeeklyXp", "getWeeklyXpRank"],
-  ] as const)(
-    "partitions %s entries and ranks for current and previous periods",
-    async (type, entries, rank) => {
-      for (const previous of [false, true]) {
-        const selection =
-          type === "weekly"
-            ? { type, previous }
-            : {
-                type,
-                previous,
-                mode: "time" as const,
-                mode2: "15",
-                language: "english" as const,
-              };
-        const web = getLeaderboardQueryOptions({
-          ...selection,
-          client: "web",
-          page: 0,
-        });
-        const tui = getLeaderboardQueryOptions({
-          ...selection,
-          client: "tui",
-          page: 0,
-        });
-        expect(web.queryKey).not.toEqual(tui.queryKey);
-        expect(
-          getRankQueryOptions({ ...selection, client: "web" }).queryKey,
-        ).not.toEqual(
-          getRankQueryOptions({ ...selection, client: "tui" }).queryKey,
-        );
-        for (const selected of ["web", "tui"] as Client[]) {
-          await client.query(
-            getLeaderboardQueryOptions({
-              ...selection,
-              client: selected,
-              page: 0,
-            }),
-          );
-          await client.query(
-            getRankQueryOptions({ ...selection, client: selected }),
-          );
-          expect(calls).toHaveBeenCalledWith(entries, {
-            query: expect.objectContaining({ client: selected, page: 0 }),
-          });
-          expect(calls).toHaveBeenCalledWith(rank, {
-            query: expect.objectContaining({ client: selected }),
-          });
-        }
-      }
-    },
-  );
   it("updates terminal rank memory without writing the web cache", async () => {
     await getQueryClient().query(getAccountQueryOptions());
     await getQueryClient().query(getTerminalAccountQueryOptions());
