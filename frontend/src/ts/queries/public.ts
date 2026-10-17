@@ -1,10 +1,4 @@
 import { queryOptions } from "@tanstack/solid-query";
-import {
-  bucketSpeedHistogram,
-  formatTypingStats,
-  type TypingStatsDisplay,
-} from "../../features/about/stats";
-import { operation } from "../../data/operations";
 import { getContributorsList, getReleaseHistory } from "../utils/json-data";
 import {
   releaseNotesToHtml,
@@ -16,8 +10,6 @@ import { format as dateFormat } from "date-fns/format";
 const queryKeys = {
   root: () => baseKey("public"),
   contributors: () => [...queryKeys.root(), "contributors"],
-  typingStats: () => [...queryKeys.root(), "typingStats"],
-  speedHistogram: () => [...queryKeys.root(), "speedHistogram"],
   versionHistory: () => [...queryKeys.root(), "versionHistory"],
 };
 
@@ -31,20 +23,6 @@ export const getContributorsQueryOptions = () =>
     staleTime,
   });
 
-export const getTypingStatsQueryOptions = () =>
-  queryOptions({
-    queryKey: queryKeys.typingStats(),
-    queryFn: fetchTypingStats,
-    staleTime,
-  });
-
-export const getSpeedHistogramQueryOptions = () =>
-  queryOptions({
-    queryKey: queryKeys.speedHistogram(),
-    queryFn: fetchSpeedHistogram,
-    staleTime,
-  });
-
 export const getVersionHistoryQueryOptions = () =>
   queryOptions({
     queryKey: queryKeys.versionHistory(),
@@ -52,32 +30,6 @@ export const getVersionHistoryQueryOptions = () =>
     // Releases ship daily, so reopening the modal should pick up new ones.
     staleTime: 1000 * 60 * 5,
   });
-
-async function fetchSpeedHistogram(): Promise<
-  ReturnType<typeof bucketSpeedHistogram>
-> {
-  const response = await operation("public.getSpeedHistogram", {
-    query: {
-      language: "english",
-      mode: "time",
-      mode2: "60",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(response.message);
-  }
-  return bucketSpeedHistogram(response.data);
-}
-
-async function fetchTypingStats(): Promise<TypingStatsDisplay> {
-  const response = await operation("public.getTypingStats");
-
-  if (!response.ok) {
-    throw new Error(response.message);
-  }
-  return formatTypingStats(response.data);
-}
 
 async function fetchVersionHistory(): Promise<VersionHistoryRelease[]> {
   const releases = await getReleaseHistory();

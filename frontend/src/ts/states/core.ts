@@ -41,10 +41,6 @@ export function setUserId(actor: string | null): void {
 }
 export const isAuthenticated = (): boolean => getUserId() !== null;
 
-export const [getSelectedProfileName, setSelectedProfileName] = createAppSignal<
-  string | undefined
->(undefined);
-
 export function showCommandLineForConfig(
   selector: CommandlineSubgroupKey,
 ): void {

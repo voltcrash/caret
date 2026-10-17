@@ -1,8 +1,4 @@
-import {
-  isAppLoading,
-  getMediaQueryDebugLevel,
-  isFocusCursorHidden,
-} from "../../states/app";
+import { getMediaQueryDebugLevel, isFocusCursorHidden } from "../../states/app";
 import {
   getCrt,
   getFunboxBodyClasses,
@@ -13,7 +9,6 @@ import { cn } from "../../utils/cn";
 import { isColorDark } from "../../utils/colors";
 
 const owned = new Set([
-  "loading",
   "darkMode",
   "crtmode",
   "ignore-reduced-motion",
@@ -35,7 +30,6 @@ export function bodyClass(current: string): string {
     isColorDark(getTheme().bg) && "darkMode",
     getCrt() !== null && "crtmode",
     isFunboxReducedMotionIgnored() && "ignore-reduced-motion",
-    isAppLoading() && "loading",
     isFocusCursorHidden() &&
       "cursor-none [&_a]:cursor-none! [&_button]:cursor-none!",
     getMediaQueryDebugLevel() > 0 &&

@@ -1,11 +1,6 @@
-import { createEffect, JSXElement, onCleanup, ParentProps } from "solid-js";
+import { createEffect, onCleanup } from "solid-js";
 
-import {
-  scrollerClass,
-  scrollerStyle,
-} from "../../../components/layout/scroller";
-import { useRef } from "../../hooks/useRef";
-import { getHeaderBottom, setPageScroller } from "../../states/page-layout";
+import { setPageScroller } from "../../states/page-layout";
 import { isTestActive } from "../../states/test";
 
 /** Registers the page scroll container and guards overscroll for the app. */
@@ -28,21 +23,4 @@ export function usePageScroller(
     setPageScroller(undefined);
     document.documentElement.style.overscrollBehaviorY = "";
   });
-}
-
-export function PageScroller(
-  props: ParentProps<{ fixed: boolean }>,
-): JSXElement {
-  const [ref, element] = useRef<HTMLDivElement>();
-  usePageScroller(element, () => props.fixed);
-
-  return (
-    <div
-      ref={ref}
-      class={scrollerClass(props.fixed)}
-      style={scrollerStyle(props.fixed, getHeaderBottom())}
-    >
-      {props.children}
-    </div>
-  );
 }
