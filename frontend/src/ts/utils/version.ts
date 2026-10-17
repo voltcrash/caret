@@ -11,21 +11,11 @@ const memoryLS = new LocalStorageWithSchema({
   fallback: "",
 });
 
-function purgeCaches(): void {
-  if (!("caches" in window)) return;
-  void caches.keys().then(function (names) {
-    for (const name of names) void caches.delete(name);
-  });
-}
-
 /**
- * `purgeCaches` keeps the rollback build's release-change cache purge. The
- * Start service worker versions its caches per build, so purging there would
- * only discard the offline shell it just installed.
+ * Release check for the version indicator. Caches are never purged here: the
+ * service worker versions them per build and owns their lifetime.
  */
-export async function fetchLatestVersion(
-  options: { purgeCaches: boolean } = { purgeCaches: true },
-): Promise<{
+export async function fetchLatestVersion(): Promise<{
   text: string;
   isNew: boolean;
 } | null> {
@@ -44,7 +34,6 @@ export async function fetchLatestVersion(
 
   if (isNew || memoryVersion === "") {
     memoryLS.set(currentVersion);
-    if (options.purgeCaches) purgeCaches();
   }
 
   return {

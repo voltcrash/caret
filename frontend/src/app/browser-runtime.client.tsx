@@ -3,11 +3,11 @@ import { AnnouncementsRuntime } from "../features/announcements/runtime.client";
 import { AuthRuntime } from "../features/auth/runtime.client";
 import { UpdateRuntime } from "../features/update/runtime.client";
 import PlatformRuntime from "./platform-runtime.client";
-/** Native Start owner. Rollback imports only platform-runtime. */
+/** Browser integrations owned by the application root; removed with it. */
 export default function BrowserRuntime() {
   return (
     <>
-      <PlatformRuntime serviceWorkerOwnsCaches />
+      <PlatformRuntime />
       <AuthRuntime />
       <AccountRuntime />
       <UpdateRuntime />

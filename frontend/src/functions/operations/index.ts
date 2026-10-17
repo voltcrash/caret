@@ -11,7 +11,7 @@ import * as usersFns from "./users";
 
 /**
  * Server functions the browser operation client may call, by operation ID.
- * The rollback build substitutes its HTTP transport for this module.
+ * Unit tests and Storybook substitute a stand-in map for this module.
  */
 export const webOperations = {
   "configs.delete": configsFns.configsDelete,

@@ -30,21 +30,10 @@ describe("release version check", () => {
     vi.unstubAllGlobals();
   });
 
-  it("purges caches on a release change for the rollback build", async () => {
-    const { fetchLatestVersion } = await import("../../src/ts/utils/version");
-    await expect(fetchLatestVersion()).resolves.toEqual({
-      text: "26.10.16",
-      isNew: false,
-    });
-    await vi.waitFor(() => {
-      expect(deleted).toEqual(["oxytype-start-build", "oxytype-build-assets"]);
-    });
-  });
-
-  it("leaves service-worker owned caches alone", async () => {
+  it("records a new release without purging service-worker caches", async () => {
     localStorage.setItem("lastSeenVersion", JSON.stringify("26.10.15"));
     const { fetchLatestVersion } = await import("../../src/ts/utils/version");
-    await expect(fetchLatestVersion({ purgeCaches: false })).resolves.toEqual({
+    await expect(fetchLatestVersion()).resolves.toEqual({
       text: "26.10.16",
       isNew: true,
     });
