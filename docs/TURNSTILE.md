@@ -20,7 +20,7 @@ See [staging setup](STAGING_SETUP.md) for ignored files and deployment commands.
 Local development uses the official [test keys](https://developers.cloudflare.com/turnstile/troubleshooting/testing/):
 
 ```dotenv
-# backend/.dev.vars; MODE=dev only
+# frontend/.dev.vars; MODE=dev only
 TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
 # frontend/.env.local; dev defaults to this if omitted
 TURNSTILE_SITE_KEY=1x00000000000000000000AA

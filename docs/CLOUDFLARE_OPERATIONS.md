@@ -37,12 +37,13 @@ vp lint --type-aware --type-check --format agent backend
 vp run --filter @oxytype/backend test
 vp run --filter @oxytype/backend integration-test
 vp -C backend test run __tests__/d1/http.spec.ts
-vp run build-be
+vp run --filter @oxytype/frontend test:start
 ```
 
 Start generates retained API docs and uses curated frontend/static assets.
-Private backend editor/config assets never enter the public asset directory. The D1 suite runs actual SQLite in workerd; unit tests preserve
-controller/HTTP contracts.
+Private backend editor/config assets never enter the public asset directory.
+The D1 suite runs actual SQLite in workerd through the same backend handlers
+Start mounts under `/api`.
 
 ## Staging deployment
 
@@ -53,7 +54,6 @@ Auth URL: `https://oxytype-api-staging.voltcrash.workers.dev/api/auth`. D1: `oxy
 Queues: `oxytype-staging-tasks` and `oxytype-staging-dlq`.
 Start delivery uses frontend/wrangler.staging.json; production uses its separate
 frontend/wrangler.production.json. Preserve existing remote auth/OAuth secrets.
-The rollback Hono build remains a validation target until Stage 8.
 
 ```sh
 vp run --filter @oxytype/frontend build:staging-site

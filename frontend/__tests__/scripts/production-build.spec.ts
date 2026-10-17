@@ -115,7 +115,6 @@ describe("production build command", () => {
         private: true,
         scripts: {
           "build-fe": "vp run --filter @oxytype/frontend build",
-          "build-be": "vp run --filter @oxytype/backend build",
         },
       }),
     );

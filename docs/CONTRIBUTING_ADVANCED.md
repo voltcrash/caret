@@ -6,47 +6,42 @@ Windows, disable Git autocrlf before cloning. Install dependencies with
 `vp install --frozen-lockfile`. Shared packages export TypeScript source and
 need no build.
 
-For frontend-only work, `vp run dev-fe` starts Solid/Vite on port 3000. To run the
-backend, copy `backend/.dev.vars.example` to `backend/.dev.vars`, apply local D1
-migrations with `vp run --filter @oxytype/frontend db:migrate`, then `vp run dev-be`.
-Wrangler serves the API with local D1 on port 5005.
-`vp run dev` starts the full workspace. Stop servers with Ctrl+C.
+`vp run dev` starts TanStack Start on port 3000: document, assets, server
+functions and `/api` run in local workerd with local D1. First copy
+`frontend/.dev.vars.example` to `frontend/.dev.vars` and apply migrations with
+`vp run --filter @oxytype/frontend db:migrate`. Stop servers with Ctrl+C.
 
 ### Lightweight frontend development
 
-`vp run dev-fe` keeps HMR enabled and skips automatic linting, signal tracking,
-Solid/TanStack devtools, Vite inspection, CSS sourcemaps and bulk modal prefetching.
-Command palette, dev options and the event-log viewer load when first opened.
-API routers initialize on their first request. Development also skips hover page
-prefetching and chart warmup; the first visit/open may take longer. Production
-retains speculative prefetching and its build plugins.
+`vp run dev` keeps HMR enabled and skips automatic linting, Solid/TanStack
+devtools, Vite inspection and result-chart warmup. Command palette, dev options
+and the event-log viewer load when first opened. Router intent preloading stays
+on.
 
-For UI/typing work without a backend, run `DEV_OFFLINE=true vp run dev-fe`.
+For UI/typing work without a backend, run
+`vp run --filter @oxytype/frontend dev:offline`.
 This uses shared local configuration defaults, skips auth/session subscriptions,
 blocks API requests and disables query retries. A banner identifies this mode.
 Login, saved results, account data and server features require normal development
 with a backend. Local assets/languages still load normally; network-dependent
-funboxes still require their external services. Production builds ignore this flag.
+funboxes still require their external services. Production builds never use this mode.
 
 Enable diagnostics as needed, through environment variables or `frontend/.env`:
 
 - `DEV_LINT=fast`: automatic lint without type checking.
 - `DEV_LINT=true`: automatic lint plus type-aware/type checks.
-- `DEV_TOOLS=true`: Solid/TanStack devtools and signal tracking.
+- `DEV_TOOLS=true`: Solid/TanStack devtools overlays.
 - `DEV_INSPECT=true`: Vite plugin inspection at `/__inspect/`.
-- `DEV_CSS_SOURCEMAPS=true`: original CSS locations in browser devtools.
-- `DEV_PREFETCH=true`: hover page prefetching and result-chart warmup.
-- `DEV_OFFLINE=true`: frontend-only configuration with backend traffic disabled.
+- `DEV_PREFETCH=true`: result-chart warmup during tests.
 
 Restart the server after changing these flags. Automatic lint uses a 750 ms
 debounce. Run `vp run lint-fe` for full frontend checks on demand; commit hooks
 and CI also check changes.
 
 ```sh
-DEV_TOOLS=true vp run dev-fe
-DEV_LINT=fast DEV_INSPECT=true vp run dev-fe
-DEV_OFFLINE=true vp run dev-fe
-DEV_PREFETCH=true vp run dev-fe
+DEV_TOOLS=true vp run dev
+DEV_LINT=fast DEV_INSPECT=true vp run dev
+DEV_PREFETCH=true vp run dev
 ```
 
 Use one server per actively edited checkout. Additional tabs on that server share
@@ -54,8 +49,8 @@ its transform cache; separate worktrees need separate servers. For a reference
 checkout, build once and run `vp run --filter @oxytype/frontend start`; rebuilding
 is required to see subsequent changes.
 For a separate preview port, run `vp preview --port 3101` from `frontend` after
-`vp run build-fe` completes at the repository root. A production build requires
-`TURNSTILE_SITE_KEY`; built previews use production configuration.
+`vp run build` completes at the repository root; preview runs the built Worker
+in workerd. A production build requires `TURNSTILE_SITE_KEY`.
 
 Keep browser devtools' **Disable cache** unchecked for routine development.
 Close unused tabs. Hidden development tabs pause cosmetic anime.js animations;
@@ -78,15 +73,14 @@ For browser checks against the official Oxytype staging site, follow
 Use `vp lint --type-aware --type-check --format agent` for type checking;
 `vp fmt` formats files. Commit hooks enforce formatting and lint.
 Run a single test with `vp test run path/to/test.ts` from its package. Backend
-`test` runs controllers/HTTP checks; `integration-test` runs workerd-backed D1
-checks. Frontend imperative DOM work belongs in component refs/lifecycles; styling
+`test` runs service/policy/HTTP-handler checks; `integration-test` runs
+workerd-backed D1 checks; frontend `test:start` runs SSR/workerd suites. Frontend imperative DOM work belongs in component refs/lifecycles; styling
 uses Tailwind classes, `cn` and configured colors; icons use `Fa`.
 
-Run the web typing smoke test with `vp run test-e2e`. Install its browser once:
-`vp -C frontend exec playwright install chromium`. The single spec starts a fresh
-offline dev server on port 4173, types 15 displayed words and checks WPM/accuracy.
-No backend is needed; stop any other server using port 4173 first. Failed runs
-retain traces and screenshots in `frontend/test-results/`.
+Run the browser suites with `vp run test-e2e` after `vp run build`. Install the browser once:
+`vp -C frontend exec playwright install chromium`. They serve the built Start
+Worker with seeded D1 fixtures on port 4185. Failed runs retain traces and
+screenshots in `frontend/test-results/`.
 
 Check unused code and dependencies:
 

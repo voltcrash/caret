@@ -26,10 +26,12 @@ Use Node 24.21.0 and [Vite+](https://viteplus.dev/guide/) (`vp`) for every comma
 
 ```sh
 vp install
-vp run dev-fe
+vp exec cp frontend/.dev.vars.example frontend/.dev.vars
+vp run --filter @oxytype/frontend db:migrate
+vp run dev
 ```
 
-The frontend runs at `http://localhost:3000` without opening a browser. Set `SERVER_OPEN=true` in `frontend/.env` or run `SERVER_OPEN=true vp run dev-fe` to open your default browser on startup. Run `vp run dev` for the full workspace after applying local D1 migrations and copying `backend/.dev.vars.example` to `.dev.vars`.
+The TanStack Start app, its API and local D1 run at `http://localhost:3000`.
 
 ## Contributing
 

@@ -33,7 +33,6 @@
     "test-pkg": "vp run --filter \"./packages/*\" test",
     "test-tui": "vp run --filter @voltcrash/oxytype test",
     "dev": "vp run dev-fe",
-    "dev-be": "vp run --filter @oxytype/backend dev",
     "dev-fe": "vp run --filter @oxytype/frontend dev",
     "dev-tui": "vp run --filter @voltcrash/oxytype dev",
     "storybook": "vp run --filter @oxytype/frontend storybook",
