@@ -22,7 +22,6 @@ const { deferred, lifecycle, guards, ui, services } = vi.hoisted(() => {
     deferred,
     lifecycle: { config: deferred(), auth: deferred() },
     guards: {
-      page: "test",
       result: false,
       active: true,
       quickRestart: false,
@@ -80,7 +79,6 @@ vi.mock("../../../src/ts/states/core", async () => {
     setIsScreenshotting,
     getGlobalOffsetTop,
     setGlobalOffsetTop,
-    getActivePage: () => guards.page,
     getCustomTextIndicator: () => undefined,
   };
 });
@@ -163,7 +161,6 @@ beforeEach(() => {
   lifecycle.config = deferred();
   lifecycle.auth = deferred();
   Object.assign(guards, {
-    page: "test",
     result: false,
     active: true,
     quickRestart: false,

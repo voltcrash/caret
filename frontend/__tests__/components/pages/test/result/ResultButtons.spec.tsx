@@ -48,7 +48,6 @@ vi.mock("../../../../../src/ts/states/core", async () => {
   const { createSignal } = await import("solid-js");
   const [getIsScreenshotting, setIsScreenshotting] = createSignal(false);
   return {
-    getActivePage: () => "test",
     getIsScreenshotting,
     setIsScreenshotting,
   };

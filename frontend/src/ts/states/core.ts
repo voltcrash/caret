@@ -1,13 +1,10 @@
 import { requireApplication, createAppMemo } from "../../app/application";
 import { createAppSignal } from "../../app/state";
 import { CommandlineSubgroupKey } from "../commandline/types";
-import type { PageName } from "../pages/page";
 import { showModal } from "./modals";
 import { Formatting } from "../utils/format";
 import { getConfig } from "../config/store";
 
-export const [getActivePage, setActivePage] =
-  createAppSignal<PageName>("loading");
 export const [getVersion, setVersion] = createAppSignal<{
   text: string;
   isNew: boolean;

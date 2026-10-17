@@ -91,10 +91,7 @@ import { restartTestEvent } from "../../../src/ts/events/test";
 import { useCommandPaletteHotkeys } from "../../../src/ts/input/hotkeys/command-palette";
 import { useQuickRestartHotkeys } from "../../../src/ts/input/hotkeys/quickrestart";
 import { commandlineState } from "../../../src/ts/states/commandline";
-import {
-  setActivePage,
-  setCommandlineSubgroup,
-} from "../../../src/ts/states/core";
+import { setCommandlineSubgroup } from "../../../src/ts/states/core";
 import { hideModalAndClearChain } from "../../../src/ts/states/modals";
 import { isAnyPopupVisible } from "../../../src/ts/states/overlay-visibility";
 
@@ -104,7 +101,6 @@ describe("theme picker lifecycle", () => {
   beforeEach(() => {
     hideModalAndClearChain("Commandline");
     setCommandlineSubgroup(null);
-    setActivePage("test");
     commandlineState.isAnimating = false;
     commandlineState.noBackground = false;
     getMutableConfig().customTheme = false;

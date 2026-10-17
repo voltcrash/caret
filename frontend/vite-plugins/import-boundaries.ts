@@ -33,4 +33,4 @@ export const clientOnlyFeatureFiles = [
  * Rollback-only page system (Stage 8 deletes it). Start's client build must
  * never bundle it; typing route entry/exit replaced its page lifecycle.
  */
-export const rollbackOnlyFiles = ["src/rollback/**", "src/ts/pages/**"];
+export const rollbackOnlyFiles = ["src/rollback/**"];

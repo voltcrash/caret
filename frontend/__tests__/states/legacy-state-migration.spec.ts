@@ -2,7 +2,6 @@ import { createComputed, createRoot } from "solid-js";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
 import * as Composition from "../../src/ts/states/composition";
-import * as PageTransition from "../../src/ts/states/page-transition";
 import * as SlowTimer from "../../src/ts/states/slow-timer";
 
 function observe<T>(read: () => T): { values: T[]; dispose: () => void } {
@@ -16,7 +15,6 @@ function observe<T>(read: () => T): { values: T[]; dispose: () => void } {
 afterEach(() => {
   Composition.setComposing(false);
   Composition.setData("");
-  PageTransition.set(true);
   SlowTimer.clear();
   vi.restoreAllMocks();
 });
@@ -31,14 +29,6 @@ describe("migrated state", () => {
     expect(data.values).toEqual(["", "あ"]);
     composing.dispose();
     data.dispose();
-  });
-
-  it("keeps the initial transition guard and notifies navigation readers", () => {
-    const transition = observe(PageTransition.get);
-    PageTransition.set(false);
-    PageTransition.set(true);
-    expect(transition.values).toEqual([true, false, true]);
-    transition.dispose();
   });
 
   it("logs slow timer only once until cleared", () => {

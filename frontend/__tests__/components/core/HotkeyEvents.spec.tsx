@@ -11,7 +11,6 @@ vi.mock("../../../src/ts/states/test", () => ({
   wordsHaveTab: () => false,
   wordsHaveNewline: () => false,
 }));
-vi.mock("../../../src/ts/states/core", () => ({ getActivePage: () => "test" }));
 vi.mock("../../../src/ts/config/store", () => ({
   getConfig: { quickRestart: "tab" },
 }));

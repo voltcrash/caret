@@ -1,11 +1,5 @@
-import type { LoadingOptions } from "../pages/loading-options";
-
-export type NavigateOptions = {
-  force?: boolean;
-  empty?: boolean;
-  data?: unknown;
-  loadingOptions?: LoadingOptions;
-};
+/** `force` skips restart/result checks, never no_quit. */
+export type NavigateOptions = { force?: boolean };
 
 type Navigation = {
   navigate: (

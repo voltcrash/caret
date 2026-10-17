@@ -1,6 +1,5 @@
 import { createAppOwned } from "../../app/application";
 import { captureTypingMount } from "../../features/typing/scope";
-import { revealPreparedTestPage } from "../states/page-transition";
 import {
   showErrorNotification,
   showNoticeNotification,
@@ -86,9 +85,6 @@ export async function setup(challengeName: ChallengeName): Promise<boolean> {
   try {
     if (challenge === undefined || settings === undefined) {
       showNoticeNotification("Challenge not found or missing settings");
-      setTimeout(() => {
-        revealPreparedTestPage();
-      }, 250);
       return false;
     }
     if (settings.type === "customTime") {
@@ -223,7 +219,6 @@ export async function setup(challengeName: ChallengeName): Promise<boolean> {
       }
     }
     notitext = settings.message;
-    revealPreparedTestPage();
 
     if (notitext === undefined) {
       showSuccessNotification(`Challenge '${challenge.display}' loaded.`);

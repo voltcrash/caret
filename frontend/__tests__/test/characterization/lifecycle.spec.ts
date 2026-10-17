@@ -84,14 +84,12 @@ vi.mock("../../../src/ts/states/test", () => ({
   },
 }));
 vi.mock("../../../src/ts/states/core", () => ({
-  getActivePage: () => "test",
   getCustomTextIndicator: () => undefined,
   isAuthenticated: () => false,
 }));
 vi.mock("../../../src/ts/auth-client", () => ({
   getAuthenticatedUser: () => null,
 }));
-vi.mock("../../../src/ts/states/page-transition", () => ({ get: () => false }));
 vi.mock("../../../src/ts/utils/json-data", () => ({
   getLanguage: async () =>
     ({ name: "english", words: ["hello", "world"] }) as LanguageObject,

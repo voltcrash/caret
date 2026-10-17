@@ -13,7 +13,6 @@ vi.mock("../../src/ts/config/store", () => ({
     return () => storedConfig;
   })(),
 }));
-vi.mock("../../src/ts/states/core", () => ({ getActivePage: () => "test" }));
 vi.mock("../../src/ts/states/test", () => ({
   getActiveWordIndex: () => 0,
   isLanguageRightToLeft: () => state.rtl,

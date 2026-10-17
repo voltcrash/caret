@@ -93,15 +93,11 @@ vi.mock("../../src/ts/states/test", () => ({
   setTestInitError: mocks.setInitError,
 }));
 vi.mock("../../src/ts/states/core", () => ({
-  getActivePage: () => "test",
   getCustomTextIndicator: () => undefined,
   isAuthenticated: () => mocks.user !== null,
 }));
 vi.mock("../../src/ts/auth-client", () => ({
   getAuthenticatedUser: () => mocks.user,
-}));
-vi.mock("../../src/ts/states/page-transition", () => ({
-  get: () => mocks.transition,
 }));
 vi.mock("../../src/ts/utils/json-data", () => ({
   getLanguage: async () => mocks.language,
