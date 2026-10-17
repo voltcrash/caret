@@ -3,16 +3,13 @@ import { Accessor, Setter } from "solid-js";
 import {
   defaultSelection,
   type LeaderboardType,
-  type LeaderboardUrlParams,
   LeaderboardUrlParamsSchema,
-  pageSize,
   type Selection,
   SelectionSchema,
 } from "../../features/leaderboards/selection";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
-export { pageSize };
-export type { LeaderboardType, LeaderboardUrlParams, Selection };
+export type { LeaderboardType, Selection };
 export { LeaderboardUrlParamsSchema };
 
 /** Last browsed board, remembered for bare `/leaderboards` visits. */

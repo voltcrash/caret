@@ -40,9 +40,8 @@ export default {
         "@tanstack/eslint-plugin-query",
         "eslint-plugin-compat",
         "eslint-plugin-solid",
-        // font-styles.ts provides these CSS modules through its Vite plugin.
+        // font-styles.ts provides this CSS module through its Vite plugin.
         "oxytype-fontawesome.css",
-        "oxytype-fonts.css",
       ],
     },
     "frontend/storybook": {
@@ -52,8 +51,9 @@ export default {
         "stories/**/*.{stories.ts,stories.tsx,mdx}",
       ],
       project: [".storybook/**/*.{ts,tsx}", "stories/**/*.{ts,tsx,css}"],
-      // Storybook resolves this addon by name in .storybook/main.ts.
-      ignoreDependencies: ["@storybook/addon-links"],
+      // Storybook resolves this addon by name in .storybook/main.ts; the
+      // font-styles plugin provides oxytype-fonts.css.
+      ignoreDependencies: ["@storybook/addon-links", "oxytype-fonts.css"],
     },
     "packages/release": {
       entry: ["src/production-release.js", "__tests__/*.spec.js"],
