@@ -23,8 +23,7 @@ export default {
         "src/ts/types/*.d.ts",
         "src/styles/{tailwind,standalone}.css",
         "scripts/*.{ts,cjs}",
-        // Legacy rollback build (Stage 8 retires it) and its HTML entry graph.
-        "vite.legacy.config.ts",
+        // Legacy rollback HTML entry graph; deleted with the entry below.
         "src/ts/index.ts",
         // Vite's rollback binding and Vitest's operation map are aliased entries.
         "src/rollback/operations.ts",
