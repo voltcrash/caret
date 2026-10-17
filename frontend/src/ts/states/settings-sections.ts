@@ -1,17 +1,10 @@
-import { createAppSignal } from "../../app/state";
-
 import { createContext } from "solid-js";
-import { serialize as serializeUrlSearchParams } from "zod-urlsearchparams";
 import {
   type SettingsSection,
-  sectionForTab,
-  type SettingsUrlParams,
   SettingsUrlParamsSchema,
 } from "../../features/settings/tabs";
-import { createEffectOn } from "../hooks/effects";
-import { replaceUrl } from "../navigation/navigation";
 import { FaSolidIcon } from "../types/font-awesome";
-import { getActivePage, isAuthenticated } from "./core";
+import { isAuthenticated } from "./core";
 
 export type { SettingsSection };
 export { SettingsUrlParamsSchema };
@@ -35,9 +28,6 @@ export const settingsSections: Record<
   dangerZone: { text: "advanced", icon: "fa-sliders-h" },
 };
 
-export const [getCurrentSettingsSection, setCurrentSettingsSection] =
-  createAppSignal<SettingsSection>("behavior");
-
 export function getAvailableSettingsSections(): Partial<
   typeof settingsSections
 > {
@@ -48,41 +38,13 @@ export function getAvailableSettingsSections(): Partial<
   );
 }
 
-function isSectionAvailable(section: SettingsSection): boolean {
-  return !settingsSections[section].requiresAuthentication || isAuthenticated();
-}
-
-export function readSettingsGetParameters(
-  params: SettingsUrlParams | undefined,
-): void {
-  const section = sectionForTab(params?.tab, isAuthenticated());
-  if (section !== undefined) setCurrentSettingsSection(section);
-}
-
-/** Who owns the selected section: route search in Start, app state in rollback. */
+/** The settings route's search owns the selected section. */
 export type SettingsSectionHost = {
   current: () => SettingsSection;
   select: (section: SettingsSection) => void;
 };
+/** Outside the settings route (isolated component tests) nothing is selectable. */
 export const SettingsSectionHostContext = createContext<SettingsSectionHost>({
-  current: getCurrentSettingsSection,
-  select: setCurrentSettingsSection,
+  current: (): SettingsSection => "behavior",
+  select: () => undefined,
 });
-
-export function useSettingsSectionEffects(): void {
-  createEffectOn(isAuthenticated, () => {
-    if (!isSectionAvailable(getCurrentSettingsSection())) {
-      setCurrentSettingsSection("behavior");
-    }
-  });
-
-  createEffectOn(getCurrentSettingsSection, (tab) => {
-    //only replace the url while on the settings page, otherwise the url-handler breaks
-    if (getActivePage() !== "settings") return;
-    const urlParams = serializeUrlSearchParams({
-      schema: SettingsUrlParamsSchema,
-      data: { tab },
-    });
-    void replaceUrl(`${window.location.pathname}?${urlParams.toString()}`);
-  });
-}

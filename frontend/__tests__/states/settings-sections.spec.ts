@@ -1,21 +1,16 @@
-import { createRoot } from "solid-js";
 import { afterEach, describe, expect, it } from "vite-plus/test";
 // Browser entry shares the schema's ESM Zod constructors.
 import { safeParse, serialize } from "zod-urlsearchparams/dist/index.mjs";
 
+import { sectionForTab } from "../../src/features/settings/tabs";
 import { setUserId } from "../../src/ts/states/core";
 import {
   getAvailableSettingsSections,
-  getCurrentSettingsSection,
-  readSettingsGetParameters,
-  setCurrentSettingsSection,
   SettingsUrlParamsSchema,
-  useSettingsSectionEffects,
 } from "../../src/ts/states/settings-sections";
 
 afterEach(() => {
   setUserId(null);
-  setCurrentSettingsSection("behavior");
 });
 
 describe("settings sections", () => {
@@ -32,9 +27,9 @@ describe("settings sections", () => {
       for (const userId of [null, "settings-user"]) {
         setUserId(userId);
         expect(getAvailableSettingsSections()).not.toHaveProperty(tab);
-        setCurrentSettingsSection("account");
-        readSettingsGetParameters(params.data);
-        expect(getCurrentSettingsSection()).toBe("behavior");
+        expect(sectionForTab(params.data.tab, userId !== null)).toBe(
+          "behavior",
+        );
       }
     },
   );
@@ -58,24 +53,18 @@ describe("settings sections", () => {
     setUserId("settings-user");
     const params = SettingsUrlParamsSchema.parse({ tab: "authentication" });
     expect(params).toEqual({ tab: "authentication" });
-    readSettingsGetParameters(params);
-    expect(getCurrentSettingsSection()).toBe("account");
+    expect(sectionForTab(params.tab, true)).toBe("account");
     expect(getAvailableSettingsSections()).not.toHaveProperty("authentication");
   });
 
   it("keeps legacy authentication links gated while signed out", () => {
-    setUserId(null);
-    readSettingsGetParameters(
-      SettingsUrlParamsSchema.parse({ tab: "authentication" }),
-    );
-    expect(getCurrentSettingsSection()).toBe("behavior");
+    expect(sectionForTab("authentication", false)).toBe("behavior");
   });
 
   it.each(accountSections)("accepts signed-in %s section links", (tab) => {
     setUserId("settings-user");
     expect(SettingsUrlParamsSchema.parse({ tab })).toEqual({ tab });
-    readSettingsGetParameters({ tab });
-    expect(getCurrentSettingsSection()).toBe(tab);
+    expect(sectionForTab(tab, true)).toBe(tab);
     expect(getAvailableSettingsSections()).toHaveProperty(tab);
   });
 
@@ -84,44 +73,19 @@ describe("settings sections", () => {
     (tab) => {
       setUserId(null);
       expect(getAvailableSettingsSections()).not.toHaveProperty(tab);
-      readSettingsGetParameters({ tab });
-      expect(getCurrentSettingsSection()).toBe("behavior");
-    },
-  );
-
-  it.each(accountSections)(
-    "returns to general settings after signing out of %s",
-    async (tab) => {
-      const dispose = createRoot((dispose) => {
-        useSettingsSectionEffects();
-        return dispose;
-      });
-      setUserId("settings-user");
-      readSettingsGetParameters({ tab });
-      setUserId(null);
-      await Promise.resolve();
-      expect(getCurrentSettingsSection()).toBe("behavior");
-      dispose();
+      expect(sectionForTab(tab, false)).toBe("behavior");
     },
   );
 
   it("keeps the shared danger zone available without an account", () => {
     setUserId(null);
-    readSettingsGetParameters({ tab: "dangerZone" });
-    expect(getCurrentSettingsSection()).toBe("dangerZone");
+    expect(sectionForTab("dangerZone", false)).toBe("dangerZone");
     expect(getAvailableSettingsSections()).toHaveProperty("dangerZone");
   });
 
-  it("selects the section from the url params", () => {
-    readSettingsGetParameters({ tab: "theme" });
-    expect(getCurrentSettingsSection()).toBe("theme");
-  });
-
-  it("keeps the current section without a tab param", () => {
-    setCurrentSettingsSection("caret");
-    readSettingsGetParameters(undefined);
-    readSettingsGetParameters({});
-    expect(getCurrentSettingsSection()).toBe("caret");
+  it("selects the section from the url params and leaves it unset without one", () => {
+    expect(sectionForTab("theme", false)).toBe("theme");
+    expect(sectionForTab(undefined, true)).toBeUndefined();
   });
 
   it("accepts known sections plus the highlight deep link, ignoring others", () => {
