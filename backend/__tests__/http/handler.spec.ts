@@ -1,4 +1,3 @@
-import { getRequestListener } from "@hono/node-server";
 import request from "supertest";
 import {
   afterEach,
@@ -17,6 +16,7 @@ import { BASE_CONFIGURATION } from "../../src/constants/base-configuration";
 import * as UserDal from "../../src/dal/user";
 import * as Configuration from "../../src/init/configuration";
 import { dispatchApi } from "../__testData__/http-worker";
+import { requestListener } from "../__testData__/node-listener";
 
 // Transport-independent HTTP behaviour of the handlers Start mounts under
 // /api. CORS, security headers and request bodies belong to Start's Worker
@@ -35,7 +35,7 @@ afterEach(() => {
 });
 
 const client = (): ReturnType<typeof request> =>
-  request(getRequestListener(dispatchApi));
+  request(requestListener(dispatchApi));
 
 describe("HTTP operation handler", () => {
   it("serves health with the compatibility header", async () => {

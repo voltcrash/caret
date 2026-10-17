@@ -11,6 +11,8 @@ import { isDevEnvironment } from "../utils/misc";
 import MonkeyError from "../utils/error";
 import statuses from "../constants/monkey-status-codes";
 
+/** Development raises every limit so local use and tests rarely hit them. */
+export const REQUEST_MULTIPLIER = 100;
 export type RateContext = Pick<
   ServiceContext,
   "actor" | "configuration" | "client"
@@ -23,7 +25,7 @@ export async function enforceLimit(
   header: SetPolicyHeader,
   useUid = true,
 ): Promise<void> {
-  const max = options.max * (isDevEnvironment() ? 100 : 1);
+  const max = options.max * (isDevEnvironment() ? REQUEST_MULTIPLIER : 1);
   const actor =
     useUid && context.actor.uid !== ""
       ? context.actor.uid

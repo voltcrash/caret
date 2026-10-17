@@ -194,9 +194,6 @@ jobs:
       - name: Check lint
         run: vp run lint-fast-be && vp run lint-be
 
-      - name: Build
-        run: vp run build-be
-
       - name: Test
         run: vp run test-be
 

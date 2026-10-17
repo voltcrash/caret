@@ -22,8 +22,8 @@ type Service = (
 
 /**
  * The single business implementation of every contract operation. Start
- * functions, retained HTTP routes and the rollback Hono adapter all dispatch
- * here after running the same policies; no transport owns business rules.
+ * functions and retained HTTP routes dispatch here after running the same
+ * policies; no transport owns business rules.
  */
 export const operationServices = {
   "admin.test": Admin.test,

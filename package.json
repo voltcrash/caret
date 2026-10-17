@@ -24,7 +24,6 @@
     "lint-fast-pkg": "vp run --filter \"./packages/*\" lint-fast",
     "lint-fast-tui": "vp run --filter @voltcrash/oxytype lint-fast",
     "build": "vp run --filter @oxytype/frontend build",
-    "build-be": "vp run --filter @oxytype/backend build",
     "build-fe": "vp run --filter @oxytype/frontend build",
     "build-tui": "vp run --filter @voltcrash/oxytype build",
     "test": "vp run --filter \"!oxytype\" test && vp run --filter \"!oxytype\" integration-test",

@@ -20,18 +20,28 @@ function sources(directory: string): string[] {
   });
 }
 
-/** Resolve the surviving transport adapter to its sole business implementation. */
-function serviceOwner(routeFile: string, key: string): string {
-  const route = readFileSync(resolve(root, routeFile), "utf8");
-  const handler = new RegExp(
-    `\\n  ${key}: \\{[\\s\\S]*?callService\\(\\w+\\.(\\w+)\\)`,
-  ).exec(route)?.[1];
-  const controller =
-    /from ["'](\.\.\/\.\.\/services\/operations\/[^"']+)["']/.exec(route)?.[1];
-  if (handler === undefined || controller === undefined) {
-    throw new Error(`Missing service adapter ${routeFile}:${key}`);
+/** Resolve an operation through the service registry to its business implementation. */
+function serviceOwner(id: string): string {
+  const registryFile = resolve(
+    root,
+    "backend/src/services/operations/registry.ts",
+  );
+  const registry = readFileSync(registryFile, "utf8");
+  const entry = new RegExp(`"${id.replace(".", "\\.")}": (\\w+)\\.(\\w+)`).exec(
+    registry,
+  );
+  const alias = entry?.[1];
+  const handler = entry?.[2];
+  const module =
+    alias === undefined
+      ? undefined
+      : new RegExp(`import \\* as ${alias} from ["'](\\.[^"']+)["']`).exec(
+          registry,
+        )?.[1];
+  if (handler === undefined || module === undefined) {
+    throw new Error(`Missing service registration for ${id}`);
   }
-  let file = resolve(root, dirname(routeFile), `${controller}.ts`);
+  let file = resolve(dirname(registryFile), `${module}.ts`);
   for (let depth = 0; depth < 4; depth++) {
     const source = readFileSync(file, "utf8");
     if (new RegExp(`export (?:async )?function ${handler}\\b`).test(source)) {
@@ -45,7 +55,7 @@ function serviceOwner(routeFile: string, key: string): string {
     if (reexport === undefined) break;
     file = resolve(dirname(file), `${reexport}.ts`);
   }
-  throw new Error(`Missing business service for ${routeFile}:${key}`);
+  throw new Error(`Missing business service for ${id}`);
 }
 
 /** Source evidence, not proof that a public endpoint has no external users. */
@@ -113,11 +123,7 @@ export function inventory(): object[] {
         method: route.method,
         path: `/api${route.path}`,
         currentOwner: httpAdapter,
-        legacyOwner: `backend/src/api/routes/${group === "apeKeys" ? "ape-keys" : group}.ts`,
-        serviceOwner: serviceOwner(
-          `backend/src/api/routes/${group === "apeKeys" ? "ape-keys" : group}.ts`,
-          key,
-        ),
+        serviceOwner: serviceOwner(id),
         startAdapter: functionAdapter,
         httpLifetime: retain
           ? "retained external/operational protocol"
