@@ -1,6 +1,6 @@
 # Styling
 
-- `app/app.css`: Start document entry. `tailwind.css`: Storybook entry.
+- `app/app.css`: Start document and Storybook entry.
 - `theme.css`: Tailwind palette, breakpoints, reusable utilities. `layers.css`: shared cascade order.
 - Defaults and compatibility hooks use `@apply`; component classes override them in the utilities layer.
 - Tailwind's Vite plugin handles vendor prefixing; do not add a separate Autoprefixer pass.

@@ -20,7 +20,6 @@ export default {
     frontend: {
       entry: [
         "src/ts/types/*.d.ts",
-        "src/styles/tailwind.css",
         "scripts/*.{ts,cjs}",
         // Vitest's operation map is an aliased entry (operation-transport).
         "__tests__/__harness__/operations.ts",
