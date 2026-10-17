@@ -91,7 +91,6 @@ vp install --frozen-lockfile
 vp pm audit -- --prod --json
 vp pm audit -- --json
 vp test run backend/__tests__/openapi.spec.ts
-vp run build-fe
-vp run build-be
+vp run build
 ```
 
