@@ -19,10 +19,7 @@ describe("ResultLoginTip", () => {
 
     setResultState("loginTip", true);
     expect(tip).not.toHaveClass("hidden");
-    expect(tip?.querySelector("a[router-link]")).toHaveAttribute(
-      "href",
-      "/login",
-    );
+    expect(tip?.querySelector("a")).toHaveAttribute("href", "/login");
 
     setIsScreenshotting(true);
     expect(tip).toHaveClass("hidden");

@@ -19,7 +19,6 @@ const plugins = [
 
 const tanstackSolidNoExternal: (string | RegExp)[] = [
   "@solidjs/meta",
-  "@solidjs/router",
   /@tanstack\/solid-.*/,
 ];
 

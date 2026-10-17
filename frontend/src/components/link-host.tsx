@@ -16,9 +16,8 @@ export type HostLinkProps = Omit<
 };
 
 /**
- * Host navigation for shared links and router-marked buttons. Start supplies
- * Router links (intent preload, blockers, modified clicks); without a host the
- * rollback app keeps its own `router-link` anchors.
+ * Host navigation for shared links and router-marked buttons. The app layout
+ * supplies Router links (intent preload, blockers, modified clicks).
  */
 export const LinkHost = createContext<(props: HostLinkProps) => JSXElement>();
 

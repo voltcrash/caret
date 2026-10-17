@@ -444,9 +444,6 @@ importers:
       '@solidjs/meta':
         specifier: 0.29.4
         version: 0.29.4(solid-js@1.9.15)
-      '@solidjs/router':
-        specifier: 1.0.0
-        version: 1.0.0(solid-js@1.9.15)
       '@tanstack/pacer-lite':
         specifier: 0.3.0
         version: 0.3.0
@@ -10119,6 +10116,7 @@ snapshots:
   '@solidjs/router@1.0.0(solid-js@1.9.15)':
     dependencies:
       solid-js: 1.9.15
+    optional: true
 
   '@solidjs/testing-library@0.8.10(@solidjs/router@1.0.0(solid-js@1.9.15))(solid-js@1.9.15)':
     dependencies:
