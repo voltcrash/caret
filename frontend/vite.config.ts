@@ -79,6 +79,8 @@ export default defineConfig(({ mode }) => {
           TURNSTILE_SITE_KEY: env["TURNSTILE_SITE_KEY"] ?? "",
           SENTRY_DSN: env["SENTRY_DSN"] ?? "",
           DEV_OFFLINE: mode === "offline" ? "true" : "false",
+          DEV_TOOLS: env["DEV_TOOLS"] ?? "false",
+          DEV_PREFETCH: env["DEV_PREFETCH"] ?? "false",
         },
       }),
       languageHashes({ skip: false }),

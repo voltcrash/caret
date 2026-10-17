@@ -14,6 +14,7 @@ import {
 
 import {
   appClass,
+  appStyle,
   scrollerClass,
   scrollerStyle,
 } from "../components/layout/scroller";
@@ -62,6 +63,8 @@ export function AppLayout(props: ParentProps): JSXElement {
   });
   const [scroller, setScroller] = createSignal<HTMLDivElement>();
   const [headerBottom, setHeaderBottom] = createSignal(0);
+  const [offsetTop, setOffsetTop] = createSignal(0);
+  const [hidden, setHidden] = createSignal(false);
   const staticHeader = () => <StaticHeader fixed={fixed()} />;
   return (
     <PageScrollHost.Provider
@@ -75,7 +78,11 @@ export function AppLayout(props: ParentProps): JSXElement {
     >
       <TypingRouteHost.Provider value={typing}>
         <LinkHost.Provider value={RouterLink}>
-          <div id="app" class={appClass}>
+          <div
+            id="app"
+            class={appClass}
+            style={appStyle(offsetTop(), hidden())}
+          >
             <ClientOnly fallback={staticHeader()}>
               <Suspense fallback={staticHeader()}>
                 <Header fixed={fixed()} />
@@ -109,6 +116,8 @@ export function AppLayout(props: ParentProps): JSXElement {
                 fixed={fixed()}
                 scroller={scroller()}
                 onHeaderBottom={setHeaderBottom}
+                onOffsetTop={setOffsetTop}
+                onHidden={setHidden}
               />
             </Suspense>
           </ClientOnly>
