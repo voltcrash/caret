@@ -11,7 +11,7 @@ changes.
 | --- | --- |
 | 8.1 Delete superseded code, document the system | Complete |
 | 8.2 Migration acceptance gate | Complete: local gate + all 12 CI checks on `200f0a710` ([validation](evidence/stage-8-validation.json), [run](https://github.com/voltcrash/oxytype/actions/runs/39099769261)) |
-| 8.3 Release, observe, retire compatibility | In progress: stack merged, main CI green, staging deployed; OAuth callback fix #146 awaiting merge and human recheck; production pending |
+| 8.3 Release, observe, retire compatibility | In progress: stack merged, main CI green, human staging acceptance passed; auth fixes #146 awaiting merge; production pending |
 
 ## 8.1 Deleted
 
@@ -123,8 +123,15 @@ canonical sessions when invalidating routes. Both header paths (`/account` and
 Eight auth/offline browser tests and 22 targeted unit tests pass; this latest
 artifact is deployed as `2026.10.18_11.47_ec3cb0fa5`, Worker version
 `808da37b-6ec1-4dc7-a037-ab2ce9b7909c`. Hosted runtime checks verify 816
-current/retained assets; offline typing passes. Human header sign-out recheck is
-pending.
+current/retained assets; offline typing passes. Human recheck after reloading
+staging confirms header sign-out works without the Unauthorized notification or
+the broken-page screen. Interactive sign-in, saved results and sign-out are
+accepted.
+
+The six original commits were split into focused signed commits for #146.
+Before recording human acceptance, the reconstructed tree at `d52ff9ddb` matched
+the original `9875e0c53` exactly (`git diff --exit-code` passed). Staging build and
+source IDs above identify the tested artifacts deployed before that history rewrite.
 
 Production was re-observed on October 18: version
 `a59fe11e-0e88-4483-a837-0b65ef3c7212` still serves the October 16 legacy build,
@@ -135,8 +142,6 @@ Production remains gated; no production deployment was performed.
 ## Remaining before Stage 8 exit
 
 - Merge #146 after CI passes; the production workflow runs only on `main`.
-- Recheck header sign-out with the latest staging build. Interactive OAuth and
-  saved results are confirmed; close old OAuth error tabs/popups before reloading.
 - Releases are manual-only with `YY.MM.NN` numbers (#144); the rollback anchor
   `v26.10.15` is `v26.10.10` after renumbering (same commit `e9bb89fe7`).
 - Set `START_PRODUCTION_ENABLED=true`, dispatch the release workflow, observe
