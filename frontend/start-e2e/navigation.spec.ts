@@ -43,10 +43,10 @@ test("command palette navigation and shared modals work across native route moun
   await expect(palette).toBeHidden();
   await page.getByRole("link", { name: "Leaderboards", exact: true }).click();
   await expect(page).toHaveURL(/\/leaderboards\?/);
-  await page.getByRole("button", { name: "Alerts", exact: true }).click();
-  await expect(page.locator("#AlertsModal")).toBeVisible();
+  await page.keyboard.press("ControlOrMeta+K");
+  await expect(palette).toBeVisible();
   await page.keyboard.press("Escape");
-  await expect(page.locator("#AlertsModal")).toBeHidden();
+  await expect(palette).toBeHidden();
 });
 
 test("window and settings scroll restore on history traversal", async ({
