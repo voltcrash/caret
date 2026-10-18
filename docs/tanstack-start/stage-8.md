@@ -110,7 +110,21 @@ The fix at `cc3441ece` is deployed to staging as build
 `abeb97f8-ed9c-4b77-af62-baa063b5daab`. Hosted checks verify 711 current/retained
 assets, routes, CSP, OAuth cookies, stale functions and offline typing. A synthetic
 provider denial returns the expected callback with preload both enabled and
-disabled. Human sign-in recheck remains pending. [Cutover evidence](evidence/stage-8-cutover.json).
+disabled. Human recheck confirms sign-in and persisted typing results;
+header sign-out exposed the separate session-state issue below.
+[Cutover evidence](evidence/stage-8-cutover.json).
+
+Header sign-out disposed the account but left a signed-in session cached. The
+session owner could restore that identity, producing an Unauthorized toast and
+a broken page. The follow-up at `ec3cb0fa5` cancels pending session queries,
+publishes a guest session before disposing account data, and compares successive
+canonical sessions when invalidating routes. Both header paths (`/account` and
+`/`) now pass: private routes redirect to login and guest typing remains usable.
+Eight auth/offline browser tests and 22 targeted unit tests pass; this latest
+artifact is deployed as `2026.10.18_11.47_ec3cb0fa5`, Worker version
+`808da37b-6ec1-4dc7-a037-ab2ce9b7909c`. Hosted runtime checks verify 816
+current/retained assets; offline typing passes. Human header sign-out recheck is
+pending.
 
 Production was re-observed on October 18: version
 `a59fe11e-0e88-4483-a837-0b65ef3c7212` still serves the October 16 legacy build,
@@ -121,8 +135,8 @@ Production remains gated; no production deployment was performed.
 ## Remaining before Stage 8 exit
 
 - Merge #146 after CI passes; the production workflow runs only on `main`.
-- Complete browser acceptance including interactive OAuth with the fixed service
-  worker. Close old OAuth error tabs/popups so the waiting worker can activate.
+- Recheck header sign-out with the latest staging build. Interactive OAuth and
+  saved results are confirmed; close old OAuth error tabs/popups before reloading.
 - Releases are manual-only with `YY.MM.NN` numbers (#144); the rollback anchor
   `v26.10.15` is `v26.10.10` after renumbering (same commit `e9bb89fe7`).
 - Set `START_PRODUCTION_ENABLED=true`, dispatch the release workflow, observe
