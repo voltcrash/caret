@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { gzipSync } from "node:zlib";
 import { fromCrossJSON, toJSONAsync, type SerovalNode } from "seroval";
@@ -50,12 +50,23 @@ function workerdPid(): number {
   const row = rows.find(
     (row) =>
       descendants.has(Number(row[0])) &&
-      row.slice(2).join(" ").endsWith("/workerd"),
+      // macOS reports the full path, Linux the bare command name.
+      /(?:^|\/)workerd$/.test(row.slice(2).join(" ")),
   );
   if (row === undefined) throw new Error("Missing benchmark workerd process");
   return Number(row[0]);
 }
 function cpuMs(pid: number): number {
+  // Linux `ps` reports whole seconds; /proc has user+system clock ticks.
+  if (existsSync(`/proc/${pid}/stat`)) {
+    const stat = readFileSync(`/proc/${pid}/stat`, "utf8");
+    // Fields after the command name; utime and stime are fields 14 and 15.
+    const fields = stat.slice(stat.lastIndexOf(")") + 2).split(" ");
+    const ticks = Number(
+      execFileSync("getconf", ["CLK_TCK"], { encoding: "utf8" }),
+    );
+    return ((Number(fields[11]) + Number(fields[12])) * 1000) / ticks;
+  }
   return (
     execFileSync("vp", ["exec", "ps", "-o", "time=", "-p", String(pid)], {
       encoding: "utf8",
