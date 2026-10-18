@@ -16,9 +16,8 @@ function createResultsCollection(client: Client) {
   const collection = createCollection(
     queryCollectionOptions({
       staleTime: Infinity,
-      // Web's synchronous typing/PB consumers still require retained data.
-      // Terminal history can refetch after five minutes without subscribers.
-      gcTime: client === "web" ? Infinity : 5 * 60 * 1000,
+      // Synchronous typing/PB consumers require retained data.
+      gcTime: Infinity,
       queryKey: queryKeys.root(client),
       enabled: isAuthenticated,
       queryFn: async () => {
@@ -38,11 +37,7 @@ function createResultsCollection(client: Client) {
           .map((result) => normalizeResult(result, knownTagIds))
           .map(applyIdWorkaround);
 
-        if (
-          client === "web" &&
-          getLastResult() === undefined &&
-          results.length > 0
-        ) {
+        if (getLastResult() === undefined && results.length > 0) {
           const lastResult = results.reduce((acc, cur) =>
             acc === undefined || acc.timestamp < cur.timestamp ? cur : acc,
           );
@@ -64,7 +59,6 @@ function createResultsCollection(client: Client) {
 
 export const resultsByClient = {
   web: defineCollection(import.meta.hot, () => createResultsCollection("web")),
-  tui: defineCollection(import.meta.hot, () => createResultsCollection("tui")),
 };
 
 export const resultsCollection = resultsByClient.web;

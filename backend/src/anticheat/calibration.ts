@@ -7,7 +7,7 @@ import {
 export type TimingSample = {
   keySpacing: number[];
   keyDuration: number[];
-  client?: "web" | "tui";
+  client?: "web";
   // overrides the file's label, e.g. the original upload of a replay
   label?: string;
 };
@@ -50,7 +50,7 @@ function toSample(
   const { keySpacing, keyDuration, client, label } = record;
   if (!isNumberArray(keySpacing) || !isNumberArray(keyDuration)) return [];
   const sample: TimingSample = { keySpacing, keyDuration };
-  const ownClient = client === "tui" || client === "web" ? client : undefined;
+  const ownClient = client === "web" ? client : undefined;
   const sampleClient = ownClient ?? inherited.client;
   if (sampleClient !== undefined) sample.client = sampleClient;
   const sampleLabel = typeof label === "string" ? label : inherited.label;
@@ -71,10 +71,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 export function extractSamples(input: unknown): TimingSample[] {
   if (isRecord(input)) {
     if (Array.isArray(input["samples"])) {
-      const client =
-        input["client"] === "tui" || input["client"] === "web"
-          ? input["client"]
-          : undefined;
+      const client = input["client"] === "web" ? input["client"] : undefined;
       return input["samples"].flatMap((item: unknown) =>
         isRecord(item) ? toSample(item, { client }) : [],
       );

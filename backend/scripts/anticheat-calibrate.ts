@@ -23,8 +23,6 @@ const root = resolve(__dirname, "../..");
 const DEFAULT_SETS: [string, string][] = [
   // scripted Playwright input against the real web client, not human typing
   ["recorded-web", "packages/typing-core/__fixtures__/keystrokes"],
-  // automated input through a real terminal, not human typing
-  ["recorded-tui", "backend/__tests__/__testData__/terminal-words-10.json"],
   // label comes from each file: bot or model
   ["", "packages/typing-core/__fixtures__/anticheat"],
 ];

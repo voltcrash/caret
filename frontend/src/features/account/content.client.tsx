@@ -13,10 +13,7 @@ import * as TodayTracker from "../typing/runtime/today-tracker";
  * Waits for the actor's snapshot and result history (the old page's loading
  * screen), then shows statistics. Charts and history never render on the server.
  */
-export function AccountView(props: {
-  client: Client;
-  onClient: (client: Client) => void;
-}): JSXElement {
+export function AccountView(props: { client: Client }): JSXElement {
   const settled = useSessionSettled();
   // Keyed by actor: history loads under the signed-in account's scope.
   const [results] = createResource(
@@ -45,7 +42,7 @@ export function AccountView(props: {
         </div>
       </Match>
       <Match when={true}>
-        <AccountContent client={props.client} onClient={props.onClient} />
+        <AccountContent client={props.client} />
       </Match>
     </Switch>
   );

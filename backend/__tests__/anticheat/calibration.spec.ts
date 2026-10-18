@@ -50,17 +50,17 @@ describe("calibration report", () => {
     expect(
       extractSamples({ completedEvent: { ...arrays, client: "web" } }),
     ).toEqual([{ ...arrays, client: "web" }]);
-    expect(extractSamples({ result: { ...arrays, client: "tui" } })).toEqual([
-      { ...arrays, client: "tui" },
+    expect(extractSamples({ result: { ...arrays, client: "web" } })).toEqual([
+      { ...arrays, client: "web" },
     ]);
     expect(
       extractSamples({
         label: "bot",
-        client: "tui",
+        client: "web",
         samples: [arrays, { ...arrays, label: "model", client: "web" }],
       }),
     ).toEqual([
-      { ...arrays, client: "tui" },
+      { ...arrays, client: "web" },
       { ...arrays, client: "web", label: "model" },
     ]);
   });

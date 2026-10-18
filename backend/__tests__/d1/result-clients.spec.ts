@@ -6,7 +6,7 @@ import { buildDbResult } from "../../src/utils/result";
 import { completedEvent } from "../__testData__/completed-event";
 import { CompletedEventSchema } from "@oxytype/schemas/results";
 
-describe("result client partitions", () => {
+describe("web result history", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;
   beforeAll(async () => {
     test = await createTestRuntime({
@@ -34,6 +34,9 @@ describe("result client partitions", () => {
       CompletedEventSchema.safeParse({ ...legacy, client: "unknown" }).success,
     ).toBe(false);
     expect(
+      CompletedEventSchema.safeParse({ ...legacy, client: "tui" }).success,
+    ).toBe(false);
+    expect(
       await test.env.DB.prepare(
         "SELECT client FROM results WHERE id='legacy-result'",
       ).first("client"),
@@ -44,45 +47,47 @@ describe("result client partitions", () => {
       );
     });
   });
-  it("filters before pagination and separates last result timestamps", async () => {
+  it("paginates web results and tracks the latest timestamp", async () => {
     await withRuntime(test.env, async () => {
-      for (const [client, timestamp] of [
-        ["web", 2000],
-        ["tui", 3000],
-        ["web", 4000],
-        ["tui", 5000],
-      ] as const) {
+      for (const timestamp of [2000, 4000, 5000]) {
         await Results.addResult(
           "client-history",
           buildDbResult(
-            completedEvent({ uid: "client-history", client, timestamp }),
+            completedEvent({ uid: "client-history", timestamp }),
             "history",
             false,
           ),
         );
       }
       expect(
-        (await Results.getResults("client-history")).map((r) => r.timestamp),
-      ).toEqual([4000, 2000]);
-      expect(
         (
-          await Results.getResults("client-history", {
-            client: "tui",
-            limit: 1,
-            offset: 1,
-          })
-        ).map((r) => r.timestamp),
-      ).toEqual([3000]);
-      expect(
-        (await Results.getLastResult("client-history", "tui")).timestamp,
-      ).toBe(5000);
-      expect(await Results.getLastResultTimestamp("client-history")).toBe(4000);
-      expect(
-        await Results.getResults("client-history", {
-          client: "tui",
-          onOrAfterTimestamp: 4000,
-        }),
-      ).toHaveLength(1);
+          await Results.getResults("client-history", { limit: 1, offset: 1 })
+        ).map((row) => row.timestamp),
+      ).toEqual([4000]);
+      expect(await Results.getLastResultTimestamp("client-history")).toBe(5000);
     });
+  });
+  it("keeps retired-client rows out of web history and direct reads", async () => {
+    await test.env.DB.prepare(
+      "INSERT INTO results(id,uid,timestamp,mode,mode2,language,wpm,acc,client,data) VALUES('retired-result','client-history',6000,'time','30','english',80,95,'tui','{}')",
+    ).run();
+    await withRuntime(test.env, async () => {
+      expect(
+        (await Results.getResults("client-history")).some(
+          (row) => row._id === "retired-result",
+        ),
+      ).toBe(false);
+      await expect(
+        Results.getResult("client-history", "retired-result"),
+      ).rejects.toThrow("Result not found");
+      await expect(
+        Results.updateTags("client-history", "retired-result", []),
+      ).rejects.toThrow("Result not found");
+    });
+    expect(
+      await test.env.DB.prepare(
+        "SELECT count(*) AS n FROM results WHERE id='retired-result'",
+      ).first("n"),
+    ).toBe(1);
   });
 });

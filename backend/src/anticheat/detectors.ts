@@ -53,8 +53,7 @@ export function detect(
 
     if (
       keySpacing.slice(1, -1).length >= MIN_BOT_TIMING_SAMPLES &&
-      (client === "tui" ||
-        keyDuration.slice(1, -1).length >= MIN_BOT_TIMING_SAMPLES)
+      keyDuration.slice(1, -1).length >= MIN_BOT_TIMING_SAMPLES
     ) {
       applicable.push("fixed-timing");
       if (hasFixedTimingSignature(keySpacing, keyDuration, client)) {

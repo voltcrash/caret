@@ -1,7 +1,7 @@
 import { rpcPath } from "../__tests__/start/rpc";
 import { expect, test } from "./fixtures";
 
-test("public navigation and the saved theme work while browser setup is loading", async ({
+test("startup covers the app with the saved theme until browser setup finishes", async ({
   page,
 }) => {
   let release!: () => void;
@@ -36,20 +36,24 @@ test("public navigation and the saved theme work while browser setup is loading"
     await page.goto("/about", { waitUntil: "domcontentloaded" });
     await expect.poll(() => blocked).toBe(true);
     await expect(page.getByTestId("tests-completed")).toHaveText("11");
+    await expect(page.locator("#startupScreen")).toBeVisible();
+    await expect(page.locator("#app")).toHaveCSS("opacity", "0");
     expect(
       await page
         .locator("html")
         .evaluate((el) => getComputedStyle(el).getPropertyValue("--bg-color")),
     ).toBe("#123456");
-    await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
-    await expect(page).toHaveURL(/\/$/);
     expect(history).toEqual([]);
-    expect(documents).toHaveLength(1);
   } finally {
     release();
   }
+  await expect(page.locator("#startupScreen")).toBeHidden();
+  await expect(page.locator("#app")).toHaveCSS("opacity", "1");
+  await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
+  await expect(page).toHaveURL(/\/$/);
   await page.waitForLoadState("networkidle");
   expect(history).toEqual([]);
+  expect(documents).toHaveLength(1);
 });
 
 test("SSR hydrates Query once and keeps native navigation and refresh working", async ({

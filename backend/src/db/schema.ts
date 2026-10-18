@@ -93,24 +93,6 @@ export const authVerifications = sqliteTable(
     index("auth_verifications_expiry_idx").on(t.expiresAt),
   ],
 );
-export const authDeviceCodes = sqliteTable(
-  "auth_device_codes",
-  {
-    id: id(),
-    deviceCode: text("device_code").notNull().unique(),
-    userCode: text("user_code").notNull().unique(),
-    userId: text("user_id").references(() => authUsers.id, {
-      onDelete: "cascade",
-    }),
-    expiresAt: date("expires_at"),
-    status: text("status").notNull(),
-    lastPolledAt: integer("last_polled_at", { mode: "timestamp_ms" }),
-    pollingInterval: integer("polling_interval"),
-    clientId: text("client_id"),
-    scope: text("scope"),
-  },
-  (t) => [index("auth_device_codes_expiry_idx").on(t.expiresAt)],
-);
 export const authRateLimits = sqliteTable("auth_rate_limits", {
   id: id(),
   key: text("key").notNull().unique(),
@@ -142,19 +124,6 @@ const owner = () =>
   text("uid")
     .notNull()
     .references(() => users.uid, { onDelete: "cascade" });
-export const clientProfiles = sqliteTable(
-  "client_profiles",
-  {
-    uid: owner(),
-    client: text("client").$type<"web" | "tui">().notNull(),
-    timeTyping: real("time_typing").notNull().default(0),
-    data: json(),
-  },
-  (t) => [
-    primaryKey({ columns: [t.uid, t.client] }),
-    check("client_profiles_client", sql`${t.client} IN ('web','tui')`),
-  ],
-);
 export const configs = sqliteTable("configs", {
   uid: owner().primaryKey(),
   id: text("id").notNull(),
@@ -196,12 +165,13 @@ export const results = sqliteTable(
     language: text("language").notNull(),
     wpm: real("wpm").notNull(),
     acc: real("acc").notNull(),
-    client: text("client").$type<"web" | "tui">().notNull().default("web"),
+    client: text("client").$type<"web">().notNull().default("web"),
     submissionHash: text("submission_hash"),
     data: json(),
   },
   (t) => [
     index("results_client_time_idx").on(t.uid, t.client, t.timestamp, t.id),
+    // Existing storage can retain legacy rows; request schemas accept web only.
     check("results_client", sql`${t.client} IN ('web','tui')`),
     index("results_owner_time_idx").on(t.uid, t.timestamp, t.id),
     index("results_mode_idx").on(t.uid, t.mode, t.mode2, t.language),
@@ -376,7 +346,7 @@ export const weeklyEntries = sqliteTable(
   {
     period: integer("period").notNull(),
     uid: owner(),
-    client: text("client").$type<"web" | "tui">().notNull().default("web"),
+    client: text("client").$type<"web">().notNull().default("web"),
     xp: integer("xp").notNull(),
     timeTypedSeconds: real("time_typed_seconds").notNull(),
     expiresAt: integer("expires_at").notNull(),
@@ -393,7 +363,7 @@ export const userActivity = sqliteTable(
   "user_activity",
   {
     uid: owner(),
-    client: text("client").$type<"web" | "tui">().notNull().default("web"),
+    client: text("client").$type<"web">().notNull().default("web"),
     day: integer("day").notNull(),
     count: integer("count").notNull(),
   },

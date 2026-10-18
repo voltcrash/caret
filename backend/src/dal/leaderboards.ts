@@ -1,5 +1,4 @@
 import type { Client } from "@oxytype/schemas/shared";
-import { clientBoard } from "../db/client-profile";
 import type { LeaderboardEntry } from "@oxytype/schemas/leaderboards";
 import { newId } from "../utils/id";
 import { binding, statement } from "../db/client";
@@ -12,9 +11,9 @@ function board(
   mode: string,
   mode2: string,
   language: string,
-  client: Client = "web",
+  _client: Client = "web",
 ): string {
-  return clientBoard(`${language}_${mode}_${mode2}`, client);
+  return `${language}_${mode}_${mode2}`;
 }
 function unpack(row: {
   uid: string;
@@ -93,13 +92,11 @@ export async function update(
       `INSERT INTO leaderboard_snapshots(generation,board,uid,rank,data)
       SELECT ?,?,u.uid,row_number() OVER(ORDER BY b.wpm DESC,b.acc DESC,b.timestamp DESC,u.uid DESC),
       json_patch(b.data,json_object('uid',u.uid,'name',u.name,'badgeId',(SELECT json_extract(value,'$.id') FROM json_each(u.data,'$.inventory.badges') WHERE json_extract(value,'$.selected')=1 LIMIT 1),'isPremium',json(CASE WHEN json_extract(u.data,'$.premium.expirationTimestamp')=-1 OR json_extract(u.data,'$.premium.expirationTimestamp')>? THEN 'true' ELSE 'false' END)))
-      FROM leaderboard_bests b JOIN users u ON b.uid=u.uid WHERE b.board=? AND b.wpm>0 AND b.acc>0 AND b.timestamp>0 AND u.banned=0 AND u.lb_opt_out=0 AND u.needs_to_change_name=0 AND CASE WHEN ?='web' THEN u.time_typing ELSE COALESCE((SELECT time_typing FROM client_profiles WHERE uid=u.uid AND client=?),0) END>?`,
+      FROM leaderboard_bests b JOIN users u ON b.uid=u.uid WHERE b.board=? AND b.wpm>0 AND b.acc>0 AND b.timestamp>0 AND u.banned=0 AND u.lb_opt_out=0 AND u.needs_to_change_name=0 AND u.time_typing>?`,
       generation,
       key,
       Date.now(),
       key,
-      client,
-      client,
       minimum,
     ),
     statement(

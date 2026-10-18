@@ -1,5 +1,8 @@
 # TanStack Start migration: architecture and execution plan
 
+> Historical migration record. The terminal client, device login, browser handoffs,
+> and client selectors were subsequently removed; only the web client is supported.
+
 Status: Stages 0–5 complete; [ledger and handoffs](tanstack-start/README.md).
 Stages 6–7 complete; Stage 8 phases 8.1–8.2 complete, 8.3 cutover pending.
 Production still serves the anchored legacy version until the release workflow

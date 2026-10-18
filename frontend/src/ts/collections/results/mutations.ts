@@ -91,7 +91,6 @@ function createActions(client: Client) {
 
 const actionsByClient = {
   web: createActions("web"),
-  tui: createActions("tui"),
 };
 
 // --- Public API ---
@@ -110,10 +109,6 @@ export async function updateTags(
 
     if (!response.ok) {
       throw new Error(`Failed to update result tag: ${response.message}`);
-    }
-
-    if (params.client === "tui") {
-      return { tagPbs: response.data.tagPbs };
     }
 
     const result = getLastResult();
@@ -172,9 +167,7 @@ export async function insertLocalResult(
 export async function deleteLocalTag(
   params: ActionType["deleteLocalTag"],
 ): Promise<void> {
-  for (const client of ["web", "tui"] as const) {
-    if (!resultsByClient[client]().isReady()) continue;
-    const transaction = actionsByClient[client].deleteLocalTag(params);
-    await transaction.isPersisted.promise;
-  }
+  if (!resultsByClient.web().isReady()) return;
+  const transaction = actionsByClient.web.deleteLocalTag(params);
+  await transaction.isPersisted.promise;
 }

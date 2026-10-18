@@ -1,5 +1,3 @@
-import { clientProfile } from "../../db/client-profile";
-
 import MonkeyError from "../../utils/error";
 import { newId } from "../../utils/id";
 
@@ -23,18 +21,10 @@ export async function addTag(uid: string, name: string): Promise<DBUserTag> {
 }
 export async function getTags(
   uid: string,
-  client: Client = "web",
+  _client: Client = "web",
 ): Promise<DBUserTag[]> {
   const user = await getUser(uid, "get tags");
-  const profile = clientProfile(user, client);
-  return (user.tags ?? []).map((tag) =>
-    client === "web"
-      ? tag
-      : {
-          ...tag,
-          personalBests: profile.tagPersonalBests?.[tag._id] ?? emptyPb(),
-        },
-  );
+  return user.tags ?? [];
 }
 function tagById(user: DBUser, id: string): DBUserTag {
   const tag = user.tags?.find((item) => item._id === id);
@@ -54,25 +44,15 @@ export async function removeTag(uid: string, id: string): Promise<void> {
   await mutateUser(uid, (user) => {
     tagById(user, id);
     user.tags = user.tags?.filter((item) => item._id !== id);
-    for (const profile of Object.values(user.clientProfiles ?? {})) {
-      if (profile.tagPersonalBests) {
-        profile.tagPersonalBests = Object.fromEntries(
-          Object.entries(profile.tagPersonalBests).filter(
-            ([key]) => key !== id,
-          ),
-        );
-      }
-    }
   });
 }
 export async function removeTagPb(
   uid: string,
   id: string,
-  client: Client = "web",
+  _client: Client = "web",
 ): Promise<void> {
   await mutateUser(uid, (user) => {
     const tag = tagById(user, id);
-    if (client === "web") tag.personalBests = emptyPb();
-    else (clientProfile(user, client).tagPersonalBests ??= {})[id] = emptyPb();
+    tag.personalBests = emptyPb();
   });
 }

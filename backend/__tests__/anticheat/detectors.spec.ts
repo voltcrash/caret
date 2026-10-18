@@ -30,7 +30,6 @@ function flagged(name: string): string[][] {
 describe("synthetic bot fixtures", () => {
   it.each([
     ["fixed-interval", "fixed-timing"],
-    ["fixed-interval-tui", "fixed-timing"],
     ["sub-ms-jitter", "fixed-timing"],
     ["ms-jitter", "low-gap-variation"],
     ["uniform-range", "uniform-gaps"],
@@ -69,14 +68,6 @@ describe("recorded fixtures", () => {
       );
     }
   });
-
-  it("reads the terminal recording as a tui sample", () => {
-    const [sample] = load(
-      resolve(__dirname, "../__testData__/terminal-words-10.json"),
-    );
-    expect(sample?.client).toBe("tui");
-    expect(sample?.keySpacing.length).toBeGreaterThan(0);
-  });
 });
 
 describe("detector histories", () => {
@@ -100,15 +91,13 @@ describe("detector histories", () => {
     expect(report.falsePositiveRate["replayed-timing"]).toBe(0);
   });
 
-  it("requires web hold telemetry but only gaps for terminal fixed timing", () => {
+  it("requires hold telemetry for fixed timing", () => {
     const keySpacing = Array<number>(150).fill(80);
-    const web = detect([{ keySpacing, keyDuration: [], client: "web" }])[0];
-    const tui = detect([{ keySpacing, keyDuration: [], client: "tui" }])[0];
-    expect(web?.applicable).not.toContain("fixed-timing");
-    expect(tui?.flagged).toContain("fixed-timing");
-    expect(tui?.applicable).not.toContain("uniform-holds");
-    expect(tui?.applicable).not.toContain("low-hold-variation");
-    expect(tui?.applicable).not.toContain("memoryless-timing");
+    const result = detect([{ keySpacing, keyDuration: [], client: "web" }])[0];
+    expect(result?.applicable).not.toContain("fixed-timing");
+    expect(result?.applicable).not.toContain("uniform-holds");
+    expect(result?.applicable).not.toContain("low-hold-variation");
+    expect(result?.applicable).not.toContain("memoryless-timing");
   });
 
   it("reports unmeasured human rates as null", () => {

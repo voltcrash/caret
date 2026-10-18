@@ -74,13 +74,6 @@ export async function resetUser(uid: string): Promise<void> {
       streak: { length: 0, lastResultTimestamp: 0, maxLength: 0 },
       testActivity: {},
     });
-    delete user.clientProfiles;
-    await stage(
-      statement(
-        "DELETE FROM client_profiles WHERE uid=? AND client='tui'",
-        uid,
-      ),
-    );
     delete user.lbOptOut;
     delete user.inbox;
     await stage(

@@ -82,7 +82,9 @@ export async function getResult(uid: string, id: string): Promise<DBResult> {
   const row = await database()
     .select()
     .from(results)
-    .where(and(eq(results.id, id), eq(results.uid, uid)))
+    .where(
+      and(eq(results.id, id), eq(results.uid, uid), eq(results.client, "web")),
+    )
     .get();
   if (!row) throw new MonkeyError(404, "Result not found");
   return unpack(row);

@@ -1,5 +1,8 @@
 # Phase 0.3: architecture and compatibility contract
 
+> Historical migration record. The terminal client, device login, browser handoffs,
+> and client selectors were subsequently removed; only the web client is supported.
+
 The [target architecture](../TANSTACK_START_MIGRATION.md#target-architecture) is
 accepted unchanged. Stage 0 makes its evidence/decisions explicit; it introduces
 no replacement application and selects no untested Start versions.

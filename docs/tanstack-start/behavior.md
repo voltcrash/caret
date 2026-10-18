@@ -1,5 +1,8 @@
 # Phase 0.1: behavior and consumer contract
 
+> Historical migration record. The terminal client, device login, browser handoffs,
+> and client selectors were subsequently removed; only the web client is supported.
+
 Source snapshot: `d6e5be3e9`; no production changes in Stage 0.
 Paths below are repo-relative. Start route names refer to the target architecture.
 

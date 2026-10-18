@@ -15,7 +15,6 @@ import { filters, setFilters } from "../../../states/result-filters";
 import { downloadResultsCSV } from "../../../utils/misc";
 import AsyncContent from "../../common/AsyncContent";
 import { Button } from "../../common/Button";
-import { ClientToggle } from "../../common/ClientToggle";
 import { Charts } from "./Charts";
 import { Filters } from "./Filters";
 import { MyProfile } from "./MyProfile";
@@ -23,10 +22,7 @@ import { Table } from "./Table";
 import { TestStats } from "./TestStats";
 
 /** Account statistics and history for the signed-in actor; the host supplies client selection. */
-export function AccountContent(props: {
-  client: Client;
-  onClient: (client: Client) => void;
-}): JSXElement {
+export function AccountContent(props: { client: Client }): JSXElement {
   const client = (): Client => props.client;
   const [tableRef, tableElement] = useRef<HTMLTableElement>();
   const [limit, setLimit] = createSignal(10);
@@ -62,8 +58,7 @@ export function AccountContent(props: {
 
   return (
     <div class="flex flex-col gap-8">
-      <ClientToggle value={client()} onChange={props.onClient} />
-      <MyProfile client={client()} />
+      <MyProfile />
 
       <Filters filters={filters} onChangeFilters={setFilters} />
 

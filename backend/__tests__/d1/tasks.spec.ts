@@ -178,6 +178,15 @@ describe("durable queue delivery", () => {
         taskName: "daily-leaderboard-results",
         ctx: { yesterdayTimestamp: period, modeRule },
       } as const;
+      // Persisted tasks for removed clients must never pay out web rewards.
+      const retiredTask = structuredClone(task);
+      Reflect.set(retiredTask.ctx, "client", "tui");
+      await jobHandler(retiredTask);
+      expect(
+        await statement(
+          "SELECT count(*) AS count FROM outbox WHERE type='reward' AND uid LIKE 'payout%'",
+        ).first("count"),
+      ).toBe(0);
       await jobHandler(task);
       await jobHandler(task);
       await jobHandler({ ...task, ctx: { ...task.ctx, offset: 20 } });

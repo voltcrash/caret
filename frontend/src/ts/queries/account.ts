@@ -108,32 +108,6 @@ export function getAccountQueryOptions(userId: string | null = getUserId()) {
   });
 }
 
-/** The terminal client's partition of the same account, for its profile/boards. */
-export function getTerminalAccountQueryOptions() {
-  return queryOptions({
-    queryKey: accountKey("tui", getUserId()),
-    queryFn: async () => {
-      const response = await operation("users.get", {
-        query: { client: "tui" },
-      });
-      if (!response.ok) throw new Error(response.message);
-      const data = response.data;
-      return {
-        ...data,
-        details: data.profileDetails,
-        typingStats: {
-          startedTests: data.startedTests ?? 0,
-          completedTests: data.completedTests ?? 0,
-          timeTyping: data.timeTyping ?? 0,
-        },
-        streak: data.streak?.length ?? 0,
-        maxStreak: data.streak?.maxLength ?? 0,
-      };
-    },
-    staleTime: 30_000,
-  });
-}
-
 /**
  * The actor's account, fetched at most once while cached; concurrent
  * consumers (snapshot, tags, filter presets) share one request. Rejects with
@@ -156,32 +130,6 @@ export async function loadAccountData(
     lease.assertCurrent();
     throw error;
   }
-}
-
-export async function updateTerminalLeaderboardMemory(
-  mode2: string,
-  rank: number,
-): Promise<void> {
-  const key = getTerminalAccountQueryOptions().queryKey;
-  const response = await operation("users.updateLeaderboardMemory", {
-    query: { client: "tui" },
-    body: { mode: "time", mode2, language: "english", rank },
-  });
-  if (!response.ok) throw new Error(response.message);
-  getQueryClient().setQueryData(key, (data) =>
-    data === undefined
-      ? data
-      : {
-          ...data,
-          lbMemory: {
-            ...data.lbMemory,
-            time: {
-              ...data.lbMemory?.time,
-              [mode2]: { ...data.lbMemory?.time?.[mode2], english: rank },
-            },
-          },
-        },
-  );
 }
 
 export function getAccountActivityQueryOptions(client: Client) {

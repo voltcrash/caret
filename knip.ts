@@ -56,14 +56,7 @@ export default {
       ignoreDependencies: ["@storybook/addon-links"],
     },
     "packages/release": {
-      entry: [
-        "src/production-validation.js",
-        "src/terminal-release.js",
-        "__tests__/*.spec.js",
-      ],
-    },
-    tui: {
-      entry: ["bin/*.ts"],
+      entry: ["src/production-validation.js", "__tests__/*.spec.js"],
     },
     "packages/typing-core": {
       entry: ["scripts/*.ts"],

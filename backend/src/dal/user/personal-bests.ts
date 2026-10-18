@@ -1,5 +1,3 @@
-import { clientProfile, clientBoard } from "../../db/client-profile";
-
 import { canFunboxGetPb, checkAndUpdatePb } from "../../utils/pb";
 
 import { statement, encode } from "../../db/client";
@@ -20,29 +18,19 @@ import { getUser } from "./queries";
 type Result = Omit<ResultType<Mode>, "_id" | "name">;
 export async function clearPb(
   uid: string,
-  client: Client = "web",
+  _client: Client = "web",
 ): Promise<void> {
   await mutateUser(uid, async (user) => {
-    const profile = clientProfile(user, client);
+    const profile = user;
     profile.personalBests = emptyPb();
     profile.lbPersonalBests = { time: {} };
-    await stage(
-      statement(
-        "DELETE FROM leaderboard_bests WHERE uid=? AND ((?='web' AND board NOT LIKE 'tui:%') OR (?='tui' AND board LIKE 'tui:%'))",
-        uid,
-        client,
-        client,
-      ),
-    );
+    await stage(statement("DELETE FROM leaderboard_bests WHERE uid=?", uid));
   });
 }
 export async function optOutOfLeaderboards(uid: string): Promise<void> {
   await mutateUser(uid, async (user) => {
     user.lbOptOut = true;
     user.lbPersonalBests = { time: {} };
-    for (const profile of Object.values(user.clientProfiles ?? {})) {
-      profile.lbPersonalBests = { time: {} };
-    }
     for (const table of [
       "leaderboard_bests",
       "daily_entries",
@@ -58,10 +46,10 @@ export async function updateLbMemory(
   mode2: Mode2<Mode>,
   language: string,
   rank: number,
-  client: Client = "web",
+  _client: Client = "web",
 ): Promise<void> {
   await mutateUser(uid, (user) => {
-    const profile = clientProfile(user, client);
+    const profile = user;
     profile.lbMemory ??= {};
     profile.lbMemory[mode] ??= {};
     profile.lbMemory[mode][mode2] ??= {};
@@ -87,7 +75,7 @@ export async function checkIfPb(
 ): Promise<boolean> {
   if (!pbEligible(result)) return false;
   return await mutateUser(uid, async (user) => {
-    const profile = clientProfile(user, result.client);
+    const profile = user;
     const pb = checkAndUpdatePb(
       profile.personalBests ?? emptyPb(),
       profile.lbPersonalBests ?? { time: {} },
@@ -103,7 +91,7 @@ export async function checkIfPb(
         statement(
           "INSERT INTO leaderboard_bests(uid,board,wpm,acc,timestamp,data) VALUES(?,?,?,?,?,?) ON CONFLICT(uid,board) DO UPDATE SET wpm=excluded.wpm,acc=excluded.acc,timestamp=excluded.timestamp,data=excluded.data",
           uid,
-          clientBoard(`${language}_time_${duration}`, result.client),
+          `${language}_time_${duration}`,
           best.wpm,
           best.acc,
           best.timestamp,
@@ -121,23 +109,16 @@ export async function checkIfTagPb(
 ): Promise<string[]> {
   if (!pbEligible(result)) return [];
   return await mutateUser(uid, (user) => {
-    const profile = clientProfile(user, result.client);
     const updated: string[] = [];
     for (const tag of user.tags ?? []) {
       if (!result.tags?.includes(tag._id)) continue;
       const pb = checkAndUpdatePb(
-        (result.client === "tui"
-          ? profile.tagPersonalBests?.[tag._id]
-          : tag.personalBests) ?? emptyPb(),
+        tag.personalBests ?? emptyPb(),
         undefined,
         result,
       );
       if (pb.isPb) {
-        if (result.client === "tui") {
-          (profile.tagPersonalBests ??= {})[tag._id] = pb.personalBests;
-        } else {
-          tag.personalBests = pb.personalBests;
-        }
+        tag.personalBests = pb.personalBests;
         updated.push(tag._id);
       }
     }
@@ -148,10 +129,10 @@ export async function getPersonalBests(
   uid: string,
   mode: string,
   mode2?: string,
-  client: Client = "web",
+  _client: Client = "web",
 ): Promise<PersonalBest> {
   const user = await getUser(uid, "get personal bests");
-  const profile = clientProfile(user, client);
+  const profile = user;
   return (mode2 === undefined
     ? (profile.personalBests as Record<string, Record<string, PersonalBest[]>>)[
         mode

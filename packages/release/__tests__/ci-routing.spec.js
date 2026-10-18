@@ -76,7 +76,6 @@ it.each([
     "should-build-be",
     "should-build-fe",
     "should-build-pkg",
-    "should-build-tui",
     "assets-or-styles",
   ]) {
     expect(flags[name], name).toBe("true");
@@ -88,7 +87,6 @@ it("retains selective routing for frontend source changes", () => {
     "should-build-fe": "true",
     "should-build-be": "false",
     "should-build-pkg": "false",
-    "should-build-tui": "false",
   });
 });
 
@@ -97,7 +95,6 @@ it("rebuilds the application Worker when backend services change", () => {
     {
       "should-build-fe": "true",
       "should-build-be": "true",
-      "should-build-tui": "false",
     },
   );
 });

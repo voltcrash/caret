@@ -6,20 +6,6 @@ This project began from the Monkeytype codebase and now has its own roadmap. We 
 
 Oxytype does not support self-hosting. For self-hosting, use [Monkeytype](https://github.com/monkeytypegame/monkeytype).
 
-## Terminal client
-
-The Bun/OpenTUI terminal client shares your account with the website and supports
-offline typing. After its first npm release:
-
-```sh
-bunx @voltcrash/oxytype
-bunx @voltcrash/oxytype --words 25
-bunx @voltcrash/oxytype login
-```
-
-Requires Bun 1.3.0+ and an 80×20 terminal. See [terminal setup and controls](./docs/TUI.md)
-and the [feature audit](./tui/MISSING.md). Develop locally with `vp run dev-tui`.
-
 ## Development
 
 Use Node 24.21.0 and [Vite+](https://viteplus.dev/guide/) (`vp`) for every command; pnpm 12.8.1 is the package manager under the hood. Follow [the development setup guide](./docs/CONTRIBUTING_ADVANCED.md) for Better Auth and backend configuration. See [the architecture overview](./docs/ARCHITECTURE.md) for the codebase and stack.

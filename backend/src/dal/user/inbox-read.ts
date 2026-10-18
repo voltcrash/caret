@@ -18,7 +18,14 @@ export async function readInbox(uid: string): Promise<MonkeyMail[]> {
         ...row.data,
         id: row.id,
         read: row.read,
-        rewards: row.read ? [] : row.data["rewards"],
+        rewards: row.read
+          ? []
+          : ((row.data["rewards"] ?? []) as MonkeyMail["rewards"]).filter(
+              (reward) =>
+                reward.type !== "xp" ||
+                reward.client === undefined ||
+                reward.client === "web",
+            ),
       }) as MonkeyMail,
   );
 }

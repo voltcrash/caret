@@ -67,19 +67,6 @@ it("returns tag PBs from the API when results are not loaded", async () => {
   expect(get).not.toHaveBeenCalled();
 });
 
-it("returns tag PBs for terminal results without touching web PBs", async () => {
-  saveLocalTagPB.mockClear();
-  await expect(
-    updateTags({
-      client: "tui",
-      resultId: "tui",
-      currentTagIds: [],
-      newTagIds: ["pb-tag"],
-    }),
-  ).resolves.toEqual({ tagPbs: ["pb-tag"] });
-  expect(saveLocalTagPB).not.toHaveBeenCalled();
-});
-
 mockHttpFixture("results.get", async (input) => await get(input));
 
 mockHttpFixture("results.updateTags", async (input) => await update(input));

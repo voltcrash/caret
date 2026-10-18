@@ -10,8 +10,8 @@ describe("GetProfileQuerySchema", () => {
     { query: { isUid: true }, expected: { isUid: true } },
     { query: { isUid: false }, expected: { isUid: false } },
     {
-      query: { client: "tui", isUid: true },
-      expected: { client: "tui", isUid: true },
+      query: { client: "web", isUid: true },
+      expected: { client: "web", isUid: true },
     },
   ])("parses $query", ({ query, expected }) => {
     expect(GetProfileQuerySchema.parse(query)).toEqual(expected);

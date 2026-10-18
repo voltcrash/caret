@@ -82,16 +82,16 @@ describe("typing-core parity fixtures", () => {
     expect(fixtures.length).toBeGreaterThan(0);
   });
 
-  it("includes the client in result hashes", async () => {
+  it("rejects unsupported result clients", async () => {
     const fixture = fixtures[0];
     if (!fixture) throw new Error("Missing fixture");
-    const web = { ...rebuild(fixture), uid: "fixture-uid" };
-    const tui = { ...web, client: "tui" as const };
+    const result = { ...rebuild(fixture), uid: "fixture-uid" };
+    const hash = await hashResult(result);
+    expect(CompletedEventSchema.parse({ ...result, hash }).client).toBe("web");
     expect(
-      CompletedEventSchema.parse({ ...tui, hash: await hashResult(tui) })
-        .client,
-    ).toBe("tui");
-    expect(await hashResult(tui)).not.toBe(await hashResult(web));
+      CompletedEventSchema.safeParse({ ...result, hash, client: "tui" })
+        .success,
+    ).toBe(false);
   });
 
   describe.each(fixtures.map((f) => [f.name, f] as const))(

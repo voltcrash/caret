@@ -21,12 +21,11 @@ describe("leaderboard query keys", () => {
         const key = (overrides: Partial<Selection>, page = 0): unknown =>
           leaderboardOptions({ ...selection, ...overrides } as Selection, page)
             .queryKey;
-        expect(key({ client: "web" })).not.toEqual(key({ client: "tui" }));
         expect(key({ client: "web" })).toEqual(key({}));
         expect(key({ previous: !previous })).not.toEqual(key({}));
         expect(key({}, 1)).not.toEqual(key({}));
-        expect(boardKey({ ...selection, client: "tui" })).toMatchObject({
-          client: "tui",
+        expect(boardKey({ ...selection, client: "web" })).toMatchObject({
+          client: "web",
           previous,
         });
       }

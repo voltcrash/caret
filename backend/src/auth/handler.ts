@@ -26,21 +26,15 @@ async function dispatchAuthRequest(
     !request.headers.has("origin") &&
     !request.headers.has("cookie") &&
     !request.headers.has("sec-fetch-site");
-  const nativeDeviceRequest =
+  const nativeBearerRequest =
     noBrowserContext &&
-    ["/auth/device/code", "/auth/device/token"].includes(path);
-  let nativeBearerRequest =
-    noBrowserContext &&
-    request.headers.get("authorization")?.startsWith("Bearer ") === true;
-  if (nativeBearerRequest && !dashboardRequest && !nativeDeviceRequest) {
-    nativeBearerRequest =
-      (await auth.api.getSession({ headers: request.headers })) !== null;
-  }
+    !dashboardRequest &&
+    request.headers.get("authorization")?.startsWith("Bearer ") === true &&
+    (await auth.api.getSession({ headers: request.headers })) !== null;
   if (
     request.method !== "GET" &&
     request.method !== "HEAD" &&
     !dashboardRequest &&
-    !nativeDeviceRequest &&
     !nativeBearerRequest
   ) {
     const origin = request.headers.get("origin");

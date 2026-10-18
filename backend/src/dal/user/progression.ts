@@ -1,5 +1,3 @@
-import { clientProfile } from "../../db/client-profile";
-
 import { statement } from "../../db/client";
 import { mutateUser, stage } from "../../db/mutation";
 
@@ -40,10 +38,10 @@ export async function updateTypingStats(
   uid: string,
   restartCount: number,
   timeTyping: number,
-  client: Client = "web",
+  _client: Client = "web",
 ): Promise<void> {
   await mutateUser(uid, (user) => {
-    const profile = clientProfile(user, client);
+    const profile = user;
     profile.startedTests = (profile.startedTests ?? 0) + restartCount + 1;
     profile.completedTests = (profile.completedTests ?? 0) + 1;
     profile.timeTyping = (profile.timeTyping ?? 0) + timeTyping;
@@ -52,10 +50,10 @@ export async function updateTypingStats(
 export async function incrementBananas(
   uid: string,
   wpm: number,
-  client: Client = "web",
+  _client: Client = "web",
 ): Promise<void> {
   await mutateUser(uid, (user) => {
-    const profile = clientProfile(user, client);
+    const profile = user;
     const pbs = profile.personalBests?.time[60];
     if (
       pbs !== undefined &&
@@ -69,10 +67,10 @@ export async function incrementBananas(
 export async function incrementXp(
   uid: string,
   xp: number,
-  client: Client = "web",
+  _client: Client = "web",
 ): Promise<void> {
   await mutateUser(uid, (user) => {
-    const profile = clientProfile(user, client);
+    const profile = user;
     profile.xp = (profile.xp ?? 0) + (Number.isFinite(xp) ? Math.trunc(xp) : 0);
   });
 }
@@ -81,12 +79,12 @@ export async function incrementTestActivity(
   timestamp: number,
   client: Client = "web",
 ): Promise<void> {
-  if (clientProfile(user, client).testActivity === undefined) return;
+  if (user.testActivity === undefined) return;
   await mutateUser(user.uid, async (current) => {
     const date = new UTCDate(timestamp),
       year = date.getFullYear(),
       index = getDayOfYear(date) - 1;
-    const profile = clientProfile(current, client);
+    const profile = current;
     profile.testActivity ??= {};
     const days = (profile.testActivity[year] ??= []);
     while (days.length <= index) days.push(0);
@@ -126,10 +124,10 @@ export async function recordAutoBanEvent(
 export async function updateStreak(
   uid: string,
   timestamp: number,
-  client: Client = "web",
+  _client: Client = "web",
 ): Promise<number> {
   return await mutateUser(uid, async (user) => {
-    const profile = clientProfile(user, client);
+    const profile = user;
     const streak: UserStreak = {
       lastResultTimestamp: profile.streak?.lastResultTimestamp ?? 0,
       length: profile.streak?.length ?? 0,
@@ -160,10 +158,10 @@ export async function updateStreak(
 export async function setStreakHourOffset(
   uid: string,
   hourOffset: number,
-  client: Client = "web",
+  _client: Client = "web",
 ): Promise<void> {
   await mutateUser(uid, (user) => {
-    const profile = clientProfile(user, client);
+    const profile = user;
     profile.streak ??= { length: 0, maxLength: 0, lastResultTimestamp: 0 };
     profile.streak.hourOffset = hourOffset;
     profile.streak.lastResultTimestamp = Date.now();
@@ -172,9 +170,6 @@ export async function setStreakHourOffset(
 export async function clearStreakHourOffset(uid: string): Promise<void> {
   await mutateUser(uid, (user) => {
     if (user.streak) delete user.streak.hourOffset;
-    for (const profile of Object.values(user.clientProfiles ?? {})) {
-      if (profile.streak) delete profile.streak.hourOffset;
-    }
   });
 }
 export async function getStats(

@@ -11,9 +11,9 @@ Package versions come from the workspace manifests and lockfile.
 | `packages/contracts/` | Retained external HTTP API contracts |
 | `packages/schemas/` | Shared Zod schemas and domain types |
 | `packages/util/`, `packages/funbox/`, `packages/challenges/` | Shared helpers and typing features |
-| `packages/typing-core/` | Headless typing test logic shared by web and TUI |
+| `packages/typing-core/` | Headless typing test logic |
 | `packages/oxlint-config/`, `packages/typescript-config/` | Shared tooling configuration |
-| `packages/release/` | Production CI validation and terminal npm release helpers |
+| `packages/release/` | Production CI validation helpers |
 | `.github/workflows/` | CI, manual production deployments, labeling, and repository automation |
 
 The root is a private pnpm workspace. Vite+ (`vp run`) runs workspace tasks.

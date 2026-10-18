@@ -1,4 +1,3 @@
-import { clientBoard } from "../db/client-profile";
 import Logger from "../utils/logger";
 import { statement, encode, binding } from "../db/client";
 import { createHash } from "node:crypto";
@@ -20,6 +19,7 @@ import { RewardBracket } from "@oxytype/schemas/configuration";
 async function handleDailyLeaderboardResults(
   ctx: LaterTaskContexts["daily-leaderboard-results"],
 ): Promise<void> {
+  if (ctx.client !== undefined && ctx.client !== "web") return;
   const { yesterdayTimestamp, modeRule } = ctx;
   const { language, mode, mode2 } = modeRule;
   const {
@@ -76,17 +76,13 @@ async function handleDailyLeaderboardResults(
           rewards: [
             {
               type: "xp",
-              ...(ctx.client === "tui" ? { client: ctx.client } : {}),
               item: Math.round(xpReward),
             },
           ],
         });
 
         rewardMail.id = rewardId(
-          clientBoard(
-            `daily:${yesterdayTimestamp}:${language}:${mode}:${mode2}:${entry.uid}`,
-            ctx.client,
-          ),
+          `daily:${yesterdayTimestamp}:${language}:${mode}:${mode2}:${entry.uid}`,
         );
         mailEntries.push({
           uid: entry.uid,
@@ -105,10 +101,7 @@ async function handleDailyLeaderboardResults(
         ctx: { ...ctx, offset: (ctx.offset ?? 0) + 20 },
       },
       {
-        jobId: clientBoard(
-          `daily:${yesterdayTimestamp}:${language}:${mode}:${mode2}:${(ctx.offset ?? 0) + 20}`,
-          ctx.client,
-        ),
+        jobId: `daily:${yesterdayTimestamp}:${language}:${mode}:${mode2}:${(ctx.offset ?? 0) + 20}`,
         delay: 0,
       },
     );
@@ -128,6 +121,7 @@ async function handleWeeklyXpLeaderboardResults(
     return;
   }
 
+  if (ctx.client !== undefined && ctx.client !== "web") return;
   const { lastWeekTimestamp } = ctx;
   const weeklyXpLeaderboard = new WeeklyXpLeaderboard(
     lastWeekTimestamp,
@@ -175,15 +169,12 @@ async function handleWeeklyXpLeaderboardResults(
         rewards: [
           {
             type: "xp",
-            ...(ctx.client === "tui" ? { client: ctx.client } : {}),
             item: Math.round(xpReward),
           },
         ],
       });
 
-      rewardMail.id = rewardId(
-        clientBoard(`weekly:${lastWeekTimestamp}:${uid}`, ctx.client),
-      );
+      rewardMail.id = rewardId(`weekly:${lastWeekTimestamp}:${uid}`);
       mailEntries.push({
         uid: uid,
         mail: [rewardMail],

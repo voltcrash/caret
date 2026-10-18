@@ -15,7 +15,6 @@ import {
 import { boardKey, leaderboardOptions } from "../../data/leaderboards";
 import { getLeaderboardRank } from "../../functions/leaderboards";
 import AsyncContent from "../../ts/components/common/AsyncContent";
-import { ClientToggle } from "../../ts/components/common/ClientToggle";
 import { LoadingCircle } from "../../ts/components/common/LoadingCircle";
 import { Separator } from "../../ts/components/common/Separator";
 import { Navigation } from "../../ts/components/pages/leaderboard/Navigation";
@@ -25,10 +24,6 @@ import { Table } from "../../ts/components/pages/leaderboard/Table";
 import { Title } from "../../ts/components/pages/leaderboard/Title";
 import { UserRank } from "../../ts/components/pages/leaderboard/UserRank";
 import { getSnapshot, updateLbMemory } from "../../ts/db";
-import {
-  getTerminalAccountQueryOptions,
-  updateTerminalLeaderboardMemory,
-} from "../../ts/queries/account";
 import { getServerConfigurationQueryOptions } from "../../ts/queries/server-configuration";
 import { baseKey } from "../../ts/queries/utils/keys";
 import { getUserId, isAuthenticated } from "../../ts/states/core";
@@ -109,12 +104,7 @@ export function LeaderboardContent(props: {
   const serverConfigurationQuery = useQuery(() =>
     getServerConfigurationQueryOptions(),
   );
-  const terminalAccount = useQuery(() => ({
-    ...getTerminalAccountQueryOptions(),
-    enabled: isAuthenticated() && selection().client === "tui",
-  }));
-  const selectedAccount = () =>
-    selection().client === "tui" ? terminalAccount.data : getSnapshot();
+  const selectedAccount = getSnapshot;
 
   // Like the old page: the address bar spells out the board once it loads.
   createEffect(() => {
@@ -182,10 +172,7 @@ export function LeaderboardContent(props: {
     const key = `${getUserId()}:${current.client ?? "web"}:${current.mode2}:${rank}`;
     if (diff === undefined || diff === 0 || memoryUpdates.has(key)) return;
     memoryUpdates.add(key);
-    const update =
-      current.client === "tui"
-        ? updateTerminalLeaderboardMemory(current.mode2, rank)
-        : updateLbMemory("time", current.mode2, "english", rank, true);
+    const update = updateLbMemory("time", current.mode2, "english", rank, true);
     void update
       .catch((error: unknown) =>
         showErrorNotification("Could not save leaderboard rank", { error }),
@@ -201,12 +188,6 @@ export function LeaderboardContent(props: {
   return (
     <div class="content-grid flex flex-col gap-6 lg:flex-row lg:gap-8">
       <div class="w-full shrink-0 lg:w-60 2xl:w-75">
-        <div class="mb-4">
-          <ClientToggle
-            value={selection().client ?? "web"}
-            onChange={(client) => onSelectionChange({ ...selection(), client })}
-          />
-        </div>
         <AsyncContent queries={{ serverConfigurationQuery }}>
           {({ serverConfigurationQueryData }) => (
             <Sidebar

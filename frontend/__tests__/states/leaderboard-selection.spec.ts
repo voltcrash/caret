@@ -27,7 +27,7 @@ describe("leaderboard selection", () => {
   it("round-trips client links for all-time, daily and weekly leaderboards", async () => {
     const state = await import("../../src/ts/states/leaderboard-selection");
     for (const type of ["allTime", "daily", "weekly"] as const) {
-      for (const client of ["web", "tui"] as const) {
+      for (const client of ["web"] as const) {
         const view = applyUrlParams(defaultSelection, {
           type,
           client,
@@ -51,19 +51,9 @@ describe("leaderboard selection", () => {
     }
   });
 
-  it("defaults legacy web links to web after browsing TUI", () => {
-    const tui = applyUrlParams(defaultSelection, {
-      type: "daily",
-      client: "tui",
-    });
-    expect(
-      applyUrlParams(tui.selection, { type: "daily" }).selection.client,
-    ).toBe("web");
-  });
-
   it("applies a client-only link and resets pagination", () => {
-    const view = applyUrlParams(defaultSelection, { client: "tui" }, 3);
-    expect(view.selection.client).toBe("tui");
+    const view = applyUrlParams(defaultSelection, { client: "web" }, 3);
+    expect(view.selection.client).toBe("web");
     expect(view.page).toBe(0);
   });
 

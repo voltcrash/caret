@@ -42,49 +42,39 @@ describe("D1 personal-best and progression policies", () => {
     },
   );
 
-  it("clears PBs and tag PBs for one client, then removes shared tag history from both", async () => {
+  it("clears PBs and tag PBs, then removes tag history", async () => {
     await seedUser(test.env, "clearPbs");
     await withRuntime(test.env, async () => {
       const tag = await Users.addTag("clearPbs", "before");
-      for (const client of ["web", "tui"] as const) {
-        const user = await Users.getUser("clearPbs", "test");
-        const result = scoreEvent(user.uid, 80, 0, { client, tags: [tag._id] });
-        expect(await Users.checkIfPb(user.uid, user, result)).toBe(true);
-        expect(await Users.checkIfTagPb(user.uid, user, result)).toEqual([
-          tag._id,
-        ]);
-      }
-      await Users.editTag("clearPbs", tag._id, "after");
-      await Users.removeTagPb("clearPbs", tag._id, "tui");
-      await Users.clearPb("clearPbs", "tui");
-      expect(
-        (await Users.getTags("clearPbs", "tui"))[0]?.personalBests.time,
-      ).toEqual({});
-      expect((await Users.getTags("clearPbs"))[0]).toMatchObject({
+      const user = await Users.getUser("clearPbs", "test");
+      const result = scoreEvent(user.uid, 80, 0, { tags: [tag._id] });
+      expect(await Users.checkIfPb(user.uid, user, result)).toBe(true);
+      expect(await Users.checkIfTagPb(user.uid, user, result)).toEqual([
+        tag._id,
+      ]);
+      await Users.editTag(user.uid, tag._id, "after");
+      await Users.removeTagPb(user.uid, tag._id);
+      await Users.clearPb(user.uid);
+      expect((await Users.getTags(user.uid))[0]).toMatchObject({
         name: "after",
-        personalBests: { time: { 15: [{ wpm: 80 }] } },
+        personalBests: { time: {} },
       });
       expect(
-        (await Users.getUser("clearPbs", "test", "tui")).personalBests.time,
+        (await Users.getUser(user.uid, "test")).personalBests.time,
       ).toEqual({});
       expect(
         await statement(
-          "SELECT board FROM leaderboard_bests WHERE uid='clearPbs'",
-        ).all<{ board: string }>(),
-      ).toMatchObject({ results: [{ board: "english_time_15" }] });
-      await Users.removeTagPb("clearPbs", tag._id);
-      expect((await Users.getTags("clearPbs"))[0]?.personalBests.time).toEqual(
-        {},
+          "SELECT count(*) AS n FROM leaderboard_bests WHERE uid=?",
+          user.uid,
+        ).first("n"),
+      ).toBe(0);
+      await Users.removeTag(user.uid, tag._id);
+      expect(await Users.getTags(user.uid)).toEqual([]);
+      await expect(Users.editTag(user.uid, tag._id, "missing")).rejects.toThrow(
+        "Tag not found",
       );
-      await Users.removeTag("clearPbs", tag._id);
-      expect(await Users.getTags("clearPbs")).toEqual([]);
-      expect(await Users.getTags("clearPbs", "tui")).toEqual([]);
-      await expect(
-        Users.editTag("clearPbs", tag._id, "missing"),
-      ).rejects.toThrow("Tag not found");
     });
   });
-
   it("advances UTC streaks once per day, preserves the maximum and ignores delayed uploads", async () => {
     await seedUser(test.env, "streakProgress");
     await withRuntime(test.env, async () => {
@@ -105,15 +95,10 @@ describe("D1 personal-best and progression policies", () => {
         maxLength: 2,
         lastResultTimestamp: day + 3 * 86400000,
       });
-      await Users.setStreakHourOffset("streakProgress", 5, "tui");
       await Users.setStreakHourOffset("streakProgress", -3);
       await Users.clearStreakHourOffset("streakProgress");
       expect(
         (await Users.getUser("streakProgress", "test")).streak?.hourOffset,
-      ).toBeUndefined();
-      expect(
-        (await Users.getUser("streakProgress", "test", "tui")).streak
-          ?.hourOffset,
       ).toBeUndefined();
     });
   });

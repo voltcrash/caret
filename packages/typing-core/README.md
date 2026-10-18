@@ -1,6 +1,6 @@
 # Typing core
 
-Shared TypeScript source for web and terminal clients. No build step, browser
+Headless TypeScript source for the web typing test. No build step, browser
 state, DOM rendering or implicit network/storage access. Import from
 `@oxytype/typing-core` or a subpath such as `@oxytype/typing-core/events/stats`.
 
@@ -20,7 +20,7 @@ commit separators; omit the last separator for a finite test), or call
 - `await session.insert(text, timestamp)` and `session.delete(type, timestamp)`
   apply input rules. Serialize input calls when generation awaits an asset.
 - `session.record(type, timestamp, data)` records physical key events and IME
-  metadata; terminal clients decide how to represent missing key-up signals.
+  metadata.
 - `session.advance(timestamp)` emits due ticks; clients own the scheduler and
   may drive `session.clock` directly. Ticks check the time limit and minimum
   speed/accuracy and finish with a reason; `deps.isSlowTimer` flags slow steps.

@@ -2,7 +2,6 @@ packages:
   - frontend
   - backend
   - packages/*
-  - tui
   - frontend/storybook
 
 allowBuilds:

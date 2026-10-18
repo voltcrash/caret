@@ -1,5 +1,4 @@
 import { createAuthClient } from "better-auth/client";
-import { deviceAuthorizationClient } from "better-auth/client/plugins";
 import { dashClient } from "@better-auth/infra/client";
 import { envConfig } from "virtual:env-config";
 import { createAppOwned } from "../../app/application";
@@ -27,7 +26,7 @@ const createOxytypeAuthClient = () => {
           }
         : {}),
     },
-    plugins: [dashClient(), deviceAuthorizationClient()],
+    plugins: [dashClient()],
   });
 };
 type OxytypeAuthClient = ReturnType<typeof createOxytypeAuthClient>;

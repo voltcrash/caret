@@ -82,9 +82,9 @@ it("cancels only unfinished signup and maps expired cancellation to 401", async 
       .first(),
   ).toBeNull();
 });
-it("renders native auth/device shells without private credential serialization", async () => {
+it("renders the native auth shell without private credential serialization", async () => {
   const worker = await mf.getWorker("a");
-  for (const path of ["/login", "/device?user_code=ABC123"]) {
+  for (const path of ["/login"]) {
     const response = await worker.fetch(`http://localhost:3000${path}`);
     expect(response.status).toBe(200);
     expect(response.headers.get("cache-control")).toBe("no-store");

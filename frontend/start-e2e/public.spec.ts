@@ -1,8 +1,6 @@
 import { expect, test } from "./fixtures";
 
-test("profile route owns client selection and lookup navigation", async ({
-  page,
-}) => {
+test("profile route owns lookup navigation", async ({ page }) => {
   const documents: string[] = [];
   page.on("request", (request) => {
     if (request.isNavigationRequest() && request.frame() === page.mainFrame()) {
@@ -11,10 +9,6 @@ test("profile route owns client selection and lookup navigation", async ({
   });
   await page.goto("/profile/fixture-profile");
   await expect(page.getByText("fixture-profile public bio")).toBeVisible();
-  const length = await page.evaluate(() => history.length);
-  await page.getByText("TUI", { exact: true }).click();
-  await expect(page).toHaveURL(/\/profile\/fixture-profile\?client=tui$/);
-  expect(await page.evaluate(() => history.length)).toBe(length);
   await page.goto("/profile");
   await page.getByPlaceholder("username").fill("fixture-profile");
   // The lookup validates the name against the profile function first.

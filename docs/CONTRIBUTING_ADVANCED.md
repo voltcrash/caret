@@ -57,8 +57,7 @@ Close unused tabs. Hidden development tabs pause cosmetic anime.js animations;
 the typing clock uses independent, wall-clock-anchored timeouts and still detects
 timer drift. Power-effect canvases allocate only while that effect is enabled.
 Language JSON caches retain eight entries; shared JSON/layout caches retain
-sixteen. Evicted assets reload on demand, and failed loads can retry. Inactive
-terminal-history queries expire after five minutes; web history stays retained
+sixteen. Evicted assets reload on demand, and failed loads can retry. Result history stays retained
 for synchronous typing/PB consumers. HMR disposes module subscriptions, derived
 state, collections, audio and component-owned DOM watchers.
 
@@ -103,11 +102,3 @@ Run everything through `vp` (`vp install`, `vp run`, `vp exec`, `vp dlx`,
 - Root `preinstall`: `npx only-allow pnpm`. Dependencies aren't installed yet,
   and `vp dlx` runs pnpm dlx, which overrides the user agent so the check always
   passes.
-- `tui` scripts: `bun scripts/*.ts`, `bun run src/index.tsx`, `bun test`. Bun is
-  the OpenTUI runtime; script-to-script calls still use `vp run`.
-- `tui/scripts/smoke-package.ts`: `npm pack`/`npm install` mimic end-user npm
-  installs of the published package.
-- `tui-release.yml`: `npm publish` ships the prebuilt `tui/dist/npm` directory
-  with npm provenance.
-- End-user install docs: `bunx`/`bun add --global`/`npm install --global` for the
-  published `@voltcrash/oxytype` package.

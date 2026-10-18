@@ -1985,9 +1985,7 @@
     },
     "browserCallers": [
       "frontend/src/data/profile.ts",
-      "frontend/src/ts/commandline/lists/navigation.ts",
-      "frontend/src/ts/controllers/browser-handoff.ts",
-      "frontend/src/ts/queries/profile.ts"
+      "frontend/src/ts/commandline/lists/navigation.ts"
     ],
     "target": "retained server route over backend service",
     "webTarget": "server function",
@@ -2369,10 +2367,7 @@
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": [
-      "frontend/src/ts/db.ts",
-      "frontend/src/ts/queries/account.ts"
-    ],
+    "browserCallers": ["frontend/src/ts/db.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",

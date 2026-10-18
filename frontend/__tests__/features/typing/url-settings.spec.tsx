@@ -4,7 +4,6 @@ import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 
 const mocks = vi.hoisted(() => ({
   apply: vi.fn(),
-  handoff: vi.fn(async () => undefined),
 }));
 const [search, setSearch] = createSignal("");
 const [pathname, setPathname] = createSignal("/");
@@ -23,9 +22,6 @@ vi.mock("../../../src/app/readiness", () => ({
 }));
 vi.mock("../../../src/ts/controllers/url-handler", () => ({
   applyUrlSettings: mocks.apply,
-}));
-vi.mock("../../../src/ts/controllers/browser-handoff", () => ({
-  loadBrowserHandoff: mocks.handoff,
 }));
 
 import { mountApplication } from "../../../src/app/application";
@@ -76,30 +72,23 @@ it("waits for entry, preferences and the account, then applies the raw URL once"
   expect(mocks.apply).not.toHaveBeenCalled();
   setSignedIn(false);
   expect(mocks.apply).toHaveBeenCalledExactlyOnceWith("?testSettings=abc+d$");
-  expect(mocks.handoff).toHaveBeenCalledExactlyOnceWith(
-    "?testSettings=abc+d$",
-    false,
-  );
   // An unrelated session observation and a remount keep the applied search.
   setSignedIn(undefined);
   setSignedIn(false);
   cleanup();
   render(() => <Probe />);
   expect(mocks.apply).toHaveBeenCalledOnce();
-  expect(mocks.handoff).toHaveBeenCalledOnce();
 });
 
-it("resumes a pending handoff after sign-in without reapplying settings", () => {
+it("does not reapply settings after sign-in", () => {
   render(() => <Probe />);
   setStatus("ready");
   setSignedIn(false);
   setSignedIn(undefined);
   setSignedIn(true);
   expect(mocks.apply).toHaveBeenCalledOnce();
-  expect(mocks.handoff).toHaveBeenLastCalledWith("?testSettings=abc+d$", true);
   navigate("");
   expect(mocks.apply).toHaveBeenCalledOnce();
-  expect(mocks.handoff).toHaveBeenLastCalledWith("", true);
   navigate("?challenge=oneHourWarrior");
   expect(mocks.apply).toHaveBeenLastCalledWith("?challenge=oneHourWarrior");
 });
@@ -108,9 +97,9 @@ it("ignores location changes for the route being navigated to", () => {
   render(() => <Probe />);
   setStatus("ready");
   setSignedIn(false);
-  expect(mocks.handoff).toHaveBeenCalledOnce();
+  expect(mocks.apply).toHaveBeenCalledOnce();
   setPathname("/login");
   setSearch("");
-  expect(mocks.handoff).toHaveBeenCalledOnce();
+  expect(mocks.apply).toHaveBeenCalledOnce();
   setPathname("/");
 });
