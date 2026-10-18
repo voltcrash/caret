@@ -4,7 +4,7 @@ function pad(numbers: number[], maxLength: number): string[] {
   return numbers.map((number) => number.toString().padStart(maxLength, "0"));
 }
 
-/** Build stamp for client, Worker and release metadata. */
+/** Internal build stamp for client, Worker and deployment diagnostics. */
 export function getClientVersion(isDevelopment: boolean): string {
   if (isDevelopment) {
     return "DEVELOPMENT_CLIENT";

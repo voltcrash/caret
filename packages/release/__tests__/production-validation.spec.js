@@ -3,7 +3,7 @@ import { requireSuccessfulProductionCI } from "../src/production-validation.js";
 
 const context = {
   repo: { owner: "voltcrash", repo: "oxytype" },
-  sha: "release-sha",
+  sha: "deployment-sha",
 };
 function run(fields = {}) {
   return {
@@ -77,7 +77,7 @@ it("allows a successful rerun of the latest snapshot", async () => {
     ),
   ).toEqual(latest);
 });
-it("fails closed when the release snapshot differs or the API is unavailable", async () => {
+it("fails closed when the deployment snapshot differs or the API is unavailable", async () => {
   const options = validation([run()]);
   await expect(
     requireSuccessfulProductionCI({ ...options, sha: "wrong-sha" }),
