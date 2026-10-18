@@ -49,9 +49,9 @@ describe("root scripts", () => {
   it("keeps commands documented for contributors and hooks", () => {
     const docs = resolve(root, "docs");
     const hooks = resolve(root, ".husky");
-    // Some examples first change into a package (e.g. TUI's assets command).
+    // Some examples first change into a package.
     const available = { ...scripts };
-    for (const directory of ["backend", "frontend", "tui"]) {
+    for (const directory of ["backend", "frontend"]) {
       const pkg = JSON.parse(
         readFileSync(resolve(root, directory, "package.json"), "utf8"),
       ) as { scripts: Record<string, string> };
@@ -60,7 +60,6 @@ describe("root scripts", () => {
     assertCommandsExist(
       [
         resolve(root, "README.md"),
-        resolve(root, "tui/README.md"),
         resolve(root, "AGENTS.md"),
         ...readdirSync(docs)
           .filter((file) => file.endsWith(".md"))
