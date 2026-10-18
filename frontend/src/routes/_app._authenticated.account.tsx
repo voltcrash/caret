@@ -23,19 +23,9 @@ export const Route = createFileRoute("/_app/_authenticated/account")({
 
 function Account(): JSXElement {
   const search = Route.useSearch();
-  const navigate = Route.useNavigate();
   return (
     <div class="page pageAccount" id="pageAccount">
-      <AccountPage
-        client={search().client ?? "web"}
-        onClient={(client) =>
-          void navigate({
-            search: (previous) => ({ ...previous, client }),
-            replace: true,
-            resetScroll: false,
-          })
-        }
-      />
+      <AccountPage client={search().client ?? "web"} />
     </div>
   );
 }
