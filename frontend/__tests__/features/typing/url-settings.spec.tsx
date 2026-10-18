@@ -97,7 +97,9 @@ it("ignores location changes for the route being navigated to", () => {
   render(() => <Probe />);
   setStatus("ready");
   setSignedIn(false);
+  expect(mocks.apply).toHaveBeenCalledOnce();
   setPathname("/login");
   setSearch("");
+  expect(mocks.apply).toHaveBeenCalledOnce();
   setPathname("/");
 });
