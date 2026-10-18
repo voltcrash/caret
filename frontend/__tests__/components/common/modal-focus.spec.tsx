@@ -22,8 +22,8 @@ import {
 } from "../../../src/ts/states/modals";
 
 beforeEach(() => {
-  hideModalAndClearChain("Support");
-  hideModalAndClearChain("Contact");
+  hideModalAndClearChain("QuoteRate");
+  hideModalAndClearChain("QuoteReport");
   HTMLDialogElement.prototype.showModal = vi.fn(function (
     this: HTMLDialogElement,
   ) {
@@ -42,19 +42,19 @@ beforeEach(() => {
 });
 afterEach(() => {
   cleanup();
-  hideModalAndClearChain("Support");
-  hideModalAndClearChain("Contact");
+  hideModalAndClearChain("QuoteRate");
+  hideModalAndClearChain("QuoteReport");
   vi.restoreAllMocks();
 });
 
 function renderFocusModal(mode: "modal" | "dialog" = "modal"): void {
   render(() => (
     <>
-      <button type="button" onClick={() => showModal("Support")}>
+      <button type="button" onClick={() => showModal("QuoteRate")}>
         Open support
       </button>
       <AnimatedModal
-        id="Support"
+        id="QuoteRate"
         title="Support settings"
         mode={mode}
         animationMode="none"
@@ -64,7 +64,7 @@ function renderFocusModal(mode: "modal" | "dialog" = "modal"): void {
         <button type="button" disabled>
           Disabled control
         </button>
-        <button type="button" onClick={() => hideModal("Support")}>
+        <button type="button" onClick={() => hideModal("QuoteRate")}>
           Close support
         </button>
       </AnimatedModal>
@@ -130,11 +130,11 @@ describe("modal focus", () => {
 
   it("focuses the owned container when a modal has no controls", async () => {
     const { container } = render(() => (
-      <AnimatedModal id="Support" animationMode="none">
+      <AnimatedModal id="QuoteRate" animationMode="none">
         <p>Read this message</p>
       </AnimatedModal>
     ));
-    showModal("Support");
+    showModal("QuoteRate");
     await waitFor(() =>
       expect(container.querySelector(".modal")).toHaveFocus(),
     );
