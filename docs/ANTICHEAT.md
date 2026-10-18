@@ -118,20 +118,17 @@ and every review signal using the production detector functions. From the root:
 vp run --filter @oxytype/backend anticheat:calibrate
 ```
 
-The default inputs are the eight scripted web recordings, the automated PTY
-recording, and the seeded bot/model fixtures in
+The default inputs are the eight scripted web recordings and the seeded bot/model fixtures in
 `packages/typing-core/__fixtures__/anticheat`. None is a labelled human sample.
-The web and PTY recordings are transport evidence, labelled `recorded-web` and
-`recorded-tui`. Modelled hands are labelled `model`, including the first upload
+The web recordings are transport evidence, labelled `recorded-web`. Modelled hands are labelled `model`, including the first upload
 in the replay fixture. These labels are excluded from human false-positive and
 bot false-negative rates.
 
-To calibrate on reviewed human web/TUI samples and known bots:
+To calibrate on reviewed human web samples and known bots:
 
 ```sh
 vp run --filter @oxytype/backend anticheat:calibrate \
   human-web=/path/to/reviewed-web \
-  human-tui=/path/to/reviewed-tui \
   bot=/path/to/known-bots
 ```
 
@@ -139,10 +136,8 @@ Each path is a JSON file or a directory of JSON files. Use **one user's history
 per file, oldest first**; split admin exports by user and reverse the API's
 newest-first ordering. A file accepts an admin audit response, audit rows with
 arrays in `message`, an array of `{ keySpacing, keyDuration, client? }`, a
-`record-fixtures.ts`/terminal fixture (`completedEvent`/`result`), or
-`{ label, client, samples }`. Set `client: "tui"` on terminal samples or the
-fixture wrapper: zero holds are unobserved releases. Without a client, web
-semantics apply. Per-sample `label` overrides the file label, so a legitimate
+`record-fixtures.ts` fixture (`completedEvent`/`result`), or
+`{ label, client, samples }`. Without a client, web semantics apply. Per-sample `label` overrides the file label, so a legitimate
 original upload and its bot resubmissions can share one replay history. Invalid
 samples and long-test sentinels are skipped.
 
@@ -164,7 +159,7 @@ vp exec node packages/typing-core/scripts/record-bot-fixtures.ts
 vp fmt packages/typing-core/__fixtures__/anticheat
 ```
 
-The fixtures cover fixed web/TUI timings, sub-ms and ±1 ms jitter, bounded random
+The fixtures cover fixed web timings, sub-ms and ±1 ms jitter, bounded random
 ranges, scripted web delays, small value pools, independent Gaussian/lognormal
 draws, and exact/noisy replays. The default report currently shows:
 
@@ -178,7 +173,7 @@ draws, and exact/noisy replays. The default report currently shows:
 The noisy replay escapes: changing timings by less than a millisecond can still
 move individual values across rounding boundaries and change the fingerprint.
 The exact replay is caught. These tiny synthetic sets establish reproducibility
-and expose blind spots; they do not justify threshold changes. Human web/TUI
+and expose blind spots; they do not justify threshold changes. Human web
 false-positive rates remain **unmeasured (null)**. Collect and review real samples
 before tightening thresholds or enabling enforcement.
 
@@ -219,28 +214,3 @@ cd ..
 vp lint --type-aware --type-check --format agent
 vp run build
 ```
-
-## Terminal clients
-
-`client: "tui"` results use the same score, duration, chart and spacing checks.
-Traditional terminals report key arrivals without release events. The shared
-session records one keydown per received key with zero hold placeholders and
-unknown overlap; it does not invent release times. Short terminal tests require
-keyboard telemetry. Long-test sentinels retain the existing cutoff.
-
-For TUI results, the narrow fixed-timing bot signature uses arrival gaps alone;
-unknown holds cannot disable that gate. Replay fingerprints likewise use the
-rounded gaps independently of unobserved hold durations. Review signals that
-need measured holds remain inactive when holds are zero. Numeric thresholds
-remain unchanged; no human terminal calibration justifies changing them yet.
-Timing review audits include the client and offline status.
-
-The committed `backend/__tests__/__testData__/terminal-words-10.json` records
-actual PTY delivery through a shared session. Input was automated: it is
-transport evidence, not a labelled human sample or the future OpenTUI app.
-`packages/typing-core/scripts/record-terminal-fixture.ts` reproduces the raw-PTY
-capture. Unit checks and production-mode D1 submissions accept that recording;
-additional tests reject missing telemetry, fixed high-speed arrivals, forged
-scores and replayed gaps while allowing varied arrivals with unknown holds.
-Review real human TUI samples during later interactive testing before tuning
-thresholds. See [backend contracts](TUI_BACKEND.md) for offline and auth policy.
