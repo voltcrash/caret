@@ -25,7 +25,7 @@ Vitest, wrangler and tsx compile it, so packages have no build step.
 TanStack Start (SolidJS) is the application framework and deployment owner of
 `frontend/`. One Cloudflare Worker (`frontend/src/worker.ts`) serves the origin:
 `fetch` runs Start (document SSR, routes, server functions, `/api` server
-routes); `queue` and `scheduled` run backend jobs. Each invocation runs inside
+routes); `scheduled` runs backend maintenance. Each invocation runs inside
 `withRuntime(env, …, ctx)`. See the [migration plan](TANSTACK_START_MIGRATION.md)
 for ownership rules and the [ledger](tanstack-start/README.md) for evidence.
 
@@ -74,9 +74,8 @@ constant-time comparison; see
 restoring API-key records.
 
 D1 owns data, exact rate windows, result progression and rankings. User JSON
-writes use optimistic version guards inside atomic batches. An outbox and
-scheduled-job ledger feed Cloudflare Queues; Cron recovers missed deliveries.
-Reward grants and inbox claims deduplicate retries. Structured logs carry the
+writes use optimistic version guards inside atomic batches. Cron refreshes
+rankings and purges expired records. Structured logs carry the
 build ID and feed Workers observability.
 
 ```mermaid
@@ -87,8 +86,6 @@ flowchart LR
   Auth --> D1[(D1 / Drizzle)]
   Services --> D1
   Cron[Cron] --> Worker
-  Worker --> Queues[Cloudflare Queues]
-  Queues --> Worker
   Services --> Bridge[External quote automation]
 ```
 
@@ -100,7 +97,7 @@ units, Start SSR/workerd suites, backend services and real D1 behaviour;
 Playwright covers the built Start Worker.
 
 `frontend/wrangler.staging.json` and `wrangler.production.json` own deployment
-with isolated D1, queues, OAuth and Turnstile credentials; `backend/wrangler.jsonc`
+with isolated D1, OAuth and Turnstile credentials; `backend/wrangler.jsonc`
 only binds D1 for local migrations. See [production setup](PRODUCTION_SETUP.md),
 [staging setup](STAGING_SETUP.md) and [operations](CLOUDFLARE_OPERATIONS.md).
 Built-in [anticheat](ANTICHEAT.md) checks scores and telemetry in all modes.

@@ -10,7 +10,6 @@ import type { Client } from "@oxytype/schemas/shared";
 
 import type { DBUser } from "./types";
 import { emptyPb } from "./empty-pb";
-import { readInbox } from "./inbox-read";
 export async function getUser(
   uid: string,
   stack: string,
@@ -19,7 +18,6 @@ export async function getUser(
   const user = await readUser(uid);
   if (!user) throw new MonkeyError(404, "User not found", stack);
   user.personalBests ??= emptyPb();
-  user.inbox = await readInbox(uid);
   return user;
 }
 export async function getPartialUser<K extends keyof DBUser>(

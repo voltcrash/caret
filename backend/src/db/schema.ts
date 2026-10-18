@@ -369,35 +369,6 @@ export const userActivity = sqliteTable(
   },
   (t) => [primaryKey({ columns: [t.uid, t.client, t.day] })],
 );
-export const inbox = sqliteTable(
-  "inbox",
-  {
-    id: text("id").notNull(),
-    uid: owner(),
-    timestamp: integer("timestamp").notNull(),
-    read: integer("read", { mode: "boolean" }).notNull().default(false),
-    deleted: integer("deleted", { mode: "boolean" }).notNull().default(false),
-    data: json(),
-  },
-  (t) => [
-    primaryKey({ columns: [t.uid, t.id] }),
-    index("inbox_owner_idx").on(t.uid, t.timestamp),
-  ],
-);
-export const rewardGrants = sqliteTable(
-  "reward_grants",
-  {
-    id: id(),
-    uid: owner(),
-    origin: text("origin").notNull(),
-    claimed: integer("claimed", { mode: "boolean" }).notNull().default(false),
-    data: json(),
-  },
-  (t) => [
-    uniqueIndex("reward_grants_origin_idx").on(t.origin, t.uid),
-    index("reward_grants_owner_idx").on(t.uid),
-  ],
-);
 export const rateCounters = sqliteTable(
   "rate_counters",
   {
@@ -406,38 +377,6 @@ export const rateCounters = sqliteTable(
     expiresAt: integer("expires_at").notNull(),
   },
   (t) => [index("rate_counters_expiry_idx").on(t.expiresAt)],
-);
-export const scheduledJobs = sqliteTable(
-  "scheduled_jobs",
-  {
-    id: id(),
-    type: text("type").notNull(),
-    dueAt: integer("due_at").notNull(),
-    status: text("status").notNull().default("pending"),
-    attempts: integer("attempts").notNull().default(0),
-    leaseUntil: integer("lease_until").notNull().default(0),
-    data: json(),
-  },
-  (t) => [
-    index("scheduled_jobs_due_idx").on(t.status, t.dueAt),
-    index("scheduled_jobs_lease_idx").on(t.status, t.leaseUntil),
-  ],
-);
-export const outbox = sqliteTable(
-  "outbox",
-  {
-    id: id(),
-    type: text("type").notNull(),
-    uid: text("uid"),
-    createdAt: integer("created_at").notNull(),
-    sentAt: integer("sent_at"),
-    completedAt: integer("completed_at"),
-    data: json(),
-  },
-  (t) => [
-    index("outbox_pending_idx").on(t.sentAt, t.createdAt),
-    index("outbox_owner_idx").on(t.uid),
-  ],
 );
 export const mutationGuards = sqliteTable(
   "mutation_guards",

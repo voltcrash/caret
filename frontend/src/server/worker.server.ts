@@ -1,17 +1,15 @@
 import "@tanstack/solid-start/server-only";
 import type {
   ExecutionContext,
-  MessageBatch,
   ScheduledController,
 } from "@cloudflare/workers-types";
 import { runtime, withRuntime, type WorkerEnv } from "@oxytype/backend/runtime";
-import { consumeBatch, scheduled } from "@oxytype/backend/jobs";
+import { scheduled } from "@oxytype/backend/jobs";
 import { boundedRequest } from "./request-body.server";
 import { applyResponsePolicy } from "./response-policy.server";
 import { requestLog, serverBuildId } from "./observability.server";
 
-async function observeJob(
-  event: "queue" | "scheduled",
+async function observeScheduled(
   env: WorkerEnv,
   run: () => Promise<void>,
 ): Promise<void> {
@@ -23,7 +21,7 @@ async function observeJob(
   } finally {
     console.info(
       JSON.stringify({
-        event,
+        event: "scheduled",
         build: serverBuildId,
         release: env.VERSION,
         outcome: completed ? "ok" : "error",
@@ -39,11 +37,6 @@ export type ApplicationWorker = {
     env: WorkerEnv,
     ctx: ExecutionContext,
   ) => Promise<Response>;
-  queue: (
-    batch: MessageBatch,
-    env: WorkerEnv,
-    ctx: ExecutionContext,
-  ) => Promise<void>;
   scheduled: (
     controller: ScheduledController,
     env: WorkerEnv,
@@ -118,18 +111,6 @@ export function createApplicationWorker(
         ctx,
       );
     },
-    async queue(
-      batch: MessageBatch,
-      env: WorkerEnv,
-      ctx: ExecutionContext,
-    ): Promise<void> {
-      await withRuntime(
-        env,
-        async () =>
-          await observeJob("queue", env, async () => await consumeBatch(batch)),
-        ctx,
-      );
-    },
     async scheduled(
       controller: ScheduledController,
       env: WorkerEnv,
@@ -138,8 +119,7 @@ export function createApplicationWorker(
       await withRuntime(
         env,
         async () =>
-          await observeJob(
-            "scheduled",
+          await observeScheduled(
             env,
             async () => await scheduled(controller.scheduledTime),
           ),

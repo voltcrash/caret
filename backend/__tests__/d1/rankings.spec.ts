@@ -7,7 +7,6 @@ import { BASE_CONFIGURATION } from "../../src/constants/base-configuration";
 import { statement } from "../../src/db/client";
 import { atomicUser } from "../../src/db/mutation";
 import * as Leaderboards from "../../src/dal/leaderboards";
-import { getCurrentDayTimestamp } from "@oxytype/util/date-and-time";
 
 describe("SQL ranking parity", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;
@@ -58,43 +57,6 @@ describe("SQL ranking parity", () => {
       });
     });
   });
-  it.each(["15", "60"])(
-    "schedules the next day's english time %s payout by default",
-    async (mode2) => {
-      await withRuntime(test.env, async () => {
-        const board = new DailyLeaderboard({
-          language: "english",
-          mode: "time",
-          mode2,
-        });
-        await board.addResult(
-          {
-            name: "A",
-            uid: "a",
-            wpm: 100,
-            raw: 100,
-            acc: 100,
-            consistency: 100,
-            timestamp: Date.now(),
-          },
-          BASE_CONFIGURATION.dailyLeaderboards,
-        );
-        const job = await statement(
-          "SELECT type,due_at AS dueAt,data FROM scheduled_jobs WHERE id=?",
-          `daily-leaderboard-results:${getCurrentDayTimestamp()}:english:time:${mode2}`,
-        ).first<{ type: string; dueAt: number; data: string }>();
-        expect(job?.type).toBe("todo-tomorrow");
-        expect(job?.dueAt).toBeGreaterThan(getCurrentDayTimestamp() + 86400000);
-        expect(JSON.parse(job?.data ?? "null")).toMatchObject({
-          taskName: "daily-leaderboard-results",
-          ctx: {
-            yesterdayTimestamp: getCurrentDayTimestamp(),
-            modeRule: { language: "english", mode: "time", mode2 },
-          },
-        });
-      });
-    },
-  );
   it("increments weekly XP and time atomically", async () => {
     await withRuntime(test.env, async () => {
       const board = new WeeklyXpLeaderboard();

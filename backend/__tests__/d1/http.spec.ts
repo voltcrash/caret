@@ -7,20 +7,14 @@ import { withRuntime } from "../../src/runtime/env";
 import { getAuth } from "../../src/init/auth";
 import * as Users from "../../src/dal/user";
 import { patchConfiguration } from "../../src/init/configuration";
-import { BASE_CONFIGURATION } from "../../src/constants/base-configuration";
-import { buildMonkeyMail } from "../../src/utils/monkey-mail";
 import Worker from "../__testData__/http-worker";
-import { GetUserInboxResponseSchema } from "@oxytype/contracts/users";
+import { GetUserResponseSchema } from "@oxytype/contracts/users";
 import type { ExecutionContext } from "@cloudflare/workers-types";
 
 describe("Worker HTTP with D1", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;
   let token: string;
   let uid: string;
-  const mail = buildMonkeyMail({
-    subject: "Reward",
-    rewards: [{ type: "xp", item: 25 }],
-  });
   const context = { waitUntil: () => undefined } as unknown as ExecutionContext;
   beforeAll(async () => {
     test = await createTestRuntime();
@@ -41,14 +35,6 @@ describe("Worker HTTP with D1", () => {
       )
         .bind(uid)
         .run();
-      await patchConfiguration({
-        users: { inbox: { enabled: true, maxMail: 100 } },
-      });
-      await Users.addToInbox(uid, [mail], {
-        ...BASE_CONFIGURATION.users.inbox,
-        enabled: true,
-        maxMail: 100,
-      });
     });
   });
   afterAll(async () => await test.dispose());
@@ -71,23 +57,12 @@ describe("Worker HTTP with D1", () => {
       context,
     );
   }
-  it("routes /api, enforces ownership and serves schema-valid inbox mail", async () => {
+  it("routes /api and serves the schema-valid signed-in user", async () => {
     expect((await request("/")).status).toBe(200);
-    const response = await request("/users/inbox");
+    const response = await request("/users");
     expect(response.status).toBe(200);
-    expect(
-      GetUserInboxResponseSchema.parse(await response.json()).data.inbox[0]?.id,
-    ).toBe(mail.id);
-    expect(
-      (await request("/users/inbox", "PATCH", { mailIdsToMarkRead: [mail.id] }))
-        .status,
-    ).toBe(200);
-    expect(
-      (await request("/users/inbox", "PATCH", { mailIdsToMarkRead: [mail.id] }))
-        .status,
-    ).toBe(200);
-    await withRuntime(test.env, async () =>
-      expect((await Users.getUser(uid, "test")).xp).toBe(25),
+    expect(GetUserResponseSchema.parse(await response.json()).data.uid).toBe(
+      uid,
     );
   });
   it("retries a full result save from the original hashed payload without duplicating progression", async () => {
@@ -176,6 +151,6 @@ describe("Worker HTTP with D1", () => {
     await withRuntime(test.env, async () => {
       await (await getAuth().$context).internalAdapter.deleteSession(token);
     });
-    expect((await request("/users/inbox")).status).toBe(401);
+    expect((await request("/users")).status).toBe(401);
   });
 });

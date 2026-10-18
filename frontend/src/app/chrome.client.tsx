@@ -22,7 +22,6 @@ import { Header } from "../ts/components/layout/header/Header";
 import { Overlays } from "../ts/components/layout/overlays/Overlays";
 import { usePageScroller } from "../ts/components/layout/PageScroller";
 import { Modals } from "../ts/components/modals/Modals";
-import { Popups } from "../ts/components/popups/Popups";
 import { getAcceptedCookies } from "../ts/cookies";
 import { addBanner, removeBanner } from "../ts/states/banners";
 import { getGlobalOffsetTop } from "../ts/states/core";
@@ -115,9 +114,6 @@ function ChromeRuntime(props: {
         <CustomBackground />
         <div id="solidmodals">
           <Modals />
-        </div>
-        <div id="solidpopups">
-          <Popups />
         </div>
         <DevTools />
         <Show when={isFixingSkillIssue()}>

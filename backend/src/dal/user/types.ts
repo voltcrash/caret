@@ -2,7 +2,6 @@ import { type LbPersonalBests } from "../../utils/pb";
 
 import type {
   CustomTheme,
-  MonkeyMail,
   ResultFilters,
   UserTag,
   User,
@@ -27,7 +26,6 @@ export type DBUser = Omit<
   customThemes?: CustomTheme[];
   autoBanTimestamps?: number[];
   lastTimingHashes?: string[];
-  inbox?: MonkeyMail[];
   ips?: string[];
   canReport?: boolean;
   nameHistory?: string[];

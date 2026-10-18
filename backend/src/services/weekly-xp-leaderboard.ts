@@ -5,7 +5,6 @@ import type {
   XpLeaderboardScore,
   XpLeaderboardEntry,
 } from "@oxytype/schemas/leaderboards";
-import LaterQueue from "../queues/later-queue";
 import { getCurrentWeekTimestamp } from "@oxytype/util/date-and-time";
 import { statement, encode } from "../db/client";
 import { stage } from "../db/mutation";
@@ -63,11 +62,6 @@ export class WeeklyXpLeaderboard {
         period + config.expirationTimeInDays * 86400000,
         encode(entry),
       ),
-    );
-    await LaterQueue.scheduleForNextWeek(
-      "weekly-xp-leaderboard-results",
-      "weekly",
-      this.client,
     );
     return (ahead ?? 0) + 1;
   }

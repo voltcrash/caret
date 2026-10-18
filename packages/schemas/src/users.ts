@@ -8,7 +8,6 @@ import {
 } from "./util";
 import { LanguageSchema } from "./languages";
 import {
-  ClientSchema,
   ModeSchema,
   Mode2Schema,
   PersonalBestsSchema,
@@ -349,36 +348,6 @@ export const UserProfileSchema = UserSchema.pick({
     uid: true,
   });
 export type UserProfile = z.infer<typeof UserProfileSchema>;
-
-export const RewardTypeSchema = z.enum(["xp", "badge"]);
-export type RewardType = z.infer<typeof RewardTypeSchema>;
-
-export const XpRewardSchema = z.object({
-  client: ClientSchema.optional(),
-  type: z.literal(RewardTypeSchema.enum.xp),
-  item: z.number().int(),
-});
-export type XpReward = z.infer<typeof XpRewardSchema>;
-
-export const BadgeRewardSchema = z.object({
-  type: z.literal(RewardTypeSchema.enum.badge),
-  item: BadgeSchema,
-});
-export type BadgeReward = z.infer<typeof BadgeRewardSchema>;
-
-export const AllRewardsSchema = XpRewardSchema.or(BadgeRewardSchema);
-export type AllRewards = z.infer<typeof AllRewardsSchema>;
-
-export const MailIdSchema = IdSchema.max(128).or(z.guid());
-export const MonkeyMailSchema = z.object({
-  id: MailIdSchema,
-  subject: z.string(),
-  body: z.string(),
-  timestamp: z.number().int().nonnegative(),
-  read: z.boolean(),
-  rewards: z.array(AllRewardsSchema),
-});
-export type MonkeyMail = z.infer<typeof MonkeyMailSchema>;
 
 export const ReportUserReasonSchema = z.enum([
   "Inappropriate name",

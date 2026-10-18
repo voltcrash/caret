@@ -28,24 +28,9 @@
       "migrations_dir": "../backend/migrations",
     },
   ],
-  "queues": {
-    "producers": [
-      { "binding": "TASKS", "queue": "oxytype-start-migration-tasks" },
-    ],
-    "consumers": [
-      {
-        "queue": "oxytype-start-migration-tasks",
-        "max_batch_size": 1,
-        "max_batch_timeout": 5,
-        "max_retries": 5,
-        "max_concurrency": 1,
-        "dead_letter_queue": "oxytype-start-migration-dlq",
-      },
-    ],
-  },
   "triggers": { "crons": ["* * * * *"] },
   // Migration-only staging target: `CLOUDFLARE_ENV=migration vp run build:start`.
-  // Shares staging D1 (lease-claimed jobs); never the production Worker or origin.
+  // Shares staging D1; never the production Worker or origin.
   "env": {
     "migration": {
       "name": "oxytype-start-migration",
@@ -64,21 +49,6 @@
           "migrations_dir": "../backend/migrations",
         },
       ],
-      "queues": {
-        "producers": [
-          { "binding": "TASKS", "queue": "oxytype-start-migration-tasks" },
-        ],
-        "consumers": [
-          {
-            "queue": "oxytype-start-migration-tasks",
-            "max_batch_size": 1,
-            "max_batch_timeout": 5,
-            "max_retries": 5,
-            "max_concurrency": 1,
-            "dead_letter_queue": "oxytype-start-migration-dlq",
-          },
-        ],
-      },
       "triggers": { "crons": ["* * * * *"] },
     },
   },

@@ -205,30 +205,9 @@ describe("built Start application in workerd", () => {
     expect(crossSite.status).toBe(403);
   });
 
-  it("exports working queue and scheduled handlers with D1", async () => {
+  it("exports a working scheduled handler with D1", async () => {
     const worker = await mf.getWorker("a");
     const db = await mf.getD1Database("DB", "a");
-    await db
-      .prepare(
-        "INSERT INTO outbox(id,type,data,created_at) VALUES('done','reward',?,0)",
-      )
-      .bind(JSON.stringify({ uid: "missing-user", mail: [], inboxConfig: {} }))
-      .run();
-    const delivered = await worker.queue("oxytype-start-migration-tasks", [
-      {
-        id: "delivery",
-        body: { id: "done", kind: "outbox" },
-        timestamp: new Date(),
-        attempts: 1,
-      },
-    ]);
-    expect(delivered.outcome).toBe("ok");
-    expect(delivered.explicitAcks).toContain("delivery");
-    expect(
-      await db
-        .prepare("SELECT completed_at FROM outbox WHERE id='done'")
-        .first<number>("completed_at"),
-    ).toBeGreaterThan(0);
     await db
       .prepare(
         "INSERT INTO rate_counters(key,points,expires_at) VALUES('expired',1,0)",

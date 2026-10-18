@@ -18,7 +18,7 @@ describe("fresh production bootstrap on D1", () => {
   });
   afterEach(async () => await test.dispose());
 
-  it("enables core flows on an empty target without creating accounts or jobs", async () => {
+  it("enables core flows on an empty target without creating accounts", async () => {
     await test.env.DB.prepare(sql).run();
     const configuration = await withRuntime(test.env, getLiveConfiguration);
     expect(ConfigurationSchema.safeParse(configuration).success).toBe(true);
@@ -31,18 +31,15 @@ describe("fresh production bootstrap on D1", () => {
     expect(configuration.users.xp.gainMultiplier).toBe(1);
     expect(configuration.leaderboards.weeklyXp.enabled).toBe(true);
     expect(configuration.dailyLeaderboards.enabled).toBe(true);
-    expect(configuration.users.inbox.enabled).toBe(false);
     expect(configuration.quotes.submissionsEnabled).toBe(false);
     expect(configuration.admin.endpointsEnabled).toBe(false);
     const counts = await test.env.DB.prepare(
-      "SELECT (SELECT count(*) FROM users) AS users, (SELECT count(*) FROM auth_users) AS auth, (SELECT count(*) FROM results) AS results, (SELECT count(*) FROM outbox) AS outbox, (SELECT count(*) FROM scheduled_jobs) AS jobs",
+      "SELECT (SELECT count(*) FROM users) AS users, (SELECT count(*) FROM auth_users) AS auth, (SELECT count(*) FROM results) AS results",
     ).first();
     expect(counts).toEqual({
       users: 0,
       auth: 0,
       results: 0,
-      outbox: 0,
-      jobs: 0,
     });
   });
 
@@ -86,14 +83,14 @@ describe("fresh production bootstrap on D1", () => {
     ).toBeNull();
   });
 
-  it("refuses pending deliveries without discarding them", async () => {
+  it("refuses pending quote submissions without discarding them", async () => {
     await test.env.DB.prepare(
-      "INSERT INTO outbox (id,type,created_at,data) VALUES ('pending','reward',0,'{}')",
+      "INSERT INTO quote_submissions (id,language,submitted_by,timestamp,data) VALUES ('pending','english','submitter',0,'{}')",
     ).run();
     await expect(test.env.DB.prepare(sql).run()).rejects.toThrow(/NOT NULL/);
-    expect(await test.env.DB.prepare("SELECT id FROM outbox").first("id")).toBe(
-      "pending",
-    );
+    expect(
+      await test.env.DB.prepare("SELECT id FROM quote_submissions").first("id"),
+    ).toBe("pending");
     expect(
       await test.env.DB.prepare("SELECT * FROM configuration").first(),
     ).toBeNull();

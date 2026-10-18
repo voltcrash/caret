@@ -13,7 +13,6 @@ import { Anime } from "./anime";
 import { AnimePresence } from "./anime/AnimePresence";
 import { Button } from "./Button";
 import { Fa } from "./Fa";
-import { NotificationBubble } from "./NotificationBubble";
 import { UserAvatar } from "./UserAvatar";
 import { UserBadge } from "./UserBadge";
 import { UserFlags } from "./UserFlags";
@@ -32,7 +31,6 @@ type Props = {
   linkToProfile?: boolean;
   level?: number;
   showSpinner?: boolean;
-  showNotificationBubble?: boolean;
   fontClass?: "text-em-xs" | "text-em-sm" | "text-em-md" | "text-em-lg";
   hideBadgeTextOnWidth?: BreakpointKey;
 } & UserFlagOptions;
@@ -81,11 +79,6 @@ export function User(props: Props): JSXElement {
     >
       <Show when={props.showAvatar ?? true}>
         <div class="relative w-[1.25em]" data-ui-element="navAvatar">
-          <NotificationBubble
-            variant="atCorner"
-            show={props.showNotificationBubble ?? false}
-            class="z-2 m-0.5"
-          />
           <div class="grid place-items-center">
             <AnimePresence exitBeforeEnter>
               <Show

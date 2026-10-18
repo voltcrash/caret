@@ -50,13 +50,21 @@ describe("daily leaderboards enable migration", () => {
         "SELECT id,version,data FROM configuration ORDER BY id",
       ).all<{ id: string; version: number; data: string }>();
       const [custom, main, partial] = rows.results;
-      expect(custom?.version).toBe(1);
-      expect(JSON.parse(custom?.data ?? "null")).toEqual(disabled);
+      // 0014 later strips the retired reward fields from every row.
+      const {
+        scheduleRewardsModeRules: _rules,
+        xpRewardBrackets: _brackets,
+        ...retained
+      } = disabled.dailyLeaderboards;
+      expect(custom?.version).toBe(2);
+      expect(JSON.parse(custom?.data ?? "null")).toEqual({
+        dailyLeaderboards: retained,
+      });
       expect(partial?.version).toBe(0);
       expect(JSON.parse(partial?.data ?? "null")).toEqual({
         users: { signUp: true },
       });
-      expect(main?.version).toBe(2);
+      expect(main?.version).toBe(3);
       expect(JSON.parse(main?.data ?? "null")).toEqual({
         users: { signUp: true },
         dailyLeaderboards: BASE_CONFIGURATION.dailyLeaderboards,
@@ -78,12 +86,6 @@ describe("daily leaderboards enable migration", () => {
       expect(configuration.dailyLeaderboards.validModeRules).toEqual([
         { language: "english", mode: "time", mode2: "(15|60)" },
       ]);
-      expect(configuration.dailyLeaderboards.scheduleRewardsModeRules).toEqual(
-        configuration.dailyLeaderboards.validModeRules,
-      );
-      expect(
-        configuration.dailyLeaderboards.xpRewardBrackets.length,
-      ).toBeGreaterThan(0);
     } finally {
       await test.dispose();
     }

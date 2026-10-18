@@ -66,7 +66,6 @@ export type Snapshot = Omit<
     completedTests: number;
   };
   details?: UserProfileDetails;
-  inboxUnreadSize: number;
   streak: number;
   maxStreak: number;
   isPremium: boolean;
@@ -103,7 +102,6 @@ const defaultSnap = {
   favoriteQuotes: {},
   addedAt: 0,
   xp: 0,
-  inboxUnreadSize: 0,
   streak: 0,
   maxStreak: 0,
   streakHourOffset: undefined,

@@ -24,24 +24,6 @@
   "triggers": {
     "crons": ["* * * * *"]
   },
-  "queues": {
-    "producers": [
-      {
-        "binding": "TASKS",
-        "queue": "oxytype-production-tasks"
-      }
-    ],
-    "consumers": [
-      {
-        "queue": "oxytype-production-tasks",
-        "max_batch_size": 1,
-        "max_batch_timeout": 5,
-        "max_retries": 5,
-        "max_concurrency": 1,
-        "dead_letter_queue": "oxytype-production-dlq"
-      }
-    ]
-  },
   "vars": {
     "MODE": "production",
     "FRONTEND_URL": "https://oxytype.voltcrash.com",

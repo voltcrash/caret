@@ -46,7 +46,6 @@ export const operationServices = {
   "configuration.update": Configuration.updateConfiguration,
   "configuration.getSchema": Configuration.getSchema,
   "dev.generateData": Dev.createTestData,
-  "dev.addDebugInboxItem": Dev.addDebugInboxItem,
   "leaderboards.get": Leaderboard.getLeaderboard,
   "leaderboards.getRank": Leaderboard.getRankFromLeaderboard,
   "leaderboards.getDaily": Leaderboard.getDailyLeaderboard,
@@ -101,8 +100,6 @@ export const operationServices = {
   "users.removeQuoteFromFavorites": User.removeFavoriteQuote,
   "users.getProfile": User.getProfile,
   "users.updateProfile": User.updateProfile,
-  "users.getInbox": User.getInbox,
-  "users.updateInbox": User.updateInbox,
   "users.report": User.reportUser,
   "users.revokeAllTokens": User.revokeAllTokens,
   "users.getTestActivity": User.getTestActivity,
@@ -115,5 +112,4 @@ export type OperationServices = typeof operationServices;
 /** Operations whose former route also required a development deployment. */
 export const developmentOnlyOperations: ReadonlySet<OperationId> = new Set([
   "dev.generateData",
-  "dev.addDebugInboxItem",
 ]);

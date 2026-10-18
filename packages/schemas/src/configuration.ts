@@ -10,16 +10,6 @@ export const ValidModeRuleSchema = z
   .strict();
 export type ValidModeRule = z.infer<typeof ValidModeRuleSchema>;
 
-export const RewardBracketSchema = z
-  .object({
-    minRank: z.number().int().nonnegative(),
-    maxRank: z.number().int().nonnegative(),
-    minReward: z.number().int().nonnegative(),
-    maxReward: z.number().int().nonnegative(),
-  })
-  .strict();
-export type RewardBracket = z.infer<typeof RewardBracketSchema>;
-
 export const ConfigurationSchema = z.object({
   maintenance: z.boolean(),
   dev: z.object({
@@ -69,10 +59,6 @@ export const ConfigurationSchema = z.object({
         maxStreakMultiplier: z.number(),
       }),
     }),
-    inbox: z.object({
-      enabled: z.boolean(),
-      maxMail: z.number().int().nonnegative(),
-    }),
     premium: z.object({
       enabled: z.boolean(),
     }),
@@ -98,8 +84,6 @@ export const ConfigurationSchema = z.object({
     leaderboardExpirationTimeInDays: z.number().nonnegative(),
     maxResults: z.number().int().nonnegative(),
     validModeRules: z.array(ValidModeRuleSchema),
-    scheduleRewardsModeRules: z.array(ValidModeRuleSchema),
-    xpRewardBrackets: z.array(RewardBracketSchema),
   }),
   leaderboards: z.object({
     minTimeTyping: z
@@ -111,7 +95,6 @@ export const ConfigurationSchema = z.object({
     weeklyXp: z.object({
       enabled: z.boolean(),
       expirationTimeInDays: z.number().nonnegative(),
-      xpRewardBrackets: z.array(RewardBracketSchema),
     }),
   }),
   anticheat: z.object({

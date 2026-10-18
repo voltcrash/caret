@@ -15,7 +15,6 @@ import {
 import MonkeyStatusCodes from "../../../constants/monkey-status-codes";
 import { purgeUserFromDailyLeaderboards } from "../../../utils/daily-leaderboards";
 import * as UserDAL from "../../../dal/user";
-import { buildMonkeyMail } from "../../../utils/monkey-mail";
 import * as WeeklyXpLeaderboard from "../../../services/weekly-xp-leaderboard";
 
 import { addImportantLog, addLog } from "../../../dal/logs";
@@ -287,12 +286,7 @@ export async function validateSubmission(
           autoBanConfig.maxHours,
         );
         if (didUserGetBanned) {
-          const mail = buildMonkeyMail({
-            subject: "Banned",
-            body: "Your account has been automatically banned for triggering the anticheat system. If you believe this is a mistake, please contact support.",
-          });
           await Promise.all([
-            UserDAL.addToInbox(uid, [mail], context.configuration.users.inbox),
             purgeUserFromDailyLeaderboards(
               uid,
               context.configuration.dailyLeaderboards,

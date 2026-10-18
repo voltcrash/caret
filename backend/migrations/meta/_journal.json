@@ -99,6 +99,13 @@
       "when": 1791478441179,
       "tag": "0013_device_authorization",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "6",
+      "when": 1792334335299,
+      "tag": "0014_remove_inbox",
+      "breakpoints": true
     }
   ]
 }

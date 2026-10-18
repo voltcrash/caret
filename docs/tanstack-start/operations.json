@@ -598,34 +598,6 @@
     "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
-    "id": "dev.addDebugInboxItem",
-    "method": "POST",
-    "path": "/api/dev/addDebugInboxItem",
-    "currentOwner": "frontend/src/routes/api.dev.addDebugInboxItem.ts",
-    "serviceOwner": "backend/src/services/operations/dev.ts#addDebugInboxItem",
-    "startAdapter": "frontend/src/functions/operations/dev.ts",
-    "httpLifetime": "old-tab compatibility window (release.md)",
-    "firstPartyTransport": "Start server function",
-    "policy": {
-      "openApiTags": "development",
-      "authenticationOptions": {
-        "isPublicOnDev": true
-      }
-    },
-    "validation": {
-      "params": false,
-      "query": false,
-      "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
-    },
-    "browserCallers": ["frontend/src/ts/components/modals/DevOptionsModal.tsx"],
-    "target": "web server function over backend service",
-    "webTarget": "server function",
-    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
-  },
-  {
     "id": "dev.generateData",
     "method": "POST",
     "path": "/api/dev/generateData",
@@ -1863,36 +1835,6 @@
     "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
-    "id": "users.getInbox",
-    "method": "GET",
-    "path": "/api/users/inbox",
-    "currentOwner": "frontend/src/routes/api.users.inbox.ts",
-    "serviceOwner": "backend/src/services/operations/user/inbox.ts#getInbox",
-    "startAdapter": "frontend/src/functions/operations/users.ts",
-    "httpLifetime": "old-tab compatibility window (release.md)",
-    "firstPartyTransport": "Start server function",
-    "policy": {
-      "openApiTags": "users",
-      "rateLimit": "userMailGet",
-      "requireConfiguration": {
-        "path": "users.inbox.enabled",
-        "invalidMessage": "Your inbox is not available at this time."
-      }
-    },
-    "validation": {
-      "params": false,
-      "query": false,
-      "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
-    },
-    "browserCallers": ["frontend/src/ts/collections/inbox.ts"],
-    "target": "web server function over backend service",
-    "webTarget": "server function",
-    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
-  },
-  {
     "id": "users.getNameAvailability",
     "method": "GET",
     "path": "/api/users/checkName/:name",
@@ -2312,36 +2254,6 @@
     "browserCallers": [
       "frontend/src/ts/components/modals/StreakHourOffsetModal.tsx"
     ],
-    "target": "web server function over backend service",
-    "webTarget": "server function",
-    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
-    "retirement": "Retire this Start HTTP adapter at least 30 days after last legacy HTML, stale-tab acceptance, and seven days without supported legacy mutation traffic (release.md)"
-  },
-  {
-    "id": "users.updateInbox",
-    "method": "PATCH",
-    "path": "/api/users/inbox",
-    "currentOwner": "frontend/src/routes/api.users.inbox.ts",
-    "serviceOwner": "backend/src/services/operations/user/inbox.ts#updateInbox",
-    "startAdapter": "frontend/src/functions/operations/users.ts",
-    "httpLifetime": "old-tab compatibility window (release.md)",
-    "firstPartyTransport": "Start server function",
-    "policy": {
-      "openApiTags": "users",
-      "rateLimit": "userMailUpdate",
-      "requireConfiguration": {
-        "path": "users.inbox.enabled",
-        "invalidMessage": "Your inbox is not available at this time."
-      }
-    },
-    "validation": {
-      "params": false,
-      "query": false,
-      "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
-    },
-    "browserCallers": ["frontend/src/ts/collections/inbox.ts"],
     "target": "web server function over backend service",
     "webTarget": "server function",
     "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",

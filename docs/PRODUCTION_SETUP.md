@@ -12,7 +12,6 @@ targets staging; the production release workflow uses the production config.
 | --- | --- |
 | Worker/custom domain | `oxytype` / `oxytype.voltcrash.com` |
 | D1 | `oxytype-production`, `43d104e9-2fef-43db-95d7-c64a08310714` |
-| Queues | `oxytype-production-tasks`, `oxytype-production-dlq` |
 | Turnstile | Managed **Oxytype production**, hostname `oxytype.voltcrash.com` |
 | GitHub OAuth | **Oxytype**, separate from local/staging apps |
 
@@ -171,10 +170,10 @@ GitHub, choose a username, complete Turnstile and a typing test. Refresh, then
 sign out/sign in and confirm the result remains. The popup returns to the
 standalone `/oauth-callback.html` page; frontend and API cookies share one HTTPS origin.
 
-Monitor Workers logs, D1 size/query latency and queue backlog/DLQ. Review rejected
+Monitor Workers logs and D1 size/query latency. Review rejected
 and flagged results (`/admin/anticheat/summary`) and calibrate on captured
 typing samples before enabling automatic bans; see [anticheat](ANTICHEAT.md).
-Cron recovers durable jobs/outbox deliveries; see [operations](CLOUDFLARE_OPERATIONS.md).
+Cron refreshes rankings and purges expired records; see [operations](CLOUDFLARE_OPERATIONS.md).
 Before future schema changes, capture a D1 backup and check code/schema rollback
 compatibility. A Worker rollback retains D1 writes; never reset this database to
 retry a deployment. Keep the production auth secret and credential files.

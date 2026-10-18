@@ -10,7 +10,7 @@ const navButton =
 
 /**
  * Server-rendered header with the browser header's geometry and links. The
- * interactive header (account, alerts, focus state) replaces it after hydration.
+ * interactive header (account, focus state) replaces it after hydration.
  */
 export function StaticHeader(props: { fixed: boolean }): JSXElement {
   const item = (href: string, icon: FaSolidIcon, label: string) => (

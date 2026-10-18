@@ -4,13 +4,11 @@ import type {
   D1Database,
   ExecutionContext,
   Fetcher,
-  Queue,
   KVNamespace,
 } from "@cloudflare/workers-types";
 
 export type WorkerEnv = {
   DB: D1Database;
-  TASKS?: Queue;
   ASSETS?: Fetcher;
   CACHE?: KVNamespace;
   MODE?: string;

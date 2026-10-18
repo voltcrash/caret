@@ -6,7 +6,7 @@ import {
   GetPresetResponseSchema,
 } from "@oxytype/contracts/presets";
 import { GetConfigResponseSchema } from "@oxytype/contracts/configs";
-import { createWorkerd, enableConfiguration, seedSession } from "./workerd";
+import { createWorkerd, seedSession } from "./workerd";
 import { rpcPath } from "./rpc";
 
 describe("ordinary server-function mutations with real D1", () => {
@@ -18,7 +18,6 @@ describe("ordinary server-function mutations with real D1", () => {
   let index = 0;
   beforeAll(async () => {
     mf = await createWorkerd();
-    await enableConfiguration(mf, "a", "$.users.inbox.enabled", true);
   });
   afterAll(async () => await mf?.dispose());
 
@@ -204,55 +203,6 @@ describe("ordinary server-function mutations with real D1", () => {
       message:
         "Config data is not in the correct format. Please refresh the page or contact support.",
     });
-  });
-
-  it("claims a reward once through repeated RPCs", async () => {
-    const actor = await account();
-    const db = await mf.getD1Database("DB", "a");
-    const rewards = [{ type: "xp", item: 50 }];
-    const mail = {
-      id: "0123456789abcdef01234567",
-      subject: "Reward",
-      body: "fixture",
-      timestamp: Date.now(),
-      read: false,
-      rewards,
-    };
-    await db.batch([
-      db
-        .prepare(
-          "INSERT INTO inbox(id,uid,timestamp,read,data) VALUES(?,?,?,0,?)",
-        )
-        .bind(mail.id, actor.uid, mail.timestamp, JSON.stringify(mail)),
-      db
-        .prepare(
-          "INSERT INTO reward_grants(id,uid,origin,claimed,data) VALUES(?,?,?,0,?)",
-        )
-        .bind(
-          `${actor.uid}:${mail.id}`,
-          actor.uid,
-          mail.id,
-          JSON.stringify({ rewards }),
-        ),
-    ]);
-    for (let attempt = 0; attempt < 2; attempt++) {
-      const response = await call(actor, "usersUpdateInbox", "POST", {
-        body: { mailIdsToMarkRead: [mail.id] },
-      });
-      expect(response.status, await response.clone().text()).toBe(200);
-    }
-    expect(
-      await db
-        .prepare("SELECT xp FROM users WHERE uid=?")
-        .bind(actor.uid)
-        .first("xp"),
-    ).toBe(50);
-    expect(
-      await db
-        .prepare("SELECT claimed FROM reward_grants WHERE uid=?")
-        .bind(actor.uid)
-        .first("claimed"),
-    ).toBe(1);
   });
 
   it("rechecks fresh-session and moderator permissions on actual mutation/read functions", async () => {

@@ -5,7 +5,6 @@ import { isAuthenticated } from "./states/core";
 import * as Dates from "date-fns";
 import { TestActivityCalendar } from "./elements/test-activity-calendar";
 import { showLoaderBar, hideLoaderBar } from "./states/loader-bar";
-import { Badge } from "@oxytype/schemas/users";
 import type { GetTestActivityResponse } from "@oxytype/contracts/users";
 import { Difficulty } from "@oxytype/schemas/configs";
 import { Mode, Mode2, PersonalBest } from "@oxytype/schemas/shared";
@@ -325,25 +324,6 @@ export function addXp(xp: number, breakdown?: XpBreakdown): void {
     resultingXp: snapshot.xp,
     breakdown: breakdown,
   });
-}
-
-export function updateInboxUnreadSize(newSize: number): void {
-  const snapshot = getSnapshot();
-  if (!snapshot) return;
-
-  snapshot.inboxUnreadSize = newSize;
-  setSnapshot(snapshot);
-}
-
-export function addBadge(badge: Badge): void {
-  const snapshot = getSnapshot();
-  if (!snapshot) return;
-
-  snapshot.inventory ??= {
-    badges: [],
-  };
-  snapshot.inventory.badges.push(badge);
-  setSnapshot(snapshot);
 }
 
 type ActivityArchive = NonNullable<GetTestActivityResponse["data"]>;

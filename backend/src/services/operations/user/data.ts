@@ -18,7 +18,6 @@ type RelevantUserInfo = Omit<
   UserDAL.DBUser,
   | "bananas"
   | "lbPersonalBests"
-  | "inbox"
   | "nameHistory"
   | "lastNameChange"
   | "_id"
@@ -32,7 +31,6 @@ function getRelevantUserInfo(user: UserDAL.DBUser): RelevantUserInfo {
   return omit(user, [
     "bananas",
     "lbPersonalBests",
-    "inbox",
     "nameHistory",
     "lastNameChange",
     "_id",
@@ -79,11 +77,6 @@ export async function getUser(
     ]),
   );
 
-  let inboxUnreadSize = 0;
-  if (context.configuration.users.inbox.enabled) {
-    inboxUnreadSize = userInfo.inbox?.filter((mail) => !mail.read).length ?? 0;
-  }
-
   if (!userInfo.name) {
     userInfo.needsToChangeName = true;
     await UserDAL.flagForNameChange(uid);
@@ -115,10 +108,7 @@ export async function getUser(
     testActivity,
   };
 
-  return new MonkeyResponse("User data retrieved", {
-    ...userData,
-    inboxUnreadSize: inboxUnreadSize,
-  });
+  return new MonkeyResponse("User data retrieved", userData);
 }
 export async function getPersonalBests(
   context: ServiceContext,

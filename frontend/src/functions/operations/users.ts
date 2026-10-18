@@ -16,13 +16,6 @@ export const usersGetCustomThemes = createServerFn({ method: "GET" })
       await callOperation(context.services, "users.getCustomThemes", data),
   );
 
-export const usersGetInbox = createServerFn({ method: "GET" })
-  .validator(operationInput)
-  .handler(
-    async ({ context, data }) =>
-      await callOperation(context.services, "users.getInbox", data),
-  );
-
 export const usersGetNameAvailability = createServerFn({ method: "GET" })
   .validator(operationInput)
   .handler(
@@ -191,13 +184,6 @@ export const usersSetStreakHourOffset = createServerFn({ method: "POST" })
   .handler(
     async ({ context, data }) =>
       await callOperation(context.services, "users.setStreakHourOffset", data),
-  );
-
-export const usersUpdateInbox = createServerFn({ method: "POST" })
-  .validator(operationInput)
-  .handler(
-    async ({ context, data }) =>
-      await callOperation(context.services, "users.updateInbox", data),
   );
 
 export const usersUpdateLeaderboardMemory = createServerFn({ method: "POST" })

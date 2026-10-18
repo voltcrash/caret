@@ -21,11 +21,10 @@ Observed 2026-10-15:
   the tag/lockfile/config is the reproducible source fallback. Do not substitute
   Stage 0's test-key frontend build for a production rollback artifact.
 
-Configuration to preserve: `backend/wrangler.production.json`, Worker name/domain,
+Configuration to preserve: `frontend/wrangler.production.json`, Worker name/domain,
 account and D1 `43d104e9-2fef-43db-95d7-c64a08310714`, migration directory,
-`TASKS` queue `oxytype-production-tasks`, DLQ `oxytype-production-dlq`, one-minute
-Cron, observability, compatibility date/flags and `ASSETS`. Keep staging isolated
-(`backend/wrangler.jsonc`, separate D1/queues). Preserve production auth/OAuth/
+one-minute Cron, observability, compatibility date/flags and `ASSETS`. Keep staging
+isolated (`frontend/wrangler.staging.json`, separate D1). Preserve production auth/OAuth/
 Turnstile secrets; do not archive secrets in evidence, public env or release assets.
 
 ## Coordination

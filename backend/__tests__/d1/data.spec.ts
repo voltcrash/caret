@@ -179,14 +179,9 @@ describe("D1 data contracts", () => {
       expect(await Blocklist.contains({ email: "DELETE@example.com" })).toBe(
         true,
       );
-      expect(
-        await test.env.DB.prepare("SELECT count(*) AS count FROM outbox").first(
-          "count",
-        ),
-      ).toBe(0);
     });
   });
-  it("resets all owned history and pending rewards atomically; refuses banned resets", async () => {
+  it("resets all owned history atomically; refuses banned resets", async () => {
     await withRuntime(test.env, async () => {
       await Users.addUser("Reset", "reset@example.com", "reset");
       await Configs.saveConfig("reset", { theme: "serika" });
@@ -194,9 +189,6 @@ describe("D1 data contracts", () => {
       await mutateUser("reset", (user) => {
         user.xp = 100;
       });
-      await statement(
-        "INSERT INTO outbox(id,type,uid,created_at,data) VALUES('reset-reward','reward','reset',0,'{}')",
-      ).run();
       await expect(
         atomicUser("reset", async () => {
           await Users.resetUser("reset");
@@ -209,11 +201,6 @@ describe("D1 data contracts", () => {
       expect((await Users.getUser("reset", "test")).xp).toBe(0);
       expect(await Presets.getPresets("reset")).toHaveLength(0);
       expect(await Configs.getConfig("reset")).toBeNull();
-      expect(
-        await statement(
-          "SELECT count(*) AS count FROM outbox WHERE id='reset-reward'",
-        ).first("count"),
-      ).toBe(0);
       await mutateUser("reset", (user) => {
         user.banned = true;
       });

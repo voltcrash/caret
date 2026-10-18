@@ -23,8 +23,7 @@ import * as LogDal from "../../../src/dal/logs";
 import { newId } from "../../../src/utils/id";
 import { PersonalBest } from "@oxytype/schemas/shared";
 import { mockAuthenticateWithApeKey } from "../../__testData__/auth";
-import { randomUUID } from "node:crypto";
-import { MonkeyMail, UserStreak } from "@oxytype/schemas/users";
+import { UserStreak } from "@oxytype/schemas/users";
 import { pb } from "../../__testData__/users";
 
 const { mockApp, uid, mockAuth } = setup();
@@ -2266,146 +2265,6 @@ describe("user controller test", () => {
       expect(body.message).toEqual("Profiles are not available at this time");
     });
   });
-  describe("get inbox", () => {
-    const getInboxMock = vi.spyOn(UserDal, "getInbox");
-
-    beforeEach(async () => {
-      getInboxMock.mockClear();
-      await enableInbox(true);
-    });
-
-    it("should get inbox", async () => {
-      //GIVEN
-      const mailOne: MonkeyMail = {
-        id: randomUUID(),
-        subject: "subjectOne",
-        body: "bodyOne",
-        timestamp: 100,
-        read: false,
-        rewards: [],
-      };
-      const mailTwo: MonkeyMail = {
-        id: randomUUID(),
-        subject: "subjectTwo",
-        body: "bodyTwo",
-        timestamp: 100,
-        read: false,
-        rewards: [],
-      };
-      getInboxMock.mockResolvedValue([mailOne, mailTwo]);
-
-      //WHEN
-      const { body } = await mockApp
-        .get("/users/inbox")
-        .set("Authorization", `Bearer ${uid}`)
-        .expect(200);
-
-      //THEN
-      expect(body).toEqual({
-        message: "Inbox retrieved",
-        data: {
-          inbox: [mailOne, mailTwo],
-          maxMail: (await Configuration.getLiveConfiguration()).users.inbox
-            .maxMail,
-        },
-      });
-      expect(getInboxMock).toHaveBeenCalledWith(uid);
-    });
-    it("should fail if feature is disabled", async () => {
-      //GIVEN
-      await enableInbox(false);
-
-      //WHEN
-      const { body } = await mockApp
-        .get("/users/inbox")
-        .set("Authorization", `Bearer ${uid}`)
-        .expect(503);
-
-      //THEN
-      expect(body.message).toEqual("Your inbox is not available at this time.");
-    });
-  });
-  describe("update inbox", () => {
-    const updateInboxMock = vi.spyOn(UserDal, "updateInbox");
-    const mailIdOne = randomUUID();
-    const mailIdTwo = randomUUID();
-    beforeEach(async () => {
-      updateInboxMock.mockClear().mockResolvedValue();
-      await enableInbox(true);
-    });
-
-    it("should update", async () => {
-      //WHEN
-      const { body } = await mockApp
-        .patch("/users/inbox")
-        .set("Authorization", `Bearer ${uid}`)
-        .send({
-          mailIdsToDelete: [mailIdOne],
-          mailIdsToMarkRead: [mailIdOne, mailIdTwo],
-        })
-        .expect(200);
-
-      //THEN
-      expect(body).toEqual({
-        message: "Inbox updated",
-        data: null,
-      });
-
-      expect(updateInboxMock).toHaveBeenCalledWith(
-        uid,
-        [mailIdOne, mailIdTwo],
-        [mailIdOne],
-      );
-    });
-    it("should update without body", async () => {
-      //WHEN
-      const { body } = await mockApp
-        .patch("/users/inbox")
-        .set("Authorization", `Bearer ${uid}`)
-        .expect(200);
-
-      //THEN
-      expect(body).toEqual({
-        message: "Inbox updated",
-        data: null,
-      });
-
-      expect(updateInboxMock).toHaveBeenCalledWith(uid, [], []);
-    });
-    it("should fail with empty arrays", async () => {
-      //WHEN
-      const { body } = await mockApp
-        .patch("/users/inbox")
-        .set("Authorization", `Bearer ${uid}`)
-        .send({
-          mailIdsToDelete: [],
-          mailIdsToMarkRead: [],
-        })
-        .expect(422);
-
-      //THEN
-      expect(body).toEqual({
-        message: "Invalid request data schema",
-        validationErrors: [
-          '"mailIdsToDelete" Array must contain at least 1 element(s)',
-          '"mailIdsToMarkRead" Array must contain at least 1 element(s)',
-        ],
-      });
-    });
-    it("should fail if feature is disabled", async () => {
-      //GIVEN
-      await enableInbox(false);
-
-      //WHEN
-      const { body } = await mockApp
-        .patch("/users/inbox")
-        .set("Authorization", `Bearer ${uid}`)
-        .expect(503);
-
-      //THEN
-      expect(body.message).toEqual("Your inbox is not available at this time.");
-    });
-  });
   describe("report user", () => {
     const createReportMock = vi.spyOn(ReportDal, "createReport");
     const verifyCaptchaMock = vi.spyOn(Captcha, "verify");
@@ -2819,15 +2678,6 @@ async function enableProfiles(enabled: boolean): Promise<void> {
     mockConfig,
   );
 }
-async function enableInbox(enabled: boolean): Promise<void> {
-  const mockConfig = await configuration;
-  mockConfig.users.inbox = { ...mockConfig.users.inbox, enabled };
-
-  vi.spyOn(Configuration, "getCachedConfiguration").mockResolvedValue(
-    mockConfig,
-  );
-}
-
 async function enableReporting(enabled: boolean): Promise<void> {
   const mockConfig = await configuration;
   mockConfig.quotes.reporting = { ...mockConfig.quotes.reporting, enabled };

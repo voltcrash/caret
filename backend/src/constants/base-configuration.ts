@@ -223,21 +223,6 @@ export const CONFIGURATION_FORM_SCHEMA: FormSchema = {
             },
           },
         },
-        inbox: {
-          type: "object",
-          label: "Inbox",
-          fields: {
-            enabled: {
-              type: "boolean",
-              label: "Enabled",
-            },
-            maxMail: {
-              type: "number",
-              label: "Max Messages",
-              min: 0,
-            },
-          },
-        },
         profiles: {
           type: "object",
           label: "User Profiles",
@@ -321,58 +306,6 @@ export const CONFIGURATION_FORM_SCHEMA: FormSchema = {
             },
           },
         },
-        scheduleRewardsModeRules: {
-          type: "array",
-          label: "Schedule Rewards Mode Rules",
-          items: {
-            type: "object",
-            label: "Rule",
-            fields: {
-              language: {
-                type: "string",
-                label: "Language",
-              },
-              mode: {
-                type: "string",
-                label: "Mode",
-              },
-              mode2: {
-                type: "string",
-                label: "Secondary Mode",
-              },
-            },
-          },
-        },
-        xpRewardBrackets: {
-          type: "array",
-          label: "XP Reward Brackets",
-          items: {
-            type: "object",
-            label: "Bracket",
-            fields: {
-              minRank: {
-                type: "number",
-                label: "Min Rank",
-                min: 1,
-              },
-              maxRank: {
-                type: "number",
-                label: "Max Rank",
-                min: 1,
-              },
-              minReward: {
-                type: "number",
-                label: "Min Reward",
-                min: 0,
-              },
-              maxReward: {
-                type: "number",
-                label: "Max Reward",
-                min: 0,
-              },
-            },
-          },
-        },
       },
     },
     leaderboards: {
@@ -398,36 +331,6 @@ export const CONFIGURATION_FORM_SCHEMA: FormSchema = {
               label: "Expiration time in days",
               min: 0,
               hint: "This should atleast be 15, to allow for past week queries.",
-            },
-            xpRewardBrackets: {
-              type: "array",
-              label: "XP Reward Brackets",
-              items: {
-                type: "object",
-                label: "Bracket",
-                fields: {
-                  minRank: {
-                    type: "number",
-                    label: "Min Rank",
-                    min: 1,
-                  },
-                  maxRank: {
-                    type: "number",
-                    label: "Max Rank",
-                    min: 1,
-                  },
-                  minReward: {
-                    type: "number",
-                    label: "Min Reward",
-                    min: 0,
-                  },
-                  maxReward: {
-                    type: "number",
-                    label: "Max Reward",
-                    min: 0,
-                  },
-                },
-              },
             },
           },
         },

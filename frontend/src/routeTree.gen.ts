@@ -46,7 +46,6 @@ import { Route as ApiApeKeysApeKeyIdRouteImport } from './routes/api.ape-keys.$a
 import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
 import { Route as ApiConfigurationSchemaRouteImport } from './routes/api.configuration.schema'
 import { Route as ApiConfigureSplatRouteImport } from './routes/api.configure.$'
-import { Route as ApiDevAddDebugInboxItemRouteImport } from './routes/api.dev.addDebugInboxItem'
 import { Route as ApiDevGenerateDataRouteImport } from './routes/api.dev.generateData'
 import { Route as ApiDocsSplatRouteImport } from './routes/api.docs.$'
 import { Route as ApiLeaderboardsDailyRouteImport } from './routes/api.leaderboards.daily'
@@ -64,7 +63,6 @@ import { Route as ApiResultsTagsRouteImport } from './routes/api.results.tags'
 import { Route as ApiUsersCurrentTestActivityRouteImport } from './routes/api.users.currentTestActivity'
 import { Route as ApiUsersCustomThemesRouteImport } from './routes/api.users.customThemes'
 import { Route as ApiUsersFavoriteQuotesRouteImport } from './routes/api.users.favoriteQuotes'
-import { Route as ApiUsersInboxRouteImport } from './routes/api.users.inbox'
 import { Route as ApiUsersLeaderboardMemoryRouteImport } from './routes/api.users.leaderboardMemory'
 import { Route as ApiUsersNameRouteImport } from './routes/api.users.name'
 import { Route as ApiUsersOptOutOfLeaderboardsRouteImport } from './routes/api.users.optOutOfLeaderboards'
@@ -280,11 +278,6 @@ const ApiConfigureSplatRoute = ApiConfigureSplatRouteImport.update({
   path: '/$',
   getParentRoute: () => ApiConfigureRoute,
 } as any)
-const ApiDevAddDebugInboxItemRoute = ApiDevAddDebugInboxItemRouteImport.update({
-  id: '/api/dev/addDebugInboxItem',
-  path: '/api/dev/addDebugInboxItem',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiDevGenerateDataRoute = ApiDevGenerateDataRouteImport.update({
   id: '/api/dev/generateData',
   path: '/api/dev/generateData',
@@ -370,11 +363,6 @@ const ApiUsersCustomThemesRoute = ApiUsersCustomThemesRouteImport.update({
 const ApiUsersFavoriteQuotesRoute = ApiUsersFavoriteQuotesRouteImport.update({
   id: '/favoriteQuotes',
   path: '/favoriteQuotes',
-  getParentRoute: () => ApiUsersRoute,
-} as any)
-const ApiUsersInboxRoute = ApiUsersInboxRouteImport.update({
-  id: '/inbox',
-  path: '/inbox',
   getParentRoute: () => ApiUsersRoute,
 } as any)
 const ApiUsersLeaderboardMemoryRoute =
@@ -568,7 +556,6 @@ export interface FileRoutesByFullPath {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/configuration/schema': typeof ApiConfigurationSchemaRoute
   '/api/configure/$': typeof ApiConfigureSplatRoute
-  '/api/dev/addDebugInboxItem': typeof ApiDevAddDebugInboxItemRoute
   '/api/dev/generateData': typeof ApiDevGenerateDataRoute
   '/api/docs/$': typeof ApiDocsSplatRoute
   '/api/leaderboards/daily': typeof ApiLeaderboardsDailyRouteWithChildren
@@ -586,7 +573,6 @@ export interface FileRoutesByFullPath {
   '/api/users/currentTestActivity': typeof ApiUsersCurrentTestActivityRoute
   '/api/users/customThemes': typeof ApiUsersCustomThemesRoute
   '/api/users/favoriteQuotes': typeof ApiUsersFavoriteQuotesRoute
-  '/api/users/inbox': typeof ApiUsersInboxRoute
   '/api/users/leaderboardMemory': typeof ApiUsersLeaderboardMemoryRoute
   '/api/users/name': typeof ApiUsersNameRoute
   '/api/users/optOutOfLeaderboards': typeof ApiUsersOptOutOfLeaderboardsRoute
@@ -653,7 +639,6 @@ export interface FileRoutesByTo {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/configuration/schema': typeof ApiConfigurationSchemaRoute
   '/api/configure/$': typeof ApiConfigureSplatRoute
-  '/api/dev/addDebugInboxItem': typeof ApiDevAddDebugInboxItemRoute
   '/api/dev/generateData': typeof ApiDevGenerateDataRoute
   '/api/docs/$': typeof ApiDocsSplatRoute
   '/api/leaderboards/daily': typeof ApiLeaderboardsDailyRouteWithChildren
@@ -671,7 +656,6 @@ export interface FileRoutesByTo {
   '/api/users/currentTestActivity': typeof ApiUsersCurrentTestActivityRoute
   '/api/users/customThemes': typeof ApiUsersCustomThemesRoute
   '/api/users/favoriteQuotes': typeof ApiUsersFavoriteQuotesRoute
-  '/api/users/inbox': typeof ApiUsersInboxRoute
   '/api/users/leaderboardMemory': typeof ApiUsersLeaderboardMemoryRoute
   '/api/users/name': typeof ApiUsersNameRoute
   '/api/users/optOutOfLeaderboards': typeof ApiUsersOptOutOfLeaderboardsRoute
@@ -741,7 +725,6 @@ export interface FileRoutesById {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/configuration/schema': typeof ApiConfigurationSchemaRoute
   '/api/configure/$': typeof ApiConfigureSplatRoute
-  '/api/dev/addDebugInboxItem': typeof ApiDevAddDebugInboxItemRoute
   '/api/dev/generateData': typeof ApiDevGenerateDataRoute
   '/api/docs/$': typeof ApiDocsSplatRoute
   '/api/leaderboards/daily': typeof ApiLeaderboardsDailyRouteWithChildren
@@ -759,7 +742,6 @@ export interface FileRoutesById {
   '/api/users/currentTestActivity': typeof ApiUsersCurrentTestActivityRoute
   '/api/users/customThemes': typeof ApiUsersCustomThemesRoute
   '/api/users/favoriteQuotes': typeof ApiUsersFavoriteQuotesRoute
-  '/api/users/inbox': typeof ApiUsersInboxRoute
   '/api/users/leaderboardMemory': typeof ApiUsersLeaderboardMemoryRoute
   '/api/users/name': typeof ApiUsersNameRoute
   '/api/users/optOutOfLeaderboards': typeof ApiUsersOptOutOfLeaderboardsRoute
@@ -828,7 +810,6 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/configuration/schema'
     | '/api/configure/$'
-    | '/api/dev/addDebugInboxItem'
     | '/api/dev/generateData'
     | '/api/docs/$'
     | '/api/leaderboards/daily'
@@ -846,7 +827,6 @@ export interface FileRouteTypes {
     | '/api/users/currentTestActivity'
     | '/api/users/customThemes'
     | '/api/users/favoriteQuotes'
-    | '/api/users/inbox'
     | '/api/users/leaderboardMemory'
     | '/api/users/name'
     | '/api/users/optOutOfLeaderboards'
@@ -913,7 +893,6 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/configuration/schema'
     | '/api/configure/$'
-    | '/api/dev/addDebugInboxItem'
     | '/api/dev/generateData'
     | '/api/docs/$'
     | '/api/leaderboards/daily'
@@ -931,7 +910,6 @@ export interface FileRouteTypes {
     | '/api/users/currentTestActivity'
     | '/api/users/customThemes'
     | '/api/users/favoriteQuotes'
-    | '/api/users/inbox'
     | '/api/users/leaderboardMemory'
     | '/api/users/name'
     | '/api/users/optOutOfLeaderboards'
@@ -1000,7 +978,6 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/configuration/schema'
     | '/api/configure/$'
-    | '/api/dev/addDebugInboxItem'
     | '/api/dev/generateData'
     | '/api/docs/$'
     | '/api/leaderboards/daily'
@@ -1018,7 +995,6 @@ export interface FileRouteTypes {
     | '/api/users/currentTestActivity'
     | '/api/users/customThemes'
     | '/api/users/favoriteQuotes'
-    | '/api/users/inbox'
     | '/api/users/leaderboardMemory'
     | '/api/users/name'
     | '/api/users/optOutOfLeaderboards'
@@ -1072,7 +1048,6 @@ export interface RootRouteChildren {
   ApiIndexRoute: typeof ApiIndexRoute
   ApiPrefixDocsRoute: typeof ApiPrefixDocsRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
-  ApiDevAddDebugInboxItemRoute: typeof ApiDevAddDebugInboxItemRoute
   ApiDevGenerateDataRoute: typeof ApiDevGenerateDataRoute
   ApiPublicSpeedHistogramRoute: typeof ApiPublicSpeedHistogramRoute
   ApiPublicTypingStatsRoute: typeof ApiPublicTypingStatsRoute
@@ -1339,13 +1314,6 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof ApiConfigureSplatRouteImport
       parentRoute: typeof ApiConfigureRoute
     }
-    '/api/dev/addDebugInboxItem': {
-      id: '/api/dev/addDebugInboxItem'
-      path: '/api/dev/addDebugInboxItem'
-      fullPath: '/api/dev/addDebugInboxItem'
-      preLoaderRoute: typeof ApiDevAddDebugInboxItemRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/dev/generateData': {
       id: '/api/dev/generateData'
       path: '/api/dev/generateData'
@@ -1463,13 +1431,6 @@ declare module '@tanstack/solid-router' {
       path: '/favoriteQuotes'
       fullPath: '/api/users/favoriteQuotes'
       preLoaderRoute: typeof ApiUsersFavoriteQuotesRouteImport
-      parentRoute: typeof ApiUsersRoute
-    }
-    '/api/users/inbox': {
-      id: '/api/users/inbox'
-      path: '/inbox'
-      fullPath: '/api/users/inbox'
-      preLoaderRoute: typeof ApiUsersInboxRouteImport
       parentRoute: typeof ApiUsersRoute
     }
     '/api/users/leaderboardMemory': {
@@ -1918,7 +1879,6 @@ interface ApiUsersRouteChildren {
   ApiUsersCurrentTestActivityRoute: typeof ApiUsersCurrentTestActivityRoute
   ApiUsersCustomThemesRoute: typeof ApiUsersCustomThemesRoute
   ApiUsersFavoriteQuotesRoute: typeof ApiUsersFavoriteQuotesRoute
-  ApiUsersInboxRoute: typeof ApiUsersInboxRoute
   ApiUsersLeaderboardMemoryRoute: typeof ApiUsersLeaderboardMemoryRoute
   ApiUsersNameRoute: typeof ApiUsersNameRoute
   ApiUsersOptOutOfLeaderboardsRoute: typeof ApiUsersOptOutOfLeaderboardsRoute
@@ -1942,7 +1902,6 @@ const ApiUsersRouteChildren: ApiUsersRouteChildren = {
   ApiUsersCurrentTestActivityRoute: ApiUsersCurrentTestActivityRoute,
   ApiUsersCustomThemesRoute: ApiUsersCustomThemesRoute,
   ApiUsersFavoriteQuotesRoute: ApiUsersFavoriteQuotesRoute,
-  ApiUsersInboxRoute: ApiUsersInboxRoute,
   ApiUsersLeaderboardMemoryRoute: ApiUsersLeaderboardMemoryRoute,
   ApiUsersNameRoute: ApiUsersNameRoute,
   ApiUsersOptOutOfLeaderboardsRoute: ApiUsersOptOutOfLeaderboardsRoute,
@@ -2000,7 +1959,6 @@ const rootRouteChildren: RootRouteChildren = {
   ApiIndexRoute: ApiIndexRoute,
   ApiPrefixDocsRoute: ApiPrefixDocsRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
-  ApiDevAddDebugInboxItemRoute: ApiDevAddDebugInboxItemRoute,
   ApiDevGenerateDataRoute: ApiDevGenerateDataRoute,
   ApiPublicSpeedHistogramRoute: ApiPublicSpeedHistogramRoute,
   ApiPublicTypingStatsRoute: ApiPublicTypingStatsRoute,

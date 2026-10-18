@@ -30,7 +30,7 @@ describe("service ownership", () => {
   });
   it("gives every legacy operation one stable identity", () => {
     const operations = allOperations();
-    expect(operations.length).toBeGreaterThan(80);
+    expect(operations.length).toBeGreaterThan(70);
     expect(new Set(operations.map(({ id }) => id)).size).toBe(
       operations.length,
     );

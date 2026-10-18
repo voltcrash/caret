@@ -59,7 +59,6 @@ function toAccountData(userData: UserData): AccountData {
     addedAt: userData.addedAt,
     inventory: userData.inventory,
     xp: userData.xp ?? 0,
-    inboxUnreadSize: userData.inboxUnreadSize ?? 0,
     streak: userData.streak?.length ?? 0,
     maxStreak: userData.streak?.maxLength ?? 0,
     isPremium: userData.isPremium ?? false,

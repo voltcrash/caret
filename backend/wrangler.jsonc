@@ -1,6 +1,6 @@
 {
   // D1 schema owner only: local migrations, generation and audits. The
-  // application Worker (fetch, queues, Cron) deploys from frontend/.
+  // application Worker (fetch, Cron) deploys from frontend/.
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "oxytype-api-staging",
   "account_id": "eb2679ce4f23ae7db4e6c4e3fcf8c3c1",

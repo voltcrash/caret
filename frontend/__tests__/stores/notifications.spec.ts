@@ -14,18 +14,13 @@ import {
   removeNotification,
   clearAllNotifications,
   getNotifications,
-  getNotificationHistory,
-  __testing,
   AddNotificationOptions,
 } from "../../src/ts/states/notifications";
-
-const { clearNotificationHistory } = __testing;
 
 describe("notifications store", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     clearAllNotifications();
-    clearNotificationHistory();
   });
 
   afterEach(() => {
@@ -91,7 +86,7 @@ describe("notifications store", () => {
       expect(getNotifications()[0]?.message).toContain("underlying cause");
     });
 
-    it("stores structured lines in notifications and history", () => {
+    it("stores structured lines in notifications", () => {
       const lines = [
         "<script>alert(1)</script>",
         "",
@@ -99,7 +94,6 @@ describe("notifications store", () => {
       ];
       addNotificationWithLevel(lines, "notice");
       expect(getNotifications()[0]?.message).toEqual(lines);
-      expect(getNotificationHistory()[0]?.message).toEqual(lines);
     });
 
     it("preserves plain string messages", () => {
@@ -292,59 +286,6 @@ describe("notifications store", () => {
     it("showErrorNotification adds error level", () => {
       showErrorNotification("error msg");
       expect(getNotifications()[0]?.level).toBe("error");
-    });
-  });
-
-  describe("notification history", () => {
-    it("adds entries to history", () => {
-      addNotificationWithLevel("msg", "success");
-
-      const history = getNotificationHistory();
-      expect(history).toHaveLength(1);
-      expect(history[0]?.message).toBe("msg");
-      expect(history[0]?.level).toBe("success");
-      expect(history[0]?.title).toBe("Success");
-    });
-
-    it("uses correct default titles", () => {
-      addNotificationWithLevel("a", "success");
-      addNotificationWithLevel("b", "error");
-      addNotificationWithLevel("c", "notice");
-
-      const history = getNotificationHistory();
-      expect(history[0]?.title).toBe("Success");
-      expect(history[1]?.title).toBe("Error");
-      expect(history[2]?.title).toBe("Notice");
-    });
-
-    it("uses customTitle in history when provided", () => {
-      addNotificationWithLevel("msg", "notice", { customTitle: "Reward" });
-      expect(getNotificationHistory()[0]?.title).toBe("Reward");
-    });
-
-    it("stores details in history", () => {
-      addNotificationWithLevel("msg", "notice", {
-        details: { foo: "bar" },
-      });
-      expect(getNotificationHistory()[0]?.details).toEqual({ foo: "bar" });
-    });
-
-    it("caps history at 25 entries", () => {
-      for (let i = 0; i < 30; i++) {
-        addNotificationWithLevel(`msg ${i}`, "notice");
-      }
-
-      const history = getNotificationHistory();
-      expect(history).toHaveLength(25);
-      expect(history[0]?.message).toBe("msg 5");
-      expect(history[24]?.message).toBe("msg 29");
-    });
-
-    it("is not affected by clearAllNotifications", () => {
-      addNotificationWithLevel("msg", "notice", { durationMs: 0 });
-      clearAllNotifications();
-
-      expect(getNotificationHistory()).toHaveLength(1);
     });
   });
 });
