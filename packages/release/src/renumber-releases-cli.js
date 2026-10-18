@@ -71,7 +71,9 @@ const plan = planRenumber(
 for (const rename of plan) console.log(`${rename.from} -> ${rename.to}`);
 if (process.argv.includes("--apply")) {
   await applyRenumber({ github, repo, plan, log: console.log });
-  console.log("Renumbered; fetch tags with `git fetch --prune --prune-tags`.");
+  console.log(
+    "Renumbered; other clones: `git fetch --prune --prune-tags --force`.",
+  );
 } else {
   console.log("Dry run; pass --apply to rename releases and tags.");
 }

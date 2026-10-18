@@ -197,6 +197,8 @@ Releases before the numbering change were renamed from date tags in publication
 order (October 2026: `v26.10.04`–`v26.10.16` became `v26.10.01`–`v26.10.11`) with
 `node packages/release/src/renumber-releases-cli.js` (dry run; `--apply` renames).
 Old date tags no longer exist; the `v2026.10.*` tags are older and unrelated.
+Existing clones keep stale local tags under reused names; refresh them with
+`git fetch --prune --prune-tags --force`.
 
 ## Browser verification and monitoring
 
