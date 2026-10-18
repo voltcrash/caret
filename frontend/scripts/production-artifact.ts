@@ -77,7 +77,6 @@ export async function validateArtifact(
     "account_id",
     "routes",
     "d1_databases",
-    "queues",
     "triggers",
     "compatibility_date",
     "compatibility_flags",
