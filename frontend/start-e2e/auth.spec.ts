@@ -1,6 +1,63 @@
 import { expect, test } from "./fixtures";
 import { authCookie } from "./auth-fixtures";
 
+test("navigation preload consumes OAuth callback state only once", async ({
+  page,
+}) => {
+  await page.goto("/login");
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+    if (!navigator.serviceWorker.controller) {
+      await new Promise<void>((resolve) =>
+        navigator.serviceWorker.addEventListener(
+          "controllerchange",
+          () => resolve(),
+          { once: true },
+        ),
+      );
+    }
+    const registration = await navigator.serviceWorker.ready;
+    await registration.navigationPreload.enable();
+  });
+  await page.evaluate(async () => {
+    const callbackURL = `${location.origin}/oauth-callback.html?requestId=preload-regression`;
+    const response = await fetch("/api/auth/sign-in/social", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        provider: "github",
+        callbackURL,
+        errorCallbackURL: callbackURL,
+        disableRedirect: true,
+      }),
+    });
+    if (!response.ok) throw new Error("OAuth initiation failed");
+    const { url } = (await response.json()) as { url: string };
+    const state = new URL(url).searchParams.get("state");
+    if (state === null || state === "") throw new Error("OAuth state missing");
+    // A provider denial exercises real state/cookies without calling GitHub.
+    location.assign(
+      `/api/auth/callback/github?error=access_denied&state=${encodeURIComponent(state)}`,
+    );
+  });
+  await expect(page).toHaveURL(
+    /\/oauth-callback\.html\?requestId=preload-regression&error=access_denied$/,
+  );
+  await expect(page.getByText("access_denied", { exact: true })).toBeVisible();
+  const cachedPaths = await page.evaluate(async () =>
+    (
+      await Promise.all(
+        (await caches.keys()).map(async (name) =>
+          (await (await caches.open(name)).keys()).map(
+            (request) => new URL(request.url).pathname,
+          ),
+        ),
+      )
+    ).flat(),
+  );
+  expect(cachedPaths.some((path) => path.startsWith("/api/"))).toBe(false);
+});
+
 test("popup login and logout update native routes without reloading the document", async ({
   page,
 }) => {
