@@ -1,14 +1,12 @@
 import * as ResultDAL from "../../../dal/result";
 import * as PublicDAL from "../../../dal/public";
 import { isDevEnvironment } from "../../../utils/misc";
-import objectHash from "object-hash";
 
 import { MonkeyResponse } from "../../../utils/monkey-response";
 import MonkeyError from "../../../utils/error";
 
 import { getDailyLeaderboard } from "../../../utils/daily-leaderboards";
 import * as UserDAL from "../../../dal/user";
-import { buildMonkeyMail } from "../../../utils/monkey-mail";
 import * as WeeklyXpLeaderboard from "../../../services/weekly-xp-leaderboard";
 import { canFunboxGetPb } from "../../../utils/pb";
 import { buildDbResult } from "../../../utils/result";
@@ -147,38 +145,6 @@ export async function applyProgression(
     completedEvent.timestamp,
     completedEvent.client,
   );
-  const badgeWaitingInInbox = (
-    user.inbox?.flatMap((i) =>
-      (i.rewards ?? []).map((r) => (r.type === "badge" ? r.item.id : null)),
-    ) ?? []
-  ).includes(14);
-
-  const shouldGetBadge =
-    !offline &&
-    streak >= 365 &&
-    user.inventory?.badges?.find((b) => b.id === 14) === undefined &&
-    !badgeWaitingInInbox;
-
-  if (shouldGetBadge) {
-    const mail = buildMonkeyMail({
-      subject: "Badge",
-      body: "Congratulations for reaching a 365 day streak! You have been awarded a special badge. Now, go touch some grass.",
-      rewards: [
-        {
-          type: "badge",
-          item: {
-            id: 14,
-          },
-        },
-      ],
-    });
-    mail.id = "365streak";
-    await UserDAL.addToInbox(
-      uid,
-      [{ ...mail, id: `365streak${objectHash(uid)}` }],
-      context.configuration.users.inbox,
-    );
-  }
 
   const xpGained: XpResult = offline
     ? { xp: 0 }
