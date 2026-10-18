@@ -20,7 +20,7 @@ export function resolveBuildId(
   return buildId;
 }
 
-/** `/version.json` keeps its public `{ version }` shape for the TUI asset cache. */
+/** `/version.json` exposes the build ID as `{ version }`. */
 export function versionJson(buildId: string): string {
   return JSON.stringify({ version: buildId });
 }
