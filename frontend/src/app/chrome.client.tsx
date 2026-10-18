@@ -1,5 +1,6 @@
 import {
   createEffect,
+  createSignal,
   onCleanup,
   onMount,
   Show,
@@ -52,11 +53,18 @@ function ChromeRuntime(props: {
   createEffect(() => props.onHeaderBottom(getHeaderBottom()));
   createEffect(() => props.onOffsetTop(getGlobalOffsetTop()));
   createEffect(() => props.onHidden(isFixingSkillIssue()));
+  // Theme changes animate only once stored preferences have been applied.
+  const [isReady, setReady] = createSignal(false);
   spread(
     document.body,
     {
       get class() {
         return bodyClass(document.body.className);
+      },
+      get style() {
+        return {
+          transition: isReady() ? "background .25s, transform .05s" : undefined,
+        };
       },
     },
     false,
@@ -82,7 +90,9 @@ function ChromeRuntime(props: {
     void preferencesReadiness()
       .wait()
       .then(() => {
-        if (!disposed && getAcceptedCookies() === null) showModal("Cookies");
+        if (disposed) return;
+        setReady(true);
+        if (getAcceptedCookies() === null) showModal("Cookies");
       })
       .catch(() => undefined);
   });
