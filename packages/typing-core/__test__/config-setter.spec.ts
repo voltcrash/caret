@@ -130,7 +130,7 @@ describe("resolveFullConfig", () => {
     expect(result.tapeMode).toBe("word");
     expect(result.showAllLines).toBe(false);
     expect(result.caretStyle).toBe("default");
-    // The terminal schema has no legacy mascot setting.
+    // The config schema has no legacy mascot setting.
     expect(rejected).toEqual(["monkey"]);
   });
 });
