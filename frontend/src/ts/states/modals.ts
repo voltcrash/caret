@@ -5,7 +5,6 @@ export type ModalId =
   | "Support"
   | "Commandline"
   | "DevOptions"
-  | "DevInboxPicker"
   | "EventLogViewer"
   | "SimpleModal"
   | "ImportSettings"
