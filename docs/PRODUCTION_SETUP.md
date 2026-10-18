@@ -130,13 +130,14 @@ legacy → Start → legacy and Start → Start rollbacks this way in Stage 7.
 ## Production releases
 
 The **Production release** [Actions workflow](../.github/workflows/production-release.yml)
-checks for new commits at `00:17 UTC` each day. It also supports **Run workflow**
-on `main`. When commits have been added since the previous successful production
-release, it deploys the complete frontend/API site with the production Wrangler
-config, applies pending production D1 migrations, and publishes a GitHub release
-only after deployment succeeds. Without new commits, it skips dependency setup,
-builds, migrations, deployment and publication; the scheduled workflow run still
-starts and records the skip reason.
+runs only when a maintainer starts it: **Run workflow** on `main`, or
+`gh workflow run production-release.yml --ref main`. There is no schedule. When
+commits have been added since the previous successful production release, it
+deploys the complete frontend/API site with the production Wrangler config,
+applies pending production D1 migrations, and publishes a GitHub release only
+after deployment succeeds. If the snapshot is already released, it skips
+dependency setup, builds, migrations, deployment and publication and records the
+skip reason.
 
 Configure these Actions inputs in repository settings or the `production`
 environment before the first run:
@@ -152,19 +153,20 @@ The account ID and isolated resource IDs come from `frontend/wrangler.production
 The workflow writes credential files with mode `0600` for the validated production
 commands, then removes them even on failure. It never bootstraps or resets the database.
 
-Release versions use the release-planning execution date in `YY.MM.DD` format,
-with a `v`-prefixed tag at the exact deployed `main` commit. Delayed runs and
-retries use the current execution date rather than the workflow creation date.
-The package version uses that date; Worker/client/SW/version.json use one build ID
-(date plus source SHA). No version commit is pushed to main. The workflow archives
+Release versions are `YY.MM.NN`: two-digit year, month, and the release's
+sequence number within that UTC month, starting at `01`. The first November 2026
+release is `26.11.01`; the next one, on any later day, is `26.11.02`. Tags are
+`v`-prefixed (`v26.11.01`) at the exact deployed `main` commit; release titles
+omit the `v`. The month is taken when release planning executes. The package
+version uses the release version; Worker/client/SW/version.json use one build ID
+(version plus source SHA). No version commit is pushed to main. The workflow archives
 the complete matched artifact for 90 days before migrations/deployment; releases
 are published only after a successful deploy.
 The release notes list all commits added since the previous successful production
 release, including older branch commits merged during the day. They are grouped
 into Features (`feat`), Improvements (`impr`, `perf`), Fixes (`fix`) and Nerd
-stuff (everything else); GitHub merge commits are omitted. Missed days are
-included in the next successful release. The first scheduled release covers the
-preceding execution UTC day; the first manual run covers its execution UTC day.
+stuff (everything else); GitHub merge commits are omitted. The first production
+release covers its execution UTC day.
 The first production release establishes the deployment baseline even without
 recent commits. Subsequent runs compare commits, so a new commit still qualifies
 when its file contents or rendered release notes are unchanged.
@@ -181,19 +183,20 @@ and links to [GitHub releases](https://github.com/voltcrash/oxytype/releases)
 for older history. Hosting and the service worker avoid persistently caching the
 snapshot so the next deployment can update it.
 
-Runs are serialized. Rerunning a completed date skips deployment and publication.
-A retry on a later UTC date also skips if its snapshot has already been released.
-Retrying a failed run keeps its original `main` snapshot but uses the date when
-the new attempt's release planning executes. An older snapshot cannot deploy over
-already released commits. A date tag belonging to another commit or a conflicting
-manual release stops the workflow before deployment.
+Runs are serialized. A run whose snapshot is the latest release skips deployment
+and publication. A deployment whose publication failed leaves its tag on the
+snapshot; the retry reuses that number. Numbers held by other releases or tags
+are never reused. An older snapshot cannot deploy over already released commits,
+and a production release from a later month stops the workflow.
 
 After merging a fix for a failed release, start a new **Production release** run
 from **main** in Actions, or run `gh workflow run production-release.yml --ref main`.
 Rerunning the old failed run retains its original snapshot and cannot pick up the fix.
 
-GitHub's scheduler can run late or drop jobs under load; 00:17 UTC is the requested
-trigger time, not an exact-time guarantee. See [GitHub scheduling behavior](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule).
+Releases before the numbering change were renamed from date tags in publication
+order (October 2026: `v26.10.04`–`v26.10.16` became `v26.10.01`–`v26.10.11`) with
+`node packages/release/src/renumber-releases-cli.js` (dry run; `--apply` renames).
+Old date tags no longer exist; the `v2026.10.*` tags are older and unrelated.
 
 ## Browser verification and monitoring
 
