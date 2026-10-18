@@ -76,3 +76,12 @@ it("serves the full icon fonts with every icon rule", async () => {
   expect(fontawesome).toContain(".fa-arrow-up-from-water-pump");
   expect(files).toHaveLength(2);
 });
+
+it("imports the generated font faces from the Start app CSS", () => {
+  const read = (file: string): string =>
+    readFileSync(path.join(import.meta.dirname, "../../src", file), "utf8");
+  expect(read("app/app.css")).toContain('@import "oxytype-fonts.css"');
+  expect(read("styles/vendor.css")).toContain(
+    '@import "oxytype-fontawesome.css"',
+  );
+});
