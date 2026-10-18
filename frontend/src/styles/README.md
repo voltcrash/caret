@@ -7,7 +7,7 @@
 - Keep Normalize.css: Slim Select search inputs retain its native appearance and focus-outline offset, which differ from Preflight alone.
 - Keep word/letter, caret, theme and funbox selectors stable. Imperative typing nodes need selector-based state styles.
 - Keep animation names stable: runtime styles and external theme/funbox CSS reference them. Keyframes require ordinary CSS declarations.
-- `font-styles.ts` generates ignored CSS from font metadata and official Font Awesome CSS. Start and Storybook register the same plugin.
+- `font-styles.ts` generates ignored CSS from font metadata and official Font Awesome CSS. Start and Storybook register the same plugin. `app/app.css` imports `oxytype-fonts.css`; `vendor.css` imports `oxytype-fontawesome.css`.
 - Standalone routes (OAuth callback, privacy policy, 404) retain their original grid dimensions and native auth inputs.
 
 Checks: `vp run lint-styles`, frontend build/tests, `vp lint --type-aware --type-check --format agent frontend`.
