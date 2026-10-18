@@ -1,6 +1,6 @@
 import { expect, it } from "vite-plus/test";
 
-import { appStyle } from "../../../src/components/layout/scroller";
+import { appClass, appStyle } from "../../../src/components/layout/scroller";
 
 it("keeps the document grid untouched without banners or the skill-issue screen", () => {
   expect(appStyle(0, false)).toBeUndefined();
@@ -15,4 +15,8 @@ it("pads the app below banners and hides it for the skill-issue screen", () => {
     display: "none",
     "padding-top": undefined,
   });
+});
+
+it("fades the app in on initial load", () => {
+  expect(appClass.split(" ")).toContain("animate-app-enter");
 });
