@@ -80,7 +80,7 @@ export type Mode2<M extends Mode> = M extends M
   : never;
 export type Mode2Custom<M extends Mode> = Mode2<M> | "custom";
 
-export const ClientSchema = z.enum(["web", "tui"]);
+export const ClientSchema = z.literal("web");
 export type Client = z.infer<typeof ClientSchema>;
 export const ClientQuerySchema = z.object({ client: ClientSchema.optional() });
 export type ClientQuery = z.infer<typeof ClientQuerySchema>;
