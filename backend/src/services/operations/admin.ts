@@ -1,5 +1,4 @@
 import { MonkeyResponse } from "../../utils/monkey-response";
-import { buildMonkeyMail } from "../../utils/monkey-mail";
 import * as UserDAL from "../../dal/user";
 import * as ReportDAL from "../../dal/report";
 import {
@@ -16,8 +15,7 @@ import {
   ToggleBanRequest,
   ToggleBanResponse,
 } from "@oxytype/contracts/admin";
-import MonkeyError, { getErrorMessage } from "../../utils/error";
-import { Configuration } from "@oxytype/schemas/configuration";
+import MonkeyError from "../../utils/error";
 import { addImportantLog, countLogs, getLogs } from "../../dal/logs";
 import type { ServiceContext, OperationInput } from "../context";
 import { purgeUserFromDailyLeaderboards } from "../../utils/daily-leaderboards";
@@ -100,39 +98,23 @@ export async function deleteUser(
 }
 
 export async function acceptReports(
-  context: ServiceContext,
+  _context: ServiceContext,
   input: OperationInput<undefined, AcceptReportsRequest>,
 ): Promise<MonkeyResponse> {
-  await handleReports(
-    input.body.reports.map((it) => ({ ...it })),
-    true,
-    context.configuration.users.inbox,
-  );
-  return new MonkeyResponse("Reports removed and users notified.", null);
+  await removeReports(input.body.reports.map(({ reportId }) => reportId));
+  return new MonkeyResponse("Reports removed.", null);
 }
 
 export async function rejectReports(
-  context: ServiceContext,
+  _context: ServiceContext,
   input: OperationInput<undefined, RejectReportsRequest>,
 ): Promise<MonkeyResponse> {
-  await handleReports(
-    input.body.reports.map((it) => ({ ...it })),
-    false,
-    context.configuration.users.inbox,
-  );
-  return new MonkeyResponse("Reports removed and users notified.", null);
+  await removeReports(input.body.reports.map(({ reportId }) => reportId));
+  return new MonkeyResponse("Reports removed.", null);
 }
 
-async function handleReports(
-  reports: { reportId: string; reason?: string }[],
-  accept: boolean,
-  inboxConfig: Configuration["users"]["inbox"],
-): Promise<void> {
-  const reportIds = reports.map(({ reportId }) => reportId);
-
+async function removeReports(reportIds: string[]): Promise<void> {
   const reportsFromDb = await ReportDAL.getReports(reportIds);
-  const reportById = new Map(reportsFromDb.map((it) => [it.id, it]));
-
   const existingReportIds = new Set(reportsFromDb.map((report) => report.id));
   const missingReportIds = reportIds.filter(
     (reportId) => !existingReportIds.has(reportId),
@@ -146,44 +128,6 @@ async function handleReports(
   }
 
   await ReportDAL.deleteReports(reportIds);
-
-  for (const { reportId, reason } of reports) {
-    try {
-      const report = reportById.get(reportId);
-      if (!report) {
-        throw new MonkeyError(404, `Report not found for ID: ${reportId}`);
-      }
-
-      let mailBody = "";
-      if (accept) {
-        mailBody = `Your report regarding ${report.type} ${
-          report.contentId
-        } (${report.reason.toLowerCase()}) has been approved. Thank you.`;
-      } else {
-        mailBody = `Sorry, but your report regarding ${report.type} ${
-          report.contentId
-        } (${report.reason.toLowerCase()}) has been denied. ${
-          reason !== undefined ? `\nReason: ${reason}` : ""
-        }`;
-      }
-
-      const mailSubject = accept ? "Report approved" : "Report denied";
-      const mail = buildMonkeyMail({
-        subject: mailSubject,
-        body: mailBody,
-      });
-      await UserDAL.addToInbox(report.uid, [mail], inboxConfig);
-    } catch (e) {
-      if (e instanceof MonkeyError) {
-        throw new MonkeyError(e.status, e.message);
-      } else {
-        throw new MonkeyError(
-          500,
-          `Error handling reports: ${getErrorMessage(e)}`,
-        );
-      }
-    }
-  }
 }
 
 export async function clearSuspicious(
