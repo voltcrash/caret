@@ -20,6 +20,8 @@ async function main(): Promise<void> {
     "browser-private",
     "browser-typing",
     "browser-result-persistence",
+    "browser-logout",
+    "browser-home",
   ]) {
     const session = await seedSession(mf, "a");
     await db
@@ -48,6 +50,8 @@ async function main(): Promise<void> {
         "browser-private",
         "browser-typing",
         "browser-result-persistence",
+        "browser-logout",
+        "browser-home",
       ].includes(token)
     ) {
       await db
