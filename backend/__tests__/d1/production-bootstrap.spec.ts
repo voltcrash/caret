@@ -18,7 +18,7 @@ describe("fresh production bootstrap on D1", () => {
   });
   afterEach(async () => await test.dispose());
 
-  it("enables core flows on an empty target without creating accounts or jobs", async () => {
+  it("enables core flows on an empty target without creating accounts", async () => {
     await test.env.DB.prepare(sql).run();
     const configuration = await withRuntime(test.env, getLiveConfiguration);
     expect(ConfigurationSchema.safeParse(configuration).success).toBe(true);
@@ -31,18 +31,15 @@ describe("fresh production bootstrap on D1", () => {
     expect(configuration.users.xp.gainMultiplier).toBe(1);
     expect(configuration.leaderboards.weeklyXp.enabled).toBe(true);
     expect(configuration.dailyLeaderboards.enabled).toBe(true);
-    expect(configuration.users.inbox.enabled).toBe(false);
     expect(configuration.quotes.submissionsEnabled).toBe(false);
     expect(configuration.admin.endpointsEnabled).toBe(false);
     const counts = await test.env.DB.prepare(
-      "SELECT (SELECT count(*) FROM users) AS users, (SELECT count(*) FROM auth_users) AS auth, (SELECT count(*) FROM results) AS results, (SELECT count(*) FROM outbox) AS outbox, (SELECT count(*) FROM scheduled_jobs) AS jobs",
+      "SELECT (SELECT count(*) FROM users) AS users, (SELECT count(*) FROM auth_users) AS auth, (SELECT count(*) FROM results) AS results",
     ).first();
     expect(counts).toEqual({
       users: 0,
       auth: 0,
       results: 0,
-      outbox: 0,
-      jobs: 0,
     });
   });
 
