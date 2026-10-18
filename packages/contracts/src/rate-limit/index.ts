@@ -291,16 +291,6 @@ export const limits = {
     max: 60,
   },
 
-  userMailGet: {
-    window: "hour",
-    max: 60,
-  },
-
-  userMailUpdate: {
-    window: "hour",
-    max: 60,
-  },
-
   userTestActivity: {
     window: "hour",
     max: 60,
