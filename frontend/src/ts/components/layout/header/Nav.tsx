@@ -113,16 +113,16 @@ export function Nav(): JSXElement {
       <Button
         variant="text"
         fa={{
-          icon: "fa-info",
+          icon: "fa-github",
+          variant: "brand",
           fixedWidth: true,
         }}
         class={buttonClass()}
         dataset={{
-          "data-nav-item": "about",
-          "aria-label": "About",
+          "data-nav-item": "github",
+          "aria-label": "GitHub",
         }}
-        href="/about"
-        router-link
+        href="https://github.com/voltcrash/oxytype"
       />
       <Button
         variant="text"
