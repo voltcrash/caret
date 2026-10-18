@@ -1,8 +1,5 @@
-import { describe, expect, it, vi } from "vite-plus/test";
-import type { MessageBatch } from "@cloudflare/workers-types";
+import { describe, expect, it } from "vite-plus/test";
 import { createTestRuntime } from "./helpers";
-import { consumeBatch } from "../../src/runtime/tasks";
-import { withRuntime } from "../../src/runtime/env";
 
 describe("Discord removal migration", () => {
   it("cleans legacy identities and bot deliveries, preserving owners, rankings and rewards", async () => {
@@ -19,8 +16,22 @@ describe("Discord removal migration", () => {
       "daily_entries",
       "weekly_entries",
     ];
+    // Delivery tables are dropped later by 0014; capture them just before.
+    let deliveries: Record<string, unknown> = {};
     const test = await createTestRuntime({
       beforeMigration: async (db, file) => {
+        if (file === "0014_remove_inbox.sql") {
+          deliveries = {
+            outbox: await db.prepare("SELECT id FROM outbox").first("id"),
+            inbox: await db
+              .prepare("SELECT count(*) AS count FROM inbox")
+              .first("count"),
+            scheduled_jobs: await db
+              .prepare("SELECT count(*) AS count FROM scheduled_jobs")
+              .first("count"),
+          };
+          return;
+        }
         if (file !== "0002_remove_discord.sql") return;
         await db.batch([
           db
@@ -120,15 +131,12 @@ describe("Discord removal migration", () => {
       expect(
         await test.env.DB.prepare("SELECT kind FROM blocklist").first("kind"),
       ).toBe("email");
-      expect(
-        await test.env.DB.prepare("SELECT id FROM outbox").first("id"),
-      ).toBe("reward");
-      for (const table of [
-        "auth_users",
-        "auth_sessions",
-        "inbox",
-        "scheduled_jobs",
-      ]) {
+      expect(deliveries).toEqual({
+        outbox: "reward",
+        inbox: 1,
+        scheduled_jobs: 1,
+      });
+      for (const table of ["auth_users", "auth_sessions"]) {
         expect(
           await test.env.DB.prepare(
             `SELECT count(*) AS count FROM ${table}`,
@@ -156,26 +164,6 @@ describe("Discord removal migration", () => {
       expect(
         (await test.env.DB.prepare("PRAGMA foreign_key_check").all()).results,
       ).toHaveLength(0);
-
-      // Messages already published before migration acknowledge deleted bot IDs.
-      const ack = vi.fn(),
-        retry = vi.fn();
-      await withRuntime(
-        test.env,
-        async () =>
-          await consumeBatch({
-            messages: [
-              {
-                id: "message",
-                body: { id: "bot", kind: "outbox" },
-                ack,
-                retry,
-              },
-            ],
-          } as unknown as MessageBatch),
-      );
-      expect(ack).toHaveBeenCalledOnce();
-      expect(retry).not.toHaveBeenCalled();
     } finally {
       await test.dispose();
     }
