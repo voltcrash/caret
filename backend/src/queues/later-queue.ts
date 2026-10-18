@@ -57,7 +57,7 @@ class LaterQueue extends MonkeyQueue<LaterTask<LaterTaskType>> {
   async scheduleForNextWeek(
     taskName: LaterTaskType,
     taskId: string,
-    client: Client = "web",
+    _client: Client = "web",
   ): Promise<void> {
     const currentWeekTimestamp = getCurrentWeekTimestamp();
     const jobId = `${taskName}:${currentWeekTimestamp}:${taskId}`;
@@ -66,7 +66,6 @@ class LaterQueue extends MonkeyQueue<LaterTask<LaterTaskType>> {
       taskName,
       ctx: {
         lastWeekTimestamp: currentWeekTimestamp,
-        ...(client === "tui" ? { client } : {}),
       },
     };
 
@@ -83,7 +82,7 @@ class LaterQueue extends MonkeyQueue<LaterTask<LaterTaskType>> {
     taskName: LaterTaskType,
     taskId: string,
     modeRule: ValidModeRule,
-    client: Client = "web",
+    _client: Client = "web",
   ): Promise<void> {
     const currentDayTimestamp = getCurrentDayTimestamp();
     const jobId = `${taskName}:${currentDayTimestamp}:${taskId}`;
@@ -92,7 +91,6 @@ class LaterQueue extends MonkeyQueue<LaterTask<LaterTaskType>> {
       taskName,
       ctx: {
         modeRule,
-        ...(client === "tui" ? { client } : {}),
         yesterdayTimestamp: currentDayTimestamp,
       },
     };
