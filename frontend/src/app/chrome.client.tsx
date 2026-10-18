@@ -32,6 +32,7 @@ import * as ServerConfiguration from "../ts/states/server-configuration";
 import { isFixingSkillIssue } from "../ts/states/skill-issue";
 import { RouterNavigation } from "./navigation.client";
 import { preferencesReadiness } from "./readiness";
+import { isAppReady, isStartupFinished, setAppReady } from "./startup";
 
 /**
  * Browser half of the common layout: overlays, global hotkeys, body classes,
@@ -58,6 +59,14 @@ function ChromeRuntime(props: {
       get class() {
         return bodyClass(document.body.className);
       },
+      get style() {
+        return {
+          // Theme changes animate only once stored preferences are applied.
+          transition: isAppReady()
+            ? "background .25s, transform .05s"
+            : undefined,
+        };
+      },
     },
     false,
     true,
@@ -79,12 +88,19 @@ function ChromeRuntime(props: {
     void ServerConfiguration.sync().catch((error: unknown) =>
       console.error("Failed to synchronize server configuration", error),
     );
+    // Reveal the app even if preferences fail; a stuck cover hides the error.
     void preferencesReadiness()
       .wait()
+      .catch(() => undefined)
       .then(() => {
-        if (!disposed && getAcceptedCookies() === null) showModal("Cookies");
-      })
-      .catch(() => undefined);
+        if (!disposed) setAppReady(true);
+      });
+  });
+  let cookiePrompted = false;
+  createEffect(() => {
+    if (cookiePrompted || !isStartupFinished()) return;
+    cookiePrompted = true;
+    if (getAcceptedCookies() === null) showModal("Cookies");
   });
   return (
     <>

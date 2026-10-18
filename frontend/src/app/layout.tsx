@@ -11,17 +11,22 @@ import {
   type JSXElement,
   type ParentProps,
 } from "solid-js";
+import { isServer } from "solid-js/web";
 
 import {
   appClass,
+  appRevealClass,
   appStyle,
   scrollerClass,
   scrollerStyle,
 } from "../components/layout/scroller";
+import { StartupScreen } from "../components/layout/startup-screen";
 import { StaticHeader } from "../components/layout/static-header";
 import { LinkHost, RouterLink } from "../components/link-host";
 import { PageScrollHost } from "../components/page-scroll";
 import { TypingRouteHost } from "../components/typing-route-host";
+import { cn } from "../ts/utils/cn";
+import { isAppReady, isStartupFinished, setStartupFinished } from "./startup";
 
 const load = createClientOnlyFn(
   async () => (await import("./chrome.client")).chrome,
@@ -66,6 +71,9 @@ export function AppLayout(props: ParentProps): JSXElement {
   const [offsetTop, setOffsetTop] = createSignal(0);
   const [hidden, setHidden] = createSignal(false);
   const staticHeader = () => <StaticHeader fixed={fixed()} />;
+  // App state is browser-only; the server renders the startup screen.
+  const ready = () => !isServer && isAppReady();
+  const finished = () => !isServer && isStartupFinished();
   return (
     <PageScrollHost.Provider
       value={(position) => {
@@ -80,7 +88,7 @@ export function AppLayout(props: ParentProps): JSXElement {
         <LinkHost.Provider value={RouterLink}>
           <div
             id="app"
-            class={appClass}
+            class={cn(appClass, appRevealClass(ready()))}
             style={appStyle(offsetTop(), hidden())}
           >
             <ClientOnly fallback={staticHeader()}>
@@ -110,6 +118,12 @@ export function AppLayout(props: ParentProps): JSXElement {
               </Show>
             </div>
           </div>
+          <Show when={!finished()}>
+            <StartupScreen
+              leaving={ready()}
+              onFinished={() => setStartupFinished(true)}
+            />
+          </Show>
           <ClientOnly>
             <Suspense>
               <ChromeRuntime
