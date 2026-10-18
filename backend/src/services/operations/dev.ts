@@ -12,11 +12,9 @@ import MonkeyError from "../../utils/error";
 
 import { Mode, PersonalBest, PersonalBests } from "@oxytype/schemas/shared";
 import {
-  AddDebugInboxItemRequest,
   GenerateDataRequest,
   GenerateDataResponse,
 } from "@oxytype/contracts/dev";
-import { buildMonkeyMail } from "../../utils/monkey-mail";
 import { roundTo2 } from "@oxytype/util/numbers";
 import type { ServiceContext, OperationInput } from "../context";
 import { DBResult } from "../../utils/result";
@@ -45,38 +43,6 @@ export async function createTestData(
   await updateLeaderboard();
 
   return new MonkeyResponse("test data created", { uid, email });
-}
-
-export async function addDebugInboxItem(
-  context: ServiceContext,
-  input: OperationInput<undefined, AddDebugInboxItemRequest>,
-): Promise<MonkeyResponse> {
-  const { uid } = context.actor;
-  const { rewardType } = input.body;
-  const inboxConfig = context.configuration.users.inbox;
-
-  const rewards =
-    rewardType === "xp"
-      ? [{ type: "xp" as const, item: 1000 }]
-      : rewardType === "badge"
-        ? [{ type: "badge" as const, item: { id: 1 } }]
-        : [];
-
-  const body =
-    rewardType === "xp"
-      ? "Here is your 1000 XP reward for debugging."
-      : rewardType === "badge"
-        ? "Here is your Developer badge reward."
-        : "A debug inbox item with no reward.";
-
-  const mail = buildMonkeyMail({
-    subject: "Debug Inbox Item",
-    body,
-    rewards,
-  });
-
-  await UserDal.addToInbox(uid, [mail], inboxConfig);
-  return new MonkeyResponse("Debug inbox item added", null);
 }
 
 async function createTestResults(
