@@ -8,7 +8,6 @@ import type {
   LeaderboardEntry,
   DailyLeaderboardEntry,
 } from "@oxytype/schemas/leaderboards";
-import { clientBoard } from "../db/client-profile";
 import type { Client, Mode, Mode2 } from "@oxytype/schemas/shared";
 import { getCurrentDayTimestamp } from "@oxytype/util/date-and-time";
 import { statement, encode } from "../db/client";
@@ -33,10 +32,7 @@ export class DailyLeaderboard {
     this.modeRule = modeRule;
     this.customTime = customTime;
     this.client = client;
-    this.board = clientBoard(
-      `${modeRule.language}:${modeRule.mode}:${modeRule.mode2}`,
-      client,
-    );
+    this.board = `${modeRule.language}:${modeRule.mode}:${modeRule.mode2}`;
   }
   private period(): number {
     return this.customTime === -1 ? getCurrentDayTimestamp() : this.customTime;
@@ -144,17 +140,9 @@ export class DailyLeaderboard {
 export async function purgeUserFromDailyLeaderboards(
   uid: string,
   _config: Configuration["dailyLeaderboards"],
-  client?: Client,
+  _client?: Client,
 ): Promise<void> {
-  await stage(
-    statement(
-      "DELETE FROM daily_entries WHERE uid=? AND (? IS NULL OR (?='web' AND board NOT LIKE 'tui:%') OR (?='tui' AND board LIKE 'tui:%'))",
-      uid,
-      client ?? null,
-      client ?? null,
-      client ?? null,
-    ),
-  );
+  await stage(statement("DELETE FROM daily_entries WHERE uid=?", uid));
 }
 function isValidModeRule(
   modeRule: ValidModeRule,
