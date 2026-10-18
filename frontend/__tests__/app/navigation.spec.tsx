@@ -51,7 +51,7 @@ import { Link } from "../../src/ts/components/common/Link";
 
 function mount(
   path = "/",
-  aboutLoader?: () => Promise<void>,
+  loginLoader?: () => Promise<void>,
   suppliedHistory?: ReturnType<typeof createMemoryHistory>,
 ): ReturnType<typeof render> & {
   router: AnyRouter;
@@ -63,9 +63,9 @@ function mount(
       return (
         <LinkHost.Provider value={RouterLink}>
           <RouterNavigation />
-          <Link href="/about">about</Link>
+          <Link href="/login">login</Link>
           <Button href="/settings?tab=account" router-link text="settings" />
-          <Link href="/about" download="file.txt">
+          <Link href="/login" download="file.txt">
             download
           </Link>
           <output>{location().href}</output>
@@ -78,14 +78,14 @@ function mount(
     createRoute({
       getParentRoute: () => root,
       path: route,
-      loader: route === "/about" ? aboutLoader : undefined,
+      loader: route === "/login" ? loginLoader : undefined,
     });
   const history =
     suppliedHistory ?? createMemoryHistory({ initialEntries: [path] });
   const router = createRouter({
     routeTree: root.addChildren([
       page("/"),
-      page("/about"),
+      page("/login"),
       page("/settings"),
       page("/leaderboards"),
     ]),
@@ -110,13 +110,13 @@ describe("Router-owned navigation", () => {
   it("routes shared links and router-marked buttons through the Router", async () => {
     const { findByRole, getByText, router } = mount();
     await findByRole("status");
-    fireEvent.click(getByText("about"));
-    await waitFor(() => expect(router.state.location.pathname).toBe("/about"));
+    fireEvent.click(getByText("login"));
+    await waitFor(() => expect(router.state.location.pathname).toBe("/login"));
     fireEvent.click(getByText("settings"));
     await waitFor(() =>
       expect(router.state.location.href).toBe("/settings?tab=account"),
     );
-    expect(getByText("about")).not.toHaveClass("active");
+    expect(getByText("login")).not.toHaveClass("active");
   });
 
   it("leaves modified clicks and downloads native", async () => {
@@ -127,7 +127,7 @@ describe("Router-owned navigation", () => {
       cancelable: true,
       ctrlKey: true,
     });
-    fireEvent(getByText("about"), modified);
+    fireEvent(getByText("login"), modified);
     expect(modified.defaultPrevented).toBe(false);
     expect(getByText("download")).toHaveAttribute("download", "file.txt");
     expect(router.state.location.pathname).toBe("/");
@@ -137,26 +137,26 @@ describe("Router-owned navigation", () => {
     const { findByRole, getByText, router } = mount();
     await findByRole("status");
     state.calculating = true;
-    fireEvent.click(getByText("about"));
+    fireEvent.click(getByText("login"));
     await new Promise((resolve) => setTimeout(resolve, 20));
     expect(router.state.location.pathname).toBe("/");
     state.calculating = false;
-    fireEvent.click(getByText("about"));
-    await waitFor(() => expect(router.state.location.pathname).toBe("/about"));
+    fireEvent.click(getByText("login"));
+    await waitFor(() => expect(router.state.location.pathname).toBe("/login"));
   });
 
   it("lets forced imperative navigation skip restart checks but never no_quit", async () => {
     const { findByRole, router } = mount();
     await findByRole("status");
     state.restarting = true;
-    await navigate("/about");
+    await navigate("/login");
     expect(router.state.location.pathname).toBe("/");
-    await navigate("/about", { force: true });
-    expect(router.state.location.pathname).toBe("/about");
+    await navigate("/login", { force: true });
+    expect(router.state.location.pathname).toBe("/login");
     state.restarting = false;
     state.active = state.noQuit = true;
     await navigate("/leaderboards", { force: true });
-    expect(router.state.location.pathname).toBe("/about");
+    expect(router.state.location.pathname).toBe("/login");
     expect(state.notice).toHaveBeenCalledWith(
       "No quit funbox is active. Please finish the test.",
       { important: true },
@@ -164,14 +164,14 @@ describe("Router-owned navigation", () => {
   });
 
   it("replaces search without pushing history", async () => {
-    const { findByRole, router, history } = mount("/about");
+    const { findByRole, router, history } = mount("/login");
     await findByRole("status");
     await navigate("/leaderboards/");
     expect(router.state.location.pathname).toBe("/leaderboards");
     await replaceUrl("/leaderboards?page=2");
     expect(router.state.location.href).toBe("/leaderboards?page=2");
     history.back();
-    await waitFor(() => expect(router.state.location.pathname).toBe("/about"));
+    await waitFor(() => expect(router.state.location.pathname).toBe("/login"));
   });
 
   it("blocks browser history traversal during no_quit, then restores back/forward", async () => {
@@ -181,11 +181,11 @@ describe("Router-owned navigation", () => {
     try {
       const { findByRole, router } = mount("/settings", undefined, history);
       await findByRole("status");
-      await navigate("/about");
+      await navigate("/login");
       state.active = state.noQuit = true;
       history.back();
       await waitFor(() => expect(state.notice).toHaveBeenCalled());
-      expect(router.state.location.pathname).toBe("/about");
+      expect(router.state.location.pathname).toBe("/login");
       state.active = false;
       history.back();
       await waitFor(() =>
@@ -193,7 +193,7 @@ describe("Router-owned navigation", () => {
       );
       history.forward();
       await waitFor(() =>
-        expect(router.state.location.pathname).toBe("/about"),
+        expect(router.state.location.pathname).toBe("/login"),
       );
     } finally {
       cleanup();
@@ -209,7 +209,7 @@ describe("Router-owned navigation", () => {
     const loader = vi.fn(async () => await pending);
     const { findByRole, router } = mount("/", loader);
     await findByRole("status");
-    const first = navigate("/about");
+    const first = navigate("/login");
     await waitFor(() => expect(loader).toHaveBeenCalled());
     const last = navigate("/settings");
     await Promise.all([first, last]);
@@ -240,8 +240,8 @@ describe("Router-owned navigation", () => {
   it("normalizes imperative URLs and rejects other origins", () => {
     expect(navigationHref("")).toBe("/");
     expect(navigationHref("/profile/a/?x=1#h")).toBe("/profile/a?x=1#h");
-    expect(navigationHref(`${window.location.origin}/about`)).toBe("/about");
-    expect(() => navigationHref("https://example.com/about")).toThrow(
+    expect(navigationHref(`${window.location.origin}/login`)).toBe("/login");
+    expect(() => navigationHref("https://example.com/login")).toThrow(
       "same-origin",
     );
   });
