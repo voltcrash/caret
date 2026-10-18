@@ -19,14 +19,6 @@ export type Notification = {
   onDismiss?: (reason: "click" | "timeout" | "clear") => void;
 };
 
-export type NotificationHistoryEntry = {
-  id: string;
-  title: string;
-  message: MessageContent;
-  level: NotificationLevel;
-  details?: string | object;
-};
-
 let id = 0;
 const [notifications, setNotifications] = createAppStore<Notification[]>([]);
 const timers = createAppOwned(() => {
@@ -37,11 +29,6 @@ const timers = createAppOwned(() => {
   });
   return timers;
 });
-
-const [notificationHistory, setNotificationHistory] = createAppStore<
-  NotificationHistoryEntry[]
->([]);
-let historyId = 0;
 
 function addNotificationToStore(
   notification: Omit<Notification, "id">,
@@ -89,18 +76,8 @@ export function clearAllNotifications(): void {
   }
 }
 
-export const __testing = {
-  clearNotificationHistory(): void {
-    setNotificationHistory([]);
-  },
-};
-
 export function getNotifications(): Notification[] {
   return notifications;
-}
-
-export function getNotificationHistory(): NotificationHistoryEntry[] {
-  return notificationHistory;
 }
 
 export type AddNotificationOptions = Partial<
@@ -109,7 +86,6 @@ export type AddNotificationOptions = Partial<
     "important" | "durationMs" | "customTitle" | "customIcon" | "onDismiss"
   >
 > & {
-  details?: object | string;
   operation?: OperationResult<unknown>;
   error?: unknown;
 };
@@ -129,15 +105,8 @@ export function addNotificationWithLevel(
   level: NotificationLevel,
   options: AddNotificationOptions = {},
 ): number {
-  let details = options.details;
-
   if (options.operation !== undefined) {
     const result = options.operation;
-    details = {
-      status: result.status,
-      additionalDetails: options.details,
-      validationErrors: !result.ok ? result.validationErrors : undefined,
-    };
     message = updateLastLine(message, (line) => `${line}: ${result.message}`);
   }
 
@@ -146,24 +115,6 @@ export function addNotificationWithLevel(
       createErrorMessage(options.error, line),
     );
   }
-
-  const title =
-    options.customTitle ??
-    (level === "success" ? "Success" : level === "error" ? "Error" : "Notice");
-
-  setNotificationHistory((prev) => {
-    const next = [
-      ...prev,
-      {
-        id: (historyId++).toString(),
-        title,
-        message,
-        level,
-        details,
-      },
-    ];
-    return next.length > 25 ? next.slice(-25) : next;
-  });
 
   const durationMs = options.durationMs ?? (level === "error" ? 0 : 3000);
 
