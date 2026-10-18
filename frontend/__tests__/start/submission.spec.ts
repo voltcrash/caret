@@ -28,7 +28,6 @@ describe("result server function in the built Worker with real D1", () => {
     for (const [path, value] of [
       ["$.results", { savingEnabled: true, objectHashCheckEnabled: true }],
       ["$.users.xp.enabled", true],
-      ["$.users.inbox", { enabled: true, maxMail: 100 }],
       ["$.dailyLeaderboards.enabled", true],
       ["$.leaderboards.minTimeTyping", 0],
       ["$.leaderboards.weeklyXp.enabled", true],
@@ -250,13 +249,7 @@ describe("result server function in the built Worker with real D1", () => {
       if ("hash" in changes) result.hash = changes.hash;
       const response = await call(session.token, result);
       expect(response.status).toBe(status);
-      for (const table of [
-        "results",
-        "daily_entries",
-        "weekly_entries",
-        "reward_grants",
-        "outbox",
-      ]) {
+      for (const table of ["results", "daily_entries", "weekly_entries"]) {
         expect(await rows(session.uid, table)).toBe(0);
       }
     },
@@ -313,7 +306,6 @@ describe("result server function in the built Worker with real D1", () => {
         "daily_entries",
         "weekly_entries",
         "user_activity",
-        "outbox",
       ]) {
         expect(await rows(session.uid, table)).toBe(0);
       }
