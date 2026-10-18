@@ -66,7 +66,7 @@ export class WeeklyXpLeaderboard {
     );
     await LaterQueue.scheduleForNextWeek(
       "weekly-xp-leaderboard-results",
-      this.client === "web" ? "weekly" : "weekly:tui",
+      "weekly",
       this.client,
     );
     return (ahead ?? 0) + 1;
