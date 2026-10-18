@@ -19,9 +19,6 @@ const lazyModals = [
   lazyModal("Commandline", async () =>
     import("./Commandline").then((m) => m.Commandline),
   ),
-  lazyModal("VersionHistory", async () =>
-    import("./VersionHistoryModal").then((m) => m.VersionHistoryModal),
-  ),
   lazyModal("Contact", async () =>
     import("./ContactModal").then((m) => m.ContactModal),
   ),

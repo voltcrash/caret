@@ -1,7 +1,6 @@
 import { createAppStore } from "../../app/state";
 
 export type ModalId =
-  | "VersionHistory"
   | "Contact"
   | "Support"
   | "Commandline"
