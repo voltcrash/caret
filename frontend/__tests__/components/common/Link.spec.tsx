@@ -30,11 +30,11 @@ describe("Link", () => {
     ));
     const { container } = render(() => (
       <LinkHost.Provider value={host}>
-        <Link href="/about" class="text-main" />
+        <Link href="/login" class="text-main" />
       </LinkHost.Provider>
     ));
     expect(host).toHaveBeenCalledOnce();
-    expect(container.querySelector("b")).toHaveAttribute("data-href", "/about");
+    expect(container.querySelector("b")).toHaveAttribute("data-href", "/login");
     expect(container.querySelector("b")).toHaveClass("text-main");
   });
 });

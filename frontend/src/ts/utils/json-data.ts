@@ -104,12 +104,3 @@ export async function getCurrentLanguage(
 ): Promise<LanguageObject> {
   return await getLanguage(languageName);
 }
-
-/**
- * Fetches the list of contributors from the server.
- * @returns A promise that resolves to the list of contributors.
- */
-export async function getContributorsList(): Promise<string[]> {
-  const data = await fetchJson<string[]>("/contributors.json");
-  return data;
-}

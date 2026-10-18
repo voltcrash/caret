@@ -952,7 +952,7 @@
     "serviceOwner": "backend/src/services/operations/public.ts#getSpeedHistogram",
     "startAdapter": "frontend/src/functions/operations/public.ts",
     "httpLifetime": "retained external/operational protocol",
-    "firstPartyTransport": "Start server function",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "public",
       "authenticationOptions": {
@@ -967,9 +967,9 @@
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/data/public.ts"],
+    "browserCallers": [],
     "target": "retained server route over backend service",
-    "webTarget": "server function",
+    "webTarget": null,
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
     "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
@@ -981,7 +981,7 @@
     "serviceOwner": "backend/src/services/operations/public.ts#getTypingStats",
     "startAdapter": "frontend/src/functions/operations/public.ts",
     "httpLifetime": "retained external/operational protocol",
-    "firstPartyTransport": "Start server function",
+    "firstPartyTransport": null,
     "policy": {
       "openApiTags": "public",
       "authenticationOptions": {
@@ -996,9 +996,9 @@
       "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
-    "browserCallers": ["frontend/src/data/public.ts"],
+    "browserCallers": [],
     "target": "retained server route over backend service",
-    "webTarget": "server function",
+    "webTarget": null,
     "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
     "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },

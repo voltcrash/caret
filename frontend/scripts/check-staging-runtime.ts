@@ -29,7 +29,7 @@ async function main(): Promise<void> {
   const latency: number[] = [];
   for (const [path, expected] of [
     ["/", 200],
-    ["/about", 200],
+    ["/leaderboards", 200],
     ["/settings", 200],
     ["/login", 200],
     ["/account", 307],
@@ -59,7 +59,7 @@ async function main(): Promise<void> {
       `${path}: document/private response must not cache`,
     );
     const body = await response.text();
-    if (path === "/about") {
+    if (path === "/leaderboards") {
       requireCheck(
         body.includes("<noscript data-nosnippet>") &&
           body.includes('id="nocss"'),
@@ -179,14 +179,16 @@ async function main(): Promise<void> {
   // Keep provider URLs, cookie values and OAuth state out of evidence.
   for (let sample = 0; sample < 20; sample++) {
     const before = performance.now();
-    const response = await fetch(`${origin}/about`, { cache: "no-store" });
+    const response = await fetch(`${origin}/leaderboards`, {
+      cache: "no-store",
+    });
     requireCheck(response.status === 200, "SSR latency sample failed");
     await response.text();
     latency.push(performance.now() - before);
   }
   await writeFile(
     output,
-    `${JSON.stringify({ startedAt, finishedAt: new Date().toISOString(), origin, build: version, routes, assets: { checked: Object.keys(history.files).length, legacy: Object.keys(history.files).filter((path) => path.startsWith("/js/") || path.startsWith("/css/") || path.startsWith("/webfonts/")).length, allIntegrityChecksPass: true }, staleFunctionStatus: missing.status, csrfStatus: crossSite.status, oauth: { initiation: oauth.status, providerHost: redirect.hostname, callback: `${origin}/api/auth/callback/github`, secureHttpOnlyStateCookie: true, fullInteractiveSignIn: "separate browser acceptance" }, ssrNetworkWallMs: latency, latencyDefinition: "Hosted staging /about wall time from this host, including network/D1; not comparable to frozen local workerd CPU or browser budgets" }, null, 2)}\n`,
+    `${JSON.stringify({ startedAt, finishedAt: new Date().toISOString(), origin, build: version, routes, assets: { checked: Object.keys(history.files).length, legacy: Object.keys(history.files).filter((path) => path.startsWith("/js/") || path.startsWith("/css/") || path.startsWith("/webfonts/")).length, allIntegrityChecksPass: true }, staleFunctionStatus: missing.status, csrfStatus: crossSite.status, oauth: { initiation: oauth.status, providerHost: redirect.hostname, callback: `${origin}/api/auth/callback/github`, secureHttpOnlyStateCookie: true, fullInteractiveSignIn: "separate browser acceptance" }, ssrNetworkWallMs: latency, latencyDefinition: "Hosted staging /leaderboards wall time from this host, including network/D1; not comparable to frozen local workerd CPU or browser budgets" }, null, 2)}\n`,
   );
   console.log(
     `Staging ${version}: routes, ${Object.keys(history.files).length} assets, CSP, auth cookies and stale functions pass`,

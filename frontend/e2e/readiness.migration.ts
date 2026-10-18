@@ -21,7 +21,7 @@ test("repeated production cold/warm input and public route readiness", async ({
   await session.send("Network.setBypassServiceWorker", { bypass: true });
   const cold: number[] = [];
   const warm: number[] = [];
-  const about: number[] = [];
+  const settings: number[] = [];
   for (let sample = 0; sample < 10; sample++) {
     for (const [cacheDisabled, measurements] of [
       [true, cold],
@@ -42,17 +42,15 @@ test("repeated production cold/warm input and public route readiness", async ({
       await expect(word.locator("letter.correct")).toHaveCount(1);
       measurements.push(await page.evaluate(() => performance.now()));
     }
-    await page.goto("/about", { waitUntil: "domcontentloaded" });
+    await page.goto("/settings", { waitUntil: "domcontentloaded" });
     await expect(page.locator("#startupScreen")).toBeHidden();
-    await expect(
-      page.getByText("See contributor credits", { exact: true }),
-    ).toBeVisible();
-    about.push(await page.evaluate(() => performance.now()));
+    await expect(page.locator("#group_behavior")).toBeVisible();
+    settings.push(await page.evaluate(() => performance.now()));
   }
   const output = process.env["MIGRATION_BASELINE_OUTPUT"];
   if (output === undefined) throw new Error("Set MIGRATION_BASELINE_OUTPUT");
   await writeFile(
     output,
-    `${JSON.stringify({ fixture: "production assets, guest API fixtures, desktop Chromium, HTTP cache cold/warm, SW bypass", cold, warm, about }, null, 2)}\n`,
+    `${JSON.stringify({ fixture: "production assets, guest API fixtures, desktop Chromium, HTTP cache cold/warm, SW bypass", cold, warm, settings }, null, 2)}\n`,
   );
 });

@@ -29,7 +29,7 @@ test("leaderboard search owns board and page with replace-only updates", async (
       documents.push(request.url());
     }
   });
-  await page.goto("/about");
+  await page.goto("/profile");
   await page.getByRole("link", { name: "Leaderboards", exact: true }).click();
   // The loaded board is spelled out in the address bar, replacing the entry.
   await expect(page).toHaveURL(
@@ -45,7 +45,7 @@ test("leaderboard search owns board and page with replace-only updates", async (
   await expect(page.getByText("racer-51", { exact: true })).toBeVisible();
   expect(await page.evaluate(() => history.length)).toBe(length);
   await page.goBack();
-  await expect(page).toHaveURL(/\/about$/);
+  await expect(page).toHaveURL(/\/profile$/);
   expect(documents).toHaveLength(1);
 });
 

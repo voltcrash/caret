@@ -1,5 +1,3 @@
-import { roundTo2 } from "@oxytype/util/numbers";
-
 /**
  * Converts a value in rem units to pixels based on the root element's font size.
  * https://stackoverflow.com/questions/36532307/rem-px-in-javascript
@@ -8,57 +6,6 @@ import { roundTo2 } from "@oxytype/util/numbers";
  */
 export function convertRemToPixels(rem: number): number {
   return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
-}
-
-/**
- * Formats a number with spaces for thousands separator.
- * @param x The number to format.
- * @returns The formatted number as a string with spaces for thousands separator.
- */
-export function numberWithSpaces(x: number): string {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-}
-
-/**
- * Converts a number into a rounded form with its order of magnitude.
- * @param num The number to convert.
- * @returns An object containing the rounded number, rounded to 2 decimal places,
- * and the order of magnitude (e.g., thousand, million, billion).
- */
-export function getNumberWithMagnitude(num: number): {
-  rounded: number;
-  roundedTo2: number;
-  orderOfMagnitude: string;
-} {
-  const units = [
-    "",
-    "thousand",
-    "million",
-    "billion",
-    "trillion",
-    "quadrillion",
-    "quintillion",
-    "sextillion",
-    "septillion",
-    "octillion",
-    "nonillion",
-    "decillion",
-  ];
-  let unitIndex = 0;
-  let roundedNum = num;
-
-  while (roundedNum >= 1000) {
-    roundedNum /= 1000;
-    unitIndex++;
-  }
-
-  const unit = units[unitIndex] ?? "unknown";
-
-  return {
-    rounded: Math.round(roundedNum),
-    roundedTo2: roundTo2(roundedNum),
-    orderOfMagnitude: unit,
-  };
 }
 
 /**

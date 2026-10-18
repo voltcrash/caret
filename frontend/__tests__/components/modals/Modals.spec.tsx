@@ -1,8 +1,8 @@
 import { cleanup, render, screen, waitFor } from "@solidjs/testing-library";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
-const { contactMounts } = vi.hoisted(() => ({
-  contactMounts: vi.fn(),
+const { simpleMounts } = vi.hoisted(() => ({
+  simpleMounts: vi.fn(),
 }));
 vi.mock("../../../src/ts/components/modals/modal-triggers", () => ({
   useModalTriggers: () => undefined,
@@ -13,10 +13,10 @@ vi.mock("../../../src/ts/components/modals/Commandline", () => ({
 vi.mock("../../../src/ts/components/modals/CookiesModal", () => ({
   CookiesModal: () => <div data-testid="cookies" />,
 }));
-vi.mock("../../../src/ts/components/modals/ContactModal", () => ({
-  ContactModal: () => {
-    contactMounts();
-    return <div data-testid="contact" />;
+vi.mock("../../../src/ts/components/modals/SimpleModal", () => ({
+  SimpleModal: () => {
+    simpleMounts();
+    return <div data-testid="simple" />;
   },
 }));
 
@@ -26,7 +26,7 @@ import { hideModal, showModal } from "../../../src/ts/states/modals";
 describe("Modals", () => {
   afterEach(() => {
     cleanup();
-    hideModal("Contact");
+    hideModal("SimpleModal");
   });
 
   it("loads the command palette and other modals only on first open", async () => {
@@ -39,23 +39,23 @@ describe("Modals", () => {
       expect(screen.getByTestId("cookies")).toBeInTheDocument(),
     );
     hideModal("Cookies");
-    expect(screen.queryByTestId("contact")).not.toBeInTheDocument();
-    expect(contactMounts).not.toHaveBeenCalled();
+    expect(screen.queryByTestId("simple")).not.toBeInTheDocument();
+    expect(simpleMounts).not.toHaveBeenCalled();
 
     showModal("Commandline");
     await waitFor(() =>
       expect(screen.getByTestId("commandline")).toBeInTheDocument(),
     );
     hideModal("Commandline");
-    showModal("Contact");
+    showModal("SimpleModal");
 
     await waitFor(() =>
-      expect(screen.getByTestId("contact")).toBeInTheDocument(),
+      expect(screen.getByTestId("simple")).toBeInTheDocument(),
     );
 
     // stays mounted after closing so reopening is instant
-    hideModal("Contact");
-    expect(screen.getByTestId("contact")).toBeInTheDocument();
-    expect(contactMounts).toHaveBeenCalledTimes(1);
+    hideModal("SimpleModal");
+    expect(screen.getByTestId("simple")).toBeInTheDocument();
+    expect(simpleMounts).toHaveBeenCalledTimes(1);
   });
 });

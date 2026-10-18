@@ -10,12 +10,10 @@ test("leaving and returning discards an incomplete typing attempt", async ({
   await expect(
     page.locator("#words letter.correct, #words letter.incorrect"),
   ).toHaveCount(2);
-  await page.getByRole("link", { name: "About", exact: true }).click();
-  await expect(
-    page.getByText("See contributor credits", { exact: true }),
-  ).toBeVisible();
-  // Back can race the About route's loader, which has no DOM signal; retry
-  // until the typing route returns.
+  await page.getByRole("link", { name: "Settings", exact: true }).click();
+  await expect(page.locator("#group_behavior")).toBeVisible();
+  // Back can race route teardown, which has no DOM signal; retry until the
+  // typing route returns.
   await expect(async () => {
     if (new URL(page.url()).pathname !== "/") await page.goBack();
     await expect(page.locator("#words")).toBeVisible({ timeout: 1000 });

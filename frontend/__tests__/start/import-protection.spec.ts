@@ -41,7 +41,11 @@ async function buildWith(plugin: Plugin): Promise<unknown> {
 describe("Start import protection", () => {
   it("rejects a legacy browser store reached from server code", async () => {
     const error = await buildWith(
-      inject("ssr", "src/server/public.server.ts", "src/ts/states/core.ts"),
+      inject(
+        "ssr",
+        "src/server/leaderboards.server.ts",
+        "src/ts/states/core.ts",
+      ),
     );
     expect(String(error)).toContain("Import denied in server environment");
   });

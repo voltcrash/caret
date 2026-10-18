@@ -156,7 +156,11 @@ async function main(): Promise<void> {
       };
       for (const [key, name, data] of [
         ["/configuration", "configurationGet", {}],
-        ["/public/typingStats", "getTypingStats", undefined],
+        [
+          "/public/typingStats",
+          "publicGetTypingStats",
+          { query: { client: "web" } },
+        ],
         ["/users", "usersGet", { query: { client: "web" } }],
         [
           "/results?limit=1000",
@@ -195,14 +199,17 @@ async function main(): Promise<void> {
       const pid = workerdPid();
       const before = cpuMs(pid);
       for (let index = 0; index < 50; index++) {
-        await request("getTypingStats", undefined);
+        await request("publicGetTypingStats", { query: { client: "web" } });
       }
       cpu.push((cpuMs(pid) - before) / 50);
       for (let index = 0; index < 10; index++) {
         const before = performance.now();
-        const response = await worker.fetch("http://localhost:3000/about", {
-          headers: { "cf-connecting-ip": "192.0.2.42" },
-        });
+        const response = await worker.fetch(
+          "http://localhost:3000/leaderboards",
+          {
+            headers: { "cf-connecting-ip": "192.0.2.42" },
+          },
+        );
         if (response.status !== 200) throw new Error("SSR failed");
         await response.text();
         ssr.push(performance.now() - before);
@@ -217,7 +224,7 @@ async function main(): Promise<void> {
     .map((name) => readFileSync(resolve(directory, name)));
   writeFileSync(
     output,
-    `${JSON.stringify({ fixture: "Built Start Worker/local workerd; native RPC; fresh D1 per sample, same scoring/counting as Stage 0. CPU is local process CPU, never edge CPU. SSR is warm /about wall time; process startup excludes D1 setup.", workerModules: { raw: modules.reduce((sum, data) => sum + data.length, 0), gzip: modules.reduce((sum, data) => sum + gzipSync(data).length, 0) }, startup, save, cpuMsPerPublicRead: cpu, queries, ssr }, null, 2)}\n`,
+    `${JSON.stringify({ fixture: "Built Start Worker/local workerd; native RPC; fresh D1 per sample, same scoring/counting as Stage 0. CPU is local process CPU, never edge CPU. SSR is warm /leaderboards wall time; process startup excludes D1 setup.", workerModules: { raw: modules.reduce((sum, data) => sum + data.length, 0), gzip: modules.reduce((sum, data) => sum + gzipSync(data).length, 0) }, startup, save, cpuMsPerPublicRead: cpu, queries, ssr }, null, 2)}\n`,
   );
 }
 void main().catch((error: unknown) => {

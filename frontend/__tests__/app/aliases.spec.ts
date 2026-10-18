@@ -11,7 +11,7 @@ describe("legacy URL aliases", () => {
       canonicalHref({ pathname: "/oauth-callback/", searchStr: "", hash: "" }),
     ).toBe("/oauth-callback.html");
     expect(
-      canonicalHref({ pathname: "/about", searchStr: "", hash: "" }),
+      canonicalHref({ pathname: "/leaderboards", searchStr: "", hash: "" }),
     ).toBeUndefined();
   });
 

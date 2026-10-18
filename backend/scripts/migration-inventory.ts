@@ -74,8 +74,6 @@ export function inventory(): object[] {
   }
   // Native SSR/browser factories also invoke dedicated, already-migrated functions.
   const nativeFactories: Record<string, string[]> = {
-    "public.getTypingStats": ["frontend/src/data/public.ts"],
-    "public.getSpeedHistogram": ["frontend/src/data/public.ts"],
     "users.getProfile": ["frontend/src/data/profile.ts"],
     "users.create": ["frontend/src/features/auth/actions.client.ts"],
     ...Object.fromEntries(
