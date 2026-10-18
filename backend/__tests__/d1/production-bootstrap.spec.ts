@@ -83,14 +83,14 @@ describe("fresh production bootstrap on D1", () => {
     ).toBeNull();
   });
 
-  it("refuses pending deliveries without discarding them", async () => {
+  it("refuses pending quote submissions without discarding them", async () => {
     await test.env.DB.prepare(
-      "INSERT INTO outbox (id,type,created_at,data) VALUES ('pending','reward',0,'{}')",
+      "INSERT INTO quote_submissions (id,language,submitted_by,timestamp,data) VALUES ('pending','english','submitter',0,'{}')",
     ).run();
     await expect(test.env.DB.prepare(sql).run()).rejects.toThrow(/NOT NULL/);
-    expect(await test.env.DB.prepare("SELECT id FROM outbox").first("id")).toBe(
-      "pending",
-    );
+    expect(
+      await test.env.DB.prepare("SELECT id FROM quote_submissions").first("id"),
+    ).toBe("pending");
     expect(
       await test.env.DB.prepare("SELECT * FROM configuration").first(),
     ).toBeNull();
