@@ -25,7 +25,7 @@ export function getTimingFingerprint(
 export function timingFingerprint(
   keySpacing: number[],
   keyDuration: number[],
-  client: CompletedEvent["client"],
+  _client: CompletedEvent["client"],
 ): string | undefined {
   const gaps = keySpacing.map(Math.round);
   if (
@@ -34,9 +34,5 @@ export function timingFingerprint(
   ) {
     return undefined;
   }
-  // Traditional terminals report presses, without trustworthy release times.
-  return objectHash([
-    gaps,
-    client === "tui" ? [] : keyDuration.map(Math.round),
-  ]);
+  return objectHash([gaps, keyDuration.map(Math.round)]);
 }
