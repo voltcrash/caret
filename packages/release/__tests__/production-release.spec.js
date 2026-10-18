@@ -345,7 +345,7 @@ it("runs backend and release CI when the production workflow changes", () => {
   }
 });
 
-it("wires scheduled/manual production deployment before publication and always cleans credentials", () => {
+it("wires manual-only production deployment before publication and always cleans credentials", () => {
   const path = fileURLToPath(
     new URL(
       "../../../.github/workflows/production-release.yml",
@@ -354,8 +354,7 @@ it("wires scheduled/manual production deployment before publication and always c
   );
   const workflow = parse(readFileSync(path, "utf8"));
   expect(workflow.name).toBe("Production release");
-  expect(workflow.on.schedule).toEqual([{ cron: "17 0 * * *" }]);
-  expect(workflow.on).toHaveProperty("workflow_dispatch");
+  expect(Object.keys(workflow.on)).toEqual(["workflow_dispatch"]);
   expect(workflow.concurrency["cancel-in-progress"]).toBe(false);
   const job = workflow.jobs.release;
   expect(job.if).toContain("github.ref == 'refs/heads/main'");
