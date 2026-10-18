@@ -9,7 +9,6 @@ import { OperationError } from "../../data/operation-result";
 import { operationData } from "../../data/operations";
 import { getQueryClient } from "../../ts/queries";
 import { addBanner } from "../../ts/states/banners";
-import { setPsas, type AlertPsa } from "../../ts/states/psas";
 import { secondsToString } from "../../ts/utils/date-and-time";
 import { isDevEnvironment } from "../../ts/utils/env";
 import { LocalStorageWithSchema } from "../../ts/utils/local-storage-with-schema";
@@ -72,7 +71,7 @@ async function getLatest(): Promise<PSA[] | null> {
 }
 
 /**
- * Fetches announcements, lists them in alerts and banners unconfirmed ones.
+ * Fetches announcements and banners unconfirmed ones.
  * `bannered` holds IDs already shown by this runtime, so refetching after an
  * account change never stacks a second banner.
  */
@@ -80,12 +79,10 @@ export async function showPsas(bannered: Set<string>): Promise<void> {
   const latest = await getLatest();
   if (latest === null) return;
   if (latest.length === 0) {
-    setPsas([]);
     clearMemory();
     return;
   }
   const localmemory = getMemory();
-  const alerts: AlertPsa[] = [];
   latest.forEach((item) => {
     const psa = { ...item };
     if (isSafeNumber(psa.date)) {
@@ -109,8 +106,6 @@ export async function showPsas(bannered: Set<string>): Promise<void> {
         format(dateObj, "dd MMM yyyy HH:mm"),
       );
     }
-
-    alerts.push({ message: psa.message, level: psa.level ?? -1 });
 
     if (localmemory.includes(psa._id) && !(psa.sticky ?? false)) {
       return;
@@ -137,5 +132,4 @@ export async function showPsas(bannered: Set<string>): Promise<void> {
       },
     });
   });
-  setPsas(alerts);
 }
