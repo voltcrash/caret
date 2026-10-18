@@ -31,7 +31,7 @@ export async function addResult(
   uid: string,
   result: DBResult,
 ): Promise<{ insertedId: string }> {
-  // Existence only; the full user (with inbox) is already loaded by callers.
+  // Existence only; the full user is already loaded by callers.
   if (!(await exists(uid))) {
     throw new MonkeyError(404, "User not found", "add result");
   }
