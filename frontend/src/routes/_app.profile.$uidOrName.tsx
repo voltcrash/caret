@@ -68,19 +68,11 @@ function Missing(): JSXElement {
 function Profile(): JSXElement {
   const params = Route.useParams();
   const search = Route.useSearch();
-  const navigate = Route.useNavigate();
   return (
     <div class="page pageProfile" id="pageProfile">
       <ProfilePage
         uidOrName={params().uidOrName}
         client={search().client ?? "web"}
-        onClient={(client) =>
-          void navigate({
-            search: (previous) => ({ ...previous, client }),
-            replace: true,
-            resetScroll: false,
-          })
-        }
       />
     </div>
   );
