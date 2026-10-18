@@ -59,7 +59,6 @@ export default {
       entry: [
         "src/production-validation.js",
         "src/terminal-release.js",
-        "src/renumber-releases-cli.js",
         "__tests__/*.spec.js",
       ],
     },
