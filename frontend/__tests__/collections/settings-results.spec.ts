@@ -149,8 +149,8 @@ it("uses the first selected date filter and retains client selection", () => {
       last_month: false,
       last_3months: false,
     };
-    expect(createResultsQueryState(filters, "tui")).toMatchObject({
-      client: "tui",
+    expect(createResultsQueryState(filters, "web")).toMatchObject({
+      client: "web",
       timestamp: 1_000_000_000 - 86_400_000,
     });
   } finally {
