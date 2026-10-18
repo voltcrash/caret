@@ -74,13 +74,13 @@ describe("web operation client", () => {
     account.setActor("a");
     let finish!: () => void;
     mockOperation(
-      "users.getInbox",
+      "users.getCustomThemes",
       async () =>
         await new Promise((resolve) => {
-          finish = () => resolve(ok({ inbox: [] }));
+          finish = () => resolve(ok([]));
         }),
     );
-    const pending = operation("users.getInbox");
+    const pending = operation("users.getCustomThemes");
     await expect.poll(() => operationCalls.mock.calls.length).toBe(1);
     account.setActor("b");
     finish();
