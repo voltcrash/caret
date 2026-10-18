@@ -21,7 +21,7 @@ export function buildCacheName(buildId: string): string {
 }
 
 export type Strategy =
-  /** Not handled: the browser performs its normal network request. */
+  /** Network only; navigations reuse preload, with no cache/offline fallback. */
   | "bypass"
   /** Network only, never cached; offline falls back to shell/offline page. */
   | "navigate"
