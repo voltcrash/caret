@@ -3,6 +3,9 @@ import { onCleanup } from "solid-js";
 import { createAppOwned } from "../app/application";
 import { googleSignUpEvent } from "./events/google-sign-up";
 import { operation } from "../data/operations";
+import type { SessionState } from "@oxytype/schemas/auth-session";
+import { sessionKey } from "../features/auth/session";
+import { getQueryClient } from "./queries";
 
 import { getAuthClient } from "../features/auth/client.client";
 export { getAuthClient };
@@ -81,6 +84,13 @@ export async function signOut(): Promise<void> {
     await getAuthClient().signOut({ fetchOptions: { signal: lease.signal } }),
   );
   if (!lease.isCurrent()) return;
+  const client = getQueryClient();
+  await client.cancelQueries({ queryKey: sessionKey });
+  if (!lease.isCurrent()) return;
+  // The session owner must see the guest state before account data is disposed.
+  client.setQueryData<SessionState>(sessionKey, (session) =>
+    session === undefined ? session : { ...session, user: null },
+  );
   setUserState(null);
 }
 export async function updateProfile(name: string): Promise<void> {
