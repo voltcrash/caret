@@ -1,0 +1,72 @@
+{
+  "recordedAt": "2026-10-18T06:37:22Z",
+  "source": "7fc6c3e10",
+  "scope": "Manual production deployment without numbered website releases or home-page release UI",
+  "workflow": {
+    "file": ".github/workflows/production-release.yml",
+    "trigger": "workflow_dispatch on main only",
+    "repeatDispatch": "Always builds and deploys, including an unchanged source commit",
+    "permissions": {
+      "contents": "read",
+      "actions": "read"
+    },
+    "validation": "Latest successful main-push Oxytype CI run for the exact workflow snapshot",
+    "buildId": "Source SHA + workflow run ID + run attempt; internal cache/diagnostic identity",
+    "deployment": "Matched client/Worker build, artifact checks, compatible D1 migrations, Wrangler deployment",
+    "removed": [
+      "Release planning and version allocation",
+      "GitHub publication and tags",
+      "Changelogs and release-history snapshots",
+      "Package-version edits",
+      "Release artifact uploads",
+      "START_PRODUCTION_ENABLED gate"
+    ],
+    "privateSettings": "Ephemeral runner files mode 0600; removed on success or failure",
+    "productionDeploymentPerformed": false
+  },
+  "validation": {
+    "helperTests": {
+      "production-deployment.spec.js": 4,
+      "production-validation.spec.js": 15,
+      "ci-routing.spec.js": 13,
+      "terminal-release.spec.js": 5,
+      "version.spec.js": 4
+    },
+    "frontendTests": {
+      "app/browser-runtime.spec.tsx": 1,
+      "utils/json-data.spec.ts": 2,
+      "components/modals/Modals.spec.tsx": 1,
+      "vite-plugins/build-id.spec.ts": 8,
+      "scripts/production-build.spec.ts": 10,
+      "scripts/production-artifact.spec.ts": 6,
+      "sw/policy.spec.ts": 39
+    },
+    "workerd": {
+      "start/service-worker-build.spec.ts": 5
+    },
+    "browser": {
+      "start-e2e/auth.spec.ts + start-e2e/offline.spec.ts": 8
+    },
+    "builds": ["build:start", "build:start:test"],
+    "dryRun": "dry-run:start (local generated Worker config; no deployment)",
+    "frontendLintAndTypecheck": "pass",
+    "helperLintAndTypecheck": "pass",
+    "formatting": "pass",
+    "unusedCode": "pass",
+    "diffWhitespace": "pass",
+    "regression": "Deployment-only workflow assertions fail on the prior numbered-release workflow, pass after replacement"
+  },
+  "browserInspection": {
+    "tool": "T3 collaborative browser",
+    "build": "2026.10.18_12.05_7fc6c3e10",
+    "appFailure": false,
+    "footer": "tab > enter\n- restart test\nctrl + k\n or \nctrl + shift + p\n- command palette\nserika dark",
+    "footerButtons": ["serika dark"],
+    "releaseRequests": 0,
+    "releaseUi": false,
+    "retiredReleaseStatus": 404,
+    "url": "http://127.0.0.1:4185/",
+    "words": 100,
+    "note": "Inspected the newly rebuilt dist/start artifact; prior-artifact browser results excluded"
+  }
+}
