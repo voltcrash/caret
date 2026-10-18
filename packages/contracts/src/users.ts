@@ -14,8 +14,6 @@ import {
   CustomThemeNameSchema,
   CustomThemeSchema,
   FavoriteQuotesSchema,
-  MonkeyMailSchema,
-  MailIdSchema,
   ResultFiltersSchema,
   StreakHourOffsetSchema,
   TagNameSchema,
@@ -41,11 +39,7 @@ import { IdSchema, StringNumberSchema } from "@oxytype/schemas/util";
 import { LanguageSchema } from "@oxytype/schemas/languages";
 import { CustomThemeColorsSchema } from "@oxytype/schemas/configs";
 
-export const GetUserResponseSchema = responseWithData(
-  UserSchema.extend({
-    inboxUnreadSize: z.number().int().nonnegative(),
-  }),
-);
+export const GetUserResponseSchema = responseWithData(UserSchema);
 export type GetUserResponse = z.infer<typeof GetUserResponseSchema>;
 
 export const CreateUserRequestSchema = z.object({
@@ -245,22 +239,6 @@ export const UpdateUserProfileResponseSchema = responseWithData(
 );
 export type UpdateUserProfileResponse = z.infer<
   typeof UpdateUserProfileResponseSchema
->;
-
-export const GetUserInboxResponseSchema = responseWithData(
-  z.object({
-    inbox: z.array(MonkeyMailSchema),
-    maxMail: z.number().int(),
-  }),
-);
-export type GetUserInboxResponse = z.infer<typeof GetUserInboxResponseSchema>;
-
-export const UpdateUserInboxRequestSchema = z.object({
-  mailIdsToDelete: z.array(MailIdSchema).min(1).optional(),
-  mailIdsToMarkRead: z.array(MailIdSchema).min(1).optional(),
-});
-export type UpdateUserInboxRequest = z.infer<
-  typeof UpdateUserInboxRequestSchema
 >;
 
 export { ReportUserCommentSchema };
@@ -694,39 +672,6 @@ export const usersContract = c.router(
         requireConfiguration: {
           path: "users.profiles.enabled",
           invalidMessage: "Profiles are not available at this time",
-        },
-      }),
-    },
-    getInbox: {
-      summary: "get inbox",
-      description: "Gets the user's inbox",
-      method: "GET",
-      path: "/inbox",
-      responses: {
-        200: GetUserInboxResponseSchema,
-      },
-      metadata: meta({
-        rateLimit: "userMailGet",
-        requireConfiguration: {
-          path: "users.inbox.enabled",
-          invalidMessage: "Your inbox is not available at this time.",
-        },
-      }),
-    },
-    updateInbox: {
-      summary: "update inbox",
-      description: "Updates the user's inbox",
-      method: "PATCH",
-      body: UpdateUserInboxRequestSchema.strict(),
-      path: "/inbox",
-      responses: {
-        200: MonkeyResponseSchema,
-      },
-      metadata: meta({
-        rateLimit: "userMailUpdate",
-        requireConfiguration: {
-          path: "users.inbox.enabled",
-          invalidMessage: "Your inbox is not available at this time.",
         },
       }),
     },
