@@ -11,7 +11,7 @@ changes.
 | --- | --- |
 | 8.1 Delete superseded code, document the system | Complete |
 | 8.2 Migration acceptance gate | Complete: local gate + all 12 CI checks on `200f0a710` ([validation](evidence/stage-8-validation.json), [run](https://github.com/voltcrash/oxytype/actions/runs/39099769261)) |
-| 8.3 Release, observe, retire compatibility | In progress: stack merged, main CI green, human staging acceptance passed; auth fixes #146 awaiting merge; production pending |
+| 8.3 Release, observe, retire compatibility | In progress: human staging acceptance passed; auth fixes #146 merged; deployment-only follow-up #147 pending; production pending |
 
 ## 8.1 Deleted
 
@@ -137,14 +137,21 @@ Production was re-observed on October 18: version
 `a59fe11e-0e88-4483-a837-0b65ef3c7212` still serves the October 16 legacy build,
 source `d6e5be3e9`, now tagged `v26.10.11`. This newer matched Worker/assets
 version supersedes the dated October 15 rollback anchor for the upcoming cutover.
-Production remains gated; no production deployment was performed.
+No production deployment was performed. The deployment-only follow-up removes
+numbered releases, GitHub publication and the home-page version/history UI.
+Its manual workflow validates main CI and deploys on every dispatch, including
+repeat deployments of the same snapshot. Internal build IDs and the retained
+Cloudflare Worker/assets rollback version remain available. [#147](https://github.com/voltcrash/oxytype/pull/147)
+records the deployment-only change and its [validation](evidence/deployment-only.json).
+All eleven GitHub release records were deleted on October 18; Git source tags
+remain available. #146 passed all applicable CI checks and was merged with the
+regular merge commit `9e69d569a`.
 
 ## Remaining before Stage 8 exit
 
-- Merge #146 after CI passes; the production workflow runs only on `main`.
-- Releases are manual-only with `YY.MM.NN` numbers (#144); the rollback anchor
-  `v26.10.15` is `v26.10.10` after renumbering (same commit `e9bb89fe7`).
-- Set `START_PRODUCTION_ENABLED=true`, dispatch the release workflow, observe
+- Merge #147 after CI passes, using a regular merge commit; the production
+  workflow runs only on `main`.
+- Manually dispatch the production deployment workflow when ready, then observe
   launch signals (input readiness, auth/session failures, save success and
   duplicates, Worker errors/CPU, queue/DLQ, route errors, version skew).
 - Keep the 47 old-tab HTTP transports and the service worker's rollback-asset

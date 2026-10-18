@@ -5,7 +5,7 @@ const buildIdPattern = /^[\w.-]{1,64}$/;
 
 /**
  * One identifier for every file of a build: client bundles, the Worker,
- * `/version.json`, service-worker caches and error reports. Release tooling
+ * `/version.json`, service-worker caches and error reports. Deployment tooling
  * may supply `OXYTYPE_BUILD_ID`; otherwise the existing timestamp+commit stamp.
  */
 export function resolveBuildId(

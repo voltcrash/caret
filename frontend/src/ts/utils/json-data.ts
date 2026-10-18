@@ -113,24 +113,3 @@ export async function getContributorsList(): Promise<string[]> {
   const data = await fetchJson<string[]>("/contributors.json");
   return data;
 }
-
-export type Release = {
-  tag_name: string;
-  name: string;
-  published_at: string;
-  body: string;
-};
-
-/** Fetches the latest ten public releases bundled with the site. */
-export async function getReleaseHistory(): Promise<Release[]> {
-  return fetchJson<Release[]>("/release.json");
-}
-
-/** Fetches the latest release name from the same snapshot as the history. */
-export async function getLatestRelease(): Promise<string> {
-  const releases = await getReleaseHistory();
-  if (releases[0]?.name === undefined) {
-    throw new Error("No release found");
-  }
-  return releases[0].name;
-}

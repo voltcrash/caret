@@ -128,7 +128,7 @@ runtime dependency with optional native binaries. No workspace packages or
 Solid preload/bunfig are needed by the installed app.
 
 The main-only `tui-release.yml` workflow validates and publishes through
-`packages/release`. npm uses unpadded date semver (`26.10.4`); production tags
-retain padded dates (`v26.10.04`). Publication setup is in the terminal guide.
+`packages/release`. npm uses unpadded date semver (`26.10.4`), independently of
+the website's unnumbered deployments. Publication setup is in the terminal guide.
 
 Terminal gaps and approximations are tracked in [MISSING.md](MISSING.md).

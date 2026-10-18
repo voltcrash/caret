@@ -1,0 +1,137 @@
+{
+  "recordedAt": "2026-10-18T06:37:22Z",
+  "source": "7fc6c3e10",
+  "scope": "Manual production deployment without numbered website releases or home-page release UI",
+  "workflow": {
+    "file": ".github/workflows/production-release.yml",
+    "trigger": "workflow_dispatch on main only",
+    "repeatDispatch": "Always builds and deploys, including an unchanged source commit",
+    "permissions": {
+      "contents": "read",
+      "actions": "read"
+    },
+    "validation": "Latest successful main-push Oxytype CI run for the exact workflow snapshot",
+    "buildId": "Source SHA + workflow run ID + run attempt; internal cache/diagnostic identity",
+    "deployment": "Matched client/Worker build, artifact checks, compatible D1 migrations, Wrangler deployment",
+    "removed": [
+      "Release planning and version allocation",
+      "GitHub publication and tags",
+      "Changelogs and release-history snapshots",
+      "Package-version edits",
+      "Release artifact uploads",
+      "START_PRODUCTION_ENABLED gate"
+    ],
+    "privateSettings": "Ephemeral runner files mode 0600; removed on success or failure",
+    "productionDeploymentPerformed": false
+  },
+  "validation": {
+    "helperTests": {
+      "production-deployment.spec.js": 4,
+      "production-validation.spec.js": 15,
+      "ci-routing.spec.js": 13,
+      "terminal-release.spec.js": 5,
+      "version.spec.js": 4
+    },
+    "frontendTests": {
+      "app/browser-runtime.spec.tsx": 1,
+      "utils/json-data.spec.ts": 2,
+      "components/modals/Modals.spec.tsx": 1,
+      "vite-plugins/build-id.spec.ts": 8,
+      "scripts/production-build.spec.ts": 10,
+      "scripts/production-artifact.spec.ts": 6,
+      "sw/policy.spec.ts": 39
+    },
+    "workerd": {
+      "start/service-worker-build.spec.ts": 5
+    },
+    "browser": {
+      "start-e2e/auth.spec.ts + start-e2e/offline.spec.ts": 8
+    },
+    "builds": ["build:start", "build:start:test"],
+    "dryRun": "dry-run:start (local generated Worker config; no deployment)",
+    "frontendLintAndTypecheck": "pass",
+    "helperLintAndTypecheck": "pass",
+    "formatting": "pass",
+    "unusedCode": "pass",
+    "diffWhitespace": "pass",
+    "regression": "Deployment-only workflow assertions fail on the prior numbered-release workflow, pass after replacement"
+  },
+  "browserInspection": {
+    "tool": "T3 collaborative browser",
+    "build": "2026.10.18_12.05_7fc6c3e10",
+    "appFailure": false,
+    "footer": "tab > enter\n- restart test\nctrl + k\n or \nctrl + shift + p\n- command palette\nserika dark",
+    "footerButtons": ["serika dark"],
+    "releaseRequests": 0,
+    "releaseUi": false,
+    "retiredReleaseStatus": 404,
+    "url": "http://127.0.0.1:4185/",
+    "words": 100,
+    "note": "Inspected the newly rebuilt dist/start artifact; prior-artifact browser results excluded"
+  },
+  "releaseCleanup": {
+    "recordedAt": "2026-10-18T06:38:52Z",
+    "repository": "voltcrash/oxytype",
+    "removed": [
+      {
+        "id": 414544433,
+        "tag": "v26.10.11",
+        "source": "d6e5be3e920e30051ce83c8947ac1225cd053488"
+      },
+      {
+        "id": 413429131,
+        "tag": "v26.10.10",
+        "source": "e9bb89fe72b7af4f3078d821277dd38cad482a26"
+      },
+      {
+        "id": 412353467,
+        "tag": "v26.10.09",
+        "source": "6b33b2c5612f80fd104371f319f04c83dfa7ba7e"
+      },
+      {
+        "id": 410241942,
+        "tag": "v26.10.08",
+        "source": "b4458a79183ff79e9f621da2097225e05b2be2be"
+      },
+      {
+        "id": 409454779,
+        "tag": "v26.10.07",
+        "source": "cd56e06b8179057cc98e355bba52c6173af78e26"
+      },
+      {
+        "id": 408131373,
+        "tag": "v26.10.06",
+        "source": "df2100164233422e9c81ec3ced5cc10d1baab27c"
+      },
+      {
+        "id": 406480834,
+        "tag": "v26.10.05",
+        "source": "624ece6689db858e935f450f72295de71684187d"
+      },
+      {
+        "id": 405431460,
+        "tag": "v26.10.04",
+        "source": "ce17dadd6c917bfd23b10aa7bfa270cd8ba70ee1"
+      },
+      {
+        "id": 404271764,
+        "tag": "v26.10.03",
+        "source": "b6cfe79ab241b478fafc47dff43a217e464e717b"
+      },
+      {
+        "id": 403318450,
+        "tag": "v26.10.02",
+        "source": "f0aafa3f31c0e40423384be80c9f747ab532c6fc"
+      },
+      {
+        "id": 403015536,
+        "tag": "v26.10.01",
+        "source": "0abb1c2941928b6ed11583ab4d43ed826120f26f"
+      }
+    ],
+    "remainingGitHubReleases": 0,
+    "verification": "gh release list --limit 100 --json tagName,name,isDraft,isPrerelease returned []",
+    "gitTags": "Retained; no new tags are created by the production deployment workflow",
+    "productionDeploymentPerformed": false
+  }
+}

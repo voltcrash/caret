@@ -54,7 +54,6 @@ describe("built Start service worker", () => {
     it.each([
       ["/sw.js", "no-cache"],
       ["/version.json", "no-cache"],
-      ["/release.json", "no-store"],
     ])("revalidates %s instead of caching it", async (path, policy) => {
       const response = await mf.dispatchFetch(`http://localhost:3000${path}`);
       expect(response.status).toBe(200);

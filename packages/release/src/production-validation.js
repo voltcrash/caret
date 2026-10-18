@@ -1,7 +1,9 @@
 /** Require the latest main-push CI result for the exact deployment snapshot. */
 export async function requireSuccessfulProductionCI({ github, context, sha }) {
   if (sha !== context.sha) {
-    throw new Error("CI validation must match the release workflow's commit");
+    throw new Error(
+      "CI validation must match the deployment workflow's commit",
+    );
   }
   const { data } = await github.rest.actions.listWorkflowRuns({
     ...context.repo,

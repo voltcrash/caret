@@ -22,7 +22,7 @@ Paths below are repo-relative. Start route names refer to the target architectur
 | Trailing slash, encoded profile ID, hashes | Router + `api/path.ts` case/path normalization; Worker rejects encoded separators/dot escape | validated Router params/search + server-route normalization | navigation/path HTTP tests; preserve malformed URL rejection |
 | External/modified/download links | `Link`, router-marked buttons, LinkPrefetch + global events | Router links and native anchors | keyboard/back/forward/modifier/accessibility; delete custom prefetch Stage 4 |
 | Downloads | client-generated results CSV, settings JSON, saved text, event log and screenshot; static language/quote/font/theme assets | feature-owned client download/canvas; public static assets | existing modal/screenshot checks; no invented HTTP download endpoint |
-| Release/version/PWA | `/version.json`, `/release.json`, `/manifest.json`, `/sw.js`; `AppEffects`, Vite PWA | Start build + owned browser runtime, Stage 7 worker | no private response caching; release assets NetworkOnly |
+| Build/PWA | `/version.json`, `/release.json`, `/manifest.json`, `/sw.js`; `AppEffects`, Vite PWA | Start build + owned browser runtime, Stage 7 worker; release UI and snapshot removed | no private response caching; build IDs support caches/diagnostics; retired release metadata stays network-only for old tabs |
 | Static fallbacks | `src/html/warnings.html` noscript + `#nocss` | root document preserving static source | must work before hydration/without scripts or CSS |
 | Overlays/commands/preferences | global modal/toast signals, component refs, stored config | root UI/preferences providers | modals/commandline/a11y tests; dispose subscriptions/restore focus |
 

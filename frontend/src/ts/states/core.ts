@@ -5,14 +5,6 @@ import { showModal } from "./modals";
 import { Formatting } from "../utils/format";
 import { getConfig } from "../config/store";
 
-export const [getVersion, setVersion] = createAppSignal<{
-  text: string;
-  isNew: boolean;
-}>({
-  text: "",
-  isNew: false,
-});
-
 export const [getThemeIndicator, setThemeIndicator] = createAppSignal<{
   /**
    * human readable display name, this is not the ThemeName.

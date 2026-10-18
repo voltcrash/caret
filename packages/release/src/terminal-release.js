@@ -4,7 +4,7 @@ import { join } from "node:path";
 
 import { getDateVersion } from "./version.js";
 
-/** npm semver rejects the zero-padded month/day used by production tags. */
+/** Normalize the UTC date to the unpadded semver required by npm. */
 export function getTerminalVersion(value = getDateVersion()) {
   const match =
     /^v?(\d{2})\.(\d{1,2})\.(\d{1,2})(-(?:alpha|beta|rc)\.[1-9]\d*)?$/.exec(

@@ -11,8 +11,6 @@ const state = vi.hoisted(() => ({
   activate: vi.fn(),
   deactivate: vi.fn(),
   disposeSentry: vi.fn(),
-  version: vi.fn(),
-  setVersion: vi.fn(),
   theme: vi.fn(),
 }));
 vi.mock("../../src/app/browser-integrity", () => ({ lockMath: vi.fn() }));
@@ -48,10 +46,6 @@ vi.mock("../../src/ts/utils/logger", () => ({
   },
   toggleDebugLogs: vi.fn(),
 }));
-vi.mock("../../src/ts/utils/version", () => ({
-  fetchLatestVersion: state.version,
-}));
-vi.mock("../../src/ts/states/core", () => ({ setVersion: state.setVersion }));
 
 import BrowserRuntime from "../../src/app/platform-runtime.client";
 import { configEvent } from "../../src/ts/events/config";
@@ -61,11 +55,7 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
-it("mounts without waiting for preferences/history and releases integrations before remount", async () => {
-  const completions: ((value: { text: string; isNew: boolean }) => void)[] = [];
-  state.version.mockImplementation(
-    async () => new Promise((resolve) => completions.push(resolve)),
-  );
+it("mounts without waiting for preferences and releases integrations before remount", () => {
   for (let i = 0; i < 2; i++) {
     const view = render(() => <BrowserRuntime />);
     expect(view.getByTestId("theme")).toBeInTheDocument();
@@ -79,8 +69,4 @@ it("mounts without waiting for preferences/history and releases integrations bef
     configEvent.dispatch({ key: "fullConfigChange" });
     expect(state.theme).toHaveBeenCalledTimes(i + 1);
   }
-  for (const finish of completions) finish({ text: "late", isNew: true });
-  await Promise.resolve();
-  await Promise.resolve();
-  expect(state.setVersion).not.toHaveBeenCalled();
 });

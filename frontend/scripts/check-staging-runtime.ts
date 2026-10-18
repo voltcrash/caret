@@ -110,7 +110,6 @@ async function main(): Promise<void> {
   for (const [path, cache] of [
     ["/sw.js", "no-cache"],
     ["/version.json", "no-cache"],
-    ["/release.json", "no-store"],
     ["/_asset-history.json", "no-store"],
   ] as const) {
     const response = await fetch(`${origin}${path}`, { cache: "no-store" });

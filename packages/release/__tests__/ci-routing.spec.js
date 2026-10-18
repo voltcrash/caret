@@ -101,3 +101,11 @@ it("rebuilds the application Worker when backend services change", () => {
     },
   );
 });
+
+it("validates backend and deployment helpers when the production workflow changes", () => {
+  expect(changes([".github/workflows/production-release.yml"])).toMatchObject({
+    "should-build-be": "true",
+    "should-build-pkg": "true",
+    "should-build-fe": "true",
+  });
+});
