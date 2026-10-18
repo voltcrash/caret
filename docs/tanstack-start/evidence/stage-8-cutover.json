@@ -1,7 +1,7 @@
 {
   "stage": 8,
-  "observedAt": "2026-10-18T06:09:54.577Z",
-  "status": "staging validated; OAuth fix awaiting human recheck and main merge; production not deployed",
+  "observedAt": "2026-10-18T06:20:18.483Z",
+  "status": "OAuth sign-in and persisted saves confirmed; header logout fix deployed for human recheck; production not deployed",
   "main": {
     "sha": "1776ac5f1caf96886a1924a9ce57b2d4698fcfce",
     "ci": "https://github.com/voltcrash/oxytype/actions/runs/39101773911",
@@ -127,7 +127,7 @@
         "error": "access_denied"
       }
     ],
-    "humanReport": "Session created and typing results saved despite popup state_mismatch; fixed service-worker recheck pending"
+    "humanReport": "User confirms sign-in works without state_mismatch and typing results persist; header sign-out exposed the separate cached-session regression"
   },
   "stagingDatabase": {
     "results": 2,
@@ -249,5 +249,87 @@
     "gate": "START_PRODUCTION_ENABLED remains unset",
     "migrations": "none pending"
   },
-  "compatibility": "Retain old HTTP transports and rollback assets for at least 30 days after last production legacy HTML, then require 7 days without supported legacy mutation traffic"
+  "compatibility": "Retain old HTTP transports and rollback assets for at least 30 days after last production legacy HTML, then require 7 days without supported legacy mutation traffic",
+  "logout": {
+    "source": "ec3cb0fa54afffcefa73f03b602de02c4b62784b",
+    "build": "2026.10.18_11.47_ec3cb0fa5",
+    "deployment": {
+      "id": "37857dcf-19ca-431d-bffe-2beedbd7a5cd",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "author_email": "gopikatanmay@gmail.com",
+      "annotations": {
+        "workers/message": "Fix header logout session consistency: ec3cb0fa5; preserve existing secrets",
+        "workers/triggered_by": "deployment"
+      },
+      "versions": [
+        {
+          "version_id": "808da37b-6ec1-4dc7-a037-ab2ce9b7909c",
+          "percentage": 100
+        }
+      ],
+      "created_on": "2026-10-18T06:19:28.991443Z"
+    },
+    "cause": "Header sign-out disposed the account while canonical session still contained the signed-in user; observing local actor changes could restore that stale identity",
+    "fix": "Cancel pending canonical session queries and publish guest before clearing account data; invalidate routes from successive canonical session identities",
+    "regressions": {
+      "before": "Canonical session unit test and header logout browser test fail",
+      "after": {
+        "authAndOfflineBrowser": 8,
+        "targetedUnit": 22,
+        "lintAndTypecheck": "pass"
+      },
+      "browserPaths": [
+        "/account redirects to login",
+        "/ retains working guest typing"
+      ]
+    },
+    "humanRecheck": "pending",
+    "runtime": {
+      "startedAt": "2026-10-18T06:19:59.290Z",
+      "finishedAt": "2026-10-18T06:20:31.232Z",
+      "origin": "https://oxytype-api-staging.voltcrash.workers.dev",
+      "build": "2026.10.18_11.47_ec3cb0fa5",
+      "routes": {
+        "/": 200,
+        "/about": 200,
+        "/settings": 200,
+        "/login": 200,
+        "/account": 307,
+        "/profile": 200,
+        "/privacy-policy.html": 200,
+        "/oauth-callback.html?requestId=stage7-check": 200,
+        "/404.html": 404,
+        "/api": 200,
+        "/api/public/typingStats": 200,
+        "/api/users": 401,
+        "/api/not-a-route": 404
+      },
+      "assets": {
+        "checked": 816,
+        "legacy": 13,
+        "allIntegrityChecksPass": true
+      },
+      "staleFunctionStatus": 409,
+      "csrfStatus": 403,
+      "oauth": {
+        "initiation": 200,
+        "providerHost": "github.com",
+        "callback": "https://oxytype-api-staging.voltcrash.workers.dev/api/auth/callback/github",
+        "secureHttpOnlyStateCookie": true,
+        "fullInteractiveSignIn": "separate browser acceptance"
+      },
+      "ssrNetworkWallMs": [
+        498.2360830000034, 492.0416499999992, 542.6010410000017,
+        501.7983060000006, 522.7527809999992, 483.05997099999877,
+        471.98698100000183, 468.0063549999977, 512.9106700000011,
+        544.9606750000021, 476.0774789999996, 449.80767000000196,
+        472.5937539999977, 512.5413059999992, 513.1308710000012,
+        473.5922649999993, 448.2961749999995, 464.6942490000001,
+        455.6921540000003, 494.6072380000005
+      ],
+      "latencyDefinition": "Hosted staging /about wall time from this host, including network/D1; not comparable to frozen local workerd CPU or browser budgets"
+    },
+    "offlineGuestTyping": "pass (1 hosted browser test)"
+  }
 }
