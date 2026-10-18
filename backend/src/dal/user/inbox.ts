@@ -1,4 +1,3 @@
-import { clientProfile } from "../../db/client-profile";
 import { eq, and, inArray } from "drizzle-orm";
 
 import { database, statement, encode } from "../../db/client";
@@ -90,7 +89,8 @@ export async function updateInbox(
       const rewards = (grant.data["rewards"] ?? []) as MonkeyMail["rewards"];
       for (const reward of rewards) {
         if (reward.type === "xp") {
-          const profile = clientProfile(user, reward.client);
+          if (reward.client !== undefined && reward.client !== "web") continue;
+          const profile = user;
           profile.xp = (profile.xp ?? 0) + reward.item;
         } else if (
           reward.type === "badge" &&
