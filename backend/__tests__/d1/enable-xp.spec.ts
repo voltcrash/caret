@@ -48,9 +48,15 @@ describe("XP enable migration", () => {
         "SELECT id,version,data FROM configuration ORDER BY id",
       ).all<{ id: string; version: number; data: string }>();
       const [custom, main] = rows.results;
-      expect(custom?.version).toBe(0);
-      expect(JSON.parse(custom?.data ?? "null")).toEqual(customised);
-      expect(main?.version).toBe(2);
+      // 0014 later strips the retired weekly reward brackets.
+      const { xpRewardBrackets: _brackets, ...weeklyXp } =
+        customised.leaderboards.weeklyXp;
+      expect(custom?.version).toBe(1);
+      expect(JSON.parse(custom?.data ?? "null")).toEqual({
+        ...customised,
+        leaderboards: { weeklyXp },
+      });
+      expect(main?.version).toBe(3);
       expect(JSON.parse(main?.data ?? "null")).toEqual({
         users: {
           signUp: true,
@@ -72,7 +78,6 @@ describe("XP enable migration", () => {
           weeklyXp: {
             enabled: true,
             expirationTimeInDays: 15,
-            xpRewardBrackets: [],
           },
         },
       });
