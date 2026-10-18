@@ -114,8 +114,8 @@ history may need external SQL, partitioning or R2 archival.
 Back up the database and pause writes before schema changes. A code
 rollback that requires an older schema also requires a matching database restore.
 Migration `0014_remove_inbox.sql` drops inbox, reward grant, outbox and scheduled
-job tables and removes their configuration fields. Pending notifications and
-unclaimed rewards are discarded when it is applied.
+job tables and removes inbox fields from user data and configuration. Pending
+notifications and unclaimed rewards are discarded when it is applied.
 
 ## ApeKey hash compatibility
 
