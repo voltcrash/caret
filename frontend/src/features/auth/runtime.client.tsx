@@ -1,3 +1,5 @@
+import type { UiSession } from "@oxytype/schemas/auth-session";
+
 import { useQuery } from "@tanstack/solid-query";
 import { useRouter } from "@tanstack/solid-router";
 import { createEffect, onCleanup, onMount } from "solid-js";
@@ -12,13 +14,14 @@ export function AuthRuntime() {
   const router = useRouter();
   const session = useQuery(() => sessionOptions());
   let initialized = false;
+  let previous: UiSession | null = null;
   createEffect(() => {
     if (!session.isSuccess || session.isFetching) return;
-    const previous = getAuthenticatedUser();
     const user = session.data.user;
     const changed =
       previous?.uid !== user?.uid || previous?.email !== user?.email;
     setUserState(user);
+    previous = user;
     if (initialized && changed) void router.invalidate();
     initialized = true;
   });
