@@ -52,4 +52,3 @@ export {
   clearStreakHourOffset,
   getStats,
 } from "./user/progression";
-export { getInbox, addToInbox, updateInbox } from "./user/inbox";
