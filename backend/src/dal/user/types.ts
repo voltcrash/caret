@@ -1,5 +1,3 @@
-import { type ClientProfile } from "../../db/client-profile";
-
 import { type LbPersonalBests } from "../../utils/pb";
 
 import type {
@@ -10,7 +8,6 @@ import type {
   User,
   CountByYearAndDay,
 } from "@oxytype/schemas/users";
-import type { Client } from "@oxytype/schemas/shared";
 
 export type DBUserTag = UserTag;
 
@@ -24,7 +21,6 @@ export type DBUser = Omit<
   | "testActivity"
 > & {
   _id: string;
-  clientProfiles?: Partial<Record<Client, ClientProfile>>;
   resultFilterPresets?: ResultFilters[];
   tags?: DBUserTag[];
   lbPersonalBests?: LbPersonalBests;
