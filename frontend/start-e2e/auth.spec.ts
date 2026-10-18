@@ -86,6 +86,54 @@ test("popup login and logout update native routes without reloading the document
   expect(documents).toHaveLength(1);
 });
 
+for (const [path, token] of [
+  ["/account", "browser-logout"],
+  ["/", "browser-home"],
+] as const) {
+  test(`header sign-out on ${path} clears private data and keeps the guest page usable`, async ({
+    page,
+    context,
+  }) => {
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    const value =
+      authCookie(token).split(";")[0]?.split("=").slice(1).join("=") ?? "";
+    await context.addCookies([
+      { name: "oxytype.session_token", value, url: "http://127.0.0.1:4185" },
+    ]);
+    await page.goto(path);
+    if (path === "/account") {
+      await expect(page.getByText("filters", { exact: true })).toBeVisible();
+    } else {
+      await expect(page.locator("#words .word").first()).toBeVisible();
+    }
+    await page.getByRole("link", { name: "Account", exact: true }).hover();
+    await page.getByRole("button", { name: "Sign out", exact: true }).click();
+    if (path === "/account") {
+      await expect(page).toHaveURL(/\/login\?redirect=%2Faccount$/);
+      await expect(
+        page.getByRole("button", { name: "sign in with GitHub" }),
+      ).toBeVisible();
+    } else {
+      await expect(
+        page.getByRole("link", { name: "Sign in", exact: true }),
+      ).toBeVisible();
+      const word = page.locator("#words .word").first();
+      const letter = (await word.textContent())?.[0] ?? "";
+      expect(letter).not.toBe("");
+      await word.click();
+      await page.keyboard.type(letter);
+      await expect(page.locator("#words letter.correct")).toHaveCount(1);
+    }
+    await expect(page.getByText(/Failed to get user data/)).toHaveCount(0);
+    await expect(page.getByText("Unable to load Oxytype")).toHaveCount(0);
+    expect(await (await page.request.get("/api/auth/get-session")).text()).toBe(
+      "null",
+    );
+    expect(errors).toEqual([]);
+  });
+}
+
 test("session expiry removes private controls while the current document stays mounted", async ({
   page,
   context,
