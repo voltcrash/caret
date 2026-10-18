@@ -38,10 +38,7 @@ export async function resultRuntime(): Promise<ResultRuntime> {
     async () =>
       await patchConfiguration({
         results: { savingEnabled: true, objectHashCheckEnabled: true },
-        users: {
-          xp: { enabled: true },
-          inbox: { enabled: true, maxMail: 100 },
-        },
+        users: { xp: { enabled: true } },
         dailyLeaderboards: { enabled: true },
         leaderboards: { minTimeTyping: 0, weeklyXp: { enabled: true } },
       }),
