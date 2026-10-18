@@ -74,7 +74,6 @@ export const test = base.extend<{
         completedTests: 0,
         startedTests: 0,
         timeTyping: 0,
-        inboxUnreadSize: 0,
       },
     });
     await page.route("**/api/**", async (route) => {
@@ -141,11 +140,9 @@ export const test = base.extend<{
             ? config
             : path === "/users/customThemes"
               ? customThemes
-              : path === "/users/inbox"
-                ? { inbox: [], maxMail: 100 }
-                : ["/presets", "/results", "/psas"].includes(path)
-                  ? []
-                  : undefined;
+              : ["/presets", "/results", "/psas"].includes(path)
+                ? []
+                : undefined;
       await route.fulfill(
         data === undefined
           ? { status: 404, json: { message: `Unmocked API route: ${path}` } }
@@ -157,7 +154,6 @@ export const test = base.extend<{
         ["usersGet", user.data],
         ["configsGet", config],
         ["usersGetCustomThemes", customThemes],
-        ["usersGetInbox", { inbox: [], maxMail: 100 }],
         [
           "configurationGet",
           {
