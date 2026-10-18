@@ -11,7 +11,7 @@ changes.
 | --- | --- |
 | 8.1 Delete superseded code, document the system | Complete |
 | 8.2 Migration acceptance gate | Complete: local gate + all 12 CI checks on `200f0a710` ([validation](evidence/stage-8-validation.json), [run](https://github.com/voltcrash/oxytype/actions/runs/39099769261)) |
-| 8.3 Release, observe, retire compatibility | Not started: needs stack merge, staging acceptance with interactive OAuth, `START_PRODUCTION_ENABLED` |
+| 8.3 Release, observe, retire compatibility | In progress: stack merged, main CI green, staging deployed; OAuth callback fix #146 awaiting merge and human recheck; production pending |
 
 ## 8.1 Deleted
 
@@ -90,12 +90,39 @@ same-machine runs put Stage 8 within noise of Stage 7
 re-measure on the reference machine or CI before closing the gate. D1 statement
 counts equal Stage 0 (4/6/19/7, save 18–20).
 
+## 8.3 Staging cutover checks
+
+The stack through #144 is merged at `1776ac5f1`; all main CI jobs pass
+([run](https://github.com/voltcrash/oxytype/actions/runs/39101773911)).
+Deployed that commit to staging using existing remote secrets; no private
+backend settings were copied to this machine. Staging and production have no
+pending D1 migrations.
+
+Interactive GitHub sign-in created a working session and saved results, but its
+popup showed `state_mismatch`. Navigation preload sent the one-use callback
+before the bypassed navigation sent it again. [#146](https://github.com/voltcrash/oxytype/pull/146)
+reuses the preload response without caching auth responses. The regression fails
+before the fix and passes afterwards; six auth/offline browser tests, 39 policy
+tests and type-aware lint pass.
+
+The fix at `cc3441ece` is deployed to staging as build
+`2026.10.18_11.36_cc3441ece`, Worker version
+`abeb97f8-ed9c-4b77-af62-baa063b5daab`. Hosted checks verify 711 current/retained
+assets, routes, CSP, OAuth cookies, stale functions and offline typing. A synthetic
+provider denial returns the expected callback with preload both enabled and
+disabled. Human sign-in recheck remains pending. [Cutover evidence](evidence/stage-8-cutover.json).
+
+Production was re-observed on October 18: version
+`a59fe11e-0e88-4483-a837-0b65ef3c7212` still serves the October 16 legacy build,
+source `d6e5be3e9`, now tagged `v26.10.11`. This newer matched Worker/assets
+version supersedes the dated October 15 rollback anchor for the upcoming cutover.
+Production remains gated; no production deployment was performed.
+
 ## Remaining before Stage 8 exit
 
-- Merge the stack (PRs #135–#142 and Stage 8) to `main`; the production
-  workflow runs only on `main`.
-- Re-observe the production rollback anchor; deploy the validated commit to
-  staging; complete browser acceptance including interactive OAuth.
+- Merge #146 after CI passes; the production workflow runs only on `main`.
+- Complete browser acceptance including interactive OAuth with the fixed service
+  worker. Close old OAuth error tabs/popups so the waiting worker can activate.
 - Releases are manual-only with `YY.MM.NN` numbers (#144); the rollback anchor
   `v26.10.15` is `v26.10.10` after renumbering (same commit `e9bb89fe7`).
 - Set `START_PRODUCTION_ENABLED=true`, dispatch the release workflow, observe
