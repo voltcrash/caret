@@ -4,7 +4,8 @@
 
 `terminal-release.js` supplies the manual
 [Terminal npm release workflow](../../.github/workflows/tui-release.yml).
-It normalizes UTC date versions to npm semver (`v26.10.04` → `26.10.4`), requires
+It normalizes UTC date versions (`getDateVersion`, `v26.10.04` → `26.10.4`;
+unrelated to website release numbers) to npm semver, requires
 `next` for prereleases, verifies the workflow checkout, and checks npm for
 version collisions. An existing version from the same commit skips publication;
 an existing version from another commit fails. No website deployment is involved.
@@ -17,22 +18,21 @@ stays private; publication uses the generated manifest and files whitelist.
 
 ## Website production releases
 
-This package supplies the daily Cloudflare production workflow with release
-planning, changelog, date-version and site-history helpers. Deployment uses the
+This package supplies the manual Cloudflare production workflow with release
+planning, changelog, version and site-history helpers. Deployment uses the
 explicit Wrangler production commands. See
 [Cloudflare operations](../../docs/CLOUDFLARE_OPERATIONS.md).
 
-Release versions use the UTC date in `YY.MM.DD` format, with a two-digit year
-and zero-padded months and days. For example, October 4, 2026 is `26.10.04`
-in `package.json`, and `v26.10.04` in Git tags. Production
-GitHub release titles omit the `v` prefix.
-The release date is captured when the release starts, independently of the
-previous version. Publication timestamps retain their full ISO year.
+Release versions are `YY.MM.NN`: two-digit year, month, and the sequence number
+of that UTC month's releases from `01` (`version.js`). The first November 2026
+release is `26.11.01` in `package.json` and `v26.11.01` in Git tags; the next,
+on any later day, is `26.11.02`. Production GitHub release titles omit the `v`.
+The month is taken when release planning starts. Publication timestamps retain
+their full ISO year.
 
-The production workflow permits one tagged release per UTC day. Retried runs
-skip a completed production release; conflicting date tags/releases fail before
-deployment. For an additional deployment that day, use the explicit Cloudflare
-production commands in [production setup](../../docs/PRODUCTION_SETUP.md).
+Any number of releases per month or day is allowed. A run whose snapshot is the
+latest release skips; a tag left on the snapshot by a failed publication is
+reused; numbers held by other releases or tags are never reused.
 
 Frontend build IDs remain separate timestamp-and-commit identifiers for cache invalidation and diagnostics.
 
@@ -43,13 +43,14 @@ the checked-in snapshot; the footer and history modal fetch the site-hosted file
 Older history is linked to GitHub.
 
 The **Production release** [GitHub workflow](../../.github/workflows/production-release.yml)
-checks for new commits at 00:17 UTC, or manually from `main`. It skips deployment
-and publication when no commits have been added since the last production release.
-Otherwise, it deploys the complete production Worker site and publishes a
-date-named release containing all changes since that release. Delayed runs and
-retries use the UTC date when release planning executes, while retaining the
-run's original `main` snapshot. See [production automation setup](../../docs/PRODUCTION_SETUP.md#production-releases)
+runs only when dispatched manually from `main`. It deploys the complete
+production Worker site and publishes a release containing all changes since the
+previous production release, retaining the run's original `main` snapshot on
+retries. See [production automation setup](../../docs/PRODUCTION_SETUP.md#production-releases)
 for required Actions inputs and first-release behavior.
+
+`renumber-releases-cli.js` renamed the date-named releases created before this
+scheme (dry run by default; `--apply` renames releases, tags and their links).
 
 Before preparing credentials or deploying, the production workflow requires the
 latest **Oxytype CI** main-push run for its exact commit to finish successfully.
