@@ -1,9 +1,10 @@
 import { writeFile } from "node:fs/promises";
 import { expect, openTest, test } from "./fixtures";
 
-test("render 1,000 words with browser layout", async ({ page }, info) => {
+test("render 1,000 words with browser layout", async ({ page }) => {
   await openTest(page);
-  const prefix = info.project.name === "start-rendering" ? "/src" : "";
+  // Start dev serves source modules under /src.
+  const prefix = "/src";
   const measurements = await page.evaluate(async (prefix) => {
     const renderingUrl = `${prefix}/features/typing/components/words/rendering.ts`;
     const wordsUrl = `${prefix}/features/typing/runtime/test-words.ts`;
