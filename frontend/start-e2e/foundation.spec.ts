@@ -33,9 +33,11 @@ test("startup covers the app with the saved theme until browser setup finishes",
     }
   });
   try {
-    await page.goto("/about", { waitUntil: "domcontentloaded" });
+    await page.goto("/profile/fixture-profile", {
+      waitUntil: "domcontentloaded",
+    });
     await expect.poll(() => blocked).toBe(true);
-    await expect(page.getByTestId("tests-completed")).toHaveText("11");
+    await expect(page.getByText("fixture-profile public bio")).toHaveCount(1);
     await expect(page.locator("#startupScreen")).toBeVisible();
     await expect(page.locator("#app")).toHaveCSS("opacity", "0");
     expect(
@@ -72,30 +74,23 @@ test("SSR hydrates Query once and keeps native navigation and refresh working", 
   page.on("console", (message) => {
     if (message.type() === "error") errors.push(message.text());
   });
-  const response = await page.goto("/about");
+  const response = await page.goto("/profile/fixture-profile");
   expect(response?.status()).toBe(200);
-  expect(await response?.text()).toContain('data-testid="tests-completed">11');
+  expect(await response?.text()).toContain("fixture-profile public bio");
   await page.waitForLoadState("networkidle");
-  await expect(page.getByTestId("tests-completed")).toHaveText("11");
+  await expect(page.getByText("fixture-profile public bio")).toBeVisible();
   await expect(page.locator("#nocss")).toBeHidden();
-  expect(rpc.filter((url) => url.includes(rpcPath("getTypingStats")))).toEqual(
-    [],
-  );
+  expect(rpc.filter((url) => url.includes(rpcPath("getProfile")))).toEqual([]);
   await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
   await expect(page).toHaveURL(/\/$/);
-  await page
-    .getByRole("navigation", { name: "Main navigation" })
-    .getByRole("link", { name: "About", exact: true })
-    .click();
-  await expect(page).toHaveURL(/\/about$/);
-  await expect(page.getByTestId("tests-completed")).toHaveText("11");
+  await page.goBack();
+  await expect(page).toHaveURL(/\/profile\/fixture-profile$/);
+  await expect(page.getByText("fixture-profile public bio")).toBeVisible();
   expect(documents).toHaveLength(1);
-  expect(rpc.filter((url) => url.includes(rpcPath("getTypingStats")))).toEqual(
-    [],
-  );
+  expect(rpc.filter((url) => url.includes(rpcPath("getProfile")))).toEqual([]);
   await page.reload();
   await page.waitForLoadState("networkidle");
-  await expect(page.getByTestId("tests-completed")).toHaveText("11");
+  await expect(page.getByText("fixture-profile public bio")).toBeVisible();
   expect(errors).toEqual([]);
 });
 
@@ -105,14 +100,14 @@ test("the initial response remains useful without JavaScript", async ({
   const context = await browser.newContext({ javaScriptEnabled: false });
   try {
     const page = await context.newPage();
-    await page.goto("http://127.0.0.1:4185/about");
+    await page.goto("http://127.0.0.1:4185/profile/fixture-profile");
     // Playwright's text engine skips <noscript>; assert the rendered DOM instead.
     const warning = page.locator("noscript > div");
     await expect(warning).toBeVisible();
     expect(await warning.textContent()).toContain(
       "Looks like JavaScript is disabled.",
     );
-    expect(await page.getByTestId("tests-completed").textContent()).toBe("11");
+    expect(await page.getByText("fixture-profile public bio").count()).toBe(1);
   } finally {
     await context.close();
   }
@@ -132,7 +127,7 @@ test("CSS failure retains cache recovery under the production CSP", async ({
     };
   });
   await page.route("**/*.css", async (route) => await route.abort());
-  await page.goto("/about");
+  await page.goto("/profile");
   await expect(page.locator("#nocss")).toBeVisible();
   const reloaded = page.waitForEvent("framenavigated", {
     predicate: (frame) => frame === page.mainFrame(),
