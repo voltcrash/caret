@@ -83,7 +83,6 @@ describe("D1 reward delivery retries", () => {
         body: "Earned",
         rewards: [
           { type: "xp", item: 50 },
-          { type: "xp", item: 20, client: "tui" },
           { type: "badge", item: { id: 14 } },
         ],
       };
@@ -91,7 +90,16 @@ describe("D1 reward delivery retries", () => {
         "INSERT INTO outbox(id,type,uid,created_at,data) VALUES('retryDelivery','reward','recipientRetry',0,?)",
         JSON.stringify({
           uid: "recipientRetry",
-          mail: [mail],
+          // Retired-client rewards from the existing outbox must not credit web XP.
+          mail: [
+            {
+              ...mail,
+              rewards: [
+                ...mail.rewards,
+                { type: "xp", item: 20, client: "tui" },
+              ],
+            },
+          ],
           inboxConfig: { enabled: true, maxMail: 100 },
         }),
       ).run();
@@ -120,6 +128,9 @@ describe("D1 reward delivery retries", () => {
       ).run();
       await __testing.consume({ id: "retryDelivery", kind: "outbox" });
       expect(await Users.getInbox("recipientRetry")).toHaveLength(1);
+      expect((await Users.getInbox("recipientRetry"))[0]?.rewards).toEqual(
+        mail.rewards,
+      );
       await Promise.all([
         Users.updateInbox("recipientRetry", [mail.id], []),
         Users.updateInbox("recipientRetry", [], [mail.id]),
@@ -130,9 +141,7 @@ describe("D1 reward delivery retries", () => {
       });
       await Users.updateInbox("recipientRetry", [mail.id], []);
       const web = await Users.getUser("recipientRetry", "test");
-      const tui = await Users.getUser("recipientRetry", "test", "tui");
       expect(web.xp).toBe(50);
-      expect(tui.xp).toBe(20);
       expect(web.inventory?.badges).toEqual([{ id: 14 }]);
       expect(
         await statement(
