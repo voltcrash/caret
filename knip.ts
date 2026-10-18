@@ -56,7 +56,11 @@ export default {
       ignoreDependencies: ["@storybook/addon-links", "oxytype-fonts.css"],
     },
     "packages/release": {
-      entry: ["src/production-release.js", "__tests__/*.spec.js"],
+      entry: [
+        "src/production-release.js",
+        "src/renumber-releases-cli.js",
+        "__tests__/*.spec.js",
+      ],
     },
     tui: {
       entry: ["bin/*.ts"],
