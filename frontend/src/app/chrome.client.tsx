@@ -1,6 +1,5 @@
 import {
   createEffect,
-  createSignal,
   onCleanup,
   onMount,
   Show,
@@ -33,6 +32,7 @@ import * as ServerConfiguration from "../ts/states/server-configuration";
 import { isFixingSkillIssue } from "../ts/states/skill-issue";
 import { RouterNavigation } from "./navigation.client";
 import { preferencesReadiness } from "./readiness";
+import { isAppReady, isStartupFinished, setAppReady } from "./startup";
 
 /**
  * Browser half of the common layout: overlays, global hotkeys, body classes,
@@ -53,8 +53,6 @@ function ChromeRuntime(props: {
   createEffect(() => props.onHeaderBottom(getHeaderBottom()));
   createEffect(() => props.onOffsetTop(getGlobalOffsetTop()));
   createEffect(() => props.onHidden(isFixingSkillIssue()));
-  // Theme changes animate only once stored preferences have been applied.
-  const [isReady, setReady] = createSignal(false);
   spread(
     document.body,
     {
@@ -63,7 +61,10 @@ function ChromeRuntime(props: {
       },
       get style() {
         return {
-          transition: isReady() ? "background .25s, transform .05s" : undefined,
+          // Theme changes animate only once stored preferences are applied.
+          transition: isAppReady()
+            ? "background .25s, transform .05s"
+            : undefined,
         };
       },
     },
@@ -87,14 +88,19 @@ function ChromeRuntime(props: {
     void ServerConfiguration.sync().catch((error: unknown) =>
       console.error("Failed to synchronize server configuration", error),
     );
+    // Reveal the app even if preferences fail; a stuck cover hides the error.
     void preferencesReadiness()
       .wait()
+      .catch(() => undefined)
       .then(() => {
-        if (disposed) return;
-        setReady(true);
-        if (getAcceptedCookies() === null) showModal("Cookies");
-      })
-      .catch(() => undefined);
+        if (!disposed) setAppReady(true);
+      });
+  });
+  let cookiePrompted = false;
+  createEffect(() => {
+    if (cookiePrompted || !isStartupFinished()) return;
+    cookiePrompted = true;
+    if (getAcceptedCookies() === null) showModal("Cookies");
   });
   return (
     <>
