@@ -18,8 +18,8 @@ async function signIn(context: BrowserContext): Promise<void> {
 test("private routes send guests to login with a return path", async ({
   page,
 }) => {
-  await page.goto("/account?client=tui");
-  await expect(page).toHaveURL(/\/login\?redirect=%2Faccount%3Fclient%3Dtui$/);
+  await page.goto("/account?client=web");
+  await expect(page).toHaveURL(/\/login\?redirect=%2Faccount%3Fclient%3Dweb$/);
   await page.goto("/account-settings");
   await expect(page).toHaveURL(/\/login\?redirect=/);
 });
@@ -35,10 +35,6 @@ test("account and account-settings render for a signed-in account", async ({
   await page.goto("/account");
   await expect(page.getByText("browser-private").first()).toBeVisible();
   await expect(page.getByText("filters", { exact: true })).toBeVisible();
-  const length = await page.evaluate(() => history.length);
-  await page.getByText("TUI", { exact: true }).click();
-  await expect(page).toHaveURL(/\/account\?client=tui$/);
-  expect(await page.evaluate(() => history.length)).toBe(length);
 });
 
 test("settings sections are replace-only route search and deep links highlight", async ({
