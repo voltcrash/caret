@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/solid-query";
 import {
-  createMemo,
   createSignal,
   JSXElement,
   lazy,
@@ -28,7 +27,6 @@ import { isCoarsePointer } from "../../../utils/pointer";
 import { Anime } from "../../common/anime";
 import { AnimePresence } from "../../common/anime/AnimePresence";
 import { Button } from "../../common/Button";
-import { NotificationBubble } from "../../common/NotificationBubble";
 const User = lazy(async () =>
   import("../../common/User").then((m) => ({ default: m.User })),
 );
@@ -69,13 +67,6 @@ export function Nav(): JSXElement {
       return;
     }
     setAnimatedLevel(getLevelFromTotalXp(snapshot.xp ?? 0));
-  });
-
-  const showAlertsNotificationBubble = createMemo((): boolean => {
-    const snapshot = getSnapshot();
-    if (snapshot === undefined) return false;
-
-    return snapshot.inboxUnreadSize > 0;
   });
 
   const serverConfig = useQuery(() => getServerConfigurationQueryOptions());
@@ -164,26 +155,6 @@ export function Nav(): JSXElement {
         }}
       />
       <div class="grow"></div>
-      <Button
-        variant="text"
-        fa={{
-          icon: "fa-bell",
-          fixedWidth: true,
-        }}
-        dataset={{
-          "data-nav-item": "alerts",
-          "aria-label": "Alerts",
-        }}
-        onClick={() => {
-          showModal("Alerts");
-        }}
-        class={cn(buttonClass(), "relative")}
-      >
-        <NotificationBubble
-          variant="fromCorner"
-          show={showAlertsNotificationBubble()}
-        />
-      </Button>
       <AnimePresence exitBeforeEnter>
         <Show
           when={getSnapshot()}
