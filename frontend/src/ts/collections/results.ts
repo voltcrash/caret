@@ -18,7 +18,7 @@ export {
   insertLocalResult,
   deleteLocalTag,
 } from "./results/mutations";
-import { resultsByClient, resultsCollection } from "./results/store";
+import { resultsCollection } from "./results/store";
 export { isResultsReady, waitForResultsReady } from "./results/store";
 
 export {
@@ -27,12 +27,7 @@ export {
   type CurrentSettingsFilter,
 } from "./results/types";
 
-/** Account sign-in refreshes web history and any loaded terminal history. */
+/** Refresh account history after sign-in. */
 export async function refetchResults(): Promise<void> {
-  await Promise.all([
-    resultsCollection().utils.refetch(),
-    ...(resultsByClient.tui().isReady()
-      ? [resultsByClient.tui().utils.refetch()]
-      : []),
-  ]);
+  await resultsCollection().utils.refetch();
 }
