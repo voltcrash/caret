@@ -110,7 +110,7 @@ function verifyRequirement(
   }
   return [requirementsMet, failReasons];
 }
-/** Shared web/terminal verification; no rendering or side effects. */
+/** Challenge verification; no rendering or side effects. */
 export function verifyChallenge(
   result: ChallengeResult,
   config: Readonly<Config>,
