@@ -1,4 +1,3 @@
-import LaterQueue from "../queues/later-queue";
 import { matchesAPattern, kogascore, omit } from "./misc";
 import type {
   Configuration,
@@ -83,14 +82,6 @@ export class DailyLeaderboard {
         config.maxResults,
       ),
     );
-    if (isValidModeRule(this.modeRule, config.scheduleRewardsModeRules)) {
-      await LaterQueue.scheduleForTomorrow(
-        "daily-leaderboard-results",
-        this.board,
-        this.modeRule,
-        this.client,
-      );
-    }
     if (previous !== null && previous >= score) return -1;
     const rank = (ahead ?? 0) + 1;
     return rank > config.maxResults ? -1 : rank;
