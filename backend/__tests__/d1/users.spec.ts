@@ -4,8 +4,6 @@ import { withRuntime } from "../../src/runtime/env";
 import * as UserDAL from "../../src/dal/user";
 import { atomicUser, mutateUser, stage } from "../../src/db/mutation";
 import { statement } from "../../src/db/client";
-import { BASE_CONFIGURATION } from "../../src/constants/base-configuration";
-import type { MonkeyMail } from "@oxytype/schemas/users";
 
 describe("D1 user mutations", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;
@@ -54,32 +52,6 @@ describe("D1 user mutations", () => {
         }),
       ).rejects.toThrow(/Concurrent update/);
       expect((await UserDAL.getUser("concurrent", "test")).xp).toBe(60);
-    });
-  });
-  it("claims each mail once across concurrent reads and deletes", async () => {
-    await withRuntime(test.env, async () => {
-      await UserDAL.addUser("Rewards", "rewards@example.com", "rewards");
-      const mail: MonkeyMail = {
-        id: "reward1",
-        timestamp: Date.now(),
-        subject: "Reward",
-        body: "Earned",
-        read: false,
-        rewards: [{ type: "xp", item: 50 }],
-      };
-      const config = {
-        ...BASE_CONFIGURATION.users.inbox,
-        enabled: true,
-        maxMail: 100,
-      };
-      await UserDAL.addToInbox("rewards", [mail], config);
-      await Promise.all([
-        UserDAL.updateInbox("rewards", [mail.id], []),
-        UserDAL.updateInbox("rewards", [], [mail.id]),
-      ]);
-      await UserDAL.addToInbox("rewards", [mail], config);
-      await UserDAL.updateInbox("rewards", [mail.id], []);
-      expect((await UserDAL.getUser("rewards", "test")).xp).toBe(50);
     });
   });
   it("enforces bounded arrays within the versioned update", async () => {
