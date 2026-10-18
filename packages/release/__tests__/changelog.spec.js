@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vite-plus/test";
-import { buildDailyChangelog } from "../src/daily-changelog.js";
+import { buildReleaseChangelog } from "../src/changelog.js";
 
 const repoUrl = "https://github.com/voltcrash/oxytype";
 const hash = (n) => String(n).repeat(40);
 
-describe("buildDailyChangelog", () => {
+describe("buildReleaseChangelog", () => {
   it("groups user facing commits into sections in a fixed order", () => {
-    const notes = buildDailyChangelog(
+    const notes = buildReleaseChangelog(
       [
         { hash: hash(1), subject: "fix(settings): keep footer visible" },
         { hash: hash(2), subject: "feat: add delete on error" },
@@ -32,7 +32,7 @@ describe("buildDailyChangelog", () => {
   });
 
   it("lists other commits under nerd stuff with their type", () => {
-    const notes = buildDailyChangelog(
+    const notes = buildReleaseChangelog(
       [
         { hash: hash(1), subject: "refactor(utils): remove helper" },
         { hash: hash(2), subject: "chore: bump deps" },
@@ -48,7 +48,7 @@ describe("buildDailyChangelog", () => {
   });
 
   it("links squash merged pull requests", () => {
-    const notes = buildDailyChangelog(
+    const notes = buildReleaseChangelog(
       [{ hash: hash(1), subject: "ci(production): add daily releases (#28)" }],
       repoUrl,
     );
@@ -58,7 +58,7 @@ describe("buildDailyChangelog", () => {
   });
 
   it("omits github merge commits", () => {
-    const notes = buildDailyChangelog(
+    const notes = buildReleaseChangelog(
       [
         {
           hash: hash(1),
@@ -74,11 +74,11 @@ describe("buildDailyChangelog", () => {
   });
 
   it("returns an empty string without commits", () => {
-    expect(buildDailyChangelog([], repoUrl)).toBe("");
+    expect(buildReleaseChangelog([], repoUrl)).toBe("");
   });
 
   it("escapes markdown in scopes and messages", () => {
-    const notes = buildDailyChangelog(
+    const notes = buildReleaseChangelog(
       [{ hash: hash(1), subject: "fix(a_b): handle [x](y) <img>" }],
       repoUrl,
     );

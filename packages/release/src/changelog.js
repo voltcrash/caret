@@ -41,7 +41,7 @@ function formatCommit(commit, repoUrl, includeType) {
  * @param {string} repoUrl
  * @returns {string} Markdown, or an empty string when nothing is listed.
  */
-export function buildDailyChangelog(commits, repoUrl) {
+export function buildReleaseChangelog(commits, repoUrl) {
   const parsed = commits
     .filter((commit) => !mergeSubject.test(commit.subject))
     .map(parseCommit);

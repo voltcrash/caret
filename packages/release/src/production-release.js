@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { buildDailyChangelog } from "./daily-changelog.js";
+import { buildReleaseChangelog } from "./changelog.js";
 import {
   compareReleaseTags,
   getNextReleaseVersion,
@@ -124,7 +124,7 @@ export async function prepareProductionRelease({ github, context, cwd }) {
       skipReason: "no-new-commits",
     };
   }
-  const changelog = buildDailyChangelog(
+  const changelog = buildReleaseChangelog(
     commits
       ? commits.split("\n").map((line) => {
           const [hash, subject] = line.split("\0");
