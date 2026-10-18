@@ -126,12 +126,12 @@ describe("native public routes in workerd", () => {
 
   it("guards direct private documents and omits account history and credentials from SSR", async () => {
     const worker = await mf.getWorker("a");
-    const guest = await worker.fetch(`${origin}/account?client=tui`, {
+    const guest = await worker.fetch(`${origin}/account?client=web`, {
       redirect: "manual",
     });
     expect(guest.status).toBe(307);
     expect(guest.headers.get("location")).toContain(
-      "/login?redirect=%2Faccount%3Fclient%3Dtui",
+      "/login?redirect=%2Faccount%3Fclient%3Dweb",
     );
     const session = await seedSession(mf, "a");
     const db = await mf.getD1Database("DB", "a");
@@ -151,7 +151,7 @@ describe("native public routes in workerd", () => {
         }),
       )
       .run();
-    const account = await worker.fetch(`${origin}/account?client=tui`, {
+    const account = await worker.fetch(`${origin}/account?client=web`, {
       headers: { cookie: session.cookie },
     });
     expect(account.status).toBe(200);
