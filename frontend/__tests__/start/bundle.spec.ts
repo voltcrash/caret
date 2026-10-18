@@ -13,12 +13,7 @@ function read(dir: string, build = "start"): string {
 // App server identifiers that survive minification (literals/exports).
 // The supported Better Auth infra client imports core/env (getter names only);
 // its generic BETTER_AUTH_SECRET string is not an application binding leak.
-const serverMarkers = [
-  "public_stats",
-  "sqlite_master",
-  "outbox",
-  "rate_counters",
-];
+const serverMarkers = ["public_stats", "sqlite_master", "rate_counters"];
 // Legacy bootstrap/page-lifecycle literals; Start must never mount them.
 const legacyMarkers = [
   "App mount not found",
