@@ -40,12 +40,12 @@ export function getBotFailure(result: CompletedEvent): BotFailure | undefined {
 export function hasFixedTimingSignature(
   keySpacing: number[],
   keyDuration: number[],
-  client: CompletedEvent["client"],
+  _client: CompletedEvent["client"],
 ): boolean {
   // Ignore endpoints: the first key may predate start; the final release can
   // be estimated. Both channels must be fixed across at least 100 samples.
   return (
     fixedPositiveTimings(keySpacing.slice(1, -1)) &&
-    (client === "tui" || fixedPositiveTimings(keyDuration.slice(1, -1)))
+    fixedPositiveTimings(keyDuration.slice(1, -1))
   );
 }
