@@ -130,7 +130,6 @@ export async function scheduled(scheduledTime: number): Promise<void> {
       statement("DELETE FROM rate_counters WHERE expires_at<=?", now),
       statement("DELETE FROM auth_sessions WHERE expires_at<=?", now),
       statement("DELETE FROM auth_verifications WHERE expires_at<=?", now),
-      statement("DELETE FROM auth_device_codes WHERE expires_at<=?", now),
       statement(
         "DELETE FROM auth_rate_limits WHERE last_request<?",
         now - 86400000,
