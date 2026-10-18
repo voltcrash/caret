@@ -32,6 +32,7 @@ export type Strategy =
 
 type RequestLike = { method: string; url: string; mode: string };
 
+// Retired release metadata stays network-only for supported old tabs.
 const neverIntercepted = new Set(["/sw.js", "/version.json", "/release.json"]);
 
 const staticPrefixes = [
