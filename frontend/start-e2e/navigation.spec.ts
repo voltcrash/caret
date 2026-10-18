@@ -9,7 +9,8 @@ test("keyboard navigation moves focus to content and preserves history without d
       documents.push(request.url());
     }
   });
-  await page.goto("/about");
+  await page.goto("/leaderboards");
+  await expect(page).toHaveURL(/\/leaderboards\?/);
   await page.waitForLoadState("networkidle");
   const settings = page.getByRole("link", { name: "Settings", exact: true });
   await settings.focus();
@@ -18,7 +19,7 @@ test("keyboard navigation moves focus to content and preserves history without d
   await expect(page.locator("main")).toBeFocused();
   await expect(page.locator("#group_behavior")).toBeVisible();
   await page.goBack();
-  await expect(page).toHaveURL(/\/about$/);
+  await expect(page).toHaveURL(/\/leaderboards\?/);
   await expect(page.locator("main")).toBeFocused();
   await page.goForward();
   await expect(page).toHaveURL(/\/settings$/);
@@ -28,7 +29,7 @@ test("keyboard navigation moves focus to content and preserves history without d
 test("command palette navigation and shared modals work across native route mounts", async ({
   page,
 }) => {
-  await page.goto("/about");
+  await page.goto("/profile");
   await page.waitForLoadState("networkidle");
   await page.keyboard.press("ControlOrMeta+K");
   const palette = page.locator("#commandLine");
@@ -40,22 +41,24 @@ test("command palette navigation and shared modals work across native route moun
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/\/settings$/);
   await expect(palette).toBeHidden();
-  await page.getByRole("link", { name: "About", exact: true }).click();
-  await page.getByRole("button", { name: "support", exact: true }).click();
-  await expect(
-    page.getByRole("dialog", { name: "Support Oxytype" }),
-  ).toBeVisible();
+  await page.getByRole("link", { name: "Leaderboards", exact: true }).click();
+  await expect(page).toHaveURL(/\/leaderboards\?/);
+  await page.getByRole("button", { name: "Alerts", exact: true }).click();
+  await expect(page.locator("#AlertsModal")).toBeVisible();
   await page.keyboard.press("Escape");
-  await expect(
-    page.getByRole("dialog", { name: "Support Oxytype" }),
-  ).toBeHidden();
+  await expect(page.locator("#AlertsModal")).toBeHidden();
 });
 
 test("window and settings scroll restore on history traversal", async ({
   page,
 }) => {
-  await page.goto("/about");
+  await page.goto("/leaderboards");
+  await expect(page).toHaveURL(/\/leaderboards\?/);
   await page.waitForLoadState("networkidle");
+  // Smooth scrolling animates the restore; assert the offset, not the animation.
+  await page.evaluate(() => {
+    document.documentElement.style.scrollBehavior = "auto";
+  });
   await page.evaluate(() => window.scrollTo({ top: 600, behavior: "instant" }));
   await expect
     .poll(async () => await page.evaluate(() => window.scrollY))
@@ -75,15 +78,15 @@ test("window and settings scroll restore on history traversal", async ({
   await expect
     .poll(async () => await scroller.evaluate((element) => element.scrollTop))
     .toBe(350);
-  await page.getByRole("link", { name: "About", exact: true }).click();
-  await expect(page).toHaveURL(/\/about$/);
+  await page.getByRole("link", { name: "Leaderboards", exact: true }).click();
+  await expect(page).toHaveURL(/\/leaderboards\?/);
   await page.goBack();
   await expect(page).toHaveURL(/\/settings$/);
   await expect
     .poll(async () => await scroller.evaluate((element) => element.scrollTop))
     .toBe(350);
   await page.goBack();
-  await expect(page).toHaveURL(/\/about$/);
+  await expect(page).toHaveURL(/\/leaderboards\?/);
   // A remounted chart/font can shift the browser's scroll anchor by a pixel.
   await expect
     .poll(async () =>
