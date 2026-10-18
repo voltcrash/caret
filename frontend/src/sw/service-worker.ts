@@ -117,6 +117,10 @@ async function store(request: Request, response: Response): Promise<void> {
   await cache.put(request, response);
 }
 
+async function navigationResponse(event: FetchEvent): Promise<Response> {
+  return (await event.preloadResponse) ?? (await fetch(event.request));
+}
+
 async function respond(
   event: FetchEvent,
   strategy: Strategy,
@@ -124,7 +128,7 @@ async function respond(
   const { request } = event;
   if (strategy === "navigate") {
     try {
-      return (await event.preloadResponse) ?? (await fetch(request));
+      return await navigationResponse(event);
     } catch {
       return await offlineDocument(request.url);
     }
@@ -192,6 +196,13 @@ worker.addEventListener("fetch", (event) => {
   // Media range requests and other partial reads stay with the browser.
   if (event.request.headers.has("range")) return;
   const strategy = classify(event.request, origin);
-  if (strategy === "bypass") return;
+  if (strategy === "bypass") {
+    // Preload also runs for bypassed navigations. Falling through sends a
+    // second request that consumes single-use OAuth state twice.
+    if (event.request.method === "GET" && event.request.mode === "navigate") {
+      event.respondWith(navigationResponse(event));
+    }
+    return;
+  }
   event.respondWith(respond(event, strategy));
 });

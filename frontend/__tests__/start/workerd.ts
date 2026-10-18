@@ -19,7 +19,12 @@ export async function createWorkerd(
   overrides: Partial<
     Pick<
       WorkerEnv,
-      "MODE" | "API_PATH_OVERRIDE" | "FRONTEND_URL" | "BETTER_AUTH_URL"
+      | "MODE"
+      | "API_PATH_OVERRIDE"
+      | "FRONTEND_URL"
+      | "BETTER_AUTH_URL"
+      | "GITHUB_CLIENT_ID"
+      | "GITHUB_CLIENT_SECRET"
     >
   > = {},
   fixture: {

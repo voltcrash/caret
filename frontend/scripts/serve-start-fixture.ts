@@ -7,7 +7,10 @@ import {
 } from "../__tests__/start/workerd";
 
 async function main(): Promise<void> {
-  const mf = await createWorkerd(false, 4185);
+  const mf = await createWorkerd(false, 4185, false, {
+    GITHUB_CLIENT_ID: "browser-fixture-client",
+    GITHUB_CLIENT_SECRET: "browser-fixture-secret",
+  });
   const db = await mf.getD1Database("DB", "a");
   for (const token of [
     "browser-login",
@@ -17,6 +20,8 @@ async function main(): Promise<void> {
     "browser-private",
     "browser-typing",
     "browser-result-persistence",
+    "browser-logout",
+    "browser-home",
   ]) {
     const session = await seedSession(mf, "a");
     await db
@@ -45,6 +50,8 @@ async function main(): Promise<void> {
         "browser-private",
         "browser-typing",
         "browser-result-persistence",
+        "browser-logout",
+        "browser-home",
       ].includes(token)
     ) {
       await db

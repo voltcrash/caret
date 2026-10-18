@@ -1,0 +1,340 @@
+{
+  "stage": 8,
+  "observedAt": "2026-10-18T06:20:18.483Z",
+  "status": "Human staging acceptance passed: OAuth sign-in, persisted saves and error-free header sign-out; production not deployed",
+  "main": {
+    "sha": "1776ac5f1caf96886a1924a9ce57b2d4698fcfce",
+    "ci": "https://github.com/voltcrash/oxytype/actions/runs/39101773911",
+    "conclusion": "success"
+  },
+  "staging": {
+    "origin": "https://oxytype-api-staging.voltcrash.workers.dev",
+    "source": "cc3441eced6b86ae29463785cc08af39b96187da",
+    "build": "2026.10.18_11.36_cc3441ece",
+    "deployment": {
+      "id": "29adda02-8223-42a2-ac85-584fa2399409",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "author_email": "gopikatanmay@gmail.com",
+      "annotations": {
+        "workers/message": "Fix duplicate OAuth callbacks: cc3441ece; preserve existing secrets",
+        "workers/triggered_by": "deployment"
+      },
+      "versions": [
+        {
+          "version_id": "abeb97f8-ed9c-4b77-af62-baa063b5daab",
+          "percentage": 100
+        }
+      ],
+      "created_on": "2026-10-18T06:08:18.839562Z"
+    },
+    "upload": {
+      "rawKiB": 1972.31,
+      "gzipKiB": 560.01,
+      "startupMs": 21
+    },
+    "runtime": {
+      "startedAt": "2026-10-18T06:08:50.431Z",
+      "finishedAt": "2026-10-18T06:09:17.704Z",
+      "origin": "https://oxytype-api-staging.voltcrash.workers.dev",
+      "build": "2026.10.18_11.36_cc3441ece",
+      "routes": {
+        "/": 200,
+        "/about": 200,
+        "/settings": 200,
+        "/login": 200,
+        "/account": 307,
+        "/profile": 200,
+        "/privacy-policy.html": 200,
+        "/oauth-callback.html?requestId=stage7-check": 200,
+        "/404.html": 404,
+        "/api": 200,
+        "/api/public/typingStats": 200,
+        "/api/users": 401,
+        "/api/not-a-route": 404
+      },
+      "assets": {
+        "checked": 711,
+        "legacy": 13,
+        "allIntegrityChecksPass": true
+      },
+      "staleFunctionStatus": 409,
+      "csrfStatus": 403,
+      "oauth": {
+        "initiation": 200,
+        "providerHost": "github.com",
+        "callback": "https://oxytype-api-staging.voltcrash.workers.dev/api/auth/callback/github",
+        "secureHttpOnlyStateCookie": true,
+        "fullInteractiveSignIn": "separate browser acceptance"
+      },
+      "ssrNetworkWallMs": [
+        514.9314940000004, 533.386975999998, 518.5051280000007,
+        505.7906260000018, 512.6904839999988, 614.0573440000007,
+        480.6533210000016, 543.1239490000007, 516.6516039999988,
+        492.24714999999924, 498.7038990000001, 544.3384100000003,
+        505.30297500000233, 495.55645899999945, 522.6759080000011,
+        466.2974979999999, 472.6706230000018, 486.58875199999966,
+        511.717015000002, 474.3309020000015
+      ],
+      "latencyDefinition": "Hosted staging /about wall time from this host, including network/D1; not comparable to frozen local workerd CPU or browser budgets"
+    },
+    "offlineGuestTyping": "pass (1 hosted browser test)",
+    "localTests": {
+      "authAndOfflineBrowser": 6,
+      "serviceWorkerPolicy": 39,
+      "lintAndTypecheck": "pass"
+    },
+    "migrations": "none pending",
+    "secrets": "Existing remote values preserved; no private backend env files written locally"
+  },
+  "oauth": {
+    "pr": "https://github.com/voltcrash/oxytype/pull/146",
+    "cause": "Service-worker navigation preload and bypassed auth navigations each fetch the single-use OAuth callback",
+    "localRegression": "fails before fix; passes after rebuild",
+    "before": [
+      {
+        "navigationPreload": {
+          "enabled": true,
+          "headerValue": "true"
+        },
+        "path": "/api/auth/error",
+        "error": "state_mismatch"
+      },
+      {
+        "navigationPreload": {
+          "enabled": false,
+          "headerValue": "true"
+        },
+        "path": "/oauth-callback.html",
+        "error": "access_denied"
+      }
+    ],
+    "after": [
+      {
+        "navigationPreload": {
+          "enabled": true,
+          "headerValue": "true"
+        },
+        "path": "/oauth-callback.html",
+        "error": "access_denied"
+      },
+      {
+        "navigationPreload": {
+          "enabled": false,
+          "headerValue": "true"
+        },
+        "path": "/oauth-callback.html",
+        "error": "access_denied"
+      }
+    ],
+    "humanReport": "User confirms sign-in works without state_mismatch and typing results persist; header sign-out exposed the separate cached-session regression"
+  },
+  "stagingDatabase": {
+    "results": 2,
+    "distinctSubmissionHashes": 2,
+    "duplicateSubmissionGroups": 0,
+    "observedAt": "2026-10-18T06:09:09.341Z"
+  },
+  "productionAnchor": {
+    "worker": "oxytype",
+    "observedAt": "2026-10-18T05:59:10.205Z",
+    "deployment": {
+      "id": "13f70f72-b48e-49b1-8e83-6ecfb0217459",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "annotations": {
+        "workers/triggered_by": "deployment"
+      },
+      "versions": [
+        {
+          "version_id": "a59fe11e-0e88-4483-a837-0b65ef3c7212",
+          "percentage": 100
+        }
+      ],
+      "created_on": "2026-10-16T04:40:37.264773Z"
+    },
+    "version": {
+      "id": "a59fe11e-0e88-4483-a837-0b65ef3c7212",
+      "number": 14,
+      "createdOn": "2026-10-16T04:40:36.162645Z",
+      "scriptEtag": "828d667922364d3701b7b21337475a5d9af1083b0860753c5b67d1d69d7695f0",
+      "runtime": {
+        "assets": {
+          "html_handling": "none",
+          "serve_directly": false,
+          "raw_run_worker_first": true,
+          "base_path": "/"
+        },
+        "compatibility_date": "2026-10-02",
+        "usage_model": "standard"
+      },
+      "bindings": [
+        {
+          "name": "ASSETS",
+          "type": "assets"
+        },
+        {
+          "name": "BETTER_AUTH_API_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "BETTER_AUTH_SECRET",
+          "type": "secret_text"
+        },
+        {
+          "name": "BETTER_AUTH_URL",
+          "text": "https://oxytype.voltcrash.com/api/auth",
+          "type": "plain_text"
+        },
+        {
+          "database_id": "43d104e9-2fef-43db-95d7-c64a08310714",
+          "id": "43d104e9-2fef-43db-95d7-c64a08310714",
+          "name": "DB",
+          "type": "d1"
+        },
+        {
+          "name": "FRONTEND_URL",
+          "text": "https://oxytype.voltcrash.com",
+          "type": "plain_text"
+        },
+        {
+          "name": "GITHUB_CLIENT_ID",
+          "type": "secret_text"
+        },
+        {
+          "name": "GITHUB_CLIENT_SECRET",
+          "type": "secret_text"
+        },
+        {
+          "name": "MODE",
+          "text": "production",
+          "type": "plain_text"
+        },
+        {
+          "name": "SERVE_FRONTEND",
+          "text": "true",
+          "type": "plain_text"
+        },
+        {
+          "name": "TASKS",
+          "queue_name": "oxytype-production-tasks",
+          "type": "queue"
+        },
+        {
+          "name": "TURNSTILE_SECRET_KEY",
+          "type": "secret_text"
+        },
+        {
+          "name": "VERSION",
+          "text": "26.10.16",
+          "type": "plain_text"
+        }
+      ]
+    },
+    "release": {
+      "name": "26.10.11",
+      "publishedAt": "2026-10-16T04:40:40Z",
+      "tagName": "v26.10.11",
+      "targetCommitish": "d6e5be3e920e30051ce83c8947ac1225cd053488",
+      "url": "https://github.com/voltcrash/oxytype/releases/tag/v26.10.11"
+    },
+    "liveVersion": {
+      "version": "2026.10.16_04.40_d6e5be3e9"
+    },
+    "releaseRun": "https://github.com/voltcrash/oxytype/actions/runs/38851735856",
+    "note": "Read-only observation. Secrets listed by name/type only; values unavailable. Retained Worker version includes matching assets; no production mutation."
+  },
+  "production": {
+    "deployed": false,
+    "gate": "START_PRODUCTION_ENABLED remains unset",
+    "migrations": "none pending"
+  },
+  "compatibility": "Retain old HTTP transports and rollback assets for at least 30 days after last production legacy HTML, then require 7 days without supported legacy mutation traffic",
+  "logout": {
+    "source": "ec3cb0fa54afffcefa73f03b602de02c4b62784b",
+    "build": "2026.10.18_11.47_ec3cb0fa5",
+    "deployment": {
+      "id": "37857dcf-19ca-431d-bffe-2beedbd7a5cd",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "author_email": "gopikatanmay@gmail.com",
+      "annotations": {
+        "workers/message": "Fix header logout session consistency: ec3cb0fa5; preserve existing secrets",
+        "workers/triggered_by": "deployment"
+      },
+      "versions": [
+        {
+          "version_id": "808da37b-6ec1-4dc7-a037-ab2ce9b7909c",
+          "percentage": 100
+        }
+      ],
+      "created_on": "2026-10-18T06:19:28.991443Z"
+    },
+    "cause": "Header sign-out disposed the account while canonical session still contained the signed-in user; observing local actor changes could restore that stale identity",
+    "fix": "Cancel pending canonical session queries and publish guest before clearing account data; invalidate routes from successive canonical session identities",
+    "regressions": {
+      "before": "Canonical session unit test and header logout browser test fail",
+      "after": {
+        "authAndOfflineBrowser": 8,
+        "targetedUnit": 22,
+        "lintAndTypecheck": "pass"
+      },
+      "browserPaths": [
+        "/account redirects to login",
+        "/ retains working guest typing"
+      ]
+    },
+    "humanRecheck": {
+      "result": "pass",
+      "report": "Works; no error",
+      "scope": "User reloaded staging and used the header Sign out button; no Unauthorized notification or Unable to load Oxytype screen",
+      "recordedAt": "2026-10-18T06:25:56Z"
+    },
+    "runtime": {
+      "startedAt": "2026-10-18T06:19:59.290Z",
+      "finishedAt": "2026-10-18T06:20:31.232Z",
+      "origin": "https://oxytype-api-staging.voltcrash.workers.dev",
+      "build": "2026.10.18_11.47_ec3cb0fa5",
+      "routes": {
+        "/": 200,
+        "/about": 200,
+        "/settings": 200,
+        "/login": 200,
+        "/account": 307,
+        "/profile": 200,
+        "/privacy-policy.html": 200,
+        "/oauth-callback.html?requestId=stage7-check": 200,
+        "/404.html": 404,
+        "/api": 200,
+        "/api/public/typingStats": 200,
+        "/api/users": 401,
+        "/api/not-a-route": 404
+      },
+      "assets": {
+        "checked": 816,
+        "legacy": 13,
+        "allIntegrityChecksPass": true
+      },
+      "staleFunctionStatus": 409,
+      "csrfStatus": 403,
+      "oauth": {
+        "initiation": 200,
+        "providerHost": "github.com",
+        "callback": "https://oxytype-api-staging.voltcrash.workers.dev/api/auth/callback/github",
+        "secureHttpOnlyStateCookie": true,
+        "fullInteractiveSignIn": "separate browser acceptance"
+      },
+      "ssrNetworkWallMs": [
+        498.2360830000034, 492.0416499999992, 542.6010410000017,
+        501.7983060000006, 522.7527809999992, 483.05997099999877,
+        471.98698100000183, 468.0063549999977, 512.9106700000011,
+        544.9606750000021, 476.0774789999996, 449.80767000000196,
+        472.5937539999977, 512.5413059999992, 513.1308710000012,
+        473.5922649999993, 448.2961749999995, 464.6942490000001,
+        455.6921540000003, 494.6072380000005
+      ],
+      "latencyDefinition": "Hosted staging /about wall time from this host, including network/D1; not comparable to frozen local workerd CPU or browser budgets"
+    },
+    "offlineGuestTyping": "pass (1 hosted browser test)"
+  }
+}
