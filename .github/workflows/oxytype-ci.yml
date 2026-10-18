@@ -2,7 +2,6 @@ name: Oxytype CI
 
 env:
   NODE_VERSION: "24.21.0"
-  BUN_VERSION: "1.4.2"
   TURNSTILE_SITE_KEY: "1x00000000000000000000AA"
 
 permissions:
@@ -29,7 +28,6 @@ jobs:
       should-build-be: ${{ steps.export-changes.outputs.should-build-be }}
       should-build-fe: ${{ steps.export-changes.outputs.should-build-fe }}
       should-build-pkg: ${{ steps.export-changes.outputs.should-build-pkg }}
-      should-build-tui: ${{ steps.export-changes.outputs.should-build-tui }}
       assets-or-styles: ${{ steps.export-changes.outputs.assets-or-styles }}
       shared-inputs: ${{ steps.filter.outputs.shared-src }}
 
@@ -73,19 +71,11 @@ jobs:
             pkg-src:
               - 'packages/**/*'
               - '.github/workflows/production-release.yml'
-            tui-src:
-              - 'tui/**/*'
-              - 'packages/**/*'
-              - 'frontend/static/languages/english.json'
-              - 'frontend/static/quotes/english.json'
-              - 'frontend/static/layouts/qwerty.json'
-              - '.github/workflows/tui-release.yml'
 
       - name: Export changes
         id: export-changes
         run: |
           echo "should-build-pkg=${{ steps.filter.outputs.pkg-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
-          echo "should-build-tui=${{ steps.filter.outputs.tui-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
           echo "should-build-be=${{ steps.filter.outputs.be-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
           echo "should-build-fe=${{ steps.filter.outputs.fe-src == 'true' || steps.filter.outputs.be-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
           echo "assets-or-styles=${{ steps.filter.outputs.assets-or-styles == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
@@ -363,36 +353,3 @@ jobs:
 
       - name: Test
         run: vp run test-pkg
-
-  ci-tui:
-    name: ci-tui
-    needs: [pre-ci, prime-cache]
-    runs-on: ubuntu-latest
-    if: needs.pre-ci.outputs.should-build-tui == 'true' || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
-    steps:
-      - uses: actions/checkout@v7.0.1
-
-      - name: Set up Vite+ and install dependencies
-        uses: voidzero-dev/setup-vp@v1.21.1
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          # Restores the pnpm store saved by prime-cache.
-          cache: true
-          cache-save: false
-          # Bun is the tui runtime, pinned by setup-bun; don't let vp shim it.
-          package-manager: |
-            bun: false
-
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v2.2.0
-        with:
-          bun-version: ${{ env.BUN_VERSION }}
-
-      - name: Check lint
-        run: vp run lint-fast-tui && vp run lint-tui
-
-      - name: Test
-        run: vp run test-tui
-
-      - name: Build and smoke npm package
-        run: vp run --filter @voltcrash/oxytype package-check
