@@ -1,7 +1,7 @@
 {
   "stage": 8,
   "observedAt": "2026-10-18T06:20:18.483Z",
-  "status": "OAuth sign-in and persisted saves confirmed; header logout fix deployed for human recheck; production not deployed",
+  "status": "Human staging acceptance passed: OAuth sign-in, persisted saves and error-free header sign-out; production not deployed",
   "main": {
     "sha": "1776ac5f1caf96886a1924a9ce57b2d4698fcfce",
     "ci": "https://github.com/voltcrash/oxytype/actions/runs/39101773911",
@@ -284,7 +284,12 @@
         "/ retains working guest typing"
       ]
     },
-    "humanRecheck": "pending",
+    "humanRecheck": {
+      "result": "pass",
+      "report": "Works; no error",
+      "scope": "User reloaded staging and used the header Sign out button; no Unauthorized notification or Unable to load Oxytype screen",
+      "recordedAt": "2026-10-18T06:25:56Z"
+    },
     "runtime": {
       "startedAt": "2026-10-18T06:19:59.290Z",
       "finishedAt": "2026-10-18T06:20:31.232Z",
