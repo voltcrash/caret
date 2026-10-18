@@ -101,8 +101,7 @@ they are unused. No endpoint is approved for unconditional deletion in Stage 0.
 | `/api` GET (API-only `/`) | health/version/uptime; maintenance + root limiter/context | retained health route, HTTP tests; remove legacy dispatcher Stage 7 |
 | `/api/docs/{internal,internal.json,public,public.json}` | static OpenAPI/Redoc; docs root serves public HTML | retained docs/download routes, regenerate external contract only Stage 6 |
 | `/api/configure[/*]` | dev-only static config UI; uses configuration GET/schema/PATCH | dev server route/static asset; retain dev/admin policy; exclude prod |
-| Queue consumer | `runtime/tasks.ts`: validated outbox/job IDs, leases, retries/idempotency, `withRuntime` per invocation | Worker queue → jobs/services; tasks/reward D1 tests Stage 1/2/7 |
-| Scheduled consumer | every minute dispatch/recovery, 15-minute aggregates, hourly cleanup | Worker scheduled → jobs/services; preserve Cron, IDs, claims, retention |
+| Scheduled consumer | one-minute Cron, 15-minute aggregates, hourly cleanup | Worker scheduled → jobs/services; preserve Cron and retention |
 | External quote approval bridge | outgoing HTTPS `INTEGRATION_URL`, bearer secret + Idempotency-Key, allowlisted repository | retained integration service/job; no inbound webhook found; retries and bridge contract remain |
 
 Common policy inheritance for every operation: 100 KiB raw/decompressed body
