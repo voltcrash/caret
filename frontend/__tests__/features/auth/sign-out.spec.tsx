@@ -44,3 +44,16 @@ it("clears the canonical session and account together after header sign-out", as
   expect(getAuthenticatedUser()).toBeNull();
   expect(lease.isCurrent()).toBe(false);
 });
+
+it("keeps the session and account when the server rejects sign-out", async () => {
+  signOutRequest.mockResolvedValue({
+    data: null,
+    error: { message: "Sign-out unavailable", status: 503 },
+  });
+  await expect(signOut()).rejects.toThrow("Sign-out unavailable");
+  expect(
+    requireApplication().queryClient.getQueryData<SessionState>(sessionKey)
+      ?.user,
+  ).toEqual(user);
+  expect(getAuthenticatedUser()).toEqual(user);
+});
