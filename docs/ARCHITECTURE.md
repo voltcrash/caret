@@ -13,8 +13,8 @@ Package versions come from the workspace manifests and lockfile.
 | `packages/util/`, `packages/funbox/`, `packages/challenges/` | Shared helpers and typing features |
 | `packages/typing-core/` | Headless typing test logic shared by web and TUI |
 | `packages/oxlint-config/`, `packages/typescript-config/` | Shared tooling configuration |
-| `packages/release/` | Manual production and terminal release helpers |
-| `.github/workflows/` | CI, production releases, labeling, and repository automation |
+| `packages/release/` | Production CI validation and terminal npm release helpers |
+| `.github/workflows/` | CI, manual production deployments, labeling, and repository automation |
 
 The root is a private pnpm workspace. Vite+ (`vp run`) runs workspace tasks.
 Internal packages use the `@oxytype` scope and export TypeScript source; Vite,
