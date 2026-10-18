@@ -1,19 +1,4 @@
-# Oxytype deployment and terminal release helpers
-
-## Terminal npm releases
-
-`terminal-release.js` supplies the manual
-[Terminal npm release workflow](../../.github/workflows/tui-release.yml).
-It normalizes UTC date versions (`getDateVersion`, `v26.10.04` → `26.10.4`)
-to npm semver, requires `next` for prereleases, verifies the workflow checkout,
-and checks npm for version collisions. An existing version from the same commit
-skips publication; an existing version from another commit fails.
-
-The workflow runs on `main` in the `npm` environment, validates terminal/release
-tests, installs and smokes the packed artifact, then publishes `tui/dist/npm`
-with provenance. Configure npm trusted publishing or the bootstrap `NPM_TOKEN`
-as described in [the terminal guide](../../docs/TUI.md). The TUI source manifest
-stays private; publication uses the generated manifest and files whitelist.
+# Oxytype deployment helpers
 
 ## Website production deployments
 
