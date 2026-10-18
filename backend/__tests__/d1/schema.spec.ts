@@ -11,11 +11,10 @@ describe("D1 schema on workerd", () => {
     await test?.dispose();
   });
 
-  it("creates auth, application, ranking, and delivery tables", async () => {
+  it("creates auth, application and ranking tables without retired ones", async () => {
     const tables = await test.env.DB.prepare(
       "SELECT name FROM sqlite_master WHERE type='table'",
     ).all<{ name: string }>();
-    expect(tables.results.map((row) => row.name)).not.toContain("connections");
     expect(tables.results.map((row) => row.name)).toEqual(
       expect.arrayContaining([
         "auth_users",
@@ -27,10 +26,17 @@ describe("D1 schema on workerd", () => {
         "results",
         "daily_entries",
         "weekly_entries",
-        "scheduled_jobs",
-        "outbox",
       ]),
     );
+    for (const removed of [
+      "connections",
+      "inbox",
+      "reward_grants",
+      "scheduled_jobs",
+      "outbox",
+    ]) {
+      expect(tables.results.map((row) => row.name)).not.toContain(removed);
+    }
   });
   it("enforces normalized user names and cascades owned rows", async () => {
     await seedUser(test.env, "owner", "Name");
