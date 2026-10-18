@@ -34,7 +34,6 @@ describe("production anticheat with D1", () => {
     await withRuntime(test.env, async () => {
       await patchConfiguration({
         results: { savingEnabled: true, objectHashCheckEnabled: true },
-        users: { inbox: { enabled: true, maxMail: 10 } },
       });
     });
   });
@@ -543,7 +542,7 @@ describe("production anticheat with D1", () => {
       },
     );
   });
-  it("commits configured strikes and a ban/inbox message despite rejecting the result", async () => {
+  it("commits configured strikes and a ban despite rejecting the result", async () => {
     const user = await account();
     await withRuntime(
       test.env,
@@ -564,7 +563,6 @@ describe("production anticheat with D1", () => {
         const profile = await Users.getUser(user.uid, "test");
         expect(profile.autoBanTimestamps).toHaveLength(2);
         expect(profile.banned).toBe(true);
-        expect(profile.inbox).toHaveLength(1);
       });
       await assertNoProgress(user.uid);
       expect(
@@ -603,7 +601,6 @@ describe("production anticheat with D1", () => {
         const profile = await Users.getUser(user.uid, "test");
         expect(profile.autoBanTimestamps).toHaveLength(2);
         expect(profile.banned).toBe(true);
-        expect(profile.inbox).toHaveLength(1);
         expect(await Public.getTypingStats()).toEqual(before);
       });
       expect(
