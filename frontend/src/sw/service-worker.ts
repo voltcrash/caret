@@ -117,6 +117,10 @@ async function store(request: Request, response: Response): Promise<void> {
   await cache.put(request, response);
 }
 
+async function navigationResponse(event: FetchEvent): Promise<Response> {
+  return (await event.preloadResponse) ?? (await fetch(event.request));
+}
+
 async function respond(
   event: FetchEvent,
   strategy: Strategy,
@@ -124,7 +128,7 @@ async function respond(
   const { request } = event;
   if (strategy === "navigate") {
     try {
-      return (await event.preloadResponse) ?? (await fetch(request));
+      return await navigationResponse(event);
     } catch {
       return await offlineDocument(request.url);
     }
