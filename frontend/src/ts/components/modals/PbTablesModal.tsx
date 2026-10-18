@@ -4,11 +4,7 @@ import { createMemo, createSignal, JSXElement } from "solid-js";
 
 import { getConfig } from "../../config/store";
 import * as DB from "../../db";
-import {
-  pbTablesMode,
-  pbTablesBests,
-  pbTablesClient,
-} from "../../states/pb-tables-modal";
+import { pbTablesMode, pbTablesBests } from "../../states/pb-tables-modal";
 import { cn } from "../../utils/cn";
 import { Formatting } from "../../utils/format";
 import { getLanguageDisplayString } from "../../utils/strings";
@@ -168,7 +164,7 @@ export function PbTablesModal(): JSXElement {
   return (
     <AnimatedModal
       id="PbTables"
-      title={`${pbTablesClient() === "tui" ? "TUI" : "Web"} personal bests`}
+      title="personal bests"
       modalClass="max-w-full gap-0 p-4 sm:p-8"
       beforeShow={() => {
         setRows(buildRows(pbTablesMode()));
