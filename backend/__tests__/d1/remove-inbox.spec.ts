@@ -18,9 +18,13 @@ describe("inbox removal migration", () => {
         if (file !== "0014_remove_inbox.sql") return;
         await seedUser({ DB: db }, "owner");
         await db.batch([
-          db
-            .prepare("UPDATE users SET data=? WHERE uid='owner'")
-            .bind(JSON.stringify(userData)),
+          db.prepare("UPDATE users SET data=? WHERE uid='owner'").bind(
+            JSON.stringify({
+              ...userData,
+              inbox: [{ id: "legacy-mail" }],
+              inboxUnreadSize: 1,
+            }),
+          ),
           db.prepare(
             "INSERT INTO daily_entries(uid,board,period,score,expires_at,data) VALUES('owner','english_time_15',0,100,9999999999999,'{}')",
           ),
@@ -99,6 +103,11 @@ describe("inbox removal migration", () => {
           ).first<string>("data")) ?? "null",
         ),
       ).toEqual(userData);
+      expect(
+        await test.env.DB.prepare(
+          "SELECT version FROM users WHERE uid='owner'",
+        ).first("version"),
+      ).toBe(1);
       for (const name of ["daily_entries", "weekly_entries"]) {
         expect(
           await test.env.DB.prepare(
