@@ -21,7 +21,6 @@ export async function deleteUserAccount(
       statement("DELETE FROM audit_logs WHERE uid=?", uid),
       statement("DELETE FROM quote_submissions WHERE submitted_by=?", uid),
       statement("DELETE FROM reports WHERE uid=?", uid),
-      statement("DELETE FROM outbox WHERE uid=?", uid),
       statement("DELETE FROM users WHERE uid=?", uid),
       statement("DELETE FROM auth_users WHERE id=?", uid),
     ];
