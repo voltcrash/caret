@@ -1,7 +1,7 @@
 # Stage 8: remove the old architecture and cut over
 
 Base: Stage 7 `bb8dd2cd3`, [PR #142](https://github.com/voltcrash/oxytype/pull/142).
-Branch `stack/stage-eight-start-migration`, stacked on Stage 7, in small commits.
+Branch `stack/stage-eight-start-migration`, [PR #143](https://github.com/voltcrash/oxytype/pull/143), stacked on Stage 7, in small commits.
 Stage 7 ledger/prerequisites verified at takeover; working tree clean. No TUI
 changes.
 
@@ -10,7 +10,7 @@ changes.
 | Phase | Status |
 | --- | --- |
 | 8.1 Delete superseded code, document the system | Complete |
-| 8.2 Migration acceptance gate | Local gate complete ([validation](evidence/stage-8-validation.json)); CI on PR |
+| 8.2 Migration acceptance gate | Complete: local gate + all 12 CI checks on `200f0a710` ([validation](evidence/stage-8-validation.json), [run](https://github.com/voltcrash/oxytype/actions/runs/39099769261)) |
 | 8.3 Release, observe, retire compatibility | Not started: needs stack merge, staging acceptance with interactive OAuth, `START_PRODUCTION_ENABLED` |
 
 ## 8.1 Deleted
@@ -92,7 +92,6 @@ counts equal Stage 0 (4/6/19/7, save 18–20).
 
 ## Remaining before Stage 8 exit
 
-- CI green on the Stage 8 PR.
 - Merge the stack (PRs #135–#142 and Stage 8) to `main`; the production
   workflow runs only on `main`.
 - Re-observe the production rollback anchor; deploy the validated commit to

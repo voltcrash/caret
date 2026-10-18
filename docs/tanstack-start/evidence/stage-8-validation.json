@@ -1,11 +1,11 @@
 {
   "stage": 8,
-  "status": "local gate pass; CI and release pending",
+  "status": "pass (8.1-8.2); release pending",
   "base": "bb8dd2cd3",
-  "implementation": "b51ab7f89",
-  "pr": "pending",
+  "implementation": "200f0a710149ac05da0c8317c83ac53e549898de",
+  "pr": "https://github.com/voltcrash/oxytype/pull/143",
   "basePr": "https://github.com/voltcrash/oxytype/pull/142",
-  "ci": "pending",
+  "ci": "https://github.com/voltcrash/oxytype/actions/runs/39099769261",
   "environment": {
     "node": "24.22.0 (vp-managed)",
     "platform": "Linux 7.1 aarch64 (Asahi)",
@@ -95,7 +95,6 @@
     "measure-worker.ts could not find workerd or read sub-second CPU on Linux."
   ],
   "notRun": [
-    "CI on the Stage 8 head (runs on PR)",
     "staging deployment, hosted browser acceptance and interactive OAuth (needs Cloudflare credentials and a human sign-in)",
     "production cutover and launch observation (8.3)"
   ]
