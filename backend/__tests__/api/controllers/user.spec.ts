@@ -23,7 +23,6 @@ import * as LogDal from "../../../src/dal/logs";
 import { newId } from "../../../src/utils/id";
 import { PersonalBest } from "@oxytype/schemas/shared";
 import { mockAuthenticateWithApeKey } from "../../__testData__/auth";
-import { randomUUID } from "node:crypto";
 import { UserStreak } from "@oxytype/schemas/users";
 import { pb } from "../../__testData__/users";
 
