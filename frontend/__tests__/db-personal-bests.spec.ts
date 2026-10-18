@@ -6,6 +6,7 @@ vi.mock("../src/ts/collections/results", () => ({
 
 import { getDefaultSnapshot } from "../src/ts/constants/default-snapshot";
 import * as DB from "../src/ts/db";
+import { getSnapshot as observedSnapshot } from "../src/ts/states/snapshot";
 
 function result(
   wpm: number,
@@ -36,6 +37,19 @@ const pb = (lazyMode = false): ReturnType<typeof DB.getLocalPB> =>
   DB.getLocalPB("time", "15", false, false, "english", "normal", lazyMode, []);
 
 describe("local personal bests", () => {
+  it("publishes favorite acknowledgements through the account query without losing progression", () => {
+    DB.setSnapshot(
+      { ...getDefaultSnapshot(), xp: 42 },
+      { dispatchEvent: false },
+    );
+    DB.updateLocalQuoteFavorite("english", "7", true);
+    expect(observedSnapshot()?.favoriteQuotes?.english).toEqual(["7"]);
+    DB.updateLocalQuoteFavorite("english", "7", true);
+    DB.updateLocalQuoteFavorite("english", "8", true);
+    DB.updateLocalQuoteFavorite("english", "7", false);
+    expect(observedSnapshot()?.favoriteQuotes?.english).toEqual(["8"]);
+    expect(DB.getSnapshot()?.xp).toBe(42);
+  });
   it("creates, updates and separates personal bests by settings", () => {
     const snapshot = getDefaultSnapshot();
     snapshot.personalBests = { words: {} } as typeof snapshot.personalBests;

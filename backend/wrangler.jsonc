@@ -1,38 +1,10 @@
 {
+  // D1 schema owner only: local migrations, generation and audits. The
+  // application Worker (fetch, queues, Cron) deploys from frontend/.
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "oxytype-api-staging",
-  "main": "src/worker.ts",
   "account_id": "eb2679ce4f23ae7db4e6c4e3fcf8c3c1",
   "compatibility_date": "2026-10-02",
-  "workers_dev": true,
-  "preview_urls": false,
-  "observability": { "enabled": true },
-  "assets": {
-    "directory": "dist/assets",
-    "binding": "ASSETS",
-    "run_worker_first": true,
-    "html_handling": "none",
-  },
-  "triggers": { "crons": ["* * * * *"] },
-  "queues": {
-    "producers": [{ "binding": "TASKS", "queue": "oxytype-staging-tasks" }],
-    "consumers": [
-      {
-        "queue": "oxytype-staging-tasks",
-        "max_batch_size": 1,
-        "max_batch_timeout": 5,
-        "max_retries": 5,
-        "max_concurrency": 1,
-        "dead_letter_queue": "oxytype-staging-dlq",
-      },
-    ],
-  },
-  "vars": {
-    "MODE": "production",
-    "FRONTEND_URL": "http://localhost:3000",
-    "BETTER_AUTH_URL": "https://oxytype-api-staging.voltcrash.workers.dev/api/auth",
-    "VERSION": "staging",
-  },
   "d1_databases": [
     {
       "binding": "DB",

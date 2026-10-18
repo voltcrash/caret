@@ -1,3 +1,7 @@
+import { createAppOwned } from "../../app/application";
+import { appObject } from "../../app/state";
 import { Formatting } from "../utils/format";
-import { Config } from "../config/store";
-export default new Formatting(Config);
+import { getMutableConfig } from "../config/store";
+export default appObject(
+  createAppOwned(() => new Formatting(getMutableConfig())),
+);

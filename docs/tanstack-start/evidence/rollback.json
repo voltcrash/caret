@@ -1,0 +1,39 @@
+{
+  "observedDate": "2026-10-15",
+  "worker": "oxytype",
+  "config": "backend/wrangler.production.json",
+  "deployment": {
+    "id": "a6537265-9f30-4895-9a8d-b5ca075e995a",
+    "created_on": "2026-10-15T04:50:16.749063Z",
+    "versions": [
+      {
+        "version_id": "ad9a94aa-739f-4a95-bb20-c7782f4c5770",
+        "percentage": 100
+      }
+    ]
+  },
+  "release": {
+    "tag": "v26.10.15",
+    "sha": "e9bb89fe72b7af4f3078d821277dd38cad482a26",
+    "url": "https://github.com/voltcrash/oxytype/releases/tag/v26.10.15",
+    "successfulRun": "https://github.com/voltcrash/oxytype/actions/runs/38683451809",
+    "githubReleaseAssets": []
+  },
+  "mappingEvidence": "Release workflow deploys then publishes same SHA; timestamps align. Cloudflare version ID independently observed; re-observe immediately before cutover.",
+  "versionMetadata": {
+    "id": "ad9a94aa-739f-4a95-bb20-c7782f4c5770",
+    "number": 13,
+    "created_on": "2026-10-15T04:50:12.398025Z",
+    "scriptEtag": "236f50200c49d71c2a2a8d832814959f3dec0338dd0203a218c0f6004c9a1c2f",
+    "runtime": {
+      "assets": {
+        "html_handling": "none",
+        "serve_directly": false,
+        "raw_run_worker_first": true,
+        "base_path": "/"
+      },
+      "compatibility_date": "2026-10-02",
+      "usage_model": "standard"
+    }
+  }
+}

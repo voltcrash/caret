@@ -1,8 +1,8 @@
-import { Config } from "../config/store";
+import { getMutableConfig } from "../config/store";
 import { applyConfig } from "../config/lifecycle";
 import * as DB from "../db";
 import { showSuccessNotification } from "../states/notifications";
-import * as TestLogic from "../test/test-logic";
+import * as TestLogic from "../../features/typing/runtime/test-logic";
 import {
   clearActiveTags,
   setTagActive,
@@ -23,7 +23,7 @@ export async function apply(_id: string): Promise<void> {
 
   if (isPartialPreset(presetToApply)) {
     await applyConfig({
-      ...structuredClone(Config),
+      ...structuredClone(getMutableConfig()),
       ...presetToApply.config,
     });
   } else {

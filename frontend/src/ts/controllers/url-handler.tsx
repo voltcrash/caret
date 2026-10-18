@@ -21,19 +21,17 @@ import { tryCatchSync } from "@oxytype/util/trycatch";
 import { decompressFromURI } from "lz-ts";
 import { z } from "zod";
 
+import * as CustomText from "../../features/typing/runtime/custom-text";
+import { restart as restartTest } from "../../features/typing/runtime/test-logic";
 import { setConfig } from "../config/setters";
-import { Config } from "../config/store";
-import { authEvent } from "../events/auth";
+import { getMutableConfig } from "../config/store";
 import {
   showErrorNotification,
   showNoticeNotification,
   showSuccessNotification,
 } from "../states/notifications";
 import { setSelectedQuoteId } from "../states/test";
-import * as CustomText from "../test/custom-text";
-import { restart as restartTest } from "../test/test-logic";
 import * as Misc from "../utils/misc";
-import { loadBrowserHandoff } from "./browser-handoff";
 import * as ChallengeController from "./challenge-controller";
 
 const customThemeUrlDataSchema = z.object({
@@ -75,8 +73,8 @@ function loadCustomThemeFromUrl(getOverride?: string): void {
     return;
   }
 
-  const oldCustomTheme = Config.customTheme;
-  const oldCustomThemeColors = Config.customThemeColors;
+  const oldCustomTheme = getMutableConfig().customTheme;
+  const oldCustomThemeColors = getMutableConfig().customThemeColors;
   try {
     setConfig("customThemeColors", colorArray);
     showSuccessNotification("Custom theme applied");
@@ -87,7 +85,7 @@ function loadCustomThemeFromUrl(getOverride?: string): void {
       setConfig("customBackgroundFilter", filter);
     }
 
-    if (!Config.customTheme) setConfig("customTheme", true);
+    if (!getMutableConfig().customTheme) setConfig("customTheme", true);
   } catch (e) {
     showNoticeNotification(
       "Something went wrong. Reverting to previous state.",
@@ -149,7 +147,7 @@ export function loadTestSettingsFromUrl(getOverride?: string): void {
     applied["mode"] = de[0];
   }
 
-  const mode = de[0] ?? Config.mode;
+  const mode = de[0] ?? getMutableConfig().mode;
   if (de[1] !== null) {
     if (mode === "time") {
       setConfig("time", parseInt(de[1], 10), {
@@ -293,18 +291,9 @@ async function loadChallengeFromUrl(getOverride?: string): Promise<void> {
     });
 }
 
-authEvent.subscribe(
-  async (event) => {
-    if (event.type === "authStateChanged") {
-      const search = window.location.search;
-
-      await event.data.loadPromise;
-
-      loadCustomThemeFromUrl(search);
-      loadTestSettingsFromUrl(search);
-      void loadChallengeFromUrl(search);
-      void loadBrowserHandoff(search, event.data.isUserSignedIn);
-    }
-  },
-  import.meta.hot,
-);
+/** Shared theme, test-settings and challenge links; raw search keeps legacy decoding. */
+export function applyUrlSettings(search: string): void {
+  loadCustomThemeFromUrl(search);
+  loadTestSettingsFromUrl(search);
+  void loadChallengeFromUrl(search);
+}

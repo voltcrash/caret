@@ -1,9 +1,11 @@
-import { createSignal, JSX } from "solid-js";
+import { createAppSignal } from "../../app/state";
+import { JSX } from "solid-js";
 import { createEvent } from "../hooks/createEvent";
 
-export const [getWordsWrapperHeight, setWordsWrapperHeight] = createSignal("");
+export const [getWordsWrapperHeight, setWordsWrapperHeight] =
+  createAppSignal("");
 export const [getWordsInputStyle, setWordsInputStyle] =
-  createSignal<JSX.CSSProperties>({
+  createAppSignal<JSX.CSSProperties>({
     top: "0px",
     left: "0px",
     width: "",

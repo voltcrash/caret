@@ -1,0 +1,63 @@
+{
+  "worker": "oxytype-api-staging",
+  "origin": "https://oxytype-api-staging.voltcrash.workers.dev",
+  "note": "Staging only; production untouched. Each step deploys or restores a Worker version together with its own asset manifest. Wrangler rollback restores no bound resources; D1 writes are preserved.",
+  "sequence": [
+    {
+      "step": "legacy anchor",
+      "version": "b00d3081-5902-4479-9822-5e4923787340",
+      "source": "rollback Hono/static site, deployed 2026-10-03"
+    },
+    {
+      "step": "first Start deployment",
+      "version": "0092ff85-c8ee-4054-ae1f-840f471a10ae",
+      "upload": "1972.69 KiB / gzip 560.14 KiB; 958 new assets"
+    },
+    {
+      "step": "rollback to legacy anchor",
+      "version": "b00d3081-5902-4479-9822-5e4923787340",
+      "result": "success; no database restore"
+    },
+    {
+      "step": "Start redeploy",
+      "version": "e6e89497-a19c-4147-bd51-4f1b8346ace7",
+      "build": "2026.10.17_00.07_361c6831d",
+      "upload": "1972.25 KiB / gzip 559.97 KiB"
+    },
+    {
+      "step": "Start with retained previous public assets",
+      "version": "d39dd875-1042-4d70-badf-cb3b101560e0",
+      "build": "2026.10.17_00.25_52a107bac",
+      "checks": "490 current/retained assets verified; hosted offline typing passed"
+    },
+    {
+      "step": "matching Worker/assets rollback drill",
+      "version": "e6e89497-a19c-4147-bd51-4f1b8346ace7",
+      "result": "success; Worker header and /version.json both report 2026.10.17_00.07_361c6831d"
+    },
+    {
+      "step": "final Stage 7 artifact",
+      "version": "9b1fbf4e-592a-43b0-941a-1080aa7a346f",
+      "build": "2026.10.17_10.46_3d61217df",
+      "upload": "1972.25 KiB / gzip 559.97 KiB",
+      "checks": "check:staging artifact match; hosted routes, 490 assets, CSP, auth cookies, stale functions; hosted offline typing"
+    }
+  ],
+  "queue": {
+    "queue": "oxytype-staging-tasks",
+    "delivery": "valid absent-job message accepted and acknowledged as a no-op",
+    "cron": "scheduled invocations log the deployed build ID with outcome ok"
+  },
+  "d1AfterRollback": {
+    "observedAt": "2026-10-17T04:45:00Z",
+    "users": 1,
+    "results": 1,
+    "auth_users": 1,
+    "auth_sessions": 0,
+    "user_activity": 1,
+    "weekly_entries": 0,
+    "client_profiles": 1,
+    "matchesAnchorAfterMigrations": true
+  },
+  "current": "9b1fbf4e-592a-43b0-941a-1080aa7a346f"
+}

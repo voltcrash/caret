@@ -4,13 +4,13 @@ import { expect, it } from "vite-plus/test";
 import type { ResolvedConfig } from "vite";
 
 import { Fonts } from "../../src/ts/constants/fonts";
-import { fontStyles, pruneIconRules } from "../../vite-plugins/font-styles";
+import { fontStyles } from "../../vite-plugins/font-styles";
 
-async function generate(isDevelopment: boolean): Promise<{
+async function generate(): Promise<{
   css: Map<string, string>;
   files: string[];
 }> {
-  const plugin = fontStyles({ isDevelopment });
+  const plugin = fontStyles();
   const config = plugin.config;
   const resolved = plugin.configResolved;
   if (typeof config !== "function" || typeof resolved !== "function") {
@@ -38,92 +38,41 @@ async function generate(isDevelopment: boolean): Promise<{
   };
 }
 
-it.each([true, false])(
-  "preserves font families, weights, and preview URLs (development=%s)",
-  async (isDevelopment) => {
-    const css = (await generate(isDevelopment)).css.get("fonts.css") ?? "";
-    const faces = new Map(
-      [...css.matchAll(/@font-face\s*{([^}]+)}/g)].map((match) => [
-        match[1]?.match(/font-family: "([^"]+)"/)?.[1],
-        match[1] ?? "",
-      ]),
-    );
-    expect(faces.has("Vazirharf")).toBe(true);
-    for (const [name, font] of Object.entries(Fonts)) {
-      const family = name.replaceAll("_", " ");
-      if (font.systemFont) {
-        expect(faces.has(family)).toBe(false);
-        continue;
-      }
-      expect(faces.get(family)).toContain(
-        `font-weight: ${font.weight ?? 400};`,
-      );
-      expect(faces.get(family)).toContain(`url("/webfonts/${font.fileName}")`);
-      expect(faces.get(`${family} Preview`)).toContain(
-        `url("/${isDevelopment ? "webfonts" : "webfonts-preview"}/${font.fileName}")`,
-      );
+it("preserves font families, weights, and preview URLs", async () => {
+  const css = (await generate()).css.get("fonts.css") ?? "";
+  const faces = new Map(
+    [...css.matchAll(/@font-face\s*{([^}]+)}/g)].map((match) => [
+      match[1]?.match(/font-family: "([^"]+)"/)?.[1],
+      match[1] ?? "",
+    ]),
+  );
+  expect(faces.has("Vazirharf")).toBe(true);
+  for (const [name, font] of Object.entries(Fonts)) {
+    const family = name.replaceAll("_", " ");
+    if (font.systemFont) {
+      expect(faces.has(family)).toBe(false);
+      continue;
     }
-  },
-);
+    expect(faces.get(family)).toContain(`font-weight: ${font.weight ?? 400};`);
+    expect(faces.get(family)).toContain(`url("/webfonts/${font.fileName}")`);
+    expect(faces.get(`${family} Preview`)).toContain(
+      `url("/webfonts/${font.fileName}")`,
+    );
+  }
+});
 
-it("uses full icon fonts in development and generated subsets in production", async () => {
-  const development = (await generate(true)).css.get("fontawesome.css") ?? "";
-  const production = (await generate(false)).css.get("fontawesome.css") ?? "";
+it("serves the full icon fonts with every icon rule", async () => {
+  const { css, files } = await generate();
+  const fontawesome = css.get("fontawesome.css") ?? "";
   for (const file of [
     "fa-solid-900.woff2",
     "fa-regular-400.woff2",
     "fa-brands-400.woff2",
   ]) {
-    expect(development).toContain(`webfonts/${file}`);
-    expect(production).toContain(`/webfonts-generated/${file}`);
+    expect(fontawesome).toContain(`webfonts/${file}`);
   }
-  expect(development).not.toContain("/webfonts-generated/");
-  expect(production).not.toContain("../webfonts/");
-  expect(production).not.toContain("fa-v4compatibility.woff2");
-});
-
-it("keeps development and production CSS separate", async () => {
-  const development = (await generate(true)).files;
-  const production = (await generate(false)).files;
-  expect(development).toHaveLength(2);
-  expect(production).toHaveLength(2);
-  expect(
-    development.every((file) => file.includes("/generated/development/")),
-  ).toBe(true);
-  expect(
-    production.every((file) => file.includes("/generated/production/")),
-  ).toBe(true);
-  expect(production.some((file) => development.includes(file))).toBe(false);
-});
-
-it("keeps only icon rules for icons in the subset font", () => {
-  const css = `.fa-solid { --fa-family: "Font Awesome 7 Free"; }
-.fa-keyboard {
-  --fa: "\\f11c";
-}
-
-.fa-unused {
-  --fa: "\\f000";
-}
-
-.fa-close,
-.fa-xmark {
-  --fa: "\\f00d";
-}
-.fa-spin { animation-name: fa-spin; }
-`;
-  const pruned = pruneIconRules(css, new Set(["keyboard", "xmark"]));
-  expect(pruned).toContain(".fa-keyboard");
-  expect(pruned).toContain(".fa-close,\n.fa-xmark");
-  expect(pruned).not.toContain(".fa-unused");
-  expect(pruned).toContain(".fa-solid {");
-  expect(pruned).toContain(".fa-spin {");
-});
-
-it("prunes unused icon rules in production only", async () => {
-  const development = (await generate(true)).css.get("fontawesome.css") ?? "";
-  const production = (await generate(false)).css.get("fontawesome.css") ?? "";
-  expect(development).toContain(".fa-arrow-up-from-water-pump");
-  expect(production).not.toContain(".fa-arrow-up-from-water-pump");
-  expect(production).toContain(".fa-keyboard");
+  expect(fontawesome).not.toContain("url(../webfonts/");
+  expect(fontawesome).toContain(".fa-keyboard");
+  expect(fontawesome).toContain(".fa-arrow-up-from-water-pump");
+  expect(files).toHaveLength(2);
 });

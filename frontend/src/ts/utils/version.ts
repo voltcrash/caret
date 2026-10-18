@@ -11,13 +11,10 @@ const memoryLS = new LocalStorageWithSchema({
   fallback: "",
 });
 
-function purgeCaches(): void {
-  if (!("caches" in window)) return;
-  void caches.keys().then(function (names) {
-    for (const name of names) void caches.delete(name);
-  });
-}
-
+/**
+ * Release check for the version indicator. Caches are never purged here: the
+ * service worker versions them per build and owns their lifetime.
+ */
 export async function fetchLatestVersion(): Promise<{
   text: string;
   isNew: boolean;
@@ -37,7 +34,6 @@ export async function fetchLatestVersion(): Promise<{
 
   if (isNew || memoryVersion === "") {
     memoryLS.set(currentVersion);
-    purgeCaches();
   }
 
   return {

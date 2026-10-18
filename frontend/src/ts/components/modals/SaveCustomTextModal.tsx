@@ -2,6 +2,7 @@ import { createForm } from "@tanstack/solid-form";
 import { Accessor, JSXElement } from "solid-js";
 import { z } from "zod";
 
+import * as CustomText from "../../../features/typing/runtime/custom-text";
 import { setCustomTextIndicator } from "../../states/core";
 import { hideModal } from "../../states/modals";
 import {
@@ -9,7 +10,6 @@ import {
   showErrorNotification,
   showSuccessNotification,
 } from "../../states/notifications";
-import * as CustomText from "../../test/custom-text";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Checkbox } from "../ui/form/Checkbox";
 import { InputField } from "../ui/form/InputField";

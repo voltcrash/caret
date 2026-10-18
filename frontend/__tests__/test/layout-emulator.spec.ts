@@ -2,7 +2,7 @@ import { describe, it, expect, afterEach } from "vite-plus/test";
 import {
   updateAltGrState,
   getIsAltGrPressed,
-} from "../../src/ts/test/layout-emulator";
+} from "../../src/features/typing/runtime/layout-emulator";
 
 describe("LayoutEmulator", () => {
   describe("updateAltGrState", () => {

@@ -1,4 +1,4 @@
-import { createSignal } from "solid-js";
+import { createAppSignal } from "../../app/state";
 
 import { showModal } from "./modals";
 
@@ -7,9 +7,8 @@ export type EditPresetData = {
   name: string;
 };
 
-const [editPresetData, setEditPresetData] = createSignal<EditPresetData | null>(
-  null,
-);
+const [editPresetData, setEditPresetData] =
+  createAppSignal<EditPresetData | null>(null);
 
 export { editPresetData };
 

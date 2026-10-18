@@ -11,29 +11,12 @@ function writeIfChanged(file: string, content: string): void {
   writeFileSync(file, content);
 }
 
-/**
- * Drops `.fa-name { --fa: "..." }` rules for icons missing from the subset
- * font; they could never render a glyph anyway.
- */
-export function pruneIconRules(css: string, used: Set<string>): string {
-  return css.replace(
-    /((?:\.fa-[a-z0-9-]+,\s*)*\.fa-[a-z0-9-]+)\s*\{\s*--fa:\s*"[^"]*";\s*\}\s*/g,
-    (rule, selectors: string) =>
-      selectors
-        .split(",")
-        .some((selector) => used.has(selector.trim().slice(".fa-".length)))
-        ? rule
-        : "",
-  );
-}
-
 // Real CSS files let Tailwind resolve these imports without a Sass preprocessor.
-// Separate directories keep development and production servers independent.
-export function fontStyles(options: { isDevelopment: boolean }): Plugin {
+// Start and Storybook serve the full font and icon assets.
+export function fontStyles(): Plugin {
   const output = path.join(
     fileURLToPath(new NodeURL("..", import.meta.url)),
     "src/styles/generated",
-    options.isDevelopment ? "development" : "production",
   );
   const imports = {
     "oxytype-fonts.css": path.join(output, "fonts.css"),
@@ -44,7 +27,7 @@ export function fontStyles(options: { isDevelopment: boolean }): Plugin {
     config() {
       return { resolve: { alias: imports } };
     },
-    async configResolved() {
+    configResolved() {
       mkdirSync(output, { recursive: true });
       const face = (family: string, file: string, weight = 400): string => `
 @font-face {
@@ -62,11 +45,7 @@ export function fontStyles(options: { isDevelopment: boolean }): Plugin {
         const family = name.replaceAll("_", " ");
         faces.push(face(family, `/webfonts/${font.fileName}`, font.weight));
         faces.push(
-          face(
-            `${family} Preview`,
-            `/${options.isDevelopment ? "webfonts" : "webfonts-preview"}/${font.fileName}`,
-            font.weight,
-          ),
+          face(`${family} Preview`, `/webfonts/${font.fileName}`, font.weight),
         );
       }
       writeIfChanged(imports["oxytype-fonts.css"], faces.join("\n"));
@@ -77,22 +56,11 @@ export function fontStyles(options: { isDevelopment: boolean }): Plugin {
           const file = require.resolve(
             `@fortawesome/fontawesome-free/css/${name}.css`,
           );
-          const fonts = options.isDevelopment
-            ? `${path.relative(output, path.resolve(path.dirname(file), "../webfonts")).replaceAll(path.sep, "/")}/`
-            : "/webfonts-generated/";
+          const fonts = `${path.relative(output, path.resolve(path.dirname(file), "../webfonts")).replaceAll(path.sep, "/")}/`;
           return readFileSync(file, "utf8").replaceAll("../webfonts/", fonts);
         },
       );
-      let fontawesome = styles.join("\n");
-      if (!options.isDevelopment) {
-        const { getFontawesomeConfig } = await import("./fontawesome-subset");
-        const { solid, regular, brands } = getFontawesomeConfig();
-        fontawesome = pruneIconRules(
-          fontawesome,
-          new Set([...solid, ...regular, ...brands]),
-        );
-      }
-      writeIfChanged(imports["oxytype-fontawesome.css"], fontawesome);
+      writeIfChanged(imports["oxytype-fontawesome.css"], styles.join("\n"));
     },
   };
 }

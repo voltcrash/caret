@@ -1,0 +1,113 @@
+[
+  {
+    "command": "vp run test-fe",
+    "exitCode": 0,
+    "result": "205 files / 2225 tests",
+    "logSha256": "5e553a8d65527f84ea606037aef75ef69c5a9475a1a2357bdccb57964d9f4dbb"
+  },
+  {
+    "command": "vp run test-be",
+    "exitCode": 0,
+    "result": "44 unit files / 801 tests; 30 D1 files / 124 tests",
+    "logSha256": "6350466af122fedef76c4643cec0d163f9c9744fe52486420543581d424fec9b"
+  },
+  {
+    "command": "vp run test-pkg",
+    "exitCode": 0,
+    "result": "54 files / 636 tests, seven workspaces",
+    "logSha256": "f63bda250850caf8cbd3c79d9f1f1c5abd4a0a8e09f3cd61a77a4be4a6da8115"
+  },
+  {
+    "command": "vp run test-e2e",
+    "exitCode": 0,
+    "result": "30 browser checks",
+    "logSha256": "54b3fffc6ef7d1d4c4202f95433e1f40e4dd40927b71df7f502927dc817f3cf8"
+  },
+  {
+    "command": "vp -C frontend exec playwright test e2e/migration-characterization.spec.ts",
+    "exitCode": 0,
+    "result": "1 new browser check",
+    "logSha256": "6b0986843cc7b1a66c3c415c365e7dc39837f9f38cbea3caa39013bde7b6e35f"
+  },
+  {
+    "command": "vp exec env TURNSTILE_SITE_KEY=1x00000000000000000000AA BACKEND_URL=/api AUTH_PROVIDERS=github vp run --no-cache build-fe",
+    "exitCode": 0,
+    "result": "production fixture build",
+    "logSha256": "e6f4ad38a2e9ee239be74b56d387b278c7e84a2af8eb6e153bb1c7927d26a6a5"
+  },
+  {
+    "command": "vp run build-be",
+    "exitCode": 0,
+    "result": "OpenAPI/assets/Worker dry-run",
+    "logSha256": "23e971f69f30e70051dbcb09976f64dfce3d8ef2e0ab3f78938bd75516836de6"
+  },
+  {
+    "command": "vp run lint-fe",
+    "exitCode": 0,
+    "result": "type-aware/type-check, agent format",
+    "logSha256": "e0e8934dfdb7a05042c46a0304429719b522c04adec139edda037c351610ce7a"
+  },
+  {
+    "command": "vp run lint-be",
+    "exitCode": 0,
+    "result": "type-aware/type-check, agent format",
+    "logSha256": "4cd41f87a2e40144cd0ab0265d0f55f3d246bc88c794cc14bc0fb25996b0ea75"
+  },
+  {
+    "command": "vp run lint-pkg",
+    "exitCode": 0,
+    "result": "type-aware/type-check, agent format",
+    "logSha256": "70b46a88fd8d934483c683558725963bd23e103a84e3af5f7a7e1e40af08e03f"
+  },
+  {
+    "command": "vp -C frontend exec env MIGRATION_BASELINE_OUTPUT=/tmp/oxytype-stage0-readiness.json playwright test --config playwright.migration.config.ts",
+    "exitCode": 0,
+    "result": "10 cold + 10 warm + 10 about",
+    "logSha256": "57e17b3ac0cca24a780dd623d3b95f70f95a32fbb2aab2bf7a0e85ee94985a98"
+  },
+  {
+    "command": "vp -C backend exec tsx scripts/migration-baseline.ts /tmp/oxytype-stage0-worker.json",
+    "exitCode": 0,
+    "result": "5 local workerd instances, 50 persisted valid saves, D1 counts, CPU batches",
+    "logSha256": "5c78969eafbcba8e8e69e83b43ddf89d9d5df81e4566f28a4bfe399d52ef19f2"
+  },
+  {
+    "command": "vp -C backend test run __tests__/migration-inventory.spec.ts",
+    "exitCode": 0,
+    "result": "3 inventory tests pass",
+    "logSha256": "a106f70ee2afa7c2e964b360f8e1af0e548f896e8b3df3bdd462e4236e6717d5"
+  },
+  {
+    "command": "vp -C frontend test run __tests__/utils/migration-performance.spec.ts",
+    "exitCode": 0,
+    "result": "4 performance gate tests pass",
+    "logSha256": "02ed27a38ec40d67bc57c3fe8bfd9af7fbabe2ce4f42e495e2ae4cf9e0c0d97e"
+  },
+  {
+    "command": "vp run knip",
+    "exitCode": 0,
+    "result": "unused-code/dependency analysis passes",
+    "logSha256": "f5ecb38db5e9ab7ee6bc00e0c7dec9330059c71d6b56a1d0e7f064170818307f"
+  },
+  {
+    "command": "vp fmt --check --no-error-on-unmatched-pattern <changed files>",
+    "exitCode": 0,
+    "result": "All 25 matched files formatted; markdown links and whitespace checked separately"
+  },
+  {
+    "command": "vp run --filter @oxytype/backend migration-inventory --check",
+    "exitCode": 0,
+    "result": "82-operation ledger fresh"
+  },
+  {
+    "command": "vp run --filter @oxytype/frontend migration-performance check ../docs/tanstack-start/evidence/budgets.json ../docs/tanstack-start/evidence/measurements.json",
+    "exitCode": 0,
+    "result": "All frozen budgets pass"
+  },
+  {
+    "command": "vp exec node <temporary empty-build copy of measure-eager-js.ts>",
+    "exitCode": 1,
+    "expectedExitCode": 1,
+    "result": "Negative check passes: empty eager graph explicitly rejected; real artifact still reports 922918 raw / 321462 gzip bytes"
+  }
+]

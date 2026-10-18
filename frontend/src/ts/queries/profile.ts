@@ -1,12 +1,12 @@
 import { queryOptions } from "@tanstack/solid-query";
 import { Client } from "@oxytype/schemas/shared";
 import { baseKey } from "./utils/keys";
-import Ape from "../ape";
-import { queryClient } from ".";
+import { operation } from "../../data/operations";
+import { getQueryClient } from ".";
 import { getSnapshot } from "../states/snapshot";
 
 const queryKeys = {
-  root: () => baseKey("profiles"),
+  root: () => baseKey("profiles", { isUserSpecific: true }),
   profile: (username: string, client: Client) => [
     ...queryKeys.root(),
     username,
@@ -20,14 +20,14 @@ export const getUserProfile = (username: string, client: Client = "web") =>
   queryOptions({
     queryKey: queryKeys.profile(username, client),
     queryFn: async () => {
-      const response = await Ape.users.getProfile({
+      const response = await operation("users.getProfile", {
         params: { uidOrName: username },
         query: { isUid: false, client },
       });
-      if (response.status !== 200) {
-        throw new Error(`Could not fetch profile: ${response.body.message}`);
+      if (!response.ok) {
+        throw new Error(`Could not fetch profile: ${response.message}`);
       }
-      return response.body.data;
+      return response.data;
     },
     staleTime,
     retry: (failureCount, error) => {
@@ -39,8 +39,14 @@ export const getUserProfile = (username: string, client: Client = "web") =>
 export async function invalidateMyProfile(): Promise<void> {
   const username = getSnapshot()?.name;
   if (username !== undefined) {
-    await queryClient.resetQueries({
-      queryKey: [...queryKeys.root(), username],
-    });
+    await Promise.all([
+      getQueryClient().resetQueries({
+        queryKey: [...queryKeys.root(), username],
+      }),
+      // Start's public profile route cache.
+      getQueryClient().resetQueries({
+        queryKey: ["public", "profile", username],
+      }),
+    ]);
   }
 }

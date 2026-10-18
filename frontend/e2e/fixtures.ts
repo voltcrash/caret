@@ -1,8 +1,11 @@
+import { fulfillOperation, rpcPath } from "../start-e2e/rpc-fixtures";
 import type { Config } from "@oxytype/schemas/configs";
 import type { CustomTheme, UserTag } from "@oxytype/schemas/users";
 import { GetUserResponseSchema } from "@oxytype/contracts/users";
 import { BASE_CONFIGURATION } from "@oxytype/schemas/default-configuration";
 import { expect, Page, test as base } from "playwright/test";
+
+import { authCookie, fixtureClientIp } from "../start-e2e/auth-fixtures";
 
 export const TEST_USER_ID = "e2e-user";
 
@@ -11,6 +14,8 @@ export const test = base.extend<{
   authenticated: boolean;
   customThemes: CustomTheme[];
   tags: UserTag[];
+  /** Seeded Start session token; Start reads sessions on the server, not via REST. */
+  startSession: string | undefined;
 }>({
   config: [
     {
@@ -25,7 +30,35 @@ export const test = base.extend<{
   authenticated: [false, { option: true }],
   customThemes: [[], { option: true }],
   tags: [[], { option: true }],
-  page: async ({ page, config, authenticated, customThemes, tags }, use) => {
+  startSession: [undefined, { option: true }],
+  page: async (
+    {
+      page,
+      context,
+      baseURL,
+      config,
+      authenticated,
+      customThemes,
+      tags,
+      startSession,
+    },
+    use,
+    info,
+  ) => {
+    if (startSession !== undefined) {
+      await context.setExtraHTTPHeaders({
+        ...info.project.use.extraHTTPHeaders,
+        "cf-connecting-ip": fixtureClientIp(info.testId),
+      });
+    }
+    if (authenticated && startSession !== undefined) {
+      const value =
+        authCookie(startSession).split(";")[0]?.split("=").slice(1).join("=") ??
+        "";
+      await context.addCookies([
+        { name: "oxytype.session_token", value, url: baseURL ?? "" },
+      ]);
+    }
     const user = GetUserResponseSchema.parse({
       message: "OK",
       data: {
@@ -119,6 +152,39 @@ export const test = base.extend<{
           : { json: { message: "OK", data } },
       );
     });
+    if (startSession !== undefined) {
+      for (const [name, data] of [
+        ["usersGet", user.data],
+        ["configsGet", config],
+        ["usersGetCustomThemes", customThemes],
+        ["usersGetInbox", { inbox: [], maxMail: 100 }],
+        [
+          "configurationGet",
+          {
+            ...BASE_CONFIGURATION,
+            dailyLeaderboards: {
+              ...BASE_CONFIGURATION.dailyLeaderboards,
+              enabled: false,
+            },
+            leaderboards: {
+              ...BASE_CONFIGURATION.leaderboards,
+              weeklyXp: {
+                ...BASE_CONFIGURATION.leaderboards.weeklyXp,
+                enabled: false,
+              },
+            },
+          },
+        ],
+        ["presetsGet", []],
+        ["resultsGet", []],
+        ["psasGet", []],
+      ] as const) {
+        await page.route(
+          `**${rpcPath(name)}*`,
+          async (route) => await fulfillOperation(route, data),
+        );
+      }
+    }
     await page.route("**/quotes/english.json*", async (route) => {
       await route.fulfill({
         json: {

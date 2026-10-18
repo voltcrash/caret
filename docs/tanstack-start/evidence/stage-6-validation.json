@@ -1,0 +1,299 @@
+{
+  "stage": 6,
+  "status": "pass",
+  "base": "212ccb026",
+  "implementation": "0e8bc7fe403c32876a79122ae93db62f4b815e15",
+  "pr": "https://github.com/voltcrash/oxytype/pull/141",
+  "basePr": "https://github.com/voltcrash/oxytype/pull/140",
+  "environment": {
+    "node": "24.21.0",
+    "platform": "Darwin arm64, Apple M1",
+    "date": "2026-10-16"
+  },
+  "checks": [
+    {
+      "name": "test-fe",
+      "command": "vp -C frontend test run --maxWorkers=4",
+      "exitCode": 0,
+      "seconds": 49.43
+    },
+    {
+      "name": "test-be",
+      "command": "vp run test-be",
+      "exitCode": 0,
+      "seconds": 96.98
+    },
+    {
+      "name": "test-pkg",
+      "command": "vp run test-pkg",
+      "exitCode": 0,
+      "seconds": 6.89
+    },
+    {
+      "name": "lint-fe",
+      "command": "vp run lint-fe",
+      "exitCode": 0,
+      "seconds": 16.07
+    },
+    {
+      "name": "lint-be",
+      "command": "vp run lint-be",
+      "exitCode": 0,
+      "seconds": 6.79
+    },
+    {
+      "name": "lint-pkg",
+      "command": "vp run lint-pkg",
+      "exitCode": 0,
+      "seconds": 6.92
+    },
+    {
+      "name": "lint-config",
+      "command": "vp run lint-check-config",
+      "exitCode": 0,
+      "seconds": 3.42
+    },
+    {
+      "name": "lint-suppressions",
+      "command": "vp run lint-suppressions",
+      "exitCode": 0,
+      "seconds": 0.57
+    },
+    {
+      "name": "build-rollback",
+      "command": "vp run build",
+      "exitCode": 0,
+      "seconds": 21.29
+    },
+    {
+      "name": "knip",
+      "command": "vp run knip",
+      "exitCode": 0,
+      "seconds": 10.52
+    },
+    {
+      "name": "lint-styles",
+      "command": "vp run lint-styles",
+      "exitCode": 0,
+      "seconds": 1.37
+    },
+    {
+      "name": "check-assets",
+      "command": "vp run check-assets",
+      "exitCode": 0,
+      "seconds": 4.08
+    },
+    {
+      "name": "inventory",
+      "command": "vp -C backend exec tsx scripts/migration-inventory.ts --check",
+      "exitCode": 0,
+      "seconds": 0.49
+    },
+    {
+      "name": "http-routes",
+      "command": "vp -C frontend exec tsx scripts/generate-http-routes.ts --check",
+      "exitCode": 0,
+      "seconds": 0.46
+    },
+    {
+      "name": "whitespace",
+      "command": "vp exec git diff --check",
+      "exitCode": 0,
+      "seconds": 0.17
+    },
+    {
+      "name": "test-rollback-browser",
+      "command": "vp run test-e2e",
+      "exitCode": 0,
+      "seconds": 107.68
+    },
+    {
+      "name": "test-start-browser",
+      "command": "vp -C frontend run test:start:browser",
+      "exitCode": 0,
+      "seconds": 139.74
+    },
+    {
+      "name": "format",
+      "command": "vp fmt --check --no-error-on-unmatched-pattern <all changed existing files since 212ccb026>",
+      "exitCode": 0
+    },
+    {
+      "name": "native-readiness-1",
+      "command": "vp -C frontend run benchmark-migration:start",
+      "exitCode": 0,
+      "seconds": 13.39
+    },
+    {
+      "name": "native-readiness-2",
+      "command": "vp -C frontend run benchmark-migration:start",
+      "exitCode": 0,
+      "seconds": 12.37
+    },
+    {
+      "name": "native-eager",
+      "command": "vp -C frontend exec tsx scripts/measure-start-eager-js.ts ../docs/tanstack-start/evidence/stage-6-native-eager.json",
+      "exitCode": 0,
+      "seconds": 2.67
+    },
+    {
+      "name": "native-words-1",
+      "command": "vp -C frontend run benchmark-word-rendering:start",
+      "exitCode": 0,
+      "seconds": 17.93
+    },
+    {
+      "name": "native-words-2",
+      "command": "vp -C frontend run benchmark-word-rendering:start",
+      "exitCode": 0,
+      "seconds": 17.54
+    },
+    {
+      "name": "native-words-3",
+      "command": "vp -C frontend run benchmark-word-rendering:start",
+      "exitCode": 0,
+      "seconds": 18.11
+    },
+    {
+      "name": "browser-performance",
+      "command": "vp -C frontend exec tsx scripts/migration-performance.ts check ../docs/tanstack-start/evidence/stage-6-browser-budgets.json ../docs/tanstack-start/evidence/stage-6-browser-measurements.json",
+      "exitCode": 0
+    },
+    {
+      "name": "frozen-budget-records",
+      "command": "Assert all eight stage-6-browser-budgets.json records equal the original budgets.json records",
+      "exitCode": 0
+    },
+    {
+      "name": "auth-account-probe",
+      "command": "vp -C frontend test run __tests__/auth-client.spec.ts",
+      "exitCode": 0,
+      "tests": 6
+    },
+    {
+      "name": "build-start-staging",
+      "command": "vp -C frontend run build:start:staging",
+      "exitCode": 0,
+      "seconds": 8.17
+    },
+    {
+      "name": "dry-run-staging",
+      "command": "vp -C frontend run dry-run:start",
+      "exitCode": 0,
+      "seconds": 1.57
+    },
+    {
+      "name": "build-start",
+      "command": "vp -C frontend run build:start",
+      "exitCode": 0,
+      "seconds": 7.6
+    },
+    {
+      "name": "build-start-test",
+      "command": "vp -C frontend run build:start:test",
+      "exitCode": 0,
+      "seconds": 8.13
+    },
+    {
+      "name": "dry-run-start",
+      "command": "vp -C frontend run dry-run:start",
+      "exitCode": 0,
+      "seconds": 1.66
+    },
+    {
+      "name": "test-start",
+      "command": "vp -C frontend run test:start",
+      "exitCode": 0,
+      "seconds": 38.72
+    }
+  ],
+  "counts": {
+    "frontendFiles": 236,
+    "frontendTests": 2317,
+    "backendUnitFiles": 45,
+    "backendUnitTests": 804,
+    "backendD1Files": 30,
+    "backendD1Tests": 124,
+    "sharedFiles": 54,
+    "sharedTests": 736,
+    "workerdFiles": 14,
+    "workerdTests": 77,
+    "startBrowserTests": 60,
+    "rollbackBrowserTests": 31,
+    "ledgerOperations": 82,
+    "firstPartyOperationCapabilities": 60,
+    "temporaryOldTabTransports": 47,
+    "retainedExternalOperationalTransports": 35
+  },
+  "performance": {
+    "scope": "Eight exact Stage 0 browser/entry-byte records, no changed thresholds",
+    "measurements": "stage-6-browser-measurements.json",
+    "budgets": "stage-6-browser-budgets.json",
+    "readinessSamplesPerMetric": 20,
+    "renderingSamplesPerMetric": 150,
+    "eagerSamples": 5,
+    "nativeEagerRawBytes": 380739,
+    "nativeEagerGzipBytes": 128003,
+    "previousStageEagerRawBytes": 382366,
+    "previousStageEagerGzipBytes": 128635,
+    "workerFootprint": "Intermediate development artifact; final footprint/edge/save budgets remain the Stage 7 cutover gate. No absent metric is asserted to pass.",
+    "nativeWorkerRawKiB": 4201.64,
+    "nativeWorkerGzipKiB": 930.1,
+    "nativeStagingWorkerRawKiB": 4201.64,
+    "nativeStagingWorkerGzipKiB": 930.11
+  },
+  "ci": {
+    "run": "https://github.com/voltcrash/oxytype/actions/runs/38910305413",
+    "head": "5ea03dc60a6710ab01266510961b38b1c6025964",
+    "status": "pass",
+    "requiredChecks": [
+      "pre-ci",
+      "prime-cache",
+      "check-format",
+      "ci-start",
+      "ci-pkg",
+      "ci-be",
+      "knip",
+      "test-e2e",
+      "ci-tui",
+      "ci-fe",
+      "ci-assets"
+    ],
+    "skippedByPathFilter": [],
+    "note": "All 13 PR checks passed at 5ea03dc (including labeler checks). This run includes the final implementation and performance evidence. Only documentation/evidence handoff commits follow; no product code changes. TUI CI ran because shared tooling paths changed; no TUI work or acceptance scope was added."
+  },
+  "coverage": [
+    "Canonical Query account and explicit PB/XP/favorite acknowledgements; quote selection/actor isolation",
+    "Optimistic rollback, expected failures, timeout without replay, offline before invocation",
+    "Real RPC preset CRUD/actor partition, historical preferences and presets without storage rewrite, reward exactly-once, fresh-session/moderator checks",
+    "Real built Worker/D1 result persistence, retry/lost acknowledgement, concurrency, cross-user hash, anticheat/body/rate/config/auth/origin, atomic telemetry rollback and retry",
+    "All 82 declared HTTP operation bindings, ApeKey auth, JSON errors, case/slash/HEAD/ETag/CORS, dev editor/docs prefix, retained-only OpenAPI/private assets",
+    "Real browser completion persists once through Start/D1 with no legacy result POST; mocked browser save UX uses Start serialization",
+    "Source graph and compiled bundle forbid browser ts-rest transport/rollback entry/Hono dispatch"
+  ],
+  "resolvedFailures": [
+    "Historical prefs and partial PBs failed strict modern DTO validation: migrate/project at the RPC boundary and normalize JSON response semantics, preserving stored data.",
+    "Historical preset settings now use the existing migration only when modern validation fails, preserving tags and valid partial presets.",
+    "Reward fixture used a non-ObjectId ID; corrected fixture and verified single grant across repeated claims.",
+    "Worker HTTP fixture needed explicit ASSETS binding; added without changing production bindings.",
+    "Browser account fixtures lacked required historical DTO defaults; corrected fixtures.",
+    "Unused account-store helper and export removed; aliased rollback/test modules registered as Knip entry points.",
+    "Formatted real browser persistence test.",
+    "Earlier default-worker frontend runs hit a pre-existing commandline import timeout under concurrent work. Isolated run passes; final complete suite passes with four workers, no increased timeout."
+  ],
+  "preExistingRequiredFailures": [],
+  "remainingAdapters": {
+    "oldTabs": "47 Start HTTP adapters; at least 30 days after last legacy HTML, stale-tab acceptance, seven days without supported legacy mutation traffic (release.md).",
+    "external": "35 Start HTTP external/operational protocols retained indefinitely. Better Auth/device HTTP remain protocols.",
+    "rollback": "Legacy Hono/build, isolated ts-rest binding, old page/navigation/bootstrap bridges; retire with old entry in Stage 8 after verified cutover.",
+    "delivery": "Production deploy ownership/PWA/offline/stale-function update and rollback/observability/final edge budgets: Stage 7."
+  },
+  "unchanged": [
+    "D1 data and migrations",
+    "Result scoring, anticheat, atomic persistence and deduplication services",
+    "Authentication identities and policy metadata",
+    "packages/typing-core source and fixtures",
+    "frontend/src/html/warnings.html",
+    "TUI source and acceptance scope"
+  ]
+}

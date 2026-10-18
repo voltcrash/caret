@@ -31,7 +31,7 @@ vi.mock("animejs", () => ({
 vi.mock("../../../src/ts/utils/misc", () => ({
   applyReducedMotion: (duration: number) => duration,
 }));
-vi.mock("../../../src/ts/test/focus", () => ({ set: vi.fn() }));
+vi.mock("../../../src/features/typing/runtime/focus", () => ({ set: vi.fn() }));
 vi.mock("../../../src/ts/ui", () => ({ clearFontPreview: vi.fn() }));
 vi.mock("../../../src/ts/controllers/analytics-controller", () => ({
   log: vi.fn(),
@@ -81,20 +81,17 @@ vi.mock("../../../src/ts/input/hotkeys/utils", () => ({
     );
   },
 }));
-vi.mock("../../../src/ts/navigation/navigation", () => ({ navigate: vi.fn() }));
+vi.mock("../../../src/app/navigate", () => ({ navigate: vi.fn() }));
 
 import { show } from "../../../src/ts/commandline/commandline";
 import { ThemeIndicator } from "../../../src/ts/components/layout/footer/ThemeIndicator";
 import { Commandline } from "../../../src/ts/components/modals/Commandline";
-import { Config } from "../../../src/ts/config/store";
+import { getMutableConfig } from "../../../src/ts/config/store";
 import { restartTestEvent } from "../../../src/ts/events/test";
 import { useCommandPaletteHotkeys } from "../../../src/ts/input/hotkeys/command-palette";
 import { useQuickRestartHotkeys } from "../../../src/ts/input/hotkeys/quickrestart";
 import { commandlineState } from "../../../src/ts/states/commandline";
-import {
-  setActivePage,
-  setCommandlineSubgroup,
-} from "../../../src/ts/states/core";
+import { setCommandlineSubgroup } from "../../../src/ts/states/core";
 import { hideModalAndClearChain } from "../../../src/ts/states/modals";
 import { isAnyPopupVisible } from "../../../src/ts/states/overlay-visibility";
 
@@ -104,10 +101,9 @@ describe("theme picker lifecycle", () => {
   beforeEach(() => {
     hideModalAndClearChain("Commandline");
     setCommandlineSubgroup(null);
-    setActivePage("test");
     commandlineState.isAnimating = false;
     commandlineState.noBackground = false;
-    Config.customTheme = false;
+    getMutableConfig().customTheme = false;
     command.id = "changeThemeAether";
     command.display = "aether";
     vi.clearAllMocks();

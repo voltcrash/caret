@@ -69,6 +69,7 @@ jobs:
             fe-src:
               - 'frontend/**/*.{ts,tsx,js,scss,html}'
               - 'frontend/**/package.json'
+              - 'frontend/wrangler.jsonc'
             pkg-src:
               - 'packages/**/*'
               - '.github/workflows/production-release.yml'
@@ -86,7 +87,7 @@ jobs:
           echo "should-build-pkg=${{ steps.filter.outputs.pkg-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
           echo "should-build-tui=${{ steps.filter.outputs.tui-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
           echo "should-build-be=${{ steps.filter.outputs.be-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
-          echo "should-build-fe=${{ steps.filter.outputs.fe-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
+          echo "should-build-fe=${{ steps.filter.outputs.fe-src == 'true' || steps.filter.outputs.be-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
           echo "assets-or-styles=${{ steps.filter.outputs.assets-or-styles == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
 
   prime-cache:
@@ -193,9 +194,6 @@ jobs:
       - name: Check lint
         run: vp run lint-fast-be && vp run lint-be
 
-      - name: Build
-        run: vp run build-be
-
       - name: Test
         run: vp run test-be
 
@@ -224,11 +222,12 @@ jobs:
       - name: Test
         run: vp run test-fe
 
-  test-e2e:
-    name: test-e2e
+  # Start owns delivery: Worker build, workerd, browser and update suites.
+  ci-start:
+    name: ci-start
     needs: [pre-ci, prime-cache]
     runs-on: ubuntu-latest
-    if: needs.pre-ci.outputs.should-build-fe == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true' || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
+    if: needs.pre-ci.outputs.should-build-fe == 'true' || needs.pre-ci.outputs.should-build-be == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true' || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -239,11 +238,45 @@ jobs:
           cache: true
           cache-save: false
 
+      - name: Check operation ownership and declared HTTP routes
+        run: vp -C backend exec tsx scripts/migration-inventory.ts --check && vp -C frontend exec tsx scripts/generate-http-routes.ts --check
+
+      - name: Build Start Worker and runtime-test entry
+        run: vp run --filter @oxytype/frontend build:start && vp run --filter @oxytype/frontend build:start:test
+
+      - name: Worker dry-run
+        run: vp run --filter @oxytype/frontend dry-run:start
+
+      - name: SSR, workerd and bundle-boundary suites
+        run: vp run --filter @oxytype/frontend test:start
+
       - name: Install Chromium and its system dependencies
         run: vp -C frontend exec playwright install --with-deps chromium
 
-      - name: Run browser regression suite
-        run: vp run test-e2e
+      - name: Production-Worker browser checks
+        run: vp run --filter @oxytype/frontend test:start:browser
+
+      - name: Upload browser traces
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: start-browser-traces
+          path: frontend/test-results
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Multi-build service worker, real save and rollback checks
+        run: vp run --filter @oxytype/frontend test:updates
+
+      # Last: overwrites dist/start with the staging delivery configuration.
+      - name: Staging build and dry-run
+        run: vp run --filter @oxytype/frontend build:start:staging && vp run --filter @oxytype/frontend dry-run:start
+
+      - name: Production configuration build and dry-run (fixture public settings)
+        env:
+          OXYTYPE_DEPLOY_ENV: production
+          OXYTYPE_BUILD_ID: ci-${{ github.sha }}
+        run: vp run --filter @oxytype/frontend build:start && vp run --filter @oxytype/frontend dry-run:start
 
   ci-assets:
     name: ci-assets

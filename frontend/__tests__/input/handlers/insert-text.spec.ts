@@ -40,7 +40,7 @@ const nav = vi.hoisted(() => ({
 }));
 vi.mock("../../../src/ts/input/helpers/word-navigation", () => nav);
 
-vi.mock("../../../src/ts/test/test-words", () => {
+vi.mock("../../../src/features/typing/runtime/test-words", () => {
   type CommitChar = " " | "\n" | "";
   type Word = { text: string; textWithCommit: string; commit: CommitChar };
   const list: Word[] = [];
@@ -89,12 +89,12 @@ vi.mock("../../../src/ts/input/state", () => ({
   isAwaitingNextWord: () => false,
 }));
 
-vi.mock("../../../src/ts/test/custom-text", () => ({
+vi.mock("../../../src/features/typing/runtime/custom-text", () => ({
   getLimit: () => ({ mode: "words", value: 0 }),
 }));
 
 // peripheral collaborators - none of them feed back into the events we assert
-vi.mock("../../../src/ts/test/test-ui", () => ({
+vi.mock("../../../src/features/typing/runtime/test-ui", () => ({
   afterTestTextInput: vi.fn(),
   // words scrolled off the screen are removed from the dom
   getWordElement: vi.fn((index: number) =>
@@ -102,13 +102,15 @@ vi.mock("../../../src/ts/test/test-ui", () => ({
   ),
   pendingWordData: new Map<number, string>(),
 }));
-vi.mock("../../../src/ts/test/test-logic", () => ({
+vi.mock("../../../src/features/typing/runtime/test-logic", () => ({
   startTest: vi.fn(),
   fail: vi.fn(),
   finish: vi.fn(),
   addWord: vi.fn(),
 }));
-vi.mock("../../../src/ts/test/weak-spot", () => ({ updateScore: vi.fn() }));
+vi.mock("../../../src/features/typing/runtime/weak-spot", () => ({
+  updateScore: vi.fn(),
+}));
 vi.mock("../../../src/ts/events/keymap", () => ({ flash: vi.fn() }));
 vi.mock("../../../src/ts/states/notifications", () => ({
   showNoticeNotification: vi.fn(),
@@ -117,7 +119,7 @@ vi.mock("../../../src/ts/states/composition", () => ({
   getComposing: () => false,
   getData: () => "",
 }));
-vi.mock("../../../src/ts/test/words-generator", () => ({
+vi.mock("../../../src/features/typing/runtime/words-generator", () => ({
   areAllWordsGenerated: () => true,
 }));
 vi.mock("../../../src/ts/input/handlers/before-insert-text", () => ({
@@ -134,13 +136,13 @@ import {
   resetTestEvents,
   getAllTestEvents,
   getInputForWord,
-} from "../../../src/ts/test/events/data";
+} from "../../../src/features/typing/runtime/events/data";
 import {
   findInputValueMismatches,
   getEventsForWord,
 } from "@oxytype/typing-core/events/helpers";
 import type { InputEventNoMs } from "@oxytype/typing-core/events/types";
-import { words as TestWords } from "../../../src/ts/test/test-words";
+import { words as TestWords } from "../../../src/features/typing/runtime/test-words";
 import { __testing } from "../../../src/ts/config/testing";
 import { DeleteInputType } from "../../../src/ts/input/helpers/input-type";
 

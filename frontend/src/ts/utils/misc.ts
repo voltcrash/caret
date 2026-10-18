@@ -359,10 +359,22 @@ export function formatTypingStatsRatio(stats: {
   };
 }
 
-export function addToGlobal(items: Record<string, unknown>): void {
+export function addToGlobal(items: Record<string, unknown>): () => void {
+  const previous = new Map(
+    Object.keys(items).map((name) => [
+      name,
+      Object.getOwnPropertyDescriptor(window, name),
+    ]),
+  );
   for (const [name, item] of Object.entries(items)) {
     Object.assign(window, { [name]: item });
   }
+  return () => {
+    for (const [name, descriptor] of previous) {
+      if (descriptor === undefined) Reflect.deleteProperty(window, name);
+      else Object.defineProperty(window, name, descriptor);
+    }
+  };
 }
 
 // DO NOT ALTER GLOBAL OBJECTSONSTRUCTOR, IT WILL BREAK RESULT HASHES

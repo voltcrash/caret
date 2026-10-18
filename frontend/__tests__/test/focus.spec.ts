@@ -5,7 +5,7 @@ const { state, caret, frames } = vi.hoisted(() => ({
   caret: { startAnimation: vi.fn(), stopAnimation: vi.fn() },
   frames: { pending: undefined as (() => void) | undefined },
 }));
-vi.mock("../../src/ts/test/caret", () => caret);
+vi.mock("../../src/features/typing/runtime/caret", () => caret);
 vi.mock("../../src/ts/states/test", () => ({
   getFocus: () => state.focused,
   setFocus: (value: boolean) => {
@@ -18,7 +18,7 @@ vi.mock("../../src/ts/utils/debounced-animation-frame", () => ({
   },
 }));
 
-import * as Focus from "../../src/ts/test/focus";
+import * as Focus from "../../src/features/typing/runtime/focus";
 import {
   isFocusCursorHidden,
   setFocusCursorHidden,

@@ -16,3 +16,7 @@ export async function log(
 export function activateAnalytics(): void {
   enabled = true;
 }
+
+export function deactivateAnalytics(): void {
+  enabled = false;
+}

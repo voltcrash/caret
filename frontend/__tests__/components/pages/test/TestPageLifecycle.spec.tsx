@@ -27,14 +27,17 @@ const { state, callbacks } = vi.hoisted(() => ({
   },
 }));
 vi.mock("../../../../src/ts/config/store", () => ({
-  Config: {
-    get mode() {
-      return state.mode;
-    },
-    get showOutOfFocusWarning() {
-      return state.warning;
-    },
-  },
+  getMutableConfig: (() => {
+    const storedConfig = {
+      get mode() {
+        return state.mode;
+      },
+      get showOutOfFocusWarning() {
+        return state.warning;
+      },
+    };
+    return () => storedConfig;
+  })(),
 }));
 vi.mock("../../../../src/ts/input/input-element", () => ({
   isInputElementFocused: () => state.focused,
@@ -44,15 +47,15 @@ vi.mock("../../../../src/ts/states/test", () => ({
   isTestActive: () => state.active,
   setTestFocusState: callbacks.setFocus,
 }));
-vi.mock("../../../../src/ts/test/caret", () => ({
+vi.mock("../../../../src/features/typing/runtime/caret", () => ({
   show: callbacks.showCaret,
   hide: callbacks.hideCaret,
 }));
-vi.mock("../../../../src/ts/test/test-logic", () => ({
+vi.mock("../../../../src/features/typing/runtime/test-logic", () => ({
   restart: callbacks.restart,
 }));
 
-import { TestPageLifecycle } from "../../../../src/ts/components/pages/test/TestPageLifecycle";
+import { TestPageLifecycle } from "../../../../src/features/typing/components/TestPageLifecycle";
 
 beforeEach(() => {
   vi.clearAllMocks();

@@ -1,0 +1,33 @@
+{
+  "capturedAt": "2026-10-16T18:14:00Z",
+  "worker": "oxytype-api-staging",
+  "version": "b00d3081-5902-4479-9822-5e4923787340",
+  "deployment": "84385eaa-76ae-4522-9f4d-a80023b19ae2",
+  "database": "17b0ae8b-92bf-4d7e-a29e-0ac4cc6f2b59",
+  "recoveryBookmark": "00000203-0000002c-00005106-433bfea47feba794dd016e1841c168df",
+  "pendingExistingMigrations": "0003 through 0013; no new Stage 7 schema migration",
+  "before": {
+    "users": 1,
+    "results": 1,
+    "auth_users": 1,
+    "auth_sessions": 0,
+    "activity": 1,
+    "weekly_entries": 0
+  },
+  "secretNames": [
+    "BETTER_AUTH_SECRET",
+    "GITHUB_CLIENT_ID",
+    "GITHUB_CLIENT_SECRET",
+    "TURNSTILE_SECRET_KEY"
+  ],
+  "note": "Staging only. Preserve existing rows and remote auth secret. Production was not mutated. Reobserve deployment and D1 recovery availability before any future rollback.",
+  "afterExistingMigrations": {
+    "users": 1,
+    "results": 1,
+    "auth_users": 1,
+    "auth_sessions": 0,
+    "activity": 1,
+    "weekly_entries": 0,
+    "client_profiles": 1
+  }
+}

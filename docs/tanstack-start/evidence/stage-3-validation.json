@@ -1,0 +1,152 @@
+{
+  "base": "94edbf0a3",
+  "implementationHead": "b014cd0b7",
+  "scope": "Stage 3 only; no production deploy or TUI source changes",
+  "checks": [
+    {
+      "command": "vp run test-fe",
+      "result": "pass",
+      "files": 225,
+      "tests": 2273
+    },
+    {
+      "command": "vp run test-be",
+      "result": "pass",
+      "unitFiles": 45,
+      "unitTests": 803,
+      "d1Files": 30,
+      "d1Tests": 124
+    },
+    {
+      "command": "vp run test-pkg",
+      "result": "pass",
+      "workspaces": 7,
+      "files": 54,
+      "tests": 636
+    },
+    {
+      "command": "vp run test-e2e",
+      "result": "pass",
+      "tests": 31
+    },
+    {
+      "command": "vp run --filter @oxytype/frontend test:start",
+      "result": "pass",
+      "files": 8,
+      "tests": 35
+    },
+    {
+      "command": "vp run --filter @oxytype/frontend test:start:browser",
+      "result": "pass",
+      "tests": 9
+    },
+    {
+      "command": "vp run lint-fe",
+      "result": "pass"
+    },
+    {
+      "command": "vp run lint-be",
+      "result": "pass"
+    },
+    {
+      "command": "vp run lint-pkg",
+      "result": "pass"
+    },
+    {
+      "command": "vp run lint-styles",
+      "result": "pass"
+    },
+    {
+      "command": "vp run check-assets",
+      "result": "pass"
+    },
+    {
+      "command": "vp run knip",
+      "result": "pass"
+    },
+    {
+      "command": "vp run lint-suppressions",
+      "result": "pass"
+    },
+    {
+      "command": "vp fmt frontend/src backend/src --check",
+      "result": "pass",
+      "files": 860
+    },
+    {
+      "command": "vp exec tsx scripts/migration-inventory.ts --check (backend)",
+      "result": "pass",
+      "operations": 82
+    },
+    {
+      "command": "vp exec env TURNSTILE_SITE_KEY=1x00000000000000000000AA BACKEND_URL=/api AUTH_PROVIDERS=github vp run --no-cache build-fe",
+      "result": "pass"
+    },
+    {
+      "command": "vp run build-be; vp run --filter @oxytype/backend build:worker",
+      "result": "pass"
+    },
+    {
+      "command": "vp run --filter @oxytype/frontend build:start",
+      "result": "pass"
+    },
+    {
+      "command": "vp run --filter @oxytype/frontend build:start:test",
+      "result": "pass"
+    },
+    {
+      "command": "vp run --filter @oxytype/frontend build:start:staging",
+      "result": "pass"
+    },
+    {
+      "command": "vp run --filter @oxytype/frontend dry-run:start",
+      "result": "pass in local and migration configurations",
+      "totalUploadKiB": 3590.24,
+      "gzipKiB": 785.24
+    },
+    {
+      "command": "vp run --filter @oxytype/frontend benchmark-migration",
+      "result": "pass; 10 cold, warm and public-route samples; timing comparison in measurements"
+    },
+    {
+      "command": "vp run --filter @oxytype/frontend benchmark-word-rendering",
+      "result": "pass; three runs retained; final two runs supply 100 samples per metric"
+    },
+    {
+      "command": "vp exec tsx scripts/migration-baseline.ts OUTPUT (backend)",
+      "result": "pass; five instances, 50 persisted result saves per run; raw samples retained"
+    },
+    {
+      "command": "vp run --filter @oxytype/frontend migration-performance check ../docs/tanstack-start/evidence/budgets.json ../docs/tanstack-start/evidence/stage-3-measurements.json",
+      "result": "all timing, D1 and eager-byte budgets pass; Worker raw/gzip byte budgets exceed freeze; explained in stage-3.md"
+    },
+    {
+      "command": "rollback JS and production Start Worker graph inspection",
+      "result": "pass; no Start RPC/server SQL/runtime in rollback JS; no test probes in production Start Worker"
+    }
+  ],
+  "measurementSelection": {
+    "worker": "stage-3-worker-paired.json; sequential candidate following a quiet Stage 2 control",
+    "browser": "stage-3-browser-repeat.json; full repeat after initial p95 outliers",
+    "words": ["stage-3-words-2.json", "stage-3-words-3.json"],
+    "diagnosticsRetained": [
+      "stage-3-worker.json",
+      "stage-3-worker-isolated.json",
+      "stage-3-stage2-control.json",
+      "stage-3-stage2-control-isolated.json",
+      "stage-3-browser.json",
+      "stage-3-words-1.json",
+      "stage-3-words-stage2-control.json"
+    ],
+    "limitations": "Local workerd process CPU includes D1. First Stage 2 control overlapped builds; symlink path labels inflate its bytes. Isolated control normalized only those labels, exactly matching recorded Stage 2 raw/gzip bytes. Word control emitted fontawesome serving-denial warnings; diagnostic only. Initial timing outliers remain visible; repeat evidence supports local timing variance, with unchanged typing implementation and benchmark."
+  },
+  "deviations": [
+    "Worker raw 4519986 vs frozen 4517181 (+2805); gzip 823990 vs frozen 822854 (+1136), +423 gzip vs Stage 2. Explained shared service/policy context extraction overhead; budgets unchanged, explicit artifact review in Stage 7.",
+    "Private guard implemented and tested; attach pathless private layout when Stage 4 supplies private page children. Empty childless layout collides with index in pinned route generator."
+  ],
+  "fixedDuringValidation": [
+    "Malformed URL 400 became 500 when bad-auth policy adapter unnecessarily initialized runtime. Minimal policy context restores 400; full backend suite passes.",
+    "Browser signup fixtures needed enabled signups and independent cancellation/dismissal sessions; fixtures corrected.",
+    "Contention-related palette/path-override timeouts passed focused and full suite reruns without timeout increases."
+  ]
+}

@@ -9,7 +9,7 @@ import * as Users from "../../src/dal/user";
 import { patchConfiguration } from "../../src/init/configuration";
 import { BASE_CONFIGURATION } from "../../src/constants/base-configuration";
 import { buildMonkeyMail } from "../../src/utils/monkey-mail";
-import Worker from "../../src/worker";
+import Worker from "../__testData__/http-worker";
 import { GetUserInboxResponseSchema } from "@oxytype/contracts/users";
 import type { ExecutionContext } from "@cloudflare/workers-types";
 

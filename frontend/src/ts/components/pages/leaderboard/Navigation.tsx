@@ -1,7 +1,6 @@
 import { JSXElement, Setter, Show } from "solid-js";
 import { z } from "zod";
 
-import { setPage } from "../../../states/leaderboard-selection";
 import { showSimpleModal } from "../../../states/simple-modal";
 import { cn } from "../../../utils/cn";
 import { Button } from "../../common/Button";
@@ -76,7 +75,7 @@ export function Navigation(props: {
             },
             buttonText: "Go",
             execFn: async ({ pageNumber }) => {
-              setPage(pageNumber - 1);
+              props.onPageChange(pageNumber - 1);
               return {
                 status: "success",
                 showNotification: false,

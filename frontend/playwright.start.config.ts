@@ -1,0 +1,32 @@
+import { defineConfig, devices } from "playwright/test";
+
+export default defineConfig<{ startSession: string | undefined }>({
+  fullyParallel: false,
+  workers: 1,
+  forbidOnly: Boolean(process.env["CI"]),
+  retries: 0,
+  reporter: "list",
+  use: {
+    ...devices["Desktop Chrome"],
+    baseURL: "http://127.0.0.1:4185",
+    trace: "retain-on-failure",
+    screenshot: "only-on-failure",
+  },
+  projects: [
+    { name: "start", testDir: "./start-e2e" },
+    {
+      // Typing regression suite, against the built Start Worker.
+      name: "typing-parity",
+      testDir: "./e2e",
+      testIgnore: ["**/*.migration.ts", "**/*.benchmark.ts"],
+      use: { startSession: "browser-typing" },
+    },
+  ],
+  webServer: {
+    command: "vp exec tsx scripts/serve-start-fixture.ts",
+    // The Worker listens before fixture sessions/config are seeded, so
+    // readiness is the fixture's own signal, not the first HTTP response.
+    wait: { stdout: /Start fixture ready/ },
+    reuseExistingServer: false,
+  },
+});

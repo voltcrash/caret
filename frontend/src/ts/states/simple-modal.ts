@@ -1,4 +1,4 @@
-import { createSignal } from "solid-js";
+import { createAppSignal } from "../../app/state";
 
 import { showModal, hideModal } from "./modals";
 import { AddNotificationOptions } from "./notifications";
@@ -139,7 +139,7 @@ type StoredSimpleModalConfig = SimpleModalOptions & {
 };
 
 const [simpleModalConfig, setSimpleModalConfig] =
-  createSignal<StoredSimpleModalConfig | null>(null);
+  createAppSignal<StoredSimpleModalConfig | null>(null);
 
 export { simpleModalConfig };
 

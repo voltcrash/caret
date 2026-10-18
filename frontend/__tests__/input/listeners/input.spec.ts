@@ -13,9 +13,9 @@ vi.mock("../../../src/ts/input/handlers/delete", () => ({ onDelete: vi.fn() }));
 vi.mock("../../../src/ts/input/handlers/before-delete", () => ({
   onBeforeDelete: vi.fn(),
 }));
-vi.mock("../../../src/ts/test/test-ui", () => ({}));
-vi.mock("../../../src/ts/test/test-words", () => ({}));
-vi.mock("../../../src/ts/test/words-generator", () => ({}));
+vi.mock("../../../src/features/typing/runtime/test-ui", () => ({}));
+vi.mock("../../../src/features/typing/runtime/test-words", () => ({}));
+vi.mock("../../../src/features/typing/runtime/words-generator", () => ({}));
 
 it("cancels unexpected events while accepting browser beforeinput events", () => {
   const input = document.createElement("textarea");

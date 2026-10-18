@@ -59,20 +59,20 @@ vi.mock("../../../src/ts/states/notifications", () => ({
 vi.mock("../../../src/ts/config/setters", () => ({
   setConfig: mocks.setConfig,
 }));
-vi.mock("../../../src/ts/test/practise-words", () => ({
+vi.mock("../../../src/features/typing/runtime/practise-words", () => ({
   resetBefore: vi.fn(),
 }));
 vi.mock("../../../src/ts/utils/bail-out", () => ({
   getBailOutHint: () => "Use escape",
 }));
 
+import * as CustomText from "../../../src/features/typing/runtime/custom-text";
 import { CustomTextModal } from "../../../src/ts/components/modals/CustomTextModal";
-import { Config } from "../../../src/ts/config/store";
-import * as CustomText from "../../../src/ts/test/custom-text";
+import { getMutableConfig } from "../../../src/ts/config/store";
 
 beforeEach(() => {
   vi.clearAllMocks();
-  Config.mode = "words";
+  getMutableConfig().mode = "words";
   CustomText.setText(["hello", "world"]);
   CustomText.setMode("repeat");
   CustomText.setPipeDelimiter(false);

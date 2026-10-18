@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/solid-query";
 import { baseKey } from "./utils/keys";
-import Ape from "../ape";
+import { operation } from "../../data/operations";
 import { envConfig } from "virtual:env-config";
 
 const queryKeys = {
@@ -32,14 +32,11 @@ export const getServerConfigurationQueryOptions = () =>
           },
         };
       }
-      const response = await Ape.configuration.get();
-
-      if (response.status !== 200) {
-        throw new Error(
-          `Could not fetch configuration: ${response.body.message}`,
-        );
+      const response = await operation("configuration.get");
+      if (!response.ok) {
+        throw new Error(`Could not fetch configuration: ${response.message}`);
       }
-      return response.body.data;
+      return response.data;
     },
     staleTime,
     gcTime: Infinity,

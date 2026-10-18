@@ -1,12 +1,13 @@
-import { createSignal } from "solid-js";
+import { createAppSignal } from "../../app/state";
+
 import { Client, Mode, PersonalBests } from "@oxytype/schemas/shared";
 
 import { showModal } from "./modals";
 
-const [pbTablesMode, setPbTablesMode] = createSignal<Mode>("time");
+const [pbTablesMode, setPbTablesMode] = createAppSignal<Mode>("time");
 const [pbTablesBests, setPbTablesBests] =
-  createSignal<Partial<PersonalBests>>();
-const [pbTablesClient, setPbTablesClient] = createSignal<Client>("web");
+  createAppSignal<Partial<PersonalBests>>();
+const [pbTablesClient, setPbTablesClient] = createAppSignal<Client>("web");
 
 export { pbTablesMode, pbTablesBests, pbTablesClient };
 

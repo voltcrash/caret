@@ -1,5 +1,6 @@
-import { createModuleRoot } from "../hooks/effects";
-import { createMemo, createSignal, onCleanup } from "solid-js";
+import { createAppMemo } from "../../app/application";
+import { createAppSignal } from "../../app/state";
+import { onCleanup } from "solid-js";
 
 import {
   scoreSettingSearch,
@@ -10,7 +11,7 @@ import { SettingsSection } from "./settings-sections";
 
 // the current settings filter query, shared between the search input and the
 // settings/sections that hide themselves when they don't match
-export const [getSettingsSearch, setSettingsSearch] = createSignal("");
+export const [getSettingsSearch, setSettingsSearch] = createAppSignal("");
 
 export const isSettingsSearchActive = (): boolean =>
   getSettingsSearch().trim() !== "";
@@ -21,7 +22,7 @@ type Searchable = {
 };
 
 // Only mounted settings participate; conditional controls register on mount.
-const [getSearchables, setSearchables] = createSignal<Set<Searchable>>(
+const [getSearchables, setSearchables] = createAppSignal<Set<Searchable>>(
   new Set(),
   {
     equals: false,
@@ -42,46 +43,42 @@ export function registerSearchable(
   );
 }
 
-export const getSettingsSearchTokens = createModuleRoot(import.meta.hot, () =>
-  createMemo(() => tokenizeSettingsSearch(getSettingsSearch())),
+export const getSettingsSearchTokens = createAppMemo(() =>
+  tokenizeSettingsSearch(getSettingsSearch()),
 );
 
 // Score once per query, sharing the same matches between rows and sidebar counts.
-const getMatchingSettings = createModuleRoot(import.meta.hot, () =>
-  createMemo(() => {
-    const tokens = getSettingsSearchTokens();
-    const scores = new Map<SettingSearchIndex, number>();
-    let best = 0;
-    if (tokens.length > 0) {
-      for (const { index } of getSearchables()) {
-        const setting = index();
-        const score = scoreSettingSearch(setting, tokens);
-        scores.set(setting, score);
-        best = Math.max(best, score);
-      }
+const getMatchingSettings = createAppMemo(() => {
+  const tokens = getSettingsSearchTokens();
+  const scores = new Map<SettingSearchIndex, number>();
+  let best = 0;
+  if (tokens.length > 0) {
+    for (const { index } of getSearchables()) {
+      const setting = index();
+      const score = scoreSettingSearch(setting, tokens);
+      scores.set(setting, score);
+      best = Math.max(best, score);
     }
-    return new Set(
-      [...scores]
-        .filter(([, score]) => score > 0 && score === best)
-        .map(([setting]) => setting),
-    );
-  }),
-);
+  }
+  return new Set(
+    [...scores]
+      .filter(([, score]) => score > 0 && score === best)
+      .map(([setting]) => setting),
+  );
+});
 
 export function settingMatchesSearch(index: SettingSearchIndex): boolean {
   return !isSettingsSearchActive() || getMatchingSettings().has(index);
 }
 
 // how many settings in each section match the active search
-export const getSearchMatchCounts = createModuleRoot(import.meta.hot, () =>
-  createMemo(() => {
-    const counts: Partial<Record<SettingsSection, number>> = {};
-    if (!isSettingsSearchActive()) return counts;
-    const matches = getMatchingSettings();
-    for (const { index, section } of getSearchables()) {
-      if (section === undefined || !matches.has(index())) continue;
-      counts[section] = (counts[section] ?? 0) + 1;
-    }
-    return counts;
-  }),
-);
+export const getSearchMatchCounts = createAppMemo(() => {
+  const counts: Partial<Record<SettingsSection, number>> = {};
+  if (!isSettingsSearchActive()) return counts;
+  const matches = getMatchingSettings();
+  for (const { index, section } of getSearchables()) {
+    if (section === undefined || !matches.has(index())) continue;
+    counts[section] = (counts[section] ?? 0) + 1;
+  }
+  return counts;
+});

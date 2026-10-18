@@ -28,20 +28,23 @@ vi.mock("../../../../../src/ts/controllers/sound-controller", () => ({
   playClick: vi.fn(),
   playError: vi.fn(),
 }));
-vi.mock("../../../../../src/ts/test/events/data", async () => {
+vi.mock("../../../../../src/features/typing/runtime/events/data", async () => {
   const { getReplaySteps } = await import("@oxytype/typing-core/replay");
   const targetWords = ["ab ", "cd"];
   return {
     buildEventLog: () => [],
-    testSession: {
-      getReplay: () => ({
-        words: targetWords,
-        steps: getReplaySteps(
-          { context: { targetWords }, events: mocks.events } as EventLog,
-          false,
-        ),
-      }),
-    },
+    getTestSession: (() => {
+      const session = {
+        getReplay: () => ({
+          words: targetWords,
+          steps: getReplaySteps(
+            { context: { targetWords }, events: mocks.events } as EventLog,
+            false,
+          ),
+        }),
+      };
+      return () => session;
+    })(),
   };
 });
 vi.mock("@oxytype/typing-core/events/helpers", async (importOriginal) => ({
@@ -55,12 +58,12 @@ vi.mock("@oxytype/typing-core/events/stats", () => ({
   getWpmHistory: () => [60, 70],
 }));
 
-import { ResultReplay } from "../../../../../src/ts/components/pages/test/result/ResultReplay";
-import { setResultState } from "../../../../../src/ts/states/result";
+import { ResultReplay } from "../../../../../src/features/typing/components/result/ResultReplay";
 import {
   pauseReplay,
   toggleReplayDisplay,
-} from "../../../../../src/ts/test/replay";
+} from "../../../../../src/features/typing/runtime/replay";
+import { setResultState } from "../../../../../src/ts/states/result";
 
 function input(testMs: number, data: Input): (typeof mocks.events)[number] {
   return { type: "input", testMs, data };

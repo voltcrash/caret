@@ -15,7 +15,7 @@ import {
   getMemoryTimerText,
   getMemoryTimerVisibility,
 } from "../../../src/ts/states/funbox-timers";
-import * as MemoryTimer from "../../../src/ts/test/funbox/memory-funbox-timer";
+import * as MemoryTimer from "../../../src/features/typing/runtime/funbox/memory-funbox-timer";
 
 beforeEach(() => {
   vi.useFakeTimers();

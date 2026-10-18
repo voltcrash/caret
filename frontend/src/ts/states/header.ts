@@ -1,4 +1,5 @@
-import { createSignal } from "solid-js";
+import { createAccountSignal } from "../../app/state";
+
 import { createEvent } from "../hooks/createEvent";
 import { XpBreakdown } from "@oxytype/schemas/results";
 
@@ -8,11 +9,10 @@ export type XpBarData = {
   breakdown?: XpBreakdown;
 };
 
-export const [getAnimatedLevel, setAnimatedLevel] = createSignal(0);
+export const [getAnimatedLevel, setAnimatedLevel] = createAccountSignal(0);
 export const [getAccountButtonSpinner, setAccountButtonSpinner] =
-  createSignal(false);
-export const [getXpBarData, setXpBarData] = createSignal<XpBarData | null>(
-  null,
-);
+  createAccountSignal(false);
+export const [getXpBarData, setXpBarData] =
+  createAccountSignal<XpBarData | null>(null);
 
 export const skipBreakdownEvent = createEvent();

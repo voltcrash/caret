@@ -31,7 +31,10 @@ import {
 } from "@oxytype/typing-core/events/stats";
 
 vi.mock("../../../src/ts/config/store", () => ({
-  Config: { mode: "time", funbox: [] },
+  getMutableConfig: (() => {
+    const storedConfig = { mode: "time", funbox: [] };
+    return () => storedConfig;
+  })(),
 }));
 
 function eventLog(

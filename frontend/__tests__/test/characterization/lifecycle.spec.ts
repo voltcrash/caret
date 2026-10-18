@@ -1,3 +1,4 @@
+import { createRoot } from "solid-js";
 import type { LanguageObject } from "@oxytype/schemas/languages";
 import type { EventLog } from "@oxytype/typing-core/events/types";
 import {
@@ -83,20 +84,18 @@ vi.mock("../../../src/ts/states/test", () => ({
   },
 }));
 vi.mock("../../../src/ts/states/core", () => ({
-  getActivePage: () => "test",
   getCustomTextIndicator: () => undefined,
   isAuthenticated: () => false,
 }));
 vi.mock("../../../src/ts/auth-client", () => ({
   getAuthenticatedUser: () => null,
 }));
-vi.mock("../../../src/ts/states/page-transition", () => ({ get: () => false }));
 vi.mock("../../../src/ts/utils/json-data", () => ({
   getLanguage: async () =>
     ({ name: "english", words: ["hello", "world"] }) as LanguageObject,
   checkIfLanguageSupportsZipf: async () => "yes",
 }));
-vi.mock("../../../src/ts/test/test-ui", () => ({
+vi.mock("../../../src/features/typing/runtime/test-ui", () => ({
   onTestStart: vi.fn(),
   fadeOutForRestart: vi.fn().mockResolvedValue(undefined),
   fadeInAfterRestart: vi.fn().mockResolvedValue(undefined),
@@ -106,7 +105,7 @@ vi.mock("../../../src/ts/test/test-ui", () => ({
   appendEmptyWordElement: vi.fn(),
   addWord: vi.fn(),
 }));
-vi.mock("../../../src/ts/test/words-generator", () => ({
+vi.mock("../../../src/features/typing/runtime/words-generator", () => ({
   generateWords: async () => ({
     words: [...mocks.generatedWords],
     sectionIndexes: mocks.generatedWords.map(() => 0),
@@ -116,7 +115,7 @@ vi.mock("../../../src/ts/test/words-generator", () => ({
   areAllWordsGenerated: () => true,
   appendCommitCharacter: (word: string) => `${word} `,
 }));
-vi.mock("../../../src/ts/test/funbox/list", () => ({
+vi.mock("../../../src/features/typing/runtime/funbox/list", () => ({
   getActiveFunboxes: () => [],
   getActiveFunboxesWithFunction: () => [],
   getActiveFunboxNames: () => [],
@@ -124,30 +123,34 @@ vi.mock("../../../src/ts/test/funbox/list", () => ({
   isFunboxActive: () => false,
   isFunboxActiveWithProperty: () => false,
 }));
-vi.mock("../../../src/ts/test/funbox/active", () => ({
+vi.mock("../../../src/features/typing/runtime/funbox/active", () => ({
   isFunboxActiveWithProperty: () => false,
 }));
-vi.mock("../../../src/ts/test/funbox/funbox", () => ({
+vi.mock("../../../src/features/typing/runtime/funbox/funbox", () => ({
   rememberSettings: vi.fn().mockResolvedValue(undefined),
   activate: vi.fn().mockResolvedValue(undefined),
   toggleScript: vi.fn(),
 }));
-vi.mock("../../../src/ts/test/pace-caret", () => ({
+vi.mock("../../../src/features/typing/runtime/pace-caret", () => ({
   start: mocks.paceStart,
   reset: mocks.paceReset,
   init: mocks.paceInit,
   setLastTestWpm: mocks.paceLastWpm,
 }));
-vi.mock("../../../src/ts/test/caret", () => ({ hide: mocks.caretHide }));
-vi.mock("../../../src/ts/test/replay", () => ({ pauseReplay: vi.fn() }));
-vi.mock("../../../src/ts/test/practise-words", () => ({
+vi.mock("../../../src/features/typing/runtime/caret", () => ({
+  hide: mocks.caretHide,
+}));
+vi.mock("../../../src/features/typing/runtime/replay", () => ({
+  pauseReplay: vi.fn(),
+}));
+vi.mock("../../../src/features/typing/runtime/practise-words", () => ({
   before: { mode: null },
   resetBefore: vi.fn(),
 }));
-vi.mock("../../../src/ts/test/today-tracker", () => ({
+vi.mock("../../../src/features/typing/runtime/today-tracker", () => ({
   addSeconds: mocks.todaySeconds,
 }));
-vi.mock("../../../src/ts/test/result", () => ({
+vi.mock("../../../src/features/typing/runtime/result", () => ({
   update: mocks.resultUpdate,
   updateRetrySaving: vi.fn(),
   updateTodayTracker: vi.fn(),
@@ -173,10 +176,13 @@ vi.mock("../../../src/ts/states/remember-lazy-mode", () => ({
   setArabicPref: vi.fn(),
 }));
 vi.mock("../../../src/ts/config/setters", async () => {
-  const { Config } = await import("../../../src/ts/config/store");
+  const { getMutableConfig } = await import("../../../src/ts/config/store");
   return {
-    setConfig: (key: keyof typeof Config, value: unknown) => {
-      Object.assign(Config, { [key]: value });
+    setConfig: (
+      key: keyof ReturnType<typeof getMutableConfig>,
+      value: unknown,
+    ) => {
+      Object.assign(getMutableConfig(), { [key]: value });
     },
     setQuoteLengthAll: vi.fn(),
     toggleFunbox: vi.fn(),
@@ -187,9 +193,7 @@ vi.mock("../../../src/ts/db", () => ({
   saveLocalResult: vi.fn(),
   getLocalPB: () => undefined,
 }));
-vi.mock("../../../src/ts/ape", () => ({
-  default: { results: { add: vi.fn() } },
-}));
+
 vi.mock("../../../src/ts/controllers/challenge-controller", () => ({
   verify: () => null,
 }));
@@ -220,15 +224,19 @@ vi.mock("../../../src/ts/utils/result-hash", () => ({
   preloadResultHasher: vi.fn().mockResolvedValue(undefined),
 }));
 
-import { Config } from "../../../src/ts/config/store";
+import { getMutableConfig } from "../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../src/ts/constants/default-config";
 import {
   getAllTestEvents,
   logTestEvent,
-} from "../../../src/ts/test/events/data";
+} from "../../../src/features/typing/runtime/events/data";
 import * as SlowTimer from "../../../src/ts/states/slow-timer";
-import * as CustomText from "../../../src/ts/test/custom-text";
-import { restart, startTest } from "../../../src/ts/test/test-logic";
+import * as CustomText from "../../../src/features/typing/runtime/custom-text";
+import {
+  restart,
+  startTest,
+  useTestLogicEvents,
+} from "../../../src/features/typing/runtime/test-logic";
 
 function type(
   now: number,
@@ -261,11 +269,17 @@ function failReason(): unknown {
   return mocks.resultUpdate.mock.calls.at(-1)?.[2];
 }
 
+let disposeRuntime: () => void;
+afterEach(() => disposeRuntime());
 beforeEach(async () => {
   vi.useFakeTimers({
     toFake: ["setTimeout", "clearTimeout", "performance", "Date"],
   });
   vi.clearAllMocks();
+  disposeRuntime = createRoot((dispose) => {
+    useTestLogicEvents();
+    return dispose;
+  });
   Object.assign(mocks, {
     active: false,
     restarting: false,
@@ -276,7 +290,7 @@ beforeEach(async () => {
     generatedWords: ["hello ", "world "],
   });
   mocks.resultUpdate.mockResolvedValue(undefined);
-  Object.assign(Config, getDefaultConfig(), {
+  Object.assign(getMutableConfig(), getDefaultConfig(), {
     mode: "time",
     time: 3,
     language: "english",
@@ -327,8 +341,8 @@ describe("timing", () => {
   });
 
   it("plays the time warning on the configured second", () => {
-    Config.time = 15;
-    Config.playTimeWarning = "5";
+    getMutableConfig().time = 15;
+    getMutableConfig().playTimeWarning = "5";
     startTest(performance.now());
     vi.advanceTimersByTime(9000);
     expect(mocks.timeWarning).not.toHaveBeenCalled();
@@ -338,7 +352,7 @@ describe("timing", () => {
 
   it("catches up stalled seconds without recomputing live stats for each", () => {
     // Long tests skip the slow timer guard.
-    Config.time = 200;
+    getMutableConfig().time = 200;
     const start = performance.now();
     startTest(start);
     const now = vi.spyOn(performance, "now").mockReturnValue(start + 3200);
@@ -379,7 +393,7 @@ describe("completion", () => {
   });
 
   it("counts custom time limits", async () => {
-    Config.mode = "custom";
+    getMutableConfig().mode = "custom";
     CustomText.setLimitMode("time");
     CustomText.setLimitValue(2);
     startTest(performance.now());
@@ -389,8 +403,8 @@ describe("completion", () => {
   });
 
   it("keeps running without a time limit", () => {
-    Config.mode = "words";
-    Config.words = 10;
+    getMutableConfig().mode = "words";
+    getMutableConfig().words = 10;
     startTest(performance.now());
     vi.advanceTimersByTime(30_000);
     expect(mocks.resultUpdate).not.toHaveBeenCalled();
@@ -409,8 +423,8 @@ describe("completion", () => {
 
 describe("failure", () => {
   it("fails on minimum accuracy at the next second", async () => {
-    Config.minAcc = "custom";
-    Config.minAccCustom = 90;
+    getMutableConfig().minAcc = "custom";
+    getMutableConfig().minAccCustom = 90;
     const start = performance.now();
     startTest(start);
     type(start + 100, 0, "h");
@@ -425,16 +439,16 @@ describe("failure", () => {
   });
 
   it("does not fail minimum accuracy before any input", () => {
-    Config.minAcc = "custom";
-    Config.minAccCustom = 90;
+    getMutableConfig().minAcc = "custom";
+    getMutableConfig().minAccCustom = 90;
     startTest(performance.now());
     vi.advanceTimersByTime(2000);
     expect(mocks.resultUpdate).not.toHaveBeenCalled();
   });
 
   it("fails on minimum speed only after the fourth word", async () => {
-    Config.minWpm = "custom";
-    Config.minWpmCustomSpeed = 100;
+    getMutableConfig().minWpm = "custom";
+    getMutableConfig().minWpmCustomSpeed = 100;
     const start = performance.now();
     startTest(start);
     type(start + 100, 0, "h");
@@ -448,7 +462,7 @@ describe("failure", () => {
   });
 
   it("fails a slow timer and flags slow steps", async () => {
-    Config.time = 10;
+    getMutableConfig().time = 10;
     const start = performance.now();
     startTest(start);
     const now = vi.spyOn(performance, "now").mockReturnValue(start + 1150);
@@ -477,7 +491,7 @@ describe("failure", () => {
 
 describe("restart", () => {
   it("records an abandoned test with its accuracy and active seconds", async () => {
-    Config.time = 30;
+    getMutableConfig().time = 30;
     const start = performance.now();
     startTest(start);
     type(start + 100, 0, "h");
@@ -493,7 +507,7 @@ describe("restart", () => {
   });
 
   it("does not record an abandoned test when result saving is off", async () => {
-    Config.resultSaving = false;
+    getMutableConfig().resultSaving = false;
     startTest(performance.now());
     vi.advanceTimersByTime(1500);
     await restart();
@@ -501,7 +515,7 @@ describe("restart", () => {
   });
 
   it("starts the next test from a fresh clock", async () => {
-    Config.time = 30;
+    getMutableConfig().time = 30;
     startTest(performance.now());
     vi.advanceTimersByTime(2500);
     await restart();
@@ -513,15 +527,15 @@ describe("restart", () => {
   });
 
   it("resets the pace caret and clears the failure reason", async () => {
-    Config.minAcc = "custom";
-    Config.minAccCustom = 90;
+    getMutableConfig().minAcc = "custom";
+    getMutableConfig().minAccCustom = 90;
     const start = performance.now();
     startTest(start);
     type(start + 100, 0, "x", false);
     vi.advanceTimersByTime(1000);
     await vi.waitFor(() => expect(failReason()).toBe("min accuracy"));
     mocks.calculating = false;
-    Config.minAcc = "off";
+    getMutableConfig().minAcc = "off";
     await restart();
     expect(mocks.paceReset).toHaveBeenCalled();
     expect(mocks.paceInit).toHaveBeenCalled();

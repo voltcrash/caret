@@ -1,5 +1,5 @@
 import { expect } from "vite-plus/test";
-import { REQUEST_MULTIPLIER } from "../../src/middlewares/rate-limit";
+import { REQUEST_MULTIPLIER } from "../../src/policies/rate-limit";
 import { MatcherResult, ExpectedRateLimit } from "../vitest";
 import { Test as SuperTest } from "supertest";
 

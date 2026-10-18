@@ -16,7 +16,8 @@ vi.mock("../../../src/ts/collections/results", () => ({
   getResultsSinceDayOnce: results.since,
 }));
 
-type Tracker = typeof import("../../../src/ts/test/today-tracker");
+type Tracker =
+  typeof import("../../../src/features/typing/runtime/today-tracker");
 let TodayTracker: Tracker;
 
 beforeEach(async () => {
@@ -24,7 +25,8 @@ beforeEach(async () => {
   vi.setSystemTime(new Date(2026, 9, 14, 15, 30));
   vi.resetModules();
   results.since.mockReset();
-  TodayTracker = await import("../../../src/ts/test/today-tracker");
+  TodayTracker =
+    await import("../../../src/features/typing/runtime/today-tracker");
 });
 afterEach(() => vi.useRealTimers());
 

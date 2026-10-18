@@ -1,7 +1,12 @@
 import { afterAll, beforeAll, expect, it } from "vite-plus/test";
 import { createTestRuntime, seedUser } from "./helpers";
-import { withRuntime } from "../../src/runtime/env";
-import { getProfile, updateProfile } from "../../src/api/controllers/user";
+import { withRuntime, runtime, background } from "../../src/runtime/env";
+import {
+  getProfile,
+  updateProfile,
+} from "../../src/services/operations/user/profile";
+import { getCachedConfiguration } from "../../src/init/configuration";
+import type { ServiceContext } from "../../src/services/context";
 import * as UserDAL from "../../src/dal/user";
 
 let test: Awaited<ReturnType<typeof createTestRuntime>>;
@@ -14,11 +19,20 @@ afterAll(async () => await test?.dispose());
 
 it("persists both privacy values and applies them to public profile reads", async () => {
   await withRuntime(test.env, async () => {
+    const context: ServiceContext = {
+      runtime: runtime(),
+      requestId: "test-request",
+      background,
+      actor: { type: "Session", uid, email: "" },
+      configuration: await getCachedConfiguration(),
+      client: { ip: "127.0.0.1" },
+    };
     for (const showActivityOnPublicProfile of [true, false]) {
-      const response = await updateProfile({
+      const response = await updateProfile(context, {
         body: { showActivityOnPublicProfile },
-        ctx: { decodedToken: { uid } },
-      } as unknown as Parameters<typeof updateProfile>[0]);
+        query: undefined,
+        params: undefined,
+      });
       expect(response.data.showActivityOnPublicProfile).toBe(
         showActivityOnPublicProfile,
       );
@@ -26,10 +40,11 @@ it("persists both privacy values and applies them to public profile reads", asyn
         (await UserDAL.getUser(uid, "privacy saved")).profileDetails
           ?.showActivityOnPublicProfile,
       ).toBe(showActivityOnPublicProfile);
-      const profile = await getProfile({
+      const profile = await getProfile(context, {
         params: { uidOrName: uid },
         query: { isUid: true },
-      } as unknown as Parameters<typeof getProfile>[0]);
+        body: undefined,
+      });
       expect("testActivity" in profile.data).toBe(showActivityOnPublicProfile);
     }
   });

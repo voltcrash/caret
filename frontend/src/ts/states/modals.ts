@@ -1,4 +1,4 @@
-import { createStore } from "solid-js/store";
+import { createAppStore } from "../../app/state";
 
 export type ModalId =
   | "VersionHistory"
@@ -50,7 +50,7 @@ type ModalState = {
   pendingIsChained: boolean;
 };
 
-const [modalState, setModalState] = createStore<ModalState>({
+const [modalState, setModalState] = createAppStore<ModalState>({
   openModals: {},
   modalStack: [],
   pendingModal: null,

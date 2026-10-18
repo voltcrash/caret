@@ -1,3 +1,4 @@
+import { mockHttpFixture } from "../__harness__/operations";
 import { expect, it, vi } from "vite-plus/test";
 import type { FunboxName } from "@oxytype/schemas/configs";
 import type { ResultMinified } from "@oxytype/schemas/results";
@@ -10,9 +11,7 @@ vi.mock("../../src/ts/states/core", () => ({
   isAuthenticated: () => true,
   getUserId: () => "settings-user",
 }));
-vi.mock("../../src/ts/ape", () => ({
-  default: { results: { get, updateTags: updateTagsApi } },
-}));
+
 vi.mock("../../src/ts/collections/tags", () => ({
   getTagsOnce: async () => [],
   getActiveTagsOnce: async () => [],
@@ -198,3 +197,10 @@ it("normalizes inserted results and persists optimistic tag edits", async () => 
     (await selected())?.find((item) => item._id === "local")?.tags,
   ).toEqual(["c"]);
 });
+
+mockHttpFixture("results.get", async (input) => await get(input));
+
+mockHttpFixture(
+  "results.updateTags",
+  async (input) => await updateTagsApi(input),
+);

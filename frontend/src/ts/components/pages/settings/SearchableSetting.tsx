@@ -5,7 +5,7 @@ import {
   registerSearchable,
   settingMatchesSearch,
 } from "../../../states/settings-search";
-import { setCurrentSettingsSection } from "../../../states/settings-sections";
+import { SettingsSectionHostContext } from "../../../states/settings-sections";
 import { cn } from "../../../utils/cn";
 import { createSettingSearchIndex } from "../../../utils/settings-search";
 import { Setting, SettingProps } from "../../common/Setting";
@@ -52,6 +52,7 @@ export function SearchableSetting(props: SearchableSettingProps): JSXElement {
   );
 
   const section = useContext(SettingsSectionContext);
+  const sections = useContext(SettingsSectionHostContext);
   untrack(() => registerSearchable(index, section));
 
   return (
@@ -77,7 +78,7 @@ export function SearchableSetting(props: SearchableSettingProps): JSXElement {
       }
       // deep links can target a setting in a section that isn't selected
       onHighlight={() => {
-        if (section !== undefined) setCurrentSettingsSection(section);
+        if (section !== undefined) sections.select(section);
         props.onHighlight?.();
       }}
       class={cn(props.class, !settingMatchesSearch(index()) && "hidden")}

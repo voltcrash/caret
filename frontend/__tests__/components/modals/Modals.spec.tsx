@@ -4,7 +4,9 @@ import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 const { contactMounts } = vi.hoisted(() => ({
   contactMounts: vi.fn(),
 }));
-vi.mock("../../../src/ts/components/modals/modal-triggers", () => ({}));
+vi.mock("../../../src/ts/components/modals/modal-triggers", () => ({
+  useModalTriggers: () => undefined,
+}));
 vi.mock("../../../src/ts/components/modals/Commandline", () => ({
   Commandline: () => <div data-testid="commandline" />,
 }));
@@ -31,7 +33,12 @@ describe("Modals", () => {
     render(() => <Modals />);
 
     expect(screen.queryByTestId("commandline")).not.toBeInTheDocument();
-    expect(screen.getByTestId("cookies")).toBeInTheDocument();
+    expect(screen.queryByTestId("cookies")).not.toBeInTheDocument();
+    showModal("Cookies");
+    await waitFor(() =>
+      expect(screen.getByTestId("cookies")).toBeInTheDocument(),
+    );
+    hideModal("Cookies");
     expect(screen.queryByTestId("contact")).not.toBeInTheDocument();
     expect(contactMounts).not.toHaveBeenCalled();
 

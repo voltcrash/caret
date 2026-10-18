@@ -2,12 +2,13 @@ import addonA11y from "@storybook/addon-a11y";
 import addonDocs from "@storybook/addon-docs";
 import { definePreview } from "storybook-solidjs-vite";
 
-import "../stories/tailwind.css";
+import "../stories/app.css";
 import "../stories/storybook-theme.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "balloon-css/balloon.min.css";
 
 import { ThemesList } from "../../src/ts/constants/themes";
+import { AppDecorator } from "./AppDecorator";
 import { ThemeDecorator } from "./ThemeDecorator";
 
 const tailwindViewports = {
@@ -44,7 +45,8 @@ export default definePreview({
   initialGlobals: {
     theme: "serika_dark",
   },
-  decorators: [ThemeDecorator],
+  // Decorators apply innermost first: the theme renders inside the application.
+  decorators: [ThemeDecorator, AppDecorator],
   parameters: {
     layout: "centered",
     // automatically create action args for all props that start with 'on'

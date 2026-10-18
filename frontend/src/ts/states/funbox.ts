@@ -1,18 +1,19 @@
+import { createAppSignal } from "../../app/state";
 import { FunboxName } from "@oxytype/schemas/configs";
-import { createSignal } from "solid-js";
 
-export const [getFunboxBodyClasses, setFunboxBodyClasses] = createSignal<
+export const [getFunboxBodyClasses, setFunboxBodyClasses] = createAppSignal<
   string[]
 >([]);
-export const [getFunboxStylesheets, setFunboxStylesheets] = createSignal<
+export const [getFunboxStylesheets, setFunboxStylesheets] = createAppSignal<
   { name: FunboxName }[]
 >([]);
 // Legacy activation adds this class once, and clear() never removes it.
 export const [isFunboxReducedMotionIgnored, setFunboxReducedMotionIgnored] =
-  createSignal(false);
+  createAppSignal(false);
 // A fresh object restarts the scanline on repeated CRT application.
-export const [getCrt, setCrt] = createSignal<object | null>(null);
-export const [isReadAheadDisabled, setReadAheadDisabled] = createSignal(false);
-export const [areWordsVisible, setWordsVisible] = createSignal(true);
+export const [getCrt, setCrt] = createAppSignal<object | null>(null);
+export const [isReadAheadDisabled, setReadAheadDisabled] =
+  createAppSignal(false);
+export const [areWordsVisible, setWordsVisible] = createAppSignal(true);
 export const [isWordsWrapperVisible, setWordsWrapperVisible] =
-  createSignal(true);
+  createAppSignal(true);

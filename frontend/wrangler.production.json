@@ -1,0 +1,69 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "oxytype",
+  "main": "src/worker.ts",
+  "account_id": "eb2679ce4f23ae7db4e6c4e3fcf8c3c1",
+  "compatibility_date": "2026-10-02",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    {
+      "pattern": "oxytype.voltcrash.com",
+      "custom_domain": true
+    }
+  ],
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "binding": "ASSETS",
+    "run_worker_first": false,
+    "html_handling": "none",
+    "not_found_handling": "none"
+  },
+  "triggers": {
+    "crons": ["* * * * *"]
+  },
+  "queues": {
+    "producers": [
+      {
+        "binding": "TASKS",
+        "queue": "oxytype-production-tasks"
+      }
+    ],
+    "consumers": [
+      {
+        "queue": "oxytype-production-tasks",
+        "max_batch_size": 1,
+        "max_batch_timeout": 5,
+        "max_retries": 5,
+        "max_concurrency": 1,
+        "dead_letter_queue": "oxytype-production-dlq"
+      }
+    ]
+  },
+  "vars": {
+    "MODE": "production",
+    "FRONTEND_URL": "https://oxytype.voltcrash.com",
+    "BETTER_AUTH_URL": "https://oxytype.voltcrash.com/api/auth",
+    "VERSION": "production"
+  },
+  "secrets": {
+    "required": [
+      "BETTER_AUTH_SECRET",
+      "TURNSTILE_SECRET_KEY",
+      "GITHUB_CLIENT_ID",
+      "GITHUB_CLIENT_SECRET"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "oxytype-production",
+      "database_id": "43d104e9-2fef-43db-95d7-c64a08310714",
+      "migrations_dir": "../backend/migrations"
+    }
+  ],
+  "compatibility_flags": ["nodejs_compat"],
+  "upload_source_maps": true
+}

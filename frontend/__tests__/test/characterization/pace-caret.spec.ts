@@ -43,36 +43,39 @@ vi.mock("../../../src/ts/states/test-dom", () => ({
   areTestElementsMounted: () => false,
   getPaceCaretElement: () => document.createElement("div"),
 }));
-vi.mock("../../../src/ts/components/pages/test/words/caret-controller", () => ({
-  CaretController: class {
-    hide(): void {
-      mocks.hidden = true;
-    }
-    show(): void {
-      mocks.hidden = false;
-    }
-    isHidden(): boolean {
-      return mocks.hidden;
-    }
-    stopAllAnimations = vi.fn();
-    clearMargins = vi.fn();
-    setStyle = vi.fn();
-    goTo(options: GoTo): void {
-      mocks.goTo.push(options);
-    }
-  },
-}));
+vi.mock(
+  "../../../src/features/typing/components/words/caret-controller",
+  () => ({
+    CaretController: class {
+      hide(): void {
+        mocks.hidden = true;
+      }
+      show(): void {
+        mocks.hidden = false;
+      }
+      isHidden(): boolean {
+        return mocks.hidden;
+      }
+      stopAllAnimations = vi.fn();
+      clearMargins = vi.fn();
+      setStyle = vi.fn();
+      goTo(options: GoTo): void {
+        mocks.goTo.push(options);
+      }
+    },
+  }),
+);
 vi.mock("../../../src/ts/db", () => ({
   getLocalPB: () => mocks.localPb,
 }));
-vi.mock("../../../src/ts/test/funbox/list", () => ({
+vi.mock("../../../src/features/typing/runtime/funbox/list", () => ({
   getActiveFunboxes: () => [],
 }));
 
-import { Config } from "../../../src/ts/config/store";
+import { getMutableConfig } from "../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../src/ts/constants/default-config";
-import * as PaceCaret from "../../../src/ts/test/pace-caret";
-import * as TestWords from "../../../src/ts/test/test-words";
+import * as PaceCaret from "../../../src/features/typing/runtime/pace-caret";
+import * as TestWords from "../../../src/features/typing/runtime/test-words";
 
 function positions(): string[] {
   return mocks.goTo
@@ -92,7 +95,7 @@ beforeEach(() => {
     goTo: [],
     localPb: undefined,
   });
-  Object.assign(Config, getDefaultConfig(), {
+  Object.assign(getMutableConfig(), getDefaultConfig(), {
     mode: "words",
     words: 3,
     paceCaret: "custom",
@@ -155,7 +158,7 @@ describe("pace caret", () => {
   });
 
   it("ignores corrections in blind mode", async () => {
-    Config.blindMode = true;
+    getMutableConfig().blindMode = true;
     await PaceCaret.init();
     PaceCaret.start();
     PaceCaret.handleSpace(false, "hi ");
@@ -197,7 +200,7 @@ describe("pace caret", () => {
   });
 
   it("disables itself for speeds below one", async () => {
-    Config.paceCaretCustomSpeed = 0.5;
+    getMutableConfig().paceCaretCustomSpeed = 0.5;
     await PaceCaret.init();
     expect(mocks.paceWpm).toBeUndefined();
     PaceCaret.start();
@@ -205,14 +208,14 @@ describe("pace caret", () => {
   });
 
   it("uses the local personal best", async () => {
-    Config.paceCaret = "pb";
+    getMutableConfig().paceCaret = "pb";
     mocks.localPb = { wpm: 120 };
     await PaceCaret.init();
     expect(mocks.paceWpm).toBe(120);
   });
 
   it("keeps the last test speed, or the fastest one while repeating", async () => {
-    Config.paceCaret = "last";
+    getMutableConfig().paceCaret = "last";
     PaceCaret.setLastTestWpm(70);
     await PaceCaret.init();
     expect(mocks.paceWpm).toBe(70);

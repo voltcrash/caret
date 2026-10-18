@@ -1,4 +1,6 @@
-import { Config } from "../../config/store";
+import { createAccountOwned } from "../../../app/account-scope";
+import { appObject } from "../../../app/state";
+import { getMutableConfig } from "../../config/store";
 import { setConfig } from "../../config/setters";
 import { capitalizeFirstLetterOfEachWord } from "../../utils/strings";
 import * as ThemeController from "../../controllers/theme-controller";
@@ -9,7 +11,7 @@ import { configEvent } from "../../events/config";
 import * as getErrorMessage from "../../utils/error";
 
 const isFavorite = (theme: ThemeWithName): boolean =>
-  Config.favThemes.includes(theme.name);
+  getMutableConfig().favThemes.includes(theme.name);
 
 /**
  * creates a theme command object for the given theme
@@ -49,36 +51,42 @@ const sortThemesByFavorite = (themes: ThemeWithName[]): ThemeWithName[] => [
   ...themes.filter(not(isFavorite)),
 ];
 
-const subgroup: CommandsSubgroup = {
+const getSubgroup = createAccountOwned<CommandsSubgroup>(() => ({
   title: "Theme...",
   configKey: "theme",
   list: sortThemesByFavorite(ThemesList).map((theme) =>
     createThemeCommand(theme),
   ),
-};
+}));
 
-const commands: Command[] = [
-  {
-    id: "changeTheme",
-    display: "Theme...",
-    icon: "fa-palette",
-    subgroup,
-  },
-];
+const commands = appObject(
+  createAccountOwned<Command[]>(() => [
+    {
+      id: "changeTheme",
+      display: "Theme...",
+      icon: "fa-palette",
+      subgroup: getSubgroup(),
+    },
+  ]),
+  true,
+);
 
 function update(themes: ThemeWithName[]): void {
   // clear the current list
-  subgroup.list = [];
+  getSubgroup().list = [];
 
   // rebuild with favorites first, then non-favorites
-  subgroup.list = sortThemesByFavorite(themes).map((theme) =>
+  getSubgroup().list = sortThemesByFavorite(themes).map((theme) =>
     createThemeCommand(theme),
   );
 }
 
 // subscribe to theme-related config events to update the theme command list
-configEvent.subscribe(
-  ({ key }) => {
+
+export default commands;
+
+export function useThemeCommandEvents(): void {
+  configEvent.useListener(({ key }) => {
     if (key === "favThemes") {
       // update themes list when favorites change
       try {
@@ -92,8 +100,5 @@ configEvent.subscribe(
         );
       }
     }
-  },
-  import.meta.hot,
-);
-
-export default commands;
+  });
+}

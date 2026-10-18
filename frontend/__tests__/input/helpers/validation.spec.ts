@@ -4,13 +4,13 @@ import {
   shouldGoToNextWord,
 } from "../../../src/ts/input/helpers/validation";
 import { __testing } from "../../../src/ts/config/testing";
-import * as FunboxList from "../../../src/ts/test/funbox/list";
+import * as FunboxList from "../../../src/features/typing/runtime/funbox/list";
 import * as Strings from "../../../src/ts/utils/strings";
 
 const { replaceConfig } = __testing;
 
 // Mock dependencies
-vi.mock("../../../src/ts/test/funbox/list", () => ({
+vi.mock("../../../src/features/typing/runtime/funbox/list", () => ({
   findSingleActiveFunboxWithFunction: vi.fn(),
 }));
 

@@ -1,8 +1,9 @@
-import { createSignal, JSX } from "solid-js";
+import { createAppSignal } from "../../app/state";
+import { JSX } from "solid-js";
 
-export const [getBackground, setBackground] = createSignal({ url: "" });
+export const [getBackground, setBackground] = createAppSignal({ url: "" });
 export const [getBackgroundStyle, setBackgroundStyle] =
-  createSignal<JSX.CSSProperties>({});
-export const [getBackgroundSize, setBackgroundSize] = createSignal<
+  createAppSignal<JSX.CSSProperties>({});
+export const [getBackgroundSize, setBackgroundSize] = createAppSignal<
   "" | "cover" | "contain"
 >("");

@@ -1,3 +1,7 @@
+import { operation } from "../../data/operations";
+import { createAccountOwned } from "../../app/account-scope";
+import { createAccountSignal } from "../../app/state";
+import { onCleanup, Accessor } from "solid-js";
 import { AllRewards, MonkeyMail } from "@oxytype/schemas/users";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import {
@@ -8,9 +12,8 @@ import {
   not,
   useLiveQuery,
 } from "@tanstack/solid-db";
-import { Accessor, createSignal } from "solid-js";
-import Ape from "../ape";
-import { queryClient } from "../queries";
+import { getQueryClient } from "../queries";
+import { defineCollection } from "./utils/scope";
 import { baseKey } from "../queries/utils/keys";
 import { isAuthenticated } from "../states/core";
 import { flushDebounceStrategy } from "./utils/flushDebounceStrategy";
@@ -21,81 +24,91 @@ import {
 import * as BadgeController from "../controllers/badge-controller";
 import { addBadge, addXp } from "../db";
 
-const flushStrategy = flushDebounceStrategy({ maxWait: 1000 * 60 * 5 });
+const getFlushStrategy = createAccountOwned(() => {
+  const value = flushDebounceStrategy({ maxWait: 1000 * 60 * 5 });
+  onCleanup(() => value.strategy.cleanup());
+  return value;
+});
 export function applyPendingInboxActions(): void {
-  flushStrategy.flush();
+  getFlushStrategy().flush();
 }
 
 const queryKeys = {
   root: () => [...baseKey("inbox", { isUserSpecific: true })],
 };
 
-const [maxMailboxSize, setMaxMailboxSize] = createSignal(0);
+const [maxMailboxSize, setMaxMailboxSize] = createAccountSignal(0);
 
 export { maxMailboxSize };
 export type InboxItem = Omit<MonkeyMail, "read"> & {
   status: "unclaimed" | "unread" | "read" | "deleted";
 };
-const inboxCollection = createCollection(
-  queryCollectionOptions({
-    staleTime: 1000 * 60 * 5,
-    queryKey: queryKeys.root(),
-    enabled: isAuthenticated,
-    queryFn: async () => {
-      const addStatus = (item: MonkeyMail): InboxItem => ({
-        ...item,
-        status:
-          item.rewards.length > 0 && !item.read
-            ? "unclaimed"
-            : item.read
-              ? "read"
-              : "unread",
-      });
+const inboxCollection = defineCollection(import.meta.hot, () =>
+  createCollection(
+    queryCollectionOptions({
+      staleTime: 1000 * 60 * 5,
+      queryKey: queryKeys.root(),
+      enabled: isAuthenticated,
+      queryFn: async () => {
+        const addStatus = (item: MonkeyMail): InboxItem => ({
+          ...item,
+          status:
+            item.rewards.length > 0 && !item.read
+              ? "unclaimed"
+              : item.read
+                ? "read"
+                : "unread",
+        });
 
-      const response = await Ape.users.getInbox();
-      if (response.status !== 200) {
-        showErrorNotification(
-          `Error fetching user inbox: ${response.body.message}`,
-        );
-        throw new Error(`Error fetching user inbox: ${response.body.message}`);
-      }
-      setMaxMailboxSize(response.body.data.maxMail);
-      return response.body.data.inbox.map(addStatus);
-    },
-    queryClient,
-    getKey: (it) => it.id,
-  }),
+        const response = await operation("users.getInbox");
+        if (!response.ok) {
+          showErrorNotification(
+            `Error fetching user inbox: ${response.message}`,
+          );
+          throw new Error(`Error fetching user inbox: ${response.message}`);
+        }
+        setMaxMailboxSize(response.data.maxMail);
+        return response.data.inbox.map(addStatus);
+      },
+      queryClient: getQueryClient(),
+      getKey: (it) => it.id,
+    }),
+  ),
 );
 
 export async function refetchInboxCollection(): Promise<void> {
-  await inboxCollection.utils.refetch();
+  await inboxCollection().utils.refetch();
 }
 
-const inboxItemIdsToClaim: string[] = [];
-export const mutateInboxItem = createPacedMutations<
-  Pick<InboxItem, "id" | "status">,
-  InboxItem
->({
-  onMutate: ({ id, status }) => {
-    inboxCollection.update(id, (old) => {
-      if (old.status === "unclaimed") {
-        inboxItemIdsToClaim.push(old.id);
-      }
-      old.status = status;
-    });
-  },
-  mutationFn: async (changes) => {
-    await flushPendingChanges(changes);
+const getPendingIds = createAccountOwned(() => [] as string[]);
+const mutation = createAccountOwned(() =>
+  createPacedMutations<Pick<InboxItem, "id" | "status">, InboxItem>({
+    onMutate: ({ id, status }) => {
+      inboxCollection().update(id, (old) => {
+        if (old.status === "unclaimed") {
+          getPendingIds().push(old.id);
+        }
+        old.status = status;
+      });
+    },
+    mutationFn: async (changes) => {
+      await flushPendingChanges(changes);
 
-    const allRewards: AllRewards[] = changes.transaction.mutations
-      .map((it) => it.modified)
-      .filter((it) => inboxItemIdsToClaim.includes(it.id))
-      .flatMap((it) => it.rewards);
-    inboxItemIdsToClaim.length = 0;
-    claimRewards(allRewards);
-  },
-  strategy: flushStrategy.strategy,
-});
+      const allRewards: AllRewards[] = changes.transaction.mutations
+        .map((it) => it.modified)
+        .filter((it) => getPendingIds().includes(it.id))
+        .flatMap((it) => it.rewards);
+      getPendingIds().length = 0;
+      claimRewards(allRewards);
+    },
+    strategy: getFlushStrategy().strategy,
+  }),
+);
+export function mutateInboxItem(
+  params: Pick<InboxItem, "id" | "status">,
+): ReturnType<ReturnType<typeof mutation>> {
+  return mutation()(params);
+}
 
 function claimRewards(pendingRewards: AllRewards[]): void {
   if (pendingRewards.length === 0) return;
@@ -126,7 +139,7 @@ function claimRewards(pendingRewards: AllRewards[]): void {
 }
 
 export function claimAllInboxItems(): void {
-  inboxCollection.forEach((it) => {
+  inboxCollection().forEach((it) => {
     if (it.status === "unclaimed") {
       mutateInboxItem({ id: it.id, status: "read" });
     }
@@ -134,7 +147,7 @@ export function claimAllInboxItems(): void {
 }
 
 export function deleteAllInboxItems(): void {
-  inboxCollection.forEach((it) => {
+  inboxCollection().forEach((it) => {
     if (it.status === "unread" || it.status === "read") {
       mutateInboxItem({ id: it.id, status: "deleted" });
     }
@@ -149,26 +162,24 @@ async function flushPendingChanges({
     (it) => it.status,
   );
 
-  const response = await Ape.users.updateInbox({
+  const response = await operation("users.updateInbox", {
     body: {
       mailIdsToMarkRead: updatedStatus.read?.map((it) => it.id),
       mailIdsToDelete: updatedStatus.deleted?.map((it) => it.id),
     },
   });
 
-  if (response.status !== 200) {
-    showErrorNotification(
-      `Error updating user inbox: ${response.body.message}`,
-    );
-    throw new Error(`Error updating user inbox: ${response.body.message}`);
+  if (!response.ok) {
+    showErrorNotification(`Error updating user inbox: ${response.message}`);
+    throw new Error(`Error updating user inbox: ${response.message}`);
   }
 
-  inboxCollection.utils.writeBatch(() => {
+  inboxCollection().utils.writeBatch(() => {
     updatedStatus.deleted?.forEach((deleted) =>
-      inboxCollection.utils.writeDelete(deleted.id),
+      inboxCollection().utils.writeDelete(deleted.id),
     );
     updatedStatus.read?.forEach((read) => {
-      inboxCollection.utils.writeUpdate(read);
+      inboxCollection().utils.writeUpdate(read);
     });
   });
 
@@ -179,13 +190,9 @@ export function useInboxQuery(enabled: Accessor<boolean>) {
   return useLiveQuery((q) => {
     if (!isAuthenticated() || !enabled()) return undefined;
     return q
-      .from({ inbox: inboxCollection })
+      .from({ inbox: inboxCollection() })
       .where(({ inbox }) => not(eq(inbox.status, "deleted")))
       .orderBy(({ inbox }) => inbox.timestamp, "desc")
       .orderBy(({ inbox }) => inbox.subject, "asc");
   });
 }
-
-import.meta.hot?.dispose(() => {
-  void inboxCollection.cleanup();
-});

@@ -1,41 +1,46 @@
+import { createAccountOwned } from "../../../app/account-scope";
+import { appObject } from "../../../app/state";
 import {
   clearActiveTags,
   getTag,
   getTags,
   toggleTagActive,
 } from "../../collections/tags";
-import { Config } from "../../config/store";
-import * as PaceCaret from "../../test/pace-caret";
+import { getMutableConfig } from "../../config/store";
+import * as PaceCaret from "../../../features/typing/runtime/pace-caret";
 import { isAuthenticated } from "../../states/core";
 import { Command, CommandsSubgroup } from "../types";
 import { showAddTagModal } from "../../components/modals/AddTagModal";
 
-const subgroup: CommandsSubgroup = {
+const getSubgroup = createAccountOwned<CommandsSubgroup>(() => ({
   title: "Tags...",
   list: [],
   beforeList: (): void => {
     update();
   },
-};
+}));
 
-const commands: Command[] = [
-  {
-    id: "changeTags",
-    display: "Tags...",
-    icon: "fa-tag",
-    subgroup,
-    available: (): boolean => {
-      return isAuthenticated();
+const commands = appObject(
+  createAccountOwned<Command[]>(() => [
+    {
+      id: "changeTags",
+      display: "Tags...",
+      icon: "fa-tag",
+      subgroup: getSubgroup(),
+      available: (): boolean => {
+        return isAuthenticated();
+      },
     },
-  },
-];
+  ]),
+  true,
+);
 
 function update(): void {
   const tags = getTags();
-  subgroup.list = [];
+  getSubgroup().list = [];
 
   if (tags.length > 0) {
-    subgroup.list.push({
+    getSubgroup().list.push({
       id: "clearTags",
       display: `Clear tags`,
       icon: "fa-times",
@@ -43,9 +48,9 @@ function update(): void {
       exec: async (): Promise<void> => {
         await clearActiveTags();
         if (
-          Config.paceCaret === "average" ||
-          Config.paceCaret === "tagPb" ||
-          Config.paceCaret === "daily"
+          getMutableConfig().paceCaret === "average" ||
+          getMutableConfig().paceCaret === "tagPb" ||
+          getMutableConfig().paceCaret === "daily"
         ) {
           await PaceCaret.init();
         }
@@ -53,7 +58,7 @@ function update(): void {
     });
 
     for (const tag of tags) {
-      subgroup.list.push({
+      getSubgroup().list.push({
         id: `toggleTag${tag._id}`,
         display: tag.name,
         sticky: true,
@@ -64,9 +69,9 @@ function update(): void {
           await toggleTagActive({ tagId: tag._id });
 
           if (
-            Config.paceCaret === "average" ||
-            Config.paceCaret === "tagPb" ||
-            Config.paceCaret === "daily"
+            getMutableConfig().paceCaret === "average" ||
+            getMutableConfig().paceCaret === "tagPb" ||
+            getMutableConfig().paceCaret === "daily"
           ) {
             await PaceCaret.init();
           }
@@ -74,7 +79,7 @@ function update(): void {
       });
     }
   }
-  subgroup.list.push({
+  getSubgroup().list.push({
     id: "createTag",
     display: "Create tag",
     icon: "fa-plus",

@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
 vi.mock("animejs", () => ({ animate: vi.fn() }));
 
-import { ResultCrown } from "../../../../../src/ts/components/pages/test/result/ResultCrown";
+import { ResultCrown } from "../../../../../src/features/typing/components/result/ResultCrown";
 import { setResultState } from "../../../../../src/ts/states/result";
 
 function renderCrown(): HTMLElement {

@@ -1,7 +1,7 @@
-import { createSignal } from "solid-js";
+import { createAppSignal } from "../../app/state";
 
-const [getComposingState, setComposingState] = createSignal(false);
-const [getCompositionData, setCompositionData] = createSignal("");
+const [getComposingState, setComposingState] = createAppSignal(false);
+const [getCompositionData, setCompositionData] = createAppSignal("");
 
 export function getComposing(): boolean {
   return getComposingState();

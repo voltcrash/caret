@@ -1,17 +1,18 @@
 import { JSXElement, createSignal, onMount, onCleanup } from "solid-js";
 
+import { useTypingRoute } from "../../../../components/typing-route-host";
 import { createEffectOn } from "../../../hooks/effects";
-import { getActivePage } from "../../../states/core";
 import { getPageScroller } from "../../../states/page-layout";
 import { cn } from "../../../utils/cn";
 import { applyReducedMotion } from "../../../utils/misc";
 import { Fa } from "../../common/Fa";
 
 export function ScrollToTop(): JSXElement {
+  const typing = useTypingRoute();
   const [visible, setVisible] = createSignal(false);
 
   const handleScroll = (): void => {
-    if (getActivePage() === "test") return;
+    if (typing()) return;
 
     // some pages scroll their content in their own container instead
     const scroll = getPageScroller()?.scrollTop ?? window.scrollY;
@@ -40,14 +41,13 @@ export function ScrollToTop(): JSXElement {
         aria-label="Scroll to top"
         class={cn(
           "breakout pointer-events-auto mb-[max(2rem,calc(env(safe-area-inset-bottom,0px)+1rem))] grid h-12 w-12 place-self-end rounded-full bg-sub-alt text-[1.5rem] text-sub ring-4 ring-bg hover:bg-text hover:text-bg sm:h-16 sm:w-16 sm:text-[2rem] sm:ring-8",
-          (getActivePage() === "test" || !visible()) &&
-            "pointer-events-none opacity-0",
+          (typing() || !visible()) && "pointer-events-none opacity-0",
         )}
         style={{
           "grid-column": "content-end/breakout-end",
         }}
-        disabled={getActivePage() === "test" || !visible()}
-        aria-hidden={getActivePage() === "test" || !visible()}
+        disabled={typing() || !visible()}
+        aria-hidden={typing() || !visible()}
         type="button"
 
         onClick={() => {

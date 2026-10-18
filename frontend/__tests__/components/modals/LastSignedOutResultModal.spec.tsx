@@ -11,6 +11,8 @@ import {
   vi,
 } from "vite-plus/test";
 
+import { mockHttpFixture } from "../../__harness__/operations";
+
 const mocks = vi.hoisted(() => ({
   result: null as CompletedEvent | null,
   add: vi.fn(),
@@ -19,9 +21,7 @@ const mocks = vi.hoisted(() => ({
   error: vi.fn(),
   success: vi.fn(),
 }));
-vi.mock("../../../src/ts/ape", () => ({
-  default: { results: { add: mocks.add } },
-}));
+
 vi.mock("../../../src/ts/auth-client", () => ({
   getAuthenticatedUser: () => ({ uid: "saved-user" }),
 }));
@@ -111,3 +111,5 @@ describe("signed-out result saving", () => {
     expect(mocks.hide).toHaveBeenCalledWith("LastSignedOutResult");
   });
 });
+
+mockHttpFixture("results.add", async (input) => await mocks.add(input));

@@ -8,6 +8,8 @@ import {
   vi,
 } from "vite-plus/test";
 
+import { mockHttpFixture } from "../../../../__harness__/operations";
+
 const mocks = vi.hoisted(() => ({
   showQuoteRateModal: vi.fn(),
   showQuoteReportModal: vi.fn(),
@@ -40,17 +42,22 @@ vi.mock("../../../../../src/ts/states/test", () => ({
 }));
 vi.mock("../../../../../src/ts/db", () => ({
   getSnapshot: () => mocks.snapshot,
-}));
-vi.mock("../../../../../src/ts/ape", () => ({
-  default: {
-    users: {
-      addQuoteToFavorites: mocks.addQuoteToFavorites,
-      removeQuoteFromFavorites: mocks.removeQuoteFromFavorites,
-    },
+  updateLocalQuoteFavorite: (
+    language: string,
+    id: string,
+    favorite: boolean,
+  ) => {
+    const snapshot = mocks.snapshot;
+    if (snapshot === undefined) return;
+    snapshot.favoriteQuotes ??= {};
+    const ids = snapshot.favoriteQuotes[language] ?? [];
+    snapshot.favoriteQuotes[language] = favorite
+      ? [...ids, id]
+      : ids.filter((value) => value !== id);
   },
 }));
 
-import { ResultQuoteActions } from "../../../../../src/ts/components/pages/test/result/ResultQuoteActions";
+import { ResultQuoteActions } from "../../../../../src/features/typing/components/result/ResultQuoteActions";
 import { setResultState } from "../../../../../src/ts/states/result";
 
 function renderActions(): Record<"report" | "favorite" | "rate", HTMLElement> {
@@ -186,3 +193,13 @@ describe("ResultQuoteActions", () => {
     expect(favorite.querySelector(".icon")).toHaveClass("far");
   });
 });
+
+mockHttpFixture(
+  "users.addQuoteToFavorites",
+  async (input) => await mocks.addQuoteToFavorites(input),
+);
+
+mockHttpFixture(
+  "users.removeQuoteFromFavorites",
+  async (input) => await mocks.removeQuoteFromFavorites(input),
+);

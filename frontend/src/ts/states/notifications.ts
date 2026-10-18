@@ -1,8 +1,10 @@
-import { createStore } from "solid-js/store";
+import { onCleanup } from "solid-js";
+import { createAppOwned } from "../../app/application";
+import { createAppStore } from "../../app/state";
 
-import { CommonResponsesType } from "@oxytype/contracts/util/api";
 import { createErrorMessage } from "../utils/error";
 import { MessageContent } from "../types/message-content";
+import type { OperationResult } from "../../data/operation-result";
 
 export type NotificationLevel = "error" | "notice" | "success";
 
@@ -26,10 +28,17 @@ export type NotificationHistoryEntry = {
 };
 
 let id = 0;
-const [notifications, setNotifications] = createStore<Notification[]>([]);
-const autoRemoveTimers = new Map<number, ReturnType<typeof setTimeout>>();
+const [notifications, setNotifications] = createAppStore<Notification[]>([]);
+const timers = createAppOwned(() => {
+  const timers = new Map<number, ReturnType<typeof setTimeout>>();
+  onCleanup(() => {
+    for (const timer of timers.values()) clearTimeout(timer);
+    timers.clear();
+  });
+  return timers;
+});
 
-const [notificationHistory, setNotificationHistory] = createStore<
+const [notificationHistory, setNotificationHistory] = createAppStore<
   NotificationHistoryEntry[]
 >([]);
 let historyId = 0;
@@ -46,10 +55,10 @@ export function removeNotification(
   notificationId: number,
   reason: "click" | "timeout" | "clear" = "click",
 ): void {
-  const timer = autoRemoveTimers.get(notificationId);
+  const timer = timers().get(notificationId);
   if (timer !== undefined) {
     clearTimeout(timer);
-    autoRemoveTimers.delete(notificationId);
+    timers().delete(notificationId);
   }
   let onDismiss: Notification["onDismiss"] | undefined;
   setNotifications((prev) =>
@@ -65,10 +74,10 @@ export function removeNotification(
 }
 
 export function clearAllNotifications(): void {
-  for (const [, timer] of autoRemoveTimers) {
+  for (const [, timer] of timers()) {
     clearTimeout(timer);
   }
-  autoRemoveTimers.clear();
+  timers().clear();
   const prev = [...notifications];
   setNotifications([]);
   for (const notification of prev) {
@@ -101,7 +110,7 @@ export type AddNotificationOptions = Partial<
   >
 > & {
   details?: object | string;
-  response?: CommonResponsesType;
+  operation?: OperationResult<unknown>;
   error?: unknown;
 };
 
@@ -122,17 +131,14 @@ export function addNotificationWithLevel(
 ): number {
   let details = options.details;
 
-  if (options.response !== undefined) {
+  if (options.operation !== undefined) {
+    const result = options.operation;
     details = {
-      status: options.response.status,
+      status: result.status,
       additionalDetails: options.details,
-      validationErrors:
-        options.response.status === 422
-          ? options.response.body.validationErrors
-          : undefined,
+      validationErrors: !result.ok ? result.validationErrors : undefined,
     };
-    const responseMessage = options.response.body.message;
-    message = updateLastLine(message, (line) => `${line}: ${responseMessage}`);
+    message = updateLastLine(message, (line) => `${line}: ${result.message}`);
   }
 
   if (options.error !== undefined) {
@@ -174,10 +180,10 @@ export function addNotificationWithLevel(
   if (durationMs > 0) {
     // +250 accounts for the exit animation duration in Notifications.tsx
     const timer = setTimeout(() => {
-      autoRemoveTimers.delete(notifId);
+      timers().delete(notifId);
       removeNotification(notifId, "timeout");
     }, durationMs + 250);
-    autoRemoveTimers.set(notifId, timer);
+    timers().set(notifId, timer);
   }
 
   return notifId;

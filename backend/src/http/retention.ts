@@ -1,0 +1,57 @@
+import type { OperationId } from "../policies/operations";
+
+/** Frozen Stage 0 classifications. Migrating callers never makes an endpoint external. */
+const compatibilityOnly: ReadonlySet<OperationId> = new Set([
+  "configs.delete",
+  "configs.get",
+  "configs.save",
+  "dev.addDebugInboxItem",
+  "dev.generateData",
+  "leaderboards.getDailyRank",
+  "leaderboards.getWeeklyXpRank",
+  "presets.add",
+  "presets.delete",
+  "presets.get",
+  "presets.save",
+  "quotes.add",
+  "quotes.addRating",
+  "quotes.approveSubmission",
+  "quotes.get",
+  "quotes.getRating",
+  "quotes.rejectSubmission",
+  "quotes.report",
+  "results.add",
+  "results.updateTags",
+  "users.addCustomTheme",
+  "users.addQuoteToFavorites",
+  "users.addResultFilterPreset",
+  "users.create",
+  "users.createTag",
+  "users.delete",
+  "users.deleteCustomTheme",
+  "users.deletePersonalBests",
+  "users.deleteTag",
+  "users.deleteTagPersonalBest",
+  "users.editCustomTheme",
+  "users.editTag",
+  "users.get",
+  "users.getCustomThemes",
+  "users.getInbox",
+  "users.getTestActivity",
+  "users.optOutOfLeaderboards",
+  "users.removeQuoteFromFavorites",
+  "users.removeResultFilterPreset",
+  "users.report",
+  "users.reset",
+  "users.revokeAllTokens",
+  "users.setStreakHourOffset",
+  "users.updateInbox",
+  "users.updateLeaderboardMemory",
+  "users.updateName",
+  "users.updateProfile",
+]);
+
+/** Other operations are published protocols or conservatively retained integrations. */
+export function isRetainedHttpOperation(id: OperationId): boolean {
+  return !compatibilityOnly.has(id);
+}

@@ -1,16 +1,16 @@
 import { JSXElement, onCleanup, onMount, Show } from "solid-js";
 
 import { useRef } from "../../../hooks/useRef";
-import { getActivePage, getIsScreenshotting } from "../../../states/core";
-import { hasFixedHeader, setHeaderBottom } from "../../../states/page-layout";
+import { getIsScreenshotting } from "../../../states/core";
+import { setHeaderBottom } from "../../../states/page-layout";
 import { getFocus } from "../../../states/test";
 import { cn } from "../../../utils/cn";
 import { Logo } from "./Logo";
 import { Nav } from "./Nav";
 
-export function Header(): JSXElement {
+export function Header(props: { fixed: boolean }): JSXElement {
   const [ref, element] = useRef<HTMLElement>();
-  const isFixed = (): boolean => hasFixedHeader(getActivePage());
+  const isFixed = (): boolean => props.fixed;
 
   // the page content scroll container starts its content below the header
   onMount(() => {

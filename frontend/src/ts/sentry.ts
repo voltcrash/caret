@@ -1,3 +1,4 @@
+import { captureAccount } from "../app/account-scope";
 import { envConfig } from "virtual:env-config";
 
 async function getSentry(): Promise<typeof import("@sentry/browser")> {
@@ -7,6 +8,8 @@ async function getSentry(): Promise<typeof import("@sentry/browser")> {
 let debug = false;
 
 let activated = false;
+let generation = 0;
+let client: ReturnType<typeof import("@sentry/browser").init> | undefined;
 
 export async function activateSentry(): Promise<void> {
   const dsn = envConfig.sentryDsn;
@@ -18,8 +21,10 @@ export async function activateSentry(): Promise<void> {
   activated = true;
   console.log("Activating Sentry");
 
+  const current = generation;
   const Sentry = await getSentry();
-  Sentry.init({
+  if (current !== generation) return;
+  client = Sentry.init({
     release: envConfig.clientVersion,
     dsn,
     // Preserve sendDefaultPii: false; Sentry 11 otherwise collects more data.
@@ -130,7 +135,9 @@ export async function activateSentry(): Promise<void> {
 
 export async function setUser(uid: string, name: string): Promise<void> {
   if (!activated) return;
+  const lease = captureAccount();
   const Sentry = await getSentry();
+  if (!lease.isCurrent()) return;
   Sentry.setUser({
     id: uid,
     username: name,
@@ -139,7 +146,9 @@ export async function setUser(uid: string, name: string): Promise<void> {
 
 export async function clearUser(): Promise<void> {
   if (!activated) return;
+  const lease = captureAccount();
   const Sentry = await getSentry();
+  if (!lease.isCurrent()) return;
   Sentry.setUser(null);
 }
 
@@ -152,4 +161,12 @@ export async function captureException(error: Error): Promise<void> {
 export function toggleDebug(): void {
   debug = !debug;
   console.debug("Sentry debug mode:", debug);
+}
+
+export function disposeSentry(): void {
+  generation++;
+  activated = false;
+  const previous = client;
+  client = undefined;
+  void previous?.close(2000);
 }

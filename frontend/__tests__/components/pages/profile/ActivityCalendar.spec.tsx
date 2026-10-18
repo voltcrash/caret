@@ -14,12 +14,12 @@ vi.mock("../../../../src/ts/db", () => ({
   getTestActivityCalendar: mocks.webCalendar,
 }));
 vi.mock("../../../../src/ts/queries", () => ({
-  queryClient: { query: mocks.query },
+  getQueryClient: () => ({ query: mocks.query }),
 }));
 vi.mock("../../../../src/ts/queries/account", () => ({
   getAccountActivityQueryOptions: (client: Client) => ({ client }),
 }));
-vi.mock("../../../../src/ts/ape/server-configuration", () => ({
+vi.mock("../../../../src/ts/states/server-configuration", () => ({
   get: () => undefined,
 }));
 vi.mock("../../../../src/ts/components/ui/Select", () => ({

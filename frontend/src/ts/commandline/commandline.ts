@@ -1,7 +1,10 @@
-import * as Focus from "../test/focus";
+import { getCommandlineState } from "../states/commandline";
+import { captureAccount, createAccountOwned } from "../../app/account-scope";
+import { onCleanup } from "solid-js";
+import * as Focus from "../../features/typing/runtime/focus";
 import * as CommandlineLists from "./lists";
 
-import { Config } from "../config/store";
+import { getMutableConfig } from "../config/store";
 
 import { showNoticeNotification } from "../states/notifications";
 import { getCommandlineSubgroup } from "../states/core";
@@ -12,7 +15,6 @@ import { parseIntOptional } from "../utils/numbers";
 import { debounce } from "throttle-debounce";
 import { matchesKeyboardEvent } from "@tanstack/solid-hotkeys";
 
-import { commandlineState } from "../states/commandline";
 import { hotkeys } from "../states/hotkeys";
 import { takePendingSettings } from "./open";
 
@@ -47,6 +49,8 @@ export {
   canCommandlineGoBack,
 } from "./actions";
 export async function prepareCommandline(): Promise<void> {
+  const commandlineState = getCommandlineState();
+  const lease = captureAccount();
   const settings = takePendingSettings();
   commandlineState.open = true;
   commandlineState.mouseMode = false;
@@ -77,7 +81,7 @@ export async function prepareCommandline(): Promise<void> {
       } else {
         commandlineState.subgroupOverride = null;
         commandlineState.usingSingleList =
-          Config.singleListCommandLine === "on";
+          getMutableConfig().singleListCommandLine === "on";
         showNoticeNotification(
           `Command list ${overrideStringOrGroup} not found`,
         );
@@ -89,7 +93,8 @@ export async function prepareCommandline(): Promise<void> {
   } else {
     commandlineState.subgroupOverride = null;
     commandlineState.usingSingleList =
-      Config.singleListCommandLine === "on" && !isBrowsingOnTouch("");
+      getMutableConfig().singleListCommandLine === "on" &&
+      !isBrowsingOnTouch("");
   }
 
   let showInputCommand: Command | undefined = undefined;
@@ -120,6 +125,7 @@ export async function prepareCommandline(): Promise<void> {
   await showCommands();
   await updateActiveCommand();
   setTimeout(() => {
+    if (!lease.isCurrent()) return;
     if (showInputCommand) {
       const escaped =
         showInputCommand.display.split("</i>")[1] ?? showInputCommand.display;
@@ -137,29 +143,36 @@ export async function prepareCommandline(): Promise<void> {
   }, 1);
 }
 
-const filterInput = debounce(50, async (value: string) => {
-  if (commandlineState.isAnimating) return;
-  commandlineState.inputValue = value;
-  if (commandlineState.subgroupOverride === null) {
-    commandlineState.usingSingleList =
-      (Config.singleListCommandLine === "on" || value.startsWith(">")) &&
-      !isBrowsingOnTouch(value);
-  }
-  if (commandlineState.mode !== "search") return;
-  commandlineState.mouseMode = false;
-  commandlineState.activeIndex = 0;
-  await filterSubgroup();
-  await showCommands();
-  await updateActiveCommand();
+const getFilterInput = createAccountOwned(() => {
+  const commandlineState = getCommandlineState();
+  const filter = debounce(50, async (value: string) => {
+    if (commandlineState.isAnimating) return;
+    commandlineState.inputValue = value;
+    if (commandlineState.subgroupOverride === null) {
+      commandlineState.usingSingleList =
+        (getMutableConfig().singleListCommandLine === "on" ||
+          value.startsWith(">")) &&
+        !isBrowsingOnTouch(value);
+    }
+    if (commandlineState.mode !== "search") return;
+    commandlineState.mouseMode = false;
+    commandlineState.activeIndex = 0;
+    await filterSubgroup();
+    await showCommands();
+    await updateActiveCommand();
+  });
+  onCleanup(() => filter.cancel());
+  return filter;
 });
 
 export function onCommandlineInput(e: Event): void {
   const input = e.target as HTMLInputElement;
-  filterInput(input.value);
+  getFilterInput()(input.value);
   validateInput(e);
 }
 
 export async function onCommandlineKeyDown(e: KeyboardEvent): Promise<void> {
+  const commandlineState = getCommandlineState();
   if (commandlineState.isAnimating) {
     e.preventDefault();
     return;
@@ -180,7 +193,7 @@ export async function onCommandlineKeyDown(e: KeyboardEvent): Promise<void> {
     (e.ctrlKey && (e.key.toLowerCase() === "k" || e.key.toLowerCase() === "p"))
   ) {
     if (
-      Config.singleListCommandLine === "on" &&
+      getMutableConfig().singleListCommandLine === "on" &&
       commandlineState.subgroupOverride === null &&
       commandlineState.inputValue === "" &&
       commandlineState.lastSingleListModeInputValue !== ""
@@ -228,20 +241,24 @@ export async function onCommandlineKeyDown(e: KeyboardEvent): Promise<void> {
   }
 }
 
-let lastHover: HTMLElement | undefined;
+const hover = createAccountOwned(() => ({
+  element: undefined as HTMLElement | undefined,
+}));
 
 export async function onSuggestionMouseMove(e: MouseEvent): Promise<void> {
+  const commandlineState = getCommandlineState();
   commandlineState.mouseMode = true;
   const target = e.target as HTMLElement | null;
-  if (target === lastHover) return;
+  if (target === hover().element) return;
   const dataIndex = parseIntOptional(target?.getAttribute("data-index"));
   if (dataIndex === undefined) return;
-  lastHover = target ?? undefined;
+  hover().element = target ?? undefined;
   commandlineState.activeIndex = dataIndex;
   await updateActiveCommand();
 }
 
 export async function onSuggestionClick(e: MouseEvent): Promise<void> {
+  const commandlineState = getCommandlineState();
   const target = e.target as HTMLElement | null;
   const dataIndex = parseIntOptional(target?.getAttribute("data-index"));
   if (dataIndex === undefined) return;

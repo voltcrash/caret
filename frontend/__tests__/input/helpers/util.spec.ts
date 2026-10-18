@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vite-plus/test";
 import { getCommitCharacterType } from "../../../src/ts/input/helpers/util";
-import * as FunboxList from "../../../src/ts/test/funbox/list";
+import * as FunboxList from "../../../src/features/typing/runtime/funbox/list";
 
-vi.mock("../../../src/ts/test/funbox/list", () => ({
+vi.mock("../../../src/features/typing/runtime/funbox/list", () => ({
   isFunboxActiveWithProperty: vi.fn(),
 }));
 

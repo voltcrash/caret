@@ -1,4 +1,4 @@
-import { Config } from "../config/store";
+import { getMutableConfig } from "../config/store";
 import { setConfig } from "../config/setters";
 import {
   ConfigMetadata,
@@ -202,7 +202,8 @@ function buildInputCommand<K extends keyof ConfigSchemas.Config>({
   } = {
     id: `set${capitalizeFirstLetter(key)}Custom`,
     defaultValue:
-      inputProps?.defaultValue ?? (() => Config[key]?.toString() ?? ""),
+      inputProps?.defaultValue ??
+      (() => getMutableConfig()[key]?.toString() ?? ""),
     configValue:
       inputProps !== undefined && "configValue" in inputProps
         ? (inputProps.configValue ?? undefined)

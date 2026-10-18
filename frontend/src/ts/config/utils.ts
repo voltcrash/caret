@@ -5,13 +5,13 @@ import {
 } from "@oxytype/typing-core/config/migrate";
 import { setProperty, typedKeys } from "@oxytype/util/objects";
 import { getDefaultConfig } from "../constants/default-config";
-import { Config } from "./store";
+import { getMutableConfig } from "./store";
 
 export { migrateConfig };
 
 export function exportConfigToJson(): string {
   return JSON.stringify(
-    supportedConfigSchema.parse(migrateConfig(Config)),
+    supportedConfigSchema.parse(migrateConfig(getMutableConfig())),
     null,
     2,
   );
@@ -19,12 +19,12 @@ export function exportConfigToJson(): string {
 
 export function getConfigChanges(): Partial<ConfigSchema> {
   const configChanges: Partial<ConfigSchema> = {};
-  typedKeys(Config)
+  typedKeys(getMutableConfig())
     .filter((key) => {
-      return Config[key] !== getDefaultConfig()[key];
+      return getMutableConfig()[key] !== getDefaultConfig()[key];
     })
     .forEach((key) => {
-      setProperty(configChanges, key, Config[key]);
+      setProperty(configChanges, key, getMutableConfig()[key]);
     });
   return configChanges;
 }

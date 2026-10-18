@@ -217,7 +217,7 @@ cd ../frontend
 vp test run __tests__/test/events/anticheat.spec.ts
 cd ..
 vp lint --type-aware --type-check --format agent
-vp run build-be
+vp run build
 ```
 
 ## Terminal clients

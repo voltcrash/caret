@@ -1,0 +1,161 @@
+{
+  "machine": "Linux 7.1 aarch64 (Asahi), Node 24.22; slower than the Stage 0/7 reference machine",
+  "method": "Same-machine alternating runs of the Stage 7 tip (bb8dd2cd3) and Stage 8 HEAD with the Linux-capable measure-worker.ts and the word-rendering benchmark",
+  "worker": {
+    "stage7-round1": {
+      "startup": {
+        "median": 422.759,
+        "p95": 690.884
+      },
+      "save": {
+        "median": 31.632,
+        "p95": 40.542
+      },
+      "cpuMsPerPublicRead": {
+        "median": 14.6,
+        "p95": 15
+      },
+      "workerRawBytes": 2019342,
+      "workerGzipBytes": 590715,
+      "queries": {
+        "/configuration": [4],
+        "/public/typingStats": [6],
+        "/users": [19],
+        "/results?limit=1000": [7],
+        "POST /results": [18, 20],
+        "/results?limit=1000 (10 rows)": [7]
+      }
+    },
+    "stage7-round2": {
+      "startup": {
+        "median": 399.987,
+        "p95": 434.067
+      },
+      "save": {
+        "median": 26.675,
+        "p95": 40.765
+      },
+      "cpuMsPerPublicRead": {
+        "median": 10,
+        "p95": 14.8
+      },
+      "workerRawBytes": 2019342,
+      "workerGzipBytes": 590715,
+      "queries": {
+        "/configuration": [4],
+        "/public/typingStats": [6],
+        "/users": [19],
+        "/results?limit=1000": [7],
+        "POST /results": [18, 20],
+        "/results?limit=1000 (10 rows)": [7]
+      }
+    },
+    "stage8-round1": {
+      "startup": {
+        "median": 428.0,
+        "p95": 459.512
+      },
+      "save": {
+        "median": 31.381,
+        "p95": 40.565
+      },
+      "cpuMsPerPublicRead": {
+        "median": 13.6,
+        "p95": 14.6
+      },
+      "workerRawBytes": 2019643,
+      "workerGzipBytes": 590782,
+      "queries": {
+        "/configuration": [4],
+        "/public/typingStats": [6],
+        "/users": [19],
+        "/results?limit=1000": [7],
+        "POST /results": [18, 20],
+        "/results?limit=1000 (10 rows)": [7]
+      }
+    },
+    "stage8-round2": {
+      "startup": {
+        "median": 404.277,
+        "p95": 458.054
+      },
+      "save": {
+        "median": 28.683,
+        "p95": 40.004
+      },
+      "cpuMsPerPublicRead": {
+        "median": 14,
+        "p95": 15
+      },
+      "workerRawBytes": 2019643,
+      "workerGzipBytes": 590782,
+      "queries": {
+        "/configuration": [4],
+        "/public/typingStats": [6],
+        "/users": [19],
+        "/results?limit=1000": [7],
+        "POST /results": [18, 20],
+        "/results?limit=1000 (10 rows)": [7]
+      }
+    }
+  },
+  "wordRendering": {
+    "stage7-round1": {
+      "dom": {
+        "median": 64.6,
+        "p95": 177.8
+      },
+      "layout": {
+        "median": 64.6,
+        "p95": 177.8
+      },
+      "typing": {
+        "median": 0.012,
+        "p95": 0.038
+      }
+    },
+    "stage7-round2": {
+      "dom": {
+        "median": 64.8,
+        "p95": 194.6
+      },
+      "layout": {
+        "median": 64.8,
+        "p95": 194.6
+      },
+      "typing": {
+        "median": 0.012,
+        "p95": 0.036
+      }
+    },
+    "stage8-round1": {
+      "dom": {
+        "median": 64.9,
+        "p95": 98.6
+      },
+      "layout": {
+        "median": 64.9,
+        "p95": 98.6
+      },
+      "typing": {
+        "median": 0.012,
+        "p95": 0.029
+      }
+    },
+    "stage8-round2": {
+      "dom": {
+        "median": 65.1,
+        "p95": 93.4
+      },
+      "layout": {
+        "median": 65.1,
+        "p95": 93.4
+      },
+      "typing": {
+        "median": 0.012,
+        "p95": 0.015
+      }
+    }
+  },
+  "conclusion": "Stage 8 is within run-to-run noise of Stage 7 on the same machine. Frozen Stage 0 ceilings for Worker startup/save/CPU and letter-update p95 are exceeded by both builds here, so the misses are environmental; thresholds unchanged."
+}

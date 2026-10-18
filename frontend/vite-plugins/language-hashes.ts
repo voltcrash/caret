@@ -17,6 +17,11 @@ function calcHash(file: string): string {
   return createHash("sha256").update(data).digest("hex");
 }
 
+/** Content hash the browser uses in `/languages/<name>.json?v=`. */
+export function languageHash(name: string): string {
+  return calcHash(`${name}.json`);
+}
+
 function getHashes(): Record<string, string> {
   const start = performance.now();
 

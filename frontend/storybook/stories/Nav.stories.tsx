@@ -1,12 +1,6 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
-
 import preview from "#.storybook/preview";
 
 import { Nav } from "../../src/ts/components/layout/header/Nav";
-
-const queryClient = new QueryClient({
-  defaultOptions: { queries: { retry: false } },
-});
 
 const meta = preview.meta({
   title: "Layout/Header/Nav",
@@ -17,11 +11,9 @@ const meta = preview.meta({
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      <QueryClientProvider client={queryClient}>
-        <div style={{ padding: "16px" }}>
-          <Story />
-        </div>
-      </QueryClientProvider>
+      <div style={{ padding: "16px" }}>
+        <Story />
+      </div>
     ),
   ],
 });

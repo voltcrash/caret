@@ -62,7 +62,7 @@ export function useUserAverage10LiveQuery(options: {
 export async function getResultsSinceDayOnce(dayTimestamp: number) {
   return queryOnce((q) =>
     q
-      .from({ r: resultsCollection })
+      .from({ r: resultsCollection() })
       .where(({ r }) => gte(r.dayTimestamp, dayTimestamp)),
   );
 }
@@ -115,7 +115,7 @@ function buildSettingsResultsQuery(
   const funbox = [...new Set(filter.funbox)];
 
   let query = new Query()
-    .from({ r: resultsCollection })
+    .from({ r: resultsCollection() })
     .where(({ r }) => eq(r.mode, filter.mode))
     .where(({ r }) => eq(r.mode2, filter.mode2))
     .where(({ r }) => eq(r.punctuation, filter.punctuation))

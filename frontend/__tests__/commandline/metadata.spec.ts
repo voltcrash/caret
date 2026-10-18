@@ -1,7 +1,9 @@
 import { describe, expect, it, vi } from "vite-plus/test";
 import { typedKeys } from "@oxytype/util/objects";
 
-vi.mock("../../src/ts/test/test-logic", () => ({ restart: vi.fn() }));
+vi.mock("../../src/features/typing/runtime/test-logic", () => ({
+  restart: vi.fn(),
+}));
 vi.mock("../../src/ts/ui", () => ({ previewFontFamily: vi.fn() }));
 vi.mock("../../src/ts/config/setters", () => ({ setConfig: vi.fn() }));
 

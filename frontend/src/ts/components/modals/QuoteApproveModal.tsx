@@ -1,9 +1,12 @@
 import { Quote } from "@oxytype/schemas/quotes";
 import { createForm } from "@tanstack/solid-form";
+import { useQuery } from "@tanstack/solid-query";
 import { format } from "date-fns/format";
 import { JSXElement, createSignal, For, Show } from "solid-js";
 
-import Ape from "../../ape";
+import { operation } from "../../../data/operations";
+import { getQueryClient } from "../../queries";
+import { getQuoteSubmissionsQueryOptions } from "../../queries/quotes";
 import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
 import {
   showErrorNotification,
@@ -39,18 +42,18 @@ function QuoteApproveItem(props: {
     setDisabled(true);
 
     showLoaderBar();
-    const response = await Ape.quotes.approveSubmission({
+    const response = await operation("quotes.approveSubmission", {
       body: { quoteId: props.quote._id },
     });
     hideLoaderBar();
 
-    if (response.status !== 200) {
+    if (!response.ok) {
       setDisabled(false);
-      showErrorNotification("Failed to approve quote", { response });
+      showErrorNotification("Failed to approve quote", { operation: response });
       return;
     }
 
-    showSuccessNotification(`Quote approved. ${response.body.message ?? ""}`);
+    showSuccessNotification(`Quote approved. ${response.message ?? ""}`);
     props.onRemove();
   };
 
@@ -59,14 +62,14 @@ function QuoteApproveItem(props: {
     setDisabled(true);
 
     showLoaderBar();
-    const response = await Ape.quotes.rejectSubmission({
+    const response = await operation("quotes.rejectSubmission", {
       body: { quoteId: props.quote._id },
     });
     hideLoaderBar();
 
-    if (response.status !== 200) {
+    if (!response.ok) {
       setDisabled(false);
-      showErrorNotification("Failed to refuse quote", { response });
+      showErrorNotification("Failed to refuse quote", { operation: response });
       return;
     }
 
@@ -79,7 +82,7 @@ function QuoteApproveItem(props: {
     setDisabled(true);
 
     showLoaderBar();
-    const response = await Ape.quotes.approveSubmission({
+    const response = await operation("quotes.approveSubmission", {
       body: {
         quoteId: props.quote._id,
         editText: form.state.values.text,
@@ -88,14 +91,14 @@ function QuoteApproveItem(props: {
     });
     hideLoaderBar();
 
-    if (response.status !== 200) {
+    if (!response.ok) {
       setDisabled(false);
-      showErrorNotification("Failed to approve quote", { response });
+      showErrorNotification("Failed to approve quote", { operation: response });
       return;
     }
 
     showSuccessNotification(
-      `Quote edited and approved. ${response.body.message ?? ""}`,
+      `Quote edited and approved. ${response.message ?? ""}`,
     );
     props.onRemove();
   };
@@ -183,28 +186,30 @@ function QuoteApproveItem(props: {
 }
 
 export function QuoteApproveModal(): JSXElement {
-  const [quotes, setQuotes] = createSignal<Quote[]>([]);
+  const quotes = useQuery(() => ({
+    ...getQuoteSubmissionsQueryOptions(),
+    enabled: false,
+  }));
 
   const fetchQuotes = async (): Promise<void> => {
     showLoaderBar();
-    const response = await Ape.quotes.get();
-    hideLoaderBar();
-
-    if (response.status !== 200) {
-      showErrorNotification("Failed to get new quotes", { response });
-      return;
+    try {
+      await quotes.refetch({ throwOnError: true });
+    } catch (error) {
+      showErrorNotification("Failed to get new quotes", { error });
+    } finally {
+      hideLoaderBar();
     }
-
-    setQuotes(response.body.data ?? []);
   };
 
   const handleBeforeShow = (): void => {
-    setQuotes([]);
     void fetchQuotes();
   };
-
   const removeQuote = (index: number): void => {
-    setQuotes((prev) => prev.filter((_, i) => i !== index));
+    getQueryClient().setQueryData(
+      getQuoteSubmissionsQueryOptions().queryKey,
+      (previous) => previous?.filter((_, i) => i !== index),
+    );
   };
 
   return (
@@ -220,13 +225,12 @@ export function QuoteApproveModal(): JSXElement {
           fa={{ icon: "fa-sync-alt" }}
           text="Refresh list"
           onClick={() => {
-            setQuotes([]);
             void fetchQuotes();
           }}
         />
       </div>
       <div class="grid gap-2">
-        <For each={quotes()}>
+        <For each={quotes.isFetching ? [] : (quotes.data ?? [])}>
           {(quote, index) => (
             <QuoteApproveItem
               quote={quote}

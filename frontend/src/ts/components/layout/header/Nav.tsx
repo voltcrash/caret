@@ -3,19 +3,17 @@ import {
   createMemo,
   createSignal,
   JSXElement,
+  lazy,
+  Suspense,
   onCleanup,
   Show,
 } from "solid-js";
 
+import { useTypingRoute } from "../../../../components/typing-route-host";
 import { restartTestEvent } from "../../../events/test";
 import { createEffectOn } from "../../../hooks/effects";
 import { useRef } from "../../../hooks/useRef";
-import {
-  prefetchAboutPage,
-  prefetchLeaderboardPage,
-} from "../../../queries/prefetch";
 import { getServerConfigurationQueryOptions } from "../../../queries/server-configuration";
-import { getActivePage } from "../../../states/core";
 import {
   getAccountButtonSpinner,
   getAnimatedLevel,
@@ -31,11 +29,18 @@ import { Anime } from "../../common/anime";
 import { AnimePresence } from "../../common/anime/AnimePresence";
 import { Button } from "../../common/Button";
 import { NotificationBubble } from "../../common/NotificationBubble";
-import { User } from "../../common/User";
-import { AccountMenu } from "./AccountMenu";
-import { AccountXpBar } from "./AccountXpBar";
+const User = lazy(async () =>
+  import("../../common/User").then((m) => ({ default: m.User })),
+);
+const AccountMenu = lazy(async () =>
+  import("./AccountMenu").then((m) => ({ default: m.AccountMenu })),
+);
+const AccountXpBar = lazy(async () =>
+  import("./AccountXpBar").then((m) => ({ default: m.AccountXpBar })),
+);
 
 export function Nav(): JSXElement {
+  const typing = useTypingRoute();
   const [getAccountMenuOpen, setAccountMenuOpen] = createSignal(false);
   const [accountMenuRef, accountMenuEl] = useRef<HTMLDivElement>();
 
@@ -97,7 +102,7 @@ export function Nav(): JSXElement {
           "aria-label": "Test",
         }}
         onClick={() => {
-          if (getActivePage() === "test") restartTestEvent.dispatch();
+          if (typing()) restartTestEvent.dispatch();
         }}
       />
       <Button
@@ -113,9 +118,6 @@ export function Nav(): JSXElement {
         }}
         class={buttonClass()}
         href="/leaderboards"
-        onMouseEnter={() => {
-          prefetchLeaderboardPage();
-        }}
       />
       <Button
         variant="text"
@@ -130,9 +132,6 @@ export function Nav(): JSXElement {
         }}
         href="/about"
         router-link
-        onMouseEnter={() => {
-          prefetchAboutPage();
-        }}
       />
       <Button
         variant="text"
@@ -257,20 +256,26 @@ export function Nav(): JSXElement {
                     "aria-label": "Account",
                   }}
                 >
-                  <User
-                    user={snap()}
-                    showAvatar={true}
-                    iconsOnly={true}
-                    hideNameOnSmallScreens={true}
-                    level={getAnimatedLevel()}
-                    showSpinner={getAccountButtonSpinner()}
-                    fontClass="text-em-xs"
-                  />
+                  <Suspense fallback={null}>
+                    <User
+                      user={snap()}
+                      showAvatar={true}
+                      iconsOnly={true}
+                      hideNameOnSmallScreens={true}
+                      level={getAnimatedLevel()}
+                      showSpinner={getAccountButtonSpinner()}
+                      fontClass="text-em-xs"
+                    />
+                  </Suspense>
                 </Button>
-                <AccountMenu />
+                <Suspense fallback={null}>
+                  <AccountMenu />
+                </Suspense>
               </div>
               <div class="relative">
-                <AccountXpBar />
+                <Suspense fallback={null}>
+                  <AccountXpBar />
+                </Suspense>
               </div>
             </Anime>
           )}

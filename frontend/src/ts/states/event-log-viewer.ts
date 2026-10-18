@@ -1,4 +1,4 @@
-import { createSignal } from "solid-js";
+import { createAppSignal } from "../../app/state";
 
 import type {
   EventLog,
@@ -25,29 +25,29 @@ export type Stage = "input" | "preview";
 export type SyncKind = "start" | "end";
 export type Mark = { id: string; videoMs: number; sync?: SyncKind };
 
-export const [getStage, setStage] = createSignal<Stage>("input");
-export const [getRaw, setRaw] = createSignal("");
-const [getEventLog, setEventLogSignal] = createSignal<EventLog | null>(null);
+export const [getStage, setStage] = createAppSignal<Stage>("input");
+export const [getRaw, setRaw] = createAppSignal("");
+const [getEventLog, setEventLogSignal] = createAppSignal<EventLog | null>(null);
 export { getEventLog };
-export const [getError, setError] = createSignal<string | null>(null);
+export const [getError, setError] = createAppSignal<string | null>(null);
 
-export const [getCurrentMs, setCurrentMs] = createSignal(0);
-export const [getVisibleTypes, setVisibleTypes] = createSignal<
+export const [getCurrentMs, setCurrentMs] = createAppSignal(0);
+export const [getVisibleTypes, setVisibleTypes] = createAppSignal<
   Set<TestEventType>
 >(new Set(EVENT_TYPES));
-export const [getTimelineZoom, setTimelineZoom] = createSignal(1);
+export const [getTimelineZoom, setTimelineZoom] = createAppSignal(1);
 
-export const [getMarks, setMarks] = createSignal<Mark[]>([]);
-export const [getEventToMark, setEventToMark] = createSignal<
+export const [getMarks, setMarks] = createAppSignal<Mark[]>([]);
+export const [getEventToMark, setEventToMark] = createAppSignal<
   Record<number, string>
 >({});
-export const [getSyncEnabled, setSyncEnabled] = createSignal(false);
+export const [getSyncEnabled, setSyncEnabled] = createAppSignal(false);
 
-const [getVideoUrl, setVideoUrlSignal] = createSignal<string | null>(null);
+const [getVideoUrl, setVideoUrlSignal] = createAppSignal<string | null>(null);
 export { getVideoUrl };
 
-export const [getDistributionOpen, setDistributionOpen] = createSignal(true);
-export const [getScatterOpen, setScatterOpen] = createSignal(true);
+export const [getDistributionOpen, setDistributionOpen] = createAppSignal(true);
+export const [getScatterOpen, setScatterOpen] = createAppSignal(true);
 
 let markSerial = 0;
 export function nextMarkId(): string {

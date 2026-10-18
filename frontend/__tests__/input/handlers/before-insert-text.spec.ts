@@ -15,7 +15,7 @@ vi.mock("../../../src/ts/input/input-element", () => ({
   }),
 }));
 
-vi.mock("../../../src/ts/test/test-words", () => ({
+vi.mock("../../../src/features/typing/runtime/test-words", () => ({
   words: {
     getCurrent: () => ({
       textWithCommit: mockState.word,
@@ -24,11 +24,11 @@ vi.mock("../../../src/ts/test/test-words", () => ({
   },
 }));
 
-vi.mock("../../../src/ts/test/events/data", () => ({
+vi.mock("../../../src/features/typing/runtime/events/data", () => ({
   getCurrentInput: () => mockState.currentInput,
 }));
 
-vi.mock("../../../src/ts/test/test-ui", () => ({
+vi.mock("../../../src/features/typing/runtime/test-ui", () => ({
   activeWordTop: 0,
   activeWordHeight: 10,
   pendingWordData: new Map<number, string>(),
@@ -51,7 +51,7 @@ vi.mock("../../../src/ts/input/state", () => ({
 
 vi.mock("../../../src/ts/states/slow-timer", () => ({ get: () => false }));
 
-vi.mock("../../../src/ts/test/funbox/list", () => ({
+vi.mock("../../../src/features/typing/runtime/funbox/list", () => ({
   isFunboxActiveWithProperty: () => false,
 }));
 

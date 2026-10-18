@@ -1,3 +1,4 @@
+import { operation } from "../../data/operations";
 import { CustomTheme } from "@oxytype/schemas/users";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import {
@@ -5,8 +6,8 @@ import {
   createOptimisticAction,
   useLiveQuery,
 } from "@tanstack/solid-db";
-import Ape from "../ape";
-import { queryClient } from "../queries";
+import { getQueryClient } from "../queries";
+import { defineCollection } from "./utils/scope";
 import { baseKey } from "../queries/utils/keys";
 import { applyIdWorkaround, tempId } from "./utils/misc";
 import { createCollectionReader } from "./utils/reader";
@@ -22,36 +23,33 @@ const queryKeys = {
 export function useCustomThemesLiveQuery() {
   return useLiveQuery((q) => {
     return q
-      .from({ customTheme: customThemesCollection })
+      .from({ customTheme: customThemesCollection() })
       .orderBy(({ customTheme }) => customTheme.name, "asc");
   });
 }
 
-const customThemesCollection = createCollection(
-  queryCollectionOptions({
-    staleTime: Infinity,
-    startSync: true,
-    queryKey: queryKeys.root(),
-    queryClient,
-    enabled: isAuthenticated,
-    getKey: (it) => it._id,
-    queryFn: async () => {
-      const response = await Ape.users.getCustomThemes();
+const customThemesCollection = defineCollection(import.meta.hot, () =>
+  createCollection(
+    queryCollectionOptions({
+      staleTime: Infinity,
+      startSync: true,
+      queryKey: queryKeys.root(),
+      queryClient: getQueryClient(),
+      enabled: isAuthenticated,
+      getKey: (it) => it._id,
+      queryFn: async () => {
+        const response = await operation("users.getCustomThemes");
 
-      if (response.status !== 200) {
-        throw new Error(
-          `Error fetching custom themes: ${response.body.message}`,
-        );
-      }
-      return response.body.data.map(applyIdWorkaround);
-    },
-  }),
+        if (!response.ok) {
+          throw new Error(`Error fetching custom themes: ${response.message}`);
+        }
+        return response.data.map(applyIdWorkaround);
+      },
+    }),
+  ),
 );
 
-const customThemesReader = createCollectionReader(
-  import.meta.hot,
-  customThemesCollection,
-);
+const customThemesReader = createCollectionReader(customThemesCollection);
 
 type ActionType = {
   addCustomTheme: {
@@ -71,26 +69,26 @@ type ActionType = {
 const actions = {
   addCustomTheme: createOptimisticAction<ActionType["addCustomTheme"]>({
     onMutate: ({ name, colors }) => {
-      customThemesCollection.insert({
+      customThemesCollection().insert({
         _id: tempId(),
         name,
         colors,
       });
     },
     mutationFn: async ({ name, colors }) => {
-      const response = await Ape.users.addCustomTheme({
+      const response = await operation("users.addCustomTheme", {
         body: { name, colors },
       });
-      if (response.status !== 200) {
-        throw new Error(`Failed to add custom theme: ${response.body.message}`);
+      if (!response.ok) {
+        throw new Error(`Failed to add custom theme: ${response.message}`);
       }
 
-      if (response.body.data === null) {
+      if (response.data === null) {
         throw new Error("Failed to add custom theme: No data returned");
       }
 
-      customThemesCollection.utils.writeInsert({
-        _id: response.body.data._id,
+      customThemesCollection().utils.writeInsert({
+        _id: response.data._id,
         name,
         colors,
       });
@@ -98,22 +96,20 @@ const actions = {
   }),
   editCustomTheme: createOptimisticAction<ActionType["editCustomTheme"]>({
     onMutate: ({ themeId, name, colors }) => {
-      customThemesCollection.update(themeId, (theme) => {
+      customThemesCollection().update(themeId, (theme) => {
         theme.name = name;
         theme.colors = colors;
       });
     },
     mutationFn: async ({ themeId, name, colors }) => {
-      const response = await Ape.users.editCustomTheme({
+      const response = await operation("users.editCustomTheme", {
         body: { themeId, theme: { name, colors } },
       });
-      if (response.status !== 200) {
-        throw new Error(
-          `Failed to edit custom theme: ${response.body.message}`,
-        );
+      if (!response.ok) {
+        throw new Error(`Failed to edit custom theme: ${response.message}`);
       }
 
-      customThemesCollection.utils.writeUpdate({
+      customThemesCollection().utils.writeUpdate({
         _id: themeId,
         name,
         colors,
@@ -122,18 +118,16 @@ const actions = {
   }),
   deleteCustomTheme: createOptimisticAction<ActionType["deleteCustomTheme"]>({
     onMutate: ({ themeId }) => {
-      customThemesCollection.delete(themeId);
+      customThemesCollection().delete(themeId);
     },
     mutationFn: async ({ themeId }) => {
-      const response = await Ape.users.deleteCustomTheme({
+      const response = await operation("users.deleteCustomTheme", {
         body: { themeId },
       });
-      if (response.status !== 200) {
-        throw new Error(
-          `Failed to delete custom theme: ${response.body.message}`,
-        );
+      if (!response.ok) {
+        throw new Error(`Failed to delete custom theme: ${response.message}`);
       }
-      customThemesCollection.utils.writeDelete(themeId);
+      customThemesCollection().utils.writeDelete(themeId);
     },
   }),
 };
@@ -152,7 +146,11 @@ export function getCustomTheme(id: string): CustomThemeItem | undefined {
   return customThemesReader.get(id);
 }
 
-bindCustomThemesReader(getCustomThemes);
+/** Account loading starts this sync eagerly; themes apply before first use. */
+export function startCustomThemesSync(): void {
+  bindCustomThemesReader(getCustomThemes);
+  customThemesCollection();
+}
 
 export async function addCustomTheme(
   params: ActionType["addCustomTheme"],
@@ -174,7 +172,3 @@ export async function deleteCustomTheme(
   const transaction = actions.deleteCustomTheme(params);
   await transaction.isPersisted.promise;
 }
-
-import.meta.hot?.dispose(() => {
-  void customThemesCollection.cleanup();
-});

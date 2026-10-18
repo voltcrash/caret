@@ -1,6 +1,6 @@
 import type { Collection } from "@tanstack/solid-db";
 import { createSignal } from "solid-js";
-import type { ModuleHotContext } from "../../hooks/createEvent";
+import { collectionScope } from "./scope";
 
 type ReadableCollection<T extends object, TKey extends string | number> = Pick<
   Collection<T, TKey>,
@@ -15,27 +15,36 @@ export type CollectionReader<T, TKey> = {
 /**
  * Synchronous collection reads that track changes inside Solid scopes.
  * Wrap reads in `untrack` where a snapshot is intended.
- * The permanent subscription keeps the collection synced and its data retained.
+ * The subscription keeps the collection synced and its data retained until
+ * the owning collection scope releases it.
  */
 export function createCollectionReader<
   T extends object,
   TKey extends string | number,
->(
-  hot: ModuleHotContext | undefined,
-  collection: ReadableCollection<T, TKey>,
-): CollectionReader<T, TKey> {
-  const [version, setVersion] = createSignal(undefined, { equals: false });
-  const subscription = collection.subscribeChanges(() => setVersion());
-  hot?.dispose(() => subscription.unsubscribe());
+>(getCollection: () => ReadableCollection<T, TKey>): CollectionReader<T, TKey> {
+  const key = {};
+  const read = (): ReadableCollection<T, TKey> => {
+    const collection = getCollection();
+    const tracked = collectionScope().use(
+      key,
+      () => {
+        const [version, setVersion] = createSignal(undefined, {
+          equals: false,
+        });
+        // Initial state marks existing keys as delivered, so later deletes emit.
+        const subscription = collection.subscribeChanges(() => setVersion(), {
+          includeInitialState: true,
+        });
+        return { collection, version, subscription };
+      },
+      ({ subscription }) => subscription.unsubscribe(),
+    );
+    tracked.version();
+    return tracked.collection;
+  };
 
   return {
-    values: () => {
-      version();
-      return [...collection.values()];
-    },
-    get: (key) => {
-      version();
-      return collection.get(key);
-    },
+    values: () => [...read().values()],
+    get: (id) => read().get(id),
   };
 }

@@ -1,9 +1,9 @@
+import { operation } from "../../../data/operations";
 import { resultsByClient, getResults } from "./store";
 import { normalizeResult } from "./normalize";
 import { UpdateTagsResult, ActionType } from "./types";
 import { Client } from "@oxytype/schemas/shared";
 import { createOptimisticAction } from "@tanstack/solid-db";
-import Ape from "../../ape";
 import { getLastResult } from "../../states/snapshot";
 import { reconcileLocalTagPB, saveLocalTagPB } from "../tags";
 
@@ -14,18 +14,16 @@ function createActions(client: Client) {
       ActionType["updateTags"] & { persisted: UpdateTagsResult }
     >({
       onMutate: ({ resultId, newTagIds }) => {
-        resultsCollection.update(resultId, (result) => {
+        resultsCollection().update(resultId, (result) => {
           result.tags = newTagIds;
         });
       },
       mutationFn: async ({ resultId, currentTagIds, newTagIds, persisted }) => {
-        const response = await Ape.results.updateTags({
+        const response = await operation("results.updateTags", {
           body: { resultId, tagIds: newTagIds },
         });
-        if (response.status !== 200) {
-          throw new Error(
-            `Failed to update result tag: ${response.body.message}`,
-          );
+        if (!response.ok) {
+          throw new Error(`Failed to update result tag: ${response.message}`);
         }
         const results = getResults(client);
         const result = results.find((it) => it._id === resultId);
@@ -54,17 +52,17 @@ function createActions(client: Client) {
           });
         }
 
-        resultsCollection.utils.writeUpdate({
+        resultsCollection().utils.writeUpdate({
           _id: resultId,
           tags: newTagIds,
         });
 
-        persisted.tagPbs = response.body.data.tagPbs;
+        persisted.tagPbs = response.data.tagPbs;
       },
     }),
     insertLocalResult: createOptimisticAction<ActionType["insertLocalResult"]>({
       onMutate: ({ result }) => {
-        resultsCollection.utils.writeInsert(normalizeResult(result));
+        resultsCollection().utils.writeInsert(normalizeResult(result));
       },
       mutationFn: async () => {
         //we don't sync the changes back to the backend here, it is done already
@@ -73,10 +71,10 @@ function createActions(client: Client) {
     }),
     deleteLocalTag: createOptimisticAction<ActionType["deleteLocalTag"]>({
       onMutate: ({ tagId }) => {
-        for (const result of [...resultsCollection.values()].filter((it) =>
+        for (const result of [...resultsCollection().values()].filter((it) =>
           it.tags.includes(tagId),
         )) {
-          resultsCollection.utils.writeUpdate({
+          resultsCollection().utils.writeUpdate({
             ...result,
             tags: result.tags.filter((it) => it !== tagId),
           });
@@ -104,18 +102,18 @@ export async function updateTags(
   params: ActionType["updateTags"],
 ): Promise<UpdateTagsResult> {
   const resultsCollection = resultsByClient[params.client ?? "web"];
-  if (!resultsCollection.isReady()) {
+  if (!resultsCollection().isReady()) {
     // if its not ready yet, send the api request to update the tags
-    const response = await Ape.results.updateTags({
+    const response = await operation("results.updateTags", {
       body: { resultId: params.resultId, tagIds: params.newTagIds },
     });
 
-    if (response.status !== 200) {
-      throw new Error(`Failed to update result tag: ${response.body.message}`);
+    if (!response.ok) {
+      throw new Error(`Failed to update result tag: ${response.message}`);
     }
 
     if (params.client === "tui") {
-      return { tagPbs: response.body.data.tagPbs };
+      return { tagPbs: response.data.tagPbs };
     }
 
     const result = getLastResult();
@@ -130,7 +128,7 @@ export async function updateTags(
       );
     }
 
-    response.body.data.tagPbs.forEach((tag) => {
+    response.data.tagPbs.forEach((tag) => {
       saveLocalTagPB(
         tag,
         result.mode,
@@ -147,7 +145,7 @@ export async function updateTags(
       );
     });
 
-    return { tagPbs: response.body.data.tagPbs };
+    return { tagPbs: response.data.tagPbs };
   }
 
   const persisted: UpdateTagsResult = { tagPbs: [] };
@@ -163,7 +161,7 @@ export async function insertLocalResult(
   params: ActionType["insertLocalResult"],
 ): Promise<void> {
   const client = params.result.client ?? "web";
-  if (!resultsByClient[client].isReady()) {
+  if (!resultsByClient[client]().isReady()) {
     //not loaded yet, don't need to insert
     return;
   }
@@ -175,7 +173,7 @@ export async function deleteLocalTag(
   params: ActionType["deleteLocalTag"],
 ): Promise<void> {
   for (const client of ["web", "tui"] as const) {
-    if (!resultsByClient[client].isReady()) continue;
+    if (!resultsByClient[client]().isReady()) continue;
     const transaction = actionsByClient[client].deleteLocalTag(params);
     await transaction.isPersisted.promise;
   }

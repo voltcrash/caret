@@ -2,7 +2,10 @@ import { UserNameSchema } from "@oxytype/schemas/users";
 import { createSignal, For, JSXElement } from "solid-js";
 import { z } from "zod";
 
-import Ape from "../../ape";
+import { operation } from "../../../data/operations";
+import { toggleCaretDebug } from "../../../features/typing/components/words/caret-controller";
+import { toggleUserFakeChartData } from "../../../features/typing/runtime/result";
+import { disableSlowTimerFail } from "../../../features/typing/runtime/test-timer";
 import { refetchInboxCollection } from "../../collections/inbox";
 import { addXp } from "../../db";
 import { getInputElement } from "../../input/input-element";
@@ -13,15 +16,12 @@ import {
   showSuccessNotification,
 } from "../../states/notifications";
 import { showSimpleModal } from "../../states/simple-modal";
-import { toggleUserFakeChartData } from "../../test/result";
-import { disableSlowTimerFail } from "../../test/test-timer";
 import { FaSolidIcon } from "../../types/font-awesome";
 import { setMediaQueryDebugLevel } from "../../ui";
 import { isProfilerMode, setProfilerMode } from "../../utils/profiler-mode";
 import { remoteValidation } from "../../utils/remote-validation";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Button } from "../common/Button";
-import { toggleCaretDebug } from "../pages/test/words/caret-controller";
 
 const [mediaQueryDebugLevel, setLocalMediaQueryDebugLevel] = createSignal(0);
 
@@ -148,18 +148,18 @@ export function DevOptionsModal(): JSXElement {
 
   const addDebugInboxItem = (rewardType: "xp" | "badge" | "none"): void => {
     hideModal("DevInboxPicker");
-    void Ape.dev
-      .addDebugInboxItem({ body: { rewardType } })
-      .then((response) => {
-        if (response.status !== 200) {
+    void operation("dev.addDebugInboxItem", { body: { rewardType } }).then(
+      (response) => {
+        if (!response.ok) {
           showErrorNotification("Failed to add inbox item", {
-            details: response.body,
+            details: response,
           });
           return;
         }
         showSuccessNotification("Debug inbox item added");
         void refetchInboxCollection();
-      });
+      },
+    );
   };
 
   return (
@@ -224,7 +224,7 @@ function showGenerateDataModal(): void {
         validation: {
           isValid: remoteValidation(
             async (name: string) =>
-              Ape.users.getNameAvailability({ params: { name } }),
+              operation("users.getNameAvailability", { params: { name } }),
             { check: (data) => !data.available || "Unknown user" },
           ),
           debounceDelay: 1000,
@@ -260,7 +260,7 @@ function showGenerateDataModal(): void {
       minTestsPerDay,
       maxTestsPerDay,
     }) => {
-      const result = await Ape.dev.generateData({
+      const result = await operation("dev.generateData", {
         body: {
           username,
           firstTestTimestamp: firstTestTimestamp?.getTime(),
@@ -271,8 +271,8 @@ function showGenerateDataModal(): void {
       });
 
       return {
-        status: result.status === 200 ? "success" : "error",
-        message: result.body.message,
+        status: result.ok ? "success" : "error",
+        message: result.message,
       };
     },
   });

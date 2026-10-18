@@ -1,15 +1,11 @@
 import { FontName } from "@oxytype/schemas/fonts";
 
-import { Config } from "./config/store";
+import { getMutableConfig } from "./config/store";
 import {
-  setFontFace,
   setFontFamily,
   setMediaQueryDebugLevel as setDebugLevel,
 } from "./states/app";
-import * as TestUI from "./test/test-ui";
-import fileStorage from "./utils/file-storage";
-import { getLanguage } from "./utils/json-data";
-import { replaceUnderscoresWithSpaces } from "./utils/strings";
+import * as TestUI from "../features/typing/runtime/test-ui";
 
 let isPreviewingFont = false;
 export function previewFontFamily(font: FontName): void {
@@ -20,44 +16,11 @@ export function previewFontFamily(font: FontName): void {
   isPreviewingFont = true;
 }
 
-export async function applyFontFamily(): Promise<void> {
-  let font = replaceUnderscoresWithSpaces(Config.fontFamily);
-
-  const localFont = await fileStorage.getFile("LocalFontFamilyFile");
-  if (localFont === undefined) {
-    //use config font
-    setFontFace("");
-  } else {
-    font = "LOCALCUSTOM";
-
-    setFontFace(`
-      @font-face{ 
-        font-family: LOCALCUSTOM;
-        src: url(${localFont});
-        font-weight: 400;
-        font-style: normal;
-        font-display: block;
-      }`);
-  }
-
-  const preferredFont = (await getLanguage(Config.language))?.preferredFont;
-
-  const fonts = [
-    `"${font}"`,
-    preferredFont !== undefined
-      ? `"${replaceUnderscoresWithSpaces(preferredFont)}"`
-      : undefined,
-    '"Roboto Mono"',
-    '"Vazirharf"',
-    "monospace",
-  ].filter((it) => it !== undefined);
-
-  setFontFamily(fonts.join(","));
-}
+export { applyFontFamily } from "../app/fonts.client";
 
 export function clearFontPreview(): void {
   if (!isPreviewingFont) return;
-  previewFontFamily(Config.fontFamily);
+  previewFontFamily(getMutableConfig().fontFamily);
   isPreviewingFont = false;
 }
 

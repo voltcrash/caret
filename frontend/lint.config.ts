@@ -11,6 +11,7 @@ export const frontendLint: OxlintConfig = {
     "coverage",
     ".firebase",
     ".standalone-generated",
+    "src/routeTree.gen.ts",
   ],
   extends: [sharedLint, pluginLint],
   options: {

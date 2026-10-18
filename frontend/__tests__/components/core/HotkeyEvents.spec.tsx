@@ -11,7 +11,6 @@ vi.mock("../../../src/ts/states/test", () => ({
   wordsHaveTab: () => false,
   wordsHaveNewline: () => false,
 }));
-vi.mock("../../../src/ts/states/core", () => ({ getActivePage: () => "test" }));
 vi.mock("../../../src/ts/config/store", () => ({
   getConfig: { quickRestart: "tab" },
 }));
@@ -22,7 +21,7 @@ vi.mock("../../../src/ts/input/input-element", () => ({
   isInputElementFocused: () => false,
 }));
 vi.mock("../../../src/ts/states/composition", () => ({ getData: () => "" }));
-vi.mock("../../../src/ts/navigation/navigation", () => ({ navigate: vi.fn() }));
+vi.mock("../../../src/app/navigate", () => ({ navigate: vi.fn() }));
 import { HotkeyEvents } from "../../../src/ts/components/core/HotkeyEvents";
 afterEach(cleanup);
 

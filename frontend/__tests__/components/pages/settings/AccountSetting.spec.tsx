@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render } from "@solidjs/testing-library";
+import { cleanup, fireEvent } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 
@@ -12,10 +12,9 @@ import {
   getSearchMatchCounts,
   setSettingsSearch,
 } from "../../../../src/ts/states/settings-search";
-import {
-  getCurrentSettingsSection,
-  setCurrentSettingsSection,
-} from "../../../../src/ts/states/settings-sections";
+import { createSectionHost } from "../../../__harness__/settings-section-host";
+
+const host = createSectionHost();
 
 vi.mock(
   "../../../../src/ts/components/modals/account-settings/ReauthConfirmModals",
@@ -34,13 +33,13 @@ beforeEach(() => setUserId("settings-user"));
 afterEach(() => {
   cleanup();
   setUserId(null);
-  setCurrentSettingsSection("behavior");
+  host.setSection("behavior");
   setSettingsSearch("");
   vi.useRealTimers();
 });
 
 it("searches account descriptions and counts matches in the main sidebar", () => {
-  const { container } = render(() => (
+  const { container } = host.render(() => (
     <SettingsSectionContext.Provider value="account">
       <Section
         key="streakHourOffset"
@@ -68,7 +67,7 @@ it("searches account descriptions and counts matches in the main sidebar", () =>
 
 it("searches authentication controls under account and deep links back to account", () => {
   vi.useFakeTimers();
-  const { container } = render(() => (
+  const { container } = host.render(() => (
     <SettingsSectionContext.Provider value="account">
       <AuthenticationTab />
     </SettingsSectionContext.Provider>
@@ -86,15 +85,15 @@ it("searches authentication controls under account and deep links back to accoun
   ).toHaveClass("hidden");
   setSettingsSearch("");
   highlightSetting("authenticationGoogle");
-  expect(getCurrentSettingsSection()).toBe("account");
-  setCurrentSettingsSection("behavior");
+  expect(host.section()).toBe("account");
+  host.setSection("behavior");
   highlightSetting("revokeAllTokens");
-  expect(getCurrentSettingsSection()).toBe("account");
+  expect(host.section()).toBe("account");
 });
 
 it("keeps account inputs inside their searchable row without remounting them", () => {
   const onClick = vi.fn();
-  const { container, getByRole, getByLabelText } = render(() => (
+  const { container, getByRole, getByLabelText } = host.render(() => (
     <Section
       key="accountName"
       title="account name"
@@ -121,7 +120,7 @@ it("keeps account inputs inside their searchable row without remounting them", (
 
 it("selects account sections through individual setting deep links", () => {
   vi.useFakeTimers();
-  render(() => (
+  host.render(() => (
     <SettingsSectionContext.Provider value="account">
       <Section
         key="accountName"
@@ -132,13 +131,13 @@ it("selects account sections through individual setting deep links", () => {
     </SettingsSectionContext.Provider>
   ));
   highlightSetting("accountName");
-  expect(getCurrentSettingsSection()).toBe("account");
+  expect(host.section()).toBe("account");
 });
 
 it("preserves reactive restrictions on account actions", () => {
   const [disabled, setDisabled] = createSignal(false);
   const onClick = vi.fn();
-  const { getByRole, queryByRole, getByText } = render(() => (
+  const { getByRole, queryByRole, getByText } = host.render(() => (
     <Section
       key="streakHourOffset"
       title="streak hour offset"

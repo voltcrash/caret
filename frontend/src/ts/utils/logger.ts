@@ -13,13 +13,29 @@ const debugLogsLS = new LocalStorageWithSchema({
   fallback: false,
 });
 
-let debugLogs = debugLogsLS.get();
+let debugLogs = false;
 
-if (isProfilerMode()) {
-  debugLogs = false;
-} else if (isDevEnvironment()) {
-  debugLogs = true;
-  debug("Debug logs automatically enabled on localhost");
+export function installLogger(): () => void {
+  const previous = {
+    log: console.log,
+    warn: console.warn,
+    error: console.error,
+    debug: console.debug,
+  };
+  debugLogs = debugLogsLS.get();
+
+  if (isProfilerMode()) {
+    debugLogs = false;
+  } else if (isDevEnvironment()) {
+    debugLogs = true;
+    debug("Debug logs automatically enabled on localhost");
+  }
+
+  console.log = info;
+  console.warn = warn;
+  console.error = error;
+  console.debug = debug;
+  return () => Object.assign(console, previous);
 }
 
 export function toggleDebugLogs(): void {
@@ -60,8 +76,3 @@ function debug(...args: unknown[]): void {
     ...args,
   );
 }
-
-console.log = info;
-console.warn = warn;
-console.error = error;
-console.debug = debug;

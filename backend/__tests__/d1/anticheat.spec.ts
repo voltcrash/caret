@@ -10,7 +10,7 @@ import * as Users from "../../src/dal/user";
 import * as Public from "../../src/dal/public";
 import * as Logs from "../../src/dal/logs";
 import { mutateUser } from "../../src/db/mutation";
-import Worker from "../../src/worker";
+import Worker from "../__testData__/http-worker";
 import { completedEvent } from "../__testData__/completed-event";
 import {
   generatedTimings,

@@ -1,63 +1,55 @@
-import { createSignal } from "solid-js";
-
+import { onCleanup, onMount } from "solid-js";
 import { debounce } from "throttle-debounce";
-import { showSuccessNotification } from "../states/notifications";
+import { createAppOwned } from "../../app/application";
+import { createAppSignal } from "../../app/state";
+import { showSuccessNotification } from "./notifications";
 import { connectionEvent } from "../events/connection";
-import { onDOMReady } from "../utils/dom-ready";
-import { addBanner, removeBanner } from "../states/banners";
-import { isTestActive } from "../states/test";
-
-const [getState, setState] = createSignal(navigator.onLine);
-
+import { addBanner, removeBanner } from "./banners";
+import { isTestActive } from "./test";
+const [getState, setState] = createAppSignal(true);
+const state = createAppOwned(() => ({
+  bannerId: undefined as number | undefined,
+  bannerClosed: false,
+}));
 export function get(): boolean {
   return getState();
 }
-
-let noInternetBannerId: number | undefined = undefined;
-
-let bannerAlreadyClosed = false;
-
 export function showOfflineBanner(): void {
-  if (bannerAlreadyClosed) return;
-  noInternetBannerId ??= addBanner({
+  const current = state();
+  if (current.bannerClosed) return;
+  current.bannerId ??= addBanner({
     level: "notice",
     text: "No internet connection",
     icon: "fas fa-exclamation-triangle",
     onClose: () => {
-      bannerAlreadyClosed = true;
-      noInternetBannerId = undefined;
+      current.bannerClosed = true;
+      current.bannerId = undefined;
     },
   });
 }
-
-const throttledHandleState = debounce(5000, () => {
-  if (getState()) {
-    if (noInternetBannerId !== undefined) {
-      showSuccessNotification("You're back online", {
-        customTitle: "Connection",
-      });
-      removeBanner(noInternetBannerId);
-      noInternetBannerId = undefined;
+export function useConnectionEvents(): void {
+  const current = state();
+  const handleState = debounce(5000, () => {
+    if (getState()) {
+      if (current.bannerId !== undefined) {
+        showSuccessNotification("You're back online", {
+          customTitle: "Connection",
+        });
+        removeBanner(current.bannerId);
+        current.bannerId = undefined;
+      }
+      current.bannerClosed = false;
+    } else if (!isTestActive()) {
+      showOfflineBanner();
     }
-    bannerAlreadyClosed = false;
-  } else if (!isTestActive()) {
-    showOfflineBanner();
-  }
-});
-
-connectionEvent.subscribe(
-  (newState) => {
-    setState(newState);
-    throttledHandleState();
-  },
-  import.meta.hot,
-);
-
-onDOMReady(() => {
-  setState(navigator.onLine);
-  if (!getState()) {
-    showOfflineBanner();
-  }
-});
-
-import.meta.hot?.dispose(() => throttledHandleState.cancel());
+  });
+  connectionEvent.useListener((value) => {
+    setState(value);
+    handleState();
+  });
+  onMount(() => {
+    setState(navigator.onLine);
+    if (!getState()) showOfflineBanner();
+  });
+  onCleanup(() => handleState.cancel());
+}

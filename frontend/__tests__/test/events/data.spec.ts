@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vite-plus/test";
 
-vi.mock("../../../src/ts/test/test-stats", () => ({
+vi.mock("../../../src/features/typing/runtime/test-stats", () => ({
   start: 1000,
 }));
 
@@ -9,9 +9,9 @@ import {
   getAllTestEvents,
   cleanupData,
   resetTestEvents,
-  __testing,
+  getTestSession,
   forceReleaseAllKeys,
-} from "../../../src/ts/test/events/data";
+} from "../../../src/features/typing/runtime/events/data";
 import type {
   InputEventData,
   KeydownEvent,
@@ -63,7 +63,7 @@ function timerData(
 describe("data.ts", () => {
   beforeEach(() => {
     resetTestEvents();
-    __testing.resetPressedKeys();
+    getTestSession().recorder.__testing.resetPressedKeys();
   });
 
   describe("logTestEvent + getAllTestEvents", () => {

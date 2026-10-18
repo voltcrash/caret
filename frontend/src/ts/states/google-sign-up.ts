@@ -1,13 +1,14 @@
+import { createAppSignal } from "../../app/state";
 import type { UserCredential } from "../auth-types";
 
-let pendingUser: UserCredential | undefined = undefined;
+const [pendingUser, setPendingUser] = createAppSignal<UserCredential>();
 
 export function getPendingGoogleSignUpUser(): UserCredential | undefined {
-  return pendingUser;
+  return pendingUser();
 }
 
 export function setPendingGoogleSignUpUser(
   user: UserCredential | undefined,
 ): void {
-  pendingUser = user;
+  setPendingUser(user);
 }

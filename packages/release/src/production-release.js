@@ -1,20 +1,26 @@
 import { execFileSync } from "node:child_process";
-import { buildDailyChangelog } from "./daily-changelog.js";
-import { getReleaseVersion } from "./version.js";
+import { buildReleaseChangelog } from "./changelog.js";
+import {
+  compareReleaseTags,
+  getNextReleaseVersion,
+  getReleaseMonth,
+  releaseTagPattern,
+} from "./version.js";
 import { buildReleaseHistory } from "./release-history.js";
 
 const productionMarker = "<!-- oxytype-production-release -->";
-const dateTag = /^v\d{2}\.\d{2}\.\d{2}$/;
 
 function git(cwd, ...args) {
   return execFileSync("git", args, { cwd, encoding: "utf8" }).trim();
 }
 
+function tagCommit(cwd, tag) {
+  return git(cwd, "rev-parse", `${tag}^{commit}`);
+}
+
 export async function prepareProductionRelease({ github, context, cwd }) {
-  // Delayed and retried runs use the UTC date when release planning executes.
+  // Retried runs number the release when planning executes.
   const date = new Date();
-  const tag = getReleaseVersion(date);
-  const version = tag.slice(1);
   const sha = git(cwd, "rev-parse", "HEAD");
   if (sha !== context.sha) {
     throw new Error("Release checkout must match the workflow's main commit");
@@ -24,19 +30,28 @@ export async function prepareProductionRelease({ github, context, cwd }) {
     ...context.repo,
     per_page: 100,
   });
-  const existing = releases.find((release) => release.tag_name === tag);
-  if (existing !== undefined) {
-    if (
-      existing.draft ||
-      existing.prerelease ||
-      !existing.body?.includes(productionMarker)
-    ) {
-      throw new Error(
-        `Release ${tag} already exists outside the production deployment`,
-      );
-    }
+  const productionReleases = releases
+    .filter(
+      (release) =>
+        !release.draft &&
+        !release.prerelease &&
+        releaseTagPattern.test(release.tag_name) &&
+        release.body?.includes(productionMarker),
+    )
+    .sort((a, b) => compareReleaseTags(b.tag_name, a.tag_name));
+  const previous = productionReleases[0];
+  if (
+    previous !== undefined &&
+    previous.tag_name.slice(0, 6) > getReleaseMonth(date)
+  ) {
+    throw new Error(
+      "A newer production release exists; dispatch a new run from main",
+    );
+  }
+  if (previous !== undefined && tagCommit(cwd, previous.tag_name) === sha) {
+    const tag = previous.tag_name;
     return {
-      version,
+      version: tag.slice(1),
       tag,
       sha,
       shouldDeploy: false,
@@ -44,26 +59,27 @@ export async function prepareProductionRelease({ github, context, cwd }) {
     };
   }
 
-  const productionReleases = releases
-    .filter(
-      (release) =>
-        !release.draft &&
-        !release.prerelease &&
-        dateTag.test(release.tag_name) &&
-        release.body?.includes(productionMarker),
-    )
-    .sort((a, b) => b.tag_name.localeCompare(a.tag_name));
-  const previous = productionReleases[0];
-  if (previous !== undefined && previous.tag_name > tag) {
-    throw new Error(
-      "A newer production release exists; dispatch a new run from main",
+  // A deployment whose publication failed leaves its tag on this snapshot;
+  // reuse that number instead of skipping one.
+  const tags = git(cwd, "tag", "--list", `${getReleaseMonth(date)}.*`)
+    .split("\n")
+    .filter((tag) => releaseTagPattern.test(tag));
+  const released = new Set(releases.map((release) => release.tag_name));
+  const tag =
+    tags.find(
+      (candidate) =>
+        !released.has(candidate) && tagCommit(cwd, candidate) === sha,
+    ) ??
+    getNextReleaseVersion(
+      [...tags, ...releases.map((release) => release.tag_name)],
+      date,
     );
-  }
-
-  if (git(cwd, "tag", "--list", tag) !== "") {
-    if (git(cwd, "rev-parse", `${tag}^{commit}`) !== sha) {
-      throw new Error(`Tag ${tag} points to a different commit`);
-    }
+  const version = tag.slice(1);
+  const existing = releases.find((release) => release.tag_name === tag);
+  if (existing !== undefined) {
+    throw new Error(
+      `Release ${tag} already exists outside the production deployment`,
+    );
   }
 
   let base;
@@ -72,12 +88,12 @@ export async function prepareProductionRelease({ github, context, cwd }) {
     // Fail on rewritten history rather than silently publishing misleading notes.
     git(cwd, "merge-base", "--is-ancestor", base, sha);
   } else {
-    // The first midnight release covers the preceding day, without dumping the
-    // fork's entire inherited history. Later releases also catch up missed days.
+    // The first release covers the current UTC day, without dumping the
+    // fork's entire inherited history.
     const dayStart = Date.UTC(
       date.getUTCFullYear(),
       date.getUTCMonth(),
-      date.getUTCDate() - (context.eventName === "schedule" ? 1 : 0),
+      date.getUTCDate(),
     );
     base = git(
       cwd,
@@ -108,7 +124,7 @@ export async function prepareProductionRelease({ github, context, cwd }) {
       skipReason: "no-new-commits",
     };
   }
-  const changelog = buildDailyChangelog(
+  const changelog = buildReleaseChangelog(
     commits
       ? commits.split("\n").map((line) => {
           const [hash, subject] = line.split("\0");

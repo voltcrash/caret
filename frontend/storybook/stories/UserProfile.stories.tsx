@@ -4,7 +4,7 @@ import preview from "#.storybook/preview";
 
 import { UserProfile } from "../../src/ts/components/pages/profile/UserProfile";
 import { getDefaultSnapshot } from "../../src/ts/constants/default-snapshot";
-import { getSnapshot, setSnapshot } from "../../src/ts/db";
+import { setSnapshot } from "../../src/ts/db";
 
 const baseProfile: UserProfileType = {
   uid: "user123",
@@ -169,8 +169,8 @@ export const Default = meta.story({
 });
 
 export const AccountPage = meta.story({
-  beforeEach: () => {
-    const previous = getSnapshot();
+  // The snapshot belongs to this story's application owner.
+  render: () => {
     setSnapshot(
       {
         ...getDefaultSnapshot(),
@@ -181,9 +181,8 @@ export const AccountPage = meta.story({
       },
       { dispatchEvent: false },
     );
-    return () => setSnapshot(previous, { dispatchEvent: false });
+    return <UserProfile profile={baseProfile} isAccountPage />;
   },
-  render: () => <UserProfile profile={baseProfile} isAccountPage />,
 });
 
 export const WithLeaderboard = meta.story({

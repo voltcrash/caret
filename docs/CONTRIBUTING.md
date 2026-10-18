@@ -1,7 +1,7 @@
 # Contributing
 
-Oxytype uses TypeScript, SolidJS, Tailwind CSS and a Hono backend on Cloudflare
-Workers with D1 and Queues. See [architecture](ARCHITECTURE.md).
+Oxytype uses TypeScript, TanStack Start with SolidJS, Tailwind CSS and backend
+services on one Cloudflare Worker with D1 and Queues. See [architecture](ARCHITECTURE.md).
 
 For asset or documentation edits, follow [basic contributions](CONTRIBUTING_BASIC.md).
 For application changes, follow [development setup](CONTRIBUTING_ADVANCED.md).

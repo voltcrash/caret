@@ -1,3 +1,4 @@
+import { createAppOwned } from "../../app/application";
 import { createSignal } from "solid-js";
 import { z } from "zod";
 import { LocalStorageWithSchema } from "../utils/local-storage-with-schema";
@@ -38,21 +39,21 @@ function persistedBoolean(storage: LocalStorageWithSchema<boolean>): {
   };
 }
 
-const remember = persistedBoolean(rememberLazyModeLS);
-const arabicPref = persistedBoolean(arabicLazyModeLS);
+const remember = createAppOwned(() => persistedBoolean(rememberLazyModeLS));
+const arabicPref = createAppOwned(() => persistedBoolean(arabicLazyModeLS));
 
 export function getRemember(): boolean {
-  return remember.get();
+  return remember().get();
 }
 
 export function setRemember(value: boolean): void {
-  remember.set(value);
+  remember().set(value);
 }
 
 export function getArabicPref(): boolean {
-  return arabicPref.get();
+  return arabicPref().get();
 }
 
 export function setArabicPref(value: boolean): void {
-  arabicPref.set(value);
+  arabicPref().set(value);
 }

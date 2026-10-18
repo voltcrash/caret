@@ -4,7 +4,7 @@ import { withRuntime } from "../../src/runtime/env";
 import { patchConfiguration } from "../../src/init/configuration";
 import { hashApeKey } from "../../src/utils/ape-key-hash";
 import * as Keys from "../../src/dal/ape-keys";
-import Worker from "../../src/worker";
+import Worker from "../__testData__/http-worker";
 import type { ExecutionContext } from "@cloudflare/workers-types";
 
 describe("Worker ApeKey authentication with D1", () => {

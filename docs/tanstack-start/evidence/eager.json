@@ -1,0 +1,346 @@
+{
+  "samples": [
+    {
+      "files": 63,
+      "raw": 922918,
+      "gzip": 321462
+    },
+    {
+      "files": 63,
+      "raw": 922918,
+      "gzip": 321462
+    },
+    {
+      "files": 63,
+      "raw": 922918,
+      "gzip": 321462
+    },
+    {
+      "files": 63,
+      "raw": 922918,
+      "gzip": 321462
+    },
+    {
+      "files": 63,
+      "raw": 922918,
+      "gzip": 321462
+    }
+  ],
+  "entries": [
+    {
+      "file": "/js/oxytype.DJlS2aMs.js",
+      "raw": 261658,
+      "gzip": 85734
+    },
+    {
+      "file": "/js/rolldown-runtime.Dd_uD5pT.js",
+      "raw": 1106,
+      "gzip": 627
+    },
+    {
+      "file": "/js/cn.DUC6fkcj.js",
+      "raw": 60993,
+      "gzip": 21097
+    },
+    {
+      "file": "/js/Fa.BdCM4wFO.js",
+      "raw": 446,
+      "gzip": 307
+    },
+    {
+      "file": "/js/vendor-auth.BneIrTuE.js",
+      "raw": 31063,
+      "gzip": 11526
+    },
+    {
+      "file": "/js/_virtual_env-config.CkivqD3h.js",
+      "raw": 211,
+      "gzip": 184
+    },
+    {
+      "file": "/js/store.0Qr-Z2nF.js",
+      "raw": 7033,
+      "gzip": 2479
+    },
+    {
+      "file": "/js/modals.BXX5Lm65.js",
+      "raw": 2629,
+      "gzip": 1114
+    },
+    {
+      "file": "/js/ape.B7Vu8hGs.js",
+      "raw": 6824,
+      "gzip": 2716
+    },
+    {
+      "file": "/js/schemas.BOFtNHhs.js",
+      "raw": 98538,
+      "gzip": 27221
+    },
+    {
+      "file": "/js/notifications.DWzAkAGB.js",
+      "raw": 1914,
+      "gzip": 938
+    },
+    {
+      "file": "/js/zod-messages.DzcYWoTe.js",
+      "raw": 2774,
+      "gzip": 1095
+    },
+    {
+      "file": "/js/local-storage-with-schema.BcC8txib.js",
+      "raw": 3561,
+      "gzip": 1275
+    },
+    {
+      "file": "/js/useRef.sozv7MV1.js",
+      "raw": 97,
+      "gzip": 114
+    },
+    {
+      "file": "/js/misc.DFBifFNr.js",
+      "raw": 3964,
+      "gzip": 1920
+    },
+    {
+      "file": "/js/strings.B-1ygbvI.js",
+      "raw": 1717,
+      "gzip": 963
+    },
+    {
+      "file": "/js/strings.PLFj1WVW.js",
+      "raw": 1690,
+      "gzip": 827
+    },
+    {
+      "file": "/js/json-data.DdCX8X2t.js",
+      "raw": 37668,
+      "gzip": 20128
+    },
+    {
+      "file": "/js/store.BTnDJ4C8.js",
+      "raw": 2225,
+      "gzip": 1179
+    },
+    {
+      "file": "/js/core.BCtJrhfx.js",
+      "raw": 2118,
+      "gzip": 968
+    },
+    {
+      "file": "/js/createEvent.DDPyD8dJ.js",
+      "raw": 313,
+      "gzip": 228
+    },
+    {
+      "file": "/js/util.mw1j0kw6.js",
+      "raw": 1256,
+      "gzip": 709
+    },
+    {
+      "file": "/js/languages.D36gYebG.js",
+      "raw": 6634,
+      "gzip": 2458
+    },
+    {
+      "file": "/js/shared.CGKHekoR.js",
+      "raw": 1001,
+      "gzip": 530
+    },
+    {
+      "file": "/js/configs.BbL5P1eQ.js",
+      "raw": 9918,
+      "gzip": 4894
+    },
+    {
+      "file": "/js/users.BmBlEonu.js",
+      "raw": 7965,
+      "gzip": 3716
+    },
+    {
+      "file": "/js/sanitize.BsuXsKyj.js",
+      "raw": 19701,
+      "gzip": 5617
+    },
+    {
+      "file": "/js/objects.FcZ6BbR1.js",
+      "raw": 172,
+      "gzip": 130
+    },
+    {
+      "file": "/js/personal-bests.Dz9-cgw8.js",
+      "raw": 2799,
+      "gzip": 1428
+    },
+    {
+      "file": "/js/format.CKIWDPD_.js",
+      "raw": 19488,
+      "gzip": 5617
+    },
+    {
+      "file": "/js/normalizeInterval.Bphkwj_K.js",
+      "raw": 866,
+      "gzip": 449
+    },
+    {
+      "file": "/js/endOfYear.pmW2cf9F.js",
+      "raw": 418,
+      "gzip": 266
+    },
+    {
+      "file": "/js/createSignalWithSetters.BBCwRIEt.js",
+      "raw": 190,
+      "gzip": 166
+    },
+    {
+      "file": "/js/loader-bar.DfWvddWb.js",
+      "raw": 217,
+      "gzip": 174
+    },
+    {
+      "file": "/js/keys.CVMCixA4.js",
+      "raw": 34428,
+      "gzip": 10270
+    },
+    {
+      "file": "/js/queries.DDOd7i0C.js",
+      "raw": 307,
+      "gzip": 239
+    },
+    {
+      "file": "/js/snapshot.Btm2yGa-.js",
+      "raw": 389,
+      "gzip": 273
+    },
+    {
+      "file": "/js/header.-wDqI-Es.js",
+      "raw": 176,
+      "gzip": 156
+    },
+    {
+      "file": "/js/db.Bop0tEGD.js",
+      "raw": 13375,
+      "gzip": 5625
+    },
+    {
+      "file": "/js/config.CHbAbEIL.js",
+      "raw": 66,
+      "gzip": 82
+    },
+    {
+      "file": "/js/quotes-controller.BI4EHHqf.js",
+      "raw": 3242,
+      "gzip": 1364
+    },
+    {
+      "file": "/js/mode.BgIo3a2E.js",
+      "raw": 326,
+      "gzip": 214
+    },
+    {
+      "file": "/js/compareAsc.CbxGcf7G.js",
+      "raw": 106,
+      "gzip": 123
+    },
+    {
+      "file": "/js/differenceInYears.BHJrNrAn.js",
+      "raw": 1428,
+      "gzip": 650
+    },
+    {
+      "file": "/js/motion.Becwc--I.js",
+      "raw": 1060,
+      "gzip": 538
+    },
+    {
+      "file": "/js/command-palette-hotkey._N0Y6JDE.js",
+      "raw": 8397,
+      "gzip": 3530
+    },
+    {
+      "file": "/js/custom-themes.fD3HWbdb.js",
+      "raw": 178,
+      "gzip": 156
+    },
+    {
+      "file": "/js/metadata.EfOCdPNp.js",
+      "raw": 41696,
+      "gzip": 11412
+    },
+    {
+      "file": "/js/useLocalStorage.-Jy0RlKm.js",
+      "raw": 670,
+      "gzip": 420
+    },
+    {
+      "file": "/js/results.Ds1BbLNh.js",
+      "raw": 3654,
+      "gzip": 1477
+    },
+    {
+      "file": "/js/test.BC7vHL_D.js",
+      "raw": 8432,
+      "gzip": 3368
+    },
+    {
+      "file": "/js/setters.Fz9752zU.js",
+      "raw": 5907,
+      "gzip": 2636
+    },
+    {
+      "file": "/js/stats.CAkBhpF1.js",
+      "raw": 14340,
+      "gzip": 4945
+    },
+    {
+      "file": "/js/animation.BxRzWO-_.js",
+      "raw": 30111,
+      "gzip": 11950
+    },
+    {
+      "file": "/js/pointer.C3UO0PzM.js",
+      "raw": 82,
+      "gzip": 95
+    },
+    {
+      "file": "/js/input-element.CGE1KD5E.js",
+      "raw": 1170,
+      "gzip": 563
+    },
+    {
+      "file": "/js/banners.qOO-js2E.js",
+      "raw": 270,
+      "gzip": 196
+    },
+    {
+      "file": "/js/numbers.bxeKlsYz.js",
+      "raw": 929,
+      "gzip": 562
+    },
+    {
+      "file": "/js/colors.DZXap-O5.js",
+      "raw": 2001,
+      "gzip": 779
+    },
+    {
+      "file": "/js/theme.2phCnRRj.js",
+      "raw": 301,
+      "gzip": 234
+    },
+    {
+      "file": "/js/today-tracker.DeC00UQu.js",
+      "raw": 134377,
+      "gzip": 44443
+    },
+    {
+      "file": "/js/overlay-visibility.CurXXsJR.js",
+      "raw": 121,
+      "gzip": 117
+    },
+    {
+      "file": "/js/hotkeys.BTKTFNIK.js",
+      "raw": 16212,
+      "gzip": 6251
+    }
+  ]
+}

@@ -3,7 +3,7 @@
 For Oxytype maintainers operating the official production site.
 
 One Worker serves the frontend and `/api` on `https://oxytype.voltcrash.com`.
-Use `backend/wrangler.production.json` explicitly. The default Wrangler config
+Use `frontend/wrangler.production.json` explicitly. The default Wrangler config
 targets staging; the production release workflow uses the production config.
 
 ## Resources
@@ -23,7 +23,7 @@ Quote publishing additionally requires the optional
 
 ## Private settings
 
-Save backend credentials in ignored `backend/.dev.vars.production`:
+Save backend credentials in ignored `frontend/.dev.vars.production`:
 
 ```dotenv
 BETTER_AUTH_SECRET=replace-with-a-new-private-production-secret
@@ -56,7 +56,7 @@ passed into the frontend build. Examples are checked in; actual files are ignore
 
 The backend connects to [Better Auth Infrastructure](https://better-auth.com/docs/infrastructure/plugins/dashboard)
 when `BETTER_AUTH_API_KEY` is configured. Add the private project API key to
-`backend/.dev.vars.production`, or save it as a separate GitHub Actions secret
+`frontend/.dev.vars.production`, or save it as a separate GitHub Actions secret
 named `BETTER_AUTH_API_KEY`. The daily workflow appends that secret to the private
 backend file before deploying it to the Worker. Preserve the other backend
 credentials; this API key does not replace `BETTER_AUTH_SECRET`.
@@ -77,7 +77,7 @@ basic dashboard connection requires no database migration.
 On a **new, empty** production D1 only:
 
 ```sh
-vp run --filter @oxytype/backend db:migrate:production
+vp run --filter @oxytype/frontend db:migrate:production
 vp run --filter @oxytype/backend db:bootstrap:production
 ```
 
@@ -93,33 +93,51 @@ From the repo root, with Node/pnpm versions in `package.json`:
 
 ```sh
 vp install --frozen-lockfile
-vp run --filter @oxytype/backend build:production-site
-vp run --filter @oxytype/backend deploy:production-dry-run
+vp run --filter @oxytype/frontend build:production-site
+vp run --filter @oxytype/frontend deploy:production-dry-run
 # Apply any newly added migrations before compatible code is deployed.
-vp run --filter @oxytype/backend db:migrate:production
-vp run --filter @oxytype/backend deploy:production-site
+vp run --filter @oxytype/frontend db:migrate:production
+vp run --filter @oxytype/frontend deploy:production-site
 ```
 
-Production builds run `vp run --no-cache build-fe`, then `vp run --no-cache build-be`.
-Keep `--no-cache` before the task name so the runner consumes it. Trailing flags
-reach the build tool; `vp build` rejects `--force`. The runner's cache bypass
-ensures fresh production assets even when workspace task caching is enabled.
-Builds stay sequential because shared package builds clean their output.
-Deployment checks isolated bindings, required secrets, the real Turnstile key,
-enabled providers and the built frontend's `/api` configuration before upload.
-The deploy command uploads secrets from the private file and packages the frontend
-under the Worker's public site prefix. Preserve other private values when editing.
+Production builds invoke one uncached Start compiler for matching client/Worker assets.
+The receipt in frontend/dist/start/artifact.json fingerprints the complete artifact.
+Deployment validates credentials, public settings, resource identity and every file;
+changed or mismatched builds fail before upload. Production secrets stay in their
+private file; local preview variables are removed from the archived artifact.
+
+Stage 7 transfers tooling only. Production remains on the retained legacy version
+until Stage 8 acceptance and cutover. The scheduled/manual workflow is gated by
+repository variable START_PRODUCTION_ENABLED=true; enable only after that gate.
+
+## Rollback
+
+Roll back the Worker version; never rebuild or redeploy client assets alone.
+A Worker version carries its own asset manifest, so both move together:
+
+```sh
+vp exec --filter @oxytype/frontend -- wrangler deployments list --config wrangler.production.json
+vp exec --filter @oxytype/frontend -- wrangler rollback <version-id> --config wrangler.production.json
+```
+
+Confirm `/version.json` and the `X-Oxytype-Build` response header report the
+same build. Rollback restores no bound resources: D1 writes, queues and secrets
+stay. Open tabs keep working: service workers for the rolled-back build install
+and wait until no tab is typing or saving; another build's server-function IDs
+answer 409 and prompt a refresh instead of resubmitting. Staging exercised
+legacy → Start → legacy and Start → Start rollbacks this way in Stage 7.
 
 ## Production releases
 
 The **Production release** [Actions workflow](../.github/workflows/production-release.yml)
-checks for new commits at `00:17 UTC` each day. It also supports **Run workflow**
-on `main`. When commits have been added since the previous successful production
-release, it deploys the complete frontend/API site with the production Wrangler
-config, applies pending production D1 migrations, and publishes a GitHub release
-only after deployment succeeds. Without new commits, it skips dependency setup,
-builds, migrations, deployment and publication; the scheduled workflow run still
-starts and records the skip reason.
+runs only when a maintainer starts it: **Run workflow** on `main`, or
+`gh workflow run production-release.yml --ref main`. There is no schedule. When
+commits have been added since the previous successful production release, it
+deploys the complete frontend/API site with the production Wrangler config,
+applies pending production D1 migrations, and publishes a GitHub release only
+after deployment succeeds. If the snapshot is already released, it skips
+dependency setup, builds, migrations, deployment and publication and records the
+skip reason.
 
 Configure these Actions inputs in repository settings or the `production`
 environment before the first run:
@@ -127,25 +145,28 @@ environment before the first run:
 | Type | Name | Value |
 | --- | --- | --- |
 | Secret | `CLOUDFLARE_API_TOKEN` | Cloudflare token scoped to the production account, with Worker deployment, D1 migration, queue and custom-domain access. |
-| Secret | `PRODUCTION_BACKEND_ENV` | Full contents of the existing private `backend/.dev.vars.production` file, preserving the deployed auth/OAuth/Turnstile credentials. |
+| Secret | `PRODUCTION_BACKEND_ENV` | Full contents of the existing private `frontend/.dev.vars.production` file, preserving the deployed auth/OAuth/Turnstile credentials. |
 | Secret (optional) | `BETTER_AUTH_API_KEY` | Private Better Auth dashboard project key. Overrides the same key in `PRODUCTION_BACKEND_ENV`; uploaded only to the backend Worker. |
 | Variable | `PRODUCTION_FRONTEND_ENV` | Full contents of `frontend/.env.production.local`: real production site key, `BACKEND_URL=/api`, and enabled auth providers. |
 
-The account ID and isolated resource IDs come from `backend/wrangler.production.json`.
+The account ID and isolated resource IDs come from `frontend/wrangler.production.json`.
 The workflow writes credential files with mode `0600` for the validated production
 commands, then removes them even on failure. It never bootstraps or resets the database.
 
-Release versions use the release-planning execution date in `YY.MM.DD` format,
-with a `v`-prefixed tag at the exact deployed `main` commit. Delayed runs and
-retries use the current execution date rather than the workflow creation date.
-The workflow sets the Worker `VERSION` and the build checkout's package version
-to that date version, without pushing a version commit to `main`.
+Release versions are `YY.MM.NN`: two-digit year, month, and the release's
+sequence number within that UTC month, starting at `01`. The first November 2026
+release is `26.11.01`; the next one, on any later day, is `26.11.02`. Tags are
+`v`-prefixed (`v26.11.01`) at the exact deployed `main` commit; release titles
+omit the `v`. The month is taken when release planning executes. The package
+version uses the release version; Worker/client/SW/version.json use one build ID
+(version plus source SHA). No version commit is pushed to main. The workflow archives
+the complete matched artifact for 90 days before migrations/deployment; releases
+are published only after a successful deploy.
 The release notes list all commits added since the previous successful production
 release, including older branch commits merged during the day. They are grouped
 into Features (`feat`), Improvements (`impr`, `perf`), Fixes (`fix`) and Nerd
-stuff (everything else); GitHub merge commits are omitted. Missed days are
-included in the next successful release. The first scheduled release covers the
-preceding execution UTC day; the first manual run covers its execution UTC day.
+stuff (everything else); GitHub merge commits are omitted. The first production
+release covers its execution UTC day.
 The first production release establishes the deployment baseline even without
 recent commits. Subsequent runs compare commits, so a new commit still qualifies
 when its file contents or rendered release notes are unchanged.
@@ -162,19 +183,22 @@ and links to [GitHub releases](https://github.com/voltcrash/oxytype/releases)
 for older history. Hosting and the service worker avoid persistently caching the
 snapshot so the next deployment can update it.
 
-Runs are serialized. Rerunning a completed date skips deployment and publication.
-A retry on a later UTC date also skips if its snapshot has already been released.
-Retrying a failed run keeps its original `main` snapshot but uses the date when
-the new attempt's release planning executes. An older snapshot cannot deploy over
-already released commits. A date tag belonging to another commit or a conflicting
-manual release stops the workflow before deployment.
+Runs are serialized. A run whose snapshot is the latest release skips deployment
+and publication. A deployment whose publication failed leaves its tag on the
+snapshot; the retry reuses that number. Numbers held by other releases or tags
+are never reused. An older snapshot cannot deploy over already released commits,
+and a production release from a later month stops the workflow.
 
 After merging a fix for a failed release, start a new **Production release** run
 from **main** in Actions, or run `gh workflow run production-release.yml --ref main`.
 Rerunning the old failed run retains its original snapshot and cannot pick up the fix.
 
-GitHub's scheduler can run late or drop jobs under load; 00:17 UTC is the requested
-trigger time, not an exact-time guarantee. See [GitHub scheduling behavior](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule).
+Releases before the numbering change were renamed from date tags in publication
+order (October 2026: `v26.10.04`–`v26.10.16` became `v26.10.01`–`v26.10.11`) with
+`node packages/release/src/renumber-releases-cli.js` (dry run; `--apply` renames).
+Old date tags no longer exist; the `v2026.10.*` tags are older and unrelated.
+Existing clones keep stale local tags under reused names; refresh them with
+`git fetch --prune --prune-tags --force`.
 
 ## Browser verification and monitoring
 

@@ -1,7 +1,7 @@
 import { JSXElement, Show } from "solid-js";
 
 import { setConfig } from "../../../config/setters";
-import { Config } from "../../../config/store";
+import { getMutableConfig } from "../../../config/store";
 import {
   getThemeIndicator,
   isAuthenticated,
@@ -15,7 +15,7 @@ import { Fa } from "../../common/Fa";
 export function ThemeIndicator(): JSXElement {
   const handleClick = (e: MouseEvent): void => {
     if (e.shiftKey) {
-      if (Config.customTheme) {
+      if (getMutableConfig().customTheme) {
         setConfig("customTheme", false);
         return;
       }
@@ -26,7 +26,9 @@ export function ThemeIndicator(): JSXElement {
       }
       setConfig("customTheme", true);
     } else {
-      const subgroup = Config.customTheme ? "customTheme" : "themes";
+      const subgroup = getMutableConfig().customTheme
+        ? "customTheme"
+        : "themes";
       setCommandlineSubgroup(subgroup);
       showModal("Commandline");
     }

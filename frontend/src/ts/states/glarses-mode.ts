@@ -1,6 +1,6 @@
-import { createSignal } from "solid-js";
+import { createAppSignal } from "../../app/state";
 
-const [getGlarsesMode, setGlarsesMode] = createSignal(false);
+const [getGlarsesMode, setGlarsesMode] = createAppSignal(false);
 
 export function get(): boolean {
   return getGlarsesMode();

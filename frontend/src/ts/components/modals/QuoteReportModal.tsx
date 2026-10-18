@@ -2,8 +2,8 @@ import { QuoteReportReason } from "@oxytype/schemas/quotes";
 import { createForm } from "@tanstack/solid-form";
 import { JSXElement, createSignal } from "solid-js";
 
-import Ape from "../../ape";
-import { Config } from "../../config/store";
+import { operation } from "../../../data/operations";
+import { getMutableConfig } from "../../config/store";
 import QuotesController from "../../controllers/quotes-controller";
 import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
 import { hideModalAndClearChain } from "../../states/modals";
@@ -34,7 +34,7 @@ export function QuoteReportModal(): JSXElement {
     },
     onSubmit: async ({ value }) => {
       const id = quoteId().toString();
-      const quoteLanguage = removeLanguageSize(Config.language);
+      const quoteLanguage = removeLanguageSize(getMutableConfig().language);
 
       if (value.captcha === "") {
         showNoticeNotification("Please complete the captcha");
@@ -55,23 +55,23 @@ export function QuoteReportModal(): JSXElement {
       }
 
       showLoaderBar();
-      const response = await Ape.quotes
-        .report({
-          body: {
-            quoteId: id,
-            quoteLanguage,
-            reason: value.reason,
-            comment: value.comment,
-            captcha: value.captcha,
-          },
-        })
-        .finally(() => {
-          form.setFieldValue("captcha", "");
-          hideLoaderBar();
-        });
+      const response = await operation("quotes.report", {
+        body: {
+          quoteId: id,
+          quoteLanguage,
+          reason: value.reason,
+          comment: value.comment,
+          captcha: value.captcha,
+        },
+      }).finally(() => {
+        form.setFieldValue("captcha", "");
+        hideLoaderBar();
+      });
 
-      if (response.status !== 200) {
-        showErrorNotification("Failed to report quote", { response });
+      if (!response.ok) {
+        showErrorNotification("Failed to report quote", {
+          operation: response,
+        });
         return;
       }
 
@@ -98,7 +98,9 @@ export function QuoteReportModal(): JSXElement {
     form.reset();
 
     const language =
-      Config.language === "swiss_german" ? "german" : Config.language;
+      getMutableConfig().language === "swiss_german"
+        ? "german"
+        : getMutableConfig().language;
     const { quotes } = await QuotesController.getQuotes(language);
     const quote = quotes.find((q) => q.id === quoteId());
     setQuoteText(quote?.text ?? "");

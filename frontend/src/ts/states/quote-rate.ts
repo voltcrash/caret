@@ -1,28 +1,73 @@
-import { createSignal } from "solid-js";
-import { Language } from "@oxytype/schemas/languages";
-import Ape from "../ape";
+import { createEffect, createSignal, onCleanup } from "solid-js";
+import { QueryObserver } from "@tanstack/solid-query";
+import { createAccountOwned } from "../../app/account-scope";
+import { getQueryClient } from "../queries";
+import { getQuoteRatingQueryOptions, type QuoteStats } from "../queries/quotes";
+import { createAppSignal } from "../../app/state";
+
 import { Quote } from "../controllers/quotes-controller";
 import { showErrorNotification } from "./notifications";
 import { showModal } from "./modals";
 import { isSafeNumber } from "@oxytype/util/numbers";
 
-type QuoteStats = {
-  average?: number;
-  ratings?: number;
-  totalRating?: number;
-  quoteId?: number;
-  language?: Language;
-};
+const [selectedQuote, setSelectedQuote] = createAppSignal<Quote | null>(null);
+export { selectedQuote };
 
-const [selectedQuote, setSelectedQuote] = createSignal<Quote | null>(null);
-const [quoteStats, setQuoteStats] = createSignal<
-  QuoteStats | null | Record<string, never>
->(null);
+function ratingOptions():
+  | ReturnType<typeof getQuoteRatingQueryOptions>
+  | undefined {
+  const quote = selectedQuote();
+  return quote === null
+    ? undefined
+    : getQuoteRatingQueryOptions(quote.id, quote.language);
+}
 
-export { selectedQuote, quoteStats };
+function derivedStats(data: QuoteStats | null | undefined): QuoteStats | null {
+  if (data === undefined) return null;
+  if (data === null) return {};
+  return { ...data, average: data.average ?? getRatingAverage(data) };
+}
+
+/** A reactive view of Query data, recreated on account changes. */
+const observedStats = createAccountOwned(() => {
+  const observer = new QueryObserver<
+    QuoteStats | null,
+    Error,
+    QuoteStats | null,
+    QuoteStats | null,
+    unknown[]
+  >(getQueryClient(), {
+    queryKey: ["quoteRating", "none"],
+    enabled: false,
+  });
+  const [data, setData] = createSignal<QuoteStats | null>(null);
+  const publish = (): void => {
+    setData(derivedStats(observer.getCurrentResult().data));
+  };
+  onCleanup(observer.subscribe(publish));
+  onCleanup(() => observer.destroy());
+  createEffect(() => {
+    observer.setOptions({
+      ...(ratingOptions() ?? { queryKey: ["quoteRating", "none"] }),
+      enabled: false,
+    });
+    publish();
+  });
+  return data;
+});
+
+export function quoteStats(): QuoteStats | null {
+  return observedStats()();
+}
 
 export function clearQuoteStats(): void {
-  setQuoteStats(null);
+  const options = ratingOptions();
+  if (options !== undefined) {
+    void getQueryClient().resetQueries({
+      queryKey: options.queryKey,
+      exact: true,
+    });
+  }
 }
 
 export function getRatingAverage(stats: QuoteStats): number {
@@ -43,31 +88,22 @@ export async function getQuoteStats(
   if (!quote) return;
 
   setSelectedQuote(quote);
-  const response = await Ape.quotes.getRating({
-    query: { quoteId: quote.id, language: quote.language },
-  });
-
-  if (response.status !== 200) {
-    showErrorNotification("Failed to get quote ratings", { response });
+  try {
+    const data = await getQueryClient().query(
+      getQuoteRatingQueryOptions(quote.id, quote.language),
+    );
+    return derivedStats(data) ?? {};
+  } catch (error) {
+    showErrorNotification("Failed to get quote ratings", { error });
     return;
   }
-
-  if (response.body.data === null) {
-    setQuoteStats({});
-    return {};
-  }
-
-  const stats = response.body.data as QuoteStats;
-  if (stats !== undefined && stats.average === undefined) {
-    stats.average = getRatingAverage(stats);
-  }
-
-  setQuoteStats(stats);
-  return stats;
 }
 
 export function updateQuoteStats(stats: QuoteStats): void {
-  setQuoteStats(stats);
+  const options = ratingOptions();
+  if (options !== undefined) {
+    getQueryClient().setQueryData(options.queryKey, stats);
+  }
 }
 
 export function showQuoteRateModal(quote: Quote): void {

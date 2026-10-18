@@ -1,5 +1,6 @@
 import { createSignal, For, Index, JSXElement, Setter, Show } from "solid-js";
 
+import * as CustomText from "../../../features/typing/runtime/custom-text";
 import { setCustomTextIndicator } from "../../states/core";
 import { hideModal } from "../../states/modals";
 import {
@@ -7,7 +8,6 @@ import {
   showSuccessNotification,
 } from "../../states/notifications";
 import { showSimpleModal } from "../../states/simple-modal";
-import * as CustomText from "../../test/custom-text";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Button } from "../common/Button";
 import { download } from "../common/Download";

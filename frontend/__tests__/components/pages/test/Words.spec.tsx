@@ -45,9 +45,6 @@ vi.mock("../../../../src/ts/states/test", () => ({
   setTestFocusState: vi.fn(),
   setTestInitError: vi.fn(),
 }));
-vi.mock("../../../../src/ts/states/core", () => ({
-  getActivePage: () => mocks.activePage,
-}));
 vi.mock("../../../../src/ts/states/background", () => ({
   getBackground: () => ({ url: "" }),
 }));
@@ -81,35 +78,40 @@ vi.mock("../../../../src/ts/events/keymap", () => ({
 vi.mock("../../../../src/ts/hooks/useWordsFocus", () => ({
   useWordsFocus: vi.fn(),
 }));
-vi.mock("../../../../src/ts/test/focus", () => ({ set: mocks.focus }));
-vi.mock("../../../../src/ts/test/caret", () => ({
+vi.mock("../../../../src/features/typing/runtime/focus", () => ({
+  set: mocks.focus,
+}));
+vi.mock("../../../../src/features/typing/runtime/caret", () => ({
   getCaret: () => mocks.caret,
   updatePosition: vi.fn(),
   stopAnimation: vi.fn(),
   resetPosition: vi.fn(),
   hide: vi.fn(),
 }));
-vi.mock("../../../../src/ts/test/pace-caret", () => ({
+vi.mock("../../../../src/features/typing/runtime/pace-caret", () => ({
   getCaret: () => mocks.caret,
   resetCaretPosition: vi.fn(),
 }));
-vi.mock("../../../../src/ts/test/custom-text", () => ({
+vi.mock("../../../../src/features/typing/runtime/custom-text", () => ({
   getLimitMode: () => "word",
   getLimitValue: () => 15,
 }));
-vi.mock("../../../../src/ts/test/funbox/list", () => ({
+vi.mock("../../../../src/features/typing/runtime/funbox/list", () => ({
   findSingleActiveFunboxWithFunction: () => undefined,
 }));
-vi.mock("../../../../src/ts/test/funbox/layoutfluid-funbox-timer", () => ({
-  instantHide: vi.fn(),
-}));
-vi.mock("../../../../src/ts/test/events/data", () => ({
+vi.mock(
+  "../../../../src/features/typing/runtime/funbox/layoutfluid-funbox-timer",
+  () => ({
+    instantHide: vi.fn(),
+  }),
+);
+vi.mock("../../../../src/features/typing/runtime/events/data", () => ({
   getCurrentInput: () => mocks.input,
 }));
-vi.mock("../../../../src/ts/test/events/live-cache", () => ({
+vi.mock("../../../../src/features/typing/runtime/events/live-cache", () => ({
   getLiveCachedAccuracy: () => mocks.accuracy,
 }));
-vi.mock("../../../../src/ts/components/pages/test/MonkeyPower", () => ({
+vi.mock("../../../../src/features/typing/components/MonkeyPower", () => ({
   addPower: mocks.power,
   reset: vi.fn(),
 }));
@@ -118,8 +120,11 @@ vi.mock("../../../../src/ts/anim", () => ({
 }));
 vi.mock("animejs", () => ({ animate: vi.fn() }));
 
-import { Words } from "../../../../src/ts/components/pages/test/Words";
-import { Config } from "../../../../src/ts/config/store";
+import { Words } from "../../../../src/features/typing/components/Words";
+import * as ui from "../../../../src/features/typing/runtime/test-ui";
+import { words } from "../../../../src/features/typing/runtime/test-words";
+import { bindTypingActivity } from "../../../../src/features/typing/scope";
+import { getMutableConfig } from "../../../../src/ts/config/store";
 import { configEvent } from "../../../../src/ts/events/config";
 import { setCurrentLiveStats } from "../../../../src/ts/states/test";
 import { setTestElements } from "../../../../src/ts/states/test-dom";
@@ -127,8 +132,6 @@ import {
   getWordsInputStyle,
   getWordsWrapperHeight,
 } from "../../../../src/ts/states/words-layout";
-import * as ui from "../../../../src/ts/test/test-ui";
-import { words } from "../../../../src/ts/test/test-words";
 
 let element: HTMLDivElement;
 let wrapper: HTMLDivElement;
@@ -162,7 +165,9 @@ async function flushFrames(): Promise<void> {
   }
 }
 
+let unbind: () => void;
 beforeEach(() => {
+  unbind = bindTypingActivity(() => mocks.activePage === "test");
   document.documentElement.style.fontSize = "16px";
   vi.clearAllMocks();
   Object.assign(mocks, {
@@ -174,7 +179,7 @@ beforeEach(() => {
     input: "",
     accuracy: 97.456,
   });
-  Object.assign(Config, {
+  Object.assign(getMutableConfig(), {
     mode: "words",
     words: 15,
     fontSize: 1,
@@ -226,6 +231,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  unbind();
   cleanup();
   wrapper.remove();
   words.reset();
@@ -322,14 +328,14 @@ describe("Words layout", () => {
 
   it("respects tape margin and right-to-left narrow words", async () => {
     await layout();
-    Config.tapeMode = "word";
-    Config.tapeMargin = 25;
+    getMutableConfig().tapeMode = "word";
+    getMutableConfig().tapeMargin = 25;
     ui.updateWordsInputPosition();
     expect(getWordsInputStyle()).toMatchObject({
       left: "100px",
       "max-width": "75%",
     });
-    Config.tapeMode = "off";
+    getMutableConfig().tapeMode = "off";
     mocks.rtl = true;
     size(word(0), { offsetWidth: 4 });
     ui.updateWordsInputPosition();
@@ -355,23 +361,23 @@ describe("Words layout", () => {
     await layout();
     ui.updateWordsWrapperHeight(true);
     expect(getWordsWrapperHeight()).toBe("60px");
-    Config.showAllLines = true;
+    getMutableConfig().showAllLines = true;
     ui.updateWordsWrapperHeight(true);
     expect(getWordsWrapperHeight()).toBe("");
-    Config.showAllLines = false;
-    Config.mode = "zen";
+    getMutableConfig().showAllLines = false;
+    getMutableConfig().mode = "zen";
     ui.updateWordsWrapperHeight(true);
     expect(getWordsWrapperHeight()).toBe("40px");
-    Config.tapeMode = "word";
-    Config.mode = "words";
+    getMutableConfig().tapeMode = "word";
+    getMutableConfig().mode = "words";
     ui.updateWordsWrapperHeight(true);
     expect(getWordsWrapperHeight()).toBe("20px");
   });
 
   it("scrolls tape and both carets by the configured margin", async () => {
     await layout();
-    Config.tapeMode = "word";
-    Config.tapeMargin = 25;
+    getMutableConfig().tapeMode = "word";
+    getMutableConfig().tapeMargin = 25;
     mocks.activeIndex = 1;
     await ui.scrollTape(true);
     expect(element.style.marginLeft).toBe("0px");
@@ -388,8 +394,8 @@ describe("Words layout", () => {
 
   it("scrolls tape by typed letter widths", async () => {
     await layout();
-    Config.tapeMode = "letter";
-    Config.tapeMargin = 25;
+    getMutableConfig().tapeMode = "letter";
+    getMutableConfig().tapeMargin = 25;
     mocks.input = "he";
     for (const letter of word(0).querySelectorAll<HTMLElement>("letter")) {
       size(letter, { offsetWidth: 10 });
@@ -437,7 +443,7 @@ describe("Words hints and joining", () => {
     "shows typo hints in %s mode",
     async (mode) => {
       await layout();
-      Config.indicateTypos = mode;
+      getMutableConfig().indicateTypos = mode;
       await ui.updateWordLetters({
         wordIndex: 0,
         input: "hxllo",
@@ -457,7 +463,7 @@ describe("Words hints and joining", () => {
 
   it("breaks typed joining words for dots and restores them on backtracking", async () => {
     await layout();
-    Config.typedEffect = "dots";
+    getMutableConfig().typedEffect = "dots";
     ui.setJoiningClass(true);
     vi.spyOn(word(0), "getBoundingClientRect").mockReturnValue({
       width: 100,
@@ -476,7 +482,7 @@ describe("Words hints and joining", () => {
 
   it("marks wrapped joining words and resets when the font changes", async () => {
     await layout();
-    Config.typedEffect = "dots";
+    getMutableConfig().typedEffect = "dots";
     ui.setJoiningClass(true);
     const letters = word(0).querySelectorAll<HTMLElement>("letter");
     size(letters[1] as HTMLElement, { offsetTop: 20 });
@@ -484,7 +490,7 @@ describe("Words hints and joining", () => {
     ui.updateActiveElement({ direction: "forward" });
     await flushFrames();
     expect(word(0)).toHaveClass("needs-wrap", "broken-joining");
-    Config.typedEffect = "keep";
+    getMutableConfig().typedEffect = "keep";
     configEvent.dispatch({ key: "fontSize", newValue: 1, previousValue: 1 });
     expect(word(0)).not.toHaveClass("needs-wrap", "broken-joining");
   });
@@ -493,7 +499,7 @@ describe("Words hints and joining", () => {
 describe("Words lifecycle", () => {
   it("updates accuracy, sound and the next key after text input", async () => {
     await layout();
-    Config.keymapMode = "next";
+    getMutableConfig().keymapMode = "next";
     mocks.input = "h";
     ui.afterTestTextInput(true);
     expect(mocks.power).toHaveBeenCalledWith(true);

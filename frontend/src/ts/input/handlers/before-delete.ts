@@ -1,10 +1,10 @@
 import { canDelete } from "@oxytype/typing-core/input/engine";
-import { Config } from "../../config/store";
-import * as TestWords from "../../test/test-words";
+import { getMutableConfig } from "../../config/store";
+import * as TestWords from "../../../features/typing/runtime/test-words";
 import { getInputElementValue } from "../input-element";
-import * as TestUI from "../../test/test-ui";
+import * as TestUI from "../../../features/typing/runtime/test-ui";
 import { isAwaitingNextWord } from "../state";
-import { getInputForWord } from "../../test/events/data";
+import { getInputForWord } from "../../../features/typing/runtime/events/data";
 import {
   isTestRestarting,
   getActiveWordIndex,
@@ -50,7 +50,7 @@ export function onBeforeDelete(event: InputEvent): void {
 
   const previousWord = TestWords.words.get(getActiveWordIndex() - 1);
   if (
-    !canDelete(Config, {
+    !canDelete(getMutableConfig(), {
       inputValue,
       wordIndex: getActiveWordIndex(),
       previousWordCorrect:

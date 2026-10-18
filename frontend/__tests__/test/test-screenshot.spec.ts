@@ -25,7 +25,7 @@ vi.mock("modern-screenshot", () => ({
   },
 }));
 vi.mock(
-  "../../src/ts/components/pages/test/result/useScreenshotCanvas",
+  "../../src/features/typing/components/result/useScreenshotCanvas",
   () => ({ createCroppedScreenshot: mocks.crop }),
 );
 vi.mock("../../src/ts/components/common/Download", () => ({
@@ -49,13 +49,15 @@ vi.mock("../../src/ts/states/notifications", () => ({
   showErrorNotification: vi.fn(),
   showSuccessNotification: vi.fn(),
 }));
-vi.mock("../../src/ts/test/funbox/list", () => ({
+vi.mock("../../src/features/typing/runtime/funbox/list", () => ({
   getActiveFunboxesWithFunction: () => [],
 }));
-vi.mock("../../src/ts/test/replay", () => ({ pauseReplay: vi.fn() }));
+vi.mock("../../src/features/typing/runtime/replay", () => ({
+  pauseReplay: vi.fn(),
+}));
 vi.mock("../../src/ts/db", () => ({ getSnapshot: () => undefined }));
 
-import { download } from "../../src/ts/test/test-screenshot";
+import { download } from "../../src/features/typing/runtime/test-screenshot";
 
 beforeEach(() => {
   vi.clearAllMocks();

@@ -1,25 +1,21 @@
-import { JSX, JSXElement, splitProps } from "solid-js";
+import { JSXElement, splitProps, useContext } from "solid-js";
+import { Dynamic } from "solid-js/web";
 
+import { type HostLinkProps, LinkHost } from "../../../components/link-host";
 import { cn } from "../../utils/cn";
 
-type LinkProps = Omit<
-  JSX.AnchorHTMLAttributes<HTMLAnchorElement>,
-  "onClick"
-> & {
-  onClick?: (event: MouseEvent) => void;
-};
-
-export function Link(props: LinkProps): JSXElement {
-  const [local, rest] = splitProps(props, ["onClick", "class"]);
+/** Outside the app layout (isolated components, Storybook): a plain anchor. */
+function PlainLink(props: HostLinkProps): JSXElement {
+  const [local, rest] = splitProps(props, ["onClick"]);
   return (
-    <a
-      {...rest}
-      class={cn(local.class)}
-      router-link
-      {...{ link: true, noScroll: true }}
-      onClick={(event) => local.onClick?.(event)}
-    >
+    <a {...rest} onClick={(event) => local.onClick?.(event)}>
       {props.children}
     </a>
   );
+}
+
+export function Link(props: HostLinkProps): JSXElement {
+  const host = useContext(LinkHost) ?? PlainLink;
+  const [local, rest] = splitProps(props, ["class"]);
+  return <Dynamic component={host} {...rest} class={cn(local.class)} />;
 }

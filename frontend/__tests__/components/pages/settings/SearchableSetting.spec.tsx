@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render } from "@solidjs/testing-library";
+import { cleanup, fireEvent } from "@solidjs/testing-library";
 import { afterEach, expect, it, vi } from "vite-plus/test";
 
 import "../../../__harness__/mock-static";
@@ -10,22 +10,21 @@ import {
   setHighlightedSetting,
 } from "../../../../src/ts/states/settings-highlight";
 import { setSettingsSearch } from "../../../../src/ts/states/settings-search";
-import {
-  getCurrentSettingsSection,
-  setCurrentSettingsSection,
-} from "../../../../src/ts/states/settings-sections";
+import { createSectionHost } from "../../../__harness__/settings-section-host";
+
+const host = createSectionHost();
 
 afterEach(() => {
   cleanup();
   setHighlightedSetting(null);
-  setCurrentSettingsSection("behavior");
+  host.setSection("behavior");
   setSettingsSearch("");
   vi.useRealTimers();
 });
 
 it("selects its section when deep linked", () => {
   vi.useFakeTimers();
-  render(() => (
+  host.render(() => (
     <SettingsSectionContext.Provider value="theme">
       <SearchableSetting
         key="deepLinked"
@@ -38,11 +37,11 @@ it("selects its section when deep linked", () => {
 
   highlightSetting("deepLinked");
 
-  expect(getCurrentSettingsSection()).toBe("theme");
+  expect(host.section()).toBe("theme");
 });
 
 it("highlights corrected names, aliases and plain description matches", () => {
-  const { container } = render(() => (
+  const { container } = host.render(() => (
     <SearchableSetting
       key="smoothCaret"
       title="smooth caret"
@@ -63,7 +62,7 @@ it("highlights corrected names, aliases and plain description matches", () => {
 
 it("filters without remounting edited inputs or rich descriptions", () => {
   const onClick = vi.fn();
-  const { container, getByLabelText, getByText } = render(() => (
+  const { container, getByLabelText, getByText } = host.render(() => (
     <SearchableSetting
       key="fontSize"
       title="font size"
@@ -92,7 +91,7 @@ it("filters without remounting edited inputs or rich descriptions", () => {
 });
 
 it("highlights matching option labels without changing their accessible names", () => {
-  const { getByRole } = render(() => (
+  const { getByRole } = host.render(() => (
     <SearchableAutoSetting key="caretStyle" />
   ));
   setSettingsSearch("underlien");

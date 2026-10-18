@@ -1,0 +1,85 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "oxytype-start-migration",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-10-02",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": false,
+  "observability": { "enabled": true },
+  "upload_source_maps": true,
+  "assets": {
+    "binding": "ASSETS",
+    "run_worker_first": false,
+    "html_handling": "none",
+    "not_found_handling": "none",
+  },
+  "vars": {
+    "MODE": "dev",
+    "FRONTEND_URL": "http://localhost:3000",
+    "BETTER_AUTH_URL": "http://localhost:3000/api/auth",
+    "VERSION": "start-migration",
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "oxytype-staging",
+      "database_id": "17b0ae8b-92bf-4d7e-a29e-0ac4cc6f2b59",
+      "migrations_dir": "../backend/migrations",
+    },
+  ],
+  "queues": {
+    "producers": [
+      { "binding": "TASKS", "queue": "oxytype-start-migration-tasks" },
+    ],
+    "consumers": [
+      {
+        "queue": "oxytype-start-migration-tasks",
+        "max_batch_size": 1,
+        "max_batch_timeout": 5,
+        "max_retries": 5,
+        "max_concurrency": 1,
+        "dead_letter_queue": "oxytype-start-migration-dlq",
+      },
+    ],
+  },
+  "triggers": { "crons": ["* * * * *"] },
+  // Migration-only staging target: `CLOUDFLARE_ENV=migration vp run build:start`.
+  // Shares staging D1 (lease-claimed jobs); never the production Worker or origin.
+  "env": {
+    "migration": {
+      "name": "oxytype-start-migration",
+      "account_id": "eb2679ce4f23ae7db4e6c4e3fcf8c3c1",
+      "vars": {
+        "MODE": "production",
+        "FRONTEND_URL": "https://oxytype-start-migration.voltcrash.workers.dev",
+        "BETTER_AUTH_URL": "https://oxytype-start-migration.voltcrash.workers.dev/api/auth",
+        "VERSION": "start-migration",
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "oxytype-staging",
+          "database_id": "17b0ae8b-92bf-4d7e-a29e-0ac4cc6f2b59",
+          "migrations_dir": "../backend/migrations",
+        },
+      ],
+      "queues": {
+        "producers": [
+          { "binding": "TASKS", "queue": "oxytype-start-migration-tasks" },
+        ],
+        "consumers": [
+          {
+            "queue": "oxytype-start-migration-tasks",
+            "max_batch_size": 1,
+            "max_batch_timeout": 5,
+            "max_retries": 5,
+            "max_concurrency": 1,
+            "dead_letter_queue": "oxytype-start-migration-dlq",
+          },
+        ],
+      },
+      "triggers": { "crons": ["* * * * *"] },
+    },
+  },
+}

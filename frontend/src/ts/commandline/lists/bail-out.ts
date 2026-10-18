@@ -1,26 +1,28 @@
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import { getCustomTextIndicator } from "../../states/core";
-import * as CustomText from "../../test/custom-text";
+import * as CustomText from "../../../features/typing/runtime/custom-text";
 import { setBailedOut } from "../../states/test";
-import * as TestLogic from "../../test/test-logic";
+import * as TestLogic from "../../../features/typing/runtime/test-logic";
 import { Command, CommandsSubgroup } from "../types";
 
 function canBailOut(): boolean {
   return (
-    (Config.mode === "custom" && getCustomTextIndicator()?.isLong === true) ||
-    (Config.mode === "custom" &&
+    (getMutableConfig().mode === "custom" &&
+      getCustomTextIndicator()?.isLong === true) ||
+    (getMutableConfig().mode === "custom" &&
       (CustomText.getLimitMode() === "word" ||
         CustomText.getLimitMode() === "section") &&
       (CustomText.getLimit().value >= 5000 ||
         CustomText.getLimit().value === 0)) ||
-    (Config.mode === "custom" &&
+    (getMutableConfig().mode === "custom" &&
       CustomText.getLimitMode() === "time" &&
       (CustomText.getLimitValue() >= 3600 ||
         CustomText.getLimitValue() === 0)) ||
-    (Config.mode === "words" && Config.words >= 5000) ||
-    Config.words === 0 ||
-    (Config.mode === "time" && (Config.time >= 3600 || Config.time === 0)) ||
-    Config.mode === "zen"
+    (getMutableConfig().mode === "words" && getMutableConfig().words >= 5000) ||
+    getMutableConfig().words === 0 ||
+    (getMutableConfig().mode === "time" &&
+      (getMutableConfig().time >= 3600 || getMutableConfig().time === 0)) ||
+    getMutableConfig().mode === "zen"
   );
 }
 

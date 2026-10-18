@@ -1,16 +1,16 @@
+import { operation } from "../../../data/operations";
 import { queryKeys } from "./keys";
 import { normalizeResult } from "./normalize";
 import { Client, Mode } from "@oxytype/schemas/shared";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import { BTreeIndex, createCollection } from "@tanstack/solid-db";
-import { bindResultsReady } from "../../states/results-ready";
-import Ape from "../../ape";
 import { SnapshotResult } from "../../constants/default-snapshot";
-import { queryClient } from "../../queries";
+import { getQueryClient } from "../../queries";
 import { isAuthenticated } from "../../states/core";
 import { getLastResult, setLastResult } from "../../states/snapshot";
 import { getTagsOnce } from "../tags";
 import { applyIdWorkaround } from "../utils/misc";
+import { defineCollection } from "../utils/scope";
 
 function createResultsCollection(client: Client) {
   const collection = createCollection(
@@ -26,15 +26,15 @@ function createResultsCollection(client: Client) {
         const knownTagIds = new Set([...tagIds.map((it) => it._id)]);
         //const options = parseLoadSubsetOptions(ctx.meta?.loadSubsetOptions);
 
-        const response = await Ape.results.get({
+        const response = await operation("results.get", {
           query: { client },
         });
 
-        if (response.status !== 200) {
-          throw new Error(`Error fetching results:${response.body.message}`);
+        if (!response.ok) {
+          throw new Error(`Error fetching results:${response.message}`);
         }
 
-        const results = response.body.data
+        const results = response.data
           .map((result) => normalizeResult(result, knownTagIds))
           .map(applyIdWorkaround);
 
@@ -50,7 +50,7 @@ function createResultsCollection(client: Client) {
         }
         return results;
       },
-      queryClient,
+      queryClient: getQueryClient(),
       getKey: (it) => it._id,
     }),
   );
@@ -59,29 +59,24 @@ function createResultsCollection(client: Client) {
     indexType: BTreeIndex,
   });
 
-  import.meta.hot?.dispose(() => {
-    void collection.cleanup();
-  });
   return collection;
 }
 
 export const resultsByClient = {
-  web: createResultsCollection("web"),
-  tui: createResultsCollection("tui"),
+  web: defineCollection(import.meta.hot, () => createResultsCollection("web")),
+  tui: defineCollection(import.meta.hot, () => createResultsCollection("tui")),
 };
 
 export const resultsCollection = resultsByClient.web;
 
 export function isResultsReady(): boolean {
-  return resultsCollection.isReady();
+  return resultsCollection().isReady();
 }
 
-bindResultsReady(isResultsReady);
-
 export async function waitForResultsReady(): Promise<void> {
-  await resultsCollection.stateWhenReady();
+  await resultsCollection().stateWhenReady();
 }
 
 export function getResults(client: Client = "web"): SnapshotResult<Mode>[] {
-  return [...resultsByClient[client].values()];
+  return [...resultsByClient[client]().values()];
 }

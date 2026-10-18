@@ -4,11 +4,11 @@ import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 const mocks = vi.hoisted(() => ({ navigate: vi.fn() }));
 
 vi.mock("animejs", () => ({ animate: vi.fn() }));
-vi.mock("../../../../../src/ts/navigation/navigation", () => ({
+vi.mock("../../../../../src/app/navigate", () => ({
   navigate: mocks.navigate,
 }));
 
-import { ResultDailyLeaderboard } from "../../../../../src/ts/components/pages/test/result/ResultDailyLeaderboard";
+import { ResultDailyLeaderboard } from "../../../../../src/features/typing/components/result/ResultDailyLeaderboard";
 import { __testing } from "../../../../../src/ts/config/testing";
 import { setResultState } from "../../../../../src/ts/states/result";
 

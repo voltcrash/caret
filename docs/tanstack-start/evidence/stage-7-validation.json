@@ -1,0 +1,105 @@
+{
+  "stage": 7,
+  "status": "pass",
+  "base": "170bae84e",
+  "implementation": "3d61217df12374bafa41462dbd234e21234aedbe",
+  "pr": "https://github.com/voltcrash/oxytype/pull/142",
+  "basePr": "https://github.com/voltcrash/oxytype/pull/141",
+  "ci": "https://github.com/voltcrash/oxytype/actions/runs/39005385598",
+  "environment": {
+    "node": "24.21.0",
+    "platform": "Darwin arm64, Apple M1",
+    "date": "2026-10-17"
+  },
+  "checks": [
+    { "name": "lint-fe / lint-be / lint-pkg", "result": "pass" },
+    {
+      "name": "lint-check-config / lint-suppressions / root type-aware lint",
+      "result": "pass"
+    },
+    {
+      "name": "test-fe",
+      "result": "pass",
+      "detail": "249 files / 2,413 tests"
+    },
+    {
+      "name": "test-be",
+      "result": "pass",
+      "detail": "782 unit + 124 D1 tests; production build/input tests moved to frontend"
+    },
+    {
+      "name": "test-pkg",
+      "result": "pass",
+      "detail": "54 files / 637 tests (Stage 6's 736 total was a summation error; package tests only gained cases here)"
+    },
+    {
+      "name": "build (Start production artifact) and build:legacy (rollback)",
+      "result": "pass"
+    },
+    {
+      "name": "operation inventory and generated HTTP route checks",
+      "result": "pass"
+    },
+    {
+      "name": "build:start, build:start:test, dry-run:start",
+      "result": "pass",
+      "detail": "1,972.23 KiB / 559.96 KiB gzip upload"
+    },
+    {
+      "name": "test:start (workerd, SSR, bundle, service-worker build)",
+      "result": "pass",
+      "detail": "16 files / 93 tests"
+    },
+    {
+      "name": "test:start:browser (Start + typing parity)",
+      "result": "pass",
+      "detail": "61 passed"
+    },
+    {
+      "name": "test:updates (new build, rollback, pending save, removed function)",
+      "result": "pass",
+      "detail": "3 passed"
+    },
+    {
+      "name": "test-e2e:legacy (rollback build)",
+      "result": "pass",
+      "detail": "31 passed"
+    },
+    {
+      "name": "build:production-site + deploy:production-dry-run",
+      "result": "pass",
+      "detail": "real private production inputs; no deployment"
+    },
+    {
+      "name": "build:staging-site + check:staging + staging dry-run",
+      "result": "pass"
+    },
+    {
+      "name": "staging deploy + check:staging:runtime + test:staging:browser",
+      "result": "pass",
+      "detail": "version 9b1fbf4e; hosted offline typing"
+    },
+    {
+      "name": "knip / lint-styles / check-assets / vp fmt . --check",
+      "result": "pass"
+    },
+    {
+      "name": "migration-performance check (8 frozen browser budgets)",
+      "result": "pass"
+    },
+    {
+      "name": "Worker measurements vs Stage 0 budgets",
+      "result": "pass",
+      "detail": "startup, save latency, local CPU, D1 counts, Worker bytes"
+    }
+  ],
+  "fixedDuringGate": [
+    "Reconnecting after an offline start revoked the server session: loadUser signed out on any account-load failure. Now only authentication rejections sign out; transient failures retry.",
+    "Browser fixture readiness raced database seeding; Playwright now waits for the fixture's ready line.",
+    "Remote migration commands were duplicated in backend; the application package owns them."
+  ],
+  "notRun": [
+    "Interactive GitHub OAuth sign-in on hosted staging: initiation, provider redirect, callback URL and secure state cookie verified; completing it needs a human GitHub login.",
+    "Production deployment and production D1 migrations: Stage 8 cutover, gated by START_PRODUCTION_ENABLED."
+  ]
+}

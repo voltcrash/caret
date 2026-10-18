@@ -8,6 +8,13 @@ import {
   createCollectionReader,
   type CollectionReader,
 } from "../../src/ts/collections/utils/reader";
+import { mountApplication } from "../../src/app/application";
+import {
+  createTestApplication,
+  releaseTestApplication,
+} from "../__harness__/mock-application";
+
+releaseTestApplication();
 
 type Item = { id: string; name: string };
 
@@ -16,16 +23,17 @@ function setup(): {
   reader: CollectionReader<Item, string>;
   dispose: () => void;
 } {
+  const { application, dispose: disposeApplication } = createTestApplication();
+  const release = mountApplication(application);
   const collection = createItems();
-  const disposers: (() => void)[] = [];
-  const reader = createCollectionReader(
-    { dispose: (fn) => disposers.push(fn) },
-    collection,
-  );
+  const reader = createCollectionReader(() => collection);
   return {
     collection,
     reader,
-    dispose: () => disposers.forEach((fn) => fn()),
+    dispose: () => {
+      release();
+      disposeApplication();
+    },
   };
 }
 
@@ -88,8 +96,11 @@ describe("createCollectionReader", () => {
     dispose();
   });
 
-  it("keeps the collection subscribed until hot disposal", () => {
-    const { collection, dispose } = setup();
+  it("subscribes on first read until its scope is disposed", () => {
+    const { collection, reader, dispose } = setup();
+    expect(collection.subscriberCount).toBe(0);
+    reader.values();
+    reader.get("a");
     expect(collection.subscriberCount).toBe(1);
     dispose();
     expect(collection.subscriberCount).toBe(0);

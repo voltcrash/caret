@@ -1,12 +1,15 @@
-import { createSignal } from "solid-js";
-export const [getHighlightedSetting, setHighlightedSetting] = createSignal<
+import { createAppOwned } from "../../app/application";
+import { createAppSignal } from "../../app/state";
+
+export const [getHighlightedSetting, setHighlightedSetting] = createAppSignal<
   string | null
 >(null);
-const settings = new Map<string, () => void>();
+const getSettings = createAppOwned(() => new Map<string, () => void>());
 export function registerSettingHighlight(
   key: string,
   highlight: () => void,
 ): () => void {
+  const settings = getSettings();
   settings.set(key, highlight);
   return () => {
     if (settings.get(key) === highlight) settings.delete(key);
@@ -14,5 +17,5 @@ export function registerSettingHighlight(
 }
 export function highlightSetting(key: string | null): void {
   setHighlightedSetting(null);
-  if (key !== null) settings.get(key)?.();
+  if (key !== null) getSettings().get(key)?.();
 }

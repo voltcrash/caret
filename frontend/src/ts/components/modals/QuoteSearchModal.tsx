@@ -10,12 +10,14 @@ import {
 } from "solid-js";
 import { z } from "zod";
 
-import Ape from "../../ape";
+import * as TestLogic from "../../../features/typing/runtime/test-logic";
 import { setConfig } from "../../config/setters";
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import QuotesController, { Quote } from "../../controllers/quotes-controller";
 import * as DB from "../../db";
 import { createDebouncedEffectOn } from "../../hooks/effects";
+import { getQueryClient } from "../../queries";
+import { getQuoteSubmissionEnabledQueryOptions } from "../../queries/quotes";
 import { isAuthenticated } from "../../states/core";
 import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
 import {
@@ -30,7 +32,6 @@ import {
 import { showQuoteReportModal } from "../../states/quote-report";
 import { showSimpleModal } from "../../states/simple-modal";
 import { setSelectedQuoteId } from "../../states/test";
-import * as TestLogic from "../../test/test-logic";
 import { cn } from "../../utils/cn";
 import { getLanguage } from "../../utils/json-data";
 import * as Misc from "../../utils/misc";
@@ -265,7 +266,7 @@ export function QuoteSearchModal(): JSXElement {
     }
 
     const quoteSearchService = getSearchService(
-      Config.language,
+      getMutableConfig().language,
       allQuotes,
       (quote: Quote) => `${quote.text} ${quote.id} ${quote.source}`,
     );
@@ -381,10 +382,10 @@ export function QuoteSearchModal(): JSXElement {
   };
 
   const handleAfterShow = async (): Promise<void> => {
-    const quotesLanguage = await getLanguage(Config.language);
+    const quotesLanguage = await getLanguage(getMutableConfig().language);
     setIsRtl(quotesLanguage?.rightToLeft ?? false);
     const { quotes: fetchedQuotes } = await QuotesController.getQuotes(
-      Config.language,
+      getMutableConfig().language,
     );
     setQuotes(fetchedQuotes);
     performSearch(form.state.values.searchText);
@@ -424,12 +425,16 @@ export function QuoteSearchModal(): JSXElement {
 
   const handleSubmitClick = async (): Promise<void> => {
     showLoaderBar();
-    const getSubmissionEnabled = await Ape.quotes.isSubmissionEnabled();
-    const isEnabled =
-      (getSubmissionEnabled.status === 200 &&
-        getSubmissionEnabled.body.data?.isEnabled) ??
-      false;
-    hideLoaderBar();
+    let isEnabled = false;
+    try {
+      isEnabled = (
+        await getQueryClient().query(getQuoteSubmissionEnabledQueryOptions())
+      ).isEnabled;
+    } catch {
+      // Preserve the disabled-submission notice on an unavailable service.
+    } finally {
+      hideLoaderBar();
+    }
     if (!isEnabled) {
       showNoticeNotification(
         "Quote submission is disabled temporarily due to a large submission queue.",

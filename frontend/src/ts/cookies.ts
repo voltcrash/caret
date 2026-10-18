@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { appSignal } from "../app/state";
 import { createSignal } from "solid-js";
 import { LocalStorageWithSchema } from "./utils/local-storage-with-schema";
 import { activateAnalytics } from "./controllers/analytics-controller";
@@ -23,7 +24,9 @@ const cookies = new LocalStorageWithSchema({
   // no migration here, if cookies changed, we need to ask the user again
 });
 
-const [acceptedCookies, _setAcceptedCookies] = createSignal(cookies.get());
+const [acceptedCookies, _setAcceptedCookies] = appSignal(() =>
+  createSignal(cookies.get()),
+);
 
 export function getAcceptedCookies(): AcceptedCookies | null {
   return acceptedCookies();
@@ -32,7 +35,6 @@ export function getAcceptedCookies(): AcceptedCookies | null {
 export function setAcceptedCookies(accepted: AcceptedCookies): void {
   cookies.set(accepted);
   _setAcceptedCookies(accepted);
-  activateWhatsAccepted();
 }
 
 export function activateWhatsAccepted(): void {

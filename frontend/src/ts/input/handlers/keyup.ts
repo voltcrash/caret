@@ -1,6 +1,6 @@
-import { Config } from "../../config/store";
-import { logTestEvent } from "../../test/events/data";
-import { getTestEventCode } from "../../test/events/helpers";
+import { getMutableConfig } from "../../config/store";
+import { logTestEvent } from "../../../features/typing/runtime/events/data";
+import { getTestEventCode } from "../../../features/typing/runtime/events/helpers";
 
 export async function onKeyup(event: KeyboardEvent): Promise<void> {
   const now = performance.now();
@@ -13,7 +13,7 @@ export async function onKeyup(event: KeyboardEvent): Promise<void> {
   });
 
   // allow arrows in arrows funbox
-  const arrowsActive = Config.funbox.includes("arrows");
+  const arrowsActive = getMutableConfig().funbox.includes("arrows");
   if (
     event.key === "Home" ||
     event.key === "End" ||

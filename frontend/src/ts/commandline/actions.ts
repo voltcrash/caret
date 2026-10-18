@@ -1,11 +1,12 @@
+import { getCommandlineState } from "../states/commandline";
+import { createAccountOwned } from "../../app/account-scope";
+import { onCleanup } from "solid-js";
 import * as CommandlineLists from "./lists";
 
-import { Config } from "../config/store";
+import { getMutableConfig } from "../config/store";
 import * as AnalyticsController from "../controllers/analytics-controller";
 
 import { CommandWithValidation } from "./types";
-
-import { commandlineState } from "../states/commandline";
 
 import { hide } from "./lifecycle";
 import {
@@ -17,6 +18,7 @@ import {
 } from "./suggestions";
 import { hideWarning, createValidationHandler } from "./input-validation";
 export async function goBackOrHide(): Promise<void> {
+  const commandlineState = getCommandlineState();
   if (commandlineState.mode === "input") {
     commandlineState.mode = "search";
     commandlineState.inputModeParams = {
@@ -46,9 +48,16 @@ export async function goBackOrHide(): Promise<void> {
   }
 }
 
-let shakeTimeout: null | NodeJS.Timeout;
+const shake = createAccountOwned(() => {
+  const state = {
+    timeout: undefined as ReturnType<typeof setTimeout> | undefined,
+  };
+  onCleanup(() => clearTimeout(state.timeout));
+  return state;
+});
 
 export function handleInputSubmit(): void {
+  const commandlineState = getCommandlineState();
   if (commandlineState.isAnimating) return;
   if (commandlineState.inputModeParams.command === null) {
     throw new Error("Can't handle input submit - command is null");
@@ -59,10 +68,10 @@ export function handleInputSubmit(): void {
     return;
   } else if (commandlineState.inputModeParams.validation?.status === "failed") {
     commandlineState.hasError = true;
-    if (shakeTimeout !== null) {
-      clearTimeout(shakeTimeout);
+    if (shake().timeout !== undefined) {
+      clearTimeout(shake().timeout);
     }
-    shakeTimeout = setTimeout(() => {
+    shake().timeout = setTimeout(() => {
       commandlineState.hasError = false;
     }, 500);
     return;
@@ -88,6 +97,7 @@ export function handleInputSubmit(): void {
 }
 
 export async function runActiveCommand(): Promise<void> {
+  const commandlineState = getCommandlineState();
   if (commandlineState.isAnimating) return;
   if (commandlineState.activeCommand === null) return;
   const command = commandlineState.activeCommand;
@@ -112,7 +122,7 @@ export async function runActiveCommand(): Promise<void> {
     await updateActiveCommand();
   } else {
     command.exec?.({});
-    if (Config.singleListCommandLine === "on") {
+    if (getMutableConfig().singleListCommandLine === "on") {
       commandlineState.lastSingleListModeInputValue =
         commandlineState.inputValue;
     }
@@ -131,6 +141,7 @@ export async function runActiveCommand(): Promise<void> {
 }
 
 export async function updateInput(setInput?: string): Promise<void> {
+  const commandlineState = getCommandlineState();
   if (setInput !== undefined) commandlineState.inputValue = setInput;
 
   if (commandlineState.mode === "input") {
@@ -159,6 +170,7 @@ export function onCommandlineBack(): void {
 }
 
 export function canCommandlineGoBack(): boolean {
+  const commandlineState = getCommandlineState();
   return (
     commandlineState.mode === "input" ||
     commandlineState.subgroupStack.length > 1

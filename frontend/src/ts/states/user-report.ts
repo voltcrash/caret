@@ -1,5 +1,5 @@
+import { createAppSignal } from "../../app/state";
 import { UserProfile } from "@oxytype/schemas/users";
-import { createSignal } from "solid-js";
 
 export const [getUserToReport, setUserToReport] =
-  createSignal<UserProfile | null>(null);
+  createAppSignal<UserProfile | null>(null);

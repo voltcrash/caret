@@ -1,11 +1,14 @@
-import * as TestUI from "../../test/test-ui";
-import * as TestWords from "../../test/test-words";
+import * as TestUI from "../../../features/typing/runtime/test-ui";
+import * as TestWords from "../../../features/typing/runtime/test-words";
 import { getInputElementValue, setInputElementValue } from "../input-element";
 
-import { Config } from "../../config/store";
+import { getMutableConfig } from "../../config/store";
 import { goToPreviousWord } from "../helpers/word-navigation";
 import { DeleteInputType } from "../helpers/input-type";
-import { getCurrentInput, logTestEvent } from "../../test/events/data";
+import {
+  getCurrentInput,
+  logTestEvent,
+} from "../../../features/typing/runtime/events/data";
 import { getActiveWordIndex } from "../../states/test";
 
 export function onDelete(inputType: DeleteInputType, now: number): void {
@@ -23,8 +26,8 @@ export function onDelete(inputType: DeleteInputType, now: number): void {
 
   //special check for code languages
   if (
-    Config.language.startsWith("code") &&
-    Config.codeUnindentOnBackspace &&
+    getMutableConfig().language.startsWith("code") &&
+    getMutableConfig().codeUnindentOnBackspace &&
     inputBeforeDelete.length > 0 &&
     beforeDeleteOnlyTabs &&
     allTabsCorrect

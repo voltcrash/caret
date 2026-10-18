@@ -1,3 +1,4 @@
+import { mockHttpFixture } from "../__harness__/operations";
 import { beforeEach, expect, it, vi } from "vite-plus/test";
 
 const state = vi.hoisted(() => {
@@ -13,18 +14,23 @@ const state = vi.hoisted(() => {
   };
 });
 vi.mock("../../src/ts/config/lifecycle", () => ({
-  configLoadPromise: state.local,
   applyConfig: state.apply,
 }));
 vi.mock("../../src/ts/config/persistence", () => ({
   saveFullConfigToLocalStorage: state.save,
 }));
-vi.mock("../../src/ts/config/store", () => ({ Config: { theme: "local" } }));
+vi.mock("../../src/ts/config/store", () => ({
+  getMutableConfig: (() => {
+    const storedConfig = { theme: "local" };
+    return () => storedConfig;
+  })(),
+}));
 vi.mock("../../src/ts/config/utils", () => ({
   migrateConfig: (config: unknown) => config,
 }));
-vi.mock("../../src/ts/ape", () => ({
-  default: { configs: { get: state.get } },
+
+vi.mock("../../src/app/readiness", () => ({
+  preferencesReadiness: () => ({ wait: async () => state.local }),
 }));
 beforeEach(() => vi.clearAllMocks());
 
@@ -33,9 +39,7 @@ it("fetches server settings immediately and applies them after local settings", 
   state.get.mockResolvedValue({ status: 200, body: { data: config } });
   const { updateFromServer } = await import("../../src/ts/config/remote");
   const updating = updateFromServer();
-  await Promise.resolve();
-  await Promise.resolve();
-  expect(state.get).toHaveBeenCalledOnce();
+  await vi.waitFor(() => expect(state.get).toHaveBeenCalledOnce());
   expect(state.apply).not.toHaveBeenCalled();
   state.finishLocal();
   await updating;
@@ -62,3 +66,5 @@ it("does not apply prefetched settings when account initialization fails", async
   expect(state.apply).not.toHaveBeenCalled();
   expect(state.save).not.toHaveBeenCalled();
 });
+
+mockHttpFixture("configs.get", async (input) => await state.get(input));

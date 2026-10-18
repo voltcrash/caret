@@ -1,3 +1,4 @@
+import { operation } from "../../data/operations";
 import { Preset } from "@oxytype/schemas/presets";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import {
@@ -5,8 +6,8 @@ import {
   createOptimisticAction,
   useLiveQuery,
 } from "@tanstack/solid-db";
-import Ape from "../ape";
-import { queryClient } from "../queries";
+import { getQueryClient } from "../queries";
+import { defineCollection } from "./utils/scope";
 import { baseKey } from "../queries/utils/keys";
 import { ConfigGroupName } from "@oxytype/schemas/configs";
 import { applyIdWorkaround, tempId } from "./utils/misc";
@@ -24,39 +25,38 @@ export function usePresetsLiveQuery() {
   return useLiveQuery((q) => {
     if (!isAuthenticated()) return undefined;
     return q
-      .from({ preset: presetsCollection })
+      .from({ preset: presetsCollection() })
       .orderBy(({ preset }) => preset.name, "asc");
   });
 }
 
-const presetsCollection = createCollection(
-  queryCollectionOptions({
-    staleTime: Infinity,
-    queryKey: queryKeys.root(),
-    queryClient,
-    enabled: isAuthenticated,
-    getKey: (it) => it._id,
-    queryFn: async () => {
-      const response = await Ape.presets.get();
+const presetsCollection = defineCollection(import.meta.hot, () =>
+  createCollection(
+    queryCollectionOptions({
+      staleTime: Infinity,
+      queryKey: queryKeys.root(),
+      queryClient: getQueryClient(),
+      enabled: isAuthenticated,
+      getKey: (it) => it._id,
+      queryFn: async () => {
+        const response = await operation("presets.get");
 
-      if (response.status !== 200) {
-        throw new Error(`Error fetching presets:${response.body.message}`);
-      }
+        if (!response.ok) {
+          throw new Error(`Error fetching presets:${response.message}`);
+        }
 
-      return response.body.data
-        .map((it) => ({
-          ...it,
-          name: replaceUnderscoresWithSpaces(it.name),
-        }))
-        .map(applyIdWorkaround);
-    },
-  }),
+        return response.data
+          .map((it) => ({
+            ...it,
+            name: replaceUnderscoresWithSpaces(it.name),
+          }))
+          .map(applyIdWorkaround);
+      },
+    }),
+  ),
 );
 
-const presetsReader = createCollectionReader(
-  import.meta.hot,
-  presetsCollection,
-);
+const presetsReader = createCollectionReader(presetsCollection);
 
 type ActionType = {
   addPreset: {
@@ -78,7 +78,7 @@ type ActionType = {
 const actions = {
   addPreset: createOptimisticAction<ActionType["addPreset"]>({
     onMutate: ({ name, config, settingGroups }) => {
-      presetsCollection.insert({
+      presetsCollection().insert({
         _id: tempId(),
         name: name.replace(/_/g, " "),
         config,
@@ -86,30 +86,30 @@ const actions = {
       });
     },
     mutationFn: async ({ name, config, settingGroups }) => {
-      const response = await Ape.presets.add({
+      const response = await operation("presets.add", {
         body: {
           name: name.replace(/ /g, "_"),
           config,
           ...(settingGroups !== undefined && { settingGroups }),
         },
       });
-      if (response.status !== 200) {
-        throw new Error(`Failed to add preset: ${response.body.message}`);
+      if (!response.ok) {
+        throw new Error(`Failed to add preset: ${response.message}`);
       }
 
       const newPreset = {
-        _id: response.body.data.presetId,
+        _id: response.data.presetId,
         name: name.replace(/_/g, " "),
         config,
         settingGroups,
       };
 
-      presetsCollection.utils.writeInsert(newPreset);
+      presetsCollection().utils.writeInsert(newPreset);
     },
   }),
   editPreset: createOptimisticAction<ActionType["editPreset"]>({
     onMutate: ({ presetId, name, config, settingGroups }) => {
-      presetsCollection.update(presetId, (preset) => {
+      presetsCollection().update(presetId, (preset) => {
         preset.name = name.replace(/_/g, " ");
 
         if (config !== undefined) {
@@ -121,13 +121,13 @@ const actions = {
       });
     },
     mutationFn: async ({ presetId, name, config, settingGroups }) => {
-      const existing = presetsCollection.get(presetId);
+      const existing = presetsCollection().get(presetId);
 
       if (existing === undefined) {
         throw new Error("Preset not found");
       }
 
-      const response = await Ape.presets.save({
+      const response = await operation("presets.save", {
         body: {
           _id: presetId,
           name: name.replace(/ /g, "_"),
@@ -137,12 +137,12 @@ const actions = {
           }),
         },
       });
-      if (response.status !== 200) {
-        throw new Error(`Failed to edit preset: ${response.body.message}`);
+      if (!response.ok) {
+        throw new Error(`Failed to edit preset: ${response.message}`);
       }
 
       // if this is missing getPreset is out of sync
-      presetsCollection.utils.writeUpdate({
+      presetsCollection().utils.writeUpdate({
         _id: presetId,
         name: name.replace(/_/g, " "),
         ...(config !== undefined && { config }),
@@ -152,23 +152,23 @@ const actions = {
   }),
   deletePreset: createOptimisticAction<ActionType["deletePreset"]>({
     onMutate: ({ presetId }) => {
-      presetsCollection.delete(presetId);
+      presetsCollection().delete(presetId);
     },
     mutationFn: async ({ presetId }) => {
-      const response = await Ape.presets.delete({
+      const response = await operation("presets.delete", {
         params: { presetId },
       });
-      if (response.status !== 200) {
-        throw new Error(`Failed to delete preset: ${response.body.message}`);
+      if (!response.ok) {
+        throw new Error(`Failed to delete preset: ${response.message}`);
       }
-      presetsCollection.utils.writeDelete(presetId);
+      presetsCollection().utils.writeDelete(presetId);
     },
   }),
 };
 
 // --- Public API ---
 export async function waitForPresetsReady(): Promise<void> {
-  await presetsCollection.stateWhenReady();
+  await presetsCollection().stateWhenReady();
 }
 
 /** Reactive. Sorted by name. */
@@ -201,7 +201,3 @@ export async function deletePreset(
   const transaction = actions.deletePreset(params);
   await transaction.isPersisted.promise;
 }
-
-import.meta.hot?.dispose(() => {
-  void presetsCollection.cleanup();
-});

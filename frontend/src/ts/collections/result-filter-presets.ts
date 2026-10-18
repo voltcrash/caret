@@ -1,3 +1,4 @@
+import { operation } from "../../data/operations";
 import { ResultFilters } from "@oxytype/schemas/users";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import {
@@ -5,47 +6,49 @@ import {
   createOptimisticAction,
   useLiveQuery,
 } from "@tanstack/solid-db";
-import Ape from "../ape";
-import { queryClient } from "../queries";
+import { getQueryClient } from "../queries";
+import { defineCollection } from "./utils/scope";
 import { baseKey } from "../queries/utils/keys";
 import {
   replaceSpacesWithUnderscores,
   replaceUnderscoresWithSpaces,
 } from "../utils/strings";
 import { applyIdWorkaround, tempId } from "./utils/misc";
-import { fetchUserFromApi } from "../ape/user";
+import { loadAccountData } from "../queries/account";
 import { isAuthenticated } from "../states/core";
 
 const queryKeys = {
   root: () => [...baseKey("resultFilterPresets", { isUserSpecific: true })],
 };
 
-const resultFilterPresetsCollection = createCollection(
-  queryCollectionOptions({
-    staleTime: Infinity,
-    startSync: true,
-    queryKey: queryKeys.root(),
-    queryClient,
-    enabled: isAuthenticated,
-    getKey: (it) => it._id,
-    queryFn: async () => {
-      const userData = await fetchUserFromApi();
-      if (userData === undefined) return [];
+const resultFilterPresetsCollection = defineCollection(import.meta.hot, () =>
+  createCollection(
+    queryCollectionOptions({
+      staleTime: Infinity,
+      startSync: true,
+      queryKey: queryKeys.root(),
+      queryClient: getQueryClient(),
+      enabled: isAuthenticated,
+      getKey: (it) => it._id,
+      queryFn: async () => {
+        const userData = await loadAccountData();
+        if (userData === undefined) return [];
 
-      return (userData.resultFilterPresets ?? [])
-        .map((it) => ({
-          ...it,
-          name: replaceUnderscoresWithSpaces(it.name),
-        }))
-        .map(applyIdWorkaround);
-    },
-  }),
+        return (userData.resultFilterPresets ?? [])
+          .map((it) => ({
+            ...it,
+            name: replaceUnderscoresWithSpaces(it.name),
+          }))
+          .map(applyIdWorkaround);
+      },
+    }),
+  ),
 );
 
 export function useResultFilterPresetsLiveQuery() {
   return useLiveQuery((q) => {
     if (!isAuthenticated()) return undefined;
-    return q.from({ presets: resultFilterPresetsCollection });
+    return q.from({ presets: resultFilterPresetsCollection() });
   });
 }
 
@@ -64,52 +67,52 @@ const actions = {
     ActionType["insertResultFilterPreset"]
   >({
     onMutate: ({ name, filters }) => {
-      resultFilterPresetsCollection.insert({
+      resultFilterPresetsCollection().insert({
         ...structuredClone(filters),
         _id: tempId(),
         name,
       });
     },
     mutationFn: async ({ name, filters }) => {
-      const response = await Ape.users.addResultFilterPreset({
+      const response = await operation("users.addResultFilterPreset", {
         body: {
           ...structuredClone(filters),
           name: replaceSpacesWithUnderscores(name),
         },
       });
-      if (response.status !== 200) {
+      if (!response.ok) {
         throw new Error(
-          `Failed to insert result filter presets: ${response.body.message}`,
+          `Failed to insert result filter presets: ${response.message}`,
         );
       }
 
       const newPreset: ResultFilters = {
         ...structuredClone(filters),
-        _id: response.body.data,
+        _id: response.data,
         name,
       };
 
-      resultFilterPresetsCollection.utils.writeInsert(newPreset);
+      resultFilterPresetsCollection().utils.writeInsert(newPreset);
     },
   }),
   deleteResultFilterPreset: createOptimisticAction<
     ActionType["deleteResultFilterPreset"]
   >({
     onMutate: ({ presetId }) => {
-      resultFilterPresetsCollection.delete(presetId);
+      resultFilterPresetsCollection().delete(presetId);
     },
     mutationFn: async ({ presetId }) => {
-      const response = await Ape.users.removeResultFilterPreset({
+      const response = await operation("users.removeResultFilterPreset", {
         params: { presetId },
       });
 
-      if (response.status !== 200) {
+      if (!response.ok) {
         throw new Error(
-          `Failed to delete result filter presets: ${response.body.message}`,
+          `Failed to delete result filter presets: ${response.message}`,
         );
       }
 
-      resultFilterPresetsCollection.utils.writeDelete(presetId);
+      resultFilterPresetsCollection().utils.writeDelete(presetId);
     },
   }),
 };
@@ -127,7 +130,3 @@ export async function deleteResultFilterPreset(
   const transaction = actions.deleteResultFilterPreset(params);
   await transaction.isPersisted.promise;
 }
-
-import.meta.hot?.dispose(() => {
-  void resultFilterPresetsCollection.cleanup();
-});

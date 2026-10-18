@@ -1,6 +1,6 @@
 import { createTestTimer, type TimerTick } from "@oxytype/typing-core/timer";
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
-import { createTimerScheduler } from "../../src/ts/test/timer-scheduler";
+import { createTimerScheduler } from "../../src/features/typing/runtime/timer-scheduler";
 beforeEach(() =>
   vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout", "performance"] }),
 );

@@ -3,15 +3,17 @@ import { expect, openTest, test } from "./fixtures";
 
 test("render 1,000 words with browser layout", async ({ page }) => {
   await openTest(page);
-  const measurements = await page.evaluate(async () => {
-    const renderingUrl = "/ts/components/pages/test/words/rendering.ts";
-    const wordsUrl = "/ts/test/test-words.ts";
+  // Start dev serves source modules under /src.
+  const prefix = "/src";
+  const measurements = await page.evaluate(async (prefix) => {
+    const renderingUrl = `${prefix}/features/typing/components/words/rendering.ts`;
+    const wordsUrl = `${prefix}/features/typing/runtime/test-words.ts`;
     const { showWords, updateWordLetters } = (await import(
       /* @vite-ignore */ renderingUrl
-    )) as typeof import("../src/ts/components/pages/test/words/rendering");
+    )) as typeof import("../src/features/typing/components/words/rendering");
     const { words } = (await import(
       /* @vite-ignore */ wordsUrl
-    )) as typeof import("../src/ts/test/test-words");
+    )) as typeof import("../src/features/typing/runtime/test-words");
     await document.fonts.ready;
     words.reset();
     for (let i = 0; i < 1_000; i++) {
@@ -78,8 +80,9 @@ test("render 1,000 words with browser layout", async ({ page }) => {
       dom: summarize(dom),
       layout: summarize(layout),
       typing: summarize(typing),
+      raw: { dom, layout, typing },
     };
-  });
+  }, prefix);
   await expect(page.locator("#words .word")).toHaveCount(1_000);
   await expect(page.locator("#words letter")).toHaveCount(12_000);
   const output = process.env["WORD_RENDERING_BENCHMARK_OUTPUT"];

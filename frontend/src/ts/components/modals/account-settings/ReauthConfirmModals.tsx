@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-import Ape from "../../../ape";
+import { operation } from "../../../../data/operations";
 import { reauthenticate } from "../../../auth";
 import { resetConfig } from "../../../config/lifecycle";
-import { getSnapshot } from "../../../db";
+import { getSnapshot, setSnapshot } from "../../../db";
 import { isAuthenticated } from "../../../states/core";
 import { showNoticeNotification } from "../../../states/notifications";
 import { ExecReturn, showSimpleModal } from "../../../states/simple-modal";
@@ -17,13 +17,13 @@ export function showDeleteAccountModal(): void {
     confirmText: `I understand that all my data will be deleted and cannot be recovered.`,
     action: async () => {
       showNoticeNotification("Deleting all data...");
-      const response = await Ape.users.delete();
+      const response = await operation("users.delete");
 
-      if (response.status !== 200) {
+      if (!response.ok) {
         return {
           status: "error",
           message: "Failed to delete user data",
-          notificationOptions: { response },
+          notificationOptions: { operation: response },
         };
       }
       reloadAfter(3);
@@ -43,12 +43,12 @@ export function showOptOutOfLeaderboardsModal(): void {
     confirmText: `I understand that my account will be removed from all leaderboards and that this cannot be undone.`,
 
     action: async () => {
-      const response = await Ape.users.optOutOfLeaderboards();
-      if (response.status !== 200) {
+      const response = await operation("users.optOutOfLeaderboards");
+      if (!response.ok) {
         return {
           status: "error",
           message: "Failed to opt out",
-          notificationOptions: { response },
+          notificationOptions: { operation: response },
         };
       }
 
@@ -74,12 +74,12 @@ export function showResetAccountModal(): void {
       await FileStorage.deleteFile("LocalFontFamilyFile");
 
       showNoticeNotification("Resetting account...");
-      const response = await Ape.users.reset();
-      if (response.status !== 200) {
+      const response = await operation("users.reset");
+      if (!response.ok) {
         return {
           status: "error",
           message: "Failed to reset account",
-          notificationOptions: { response },
+          notificationOptions: { operation: response },
         };
       }
 
@@ -99,12 +99,12 @@ export function showResetPersonalBestsModal(): void {
     buttonText: "reset",
     confirmText: `I understand that all my personal bests will be deleted and that this cannot be undone.`,
     action: async () => {
-      const response = await Ape.users.deletePersonalBests();
-      if (response.status !== 200) {
+      const response = await operation("users.deletePersonalBests");
+      if (!response.ok) {
         return {
           status: "error",
           message: "Failed to reset personal bests",
-          notificationOptions: { response },
+          notificationOptions: { operation: response },
         };
       }
 
@@ -123,6 +123,7 @@ export function showResetPersonalBestsModal(): void {
         zen: {},
         custom: {},
       };
+      setSnapshot(snapshot);
 
       return {
         status: "success",
@@ -138,12 +139,12 @@ export function showRevokeAllTokensModal() {
     confirmText: `I understand that all my tokens will get revoked and that I will be logged out of all devices.`,
     buttonText: "revoke all",
     action: async () => {
-      const response = await Ape.users.revokeAllTokens();
-      if (response.status !== 200) {
+      const response = await operation("users.revokeAllTokens");
+      if (!response.ok) {
         return {
           status: "error",
           message: "Failed to revoke tokens",
-          notificationOptions: { response },
+          notificationOptions: { operation: response },
         };
       }
 

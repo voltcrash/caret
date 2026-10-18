@@ -1,9 +1,10 @@
 import { typedKeys } from "@oxytype/util/objects";
 import { tryCatch } from "@oxytype/util/trycatch";
-import { createMemo } from "solid-js";
 
+import { captureAccount } from "../app/account-scope";
+import { createAppMemo } from "../app/application";
 import {
-  authClient,
+  getAuthClient,
   checkAuthResult,
   refreshSession,
   requestOAuth,
@@ -19,7 +20,6 @@ import { updateFromServer as updateConfigFromServer } from "./config/remote";
 import * as DB from "./db";
 import { authEvent } from "./events/auth";
 import * as Sentry from "./sentry";
-import { setUserId } from "./states/core";
 import { hideLoaderBar, showLoaderBar } from "./states/loader-bar";
 import {
   showErrorNotification,
@@ -81,7 +81,7 @@ type ReauthenticateOptions = {
 
 const authenticationMemos = Object.fromEntries(
   typedKeys(authMethods).map((authMethod) => {
-    const memo = createMemo(() => {
+    const memo = createAppMemo(() => {
       const providerId = getProviderId(authMethod);
 
       const user = getAuthenticatedUser();
@@ -101,19 +101,51 @@ const authenticationMemos = Object.fromEntries(
   }),
 );
 
-async function getDataAndInit(): Promise<boolean> {
+/**
+ * `unauthenticated`: the server rejected the session. `unavailable`: the data
+ * could not be loaded (offline, timeout, server error); the session stands.
+ */
+export type AccountLoad = "loaded" | "unauthenticated" | "unavailable";
+
+function isAuthenticationFailure(error: unknown): boolean {
+  if (error instanceof SnapshotInitError) {
+    return error.responseCode === 401 || error.responseCode === 403;
+  }
+  return (
+    error instanceof Error &&
+    error.message.startsWith(
+      "Snapshot didn't initialize due to lacking authentication",
+    )
+  );
+}
+
+async function getDataAndInit(): Promise<AccountLoad> {
+  const lease = captureAccount();
   try {
     console.log("getting account data");
     // collections sync on their own; waiting keeps tags and presets inside the account loading gate
     const accountReady = Promise.all([
       DB.initSnapshot(),
-      import("./collections/presets").then(async (m) =>
-        m.waitForPresetsReady(),
-      ),
-      import("./collections/tags").then(async (m) => m.waitForTagsReady()),
-      import("./collections/custom-themes"),
-      import("./collections/inbox"),
-      import("./collections/results"),
+      import("./collections/presets").then(async (m) => {
+        lease.assertCurrent();
+        return m.waitForPresetsReady();
+      }),
+      import("./collections/tags").then(async (m) => {
+        lease.assertCurrent();
+        return m.waitForTagsReady();
+      }),
+      import("./collections/custom-themes").then((m) => {
+        lease.assertCurrent();
+        m.startCustomThemesSync();
+        return undefined;
+      }),
+      import("./collections/results").then((m) => {
+        lease.assertCurrent();
+        void m.refetchResults().catch((error: unknown) => {
+          if (lease.isCurrent()) console.error(error);
+        });
+        return undefined;
+      }),
     ]).then(([snapshot]) => {
       if (snapshot === false) {
         throw new Error(
@@ -127,10 +159,12 @@ async function getDataAndInit(): Promise<boolean> {
       updateConfigFromServer(accountReady),
     ]);
 
+    lease.assertCurrent();
     void Sentry.setUser(snapshot.uid, snapshot.name);
 
-    return true;
+    return "loaded";
   } catch (error) {
+    if (!lease.isCurrent()) return "unavailable";
     console.error(error);
     if (error instanceof SnapshotInitError) {
       if (error.responseCode === 429) {
@@ -152,45 +186,27 @@ async function getDataAndInit(): Promise<boolean> {
     } else {
       showErrorNotification("Failed to get user data", { error });
     }
-    return false;
+    return isAuthenticationFailure(error) ? "unauthenticated" : "unavailable";
   }
 }
 
-export async function loadUser(_user: UserType): Promise<void> {
-  if (!(await getDataAndInit())) {
+/**
+ * Only a server rejection ends the session. A network loss, timeout or server
+ * error while loading (e.g. reconnecting after an offline start) keeps it, so
+ * the caller can retry instead of revoking a valid sign-in.
+ */
+export async function loadUser(_user: UserType): Promise<AccountLoad> {
+  const lease = captureAccount();
+  const result = await getDataAndInit();
+  if (!lease.isCurrent()) return result;
+  if (result === "unauthenticated") {
     signOut();
-    return;
+    return result;
   }
-  authEvent.dispatch({ type: "snapshotUpdated", data: { isInitial: true } });
-}
-
-export async function onAuthStateChanged(
-  authInitialisedAndConnected: boolean,
-  user: UserType | null,
-): Promise<void> {
-  console.debug(`account controller ready`);
-
-  let userPromise: Promise<void> = Promise.resolve();
-
-  if (authInitialisedAndConnected) {
-    console.debug(`auth state changed, user ${user ? "true" : "false"}`);
-    if (user) {
-      setUserId(user.uid);
-      userPromise = loadUser(user);
-    } else {
-      setUserId(null);
-      DB.setSnapshot(undefined);
-    }
+  if (result === "loaded") {
+    authEvent.dispatch({ type: "snapshotUpdated", data: { isInitial: true } });
   }
-
-  if (!authInitialisedAndConnected || !user) {
-    void Sentry.clearUser();
-  }
-
-  authEvent.dispatch({
-    type: "authStateChanged",
-    data: { isUserSignedIn: user !== null, loadPromise: userPromise },
-  });
+  return result;
 }
 
 export async function signInWithProvider(
@@ -224,7 +240,7 @@ export async function addAuthProvider(options: {
   showLoaderBar();
   try {
     await requestOAuth(getAuthProvider(options.authMethod), true);
-    await refreshSession(false);
+    await refreshSession();
     authEvent.dispatch({ type: "authConfigUpdated" });
     showSuccessNotification(`${providerName} authentication added`);
   } catch (error) {
@@ -249,11 +265,13 @@ export async function removeAuthProvider(
     };
   }
   try {
-    const accounts = checkAuthResult(await authClient.listAccounts());
+    const accounts = checkAuthResult(await getAuthClient().listAccounts());
     const account = accounts?.find((entry) => entry.providerId === authMethod);
     if (!account) throw new Error("Authentication method not found");
-    checkAuthResult(await authClient.unlinkAccount({ accountId: account.id }));
-    await refreshSession(false);
+    checkAuthResult(
+      await getAuthClient().unlinkAccount({ accountId: account.id }),
+    );
+    await refreshSession();
   } catch (e) {
     const message = createErrorMessage(
       e,
@@ -314,7 +332,7 @@ export async function reauthenticate(
     }
 
     await requestOAuth(authMethod);
-    const refreshed = await refreshSession(false);
+    const refreshed = await refreshSession();
     if (refreshed?.uid !== user.uid) {
       await authSignOut();
       throw new Error("Reauthenticate with the same account");

@@ -1,8 +1,6 @@
-import { COMPATIBILITY_CHECK } from "@oxytype/contracts/compatibility";
 import { JSXElement, Show, createSignal } from "solid-js";
 import { envConfig } from "virtual:env-config";
 
-import { getLastSeenServerCompatibility } from "../../../ape/server-compatibility";
 import { getVersion } from "../../../states/core";
 import { showModal } from "../../../states/modals";
 import { isDevEnvironment } from "../../../utils/env";
@@ -23,8 +21,6 @@ export function VersionButton(): JSXElement {
         JSON.stringify(
           {
             clientVersion: envConfig.clientVersion,
-            clientCompatibility: COMPATIBILITY_CHECK,
-            lastSeenServerCompatibility: getLastSeenServerCompatibility(),
           },
           null,
           2,

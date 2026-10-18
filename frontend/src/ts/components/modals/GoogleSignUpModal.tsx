@@ -1,15 +1,13 @@
 import { UserNameSchema } from "@oxytype/schemas/users";
 import { createForm } from "@tanstack/solid-form";
 
-import Ape from "../../ape";
+import { operation } from "../../../data/operations";
 import { loadUser, signOut } from "../../auth";
 import {
   updateProfile,
   deleteUnfinishedUser,
-  resetIgnoreAuthCallback,
   setUserState,
 } from "../../auth-client";
-import { authEvent } from "../../events/auth";
 import {
   getPendingGoogleSignUpUser,
   setPendingGoogleSignUpUser,
@@ -74,7 +72,7 @@ export function GoogleSignupModal() {
             onChangeAsyncDebounceMs: 1000,
             onChangeAsync: remoteValidationForm(
               async (name: string) =>
-                Ape.users.getNameAvailability({ params: { name } }),
+                operation("users.getNameAvailability", { params: { name } }),
               { check: (data) => data.available || "Name not available" },
             ),
           }}
@@ -100,7 +98,6 @@ export function GoogleSignupModal() {
 }
 
 async function afterHide(): Promise<void> {
-  resetIgnoreAuthCallback();
   if (getPendingGoogleSignUpUser() !== undefined) {
     showNoticeNotification("Sign up process cancelled", {
       durationMs: 5000,
@@ -133,27 +130,24 @@ async function apply(options: {
   let closeModal = true;
   try {
     if (name.length === 0) throw new Error("Name cannot be empty");
-    const response = await Ape.users.create({ body: { name, captcha } });
+    const response = await operation("users.create", {
+      body: { name, captcha },
+    });
     if (response.status === 422) {
       closeModal = false;
       showErrorNotification("Verification failed. Please try again.", {
-        response,
+        operation: response,
       });
       return;
     }
-    if (response.status !== 200) {
-      throw new Error(`Failed to create user: ${response.body.message}`);
+    if (!response.ok) {
+      throw new Error(`Failed to create user: ${response.message}`);
     }
 
     setUserState(signedInUser.user);
     await updateProfile(name);
     showSuccessNotification("Account created");
     await loadUser(signedInUser.user);
-
-    authEvent.dispatch({
-      type: "authStateChanged",
-      data: { isUserSignedIn: true, loadPromise: Promise.resolve() },
-    });
     setPendingGoogleSignUpUser(undefined);
   } catch (e) {
     console.log(e);

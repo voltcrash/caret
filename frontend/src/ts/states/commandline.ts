@@ -1,3 +1,5 @@
+import { createAccountOwned } from "../../app/account-scope";
+import { appObject } from "../../app/state";
 import { createMutable } from "solid-js/store";
 import type { Command, CommandsSubgroup } from "../commandline/types";
 import type { ValidationResult } from "../types/validation";
@@ -38,31 +40,34 @@ type CommandlineState = {
   hasError: boolean;
 };
 
-export const commandlineState = createMutable<CommandlineState>({
-  open: false,
-  inputValue: "",
-  mode: "search",
-  subgroupStack: [],
-  activeIndex: 0,
-  warning: null,
-  checking: false,
-  usingSingleList: false,
-  activeCommand: null,
-  mouseMode: false,
-  inputModeParams: {
-    command: null,
-    placeholder: "",
-    value: "",
-    icon: "",
-  },
-  subgroupOverride: null,
-  isAnimating: false,
-  lastSingleListModeInputValue: "",
-  suggestions: [],
-  inputPlaceholder: "Search...",
-  inputIcon: "fa-search",
-  selectAll: false,
-  selectionNonce: 0,
-  noBackground: false,
-  hasError: false,
-});
+export const getCommandlineState = createAccountOwned(() =>
+  createMutable<CommandlineState>({
+    open: false,
+    inputValue: "",
+    mode: "search",
+    subgroupStack: [],
+    activeIndex: 0,
+    warning: null,
+    checking: false,
+    usingSingleList: false,
+    activeCommand: null,
+    mouseMode: false,
+    inputModeParams: {
+      command: null,
+      placeholder: "",
+      value: "",
+      icon: "",
+    },
+    subgroupOverride: null,
+    isAnimating: false,
+    lastSingleListModeInputValue: "",
+    suggestions: [],
+    inputPlaceholder: "Search...",
+    inputIcon: "fa-search",
+    selectAll: false,
+    selectionNonce: 0,
+    noBackground: false,
+    hasError: false,
+  }),
+);
+export const commandlineState = appObject(getCommandlineState);

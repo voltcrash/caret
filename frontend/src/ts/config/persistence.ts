@@ -1,7 +1,9 @@
+import { onCleanup } from "solid-js";
+import { createAccountOwned, captureAccount } from "../../app/account-scope";
 import { Config as ConfigSchema } from "@oxytype/schemas/configs";
-import { saveConfig } from "../ape/config";
+import { saveConfig } from "./sync";
 import { setAccountButtonSpinner } from "../states/header";
-import { Config } from "./store";
+import { getMutableConfig } from "./store";
 import * as ConfigSchemas from "@oxytype/schemas/configs";
 import { getDefaultConfig } from "../constants/default-config";
 import { migrateConfig } from "./utils";
@@ -10,7 +12,30 @@ import { isObject } from "../utils/misc";
 import { debounce } from "throttle-debounce";
 import { setProperty } from "@oxytype/util/objects";
 
-let configToSend: Partial<ConfigSchemas.Config> = {};
+const pendingSync = createAccountOwned(() => {
+  const current = {
+    config: {} as Partial<ConfigSchemas.Config>,
+    save: debounce(1000, () => {
+      const pending = current.config;
+      current.config = {};
+      if (Object.keys(pending).length > 0) persist(pending);
+    }),
+  };
+  onCleanup(() => current.save.cancel());
+  return current;
+});
+
+function persist(config: Partial<ConfigSchemas.Config>): void {
+  const lease = captureAccount();
+  setAccountButtonSpinner(true);
+  void saveConfig(config)
+    .catch((error: unknown) => {
+      if (lease.isCurrent()) console.error("Failed to save config", error);
+    })
+    .finally(() => {
+      if (lease.isCurrent()) setAccountButtonSpinner(false);
+    });
+}
 
 export const configLS = new LocalStorageWithSchema({
   key: "config",
@@ -31,36 +56,24 @@ export function saveToLocalStorage(
   noDbCheck = false,
 ): void {
   if (nosave) return;
-  configLS.set(Config);
+  configLS.set(getMutableConfig());
   if (!noDbCheck) {
-    setProperty(configToSend, key, Config[key]);
-    saveToDatabase();
+    setProperty(pendingSync().config, key, getMutableConfig()[key]);
+    pendingSync().save();
   }
 }
 
 export function saveFullConfigToLocalStorage(noDbCheck = false): void {
   console.log("saving full config to localStorage");
-  configLS.set(Config);
+  configLS.set(getMutableConfig());
   if (!noDbCheck) {
-    setAccountButtonSpinner(true);
-    void saveConfig(Config).finally(() => {
-      setAccountButtonSpinner(false);
-    });
+    persist(structuredClone(getMutableConfig()));
   }
 }
-
-const saveToDatabase = debounce(1000, () => {
-  if (Object.keys(configToSend).length > 0) {
-    setAccountButtonSpinner(true);
-    void saveConfig(configToSend).finally(() => {
-      setAccountButtonSpinner(false);
-    });
-  }
-  configToSend = {};
-});
 
 export function resetPendingConfigSync(
   newConfigToSend: Partial<ConfigSchemas.Config>,
 ): void {
-  configToSend = newConfigToSend;
+  pendingSync().save.cancel({ upcomingOnly: true });
+  pendingSync().config = newConfigToSend;
 }

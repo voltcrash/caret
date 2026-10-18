@@ -1,3 +1,4 @@
+import { mockHttpFixture } from "../__harness__/operations";
 import { expect, it, vi } from "vite-plus/test";
 import type { ResultMinified } from "@oxytype/schemas/results";
 
@@ -6,7 +7,7 @@ vi.mock("../../src/ts/states/core", () => ({
   isAuthenticated: () => true,
   getUserId: () => "today-user",
 }));
-vi.mock("../../src/ts/ape", () => ({ default: { results: { get } } }));
+
 vi.mock("../../src/ts/collections/tags", () => ({
   getTagsOnce: async () => [],
   getActiveTagsOnce: async () => [],
@@ -24,7 +25,7 @@ import {
   getResultsSinceDayOnce,
   waitForResultsReady,
 } from "../../src/ts/collections/results";
-import * as TodayTracker from "../../src/ts/test/today-tracker";
+import * as TodayTracker from "../../src/features/typing/runtime/today-tracker";
 
 const midnight = new Date();
 midnight.setHours(0, 0, 0, 0);
@@ -78,3 +79,5 @@ it("sums today's typing time from collection results", async () => {
   // midnight: 15, today: 15 + 8 - 5
   expect(TodayTracker.getString()).toBe("00:00:33 today");
 });
+
+mockHttpFixture("results.get", async (input) => await get(input));

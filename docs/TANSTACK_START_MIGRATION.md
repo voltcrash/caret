@@ -1,6 +1,9 @@
 # TanStack Start migration: architecture and execution plan
 
-Status: proposed implementation plan. No application migration performed yet.
+Status: Stages 0–5 complete; [ledger and handoffs](tanstack-start/README.md).
+Stages 6–7 complete; Stage 8 phases 8.1–8.2 complete, 8.3 cutover pending.
+Production still serves the anchored legacy version until the release workflow
+is enabled. See [Stage 8 ledger](tanstack-start/stage-8.md).
 Prepared: 2026-10-15. Scope: Oxytype web application and its server/runtime.
 
 ## Outcome
@@ -128,7 +131,8 @@ frontend/
     worker.ts                    # Cloudflare fetch + queue + scheduled entry
     html/warnings.html           # preserved static fallback source
   static/                        # existing assets; configured as public directory
-  wrangler.jsonc                 # deployment owner after Stage 7
+  wrangler.jsonc                 # local development
+  wrangler.staging.json          # deployment owner after Stage 7
   wrangler.production.json
 backend/
   src/
@@ -256,6 +260,9 @@ potential server and client code; server-only work crosses a declared boundary.
 
 ### 0.1 Map behavior and consumers
 
+Status: complete. [Behavior/consumer inventory](tanstack-start/behavior.md) and
+[operation ledger](tanstack-start/operations.json).
+
 - Inventory routes, standalone HTML entries, deep links, redirects, URL encodings,
   auth flows, downloads, admin/config endpoints, and integration callbacks.
 - Create an operation ledger from `frontend/src/ts/ape`, backend route metadata,
@@ -271,6 +278,8 @@ callers, validation, and retirement condition.
 
 ### 0.2 Capture meaningful baselines
 
+Status: complete. [Measurements, frozen budgets and validation](tanstack-start/baseline.md).
+
 - Run current web, backend/D1, shared-package, and browser checks; record existing
   failures separately from migration regressions.
 - Record production-build eager JS, cold/warm input readiness, public page load,
@@ -281,6 +290,9 @@ callers, validation, and retirement condition.
   observed variance before implementation. No unexplained regression crosses a gate.
 
 ### 0.3 Freeze the architecture contract
+
+Status: complete. [Compatibility contract](tanstack-start/contract.md) and
+[release/rollback rules](tanstack-start/release.md).
 
 - Confirm this document's defaults: Solid 1.x, Vite+, Cloudflare, one origin/Worker,
   backend service package, selective SSR, existing storage and OAuth URLs.
@@ -296,6 +308,8 @@ no unresolved product-scope decision blocks foundation work.
 
 ### 1.1 Add the real Start foundation
 
+Status: complete. [Stage 1 ledger](tanstack-start/stage-1.md).
+
 - Pin compatible Start/Solid Router/build packages; adapt `frontend/vite.config.ts`
   for Start, Solid, Tailwind, static directory, workspace aliases, and generated routes.
 - Provide one local Start/Cloudflare development entry with same-origin functions,
@@ -310,6 +324,8 @@ no unresolved product-scope decision blocks foundation work.
 
 ### 1.2 Prove one Worker handles all invocation types
 
+Status: complete. [Stage 1 ledger](tanstack-start/stage-1.md).
+
 - Bind Start fetch to `withRuntime`; wire queue/scheduled exports to existing jobs.
   Reuse the local D1 persistence location or migrate its dev configuration explicitly.
 - Exercise one real read service through a server function, including during SSR;
@@ -320,6 +336,8 @@ no unresolved product-scope decision blocks foundation work.
   callbacks; keep references explicit where runtime lifetime requires it.
 
 ### 1.3 Port document, assets, and response policy
+
+Status: complete. [Stage 1 ledger](tanstack-start/stage-1.md).
 
 - Bring over fonts, semantic theme CSS, metadata, icons, manifest, public assets,
   and route-independent shell. Keep SSR markup stable before browser preferences load.
@@ -332,6 +350,8 @@ no unresolved product-scope decision blocks foundation work.
   allowlisting. Secrets come from runtime bindings, not public build-time config.
 
 ### 1.4 Establish migration CI and staging build
+
+Status: complete. [Stage 1 ledger](tanstack-start/stage-1.md).
 
 - Add Start build + Worker dry-run and SSR/workerd checks to CI while retaining
   existing checks for code not yet migrated. Use a migration-only staging target.
@@ -346,6 +366,8 @@ the wrong bundle. Resolve foundation incompatibilities before mass file movement
 
 ### 2.1 Define factories and import boundaries
 
+Status: complete. [Stage 2 ledger](tanstack-start/stage-2.md).
+
 - Replace module-level QueryClient/router/user snapshot initialization with factories.
   Convert SSR-reachable mutable stores to request/app-owned state.
 - Keep SSR owners limited to safe state; instantiate browser integrations only
@@ -358,6 +380,8 @@ the wrong bundle. Resolve foundation incompatibilities before mass file movement
 
 ### 2.2 Build providers and browser runtime
 
+Status: complete. [Stage 2 ledger](tanstack-start/stage-2.md).
+
 - Introduce preferences, auth observation, collections, overlays, and typing-session
   owners with typed accessors. Keep domain signals where useful, but give their
   lifetime and teardown a concrete owner.
@@ -367,6 +391,8 @@ the wrong bundle. Resolve foundation incompatibilities before mass file movement
   Public pages do not wait for history downloads or unrelated auth synchronization.
 
 ### 2.3 Preserve preferences and data identity
+
+Status: complete. [Stage 2 ledger](tanstack-start/stage-2.md).
 
 - Keep existing localStorage/IndexedDB schemas, migrations, language hashes,
   config metadata, and local/server/URL precedence.
@@ -382,7 +408,11 @@ typing startup remains independent of full account/history loading.
 
 ## Stage 3 — Extract server services and integrate authentication
 
+Status: complete, with recorded Worker-byte deviation. [Validation and handoff](tanstack-start/stage-3.md).
+
 ### 3.1 Extract policies and operation services
+
+Status: complete.
 
 - Separate reusable rules from Hono middleware in `backend/src/middlewares` and
   controllers. Introduce typed service context, DTOs, errors, and operation IDs.
@@ -394,6 +424,8 @@ typing startup remains independent of full account/history loading.
 
 ### 3.2 Add Start policy adapters
 
+Status: complete.
+
 - Implement request logging/context/security headers and function-level auth,
   permission/config gates, input validation, rate limits, and error mapping.
 - Preserve body/telemetry limits, trusted proxy/IP policy, fresh-session checks,
@@ -403,6 +435,8 @@ typing startup remains independent of full account/history loading.
   direct calls without a page visit. Layout guards alone never authorize data.
 
 ### 3.3 Move Better Auth and session flows
+
+Status: complete.
 
 - Delegate `/api/auth/*` to Better Auth through a Start server route, with untouched
   request bodies, all `Set-Cookie` headers, trusted origins/IP handling, and existing
@@ -420,7 +454,11 @@ cache state without a global forced page reload pipeline.
 
 ## Stage 4 — Migrate routes and remove parallel page lifecycles
 
+Status: complete; intermediate Worker footprint recorded. [Stage 4 validation and handoff](tanstack-start/stage-4.md).
+
 ### 4.1 Migrate public pages
+
+Status: complete.
 
 - Move about, profile search/profile, leaderboards, privacy/standalone pages, and
   not-found handling into the route tree. Components live in features/shared UI.
@@ -431,6 +469,8 @@ cache state without a global forced page reload pipeline.
 
 ### 4.2 Migrate settings and authenticated pages
 
+Status: complete.
+
 - Move account and settings to native routes/layouts. Keep shared charts lazy and
   browser-only where required; avoid serializing all results for SSR.
 - Move tab/filter URL state into validated route search. Preserve settings highlight
@@ -440,6 +480,8 @@ cache state without a global forced page reload pipeline.
   feature state. Retain useful UI state through explicit owners/search/storage.
 
 ### 4.3 Replace navigation callers and transitions
+
+Status: complete.
 
 - Convert `Link`, router-marked buttons, command palette actions, modals, auth
   callbacks, and imperative callers to Router navigation.
@@ -458,6 +500,8 @@ page loading/metadata/URL state no longer depends on legacy page classes.
 
 ### 5.1 Introduce typing session and lifecycle boundaries
 
+Status: complete. [Stage 5 ledger](tanstack-start/stage-5.md).
+
 - Move browser orchestration around `packages/typing-core` into the typing feature;
   preserve engine algorithms, deterministic fixtures, and event/telemetry formats.
 - Replace `pages/test.ts` hide/show hooks with explicit route entry/exit/session
@@ -468,6 +512,8 @@ page loading/metadata/URL state no longer depends on legacy page classes.
 
 ### 5.2 Move browser integrations and URL settings
 
+Status: complete.
+
 - Integrate words/letters/caret, keymaps, IME/composition, hotkeys, focus, scroll,
   sound/TTS, charts, screenshots, funboxes, and challenges under owned refs/lifecycles.
 - Move shared test-settings/theme/challenge URLs from auth-event subscriptions
@@ -477,6 +523,8 @@ page loading/metadata/URL state no longer depends on legacy page classes.
   if exposed by the web app; no new TUI-side implementation is included.
 
 ### 5.3 Verify responsiveness and route behavior
+
+Status: complete. [Validation and handoff](tanstack-start/stage-5.md).
 
 - Run existing typing, quote, time, restart, command palette, modal, accessibility,
   screenshot, funbox, and typing-core parity checks against Start.
@@ -539,7 +587,11 @@ result persistence and rewards are unchanged; no web functionality requires Hono
 
 ## Stage 7 — Complete offline support, deployment, and observability
 
+Status: complete; production cutover gated to Stage 8. [Validation and handoff](tanstack-start/stage-7.md#validation).
+
 ### 7.1 Rebuild the PWA/offline contract
+
+Status: complete. [Stage 7 ledger](tanstack-start/stage-7.md#71-offline-ownership).
 
 - Adapt manifest/service-worker generation to Start output paths and code splitting.
   Version caches by build; never assume the old `/js` filename/hash pattern.
@@ -557,6 +609,8 @@ result persistence and rewards are unchanged; no web functionality requires Hono
 
 ### 7.2 Transfer delivery ownership to Start
 
+Status: complete. [Stage 7 ledger](tanstack-start/stage-7.md#72-delivery-ownership).
+
 - Move/retarget Wrangler staging/production configs to the application package.
   Preserve Worker names, origins, bindings, secrets, D1 IDs/migration directories,
   queue consumers, Cron, compatibility flags, and environment isolation.
@@ -571,6 +625,8 @@ result persistence and rewards are unchanged; no web functionality requires Hono
 
 ### 7.3 Exercise production behavior in staging
 
+Status: complete. [Stage 7 ledger](tanstack-start/stage-7.md#73-production-behaviour).
+
 - Run the built Worker in workerd and staging, not only Vite dev. Verify OAuth
   cookies, direct URLs, real result saves, queues/Cron, assets, offline revisit,
   retained endpoints, CSP, logging, and safe error responses.
@@ -584,6 +640,8 @@ result persistence and rewards are unchanged; no web functionality requires Hono
 checks with the intended production configuration, including update/rollback cases.
 
 ## Stage 8 — Remove the old architecture and cut over
+
+Status: 8.1–8.2 complete; 8.3 pending. [Stage 8 ledger](tanstack-start/stage-8.md).
 
 ### 8.1 Delete superseded code and document the new system
 
@@ -612,7 +670,7 @@ checks with the intended production configuration, including update/rollback cas
 ### 8.3 Release, observe, and retire temporary compatibility
 
 - Build from the validated commit, deploy to staging, then release through the
-  updated production workflow. Avoid running the old scheduled auto-release path
+  updated production workflow (manual-only since #144). Avoid running the old scheduled auto-release path
   against a partially migrated main branch; coordinate its transition first.
 - Retain the previous deployable artifact and compatible database/storage formats.
   If rollback is required, roll back server and client assets together and account
@@ -628,12 +686,13 @@ the recorded acceptance budgets.
 
 ## Validation commands and evidence
 
-These commands describe implementation gates; this planning change does not run
-the application suites. Keep scripts working as package responsibilities move.
+These commands describe implementation gates. Stage 0 ran the existing application
+suites and captured evidence in the [baseline](tanstack-start/baseline.md).
+Keep scripts working as package responsibilities move.
 
 ```sh
 # Focused examples, run in the owning workspace.
-vp -C frontend test run __tests__/navigation/guard.spec.ts
+vp -C frontend test run __tests__/app/navigation-guard.spec.ts
 vp -C frontend test run __tests__/test/typing-core-parity.spec.ts
 vp -C backend test run __tests__/d1/http.spec.ts
 
@@ -676,11 +735,12 @@ and whitespace directly instead of treating a skipped formatter run as validatio
 
 ## Unresolved questions
 
-No blocking user questions. Recommended defaults are stated above.
-Stage 0/1 must resolve technical facts: actual external endpoint consumers,
-measured performance budgets, pinned Solid Query SSR support, Vite+/Cloudflare
-integration, and old-client compatibility window. Record findings in the ledger;
-ask only if evidence requires a product decision outside these defaults.
+No blocking product-scope questions. Stage 0 recorded measured budgets, published
+and uncertain external contracts (conservatively retained), and the old-client
+compatibility window. Stage 1 proved pinned Solid Query SSR support and
+Vite+/Cloudflare integration ([evidence](tanstack-start/stage-1.md)). Record
+later findings in the ledger; ask only if evidence requires a product decision
+outside these defaults.
 
 ## Official references
 

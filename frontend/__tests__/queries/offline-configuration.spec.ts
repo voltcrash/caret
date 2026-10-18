@@ -1,16 +1,20 @@
 import { ConfigurationSchema } from "@oxytype/schemas/configuration";
 import { QueryClient } from "@tanstack/solid-query";
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
-const { environment, get } = vi.hoisted(() => ({
+import {
+  mockOperation,
+  ok,
+  operationCalls,
+  resetOperations,
+} from "../__harness__/operations";
+const { environment } = vi.hoisted(() => ({
   environment: { devOffline: false },
-  get: vi.fn(),
 }));
 vi.mock("virtual:env-config", () => ({ envConfig: environment }));
-vi.mock("../../src/ts/ape", () => ({ default: { configuration: { get } } }));
 import { getServerConfigurationQueryOptions } from "../../src/ts/queries/server-configuration";
 const client = new QueryClient();
 beforeEach(() => {
-  get.mockReset();
+  resetOperations();
   environment.devOffline = false;
 });
 afterEach(() => client.clear());
@@ -25,13 +29,16 @@ it("loads schema-valid frontend-only defaults without contacting the API", async
   expect(configuration.users.signUp).toBe(false);
   expect(configuration.dailyLeaderboards.enabled).toBe(false);
   expect(configuration.leaderboards.weeklyXp.enabled).toBe(false);
-  expect(get).not.toHaveBeenCalled();
+  expect(operationCalls).not.toHaveBeenCalled();
 });
 
 it("uses the backend configuration normally", async () => {
-  get.mockResolvedValue({ status: 200, body: { data: { maintenance: true } } });
+  mockOperation("configuration.get", () => ok({ maintenance: true }));
   expect(await client.query(getServerConfigurationQueryOptions())).toEqual({
     maintenance: true,
   });
-  expect(get).toHaveBeenCalledOnce();
+  expect(operationCalls).toHaveBeenCalledExactlyOnceWith(
+    "configuration.get",
+    {},
+  );
 });

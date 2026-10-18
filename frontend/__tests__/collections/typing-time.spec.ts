@@ -1,3 +1,4 @@
+import { mockHttpFixture } from "../__harness__/operations";
 import { expect, it, vi } from "vite-plus/test";
 import type { ResultMinified } from "@oxytype/schemas/results";
 
@@ -6,7 +7,7 @@ vi.mock("../../src/ts/states/core", () => ({
   isAuthenticated: () => true,
   getUserId: () => "typing-time",
 }));
-vi.mock("../../src/ts/ape", () => ({ default: { results: { get } } }));
+
 vi.mock("../../src/ts/collections/tags", () => ({
   getTagsOnce: async () => [],
   getActiveTagsOnce: async () => [],
@@ -104,3 +105,5 @@ it.each(cases)(
     expect(rows?.find((row) => row._id === name)?.timeTyping).toBe(expected);
   },
 );
+
+mockHttpFixture("results.get", async (input) => await get(input));

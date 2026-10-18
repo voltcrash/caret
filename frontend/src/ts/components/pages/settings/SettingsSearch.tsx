@@ -1,6 +1,5 @@
 import { JSXElement, onCleanup, onMount, Show } from "solid-js";
 
-import { getActivePage } from "../../../states/core";
 import { isAnyPopupVisible } from "../../../states/overlay-visibility";
 import {
   getSettingsSearch,
@@ -26,7 +25,6 @@ export function SettingsSearch(): JSXElement {
   onMount(() => {
     const onKeyDown = (e: KeyboardEvent): void => {
       if (!inputRef || e.defaultPrevented) return;
-      if (getActivePage() !== "settings") return;
       // backspace edits an existing query, e.g. after toggling a setting
       const isBackspace =
         e.key === "Backspace" &&

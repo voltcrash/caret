@@ -17,17 +17,17 @@ vi.mock("../../../src/ts/controllers/sound-controller", () => ({
 vi.mock("../../../src/ts/controllers/theme-controller", () => ({
   randomizeTheme: vi.fn(),
 }));
-vi.mock("../../../src/ts/components/pages/test/MonkeyPower", () => ({
+vi.mock("../../../src/features/typing/components/MonkeyPower", () => ({
   reset: vi.fn(),
 }));
-vi.mock("../../../src/ts/test/caret", () => ({
+vi.mock("../../../src/features/typing/runtime/caret", () => ({
   resetPosition: vi.fn(),
   updatePosition: vi.fn(),
 }));
-vi.mock("../../../src/ts/test/pace-caret", () => ({
+vi.mock("../../../src/features/typing/runtime/pace-caret", () => ({
   resetCaretPosition: vi.fn(),
 }));
-vi.mock("../../../src/ts/test/focus", () => ({ set: vi.fn() }));
+vi.mock("../../../src/features/typing/runtime/focus", () => ({ set: vi.fn() }));
 vi.mock("../../../src/ts/utils/debounced-animation-frame", () => ({
   requestDebouncedAnimationFrame: vi.fn(),
   cancelPendingAnimationFramesStartingWith: vi.fn(),
@@ -48,11 +48,11 @@ import {
   getMemoryTimerVisibility,
 } from "../../../src/ts/states/funbox-timers";
 import { setResultElements } from "../../../src/ts/states/result";
-import * as Funbox from "../../../src/ts/test/funbox/funbox";
-import { getActiveFunboxesWithFunction } from "../../../src/ts/test/funbox/list";
-import * as MemoryTimer from "../../../src/ts/test/funbox/memory-funbox-timer";
-import * as TestUI from "../../../src/ts/test/test-ui";
-import { words } from "../../../src/ts/test/test-words";
+import * as Funbox from "../../../src/features/typing/runtime/funbox/funbox";
+import { getActiveFunboxesWithFunction } from "../../../src/features/typing/runtime/funbox/list";
+import * as MemoryTimer from "../../../src/features/typing/runtime/funbox/memory-funbox-timer";
+import * as TestUI from "../../../src/features/typing/runtime/test-ui";
+import { words } from "../../../src/features/typing/runtime/test-words";
 import * as JSONData from "../../../src/ts/utils/json-data";
 
 beforeEach(() => {

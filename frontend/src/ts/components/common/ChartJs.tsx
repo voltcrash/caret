@@ -66,15 +66,6 @@ if (isCoarsePointer) {
   Chart.defaults.font.size = 13;
 }
 
-configEvent.subscribe(
-  ({ key, newValue }) => {
-    if (key === "fontFamily") {
-      Chart.defaults.font.family = newValue.replace(/_/g, " ");
-    }
-  },
-  import.meta.hot,
-);
-
 type ChartJSProps<
   T extends ChartType = ChartType,
   TData = DefaultDataPoint<T>,
@@ -99,6 +90,7 @@ export function ChartJs<T extends ChartType, TData = DefaultDataPoint<T>>(
   let chart: Chart<T, TData> | undefined;
   let mountObserver: MutationObserver | undefined;
 
+  useChartEvents();
   onMount(() => {
     const canvas = canvasEl();
     if (canvas === undefined) return;
@@ -188,4 +180,12 @@ function addColorsToOptions<TType extends ChartType = ChartType>(
   });
 
   return options;
+}
+
+function useChartEvents(): void {
+  configEvent.useListener(({ key, newValue }) => {
+    if (key === "fontFamily") {
+      Chart.defaults.font.family = newValue.replace(/_/g, " ");
+    }
+  });
 }

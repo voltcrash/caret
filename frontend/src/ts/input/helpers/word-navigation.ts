@@ -1,25 +1,28 @@
 import { getPreviousWordInput } from "@oxytype/typing-core/input/engine";
-import { Config } from "../../config/store";
-import * as TestUI from "../../test/test-ui";
-import * as PaceCaret from "../../test/pace-caret";
+import { getMutableConfig } from "../../config/store";
+import * as TestUI from "../../../features/typing/runtime/test-ui";
+import * as PaceCaret from "../../../features/typing/runtime/pace-caret";
 import {
   decreaseActiveWordIndex,
   getActiveWordIndex,
   increaseActiveWordIndex,
 } from "../../states/test";
-import * as TestLogic from "../../test/test-logic";
-import * as TestWords from "../../test/test-words";
+import * as TestLogic from "../../../features/typing/runtime/test-logic";
+import * as TestWords from "../../../features/typing/runtime/test-words";
 import {
   getActiveFunboxesWithFunction,
   isFunboxActiveWithProperty,
-} from "../../test/funbox/list";
-import * as Funbox from "../../test/funbox/funbox";
+} from "../../../features/typing/runtime/funbox/list";
+import * as Funbox from "../../../features/typing/runtime/funbox/funbox";
 import { showLoaderBar, hideLoaderBar } from "../../states/loader-bar";
 import { setInputElementValue } from "../input-element";
 import { setAwaitingNextWord } from "../state";
 import { DeleteInputType } from "./input-type";
 import { getWordBurst } from "@oxytype/typing-core/events/stats";
-import { buildEventLog, getInputForWord } from "../../test/events/data";
+import {
+  buildEventLog,
+  getInputForWord,
+} from "../../../features/typing/runtime/events/data";
 
 type GoToNextWordParams = {
   correctInsert: boolean;
@@ -46,7 +49,10 @@ export async function goToNextWord({
     fb.functions.handleSpace();
   }
 
-  if (Config.minBurst !== "off" || Config.liveBurstStyle !== "off") {
+  if (
+    getMutableConfig().minBurst !== "off" ||
+    getMutableConfig().liveBurstStyle !== "off"
+  ) {
     const burst = getWordBurst(buildEventLog(), getActiveWordIndex(), now);
     ret.lastBurst = burst;
   }
@@ -72,7 +78,7 @@ export async function goToNextWord({
 
   if (
     getActiveWordIndex() < TestWords.words.length - 1 ||
-    Config.mode === "zen"
+    getMutableConfig().mode === "zen"
   ) {
     ret.increasedWordIndex = true;
     increaseActiveWordIndex();

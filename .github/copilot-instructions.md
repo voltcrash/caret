@@ -4,8 +4,9 @@ Be extremely concise. Follow [AGENTS.md](../AGENTS.md) for repository convention
 
 ## Architecture
 
-pnpm/Vite+ workspace: SolidJS frontend, Hono backend on Cloudflare Workers
-with D1 and Queues, and shared `@oxytype` packages. See
+pnpm/Vite+ workspace: TanStack Start (SolidJS) application and Worker in
+`frontend/`, server-only backend services with D1 and Queues in `backend/`, and
+shared `@oxytype` packages. See
 [architecture](../docs/ARCHITECTURE.md) and [development setup](../docs/CONTRIBUTING_ADVANCED.md).
 
 Frontend UI uses `.tsx` components. Keep imperative DOM work inside
@@ -16,12 +17,13 @@ and the `Fa` icon component.
 
 ```sh
 vp lint --type-aware --type-check --format agent
-vp run build-fe
-vp run build-be
+vp run build
+vp run test-fe
+vp run test-be
 ```
 
 Run a single test from its package with `vp test run path/to/test.ts`.
-`vp run dev-fe` and `vp run dev-be` start the frontend and backend.
+`vp run dev` starts the Start app, API and local D1 on port 3000.
 
 ## Key files
 
@@ -29,4 +31,5 @@ Run a single test from its package with `vp test run path/to/test.ts`.
 - `frontend/src/ts/config/metadata.tsx`: config validation rules.
 - `packages/contracts/src/index.ts`: API contracts.
 - `packages/funbox/src/list.ts`: funbox definitions.
-- `backend/src/api/ts-rest-adapter.ts`: typed controller adapter.
+- `frontend/src/routes/`: Start routes; `frontend/src/functions/`: server functions.
+- `backend/src/services/operations/registry.ts`: operation → service map.

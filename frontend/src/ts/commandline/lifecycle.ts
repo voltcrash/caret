@@ -1,14 +1,14 @@
+import { getCommandlineState } from "../states/commandline";
 import * as ThemeController from "../controllers/theme-controller";
 import { clearFontPreview } from "../ui";
 
-import { getActivePage, setCommandlineSubgroup } from "../states/core";
+import { isTypingRouteActive } from "../../features/typing/scope";
+import { setCommandlineSubgroup } from "../states/core";
 
 import {
   hideModal as storeHideModal,
   hideModalAndClearChain as storeClearChain,
 } from "../states/modals";
-
-import { commandlineState } from "../states/commandline";
 
 import { addCommandlineBackground } from "./suggestions";
 import { hideWarning } from "./input-validation";
@@ -16,6 +16,7 @@ import { hideWarning } from "./input-validation";
 const MODAL_STORE_ID = "Commandline";
 
 export function hide(clearModalChain = false): void {
+  const commandlineState = getCommandlineState();
   clearFontPreview();
   void ThemeController.clearPreview();
   commandlineState.isAnimating = true;
@@ -27,9 +28,10 @@ export function hide(clearModalChain = false): void {
 }
 
 export function afterHideCommandline(): void {
+  const commandlineState = getCommandlineState();
   hideWarning();
   addCommandlineBackground();
-  if (getActivePage() !== "test") {
+  if (!isTypingRouteActive()) {
     (document.activeElement as HTMLElement | undefined)?.blur();
   }
   commandlineState.isAnimating = false;
@@ -41,6 +43,7 @@ export function afterHideCommandline(): void {
 // the single list stays empty until something is typed. touch users often
 // have no keyboard open, so they browse the grouped list until they search
 export function onCommandlineBeforeHide(): void {
+  const commandlineState = getCommandlineState();
   clearFontPreview();
   void ThemeController.clearPreview();
   commandlineState.isAnimating = true;

@@ -1,13 +1,13 @@
 import type { Config as ConfigSchema } from "@oxytype/schemas/configs";
 import { getDefaultConfig } from "../constants/default-config";
-import { createStore, reconcile } from "solid-js/store";
+import { reconcile } from "solid-js/store";
+import { createAppOwned } from "../../app/application";
+import { createAppStore } from "../../app/state";
 
-export const Config: ConfigSchema = {
-  ...getDefaultConfig(),
-};
+export const getMutableConfig = createAppOwned(getDefaultConfig);
 
 const [getConfigStore, setConfigStoreRaw] =
-  createStore<ConfigSchema>(getDefaultConfig());
+  createAppStore<ConfigSchema>(getDefaultConfig);
 
 export const getConfig = getConfigStore;
 

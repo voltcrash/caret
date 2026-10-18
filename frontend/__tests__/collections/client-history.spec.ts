@@ -1,3 +1,4 @@
+import { mockHttpFixture } from "../__harness__/operations";
 import { ResultMinified } from "@oxytype/schemas/results";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
@@ -10,9 +11,7 @@ vi.mock("../../src/ts/states/core", () => ({
   isAuthenticated: () => true,
   getUserId: () => "history-user",
 }));
-vi.mock("../../src/ts/ape", () => ({
-  default: { results: { get, updateTags: update } },
-}));
+
 vi.mock("../../src/ts/collections/tags", () => ({
   getTagsOnce: async () => [{ _id: "tag" }],
   reconcileLocalTagPB: reconcile,
@@ -140,3 +139,7 @@ describe("account result partitions", () => {
     }
   });
 });
+
+mockHttpFixture("results.get", async (input) => await get(input));
+
+mockHttpFixture("results.updateTags", async (input) => await update(input));

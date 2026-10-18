@@ -1,6 +1,6 @@
-import { getRequestListener } from "@hono/node-server";
 import request from "supertest";
-import app from "../../src/app";
+import { dispatchApi } from "./http-worker";
+import { requestListener } from "./node-listener";
 import { newId } from "../../src/utils/id";
 import { BearerAuthenticationMock, mockBearerAuthentication } from "./auth";
 import { beforeEach } from "vite-plus/test";
@@ -11,7 +11,8 @@ export function setup(): {
   uid: string;
   mockAuth: BearerAuthenticationMock;
 } {
-  const mockApp = request(getRequestListener(app.fetch));
+  // The same backend handlers Start serves under /api; see http-worker.
+  const mockApp = request(requestListener(dispatchApi));
   const uid = newId();
   const mockAuth = mockBearerAuthentication(uid);
 

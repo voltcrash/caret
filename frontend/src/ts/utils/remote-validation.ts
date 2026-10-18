@@ -6,9 +6,7 @@ type IsValidResponseOrFunction =
   | ((message: string) => IsValidResponse)
   | IsValidResponse;
 export function remoteValidation<V, T>(
-  call: (
-    val: V,
-  ) => Promise<{ status: number; body: { data?: T; message: string } }>,
+  call: (val: V) => Promise<{ status: number; data?: T; message: string }>,
   options?: {
     check?: (data: T) => IsValidResponse;
     on4xx?: IsValidResponseOrFunction;
@@ -18,7 +16,7 @@ export function remoteValidation<V, T>(
   return async (val) => {
     const result = await call(val);
     if (result.status <= 299) {
-      return options?.check?.(result.body.data as T) ?? true;
+      return options?.check?.(result.data as T) ?? true;
     }
 
     let handler: IsValidResponseOrFunction | undefined;
@@ -28,15 +26,13 @@ export function remoteValidation<V, T>(
       handler = options?.on5xx ?? "Server unavailable. Please try again later.";
     }
 
-    if (typeof handler === "function") return handler(result.body.message);
+    if (typeof handler === "function") return handler(result.message);
     return handler;
   };
 }
 
 export function remoteValidationForm<V, T>(
-  call: (
-    val: V,
-  ) => Promise<{ status: number; body: { data?: T; message: string } }>,
+  call: (val: V) => Promise<{ status: number; data?: T; message: string }>,
   options?: {
     check?: (data: T) => IsValidResponse;
     on4xx?: IsValidResponseOrFunction;
@@ -51,7 +47,7 @@ export function remoteValidationForm<V, T>(
 
     const result = await call(val.value);
     if (result.status <= 299) {
-      validationResult = options?.check?.(result.body.data as T) ?? undefined;
+      validationResult = options?.check?.(result.data as T) ?? undefined;
     } else {
       let handler: IsValidResponseOrFunction | undefined;
       if (result.status <= 499) {
@@ -62,7 +58,7 @@ export function remoteValidationForm<V, T>(
       }
 
       if (typeof handler === "function") {
-        validationResult = handler(result.body.message);
+        validationResult = handler(result.message);
       } else {
         validationResult = handler;
       }

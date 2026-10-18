@@ -19,10 +19,14 @@ export default {
     },
     frontend: {
       entry: [
-        "src/ts/{oauth-callback,not-found,privacy-policy,standalone-renderer}.tsx",
         "src/ts/types/*.d.ts",
-        "src/styles/{tailwind,standalone}.css",
         "scripts/*.{ts,cjs}",
+        // Vitest's operation map is an aliased entry (operation-transport).
+        "__tests__/__harness__/operations.ts",
+        // Built-Worker test entry, selected by `vp build --mode runtime-test`.
+        "__tests__/start/worker-entry.ts",
+        // Compiled independently by the Start service-worker build plugin.
+        "src/sw/service-worker.ts",
       ],
       project: [
         "src/**/*.{ts,tsx,css}",
@@ -36,9 +40,8 @@ export default {
         "@tanstack/eslint-plugin-query",
         "eslint-plugin-compat",
         "eslint-plugin-solid",
-        // font-styles.ts provides these CSS modules through its Vite plugin.
+        // font-styles.ts provides this CSS module through its Vite plugin.
         "oxytype-fontawesome.css",
-        "oxytype-fonts.css",
       ],
     },
     "frontend/storybook": {
@@ -48,11 +51,16 @@ export default {
         "stories/**/*.{stories.ts,stories.tsx,mdx}",
       ],
       project: [".storybook/**/*.{ts,tsx}", "stories/**/*.{ts,tsx,css}"],
-      // Storybook resolves this addon by name in .storybook/main.ts.
-      ignoreDependencies: ["@storybook/addon-links"],
+      // Storybook resolves this addon by name in .storybook/main.ts; the
+      // font-styles plugin provides oxytype-fonts.css.
+      ignoreDependencies: ["@storybook/addon-links", "oxytype-fonts.css"],
     },
     "packages/release": {
-      entry: ["src/production-release.js", "__tests__/*.spec.js"],
+      entry: [
+        "src/production-release.js",
+        "src/renumber-releases-cli.js",
+        "__tests__/*.spec.js",
+      ],
     },
     tui: {
       entry: ["bin/*.ts"],

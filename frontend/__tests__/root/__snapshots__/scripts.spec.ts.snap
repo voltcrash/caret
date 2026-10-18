@@ -2,13 +2,13 @@
 
 exports[`root scripts > preserves aggregate command forwarding and flags 1`] = `
 {
-  "build": "vp run --filter @oxytype/frontend --filter @oxytype/backend build",
-  "dev": "vp run --filter "!oxytype" --filter "!@voltcrash/oxytype" --parallel dev",
+  "build": "vp run --filter @oxytype/frontend build",
+  "dev": "vp run dev-fe",
   "full-check": "vp run lint && vp run build && vp run test && vp run lint-styles && vp run check-assets",
   "lint": "vp run --filter "!oxytype" lint",
   "lint-fast": "vp run --filter "!oxytype" lint-fast",
   "lint-fix": "vp run --filter "!oxytype" lint --fix",
-  "start": "vp run build && vp run --filter @oxytype/frontend --filter @oxytype/backend --parallel start",
+  "start": "vp run build && vp run --filter @oxytype/frontend start",
   "test": "vp run --filter "!oxytype" test && vp run --filter "!oxytype" integration-test",
   "ts-check": "vp run --filter "!oxytype" ts-check",
 }

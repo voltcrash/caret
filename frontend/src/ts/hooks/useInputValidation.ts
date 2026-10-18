@@ -24,6 +24,7 @@ export function useInputValidation<T>(
   callback: (result: ValidationResult) => void,
   validation: Validation<T>,
   inputValueConvert?: (val: string) => T,
+  signal?: AbortSignal,
 ): (e: Event) => Promise<void> {
   let callIsValid =
     validation.isValid !== undefined
@@ -34,7 +35,9 @@ export function useInputValidation<T>(
             currentValue: string,
             checkValue: T,
           ) => {
+            if (signal?.aborted) return;
             const result = await validation.isValid?.(checkValue);
+            if (signal?.aborted) return;
             if (originalInput.value !== currentValue) {
               //value has change in the meantime, discard result
               return;
@@ -61,7 +64,17 @@ export function useInputValidation<T>(
         )
       : undefined;
 
+  signal?.addEventListener(
+    "abort",
+    () => {
+      if (callIsValid !== undefined && "cancel" in callIsValid) {
+        callIsValid.cancel();
+      }
+    },
+    { once: true },
+  );
   return async (e) => {
+    if (signal?.aborted) return;
     const originalInput = e.target as HTMLInputElement;
     const currentValue = originalInput.value;
     let checkValue: unknown = currentValue;

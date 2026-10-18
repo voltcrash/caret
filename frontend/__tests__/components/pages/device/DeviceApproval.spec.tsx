@@ -17,10 +17,10 @@ const [user, setUser] = createSignal<{
   uid: string;
   displayName: string;
 } | null>({ uid: "one", displayName: "Tester" });
-vi.mock("../../../../src/ts/auth-client", () => ({
+vi.mock("../../../../src/features/auth/state.client", () => ({
   getAuthenticatedUser: () => user(),
 }));
-vi.mock("../../../../src/ts/ape/device-auth", () => ({
+vi.mock("../../../../src/features/auth/device-transport.client", () => ({
   reviewDeviceCode: review,
   decideDeviceCode: decide,
 }));

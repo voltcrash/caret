@@ -13,9 +13,12 @@ vi.mock("../src/ts/collections/presets", () => ({
 vi.mock("../src/ts/collections/tags", () => ({
   waitForTagsReady: services.tags,
 }));
-vi.mock("../src/ts/collections/custom-themes", () => ({}));
-vi.mock("../src/ts/collections/inbox", () => ({}));
-vi.mock("../src/ts/collections/results", () => ({}));
+vi.mock("../src/ts/collections/custom-themes", () => ({
+  startCustomThemesSync: vi.fn(),
+}));
+vi.mock("../src/ts/collections/results", () => ({
+  refetchResults: vi.fn(async () => undefined),
+}));
 vi.mock("../src/ts/config/remote", () => ({
   updateFromServer: services.config,
 }));

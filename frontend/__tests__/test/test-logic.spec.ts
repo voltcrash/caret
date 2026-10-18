@@ -1,6 +1,18 @@
+import { mockHttpFixture } from "../__harness__/operations";
+import { animateAsync } from "../../src/ts/anim";
+import { requireApplication } from "../../src/app/application";
+import { bindTypingActivity } from "../../src/features/typing/scope";
+import { createRoot, onCleanup } from "solid-js";
 import type { QuoteWithTextSplit } from "@oxytype/typing-core/quotes";
 import type { LanguageObject } from "@oxytype/schemas/languages";
-import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vite-plus/test";
 
 const mocks = vi.hoisted(() => ({
   active: false,
@@ -81,21 +93,17 @@ vi.mock("../../src/ts/states/test", () => ({
   setTestInitError: mocks.setInitError,
 }));
 vi.mock("../../src/ts/states/core", () => ({
-  getActivePage: () => "test",
   getCustomTextIndicator: () => undefined,
   isAuthenticated: () => mocks.user !== null,
 }));
 vi.mock("../../src/ts/auth-client", () => ({
   getAuthenticatedUser: () => mocks.user,
 }));
-vi.mock("../../src/ts/states/page-transition", () => ({
-  get: () => mocks.transition,
-}));
 vi.mock("../../src/ts/utils/json-data", () => ({
   getLanguage: async () => mocks.language,
   checkIfLanguageSupportsZipf: async () => "yes",
 }));
-vi.mock("../../src/ts/test/test-ui", () => ({
+vi.mock("../../src/features/typing/runtime/test-ui", () => ({
   onTestStart: mocks.uiStart,
   fadeOutForRestart: vi.fn().mockResolvedValue(undefined),
   fadeInAfterRestart: vi.fn().mockResolvedValue(undefined),
@@ -105,23 +113,26 @@ vi.mock("../../src/ts/test/test-ui", () => ({
   appendEmptyWordElement: vi.fn(),
   addWord: vi.fn(),
 }));
-vi.mock("../../src/ts/test/events/data", () => ({
-  testSession: {
-    start: mocks.sessionStart,
-    generate: mocks.generate,
-    complete: mocks.complete,
-    end: vi.fn(),
-    abandon: () => ({ acc: mocks.inputAccuracy, seconds: 0 }),
-    finish: (_now: number, reason?: string) => {
-      mocks.finishReason = reason;
-      mocks.onFinish?.({ reason });
-    },
-    getFinishReason: () => mocks.finishReason,
-    on: (_type: "finish", listener: (event: { reason?: string }) => void) => {
-      mocks.onFinish = listener;
-      return () => undefined;
-    },
-  },
+vi.mock("../../src/features/typing/runtime/events/data", () => ({
+  getTestSession: (() => {
+    const session = {
+      start: mocks.sessionStart,
+      generate: mocks.generate,
+      complete: mocks.complete,
+      end: vi.fn(),
+      abandon: () => ({ acc: mocks.inputAccuracy, seconds: 0 }),
+      finish: (_now: number, reason?: string) => {
+        mocks.finishReason = reason;
+        mocks.onFinish?.({ reason });
+      },
+      getFinishReason: () => mocks.finishReason,
+      on: (_type: "finish", listener: (event: { reason?: string }) => void) => {
+        mocks.onFinish = listener;
+        return () => undefined;
+      },
+    };
+    return () => session;
+  })(),
   resetTestEvents: () => {
     mocks.finishReason = undefined;
   },
@@ -133,10 +144,10 @@ vi.mock("../../src/ts/test/events/data", () => ({
     context: { targetWords: mocks.generatedWords },
   }),
 }));
-vi.mock("../../src/ts/test/words-generator", () => ({
+vi.mock("../../src/features/typing/runtime/words-generator", () => ({
   areAllWordsGenerated: () => true,
 }));
-vi.mock("../../src/ts/test/funbox/list", () => ({
+vi.mock("../../src/features/typing/runtime/funbox/list", () => ({
   getActiveFunboxes: () => [],
   getActiveFunboxesWithFunction: () => [],
   getActiveFunboxNames: () => [],
@@ -144,28 +155,32 @@ vi.mock("../../src/ts/test/funbox/list", () => ({
   isFunboxActive: (name: string) => name === "no_quit" && mocks.noQuit,
   isFunboxActiveWithProperty: () => false,
 }));
-vi.mock("../../src/ts/test/funbox/funbox", () => ({
+vi.mock("../../src/features/typing/runtime/funbox/funbox", () => ({
   rememberSettings: vi.fn().mockResolvedValue(undefined),
   activate: vi.fn().mockResolvedValue(undefined),
   toggleScript: vi.fn(),
 }));
-vi.mock("../../src/ts/test/pace-caret", () => ({
+vi.mock("../../src/features/typing/runtime/pace-caret", () => ({
   start: vi.fn(),
   reset: vi.fn(),
   init: vi.fn().mockResolvedValue(undefined),
   setLastTestWpm: vi.fn(),
 }));
-vi.mock("../../src/ts/test/test-timer", () => ({
+vi.mock("../../src/features/typing/runtime/test-timer", () => ({
   clear: vi.fn(),
   start: vi.fn().mockResolvedValue(undefined),
 }));
-vi.mock("../../src/ts/test/replay", () => ({ pauseReplay: vi.fn() }));
-vi.mock("../../src/ts/test/practise-words", () => ({
+vi.mock("../../src/features/typing/runtime/replay", () => ({
+  pauseReplay: vi.fn(),
+}));
+vi.mock("../../src/features/typing/runtime/practise-words", () => ({
   before: { mode: null },
   resetBefore: vi.fn(),
 }));
-vi.mock("../../src/ts/test/today-tracker", () => ({ addSeconds: vi.fn() }));
-vi.mock("../../src/ts/test/result", () => ({
+vi.mock("../../src/features/typing/runtime/today-tracker", () => ({
+  addSeconds: vi.fn(),
+}));
+vi.mock("../../src/features/typing/runtime/result", () => ({
   update: mocks.resultUpdate,
   updateRetrySaving: mocks.retryUpdate,
   updateTodayTracker: vi.fn(),
@@ -189,10 +204,13 @@ vi.mock("../../src/ts/states/remember-lazy-mode", () => ({
   setArabicPref: vi.fn(),
 }));
 vi.mock("../../src/ts/config/setters", async () => {
-  const { Config } = await import("../../src/ts/config/store");
+  const { getMutableConfig } = await import("../../src/ts/config/store");
   return {
-    setConfig: (key: keyof typeof Config, value: unknown) => {
-      Object.assign(Config, { [key]: value });
+    setConfig: (
+      key: keyof ReturnType<typeof getMutableConfig>,
+      value: unknown,
+    ) => {
+      Object.assign(getMutableConfig(), { [key]: value });
     },
     setQuoteLengthAll: vi.fn(),
     toggleFunbox: vi.fn(),
@@ -203,9 +221,7 @@ vi.mock("../../src/ts/db", () => ({
   saveLocalResult: mocks.saveLocal,
   getLocalPB: () => undefined,
 }));
-vi.mock("../../src/ts/ape", () => ({
-  default: { results: { add: mocks.addResult } },
-}));
+
 vi.mock("../../src/ts/collections/tags", () => ({ getActiveTags: () => [] }));
 vi.mock("../../src/ts/controllers/challenge-controller", () => ({
   verify: () => null,
@@ -237,7 +253,7 @@ vi.mock("@oxytype/typing-core/result-validity", () => ({
   isAfkResult: () => false,
 }));
 
-import { Config } from "../../src/ts/config/store";
+import { getMutableConfig } from "../../src/ts/config/store";
 import { getDefaultConfig } from "../../src/ts/constants/default-config";
 import {
   fail,
@@ -245,10 +261,18 @@ import {
   restart,
   retrySavingResult,
   startTest,
-} from "../../src/ts/test/test-logic";
+  useTestLogicEvents,
+} from "../../src/features/typing/runtime/test-logic";
 
+let disposeRuntime: () => void;
+afterEach(() => disposeRuntime());
 beforeEach(() => {
   vi.clearAllMocks();
+  disposeRuntime = createRoot((dispose) => {
+    onCleanup(bindTypingActivity(() => !mocks.transition));
+    useTestLogicEvents();
+    return dispose;
+  });
   Object.assign(mocks, {
     active: false,
     restarting: false,
@@ -262,7 +286,7 @@ beforeEach(() => {
     generatedWords: ["hello ", "world"],
     language: { name: "english", words: ["hello", "world"] },
   });
-  Object.assign(Config, getDefaultConfig(), {
+  Object.assign(getMutableConfig(), getDefaultConfig(), {
     mode: "words",
     words: 15,
     language: "english",
@@ -314,7 +338,7 @@ describe("test lifecycle state", () => {
     expect(saved).not.toHaveProperty("timeTyping");
     expect(saved).not.toHaveProperty("dayTimestamp");
   });
-  it("rejects starts during page transitions", () => {
+  it("rejects starts outside the active typing route", () => {
     mocks.transition = true;
     expect(startTest(100)).toBe(false);
     expect(mocks.sessionStart).not.toHaveBeenCalled();
@@ -359,16 +383,16 @@ describe("test lifecycle state", () => {
 
   it("remembers a lazy-mode notice until lazy mode becomes available", async () => {
     mocks.language.noLazyMode = true;
-    Config.lazyMode = true;
+    getMutableConfig().lazyMode = true;
     await restart();
-    expect(Config.lazyMode).toBe(false);
+    expect(getMutableConfig().lazyMode).toBe(false);
     expect(mocks.rememberLazy).toBe(true);
-    Config.lazyMode = true;
+    getMutableConfig().lazyMode = true;
     await restart();
     expect(mocks.notice).toHaveBeenCalledTimes(1);
     mocks.language.noLazyMode = false;
     await restart();
-    expect(Config.lazyMode).toBe(true);
+    expect(getMutableConfig().lazyMode).toBe(true);
     expect(mocks.rememberLazy).toBe(false);
     mocks.language.noLazyMode = true;
     await restart();
@@ -426,8 +450,8 @@ describe("shared test decisions", () => {
   it.each(["off", "typing"] as const)(
     "preserves repeatQuotes=%s on an active quote restart",
     async (repeatQuotes) => {
-      Config.mode = "quote";
-      Config.repeatQuotes = repeatQuotes;
+      getMutableConfig().mode = "quote";
+      getMutableConfig().repeatQuotes = repeatQuotes;
       mocks.quote = { language: "english", id: 1 } as QuoteWithTextSplit;
       mocks.active = true;
       await restart();
@@ -436,8 +460,8 @@ describe("shared test decisions", () => {
   );
 
   it("does not repeat a quote after changing its language", async () => {
-    Config.mode = "quote";
-    Config.repeatQuotes = "typing";
+    getMutableConfig().mode = "quote";
+    getMutableConfig().repeatQuotes = "typing";
     mocks.quote = { language: "spanish", id: 1 } as QuoteWithTextSplit;
     mocks.active = true;
     await restart();
@@ -454,3 +478,44 @@ describe("shared test decisions", () => {
     expect(mocks.signedOut).not.toHaveBeenCalled();
   });
 });
+
+it("drops completion presentation after forced navigation during the fade", async () => {
+  let resolve!: () => void;
+  vi.mocked(animateAsync).mockImplementationOnce(
+    async () =>
+      new Promise<void>((done) => {
+        resolve = done;
+      }),
+  );
+  mocks.active = true;
+  const completion = finish();
+  mocks.transition = true;
+  resolve();
+  await completion;
+  expect(mocks.resultUpdate).not.toHaveBeenCalled();
+  expect(mocks.addResult).not.toHaveBeenCalled();
+});
+
+it("never applies a pending save acknowledgement to another actor", async () => {
+  let resolve!: (value: {
+    status: number;
+    body: { data: { insertedId: string } };
+  }) => void;
+  mocks.addResult.mockImplementationOnce(
+    async () =>
+      new Promise((done) => {
+        resolve = done;
+      }),
+  );
+  mocks.user = { uid: "user" };
+  mocks.active = true;
+  const completion = finish();
+  await vi.waitFor(() => expect(mocks.addResult).toHaveBeenCalledOnce());
+  requireApplication().accountData.setActor("other-actor");
+  resolve({ status: 200, body: { data: { insertedId: "old-actor-result" } } });
+  await completion;
+  expect(mocks.saveLocal).not.toHaveBeenCalled();
+  requireApplication().accountData.setActor(null);
+});
+
+mockHttpFixture("results.add", async (input) => await mocks.addResult(input));

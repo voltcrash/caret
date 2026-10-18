@@ -6,18 +6,18 @@ import {
   getLastInsertCompositionTextData,
   setLastInsertCompositionTextData,
 } from "../state";
-import * as TestUI from "../../test/test-ui";
+import * as TestUI from "../../../features/typing/runtime/test-ui";
 import { onBeforeInsertText } from "../handlers/before-insert-text";
 import { onBeforeDelete } from "../handlers/before-delete";
-import * as TestWords from "../../test/test-words";
+import * as TestWords from "../../../features/typing/runtime/test-words";
 import * as CompositionState from "../../states/composition";
 import {
   isTestRestarting,
   getActiveWordIndex,
   isResultCalculating,
 } from "../../states/test";
-import { getCurrentInput } from "../../test/events/data";
-import { areAllWordsGenerated } from "../../test/words-generator";
+import { getCurrentInput } from "../../../features/typing/runtime/events/data";
+import { areAllWordsGenerated } from "../../../features/typing/runtime/words-generator";
 
 export function bindInputListeners(inputEl: HTMLTextAreaElement): void {
   useInputListener(inputEl, "beforeinput", async (event: Event) => {

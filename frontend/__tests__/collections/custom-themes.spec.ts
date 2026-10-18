@@ -1,3 +1,4 @@
+import { mockHttpFixture } from "../__harness__/operations";
 import { createEffect, createRoot } from "solid-js";
 import { expect, it, vi } from "vite-plus/test";
 
@@ -21,11 +22,6 @@ vi.mock("../../src/ts/states/core", () => ({
   isAuthenticated: () => true,
   getUserId: () => "themes-user",
 }));
-vi.mock("../../src/ts/ape", () => ({
-  default: {
-    users: { getCustomThemes: fetchThemes, deleteCustomTheme: remove },
-  },
-}));
 
 import {
   deleteCustomTheme,
@@ -48,3 +44,13 @@ it("reads custom themes sorted by name and tracks changes", async () => {
   expect(getCustomTheme("1")).toBeUndefined();
   dispose();
 });
+
+mockHttpFixture(
+  "users.getCustomThemes",
+  async (input) => await fetchThemes(input),
+);
+
+mockHttpFixture(
+  "users.deleteCustomTheme",
+  async (input) => await remove(input),
+);

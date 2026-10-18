@@ -1,0 +1,217 @@
+{
+  "stage": 5,
+  "status": "pass",
+  "base": "2a66d1577",
+  "implementation": "9d3eb57bfcb7746f2081bb956504a4ab493aee36",
+  "pr": "https://github.com/voltcrash/oxytype/pull/140",
+  "basePr": "https://github.com/voltcrash/oxytype/pull/139",
+  "environment": {
+    "node": "24.21.0",
+    "platform": "Darwin arm64, Apple M1",
+    "date": "2026-10-16"
+  },
+  "checks": [
+    {
+      "name": "build-start",
+      "command": "vp -C frontend run build:start",
+      "exitCode": 0,
+      "seconds": 6.44
+    },
+    {
+      "name": "build-start-test",
+      "command": "vp -C frontend run build:start:test",
+      "exitCode": 0,
+      "seconds": 5.64
+    },
+    {
+      "name": "test-fe",
+      "command": "vp run test-fe",
+      "exitCode": 0,
+      "seconds": 31.06
+    },
+    {
+      "name": "test-pkg",
+      "command": "vp run test-pkg",
+      "exitCode": 0,
+      "seconds": 6.33
+    },
+    {
+      "name": "test-be",
+      "command": "vp run test-be",
+      "exitCode": 0,
+      "seconds": 83.47
+    },
+    {
+      "name": "lint-fe",
+      "command": "vp run lint-fe",
+      "exitCode": 0,
+      "seconds": 10.27
+    },
+    {
+      "name": "lint-be",
+      "command": "vp run lint-be",
+      "exitCode": 0,
+      "seconds": 5.13
+    },
+    {
+      "name": "lint-pkg",
+      "command": "vp run lint-pkg",
+      "exitCode": 0,
+      "seconds": 6.36
+    },
+    {
+      "name": "knip",
+      "command": "vp run knip",
+      "exitCode": 0,
+      "seconds": 3.28
+    },
+    {
+      "name": "lint-styles",
+      "command": "vp run lint-styles",
+      "exitCode": 0,
+      "seconds": 0.87
+    },
+    {
+      "name": "check-assets",
+      "command": "vp run check-assets",
+      "exitCode": 0,
+      "seconds": 3.71
+    },
+    {
+      "name": "lint-suppressions",
+      "command": "vp run lint-suppressions",
+      "exitCode": 0,
+      "seconds": 0.48
+    },
+    {
+      "name": "inventory",
+      "command": "vp -C backend exec tsx scripts/migration-inventory.ts --check",
+      "exitCode": 0,
+      "seconds": 0.43
+    },
+    {
+      "name": "test-start",
+      "command": "vp -C frontend run test:start",
+      "exitCode": 0,
+      "seconds": 19.35
+    },
+    {
+      "name": "test-start-browser",
+      "command": "vp -C frontend run test:start:browser",
+      "exitCode": 0,
+      "seconds": 121.98
+    },
+    {
+      "name": "test-e2e",
+      "command": "vp run test-e2e",
+      "exitCode": 0,
+      "seconds": 101.88
+    },
+    {
+      "name": "typing-short-word-repeat",
+      "command": "vp -C frontend exec playwright test --config playwright.start.config.ts --project=start start-e2e/typing.spec.ts --grep 'losing the session|leaving mid-test' --repeat-each 10",
+      "exitCode": 0,
+      "tests": 20
+    },
+    {
+      "name": "build-rollback",
+      "command": "vp run build",
+      "exitCode": 0,
+      "seconds": 18.73
+    },
+    {
+      "name": "dry-run-start",
+      "command": "vp -C frontend run dry-run:start",
+      "exitCode": 0,
+      "seconds": 1.46
+    },
+    {
+      "name": "build-start-staging",
+      "command": "vp -C frontend run build:start:staging",
+      "exitCode": 0,
+      "seconds": 5.73
+    },
+    {
+      "name": "dry-run-staging",
+      "command": "vp -C frontend run dry-run:start",
+      "exitCode": 0,
+      "seconds": 1.46
+    },
+    {
+      "name": "format",
+      "command": "vp fmt frontend/src frontend/__tests__ frontend/start-e2e frontend/e2e frontend/scripts frontend/playwright.start*.ts frontend/package.json docs/tanstack-start/evidence/stage-5-* --check",
+      "exitCode": 0
+    },
+    {
+      "name": "browser-performance",
+      "command": "vp -C frontend exec tsx scripts/migration-performance.ts check ../docs/tanstack-start/evidence/stage-5-browser-budgets.json ../docs/tanstack-start/evidence/stage-5-browser-measurements.json",
+      "exitCode": 0
+    },
+    {
+      "name": "scoped-frozen-records",
+      "command": "Compare each of the 8 stage-5-browser-budgets.json records with budgets.json",
+      "exitCode": 0
+    },
+    {
+      "name": "whitespace",
+      "command": "vp exec git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "counts": {
+    "frontendFiles": 234,
+    "frontendTests": 2308,
+    "backendUnitTests": 803,
+    "backendD1Tests": 124,
+    "sharedFiles": 54,
+    "sharedTests": 636,
+    "workerdFiles": 10,
+    "workerdTests": 50,
+    "startBrowserTests": 59,
+    "rollbackBrowserTests": 31
+  },
+  "performance": {
+    "scope": "Eight Stage 0 browser/entry-byte metrics; exact frozen record extraction, no changed thresholds",
+    "measurements": "stage-5-browser-measurements.json",
+    "budgets": "stage-5-browser-budgets.json",
+    "readinessSamplesPerMetric": 20,
+    "renderingSamplesPerMetric": 150,
+    "eagerSamples": 5,
+    "nativeEagerRawBytes": 382366,
+    "nativeEagerGzipBytes": 128635,
+    "rollbackEagerRawBytes": 916624,
+    "rollbackEagerGzipBytes": 321106,
+    "nativeStagingWorkerRawKiB": 4178.51,
+    "nativeStagingWorkerGzipKiB": 931.71
+  },
+  "ci": {
+    "run": "https://github.com/voltcrash/oxytype/actions/runs/38869928648",
+    "head": "6d90361aa32ce8cb5d0e7451a26167f2328f382e",
+    "status": "pass",
+    "requiredChecks": ["ci-fe", "ci-start", "test-e2e", "check-format", "knip"],
+    "skippedByPathFilter": ["ci-be", "ci-assets", "ci-pkg", "ci-tui"],
+    "note": "Backend, shared and asset gates all pass locally; no TUI work. Product code is unchanged from the earlier green implementation 9d3eb57bf; this run includes the deterministic short-word fixture correction. Evidence/handoff commits follow.",
+    "resolvedFixtureFailureRun": "https://github.com/voltcrash/oxytype/actions/runs/38868767591"
+  },
+  "resolvedFailures": [
+    "Preferences launched an animated restart before entry; activate the typing route after preferences.",
+    "Moved typing sources made operation caller paths stale; refreshed all 82 operations without policy changes.",
+    "Unused account readiness export; made module-private.",
+    "Expanded browser suite shared one session rate bucket and hit 429; per-context reserved edge IPs retain real limits.",
+    "Rollback build removed Start dist output before dry-run; rebuilt Start then reran both dry-runs.",
+    "Random two-letter first words invalidated a three-letter test assumption before auth loss; assert actual input count and use supported deterministic short custom text. Twenty repeated local checks and corrected Linux CI pass."
+  ],
+  "preExistingRequiredTestFailures": [],
+  "remainingAdapters": {
+    "rollback": "Legacy page/controller/cache/activity/URL adapters: delete Stage 8 with rollback entry",
+    "transport": "Ape, snapshot, result HTTP transport, /api/$ Hono adapter: Stage 6",
+    "delivery": "Production deployment/PWA/static delivery: Stages 7\u20138"
+  },
+  "unchanged": [
+    "packages/typing-core algorithms and fixtures",
+    "backend services and authentication policies",
+    "D1 data and migrations",
+    "frontend/src/html/warnings.html",
+    "TUI source and validation scope"
+  ]
+}

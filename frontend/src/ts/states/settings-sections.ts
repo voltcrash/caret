@@ -1,23 +1,13 @@
-import { createSignal } from "solid-js";
-import { z } from "zod";
-import { serialize as serializeUrlSearchParams } from "zod-urlsearchparams";
-import { createModuleEffectOn } from "../hooks/effects";
-import { replaceUrl } from "../navigation/navigation";
+import { createContext } from "solid-js";
+import {
+  type SettingsSection,
+  SettingsUrlParamsSchema,
+} from "../../features/settings/tabs";
 import { FaSolidIcon } from "../types/font-awesome";
-import { getActivePage, isAuthenticated } from "./core";
+import { isAuthenticated } from "./core";
 
-const SettingsSectionSchema = z.enum([
-  "behavior",
-  "input",
-  "sound",
-  "caret",
-  "appearance",
-  "theme",
-  "hideElements",
-  "account",
-  "dangerZone",
-]);
-export type SettingsSection = z.infer<typeof SettingsSectionSchema>;
+export type { SettingsSection };
+export { SettingsUrlParamsSchema };
 
 export const settingsSections: Record<
   SettingsSection,
@@ -38,21 +28,6 @@ export const settingsSections: Record<
   dangerZone: { text: "advanced", icon: "fa-sliders-h" },
 };
 
-export const SettingsUrlParamsSchema = z
-  .object({
-    tab: z.enum([
-      ...SettingsSectionSchema.options,
-      "authentication",
-      "blockedUsers",
-      "apeKeys",
-    ]),
-  })
-  .partial();
-type SettingsUrlParams = z.infer<typeof SettingsUrlParamsSchema>;
-
-export const [getCurrentSettingsSection, setCurrentSettingsSection] =
-  createSignal<SettingsSection>("behavior");
-
 export function getAvailableSettingsSections(): Partial<
   typeof settingsSections
 > {
@@ -63,36 +38,13 @@ export function getAvailableSettingsSections(): Partial<
   );
 }
 
-function isSectionAvailable(section: SettingsSection): boolean {
-  return !settingsSections[section].requiresAuthentication || isAuthenticated();
-}
-
-export function readSettingsGetParameters(
-  params: SettingsUrlParams | undefined,
-): void {
-  if (params?.tab === undefined) return;
-
-  const section =
-    params.tab === "authentication"
-      ? "account"
-      : params.tab === "blockedUsers" || params.tab === "apeKeys"
-        ? "behavior"
-        : params.tab;
-  setCurrentSettingsSection(isSectionAvailable(section) ? section : "behavior");
-}
-
-createModuleEffectOn(import.meta.hot, isAuthenticated, () => {
-  if (!isSectionAvailable(getCurrentSettingsSection())) {
-    setCurrentSettingsSection("behavior");
-  }
-});
-
-createModuleEffectOn(import.meta.hot, getCurrentSettingsSection, (tab) => {
-  //only replace the url while on the settings page, otherwise the url-handler breaks
-  if (getActivePage() !== "settings") return;
-  const urlParams = serializeUrlSearchParams({
-    schema: SettingsUrlParamsSchema,
-    data: { tab },
-  });
-  void replaceUrl(`${window.location.pathname}?${urlParams.toString()}`);
+/** The settings route's search owns the selected section. */
+export type SettingsSectionHost = {
+  current: () => SettingsSection;
+  select: (section: SettingsSection) => void;
+};
+/** Outside the settings route (isolated component tests) nothing is selectable. */
+export const SettingsSectionHostContext = createContext<SettingsSectionHost>({
+  current: (): SettingsSection => "behavior",
+  select: () => undefined,
 });

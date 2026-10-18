@@ -72,12 +72,13 @@ describe("notifications store", () => {
     });
 
     it("appends response body message", () => {
-      const response = {
+      const operation = {
+        ok: false,
         status: 400,
-        body: { message: "Bad request" },
-      } as AddNotificationOptions["response"];
+        message: "Bad request",
+      } as AddNotificationOptions["operation"];
 
-      addNotificationWithLevel("Request failed", "error", { response });
+      addNotificationWithLevel("Request failed", "error", { operation });
       expect(getNotifications()[0]?.message).toBe(
         "Request failed: Bad request",
       );
@@ -109,7 +110,7 @@ describe("notifications store", () => {
     it("appends response and error text to the last structured line", () => {
       const lines = ["Request", "", "failed"];
       addNotificationWithLevel(lines, "error", {
-        response: { status: 400, body: { message: "<img onerror=x>" } },
+        operation: { ok: false, status: 400, message: "<img onerror=x>" },
         error: new Error("<script>failure</script>"),
       });
       expect(getNotifications()[0]?.message).toEqual([

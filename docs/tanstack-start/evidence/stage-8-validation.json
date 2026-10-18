@@ -1,0 +1,101 @@
+{
+  "stage": 8,
+  "status": "pass (8.1-8.2); release pending",
+  "base": "bb8dd2cd3",
+  "implementation": "200f0a710149ac05da0c8317c83ac53e549898de",
+  "pr": "https://github.com/voltcrash/oxytype/pull/143",
+  "basePr": "https://github.com/voltcrash/oxytype/pull/142",
+  "ci": "https://github.com/voltcrash/oxytype/actions/runs/39099769261",
+  "environment": {
+    "node": "24.22.0 (vp-managed)",
+    "platform": "Linux 7.1 aarch64 (Asahi)",
+    "date": "2026-10-18"
+  },
+  "checks": [
+    {
+      "name": "lint-fe / lint-be / lint-pkg / root type-aware lint",
+      "result": "pass"
+    },
+    {
+      "name": "lint-check-config / lint-suppressions",
+      "result": "pass"
+    },
+    {
+      "name": "migration-inventory --check / generate-http-routes --check",
+      "result": "pass"
+    },
+    {
+      "name": "test-fe",
+      "result": "pass",
+      "detail": "2,315 tests, 242 files"
+    },
+    {
+      "name": "test-be (unit + real D1)",
+      "result": "pass",
+      "detail": "743 unit + 124 D1"
+    },
+    {
+      "name": "test-pkg",
+      "result": "pass",
+      "detail": "637 tests"
+    },
+    {
+      "name": "knip",
+      "result": "pass",
+      "detail": "no unused files, exports or dependencies"
+    },
+    {
+      "name": "lint-styles / check-assets / vp fmt . --check",
+      "result": "pass"
+    },
+    {
+      "name": "build:start + build:start:test + dry-run",
+      "result": "pass"
+    },
+    {
+      "name": "test:start (SSR, workerd, HTTP, isolation, bundle boundaries)",
+      "result": "pass",
+      "detail": "93 tests"
+    },
+    {
+      "name": "test:start:browser (Start + typing parity)",
+      "result": "pass",
+      "detail": "61 tests"
+    },
+    {
+      "name": "test:updates (multi-build SW, real save, rollback)",
+      "result": "pass",
+      "detail": "3 tests"
+    },
+    {
+      "name": "staging and production configuration builds + dry-runs",
+      "result": "pass",
+      "detail": "fixture public settings; no deployment"
+    },
+    {
+      "name": "Storybook build + story tests",
+      "result": "pass",
+      "detail": "120 stories (7 failed before Stage 8)"
+    },
+    {
+      "name": "browser budgets (Stage 7 budget file)",
+      "result": "environmental miss",
+      "detail": "all pass except letter-update p95 0.035 vs 0.014 ms; Stage 7 tip measures 0.036-0.038 on the same machine"
+    },
+    {
+      "name": "Worker budgets",
+      "result": "environmental miss",
+      "detail": "startup/save/CPU exceed Stage 0 ceilings for both Stage 7 and Stage 8 on this machine; Stage 8 within noise of Stage 7; Worker 2,019,643 B raw / 590,782 B gzip, D1 counts 4/6/19/7, save 18-20"
+    }
+  ],
+  "fixedDuringGate": [
+    "Root script contract test: ANTICHEAT.md still documented build-be.",
+    "A local Storybook build output was linted by stylelint (removed; gitignored).",
+    "Word-rendering benchmark keyed on a removed Playwright project name.",
+    "measure-worker.ts could not find workerd or read sub-second CPU on Linux."
+  ],
+  "notRun": [
+    "staging deployment, hosted browser acceptance and interactive OAuth (needs Cloudflare credentials and a human sign-in)",
+    "production cutover and launch observation (8.3)"
+  ]
+}
