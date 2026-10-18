@@ -327,14 +327,6 @@ export function addXp(xp: number, breakdown?: XpBreakdown): void {
   });
 }
 
-export function updateInboxUnreadSize(newSize: number): void {
-  const snapshot = getSnapshot();
-  if (!snapshot) return;
-
-  snapshot.inboxUnreadSize = newSize;
-  setSnapshot(snapshot);
-}
-
 export function addBadge(badge: Badge): void {
   const snapshot = getSnapshot();
   if (!snapshot) return;
