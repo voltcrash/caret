@@ -205,8 +205,8 @@ test("leaving incomplete signup cancels its session without changing the documen
   await expect(
     page.getByRole("button", { name: "cancel sign up" }),
   ).toBeVisible();
-  await page.getByRole("link", { name: "About", exact: true }).click();
-  await expect(page).toHaveURL(/\/about$/);
+  await page.getByRole("link", { name: "Settings", exact: true }).click();
+  await expect(page).toHaveURL(/\/settings$/);
   await expect
     .poll(
       async () =>

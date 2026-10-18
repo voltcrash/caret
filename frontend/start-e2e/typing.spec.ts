@@ -131,8 +131,8 @@ test("leaving mid-test disposes the route and returning starts a fresh test", as
   await page.clock.install();
   await openTest(page);
   await typeFirstLetters(page, 2);
-  await nav(page, "About").click();
-  await expect(page).toHaveURL(/\/about$/);
+  await nav(page, "Settings").click();
+  await expect(page).toHaveURL(/\/settings$/);
   await expect(page.locator("#wordsInput")).toHaveCount(0);
   // The abandoned 15 second timer must not finish or touch detached refs.
   await page.clock.runFor(20_000);
@@ -155,7 +155,7 @@ test("no_quit blocks leaving an active test until it ends", async ({
   await useConfig(page, { mode: "words", words: 15, funbox: ["no_quit"] });
   await openTest(page);
   await typeFirstLetters(page, 1);
-  await nav(page, "About").click();
+  await nav(page, "Settings").click();
   await expect(
     page.getByText("No quit funbox is active. Please finish the test."),
   ).toBeVisible();
@@ -176,8 +176,8 @@ test("typing keys focus the input and funbox styles leave with the route", async
   await expect(page.locator("#wordsInput")).not.toBeFocused();
   await page.keyboard.press("a");
   await expect(page.locator("#wordsInput")).toBeFocused();
-  await nav(page, "About").click();
-  await expect(page).toHaveURL(/\/about$/);
+  await nav(page, "Settings").click();
+  await expect(page).toHaveURL(/\/settings$/);
   await expect(stylesheet).toHaveCount(0);
 });
 
@@ -222,8 +222,8 @@ test("an in-flight save neither blocks navigation nor submits twice", async ({
   await expect.poll(() => submissions.length).toBe(1);
   // Calculation and the result fade block navigation; the pending save does not.
   await expect(page.locator("#result")).toHaveCSS("opacity", "1");
-  await nav(page, "About").click();
-  await expect(page).toHaveURL(/\/about$/);
+  await nav(page, "Settings").click();
+  await expect(page).toHaveURL(/\/settings$/);
   release();
   await page.waitForLoadState("networkidle");
   await nav(page, "Test").click();
