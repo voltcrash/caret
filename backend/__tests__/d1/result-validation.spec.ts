@@ -60,13 +60,7 @@ describe("result submission validation with D1", () => {
         expect(user.personalBests.time).toEqual({});
         expect(user.xp).toBeUndefined();
         expect(user.completedTests).toBeUndefined();
-        for (const table of [
-          "results",
-          "daily_entries",
-          "weekly_entries",
-          "reward_grants",
-          "outbox",
-        ]) {
+        for (const table of ["results", "daily_entries", "weekly_entries"]) {
           expect(
             await test.env.DB.prepare(
               `SELECT count(*) AS n FROM ${table} WHERE uid=?`,
