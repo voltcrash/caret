@@ -42,7 +42,6 @@ export {
 
 export { getProfile, updateProfile } from "./user/profile";
 
-
 export { reportUser } from "./user/report";
 
 export { getUser, getPersonalBests, getStats } from "./user/data";
