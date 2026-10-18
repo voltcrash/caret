@@ -43,9 +43,9 @@ describe("AnimatedModal", () => {
   let displayStyles: HTMLStyleElement;
 
   beforeEach(() => {
-    hideModalAndClearChain("Support");
-    hideModalAndClearChain("Contact");
-    showModal("Support");
+    hideModalAndClearChain("QuoteRate");
+    hideModalAndClearChain("QuoteReport");
+    showModal("QuoteRate");
     vi.clearAllMocks();
     animations.length = 0;
     // jsdom has no Tailwind stylesheet or layout. Model its display utilities
@@ -79,8 +79,8 @@ describe("AnimatedModal", () => {
 
   afterEach(() => {
     cleanup();
-    hideModalAndClearChain("Support");
-    hideModalAndClearChain("Contact");
+    hideModalAndClearChain("QuoteRate");
+    hideModalAndClearChain("QuoteReport");
     displayStyles.remove();
   });
 
@@ -100,7 +100,11 @@ describe("AnimatedModal", () => {
     modalDiv: HTMLDivElement | null;
   } {
     const { container } = render(() => (
-      <AnimatedModal id="Support" {...props} wrapperClass={props.wrapperClass}>
+      <AnimatedModal
+        id="QuoteRate"
+        {...props}
+        wrapperClass={props.wrapperClass}
+      >
         <div data-testid="modal-content">Test Content</div>
       </AnimatedModal>
     ));
@@ -125,7 +129,7 @@ describe("AnimatedModal", () => {
   it("renders dialog with correct id and class", () => {
     const { dialog } = renderModal({});
 
-    expect(dialog).toHaveAttribute("id", "SupportModal");
+    expect(dialog).toHaveAttribute("id", "QuoteRateModal");
   });
 
   it("renders children inside modal div", () => {
@@ -138,7 +142,7 @@ describe("AnimatedModal", () => {
   });
 
   it("doesnt render children if not open", () => {
-    hideModal("Support");
+    hideModal("QuoteRate");
     const { modalDiv } = renderModal({});
 
     expect(modalDiv).not.toBeInTheDocument();
@@ -169,7 +173,7 @@ describe("AnimatedModal", () => {
       animationMode: "none",
     });
 
-    expect(dialog).toHaveAttribute("id", "SupportModal");
+    expect(dialog).toHaveAttribute("id", "QuoteRateModal");
   });
 
   it("opens the native dialog after preparation", async () => {
@@ -190,7 +194,7 @@ describe("AnimatedModal", () => {
     await waitFor(() => expect(dialog.open).toBe(true));
     await completeAnimation();
 
-    hideModal("Support");
+    hideModal("QuoteRate");
     await waitFor(() => expect(animations).toHaveLength(4));
     expect(dialog.open).toBe(true);
     expect(afterHide).not.toHaveBeenCalled();
@@ -205,7 +209,7 @@ describe("AnimatedModal", () => {
     const { dialog } = renderModal({ animationMode: "none", afterHide });
     await waitFor(() => expect(dialog.open).toBe(true));
 
-    hideModal("Support");
+    hideModal("QuoteRate");
     await waitFor(() => expect(dialog.open).toBe(false));
     expect(afterHide).toHaveBeenCalledOnce();
     expect(animations).toHaveLength(0);
@@ -221,7 +225,7 @@ describe("AnimatedModal", () => {
   });
 
   it("keeps an unopened dialog out of overlay detection", () => {
-    hideModal("Support");
+    hideModal("QuoteRate");
     const { dialog } = renderModal({});
 
     expect(getComputedStyle(dialog).display).toBe("none");
@@ -246,7 +250,7 @@ describe("AnimatedModal", () => {
       expect(isAnyPopupVisible()).toBe(true);
       animations.length = 0;
 
-      hideModal("Support");
+      hideModal("QuoteRate");
       if (animationMode !== "none") {
         await waitFor(() => expect(animations.length).toBeGreaterThan(0));
         await completeAnimation();
@@ -258,7 +262,7 @@ describe("AnimatedModal", () => {
       setWrapperClass("bg-transparent");
       expect(isAnyPopupVisible()).toBe(false);
 
-      showModal("Support");
+      showModal("QuoteRate");
       await waitFor(() => expect(dialog.open).toBe(true));
       expect(getComputedStyle(dialog).display).toBe("flex");
     },
@@ -286,7 +290,7 @@ describe("AnimatedModal", () => {
         expect(dialog.open).toBe(false);
         expect(isAnyPopupVisible()).toBe(false);
         expect(afterHide).toHaveBeenCalledTimes(cycle + 1);
-        if (cycle < 2) showModal("Support");
+        if (cycle < 2) showModal("QuoteRate");
       }
     },
   );
@@ -307,7 +311,7 @@ describe("AnimatedModal", () => {
     expect(HTMLDialogElement.prototype.show).toHaveBeenCalledOnce();
     expect(HTMLDialogElement.prototype.showModal).not.toHaveBeenCalled();
 
-    hideModal("Support");
+    hideModal("QuoteRate");
     await waitFor(() => expect(dialog.open).toBe(false));
 
     expect(getComputedStyle(dialog).display).toBe("none");
@@ -317,21 +321,21 @@ describe("AnimatedModal", () => {
   it("closes and restores chained dialogs without leaving visible wrappers", async () => {
     const { container } = render(() => (
       <>
-        <AnimatedModal id="Support">Support content</AnimatedModal>
-        <AnimatedModal id="Contact">Contact content</AnimatedModal>
+        <AnimatedModal id="QuoteRate">QuoteRate content</AnimatedModal>
+        <AnimatedModal id="QuoteReport">QuoteReport content</AnimatedModal>
       </>
     ));
     const support = container.querySelector(
-      "#SupportModal",
+      "#QuoteRateModal",
     ) as HTMLDialogElement;
     const contact = container.querySelector(
-      "#ContactModal",
+      "#QuoteReportModal",
     ) as HTMLDialogElement;
     await waitFor(() => expect(support.open).toBe(true));
     await completeAnimation();
     animations.length = 0;
 
-    showModal("Contact");
+    showModal("QuoteReport");
     await waitFor(() => expect(animations).toHaveLength(1));
     await completeAnimation();
     await waitFor(() => expect(contact.open).toBe(true));
@@ -340,7 +344,7 @@ describe("AnimatedModal", () => {
     await completeAnimation();
     animations.length = 0;
 
-    hideModal("Contact");
+    hideModal("QuoteReport");
     await waitFor(() => expect(animations).toHaveLength(1));
     await completeAnimation();
     await waitFor(() => expect(support.open).toBe(true));
@@ -349,7 +353,7 @@ describe("AnimatedModal", () => {
     await completeAnimation();
     animations.length = 0;
 
-    hideModal("Support");
+    hideModal("QuoteRate");
     await waitFor(() => expect(animations).toHaveLength(2));
     await completeAnimation();
     expect(support.open).toBe(false);
@@ -397,7 +401,7 @@ describe("AnimatedModal", () => {
       pointer(handle, "pointercancel", 220);
 
       expect(onBackdropClick).not.toHaveBeenCalled();
-      expect(isModalOpen("Support")).toBe(true);
+      expect(isModalOpen("QuoteRate")).toBe(true);
       expect(dialog.open).toBe(true);
       expect(animations.at(-1)?.params["translateY"]).toEqual(["120px", "0px"]);
     });
@@ -409,7 +413,7 @@ describe("AnimatedModal", () => {
       pointer(handle, "pointerup", 220);
 
       expect(onBackdropClick).toHaveBeenCalledOnce();
-      expect(isModalOpen("Support")).toBe(true);
+      expect(isModalOpen("QuoteRate")).toBe(true);
       expect(animations.at(-1)?.params["translateY"]).toEqual(["120px", "0px"]);
     });
   });
