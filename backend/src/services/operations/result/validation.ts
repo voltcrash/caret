@@ -1,5 +1,3 @@
-import { clientProfile } from "../../../db/client-profile";
-
 import * as ResultDAL from "../../../dal/result";
 
 import { omit } from "../../../utils/misc";
@@ -52,7 +50,7 @@ export async function validateSubmission(
   // Each optimistic retry starts from the original client payload/hash.
   const completedEvent = structuredClone(input.body.result);
   completedEvent.uid = uid;
-  const profile = clientProfile(user, completedEvent.client);
+  const profile = user;
   const offline = completedEvent.offline === true;
   if (
     offline &&
