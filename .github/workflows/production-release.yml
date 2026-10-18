@@ -1,11 +1,11 @@
-name: Production release
+name: Production deployment
 
-# Manual only: a maintainer dispatches each production release from main.
+# Manual only: each dispatch deploys the selected main snapshot.
 on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   actions: read
 
 concurrency:
@@ -17,9 +17,9 @@ env:
   CI: "true"
 
 jobs:
-  release:
-    if: github.repository == 'voltcrash/oxytype' && github.ref == 'refs/heads/main' && vars.START_PRODUCTION_ENABLED == 'true'
-    name: Deploy production and publish release
+  deploy:
+    if: github.repository == 'voltcrash/oxytype' && github.ref == 'refs/heads/main'
+    name: Deploy production
     runs-on: ubuntu-latest
     timeout-minutes: 60
     environment:
@@ -30,57 +30,32 @@ jobs:
         uses: actions/checkout@v7.0.1
         with:
           ref: ${{ github.sha }}
-          fetch-depth: 0
+          persist-credentials: false
 
-      - name: Plan numbered release and changes
-        id: plan
-        uses: actions/github-script@v9.0.0
-        with:
-          script: |
-            const { prepareProductionRelease } = await import(`${process.env.GITHUB_WORKSPACE}/packages/release/src/production-release.js`);
-            const plan = await prepareProductionRelease({ github, context, cwd: process.env.GITHUB_WORKSPACE });
-            for (const key of ['version', 'tag', 'sha', 'shouldDeploy']) core.setOutput(key, plan[key]);
-            if (plan.shouldDeploy) {
-              require('node:fs').writeFileSync(`${process.env.RUNNER_TEMP}/production-release-notes.md`, plan.body);
-              require('node:fs').writeFileSync(`${process.env.GITHUB_WORKSPACE}/frontend/static/release.json`, `${JSON.stringify(plan.releaseHistory, null, 2)}\n`);
-            } else {
-              const message = plan.skipReason === 'no-new-commits'
-                ? 'No new commits since the previous production release; skipping deployment and publication.'
-                : `Release ${plan.tag} already deployed; skipping this run.`;
-              await core.summary.addRaw(message).write();
-            }
-
-      - name: Require successful CI for the release commit
+      - name: Require successful CI for the deployment commit
         id: validate-ci
-        if: steps.plan.outputs.shouldDeploy == 'true'
         uses: actions/github-script@v9.0.0
-        env:
-          RELEASE_SHA: ${{ steps.plan.outputs.sha }}
         with:
           script: |
             const { requireSuccessfulProductionCI } = await import(`${process.env.GITHUB_WORKSPACE}/packages/release/src/production-validation.js`);
-            const run = await requireSuccessfulProductionCI({ github, context, sha: process.env.RELEASE_SHA });
+            const run = await requireSuccessfulProductionCI({ github, context, sha: context.sha });
             await core.summary.addLink('Validated Oxytype CI', run.html_url).write();
 
       - name: Set up Vite+
-        if: steps.plan.outputs.shouldDeploy == 'true'
         uses: voidzero-dev/setup-vp@v1.21.1
         with:
           node-version: ${{ env.NODE_VERSION }}
-          # Install after private settings and the release version are written.
           run-install: false
 
       - name: Prepare production credentials and build settings
-        if: steps.plan.outputs.shouldDeploy == 'true'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           PRODUCTION_BACKEND_ENV: ${{ secrets.PRODUCTION_BACKEND_ENV }}
           BETTER_AUTH_API_KEY: ${{ secrets.BETTER_AUTH_API_KEY }}
           PRODUCTION_FRONTEND_ENV: ${{ vars.PRODUCTION_FRONTEND_ENV }}
-          RELEASE_VERSION: ${{ steps.plan.outputs.version }}
         run: |
           node --input-type=module <<'NODE'
-          import { readFileSync, writeFileSync } from 'node:fs';
+          import { writeFileSync } from 'node:fs';
           for (const key of ['CLOUDFLARE_API_TOKEN', 'PRODUCTION_BACKEND_ENV', 'PRODUCTION_FRONTEND_ENV']) {
             if (!process.env[key]?.trim()) throw new Error(`Configure the production Actions input ${key}`);
           }
@@ -88,70 +63,30 @@ jobs:
           const backendEnv = process.env.PRODUCTION_BACKEND_ENV + (dashboardApiKey ? `\nBETTER_AUTH_API_KEY=${JSON.stringify(dashboardApiKey)}\n` : '');
           writeFileSync('frontend/.dev.vars.production', backendEnv, { mode: 0o600 });
           writeFileSync('frontend/.env.production.local', process.env.PRODUCTION_FRONTEND_ENV, { mode: 0o600 });
-          const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
-          pkg.version = process.env.RELEASE_VERSION;
-          writeFileSync('package.json', `${JSON.stringify(pkg, null, 2)}\n`);
           NODE
 
       - name: Install dependencies
-        if: steps.plan.outputs.shouldDeploy == 'true'
         run: vp install --frozen-lockfile
 
       - name: Build production frontend and Worker
-        if: steps.plan.outputs.shouldDeploy == 'true'
         env:
-          OXYTYPE_BUILD_ID: ${{ steps.plan.outputs.version }}-${{ steps.plan.outputs.sha }}
+          OXYTYPE_BUILD_ID: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
         run: vp run --filter @oxytype/frontend build:production-site
 
       - name: Check production deployment
-        if: steps.plan.outputs.shouldDeploy == 'true'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: vp run --filter @oxytype/frontend deploy:production-dry-run
 
-      - name: Retain matched Start release artifact
-        if: steps.plan.outputs.shouldDeploy == 'true'
-        uses: actions/upload-artifact@v6
-        with:
-          name: start-${{ steps.plan.outputs.version }}-${{ steps.plan.outputs.sha }}
-          include-hidden-files: true
-          retention-days: 90
-          path: |
-            frontend/dist/start
-            frontend/wrangler.production.json
-            pnpm-lock.yaml
-
       - name: Apply production D1 migrations
-        if: steps.plan.outputs.shouldDeploy == 'true'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: vp run --filter @oxytype/frontend db:migrate:production
 
       - name: Deploy production with Wrangler
-        if: steps.plan.outputs.shouldDeploy == 'true'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          RELEASE_VERSION: ${{ steps.plan.outputs.version }}
         run: vp run --filter @oxytype/frontend deploy:production-site
-
-      - name: Publish GitHub release after deployment
-        if: steps.plan.outputs.shouldDeploy == 'true'
-        uses: actions/github-script@v9.0.0
-        env:
-          RELEASE_VERSION: ${{ steps.plan.outputs.version }}
-          RELEASE_TAG: ${{ steps.plan.outputs.tag }}
-          RELEASE_SHA: ${{ steps.plan.outputs.sha }}
-        with:
-          script: |
-            const { publishProductionRelease } = await import(`${process.env.GITHUB_WORKSPACE}/packages/release/src/production-release.js`);
-            const { data: release } = await publishProductionRelease({
-              github, context,
-              version: process.env.RELEASE_VERSION,
-              tag: process.env.RELEASE_TAG,
-              sha: process.env.RELEASE_SHA,
-              body: require('node:fs').readFileSync(`${process.env.RUNNER_TEMP}/production-release-notes.md`, 'utf8'),
-            });
-            await core.summary.addLink(release.name, release.html_url).write();
 
       - name: Remove private settings
         if: always()
