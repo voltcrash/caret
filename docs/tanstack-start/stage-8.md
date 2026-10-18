@@ -11,7 +11,7 @@ changes.
 | --- | --- |
 | 8.1 Delete superseded code, document the system | Complete |
 | 8.2 Migration acceptance gate | Complete: local gate + all 12 CI checks on `200f0a710` ([validation](evidence/stage-8-validation.json), [run](https://github.com/voltcrash/oxytype/actions/runs/39099769261)) |
-| 8.3 Release, observe, retire compatibility | In progress: stack merged, main CI green, human staging acceptance passed; auth fixes #146 awaiting merge; production pending |
+| 8.3 Release, observe, retire compatibility | In progress: human staging acceptance passed; auth fixes #146 merged; deployment-only follow-up #147 pending; production pending |
 
 ## 8.1 Deleted
 
@@ -141,12 +141,16 @@ No production deployment was performed. The deployment-only follow-up removes
 numbered releases, GitHub publication and the home-page version/history UI.
 Its manual workflow validates main CI and deploys on every dispatch, including
 repeat deployments of the same snapshot. Internal build IDs and the retained
-Cloudflare Worker/assets rollback version remain available.
+Cloudflare Worker/assets rollback version remain available. [#147](https://github.com/voltcrash/oxytype/pull/147)
+records the deployment-only change and its [validation](evidence/deployment-only.json).
+All eleven GitHub release records were deleted on October 18; Git source tags
+remain available. #146 passed all applicable CI checks and was merged with the
+regular merge commit `9e69d569a`.
 
 ## Remaining before Stage 8 exit
 
-- Merge #146 and its deployment-only follow-up after CI passes, using regular
-  merge commits; the production workflow runs only on `main`.
+- Merge #147 after CI passes, using a regular merge commit; the production
+  workflow runs only on `main`.
 - Manually dispatch the production deployment workflow when ready, then observe
   launch signals (input readiness, auth/session failures, save success and
   duplicates, Worker errors/CPU, queue/DLQ, route errors, version skew).

@@ -12,7 +12,8 @@ Observed 2026-10-15:
   at source `e9bb89fe72b7af4f3078d821277dd38cad482a26`, followed by
   `v26.10.10`
   (published as `v26.10.15`; renamed when releases moved to `YY.MM.NN`)
-  publication at 04:50:20 UTC. Release tag resolves to that commit; deployment
+  publication at 04:50:20 UTC. The GitHub release record was removed on October 18
+  with the deployment-only change; its source tag remains. The tag resolves to that commit; deployment
   and publication timestamps align with workflow order. Re-observe before cutover;
   this is a dated anchor, not an assertion that production will remain unchanged.
 - GitHub release has no binary assets. The retained Cloudflare Worker version
