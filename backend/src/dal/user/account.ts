@@ -75,12 +75,7 @@ export async function resetUser(uid: string): Promise<void> {
       testActivity: {},
     });
     delete user.lbOptOut;
-    delete user.inbox;
-    await stage(
-      statement("UPDATE reward_grants SET claimed=1 WHERE uid=?", uid),
-    );
     for (const table of [
-      "inbox",
       "user_activity",
       "leaderboard_bests",
       "leaderboard_snapshots",
