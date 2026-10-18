@@ -60,8 +60,6 @@ export const Default = meta.story({
         />
         <div class="text-sub">Show spinner (cycling):</div>
         <SpinnerCycleUser data={data} />
-        <div class="text-sub">Show notification bubble:</div>
-        <User user={{ ...data }} showNotificationBubble={true} />
       </div>
     );
   },
