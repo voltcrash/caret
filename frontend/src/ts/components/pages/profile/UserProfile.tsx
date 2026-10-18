@@ -57,9 +57,7 @@ export function UserProfile(props: {
 
       <ActivityCalendar
         testActivity={
-          props.isAccountPage && props.client !== "tui"
-            ? undefined
-            : props.profile.testActivity
+          props.isAccountPage ? undefined : props.profile.testActivity
         }
         isAccountPage={props.isAccountPage}
         client={props.client}
@@ -191,11 +189,7 @@ function PbCard<M extends "time" | "words">(props: {
             class="h-full rounded-none rounded-r text-sub hover:text-bg"
             fa={{ icon: "fa-ellipsis-v" }}
             onClick={() =>
-              showPbTablesModal(
-                props.mode,
-                { [props.mode]: props.pbs },
-                props.client,
-              )
+              showPbTablesModal(props.mode, { [props.mode]: props.pbs })
             }
           />
         </div>
