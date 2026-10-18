@@ -1,4 +1,3 @@
-import { projectClientUser } from "../../db/client-profile";
 import { eq } from "drizzle-orm";
 
 import MonkeyError from "../../utils/error";
@@ -15,13 +14,13 @@ import { readInbox } from "./inbox-read";
 export async function getUser(
   uid: string,
   stack: string,
-  client: Client = "web",
+  _client: Client = "web",
 ): Promise<DBUser> {
   const user = await readUser(uid);
   if (!user) throw new MonkeyError(404, "User not found", stack);
   user.personalBests ??= emptyPb();
   user.inbox = await readInbox(uid);
-  return projectClientUser(user, client);
+  return user;
 }
 export async function getPartialUser<K extends keyof DBUser>(
   uid: string,
@@ -54,9 +53,9 @@ export async function isNameAvailable(
 export async function getUserByName(
   name: string,
   stack: string,
-  client: Client = "web",
+  _client: Client = "web",
 ): Promise<DBUser> {
   const user = await findByName(name);
   if (!user) throw new MonkeyError(404, "User not found", stack);
-  return projectClientUser(user, client);
+  return user;
 }
