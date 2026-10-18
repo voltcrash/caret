@@ -106,9 +106,8 @@ Deployment validates credentials, public settings, resource identity and every f
 changed or mismatched builds fail before upload. Production secrets stay in their
 private file; local preview variables are removed from the archived artifact.
 
-Stage 7 transfers tooling only. Production remains on the retained legacy version
-until Stage 8 acceptance and cutover. The scheduled/manual workflow is gated by
-repository variable START_PRODUCTION_ENABLED=true; enable only after that gate.
+Production deployments are manual-only and require successful CI for their exact
+main snapshot. Complete staging acceptance before the first Start cutover.
 
 ## Rollback
 
@@ -127,17 +126,18 @@ and wait until no tab is typing or saving; another build's server-function IDs
 answer 409 and prompt a refresh instead of resubmitting. Staging exercised
 legacy → Start → legacy and Start → Start rollbacks this way in Stage 7.
 
-## Production releases
+## Production deployments
 
-The **Production release** [Actions workflow](../.github/workflows/production-release.yml)
+The **Production deployment** [Actions workflow](../.github/workflows/production-release.yml)
 runs only when a maintainer starts it: **Run workflow** on `main`, or
-`gh workflow run production-release.yml --ref main`. There is no schedule. When
-commits have been added since the previous successful production release, it
-deploys the complete frontend/API site with the production Wrangler config,
-applies pending production D1 migrations, and publishes a GitHub release only
-after deployment succeeds. If the snapshot is already released, it skips
-dependency setup, builds, migrations, deployment and publication and records the
-skip reason.
+`gh workflow run production-release.yml --ref main`. Each dispatch deploys the
+complete frontend/API site with the production Wrangler config, including a
+repeat deployment of the same commit. It creates no GitHub release, tag,
+changelog, release snapshot or package-version change.
+
+The latest **Oxytype CI** main-push run for the exact snapshot must pass first.
+Runs are serialized; the deployment validates the matched client/Worker artifact,
+applies pending compatible D1 migrations and uploads it with Wrangler.
 
 Configure these Actions inputs in repository settings or the `production`
 environment before the first run:
@@ -153,52 +153,16 @@ The account ID and isolated resource IDs come from `frontend/wrangler.production
 The workflow writes credential files with mode `0600` for the validated production
 commands, then removes them even on failure. It never bootstraps or resets the database.
 
-Release versions are `YY.MM.NN`: two-digit year, month, and the release's
-sequence number within that UTC month, starting at `01`. The first November 2026
-release is `26.11.01`; the next one, on any later day, is `26.11.02`. Tags are
-`v`-prefixed (`v26.11.01`) at the exact deployed `main` commit; release titles
-omit the `v`. The month is taken when release planning executes. The package
-version uses the release version; Worker/client/SW/version.json use one build ID
-(version plus source SHA). No version commit is pushed to main. The workflow archives
-the complete matched artifact for 90 days before migrations/deployment; releases
-are published only after a successful deploy.
-The release notes list all commits added since the previous successful production
-release, including older branch commits merged during the day. They are grouped
-into Features (`feat`), Improvements (`impr`, `perf`), Fixes (`fix`) and Nerd
-stuff (everything else); GitHub merge commits are omitted. The first production
-release covers its execution UTC day.
-The first production release establishes the deployment baseline even without
-recent commits. Subsequent runs compare commits, so a new commit still qualifies
-when its file contents or rendered release notes are unchanged.
+Worker, client, `/version.json` and service-worker caches share an internal
+build ID: source SHA, workflow run ID and run attempt. Repeated deployments and
+retries receive distinct IDs. This identifier supports cache updates, matching
+artifacts and diagnostics; it is not a numbered release and has no home-page
+version button or changes screen. The retained Cloudflare Worker version and its
+matching assets remain the rollback artifact.
 
-Before the frontend build, the workflow writes `frontend/static/release.json`
-with the planned release's notes and the nine newest earlier public releases.
-Drafts and prereleases are excluded. This includes the release being deployed
-even though GitHub publication happens afterward. The generated snapshot is
-bundled into the deployment; it does not create a commit on `main`.
-
-The footer version and version-history modal read `/release.json` from the site,
-without browser requests to GitHub's API. The modal shows at most ten releases
-and links to [GitHub releases](https://github.com/voltcrash/oxytype/releases)
-for older history. Hosting and the service worker avoid persistently caching the
-snapshot so the next deployment can update it.
-
-Runs are serialized. A run whose snapshot is the latest release skips deployment
-and publication. A deployment whose publication failed leaves its tag on the
-snapshot; the retry reuses that number. Numbers held by other releases or tags
-are never reused. An older snapshot cannot deploy over already released commits,
-and a production release from a later month stops the workflow.
-
-After merging a fix for a failed release, start a new **Production release** run
-from **main** in Actions, or run `gh workflow run production-release.yml --ref main`.
-Rerunning the old failed run retains its original snapshot and cannot pick up the fix.
-
-Releases before the numbering change were renamed from date tags in publication
-order (October 2026: `v26.10.04`–`v26.10.16` became `v26.10.01`–`v26.10.11`) with
-`node packages/release/src/renumber-releases-cli.js` (dry run; `--apply` renames).
-Old date tags no longer exist; the `v2026.10.*` tags are older and unrelated.
-Existing clones keep stale local tags under reused names; refresh them with
-`git fetch --prune --prune-tags --force`.
+After merging a fix for a failed deployment, start a new **Production deployment**
+run from **main**, or run `gh workflow run production-release.yml --ref main`.
+Rerunning an old failed run retains its original snapshot and cannot pick up the fix.
 
 ## Browser verification and monitoring
 
