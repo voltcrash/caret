@@ -28,6 +28,7 @@ async function dispatchAuthRequest(
     !request.headers.has("sec-fetch-site");
   const nativeBearerRequest =
     noBrowserContext &&
+    !dashboardRequest &&
     request.headers.get("authorization")?.startsWith("Bearer ") === true &&
     (await auth.api.getSession({ headers: request.headers })) !== null;
   if (
