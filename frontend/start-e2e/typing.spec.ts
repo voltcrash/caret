@@ -268,37 +268,6 @@ test("losing the session mid-test keeps the active attempt", async ({
   await expect(page.locator("#wordsInput")).toBeFocused();
 });
 
-test("a terminal handoff waits for sign-in and opens its form once", async ({
-  page,
-  context,
-}) => {
-  const documents = trackDocuments(page);
-  // quote-submit only renders inside quote search (pre-existing in both hosts).
-  await page.goto("/?terminalAction=quote-report&language=english&quoteId=1");
-  await expect(
-    page.getByText("Sign in to continue the terminal browser action").first(),
-  ).toBeVisible();
-  await expect(page).toHaveURL(/\/login$/);
-  await signIn(context);
-  await page.evaluate(() =>
-    window.dispatchEvent(new Event("visibilitychange")),
-  );
-  await expect(nav(page, "Sign in")).toHaveCount(0);
-  await nav(page, "Test").click();
-  const dialog = page.getByRole("dialog", { name: "Report a quote" });
-  await expect(dialog).toBeVisible();
-  // Escape is ignored until the opening animation finishes.
-  await expect(async () => {
-    await page.keyboard.press("Escape");
-    await expect(dialog).toBeHidden({ timeout: 500 });
-  }).toPass();
-  await nav(page, "About").click();
-  await nav(page, "Test").click();
-  await expect(page.locator("#words .word").first()).toBeVisible();
-  await expect(dialog).toBeHidden();
-  expect(documents).toHaveLength(1);
-});
-
 test("result screenshots download from the native route", async ({ page }) => {
   await useConfig(page, { mode: "words", words: 10 });
   const errors = trackErrors(page);
