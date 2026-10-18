@@ -1,6 +1,5 @@
 {
   "name": "oxytype",
-  "version": "26.10.11",
   "private": true,
   "license": "GPL-3.0",
   "type": "module",
