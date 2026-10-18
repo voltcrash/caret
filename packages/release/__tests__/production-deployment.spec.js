@@ -1,4 +1,16 @@
-import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { parseEnv } from "node:util";
 import { expect, it } from "vite-plus/test";
 import { parse } from "yaml";
 
@@ -64,3 +76,58 @@ it("validates the exact deployment snapshot before building and applying migrati
     "--filter @oxytype/frontend deploy:production-site",
   );
 });
+
+it.each(["", "ba_dashboard_workflow_fixture"])(
+  "writes private deployment settings without changing package metadata (%s)",
+  (apiKey) => {
+    const settings = workflow.jobs.deploy.steps.find(
+      (step) =>
+        step.name === "Prepare production credentials and build settings",
+    );
+    expect(settings.env.BETTER_AUTH_API_KEY).toBe(
+      "${{ secrets.BETTER_AUTH_API_KEY }}",
+    );
+    const script = settings.run.match(/<<'NODE'\n([\s\S]+)\nNODE/)?.[1];
+    if (script === undefined) {
+      throw new Error("Missing deployment settings script");
+    }
+    const directory = mkdtempSync(join(tmpdir(), "oxytype-deploy-settings-"));
+    const manifest = '{"name":"fixture","private":true}\n';
+    try {
+      mkdirSync(join(directory, "frontend"));
+      writeFileSync(join(directory, "package.json"), manifest);
+      const frontend =
+        "BACKEND_URL=/api\nTURNSTILE_SITE_KEY=public-fixture\nAUTH_PROVIDERS=github\n";
+      execFileSync(process.execPath, ["--input-type=module"], {
+        cwd: directory,
+        input: script,
+        env: {
+          ...process.env,
+          CLOUDFLARE_API_TOKEN: "cloudflare-fixture",
+          PRODUCTION_BACKEND_ENV:
+            "BETTER_AUTH_SECRET=auth-secret-fixture\nBETTER_AUTH_API_KEY=existing-dashboard-key\n",
+          BETTER_AUTH_API_KEY: apiKey,
+          PRODUCTION_FRONTEND_ENV: frontend,
+        },
+      });
+      const backendPath = join(directory, "frontend/.dev.vars.production");
+      const frontendPath = join(directory, "frontend/.env.production.local");
+      const backend = parseEnv(readFileSync(backendPath, "utf8"));
+      expect(backend.BETTER_AUTH_SECRET).toBe("auth-secret-fixture");
+      expect(backend.BETTER_AUTH_API_KEY).toBe(
+        apiKey || "existing-dashboard-key",
+      );
+      expect(statSync(backendPath).mode & 0o777).toBe(0o600);
+      expect(statSync(frontendPath).mode & 0o777).toBe(0o600);
+      expect(readFileSync(frontendPath, "utf8")).toBe(frontend);
+      expect(readFileSync(join(directory, "package.json"), "utf8")).toBe(
+        manifest,
+      );
+      expect(existsSync(join(directory, "frontend/static/release.json"))).toBe(
+        false,
+      );
+    } finally {
+      rmSync(directory, { recursive: true, force: true });
+    }
+  },
+);
