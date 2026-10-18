@@ -1,17 +1,23 @@
 import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
-import { createWorkerd, seedSession } from "./workerd";
+import { toJSONAsync } from "seroval";
+import { createWorkerd, seedLeaderboard, seedSession } from "./workerd";
 import { rpcPath } from "./rpc";
 
 describe("built Start application in workerd", () => {
   let mf: Awaited<ReturnType<typeof createWorkerd>>;
   beforeAll(async () => {
     mf = await createWorkerd();
+    await seedLeaderboard(mf, "a", 1);
+    await seedLeaderboard(mf, "b", 2);
   });
   afterAll(async () => await mf?.dispose());
 
   it("executes real RPC with origin protection and stable rate limits", async () => {
     const worker = await mf.getWorker("a");
-    const url = `http://localhost:3000${rpcPath("getTypingStats")}`;
+    const payload = encodeURIComponent(
+      JSON.stringify(await toJSONAsync({ data: { query: { client: "web" } } })),
+    );
+    const url = `http://localhost:3000${rpcPath("publicGetTypingStats")}?payload=${payload}`;
     const headers = {
       "x-tsr-serverFn": "true",
       origin: "http://localhost:3000",
@@ -84,16 +90,16 @@ describe("built Start application in workerd", () => {
       Array.from(
         { length: 6 },
         async (_, i) =>
-          await (i % 2 ? b : a).fetch("http://localhost:3000/about"),
+          await (i % 2 ? b : a).fetch("http://localhost:3000/leaderboards"),
       ),
     );
     for (const [i, response] of responses.entries()) {
       expect(response.status).toBe(200);
       const html = await response.text();
-      expect(html).toContain("About | Oxytype");
-      expect(html).toContain(
-        `data-testid="tests-completed">${i % 2 ? 22 : 11}`,
-      );
+      expect(html).toContain("Leaderboards | Oxytype");
+      expect(html).toContain("racer-1<");
+      if (i % 2) expect(html).toContain("racer-2<");
+      else expect(html).not.toContain("racer-2<");
       expect(html).not.toContain("stage-one-local-only-secret");
       expect(html).not.toContain("auth_sessions");
     }

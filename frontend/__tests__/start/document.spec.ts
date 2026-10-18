@@ -12,7 +12,9 @@ describe("Start document and response policy in workerd", () => {
   afterAll(async () => await mf?.dispose());
 
   it("renders static fallbacks and gives every executable script a fresh CSP nonce", async () => {
-    const response = await mf.dispatchFetch("http://localhost:3000/about");
+    const response = await mf.dispatchFetch(
+      "http://localhost:3000/leaderboards",
+    );
     const html = await response.text();
     const csp = response.headers.get("Content-Security-Policy") ?? "";
     const nonce = /'nonce-([^']+)'/.exec(csp)?.[1];
@@ -45,13 +47,15 @@ describe("Start document and response policy in workerd", () => {
       .update(handlers[0]?.[1] ?? "")
       .digest("base64");
     expect(csp).toContain(`script-src-attr 'unsafe-hashes' 'sha256-${hash}'`);
-    const next = await mf.dispatchFetch("http://localhost:3000/about");
+    const next = await mf.dispatchFetch("http://localhost:3000/leaderboards");
     expect(next.headers.get("Content-Security-Policy")).not.toBe(csp);
     await next.text();
   });
 
   it("serves generated CSS/fonts/icons/manifest and immutable versioned assets", async () => {
-    const response = await mf.dispatchFetch("http://localhost:3000/about");
+    const response = await mf.dispatchFetch(
+      "http://localhost:3000/leaderboards",
+    );
     const html = await response.text();
     const css = /href="([^"]+\.css)"/.exec(html)?.[1];
     expect(css).toBeDefined();
@@ -101,12 +105,14 @@ describe("Start document and response policy in workerd", () => {
 
   it("degrades public reads inline without exposing database details", async () => {
     const db = await mf.getD1Database("DB", "b");
-    await db.prepare("DROP TABLE public_stats").run();
+    await db.prepare("DROP TABLE leaderboard_snapshots").run();
+    await db.prepare("DROP TABLE leaderboard_generations").run();
     const worker = await mf.getWorker("b");
-    const response = await worker.fetch("http://localhost:3000/about");
+    const response = await worker.fetch("http://localhost:3000/leaderboards");
     expect(response.status).toBe(200);
     const html = await response.text();
-    expect(html).toContain('data-testid="tests-completed">-');
+    expect(html).toContain("All-time english time 15 leaderboard");
+    expect(html).not.toContain("<table");
     expect(html).not.toContain("no such table");
     expect(html).not.toContain("stage-one-local-only-secret");
     expect(response.headers.get("Cache-Control")).toBe("no-store");
