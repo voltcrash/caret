@@ -6,7 +6,6 @@ import {
 } from "./result";
 
 export type KeyDataFailure =
-  | "missing-terminal-key-data"
   | "invalid-key-number"
   | "invalid-key-sentinel"
   | "key-count-mismatch"
@@ -26,15 +25,6 @@ export function getKeyDataFailure(
       keyDuration === "toolong"
       ? undefined
       : "invalid-key-sentinel";
-  }
-  if (
-    result.client === "tui" &&
-    keyDuration.length === 0 &&
-    result.charTotal > 0 &&
-    result.mode !== "zen" &&
-    !result.bailedOut
-  ) {
-    return "missing-terminal-key-data";
   }
   if (
     [...keySpacing, ...keyDuration].some(
