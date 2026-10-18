@@ -1,4 +1,3 @@
-import type { clientProfile } from "../../../db/client-profile";
 import type { DBUser } from "../../../dal/user";
 import type { AddResultRequest } from "@oxytype/contracts/results";
 import type { CompletedEvent, KeyStats } from "@oxytype/schemas/results";
@@ -10,7 +9,7 @@ export type ValidatedSubmission = {
   uid: string;
   user: DBUser;
   completedEvent: CompletedEvent;
-  profile: ReturnType<typeof clientProfile>;
+  profile: DBUser;
   offline: boolean;
   resulthash: string;
   submissionHash: string;
