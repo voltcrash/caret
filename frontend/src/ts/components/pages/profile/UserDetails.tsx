@@ -191,7 +191,7 @@ function AvatarAndName(props: {
     `${length} ${length === 1 ? "day" : "days"}`;
 
   const extraStreakText = () => {
-    if (!props.isAccountPage || props.client === "tui") return "";
+    if (!props.isAccountPage) return "";
     let hoverText = "";
 
     const lastResult = getLastResult();
