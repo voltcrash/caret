@@ -1,9 +1,9 @@
 # TanStack Start migration: architecture and execution plan
 
 Status: Stages 0–5 complete; [ledger and handoffs](tanstack-start/README.md).
-Stages 6–7 complete; Stage 8 not started. Production still serves the legacy app
-(rollback build); Start delivery is gated until cutover. See
-[Stage 7 ledger](tanstack-start/stage-7.md).
+Stages 6–7 complete; Stage 8 phases 8.1–8.2 complete, 8.3 cutover pending.
+Production still serves the anchored legacy version until the release workflow
+is enabled. See [Stage 8 ledger](tanstack-start/stage-8.md).
 Prepared: 2026-10-15. Scope: Oxytype web application and its server/runtime.
 
 ## Outcome
@@ -641,6 +641,8 @@ checks with the intended production configuration, including update/rollback cas
 
 ## Stage 8 — Remove the old architecture and cut over
 
+Status: 8.1–8.2 complete; 8.3 pending. [Stage 8 ledger](tanstack-start/stage-8.md).
+
 ### 8.1 Delete superseded code and document the new system
 
 - Delete the old Solid Router setup, `NavigationRuntime`, `navigation/routes.ts`,
@@ -690,7 +692,7 @@ Keep scripts working as package responsibilities move.
 
 ```sh
 # Focused examples, run in the owning workspace.
-vp -C frontend test run __tests__/navigation/guard.spec.ts
+vp -C frontend test run __tests__/app/navigation-guard.spec.ts
 vp -C frontend test run __tests__/test/typing-core-parity.spec.ts
 vp -C backend test run __tests__/d1/http.spec.ts
 

@@ -40,7 +40,9 @@ No preceding implementation stage or handoff exists. Prerequisite: merged
 | 7.2 Delivery ownership | Complete | [Stage 7](stage-7.md#72-delivery-ownership) |
 | 7.3 Production behaviour in staging | Complete | [Stage 7](stage-7.md#73-production-behaviour) |
 | Stage 7 exit | Complete; production gated until Stage 8 | [Validation and handoff](stage-7.md#validation) |
-| Stage 8 | Not started | Separate assignment |
+| 8.1 Legacy removal/docs | Complete | [Stage 8](stage-8.md#81-deleted) |
+| 8.2 Acceptance gate | Local complete; CI on PR | [Validation](stage-8.md#82-acceptance-gate) |
+| 8.3 Release/observe/retire | Not started | [Remaining](stage-8.md#remaining-before-stage-8-exit) |
 
 Stage 0 moves responsibility for migration evidence from an unverified proposal
 to this versioned ledger and reproducible checks. It moves no application
