@@ -96,7 +96,9 @@ counts equal Stage 0 (4/6/19/7, save 18–20).
   workflow runs only on `main`.
 - Re-observe the production rollback anchor; deploy the validated commit to
   staging; complete browser acceptance including interactive OAuth.
-- Set `START_PRODUCTION_ENABLED=true`, release through the workflow, observe
+- Releases are manual-only with `YY.MM.NN` numbers (#144); the rollback anchor
+  `v26.10.15` is `v26.10.10` after renumbering (same commit `e9bb89fe7`).
+- Set `START_PRODUCTION_ENABLED=true`, dispatch the release workflow, observe
   launch signals (input readiness, auth/session failures, save success and
   duplicates, Worker errors/CPU, queue/DLQ, route errors, version skew).
 - Keep the 47 old-tab HTTP transports and the service worker's rollback-asset

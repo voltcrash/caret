@@ -10,7 +10,8 @@ Observed 2026-10-15:
   `ad9a94aa-739f-4a95-bb20-c7782f4c5770`, created 04:50:16 UTC.
 - [Successful production run](https://github.com/voltcrash/oxytype/actions/runs/38683451809)
   at source `e9bb89fe72b7af4f3078d821277dd38cad482a26`, followed by
-  [v26.10.15](https://github.com/voltcrash/oxytype/releases/tag/v26.10.15)
+  [v26.10.10](https://github.com/voltcrash/oxytype/releases/tag/v26.10.10)
+  (published as `v26.10.15`; renamed when releases moved to `YY.MM.NN`)
   publication at 04:50:20 UTC. Release tag resolves to that commit; deployment
   and publication timestamps align with workflow order. Re-observe before cutover;
   this is a dated anchor, not an assertion that production will remain unchanged.
@@ -31,7 +32,8 @@ Turnstile secrets; do not archive secrets in evidence, public env or release ass
 1. Stage 1 develops a migration-only build/Worker target; production keeps the
    legacy build. Stage 0 PR is safe for the existing release flow: only docs,
    tests and opt-in tooling, no altered production entry/config or dependencies.
-2. Existing `production-release.yml` runs on main daily at 00:17 UTC or manually,
+2. `production-release.yml` ran on main daily at 00:17 UTC or manually (manual-only
+   since Stage 8 follow-up #144),
    serializes runs, validates CI, builds frontend then backend, dry-runs, applies
    compatible D1 migrations, deploys, then publishes the release at its source SHA.
    Do not merge partial migration entry changes into this path. Keep migrations
