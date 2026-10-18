@@ -10,7 +10,7 @@ Observed 2026-10-15:
   `ad9a94aa-739f-4a95-bb20-c7782f4c5770`, created 04:50:16 UTC.
 - [Successful production run](https://github.com/voltcrash/oxytype/actions/runs/38683451809)
   at source `e9bb89fe72b7af4f3078d821277dd38cad482a26`, followed by
-  [v26.10.10](https://github.com/voltcrash/oxytype/releases/tag/v26.10.10)
+  `v26.10.10`
   (published as `v26.10.15`; renamed when releases moved to `YY.MM.NN`)
   publication at 04:50:20 UTC. Release tag resolves to that commit; deployment
   and publication timestamps align with workflow order. Re-observe before cutover;
@@ -32,10 +32,11 @@ Turnstile secrets; do not archive secrets in evidence, public env or release ass
 1. Stage 1 develops a migration-only build/Worker target; production keeps the
    legacy build. Stage 0 PR is safe for the existing release flow: only docs,
    tests and opt-in tooling, no altered production entry/config or dependencies.
-2. `production-release.yml` ran on main daily at 00:17 UTC or manually (manual-only
-   since Stage 8 follow-up #144),
-   serializes runs, validates CI, builds frontend then backend, dry-runs, applies
-   compatible D1 migrations, deploys, then publishes the release at its source SHA.
+2. `production-release.yml` formerly ran daily or manually, then became manual-only
+   in #144. The deployment-only follow-up removes numbered releases, publication,
+   changelogs and package-version edits. Each dispatch serializes runs, validates
+   exact-snapshot CI, builds the matched client/Worker, dry-runs, applies compatible
+   D1 migrations and deploys.
    Do not merge partial migration entry changes into this path. Keep migrations
    isolated until the native application passes the preceding gates; preserve
    the production path or explicitly gate the workflow during transition.
@@ -95,11 +96,13 @@ explicit Stage 1/7 implementation gates, not silently completed by this document
 
 ## Stage 7 delivery state
 
-Start now owns the production/staging Wrangler configs, build, artifact receipt,
-validation, migrations and deployment commands; `production-release.yml` builds,
-archives (90 days) and deploys the matched Start artifact. It runs only when the
-repository variable `START_PRODUCTION_ENABLED` is `true`; Stage 8 sets it after
-acceptance. Until then production stays on the anchored legacy version above.
+Start owns the production/staging Wrangler configs, build, artifact receipt,
+validation, migrations and deployment commands. The manual production workflow
+builds and deploys the matched Start artifact after successful main CI. It no
+longer needs `START_PRODUCTION_ENABLED`, numbers deployments or publishes GitHub
+releases. Rollback uses the retained Cloudflare Worker version with matching
+assets, independently of GitHub release records. Human staging acceptance is
+recorded in the [Stage 8 ledger](stage-8.md); merging does not deploy production.
 
 The replacement `/sw.js` keeps the rollback worker's URL and scope, replaces it
 at once on first install, retires workbox caches and keeps rollback hashed

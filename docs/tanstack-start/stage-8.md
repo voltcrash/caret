@@ -137,14 +137,17 @@ Production was re-observed on October 18: version
 `a59fe11e-0e88-4483-a837-0b65ef3c7212` still serves the October 16 legacy build,
 source `d6e5be3e9`, now tagged `v26.10.11`. This newer matched Worker/assets
 version supersedes the dated October 15 rollback anchor for the upcoming cutover.
-Production remains gated; no production deployment was performed.
+No production deployment was performed. The deployment-only follow-up removes
+numbered releases, GitHub publication and the home-page version/history UI.
+Its manual workflow validates main CI and deploys on every dispatch, including
+repeat deployments of the same snapshot. Internal build IDs and the retained
+Cloudflare Worker/assets rollback version remain available.
 
 ## Remaining before Stage 8 exit
 
-- Merge #146 after CI passes; the production workflow runs only on `main`.
-- Releases are manual-only with `YY.MM.NN` numbers (#144); the rollback anchor
-  `v26.10.15` is `v26.10.10` after renumbering (same commit `e9bb89fe7`).
-- Set `START_PRODUCTION_ENABLED=true`, dispatch the release workflow, observe
+- Merge #146 and its deployment-only follow-up after CI passes, using regular
+  merge commits; the production workflow runs only on `main`.
+- Manually dispatch the production deployment workflow when ready, then observe
   launch signals (input readiness, auth/session failures, save success and
   duplicates, Worker errors/CPU, queue/DLQ, route errors, version skew).
 - Keep the 47 old-tab HTTP transports and the service worker's rollback-asset
