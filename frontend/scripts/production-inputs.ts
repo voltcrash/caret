@@ -28,24 +28,6 @@ const configSchema = z.object({
       }),
     )
     .length(1),
-  queues: z.object({
-    producers: z
-      .array(
-        z.object({
-          binding: z.literal("TASKS"),
-          queue: z.literal("oxytype-production-tasks"),
-        }),
-      )
-      .length(1),
-    consumers: z
-      .array(
-        z.object({
-          queue: z.literal("oxytype-production-tasks"),
-          dead_letter_queue: z.literal("oxytype-production-dlq"),
-        }),
-      )
-      .length(1),
-  }),
 });
 
 function configured(value: string | undefined): value is string {
@@ -66,7 +48,7 @@ export function validateProductionInputs(inputs: {
   const parsed = configSchema.safeParse(inputs.config);
   if (!parsed.success) {
     throw new Error(
-      "Production config must use isolated production Worker, D1 and queues",
+      "Production config must use isolated production Worker and D1",
     );
   }
   const config = parsed.data;
