@@ -23,7 +23,7 @@ type Timeline = {
 type Fixture = {
   name: string;
   label: "bot" | "model";
-  client: "web" | "tui";
+  client: "web";
   description: string;
   samples: Timeline[];
 };
@@ -90,19 +90,6 @@ const fixtures: Fixture[] = [
         1,
         () => 80,
         () => 45,
-      ),
-    ],
-  },
-  {
-    name: "fixed-interval-tui",
-    label: "bot",
-    client: "tui",
-    description: "Terminal arrivals every 75 ms; holds are unobserved zeros.",
-    samples: [
-      timeline(
-        2,
-        () => 75,
-        () => 0,
       ),
     ],
   },
