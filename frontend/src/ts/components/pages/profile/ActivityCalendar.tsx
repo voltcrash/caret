@@ -11,8 +11,6 @@ import {
 
 import { getSnapshot, getTestActivityCalendar } from "../../../db";
 import { TestActivityCalendar } from "../../../elements/test-activity-calendar";
-import { getQueryClient } from "../../../queries";
-import { getAccountActivityQueryOptions } from "../../../queries/account";
 import { get as getSeverConfiguration } from "../../../states/server-configuration";
 import { cn } from "../../../utils/cn";
 import { getFirstDayOfTheWeek } from "../../../utils/date-and-time";
@@ -76,24 +74,23 @@ export function ActivityCalendar(props: {
   };
 
   createEffect(() => {
-    const activity =
-      props.isAccountPage && props.client !== "tui"
-        ? getSnapshot()?.testActivity
-        : props.testActivity;
+    const activity = props.isAccountPage
+      ? getSnapshot()?.testActivity
+      : props.testActivity;
     revision++;
     setSelectedYear("current");
     setError(undefined);
     updateCalendar(
       activity === undefined
         ? undefined
-        : props.isAccountPage && props.client !== "tui"
+        : props.isAccountPage
           ? (activity as TestActivityCalendar)
           : new TestActivityCalendar(
               (activity as TestActivity).testsByDays,
               new Date((activity as TestActivity).lastDay),
               firstDayOfTheWeek,
             ),
-      props.client !== "tui",
+      true,
     );
   });
 
@@ -128,32 +125,7 @@ export function ActivityCalendar(props: {
     const current = ++revision;
     setError(undefined);
     try {
-      let calendar: TestActivityCalendar | undefined;
-      if (props.client !== "tui") {
-        calendar = await getTestActivityCalendar(year);
-      } else if (year === "current") {
-        const activity = props.testActivity;
-        if (activity !== undefined) {
-          calendar = new TestActivityCalendar(
-            activity.testsByDays,
-            new Date(activity.lastDay),
-            firstDayOfTheWeek,
-          );
-        }
-      } else {
-        const activity = await getQueryClient().query(
-          getAccountActivityQueryOptions("tui"),
-        );
-        const days = activity?.[year];
-        if (days !== undefined && days.length > 0) {
-          calendar = new TestActivityCalendar(
-            days,
-            new Date(Date.UTC(Number(year), 0, days.length)),
-            firstDayOfTheWeek,
-            true,
-          );
-        }
-      }
+      const calendar = await getTestActivityCalendar(year);
       if (current === revision) updateCalendar(calendar);
     } catch (err) {
       if (current === revision) {
