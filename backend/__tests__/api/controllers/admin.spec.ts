@@ -305,12 +305,9 @@ describe("AdminController", () => {
   describe("accept reports", () => {
     const getReportsMock = vi.spyOn(ReportDal, "getReports");
     const deleteReportsMock = vi.spyOn(ReportDal, "deleteReports");
-    const addToInboxMock = vi.spyOn(UserDal, "addToInbox");
 
     beforeEach(() => {
-      [getReportsMock, deleteReportsMock, addToInboxMock].forEach((it) =>
-        it.mockClear(),
-      );
+      [getReportsMock, deleteReportsMock].forEach((it) => it.mockClear());
       deleteReportsMock.mockResolvedValue();
     });
 
@@ -336,11 +333,10 @@ describe("AdminController", () => {
         .expect(200);
 
       expect(body).toEqual({
-        message: "Reports removed and users notified.",
+        message: "Reports removed.",
         data: null,
       });
 
-      expect(addToInboxMock).toHaveBeenCalledTimes(2);
       expect(deleteReportsMock).toHaveBeenCalledWith(["1", "2"]);
     });
     it("should fail wihtout mandatory properties", async () => {
@@ -420,10 +416,9 @@ describe("AdminController", () => {
   describe("reject reports", () => {
     const getReportsMock = vi.spyOn(ReportDal, "getReports");
     const deleteReportsMock = vi.spyOn(ReportDal, "deleteReports");
-    const addToInboxMock = vi.spyOn(UserDal, "addToInbox");
 
     beforeEach(() => {
-      [getReportsMock, deleteReportsMock, addToInboxMock].forEach((it) => {
+      [getReportsMock, deleteReportsMock].forEach((it) => {
         it.mockClear();
         deleteReportsMock.mockResolvedValue();
       });
@@ -454,11 +449,10 @@ describe("AdminController", () => {
         .expect(200);
 
       expect(body).toEqual({
-        message: "Reports removed and users notified.",
+        message: "Reports removed.",
         data: null,
       });
 
-      expect(addToInboxMock).toHaveBeenCalledTimes(2);
       expect(deleteReportsMock).toHaveBeenCalledWith(["1", "2"]);
     });
     it("should fail wihtout mandatory properties", async () => {
