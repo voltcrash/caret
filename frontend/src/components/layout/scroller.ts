@@ -44,9 +44,14 @@ export function appStyle(
   };
 }
 
-/**
- * Initial `#app` grid from the legacy document. It fades in on first paint;
- * client navigation keeps the element, so the animation runs once per load.
- */
+/** Initial `#app` grid from the legacy document. */
 export const appClass =
-  "animate-app-enter content-grid focus min-h-dvh w-full grid-rows-[[top-start]_auto_[content-start]_1fr_[content-end]_auto_[top-end]] gap-y-8 overflow-clip pt-[max(2rem,env(safe-area-inset-top,0px))] pr-[env(safe-area-inset-right,0px)] pb-[max(2rem,env(safe-area-inset-bottom,0px))] pl-[env(safe-area-inset-left,0px)]";
+  "content-grid focus min-h-dvh w-full grid-rows-[[top-start]_auto_[content-start]_1fr_[content-end]_auto_[top-end]] gap-y-8 overflow-clip pt-[max(2rem,env(safe-area-inset-top,0px))] pr-[env(safe-area-inset-right,0px)] pb-[max(2rem,env(safe-area-inset-bottom,0px))] pl-[env(safe-area-inset-left,0px)]";
+
+/**
+ * `#app` stays transparent under the startup screen, then fades in once the
+ * app is ready. Client navigation keeps the element, so it runs once per load.
+ */
+export function appRevealClass(ready: boolean): string {
+  return ready ? "animate-app-enter" : "opacity-0";
+}
