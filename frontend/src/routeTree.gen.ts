@@ -15,7 +15,6 @@ import { Route as OauthCallbackDothtmlRouteImport } from './routes/oauth-callbac
 import { Route as PrivacyPolicyDothtmlRouteImport } from './routes/privacy-policy[.]html'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppAuthenticatedRouteImport } from './routes/_app._authenticated'
-import { Route as AppAboutRouteImport } from './routes/_app.about'
 import { Route as AppLeaderboardsRouteImport } from './routes/_app.leaderboards'
 import { Route as AppLoginRouteImport } from './routes/_app.login'
 import { Route as AppSettingsRouteImport } from './routes/_app.settings'
@@ -119,11 +118,6 @@ const AppIndexRoute = AppIndexRouteImport.update({
 } as any)
 const AppAuthenticatedRoute = AppAuthenticatedRouteImport.update({
   id: '/_authenticated',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppAboutRoute = AppAboutRouteImport.update({
-  id: '/about',
-  path: '/about',
   getParentRoute: () => AppRoute,
 } as any)
 const AppLeaderboardsRoute = AppLeaderboardsRouteImport.update({
@@ -526,7 +520,6 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/oauth-callback.html': typeof OauthCallbackDothtmlRoute
   '/privacy-policy.html': typeof PrivacyPolicyDothtmlRoute
-  '/about': typeof AppAboutRoute
   '/leaderboards': typeof AppLeaderboardsRoute
   '/login': typeof AppLoginRoute
   '/settings': typeof AppSettingsRoute
@@ -609,7 +602,6 @@ export interface FileRoutesByTo {
   '/oauth-callback.html': typeof OauthCallbackDothtmlRoute
   '/privacy-policy.html': typeof PrivacyPolicyDothtmlRoute
   '/': typeof AppIndexRoute
-  '/about': typeof AppAboutRoute
   '/leaderboards': typeof AppLeaderboardsRoute
   '/login': typeof AppLoginRoute
   '/settings': typeof AppSettingsRoute
@@ -694,7 +686,6 @@ export interface FileRoutesById {
   '/oauth-callback.html': typeof OauthCallbackDothtmlRoute
   '/privacy-policy.html': typeof PrivacyPolicyDothtmlRoute
   '/_app/_authenticated': typeof AppAuthenticatedRouteWithChildren
-  '/_app/about': typeof AppAboutRoute
   '/_app/leaderboards': typeof AppLeaderboardsRoute
   '/_app/login': typeof AppLoginRoute
   '/_app/settings': typeof AppSettingsRoute
@@ -780,7 +771,6 @@ export interface FileRouteTypes {
     | '/'
     | '/oauth-callback.html'
     | '/privacy-policy.html'
-    | '/about'
     | '/leaderboards'
     | '/login'
     | '/settings'
@@ -863,7 +853,6 @@ export interface FileRouteTypes {
     | '/oauth-callback.html'
     | '/privacy-policy.html'
     | '/'
-    | '/about'
     | '/leaderboards'
     | '/login'
     | '/settings'
@@ -947,7 +936,6 @@ export interface FileRouteTypes {
     | '/oauth-callback.html'
     | '/privacy-policy.html'
     | '/_app/_authenticated'
-    | '/_app/about'
     | '/_app/leaderboards'
     | '/_app/login'
     | '/_app/settings'
@@ -1095,13 +1083,6 @@ declare module '@tanstack/solid-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AppAuthenticatedRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/about': {
-      id: '/_app/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AppAboutRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/leaderboards': {
@@ -1654,7 +1635,6 @@ const AppAuthenticatedRouteWithChildren =
 
 interface AppRouteChildren {
   AppAuthenticatedRoute: typeof AppAuthenticatedRouteWithChildren
-  AppAboutRoute: typeof AppAboutRoute
   AppLeaderboardsRoute: typeof AppLeaderboardsRoute
   AppLoginRoute: typeof AppLoginRoute
   AppSettingsRoute: typeof AppSettingsRoute
@@ -1665,7 +1645,6 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppAuthenticatedRoute: AppAuthenticatedRouteWithChildren,
-  AppAboutRoute: AppAboutRoute,
   AppLeaderboardsRoute: AppLeaderboardsRoute,
   AppLoginRoute: AppLoginRoute,
   AppSettingsRoute: AppSettingsRoute,
