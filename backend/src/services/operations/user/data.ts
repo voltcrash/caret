@@ -27,7 +27,6 @@ type RelevantUserInfo = Omit<
   | "ips"
   | "testActivity"
   | "suspicious"
-  | "clientProfiles"
 >;
 function getRelevantUserInfo(user: UserDAL.DBUser): RelevantUserInfo {
   return omit(user, [
@@ -42,7 +41,6 @@ function getRelevantUserInfo(user: UserDAL.DBUser): RelevantUserInfo {
     "ips",
     "testActivity",
     "suspicious",
-    "clientProfiles",
   ]);
 }
 export async function getUser(
