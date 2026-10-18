@@ -11,15 +11,12 @@ const View = lazy(
 );
 
 /** Private account page: the server renders only a shell, never results. */
-export function AccountPage(props: {
-  client: Client;
-  onClient: (client: Client) => void;
-}): JSXElement {
+export function AccountPage(props: { client: Client }): JSXElement {
   const shell = <div class="grid h-150 place-items-center"></div>;
   return (
     <ClientOnly fallback={shell}>
       <Suspense fallback={shell}>
-        <View client={props.client} onClient={props.onClient} />
+        <View client={props.client} />
       </Suspense>
     </ClientOnly>
   );
