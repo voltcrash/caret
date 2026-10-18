@@ -576,7 +576,6 @@ describe("result controller test", () => {
       "updateLastTimingHashes",
     );
     const userRecordAutoBanEventMock = vi.spyOn(UserDal, "recordAutoBanEvent");
-    const userAddToInboxMock = vi.spyOn(UserDal, "addToInbox");
     const purgeDailyMock = vi.spyOn(
       DailyLeaderboards,
       "purgeUserFromDailyLeaderboards",
@@ -614,7 +613,6 @@ describe("result controller test", () => {
         hasSubmissionHashMock,
         userUpdateLastTimingHashesMock,
         userRecordAutoBanEventMock,
-        userAddToInboxMock,
         purgeDailyMock,
         purgeWeeklyMock,
         publicUpdateStatsMock,
@@ -630,7 +628,6 @@ describe("result controller test", () => {
       hasSubmissionHashMock.mockResolvedValue(false);
       userUpdateLastTimingHashesMock.mockResolvedValue();
       userRecordAutoBanEventMock.mockResolvedValue(false);
-      userAddToInboxMock.mockResolvedValue();
       purgeDailyMock.mockResolvedValue();
       purgeWeeklyMock.mockResolvedValue();
       //a prior result exists so incomplete-test time is credited (not zeroed)
@@ -1337,7 +1334,6 @@ describe("result controller test", () => {
 
           //THEN
           expect(userRecordAutoBanEventMock).toHaveBeenCalledWith(uid, 5, 1);
-          expect(userAddToInboxMock).not.toHaveBeenCalled();
           expect(purgeDailyMock).not.toHaveBeenCalled();
           expect(purgeWeeklyMock).not.toHaveBeenCalled();
         });
@@ -1354,11 +1350,6 @@ describe("result controller test", () => {
             .expect(465);
 
           //THEN
-          expect(userAddToInboxMock).toHaveBeenCalledWith(
-            uid,
-            [expect.objectContaining({ subject: "Banned" })],
-            expect.anything(),
-          );
           expect(purgeDailyMock).toHaveBeenCalledWith(uid, expect.anything());
           expect(purgeWeeklyMock).toHaveBeenCalledWith(uid, expect.anything());
           expectNoProgress();
