@@ -2,10 +2,10 @@ import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { getReleaseVersion } from "./version.js";
+import { getDateVersion } from "./version.js";
 
 /** npm semver rejects the zero-padded month/day used by production tags. */
-export function getTerminalVersion(value = getReleaseVersion()) {
+export function getTerminalVersion(value = getDateVersion()) {
   const match =
     /^v?(\d{2})\.(\d{1,2})\.(\d{1,2})(-(?:alpha|beta|rc)\.[1-9]\d*)?$/.exec(
       value,

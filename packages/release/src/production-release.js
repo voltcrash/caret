@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { buildDailyChangelog } from "./daily-changelog.js";
-import { getReleaseVersion } from "./version.js";
+import { getDateVersion } from "./version.js";
 import { buildReleaseHistory } from "./release-history.js";
 
 const productionMarker = "<!-- oxytype-production-release -->";
@@ -13,7 +13,7 @@ function git(cwd, ...args) {
 export async function prepareProductionRelease({ github, context, cwd }) {
   // Delayed and retried runs use the UTC date when release planning executes.
   const date = new Date();
-  const tag = getReleaseVersion(date);
+  const tag = getDateVersion(date);
   const version = tag.slice(1);
   const sha = git(cwd, "rev-parse", "HEAD");
   if (sha !== context.sha) {
