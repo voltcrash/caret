@@ -108,7 +108,3 @@ export const badges: Record<number, UserBadge> = {
     background: "var(--main-color)",
   },
 };
-
-export function getById(id: number): UserBadge | undefined {
-  return badges[id];
-}
