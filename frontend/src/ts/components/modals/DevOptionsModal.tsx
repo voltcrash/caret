@@ -6,7 +6,6 @@ import { operation } from "../../../data/operations";
 import { toggleCaretDebug } from "../../../features/typing/components/words/caret-controller";
 import { toggleUserFakeChartData } from "../../../features/typing/runtime/result";
 import { disableSlowTimerFail } from "../../../features/typing/runtime/test-timer";
-import { refetchInboxCollection } from "../../collections/inbox";
 import { addXp } from "../../db";
 import { getInputElement } from "../../input/input-element";
 import { hideModal, showModal } from "../../states/modals";
@@ -44,10 +43,7 @@ export function DevOptionsModal(): JSXElement {
       onClick: () => {
         showSuccessNotification("This is a test", { durationMs: 0 });
         showNoticeNotification("This is a test", { durationMs: 0 });
-        showErrorNotification("This is a test", {
-          durationMs: 0,
-          details: { test: true, error: "Example error message" },
-        });
+        showErrorNotification("This is a test", { durationMs: 0 });
         showNoticeNotification(["Structured lines", "test"], {
           durationMs: 0,
         });
@@ -109,13 +105,6 @@ export function DevOptionsModal(): JSXElement {
       },
     },
     {
-      icon: "fa-inbox",
-      label: () => "Add Debug Inbox Item",
-      onClick: () => {
-        showModal("DevInboxPicker");
-      },
-    },
-    {
       icon: "fa-chart-bar",
       label: () => "Toggle Fake Chart Data",
       onClick: toggleUserFakeChartData,
@@ -146,61 +135,21 @@ export function DevOptionsModal(): JSXElement {
     },
   ];
 
-  const addDebugInboxItem = (rewardType: "xp" | "badge" | "none"): void => {
-    hideModal("DevInboxPicker");
-    void operation("dev.addDebugInboxItem", { body: { rewardType } }).then(
-      (response) => {
-        if (!response.ok) {
-          showErrorNotification("Failed to add inbox item", {
-            details: response,
-          });
-          return;
-        }
-        showSuccessNotification("Debug inbox item added");
-        void refetchInboxCollection();
-      },
-    );
-  };
-
   return (
-    <>
-      <AnimatedModal id="DevOptions" title="Dev Options">
-        <div class="flex flex-col gap-4">
-          <For each={buttons}>
-            {(btn) => (
-              <Button
-                variant="button"
-                onClick={btn.onClick}
-                fa={{ icon: btn.icon, fixedWidth: true }}
-                text={btn.label()}
-              />
-            )}
-          </For>
-        </div>
-      </AnimatedModal>
-      <AnimatedModal id="DevInboxPicker" title="Choose Reward Type">
-        <div class="flex flex-col gap-4">
-          <Button
-            variant="button"
-            onClick={() => addDebugInboxItem("xp")}
-            fa={{ icon: "fa-star", fixedWidth: true }}
-            text="XP Reward (1000)"
-          />
-          <Button
-            variant="button"
-            onClick={() => addDebugInboxItem("badge")}
-            fa={{ icon: "fa-certificate", fixedWidth: true }}
-            text="Badge Reward"
-          />
-          <Button
-            variant="button"
-            onClick={() => addDebugInboxItem("none")}
-            fa={{ icon: "fa-envelope", fixedWidth: true }}
-            text="No Reward"
-          />
-        </div>
-      </AnimatedModal>
-    </>
+    <AnimatedModal id="DevOptions" title="Dev Options">
+      <div class="flex flex-col gap-4">
+        <For each={buttons}>
+          {(btn) => (
+            <Button
+              variant="button"
+              onClick={btn.onClick}
+              fa={{ icon: btn.icon, fixedWidth: true }}
+              text={btn.label()}
+            />
+          )}
+        </For>
+      </div>
+    </AnimatedModal>
   );
 }
 
