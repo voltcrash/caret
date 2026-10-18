@@ -5,7 +5,7 @@ Be extremely concise. Follow [AGENTS.md](../AGENTS.md) for repository convention
 ## Architecture
 
 pnpm/Vite+ workspace: TanStack Start (SolidJS) application and Worker in
-`frontend/`, server-only backend services with D1 and Queues in `backend/`, and
+`frontend/`, server-only backend services with D1 in `backend/`, and
 shared `@oxytype` packages. See
 [architecture](../docs/ARCHITECTURE.md) and [development setup](../docs/CONTRIBUTING_ADVANCED.md).
 
