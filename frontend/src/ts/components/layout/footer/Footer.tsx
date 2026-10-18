@@ -5,7 +5,6 @@ import { getFocus } from "../../../states/test";
 import { cn } from "../../../utils/cn";
 import { Keytips } from "./Keytips";
 import { ThemeIndicator } from "./ThemeIndicator";
-import { VersionButton } from "./VersionButton";
 
 export function Footer(): JSXElement {
   return (
@@ -24,13 +23,12 @@ export function Footer(): JSXElement {
 
       <div
         class={cn(
-          // phones: one row, theme left and version right, 44px tall
+          // phones: a 44px theme control
           "-m-2 flex flex-row items-end justify-between text-right transition-opacity [&>*]:min-h-11 sm:flex-col sm:justify-end sm:[&>*]:min-h-0 lg:flex-row lg:justify-end",
           getFocus() && "opacity-0",
         )}
       >
         <ThemeIndicator />
-        <VersionButton />
       </div>
     </footer>
   );
