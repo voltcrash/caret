@@ -78,6 +78,16 @@ test("other text inputs keep the focus outline", async ({ page }) => {
   await expect(input).toHaveCSS("outline-style", "solid");
 });
 
+test("finishing a test focuses results without outlining the screen", async ({
+  page,
+}) => {
+  await openTest(page);
+  await completeWords(page);
+  const result = page.locator("#result");
+  await expect(result).toBeFocused();
+  await expect(result).toHaveCSS("outline-style", "none");
+});
+
 test("result summary stays silent during typing and clears on restart", async ({
   page,
 }) => {
