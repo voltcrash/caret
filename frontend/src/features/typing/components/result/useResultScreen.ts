@@ -20,13 +20,15 @@ export function useResultScreen(
       const result = element();
       if (result) {
         result.className = updateClassNames(result.className, "hidden", false);
-        result.focus({ preventScroll: true });
       }
       await animateAsync(result, { opacity: [0, 1], duration });
       if (!lease.isCurrent()) return;
       result?.scrollIntoView({
         block: result.offsetHeight < window.innerHeight ? "center" : "start",
       });
+      // Restart stays guarded during the reveal. Focus only once keyboard
+      // users can Tab to Next test and activate it without losing the action.
+      result?.focus({ preventScroll: true });
     };
     show = showScreen;
     createEffect(() => {
