@@ -7,6 +7,7 @@ import { createSignal, For, Show, onCleanup, createEffect } from "solid-js";
 import { envConfig } from "virtual:env-config";
 
 import { currentApplication, requireApplication } from "../../app/application";
+import { Button } from "../../ts/components/common/Button";
 import { Fa } from "../../ts/components/common/Fa";
 import { Captcha } from "../../ts/components/ui/form/Captcha";
 import { createAuthActions } from "./actions.client";
@@ -92,27 +93,34 @@ export function AuthPanel(props: { initial: SessionState; redirect?: string }) {
       (provider): provider is "google" | "github" =>
         provider === "google" || provider === "github",
     );
+  const providerName = (provider: "google" | "github") =>
+    provider === "google" ? "Google" : "GitHub";
+  const providerIcon = (provider: "google" | "github") =>
+    provider === "google" ? "fa-google" : "fa-github";
+  const inputClass =
+    "w-full rounded bg-sub-alt p-[0.5em] text-text outline-none placeholder:text-sub focus-visible:shadow-[0_0_0_0.1rem_var(--bg-color),_0_0_0_0.2rem_var(--text-color)] disabled:opacity-[0.33]";
   return (
-    <section class="grid max-w-md gap-4">
+    <section class="grid gap-4">
       <Show
         when={session.data.user}
         fallback={
-          <>
-            <p class="text-sub">New here? Sign in to create an account.</p>
-            <Show
-              when={session.data.signUpEnabled}
-              fallback={
-                <p>
-                  Login/Signup is disabled or the server is down/under
-                  maintenance.
-                </p>
-              }
-            >
+          <Show
+            when={session.data.signUpEnabled}
+            fallback={
+              <p class="text-sub">
+                Login/Signup is disabled or the server is down/under
+                maintenance.
+              </p>
+            }
+          >
+            <p class="text-sub">New here? Signing in creates an account.</p>
+            <div class="grid gap-2">
               <For each={providers()}>
                 {(provider) => (
-                  <button
-                    type="button"
-                    class="rounded bg-sub-alt p-3 text-text disabled:opacity-50"
+                  <Button
+                    text={`sign in with ${providerName(provider)}`}
+                    fa={{ icon: providerIcon(provider), variant: "brand" }}
+                    class="w-full p-3"
                     disabled={busy()}
                     onClick={() =>
                       void perform(
@@ -120,89 +128,88 @@ export function AuthPanel(props: { initial: SessionState; redirect?: string }) {
                         true,
                       )
                     }
-                  >
-                    <Fa
-                      icon={provider === "google" ? "fa-google" : "fa-github"}
-                      variant="brand"
-                    />{" "}
-                    sign in with {provider === "google" ? "Google" : "GitHub"}
-                  </button>
+                  />
                 )}
               </For>
-            </Show>
-          </>
+            </div>
+          </Show>
         }
       >
         {(user) => (
           <>
-            <p>Signed in as {user().displayName}</p>
+            <p class="text-sub">Signed in as {user().displayName}</p>
             <Show
               when={!user().registered}
               fallback={
                 <>
-                  <For each={providers()}>
-                    {(provider) => (
-                      <div class="flex gap-4">
+                  <div class="grid gap-2">
+                    <For each={providers()}>
+                      {(provider) => (
                         <Show
                           when={user().providerData.some(
                             ({ providerId }) => providerId === provider,
                           )}
                           fallback={
-                            <button
-                              type="button"
-                              class="rounded bg-sub-alt p-3"
+                            <Button
+                              text={`link ${providerName(provider)}`}
+                              fa={{
+                                icon: providerIcon(provider),
+                                variant: "brand",
+                              }}
+                              class="w-full p-3"
                               disabled={busy()}
                               onClick={() =>
                                 void perform(
                                   async () => await actions.link(provider),
                                 )
                               }
-                            >
-                              link {provider}
-                            </button>
+                            />
                           }
                         >
-                          <button
-                            type="button"
-                            class="rounded bg-sub-alt p-3"
-                            disabled={busy()}
-                            onClick={() =>
-                              void perform(
-                                async () =>
-                                  await actions.reauthenticate(provider),
-                              )
-                            }
-                          >
-                            reauthenticate with {provider}
-                          </button>
-                          <button
-                            type="button"
-                            class="rounded bg-sub-alt p-3"
-                            disabled={busy() || user().providerData.length < 2}
-                            onClick={() =>
-                              void perform(
-                                async () => await actions.unlink(provider),
-                              )
-                            }
-                          >
-                            unlink {provider}
-                          </button>
+                          <div class="grid grid-cols-[1fr_auto] gap-2">
+                            <Button
+                              text={`reauthenticate with ${providerName(provider)}`}
+                              fa={{
+                                icon: providerIcon(provider),
+                                variant: "brand",
+                              }}
+                              class="p-3"
+                              disabled={busy()}
+                              onClick={() =>
+                                void perform(
+                                  async () =>
+                                    await actions.reauthenticate(provider),
+                                )
+                              }
+                            />
+                            <Button
+                              text="unlink"
+                              class="p-3"
+                              disabled={
+                                busy() || user().providerData.length < 2
+                              }
+                              onClick={() =>
+                                void perform(
+                                  async () => await actions.unlink(provider),
+                                )
+                              }
+                            />
+                          </div>
                         </Show>
-                      </div>
-                    )}
-                  </For>
-                  <button
-                    type="button"
-                    class="rounded bg-sub-alt p-3"
+                      )}
+                    </For>
+                  </div>
+                  <Button
+                    text="sign out"
+                    fa={{ icon: "fa-sign-out-alt" }}
+                    class="w-full p-3"
                     disabled={busy()}
                     onClick={() => void perform(actions.logout)}
-                  >
-                    sign out
-                  </button>
+                  />
                 </>
               }
             >
-              <p>Please enter a username before continuing</p>
+              <p class="text-sub">Pick a username to finish signing up.</p>
               <form
                 class="grid gap-4"
                 onSubmit={(event) => {
@@ -214,9 +221,9 @@ export function AuthPanel(props: { initial: SessionState; redirect?: string }) {
                   name="name"
                   children={(field) => (
                     <label class="grid gap-2">
-                      username
+                      <span class="text-sub">username</span>
                       <input
-                        class="rounded bg-sub-alt p-3 text-text"
+                        class={inputClass}
                         required
                         maxLength={16}
                         value={field().state.value}
@@ -234,28 +241,27 @@ export function AuthPanel(props: { initial: SessionState; redirect?: string }) {
                     <Captcha field={field} action="signup" />
                   )}
                 />
-                <button
-                  class="rounded bg-sub-alt p-3"
-                  type="submit"
-                  disabled={busy()}
-                >
-                  continue
-                </button>
+                <div class="grid grid-cols-2 gap-2">
+                  <Button
+                    text="cancel sign up"
+                    class="p-3"
+                    disabled={busy()}
+                    onClick={() => void perform(actions.cancel)}
+                  />
+                  <Button
+                    type="submit"
+                    text="continue"
+                    class="p-3"
+                    disabled={busy()}
+                  />
+                </div>
               </form>
-              <button
-                type="button"
-                class="rounded bg-sub-alt p-3"
-                disabled={busy()}
-                onClick={() => void perform(actions.cancel)}
-              >
-                cancel sign up
-              </button>
             </Show>
           </>
         )}
       </Show>
       <Show when={busy()}>
-        <p role="status">
+        <p role="status" class="text-sub">
           <Fa icon="fa-circle-notch" spin /> processing request
         </p>
       </Show>
