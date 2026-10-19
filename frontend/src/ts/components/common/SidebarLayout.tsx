@@ -112,6 +112,9 @@ export function SidebarLayout<T extends string>(props: {
                 variant="text"
                 fa={{ icon: item.icon, class: "shrink-0" }}
                 active={props.active === key}
+                dataset={
+                  props.active === key ? { "aria-current": "location" } : {}
+                }
                 class={cn(
                   "min-w-0 justify-start text-left [--themable-button-active:var(--themable-button-text)]",
                   // 44px minimum tap target on touch screens

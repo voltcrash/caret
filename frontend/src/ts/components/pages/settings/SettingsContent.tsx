@@ -384,8 +384,9 @@ function Section(props: {
 }): JSXElement {
   const section = untrack(() => props.section);
   return (
-    <div
+    <section
       id={`group_${props.section}`}
+      aria-labelledby={`group_${props.section}_title`}
       data-settings-section={props.section}
       class={cn(
         "grid scroll-mt-[calc(var(--header-bottom)+1rem)] gap-8",
@@ -394,6 +395,7 @@ function Section(props: {
       )}
     >
       <H2
+        id={`group_${props.section}_title`}
         text={settingsSections[props.section].text}
         fa={{ icon: settingsSections[props.section].icon }}
         class="pb-0 text-[1.5em]"
@@ -401,6 +403,6 @@ function Section(props: {
       <SettingsSectionContext.Provider value={section}>
         {props.children}
       </SettingsSectionContext.Provider>
-    </div>
+    </section>
   );
 }
