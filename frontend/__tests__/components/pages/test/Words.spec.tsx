@@ -374,6 +374,28 @@ describe("Words layout", () => {
     expect(getWordsWrapperHeight()).toBe("20px");
   });
 
+  it("keeps the last height while the words have no layout", async () => {
+    await layout();
+    ui.updateWordsWrapperHeight(true);
+    expect(getWordsWrapperHeight()).toBe("60px");
+    size(word(0), { offsetTop: 0, offsetHeight: 0 });
+    size(word(1), { offsetTop: 0, offsetHeight: 0 });
+    ui.updateWordsWrapperHeight(true);
+    expect(getWordsWrapperHeight()).toBe("60px");
+    getMutableConfig().mode = "zen";
+    ui.updateWordsWrapperHeight(true);
+    expect(getWordsWrapperHeight()).toBe("60px");
+  });
+
+  it("keeps the last height when no line is below the top", async () => {
+    await layout();
+    ui.updateWordsWrapperHeight(true);
+    size(word(0), { offsetTop: 0 });
+    size(word(1), { offsetTop: 0 });
+    ui.updateWordsWrapperHeight(true);
+    expect(getWordsWrapperHeight()).toBe("60px");
+  });
+
   it("scrolls tape and both carets by the configured margin", async () => {
     await layout();
     getMutableConfig().tapeMode = "word";
