@@ -32,29 +32,31 @@ export function StaticHeader(props: { fixed: boolean }): JSXElement {
       }
       data-ui-element="header"
     >
-      <Link
-        href="/"
-        class="-m-2 flex h-6 w-max gap-2 rounded-[0.8rem] p-2"
-        aria-label="Oxytype Home"
-        style={{
-          "box-sizing": "content-box",
-          "font-family": "Lexend Deca ,sans-serif",
-        }}
+      <div
+        class="flex h-6 w-max gap-2"
+        style={{ "font-family": "Lexend Deca ,sans-serif" }}
         data-ui-element="logo"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 48 48"
-          aria-hidden="true"
-          class="h-full fill-none stroke-current stroke-[6] text-main"
+        <Link
+          href="/"
+          class="-m-2 h-6 rounded-[0.8rem] p-2"
+          aria-label="Oxytype Home"
+          style={{ "box-sizing": "content-box" }}
         >
-          <circle cx="24" cy="24" r="16"></circle>
-          <path d="M24 5v13" class="[stroke-linecap:round]"></path>
-        </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 48 48"
+            aria-hidden="true"
+            class="h-full fill-none stroke-current stroke-[6] text-main"
+          >
+            <circle cx="24" cy="24" r="16"></circle>
+            <path d="M24 5v13" class="[stroke-linecap:round]"></path>
+          </svg>
+        </Link>
         <div class="hidden h-6 place-content-center text-[2rem] leading-0 sm:grid">
           <h1 class="-mt-[0.11em] text-text">oxytype</h1>
         </div>
-      </Link>
+      </div>
       <nav
         aria-label="Main navigation"
         class="z-5 flex w-full items-center gap-0 xs:gap-1 md:gap-2"
