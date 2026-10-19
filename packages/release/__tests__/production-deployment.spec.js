@@ -14,6 +14,7 @@ import { parseEnv } from "node:util";
 import { runInNewContext } from "node:vm";
 import { expect, it } from "vite-plus/test";
 import { parse } from "yaml";
+import { requireSuccessfulProductionCI } from "../src/production-validation.js";
 
 const workflow = parse(
   readFileSync(
@@ -142,6 +143,63 @@ it("validates the exact deployment snapshot before building and applying migrati
     "vp run --filter @oxytype/frontend retire:production-task-consumer",
   );
 });
+
+it.each(["workflow_run", "workflow_dispatch"])(
+  "checks out, validates and labels the same commit for %s",
+  async (eventName) => {
+    const github = {
+      event_name: eventName,
+      sha: "current-main-sha",
+      run_id: "100",
+      run_attempt: "2",
+      event:
+        eventName === "workflow_run"
+          ? { workflow_run: { ...successfulCI, head_sha: "ci-passed-sha" } }
+          : {},
+    };
+    const expectedSha =
+      eventName === "workflow_run" ? "ci-passed-sha" : "current-main-sha";
+    const env = {};
+    const resolve = (value) =>
+      value.replace(/\$\{\{([\s\S]*?)\}\}/g, (_, expression) =>
+        runInNewContext(expression, { github, env }),
+      );
+    env.DEPLOYMENT_SHA = resolve(workflow.jobs.deploy.env.DEPLOYMENT_SHA);
+    const checkout = workflow.jobs.deploy.steps[0];
+    expect(resolve(checkout.with.ref)).toBe(expectedSha);
+    const build = workflow.jobs.deploy.steps.find(
+      (step) => step.name === "Build production frontend and Worker",
+    );
+    expect(resolve(build.env.OXYTYPE_BUILD_ID)).toBe(`${expectedSha}-100-2`);
+    const run = {
+      ...successfulCI,
+      head_sha: expectedSha,
+      status: "completed",
+      id: 42,
+    };
+    expect(
+      await requireSuccessfulProductionCI({
+        github: {
+          rest: {
+            actions: {
+              listWorkflowRuns: async (query) => {
+                expect(query.head_sha).toBe(expectedSha);
+                return { data: { workflow_runs: [run] } };
+              },
+            },
+          },
+        },
+        context: {
+          eventName,
+          repo: { owner: "voltcrash", repo: "oxytype" },
+          sha: github.sha,
+          payload: github.event,
+        },
+        sha: env.DEPLOYMENT_SHA,
+      }),
+    ).toEqual(run);
+  },
+);
 
 it("retires consumers on direct deployments while keeping dry-runs read-only", () => {
   const { scripts } = JSON.parse(
