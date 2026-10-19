@@ -36,7 +36,7 @@ Enable diagnostics as needed, through environment variables or `frontend/.env`:
 
 Restart the server after changing these flags. Automatic lint uses a 750 ms
 debounce. Run `vp run lint-fe` for full frontend checks on demand; commit hooks
-and CI also check changes.
+and [CI](CI.md) also check changes.
 
 ```sh
 DEV_TOOLS=true vp run dev
