@@ -79,3 +79,27 @@ test("mobile settings reach every section without returning to navigation", asyn
     await page.evaluate(() => document.documentElement.scrollWidth),
   ).toBeLessThanOrEqual(390);
 });
+
+test("sidebar clicks and hotkeys jump even when the requested tab is unchanged", async ({
+  page,
+}) => {
+  await page.goto("/settings?tab=theme");
+  const theme = page.locator("#group_theme h2");
+  const input = page.locator("#group_input h2");
+  const nav = page.getByRole("navigation", { name: "Page sections" });
+  await expect(theme).toBeInViewport();
+  await input.evaluate((element) =>
+    element.scrollIntoView({ block: "start", behavior: "instant" }),
+  );
+  await expect(
+    nav.getByRole("button", { name: "input", exact: true }),
+  ).toHaveAttribute("aria-current", "location");
+  await nav.getByRole("button", { name: "theme", exact: true }).click();
+  await expect(theme).toBeInViewport();
+  await input.evaluate((element) =>
+    element.scrollIntoView({ block: "start", behavior: "instant" }),
+  );
+  await page.keyboard.press("ControlOrMeta+6");
+  await expect(theme).toBeInViewport();
+  await expect(page).toHaveURL(/\/settings\?tab=theme$/);
+});
