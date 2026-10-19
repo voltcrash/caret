@@ -64,7 +64,7 @@ export function AccountRuntime(): null {
           if (result !== "unavailable" || !lease.isCurrent()) return;
           await retryAfter(delay);
           if (!lease.isCurrent()) return;
-          result = await loadUser(user);
+          result = await loadUser(user, { notifyOnFailure: false });
         }
       })();
     }),
