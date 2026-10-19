@@ -5,41 +5,41 @@ import { restartTestEvent } from "../../../events/test";
 import { getFocus } from "../../../states/test";
 import { cn } from "../../../utils/cn";
 import { Link } from "../../common/Link";
+import { openThemePicker } from "./ThemeIndicator";
 
 export function Logo(): JSXElement {
   const typing = useTypingRoute();
   return (
-    <Link
-      href="/"
-      class="-m-2 flex h-6 w-max gap-2 rounded-[0.8rem] p-2"
-      aria-label="Oxytype Home"
-      style={{
-        "box-sizing": "content-box",
-        "font-family": "Lexend Deca ,sans-serif",
-      }}
+    <div
+      class="flex h-6 w-max gap-2"
+      style={{ "font-family": "Lexend Deca ,sans-serif" }}
       data-ui-element="logo"
-      onClick={() => {
-        if (typing()) restartTestEvent.dispatch();
-      }}
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 48 48"
-        aria-hidden="true"
-        class={cn(
-          "h-full fill-none stroke-current stroke-[6] text-main transition-colors",
-          {
-            "text-text": getFocus(),
-          },
-        )}
+      {/* only the icon goes home; the wordmark opens the theme picker */}
+      <Link
+        href="/"
+        class="-m-2 h-6 rounded-[0.8rem] p-2"
+        aria-label="Oxytype Home"
+        style={{ "box-sizing": "content-box" }}
+        onClick={() => {
+          if (typing()) restartTestEvent.dispatch();
+        }}
       >
-        <circle cx="24" cy="24" r="16"></circle>
-        <path
-          d="M24 5v13"
-
-          class="[stroke-linecap:round]"
-        ></path>
-      </svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 48 48"
+          aria-hidden="true"
+          class={cn(
+            "h-full fill-none stroke-current stroke-[6] text-main transition-colors",
+            {
+              "text-text": getFocus(),
+            },
+          )}
+        >
+          <circle cx="24" cy="24" r="16"></circle>
+          <path d="M24 5v13" class="[stroke-linecap:round]"></path>
+        </svg>
+      </Link>
       <div class="hidden h-6 place-content-center text-[2rem] leading-0 sm:grid">
         <h1
           class={cn("-mt-[0.11em] text-text transition-colors duration-250", {
@@ -47,9 +47,16 @@ export function Logo(): JSXElement {
           })}
           data-ui-element="logoText"
         >
-          oxytype
+          <button
+            type="button"
+            class="cursor-pointer rounded-[0.4rem] border-none bg-transparent p-0 font-[inherit] leading-[inherit] text-inherit"
+            aria-label="oxytype - change theme"
+            onClick={openThemePicker}
+          >
+            oxytype
+          </button>
         </h1>
       </div>
-    </Link>
+    </div>
   );
 }
