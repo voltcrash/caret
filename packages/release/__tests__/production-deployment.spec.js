@@ -11,6 +11,7 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { parseEnv } from "node:util";
+import { runInNewContext } from "node:vm";
 import { expect, it } from "vite-plus/test";
 import { parse } from "yaml";
 
@@ -23,6 +24,48 @@ const workflow = parse(
     "utf8",
   ),
 );
+
+const successfulCI = {
+  event: "push",
+  head_branch: "main",
+  head_repository: { full_name: "voltcrash/oxytype" },
+  conclusion: "success",
+};
+
+it.each([
+  { name: "successful main push", allowed: true },
+  { name: "failed CI", run: { conclusion: "failure" }, allowed: false },
+  { name: "cancelled CI", run: { conclusion: "cancelled" }, allowed: false },
+  { name: "skipped CI", run: { conclusion: "skipped" }, allowed: false },
+  { name: "neutral CI", run: { conclusion: "neutral" }, allowed: false },
+  { name: "timed out CI", run: { conclusion: "timed_out" }, allowed: false },
+  { name: "pending CI", run: { conclusion: null }, allowed: false },
+  { name: "pull request CI", run: { event: "pull_request" }, allowed: false },
+  { name: "other branch", run: { head_branch: "feature" }, allowed: false },
+  {
+    name: "fork main CI",
+    run: { head_repository: { full_name: "fork/oxytype" } },
+    allowed: false,
+  },
+  { name: "fork repository", repository: "fork/oxytype", allowed: false },
+  { name: "unsequenced push", event: "push", allowed: false },
+  { name: "manual main retry", event: "workflow_dispatch", allowed: true },
+  {
+    name: "manual feature dispatch",
+    event: "workflow_dispatch",
+    ref: "refs/heads/feature",
+    allowed: false,
+  },
+])("gates production deployment: $name", ({ allowed, ...scenario }) => {
+  // These conditions use only the equality/boolean subset shared by Actions and JS.
+  const github = {
+    repository: scenario.repository ?? "voltcrash/oxytype",
+    ref: scenario.ref ?? "refs/heads/main",
+    event_name: scenario.event ?? "workflow_run",
+    event: { workflow_run: { ...successfulCI, ...scenario.run } },
+  };
+  expect(runInNewContext(workflow.jobs.deploy.if, { github })).toBe(allowed);
+});
 
 it("deploys after main CI or manual retry without creating a release or version", () => {
   const ci = parse(
