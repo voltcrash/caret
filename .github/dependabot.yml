@@ -5,3 +5,11 @@ updates:
     versioning-strategy: increase
     schedule:
       interval: "weekly"
+  - package-ecosystem: "github-actions"
+    # "/" covers workflows; local composite actions are listed separately.
+    directories: ["/", "/.github/actions/*"]
+    schedule:
+      interval: "weekly"
+    groups:
+      github-actions:
+        patterns: ["*"]

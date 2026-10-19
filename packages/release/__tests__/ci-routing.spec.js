@@ -1,9 +1,9 @@
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, matchesGlob } from "node:path";
-import { runInNewContext } from "node:vm";
-import { expect, it } from "vite-plus/test";
+import { join } from "node:path";
+import picomatch from "picomatch";
+import { describe, expect, it } from "vite-plus/test";
 import { parse } from "yaml";
 
 const workflow = parse(
@@ -12,97 +12,264 @@ const workflow = parse(
     "utf8",
   ),
 );
-const steps = workflow.jobs["pre-ci"].steps;
-const filters = parse(steps.find((step) => step.id === "filter").with.filters);
-const exports = steps.find((step) => step.id === "export-changes").run;
+const steps = workflow.jobs.changes.steps;
+const filterStep = steps.find((step) => step.id === "filter");
+const filters = parse(filterStep.with.filters);
+const select = steps.find((step) => step.id === "select").run;
+const jobs = Object.keys(workflow.jobs.changes.outputs);
 
-function changes(files) {
-  const flags = Object.fromEntries(
-    Object.entries(filters).map(([name, patterns]) => [
-      name,
-      files.some((file) =>
-        patterns.some((pattern) => matchesGlob(file, pattern)),
-      )
-        ? "true"
-        : "false",
-    ]),
+// dorny/paths-filter's some-with-excludes: any pattern matches, no exclusion does.
+function matches(file, patterns) {
+  const test = (pattern) => picomatch(pattern, { dot: true })(file);
+  const excludes = patterns.filter((pattern) => pattern.startsWith("!"));
+  return (
+    patterns.some((pattern) => !pattern.startsWith("!") && test(pattern)) &&
+    !excludes.some((pattern) => test(pattern.slice(1)))
   );
-  const script = exports.replace(
-    /\$\{\{([\s\S]*?)\}\}/g,
-    (_match, expression) =>
-      String(
-        runInNewContext(
-          expression.replace(
-            /steps\.filter\.outputs\.([\w-]+)/g,
-            (_output, name) => JSON.stringify(flags[name]),
-          ),
-          {},
-          { timeout: 1000 },
-        ),
-      ),
-  );
+}
+
+function selected(files, { full = false } = {}) {
+  const changed = Object.entries(filters)
+    .filter(([, patterns]) => files.some((file) => matches(file, patterns)))
+    .map(([name]) => name);
   const directory = mkdtempSync(join(tmpdir(), "oxytype-ci-routing-"));
   const output = join(directory, "outputs");
   try {
     execFileSync("bash", ["-e"], {
-      input: script,
-      env: { ...process.env, GITHUB_OUTPUT: output },
+      input: select,
+      env: {
+        ...process.env,
+        GITHUB_OUTPUT: output,
+        FULL: String(full),
+        CHANGED: JSON.stringify(changed),
+      },
+      stdio: ["pipe", "ignore", "inherit"],
     });
-    return Object.fromEntries(
+    const flags = Object.fromEntries(
       readFileSync(output, "utf8")
         .trim()
         .split("\n")
         .map((line) => line.split("=")),
     );
+    return jobs.filter((job) => flags[job] === "true");
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
 }
 
+const allJobs = [
+  "backend-lint",
+  "backend-test",
+  "frontend-lint",
+  "frontend-test",
+  "start-ssr",
+  "start-browser",
+  "start-updates",
+  "start-delivery",
+  "packages",
+  "assets",
+  "code",
+];
+const appJobs = [
+  "backend-test",
+  "frontend-lint",
+  "frontend-test",
+  "start-ssr",
+  "start-browser",
+  "start-updates",
+  "start-delivery",
+  "code",
+];
+
+it("matches dorny/paths-filter's quantifier", () => {
+  expect(filterStep.with["predicate-quantifier"]).toBe("some-with-excludes");
+});
+
+it("exports a flag for every job", () => {
+  expect(jobs.toSorted()).toEqual(allJobs.toSorted());
+});
+
 it.each([
   "package.json",
   "pnpm-lock.yaml",
   "pnpm-workspace.yaml",
-  "vite.config.ts",
-  "vitest.config.ts",
-  ".github/workflows/oxytype-ci.yml",
-  "patches/dependency.patch",
-  "stylelint.config.mjs",
-  ".oxfmtrc-editor.json",
   ".nvmrc",
-])("validates all components for shared input %s", (file) => {
-  const flags = changes([file]);
-  for (const name of [
-    "should-build-be",
-    "should-build-fe",
-    "should-build-pkg",
-    "assets-or-styles",
-  ]) {
-    expect(flags[name], name).toBe("true");
-  }
+  ".node-version",
+  "patches/dependency.patch",
+  "packages/typescript-config/base.json",
+  ".github/actions/setup/action.yml",
+  ".github/workflows/oxytype-ci.yml",
+  ".github/workflows/production-release.yml",
+])("runs every job for shared input %s", (file) => {
+  expect(selected([file])).toEqual(allJobs);
 });
 
-it("retains selective routing for frontend source changes", () => {
-  expect(changes(["frontend/src/ts/test/result.ts"])).toMatchObject({
-    "should-build-fe": "true",
-    "should-build-be": "false",
-    "should-build-pkg": "false",
-  });
-});
-
-it("rebuilds the application Worker when backend services change", () => {
-  expect(changes(["backend/src/services/operations/results.ts"])).toMatchObject(
-    {
-      "should-build-fe": "true",
-      "should-build-be": "true",
-    },
+it("runs every job outside pull requests", () => {
+  // A main push's diff misses commits whose CI a newer push cancelled.
+  expect(steps.find((step) => step.id === "select").env.FULL).toContain(
+    "github.event_name != 'pull_request'",
   );
+  expect(filterStep.if).toBe("github.event_name == 'pull_request'");
 });
 
-it("validates backend and deployment helpers when the production workflow changes", () => {
-  expect(changes([".github/workflows/production-release.yml"])).toMatchObject({
-    "should-build-be": "true",
-    "should-build-pkg": "true",
-    "should-build-fe": "true",
+it("runs every job for force-full-ci and main or manual runs", () => {
+  expect(selected([], { full: true })).toEqual(allJobs);
+});
+
+it.each([
+  "README.md",
+  "docs/CI.md",
+  "frontend/README.md",
+  "LICENSE",
+  ".github/labeler.yml",
+  ".github/ISSUE_TEMPLATE/bug_report.yaml",
+])("runs only the format check for %s", (file) => {
+  expect(selected([file])).toEqual([]);
+});
+
+describe("application sources", () => {
+  it("rebuilds the frontend, Start and inventory spec for frontend source", () => {
+    expect(selected(["frontend/src/ts/test/result.ts"])).toEqual(appJobs);
   });
+
+  it("treats non-script frontend config as source", () => {
+    expect(selected(["frontend/wrangler.production.json"])).toEqual(appJobs);
+    expect(selected(["frontend/tsconfig.json"])).toEqual(appJobs);
+  });
+
+  it("lints styles and rebuilds for frontend CSS", () => {
+    expect(selected(["frontend/src/styles/tailwind.css"])).toEqual(
+      appJobs.toSpliced(-1, 0, "assets"),
+    );
+  });
+
+  it("rebuilds the application Worker when backend services change", () => {
+    expect(selected(["backend/src/services/operations/results.ts"])).toEqual([
+      "backend-lint",
+      ...appJobs,
+    ]);
+  });
+
+  it("runs every job for bundled package sources", () => {
+    expect(selected(["packages/schemas/src/results.ts"])).toEqual(allJobs);
+  });
+});
+
+describe("test-only changes", () => {
+  it.each([
+    [
+      "frontend/__tests__/utils/format.spec.ts",
+      ["frontend-lint", "frontend-test"],
+    ],
+    [
+      "frontend/__tests__/start/workerd.ts",
+      [
+        "frontend-lint",
+        "frontend-test",
+        "start-ssr",
+        "start-browser",
+        "start-updates",
+      ],
+    ],
+    ["frontend/start-e2e/auth.spec.ts", ["frontend-lint", "start-browser"]],
+    ["frontend/e2e/typing.spec.ts", ["frontend-lint", "start-browser"]],
+    [
+      "frontend/update-e2e/deployment.spec.ts",
+      ["frontend-lint", "start-updates"],
+    ],
+    ["backend/__tests__/d1/users.spec.ts", ["backend-lint", "backend-test"]],
+    ["packages/schemas/__tests__/results.spec.ts", ["packages"]],
+    ["packages/funbox/__test__/list.spec.ts", ["packages"]],
+    [
+      "packages/typing-core/__fixtures__/words/english.json",
+      [
+        "backend-lint",
+        "backend-test",
+        "frontend-lint",
+        "frontend-test",
+        "packages",
+      ],
+    ],
+  ])("%s runs only its own suite", (file, expected) => {
+    expect(selected([file])).toEqual([...expected, "code"]);
+  });
+
+  it.each([
+    "backend/__tests__/d1/result-support.ts",
+    "backend/__tests__/__testData__/completed-event.ts",
+  ])("runs frontend suites importing backend helper %s", (file) => {
+    expect(selected([file])).toEqual([
+      "backend-lint",
+      "backend-test",
+      "frontend-lint",
+      "frontend-test",
+      "start-ssr",
+      "code",
+    ]);
+  });
+
+  it("runs the update suite for shared browser fixtures", () => {
+    expect(selected(["frontend/start-e2e/fixtures.ts"])).toEqual([
+      "frontend-lint",
+      "start-browser",
+      "start-updates",
+      "code",
+    ]);
+  });
+});
+
+describe("static files", () => {
+  it("runs the Start suites for Worker delivery files", () => {
+    expect(selected(["frontend/static/_headers"])).toEqual([
+      "start-ssr",
+      "start-browser",
+      "start-updates",
+      "start-delivery",
+      "assets",
+    ]);
+  });
+
+  it("runs layout consumers for layout files", () => {
+    expect(selected(["frontend/static/layouts/qwerty.json"])).toEqual([
+      "frontend-test",
+      "packages",
+      "assets",
+    ]);
+  });
+
+  it.each([
+    "frontend/scripts/json-lint.ts",
+    "frontend/scripts/short-quotes.json",
+  ])("validates assets when validator input %s changes", (file) => {
+    expect(selected([file])).toContain("assets");
+  });
+
+  it("validates assets when the constants they must match change", () => {
+    expect(selected(["frontend/src/ts/constants/fonts.ts"])).toEqual(
+      appJobs.toSpliced(-1, 0, "assets"),
+    );
+  });
+
+  it("runs the challenge catalog test for challenge files", () => {
+    expect(selected(["frontend/static/challenges/list.json"])).toEqual([
+      "packages",
+      "assets",
+    ]);
+  });
+});
+
+it.each([
+  ["packages/release/src/production-validation.js", ["packages", "code"]],
+  [
+    "packages/oxlint-config/config.ts",
+    ["backend-lint", "frontend-lint", "packages", "code"],
+  ],
+  ["vite.config.ts", ["backend-lint", "frontend-lint", "packages", "code"]],
+  ["frontend/storybook/stories/button.tsx", ["frontend-lint", "code"]],
+  ["knip.ts", ["code"]],
+  ["frontend/static/quotes/english.json", ["assets"]],
+  ["frontend/static/themes/serika.css", ["assets"]],
+  ["stylelint.config.mjs", ["assets", "code"]],
+])("routes %s narrowly", (file, expected) => {
+  expect(selected([file])).toEqual(expected);
 });

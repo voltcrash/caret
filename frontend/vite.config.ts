@@ -42,6 +42,12 @@ async function devPlugins(env: Record<string, string>): Promise<Plugin[]> {
 export default defineConfig(async ({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), "");
   const buildId = resolveBuildId(mode !== "production");
+  if (mode === "production") {
+    // Vite evaluates this config once per environment. Pin the generated
+    // timestamp so the client, Worker and /version.json share one build ID
+    // even when a build crosses a minute boundary.
+    process.env["OXYTYPE_BUILD_ID"] = buildId;
+  }
   const sentryDsn = env["SENTRY_DSN"] ?? "";
   const sentryOrigin = sentryDsn === "" ? "" : new URL(sentryDsn).origin;
   if (sentryOrigin !== "" && !sentryOrigin.startsWith("https://")) {

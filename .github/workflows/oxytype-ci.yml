@@ -1,7 +1,6 @@
 name: Oxytype CI
 
 env:
-  NODE_VERSION: "24.21.0"
   TURNSTILE_SITE_KEY: "1x00000000000000000000AA"
 
 permissions:
@@ -14,219 +13,262 @@ on:
     types: [opened, reopened, synchronize, ready_for_review]
   push:
     branches: [main]
+  # Manual runs check everything; they never trigger a production deployment.
+  workflow_dispatch:
 
 concurrency:
-  group: group-${{ github.ref }}-${{ github.workflow }}
+  # The event keeps manual runs from cancelling the main-push run a deploy waits for.
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  pre-ci:
+  # Decides which jobs run. Draft PRs skip CI unless labelled force-ci or
+  # force-full-ci; every other job needs this one, so they skip with it.
+  changes:
+    name: changes
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'force-ci') || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
-    name: pre-ci
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
-      should-build-be: ${{ steps.export-changes.outputs.should-build-be }}
-      should-build-fe: ${{ steps.export-changes.outputs.should-build-fe }}
-      should-build-pkg: ${{ steps.export-changes.outputs.should-build-pkg }}
-      assets-or-styles: ${{ steps.export-changes.outputs.assets-or-styles }}
-      shared-inputs: ${{ steps.filter.outputs.shared-src }}
+      backend-lint: ${{ steps.select.outputs.backend-lint }}
+      backend-test: ${{ steps.select.outputs.backend-test }}
+      frontend-lint: ${{ steps.select.outputs.frontend-lint }}
+      frontend-test: ${{ steps.select.outputs.frontend-test }}
+      start-ssr: ${{ steps.select.outputs.start-ssr }}
+      start-browser: ${{ steps.select.outputs.start-browser }}
+      start-updates: ${{ steps.select.outputs.start-updates }}
+      start-delivery: ${{ steps.select.outputs.start-delivery }}
+      packages: ${{ steps.select.outputs.packages }}
+      assets: ${{ steps.select.outputs.assets }}
+      code: ${{ steps.select.outputs.code }}
 
     steps:
-      - name: Full checkout
-        uses: actions/checkout@v7.0.1
-        # paths filter doesn't need checkout on pr
-        if: github.event_name != 'pull_request'
-
+      # PRs read changed files from the API, so no checkout is needed.
       - name: Detect changes
+        if: github.event_name == 'pull_request'
         uses: dorny/paths-filter@v4.0.3
         id: filter
         with:
+          # A file counts when it matches a pattern and none of the filter's exclusions.
+          predicate-quantifier: some-with-excludes
           filters: |
-            shared-src:
+            # Inputs every job depends on.
+            shared:
               - 'package.json'
               - 'pnpm-lock.yaml'
               - 'pnpm-workspace.yaml'
-              - 'vite.config.ts'
-              - 'vitest.config.ts'
-              - 'knip.ts'
-              - 'stylelint.config.mjs'
-              - '.oxfmtrc-editor.json'
-              - '.editorconfig'
-              - '.nvmrc'
               - '.npmrc'
+              - '.node-version'
+              - '.nvmrc'
               - 'patches/**'
+              - 'packages/typescript-config/**'
               - '.github/actions/**'
               - '.github/workflows/oxytype-ci.yml'
-            assets-or-styles:
-              - 'frontend/static/**/*'
-              - '**/*.{scss,css}'
-            be-src:
-              - 'backend/**/*'
-              - 'backend/package.json'
+              # Deploys run the production build and release helpers.
               - '.github/workflows/production-release.yml'
-            fe-src:
-              - 'frontend/**/*.{ts,tsx,js,scss,html}'
-              - 'frontend/**/package.json'
-              - 'frontend/wrangler.jsonc'
-            pkg-src:
-              - 'packages/**/*'
-              - '.github/workflows/production-release.yml'
+            lint-config:
+              - 'vite.config.ts'
+              - 'vitest.config.ts'
+              - 'packages/oxlint-config/**'
+            # Workspace packages bundled into the backend and frontend.
+            runtime-packages:
+              - 'packages/{challenges,contracts,funbox,schemas,typing-core,util}/**'
+              - '!packages/*/{__test__,__tests__,__fixtures__}/**'
+              - '!**/*.md'
+            packages:
+              - 'packages/**'
+              - '!**/*.md'
+            backend:
+              - 'backend/**'
+              - '!backend/__tests__/**'
+              - '!**/*.md'
+            backend-tests:
+              - 'backend/__tests__/**'
+              # Anticheat specs replay typing-core's recorded fixtures.
+              - 'packages/typing-core/__fixtures__/**'
+            # Backend test data and D1 helpers the frontend unit and SSR suites import.
+            backend-test-support:
+              - 'backend/__tests__/{__testData__/**,d1/helpers.ts,d1/result-support.ts}'
+            frontend:
+              - 'frontend/**'
+              - '!frontend/static/**'
+              - '!frontend/{__tests__,e2e,start-e2e,update-e2e,staging-e2e,storybook}/**'
+              - '!frontend/{vitest,playwright}.*config.ts'
+              - '!**/*.md'
+            frontend-tests:
+              - 'frontend/__tests__/**'
+              - 'frontend/vitest.config.ts'
+              # Parity specs replay typing-core's recorded fixtures.
+              - 'packages/typing-core/__fixtures__/**'
+              - '!frontend/__tests__/start/**'
+            # Start harness: SSR suites, and the workerd fixture the browser suites serve.
+            start-tests:
+              - 'frontend/__tests__/start/**'
+              - 'frontend/vitest.start.config.ts'
+            browser-tests:
+              - 'frontend/{e2e,start-e2e}/**'
+              - 'frontend/playwright.start.config.ts'
+            update-tests:
+              - 'frontend/update-e2e/**'
+              - 'frontend/playwright.update.config.ts'
+              # Fixtures the update suite shares with the browser suite.
+              - 'frontend/start-e2e/*fixtures.ts'
+            # Linted, but not run in CI.
+            frontend-lint-only:
+              - 'frontend/{staging-e2e,storybook}/**'
+              - 'frontend/playwright.{benchmark,migration,staging}.config.ts'
+            # Served as-is by the Worker (e.g. _headers), so the Start suites cover them.
+            static-delivery:
+              - 'frontend/static/*'
+            # Fixtures read by frontend unit and package tests.
+            static-layouts:
+              - 'frontend/static/layouts/**'
+            static-challenges:
+              - 'frontend/static/challenges/**'
+            assets:
+              - 'frontend/static/**'
+              - '**/*.{css,scss}'
+              - 'stylelint.config.mjs'
+              # The validator, its helpers, and the constants it checks assets against.
+              - 'frontend/scripts/{check-assets.ts,json-lint.ts,short-quotes.json}'
+              - 'frontend/src/ts/constants/**'
+            # Anything Knip reads: everything but docs, static assets and repo metadata.
+            code:
+              - '**'
+              - '!**/*.md'
+              - '!docs/**'
+              - '!LICENSE'
+              - '!frontend/static/**'
+              - '!.github/{ISSUE_TEMPLATE/**,dependabot.yml,labeler.yml,workflows/labeler.yml}'
+              - '!.{claude,husky}/**'
 
-      - name: Export changes
-        id: export-changes
+      - name: Select jobs
+        id: select
+        env:
+          # Main pushes deploy, so they check everything: a push's diff alone would
+          # miss commits whose CI run a newer push cancelled.
+          FULL: ${{ github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'force-full-ci') }}
+          CHANGED: ${{ steps.filter.outputs.changes }}
         run: |
-          echo "should-build-pkg=${{ steps.filter.outputs.pkg-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
-          echo "should-build-be=${{ steps.filter.outputs.be-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
-          echo "should-build-fe=${{ steps.filter.outputs.fe-src == 'true' || steps.filter.outputs.be-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
-          echo "assets-or-styles=${{ steps.filter.outputs.assets-or-styles == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
+          # Prints "<job>=true" when any listed filter matched (or on a full run).
+          enable() {
+            local job=$1 filter result=false
+            shift
+            for filter in shared "$@"; do
+              if [[ $FULL == true ]] || jq -e --arg f "$filter" 'index($f) != null' <<<"$CHANGED" >/dev/null; then
+                result=true
+              fi
+            done
+            echo "$job=$result" | tee -a "$GITHUB_OUTPUT"
+          }
+          runtime=(backend runtime-packages)
+          enable backend-lint "${runtime[@]}" backend-tests lint-config
+          # The migration inventory spec reads frontend sources.
+          enable backend-test "${runtime[@]}" backend-tests frontend
+          enable frontend-lint "${runtime[@]}" frontend frontend-tests start-tests browser-tests update-tests frontend-lint-only lint-config backend-test-support
+          enable frontend-test "${runtime[@]}" frontend frontend-tests start-tests backend-test-support static-layouts
+          enable start-ssr "${runtime[@]}" frontend start-tests backend-test-support static-delivery
+          enable start-browser "${runtime[@]}" frontend start-tests browser-tests static-delivery
+          enable start-updates "${runtime[@]}" frontend start-tests update-tests static-delivery
+          enable start-delivery "${runtime[@]}" frontend static-delivery
+          enable packages packages lint-config static-layouts static-challenges
+          enable assets assets runtime-packages
+          enable code code
 
-  prime-cache:
-    name: prime-cache
+  quality:
+    name: quality
+    needs: [changes]
     runs-on: ubuntu-latest
-    needs: [pre-ci]
-    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'force-ci') || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7.0.1
 
       - name: Set up Vite+ and install dependencies
-        uses: voidzero-dev/setup-vp@v1.21.1
+        uses: ./.github/actions/setup
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          # Saves the pnpm store once so parallel jobs only restore it.
-          cache: true
+          # Runs on every change, so it is the one job that uploads caches.
+          save-cache: "true"
 
-  check-format:
-    name: check-format
-    needs: [prime-cache]
-    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'force-ci') || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Full checkout
-        uses: actions/checkout@v7.0.1
-        with:
-          fetch-depth: 0
-
-      - name: Get changed files and write to temp
-        id: get-changed-files
-        uses: actions/github-script@v9.0.0
-        with:
-          script: |
-            let files;
-            if (context.eventName === "pull_request") {
-              const changedFiles = await github.paginate(
-                github.rest.pulls.listFiles,
-                {
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  pull_number: context.payload.pull_request.number,
-                }
-              );
-              files = changedFiles.filter(file => file.status !== "removed").map(file => file.filename);
-            } else {
-              const before = context.payload.before;
-              const args = /^0+$/.test(before)
-                ? ["ls-files", "-z"]
-                : ["diff", "--name-only", "--diff-filter=ACMRTUXB", "-z", before, context.sha];
-              files = require("child_process").execFileSync("git", args, { encoding: "utf8" }).split("\0").filter(Boolean);
-            }
-            if (files.length > 0) {
-              require('fs').writeFileSync('/tmp/changed-files.txt', files.join('\0'));
-              core.setOutput('has-files', 'true');
-            }
-
-      - name: Set up Vite+ and install dependencies
-        if: steps.get-changed-files.outputs.has-files == 'true'
-        uses: voidzero-dev/setup-vp@v1.21.1
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: true
-          cache-save: false
-
-      - name: Check formatting (changed files)
-        if: steps.get-changed-files.outputs.has-files == 'true'
-        run: |
-          xargs -0 vp fmt --check --no-error-on-unmatched-pattern < /tmp/changed-files.txt
-
-  knip:
-    name: knip
-    needs: [prime-cache]
-    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'force-ci') || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7.0.1
-
-      - name: Set up Vite+ and install dependencies
-        uses: voidzero-dev/setup-vp@v1.21.1
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: true
-          cache-save: false
+      # The whole repository formats in about a second, so check it all:
+      # formatter or config changes are caught, and no history is fetched.
+      - name: Check formatting
+        run: vp fmt . --check
 
       - name: Find unused code and dependencies
+        if: needs.changes.outputs.code == 'true'
         run: vp run knip
 
   ci-be:
     name: ci-be
-    needs: [pre-ci, prime-cache]
+    needs: [changes]
+    if: needs.changes.outputs.backend-lint == 'true' || needs.changes.outputs.backend-test == 'true'
     runs-on: ubuntu-latest
-    if: needs.pre-ci.outputs.should-build-be == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true' || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7.0.1
 
       - name: Set up Vite+ and install dependencies
-        uses: voidzero-dev/setup-vp@v1.21.1
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          # Restores the pnpm store saved by prime-cache.
-          cache: true
-          cache-save: false
+        uses: ./.github/actions/setup
 
       - name: Check lint
-        run: vp run lint-fast-be && vp run lint-be
+        if: needs.changes.outputs.backend-lint == 'true'
+        run: vp run lint-be
 
       - name: Test
+        if: needs.changes.outputs.backend-test == 'true'
         run: vp run test-be
 
   ci-fe:
     name: ci-fe
-    needs: [pre-ci, prime-cache]
+    needs: [changes]
+    if: needs.changes.outputs.frontend-lint == 'true'
     runs-on: ubuntu-latest
-    if: needs.pre-ci.outputs.should-build-fe == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true' || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7.0.1
 
       - name: Set up Vite+ and install dependencies
-        uses: voidzero-dev/setup-vp@v1.21.1
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          # Restores the pnpm store saved by prime-cache.
-          cache: true
-          cache-save: false
+        uses: ./.github/actions/setup
 
       - name: Check lint
-        run: vp run lint-fast-fe && vp run lint-fe
+        run: vp run lint-fe
 
-      - name: Build
-        run: vp run build-fe
+      # The Start jobs build the same bundle; only its circular-import guard runs here.
+      - name: Check circular imports
+        run: vp run --filter @oxytype/frontend madge
 
-      - name: Test
-        run: vp run test-fe
-
-  # Start owns delivery: Worker build, workerd, browser and update suites.
-  ci-start:
-    name: ci-start
-    needs: [pre-ci, prime-cache]
+  ci-fe-test:
+    name: ci-fe-test (${{ matrix.shard }}/2)
+    needs: [changes]
+    if: needs.changes.outputs.frontend-test == 'true'
     runs-on: ubuntu-latest
-    if: needs.pre-ci.outputs.should-build-fe == 'true' || needs.pre-ci.outputs.should-build-be == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true' || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
     steps:
       - uses: actions/checkout@v7.0.1
 
       - name: Set up Vite+ and install dependencies
-        uses: voidzero-dev/setup-vp@v1.21.1
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: true
-          cache-save: false
+        uses: ./.github/actions/setup
+
+      - name: Test
+        working-directory: frontend
+        run: vp test run --shard=${{ matrix.shard }}/2
+
+  # Start owns delivery. Its suites run as parallel jobs, each building what it needs.
+  start-ssr:
+    name: start-ssr
+    needs: [changes]
+    if: needs.changes.outputs.start-ssr == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Set up Vite+ and install dependencies
+        uses: ./.github/actions/setup
 
       - name: Check operation ownership and declared HTTP routes
         run: vp -C backend exec tsx scripts/migration-inventory.ts --check && vp -C frontend exec tsx scripts/generate-http-routes.ts --check
@@ -240,25 +282,82 @@ jobs:
       - name: SSR, workerd and bundle-boundary suites
         run: vp run --filter @oxytype/frontend test:start
 
-      - name: Install Chromium and its system dependencies
-        run: vp -C frontend exec playwright install --with-deps chromium
+  start-browser:
+    name: start-browser (${{ matrix.shard }}/4)
+    needs: [changes]
+    if: needs.changes.outputs.start-browser == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v7.0.1
 
+      - name: Set up Vite+ and install dependencies
+        uses: ./.github/actions/setup
+
+      - name: Build Start Worker
+        run: vp run --filter @oxytype/frontend build:start
+
+      # Suites run headless, so the small headless shell is enough.
+      - name: Install Chromium and its system dependencies
+        run: vp -C frontend exec playwright install --with-deps --only-shell chromium
+
+      # Each shard serves its own fixture Worker, so shards share no state.
       - name: Production-Worker browser checks
-        run: vp run --filter @oxytype/frontend test:start:browser
+        working-directory: frontend
+        run: vp exec playwright test --config playwright.start.config.ts --shard=${{ matrix.shard }}/4
 
       - name: Upload browser traces
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7.0.2
         with:
-          name: start-browser-traces
+          name: start-browser-traces-${{ matrix.shard }}
           path: frontend/test-results
           retention-days: 7
           if-no-files-found: ignore
 
+  start-updates:
+    name: start-updates
+    needs: [changes]
+    if: needs.changes.outputs.start-updates == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Set up Vite+ and install dependencies
+        uses: ./.github/actions/setup
+
+      - name: Install Chromium and its system dependencies
+        run: vp -C frontend exec playwright install --with-deps --only-shell chromium
+
       - name: Multi-build service worker, real save and rollback checks
         run: vp run --filter @oxytype/frontend test:updates
 
-      # Last: overwrites dist/start with the staging delivery configuration.
+      - name: Upload update traces
+        if: failure()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: start-update-traces
+          path: frontend/test-results
+          retention-days: 7
+          if-no-files-found: ignore
+
+  start-delivery:
+    name: start-delivery
+    needs: [changes]
+    if: needs.changes.outputs.start-delivery == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Set up Vite+ and install dependencies
+        uses: ./.github/actions/setup
+
       - name: Staging build and dry-run
         run: vp run --filter @oxytype/frontend build:start:staging && vp run --filter @oxytype/frontend dry-run:start
 
@@ -270,74 +369,43 @@ jobs:
 
   ci-assets:
     name: ci-assets
-    needs: [pre-ci, prime-cache]
+    needs: [changes]
+    if: needs.changes.outputs.assets == 'true'
     runs-on: ubuntu-latest
-    if: needs.pre-ci.outputs.assets-or-styles == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true' || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7.0.1
 
-      - uses: dorny/paths-filter@v4.0.3
-        id: filter
-        with:
-          filters: |
-            styles:
-              - '**/*.{scss,css}'
-            json:
-              - 'frontend/static/**/*.json'
-            languages:
-              - 'frontend/static/languages/**'
-            quotes:
-              - 'frontend/static/quotes/**'
-            others:
-              - 'frontend/static/layouts/**'
-              - 'frontend/static/themes/**'
-              - 'frontend/static/webfonts/**'
-              - 'frontend/static/challenges/**'
-              - 'frontend/static/sounds/**'
-
       - name: Set up Vite+ and install dependencies
-        uses: voidzero-dev/setup-vp@v1.21.1
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          # Restores the pnpm store saved by prime-cache.
-          cache: true
-          cache-save: false
+        uses: ./.github/actions/setup
 
+      # Each check takes a few seconds, so run them all whenever assets change.
       - name: Lint styles
-        if: steps.filter.outputs.styles == 'true' || needs.pre-ci.outputs.shared-inputs == 'true'
         run: vp run lint-styles
 
       - name: Lint JSON
-        if: steps.filter.outputs.json == 'true' || needs.pre-ci.outputs.shared-inputs == 'true'
         run: vp run check-assets-json
 
       - name: Validate language assets
-        if: steps.filter.outputs.languages == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true'
         run: vp run check-assets-languages
 
       - name: Validate quote assets
-        if: steps.filter.outputs.quotes == 'true' || needs.pre-ci.outputs.shared-inputs == 'true'
         run: vp run check-assets-quotes
 
       - name: Validate other assets
-        if: steps.filter.outputs.others == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true'
         run: vp run check-assets-others
 
   ci-pkg:
     name: ci-pkg
-    needs: [pre-ci, prime-cache]
+    needs: [changes]
+    if: needs.changes.outputs.packages == 'true'
     runs-on: ubuntu-latest
-    if: needs.pre-ci.outputs.should-build-pkg == 'true' || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7.0.1
 
       - name: Set up Vite+ and install dependencies
-        uses: voidzero-dev/setup-vp@v1.21.1
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          # Restores the pnpm store saved by prime-cache.
-          cache: true
-          cache-save: false
+        uses: ./.github/actions/setup
 
       - name: Check shared lint configuration
         run: vp run lint-check-config
@@ -346,10 +414,38 @@ jobs:
         run: vp run lint-suppressions
 
       - name: Check lint
-        run: vp run lint-fast-pkg && vp run lint-pkg
+        run: vp run lint-pkg
 
       - name: Check workspace root lint
         run: vp lint . --type-aware --type-check --format agent
 
       - name: Test
         run: vp run test-pkg
+
+  # One stable check to require in branch protection, whichever jobs ran.
+  ci-ok:
+    name: ci-ok
+    if: ${{ !cancelled() && needs.changes.result != 'skipped' }}
+    needs:
+      [
+        changes,
+        quality,
+        ci-be,
+        ci-fe,
+        ci-fe-test,
+        start-ssr,
+        start-browser,
+        start-updates,
+        start-delivery,
+        ci-assets,
+        ci-pkg,
+      ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Require every selected job to pass
+        env:
+          RESULTS: ${{ toJSON(needs.*.result) }}
+        run: |
+          echo "$RESULTS"
+          jq -e 'all(. == "success" or . == "skipped")' <<<"$RESULTS"

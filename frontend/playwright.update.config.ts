@@ -3,6 +3,7 @@ export default defineConfig({
   testDir: "./update-e2e",
   workers: 1,
   retries: 0,
+  reporter: Boolean(process.env["CI"]) ? [["list"], ["github"]] : "list",
   use: {
     ...devices["Desktop Chrome"],
     baseURL: "http://127.0.0.1:4186",

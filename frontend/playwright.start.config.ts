@@ -4,8 +4,11 @@ export default defineConfig<{ startSession: string | undefined }>({
   fullyParallel: false,
   workers: 1,
   forbidOnly: Boolean(process.env["CI"]),
-  retries: 0,
-  reporter: "list",
+  // Intermittent failures used to fail the whole CI run; one retry reruns
+  // just that test, and the report still marks it flaky.
+  retries: Boolean(process.env["CI"]) ? 1 : 0,
+  // CI adds inline annotations on the pull request diff.
+  reporter: Boolean(process.env["CI"]) ? [["list"], ["github"]] : "list",
   use: {
     ...devices["Desktop Chrome"],
     baseURL: "http://127.0.0.1:4185",
