@@ -152,25 +152,9 @@ jobs:
           enable assets assets runtime-packages
           enable code code
 
-  check-format:
-    name: check-format
+  quality:
+    name: quality
     needs: [changes]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7.0.1
-
-      - name: Set up Vite+ and install dependencies
-        uses: ./.github/actions/setup
-
-      # The whole repository formats in about a second, so check it all:
-      # formatter or config changes are caught, and no history is fetched.
-      - name: Check formatting
-        run: vp fmt . --check
-
-  knip:
-    name: knip
-    needs: [changes]
-    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
@@ -178,10 +162,16 @@ jobs:
       - name: Set up Vite+ and install dependencies
         uses: ./.github/actions/setup
         with:
-          # The only job that uploads caches; the others restore them.
+          # Runs on every change, so it is the one job that uploads caches.
           save-cache: "true"
 
+      # The whole repository formats in about a second, so check it all:
+      # formatter or config changes are caught, and no history is fetched.
+      - name: Check formatting
+        run: vp fmt . --check
+
       - name: Find unused code and dependencies
+        if: needs.changes.outputs.code == 'true'
         run: vp run knip
 
   ci-be:
