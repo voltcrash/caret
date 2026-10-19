@@ -1,5 +1,9 @@
 import { afterEach, beforeEach, expect, it } from "vite-plus/test";
 import { requireApplication } from "../../src/app/application";
+import {
+  waitForPresetsReady,
+  getPresets,
+} from "../../src/ts/collections/presets";
 import { waitForTagsReady, getTags } from "../../src/ts/collections/tags";
 import { setUserId } from "../../src/ts/states/core";
 import {
@@ -28,5 +32,15 @@ it("retries failed tags against the recovered account instead of replaying the o
   );
   await waitForTagsReady();
   expect(getTags().map((tag) => tag.name)).toEqual(["practice"]);
+  expect(operationCalls).toHaveBeenCalledTimes(2);
+});
+
+it("retries failed presets and accepts an empty recovered collection", async () => {
+  mockOperation("presets.get", () => fail(500, "Server unavailable"));
+  await expect(waitForPresetsReady()).rejects.toThrow("Server unavailable");
+
+  mockOperation("presets.get", () => ok([]));
+  await waitForPresetsReady();
+  expect(getPresets()).toEqual([]);
   expect(operationCalls).toHaveBeenCalledTimes(2);
 });
