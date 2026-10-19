@@ -92,6 +92,8 @@ test("finishing a test focuses results without outlining the screen", async ({
   await expect(next).toBeFocused();
   await expect(next).toHaveCSS("outline-style", "solid");
   await expect(next).toHaveCSS("outline-width", "2px");
+  await page.keyboard.press("Enter");
+  await assertRestarted(page);
 });
 
 test("result summary stays silent during typing and clears on restart", async ({
