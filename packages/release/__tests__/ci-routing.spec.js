@@ -179,6 +179,17 @@ describe("test-only changes", () => {
     ],
     ["backend/__tests__/d1/users.spec.ts", ["backend-lint", "backend-test"]],
     ["packages/schemas/__tests__/results.spec.ts", ["packages"]],
+    ["packages/funbox/__test__/list.spec.ts", ["packages"]],
+    [
+      "packages/typing-core/__fixtures__/words/english.json",
+      [
+        "backend-lint",
+        "backend-test",
+        "frontend-lint",
+        "frontend-test",
+        "packages",
+      ],
+    ],
   ])("%s runs only its own suite", (file, expected) => {
     expect(selected([file])).toEqual([...expected, "code"]);
   });

@@ -73,7 +73,7 @@ jobs:
             # Workspace packages bundled into the backend and frontend.
             runtime-packages:
               - 'packages/{challenges,contracts,funbox,schemas,typing-core,util}/**'
-              - '!packages/*/__tests__/**'
+              - '!packages/*/{__test__,__tests__,__fixtures__}/**'
               - '!**/*.md'
             packages:
               - 'packages/**'
@@ -84,6 +84,8 @@ jobs:
               - '!**/*.md'
             backend-tests:
               - 'backend/__tests__/**'
+              # Anticheat specs replay typing-core's recorded fixtures.
+              - 'packages/typing-core/__fixtures__/**'
             # Backend test data and D1 helpers the frontend unit and SSR suites import.
             backend-test-support:
               - 'backend/__tests__/{__testData__/**,d1/helpers.ts,d1/result-support.ts}'
@@ -96,6 +98,8 @@ jobs:
             frontend-tests:
               - 'frontend/__tests__/**'
               - 'frontend/vitest.config.ts'
+              # Parity specs replay typing-core's recorded fixtures.
+              - 'packages/typing-core/__fixtures__/**'
               - '!frontend/__tests__/start/**'
             # Start harness: SSR suites, and the workerd fixture the browser suites serve.
             start-tests:
