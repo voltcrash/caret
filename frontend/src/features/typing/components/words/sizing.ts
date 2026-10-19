@@ -79,6 +79,9 @@ export function updateWordsWrapperHeight(force = false): void {
   if (!activeWordEl) return;
 
   setWordsWrapperVisible(true);
+  // measuring before the words have layout (e.g. while hidden) yields zero
+  // sizes, which would leave the wrapper unclipped; keep the last height
+  if (activeWordEl.offsetHeight === 0) return;
 
   const wordComputedStyle = window.getComputedStyle(activeWordEl);
   const wordMargin =
@@ -122,6 +125,8 @@ export function updateWordsWrapperHeight(force = false): void {
         }
         wordIndex++;
       }
+      // no line below the top yet means no layout to measure
+      if (lines === 0) return;
       if (lines < 3) wrapperHeight = wrapperHeight * (3 / lines);
 
       //limit to 3 lines

@@ -34,6 +34,7 @@ import { TestPageLifecycle } from "./TestPageLifecycle";
 import { TypingEvents } from "./TypingEvents";
 import { Words } from "./Words";
 import { Caret } from "./words/Caret";
+import { useWordsWrapperSizing } from "./words/wrapper-sizing";
 
 export function TestPage(
   props: { ref?: (el: HTMLDivElement) => void; class?: string } = {},
@@ -43,6 +44,7 @@ export function TestPage(
   onMount(() => {
     onCleanup(setTestElements(refs));
     useWordsInputScroll(refs.wordsWrapper, refs.wordsInput);
+    useWordsWrapperSizing(refs.wordsWrapper);
     spread(
       refs.wordsWrapper,
       {
