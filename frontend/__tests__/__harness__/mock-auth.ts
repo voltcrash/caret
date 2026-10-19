@@ -11,5 +11,4 @@ vi.mock("../../src/ts/auth-client", () => ({
   updateProfile: vi.fn(),
   setUserState: vi.fn(),
   deleteUnfinishedUser: vi.fn(),
-  signInWithPopup: vi.fn(),
 }));

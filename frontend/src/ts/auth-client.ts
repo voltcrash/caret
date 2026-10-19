@@ -1,15 +1,13 @@
 import { captureAccount } from "../app/account-scope";
 import { onCleanup } from "solid-js";
 import { createAppOwned } from "../app/application";
-import { googleSignUpEvent } from "./events/google-sign-up";
-import { operation } from "../data/operations";
 import type { SessionState } from "@oxytype/schemas/auth-session";
 import { sessionKey } from "../features/auth/session";
 import { getQueryClient } from "./queries";
 
 import { getAuthClient } from "../features/auth/client.client";
 export { getAuthClient };
-import type { AuthUser, SocialProvider } from "./auth-types";
+import type { AuthUser } from "./auth-types";
 export type { AuthUser, SocialProvider } from "./auth-types";
 import {
   getAuthenticatedUser,
@@ -103,19 +101,4 @@ export async function deleteUnfinishedUser(): Promise<void> {
   );
 }
 
-import { requestOAuth } from "../features/auth/popup.client";
 export { requestOAuth } from "../features/auth/popup.client";
-export async function signInWithPopup(
-  provider: SocialProvider,
-  rememberMe: boolean,
-): Promise<void> {
-  await requestOAuth(provider, false, rememberMe);
-  const user = await refreshSession();
-  if (!user) throw new Error("Sign in did not create a session");
-  const response = await operation("users.get");
-  if (response.status === 404) {
-    googleSignUpEvent.dispatch({ signedInUser: { user }, isNewUser: true });
-  } else if (!response.ok) {
-    throw new Error("Failed to load account");
-  }
-}
