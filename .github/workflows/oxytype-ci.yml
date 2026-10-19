@@ -19,19 +19,27 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  pre-ci:
+  # Decides which jobs run. Draft PRs skip CI unless labelled force-ci or
+  # force-full-ci; every other job needs this one, so they skip with it.
+  changes:
+    name: changes
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'force-ci') || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
-    name: pre-ci
     runs-on: ubuntu-latest
     outputs:
-      should-build-be: ${{ steps.export-changes.outputs.should-build-be }}
-      should-build-fe: ${{ steps.export-changes.outputs.should-build-fe }}
-      should-build-pkg: ${{ steps.export-changes.outputs.should-build-pkg }}
-      assets-or-styles: ${{ steps.export-changes.outputs.assets-or-styles }}
-      shared-inputs: ${{ steps.filter.outputs.shared-src }}
+      backend-lint: ${{ steps.select.outputs.backend-lint }}
+      backend-test: ${{ steps.select.outputs.backend-test }}
+      frontend-lint: ${{ steps.select.outputs.frontend-lint }}
+      frontend-test: ${{ steps.select.outputs.frontend-test }}
+      start-ssr: ${{ steps.select.outputs.start-ssr }}
+      start-browser: ${{ steps.select.outputs.start-browser }}
+      start-updates: ${{ steps.select.outputs.start-updates }}
+      start-delivery: ${{ steps.select.outputs.start-delivery }}
+      packages: ${{ steps.select.outputs.packages }}
+      assets: ${{ steps.select.outputs.assets }}
+      code: ${{ steps.select.outputs.code }}
 
     steps:
-      - name: Full checkout
+      - name: Checkout
         uses: actions/checkout@v7.0.1
         # paths filter doesn't need checkout on pr
         if: github.event_name != 'pull_request'
@@ -40,49 +48,113 @@ jobs:
         uses: dorny/paths-filter@v4.0.3
         id: filter
         with:
+          # A file counts when it matches a pattern and none of the filter's exclusions.
+          predicate-quantifier: some-with-excludes
           filters: |
-            shared-src:
+            # Inputs every job depends on.
+            shared:
               - 'package.json'
               - 'pnpm-lock.yaml'
               - 'pnpm-workspace.yaml'
-              - 'vite.config.ts'
-              - 'vitest.config.ts'
-              - 'knip.ts'
-              - 'stylelint.config.mjs'
-              - '.oxfmtrc-editor.json'
-              - '.editorconfig'
-              - '.nvmrc'
               - '.npmrc'
+              - '.node-version'
+              - '.nvmrc'
               - 'patches/**'
+              - 'packages/typescript-config/**'
               - '.github/actions/**'
               - '.github/workflows/oxytype-ci.yml'
-            assets-or-styles:
-              - 'frontend/static/**/*'
-              - '**/*.{scss,css}'
-            be-src:
-              - 'backend/**/*'
-              - 'backend/package.json'
+            lint-config:
+              - 'vite.config.ts'
+              - 'vitest.config.ts'
+              - 'packages/oxlint-config/**'
+            # Workspace packages bundled into the backend and frontend.
+            runtime-packages:
+              - 'packages/{challenges,contracts,funbox,schemas,typing-core,util}/**'
+              - '!packages/*/__tests__/**'
+              - '!**/*.md'
+            packages:
+              - 'packages/**'
               - '.github/workflows/production-release.yml'
-            fe-src:
-              - 'frontend/**/*.{ts,tsx,js,scss,html}'
-              - 'frontend/**/package.json'
-              - 'frontend/wrangler.jsonc'
-            pkg-src:
-              - 'packages/**/*'
-              - '.github/workflows/production-release.yml'
+              - '!**/*.md'
+            backend:
+              - 'backend/**'
+              - '!backend/__tests__/**'
+              - '!**/*.md'
+            backend-tests:
+              - 'backend/__tests__/**'
+            frontend:
+              - 'frontend/**'
+              - '!frontend/static/**'
+              - '!frontend/{__tests__,e2e,start-e2e,update-e2e,staging-e2e,storybook}/**'
+              - '!frontend/{vitest,playwright}.*config.ts'
+              - '!**/*.md'
+            frontend-tests:
+              - 'frontend/__tests__/**'
+              - 'frontend/vitest.config.ts'
+              - '!frontend/__tests__/start/**'
+            # Start harness: SSR suites, and the workerd fixture the browser suites serve.
+            start-tests:
+              - 'frontend/__tests__/start/**'
+              - 'frontend/vitest.start.config.ts'
+            browser-tests:
+              - 'frontend/{e2e,start-e2e}/**'
+              - 'frontend/playwright.start.config.ts'
+            update-tests:
+              - 'frontend/update-e2e/**'
+              - 'frontend/playwright.update.config.ts'
+            # Linted, but not run in CI.
+            frontend-lint-only:
+              - 'frontend/{staging-e2e,storybook}/**'
+              - 'frontend/playwright.{benchmark,migration,staging}.config.ts'
+            assets:
+              - 'frontend/static/**'
+              - '**/*.{css,scss}'
+              - 'stylelint.config.mjs'
+              - 'frontend/scripts/check-assets.ts'
+            # Anything Knip reads: everything but docs, static assets and repo metadata.
+            code:
+              - '**'
+              - '!**/*.md'
+              - '!docs/**'
+              - '!LICENSE'
+              - '!frontend/static/**'
+              - '!.github/{ISSUE_TEMPLATE/**,dependabot.yml,labeler.yml,workflows/labeler.yml}'
+              - '!.{claude,husky}/**'
 
-      - name: Export changes
-        id: export-changes
+      - name: Select jobs
+        id: select
+        env:
+          FULL: ${{ contains(github.event.pull_request.labels.*.name, 'force-full-ci') }}
+          CHANGED: ${{ steps.filter.outputs.changes }}
         run: |
-          echo "should-build-pkg=${{ steps.filter.outputs.pkg-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
-          echo "should-build-be=${{ steps.filter.outputs.be-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
-          echo "should-build-fe=${{ steps.filter.outputs.fe-src == 'true' || steps.filter.outputs.be-src == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
-          echo "assets-or-styles=${{ steps.filter.outputs.assets-or-styles == 'true' || steps.filter.outputs.shared-src == 'true' }}" >> $GITHUB_OUTPUT
+          # Prints "<job>=true" when any listed filter matched (or on a full run).
+          enable() {
+            local job=$1 filter result=false
+            shift
+            for filter in shared "$@"; do
+              if [[ $FULL == true ]] || jq -e --arg f "$filter" 'index($f) != null' <<<"$CHANGED" >/dev/null; then
+                result=true
+              fi
+            done
+            echo "$job=$result" | tee -a "$GITHUB_OUTPUT"
+          }
+          runtime=(backend runtime-packages)
+          enable backend-lint "${runtime[@]}" backend-tests lint-config
+          # The migration inventory spec reads frontend sources.
+          enable backend-test "${runtime[@]}" backend-tests frontend
+          enable frontend-lint "${runtime[@]}" frontend frontend-tests start-tests browser-tests update-tests frontend-lint-only lint-config
+          enable frontend-test "${runtime[@]}" frontend frontend-tests start-tests
+          enable start-ssr "${runtime[@]}" frontend start-tests
+          enable start-browser "${runtime[@]}" frontend start-tests browser-tests
+          enable start-updates "${runtime[@]}" frontend start-tests update-tests
+          enable start-delivery "${runtime[@]}" frontend
+          enable packages packages lint-config
+          enable assets assets runtime-packages
+          enable code code
 
   check-format:
     name: check-format
-    needs: [pre-ci]
-    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'force-ci') || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
+    needs: [changes]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
@@ -97,8 +169,8 @@ jobs:
 
   knip:
     name: knip
-    needs: [pre-ci]
-    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'force-ci') || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
+    needs: [changes]
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
@@ -114,9 +186,9 @@ jobs:
 
   ci-be:
     name: ci-be
-    needs: [pre-ci]
+    needs: [changes]
+    if: needs.changes.outputs.backend-lint == 'true' || needs.changes.outputs.backend-test == 'true'
     runs-on: ubuntu-latest
-    if: needs.pre-ci.outputs.should-build-be == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true' || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -124,16 +196,18 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Check lint
+        if: needs.changes.outputs.backend-lint == 'true'
         run: vp run lint-be
 
       - name: Test
+        if: needs.changes.outputs.backend-test == 'true'
         run: vp run test-be
 
   ci-fe:
     name: ci-fe
-    needs: [pre-ci]
+    needs: [changes]
+    if: needs.changes.outputs.frontend-lint == 'true'
     runs-on: ubuntu-latest
-    if: needs.pre-ci.outputs.should-build-fe == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true' || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -149,9 +223,9 @@ jobs:
 
   ci-fe-test:
     name: ci-fe-test (${{ matrix.shard }}/2)
-    needs: [pre-ci]
+    needs: [changes]
+    if: needs.changes.outputs.frontend-test == 'true'
     runs-on: ubuntu-latest
-    if: needs.pre-ci.outputs.should-build-fe == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true' || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
     strategy:
       fail-fast: false
       matrix:
@@ -169,9 +243,9 @@ jobs:
   # Start owns delivery. Its suites run as parallel jobs, each building what it needs.
   start-ssr:
     name: start-ssr
-    needs: [pre-ci]
+    needs: [changes]
+    if: needs.changes.outputs.start-ssr == 'true'
     runs-on: ubuntu-latest
-    if: needs.pre-ci.outputs.should-build-fe == 'true' || needs.pre-ci.outputs.should-build-be == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true' || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -192,9 +266,9 @@ jobs:
 
   start-browser:
     name: start-browser (${{ matrix.shard }}/4)
-    needs: [pre-ci]
+    needs: [changes]
+    if: needs.changes.outputs.start-browser == 'true'
     runs-on: ubuntu-latest
-    if: needs.pre-ci.outputs.should-build-fe == 'true' || needs.pre-ci.outputs.should-build-be == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true' || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
     strategy:
       fail-fast: false
       matrix:
@@ -228,9 +302,9 @@ jobs:
 
   start-updates:
     name: start-updates
-    needs: [pre-ci]
+    needs: [changes]
+    if: needs.changes.outputs.start-updates == 'true'
     runs-on: ubuntu-latest
-    if: needs.pre-ci.outputs.should-build-fe == 'true' || needs.pre-ci.outputs.should-build-be == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true' || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -254,9 +328,9 @@ jobs:
 
   start-delivery:
     name: start-delivery
-    needs: [pre-ci]
+    needs: [changes]
+    if: needs.changes.outputs.start-delivery == 'true'
     runs-on: ubuntu-latest
-    if: needs.pre-ci.outputs.should-build-fe == 'true' || needs.pre-ci.outputs.should-build-be == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true' || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -274,59 +348,36 @@ jobs:
 
   ci-assets:
     name: ci-assets
-    needs: [pre-ci]
+    needs: [changes]
+    if: needs.changes.outputs.assets == 'true'
     runs-on: ubuntu-latest
-    if: needs.pre-ci.outputs.assets-or-styles == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true' || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
     steps:
       - uses: actions/checkout@v7.0.1
-
-      - uses: dorny/paths-filter@v4.0.3
-        id: filter
-        with:
-          filters: |
-            styles:
-              - '**/*.{scss,css}'
-            json:
-              - 'frontend/static/**/*.json'
-            languages:
-              - 'frontend/static/languages/**'
-            quotes:
-              - 'frontend/static/quotes/**'
-            others:
-              - 'frontend/static/layouts/**'
-              - 'frontend/static/themes/**'
-              - 'frontend/static/webfonts/**'
-              - 'frontend/static/challenges/**'
-              - 'frontend/static/sounds/**'
 
       - name: Set up Vite+ and install dependencies
         uses: ./.github/actions/setup
 
+      # Each check takes a few seconds, so run them all whenever assets change.
       - name: Lint styles
-        if: steps.filter.outputs.styles == 'true' || needs.pre-ci.outputs.shared-inputs == 'true'
         run: vp run lint-styles
 
       - name: Lint JSON
-        if: steps.filter.outputs.json == 'true' || needs.pre-ci.outputs.shared-inputs == 'true'
         run: vp run check-assets-json
 
       - name: Validate language assets
-        if: steps.filter.outputs.languages == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true'
         run: vp run check-assets-languages
 
       - name: Validate quote assets
-        if: steps.filter.outputs.quotes == 'true' || needs.pre-ci.outputs.shared-inputs == 'true'
         run: vp run check-assets-quotes
 
       - name: Validate other assets
-        if: steps.filter.outputs.others == 'true' || needs.pre-ci.outputs.should-build-pkg == 'true'
         run: vp run check-assets-others
 
   ci-pkg:
     name: ci-pkg
-    needs: [pre-ci]
+    needs: [changes]
+    if: needs.changes.outputs.packages == 'true'
     runs-on: ubuntu-latest
-    if: needs.pre-ci.outputs.should-build-pkg == 'true' || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
     steps:
       - uses: actions/checkout@v7.0.1
 
