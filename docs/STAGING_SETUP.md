@@ -56,6 +56,8 @@ Once all placeholders are replaced, run from the repo root:
 
 ```sh
 vp run --filter @oxytype/frontend build:staging-site
+vp run --filter @oxytype/frontend check:staging
+vp run --filter @oxytype/frontend retire:staging-task-consumer
 vp run --filter @oxytype/frontend db:migrate:staging
 vp run --filter @oxytype/frontend deploy:staging-site
 ```
@@ -64,6 +66,13 @@ Secret upload retains the existing auth secret. Build and deploy use Start's
 generated client/server artifact; the staging check rejects a production build
 or any changed file. Documents are rendered by native routes with no SPA fallback.
 D1 migrations keep their existing history; never bootstrap/reset retained data.
+
+Consumer retirement requires `CLOUDFLARE_API_TOKEN` with **Queues Write**. It
+detaches only `oxytype-api-staging` from `oxytype-staging-tasks`, using the staging
+account/Worker config. Queues, DLQ and messages remain subject to normal retention.
+Missing consumers/queues are a no-op; API failures stop deployment. The deploy
+command repeats retirement after artifact validation, preventing Cloudflare's
+`Queue handler is missing` error after the task processor's removal.
 
 ## 4. Test the browser
 
