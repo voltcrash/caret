@@ -61,7 +61,6 @@ export function StaticHeader(props: { fixed: boolean }): JSXElement {
         aria-label="Main navigation"
         class="z-5 flex w-full items-center gap-0 xs:gap-1 md:gap-2"
       >
-        {item("/", "fa-keyboard", "Test")}
         {item("/leaderboards", "fa-crown", "Leaderboards")}
         <Button
           variant="text"

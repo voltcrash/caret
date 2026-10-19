@@ -81,4 +81,14 @@ describe("Logo", () => {
     fireEvent.click(indicator);
     expect(showModal).toHaveBeenCalledWith("Commandline");
   });
+
+  it("shows no star for a favorite theme", () => {
+    const view = renderLogo();
+    setThemeIndicator({ text: "aether", isFavorite: true });
+    const indicator = view.getByRole("button", {
+      name: "Shift-click to toggle custom theme",
+    });
+    expect(indicator).toHaveTextContent("aether");
+    expect(indicator.querySelector(".fa-star")).toBeNull();
+  });
 });
