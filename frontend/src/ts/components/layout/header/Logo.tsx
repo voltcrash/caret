@@ -49,7 +49,7 @@ export function Logo(): JSXElement {
         >
           <button
             type="button"
-            class="cursor-pointer rounded-[0.4rem] border-none bg-transparent p-0 font-[inherit] leading-[inherit] text-inherit"
+            class="-my-[0.5em] block cursor-pointer rounded-[0.4rem] border-none bg-transparent p-0 font-[inherit] leading-none text-inherit"
             aria-label="oxytype - change theme"
             onClick={openThemePicker}
           >
