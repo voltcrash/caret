@@ -75,7 +75,7 @@ export function Result(): JSXElement {
     <div
       id="result"
       ref={(el) => (resultEl = el)}
-      class="content-grid full-width col-[full-width] hidden outline-none focus:outline-none focus-visible:outline-none [&.noBalloons_[aria-label][data-balloon-pos]]:before:hidden [&.noBalloons_[aria-label][data-balloon-pos]]:after:hidden"
+      class="content-grid full-width col-[full-width] hidden outline-none [&.noBalloons_[aria-label][data-balloon-pos]]:before:hidden [&.noBalloons_[aria-label][data-balloon-pos]]:after:hidden"
       tabIndex={-1}
     >
       <Show when={resultState.noStress}>

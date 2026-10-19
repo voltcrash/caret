@@ -78,6 +78,24 @@ test("other text inputs keep the focus outline", async ({ page }) => {
   await expect(input).toHaveCSS("outline-style", "solid");
 });
 
+test("finishing a test focuses results without outlining the screen", async ({
+  page,
+}) => {
+  await openTest(page);
+  await completeWords(page);
+  const result = page.locator("#result");
+  await expect(result).toBeFocused();
+  await expect(result).toHaveCSS("outline-style", "none");
+  await expect(result).toHaveCSS("box-shadow", "none");
+  await page.keyboard.press("Tab");
+  const next = page.getByRole("button", { name: "Next test", exact: true });
+  await expect(next).toBeFocused();
+  await expect(next).toHaveCSS("outline-style", "solid");
+  await expect(next).toHaveCSS("outline-width", "2px");
+  await page.keyboard.press("Enter");
+  await assertRestarted(page);
+});
+
 test("result summary stays silent during typing and clears on restart", async ({
   page,
 }) => {
