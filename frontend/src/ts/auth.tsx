@@ -155,6 +155,9 @@ async function getDataAndInit(): Promise<AccountLoad> {
   } catch (error) {
     if (!lease.isCurrent()) return "unavailable";
     console.error(error);
+    const result = isAuthenticationFailure(error)
+      ? "unauthenticated"
+      : "unavailable";
     if (error instanceof SnapshotInitError) {
       if (error.responseCode === 429) {
         showNoticeNotification(
@@ -175,7 +178,7 @@ async function getDataAndInit(): Promise<AccountLoad> {
     } else {
       showErrorNotification("Failed to get user data", { error });
     }
-    return isAuthenticationFailure(error) ? "unauthenticated" : "unavailable";
+    return result;
   }
 }
 
