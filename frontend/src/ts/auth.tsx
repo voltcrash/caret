@@ -108,7 +108,7 @@ function isAuthenticationFailure(error: unknown): boolean {
   );
 }
 
-async function getDataAndInit(): Promise<AccountLoad> {
+async function getDataAndInit(notifyOnFailure: boolean): Promise<AccountLoad> {
   const lease = captureAccount();
   try {
     console.log("getting account data");
@@ -155,6 +155,10 @@ async function getDataAndInit(): Promise<AccountLoad> {
   } catch (error) {
     if (!lease.isCurrent()) return "unavailable";
     console.error(error);
+    const result = isAuthenticationFailure(error)
+      ? "unauthenticated"
+      : "unavailable";
+    if (!notifyOnFailure) return result;
     if (error instanceof SnapshotInitError) {
       if (error.responseCode === 429) {
         showNoticeNotification(
@@ -175,7 +179,7 @@ async function getDataAndInit(): Promise<AccountLoad> {
     } else {
       showErrorNotification("Failed to get user data", { error });
     }
-    return isAuthenticationFailure(error) ? "unauthenticated" : "unavailable";
+    return result;
   }
 }
 
@@ -184,9 +188,12 @@ async function getDataAndInit(): Promise<AccountLoad> {
  * error while loading (e.g. reconnecting after an offline start) keeps it, so
  * the caller can retry instead of revoking a valid sign-in.
  */
-export async function loadUser(_user: UserType): Promise<AccountLoad> {
+export async function loadUser(
+  _user: UserType,
+  options: { notifyOnFailure?: boolean } = {},
+): Promise<AccountLoad> {
   const lease = captureAccount();
-  const result = await getDataAndInit();
+  const result = await getDataAndInit(options.notifyOnFailure ?? true);
   if (!lease.isCurrent()) return result;
   if (result === "unauthenticated") {
     signOut();

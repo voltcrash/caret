@@ -30,6 +30,10 @@ vi.mock("../src/ts/auth-client", async (original) => ({
 
 import { loadUser } from "../src/ts/auth";
 import { SnapshotInitError } from "../src/ts/utils/snapshot-init-error";
+import {
+  clearAllNotifications,
+  getNotifications,
+} from "../src/ts/states/notifications";
 
 const user = {
   uid: "user",
@@ -42,6 +46,7 @@ describe("account load failures", () => {
   beforeEach(() => {
     services.snapshot.mockReset();
     services.signOut.mockClear();
+    clearAllNotifications();
   });
 
   it.each([
@@ -83,5 +88,29 @@ describe("account load failures", () => {
     services.snapshot.mockResolvedValue({ uid: "user", name: "User" });
     await expect(loadUser(user)).resolves.toBe("loaded");
     expect(services.signOut).not.toHaveBeenCalled();
+  });
+
+  it("shows one failure while automatic retries stay quiet", async () => {
+    services.snapshot.mockRejectedValue(
+      new SnapshotInitError("Internal Server Error (user)", 500),
+    );
+    await loadUser(user);
+    for (let attempt = 0; attempt < 3; attempt++) {
+      await expect(loadUser(user, { notifyOnFailure: false })).resolves.toBe(
+        "unavailable",
+      );
+    }
+    expect(getNotifications()).toHaveLength(1);
+  });
+
+  it("still signs out when a quiet retry rejects authentication", async () => {
+    services.snapshot.mockRejectedValue(
+      new SnapshotInitError("Unauthorized (user)", 401),
+    );
+    await expect(loadUser(user, { notifyOnFailure: false })).resolves.toBe(
+      "unauthenticated",
+    );
+    expect(services.signOut).toHaveBeenCalledOnce();
+    expect(getNotifications()).toHaveLength(0);
   });
 });

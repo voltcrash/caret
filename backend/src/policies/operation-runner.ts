@@ -215,7 +215,7 @@ export async function describeFailure(
     status = monkeyError.status;
     message = monkeyError.message;
   } else {
-    message = `Oops! Our monkeys dropped their bananas. Please try again later. - ${errorId}`;
+    message = `Something went wrong. Please try again later. - ${errorId}`;
   }
   if (scope !== undefined) await recordBadAuthentication(scope, status);
   const detail = error instanceof Error ? error : new Error(String(error));
