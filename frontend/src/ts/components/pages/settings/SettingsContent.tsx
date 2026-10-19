@@ -82,7 +82,7 @@ export function SettingsContent(): JSXElement {
     <SidebarLayout
       items={getAvailableSettingsSections()}
       // while filtering, results from every section are shown
-      active={isSettingsSearchActive() ? undefined : sections.current()}
+      active={isSettingsSearchActive() ? undefined : navigation.active()}
       onSelect={navigation.select}
       scrollToContent={false}
       header={<SettingsSearch />}
@@ -386,6 +386,7 @@ function Section(props: {
   return (
     <div
       id={`group_${props.section}`}
+      data-settings-section={props.section}
       class={cn(
         "grid scroll-mt-[calc(var(--header-bottom)+1rem)] gap-8",
         isSettingsSearchActive() &&
