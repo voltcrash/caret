@@ -6,9 +6,11 @@ runs trigger the [production deployment](PRODUCTION_SETUP.md).
 
 ## Jobs
 
-`changes` maps changed paths onto jobs; everything else starts in parallel once
-it finishes. Every job installs through
-[`.github/actions/setup`](../.github/actions/setup/action.yml), which restores
+On pull requests, `changes` maps changed paths onto jobs; everything else starts
+in parallel once it finishes. Main pushes and manual runs run every job: a
+deployment must not rely on a diff whose earlier commits' CI was cancelled.
+
+Every job installs through [`.github/actions/setup`](../.github/actions/setup/action.yml), which restores
 the dependency and toolchain caches (`quality` saves them).
 
 | Job | Runs | Checks |

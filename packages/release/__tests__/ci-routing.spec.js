@@ -104,7 +104,15 @@ it.each([
   expect(selected([file])).toEqual(allJobs);
 });
 
-it("runs every job for force-full-ci and manual runs", () => {
+it("runs every job outside pull requests", () => {
+  // A main push's diff misses commits whose CI a newer push cancelled.
+  expect(steps.find((step) => step.id === "select").env.FULL).toContain(
+    "github.event_name != 'pull_request'",
+  );
+  expect(filterStep.if).toBe("github.event_name == 'pull_request'");
+});
+
+it("runs every job for force-full-ci and main or manual runs", () => {
   expect(selected([], { full: true })).toEqual(allJobs);
 });
 

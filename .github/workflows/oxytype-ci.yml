@@ -43,13 +43,9 @@ jobs:
       code: ${{ steps.select.outputs.code }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7.0.1
-        # paths filter doesn't need checkout on pr
-        if: github.event_name == 'push'
-
+      # PRs read changed files from the API, so no checkout is needed.
       - name: Detect changes
-        if: github.event_name != 'workflow_dispatch'
+        if: github.event_name == 'pull_request'
         uses: dorny/paths-filter@v4.0.3
         id: filter
         with:
@@ -130,7 +126,9 @@ jobs:
       - name: Select jobs
         id: select
         env:
-          FULL: ${{ github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'force-full-ci') }}
+          # Main pushes deploy, so they check everything: a push's diff alone would
+          # miss commits whose CI run a newer push cancelled.
+          FULL: ${{ github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'force-full-ci') }}
           CHANGED: ${{ steps.filter.outputs.changes }}
         run: |
           # Prints "<job>=true" when any listed filter matched (or on a full run).
