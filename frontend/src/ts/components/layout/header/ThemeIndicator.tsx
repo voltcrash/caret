@@ -40,7 +40,7 @@ export function ThemeIndicator(props: { class?: string }): JSXElement {
     <Button
       variant="text"
       class={cn(
-        "gap-[0.35em] p-0 text-xs leading-none whitespace-nowrap [--themable-button-text:var(--sub-color)]",
+        "gap-[0.35em] p-0 text-xs leading-none whitespace-nowrap",
         props.class,
       )}
       balloon={{ text: "Shift-click to toggle custom theme", position: "down" }}
