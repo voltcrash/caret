@@ -267,7 +267,11 @@ const actions = {
 // --- Public API ---
 
 export async function waitForTagsReady(): Promise<void> {
-  await tagsCollection().stateWhenReady();
+  const collection = tagsCollection();
+  if (collection.status === "error") {
+    await collection.utils.refetch({ throwOnError: true });
+  }
+  await collection.stateWhenReady();
 }
 
 export async function insertTag(
