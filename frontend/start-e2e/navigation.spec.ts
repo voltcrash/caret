@@ -17,6 +17,7 @@ test("keyboard navigation moves focus to content and preserves history without d
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/\/settings$/);
   await expect(page.locator("main")).toBeFocused();
+  await expect(page.locator("main")).toHaveCSS("outline-style", "none");
   await expect(page.locator("#group_behavior")).toBeVisible();
   await page.goBack();
   await expect(page).toHaveURL(/\/leaderboards\?/);
