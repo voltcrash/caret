@@ -85,47 +85,15 @@ jobs:
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'force-ci') || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
     runs-on: ubuntu-latest
     steps:
-      - name: Full checkout
-        uses: actions/checkout@v7.0.1
-        with:
-          fetch-depth: 0
-
-      - name: Get changed files and write to temp
-        id: get-changed-files
-        uses: actions/github-script@v9.0.0
-        with:
-          script: |
-            let files;
-            if (context.eventName === "pull_request") {
-              const changedFiles = await github.paginate(
-                github.rest.pulls.listFiles,
-                {
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  pull_number: context.payload.pull_request.number,
-                }
-              );
-              files = changedFiles.filter(file => file.status !== "removed").map(file => file.filename);
-            } else {
-              const before = context.payload.before;
-              const args = /^0+$/.test(before)
-                ? ["ls-files", "-z"]
-                : ["diff", "--name-only", "--diff-filter=ACMRTUXB", "-z", before, context.sha];
-              files = require("child_process").execFileSync("git", args, { encoding: "utf8" }).split("\0").filter(Boolean);
-            }
-            if (files.length > 0) {
-              require('fs').writeFileSync('/tmp/changed-files.txt', files.join('\0'));
-              core.setOutput('has-files', 'true');
-            }
+      - uses: actions/checkout@v7.0.1
 
       - name: Set up Vite+ and install dependencies
-        if: steps.get-changed-files.outputs.has-files == 'true'
         uses: ./.github/actions/setup
 
-      - name: Check formatting (changed files)
-        if: steps.get-changed-files.outputs.has-files == 'true'
-        run: |
-          xargs -0 vp fmt --check --no-error-on-unmatched-pattern < /tmp/changed-files.txt
+      # The whole repository formats in about a second, so check it all:
+      # formatter or config changes are caught, and no history is fetched.
+      - name: Check formatting
+        run: vp fmt . --check
 
   knip:
     name: knip
