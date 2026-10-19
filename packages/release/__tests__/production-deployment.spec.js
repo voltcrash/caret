@@ -56,9 +56,12 @@ it("validates the exact deployment snapshot before building and applying migrati
   const validation = steps.findIndex((step) => step.id === "validate-ci");
   expect(validation).toBeGreaterThan(0);
   expect(steps[validation].with.script).toContain(
-    "requireSuccessfulProductionCI({ github, context, sha: context.sha })",
+    "requireSuccessfulProductionCI({ github, context, sha: process.env.DEPLOYMENT_SHA })",
   );
-  expect(steps[0].with.ref).toBe("${{ github.sha }}");
+  expect(workflow.jobs.deploy.env.DEPLOYMENT_SHA).toBe(
+    "${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}",
+  );
+  expect(steps[0].with.ref).toBe("${{ env.DEPLOYMENT_SHA }}");
   const settings = index("Prepare production credentials and build settings");
   const build = index("Build production frontend and Worker");
   const check = index("Check production deployment");
@@ -72,7 +75,7 @@ it("validates the exact deployment snapshot before building and applying migrati
   expect(migrate).toBeGreaterThan(retire);
   expect(deploy).toBeGreaterThan(migrate);
   expect(steps[build].env.OXYTYPE_BUILD_ID).toBe(
-    "${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}",
+    "${{ env.DEPLOYMENT_SHA }}-${{ github.run_id }}-${{ github.run_attempt }}",
   );
   expect(steps[deploy].run).toContain(
     "--filter @oxytype/frontend deploy:production-site",
