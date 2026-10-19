@@ -77,6 +77,34 @@ it("allows a successful rerun of the latest snapshot", async () => {
     ),
   ).toEqual(latest);
 });
+it("validates the completed CI commit even when main has advanced", async () => {
+  const options = validation([run()]);
+  options.context = {
+    ...context,
+    eventName: "workflow_run",
+    sha: "newer-main-sha",
+    payload: { workflow_run: { head_sha: context.sha } },
+  };
+  expect(await requireSuccessfulProductionCI(options)).toEqual(run());
+  expect(options.github.rest.actions.listWorkflowRuns).toHaveBeenCalledWith(
+    expect.objectContaining({ head_sha: context.sha }),
+  );
+  await expect(
+    requireSuccessfulProductionCI({ ...options, sha: "newer-main-sha" }),
+  ).rejects.toThrow("must match");
+  expect(options.github.rest.actions.listWorkflowRuns).toHaveBeenCalledTimes(1);
+});
+it.each([{}, { workflow_run: {} }])(
+  "rejects workflow-run events missing the CI snapshot (%j)",
+  async (payload) => {
+    const options = validation([run()]);
+    options.context = { ...context, eventName: "workflow_run", payload };
+    await expect(requireSuccessfulProductionCI(options)).rejects.toThrow(
+      "must match",
+    );
+    expect(options.github.rest.actions.listWorkflowRuns).not.toHaveBeenCalled();
+  },
+);
 it("fails closed when the deployment snapshot differs or the API is unavailable", async () => {
   const options = validation([run()]);
   await expect(
