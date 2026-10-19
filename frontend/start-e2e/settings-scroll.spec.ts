@@ -1,5 +1,6 @@
 import type { Page } from "playwright/test";
 
+import { authCookie } from "./auth-fixtures";
 import { expect, test } from "./fixtures";
 
 const guestSections = [
@@ -123,4 +124,25 @@ test("clearing search restores all sections and selecting a result section jumps
   await expect(search).toHaveValue("");
   await expect(page.locator("#group_theme h2")).toBeInViewport();
   await expect(page.locator("#group_behavior")).toBeVisible();
+});
+
+test("signed-in users can scroll through account settings too", async ({
+  page,
+  context,
+}) => {
+  const value =
+    authCookie("browser-private")
+      .split(";")[0]
+      ?.split("=")
+      .slice(1)
+      .join("=") ?? "";
+  await context.addCookies([
+    { name: "oxytype.session_token", value, url: "http://127.0.0.1:4185" },
+  ]);
+  await page.goto("/settings");
+  await scrollThroughSettings(page, [
+    ...guestSections.slice(0, -1),
+    "account",
+    "dangerZone",
+  ]);
 });
