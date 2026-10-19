@@ -182,6 +182,56 @@ describe("test-only changes", () => {
   ])("%s runs only its own suite", (file, expected) => {
     expect(selected([file])).toEqual([...expected, "code"]);
   });
+
+  it.each([
+    "backend/__tests__/d1/result-support.ts",
+    "backend/__tests__/__testData__/completed-event.ts",
+  ])("runs frontend suites importing backend helper %s", (file) => {
+    expect(selected([file])).toEqual([
+      "backend-lint",
+      "backend-test",
+      "frontend-lint",
+      "frontend-test",
+      "start-ssr",
+      "code",
+    ]);
+  });
+
+  it("runs the update suite for shared browser fixtures", () => {
+    expect(selected(["frontend/start-e2e/fixtures.ts"])).toEqual([
+      "frontend-lint",
+      "start-browser",
+      "start-updates",
+      "code",
+    ]);
+  });
+});
+
+describe("static files", () => {
+  it("runs the Start suites for Worker delivery files", () => {
+    expect(selected(["frontend/static/_headers"])).toEqual([
+      "start-ssr",
+      "start-browser",
+      "start-updates",
+      "start-delivery",
+      "assets",
+    ]);
+  });
+
+  it("runs layout consumers for layout files", () => {
+    expect(selected(["frontend/static/layouts/qwerty.json"])).toEqual([
+      "frontend-test",
+      "packages",
+      "assets",
+    ]);
+  });
+
+  it("runs the challenge catalog test for challenge files", () => {
+    expect(selected(["frontend/static/challenges/list.json"])).toEqual([
+      "packages",
+      "assets",
+    ]);
+  });
 });
 
 it.each([

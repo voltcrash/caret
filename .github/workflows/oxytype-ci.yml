@@ -84,6 +84,9 @@ jobs:
               - '!**/*.md'
             backend-tests:
               - 'backend/__tests__/**'
+            # Backend test data and D1 helpers the frontend unit and SSR suites import.
+            backend-test-support:
+              - 'backend/__tests__/{__testData__/**,d1/helpers.ts,d1/result-support.ts}'
             frontend:
               - 'frontend/**'
               - '!frontend/static/**'
@@ -104,10 +107,20 @@ jobs:
             update-tests:
               - 'frontend/update-e2e/**'
               - 'frontend/playwright.update.config.ts'
+              # Fixtures the update suite shares with the browser suite.
+              - 'frontend/start-e2e/*fixtures.ts'
             # Linted, but not run in CI.
             frontend-lint-only:
               - 'frontend/{staging-e2e,storybook}/**'
               - 'frontend/playwright.{benchmark,migration,staging}.config.ts'
+            # Served as-is by the Worker (e.g. _headers), so the Start suites cover them.
+            static-delivery:
+              - 'frontend/static/*'
+            # Fixtures read by frontend unit and package tests.
+            static-layouts:
+              - 'frontend/static/layouts/**'
+            static-challenges:
+              - 'frontend/static/challenges/**'
             assets:
               - 'frontend/static/**'
               - '**/*.{css,scss}'
@@ -146,13 +159,13 @@ jobs:
           enable backend-lint "${runtime[@]}" backend-tests lint-config
           # The migration inventory spec reads frontend sources.
           enable backend-test "${runtime[@]}" backend-tests frontend
-          enable frontend-lint "${runtime[@]}" frontend frontend-tests start-tests browser-tests update-tests frontend-lint-only lint-config
-          enable frontend-test "${runtime[@]}" frontend frontend-tests start-tests
-          enable start-ssr "${runtime[@]}" frontend start-tests
-          enable start-browser "${runtime[@]}" frontend start-tests browser-tests
-          enable start-updates "${runtime[@]}" frontend start-tests update-tests
-          enable start-delivery "${runtime[@]}" frontend
-          enable packages packages lint-config
+          enable frontend-lint "${runtime[@]}" frontend frontend-tests start-tests browser-tests update-tests frontend-lint-only lint-config backend-test-support
+          enable frontend-test "${runtime[@]}" frontend frontend-tests start-tests backend-test-support static-layouts
+          enable start-ssr "${runtime[@]}" frontend start-tests backend-test-support static-delivery
+          enable start-browser "${runtime[@]}" frontend start-tests browser-tests static-delivery
+          enable start-updates "${runtime[@]}" frontend start-tests update-tests static-delivery
+          enable start-delivery "${runtime[@]}" frontend static-delivery
+          enable packages packages lint-config static-layouts static-challenges
           enable assets assets runtime-packages
           enable code code
 
