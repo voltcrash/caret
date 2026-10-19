@@ -146,3 +146,28 @@ test("signed-in users can scroll through account settings too", async ({
     "dangerZone",
   ]);
 });
+
+test("browser Back restores manual scrolling instead of jumping to the URL tab", async ({
+  page,
+}) => {
+  await page.goto("/settings?tab=theme");
+  await expect(page.locator("#group_theme h2")).toBeInViewport();
+  const input = page.locator("#group_input h2");
+  await input.evaluate((element) =>
+    element.scrollIntoView({ block: "start", behavior: "instant" }),
+  );
+  await expect(
+    page
+      .getByRole("navigation", { name: "Page sections" })
+      .getByRole("button", {
+        name: "input",
+        exact: true,
+      }),
+  ).toHaveAttribute("aria-current", "location");
+  await page.getByRole("link", { name: "Test", exact: true }).click();
+  await expect(page.locator("#typingTest")).toBeVisible();
+  await page.goBack();
+  await expect(page).toHaveURL(/\/settings\?tab=theme$/);
+  await expect(input).toBeInViewport();
+  await expect(page.locator("#group_theme h2")).not.toBeInViewport();
+});
