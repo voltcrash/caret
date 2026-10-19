@@ -25,6 +25,7 @@ jobs:
     name: changes
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'force-ci') || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
       backend-lint: ${{ steps.select.outputs.backend-lint }}
       backend-test: ${{ steps.select.outputs.backend-test }}
@@ -156,6 +157,7 @@ jobs:
     name: quality
     needs: [changes]
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -179,6 +181,7 @@ jobs:
     needs: [changes]
     if: needs.changes.outputs.backend-lint == 'true' || needs.changes.outputs.backend-test == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -198,6 +201,7 @@ jobs:
     needs: [changes]
     if: needs.changes.outputs.frontend-lint == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -216,6 +220,7 @@ jobs:
     needs: [changes]
     if: needs.changes.outputs.frontend-test == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -236,6 +241,7 @@ jobs:
     needs: [changes]
     if: needs.changes.outputs.start-ssr == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -259,6 +265,7 @@ jobs:
     needs: [changes]
     if: needs.changes.outputs.start-browser == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
@@ -295,6 +302,7 @@ jobs:
     needs: [changes]
     if: needs.changes.outputs.start-updates == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -321,6 +329,7 @@ jobs:
     needs: [changes]
     if: needs.changes.outputs.start-delivery == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -341,6 +350,7 @@ jobs:
     needs: [changes]
     if: needs.changes.outputs.assets == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -368,6 +378,7 @@ jobs:
     needs: [changes]
     if: needs.changes.outputs.packages == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -388,3 +399,31 @@ jobs:
 
       - name: Test
         run: vp run test-pkg
+
+  # One stable check to require in branch protection, whichever jobs ran.
+  ci-ok:
+    name: ci-ok
+    if: ${{ !cancelled() && needs.changes.result != 'skipped' }}
+    needs:
+      [
+        changes,
+        quality,
+        ci-be,
+        ci-fe,
+        ci-fe-test,
+        start-ssr,
+        start-browser,
+        start-updates,
+        start-delivery,
+        ci-assets,
+        ci-pkg,
+      ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Require every selected job to pass
+        env:
+          RESULTS: ${{ toJSON(needs.*.result) }}
+        run: |
+          echo "$RESULTS"
+          jq -e 'all(. == "success" or . == "skipped")' <<<"$RESULTS"
