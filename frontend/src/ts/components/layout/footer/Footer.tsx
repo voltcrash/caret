@@ -4,7 +4,7 @@ import { getIsScreenshotting } from "../../../states/core";
 import { getFocus } from "../../../states/test";
 import { cn } from "../../../utils/cn";
 import { Keytips } from "./Keytips";
-import { ThemeIndicator } from "./ThemeIndicator";
+import { ThemeIndicator } from "../header/ThemeIndicator";
 
 export function Footer(): JSXElement {
   return (
