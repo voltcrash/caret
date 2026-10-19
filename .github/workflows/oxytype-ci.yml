@@ -124,7 +124,7 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Check lint
-        run: vp run lint-fast-be && vp run lint-be
+        run: vp run lint-be
 
       - name: Test
         run: vp run test-be
@@ -141,10 +141,11 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Check lint
-        run: vp run lint-fast-fe && vp run lint-fe
+        run: vp run lint-fe
 
-      - name: Build
-        run: vp run build-fe
+      # The Start jobs build the same bundle; only its circular-import guard runs here.
+      - name: Check circular imports
+        run: vp run --filter @oxytype/frontend madge
 
       - name: Test
         run: vp run test-fe
@@ -269,7 +270,7 @@ jobs:
         run: vp run lint-suppressions
 
       - name: Check lint
-        run: vp run lint-fast-pkg && vp run lint-pkg
+        run: vp run lint-pkg
 
       - name: Check workspace root lint
         run: vp lint . --type-aware --type-check --format agent
