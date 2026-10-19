@@ -17,7 +17,6 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  NODE_VERSION: "24.21.0"
   CI: "true"
 
 jobs:
@@ -60,9 +59,9 @@ jobs:
             await core.summary.addLink('Validated Oxytype CI', run.html_url).write();
 
       - name: Set up Vite+
-        uses: voidzero-dev/setup-vp@v1.21.1
+        uses: voidzero-dev/setup-vp@v1.21.2
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version-file: .node-version
           run-install: false
 
       - name: Prepare production credentials and build settings
