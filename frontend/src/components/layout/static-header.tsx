@@ -52,9 +52,6 @@ export function StaticHeader(props: { fixed: boolean }): JSXElement {
           <path d="M24 5v13" class="[stroke-linecap:round]"></path>
         </svg>
         <div class="hidden h-6 place-content-center text-[2rem] leading-0 sm:grid">
-          <div class="-mt-[1.65em] hidden pl-[0.5em] text-[0.315em] leading-0 text-text lg:block">
-            type with focus
-          </div>
           <h1 class="-mt-[0.11em] text-text">oxytype</h1>
         </div>
       </Link>
