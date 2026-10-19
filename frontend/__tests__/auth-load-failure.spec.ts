@@ -102,4 +102,15 @@ describe("account load failures", () => {
     }
     expect(getNotifications()).toHaveLength(1);
   });
+
+  it("still signs out when a quiet retry rejects authentication", async () => {
+    services.snapshot.mockRejectedValue(
+      new SnapshotInitError("Unauthorized (user)", 401),
+    );
+    await expect(loadUser(user, { notifyOnFailure: false })).resolves.toBe(
+      "unauthenticated",
+    );
+    expect(services.signOut).toHaveBeenCalledOnce();
+    expect(getNotifications()).toHaveLength(0);
+  });
 });
