@@ -136,20 +136,9 @@ export function createAuth(
       }),
       after: createAuthMiddleware(async (ctx) => {
         if (ctx.path !== "/sign-in/social") return;
-        const body = ctx.body as
-          | { additionalData?: { rememberMe?: boolean } }
-          | undefined;
+        // Sessions always persist; clear stale session-only markers.
         const cookie = ctx.context.authCookies.dontRememberToken;
-        if (body?.additionalData?.rememberMe === false) {
-          await ctx.setSignedCookie(
-            cookie.name,
-            "true",
-            ctx.context.secret,
-            cookie.attributes,
-          );
-        } else {
-          ctx.setCookie(cookie.name, "", { ...cookie.attributes, maxAge: 0 });
-        }
+        ctx.setCookie(cookie.name, "", { ...cookie.attributes, maxAge: 0 });
       }),
     },
     databaseHooks: {
