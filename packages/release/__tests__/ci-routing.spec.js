@@ -226,6 +226,19 @@ describe("static files", () => {
     ]);
   });
 
+  it.each([
+    "frontend/scripts/json-lint.ts",
+    "frontend/scripts/short-quotes.json",
+  ])("validates assets when validator input %s changes", (file) => {
+    expect(selected([file])).toContain("assets");
+  });
+
+  it("validates assets when the constants they must match change", () => {
+    expect(selected(["frontend/src/ts/constants/fonts.ts"])).toEqual(
+      appJobs.toSpliced(-1, 0, "assets"),
+    );
+  });
+
   it("runs the challenge catalog test for challenge files", () => {
     expect(selected(["frontend/static/challenges/list.json"])).toEqual([
       "packages",
