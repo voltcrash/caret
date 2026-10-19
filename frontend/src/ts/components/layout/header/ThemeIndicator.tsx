@@ -12,35 +12,35 @@ import { showModal } from "../../../states/modals";
 import { showNoticeNotification } from "../../../states/notifications";
 import { Fa } from "../../common/Fa";
 
-export function ThemeIndicator(): JSXElement {
-  const handleClick = (e: MouseEvent): void => {
-    if (e.shiftKey) {
-      if (getMutableConfig().customTheme) {
-        setConfig("customTheme", false);
-        return;
-      }
-      if (isAuthenticated() && getCustomThemes().length < 1) {
-        showNoticeNotification("No custom themes!");
-        setConfig("customTheme", false);
-        return;
-      }
-      setConfig("customTheme", true);
-    } else {
-      const subgroup = getMutableConfig().customTheme
-        ? "customTheme"
-        : "themes";
-      setCommandlineSubgroup(subgroup);
-      showModal("Commandline");
+/** Opens the theme picker; shift-click toggles the custom theme instead. */
+export function openThemePicker(e: MouseEvent): void {
+  if (e.shiftKey) {
+    if (getMutableConfig().customTheme) {
+      setConfig("customTheme", false);
+      return;
     }
-  };
+    if (isAuthenticated() && getCustomThemes().length < 1) {
+      showNoticeNotification("No custom themes!");
+      setConfig("customTheme", false);
+      return;
+    }
+    setConfig("customTheme", true);
+    return;
+  }
+  setCommandlineSubgroup(
+    getMutableConfig().customTheme ? "customTheme" : "themes",
+  );
+  showModal("Commandline");
+}
 
+export function ThemeIndicator(): JSXElement {
   return (
     <button
       type="button"
       class="textButton"
       aria-label="Shift-click to toggle custom theme"
       data-balloon-pos="left"
-      onClick={handleClick}
+      onClick={openThemePicker}
     >
       <div class="relative">
         <Show when={getThemeIndicator().isFavorite}>
