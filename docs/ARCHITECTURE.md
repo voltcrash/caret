@@ -14,7 +14,7 @@ Package versions come from the workspace manifests and lockfile.
 | `packages/typing-core/` | Headless typing test logic |
 | `packages/oxlint-config/`, `packages/typescript-config/` | Shared tooling configuration |
 | `packages/release/` | Production CI validation helpers |
-| `.github/workflows/` | CI, manual production deployments, labeling, and repository automation |
+| `.github/workflows/` | CI, automatic production deployments after successful main CI, manual retries, labeling, and repository automation |
 
 The root is a private pnpm workspace. Vite+ (`vp run`) runs workspace tasks.
 Internal packages use the `@oxytype` scope and export TypeScript source; Vite,
