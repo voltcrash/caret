@@ -30,9 +30,13 @@ body {
 }
 
 /* palette search has no outline: its modal clips the offset ring */
-:where(a[href], button, input, textarea, select, [tabindex]):not(
-    #wordsInput,
-    #commandLineInput
-  ):focus-visible {
+:where(
+    a[href],
+    button,
+    input,
+    textarea,
+    select,
+    [tabindex]:not([tabindex="-1"])
+  ):not(#wordsInput, #commandLineInput):focus-visible {
   @apply outline-2! outline-solid! outline-offset-4! outline-text!;
 }
