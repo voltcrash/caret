@@ -116,10 +116,11 @@ export function SidebarLayout<T extends string>(props: {
                   props.active === key ? { "aria-current": "location" } : {}
                 }
                 class={cn(
-                  "min-w-0 justify-start text-left [--themable-button-active:var(--themable-button-text)]",
+                  "w-full min-w-0 justify-start text-left",
+                  props.active === key &&
+                    "bg-bg font-semibold hover:bg-bg hover:text-main",
                   // 44px minimum tap target on touch screens
                   "pointer-coarse:min-h-11",
-                  (props.counts !== undefined || showHotkeys()) && "w-full",
                   props.counts !== undefined &&
                     (props.counts[key] ?? 0) === 0 &&
                     "opacity-50",
