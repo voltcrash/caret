@@ -68,6 +68,8 @@ jobs:
               - 'packages/typescript-config/**'
               - '.github/actions/**'
               - '.github/workflows/oxytype-ci.yml'
+              # Deploys run the production build and release helpers.
+              - '.github/workflows/production-release.yml'
             lint-config:
               - 'vite.config.ts'
               - 'vitest.config.ts'
@@ -79,7 +81,6 @@ jobs:
               - '!**/*.md'
             packages:
               - 'packages/**'
-              - '.github/workflows/production-release.yml'
               - '!**/*.md'
             backend:
               - 'backend/**'

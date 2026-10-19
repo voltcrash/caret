@@ -22,11 +22,11 @@ the dependency and toolchain caches (`quality` saves them).
 | `start-updates` | Same, plus `update-e2e` | Service-worker update and rollback suites |
 | `start-delivery` | Frontend, backend, runtime packages | Staging and production builds + dry-runs |
 | `ci-assets` | `frontend/static`, CSS, runtime packages | Stylelint and asset validation |
-| `ci-pkg` | `packages/**`, release workflow | Lint config audits, package lint and tests |
+| `ci-pkg` | `packages/**` | Lint config audits, package lint and tests |
 | `ci-ok` | Always | Fails if any selected job failed |
 
 Root dependency, toolchain and CI files (lockfile, `patches/`, `.node-version`,
-`packages/typescript-config`, `.github/actions`, the CI workflow) run
+`packages/typescript-config`, `.github/actions`, the CI and release workflows) run
 everything. Markdown, `docs/` and repository metadata run only `quality`.
 "Runtime packages" are the workspace packages bundled into the app:
 `challenges`, `contracts`, `funbox`, `schemas`, `typing-core` and `util`.
