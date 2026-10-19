@@ -134,16 +134,13 @@ describe("Better Auth social-only HTTP flow", () => {
       expect(result.createdAt).toBeInstanceOf(Date);
     },
   );
-  it("honors session-only OAuth login", async () => {
-    const { response } = await signInWithOAuth(auth, app, {
-      rememberMe: false,
-    });
+  it("always persists OAuth sessions", async () => {
+    const { response } = await signInWithOAuth(auth, app);
     const sessionCookie = response.headers
       .getSetCookie()
       .find((value) => value.includes("session_token="));
     expect(sessionCookie).toContain("HttpOnly");
-    expect(sessionCookie).not.toContain("Max-Age");
-    expect(sessionCookie).not.toContain("Expires");
+    expect(sessionCookie).toContain("Max-Age");
   });
   it.each([
     "/sign-up/email",

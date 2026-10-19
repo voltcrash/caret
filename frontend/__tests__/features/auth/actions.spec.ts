@@ -63,8 +63,8 @@ beforeEach(() => {
 afterEach(() => client.clear());
 it("updates Query and routes after login/logout without loading legacy snapshots", async () => {
   const actions = createAuthActions(client, invalidated);
-  await actions.login("github", false);
-  expect(mocks.popup).toHaveBeenCalledWith("github", false, false);
+  await actions.login("github");
+  expect(mocks.popup).toHaveBeenCalledWith("github");
   expect(client.getQueryData(sessionKey)).toEqual(state);
   expect(mocks.setUser).toHaveBeenLastCalledWith(user);
   state = { user: null, signUpEnabled: true };

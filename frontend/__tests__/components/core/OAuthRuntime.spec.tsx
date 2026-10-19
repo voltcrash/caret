@@ -54,7 +54,6 @@ function start(link = false): Request {
   const request: Request = {
     provider: "google",
     link,
-    rememberMe: false,
     resolve: vi.fn(),
     reject: vi.fn(),
   };
@@ -74,7 +73,7 @@ function sendMessage(
     }),
   );
 }
-it("opens synchronously and preserves OAuth remember-me choice", async () => {
+it("opens synchronously and starts social sign-in", async () => {
   start();
   expect(window.open).toHaveBeenCalledWith(
     "about:blank",
@@ -88,7 +87,6 @@ it("opens synchronously and preserves OAuth remember-me choice", async () => {
     expect.objectContaining({
       provider: "google",
       disableRedirect: true,
-      additionalData: { rememberMe: false },
     }),
   );
 });

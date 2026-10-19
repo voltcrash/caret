@@ -74,7 +74,6 @@ export function OAuthRuntime(): null {
                 callbackURL,
                 errorCallbackURL: callbackURL,
                 disableRedirect: true,
-                additionalData: { rememberMe: request.rememberMe },
                 additionalParams: { prompt: "select_account" },
               });
           const data = checkAuthResult(result);

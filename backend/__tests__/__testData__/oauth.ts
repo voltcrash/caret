@@ -16,7 +16,6 @@ export async function signInWithOAuth(
   options: {
     provider?: "google" | "github";
     email?: string;
-    rememberMe?: boolean;
     frontendUrl?: string;
     headers?: Record<string, string>;
   } = {},
@@ -49,7 +48,6 @@ export async function signInWithOAuth(
       provider: providerId,
       callbackURL,
       disableRedirect: true,
-      additionalData: { rememberMe: options.rememberMe ?? true },
     }),
   });
   expect(start.status).toBe(200);

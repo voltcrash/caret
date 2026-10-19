@@ -1,5 +1,4 @@
 import { typedKeys } from "@oxytype/util/objects";
-import { tryCatch } from "@oxytype/util/trycatch";
 
 import { captureAccount } from "../app/account-scope";
 import { createAppMemo } from "../app/application";
@@ -14,7 +13,6 @@ import {
   signOut as authSignOut,
   getAuthenticatedUser,
   isAuthAvailable,
-  signInWithPopup,
 } from "./auth-client";
 import { updateFromServer as updateConfigFromServer } from "./config/remote";
 import * as DB from "./db";
@@ -54,15 +52,6 @@ const authMethods = {
 } as const satisfies Record<string, AuthMethodInfo>;
 
 export type AuthMethod = keyof typeof authMethods;
-
-export type AuthResult =
-  | {
-      success: true;
-    }
-  | {
-      success: false;
-      message: string;
-    };
 
 type ReauthSuccess = {
   status: "success";
@@ -207,25 +196,6 @@ export async function loadUser(_user: UserType): Promise<AccountLoad> {
     authEvent.dispatch({ type: "snapshotUpdated", data: { isInitial: true } });
   }
   return result;
-}
-
-export async function signInWithProvider(
-  authMethod: AuthMethod,
-  options: { rememberMe: boolean },
-): Promise<AuthResult> {
-  if (!isAuthAvailable()) {
-    return { success: false, message: "Authentication uninitialized" };
-  }
-
-  const provider = getAuthProvider(authMethod);
-  const { error } = await tryCatch(
-    signInWithPopup(provider, options.rememberMe),
-  );
-
-  if (error !== null) {
-    return { success: false, message: error.message };
-  }
-  return { success: true };
 }
 
 export async function addAuthProvider(options: {

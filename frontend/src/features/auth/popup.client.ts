@@ -4,7 +4,6 @@ import { createEvent } from "../../ts/hooks/createEvent";
 type OAuthRequest = {
   provider: SocialProvider;
   link: boolean;
-  rememberMe: boolean;
   resolve: () => void;
   reject: (error: Error) => void;
 };
@@ -12,7 +11,6 @@ export const oauthRequestEvent = createEvent<OAuthRequest>();
 export async function requestOAuth(
   provider: SocialProvider,
   link = false,
-  rememberMe = true,
 ): Promise<void> {
   if (envConfig.devOffline) {
     throw new Error(
@@ -20,6 +18,6 @@ export async function requestOAuth(
     );
   }
   return new Promise((resolve, reject) =>
-    oauthRequestEvent.dispatch({ provider, link, rememberMe, resolve, reject }),
+    oauthRequestEvent.dispatch({ provider, link, resolve, reject }),
   );
 }
