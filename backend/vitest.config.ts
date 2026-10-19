@@ -7,7 +7,7 @@ export const projects = [
       include: ["__tests__/d1/**/*.spec.ts"],
       testTimeout: 30_000,
       hookTimeout: 30_000,
-      fileParallelism: false,
+      // Each file migrates its own in-memory Miniflare D1, so files are isolated.
     },
   },
   {
