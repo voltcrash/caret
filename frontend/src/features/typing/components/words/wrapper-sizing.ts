@@ -25,8 +25,12 @@ export function useWordsWrapperSizing(wrapper: HTMLElement): void {
   });
   observer.observe(wrapper);
 
+  // a swapped in font rewraps the words without changing the width
+  document.fonts.addEventListener("loadingdone", remeasure);
+
   onCleanup(() => {
     observer.disconnect();
+    document.fonts.removeEventListener("loadingdone", remeasure);
     cancelPendingAnimationFrame(FRAME_ID);
   });
 }
