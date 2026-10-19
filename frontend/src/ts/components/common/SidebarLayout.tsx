@@ -30,6 +30,8 @@ export function SidebarLayout<T extends string>(props: {
   // no item is shown as active when undefined
   active: T | undefined;
   onSelect: (key: T) => void;
+  // Continuous pages scroll to their own section instead of the content top.
+  scrollToContent?: boolean;
   // extra content above the items
   header?: JSXElement;
   // extra content below the items, split off by a separator
@@ -57,6 +59,7 @@ export function SidebarLayout<T extends string>(props: {
 
   const select = (key: T): void => {
     props.onSelect(key);
+    if (props.scrollToContent === false) return;
     // the sidebar stays in view while scrolling (or sits above the content on
     // mobile), so bring the top of the new content into view
     const top = content()?.getBoundingClientRect().top;
