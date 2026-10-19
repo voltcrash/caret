@@ -86,6 +86,7 @@ test("finishing a test focuses results without outlining the screen", async ({
   const result = page.locator("#result");
   await expect(result).toBeFocused();
   await expect(result).toHaveCSS("outline-style", "none");
+  await expect(result).toHaveCSS("box-shadow", "none");
 });
 
 test("result summary stays silent during typing and clears on restart", async ({
