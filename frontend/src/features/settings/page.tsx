@@ -11,6 +11,8 @@ const View = lazy(
     default: (await import("./content.client")).SettingsView,
   })),
 );
+// Warm browser code during route preload; preferences still mount on navigation.
+if (!import.meta.env.SSR) void View.preload();
 
 /** Stable server shell; settings read browser preferences once mounted. */
 export function SettingsPage(props: {
