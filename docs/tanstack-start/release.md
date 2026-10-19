@@ -36,7 +36,8 @@ Turnstile secrets; do not archive secrets in evidence, public env or release ass
    in #144. The deployment-only follow-up removes numbered releases, publication,
    changelogs and package-version edits. Each dispatch serializes runs, validates
    exact-snapshot CI, builds the matched client/Worker, dry-runs, applies compatible
-   D1 migrations and deploys.
+   D1 migrations and deploys. The current workflow also deploys automatically
+   after successful main-push CI, using the triggering CI run's exact commit.
    Do not merge partial migration entry changes into this path. Keep migrations
    isolated until the native application passes the preceding gates; preserve
    the production path or explicitly gate the workflow during transition.
@@ -97,12 +98,14 @@ explicit Stage 1/7 implementation gates, not silently completed by this document
 ## Stage 7 delivery state
 
 Start owns the production/staging Wrangler configs, build, artifact receipt,
-validation, migrations and deployment commands. The manual production workflow
-builds and deploys the matched Start artifact after successful main CI. It no
+validation, migrations and deployment commands. The production workflow now
+automatically builds and deploys the matched Start artifact after successful
+main-push CI; manual retries remain available. It no
 longer needs `START_PRODUCTION_ENABLED`, numbers deployments or publishes GitHub
 releases. Rollback uses the retained Cloudflare Worker version with matching
 assets, independently of GitHub release records. Human staging acceptance is
-recorded in the [Stage 8 ledger](stage-8.md); merging does not deploy production.
+recorded in the [Stage 8 ledger](stage-8.md). The ledger records the earlier manual
+cutover process; merging to `main` now deploys production once CI succeeds.
 
 The replacement `/sw.js` keeps the rollback worker's URL and scope, replaces it
 at once on first install, retires workbox caches and keeps rollback hashed

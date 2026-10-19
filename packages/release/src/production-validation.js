@@ -1,6 +1,11 @@
 /** Require the latest main-push CI result for the exact deployment snapshot. */
 export async function requireSuccessfulProductionCI({ github, context, sha }) {
-  if (sha !== context.sha) {
+  // workflow_run's context.sha points at current main, not necessarily the CI commit.
+  const deploymentSha =
+    context.eventName === "workflow_run"
+      ? context.payload?.workflow_run?.head_sha
+      : context.sha;
+  if (!sha || sha !== deploymentSha) {
     throw new Error(
       "CI validation must match the deployment workflow's commit",
     );

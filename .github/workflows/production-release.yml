@@ -1,7 +1,11 @@
 name: Production deployment
 
-# Manual only: each dispatch deploys the selected main snapshot.
+# Deploy successful main-push CI snapshots automatically; allow manual retries.
 on:
+  workflow_run:
+    workflows: [Oxytype CI]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -18,10 +22,24 @@ env:
 
 jobs:
   deploy:
-    if: github.repository == 'voltcrash/oxytype' && github.ref == 'refs/heads/main'
+    if: >-
+      github.repository == 'voltcrash/oxytype' &&
+      (
+        (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+        (
+          github.event_name == 'workflow_run' &&
+          github.event.workflow_run.event == 'push' &&
+          github.event.workflow_run.head_branch == 'main' &&
+          github.event.workflow_run.head_repository.full_name == github.repository &&
+          github.event.workflow_run.conclusion == 'success'
+        )
+      )
     name: Deploy production
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    env:
+      # workflow_run's github.sha may already point at a newer main commit.
+      DEPLOYMENT_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
     environment:
       name: production
       url: https://oxytype.voltcrash.com
@@ -29,7 +47,7 @@ jobs:
       - name: Check out the run's main snapshot
         uses: actions/checkout@v7.0.1
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ env.DEPLOYMENT_SHA }}
           persist-credentials: false
 
       - name: Require successful CI for the deployment commit
@@ -38,7 +56,7 @@ jobs:
         with:
           script: |
             const { requireSuccessfulProductionCI } = await import(`${process.env.GITHUB_WORKSPACE}/packages/release/src/production-validation.js`);
-            const run = await requireSuccessfulProductionCI({ github, context, sha: context.sha });
+            const run = await requireSuccessfulProductionCI({ github, context, sha: process.env.DEPLOYMENT_SHA });
             await core.summary.addLink('Validated Oxytype CI', run.html_url).write();
 
       - name: Set up Vite+
@@ -70,7 +88,7 @@ jobs:
 
       - name: Build production frontend and Worker
         env:
-          OXYTYPE_BUILD_ID: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          OXYTYPE_BUILD_ID: ${{ env.DEPLOYMENT_SHA }}-${{ github.run_id }}-${{ github.run_attempt }}
         run: vp run --filter @oxytype/frontend build:production-site
 
       - name: Check production deployment

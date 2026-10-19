@@ -3,8 +3,10 @@
 ## Website production deployments
 
 The **Production deployment** [workflow](../../.github/workflows/production-release.yml)
-runs only when dispatched manually from `main`. Every dispatch builds and deploys
-the run's snapshot, including another deployment of an unchanged commit. It
+runs automatically after **Oxytype CI** completes successfully for a push to `main`.
+It checks out and deploys that CI run's exact commit, even if `main` has advanced.
+Failed, cancelled and pull-request CI runs cannot deploy. Manual dispatch from
+`main` remains available, including another deployment of an unchanged commit. It
 creates no GitHub release, tag, changelog, release snapshot or package-version edit.
 
 `production-validation.js` requires the latest **Oxytype CI** main-push run for
@@ -20,7 +22,7 @@ Removing a consumer from Wrangler config alone leaves its remote trigger attache
 so uploading a Worker without `queue()` otherwise fails with error 11001.
 
 Worker, client, `/version.json` and service-worker caches share an internal build
-ID made from the source SHA, workflow run ID and run attempt. Each dispatch and
+ID made from the source SHA, workflow run ID and run attempt. Each deployment and
 retry gets its own ID. It supports cache updates and deployment diagnostics;
 the website has no release-version button or changes modal.
 

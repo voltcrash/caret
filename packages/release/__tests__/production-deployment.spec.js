@@ -11,8 +11,10 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { parseEnv } from "node:util";
+import { runInNewContext } from "node:vm";
 import { expect, it } from "vite-plus/test";
 import { parse } from "yaml";
+import { requireSuccessfulProductionCI } from "../src/production-validation.js";
 
 const workflow = parse(
   readFileSync(
@@ -24,14 +26,68 @@ const workflow = parse(
   ),
 );
 
-it("deploys every manual main snapshot without creating a release or version", () => {
-  expect(Object.keys(workflow.on)).toEqual(["workflow_dispatch"]);
+const successfulCI = {
+  event: "push",
+  head_branch: "main",
+  head_repository: { full_name: "voltcrash/oxytype" },
+  conclusion: "success",
+};
+
+it.each([
+  { name: "successful main push", allowed: true },
+  { name: "failed CI", run: { conclusion: "failure" }, allowed: false },
+  { name: "cancelled CI", run: { conclusion: "cancelled" }, allowed: false },
+  { name: "skipped CI", run: { conclusion: "skipped" }, allowed: false },
+  { name: "neutral CI", run: { conclusion: "neutral" }, allowed: false },
+  { name: "timed out CI", run: { conclusion: "timed_out" }, allowed: false },
+  { name: "pending CI", run: { conclusion: null }, allowed: false },
+  { name: "pull request CI", run: { event: "pull_request" }, allowed: false },
+  { name: "other branch", run: { head_branch: "feature" }, allowed: false },
+  {
+    name: "fork main CI",
+    run: { head_repository: { full_name: "fork/oxytype" } },
+    allowed: false,
+  },
+  { name: "fork repository", repository: "fork/oxytype", allowed: false },
+  { name: "unsequenced push", event: "push", allowed: false },
+  { name: "manual main retry", event: "workflow_dispatch", allowed: true },
+  {
+    name: "manual feature dispatch",
+    event: "workflow_dispatch",
+    ref: "refs/heads/feature",
+    allowed: false,
+  },
+])("gates production deployment: $name", ({ allowed, ...scenario }) => {
+  // These conditions use only the equality/boolean subset shared by Actions and JS.
+  const github = {
+    repository: scenario.repository ?? "voltcrash/oxytype",
+    ref: scenario.ref ?? "refs/heads/main",
+    event_name: scenario.event ?? "workflow_run",
+    event: { workflow_run: { ...successfulCI, ...scenario.run } },
+  };
+  expect(runInNewContext(workflow.jobs.deploy.if, { github })).toBe(allowed);
+});
+
+it("deploys after main CI or manual retry without creating a release or version", () => {
+  const ci = parse(
+    readFileSync(
+      new URL("../../../.github/workflows/oxytype-ci.yml", import.meta.url),
+      "utf8",
+    ),
+  );
+  expect(Object.keys(workflow.on)).toEqual([
+    "workflow_run",
+    "workflow_dispatch",
+  ]);
+  expect(workflow.on.workflow_run).toEqual({
+    workflows: [ci.name],
+    types: ["completed"],
+    branches: ["main"],
+  });
+  expect(ci.on.push.branches).toContain("main");
   expect(workflow.permissions).toEqual({ contents: "read", actions: "read" });
   expect(workflow.concurrency["cancel-in-progress"]).toBe(false);
   const job = workflow.jobs.deploy;
-  expect(job.if).toBe(
-    "github.repository == 'voltcrash/oxytype' && github.ref == 'refs/heads/main'",
-  );
   expect(job.environment.name).toBe("production");
   for (const step of job.steps.slice(0, -1)) {
     expect(step.if, step.name).toBeUndefined();
@@ -56,9 +112,12 @@ it("validates the exact deployment snapshot before building and applying migrati
   const validation = steps.findIndex((step) => step.id === "validate-ci");
   expect(validation).toBeGreaterThan(0);
   expect(steps[validation].with.script).toContain(
-    "requireSuccessfulProductionCI({ github, context, sha: context.sha })",
+    "requireSuccessfulProductionCI({ github, context, sha: process.env.DEPLOYMENT_SHA })",
   );
-  expect(steps[0].with.ref).toBe("${{ github.sha }}");
+  expect(workflow.jobs.deploy.env.DEPLOYMENT_SHA).toBe(
+    "${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}",
+  );
+  expect(steps[0].with.ref).toBe("${{ env.DEPLOYMENT_SHA }}");
   const settings = index("Prepare production credentials and build settings");
   const build = index("Build production frontend and Worker");
   const check = index("Check production deployment");
@@ -72,7 +131,7 @@ it("validates the exact deployment snapshot before building and applying migrati
   expect(migrate).toBeGreaterThan(retire);
   expect(deploy).toBeGreaterThan(migrate);
   expect(steps[build].env.OXYTYPE_BUILD_ID).toBe(
-    "${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}",
+    "${{ env.DEPLOYMENT_SHA }}-${{ github.run_id }}-${{ github.run_attempt }}",
   );
   expect(steps[deploy].run).toContain(
     "--filter @oxytype/frontend deploy:production-site",
@@ -84,6 +143,63 @@ it("validates the exact deployment snapshot before building and applying migrati
     "vp run --filter @oxytype/frontend retire:production-task-consumer",
   );
 });
+
+it.each(["workflow_run", "workflow_dispatch"])(
+  "checks out, validates and labels the same commit for %s",
+  async (eventName) => {
+    const github = {
+      event_name: eventName,
+      sha: "current-main-sha",
+      run_id: "100",
+      run_attempt: "2",
+      event:
+        eventName === "workflow_run"
+          ? { workflow_run: { ...successfulCI, head_sha: "ci-passed-sha" } }
+          : {},
+    };
+    const expectedSha =
+      eventName === "workflow_run" ? "ci-passed-sha" : "current-main-sha";
+    const env = {};
+    const resolve = (value) =>
+      value.replace(/\$\{\{([\s\S]*?)\}\}/g, (_, expression) =>
+        runInNewContext(expression, { github, env }),
+      );
+    env.DEPLOYMENT_SHA = resolve(workflow.jobs.deploy.env.DEPLOYMENT_SHA);
+    const checkout = workflow.jobs.deploy.steps[0];
+    expect(resolve(checkout.with.ref)).toBe(expectedSha);
+    const build = workflow.jobs.deploy.steps.find(
+      (step) => step.name === "Build production frontend and Worker",
+    );
+    expect(resolve(build.env.OXYTYPE_BUILD_ID)).toBe(`${expectedSha}-100-2`);
+    const run = {
+      ...successfulCI,
+      head_sha: expectedSha,
+      status: "completed",
+      id: 42,
+    };
+    expect(
+      await requireSuccessfulProductionCI({
+        github: {
+          rest: {
+            actions: {
+              listWorkflowRuns: async (query) => {
+                expect(query.head_sha).toBe(expectedSha);
+                return { data: { workflow_runs: [run] } };
+              },
+            },
+          },
+        },
+        context: {
+          eventName,
+          repo: { owner: "voltcrash", repo: "oxytype" },
+          sha: github.sha,
+          payload: github.event,
+        },
+        sha: env.DEPLOYMENT_SHA,
+      }),
+    ).toEqual(run);
+  },
+);
 
 it("retires consumers on direct deployments while keeping dry-runs read-only", () => {
   const { scripts } = JSON.parse(

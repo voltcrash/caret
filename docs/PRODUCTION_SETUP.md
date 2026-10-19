@@ -107,8 +107,8 @@ Deployment validates credentials, public settings, resource identity and every f
 changed or mismatched builds fail before upload. Production secrets stay in their
 private file; local preview variables are removed from the archived artifact.
 
-Production deployments are manual-only and require successful CI for their exact
-main snapshot. Complete staging acceptance before the first Start cutover.
+Production deployments start automatically after successful main-push CI and use
+that exact snapshot. Complete staging acceptance before the first Start cutover.
 
 The retired `oxytype-production-tasks` consumer must be detached before uploading
 the Worker without a queue handler. Removing `queues` from Wrangler configuration
@@ -143,8 +143,14 @@ legacy → Start → legacy and Start → Start rollbacks this way in Stage 7.
 ## Production deployments
 
 The **Production deployment** [Actions workflow](../.github/workflows/production-release.yml)
-runs only when a maintainer starts it: **Run workflow** on `main`, or
-`gh workflow run production-release.yml --ref main`. Each dispatch deploys the
+runs automatically when **Oxytype CI** finishes successfully for each push to
+`main`. Deployment checks out the completed CI run's exact commit, even if `main`
+has advanced. Failed, cancelled, skipped and pull-request CI runs cannot deploy.
+No manual trigger is needed after merging a change.
+
+For a manual retry, use **Run workflow** on `main`, or
+`gh workflow run production-release.yml --ref main`. Manual dispatch requires CI
+to have passed already; it fails if CI is still pending. Each run deploys the
 complete frontend/API site with the production Wrangler config, including a
 repeat deployment of the same commit. It creates no GitHub release, tag,
 changelog, release snapshot or package-version change.
@@ -175,8 +181,9 @@ artifacts and diagnostics; it is not a numbered release and has no home-page
 version button or changes screen. The retained Cloudflare Worker version and its
 matching assets remain the rollback artifact.
 
-After merging a fix for a failed deployment, start a new **Production deployment**
-run from **main**, or run `gh workflow run production-release.yml --ref main`.
+After merging a fix for a failed deployment, successful main CI automatically
+starts a new **Production deployment** run for the fix. To retry a transient
+deployment failure after CI has passed, manually dispatch from **main**.
 Rerunning an old failed run retains its original snapshot and cannot pick up the fix.
 
 ## Browser verification and monitoring
