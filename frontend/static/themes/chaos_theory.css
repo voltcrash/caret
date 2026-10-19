@@ -4,10 +4,6 @@
   transition: 0.5s;
 }
 
-[data-ui-element="logoSubtext"] {
-  font-family: "Comic Sans MS", "Comic Sans", cursive;
-}
-
 [data-ui-element="logo"] svg {
   transform: rotateX(180deg);
   transition: 0.5s;

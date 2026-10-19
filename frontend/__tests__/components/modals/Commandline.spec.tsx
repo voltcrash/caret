@@ -84,7 +84,7 @@ vi.mock("../../../src/ts/input/hotkeys/utils", () => ({
 vi.mock("../../../src/app/navigate", () => ({ navigate: vi.fn() }));
 
 import { show } from "../../../src/ts/commandline/commandline";
-import { ThemeIndicator } from "../../../src/ts/components/layout/footer/ThemeIndicator";
+import { ThemeIndicator } from "../../../src/ts/components/layout/header/ThemeIndicator";
 import { Commandline } from "../../../src/ts/components/modals/Commandline";
 import { getMutableConfig } from "../../../src/ts/config/store";
 import { restartTestEvent } from "../../../src/ts/events/test";

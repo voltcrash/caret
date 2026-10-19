@@ -71,7 +71,6 @@
   animation: rgb-bg 5s linear infinite !important;
 }
 
-[data-ui-element="logoSubtext"],
 #result .stats .group .bottom,
 [data-nav-item]:hover,
 footer button:hover,
@@ -94,9 +93,6 @@ header [data-ui-element="logo"] svg path {
 }
 
 header[data-focused] {
-  & [data-ui-element="logoSubtext"] {
-    animation: none;
-  }
   & [data-ui-element="logo"] svg path {
     animation: none;
   }

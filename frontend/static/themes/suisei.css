@@ -18,11 +18,6 @@
   line-height: 1;
 }
 
-[data-ui-element="logoSubtext"] {
-  margin-top: 0em;
-  color: var(--main-color);
-}
-
 header[data-focused] [data-ui-element="logoText"] {
   background: linear-gradient(-120deg, var(--main-color), var(--sub-color));
   background-clip: text;

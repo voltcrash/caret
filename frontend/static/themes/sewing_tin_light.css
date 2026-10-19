@@ -23,9 +23,3 @@ header [data-ui-element="logoText"] {
   padding-bottom: 0.1em;
   line-height: 1;
 }
-
-[data-ui-element="logoSubtext"] {
-  margin-top: 0em;
-  /* prevent it from being transparent */
-  -webkit-text-fill-color: #385eca;
-}

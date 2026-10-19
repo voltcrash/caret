@@ -44,7 +44,10 @@ test("settings sections are replace-only route search and deep links highlight",
   await expect(page.locator("#group_caret h2")).toBeInViewport();
   await expect(page.locator("#group_behavior")).toBeVisible();
   const length = await page.evaluate(() => history.length);
-  await page.getByRole("button", { name: "theme" }).first().click();
+  await page
+    .getByRole("button", { name: "theme", exact: true })
+    .first()
+    .click();
   await expect(page).toHaveURL(/\/settings\?tab=theme$/);
   await expect(page.locator("#group_theme h2")).toBeInViewport();
   expect(await page.evaluate(() => history.length)).toBe(length);
