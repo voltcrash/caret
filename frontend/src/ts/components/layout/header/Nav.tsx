@@ -210,7 +210,7 @@ export function Nav(): JSXElement {
                   <Suspense fallback={null}>
                     <User
                       user={snap()}
-                      showAvatar={true}
+                      showAvatar={false}
                       iconsOnly={true}
                       hideNameOnSmallScreens={true}
                       level={getAnimatedLevel()}
