@@ -673,8 +673,9 @@ Status: 8.1–8.2 complete; 8.3 pending. [Stage 8 ledger](tanstack-start/stage-8
 ### 8.3 Release, observe, and retire temporary compatibility
 
 - Build from the validated commit, deploy to staging, then release through the
-  updated production workflow (manual-only since #144). Avoid running the old scheduled auto-release path
-  against a partially migrated main branch; coordinate its transition first.
+  updated production workflow, which now deploys automatically after successful
+  main-push CI and retains manual retries. Complete staging acceptance before
+  merging production changes. The old scheduled auto-release path is retired.
 - Retain the previous deployable artifact and compatible database/storage formats.
   If rollback is required, roll back server and client assets together and account
   for service-worker caches. Do not require restoring the database for a code-only rollback.
