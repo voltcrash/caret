@@ -10,6 +10,8 @@ import {
 import { getCustomThemes } from "../../../states/custom-themes";
 import { showModal } from "../../../states/modals";
 import { showNoticeNotification } from "../../../states/notifications";
+import { cn } from "../../../utils/cn";
+import { Button } from "../../common/Button";
 import { Fa } from "../../common/Fa";
 
 /** Opens the theme picker; shift-click toggles the custom theme instead. */
@@ -33,24 +35,22 @@ export function openThemePicker(e: MouseEvent): void {
   showModal("Commandline");
 }
 
-export function ThemeIndicator(): JSXElement {
+export function ThemeIndicator(props: { class?: string }): JSXElement {
   return (
-    <button
-      type="button"
-      class="textButton"
-      aria-label="Shift-click to toggle custom theme"
-      data-balloon-pos="left"
+    <Button
+      variant="text"
+      class={cn(
+        "gap-[0.35em] p-0 text-xs leading-none whitespace-nowrap [--themable-button-text:var(--sub-color)]",
+        props.class,
+      )}
+      balloon={{ text: "Shift-click to toggle custom theme", position: "down" }}
+      dataset={{ "data-ui-element": "themeIndicator" }}
       onClick={openThemePicker}
     >
-      <div class="relative">
-        <Show when={getThemeIndicator().isFavorite}>
-          <div class="absolute top-[-0.5em] right-[-0.5em] flex rounded-full bg-bg p-[0.25em]">
-            <Fa icon="fa-star" size={0.5} />
-          </div>
-        </Show>
-        <Fa icon="fa-palette" fixedWidth />
-      </div>
-      <div class="text">{getThemeIndicator().text}</div>
-    </button>
+      <Show when={getThemeIndicator().isFavorite}>
+        <Fa icon="fa-star" size={0.75} />
+      </Show>
+      {getThemeIndicator().text}
+    </Button>
   );
 }

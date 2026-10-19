@@ -5,7 +5,7 @@ import { restartTestEvent } from "../../../events/test";
 import { getFocus } from "../../../states/test";
 import { cn } from "../../../utils/cn";
 import { Link } from "../../common/Link";
-import { openThemePicker } from "./ThemeIndicator";
+import { openThemePicker, ThemeIndicator } from "./ThemeIndicator";
 
 export function Logo(): JSXElement {
   const typing = useTypingRoute();
@@ -40,7 +40,7 @@ export function Logo(): JSXElement {
           <path d="M24 5v13" class="[stroke-linecap:round]"></path>
         </svg>
       </Link>
-      <div class="hidden h-6 place-content-center text-[2rem] leading-0 sm:grid">
+      <div class="relative hidden h-6 place-content-center text-[2rem] leading-0 sm:grid">
         <h1
           class={cn("-mt-[0.11em] text-text transition-colors duration-250", {
             "text-text": getFocus(),
@@ -56,6 +56,12 @@ export function Logo(): JSXElement {
             oxytype
           </button>
         </h1>
+        <ThemeIndicator
+          class={cn(
+            "absolute top-full right-0 mt-1 transition-[color,opacity]",
+            getFocus() && "pointer-events-none opacity-0",
+          )}
+        />
       </div>
     </div>
   );
