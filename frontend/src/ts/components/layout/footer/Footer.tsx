@@ -4,7 +4,6 @@ import { getIsScreenshotting } from "../../../states/core";
 import { getFocus } from "../../../states/test";
 import { cn } from "../../../utils/cn";
 import { Keytips } from "./Keytips";
-import { ThemeIndicator } from "../header/ThemeIndicator";
 
 export function Footer(): JSXElement {
   return (
@@ -20,16 +19,6 @@ export function Footer(): JSXElement {
       )}
     >
       <Keytips />
-
-      <div
-        class={cn(
-          // phones: a 44px theme control
-          "-m-2 flex flex-row items-end justify-between text-right transition-opacity [&>*]:min-h-11 sm:flex-col sm:justify-end sm:[&>*]:min-h-0 lg:flex-row lg:justify-end",
-          getFocus() && "opacity-0",
-        )}
-      >
-        <ThemeIndicator />
-      </div>
     </footer>
   );
 }
