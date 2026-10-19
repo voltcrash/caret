@@ -65,3 +65,17 @@ test("desktop settings reach every section by scrolling alone", async ({
   await expect(page).toHaveURL(/\/settings$/);
   await expect(page.locator("#group_account")).toHaveCount(0);
 });
+
+test("mobile settings reach every section without returning to navigation", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/settings");
+  await expect(
+    page.getByRole("textbox", { name: "Search settings" }),
+  ).toBeInViewport();
+  await scrollThroughSettings(page);
+  expect(
+    await page.evaluate(() => document.documentElement.scrollWidth),
+  ).toBeLessThanOrEqual(390);
+});
