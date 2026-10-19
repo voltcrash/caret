@@ -6,12 +6,14 @@ export const PageScrollHost =
   createContext<(position: { scrollX: number; scrollY: number }) => void>();
 
 /** Reapply Router's cached position after a browser leaf has its final height. */
-export function RestorePageScroll(): null {
+export function RestorePageScroll(props: { fallback?: () => void }): null {
   const position = useElementScrollRestoration({ id: "page-content" });
   const restore = useContext(PageScrollHost);
   onMount(() => {
-    if (position === undefined) return;
-    const frame = requestAnimationFrame(() => restore?.(position));
+    const frame = requestAnimationFrame(() => {
+      if (position === undefined) props.fallback?.();
+      else restore?.(position);
+    });
     onCleanup(() => cancelAnimationFrame(frame));
   });
   return null;

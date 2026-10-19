@@ -14,6 +14,7 @@ import {
   createCroppedScreenshot,
   useScreenshotCanvas,
 } from "../../../../../src/features/typing/components/result/useScreenshotCanvas";
+import { animateAsync } from "../../../../../src/ts/anim";
 import { setIsScreenshotting } from "../../../../../src/ts/states/core";
 import { showErrorNotification } from "../../../../../src/ts/states/notifications";
 
@@ -24,6 +25,30 @@ afterEach(() => {
 });
 
 describe("result lifecycle", () => {
+  it("keeps keyboard focus outside results until their reveal finishes", async () => {
+    const animation = Promise.withResolvers<undefined>();
+    vi.mocked(animateAsync).mockReturnValueOnce(animation.promise);
+    const node = document.createElement("div");
+    node.className = "hidden";
+    node.tabIndex = -1;
+    node.scrollIntoView = vi.fn();
+    document.body.append(node);
+    render(() => {
+      useResultScreen(() => node);
+      return null;
+    });
+    try {
+      const showing = showResultScreen(125);
+      expect(document.activeElement).not.toBe(node);
+      animation.resolve(undefined);
+      await showing;
+      expect(document.activeElement).toBe(node);
+    } finally {
+      animation.resolve(undefined);
+      node.remove();
+    }
+  });
+
   it("reveals, focuses and scrolls the owned result, preserving screenshot classes", async () => {
     const node = document.createElement("div");
     node.className = "hidden existing";

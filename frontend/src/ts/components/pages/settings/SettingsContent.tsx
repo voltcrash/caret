@@ -7,6 +7,7 @@ import {
   useContext,
 } from "solid-js";
 
+import { RestorePageScroll } from "../../../../components/page-scroll";
 import { resetConfig } from "../../../config/lifecycle";
 import { getConfig } from "../../../config/store";
 import {
@@ -20,7 +21,6 @@ import {
   getSearchMatchCounts,
   getSettingsSearch,
   isSettingsSearchActive,
-  setSettingsSearch,
 } from "../../../states/settings-search";
 import {
   getAvailableSettingsSections,
@@ -67,10 +67,12 @@ import { SearchableSetting } from "./SearchableSetting";
 import { SettingsSectionContext } from "./settings-section-context";
 import { SettingsGroup } from "./SettingsGroup";
 import { SettingsSearch } from "./SettingsSearch";
+import { useSettingsNavigation } from "./useSettingsNavigation";
 
-/** Settings sections; the selected section comes from SettingsSectionHostContext. */
+/** All available settings, with optional sidebar jumps between sections. */
 export function SettingsContent(): JSXElement {
   const sections = useContext(SettingsSectionHostContext);
+  const navigation = useSettingsNavigation(sections);
   const [hasLocalBg] = createResource(
     () => fileStorage.track("LocalBackgroundFile"),
     async () => fileStorage.hasFile("LocalBackgroundFile"),
@@ -80,11 +82,9 @@ export function SettingsContent(): JSXElement {
     <SidebarLayout
       items={getAvailableSettingsSections()}
       // while filtering, results from every section are shown
-      active={isSettingsSearchActive() ? undefined : sections.current()}
-      onSelect={(section) => {
-        setSettingsSearch("");
-        sections.select(section);
-      }}
+      active={isSettingsSearchActive() ? undefined : navigation.active()}
+      onSelect={navigation.select}
+      scrollToContent={false}
       header={<SettingsSearch />}
       hotkeys
       counts={isSettingsSearchActive() ? getSearchMatchCounts() : undefined}
@@ -130,7 +130,7 @@ export function SettingsContent(): JSXElement {
           No settings match &quot;{getSettingsSearch().trim()}&quot;.
         </div>
       </Show>
-      <div class="grid gap-16">
+      <div ref={navigation.ref} class="grid gap-16">
         <Section section="behavior">
           <Show when={isAuthenticated()}>
             <SettingsGroup title="saved tests">
@@ -373,6 +373,7 @@ export function SettingsContent(): JSXElement {
           </SettingsGroup>
         </Section>
       </div>
+      <RestorePageScroll fallback={navigation.restore} />
     </SidebarLayout>
   );
 }
@@ -382,22 +383,19 @@ function Section(props: {
   children: JSXElement;
 }): JSXElement {
   const section = untrack(() => props.section);
-  const sections = useContext(SettingsSectionHostContext);
   return (
-    <div
+    <section
       id={`group_${props.section}`}
+      aria-labelledby={`group_${props.section}_title`}
+      data-settings-section={props.section}
       class={cn(
-        "grid gap-8",
-        // only the selected section is shown, unless filtering, where every
-        // section with a matching setting is shown
-        !isSettingsSearchActive() &&
-          sections.current() !== props.section &&
-          "hidden",
+        "grid scroll-mt-[calc(var(--header-bottom)+1rem)] gap-8",
         isSettingsSearchActive() &&
           "not-has-[[data-setting-key]:not(.hidden)]:hidden",
       )}
     >
       <H2
+        id={`group_${props.section}_title`}
         text={settingsSections[props.section].text}
         fa={{ icon: settingsSections[props.section].icon }}
         class="pb-0 text-[1.5em]"
@@ -405,6 +403,6 @@ function Section(props: {
       <SettingsSectionContext.Provider value={section}>
         {props.children}
       </SettingsSectionContext.Provider>
-    </div>
+    </section>
   );
 }

@@ -41,20 +41,20 @@ test("settings sections are replace-only route search and deep links highlight",
   page,
 }) => {
   await page.goto("/settings?tab=caret");
-  await expect(page.locator("#group_caret")).toBeVisible();
-  await expect(page.locator("#group_behavior")).toBeHidden();
+  await expect(page.locator("#group_caret h2")).toBeInViewport();
+  await expect(page.locator("#group_behavior")).toBeVisible();
   const length = await page.evaluate(() => history.length);
   await page.getByRole("button", { name: "theme" }).first().click();
   await expect(page).toHaveURL(/\/settings\?tab=theme$/);
-  await expect(page.locator("#group_theme")).toBeVisible();
+  await expect(page.locator("#group_theme h2")).toBeInViewport();
   expect(await page.evaluate(() => history.length)).toBe(length);
   // Guests asking for the account section get behavior.
   await page.goto("/settings?tab=account");
-  await expect(page.locator("#group_behavior")).toBeVisible();
+  await expect(page.locator("#group_behavior h2")).toBeInViewport();
   await page.goto("/settings?highlight=quickRestart");
   await expect(
     page.locator('[data-setting-key="quickRestart"].settings-highlight'),
-  ).toBeVisible();
+  ).toBeInViewport();
 });
 
 test("settings highlights follow search changes on the mounted route", async ({
