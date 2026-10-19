@@ -8,8 +8,6 @@ import {
   Show,
 } from "solid-js";
 
-import { useTypingRoute } from "../../../../components/typing-route-host";
-import { restartTestEvent } from "../../../events/test";
 import { createEffectOn } from "../../../hooks/effects";
 import { useRef } from "../../../hooks/useRef";
 import { getServerConfigurationQueryOptions } from "../../../queries/server-configuration";
@@ -38,7 +36,6 @@ const AccountXpBar = lazy(async () =>
 );
 
 export function Nav(): JSXElement {
-  const typing = useTypingRoute();
   const [getAccountMenuOpen, setAccountMenuOpen] = createSignal(false);
   const [accountMenuRef, accountMenuEl] = useRef<HTMLDivElement>();
 
@@ -79,23 +76,6 @@ export function Nav(): JSXElement {
       aria-label="Main navigation"
       class={cn("z-5 flex w-full items-center gap-0 xs:gap-1 md:gap-2")}
     >
-      <Button
-        variant="text"
-        fa={{
-          icon: "fa-keyboard",
-          fixedWidth: true,
-        }}
-        router-link
-        href="/"
-        class={buttonClass()}
-        dataset={{
-          "data-nav-item": "test",
-          "aria-label": "Test",
-        }}
-        onClick={() => {
-          if (typing()) restartTestEvent.dispatch();
-        }}
-      />
       <Button
         variant="text"
         fa={{
