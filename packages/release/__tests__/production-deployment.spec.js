@@ -24,14 +24,26 @@ const workflow = parse(
   ),
 );
 
-it("deploys every manual main snapshot without creating a release or version", () => {
-  expect(Object.keys(workflow.on)).toEqual(["workflow_dispatch"]);
+it("deploys after main CI or manual retry without creating a release or version", () => {
+  const ci = parse(
+    readFileSync(
+      new URL("../../../.github/workflows/oxytype-ci.yml", import.meta.url),
+      "utf8",
+    ),
+  );
+  expect(Object.keys(workflow.on)).toEqual([
+    "workflow_run",
+    "workflow_dispatch",
+  ]);
+  expect(workflow.on.workflow_run).toEqual({
+    workflows: [ci.name],
+    types: ["completed"],
+    branches: ["main"],
+  });
+  expect(ci.on.push.branches).toContain("main");
   expect(workflow.permissions).toEqual({ contents: "read", actions: "read" });
   expect(workflow.concurrency["cancel-in-progress"]).toBe(false);
   const job = workflow.jobs.deploy;
-  expect(job.if).toBe(
-    "github.repository == 'voltcrash/oxytype' && github.ref == 'refs/heads/main'",
-  );
   expect(job.environment.name).toBe("production");
   for (const step of job.steps.slice(0, -1)) {
     expect(step.if, step.name).toBeUndefined();
