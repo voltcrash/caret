@@ -166,6 +166,9 @@ it("retries a transient load failure once back online and stops after success", 
   window.dispatchEvent(new Event("online"));
   await tick();
   expect(loads).toHaveBeenCalledTimes(2);
+  expect(loads).toHaveBeenLastCalledWith(user("retry"), {
+    notifyOnFailure: false,
+  });
   window.dispatchEvent(new Event("online"));
   await tick();
   expect(loads).toHaveBeenCalledTimes(2);
