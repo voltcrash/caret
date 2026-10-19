@@ -103,3 +103,24 @@ test("sidebar clicks and hotkeys jump even when the requested tab is unchanged",
   await expect(theme).toBeInViewport();
   await expect(page).toHaveURL(/\/settings\?tab=theme$/);
 });
+
+test("clearing search restores all sections and selecting a result section jumps", async ({
+  page,
+}) => {
+  await page.goto("/settings");
+  const search = page.getByRole("textbox", { name: "Search settings" });
+  const nav = page.getByRole("navigation", { name: "Page sections" });
+  await search.fill("caret");
+  await expect(page.locator("#group_behavior")).toBeHidden();
+  await expect(page.locator('[data-setting-key="caretStyle"]')).toBeVisible();
+  await expect(nav.locator("[aria-current]")).toHaveCount(0);
+  await page.getByRole("button", { name: "clear search", exact: true }).click();
+  for (const section of guestSections) {
+    await expect(page.locator(`#group_${section}`)).toBeVisible();
+  }
+  await search.fill("caret");
+  await nav.getByRole("button", { name: /^theme/ }).click();
+  await expect(search).toHaveValue("");
+  await expect(page.locator("#group_theme h2")).toBeInViewport();
+  await expect(page.locator("#group_behavior")).toBeVisible();
+});
