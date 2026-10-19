@@ -1,9 +1,9 @@
 name: Set up Vite+
-description: Install Vite+, Node.js and workspace dependencies, restoring caches.
+description: Install Vite+, Node.js and workspace dependencies, restoring the dependency cache.
 
 inputs:
   save-cache:
-    description: Save the dependency and toolchain caches when the job ends. Enable in one job per run to avoid racing uploads.
+    description: Save the dependency cache when the job ends. Enable in one job per run to avoid racing uploads.
     default: "false"
 
 runs:
@@ -14,6 +14,4 @@ runs:
       with:
         node-version-file: .node-version
         cache: true
-        # Caches the Vite+ CLI, Node.js and pnpm themselves (exact versions only).
-        cache-toolchain: true
         cache-save: ${{ inputs.save-cache }}
