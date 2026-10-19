@@ -168,7 +168,11 @@ const actions = {
 
 // --- Public API ---
 export async function waitForPresetsReady(): Promise<void> {
-  await presetsCollection().stateWhenReady();
+  const collection = presetsCollection();
+  if (collection.status === "error") {
+    await collection.utils.refetch({ throwOnError: true });
+  }
+  await collection.stateWhenReady();
 }
 
 /** Reactive. Sorted by name. */
