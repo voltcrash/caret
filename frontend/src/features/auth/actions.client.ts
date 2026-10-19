@@ -10,7 +10,7 @@ import { completeSignUp } from "../../functions/signup";
 type Provider = "google" | "github";
 export type AuthActions = {
   refresh: () => Promise<UiSession | null>;
-  login: (provider: Provider, rememberMe?: boolean) => Promise<void>;
+  login: (provider: Provider) => Promise<void>;
   logout: () => Promise<void>;
   reauthenticate: (provider: Provider) => Promise<void>;
   complete: (name: string, captcha: string) => Promise<void>;
@@ -34,11 +34,8 @@ export const createAuthActions = (
     checkAuthResult(await getAuthClient().signOut());
     await refresh();
   };
-  const login = async (
-    provider: "google" | "github",
-    rememberMe = true,
-  ): Promise<void> => {
-    await requestOAuth(provider, false, rememberMe);
+  const login = async (provider: "google" | "github"): Promise<void> => {
+    await requestOAuth(provider);
     await refresh();
   };
   const reauthenticate = async (

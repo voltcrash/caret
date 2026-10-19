@@ -50,7 +50,6 @@ export function AuthPanel(props: { initial: SessionState; redirect?: string }) {
   });
   const [busy, setBusy] = createSignal(false);
   const [error, setError] = createSignal<string>();
-  const [rememberMe, setRememberMe] = createSignal(true);
   const perform = async (
     action: () => Promise<void>,
     navigate = false,
@@ -117,7 +116,7 @@ export function AuthPanel(props: { initial: SessionState; redirect?: string }) {
                     disabled={busy()}
                     onClick={() =>
                       void perform(
-                        async () => await actions.login(provider, rememberMe()),
+                        async () => await actions.login(provider),
                         true,
                       )
                     }
@@ -130,17 +129,6 @@ export function AuthPanel(props: { initial: SessionState; redirect?: string }) {
                   </button>
                 )}
               </For>
-              <label class="flex gap-2">
-                <input
-                  type="checkbox"
-                  checked={rememberMe()}
-                  onChange={(event) =>
-                    setRememberMe(event.currentTarget.checked)
-                  }
-                  disabled={busy()}
-                />
-                remember me
-              </label>
             </Show>
           </>
         }
