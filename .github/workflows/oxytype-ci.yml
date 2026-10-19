@@ -13,9 +13,12 @@ on:
     types: [opened, reopened, synchronize, ready_for_review]
   push:
     branches: [main]
+  # Manual runs check everything; they never trigger a production deployment.
+  workflow_dispatch:
 
 concurrency:
-  group: group-${{ github.ref }}-${{ github.workflow }}
+  # The event keeps manual runs from cancelling the main-push run a deploy waits for.
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -43,9 +46,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7.0.1
         # paths filter doesn't need checkout on pr
-        if: github.event_name != 'pull_request'
+        if: github.event_name == 'push'
 
       - name: Detect changes
+        if: github.event_name != 'workflow_dispatch'
         uses: dorny/paths-filter@v4.0.3
         id: filter
         with:
@@ -125,7 +129,7 @@ jobs:
       - name: Select jobs
         id: select
         env:
-          FULL: ${{ contains(github.event.pull_request.labels.*.name, 'force-full-ci') }}
+          FULL: ${{ github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'force-full-ci') }}
           CHANGED: ${{ steps.filter.outputs.changes }}
         run: |
           # Prints "<job>=true" when any listed filter matched (or on a full run).
