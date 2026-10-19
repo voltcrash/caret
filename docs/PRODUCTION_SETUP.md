@@ -94,6 +94,8 @@ From the repo root, with Node/pnpm versions in `package.json`:
 vp install --frozen-lockfile
 vp run --filter @oxytype/frontend build:production-site
 vp run --filter @oxytype/frontend deploy:production-dry-run
+# Detach the retired task consumer before migrations remove its tables.
+vp run --filter @oxytype/frontend retire:production-task-consumer
 # Apply any newly added migrations before compatible code is deployed.
 vp run --filter @oxytype/frontend db:migrate:production
 vp run --filter @oxytype/frontend deploy:production-site
@@ -107,6 +109,19 @@ private file; local preview variables are removed from the archived artifact.
 
 Production deployments are manual-only and require successful CI for their exact
 main snapshot. Complete staging acceptance before the first Start cutover.
+
+The retired `oxytype-production-tasks` consumer must be detached before uploading
+the Worker without a queue handler. Removing `queues` from Wrangler configuration
+does not detach an existing Cloudflare consumer; upload otherwise fails with
+`Queue handler is missing` (11001). The retirement command uses
+`CLOUDFLARE_API_TOKEN` and the account/Worker in `wrangler.production.json` to
+remove only that consumer through the
+[Queues API](https://developers.cloudflare.com/api/resources/queues/subresources/consumers/methods/delete/).
+It preserves the task queue, DLQ and queued messages; normal message retention
+still applies. Missing queues/consumers are a successful no-op; authentication,
+permission and API failures stop deployment. The token needs **Queues Write**.
+Direct `deploy:production-site` calls repeat this check after artifact validation;
+dry-runs never detach consumers.
 
 ## Rollback
 
@@ -136,7 +151,8 @@ changelog, release snapshot or package-version change.
 
 The latest **Oxytype CI** main-push run for the exact snapshot must pass first.
 Runs are serialized; the deployment validates the matched client/Worker artifact,
-applies pending compatible D1 migrations and uploads it with Wrangler.
+detaches the retired task consumer, applies pending compatible D1 migrations and
+uploads it with Wrangler.
 
 Configure these Actions inputs in repository settings or the `production`
 environment before the first run:

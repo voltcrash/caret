@@ -62,12 +62,14 @@ it("validates the exact deployment snapshot before building and applying migrati
   const settings = index("Prepare production credentials and build settings");
   const build = index("Build production frontend and Worker");
   const check = index("Check production deployment");
+  const retire = index("Retire the removed production task consumer");
   const migrate = index("Apply production D1 migrations");
   const deploy = index("Deploy production with Wrangler");
   expect(settings).toBeGreaterThan(validation);
   expect(build).toBeGreaterThan(settings);
   expect(check).toBeGreaterThan(build);
-  expect(migrate).toBeGreaterThan(check);
+  expect(retire).toBeGreaterThan(check);
+  expect(migrate).toBeGreaterThan(retire);
   expect(deploy).toBeGreaterThan(migrate);
   expect(steps[build].env.OXYTYPE_BUILD_ID).toBe(
     "${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}",
@@ -75,6 +77,31 @@ it("validates the exact deployment snapshot before building and applying migrati
   expect(steps[deploy].run).toContain(
     "--filter @oxytype/frontend deploy:production-site",
   );
+  expect(steps[retire].env.CLOUDFLARE_API_TOKEN).toBe(
+    "${{ secrets.CLOUDFLARE_API_TOKEN }}",
+  );
+  expect(steps[retire].run).toBe(
+    "vp run --filter @oxytype/frontend retire:production-task-consumer",
+  );
+});
+
+it("retires consumers on direct deployments while keeping dry-runs read-only", () => {
+  const { scripts } = JSON.parse(
+    readFileSync(
+      new URL("../../../frontend/package.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  for (const environment of ["production", "staging"]) {
+    expect(scripts[`deploy:${environment}-site`]).toBe(
+      `vp run check:${environment} && vp run retire:${environment}-task-consumer && wrangler deploy --config dist/start/server/wrangler.json --secrets-file .dev.vars.${environment}`,
+    );
+    expect(scripts[`retire:${environment}-task-consumer`]).toBe(
+      `tsx scripts/retire-task-consumer.ts ${environment}`,
+    );
+  }
+  expect(scripts["deploy:production-dry-run"]).not.toContain("retire:");
+  expect(scripts["dry-run:start"]).not.toContain("retire:");
 });
 
 it.each(["", "ba_dashboard_workflow_fixture"])(
