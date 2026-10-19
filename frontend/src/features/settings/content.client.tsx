@@ -7,6 +7,7 @@ import {
   SettingsSectionHostContext,
 } from "../../ts/states/settings-sections";
 import { useSessionSettled } from "../auth/settled.client";
+import { SettingsLoading } from "./loading";
 
 /** Preference UI; route search owns the section and each highlight request. */
 export function SettingsView(props: {
@@ -28,7 +29,7 @@ export function SettingsView(props: {
     ),
   );
   return (
-    <Show when={settled()}>
+    <Show when={settled()} fallback={<SettingsLoading />}>
       <SettingsSectionHostContext.Provider
         value={{
           current: () => props.section,
@@ -37,7 +38,9 @@ export function SettingsView(props: {
           },
         }}
       >
-        <SettingsContent />
+        <div class="motion-safe:animate-[fadeIn_150ms_ease-out]">
+          <SettingsContent />
+        </div>
       </SettingsSectionHostContext.Provider>
     </Show>
   );
