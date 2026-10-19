@@ -22,6 +22,7 @@ test("keyboard navigation moves focus to content and preserves history without d
   await page.goBack();
   await expect(page).toHaveURL(/\/leaderboards\?/);
   await expect(page.locator("main")).toBeFocused();
+  await expect(page.locator("main")).toHaveCSS("outline-style", "none");
   await page.goForward();
   await expect(page).toHaveURL(/\/settings$/);
   expect(documents).toHaveLength(1);
