@@ -12,6 +12,13 @@ that exact commit to finish successfully before credentials are prepared. Missin
 pending, failed or cancelled CI blocks deployment; retry after CI succeeds.
 The workflow token has only Contents and Actions read permissions.
 
+After the Worker dry-run, deployment detaches the retired production task consumer
+before applying D1 migrations. Direct production/staging deploy commands also
+retire their own consumer after artifact validation. Cleanup is repeatable and
+preserves queues, DLQs and messages; Cloudflare API failures stop the deployment.
+Removing a consumer from Wrangler config alone leaves its remote trigger attached,
+so uploading a Worker without `queue()` otherwise fails with error 11001.
+
 Worker, client, `/version.json` and service-worker caches share an internal build
 ID made from the source SHA, workflow run ID and run attempt. Each dispatch and
 retry gets its own ID. It supports cache updates and deployment diagnostics;
