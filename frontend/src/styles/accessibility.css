@@ -29,7 +29,9 @@ body {
   }
 }
 
-/* palette search has no outline: its modal clips the offset ring */
+/* Programmatic focus targets (page/result/modal containers) are not controls.
+   Native controls keep their ring even with tabindex=-1.
+   Palette search has no outline: its modal clips the offset ring. */
 :where(
     a[href],
     button,
