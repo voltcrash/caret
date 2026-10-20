@@ -1,4 +1,3 @@
-import { detectPlatform } from "@tanstack/solid-hotkeys";
 import {
   untrack,
   createResource,
@@ -33,7 +32,6 @@ import { cn } from "../../../utils/cn";
 import fileStorage from "../../../utils/file-storage";
 import { Button } from "../../common/Button";
 import { H2 } from "../../common/Headers";
-import { Kbd } from "../../common/Kbd";
 import { SidebarLayout } from "../../common/SidebarLayout";
 import { CommandPaletteHotkey } from "../../hotkeys/CommandPaletteHotkey";
 import { AccountTab } from "../account-settings/AccountTab";
@@ -66,6 +64,7 @@ import { SearchableAutoSetting } from "./SearchableAutoSetting";
 import { SearchableSetting } from "./SearchableSetting";
 import { SettingsSectionContext } from "./settings-section-context";
 import { SettingsGroup } from "./SettingsGroup";
+import { SettingsKeyTips } from "./SettingsKeyTips";
 import { SettingsSearch } from "./SettingsSearch";
 import { useSettingsNavigation } from "./useSettingsNavigation";
 
@@ -90,33 +89,7 @@ export function SettingsContent(): JSXElement {
       counts={isSettingsSearchActive() ? getSearchMatchCounts() : undefined}
       footer={
         getConfig.showKeyTips ? (
-          <>
-            {/* padded like the buttons: inset to line up with the item icons,
-                    and space below to match the gap above the tip */}
-            <div class="grid gap-2 px-2 pb-2 text-em-xs text-text">
-              {/* keyboard shortcuts are hidden on touch, where they can't be used */}
-              <div class="pointer-coarse:hidden">
-                tip: you can also change all these settings quickly via the
-                command palette (
-                <span class="whitespace-nowrap">
-                  <CommandPaletteHotkey />
-                </span>
-                )
-              </div>
-              <div class="pointer-coarse:hidden">
-                tip: press{" "}
-                <span class="whitespace-nowrap">
-                  <Kbd
-                    text={`${detectPlatform() === "mac" ? "cmd" : "ctrl"} + 1-9`}
-                  />
-                </span>{" "}
-                to jump to a section
-              </div>
-              <div class="hidden pointer-coarse:block">
-                tip: tap the terminal icon in the nav to search every setting
-              </div>
-            </div>
-          </>
+          <SettingsKeyTips palette={<CommandPaletteHotkey />} />
         ) : undefined
       }
     >
