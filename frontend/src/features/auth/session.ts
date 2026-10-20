@@ -20,6 +20,8 @@ export const sessionOptions = (): ReturnType<
         ? { user: null, signUpEnabled: false }
         : await getSessionState({ signal }),
     staleTime: 30_000,
+    // A tab returning from another app/tab must observe revocation immediately.
+    refetchOnWindowFocus: "always",
     retry: false,
     meta: { ssrSafe: true },
   });
