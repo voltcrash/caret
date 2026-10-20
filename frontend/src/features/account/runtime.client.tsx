@@ -6,6 +6,7 @@ import { loadUser, type AccountLoad } from "../../ts/auth";
 import { setAuthAvailable } from "../../ts/auth-client";
 import * as Sentry from "../../ts/sentry";
 import { sessionOptions } from "../auth/session";
+import { preloadAccount } from "./page";
 import { setLoadedAccount } from "./settled.client";
 
 /**
@@ -39,6 +40,16 @@ export function AccountRuntime(): null {
         return;
       }
       const lease = account.capture();
+      const warm = (): void => {
+        if (lease.isCurrent()) void preloadAccount().catch(() => undefined);
+      };
+      if (typeof requestIdleCallback === "function") {
+        const idle = requestIdleCallback(warm, { timeout: 2_000 });
+        onCleanup(() => cancelIdleCallback(idle));
+      } else {
+        const idle = setTimeout(warm, 0);
+        onCleanup(() => clearTimeout(idle));
+      }
       let timer: ReturnType<typeof setTimeout> | undefined;
       let wake: (() => void) | undefined;
       onCleanup(() => {

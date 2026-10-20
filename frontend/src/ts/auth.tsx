@@ -128,13 +128,6 @@ async function getDataAndInit(notifyOnFailure: boolean): Promise<AccountLoad> {
         m.startCustomThemesSync();
         return undefined;
       }),
-      import("./collections/results").then((m) => {
-        lease.assertCurrent();
-        void m.refetchResults().catch((error: unknown) => {
-          if (lease.isCurrent()) console.error(error);
-        });
-        return undefined;
-      }),
     ]).then(([snapshot]) => {
       if (snapshot === false) {
         throw new Error(
