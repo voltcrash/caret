@@ -1,3 +1,5 @@
+import type { ResultMinified } from "@oxytype/schemas/results";
+
 import { cleanup, render, waitFor } from "@solidjs/testing-library";
 import {
   afterEach,
@@ -75,5 +77,47 @@ describe("TestModesNotice", () => {
     await waitFor(() => {
       expect(queryByRole("button", { name: "no average" })).not.toBeNull();
     });
+  });
+
+  it("updates averages when display options and test settings change", async () => {
+    const results: ResultMinified[] = (
+      [
+        { wpm: 80, acc: 94, language: "english" },
+        { wpm: 100, acc: 98, language: "english" },
+        { wpm: 140, acc: 100, language: "german" },
+      ] satisfies Pick<ResultMinified, "wpm" | "acc" | "language">[]
+    ).map((result, index) => ({
+      ...result,
+      _id: `notice_result_${index}`,
+      uid: "notice-user",
+      rawWpm: result.wpm,
+      consistency: 100,
+      charStats: [150, 0, 0, 0],
+      mode: "time",
+      mode2: "30",
+      testDuration: 30,
+      timestamp: Date.now() - index,
+      keyConsistency: 100,
+    }));
+    mockOperation("results.get", () => ok(results));
+    setUserId("notice-user");
+    setConfigStore("showAverage", "speed");
+    const { findByRole, queryByRole } = render(() => <TestModesNotice />);
+
+    expect(await findByRole("button", { name: "90 wpm" })).toBeVisible();
+    setConfigStore("showAverage", "both");
+    expect(
+      await findByRole("button", { name: "90 wpm 96% acc" }),
+    ).toBeVisible();
+    setConfigStore("language", "german");
+    expect(
+      await findByRole("button", { name: "140 wpm 100% acc" }),
+    ).toBeVisible();
+    setConfigStore("showTestModesNotice", false);
+    expect(queryByRole("button", { name: "140 wpm 100% acc" })).toBeNull();
+    setConfigStore("showTestModesNotice", true);
+    expect(
+      await findByRole("button", { name: "140 wpm 100% acc" }),
+    ).toBeVisible();
   });
 });
