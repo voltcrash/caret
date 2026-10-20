@@ -59,12 +59,11 @@ export function SettingsView(props: {
           },
         }}
       >
-        {/* the loading layout already shows the sidebar and heading, so only
-            the settings replacing its placeholders fade, once */}
+        {/* The sidebar and settings replace their placeholders together. */}
         <div
           class={cn(
             entering() &&
-              "motion-safe:[&_[data-settings-group]]:animate-[fadeIn_120ms_ease-out]",
+              "motion-safe:[&_[data-settings-group]]:animate-[fadeIn_120ms_ease-out] motion-safe:[&_nav]:animate-[fadeIn_120ms_ease-out]",
           )}
           onAnimationEnd={() => setEntering(false)}
         >
