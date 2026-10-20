@@ -669,6 +669,35 @@ describe("test-activity-calendar.ts", () => {
     });
 
     describe("getDays", () => {
+      it.each([0, 1, 2, 3, 4, 5, 6] as const)(
+        "aligns full years with week start %s, including leap years with 54 columns",
+        (weekStart) => {
+          for (const year of [2012, 2023, 2024]) {
+            const first = getDate(`${year}-01-01`);
+            const calendar = new TestActivityCalendar(
+              [1],
+              first,
+              weekStart,
+              true,
+            );
+            const days = calendar.getDays();
+            const leading = (first.getDay() - weekStart + 7) % 7;
+            const length = Dates.getDaysInYear(first);
+            expect(days).toHaveLength(Math.ceil((leading + length) / 7) * 7);
+            expect(
+              days.slice(0, leading).every((day) => day.level === "filler"),
+            ).toBe(true);
+            expect(days[leading]).toBeDate(`${year}-01-01`).toHaveTests(1);
+            expect(days[leading + length - 1]).toBeDate(`${year}-12-31`);
+            expect(
+              days
+                .slice(leading + length)
+                .every((day) => day.level === "filler"),
+            ).toBe(true);
+          }
+        },
+      );
+
       it.each([0, null, undefined])(
         "keeps activity intensity independent of inactive days (%s)",
         (inactive) => {

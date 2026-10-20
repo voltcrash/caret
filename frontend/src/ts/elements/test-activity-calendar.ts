@@ -133,7 +133,8 @@ export class TestActivityCalendar implements TestActivityCalendar {
     };
 
     //skip weekdays in the previous month
-    for (let i = 0; i < this.startDay.getDay() - this.firstDayOfWeek; i++) {
+    const leadingDays = (this.startDay.getDay() - this.firstDayOfWeek + 7) % 7;
+    for (let i = 0; i < leadingDays; i++) {
       result.push({
         level: "filler",
       });
@@ -157,7 +158,8 @@ export class TestActivityCalendar implements TestActivityCalendar {
     }
 
     //add weekdays missing
-    for (let i = this.endDay.getDay() - this.firstDayOfWeek; i < 6; i++) {
+    const lastWeekday = (this.endDay.getDay() - this.firstDayOfWeek + 7) % 7;
+    for (let i = lastWeekday; i < 6; i++) {
       result.push({
         level: "filler",
       });
