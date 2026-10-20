@@ -108,6 +108,7 @@ export function createActorQueryCache(options: {
   let unsubscribe: (() => void) | undefined;
   let timer: ReturnType<typeof setTimeout> | undefined;
   let disposed = false;
+  let revision = 0;
   // Serialize writes/clears. A late save can never overtake sign-out's clear.
   let queue = Promise.resolve();
   const enqueue = async (action: () => Promise<void>): Promise<void> => {
@@ -116,6 +117,7 @@ export function createActorQueryCache(options: {
     return queue;
   };
   const stop = (): void => {
+    revision++;
     unsubscribe?.();
     unsubscribe = undefined;
     clearTimeout(timer);
@@ -130,8 +132,10 @@ export function createActorQueryCache(options: {
   const release = account.onChange((previous) => {
     stop();
     // Initial null → actor must retain that actor's previous document cache.
-    if (previous !== null) void clear();
-    queryClient.removeQueries({ queryKey: ["public", "profile"] });
+    if (previous !== null) {
+      void clear();
+      queryClient.removeQueries({ queryKey: ["public", "profile"] });
+    }
   });
   const save = async (): Promise<void> => {
     clearTimeout(timer);
@@ -139,8 +143,9 @@ export function createActorQueryCache(options: {
     const lease = account.capture();
     if (disposed || !ready() || lease.actor === null) return queue;
     const actor = lease.actor;
+    const started = revision;
     return enqueue(async () => {
-      if (disposed || !lease.isCurrent()) return;
+      if (disposed || !lease.isCurrent() || started !== revision) return;
       const client = dehydrate(queryClient, {
         shouldDehydrateMutation: () => false,
         shouldDehydrateQuery: (query) =>
@@ -179,9 +184,10 @@ export function createActorQueryCache(options: {
     const lease = account.capture();
     if (lease.actor === null || disposed) return Promise.resolve();
     const actor = lease.actor;
+    const started = revision;
     pending = enqueue(async () => {
       const stored = await storage.read();
-      if (disposed || !lease.isCurrent()) return;
+      if (disposed || !lease.isCurrent() || started !== revision) return;
       if (stored === undefined) return;
       const age = Date.now() - stored.timestamp;
       const maxAge = options.maxAge ?? defaultMaxAge;
@@ -232,7 +238,7 @@ export function createActorQueryCache(options: {
         });
       hydrate(queryClient, { mutations: [], queries });
     }).then(() => {
-      if (disposed || !lease.isCurrent()) return;
+      if (disposed || !lease.isCurrent() || started !== revision) return;
       unsubscribe = queryClient.getQueryCache().subscribe((event) => {
         if (
           isPersisted(event.query.queryKey as QueryKey, actor, lease.generation)

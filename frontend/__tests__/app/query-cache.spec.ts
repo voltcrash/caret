@@ -143,25 +143,40 @@ it.each(["actor", "build", "age"])(
   },
 );
 
-it("never hydrates a delayed restore after the actor switches", async () => {
-  const store = storage();
-  const first = app(store);
-  first.account.setActor("a");
-  await first.cache.restore();
-  first.queryClient.setQueryData(first.key("results"), [{ _id: "private" }]);
-  await first.cache.save();
-  first.dispose();
-  const delayed = Promise.withResolvers<StoredQueryCache | undefined>();
-  const next = app({ ...store, read: async () => await delayed.promise });
+it.each(["switch", "clear"])(
+  "never hydrates a delayed restore after %s",
+  async (transition) => {
+    const store = storage();
+    const first = app(store);
+    first.account.setActor("a");
+    await first.cache.restore();
+    first.queryClient.setQueryData(first.key("results"), [{ _id: "private" }]);
+    await first.cache.save();
+    first.dispose();
+    const delayed = Promise.withResolvers<StoredQueryCache | undefined>();
+    const next = app({ ...store, read: async () => await delayed.promise });
+    next.account.setActor("a");
+    const restore = next.cache.restore();
+    await Promise.resolve();
+    if (transition === "switch") next.account.setActor("b");
+    else void next.cache.clear();
+    delayed.resolve(await store.read());
+    await restore;
+    expect(next.cache.ready()).toBe(false);
+    await next.cache.clear();
+    expect(next.queryClient.getQueryCache().getAll()).toHaveLength(0);
+    expect(await store.read()).toBeUndefined();
+  },
+);
+
+it("retains current-document SSR profiles on initial actor selection, then removes them on switch", () => {
+  const next = app(storage());
+  const key = ["public", "profile", "name", "web"];
+  next.queryClient.setQueryData(key, { name: "SSR" });
   next.account.setActor("a");
-  const restore = next.cache.restore();
-  await Promise.resolve();
+  expect(next.queryClient.getQueryData(key)).toEqual({ name: "SSR" });
   next.account.setActor("b");
-  delayed.resolve(await store.read());
-  await restore;
-  await next.cache.clear();
-  expect(next.queryClient.getQueryCache().getAll()).toHaveLength(0);
-  expect(await store.read()).toBeUndefined();
+  expect(next.queryClient.getQueryData(key)).toBeUndefined();
 });
 
 it("serializes sign-out clearing after an already-running write, and never saves guests", async () => {
