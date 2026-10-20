@@ -2,16 +2,16 @@ import type { Client } from "@oxytype/schemas/shared";
 
 import { createResource, type JSXElement, Match, Switch } from "solid-js";
 
-import { LoadingCircle } from "../../ts/components/common/LoadingCircle";
 import { AccountContent } from "../../ts/components/pages/account/AccountContent";
 import { getSnapshot } from "../../ts/db";
 import { getUserId } from "../../ts/states/core";
 import { useSessionSettled } from "../auth/settled.client";
 import * as TodayTracker from "../typing/runtime/today-tracker";
+import { AccountSkeleton } from "./skeleton";
 
 /**
- * Waits for the actor's snapshot and result history (the old page's loading
- * screen), then shows statistics. Charts and history never render on the server.
+ * Waits for the actor's snapshot and result history behind the account
+ * skeleton, then shows statistics. Charts and history never render on the server.
  */
 export function AccountView(props: { client: Client }): JSXElement {
   const settled = useSessionSettled();
@@ -34,12 +34,7 @@ export function AccountView(props: { client: Client }): JSXElement {
         </div>
       </Match>
       <Match when={results() !== true || getSnapshot() === undefined}>
-        <div
-          class="grid h-150 place-items-center text-4xl"
-          aria-label="Downloading results"
-        >
-          <LoadingCircle />
-        </div>
+        <AccountSkeleton />
       </Match>
       <Match when={true}>
         <AccountContent client={props.client} />
