@@ -15,7 +15,6 @@ import {
   previewClick,
   previewError,
 } from "../../../controllers/sound-controller";
-import { isAuthenticated } from "../../../states/core";
 import { showModal } from "../../../states/modals";
 import {
   getSearchMatchCounts,
@@ -70,9 +69,9 @@ import { SettingsSearch } from "./SettingsSearch";
 import { useSettingsNavigation } from "./useSettingsNavigation";
 
 /** All available settings, with optional sidebar jumps between sections. */
-export function SettingsContent(): JSXElement {
+export function SettingsContent(props: { authenticated: boolean }): JSXElement {
   const settled = useSessionSettled();
-  const accountReady = () => settled() && isAuthenticated();
+  const accountReady = () => settled() && props.authenticated;
   const sections = useContext(SettingsSectionHostContext);
   const navigation = useSettingsNavigation(sections);
   const [hasLocalBg] = createResource(
@@ -82,7 +81,7 @@ export function SettingsContent(): JSXElement {
 
   return (
     <SidebarLayout
-      items={getAvailableSettingsSections()}
+      items={getAvailableSettingsSections(accountReady())}
       // while filtering, results from every section are shown
       active={isSettingsSearchActive() ? undefined : navigation.active()}
       onSelect={navigation.select}

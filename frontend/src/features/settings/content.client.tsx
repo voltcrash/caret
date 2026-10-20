@@ -27,7 +27,10 @@ export function SettingsView(props: {
     on(
       () => props.highlight,
       (key) => {
-        if (key === undefined) return;
+        if (key === undefined) {
+          highlightSetting(null);
+          return;
+        }
         // Settings register their refs during mount; search-only navigation keeps
         // them mounted and can request another highlight without a page lifecycle.
         const frame = requestAnimationFrame(() => highlightSetting(key));
@@ -52,7 +55,7 @@ export function SettingsView(props: {
         )}
         onAnimationEnd={() => setEntering(false)}
       >
-        <SettingsContent />
+        <SettingsContent authenticated={props.authenticated} />
       </div>
     </SettingsSectionHostContext.Provider>
   );
