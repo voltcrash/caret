@@ -69,7 +69,8 @@ export function SettingsSidebarSkeleton(props: {
           <Show when={props.keyTips ?? true}>
             <div class="col-span-full grid w-full gap-6">
               <Separator class="mx-2 w-auto bg-bg" />
-              <div class="grid gap-2">
+              {/* One bar per line; transparent copy keeps shortcut wrapping. */}
+              <div class="grid gap-2 [&>div>div]:bg-linear-[transparent_30%,var(--bg-color)_30%,var(--bg-color)_70%,transparent_70%] [&>div>div]:bg-size-[100%_1lh] [&>div>div]:text-transparent [&_kbd]:invisible">
                 <SettingsKeyTips
                   // default hotkeys; custom ones rarely change the wrap
                   palette={
