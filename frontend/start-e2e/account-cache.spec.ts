@@ -1,6 +1,7 @@
 import type { BrowserContext, Page } from "playwright/test";
-import type { SessionState } from "@oxytype/schemas/auth-session";
+import { SessionStateSchema } from "@oxytype/schemas/auth-session";
 import { fromCrossJSON, type SerovalNode } from "seroval";
+import { z } from "zod";
 import type { StoredQueryCache } from "../src/app/query-cache.client";
 import { authCookie } from "./auth-fixtures";
 import { expect, test } from "./fixtures";
@@ -101,9 +102,11 @@ test("unfinished signups see local settings without registered account controls"
       new URL(response.url()).pathname === rpcPath("getSessionState"),
   );
   await page.goto("/settings");
-  const state = fromCrossJSON((await (await session).json()) as SerovalNode, {
-    refs: new Map(),
-  }) as { result: SessionState };
+  const state = z.object({ result: SessionStateSchema }).parse(
+    fromCrossJSON((await (await session).json()) as SerovalNode, {
+      refs: new Map(),
+    }),
+  );
   expect(state.result.user?.registered).toBe(false);
   await expect(
     page.getByRole("textbox", { name: "Search settings" }),
