@@ -21,13 +21,12 @@ function createResultsCollection(client: Client) {
       queryKey: queryKeys.root(client),
       enabled: isAuthenticated,
       queryFn: async () => {
-        const tagIds = await getTagsOnce();
+        const [tagIds, response] = await Promise.all([
+          getTagsOnce(),
+          operation("results.get", { query: { client } }),
+        ]);
         const knownTagIds = new Set([...tagIds.map((it) => it._id)]);
         //const options = parseLoadSubsetOptions(ctx.meta?.loadSubsetOptions);
-
-        const response = await operation("results.get", {
-          query: { client },
-        });
 
         if (!response.ok) {
           throw new Error(`Error fetching results:${response.message}`);
