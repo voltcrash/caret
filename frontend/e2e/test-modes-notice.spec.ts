@@ -39,4 +39,45 @@ test.describe("test mode notices", () => {
     ).toHaveCount(0);
     expect(errors).toEqual([]);
   });
+
+  for (const showAverage of ["off", "speed", "acc", "both"] as const) {
+    test.describe(`saved ${showAverage} average setting`, () => {
+      test.use({
+        config: {
+          mode: "words",
+          words: 15,
+          showTestModesNotice: true,
+          showAverage,
+        },
+      });
+
+      test("loads notices from saved settings and survives reload", async ({
+        page,
+      }) => {
+        const errors: string[] = [];
+        page.on("pageerror", (error) => errors.push(error.message));
+        await openTest(page);
+        const language = page.getByRole("button", {
+          name: "english",
+          exact: true,
+        });
+        const average = page.getByRole("button", {
+          name: "no average",
+          exact: true,
+        });
+        await expect(language).toBeVisible();
+        if (showAverage !== "off") await expect(average).toBeVisible();
+
+        await page.reload();
+        await expect(page.locator("#words .word").first()).toBeVisible();
+        await expect(language).toBeVisible();
+        if (showAverage !== "off") await expect(average).toBeVisible();
+        else await expect(average).toHaveCount(0);
+        await expect(
+          page.getByText("Unable to load Oxytype", { exact: true }),
+        ).toHaveCount(0);
+        expect(errors).toEqual([]);
+      });
+    });
+  }
 });
