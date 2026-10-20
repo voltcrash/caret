@@ -10,11 +10,13 @@ import {
   ChartType,
   DefaultDataPoint,
   Filler,
+  FontSpec,
   LineController,
   LineElement,
   LinearScale,
   PointElement,
   ScaleChartOptions,
+  ScriptableAndScriptableOptions,
   ScatterController,
   TimeScale,
   TimeSeriesScale,
@@ -26,9 +28,9 @@ import chartTrendline from "chartjs-plugin-trendline";
 import { createDeferred, JSXElement, onCleanup, onMount } from "solid-js";
 
 import { Theme } from "../../constants/themes";
-import { configEvent } from "../../events/config";
 import { createEffectOn } from "../../hooks/effects";
 import { useRef } from "../../hooks/useRef";
+import { getFontFamily } from "../../states/app";
 import { getTheme } from "../../states/theme";
 import { cn } from "../../utils/cn";
 
@@ -89,8 +91,8 @@ export function ChartJs<T extends ChartType, TData = DefaultDataPoint<T>>(
 
   let chart: Chart<T, TData> | undefined;
   let mountObserver: MutationObserver | undefined;
+  const redraw = (): void => chart?.update("none");
 
-  useChartEvents();
   onMount(() => {
     const canvas = canvasEl();
     if (canvas === undefined) return;
@@ -104,12 +106,11 @@ export function ChartJs<T extends ChartType, TData = DefaultDataPoint<T>>(
       chart = new Chart(canvas, {
         type: props.type,
         data: props.data,
-        options:
-          props.options === undefined
-            ? undefined
-            : addColorsToOptions(props.options, getTheme),
+        options: chartOptions(canvas),
       });
       props.onChartInit?.(chart);
+      // A canvas may first draw with a fallback while its web font downloads.
+      void document.fonts?.ready.then(redraw);
     };
     initialize();
     if (chart === undefined) {
@@ -119,19 +120,44 @@ export function ChartJs<T extends ChartType, TData = DefaultDataPoint<T>>(
         subtree: true,
       });
     }
+    document.fonts?.addEventListener("loadingdone", redraw);
+    onCleanup(() => document.fonts?.removeEventListener("loadingdone", redraw));
   });
+
+  const chartOptions = (canvas: HTMLCanvasElement): ChartOptions<T> => {
+    const family = getFontFamily() ?? getComputedStyle(canvas).fontFamily;
+    const tooltip = props.options?.plugins?.tooltip;
+    const options = {
+      ...props.options,
+      plugins: {
+        ...props.options?.plugins,
+        tooltip: {
+          ...tooltip,
+          bodyFont: withFontFamily(tooltip?.bodyFont, family),
+          titleFont: withFontFamily(tooltip?.titleFont, family),
+          footerFont: withFontFamily(tooltip?.footerFont, family),
+        },
+      },
+    } as NonNullable<ChartOptions<T>>;
+    options.font = {
+      ...options.font,
+      family,
+    };
+    return addColorsToOptions(options, getTheme, family);
+  };
 
   const updateChart = (data: ChartData<T, TData>): void => {
     if (!chart) return;
 
     chart.data = data;
 
-    if (props.options) {
-      chart.options = addColorsToOptions(props.options, getTheme);
-    }
+    chart.options = chartOptions(chart.canvas);
 
     chart.update("none");
   };
+
+  // Canvas text does not inherit CSS. Keep each chart on its app's font stack.
+  createEffectOn(getFontFamily, () => updateChart(props.data), { defer: true });
 
   const deferredData = createDeferred(() => props.data, { timeoutMs: 500 });
 
@@ -140,6 +166,7 @@ export function ChartJs<T extends ChartType, TData = DefaultDataPoint<T>>(
   onCleanup(() => {
     mountObserver?.disconnect();
     chart?.destroy();
+    chart = undefined;
   });
 
   return (
@@ -158,6 +185,7 @@ export function ChartJs<T extends ChartType, TData = DefaultDataPoint<T>>(
 function addColorsToOptions<TType extends ChartType = ChartType>(
   options: ChartOptions<TType>,
   theme: () => Theme,
+  family: string,
 ): ChartOptions<TType> {
   //axis colors
   const chartScaleOptions = options as ScaleChartOptions<TType>;
@@ -166,10 +194,12 @@ function addColorsToOptions<TType extends ChartType = ChartType>(
     axis.ticks = {
       ...axis.ticks,
       color: theme().sub,
+      font: withFontFamily(axis.ticks?.font, family),
     };
     axis.title = {
       ...axis.title,
       color: theme().sub,
+      font: withFontFamily(axis.title?.font, family),
     };
     axis.border = { ...axis.border, color: theme().subAlt };
     axis.grid = {
@@ -182,10 +212,11 @@ function addColorsToOptions<TType extends ChartType = ChartType>(
   return options;
 }
 
-function useChartEvents(): void {
-  configEvent.useListener(({ key, newValue }) => {
-    if (key === "fontFamily") {
-      Chart.defaults.font.family = newValue.replace(/_/g, " ");
-    }
-  });
+function withFontFamily<TContext>(
+  font: ScriptableAndScriptableOptions<Partial<FontSpec>, TContext> | undefined,
+  family: string,
+): ScriptableAndScriptableOptions<Partial<FontSpec>, TContext> {
+  return typeof font === "function"
+    ? (context, options) => ({ ...font(context, options), family })
+    : { ...font, family };
 }

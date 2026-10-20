@@ -669,6 +669,76 @@ describe("test-activity-calendar.ts", () => {
     });
 
     describe("getDays", () => {
+      it.each([0, 1, 2, 3, 4, 5, 6] as const)(
+        "aligns full years with week start %s, including leap years with 54 columns",
+        (weekStart) => {
+          for (const year of [2012, 2023, 2024]) {
+            const first = getDate(`${year}-01-01`);
+            const calendar = new TestActivityCalendar(
+              [1],
+              first,
+              weekStart,
+              true,
+            );
+            const days = calendar.getDays();
+            const leading = (first.getDay() - weekStart + 7) % 7;
+            const length = Dates.getDaysInYear(first);
+            expect(days).toHaveLength(Math.ceil((leading + length) / 7) * 7);
+            expect(
+              days.slice(0, leading).every((day) => day.level === "filler"),
+            ).toBe(true);
+            expect(days[leading]).toBeDate(`${year}-01-01`).toHaveTests(1);
+            expect(days[leading + length - 1]).toBeDate(`${year}-12-31`);
+            expect(
+              days
+                .slice(leading + length)
+                .every((day) => day.level === "filler"),
+            ).toBe(true);
+          }
+        },
+      );
+
+      it.each([0, null, undefined])(
+        "keeps activity intensity independent of inactive days (%s)",
+        (inactive) => {
+          const lastDay = getDate("2026-10-20");
+          vi.setSystemTime(lastDay);
+          const calendar = new TestActivityCalendar(
+            [
+              ...Array<number | null | undefined>(300).fill(inactive),
+              1,
+              3,
+              6,
+              10,
+            ],
+            lastDay,
+            0,
+          );
+          const activeDays = calendar
+            .getDays()
+            .filter((day) => /^[1-9]/.test(day.label ?? ""));
+          expect(activeDays.map((day) => day.level)).toEqual([
+            "1",
+            "2",
+            "3",
+            "4",
+          ]);
+          expect(calendar.getTotalTests()).toBe(20);
+        },
+      );
+
+      it("renders an empty history without active cells", () => {
+        const lastDay = getDate("2026-10-20");
+        vi.setSystemTime(lastDay);
+        const calendar = new TestActivityCalendar([0, null, 0], lastDay, 0);
+        expect(calendar.getTotalTests()).toBe(0);
+        expect(
+          calendar
+            .getDays()
+            .every((day) => ["0", "filler"].includes(day.level)),
+        ).toBe(true);
+      });
+
       it("for lastDay in april", () => {
         const data = getData("2023-04-10", "2024-04-10");
         vi.setSystemTime(getDate("2024-04-30"));

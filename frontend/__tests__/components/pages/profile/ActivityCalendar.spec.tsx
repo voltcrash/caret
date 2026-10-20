@@ -15,6 +15,12 @@ vi.mock("../../../../src/ts/db", () => ({
 vi.mock("../../../../src/ts/states/server-configuration", () => ({
   get: () => undefined,
 }));
+vi.mock("../../../../src/ts/utils/date-and-time", async (original) => ({
+  ...(await original<
+    typeof import("../../../../src/ts/utils/date-and-time")
+  >()),
+  getFirstDayOfTheWeek: () => 1,
+}));
 vi.mock("../../../../src/ts/components/ui/Select", () => ({
   default: (props: { onChange: NonNullable<typeof mocks.selectYear> }) => {
     mocks.selectYear = props.onChange;
@@ -62,6 +68,11 @@ it("renders the calendar's day levels, labels, month spans and total, and clears
       }),
     ),
   ).toEqual(expected.getMonths());
+  expect(
+    [...container.querySelectorAll(".days > div > span:first-child")].map(
+      (label) => label.textContent,
+    ),
+  ).toEqual(["monday", "wednesday", "friday"]);
   setData(undefined);
   expect(container.querySelector(".testActivity")).toHaveClass("hidden");
   expect(container.querySelector(".activity")?.children).toHaveLength(0);
