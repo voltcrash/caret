@@ -8,8 +8,14 @@ import {
   vi,
 } from "vite-plus/test";
 
-import { prepareCommandline } from "../../src/ts/commandline/commandline";
-import { afterHideCommandline } from "../../src/ts/commandline/lifecycle";
+import {
+  onCommandlineKeyDown,
+  prepareCommandline,
+} from "../../src/ts/commandline/commandline";
+import {
+  afterHideCommandline,
+  onCommandlineBackdropClick,
+} from "../../src/ts/commandline/lifecycle";
 import { setConfig } from "../../src/ts/config/setters";
 import { getMutableConfig } from "../../src/ts/config/store";
 import { getDefaultConfig } from "../../src/ts/constants/default-config";
@@ -113,6 +119,34 @@ describe("theme picker selection", () => {
       expect(
         commandlineState.suggestions.filter((command) => command.isActive),
       ).toMatchObject([{ configValue: "aether" }]);
+    },
+  );
+
+  it.each(["escape", "backdrop"] as const)(
+    "restores the random theme after browsing and closing via %s",
+    async (dismissal) => {
+      await prepareCommandline();
+      await vi.advanceTimersByTimeAsync(250);
+      await onCommandlineKeyDown(
+        new KeyboardEvent("keydown", { key: "ArrowDown" }),
+      );
+      await vi.advanceTimersByTimeAsync(250);
+      expect(getTheme().name).not.toBe("matrix");
+      expect(getMutableConfig().theme).toBe("aether");
+
+      if (dismissal === "escape") {
+        await onCommandlineKeyDown(
+          new KeyboardEvent("keydown", { key: "Escape" }),
+        );
+      } else {
+        onCommandlineBackdropClick();
+      }
+      await vi.advanceTimersByTimeAsync(250);
+
+      expect(getTheme().name).toBe("matrix");
+      expect(getThemeIndicator().text).toBe("matrix");
+      expect(getMutableConfig().theme).toBe("aether");
+      expect(getMutableConfig().randomTheme).toBe("fav");
     },
   );
 });
