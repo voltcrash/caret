@@ -1,4 +1,5 @@
 import { operation } from "../../../data/operations";
+import { captureAccount } from "../../../app/account-scope";
 import { queryKeys } from "./keys";
 import { normalizeResult } from "./normalize";
 import { Client, Mode } from "@oxytype/schemas/shared";
@@ -12,6 +13,20 @@ import { getTagsOnce } from "../tags";
 import { applyIdWorkaround } from "../utils/misc";
 import { defineCollection } from "../utils/scope";
 
+function seedLastResult(results: SnapshotResult<Mode>[]): void {
+  const latest = results.reduce<SnapshotResult<Mode> | undefined>(
+    (acc, result) =>
+      acc === undefined || acc.timestamp < result.timestamp ? result : acc,
+    undefined,
+  );
+  if (
+    latest !== undefined &&
+    (getLastResult()?.timestamp ?? -Infinity) < latest.timestamp
+  ) {
+    setLastResult(latest);
+  }
+}
+
 function createResultsCollection(client: Client) {
   const collection = createCollection(
     queryCollectionOptions({
@@ -21,10 +36,12 @@ function createResultsCollection(client: Client) {
       queryKey: queryKeys.root(client),
       enabled: isAuthenticated,
       queryFn: async () => {
+        const lease = captureAccount();
         const [tagIds, response] = await Promise.all([
           getTagsOnce(),
           operation("results.get", { query: { client } }),
         ]);
+        lease.assertCurrent();
         const knownTagIds = new Set([...tagIds.map((it) => it._id)]);
         //const options = parseLoadSubsetOptions(ctx.meta?.loadSubsetOptions);
 
@@ -36,12 +53,7 @@ function createResultsCollection(client: Client) {
           .map((result) => normalizeResult(result, knownTagIds))
           .map(applyIdWorkaround);
 
-        if (getLastResult() === undefined && results.length > 0) {
-          const lastResult = results.reduce((acc, cur) =>
-            acc === undefined || acc.timestamp < cur.timestamp ? cur : acc,
-          );
-          setLastResult(lastResult);
-        }
+        seedLastResult(results);
         return results;
       },
       queryClient: getQueryClient(),
@@ -67,7 +79,12 @@ export function isResultsReady(): boolean {
 }
 
 export async function waitForResultsReady(): Promise<void> {
-  await resultsCollection().stateWhenReady();
+  const lease = captureAccount();
+  const collection = resultsCollection();
+  await collection.stateWhenReady();
+  lease.assertCurrent();
+  // Hydrated queries can become ready without executing their query function.
+  seedLastResult([...collection.values()]);
 }
 
 export function getResults(client: Client = "web"): SnapshotResult<Mode>[] {

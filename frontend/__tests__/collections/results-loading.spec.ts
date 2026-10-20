@@ -14,6 +14,7 @@ import { normalizeResult } from "../../src/ts/collections/results/normalize";
 import { getDefaultSnapshot } from "../../src/ts/constants/default-snapshot";
 import { getAccountQueryOptions } from "../../src/ts/queries/account";
 import { setUserId } from "../../src/ts/states/core";
+import { getLastResult } from "../../src/ts/states/snapshot";
 import {
   mockOperation,
   ok,
@@ -100,6 +101,7 @@ it("publishes persisted collection rows before background requests finish", asyn
     await next.restore();
     await waitForResultsReady();
     expect(getResults().map((result) => result._id)).toEqual(["cached"]);
+    expect(getLastResult()?._id).toBe("cached");
     expect(app.queryClient.getQueryState(queryKeys.root())?.fetchStatus).toBe(
       "fetching",
     );
