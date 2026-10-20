@@ -7,6 +7,7 @@ import {
 } from "solid-js";
 
 import { RestorePageScroll } from "../../../../components/page-scroll";
+import { useSessionSettled } from "../../../../features/auth/settled.client";
 import { resetConfig } from "../../../config/lifecycle";
 import { getConfig } from "../../../config/store";
 import {
@@ -70,6 +71,8 @@ import { useSettingsNavigation } from "./useSettingsNavigation";
 
 /** All available settings, with optional sidebar jumps between sections. */
 export function SettingsContent(): JSXElement {
+  const settled = useSessionSettled();
+  const accountReady = () => settled() && isAuthenticated();
   const sections = useContext(SettingsSectionHostContext);
   const navigation = useSettingsNavigation(sections);
   const [hasLocalBg] = createResource(
@@ -105,7 +108,7 @@ export function SettingsContent(): JSXElement {
       </Show>
       <div ref={navigation.ref} class="grid gap-16">
         <Section section="behavior">
-          <Show when={isAuthenticated()}>
+          <Show when={accountReady()}>
             <SettingsGroup title="saved tests">
               <Tags />
               <Presets />
@@ -265,7 +268,7 @@ export function SettingsContent(): JSXElement {
             <SearchableAutoSetting key="showAverage" />
           </SettingsGroup>
         </Section>
-        <Show when={isAuthenticated()}>
+        <Show when={accountReady()}>
           <Section section="account">
             <SettingsGroup title="account preferences">
               <AccountTab />
@@ -276,7 +279,7 @@ export function SettingsContent(): JSXElement {
           </Section>
         </Show>
         <Section section="dangerZone">
-          <Show when={isAuthenticated()}>
+          <Show when={accountReady()}>
             <SettingsGroup title="account data">
               <DangerZoneTab />
             </SettingsGroup>
