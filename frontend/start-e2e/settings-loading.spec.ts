@@ -28,6 +28,19 @@ test("settings keep their loading layout while the browser bundle downloads", as
     await expect(loading).toBeVisible();
     await expect(loading).toHaveAttribute("aria-busy", "true");
     await expect(loading.getByText("loading your preferences…")).toBeVisible();
+    const sidebar = loading.locator("[data-settings-sidebar-skeleton]");
+    await expect(sidebar).toBeVisible();
+    await expect(sidebar.locator('[aria-hidden="true"]').first()).toBeVisible();
+    await expect(
+      sidebar.locator("[data-settings-section-skeleton]"),
+    ).toHaveCount(8);
+    await expect(sidebar.getByText("appearance", { exact: true })).toBeHidden();
+    await expect(sidebar.locator("input, button, a, [tabindex]")).toHaveCount(
+      0,
+    );
+    await expect(
+      page.getByRole("navigation", { name: "Page sections" }),
+    ).toHaveCount(0);
     await expect(page.locator("#group_behavior")).toHaveCount(0);
     await page.screenshot({
       path: test.info().outputPath("settings-loading.png"),
@@ -55,9 +68,9 @@ test("the loaded settings replace the loading layout without moving", async ({
     await route.continue();
   });
   const loading = page.getByRole("status", { name: "Loading settings" });
-  type Box = { x: number; y: number } | null;
+  type Box = { x: number; y: number; width: number; height: number } | null;
   const boxes = async (): Promise<
-    Record<"heading" | "item" | "search", Box>
+    Record<"heading" | "item" | "search" | "sidebar", Box>
   > => ({
     heading: await page.getByRole("heading", { name: "caret" }).boundingBox(),
     item: await loading
@@ -65,6 +78,9 @@ test("the loaded settings replace the loading layout without moving", async ({
       .boundingBox(),
     search: await loading
       .locator("[data-settings-search-skeleton]")
+      .boundingBox(),
+    sidebar: await loading
+      .locator("[data-settings-sidebar-skeleton] > div > div")
       .boundingBox(),
   });
   let before: Awaited<ReturnType<typeof boxes>>;
@@ -91,11 +107,14 @@ test("the loaded settings replace the loading layout without moving", async ({
       .locator("span")
       .boundingBox(),
     search: await search.boundingBox(),
+    sidebar: await page
+      .getByRole("navigation", { name: "Page sections" })
+      .boundingBox(),
   };
   await page.screenshot({
     path: test.info().outputPath("settings-loaded-desktop.png"),
   });
-  for (const key of ["heading", "item", "search"] as const) {
+  for (const key of ["heading", "item", "search", "sidebar"] as const) {
     expect(before[key]).not.toBeNull();
     expect(after[key]).not.toBeNull();
     expect(
@@ -103,6 +122,11 @@ test("the loaded settings replace the loading layout without moving", async ({
     ).toBeLessThanOrEqual(1);
     expect(
       Math.abs((before[key]?.y ?? 0) - (after[key]?.y ?? 0)),
+    ).toBeLessThanOrEqual(1);
+  }
+  for (const key of ["width", "height"] as const) {
+    expect(
+      Math.abs((before.sidebar?.[key] ?? 0) - (after.sidebar?.[key] ?? 0)),
     ).toBeLessThanOrEqual(1);
   }
 });
