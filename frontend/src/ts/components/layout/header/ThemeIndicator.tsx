@@ -14,7 +14,7 @@ import { cn } from "../../../utils/cn";
 import { Button } from "../../common/Button";
 
 /** Opens the theme picker; shift-click toggles the custom theme instead. */
-export function openThemePicker(e: MouseEvent): void {
+function openThemePicker(e: MouseEvent): void {
   if (e.shiftKey) {
     if (getMutableConfig().customTheme) {
       setConfig("customTheme", false);

@@ -41,34 +41,50 @@ describe("Logo", () => {
     expect(view.container).not.toHaveTextContent("type with focus");
   });
 
-  it("links only the icon home", () => {
+  it("links the icon and wordmark home without nesting the theme button", () => {
     const view = renderLogo();
     const home = view.getByRole("link", { name: "Oxytype Home" });
     expect(home).toHaveAttribute("href", "/");
-    expect(home).not.toHaveTextContent("oxytype");
+    expect(home).toHaveTextContent("oxytype");
     expect(home.querySelector("svg")).not.toBeNull();
+    expect(home.querySelector("button")).toBeNull();
   });
 
-  it("restarts the test from the icon on the typing route", () => {
-    setTyping(true);
+  it.each(["icon", "wordmark"])(
+    "restarts the test from the %s on the typing route without opening themes",
+    (target) => {
+      setTyping(true);
+      const restart = vi.fn();
+      const unsubscribe = restartTestEvent.subscribe(restart);
+      try {
+        const view = renderLogo();
+        const home = view.getByRole("link", { name: "Oxytype Home" });
+        const element =
+          target === "icon"
+            ? home.querySelector("svg")
+            : view.getByText("oxytype");
+        if (element === null) throw new Error("Logo icon missing");
+        fireEvent.click(element);
+        expect(restart).toHaveBeenCalledOnce();
+        expect(showModal).not.toHaveBeenCalled();
+        expect(getCommandlineSubgroup()).toBeNull();
+      } finally {
+        unsubscribe();
+      }
+    },
+  );
+
+  it("navigates home from the wordmark on other routes without restarting", () => {
     const restart = vi.fn();
     const unsubscribe = restartTestEvent.subscribe(restart);
     try {
       const view = renderLogo();
-      fireEvent.click(view.getByRole("link", { name: "Oxytype Home" }));
-      expect(restart).toHaveBeenCalledOnce();
+      fireEvent.click(view.getByText("oxytype"));
+      expect(restart).not.toHaveBeenCalled();
+      expect(showModal).not.toHaveBeenCalled();
     } finally {
       unsubscribe();
     }
-  });
-
-  it("opens the theme picker from the logo text", () => {
-    const view = renderLogo();
-    fireEvent.click(
-      view.getByRole("button", { name: "oxytype - change theme" }),
-    );
-    expect(getCommandlineSubgroup()).toBe("themes");
-    expect(showModal).toHaveBeenCalledWith("Commandline");
   });
 
   it("shows the current theme name under the logo text", () => {
@@ -79,6 +95,7 @@ describe("Logo", () => {
     });
     expect(indicator).toHaveTextContent("aether");
     fireEvent.click(indicator);
+    expect(getCommandlineSubgroup()).toBe("themes");
     expect(showModal).toHaveBeenCalledWith("Commandline");
   });
 
