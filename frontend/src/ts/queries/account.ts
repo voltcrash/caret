@@ -123,6 +123,16 @@ export async function loadAccountData(
       staleTime: "static",
     });
     lease.assertCurrent();
+    // Restored snapshots render immediately, including when offline. Refresh
+    // invalidated disk data without putting the account loading gate back up.
+    const options = getAccountQueryOptions(userId);
+    if (
+      getQueryClient().getQueryState(options.queryKey)?.isInvalidated === true
+    ) {
+      void getQueryClient()
+        .query(options)
+        .catch(() => undefined);
+    }
     return data;
   } catch (error) {
     // An actor change cancels the request; report it as the lease ending.

@@ -6,6 +6,7 @@ import { loadUser, type AccountLoad } from "../../ts/auth";
 import { setAuthAvailable } from "../../ts/auth-client";
 import * as Sentry from "../../ts/sentry";
 import { sessionOptions } from "../auth/session";
+import { useSessionSettled } from "../auth/settled.client";
 import { preloadAccount } from "./page";
 import { setLoadedAccount } from "./settled.client";
 
@@ -18,6 +19,7 @@ import { setLoadedAccount } from "./settled.client";
 export function AccountRuntime(): null {
   const account = requireApplication().accountData;
   const session = useQuery(() => sessionOptions());
+  const settled = useSessionSettled();
   createEffect(() => {
     if (session.isSuccess) setAuthAvailable(!import.meta.env.OXYTYPE_OFFLINE);
   });
@@ -28,7 +30,7 @@ export function AccountRuntime(): null {
   // Waits for the session owner to switch the actor, so the load's lease is current.
   const loadable = createMemo(() => {
     const uid = registered()?.uid;
-    return uid !== undefined && account.actor() === uid ? uid : undefined;
+    return uid !== undefined && settled() ? uid : undefined;
   });
   createEffect(
     on(loadable, (uid) => {

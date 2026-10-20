@@ -21,6 +21,7 @@ export const sessionOptions = (): ReturnType<
         : await getSessionState({ signal }),
     staleTime: 30_000,
     retry: false,
+    meta: { ssrSafe: true },
   });
 };
 /** Only local URLs can receive an auth redirect; preserve search/hash. */
