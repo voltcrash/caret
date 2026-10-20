@@ -10,10 +10,10 @@ import { isAuthenticated } from "./core";
 export type { SettingsSection };
 export { settingsSections, SettingsUrlParamsSchema };
 
-export function getAvailableSettingsSections(): Partial<
-  typeof settingsSections
-> {
-  return availableSettingsSections(isAuthenticated());
+export function getAvailableSettingsSections(
+  authenticated = isAuthenticated(),
+): Partial<typeof settingsSections> {
+  return availableSettingsSections(authenticated);
 }
 
 /** The settings route's search owns the selected section. */

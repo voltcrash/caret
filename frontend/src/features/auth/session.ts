@@ -19,8 +19,11 @@ export const sessionOptions = (): ReturnType<
       import.meta.env.OXYTYPE_OFFLINE
         ? { user: null, signUpEnabled: false }
         : await getSessionState({ signal }),
-    staleTime: 0,
+    staleTime: 30_000,
+    // A tab returning from another app/tab must observe revocation immediately.
+    refetchOnWindowFocus: "always",
     retry: false,
+    meta: { ssrSafe: true },
   });
 };
 /** Only local URLs can receive an auth redirect; preserve search/hash. */

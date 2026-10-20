@@ -10,6 +10,7 @@ export type AccountDataOwner = {
   capture: () => AccountLease;
   /** Reactive: readers re-run when the scope is replaced. */
   scope: () => OwnedScope;
+  onChange: (listener: (previous: string | null) => void) => () => void;
   dispose: () => void;
 };
 
@@ -29,10 +30,12 @@ export function createAccountDataOwner(
   let generation = 0;
   let controller = new AbortController();
   let disposed = false;
+  const listeners = new Set<(previous: string | null) => void>();
   return {
     actor,
     setActor: (next) => {
       if (disposed || next === untrack(actor)) return;
+      const previous = untrack(actor);
       batch(() => {
         controller.abort(new DOMException("Account changed", "AbortError"));
         controller = new AbortController();
@@ -42,6 +45,7 @@ export function createAccountDataOwner(
         untrack(scope).dispose();
         setActor(next);
         setScope(createOwnedScope());
+        for (const listener of listeners) listener(previous);
       });
     },
     capture: () => {
@@ -60,8 +64,13 @@ export function createAccountDataOwner(
       };
     },
     scope,
+    onChange: (listener) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
     dispose: () => {
       disposed = true;
+      listeners.clear();
       controller.abort(new DOMException("Application disposed", "AbortError"));
       untrack(scope).dispose();
     },

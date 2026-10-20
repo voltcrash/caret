@@ -2,7 +2,7 @@ import { captureAccount } from "../app/account-scope";
 import { onCleanup } from "solid-js";
 import { createAppOwned } from "../app/application";
 import type { SessionState } from "@oxytype/schemas/auth-session";
-import { sessionKey } from "../features/auth/session";
+import { sessionKey, sessionOptions } from "../features/auth/session";
 import { getQueryClient } from "./queries";
 
 import { getAuthClient } from "../features/auth/client.client";
@@ -26,7 +26,7 @@ const authState = createAppOwned(() => {
 import { checkAuthResult } from "../features/auth/result";
 export { checkAuthResult };
 
-/** Reads the Better Auth session and linked providers into the user state. */
+/** Refresh the canonical session after profile or authentication changes. */
 export async function refreshSession(): Promise<AuthUser | null> {
   const state = authState();
   const revision = ++state.revision;
@@ -37,34 +37,13 @@ export async function refreshSession(): Promise<AuthUser | null> {
       throw new DOMException("Session changed", "AbortError");
     }
   };
-  const session = checkAuthResult(
-    await getAuthClient().getSession({
-      fetchOptions: { signal: lease.signal },
-    }),
-  );
+  const client = getQueryClient();
+  await client.cancelQueries({ queryKey: sessionKey });
   assertCurrent();
-  let user: AuthUser | null = null;
-  if (session) {
-    const accounts = checkAuthResult(
-      await getAuthClient().listAccounts({
-        fetchOptions: { signal: lease.signal },
-      }),
-    );
-    user = {
-      uid: session.user.id,
-      email: session.user.email,
-      displayName: session.user.name,
-      providerData: (accounts ?? [])
-        .filter((account) => ["google", "github"].includes(account.providerId))
-        .map((account) => ({
-          providerId: account.providerId,
-          email: session.user.email,
-        })),
-    };
-  }
+  const session = await client.query({ ...sessionOptions(), staleTime: 0 });
   assertCurrent();
-  setUserState(user);
-  return user;
+  setUserState(session.user);
+  return session.user;
 }
 
 export function isAuthAvailable(): boolean {

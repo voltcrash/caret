@@ -5,11 +5,14 @@ import { createFileRoute } from "@tanstack/solid-router";
 import { z } from "zod";
 
 import { urlSearch } from "../app/search";
-import { AccountPage } from "../features/account/page";
+import { AccountPage, preloadAccount } from "../features/account/page";
 
 const SearchSchema = z.object({ client: ClientSchema.optional() }).partial();
 
 export const Route = createFileRoute("/_app/_authenticated/account")({
+  loader: () => {
+    if (!import.meta.env.SSR) void preloadAccount().catch(() => undefined);
+  },
   validateSearch: (search: Record<string, unknown>) =>
     urlSearch(SearchSchema)(search),
   head: () => ({

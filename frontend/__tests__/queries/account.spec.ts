@@ -7,6 +7,7 @@ import {
   loadAccountData,
 } from "../../src/ts/queries/account";
 import { getSnapshot as getReactiveSnapshot } from "../../src/ts/states/snapshot";
+import { getTags, waitForTagsReady } from "../../src/ts/collections/tags";
 import {
   fail,
   mockOperation,
@@ -95,4 +96,48 @@ it("updates the canonical entry and its reactive view through explicit writes", 
   setSnapshot(undefined);
   expect(getSnapshot()).toBeUndefined();
   expect(getReactiveSnapshot()).toBeUndefined();
+});
+
+it("renders stale accounts immediately and refreshes derived tags in the background", async () => {
+  mockOperation("users.get", () =>
+    ok({ name: "cached", tags: [{ _id: "old", name: "old" }] }),
+  );
+  await loadAccountData("first");
+  await waitForTagsReady();
+  expect(getTags().map((tag) => tag._id)).toEqual(["old"]);
+  await getQueryClient().invalidateQueries({
+    queryKey: getAccountQueryOptions().queryKey,
+    refetchType: "none",
+  });
+  const response = Promise.withResolvers<ReturnType<typeof ok>>();
+  mockOperation("users.get", async () => await response.promise);
+  const stale = await loadAccountData("first");
+  expect(stale?.name).toBe("cached");
+  response.resolve(ok({ name: "fresh", tags: [{ _id: "new", name: "new" }] }));
+  await expect.poll(() => getSnapshot()?.name).toBe("fresh");
+  await expect.poll(() => getTags().map((tag) => tag._id)).toEqual(["new"]);
+  expect(
+    operationCalls.mock.calls.filter(([id]) => id === "users.get"),
+  ).toHaveLength(2);
+});
+
+it("keeps the cached snapshot when its background refresh fails", async () => {
+  mockOperation("users.get", () => ok({ name: "cached" }));
+  await loadAccountData("first");
+  await getQueryClient().invalidateQueries({
+    queryKey: getAccountQueryOptions().queryKey,
+    refetchType: "none",
+  });
+  mockOperation("users.get", () => fail(503, "offline"));
+  await expect(loadAccountData("first")).resolves.toMatchObject({
+    name: "cached",
+  });
+  await expect
+    .poll(
+      () =>
+        getQueryClient().getQueryState(getAccountQueryOptions().queryKey)
+          ?.status,
+    )
+    .toBe("error");
+  expect(getSnapshot()?.name).toBe("cached");
 });

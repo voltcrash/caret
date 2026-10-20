@@ -78,7 +78,7 @@ for (const target of pages) {
   });
 }
 
-test("a profile shows its skeleton until the full profile loads", async ({
+test("a profile keeps its readable summary until the full profile loads", async ({
   page,
 }) => {
   const chunk = await holdChunk(page, "**/assets/profile.client-*.js");
@@ -86,7 +86,10 @@ test("a profile shows its skeleton until the full profile loads", async ({
     await page.goto("/profile/fixture-profile");
     await expect.poll(chunk.blocked).toBe(true);
     await expect(page.locator("#startupScreen")).toBeHidden();
-    await expect(page.getByText("fixture-profile public bio")).toHaveCount(0);
+    await expect(
+      page.getByRole("region", { name: "Profile summary" }),
+    ).toBeVisible();
+    await expect(page.getByText("fixture-profile public bio")).toBeVisible();
   } finally {
     chunk.release();
   }

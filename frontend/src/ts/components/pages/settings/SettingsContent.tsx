@@ -7,6 +7,7 @@ import {
 } from "solid-js";
 
 import { RestorePageScroll } from "../../../../components/page-scroll";
+import { useSessionSettled } from "../../../../features/auth/settled.client";
 import { resetConfig } from "../../../config/lifecycle";
 import { getConfig } from "../../../config/store";
 import {
@@ -14,7 +15,6 @@ import {
   previewClick,
   previewError,
 } from "../../../controllers/sound-controller";
-import { isAuthenticated } from "../../../states/core";
 import { showModal } from "../../../states/modals";
 import {
   getSearchMatchCounts,
@@ -69,7 +69,9 @@ import { SettingsSearch } from "./SettingsSearch";
 import { useSettingsNavigation } from "./useSettingsNavigation";
 
 /** All available settings, with optional sidebar jumps between sections. */
-export function SettingsContent(): JSXElement {
+export function SettingsContent(props: { authenticated: boolean }): JSXElement {
+  const settled = useSessionSettled();
+  const accountReady = () => settled() && props.authenticated;
   const sections = useContext(SettingsSectionHostContext);
   const navigation = useSettingsNavigation(sections);
   const [hasLocalBg] = createResource(
@@ -79,7 +81,7 @@ export function SettingsContent(): JSXElement {
 
   return (
     <SidebarLayout
-      items={getAvailableSettingsSections()}
+      items={getAvailableSettingsSections(accountReady())}
       // while filtering, results from every section are shown
       active={isSettingsSearchActive() ? undefined : navigation.active()}
       onSelect={navigation.select}
@@ -105,7 +107,7 @@ export function SettingsContent(): JSXElement {
       </Show>
       <div ref={navigation.ref} class="grid gap-16">
         <Section section="behavior">
-          <Show when={isAuthenticated()}>
+          <Show when={accountReady()}>
             <SettingsGroup title="saved tests">
               <Tags />
               <Presets />
@@ -265,7 +267,7 @@ export function SettingsContent(): JSXElement {
             <SearchableAutoSetting key="showAverage" />
           </SettingsGroup>
         </Section>
-        <Show when={isAuthenticated()}>
+        <Show when={accountReady()}>
           <Section section="account">
             <SettingsGroup title="account preferences">
               <AccountTab />
@@ -276,7 +278,7 @@ export function SettingsContent(): JSXElement {
           </Section>
         </Show>
         <Section section="dangerZone">
-          <Show when={isAuthenticated()}>
+          <Show when={accountReady()}>
             <SettingsGroup title="account data">
               <DangerZoneTab />
             </SettingsGroup>

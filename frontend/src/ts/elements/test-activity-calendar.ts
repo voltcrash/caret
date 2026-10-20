@@ -30,6 +30,13 @@ export type TestActivityMonth = {
   weeks: number;
 };
 
+/** Plain data for IndexedDB; reconstruct to advance the calendar on revisit. */
+export type StoredTestActivity = {
+  data: (number | null)[];
+  lastDay: string;
+  firstDayOfWeek: Day;
+};
+
 export class TestActivityCalendar implements TestActivityCalendar {
   protected data: (number | null | undefined)[];
   protected startDay: Date;
@@ -220,6 +227,22 @@ export class ModifiableTestActivityCalendar
   constructor(data: (number | null)[], lastDay: Date, firstDayOfWeek: Day) {
     super(data, lastDay, firstDayOfWeek);
     this.lastDay = new UTCDateMini(lastDay);
+  }
+
+  toStored(): StoredTestActivity {
+    return {
+      data: this.data.map((value) => value ?? null),
+      lastDay: this.lastDay.toISOString(),
+      firstDayOfWeek: this.firstDayOfWeek,
+    };
+  }
+
+  static fromStored(value: StoredTestActivity): ModifiableTestActivityCalendar {
+    return new ModifiableTestActivityCalendar(
+      value.data,
+      new Date(value.lastDay),
+      value.firstDayOfWeek,
+    );
   }
 
   increment(utcDate: Date): void {

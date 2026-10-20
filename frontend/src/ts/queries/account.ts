@@ -83,9 +83,9 @@ function accountKey(client: Client, userId: string | null): unknown[] {
 }
 
 /**
- * The actor's canonical web account. Loaded once per identity, then updated
- * only by explicit cache writes (local result acknowledgements, profile
- * edits); it lives until the actor changes.
+ * The actor's canonical web account. Lives until the actor changes; restored
+ * disk data refreshes in the background. Explicit writes acknowledge local
+ * results and profile edits.
  */
 export function getAccountQueryOptions(userId: string | null = getUserId()) {
   return queryOptions({
@@ -108,7 +108,7 @@ export function getAccountQueryOptions(userId: string | null = getUserId()) {
 }
 
 /**
- * The actor's account, fetched at most once while cached; concurrent
+ * The actor's account, reusing cached data and refreshing restored data; concurrent
  * consumers (snapshot, tags, filter presets) share one request. Rejects with
  * AbortError if the actor changes before it settles.
  */
@@ -123,6 +123,36 @@ export async function loadAccountData(
       staleTime: "static",
     });
     lease.assertCurrent();
+    // Restored snapshots render immediately, including when offline. Refresh
+    // invalidated disk data without putting the account loading gate back up.
+    const options = getAccountQueryOptions(userId);
+    const client = getQueryClient();
+    const state = client.getQueryState(options.queryKey);
+    if (state?.isInvalidated === true && state.fetchStatus === "idle") {
+      void client
+        .query(options)
+        .then(async (updated) => {
+          lease.assertCurrent();
+          await client.invalidateQueries({
+            queryKey: baseKey("tags", { isUserSpecific: true }),
+          });
+          lease.assertCurrent();
+          const previousIds = new Set(data.tags?.map((tag) => tag._id));
+          const nextIds = updated.tags?.map((tag) => tag._id) ?? [];
+          if (
+            previousIds.size !== nextIds.length ||
+            nextIds.some((id) => !previousIds.has(id))
+          ) {
+            // History normalization removes unknown tags. Reapply it if the
+            // refreshed account changed that set during the parallel fetch.
+            await client.invalidateQueries({
+              queryKey: baseKey("results", { isUserSpecific: true }),
+            });
+          }
+          return undefined;
+        })
+        .catch(() => undefined);
+    }
     return data;
   } catch (error) {
     // An actor change cancels the request; report it as the lease ending.

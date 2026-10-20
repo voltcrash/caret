@@ -2,9 +2,10 @@ import type { Client } from "@oxytype/schemas/shared";
 
 import { createResource, type JSXElement, Match, Switch } from "solid-js";
 
+import { captureAccount } from "../../app/account-scope";
 import { AccountContent } from "../../ts/components/pages/account/AccountContent";
-import { getSnapshot } from "../../ts/db";
 import { getUserId } from "../../ts/states/core";
+import { getSnapshot } from "../../ts/states/snapshot";
 import { useSessionSettled } from "../auth/settled.client";
 import * as TodayTracker from "../typing/runtime/today-tracker";
 import { AccountSkeleton } from "./skeleton";
@@ -19,10 +20,13 @@ export function AccountView(props: { client: Client }): JSXElement {
   const [results] = createResource(
     () => (settled() ? (getUserId() ?? undefined) : undefined),
     async () => {
+      const lease = captureAccount();
       const { waitForResultsReady } =
         await import("../../ts/collections/results");
+      lease.assertCurrent();
       await waitForResultsReady();
-      await TodayTracker.addAllFromToday();
+      lease.assertCurrent();
+      void TodayTracker.addAllFromToday().catch(() => undefined);
       return true;
     },
   );
