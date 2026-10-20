@@ -38,11 +38,7 @@ function Settings(): JSXElement {
   }));
   const registered = (): boolean => session.data?.user?.registered === true;
   return (
-    <div
-      // Keep native anchoring from following headings across skeleton replacement.
-      class="page pageSettings [overflow-anchor:none]"
-      id="pageSettings"
-    >
+    <div class="page pageSettings" id="pageSettings">
       <SettingsPage
         section={sectionForTab(search().tab, registered()) ?? "behavior"}
         authenticated={registered()}
