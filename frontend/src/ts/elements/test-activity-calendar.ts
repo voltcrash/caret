@@ -176,7 +176,11 @@ export class TestActivityCalendar implements TestActivityCalendar {
   }
 
   private getBuckets(): number[] {
-    const filtered = this.data.filter((it) => it !== null && it !== undefined);
+    // Inactive days have their own level and must not flatten the active scale.
+    const filtered = this.data.filter(
+      (it): it is number => it !== null && it !== undefined && it > 0,
+    );
+    if (filtered.length === 0) return [0, 0, 0];
     const sorted = filtered.sort((a, b) => a - b);
 
     const trimmed = sorted.slice(
