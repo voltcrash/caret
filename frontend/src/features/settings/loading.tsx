@@ -22,7 +22,7 @@ const rows = [
 export function SettingsLoading(props: {
   section: SettingsSection;
   authenticated: boolean;
-  /** Preference known once browser code runs; on by default. */
+  /** Preference known once browser code runs; otherwise the shared default. */
   keyTips?: boolean;
 }): JSXElement {
   return (

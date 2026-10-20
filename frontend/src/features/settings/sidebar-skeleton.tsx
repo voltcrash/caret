@@ -1,3 +1,4 @@
+import { getDefaultConfig } from "@oxytype/typing-core/config/default-config";
 import { For, type JSXElement, Show } from "solid-js";
 
 import type { SettingsSection } from "./tabs";
@@ -67,7 +68,7 @@ export function SettingsSidebarSkeleton(props: {
               </div>
             )}
           </For>
-          <Show when={props.keyTips ?? true}>
+          <Show when={props.keyTips ?? getDefaultConfig().showKeyTips}>
             <div class="col-span-full grid w-full gap-6">
               <Separator class="mx-2 w-auto bg-bg" />
               {/* One bar per line; transparent copy keeps shortcut wrapping. */}
