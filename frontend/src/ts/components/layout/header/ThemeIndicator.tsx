@@ -14,7 +14,7 @@ import { cn } from "../../../utils/cn";
 import { Button } from "../../common/Button";
 
 /** Opens the theme picker; shift-click toggles the custom theme instead. */
-export function openThemePicker(e: MouseEvent): void {
+function openThemePicker(e: MouseEvent): void {
   if (e.shiftKey) {
     if (getMutableConfig().customTheme) {
       setConfig("customTheme", false);
@@ -38,7 +38,10 @@ export function ThemeIndicator(props: { class?: string }): JSXElement {
   return (
     <Button
       variant="text"
-      class={cn("p-0 text-xs leading-none whitespace-nowrap", props.class)}
+      class={cn(
+        "p-0 text-xs leading-none whitespace-nowrap text-sub hover:text-main",
+        props.class,
+      )}
       balloon={{ text: "Shift-click to toggle custom theme", position: "down" }}
       dataset={{ "data-ui-element": "themeIndicator" }}
       onClick={openThemePicker}

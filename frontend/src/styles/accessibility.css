@@ -39,6 +39,13 @@ body {
     textarea,
     select,
     [tabindex]:not([tabindex="-1"])
-  ):not(#wordsInput, #commandLineInput):focus-visible {
+  ):not(:where(#wordsInput, #commandLineInput)):focus-visible {
   @apply outline-2! outline-solid! outline-offset-4! outline-text!;
+}
+
+/* Modifier keys must not reveal rings on mouse/touch-focused controls.
+   Text fields keep their native editing focus indication. */
+:root[data-input-modality="pointer"]
+  :focus-visible:not(input, textarea, select, [contenteditable]) {
+  @apply outline-none! shadow-none!;
 }
