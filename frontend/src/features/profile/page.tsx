@@ -8,6 +8,7 @@ import { lazy, Show, Suspense, type JSXElement } from "solid-js";
 import { onlyCachedOnServer } from "../../data/prefetch";
 import { profileOptions } from "../../data/profile";
 import { ProfileMissing } from "./missing";
+import { ProfileSkeleton } from "./skeleton";
 import { ProfileSummary } from "./summary";
 
 const UserProfile = lazy(
@@ -16,7 +17,14 @@ const UserProfile = lazy(
   })),
 );
 
-/** `/profile/$uidOrName`: route-owned name and client selection. */
+/** Shared with the route's pending view so the skeleton sits in place. */
+export const profileFrame = "flex h-full flex-col justify-center gap-4 text-lg";
+
+/**
+ * `/profile/$uidOrName`: route-owned name and client selection. The server
+ * renders a readable summary; the browser shows the skeleton until the full
+ * profile's code arrives.
+ */
 export function ProfilePage(props: {
   uidOrName: string;
   client: Client;
@@ -26,11 +34,11 @@ export function ProfilePage(props: {
     enabled: onlyCachedOnServer(),
   }));
   return (
-    <div class="flex h-full flex-col justify-center gap-4 text-lg">
+    <div class={profileFrame}>
       <Show when={profile.data}>
         {(data) => (
           <ClientOnly fallback={<ProfileSummary profile={data()} />}>
-            <Suspense fallback={<ProfileSummary profile={data()} />}>
+            <Suspense fallback={<ProfileSkeleton />}>
               <UserProfile profile={data()} client={props.client} />
             </Suspense>
           </ClientOnly>

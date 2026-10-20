@@ -9,6 +9,7 @@ import type { LeaderboardView, Selection } from "./selection";
 
 import { leaderboardOptions } from "../../data/leaderboards";
 import { onlyCachedOnServer } from "../../data/prefetch";
+import { LeaderboardSkeleton } from "./skeleton";
 
 const Content = lazy(
   createClientOnlyFn(async () => ({
@@ -24,7 +25,10 @@ function heading(selection: Selection): string {
   return `${board} ${selection.language} ${selection.mode} ${selection.mode2} leaderboard`;
 }
 
-/** Server-rendered first view: board title and the requested page's ranks. */
+/**
+ * Server-rendered first view: board title and the requested page's ranks.
+ * The browser shows the skeleton instead until the interactive board loads.
+ */
 function StaticBoard(props: { view: LeaderboardView }): JSXElement {
   const entries = useQuery(() => ({
     ...leaderboardOptions(props.view.selection, props.view.page),
@@ -87,7 +91,7 @@ export function LeaderboardPage(props: {
 }): JSXElement {
   return (
     <ClientOnly fallback={<StaticBoard view={props.view} />}>
-      <Suspense fallback={<StaticBoard view={props.view} />}>
+      <Suspense fallback={<LeaderboardSkeleton />}>
         <Content
           view={props.view}
           explicit={props.explicit}

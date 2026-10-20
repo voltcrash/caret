@@ -5,6 +5,8 @@ import { createClientOnlyFn } from "@tanstack/solid-start";
 import { lazy, Suspense } from "solid-js";
 
 import { Fa } from "../../ts/components/common/Fa";
+import { AuthPanelSkeleton } from "./skeleton";
+
 const Panel = lazy(
   createClientOnlyFn(async () => ({
     default: (await import("./panel.client")).AuthPanel,
@@ -18,16 +20,8 @@ export function AuthPage(props: { session: SessionState; redirect?: string }) {
           <Fa icon="fa-sign-in-alt" />
           sign in
         </h1>
-        <ClientOnly
-          fallback={
-            <p class="text-sub">
-              {props.session.user === null
-                ? "Sign in to your account"
-                : `Signed in as ${props.session.user.displayName}`}
-            </p>
-          }
-        >
-          <Suspense fallback={<p class="text-sub">Loading sign in…</p>}>
+        <ClientOnly fallback={<AuthPanelSkeleton session={props.session} />}>
+          <Suspense fallback={<AuthPanelSkeleton session={props.session} />}>
             <Panel initial={props.session} redirect={props.redirect} />
           </Suspense>
         </ClientOnly>

@@ -9,7 +9,8 @@ import { publicEnv } from "../app/public-env";
 import { urlSearch } from "../app/search";
 import { isUserNotFound, profileOptions } from "../data/profile";
 import { ProfileMissing } from "../features/profile/missing";
-import { ProfilePage } from "../features/profile/page";
+import { ProfilePage, profileFrame } from "../features/profile/page";
+import { ProfileSkeleton } from "../features/profile/skeleton";
 
 const SearchSchema = z.object({ client: ClientSchema.optional() }).partial();
 
@@ -53,8 +54,19 @@ export const Route = createFileRoute("/_app/profile/$uidOrName")({
     };
   },
   notFoundComponent: Missing,
+  pendingComponent: Pending,
   component: Profile,
 });
+
+function Pending(): JSXElement {
+  return (
+    <div class="page pageProfile" id="pageProfile">
+      <div class={profileFrame}>
+        <ProfileSkeleton />
+      </div>
+    </div>
+  );
+}
 
 function Missing(): JSXElement {
   const params = Route.useParams();
