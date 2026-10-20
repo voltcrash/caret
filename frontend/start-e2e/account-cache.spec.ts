@@ -22,7 +22,13 @@ async function cached(page: Page): Promise<StoredQueryCache | undefined> {
     async () =>
       await new Promise<StoredQueryCache | undefined>((resolve, reject) => {
         const request = indexedDB.open("oxytype-query-cache", 1);
-        request.onerror = () => reject(request.error);
+        // SSR content can appear before the app initializes storage. Inspection
+        // must never create an empty database that prevents its schema upgrade.
+        request.onupgradeneeded = () => request.transaction?.abort();
+        request.onerror = () =>
+          request.error?.name === "AbortError"
+            ? resolve(undefined)
+            : reject(request.error);
         request.onsuccess = () => {
           const db = request.result;
           if (!db.objectStoreNames.contains("cache")) {
