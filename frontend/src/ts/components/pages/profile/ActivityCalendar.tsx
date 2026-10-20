@@ -188,8 +188,8 @@ export function ActivityCalendar(props: {
             </div>
           }
         >
-          <div class="calendarScroll overflow-x-auto sm:overflow-visible">
-            <div class="grid min-w-[36rem] grid-cols-[max-content_minmax(0,1fr)] gap-x-4 gap-y-3 sm:min-w-0">
+          <div class="calendarScroll overflow-x-auto [direction:rtl] sm:overflow-visible">
+            <div class="grid min-w-[36rem] grid-cols-[max-content_minmax(0,1fr)] gap-x-4 gap-y-3 [direction:ltr] sm:min-w-0">
               <div class="days col-start-1 row-start-1 grid grid-rows-[repeat(7,minmax(0,1fr))] items-center gap-(--gap-size) text-(length:--font-size) text-sub">
                 <For each={view().labels}>
                   {(label) => (
@@ -210,7 +210,7 @@ export function ActivityCalendar(props: {
               </div>
               <div class="activity col-start-2 row-start-1 grid grid-flow-col grid-cols-[repeat(var(--weeks),minmax(0,1fr))] grid-rows-[repeat(7,minmax(0,1fr))] gap-(--gap-size)">
                 <For each={view().days}>
-                  {(day) => (
+                  {(day, index) => (
                     <div
                       class={cn(
                         squareClass,
@@ -219,8 +219,15 @@ export function ActivityCalendar(props: {
                       )}
                       data-level={day.level}
                       aria-label={day.label}
+                      data-balloon-length={
+                        day.label !== undefined ? "large" : undefined
+                      }
                       data-balloon-pos={
-                        day.label !== undefined ? "up" : undefined
+                        day.label === undefined
+                          ? undefined
+                          : index() < view().days.length / 2
+                            ? "up-left"
+                            : "up-right"
                       }
                     ></div>
                   )}
