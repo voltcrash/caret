@@ -181,3 +181,41 @@ test("account restores IndexedDB before network refresh, isolates actors and cle
   await expect(page).toHaveURL(/\/login\?redirect=%2Faccount$/);
   await expect.poll(async () => await cached(page)).toBeUndefined();
 });
+
+test("profile history navigation restores disk data while its RPC refresh is pending", async ({
+  page,
+  context,
+}) => {
+  await signIn(context, "browser-cache");
+  await page.goto("/profile/fixture-profile");
+  await expect(page.getByText("fixture-profile public bio")).toBeVisible();
+  await expect
+    .poll(async () =>
+      (await cached(page))?.client.queries.some(
+        (query) =>
+          query.queryKey[0] === "public" && query.queryKey[1] === "profile",
+      ),
+    )
+    .toBe(true);
+  await page.getByRole("link", { name: "Settings", exact: true }).click();
+  await page.reload();
+  await expect(
+    page.getByRole("textbox", { name: "Search settings" }),
+  ).toBeVisible();
+  await page.waitForLoadState("networkidle");
+  const network = Promise.withResolvers<undefined>();
+  let blocked = false;
+  await page.route(`**${rpcPath("getProfile")}*`, async (route) => {
+    blocked = true;
+    await network.promise;
+    await route.continue();
+  });
+  try {
+    await page.goBack();
+    await expect(page).toHaveURL(/\/profile\/fixture-profile$/);
+    await expect(page.getByText("fixture-profile public bio")).toBeVisible();
+    await expect.poll(() => blocked).toBe(true);
+  } finally {
+    network.resolve(undefined);
+  }
+});
