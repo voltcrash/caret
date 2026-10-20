@@ -99,7 +99,7 @@ export function AppLayout(props: ParentProps): JSXElement {
             <div
               ref={setScroller}
               data-scroll-restoration-id="page-content"
-              class={scrollerClass(fixed())}
+              class={scrollerClass(fixed(), typing())}
               style={scrollerStyle(fixed(), headerBottom())}
             >
               <main
