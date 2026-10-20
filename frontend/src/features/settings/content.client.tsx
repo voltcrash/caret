@@ -1,4 +1,11 @@
-import { createEffect, type JSXElement, on, onCleanup, Show } from "solid-js";
+import {
+  createEffect,
+  createSignal,
+  type JSXElement,
+  on,
+  onCleanup,
+  Show,
+} from "solid-js";
 
 import { SettingsContent } from "../../ts/components/pages/settings/SettingsContent";
 import { getConfig } from "../../ts/config/store";
@@ -7,6 +14,7 @@ import {
   type SettingsSection,
   SettingsSectionHostContext,
 } from "../../ts/states/settings-sections";
+import { cn } from "../../ts/utils/cn";
 import { useSessionSettled } from "../auth/settled.client";
 import { SettingsLoading } from "./loading";
 
@@ -18,6 +26,8 @@ export function SettingsView(props: {
   onSection: (section: SettingsSection) => void;
 }): JSXElement {
   const settled = useSessionSettled();
+  // Filtering hides and shows groups; that must not replay the entrance.
+  const [entering, setEntering] = createSignal(true);
   createEffect(
     on(
       () => (settled() ? props.highlight : undefined),
@@ -49,7 +59,15 @@ export function SettingsView(props: {
           },
         }}
       >
-        <div class="motion-safe:animate-[fadeIn_150ms_ease-out]">
+        {/* the loading layout already shows the sidebar and heading, so only
+            the settings replacing its placeholders fade, once */}
+        <div
+          class={cn(
+            entering() &&
+              "motion-safe:[&_[data-settings-group]]:animate-[fadeIn_120ms_ease-out]",
+          )}
+          onAnimationEnd={() => setEntering(false)}
+        >
           <SettingsContent />
         </div>
       </SettingsSectionHostContext.Provider>
