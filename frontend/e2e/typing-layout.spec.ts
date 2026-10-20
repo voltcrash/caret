@@ -26,7 +26,7 @@ test("key tips toggle without moving the desktop words", async ({ page }) => {
   const before = await page.locator("#wordsWrapper").boundingBox();
   if (!before) throw new Error("Words have no layout");
 
-  for (const state of ["on", "off"]) {
+  for (const state of ["show", "hide"]) {
     await page.goto("/settings?highlight=showKeyTips");
     const button = page
       .locator('[data-setting-key="showKeyTips"]')
