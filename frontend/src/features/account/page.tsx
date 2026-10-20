@@ -27,14 +27,13 @@ export const preloadAccount = createClientOnlyFn(async (): Promise<void> => {
     return;
   }
   const lease = app.accountData.capture();
-  const code = View.preload();
-  const cache = await import("../../app/query-cache.client");
-  lease.assertCurrent();
-  await cache.accountQueryCache().restore();
-  lease.assertCurrent();
   await Promise.all([
-    code,
-    import("../../ts/collections/results").then(async (results) => {
+    View.preload(),
+    import("../../app/query-cache.client").then(async (cache) => {
+      lease.assertCurrent();
+      await cache.accountQueryCache().restore();
+      lease.assertCurrent();
+      const results = await import("../../ts/collections/results");
       lease.assertCurrent();
       await results.waitForResultsReady();
       return undefined;
