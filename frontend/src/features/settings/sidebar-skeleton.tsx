@@ -2,6 +2,7 @@ import { For, type JSXElement, Show } from "solid-js";
 
 import type { SettingsSection } from "./tabs";
 
+import { SkeletonText } from "../../components/skeleton-text";
 import { Fa } from "../../ts/components/common/Fa";
 import { Kbd } from "../../ts/components/common/Kbd";
 import { Separator } from "../../ts/components/common/Separator";
@@ -25,16 +26,13 @@ export function SettingsSidebarSkeleton(props: {
           aria-hidden="true"
           class="grid w-full grid-cols-2 gap-2 rounded-double bg-sub-alt p-4 md:flex md:max-h-[calc(100vh-var(--content-top)-1rem)] md:flex-col md:items-start md:gap-4 md:overflow-hidden"
         >
-          <div class="relative col-span-full w-full">
-            <Fa
-              icon="fa-search"
-              class="absolute top-1/2 left-4 -translate-y-1/2 text-sub"
-            />
-            {/* global input styles arrive with the browser bundle, so the
-                  search box's line height and touch height are explicit */}
-            <div class="w-full rounded bg-bg py-3 pr-10 pl-10 text-em-base leading-[1.25em] text-sub pointer-coarse:min-h-11">
-              search
-            </div>
+          {/* Explicit input geometry also applies before browser styles load. */}
+          <div
+            data-settings-search-skeleton
+            class="col-span-full flex w-full items-center gap-[0.5em] rounded bg-bg px-4 py-3 text-em-base pointer-coarse:min-h-11"
+          >
+            <div class="size-[1em] shrink-0 rounded bg-sub/20"></div>
+            <SkeletonText class="h-[1.25em] w-16" />
           </div>
           <For
             each={Object.entries(

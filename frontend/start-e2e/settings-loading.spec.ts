@@ -61,7 +61,9 @@ test("the loaded settings replace the loading layout without moving", async ({
   > => ({
     heading: await page.getByRole("heading", { name: "caret" }).boundingBox(),
     item: await page.getByText("appearance", { exact: true }).boundingBox(),
-    search: await loading.getByText("search", { exact: true }).boundingBox(),
+    search: await loading
+      .locator("[data-settings-search-skeleton]")
+      .boundingBox(),
   });
   let before: Awaited<ReturnType<typeof boxes>>;
   try {
