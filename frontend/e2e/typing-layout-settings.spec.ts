@@ -167,3 +167,97 @@ test("font, line width and tape changes apply through settings", async ({
       .toBe(value);
   }
 });
+
+test.describe("numeric textbox controls", () => {
+  test.use({ config: { fontSize: 2, maxLineWidth: 60, keymapMode: "static" } });
+
+  for (const [settingKey, configKey, value] of [
+    ["fontSize", "fontSize", 3],
+    ["maxLineWidth", "maxLineWidth", 40],
+    ["paceCaret", "paceCaretCustomSpeed", 120],
+  ] as const) {
+    test(`${configKey} saves on blur and Enter without freezing`, async ({
+      page,
+    }) => {
+      await openTest(page);
+      await page.goto(`/settings?highlight=${settingKey}`);
+      const input = page
+        .locator(`[data-setting-key="${settingKey}"]`)
+        .getByRole("spinbutton");
+      for (const key of ["Tab", "Enter"]) {
+        const nextValue = key === "Tab" ? value : value + 1;
+        await input.fill(String(nextValue));
+        await input.press(key);
+        await expect
+          .poll(
+            async () =>
+              await page.evaluate((name) => {
+                const config = JSON.parse(
+                  localStorage.getItem("config") ?? "{}",
+                ) as Partial<Config>;
+                return config[name];
+              }, configKey),
+          )
+          .toBe(nextValue);
+      }
+      await page
+        .getByRole("link", { name: "Oxytype Home", exact: true })
+        .click();
+      await expect(page.locator("#words .word").first()).toBeVisible();
+    });
+  }
+
+  test("keymap size slider resizes the keyboard", async ({ page }) => {
+    await openTest(page);
+    const before = await page
+      .locator('[data-ui-element="keymap"]')
+      .boundingBox();
+    if (!before) throw new Error("Keymap has no layout");
+    await page.goto("/settings?highlight=keymapSize");
+    const slider = page.getByRole("slider", {
+      name: "Keymap size",
+      exact: true,
+    });
+    await slider.focus();
+    await slider.press("ArrowRight");
+    await expect(slider).toHaveValue("1.1");
+    await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
+    await expect(page.locator("#typingTest")).toHaveCSS("opacity", "1");
+    const after = await page
+      .locator('[data-ui-element="keymap"]')
+      .boundingBox();
+    if (!after) throw new Error("Keymap has no layout");
+    expect(after.height).toBeGreaterThan(before.height);
+  });
+
+  for (const [key, invalid, valid] of [
+    ["fontSize", 0, 3],
+    ["maxLineWidth", 19, 40],
+  ] as const) {
+    test(`${key} rejects invalid sizes and recovers`, async ({
+      page,
+      config,
+    }) => {
+      await openTest(page);
+      await page.goto(`/settings?highlight=${key}`);
+      const input = page
+        .locator(`[data-setting-key="${key}"]`)
+        .getByRole("spinbutton");
+      await input.fill(String(invalid));
+      await input.press("Enter");
+      const saved = await page.evaluate((name) => {
+        const value = JSON.parse(
+          localStorage.getItem("config") ?? "{}",
+        ) as Partial<Config>;
+        return value[name];
+      }, key);
+      expect(saved).toBe(config[key]);
+      await input.fill(String(valid));
+      await input.press("Tab");
+      await page
+        .getByRole("link", { name: "Oxytype Home", exact: true })
+        .click();
+      await expect(page.locator("#words .word").first()).toBeVisible();
+    });
+  }
+});
