@@ -20,6 +20,7 @@ import {
   setCommandlineSubgroup,
 } from "../../src/ts/states/core";
 import { getTheme } from "../../src/ts/states/theme";
+import * as Arrays from "../../src/ts/utils/arrays";
 
 vi.mock("../../src/features/typing/runtime/focus", () => ({ set: vi.fn() }));
 vi.mock("../../src/ts/ui", () => ({ clearFontPreview: vi.fn() }));
@@ -29,6 +30,10 @@ describe("theme picker selection", () => {
 
   beforeEach(async () => {
     vi.useFakeTimers();
+    vi.spyOn(Arrays, "shuffle").mockImplementation(() => undefined);
+    vi.spyOn(window, "matchMedia").mockReturnValue({
+      matches: true,
+    } as MediaQueryList);
     dispose = createRoot((disposeRoot) => {
       ThemeController.useThemeEvents();
       return disposeRoot;
@@ -52,6 +57,7 @@ describe("theme picker selection", () => {
     dispose();
     vi.clearAllTimers();
     vi.useRealTimers();
+    vi.restoreAllMocks();
   });
 
   it("keeps the random theme when opening the picker", async () => {
@@ -69,4 +75,25 @@ describe("theme picker selection", () => {
     expect(getMutableConfig().theme).toBe("aether");
     expect(getMutableConfig().randomTheme).toBe("fav");
   });
+
+  it.each(["on", "dark", "light", "auto"] as const)(
+    "keeps the current theme with random mode %s",
+    async (mode) => {
+      setConfig("randomTheme", mode, { nosave: true });
+      await ThemeController.randomizeTheme();
+      const currentTheme = getTheme().name;
+      expect(currentTheme).not.toBe("aether");
+
+      await prepareCommandline();
+      await vi.advanceTimersByTimeAsync(250);
+
+      expect(getTheme().name).toBe(currentTheme);
+      expect(commandlineState.activeCommand?.configValue).toBe(currentTheme);
+      expect(
+        commandlineState.suggestions.filter((command) => command.isActive),
+      ).toMatchObject([{ configValue: currentTheme }]);
+      expect(getMutableConfig().theme).toBe("aether");
+      expect(getMutableConfig().randomTheme).toBe(mode);
+    },
+  );
 });
