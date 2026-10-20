@@ -30,8 +30,7 @@ export function SettingsLoading(props: {
       role="status"
       aria-label="Loading settings"
       aria-busy="true"
-      // Replacing placeholders must not anchor the scroller to the new heading.
-      class="content-grid flex flex-col gap-8 [overflow-anchor:none] md:flex-row"
+      class="content-grid flex flex-col gap-8 md:flex-row"
     >
       <p class="sr-only">loading your preferences…</p>
       <SettingsSidebarSkeleton
