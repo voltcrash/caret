@@ -15,7 +15,6 @@ import {
 import { boardKey, leaderboardOptions } from "../../data/leaderboards";
 import { getLeaderboardRank } from "../../functions/leaderboards";
 import AsyncContent from "../../ts/components/common/AsyncContent";
-import { LoadingCircle } from "../../ts/components/common/LoadingCircle";
 import { Separator } from "../../ts/components/common/Separator";
 import { Navigation } from "../../ts/components/pages/leaderboard/Navigation";
 import { NextUpdate } from "../../ts/components/pages/leaderboard/NextUpdate";
@@ -33,6 +32,8 @@ import {
 } from "../../ts/states/leaderboard-selection";
 import { showErrorNotification } from "../../ts/states/notifications";
 import { pageSize, type LeaderboardView, type Selection } from "./selection";
+import { LeaderboardSidebarSkeleton } from "./sidebar-skeleton";
+import { LeaderboardTableSkeleton } from "./table-skeleton";
 
 type LeaderboardRank = LeaderboardEntry | XpLeaderboardEntry | null;
 
@@ -188,7 +189,10 @@ export function LeaderboardContent(props: {
   return (
     <div class="content-grid flex flex-col gap-6 lg:flex-row lg:gap-8">
       <div class="w-full shrink-0 lg:w-60 2xl:w-75">
-        <AsyncContent queries={{ serverConfigurationQuery }}>
+        <AsyncContent
+          queries={{ serverConfigurationQuery }}
+          loader={<LeaderboardSidebarSkeleton />}
+        >
           {({ serverConfigurationQueryData }) => (
             <Sidebar
               selection={selection}
@@ -249,11 +253,7 @@ export function LeaderboardContent(props: {
 
         <AsyncContent
           queries={{ entriesQuery }}
-          loader={
-            <div class="flex justify-center pt-4 text-4xl">
-              <LoadingCircle />
-            </div>
-          }
+          loader={<LeaderboardTableSkeleton />}
         >
           {({ entriesQueryData }) => (
             <div>
