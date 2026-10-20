@@ -39,7 +39,7 @@ body {
     textarea,
     select,
     [tabindex]:not([tabindex="-1"])
-  ):not(#wordsInput, #commandLineInput):focus-visible {
+  ):not(:where(#wordsInput, #commandLineInput)):focus-visible {
   @apply outline-2! outline-solid! outline-offset-4! outline-text!;
 }
 
