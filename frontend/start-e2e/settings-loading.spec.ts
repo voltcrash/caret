@@ -154,6 +154,16 @@ test.describe("mobile with reduced motion", () => {
       await expect(page.locator("#startupScreen")).toBeHidden();
       await expect(loading).toBeVisible();
       await expect(page.locator("#group_caret")).toHaveCount(0);
+      const sidebar = loading.locator("[data-settings-sidebar-skeleton]");
+      await expect(sidebar).toBeInViewport();
+      await expect(sidebar.getByText(/tip:/)).toHaveCount(0);
+      const items = sidebar.locator("[data-settings-section-skeleton]");
+      const first = await items.nth(0).boundingBox();
+      const second = await items.nth(1).boundingBox();
+      expect(first).not.toBeNull();
+      expect(second).not.toBeNull();
+      expect(first?.y).toBe(second?.y);
+      expect(first?.x).toBeLessThan(second?.x ?? 0);
       const animations = await loading.evaluate((element) =>
         [...element.querySelectorAll("*")].map(
           (child) => getComputedStyle(child).animationName,
@@ -171,5 +181,8 @@ test.describe("mobile with reduced motion", () => {
     }
     await expect(loading).toBeHidden();
     await expect(page.locator("#group_caret h2")).toBeInViewport();
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBeLessThanOrEqual(390);
   });
 });
