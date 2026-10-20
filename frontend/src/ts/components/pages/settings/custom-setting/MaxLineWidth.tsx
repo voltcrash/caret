@@ -46,6 +46,8 @@ export function MaxLineWidth(): JSXElement {
               name="maxLineWidth"
               validators={{
                 onChange: fromSchema(MaxLineWidthSchema),
+              }}
+              listeners={{
                 onBlur: () => {
                   void form.handleSubmit();
                 },

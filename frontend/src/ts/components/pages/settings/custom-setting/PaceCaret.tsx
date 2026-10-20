@@ -63,6 +63,8 @@ export function PaceCaret(): JSXElement {
               name="paceCaretCustomSpeed"
               validators={{
                 onChange: fromSchema(PaceCaretCustomSpeedSchema),
+              }}
+              listeners={{
                 onBlur: () => {
                   void form.handleSubmit();
                 },

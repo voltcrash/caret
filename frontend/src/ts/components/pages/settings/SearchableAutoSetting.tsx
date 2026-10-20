@@ -59,6 +59,8 @@ export function SearchableAutoSetting<T extends ConfigKey>(props: {
               name={props.key}
               validators={{
                 onChange: fromSchema<unknown>(ConfigSchema.shape[props.key]),
+              }}
+              listeners={{
                 onBlur: () => {
                   void form.handleSubmit();
                 },

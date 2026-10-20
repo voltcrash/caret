@@ -8,13 +8,16 @@ import { cn } from "../../ts/utils/cn";
  * scroll container under the header, so overscroll only moves the content and
  * the content scrolls under the header's soft edge.
  */
-export function scrollerClass(fixed: boolean): string {
+export function scrollerClass(fixed: boolean, typing = false): string {
   return cn(
     "content-grid grid-rows-[1fr_auto] gap-y-8",
     // keep the scrollport full screen for the soft header edge
     fixed
       ? "fixed inset-0 z-10 grid-rows-[1fr] touch-manipulation overflow-y-auto overscroll-y-contain pr-[env(safe-area-inset-right,0px)] pb-[max(2rem,env(safe-area-inset-bottom,0px))] pl-[env(safe-area-inset-left,0px)] [&>main]:mt-(--content-top) [&>main]:h-auto"
       : "full-width row-[content-start/top-end]",
+    // Keep the desktop test near eye level even with the smaller footer or
+    // hidden key tips. The main row can still grow for tall test settings.
+    typing && !fixed && "md:pointer-fine:grid-rows-[1fr_minmax(5rem,auto)]",
   );
 }
 
