@@ -33,13 +33,13 @@ export function StaticHeader(props: { fixed: boolean }): JSXElement {
       data-ui-element="header"
     >
       <div
-        class="flex h-6 w-max gap-2"
+        class="relative flex h-6 w-max"
         style={{ "font-family": "Lexend Deca ,sans-serif" }}
         data-ui-element="logo"
       >
         <Link
           href="/"
-          class="-m-2 h-6 rounded-[0.8rem] p-2"
+          class="-m-2 flex h-6 items-center gap-2 rounded-[0.8rem] p-2"
           aria-label="Oxytype Home"
           style={{ "box-sizing": "content-box" }}
         >
@@ -47,15 +47,15 @@ export function StaticHeader(props: { fixed: boolean }): JSXElement {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 48 48"
             aria-hidden="true"
-            class="h-full fill-none stroke-current stroke-[6] text-main"
+            class="h-full w-6 shrink-0 fill-none stroke-current stroke-[6] text-main"
           >
             <circle cx="24" cy="24" r="16"></circle>
             <path d="M24 5v13" class="[stroke-linecap:round]"></path>
           </svg>
+          <div class="hidden h-6 place-content-center text-[2rem] leading-0 sm:grid">
+            <h1 class="-mt-[0.11em] text-text">oxytype</h1>
+          </div>
         </Link>
-        <div class="hidden h-6 place-content-center text-[2rem] leading-0 sm:grid">
-          <h1 class="-mt-[0.11em] text-text">oxytype</h1>
-        </div>
       </div>
       <nav
         aria-label="Main navigation"

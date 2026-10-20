@@ -65,6 +65,47 @@ test("command palette input shows no focus outline", async ({ page }) => {
   );
 });
 
+test("modifier keys leave pointer focus quiet while Tab restores control outlines", async ({
+  page,
+}) => {
+  await openTest(page);
+  const indicator = page.locator('[data-ui-element="themeIndicator"]');
+  // Shift-click changes the theme without opening a modal or moving focus.
+  await indicator.click({ modifiers: ["Shift"] });
+  await page.mouse.move(0, 0);
+  await expect(indicator).toBeFocused();
+  for (const key of ["Shift", "Control", "Alt", "Meta", "CapsLock"]) {
+    await page.keyboard.press(key);
+    await expect(indicator).toBeFocused();
+    await expect(indicator).toHaveCSS("outline-style", "none");
+    // Tailwind can serialize no shadow as several transparent, zero-size shadows.
+    await expect(indicator).toHaveCSS(
+      "box-shadow",
+      /^(none|(?:rgba\(0, 0, 0, 0\) 0px 0px 0px 0px,? ?)+)$/,
+    );
+    await expect(page.locator("#commandLine")).toBeHidden();
+    await expect
+      .poll(async () =>
+        indicator.evaluate((element) =>
+          getComputedStyle(element, "::after").getPropertyValue("visibility"),
+        ),
+      )
+      .toBe("hidden");
+  }
+  await page.keyboard.press("Shift+Tab");
+  const home = page.getByRole("link", { name: "Oxytype Home", exact: true });
+  await expect(home).toBeFocused();
+  await expect(home).toHaveCSS("outline-style", "solid");
+  await expect(home).toHaveCSS("outline-width", "2px");
+  await page.keyboard.press("Shift");
+  await expect(home).toHaveCSS("outline-style", "solid");
+  await page.keyboard.press("Tab");
+  await expect(indicator).toBeFocused();
+  await expect(indicator).toHaveCSS("outline-style", "solid");
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#commandLine input")).toBeFocused();
+});
+
 test("other text inputs keep the focus outline", async ({ page }) => {
   await openTest(page);
   await page

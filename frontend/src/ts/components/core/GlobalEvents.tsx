@@ -1,12 +1,26 @@
 import { onCleanup, onMount } from "solid-js";
 
+import { ModifierKeys } from "../../constants/modifier-keys";
 import { connectionEvent } from "../../events/connection";
 import { showErrorNotification } from "../../states/notifications";
 import { isDevEnvironment } from "../../utils/env";
 
-/** Host-neutral document listeners: connection, space scrolling, dev errors. */
+/** Host-neutral listeners: input modality, connection, scrolling, dev errors. */
 export function GlobalEvents(): null {
   onMount(() => {
+    const root = document.documentElement;
+    const previousModality = root.dataset["inputModality"];
+    const usePointer = (): void => {
+      root.dataset["inputModality"] = "pointer";
+    };
+    const useKeyboard = (e: KeyboardEvent): void => {
+      // Shift alone can make a mouse-focused button match :focus-visible.
+      // Keep pointer focus quiet until an actual keyboard action occurs.
+      if (e.ctrlKey || e.altKey || e.metaKey || ModifierKeys.includes(e.key)) {
+        return;
+      }
+      root.dataset["inputModality"] = "keyboard";
+    };
     const preventSpaceScroll = (e: KeyboardEvent): void => {
       if (
         e.code === "Space" &&
@@ -53,12 +67,21 @@ export function GlobalEvents(): null {
     window.addEventListener("online", online);
     window.addEventListener("offline", offline);
     window.addEventListener("keydown", preventSpaceScroll);
+    window.addEventListener("pointerdown", usePointer, true);
+    window.addEventListener("keydown", useKeyboard, true);
     window.onerror = onError;
     window.onunhandledrejection = onRejection;
     onCleanup(() => {
       window.removeEventListener("online", online);
       window.removeEventListener("offline", offline);
       window.removeEventListener("keydown", preventSpaceScroll);
+      window.removeEventListener("pointerdown", usePointer, true);
+      window.removeEventListener("keydown", useKeyboard, true);
+      if (previousModality === undefined) {
+        delete root.dataset["inputModality"];
+      } else {
+        root.dataset["inputModality"] = previousModality;
+      }
       if (window.onerror === onError) window.onerror = previousError;
       if (window.onunhandledrejection === onRejection) {
         window.onunhandledrejection = previousRejection;

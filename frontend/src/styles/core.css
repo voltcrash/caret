@@ -196,7 +196,11 @@ kbd {
 }
 @supports selector(:focus-visible) {
   [aria-label][data-balloon-pos]:focus:not(:focus-visible):not(:hover)::before,
-  [aria-label][data-balloon-pos]:focus:not(:focus-visible):not(:hover)::after {
+  [aria-label][data-balloon-pos]:focus:not(:focus-visible):not(:hover)::after,
+  :root[data-input-modality="pointer"]
+    [aria-label][data-balloon-pos]:focus:not(:hover)::before,
+  :root[data-input-modality="pointer"]
+    [aria-label][data-balloon-pos]:focus:not(:hover)::after {
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
