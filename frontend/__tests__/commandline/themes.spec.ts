@@ -9,6 +9,7 @@ import {
 } from "vite-plus/test";
 
 import {
+  onCommandlineInput,
   onCommandlineKeyDown,
   prepareCommandline,
 } from "../../src/ts/commandline/commandline";
@@ -147,6 +148,30 @@ describe("theme picker selection", () => {
       expect(getThemeIndicator().text).toBe("matrix");
       expect(getMutableConfig().theme).toBe("aether");
       expect(getMutableConfig().randomTheme).toBe("fav");
+    },
+  );
+
+  it.each(["aether", "serika"] as const)(
+    "applies manual selection %s while random mode remains enabled",
+    async (theme) => {
+      await prepareCommandline();
+      const input = document.createElement("input");
+      input.addEventListener("input", onCommandlineInput);
+      input.value = theme;
+      input.dispatchEvent(new Event("input"));
+      await vi.advanceTimersByTimeAsync(300);
+      expect(commandlineState.activeCommand?.configValue).toBe(theme);
+
+      await onCommandlineKeyDown(
+        new KeyboardEvent("keydown", { key: "Enter" }),
+      );
+      await vi.advanceTimersByTimeAsync(250);
+
+      expect(getTheme().name).toBe(theme);
+      expect(getThemeIndicator().text).toBe(theme);
+      expect(getMutableConfig().theme).toBe(theme);
+      expect(getMutableConfig().randomTheme).toBe("fav");
+      expect(ThemeController.randomTheme).toBeNull();
     },
   );
 });
