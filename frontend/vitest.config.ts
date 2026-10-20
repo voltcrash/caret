@@ -20,6 +20,11 @@ const tanstackSolidNoExternal: (string | RegExp)[] = [
   /@tanstack\/solid-.*/,
 ];
 
+// Inline projects also run through the repository's aggregate config.
+const define = {
+  "import.meta.env.OXYTYPE_BUILD_ID": JSON.stringify("TESTING"),
+};
+
 export const projects = [
   {
     extends: false,
@@ -36,6 +41,7 @@ export const projects = [
     },
   },
   {
+    define,
     ssr: {
       noExternal: tanstackSolidNoExternal,
     },
@@ -56,6 +62,7 @@ export const projects = [
     plugins,
   },
   {
+    define,
     ssr: {
       noExternal: tanstackSolidNoExternal,
     },
@@ -68,6 +75,7 @@ export const projects = [
     plugins,
   },
   {
+    define,
     ssr: {
       noExternal: tanstackSolidNoExternal,
     },
@@ -88,7 +96,7 @@ export const projects = [
 ] satisfies TestProjectInlineConfiguration[];
 export default defineConfig({
   // Start builds define it; unit tests use the same fixed client version.
-  define: { "import.meta.env.OXYTYPE_BUILD_ID": JSON.stringify("TESTING") },
+  define,
   test: {
     // Vitest v4 compatibility: preserve mock call history.
     // Remove after tests no longer rely on calls from setup or earlier tests.
