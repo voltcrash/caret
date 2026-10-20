@@ -52,7 +52,9 @@ export function SettingsLoading(props: {
                 icon="fa-search"
                 class="absolute top-1/2 left-4 -translate-y-1/2 text-sub"
               />
-              <div class="w-full rounded bg-bg py-3 pr-10 pl-10 text-em-base text-sub">
+              {/* global input styles arrive with the browser bundle, so the
+                  search box's line height and touch height are explicit */}
+              <div class="w-full rounded bg-bg py-3 pr-10 pl-10 text-em-base leading-[1.25em] text-sub pointer-coarse:min-h-11">
                 search
               </div>
             </div>
