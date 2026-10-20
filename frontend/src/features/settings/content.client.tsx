@@ -1,6 +1,7 @@
 import { createEffect, type JSXElement, on, onCleanup, Show } from "solid-js";
 
 import { SettingsContent } from "../../ts/components/pages/settings/SettingsContent";
+import { getConfig } from "../../ts/config/store";
 import { highlightSetting } from "../../ts/states/settings-highlight";
 import {
   type SettingsSection,
@@ -12,6 +13,7 @@ import { SettingsLoading } from "./loading";
 /** Preference UI; route search owns the section and each highlight request. */
 export function SettingsView(props: {
   section: SettingsSection;
+  authenticated: boolean;
   highlight: string | undefined;
   onSection: (section: SettingsSection) => void;
 }): JSXElement {
@@ -29,7 +31,16 @@ export function SettingsView(props: {
     ),
   );
   return (
-    <Show when={settled()} fallback={<SettingsLoading />}>
+    <Show
+      when={settled()}
+      fallback={
+        <SettingsLoading
+          section={props.section}
+          authenticated={props.authenticated}
+          keyTips={getConfig.showKeyTips}
+        />
+      }
+    >
       <SettingsSectionHostContext.Provider
         value={{
           current: () => props.section,

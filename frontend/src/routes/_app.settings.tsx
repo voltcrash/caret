@@ -41,6 +41,7 @@ function Settings(): JSXElement {
     <div class="page pageSettings" id="pageSettings">
       <SettingsPage
         section={sectionForTab(search().tab, registered()) ?? "behavior"}
+        authenticated={registered()}
         highlight={search().highlight}
         onSection={(tab) =>
           void navigate({ search: { tab }, replace: true, resetScroll: false })
