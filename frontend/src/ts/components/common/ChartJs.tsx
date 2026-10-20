@@ -26,9 +26,9 @@ import chartTrendline from "chartjs-plugin-trendline";
 import { createDeferred, JSXElement, onCleanup, onMount } from "solid-js";
 
 import { Theme } from "../../constants/themes";
-import { configEvent } from "../../events/config";
 import { createEffectOn } from "../../hooks/effects";
 import { useRef } from "../../hooks/useRef";
+import { getFontFamily } from "../../states/app";
 import { getTheme } from "../../states/theme";
 import { cn } from "../../utils/cn";
 
@@ -90,7 +90,6 @@ export function ChartJs<T extends ChartType, TData = DefaultDataPoint<T>>(
   let chart: Chart<T, TData> | undefined;
   let mountObserver: MutationObserver | undefined;
 
-  useChartEvents();
   onMount(() => {
     const canvas = canvasEl();
     if (canvas === undefined) return;
@@ -104,10 +103,7 @@ export function ChartJs<T extends ChartType, TData = DefaultDataPoint<T>>(
       chart = new Chart(canvas, {
         type: props.type,
         data: props.data,
-        options:
-          props.options === undefined
-            ? undefined
-            : addColorsToOptions(props.options, getTheme),
+        options: chartOptions(canvas),
       });
       props.onChartInit?.(chart);
     };
@@ -121,17 +117,27 @@ export function ChartJs<T extends ChartType, TData = DefaultDataPoint<T>>(
     }
   });
 
+  const chartOptions = (canvas: HTMLCanvasElement): ChartOptions<T> => {
+    const options = { ...props.options } as NonNullable<ChartOptions<T>>;
+    options.font = {
+      ...options.font,
+      family: getFontFamily() ?? getComputedStyle(canvas).fontFamily,
+    };
+    return addColorsToOptions(options, getTheme);
+  };
+
   const updateChart = (data: ChartData<T, TData>): void => {
     if (!chart) return;
 
     chart.data = data;
 
-    if (props.options) {
-      chart.options = addColorsToOptions(props.options, getTheme);
-    }
+    chart.options = chartOptions(chart.canvas);
 
     chart.update("none");
   };
+
+  // Canvas text does not inherit CSS. Keep each chart on its app's font stack.
+  createEffectOn(getFontFamily, () => updateChart(props.data), { defer: true });
 
   const deferredData = createDeferred(() => props.data, { timeoutMs: 500 });
 
@@ -180,12 +186,4 @@ function addColorsToOptions<TType extends ChartType = ChartType>(
   });
 
   return options;
-}
-
-function useChartEvents(): void {
-  configEvent.useListener(({ key, newValue }) => {
-    if (key === "fontFamily") {
-      Chart.defaults.font.family = newValue.replace(/_/g, " ");
-    }
-  });
 }
