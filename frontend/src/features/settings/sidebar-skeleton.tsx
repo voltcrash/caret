@@ -2,6 +2,7 @@ import { For, type JSXElement, Show } from "solid-js";
 
 import type { SettingsSection } from "./tabs";
 
+import { Skeleton } from "../../components/skeleton";
 import { SkeletonText } from "../../components/skeleton-text";
 import { Fa } from "../../ts/components/common/Fa";
 import { Kbd } from "../../ts/components/common/Kbd";
@@ -17,15 +18,15 @@ export function SettingsSidebarSkeleton(props: {
   keyTips?: boolean;
 }): JSXElement {
   return (
-    <div class="w-full shrink-0 md:w-60 md:self-start">
+    <div
+      data-settings-sidebar-skeleton
+      class="w-full shrink-0 md:w-60 md:self-start"
+    >
       {/* SidebarLayout centers its fixed nav below the header, or pins it
             under the header when taller; a symmetric safe-centered frame
             places it identically without measuring */}
       <div class="md:pointer-events-none md:fixed md:top-(--content-top) md:bottom-(--content-top) md:flex md:w-60 md:items-center-safe">
-        <div
-          aria-hidden="true"
-          class="grid w-full grid-cols-2 gap-2 rounded-double bg-sub-alt p-4 md:flex md:max-h-[calc(100vh-var(--content-top)-1rem)] md:flex-col md:items-start md:gap-4 md:overflow-hidden"
-        >
+        <Skeleton class="grid w-full grid-cols-2 gap-2 rounded-double bg-sub-alt p-4 md:flex md:max-h-[calc(100vh-var(--content-top)-1rem)] md:flex-col md:items-start md:gap-4 md:overflow-hidden">
           {/* Explicit input geometry also applies before browser styles load. */}
           <div
             data-settings-search-skeleton
@@ -84,7 +85,7 @@ export function SettingsSidebarSkeleton(props: {
               </div>
             </div>
           </Show>
-        </div>
+        </Skeleton>
       </div>
     </div>
   );

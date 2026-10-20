@@ -16,9 +16,8 @@ const rows = [
 ];
 
 /**
- * Mirrors SidebarLayout and the settings sections while browser code and the
- * session get ready, so the real page replaces it without moving anything:
- * same labels, same centered sidebar, same heading for the open section.
+ * Keeps sidebar and section geometry while browser code and the session load.
+ * The route's heading stays visible above the pulsing placeholders.
  */
 export function SettingsLoading(props: {
   section: SettingsSection;
