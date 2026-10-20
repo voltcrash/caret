@@ -122,7 +122,7 @@ for (const { authenticated, mobile } of [
     }
     await expect(loading).toBeHidden();
     const search = page.getByRole("textbox", { name: "Search settings" });
-    await expect(search).toBeVisible();
+    await expect(search).toBeInViewport();
     const after = {
       heading: await page.locator(`#group_${section} h2`).boundingBox(),
       item: await page
