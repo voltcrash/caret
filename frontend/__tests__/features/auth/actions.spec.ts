@@ -34,7 +34,11 @@ vi.mock("../../../src/features/auth/client.client", () => ({
   }),
 }));
 import { createAuthActions } from "../../../src/features/auth/actions.client";
-import { authRedirect, sessionKey } from "../../../src/features/auth/session";
+import {
+  authRedirect,
+  sessionKey,
+  sessionOptions,
+} from "../../../src/features/auth/session";
 import { requireSession } from "../../../src/features/auth/guard";
 const user = {
   uid: "a",
@@ -115,8 +119,17 @@ it("guards private routes and preserves local redirect search/hash", async () =>
   expect(await requireSession(client, "/device?user_code=ABC#confirm")).toEqual(
     user,
   );
-  // A cached signed-in session is rechecked, never trusted for a guard.
+  // Fresh sessions (including SSR hydration) avoid another round trip.
+  await requireSession(client, "/account");
+  expect(mocks.session).toHaveBeenCalledOnce();
   state = { user: null, signUpEnabled: true };
+  client.setQueryData(
+    sessionKey,
+    { user, signUpEnabled: true },
+    {
+      updatedAt: Date.now() - 30_001,
+    },
+  );
   await expect(
     requireSession(client, "/device?user_code=ABC#confirm"),
   ).rejects.toMatchObject({
@@ -126,6 +139,7 @@ it("guards private routes and preserves local redirect search/hash", async () =>
     },
   });
   state = { user: { ...user, registered: false }, signUpEnabled: true };
+  await client.invalidateQueries({ queryKey: sessionKey });
   await expect(requireSession(client, "/account")).rejects.toMatchObject({
     options: { to: "/login", search: { redirect: "/account" } },
   });
@@ -169,4 +183,11 @@ it("reauthenticates with the remaining provider before unlinking and refreshes p
   expect(mocks.unlink).toHaveBeenCalledWith({ accountId: "linked-github" });
   expect(client.getQueryData(sessionKey)).toEqual(state);
   expect(invalidated).toHaveBeenCalledTimes(2);
+});
+
+it("forces refresh after auth changes even while the cached session is fresh", async () => {
+  client.setQueryData(sessionKey, { user: null, signUpEnabled: true });
+  await createAuthActions(client, invalidated).login("github");
+  expect(mocks.session).toHaveBeenCalledOnce();
+  expect(client.getQueryData(sessionOptions().queryKey)).toEqual(state);
 });
