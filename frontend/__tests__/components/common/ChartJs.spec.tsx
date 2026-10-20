@@ -42,6 +42,7 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
+  Reflect.deleteProperty(document, "fonts");
 });
 
 function mountChart(container?: HTMLElement): Chart {
@@ -89,4 +90,38 @@ it("initializes a detached cached canvas with the latest font", async () => {
   await waitFor(() => expect(mocks.create).toHaveBeenCalledOnce());
   const chart = mocks.create.mock.calls[0]?.[0] as Chart;
   expect(chart.options.font?.family).toBe('"Fira Code", monospace');
+});
+
+it("redraws after initial and later web fonts load, then removes its listener", async () => {
+  const ready = Promise.withResolvers<undefined>();
+  const fonts = Object.assign(new EventTarget(), { ready: ready.promise });
+  Object.defineProperty(document, "fonts", {
+    configurable: true,
+    value: fonts,
+  });
+  const chart = mountChart();
+  expect(chart.update).not.toHaveBeenCalled();
+  ready.resolve(undefined);
+  await ready.promise;
+  expect(chart.update).toHaveBeenCalledOnce();
+  fonts.dispatchEvent(new Event("loadingdone"));
+  expect(chart.update).toHaveBeenCalledTimes(2);
+
+  cleanup();
+  fonts.dispatchEvent(new Event("loadingdone"));
+  expect(chart.update).toHaveBeenCalledTimes(2);
+  expect(chart.destroy).toHaveBeenCalledOnce();
+});
+
+it("ignores a font download finishing after unmount", async () => {
+  const ready = Promise.withResolvers<undefined>();
+  Object.defineProperty(document, "fonts", {
+    configurable: true,
+    value: Object.assign(new EventTarget(), { ready: ready.promise }),
+  });
+  const chart = mountChart();
+  cleanup();
+  ready.resolve(undefined);
+  await ready.promise;
+  expect(chart.update).not.toHaveBeenCalled();
 });

@@ -89,6 +89,7 @@ export function ChartJs<T extends ChartType, TData = DefaultDataPoint<T>>(
 
   let chart: Chart<T, TData> | undefined;
   let mountObserver: MutationObserver | undefined;
+  const redraw = (): void => chart?.update("none");
 
   onMount(() => {
     const canvas = canvasEl();
@@ -106,6 +107,8 @@ export function ChartJs<T extends ChartType, TData = DefaultDataPoint<T>>(
         options: chartOptions(canvas),
       });
       props.onChartInit?.(chart);
+      // A canvas may first draw with a fallback while its web font downloads.
+      void document.fonts?.ready.then(redraw);
     };
     initialize();
     if (chart === undefined) {
@@ -115,6 +118,8 @@ export function ChartJs<T extends ChartType, TData = DefaultDataPoint<T>>(
         subtree: true,
       });
     }
+    document.fonts?.addEventListener("loadingdone", redraw);
+    onCleanup(() => document.fonts?.removeEventListener("loadingdone", redraw));
   });
 
   const chartOptions = (canvas: HTMLCanvasElement): ChartOptions<T> => {
@@ -146,6 +151,7 @@ export function ChartJs<T extends ChartType, TData = DefaultDataPoint<T>>(
   onCleanup(() => {
     mountObserver?.disconnect();
     chart?.destroy();
+    chart = undefined;
   });
 
   return (
