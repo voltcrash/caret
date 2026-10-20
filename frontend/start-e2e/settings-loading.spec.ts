@@ -56,8 +56,14 @@ test("settings keep their loading layout while the browser bundle downloads", as
   expect(documents).toHaveLength(1);
 });
 
-for (const authenticated of [false, true]) {
-  test(`the ${authenticated ? "signed-in" : "guest"} settings replace the loading layout without moving`, async ({
+for (const { authenticated, mobile } of [
+  { authenticated: false, mobile: false },
+  { authenticated: true, mobile: false },
+  { authenticated: false, mobile: true },
+]) {
+  const section = mobile ? "behavior" : "caret";
+  const name = `${authenticated ? "signed-in" : "guest"}-${mobile ? "mobile" : "desktop"}`;
+  test(`the ${name} settings replace the loading layout without moving`, async ({
     page,
     context,
   }) => {
@@ -72,7 +78,9 @@ for (const authenticated of [false, true]) {
         { name: "oxytype.session_token", value, url: "http://127.0.0.1:4185" },
       ]);
     }
-    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.setViewportSize(
+      mobile ? { width: 390, height: 844 } : { width: 1440, height: 900 },
+    );
     const bundle = Promise.withResolvers<undefined>();
     let blocked = false;
     await page.route("**/assets/content.client-*.js", async (route) => {
@@ -85,7 +93,7 @@ for (const authenticated of [false, true]) {
     const boxes = async (): Promise<
       Record<"heading" | "item" | "search" | "sidebar", Box>
     > => ({
-      heading: await page.getByRole("heading", { name: "caret" }).boundingBox(),
+      heading: await page.getByRole("heading", { name: section }).boundingBox(),
       item: await loading
         .locator('[data-settings-section-skeleton="appearance"] > :last-child')
         .boundingBox(),
@@ -98,7 +106,7 @@ for (const authenticated of [false, true]) {
     });
     let before: Awaited<ReturnType<typeof boxes>>;
     try {
-      await page.goto("/settings?tab=caret");
+      await page.goto(mobile ? "/settings" : "/settings?tab=caret");
       await expect.poll(() => blocked).toBe(true);
       await expect(page.locator("#startupScreen")).toBeHidden();
       await expect(loading).toBeVisible();
@@ -107,11 +115,7 @@ for (const authenticated of [false, true]) {
       ).toHaveCount(authenticated ? 9 : 8);
       before = await boxes();
       await page.screenshot({
-        path: test
-          .info()
-          .outputPath(
-            `settings-loading-${authenticated ? "signed-in" : "guest"}-desktop.png`,
-          ),
+        path: test.info().outputPath(`settings-loading-${name}.png`),
       });
     } finally {
       bundle.resolve(undefined);
@@ -120,7 +124,7 @@ for (const authenticated of [false, true]) {
     const search = page.getByRole("textbox", { name: "Search settings" });
     await expect(search).toBeVisible();
     const after = {
-      heading: await page.locator("#group_caret h2").boundingBox(),
+      heading: await page.locator(`#group_${section} h2`).boundingBox(),
       item: await page
         .getByRole("navigation", { name: "Page sections" })
         .getByRole("button", { name: "appearance" })
@@ -132,11 +136,7 @@ for (const authenticated of [false, true]) {
         .boundingBox(),
     };
     await page.screenshot({
-      path: test
-        .info()
-        .outputPath(
-          `settings-loaded-${authenticated ? "signed-in" : "guest"}-desktop.png`,
-        ),
+      path: test.info().outputPath(`settings-loaded-${name}.png`),
     });
     for (const key of ["heading", "item", "search", "sidebar"] as const) {
       expect(before[key]).not.toBeNull();
