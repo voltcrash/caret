@@ -27,14 +27,14 @@ describe("Config", () => {
     replaceConfig({
       mode: "words",
       words: 0,
-      showKeyTips: false,
+      showKeyTips: true,
       funbox: ["no_quit"],
     });
     const previous = structuredClone(getConfig());
     expect(ConfigUtils.getConfigChanges()).toMatchObject({
       mode: "words",
       words: 0,
-      showKeyTips: false,
+      showKeyTips: true,
       funbox: ["no_quit"],
     });
     expect(getConfig()).toEqual(previous);
