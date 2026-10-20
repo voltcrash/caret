@@ -11,6 +11,22 @@ import {
 releaseTestApplication();
 
 describe("app-owned state", () => {
+  it("copies store properties without leaking Solid's proxy metadata", () => {
+    const [settings, setSettings] = createAppStore({ language: "english" });
+    const app = createTestApplication();
+    const release = mountApplication(app.application);
+    try {
+      expect({ ...settings }).toEqual({ language: "english" });
+      expect(Object.assign({}, settings)).toEqual({ language: "english" });
+      expect(Object.keys(settings)).toEqual(["language"]);
+      setSettings("language", "german");
+      expect({ ...settings }).toEqual({ language: "german" });
+    } finally {
+      app.dispose();
+      release();
+    }
+  });
+
   it("keeps domain accessors reactive and recreates data on remount", () => {
     const [count, setCount] = createAppSignal(0);
     const [items, setItems] = createAppStore<{ value: number }[]>([]);
