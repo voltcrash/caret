@@ -8,7 +8,6 @@ import { lazy, Show, Suspense, type JSXElement } from "solid-js";
 import { onlyCachedOnServer } from "../../data/prefetch";
 import { profileOptions } from "../../data/profile";
 import { ProfileMissing } from "./missing";
-import { ProfileSkeleton } from "./skeleton";
 import { ProfileSummary } from "./summary";
 
 const UserProfile = lazy(
@@ -16,6 +15,10 @@ const UserProfile = lazy(
     default: (await import("./profile.client")).profileLeaves.UserProfile,
   })),
 );
+
+export const preloadProfile = createClientOnlyFn(async (): Promise<void> => {
+  await UserProfile.preload();
+});
 
 /** Shared with the route's pending view so the skeleton sits in place. */
 export const profileFrame = "flex h-full flex-col justify-center gap-4 text-lg";
@@ -38,13 +41,13 @@ export function ProfilePage(props: {
       <Show when={profile.data}>
         {(data) => (
           <ClientOnly fallback={<ProfileSummary profile={data()} />}>
-            <Suspense fallback={<ProfileSkeleton />}>
+            <Suspense fallback={<ProfileSummary profile={data()} />}>
               <UserProfile profile={data()} client={props.client} />
             </Suspense>
           </ClientOnly>
         )}
       </Show>
-      <Show when={profile.isError}>
+      <Show when={profile.isError && profile.data === undefined}>
         <ProfileMissing name={props.uidOrName} />
       </Show>
     </div>

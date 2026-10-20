@@ -9,7 +9,11 @@ import { publicEnv } from "../app/public-env";
 import { urlSearch } from "../app/search";
 import { isUserNotFound, profileOptions } from "../data/profile";
 import { ProfileMissing } from "../features/profile/missing";
-import { ProfilePage, profileFrame } from "../features/profile/page";
+import {
+  ProfilePage,
+  profileFrame,
+  preloadProfile,
+} from "../features/profile/page";
 import { ProfileSkeleton } from "../features/profile/skeleton";
 
 const SearchSchema = z.object({ client: ClientSchema.optional() }).partial();
@@ -20,6 +24,13 @@ export const Route = createFileRoute("/_app/profile/$uidOrName")({
   loaderDeps: ({ search }) => ({ client: search.client ?? "web" }),
   loader: async ({ context, params, deps }) => {
     const options = profileOptions(params.uidOrName, deps.client);
+    if (!isServer) {
+      void preloadProfile().catch(() => undefined);
+      if (context.queryClient.getQueryData(options.queryKey) !== undefined) {
+        void context.queryClient.query(options).catch(() => undefined);
+        return;
+      }
+    }
     try {
       await context.queryClient.query(options);
     } catch (error) {
