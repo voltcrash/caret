@@ -174,4 +174,27 @@ describe("theme picker selection", () => {
       expect(ThemeController.randomTheme).toBeNull();
     },
   );
+
+  it("follows subsequent random themes when reopening the picker", async () => {
+    for (const theme of ["matrix", "serika", "8008"] as const) {
+      setConfig("favThemes", [theme], { nosave: true });
+      setConfig("randomTheme", "fav", { nosave: true });
+      await ThemeController.randomizeTheme();
+      setCommandlineSubgroup("themes");
+
+      await prepareCommandline();
+      await vi.advanceTimersByTimeAsync(250);
+
+      expect(getTheme().name).toBe(theme);
+      expect(commandlineState.activeCommand?.configValue).toBe(theme);
+      expect(
+        commandlineState.suggestions.filter((command) => command.isActive),
+      ).toMatchObject([{ configValue: theme }]);
+      expect(getMutableConfig().theme).toBe("aether");
+
+      onCommandlineBackdropClick();
+      await vi.advanceTimersByTimeAsync(0);
+      afterHideCommandline();
+    }
+  });
 });
