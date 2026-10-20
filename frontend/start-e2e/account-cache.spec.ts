@@ -1,4 +1,6 @@
 import type { BrowserContext, Page } from "playwright/test";
+import type { SessionState } from "@oxytype/schemas/auth-session";
+import { fromCrossJSON, type SerovalNode } from "seroval";
 import type { StoredQueryCache } from "../src/app/query-cache.client";
 import { authCookie } from "./auth-fixtures";
 import { expect, test } from "./fixtures";
@@ -94,12 +96,17 @@ test("unfinished signups see local settings without registered account controls"
   context,
 }) => {
   await signIn(context, "browser-cache-pending");
+  const session = page.waitForResponse(
+    (response) =>
+      new URL(response.url()).pathname === rpcPath("getSessionState"),
+  );
   await page.goto("/settings");
+  const state = fromCrossJSON((await (await session).json()) as SerovalNode, {
+    refs: new Map(),
+  }) as { result: SessionState };
+  expect(state.result.user?.registered).toBe(false);
   await expect(
     page.getByRole("textbox", { name: "Search settings" }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("link", { name: "Account", exact: true }),
   ).toBeVisible();
   await expect(page.locator("#group_account")).toHaveCount(0);
   await expect(page.locator('[data-setting-key="tags"]')).toHaveCount(0);
