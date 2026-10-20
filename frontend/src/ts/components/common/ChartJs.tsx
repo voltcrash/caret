@@ -10,11 +10,13 @@ import {
   ChartType,
   DefaultDataPoint,
   Filler,
+  FontSpec,
   LineController,
   LineElement,
   LinearScale,
   PointElement,
   ScaleChartOptions,
+  ScriptableAndScriptableOptions,
   ScatterController,
   TimeScale,
   TimeSeriesScale,
@@ -123,12 +125,25 @@ export function ChartJs<T extends ChartType, TData = DefaultDataPoint<T>>(
   });
 
   const chartOptions = (canvas: HTMLCanvasElement): ChartOptions<T> => {
-    const options = { ...props.options } as NonNullable<ChartOptions<T>>;
+    const family = getFontFamily() ?? getComputedStyle(canvas).fontFamily;
+    const tooltip = props.options?.plugins?.tooltip;
+    const options = {
+      ...props.options,
+      plugins: {
+        ...props.options?.plugins,
+        tooltip: {
+          ...tooltip,
+          bodyFont: withFontFamily(tooltip?.bodyFont, family),
+          titleFont: withFontFamily(tooltip?.titleFont, family),
+          footerFont: withFontFamily(tooltip?.footerFont, family),
+        },
+      },
+    } as NonNullable<ChartOptions<T>>;
     options.font = {
       ...options.font,
-      family: getFontFamily() ?? getComputedStyle(canvas).fontFamily,
+      family,
     };
-    return addColorsToOptions(options, getTheme);
+    return addColorsToOptions(options, getTheme, family);
   };
 
   const updateChart = (data: ChartData<T, TData>): void => {
@@ -170,6 +185,7 @@ export function ChartJs<T extends ChartType, TData = DefaultDataPoint<T>>(
 function addColorsToOptions<TType extends ChartType = ChartType>(
   options: ChartOptions<TType>,
   theme: () => Theme,
+  family: string,
 ): ChartOptions<TType> {
   //axis colors
   const chartScaleOptions = options as ScaleChartOptions<TType>;
@@ -178,10 +194,12 @@ function addColorsToOptions<TType extends ChartType = ChartType>(
     axis.ticks = {
       ...axis.ticks,
       color: theme().sub,
+      font: withFontFamily(axis.ticks?.font, family),
     };
     axis.title = {
       ...axis.title,
       color: theme().sub,
+      font: withFontFamily(axis.title?.font, family),
     };
     axis.border = { ...axis.border, color: theme().subAlt };
     axis.grid = {
@@ -192,4 +210,13 @@ function addColorsToOptions<TType extends ChartType = ChartType>(
   });
 
   return options;
+}
+
+function withFontFamily<TContext>(
+  font: ScriptableAndScriptableOptions<Partial<FontSpec>, TContext> | undefined,
+  family: string,
+): ScriptableAndScriptableOptions<Partial<FontSpec>, TContext> {
+  return typeof font === "function"
+    ? (context, options) => ({ ...font(context, options), family })
+    : { ...font, family };
 }

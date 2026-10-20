@@ -1,4 +1,4 @@
-import type { ChartConfiguration } from "chart.js";
+import type { ChartConfiguration, ChartOptions } from "chart.js";
 
 import { cleanup, render, waitFor } from "@solidjs/testing-library";
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
@@ -45,20 +45,24 @@ afterEach(() => {
   Reflect.deleteProperty(document, "fonts");
 });
 
-function mountChart(container?: HTMLElement): Chart {
-  let chart: Chart | undefined;
+function mountChart(
+  container?: HTMLElement,
+  options?: ChartOptions<"bar">,
+): Chart<"bar"> {
+  let chart: Chart<"bar"> | undefined;
   render(
     () => (
       <ChartJs
         name="font regression"
         type="bar"
         data={{ labels: ["one"], datasets: [{ data: [1] }] }}
+        options={options}
         onChartInit={(value) => (chart = value)}
       />
     ),
     container === undefined ? undefined : { container },
   );
-  return chart as Chart;
+  return chart as Chart<"bar">;
 }
 
 it("uses the selected font on first render and updates existing charts", () => {
@@ -79,6 +83,27 @@ it("inherits the canvas font before the app font is ready", () => {
   } as CSSStyleDeclaration);
   const chart = mountChart();
   expect(chart.options.font?.family).toBe('"Roboto Mono", monospace');
+});
+
+it("sets axis and tooltip fonts explicitly while retaining their size and weight", () => {
+  setFontFamily('"Fira Code", monospace');
+  const chart = mountChart(undefined, {
+    scales: {
+      x: { ticks: { font: { size: 18 } }, title: { font: { weight: "bold" } } },
+    },
+    plugins: { tooltip: { titleFont: { weight: "bold" } } },
+  });
+  setFontFamily('"JetBrains Mono", monospace');
+  const family = '"JetBrains Mono", monospace';
+  expect(chart.options.scales?.["x"]).toMatchObject({
+    ticks: { font: { family, size: 18 } },
+    title: { font: { family, weight: "bold" } },
+  });
+  expect(chart.options.plugins?.tooltip).toMatchObject({
+    bodyFont: { family },
+    titleFont: { family, weight: "bold" },
+    footerFont: { family },
+  });
 });
 
 it("initializes a detached cached canvas with the latest font", async () => {
