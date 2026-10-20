@@ -96,4 +96,23 @@ describe("theme picker selection", () => {
       expect(getMutableConfig().randomTheme).toBe(mode);
     },
   );
+
+  it.each(["off", "on"] as const)(
+    "uses the saved theme in mode %s before any random theme is applied",
+    async (mode) => {
+      setConfig("randomTheme", "off", { nosave: true });
+      await vi.advanceTimersByTimeAsync(0);
+      setConfig("randomTheme", mode, { nosave: true });
+
+      await prepareCommandline();
+      await vi.advanceTimersByTimeAsync(250);
+
+      expect(getTheme().name).toBe("aether");
+      expect(getThemeIndicator().text).toBe("aether");
+      expect(commandlineState.activeCommand?.configValue).toBe("aether");
+      expect(
+        commandlineState.suggestions.filter((command) => command.isActive),
+      ).toMatchObject([{ configValue: "aether" }]);
+    },
+  );
 });
