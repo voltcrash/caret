@@ -126,11 +126,31 @@ export async function loadAccountData(
     // Restored snapshots render immediately, including when offline. Refresh
     // invalidated disk data without putting the account loading gate back up.
     const options = getAccountQueryOptions(userId);
-    if (
-      getQueryClient().getQueryState(options.queryKey)?.isInvalidated === true
-    ) {
-      void getQueryClient()
+    const client = getQueryClient();
+    const state = client.getQueryState(options.queryKey);
+    if (state?.isInvalidated === true && state.fetchStatus === "idle") {
+      void client
         .query(options)
+        .then(async (updated) => {
+          lease.assertCurrent();
+          await client.invalidateQueries({
+            queryKey: baseKey("tags", { isUserSpecific: true }),
+          });
+          lease.assertCurrent();
+          const previousIds = new Set(data.tags?.map((tag) => tag._id));
+          const nextIds = updated.tags?.map((tag) => tag._id) ?? [];
+          if (
+            previousIds.size !== nextIds.length ||
+            nextIds.some((id) => !previousIds.has(id))
+          ) {
+            // History normalization removes unknown tags. Reapply it if the
+            // refreshed account changed that set during the parallel fetch.
+            await client.invalidateQueries({
+              queryKey: baseKey("results", { isUserSpecific: true }),
+            });
+          }
+          return undefined;
+        })
         .catch(() => undefined);
     }
     return data;
