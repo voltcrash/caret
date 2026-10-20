@@ -22,6 +22,9 @@ async function main(): Promise<void> {
     "browser-result-persistence",
     "browser-logout",
     "browser-home",
+    "browser-cache",
+    "browser-cache-b",
+    "browser-cache-pending",
   ]) {
     const session = await seedSession(mf, "a");
     await db
@@ -52,6 +55,8 @@ async function main(): Promise<void> {
         "browser-result-persistence",
         "browser-logout",
         "browser-home",
+        "browser-cache",
+        "browser-cache-b",
       ].includes(token)
     ) {
       await db
