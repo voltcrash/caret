@@ -1,4 +1,4 @@
-import { For, type JSXElement } from "solid-js";
+import { For, type JSXElement, Show } from "solid-js";
 
 import { Skeleton } from "../../components/skeleton";
 import { SkeletonText } from "../../components/skeleton-text";
@@ -38,6 +38,13 @@ export function LeaderboardTableSkeleton(): JSXElement {
                 <For each={[0, 1, 2]}>
                   {() => <SkeletonText class="w-14 shrink-0" tone={tone} />}
                 </For>
+                {/* dates take two 1.25em lines (day, then time) */}
+                <div class="grid w-20 shrink-0 justify-items-end">
+                  <SkeletonText class="h-[1.25em] w-20" tone={tone} />
+                  <Show when={row > 0}>
+                    <SkeletonText class="h-[1.25em] w-12" tone={tone} />
+                  </Show>
+                </div>
               </div>
             );
           }}
