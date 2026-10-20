@@ -58,8 +58,17 @@ export function appObject<T extends object>(read: () => T, array = false): T {
     deleteProperty: (_target, key) => Reflect.deleteProperty(read(), key),
     has: (_target, key) => Reflect.has(read(), key),
     ownKeys: () => Reflect.ownKeys(read()),
-    getOwnPropertyDescriptor: (_target, key) =>
-      Reflect.getOwnPropertyDescriptor(read(), key),
+    getOwnPropertyDescriptor: (target, key) => {
+      const descriptor = Reflect.getOwnPropertyDescriptor(read(), key);
+      if (descriptor === undefined) return undefined;
+      return {
+        ...descriptor,
+        // Forwarded properties belong to the current app, not this target.
+        // Preserve the array target's non-configurable length property.
+        configurable:
+          Reflect.getOwnPropertyDescriptor(target, key)?.configurable ?? true,
+      };
+    },
   }) as T;
 }
 
