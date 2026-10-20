@@ -1,3 +1,4 @@
+import { authCookie } from "./auth-fixtures";
 import { expect, test } from "./fixtures";
 
 // Hold actual downloads rather than receiving assets from the service worker.
@@ -55,80 +56,105 @@ test("settings keep their loading layout while the browser bundle downloads", as
   expect(documents).toHaveLength(1);
 });
 
-test("the loaded settings replace the loading layout without moving", async ({
-  page,
-}) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  const bundle = Promise.withResolvers<undefined>();
-  let blocked = false;
-  await page.route("**/assets/content.client-*.js", async (route) => {
-    blocked = true;
-    await bundle.promise;
-    await route.continue();
-  });
-  const loading = page.getByRole("status", { name: "Loading settings" });
-  type Box = { x: number; y: number; width: number; height: number } | null;
-  const boxes = async (): Promise<
-    Record<"heading" | "item" | "search" | "sidebar", Box>
-  > => ({
-    heading: await page.getByRole("heading", { name: "caret" }).boundingBox(),
-    item: await loading
-      .locator('[data-settings-section-skeleton="appearance"] > :last-child')
-      .boundingBox(),
-    search: await loading
-      .locator("[data-settings-search-skeleton]")
-      .boundingBox(),
-    sidebar: await loading
-      .locator("[data-settings-sidebar-skeleton] > div > div")
-      .boundingBox(),
-  });
-  let before: Awaited<ReturnType<typeof boxes>>;
-  try {
-    await page.goto("/settings?tab=caret");
-    await expect.poll(() => blocked).toBe(true);
-    await expect(page.locator("#startupScreen")).toBeHidden();
-    await expect(loading).toBeVisible();
-    before = await boxes();
-    await page.screenshot({
-      path: test.info().outputPath("settings-loading-desktop.png"),
+for (const authenticated of [false, true]) {
+  test(`the ${authenticated ? "signed-in" : "guest"} settings replace the loading layout without moving`, async ({
+    page,
+    context,
+  }) => {
+    if (authenticated) {
+      const value =
+        authCookie("browser-private")
+          .split(";")[0]
+          ?.split("=")
+          .slice(1)
+          .join("=") ?? "";
+      await context.addCookies([
+        { name: "oxytype.session_token", value, url: "http://127.0.0.1:4185" },
+      ]);
+    }
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const bundle = Promise.withResolvers<undefined>();
+    let blocked = false;
+    await page.route("**/assets/content.client-*.js", async (route) => {
+      blocked = true;
+      await bundle.promise;
+      await route.continue();
     });
-  } finally {
-    bundle.resolve(undefined);
-  }
-  await expect(loading).toBeHidden();
-  const search = page.getByRole("textbox", { name: "Search settings" });
-  await expect(search).toBeVisible();
-  const after = {
-    heading: await page.locator("#group_caret h2").boundingBox(),
-    item: await page
-      .getByRole("navigation", { name: "Page sections" })
-      .getByRole("button", { name: "appearance" })
-      .locator("span")
-      .boundingBox(),
-    search: await search.boundingBox(),
-    sidebar: await page
-      .getByRole("navigation", { name: "Page sections" })
-      .boundingBox(),
-  };
-  await page.screenshot({
-    path: test.info().outputPath("settings-loaded-desktop.png"),
+    const loading = page.getByRole("status", { name: "Loading settings" });
+    type Box = { x: number; y: number; width: number; height: number } | null;
+    const boxes = async (): Promise<
+      Record<"heading" | "item" | "search" | "sidebar", Box>
+    > => ({
+      heading: await page.getByRole("heading", { name: "caret" }).boundingBox(),
+      item: await loading
+        .locator('[data-settings-section-skeleton="appearance"] > :last-child')
+        .boundingBox(),
+      search: await loading
+        .locator("[data-settings-search-skeleton]")
+        .boundingBox(),
+      sidebar: await loading
+        .locator("[data-settings-sidebar-skeleton] > div > div")
+        .boundingBox(),
+    });
+    let before: Awaited<ReturnType<typeof boxes>>;
+    try {
+      await page.goto("/settings?tab=caret");
+      await expect.poll(() => blocked).toBe(true);
+      await expect(page.locator("#startupScreen")).toBeHidden();
+      await expect(loading).toBeVisible();
+      await expect(
+        loading.locator("[data-settings-section-skeleton]"),
+      ).toHaveCount(authenticated ? 9 : 8);
+      before = await boxes();
+      await page.screenshot({
+        path: test
+          .info()
+          .outputPath(
+            `settings-loading-${authenticated ? "signed-in" : "guest"}-desktop.png`,
+          ),
+      });
+    } finally {
+      bundle.resolve(undefined);
+    }
+    await expect(loading).toBeHidden();
+    const search = page.getByRole("textbox", { name: "Search settings" });
+    await expect(search).toBeVisible();
+    const after = {
+      heading: await page.locator("#group_caret h2").boundingBox(),
+      item: await page
+        .getByRole("navigation", { name: "Page sections" })
+        .getByRole("button", { name: "appearance" })
+        .locator("span")
+        .boundingBox(),
+      search: await search.boundingBox(),
+      sidebar: await page
+        .getByRole("navigation", { name: "Page sections" })
+        .boundingBox(),
+    };
+    await page.screenshot({
+      path: test
+        .info()
+        .outputPath(
+          `settings-loaded-${authenticated ? "signed-in" : "guest"}-desktop.png`,
+        ),
+    });
+    for (const key of ["heading", "item", "search", "sidebar"] as const) {
+      expect(before[key]).not.toBeNull();
+      expect(after[key]).not.toBeNull();
+      expect(
+        Math.abs((before[key]?.x ?? 0) - (after[key]?.x ?? 0)),
+      ).toBeLessThanOrEqual(1);
+      expect(
+        Math.abs((before[key]?.y ?? 0) - (after[key]?.y ?? 0)),
+      ).toBeLessThanOrEqual(1);
+    }
+    for (const key of ["width", "height"] as const) {
+      expect(
+        Math.abs((before.sidebar?.[key] ?? 0) - (after.sidebar?.[key] ?? 0)),
+      ).toBeLessThanOrEqual(1);
+    }
   });
-  for (const key of ["heading", "item", "search", "sidebar"] as const) {
-    expect(before[key]).not.toBeNull();
-    expect(after[key]).not.toBeNull();
-    expect(
-      Math.abs((before[key]?.x ?? 0) - (after[key]?.x ?? 0)),
-    ).toBeLessThanOrEqual(1);
-    expect(
-      Math.abs((before[key]?.y ?? 0) - (after[key]?.y ?? 0)),
-    ).toBeLessThanOrEqual(1);
-  }
-  for (const key of ["width", "height"] as const) {
-    expect(
-      Math.abs((before.sidebar?.[key] ?? 0) - (after.sidebar?.[key] ?? 0)),
-    ).toBeLessThanOrEqual(1);
-  }
-});
+}
 
 test.describe("mobile with reduced motion", () => {
   test.use({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
