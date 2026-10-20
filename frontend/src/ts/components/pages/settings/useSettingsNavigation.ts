@@ -1,4 +1,11 @@
-import { Accessor, createEffect, createSignal, on, onCleanup } from "solid-js";
+import {
+  Accessor,
+  createEffect,
+  createMemo,
+  createSignal,
+  on,
+  onCleanup,
+} from "solid-js";
 
 import { useRef } from "../../../hooks/useRef";
 import { getHeaderBottom, getPageScroller } from "../../../states/page-layout";
@@ -19,7 +26,9 @@ export function useSettingsNavigation(host: SettingsSectionHost): {
   restore: () => void;
 } {
   const [ref, content] = useRef<HTMLDivElement>();
-  const [active, setActive] = createSignal(host.current());
+  // Session refreshes can re-evaluate an unchanged route section.
+  const current = createMemo(host.current);
+  const [active, setActive] = createSignal(current());
   const scrollTo = (section: SettingsSection): void => {
     setActive(section);
     content()
@@ -27,7 +36,7 @@ export function useSettingsNavigation(host: SettingsSectionHost): {
       ?.scrollIntoView({ block: "start", behavior: "instant" });
   };
 
-  createEffect(on(host.current, scrollTo, { defer: true }));
+  createEffect(on(current, scrollTo, { defer: true }));
 
   createEffect(() => {
     const element = content();

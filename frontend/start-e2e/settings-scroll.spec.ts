@@ -171,3 +171,25 @@ test("browser Back restores manual scrolling instead of jumping to the URL tab",
   await expect(input).toBeInViewport();
   await expect(page.locator("#group_theme h2")).not.toBeInViewport();
 });
+
+test("key tips start hidden, preserve an opt-in, and reset to hidden", async ({
+  page,
+}) => {
+  await page.goto("/settings?tab=hideElements");
+  const setting = page.locator('[data-setting-key="showKeyTips"]');
+  const hide = setting.getByRole("button", { name: "hide", exact: true });
+  const show = setting.getByRole("button", { name: "show", exact: true });
+  const tips = page
+    .getByRole("navigation", { name: "Page sections" })
+    .getByText("tip: you can also change all these settings", { exact: false });
+  await expect(hide).toHaveAttribute("aria-pressed", "true");
+  await expect(tips).toHaveCount(0);
+  await show.click();
+  await expect(tips).toBeVisible();
+  await page.reload();
+  await expect(show).toHaveAttribute("aria-pressed", "true");
+  await expect(tips).toBeVisible();
+  await setting.getByRole("button", { name: "Reset to default" }).click();
+  await expect(hide).toHaveAttribute("aria-pressed", "true");
+  await expect(tips).toHaveCount(0);
+});
