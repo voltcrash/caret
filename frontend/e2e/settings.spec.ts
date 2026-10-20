@@ -20,7 +20,7 @@ test("enabling Tab quick restart works immediately and after reload", async ({
   await page.getByRole("link", { name: "Settings", exact: true }).click();
   const setting = page.locator('[data-setting-key="quickRestart"]');
   await setting.getByRole("button", { name: "tab", exact: true }).click();
-  await page.getByRole("link", { name: "Test", exact: true }).click();
+  await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
 
   for (const input of ["x", "y"]) {
     await expect(page.locator("#typingTest")).toHaveCSS("opacity", "1");
@@ -35,7 +35,7 @@ test("enabling Tab quick restart works immediately and after reload", async ({
 
   await page.getByRole("link", { name: "Settings", exact: true }).click();
   await setting.getByRole("button", { name: "off", exact: true }).click();
-  await page.getByRole("link", { name: "Test", exact: true }).click();
+  await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
   await expect(page.locator("#typingTest")).toHaveCSS("opacity", "1");
   await page.locator("#words").click();
   await page.keyboard.type("z");
