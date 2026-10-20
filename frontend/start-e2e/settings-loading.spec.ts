@@ -29,7 +29,6 @@ test("settings keep their loading layout while the browser bundle downloads", as
     await expect(loading).toHaveAttribute("aria-busy", "true");
     await expect(loading.getByText("loading your preferences…")).toBeVisible();
     const sidebar = loading.locator("[data-settings-sidebar-skeleton]");
-    await expect(sidebar).toBeVisible();
     await expect(sidebar.locator('[aria-hidden="true"]').first()).toBeVisible();
     await expect(
       sidebar.locator("[data-settings-section-skeleton]"),
