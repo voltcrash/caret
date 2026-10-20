@@ -162,7 +162,7 @@ body {
 }
 
 kbd {
-  @apply text-bg bg-text;
+  @apply text-bg bg-text font-(family-name:--font);
 
   @apply py-[0.2em] px-[0.4em] rounded-[0.25em] text-[0.75em];
 }
