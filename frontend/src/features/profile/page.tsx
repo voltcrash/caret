@@ -25,8 +25,8 @@ export const profileFrame = "flex h-full flex-col justify-center gap-4 text-lg";
 
 /**
  * `/profile/$uidOrName`: route-owned name and client selection. The server
- * renders a readable summary; the browser shows the skeleton until the full
- * profile's code arrives.
+ * renders a readable summary; the browser retains it until the full
+ * profile's code arrives. Cached data remains visible during refresh.
  */
 export function ProfilePage(props: {
   uidOrName: string;

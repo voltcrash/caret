@@ -6,7 +6,8 @@ import { sessionOptions } from "./session";
 import { accountQueryCache } from "../../app/query-cache.client";
 
 /**
- * True once the app's account owner reflects the server session. Leaves that
+ * True once the app's account owner reflects the server session and its
+ * disk cache has restored (or storage is unavailable). Leaves that
  * create actor-scoped collections wait for it, so they never start under the
  * guest scope and get disposed by the sign-in switch moments later.
  */

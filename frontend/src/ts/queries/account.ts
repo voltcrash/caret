@@ -83,9 +83,9 @@ function accountKey(client: Client, userId: string | null): unknown[] {
 }
 
 /**
- * The actor's canonical web account. Loaded once per identity, then updated
- * only by explicit cache writes (local result acknowledgements, profile
- * edits); it lives until the actor changes.
+ * The actor's canonical web account. Lives until the actor changes; restored
+ * disk data refreshes in the background. Explicit writes acknowledge local
+ * results and profile edits.
  */
 export function getAccountQueryOptions(userId: string | null = getUserId()) {
   return queryOptions({
@@ -108,7 +108,7 @@ export function getAccountQueryOptions(userId: string | null = getUserId()) {
 }
 
 /**
- * The actor's account, fetched at most once while cached; concurrent
+ * The actor's account, reusing cached data and refreshing restored data; concurrent
  * consumers (snapshot, tags, filter presets) share one request. Rejects with
  * AbortError if the actor changes before it settles.
  */
