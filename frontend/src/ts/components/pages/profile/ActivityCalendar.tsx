@@ -145,7 +145,7 @@ export function ActivityCalendar(props: {
       <div class="wrapper grid w-full max-w-[80em] grid-cols-[min-content_1fr] grid-rows-[min-content_1fr_min-content] gap-[1em] [grid-template-areas:'top_top'_'day_chart'_'empty_month'] max-[calc(1024px+5rem)]:[grid-template-areas:'top_top'_'chart_chart'_'month_month']">
         <div class="top grid grid-cols-1 gap-4 [grid-area:top] [grid-template-areas:'title'_'legend'] has-[.year]:[grid-template-areas:'year'_'title'_'legend'] sm:grid-cols-[15rem_1fr_max-content] sm:[grid-template-areas:'title_title_legend'] sm:has-[.year]:[grid-template-areas:'year_title_legend']">
           <Show when={props.isAccountPage}>
-            <div class="year text-(length:--font-size) [grid-area:year] [&_select]:border-[0.2em] [&_select]:border-bg">
+            <div class="year text-(length:--font-size) [grid-area:year] [&_select]:border-[0.2em] [&_select]:border-solid [&_select]:border-bg">
               <Select
                 label="Year"
                 options={yearOptions()}
