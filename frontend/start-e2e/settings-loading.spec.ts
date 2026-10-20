@@ -60,7 +60,9 @@ test("the loaded settings replace the loading layout without moving", async ({
     Record<"heading" | "item" | "search", Box>
   > => ({
     heading: await page.getByRole("heading", { name: "caret" }).boundingBox(),
-    item: await page.getByText("appearance", { exact: true }).boundingBox(),
+    item: await loading
+      .locator('[data-settings-section-skeleton="appearance"] > :last-child')
+      .boundingBox(),
     search: await loading
       .locator("[data-settings-search-skeleton]")
       .boundingBox(),

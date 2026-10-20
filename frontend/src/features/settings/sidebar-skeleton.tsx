@@ -10,7 +10,7 @@ import { SettingsKeyTips } from "../../ts/components/pages/settings/SettingsKeyT
 import { cn } from "../../ts/utils/cn";
 import { availableSettingsSections } from "./tabs";
 
-/** Settings sidebar geometry while browser preferences load. */
+/** Hidden copy reserves the loaded sidebar's exact wrapping and icon widths. */
 export function SettingsSidebarSkeleton(props: {
   section: SettingsSection;
   authenticated: boolean;
@@ -41,13 +41,28 @@ export function SettingsSidebarSkeleton(props: {
           >
             {([key, item]) => (
               <div
+                data-settings-section-skeleton={key}
                 class={cn(
                   "inline-flex h-min w-full min-w-0 items-center justify-start gap-[0.5em] rounded p-[0.5em] text-left leading-[1.25] text-text pointer-coarse:min-h-11",
                   key === props.section && "bg-bg font-semibold text-main",
                 )}
               >
-                <Fa icon={item.icon} class="shrink-0" />
-                <span class="min-w-0 wrap-anywhere">{item.text}</span>
+                <div class="relative flex shrink-0 items-center justify-center">
+                  <Fa icon={item.icon} class="invisible" />
+                  <div
+                    class={cn(
+                      "absolute size-[1em] rounded",
+                      key === props.section ? "bg-sub/20" : "bg-bg",
+                    )}
+                  ></div>
+                </div>
+                <div class="relative min-w-0 wrap-anywhere">
+                  <span class="invisible">{item.text}</span>
+                  <SkeletonText
+                    class="absolute inset-0 h-full"
+                    tone={key === props.section ? "sub" : "bg"}
+                  />
+                </div>
               </div>
             )}
           </For>
