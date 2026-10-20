@@ -19,7 +19,7 @@ export const sessionOptions = (): ReturnType<
       import.meta.env.OXYTYPE_OFFLINE
         ? { user: null, signUpEnabled: false }
         : await getSessionState({ signal }),
-    staleTime: 0,
+    staleTime: 30_000,
     retry: false,
   });
 };

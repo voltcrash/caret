@@ -25,7 +25,10 @@ export const createAuthActions = (
 ): AuthActions => {
   const refresh = async (): Promise<UiSession | null> => {
     await queryClient.cancelQueries({ queryKey: sessionKey });
-    const state = await queryClient.query(sessionOptions());
+    const state = await queryClient.query({
+      ...sessionOptions(),
+      staleTime: 0,
+    });
     setUserState(state.user);
     await invalidateRoutes();
     return state.user;

@@ -16,7 +16,7 @@ export async function requireSession(
     // oxlint-disable-next-line typescript/only-throw-error -- Router consumes this redirect.
     throw redirect({ to: "/" });
   }
-  await queryClient.invalidateQueries({ queryKey: sessionOptions().queryKey });
+  // query() reuses fresh SSR/browser data and rechecks expired sessions.
   const { user } = await queryClient.query(sessionOptions());
   if (user === null || !user.registered) {
     // oxlint-disable-next-line typescript/only-throw-error -- Router consumes this redirect.
