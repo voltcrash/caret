@@ -11,7 +11,9 @@ export const [isTypingReady, setTypingReady] = createAppSignal(false);
 export const [isStartupFinished, setStartupFinished] = createAppSignal(false);
 
 /** Reveal once per layout; later navigation and restarts never hide the app. */
-export function createStartupReveal(typing: Accessor<boolean>): Accessor<boolean> {
+export function createStartupReveal(
+  typing: Accessor<boolean>,
+): Accessor<boolean> {
   return createMemo(
     (revealed) =>
       revealed ||
