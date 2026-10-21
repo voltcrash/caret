@@ -9,7 +9,12 @@ import {
 import { updateWordsInputPosition } from "./sizing";
 import { setWordJoining } from "./joining";
 import { createHintsNodes, joinOverlappingHints } from "./hints";
-import { getWordElement, getActiveWordElement, setClass } from "./elements";
+import {
+  clearWordElements,
+  getWordElement,
+  getActiveWordElement,
+  setClass,
+} from "./elements";
 import { getMutableConfig } from "../../../../ts/config/store";
 import * as SlowTimer from "../../../../ts/states/slow-timer";
 import { getActiveWordIndex } from "../../../../ts/states/test";
@@ -98,6 +103,7 @@ function appendWordNodes(
 }
 
 export function showWords(): void {
+  clearWordElements();
   getWordsEl().replaceChildren();
 
   if (getMutableConfig().mode === "zen") {
@@ -288,6 +294,7 @@ export function getActiveWordTopAndHeightWithDifferentData(data: string): {
 }
 
 export function clearWords(): void {
+  clearWordElements();
   getWordsEl().replaceChildren();
 }
 
@@ -296,6 +303,7 @@ export function clearWordsBlur(): void {
 }
 
 export function disposeWordRendering(): void {
+  clearWordElements();
   clearWordTemplates();
   pendingWordData.clear();
   for (const frame of appendFrames) cancelAnimationFrame(frame);
