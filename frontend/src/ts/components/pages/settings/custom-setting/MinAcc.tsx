@@ -53,6 +53,8 @@ export function MinAcc(): JSXElement {
               name="minAccCustom"
               validators={{
                 onChange: fromSchema(MinimumAccuracyCustomSchema),
+              }}
+              listeners={{
                 onBlur: () => {
                   void form.handleSubmit();
                 },
