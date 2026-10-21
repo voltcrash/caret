@@ -1,44 +1,6 @@
 import { expect, vi } from "vite-plus/test";
-import { Configuration } from "@oxytype/schemas/configuration";
-import { randomBytes } from "crypto";
-import { hashApeKey } from "../../src/utils/ape-key-hash";
-import { newId } from "../../src/utils/id";
-import { base64UrlEncode } from "../../src/utils/misc";
-import * as ApeKeyDal from "../../src/dal/ape-keys";
 import { AuthenticatedSession } from "../../src/utils/auth";
 import * as AuthUtils from "../../src/utils/auth";
-
-export async function mockAuthenticateWithApeKey(
-  uid: string,
-  config: Configuration,
-): Promise<string> {
-  if (!config.apeKeys.acceptKeys) {
-    throw Error("config.apeKeys.acceptedKeys needs to be set to true");
-  }
-  const { apeKeyBytes } = config.apeKeys;
-
-  const apiKey = randomBytes(apeKeyBytes).toString("base64url");
-  const saltyHash = hashApeKey(apiKey);
-
-  const apeKey: ApeKeyDal.DBApeKey = {
-    _id: newId(),
-    name: "bob",
-    enabled: true,
-    uid,
-    hash: saltyHash,
-    createdOn: Date.now(),
-    modifiedOn: Date.now(),
-    lastUsedOn: -1,
-    useCount: 0,
-  };
-
-  const apeKeyId = newId();
-
-  vi.spyOn(ApeKeyDal, "getApeKey").mockResolvedValue(apeKey);
-  vi.spyOn(ApeKeyDal, "updateLastUsedOn").mockResolvedValue();
-
-  return base64UrlEncode(`${apeKeyId}.${apiKey}`);
-}
 
 export type BearerAuthenticationMock = {
   /**
