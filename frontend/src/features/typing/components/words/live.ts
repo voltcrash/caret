@@ -1,13 +1,8 @@
 import type { Config } from "@oxytype/schemas/configs";
 import { splitIntoCharacters } from "../../../../ts/utils/strings";
-import {
-  createLetter,
-  createUntypedLetter,
-  displayTypedChar,
-  WordNodeRenderer,
-} from "./letters";
+import { createLetter, displayTypedChar, WordNodeRenderer } from "./letters";
 
-export function buildLiveWordNodes(options: {
+type LiveWordOptions = {
   currentWord: string | undefined;
   input: string;
   compositionData: string;
@@ -15,11 +10,23 @@ export function buildLiveWordNodes(options: {
   indicateTypos: Config["indicateTypos"];
   compositionDisplay: Config["compositionDisplay"];
   getWordNode?: WordNodeRenderer;
-}): {
-  nodes: DocumentFragment;
+};
+
+type LiveWordResult = {
   hintIndices: number[][];
   newlineafter: boolean;
-} {
+};
+
+type AppendLetter = (
+  content: string | Node,
+  classes?: string,
+  opacity?: string,
+) => void;
+
+function renderLiveWord(
+  options: LiveWordOptions,
+  append: AppendLetter,
+): LiveWordResult {
   const {
     currentWord,
     input,
@@ -29,27 +36,25 @@ export function buildLiveWordNodes(options: {
     compositionDisplay,
     getWordNode,
   } = options;
-  const nodes = document.createDocumentFragment();
   const hintIndices: number[][] = [];
   let newlineafter = false;
   if (zen) {
     for (const char of input) {
       const control = char === "\t" || char === "\n";
-      const letter = createLetter(
+      append(
         control ? displayTypedChar(char) : char,
         control ? `${char === "\t" ? "tabChar" : "nlChar"} correct` : "correct",
+        control ? "0" : "",
       );
-      if (control) letter.style.opacity = "0";
-      nodes.append(letter);
       if (char === "\n") newlineafter = true;
     }
     if (input === "" && compositionData === "") {
-      nodes.append(createLetter("_", "invisible"));
+      append("_", "invisible");
     }
     for (const char of compositionData) {
-      nodes.append(createLetter(char, "dead"));
+      append(char, "dead");
     }
-    return { nodes, hintIndices, newlineafter };
+    return { hintIndices, newlineafter };
   }
 
   const inputChars = splitIntoCharacters(input);
@@ -72,19 +77,15 @@ export function buildLiveWordNodes(options: {
           ? displayTypedChar(target)
           : (target ?? "");
     if (target === typed) {
-      nodes.append(
-        createLetter(targetContent, `correct ${controlClass}`.trim()),
-      );
+      append(targetContent, `correct ${controlClass}`.trim());
     } else if (target === undefined) {
-      nodes.append(createLetter(displayTypedChar(typed), "incorrect extra"));
+      append(displayTypedChar(typed), "incorrect extra");
     } else {
-      nodes.append(
-        createLetter(
-          indicateTypos === "replace" || indicateTypos === "both"
-            ? displayTypedChar(typed ?? target)
-            : targetContent,
-          `incorrect ${controlClass}`.trim(),
-        ),
+      append(
+        indicateTypos === "replace" || indicateTypos === "both"
+          ? displayTypedChar(typed ?? target)
+          : targetContent,
+        `incorrect ${controlClass}`.trim(),
       );
       if (indicateTypos === "below" || indicateTypos === "both") {
         const last = hintIndices[hintIndices.length - 1];
@@ -102,9 +103,7 @@ export function buildLiveWordNodes(options: {
           ? "_"
           : char
         : (target ?? char);
-    nodes.append(
-      createLetter(content ?? "", char === target ? "dead correct" : "dead"),
-    );
+    append(content ?? "", char === target ? "dead correct" : "dead");
   }
   for (
     let i = inputChars.length + compositionData.length;
@@ -113,8 +112,74 @@ export function buildLiveWordNodes(options: {
   ) {
     const char = targetChars[i];
     if (char === undefined) continue;
-    const letter = createUntypedLetter(char, getWordNode);
-    if (letter !== undefined) nodes.append(letter);
+    if (getWordNode !== undefined) {
+      const content = getWordNode(char);
+      if (content !== undefined) append(content);
+    } else {
+      append(
+        char === "\t" || char === "\n" ? displayTypedChar(char) : char,
+        char === "\t" ? "tabChar" : char === "\n" ? "nlChar" : "",
+      );
+    }
   }
-  return { nodes, hintIndices, newlineafter };
+  return { hintIndices, newlineafter };
+}
+
+export function buildLiveWordNodes(options: LiveWordOptions): LiveWordResult & {
+  nodes: DocumentFragment;
+} {
+  const nodes = document.createDocumentFragment();
+  const result = renderLiveWord(options, (content, classes, opacity = "") => {
+    const letter = createLetter(content, classes);
+    if (opacity !== "") letter.style.opacity = opacity;
+    nodes.append(letter);
+  });
+  return { nodes, ...result };
+}
+
+/** Keep unchanged letters in place; edits usually change just one class. */
+export function updateLiveWordNodes(
+  word: HTMLElement,
+  options: LiveWordOptions,
+): LiveWordResult {
+  let next = word.firstChild;
+  const result = renderLiveWord(
+    options,
+    (content, classes = "", opacity = "") => {
+      const previous = next;
+      next = next?.nextSibling ?? null;
+      if (previous instanceof HTMLElement && previous.localName === "letter") {
+        if (typeof content === "string") {
+          if (
+            previous.textContent !== content ||
+            previous.childElementCount !== 0
+          ) {
+            previous.textContent = content;
+          }
+        } else {
+          previous.replaceChildren(content);
+        }
+        if (previous.className !== classes) {
+          if (classes === "") previous.removeAttribute("class");
+          else previous.className = classes;
+        }
+        if (previous.style.opacity !== opacity) {
+          if (opacity === "") previous.removeAttribute("style");
+          else previous.style.opacity = opacity;
+        }
+      } else {
+        const letter = createLetter(content, classes);
+        if (opacity !== "") letter.style.opacity = opacity;
+        if (previous === null) word.append(letter);
+        else word.replaceChild(letter, previous);
+      }
+    },
+  );
+  // Remove extra letters and old hints before the caller rebuilds hints.
+  while (next !== null) {
+    const previous = next;
+    next = next.nextSibling;
+    word.removeChild(previous);
+  }
+  return result;
 }

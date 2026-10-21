@@ -19,7 +19,7 @@ import { findSingleActiveFunboxWithFunction } from "../../runtime/funbox/list";
 import * as PaceCaret from "../../runtime/pace-caret";
 import * as TestWords from "../../runtime/test-words";
 import { appendInitialWordNodes, clearWordTemplates } from "./initial";
-import { buildLiveWordNodes } from "./live";
+import { updateLiveWordNodes } from "./live";
 import { createLetter, createNewlineSpacers } from "./letters";
 import { requestDebouncedAnimationFrame } from "../../../../ts/utils/debounced-animation-frame";
 
@@ -172,7 +172,7 @@ export async function updateWordLetters({
       }
       const wordAtIndex = getWordElement(wordIndex);
       if (!wordAtIndex) return;
-      const { nodes, hintIndices, newlineafter } = buildLiveWordNodes({
+      const { hintIndices, newlineafter } = updateLiveWordNodes(wordAtIndex, {
         currentWord,
         input,
         compositionData,
@@ -183,8 +183,6 @@ export async function updateWordLetters({
           findSingleActiveFunboxWithFunction("getWordNode")?.functions
             .getWordNode,
       });
-
-      wordAtIndex.replaceChildren(nodes);
 
       if (hintIndices?.length) {
         const wordAtIndexLetters = Array.from(
