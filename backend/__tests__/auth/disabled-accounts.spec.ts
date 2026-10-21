@@ -135,3 +135,62 @@ it.each([
     ).not.toBeNull();
   },
 );
+
+it("revokes every session on disable and requires a new session after re-enabling", async () => {
+  const identity = await fixture();
+  const context = await auth.$context;
+  await unitRuntime(
+    async () =>
+      await context.internalAdapter.updateUser(identity.userId, {
+        disabled: true,
+      }),
+  );
+  for (const token of [identity.token, identity.otherToken]) {
+    expect(await context.internalAdapter.findSession(token)).toBeNull();
+  }
+  expect(
+    await context.internalAdapter.findSession(identity.unrelatedToken),
+  ).not.toBeNull();
+  await unitRuntime(
+    async () =>
+      await context.internalAdapter.updateUser(identity.userId, {
+        disabled: false,
+      }),
+  );
+  expect(await context.internalAdapter.findSession(identity.token)).toBeNull();
+  const revoked = await unitApi.request(`${origin}/api/auth/list-sessions`, {
+    headers: headers(identity, "bearer"),
+  });
+  expect(revoked.status).toBe(401);
+  const replacement = await unitRuntime(
+    async () =>
+      await context.internalAdapter.createSession(identity.userId, false),
+  );
+  if (replacement === null) throw new Error("Missing replacement session");
+  const enabled = await unitApi.request(`${origin}/api/auth/update-user`, {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${replacement.token}`,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ name: "Enabled account" }),
+  });
+  expect(enabled.status).toBe(200);
+});
+
+it("preserves sessions during ordinary enabled-account updates", async () => {
+  const identity = await fixture();
+  const response = await unitApi.request(`${origin}/api/auth/update-user`, {
+    method: "POST",
+    headers: {
+      ...headers(identity, "cookie"),
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ name: "Enabled update" }),
+  });
+  expect(response.status).toBe(200);
+  const context = await auth.$context;
+  for (const token of [identity.token, identity.otherToken]) {
+    expect(await context.internalAdapter.findSession(token)).not.toBeNull();
+  }
+});
