@@ -1,0 +1,137 @@
+import { createHmac } from "node:crypto";
+import { memoryAdapter } from "better-auth/adapters/memory";
+import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
+import { unitApi, unitRuntime } from "../setup-tests";
+import { createAuth } from "../../src/init/auth";
+import * as AuthInit from "../../src/init/auth";
+
+const origin = "https://oxytype.test";
+const secret = "disabled-account-test-secret-at-least-32-characters";
+let auth: ReturnType<typeof createAuth>;
+
+beforeEach(() => {
+  vi.stubEnv("MODE", "production");
+  vi.stubEnv("FRONTEND_URL", origin);
+  vi.stubEnv("BETTER_AUTH_URL", `${origin}/api/auth`);
+  vi.stubEnv("BETTER_AUTH_SECRET", secret);
+  auth = createAuth(
+    memoryAdapter({
+      authUsers: [],
+      authAccounts: [],
+      authSessions: [],
+      authVerifications: [],
+      authRateLimits: [],
+    }),
+  );
+  vi.spyOn(AuthInit, "getAuth").mockReturnValue(auth);
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
+  vi.unstubAllEnvs();
+});
+
+async function fixture(): Promise<{
+  userId: string;
+  token: string;
+  otherToken: string;
+  unrelatedToken: string;
+  cookie: string;
+}> {
+  return await unitRuntime(async () => {
+    const context = await auth.$context;
+    const createUser = async (name: string): Promise<{ id: string }> =>
+      await context.internalAdapter.createUser(
+        { name, email: `${name}@example.test`, emailVerified: true },
+        { method: "oauth", oauth: { providerId: "github" } },
+      );
+    const user = await createUser("DisabledFixture");
+    const unrelated = await createUser("UnrelatedFixture");
+    const session = await context.internalAdapter.createSession(user.id, false);
+    const other = await context.internalAdapter.createSession(user.id, false);
+    const unrelatedSession = await context.internalAdapter.createSession(
+      unrelated.id,
+      false,
+    );
+    if (session === null || other === null || unrelatedSession === null) {
+      throw new Error("Missing fixture sessions");
+    }
+    const signature = createHmac("sha256", secret)
+      .update(session.token)
+      .digest("base64");
+    return {
+      userId: user.id,
+      token: session.token,
+      otherToken: other.token,
+      unrelatedToken: unrelatedSession.token,
+      cookie: `__Secure-oxytype.session_token=${encodeURIComponent(`${session.token}.${signature}`)}`,
+    };
+  });
+}
+
+async function setDisabled(userId: string, disabled: boolean): Promise<void> {
+  // Bypass hooks to model existing disabled accounts and direct database edits.
+  await (
+    await auth.$context
+  ).adapter.update({
+    model: "user",
+    where: [{ field: "id", value: userId }],
+    update: { disabled },
+  });
+}
+
+function headers(
+  identity: Awaited<ReturnType<typeof fixture>>,
+  credential: "cookie" | "bearer",
+): Record<string, string> {
+  return credential === "cookie"
+    ? { cookie: identity.cookie, origin }
+    : { authorization: `Bearer ${identity.token}` };
+}
+
+it.each([
+  ["cookie", "/update-user"],
+  ["bearer", "/update-user"],
+  ["cookie", "/list-sessions"],
+  ["bearer", "/list-sessions"],
+  ["cookie", "/get-session"],
+  ["bearer", "/get-session"],
+] as const)(
+  "rejects disabled %s sessions at native %s",
+  async (credential, path) => {
+    const identity = await fixture();
+    await setDisabled(identity.userId, true);
+    const response = await unitApi.request(`${origin}/api/auth${path}`, {
+      method: path === "/update-user" ? "POST" : "GET",
+      headers: {
+        ...headers(identity, credential),
+        "content-type": "application/json",
+      },
+      ...(path === "/update-user"
+        ? {
+            body: JSON.stringify({
+              name: "Forbidden mutation",
+              disabled: false,
+            }),
+          }
+        : {}),
+    });
+    expect(response.status).toBe(403);
+    expect(await response.json()).toMatchObject({
+      message: "Account disabled",
+    });
+    const context = await auth.$context;
+    expect(
+      await context.internalAdapter.findUserById(identity.userId),
+    ).toMatchObject({
+      name: "DisabledFixture",
+      disabled: true,
+    });
+    for (const token of [identity.token, identity.otherToken]) {
+      expect(await context.internalAdapter.findSession(token)).toBeNull();
+    }
+    expect(
+      await context.internalAdapter.findSession(identity.unrelatedToken),
+    ).not.toBeNull();
+  },
+);
