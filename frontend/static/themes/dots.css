@@ -8,7 +8,7 @@
   filter: brightness(1.25);
 }
 
-[data-nav-item="test"] {
+[data-nav-item="commandline"] {
   background: #f94348;
 }
 
@@ -53,7 +53,7 @@ header[data-focused] {
 }
 
 body.crtmode {
-  & [data-nav-item="test"] {
+  & [data-nav-item="commandline"] {
     box-shadow:
       3px 0 1px color-mix(in srgb, #f94348 20%, transparent),
       -3px 0 color-mix(in srgb, #f94348 30%, transparent),
