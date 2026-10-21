@@ -4,7 +4,7 @@ import { getDefaultConfig } from "../../src/ts/constants/default-config";
 import {
   DEFAULT_THEME_KEY,
   getBrowserDefaultTheme,
-} from "../../src/ts/constants/default-theme";
+} from "../../src/app/default-theme";
 
 afterEach(() => {
   localStorage.removeItem(DEFAULT_THEME_KEY);

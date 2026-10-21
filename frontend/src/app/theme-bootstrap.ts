@@ -1,7 +1,7 @@
 import { defaultThemes } from "@oxytype/typing-core/config/default-config";
-import { DEFAULT_THEME_KEY } from "../ts/constants/default-theme";
-import { themes } from "../ts/constants/themes";
-import { toThemeVars } from "../ts/utils/theme-vars";
+import { themes } from "@oxytype/typing-core/themes";
+import { DEFAULT_THEME_KEY } from "./default-theme";
+import { toThemeVars } from "./theme-vars";
 
 const defaultPalettes = JSON.stringify(
   Object.fromEntries(

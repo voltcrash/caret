@@ -8,13 +8,13 @@ import {
 } from "solid-js";
 import { debounce } from "throttle-debounce";
 
+import { toThemeVars } from "../../../app/theme-vars";
 import { Theme as ThemeColors, themes } from "../../constants/themes";
 import { createEffectOn } from "../../hooks/effects";
 import { useRef } from "../../hooks/useRef";
 import { hideLoaderBar, showLoaderBar } from "../../states/loader-bar";
 import { showNoticeNotification } from "../../states/notifications";
 import { getTheme } from "../../states/theme";
-import { toThemeVars } from "../../utils/theme-vars";
 import { FavIcon } from "./FavIcon";
 
 // Read by the document theme bootstrap script to paint the last theme early.
