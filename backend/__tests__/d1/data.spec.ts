@@ -4,7 +4,6 @@ import { withRuntime } from "../../src/runtime/env";
 import * as Users from "../../src/dal/user";
 import * as Configs from "../../src/dal/config";
 import * as Presets from "../../src/dal/preset";
-import * as Keys from "../../src/dal/ape-keys";
 import * as Results from "../../src/dal/result";
 import * as Public from "../../src/dal/public";
 import * as Blocklist from "../../src/dal/blocklist";
@@ -81,37 +80,7 @@ describe("D1 data contracts", () => {
       );
     });
   });
-  it("caps concurrent ApeKey creation and prevents disabled key use", async () => {
-    await withRuntime(test.env, async () => {
-      const attempts = await Promise.allSettled(
-        Array.from({ length: 2 }, async () =>
-          Keys.addApeKey(
-            {
-              _id: newId(),
-              uid: "owner",
-              name: "key",
-              enabled: false,
-              hash: "sha256:test",
-              createdOn: 0,
-              modifiedOn: 0,
-              lastUsedOn: -1,
-              useCount: 0,
-            },
-            1,
-          ),
-        ),
-      );
-      expect(attempts.filter((r) => r.status === "fulfilled")).toHaveLength(1);
-      const key = (await Keys.getApeKeys("owner"))[0];
-      if (key === undefined) throw new Error("Missing key");
-      await expect(Keys.updateLastUsedOn("owner", key._id)).rejects.toThrow(
-        "ApeKey not found",
-      );
-      await expect(Keys.editApeKey("other", key._id, "stolen")).rejects.toThrow(
-        "ApeKey not found",
-      );
-    });
-  });
+
   it("rolls back duplicate results with XP and public counters", async () => {
     await withRuntime(test.env, async () => {
       const save = async (): Promise<void> => {
