@@ -168,4 +168,57 @@ describe("Better Auth dashboard", () => {
         ),
     );
   });
+
+  it("permits signed administration of disabled users and rejects session tokens", async () => {
+    await unitRuntime(async () => {
+      const context = await auth.$context;
+      const user = await context.internalAdapter.createUser(
+        {
+          name: "Disabled",
+          email: "disabled@example.test",
+          emailVerified: true,
+        },
+        { method: "oauth", oauth: { providerId: "github" } },
+      );
+      const session = await context.internalAdapter.createSession(
+        user.id,
+        false,
+      );
+      if (session === null) throw new Error("Missing fixture session");
+      await context.adapter.update({
+        model: "user",
+        where: [{ field: "id", value: user.id }],
+        update: { disabled: true },
+      });
+      const request = async (authorization: string): Promise<Response> =>
+        await app.request("/auth/dash/update-user", {
+          method: "POST",
+          headers: { authorization, "content-type": "application/json" },
+          body: JSON.stringify({ name: "Administrator update" }),
+        });
+      expect((await request(`Bearer ${session.token}`)).status).toBe(401);
+      expect(
+        (await request(`Bearer ${token("ba_wrong_key", { userId: user.id })}`))
+          .status,
+      ).toBe(401);
+      expect(await context.internalAdapter.findUserById(user.id)).toMatchObject(
+        {
+          name: "Disabled",
+          disabled: true,
+        },
+      );
+      expect(
+        (await request(`Bearer ${token(apiKey, { userId: user.id })}`)).status,
+      ).toBe(200);
+      expect(await context.internalAdapter.findUserById(user.id)).toMatchObject(
+        {
+          name: "Administrator update",
+          disabled: true,
+        },
+      );
+      expect(
+        await context.internalAdapter.findSession(session.token),
+      ).toBeNull();
+    });
+  });
 });
