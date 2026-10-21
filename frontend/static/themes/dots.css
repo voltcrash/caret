@@ -16,7 +16,7 @@
   background: #9261ff;
 }
 
-[data-nav-item="about"] {
+[data-nav-item="github"] {
   background: #3cc5f8;
 }
 
@@ -67,7 +67,7 @@ body.crtmode {
       0 0 3px;
   }
 
-  & [data-nav-item="about"] {
+  & [data-nav-item="github"] {
     box-shadow:
       3px 0 1px color-mix(in srgb, #3cc5f8 20%, transparent),
       -3px 0 color-mix(in srgb, #3cc5f8 30%, transparent),
