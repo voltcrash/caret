@@ -1,54 +1,27 @@
-# Migration ledger
+# TanStack Start migration
 
-Stage 0 baseline commit: `d6e5be3e9`. Working tree initially clean.
-No preceding implementation stage or handoff exists. Prerequisite: merged
-[architecture plan](../archive/tanstack-start/plan.md), read in full before changes.
+TanStack Start owns the application and deployment build in this checkout.
+See [architecture](../ARCHITECTURE.md), [production setup](../PRODUCTION_SETUP.md),
+[staging setup](../STAGING_SETUP.md) and [CI](../CI.md) for current workflows.
+Production deployment runs after successful main-push CI; manual retries remain
+available. Historical cutover checklists are not instructions to merge old PRs
+or enable a production gate.
 
-| Phase | Status | Evidence |
-| --- | --- | --- |
-| 0.1 Behavior/consumer inventory | Complete | [Behavior](../archive/tanstack-start/behavior.md), generated operations ledger |
-| 0.2 Repeated baselines/budgets | Complete | [Measurements, budgets, checks](../archive/tanstack-start/baseline.md) |
-| 0.3 Architecture/release contract | Complete | [Compatibility](../archive/tanstack-start/contract.md), [rollback/old tabs](release.md) |
-| Stage 0 exit | Complete | [Handoff](../archive/tanstack-start/stage-0-handoff.md); no unresolved required checks/product questions |
-| 1.1 Start foundation | Complete | [Stage 1](../archive/tanstack-start/stage-1.md) |
-| 1.2 One Worker, all invocations | Complete | [Stage 1](../archive/tanstack-start/stage-1.md), workerd suite |
-| 1.3 Document/assets/response policy | Complete | [Stage 1](../archive/tanstack-start/stage-1.md), document suite |
-| 1.4 CI and staging build | Complete | [Stage 1](../archive/tanstack-start/stage-1.md), `ci-start`, browser suite |
-| Stage 1 exit | Complete | [Stage 1 handoff](../archive/tanstack-start/stage-1.md#next-stage-prerequisites) |
-| 2.1 Factories/import boundaries | Complete | [Stage 2](../archive/tanstack-start/stage-2.md), protection + layer suites |
-| 2.2 Providers/browser runtime | Complete | [Stage 2](../archive/tanstack-start/stage-2.md), owner/runtime suites |
-| 2.3 Preferences/data identity | Complete | [Stage 2](../archive/tanstack-start/stage-2.md), actor-isolation suites |
-| Stage 2 exit | Complete | [Stage 2 handoff](../archive/tanstack-start/stage-2.md#next-stage-prerequisites) |
-| 3.1 Services/policies | Complete | [Stage 3](../archive/tanstack-start/stage-3.md) |
-| 3.2 Start policy adapters | Complete | [Stage 3](../archive/tanstack-start/stage-3.md) |
-| 3.3 Authentication flows | Complete | [Stage 3](../archive/tanstack-start/stage-3.md) |
-| Stage 3 exit | Complete, recorded byte deviation | [Validation and handoff](../archive/tanstack-start/stage-3.md#exit-validation) |
-| 4.1 Public routes | Complete | [Stage 4](../archive/tanstack-start/stage-4.md) |
-| 4.2 Settings/private routes | Complete | [Stage 4](../archive/tanstack-start/stage-4.md) |
-| 4.3 Navigation | Complete | [Stage 4](../archive/tanstack-start/stage-4.md) |
-| Stage 4 exit | Complete; intermediate Worker footprint recorded | [Validation and handoff](../archive/tanstack-start/stage-4.md#exit-validation) |
-| 5.1 Typing session/lifecycle | Complete | [Stage 5](../archive/tanstack-start/stage-5.md) |
-| 5.2 Browser integrations/URLs | Complete | [Stage 5](../archive/tanstack-start/stage-5.md) |
-| 5.3 Typing behavior/performance | Complete | [Stage 5 validation](../archive/tanstack-start/stage-5.md#53-responsiveness-and-route-behavior) |
-| Stage 5 exit | Complete; intermediate Worker footprint recorded | [Validation and handoff](../archive/tanstack-start/stage-5.md#remaining-adapters-and-next-stage) |
-| 6.1 Read models/collections | Complete | [Stage 6](../archive/tanstack-start/stage-6.md#61-read-models-and-collections) |
-| 6.2 Ordinary mutations | Complete | [Stage 6](../archive/tanstack-start/stage-6.md#62-ordinary-mutations) |
-| 6.3 Result submission | Complete | [Stage 6](../archive/tanstack-start/stage-6.md#63-result-submission) |
-| 6.4 Transport retirement | Complete | [Stage 6](../archive/tanstack-start/stage-6.md#64-transport-retirement) |
-| Stage 6 exit | Complete; old-tab/rollback lifetimes explicit | [Validation and handoff](../archive/tanstack-start/stage-6.md#exit-validation) |
-| 7.1 PWA/offline | Complete | [Stage 7](../archive/tanstack-start/stage-7.md#71-offline-ownership) |
-| 7.2 Delivery ownership | Complete | [Stage 7](../archive/tanstack-start/stage-7.md#72-delivery-ownership) |
-| 7.3 Production behaviour in staging | Complete | [Stage 7](../archive/tanstack-start/stage-7.md#73-production-behaviour) |
-| Stage 7 exit | Complete; production gated until Stage 8 | [Validation and handoff](../archive/tanstack-start/stage-7.md#validation) |
-| 8.1 Legacy removal/docs | Complete | [Stage 8](../archive/tanstack-start/stage-8.md#81-deleted) |
-| 8.2 Acceptance gate | Complete; CI green | [Validation](../archive/tanstack-start/stage-8.md#82-acceptance-gate) |
-| 8.3 Release/observe/retire | Not started | [Remaining](../archive/tanstack-start/stage-8.md#remaining-before-stage-8-exit) |
+The remaining migration obligation is old-client compatibility. Keep the HTTP
+adapters and rollback assets until the [retirement conditions](release.md#compatibility-window)
+are evidenced. Archived checkpoints do not establish the last time legacy HTML
+was served or prove the absence of supported legacy mutation traffic.
 
-Stage 0 moves responsibility for migration evidence from an unverified proposal
-to this versioned ledger and reproducible checks. It moves no application
-functionality; deletes no production transport, UI, storage or runtime code.
-Installing Start or changing dispatch belongs to Stage 1, not this stage.
+- [Release, rollback and compatibility rules](release.md): current contract.
+- [Operation inventory](operations.json): generated by
+  `backend/scripts/migration-inventory.ts`; consumed by inventory checks.
+- [Historical ledger](../archive/tanstack-start/README.md): stage reports,
+  original plan, benchmarks and dated deployment evidence. Pending work in
+  those records describes the checkpoint when it was written.
 
-Record each later phase here: moved files, removed responsibilities, remaining
-adapters with retirement conditions, tests/results and significant deviations.
-Never treat a missing measurement as a passing gate.
+Validate the operation inventory from the repository root:
+
+```sh
+vp -C backend exec tsx scripts/migration-inventory.ts --check
+vp -C frontend exec tsx scripts/generate-http-routes.ts --check
+```
