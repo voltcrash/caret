@@ -13,7 +13,7 @@ header[data-focused] nav::after {
   background: #99989f;
 }
 
-[data-nav-item="test"] {
+[data-nav-item="commandline"] {
   background: #553d94;
 }
 
@@ -66,7 +66,7 @@ header[data-focused] nav::after {
 }
 
 header[data-focused] {
-  [data-nav-item="test"],
+  [data-nav-item="commandline"],
   [data-nav-item="leaderboards"],
   [data-nav-item="github"],
   [data-nav-item="settings"] {
@@ -76,7 +76,7 @@ header[data-focused] {
 }
 
 body.crtmode {
-  & [data-nav-item="test"] {
+  & [data-nav-item="commandline"] {
     box-shadow:
       3px 0 1px color-mix(in srgb, #553d94 20%, transparent),
       -3px 0 color-mix(in srgb, #553d94 30%, transparent),
