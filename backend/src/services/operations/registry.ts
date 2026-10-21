@@ -2,7 +2,6 @@ import type { OperationId } from "../../policies/operations";
 import type { MonkeyResponse } from "../../utils/monkey-response";
 import type { ServiceContext } from "../context";
 import * as Admin from "./admin";
-import * as ApeKey from "./ape-key";
 import * as Config from "./config";
 import * as Configuration from "./configuration";
 import * as Dev from "./dev";
@@ -35,10 +34,6 @@ export const operationServices = {
   "admin.clearSuspicious": Admin.clearSuspicious,
   "admin.getAnticheatAudits": Admin.getAnticheatAudits,
   "admin.getAnticheatSummary": Admin.getAnticheatSummary,
-  "apeKeys.get": ApeKey.getApeKeys,
-  "apeKeys.add": ApeKey.generateApeKey,
-  "apeKeys.save": ApeKey.editApeKey,
-  "apeKeys.delete": ApeKey.deleteApeKey,
   "configs.get": Config.getConfig,
   "configs.save": Config.saveConfig,
   "configs.delete": Config.deleteConfig,
