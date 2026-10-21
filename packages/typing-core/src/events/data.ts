@@ -14,7 +14,7 @@ import {
   TimerEvent,
   TimerEventData,
 } from "./types";
-import { getEventsForWord, getInputFromDom, keysToTrack } from "./helpers";
+import { getInputFromDom, keysToTrack } from "./helpers";
 import { Keycode } from "../keys";
 import { isSafeNumber, mean, roundTo2 } from "@oxytype/util/numbers";
 import { createLiveCache } from "./live-cache";
@@ -40,6 +40,7 @@ export function createEventRecorder(deps: EventRecorderDeps): EventRecorder {
   let keyupEvents: KeyupEvent[] = [];
   let timerEvents: TimerEvent[] = [];
   let inputEvents: InputEvent[] = [];
+  const latestInputByWord = new Map<number, InputEvent>();
   let compositionEvents: CompositionTestEvent[] = [];
 
   let cachedAllEvents: TestEventNoMs[] | undefined;
@@ -163,6 +164,7 @@ export function createEventRecorder(deps: EventRecorderDeps): EventRecorder {
         data: eventData as InputEventData,
       };
       inputEvents.push(event);
+      indexInput(event);
       deps.liveCache.recordEventForCache(event);
     } else if (type === "composition") {
       compositionEvents.push({
@@ -178,6 +180,15 @@ export function createEventRecorder(deps: EventRecorderDeps): EventRecorder {
 
   function invalidateCache(): void {
     cachedAllEvents = undefined;
+  }
+
+  function indexInput(event: InputEvent): void {
+    const previous = latestInputByWord.get(event.data.wordIndex);
+    // Match the stable chronological order used by getAllTestEvents, even
+    // when an older timestamp is recorded after a newer event.
+    if (previous === undefined || previous.ms <= event.ms) {
+      latestInputByWord.set(event.data.wordIndex, event);
+    }
   }
 
   function getCurrentInput(): string {
@@ -196,13 +207,12 @@ export function createEventRecorder(deps: EventRecorderDeps): EventRecorder {
       }
     }
 
-    return getInputFromDom(
-      getEventsForWord(getAllTestEvents(), deps.getActiveWordIndex()),
-    );
+    return getInputForWord(deps.getActiveWordIndex());
   }
 
   function getInputForWord(wordIndex: number): string {
-    return getInputFromDom(getEventsForWord(getAllTestEvents(), wordIndex));
+    const latest = latestInputByWord.get(wordIndex);
+    return latest === undefined ? "" : getInputFromDom([latest]);
   }
 
   function cleanupData(): void {
@@ -224,6 +234,8 @@ export function createEventRecorder(deps: EventRecorderDeps): EventRecorder {
 
     if (timerEnd !== undefined) {
       inputEvents = inputEvents.filter((e) => e.ms <= timerEnd.ms);
+      latestInputByWord.clear();
+      for (const event of inputEvents) indexInput(event);
       const postEndKeydownCodes = new Set(
         keydownEvents.filter((e) => e.ms > timerEnd.ms).map((e) => e.data.code),
       );
@@ -320,6 +332,7 @@ export function createEventRecorder(deps: EventRecorderDeps): EventRecorder {
     keyupEvents = [];
     timerEvents = [];
     inputEvents = [];
+    latestInputByWord.clear();
     compositionEvents = [];
     invalidateCache();
     pressedKeys = new Map();

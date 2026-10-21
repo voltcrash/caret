@@ -9,7 +9,12 @@ import {
 import { updateWordsInputPosition } from "./sizing";
 import { setWordJoining } from "./joining";
 import { createHintsNodes, joinOverlappingHints } from "./hints";
-import { getWordElement, getActiveWordElement, setClass } from "./elements";
+import {
+  clearWordElements,
+  getWordElement,
+  getActiveWordElement,
+  setClass,
+} from "./elements";
 import { getMutableConfig } from "../../../../ts/config/store";
 import * as SlowTimer from "../../../../ts/states/slow-timer";
 import { getActiveWordIndex } from "../../../../ts/states/test";
@@ -19,7 +24,7 @@ import { findSingleActiveFunboxWithFunction } from "../../runtime/funbox/list";
 import * as PaceCaret from "../../runtime/pace-caret";
 import * as TestWords from "../../runtime/test-words";
 import { appendInitialWordNodes, clearWordTemplates } from "./initial";
-import { buildLiveWordNodes } from "./live";
+import { updateLiveWordNodes } from "./live";
 import { createLetter, createNewlineSpacers } from "./letters";
 import { requestDebouncedAnimationFrame } from "../../../../ts/utils/debounced-animation-frame";
 
@@ -98,6 +103,7 @@ function appendWordNodes(
 }
 
 export function showWords(): void {
+  clearWordElements();
   getWordsEl().replaceChildren();
 
   if (getMutableConfig().mode === "zen") {
@@ -172,7 +178,7 @@ export async function updateWordLetters({
       }
       const wordAtIndex = getWordElement(wordIndex);
       if (!wordAtIndex) return;
-      const { nodes, hintIndices, newlineafter } = buildLiveWordNodes({
+      const { hintIndices, newlineafter } = updateLiveWordNodes(wordAtIndex, {
         currentWord,
         input,
         compositionData,
@@ -183,8 +189,6 @@ export async function updateWordLetters({
           findSingleActiveFunboxWithFunction("getWordNode")?.functions
             .getWordNode,
       });
-
-      wordAtIndex.replaceChildren(nodes);
 
       if (hintIndices?.length) {
         const wordAtIndexLetters = Array.from(
@@ -290,6 +294,7 @@ export function getActiveWordTopAndHeightWithDifferentData(data: string): {
 }
 
 export function clearWords(): void {
+  clearWordElements();
   getWordsEl().replaceChildren();
 }
 
@@ -298,6 +303,7 @@ export function clearWordsBlur(): void {
 }
 
 export function disposeWordRendering(): void {
+  clearWordElements();
   clearWordTemplates();
   pendingWordData.clear();
   for (const frame of appendFrames) cancelAnimationFrame(frame);

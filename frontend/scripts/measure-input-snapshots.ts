@@ -1,0 +1,36 @@
+import { writeFileSync } from "node:fs";
+import { createEventRecorder } from "@oxytype/typing-core/events/data";
+import { createLiveCache } from "@oxytype/typing-core/events/live-cache";
+const recorder = createEventRecorder({
+  getActiveWordIndex: () => 4999,
+  liveCache: createLiveCache(),
+});
+let time = 0;
+for (let word = 0; word < 5000; word++) {
+  for (let letter = 0; letter < 6; letter++) {
+    recorder.logTestEvent("keydown", ++time, { code: "KeyA" });
+    recorder.logTestEvent("input", ++time, {
+      inputType: "insertText",
+      wordIndex: word,
+      charIndex: letter,
+      data: "a",
+      correct: true,
+      inputValue: "a".repeat(letter + 1),
+    });
+    recorder.logTestEvent("keyup", ++time, { code: "KeyA" });
+  }
+}
+const samples: number[] = [];
+for (let sample = 0; sample < 60; sample++) {
+  recorder.logTestEvent("keyup", ++time, { code: "KeyA" });
+  const start = performance.now();
+  const input = recorder.getInputForWord(4998);
+  if (input !== "aaaaaa") throw new Error("Incorrect snapshot");
+  const elapsed = performance.now() - start;
+  if (sample >= 10) samples.push(elapsed);
+}
+samples.sort((a, b) => a - b);
+const output = `${JSON.stringify({ words: 5000, events: 90000, samples: 50, medianMs: samples[25], p95Ms: samples[47] }, null, 2)}\n`;
+const path = process.argv[2];
+if (path === undefined) console.log(output);
+else writeFileSync(path, output);

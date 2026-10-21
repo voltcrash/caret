@@ -3,7 +3,10 @@ import {
   buildInitialWordNodes,
   clearWordTemplates,
 } from "../../src/features/typing/components/words/initial";
-import { buildLiveWordNodes } from "../../src/features/typing/components/words/live";
+import {
+  buildLiveWordNodes,
+  updateLiveWordNodes,
+} from "../../src/features/typing/components/words/live";
 
 function build(
   options: Partial<Parameters<typeof buildLiveWordNodes>[0]>,
@@ -20,6 +23,60 @@ function build(
 }
 
 beforeEach(clearWordTemplates);
+
+describe("in-place letter updates", () => {
+  const options = {
+    currentWord: "hello",
+    input: "",
+    compositionData: "",
+    zen: false,
+    indicateTypos: "off",
+    compositionDisplay: "off",
+  } as const;
+
+  it("retains letter nodes through typing, mistakes, deletion and correction", () => {
+    const word = document.createElement("div");
+    updateLiveWordNodes(word, options);
+    const letters = [...word.children];
+    for (const input of ["h", "hx", "hxlloz", "h", "hello", ""]) {
+      updateLiveWordNodes(word, { ...options, input });
+      expect([...word.children].slice(0, 5)).toEqual(letters);
+    }
+    expect(word.textContent).toBe("hello");
+    expect(word.querySelector(".incorrect, .extra, .correct")).toBeNull();
+  });
+
+  it("removes obsolete hints, extra letters and composition styles", () => {
+    const word = document.createElement("div");
+    updateLiveWordNodes(word, { ...options, zen: true, input: "\n" });
+    expect((word.firstChild as HTMLElement).style.opacity).toBe("0");
+    word.append(document.createElement("hint"));
+    updateLiveWordNodes(word, { ...options, input: "h", compositionData: "e" });
+    expect(word.querySelector("hint, i")).toBeNull();
+    expect((word.firstChild as HTMLElement).style.opacity).toBe("");
+    expect(word.querySelector(".dead.correct")?.textContent).toBe("e");
+    updateLiveWordNodes(word, { ...options, input: "hello!" });
+    expect(word.querySelector(".extra")?.textContent).toBe("!");
+    updateLiveWordNodes(word, options);
+    expect(word.children).toHaveLength(5);
+    expect(word.querySelector(".dead, .extra")).toBeNull();
+  });
+
+  it.each(["<&\"'", "שלום", "عربي", "👩‍💻", "\t\n"])(
+    "preserves literal Unicode and control characters: %s",
+    (currentWord) => {
+      const word = document.createElement("div");
+      for (const input of [currentWord, "", `${currentWord}<`]) {
+        updateLiveWordNodes(word, { ...options, currentWord, input });
+        const expected = build({ currentWord, input }).nodes;
+        const container = document.createElement("div");
+        container.append(expected);
+        expect(word.innerHTML).toBe(container.innerHTML);
+      }
+      expect(word.querySelector("script, img")).toBeNull();
+    },
+  );
+});
 
 describe("live word node builders", () => {
   it("preserves Unicode letters and newline spacer structure", () => {

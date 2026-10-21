@@ -1,0 +1,74 @@
+{
+  "fixture": "Start Worker; guest; cold HTTP cache; service workers blocked; three fresh contexts per profile",
+  "measurements": [
+    {
+      "name": "desktop",
+      "cpu": 1,
+      "latency": 0,
+      "download": -1,
+      "samples": [
+        {
+          "readyMs": 518.6000000089407,
+          "jsRequests": 77,
+          "jsBytes": 1039438
+        },
+        {
+          "readyMs": 399.70000000298023,
+          "jsRequests": 77,
+          "jsBytes": 1039438
+        },
+        {
+          "readyMs": 372.79999999701977,
+          "jsRequests": 77,
+          "jsBytes": 1039438
+        }
+      ]
+    },
+    {
+      "name": "mobile-4g",
+      "cpu": 4,
+      "latency": 150,
+      "download": 204800,
+      "samples": [
+        {
+          "readyMs": 5028.899999991059,
+          "jsRequests": 77,
+          "jsBytes": 1039438
+        },
+        {
+          "readyMs": 4976.5,
+          "jsRequests": 77,
+          "jsBytes": 1039438
+        },
+        {
+          "readyMs": 4954.699999988079,
+          "jsRequests": 77,
+          "jsBytes": 1039438
+        }
+      ]
+    },
+    {
+      "name": "mobile-3g",
+      "cpu": 6,
+      "latency": 400,
+      "download": 51200,
+      "samples": [
+        {
+          "readyMs": 17129.29999999702,
+          "jsRequests": 77,
+          "jsBytes": 1039438
+        },
+        {
+          "readyMs": 17123.69999998808,
+          "jsRequests": 77,
+          "jsBytes": 1039438
+        },
+        {
+          "readyMs": 17125.29999999702,
+          "jsRequests": 77,
+          "jsBytes": 1039438
+        }
+      ]
+    }
+  ]
+}

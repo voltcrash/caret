@@ -31,6 +31,7 @@ const offlineTypingModules = [
   "src/app/chrome.client.tsx",
   "src/features/typing/page.client.tsx",
   "src/features/typing/components/result/Result.tsx",
+  "src/features/typing/runtime/completion.client.ts",
   "src/ts/components/modals/Commandline.tsx",
   "src/ts/components/modals/CustomTextModal.tsx",
   "src/ts/components/modals/CustomTestDurationModal.tsx",

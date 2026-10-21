@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vite-plus/test";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { runInNewContext } from "node:vm";
@@ -19,6 +19,63 @@ function builtConfig(): { buildId: string; precache: string[] } {
 }
 
 describe("built Start service worker", () => {
+  it("limits concurrent offline downloads while retaining the complete cache", async () => {
+    const config = builtConfig();
+    const handlers = new Map<
+      string,
+      (event: { waitUntil: (work: Promise<void>) => void }) => void
+    >();
+    const pending: (() => void)[] = [];
+    const put = vi.fn(async () => undefined);
+    const fetched: string[] = [];
+    const source = readFileSync(resolve(client, "sw.js"), "utf8");
+    runInNewContext(source, {
+      URL,
+      location: { origin: "https://oxytype.test" },
+      registration: { active: null },
+      caches: {
+        open: async () => ({ put }),
+        match: async () => undefined,
+      },
+      fetch: async (url: string) =>
+        new Promise<Response>((resolve) => {
+          fetched.push(url);
+          pending.push(() =>
+            resolve(
+              new Response("fixture", {
+                headers: { "X-Oxytype-Build": config.buildId },
+              }),
+            ),
+          );
+        }),
+      skipWaiting: async () => undefined,
+      addEventListener: (
+        type: string,
+        handler: (event: { waitUntil: (work: Promise<void>) => void }) => void,
+      ) => handlers.set(type, handler),
+    });
+    let work: Promise<void> | undefined;
+    let done = false;
+    handlers.get("install")?.({
+      waitUntil: (pending) => {
+        work = pending;
+      },
+    });
+    if (work === undefined) throw new Error("Missing install event");
+    void work.then(() => {
+      done = true;
+    });
+    for (let round = 0; !done && round < config.precache.length + 2; round++) {
+      await new Promise((resolve) => setImmediate(resolve));
+      expect(pending.length).toBeLessThanOrEqual(4);
+      for (const complete of pending.splice(0)) complete();
+    }
+    expect(done).toBe(true);
+    await work;
+    expect(fetched).toHaveLength(config.precache.length + 1);
+    expect(put).toHaveBeenCalledTimes(config.precache.length + 1);
+  });
+
   it("belongs to the same build as version.json and the client", () => {
     const { version } = JSON.parse(
       readFileSync(resolve(client, "version.json"), "utf8"),
@@ -50,6 +107,21 @@ describe("built Start service worker", () => {
       mf = await createWorkerd();
     });
     afterAll(async () => await mf?.dispose());
+
+    it("preloads the verified default language directly from the typing document", async () => {
+      const path = builtConfig().precache.find((path) =>
+        path.startsWith("/languages/english.json?v="),
+      );
+      expect(path).toBeDefined();
+      const response = await mf.dispatchFetch("http://localhost:3000/");
+      const html = await response.text();
+      const link = [...html.matchAll(/<link\b[^>]*>/g)]
+        .map((match) => match[0])
+        .find((tag) => tag.includes(`href="${path}"`));
+      expect(link).toContain('rel="preload"');
+      expect(link).toContain('as="fetch"');
+      expect(link).toContain('crossorigin="anonymous"');
+    });
 
     it.each([
       ["/sw.js", "no-cache"],

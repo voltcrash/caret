@@ -121,6 +121,7 @@ vi.mock("../../../../src/ts/anim", () => ({
 vi.mock("animejs", () => ({ animate: vi.fn() }));
 
 import { Words } from "../../../../src/features/typing/components/Words";
+import { getWordElement } from "../../../../src/features/typing/components/words/elements";
 import * as ui from "../../../../src/features/typing/runtime/test-ui";
 import { words } from "../../../../src/features/typing/runtime/test-words";
 import { bindTypingActivity } from "../../../../src/features/typing/scope";
@@ -239,6 +240,22 @@ afterEach(() => {
 });
 
 describe("Words rendering", () => {
+  it("reuses lookups but drops detached words on removal and restart", async () => {
+    ui.onTestRestart("testPage");
+    await flushFrames();
+    const original = getWordElement(0);
+    const query = vi.spyOn(element, "querySelector");
+    expect(getWordElement(0)).toBe(original);
+    expect(getWordElement(0)).toBe(original);
+    expect(query).not.toHaveBeenCalled();
+    original?.remove();
+    expect(getWordElement(0)).toBeNull();
+    ui.onTestRestart("testPage");
+    await flushFrames();
+    expect(getWordElement(0)).not.toBe(original);
+    expect(getWordElement(0)?.textContent).toBe("hello");
+  });
+
   it("renders initial words and activates the first on restart", async () => {
     ui.onTestRestart("testPage");
     await flushFrames();
