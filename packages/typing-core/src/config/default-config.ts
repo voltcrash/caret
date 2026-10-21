@@ -1,4 +1,10 @@
-import { Config, CustomThemeColors } from "@oxytype/schemas/configs";
+import { Config, CustomThemeColors, ThemeName } from "@oxytype/schemas/configs";
+
+/** Flagship themes. Each browser gets one of these, picked at random, as its default. */
+export const defaultThemes = [
+  "rust",
+  "azure",
+] as const satisfies readonly ThemeName[];
 
 const obj: Config = {
   theme: "rust",
