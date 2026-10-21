@@ -1,6 +1,7 @@
 import { setIsScreenshotting } from "../../ts/states/core";
 import { setScreenshotWatermark } from "../../ts/states/result";
 import { preferencesReadiness } from "../../app/readiness";
+import { setTypingReady } from "../../app/startup";
 import { setFocusCursorHidden } from "../../ts/states/app";
 import { hideLoaderBar } from "../../ts/states/loader-bar";
 import { resetModifierState } from "../../ts/states/modifiers";
@@ -34,14 +35,21 @@ import { resetAltGrState } from "./runtime/layout-emulator";
 /** Returning always starts a new test; never resumes detached engine/DOM state. */
 export async function enterTypingRoute(): Promise<void> {
   const mount = captureTypingMount();
-  await preferencesReadiness().wait();
-  if (!mount.activate()) return;
-  resetIncompleteTests();
-  await restart({ noAnim: true });
+  try {
+    await preferencesReadiness().wait();
+    if (!mount.activate()) return;
+    resetIncompleteTests();
+    await restart({ noAnim: true });
+  } finally {
+    // A failed initialization must reveal its error; stale mounts cannot
+    // release the startup cover over a replacement typing route.
+    if (mount.isCurrent()) setTypingReady(true);
+  }
 }
 
 /** Synchronous teardown: no generation, animation or async work against detached refs. */
 export function exitTypingRoute(): void {
+  setTypingReady(false);
   Timer.clear();
   PaceCaret.reset();
   Replay.pauseReplay();
