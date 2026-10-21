@@ -1,7 +1,7 @@
 # Release, rollback and old-client contract
 
 Stage 0 performs no deployment or resource mutation. Read-only deployment/release
-inspection establishes a concrete rollback anchor in [rollback.json](evidence/rollback.json).
+inspection establishes a concrete rollback anchor in [rollback.json](../archive/tanstack-start/evidence/rollback.json).
 
 Observed 2026-10-15:
 
@@ -104,7 +104,7 @@ main-push CI; manual retries remain available. It no
 longer needs `START_PRODUCTION_ENABLED`, numbers deployments or publishes GitHub
 releases. Rollback uses the retained Cloudflare Worker version with matching
 assets, independently of GitHub release records. Human staging acceptance is
-recorded in the [Stage 8 ledger](stage-8.md). The ledger records the earlier manual
+recorded in the [Stage 8 ledger](../archive/tanstack-start/stage-8.md). The ledger records the earlier manual
 cutover process; merging to `main` now deploys production once CI succeeds.
 
 The replacement `/sw.js` keeps the rollback worker's URL and scope, replaces it
@@ -114,5 +114,5 @@ one previous Start cache, exclude auth/functions/APIs/mutations/private HTML and
 never activate or reload during typing or a pending save. Builds retain the
 previous deployment's public chunk graph for open tabs. Staging rehearsed
 legacy → Start → legacy and Start → Start rollbacks with D1 rows unchanged
-([evidence](evidence/stage-7-staging-deployments.json)). Re-observe the
+([evidence](../archive/tanstack-start/evidence/stage-7-staging-deployments.json)). Re-observe the
 production anchor's rollback availability immediately before Stage 8 cutover.

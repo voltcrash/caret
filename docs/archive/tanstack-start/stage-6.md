@@ -76,7 +76,7 @@ dev-only configuration editor. Preserved JSON errors, parsing/body limits,
 cookie-origin and ApeKey policy, rates, CORS, version headers, conditional ETags,
 HEAD, case/trailing slashes, maintenance and development slowdown.
 
-The [operation ledger](operations.json) identifies current route, function,
+The [operation ledger](../../tanstack-start/operations.json) identifies current route, function,
 browser caller, service, policy, lifetime and retirement condition for every
 operation. Frozen Stage 0 classification: 35 retained external/operational
 protocols; 47 temporary old-tab transports. OpenAPI includes only retained
@@ -141,7 +141,7 @@ failures are recorded in the evidence.
 
 - Retain Start's 47 old-tab HTTP transports for **at least 30 days after last
   legacy HTML**, stale-tab acceptance, and seven days without supported legacy
-  mutation traffic. [Release contract](release.md#compatibility-window) is unchanged;
+  mutation traffic. [Release contract](../../tanstack-start/release.md#compatibility-window) is unchanged;
   missing traffic evidence never means zero usage. External protocols stay indefinitely.
 - Legacy Hono app/build and isolated browser HTTP binding serve the production
   rollback target only. Remove with the old entry in Stage 8 after verified cutover;

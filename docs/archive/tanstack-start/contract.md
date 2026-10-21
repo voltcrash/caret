@@ -3,7 +3,7 @@
 > Historical migration record. The terminal client, device login, browser handoffs,
 > and client selectors were subsequently removed; only the web client is supported.
 
-The [target architecture](../TANSTACK_START_MIGRATION.md#target-architecture) is
+The [target architecture](plan.md#target-architecture) is
 accepted unchanged. Stage 0 makes its evidence/decisions explicit; it introduces
 no replacement application and selects no untested Start versions.
 
@@ -25,7 +25,7 @@ no replacement application and selects no untested Start versions.
   providers; route params/search replace selected-page/profile mirrors.
 - Web operations become thin functions over policy/services. Published public/
   ApeKey protocols and uncertain operational HTTP consumers retain Start server
-  routes over the same services. [Inventory](operations.json): 47 web-function
+  routes over the same services. [Inventory](../../tanstack-start/operations.json): 47 web-function
   targets, 35 retained HTTP targets (19 published contracts). Some retained
   routes also have web callers, which move to functions. No dual result writes.
 - Preserve origin `https://oxytype.voltcrash.com`, `/api/auth`, `oxytype` cookie
