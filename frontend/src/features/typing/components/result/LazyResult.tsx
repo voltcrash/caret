@@ -33,7 +33,10 @@ export function LazyResult(): JSXElement {
   onCleanup(bindResultScreenLoader(prepare));
   createEffect(() => {
     if (isTestActive() && (!envConfig.isDevelopment || envConfig.devPrefetch)) {
-      void prepare().catch((error: unknown) =>
+      void Promise.all([
+        prepare(),
+        import("../../runtime/completion.client"),
+      ]).catch((error: unknown) =>
         showErrorNotification("Could not load result screen", { error }),
       );
     }
