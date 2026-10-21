@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHmac } from "node:crypto";
 import {
   createTestRuntime,
   seedUser,
@@ -47,7 +48,7 @@ try {
       .run();
     const request = async (
       path: string,
-      authorization: string,
+      credential: string | { cookie: string },
       method = "GET",
       body?: unknown,
     ): Promise<Response> =>
@@ -58,7 +59,9 @@ try {
             new Request(`https://oxytype.test${path}`, {
               method,
               headers: {
-                authorization,
+                ...(typeof credential === "string"
+                  ? { authorization: credential }
+                  : credential),
                 origin: "https://oxytype.test",
                 "content-type": "application/json",
               },
@@ -107,12 +110,35 @@ try {
     assert.equal(disabledSession.status, 403);
     assert.equal(disabledKey.status, 401);
     assert.equal(disabledAuthMutation.status, 200);
+    const signature = createHmac("sha256", test.env.BETTER_AUTH_SECRET ?? "")
+      .update(session.token)
+      .digest("base64");
+    const cookie = `__Secure-oxytype.session_token=${encodeURIComponent(`${session.token}.${signature}`)}`;
+    const disabledCookieSession = await request("/api/users/stats", { cookie });
+    const disabledCookieMutation = await request(
+      "/api/auth/update-user",
+      { cookie },
+      "POST",
+      { name: "Disabled cookie mutation", disabled: false },
+    );
+    assert.equal(disabledCookieSession.status, 403);
+    assert.equal(disabledCookieMutation.status, 200);
+    const stored = await test.env.DB.prepare(
+      "SELECT name,disabled FROM auth_users WHERE id=?",
+    )
+      .bind(user.id)
+      .first<{ name: string; disabled: number }>();
+    assert.equal(stored?.name, "Disabled cookie mutation");
+    assert.equal(stored.disabled, 1);
     console.log(
       JSON.stringify({
         check: "disabled-account",
         sessionStatus: disabledSession.status,
         apiKeyStatus: disabledKey.status,
         authUpdateUserStatus: disabledAuthMutation.status,
+        cookieSessionStatus: disabledCookieSession.status,
+        cookieAuthUpdateUserStatus: disabledCookieMutation.status,
+        disabledFlagPreserved: stored.disabled === 1,
       }),
     );
 
