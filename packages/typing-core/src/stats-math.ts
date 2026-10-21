@@ -1,6 +1,6 @@
 import { kogasa, mean, roundTo2, stdDev } from "@oxytype/util/numbers";
 
-export { mean, stdDev };
+export { stdDev };
 
 /**
  * Words per minute for a number of characters, counting 5 characters as a word.
