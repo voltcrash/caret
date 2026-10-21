@@ -125,6 +125,19 @@ describe("ScrollToTop", () => {
     setPageScroller(undefined);
   });
 
+  it("follows a page scroll container registered after mount", () => {
+    const { button } = renderElement();
+    const scroller = document.createElement("div");
+    setPageScroller(scroller);
+
+    scroller.scrollTop = 150;
+    scroller.dispatchEvent(new Event("scroll"));
+    expect(button).not.toHaveClass("opacity-0");
+
+    setPageScroller(undefined);
+    expect(button).toHaveClass("opacity-0");
+  });
+
   function scrollTo(value: number): void {
     Object.defineProperty(window, "scrollY", { value, writable: true });
     window.dispatchEvent(new Event("scroll"));
