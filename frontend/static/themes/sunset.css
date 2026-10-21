@@ -1,6 +1,6 @@
 [data-nav-item="test"],
 [data-nav-item="leaderboards"],
-[data-nav-item="about"],
+[data-nav-item="github"],
 [data-nav-item="settings"] {
   color: #f79777;
   &:hover {
