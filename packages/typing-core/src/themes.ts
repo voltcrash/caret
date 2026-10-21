@@ -1816,6 +1816,18 @@ export const themes: Record<ThemeName, Theme> = {
     colorfulError: "#bf616a",
     colorfulErrorExtra: "#793e44",
   },
+  rust: {
+    bg: "#180d0d",
+    caret: "#e8692e",
+    main: "#e8692e",
+    sub: "#9c867a",
+    subAlt: "#271616",
+    text: "#f3e7dc",
+    error: "#ff4d6d",
+    errorExtra: "#b8344f",
+    colorfulError: "#ff4d6d",
+    colorfulErrorExtra: "#b8344f",
+  },
   ryujinscales: {
     bg: "#081426",
     caret: "#ef6d49",

@@ -149,6 +149,7 @@ export const ThemeNameSchema = z.literal(
     "rose_pine_dawn",
     "rose_pine_moon",
     "rudy",
+    "rust",
     "ryujinscales",
     "serika",
     "serika_dark",
