@@ -9,7 +9,6 @@ allowBuilds:
   "@parcel/watcher": true
   "@sentry/cli": true
   esbuild: true
-  re2: true
   ssh2: true
   workerd: true
 
