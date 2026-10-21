@@ -22,6 +22,14 @@ async function dispatchAuthRequest(
     path.startsWith("/auth/dash/") &&
     request.headers.get("authorization")?.startsWith("Bearer ") === true &&
     !request.headers.has("cookie");
+  // Use Better Auth's bearer/cookie validation, with no cached identity or refresh.
+  // Dashboard JWTs are independently authenticated by the dashboard plugin.
+  const session = dashboardRequest
+    ? null
+    : await auth.api.getSession({
+        headers: request.headers,
+        query: { disableCookieCache: true, disableRefresh: true },
+      });
   const noBrowserContext =
     !request.headers.has("origin") &&
     !request.headers.has("cookie") &&
@@ -30,7 +38,7 @@ async function dispatchAuthRequest(
     noBrowserContext &&
     !dashboardRequest &&
     request.headers.get("authorization")?.startsWith("Bearer ") === true &&
-    (await auth.api.getSession({ headers: request.headers })) !== null;
+    session !== null;
   if (
     request.method !== "GET" &&
     request.method !== "HEAD" &&
@@ -40,6 +48,19 @@ async function dispatchAuthRequest(
     const origin = request.headers.get("origin");
     if (origin !== new URL(getFrontendUrl()).origin) {
       return Response.json({ message: "Untrusted origin" }, { status: 403 });
+    }
+  }
+  // Origin checks run first so a foreign website cannot revoke a user's sessions.
+  if (
+    session !== null &&
+    "disabled" in session.user &&
+    session.user.disabled === true
+  ) {
+    await (
+      await auth.$context
+    ).internalAdapter.deleteUserSessions(session.user.id);
+    if (path !== "/auth/sign-out") {
+      return Response.json({ message: "Account disabled" }, { status: 403 });
     }
   }
   const headers = request.headers;
