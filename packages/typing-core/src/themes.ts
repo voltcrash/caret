@@ -135,6 +135,18 @@ export const themes: Record<ThemeName, Theme> = {
     colorfulErrorExtra: "#9b3a76",
     hasCss: true,
   },
+  azure: {
+    bg: "#0b0d1c",
+    caret: "#4ea8ff",
+    main: "#4ea8ff",
+    sub: "#8290b4",
+    subAlt: "#151a30",
+    text: "#e4ebff",
+    error: "#ff6b5e",
+    errorExtra: "#b8423a",
+    colorfulError: "#ff6b5e",
+    colorfulErrorExtra: "#b8423a",
+  },
   beach: {
     bg: "#ffeead",
     caret: "#ffcc5c",

@@ -13,6 +13,7 @@ export const ThemeNameSchema = z.literal(
     "anti_hero",
     "arch",
     "aurora",
+    "azure",
     "beach",
     "bento",
     "bingsu",
