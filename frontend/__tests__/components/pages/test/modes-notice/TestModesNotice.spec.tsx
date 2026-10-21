@@ -1,7 +1,7 @@
 import type { ResultMinified } from "@oxytype/schemas/results";
 
 import { cleanup, render, waitFor } from "@solidjs/testing-library";
-import { Suspense } from "solid-js";
+import { Suspense, type JSXElement } from "solid-js";
 import {
   afterEach,
   beforeEach,
@@ -139,7 +139,7 @@ describe("TestModesNotice", () => {
     });
     setUserId("notice-user");
     setConfigStore("showAverage", "both");
-    function Fallback() {
+    function Fallback(): JSXElement {
       parentFallbacks++;
       return <p>Loading typing test…</p>;
     }
