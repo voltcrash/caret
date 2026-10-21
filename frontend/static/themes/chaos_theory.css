@@ -72,7 +72,7 @@ did not try it on the new #testConfig yet
   background: #f3ea5d;
 }
 
-[data-nav-item="about"] {
+[data-nav-item="github"] {
   background: #7ae1bf;
 }
 
@@ -143,7 +143,7 @@ body.crtmode {
       0 0 3px;
   }
 
-  & [data-nav-item="about"] {
+  & [data-nav-item="github"] {
     box-shadow:
       3px 0 1px color-mix(in srgb, #7ae1bf 20%, transparent),
       -3px 0 color-mix(in srgb, #7ae1bf 30%, transparent),
