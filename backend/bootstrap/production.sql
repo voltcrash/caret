@@ -5,7 +5,6 @@ INSERT INTO configuration (id, data)
 SELECT 'main', CASE WHEN
   EXISTS (SELECT 1 FROM configuration)
   OR EXISTS (SELECT 1 FROM admin_uids)
-  OR EXISTS (SELECT 1 FROM ape_keys)
   OR EXISTS (SELECT 1 FROM auth_accounts)
   OR EXISTS (SELECT 1 FROM auth_rate_limits)
   OR EXISTS (SELECT 1 FROM auth_sessions)
