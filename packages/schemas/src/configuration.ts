@@ -66,12 +66,7 @@ export const ConfigurationSchema = z.object({
   admin: z.object({
     endpointsEnabled: z.boolean(),
   }),
-  apeKeys: z.object({
-    endpointsEnabled: z.boolean(),
-    acceptKeys: z.boolean(),
-    maxKeysPerUser: z.number().int().nonnegative(),
-    apeKeyBytes: z.number().int().nonnegative(),
-  }),
+
   rateLimiting: z.object({
     badAuthentication: z.object({
       enabled: z.boolean(),
