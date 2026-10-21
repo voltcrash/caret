@@ -1,5 +1,4 @@
 import { envValue } from "../runtime/env";
-import { Buffer } from "node:buffer";
 import { MILLISECONDS_IN_DAY } from "@oxytype/util/date-and-time";
 import { roundTo2 } from "@oxytype/util/numbers";
 export { sanitizeString } from "@oxytype/util/strings";
@@ -13,14 +12,6 @@ export function identity(value: unknown): string {
     .call(value)
     .replace(/^\[object\s+([a-z]+)\]$/i, "$1")
     .toLowerCase();
-}
-
-export function base64UrlEncode(data: string): string {
-  return Buffer.from(data).toString("base64url");
-}
-
-export function base64UrlDecode(data: string): string {
-  return Buffer.from(data, "base64url").toString();
 }
 
 type AgentLog = {
