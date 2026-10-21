@@ -55,6 +55,8 @@ export function MinBurst(): JSXElement {
               name="minBurstCustomSpeed"
               validators={{
                 onChange: fromSchema(MinimumBurstCustomSpeedSchema),
+              }}
+              listeners={{
                 onBlur: () => {
                   void form.handleSubmit();
                 },
