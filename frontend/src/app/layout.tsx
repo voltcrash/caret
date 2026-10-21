@@ -26,7 +26,7 @@ import { LinkHost, RouterLink } from "../components/link-host";
 import { PageScrollHost } from "../components/page-scroll";
 import { TypingRouteHost } from "../components/typing-route-host";
 import { cn } from "../ts/utils/cn";
-import { isAppReady, isStartupFinished, setStartupFinished } from "./startup";
+import { isChromeReady, isStartupFinished, setStartupFinished } from "./startup";
 
 const load = createClientOnlyFn(
   async () => (await import("./chrome.client")).chrome,
@@ -72,7 +72,7 @@ export function AppLayout(props: ParentProps): JSXElement {
   const [hidden, setHidden] = createSignal(false);
   const staticHeader = () => <StaticHeader fixed={fixed()} />;
   // App state is browser-only; the server renders the startup screen.
-  const ready = () => !isServer && isAppReady();
+  const ready = () => !isServer && isChromeReady();
   const finished = () => !isServer && isStartupFinished();
   return (
     <PageScrollHost.Provider

@@ -31,7 +31,7 @@ import * as ServerConfiguration from "../ts/states/server-configuration";
 import { isFixingSkillIssue } from "../ts/states/skill-issue";
 import { RouterNavigation } from "./navigation.client";
 import { preferencesReadiness } from "./readiness";
-import { isAppReady, isStartupFinished, setAppReady } from "./startup";
+import { isChromeReady, isStartupFinished, setChromeReady } from "./startup";
 
 /**
  * Browser half of the common layout: overlays, global hotkeys, body classes,
@@ -61,7 +61,7 @@ function ChromeRuntime(props: {
       get style() {
         return {
           // Theme changes animate only once stored preferences are applied.
-          transition: isAppReady()
+          transition: isChromeReady()
             ? "background .25s, transform .05s"
             : undefined,
         };
@@ -92,7 +92,7 @@ function ChromeRuntime(props: {
       .wait()
       .catch(() => undefined)
       .then(() => {
-        if (!disposed) setAppReady(true);
+        if (!disposed) setChromeReady(true);
       });
   });
   let cookiePrompted = false;
