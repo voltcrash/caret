@@ -21,7 +21,7 @@ header[data-focused] nav::after {
   background: #6851a4;
 }
 
-[data-nav-item="about"] {
+[data-nav-item="github"] {
   background: #7962b3;
 }
 
@@ -68,7 +68,7 @@ header[data-focused] nav::after {
 header[data-focused] {
   [data-nav-item="test"],
   [data-nav-item="leaderboards"],
-  [data-nav-item="about"],
+  [data-nav-item="github"],
   [data-nav-item="settings"] {
     --themable-button-bg: var(--sub-alt-color);
     --nav-focus-opacity: 0.5;
@@ -90,7 +90,7 @@ body.crtmode {
       0 0 3px;
   }
 
-  & [data-nav-item="about"] {
+  & [data-nav-item="github"] {
     box-shadow:
       3px 0 1px color-mix(in srgb, #7962b3 20%, transparent),
       -3px 0 color-mix(in srgb, #7962b3 30%, transparent),
