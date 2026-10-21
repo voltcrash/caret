@@ -139,21 +139,7 @@ export const presets = sqliteTable(
   },
   (t) => [index("presets_owner_idx").on(t.uid, t.timestamp)],
 );
-export const apeKeys = sqliteTable(
-  "ape_keys",
-  {
-    id: id(),
-    uid: owner(),
-    name: text("name").notNull(),
-    enabled: integer("enabled", { mode: "boolean" }).notNull(),
-    hash: text("hash").notNull(),
-    createdOn: integer("created_on").notNull(),
-    modifiedOn: integer("modified_on").notNull(),
-    lastUsedOn: integer("last_used_on").notNull(),
-    useCount: integer("use_count").notNull().default(0),
-  },
-  (t) => [index("ape_keys_owner_idx").on(t.uid)],
-);
+
 export const results = sqliteTable(
   "results",
   {
