@@ -149,6 +149,8 @@ export function CustomBackground(): JSXElement {
                 name="customBackground"
                 validators={{
                   onChange: fromSchema(CustomBackgroundSchema),
+                }}
+                listeners={{
                   onBlur: () => {
                     void form.handleSubmit();
                   },

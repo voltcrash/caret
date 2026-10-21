@@ -11,6 +11,47 @@ describe("Start document and response policy in workerd", () => {
   });
   afterAll(async () => await mf?.dispose());
 
+  it("allows supported content/image origins without widening script, frame or font policy", async () => {
+    const response = await mf.dispatchFetch("http://localhost:3000/");
+    await response.text();
+    const policy = response.headers.get("Content-Security-Policy") ?? "";
+    const directives = new Map(
+      policy.split(";").map((part) => {
+        const [name, ...sources] = part.trim().split(/\s+/);
+        return [name, sources] as const;
+      }),
+    );
+    expect(directives.get("connect-src")).toEqual(
+      expect.arrayContaining([
+        "'self'",
+        "https://challenges.cloudflare.com",
+        "https://poetrydb.org",
+        "https://*.wikipedia.org",
+      ]),
+    );
+    for (const broadSource of ["*", "http:", "https:", "ws:", "wss:"]) {
+      expect(directives.get("connect-src")).not.toContain(broadSource);
+    }
+    expect(directives.get("img-src")).toEqual([
+      "'self'",
+      "data:",
+      "http:",
+      "https:",
+    ]);
+    expect(directives.get("default-src")).toEqual(["'self'"]);
+    expect(directives.get("object-src")).toEqual(["'none'"]);
+    expect(directives.get("font-src")).toEqual(["'self'", "data:"]);
+    expect(directives.get("frame-src")).toEqual([
+      "https://challenges.cloudflare.com",
+    ]);
+    expect(directives.get("script-src")).toHaveLength(3);
+    expect(directives.get("script-src")).toEqual([
+      "'self'",
+      "https://challenges.cloudflare.com",
+      expect.stringMatching(/^'nonce-[^']+'$/),
+    ]);
+  });
+
   it("renders static fallbacks and gives every executable script a fresh CSP nonce", async () => {
     const response = await mf.dispatchFetch(
       "http://localhost:3000/leaderboards",
