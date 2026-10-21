@@ -10,15 +10,10 @@ import * as AuthUtils from "../../src/utils/auth";
 import { authenticate as authenticatePolicy } from "../../src/policies/authentication";
 import type { Actor } from "../../src/services/context";
 import { AuthenticatedSession } from "../../src/utils/auth";
-import { getCachedConfiguration } from "../../src/init/configuration";
-import * as ApeKeys from "../../src/dal/ape-keys";
-import { newId } from "../../src/utils/id";
-import { hashApeKey } from "../../src/utils/ape-key-hash";
 import MonkeyError from "../../src/utils/error";
 import * as Misc from "../../src/utils/misc";
 import { RequestAuthenticationOptions } from "@oxytype/contracts/util/api";
 import { enableMonkeyErrorExpects } from "../__testData__/monkey-error";
-import type { Configuration } from "@oxytype/schemas/configuration";
 
 enableMonkeyErrorExpects();
 const mockDecodedToken: AuthenticatedSession = {
@@ -29,40 +24,23 @@ const mockDecodedToken: AuthenticatedSession = {
 
 vi.spyOn(AuthUtils, "verifySession").mockResolvedValue(mockDecodedToken);
 
-const mockApeKey = {
-  _id: newId(),
-  uid: "123",
-  name: "test",
-  hash: hashApeKey("key"),
-  createdOn: Date.now(),
-  modifiedOn: Date.now(),
-  lastUsedOn: Date.now(),
-  useCount: 0,
-  enabled: true,
-};
-vi.spyOn(ApeKeys, "getApeKey").mockResolvedValue(mockApeKey);
-vi.spyOn(ApeKeys, "updateLastUsedOn").mockResolvedValue();
 const isDevModeMock = vi.spyOn(Misc, "isDevEnvironment");
 type TestRequest = {
   path: string;
   headers: Record<string, string | undefined>;
-  ctx: { configuration: Configuration };
 };
 let mockRequest: TestRequest;
 let nextFunction: ReturnType<typeof vi.fn<(error?: unknown) => unknown>>;
 
 describe("policies/authentication", () => {
-  beforeEach(async () => {
+  beforeEach(() => {
     isDevModeMock.mockReturnValue(true);
-    let config = await getCachedConfiguration(true);
-    config.apeKeys.acceptKeys = true;
 
     mockRequest = {
       path: "/api/v1",
       headers: {
         authorization: "Bearer 123456789",
       },
-      ctx: { configuration: config },
     };
     nextFunction = vi.fn((error) => {
       if (error instanceof Error) {
@@ -77,6 +55,31 @@ describe("policies/authentication", () => {
   });
 
   describe("authenticate", () => {
+    it.each([false, true])(
+      "rejects retired API keys with dev mode %s",
+      async (development) => {
+        isDevModeMock.mockReturnValue(development);
+        const verify = vi.spyOn(AuthUtils, "verifySession").mockClear();
+        for (const options of [
+          {},
+          { isPublic: true },
+          { isPublicOnDev: true },
+        ]) {
+          await expect(
+            authenticate(
+              {
+                headers: {
+                  authorization: "ApeKey retired-key",
+                  cookie: "oxytype.session_token=valid-session",
+                },
+              },
+              options,
+            ),
+          ).rejects.toMatchObject({ status: 401 });
+        }
+        expect(verify).not.toHaveBeenCalled();
+      },
+    );
     it("should fail if token is not fresh", async () => {
       //GIVEN
       Date.now = vi.fn(() => 60001);
@@ -110,46 +113,7 @@ describe("policies/authentication", () => {
       expect(decodedToken?.uid).toBe(mockDecodedToken.uid);
       expect(nextFunction).toHaveBeenCalledOnce();
     });
-    it("should allow the request if apeKey is supported", async () => {
-      //WHEN
-      const result = await authenticate(
-        { headers: { authorization: "ApeKey aWQua2V5" } },
-        { acceptApeKeys: true },
-      );
 
-      //THEN
-      const decodedToken = result.decodedToken;
-      expect(decodedToken?.type).toBe("ApeKey");
-      expect(decodedToken?.email).toBe("");
-      expect(decodedToken?.uid).toBe("123");
-      expect(nextFunction).toHaveBeenCalledTimes(1);
-    });
-    it("should fail with apeKey if apeKey is not supported", async () => {
-      //WHEN
-      await expect(async () =>
-        authenticate(
-          { headers: { authorization: "ApeKey aWQua2V5" } },
-          { acceptApeKeys: false },
-        ),
-      ).rejects.toThrow("This endpoint does not accept ApeKeys");
-
-      //THEN
-    });
-    it("should fail with apeKey if apeKeys are disabled", async () => {
-      //GIVEN
-
-      mockRequest.ctx.configuration.apeKeys.acceptKeys = false;
-
-      //WHEN
-      await expect(async () =>
-        authenticate(
-          { headers: { authorization: "ApeKey aWQua2V5" } },
-          { acceptApeKeys: false },
-        ),
-      ).rejects.toThrow("ApeKeys are not being accepted at this time");
-
-      //THEN
-    });
     it("should allow the request with authentation on public endpoint", async () => {
       //WHEN
       const result = await authenticate({}, { isPublic: true });
@@ -201,20 +165,7 @@ describe("policies/authentication", () => {
       expect(decodedToken?.uid).toBe("");
       expect(nextFunction).toHaveBeenCalledTimes(1);
     });
-    it("should allow the request with apeKey on public endpoint", async () => {
-      //WHEN
-      const result = await authenticate(
-        { headers: { authorization: "ApeKey aWQua2V5" } },
-        { isPublic: true },
-      );
 
-      //THEN
-      const decodedToken = result.decodedToken;
-      expect(decodedToken?.type).toBe("ApeKey");
-      expect(decodedToken?.email).toBe("");
-      expect(decodedToken?.uid).toBe("123");
-      expect(nextFunction).toHaveBeenCalledTimes(1);
-    });
     it("should allow request with Uid on dev", async () => {
       //WHEN
       const result = await authenticate({
@@ -311,37 +262,7 @@ describe("policies/authentication", () => {
       expect(decodedToken?.uid).toBe("");
       expect(nextFunction).toHaveBeenCalledTimes(1);
     });
-    it("should allow the request with apeKey on dev public endpoint", async () => {
-      //WHEN
-      const result = await authenticate(
-        { headers: { authorization: "ApeKey aWQua2V5" } },
-        { acceptApeKeys: true, isPublicOnDev: true },
-      );
 
-      //THEN
-      const decodedToken = result.decodedToken;
-      expect(decodedToken?.type).toBe("ApeKey");
-      expect(decodedToken?.email).toBe("");
-      expect(decodedToken?.uid).toBe("123");
-      expect(nextFunction).toHaveBeenCalledTimes(1);
-    });
-    it("should allow with apeKey if apeKeys are disabled on dev public endpoint", async () => {
-      //GIVEN
-      mockRequest.ctx.configuration.apeKeys.acceptKeys = false;
-
-      //WHEN
-      const result = await authenticate(
-        { headers: { authorization: "ApeKey aWQua2V5" } },
-        { acceptApeKeys: true, isPublicOnDev: true },
-      );
-
-      //THEN
-      const decodedToken = result.decodedToken;
-      expect(decodedToken?.type).toBe("ApeKey");
-      expect(decodedToken?.email).toBe("");
-      expect(decodedToken?.uid).toBe("123");
-      expect(nextFunction).toHaveBeenCalledTimes(1);
-    });
     it("should allow the request with authentation on dev public endpoint in production", async () => {
       //WHEN
       isDevModeMock.mockReturnValue(false);
@@ -363,21 +284,6 @@ describe("policies/authentication", () => {
         authenticate({ headers: {} }, { isPublicOnDev: true }),
       ).rejects.toThrow("Unauthorized");
     });
-    it("should allow with apeKey on dev public endpoint in production", async () => {
-      //WHEN
-      isDevModeMock.mockReturnValue(false);
-      const result = await authenticate(
-        { headers: { authorization: "ApeKey aWQua2V5" } },
-        { acceptApeKeys: true, isPublicOnDev: true },
-      );
-
-      //THEN
-      const decodedToken = result.decodedToken;
-      expect(decodedToken?.type).toBe("ApeKey");
-      expect(decodedToken?.email).toBe("");
-      expect(decodedToken?.uid).toBe("123");
-      expect(nextFunction).toHaveBeenCalledTimes(1);
-    });
   });
 });
 
@@ -394,7 +300,6 @@ async function authenticate(
   try {
     const decodedToken = await authenticatePolicy({
       headers,
-      configuration: merged.ctx.configuration,
       options: authenticationOptions,
       endpoint: merged.path,
     });

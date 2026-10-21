@@ -120,7 +120,6 @@ export async function execute<K extends OperationId>(
   const operation = getOperation(id);
   scope.actor = await authenticate({
     headers: invocation.headers,
-    configuration: scope.configuration,
     options: operation.metadata.authenticationOptions,
     endpoint: id,
   });
