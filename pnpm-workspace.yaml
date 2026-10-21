@@ -8,7 +8,6 @@ allowBuilds:
   "@fortawesome/fontawesome-free": true
   "@parcel/watcher": true
   "@sentry/cli": true
-  cpu-features: true
   esbuild: true
   msgpackr-extract: true
   protobufjs: true
