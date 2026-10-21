@@ -89,6 +89,8 @@ for (const target of ["quickRestart", "accountName"]) {
     } finally {
       session.resolve(undefined);
     }
+    // Account controls insert content above local settings after login settles.
+    await expect(page.locator("#group_account")).toBeVisible();
     await expect(page.locator(`[data-setting-key="${target}"]`)).toHaveClass(
       /settings-highlight/,
     );
