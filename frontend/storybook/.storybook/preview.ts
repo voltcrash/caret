@@ -43,7 +43,7 @@ export default definePreview({
     },
   },
   initialGlobals: {
-    theme: "serika_dark",
+    theme: "rust",
   },
   // Decorators apply innermost first: the theme renders inside the application.
   decorators: [ThemeDecorator, AppDecorator],

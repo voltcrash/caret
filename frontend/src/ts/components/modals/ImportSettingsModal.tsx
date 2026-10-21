@@ -202,7 +202,7 @@ export function ImportSettingsModal(): JSXElement {
             name="json"
             aria-label="settings JSON"
             class="h-40 min-h-32 w-full resize-y rounded border-none bg-sub-alt p-3 text-sm leading-relaxed caret-main outline-none focus-visible:shadow-text-focus sm:h-48"
-            placeholder={'{\n  "theme": "serika_dark",\n  "time": 30\n}'}
+            placeholder={'{\n  "theme": "rust",\n  "time": 30\n}'}
             spellcheck={false}
             value={json()}
             disabled={isBusy()}

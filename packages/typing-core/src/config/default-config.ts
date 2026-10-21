@@ -1,22 +1,28 @@
-import { Config, CustomThemeColors } from "@oxytype/schemas/configs";
+import { Config, CustomThemeColors, ThemeName } from "@oxytype/schemas/configs";
+
+/** Flagship themes. Each browser gets one of these, picked at random, as its default. */
+export const defaultThemes = [
+  "rust",
+  "azure",
+] as const satisfies readonly ThemeName[];
 
 const obj: Config = {
-  theme: "serika_dark",
+  theme: "rust",
   themeLight: "serika",
-  themeDark: "serika_dark",
+  themeDark: "rust",
   autoSwitchTheme: false,
   customTheme: false,
   customThemeColors: [
-    "#323437",
-    "#e2b714",
-    "#e2b714",
-    "#646669",
-    "#2c2e31",
-    "#d1d0c5",
-    "#ca4754",
-    "#7e2a33",
-    "#ca4754",
-    "#7e2a33",
+    "#180d0d",
+    "#e8692e",
+    "#e8692e",
+    "#9c867a",
+    "#271616",
+    "#f3e7dc",
+    "#ff4d6d",
+    "#b8344f",
+    "#ff4d6d",
+    "#b8344f",
   ] as CustomThemeColors,
   favThemes: [],
   showKeyTips: false,

@@ -8,6 +8,7 @@ import {
 } from "solid-js";
 import { debounce } from "throttle-debounce";
 
+import { toThemeVars } from "../../../app/theme-vars";
 import { Theme as ThemeColors, themes } from "../../constants/themes";
 import { createEffectOn } from "../../hooks/effects";
 import { useRef } from "../../hooks/useRef";
@@ -20,23 +21,8 @@ import { FavIcon } from "./FavIcon";
 const THEME_COLORS_KEY = "themeColors";
 const BOOTSTRAP_STYLE_ID = "themeBootstrap";
 
-function toVars(colors: ThemeColors): Record<string, string> {
-  return {
-    "bg-color": colors.bg,
-    "main-color": colors.main,
-    "caret-color": colors.caret,
-    "sub-color": colors.sub,
-    "sub-alt-color": colors.subAlt,
-    "text-color": colors.text,
-    "error-color": colors.error,
-    "error-extra-color": colors.errorExtra,
-    "colorful-error-color": colors.colorfulError,
-    "colorful-error-extra-color": colors.colorfulErrorExtra,
-  };
-}
-
 function toCss(colors: ThemeColors): string {
-  const vars = Object.entries(toVars(colors))
+  const vars = Object.entries(toThemeVars(colors))
     .map(([name, value]) => `    --${name}: ${value};`)
     .join("\n");
   return `\n:root {\n${vars}\n}`;
@@ -76,7 +62,10 @@ export function Theme(): JSXElement {
     // The startup palette loses to the real theme once config has applied it.
     document.getElementById(BOOTSTRAP_STYLE_ID)?.remove();
     try {
-      localStorage.setItem(THEME_COLORS_KEY, JSON.stringify(toVars(colors)));
+      localStorage.setItem(
+        THEME_COLORS_KEY,
+        JSON.stringify(toThemeVars(colors)),
+      );
     } catch {
       // storage may be full or unavailable
     }
