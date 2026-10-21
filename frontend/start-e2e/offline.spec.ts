@@ -67,6 +67,11 @@ test("one online visit installs guest typing; private documents and RPCs stay un
     "background-color",
     "rgb(24, 13, 13)",
   );
+  await expect(page.locator("body")).toHaveCSS("color", "rgb(243, 231, 220)");
+  await expect(page.getByRole("link", { name: "Start typing" })).toHaveCSS(
+    "color",
+    "rgb(232, 105, 46)",
+  );
   await page.getByRole("link", { name: "Start typing" }).click();
   await expect(page.locator("#words .word").first()).toBeVisible();
   await expect(
