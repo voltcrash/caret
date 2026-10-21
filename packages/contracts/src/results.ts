@@ -97,13 +97,7 @@ export const resultsContract = c.router(
         200: GetResultsResponseSchema,
       },
       metadata: meta({
-        authenticationOptions: {
-          acceptApeKeys: true,
-        },
-        rateLimit: {
-          normal: "resultsGet",
-          apeKey: "resultsGetApe",
-        },
+        rateLimit: "resultsGet",
       }),
     },
     getById: {
@@ -116,13 +110,7 @@ export const resultsContract = c.router(
         200: GetResultByIdResponseSchema,
       },
       metadata: meta({
-        authenticationOptions: {
-          acceptApeKeys: true,
-        },
-        rateLimit: {
-          normal: "resultByIdGet",
-          apeKey: "resultByIdGetApe",
-        },
+        rateLimit: "resultByIdGet",
       }),
     },
     add: {
@@ -172,9 +160,6 @@ export const resultsContract = c.router(
         200: GetLastResultResponseSchema,
       },
       metadata: meta({
-        authenticationOptions: {
-          acceptApeKeys: true,
-        },
         rateLimit: "resultsGet",
       }),
     },
