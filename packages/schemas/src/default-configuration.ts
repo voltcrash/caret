@@ -35,12 +35,7 @@ export const BASE_CONFIGURATION: Configuration = {
   admin: {
     endpointsEnabled: false,
   },
-  apeKeys: {
-    endpointsEnabled: false,
-    acceptKeys: false,
-    maxKeysPerUser: 0,
-    apeKeyBytes: 24,
-  },
+
   users: {
     signUp: false,
     autoBan: {

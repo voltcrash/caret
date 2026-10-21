@@ -21,7 +21,6 @@ import { Route as AppSettingsRouteImport } from './routes/_app.settings'
 import { Route as ApiIndexRouteImport } from './routes/api.index'
 import { Route as ApiSplatRouteImport } from './routes/api.$'
 import { Route as ApiAdminRouteImport } from './routes/api.admin'
-import { Route as ApiApeKeysRouteImport } from './routes/api.ape-keys'
 import { Route as ApiConfigsRouteImport } from './routes/api.configs'
 import { Route as ApiConfigurationRouteImport } from './routes/api.configuration'
 import { Route as ApiConfigureRouteImport } from './routes/api.configure'
@@ -41,7 +40,6 @@ import { Route as ApiAdminClearStreakHourOffsetRouteImport } from './routes/api.
 import { Route as ApiAdminClearSuspiciousRouteImport } from './routes/api.admin.clearSuspicious'
 import { Route as ApiAdminDeleteUserRouteImport } from './routes/api.admin.deleteUser'
 import { Route as ApiAdminToggleBanRouteImport } from './routes/api.admin.toggleBan'
-import { Route as ApiApeKeysApeKeyIdRouteImport } from './routes/api.ape-keys.$apeKeyId'
 import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
 import { Route as ApiConfigurationSchemaRouteImport } from './routes/api.configuration.schema'
 import { Route as ApiConfigureSplatRouteImport } from './routes/api.configure.$'
@@ -150,11 +148,6 @@ const ApiAdminRoute = ApiAdminRouteImport.update({
   path: '/api/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiApeKeysRoute = ApiApeKeysRouteImport.update({
-  id: '/api/ape-keys',
-  path: '/api/ape-keys',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiConfigsRoute = ApiConfigsRouteImport.update({
   id: '/api/configs',
   path: '/api/configs',
@@ -251,11 +244,6 @@ const ApiAdminToggleBanRoute = ApiAdminToggleBanRouteImport.update({
   id: '/toggleBan',
   path: '/toggleBan',
   getParentRoute: () => ApiAdminRoute,
-} as any)
-const ApiApeKeysApeKeyIdRoute = ApiApeKeysApeKeyIdRouteImport.update({
-  id: '/$apeKeyId',
-  path: '/$apeKeyId',
-  getParentRoute: () => ApiApeKeysRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
@@ -525,7 +513,6 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AppSettingsRoute
   '/api/$': typeof ApiSplatRoute
   '/api/admin': typeof ApiAdminRouteWithChildren
-  '/api/ape-keys': typeof ApiApeKeysRouteWithChildren
   '/api/configs': typeof ApiConfigsRoute
   '/api/configuration': typeof ApiConfigurationRouteWithChildren
   '/api/configure': typeof ApiConfigureRouteWithChildren
@@ -545,7 +532,6 @@ export interface FileRoutesByFullPath {
   '/api/admin/clearSuspicious': typeof ApiAdminClearSuspiciousRoute
   '/api/admin/deleteUser': typeof ApiAdminDeleteUserRoute
   '/api/admin/toggleBan': typeof ApiAdminToggleBanRoute
-  '/api/ape-keys/$apeKeyId': typeof ApiApeKeysApeKeyIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/configuration/schema': typeof ApiConfigurationSchemaRoute
   '/api/configure/$': typeof ApiConfigureSplatRoute
@@ -607,7 +593,6 @@ export interface FileRoutesByTo {
   '/settings': typeof AppSettingsRoute
   '/api/$': typeof ApiSplatRoute
   '/api/admin': typeof ApiAdminRouteWithChildren
-  '/api/ape-keys': typeof ApiApeKeysRouteWithChildren
   '/api/configs': typeof ApiConfigsRoute
   '/api/configuration': typeof ApiConfigurationRouteWithChildren
   '/api/configure': typeof ApiConfigureRouteWithChildren
@@ -627,7 +612,6 @@ export interface FileRoutesByTo {
   '/api/admin/clearSuspicious': typeof ApiAdminClearSuspiciousRoute
   '/api/admin/deleteUser': typeof ApiAdminDeleteUserRoute
   '/api/admin/toggleBan': typeof ApiAdminToggleBanRoute
-  '/api/ape-keys/$apeKeyId': typeof ApiApeKeysApeKeyIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/configuration/schema': typeof ApiConfigurationSchemaRoute
   '/api/configure/$': typeof ApiConfigureSplatRoute
@@ -691,7 +675,6 @@ export interface FileRoutesById {
   '/_app/settings': typeof AppSettingsRoute
   '/api/$': typeof ApiSplatRoute
   '/api/admin': typeof ApiAdminRouteWithChildren
-  '/api/ape-keys': typeof ApiApeKeysRouteWithChildren
   '/api/configs': typeof ApiConfigsRoute
   '/api/configuration': typeof ApiConfigurationRouteWithChildren
   '/api/configure': typeof ApiConfigureRouteWithChildren
@@ -712,7 +695,6 @@ export interface FileRoutesById {
   '/api/admin/clearSuspicious': typeof ApiAdminClearSuspiciousRoute
   '/api/admin/deleteUser': typeof ApiAdminDeleteUserRoute
   '/api/admin/toggleBan': typeof ApiAdminToggleBanRoute
-  '/api/ape-keys/$apeKeyId': typeof ApiApeKeysApeKeyIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/configuration/schema': typeof ApiConfigurationSchemaRoute
   '/api/configure/$': typeof ApiConfigureSplatRoute
@@ -776,7 +758,6 @@ export interface FileRouteTypes {
     | '/settings'
     | '/api/$'
     | '/api/admin'
-    | '/api/ape-keys'
     | '/api/configs'
     | '/api/configuration'
     | '/api/configure'
@@ -796,7 +777,6 @@ export interface FileRouteTypes {
     | '/api/admin/clearSuspicious'
     | '/api/admin/deleteUser'
     | '/api/admin/toggleBan'
-    | '/api/ape-keys/$apeKeyId'
     | '/api/auth/$'
     | '/api/configuration/schema'
     | '/api/configure/$'
@@ -858,7 +838,6 @@ export interface FileRouteTypes {
     | '/settings'
     | '/api/$'
     | '/api/admin'
-    | '/api/ape-keys'
     | '/api/configs'
     | '/api/configuration'
     | '/api/configure'
@@ -878,7 +857,6 @@ export interface FileRouteTypes {
     | '/api/admin/clearSuspicious'
     | '/api/admin/deleteUser'
     | '/api/admin/toggleBan'
-    | '/api/ape-keys/$apeKeyId'
     | '/api/auth/$'
     | '/api/configuration/schema'
     | '/api/configure/$'
@@ -941,7 +919,6 @@ export interface FileRouteTypes {
     | '/_app/settings'
     | '/api/$'
     | '/api/admin'
-    | '/api/ape-keys'
     | '/api/configs'
     | '/api/configuration'
     | '/api/configure'
@@ -962,7 +939,6 @@ export interface FileRouteTypes {
     | '/api/admin/clearSuspicious'
     | '/api/admin/deleteUser'
     | '/api/admin/toggleBan'
-    | '/api/ape-keys/$apeKeyId'
     | '/api/auth/$'
     | '/api/configuration/schema'
     | '/api/configure/$'
@@ -1022,7 +998,6 @@ export interface RootRouteChildren {
   PrivacyPolicyDothtmlRoute: typeof PrivacyPolicyDothtmlRoute
   ApiSplatRoute: typeof ApiSplatRoute
   ApiAdminRoute: typeof ApiAdminRouteWithChildren
-  ApiApeKeysRoute: typeof ApiApeKeysRouteWithChildren
   ApiConfigsRoute: typeof ApiConfigsRoute
   ApiConfigurationRoute: typeof ApiConfigurationRouteWithChildren
   ApiConfigureRoute: typeof ApiConfigureRouteWithChildren
@@ -1125,13 +1100,6 @@ declare module '@tanstack/solid-router' {
       path: '/api/admin'
       fullPath: '/api/admin'
       preLoaderRoute: typeof ApiAdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/ape-keys': {
-      id: '/api/ape-keys'
-      path: '/api/ape-keys'
-      fullPath: '/api/ape-keys'
-      preLoaderRoute: typeof ApiApeKeysRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/configs': {
@@ -1266,13 +1234,6 @@ declare module '@tanstack/solid-router' {
       fullPath: '/api/admin/toggleBan'
       preLoaderRoute: typeof ApiAdminToggleBanRouteImport
       parentRoute: typeof ApiAdminRoute
-    }
-    '/api/ape-keys/$apeKeyId': {
-      id: '/api/ape-keys/$apeKeyId'
-      path: '/$apeKeyId'
-      fullPath: '/api/ape-keys/$apeKeyId'
-      preLoaderRoute: typeof ApiApeKeysApeKeyIdRouteImport
-      parentRoute: typeof ApiApeKeysRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -1681,18 +1642,6 @@ const ApiAdminRouteWithChildren = ApiAdminRoute._addFileChildren(
   ApiAdminRouteChildren,
 )
 
-interface ApiApeKeysRouteChildren {
-  ApiApeKeysApeKeyIdRoute: typeof ApiApeKeysApeKeyIdRoute
-}
-
-const ApiApeKeysRouteChildren: ApiApeKeysRouteChildren = {
-  ApiApeKeysApeKeyIdRoute: ApiApeKeysApeKeyIdRoute,
-}
-
-const ApiApeKeysRouteWithChildren = ApiApeKeysRoute._addFileChildren(
-  ApiApeKeysRouteChildren,
-)
-
 interface ApiConfigurationRouteChildren {
   ApiConfigurationSchemaRoute: typeof ApiConfigurationSchemaRoute
 }
@@ -1924,7 +1873,6 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyPolicyDothtmlRoute: PrivacyPolicyDothtmlRoute,
   ApiSplatRoute: ApiSplatRoute,
   ApiAdminRoute: ApiAdminRouteWithChildren,
-  ApiApeKeysRoute: ApiApeKeysRouteWithChildren,
   ApiConfigsRoute: ApiConfigsRoute,
   ApiConfigurationRoute: ApiConfigurationRouteWithChildren,
   ApiConfigureRoute: ApiConfigureRouteWithChildren,

@@ -4,8 +4,7 @@ import {
   COMPATIBILITY_CHECK,
   COMPATIBILITY_CHECK_HEADER,
 } from "@oxytype/contracts";
-import { AddApeKeyResponseSchema } from "@oxytype/contracts/ape-keys";
-import { createWorkerd, enableConfiguration, seedSession } from "./workerd";
+import { createWorkerd, seedSession } from "./workerd";
 
 describe("declared Start HTTP protocols without Hono", () => {
   let mf: Awaited<ReturnType<typeof createWorkerd>>;
@@ -149,7 +148,8 @@ describe("declared Start HTTP protocols without Hono", () => {
       servers: { url: string }[];
     };
     expect(api.servers[0]?.url).toBe("/api");
-    expect(api.paths).toHaveProperty("/ape-keys");
+    expect(api.paths).not.toHaveProperty("/ape-keys");
+    expect(api.paths).toHaveProperty("/users/stats");
     expect(api.paths).not.toHaveProperty("/configs");
     expect(api.paths).not.toHaveProperty("/users/signup");
     const html = await worker.fetch("http://localhost:3000/api/docs");
@@ -171,7 +171,7 @@ describe("declared Start HTTP protocols without Hono", () => {
     }
   });
 
-  it("preserves ApeKey authentication and cookie origin checks on old-tab mutations", async () => {
+  it("preserves session authentication and cookie origin checks on old-tab mutations", async () => {
     const session = await seedSession(mf, "a");
     const db = await mf.getD1Database("DB", "a");
     const data = {
@@ -194,27 +194,14 @@ describe("declared Start HTTP protocols without Hono", () => {
         JSON.stringify(data),
       )
       .run();
-    await enableConfiguration(mf, "a", "$.apeKeys", {
-      endpointsEnabled: true,
-      acceptKeys: true,
-      maxKeysPerUser: 5,
-    });
     const worker = await mf.getWorker("a");
     const headers = {
       authorization: `Bearer ${session.token}`,
       "content-type": "application/json",
     };
-    const generated = await worker.fetch("http://localhost:3000/api/ape-keys", {
-      method: "POST",
-      headers,
-      body: JSON.stringify({ name: "fixture", enabled: true }),
-    });
-    expect(generated.status, await generated.clone().text()).toBe(200);
-    const key = AddApeKeyResponseSchema.parse(await generated.json()).data
-      .apeKey;
     const stats = await worker.fetch(
       'http://localhost:3000/api/users/stats?client="web"',
-      { headers: { authorization: `ApeKey ${key}` } },
+      { headers },
     );
     expect(stats.status, await stats.clone().text()).toBe(200);
     expect(await stats.text()).not.toContain(session.token);

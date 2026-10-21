@@ -146,36 +146,28 @@ describe("permission policy", () => {
     });
   });
   describe("user checks", () => {
-    it("should fetch user only once", async () => {
-      //GIVEN
-      const req = givenRequest(
-        {
-          requirePermission: ["canReport", "canManageApeKeys"],
-        },
-        { uid },
+    it("fetches the user only once for multiple permission checks", async () => {
+      getPartialUserMock.mockResolvedValue({
+        canReport: true,
+        quoteMod: true,
+      } as any);
+      await invoke(
+        givenRequest({ requirePermission: ["canReport", "quoteMod"] }, { uid }),
+        next,
       );
-
-      //WHEN
-      await invoke(req, next);
-
-      //THEN
+      expect(next).toHaveBeenCalledWith();
       expect(getPartialUserMock).toHaveBeenCalledOnce();
       expect(getPartialUserMock).toHaveBeenCalledWith(
         uid,
         "check user permissions",
-        ["canReport", "canManageApeKeys"],
+        ["canReport", "quoteMod"],
       );
     });
-    it("should fail if authentication is missing", async () => {
-      //GIVEN
-      const req = givenRequest({
-        requirePermission: ["canReport", "canManageApeKeys"],
-      });
-
-      //WHEN
-      await invoke(req, next);
-
-      //THEN
+    it("fails without authentication", async () => {
+      await invoke(
+        givenRequest({ requirePermission: ["canReport", "quoteMod"] }),
+        next,
+      );
       expect(next).toHaveBeenCalledWith(
         expect.toMatchMonkeyError(
           new MonkeyError(
@@ -291,57 +283,6 @@ describe("permission policy", () => {
       expect(next).toHaveBeenCalledWith();
     });
     it("should pass if canReport is not set", async () => {
-      //GIVEN
-      getPartialUserMock.mockResolvedValue({} as any);
-      const req = givenRequest(requireCanReport, { uid });
-
-      //WHEN
-      await invoke(req, next);
-
-      //THEN
-      expect(next).toHaveBeenCalledWith();
-    });
-  });
-  describe("canManageApeKeys check", () => {
-    const requireCanReport: EndpointMetadata = {
-      requirePermission: "canManageApeKeys",
-    };
-
-    it("should fail if user cannot report", async () => {
-      //GIVEN
-      getPartialUserMock.mockResolvedValue({ canManageApeKeys: false } as any);
-      const req = givenRequest(requireCanReport, { uid });
-
-      //WHEN
-      await invoke(req, next);
-
-      //THEN
-      expect(next).toHaveBeenCalledWith(
-        expect.toMatchMonkeyError(
-          new MonkeyError(
-            403,
-            "You have lost access to ape keys, please contact support",
-          ),
-        ),
-      );
-      expect(getPartialUserMock).toHaveBeenCalledWith(
-        uid,
-        "check user permissions",
-        ["canManageApeKeys"],
-      );
-    });
-    it("should pass if user can report", async () => {
-      //GIVEN
-      getPartialUserMock.mockResolvedValue({ canManageApeKeys: true } as any);
-      const req = givenRequest(requireCanReport, { uid });
-
-      //WHEN
-      await invoke(req, next);
-
-      //THEN
-      expect(next).toHaveBeenCalledWith();
-    });
-    it("should pass if canManageApeKeys is not set", async () => {
       //GIVEN
       getPartialUserMock.mockResolvedValue({} as any);
       const req = givenRequest(requireCanReport, { uid });

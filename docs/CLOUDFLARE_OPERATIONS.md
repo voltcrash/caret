@@ -117,19 +117,12 @@ Migration `0014_remove_inbox.sql` drops inbox, reward grant, outbox and schedule
 job tables and removes inbox fields from user data and configuration. Pending
 notifications and unclaimed rewards are discarded when it is applied.
 
-## ApeKey hash compatibility
+Migration `0015_remove_ape_keys.sql` permanently deletes stored external API
+keys and removes their configuration, user permissions and rate counters.
+Back up D1 before applying it through the normal migration command. Old key
+headers return 401 and key-management routes return 404. Browser OAuth accounts,
+sessions, typing results and unrelated legacy tables are retained.
 
-ApeKeys use `sha256:` followed by 64 lowercase hexadecimal characters. The Worker
-rejects unsupported formats and compares digests in constant time.
-
-Before deploying to a retained database or restoring older data, run these
-read-only audits. They include disabled keys and output counts only:
-
-```sh
-vp run --filter @oxytype/backend db:audit-ape-key-hashes
-vp run --filter @oxytype/backend db:audit-ape-key-hashes:production
-```
-
-`unsupported_hashes` must be zero. Replace affected keys before accepting API-key
-requests; unsupported hashes cannot be converted without the original key.
-Better Auth accounts and sessions use separate authentication.
+After this migration, rolling back to code that queries the removed table also
+requires a compatible database restore. A Worker-only rollback cannot restore
+deleted credentials. No API-key audit or restoration command remains.

@@ -107,8 +107,7 @@ export function inventory(): object[] {
       }
       const policy = (route.metadata ?? {}) as EndpointMetadata;
       const auth = policy.authenticationOptions;
-      const externalContract =
-        auth?.isPublic === true || auth?.acceptApeKeys === true;
+      const externalContract = auth?.isPublic === true;
       const browserCallers = [...new Set(callers.get(id) ?? [])].sort();
       const group = id.split(".")[0];
       const retain = isRetainedHttpOperation(id as OperationId);

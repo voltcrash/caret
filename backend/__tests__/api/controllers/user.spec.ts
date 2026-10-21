@@ -22,7 +22,6 @@ import * as Captcha from "../../../src/utils/captcha";
 import * as LogDal from "../../../src/dal/logs";
 import { newId } from "../../../src/utils/id";
 import { PersonalBest } from "@oxytype/schemas/shared";
-import { mockAuthenticateWithApeKey } from "../../__testData__/auth";
 import { UserStreak } from "@oxytype/schemas/users";
 import { pb } from "../../__testData__/users";
 
@@ -1466,18 +1465,7 @@ describe("user controller test", () => {
       });
       expect(getPBMock).toHaveBeenCalledWith(uid, "time", "15", undefined);
     });
-    it("should get pbs with ape key", async () => {
-      //GIVEN
-      await acceptApeKeys(true);
-      const apeKey = await mockAuthenticateWithApeKey(uid, await configuration);
 
-      //WHEN
-      await mockApp
-        .get("/users/personalBests")
-        .set("authorization", `ApeKey ${apeKey}`)
-        .query({ mode: "time", mode2: "15" })
-        .expect(200);
-    });
     it("should fail without mandatory query parameters", async () => {
       //WHEN
       const { body } = await mockApp
@@ -1555,17 +1543,6 @@ describe("user controller test", () => {
       });
 
       expect(getStatsMock).toHaveBeenCalledWith(uid, undefined);
-    });
-    it("should get stats with ape key", async () => {
-      //GIVEN
-      await acceptApeKeys(true);
-      const apeKey = await mockAuthenticateWithApeKey(uid, await configuration);
-
-      //WHEN
-      await mockApp
-        .get("/users/stats")
-        .set("authorization", `ApeKey ${apeKey}`)
-        .expect(200);
     });
   });
   describe("get favorite quotes", () => {
@@ -2655,15 +2632,6 @@ async function enableResultFilterPresets(enabled: boolean): Promise<void> {
     ...mockConfig.results.filterPresets,
     enabled,
   };
-
-  vi.spyOn(Configuration, "getCachedConfiguration").mockResolvedValue(
-    mockConfig,
-  );
-}
-
-async function acceptApeKeys(acceptKeys: boolean): Promise<void> {
-  const mockConfig = await configuration;
-  mockConfig.apeKeys = { ...mockConfig.apeKeys, acceptKeys };
 
   vi.spyOn(Configuration, "getCachedConfiguration").mockResolvedValue(
     mockConfig,

@@ -7,11 +7,6 @@ export type RateLimitOptions = {
 };
 
 export const limits = {
-  defaultApeRateLimit: {
-    window: "minute",
-    max: 30,
-  },
-
   adminLimit: {
     window: 5000, // 5 seconds
     max: 1,
@@ -133,10 +128,6 @@ export const limits = {
   },
 
   // Results Routing
-  resultsGetApe: {
-    window: "day",
-    max: 30,
-  },
 
   // Result by id
   resultByIdGet: {
@@ -145,10 +136,6 @@ export const limits = {
   },
 
   // Result by id
-  resultByIdGetApe: {
-    window: "hour",
-    max: 60,
-  },
 
   resultsAdd: {
     window: "hour",
@@ -305,37 +292,6 @@ export const limits = {
     window: "hour",
     max: 60,
   },
-
-  // ApeKeys Routing
-  apeKeysGet: {
-    window: "hour",
-    max: 120,
-  },
-
-  apeKeysGenerate: {
-    window: "hour",
-    max: 15,
-  },
 } satisfies Record<string, RateLimitOptions>;
 
 export type RateLimiterId = keyof typeof limits;
-export type RateLimitIds = {
-  /** Rate limiter options for non-apeKey requests */
-  normal: RateLimiterId;
-  /** Rate limiter options for apeKey requests */
-  apeKey: RateLimiterId;
-};
-
-export function getLimits(limit: RateLimiterId | RateLimitIds): {
-  limiter: RateLimitOptions;
-  apeKeyLimiter?: RateLimitOptions;
-} {
-  const isApeKeyLimiter = typeof limit === "object";
-  const limiter = isApeKeyLimiter ? limit.normal : limit;
-  const apeLimiter = isApeKeyLimiter ? limit.apeKey : undefined;
-
-  return {
-    limiter: limits[limiter],
-    apeKeyLimiter: apeLimiter !== undefined ? limits[apeLimiter] : undefined,
-  };
-}

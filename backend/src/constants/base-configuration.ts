@@ -117,30 +117,7 @@ export const CONFIGURATION_FORM_SCHEMA: FormSchema = {
         },
       },
     },
-    apeKeys: {
-      type: "object",
-      label: "Ape Keys",
-      fields: {
-        endpointsEnabled: {
-          type: "boolean",
-          label: "Endpoints Enabled",
-        },
-        acceptKeys: {
-          type: "boolean",
-          label: "Accept Keys",
-        },
-        maxKeysPerUser: {
-          type: "number",
-          label: "Max Keys Per User",
-          min: 0,
-        },
-        apeKeyBytes: {
-          type: "number",
-          label: "Ape Key Bytes",
-          min: 24,
-        },
-      },
-    },
+
     users: {
       type: "object",
       label: "Users",

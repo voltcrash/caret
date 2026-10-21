@@ -1,0 +1,271 @@
+{
+  "date": "2026-10-21",
+  "commit": "c1da7433a108c6693c8585616ef1e9d80901fe10",
+  "commands": ["vp pm audit --json", "vp pm audit -- --prod --json"],
+  "all": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 4,
+      "moderate": 9,
+      "high": 4,
+      "critical": 0
+    },
+    "dependencies": 259,
+    "devDependencies": 1001,
+    "optionalDependencies": 400,
+    "totalDependencies": 1387
+  },
+  "production": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0
+    },
+    "dependencies": 241,
+    "devDependencies": 0,
+    "optionalDependencies": 145,
+    "totalDependencies": 386
+  },
+  "advisories": [
+    {
+      "id": "GHSA-3wwx-pv8p-q78v",
+      "package": "undici",
+      "severity": "moderate",
+      "patched": ">=7.29.1",
+      "url": "https://github.com/advisories/GHSA-3wwx-pv8p-q78v",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "dev": true,
+          "examplePath": "frontend>@cloudflare/vite-plugin>miniflare>undici"
+        }
+      ]
+    },
+    {
+      "id": "GHSA-pmjh-fq2x-6v4x",
+      "package": "undici",
+      "severity": "moderate",
+      "patched": ">=7.29.1",
+      "url": "https://github.com/advisories/GHSA-pmjh-fq2x-6v4x",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "dev": true,
+          "examplePath": "frontend>@cloudflare/vite-plugin>miniflare>undici"
+        }
+      ]
+    },
+    {
+      "id": "GHSA-r53p-7pc4-xj5r",
+      "package": "undici",
+      "severity": "low",
+      "patched": ">=7.29.1",
+      "url": "https://github.com/advisories/GHSA-r53p-7pc4-xj5r",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "dev": true,
+          "examplePath": "frontend>@cloudflare/vite-plugin>miniflare>undici"
+        }
+      ]
+    },
+    {
+      "id": "GHSA-rfgv-xxqx-mfg5",
+      "package": "undici",
+      "severity": "high",
+      "patched": ">=7.29.1",
+      "url": "https://github.com/advisories/GHSA-rfgv-xxqx-mfg5",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "dev": true,
+          "examplePath": "frontend>@cloudflare/vite-plugin>miniflare>undici"
+        }
+      ]
+    },
+    {
+      "id": "GHSA-3xpg-4rpp-hhhm",
+      "package": "undici",
+      "severity": "moderate",
+      "patched": ">=7.29.1",
+      "url": "https://github.com/advisories/GHSA-3xpg-4rpp-hhhm",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "dev": true,
+          "examplePath": "frontend>@cloudflare/vite-plugin>miniflare>undici"
+        }
+      ]
+    },
+    {
+      "id": "GHSA-2jfj-6hjv-fm6j",
+      "package": "undici",
+      "severity": "moderate",
+      "patched": ">=7.29.1",
+      "url": "https://github.com/advisories/GHSA-2jfj-6hjv-fm6j",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "dev": true,
+          "examplePath": "frontend>@cloudflare/vite-plugin>miniflare>undici"
+        }
+      ]
+    },
+    {
+      "id": "GHSA-2gqq-gqf2-x968",
+      "package": "undici",
+      "severity": "low",
+      "patched": ">=7.29.1",
+      "url": "https://github.com/advisories/GHSA-2gqq-gqf2-x968",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "dev": true,
+          "examplePath": "frontend>@cloudflare/vite-plugin>miniflare>undici"
+        }
+      ]
+    },
+    {
+      "id": "GHSA-w293-vg96-wgc3",
+      "package": "undici",
+      "severity": "high",
+      "patched": ">=7.29.1",
+      "url": "https://github.com/advisories/GHSA-w293-vg96-wgc3",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "dev": true,
+          "examplePath": "frontend>@cloudflare/vite-plugin>miniflare>undici"
+        }
+      ]
+    },
+    {
+      "id": "GHSA-8436-99hf-9mmv",
+      "package": "undici",
+      "severity": "low",
+      "patched": ">=7.29.1",
+      "url": "https://github.com/advisories/GHSA-8436-99hf-9mmv",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "dev": true,
+          "examplePath": "frontend>@cloudflare/vite-plugin>miniflare>undici"
+        }
+      ]
+    },
+    {
+      "id": "GHSA-rx4f-c7p8-82vq",
+      "package": "undici",
+      "severity": "moderate",
+      "patched": ">=7.29.1",
+      "url": "https://github.com/advisories/GHSA-rx4f-c7p8-82vq",
+      "findings": [
+        {
+          "version": "7.29.0",
+          "dev": true,
+          "examplePath": "frontend>@cloudflare/vite-plugin>miniflare>undici"
+        }
+      ]
+    },
+    {
+      "id": "GHSA-vfj7-8cjw-p6xm",
+      "package": "braces",
+      "severity": "high",
+      "patched": null,
+      "url": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm",
+      "findings": [
+        {
+          "version": "3.0.3",
+          "dev": true,
+          "examplePath": ".>stylelint>fast-glob>micromatch>braces"
+        }
+      ]
+    },
+    {
+      "id": "GHSA-698v-4r3x-3vcv",
+      "package": "vite-plus",
+      "severity": "moderate",
+      "patched": ">=1.1.0",
+      "url": "https://github.com/advisories/GHSA-698v-4r3x-3vcv",
+      "findings": [
+        {
+          "version": "1.0.0",
+          "dev": true,
+          "examplePath": ".>vite-plus"
+        }
+      ]
+    },
+    {
+      "id": "GHSA-r825-w8mm-5pxw",
+      "package": "vite-plus",
+      "severity": "moderate",
+      "patched": ">=1.1.0",
+      "url": "https://github.com/advisories/GHSA-r825-w8mm-5pxw",
+      "findings": [
+        {
+          "version": "1.0.0",
+          "dev": true,
+          "examplePath": ".>vite-plus"
+        }
+      ]
+    },
+    {
+      "id": "GHSA-587h-7wmj-h5pm",
+      "package": "vite-plus",
+      "severity": "high",
+      "patched": ">=1.1.0",
+      "url": "https://github.com/advisories/GHSA-587h-7wmj-h5pm",
+      "findings": [
+        {
+          "version": "1.0.0",
+          "dev": true,
+          "examplePath": ".>vite-plus"
+        }
+      ]
+    },
+    {
+      "id": "GHSA-9jrq-w75r-8gcw",
+      "package": "vite-plus",
+      "severity": "low",
+      "patched": ">=1.1.0",
+      "url": "https://github.com/advisories/GHSA-9jrq-w75r-8gcw",
+      "findings": [
+        {
+          "version": "1.0.0",
+          "dev": true,
+          "examplePath": ".>vite-plus"
+        }
+      ]
+    },
+    {
+      "id": "GHSA-rq7h-c2jc-7f22",
+      "package": "vite-plus",
+      "severity": "moderate",
+      "patched": ">=1.1.0",
+      "url": "https://github.com/advisories/GHSA-rq7h-c2jc-7f22",
+      "findings": [
+        {
+          "version": "1.0.0",
+          "dev": true,
+          "examplePath": ".>vite-plus"
+        }
+      ]
+    },
+    {
+      "id": "GHSA-vfpm-58rq-9qcg",
+      "package": "vite-plus",
+      "severity": "moderate",
+      "patched": ">=1.1.0",
+      "url": "https://github.com/advisories/GHSA-vfpm-58rq-9qcg",
+      "findings": [
+        {
+          "version": "1.0.0",
+          "dev": true,
+          "examplePath": ".>vite-plus"
+        }
+      ]
+    }
+  ]
+}

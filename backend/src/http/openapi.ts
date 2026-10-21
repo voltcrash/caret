@@ -10,8 +10,7 @@ type OperationObject = Parameters<
   >
 >[0];
 import {
-  RateLimitIds,
-  getLimits,
+  limits,
   RateLimiterId,
   Window,
 } from "@oxytype/contracts/rate-limit/index";
@@ -39,7 +38,7 @@ export function getOpenApi(basePath = "/"): OpenAPIObject {
       info: {
         title: "Oxytype API",
         description:
-          "Documentation for the endpoints provided by the Oxytype API server.\n\nNote that authentication is performed with the Authorization HTTP header in the format `Authorization: ApeKey YOUR_APE_KEY`\n\nThere is a rate limit of `30 requests per minute` across all endpoints with some endpoints being more strict. Rate limit rates are shared across all ape keys.",
+          "Documentation for the endpoints provided by the Oxytype API server.\n\nPrivate endpoints require an authenticated browser session or a Bearer session token. Rate limits are documented per operation.",
         version: `2.${COMPATIBILITY_CHECK}.0`,
         contact: {
           name: "Oxytype repository",
@@ -61,10 +60,6 @@ export function getOpenApi(basePath = "/"): OpenAPIObject {
           BearerAuth: {
             type: "http",
             scheme: "bearer",
-          },
-          ApeKey: {
-            type: "http",
-            scheme: "ApeKey",
           },
         },
       },
@@ -93,12 +88,6 @@ export function getOpenApi(basePath = "/"): OpenAPIObject {
           description: "User test results",
           "x-displayName": "Test results",
           "x-public": "yes",
-        },
-        {
-          name: "ape-keys",
-          description: "Ape keys provide access to certain API endpoints.",
-          "x-displayName": "Ape Keys",
-          "x-public": "no",
         },
         {
           name: "public",
@@ -176,13 +165,9 @@ function addAuth(
   const security: SecurityRequirementObject[] = [];
   if (!auth.isPublic && !auth.isPublicOnDev) {
     security.push({ BearerAuth: permissions });
-
-    if (auth.acceptApeKeys === true) {
-      security.push({ ApeKey: permissions });
-    }
   }
 
-  const includeInPublic = auth.isPublic === true || auth.acceptApeKeys === true;
+  const includeInPublic = auth.isPublic === true;
   operation["x-public"] = includeInPublic ? "yes" : "no";
   operation.security = security;
 
@@ -247,20 +232,9 @@ function addRateLimit(
   };
 }
 
-function getRateLimitDescription(limit: RateLimiterId | RateLimitIds): string {
-  const limits = getLimits(limit);
-
-  let result = `**Rate limit:** This operation can be called up to ${
-    limits.limiter.max
-  } times ${formatWindow(limits.limiter.window)} for regular users`;
-
-  if (limits.apeKeyLimiter !== undefined) {
-    result += ` and up to ${limits.apeKeyLimiter.max} times ${formatWindow(
-      limits.apeKeyLimiter.window,
-    )} with ApeKeys`;
-  }
-
-  return `${result}.\n\n`;
+function getRateLimitDescription(limit: RateLimiterId): string {
+  const options = limits[limit];
+  return `**Rate limit:** This operation can be called up to ${options.max} times ${formatWindow(options.window)}.\n\n`;
 }
 
 function formatWindow(window: Window): string {

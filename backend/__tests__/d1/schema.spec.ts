@@ -29,6 +29,7 @@ describe("D1 schema on workerd", () => {
       ]),
     );
     for (const removed of [
+      "ape_keys",
       "connections",
       "inbox",
       "reward_grants",

@@ -16,7 +16,7 @@ afterEach(() => {
 describe("settings sections", () => {
   const accountSections = ["account"] as const;
 
-  it.each(["blockedUsers", "apeKeys"] as const)(
+  it.each(["blockedUsers"] as const)(
     "omits %s and returns stale links to general settings",
     (tab) => {
       const params = safeParse({

@@ -8,7 +8,11 @@ process.env.TURNSTILE_SITE_KEY ??= "1x00000000000000000000AA";
 export default {
   workspaces: {
     ".": {
-      entry: ["vitest.config.ts"],
+      entry: [
+        "vitest.config.ts",
+        // Invoked manually by the documented local security audit workflow.
+        "docs/security/reproduce-account-controls.mts",
+      ],
       vitest: false,
     },
     backend: {

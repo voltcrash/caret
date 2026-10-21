@@ -30,7 +30,6 @@ export type DBUser = Omit<
   canReport?: boolean;
   nameHistory?: string[];
   lastNameChange?: number;
-  canManageApeKeys?: boolean;
   bananas?: number;
   testActivity?: CountByYearAndDay;
   suspicious?: boolean;

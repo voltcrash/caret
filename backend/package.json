@@ -43,8 +43,6 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "wrangler d1 migrations apply oxytype-staging --local",
     "db:bootstrap:production": "wrangler d1 execute oxytype-production --remote --config ../frontend/wrangler.production.json --file bootstrap/production.sql",
-    "db:audit-ape-key-hashes": "wrangler d1 execute oxytype-staging --remote --command=\"$(cat scripts/audit-ape-key-hashes.sql)\" --json",
-    "db:audit-ape-key-hashes:production": "wrangler d1 execute oxytype-production --remote --config ../frontend/wrangler.production.json --command=\"$(cat scripts/audit-ape-key-hashes.sql)\" --json",
     "migration-inventory": "tsx scripts/migration-inventory.ts"
   },
   "dependencies": {

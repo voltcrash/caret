@@ -84,7 +84,6 @@ export async function resetUser(uid: string): Promise<void> {
       "results",
       "configs",
       "presets",
-      "ape_keys",
     ]) {
       await stage(statement(`DELETE FROM ${table} WHERE uid=?`, uid));
     }

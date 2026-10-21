@@ -83,7 +83,9 @@ it("restores only the actor's whitelisted data and reconstructs calendar methods
     name: "profile",
   });
   first.queryClient.setQueryData(["auth", "session"], { secret: "excluded" });
-  first.queryClient.setQueryData(first.key("apeKeys"), { secret: "excluded" });
+  first.queryClient.setQueryData(first.key("unknown-private-query"), {
+    secret: "excluded",
+  });
   first.queryClient.setQueryData(["user", "b", 1, "account"], {
     name: "other",
   });

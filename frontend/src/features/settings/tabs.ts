@@ -53,7 +53,6 @@ export const SettingsUrlParamsSchema = z
       ...SettingsSectionSchema.options,
       "authentication",
       "blockedUsers",
-      "apeKeys",
     ]),
     highlight: z.string(),
   })
@@ -71,7 +70,7 @@ export function sectionForTab(
   const section =
     tab === "authentication"
       ? "account"
-      : tab === "blockedUsers" || tab === "apeKeys"
+      : tab === "blockedUsers"
         ? "behavior"
         : tab;
   return authenticated || !authenticatedSections.includes(section)
