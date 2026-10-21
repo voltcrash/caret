@@ -35,7 +35,6 @@ overrides:
   "better-auth>mongodb": "-"
   "postcss": "8.5.28"
   "cssnano": "8.0.10"
-  "nan": "2.29.0"
   "@ts-rest/core>zod": "4.6.5"
   "@ts-rest/open-api>zod": "4.6.5"
   "@anatine/zod-openapi>zod": "4.6.5"
