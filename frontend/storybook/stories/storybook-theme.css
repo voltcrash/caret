@@ -1,15 +1,15 @@
-/* Fallback theme variables for Storybook (serika_dark) */
+/* Fallback theme variables for Storybook (rust) */
 :root {
-  --bg-color: #323437;
-  --main-color: #e2b714;
-  --caret-color: #e2b714;
-  --sub-color: #646669;
-  --sub-alt-color: #2c2e31;
-  --text-color: #d1d0c5;
-  --error-color: #ca4754;
-  --error-extra-color: #7e2a33;
-  --colorful-error-color: #ca4754;
-  --colorful-error-extra-color: #7e2a33;
+  --bg-color: #180d0d;
+  --main-color: #e8692e;
+  --caret-color: #e8692e;
+  --sub-color: #9c867a;
+  --sub-alt-color: #271616;
+  --text-color: #f3e7dc;
+  --error-color: #ff4d6d;
+  --error-extra-color: #b8344f;
+  --colorful-error-color: #ff4d6d;
+  --colorful-error-extra-color: #b8344f;
   --roundness: 0.5rem;
 }
 

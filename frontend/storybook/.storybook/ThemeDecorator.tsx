@@ -15,8 +15,8 @@ export function ThemeDecorator(
   Story: () => JSXElement,
   context: StoryContext,
 ): JSXElement {
-  const themeName = (context.globals.theme ?? "serika_dark") as ThemeName;
-  const fallback = themeMap.get("serika_dark") as ThemeWithName;
+  const themeName = (context.globals.theme ?? "rust") as ThemeName;
+  const fallback = themeMap.get("rust") as ThemeWithName;
   const theme = themeMap.get(themeName) ?? fallback;
 
   const root = document.documentElement;
