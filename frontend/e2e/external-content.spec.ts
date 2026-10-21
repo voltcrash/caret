@@ -1,5 +1,49 @@
 import { expect, openTest, test } from "./fixtures";
 
+test.describe("background blocked by an additional browser policy", () => {
+  const url = "https://images.example.test/blocked.png";
+  test.use({ config: { mode: "words", words: 15, customBackground: url } });
+
+  test("reports a policy block rather than an expired URL", async ({
+    page,
+  }) => {
+    const policyErrors: string[] = [];
+    page.on("console", (message) => {
+      if (message.type() === "error" && message.text().includes("img-src")) {
+        policyErrors.push(message.text());
+      }
+    });
+    await page.route("**/", async (route) => {
+      const response = await route.fetch();
+      const headers = response.headers();
+      await route.fulfill({
+        response,
+        headers: {
+          ...headers,
+          "content-security-policy": (
+            headers["content-security-policy"] ?? ""
+          ).replace(/img-src[^;]+/, "img-src 'self' data:"),
+        },
+      });
+    });
+    await openTest(page);
+    await expect(
+      page.getByText(
+        "Your browser blocked this background image. Use a different image URL or upload a local image.",
+        { exact: true },
+      ),
+    ).toBeVisible();
+    expect(policyErrors.some((message) => message.includes(url))).toBe(true);
+    await expect(
+      page.getByText(
+        "Custom background link is either temporarily unavailable or expired. Please make sure the URL is correct or change it",
+        { exact: true },
+      ),
+    ).toBeHidden();
+    await expect(page.locator(".customBackground img")).toBeHidden();
+  });
+});
+
 for (const protocol of ["http", "https"] as const) {
   const url = `${protocol}://images.example.test/background.png`;
   test.describe(`${protocol} background under production CSP`, () => {
