@@ -53,4 +53,5 @@ it("uses the browser pick for the default config theme", () => {
   expect(config.theme).toBe("azure");
   expect(config.themeDark).toBe("azure");
   expect(config.themeLight).toBe("serika");
+  expect(config.customThemeColors[0]).toBe("#0b0d1c");
 });
