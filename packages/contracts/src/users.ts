@@ -382,7 +382,6 @@ export const usersContract = c.router(
         200: GetPersonalBestsResponseSchema,
       },
       metadata: meta({
-        authenticationOptions: { acceptApeKeys: true },
         rateLimit: "userGet",
       }),
     },
@@ -462,7 +461,6 @@ export const usersContract = c.router(
         200: GetTagsResponseSchema,
       },
       metadata: meta({
-        authenticationOptions: { acceptApeKeys: true },
         rateLimit: "userTagsGet",
       }),
     },
@@ -582,7 +580,6 @@ export const usersContract = c.router(
         200: GetStatsResponseSchema,
       },
       metadata: meta({
-        authenticationOptions: { acceptApeKeys: true },
         rateLimit: "userGet",
       }),
     },
@@ -731,7 +728,6 @@ export const usersContract = c.router(
         200: GetCurrentTestActivityResponseSchema,
       },
       metadata: meta({
-        authenticationOptions: { acceptApeKeys: true },
         rateLimit: "userCurrentTestActivity",
       }),
     },
@@ -745,7 +741,6 @@ export const usersContract = c.router(
         200: GetStreakResponseSchema,
       },
       metadata: meta({
-        authenticationOptions: { acceptApeKeys: true },
         rateLimit: "userStreak",
       }),
     },
