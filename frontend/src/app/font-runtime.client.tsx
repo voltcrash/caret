@@ -1,9 +1,10 @@
 import { MetaProvider, Style } from "@solidjs/meta";
-import { createEffect, onMount, type JSXElement } from "solid-js";
+import { createEffect, type JSXElement } from "solid-js";
 
 import { configEvent } from "../ts/events/config";
 import { getFontFace, getFontFamily } from "../ts/states/app";
 import { applyFontFamily } from "./fonts.client";
+import { preferencesReadiness } from "./readiness";
 
 /** Font work runs after mount; IndexedDB/language reads never gate the shell. */
 export function FontRuntime(): JSXElement {
@@ -18,10 +19,25 @@ export function FontRuntime(): JSXElement {
       console.error("Failed to apply font", error),
     );
   };
+  const ready = () => preferencesReadiness().state().status === "ready";
+  let fullConfigChange = false;
   configEvent.useListener(({ key }) => {
-    if (key === "fontFamily" || key === "language") apply();
+    if (key === "fullConfigChange") {
+      fullConfigChange = true;
+    } else if (key === "fullConfigChangeFinished") {
+      fullConfigChange = false;
+      if (ready()) apply();
+    } else if (
+      !fullConfigChange &&
+      ready() &&
+      (key === "fontFamily" || key === "language")
+    ) {
+      apply();
+    }
   });
-  onMount(apply);
+  createEffect(() => {
+    if (ready()) apply();
+  });
   return (
     <MetaProvider>
       <Style class="customFont">{getFontFace()}</Style>

@@ -12,8 +12,11 @@ export async function applyFontFamily(): Promise<void> {
   const language = config.language;
   let font = replaceUnderscoresWithSpaces(selectedFont);
 
-  const localFont = await fileStorage.getFile("LocalFontFamilyFile");
-  const preferredFont = (await getLanguage(language))?.preferredFont;
+  const [localFont, languageData] = await Promise.all([
+    fileStorage.getFile("LocalFontFamilyFile"),
+    getLanguage(language),
+  ]);
+  const preferredFont = languageData.preferredFont;
   lease.assertCurrent();
   if (selectedFont !== config.fontFamily || language !== config.language) {
     return;
