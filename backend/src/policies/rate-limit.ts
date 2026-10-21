@@ -9,7 +9,6 @@ import { getIpKey } from "./ip-key";
 import { statement } from "../db/client";
 import { isDevEnvironment } from "../utils/misc";
 import MonkeyError from "../utils/error";
-import statuses from "../constants/monkey-status-codes";
 
 /** Development raises every limit so local use and tests rarely hit them. */
 export const REQUEST_MULTIPLIER = 100;
@@ -51,12 +50,6 @@ export async function enforceLimit(
         "Maximum API request (root) limit reached. Please try again later.",
       );
     }
-    if (context.actor.type === "ApeKey") {
-      throw new MonkeyError(
-        statuses.APE_KEY_RATE_LIMIT_EXCEEDED.code,
-        statuses.APE_KEY_RATE_LIMIT_EXCEEDED.message,
-      );
-    }
     throw new MonkeyError(
       429,
       "Request limit reached, please try again later.",
@@ -72,14 +65,7 @@ export async function enforceOperationLimit(
 ): Promise<void> {
   const limit = metadata.rateLimit;
   if (limit === undefined) return;
-  const id =
-    context.actor.type === "ApeKey"
-      ? typeof limit === "object"
-        ? limit.apeKey
-        : "defaultApeRateLimit"
-      : typeof limit === "object"
-        ? limit.normal
-        : limit;
+  const id = limit;
   const options = limits[id];
   if (options === undefined) {
     throw new MonkeyError(
