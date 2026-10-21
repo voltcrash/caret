@@ -5,17 +5,17 @@ import { ThemeName } from "@oxytype/schemas/configs";
 
 export type ThemeIdentifier = ThemeName | "custom";
 const defaultTheme: Theme & { name: ThemeIdentifier } = {
-  name: "serika_dark",
-  bg: "#323437",
-  main: "#e2b714",
-  caret: "#e2b714",
-  sub: "#646669",
-  subAlt: "#2c2e31",
-  text: "#d1d0c5",
-  error: "#ca4754",
-  errorExtra: "#7e2a33",
-  colorfulError: "#ca4754",
-  colorfulErrorExtra: "#7e2a33",
+  name: "rust",
+  bg: "#180d0d",
+  main: "#e8692e",
+  caret: "#e8692e",
+  sub: "#9c867a",
+  subAlt: "#271616",
+  text: "#f3e7dc",
+  error: "#ff4d6d",
+  errorExtra: "#b8344f",
+  colorfulError: "#ff4d6d",
+  colorfulErrorExtra: "#b8344f",
 };
 
 export const [getTheme, setTheme] = createAppSignal(defaultTheme);
