@@ -3,7 +3,7 @@ header[data-focused] [data-nav-item] {
   background: none;
 }
 
-[data-nav-item="test"] {
+[data-nav-item="commandline"] {
   background: var(--sub-color);
   color: var(--bg-color);
   border-radius: calc(var(--roundness) * 2) calc(var(--roundness) * 1.3)
@@ -30,7 +30,7 @@ header[data-focused] [data-nav-item] {
     calc(var(--roundness) * 0.8) calc(var(--roundness) * 2.8);
 }
 
-[data-nav-item="test"]:hover,
+[data-nav-item="commandline"]:hover,
 [data-nav-item="leaderboards"]:hover,
 [data-nav-item="github"]:hover,
 [data-nav-item="settings"]:hover {
@@ -38,7 +38,7 @@ header[data-focused] [data-nav-item] {
 }
 
 body.crtmode {
-  & [data-nav-item="test"] {
+  & [data-nav-item="commandline"] {
     box-shadow:
       3px 0 1px color-mix(in srgb, var(--sub-color) 20%, transparent),
       -3px 0 color-mix(in srgb, var(--sub-color) 30%, transparent),
