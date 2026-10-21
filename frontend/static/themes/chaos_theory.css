@@ -64,7 +64,7 @@ did not try it on the new #testConfig yet
   filter: brightness(1.25);
 }
 
-[data-nav-item="test"] {
+[data-nav-item="commandline"] {
   background: #ab92e1;
 }
 
@@ -129,7 +129,7 @@ header[data-focused] {
 }
 
 body.crtmode {
-  & [data-nav-item="test"] {
+  & [data-nav-item="commandline"] {
     box-shadow:
       3px 0 1px color-mix(in srgb, #ab92e1 20%, transparent),
       -3px 0 color-mix(in srgb, #ab92e1 30%, transparent),
