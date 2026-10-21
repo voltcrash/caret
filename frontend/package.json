@@ -34,7 +34,6 @@
     "test:start:browser": "playwright test --config playwright.start.config.ts",
     "dry-run:start": "wrangler deploy --config dist/start/server/wrangler.json --dry-run --outdir dist/start-dry-run",
     "build:start:staging": "OXYTYPE_DEPLOY_ENV=staging vp build",
-    "build:start:migration": "CLOUDFLARE_ENV=migration vp build",
     "check:production": "tsx scripts/check-production.ts",
     "build:production-site": "tsx scripts/build-production-site.ts",
     "deploy:production-site": "vp run check:production && vp run retire:production-task-consumer && wrangler deploy --config dist/start/server/wrangler.json --secrets-file .dev.vars.production",
