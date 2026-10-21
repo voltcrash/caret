@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-21",
+  "baseline": "8429ba0fe",
+  "node": "v24.22.1",
+  "platform": "linux",
+  "arch": "arm64",
+  "parallelism": 8,
+  "chromium": "153.0.8010.12",
+  "browser": "headless Chromium; Playwright repository fixtures",
+  "startupSamplesPerProfile": 3,
+  "wordRenderingSamples": 50,
+  "inputSnapshotSamples": 50,
+  "implementation": "a67a953c7",
+  "wordRenderingAfter": "word renderer/cache changes; later startup and event-recorder changes do not affect this benchmark"
+}
