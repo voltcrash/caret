@@ -5,11 +5,10 @@ import {
 } from "../../backend/__tests__/d1/helpers";
 import { withRuntime } from "../../backend/src/runtime/env";
 import { getAuth } from "../../backend/src/init/auth";
-import { patchConfiguration } from "../../backend/src/init/configuration";
 import { dispatchApi } from "../../backend/__tests__/__testData__/http-worker";
 
 // Local migrated Miniflare D1 only. No production credentials or outbound calls.
-// These assertions document vulnerable behavior; invert them when fixing it.
+// Checks retired key routes and reproduces the remaining disabled-auth gap.
 
 const test = await createTestRuntime();
 Object.assign(test.env, {
@@ -19,7 +18,11 @@ Object.assign(test.env, {
   BETTER_AUTH_SECRET: "local-audit-fixture-secret-at-least-32-characters",
 });
 const execution = {
-  waitUntil: (task: Promise<unknown>) => void task.catch(() => {}),
+  waitUntil: (task: Promise<unknown>): void => {
+    void task.catch((error: unknown) =>
+      console.error("Local audit background task failed", error),
+    );
+  },
 };
 try {
   await withRuntime(test.env, async () => {
@@ -36,10 +39,7 @@ try {
       accessToken: "local-audit-oauth-token",
     });
     const session = await auth.internalAdapter.createSession(user.id, false);
-    assert(session);
-    await patchConfiguration({
-      apeKeys: { acceptKeys: true, endpointsEnabled: true, maxKeysPerUser: 5 },
-    });
+    assert.notEqual(session, null);
     await test.env.DB.prepare(
       "UPDATE auth_sessions SET created_at=? WHERE user_id=?",
     )
@@ -50,7 +50,7 @@ try {
       authorization: string,
       method = "GET",
       body?: unknown,
-    ) =>
+    ): Promise<Response> =>
       await withRuntime(
         test.env,
         async () =>
@@ -73,9 +73,7 @@ try {
       "POST",
       { name: "audit-key", enabled: true },
     );
-    assert.equal(minted.status, 200);
-    const payload = (await minted.json()) as { data: { apeKey: string } };
-    const key = payload.data.apeKey;
+    assert.equal(minted.status, 404);
     const freshRequired = await request(
       "/api/users/name",
       `Bearer ${session.token}`,
@@ -85,7 +83,7 @@ try {
     assert.equal(freshRequired.status, 401);
     console.log(
       JSON.stringify({
-        check: "stale-session-credential-creation",
+        check: "retired-key-creation",
         sessionAgeMinutes: 5,
         mintKeyStatus: minted.status,
         renameStatus: freshRequired.status,
@@ -99,7 +97,7 @@ try {
       "/api/users/stats",
       `Bearer ${session.token}`,
     );
-    const disabledKey = await request("/api/users/stats", `ApeKey ${key}`);
+    const disabledKey = await request("/api/users/stats", "ApeKey retired-key");
     const disabledAuthMutation = await request(
       "/api/auth/update-user",
       `Bearer ${session.token}`,
@@ -107,7 +105,7 @@ try {
       { name: "Disabled account mutation" },
     );
     assert.equal(disabledSession.status, 403);
-    assert.equal(disabledKey.status, 200);
+    assert.equal(disabledKey.status, 401);
     assert.equal(disabledAuthMutation.status, 200);
     console.log(
       JSON.stringify({
