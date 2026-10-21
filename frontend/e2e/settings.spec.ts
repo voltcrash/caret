@@ -1,5 +1,47 @@
 import { assertRestarted, expect, openTest, test } from "./fixtures";
 
+test("animation FPS saves on blur and Enter, persists and returns to native", async ({
+  page,
+}) => {
+  await openTest(page);
+  await page.goto("/settings?highlight=animationFpsLimit");
+  const setting = page.locator('[data-setting-key="animationFpsLimit"]');
+  const input = setting.getByRole("spinbutton");
+  for (const [key, value] of [
+    ["Tab", 30],
+    ["Enter", 60],
+  ] as const) {
+    await input.fill(String(value));
+    await input.press(key);
+    await expect
+      .poll(
+        async () =>
+          await page.evaluate(
+            () =>
+              JSON.parse(localStorage.getItem("fpsLimit") ?? "null") as
+                | number
+                | null,
+          ),
+      )
+      .toBe(value);
+    await page.reload();
+    await expect(input).toHaveValue(String(value));
+  }
+  await input.fill("14");
+  await input.press("Enter");
+  expect(await page.evaluate(() => localStorage.getItem("fpsLimit"))).toBe(
+    "60",
+  );
+  await setting.getByRole("button", { name: "native", exact: true }).click();
+  await expect
+    .poll(
+      async () => await page.evaluate(() => localStorage.getItem("fpsLimit")),
+    )
+    .toBe("1000");
+  await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
+  await expect(page.locator("#words .word").first()).toBeVisible();
+});
+
 test("settings change persists through reload", async ({ page }) => {
   await openTest(page);
   await page.goto("/settings?highlight=quickRestart");
