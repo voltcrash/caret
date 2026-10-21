@@ -8,7 +8,7 @@ header[data-focused] {
   }
 }
 
-[data-nav-item="test"],
+[data-nav-item="commandline"],
 [data-nav-item="leaderboards"],
 [data-nav-item="github"],
 [data-nav-item="settings"] {
@@ -23,7 +23,7 @@ header[data-focused] {
 }
 
 body.crtmode {
-  & [data-nav-item="test"],
+  & [data-nav-item="commandline"],
   & [data-nav-item="leaderboards"],
   & [data-nav-item="github"],
   & [data-nav-item="settings"] {
