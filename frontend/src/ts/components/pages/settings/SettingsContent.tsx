@@ -7,7 +7,6 @@ import {
 } from "solid-js";
 
 import { RestorePageScroll } from "../../../../components/page-scroll";
-import { useSessionSettled } from "../../../../features/auth/settled.client";
 import { resetConfig } from "../../../config/lifecycle";
 import { getConfig } from "../../../config/store";
 import {
@@ -70,8 +69,6 @@ import { useSettingsNavigation } from "./useSettingsNavigation";
 
 /** All available settings, with optional sidebar jumps between sections. */
 export function SettingsContent(props: { authenticated: boolean }): JSXElement {
-  const settled = useSessionSettled();
-  const accountReady = () => settled() && props.authenticated;
   const sections = useContext(SettingsSectionHostContext);
   const navigation = useSettingsNavigation(sections);
   const [hasLocalBg] = createResource(
@@ -81,7 +78,7 @@ export function SettingsContent(props: { authenticated: boolean }): JSXElement {
 
   return (
     <SidebarLayout
-      items={getAvailableSettingsSections(accountReady())}
+      items={getAvailableSettingsSections(props.authenticated)}
       // while filtering, results from every section are shown
       active={isSettingsSearchActive() ? undefined : navigation.active()}
       onSelect={navigation.select}
@@ -107,7 +104,7 @@ export function SettingsContent(props: { authenticated: boolean }): JSXElement {
       </Show>
       <div ref={navigation.ref} class="grid gap-16">
         <Section section="behavior">
-          <Show when={accountReady()}>
+          <Show when={props.authenticated}>
             <SettingsGroup title="saved tests">
               <Tags />
               <Presets />
@@ -267,7 +264,7 @@ export function SettingsContent(props: { authenticated: boolean }): JSXElement {
             <SearchableAutoSetting key="showAverage" />
           </SettingsGroup>
         </Section>
-        <Show when={accountReady()}>
+        <Show when={props.authenticated}>
           <Section section="account">
             <SettingsGroup title="account preferences">
               <AccountTab />
@@ -278,7 +275,7 @@ export function SettingsContent(props: { authenticated: boolean }): JSXElement {
           </Section>
         </Show>
         <Section section="dangerZone">
-          <Show when={accountReady()}>
+          <Show when={props.authenticated}>
             <SettingsGroup title="account data">
               <DangerZoneTab />
             </SettingsGroup>
