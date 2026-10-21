@@ -110,7 +110,7 @@ function ChromeRuntime(props: {
       <Portal>
         <Download />
         <FilePicker />
-        <Overlays scrollToTop={!props.fixed} />
+        <Overlays />
         <CustomBackground />
         <div id="solidmodals">
           <Modals />

@@ -11,12 +11,10 @@ import { LoaderBar } from "./LoaderBar";
 import { MediaQueryDebugger } from "./MediaQueryDebugger";
 import { Notifications } from "./Notifications";
 
-export function Overlays(props: { scrollToTop: boolean }): JSXElement {
+export function Overlays(): JSXElement {
   return (
     <>
-      <Show when={props.scrollToTop}>
-        <ScrollToTop />
-      </Show>
+      <ScrollToTop />
       <Banners />
       <Notifications />
       <MediaQueryDebugger />
