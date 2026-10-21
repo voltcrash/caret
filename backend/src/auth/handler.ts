@@ -50,7 +50,7 @@ async function dispatchAuthRequest(
       return Response.json({ message: "Untrusted origin" }, { status: 403 });
     }
   }
-  // Origin checks run first so a foreign website cannot revoke a user's sessions.
+  // Reject untrusted writes before revoking disabled sessions.
   if (
     session !== null &&
     "disabled" in session.user &&

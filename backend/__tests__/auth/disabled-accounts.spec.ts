@@ -194,3 +194,44 @@ it("preserves sessions during ordinary enabled-account updates", async () => {
     expect(await context.internalAdapter.findSession(token)).not.toBeNull();
   }
 });
+
+it.each(["cookie", "bearer"] as const)(
+  "allows disabled %s sessions to sign out and revokes their other sessions",
+  async (credential) => {
+    const identity = await fixture();
+    await setDisabled(identity.userId, true);
+    const response = await unitApi.request(`${origin}/api/auth/sign-out`, {
+      method: "POST",
+      headers: {
+        ...headers(identity, credential),
+        "content-type": "application/json",
+      },
+      body: "{}",
+    });
+    expect(response.status).toBe(200);
+    expect(response.headers.getSetCookie().join(";")).toContain("Max-Age=0");
+    const context = await auth.$context;
+    for (const token of [identity.token, identity.otherToken]) {
+      expect(await context.internalAdapter.findSession(token)).toBeNull();
+    }
+  },
+);
+
+it("rejects foreign-origin writes before revoking disabled sessions", async () => {
+  const identity = await fixture();
+  await setDisabled(identity.userId, true);
+  const response = await unitApi.request(`${origin}/api/auth/update-user`, {
+    method: "POST",
+    headers: {
+      cookie: identity.cookie,
+      origin: "https://attacker.test",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ name: "Forbidden mutation" }),
+  });
+  expect(response.status).toBe(403);
+  expect(await response.json()).toMatchObject({ message: "Untrusted origin" });
+  expect(
+    await (await auth.$context).internalAdapter.findSession(identity.token),
+  ).not.toBeNull();
+});
