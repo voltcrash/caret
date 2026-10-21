@@ -1,118 +1,57 @@
 # Release, rollback and old-client contract
 
-Stage 0 performs no deployment or resource mutation. Read-only deployment/release
-inspection establishes a concrete rollback anchor in [rollback.json](../archive/tanstack-start/evidence/rollback.json).
+TanStack Start owns the production/staging build and deployment commands in
+`frontend/`. The [production workflow](../../.github/workflows/production-release.yml)
+deploys the exact successful main-push CI snapshot and supports manual retries.
+It does not require `START_PRODUCTION_ENABLED` or publish numbered GitHub releases.
+See [production setup](../PRODUCTION_SETUP.md), [staging setup](../STAGING_SETUP.md)
+and [operations](../CLOUDFLARE_OPERATIONS.md) for commands and configuration.
 
-Observed 2026-10-15:
+## Deployment and rollback
 
-- Production Worker `oxytype`, custom domain `oxytype.voltcrash.com`.
-- Deployment `a6537265-9f30-4895-9a8d-b5ca075e995a`, 100% version
-  `ad9a94aa-739f-4a95-bb20-c7782f4c5770`, created 04:50:16 UTC.
-- [Successful production run](https://github.com/voltcrash/oxytype/actions/runs/38683451809)
-  at source `e9bb89fe72b7af4f3078d821277dd38cad482a26`, followed by
-  `v26.10.10`
-  (published as `v26.10.15`; renamed when releases moved to `YY.MM.NN`)
-  publication at 04:50:20 UTC. The GitHub release record was removed on October 18
-  with the deployment-only change; its source tag remains. The tag resolves to that commit; deployment
-  and publication timestamps align with workflow order. Re-observe before cutover;
-  this is a dated anchor, not an assertion that production will remain unchanged.
-- GitHub release has no binary assets. The retained Cloudflare Worker version
-  plus its associated asset version is the exact deployment rollback artifact;
-  the tag/lockfile/config is the reproducible source fallback. Do not substitute
-  Stage 0's test-key frontend build for a production rollback artifact.
-
-Configuration to preserve: `frontend/wrangler.production.json`, Worker name/domain,
-account and D1 `43d104e9-2fef-43db-95d7-c64a08310714`, migration directory,
-one-minute Cron, observability, compatibility date/flags and `ASSETS`. Keep staging
-isolated (`frontend/wrangler.staging.json`, separate D1). Preserve production auth/OAuth/
-Turnstile secrets; do not archive secrets in evidence, public env or release assets.
-
-## Coordination
-
-1. Stage 1 develops a migration-only build/Worker target; production keeps the
-   legacy build. Stage 0 PR is safe for the existing release flow: only docs,
-   tests and opt-in tooling, no altered production entry/config or dependencies.
-2. `production-release.yml` formerly ran daily or manually, then became manual-only
-   in #144. The deployment-only follow-up removes numbered releases, publication,
-   changelogs and package-version edits. Each dispatch serializes runs, validates
-   exact-snapshot CI, builds the matched client/Worker, dry-runs, applies compatible
-   D1 migrations and deploys. The current workflow also deploys automatically
-   after successful main-push CI, using the triggering CI run's exact commit.
-   Do not merge partial migration entry changes into this path. Keep migrations
-   isolated until the native application passes the preceding gates; preserve
-   the production path or explicitly gate the workflow during transition.
-3. Stage 1 CI adds isolated Start checks. Stage 7 transfers production build and
-   deploy ownership to frontend and expands path filters: backend services must
-   rebuild/test the application Worker. Do not run legacy `prepare-site.ts` or
-   a cached mismatched client/server artifact against Start output.
-4. Before Stage 7/8 cutover, capture current deployment/version IDs and associated
-   assets; retain the complete validated bundle, lockfile, public build settings,
-   release ID and configuration manifest. Verify the previous version remains
-   rollback-capable. Stage 7 tests previous-build tabs/SW and actual rollback in
-   staging before production. Never rebuild client assets independently during rollback.
-5. Roll back Worker + matching assets together; preserve D1 writes, secrets,
-   queue/job identities and compatible storage. Framework migration itself
-   requires no database restore. Any future incompatible schema change needs
-   its own reviewed restore/forward-compatibility plan before release.
+- Build the client and Worker together, validate the artifact, dry-run, apply
+  compatible D1 migrations and deploy the matched bundle.
+- Preserve the production origin, Worker/D1 identities, auth/OAuth/Turnstile
+  secrets, session cookie identity and compatible storage formats.
+- Before deployment, record the current Cloudflare Worker version with its
+  matching assets and verify rollback availability. Dated migration anchors
+  are historical evidence, not a current rollback target.
+- Roll back Worker and matching assets together. Never rebuild client assets
+  independently or restore D1 for a code-only rollback. Cloudflare version
+  rollback does not restore connected resources, secrets or data writes.
+- Observe input readiness, auth/session failures, save success and duplicates,
+  Worker errors/CPU, scheduled work, route errors and version skew.
 
 ## Compatibility window
 
-Default frozen here: retain necessary old web HTTP transports for **at least
+Retain necessary old web HTTP transports for **at least
 30 days after the last legacy HTML is served**. This matches the old runtime
 build/language cache's 30-day TTL. Keep published/external endpoints indefinitely
 under their contracts; their lifetime is independent of this window.
 
 During the window, Start server routes implement old request/response policies
 over the same services as new functions. Keep no second router/business code,
-no dual result submission, and no global fallback to the old SPA. Ledger entries
-name which web-only adapters can retire. Cache-safe old hashed assets must remain
+no dual result submission, and no global fallback to the old SPA. The [operation inventory](operations.json)
+names which web-only adapters can retire. Cache-safe old hashed assets must remain
 available for supported old tabs; user-independent offline documents must not
 cache private HTML or function responses.
 
 Retire web-only transports only after the minimum window, verified stale-tab
 handling, and seven consecutive days with no supported legacy mutation traffic.
-Stage 7 adds version/operation observability without logging tokens or result
+Use version/operation observability without logging tokens or result
 payloads; absent evidence is not evidence of zero usage. Maintain the adapters
 longer if that condition is not met. Old clients beyond support get an explicit
 refresh/retry path after idle, not a false save acknowledgement.
 
-Old SW facts: `/sw.js`, scope `/`, autoUpdate registration, clientsClaim and
-cleanupOutdatedCaches; build caches assume `/js|css|webfonts/name.hash.ext`;
-version/release are NetworkOnly. The broad non-`/api` NetworkFirst rule is unsafe
-for Start functions. Stage 7 replaces it, versions caches with the build, excludes
-auth/functions/mutations/private data, and deliberately preserves guest offline
-typing. Service-worker update/activation and page refresh must wait for active
-typing and pending saves; never auto-replay a failed result on update/reconnect.
+## Service worker and retained assets
 
-Cloudflare's [rollback contract](https://developers.cloudflare.com/workers/versions-and-deployments/rollbacks/)
-currently permits the 100 most recent versions and does not restore connected
-resources. Preserve the current anchor explicitly before it ages out; do not
-assume a dated deployment stays rollback-capable indefinitely. Installed Wrangler
-read-only `versions view` confirmed version 13, script ETag and runtime asset
-configuration; sanitized metadata is included in the rollback evidence.
+Keep `/sw.js` at its existing URL and scope. Builds precache guest typing, keep
+one previous Start cache and retain the previous deployment's public chunk graph
+for open tabs. Auth, functions, APIs, mutations and private HTML stay outside
+shared offline caches. Activation and page refresh wait for active typing and
+pending saves; updates/reconnects never automatically replay a failed result.
 
-No unresolved product-scope decision blocks Stage 1. Actual package compatibility,
-edge metrics, final release IDs, migration staging and old-tab acceptance are
-explicit Stage 1/7 implementation gates, not silently completed by this document.
-
-## Stage 7 delivery state
-
-Start owns the production/staging Wrangler configs, build, artifact receipt,
-validation, migrations and deployment commands. The production workflow now
-automatically builds and deploys the matched Start artifact after successful
-main-push CI; manual retries remain available. It no
-longer needs `START_PRODUCTION_ENABLED`, numbers deployments or publishes GitHub
-releases. Rollback uses the retained Cloudflare Worker version with matching
-assets, independently of GitHub release records. Human staging acceptance is
-recorded in the [Stage 8 ledger](../archive/tanstack-start/stage-8.md). The ledger records the earlier manual
-cutover process; merging to `main` now deploys production once CI succeeds.
-
-The replacement `/sw.js` keeps the rollback worker's URL and scope, replaces it
-at once on first install, retires workbox caches and keeps rollback hashed
-assets for one generation. Start builds precache guest typing per build, keep
-one previous Start cache, exclude auth/functions/APIs/mutations/private HTML and
-never activate or reload during typing or a pending save. Builds retain the
-previous deployment's public chunk graph for open tabs. Staging rehearsed
-legacy → Start → legacy and Start → Start rollbacks with D1 rows unchanged
-([evidence](../archive/tanstack-start/evidence/stage-7-staging-deployments.json)). Re-observe the
-production anchor's rollback availability immediately before Stage 8 cutover.
+Historical legacy/Start rollback rehearsals and deployment observations are
+in the [archived release record](../archive/tanstack-start/release.md) and
+[stage reports](../archive/tanstack-start/README.md). They do not close the
+compatibility window or certify the currently hosted deployment.
