@@ -15,6 +15,7 @@ import {
   setFocus,
   setCompositionText,
   setTestFocusState,
+  setTestInitError,
 } from "../../ts/states/test";
 import * as Composition from "../../ts/states/composition";
 import {
@@ -40,6 +41,14 @@ export async function enterTypingRoute(): Promise<void> {
     if (!mount.activate()) return;
     resetIncompleteTests();
     await restart({ noAnim: true });
+  } catch (error) {
+    if (mount.isCurrent()) {
+      setIsTestRestarting(false);
+      setTestInitError({
+        message: error instanceof Error ? error.message : undefined,
+      });
+    }
+    throw error;
   } finally {
     // A failed initialization must reveal its error; stale mounts cannot
     // release the startup cover over a replacement typing route.
