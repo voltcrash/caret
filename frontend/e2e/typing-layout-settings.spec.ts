@@ -175,6 +175,7 @@ test.describe("numeric textbox controls", () => {
     ["fontSize", "fontSize", 3],
     ["maxLineWidth", "maxLineWidth", 40],
     ["paceCaret", "paceCaretCustomSpeed", 120],
+    ["minAcc", "minAccCustom", 95],
     ["minSpeed", "minWpmCustomSpeed", 80],
   ] as const) {
     test(`${configKey} saves on blur and Enter without freezing`, async ({
