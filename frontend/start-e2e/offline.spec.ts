@@ -62,9 +62,15 @@ test("one online visit installs guest typing; private documents and RPCs stay un
   await expect(
     page.getByRole("heading", { name: "You're offline" }),
   ).toBeVisible();
+  // The script-free fallback uses the standalone rust palette.
   await expect(page.locator("body")).toHaveCSS(
     "background-color",
-    "rgb(50, 52, 55)",
+    "rgb(24, 13, 13)",
+  );
+  await expect(page.locator("body")).toHaveCSS("color", "rgb(243, 231, 220)");
+  await expect(page.getByRole("link", { name: "Start typing" })).toHaveCSS(
+    "color",
+    "rgb(232, 105, 46)",
   );
   await page.getByRole("link", { name: "Start typing" }).click();
   await expect(page.locator("#words .word").first()).toBeVisible();
