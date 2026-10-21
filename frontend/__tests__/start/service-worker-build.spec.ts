@@ -108,6 +108,21 @@ describe("built Start service worker", () => {
     });
     afterAll(async () => await mf?.dispose());
 
+    it("preloads the verified default language directly from the typing document", async () => {
+      const path = builtConfig().precache.find((path) =>
+        path.startsWith("/languages/english.json?v="),
+      );
+      expect(path).toBeDefined();
+      const response = await mf.dispatchFetch("http://localhost:3000/");
+      const html = await response.text();
+      const link = [...html.matchAll(/<link\b[^>]*>/g)]
+        .map((match) => match[0])
+        .find((tag) => tag.includes(`href="${path}"`));
+      expect(link).toContain('rel="preload"');
+      expect(link).toContain('as="fetch"');
+      expect(link).toContain('crossorigin="anonymous"');
+    });
+
     it.each([
       ["/sw.js", "no-cache"],
       ["/version.json", "no-cache"],

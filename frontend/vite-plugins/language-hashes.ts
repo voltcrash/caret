@@ -56,6 +56,7 @@ export function languageHashes(options?: { skip: boolean }): Plugin {
         const hashes: Record<string, string> = options?.skip ? {} : getHashes();
         return `
           export const languageHashes = ${JSON.stringify(hashes)};
+          export const englishHash = ${JSON.stringify(hashes["english"])};
         `;
       }
       return;
