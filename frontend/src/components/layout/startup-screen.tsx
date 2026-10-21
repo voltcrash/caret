@@ -4,8 +4,8 @@ import { TypingLoader } from "../../ts/components/common/TypingLoader";
 import { cn } from "../../ts/utils/cn";
 
 /**
- * Server-rendered cover over the app while the browser chrome and stored
- * preferences load. Fades out once `leaving`, accepting input during the fade.
+ * Server-rendered cover while chrome, preferences and the initial typing test
+ * load. Fades out once `leaving`, accepting input during the fade.
  */
 export function StartupScreen(props: {
   leaving: boolean;
