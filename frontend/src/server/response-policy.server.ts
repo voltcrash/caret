@@ -41,7 +41,7 @@ export function applyResponsePolicy(
         "style-src 'self' 'unsafe-inline'",
         "font-src 'self' data:",
         "img-src 'self' data:",
-        `connect-src 'self' https://challenges.cloudflare.com https://poetrydb.org${sentryOrigin === "" ? "" : ` ${sentryOrigin}`}${development ? " ws: wss:" : ""}`,
+        `connect-src 'self' https://challenges.cloudflare.com https://poetrydb.org https://*.wikipedia.org${sentryOrigin === "" ? "" : ` ${sentryOrigin}`}${development ? " ws: wss:" : ""}`,
       ].join("; "),
     );
   }
