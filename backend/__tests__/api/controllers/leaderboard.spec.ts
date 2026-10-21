@@ -12,7 +12,6 @@ import * as LeaderboardDal from "../../../src/dal/leaderboards";
 import * as DailyLeaderboards from "../../../src/utils/daily-leaderboards";
 import * as WeeklyXpLeaderboard from "../../../src/services/weekly-xp-leaderboard";
 import * as Configuration from "../../../src/init/configuration";
-import { mockAuthenticateWithApeKey } from "../../__testData__/auth";
 import { XpLeaderboardEntry } from "@oxytype/schemas/leaderboards";
 
 const { mockApp, uid } = setup();
@@ -334,16 +333,7 @@ describe("Loaderboard Controller", () => {
         data: null,
       });
     });
-    it("should get with ape key", async () => {
-      await acceptApeKeys(true);
-      const apeKey = await mockAuthenticateWithApeKey(uid, await configuration);
 
-      await mockApp
-        .get("/leaderboards/rank")
-        .query({ language: "english", mode: "time", mode2: "60" })
-        .set("authorization", `ApeKey ${apeKey}`)
-        .expect(200);
-    });
     it("should get for mode", async () => {
       getLeaderboardRankMock.mockResolvedValue({} as any);
       for (const mode of ["time", "words", "quote", "zen", "custom"]) {
@@ -1219,15 +1209,6 @@ describe("Loaderboard Controller", () => {
     });
   });
 });
-
-async function acceptApeKeys(enabled: boolean): Promise<void> {
-  const mockConfig = await configuration;
-  mockConfig.apeKeys = { ...mockConfig.apeKeys, acceptKeys: enabled };
-
-  vi.spyOn(Configuration, "getCachedConfiguration").mockResolvedValue(
-    mockConfig,
-  );
-}
 
 async function dailyLeaderboardEnabled(enabled: boolean): Promise<void> {
   const mockConfig = await configuration;

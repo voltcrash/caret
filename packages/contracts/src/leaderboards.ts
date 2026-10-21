@@ -174,9 +174,6 @@ export const leaderboardsContract = c.router(
       responses: {
         200: GetLeaderboardRankResponseSchema,
       },
-      metadata: meta({
-        authenticationOptions: { acceptApeKeys: true },
-      }),
     },
     getDaily: {
       summary: "get daily leaderboard",
