@@ -168,7 +168,12 @@ export function createAuth(
       },
       user: {
         update: {
-          after: async (user) => {
+          after: async (user, ctx) => {
+            // Await revocation so re-enabling cannot revive retained sessions.
+            if (user["disabled"] === true) {
+              const context = ctx?.context ?? (await auth.$context);
+              await context.internalAdapter.deleteUserSessions(user.id);
+            }
             // Provider profile updates keep the application email in sync.
             if (await UserDAL.exists(user.id)) {
               await mutateUser(user.id, (profile) => {
@@ -191,7 +196,8 @@ export function createAuth(
       modelName: "authRateLimits",
     },
   };
-  return betterAuth(options);
+  const auth = betterAuth(options);
+  return auth;
 }
 
 export function getAuth(): ReturnType<typeof createAuth> {
