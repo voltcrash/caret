@@ -2,6 +2,7 @@ import { createRouter } from "@tanstack/solid-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/solid-router-ssr-query";
 import { createIsomorphicFn } from "@tanstack/solid-start";
 
+import { preloadStartup } from "./app/preload.client";
 import { createQueryClient } from "./app/query-client";
 import { parseSearch, stringifySearch } from "./app/search";
 import { AppError } from "./components/app-error";
@@ -13,7 +14,16 @@ const getNonce = createIsomorphicFn()
   .server(() => requestNonce())
   .client(() => undefined);
 
+const preload = createIsomorphicFn()
+  .server(() => undefined)
+  .client(() => {
+    void preloadStartup(window.location.pathname).catch((error: unknown) =>
+      console.error("Startup preload failed", error),
+    );
+  });
+
 export function getRouter() {
+  preload();
   const queryClient = createQueryClient();
   const router = createRouter({
     ssr: { nonce: getNonce() },
