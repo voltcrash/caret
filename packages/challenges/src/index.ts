@@ -7,14 +7,9 @@ const map: Record<ChallengeName, Challenge> = Object.fromEntries(
 ) as Record<ChallengeName, Challenge>;
 
 const list: Challenge[] = Object.values(map);
-const regular: Challenge[] = list.filter((it) => it.isHidden !== true);
 
 export function getChallenges(): Challenge[] {
   return list;
-}
-
-export function getRegularChallenges(): Challenge[] {
-  return regular;
 }
 
 export function getChallenge(name: ChallengeName): Challenge {

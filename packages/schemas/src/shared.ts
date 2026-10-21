@@ -58,12 +58,6 @@ export const QuoteLengthSchema = z.union([
   z.literal("thicc"),
 ]);
 
-// // Step 1: Define the schema for specific string values "10" and "25"
-// const SpecificKeySchema = z.union([z.literal("10"), z.literal("25")]);
-
-// // Step 2: Use this schema as the key schema for another object
-// export const ExampleSchema = z.record(SpecificKeySchema, z.string());
-
 // //used by user, config, public
 export const ModeSchema = PersonalBestsSchema.keyof();
 export type Mode = z.infer<typeof ModeSchema>;

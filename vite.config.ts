@@ -62,7 +62,7 @@ export default defineConfig({
         files: ["**/*.tsx"],
         options: {
           experimentalTailwindcss: {
-            stylesheet: "./frontend/src/styles/tailwind.css",
+            stylesheet: "./frontend/src/app/app.css",
             attributes: ["cn"],
             functions: ["cn"],
           },

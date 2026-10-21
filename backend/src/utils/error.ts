@@ -1,30 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { isDevEnvironment } from "./misc";
 import { MonkeyServerErrorType } from "@oxytype/contracts/util/api";
-export function getErrorMessage(error: unknown): string | undefined {
-  let message = "";
-
-  if (error instanceof Error) {
-    message = error.message;
-  } else if (
-    error !== null &&
-    typeof error === "object" &&
-    "message" in error &&
-    (typeof error.message === "string" || typeof error.message === "number")
-  ) {
-    message = `${error.message}`;
-  } else if (typeof error === "string") {
-    message = error;
-  } else if (typeof error === "number") {
-    message = `${error}`;
-  }
-
-  if (message === "") {
-    return undefined;
-  }
-
-  return message;
-}
 
 class MonkeyError extends Error implements MonkeyServerErrorType {
   status: number;

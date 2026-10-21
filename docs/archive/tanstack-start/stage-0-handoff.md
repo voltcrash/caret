@@ -9,7 +9,7 @@ Delivered:
 - [Behavior/consumer inventory](behavior.md): routes/standalone aliases, URLs,
   OAuth/device/handoffs, downloads, admin/config/integrations/jobs, startup and
   preference ordering, account resets, navigation/test lifecycle, offline saves.
-- [82-operation ledger](operations.json), generated from merged ts-rest contracts
+- [82-operation ledger](../../tanstack-start/operations.json), generated from merged ts-rest contracts
   and actual browser callers. 47 web function targets; 35 retained HTTP targets,
   including 19 published public/ApeKey contracts. Uncertain operational/external
   usage conservatively retains HTTP; no product decision blocks foundation.
@@ -19,7 +19,7 @@ Delivered:
   and representative D1 statement counts; raw evidence and frozen numeric gates.
 - [Architecture/compatibility](contract.md): unchanged target ownership, installed
   package facts and explicit Solid Query/Vite+/Cloudflare foundation proofs.
-- [Release/rollback](release.md): observed production version/release/config,
+- [Release/rollback](../../tanstack-start/release.md): observed production version/release/config,
   unchanged delivery path, coordinated artifact rollback and 30-day minimum old-tab
   window plus evidence-based transport retirement.
 - Executable inventory drift/retention tests, budget rejection tests and browser

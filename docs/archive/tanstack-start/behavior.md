@@ -79,7 +79,7 @@ Lifecycle contract:
 
 ## HTTP operations and non-HTTP consumers
 
-[operations.json](operations.json) enumerates every **82** ts-rest operation:
+[operations.json](../../tanstack-start/operations.json) enumerates every **82** ts-rest operation:
 method/path, backend owner, exact merged policy metadata, browser callers,
 validation/status contract, target transport and adapter retirement condition.
 Generate/check with `vp -C backend exec tsx scripts/migration-inventory.ts [--check]`.

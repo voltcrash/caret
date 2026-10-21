@@ -155,5 +155,5 @@ regular merge commit `9e69d569a`.
   launch signals (input readiness, auth/session failures, save success and
   duplicates, Worker errors/CPU, queue/DLQ, route errors, version skew).
 - Keep the 47 old-tab HTTP transports and the service worker's rollback-asset
-  handling for the [compatibility window](release.md#compatibility-window)
+  handling for the [compatibility window](../../tanstack-start/release.md#compatibility-window)
   (≥30 days after last legacy HTML); then retire them and close the ledger.

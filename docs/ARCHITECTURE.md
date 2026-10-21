@@ -26,8 +26,8 @@ TanStack Start (SolidJS) is the application framework and deployment owner of
 `frontend/`. One Cloudflare Worker (`frontend/src/worker.ts`) serves the origin:
 `fetch` runs Start (document SSR, routes, server functions, `/api` server
 routes); `scheduled` runs backend maintenance. Each invocation runs inside
-`withRuntime(env, …, ctx)`. See the [migration plan](TANSTACK_START_MIGRATION.md)
-for ownership rules and the [ledger](tanstack-start/README.md) for evidence.
+`withRuntime(env, …, ctx)`. See the [migration index](tanstack-start/README.md)
+for the operation inventory, remaining compatibility rules and archived evidence.
 
 | Path | Role |
 | --- | --- |
@@ -111,4 +111,4 @@ Public contact and security reporting use the Oxytype repository and its securit
 policy. The
 original GPL license and contributor attribution remain in place.
 
-See [development setup](./CONTRIBUTING_ADVANCED.md) and [security reporting](./SECURITY.md) for operational details.
+See [development setup](CONTRIBUTING_ADVANCED.md) and [security reporting](SECURITY.md) for operational details.
