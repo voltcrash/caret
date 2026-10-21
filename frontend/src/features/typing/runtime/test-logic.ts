@@ -79,7 +79,10 @@ import { testLogicState } from "./logic-state";
 import { init } from "./initialization";
 import { finish } from "./completion";
 export { finish } from "./completion";
-export { retrySavingResult } from "./result-saving";
+export async function retrySavingResult(): Promise<void> {
+  const saving = await import("./result-saving");
+  await saving.retrySavingResult();
+}
 export function startTest(now: number): boolean {
   if (!isTypingRouteActive()) {
     return false;
