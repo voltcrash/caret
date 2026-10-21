@@ -1,0 +1,122 @@
+[
+  {
+    "path": "/",
+    "status": 200,
+    "headers": {
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "no-store",
+      "content-security-policy": "default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; frame-src https://challenges.cloudflare.com; script-src 'self' https://challenges.cloudflare.com 'nonce-f5810140a7274e61b10db3f53a83c8dc'; script-src-attr 'unsafe-hashes' 'sha256-iiia5AKJZAREDabTiAT6lsvuOYHKDHC9Rnk0lyzkrZo='; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: http: https:; connect-src 'self' https://challenges.cloudflare.com https://poetrydb.org https://*.wikipedia.org",
+      "strict-transport-security": "max-age=15552000; includeSubDomains",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "referrer-policy": "same-origin",
+      "x-oxytype-build": "9784dc7957447f1714b7c189cfe00e49a0044126-39665210384-1",
+      "location": null
+    }
+  },
+  {
+    "path": "/login",
+    "status": 200,
+    "headers": {
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "no-store",
+      "content-security-policy": "default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; frame-src https://challenges.cloudflare.com; script-src 'self' https://challenges.cloudflare.com 'nonce-a8d3414408bc4f3d892180674b76df90'; script-src-attr 'unsafe-hashes' 'sha256-iiia5AKJZAREDabTiAT6lsvuOYHKDHC9Rnk0lyzkrZo='; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: http: https:; connect-src 'self' https://challenges.cloudflare.com https://poetrydb.org https://*.wikipedia.org",
+      "strict-transport-security": "max-age=15552000; includeSubDomains",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "referrer-policy": "same-origin",
+      "x-oxytype-build": "9784dc7957447f1714b7c189cfe00e49a0044126-39665210384-1",
+      "location": null
+    }
+  },
+  {
+    "path": "/privacy-policy.html",
+    "status": 200,
+    "headers": {
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "no-store",
+      "content-security-policy": "default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; frame-src https://challenges.cloudflare.com; script-src 'self' https://challenges.cloudflare.com 'nonce-a19d92767da64d8f9bd93db9063a7610'; script-src-attr 'unsafe-hashes' 'sha256-iiia5AKJZAREDabTiAT6lsvuOYHKDHC9Rnk0lyzkrZo='; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: http: https:; connect-src 'self' https://challenges.cloudflare.com https://poetrydb.org https://*.wikipedia.org",
+      "strict-transport-security": "max-age=15552000; includeSubDomains",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "referrer-policy": "same-origin",
+      "x-oxytype-build": "9784dc7957447f1714b7c189cfe00e49a0044126-39665210384-1",
+      "location": null
+    }
+  },
+  {
+    "path": "/api/users",
+    "status": 401,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store",
+      "content-security-policy": "default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; frame-src https://challenges.cloudflare.com; script-src 'self' https://challenges.cloudflare.com 'nonce-8354d76170d244a082a3b5986d550830'; script-src-attr 'unsafe-hashes' 'sha256-iiia5AKJZAREDabTiAT6lsvuOYHKDHC9Rnk0lyzkrZo='; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: http: https:; connect-src 'self' https://challenges.cloudflare.com https://poetrydb.org https://*.wikipedia.org",
+      "strict-transport-security": "max-age=15552000; includeSubDomains",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "referrer-policy": "same-origin",
+      "x-oxytype-build": "9784dc7957447f1714b7c189cfe00e49a0044126-39665210384-1",
+      "location": null
+    }
+  },
+  {
+    "path": "/api/admin",
+    "status": 401,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store",
+      "content-security-policy": "default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; frame-src https://challenges.cloudflare.com; script-src 'self' https://challenges.cloudflare.com 'nonce-8bf03cdbd62945ddb8bee64fe4ddb3e0'; script-src-attr 'unsafe-hashes' 'sha256-iiia5AKJZAREDabTiAT6lsvuOYHKDHC9Rnk0lyzkrZo='; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: http: https:; connect-src 'self' https://challenges.cloudflare.com https://poetrydb.org https://*.wikipedia.org",
+      "strict-transport-security": "max-age=15552000; includeSubDomains",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "referrer-policy": "same-origin",
+      "x-oxytype-build": "9784dc7957447f1714b7c189cfe00e49a0044126-39665210384-1",
+      "location": null
+    }
+  },
+  {
+    "path": "/api/configure",
+    "status": 404,
+    "headers": {
+      "content-type": "application/json",
+      "cache-control": "no-store",
+      "content-security-policy": "default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; frame-src https://challenges.cloudflare.com; script-src 'self' https://challenges.cloudflare.com 'nonce-d692645b196b4f329190aa9446d91cc4'; script-src-attr 'unsafe-hashes' 'sha256-iiia5AKJZAREDabTiAT6lsvuOYHKDHC9Rnk0lyzkrZo='; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: http: https:; connect-src 'self' https://challenges.cloudflare.com https://poetrydb.org https://*.wikipedia.org",
+      "strict-transport-security": "max-age=15552000; includeSubDomains",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "SAMEORIGIN",
+      "referrer-policy": "same-origin",
+      "x-oxytype-build": "9784dc7957447f1714b7c189cfe00e49a0044126-39665210384-1",
+      "location": null
+    }
+  },
+  {
+    "path": "/version.json",
+    "status": 200,
+    "headers": {
+      "content-type": "application/json",
+      "cache-control": "no-cache",
+      "content-security-policy": null,
+      "strict-transport-security": null,
+      "x-content-type-options": null,
+      "x-frame-options": null,
+      "referrer-policy": null,
+      "x-oxytype-build": null,
+      "location": null
+    }
+  },
+  {
+    "path": "/sw.js",
+    "status": 200,
+    "headers": {
+      "content-type": "text/javascript",
+      "cache-control": "no-cache",
+      "content-security-policy": null,
+      "strict-transport-security": null,
+      "x-content-type-options": null,
+      "x-frame-options": null,
+      "referrer-policy": null,
+      "x-oxytype-build": null,
+      "location": null
+    }
+  }
+]
