@@ -40,7 +40,7 @@ export function applyResponsePolicy(
         `script-src-attr 'unsafe-hashes' 'sha256-${recoveryHash}'`,
         "style-src 'self' 'unsafe-inline'",
         "font-src 'self' data:",
-        "img-src 'self' data:",
+        "img-src 'self' data: http: https:",
         `connect-src 'self' https://challenges.cloudflare.com https://poetrydb.org https://*.wikipedia.org${sentryOrigin === "" ? "" : ` ${sentryOrigin}`}${development ? " ws: wss:" : ""}`,
       ].join("; "),
     );
