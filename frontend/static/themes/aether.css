@@ -12,7 +12,7 @@
   }
 }
 
-[data-nav-item="about"] {
+[data-nav-item="github"] {
   color: #95549e;
   &:hover {
     color: color-mix(in srgb, #95549e 75%, white 25%);
