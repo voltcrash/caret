@@ -1,3 +1,4 @@
+import { batch } from "solid-js";
 import { preferencesReadiness } from "../../app/readiness";
 import * as ConfigSchemas from "@oxytype/schemas/configs";
 import { parseWithSchema as parseJsonWithSchema } from "@oxytype/util/json";
@@ -66,38 +67,41 @@ export async function applyConfig(
   //migrate old values if needed, remove additional keys and merge with default config
   const fullConfig: ConfigSchemas.Config = migrateConfig(partialConfig);
 
-  configEvent.dispatch({ key: "fullConfigChange" });
+  // Publish one settled configuration to reactive UI subscribers.
+  batch(() => {
+    configEvent.dispatch({ key: "fullConfigChange" });
 
-  const defaultConfig = getDefaultConfig();
-  for (const key of typedKeys(fullConfig)) {
-    setProperty(getMutableConfig(), key, defaultConfig[key]);
-  }
-
-  const configKeysToReset: (keyof ConfigSchemas.Config)[] = [];
-
-  const firstKeys = typedKeys(fullConfig).filter(
-    (key) => !lastConfigsToApply.has(key),
-  );
-
-  for (const configKey of [...firstKeys, ...lastConfigsToApply]) {
-    const configValue = fullConfig[configKey];
-
-    const set = setConfig(configKey, configValue, {
-      nosave: true,
-      partOfFullConfigChange: true,
-    });
-
-    if (!set) {
-      configKeysToReset.push(configKey);
+    const defaultConfig = getDefaultConfig();
+    for (const key of typedKeys(fullConfig)) {
+      setProperty(getMutableConfig(), key, defaultConfig[key]);
     }
-  }
 
-  for (const key of configKeysToReset) {
-    saveToLocalStorage(key);
-  }
+    const configKeysToReset: (keyof ConfigSchemas.Config)[] = [];
 
-  configEvent.dispatch({ key: "fullConfigChangeFinished" });
-  setFullConfigStore(fullConfig);
+    const firstKeys = typedKeys(fullConfig).filter(
+      (key) => !lastConfigsToApply.has(key),
+    );
+
+    for (const configKey of [...firstKeys, ...lastConfigsToApply]) {
+      const configValue = fullConfig[configKey];
+
+      const set = setConfig(configKey, configValue, {
+        nosave: true,
+        partOfFullConfigChange: true,
+      });
+
+      if (!set) {
+        configKeysToReset.push(configKey);
+      }
+    }
+
+    for (const key of configKeysToReset) {
+      saveToLocalStorage(key);
+    }
+
+    configEvent.dispatch({ key: "fullConfigChangeFinished" });
+    setFullConfigStore(fullConfig);
+  });
 }
 
 export async function resetConfig(): Promise<void> {
