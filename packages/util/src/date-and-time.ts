@@ -82,16 +82,6 @@ export function getCurrentWeekTimestamp(): number {
 }
 
 /**
- * Gets the timestamp of the start of the last week.
- * @returns The timestamp of the start of the last week.
- */
-export function getLastWeekTimestamp(): number {
-  const currentTime = Date.now();
-  const lastWeekTime = currentTime - 7 * MILLISECONDS_IN_DAY;
-  return getStartOfWeekTimestamp(lastWeekTime);
-}
-
-/**
  * Converts seconds to a human-readable string representation of time.
  * @param sec The number of seconds to convert.
  * @param alwaysShowMinutes Whether to always show minutes, even if the value is 0. Default is false.
