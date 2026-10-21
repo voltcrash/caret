@@ -31,7 +31,7 @@ body.crtmode [data-nav-item] {
 header[data-focused] {
   [data-nav-item="test"],
   [data-nav-item="leaderboards"],
-  [data-nav-item="about"],
+  [data-nav-item="github"],
   [data-nav-item="settings"] {
     /* --themable-button-bg: var(--sub-color); */
     --nav-focus-opacity: 0.5;
