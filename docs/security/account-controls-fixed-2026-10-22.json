@@ -1,0 +1,24 @@
+[
+  {
+    "check": "retired-key-creation",
+    "sessionAgeMinutes": 5,
+    "mintKeyStatus": 404,
+    "renameStatus": 401
+  },
+  {
+    "check": "disabled-account",
+    "sessionStatus": 403,
+    "apiKeyStatus": 401,
+    "authUpdateUserStatus": 403,
+    "cookieSessionStatus": 403,
+    "cookieAuthUpdateUserStatus": 403,
+    "disabledFlagPreserved": true,
+    "nativeMutationsBlocked": true,
+    "namePreserved": true,
+    "sessionsRemaining": 0
+  },
+  {
+    "check": "oauth-token-storage",
+    "plaintext": true
+  }
+]

@@ -9,7 +9,7 @@ import { getAuth } from "../../backend/src/init/auth";
 import { dispatchApi } from "../../backend/__tests__/__testData__/http-worker";
 
 // Local migrated Miniflare D1 only. No production credentials or outbound calls.
-// Checks retired key routes and reproduces the remaining disabled-auth gap.
+// Checks retired key routes and guards against the disabled-auth regression.
 
 const test = await createTestRuntime();
 Object.assign(test.env, {
@@ -109,11 +109,24 @@ try {
     );
     assert.equal(disabledSession.status, 403);
     assert.equal(disabledKey.status, 401);
-    assert.equal(disabledAuthMutation.status, 200);
+    assert.equal(disabledAuthMutation.status, 403);
+    // The bearer rejection revoked every old session. Use a new session for
+    // independent cookie coverage, then simulate a direct database disable.
+    await test.env.DB.prepare("UPDATE auth_users SET disabled=0 WHERE id=?")
+      .bind(user.id)
+      .run();
+    const cookieSession = await auth.internalAdapter.createSession(
+      user.id,
+      false,
+    );
+    assert.notEqual(cookieSession, null);
+    await test.env.DB.prepare("UPDATE auth_users SET disabled=1 WHERE id=?")
+      .bind(user.id)
+      .run();
     const signature = createHmac("sha256", test.env.BETTER_AUTH_SECRET ?? "")
-      .update(session.token)
+      .update(cookieSession.token)
       .digest("base64");
-    const cookie = `__Secure-oxytype.session_token=${encodeURIComponent(`${session.token}.${signature}`)}`;
+    const cookie = `__Secure-oxytype.session_token=${encodeURIComponent(`${cookieSession.token}.${signature}`)}`;
     const disabledCookieSession = await request("/api/users/stats", { cookie });
     const disabledCookieMutation = await request(
       "/api/auth/update-user",
@@ -122,14 +135,20 @@ try {
       { name: "Disabled cookie mutation", disabled: false },
     );
     assert.equal(disabledCookieSession.status, 403);
-    assert.equal(disabledCookieMutation.status, 200);
+    assert.equal(disabledCookieMutation.status, 403);
     const stored = await test.env.DB.prepare(
       "SELECT name,disabled FROM auth_users WHERE id=?",
     )
       .bind(user.id)
       .first<{ name: string; disabled: number }>();
-    assert.equal(stored?.name, "Disabled cookie mutation");
+    assert.equal(stored?.name, "Audit");
     assert.equal(stored.disabled, 1);
+    const sessionsRemaining = await test.env.DB.prepare(
+      "SELECT count(*) AS count FROM auth_sessions WHERE user_id=?",
+    )
+      .bind(user.id)
+      .first<number>("count");
+    assert.equal(sessionsRemaining, 0);
     console.log(
       JSON.stringify({
         check: "disabled-account",
@@ -139,6 +158,9 @@ try {
         cookieSessionStatus: disabledCookieSession.status,
         cookieAuthUpdateUserStatus: disabledCookieMutation.status,
         disabledFlagPreserved: stored.disabled === 1,
+        nativeMutationsBlocked: true,
+        namePreserved: stored.name === "Audit",
+        sessionsRemaining,
       }),
     );
 
