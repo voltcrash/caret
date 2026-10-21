@@ -1,5 +1,51 @@
 import { expect, openTest, test } from "./fixtures";
 
+for (const protocol of ["http", "https"] as const) {
+  const url = `${protocol}://images.example.test/background.png`;
+  test.describe(`${protocol} background under production CSP`, () => {
+    test.use({ config: { mode: "words", words: 15, customBackground: url } });
+
+    test("loads the configured image and retains it after reload", async ({
+      page,
+    }) => {
+      let requests = 0;
+      await page.route(url, async (route) => {
+        requests++;
+        await route.fulfill({
+          contentType: "image/png",
+          body: Buffer.from(
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9Zl1sAAAAASUVORK5CYII=",
+            "base64",
+          ),
+        });
+      });
+      await openTest(page);
+      const image = page.locator(".customBackground img");
+      await expect(image).toBeVisible();
+      await expect
+        .poll(
+          async () =>
+            await image.evaluate(
+              (element: HTMLImageElement) => element.naturalWidth,
+            ),
+        )
+        .toBe(1);
+      expect(requests).toBeGreaterThan(0);
+      await page.reload();
+      await expect(image).toBeVisible();
+      await expect
+        .poll(
+          async () =>
+            await image.evaluate(
+              (element: HTMLImageElement) => element.naturalWidth,
+            ),
+        )
+        .toBe(1);
+      await expect(image).toHaveAttribute("src", url);
+    });
+  });
+}
+
 for (const [language, subdomain] of [
   ["english", "en"],
   ["german", "de"],
