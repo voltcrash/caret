@@ -56,11 +56,6 @@ const permissionChecks: Record<PermissionId, PermissionCheck> = {
     ["canReport"],
     (user) => user.canReport !== false,
   ),
-  canManageApeKeys: buildUserPermission(
-    ["canManageApeKeys"],
-    (user) => user.canManageApeKeys ?? true,
-    "You have lost access to ape keys, please contact support",
-  ),
 };
 
 export async function verifyPermissions(
