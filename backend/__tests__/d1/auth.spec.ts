@@ -169,4 +169,45 @@ describe("Better Auth D1 adapter", () => {
       ).rejects.toThrow(/disabled/);
     });
   });
+
+  it("revokes D1 sessions immediately on disable and never revives them on re-enable", async () => {
+    await withRuntime(test.env, async () => {
+      const context = await getAuth().$context;
+      const user = await context.internalAdapter.createUser(
+        { name: "Disable", email: "disable@example.test", emailVerified: true },
+        { method: "oauth", oauth: { providerId: "github" } },
+      );
+      const first = await context.internalAdapter.createSession(user.id, false);
+      const second = await context.internalAdapter.createSession(
+        user.id,
+        false,
+      );
+      if (first === null || second === null) {
+        throw new Error("Missing fixture sessions");
+      }
+      await context.internalAdapter.updateUser(user.id, { disabled: true });
+      for (const token of [first.token, second.token]) {
+        expect(await context.internalAdapter.findSession(token)).toBeNull();
+      }
+      await expect(
+        context.internalAdapter.createSession(user.id, false),
+      ).rejects.toThrow(/disabled/);
+      await context.internalAdapter.updateUser(user.id, { disabled: false });
+      await expect(
+        verifySession(new Headers({ authorization: `Bearer ${first.token}` })),
+      ).rejects.toThrow(/expired or revoked/);
+      const replacement = await context.internalAdapter.createSession(
+        user.id,
+        false,
+      );
+      if (replacement === null) throw new Error("Missing replacement session");
+      expect(
+        (
+          await verifySession(
+            new Headers({ authorization: `Bearer ${replacement.token}` }),
+          )
+        ).uid,
+      ).toBe(user.id);
+    });
+  });
 });
