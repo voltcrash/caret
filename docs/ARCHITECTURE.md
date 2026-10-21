@@ -68,10 +68,8 @@ never add `hidden` imperatively, or a closed dialog can intercept clicks.
 policies, auth, http, jobs). Start handlers call services directly; there is no
 internal HTTP hop. Shared ts-rest contracts and Zod schemas define the retained
 external HTTP API. Drizzle describes D1 tables; Better Auth uses database-backed
-sessions for Google/GitHub accounts. ApeKeys use versioned SHA-256 hashes and
-constant-time comparison; see
-[the hash audit](CLOUDFLARE_OPERATIONS.md#apekey-hash-compatibility) before
-restoring API-key records.
+sessions for Google/GitHub accounts. Private operations require a session cookie
+or Bearer session token. External API keys are unsupported.
 
 D1 owns data, exact rate windows, result progression and rankings. User JSON
 writes use optimistic version guards inside atomic batches. Cron refreshes
