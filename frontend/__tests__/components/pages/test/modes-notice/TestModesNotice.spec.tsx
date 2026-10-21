@@ -1,6 +1,7 @@
 import type { ResultMinified } from "@oxytype/schemas/results";
 
 import { cleanup, render, waitFor } from "@solidjs/testing-library";
+import { Suspense, type JSXElement } from "solid-js";
 import {
   afterEach,
   beforeEach,
@@ -119,5 +120,48 @@ describe("TestModesNotice", () => {
     expect(
       await findByRole("button", { name: "140 wpm 100% acc" }),
     ).toBeVisible();
+  });
+
+  it("keeps the page visible while signed-in notices await account and history", async () => {
+    const pending = Promise.withResolvers<undefined>();
+    let accountRequested = false;
+    let resultsRequested = false;
+    let parentFallbacks = 0;
+    mockOperation("users.get", async () => {
+      accountRequested = true;
+      await pending.promise;
+      return ok({ name: "notice-user", tags: [] });
+    });
+    mockOperation("results.get", async () => {
+      resultsRequested = true;
+      await pending.promise;
+      return ok([]);
+    });
+    setUserId("notice-user");
+    setConfigStore("showAverage", "both");
+    function Fallback(): JSXElement {
+      parentFallbacks++;
+      return <p>Loading typing test…</p>;
+    }
+    const view = render(() => (
+      <Suspense fallback={<Fallback />}>
+        <div>Typing surface</div>
+        <TestModesNotice />
+      </Suspense>
+    ));
+    try {
+      await waitFor(() =>
+        expect(accountRequested && resultsRequested).toBe(true),
+      );
+      expect(view.getByText("Typing surface")).toBeVisible();
+      expect(view.getByRole("button", { name: "english" })).toBeVisible();
+      expect(parentFallbacks).toBe(0);
+    } finally {
+      pending.resolve(undefined);
+    }
+    expect(
+      await view.findByRole("button", { name: "no average" }),
+    ).toBeVisible();
+    expect(parentFallbacks).toBe(0);
   });
 });
