@@ -10,6 +10,58 @@ function config(overrides: Partial<Config> = {}): Config {
 }
 
 describe("resolveConfigChange", () => {
+  it.each([
+    ["funbox", null],
+    ["funbox", undefined],
+    ["funbox", {}],
+    ["funbox", "invalid-setting-value"],
+    ["customLayoutfluid", {}],
+    ["customPolyglot", {}],
+    ["customBackground", null],
+    ["customBackground", undefined],
+    ["customBackground", {}],
+    ["customBackground", []],
+    ["customThemeColors", null],
+    ["customThemeColors", undefined],
+    ["customThemeColors", {}],
+    ["customThemeColors", "invalid-setting-value"],
+    ["accountChart", null],
+    ["accountChart", undefined],
+  ] as const)("rejects malformed %s values without throwing", (key, value) => {
+    const current = config();
+    const before = structuredClone(current);
+    // Exercise the runtime boundary used by callers without TypeScript.
+    // @ts-expect-error -- Deliberately invalid config values from untyped callers.
+    expect(resolveConfigChange(key, value, current)).toMatchObject({
+      ok: false,
+      reason: "invalid",
+      key,
+    });
+    expect(current).toEqual(before);
+  });
+
+  it("preserves valid trimming, deduplication and size normalization", () => {
+    const background = resolveConfigChange(
+      "customBackground",
+      " https://example.com/bg.png ",
+      config(),
+    );
+    expect(background.ok && background.changes.at(-1)?.value).toBe(
+      "https://example.com/bg.png",
+    );
+    const languages = resolveConfigChange(
+      "customPolyglot",
+      ["english", "english", "german"],
+      config(),
+    );
+    expect(languages.ok && languages.changes.at(-1)?.value).toEqual([
+      "english",
+      "german",
+    ]);
+    const size = resolveConfigChange("keymapSize", 10, config());
+    expect(size.ok && size.changes.at(-1)?.value).toBe(3.5);
+  });
+
   it("applies dependent settings before the requested one", () => {
     const result = resolveConfigChange(
       "confidenceMode",
