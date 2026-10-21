@@ -64,13 +64,25 @@ function resolve<K extends ConfigKey>(
   options: ConfigChangeOptions,
 ): ConfigChangeFailure | undefined {
   const metadata = sharedConfigMetadata[key] as SharedConfigMetadata<K>;
+  const label = metadata.displayString ?? key;
+  // Overrides normalize values before schema validation, but require the right
+  // primitive/array type. Keep untyped callers out of those hooks.
+  if (
+    typeof requested !== typeof working[key] ||
+    Array.isArray(requested) !== Array.isArray(working[key])
+  ) {
+    return {
+      reason: "invalid",
+      key,
+      message: `Invalid value for ${label} (${String(requested)}). Please try to change this setting again.`,
+    };
+  }
   const value =
     metadata.overrideValue?.({
       value: requested,
       currentValue: working[key],
       currentConfig: working,
     }) ?? requested;
-  const label = metadata.displayString ?? key;
 
   if (
     metadata.changeRequiresRestart &&
