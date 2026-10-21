@@ -438,25 +438,6 @@ export function computeBellness(
   return covariance / Math.sqrt(varValue * varExpected);
 }
 
-/**
- * The same bell test with pauses removed, so it describes the typing itself
- * rather than how often the typist stopped. Pauses are a genuine part of the
- * right tail, so both versions are worth having - they answer different
- * questions and a generator can fail either one.
- */
-export function computeBellnessTyping(
-  values: number[],
-  useLogs: boolean,
-): number | null {
-  const positive = values.filter((v) => v > 0).sort((a, b) => a - b);
-  const median = positive[Math.floor(positive.length / 2)];
-  if (median === undefined) return null;
-  return computeBellness(
-    positive.filter((v) => v < median * PAUSE_CUTOFF_MULTIPLE),
-    useLogs,
-  );
-}
-
 export function computeDistStats(values: number[]): DistStats | null {
   if (values.length === 0) return null;
 
