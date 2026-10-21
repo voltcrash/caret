@@ -17,8 +17,8 @@ describe("legacy URL aliases", () => {
 
   it("keeps the old account-settings merge order: original keys override", () => {
     expect(accountSettingsHref("", "")).toBe("/settings?tab=account");
-    expect(accountSettingsHref("?highlight=x&tab=apeKeys", "top")).toBe(
-      "/settings?tab=apeKeys&highlight=x#top",
+    expect(accountSettingsHref("?highlight=x&tab=theme", "top")).toBe(
+      "/settings?tab=theme&highlight=x#top",
     );
   });
 });
