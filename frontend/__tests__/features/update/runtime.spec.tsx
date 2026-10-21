@@ -3,6 +3,7 @@ import { cleanup, render } from "@solidjs/testing-library";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
 import { clientBuildId, staleClient } from "../../../src/app/release";
+import { setStartupFinished } from "../../../src/app/startup";
 import { UpdateRuntime } from "../../../src/features/update/runtime.client";
 
 function deployed(version: string): void {
@@ -20,7 +21,34 @@ async function settle(): Promise<void> {
 describe("update runtime", () => {
   afterEach(() => {
     cleanup();
+    setStartupFinished(false);
     vi.unstubAllGlobals();
+  });
+
+  it("starts offline precaching only after the startup cover has finished", async () => {
+    const register = vi.fn(async () => ({
+      waiting: null,
+      installing: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    }));
+    vi.stubGlobal("navigator", {
+      serviceWorker: {
+        register,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      },
+    });
+    setStartupFinished(false);
+    render(() => <UpdateRuntime reload={vi.fn()} />);
+    await settle();
+    expect(register).not.toHaveBeenCalled();
+    setStartupFinished(true);
+    await settle();
+    expect(register).toHaveBeenCalledExactlyOnceWith("/sw.js", {
+      scope: "/",
+      updateViaCache: "none",
+    });
   });
 
   it("treats a failed chunk as stale only when another build is deployed", async () => {

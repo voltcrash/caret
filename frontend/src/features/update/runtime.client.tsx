@@ -11,6 +11,7 @@ import {
   reportStaleClient,
   staleClient,
 } from "../../app/release";
+import { isStartupFinished } from "../../app/startup";
 import { pendingResultSaves } from "../../app/update-safety";
 import { addBanner, removeBanner } from "../../ts/states/banners";
 import { showNoticeNotification } from "../../ts/states/notifications";
@@ -113,6 +114,16 @@ export function UpdateRuntime(props: { reload?: () => void }): JSXElement {
     if (!("serviceWorker" in navigator)) return;
     if (isDevEnvironment()) {
       void unregisterServiceWorkers(navigator.serviceWorker);
+    }
+  });
+  // Installing precaches offline chunks. Let the first test use the connection
+  // and CPU first; the readiness cover still waits for the same work as before.
+  createEffect(() => {
+    if (
+      isDevEnvironment() ||
+      !isStartupFinished() ||
+      !("serviceWorker" in navigator)
+    ) {
       return;
     }
     const registered = registerServiceWorker({
