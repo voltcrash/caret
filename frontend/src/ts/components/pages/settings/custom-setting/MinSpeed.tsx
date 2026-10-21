@@ -55,6 +55,8 @@ export function MinSpeed(): JSXElement {
               name="minWpmCustomSpeed"
               validators={{
                 onChange: fromSchema(MinWpmCustomSpeedSchema),
+              }}
+              listeners={{
                 onBlur: () => {
                   void form.handleSubmit();
                 },
