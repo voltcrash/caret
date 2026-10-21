@@ -24,7 +24,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
@@ -58,7 +58,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
@@ -92,7 +92,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
@@ -126,7 +126,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
@@ -160,7 +160,7 @@
       "params": false,
       "query": true,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
@@ -194,7 +194,7 @@
       "params": false,
       "query": true,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
@@ -228,7 +228,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
@@ -262,7 +262,7 @@
       "params": false,
       "query": false,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
@@ -296,131 +296,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
-    },
-    "browserCallers": [],
-    "target": "retained server route over backend service",
-    "webTarget": null,
-    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
-    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
-  },
-  {
-    "id": "apeKeys.add",
-    "method": "POST",
-    "path": "/api/ape-keys",
-    "currentOwner": "frontend/src/routes/api.ape-keys.ts",
-    "serviceOwner": "backend/src/services/operations/ape-key.ts#generateApeKey",
-    "startAdapter": null,
-    "httpLifetime": "retained external/operational protocol",
-    "firstPartyTransport": null,
-    "policy": {
-      "openApiTags": "ape-keys",
-      "requirePermission": "canManageApeKeys",
-      "requireConfiguration": {
-        "path": "apeKeys.endpointsEnabled",
-        "invalidMessage": "ApeKeys are currently disabled."
-      },
-      "rateLimit": "apeKeysGenerate"
-    },
-    "validation": {
-      "params": false,
-      "query": false,
-      "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
-    },
-    "browserCallers": [],
-    "target": "retained server route over backend service",
-    "webTarget": null,
-    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
-    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
-  },
-  {
-    "id": "apeKeys.delete",
-    "method": "DELETE",
-    "path": "/api/ape-keys/:apeKeyId",
-    "currentOwner": "frontend/src/routes/api.ape-keys.$apeKeyId.ts",
-    "serviceOwner": "backend/src/services/operations/ape-key.ts#deleteApeKey",
-    "startAdapter": null,
-    "httpLifetime": "retained external/operational protocol",
-    "firstPartyTransport": null,
-    "policy": {
-      "openApiTags": "ape-keys",
-      "requirePermission": "canManageApeKeys",
-      "requireConfiguration": {
-        "path": "apeKeys.endpointsEnabled",
-        "invalidMessage": "ApeKeys are currently disabled."
-      },
-      "rateLimit": "apeKeysGenerate"
-    },
-    "validation": {
-      "params": true,
-      "query": false,
-      "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
-    },
-    "browserCallers": [],
-    "target": "retained server route over backend service",
-    "webTarget": null,
-    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
-    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
-  },
-  {
-    "id": "apeKeys.get",
-    "method": "GET",
-    "path": "/api/ape-keys",
-    "currentOwner": "frontend/src/routes/api.ape-keys.ts",
-    "serviceOwner": "backend/src/services/operations/ape-key.ts#getApeKeys",
-    "startAdapter": null,
-    "httpLifetime": "retained external/operational protocol",
-    "firstPartyTransport": null,
-    "policy": {
-      "openApiTags": "ape-keys",
-      "requirePermission": "canManageApeKeys",
-      "requireConfiguration": {
-        "path": "apeKeys.endpointsEnabled",
-        "invalidMessage": "ApeKeys are currently disabled."
-      },
-      "rateLimit": "apeKeysGet"
-    },
-    "validation": {
-      "params": false,
-      "query": false,
-      "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
-      "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
-    },
-    "browserCallers": [],
-    "target": "retained server route over backend service",
-    "webTarget": null,
-    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
-    "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
-  },
-  {
-    "id": "apeKeys.save",
-    "method": "PATCH",
-    "path": "/api/ape-keys/:apeKeyId",
-    "currentOwner": "frontend/src/routes/api.ape-keys.$apeKeyId.ts",
-    "serviceOwner": "backend/src/services/operations/ape-key.ts#editApeKey",
-    "startAdapter": null,
-    "httpLifetime": "retained external/operational protocol",
-    "firstPartyTransport": null,
-    "policy": {
-      "openApiTags": "ape-keys",
-      "requirePermission": "canManageApeKeys",
-      "requireConfiguration": {
-        "path": "apeKeys.endpointsEnabled",
-        "invalidMessage": "ApeKeys are currently disabled."
-      },
-      "rateLimit": "apeKeysGenerate"
-    },
-    "validation": {
-      "params": true,
-      "query": false,
-      "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
@@ -446,7 +322,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/config/sync.ts"],
@@ -472,7 +348,7 @@
       "params": false,
       "query": false,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/queries/preferences.ts"],
@@ -498,7 +374,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/config/sync.ts"],
@@ -526,7 +402,7 @@
       "params": false,
       "query": false,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/queries/server-configuration.ts"],
@@ -557,7 +433,7 @@
       "params": false,
       "query": false,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
@@ -588,7 +464,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
@@ -616,7 +492,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/components/modals/DevOptionsModal.tsx"],
@@ -645,9 +521,7 @@
       "params": false,
       "query": true,
       "body": false,
-      "statuses": [
-        200, 400, 401, 403, 404, 422, 429, 470, 471, 472, 479, 500, 503
-      ],
+      "statuses": [200, 400, 401, 403, 404, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/data/leaderboards.ts"],
@@ -680,7 +554,7 @@
       "params": false,
       "query": true,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/data/leaderboards.ts"],
@@ -710,7 +584,7 @@
       "params": false,
       "query": true,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/data/leaderboards.ts"],
@@ -730,22 +604,19 @@
     "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "leaderboards",
-      "rateLimit": "leaderboardsGet",
-      "authenticationOptions": {
-        "acceptApeKeys": true
-      }
+      "rateLimit": "leaderboardsGet"
     },
     "validation": {
       "params": false,
       "query": true,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/data/leaderboards.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
-    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
     "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
@@ -772,7 +643,7 @@
       "params": false,
       "query": true,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/data/leaderboards.ts"],
@@ -802,7 +673,7 @@
       "params": false,
       "query": true,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/data/leaderboards.ts"],
@@ -828,7 +699,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/presets.ts"],
@@ -854,7 +725,7 @@
       "params": true,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/presets.ts"],
@@ -880,7 +751,7 @@
       "params": false,
       "query": false,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/presets.ts"],
@@ -906,7 +777,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/presets.ts"],
@@ -935,7 +806,7 @@
       "params": false,
       "query": false,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/features/announcements/psas.client.ts"],
@@ -964,7 +835,7 @@
       "params": false,
       "query": true,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
@@ -993,7 +864,7 @@
       "params": false,
       "query": true,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
@@ -1023,7 +894,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
@@ -1051,7 +922,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/components/modals/QuoteRateModal.tsx"],
@@ -1078,7 +949,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
@@ -1107,7 +978,7 @@
       "params": false,
       "query": false,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/queries/quotes.ts"],
@@ -1133,7 +1004,7 @@
       "params": false,
       "query": true,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/queries/quotes.ts"],
@@ -1162,7 +1033,7 @@
       "params": false,
       "query": false,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/queries/quotes.ts"],
@@ -1189,7 +1060,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
@@ -1222,7 +1093,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
@@ -1255,8 +1126,8 @@
       "query": false,
       "body": true,
       "statuses": [
-        200, 400, 401, 403, 422, 429, 460, 461, 462, 463, 464, 465, 466, 470,
-        471, 472, 479, 500, 503
+        200, 400, 401, 403, 422, 429, 460, 461, 462, 463, 464, 465, 466, 500,
+        503
       ],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
@@ -1280,25 +1151,19 @@
     "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "results",
-      "authenticationOptions": {
-        "acceptApeKeys": true
-      },
-      "rateLimit": {
-        "normal": "resultsGet",
-        "apeKey": "resultsGetApe"
-      }
+      "rateLimit": "resultsGet"
     },
     "validation": {
       "params": false,
       "query": true,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/results/store.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
-    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
     "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
@@ -1312,25 +1177,19 @@
     "firstPartyTransport": "Start server function",
     "policy": {
       "openApiTags": "results",
-      "authenticationOptions": {
-        "acceptApeKeys": true
-      },
-      "rateLimit": {
-        "normal": "resultByIdGet",
-        "apeKey": "resultByIdGetApe"
-      }
+      "rateLimit": "resultByIdGet"
     },
     "validation": {
       "params": true,
       "query": false,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/results/queries.ts"],
     "target": "retained server route over backend service",
     "webTarget": "server function",
-    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "consumerEvidence": "Repository browser caller; old tabs require temporary HTTP adapter",
     "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
@@ -1344,22 +1203,19 @@
     "firstPartyTransport": null,
     "policy": {
       "openApiTags": "results",
-      "authenticationOptions": {
-        "acceptApeKeys": true
-      },
       "rateLimit": "resultsGet"
     },
     "validation": {
       "params": false,
       "query": true,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
     "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
@@ -1379,7 +1235,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/results/mutations.ts"],
@@ -1405,7 +1261,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/custom-themes.ts"],
@@ -1431,7 +1287,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
@@ -1464,7 +1320,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/result-filter-presets.ts"],
@@ -1494,7 +1350,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
@@ -1523,7 +1379,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/tags.ts"],
@@ -1552,7 +1408,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
@@ -1580,7 +1436,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/custom-themes.ts"],
@@ -1609,7 +1465,7 @@
       "params": false,
       "query": true,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
@@ -1637,7 +1493,7 @@
       "params": true,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/tags.ts"],
@@ -1663,7 +1519,7 @@
       "params": true,
       "query": true,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/tags.ts"],
@@ -1689,7 +1545,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/custom-themes.ts"],
@@ -1715,7 +1571,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/tags.ts"],
@@ -1741,7 +1597,7 @@
       "params": false,
       "query": true,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/queries/account.ts"],
@@ -1761,22 +1617,19 @@
     "firstPartyTransport": null,
     "policy": {
       "openApiTags": "users",
-      "authenticationOptions": {
-        "acceptApeKeys": true
-      },
       "rateLimit": "userCurrentTestActivity"
     },
     "validation": {
       "params": false,
       "query": true,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
     "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
@@ -1796,7 +1649,7 @@
       "params": false,
       "query": false,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/custom-themes.ts"],
@@ -1822,7 +1675,7 @@
       "params": false,
       "query": false,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
@@ -1851,7 +1704,7 @@
       "params": true,
       "query": false,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
@@ -1875,22 +1728,19 @@
     "firstPartyTransport": null,
     "policy": {
       "openApiTags": "users",
-      "authenticationOptions": {
-        "acceptApeKeys": true
-      },
       "rateLimit": "userGet"
     },
     "validation": {
       "params": false,
       "query": true,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
     "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
@@ -1917,9 +1767,7 @@
       "params": true,
       "query": true,
       "body": false,
-      "statuses": [
-        200, 400, 401, 403, 404, 422, 429, 470, 471, 472, 479, 500, 503
-      ],
+      "statuses": [200, 400, 401, 403, 404, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
@@ -1942,22 +1790,19 @@
     "firstPartyTransport": null,
     "policy": {
       "openApiTags": "users",
-      "authenticationOptions": {
-        "acceptApeKeys": true
-      },
       "rateLimit": "userGet"
     },
     "validation": {
       "params": false,
       "query": true,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
     "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
@@ -1971,22 +1816,19 @@
     "firstPartyTransport": null,
     "policy": {
       "openApiTags": "users",
-      "authenticationOptions": {
-        "acceptApeKeys": true
-      },
       "rateLimit": "userStreak"
     },
     "validation": {
       "params": false,
       "query": true,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
     "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
@@ -2000,22 +1842,19 @@
     "firstPartyTransport": null,
     "policy": {
       "openApiTags": "users",
-      "authenticationOptions": {
-        "acceptApeKeys": true
-      },
       "rateLimit": "userTagsGet"
     },
     "validation": {
       "params": false,
       "query": true,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [],
     "target": "retained server route over backend service",
     "webTarget": null,
-    "consumerEvidence": "Published public OpenAPI (backend/scripts/openapi.ts); actual deployment consumers unknown; preserve HTTP contract",
+    "consumerEvidence": "Stage 0 operational/external usage uncertain; conservatively retained HTTP classification frozen",
     "retirement": "Start route retained indefinitely; Hono is rollback-only and retires with the old entry in Stage 8"
   },
   {
@@ -2035,7 +1874,7 @@
       "params": false,
       "query": true,
       "body": false,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/queries/account.ts"],
@@ -2064,7 +1903,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
@@ -2092,7 +1931,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
@@ -2125,7 +1964,7 @@
       "params": true,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/collections/result-filter-presets.ts"],
@@ -2156,7 +1995,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/components/modals/UserReportModal.tsx"],
@@ -2185,7 +2024,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
@@ -2217,7 +2056,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
@@ -2245,7 +2084,7 @@
       "params": false,
       "query": true,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
@@ -2273,7 +2112,7 @@
       "params": false,
       "query": true,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": ["frontend/src/ts/db.ts"],
@@ -2302,7 +2141,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [
@@ -2334,7 +2173,7 @@
       "params": false,
       "query": false,
       "body": true,
-      "statuses": [200, 400, 401, 403, 422, 429, 470, 471, 472, 479, 500, 503],
+      "statuses": [200, 400, 401, 403, 422, 429, 500, 503],
       "gate": "Start workerd HTTP/RPC + real D1 submission suites; backend D1/policy and browser gates"
     },
     "browserCallers": [

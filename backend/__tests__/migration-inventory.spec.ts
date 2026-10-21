@@ -13,7 +13,7 @@ describe("Stage 0 operation ownership", () => {
     startAdapter: string | null;
     browserCallers: string[];
     policy: {
-      authenticationOptions?: { isPublic?: boolean; acceptApeKeys?: boolean };
+      authenticationOptions?: { isPublic?: boolean };
     };
     retirement: string;
   }[];
@@ -36,14 +36,10 @@ describe("Stage 0 operation ownership", () => {
     ).toBe(operations.length);
   });
 
-  it("preserves published public and ApeKey HTTP protocols even with web callers", () => {
+  it("preserves published public HTTP protocols even with web callers", () => {
     for (const operation of operations) {
       const auth = operation.policy.authenticationOptions;
-      if (
-        auth?.isPublic ||
-        auth?.acceptApeKeys ||
-        operation.browserCallers.length === 0
-      ) {
+      if (auth?.isPublic || operation.browserCallers.length === 0) {
         expect(operation.target, operation.id).toContain(
           "retained server route",
         );
