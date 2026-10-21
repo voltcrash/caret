@@ -58,20 +58,24 @@ const origin = worker.location.origin;
 async function precache(): Promise<void> {
   const immediate = activatesImmediately(worker.registration.active !== null);
   const cache = await caches.open(cacheName);
-  await Promise.all(
-    config.precache.map(async (path) => {
-      const url = new URL(path, origin).href;
-      const immutable =
-        classify({ method: "GET", url, mode: "cors" }, origin) === "immutable";
-      // Content-addressed files come from a previous build's cache or the
-      // HTTP cache when possible; public static files are revalidated.
-      const response =
-        (immutable ? await caches.match(url) : undefined) ??
-        (await fetch(url, { cache: immutable ? "default" : "no-cache" }));
-      if (!response.ok) throw new Error(`Precache failed: ${path}`);
-      await cache.put(url, response);
-    }),
-  );
+  // Keep offline installation from flooding a slow connection with requests.
+  for (let index = 0; index < config.precache.length; index += 4) {
+    await Promise.all(
+      config.precache.slice(index, index + 4).map(async (path) => {
+        const url = new URL(path, origin).href;
+        const immutable =
+          classify({ method: "GET", url, mode: "cors" }, origin) ===
+          "immutable";
+        // Content-addressed files come from a previous build's cache or the
+        // HTTP cache when possible; public static files are revalidated.
+        const response =
+          (immutable ? await caches.match(url) : undefined) ??
+          (await fetch(url, { cache: immutable ? "default" : "no-cache" }));
+        if (!response.ok) throw new Error(`Precache failed: ${path}`);
+        await cache.put(url, response);
+      }),
+    );
+  }
   // Credentials are omitted: the shell is always the guest render.
   const shell = await fetch(shellPath, {
     credentials: "omit",
