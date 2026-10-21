@@ -10,7 +10,7 @@ header[data-focused] {
 
 [data-nav-item="test"],
 [data-nav-item="leaderboards"],
-[data-nav-item="about"],
+[data-nav-item="github"],
 [data-nav-item="settings"] {
   /* border-radius: rem !important; this is doing nothing */
   color: #191f28 !important;
@@ -25,7 +25,7 @@ header[data-focused] {
 body.crtmode {
   & [data-nav-item="test"],
   & [data-nav-item="leaderboards"],
-  & [data-nav-item="about"],
+  & [data-nav-item="github"],
   & [data-nav-item="settings"] {
     box-shadow:
       3px 0 1px color-mix(in srgb, #c69f68 20%, transparent),
