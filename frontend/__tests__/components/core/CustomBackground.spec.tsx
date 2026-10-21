@@ -7,11 +7,62 @@ import {
   setBackgroundSize,
   setBackgroundStyle,
 } from "../../../src/ts/states/background";
+import * as Notifications from "../../../src/ts/states/notifications";
 
 afterEach(() => {
   cleanup();
   setBackground({ url: "" });
+  Notifications.clearAllNotifications();
   vi.restoreAllMocks();
+});
+
+function reportImagePolicy(
+  blockedURI: string,
+  effectiveDirective = "img-src",
+  disposition = "enforce",
+): void {
+  document.dispatchEvent(
+    Object.assign(new Event("securitypolicyviolation"), {
+      blockedURI,
+      effectiveDirective,
+      disposition,
+    }),
+  );
+}
+
+it("replaces an unavailable-image notice with a policy notice without duplicates", () => {
+  const notice = vi.spyOn(Notifications, "showNoticeNotification");
+  const remove = vi.spyOn(Notifications, "removeNotification");
+  const view = render(() => <CustomBackground />);
+  const url = "https://example.com/background.png";
+  setBackground({ url });
+  fireEvent.error(view.container.querySelector("img") as HTMLImageElement);
+  const firstNotice = notice.mock.results[0]?.value;
+  reportImagePolicy(url);
+  expect(remove).toHaveBeenCalledWith(firstNotice);
+  expect(notice).toHaveBeenLastCalledWith(
+    "Your browser blocked this background image. Use a different image URL or upload a local image.",
+    { durationMs: 5000 },
+  );
+  expect(Notifications.getNotifications()).toHaveLength(1);
+  fireEvent.error(view.container.querySelector("img") as HTMLImageElement);
+  expect(notice).toHaveBeenCalledTimes(2);
+});
+
+it("ignores unrelated/report-only policies and removes its policy listener on unmount", () => {
+  const notice = vi.spyOn(Notifications, "showNoticeNotification");
+  const view = render(() => <CustomBackground />);
+  const url = "https://example.com/background.png";
+  setBackground({ url });
+  reportImagePolicy("https://example.com/other.png");
+  reportImagePolicy(url, "connect-src");
+  reportImagePolicy(url, "img-src", "report");
+  expect(notice).not.toHaveBeenCalled();
+  reportImagePolicy(url);
+  expect(notice).toHaveBeenCalledOnce();
+  view.unmount();
+  reportImagePolicy(url);
+  expect(notice).toHaveBeenCalledOnce();
 });
 
 it("replaces failed images on reapply and retains filter and size geometry", () => {
