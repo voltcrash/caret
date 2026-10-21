@@ -71,6 +71,8 @@ export function AnimationFpsLimit(): JSXElement {
                     value: val,
                   });
                 },
+              }}
+              listeners={{
                 onBlur: () => {
                   void form.handleSubmit();
                 },
