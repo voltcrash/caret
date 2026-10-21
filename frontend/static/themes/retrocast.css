@@ -1,6 +1,6 @@
 [data-nav-item="test"],
 [data-nav-item="leaderboards"],
-[data-nav-item="about"] {
+[data-nav-item="github"] {
   color: #88dbdf;
   &:hover {
     color: color-mix(in srgb, #88dbdf 75%, black 25%);

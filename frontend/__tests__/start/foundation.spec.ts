@@ -53,8 +53,8 @@ describe("Start ownership boundaries", () => {
           target: "solid",
           routesDirectory: "./routes",
           generatedRouteTree: "./tree.ts",
-          // Atomic writes must stay on the fixture's filesystem.
-          tmpDir: join(root, ".tanstack", "tmp"),
+          // Atomic renames require temporary files on the fixture's filesystem.
+          tmpDir: join(root, "tmp"),
           disableLogging: true,
         },
         root,
