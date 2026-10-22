@@ -150,13 +150,15 @@ jobs:
           FULL: ${{ github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'force-full-ci') }}
           CHANGED: ${{ steps.filter.outputs.changes }}
         run: |
-          # Prints "<job>=true" when any listed filter matched (or on a full run).
+          # Parse once; each job then matches whole filter names in Bash.
+          changed=$(jq -r 'join(" ")' <<<"${CHANGED:-[]}")
           enable() {
             local job=$1 filter result=false
             shift
             for filter in shared "$@"; do
-              if [[ $FULL == true ]] || jq -e --arg f "$filter" 'index($f) != null' <<<"$CHANGED" >/dev/null; then
+              if [[ $FULL == true || " $changed " == *" $filter "* ]]; then
                 result=true
+                break
               fi
             done
             echo "$job=$result" | tee -a "$GITHUB_OUTPUT"
