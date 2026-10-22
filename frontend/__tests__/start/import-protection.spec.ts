@@ -56,5 +56,4 @@ describe("Start import protection", () => {
     );
     expect(String(error)).toContain("Import denied in client environment");
   });
-
 });

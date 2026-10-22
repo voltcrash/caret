@@ -40,6 +40,7 @@ export const projects = [
     extends: false,
     test: {
       name: "node",
+      env: { TZ: "UTC" },
       include: [
         ...nodeTests,
         "__tests__/start/foundation.spec.ts",
@@ -60,12 +61,11 @@ export const projects = [
       include: ["__tests__/**/*.spec.ts"],
       exclude: [...nodeTests, "__tests__/start/**"],
       environment: "happy-dom",
-      globalSetup: "__tests__/global-setup.ts",
+      env: { TZ: "UTC" },
       setupFiles: [
         "__tests__/__harness__/mock-application.ts",
         "__tests__/__harness__/mock-dom.ts",
         "__tests__/__harness__/mock-auth.ts",
-        "__tests__/__harness__/mock-env-config.ts",
         "__tests__/__harness__/mock-static.ts",
       ],
     },
@@ -80,7 +80,7 @@ export const projects = [
       name: { label: "jsdom", color: "yellow" },
       include: ["__tests__/**/*.jsdom-spec.ts"],
       environment: "jsdom",
-      globalSetup: "__tests__/global-setup.ts",
+      env: { TZ: "UTC" },
     },
     plugins,
   },
@@ -93,7 +93,7 @@ export const projects = [
       name: { label: "jsx", color: "green" },
       include: ["__tests__/**/*.spec.tsx"],
       environment: "jsdom",
-      globalSetup: "__tests__/global-setup.ts",
+      env: { TZ: "UTC" },
       setupFiles: [
         "__tests__/__harness__/setup-jsx.ts",
         "__tests__/__harness__/mock-application.ts",
