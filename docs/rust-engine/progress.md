@@ -23,7 +23,7 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | 1.3 Native / browser proof | Complete | Native 7 traces; Cloudflare real-browser finite slice; MIME/CSP, lifecycle, boundary benchmark. Budgets frozen. |
 | 1.4 Input / lifecycle / timing | Active | 19 native/browser command traces; 8 original recordings. Composition, batch failure, deferred work, visible-word bounds and browser deletion observations covered. Full generator/session integration remains open. |
 | 1.5 Generation / configuration | Active | 61/61 unchanged generator snapshots. Content requests, configuration validation and generator/session integration pending. |
-| 1.6 Events / results / replay | Active | All computed summary fields match 8 original CompletedEvents exactly. Full results, eligibility, replay pending. |
+| 1.6 Events / results / replay | Active | All computed summary fields match 8 original CompletedEvents exactly. Full results, eligibility, histories and replay pass native/browser references; malformed/historical edge coverage and incremental playback facade pending. |
 | 1.7 Binding / engine gate | Pending | Full three-path parity and budgets. |
 | 2.1–2.6 Website | Pending | Requires Stage 1 gate. |
 | 3.1–3.5 Terminal | Pending | Requires Stage 2 gate. |
@@ -86,3 +86,6 @@ do not rerun completed checks without a new reason.
 
 - Optimized real Cloudflare browser proof now passes 3 tests: all 19 command traces, all 61 generators, and all eight historical result/replay/practice references. Native full tests and Clippy pass.
 - Adding full analysis exports increases optimized Wasm to 812,970 bytes raw / 321,266 bytes gzip (level 9). Raw passes; gzip exceeds 307,200-byte budget. Additional optimization is required. `--converge` and `--gufa` experiments did not resolve the excess; no budget was relaxed.
+
+- Replaced general-purpose Morse normalization with a 492-entry immutable compatibility map captured from original TypeScript (Node 24.21.0 / Unicode 17.0). Exhaustive native parity passes every Unicode scalar and every isolated UTF-16 unit; original 61 generator snapshots still pass. No reference was regenerated.
+- Expanded engine with analysis: 709,637 bytes raw / 271,030 gzip level 6 after optimization, within both payload budgets. Full browser rerun after this change remains pending.

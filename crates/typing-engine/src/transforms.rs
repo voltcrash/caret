@@ -196,7 +196,6 @@ pub fn alter(
 }
 
 fn morse(word: Text) -> Text {
-    use unicode_normalization::UnicodeNormalization;
     const MAP: &[(&str, &str)] = &[
         ("a", ".-"),
         ("b", "-..."),
@@ -253,21 +252,18 @@ fn morse(word: Text) -> Text {
         ("!", "-.-.--"),
         ("@", ".--.-."),
     ];
-    // A surrogate cannot map to Morse; replacement also cannot map. Preserve
-    // JS's original UTF-16 loop bound even if lowercasing expands the text.
-    let normalized = Text::from(
-        word.display_lossy()
-            .nfd()
-            .filter(|c| !('\u{0300}'..='\u{036f}').contains(c))
-            .collect::<String>()
-            .as_str(),
-    );
-    let lower = case(&normalized, false);
+    const EXTENDED: &[(u32, &str)] = include!("../data/morse.rs");
     let mut output = String::new();
-    for unit in lower.0.iter().take(normalized.len()) {
-        if let Some((_, code)) = MAP.iter().find(|(key, _)| key.encode_utf16().eq([*unit])) {
-            output.push_str(code);
-            output.push('/');
+    for character in char::decode_utf16(word.0.iter().copied()).flatten() {
+        let code = u32::from(character);
+        if code <= 127 {
+            let lower = character.to_ascii_lowercase();
+            if let Some((_, morse)) = MAP.iter().find(|(key, _)| key.chars().eq([lower])) {
+                output.push_str(morse);
+                output.push('/');
+            }
+        } else if let Ok(index) = EXTENDED.binary_search_by_key(&code, |(code, _)| *code) {
+            output.push_str(EXTENDED[index].1);
         }
     }
     Text::from(output.as_str())
