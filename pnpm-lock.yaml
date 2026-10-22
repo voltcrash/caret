@@ -563,9 +563,6 @@ importers:
       '@tanstack/eslint-plugin-query':
         specifier: 5.104.0
         version: 5.104.0(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2)
-      '@tanstack/router-generator':
-        specifier: 1.167.44
-        version: 1.167.44(supports-color@10.2.2)
       '@tanstack/solid-devtools':
         specifier: 0.8.13
         version: 0.8.13(csstype@3.2.3)(solid-js@1.9.15)
