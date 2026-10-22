@@ -1,5 +1,6 @@
 import initialize, {
   binding_version,
+  analyze,
   WasmSession,
   WasmContent,
 } from "../generated/engine.js";
@@ -13,6 +14,11 @@ import type { Prepare } from "../generated/types/Prepare";
 import type { Generated } from "../generated/types/Generated";
 import type { NextWord } from "../generated/types/NextWord";
 import type { Quote } from "../generated/types/Quote";
+import type { Query } from "../generated/types/Query";
+import type { Response } from "../generated/types/Response";
+import type { Log } from "../generated/types/Log";
+export type { Query, Response, Log };
+
 export type {
   Command,
   Config,
@@ -174,4 +180,14 @@ export class BrowserContent {
     handle.dispose();
     handle.free();
   }
+}
+
+/** Derivation only: transport IDs, hashes and network policy stay with the host. */
+export function analyzeLog<Q extends Query>(
+  log: Log,
+  query: Q,
+): Extract<Response, { op: Q["op"] }> {
+  return JSON.parse(
+    analyze(JSON.stringify(log), JSON.stringify(query)),
+  ) as Extract<Response, { op: Q["op"] }>;
 }

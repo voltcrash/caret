@@ -230,3 +230,116 @@ test("all 61 unchanged generator snapshots match browser Wasm", async ({
     expect(actual[index], fixture.name).toEqual(expected[index]);
   }
 });
+
+test("historical results, replay and practice agree with frozen references in Wasm", async ({
+  page,
+}) => {
+  const references = JSON.parse(
+    await readFile(resolve(root, "oracle/analysis.json"), "utf8"),
+  ) as {
+    name: string;
+    frames: Record<string, unknown>[];
+    replay: { zen: boolean; words: unknown; steps: unknown }[];
+    practice: {
+      missed: string;
+      slow: boolean;
+      result: unknown;
+      notifications: string[];
+    }[];
+    validity: { input: unknown; reason: string | null }[];
+  }[];
+  const units = (text: string): number[] =>
+    Array.from({ length: text.length }, (_, i) => text.charCodeAt(i));
+  const inputs = [];
+  const expected = [];
+  for (const reference of references) {
+    const fixture = JSON.parse(
+      await readFile(
+        resolve(root, `reference/keystrokes/${reference.name}.json`),
+        "utf8",
+      ),
+    ) as {
+      config: Record<string, unknown>;
+      eventLog: {
+        context: { targetWords: string[] };
+        events: { testMs: number }[];
+      };
+      completedEvent: Record<string, unknown>;
+    };
+    const recorded = fixture.completedEvent;
+    const context = {
+      config: fixture.config,
+      currentQuote:
+        recorded["mode"] === "quote"
+          ? { id: Number(recorded["mode2"]), group: recorded["quoteLength"] }
+          : null,
+      customText: recorded["customText"],
+      tags: recorded["tags"],
+      bailedOut: recorded["bailedOut"],
+      restartCount: recorded["restartCount"],
+      incompleteTests: recorded["incompleteTests"],
+      incompleteSeconds: recorded["incompleteTestSeconds"],
+      timestamp: recorded["timestamp"],
+    };
+    const log = {
+      ...fixture.eventLog,
+      context: {
+        ...fixture.eventLog.context,
+        targetWords: fixture.eventLog.context.targetWords.map(units),
+      },
+    };
+    const queries: unknown[] = [{ op: "completed", context }];
+    const outputs: unknown[] = [{ op: "completed", result: recorded }];
+    for (const frame of reference.frames) {
+      const { time, ...state } = frame;
+      queries.push({ op: "frame", time });
+      outputs.push({ op: "frame", frame: state });
+    }
+    for (const replay of reference.replay) {
+      queries.push({ op: "replay", zen: replay.zen });
+      outputs.push({
+        op: "replay",
+        words: replay.words,
+        steps: replay.steps,
+        duration: Math.max(
+          0,
+          ...fixture.eventLog.events.map((event) => event.testMs),
+        ),
+      });
+    }
+    const words = fixture.eventLog.context.targetWords.map((word) =>
+      units(word.replace(/[ \n]$/, "")),
+    );
+    for (const practice of reference.practice) {
+      queries.push({
+        op: "practice",
+        words,
+        missed: practice.missed,
+        slow: practice.slow,
+        now: 0,
+      });
+      outputs.push({
+        op: "practice",
+        selection: {
+          result: practice.result,
+          notifications: practice.notifications,
+        },
+      });
+    }
+    inputs.push({ log, queries });
+    expected.push(outputs);
+  }
+  await page.goto("/engine-proof");
+  await page
+    .getByRole("textbox", { name: "Command fixture" })
+    .fill(JSON.stringify(inputs));
+  await page.getByRole("button", { name: "Run analysis" }).click();
+  await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
+  await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+  const actual = JSON.parse(
+    await page.getByTestId("engine-proof-result").innerText(),
+  ) as unknown[];
+  for (const [index, reference] of references.entries()) {
+    expect(actual[index], reference.name).toEqual(expected[index]);
+  }
+});

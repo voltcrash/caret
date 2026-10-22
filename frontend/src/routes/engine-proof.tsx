@@ -4,6 +4,8 @@ import type {
   Config,
   Text,
   Prepare,
+  Log,
+  Query,
 } from "@oxytype/typing-engine/browser.client";
 
 import { createFileRoute } from "@tanstack/solid-router";
@@ -152,6 +154,26 @@ function EngineProof() {
       setFailure(error instanceof Error ? error.message : String(error));
     }
   };
+  const runAnalysis = async (): Promise<void> => {
+    setResult("");
+    setFailure("");
+    try {
+      const inputs = JSON.parse(fixture()) as { log: Log; queries: Query[] }[];
+      const { loadEngine, analyzeLog } =
+        await import("@oxytype/typing-engine/browser.client");
+      await loadEngine();
+      if (disposed) return;
+      setResult(
+        JSON.stringify(
+          inputs.map(({ log, queries }) =>
+            queries.map((query) => analyzeLog(log, query)),
+          ),
+        ),
+      );
+    } catch (error) {
+      setFailure(error instanceof Error ? error.message : String(error));
+    }
+  };
   return (
     <Show
       when={import.meta.env.OXYTYPE_ENGINE_PROOF}
@@ -178,6 +200,14 @@ function EngineProof() {
           }}
         >
           Run generation
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            void runAnalysis();
+          }}
+        >
+          Run analysis
         </button>
         <pre data-testid="engine-proof-result">{result()}</pre>
         <pre data-testid="engine-proof-error">{failure()}</pre>

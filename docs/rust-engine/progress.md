@@ -83,3 +83,6 @@ do not rerun completed checks without a new reason.
 - Pinned Binaryen 132.0.0 optimization reduces expanded Wasm to 660,285 bytes raw / 261,217 bytes gzip. Both payload limits pass; optimized browser rerun still required.
 - Session and generation now share one Rust Config/default implementation.
 - All full CompletedEvents and historical derived arrays match original recordings. New one-time analysis capture checks replay frames, steps, final prompt/sounds, seeking, all practice combinations and validity flags against unchanged TypeScript. Native analysis regression passes for all eight recordings.
+
+- Optimized real Cloudflare browser proof now passes 3 tests: all 19 command traces, all 61 generators, and all eight historical result/replay/practice references. Native full tests and Clippy pass.
+- Adding full analysis exports increases optimized Wasm to 812,970 bytes raw / 321,266 bytes gzip (level 9). Raw passes; gzip exceeds 307,200-byte budget. Additional optimization is required. `--converge` and `--gufa` experiments did not resolve the excess; no budget was relaxed.

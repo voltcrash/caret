@@ -131,3 +131,12 @@ impl WasmContent {
         self.content = None;
     }
 }
+
+#[wasm_bindgen]
+pub fn analyze(log: &str, query: &str) -> Result<String, JsError> {
+    let log = serde_json::from_str(log)?;
+    let query = serde_json::from_str(query)?;
+    Ok(serde_json::to_string(&typing_engine::analysis::analyze(
+        &log, query,
+    ))?)
+}
