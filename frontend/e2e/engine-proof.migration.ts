@@ -98,9 +98,25 @@ test("native fixture matches browser Wasm through built Cloudflare assets", asyn
       .fill(await readFile(resolve(root, "commands", name), "utf8"));
     await page.getByRole("button", { name: "Run fixture" }).click();
     await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
-    const frozen: unknown = JSON.parse(
+    const frozen = JSON.parse(
       await readFile(resolve(root, "oracle", name), "utf8"),
-    );
+    ) as { name: string; frames: { state: unknown }[] };
+    const differences = JSON.parse(
+      await readFile(resolve(root, "browser-contract-overrides.json"), "utf8"),
+    ) as {
+      fixture: string;
+      frame: number;
+      headlessState: unknown;
+      browserState: unknown;
+    }[];
+    for (const difference of differences.filter(
+      (item) => `${item.fixture}.json` === name,
+    )) {
+      const frame = frozen.frames[difference.frame];
+      if (frame === undefined) throw new Error("Missing classified frame");
+      expect(frame.state).toEqual(difference.headlessState);
+      frame.state = difference.browserState;
+    }
     expect(
       JSON.parse(await page.getByTestId("engine-proof-result").innerText()),
       name,

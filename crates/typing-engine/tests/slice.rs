@@ -54,10 +54,25 @@ fn finite_slice_matches_frozen_intermediate_oracle() {
             &std::fs::read(root.join(format!("commands/{name}.json"))).unwrap(),
         )
         .unwrap();
-        let expected: Value = serde_json::from_slice(
+        let mut expected: Value = serde_json::from_slice(
             &std::fs::read(root.join(format!("oracle/{name}.json"))).unwrap(),
         )
         .unwrap();
+        let differences: Vec<Value> = serde_json::from_slice(
+            &std::fs::read(root.join("browser-contract-overrides.json")).unwrap(),
+        )
+        .unwrap();
+        for difference in differences
+            .iter()
+            .filter(|difference| difference["fixture"] == name)
+        {
+            let frame = difference["frame"].as_u64().unwrap() as usize;
+            assert_eq!(
+                expected["frames"][frame]["state"], difference["headlessState"],
+                "Classified original must stay frozen"
+            );
+            expected["frames"][frame]["state"] = difference["browserState"].clone();
+        }
         let mut session = Session::new(fixture.config, fixture.words).unwrap();
         let mut frames = vec![];
         for command in fixture.commands {

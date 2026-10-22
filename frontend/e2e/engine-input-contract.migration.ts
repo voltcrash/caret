@@ -38,3 +38,36 @@ test("master failure waits for the final unit of a multi-character browser commi
   );
   expect(state.wordIndex).toBe(1);
 });
+
+test.describe("minimum burst progression", () => {
+  test.use({
+    config: {
+      mode: "words",
+      words: 15,
+      difficulty: "normal",
+      minBurst: "fixed",
+      minBurstCustomSpeed: 1_000_000,
+      smoothCaret: "off",
+    },
+  });
+  test("advances before reporting a committed word's minimum burst failure", async ({
+    page,
+  }) => {
+    await openTest(page);
+    const first = await page.locator("#words .word").first().textContent();
+    if (first === null || first.length === 0) throw new Error("Missing target");
+    await page.locator("#words").click();
+    await page.keyboard.insertText(first[0] as string);
+    await page.waitForTimeout(100);
+    await page.keyboard.insertText(`${first.slice(1)} `);
+    await expect(page.locator("#result")).toBeVisible();
+    const state = await page.evaluate(() =>
+      (
+        window as unknown as {
+          engineMigrationState: () => { wordIndex: number };
+        }
+      ).engineMigrationState(),
+    );
+    expect(state.wordIndex).toBe(1);
+  });
+});

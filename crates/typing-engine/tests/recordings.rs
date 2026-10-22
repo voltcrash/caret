@@ -149,6 +149,8 @@ fn master_failure_checks_final_unit_as_recorded_by_actual_browser_handler() {
         .filter(|e| e["type"] == "input")
         .collect();
     assert_eq!(inputs.len(), 5);
+    assert_eq!(session.state().word_index, 1);
+    assert!(session.state().input_value.is_empty());
     assert_eq!(session.state().reason.as_deref(), Some("difficulty"));
     assert!(session.state().ended);
 }

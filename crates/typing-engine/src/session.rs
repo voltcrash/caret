@@ -918,6 +918,13 @@ impl Session {
             self.end(now, date, Some("word generation error".into()));
             return;
         }
+        // The actual browser navigates before checking difficulty/minimum burst.
+        let committed_index = self.index;
+        let progressed =
+            advance && (self.index + 1 < self.words.len() || self.config.mode == "zen");
+        if progressed {
+            self.index += 1;
+        }
         if self.completion_checkpoint
             && self.config.mode != "zen"
             && ((self.config.difficulty == "master" && !correct)
@@ -929,14 +936,11 @@ impl Session {
             self.end(now, date, Some("difficulty".into()));
             return;
         }
-        if self.completion_checkpoint
-            && advance
-            && (self.index + 1 < self.words.len() || self.config.mode == "zen")
-            && self.config.min_burst != "off"
-        {
+        if self.completion_checkpoint && progressed && self.config.min_burst != "off" {
             let log: crate::stats::Log =
                 serde_json::from_value(self.log()).expect("Engine log is valid");
-            let burst = crate::stats::word_burst(&log, self.index, now - self.start.unwrap_or(now));
+            let burst =
+                crate::stats::word_burst(&log, committed_index, now - self.start.unwrap_or(now));
             let length = if self.config.mode == "zen" {
                 input.len() + 1
             } else {
@@ -963,13 +967,11 @@ impl Session {
             && self.config.stop_on_error == "off"
             && self.config.delete_on_error == "off";
         if self.completion_checkpoint
-            && self.index + 1 >= self.words.len()
+            && committed_index + 1 >= self.words.len()
             && finite
             && (word_correct || quick || advance)
         {
             self.end(now, date, None);
-        } else if advance && (self.index + 1 < self.words.len() || self.config.mode == "zen") {
-            self.index += 1;
         }
         if !self.ended
             && correct

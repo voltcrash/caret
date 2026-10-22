@@ -1,6 +1,6 @@
 # Feature parity checklist
 
-Every entry must pass before Stage 1 / web cutover. Pending means unported.
+Every entry must pass before Stage 1 / web cutover. Pending means its complete acceptance gate remains open; partial native/browser evidence is tracked in progress.md.
 
 | Feature | Rust | Native / Wasm / web evidence |
 | --- | --- | --- |
