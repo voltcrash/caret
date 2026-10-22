@@ -1,7 +1,7 @@
 /**
  * Legacy `src/ts` modules SSR may import: pure standalone presentation with
  * no browser state. Root-relative globs, shared by Start import protection
- * and the source layer test.
+ * checks.
  */
 export const ssrSafeLegacyFiles = [
   "src/ts/components/standalone/StandaloneHeader.tsx",
@@ -24,7 +24,7 @@ export const ssrSafeLegacyFiles = [
 /**
  * Browser-only typing modules. Reachable solely through the client-only typing
  * leaf (`*.client.*` entry), so server import protection denies them like
- * legacy state and the layer test treats them as client code.
+ * legacy state.
  */
 export const clientOnlyFeatureFiles = [
   "src/features/typing/components/**",

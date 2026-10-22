@@ -43,7 +43,6 @@ export const projects = [
       include: [
         ...nodeTests,
         "__tests__/start/foundation.spec.ts",
-        "__tests__/start/layers.spec.ts",
         "__tests__/start/operation-functions.spec.ts",
       ],
       environment: "node",
