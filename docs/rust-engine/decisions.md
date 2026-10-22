@@ -26,3 +26,7 @@ Pseudolang retains UTF-16 prefix and JS property enumeration semantics. Its lega
 ## Browser progression precedes commit failure
 
 Actual built-Cloudflare browser tests show both master and minimum-burst failures advance the word before finishing when the input commits it. The headless oracle checks failure first. Rust follows the website: advancement precedes failure checks, while burst is calculated for the committed word. `browser-contract-overrides.json` explicitly classifies the one existing min-burst frame whose state differs; its original bytes stay unchanged and tests assert the original state before comparing the separately recorded browser state. Input events and scores retain exact equality. No score rule changes.
+
+## Section request ordering
+
+One outstanding section request per generator, with at most 16 prefetched sections. Background prefetch does not disable typing while already prepared words remain. At exhaustion, preserve the current commit and its bounded remaining UTF-16 batch; reject new insertion/deletion until a matching response arrives. Generation and input timestamps remain stable. Reset/end cancel requests. Resume-time completion uses the reply's explicit monotonic and wall-clock timestamps, matching the browser's post-await finish ordering. This replaces the old possibility of concurrent, out-of-order section fetches with explicit ordering as required by the migration contract; the browser adapter must not start duplicate requests.

@@ -118,6 +118,10 @@ fn deferred_initial_generation_resumes_without_repeating_words_or_random_draws()
     };
     assert_eq!(replies, 3);
     assert_eq!(
+        serde_json::to_value(deferred.random_state()).unwrap(),
+        serde_json::to_value(baseline.random_state()).unwrap()
+    );
+    assert_eq!(
         serde_json::to_value(&actual).unwrap(),
         serde_json::to_value(&expected).unwrap()
     );
@@ -174,5 +178,165 @@ fn content_retains_initial_generator_while_session_creation_waits() {
     assert_eq!(
         session.snapshot().words,
         vec![Text::from("one "), Text::from("two")]
+    );
+}
+
+fn running_section_session(difficulty: &str) -> typing_engine::Session {
+    use typing_engine::{
+        Config,
+        generation::{Assets, Generator, Language},
+        random::Random,
+    };
+    let generator = Generator::with_assets(
+        Config {
+            mode: "time".into(),
+            time: 0.0,
+            difficulty: difficulty.into(),
+            funbox: vec!["poetry".into()],
+            ..Config::default()
+        },
+        Language {
+            name: "english".into(),
+            words: vec![Text::from("base")],
+            ..Language::default()
+        },
+        None,
+        Random::seeded(1),
+        &mut Assets {
+            sections: vec![poem(&vec!["one"; 100].join(" "))],
+            ..Assets::default()
+        },
+    )
+    .unwrap();
+    typing_engine::Session::from_generator(generator, false).unwrap()
+}
+fn commit(
+    session: &mut typing_engine::Session,
+    text: &str,
+    now: f64,
+) -> typing_engine::session::Update {
+    session.apply(serde_json::from_value(serde_json::json!({"op":"insert","data":Text::from(text),"now":now,"date":1_000_000.0+now})).unwrap()).unwrap()
+}
+#[test]
+fn active_session_prefetches_then_preserves_a_committed_batch_until_reply() {
+    let mut session = running_section_session("normal");
+    let first = commit(&mut session, "one ", 0.0);
+    let request = first.content_request.unwrap();
+    assert!(!first.awaiting_content);
+    assert_eq!(first.state.word_index, 1);
+    let waiting = commit(&mut session, &"one ".repeat(100), 100.0);
+    assert!(waiting.awaiting_content);
+    assert_eq!(waiting.state.word_index, 99);
+    assert_eq!(waiting.content_request, Some(request.clone()));
+    let log = session.log();
+    let blocked = commit(&mut session, "unaccepted", 200.0);
+    assert!(blocked.awaiting_content);
+    assert_eq!(log, session.log());
+    session
+        .apply(
+            serde_json::from_value(
+                serde_json::json!({"op":"delete","kind":"deleteWordBackward","now":300.0}),
+            )
+            .unwrap(),
+        )
+        .unwrap();
+    assert_eq!(log, session.log());
+    let resumed = session
+        .apply(typing_engine::Command::SupplyContent {
+            now: 1000.0,
+            date: 1_001_000.0,
+            request,
+            source: Box::new(poem("one two three")),
+        })
+        .unwrap();
+    assert!(!resumed.awaiting_content);
+    assert_eq!(resumed.state.word_index, 101);
+    assert_eq!(session.snapshot().words[101], Text::from("two "));
+    let inserted = session.log()["events"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|event| event["type"] == "input")
+        .count();
+    assert_eq!(inserted, 404);
+}
+#[test]
+fn reset_and_timeout_cancel_pending_reply_and_remaining_committed_units() {
+    use typing_engine::Command;
+    for reset in [false, true] {
+        let mut session = running_section_session("normal");
+        let waiting = commit(&mut session, &"one ".repeat(101), 0.0);
+        assert!(waiting.awaiting_content);
+        let request = waiting.content_request.unwrap();
+        if !reset {
+            session
+                .apply(Command::Configure {
+                    now: 0.0,
+                    config: Box::new(typing_engine::Config {
+                        mode: "time".into(),
+                        time: 1.0,
+                        funbox: vec!["poetry".into()],
+                        ..typing_engine::Config::default()
+                    }),
+                })
+                .unwrap();
+        }
+        session
+            .apply(if reset {
+                Command::Reset { now: 1.0 }
+            } else {
+                Command::Advance {
+                    now: 1000.0,
+                    date: 1_001_000.0,
+                }
+            })
+            .unwrap();
+        let log = session.log();
+        assert!(
+            session
+                .apply(Command::SupplyContent {
+                    now: 2.0,
+                    date: 1_000_002.0,
+                    request,
+                    source: Box::new(poem("late content"))
+                })
+                .is_err()
+        );
+        assert_eq!(log, session.log());
+        assert_eq!(session.state().ended, !reset);
+    }
+}
+#[test]
+fn failure_after_await_uses_reply_time_without_retiming_captured_input() {
+    use typing_engine::Command;
+    let mut session = running_section_session("master");
+    for index in 0..99 {
+        commit(&mut session, "one ", index as f64 * 100.0);
+    }
+    let waiting = commit(&mut session, "xone ", 9900.0);
+    assert!(waiting.awaiting_content);
+    assert!(!waiting.state.ended);
+    let update = session
+        .apply(Command::SupplyContent {
+            now: 20000.0,
+            date: 1_020_000.0,
+            request: waiting.content_request.unwrap(),
+            source: Box::new(poem("next section")),
+        })
+        .unwrap();
+    assert!(update.state.ended);
+    assert_eq!(update.state.word_index, 100);
+    assert_eq!(update.state.reason.as_deref(), Some("difficulty"));
+    let log = session.log();
+    let events = log["events"].as_array().unwrap();
+    assert_eq!(events.last().unwrap()["testMs"].as_f64(), Some(20000.0));
+    assert_eq!(
+        events
+            .iter()
+            .rev()
+            .find(|event| event["type"] == "input")
+            .unwrap()["testMs"]
+            .as_f64(),
+        Some(9900.0)
     );
 }

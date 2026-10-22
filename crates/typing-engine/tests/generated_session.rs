@@ -199,3 +199,39 @@ fn invalid_configuration_and_overdue_work_leave_session_unchanged() {
     );
     assert_eq!(log, session.log());
 }
+
+#[test]
+fn prepared_content_flags_include_tabs_and_newlines_beyond_initial_window() {
+    let mut text = vec![Text::from("word"); 100];
+    text.push(Text::from("\tline\n"));
+    let custom = CustomText {
+        text,
+        mode: "repeat".into(),
+        limit: CustomLimit {
+            mode: "time".into(),
+            value: 30,
+        },
+        pipe_delimiter: false,
+    };
+    let mut session = Session::from_generator(
+        generator(
+            Config {
+                mode: "custom".into(),
+                ..Config::default()
+            },
+            Some(custom),
+        ),
+        false,
+    )
+    .unwrap();
+    let snapshot = session.snapshot();
+    assert!(snapshot.has_tab && snapshot.has_newline);
+    assert!(!snapshot.words.iter().any(|word| word.0.contains(&10)));
+    assert!(
+        !session
+            .preflight(Text::from("\n"), &Default::default())
+            .blocked
+    );
+    insert(&mut session, Text::from("\n"), 0.0);
+    assert_eq!(session.state().word_index, 1);
+}

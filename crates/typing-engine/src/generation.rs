@@ -142,6 +142,9 @@ fn collapse_spaces(text: Text) -> Text {
     Text(result)
 }
 impl Generator {
+    pub fn random_state(&self) -> &Random {
+        &self.random
+    }
     pub fn config(&self) -> &GenerationConfig {
         &self.config
     }

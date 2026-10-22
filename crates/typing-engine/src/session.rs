@@ -236,6 +236,14 @@ pub enum Command {
         #[serde(default)]
         defer_automatic: Option<bool>,
     },
+    #[serde(rename_all = "camelCase")]
+    SupplyContent {
+        now: f64,
+        #[serde(default)]
+        date: f64,
+        request: crate::content::Request,
+        source: Box<crate::content::Source>,
+    },
     Configure {
         now: f64,
         config: Box<Config>,
@@ -308,6 +316,11 @@ pub struct Update {
     )]
     #[ts(optional)]
     pub visual_input_override: Option<Text>,
+    #[serde(rename = "contentRequest", skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub content_request: Option<crate::content::Request>,
+    #[serde(rename = "awaitingContent")]
+    pub awaiting_content: bool,
 }
 #[derive(Clone, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
@@ -323,6 +336,8 @@ pub struct Snapshot {
     pub words: Vec<Text>,
     pub section_indexes: Vec<usize>,
     pub all_words_generated: bool,
+    pub has_tab: bool,
+    pub has_newline: bool,
     pub current_quote: Option<crate::results::QuoteRef>,
 }
 
@@ -333,6 +348,27 @@ struct Recorded {
     data: Value,
 }
 
+struct Checkpoint {
+    unit: u16,
+    now: f64,
+    date: f64,
+    input: Text,
+    target: Text,
+    correct: bool,
+    commit: bool,
+    word_correct: bool,
+    advance: bool,
+    checkpoint: bool,
+}
+struct DeferredInput {
+    units: VecDeque<u16>,
+    now: f64,
+    date: f64,
+    shift: Option<bool>,
+    automatic: bool,
+    composition: bool,
+    final_in_batch: bool,
+}
 pub struct Session {
     pub pace: crate::pace::Pace,
     pub weak_spot: crate::weak_spot::WeakSpot,
@@ -363,6 +399,10 @@ pub struct Session {
     word_changes: Vec<WordChange>,
     bailed_out: bool,
     visual_input_override: Option<Text>,
+    has_tab: bool,
+    has_newline: bool,
+    pending_commit: Option<Checkpoint>,
+    deferred_input: Option<DeferredInput>,
 }
 
 impl Session {
@@ -375,6 +415,8 @@ impl Session {
             && config.mode != "zen"
             && !(config.mode == "words" && config.words == 0);
         let sections = (1..=words.len()).collect();
+        let has_tab = words.iter().any(|word| word.0.contains(&9));
+        let has_newline = words.iter().any(|word| word.0.contains(&10));
         Ok(Self {
             pace: crate::pace::Pace::default(),
             weak_spot: crate::weak_spot::WeakSpot::default(),
@@ -405,6 +447,10 @@ impl Session {
             word_changes: vec![],
             bailed_out: false,
             visual_input_override: None,
+            has_tab,
+            has_newline,
+            pending_commit: None,
+            deferred_input: None,
         })
     }
 
@@ -421,6 +467,8 @@ impl Session {
     ) -> Result<Self, String> {
         let mut session = Self::new(generator.config().clone(), generated.words)?;
         session.sections = generated.section_indexes;
+        session.has_tab = generated.has_tab;
+        session.has_newline = generated.has_newline;
         session.custom_limit = generator.custom_limit();
         session.quote = generator
             .current_quote
@@ -451,11 +499,8 @@ impl Session {
             ..observation
         };
         let blocked = self.ended
-            || crate::input::blocked(
-                &self.config,
-                &observation,
-                self.words.iter().any(|word| word.0.contains(&10)),
-            );
+            || self.pending_commit.is_some()
+            || crate::input::blocked(&self.config, &observation, self.has_newline);
         let display_length = target.len() - usize::from(target.0.last() == Some(&32));
         let measure_overflow = !blocked
             && !layout.slow_timer
@@ -478,6 +523,8 @@ impl Session {
             words: self.words.clone(),
             section_indexes: self.sections.clone(),
             all_words_generated: self.all_generated,
+            has_tab: self.has_tab,
+            has_newline: self.has_newline,
             current_quote: self.quote.clone(),
         }
     }
@@ -516,6 +563,8 @@ impl Session {
         };
         let index = self.words.len();
         let next = generator.next(index, bound, previous.as_ref(), previous2.as_ref())?;
+        self.has_tab |= next.word.0.contains(&9);
+        self.has_newline |= next.word.0.contains(&10);
         self.words.push(next.word.clone());
         self.sections.push(next.section_index);
         self.word_changes.push(WordChange {
@@ -572,6 +621,11 @@ impl Session {
         self.active = false;
         self.ended = true;
         self.reason = reason;
+        self.pending_commit = None;
+        self.deferred_input = None;
+        if let Some(generator) = &mut self.generator {
+            generator.reset_requests(self.generation);
+        }
         self.record("timer", now, json!({"event":"end", "timer":((now-self.start.unwrap_or(now))/1000.0).floor(), "date":date}));
     }
 
@@ -591,7 +645,8 @@ impl Session {
             | Command::FlushAutomatic { now, .. }
             | Command::Configure { now, .. }
             | Command::CustomLimit { now, .. }
-            | Command::Bailout { now, .. } => *now,
+            | Command::Bailout { now, .. }
+            | Command::SupplyContent { now, .. } => *now,
         };
         if !now.is_finite() || now.abs() > 9_007_199_254_740_991.0 {
             return Err("Invalid timestamp".into());
@@ -612,6 +667,7 @@ impl Session {
             | Command::End { date, .. }
             | Command::Abandon { date, .. }
             | Command::Bailout { date, .. }
+            | Command::SupplyContent { date, .. }
                 if !date.is_finite() =>
             {
                 return Err("Invalid wall-clock date".into());
@@ -653,28 +709,54 @@ impl Session {
                         words: vec![],
                         log_invalidated: false,
                         visual_input_override: None,
+                        content_request: self
+                            .generator
+                            .as_ref()
+                            .and_then(|generator| generator.pending_request())
+                            .cloned(),
+                        awaiting_content: self.pending_commit.is_some(),
                     });
                 }
-                let length = data.len();
-                for (index, unit) in data.0.into_iter().enumerate() {
-                    if self.ended {
-                        break;
+                self.process_input(DeferredInput {
+                    units: data.0.into(),
+                    now,
+                    date,
+                    shift: correct_shift_used,
+                    automatic: automatic == Some(true),
+                    composition: is_composition_ending == Some(true),
+                    final_in_batch: layout.final_in_batch != Some(false),
+                });
+            }
+            Command::SupplyContent {
+                now,
+                date,
+                request,
+                source,
+            } => {
+                self.generator
+                    .as_mut()
+                    .ok_or("Session has no generated content")?
+                    .supply(&request, *source)?;
+                if let Err(error) = self.refill() {
+                    if self
+                        .generator
+                        .as_ref()
+                        .and_then(|generator| generator.pending_request())
+                        .is_none()
+                    {
+                        return Err(error);
                     }
-                    // The browser checks failure/finish at the final unit of a
-                    // committed input batch, not after each surrogate/character.
-                    self.completion_checkpoint = index + 1 == length
-                        && !self.composing
-                        && layout.final_in_batch != Some(false);
-                    self.insert(
-                        unit,
-                        now,
-                        date,
-                        correct_shift_used,
-                        automatic == Some(true),
-                        is_composition_ending == Some(true),
-                    );
+                } else if let Some(checkpoint) = self.pending_commit.take() {
+                    let input_now = checkpoint.now;
+                    let input_date = checkpoint.date;
+                    self.complete_input(checkpoint, now, date);
+                    self.drain_indentation(input_now, input_date);
+                    if !self.ended
+                        && let Some(input) = self.deferred_input.take()
+                    {
+                        self.process_input(input);
+                    }
                 }
-                self.completion_checkpoint = true;
             }
             Command::Delete {
                 kind,
@@ -725,6 +807,8 @@ impl Session {
             Command::Reset { .. } => {
                 self.index = 0;
                 self.bailed_out = false;
+                self.pending_commit = None;
+                self.deferred_input = None;
                 self.active = false;
                 self.ended = false;
                 self.reason = None;
@@ -740,6 +824,9 @@ impl Session {
                 self.earliest_visible_word = 0;
                 self.automatic.clear();
                 self.generation = self.generation.wrapping_add(1);
+                if let Some(generator) = &mut self.generator {
+                    generator.reset_requests(self.generation);
+                }
             }
             Command::Observe {
                 now,
@@ -784,9 +871,38 @@ impl Session {
             words: self.word_changes.clone(),
             log_invalidated: invalidated || previous_origin != origin,
             visual_input_override: self.visual_input_override.clone(),
+            content_request: self
+                .generator
+                .as_ref()
+                .and_then(|generator| generator.pending_request())
+                .cloned(),
+            awaiting_content: self.pending_commit.is_some(),
         })
     }
 
+    fn process_input(&mut self, mut input: DeferredInput) {
+        while !self.ended
+            && let Some(unit) = input.units.pop_front()
+        {
+            self.completion_checkpoint =
+                input.units.is_empty() && input.final_in_batch && !self.composing;
+            self.insert(
+                unit,
+                input.now,
+                input.date,
+                input.shift,
+                input.automatic,
+                input.composition,
+            );
+            if self.pending_commit.is_some() {
+                if !input.units.is_empty() {
+                    self.deferred_input = Some(input);
+                }
+                break;
+            }
+        }
+        self.completion_checkpoint = true;
+    }
     fn insert(
         &mut self,
         unit: u16,
@@ -797,12 +913,18 @@ impl Session {
         composition: bool,
     ) {
         self.insert_one(unit, now, date, shift, automatic, composition);
+        self.drain_indentation(now, date);
+    }
+    fn drain_indentation(&mut self, now: f64, date: f64) {
+        if self.pending_commit.is_some() || self.ended {
+            return;
+        }
         if self.defer_automatic && self.indent_pending {
             self.indent_pending = false;
             self.automatic.push_back((now, date));
             return;
         }
-        while self.indent_pending && !self.ended {
+        while self.indent_pending && !self.ended && self.pending_commit.is_none() {
             self.indent_pending = false;
             self.insert_one(9, now, date, None, true, false);
             if self.defer_automatic && self.indent_pending {
@@ -832,11 +954,7 @@ impl Session {
             nospace,
             correct_shift_used: shift,
         };
-        if crate::input::blocked(
-            &self.config,
-            &observation,
-            self.words.iter().any(|word| word.0.contains(&10)),
-        ) {
+        if crate::input::blocked(&self.config, &observation, self.has_newline) {
             return;
         }
         let unit = normalize(
@@ -920,10 +1038,50 @@ impl Session {
         if !correct && !stopped && self.config.delete_on_error != "off" {
             self.delete_error(now);
         }
+        let checkpoint = Checkpoint {
+            unit,
+            now,
+            date,
+            input,
+            target,
+            correct,
+            commit,
+            word_correct,
+            advance,
+            checkpoint: self.completion_checkpoint,
+        };
         if advance && let Err(_) = self.refill() {
-            self.end(now, date, Some("word generation error".into()));
-            return;
+            if self
+                .generator
+                .as_ref()
+                .and_then(|generator| generator.pending_request())
+                .is_some()
+            {
+                if self.index + 1 >= self.words.len() {
+                    self.pending_commit = Some(checkpoint);
+                    return;
+                }
+            } else {
+                self.end(now, date, Some("word generation error".into()));
+                return;
+            }
         }
+        self.complete_input(checkpoint, now, date);
+    }
+    fn complete_input(&mut self, checkpoint: Checkpoint, finish_now: f64, finish_date: f64) {
+        let Checkpoint {
+            unit,
+            now,
+            date: _,
+            input,
+            target,
+            correct,
+            commit,
+            word_correct,
+            advance,
+            checkpoint,
+        } = checkpoint;
+        let checkpoint = checkpoint && !self.composing;
         // The actual browser navigates before checking difficulty/minimum burst.
         let committed_index = self.index;
         let progressed =
@@ -931,7 +1089,7 @@ impl Session {
         if progressed {
             self.index += 1;
         }
-        if self.completion_checkpoint
+        if checkpoint
             && self.config.mode != "zen"
             && ((self.config.difficulty == "master" && !correct)
                 || (self.config.difficulty == "expert"
@@ -939,10 +1097,10 @@ impl Session {
                     && !(input.is_empty() && (is_space(unit) || unit == 10))
                     && !word_correct))
         {
-            self.end(now, date, Some("difficulty".into()));
+            self.end(finish_now, finish_date, Some("difficulty".into()));
             return;
         }
-        if self.completion_checkpoint && progressed && self.config.min_burst != "off" {
+        if checkpoint && progressed && self.config.min_burst != "off" {
             let log: crate::stats::Log =
                 serde_json::from_value(self.log()).expect("Engine log is valid");
             let burst =
@@ -963,7 +1121,7 @@ impl Session {
                     self.config.min_burst_custom_speed
                 })
             {
-                self.end(now, date, Some("min burst".into()));
+                self.end(finish_now, finish_date, Some("min burst".into()));
                 return;
             }
         }
@@ -972,12 +1130,12 @@ impl Session {
             && target.len() == input.len() + 1
             && self.config.stop_on_error == "off"
             && self.config.delete_on_error == "off";
-        if self.completion_checkpoint
+        if checkpoint
             && committed_index + 1 >= self.words.len()
             && finite
             && (word_correct || quick || advance)
         {
-            self.end(now, date, None);
+            self.end(finish_now, finish_date, None);
         }
         if !self.ended
             && correct
@@ -1046,7 +1204,7 @@ impl Session {
     }
 
     fn delete(&mut self, kind: &str, now: f64, observed: Option<Text>, sentinel_removed: bool) {
-        if !self.active || self.ended {
+        if !self.active || self.ended || self.pending_commit.is_some() {
             return;
         }
         let input = self.current();
