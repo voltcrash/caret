@@ -31,11 +31,34 @@ fn base_generation_matches_immutable_browser_snapshots() {
     let mut checked = 0;
     for case in cases {
         let config: GenerationConfig = serde_json::from_value(case["config"].clone()).unwrap();
-        if config.punctuation
-            || config.numbers
-            || config.lazy_mode
+        if config.lazy_mode
             || config.british_english
-            || !config.funbox.is_empty()
+            || config.funbox.iter().any(|name| {
+                ![
+                    "58008",
+                    "binary",
+                    "hexadecimal",
+                    "gibberish",
+                    "ascii",
+                    "specials",
+                    "backwards",
+                    "ALL_CAPS",
+                    "capitals",
+                    "sPoNgEcAsE",
+                    "rAnDoMcAsE",
+                    "rot13",
+                    "ddoouubblleedd",
+                    "instant_messaging",
+                    "underscore_spaces",
+                    "nospace",
+                    "plus_zero",
+                    "plus_one",
+                    "plus_two",
+                    "plus_three",
+                    "zipf",
+                ]
+                .contains(&name.as_str())
+            })
             || config.mode == "quote"
         {
             continue;
@@ -105,5 +128,5 @@ fn base_generation_matches_immutable_browser_snapshots() {
         assert_eq!(actual, expected, "{name}");
         checked += 1;
     }
-    assert!(checked >= 15, "Only {checked} cases exercised");
+    assert!(checked >= 40, "Only {checked} cases exercised");
 }

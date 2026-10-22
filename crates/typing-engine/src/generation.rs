@@ -9,6 +9,7 @@ pub struct Language {
     pub words: Vec<Text>,
     pub right_to_left: Option<bool>,
     pub joining_script: bool,
+    pub original_punctuation: bool,
 }
 #[derive(Clone, Debug, Deserialize)]
 #[serde(default, rename_all = "camelCase")]
@@ -84,8 +85,9 @@ pub struct Generator {
     previous: Vec<NextWord>,
     repeating: bool,
     generated: usize,
+    punctuation: crate::punctuation::Punctuation,
 }
-fn case(text: &Text, upper: bool) -> Text {
+pub(crate) fn case(text: &Text, upper: bool) -> Text {
     let mut output = vec![];
     let mut valid = String::new();
     fn flush(valid: &mut String, output: &mut Vec<u16>, upper: bool) {
@@ -151,11 +153,34 @@ impl Generator {
         if config.mode == "quote" {
             return Err("Quote asset selection is not yet ported".into());
         }
-        if config.punctuation
-            || config.numbers
-            || config.lazy_mode
+        if config.lazy_mode
             || config.british_english
-            || !config.funbox.is_empty()
+            || config.funbox.iter().any(|name| {
+                ![
+                    "58008",
+                    "binary",
+                    "hexadecimal",
+                    "gibberish",
+                    "ascii",
+                    "specials",
+                    "backwards",
+                    "ALL_CAPS",
+                    "capitals",
+                    "sPoNgEcAsE",
+                    "rAnDoMcAsE",
+                    "rot13",
+                    "ddoouubblleedd",
+                    "instant_messaging",
+                    "underscore_spaces",
+                    "nospace",
+                    "plus_zero",
+                    "plus_one",
+                    "plus_two",
+                    "plus_three",
+                    "zipf",
+                ]
+                .contains(&name.as_str())
+            })
         {
             return Err("Requested generator transform is not yet ported".into());
         }
@@ -168,11 +193,14 @@ impl Generator {
         {
             return Err("Invalid custom mode or limit".into());
         }
-        let wordset = if config.mode == "custom" {
+        let mut wordset = if config.mode == "custom" {
             custom.as_ref().unwrap().text.clone()
         } else {
             language.words.clone()
         };
+        if config.funbox.iter().any(|name| name == "backwards") {
+            wordset.reverse();
+        }
         if config.mode != "zen" && (wordset.is_empty() || wordset.iter().all(Text::is_empty)) {
             return Err("Content has no words".into());
         }
@@ -193,6 +221,7 @@ impl Generator {
             previous: vec![],
             repeating: false,
             generated: 0,
+            punctuation: crate::punctuation::Punctuation::default(),
         })
     }
     fn limit(&self) -> usize {
@@ -218,6 +247,21 @@ impl Generator {
         if self.config.mode == "words" && self.config.words > 0 {
             limit = limit.min(self.config.words);
         }
+        for funbox in &self.config.funbox {
+            if let Some(count) = match funbox.as_str() {
+                "plus_zero" => Some(1),
+                "plus_one" => Some(2),
+                "plus_two" => Some(3),
+                "plus_three" => Some(4),
+                _ => None,
+            } {
+                limit = count;
+                break;
+            }
+        }
+        if self.config.mode == "words" && self.config.words > 0 {
+            limit = limit.min(self.config.words);
+        }
         limit
     }
     pub fn all_generated(&self) -> bool {
@@ -239,7 +283,12 @@ impl Generator {
         false
     }
     fn random_word(&mut self) -> Result<Text, String> {
-        Ok(self.wordset[self.random.index(self.wordset.len())?].clone())
+        let index = if self.config.funbox.iter().any(|name| name == "zipf") {
+            self.random.zipf_index(self.wordset.len())?
+        } else {
+            self.random.index(self.wordset.len())?
+        };
+        Ok(self.wordset[index].clone())
     }
     fn next_ordered(&mut self) -> Text {
         if self.ordered >= self.wordset.len() {
@@ -321,7 +370,7 @@ impl Generator {
     pub fn next(
         &mut self,
         index: usize,
-        _bound: usize,
+        bound: usize,
         previous: Option<&Text>,
         previous2: Option<&Text>,
     ) -> Result<NextWord, String> {
@@ -333,6 +382,7 @@ impl Generator {
             return Ok(next.clone());
         }
         let mut word = self.random_word()?;
+        let previous_original = previous.cloned();
         let previous = previous.map(|word| clean_previous(word, false));
         let previous2 = previous2.map(|word| clean_previous(word, true));
         if self.section.is_empty() {
@@ -389,13 +439,15 @@ impl Generator {
                     && (previous.as_ref() == Some(&first)
                         || previous2.as_ref() == Some(&first)
                         || (self.config.mode != "custom"
-                            && (word.0 == [73]
-                                || (!self.config.language.starts_with("code")
+                            && ((!self.config.punctuation && word.0 == [73])
+                                || (!self.config.punctuation
+                                    && !self.config.language.starts_with("code")
                                     && word.0.iter().any(|unit| {
                                         b"-=_+[]{};'\\:\"|,./<>?".contains(&(*unit as u8))
                                             && *unit < 128
                                     }))
-                                || word.0.iter().any(|unit| (48..=57).contains(unit)))))
+                                || (!self.config.numbers
+                                    && word.0.iter().any(|unit| (48..=57).contains(unit))))))
                 {
                     retries += 1;
                     word = self.random_word()?;
@@ -409,6 +461,20 @@ impl Generator {
                 }
             }
             word = collapse_spaces(word);
+            for name in &self.config.funbox {
+                if let Some(generated) = crate::transforms::generated_word(name, &mut self.random)?
+                {
+                    word = if name == "58008"
+                        && (self.config.language.starts_with("kurdish")
+                            || self.config.language.starts_with("nepali"))
+                    {
+                        crate::transforms::numeral_script(generated, &self.config.language)
+                    } else {
+                        generated
+                    };
+                    break;
+                }
+            }
             self.section = word
                 .0
                 .split(|unit| *unit == 32)
@@ -422,6 +488,10 @@ impl Generator {
             return Err("Random word is empty".into());
         }
         if self.config.mode != "custom"
+            && !self.config.punctuation
+            && !self.config.funbox.iter().any(|name| {
+                ["binary", "hexadecimal", "gibberish", "ascii", "specials"].contains(&name.as_str())
+            })
             && word.0.iter().any(|unit| (65..=90).contains(unit))
             && !["german", "swiss_german", "code", "klingon"]
                 .iter()
@@ -441,8 +511,36 @@ impl Generator {
             }
             word = Text(out);
         }
+        if self.config.punctuation && !self.language.original_punctuation {
+            word = self.punctuation.apply(
+                word,
+                crate::punctuation::PunctuationContext {
+                    previous: previous_original.as_ref(),
+                    index,
+                    bound,
+                    language: &self.config.language,
+                    funboxes: &self.config.funbox,
+                },
+                &mut self.random,
+            )?;
+        }
+        if self.config.numbers && self.random.draw()? < 0.1 {
+            word = crate::transforms::numeral_script(
+                crate::transforms::numbers(&mut self.random, 4)?,
+                &self.config.language,
+            );
+        }
+        for name in &self.config.funbox {
+            word = crate::transforms::alter(name, word, index, bound, &mut self.random)?;
+        }
         let mut committed = word.clone();
-        if committed.0.last() != Some(&10) {
+        if committed.0.last() != Some(&10)
+            && !self
+                .config
+                .funbox
+                .iter()
+                .any(|name| ["nospace", "underscore_spaces"].contains(&name.as_str()))
+        {
             committed.0.push(32);
         }
         let next = NextWord {
