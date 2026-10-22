@@ -89,6 +89,9 @@ pub struct Generator {
     generated: usize,
     punctuation: crate::punctuation::Punctuation,
     rules: crate::language_rules::LanguageRules,
+    arrows: crate::generated_funboxes::Arrows,
+    pseudolang: Option<crate::generated_funboxes::Pseudolang>,
+    pub weak_spot: crate::weak_spot::WeakSpot,
 }
 pub(crate) fn case(text: &Text, upper: bool) -> Text {
     let mut output = vec![];
@@ -158,6 +161,11 @@ impl Generator {
         }
         if config.funbox.iter().any(|name| {
             ![
+                "arrows",
+                "weakspot",
+                "pseudolang",
+                "IPv4",
+                "IPv6",
                 "58008",
                 "binary",
                 "hexadecimal",
@@ -223,6 +231,9 @@ impl Generator {
             generated: 0,
             punctuation: crate::punctuation::Punctuation::default(),
             rules: crate::language_rules::LanguageRules::new()?,
+            arrows: crate::generated_funboxes::Arrows::default(),
+            pseudolang: None,
+            weak_spot: crate::weak_spot::WeakSpot::default(),
         })
     }
     fn limit(&self) -> usize {
@@ -284,6 +295,12 @@ impl Generator {
         false
     }
     fn random_word(&mut self) -> Result<Text, String> {
+        if self.config.funbox.iter().any(|name| name == "pseudolang") {
+            let generator = self
+                .pseudolang
+                .get_or_insert_with(|| crate::generated_funboxes::Pseudolang::new(&self.wordset));
+            return generator.word(&mut self.random);
+        }
         let index = if self.config.funbox.iter().any(|name| name == "zipf") {
             self.random.zipf_index(self.wordset.len())?
         } else {
@@ -420,6 +437,7 @@ impl Generator {
                     .as_ref()
                     .is_some_and(|custom| custom.mode == "random")
                 && self.wordset.len() < 4
+                && !self.config.funbox.iter().any(|name| name == "pseudolang")
             {
                 word = self.random_word()?;
             } else if self.config.mode == "custom"
@@ -484,8 +502,21 @@ impl Generator {
             }
             word = collapse_spaces(word);
             for name in &self.config.funbox {
-                if let Some(generated) = crate::transforms::generated_word(name, &mut self.random)?
-                {
+                let generated = match name.as_str() {
+                    "arrows" => Some(self.arrows.word(index == 0, &mut self.random)?),
+                    "IPv4" => Some(crate::generated_funboxes::ip(4, &mut self.random)?),
+                    "IPv6" => Some(crate::generated_funboxes::ip(6, &mut self.random)?),
+                    "weakspot" => {
+                        let mut candidates = vec![];
+                        for _ in 0..20 {
+                            candidates
+                                .push(self.wordset[self.random.index(self.wordset.len())?].clone());
+                        }
+                        self.weak_spot.best(&candidates).cloned()
+                    }
+                    _ => crate::transforms::generated_word(name, &mut self.random)?,
+                };
+                if let Some(generated) = generated {
                     word = if name == "58008"
                         && (self.config.language.starts_with("kurdish")
                             || self.config.language.starts_with("nepali"))
@@ -512,7 +543,18 @@ impl Generator {
         if self.config.mode != "custom"
             && !self.config.punctuation
             && !self.config.funbox.iter().any(|name| {
-                ["binary", "hexadecimal", "gibberish", "ascii", "specials"].contains(&name.as_str())
+                [
+                    "binary",
+                    "hexadecimal",
+                    "gibberish",
+                    "ascii",
+                    "specials",
+                    "arrows",
+                    "IPv4",
+                    "IPv6",
+                    "weakspot",
+                ]
+                .contains(&name.as_str())
             })
             && word.0.iter().any(|unit| (65..=90).contains(unit))
             && !["german", "swiss_german", "code", "klingon"]
@@ -567,7 +609,7 @@ impl Generator {
                 .config
                 .funbox
                 .iter()
-                .any(|name| ["nospace", "underscore_spaces"].contains(&name.as_str()))
+                .any(|name| ["nospace", "underscore_spaces", "arrows"].contains(&name.as_str()))
         {
             committed.0.push(32);
         }

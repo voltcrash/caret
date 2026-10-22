@@ -45,6 +45,11 @@ fn base_generation_matches_immutable_browser_snapshots() {
         let config: GenerationConfig = serde_json::from_value(case["config"].clone()).unwrap();
         if config.funbox.iter().any(|name| {
             ![
+                "arrows",
+                "weakspot",
+                "pseudolang",
+                "IPv4",
+                "IPv6",
                 "58008",
                 "binary",
                 "hexadecimal",
@@ -137,5 +142,5 @@ fn base_generation_matches_immutable_browser_snapshots() {
         assert_eq!(actual, expected, "{name}");
         checked += 1;
     }
-    assert!(checked >= 48, "Only {checked} cases exercised");
+    assert!(checked >= 53, "Only {checked} cases exercised");
 }

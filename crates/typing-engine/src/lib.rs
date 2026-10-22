@@ -1,4 +1,5 @@
 //! Platform-independent typing rules. Hosts provide content, observations and time.
+mod generated_funboxes;
 pub mod generation;
 pub mod language_rules;
 pub mod pace;

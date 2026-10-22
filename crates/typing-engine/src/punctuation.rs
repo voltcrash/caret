@@ -94,6 +94,9 @@ impl Punctuation {
             language,
             funboxes,
         } = context;
+        if funboxes.iter().any(|name| name == "IPv4" || name == "IPv6") {
+            return crate::generated_funboxes::punctuate_ip(word, random);
+        }
         if funboxes.iter().any(|name| name == "hexadecimal") {
             return Ok(wrap(word, "0x", ""));
         }
