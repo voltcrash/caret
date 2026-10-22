@@ -143,10 +143,23 @@ pub fn chars(log: &Log, partial: bool, limit: Option<f64>) -> Chars {
                 *unit = 32;
             }
         }
-        let target = log.context.target_words.get(index).unwrap_or(&typed);
+        let target = log
+            .context
+            .target_words
+            .get(index)
+            .unwrap_or(&typed)
+            .clone();
+        let (typed, target) = if log.context.korean_status {
+            (
+                crate::text::disassemble_hangul(&typed),
+                crate::text::disassemble_hangul(&target),
+            )
+        } else {
+            (typed, target)
+        };
         let counts = count_chars(
             &typed,
-            target,
+            &target,
             index == active && (partial || timed(log) || log.context.bailed_out),
         );
         total.all_correct += counts.all_correct;

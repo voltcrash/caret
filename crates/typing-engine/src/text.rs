@@ -77,3 +77,63 @@ pub fn delete_word(input: &Text) -> Text {
     }
     Text(input.0[..end].to_vec())
 }
+
+/// Match hangul-js disassemble: compatibility compound jamo split; modern jamo
+/// remain unchanged. Scores count these units while event indices stay UTF-16.
+pub fn disassemble_hangul(text: &Text) -> Text {
+    let leading: Vec<_> = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ"
+        .encode_utf16()
+        .collect();
+    let trailing: Vec<_> = "\0ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ"
+        .encode_utf16()
+        .collect();
+    fn push(unit: u16, output: &mut Vec<u16>) {
+        // hangul-js initializes its lookup hashes with 0 -> 0; preserve that
+        // historical NUL interpretation rather than silently changing scores.
+        if unit == 0 {
+            output.push(0x3131);
+            return;
+        }
+        let pair = match unit {
+            0x3133 => Some((0x3131, 0x3145)),
+            0x3135 => Some((0x3134, 0x3148)),
+            0x3136 => Some((0x3134, 0x314e)),
+            0x313a => Some((0x3139, 0x3131)),
+            0x313b => Some((0x3139, 0x3141)),
+            0x313c => Some((0x3139, 0x3142)),
+            0x313d => Some((0x3139, 0x3145)),
+            0x313e => Some((0x3139, 0x314c)),
+            0x313f => Some((0x3139, 0x314d)),
+            0x3140 => Some((0x3139, 0x314e)),
+            0x3144 => Some((0x3142, 0x3145)),
+            0x3158 => Some((0x3157, 0x314f)),
+            0x3159 => Some((0x3157, 0x3150)),
+            0x315a => Some((0x3157, 0x3163)),
+            0x315d => Some((0x315c, 0x3153)),
+            0x315e => Some((0x315c, 0x3154)),
+            0x315f => Some((0x315c, 0x3163)),
+            0x3162 => Some((0x3161, 0x3163)),
+            _ => None,
+        };
+        if let Some((a, b)) = pair {
+            output.push(a);
+            output.push(b);
+        } else {
+            output.push(unit);
+        }
+    }
+    let mut result = vec![];
+    for unit in &text.0 {
+        if (0xac00..=0xd7a3).contains(unit) {
+            let syllable = usize::from(*unit - 0xac00);
+            push(leading[syllable / 588], &mut result);
+            push(0x314f + (syllable % 588 / 28) as u16, &mut result);
+            if syllable % 28 != 0 {
+                push(trailing[syllable % 28], &mut result);
+            }
+        } else {
+            push(*unit, &mut result);
+        }
+    }
+    Text(result)
+}

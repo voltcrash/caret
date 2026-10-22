@@ -53,3 +53,20 @@ fn summary_fields_match_all_unchanged_browser_results_exactly() {
         }
     }
 }
+
+#[test]
+fn hangul_disassembly_matches_frozen_original_library_for_every_utf16_unit() {
+    // Frozen from hangul-js 0.2.6, all 65536 individual UTF-16 code units.
+    // FNV-1a64 over each result's unit length followed by its UTF-16 units.
+    let mut hash = 14695981039346656037_u64;
+    let mut count = 0;
+    for unit in 0..=u16::MAX {
+        let result = typing_engine::text::disassemble_hangul(&Text(vec![unit]));
+        for unit in std::iter::once(result.len() as u16).chain(result.0) {
+            hash = (hash ^ u64::from(unit)).wrapping_mul(1099511628211);
+            count += 1;
+        }
+    }
+    assert_eq!(count, 161148);
+    assert_eq!(hash, 0x6b0ab93734a2fb3f);
+}

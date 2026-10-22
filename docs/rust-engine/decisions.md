@@ -11,3 +11,6 @@
   before finalizing Phase 1.3; no lower MSRV support claimed without a build.
 - Offline terminal initial scope excludes accounts/sync. Publication follows
   repository release authorization; no production deployment implied by this task.
+- Korean scoring preserves hangul-js 0.2.6 disassembly, including its NUL→ㄱ
+  lookup quirk. An exhaustive frozen digest covers every UTF-16 unit. Correcting
+  that legacy interpretation requires a separately versioned behavior change.
