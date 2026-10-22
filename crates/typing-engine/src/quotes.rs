@@ -1,7 +1,8 @@
 use crate::{Text, random::Random};
 use serde::{Deserialize, Serialize};
+use ts_rs::TS;
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
 pub struct Quote {
     pub text: Text,
@@ -17,7 +18,7 @@ pub struct Quote {
     #[serde(default)]
     pub text_split: Vec<Text>,
 }
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, TS)]
 pub struct QuoteAsset {
     pub language: String,
     pub groups: Vec<(usize, usize)>,

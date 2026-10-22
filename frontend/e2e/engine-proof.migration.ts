@@ -108,3 +108,125 @@ test("native fixture matches browser Wasm through built Cloudflare assets", asyn
     await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
   }
 });
+
+test("all 61 unchanged generator snapshots match browser Wasm", async ({
+  page,
+}) => {
+  const staticRoot = resolve(import.meta.dirname, "../static");
+  const cases = JSON.parse(
+    await readFile(resolve(root, "reference/words/cases.json"), "utf8"),
+  ) as {
+    name: string;
+    seed: number;
+    config: Record<string, unknown>;
+    customText?: unknown;
+    repeat?: boolean;
+    extraWords?: number;
+    selectedQuoteId?: number;
+  }[];
+  const units = (text: string): number[] =>
+    Array.from({ length: text.length }, (_, index) => text.charCodeAt(index));
+  const neutral = (value: unknown, key = ""): unknown => {
+    if (
+      typeof value === "string" &&
+      [
+        "words",
+        "text",
+        "britishText",
+        "word",
+        "wordRaw",
+        "additionalAccents",
+      ].includes(key)
+    ) {
+      return units(value);
+    }
+    if (Array.isArray(value)) return value.map((item) => neutral(item, key));
+    if (value !== null && typeof value === "object") {
+      return Object.fromEntries(
+        Object.entries(value).map(([key, item]) => [key, neutral(item, key)]),
+      );
+    }
+    return value;
+  };
+  const inputs = [];
+  const expected = [];
+  let quotesLoaded = false;
+  for (const fixture of cases) {
+    const language =
+      typeof fixture.config["language"] === "string"
+        ? fixture.config["language"]
+        : "english";
+    const polyglot =
+      fixture.config["funbox"] instanceof Array &&
+      fixture.config["funbox"].includes("polyglot")
+        ? await Promise.all(
+            (fixture.config["customPolyglot"] as string[]).map(async (name) =>
+              neutral(
+                JSON.parse(
+                  await readFile(
+                    resolve(staticRoot, `languages/${name}.json`),
+                    "utf8",
+                  ),
+                ),
+              ),
+            ),
+          )
+        : [];
+    let quotes: unknown = null;
+    if (fixture.config["mode"] === "quote" && !quotesLoaded) {
+      quotes = neutral(
+        JSON.parse(
+          await readFile(resolve(staticRoot, "quotes/english.json"), "utf8"),
+        ),
+      );
+      quotesLoaded = true;
+    }
+    inputs.push({
+      input: {
+        config: fixture.config,
+        language: neutral(
+          JSON.parse(
+            await readFile(
+              resolve(staticRoot, `languages/${language}.json`),
+              "utf8",
+            ),
+          ),
+        ),
+        custom: neutral(fixture.customText ?? null),
+        random: { kind: "seeded", state: fixture.seed },
+        quotes,
+        polyglot,
+        selectedQuoteId: fixture.selectedQuoteId ?? 1,
+        favoriteQuoteIds: [],
+      },
+      repeat: fixture.repeat,
+      extraWords: fixture.extraWords,
+    });
+    expected.push(
+      neutral(
+        JSON.parse(
+          await readFile(
+            resolve(root, `reference/words/__snapshots__/${fixture.name}.json`),
+            "utf8",
+          ),
+        ),
+      ),
+    );
+  }
+  await page.goto("/engine-proof");
+  await page
+    .getByRole("textbox", { name: "Command fixture" })
+    .fill(JSON.stringify(inputs));
+  await page.getByRole("button", { name: "Run generation" }).click();
+  await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty({
+    timeout: 30_000,
+  });
+  await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+  const actual = JSON.parse(
+    await page.getByTestId("engine-proof-result").innerText(),
+  ) as unknown[];
+  expect(actual).toHaveLength(61);
+  for (const [index, fixture] of cases.entries()) {
+    expect(actual[index], fixture.name).toEqual(expected[index]);
+  }
+});

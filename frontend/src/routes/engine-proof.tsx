@@ -3,6 +3,7 @@ import type {
   Command,
   Config,
   Text,
+  Prepare,
 } from "@oxytype/typing-engine/browser.client";
 
 import { createFileRoute } from "@tanstack/solid-router";
@@ -92,6 +93,65 @@ function EngineProof() {
       setFailure(error instanceof Error ? error.message : String(error));
     }
   };
+  const runGeneration = async (): Promise<void> => {
+    setResult("");
+    setFailure("");
+    try {
+      const cases = JSON.parse(fixture()) as {
+        input: Prepare;
+        repeat?: boolean;
+        extraWords?: number;
+      }[];
+      const { loadEngine } =
+        await import("@oxytype/typing-engine/browser.client");
+      const engine = await loadEngine();
+      if (disposed) return;
+      const content = engine.createContent();
+      try {
+        const results = cases.map(({ input, repeat, extraWords }) => {
+          content.prepare(input);
+          let generated = content.generate();
+          if (repeat === true) generated = content.generate(true);
+          const words = [...generated.words];
+          const extra = [];
+          const strip = (word: Text | undefined): Text | null =>
+            word === undefined
+              ? null
+              : [32, 10].includes(word.at(-1) ?? -1)
+                ? word.slice(0, -1)
+                : word;
+          for (let index = 0; index < (extraWords ?? 0); index++) {
+            const next = content.next(
+              words.length,
+              100,
+              strip(words.at(-1)),
+              strip(words.at(-2)),
+            );
+            words.push(next.word);
+            extra.push(next);
+          }
+          const metadata = content.metadata();
+          return {
+            ...generated,
+            extra,
+            allWordsGenerated: metadata.allWordsGenerated,
+            currentQuote:
+              metadata.currentQuote === null
+                ? null
+                : {
+                    id: metadata.currentQuote.id,
+                    group: metadata.currentQuote.group,
+                  },
+          };
+        });
+        setResult(JSON.stringify(results));
+      } finally {
+        content.dispose();
+      }
+    } catch (error) {
+      setFailure(error instanceof Error ? error.message : String(error));
+    }
+  };
   return (
     <Show
       when={import.meta.env.OXYTYPE_ENGINE_PROOF}
@@ -110,6 +170,14 @@ function EngineProof() {
           }}
         >
           Run fixture
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            void runGeneration();
+          }}
+        >
+          Run generation
         </button>
         <pre data-testid="engine-proof-result">{result()}</pre>
         <pre data-testid="engine-proof-error">{failure()}</pre>

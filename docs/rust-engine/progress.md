@@ -76,3 +76,6 @@ do not rerun completed checks without a new reason.
 - Native test, Clippy and format checks passed after language-rule integration. Final current-head browser/build rerun pending.
 - Draft Stage 1 PR: https://github.com/voltcrash/oxytype/pull/184. Initial CI native/Wasm, SSR, delivery and frontend checks passed; package routing failure fixed locally (60 routing tests pass). Whole current-head CI not yet verified.
 - Stages 2 and 3 have no implementation yet. No production deployment or release published.
+
+- Current Cloudflare production build passes. Real-browser `engine-proof.migration.ts`: 2 tests pass (19 command traces and 61 generator snapshots). Generated binding types now cover content preparation and generator outputs.
+- Expanded Wasm: 1,123,350 bytes raw (over 1 MiB budget), ~292.77 kB gzip (under budget). Optimization required; size gate explicitly not passed.

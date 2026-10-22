@@ -1,8 +1,9 @@
 use serde::{Deserialize, Serialize};
+use ts_rs::TS;
 
 /// Stable Mulberry32 stream, matching the original generator fixtures. No host
 /// RNG, hidden clock or library-selected algorithm participates in generation.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, TS)]
 #[serde(tag = "kind", rename_all = "camelCase")]
 pub enum Random {
     Seeded { state: u32 },

@@ -12,5 +12,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Config::export_all(&config)?;
     State::export_all(&config)?;
     Update::export_all(&config)?;
+    typing_engine::generation::Prepare::export_all(&config)?;
+    typing_engine::generation::Generated::export_all(&config)?;
+    typing_engine::generation::NextWord::export_all(&config)?;
+    typing_engine::quotes::Quote::export_all(&config)?;
     Ok(())
 }

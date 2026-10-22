@@ -60,3 +60,74 @@ impl WasmSession {
         self.session = None;
     }
 }
+
+#[wasm_bindgen]
+pub struct WasmContent {
+    content: Option<typing_engine::generation::Content>,
+}
+#[wasm_bindgen]
+impl WasmContent {
+    #[wasm_bindgen(constructor)]
+    pub fn new(version: u32) -> Result<Self, JsError> {
+        if version != BINDING_VERSION {
+            return Err(JsError::new("Binding version mismatch"));
+        }
+        Ok(Self {
+            content: Some(typing_engine::generation::Content::default()),
+        })
+    }
+    pub fn prepare(&mut self, input: &str) -> Result<(), JsError> {
+        let input = serde_json::from_str(input)?;
+        self.content
+            .as_mut()
+            .ok_or_else(|| JsError::new("Content disposed"))?
+            .prepare(input)
+            .map_err(|message| JsError::new(&message))
+    }
+    pub fn generate(&mut self, repeating: bool) -> Result<String, JsError> {
+        let generator = self
+            .content
+            .as_mut()
+            .ok_or_else(|| JsError::new("Content disposed"))?
+            .generator()
+            .map_err(|message| JsError::new(&message))?;
+        let generated = generator
+            .generate(repeating)
+            .map_err(|message| JsError::new(&message))?;
+        Ok(serde_json::to_string(&generated)?)
+    }
+    pub fn next(
+        &mut self,
+        index: usize,
+        bound: usize,
+        previous: &str,
+        previous2: &str,
+    ) -> Result<String, JsError> {
+        let previous: Option<Text> = serde_json::from_str(previous)?;
+        let previous2: Option<Text> = serde_json::from_str(previous2)?;
+        let generator = self
+            .content
+            .as_mut()
+            .ok_or_else(|| JsError::new("Content disposed"))?
+            .generator()
+            .map_err(|message| JsError::new(&message))?;
+        let next = generator
+            .next(index, bound, previous.as_ref(), previous2.as_ref())
+            .map_err(|message| JsError::new(&message))?;
+        Ok(serde_json::to_string(&next)?)
+    }
+    pub fn metadata(&mut self) -> Result<String, JsError> {
+        let generator = self
+            .content
+            .as_mut()
+            .ok_or_else(|| JsError::new("Content disposed"))?
+            .generator()
+            .map_err(|message| JsError::new(&message))?;
+        Ok(serde_json::to_string(
+            &serde_json::json!({ "allWordsGenerated": generator.all_generated(), "currentQuote": generator.current_quote }),
+        )?)
+    }
+    pub fn dispose(&mut self) {
+        self.content = None;
+    }
+}

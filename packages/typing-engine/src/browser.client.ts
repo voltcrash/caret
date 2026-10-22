@@ -1,6 +1,7 @@
 import initialize, {
   binding_version,
   WasmSession,
+  WasmContent,
 } from "../generated/engine.js";
 import wasmUrl from "../generated/engine_bg.wasm?url";
 import type { Command } from "../generated/types/Command";
@@ -8,7 +9,20 @@ import type { Config } from "../generated/types/Config";
 import type { Text } from "../generated/types/Text";
 import type { Update } from "../generated/types/Update";
 
-export type { Command, Config, Text, Update };
+import type { Prepare } from "../generated/types/Prepare";
+import type { Generated } from "../generated/types/Generated";
+import type { NextWord } from "../generated/types/NextWord";
+import type { Quote } from "../generated/types/Quote";
+export type {
+  Command,
+  Config,
+  Text,
+  Update,
+  Prepare,
+  Generated,
+  NextWord,
+  Quote,
+};
 const BINDING_VERSION = 1;
 
 export function encodeText(value: string): Text {
@@ -28,6 +42,7 @@ export function decodeText(units: Text): string {
 export async function loadEngine(): Promise<{
   createSession: (config: Partial<Config>, words: Text[]) => BrowserSession;
   memoryBytes: () => number;
+  createContent: () => BrowserContent;
 }> {
   const module = await initialize({ module_or_path: wasmUrl });
   if (binding_version() !== BINDING_VERSION) {
@@ -36,6 +51,7 @@ export async function loadEngine(): Promise<{
   return {
     createSession: (config, words) => new BrowserSession(config, words),
     memoryBytes: () => module.memory.buffer.byteLength,
+    createContent: () => new BrowserContent(),
   };
 }
 
@@ -114,4 +130,48 @@ export function benchmarkBoundary(): { jsonMs: number[]; objectMs: number[] } {
     }
   }
   return { jsonMs, objectMs };
+}
+
+export class BrowserContent {
+  private handle: WasmContent | undefined = new WasmContent(BINDING_VERSION);
+  private live(): WasmContent {
+    if (this.handle === undefined) {
+      throw new Error("Typing engine content disposed");
+    }
+    return this.handle;
+  }
+  prepare(input: Prepare): void {
+    this.live().prepare(JSON.stringify(input));
+  }
+  generate(repeating = false): Generated {
+    return JSON.parse(this.live().generate(repeating)) as Generated;
+  }
+  next(
+    index: number,
+    bound: number,
+    previous: Text | null,
+    previous2: Text | null,
+  ): NextWord {
+    return JSON.parse(
+      this.live().next(
+        index,
+        bound,
+        JSON.stringify(previous),
+        JSON.stringify(previous2),
+      ),
+    ) as NextWord;
+  }
+  metadata(): { allWordsGenerated: boolean; currentQuote: Quote | null } {
+    return JSON.parse(this.live().metadata()) as {
+      allWordsGenerated: boolean;
+      currentQuote: Quote | null;
+    };
+  }
+  dispose(): void {
+    const handle = this.handle;
+    if (handle === undefined) return;
+    this.handle = undefined;
+    handle.dispose();
+    handle.free();
+  }
 }

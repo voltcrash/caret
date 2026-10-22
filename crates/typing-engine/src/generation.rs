@@ -1,8 +1,9 @@
 use crate::{Text, random::Random};
 use serde::{Deserialize, Serialize};
 use std::collections::VecDeque;
+use ts_rs::TS;
 
-#[derive(Clone, Debug, Default, Deserialize)]
+#[derive(Clone, Debug, Default, Deserialize, TS)]
 #[serde(default, rename_all = "camelCase")]
 pub struct Language {
     pub name: String,
@@ -13,7 +14,7 @@ pub struct Language {
     pub no_lazy_mode: bool,
     pub additional_accents: Vec<(Text, Text)>,
 }
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, TS)]
 #[serde(default, rename_all = "camelCase")]
 pub struct GenerationConfig {
     pub mode: String,
@@ -51,12 +52,12 @@ impl Default for GenerationConfig {
         }
     }
 }
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, TS)]
 pub struct CustomLimit {
     pub mode: String,
     pub value: usize,
 }
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, TS)]
 #[serde(rename_all = "camelCase")]
 pub struct CustomText {
     pub text: Vec<Text>,
@@ -64,14 +65,14 @@ pub struct CustomText {
     pub limit: CustomLimit,
     pub pipe_delimiter: bool,
 }
-#[derive(Clone, Debug, Serialize, PartialEq, Eq)]
+#[derive(Clone, Debug, Serialize, PartialEq, Eq, TS)]
 #[serde(rename_all = "camelCase")]
 pub struct NextWord {
     pub word: Text,
     pub word_raw: Text,
     pub section_index: usize,
 }
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
 pub struct Generated {
     pub words: Vec<Text>,
@@ -740,5 +741,47 @@ impl Generator {
         self.previous.push(next.clone());
         self.generated = index + 1;
         Ok(next)
+    }
+}
+
+#[derive(Deserialize, TS)]
+#[serde(rename_all = "camelCase")]
+pub struct Prepare {
+    pub config: GenerationConfig,
+    pub language: Language,
+    pub custom: Option<CustomText>,
+    pub random: Random,
+    pub quotes: Option<crate::quotes::QuoteAsset>,
+    #[serde(default)]
+    pub polyglot: Vec<Language>,
+    #[serde(default)]
+    pub selected_quote_id: u32,
+    #[serde(default)]
+    pub favorite_quote_ids: Vec<u32>,
+}
+/// Retains only explicitly owned content-selection state across restarts.
+#[derive(Default)]
+pub struct Content {
+    assets: Assets,
+    generator: Option<Generator>,
+}
+impl Content {
+    pub fn prepare(&mut self, input: Prepare) -> Result<(), String> {
+        self.generator = None;
+        self.assets.quote_asset = input.quotes;
+        self.assets.polyglot = input.polyglot;
+        self.assets.selected_quote_id = input.selected_quote_id;
+        self.assets.favorite_quote_ids = input.favorite_quote_ids;
+        self.generator = Some(Generator::with_assets(
+            input.config,
+            input.language,
+            input.custom,
+            input.random,
+            &mut self.assets,
+        )?);
+        Ok(())
+    }
+    pub fn generator(&mut self) -> Result<&mut Generator, String> {
+        self.generator.as_mut().ok_or("Content not prepared".into())
     }
 }
