@@ -9,7 +9,7 @@ permissions:
 
 on:
   pull_request:
-    branches: [main, "stack/**"]
+    branches: [main, "stack/**", "t3/rust-engine-migration"]
     types: [opened, reopened, synchronize, ready_for_review]
   push:
     branches: [main]
@@ -184,10 +184,10 @@ jobs:
           enable start-browser "${runtime[@]}" frontend start-tests browser-tests static-delivery
           enable start-updates "${runtime[@]}" frontend start-tests update-tests static-delivery
           enable start-delivery "${runtime[@]}" frontend static-delivery
-          enable packages packages lint-config static-layouts static-challenges
+          enable packages packages lint-config static-layouts static-challenges engine
           enable assets assets runtime-packages
           enable code code
-          enable engine engine runtime-packages browser-tests
+          enable engine engine runtime-packages
 
   engine:
     name: engine

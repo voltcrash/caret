@@ -69,6 +69,7 @@ const allJobs = [
   "packages",
   "assets",
   "code",
+  "engine",
 ];
 const appJobs = [
   "backend-test",
@@ -114,6 +115,19 @@ it("runs every job outside pull requests", () => {
 
 it("runs every job for force-full-ci and main or manual runs", () => {
   expect(selected([], { full: true })).toEqual(allJobs);
+});
+
+it.each([
+  "Cargo.toml",
+  "Cargo.lock",
+  "rust-toolchain.toml",
+  "crates/typing-engine/src/session.rs",
+  "crates/typing-engine-wasm/src/lib.rs",
+  "packages/typing-engine/src/browser.client.ts",
+  "packages/typing-fixtures/commands/finite-edit.json",
+  "scripts/engine.ts",
+])("runs native, Wasm, parity and Cloudflare consumers for %s", (file) => {
+  expect(selected([file])).toEqual(allJobs);
 });
 
 it.each([
