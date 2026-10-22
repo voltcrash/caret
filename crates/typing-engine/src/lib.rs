@@ -1,5 +1,6 @@
 //! Platform-independent typing rules. Hosts provide content, observations and time.
 pub mod pace;
+pub mod random;
 pub mod session;
 pub mod stats;
 pub mod text;
