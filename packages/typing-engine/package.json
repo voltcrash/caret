@@ -1,0 +1,13 @@
+{
+  "name": "@oxytype/typing-engine",
+  "private": true,
+  "license": "GPL-3.0",
+  "type": "module",
+  "exports": {
+    "./browser.client": "./src/browser.client.ts"
+  },
+  "devDependencies": {
+    "@oxytype/typescript-config": "workspace:*",
+    "vite-plus": "catalog:"
+  }
+}

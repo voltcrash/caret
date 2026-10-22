@@ -7,6 +7,7 @@ import { tanstackStart } from "@tanstack/solid-start/plugin/vite";
 import solid from "vite-plugin-solid";
 import tailwindcss from "@tailwindcss/vite";
 import { frontendLint } from "./lint.config";
+import { prepareTypingEngine } from "./vite-plugins/typing-engine";
 import { fontStyles } from "./vite-plugins/font-styles";
 import { workerNodeBuiltins } from "./vite-plugins/worker-node-builtins";
 import { apiDocs } from "./vite-plugins/api-docs";
@@ -40,6 +41,7 @@ async function devPlugins(env: Record<string, string>): Promise<Plugin[]> {
 }
 
 export default defineConfig(async ({ mode, command }) => {
+  prepareTypingEngine();
   const env = loadEnv(mode, process.cwd(), "");
   const buildId = resolveBuildId(mode !== "production");
   if (mode === "production") {
@@ -167,6 +169,9 @@ export default defineConfig(async ({ mode, command }) => {
       ...(command === "serve" ? await devPlugins(env) : []),
     ],
     define: {
+      "import.meta.env.OXYTYPE_ENGINE_PROOF": JSON.stringify(
+        process.env["OXYTYPE_ENGINE_PROOF"] === "true",
+      ),
       "import.meta.env.OXYTYPE_OFFLINE": JSON.stringify(mode === "offline"),
       // Client and Worker share it; logs and error reports join on this ID.
       "import.meta.env.OXYTYPE_BUILD_ID": JSON.stringify(buildId),

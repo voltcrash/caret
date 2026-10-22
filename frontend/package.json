@@ -60,6 +60,7 @@
     "@oxytype/funbox": "workspace:*",
     "@oxytype/schemas": "workspace:*",
     "@oxytype/typing-core": "workspace:*",
+    "@oxytype/typing-engine": "workspace:*",
     "@oxytype/util": "workspace:*",
     "@sentry/browser": "11.1.0",
     "@sentry/vite-plugin": "5.4.0",
