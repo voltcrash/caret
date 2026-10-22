@@ -4,7 +4,7 @@ use crate::{
 };
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, VecDeque};
 use ts_rs::TS;
 
 #[derive(Clone, Debug, Deserialize, Serialize, TS)]
@@ -121,6 +121,18 @@ pub enum Command {
     Finalize {
         now: f64,
     },
+    #[serde(rename_all = "camelCase")]
+    View {
+        now: f64,
+        #[serde(default)]
+        earliest_visible_word: Option<usize>,
+        #[serde(default)]
+        defer_automatic: Option<bool>,
+    },
+    FlushAutomatic {
+        now: f64,
+        generation: u32,
+    },
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, TS)]
@@ -148,6 +160,9 @@ pub struct Event {
 pub struct Update {
     pub state: State,
     pub events: Vec<Event>,
+    pub generation: u32,
+    #[serde(rename = "automaticPending")]
+    pub automatic_pending: bool,
 }
 
 #[derive(Clone)]
@@ -158,6 +173,8 @@ struct Recorded {
 }
 
 pub struct Session {
+    pub pace: crate::pace::Pace,
+    pub weak_spot: crate::weak_spot::WeakSpot,
     config: Config,
     words: Vec<Text>,
     input: Vec<Text>,
@@ -171,6 +188,12 @@ pub struct Session {
     indent_pending: bool,
     pressed: Vec<(String, f64)>,
     no_code_index: usize,
+    completion_checkpoint: bool,
+    composing: bool,
+    earliest_visible_word: usize,
+    defer_automatic: bool,
+    automatic: VecDeque<(f64, f64)>,
+    generation: u32,
 }
 
 impl Session {
@@ -182,6 +205,8 @@ impl Session {
             return Err("Invalid time limit".into());
         }
         Ok(Self {
+            pace: crate::pace::Pace::default(),
+            weak_spot: crate::weak_spot::WeakSpot::default(),
             config,
             input: vec![Text::default(); words.len().max(1)],
             words,
@@ -195,6 +220,12 @@ impl Session {
             indent_pending: false,
             pressed: vec![],
             no_code_index: 0,
+            completion_checkpoint: true,
+            composing: false,
+            earliest_visible_word: 0,
+            defer_automatic: false,
+            automatic: VecDeque::new(),
+            generation: 0,
         })
     }
 
@@ -231,6 +262,7 @@ impl Session {
         }
         self.active = true;
         self.start = Some(now);
+        self.pace.start(now);
         self.record(
             "timer",
             now,
@@ -258,7 +290,9 @@ impl Session {
             | Command::Abandon { now, .. }
             | Command::Reset { now }
             | Command::Observe { now, .. }
-            | Command::Finalize { now } => *now,
+            | Command::Finalize { now }
+            | Command::View { now, .. }
+            | Command::FlushAutomatic { now, .. } => *now,
         };
         if !now.is_finite() || now.abs() > 9_007_199_254_740_991.0 {
             return Err("Invalid timestamp".into());
@@ -273,10 +307,17 @@ impl Session {
                 automatic,
                 is_composition_ending,
             } => {
-                for unit in data.0 {
+                if is_composition_ending == Some(true) {
+                    self.composing = false;
+                }
+                let length = data.len();
+                for (index, unit) in data.0.into_iter().enumerate() {
                     if self.ended {
                         break;
                     }
+                    // The browser checks failure/finish at the final unit of a
+                    // committed input batch, not after each surrogate/character.
+                    self.completion_checkpoint = index + 1 == length && !self.composing;
                     self.insert(
                         unit,
                         now,
@@ -286,6 +327,7 @@ impl Session {
                         is_composition_ending == Some(true),
                     );
                 }
+                self.completion_checkpoint = true;
             }
             Command::Delete { kind, now, .. } => {
                 if !["deleteContentBackward", "deleteWordBackward"].contains(&kind.as_str()) {
@@ -311,6 +353,11 @@ impl Session {
                 self.input = vec![Text::default(); self.words.len().max(1)];
                 self.pressed.clear();
                 self.no_code_index = 0;
+                self.pace.reset(None);
+                self.composing = false;
+                self.earliest_visible_word = 0;
+                self.automatic.clear();
+                self.generation = self.generation.wrapping_add(1);
             }
             Command::Observe {
                 now,
@@ -318,6 +365,26 @@ impl Session {
                 event_data,
             } => self.observe(&event_type, now, event_data)?,
             Command::Finalize { .. } => self.finalize(),
+            Command::View {
+                earliest_visible_word,
+                defer_automatic,
+                ..
+            } => {
+                self.earliest_visible_word = earliest_visible_word.unwrap_or(0);
+                if let Some(defer) = defer_automatic {
+                    self.defer_automatic = defer;
+                }
+            }
+            Command::FlushAutomatic { generation, .. } => {
+                if generation == self.generation
+                    && !self.ended
+                    && let Some((now, date)) = self.automatic.pop_front()
+                {
+                    self.completion_checkpoint = !self.composing;
+                    self.insert(9, now, date, None, true, false);
+                    self.completion_checkpoint = true;
+                }
+            }
         }
         let origin = self.origin();
         let events = self
@@ -330,6 +397,8 @@ impl Session {
         Ok(Update {
             state: self.state(),
             events,
+            generation: self.generation,
+            automatic_pending: !self.automatic.is_empty(),
         })
     }
 
@@ -343,9 +412,19 @@ impl Session {
         composition: bool,
     ) {
         self.insert_one(unit, now, date, shift, automatic, composition);
+        if self.defer_automatic && self.indent_pending {
+            self.indent_pending = false;
+            self.automatic.push_back((now, date));
+            return;
+        }
         while self.indent_pending && !self.ended {
             self.indent_pending = false;
             self.insert_one(9, now, date, None, true, false);
+            if self.defer_automatic && self.indent_pending {
+                self.indent_pending = false;
+                self.automatic.push_back((now, date));
+                break;
+            }
         }
     }
 
@@ -444,12 +523,28 @@ impl Session {
         }
         self.input
             .resize(self.input.len().max(self.index + 1), Text::default());
+        if advance {
+            self.pace
+                .correct(self.index, next == target, &target, self.config.blind_mode);
+        }
         self.input[self.index] = next;
+        let previous = self
+            .events
+            .iter()
+            .rev()
+            .find(|event| event.kind == "input")
+            .map(|event| event.now);
         self.record("input", now, data);
+        self.weak_spot.update(
+            &Text(vec![unit]),
+            correct,
+            previous.map(|previous| round2(round2(now) - previous)),
+        );
         if !correct && !stopped && self.config.delete_on_error != "off" {
             self.delete_error(now);
         }
-        if self.config.mode != "zen"
+        if self.completion_checkpoint
+            && self.config.mode != "zen"
             && ((self.config.difficulty == "master" && !correct)
                 || (self.config.difficulty == "expert"
                     && commit
@@ -459,7 +554,7 @@ impl Session {
             self.end(now, date, Some("difficulty".into()));
             return;
         }
-        if advance && self.config.min_burst != "off" {
+        if self.completion_checkpoint && advance && self.config.min_burst != "off" {
             let log: crate::stats::Log =
                 serde_json::from_value(self.log()).expect("Engine log is valid");
             let burst = crate::stats::word_burst(&log, self.index, now - self.start.unwrap_or(now));
@@ -490,7 +585,11 @@ impl Session {
             && target.len() == input.len() + 1
             && self.config.stop_on_error == "off"
             && self.config.delete_on_error == "off";
-        if self.index + 1 >= self.words.len() && finite && (word_correct || quick || advance) {
+        if self.completion_checkpoint
+            && self.index + 1 >= self.words.len()
+            && finite
+            && (word_correct || quick || advance)
+        {
             self.end(now, date, None);
         } else if advance && (self.index + 1 < self.words.len() || self.config.mode == "zen") {
             self.index += 1;
@@ -551,7 +650,10 @@ impl Session {
                 );
             }
         }
-        if self.config.delete_on_error.contains("hard") && input.len() <= 1 && self.index > 0 {
+        if self.config.delete_on_error.contains("hard")
+            && input.len() <= 1
+            && self.index > self.earliest_visible_word
+        {
             self.index -= 1;
             let previous = self.previous_input(kind);
             self.log_delete(kind, now, previous.len(), previous, true);
@@ -563,7 +665,7 @@ impl Session {
             return;
         }
         let input = self.current();
-        if input.is_empty() && self.index == 0 {
+        if input.is_empty() && self.index <= self.earliest_visible_word {
             return;
         }
         let prev = self
@@ -775,6 +877,14 @@ impl Session {
             data["code"] = json!(key);
             self.record(kind, now, data);
         } else if kind == "composition" || kind == "timer" {
+            if kind == "composition" {
+                if data["event"] == "start" {
+                    self.composing = true;
+                } else if data["event"] == "end" {
+                    self.composing = false;
+                }
+                data["wordIndex"] = json!(self.index);
+            }
             self.record(kind, now, data);
         } else {
             return Err("Unsupported observation type".into());

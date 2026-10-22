@@ -127,3 +127,28 @@ fn absent_physical_observations_do_not_create_key_durations() {
             .all(|event| event["type"] != "keyup" && event["type"] != "keydown")
     );
 }
+
+#[test]
+fn master_failure_checks_final_unit_as_recorded_by_actual_browser_handler() {
+    let mut session = Session::new(
+        serde_json::from_value(json!({"mode":"words","words":2,"difficulty":"master"})).unwrap(),
+        vec![Text::from("one "), Text::from("two")],
+    )
+    .unwrap();
+    session
+        .apply(
+            serde_json::from_value(json!({"op":"insert","data":[120,111,110,101,32],"now":100}))
+                .unwrap(),
+        )
+        .unwrap();
+    let log = session.log();
+    let inputs: Vec<_> = log["events"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|e| e["type"] == "input")
+        .collect();
+    assert_eq!(inputs.len(), 5);
+    assert_eq!(session.state().reason.as_deref(), Some("difficulty"));
+    assert!(session.state().ended);
+}
