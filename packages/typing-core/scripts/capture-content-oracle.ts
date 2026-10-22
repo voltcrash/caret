@@ -1,0 +1,67 @@
+import { writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { getPoem } from "../src/poetry";
+import { getSection } from "../src/wikipedia";
+import type { LanguageObject } from "@oxytype/schemas/languages";
+import { units } from "./rust-oracle";
+const cases = [];
+for (const lines of [
+  ["  The— _cat  sat.", "and naïve😀 words  "],
+  ["_ —", "poem\tline", "“quote” …"],
+  Array.from({ length: 110 }, (_, i) => `word${i}`),
+]) {
+  const result = await getPoem(async () => [
+    { title: "Poem", author: "Author", lines },
+  ]);
+  if (result === false) throw new Error("Poem fixture failed");
+  cases.push({
+    english: true,
+    source: {
+      kind: "poem",
+      title: units("Poem"),
+      author: units("Author"),
+      lines: lines.map(units),
+    },
+    expected: {
+      title: units(result.title),
+      author: units(result.author),
+      words: result.words.map(units),
+    },
+  });
+}
+for (const language of ["en", "fr"]) {
+  for (const text of [
+    "  A[1] naïve…— “word” «end»\nNext\tline  ",
+    "a\u200bb[20] c\ufeffd\u200ce\u200df",
+    "„hello᾽ \u1680world\r\nnext",
+    "Ångström\u00a0a\u2007b\u202fc — end",
+  ]) {
+    const result = await getSection("english", {
+      getLanguage: async () => ({ bcp47: language }) as LanguageObject,
+      fetchJson: async (url) =>
+        url.includes("/w/api.php")
+          ? { query: { pages: { "1": { extract: "html" } } } }
+          : { title: "Article", author: "Writer", pageid: 1 },
+      htmlToText: () => text,
+    });
+    cases.push({
+      english: language === "en",
+      source: {
+        kind: "article",
+        title: units("Article"),
+        author: units("Writer"),
+        plainText: units(text),
+      },
+      expected: {
+        title: units(result.title),
+        author: units(result.author),
+        words: result.words.map(units),
+      },
+    });
+  }
+}
+writeFileSync(
+  resolve(import.meta.dirname, "../../typing-fixtures/oracle/content.json"),
+  `${JSON.stringify(cases, null, 2)}\n`,
+  { flag: "wx" },
+);
