@@ -110,3 +110,7 @@ do not rerun completed checks without a new reason.
 - Opt-in browser instrumentation proves master failure after a multi-character commit has already advanced website word index to 1. Rust still reports index 0 for this failure path. Must reconcile this known headless/web difference, including min-burst, before gate 1.4; never overwrite the old oracle to hide it.
 
 - Reconciled commit-failure progression with the actual website. Built-browser master and minimum-burst tests both pass (word index advances before failure). Native tests pass against all 19 command fixtures; exactly one old headless min-burst frame is explicitly classified in `browser-contract-overrides.json`. Its original state/bytes are asserted unchanged before comparing the browser state. Events/scores retain exact equality. Current-head Wasm rerun pending.
+
+- Current 0f7f2c13c Cloudflare build succeeds: 787.06 kB raw / 293.88 kB gzip (Vite), within payload budgets. Full browser proof and both actual-browser input-contract tests pass together: 5 tests, 19.7 seconds.
+
+- Poetry cleanup and extracted Wikipedia text normalization match 11 newly captured TypeScript cases. Rust owns cleanup; hosts retain network and HTML extraction. Bounded section queue tests cover one outstanding token, source-kind validation, 16-section prefetch, generation cancellation and rejection of stale/forged replies. These are not yet connected to generator/session continuation.
