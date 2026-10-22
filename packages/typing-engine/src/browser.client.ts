@@ -16,8 +16,9 @@ import type { NextWord } from "../generated/types/NextWord";
 import type { Quote } from "../generated/types/Quote";
 import type { Query } from "../generated/types/Query";
 import type { Response } from "../generated/types/Response";
+import type { Snapshot } from "../generated/types/Snapshot";
 import type { Log } from "../generated/types/Log";
-export type { Query, Response, Log };
+export type { Query, Response, Log, Snapshot };
 
 export type {
   Command,
@@ -64,18 +65,26 @@ export async function loadEngine(): Promise<{
 export class BrowserSession {
   private handle: WasmSession | undefined;
 
-  constructor(config: Partial<Config>, words: Text[]) {
-    this.handle = new WasmSession(
-      JSON.stringify(config),
-      JSON.stringify(words),
-      BINDING_VERSION,
-    );
+  constructor(config: Partial<Config>, words: Text[], handle?: WasmSession) {
+    this.handle =
+      handle ??
+      new WasmSession(
+        JSON.stringify(config),
+        JSON.stringify(words),
+        BINDING_VERSION,
+      );
   }
   command(command: Command): Update {
     if (this.handle === undefined) {
       throw new Error("Typing engine session disposed");
     }
     return JSON.parse(this.handle.command(JSON.stringify(command))) as Update;
+  }
+  snapshot(): Snapshot {
+    if (this.handle === undefined) {
+      throw new Error("Typing engine session disposed");
+    }
+    return JSON.parse(this.handle.snapshot()) as Snapshot;
   }
   log(): unknown {
     if (this.handle === undefined) {
@@ -166,6 +175,9 @@ export class BrowserContent {
         JSON.stringify(previous2),
       ),
     ) as NextWord;
+  }
+  createSession(repeating = false): BrowserSession {
+    return new BrowserSession({}, [], this.live().session(repeating));
   }
   metadata(): { allWordsGenerated: boolean; currentQuote: Quote | null } {
     return JSON.parse(this.live().metadata()) as {

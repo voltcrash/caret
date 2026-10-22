@@ -37,6 +37,13 @@ impl WasmSession {
             .map_err(|message| JsError::new(&message))?;
         Ok(serde_json::to_string(&update)?)
     }
+    pub fn snapshot(&self) -> Result<String, JsError> {
+        let session = self
+            .session
+            .as_ref()
+            .ok_or_else(|| JsError::new("Session disposed"))?;
+        Ok(serde_json::to_string(&session.snapshot())?)
+    }
     pub fn log(&self) -> Result<String, JsError> {
         let session = self
             .session
@@ -126,6 +133,17 @@ impl WasmContent {
         Ok(serde_json::to_string(
             &serde_json::json!({ "allWordsGenerated": generator.all_generated(), "currentQuote": generator.current_quote }),
         )?)
+    }
+    pub fn session(&mut self, repeating: bool) -> Result<WasmSession, JsError> {
+        let session = self
+            .content
+            .as_mut()
+            .ok_or_else(|| JsError::new("Content disposed"))?
+            .start_session(repeating)
+            .map_err(|message| JsError::new(&message))?;
+        Ok(WasmSession {
+            session: Some(session),
+        })
     }
     pub fn dispose(&mut self) {
         self.content = None;

@@ -98,3 +98,6 @@ do not rerun completed checks without a new reason.
 - Add persistent replay handle, malformed/bounded DTO checks, randomized lifecycle and memory/performance checks.
 - Re-run optimized Cloudflare browser proof after Morse reduction, then fresh-checkout/complete CI and final performance budgets.
 - Stage 2/3 remain pending; do not cut over website while these gaps exist.
+
+- Session now owns an attached generator, incremental lookahead refill, final separator stripping, quote identity, custom time/infinite limits and explicit bailout state. Full snapshots are explicit; per-command word changes are incremental. Recorder deltas signal invalidation when origin changes or finalization/reset changes earlier events.
+- Five new native session tests cover 150-word continuation, plus-zero refill/completion, custom time/infinite limits, recorder rebasing/finalization, and pre-mutation malformed config / oversized commits / bounded timer catchup. Browser integration of these new APIs still pending.

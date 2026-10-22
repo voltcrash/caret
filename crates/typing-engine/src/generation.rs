@@ -131,6 +131,15 @@ fn collapse_spaces(text: Text) -> Text {
     Text(result)
 }
 impl Generator {
+    pub fn config(&self) -> &GenerationConfig {
+        &self.config
+    }
+    pub fn custom_limit(&self) -> Option<crate::results::Limit> {
+        self.custom.as_ref().map(|custom| crate::results::Limit {
+            mode: custom.limit.mode.clone(),
+            value: custom.limit.value as f64,
+        })
+    }
     pub fn new(
         config: GenerationConfig,
         language: Language,
@@ -146,9 +155,7 @@ impl Generator {
         mut random: Random,
         assets: &mut Assets,
     ) -> Result<Self, String> {
-        if !["time", "words", "custom", "zen", "quote"].contains(&config.mode.as_str()) {
-            return Err("Invalid mode".into());
-        }
+        config.validate()?;
         if config.funbox.iter().any(|name| {
             ![
                 "polyglot",
@@ -743,6 +750,10 @@ impl Content {
             &mut self.assets,
         )?);
         Ok(())
+    }
+    pub fn start_session(&mut self, repeating: bool) -> Result<crate::Session, String> {
+        let generator = self.generator.take().ok_or("Content not prepared")?;
+        crate::Session::from_generator(generator, repeating)
     }
     pub fn generator(&mut self) -> Result<&mut Generator, String> {
         self.generator.as_mut().ok_or("Content not prepared".into())

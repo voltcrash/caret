@@ -78,6 +78,84 @@ impl Default for Config {
     }
 }
 
+impl Config {
+    pub fn validate(&self) -> Result<(), String> {
+        for (name, value, allowed) in [
+            (
+                "mode",
+                self.mode.as_str(),
+                &["time", "words", "quote", "custom", "zen"][..],
+            ),
+            (
+                "difficulty",
+                self.difficulty.as_str(),
+                &["normal", "expert", "master"][..],
+            ),
+            (
+                "stopOnError",
+                self.stop_on_error.as_str(),
+                &["off", "word", "letter"][..],
+            ),
+            (
+                "deleteOnError",
+                self.delete_on_error.as_str(),
+                &["off", "word", "letter", "word_hard", "letter_hard"][..],
+            ),
+            (
+                "confidenceMode",
+                self.confidence_mode.as_str(),
+                &["off", "on", "max"][..],
+            ),
+            (
+                "minBurst",
+                self.min_burst.as_str(),
+                &["off", "fixed", "flex"][..],
+            ),
+            ("minWpm", self.min_wpm.as_str(), &["off", "custom"][..]),
+            ("minAcc", self.min_acc.as_str(), &["off", "custom"][..]),
+        ] {
+            if !allowed.contains(&value) {
+                return Err(format!("Invalid {name}"));
+            }
+        }
+        if !self.time.is_finite() || self.time < 0.0 {
+            return Err("Invalid time limit".into());
+        }
+        if [
+            self.min_burst_custom_speed,
+            self.min_wpm_custom_speed,
+            self.min_acc_custom,
+        ]
+        .iter()
+        .any(|value| !value.is_finite() || *value < 0.0)
+            || self.min_acc_custom > 100.0
+        {
+            return Err("Invalid minimum threshold".into());
+        }
+        if self.language.is_empty()
+            || self.language.len() > 128
+            || !self
+                .language
+                .bytes()
+                .all(|c| c.is_ascii_alphanumeric() || c == b'_')
+        {
+            return Err("Invalid language".into());
+        }
+        if self.funbox.len() > 64
+            || self
+                .funbox
+                .iter()
+                .any(|name| name.is_empty() || name.len() > 64)
+        {
+            return Err("Invalid funbox list".into());
+        }
+        if self.quote_length.len() > 64 || self.custom_polyglot.len() > 64 {
+            return Err("Content selection exceeds bound".into());
+        }
+        Ok(())
+    }
+}
+
 #[derive(Clone, Debug, Deserialize, Serialize, TS)]
 #[serde(tag = "op", rename_all = "camelCase")]
 pub enum Command {
@@ -153,6 +231,21 @@ pub enum Command {
         #[serde(default)]
         defer_automatic: Option<bool>,
     },
+    Configure {
+        now: f64,
+        config: Box<Config>,
+    },
+    #[serde(rename_all = "camelCase")]
+    CustomLimit {
+        now: f64,
+        mode: String,
+        value: f64,
+    },
+    Bailout {
+        now: f64,
+        #[serde(default)]
+        date: f64,
+    },
     FlushAutomatic {
         now: f64,
         generation: u32,
@@ -187,6 +280,25 @@ pub struct Update {
     pub generation: u32,
     #[serde(rename = "automaticPending")]
     pub automatic_pending: bool,
+    pub words: Vec<WordChange>,
+    #[serde(rename = "logInvalidated")]
+    pub log_invalidated: bool,
+}
+#[derive(Clone, Serialize, TS)]
+#[serde(rename_all = "camelCase")]
+pub struct WordChange {
+    pub index: usize,
+    pub word: Text,
+    pub section_index: usize,
+}
+#[derive(Serialize, TS)]
+#[serde(rename_all = "camelCase")]
+pub struct Snapshot {
+    pub state: State,
+    pub words: Vec<Text>,
+    pub section_indexes: Vec<usize>,
+    pub all_words_generated: bool,
+    pub current_quote: Option<crate::results::QuoteRef>,
 }
 
 #[derive(Clone)]
@@ -218,16 +330,25 @@ pub struct Session {
     defer_automatic: bool,
     automatic: VecDeque<(f64, f64)>,
     generation: u32,
+    generator: Option<crate::generation::Generator>,
+    all_generated: bool,
+    custom_limit: Option<crate::results::Limit>,
+    quote: Option<crate::results::QuoteRef>,
+    sections: Vec<usize>,
+    word_changes: Vec<WordChange>,
+    bailed_out: bool,
 }
 
 impl Session {
     pub fn new(config: Config, words: Vec<Text>) -> Result<Self, String> {
-        if !["time", "words", "quote", "custom", "zen"].contains(&config.mode.as_str()) {
-            return Err("Invalid mode".into());
+        config.validate()?;
+        if words.len() > 1_000_000 || words.iter().any(|word| word.len() > 1_000_000) {
+            return Err("Content exceeds session bound".into());
         }
-        if !config.time.is_finite() || config.time < 0.0 {
-            return Err("Invalid time limit".into());
-        }
+        let all_generated = config.mode != "time"
+            && config.mode != "zen"
+            && !(config.mode == "words" && config.words == 0);
+        let sections = (1..=words.len()).collect();
         Ok(Self {
             pace: crate::pace::Pace::default(),
             weak_spot: crate::weak_spot::WeakSpot::default(),
@@ -250,9 +371,102 @@ impl Session {
             defer_automatic: false,
             automatic: VecDeque::new(),
             generation: 0,
+            generator: None,
+            all_generated,
+            custom_limit: None,
+            quote: None,
+            sections,
+            word_changes: vec![],
+            bailed_out: false,
         })
     }
 
+    pub fn from_generator(
+        mut generator: crate::generation::Generator,
+        repeating: bool,
+    ) -> Result<Self, String> {
+        let generated = generator.generate(repeating)?;
+        let mut session = Self::new(generator.config().clone(), generated.words)?;
+        session.sections = generated.section_indexes;
+        session.custom_limit = generator.custom_limit();
+        session.quote = generator
+            .current_quote
+            .as_ref()
+            .map(|quote| crate::results::QuoteRef {
+                id: quote.id,
+                group: quote.group,
+            });
+        session.all_generated = generator.all_generated();
+        session.generator = Some(generator);
+        session.strip_final_separator();
+        session.word_changes.clear();
+        Ok(session)
+    }
+    pub fn snapshot(&self) -> Snapshot {
+        Snapshot {
+            state: self.state(),
+            words: self.words.clone(),
+            section_indexes: self.sections.clone(),
+            all_words_generated: self.all_generated,
+            current_quote: self.quote.clone(),
+        }
+    }
+    fn strip_final_separator(&mut self) {
+        if self.all_generated
+            && let Some(word) = self.words.last_mut()
+            && word.len() > 1
+            && matches!(word.0.last(), Some(32 | 10))
+        {
+            word.0.pop();
+            let index = self.words.len() - 1;
+            self.word_changes.push(WordChange {
+                index,
+                word: self.words[index].clone(),
+                section_index: self.sections[index],
+            });
+        }
+    }
+    fn refill(&mut self) -> Result<(), String> {
+        let bound = self
+            .config
+            .funbox
+            .iter()
+            .find_map(|name| match name.as_str() {
+                "plus_zero" => Some(0),
+                "plus_one" => Some(1),
+                "plus_two" => Some(2),
+                "plus_three" => Some(3),
+                _ => None,
+            })
+            .unwrap_or(100);
+        if self.all_generated || self.words.len().saturating_sub(self.index + 1) > bound {
+            return Ok(());
+        }
+        let strip = |word: &Text| {
+            let mut word = word.clone();
+            if matches!(word.0.last(), Some(32 | 10)) {
+                word.0.pop();
+            }
+            word
+        };
+        let previous = self.words.last().map(strip);
+        let previous2 = self.words.get(self.words.len().wrapping_sub(2)).map(strip);
+        let Some(generator) = &mut self.generator else {
+            return Ok(());
+        };
+        let index = self.words.len();
+        let next = generator.next(index, bound, previous.as_ref(), previous2.as_ref())?;
+        self.words.push(next.word.clone());
+        self.sections.push(next.section_index);
+        self.word_changes.push(WordChange {
+            index,
+            word: next.word,
+            section_index: next.section_index,
+        });
+        self.all_generated = generator.all_generated();
+        self.strip_final_separator();
+        Ok(())
+    }
     pub fn state(&self) -> State {
         State {
             word_index: self.index,
@@ -316,12 +530,47 @@ impl Session {
             | Command::Observe { now, .. }
             | Command::Finalize { now }
             | Command::View { now, .. }
-            | Command::FlushAutomatic { now, .. } => *now,
+            | Command::FlushAutomatic { now, .. }
+            | Command::Configure { now, .. }
+            | Command::CustomLimit { now, .. }
+            | Command::Bailout { now, .. } => *now,
         };
         if !now.is_finite() || now.abs() > 9_007_199_254_740_991.0 {
             return Err("Invalid timestamp".into());
         }
+        match &command {
+            Command::Configure { config, .. } => config.validate()?,
+            Command::Insert { data, date, .. } => {
+                if data.len() > 65536 {
+                    return Err("Committed input exceeds bound".into());
+                }
+                if !date.is_finite() {
+                    return Err("Invalid wall-clock date".into());
+                }
+            }
+            Command::Start { date, .. }
+            | Command::Advance { date, .. }
+            | Command::Finish { date, .. }
+            | Command::End { date, .. }
+            | Command::Abandon { date, .. }
+            | Command::Bailout { date, .. }
+                if !date.is_finite() =>
+            {
+                return Err("Invalid wall-clock date".into());
+            }
+            _ => {}
+        }
+        if matches!(command, Command::Advance { .. })
+            && self
+                .start
+                .is_some_and(|start| (now - start) / 1000.0 - f64::from(self.ticks) > 1_000_000.0)
+        {
+            return Err("Timer catchup exceeds bounded work".into());
+        }
         let before = self.events.len();
+        let previous_origin = self.origin();
+        let invalidated = matches!(command, Command::Finalize { .. } | Command::Reset { .. });
+        self.word_changes.clear();
         match command {
             Command::Insert {
                 data,
@@ -371,6 +620,28 @@ impl Session {
                 }
                 self.delete(&kind, now, observed_input, sentinel_removed);
             }
+            Command::Configure { config, .. } => {
+                self.config = *config;
+            }
+            Command::CustomLimit { mode, value, .. } => {
+                if !["word", "time", "section"].contains(&mode.as_str())
+                    || !value.is_finite()
+                    || value < 0.0
+                {
+                    return Err("Invalid custom limit".into());
+                }
+                self.all_generated = mode != "time"
+                    && value > 0.0
+                    && self
+                        .generator
+                        .as_ref()
+                        .is_none_or(|generator| generator.all_generated());
+                self.custom_limit = Some(crate::results::Limit { mode, value });
+            }
+            Command::Bailout { now, date } => {
+                self.bailed_out = true;
+                self.end(now, date, None);
+            }
             Command::Start { now, date } => self.start(now, date),
             Command::Finish { now, date, reason } => self.end(now, date, reason),
             Command::End { now, date } | Command::Abandon { now, date } => {
@@ -379,6 +650,7 @@ impl Session {
             Command::Advance { now, date } => self.advance(now, date),
             Command::Reset { .. } => {
                 self.index = 0;
+                self.bailed_out = false;
                 self.active = false;
                 self.ended = false;
                 self.reason = None;
@@ -435,6 +707,8 @@ impl Session {
             events,
             generation: self.generation,
             automatic_pending: !self.automatic.is_empty(),
+            words: self.word_changes.clone(),
+            log_invalidated: invalidated || previous_origin != origin,
         })
     }
 
@@ -571,13 +845,21 @@ impl Session {
             .find(|event| event.kind == "input")
             .map(|event| event.now);
         self.record("input", now, data);
-        self.weak_spot.update(
+        let learner = self
+            .generator
+            .as_mut()
+            .map_or(&mut self.weak_spot, |generator| &mut generator.weak_spot);
+        learner.update(
             &Text(vec![unit]),
             correct,
             previous.map(|previous| round2(round2(now) - previous)),
         );
         if !correct && !stopped && self.config.delete_on_error != "off" {
             self.delete_error(now);
+        }
+        if advance && let Err(_) = self.refill() {
+            self.end(now, date, Some("word generation error".into()));
+            return;
         }
         if self.completion_checkpoint
             && self.config.mode != "zen"
@@ -590,7 +872,11 @@ impl Session {
             self.end(now, date, Some("difficulty".into()));
             return;
         }
-        if self.completion_checkpoint && advance && self.config.min_burst != "off" {
+        if self.completion_checkpoint
+            && advance
+            && (self.index + 1 < self.words.len() || self.config.mode == "zen")
+            && self.config.min_burst != "off"
+        {
             let log: crate::stats::Log =
                 serde_json::from_value(self.log()).expect("Engine log is valid");
             let burst = crate::stats::word_burst(&log, self.index, now - self.start.unwrap_or(now));
@@ -614,9 +900,7 @@ impl Session {
                 return;
             }
         }
-        let finite = self.config.mode != "time"
-            && self.config.mode != "zen"
-            && !(self.config.mode == "words" && self.config.words == 0);
+        let finite = self.all_generated;
         let quick = self.config.quick_end
             && target.len() == input.len() + 1
             && self.config.stop_on_error == "off"
@@ -823,10 +1107,17 @@ impl Session {
                     self.end(now, date, Some(reason.into()));
                 }
             }
-            if self.config.mode == "time"
-                && self.config.time > 0.0
-                && f64::from(self.ticks) >= self.config.time
-            {
+            let limit = if self.config.mode == "time" {
+                Some(self.config.time)
+            } else if self.config.mode == "custom" {
+                self.custom_limit
+                    .as_ref()
+                    .filter(|limit| limit.mode == "time")
+                    .map(|limit| limit.value)
+            } else {
+                None
+            };
+            if limit.is_some_and(|limit| limit > 0.0 && f64::from(self.ticks) >= limit) {
                 self.end(now, date, None);
             }
         }
@@ -1044,11 +1335,19 @@ impl Session {
         let mode2 = match self.config.mode.as_str() {
             "words" => self.config.words.to_string(),
             "time" => self.config.time.to_string(),
-            "quote" => "-1".into(),
+            "quote" => self
+                .quote
+                .as_ref()
+                .map_or_else(|| "-1".into(), |quote| quote.id.to_string()),
             other => other.into(),
         };
         let korean=self.words.iter().flat_map(|word| &word.0).any(|c| matches!(*c,0xac00..=0xd7af | 0x1100..=0x11ff | 0x3130..=0x318f | 0xa960..=0xa97f | 0xd7b0..=0xd7ff));
-        json!({"version":EVENT_LOG_VERSION,"events":events.iter().map(|event|Self::event(event,self.origin())).collect::<Vec<_>>(),
-            "context":{"targetWords":self.words,"mode":self.config.mode,"mode2":mode2,"koreanStatus":korean,"bailedOut":false,"isFunboxWithNospacePropertyActive":self.nospace()}})
+        let mut log = json!({"version":EVENT_LOG_VERSION,"events":events.iter().map(|event|Self::event(event,self.origin())).collect::<Vec<_>>(),
+            "context":{"targetWords":self.words,"mode":self.config.mode,"mode2":mode2,"koreanStatus":korean,"bailedOut":self.bailed_out,"isFunboxWithNospacePropertyActive":self.nospace()}});
+        if let Some(limit) = &self.custom_limit {
+            log["context"]["customTextLimitMode"] = json!(limit.mode);
+            log["context"]["customTextLimitValue"] = json!(limit.value);
+        }
+        log
     }
 }
