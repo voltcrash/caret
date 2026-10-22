@@ -1,0 +1,494 @@
+{
+  "browser": "153.0.8010.12",
+  "fixture": "built Start Worker; desktop Chromium; zen; 20 input/restart samples; double-rAF paint; 2000 keyboard characters; forced GC",
+  "inputToPaint": [
+    138.20000000298023, 80.20000000298023, 84, 88.1000000089407,
+    68.1000000089407, 87.90000000596046, 80.5, 77.8999999910593,
+    60.599999994039536, 73.59999999403954, 107.5, 78.1000000089407,
+    59.1000000089407, 92, 76.90000000596046, 72.3999999910593, 57.5,
+    87.69999998807907, 76.3999999910593, 89.20000000298023
+  ],
+  "restart": [
+    388.47247100000004, 423.63136399999985, 433.59411, 426.2511919999997,
+    449.42194900000004, 438.79164199999923, 409.1686869999994,
+    415.29368799999975, 388.8231259999993, 448.3593600000004, 452.6419649999998,
+    408.8987789999992, 401.96822299999985, 441.1246890000002, 436.5003859999997,
+    401.4671980000003, 451.58758399999897, 385.44698999999855,
+    423.49853500000063, 394.7576749999989
+  ],
+  "initialHeap": 8628096,
+  "activeHeap": 13696236,
+  "resetHeap": 13135484,
+  "assets": [
+    {
+      "name": "/assets/index-Bih2PTRA.js",
+      "bytes": 120018,
+      "transfer": 48207
+    },
+    {
+      "name": "/assets/web-DoCSsFQb.js",
+      "bytes": 32378,
+      "transfer": 12617
+    },
+    {
+      "name": "/assets/link-BBh-inDq.js",
+      "bytes": 62968,
+      "transfer": 22646
+    },
+    {
+      "name": "/assets/redirect-D6mi4iKQ.js",
+      "bytes": 848,
+      "transfer": 784
+    },
+    {
+      "name": "/assets/matchContext-CJdPZbyb.js",
+      "bytes": 106,
+      "transfer": 410
+    },
+    {
+      "name": "/assets/not-found-i5RsCZif.js",
+      "bytes": 118,
+      "transfer": 411
+    },
+    {
+      "name": "/assets/ClientOnly-BFOvw4I-.js",
+      "bytes": 315,
+      "transfer": 528
+    },
+    {
+      "name": "/assets/application-BO7jqupq.js",
+      "bytes": 1199,
+      "transfer": 898
+    },
+    {
+      "name": "/assets/useRouter-Ca7pFXE8.js",
+      "bytes": 103,
+      "transfer": 414
+    },
+    {
+      "name": "/assets/createServerFn-DlBie0Bv.js",
+      "bytes": 36231,
+      "transfer": 11909
+    },
+    {
+      "name": "/assets/store-CAx0GJVG.js",
+      "bytes": 7034,
+      "transfer": 2818
+    },
+    {
+      "name": "/assets/build-BK2Ekhsu.js",
+      "bytes": 15058,
+      "transfer": 5010
+    },
+    {
+      "name": "/assets/queryObserver-D957XF2z.js",
+      "bytes": 20747,
+      "transfer": 7040
+    },
+    {
+      "name": "/assets/preload-helper-BZ1Pz5am.js",
+      "bytes": 1218,
+      "transfer": 988
+    },
+    {
+      "name": "/assets/schemas-BCsEXk5z.js",
+      "bytes": 95477,
+      "transfer": 26790
+    },
+    {
+      "name": "/assets/dist-Dz3b91zX.js",
+      "bytes": 2701,
+      "transfer": 1352
+    },
+    {
+      "name": "/assets/cn-DLyFV4qv.js",
+      "bytes": 27805,
+      "transfer": 9057
+    },
+    {
+      "name": "/assets/skeleton-CWhZcH5J.js",
+      "bytes": 2536,
+      "transfer": 1185
+    },
+    {
+      "name": "/assets/skeleton-CtcKlTjt.js",
+      "bytes": 417,
+      "transfer": 608
+    },
+    {
+      "name": "/assets/skeleton-text-CMtoHw-F.js",
+      "bytes": 390,
+      "transfer": 591
+    },
+    {
+      "name": "/assets/shared-DsmhGVsE.js",
+      "bytes": 8590,
+      "transfer": 3686
+    },
+    {
+      "name": "/assets/skeleton-DZbZqgc0.js",
+      "bytes": 1235,
+      "transfer": 910
+    },
+    {
+      "name": "/assets/zod-messages-DFcmgwyp.js",
+      "bytes": 2774,
+      "transfer": 1398
+    },
+    {
+      "name": "/assets/_app-BOKTVhON.js",
+      "bytes": 158,
+      "transfer": 451
+    },
+    {
+      "name": "/assets/_app.index-DywpqF7e.js",
+      "bytes": 2637,
+      "transfer": 1607
+    },
+    {
+      "name": "/assets/browser-runtime.client-DqEaJ8Tp.js",
+      "bytes": 13557,
+      "transfer": 6118
+    },
+    {
+      "name": "/assets/personal-bests-DoKtXru2.js",
+      "bytes": 83199,
+      "transfer": 26749
+    },
+    {
+      "name": "/assets/default-config-Ch20GKSO.js",
+      "bytes": 2053,
+      "transfer": 1372
+    },
+    {
+      "name": "/assets/test-activity-calendar-lFGxz15v.js",
+      "bytes": 5837,
+      "transfer": 2611
+    },
+    {
+      "name": "/assets/users-DZf1VidT.js",
+      "bytes": 19012,
+      "transfer": 9304
+    },
+    {
+      "name": "/assets/_virtual_env-config-D6szLuD5.js",
+      "bytes": 196,
+      "transfer": 482
+    },
+    {
+      "name": "/assets/useRef-9UY2IK1A.js",
+      "bytes": 98,
+      "transfer": 415
+    },
+    {
+      "name": "/assets/app-BQPR1dmp.js",
+      "bytes": 53139,
+      "transfer": 16377
+    },
+    {
+      "name": "/assets/createEvent-DUwnlqx6.js",
+      "bytes": 313,
+      "transfer": 528
+    },
+    {
+      "name": "/assets/effects-7SE5KZhe.js",
+      "bytes": 38433,
+      "transfer": 15617
+    },
+    {
+      "name": "/assets/useLocalStorage-ICcLxfs0.js",
+      "bytes": 3971,
+      "transfer": 2259
+    },
+    {
+      "name": "/assets/parse-C_h2zvC4.js",
+      "bytes": 5672,
+      "transfer": 2774
+    },
+    {
+      "name": "/assets/test-C11xF37d.js",
+      "bytes": 13652,
+      "transfer": 5833
+    },
+    {
+      "name": "/assets/rolldown-runtime-Dd_uD5pT.js",
+      "bytes": 1106,
+      "transfer": 927
+    },
+    {
+      "name": "/assets/env-hNDnyPZd.js",
+      "bytes": 100,
+      "transfer": 412
+    },
+    {
+      "name": "/assets/auth-client-Do4XO1Ss.js",
+      "bytes": 1099,
+      "transfer": 907
+    },
+    {
+      "name": "/assets/connection-BMlZb37h.js",
+      "bytes": 903,
+      "transfer": 837
+    },
+    {
+      "name": "/assets/popup.client-Cozt_Hi9.js",
+      "bytes": 31904,
+      "transfer": 12210
+    },
+    {
+      "name": "/assets/auth-EgLHI1c9.js",
+      "bytes": 7905,
+      "transfer": 3646
+    },
+    {
+      "name": "/assets/date-and-time-Bxt-WH9L.js",
+      "bytes": 964,
+      "transfer": 795
+    },
+    {
+      "name": "/assets/settled.client-BoF65wsR.js",
+      "bytes": 530,
+      "transfer": 644
+    },
+    {
+      "name": "/assets/query-cache.client-Bht1In51.js",
+      "bytes": 3064,
+      "transfer": 1726
+    },
+    {
+      "name": "/assets/build-hTByFGMt.js",
+      "bytes": 3318,
+      "transfer": 1634
+    },
+    {
+      "name": "/assets/settled.client-H6Sptnm2.js",
+      "bytes": 349,
+      "transfer": 558
+    },
+    {
+      "name": "/assets/update-safety-C66gpHLz.js",
+      "bytes": 140,
+      "transfer": 443
+    },
+    {
+      "name": "/assets/connection-DQSF9opu.js",
+      "bytes": 6679,
+      "transfer": 3042
+    },
+    {
+      "name": "/assets/cookies-DAiHfj0P.js",
+      "bytes": 691,
+      "transfer": 724
+    },
+    {
+      "name": "/assets/glarses-mode-SixLinXc.js",
+      "bytes": 285,
+      "transfer": 524
+    },
+    {
+      "name": "/assets/fonts.client-CxGm7qeF.js",
+      "bytes": 840,
+      "transfer": 815
+    },
+    {
+      "name": "/assets/chrome.client-BT71_e9g.js",
+      "bytes": 41572,
+      "transfer": 14441
+    },
+    {
+      "name": "/assets/mode-BgIo3a2E.js",
+      "bytes": 326,
+      "transfer": 514
+    },
+    {
+      "name": "/assets/list-Fui5YVEc.js",
+      "bytes": 72086,
+      "transfer": 25222
+    },
+    {
+      "name": "/assets/Kbd-DPDwH4vf.js",
+      "bytes": 1953,
+      "transfer": 1436
+    },
+    {
+      "name": "/assets/overlay-visibility-CHOMN59j.js",
+      "bytes": 181,
+      "transfer": 461
+    },
+    {
+      "name": "/assets/UpdateNameModal-DCeulr76.js",
+      "bytes": 6845,
+      "transfer": 3187
+    },
+    {
+      "name": "/assets/breakpoints-Cc6HYHps.js",
+      "bytes": 111,
+      "transfer": 409
+    },
+    {
+      "name": "/assets/simple-modal-QQBzpojW.js",
+      "bytes": 255,
+      "transfer": 501
+    },
+    {
+      "name": "/assets/utils-OCzDnQsQ.js",
+      "bytes": 638,
+      "transfer": 665
+    },
+    {
+      "name": "/assets/modifier-keys-CBdW-khj.js",
+      "bytes": 165,
+      "transfer": 437
+    },
+    {
+      "name": "/assets/navigate-H3LNuvCa.js",
+      "bytes": 268,
+      "transfer": 469
+    },
+    {
+      "name": "/assets/anime-CmdYVwG7.js",
+      "bytes": 5568,
+      "transfer": 2629
+    },
+    {
+      "name": "/assets/levels-DlYwc516.js",
+      "bytes": 414,
+      "transfer": 593
+    },
+    {
+      "name": "/assets/page.client-DkiCL-AL.js",
+      "bytes": 77067,
+      "transfer": 23940
+    },
+    {
+      "name": "/assets/modifiers-Cavid0O1.js",
+      "bytes": 1872,
+      "transfer": 1176
+    },
+    {
+      "name": "/assets/practise-words-DX1fN1hH.js",
+      "bytes": 2060,
+      "transfer": 1337
+    },
+    {
+      "name": "/assets/quote-rate-D0u-bc68.js",
+      "bytes": 42597,
+      "transfer": 14482
+    },
+    {
+      "name": "/assets/test-logic-DBD-TUd8.js",
+      "bytes": 32336,
+      "transfer": 11982
+    },
+    {
+      "name": "/assets/quotes-controller-NMBMwU9J.js",
+      "bytes": 2830,
+      "transfer": 1500
+    },
+    {
+      "name": "/assets/format-BdXx0Xan.js",
+      "bytes": 187,
+      "transfer": 460
+    },
+    {
+      "name": "/assets/open-8_Twa7Cq.js",
+      "bytes": 253,
+      "transfer": 492
+    },
+    {
+      "name": "/assets/challenge-controller-BsG6c5c5.js",
+      "bytes": 3970,
+      "transfer": 1879
+    },
+    {
+      "name": "/assets/lz-ts-BjRkF-Z2.js",
+      "bytes": 3789,
+      "transfer": 1602
+    },
+    {
+      "name": "/assets/Result-KOjBV5UZ.js",
+      "bytes": 36010,
+      "transfer": 12527
+    },
+    {
+      "name": "/assets/tags-x7qZ75SS.js",
+      "bytes": 6056,
+      "transfer": 2476
+    },
+    {
+      "name": "/assets/reader-CD0iXdWl.js",
+      "bytes": 336480,
+      "transfer": 92657
+    },
+    {
+      "name": "/assets/UserFlags-D0zcp66J.js",
+      "bytes": 994,
+      "transfer": 788
+    },
+    {
+      "name": "/assets/typing-speed-units-C-jdytt1.js",
+      "bytes": 37,
+      "transfer": 357
+    },
+    {
+      "name": "/assets/edit-result-tags-aFuXCmB7.js",
+      "bytes": 294,
+      "transfer": 531
+    },
+    {
+      "name": "/assets/result-Bi9gnFH6.js",
+      "bytes": 19238,
+      "transfer": 7675
+    },
+    {
+      "name": "/assets/today-tracker-Bgf7zsww.js",
+      "bytes": 2349,
+      "transfer": 1484
+    },
+    {
+      "name": "/assets/test-screenshot-BLnrMuiq.js",
+      "bytes": 4898,
+      "transfer": 2604
+    },
+    {
+      "name": "/assets/quote-report-CqoAU8jd.js",
+      "bytes": 163,
+      "transfer": 453
+    },
+    {
+      "name": "/assets/completion.client-py8Tupf4.js",
+      "bytes": 6348,
+      "transfer": 3293
+    },
+    {
+      "name": "/assets/result-saving-BzV5NqD0.js",
+      "bytes": 4902,
+      "transfer": 2525
+    },
+    {
+      "name": "/assets/ResultChart-CoVlHRBs.js",
+      "bytes": 6050,
+      "transfer": 2766
+    },
+    {
+      "name": "/assets/ChartJs-CYa-nlCR.js",
+      "bytes": 74721,
+      "transfer": 22585
+    },
+    {
+      "name": "/assets/endOfWeek-yDY4_qaX.js",
+      "bytes": 1860,
+      "transfer": 1085
+    },
+    {
+      "name": "/assets/compareAsc-BJhcP0hn.js",
+      "bytes": 105,
+      "transfer": 422
+    },
+    {
+      "name": "/assets/chart-Bx03QiIs.js",
+      "bytes": 177979,
+      "transfer": 61565
+    }
+  ]
+}

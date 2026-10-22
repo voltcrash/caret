@@ -12,14 +12,14 @@ empty commits to inflate count. Do not publish production or releases implicitly
 
 ## Current position
 
-Stage 1, Phase 1.1 in progress. Read root AGENTS.md and the complete migration
+Stage 1, Phase 1.1 complete; Phase 1.2 in progress. Read root AGENTS.md and the complete migration
 plan before edits. Installed workspace dependencies with frozen lockfile.
-No acceptance gate passed yet. Existing website engine remains authoritative.
+Phase 1.1 gate passed: inventory, feature map, reproducible browser/performance baseline. Existing website engine remains authoritative.
 
 | Phase | Status | Evidence / remaining gate |
 | --- | --- | --- |
-| 1.1 Inventory / baselines | Active | Core baseline: 28 files, 349 tests pass. Browser/performance baseline pending. |
-| 1.2 Contracts / fixtures | Pending | Requires inventory and recorded baseline. |
+| 1.1 Inventory / baselines | Complete | See inventory.md, features.md, baseline.md and raw measurements. |
+| 1.2 Contracts / fixtures | Active | Freeze neutral command contract and differential harness. |
 | 1.3 Native / browser proof | Pending | Requires frozen contracts. |
 | 1.4 Input / lifecycle / timing | Pending | Requires production browser proof. |
 | 1.5 Generation / configuration | Pending | Requires contract and proof. |
