@@ -1,0 +1,34 @@
+{
+  "name": "delete-error-letter_hard",
+  "config": {
+    "mode": "words",
+    "words": 2,
+    "deleteOnError": "letter_hard"
+  },
+  "words": [
+    [111, 110, 101, 32],
+    [116, 119, 111]
+  ],
+  "commands": [
+    {
+      "op": "insert",
+      "data": [111, 120],
+      "now": 0
+    },
+    {
+      "op": "insert",
+      "data": [111, 110, 101, 32],
+      "now": 100
+    },
+    {
+      "op": "insert",
+      "data": [120],
+      "now": 200
+    },
+    {
+      "op": "insert",
+      "data": [116, 119, 111],
+      "now": 500
+    }
+  ]
+}

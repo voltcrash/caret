@@ -1,0 +1,25 @@
+{
+  "name": "ime-typography",
+  "config": {
+    "mode": "words",
+    "words": 2
+  },
+  "words": [
+    [97, 32],
+    [8220, 98, 8221, 8212]
+  ],
+  "commands": [
+    {
+      "op": "insert",
+      "data": [97, 12288],
+      "now": 0,
+      "isCompositionEnding": true
+    },
+    {
+      "op": "insert",
+      "data": [34, 98, 34, 45],
+      "now": 100,
+      "isCompositionEnding": true
+    }
+  ]
+}

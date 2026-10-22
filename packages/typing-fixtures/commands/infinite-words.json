@@ -1,0 +1,26 @@
+{
+  "name": "infinite-words",
+  "config": {
+    "mode": "words",
+    "words": 0
+  },
+  "words": [
+    [111, 110, 101, 32],
+    [116, 119, 111, 32]
+  ],
+  "commands": [
+    {
+      "op": "insert",
+      "data": [111, 110, 101, 32, 116, 119, 111, 32],
+      "now": 0
+    },
+    {
+      "op": "advance",
+      "now": 5000
+    },
+    {
+      "op": "abandon",
+      "now": 6000
+    }
+  ]
+}

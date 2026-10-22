@@ -12,15 +12,15 @@ empty commits to inflate count. Do not publish production or releases implicitly
 
 ## Current position
 
-Stage 1, Phase 1.1 complete; Phase 1.2 in progress. Read root AGENTS.md and the complete migration
+Stage 1, Phases 1.1–1.2 complete; Phase 1.3 in progress. Read root AGENTS.md and the complete migration
 plan before edits. Installed workspace dependencies with frozen lockfile.
-Phase 1.1 gate passed: inventory, feature map, reproducible browser/performance baseline. Existing website engine remains authoritative.
+Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen oracle and mismatch detection. Existing website engine remains authoritative.
 
 | Phase | Status | Evidence / remaining gate |
 | --- | --- | --- |
 | 1.1 Inventory / baselines | Complete | See inventory.md, features.md, baseline.md and raw measurements. |
-| 1.2 Contracts / fixtures | Active | Freeze neutral command contract and differential harness. |
-| 1.3 Native / browser proof | Pending | Requires frozen contracts. |
+| 1.2 Contracts / fixtures | Complete | 13 command traces, 15 oracle/integrity tests; contract and classified gaps. |
+| 1.3 Native / browser proof | Active | Implement finite slice; native/browser/Cloudflare parity and measured budgets pending. |
 | 1.4 Input / lifecycle / timing | Pending | Requires production browser proof. |
 | 1.5 Generation / configuration | Pending | Requires contract and proof. |
 | 1.6 Events / results / replay | Pending | Requires input and generation. |
@@ -34,6 +34,10 @@ Phase 1.1 gate passed: inventory, feature map, reproducible browser/performance 
 - `vp test run --project=@oxytype/typing-core`: pass; 349 tests, 28 files.
 - Environment: Linux, Node 24.21.0; installed Rust 1.99.1; GitHub CLI authenticated.
   Toolchain/binding pins not yet selected. Browser/OS support unverified.
+
+- Phase 1.2: `vp test run packages/typing-core/__test__/rust-oracle.spec.ts`: 15 pass.
+- Phase 1.2 type-aware lint: pass. Capture created new traces once, refuses overwrite.
+- `vp exec rustup target add wasm32-unknown-unknown`: pass.
 
 ## Decisions
 

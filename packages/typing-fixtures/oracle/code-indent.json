@@ -1,0 +1,478 @@
+{
+  "name": "code-indent",
+  "frames": [
+    {
+      "state": {
+        "wordIndex": 1,
+        "inputValue": [9, 9],
+        "active": true,
+        "ended": false
+      },
+      "log": {
+        "version": 1,
+        "events": [
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [111],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 0,
+              "inputValue": [111]
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [110],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 1,
+              "inputValue": [111, 110]
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [101],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 2,
+              "inputValue": [111, 110, 101]
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [10],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 3,
+              "inputValue": [111, 110, 101, 10],
+              "commitsWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [9],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 0,
+              "inputValue": [9],
+              "lastWord": true,
+              "automatic": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [9],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 1,
+              "inputValue": [9, 9],
+              "lastWord": true,
+              "automatic": true
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [
+            [111, 110, 101, 10],
+            [9, 9, 116, 119, 111]
+          ],
+          "mode": "words",
+          "mode2": "2",
+          "koreanStatus": false,
+          "bailedOut": false,
+          "isFunboxWithNospacePropertyActive": false
+        }
+      }
+    },
+    {
+      "state": {
+        "wordIndex": 0,
+        "inputValue": [111, 110, 101],
+        "active": true,
+        "ended": false
+      },
+      "log": {
+        "version": 1,
+        "events": [
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [111],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 0,
+              "inputValue": [111]
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [110],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 1,
+              "inputValue": [111, 110]
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [101],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 2,
+              "inputValue": [111, 110, 101]
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [10],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 3,
+              "inputValue": [111, 110, 101, 10],
+              "commitsWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [9],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 0,
+              "inputValue": [9],
+              "lastWord": true,
+              "automatic": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [9],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 1,
+              "inputValue": [9, 9],
+              "lastWord": true,
+              "automatic": true
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "inputType": "deleteWordBackward",
+              "wordIndex": 1,
+              "charIndex": 2,
+              "inputValue": []
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "inputType": "deleteContentBackward",
+              "wordIndex": 0,
+              "charIndex": 3,
+              "inputValue": [111, 110, 101]
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [
+            [111, 110, 101, 10],
+            [9, 9, 116, 119, 111]
+          ],
+          "mode": "words",
+          "mode2": "2",
+          "koreanStatus": false,
+          "bailedOut": false,
+          "isFunboxWithNospacePropertyActive": false
+        }
+      }
+    },
+    {
+      "state": {
+        "wordIndex": 1,
+        "inputValue": [9, 9, 111, 110, 101, 10],
+        "active": false,
+        "ended": true
+      },
+      "log": {
+        "version": 1,
+        "events": [
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [111],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 0,
+              "inputValue": [111]
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [110],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 1,
+              "inputValue": [111, 110]
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [101],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 2,
+              "inputValue": [111, 110, 101]
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [10],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 3,
+              "inputValue": [111, 110, 101, 10],
+              "commitsWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [9],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 0,
+              "inputValue": [9],
+              "lastWord": true,
+              "automatic": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [9],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 1,
+              "inputValue": [9, 9],
+              "lastWord": true,
+              "automatic": true
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "inputType": "deleteWordBackward",
+              "wordIndex": 1,
+              "charIndex": 2,
+              "inputValue": []
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "inputType": "deleteContentBackward",
+              "wordIndex": 0,
+              "charIndex": 3,
+              "inputValue": [111, 110, 101]
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "inputType": "insertText",
+              "data": [10],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 3,
+              "inputValue": [111, 110, 101, 10],
+              "commitsWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "inputType": "insertText",
+              "data": [9],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 0,
+              "inputValue": [9],
+              "lastWord": true,
+              "automatic": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "inputType": "insertText",
+              "data": [9],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 1,
+              "inputValue": [9, 9],
+              "lastWord": true,
+              "automatic": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "inputType": "insertText",
+              "data": [111],
+              "correct": false,
+              "wordIndex": 1,
+              "charIndex": 2,
+              "inputValue": [9, 9, 111],
+              "lastWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "inputType": "insertText",
+              "data": [110],
+              "correct": false,
+              "wordIndex": 1,
+              "charIndex": 3,
+              "inputValue": [9, 9, 111, 110],
+              "lastWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "inputType": "insertText",
+              "data": [101],
+              "correct": false,
+              "wordIndex": 1,
+              "charIndex": 4,
+              "inputValue": [9, 9, 111, 110, 101],
+              "lastWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "inputType": "insertText",
+              "data": [10],
+              "correct": false,
+              "wordIndex": 1,
+              "charIndex": 5,
+              "inputValue": [9, 9, 111, 110, 101, 10],
+              "commitsWord": true,
+              "lastWord": true
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 200,
+            "data": {
+              "event": "end",
+              "timer": 0,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [
+            [111, 110, 101, 10],
+            [9, 9, 116, 119, 111]
+          ],
+          "mode": "words",
+          "mode2": "2",
+          "koreanStatus": false,
+          "bailedOut": false,
+          "isFunboxWithNospacePropertyActive": false
+        }
+      }
+    }
+  ]
+}

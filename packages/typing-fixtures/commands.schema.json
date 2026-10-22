@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "oxytype:engine-command-fixture:1",
+  "title": "Oxytype deterministic command fixture v1",
+  "type": "object",
+  "required": ["name", "config", "words", "commands"],
+  "additionalProperties": false,
+  "$defs": {
+    "text": {
+      "type": "array",
+      "items": { "type": "integer", "minimum": 0, "maximum": 65535 }
+    }
+  },
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "config": {
+      "type": "object",
+      "description": "Legacy Config projection; omitted fields use frozen oracle defaults. Rust bindings generate normalized config separately."
+    },
+    "words": { "type": "array", "items": { "$ref": "#/$defs/text" } },
+    "commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["op", "now"],
+        "additionalProperties": false,
+        "properties": {
+          "op": {
+            "enum": [
+              "insert",
+              "delete",
+              "start",
+              "advance",
+              "finish",
+              "end",
+              "abandon",
+              "reset",
+              "observe"
+            ]
+          },
+          "now": { "type": "number" },
+          "date": { "type": "number" },
+          "data": { "$ref": "#/$defs/text" },
+          "kind": { "enum": ["deleteContentBackward", "deleteWordBackward"] },
+          "reason": { "type": "string" },
+          "correctShiftUsed": { "type": ["boolean", "null"] },
+          "automatic": { "const": true },
+          "isCompositionEnding": { "const": true },
+          "eventType": { "enum": ["keydown", "keyup", "composition", "timer"] },
+          "eventData": { "type": "object" }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "op": { "const": "insert" } } },
+            "then": { "required": ["data"] }
+          },
+          {
+            "if": { "properties": { "op": { "const": "observe" } } },
+            "then": { "required": ["eventType", "eventData"] }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,190 @@
+{
+  "name": "ime-typography",
+  "frames": [
+    {
+      "state": {
+        "wordIndex": 1,
+        "inputValue": [],
+        "active": true,
+        "ended": false
+      },
+      "log": {
+        "version": 1,
+        "events": [
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [97],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 0,
+              "inputValue": [97],
+              "isCompositionEnding": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [32],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 1,
+              "inputValue": [97, 32],
+              "commitsWord": true,
+              "isCompositionEnding": true
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [
+            [97, 32],
+            [8220, 98, 8221, 8212]
+          ],
+          "mode": "words",
+          "mode2": "2",
+          "koreanStatus": false,
+          "bailedOut": false,
+          "isFunboxWithNospacePropertyActive": false
+        }
+      }
+    },
+    {
+      "state": {
+        "wordIndex": 1,
+        "inputValue": [8220, 98, 8221, 8212],
+        "active": false,
+        "ended": true
+      },
+      "log": {
+        "version": 1,
+        "events": [
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [97],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 0,
+              "inputValue": [97],
+              "isCompositionEnding": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [32],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 1,
+              "inputValue": [97, 32],
+              "commitsWord": true,
+              "isCompositionEnding": true
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "inputType": "insertText",
+              "data": [8220],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 0,
+              "inputValue": [8220],
+              "lastWord": true,
+              "isCompositionEnding": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "inputType": "insertText",
+              "data": [98],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 1,
+              "inputValue": [8220, 98],
+              "lastWord": true,
+              "isCompositionEnding": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "inputType": "insertText",
+              "data": [8221],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 2,
+              "inputValue": [8220, 98, 8221],
+              "lastWord": true,
+              "isCompositionEnding": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "inputType": "insertText",
+              "data": [8212],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 3,
+              "inputValue": [8220, 98, 8221, 8212],
+              "lastWord": true,
+              "isCompositionEnding": true
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 100,
+            "data": {
+              "event": "end",
+              "timer": 0,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [
+            [97, 32],
+            [8220, 98, 8221, 8212]
+          ],
+          "mode": "words",
+          "mode2": "2",
+          "koreanStatus": false,
+          "bailedOut": false,
+          "isFunboxWithNospacePropertyActive": false
+        }
+      }
+    }
+  ]
+}

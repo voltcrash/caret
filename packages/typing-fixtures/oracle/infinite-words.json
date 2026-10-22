@@ -1,0 +1,509 @@
+{
+  "name": "infinite-words",
+  "frames": [
+    {
+      "state": {
+        "wordIndex": 1,
+        "inputValue": [116, 119, 111, 32],
+        "active": true,
+        "ended": false
+      },
+      "log": {
+        "version": 1,
+        "events": [
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [111],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 0,
+              "inputValue": [111]
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [110],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 1,
+              "inputValue": [111, 110]
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [101],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 2,
+              "inputValue": [111, 110, 101]
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [32],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 3,
+              "inputValue": [111, 110, 101, 32],
+              "commitsWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [116],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 0,
+              "inputValue": [116],
+              "lastWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [119],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 1,
+              "inputValue": [116, 119],
+              "lastWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [111],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 2,
+              "inputValue": [116, 119, 111],
+              "lastWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [32],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 3,
+              "inputValue": [116, 119, 111, 32],
+              "commitsWord": true,
+              "lastWord": true
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [
+            [111, 110, 101, 32],
+            [116, 119, 111, 32]
+          ],
+          "mode": "words",
+          "mode2": "0",
+          "koreanStatus": false,
+          "bailedOut": false,
+          "isFunboxWithNospacePropertyActive": false
+        }
+      }
+    },
+    {
+      "state": {
+        "wordIndex": 1,
+        "inputValue": [116, 119, 111, 32],
+        "active": true,
+        "ended": false
+      },
+      "log": {
+        "version": 1,
+        "events": [
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [111],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 0,
+              "inputValue": [111]
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [110],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 1,
+              "inputValue": [111, 110]
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [101],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 2,
+              "inputValue": [111, 110, 101]
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [32],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 3,
+              "inputValue": [111, 110, 101, 32],
+              "commitsWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [116],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 0,
+              "inputValue": [116],
+              "lastWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [119],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 1,
+              "inputValue": [116, 119],
+              "lastWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [111],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 2,
+              "inputValue": [116, 119, 111],
+              "lastWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [32],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 3,
+              "inputValue": [116, 119, 111, 32],
+              "commitsWord": true,
+              "lastWord": true
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 5000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "catchup": true
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 5000,
+            "data": {
+              "event": "step",
+              "timer": 2,
+              "catchup": true
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 5000,
+            "data": {
+              "event": "step",
+              "timer": 3,
+              "catchup": true
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 5000,
+            "data": {
+              "event": "step",
+              "timer": 4,
+              "catchup": true
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 5000,
+            "data": {
+              "event": "step",
+              "timer": 5,
+              "drift": 4000
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [
+            [111, 110, 101, 32],
+            [116, 119, 111, 32]
+          ],
+          "mode": "words",
+          "mode2": "0",
+          "koreanStatus": false,
+          "bailedOut": false,
+          "isFunboxWithNospacePropertyActive": false
+        }
+      }
+    },
+    {
+      "state": {
+        "wordIndex": 1,
+        "inputValue": [116, 119, 111, 32],
+        "active": false,
+        "ended": true
+      },
+      "log": {
+        "version": 1,
+        "events": [
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [111],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 0,
+              "inputValue": [111]
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [110],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 1,
+              "inputValue": [111, 110]
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [101],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 2,
+              "inputValue": [111, 110, 101]
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [32],
+              "correct": true,
+              "wordIndex": 0,
+              "charIndex": 3,
+              "inputValue": [111, 110, 101, 32],
+              "commitsWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [116],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 0,
+              "inputValue": [116],
+              "lastWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [119],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 1,
+              "inputValue": [116, 119],
+              "lastWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [111],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 2,
+              "inputValue": [116, 119, 111],
+              "lastWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [32],
+              "correct": true,
+              "wordIndex": 1,
+              "charIndex": 3,
+              "inputValue": [116, 119, 111, 32],
+              "commitsWord": true,
+              "lastWord": true
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 5000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "catchup": true
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 5000,
+            "data": {
+              "event": "step",
+              "timer": 2,
+              "catchup": true
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 5000,
+            "data": {
+              "event": "step",
+              "timer": 3,
+              "catchup": true
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 5000,
+            "data": {
+              "event": "step",
+              "timer": 4,
+              "catchup": true
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 5000,
+            "data": {
+              "event": "step",
+              "timer": 5,
+              "drift": 4000
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 6000,
+            "data": {
+              "event": "end",
+              "timer": 6,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [
+            [111, 110, 101, 32],
+            [116, 119, 111, 32]
+          ],
+          "mode": "words",
+          "mode2": "0",
+          "koreanStatus": false,
+          "bailedOut": false,
+          "isFunboxWithNospacePropertyActive": false
+        }
+      }
+    }
+  ]
+}

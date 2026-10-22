@@ -1,0 +1,51 @@
+{
+  "name": "finite-edit",
+  "config": {
+    "mode": "words",
+    "words": 2
+  },
+  "words": [
+    [111, 110, 101, 32],
+    [116, 119, 111]
+  ],
+  "commands": [
+    {
+      "op": "insert",
+      "data": [111, 120],
+      "now": 0
+    },
+    {
+      "op": "delete",
+      "now": 50,
+      "kind": "deleteContentBackward"
+    },
+    {
+      "op": "insert",
+      "data": [110, 101, 32],
+      "now": 100
+    },
+    {
+      "op": "insert",
+      "data": [116, 119, 111],
+      "now": 1100
+    },
+    {
+      "op": "insert",
+      "data": [120],
+      "now": 1200
+    },
+    {
+      "op": "finish",
+      "now": 1300
+    },
+    {
+      "op": "reset",
+      "now": 1400
+    },
+    {
+      "op": "insert",
+      "data": [111, 110, 101, 32, 116, 119, 111],
+      "now": 1500
+    }
+  ]
+}
