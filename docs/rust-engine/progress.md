@@ -22,7 +22,7 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | 1.2 Contracts / fixtures | Complete | 19 command traces, 21 oracle/integrity tests; contract and classified gaps. |
 | 1.3 Native / browser proof | Complete | Native 7 traces; Cloudflare real-browser finite slice; MIME/CSP, lifecycle, boundary benchmark. Budgets frozen. |
 | 1.4 Input / lifecycle / timing | Active | 19 native/browser command traces; 8 original recordings. Composition, batch failure, deferred work, visible-word bounds and browser deletion observations covered. Full generator/session integration remains open. |
-| 1.5 Generation / configuration | Active | 48/61 unchanged generator snapshots. Quote and remaining funboxes pending. |
+| 1.5 Generation / configuration | Active | 61/61 unchanged generator snapshots. Content requests, configuration validation and generator/session integration pending. |
 | 1.6 Events / results / replay | Active | All computed summary fields match 8 original CompletedEvents exactly. Full results, eligibility, replay pending. |
 | 1.7 Binding / engine gate | Pending | Full three-path parity and budgets. |
 | 2.1–2.6 Website | Pending | Requires Stage 1 gate. |
@@ -72,7 +72,7 @@ do not rerun completed checks without a new reason.
 - Native and actual Cloudflare-browser Wasm match all 19 frozen command traces.
 - Original CompletedEvent summaries match exactly (including floating-point outputs); exhaustive Hangul compatibility hash covers all 65,536 UTF-16 units.
 - Pace, weak-spot learning, explicit Mulberry32/strict random streams, 99 frozen transform cases, language punctuation, lazy mode and British conversion implemented.
-- Native generator currently matches 48/61 original snapshots; unsupported cases remain explicitly skipped and prevent the full Stage 1 gate.
+- Native generator now matches all 61 original snapshots with no skipped cases, including quote queue state, repeated quotes, IDs, British text, Morse, arrows, IPs, pseudolang, weakspot and polyglot. Full configuration/content/session gate remains open.
 - Native test, Clippy and format checks passed after language-rule integration. Final current-head browser/build rerun pending.
 - Draft Stage 1 PR: https://github.com/voltcrash/oxytype/pull/184. Initial CI native/Wasm, SSR, delivery and frontend checks passed; package routing failure fixed locally (60 routing tests pass). Whole current-head CI not yet verified.
 - Stages 2 and 3 have no implementation yet. No production deployment or release published.

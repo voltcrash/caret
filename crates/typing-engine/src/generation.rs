@@ -25,6 +25,8 @@ pub struct GenerationConfig {
     pub lazy_mode: bool,
     pub british_english: bool,
     pub funbox: Vec<String>,
+    pub quote_length: Vec<i32>,
+    pub custom_polyglot: Vec<String>,
 }
 impl Default for GenerationConfig {
     fn default() -> Self {
@@ -39,6 +41,13 @@ impl Default for GenerationConfig {
             lazy_mode: false,
             british_english: false,
             funbox: vec![],
+            quote_length: vec![1],
+            custom_polyglot: vec![
+                "english".into(),
+                "spanish".into(),
+                "french".into(),
+                "german".into(),
+            ],
         }
     }
 }
@@ -73,6 +82,14 @@ pub struct Generated {
     pub all_right_to_left: Option<bool>,
     pub all_joining_script: bool,
 }
+#[derive(Default)]
+pub struct Assets {
+    pub quotes: crate::quotes::Quotes,
+    pub quote_asset: Option<crate::quotes::QuoteAsset>,
+    pub selected_quote_id: u32,
+    pub favorite_quote_ids: Vec<u32>,
+    pub polyglot: Vec<Language>,
+}
 pub struct Generator {
     config: GenerationConfig,
     language: Language,
@@ -92,6 +109,9 @@ pub struct Generator {
     arrows: crate::generated_funboxes::Arrows,
     pseudolang: Option<crate::generated_funboxes::Pseudolang>,
     pub weak_spot: crate::weak_spot::WeakSpot,
+    pub current_quote: Option<crate::quotes::Quote>,
+    polyglot: Vec<Language>,
+    word_languages: std::collections::BTreeMap<Vec<u16>, usize>,
 }
 pub(crate) fn case(text: &Text, upper: bool) -> Text {
     let mut output = vec![];
@@ -153,14 +173,21 @@ impl Generator {
         custom: Option<CustomText>,
         random: Random,
     ) -> Result<Self, String> {
+        Self::with_assets(config, language, custom, random, &mut Assets::default())
+    }
+    pub fn with_assets(
+        config: GenerationConfig,
+        mut language: Language,
+        custom: Option<CustomText>,
+        mut random: Random,
+        assets: &mut Assets,
+    ) -> Result<Self, String> {
         if !["time", "words", "custom", "zen", "quote"].contains(&config.mode.as_str()) {
             return Err("Invalid mode".into());
         }
-        if config.mode == "quote" {
-            return Err("Quote asset selection is not yet ported".into());
-        }
         if config.funbox.iter().any(|name| {
             ![
+                "polyglot",
                 "morse",
                 "arrows",
                 "weakspot",
@@ -202,10 +229,62 @@ impl Generator {
         {
             return Err("Invalid custom mode or limit".into());
         }
-        let mut wordset = if config.mode == "custom" {
+        let current_quote = if config.mode == "quote" {
+            if let Some(asset) = assets.quote_asset.take() {
+                assets
+                    .quotes
+                    .load(asset, &config.quote_length, &mut random)?;
+            }
+            Some(assets.quotes.select(
+                &config.language,
+                &config.quote_length,
+                assets.selected_quote_id,
+                &assets.favorite_quote_ids,
+                config.british_english,
+                &mut random,
+            )?)
+        } else {
+            None
+        };
+        let mut wordset = if let Some(quote) = &current_quote {
+            quote.text_split.clone()
+        } else if config.mode == "custom" {
             custom.as_ref().unwrap().text.clone()
         } else {
             language.words.clone()
+        };
+        let mut word_languages = std::collections::BTreeMap::new();
+        let polyglot = if config.funbox.iter().any(|name| name == "polyglot") {
+            if assets.polyglot.len() < 2 {
+                return Err("Polyglot requires at least two valid languages".into());
+            }
+            let all_rtl = assets
+                .polyglot
+                .iter()
+                .all(|lang| lang.right_to_left == Some(true));
+            let all_ltr = assets
+                .polyglot
+                .iter()
+                .all(|lang| lang.right_to_left != Some(true));
+            if (language.right_to_left == Some(true) && all_ltr)
+                || (language.right_to_left != Some(true) && all_rtl)
+            {
+                return Err("Polyglot language direction conflict; update main language".into());
+            }
+            wordset.clear();
+            for (index, lang) in assets.polyglot.iter().enumerate() {
+                for word in &lang.words {
+                    if !word_languages.contains_key(&word.0) {
+                        wordset.push(word.clone());
+                    }
+                    word_languages.insert(word.0.clone(), index);
+                }
+            }
+            random.shuffle(&mut wordset)?;
+            language.joining_script = assets.polyglot.iter().any(|lang| lang.joining_script);
+            assets.polyglot.clone()
+        } else {
+            vec![]
         };
         if config.funbox.iter().any(|name| name == "backwards") {
             wordset.reverse();
@@ -235,6 +314,9 @@ impl Generator {
             arrows: crate::generated_funboxes::Arrows::default(),
             pseudolang: None,
             weak_spot: crate::weak_spot::WeakSpot::default(),
+            current_quote,
+            polyglot,
+            word_languages,
         })
     }
     fn limit(&self) -> usize {
@@ -275,9 +357,19 @@ impl Generator {
         if self.config.mode == "words" && self.config.words > 0 {
             limit = limit.min(self.config.words);
         }
+        if let Some(quote) = &self.current_quote {
+            limit = if self.config.show_all_lines {
+                quote.text_split.len()
+            } else {
+                limit.min(quote.text_split.len())
+            };
+        }
         limit
     }
     pub fn all_generated(&self) -> bool {
+        if let Some(quote) = &self.current_quote {
+            return self.generated >= quote.text_split.len();
+        }
         if self.config.mode == "words" {
             return self.config.words > 0 && self.generated >= self.config.words;
         }
@@ -310,8 +402,18 @@ impl Generator {
         Ok(self.wordset[index].clone())
     }
     fn lazy(&self, word: Text) -> Text {
-        if self.config.lazy_mode && (!self.language.no_lazy_mode || self.config.mode == "custom") {
-            self.rules.lazy(&word, &self.language.additional_accents)
+        let language = if self.polyglot.is_empty() {
+            Some(&self.language)
+        } else {
+            self.word_languages
+                .get(&word.0)
+                .and_then(|index| self.polyglot.get(*index))
+        };
+        if let Some(language) = language
+            && self.config.lazy_mode
+            && (!language.no_lazy_mode || self.config.mode == "custom")
+        {
+            self.rules.lazy(&word, &language.additional_accents)
         } else {
             word
         }
@@ -401,13 +503,14 @@ impl Generator {
         previous2: Option<&Text>,
     ) -> Result<NextWord, String> {
         if self.repeating
+            && self.config.mode != "quote"
             && let Some(next) = self.previous.get(index)
         {
             self.section_index += 1;
             self.generated = index + 1;
             return Ok(next.clone());
         }
-        if self.repeating {
+        if self.repeating && self.config.mode != "quote" {
             let continuation = self.config.mode == "time"
                 || (self.config.mode == "words" && index < self.config.words)
                 || (self.config.mode == "custom"
@@ -427,10 +530,11 @@ impl Generator {
         let previous2 = previous2.map(|word| clean_previous(word, true));
         if self.section.is_empty() {
             let custom = self.custom.clone();
-            if self.config.mode == "custom"
-                && custom
-                    .as_ref()
-                    .is_some_and(|custom| custom.mode == "repeat")
+            if self.config.mode == "quote"
+                || (self.config.mode == "custom"
+                    && custom
+                        .as_ref()
+                        .is_some_and(|custom| custom.mode == "repeat"))
             {
                 word = self.next_ordered();
             } else if self.config.mode == "custom"
@@ -541,7 +645,15 @@ impl Generator {
         if word.is_empty() {
             return Err("Random word is empty".into());
         }
+        let word_language = self
+            .word_languages
+            .get(&word.0)
+            .and_then(|index| self.polyglot.get(*index))
+            .map_or(self.config.language.as_str(), |language| {
+                language.name.as_str()
+            });
         if self.config.mode != "custom"
+            && self.config.mode != "quote"
             && !self.config.punctuation
             && !self.config.funbox.iter().any(|name| {
                 [
@@ -560,7 +672,7 @@ impl Generator {
             && word.0.iter().any(|unit| (65..=90).contains(unit))
             && !["german", "swiss_german", "code", "klingon"]
                 .iter()
-                .any(|prefix| self.config.language.starts_with(prefix))
+                .any(|prefix| word_language.starts_with(prefix))
         {
             word = case(&word, false);
         }
@@ -590,7 +702,15 @@ impl Generator {
                 &mut self.random,
             )?;
         }
-        if self.config.british_english && self.config.language.contains("english") {
+        if self.config.british_english
+            && self.config.language.contains("english")
+            && !self.current_quote.as_ref().is_some_and(|quote| {
+                quote
+                    .british_text
+                    .as_ref()
+                    .is_some_and(|text| !text.is_empty())
+            })
+        {
             word = self
                 .rules
                 .british(word, previous.as_ref(), self.config.mode == "quote");
@@ -606,11 +726,9 @@ impl Generator {
         }
         let mut committed = word.clone();
         if committed.0.last() != Some(&10)
-            && !self
-                .config
-                .funbox
-                .iter()
-                .any(|name| ["nospace", "underscore_spaces", "arrows", "morse"].contains(&name.as_str()))
+            && !self.config.funbox.iter().any(|name| {
+                ["nospace", "underscore_spaces", "arrows", "morse"].contains(&name.as_str())
+            })
         {
             committed.0.push(32);
         }

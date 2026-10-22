@@ -4,6 +4,7 @@ pub mod generation;
 pub mod language_rules;
 pub mod pace;
 pub mod punctuation;
+pub mod quotes;
 pub mod random;
 pub mod session;
 pub mod stats;

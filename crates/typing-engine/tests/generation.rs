@@ -1,7 +1,7 @@
 use serde_json::{Value, json};
 use typing_engine::{
     Text,
-    generation::{CustomText, GenerationConfig, Generator, Language},
+    generation::{Assets, CustomText, GenerationConfig, Generator, Language},
     random::Random,
 };
 
@@ -41,43 +41,9 @@ fn base_generation_matches_immutable_browser_snapshots() {
     )
     .unwrap();
     let mut checked = 0;
+    let mut assets = Assets::default();
     for case in cases {
         let config: GenerationConfig = serde_json::from_value(case["config"].clone()).unwrap();
-        if config.funbox.iter().any(|name| {
-            ![
-                "morse",
-                "arrows",
-                "weakspot",
-                "pseudolang",
-                "IPv4",
-                "IPv6",
-                "58008",
-                "binary",
-                "hexadecimal",
-                "gibberish",
-                "ascii",
-                "specials",
-                "backwards",
-                "ALL_CAPS",
-                "capitals",
-                "sPoNgEcAsE",
-                "rAnDoMcAsE",
-                "rot13",
-                "ddoouubblleedd",
-                "instant_messaging",
-                "underscore_spaces",
-                "nospace",
-                "plus_zero",
-                "plus_one",
-                "plus_two",
-                "plus_three",
-                "zipf",
-            ]
-            .contains(&name.as_str())
-        }) || config.mode == "quote"
-        {
-            continue;
-        }
         let name = case["name"].as_str().unwrap();
         let mut language: Value = serde_json::from_slice(
             &std::fs::read(root.join(format!(
@@ -94,11 +60,42 @@ fn base_generation_matches_immutable_browser_snapshots() {
             neutral_words(&mut value);
             serde_json::from_value::<CustomText>(value).unwrap()
         });
-        let mut generator = Generator::new(
+        if config.mode == "quote" {
+            let mut quote_asset: Value = serde_json::from_slice(
+                &std::fs::read(root.join("frontend/static/quotes/english.json")).unwrap(),
+            )
+            .unwrap();
+            for quote in quote_asset["quotes"].as_array_mut().unwrap() {
+                for key in ["text", "britishText"] {
+                    if let Some(value) = quote.get(key).and_then(Value::as_str) {
+                        quote[key] = json!(Text::from(value));
+                    }
+                }
+            }
+            assets.quote_asset = Some(serde_json::from_value(quote_asset).unwrap());
+            assets.selected_quote_id = case["selectedQuoteId"].as_u64().unwrap_or(1) as u32;
+        }
+        if config.funbox.iter().any(|name| name == "polyglot") {
+            assets.polyglot = config
+                .custom_polyglot
+                .iter()
+                .map(|name| {
+                    let mut value: Value = serde_json::from_slice(
+                        &std::fs::read(root.join(format!("frontend/static/languages/{name}.json")))
+                            .unwrap(),
+                    )
+                    .unwrap();
+                    neutral_words(&mut value);
+                    serde_json::from_value(value).unwrap()
+                })
+                .collect();
+        }
+        let mut generator = Generator::with_assets(
             config,
             language,
             custom,
             Random::seeded(case["seed"].as_u64().unwrap() as u32),
+            &mut assets,
         )
         .unwrap();
         let mut generated = generator.generate(false).unwrap();
@@ -126,7 +123,10 @@ fn base_generation_matches_immutable_browser_snapshots() {
         let mut actual = json!(generated);
         actual["extra"] = json!(extra);
         actual["allWordsGenerated"] = json!(generator.all_generated());
-        actual["currentQuote"] = Value::Null;
+        actual["currentQuote"] = generator.current_quote.as_ref().map_or(
+            Value::Null,
+            |quote| json!({"id": quote.id, "group": quote.group}),
+        );
         let mut expected: Value = serde_json::from_slice(
             &std::fs::read(root.join(format!(
                 "packages/typing-fixtures/reference/words/__snapshots__/{name}.json"
@@ -143,5 +143,5 @@ fn base_generation_matches_immutable_browser_snapshots() {
         assert_eq!(actual, expected, "{name}");
         checked += 1;
     }
-    assert!(checked >= 54, "Only {checked} cases exercised");
+    assert_eq!(checked, 61, "Every original generator case must run");
 }
