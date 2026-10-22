@@ -1,6 +1,7 @@
 import { spawnSync } from "node:child_process";
 import { mkdirSync } from "node:fs";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
+import { createRequire } from "node:module";
 
 const root = resolve(import.meta.dirname, "..");
 const output = resolve(root, "packages/typing-engine/generated");
@@ -46,6 +47,22 @@ switch (process.argv[2]) {
         root,
         "target/wasm32-unknown-unknown/release/typing_engine_wasm.wasm",
       ),
+    ]);
+    const binaryen = dirname(
+      createRequire(import.meta.url).resolve("binaryen/package.json"),
+    );
+    const wasm = resolve(output, "engine_bg.wasm");
+    run(process.execPath, [
+      resolve(binaryen, "bin/wasm-opt"),
+      wasm,
+      "-Oz",
+      "--enable-bulk-memory",
+      "--enable-nontrapping-float-to-int",
+      "--enable-sign-ext",
+      "--enable-multivalue",
+      "--enable-reference-types",
+      "-o",
+      wasm,
     ]);
     run("cargo", [
       "run",

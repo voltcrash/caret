@@ -52,6 +52,7 @@
     "@commitlint/cli": "21.2.3",
     "@types/node": "24.19.0",
     "@vitest/coverage-v8": "catalog:",
+    "binaryen": "132.0.0",
     "caniuse-lite": "1.0.30001814",
     "conventional-changelog-conventionalcommits": "10.4.0",
     "husky": "9.1.7",
