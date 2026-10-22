@@ -29,3 +29,7 @@ lto = true
 codegen-units = 1
 opt-level = "s"
 strip = "debuginfo"
+
+[profile.wasm]
+inherits = "release"
+opt-level = "z"

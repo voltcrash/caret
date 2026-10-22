@@ -29,7 +29,8 @@ switch (process.argv[2]) {
     run("cargo", [
       "build",
       "--locked",
-      "--release",
+      "--profile",
+      "wasm",
       "--target",
       "wasm32-unknown-unknown",
       "-p",
@@ -45,7 +46,7 @@ switch (process.argv[2]) {
       "engine",
       resolve(
         root,
-        "target/wasm32-unknown-unknown/release/typing_engine_wasm.wasm",
+        "target/wasm32-unknown-unknown/wasm/typing_engine_wasm.wasm",
       ),
     ]);
     const binaryen = dirname(
