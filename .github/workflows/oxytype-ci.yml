@@ -452,7 +452,7 @@ jobs:
         run: vp run lint-pkg
 
       - name: Check workspace root lint
-        run: vp lint . --type-aware --type-check --format agent
+        run: vp lint *.ts --type-aware --type-check --format agent
 
       - name: Test
         run: vp run test-pkg
