@@ -72,7 +72,7 @@ For browser checks against the official Oxytype staging site, follow
 Use `vp lint --type-aware --type-check --format agent` for type checking;
 `vp fmt` formats files. Commit hooks enforce formatting and lint.
 Run a single test with `vp test run path/to/test.ts` from its package. Backend
-`test` runs service/policy/HTTP-handler checks; `integration-test` runs
+Backend `test` runs service/policy/HTTP-handler checks; `integration-test` runs
 workerd-backed D1 checks; frontend `test:start` runs SSR/workerd suites. Frontend imperative DOM work belongs in component refs/lifecycles; styling
 uses Tailwind classes, `cn` and configured colors; icons use `Fa`.
 

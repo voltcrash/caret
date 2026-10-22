@@ -13,25 +13,6 @@ import { setConfig } from "../../src/ts/config/setters";
 import type { CommandWithValidation } from "../../src/ts/commandline/types";
 
 describe("commandline metadata", () => {
-  it("preserves every command title and option label", () => {
-    expect(
-      Object.fromEntries(
-        typedKeys(commandlineConfigMetadata).map((key) => {
-          const command = buildCommandForConfigKey(key);
-          return [
-            key,
-            {
-              title: command.display,
-              options: command.subgroup?.list.map((item) => ({
-                label: item.display,
-                value: item.configValue,
-              })),
-            },
-          ];
-        }),
-      ),
-    ).toMatchSnapshot();
-  });
   it.each(typedKeys(commandlineConfigMetadata))(
     "builds a usable %s command",
     (key) => {

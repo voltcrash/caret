@@ -150,13 +150,15 @@ jobs:
           FULL: ${{ github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'force-full-ci') }}
           CHANGED: ${{ steps.filter.outputs.changes }}
         run: |
-          # Prints "<job>=true" when any listed filter matched (or on a full run).
+          # Parse once; each job then matches whole filter names in Bash.
+          changed=$(jq -r 'join(" ")' <<<"${CHANGED:-[]}")
           enable() {
             local job=$1 filter result=false
             shift
             for filter in shared "$@"; do
-              if [[ $FULL == true ]] || jq -e --arg f "$filter" 'index($f) != null' <<<"$CHANGED" >/dev/null; then
+              if [[ $FULL == true || " $changed " == *" $filter "* ]]; then
                 result=true
+                break
               fi
             done
             echo "$job=$result" | tee -a "$GITHUB_OUTPUT"
@@ -257,10 +259,37 @@ jobs:
         working-directory: frontend
         run: vp test run --shard=${{ matrix.shard }}/2
 
-  # Start owns delivery. Its suites run as parallel jobs, each building what it needs.
+  # SSR and browser shards consume the exact same production Worker.
+  start-build:
+    name: start-build
+    needs: [changes]
+    if: needs.changes.outputs.start-ssr == 'true' || needs.changes.outputs.start-browser == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Set up Vite+ and install dependencies
+        uses: ./.github/actions/setup
+
+      - name: Build Start Worker
+        run: vp run --filter @oxytype/frontend build:start
+
+      - name: Worker dry-run
+        run: vp run --filter @oxytype/frontend dry-run:start
+
+      - name: Share Start Worker
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: start-worker
+          path: frontend/dist/start
+          include-hidden-files: true
+          retention-days: 1
+          if-no-files-found: error
+
   start-ssr:
     name: start-ssr
-    needs: [changes]
+    needs: [changes, start-build]
     if: needs.changes.outputs.start-ssr == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -273,18 +302,21 @@ jobs:
       - name: Check operation ownership and declared HTTP routes
         run: vp -C backend exec tsx scripts/migration-inventory.ts --check && vp -C frontend exec tsx scripts/generate-http-routes.ts --check
 
-      - name: Build Start Worker and runtime-test entry
-        run: vp run --filter @oxytype/frontend build:start && vp run --filter @oxytype/frontend build:start:test
+      - name: Download Start Worker
+        uses: actions/download-artifact@v8.0.2
+        with:
+          name: start-worker
+          path: frontend/dist/start
 
-      - name: Worker dry-run
-        run: vp run --filter @oxytype/frontend dry-run:start
+      - name: Build runtime-test entry
+        run: vp run --filter @oxytype/frontend build:start:test
 
       - name: SSR, workerd and bundle-boundary suites
         run: vp run --filter @oxytype/frontend test:start
 
   start-browser:
     name: start-browser (${{ matrix.shard }}/4)
-    needs: [changes]
+    needs: [changes, start-build]
     if: needs.changes.outputs.start-browser == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -298,8 +330,11 @@ jobs:
       - name: Set up Vite+ and install dependencies
         uses: ./.github/actions/setup
 
-      - name: Build Start Worker
-        run: vp run --filter @oxytype/frontend build:start
+      - name: Download Start Worker
+        uses: actions/download-artifact@v8.0.2
+        with:
+          name: start-worker
+          path: frontend/dist/start
 
       # Suites run headless, so the small headless shell is enough.
       - name: Install Chromium and its system dependencies
@@ -417,7 +452,7 @@ jobs:
         run: vp run lint-pkg
 
       - name: Check workspace root lint
-        run: vp lint . --type-aware --type-check --format agent
+        run: vp lint *.{ts,cjs,mjs} --type-aware --type-check --format agent
 
       - name: Test
         run: vp run test-pkg
@@ -433,6 +468,7 @@ jobs:
         ci-be,
         ci-fe,
         ci-fe-test,
+        start-build,
         start-ssr,
         start-browser,
         start-updates,

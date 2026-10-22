@@ -25,16 +25,24 @@ const define = {
   "import.meta.env.OXYTYPE_BUILD_ID": JSON.stringify("TESTING"),
 };
 
+// Pure tests skip DOM emulation and application-owner mocks.
+const nodeTests = [
+  "__tests__/architecture/**/*.spec.ts",
+  "__tests__/scripts/**/*.spec.ts",
+  "__tests__/vite-plugins/**/*.spec.ts",
+  "__tests__/styles/**/*.spec.ts",
+  "__tests__/utils/{colors,ip-addresses,key-converter,migration-performance,numbers,result-hash,settings-search,zod}.spec.ts",
+  "__tests__/elements/**/*.spec.ts",
+  "__tests__/components/pages/test/keymapConverter.spec.ts",
+];
+
 export const projects = [
   {
     extends: false,
     test: {
-      name: "start",
-      include: [
-        "__tests__/start/foundation.spec.ts",
-        "__tests__/start/layers.spec.ts",
-        "__tests__/start/operation-functions.spec.ts",
-      ],
+      name: "node",
+      env: { TZ: "UTC" },
+      include: nodeTests,
       environment: "node",
       testTimeout: 30_000,
       hookTimeout: 30_000,
@@ -48,14 +56,13 @@ export const projects = [
     test: {
       name: { label: "unit", color: "blue" },
       include: ["__tests__/**/*.spec.ts"],
-      exclude: ["__tests__/**/*.jsdom-spec.ts", "__tests__/start/**"],
+      exclude: [...nodeTests, "__tests__/start/**"],
       environment: "happy-dom",
-      globalSetup: "__tests__/global-setup.ts",
+      env: { TZ: "UTC" },
       setupFiles: [
         "__tests__/__harness__/mock-application.ts",
         "__tests__/__harness__/mock-dom.ts",
         "__tests__/__harness__/mock-auth.ts",
-        "__tests__/__harness__/mock-env-config.ts",
         "__tests__/__harness__/mock-static.ts",
       ],
     },
@@ -70,7 +77,7 @@ export const projects = [
       name: { label: "jsdom", color: "yellow" },
       include: ["__tests__/**/*.jsdom-spec.ts"],
       environment: "jsdom",
-      globalSetup: "__tests__/global-setup.ts",
+      env: { TZ: "UTC" },
     },
     plugins,
   },
@@ -83,7 +90,7 @@ export const projects = [
       name: { label: "jsx", color: "green" },
       include: ["__tests__/**/*.spec.tsx"],
       environment: "jsdom",
-      globalSetup: "__tests__/global-setup.ts",
+      env: { TZ: "UTC" },
       setupFiles: [
         "__tests__/__harness__/setup-jsx.ts",
         "__tests__/__harness__/mock-application.ts",
