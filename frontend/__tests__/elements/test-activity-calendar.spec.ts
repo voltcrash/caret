@@ -139,10 +139,10 @@ describe("test-activity-calendar.ts", () => {
               days.slice(0, leading).every((day) => day.level === "filler"),
             ).toBe(true);
             expect(days[leading]).toMatchObject(
-              activityDay(`${year}-01-01`, 1, undefined),
+              activityDay(`${year}-01-01`, 1),
             );
             expect(days[leading + length - 1]).toMatchObject(
-              activityDay(`${year}-12-31`, undefined, undefined),
+              activityDay(`${year}-12-31`),
             );
             expect(
               days
@@ -207,9 +207,7 @@ describe("test-activity-calendar.ts", () => {
         expect(days).toHaveLength(1 + 366 + 4); //one filler on the start, 366 days in leap year, four fillers at the end
 
         //may 23 starts with a monday, we use sunday from last month
-        expect(days[0]).toMatchObject(
-          activityDay("2023-04-30", 120, undefined),
-        );
+        expect(days[0]).toMatchObject(activityDay("2023-04-30", 120));
 
         expect(days[1]).toMatchObject(activityDay("2023-05-01", 121, 2));
 
@@ -223,7 +221,7 @@ describe("test-activity-calendar.ts", () => {
 
         //days from April 11th to April 30th
         for (let day = 347; day <= 366; day++) {
-          expect(days[day]?.level).toBe(String(0));
+          expect(days[day]?.level).toBe("0");
         }
         for (let day = 367; day <= 370; day++) {
           expect(days[day]).toEqual({ level: "filler" });
@@ -242,9 +240,7 @@ describe("test-activity-calendar.ts", () => {
         expect(days).toHaveLength(1 + 366 + 4); //one filler on the start, 366 days in leap year, four fillers at the end
 
         //may 23 starts with a monday
-        expect(days[0]).toMatchObject(
-          activityDay("2023-05-01", 121, undefined),
-        );
+        expect(days[0]).toMatchObject(activityDay("2023-05-01", 121));
 
         expect(days[1]).toMatchObject(activityDay("2023-05-02", 122, 2));
 
@@ -258,7 +254,7 @@ describe("test-activity-calendar.ts", () => {
 
         //days from April 11th to April 30th
         for (let day = 346; day <= 365; day++) {
-          expect(days[day]?.level).toBe(String(0));
+          expect(days[day]?.level).toBe("0");
         }
         for (let day = 366; day <= 370; day++) {
           expect(days[day]).toEqual({ level: "filler" });
@@ -282,9 +278,7 @@ describe("test-activity-calendar.ts", () => {
         expect(days).toHaveLength(1 + 366 + 4); //one filler on the start, 366 days in leap year, four fillers at the end
 
         //2024 starts with a monday
-        expect(days[0]).toMatchObject(
-          activityDay("2023-12-31", undefined, undefined),
-        );
+        expect(days[0]).toMatchObject(activityDay("2023-12-31"));
 
         expect(days[1]).toMatchObject(activityDay("2024-01-01", 1, 1));
         expect(days[60]).toMatchObject(activityDay("2024-02-29", 60, 1));
@@ -313,9 +307,7 @@ describe("test-activity-calendar.ts", () => {
         expect(days).toHaveLength(1 + 366 + 4); //one filler on the start, 366 days in leap year, four fillers at the end
 
         //2024 starts with a monday
-        expect(days[0]).toMatchObject(
-          activityDay("2024-01-01", undefined, undefined),
-        );
+        expect(days[0]).toMatchObject(activityDay("2024-01-01"));
 
         expect(days[1]).toMatchObject(activityDay("2024-01-02", 2, 1));
         expect(days[59]).toMatchObject(activityDay("2024-02-29", 60, 1));
@@ -378,9 +370,7 @@ describe("test-activity-calendar.ts", () => {
         expect(days).toHaveLength(1 + 366 + 4); //one filler on the start, 366 days in leap year, four fillers at the end
 
         //may 23 starts with a monday, so we skip one day
-        expect(days[0]).toMatchObject(
-          activityDay("2023-04-30", 120, undefined),
-        );
+        expect(days[0]).toMatchObject(activityDay("2023-04-30", 120));
 
         expect(days[1]).toMatchObject(activityDay("2023-05-01", 121, 2));
         expect(days[346]).toMatchObject(activityDay("2024-04-10", 101, 2));
@@ -402,18 +392,16 @@ describe("test-activity-calendar.ts", () => {
         //THEN
         expect(days).toHaveLength(1 + 366 + 4); //one filler on the start, 366 days in leap year, four fillers at the end
 
-        expect(days[0]).toMatchObject(
-          activityDay("2023-04-30", undefined, undefined),
-        );
+        expect(days[0]).toMatchObject(activityDay("2023-04-30"));
         for (let day = 1; day <= 336; day++) {
-          expect(days[day]?.level).toBe(String(0));
+          expect(days[day]?.level).toBe("0");
         }
 
         expect(days[337]).toMatchObject(activityDay("2024-04-01", 92, 2));
         expect(days[346]).toMatchObject(activityDay("2024-04-10", 101, 3));
 
         for (let day = 347; day <= 366; day++) {
-          expect(days[day]?.level).toBe(String(0));
+          expect(days[day]?.level).toBe("0");
         }
       });
 
@@ -434,8 +422,8 @@ describe("test-activity-calendar.ts", () => {
         expect(days).toHaveLength(2 + 365 + 4); //two filler on the start, 365 days in the  year, four fillers at the end
 
         //march 22 starts with a tuesday, two days from february
-        expect(days[0]).toMatchObject(activityDay("2022-02-27", 58, undefined));
-        expect(days[1]).toMatchObject(activityDay("2022-02-28", 59, undefined));
+        expect(days[0]).toMatchObject(activityDay("2022-02-27", 58));
+        expect(days[1]).toMatchObject(activityDay("2022-02-28", 59));
 
         expect(days[2]).toMatchObject(activityDay("2022-03-01", 60, 1));
         expect(days[307]).toMatchObject(activityDay("2022-12-31", 365, 4));
@@ -444,7 +432,7 @@ describe("test-activity-calendar.ts", () => {
 
         //days from 11th till 28 Februar
         for (let day = 349; day <= 365; day++) {
-          expect(days[day]?.level).toBe(String(0));
+          expect(days[day]?.level).toBe("0");
         }
         //februar 23 ends with tuesday, add four fillers
         for (let day = 367; day <= 370; day++) {
@@ -468,8 +456,8 @@ describe("test-activity-calendar.ts", () => {
         //THEN
         expect(days).toHaveLength(2 + 365 + 4); //two filler on the start, 365 days in the  year, four fillers at the end
 
-        expect(days[0]).toMatchObject(activityDay("2022-02-13", 44, undefined));
-        expect(days[1]).toMatchObject(activityDay("2022-02-14", 45, undefined));
+        expect(days[0]).toMatchObject(activityDay("2022-02-13", 44));
+        expect(days[1]).toMatchObject(activityDay("2022-02-14", 45));
 
         expect(days[16]).toMatchObject(activityDay("2022-03-01", 60, 1));
         expect(days[321]).toMatchObject(activityDay("2022-12-31", 365, 4));
@@ -506,7 +494,7 @@ describe("test-activity-calendar.ts", () => {
 
         //days from 11th february to 31th december
         for (let day = 42; day <= 366; day++) {
-          expect(days[day]?.level).toBe(String(0));
+          expect(days[day]?.level).toBe("0");
         }
         //december 24 ends with a tuesday
         for (let day = 367; day <= 370; day++) {
@@ -535,7 +523,7 @@ describe("test-activity-calendar.ts", () => {
 
         //days from 11th february to 31th december
         for (let day = 41; day <= 365; day++) {
-          expect(days[day]?.level).toBe(String(0));
+          expect(days[day]?.level).toBe("0");
         }
         //december 24 ends with a tuesday
         for (let day = 366; day <= 370; day++) {
@@ -562,17 +550,11 @@ describe("test-activity-calendar.ts", () => {
         //THEN
         const days = calendar.getDays();
 
-        expect(days[343]?.level).toBe(String(0));
-        expect(days[344]).toMatchObject(
-          activityDay("2024-04-08", 1, undefined),
-        );
-        expect(days[345]).toMatchObject(
-          activityDay("2024-04-09", 2, undefined),
-        );
-        expect(days[346]).toMatchObject(
-          activityDay("2024-04-10", 4, undefined),
-        );
-        expect(days[347]?.level).toBe(String(0));
+        expect(days[343]?.level).toBe("0");
+        expect(days[344]).toMatchObject(activityDay("2024-04-08", 1));
+        expect(days[345]).toMatchObject(activityDay("2024-04-09", 2));
+        expect(days[346]).toMatchObject(activityDay("2024-04-10", 4));
+        expect(days[347]?.level).toBe("0");
       });
       it("increments after lastDay", () => {
         //GIVEN
@@ -590,20 +572,12 @@ describe("test-activity-calendar.ts", () => {
 
         //THEN
         let days = calendar.getDays();
-        expect(days[364]?.level).toBe(String(0));
-        expect(days[365]).toMatchObject(
-          activityDay("2024-04-08", 1, undefined),
-        );
-        expect(days[366]).toMatchObject(
-          activityDay("2024-04-09", 2, undefined),
-        );
-        expect(days[367]).toMatchObject(
-          activityDay("2024-04-10", 3, undefined),
-        );
-        expect(days[368]?.level).toBe(String(0));
-        expect(days[369]).toMatchObject(
-          activityDay("2024-04-12", 1, undefined),
-        );
+        expect(days[364]?.level).toBe("0");
+        expect(days[365]).toMatchObject(activityDay("2024-04-08", 1));
+        expect(days[366]).toMatchObject(activityDay("2024-04-09", 2));
+        expect(days[367]).toMatchObject(activityDay("2024-04-10", 3));
+        expect(days[368]?.level).toBe("0");
+        expect(days[369]).toMatchObject(activityDay("2024-04-12", 1));
         expect(days[370]).toEqual({ level: "filler" });
 
         //WHEN
@@ -612,20 +586,12 @@ describe("test-activity-calendar.ts", () => {
         //THEN
         days = calendar.getDays();
 
-        expect(days[364]?.level).toBe(String(0));
-        expect(days[365]).toMatchObject(
-          activityDay("2024-04-08", 1, undefined),
-        );
-        expect(days[366]).toMatchObject(
-          activityDay("2024-04-09", 2, undefined),
-        );
-        expect(days[367]).toMatchObject(
-          activityDay("2024-04-10", 3, undefined),
-        );
-        expect(days[368]?.level).toBe(String(0));
-        expect(days[369]).toMatchObject(
-          activityDay("2024-04-12", 2, undefined),
-        );
+        expect(days[364]?.level).toBe("0");
+        expect(days[365]).toMatchObject(activityDay("2024-04-08", 1));
+        expect(days[366]).toMatchObject(activityDay("2024-04-09", 2));
+        expect(days[367]).toMatchObject(activityDay("2024-04-10", 3));
+        expect(days[368]?.level).toBe("0");
+        expect(days[369]).toMatchObject(activityDay("2024-04-12", 2));
         expect(days[370]).toEqual({ level: "filler" });
       });
 
@@ -644,22 +610,14 @@ describe("test-activity-calendar.ts", () => {
 
         //THEN
         const days = calendar.getDays();
-        expect(days[301]?.level).toBe(String(0));
-        expect(days[302]).toMatchObject(
-          activityDay("2024-04-08", 1, undefined),
-        );
-        expect(days[303]).toMatchObject(
-          activityDay("2024-04-09", 2, undefined),
-        );
-        expect(days[304]).toMatchObject(
-          activityDay("2024-04-10", 3, undefined),
-        );
-        expect(days[305]?.level).toBe(String(0));
+        expect(days[301]?.level).toBe("0");
+        expect(days[302]).toMatchObject(activityDay("2024-04-08", 1));
+        expect(days[303]).toMatchObject(activityDay("2024-04-09", 2));
+        expect(days[304]).toMatchObject(activityDay("2024-04-10", 3));
+        expect(days[305]?.level).toBe("0");
 
-        expect(days[366]?.level).toBe(String(0));
-        expect(days[367]).toMatchObject(
-          activityDay("2024-06-12", 1, undefined),
-        );
+        expect(days[366]?.level).toBe("0");
+        expect(days[367]).toMatchObject(activityDay("2024-06-12", 1));
         expect(days[368]).toEqual({ level: "filler" });
       });
       it("increments in new year", () => {
@@ -677,15 +635,11 @@ describe("test-activity-calendar.ts", () => {
 
         //THEN
         const days = calendar.getDays();
-        expect(days[359]).toMatchObject(
-          activityDay("2024-12-24", 359, undefined),
-        );
+        expect(days[359]).toMatchObject(activityDay("2024-12-24", 359));
         for (let day = 360; day <= 367; day++) {
-          expect(days[day]?.level).toBe(String(0));
+          expect(days[day]?.level).toBe("0");
         }
-        expect(days[368]).toMatchObject(
-          activityDay("2025-01-02", 1, undefined),
-        );
+        expect(days[368]).toMatchObject(activityDay("2025-01-02", 1));
         expect(days[369]).toEqual({ level: "filler" });
       });
       it("fails increment in the past", () => {
@@ -725,11 +679,11 @@ describe("test-activity-calendar.ts", () => {
       //2024 starts with a monday
       expect(days).toHaveLength(1 + 366 + 4);
       expect(days[0]).toEqual({ level: "filler" });
-      expect(days[1]).toMatchObject(activityDay("2024-01-01", 3, undefined));
-      expect(days[2]).toMatchObject(activityDay("2024-01-02", 4, undefined));
+      expect(days[1]).toMatchObject(activityDay("2024-01-01", 3));
+      expect(days[2]).toMatchObject(activityDay("2024-01-02", 4));
 
       for (let day = 3; day <= 366; day++) {
-        expect(days[day]?.level).toBe(String(0));
+        expect(days[day]?.level).toBe("0");
       }
       expect(days[367]).toEqual({ level: "filler" });
       expect(days[368]).toEqual({ level: "filler" });
