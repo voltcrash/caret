@@ -14,44 +14,7 @@ pub struct Language {
     pub no_lazy_mode: bool,
     pub additional_accents: Vec<(Text, Text)>,
 }
-#[derive(Clone, Debug, Deserialize, TS)]
-#[serde(default, rename_all = "camelCase")]
-pub struct GenerationConfig {
-    pub mode: String,
-    pub words: usize,
-    pub language: String,
-    pub show_all_lines: bool,
-    pub punctuation: bool,
-    pub numbers: bool,
-    pub lazy_mode: bool,
-    pub british_english: bool,
-    pub funbox: Vec<String>,
-    pub quote_length: Vec<i32>,
-    pub custom_polyglot: Vec<String>,
-}
-impl Default for GenerationConfig {
-    fn default() -> Self {
-        let config = crate::Config::default();
-        Self {
-            mode: config.mode,
-            words: config.words as usize,
-            language: config.language,
-            show_all_lines: false,
-            punctuation: false,
-            numbers: false,
-            lazy_mode: false,
-            british_english: false,
-            funbox: vec![],
-            quote_length: vec![1],
-            custom_polyglot: vec![
-                "english".into(),
-                "spanish".into(),
-                "french".into(),
-                "german".into(),
-            ],
-        }
-    }
-}
+pub type GenerationConfig = crate::Config;
 #[derive(Clone, Debug, Deserialize, TS)]
 pub struct CustomLimit {
     pub mode: String,
@@ -326,9 +289,9 @@ impl Generator {
         }
         let mut limit = 100;
         if self.config.show_all_lines && self.config.mode == "words" {
-            limit = self.config.words;
+            limit = self.config.words as usize;
         }
-        if self.config.mode == "words" && self.config.words == 0 {
+        if self.config.mode == "words" && self.config.words as usize == 0 {
             limit = 100;
         }
         if let Some(custom) = &self.custom
@@ -340,8 +303,8 @@ impl Generator {
                 custom.limit.value.min(100)
             };
         }
-        if self.config.mode == "words" && self.config.words > 0 {
-            limit = limit.min(self.config.words);
+        if self.config.mode == "words" && self.config.words as usize > 0 {
+            limit = limit.min(self.config.words as usize);
         }
         for funbox in &self.config.funbox {
             if let Some(count) = match funbox.as_str() {
@@ -355,8 +318,8 @@ impl Generator {
                 break;
             }
         }
-        if self.config.mode == "words" && self.config.words > 0 {
-            limit = limit.min(self.config.words);
+        if self.config.mode == "words" && self.config.words as usize > 0 {
+            limit = limit.min(self.config.words as usize);
         }
         if let Some(quote) = &self.current_quote {
             limit = if self.config.show_all_lines {
@@ -372,7 +335,7 @@ impl Generator {
             return self.generated >= quote.text_split.len();
         }
         if self.config.mode == "words" {
-            return self.config.words > 0 && self.generated >= self.config.words;
+            return self.config.words as usize > 0 && self.generated >= self.config.words as usize;
         }
         if self.config.mode == "custom"
             && let Some(custom) = &self.custom
@@ -513,7 +476,7 @@ impl Generator {
         }
         if self.repeating && self.config.mode != "quote" {
             let continuation = self.config.mode == "time"
-                || (self.config.mode == "words" && index < self.config.words)
+                || (self.config.mode == "words" && index < self.config.words as usize)
                 || (self.config.mode == "custom"
                     && self.custom.as_ref().is_some_and(|custom| {
                         custom.limit.mode == "time"

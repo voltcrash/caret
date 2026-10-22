@@ -145,14 +145,10 @@ impl Quotes {
         Ok(quote)
     }
 }
-fn remove_language_size(language: &str) -> String {
+pub fn remove_language_size(language: &str) -> String {
     let mut parts: Vec<_> = language.split('_').collect();
     if parts.last().is_some_and(|part| {
-        !part.is_empty()
-            && part
-                .trim_end_matches('k')
-                .chars()
-                .all(|c| c.is_ascii_digit())
+        part.ends_with('k') && part[..part.len() - 1].chars().all(|c| c.is_ascii_digit())
     }) {
         parts.pop();
     }
