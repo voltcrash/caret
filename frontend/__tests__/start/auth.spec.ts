@@ -139,6 +139,65 @@ it("completes signup through real RPC/D1 and protects completed registration fro
   ).not.toBeNull();
 });
 
+it.each(["cookie", "bearer"] as const)(
+  "blocks disabled %s sessions in the built auth Worker",
+  async (credential) => {
+    const identity = await seedSession(mf, "a");
+    const worker = await mf.getWorker("a");
+    const db = await mf.getD1Database("DB", "a");
+    await db
+      .prepare("UPDATE auth_users SET disabled=1 WHERE id=?")
+      .bind(identity.uid)
+      .run();
+    const headers =
+      credential === "cookie"
+        ? { cookie: identity.cookie, origin: "http://localhost:3000" }
+        : { authorization: `Bearer ${identity.token}` };
+    const response = await worker.fetch(
+      "http://localhost:3000/api/auth/update-user",
+      {
+        method: "POST",
+        headers: { ...headers, "content-type": "application/json" },
+        body: JSON.stringify({ name: "Forbidden mutation", disabled: false }),
+      },
+    );
+    expect(response.status).toBe(403);
+    expect(await response.json()).toMatchObject({
+      message: "Account disabled",
+    });
+    expect(
+      await db
+        .prepare("SELECT name,disabled FROM auth_users WHERE id=?")
+        .bind(identity.uid)
+        .first(),
+    ).toMatchObject({ name: "a", disabled: 1 });
+    expect(
+      await db
+        .prepare("SELECT id FROM auth_sessions WHERE user_id=?")
+        .bind(identity.uid)
+        .first(),
+    ).toBeNull();
+    expect(
+      (await worker.fetch("http://localhost:3000/api/users/stats", { headers }))
+        .status,
+    ).toBe(401);
+    const state = await worker.fetch(
+      `http://localhost:3000${rpcPath("getSessionState")}`,
+      {
+        headers: {
+          ...headers,
+          origin: "http://localhost:3000",
+          "x-tsr-serverFn": "true",
+        },
+      },
+    );
+    expect(state.status).toBe(200);
+    const text = await state.text();
+    expect(text).not.toContain(identity.uid);
+    expect(text).not.toContain(identity.token);
+  },
+);
+
 it("redacts configuration failures on direct session and operation RPCs", async () => {
   const worker = await mf.getWorker("b");
   const db = await mf.getD1Database("DB", "b");

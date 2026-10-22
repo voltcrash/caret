@@ -1,5 +1,10 @@
 # Dependency audit — 2026-10-11
 
+Latest snapshot: [2026-10-22 security audit](security/audit-2026-10-22.md).
+Its refreshed scan reports 22 development package/advisory entries, including
+two critical Storybook entries; production-only scan remains zero. Counts below
+are historical.
+
 The audit on main reported 21 production flags (1 critical, 11 high,
 7 moderate, 2 low). Including development dependencies reported 50 flags
 (2 critical, 27 high, 16 moderate, 5 low).
