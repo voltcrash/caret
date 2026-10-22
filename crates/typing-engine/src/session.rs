@@ -235,6 +235,14 @@ pub enum Command {
         earliest_visible_word: Option<usize>,
         #[serde(default)]
         defer_automatic: Option<bool>,
+        #[serde(default)]
+        #[ts(optional)]
+        defer_finish: Option<bool>,
+    },
+    AcknowledgeFinish {
+        now: f64,
+        #[serde(default)]
+        date: f64,
     },
     #[serde(rename_all = "camelCase")]
     SupplyContent {
@@ -279,6 +287,12 @@ pub struct Preflight {
     pub measure_overflow: bool,
     pub normalized: Text,
 }
+#[derive(Clone, Serialize, TS)]
+pub struct FinishRequest {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub reason: Option<String>,
+}
 #[derive(Clone, Debug, Serialize, Deserialize, TS)]
 #[serde(rename_all = "camelCase")]
 pub struct State {
@@ -321,6 +335,9 @@ pub struct Update {
     pub content_request: Option<crate::content::Request>,
     #[serde(rename = "awaitingContent")]
     pub awaiting_content: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub finish: Option<FinishRequest>,
 }
 #[derive(Clone, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
@@ -339,6 +356,9 @@ pub struct Snapshot {
     pub has_tab: bool,
     pub has_newline: bool,
     pub current_quote: Option<crate::results::QuoteRef>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub finish: Option<FinishRequest>,
 }
 
 #[derive(Clone)]
@@ -403,6 +423,9 @@ pub struct Session {
     has_newline: bool,
     pending_commit: Option<Checkpoint>,
     deferred_input: Option<DeferredInput>,
+    defer_finish: bool,
+    pending_finish: Option<FinishRequest>,
+    pending_finish_at: f64,
 }
 
 impl Session {
@@ -451,6 +474,9 @@ impl Session {
             has_newline,
             pending_commit: None,
             deferred_input: None,
+            defer_finish: false,
+            pending_finish: None,
+            pending_finish_at: 0.0,
         })
     }
 
@@ -500,6 +526,7 @@ impl Session {
         };
         let blocked = self.ended
             || self.pending_commit.is_some()
+            || self.pending_finish.is_some()
             || crate::input::blocked(&self.config, &observation, self.has_newline);
         let display_length = target.len() - usize::from(target.0.last() == Some(&32));
         let measure_overflow = !blocked
@@ -526,6 +553,7 @@ impl Session {
             has_tab: self.has_tab,
             has_newline: self.has_newline,
             current_quote: self.quote.clone(),
+            finish: self.pending_finish.clone(),
         }
     }
     fn strip_final_separator(&mut self) {
@@ -614,6 +642,17 @@ impl Session {
             json!({"event":"start", "timer":0, "date":date}),
         );
     }
+    fn finish(&mut self, now: f64, date: f64, reason: Option<String>) {
+        if !self.active || self.ended || self.pending_finish.is_some() {
+            return;
+        }
+        if self.defer_finish {
+            self.pending_finish = Some(FinishRequest { reason });
+            self.pending_finish_at = now;
+        } else {
+            self.end(now, date, reason);
+        }
+    }
     fn end(&mut self, now: f64, date: f64, reason: Option<String>) {
         if !self.active || self.ended {
             return;
@@ -621,6 +660,7 @@ impl Session {
         self.active = false;
         self.ended = true;
         self.reason = reason;
+        self.pending_finish = None;
         self.pending_commit = None;
         self.deferred_input = None;
         if let Some(generator) = &mut self.generator {
@@ -646,7 +686,8 @@ impl Session {
             | Command::Configure { now, .. }
             | Command::CustomLimit { now, .. }
             | Command::Bailout { now, .. }
-            | Command::SupplyContent { now, .. } => *now,
+            | Command::SupplyContent { now, .. }
+            | Command::AcknowledgeFinish { now, .. } => *now,
         };
         if !now.is_finite() || now.abs() > 9_007_199_254_740_991.0 {
             return Err("Invalid timestamp".into());
@@ -668,6 +709,7 @@ impl Session {
             | Command::Abandon { date, .. }
             | Command::Bailout { date, .. }
             | Command::SupplyContent { date, .. }
+            | Command::AcknowledgeFinish { date, .. }
                 if !date.is_finite() =>
             {
                 return Err("Invalid wall-clock date".into());
@@ -715,6 +757,7 @@ impl Session {
                             .and_then(|generator| generator.pending_request())
                             .cloned(),
                         awaiting_content: self.pending_commit.is_some(),
+                        finish: self.pending_finish.clone(),
                     });
                 }
                 self.process_input(DeferredInput {
@@ -796,10 +839,17 @@ impl Session {
             }
             Command::Bailout { now, date } => {
                 self.bailed_out = true;
-                self.end(now, date, None);
+                self.finish(now, date, None);
             }
             Command::Start { now, date } => self.start(now, date),
-            Command::Finish { now, date, reason } => self.end(now, date, reason),
+            Command::Finish { now, date, reason } => self.finish(now, date, reason),
+            Command::AcknowledgeFinish { now, date } => {
+                if self.pending_finish.is_none() || now < self.pending_finish_at {
+                    return Err("Invalid completion acknowledgement".into());
+                }
+                let finish = self.pending_finish.take().unwrap();
+                self.end(now, date, finish.reason);
+            }
             Command::End { now, date } | Command::Abandon { now, date } => {
                 self.end(now, date, None)
             }
@@ -809,6 +859,7 @@ impl Session {
                 self.bailed_out = false;
                 self.pending_commit = None;
                 self.deferred_input = None;
+                self.pending_finish = None;
                 self.active = false;
                 self.ended = false;
                 self.reason = None;
@@ -837,16 +888,21 @@ impl Session {
             Command::View {
                 earliest_visible_word,
                 defer_automatic,
+                defer_finish,
                 ..
             } => {
                 self.earliest_visible_word = earliest_visible_word.unwrap_or(0);
                 if let Some(defer) = defer_automatic {
                     self.defer_automatic = defer;
                 }
+                if let Some(defer) = defer_finish {
+                    self.defer_finish = defer;
+                }
             }
             Command::FlushAutomatic { generation, .. } => {
                 if generation == self.generation
                     && !self.ended
+                    && self.pending_finish.is_none()
                     && let Some((now, date)) = self.automatic.pop_front()
                 {
                     self.completion_checkpoint = !self.composing;
@@ -877,11 +933,13 @@ impl Session {
                 .and_then(|generator| generator.pending_request())
                 .cloned(),
             awaiting_content: self.pending_commit.is_some(),
+            finish: self.pending_finish.clone(),
         })
     }
 
     fn process_input(&mut self, mut input: DeferredInput) {
         while !self.ended
+            && self.pending_finish.is_none()
             && let Some(unit) = input.units.pop_front()
         {
             self.completion_checkpoint =
@@ -916,7 +974,7 @@ impl Session {
         self.drain_indentation(now, date);
     }
     fn drain_indentation(&mut self, now: f64, date: f64) {
-        if self.pending_commit.is_some() || self.ended {
+        if self.pending_commit.is_some() || self.ended || self.pending_finish.is_some() {
             return;
         }
         if self.defer_automatic && self.indent_pending {
@@ -924,7 +982,11 @@ impl Session {
             self.automatic.push_back((now, date));
             return;
         }
-        while self.indent_pending && !self.ended && self.pending_commit.is_none() {
+        while self.indent_pending
+            && !self.ended
+            && self.pending_commit.is_none()
+            && self.pending_finish.is_none()
+        {
             self.indent_pending = false;
             self.insert_one(9, now, date, None, true, false);
             if self.defer_automatic && self.indent_pending {
@@ -1062,7 +1124,7 @@ impl Session {
                     return;
                 }
             } else {
-                self.end(now, date, Some("word generation error".into()));
+                self.finish(now, date, Some("word generation error".into()));
                 return;
             }
         }
@@ -1097,7 +1159,7 @@ impl Session {
                     && !(input.is_empty() && (is_space(unit) || unit == 10))
                     && !word_correct))
         {
-            self.end(finish_now, finish_date, Some("difficulty".into()));
+            self.finish(finish_now, finish_date, Some("difficulty".into()));
             return;
         }
         if checkpoint && progressed && self.config.min_burst != "off" {
@@ -1121,7 +1183,7 @@ impl Session {
                     self.config.min_burst_custom_speed
                 })
             {
-                self.end(finish_now, finish_date, Some("min burst".into()));
+                self.finish(finish_now, finish_date, Some("min burst".into()));
                 return;
             }
         }
@@ -1135,7 +1197,7 @@ impl Session {
             && finite
             && (word_correct || quick || advance)
         {
-            self.end(finish_now, finish_date, None);
+            self.finish(finish_now, finish_date, None);
         }
         if !self.ended
             && correct
@@ -1204,7 +1266,11 @@ impl Session {
     }
 
     fn delete(&mut self, kind: &str, now: f64, observed: Option<Text>, sentinel_removed: bool) {
-        if !self.active || self.ended || self.pending_commit.is_some() {
+        if !self.active
+            || self.ended
+            || self.pending_commit.is_some()
+            || self.pending_finish.is_some()
+        {
             return;
         }
         let input = self.current();
@@ -1282,7 +1348,7 @@ impl Session {
     }
 
     fn advance(&mut self, now: f64, date: f64) {
-        if !self.active {
+        if !self.active || self.pending_finish.is_some() {
             return;
         }
         let start = self.start.unwrap_or(now);
@@ -1291,7 +1357,7 @@ impl Session {
             return;
         }
         let due = ((now - start) / 1000.0).floor() as u32;
-        while self.active && self.ticks < due {
+        while self.active && self.pending_finish.is_none() && self.ticks < due {
             self.ticks += 1;
             let mut data = json!({"event":"step","timer":self.ticks});
             if self.ticks < due {
@@ -1330,7 +1396,7 @@ impl Session {
                     None
                 };
                 if let Some(reason) = reason {
-                    self.end(now, date, Some(reason.into()));
+                    self.finish(now, date, Some(reason.into()));
                 }
             }
             let limit = if self.config.mode == "time" {
@@ -1344,7 +1410,7 @@ impl Session {
                 None
             };
             if limit.is_some_and(|limit| limit > 0.0 && f64::from(self.ticks) >= limit) {
-                self.end(now, date, None);
+                self.finish(now, date, None);
             }
         }
     }

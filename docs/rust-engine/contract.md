@@ -121,3 +121,7 @@ fixtures: commands/*.json, with frozen TypeScript frames in oracle/*.json.
 Compare every command's state and events, then final derived values. A harness
 self-test must reject a deliberately altered word index. New captures refuse to
 overwrite files. Existing snapshots are never updated by the harness.
+
+## Observed web completion
+
+`view {deferFinish:true}` enables a finish-request/acknowledgement handshake. Rust decides completion and returns `finish` in the update; hosts disable input and stop scheduling, perform the same platform navigation/hooks as before, then send `acknowledgeFinish {now,date}`. The end event uses that explicit observation, preserving the website's later completion clock without a hidden Rust clock. New typing/ticks cannot change the decision while awaiting acknowledgement. Reset/end cancel it; stale/duplicate acknowledgement is an error. Native callers can keep immediate completion.
