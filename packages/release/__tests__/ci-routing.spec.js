@@ -273,3 +273,34 @@ it.each([
 ])("routes %s narrowly", (file, expected) => {
   expect(selected([file])).toEqual(expected);
 });
+
+it("builds the production Worker once and shares it with SSR and browser shards", () => {
+  const build = workflow.jobs["start-build"];
+  for (const flag of ["start-ssr", "start-browser"]) {
+    expect(build.if).toContain(`needs.changes.outputs.${flag} == 'true'`);
+  }
+  const upload = build.steps.find((step) =>
+    step.uses?.startsWith("actions/upload-artifact@"),
+  );
+  expect(upload.with).toMatchObject({
+    name: "start-worker",
+    path: "frontend/dist/start",
+    "include-hidden-files": true,
+    "if-no-files-found": "error",
+  });
+  for (const name of ["start-ssr", "start-browser"]) {
+    const job = workflow.jobs[name];
+    expect(job.needs).toContain("start-build");
+    const download = job.steps.find((step) =>
+      step.uses?.startsWith("actions/download-artifact@"),
+    );
+    expect(download.with).toMatchObject({
+      name: upload.with.name,
+      path: upload.with.path,
+    });
+    expect(
+      job.steps.some((step) => /build:start(?:$|\s)/.test(step.run ?? "")),
+    ).toBe(false);
+  }
+  expect(workflow.jobs["ci-ok"].needs).toContain("start-build");
+});
