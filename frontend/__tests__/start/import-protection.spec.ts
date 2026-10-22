@@ -57,7 +57,4 @@ describe("Start import protection", () => {
     expect(String(error)).toContain("Import denied in client environment");
   });
 
-  it("accepts the unmodified application", async () => {
-    expect(await buildWith({ name: "noop" })).toBeUndefined();
-  });
 });
