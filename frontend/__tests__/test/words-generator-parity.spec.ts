@@ -1,13 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vite-plus/test";
-import { existsSync, readFileSync, writeFileSync } from "fs";
+import { readFileSync } from "fs";
 import { resolve } from "path";
 import { fileURLToPath } from "url";
 
 // Snapshots of the words generator for the typing-core extraction. Every case
 // (packages/typing-core/__fixtures__/words/cases.json) runs with a seeded
 // Math.random, so typing-core can reproduce the exact same words.
-// Regenerate with UPDATE_PARITY_SNAPSHOTS=1 - only when the output is meant
-// to change.
+// Expected output is committed; missing fixtures must fail the test.
 
 const state = vi.hoisted(() => {
   // mulberry32
@@ -176,9 +175,6 @@ describe("words generator parity", () => {
     // json round trip on purpose: drops undefined just like the file
     const actual = JSON.parse(JSON.stringify(await run(c))) as unknown;
     const file = resolve(WORDS_DIR, "__snapshots__", `${name}.json`);
-    if (process.env["UPDATE_PARITY_SNAPSHOTS"] === "1" || !existsSync(file)) {
-      writeFileSync(file, `${JSON.stringify(actual, null, 2)}\n`);
-    }
     expect(actual).toEqual(JSON.parse(readFileSync(file, "utf-8")));
   });
 });
