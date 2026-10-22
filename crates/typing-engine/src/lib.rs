@@ -1,5 +1,6 @@
 //! Platform-independent typing rules. Hosts provide content, observations and time.
 pub mod session;
+pub mod stats;
 pub mod text;
 
 pub use session::{Command, Config, Session};

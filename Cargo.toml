@@ -11,7 +11,10 @@ repository = "https://github.com/voltcrash/oxytype"
 
 [workspace.dependencies]
 serde = { version = "1.0.229", features = ["derive"] }
-serde_json = { version = "1.0.151", features = ["preserve_order"] }
+serde_json = { version = "1.0.151", features = [
+  "preserve_order",
+  "float_roundtrip",
+] }
 wasm-bindgen = "=0.2.129"
 ts-rs = { version = "=12.0.1", features = ["serde-json-impl"] }
 
