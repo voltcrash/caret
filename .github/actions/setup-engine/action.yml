@@ -1,0 +1,16 @@
+name: Set up Rust typing engine
+description: Bootstrap pinned Rust, Wasm target/tooling and ignored browser bindings.
+runs:
+  using: composite
+  steps:
+    - name: Restore Rust build cache
+      uses: actions/cache@v5.0.3
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/bin/wasm-bindgen*
+          target
+        key: engine-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Cargo.lock', 'rust-toolchain.toml') }}
+    - name: Prepare pinned Rust and Wasm bindings
+      shell: bash
+      run: vp run engine:build

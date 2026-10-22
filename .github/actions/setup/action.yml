@@ -15,3 +15,5 @@ runs:
         node-version-file: .node-version
         cache: true
         cache-save: ${{ inputs.save-cache }}
+    - name: Prepare generated engine bindings
+      uses: ./.github/actions/setup-engine
