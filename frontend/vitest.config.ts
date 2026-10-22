@@ -25,12 +25,23 @@ const define = {
   "import.meta.env.OXYTYPE_BUILD_ID": JSON.stringify("TESTING"),
 };
 
+// Pure tests skip DOM emulation and application-owner mocks.
+const nodeTests = [
+  "__tests__/scripts/**/*.spec.ts",
+  "__tests__/vite-plugins/**/*.spec.ts",
+  "__tests__/styles/**/*.spec.ts",
+  "__tests__/utils/{colors,ip-addresses,key-converter,migration-performance,numbers,result-hash,settings-search,zod}.spec.ts",
+  "__tests__/elements/**/*.spec.ts",
+  "__tests__/components/pages/test/keymapConverter.spec.ts",
+];
+
 export const projects = [
   {
     extends: false,
     test: {
-      name: "start",
+      name: "node",
       include: [
+        ...nodeTests,
         "__tests__/start/foundation.spec.ts",
         "__tests__/start/layers.spec.ts",
         "__tests__/start/operation-functions.spec.ts",
@@ -48,7 +59,7 @@ export const projects = [
     test: {
       name: { label: "unit", color: "blue" },
       include: ["__tests__/**/*.spec.ts"],
-      exclude: ["__tests__/**/*.jsdom-spec.ts", "__tests__/start/**"],
+      exclude: [...nodeTests, "__tests__/start/**"],
       environment: "happy-dom",
       globalSetup: "__tests__/global-setup.ts",
       setupFiles: [
