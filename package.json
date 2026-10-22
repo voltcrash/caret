@@ -41,7 +41,12 @@
     "check-assets-others": "vp run --filter @oxytype/frontend check-assets others",
     "check-assets-json": "vp run --filter @oxytype/frontend check-assets json",
     "knip": "knip",
-    "oxlint": "vp lint"
+    "oxlint": "vp lint",
+    "engine:build": "node scripts/engine.ts build",
+    "engine:test": "node scripts/engine.ts test",
+    "engine:lint": "node scripts/engine.ts lint",
+    "engine:fmt": "node scripts/engine.ts fmt",
+    "engine:fmt-fix": "node scripts/engine.ts fmt-fix"
   },
   "devDependencies": {
     "@commitlint/cli": "21.2.3",
