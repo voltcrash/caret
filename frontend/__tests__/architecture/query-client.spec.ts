@@ -16,5 +16,4 @@ describe("Start ownership boundaries", () => {
     a.clear();
     b.clear();
   });
-
 });

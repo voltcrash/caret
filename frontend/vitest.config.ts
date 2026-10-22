@@ -27,6 +27,7 @@ const define = {
 
 // Pure tests skip DOM emulation and application-owner mocks.
 const nodeTests = [
+  "__tests__/architecture/**/*.spec.ts",
   "__tests__/scripts/**/*.spec.ts",
   "__tests__/vite-plugins/**/*.spec.ts",
   "__tests__/styles/**/*.spec.ts",
@@ -41,11 +42,7 @@ export const projects = [
     test: {
       name: "node",
       env: { TZ: "UTC" },
-      include: [
-        ...nodeTests,
-        "__tests__/start/foundation.spec.ts",
-        "__tests__/start/operation-functions.spec.ts",
-      ],
+      include: nodeTests,
       environment: "node",
       testTimeout: 30_000,
       hookTimeout: 30_000,
