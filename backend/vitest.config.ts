@@ -12,13 +12,17 @@ export const projects = [
   },
   {
     test: {
-      name: { label: "unit", color: "blue" },
+      name: { label: "http", color: "yellow" },
       setupFiles: ["__tests__/setup-tests.ts"],
+      include: ["__tests__/{api,auth,http}/**/*.spec.ts"],
+    },
+  },
+  {
+    test: {
+      name: { label: "unit", color: "blue" },
+      setupFiles: ["__tests__/setup-unit.ts"],
       include: ["__tests__/**/*.spec.ts"],
-      exclude: ["__tests__/__integration__/**", "__tests__/d1/**"],
-      sequence: {
-        groupOrder: 0,
-      },
+      exclude: ["__tests__/{api,auth,http,d1}/**"],
     },
   },
 ] satisfies TestProjectInlineConfiguration[];

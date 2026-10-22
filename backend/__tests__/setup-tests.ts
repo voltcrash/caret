@@ -1,24 +1,10 @@
 import { beforeAll, afterAll, afterEach, vi } from "vite-plus/test";
-import { BASE_CONFIGURATION } from "../src/constants/base-configuration";
-import "./setup-common-mocks";
+import "./setup-unit";
 import { createTestRuntime } from "./d1/helpers";
 import { readFile } from "node:fs/promises";
 import { createETagGenerator } from "../src/utils/etag";
 import { withRuntime, type WorkerEnv } from "../src/runtime/env";
 import { dispatchApi } from "./__testData__/http-worker";
-
-process.env["MODE"] = "dev";
-process.env["TZ"] = "UTC";
-vi.mock("../src/init/configuration", async (importOriginal) => {
-  const orig = (await importOriginal()) as any;
-
-  return {
-    __testing: orig.__testing,
-    getLiveConfiguration: () => BASE_CONFIGURATION,
-    getCachedConfiguration: () => BASE_CONFIGURATION,
-    patchConfiguration: vi.fn(),
-  };
-});
 
 /** Static asset binding stand-in: URL paths name files on disk. */
 async function fetchAsset(
