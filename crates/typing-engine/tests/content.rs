@@ -64,3 +64,115 @@ fn section_requests_are_owned_bounded_and_cancelled_by_generation() {
     }
     assert!(queue.is_empty());
 }
+
+fn section_generator(prefetch: Vec<Source>) -> typing_engine::generation::Generator {
+    use typing_engine::{
+        Config,
+        generation::{Assets, Generator, Language},
+        random::Random,
+    };
+    let config = Config {
+        mode: "words".into(),
+        words: 12,
+        punctuation: true,
+        funbox: vec!["poetry".into()],
+        ..Config::default()
+    };
+    Generator::with_assets(
+        config,
+        Language {
+            name: "english".into(),
+            words: vec![Text::from("base")],
+            ..Language::default()
+        },
+        None,
+        Random::seeded(4),
+        &mut Assets {
+            sections: prefetch,
+            ..Assets::default()
+        },
+    )
+    .unwrap()
+}
+#[test]
+fn deferred_initial_generation_resumes_without_repeating_words_or_random_draws() {
+    let sources: Vec<_> = (0..4)
+        .map(|index| poem(&format!("Section{index} café Three Four")))
+        .collect();
+    let mut baseline = section_generator(sources.clone());
+    let expected = baseline.generate(false).unwrap();
+    let mut deferred = section_generator(vec![]);
+    let mut replies = 0;
+    let actual = loop {
+        match deferred.generate(false) {
+            Ok(generated) => break generated,
+            Err(error) => {
+                assert_eq!(error, "Section content required");
+                let request = deferred.pending_request().unwrap().clone();
+                assert!(deferred.generate(true).is_err());
+                deferred.supply(&request, sources[replies].clone()).unwrap();
+                assert!(deferred.supply(&request, poem("duplicate")).is_err());
+                replies += 1;
+            }
+        }
+    };
+    assert_eq!(replies, 3);
+    assert_eq!(
+        serde_json::to_value(&actual).unwrap(),
+        serde_json::to_value(&expected).unwrap()
+    );
+    assert_eq!(actual.words[0], Text::from("Section0 "));
+    assert_eq!(actual.words[1], Text::from("café "));
+    assert_eq!(
+        serde_json::to_value(deferred.generate(true).unwrap()).unwrap(),
+        serde_json::to_value(expected).unwrap()
+    );
+}
+#[test]
+fn content_retains_initial_generator_while_session_creation_waits() {
+    use typing_engine::{
+        Config,
+        generation::{Content, Language, Prepare},
+        random::Random,
+    };
+    let mut content = Content::default();
+    content
+        .prepare(Prepare {
+            config: Config {
+                mode: "words".into(),
+                words: 2,
+                funbox: vec!["poetry".into()],
+                ..Config::default()
+            },
+            language: Language {
+                name: "english".into(),
+                words: vec![Text::from("base")],
+                ..Language::default()
+            },
+            custom: None,
+            random: Random::seeded(1),
+            quotes: None,
+            polyglot: vec![],
+            selected_quote_id: 1,
+            favorite_quote_ids: vec![],
+            sections: vec![],
+        })
+        .unwrap();
+    assert!(content.start_session(false).is_err());
+    let request = content
+        .generator()
+        .unwrap()
+        .pending_request()
+        .unwrap()
+        .clone();
+    content
+        .generator()
+        .unwrap()
+        .supply(&request, poem("one two"))
+        .unwrap();
+    let session = content.start_session(false).unwrap();
+    assert_eq!(
+        session.snapshot().words,
+        vec![Text::from("one "), Text::from("two")]
+    );
+}

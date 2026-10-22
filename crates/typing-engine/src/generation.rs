@@ -7,6 +7,7 @@ use ts_rs::TS;
 #[serde(default, rename_all = "camelCase")]
 pub struct Language {
     pub name: String,
+    pub bcp47: Option<String>,
     pub words: Vec<Text>,
     pub right_to_left: Option<bool>,
     pub joining_script: bool,
@@ -53,6 +54,14 @@ pub struct Assets {
     pub selected_quote_id: u32,
     pub favorite_quote_ids: Vec<u32>,
     pub polyglot: Vec<Language>,
+    pub sections: Vec<crate::content::Source>,
+}
+struct Batch {
+    repeating: bool,
+    limit: usize,
+    words: Vec<Text>,
+    indexes: Vec<usize>,
+    raw: Vec<Text>,
 }
 pub struct Generator {
     config: GenerationConfig,
@@ -76,6 +85,8 @@ pub struct Generator {
     pub current_quote: Option<crate::quotes::Quote>,
     polyglot: Vec<Language>,
     word_languages: std::collections::BTreeMap<Vec<u16>, usize>,
+    section_queue: Option<crate::content::Queue>,
+    batch: Option<Batch>,
 }
 pub(crate) fn case(text: &Text, upper: bool) -> Text {
     let mut output = vec![];
@@ -156,9 +167,24 @@ impl Generator {
         assets: &mut Assets,
     ) -> Result<Self, String> {
         config.validate()?;
-        if crate::funboxes::has_function(&config.funbox, "pullSection") {
-            return Err("Section content protocol is not yet available".into());
-        }
+        let section_queue = if let Some(name) = config.funbox.iter().find(|name| {
+            crate::funboxes::get(name).is_some_and(|metadata| {
+                metadata
+                    .frontend_functions
+                    .iter()
+                    .any(|function| function == "pullSection")
+            })
+        }) {
+            let english = language.bcp47.as_deref().unwrap_or("en").split('-').next() == Some("en");
+            let mut queue =
+                crate::content::Queue::new(name.clone(), config.language.clone(), english);
+            for source in std::mem::take(&mut assets.sections) {
+                queue.prefetch(source)?;
+            }
+            Some(queue)
+        } else {
+            None
+        };
         if config.mode == "custom" && custom.is_none() {
             return Err("Missing custom text".into());
         }
@@ -256,6 +282,8 @@ impl Generator {
             current_quote,
             polyglot,
             word_languages,
+            section_queue,
+            batch: None,
         })
     }
     fn limit(&self) -> usize {
@@ -372,62 +400,105 @@ impl Generator {
         }
         Ok(self.wordset[self.shuffled.pop().unwrap()].clone())
     }
+    pub fn pending_request(&self) -> Option<&crate::content::Request> {
+        self.section_queue
+            .as_ref()
+            .and_then(|queue| queue.pending())
+    }
+    pub fn supply(
+        &mut self,
+        request: &crate::content::Request,
+        source: crate::content::Source,
+    ) -> Result<(), String> {
+        self.section_queue
+            .as_mut()
+            .ok_or("Generator has no section source")?
+            .supply(request, source)
+    }
+    pub fn reset_requests(&mut self, generation: u32) {
+        if let Some(queue) = &mut self.section_queue {
+            queue.reset(generation);
+        }
+        self.batch = None;
+    }
     pub fn generate(&mut self, repeating: bool) -> Result<Generated, String> {
-        self.repeating = repeating;
-        self.ordered = 0;
-        self.shuffled.clear();
-        self.section.clear();
-        self.section_index = 0;
-        self.section_history.clear();
-        self.generated = 0;
-        if !repeating {
-            self.previous.clear();
-        }
-        let limit = self.limit();
-        if limit > 1_000_000 {
-            return Err("Generation request exceeds bound".into());
-        }
-        let mut words = vec![];
-        let mut indexes = vec![];
-        let mut raw: Vec<Text> = vec![];
-        if limit > 0 {
+        let mut batch = if let Some(batch) = self.batch.take() {
+            if batch.repeating != repeating {
+                self.batch = Some(batch);
+                return Err("Generation already awaiting content".into());
+            }
+            batch
+        } else {
+            self.repeating = repeating;
+            self.ordered = 0;
+            self.shuffled.clear();
+            self.section.clear();
+            self.section_index = 0;
+            self.section_history.clear();
+            self.generated = 0;
+            if !repeating {
+                self.previous.clear();
+            }
+            let limit = self.limit();
+            if limit > 1_000_000 {
+                return Err("Generation request exceeds bound".into());
+            }
+            Batch {
+                repeating,
+                limit,
+                words: vec![],
+                indexes: vec![],
+                raw: vec![],
+            }
+        };
+        if batch.limit > 0 {
             loop {
-                let next = self.next(
-                    words.len(),
-                    limit,
-                    raw.last(),
-                    raw.get(raw.len().wrapping_sub(2)),
-                )?;
-                indexes.push(next.section_index);
-                words.push(next.word.clone());
-                raw.push(next.word_raw);
+                let next = match self.next(
+                    batch.words.len(),
+                    batch.limit,
+                    batch.raw.last(),
+                    batch.raw.get(batch.raw.len().wrapping_sub(2)),
+                ) {
+                    Ok(next) => next,
+                    Err(error) => {
+                        if self.pending_request().is_some() {
+                            self.batch = Some(batch);
+                        }
+                        return Err(error);
+                    }
+                };
+                batch.indexes.push(next.section_index);
+                batch.words.push(next.word);
+                batch.raw.push(next.word_raw);
                 let sections = self.config.mode == "custom"
                     && self
                         .custom
                         .as_ref()
                         .is_some_and(|custom| custom.pipe_delimiter);
                 if (sections
-                    && ((self.section.is_empty() && self.section_index >= limit)
-                        || words.len() >= 100))
-                    || (!sections && words.len() >= limit)
+                    && ((self.section.is_empty() && self.section_index >= batch.limit)
+                        || batch.words.len() >= 100))
+                    || (!sections && batch.words.len() >= batch.limit)
                 {
                     break;
                 }
             }
         }
-        self.generated = words.len();
+        self.generated = batch.words.len();
         self.section_history.clear();
-        let has_tab = words
+        let has_tab = batch
+            .words
             .iter()
             .chain(&self.wordset)
             .any(|word| word.0.contains(&9));
-        let has_newline = words
+        let has_newline = batch
+            .words
             .iter()
             .chain(&self.wordset)
             .any(|word| word.0.contains(&10));
         Ok(Generated {
-            words,
-            section_indexes: indexes,
+            words: batch.words,
+            section_indexes: batch.indexes,
             has_tab,
             has_newline,
             all_right_to_left: self.language.right_to_left,
@@ -462,6 +533,13 @@ impl Generator {
             if !continuation {
                 return Err("Repeated word is undefined".into());
             }
+        }
+        if self.section.is_empty()
+            && let Some(queue) = &mut self.section_queue
+            && queue.is_empty()
+        {
+            queue.request();
+            return Err("Section content required".into());
         }
         let mut word = self.random_word()?;
         let previous_original = previous.cloned();
@@ -507,6 +585,19 @@ impl Generator {
                     retries += 1;
                     word = self.random_word()?;
                 }
+            } else if let Some(section) = self.section_queue.as_mut().and_then(|queue| queue.pop())
+            {
+                let mut units = vec![];
+                for (index, source_word) in section.words.into_iter().enumerate() {
+                    if self.config.mode == "words" && index >= self.config.words as usize {
+                        break;
+                    }
+                    if index > 0 {
+                        units.push(32);
+                    }
+                    units.extend(source_word.0);
+                }
+                word = Text(units);
             } else {
                 let mut retries = 0;
                 let mut first = self.lazy(case(
@@ -593,6 +684,7 @@ impl Generator {
             });
         if self.config.mode != "custom"
             && self.config.mode != "quote"
+            && self.section_queue.is_none()
             && !self.config.punctuation
             && !self.config.funbox.iter().any(|name| {
                 [
@@ -628,7 +720,10 @@ impl Generator {
             }
             word = Text(out);
         }
-        if self.config.punctuation && !self.language.original_punctuation {
+        if self.config.punctuation
+            && !self.language.original_punctuation
+            && self.section_queue.is_none()
+        {
             word = self.punctuation.apply(
                 word,
                 crate::punctuation::PunctuationContext {
@@ -701,6 +796,8 @@ pub struct Prepare {
     pub selected_quote_id: u32,
     #[serde(default)]
     pub favorite_quote_ids: Vec<u32>,
+    #[serde(default)]
+    pub sections: Vec<crate::content::Source>,
 }
 /// Retains only explicitly owned content-selection state across restarts.
 #[derive(Default)]
@@ -715,6 +812,7 @@ impl Content {
         self.assets.polyglot = input.polyglot;
         self.assets.selected_quote_id = input.selected_quote_id;
         self.assets.favorite_quote_ids = input.favorite_quote_ids;
+        self.assets.sections = input.sections;
         self.generator = Some(Generator::with_assets(
             input.config,
             input.language,
@@ -725,8 +823,9 @@ impl Content {
         Ok(())
     }
     pub fn start_session(&mut self, repeating: bool) -> Result<crate::Session, String> {
+        let generated = self.generator()?.generate(repeating)?;
         let generator = self.generator.take().ok_or("Content not prepared")?;
-        crate::Session::from_generator(generator, repeating)
+        crate::Session::from_generated(generator, generated)
     }
     pub fn generator(&mut self) -> Result<&mut Generator, String> {
         self.generator.as_mut().ok_or("Content not prepared".into())

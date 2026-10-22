@@ -20,6 +20,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Command::export_all(&config)?;
     Config::export_all(&config)?;
     State::export_all(&config)?;
+    typing_engine::content::Request::export_all(&config)?;
     typing_engine::session::Preflight::export_all(&config)?;
     typing_engine::session::InsertionLayout::export_all(&config)?;
     typing_engine::session::Snapshot::export_all(&config)?;

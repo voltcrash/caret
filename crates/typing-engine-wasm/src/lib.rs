@@ -143,6 +143,26 @@ impl WasmContent {
             &serde_json::json!({ "allWordsGenerated": generator.all_generated(), "currentQuote": generator.current_quote }),
         )?)
     }
+    pub fn request(&mut self) -> Result<String, JsError> {
+        let generator = self
+            .content
+            .as_mut()
+            .ok_or_else(|| JsError::new("Content disposed"))?
+            .generator()
+            .map_err(|message| JsError::new(&message))?;
+        Ok(serde_json::to_string(&generator.pending_request())?)
+    }
+    pub fn supply(&mut self, request: &str, source: &str) -> Result<(), JsError> {
+        let request = serde_json::from_str(request)?;
+        let source = serde_json::from_str(source)?;
+        self.content
+            .as_mut()
+            .ok_or_else(|| JsError::new("Content disposed"))?
+            .generator()
+            .map_err(|message| JsError::new(&message))?
+            .supply(&request, source)
+            .map_err(|message| JsError::new(&message))
+    }
     pub fn session(&mut self, repeating: bool) -> Result<WasmSession, JsError> {
         let session = self
             .content

@@ -413,6 +413,12 @@ impl Session {
         repeating: bool,
     ) -> Result<Self, String> {
         let generated = generator.generate(repeating)?;
+        Self::from_generated(generator, generated)
+    }
+    pub fn from_generated(
+        generator: crate::generation::Generator,
+        generated: crate::generation::Generated,
+    ) -> Result<Self, String> {
         let mut session = Self::new(generator.config().clone(), generated.words)?;
         session.sections = generated.section_indexes;
         session.custom_limit = generator.custom_limit();

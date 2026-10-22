@@ -16,11 +16,22 @@ import type { NextWord } from "../generated/types/NextWord";
 import type { Quote } from "../generated/types/Quote";
 import type { Query } from "../generated/types/Query";
 import type { Response } from "../generated/types/Response";
+import type { Request as ContentRequest } from "../generated/types/Request";
+import type { Source } from "../generated/types/Source";
 import type { Preflight } from "../generated/types/Preflight";
 import type { InsertionLayout } from "../generated/types/InsertionLayout";
 import type { Snapshot } from "../generated/types/Snapshot";
 import type { Log } from "../generated/types/Log";
-export type { Query, Response, Log, Snapshot, Preflight, InsertionLayout };
+export type {
+  Query,
+  Response,
+  Log,
+  Snapshot,
+  Preflight,
+  InsertionLayout,
+  ContentRequest,
+  Source,
+};
 
 export type {
   Command,
@@ -185,6 +196,12 @@ export class BrowserContent {
         JSON.stringify(previous2),
       ),
     ) as NextWord;
+  }
+  request(): ContentRequest | null {
+    return JSON.parse(this.live().request()) as ContentRequest | null;
+  }
+  supply(request: ContentRequest, source: Source): void {
+    this.live().supply(JSON.stringify(request), JSON.stringify(source));
   }
   createSession(repeating = false): BrowserSession {
     return new BrowserSession({}, [], this.live().session(repeating));
