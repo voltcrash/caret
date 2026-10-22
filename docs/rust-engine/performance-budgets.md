@@ -1,7 +1,7 @@
 # Performance budgets — frozen before full port
 
 Budgets: `performance-budgets.json`. Do not raise them to hide a failed migration.
-Conditions: baseline.md; same Linux ARM64 machine, Desktop Chromium 151.0.7896.0,
+Conditions: baseline.md; same Linux ARM64 machine, Desktop Chromium 153.0.8010.12,
 no CPU/network throttle, local built Cloudflare Start/workerd. Shared host; allow
 only the fixed additive margins below. CI timing is diagnostic until equivalently
 controlled; structural/size/parity assertions remain mandatory everywhere.

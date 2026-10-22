@@ -152,6 +152,7 @@ pub struct Session {
     start: Option<f64>,
     ticks: u32,
     events: Vec<Recorded>,
+    indent_pending: bool,
 }
 
 impl Session {
@@ -173,6 +174,7 @@ impl Session {
             start: None,
             ticks: 0,
             events: vec![],
+            indent_pending: false,
         })
     }
 
@@ -283,6 +285,7 @@ impl Session {
                 self.reason = None;
                 self.start = None;
                 self.ticks = 0;
+                self.indent_pending = false;
                 self.events.clear();
                 self.input = vec![Text::default(); self.words.len().max(1)];
             }
@@ -313,6 +316,22 @@ impl Session {
         automatic: bool,
         composition: bool,
     ) {
+        self.insert_one(unit, now, date, shift, automatic, composition);
+        while self.indent_pending && !self.ended {
+            self.indent_pending = false;
+            self.insert_one(9, now, date, None, true, false);
+        }
+    }
+
+    fn insert_one(
+        &mut self,
+        unit: u16,
+        now: f64,
+        date: f64,
+        shift: Option<bool>,
+        automatic: bool,
+        composition: bool,
+    ) {
         let input = self.current();
         let target = self.target();
         let nospace = self.nospace();
@@ -330,6 +349,24 @@ impl Session {
             target.0.get(input.len()).copied(),
             &self.config.language,
         );
+        let replacement = if unit == 0x2026 && target.0.get(input.len()) != Some(&unit) {
+            Some("...")
+        } else if unit == 0x0133
+            && self.config.language.starts_with("dutch")
+            && target.0.get(input.len()) != Some(&unit)
+        {
+            Some("ij")
+        } else {
+            None
+        };
+        if let Some(replacement) = replacement {
+            for unit in replacement.encode_utf16() {
+                if !self.ended {
+                    self.insert(unit, now, date, shift, automatic, composition);
+                }
+            }
+            return;
+        }
         let commit = is_space(unit) || unit == 10 || (nospace && input.len() + 1 == target.len());
         if is_space(unit)
             && input.is_empty()
@@ -383,7 +420,19 @@ impl Session {
             .resize(self.input.len().max(self.index + 1), Text::default());
         self.input[self.index] = next;
         self.record("input", now, data);
-        // Full input/lifecycle port adds difficulty/deletion penalties after browser proof.
+        if !correct && !stopped && self.config.delete_on_error != "off" {
+            self.delete_error(now);
+        }
+        if self.config.mode != "zen"
+            && ((self.config.difficulty == "master" && !correct)
+                || (self.config.difficulty == "expert"
+                    && commit
+                    && !(input.is_empty() && (is_space(unit) || unit == 10))
+                    && !word_correct))
+        {
+            self.end(now, date, Some("difficulty".into()));
+            return;
+        }
         let finite = self.config.mode != "time"
             && self.config.mode != "zen"
             && !(self.config.mode == "words" && self.config.words == 0);
@@ -395,6 +444,67 @@ impl Session {
             self.end(now, date, None);
         } else if advance && (self.index + 1 < self.words.len() || self.config.mode == "zen") {
             self.index += 1;
+        }
+        if !self.ended
+            && correct
+            && self.config.language.starts_with("code")
+            && self.target().0.first() == Some(&9)
+            && self.target().0.get(self.current().len()) == Some(&9)
+        {
+            self.indent_pending = true;
+        }
+    }
+
+    fn log_delete(&mut self, kind: &str, now: f64, char_index: usize, next: Text, automatic: bool) {
+        let mut data = json!({"inputType":kind,"wordIndex":self.index,"charIndex":char_index,"inputValue":next});
+        if automatic {
+            data["automatic"] = json!(true);
+        }
+        self.record("input", now, data);
+        self.input
+            .resize(self.input.len().max(self.index + 1), Text::default());
+        self.input[self.index] = next;
+    }
+
+    fn previous_input(&self, kind: &str) -> Text {
+        let mut input = self.input.get(self.index).cloned().unwrap_or_default();
+        if kind == "deleteWordBackward" {
+            input.0.clear();
+        } else if self.nospace() || matches!(input.0.last(), Some(32 | 10)) {
+            input.0.pop();
+        }
+        input
+    }
+
+    fn delete_error(&mut self, now: f64) {
+        let input = self.current();
+        let whole = self.config.delete_on_error.starts_with("word");
+        let kind = if whole {
+            "deleteWordBackward"
+        } else {
+            "deleteContentBackward"
+        };
+        if !input.is_empty() {
+            let next = if whole {
+                Text::default()
+            } else {
+                Text(input.0[..input.len() - 1].to_vec())
+            };
+            self.log_delete(kind, now, input.len(), next, true);
+            if !whole && input.len() > 1 {
+                self.log_delete(
+                    kind,
+                    now,
+                    input.len() - 1,
+                    Text(input.0[..input.len() - 2].to_vec()),
+                    true,
+                );
+            }
+        }
+        if self.config.delete_on_error.contains("hard") && input.len() <= 1 && self.index > 0 {
+            self.index -= 1;
+            let previous = self.previous_input(kind);
+            self.log_delete(kind, now, previous.len(), previous, true);
         }
     }
 
@@ -419,15 +529,23 @@ impl Session {
         {
             return;
         }
-        let next = if input.is_empty() {
-            self.index -= 1;
-            let mut previous = prev;
-            if kind == "deleteWordBackward" {
-                previous.0.clear();
-            } else if self.nospace() || matches!(previous.0.last(), Some(32 | 10)) {
-                previous.0.pop();
-            }
-            previous
+        let unindent = self.config.language.starts_with("code")
+            && self.config.code_unindent_on_backspace
+            && !input.is_empty()
+            && input.0.iter().all(|c| *c == 9)
+            && self.target().0.starts_with(&input.0);
+        if unindent {
+            self.log_delete(
+                "deleteWordBackward",
+                now,
+                input.len(),
+                Text::default(),
+                false,
+            );
+        }
+        let next = if input.is_empty() || unindent {
+            self.index = self.index.saturating_sub(1);
+            self.previous_input(kind)
         } else if kind == "deleteWordBackward" {
             delete_word(&input)
         } else {
@@ -435,13 +553,22 @@ impl Session {
             next.0.pop();
             next
         };
-        let char_index = if input.is_empty() {
+        let char_index = if input.is_empty() || unindent {
             next.len()
         } else {
             input.len()
         };
-        self.record("input",now,json!({"inputType":kind,"wordIndex":self.index,"charIndex":char_index,"inputValue":next}));
-        self.input[self.index] = next;
+        self.log_delete(
+            if unindent {
+                "deleteContentBackward"
+            } else {
+                kind
+            },
+            now,
+            char_index,
+            next,
+            false,
+        );
     }
 
     fn advance(&mut self, now: f64, date: f64) {
