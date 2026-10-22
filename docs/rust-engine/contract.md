@@ -75,7 +75,8 @@ plus residue; preserve clearedNextWord. Host callbacks do not supply word index.
 Known headless/web differences requiring recorded web cases before input cutover:
 
 - Web checks failure/completion after the last multi-input unit and outside active
-  composition; headless session checks every unit.
+  composition; headless session checks every unit. Rust now checks at the final
+  committed unit, proved by the actual-browser master multi-input regression.
 - Web schedules automatic tabs on a later task; headless session inserts recursively.
 - Web records DOM-based limits/visible words; headless session has no observations.
 - Web normalizes prior to ellipsis expansion; headless path checks blocking first.
@@ -95,7 +96,7 @@ metadata; transport Zod schemas remain authoritative and mechanically checked.
 Fixtures supply the exact floating-point random stream in [0,1); exhaustion is an
 error, not reseeding. Production uses a specified seeded algorithm, host-provided
 seed, stable draw order; seed algorithm/behavior version accompanies native history.
-Legacy generator snapshots require their existing seedrandom stream, not matching
+Legacy generator snapshots require their existing Mulberry32 stream, not matching
 only distributions. Host asset loaders supply English punctuation/replacement data;
 Rust decides transform order and random consumption.
 

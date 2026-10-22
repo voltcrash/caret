@@ -31,6 +31,9 @@ impl Random {
             }
             Self::Stream { values, cursor } => {
                 let value = *values.get(*cursor).ok_or("Random stream exhausted")?;
+                if !value.is_finite() || !(0.0..1.0).contains(&value) {
+                    return Err("Random stream values must be finite and in [0,1)".into());
+                }
                 *cursor += 1;
                 Ok(value)
             }
