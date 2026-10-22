@@ -12,7 +12,7 @@ empty commits to inflate count. Do not publish production or releases implicitly
 
 ## Current position
 
-Stage 1, Phases 1.1–1.2 complete; Phase 1.3 in progress. Read root AGENTS.md and the complete migration
+Stage 1, Phases 1.1–1.3 complete; Phase 1.4 in progress. Read root AGENTS.md and the complete migration
 plan before edits. Installed workspace dependencies with frozen lockfile.
 Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen oracle and mismatch detection. Existing website engine remains authoritative.
 
@@ -20,8 +20,8 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | --- | --- | --- |
 | 1.1 Inventory / baselines | Complete | See inventory.md, features.md, baseline.md and raw measurements. |
 | 1.2 Contracts / fixtures | Complete | 13 command traces, 15 oracle/integrity tests; contract and classified gaps. |
-| 1.3 Native / browser proof | Active | Implement finite slice; native/browser/Cloudflare parity and measured budgets pending. |
-| 1.4 Input / lifecycle / timing | Pending | Requires production browser proof. |
+| 1.3 Native / browser proof | Complete | Native 7 traces; Cloudflare real-browser finite slice; MIME/CSP, lifecycle, boundary benchmark. Budgets frozen. |
+| 1.4 Input / lifecycle / timing | Active | Remaining input penalties, code, physical observations, browser differences and timing. |
 | 1.5 Generation / configuration | Pending | Requires contract and proof. |
 | 1.6 Events / results / replay | Pending | Requires input and generation. |
 | 1.7 Binding / engine gate | Pending | Full three-path parity and budgets. |
@@ -38,6 +38,13 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 - Phase 1.2: `vp test run packages/typing-core/__test__/rust-oracle.spec.ts`: 15 pass.
 - Phase 1.2 type-aware lint: pass. Capture created new traces once, refuses overwrite.
 - `vp exec rustup target add wasm32-unknown-unknown`: pass.
+
+- Phase 1.3: `vp run engine:test`: three native tests pass (seven frozen traces).
+- Phase 1.3: `vp run engine:lint` and `vp run engine:fmt`: pass.
+- Phase 1.3: opted-in Cloudflare production build and browser proof: pass.
+- Phase 1.3: workerd document suite: six pass; production CSP now permits Wasm compilation specifically.
+- Phase 1.3: boundary benchmark/type-aware lint passed; proof-performance.json and performance-budgets.md record limits and evidence.
+- Early failed browser proof correctly exposed CSP; fixed and retested. Initial build raced workspace dependency installation; reran after install completed.
 
 ## Decisions
 

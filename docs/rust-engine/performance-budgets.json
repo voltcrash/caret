@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "b5bc52672",
+  "wasmRawBytes": 1048576,
+  "wasmGzipBytes": 307200,
+  "glueRawBytes": 32768,
+  "bindingP95Ms": 0.1,
+  "initializationP95Ms": 100,
+  "inputToPaintP95Ms": 112.5,
+  "restartMedianMs": 448.49853500000063,
+  "restartP95Ms": 501.58758399999897,
+  "coldMedianMs": 820.9000000059605,
+  "coldP95Ms": 1500.6000000089407,
+  "warmMedianMs": 719.7000000029802,
+  "warmP95Ms": 844.4000000059605,
+  "activeHeapBytes": 22084844,
+  "resetHeapBytes": 15232636,
+  "wasmHeapBytesAfterReset": 16777216
+}
