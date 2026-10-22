@@ -31,4 +31,10 @@ test("master failure waits for the final unit of a multi-character browser commi
       .join(""),
   ).toBe(batch);
   expect(inputs.at(-1)?.data.wordIndex).toBe(0);
+  const state = await page.evaluate(() =>
+    (
+      window as unknown as { engineMigrationState: () => { wordIndex: number } }
+    ).engineMigrationState(),
+  );
+  expect(state.wordIndex).toBe(1);
 });
