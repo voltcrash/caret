@@ -16,9 +16,11 @@ import type { NextWord } from "../generated/types/NextWord";
 import type { Quote } from "../generated/types/Quote";
 import type { Query } from "../generated/types/Query";
 import type { Response } from "../generated/types/Response";
+import type { Preflight } from "../generated/types/Preflight";
+import type { InsertionLayout } from "../generated/types/InsertionLayout";
 import type { Snapshot } from "../generated/types/Snapshot";
 import type { Log } from "../generated/types/Log";
-export type { Query, Response, Log, Snapshot };
+export type { Query, Response, Log, Snapshot, Preflight, InsertionLayout };
 
 export type {
   Command,
@@ -79,6 +81,14 @@ export class BrowserSession {
       throw new Error("Typing engine session disposed");
     }
     return JSON.parse(this.handle.command(JSON.stringify(command))) as Update;
+  }
+  preflight(data: Text, layout: Partial<InsertionLayout> = {}): Preflight {
+    if (this.handle === undefined) {
+      throw new Error("Typing engine session disposed");
+    }
+    return JSON.parse(
+      this.handle.preflight(JSON.stringify(data), JSON.stringify(layout)),
+    ) as Preflight;
   }
   snapshot(): Snapshot {
     if (this.handle === undefined) {

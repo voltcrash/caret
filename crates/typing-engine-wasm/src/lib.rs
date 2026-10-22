@@ -37,6 +37,15 @@ impl WasmSession {
             .map_err(|message| JsError::new(&message))?;
         Ok(serde_json::to_string(&update)?)
     }
+    pub fn preflight(&self, data: &str, layout: &str) -> Result<String, JsError> {
+        let data = serde_json::from_str(data)?;
+        let layout = serde_json::from_str(layout)?;
+        let session = self
+            .session
+            .as_ref()
+            .ok_or_else(|| JsError::new("Session disposed"))?;
+        Ok(serde_json::to_string(&session.preflight(data, &layout))?)
+    }
     pub fn snapshot(&self) -> Result<String, JsError> {
         let session = self
             .session

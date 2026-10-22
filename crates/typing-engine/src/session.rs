@@ -22,6 +22,7 @@ pub struct Config {
     pub freedom_mode: bool,
     pub confidence_mode: String,
     pub blind_mode: bool,
+    pub hide_extra_letters: bool,
     pub code_unindent_on_backspace: bool,
     pub funbox: Vec<String>,
     pub show_all_lines: bool,
@@ -54,6 +55,7 @@ impl Default for Config {
             freedom_mode: false,
             confidence_mode: "off".into(),
             blind_mode: false,
+            hide_extra_letters: false,
             code_unindent_on_backspace: false,
             funbox: vec![],
             show_all_lines: false,
@@ -171,6 +173,9 @@ pub enum Command {
         automatic: Option<bool>,
         #[serde(default)]
         is_composition_ending: Option<bool>,
+        #[serde(default)]
+        #[ts(optional)]
+        layout: Option<InsertionLayout>,
     },
     #[serde(rename_all = "camelCase")]
     Delete {
@@ -252,6 +257,20 @@ pub enum Command {
     },
 }
 
+#[derive(Clone, Debug, Default, Serialize, Deserialize, TS)]
+#[serde(default, rename_all = "camelCase")]
+pub struct InsertionLayout {
+    pub slow_timer: bool,
+    pub wrapped: bool,
+    pub final_in_batch: Option<bool>,
+}
+#[derive(Serialize, TS)]
+#[serde(rename_all = "camelCase")]
+pub struct Preflight {
+    pub blocked: bool,
+    pub measure_overflow: bool,
+    pub normalized: Text,
+}
 #[derive(Clone, Debug, Serialize, Deserialize, TS)]
 #[serde(rename_all = "camelCase")]
 pub struct State {
@@ -283,6 +302,12 @@ pub struct Update {
     pub words: Vec<WordChange>,
     #[serde(rename = "logInvalidated")]
     pub log_invalidated: bool,
+    #[serde(
+        rename = "visualInputOverride",
+        skip_serializing_if = "Option::is_none"
+    )]
+    #[ts(optional)]
+    pub visual_input_override: Option<Text>,
 }
 #[derive(Clone, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
@@ -337,6 +362,7 @@ pub struct Session {
     sections: Vec<usize>,
     word_changes: Vec<WordChange>,
     bailed_out: bool,
+    visual_input_override: Option<Text>,
 }
 
 impl Session {
@@ -378,6 +404,7 @@ impl Session {
             sections,
             word_changes: vec![],
             bailed_out: false,
+            visual_input_override: None,
         })
     }
 
@@ -401,6 +428,43 @@ impl Session {
         session.strip_final_separator();
         session.word_changes.clear();
         Ok(session)
+    }
+    pub fn preflight(&self, data: Text, layout: &InsertionLayout) -> Preflight {
+        let target = self.target();
+        let input = self.current();
+        let observation = crate::input::Input {
+            data,
+            input_value: input.clone(),
+            target_word: target.clone(),
+            nospace: self.nospace(),
+            correct_shift_used: None,
+        };
+        let normalized = crate::input::normalize_data(&self.config, &observation);
+        let observation = crate::input::Input {
+            data: normalized.clone(),
+            ..observation
+        };
+        let blocked = self.ended
+            || crate::input::blocked(
+                &self.config,
+                &observation,
+                self.words.iter().any(|word| word.0.contains(&10)),
+            );
+        let display_length = target.len() - usize::from(target.0.last() == Some(&32));
+        let measure_overflow = !blocked
+            && !layout.slow_timer
+            && observation.data.len() == 1
+            && !self.config.blind_mode
+            && !self.config.hide_extra_letters
+            && !self.config.delete_on_error.contains("hard")
+            && input.len() >= display_length
+            && !crate::input::should_advance(&self.config, &observation)
+            && self.config.mode != "zen";
+        Preflight {
+            blocked: blocked || (measure_overflow && layout.wrapped),
+            measure_overflow,
+            normalized,
+        }
     }
     pub fn snapshot(&self) -> Snapshot {
         Snapshot {
@@ -559,6 +623,7 @@ impl Session {
         let previous_origin = self.origin();
         let invalidated = matches!(command, Command::Finalize { .. } | Command::Reset { .. });
         self.word_changes.clear();
+        self.visual_input_override = None;
         match command {
             Command::Insert {
                 data,
@@ -567,9 +632,22 @@ impl Session {
                 correct_shift_used,
                 automatic,
                 is_composition_ending,
+                layout,
             } => {
                 if is_composition_ending == Some(true) {
                     self.composing = false;
+                }
+                let layout = layout.unwrap_or_default();
+                if self.preflight(data.clone(), &layout).blocked {
+                    return Ok(Update {
+                        state: self.state(),
+                        events: vec![],
+                        generation: self.generation,
+                        automatic_pending: !self.automatic.is_empty(),
+                        words: vec![],
+                        log_invalidated: false,
+                        visual_input_override: None,
+                    });
                 }
                 let length = data.len();
                 for (index, unit) in data.0.into_iter().enumerate() {
@@ -578,7 +656,9 @@ impl Session {
                     }
                     // The browser checks failure/finish at the final unit of a
                     // committed input batch, not after each surrogate/character.
-                    self.completion_checkpoint = index + 1 == length && !self.composing;
+                    self.completion_checkpoint = index + 1 == length
+                        && !self.composing
+                        && layout.final_in_batch != Some(false);
                     self.insert(
                         unit,
                         now,
@@ -697,6 +777,7 @@ impl Session {
             automatic_pending: !self.automatic.is_empty(),
             words: self.word_changes.clone(),
             log_invalidated: invalidated || previous_origin != origin,
+            visual_input_override: self.visual_input_override.clone(),
         })
     }
 
@@ -738,13 +819,18 @@ impl Session {
         let input = self.current();
         let target = self.target();
         let nospace = self.nospace();
-        if unit == 10
-            && self.config.mode != "zen"
-            && !self.words.iter().any(|word| word.0.contains(&10))
-        {
-            return;
-        }
-        if is_space(unit) && nospace {
+        let observation = crate::input::Input {
+            data: Text(vec![unit]),
+            input_value: input.clone(),
+            target_word: target.clone(),
+            nospace,
+            correct_shift_used: shift,
+        };
+        if crate::input::blocked(
+            &self.config,
+            &observation,
+            self.words.iter().any(|word| word.0.contains(&10)),
+        ) {
             return;
         }
         let unit = normalize(
@@ -763,49 +849,32 @@ impl Session {
             None
         };
         if let Some(replacement) = replacement {
-            for unit in replacement.encode_utf16() {
+            let checkpoint = self.completion_checkpoint;
+            let replacement: Vec<_> = replacement.encode_utf16().collect();
+            for (index, unit) in replacement.iter().enumerate() {
+                self.completion_checkpoint = checkpoint && index + 1 == replacement.len();
                 if !self.ended {
-                    self.insert(unit, now, date, shift, automatic, composition);
+                    self.insert(*unit, now, date, shift, automatic, composition);
                 }
             }
+            self.completion_checkpoint = checkpoint;
             return;
         }
-        let commit = is_space(unit) || unit == 10 || (nospace && input.len() + 1 == target.len());
-        if is_space(unit)
-            && input.is_empty()
-            && !self.config.strict_space
-            && self.config.difficulty == "normal"
-            && !self.config.delete_on_error.contains("hard")
-        {
-            return;
-        }
-        let mut next = input.clone();
-        next.0.push(unit);
-        let word_correct = next == target;
-        let advance = commit
-            && (self.config.mode == "zen"
-                || (!(input.is_empty()
-                    && !nospace
-                    && (self.config.strict_space || self.config.difficulty != "normal"))
-                    && (word_correct
-                        || (self.config.stop_on_error == "off"
-                            && self.config.delete_on_error == "off"))));
-        let limit = if self.config.mode == "zen" {
-            30
-        } else {
-            target.len() + 20
+        let observation = crate::input::Input {
+            data: Text(vec![unit]),
+            ..observation
         };
-        if input.len() >= limit && !advance {
-            return;
-        }
+        let commit = crate::input::commit(&observation).is_some();
+        let decision = crate::input::evaluate(&self.config, &observation);
+        let mut raw_next = input.clone();
+        raw_next.0.push(unit);
+        let word_correct = raw_next == target;
+        let next = decision.input_value;
+        self.visual_input_override = decision.visual_input_override;
+        let correct = decision.correct;
+        let stopped = decision.stopped;
+        let advance = decision.advance;
         self.start(now, date);
-        let correct = self.config.mode == "zen"
-            || (shift != Some(false) && target.0.get(input.len()) == Some(&unit));
-        let stopped = (self.config.stop_on_error == "letter" && !correct) || shift == Some(false);
-        if stopped {
-            next = input.clone();
-        }
-        let advance = advance && !stopped;
         let mut data = json!({"inputType":"insertText", "data":Text(vec![unit]), "correct":correct, "wordIndex":self.index,
             "charIndex":input.len(), "inputValue":next});
         for (key, yes) in [
@@ -983,10 +1052,13 @@ impl Session {
             .cloned()
             .unwrap_or_default();
         let previous_correct = self.index > 0 && self.words.get(self.index - 1) == Some(&prev);
-        if !self.config.freedom_mode
-            && (self.config.confidence_mode == "max"
-                || (input.is_empty() && (self.config.confidence_mode == "on" || previous_correct)))
-        {
+        if !crate::input::can_delete(
+            &self.config,
+            &input,
+            self.index,
+            previous_correct,
+            self.index > self.earliest_visible_word,
+        ) {
             return;
         }
         let after = observed.unwrap_or_else(|| {

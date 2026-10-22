@@ -28,6 +28,7 @@ fn insert(session: &mut Session, data: Text, now: f64) -> typing_engine::session
             correct_shift_used: None,
             automatic: None,
             is_composition_ending: None,
+            layout: None,
         })
         .unwrap()
 }
@@ -180,7 +181,8 @@ fn invalid_configuration_and_overdue_work_leave_session_unchanged() {
                 date: 0.0,
                 correct_shift_used: None,
                 automatic: None,
-                is_composition_ending: None
+                is_composition_ending: None,
+                layout: None,
             })
             .is_err()
     );

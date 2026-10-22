@@ -3,6 +3,7 @@ pub mod analysis;
 pub mod funboxes;
 mod generated_funboxes;
 pub mod generation;
+pub mod input;
 pub mod language_rules;
 pub mod pace;
 pub mod practice;
