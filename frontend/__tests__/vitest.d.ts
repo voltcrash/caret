@@ -1,3 +1,4 @@
+/* oxlint-disable typescript/no-empty-object-type -- Vitest matcher augmentation requires interface declaration merging. */
 import type { TestingLibraryMatchers } from "@testing-library/jest-dom/matchers";
 declare module "vitest" {
   interface Assertion<

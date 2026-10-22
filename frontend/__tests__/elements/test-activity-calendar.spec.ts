@@ -475,7 +475,7 @@ describe("test-activity-calendar.ts", () => {
         expect(days[321]).toMatchObject(activityDay("2022-12-31", 365, 4));
         expect(days[322]).toMatchObject(activityDay("2023-01-01", 1, 1));
         expect(days[364]).toMatchObject(
-          activityDay("2023-02-12", undefined, "0"),
+          activityDay("2023-02-12", undefined, 0),
         );
 
         //fillers
