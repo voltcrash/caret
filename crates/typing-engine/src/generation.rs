@@ -161,6 +161,7 @@ impl Generator {
         }
         if config.funbox.iter().any(|name| {
             ![
+                "morse",
                 "arrows",
                 "weakspot",
                 "pseudolang",
@@ -609,7 +610,7 @@ impl Generator {
                 .config
                 .funbox
                 .iter()
-                .any(|name| ["nospace", "underscore_spaces", "arrows"].contains(&name.as_str()))
+                .any(|name| ["nospace", "underscore_spaces", "arrows", "morse"].contains(&name.as_str()))
         {
             committed.0.push(32);
         }

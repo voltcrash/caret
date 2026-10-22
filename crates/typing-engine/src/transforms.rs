@@ -80,6 +80,7 @@ pub fn alter(
 ) -> Result<Text, String> {
     let mut word = word;
     match name {
+        "morse" => word = morse(word),
         "backwards" => word.0.reverse(),
         "ALL_CAPS" => word = case(&word, true),
         "capitals" => {
@@ -192,4 +193,82 @@ pub fn alter(
         _ => {}
     }
     Ok(word)
+}
+
+fn morse(word: Text) -> Text {
+    use unicode_normalization::UnicodeNormalization;
+    const MAP: &[(&str, &str)] = &[
+        ("a", ".-"),
+        ("b", "-..."),
+        ("c", "-.-."),
+        ("d", "-.."),
+        ("e", "."),
+        ("f", "..-."),
+        ("g", "--."),
+        ("h", "...."),
+        ("i", ".."),
+        ("j", ".---"),
+        ("k", "-.-"),
+        ("l", ".-.."),
+        ("m", "--"),
+        ("n", "-."),
+        ("o", "---"),
+        ("p", ".--."),
+        ("q", "--.-"),
+        ("r", ".-."),
+        ("s", "..."),
+        ("t", "-"),
+        ("u", "..-"),
+        ("v", "...-"),
+        ("w", ".--"),
+        ("x", "-..-"),
+        ("y", "-.--"),
+        ("z", "--.."),
+        ("0", "-----"),
+        ("1", ".----"),
+        ("2", "..---"),
+        ("3", "...--"),
+        ("4", "....-"),
+        ("5", "....."),
+        ("6", "-...."),
+        ("7", "--..."),
+        ("8", "---.."),
+        ("9", "----."),
+        (".", ".-.-.-"),
+        (",", "--..--"),
+        ("?", "..--.."),
+        ("'", ".----."),
+        ("/", "-..-."),
+        ("(", "-.--."),
+        (")", "-.--.-"),
+        ("&", ".-..."),
+        (":", "---..."),
+        (";", "-.-.-."),
+        ("=", "-...-"),
+        ("+", ".-.-."),
+        ("-", "-....-"),
+        ("_", "..--.-"),
+        ("\"", ".-..-."),
+        ("$", "...-..-"),
+        ("!", "-.-.--"),
+        ("@", ".--.-."),
+    ];
+    // A surrogate cannot map to Morse; replacement also cannot map. Preserve
+    // JS's original UTF-16 loop bound even if lowercasing expands the text.
+    let normalized = Text::from(
+        word.display_lossy()
+            .nfd()
+            .filter(|c| !('\u{0300}'..='\u{036f}').contains(c))
+            .collect::<String>()
+            .as_str(),
+    );
+    let lower = case(&normalized, false);
+    let mut output = String::new();
+    for unit in lower.0.iter().take(normalized.len()) {
+        if let Some((_, code)) = MAP.iter().find(|(key, _)| key.encode_utf16().eq([*unit])) {
+            output.push_str(code);
+            output.push('/');
+        }
+    }
+    Text::from(output.as_str())
 }
