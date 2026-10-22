@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, readdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { expect, test } from "playwright/test";
 
@@ -90,4 +90,21 @@ test("native fixture matches browser Wasm through built Cloudflare assets", asyn
   expect(
     JSON.parse(await page.getByTestId("engine-proof-result").innerText()),
   ).toEqual(expected);
+  for (const name of (await readdir(resolve(root, "commands"))).filter(
+    (entry) => entry.endsWith(".json"),
+  )) {
+    await page
+      .getByRole("textbox", { name: "Command fixture" })
+      .fill(await readFile(resolve(root, "commands", name), "utf8"));
+    await page.getByRole("button", { name: "Run fixture" }).click();
+    await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
+    const frozen: unknown = JSON.parse(
+      await readFile(resolve(root, "oracle", name), "utf8"),
+    );
+    expect(
+      JSON.parse(await page.getByTestId("engine-proof-result").innerText()),
+      name,
+    ).toEqual(frozen);
+    await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+  }
 });

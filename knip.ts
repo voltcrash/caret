@@ -6,6 +6,8 @@ import process from "node:process";
 process.env.TURNSTILE_SITE_KEY ??= "1x00000000000000000000AA";
 
 export default {
+  // Installed through the pinned Cargo bootstrap, not a JavaScript dependency.
+  ignoreBinaries: ["wasm-bindgen"],
   workspaces: {
     ".": {
       entry: [
@@ -64,6 +66,11 @@ export default {
     },
     "packages/typing-core": {
       entry: ["scripts/*.ts"],
+    },
+    "packages/typing-engine": {
+      // This package's browser-only declarations use the workspace TS base;
+      // Knip's default entry analysis does not inspect this tsconfig reference.
+      ignoreDependencies: ["@oxytype/typescript-config"],
     },
     "packages/oxlint-config": {
       entry: ["plugins/*.js"],

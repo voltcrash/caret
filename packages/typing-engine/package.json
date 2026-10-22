@@ -6,6 +6,11 @@
   "exports": {
     "./browser.client": "./src/browser.client.ts"
   },
+  "scripts": {
+    "ts-check": "vp lint . --type-aware --type-check --format agent",
+    "lint": "vp lint . --type-aware --type-check --format agent",
+    "lint-fast": "vp lint . --format agent"
+  },
   "devDependencies": {
     "@oxytype/typescript-config": "workspace:*",
     "vite-plus": "catalog:"
