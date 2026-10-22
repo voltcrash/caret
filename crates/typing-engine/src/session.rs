@@ -75,11 +75,16 @@ pub enum Command {
         #[serde(default)]
         is_composition_ending: Option<bool>,
     },
+    #[serde(rename_all = "camelCase")]
     Delete {
         kind: String,
         now: f64,
         #[serde(default)]
         date: f64,
+        #[serde(default)]
+        observed_input: Option<Text>,
+        #[serde(default)]
+        sentinel_removed: bool,
     },
     Start {
         now: f64,
@@ -329,11 +334,23 @@ impl Session {
                 }
                 self.completion_checkpoint = true;
             }
-            Command::Delete { kind, now, .. } => {
+            Command::Delete {
+                kind,
+                now,
+                observed_input,
+                sentinel_removed,
+                ..
+            } => {
                 if !["deleteContentBackward", "deleteWordBackward"].contains(&kind.as_str()) {
                     return Err("Invalid deletion kind".into());
                 }
-                self.delete(&kind, now);
+                if observed_input.as_ref().is_some_and(|observed| {
+                    !self.current().0.starts_with(&observed.0)
+                        || (sentinel_removed && !observed.is_empty())
+                }) {
+                    return Err("Invalid deletion observation".into());
+                }
+                self.delete(&kind, now, observed_input, sentinel_removed);
             }
             Command::Start { now, date } => self.start(now, date),
             Command::Finish { now, date, reason } => self.end(now, date, reason),
@@ -660,7 +677,7 @@ impl Session {
         }
     }
 
-    fn delete(&mut self, kind: &str, now: f64) {
+    fn delete(&mut self, kind: &str, now: f64, observed: Option<Text>, sentinel_removed: bool) {
         if !self.active || self.ended {
             return;
         }
@@ -681,11 +698,18 @@ impl Session {
         {
             return;
         }
+        let after = observed.unwrap_or_else(|| {
+            if kind == "deleteWordBackward" {
+                delete_word(&input)
+            } else {
+                Text(input.0[..input.len().saturating_sub(1)].to_vec())
+            }
+        });
         let unindent = self.config.language.starts_with("code")
             && self.config.code_unindent_on_backspace
             && !input.is_empty()
             && input.0.iter().all(|c| *c == 9)
-            && self.target().0.starts_with(&input.0);
+            && self.target().0.starts_with(&after.0);
         if unindent {
             self.log_delete(
                 "deleteWordBackward",
@@ -695,21 +719,18 @@ impl Session {
                 false,
             );
         }
-        let next = if input.is_empty() || unindent {
-            self.index = self.index.saturating_sub(1);
-            self.previous_input(kind)
-        } else if kind == "deleteWordBackward" {
-            delete_word(&input)
+        let regression = input.is_empty() || unindent || sentinel_removed;
+        let next = if regression {
+            if self.index == 0 {
+                Text::default()
+            } else {
+                self.index -= 1;
+                self.previous_input(kind)
+            }
         } else {
-            let mut next = input.clone();
-            next.0.pop();
-            next
+            after
         };
-        let char_index = if input.is_empty() || unindent {
-            next.len()
-        } else {
-            input.len()
-        };
+        let char_index = if regression { next.len() } else { input.len() };
         self.log_delete(
             if unindent {
                 "deleteContentBackward"
@@ -721,6 +742,14 @@ impl Session {
             next,
             false,
         );
+        if sentinel_removed && !unindent && !input.is_empty() {
+            if let Some(event) = self.events.last_mut() {
+                event.data["clearedNextWord"] = json!(true);
+            }
+            if let Some(input) = self.input.get_mut(self.index + 1) {
+                input.0.clear();
+            }
+        }
     }
 
     fn advance(&mut self, now: f64, date: f64) {
