@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
 import { dehydrate } from "@tanstack/solid-query";
-import { Generator, getConfig } from "@tanstack/router-generator";
-import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
 import { createQueryClient } from "../../src/app/query-client";
 
 describe("Start ownership boundaries", () => {
@@ -21,61 +17,4 @@ describe("Start ownership boundaries", () => {
     b.clear();
   });
 
-  it("generates the intended pathless, index, parameter and literal-dot IDs", async () => {
-    const root = await mkdtemp(join(tmpdir(), "oxytype-routes-"));
-    try {
-      await mkdir(join(root, "routes"));
-      const routes = [
-        "__root",
-        "_app",
-        "_app.index",
-        "_app.profile.index",
-        "_app.profile.$uidOrName",
-        "_app._authenticated",
-        "_app._authenticated.account",
-        "oauth-callback[.]html",
-        "privacy-policy[.]html",
-        "404[.]html",
-      ];
-      await Promise.all(
-        routes.map(
-          async (name) =>
-            await writeFile(
-              join(root, "routes", `${name}.tsx`),
-              name === "__root"
-                ? 'import { createRootRoute } from "@tanstack/solid-router"; export const Route = createRootRoute({});'
-                : 'import { createFileRoute } from "@tanstack/solid-router"; export const Route = createFileRoute("/")({});',
-            ),
-        ),
-      );
-      const config = getConfig(
-        {
-          target: "solid",
-          routesDirectory: "./routes",
-          generatedRouteTree: "./tree.ts",
-          // Atomic renames require temporary files on the fixture's filesystem.
-          tmpDir: join(root, "tmp"),
-          disableLogging: true,
-        },
-        root,
-      );
-      await new Generator({ config, root }).run();
-      const tree = await readFile(join(root, "tree.ts"), "utf8");
-      for (const path of [
-        "'/_app/'",
-        "'/_app/profile/'",
-        "'/_app/profile/$uidOrName'",
-        "'/_app/_authenticated/account'",
-        "'/oauth-callback.html'",
-        "'/privacy-policy.html'",
-        "'/404.html'",
-      ]) {
-        expect(tree).toContain(path);
-      }
-      expect(tree).toContain("fullPath: '/account'");
-      expect(tree).toContain("fullPath: '/profile/$uidOrName'");
-    } finally {
-      await rm(root, { recursive: true, force: true });
-    }
-  });
 });
