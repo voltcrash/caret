@@ -44,6 +44,11 @@ fn finite_slice_matches_frozen_intermediate_oracle() {
         "delete-error-word",
         "delete-error-word_hard",
         "physical-observations",
+        "timer-min-accuracy",
+        "timer-min-speed",
+        "min-burst",
+        "time-stall-finish",
+        "time-zero",
     ] {
         let fixture: Fixture = serde_json::from_slice(
             &std::fs::read(root.join(format!("commands/{name}.json"))).unwrap(),

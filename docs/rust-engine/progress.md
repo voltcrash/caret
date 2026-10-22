@@ -21,7 +21,7 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | 1.1 Inventory / baselines | Complete | See inventory.md, features.md, baseline.md and raw measurements. |
 | 1.2 Contracts / fixtures | Complete | 13 command traces, 15 oracle/integrity tests; contract and classified gaps. |
 | 1.3 Native / browser proof | Complete | Native 7 traces; Cloudflare real-browser finite slice; MIME/CSP, lifecycle, boundary benchmark. Budgets frozen. |
-| 1.4 Input / lifecycle / timing | Active | Remaining input penalties, code, physical observations, browser differences and timing. |
+| 1.4 Input / lifecycle / timing | Active | Input penalties/code and physical recording now match 14 traces and 8 browser recordings. Browser differences/timing failures still open. |
 | 1.5 Generation / configuration | Pending | Requires contract and proof. |
 | 1.6 Events / results / replay | Pending | Requires input and generation. |
 | 1.7 Binding / engine gate | Pending | Full three-path parity and budgets. |
@@ -45,6 +45,9 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 - Phase 1.3: workerd document suite: six pass; production CSP now permits Wasm compilation specifically.
 - Phase 1.3: boundary benchmark/type-aware lint passed; proof-performance.json and performance-budgets.md record limits and evidence.
 - Early failed browser proof correctly exposed CSP; fixed and retested. Initial build raced workspace dependency installation; reran after install completed.
+
+- Phase 1.4 partial: native input logs match all eight original browser recordings. All 14 command traces (including physical repeat/NoCode/estimated cleanup) match intermediate frames.
+- Native Clippy passes. Pure event statistics are being ported as prerequisites for min-speed/min-burst timing rules; full result gate remains pending.
 
 ## Decisions
 

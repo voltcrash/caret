@@ -24,6 +24,12 @@ pub struct Config {
     pub blind_mode: bool,
     pub code_unindent_on_backspace: bool,
     pub funbox: Vec<String>,
+    pub min_burst: String,
+    pub min_burst_custom_speed: f64,
+    pub min_wpm: String,
+    pub min_wpm_custom_speed: f64,
+    pub min_acc: String,
+    pub min_acc_custom: f64,
 }
 
 impl Default for Config {
@@ -43,6 +49,12 @@ impl Default for Config {
             blind_mode: false,
             code_unindent_on_backspace: false,
             funbox: vec![],
+            min_burst: "off".into(),
+            min_burst_custom_speed: 100.0,
+            min_wpm: "off".into(),
+            min_wpm_custom_speed: 100.0,
+            min_acc: "off".into(),
+            min_acc_custom: 90.0,
         }
     }
 }
@@ -447,6 +459,30 @@ impl Session {
             self.end(now, date, Some("difficulty".into()));
             return;
         }
+        if advance && self.config.min_burst != "off" {
+            let log: crate::stats::Log =
+                serde_json::from_value(self.log()).expect("Engine log is valid");
+            let burst = crate::stats::word_burst(&log, self.index, now - self.start.unwrap_or(now));
+            let length = if self.config.mode == "zen" {
+                input.len() + 1
+            } else {
+                target.len()
+            };
+            let flex = self.config.min_burst_custom_speed.min(
+                (self.config.min_burst_custom_speed * 1.03_f64.powf(-2.0 * (length as f64 - 3.0)))
+                    .floor(),
+            );
+            if burst
+                < (if self.config.min_burst == "flex" {
+                    flex
+                } else {
+                    self.config.min_burst_custom_speed
+                })
+            {
+                self.end(now, date, Some("min burst".into()));
+                return;
+            }
+        }
         let finite = self.config.mode != "time"
             && self.config.mode != "zen"
             && !(self.config.mode == "words" && self.config.words == 0);
@@ -604,6 +640,39 @@ impl Session {
                 data["drift"] = json!(drift);
             }
             self.record("timer", now, data);
+            if self.ticks == due
+                && (self.config.min_wpm == "custom" || self.config.min_acc == "custom")
+            {
+                let log: crate::stats::Log =
+                    serde_json::from_value(self.log()).expect("Engine log is valid");
+                let chars = crate::stats::chars(&log, true, None);
+                let wpm = crate::js_round(crate::stats::wpm(
+                    chars.correct_word,
+                    (now - start) / 1000.0,
+                ));
+                let has_input = self
+                    .events
+                    .iter()
+                    .any(|e| e.kind == "input" && e.data.get("correct").is_some());
+                let accuracy = if has_input {
+                    crate::stats::accuracy(&log, None)
+                } else {
+                    100.0
+                };
+                let reason = if self.config.min_wpm == "custom"
+                    && wpm < self.config.min_wpm_custom_speed
+                    && self.index > 3
+                {
+                    Some("min speed")
+                } else if self.config.min_acc == "custom" && accuracy < self.config.min_acc_custom {
+                    Some("min accuracy")
+                } else {
+                    None
+                };
+                if let Some(reason) = reason {
+                    self.end(now, date, Some(reason.into()));
+                }
+            }
             if self.config.mode == "time"
                 && self.config.time > 0.0
                 && f64::from(self.ticks) >= self.config.time
