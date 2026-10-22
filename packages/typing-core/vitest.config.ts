@@ -3,7 +3,6 @@ import { defineConfig } from "vite-plus";
 export default defineConfig({
   test: {
     environment: "node",
-    passWithNoTests: true,
     coverage: {
       include: ["**/*.ts"],
     },
