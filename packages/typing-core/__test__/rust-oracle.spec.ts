@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { getDefaultConfig } from "../src/config/default-config";
 import { getAllFunboxes } from "@oxytype/funbox";
 import { expect, it } from "vite-plus/test";
 import { readCommandFixture, runOracle } from "../scripts/rust-oracle";
@@ -81,4 +82,17 @@ it("Rust funbox metadata stays mechanically equal to the website contract", () =
     }),
   );
   expect(actual).toEqual(expected);
+});
+
+it("Rust engine defaults stay mechanically equal to supported website preferences", () => {
+  const defaults = JSON.parse(
+    readFileSync(
+      resolve(root, "../typing-engine/generated/defaults.json"),
+      "utf8",
+    ),
+  ) as Record<string, unknown>;
+  const website: Record<string, unknown> = getDefaultConfig();
+  for (const [key, value] of Object.entries(defaults)) {
+    expect(value, key).toEqual(website[key]);
+  }
 });
