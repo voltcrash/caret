@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { getAllFunboxes } from "@oxytype/funbox";
 import { expect, it } from "vite-plus/test";
 import { readCommandFixture, runOracle } from "../scripts/rust-oracle";
 
@@ -51,4 +52,33 @@ it("original and neutral reference fixtures retain the frozen bytes", () => {
       ).toBe(sha256);
     }
   }
+});
+
+it("Rust funbox metadata stays mechanically equal to the website contract", () => {
+  const actual = JSON.parse(
+    readFileSync(
+      resolve(root, "../../crates/typing-engine/data/funboxes.json"),
+      "utf8",
+    ),
+  ) as unknown;
+  const expected = getAllFunboxes().map(
+    ({
+      name,
+      properties = [],
+      frontendFunctions = [],
+      frontendForcedConfig = {},
+      canGetPb,
+      difficultyLevel,
+      cssModifications = [],
+    }) => ({
+      name,
+      properties,
+      frontendFunctions,
+      frontendForcedConfig,
+      canGetPb,
+      difficultyLevel,
+      cssModifications,
+    }),
+  );
+  expect(actual).toEqual(expected);
 });

@@ -145,7 +145,7 @@ impl Config {
             || self
                 .funbox
                 .iter()
-                .any(|name| name.is_empty() || name.len() > 64)
+                .any(|name| crate::funboxes::get(name).is_none())
         {
             return Err("Invalid funbox list".into());
         }
@@ -427,18 +427,8 @@ impl Session {
         }
     }
     fn refill(&mut self) -> Result<(), String> {
-        let bound = self
-            .config
-            .funbox
-            .iter()
-            .find_map(|name| match name.as_str() {
-                "plus_zero" => Some(0),
-                "plus_one" => Some(1),
-                "plus_two" => Some(2),
-                "plus_three" => Some(3),
-                _ => None,
-            })
-            .unwrap_or(100);
+        let bound = crate::funboxes::to_push(&self.config.funbox)
+            .map_or(100, |count| count.saturating_sub(1));
         if self.all_generated || self.words.len().saturating_sub(self.index + 1) > bound {
             return Ok(());
         }
@@ -483,9 +473,7 @@ impl Session {
         self.words.get(self.index).cloned().unwrap_or_default()
     }
     fn nospace(&self) -> bool {
-        self.config.funbox.iter().any(|name| {
-            ["nospace", "arrows", "morse", "underscore_spaces"].contains(&name.as_str())
-        })
+        crate::funboxes::has_property(&self.config.funbox, "nospace")
     }
     fn record(&mut self, kind: &str, now: f64, data: Value) {
         self.events.push(Recorded {

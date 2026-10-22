@@ -101,3 +101,6 @@ do not rerun completed checks without a new reason.
 
 - Session now owns an attached generator, incremental lookahead refill, final separator stripping, quote identity, custom time/infinite limits and explicit bailout state. Full snapshots are explicit; per-command word changes are incremental. Recorder deltas signal invalidation when origin changes or finalization/reset changes earlier events.
 - Five new native session tests cover 150-word continuation, plus-zero refill/completion, custom time/infinite limits, recorder rebasing/finalization, and pre-mutation malformed config / oversized commits / bounded timer catchup. Browser integration of these new APIs still pending.
+
+- New immutable funbox rule metadata and Rust compatibility/forced-config checks match all 2,304 ordered pairs and 768 setting cases captured once from TypeScript. A mechanical TypeScript guard checks metadata equality. Visual-only funboxes are accepted by generation; section funboxes remain an explicit missing-protocol error until the content lifecycle is implemented.
+- Optimized Cloudflare proof at ccb7db67f passes all 3 tests after Morse reduction/session additions; asset 753.41 kB raw / 285.44 kB gzip (Vite report), within frozen payload budgets. New funbox code has native verification only so far.

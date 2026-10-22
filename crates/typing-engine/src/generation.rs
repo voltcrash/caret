@@ -156,40 +156,8 @@ impl Generator {
         assets: &mut Assets,
     ) -> Result<Self, String> {
         config.validate()?;
-        if config.funbox.iter().any(|name| {
-            ![
-                "polyglot",
-                "morse",
-                "arrows",
-                "weakspot",
-                "pseudolang",
-                "IPv4",
-                "IPv6",
-                "58008",
-                "binary",
-                "hexadecimal",
-                "gibberish",
-                "ascii",
-                "specials",
-                "backwards",
-                "ALL_CAPS",
-                "capitals",
-                "sPoNgEcAsE",
-                "rAnDoMcAsE",
-                "rot13",
-                "ddoouubblleedd",
-                "instant_messaging",
-                "underscore_spaces",
-                "nospace",
-                "plus_zero",
-                "plus_one",
-                "plus_two",
-                "plus_three",
-                "zipf",
-            ]
-            .contains(&name.as_str())
-        }) {
-            return Err("Requested generator transform is not yet ported".into());
+        if crate::funboxes::has_function(&config.funbox, "pullSection") {
+            return Err("Section content protocol is not yet available".into());
         }
         if config.mode == "custom" && custom.is_none() {
             return Err("Missing custom text".into());
@@ -698,7 +666,12 @@ impl Generator {
         let mut committed = word.clone();
         if committed.0.last() != Some(&10)
             && !self.config.funbox.iter().any(|name| {
-                ["nospace", "underscore_spaces", "arrows", "morse"].contains(&name.as_str())
+                crate::funboxes::get(name).is_some_and(|metadata| {
+                    metadata
+                        .properties
+                        .iter()
+                        .any(|property| property == "nospace")
+                })
             })
         {
             committed.0.push(32);
