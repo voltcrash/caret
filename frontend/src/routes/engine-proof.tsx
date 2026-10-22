@@ -6,6 +6,9 @@ import type {
   Prepare,
   Log,
   Query,
+  Source,
+  ContentRequest,
+  Update,
 } from "@oxytype/typing-engine/browser.client";
 
 import { createFileRoute } from "@tanstack/solid-router";
@@ -174,6 +177,82 @@ function EngineProof() {
       setFailure(error instanceof Error ? error.message : String(error));
     }
   };
+  const runPrepared = async (): Promise<void> => {
+    setResult("");
+    setFailure("");
+    try {
+      const input = JSON.parse(fixture()) as {
+        prepare: Prepare;
+        initialReplies: Source[];
+        steps: (
+          | { command: Command }
+          | { source: Source; now: number; date: number }
+        )[];
+      };
+      const { loadEngine } =
+        await import("@oxytype/typing-engine/browser.client");
+      const engine = await loadEngine();
+      if (disposed) return;
+      const content = engine.createContent();
+      let session: BrowserSession | undefined;
+      try {
+        content.prepare(input.prepare);
+        const requests: ContentRequest[] = [];
+        for (let reply = 0; reply <= input.initialReplies.length; reply++) {
+          try {
+            session = content.createSession();
+            break;
+          } catch (error) {
+            const request = content.request();
+            const source = input.initialReplies[reply];
+            if (request === null || source === undefined) throw error;
+            requests.push(request);
+            content.supply(request, source);
+          }
+        }
+        if (session === undefined) {
+          throw new Error("Prepared session unavailable");
+        }
+        handles.add(session);
+        const updates: Update[] = [];
+        for (const step of input.steps) {
+          if ("command" in step) {
+            updates.push(session.command(step.command));
+          } else {
+            const request = updates.at(-1)?.contentRequest;
+            if (request === undefined) {
+              throw new Error("Missing active content request");
+            }
+            updates.push(
+              session.command({
+                op: "supplyContent",
+                request,
+                source: step.source,
+                now: step.now,
+                date: step.date,
+              }),
+            );
+          }
+        }
+        setResult(
+          JSON.stringify({
+            requests,
+            updates,
+            snapshot: session.snapshot(),
+            log: session.log(),
+          }),
+        );
+      } finally {
+        if (session !== undefined) {
+          session.dispose();
+          handles.delete(session);
+        }
+        content.dispose();
+      }
+    } catch (error) {
+      setFailure(error instanceof Error ? error.message : String(error));
+    }
+  };
   return (
     <Show
       when={import.meta.env.OXYTYPE_ENGINE_PROOF}
@@ -208,6 +287,14 @@ function EngineProof() {
           }}
         >
           Run analysis
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            void runPrepared();
+          }}
+        >
+          Run prepared session
         </button>
         <pre data-testid="engine-proof-result">{result()}</pre>
         <pre data-testid="engine-proof-error">{failure()}</pre>

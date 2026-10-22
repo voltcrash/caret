@@ -120,3 +120,7 @@ do not rerun completed checks without a new reason.
 
 - Active section requests now preserve one committed batch (maximum 65,536 units). Background prefetch permits typing while target words remain; only exhausting content blocks input/deletion. Matching replies resume progression and buffered units; reset/end invalidate the request. A failure after awaiting content uses the reply's observed completion time while retaining original input-event times. Seven native content tests cover cleanup, initial resume, active resume, stale replies/reset/expiry and delayed failure. Browser verification pending.
 - Prepared tab/newline capabilities now include custom content beyond the initial 100-word window; a native regression covers newline acceptance before that future word is generated.
+
+- New section-generation references cover poetry/article finite/time/repeat, lazy mode and random-case ordering. Native output and subsequent RNG draw match all five exactly; no old snapshots changed.
+- Browser proof now also exercises delayed initial section preparation and active batch resume; combined actual-browser run: 6 tests pass, 19.1 seconds.
+- Section exports increased release-profile Wasm to 854,263 raw / 310,646 gzip level 6, above gzip budget. A dedicated `wasm` Cargo profile (`opt-level=z`) plus existing Binaryen produces 748,995 / 288,742 bytes. Switching the build entry point to this profile; full browser/boundary retest pending.

@@ -125,7 +125,7 @@ test("native fixture matches browser Wasm through built Cloudflare assets", asyn
   }
 });
 
-test("all 61 unchanged generator snapshots match browser Wasm", async ({
+test("all 61 original and 5 section generator references match browser Wasm", async ({
   page,
 }) => {
   const staticRoot = resolve(import.meta.dirname, "../static");
@@ -214,6 +214,7 @@ test("all 61 unchanged generator snapshots match browser Wasm", async ({
         polyglot,
         selectedQuoteId: fixture.selectedQuoteId ?? 1,
         favoriteQuoteIds: [],
+        sections: [] as unknown[],
       },
       repeat: fixture.repeat,
       extraWords: fixture.extraWords,
@@ -229,6 +230,37 @@ test("all 61 unchanged generator snapshots match browser Wasm", async ({
       ),
     );
   }
+  const names = cases.map((fixture) => fixture.name);
+  const sections = JSON.parse(
+    await readFile(resolve(root, "oracle/section-generation.json"), "utf8"),
+  ) as {
+    name: string;
+    config: Record<string, unknown>;
+    language: unknown;
+    seed: number;
+    sources: unknown[];
+    repeat: boolean;
+    expected: Record<string, unknown> & { extra: unknown[] };
+  }[];
+  for (const fixture of sections) {
+    inputs.push({
+      input: {
+        config: fixture.config,
+        language: fixture.language,
+        custom: null,
+        random: { kind: "seeded", state: fixture.seed },
+        quotes: null,
+        polyglot: [],
+        selectedQuoteId: 1,
+        favoriteQuoteIds: [],
+        sections: fixture.sources,
+      },
+      repeat: fixture.repeat,
+      extraWords: fixture.expected.extra.length,
+    });
+    expected.push({ ...fixture.expected, currentQuote: null });
+    names.push(fixture.name);
+  }
   await page.goto("/engine-proof");
   await page
     .getByRole("textbox", { name: "Command fixture" })
@@ -241,9 +273,9 @@ test("all 61 unchanged generator snapshots match browser Wasm", async ({
   const actual = JSON.parse(
     await page.getByTestId("engine-proof-result").innerText(),
   ) as unknown[];
-  expect(actual).toHaveLength(61);
-  for (const [index, fixture] of cases.entries()) {
-    expect(actual[index], fixture.name).toEqual(expected[index]);
+  expect(actual).toHaveLength(66);
+  for (const [index, name] of names.entries()) {
+    expect(actual[index], name).toEqual(expected[index]);
   }
 });
 
@@ -358,4 +390,90 @@ test("historical results, replay and practice agree with frozen references in Wa
   for (const [index, reference] of references.entries()) {
     expect(actual[index], reference.name).toEqual(expected[index]);
   }
+});
+
+test("typed section requests preserve prepared and active input through browser Wasm", async ({
+  page,
+}) => {
+  const units = (text: string): number[] =>
+    Array.from({ length: text.length }, (_, i) => text.charCodeAt(i));
+  const poem = (text: string): unknown => ({
+    kind: "poem",
+    title: units("Title"),
+    author: units("Author"),
+    lines: [units(text)],
+  });
+  const input = {
+    prepare: {
+      config: { mode: "time", time: 0, funbox: ["poetry"] },
+      language: { name: "english", words: [units("base")] },
+      custom: null,
+      random: { kind: "seeded", state: 1 },
+      quotes: null,
+      polyglot: [],
+      sections: [],
+      selectedQuoteId: 1,
+      favoriteQuoteIds: [],
+    },
+    initialReplies: [poem(Array.from({ length: 100 }, () => "one").join(" "))],
+    steps: [
+      {
+        command: { op: "insert", data: units("one "), now: 0, date: 1_000_000 },
+      },
+      {
+        command: {
+          op: "insert",
+          data: units("one ".repeat(100)),
+          now: 100,
+          date: 1_000_100,
+        },
+      },
+      { source: poem("one two three"), now: 1000, date: 1_001_000 },
+    ],
+  };
+  await page.goto("/engine-proof");
+  await page
+    .getByRole("textbox", { name: "Command fixture" })
+    .fill(JSON.stringify(input));
+  await page.getByRole("button", { name: "Run prepared session" }).click();
+  await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
+  await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+  const result = JSON.parse(
+    await page.getByTestId("engine-proof-result").innerText(),
+  ) as {
+    requests: { id: number; generation: number; kind: string }[];
+    updates: {
+      state: { wordIndex: number };
+      awaitingContent: boolean;
+      contentRequest?: { id: number; generation: number; kind: string };
+    }[];
+    snapshot: { words: number[][] };
+    log: { events: { type: string; testMs: number }[] };
+  };
+  expect(result.requests).toEqual([
+    { id: 1, generation: 0, kind: "poetry", language: "english" },
+  ]);
+  expect(
+    result.updates.map((update) => [
+      update.state.wordIndex,
+      update.awaitingContent,
+    ]),
+  ).toEqual([
+    [1, false],
+    [99, true],
+    [101, false],
+  ]);
+  expect(result.updates[0]?.contentRequest).toEqual({
+    id: 2,
+    generation: 0,
+    kind: "poetry",
+    language: "english",
+  });
+  expect(result.updates[1]?.contentRequest).toEqual(
+    result.updates[0]?.contentRequest,
+  );
+  expect(result.snapshot.words[101]).toEqual(units("two "));
+  const events = result.log.events.filter((event) => event.type === "input");
+  expect(events).toHaveLength(404);
+  expect(events.at(-1)?.testMs).toBe(100);
 });

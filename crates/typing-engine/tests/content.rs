@@ -340,3 +340,56 @@ fn failure_after_await_uses_reply_time_without_retiming_captured_input() {
         Some(9900.0)
     );
 }
+
+#[test]
+fn section_generation_and_random_draw_order_match_frozen_typescript() {
+    use typing_engine::generation::{Assets, Generator};
+    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../packages/typing-fixtures/oracle/section-generation.json");
+    let cases: Vec<Value> = serde_json::from_slice(&std::fs::read(path).unwrap()).unwrap();
+    for case in cases {
+        let mut generator = Generator::with_assets(
+            serde_json::from_value(case["config"].clone()).unwrap(),
+            serde_json::from_value(case["language"].clone()).unwrap(),
+            None,
+            typing_engine::random::Random::seeded(case["seed"].as_u64().unwrap() as u32),
+            &mut Assets {
+                sections: serde_json::from_value(case["sources"].clone()).unwrap(),
+                ..Assets::default()
+            },
+        )
+        .unwrap();
+        let mut generated = generator.generate(false).unwrap();
+        if case["repeat"] == true {
+            generated = generator.generate(true).unwrap();
+        }
+        let mut words = generated.words.clone();
+        let mut extra = vec![];
+        for _ in 0..case["expected"]["extra"].as_array().unwrap().len() {
+            let strip = |word: &Text| {
+                let mut word = word.clone();
+                if matches!(word.0.last(), Some(32 | 10)) {
+                    word.0.pop();
+                }
+                word
+            };
+            let previous = words.last().map(strip);
+            let previous2 = words.get(words.len().wrapping_sub(2)).map(strip);
+            let next = generator
+                .next(words.len(), 100, previous.as_ref(), previous2.as_ref())
+                .unwrap();
+            words.push(next.word.clone());
+            extra.push(next);
+        }
+        let mut actual = serde_json::to_value(generated).unwrap();
+        actual["extra"] = serde_json::to_value(extra).unwrap();
+        actual["allWordsGenerated"] = serde_json::json!(generator.all_generated());
+        assert_eq!(actual, case["expected"], "{}", case["name"]);
+        assert_eq!(
+            generator.random_state().clone().draw().unwrap(),
+            case["randomTail"].as_f64().unwrap(),
+            "{} RNG",
+            case["name"]
+        );
+    }
+}
