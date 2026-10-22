@@ -4,9 +4,11 @@ import { readCommandFixture, runOracle } from "./rust-oracle";
 
 const root = resolve(import.meta.dirname, "../../typing-fixtures");
 // Capture only NEW traces. Deliberately no overwrite/update flag.
-for (const name of readdirSync(resolve(root, "commands")).filter((entry) =>
-  entry.endsWith(".json"),
-)) {
+const requested = process.argv.slice(2);
+for (const name of (requested.length > 0
+  ? requested
+  : readdirSync(resolve(root, "commands"))
+).filter((entry) => entry.endsWith(".json"))) {
   const fixture = readCommandFixture(resolve(root, "commands", name));
   const output = await runOracle(fixture);
   writeFileSync(

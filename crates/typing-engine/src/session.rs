@@ -4,6 +4,7 @@ use crate::{
 };
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
+use std::collections::BTreeMap;
 use ts_rs::TS;
 
 #[derive(Clone, Debug, Deserialize, Serialize, TS)]
@@ -105,6 +106,9 @@ pub enum Command {
         event_type: String,
         event_data: Value,
     },
+    Finalize {
+        now: f64,
+    },
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, TS)]
@@ -153,6 +157,8 @@ pub struct Session {
     ticks: u32,
     events: Vec<Recorded>,
     indent_pending: bool,
+    pressed: Vec<(String, f64)>,
+    no_code_index: usize,
 }
 
 impl Session {
@@ -175,6 +181,8 @@ impl Session {
             ticks: 0,
             events: vec![],
             indent_pending: false,
+            pressed: vec![],
+            no_code_index: 0,
         })
     }
 
@@ -237,7 +245,8 @@ impl Session {
             | Command::End { now, .. }
             | Command::Abandon { now, .. }
             | Command::Reset { now }
-            | Command::Observe { now, .. } => *now,
+            | Command::Observe { now, .. }
+            | Command::Finalize { now } => *now,
         };
         if !now.is_finite() || now.abs() > 9_007_199_254_740_991.0 {
             return Err("Invalid timestamp".into());
@@ -288,10 +297,15 @@ impl Session {
                 self.indent_pending = false;
                 self.events.clear();
                 self.input = vec![Text::default(); self.words.len().max(1)];
+                self.pressed.clear();
+                self.no_code_index = 0;
             }
-            Command::Observe { .. } => {
-                return Err("Observations not yet implemented in proof slice".into());
-            }
+            Command::Observe {
+                now,
+                event_type,
+                event_data,
+            } => self.observe(&event_type, now, event_data)?,
+            Command::Finalize { .. } => self.finalize(),
         }
         let origin = self.origin();
         let events = self
@@ -607,6 +621,171 @@ impl Session {
             "composition" => 3,
             _ => 4,
         }
+    }
+
+    fn observe(&mut self, kind: &str, now: f64, mut data: Value) -> Result<(), String> {
+        if !data.is_object() {
+            return Err("Observation data must be an object".into());
+        }
+        if kind == "keydown" || kind == "keyup" {
+            let code = data["code"].as_str().ok_or("Missing key code")?.to_owned();
+            let tracked = (code.len() == 4
+                && code.starts_with("Key")
+                && code.as_bytes()[3].is_ascii_uppercase())
+                || (code.len() == 6
+                    && code.starts_with("Digit")
+                    && code.as_bytes()[5].is_ascii_digit())
+                || [
+                    "NumpadMultiply",
+                    "NumpadSubtract",
+                    "NumpadAdd",
+                    "NumpadDecimal",
+                    "NumpadEqual",
+                    "NumpadDivide",
+                    "Numpad0",
+                    "Numpad1",
+                    "Numpad2",
+                    "Numpad3",
+                    "Numpad4",
+                    "Numpad5",
+                    "Numpad6",
+                    "Numpad7",
+                    "Numpad8",
+                    "Numpad9",
+                    "Backquote",
+                    "Minus",
+                    "Equal",
+                    "BracketLeft",
+                    "BracketRight",
+                    "Backslash",
+                    "Semicolon",
+                    "Quote",
+                    "IntlBackslash",
+                    "Comma",
+                    "Period",
+                    "Slash",
+                    "Space",
+                    "Enter",
+                    "Tab",
+                    "NoCode",
+                ]
+                .contains(&code.as_str());
+            let indexed_no_code = code.strip_prefix("NoCode").is_some_and(|suffix| {
+                !suffix.is_empty() && suffix.bytes().all(|c| c.is_ascii_digit())
+            });
+            if !tracked && !(kind == "keyup" && indexed_no_code) {
+                return Ok(());
+            }
+            let mut key = code.clone();
+            if kind == "keydown" {
+                if let Some(index) = self.pressed.iter().position(|(key, _)| key == &code) {
+                    self.pressed.remove(index);
+                    self.record("keyup", now, data.clone());
+                }
+                if code == "NoCode" {
+                    key = format!("NoCode{}", self.no_code_index);
+                    self.no_code_index += 1;
+                }
+                self.pressed.push((key.clone(), round2(now)));
+            } else {
+                if code == "NoCode" {
+                    if self.no_code_index == 0 {
+                        return Ok(());
+                    }
+                    key = format!("NoCode{}", self.no_code_index - 1);
+                    if !self.pressed.iter().any(|(code, _)| code == &key) {
+                        return Ok(());
+                    }
+                    self.no_code_index -= 1;
+                }
+                let Some(index) = self.pressed.iter().position(|(code, _)| code == &key) else {
+                    return Ok(());
+                };
+                self.pressed.remove(index);
+            }
+            data["code"] = json!(key);
+            self.record(kind, now, data);
+        } else if kind == "composition" || kind == "timer" {
+            self.record(kind, now, data);
+        } else {
+            return Err("Unsupported observation type".into());
+        }
+        Ok(())
+    }
+
+    fn finalize(&mut self) {
+        let mut down = BTreeMap::new();
+        for event in &self.events {
+            if event.kind == "keydown" {
+                down.insert(
+                    event.data["code"].as_str().unwrap_or_default().to_owned(),
+                    event.now,
+                );
+            }
+        }
+        let mut durations = vec![];
+        for event in &self.events {
+            if event.kind != "keyup" {
+                continue;
+            }
+            if let Some(start) = down.remove(event.data["code"].as_str().unwrap_or_default()) {
+                let duration = event.now - start;
+                if duration > 0.0 {
+                    durations.push(duration);
+                }
+            }
+        }
+        let average = if durations.is_empty() {
+            80.0
+        } else {
+            round2(durations.iter().sum::<f64>() / durations.len() as f64)
+        };
+        for (key, now) in self.pressed.clone() {
+            let _ = self.observe("keyup", now + average, json!({"code":key,"estimated":true}));
+        }
+        let start = self
+            .events
+            .iter()
+            .find(|e| e.kind == "timer" && e.data["event"] == "start")
+            .map(|e| e.now);
+        let end = self
+            .events
+            .iter()
+            .find(|e| e.kind == "timer" && e.data["event"] == "end")
+            .map(|e| e.now);
+        let last_pre = self
+            .events
+            .iter()
+            .enumerate()
+            .filter(|(_, e)| e.kind == "keydown" && start.is_some_and(|start| e.now < start))
+            .map(|(i, _)| i)
+            .next_back();
+        let post_codes: Vec<_> = self
+            .events
+            .iter()
+            .filter(|e| e.kind == "keydown" && end.is_some_and(|end| e.now > end))
+            .map(|e| e.data["code"].clone())
+            .collect();
+        let mut index = 0;
+        self.events.retain(|e| {
+            let current = index;
+            index += 1;
+            if let Some(start) = start
+                && e.now < start
+                && (e.kind == "keyup" || (e.kind == "keydown" && Some(current) != last_pre))
+            {
+                return false;
+            }
+            if let Some(end) = end
+                && e.now > end
+                && (e.kind == "input"
+                    || e.kind == "keydown"
+                    || (e.kind == "keyup" && post_codes.contains(&e.data["code"])))
+            {
+                return false;
+            }
+            true
+        });
     }
     fn origin(&self) -> f64 {
         self.events

@@ -19,7 +19,8 @@ export type OracleCommand = {
     | "end"
     | "abandon"
     | "reset"
-    | "observe";
+    | "observe"
+    | "finalize";
   now: number;
   date?: number;
   data?: Text;
@@ -111,6 +112,10 @@ export async function runOracle(fixture: CommandFixture): Promise<unknown> {
         break;
       case "reset":
         session.reset();
+        break;
+      case "finalize":
+        session.recorder.forceReleaseAllKeys();
+        session.recorder.cleanupData();
         break;
       case "observe":
         if (

@@ -35,6 +35,7 @@
               "end",
               "abandon",
               "reset",
+              "finalize",
               "observe"
             ]
           },
