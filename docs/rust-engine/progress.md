@@ -89,3 +89,12 @@ do not rerun completed checks without a new reason.
 
 - Replaced general-purpose Morse normalization with a 492-entry immutable compatibility map captured from original TypeScript (Node 24.21.0 / Unicode 17.0). Exhaustive native parity passes every Unicode scalar and every isolated UTF-16 unit; original 61 generator snapshots still pass. No reference was regenerated.
 - Expanded engine with analysis: 709,637 bytes raw / 271,030 gzip level 6 after optimization, within both payload budgets. Full browser rerun after this change remains pending.
+
+## Next concrete engine gaps (before Stage 1 exit)
+
+- Session must own incremental generation, custom limits and pending section requests; preserve final separator stripping and plus-X lookahead.
+- Port browser preflight/layout observations, live config, slow-render failure policy, bailout/restart rules. Capture actual web discrepancies, including progression before batch failure.
+- Add recorder delta invalidation when start rebases timestamps or finalization removes earlier observations; hosts must not accumulate stale deltas.
+- Add persistent replay handle, malformed/bounded DTO checks, randomized lifecycle and memory/performance checks.
+- Re-run optimized Cloudflare browser proof after Morse reduction, then fresh-checkout/complete CI and final performance budgets.
+- Stage 2/3 remain pending; do not cut over website while these gaps exist.
