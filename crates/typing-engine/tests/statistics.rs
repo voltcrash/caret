@@ -43,6 +43,71 @@ fn summary_fields_match_all_unchanged_browser_results_exactly() {
                 .collect::<Vec<_>>()
         );
         let log: Log = serde_json::from_value(log).unwrap();
+
+        let snapshot: Value = serde_json::from_slice(
+            &std::fs::read(
+                path.parent()
+                    .unwrap()
+                    .join("__snapshots__")
+                    .join(path.file_name().unwrap()),
+            )
+            .unwrap(),
+        )
+        .unwrap();
+        let derived = &snapshot["derived"];
+        let decode =
+            |words: Vec<Text>| json!(words.iter().map(Text::display_lossy).collect::<Vec<_>>());
+        equal(
+            &decode(typing_engine::stats::input_history(&log)),
+            &derived["inputHistory"],
+            "inputHistory",
+        );
+        equal(
+            &decode(typing_engine::stats::corrected_history(&log)),
+            &derived["correctedWordsHistory"],
+            "correctedHistory",
+        );
+        let missed: serde_json::Map<String, Value> = typing_engine::stats::missed_words(&log)
+            .into_iter()
+            .map(|(word, count)| (word.display_lossy(), json!(count)))
+            .collect();
+        equal(&json!(missed), &derived["missedWords"], "missedWords");
+        equal(
+            &json!(typing_engine::stats::word_burst_history(&log, 0.0)),
+            &derived["wordBurstHistory"],
+            "wordBurstHistory",
+        );
+        equal(
+            &json!(typing_engine::stats::speed_history(&log, true)),
+            &derived["rawHistory"],
+            "rawHistory",
+        );
+        equal(
+            &json!(typing_engine::stats::keypresses_per_second(&log)),
+            &derived["keypressesPerSecond"],
+            "keypressesPerSecond",
+        );
+        equal(
+            &json!(typing_engine::stats::incomplete_seconds(&log)),
+            &derived["incompleteTestSeconds"],
+            "incompleteSeconds",
+        );
+
+        let recorded = &fixture["completedEvent"];
+        let context = json!({
+            "config": fixture["config"], "client": null, "offline": null,
+            "currentQuote": if recorded["mode"] == "quote" { json!({"id": recorded["mode2"].as_str().unwrap().parse::<u32>().unwrap(), "group": recorded["quoteLength"]}) } else { Value::Null },
+            "customText": recorded["customText"], "tags": recorded["tags"], "bailedOut": recorded["bailedOut"],
+            "restartCount": recorded["restartCount"], "incompleteTests": recorded["incompleteTests"],
+            "incompleteSeconds": recorded["incompleteTestSeconds"], "timestamp": recorded["timestamp"]
+        });
+        let context = serde_json::from_value(context).unwrap();
+        equal(
+            &typing_engine::results::completed(&log, &context),
+            recorded,
+            &format!("{}.completed", path.display()),
+        );
+
         let actual = summary(&log);
         for (key, actual) in actual.as_object().unwrap() {
             equal(

@@ -79,3 +79,7 @@ do not rerun completed checks without a new reason.
 
 - Current Cloudflare production build passes. Real-browser `engine-proof.migration.ts`: 2 tests pass (19 command traces and 61 generator snapshots). Generated binding types now cover content preparation and generator outputs.
 - Expanded Wasm: 1,123,350 bytes raw (over 1 MiB budget), ~292.77 kB gzip (under budget). Optimization required; size gate explicitly not passed.
+
+- Pinned Binaryen 132.0.0 optimization reduces expanded Wasm to 660,285 bytes raw / 261,217 bytes gzip. Both payload limits pass; optimized browser rerun still required.
+- Session and generation now share one Rust Config/default implementation.
+- All full CompletedEvents and historical derived arrays match original recordings. New one-time analysis capture checks replay frames, steps, final prompt/sounds, seeking, all practice combinations and validity flags against unchanged TypeScript. Native analysis regression passes for all eight recordings.

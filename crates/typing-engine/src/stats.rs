@@ -6,8 +6,9 @@ use crate::{
 };
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
+use ts_rs::TS;
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
 pub struct Context {
     pub target_words: Vec<Text>,
@@ -20,7 +21,7 @@ pub struct Context {
     pub custom_text_limit_mode: Option<String>,
     pub custom_text_limit_value: Option<f64>,
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, TS)]
 pub struct Log {
     pub version: u32,
     pub events: Vec<Event>,
@@ -59,7 +60,7 @@ pub fn input(events: &[&Event]) -> Text {
     }
     value
 }
-fn per_word(log: &Log, limit: Option<f64>) -> Vec<(usize, Vec<&Event>)> {
+pub(crate) fn per_word(log: &Log, limit: Option<f64>) -> Vec<(usize, Vec<&Event>)> {
     let mut words: Vec<(usize, Vec<&Event>)> = vec![];
     for event in &log.events {
         if limit.is_some_and(|limit| event.test_ms > limit) {
@@ -95,7 +96,7 @@ pub fn timed(log: &Log) -> bool {
             && (log.context.custom_text_limit_mode.as_deref() == Some("time")
                 || log.context.custom_text_limit_value == Some(0.0)))
 }
-#[derive(Default, Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Default, Debug, Clone, PartialEq, Eq, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
 pub struct Chars {
     pub all_correct: usize,
@@ -382,11 +383,16 @@ pub fn summary(log: &Log) -> Value {
     let mut held: Vec<(String, f64, usize)> = vec![];
     let mut overlap = 0.0;
     let mut overlap_start = None;
+    let start = log
+        .events
+        .iter()
+        .find(|event| event.kind == "timer" && event.data["event"] == "start")
+        .map(|event| event.test_ms);
     let first = log
         .events
         .iter()
         .find(|event| event.kind == "keydown")
-        .map(|event| event.test_ms.max(0.0))
+        .map(|event| (event.test_ms - start.unwrap_or(event.test_ms)).max(0.0))
         .unwrap_or(0.0);
     for event in &log.events {
         let code = event.data["code"].as_str().unwrap_or_default().to_owned();
@@ -422,4 +428,197 @@ pub fn summary(log: &Log) -> Value {
         "startToFirstKey":if log.context.mode=="zen" {0.0} else {round2(first)},"afkDuration":afk(log),
         "consistency":consistency(&burst),"wpmConsistency":consistency(&speed),"keyConsistency":consistency(&spacing[..spacing.len().saturating_sub(1)]),
         "chartData":{"wpm":speed,"burst":burst,"err":errors},"keySpacing":spacing,"keyDuration":durations,"keyOverlap":round2(overlap)})
+}
+
+pub fn input_history(log: &Log) -> Vec<Text> {
+    let words = per_word(log, None);
+    words
+        .iter()
+        .map(|(index, events)| {
+            let Some(last) = events.last() else {
+                return Text::default();
+            };
+            let abandoned = words
+                .iter()
+                .find(|(previous, _)| *previous + 1 == *index)
+                .is_some_and(|(_, previous)| {
+                    previous.iter().any(|event| {
+                        event.test_ms > last.test_ms && event.data["clearedNextWord"] == true
+                    })
+                });
+            if abandoned {
+                Text::default()
+            } else {
+                input(events)
+            }
+        })
+        .collect()
+}
+pub fn missed_words(log: &Log) -> Vec<(Text, usize)> {
+    let mut words: Vec<(Text, usize)> = vec![];
+    for event in &log.events {
+        if event.kind != "input"
+            || event.data["inputType"] != "insertText"
+            || event.data["correct"] == true
+        {
+            continue;
+        }
+        let Some(word) = word_index(event).and_then(|index| log.context.target_words.get(index))
+        else {
+            continue;
+        };
+        let mut word = word.clone();
+        if matches!(word.0.last(), Some(32 | 10)) {
+            word.0.pop();
+        }
+        if let Some((_, count)) = words.iter_mut().find(|(text, _)| text == &word) {
+            *count += 1;
+        } else {
+            words.push((word, 1));
+        }
+    }
+    // JS Object.keys: canonical uint32 integer keys precede insertion order.
+    words.sort_by_key(|(text, _)| {
+        let value = text.display_lossy();
+        value
+            .parse::<u32>()
+            .ok()
+            .filter(|n| *n < u32::MAX && n.to_string() == value)
+            .map_or((true, 0), |n| (false, n))
+    });
+    words
+}
+pub fn corrected_history(log: &Log) -> Vec<Text> {
+    per_word(log, None)
+        .into_iter()
+        .map(|(_, events)| {
+            let mut current: Vec<Option<Text>> = vec![];
+            let mut corrected: Vec<Option<Text>> = vec![];
+            let mut cursor = 0;
+            for event in events {
+                if event.kind != "input" {
+                    continue;
+                }
+                if event.data["inputType"] == "insertText"
+                    || event.data["inputType"] == "insertCompositionText"
+                {
+                    if event.data["inputStopped"] == true {
+                        continue;
+                    }
+                    current.resize(current.len().max(cursor + 1), None);
+                    current[cursor] = Some(text(&event.data["data"]));
+                    cursor += 1;
+                } else if event.data["inputType"] == "deleteContentBackward"
+                    || event.data["inputType"] == "deleteWordBackward"
+                {
+                    let all = event.data["inputType"] == "deleteWordBackward";
+                    while cursor > 0 {
+                        cursor -= 1;
+                        corrected.resize(corrected.len().max(cursor + 1), None);
+                        corrected[cursor] = current
+                            .get(cursor)
+                            .cloned()
+                            .flatten()
+                            .or(Some(Text::default()));
+                        if !all {
+                            break;
+                        }
+                    }
+                }
+            }
+            Text(
+                current
+                    .iter()
+                    .enumerate()
+                    .flat_map(|(index, value)| {
+                        corrected
+                            .get(index)
+                            .and_then(Option::as_ref)
+                            .or(value.as_ref())
+                            .map_or(vec![], |text| text.0.clone())
+                    })
+                    .collect(),
+            )
+        })
+        .collect()
+}
+pub fn word_burst_history(log: &Log, now: f64) -> Vec<f64> {
+    (0..per_word(log, None).len())
+        .map(|index| word_burst(log, index, now))
+        .collect()
+}
+pub fn word_indexes_for_second(log: &Log, second: usize) -> Vec<usize> {
+    let boundaries = boundaries(log);
+    let Some(boundary) = boundaries.get(second) else {
+        return vec![];
+    };
+    let previous = second
+        .checked_sub(1)
+        .and_then(|index| boundaries.get(index));
+    let mut words = vec![];
+    for event in &log.events {
+        if previous.is_some_and(|previous| event.test_ms <= *previous) {
+            continue;
+        }
+        if event.test_ms > *boundary {
+            break;
+        }
+        if let Some(index) = word_index(event)
+            && !words.contains(&index)
+        {
+            words.push(index);
+        }
+    }
+    words
+}
+
+pub fn lagged_boundaries(log: &Log) -> Vec<f64> {
+    let mut boundaries: Vec<_> = log
+        .events
+        .iter()
+        .filter(|event| event.kind == "timer" && event.data["event"] == "step")
+        .map(|event| event.test_ms)
+        .collect();
+    let has_end = log
+        .events
+        .iter()
+        .any(|event| event.kind == "timer" && event.data["event"] == "end");
+    let end = adjusted_end(log);
+    if has_end && (log.context.mode == "zen" || log.context.bailed_out) {
+        while boundaries.last().is_some_and(|boundary| *boundary > end) {
+            boundaries.pop();
+        }
+    }
+    if has_end && !timed(log) && js_round(round2(end / 1000.0) % 1.0) >= 0.5 {
+        boundaries.push(end);
+    }
+    boundaries
+}
+pub fn boundary_labels(log: &Log, show_lag: bool) -> Vec<String> {
+    let boundaries = boundaries(log);
+    boundaries
+        .iter()
+        .enumerate()
+        .map(|(index, boundary)| {
+            if index + 1 == boundaries.len()
+                && (boundary - (index + 1) as f64 * 1000.0).abs() > 100.0
+            {
+                return format!("{:.2}", round2(boundary / 1000.0));
+            }
+            let previous = index.checked_sub(1).map_or(0.0, |index| boundaries[index]);
+            if show_lag
+                && log.events.iter().any(|event| {
+                    event.kind == "timer"
+                        && event.data["event"] == "step"
+                        && event.data["catchup"] == true
+                        && event.test_ms > previous
+                        && event.test_ms <= *boundary
+                })
+            {
+                "LAG".into()
+            } else {
+                (index + 1).to_string()
+            }
+        })
+        .collect()
 }

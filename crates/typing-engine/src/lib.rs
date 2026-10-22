@@ -1,11 +1,15 @@
 //! Platform-independent typing rules. Hosts provide content, observations and time.
+pub mod analysis;
 mod generated_funboxes;
 pub mod generation;
 pub mod language_rules;
 pub mod pace;
+pub mod practice;
 pub mod punctuation;
 pub mod quotes;
 pub mod random;
+pub mod replay;
+pub mod results;
 pub mod session;
 pub mod stats;
 pub mod text;
