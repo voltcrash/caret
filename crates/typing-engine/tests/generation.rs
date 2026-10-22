@@ -6,6 +6,18 @@ use typing_engine::{
 };
 
 fn neutral_words(value: &mut Value) {
+    if let Some(accents) = value
+        .get_mut("additionalAccents")
+        .and_then(Value::as_array_mut)
+    {
+        for pair in accents {
+            for text in pair.as_array_mut().unwrap() {
+                if let Some(value) = text.as_str() {
+                    *text = json!(Text::from(value));
+                }
+            }
+        }
+    }
     if let Some(words) = value.get_mut("words").and_then(Value::as_array_mut) {
         for word in words {
             if let Some(value) = word.as_str() {
@@ -31,35 +43,32 @@ fn base_generation_matches_immutable_browser_snapshots() {
     let mut checked = 0;
     for case in cases {
         let config: GenerationConfig = serde_json::from_value(case["config"].clone()).unwrap();
-        if config.lazy_mode
-            || config.british_english
-            || config.funbox.iter().any(|name| {
-                ![
-                    "58008",
-                    "binary",
-                    "hexadecimal",
-                    "gibberish",
-                    "ascii",
-                    "specials",
-                    "backwards",
-                    "ALL_CAPS",
-                    "capitals",
-                    "sPoNgEcAsE",
-                    "rAnDoMcAsE",
-                    "rot13",
-                    "ddoouubblleedd",
-                    "instant_messaging",
-                    "underscore_spaces",
-                    "nospace",
-                    "plus_zero",
-                    "plus_one",
-                    "plus_two",
-                    "plus_three",
-                    "zipf",
-                ]
-                .contains(&name.as_str())
-            })
-            || config.mode == "quote"
+        if config.funbox.iter().any(|name| {
+            ![
+                "58008",
+                "binary",
+                "hexadecimal",
+                "gibberish",
+                "ascii",
+                "specials",
+                "backwards",
+                "ALL_CAPS",
+                "capitals",
+                "sPoNgEcAsE",
+                "rAnDoMcAsE",
+                "rot13",
+                "ddoouubblleedd",
+                "instant_messaging",
+                "underscore_spaces",
+                "nospace",
+                "plus_zero",
+                "plus_one",
+                "plus_two",
+                "plus_three",
+                "zipf",
+            ]
+            .contains(&name.as_str())
+        }) || config.mode == "quote"
         {
             continue;
         }
@@ -128,5 +137,5 @@ fn base_generation_matches_immutable_browser_snapshots() {
         assert_eq!(actual, expected, "{name}");
         checked += 1;
     }
-    assert!(checked >= 40, "Only {checked} cases exercised");
+    assert!(checked >= 48, "Only {checked} cases exercised");
 }

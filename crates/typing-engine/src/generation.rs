@@ -10,6 +10,8 @@ pub struct Language {
     pub right_to_left: Option<bool>,
     pub joining_script: bool,
     pub original_punctuation: bool,
+    pub no_lazy_mode: bool,
+    pub additional_accents: Vec<(Text, Text)>,
 }
 #[derive(Clone, Debug, Deserialize)]
 #[serde(default, rename_all = "camelCase")]
@@ -86,6 +88,7 @@ pub struct Generator {
     repeating: bool,
     generated: usize,
     punctuation: crate::punctuation::Punctuation,
+    rules: crate::language_rules::LanguageRules,
 }
 pub(crate) fn case(text: &Text, upper: bool) -> Text {
     let mut output = vec![];
@@ -153,35 +156,32 @@ impl Generator {
         if config.mode == "quote" {
             return Err("Quote asset selection is not yet ported".into());
         }
-        if config.lazy_mode
-            || config.british_english
-            || config.funbox.iter().any(|name| {
-                ![
-                    "58008",
-                    "binary",
-                    "hexadecimal",
-                    "gibberish",
-                    "ascii",
-                    "specials",
-                    "backwards",
-                    "ALL_CAPS",
-                    "capitals",
-                    "sPoNgEcAsE",
-                    "rAnDoMcAsE",
-                    "rot13",
-                    "ddoouubblleedd",
-                    "instant_messaging",
-                    "underscore_spaces",
-                    "nospace",
-                    "plus_zero",
-                    "plus_one",
-                    "plus_two",
-                    "plus_three",
-                    "zipf",
-                ]
-                .contains(&name.as_str())
-            })
-        {
+        if config.funbox.iter().any(|name| {
+            ![
+                "58008",
+                "binary",
+                "hexadecimal",
+                "gibberish",
+                "ascii",
+                "specials",
+                "backwards",
+                "ALL_CAPS",
+                "capitals",
+                "sPoNgEcAsE",
+                "rAnDoMcAsE",
+                "rot13",
+                "ddoouubblleedd",
+                "instant_messaging",
+                "underscore_spaces",
+                "nospace",
+                "plus_zero",
+                "plus_one",
+                "plus_two",
+                "plus_three",
+                "zipf",
+            ]
+            .contains(&name.as_str())
+        }) {
             return Err("Requested generator transform is not yet ported".into());
         }
         if config.mode == "custom" && custom.is_none() {
@@ -222,6 +222,7 @@ impl Generator {
             repeating: false,
             generated: 0,
             punctuation: crate::punctuation::Punctuation::default(),
+            rules: crate::language_rules::LanguageRules::new()?,
         })
     }
     fn limit(&self) -> usize {
@@ -289,6 +290,13 @@ impl Generator {
             self.random.index(self.wordset.len())?
         };
         Ok(self.wordset[index].clone())
+    }
+    fn lazy(&self, word: Text) -> Text {
+        if self.config.lazy_mode && (!self.language.no_lazy_mode || self.config.mode == "custom") {
+            self.rules.lazy(&word, &self.language.additional_accents)
+        } else {
+            word
+        }
     }
     fn next_ordered(&mut self) -> Text {
         if self.ordered >= self.wordset.len() {
@@ -381,6 +389,20 @@ impl Generator {
             self.generated = index + 1;
             return Ok(next.clone());
         }
+        if self.repeating {
+            let continuation = self.config.mode == "time"
+                || (self.config.mode == "words" && index < self.config.words)
+                || (self.config.mode == "custom"
+                    && self.custom.as_ref().is_some_and(|custom| {
+                        custom.limit.mode == "time"
+                            || (custom.limit.mode == "word" && index < custom.limit.value)
+                            || (custom.limit.mode == "section"
+                                && self.section_index < custom.limit.value)
+                    }));
+            if !continuation {
+                return Err("Repeated word is undefined".into());
+            }
+        }
         let mut word = self.random_word()?;
         let previous_original = previous.cloned();
         let previous = previous.map(|word| clean_previous(word, false));
@@ -425,7 +447,7 @@ impl Generator {
                 }
             } else {
                 let mut retries = 0;
-                let mut first = case(
+                let mut first = self.lazy(case(
                     &Text(
                         word.0
                             .split(|unit| *unit == 32)
@@ -434,7 +456,7 @@ impl Generator {
                             .to_vec(),
                     ),
                     false,
-                );
+                ));
                 while retries < 100
                     && (previous.as_ref() == Some(&first)
                         || previous2.as_ref() == Some(&first)
@@ -451,13 +473,13 @@ impl Generator {
                 {
                     retries += 1;
                     word = self.random_word()?;
-                    first = Text(
+                    first = self.lazy(Text(
                         word.0
                             .split(|unit| *unit == 32)
                             .next()
                             .unwrap_or_default()
                             .to_vec(),
-                    );
+                    ));
                 }
             }
             word = collapse_spaces(word);
@@ -500,6 +522,7 @@ impl Generator {
             word = case(&word, false);
         }
         word = collapse_spaces(word);
+        word = self.lazy(word);
         if self.config.language.starts_with("swiss_german") {
             let mut out = vec![];
             for unit in word.0 {
@@ -523,6 +546,11 @@ impl Generator {
                 },
                 &mut self.random,
             )?;
+        }
+        if self.config.british_english && self.config.language.contains("english") {
+            word = self
+                .rules
+                .british(word, previous.as_ref(), self.config.mode == "quote");
         }
         if self.config.numbers && self.random.draw()? < 0.1 {
             word = crate::transforms::numeral_script(
