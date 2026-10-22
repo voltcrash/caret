@@ -6,8 +6,8 @@ runs trigger the [production deployment](PRODUCTION_SETUP.md).
 
 ## Jobs
 
-On pull requests, `changes` maps changed paths onto jobs; everything else starts
-in parallel once it finishes. Main pushes and manual runs run every job: a
+On pull requests, `changes` maps changed paths onto jobs; independent jobs start
+in parallel once it finishes. SSR and browser jobs wait for `start-build`. Main pushes and manual runs run every job: a
 deployment must not rely on a diff whose earlier commits' CI was cancelled.
 
 Every job installs through
@@ -20,8 +20,9 @@ the dependency cache (`quality` saves it).
 | `ci-be` | Backend, its tests, runtime packages, lint config | Lint, unit and D1 tests |
 | `ci-fe` | Frontend, any frontend tests, backend, runtime packages, lint config | Lint, circular imports |
 | `ci-fe-test` (2 shards) | Frontend, unit or Start tests, backend, runtime packages | Vitest |
-| `start-ssr` | Frontend, Start tests, backend, runtime packages | Route checks, Worker builds, dry-run, SSR/workerd suites |
-| `start-browser` (4 shards) | Same, plus `e2e`/`start-e2e` | Production-Worker Playwright suites |
+| `start-build` | SSR or browser suite selected | Build and dry-run production Worker; share artifact |
+| `start-ssr` | Frontend, Start tests, backend, runtime packages | Route checks, runtime-test build, SSR/workerd suites |
+| `start-browser` (4 shards) | Same, plus `e2e`/`start-e2e` | Playwright suites using shared Worker |
 | `start-updates` | Same, plus `update-e2e` | Service-worker update and rollback suites |
 | `start-delivery` | Frontend, backend, runtime packages | Staging and production builds + dry-runs |
 | `ci-assets` | `frontend/static`, CSS, runtime packages, asset validator inputs and constants | Stylelint and asset validation |
@@ -52,4 +53,20 @@ covers these rules.
 ## Changing CI
 
 Add new paths to the matching `changes` filter with a routing spec case, and
-new jobs to `ci-ok`'s `needs`. When a suite grows, raise its shard count rather than its timeout.
+new jobs to `ci-ok`'s `needs`. Share build output before adding shards; each shard keeps its own fixture Worker and D1 databases.
+
+## Test structure
+
+`vp test run` runs backend, frontend and packages in one workspace runner.
+`vp run test-be`, `vp run test-fe` and `vp run test-pkg` select projects from that
+same configuration. For one file, use `vp test run path/to/file.spec.ts`.
+
+Backend unit tests use lightweight mocks. Only HTTP/auth/controller suites
+start a migrated D1 runtime; D1 integration tests retain independent databases.
+Pure frontend suites run in Node without application mocks or DOM emulation.
+DOM logic and Solid component suites keep their respective browser environments.
+
+Prefer behavior assertions and small case tables. Test shared logic in its
+own package; frontend adapters cover the wiring. Keep fixtures read-only during
+normal runs. Broad metadata snapshots, source-text style checks and tests of
+third-party generators add maintenance without exercising application behavior.
