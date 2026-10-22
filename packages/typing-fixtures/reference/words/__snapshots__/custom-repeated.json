@@ -1,0 +1,23 @@
+{
+  "words": [
+    "cyan ",
+    "green ",
+    "red ",
+    "cyan ",
+    "green ",
+    "blue ",
+    "cyan ",
+    "green ",
+    "blue ",
+    "red ",
+    "green ",
+    "cyan "
+  ],
+  "sectionIndexes": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+  "hasTab": false,
+  "hasNewline": false,
+  "allJoiningScript": false,
+  "extra": [],
+  "allWordsGenerated": true,
+  "currentQuote": null
+}

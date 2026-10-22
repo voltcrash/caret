@@ -1,0 +1,20 @@
+{
+  "words": [
+    "The ",
+    "quick ",
+    "brown ",
+    "fox ",
+    "jumps ",
+    "over ",
+    "the ",
+    "lazy ",
+    "dog "
+  ],
+  "sectionIndexes": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  "hasTab": false,
+  "hasNewline": false,
+  "allJoiningScript": false,
+  "extra": [],
+  "allWordsGenerated": true,
+  "currentQuote": null
+}

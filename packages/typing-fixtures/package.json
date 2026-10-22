@@ -1,0 +1,6 @@
+{
+  "name": "@oxytype/typing-fixtures",
+  "private": true,
+  "description": "Immutable language-neutral typing engine reference data",
+  "license": "GPL-3.0"
+}
