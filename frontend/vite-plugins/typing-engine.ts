@@ -9,7 +9,9 @@ export function prepareTypingEngine(): void {
     [resolve(root, "scripts/engine.ts"), "build"],
     {
       cwd: root,
-      stdio: "inherit",
+      // Vite also loads this config for machine-readable commands such as
+      // lint --print-config. Build diagnostics must never contaminate stdout.
+      stdio: ["ignore", 2, 2],
     },
   );
 }

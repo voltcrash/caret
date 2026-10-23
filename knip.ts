@@ -80,6 +80,8 @@ export default {
   ignoreDependencies: [
     // Browserslist uses the pinned database indirectly for compatibility linting.
     "caniuse-lite",
+    // scripts/engine.ts resolves Binaryen's package metadata to invoke wasm-opt.
+    "binaryen",
     // .husky/commit-msg invokes the commitlint binary.
     "@commitlint/cli",
   ],
