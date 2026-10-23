@@ -98,3 +98,14 @@ original generator snapshots pass through the actual browser binding/asset adapt
 Built-site source tests cover delayed batches, cancellation, source failure and
 retained original event timing; settings imports/commands/quotes/restarts pass the
 broader existing browser suite. Results/replay consumers remain Phase 2.4 work.
+
+## Website final ownership (Phase 2.6)
+
+All advertised website modes/funboxes use Rust. Input/IME behavior, timer completion,
+settings/quote/practice/repeat policies, results and historical inspection/playback
+use native decisions. Hosts retain DOM/layout observations, rendering/audio, I/O,
+hashing, storage/account transport and presentation. The TypeScript engine package
+and unused rule facades are removed; non-engine helpers live in `web-shared`.
+Historical references and UTF-16 transport remain unchanged. No redesign or scoring
+change included. Cloudflare build/delivery and rollback retain matched Wasm/glue.
+Hosted release validation still follows the existing deployment authorization.

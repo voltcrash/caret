@@ -444,3 +444,26 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
 - Continue immediately with TypeScript retirement. Additional synthetic legacy
   analysis calls captured once before deleting that test-only recorder; native
   parity verification is in progress. Original reference snapshots remain unchanged.
+
+## Phase 2.6 active checkpoint — legacy removal
+
+- Extracted host helpers and legacy wire DTO types into `web-shared`; 114 moved
+  utility tests pass. Removed all TypeScript engine sources/package/dependency,
+  unused rule facades and transitional test-only recorder. Retained every original
+  reference byte; original manifest unchanged. Capture scripts archived inertly.
+- Captured 67 synthetic public analysis calls and 68 string-rule calls once, before
+  deletion. Original legacy suites pass (100 and 157 cases respectively); all 135
+  native comparisons pass. Full native suite, Clippy and format pass.
+- Browser anticheat regression now passes actual optimized-Wasm summaries into the
+  unchanged independent backend validators, removing its previous JS score formulas.
+  Host input capture and timer scheduler tests no longer import the legacy engine.
+- Changed host/input/string/anticheat group: 126 pass. Whole workspace unit/JSX run:
+  338 files / 3,387 pass, one CI fixture-routing expectation failed because immutable
+  fixtures now correctly select the full engine gate. Corrected routing assertion;
+  all 68 routing/metadata/reference-integrity checks pass. No reference regenerated.
+- Whole frontend/shared type-aware check passes. Two earlier transient tsgolint
+  panics came from deleting a file during a running scan; subsequent complete check
+  after edits settled passes. Do not mutate scanned trees while lint/typecheck runs.
+- Remaining: current retired-engine production build/browser/full-workspace types,
+  final fresh checkout, performance confirmation, rollback documentation and PR2
+  sign-off. Stage 3 still pending; no live deployment performed.
