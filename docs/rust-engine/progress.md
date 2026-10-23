@@ -397,3 +397,31 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
   Independent backend result (21) and anticheat detector (19) checks pass unchanged.
 - All result browser cases added to engine browser CI task. No production/staging
   publication. Continue Phase 2.5; TypeScript retirement and terminal remain open.
+
+## Phase 2.5 active checkpoint
+
+- Fixed public asset retention to include hashed Wasm alongside matched glue;
+  service-worker precache explicitly includes browser SDK and Wasm. Nine retention/
+  precache unit checks and eight built workerd delivery checks pass (MIME, immutable
+  headers, complete cache and exact published bytes). Wrangler dry-run passes.
+- Long real-keyboard profiling exposed an attached-generator zen bug: refill
+  generated English targets behind the cursor. Rust now keeps zen targetless;
+  component-owned rendering projects native word indices into empty display nodes.
+  Native parity, full native tests/Clippy/format and actual browser backward/restart
+  regression pass. No reference changed.
+- Full website baseline passes unchanged budgets: 20 input/restart samples plus
+  2,000 keyboard characters, no page errors. Active JS 13,185,628 bytes; reset JS
+  13,006,284; reset Wasm 15,335,424 (<16 MiB). Three additional real-keyboard 2,000-unit
+  sessions remain flat at 15,335,424 Wasm bytes; reset JS maximum 12,227,996.
+  Raw measurements: website-candidate-{readiness,input,soak}.json. Earlier added-soak
+  attempt hit the original baseline deadline and exposed the zen defect; repeated
+  workloads now have a separate test, leaving original timing budgets unchanged.
+- Cold/warm startup gate passes (10 samples each), as do input-paint and restart
+  median/p95 gates. Current payload 774,770 raw bytes, gzip6 still within unchanged
+  307,200-byte build guard. Whole changed-source type-aware check passes.
+- Actual matched-build update/rollback suite: three pass (38.2 s). Old tab resolves
+  its engine/glue after deployment, both caches contain engine assets, rollback
+  types offline; pending real save and removed-function retry remain compatible.
+- Remaining gate: clean checkout, current whole proof/SSR/browser regression and
+  controlled initialization/boundary distribution. Then Phase 2.6 retirement.
+  No external deployment, release or Stage 3 completion claimed.
