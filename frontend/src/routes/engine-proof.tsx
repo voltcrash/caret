@@ -257,6 +257,110 @@ function EngineProof() {
       setFailure(error instanceof Error ? error.message : String(error));
     }
   };
+  const runRestarts = async (): Promise<void> => {
+    setResult("");
+    setFailure("");
+    try {
+      const input = JSON.parse(fixture()) as {
+        words: Prepare;
+        quote: Prepare;
+        sections: Prepare;
+      };
+      const { loadEngine } =
+        await import("@oxytype/typing-engine/browser.client");
+      const engine = await loadEngine();
+      if (disposed) return;
+      const owners = Array.from({ length: 3 }, () => engine.createContent());
+      const sessions: BrowserSession[] = [];
+      const [words, quote, sections] = owners;
+      if (
+        words === undefined ||
+        quote === undefined ||
+        sections === undefined
+      ) {
+        throw new Error("Missing owner");
+      }
+      try {
+        words.prepare(input.words);
+        const first = words.createSession();
+        sessions.push(first);
+        const before = first.snapshot().words;
+        words.recycleSession(first);
+        words.prepare(
+          { ...input.words, random: { kind: "seeded", state: 99 } },
+          true,
+        );
+        const repeated = words.createSession(true);
+        sessions.push(repeated);
+        const after = repeated.snapshot().words;
+        quote.prepare(input.quote);
+        const firstQuote = quote.createSession();
+        sessions.push(firstQuote);
+        const quoteBefore = firstQuote.snapshot();
+        quote.recycleSession(firstQuote);
+        quote.prepare({ ...input.quote, quotes: null }, true);
+        const repeatQuote = quote.createSession(true);
+        sessions.push(repeatQuote);
+        const quoteAfter = repeatQuote.snapshot();
+        quote.recycleSession(repeatQuote);
+        quote.prepare({ ...input.quote, quotes: null });
+        const nextQuote = quote.createSession();
+        sessions.push(nextQuote);
+        sections.prepare(input.sections);
+        try {
+          sections.createSession();
+        } catch {
+          /* Expected typed source request. */
+        }
+        const old = sections.request();
+        sections.prepare(input.sections);
+        try {
+          sections.createSession();
+        } catch {
+          /* Expected replacement request. */
+        }
+        const current = sections.request();
+        if (old === null || current === null) {
+          throw new Error("Missing request");
+        }
+        let staleRejected = false;
+        try {
+          sections.supply(old, {
+            kind: "poem",
+            title: [],
+            author: [],
+            lines: [[111, 110, 101]],
+          });
+        } catch {
+          staleRejected = true;
+        }
+        setResult(
+          JSON.stringify({
+            before,
+            after,
+            quoteBefore: {
+              words: quoteBefore.words,
+              quote: quoteBefore.currentQuote,
+            },
+            quoteAfter: {
+              words: quoteAfter.words,
+              quote: quoteAfter.currentQuote,
+            },
+            nextQuote: nextQuote.snapshot().currentQuote,
+            old,
+            current,
+            staleRejected,
+            pending: sections.request(),
+          }),
+        );
+      } finally {
+        for (const session of sessions) session.dispose();
+        for (const owner of owners) owner.dispose();
+      }
+    } catch (error) {
+      setFailure(error instanceof Error ? error.message : String(error));
+    }
+  };
   const runGeneration = async (): Promise<void> => {
     setResult("");
     setFailure("");
@@ -516,6 +620,14 @@ function EngineProof() {
           }}
         >
           Run context
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            void runRestarts();
+          }}
+        >
+          Run restarts
         </button>
         <pre data-testid="engine-proof-result">{result()}</pre>
         <pre data-testid="engine-proof-error">{failure()}</pre>

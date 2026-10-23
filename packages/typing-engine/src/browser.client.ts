@@ -250,8 +250,8 @@ export class BrowserContent {
   recycleSession(session: BrowserSession): void {
     session.recycleTo(this.live());
   }
-  prepare(input: Prepare): void {
-    this.live().prepare(JSON.stringify(input));
+  prepare(input: Prepare, repeating = false): void {
+    this.live().prepare(JSON.stringify(input), repeating);
   }
   generate(repeating = false): Generated {
     return JSON.parse(this.live().generate(repeating)) as Generated;

@@ -656,3 +656,75 @@ test("browser Wasm preserves learning, pace clocks and language normalization", 
   expect(result.emptyLog).toBe(true);
   expect(result.active).toBe(false);
 });
+
+test("replacement Wasm sessions repeat exact targets and reject old source replies", async ({
+  page,
+}) => {
+  const units = (text: string): number[] =>
+    Array.from({ length: text.length }, (_, i) => text.charCodeAt(i));
+  const language = {
+    name: "english",
+    words: ["one", "two", "three", "four", "five", "six"].map(units),
+  };
+  const random = { kind: "seeded", state: 1 };
+  const input = {
+    words: { config: { mode: "words", words: 30 }, language, random },
+    quote: {
+      config: { mode: "quote", quoteLength: [0] },
+      language,
+      random,
+      quotes: {
+        language: "english",
+        groups: [[0, 1000]],
+        quotes: [
+          {
+            id: 1,
+            text: units("one two three"),
+            length: 13,
+            source: "fixture",
+          },
+          {
+            id: 2,
+            text: units("four five six"),
+            length: 13,
+            source: "fixture",
+          },
+        ],
+      },
+    },
+    sections: {
+      config: { mode: "time", time: 0, funbox: ["poetry"] },
+      language,
+      random,
+    },
+  };
+  await page.goto("/engine-proof");
+  await page
+    .getByRole("textbox", { name: "Command fixture" })
+    .fill(JSON.stringify(input));
+  await page.getByRole("button", { name: "Run restarts", exact: true }).click();
+  await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
+  await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+  const actual = JSON.parse(
+    await page.getByTestId("engine-proof-result").innerText(),
+  ) as {
+    before: number[][];
+    after: number[][];
+    quoteBefore: { words: number[][]; quote: { id: number } };
+    quoteAfter: { words: number[][]; quote: { id: number } };
+    nextQuote: { id: number };
+    old: { id: number; generation: number };
+    current: { id: number; generation: number };
+    staleRejected: boolean;
+    pending: unknown;
+  };
+  expect(actual.before).toHaveLength(30);
+  expect(actual.after).toEqual(actual.before);
+  expect(actual.quoteAfter).toEqual(actual.quoteBefore);
+  expect(actual.nextQuote.id).not.toBe(actual.quoteBefore.quote.id);
+  expect(actual.old.id).toBe(actual.current.id);
+  expect(actual.old.generation).toBe(0);
+  expect(actual.current.generation).toBe(1);
+  expect(actual.staleRejected).toBe(true);
+  expect(actual.pending).toEqual(actual.current);
+});
