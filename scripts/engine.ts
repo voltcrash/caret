@@ -53,10 +53,24 @@ function fingerprint(): string {
     "rust-toolchain.toml",
     "package.json",
     "scripts/engine.ts",
+    "crates/typing-engine/Cargo.toml",
+    "crates/typing-engine-wasm/Cargo.toml",
   ].map((path) => resolve(root, path));
-  for (const path of ["crates", ".cargo"]) {
+  // Tests and terminal sources cannot affect Wasm/binding output. Keep native
+  // iteration independent; all actual runtime data, declarations and build inputs
+  // still participate in the verified output cache.
+  for (const path of [
+    "crates/typing-engine/src",
+    "crates/typing-engine/data",
+    "crates/typing-engine-wasm/src",
+    ".cargo",
+  ]) {
     const directory = resolve(root, path);
     if (existsSync(directory)) sources.push(...files(directory));
+  }
+  for (const crate of ["typing-engine", "typing-engine-wasm"]) {
+    const buildScript = resolve(root, "crates", crate, "build.rs");
+    if (existsSync(buildScript)) sources.push(buildScript);
   }
   const environment = Object.fromEntries(
     Object.entries(process.env).filter(
