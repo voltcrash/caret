@@ -10,7 +10,7 @@ import type {
 type Loader = ReturnType<
   typeof import("@oxytype/typing-engine/browser.client").createEngineLoader
 >;
-export type EngineStatus =
+type EngineStatus =
   | { state: "idle" | "loading" | "ready" | "disposed" }
   | { state: "failed"; error: unknown };
 
