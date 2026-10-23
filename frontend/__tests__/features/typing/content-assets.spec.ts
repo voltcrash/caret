@@ -32,7 +32,7 @@ it("keeps raw Unicode words, accents, quote whitespace and language metadata for
     quotes: [{ id: 1, text: "  line…\n next  ", source: "Source", length: 16 }],
   });
   expect(decodeText(quotes.quotes[0]?.text ?? [])).toBe("  line…\n next  ");
-  expect(quotes.quotes[0]?.britishText).toBeNull();
+  expect(quotes.quotes[0]?.britishText).toBeUndefined();
   expect(quotes.quotes[0]?.textSplit).toEqual([]);
 });
 

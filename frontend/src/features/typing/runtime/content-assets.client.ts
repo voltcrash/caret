@@ -31,8 +31,9 @@ export function engineQuotes(input: QuoteData): NonNullable<Prepare["quotes"]> {
     quotes: input.quotes.map((quote) => ({
       id: quote.id,
       text: encodeText(quote.text),
-      britishText:
-        quote.britishText === undefined ? null : encodeText(quote.britishText),
+      ...(quote.britishText === undefined
+        ? {}
+        : { britishText: encodeText(quote.britishText) }),
       source: quote.source,
       length: quote.length,
       group: 0,

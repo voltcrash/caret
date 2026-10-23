@@ -46,7 +46,7 @@ function webQuote(
   return {
     ...quote,
     text: decodeText(quote.text),
-    ...(quote.britishText === null
+    ...(quote.britishText === undefined
       ? { britishText: undefined }
       : { britishText: decodeText(quote.britishText) }),
     textSplit: quote.textSplit.map(decodeText),
