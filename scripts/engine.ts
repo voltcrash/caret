@@ -159,6 +159,7 @@ switch (process.argv[2]) {
       resolve(binaryen, "bin/wasm-opt"),
       wasm,
       "-Oz",
+      "--converge",
       "--enable-bulk-memory",
       "--enable-nontrapping-float-to-int",
       "--enable-sign-ext",
