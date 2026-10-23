@@ -709,7 +709,7 @@ pub fn key_timing(log: &Log) -> KeyTiming {
     let mut spacing = vec![];
     let mut last = None;
     let mut durations: Vec<f64> = vec![];
-    let mut held: Vec<(String, f64, usize)> = vec![];
+    let mut held: Vec<(&str, f64, usize)> = vec![];
     let mut overlap = 0.0;
     let mut overlap_start = None;
     let start = log
@@ -724,7 +724,7 @@ pub fn key_timing(log: &Log) -> KeyTiming {
         .map(|event| (event.test_ms - start.unwrap_or(event.test_ms)).max(0.0))
         .unwrap_or(0.0);
     for event in &log.events {
-        let code = event.data["code"].as_str().unwrap_or_default().to_owned();
+        let code = event.data["code"].as_str().unwrap_or_default();
         if event.kind == "keydown" {
             if let Some(previous) = last {
                 spacing.push(event.test_ms - previous);
