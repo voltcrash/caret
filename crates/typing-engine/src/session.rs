@@ -19,6 +19,9 @@ pub struct Config {
     pub stop_on_error: String,
     pub delete_on_error: String,
     pub quick_end: bool,
+    pub repeat_quotes: String,
+    pub result_saving: bool,
+    pub repeated_pace: bool,
     pub freedom_mode: bool,
     pub confidence_mode: String,
     pub blind_mode: bool,
@@ -52,6 +55,9 @@ impl Default for Config {
             stop_on_error: "off".into(),
             delete_on_error: "off".into(),
             quick_end: false,
+            repeat_quotes: "off".into(),
+            result_saving: true,
+            repeated_pace: true,
             freedom_mode: false,
             confidence_mode: "off".into(),
             blind_mode: false,
@@ -115,6 +121,11 @@ impl Config {
             ),
             ("minWpm", self.min_wpm.as_str(), &["off", "custom"][..]),
             ("minAcc", self.min_acc.as_str(), &["off", "custom"][..]),
+            (
+                "repeatQuotes",
+                self.repeat_quotes.as_str(),
+                &["off", "typing"][..],
+            ),
         ] {
             if !allowed.contains(&value) {
                 return Err(format!("Invalid {name}"));
@@ -448,6 +459,25 @@ pub struct Session {
 }
 
 impl Session {
+    pub fn restart_policy(
+        &self,
+        options: crate::restart::RestartOptions,
+    ) -> crate::restart::RestartDecision {
+        let state = crate::restart::RestartState {
+            active: self.active,
+            failed: self.reason.is_some(),
+            repeated: self
+                .generator
+                .as_ref()
+                .is_some_and(|generator| generator.is_repeating()),
+            quote_language: self
+                .generator
+                .as_ref()
+                .and_then(|generator| generator.current_quote.as_ref())
+                .map(|quote| quote.language.as_str()),
+        };
+        crate::restart::decide(&self.config, state, self.custom_limit.as_ref(), options)
+    }
     pub fn pace_command(
         &mut self,
         command: crate::pace::PaceCommand,

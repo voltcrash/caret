@@ -149,6 +149,9 @@ impl Generator {
     pub fn config(&self) -> &GenerationConfig {
         &self.config
     }
+    pub fn is_repeating(&self) -> bool {
+        self.repeating
+    }
     pub fn custom_limit(&self) -> Option<crate::results::Limit> {
         self.custom.as_ref().map(|custom| crate::results::Limit {
             mode: custom.limit.mode.clone(),

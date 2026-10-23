@@ -23,6 +23,9 @@ pub enum Query {
     Frame {
         time: f64,
     },
+    CustomProgress {
+        previous: u32,
+    },
     Practice {
         words: Vec<Text>,
         missed: String,
@@ -50,6 +53,9 @@ pub enum Response {
     },
     Frame {
         frame: replay::Frame,
+    },
+    CustomProgress {
+        progress: crate::custom_progress::LongProgress,
     },
     Practice {
         selection: practice::Selection,
@@ -107,6 +113,9 @@ pub fn analyze(log: &Log, query: Query) -> Response {
         },
         Query::Frame { time } => Response::Frame {
             frame: replay::frame(log, time),
+        },
+        Query::CustomProgress { previous } => Response::CustomProgress {
+            progress: crate::custom_progress::calculate(log, previous),
         },
         Query::Practice {
             words,
