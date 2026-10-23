@@ -55,3 +55,38 @@ Historical legacy/Start rollback rehearsals and deployment observations are
 in the [archived release record](../archive/tanstack-start/release.md) and
 [stage reports](../archive/tanstack-start/README.md). They do not close the
 compatibility window or certify the currently hosted deployment.
+
+## Rust engine cutover
+
+The website builds one Rust engine through browser-only Wasm. No permanent dual
+engine fallback remains. Native `typing-engine` code, generated bindings, browser
+glue and `.wasm` are a matched unit. Bootstrap runs before Vite in development,
+production/staging and CI; the production workflow installs the pinned toolchain.
+
+Wasm is content-addressed under `/assets/`, served as `application/wasm` with
+immutable caching and the existing `wasm-unsafe-eval` CSP permission. Preserve
+previous hashed Wasm **and** its importing JS graph. The public integrity index
+includes both; failed/colliding captures stop the build. The service worker
+precaches engine/glue for cached guest typing; it never caches private responses.
+A missing or interrupted first download leaves typing disabled with Restart retry.
+
+The original source anchor is
+`7b1ae05f204be53b5d9f2714f21c6eea08b25935`; completed Stage 1
+`dc843955a` also retains the original website runtime. Immutable references and
+source provenance remain in `packages/typing-fixtures`. These Git anchors preserve
+source; they are **not** claims about the currently hosted Worker version or an
+archived deployed artifact.
+
+Before the authorized production cutover, retain the currently deployed matched
+Worker/assets artifact and record its Cloudflare version using the operations
+guide above. Rehearse on the authorized staging deployment, including stale tabs,
+settings, authenticated save retry, IME, historical replay and engine download
+failure. This implementation has local workerd/matched-build update/rollback
+evidence; it does not assert hosted staging/production verification. Rollback uses
+the retained deployment artifact, without restoring D1 or rebuilding its client.
+New and old tabs keep their own engine version throughout a test. Idle update
+activation and pending-save protection are unchanged.
+
+Frozen performance budgets and raw evidence live in `docs/rust-engine/`; keep the
+original baseline files unchanged. `vp run engine:parity` compares native and
+built-browser Wasm directly with the frozen reference outputs after retirement.
