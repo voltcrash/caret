@@ -40,7 +40,7 @@ test("signed-out native results retain history, clipboard export and replay seek
     .locator("#replayWords .word")
     .nth(1)
     .locator("letter")
-    .nth(1)
+    .first()
     .click();
   await expect(
     page.locator("#replayWords .word").first().locator("letter.correct"),
