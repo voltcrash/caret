@@ -215,3 +215,5 @@ do not rerun completed checks without a new reason.
 
 - Added engine:test:wasm and engine:parity vp tasks; CI runs the same production build plus proof/input-contract/lifecycle browser files. Combined task passes native suite and 21 browser tests (51.1 s). Shared Node bootstrap now covers direct type-aware lint and root/package tests as well as frontend builds; diagnostics stay off structured stdout. Oracle/text/failure tests pass 28 cases; lint-config check and Knip pass. Fresh first-test/typecheck bootstrap verification pending.
 - Final API audit: generation must adopt live Configure updates rather than retaining preparation-time rule settings, and shared funbox setting-policy functions need a typed Wasm entry point. Resolve both before closing the engine gate.
+
+- Froze 30 original next-word outputs across six live configuration boundaries (punctuation, numbers, lazy accents, British conversion, ordered funbox transforms, restored defaults), including final RNG position. Capture imports the oracle after seeding, tracks host word count, snapshots each effective config and refuses overwrite.
