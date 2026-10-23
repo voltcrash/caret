@@ -436,6 +436,8 @@ pub struct Session {
     start: Option<f64>,
     ticks: u32,
     events: Vec<Recorded>,
+    live: crate::live::Live,
+    korean: bool,
     indent_pending: bool,
     pressed: Vec<(String, f64)>,
     no_code_index: usize,
@@ -526,6 +528,7 @@ impl Session {
         let sections = (1..=words.len()).collect();
         let has_tab = words.iter().any(|word| word.0.contains(&9));
         let has_newline = words.iter().any(|word| word.0.contains(&10));
+        let korean = words.iter().any(crate::stats::contains_korean);
         Ok(Self {
             pace: crate::pace::Pace::default(),
             weak_spot: crate::weak_spot::WeakSpot::default(),
@@ -539,6 +542,8 @@ impl Session {
             start: None,
             ticks: 0,
             events: vec![],
+            live: crate::live::Live::default(),
+            korean,
             indent_pending: false,
             pressed: vec![],
             no_code_index: 0,
@@ -658,6 +663,7 @@ impl Session {
         {
             word.0.pop();
             let index = self.words.len() - 1;
+            self.live.recount(index, self.words.get(index), self.korean);
             self.word_changes.push(WordChange {
                 index,
                 word: self.words[index].clone(),
@@ -687,6 +693,10 @@ impl Session {
         let next = generator.next(index, bound, previous.as_ref(), previous2.as_ref())?;
         self.has_tab |= next.word.0.contains(&9);
         self.has_newline |= next.word.0.contains(&10);
+        if !self.korean && crate::stats::contains_korean(&next.word) {
+            self.korean = true;
+            self.live.recount_all(&self.words, true);
+        }
         self.words.push(next.word.clone());
         self.sections.push(next.section_index);
         self.word_changes.push(WordChange {
@@ -718,6 +728,7 @@ impl Session {
         crate::funboxes::has_property(&self.config.funbox, "nospace")
     }
     fn record(&mut self, kind: &str, now: f64, data: Value) {
+        self.live.record(kind, now, &data, &self.words, self.korean);
         self.events.push(Recorded {
             kind: kind.into(),
             now: round2(now),
@@ -1000,6 +1011,7 @@ impl Session {
                 self.ticks = 0;
                 self.indent_pending = false;
                 self.events.clear();
+                self.live = crate::live::Live::default();
                 self.input = vec![Text::default(); self.words.len().max(1)];
                 self.pressed.clear();
                 self.no_code_index = 0;
@@ -1220,12 +1232,7 @@ impl Session {
                 .correct(self.index, next == target, &target, self.config.blind_mode);
         }
         self.input[self.index] = next;
-        let previous = self
-            .events
-            .iter()
-            .rev()
-            .find(|event| event.kind == "input")
-            .map(|event| event.now);
+        let previous = self.live.last_input_at();
         self.record("input", now, data);
         let learner = self
             .generator
@@ -1302,10 +1309,11 @@ impl Session {
             return;
         }
         if checkpoint && progressed && self.config.min_burst != "off" {
-            let log: crate::stats::Log =
-                serde_json::from_value(self.log()).expect("Engine log is valid");
-            let burst =
-                crate::stats::word_burst(&log, committed_index, now - self.start.unwrap_or(now));
+            let burst = self.live.burst(
+                committed_index,
+                self.origin(),
+                now - self.start.unwrap_or(now),
+            );
             let length = if self.config.mode == "zen" {
                 input.len() + 1
             } else {
@@ -1530,19 +1538,13 @@ impl Session {
             if self.ticks == due
                 && (self.config.min_wpm == "custom" || self.config.min_acc == "custom")
             {
-                let log: crate::stats::Log =
-                    serde_json::from_value(self.log()).expect("Engine log is valid");
-                let chars = crate::stats::chars(&log, true, None);
+                let chars = self.live.chars(true);
                 let wpm = crate::js_round(crate::stats::wpm(
                     chars.correct_word,
                     (now - start) / 1000.0,
                 ));
-                let has_input = self
-                    .events
-                    .iter()
-                    .any(|e| e.kind == "input" && e.data.get("correct").is_some());
-                let accuracy = if has_input {
-                    crate::stats::accuracy(&log, None)
+                let accuracy = if self.live.has_input() {
+                    self.live.accuracy()
                 } else {
                     100.0
                 };
@@ -1762,6 +1764,16 @@ impl Session {
             }
             true
         });
+        self.live = crate::live::Live::default();
+        for event in &self.events {
+            self.live.record(
+                &event.kind,
+                event.now,
+                &event.data,
+                &self.words,
+                self.korean,
+            );
+        }
     }
     fn origin(&self) -> f64 {
         self.events
@@ -1799,7 +1811,7 @@ impl Session {
                 .map_or_else(|| "-1".into(), |quote| quote.id.to_string()),
             other => other.into(),
         };
-        let korean=self.words.iter().flat_map(|word| &word.0).any(|c| matches!(*c,0xac00..=0xd7af | 0x1100..=0x11ff | 0x3130..=0x318f | 0xa960..=0xa97f | 0xd7b0..=0xd7ff));
+        let korean = self.korean;
         let mut log = json!({"version":EVENT_LOG_VERSION,"events":events.iter().map(|event|Self::event(event,self.origin())).collect::<Vec<_>>(),
             "context":{"targetWords":self.words,"mode":self.config.mode,"mode2":mode2,"koreanStatus":korean,"bailedOut":self.bailed_out,"isFunboxWithNospacePropertyActive":self.nospace()}});
         if let Some(limit) = &self.custom_limit {

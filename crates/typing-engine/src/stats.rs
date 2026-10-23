@@ -32,6 +32,9 @@ pub struct Log {
     pub context: Context,
 }
 
+pub(crate) fn contains_korean(word: &Text) -> bool {
+    word.0.iter().any(|c| matches!(*c,0xac00..=0xd7af | 0x1100..=0x11ff | 0x3130..=0x318f | 0xa960..=0xa97f | 0xd7b0..=0xd7ff))
+}
 pub fn text(value: &Value) -> Text {
     if let Some(value) = value.as_str() {
         Text::from(value)
@@ -51,12 +54,15 @@ pub fn input(events: &[&Event]) -> Text {
     let Some(event) = events.iter().rev().find(|event| event.kind == "input") else {
         return Text::default();
     };
-    let mut value = text(&event.data["inputValue"]);
-    if event.data["inputType"] == "insertText"
-        && text(&event.data["data"]).0 == [32]
-        && event.data["lastWord"] == true
-        && event.data["commitsWord"] == true
-        && event.data["correct"] == false
+    input_value(&event.data)
+}
+pub(crate) fn input_value(data: &Value) -> Text {
+    let mut value = text(&data["inputValue"]);
+    if data["inputType"] == "insertText"
+        && text(&data["data"]).0 == [32]
+        && data["lastWord"] == true
+        && data["commitsWord"] == true
+        && data["correct"] == false
     {
         while value.0.last().is_some_and(|c| js_whitespace(*c)) {
             value.0.pop();
@@ -339,10 +345,6 @@ pub fn word_burst(log: &Log, index: usize, now: f64) -> f64 {
         .filter(|e| word_index(e) == Some(index))
         .collect();
     let input = input(&events);
-    let mut length = input.len();
-    if !matches!(input.0.last(), Some(32 | 10)) {
-        length += 1;
-    }
     let mut first = None;
     let mut last = None;
     for event in events {
@@ -358,6 +360,10 @@ pub fn word_burst(log: &Log, index: usize, now: f64) -> f64 {
             }
         }
     }
+    burst(&input, first, last, now)
+}
+pub(crate) fn burst(input: &Text, first: Option<f64>, last: Option<f64>, now: f64) -> f64 {
+    let length = input.len() + usize::from(!matches!(input.0.last(), Some(32 | 10)));
     let Some(first) = first else {
         return 0.0;
     };

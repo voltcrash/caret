@@ -170,7 +170,7 @@ do not rerun completed checks without a new reason.
 ## Remaining Stage 1 exit work
 
 - Structured native/binding errors, quote/favorite/polyglot recovery and failed-content lifecycle implemented; final malformed-input and lifecycle stress gates remain.
-- Bounded live-stat and word-burst reads without full-log cloning on commits/ticks.
+- Indexed live-stat/word-burst cache implemented; final browser/long-session performance evidence remains.
 - Complete content/config/observation/log validation, checked transport DTO compatibility, randomized lifecycle/stale-handle checks.
 - Final engine initialization distributions, long-session/restart memory and per-key performance budgets; full website startup/input/restart comparison belongs to Stage 2 after integration.
 - Current-head full regression/backend submission/hash checks, fresh-checkout bootstrap and complete CI evidence.
@@ -191,3 +191,5 @@ do not rerun completed checks without a new reason.
 - Built Cloudflare proof plus actual website input-contract suite: 17 tests pass (26.7 s). New browser checks match initial source errors and both buffered/exhausted active failures, preserve the log, block subsequent typing/ticks, reject late replies and abandon without a score failure. Type-aware lint and Clippy pass. Wasm remains within frozen transfer limits: 701.91 kB raw / 282.63 kB Vite gzip.
 
 - Captured 1387 original TypeScript live-stat prefixes across all eight historical recordings before replacing the hot reads. Immutable live-stats.json includes partial character totals, unrounded accuracy and per-word bursts (non-finite JSON semantics preserved). Capture typechecks and refuses overwrite. Indexed native cache verification is ongoing.
+
+- Replaced minimum-burst and timer minimum-speed/accuracy full-log JSON clones with indexed live derivation. Cache retains one word state per observed word, constant counters and timestamp/rank metadata; repeated edits add no cache entries. Reuses shared character/burst formulas and preserves delayed-observation ordering, first-appearance word order and legacy sentinel semantics. All 1,387 frozen live prefixes match exactly; delayed-order/cache-growth regression plus full native suite/Clippy pass. Finalize rebuilds cache after log cleanup; reset clears it. Browser/performance verification pending.

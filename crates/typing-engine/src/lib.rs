@@ -8,6 +8,7 @@ mod generated_funboxes;
 pub mod generation;
 pub mod input;
 pub mod language_rules;
+mod live;
 pub mod pace;
 pub mod practice;
 pub mod punctuation;
