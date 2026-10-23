@@ -287,7 +287,20 @@ test("historical results, replay and practice agree with frozen references in Wa
   ) as {
     name: string;
     frames: Record<string, unknown>[];
-    replay: { zen: boolean; words: unknown; steps: unknown }[];
+    replay: {
+      zen: boolean;
+      words: unknown;
+      steps: unknown;
+      final: unknown;
+      cursor: unknown;
+      sounds: unknown;
+      seeks: {
+        target: unknown;
+        words: unknown;
+        cursor: unknown;
+        nextIndex: number;
+      }[];
+    }[];
     practice: {
       missed: string;
       slow: boolean;
@@ -374,8 +387,28 @@ test("historical results, replay and practice agree with frozen references in Wa
         },
       });
     }
-    inputs.push({ log, queries });
-    expected.push(outputs);
+    inputs.push({
+      log,
+      queries,
+      playback: reference.replay.map((replay) => ({
+        zen: replay.zen,
+        targets: replay.seeks.map((seek) => seek.target),
+      })),
+    });
+    expected.push({
+      analysis: outputs,
+      playback: reference.replay.map((replay) => ({
+        words: replay.final,
+        sounds: replay.sounds,
+        cursor: replay.cursor,
+        stale: true,
+        seeks: replay.seeks.map(({ words, cursor, nextIndex }) => ({
+          words,
+          cursor,
+          nextIndex,
+        })),
+      })),
+    });
   }
   await page.goto("/engine-proof");
   await page
@@ -476,4 +509,102 @@ test("typed section requests preserve prepared and active input through browser 
   const events = result.log.events.filter((event) => event.type === "input");
   expect(events).toHaveLength(404);
   expect(events.at(-1)?.testMs).toBe(100);
+});
+
+test("Wasm owns slow-render failure and accepts observed completion time", async ({
+  page,
+}) => {
+  await page.goto("/engine-proof");
+  const run = async (
+    fixture: unknown,
+  ): Promise<{
+    frames: {
+      state: { active: boolean; ended: boolean; reason?: string };
+      log: {
+        events: { type: string; testMs: number; data: { event?: string } }[];
+      };
+    }[];
+  }> => {
+    await page
+      .getByRole("textbox", { name: "Command fixture" })
+      .fill(JSON.stringify(fixture));
+    await page.getByRole("button", { name: "Run fixture" }).click();
+    await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
+    await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+    return JSON.parse(
+      await page.getByTestId("engine-proof-result").innerText(),
+    ) as {
+      frames: {
+        state: { active: boolean; ended: boolean; reason?: string };
+        log: {
+          events: { type: string; testMs: number; data: { event?: string } }[];
+        };
+      }[];
+    };
+  };
+  const completed = await run({
+    name: "observed completion",
+    config: { mode: "words", words: 1 },
+    words: [[97]],
+    commands: [
+      { op: "view", now: 0, deferFinish: true },
+      { op: "insert", data: [97], now: 1000, date: 1000000 },
+      { op: "advance", now: 5000, date: 1004000 },
+      { op: "acknowledgeFinish", now: 5050, date: 1004050 },
+    ],
+  });
+  expect(completed.frames[1]?.state).toMatchObject({
+    active: true,
+    ended: false,
+  });
+  expect(completed.frames.at(-1)?.state).toMatchObject({
+    active: false,
+    ended: true,
+  });
+  expect(completed.frames.at(-1)?.log.events.at(-1)?.testMs).toBe(4050);
+  const failed = await run({
+    name: "web slow timer",
+    config: { mode: "time", time: 30 },
+    words: [[97, 32]],
+    commands: [
+      { op: "view", now: 0, monitorRenderDrift: true },
+      { op: "start", now: 0, date: 0 },
+      { op: "advance", now: 1501, date: 1501 },
+    ],
+  });
+  expect(failed.frames.at(-1)?.state).toMatchObject({
+    ended: true,
+    reason: "slow timer",
+  });
+  expect(
+    failed.frames
+      .at(-1)
+      ?.log.events.filter(
+        (event) => event.type === "timer" && event.data.event === "step",
+      ),
+  ).toEqual([]);
+});
+
+test("owned Wasm loading retries failed downloads and preserves concurrent handles", async ({
+  page,
+}) => {
+  let downloads = 0;
+  await page.route("**/*.wasm", async (route) => {
+    downloads++;
+    if (downloads === 1) await route.abort("failed");
+    else await route.continue();
+  });
+  await page.goto("/engine-proof");
+  await page.getByRole("button", { name: "Run loading", exact: true }).click();
+  await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
+  await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+  expect(
+    JSON.parse(await page.getByTestId("engine-proof-result").innerText()),
+  ).toEqual({
+    recovered: true,
+    shared: true,
+    intact: true,
+    rejected: true,
+  });
+  expect(downloads).toBe(6);
 });

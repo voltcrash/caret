@@ -1,8 +1,10 @@
-import initialize, {
+import {
+  initSync,
   binding_version,
   analyze,
   WasmSession,
   WasmContent,
+  WasmReplay,
 } from "../generated/engine.js";
 import wasmUrl from "../generated/engine_bg.wasm?url";
 import type { Command } from "../generated/types/Command";
@@ -21,10 +23,16 @@ import type { Source } from "../generated/types/Source";
 import type { Preflight } from "../generated/types/Preflight";
 import type { InsertionLayout } from "../generated/types/InsertionLayout";
 import type { Snapshot } from "../generated/types/Snapshot";
+import type { PlaybackSnapshot } from "../generated/types/PlaybackSnapshot";
+import type { PlaybackUpdate } from "../generated/types/PlaybackUpdate";
+import type { Cursor } from "../generated/types/Cursor";
 import type { Log } from "../generated/types/Log";
 export type {
   Query,
   Response,
+  PlaybackSnapshot,
+  PlaybackUpdate,
+  Cursor,
   Log,
   Snapshot,
   Preflight,
@@ -59,12 +67,25 @@ export function decodeText(units: Text): string {
 }
 
 /** Module preparation is async; all prepared session commands are synchronous. */
-export async function loadEngine(): Promise<{
+export async function loadEngine(signal?: AbortSignal): Promise<{
   createSession: (config: Partial<Config>, words: Text[]) => BrowserSession;
   memoryBytes: () => number;
   createContent: () => BrowserContent;
+  createReplay: (log: Log, zen: boolean) => BrowserReplay;
 }> {
-  const module = await initialize({ module_or_path: wasmUrl });
+  // Compile asynchronously, then use wasm-bindgen's synchronous guard. Two
+  // concurrent async initializers could otherwise replace memory under handles.
+  signal?.throwIfAborted();
+  const response = await fetch(wasmUrl, { signal });
+  if (!response.ok) {
+    throw new Error(`Typing engine download failed: ${response.status}`);
+  }
+  const compiled =
+    typeof WebAssembly.compileStreaming === "function"
+      ? await WebAssembly.compileStreaming(response)
+      : await WebAssembly.compile(await response.arrayBuffer());
+  signal?.throwIfAborted();
+  const module = initSync({ module: compiled });
   if (binding_version() !== BINDING_VERSION) {
     throw new Error("Typing engine binding version mismatch");
   }
@@ -72,6 +93,38 @@ export async function loadEngine(): Promise<{
     createSession: (config, words) => new BrowserSession(config, words),
     memoryBytes: () => module.memory.buffer.byteLength,
     createContent: () => new BrowserContent(),
+    createReplay: (log, zen) => new BrowserReplay(log, zen),
+  };
+}
+
+export type Engine = Awaited<ReturnType<typeof loadEngine>>;
+
+/** The caller owns this resource and must dispose it with its app/route owner. */
+export function createEngineLoader(): {
+  load: () => Promise<Engine>;
+  dispose: () => void;
+} {
+  const controller = new AbortController();
+  let pending: Promise<Engine> | undefined;
+  let disposed = false;
+  return {
+    // oxlint-disable-next-line typescript/promise-function-async -- Owners share the exact pending promise.
+    load: () => {
+      if (disposed) {
+        return Promise.reject(new Error("Typing engine loader disposed"));
+      }
+      pending ??= loadEngine(controller.signal).catch((error: unknown) => {
+        pending = undefined;
+        throw error;
+      });
+      return pending;
+    },
+    dispose: () => {
+      if (disposed) return;
+      disposed = true;
+      controller.abort();
+      pending = undefined;
+    },
   };
 }
 
@@ -229,4 +282,36 @@ export function analyzeLog<Q extends Query>(
   return JSON.parse(
     analyze(JSON.stringify(log), JSON.stringify(query)),
   ) as Extract<Response, { op: Q["op"] }>;
+}
+
+/** Persistent playback: scheduling/audio/DOM belong to the host. */
+export class BrowserReplay {
+  private handle: WasmReplay | undefined;
+  constructor(log: Log, zen: boolean) {
+    this.handle = new WasmReplay(JSON.stringify(log), zen, BINDING_VERSION);
+  }
+  private live(): WasmReplay {
+    if (this.handle === undefined) {
+      throw new Error("Typing engine replay disposed");
+    }
+    return this.handle;
+  }
+  snapshot(): PlaybackSnapshot {
+    return JSON.parse(this.live().snapshot()) as PlaybackSnapshot;
+  }
+  step(): PlaybackUpdate {
+    return JSON.parse(this.live().step()) as PlaybackUpdate;
+  }
+  seek(cursor: Cursor): PlaybackSnapshot {
+    return JSON.parse(
+      this.live().seek(JSON.stringify(cursor)),
+    ) as PlaybackSnapshot;
+  }
+  dispose(): void {
+    const handle = this.handle;
+    if (handle === undefined) return;
+    this.handle = undefined;
+    handle.dispose();
+    handle.free();
+  }
 }

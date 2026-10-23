@@ -9,6 +9,7 @@ import type {
   Source,
   ContentRequest,
   Update,
+  Cursor,
 } from "@oxytype/typing-engine/browser.client";
 
 import { createFileRoute } from "@tanstack/solid-router";
@@ -29,10 +30,13 @@ function EngineProof() {
   let typingSession: BrowserSession | undefined;
   let disposed = false;
   const handles = new Set<BrowserSession>();
+  const loaders = new Set<{ dispose: () => void }>();
   onCleanup(() => {
     disposed = true;
     for (const handle of handles) handle.dispose();
     handles.clear();
+    for (const loader of loaders) loader.dispose();
+    loaders.clear();
   });
   const run = async (): Promise<void> => {
     setResult("");
@@ -98,6 +102,68 @@ function EngineProof() {
       setFailure(error instanceof Error ? error.message : String(error));
     }
   };
+  const runLoading = async (): Promise<void> => {
+    setResult("");
+    setFailure("");
+    const { createEngineLoader, loadEngine, encodeText } =
+      await import("@oxytype/typing-engine/browser.client");
+    const loader = createEngineLoader();
+    const sessions: BrowserSession[] = [];
+    loaders.add(loader);
+    try {
+      let recovered = false;
+      try {
+        await loader.load();
+      } catch {
+        recovered = true;
+      }
+      const first = loader.load();
+      const shared = first === loader.load();
+      await Promise.all(
+        [first, ...Array.from({ length: 4 }, async () => loadEngine())].map(
+          async (ready) => {
+            const engine = await ready;
+            if (disposed) return;
+            const session = engine.createSession({ mode: "words", words: 0 }, [
+              encodeText("one "),
+            ]);
+            sessions.push(session);
+            session.command({
+              op: "insert",
+              data: encodeText("o"),
+              now: 0,
+              date: 0,
+              automatic: null,
+              isCompositionEnding: null,
+              correctShiftUsed: null,
+            });
+          },
+        ),
+      );
+      const intact =
+        sessions.length === 5 &&
+        sessions.every(
+          (session) =>
+            JSON.stringify(session.snapshot().state.inputValue) === "[111]",
+        );
+      loader.dispose();
+      let rejected = false;
+      try {
+        await loader.load();
+      } catch {
+        rejected = true;
+      }
+      if (!disposed) {
+        setResult(JSON.stringify({ recovered, shared, intact, rejected }));
+      }
+    } catch (error) {
+      setFailure(error instanceof Error ? error.message : String(error));
+    } finally {
+      for (const session of sessions) session.dispose();
+      loader.dispose();
+      loaders.delete(loader);
+    }
+  };
   const runGeneration = async (): Promise<void> => {
     setResult("");
     setFailure("");
@@ -161,16 +227,62 @@ function EngineProof() {
     setResult("");
     setFailure("");
     try {
-      const inputs = JSON.parse(fixture()) as { log: Log; queries: Query[] }[];
+      const inputs = JSON.parse(fixture()) as {
+        log: Log;
+        queries: Query[];
+        playback?: { zen: boolean; targets: Cursor[] }[];
+      }[];
       const { loadEngine, analyzeLog } =
         await import("@oxytype/typing-engine/browser.client");
-      await loadEngine();
+      const engine = await loadEngine();
       if (disposed) return;
       setResult(
         JSON.stringify(
-          inputs.map(({ log, queries }) =>
-            queries.map((query) => analyzeLog(log, query)),
-          ),
+          inputs.map(({ log, queries, playback }) => {
+            const analysis = queries.map((query) => analyzeLog(log, query));
+            if (playback === undefined) return analysis;
+            return {
+              analysis,
+              playback: playback.map(({ zen, targets }) => {
+                const replay = engine.createReplay(log, zen);
+                try {
+                  const initial = replay.snapshot();
+                  const words = initial.words;
+                  const sounds = [];
+                  let cursor = initial.cursor;
+                  let next = initial.nextTime;
+                  while (next !== null) {
+                    const update = replay.step();
+                    for (const change of update.words) {
+                      words[change.index] = change.word;
+                    }
+                    sounds.push(update.sound);
+                    cursor = update.cursor;
+                    next = update.nextTime;
+                  }
+                  const seeks = targets.map((target) => {
+                    const snapshot = replay.seek(target);
+                    return {
+                      words: snapshot.words,
+                      cursor: snapshot.cursor,
+                      nextIndex: snapshot.nextIndex,
+                    };
+                  });
+                  replay.dispose();
+                  replay.dispose();
+                  let stale = false;
+                  try {
+                    replay.step();
+                  } catch {
+                    stale = true;
+                  }
+                  return { words, sounds, cursor, seeks, stale };
+                } finally {
+                  replay.dispose();
+                }
+              }),
+            };
+          }),
         ),
       );
     } catch (error) {
@@ -295,6 +407,14 @@ function EngineProof() {
           }}
         >
           Run prepared session
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            void runLoading();
+          }}
+        >
+          Run loading
         </button>
         <pre data-testid="engine-proof-result">{result()}</pre>
         <pre data-testid="engine-proof-error">{failure()}</pre>
