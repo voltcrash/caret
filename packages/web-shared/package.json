@@ -1,0 +1,26 @@
+{
+  "name": "@oxytype/web-shared",
+  "private": true,
+  "license": "GPL-3.0",
+  "type": "module",
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "test": "vp test run",
+    "ts-check": "vp lint . --type-aware --type-check --format agent",
+    "lint": "vp lint . --type-aware --type-check --format agent",
+    "lint-fast": "vp lint . --format agent"
+  },
+  "dependencies": {
+    "@oxytype/schemas": "workspace:*",
+    "@oxytype/typing-engine": "workspace:*",
+    "@oxytype/util": "workspace:*",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@oxytype/typescript-config": "workspace:*",
+    "@types/node": "24.19.0",
+    "vite-plus": "catalog:"
+  }
+}

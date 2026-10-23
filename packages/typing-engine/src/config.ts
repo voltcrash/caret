@@ -10,3 +10,5 @@ export function projectEngineConfig(input: Partial<Config>): Config {
     }),
   ) as Config;
 }
+
+export type { Config } from "../generated/types/Config";

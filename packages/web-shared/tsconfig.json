@@ -1,0 +1,12 @@
+{
+  "extends": "@oxytype/typescript-config/base.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "target": "ES2022",
+    "lib": ["es2022"]
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

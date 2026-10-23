@@ -17,6 +17,9 @@ export function checkCompatibility(
   names: FunboxName[],
   withFunbox?: FunboxName,
 ): boolean {
+  if (names.length === 0 && withFunbox === undefined) {
+    return true;
+  }
   if (!enginePolicyReady()) {
     return false;
   }
@@ -30,6 +33,9 @@ export function checkForcedConfig(
   value: ConfigValue,
   names: FunboxName[],
 ): Extract<PolicyResponse, { op: "forced" }>["result"] {
+  if (names.length === 0) {
+    return { result: true };
+  }
   return enginePolicy({ op: "forced", key, value, names }).result;
 }
 export function canSetConfigWithCurrentFunboxes(

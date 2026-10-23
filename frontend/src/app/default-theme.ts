@@ -1,5 +1,5 @@
 import { ThemeName } from "@oxytype/schemas/configs";
-import { defaultThemes } from "@oxytype/typing-core/config/default-config";
+import { defaultThemes } from "@oxytype/web-shared/config/default-config";
 import { tryCatchSync } from "@oxytype/util/trycatch";
 
 // Also read and written by the document theme bootstrap script.

@@ -1,4 +1,4 @@
-import { getDefaultConfig } from "@oxytype/typing-core/config/default-config";
+import { getDefaultConfig } from "@oxytype/web-shared/config/default-config";
 import { For, type JSXElement, Show } from "solid-js";
 
 import type { SettingsSection } from "./tabs";

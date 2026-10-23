@@ -1,14 +1,18 @@
 import * as ConfigSchemas from "@oxytype/schemas/configs";
+import { typedKeys } from "@oxytype/util/objects";
 import {
   getOptionLabel,
   getOptionSearchKeywords,
   getVisibleOptions,
   sharedConfigMetadata,
   type ConfigOptionMetadata,
-} from "@oxytype/typing-core/config/metadata";
-import { typedKeys } from "@oxytype/util/objects";
+} from "@oxytype/web-shared/config/metadata";
 import { JSXElement, untrack } from "solid-js";
 
+import {
+  checkCompatibility,
+  canSetFunboxWithConfig,
+} from "../../features/typing/policy.client";
 import {
   DEFAULT_COMMAND_PALETTE_HOTKEY,
   getCommandPaletteHotkeyError,
@@ -199,7 +203,28 @@ const webConfigMetadata: {
   minBurst: { fa: { icon: "fa-bomb" } },
   minBurstCustomSpeed: { fa: { icon: "fa-bomb" } },
   britishEnglish: { fa: { icon: "fa-language" } },
-  funbox: { fa: { icon: "fa-gamepad" } },
+  funbox: {
+    fa: { icon: "fa-gamepad" },
+    isBlocked: ({ value, currentConfig }) => {
+      if (!checkCompatibility(value)) {
+        const names = value.join(", ");
+        showNoticeNotification(
+          `${names.charAt(0).toUpperCase()}${names.slice(1)} is an invalid combination of funboxes`,
+        );
+        return true;
+      }
+      const blocked = value.find(
+        (funbox) => !canSetFunboxWithConfig(funbox, currentConfig).ok,
+      );
+      if (blocked === undefined) {
+        return false;
+      }
+      showNoticeNotification(
+        `"${blocked}" cannot be enabled with the current config`,
+      );
+      return true;
+    },
+  },
   customLayoutfluid: { fa: { icon: "fa-tint" } },
   customPolyglot: { fa: { icon: "fa-language" } },
   freedomMode: { fa: { icon: "fa-feather-alt" } },

@@ -73,7 +73,7 @@ jobs:
               - 'packages/oxlint-config/**'
             # Workspace packages bundled into the backend and frontend.
             runtime-packages:
-              - 'packages/{challenges,contracts,funbox,schemas,typing-core,typing-engine,typing-fixtures,util}/**'
+              - 'packages/{challenges,contracts,funbox,schemas,typing-core,typing-engine,typing-fixtures,util,web-shared}/**'
               - 'crates/**'
               - 'Cargo.{toml,lock}'
               - 'rust-toolchain.toml'

@@ -1,3 +1,4 @@
+import { applyPendingLocalConfig } from "../../../ts/config/lifecycle";
 import { captureTypingRoute, isTypingRouteActive } from "../scope";
 import { getBrowserEngine } from "../engine.client";
 import { getContentHost } from "./content.client";
@@ -85,6 +86,7 @@ export async function init(lease = captureTypingRoute()): Promise<boolean> {
   showLoaderBar();
   try {
     await getBrowserEngine().load();
+    await applyPendingLocalConfig();
   } catch (error) {
     if (!lease.isCurrent()) return false;
     hideLoaderBar();

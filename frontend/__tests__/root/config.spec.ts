@@ -1,3 +1,5 @@
+import "../__harness__/native-engine";
+import { evaluatePolicy } from "@oxytype/typing-engine/browser.client";
 import { describe, it, expect, beforeEach, afterAll, vi } from "vite-plus/test";
 import * as Config from "../../src/ts/config/setters";
 import * as Lifecycle from "../../src/ts/config/lifecycle";
@@ -638,3 +640,12 @@ describe("Config", () => {
     });
   });
 });
+
+vi.mock("../../src/features/typing/engine.client", () => ({
+  getBrowserEngine: () => ({
+    status: () => ({ state: "ready" }),
+    load: async () => undefined,
+    api: () => ({ policy: evaluatePolicy }),
+    session: () => undefined,
+  }),
+}));

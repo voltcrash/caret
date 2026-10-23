@@ -2,7 +2,7 @@ import type { Config as ConfigSchema } from "@oxytype/schemas/configs";
 import {
   migrateConfig,
   supportedConfigSchema,
-} from "@oxytype/typing-core/config/migrate";
+} from "@oxytype/web-shared/config/migrate";
 import { setProperty, typedKeys } from "@oxytype/util/objects";
 import { getDefaultConfig } from "../constants/default-config";
 import { getMutableConfig } from "./store";

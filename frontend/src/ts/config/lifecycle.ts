@@ -1,3 +1,5 @@
+import { createAppOwned } from "../../app/application";
+import { getBrowserEngine } from "../../features/typing/engine.client";
 import { batch } from "solid-js";
 import { preferencesReadiness } from "../../app/readiness";
 import * as ConfigSchemas from "@oxytype/schemas/configs";
@@ -19,7 +21,7 @@ import { isObject } from "../utils/misc";
 import { setConfig } from "./setters";
 import { deleteConfig } from "./sync";
 import { setProperty, typedKeys } from "@oxytype/util/objects";
-import { lastConfigsToApply } from "@oxytype/typing-core/config/setter";
+import { lastConfigsToApply } from "@oxytype/web-shared/config/apply-order";
 
 export async function applyConfigFromJson(json: string): Promise<boolean> {
   try {
@@ -46,6 +48,25 @@ export async function applyConfigFromJson(json: string): Promise<boolean> {
   }
 }
 
+const localConfigRetry = createAppOwned(() => ({
+  pending: undefined as Partial<ConfigSchemas.Config> | undefined,
+}));
+
+/** A failed engine download must not erase constrained saved preferences. */
+export async function applyPendingLocalConfig(): Promise<void> {
+  const state = localConfigRetry();
+  const pending = state.pending;
+  if (pending === undefined) {
+    return;
+  }
+  await applyConfig(pending);
+  if (state.pending !== pending) {
+    return;
+  }
+  state.pending = undefined;
+  saveFullConfigToLocalStorage(true);
+}
+
 export async function loadFromLocalStorage(): Promise<void> {
   return preferencesReadiness().start(async () => {
     console.log("loading localStorage config");
@@ -53,7 +74,15 @@ export async function loadFromLocalStorage(): Promise<void> {
     if (newConfig === undefined) {
       await resetConfig();
     } else {
-      await applyConfig(newConfig);
+      try {
+        await applyConfig(newConfig);
+      } catch (error) {
+        if (getBrowserEngine().status().state !== "failed") {
+          throw error;
+        }
+        localConfigRetry().pending = newConfig;
+        return;
+      }
       saveFullConfigToLocalStorage(true);
     }
   });
@@ -66,6 +95,10 @@ export async function applyConfig(
 
   //migrate old values if needed, remove additional keys and merge with default config
   const fullConfig: ConfigSchemas.Config = migrateConfig(partialConfig);
+
+  if (fullConfig.funbox.length !== 0) {
+    await getBrowserEngine().load();
+  }
 
   // Publish one settled configuration to reactive UI subscribers.
   batch(() => {
