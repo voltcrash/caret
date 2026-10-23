@@ -8,6 +8,7 @@ use ts_rs::TS;
 pub struct Quote {
     pub text: Text,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
     pub british_text: Option<Text>,
     pub source: String,
     pub length: usize,
