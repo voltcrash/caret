@@ -12,19 +12,19 @@ empty commits to inflate count. Do not publish production or releases implicitly
 
 ## Current position
 
-Stage 1, Phases 1.1–1.3 complete; Phases 1.4–1.6 active; full engine gate remains open. Read root AGENTS.md and the complete migration
+Stage 1, Phases 1.1–1.6 implemented and compatibility checks pass; Phase 1.7 final size/fresh-checkout/CI gate active. Read root AGENTS.md and the complete migration
 plan before edits. Installed workspace dependencies with frozen lockfile.
-Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen oracle and mismatch detection. Existing website engine remains authoritative.
+Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen oracle and mismatch detection. Existing website engine remains authoritative until Stage 2.
 
 | Phase | Status | Evidence / remaining gate |
 | --- | --- | --- |
 | 1.1 Inventory / baselines | Complete | See inventory.md, features.md, baseline.md and raw measurements. |
 | 1.2 Contracts / fixtures | Complete | 19 command traces, 21 oracle/integrity tests; contract and classified gaps. |
 | 1.3 Native / browser proof | Complete | Native 7 traces; Cloudflare real-browser finite slice; MIME/CSP, lifecycle, boundary benchmark. Budgets frozen. |
-| 1.4 Input / lifecycle / timing | Active | 19 native/browser command traces; 8 original recordings. Composition, batch failure, deferred work, visible-word bounds and browser deletion observations covered. Owned generation, delayed completion and restart rules now pass; randomized lifecycle/live-stat performance gate remains open. |
-| 1.5 Generation / configuration | Active | 61/61 unchanged generator snapshots. Content requests and owned session continuation pass; structured quote/polyglot recovery and malformed-input coverage remain open. |
-| 1.6 Events / results / replay | Active | All computed summary fields match 8 original CompletedEvents exactly. Full results, eligibility, histories and replay pass native/browser references; persistent playback and historical UTF-16 edges pass; schema/hash/backend and malformed-log gates remain open. |
-| 1.7 Binding / engine gate | Pending | Full three-path parity and budgets. |
+| 1.4 Input / lifecycle / timing | Complete | Native/built-Wasm traces, observed browser input, delayed completion, stale sources, reset/restart and 12,800 randomized commands. |
+| 1.5 Generation / configuration | Complete | 61 original snapshots; section/fractional/live generation; all funbox policies; quote refresh RNG; typed recovery and bounded malformed content. |
+| 1.6 Events / results / replay | Complete | Eight exact original CompletedEvents/hashes/schema/backend outcomes, replay/seek, Unicode history, 1,387 live prefixes and malformed-log validation. |
+| 1.7 Binding / engine gate | Active | 24 built-browser tests pass; final ABI payload exceeds gzip budget; direct typed-result construction under verification, then fresh/current CI. |
 | 2.1–2.6 Website | Pending | Requires Stage 1 gate. |
 | 3.1–3.5 Terminal | Pending | Requires Stage 2 gate. |
 
@@ -226,3 +226,5 @@ do not rerun completed checks without a new reason.
 - Built-browser shared setting policies and live generation checks pass (two tests, 6.5 s): all frozen compatibility/forced-setting cases and all 30 live outputs match. Captured explicit legacy quote-length queue refresh once in quote-queue.json, including repeated selection on cached language and exact seeded RNG state after each operation. Capture typechecks/refuses overwrite; no prior reference changed.
 
 - Explicit quote-length refresh now reaches the owned native queue through a typed Wasm operation; ordinary cached-language preparation does not rebuild it. Native fixture checks preserve all selected IDs and exact update/selection RNG states. Clippy passes. Actual Cloudflare browser proof passes all three final policy/live-generation/quote-queue cases (8.6 s).
+
+- Final API built-browser suite: 24 tests pass (49.0 s) with controlled-host timing gates enabled; initialization p95 62.2 ms. Native suite/Clippy pass. Previous pushed checkpoint 9ab9bdc12 full CI passed (run 39928691398). Final payload check exposed 799,776 raw / 315,765 gzip6 bytes: gzip fails frozen 307,200-byte limit. Removing redundant Value-to-typed result deserialization; no size limit/reference changes. Current-head clean build and CI remain pending.

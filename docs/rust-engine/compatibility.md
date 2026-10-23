@@ -1,26 +1,24 @@
 # Compatibility coverage map
 
-Never regenerate existing reference snapshots. New oracle traces were captured
-once from the unchanged TypeScript session; capture refuses existing output.
+Original references remain immutable, byte-for-byte copies with a SHA manifest. New captures are write-once; mismatch detection deliberately changes a word index and requires failure. No original snapshot was regenerated for the port.
 
-| Contract | Reference / additional required verification |
+| Contract | Implemented verification |
 | --- | --- |
-| Per-unit commits, edits, finish/reset | commands/finite-edit; existing session tests |
-| Isolated UTF-16 halves, combining marks | commands/unicode-halves |
-| IME metadata, typography/space normalization | commands/ime-typography; browser IME characterization required 1.4 |
-| Backtracking | commands/freedom-regression; Firefox clearedNextWord browser case required 1.4 |
-| Automatic code tabs/unindent | commands/code-indent; deferred browser task ordering required 1.4 |
-| Timer stalls and finish/reset races | commands/timer-stall; existing timer specs |
-| Infinite limits | commands/infinite-words; timed/zen zero-limit cases required 1.4 |
-| Error policies | commands/delete-error-*; stop-letter; master-finish-once |
-| Generation / random consumption | reference/generator + 61 existing snapshots; connect native/Wasm at 1.5 |
-| Scores, hashes, history, replay | reference/keystrokes + snapshots; original frontend characterization at 1.6 |
-| Backend rejection behavior | reference/anticheat; backend/__tests__/anticheat |
-| Browser-only DOM/composition behavior | frontend/__tests__/input; e2e/migration-characterization; expand for recorded differences in contract |
-| Transport schema | packages/schemas/src/results.ts; mechanical binding/CompletedEvent check at 1.6–1.7 |
-| SSR and immutable asset pairing | Start delivery/update suites at 1.3 and 2.5 |
+| Per-unit input, deletion, reset, finish | 19 frozen command traces; native and actual built Cloudflare Wasm |
+| UTF-16 halves, combining text, typography | Unicode/input oracles; exhaustive Hangul unit hash; historical Unicode replay |
+| IME / batch completion / deferred code tabs | Actual website characterization; native and Wasm observed-input contract |
+| Firefox sentinel / visible bounds / overflow | Explicit preflight/delete observations; native and browser cases |
+| Zero/infinite/fractional limits | Input/generation/fractional oracles; exact targets and RNG position |
+| Generation / transforms / sections | 61 original generator snapshots, 99 transforms, section/live-generation captures |
+| Quote queue / repeat / recovery | Explicit queue refresh RNG, retained quote identity, eight frozen recovery paths |
+| Async source / stale generations | Native/browser initial and active failure, prefetch, reset/replacement, deferred input |
+| Timer stalls / same-time reordering | Frozen timer traces, slow-render tests, delta invalidation regression |
+| Stats / results / history / replay | Eight exact historical outputs; 1,387 live prefixes; persistent playback and seek |
+| Transport schema / hashing | Built-Wasm CompletedEventSchema, eight frozen object-hashes, unchanged backend rejection |
+| Physical observations | Repeat/NoCode/synthetic and estimated-release oracles; optional capability remains explicit |
+| Shared policies / defaults | Generated Rust metadata/defaults; all funbox pairs/forced values; checked policy queries |
+| Malformed boundaries / lifecycle | Bounded config/content/log validation; 128-seed, 12,800-command stress; stale/disposed handles |
+| Memory / hot path / initialization | Recorded controlled-host budget checks; replacement and long-session growth soaks |
+| Fresh-checkout / Cloudflare delivery | Automatic generated-output bootstrap; full website deployment/old-tab cutover gate remains Stage 2 |
 
-These are classified gaps, not coverage claims. Phase 1.2 freezes the comparison
-mechanism; later phases must fill their respective gaps before their gates pass.
-The deliberate-mismatch test changes the first word index and requires comparison
-to fail; fixture-integrity test checks every original and copied file hash.
+Stage 1 proves the engine/binding. Stage 2 must rerun actual website behavior after integration, including settings imports/presets/URLs, authenticated/signed-out results, asset update/rollback and full website performance. Those host gates are not inferred from the proof component.

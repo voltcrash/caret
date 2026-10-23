@@ -33,7 +33,7 @@ timer, generator, pace and completion. No global state, implicit clock, I/O, DOM
 callback that overrides progression, or platform RNG. Hosts own scheduling,
 observations, assets, rendering, storage, transport and account fields.
 
-Commands are synchronous after module/content preparation. Initial proof commands:
+Commands are synchronous after module/content preparation. Generated `Command`/`Update` declarations define the exact completed surface. Core commands:
 
 - `insert {data: Text, now, date, correctShiftUsed?, automatic?, isCompositionEnding?}`
 - `delete {kind: deleteContentBackward|deleteWordBackward, now, date}`
@@ -41,10 +41,7 @@ Commands are synchronous after module/content preparation. Initial proof command
 - `observe {type: keydown|keyup|composition|timer, data, now}`
 - `reset`: retain prepared content, clear recorder/timer/input/finish state
 
-Full port adds config projection/update, browser observations, content requests,
-generation/repeat, pace/weak-spot operations, result derivation and historical replay.
-Typed Rust declarations must define these before use; proof coverage does not imply
-the full surface is ready. Full snapshots/event logs are explicit reads; hot-path
+Additional commands configure effective rules/custom limits, set explicit view observations, flush generation-tagged automatic input, supply/fail content, finalize, bailout and acknowledge finish. Content owns prepare/repeat/live configuration, explicit quote queue refresh and session recycling. Separate typed queries expose policy, restart, pace, live stats, analysis and playback. See the binding package README for host usage. Full snapshots/event logs are explicit reads; hot-path
 updates contain ordered new events, changed words, cursor/current input, status,
 tick/finish notifications. No growing full log copied per key.
 
@@ -145,3 +142,7 @@ Initial Content.fail_source returns sourceUnavailable with the frozen disable-fu
 The host JSON boundary accepts at most 64 MiB per argument before deserialization. Content is limited to 1,000,000 words, 1,000,000 UTF-16 units per word and 5,000,000 total units. Sources retain 16 prefetched sections; titles/authors are at most 10,000 units. Quote groups/languages and selectors have explicit count/metadata bounds. Random streams validate their cursor and every supplied finite [0,1) draw. Stored logs validate version 1, known event/mode shapes, finite ordered timestamps, bounded UTF-16 positions, at most 1,000,000 events and absolute test time at most 1,000,000,000 ms (same order as bounded timer catchup). Negative pre-start key times remain valid. Historical malformed data produces invalidLog before replay/history/chart allocation. Session observations reject malformed data before mutation; retained extra metadata is bounded in depth/count. Backend Zod/auth/anticheat validation remains independently authoritative.
 
 Log deltas signal logInvalidated after reset/finalize, origin changes, or a new event whose rounded timestamp/rank precedes prior output. Equal-time input may sort before a previously observed timer. Consumers accumulating a historical log must refresh on this flag; they must not assume arrival order equals the legacy sorted log. Presentation can consume ordered command events independently.
+
+### Live generation and quote preferences
+
+Configure updates rule reads at subsequent generation boundaries without replacing prepared assets, previously generated words, RNG or learned state. Source/mode replacement uses explicit preparation. Cached quote-language preparation preserves its selection queue. Hosts call `updateQuoteQueue` only for an explicit length-preference change and retain its returned random state. Both operations are covered by write-once original-host captures.
