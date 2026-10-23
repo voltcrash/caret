@@ -1,10 +1,80 @@
 import { spawnSync } from "node:child_process";
-import { mkdirSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  renameSync,
+  writeFileSync,
+} from "node:fs";
+import { dirname, relative, resolve } from "node:path";
 import { createRequire } from "node:module";
+import { createHash } from "node:crypto";
 
 const root = resolve(import.meta.dirname, "..");
 const output = resolve(root, "packages/typing-engine/generated");
+const cacheFile = resolve(output, "build-cache.json");
+function files(directory: string): string[] {
+  return readdirSync(directory, { withFileTypes: true })
+    .flatMap((entry) => {
+      const path = resolve(directory, entry.name);
+      return entry.isDirectory() ? files(path) : [path];
+    })
+    .sort();
+}
+function digest(path: string): string {
+  return createHash("sha256").update(readFileSync(path)).digest("hex");
+}
+function fingerprint(): string {
+  const sources = [
+    "Cargo.toml",
+    "Cargo.lock",
+    "rust-toolchain.toml",
+    "package.json",
+    "scripts/engine.ts",
+  ].map((path) => resolve(root, path));
+  for (const path of ["crates", ".cargo"]) {
+    const directory = resolve(root, path);
+    if (existsSync(directory)) sources.push(...files(directory));
+  }
+  const environment = Object.fromEntries(
+    Object.entries(process.env).filter(
+      ([key]) =>
+        key.startsWith("RUST") ||
+        key.startsWith("CARGO_PROFILE_") ||
+        key.startsWith("CARGO_BUILD_") ||
+        key === "CARGO_ENCODED_RUSTFLAGS",
+    ),
+  );
+  return createHash("sha256")
+    .update(
+      JSON.stringify({
+        sources: sources
+          .sort()
+          .map((path) => [relative(root, path), digest(path)]),
+        environment,
+        platform: process.platform,
+        architecture: process.arch,
+      }),
+    )
+    .digest("hex");
+}
+type BuildCache = { fingerprint: string; outputs: [string, string][] };
+function cached(key: string): boolean {
+  try {
+    const cache = JSON.parse(readFileSync(cacheFile, "utf8")) as BuildCache;
+    return (
+      cache.fingerprint === key &&
+      cache.outputs.length > 0 &&
+      cache.outputs.every(
+        ([path, hash]) => digest(resolve(output, path)) === hash,
+      )
+    );
+  } catch {
+    return false;
+  }
+}
 function run(command: string, args: string[]): void {
   const result = spawnSync(command, args, { cwd: root, stdio: "inherit" });
   if (result.error !== undefined) throw result.error;
@@ -13,6 +83,13 @@ function run(command: string, args: string[]): void {
 
 switch (process.argv[2]) {
   case "build": {
+    const key = fingerprint();
+    if (!process.argv.includes("--force") && cached(key)) {
+      process.stdout.write(
+        "Typing engine bindings verified; build cache hit\n",
+      );
+      break;
+    }
     const bindingVersion = "0.2.129";
     const installed = spawnSync("wasm-bindgen", ["--version"], {
       encoding: "utf8",
@@ -36,6 +113,7 @@ switch (process.argv[2]) {
       "-p",
       "typing-engine-wasm",
     ]);
+    rmSync(output, { recursive: true, force: true });
     mkdirSync(output, { recursive: true });
     run("wasm-bindgen", [
       "--target",
@@ -74,6 +152,18 @@ switch (process.argv[2]) {
       "--bin",
       "export-bindings",
     ]);
+    const cache: BuildCache = {
+      fingerprint: key,
+      outputs: files(output)
+        .filter(
+          (path) =>
+            path !== cacheFile && !path.includes("build-cache.json.tmp-"),
+        )
+        .map((path) => [relative(output, path), digest(path)]),
+    };
+    const temporary = `${cacheFile}.tmp-${process.pid}`;
+    writeFileSync(temporary, JSON.stringify(cache));
+    renameSync(temporary, cacheFile);
     break;
   }
   case "test":
