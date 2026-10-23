@@ -1,6 +1,6 @@
-import type { ReplayLetter } from "@oxytype/typing-core/replay";
-
 import { For, JSXElement } from "solid-js";
+
+import type { ReplayLetter } from "../../replay-view";
 
 import { Fa } from "../../../../ts/components/common/Fa";
 import { useRef } from "../../../../ts/hooks/useRef";

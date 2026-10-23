@@ -23,12 +23,19 @@ import { getMutableConfig } from "../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../src/ts/constants/default-config";
 import { resultState, setResultState } from "../../../src/ts/states/result";
 import "../../__harness__/native-engine";
-import { analyzeLog } from "@oxytype/typing-engine/browser.client";
+import {
+  analyzeLog,
+  BrowserReplay,
+} from "@oxytype/typing-engine/browser.client";
 import { toEngineLog } from "@oxytype/typing-engine/text";
 const recorded = vi.hoisted(() => ({ log: undefined as EventLog | undefined }));
 vi.mock("../../../src/features/typing/engine.client", () => ({
   getBrowserEngine: () => ({
-    api: () => ({ analyze: analyzeLog }),
+    api: () => ({
+      analyze: analyzeLog,
+      createReplay: (log: Parameters<typeof analyzeLog>[0], zen: boolean) =>
+        new BrowserReplay(log, zen),
+    }),
     session: () => ({ log: () => toEngineLog(recorded.log as EventLog) }),
   }),
 }));

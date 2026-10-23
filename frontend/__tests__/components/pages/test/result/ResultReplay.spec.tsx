@@ -28,33 +28,47 @@ vi.mock("../../../../../src/ts/controllers/sound-controller", () => ({
   playClick: vi.fn(),
   playError: vi.fn(),
 }));
-vi.mock("../../../../../src/features/typing/runtime/events/data", async () => {
-  const { getReplaySteps } = await import("@oxytype/typing-core/replay");
-  const targetWords = ["ab ", "cd"];
+import "../../../../__harness__/native-engine";
+import {
+  analyzeLog,
+  BrowserReplay,
+} from "@oxytype/typing-engine/browser.client";
+import { toEngineLog } from "@oxytype/typing-engine/text";
+function log(): EventLog {
   return {
-    buildEventLog: () => [],
-    getTestSession: (() => {
-      const session = {
-        getReplay: () => ({
-          words: targetWords,
-          steps: getReplaySteps(
-            { context: { targetWords }, events: mocks.events } as EventLog,
-            false,
-          ),
-        }),
-      };
-      return () => session;
-    })(),
+    version: 1,
+    context: {
+      targetWords: ["ab ", "cd"],
+      mode: "words",
+      mode2: "2",
+      koreanStatus: false,
+      bailedOut: false,
+    },
+    events: mocks.events.map((event) => ({
+      ...event,
+      data: {
+        ...event.data,
+        charIndex: Math.max(0, (event.data.inputValue?.length ?? 0) - 1),
+      },
+    })) as EventLog["events"],
   };
-});
-vi.mock("@oxytype/typing-core/events/helpers", async (importOriginal) => ({
-  ...(await importOriginal<
-    typeof import("@oxytype/typing-core/events/helpers")
-  >()),
-  getInputFromDom: () => mocks.inputForWord,
+}
+vi.mock("../../../../../src/features/typing/runtime/events/data", () => ({
+  buildEventLog: log,
+  getTestSession: () => ({
+    getReplay: () =>
+      analyzeLog(toEngineLog(log()), { op: "replay", zen: false }),
+  }),
 }));
-vi.mock("@oxytype/typing-core/events/stats", () => ({
-  getInputHistory: () => [],
+vi.mock("../../../../../src/features/typing/engine.client", () => ({
+  getBrowserEngine: () => ({
+    api: () => ({
+      createReplay: (data: Parameters<typeof analyzeLog>[0], zen: boolean) =>
+        new BrowserReplay(data, zen),
+    }),
+  }),
+}));
+vi.mock("../../../../../src/features/typing/analysis.client", () => ({
   getWpmHistory: () => [60, 70],
 }));
 
@@ -71,11 +85,18 @@ function input(testMs: number, data: Input): (typeof mocks.events)[number] {
 
 // a, x (wrong), backspace, b, space, c, d
 const events = [
-  input(0, { wordIndex: 0, inputType: "insertText", data: "a", correct: true }),
+  input(0, {
+    wordIndex: 0,
+    inputType: "insertText",
+    data: "a",
+    inputValue: "a",
+    correct: true,
+  }),
   input(100, {
     wordIndex: 0,
     inputType: "insertText",
     data: "x",
+    inputValue: "ax",
     correct: false,
   }),
   input(200, {
@@ -87,24 +108,28 @@ const events = [
     wordIndex: 0,
     inputType: "insertText",
     data: "b",
+    inputValue: "ab",
     correct: true,
   }),
   input(400, {
     wordIndex: 0,
     inputType: "insertText",
     data: " ",
+    inputValue: "ab ",
     correct: true,
   }),
   input(1200, {
     wordIndex: 1,
     inputType: "insertText",
     data: "c",
+    inputValue: "c",
     correct: true,
   }),
   input(1300, {
     wordIndex: 1,
     inputType: "insertText",
     data: "d",
+    inputValue: "cd",
     correct: true,
   }),
 ];
@@ -204,30 +229,35 @@ describe("ResultReplay", () => {
         wordIndex: 0,
         inputType: "insertText",
         data: "a",
+        inputValue: "a",
         correct: true,
       }),
       input(10, {
         wordIndex: 0,
         inputType: "insertText",
         data: "b",
+        inputValue: "ab",
         correct: true,
       }),
       input(20, {
         wordIndex: 0,
         inputType: "insertText",
         data: " ",
+        inputValue: "ab ",
         correct: true,
       }),
       input(30, {
         wordIndex: 0,
         inputType: "insertText",
         data: "z",
+        inputValue: "ab z",
         correct: false,
       }),
       input(40, {
         wordIndex: 1,
         inputType: "insertText",
         data: "c",
+        inputValue: "c",
         correct: true,
       }),
     ];

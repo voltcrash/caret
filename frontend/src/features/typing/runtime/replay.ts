@@ -1,173 +1,156 @@
+import { onCleanup } from "solid-js";
+import { createTypingOwned } from "../scope";
+import { getBrowserEngine } from "../engine.client";
+import { decodeText, toEngineLog } from "@oxytype/typing-engine/text";
+import type {
+  BrowserReplay,
+  Cursor,
+  PlaybackSnapshot,
+} from "@oxytype/typing-engine/browser.client";
+import type { ReplayWord } from "../replay-view";
+import { getWpmHistory } from "../analysis.client";
 import * as Sound from "../../../ts/controllers/sound-controller";
-import * as Arrays from "../../../ts/utils/arrays";
 import { getMutableConfig } from "../../../ts/config/store";
 import { buildEventLog, getTestSession } from "./events/data";
-import { getWpmHistory } from "@oxytype/typing-core/events/stats";
-import {
-  applyReplayStep,
-  createReplayPrompt,
-  ReplayCursor,
-  ReplayStep,
-  seekReplay,
-} from "@oxytype/typing-core/replay";
-import { produce } from "solid-js/store";
 import { resultState, setResultState } from "../../../ts/states/result";
 
-// The session derives the replay; this module plays it on the result screen.
-let words: string[] = [];
-let steps: ReplayStep[] = [];
-let wpmHistory: number[] = [];
-let cursor: ReplayCursor = { wordIndex: 0, letterIndex: 0 };
-let target: ReplayCursor = { wordIndex: 0, letterIndex: 0 };
-let timeoutList: NodeJS.Timeout[] = [];
-let stopwatchList: NodeJS.Timeout[] = [];
-
-function initializeReplayPrompt(): void {
-  setResultState("replay", "words", createReplayPrompt(words, steps));
+function webWord(word: PlaybackSnapshot["words"][number]): ReplayWord {
+  return {
+    ...word,
+    letters: word.letters.map((letter) => ({
+      ...letter,
+      char: decodeText(letter.char),
+    })),
+  };
 }
-
-export function pauseReplay(): void {
-  timeoutList.forEach((item) => {
-    clearTimeout(item);
+/** Rust owns prompt mutations and seeking; the route owns timers, sound and display. */
+const playback = createTypingOwned(() => {
+  let replay: BrowserReplay | undefined;
+  let times: number[] = [];
+  let wpmHistory: number[] = [];
+  let cursor: Cursor = { wordIndex: 0, letterIndex: 0 };
+  let target: Cursor = { ...cursor };
+  let timers: ReturnType<typeof setTimeout>[] = [];
+  const stop = (): void => {
+    for (const timer of timers) clearTimeout(timer);
+    timers = [];
+  };
+  onCleanup(() => {
+    stop();
+    replay?.dispose();
   });
-  timeoutList = [];
-  stopwatchList.forEach((item) => {
-    clearTimeout(item);
-  });
-  stopwatchList = [];
-  target = { ...cursor };
-
-  setResultState("replay", "playback", "paused");
-}
-
-function playSound(sound: "click" | "error" | undefined): void {
-  if (sound === undefined) return;
-  if (sound === "error" && getMutableConfig().playSoundOnError !== "off") {
-    void Sound.playError();
-  } else {
-    void Sound.playClick();
-  }
-}
-
-function handleDisplayLogic(step: ReplayStep): void {
-  const applied: { sound?: "click" | "error" } = {};
-  setResultState(
-    "replay",
-    "words",
-    produce((replayWords) => {
-      applied.sound = applyReplayStep(replayWords, cursor, step);
-    }),
-  );
-  playSound(applied.sound);
-}
-
-function loadOldReplay(): number {
-  let startingIndex = 0;
-  setResultState(
-    "replay",
-    "words",
-    produce((replayWords) => {
-      const seek = seekReplay(replayWords, steps, target);
-      cursor = seek.cursor;
-      startingIndex = seek.nextIndex;
-    }),
-  );
-
-  const datatime = steps[startingIndex]?.time;
-
-  if (datatime === undefined) {
-    throw new Error("Failed to load old replay: datatime is undefined");
-  }
-
-  const time = Math.max(0, Math.floor(datatime / 1000));
-  updateStatsString(time);
-
-  return startingIndex;
-}
-
-export function toggleReplayDisplay(): void {
-  if (!resultState.replay.visible) {
-    refreshReplayFromEvents();
-    initializeReplayPrompt();
-    loadOldReplay();
-    setResultState("replay", { visible: true, slideDuration: 250 });
-  } else {
-    if (resultState.replay.playback !== "start") {
-      pauseReplay();
+  const updateStats = (time: number): void => {
+    setResultState(
+      "replay",
+      "stats",
+      `${wpmHistory[time - 1] ?? 0}wpm\t${time}s`,
+    );
+  };
+  const pause = (): void => {
+    stop();
+    target = { ...cursor };
+    setResultState("replay", "playback", "paused");
+  };
+  const seek = (): PlaybackSnapshot | undefined => {
+    const snapshot = replay?.seek(target);
+    if (snapshot === undefined) return undefined;
+    cursor = snapshot.cursor;
+    setResultState("replay", "words", snapshot.words.map(webWord));
+    if (snapshot.nextTime !== null) {
+      updateStats(Math.max(0, Math.floor(snapshot.nextTime / 1000)));
     }
-    setResultState("replay", { visible: false, slideDuration: 250 });
-  }
-}
-
-function refreshReplayFromEvents(): void {
-  ({ words, steps } = getTestSession().getReplay());
-  wpmHistory = getWpmHistory(buildEventLog());
-  target = { wordIndex: 0, letterIndex: 0 };
-}
-
-function updateStatsString(time: number): void {
-  const wpm = wpmHistory[time - 1] ?? 0;
-  setResultState("replay", "stats", `${wpm}wpm\t${time}s`);
-}
-
-function playReplay(): void {
-  setResultState("replay", "playback", "playing");
-  initializeReplayPrompt();
-  const startingIndex = loadOldReplay();
-  const lastTime = steps[startingIndex]?.time;
-
-  if (lastTime === undefined) {
-    throw new Error("Failed to play replay: lastTime is undefined");
-  }
-
-  let swTime = Math.round(lastTime / 1000);
-  const swEndTime = Math.round(
-    (Arrays.lastElementFromArray(steps) as ReplayStep).time / 1000,
-  );
-  while (swTime <= swEndTime) {
-    const time = swTime;
-    stopwatchList.push(
-      setTimeout(
-        () => {
-          updateStatsString(time);
-        },
-        time * 1000 - lastTime,
-      ),
-    );
-    swTime++;
-  }
-  steps.forEach((item, i) => {
-    if (i < startingIndex) return;
-    timeoutList.push(
-      setTimeout(() => {
-        handleDisplayLogic(item);
-      }, item.time - lastTime),
-    );
-  });
-  timeoutList.push(
-    setTimeout(
-      () => {
-        target = { wordIndex: 0, letterIndex: 0 };
-        setResultState("replay", "playback", "start");
-      },
-      (Arrays.lastElementFromArray(steps) as ReplayStep).time - lastTime,
-    ),
-  );
-}
-
-export function togglePlayback(): void {
-  if (resultState.replay.playback === "playing") {
-    pauseReplay();
-  } else {
-    playReplay();
-  }
-}
-
-// replay words letter clicked
-export function jumpToLetter(wordIndex: number, letterIndex: number): void {
-  pauseReplay();
-  target = { wordIndex, letterIndex };
-
-  initializeReplayPrompt();
-  loadOldReplay();
-}
+    return snapshot;
+  };
+  const refresh = (): void => {
+    stop();
+    replay?.dispose();
+    const log = buildEventLog();
+    replay = getBrowserEngine()
+      .api()
+      .createReplay(toEngineLog(log), getMutableConfig().mode === "zen");
+    times = getTestSession()
+      .getReplay()
+      .steps.map((step) => step.time);
+    wpmHistory = getWpmHistory(log);
+    target = { wordIndex: 0, letterIndex: 0 };
+  };
+  const sound = (kind: string | null): void => {
+    if (kind === null) return;
+    if (kind === "error" && getMutableConfig().playSoundOnError !== "off") {
+      void Sound.playError();
+    } else {
+      void Sound.playClick();
+    }
+  };
+  return {
+    pause,
+    toggleDisplay: (): void => {
+      if (!resultState.replay.visible) {
+        refresh();
+        seek();
+        setResultState("replay", { visible: true, slideDuration: 250 });
+      } else {
+        if (resultState.replay.playback !== "start") pause();
+        setResultState("replay", { visible: false, slideDuration: 250 });
+      }
+    },
+    togglePlayback: (): void => {
+      if (resultState.replay.playback === "playing") {
+        pause();
+        return;
+      }
+      stop();
+      const snapshot = seek();
+      if (snapshot?.nextTime === undefined || snapshot.nextTime === null) {
+        return;
+      }
+      setResultState("replay", "playback", "playing");
+      const lastTime = snapshot.nextTime;
+      const end = times.at(-1) ?? lastTime;
+      for (
+        let second = Math.round(lastTime / 1000);
+        second <= Math.round(end / 1000);
+        second++
+      ) {
+        const time = second;
+        timers.push(
+          setTimeout(() => updateStats(time), time * 1000 - lastTime),
+        );
+      }
+      for (const time of times.slice(snapshot.nextIndex)) {
+        timers.push(
+          setTimeout(() => {
+            const update = replay?.step();
+            if (update === undefined) return;
+            cursor = update.cursor;
+            for (const change of update.words) {
+              setResultState(
+                "replay",
+                "words",
+                change.index,
+                webWord(change.word),
+              );
+            }
+            sound(update.sound);
+          }, time - lastTime),
+        );
+      }
+      timers.push(
+        setTimeout(() => {
+          target = { wordIndex: 0, letterIndex: 0 };
+          setResultState("replay", "playback", "start");
+        }, end - lastTime),
+      );
+    },
+    jump: (wordIndex: number, letterIndex: number): void => {
+      pause();
+      target = { wordIndex, letterIndex };
+      seek();
+    },
+  };
+});
+export const pauseReplay = (): void => playback().pause();
+export const toggleReplayDisplay = (): void => playback().toggleDisplay();
+export const togglePlayback = (): void => playback().togglePlayback();
+export const jumpToLetter = (wordIndex: number, letterIndex: number): void =>
+  playback().jump(wordIndex, letterIndex);
