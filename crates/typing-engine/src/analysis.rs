@@ -3,7 +3,6 @@ use crate::{
     stats::{self, Log},
 };
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 use ts_rs::TS;
 #[derive(Deserialize, TS)]
 #[serde(tag = "op", rename_all = "camelCase")]
@@ -40,7 +39,7 @@ pub enum Response {
         stats: Box<Overview>,
     },
     Completed {
-        result: Value,
+        result: Box<results::CompletedMetrics>,
     },
     Validity {
         reason: Option<String>,
@@ -64,7 +63,7 @@ pub enum Response {
 #[derive(Serialize, TS)]
 #[serde(rename_all = "camelCase")]
 pub struct Overview {
-    pub summary: Value,
+    pub summary: stats::Summary,
     pub input_history: Vec<Text>,
     pub corrected_words_history: Vec<Text>,
     pub missed_words: Vec<(Text, usize)>,
@@ -110,7 +109,7 @@ pub fn analyze(log: &Log, query: Query) -> Result<Response, crate::error::Engine
     Ok(match query {
         Query::Stats { now } => Response::Stats {
             stats: Box::new(Overview {
-                summary: stats::summary(log),
+                summary: stats::typed_summary(log)?,
                 input_history: stats::input_history(log),
                 corrected_words_history: stats::corrected_history(log),
                 missed_words: stats::missed_words(log),
@@ -128,7 +127,7 @@ pub fn analyze(log: &Log, query: Query) -> Result<Response, crate::error::Engine
             }),
         },
         Query::Completed { context } => Response::Completed {
-            result: results::completed(log, &context),
+            result: Box::new(results::typed_completed(log, &context)?),
         },
         Query::Validity { input } => Response::Validity {
             reason: results::invalid_reason(log, &input).map(String::from),

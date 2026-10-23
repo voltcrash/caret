@@ -377,6 +377,40 @@ pub(crate) fn burst(input: &Text, first: Option<f64>, last: Option<f64>, now: f6
         js_round(wpm(length, seconds))
     }
 }
+#[derive(Clone, Debug, Deserialize, Serialize, TS)]
+pub struct ChartData {
+    pub wpm: Vec<f64>,
+    pub burst: Vec<f64>,
+    pub err: Vec<usize>,
+}
+#[derive(Clone, Debug, Deserialize, Serialize, TS)]
+#[serde(rename_all = "camelCase")]
+pub struct Summary {
+    pub wpm: f64,
+    pub raw_wpm: f64,
+    pub char_stats: [usize; 4],
+    pub char_total: usize,
+    pub acc: f64,
+    pub test_duration: f64,
+    pub last_key_to_end: f64,
+    pub start_to_first_key: f64,
+    pub afk_duration: usize,
+    pub consistency: f64,
+    pub wpm_consistency: f64,
+    pub key_consistency: f64,
+    pub chart_data: ChartData,
+    pub key_spacing: Vec<f64>,
+    pub key_duration: Vec<f64>,
+    pub key_overlap: f64,
+}
+pub fn typed_summary(log: &Log) -> Result<Summary, crate::error::EngineError> {
+    serde_json::from_value(summary(log)).map_err(|error| {
+        crate::error::EngineError::new(
+            crate::error::ErrorCode::InvalidLog,
+            format!("Unrepresentable result metrics: {error}"),
+        )
+    })
+}
 pub fn summary(log: &Log) -> Value {
     let counts = chars(log, false, None);
     let seconds = duration(log) / 1000.0;

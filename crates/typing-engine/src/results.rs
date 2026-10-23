@@ -13,16 +13,72 @@ pub struct QuoteRef {
 }
 #[derive(Clone, Debug, Deserialize, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
+pub struct CustomTextMetrics {
+    pub text_len: usize,
+    pub mode: String,
+    pub pipe_delimiter: bool,
+    pub limit: Limit,
+}
+#[derive(Clone, Debug, Deserialize, Serialize, TS)]
+pub struct IncompleteTest {
+    pub acc: f64,
+    pub seconds: f64,
+}
+#[derive(Clone, Debug, Deserialize, Serialize, TS)]
+#[serde(rename_all = "camelCase")]
+pub struct CompletedMetrics {
+    #[serde(flatten)]
+    pub summary: stats::Summary,
+    pub client: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub offline: Option<bool>,
+    pub language: String,
+    pub tags: Vec<String>,
+    pub punctuation: bool,
+    pub numbers: bool,
+    pub lazy_mode: bool,
+    pub timestamp: f64,
+    pub mode: String,
+    pub mode2: String,
+    pub bailed_out: bool,
+    pub funbox: Vec<String>,
+    pub difficulty: String,
+    pub blind_mode: bool,
+    pub stop_on_letter: bool,
+    pub restart_count: u32,
+    pub incomplete_tests: Vec<IncompleteTest>,
+    pub incomplete_test_seconds: f64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub custom_text: Option<CustomTextMetrics>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub quote_length: Option<i32>,
+}
+pub fn typed_completed(
+    log: &Log,
+    context: &CompletedContext,
+) -> Result<CompletedMetrics, crate::error::EngineError> {
+    serde_json::from_value(completed(log, context)).map_err(|error| {
+        crate::error::EngineError::new(
+            crate::error::ErrorCode::InvalidLog,
+            format!("Unrepresentable completed result: {error}"),
+        )
+    })
+}
+#[derive(Clone, Debug, Deserialize, Serialize, TS)]
+#[serde(rename_all = "camelCase")]
 pub struct CompletedContext {
     pub client: Option<String>,
     pub offline: Option<bool>,
     pub config: Config,
     pub current_quote: Option<QuoteRef>,
-    pub custom_text: Option<Value>,
+    pub custom_text: Option<CustomTextMetrics>,
     pub tags: Vec<String>,
     pub bailed_out: bool,
     pub restart_count: u32,
-    pub incomplete_tests: Vec<Value>,
+    pub incomplete_tests: Vec<IncompleteTest>,
     pub incomplete_seconds: f64,
     pub timestamp: f64,
 }
@@ -56,7 +112,7 @@ pub fn completed(log: &Log, context: &CompletedContext) -> Value {
     if config.mode == "custom"
         && let Some(custom) = &context.custom_text
     {
-        object.insert("customText".into(), custom.clone());
+        object.insert("customText".into(), json!(custom));
     }
     if config.mode == "quote" {
         object.insert(

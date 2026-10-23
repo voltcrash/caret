@@ -31,7 +31,12 @@ type WebContext = Omit<
   customTextLimitValue?: number;
   isFunboxWithNospacePropertyActive?: boolean;
 };
-export type WebLog = { version: number; context: WebContext; events: Event[] };
+export type TransportEvent = { type: string; testMs: number; data: JsonValue };
+export type WebLog = {
+  version: number;
+  context: WebContext;
+  events: TransportEvent[];
+};
 
 function fields(
   data: JsonValue,
@@ -47,16 +52,17 @@ function fields(
     ]),
   );
 }
-/** Mechanical v1 wire conversion. No string ever passes through Rust String. */
-export function toEngineEvent(event: Event): Event {
+/** Mechanical v1 conversion; Rust validates event shapes at the host boundary.
+ * Text never passes through Rust String. Additional legacy metadata survives. */
+export function toEngineEvent(event: TransportEvent): Event {
   return {
     ...event,
     data: fields(event.data, (value) =>
       typeof value === "string" ? encodeText(value) : value,
     ),
-  };
+  } as Event;
 }
-export function toWebEvent(event: Event): Event {
+export function toWebEvent(event: Event): TransportEvent {
   return {
     ...event,
     data: fields(event.data, (value) =>

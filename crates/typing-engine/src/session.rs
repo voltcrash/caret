@@ -340,10 +340,11 @@ pub struct State {
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, TS)]
-#[serde(rename_all = "camelCase")]
+#[ts(as = "crate::wire::TypedEvent")]
 pub struct Event {
     #[serde(rename = "type")]
     pub kind: String,
+    #[serde(rename = "testMs")]
     pub test_ms: f64,
     pub data: Value,
 }

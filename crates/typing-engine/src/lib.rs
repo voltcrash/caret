@@ -23,6 +23,7 @@ pub mod text;
 pub mod transforms;
 pub mod validation;
 pub mod weak_spot;
+pub mod wire;
 
 pub use session::{Command, Config, Session};
 pub use text::Text;

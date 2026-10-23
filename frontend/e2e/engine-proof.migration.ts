@@ -2,6 +2,9 @@ import { readFile, readdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { expect, test } from "playwright/test";
 import { toWebLog } from "@oxytype/typing-engine/text";
+import { CompletedEventSchema } from "@oxytype/schemas/results";
+import { hashResult } from "@oxytype/typing-core/result-hash";
+import { getResultFailure } from "../../backend/src/anticheat/result";
 
 const root = resolve(import.meta.dirname, "../../packages/typing-fixtures");
 test("native fixture matches browser Wasm through built Cloudflare assets", async ({
@@ -423,6 +426,36 @@ test("historical results, replay and practice agree with frozen references in Wa
   ) as unknown[];
   for (const [index, reference] of references.entries()) {
     expect(actual[index], reference.name).toEqual(expected[index]);
+    const row = actual[index] as {
+      analysis: { result: Record<string, unknown> }[];
+    };
+    const metrics = row.analysis[0]?.result;
+    if (metrics === undefined) throw new Error("Missing Wasm result");
+    const payload = { ...metrics, uid: "fixture-uid" };
+    const hash = await hashResult(payload);
+    const snapshot = JSON.parse(
+      await readFile(
+        resolve(
+          root,
+          `reference/keystrokes/__snapshots__/${reference.name}.json`,
+        ),
+        "utf8",
+      ),
+    ) as { hash: string; completedEvent: Record<string, unknown> };
+    expect(hash, reference.name).toBe(snapshot.hash);
+    const parsed = CompletedEventSchema.parse({ ...payload, hash });
+    const original = CompletedEventSchema.parse({
+      ...snapshot.completedEvent,
+      uid: "fixture-uid",
+      hash: snapshot.hash,
+    });
+    expect(getResultFailure(parsed), reference.name).toBe(
+      getResultFailure(original),
+    );
+    expect(
+      getResultFailure({ ...parsed, wpm: parsed.wpm + 1000 }),
+      reference.name,
+    ).not.toBeUndefined();
   }
 });
 
