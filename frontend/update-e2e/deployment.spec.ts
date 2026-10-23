@@ -38,6 +38,37 @@ async function update(page: Page, deployment: "a" | "b"): Promise<void> {
     .toBe("installed");
 }
 
+async function cachedEngine(page: Page, build: string): Promise<void> {
+  const assets = await page.evaluate(async (name) => {
+    const cache = await caches.open(`oxytype-start-${name}`);
+    const requests = await cache.keys();
+    return await Promise.all(
+      requests
+        .filter((request) =>
+          /\/(?:browser\.client-[^/]+\.js|engine_bg-[^/]+\.wasm)$/.test(
+            new URL(request.url).pathname,
+          ),
+        )
+        .map(async (request) => {
+          const response = await cache.match(request);
+          return {
+            path: new URL(request.url).pathname,
+            type: response?.headers.get("content-type"),
+            bytes: (await response?.arrayBuffer())?.byteLength ?? 0,
+          };
+        }),
+    );
+  }, build);
+  expect(assets.filter((asset) => asset.path.endsWith(".wasm"))).toEqual([
+    expect.objectContaining({
+      type: "application/wasm",
+      bytes: expect.any(Number),
+    }),
+  ]);
+  expect(assets.some((asset) => asset.path.endsWith(".js"))).toBe(true);
+  expect(assets.every((asset) => asset.bytes > 0)).toBe(true);
+}
+
 test("a new build and rollback wait for idle and refresh the complete offline shell", async ({
   page,
   context,
@@ -66,6 +97,7 @@ test("a new build and rollback wait for idle and refresh the complete offline sh
   await page.goto("/");
   await expect(page.locator("#words .word").first()).toBeVisible();
   await controlled(page);
+  await cachedEngine(page, "update-a");
   expect(documents).toEqual(["update-a"]);
   const first = page.locator("#words .word").first();
   const letter = (await first.textContent())?.[0] ?? "";
@@ -88,6 +120,21 @@ test("a new build and rollback wait for idle and refresh the complete offline sh
   await other.keyboard.type((await otherWord.textContent())?.[0] ?? "");
   await expect(other.locator("#words letter.correct")).toHaveCount(1);
   await update(page, "b");
+  // An old tab must still resolve the exact hashed engine/glue pair after deploy.
+  const oldAssets = await page.evaluate(() =>
+    performance
+      .getEntriesByType("resource")
+      .map((entry) => new URL(entry.name).pathname)
+      .filter((path) =>
+        /\/(?:browser\.client-[^/]+\.js|engine_bg-[^/]+\.wasm)$/.test(path),
+      ),
+  );
+  expect(oldAssets).toHaveLength(2);
+  for (const path of oldAssets) {
+    const response = await page.request.get(path);
+    expect(response.status()).toBe(200);
+    expect(response.headers()["cache-control"]).toContain("immutable");
+  }
   await expect(
     page.getByRole("button", { name: "Reload", exact: true }),
   ).toHaveCount(0);
@@ -119,6 +166,7 @@ test("a new build and rollback wait for idle and refresh the complete offline sh
   await expect.poll(() => documents).toEqual(["update-a", "update-b"]);
   await expect(page.locator("#words .word").first()).toBeVisible();
   await controlled(page);
+  await cachedEngine(page, "update-b");
   expect(await page.evaluate(async () => await caches.keys())).toEqual(
     expect.arrayContaining([
       "oxytype-start-update-a",
@@ -140,6 +188,12 @@ test("a new build and rollback wait for idle and refresh the complete offline sh
   await page.reload();
   await expect(page.locator("#words .word").first()).toBeVisible();
   expect(documents.at(-1)).toBe("update-a");
+  await cachedEngine(page, "update-a");
+  await page.locator("#words").click();
+  await page.keyboard.type(
+    (await page.locator("#words .word").first().textContent())?.[0] ?? "",
+  );
+  await expect(page.locator("#words letter.correct")).toHaveCount(1);
 });
 
 test("a pending real save holds an update; refresh and rollback never submit it again", async ({
