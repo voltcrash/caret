@@ -235,3 +235,26 @@ fn prepared_content_flags_include_tabs_and_newlines_beyond_initial_window() {
     insert(&mut session, Text::from("\n"), 0.0);
     assert_eq!(session.state().word_index, 1);
 }
+
+#[test]
+fn timestamp_ties_and_delayed_inputs_signal_sorted_log_invalidation() {
+    let mut session = Session::new(
+        Config {
+            mode: "time".into(),
+            time: 0.0,
+            ..Config::default()
+        },
+        vec![Text::from("abc ")],
+    )
+    .unwrap();
+    insert(&mut session, Text::from("a"), 100.001);
+    let same = insert(&mut session, Text::from("b"), 100.002);
+    assert!(same.log_invalidated);
+    let log = session.log();
+    assert_eq!(log["events"][0]["data"]["data"], serde_json::json!([97]));
+    assert_eq!(log["events"][1]["data"]["data"], serde_json::json!([98]));
+    assert_eq!(log["events"][2]["data"]["event"], "start");
+    let delayed = insert(&mut session, Text::from("c"), 90.0);
+    assert!(delayed.log_invalidated);
+    assert_eq!(session.log()["events"][0]["testMs"], -10.0);
+}

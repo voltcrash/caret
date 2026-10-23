@@ -461,6 +461,8 @@ pub struct Session {
     start: Option<f64>,
     ticks: u32,
     events: Vec<Recorded>,
+    last_event_order: Option<(f64, u8)>,
+    log_reordered: bool,
     live: crate::live::Live,
     korean: bool,
     indent_pending: bool,
@@ -590,6 +592,8 @@ impl Session {
             start: None,
             ticks: 0,
             events: vec![],
+            last_event_order: None,
+            log_reordered: false,
             live: crate::live::Live::default(),
             korean,
             indent_pending: false,
@@ -776,6 +780,20 @@ impl Session {
         crate::funboxes::has_property(&self.config.funbox, "nospace")
     }
     fn record(&mut self, kind: &str, now: f64, data: Value) {
+        let order = (round2(now), Self::rank(kind));
+        if let Some(previous) = self.last_event_order {
+            let comparison = order
+                .0
+                .total_cmp(&previous.0)
+                .then(order.1.cmp(&previous.1));
+            if comparison.is_lt() {
+                self.log_reordered = true;
+            } else {
+                self.last_event_order = Some(order);
+            }
+        } else {
+            self.last_event_order = Some(order);
+        }
         self.live.record(kind, now, &data, &self.words, self.korean);
         self.events.push(Recorded {
             kind: kind.into(),
@@ -909,6 +927,7 @@ impl Session {
         let previous_origin = self.origin();
         let invalidated = matches!(command, Command::Finalize { .. } | Command::Reset { .. });
         self.word_changes.clear();
+        self.log_reordered = false;
         self.visual_input_override = None;
         self.last_drift = None;
         match command {
@@ -1067,6 +1086,7 @@ impl Session {
                 self.ticks = 0;
                 self.indent_pending = false;
                 self.events.clear();
+                self.last_event_order = None;
                 self.live = crate::live::Live::default();
                 self.input = vec![Text::default(); self.words.len().max(1)];
                 self.pressed.clear();
@@ -1130,7 +1150,7 @@ impl Session {
             generation: self.generation,
             automatic_pending: !self.automatic.is_empty(),
             words: self.word_changes.clone(),
-            log_invalidated: invalidated || previous_origin != origin,
+            log_invalidated: invalidated || previous_origin != origin || self.log_reordered,
             visual_input_override: self.visual_input_override.clone(),
             content_request: self
                 .generator
@@ -1820,6 +1840,11 @@ impl Session {
             }
             true
         });
+        self.last_event_order = self
+            .events
+            .iter()
+            .map(|event| (event.now, Self::rank(&event.kind)))
+            .max_by(|a, b| a.0.total_cmp(&b.0).then(a.1.cmp(&b.1)));
         self.live = crate::live::Live::default();
         for event in &self.events {
             self.live.record(

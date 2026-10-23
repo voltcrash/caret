@@ -797,6 +797,7 @@ test("Wasm long custom progress keeps UTF-16, newline and bailout boundaries", a
           inputValue: units(inputValue),
           data: units(inputValue.slice(-1)),
           wordIndex,
+          charIndex: Math.max(0, inputValue.length - 1),
           correct: true,
         },
       })),
