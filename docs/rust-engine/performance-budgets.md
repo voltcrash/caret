@@ -24,8 +24,7 @@ controlled; structural/size/parity assertions remain mandatory everywhere.
 
 ## Chosen boundary and limits
 
-Use synchronous JSON commands + bounded deltas after async preparation; retain
-object path as measurement control until Phase 1.7. JSON won this benchmark.
+Use synchronous JSON commands + bounded deltas after async preparation. JSON won the benchmark; the object-only measurement path is retired, with original evidence retained.
 No full history is returned per key; explicit log reads only.
 Raw Wasm <=1 MiB, gzip <=300 KiB, glue <=32 KiB. Binding p95 <=0.1 ms/unit.
 Initialization p95 <=100 ms (collect repeated cold samples at final gate).
@@ -51,3 +50,11 @@ wasm-bindgen automatically. CI and production rebuilds use the same setup action
 Pinned candidate versions proven here: Rust 1.99.1, wasm-bindgen/CLI 0.2.129.
 Rust MSRV declared 1.99; only pinned 1.99.1 tested so far.
 
+
+## Completed engine checkpoint (e7b7ad864)
+
+Actual Cloudflare build, same recorded host/browser; 24 browser cases pass with controlled timing gates enabled (46.8 s). Wasm is 755,466 raw / 301,279 gzip6 bytes, SHA256 `b564513a4cf0f1c4e5c07db96a647f5e5c8f54c150e6e411ea3babd7403ca8f2`. Deployed minified facade/glue is 13,540 bytes. Build/cache reuse enforce the frozen raw/gzip limits; browser proof also checks deployed facade size.
+
+Thirty fresh contexts, HTTP cache disabled: initialization p95 45.1 ms. Fifty warmed boundary samples: p95 0.01050 ms/UTF-16 unit. Seven keyboard/double-rAF samples: maximum 36.7 ms (proof component, not full website baseline comparison). Baseline 2,000-unit reset retains 9,240,576 Wasm bytes; replacement range after warmup is zero. Long workload maximum block cost 0.02360 ms/unit; reset workload 0.02620.
+
+The separate 20,000-unit workload/full-log export retains 81,395,712 bytes after reset; repeated owners remain flat. Wasm retains its high-water allocation. The frozen 16 MiB limit applies to the recorded 2,000-unit workload, not arbitrary explicit full-log sizes. Original and final raw artifacts are retained separately (`engine-final-*-performance.json`). Full website startup/input/restart/JS-heap comparison remains Stage 2.

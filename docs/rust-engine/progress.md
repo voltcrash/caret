@@ -12,7 +12,7 @@ empty commits to inflate count. Do not publish production or releases implicitly
 
 ## Current position
 
-Stage 1, Phases 1.1–1.6 implemented and compatibility checks pass; Phase 1.7 final size/fresh-checkout/CI gate active. Read root AGENTS.md and the complete migration
+Stage 1 engine gate passed. Stage 2 website integration next; Stage 3 remains pending. Read root AGENTS.md and the complete migration
 plan before edits. Installed workspace dependencies with frozen lockfile.
 Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen oracle and mismatch detection. Existing website engine remains authoritative until Stage 2.
 
@@ -24,7 +24,7 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | 1.4 Input / lifecycle / timing | Complete | Native/built-Wasm traces, observed browser input, delayed completion, stale sources, reset/restart and 12,800 randomized commands. |
 | 1.5 Generation / configuration | Complete | 61 original snapshots; section/fractional/live generation; all funbox policies; quote refresh RNG; typed recovery and bounded malformed content. |
 | 1.6 Events / results / replay | Complete | Eight exact original CompletedEvents/hashes/schema/backend outcomes, replay/seek, Unicode history, 1,387 live prefixes and malformed-log validation. |
-| 1.7 Binding / engine gate | Active | 24 built-browser tests pass; final ABI payload exceeds gzip budget; direct typed-result construction under verification, then fresh/current CI. |
+| 1.7 Binding / engine gate | Complete | 24 built-browser cases, unchanged results/hashes, frozen payload/performance limits, fresh production build/typechecks; CI engine/native/Wasm and quality/package/SSR/delivery/update jobs pass at e7b7ad864. Existing website browser shards still running when this record was written. |
 | 2.1–2.6 Website | Pending | Requires Stage 1 gate. |
 | 3.1–3.5 Terminal | Pending | Requires Stage 2 gate. |
 
@@ -90,7 +90,7 @@ do not rerun completed checks without a new reason.
 - Replaced general-purpose Morse normalization with a 492-entry immutable compatibility map captured from original TypeScript (Node 24.21.0 / Unicode 17.0). Exhaustive native parity passes every Unicode scalar and every isolated UTF-16 unit; original 61 generator snapshots still pass. No reference was regenerated.
 - Expanded engine with analysis: 709,637 bytes raw / 271,030 gzip level 6 after optimization, within both payload budgets. Full browser rerun after this change remains pending.
 
-## Next concrete engine gaps (before Stage 1 exit)
+## Historical engine-gap checkpoint (resolved below)
 
 - Session must own incremental generation, custom limits and pending section requests; preserve final separator stripping and plus-X lookahead.
 - Port browser preflight/layout observations, live config, slow-render failure policy, bailout/restart rules. Capture actual web discrepancies, including progression before batch failure.
@@ -167,7 +167,7 @@ do not rerun completed checks without a new reason.
 
 - Historical log bridge is SSR-safe and losslessly converts target words, input snapshots and composition data between JavaScript strings and UTF-16 arrays. Three tests cover every UTF-16 unit, original recordings/optional metadata and isolated text. Two new immutable historical Unicode references match native stats/frames/replay/seeks, then match real-browser Wasm through actual legacy string conversion. All 14 browser migration tests pass (26.1 s); native analysis, Clippy and type-aware lint pass. A parallel typecheck briefly ran while the prior builder had removed generated declarations; sequential rerun passed. Builder publication is being fixed separately.
 
-## Remaining Stage 1 exit work
+## Historical Stage 1 exit checklist (resolved below)
 
 - Structured native/binding errors, quote/favorite/polyglot recovery and failed-content lifecycle implemented; final malformed-input and lifecycle stress gates remain.
 - Indexed live-stat/word-burst cache implemented; final browser/long-session performance evidence remains.
@@ -230,3 +230,13 @@ do not rerun completed checks without a new reason.
 - Final API built-browser suite: 24 tests pass (49.0 s) with controlled-host timing gates enabled; initialization p95 62.2 ms. Native suite/Clippy pass. Previous pushed checkpoint 9ab9bdc12 full CI passed (run 39928691398). Final payload check exposed 799,776 raw / 315,765 gzip6 bytes: gzip fails frozen 307,200-byte limit. Removing redundant Value-to-typed result deserialization; no size limit/reference changes. Current-head clean build and CI remain pending.
 
 - Result summaries/completion now construct typed DTOs directly; native legacy Value helpers serialize that same structure. Removed the intermediate JSON object/deserializer while retaining checked finite-metric rejection. All eight original completed results remain exact, including the typed entry point; full native suite and Clippy pass. Optimized Wasm falls to 755,466 raw / 301,279 gzip6 bytes (budget 307,200). Final browser compatibility/performance rerun underway.
+
+- Post-optimization final engine proof passes 24 browser cases (46.8 s), including exact schema/hash/backend outcomes and controlled performance gates. Initialization p95 45.1 ms; boundary p95 0.01050 ms/UTF-16 unit; minified glue/facade 13,540 bytes. 2,000-unit reset retains 9,240,576 bytes; long full-log workload retains 81,395,712 with zero warm replacement growth. Final raw artifacts retained separately. Fresh e7b7ad864 checkout with deleted target/generated/dist builds the actual Cloudflare proof and all workspace typechecks pass. Global pinned Rust/CLI tools reused; no runtime-tool-free install claim.
+
+- Raw/gzip payload budgets now run on every engine build and verified-cache reuse; built-browser proof additionally checks deployed minified facade size. Targeted browser case passes with all frozen commands; type-aware lint and formatting pass. Initial test launch lacked the Node JSON import attribute; added it and reran successfully. No engine behavior changed.
+
+## Stage 1 acceptance / Stage 2 handoff
+
+Engine gate passed at e7b7ad864 plus automated payload checks ee676ab63. Current API behavior/native/Wasm parity, bounded failures/lifecycles, exact legacy result transport, frozen performance limits and isolated fresh-checkout build/typechecks verified. All original references remain unchanged. Full CI 39932135295 has passed engine, package/frontend/backend, quality, SSR, delivery, assets and update jobs; four existing website browser shards were still running at this handoff. Track their actual final outcome without claiming it early.
+
+Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: browser-only app resource, loading/retry/disposal and configuration projection, then replace the typing loop and asset/result/replay consumers. The production website still uses TypeScript until integration passes. No production deployment or release publication performed. Stage 3 remains entirely pending.
