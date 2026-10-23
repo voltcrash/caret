@@ -74,7 +74,7 @@ pub struct Generator {
     section: VecDeque<Text>,
     section_index: usize,
     section_history: Vec<Text>,
-    previous: Vec<NextWord>,
+    pub(crate) previous: Vec<NextWord>,
     repeating: bool,
     generated: usize,
     punctuation: crate::punctuation::Punctuation,
@@ -164,10 +164,20 @@ impl Generator {
     }
     pub fn with_assets(
         config: GenerationConfig,
+        language: Language,
+        custom: Option<CustomText>,
+        random: Random,
+        assets: &mut Assets,
+    ) -> Result<Self, String> {
+        Self::with_repeated_quote(config, language, custom, random, assets, None)
+    }
+    fn with_repeated_quote(
+        config: GenerationConfig,
         mut language: Language,
         custom: Option<CustomText>,
         mut random: Random,
         assets: &mut Assets,
+        repeated_quote: Option<crate::quotes::Quote>,
     ) -> Result<Self, String> {
         config.validate()?;
         let section_queue = if let Some(name) = config.funbox.iter().find(|name| {
@@ -197,7 +207,9 @@ impl Generator {
         {
             return Err("Invalid custom mode or limit".into());
         }
-        let current_quote = if config.mode == "quote" {
+        let current_quote = if repeated_quote.is_some() && config.mode == "quote" {
+            repeated_quote
+        } else if config.mode == "quote" {
             if let Some(asset) = assets.quote_asset.take() {
                 assets
                     .quotes
@@ -809,29 +821,48 @@ pub struct Content {
     generator: Option<Generator>,
     weak_spot: crate::weak_spot::WeakSpot,
     last_pace_wpm: f64,
+    previous: Vec<NextWord>,
+    previous_quote: Option<crate::quotes::Quote>,
 }
 impl Content {
     /// Consume the prior session before preparing its replacement. Only learning
     /// survives; logs, pending replies and input state are dropped with the session.
     pub fn recycle_session(&mut self, session: crate::Session) {
-        (self.weak_spot, self.last_pace_wpm) = session.into_learning();
+        (
+            self.weak_spot,
+            self.last_pace_wpm,
+            self.previous,
+            self.previous_quote,
+        ) = session.into_learning();
         self.generator = None;
     }
     pub fn prepare(&mut self, input: Prepare) -> Result<(), String> {
+        self.prepare_repeating(input, false)
+    }
+    pub fn prepare_repeating(&mut self, input: Prepare, repeating: bool) -> Result<(), String> {
+        if repeating && input.config.mode == "quote" && self.previous_quote.is_none() {
+            return Err("Missing previous quote".into());
+        }
         self.generator = None;
         self.assets.quote_asset = input.quotes;
         self.assets.polyglot = input.polyglot;
         self.assets.selected_quote_id = input.selected_quote_id;
         self.assets.favorite_quote_ids = input.favorite_quote_ids;
         self.assets.sections = input.sections;
-        self.generator = Some(Generator::with_assets(
+        self.generator = Some(Generator::with_repeated_quote(
             input.config,
             input.language,
             input.custom,
             input.random,
             &mut self.assets,
+            if repeating {
+                self.previous_quote.clone()
+            } else {
+                None
+            },
         )?);
         self.generator.as_mut().unwrap().weak_spot = self.weak_spot.clone();
+        self.generator.as_mut().unwrap().previous = self.previous.clone();
         Ok(())
     }
     pub fn start_session(&mut self, repeating: bool) -> Result<crate::Session, String> {

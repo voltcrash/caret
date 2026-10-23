@@ -111,3 +111,63 @@ fn session_pace_uses_bare_utf16_words_and_rejects_excessive_catchup_before_mutat
     assert_eq!(third.position.unwrap().letter_index, 1);
     assert_eq!(third.step_end, 400.00000000000006);
 }
+
+#[test]
+fn repeated_session_keeps_prepared_words_after_recycling_with_a_different_seed() {
+    let mut content = Content::default();
+    content.prepare(input()).unwrap();
+    let session = content.start_session(false).unwrap();
+    let original = session.snapshot().words;
+    content.recycle_session(session);
+    let mut preparation = input();
+    preparation.random = typing_engine::random::Random::seeded(99);
+    content.prepare_repeating(preparation, true).unwrap();
+    let repeated = content.start_session(true).unwrap();
+    assert_eq!(repeated.snapshot().words, original);
+    content.recycle_session(repeated);
+    content.prepare(input()).unwrap();
+    assert_eq!(
+        content.start_session(false).unwrap().snapshot().words,
+        original
+    );
+}
+
+#[test]
+fn repeated_quote_keeps_identity_and_does_not_consume_the_next_queue_entry() {
+    fn quote_input(with_asset: bool) -> Prepare {
+        let mut value = json!({
+            "config":{"mode":"quote","quoteLength":[0]},
+            "language":{"name":"english","words":[[97]]},
+            "random":{"kind":"seeded","state":1}
+        });
+        if with_asset {
+            value["quotes"] = json!({"language":"english","groups":[[0,1000]],"quotes":[
+                {"text":Text::from("one two three"),"id":1,"length":13,"source":"fixture"},
+                {"text":Text::from("four five six"),"id":2,"length":13,"source":"fixture"}
+            ]});
+        }
+        serde_json::from_value(value).unwrap()
+    }
+    let mut content = Content::default();
+    content.prepare(quote_input(true)).unwrap();
+    let first = content.start_session(false).unwrap();
+    let quote = first.snapshot().current_quote.unwrap().id;
+    let words = first.snapshot().words;
+    content.recycle_session(first);
+    content.prepare_repeating(quote_input(false), true).unwrap();
+    let repeated = content.start_session(true).unwrap();
+    assert_eq!(repeated.snapshot().current_quote.unwrap().id, quote);
+    assert_eq!(repeated.snapshot().words, words);
+    content.recycle_session(repeated);
+    content.prepare(quote_input(false)).unwrap();
+    assert_ne!(
+        content
+            .start_session(false)
+            .unwrap()
+            .snapshot()
+            .current_quote
+            .unwrap()
+            .id,
+        quote
+    );
+}

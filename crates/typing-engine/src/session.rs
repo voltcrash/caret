@@ -448,12 +448,24 @@ impl Session {
         self.pace
             .command(command, &self.words, self.config.blind_mode)
     }
-    pub(crate) fn into_learning(self) -> (crate::weak_spot::WeakSpot, f64) {
-        (
+    pub(crate) fn into_learning(
+        self,
+    ) -> (
+        crate::weak_spot::WeakSpot,
+        f64,
+        Vec<crate::generation::NextWord>,
+        Option<crate::quotes::Quote>,
+    ) {
+        let (learner, previous, quote) =
             self.generator
-                .map_or(self.weak_spot, |generator| generator.weak_spot),
-            self.pace.last_wpm(),
-        )
+                .map_or((self.weak_spot, vec![], None), |generator| {
+                    (
+                        generator.weak_spot,
+                        generator.previous,
+                        generator.current_quote,
+                    )
+                });
+        (learner, self.pace.last_wpm(), previous, quote)
     }
     pub fn new(config: Config, words: Vec<Text>) -> Result<Self, String> {
         config.validate()?;

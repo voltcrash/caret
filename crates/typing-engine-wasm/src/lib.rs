@@ -116,12 +116,12 @@ impl WasmContent {
             content: Some(typing_engine::generation::Content::default()),
         })
     }
-    pub fn prepare(&mut self, input: &str) -> Result<(), JsError> {
+    pub fn prepare(&mut self, input: &str, repeating: bool) -> Result<(), JsError> {
         let input = serde_json::from_str(input)?;
         self.content
             .as_mut()
             .ok_or_else(|| JsError::new("Content disposed"))?
-            .prepare(input)
+            .prepare_repeating(input, repeating)
             .map_err(|message| JsError::new(&message))
     }
     pub fn generate(&mut self, repeating: bool) -> Result<String, JsError> {
