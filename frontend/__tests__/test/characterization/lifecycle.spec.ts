@@ -14,6 +14,8 @@ import {
 // timer and completion code. Only rendering, storage and transport are mocked.
 
 const mocks = vi.hoisted(() => ({
+  customIndicator: undefined as { name: string; isLong: boolean } | undefined,
+  bailedOut: false,
   active: false,
   restarting: false,
   calculating: false,
@@ -70,7 +72,7 @@ vi.mock("../../../src/ts/states/test", () => ({
   getActiveWordIndex: () => mocks.wordIndex,
   resetActiveWordIndex: vi.fn(),
   getResultVisible: () => false,
-  getBailedOut: () => false,
+  getBailedOut: () => mocks.bailedOut,
   getKoreanStatus: () => false,
   isPaceRepeat: () => false,
   getIncompleteSeconds: () => 0,
@@ -100,7 +102,7 @@ vi.mock("../../../src/ts/states/test", () => ({
   },
 }));
 vi.mock("../../../src/ts/states/core", () => ({
-  getCustomTextIndicator: () => undefined,
+  getCustomTextIndicator: () => mocks.customIndicator,
   isAuthenticated: () => false,
 }));
 vi.mock("../../../src/ts/auth-client", () => ({
@@ -336,6 +338,8 @@ beforeEach(async () => {
     return dispose;
   });
   Object.assign(mocks, {
+    customIndicator: undefined,
+    bailedOut: false,
     active: false,
     restarting: false,
     calculating: false,
@@ -446,6 +450,52 @@ describe("completion", () => {
     expect(mocks.resultUpdate).toHaveBeenCalledOnce();
     expect(timerEvents()).toHaveLength(5);
   });
+
+  it.each([
+    {
+      name: "partial bailout",
+      data: "alpha b",
+      bailout: true,
+      progress: 2,
+      remaining: ["beta", "gamma"],
+    },
+    {
+      name: "complete tail",
+      data: "alpha beta gamma",
+      bailout: false,
+      progress: 0,
+      remaining: ["old", "alpha", "beta", "gamma"],
+    },
+  ])(
+    "persists native long-text progress after $name",
+    async ({ data, bailout, progress, remaining }) => {
+      mocks.customIndicator = { name: "fixture_book", isLong: true };
+      mocks.generatedWords = ["alpha ", "beta ", "gamma"];
+      getMutableConfig().mode = "custom";
+      CustomText.setCustomText(
+        "fixture_book",
+        ["old", "alpha", "beta", "gamma"],
+        true,
+      );
+      CustomText.setCustomTextLongProgress("fixture_book", 1);
+      CustomText.setText(["alpha", "beta", "gamma"]);
+      CustomText.setLimitMode("word");
+      CustomText.setLimitValue(3);
+      await restart();
+      startTest(performance.now());
+      vi.advanceTimersByTime(100);
+      type(performance.now(), 0, data);
+      if (bailout) {
+        mocks.bailedOut = true;
+        getEngineSession().bailout(performance.now());
+      }
+      await vi.waitFor(() => expect(mocks.resultUpdate).toHaveBeenCalled());
+      expect(CustomText.getCustomTextLongProgress("fixture_book")).toBe(
+        progress,
+      );
+      expect(CustomText.getText()).toEqual(remaining);
+    },
+  );
 
   it("counts custom time limits", async () => {
     getMutableConfig().mode = "custom";

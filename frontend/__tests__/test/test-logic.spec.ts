@@ -263,9 +263,9 @@ vi.mock("../../src/ts/utils/result-hash", () => ({
   hashResult: vi.fn().mockResolvedValue("hash"),
   preloadResultHasher: vi.fn().mockResolvedValue(undefined),
 }));
-vi.mock("@oxytype/typing-core/result-validity", () => ({
-  getInvalidResultReason: () => undefined,
-  isAfkResult: () => false,
+vi.mock("../../src/features/typing/analysis.client", () => ({
+  analyze: () => ({ reason: null, afk: false }),
+  getAnalysis: () => ({ incompleteTestSeconds: 0, dateDurationMs: 0 }),
 }));
 
 import { getMutableConfig } from "../../src/ts/config/store";

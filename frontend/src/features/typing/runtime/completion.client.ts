@@ -36,8 +36,6 @@ import {
   setTestActive,
 } from "../../../ts/states/test";
 
-import * as TestWords from "./test-words";
-
 import * as AnalyticsController from "../../../ts/controllers/analytics-controller";
 
 import { getAuthenticatedUser } from "../../../ts/auth-client";
@@ -56,16 +54,16 @@ import {
   forceReleaseAllKeys,
   buildEventLog,
 } from "./events/data";
-import {
-  getIncompleteTestSeconds,
-  getDateBasedTestDurationMs,
-  getInputHistory,
-} from "@oxytype/typing-core/events/stats";
-import {
-  getInvalidResultReason,
-  InvalidResultReason,
-  isAfkResult,
-} from "@oxytype/typing-core/result-validity";
+import { analyze, getAnalysis } from "../analysis.client";
+type InvalidResultReason =
+  | "inconsistent duration"
+  | "failed"
+  | "too short"
+  | "afk"
+  | "repeated"
+  | "wpm"
+  | "raw"
+  | "accuracy";
 
 import { isDevEnvironment } from "../../../ts/utils/env";
 
@@ -161,28 +159,31 @@ export async function finish(
   ///////// completed event ready
 
   const failReason = getTestSession().getFinishReason() ?? "";
-  const afkDetected = isAfkResult(eventLog, getBailedOut());
-  const invalidReason = getInvalidResultReason({
-    result: completedEvent,
-    eventLog,
-    bailedOut: getBailedOut(),
-    failed: difficultyFailed,
-    repeated: isRepeated(),
-    lbOptOut: DB.getSnapshot()?.lbOptOut === true,
-    customLimit: CustomText.getData().limit,
+  const validity = analyze(eventLog, {
+    op: "validity",
+    input: {
+      result: completedEvent,
+      bailedOut: getBailedOut(),
+      failed: difficultyFailed,
+      repeated: isRepeated(),
+      lbOptOut: DB.getSnapshot()?.lbOptOut === true,
+      customLimit: CustomText.getData().limit,
+    },
   });
+  const afkDetected = validity.afk;
+  const invalidReason = validity.reason as InvalidResultReason | null;
   const tooShort = invalidReason === "too short";
   if (invalidReason === "failed") {
     showNoticeNotification(`Test failed - ${failReason}`, {
       durationMs: 1000,
     });
     dontSave = true;
-  } else if (invalidReason !== undefined) {
+  } else if (invalidReason !== null) {
     if (invalidReason === "inconsistent duration") {
       console.error(
         "Test duration inconsistent",
         ce.testDuration,
-        getDateBasedTestDurationMs(eventLog) / 1000,
+        getAnalysis(eventLog).dateDurationMs / 1000,
       );
     }
     showNoticeNotification(`Test invalid - ${invalidMessages[invalidReason]}`);
@@ -196,7 +197,7 @@ export async function finish(
     if (getMutableConfig().resultSaving) {
       pushIncompleteTest({
         acc: completedEvent.acc,
-        seconds: getIncompleteTestSeconds(eventLog),
+        seconds: getAnalysis(eventLog).incompleteTestSeconds,
       });
     }
   }
@@ -204,51 +205,22 @@ export async function finish(
   const customTextName = getCustomTextIndicator()?.name ?? "";
   const isLong = getCustomTextIndicator()?.isLong === true;
   if (getMutableConfig().mode === "custom" && customTextName !== "" && isLong) {
-    // Let's update the custom text progress
-    if (
-      getBailedOut() ||
-      getInputHistory(eventLog).length < TestWords.words.length
-    ) {
-      // They bailed out
-
-      const history = getInputHistory(eventLog);
-      let historyLength = history?.length;
-      const wordIndex = historyLength - 1;
-
-      const lastWordInputLength = history[wordIndex]?.length ?? 0;
-
-      // compare against display.length (not textWithCommit.length): the input
-      // history holds the typed letters, not the committing space separator, so
-      // a space word is "complete" at text.length. display includes a newline
-      // commit, which is a required typed char.
-      if (
-        lastWordInputLength <
-        (TestWords.words.get(wordIndex)?.display.length ?? 0)
-      ) {
-        historyLength--;
-      }
-
-      const newProgress =
-        CustomText.getCustomTextLongProgress(customTextName) + historyLength;
-      CustomText.setCustomTextLongProgress(customTextName, newProgress);
-      showSuccessNotification("Long custom text progress saved", {
+    const { progress } = analyze(eventLog, {
+      op: "customProgress",
+      previous: CustomText.getCustomTextLongProgress(customTextName),
+    });
+    CustomText.setCustomTextLongProgress(customTextName, progress.progress);
+    const text = CustomText.getCustomText(customTextName, true);
+    CustomText.setText(text.slice(progress.progress));
+    showSuccessNotification(
+      progress.completed
+        ? "Long custom text completed"
+        : "Long custom text progress saved",
+      {
         durationMs: 5000,
         important: true,
-      });
-
-      let newText = CustomText.getCustomText(customTextName, true);
-      newText = newText.slice(newProgress);
-      CustomText.setText(newText);
-    } else {
-      // They finished the test
-      CustomText.setCustomTextLongProgress(customTextName, 0);
-      const text = CustomText.getCustomText(customTextName, true);
-      CustomText.setText(text);
-      showSuccessNotification("Long custom text completed", {
-        durationMs: 5000,
-        important: true,
-      });
-    }
+      },
+    );
   }
 
   TodayTracker.addSeconds(
