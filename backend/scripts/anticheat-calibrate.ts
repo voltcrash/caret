@@ -22,9 +22,9 @@ recordings and synthetic fixtures are used.`;
 const root = resolve(__dirname, "../..");
 const DEFAULT_SETS: [string, string][] = [
   // scripted Playwright input against the real web client, not human typing
-  ["recorded-web", "packages/typing-core/__fixtures__/keystrokes"],
+  ["recorded-web", "packages/typing-fixtures/reference/keystrokes"],
   // label comes from each file: bot or model
-  ["", "packages/typing-core/__fixtures__/anticheat"],
+  ["", "packages/typing-fixtures/reference/anticheat"],
 ];
 
 async function files(path: string): Promise<string[]> {

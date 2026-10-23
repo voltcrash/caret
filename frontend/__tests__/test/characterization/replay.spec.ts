@@ -46,7 +46,7 @@ const fixture = JSON.parse(
   readFileSync(
     resolve(
       fileURLToPath(import.meta.url),
-      "../../../../../packages/typing-core/__fixtures__/keystrokes/words-10-errors.json",
+      "../../../../../packages/typing-fixtures/reference/keystrokes/words-10-errors.json",
     ),
     "utf-8",
   ),

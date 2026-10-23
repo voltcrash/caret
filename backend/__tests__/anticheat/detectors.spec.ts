@@ -14,7 +14,7 @@ import {
 
 const fixtures = resolve(
   __dirname,
-  "../../../packages/typing-core/__fixtures__",
+  "../../../packages/typing-fixtures/reference",
 );
 
 function load(path: string): TimingSample[] {

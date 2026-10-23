@@ -212,10 +212,3 @@ export function replaceSpacesWithUnderscores(text: string): string {
 export const __testing = {
   hasRTLCharacters,
 };
-
-// Retired with the remaining legacy test consumers in the next removal commit.
-export {
-  areCharactersVisuallyEqual,
-  isSpace,
-  countChars,
-} from "@oxytype/typing-core/strings";

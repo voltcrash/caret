@@ -125,9 +125,6 @@ vi.mock("../../../src/features/typing/runtime/test-logic", () => ({
   finish: vi.fn(),
   addWord: vi.fn(),
 }));
-vi.mock("../../../src/features/typing/runtime/weak-spot", () => ({
-  updateScore: vi.fn(),
-}));
 vi.mock("../../../src/ts/events/keymap", () => ({ flash: vi.fn() }));
 vi.mock("../../../src/ts/states/notifications", () => ({
   showNoticeNotification: vi.fn(),
@@ -141,10 +138,7 @@ import {
   resetTestEvents,
   getAllTestEvents,
 } from "../../../src/features/typing/runtime/events/data";
-import {
-  findInputValueMismatches,
-  getEventsForWord,
-} from "@oxytype/typing-core/events/helpers";
+
 import type { InputEventNoMs } from "@oxytype/web-shared/events/types";
 import { words as TestWords } from "../../../src/features/typing/runtime/test-words";
 import { __testing } from "../../../src/ts/config/testing";
@@ -194,8 +188,15 @@ async function type(data: string, now = 1000): Promise<void> {
 }
 
 function inputEventsForWord(wordIndex: number): InputEventNoMs[] {
-  return getEventsForWord(getAllTestEvents(), wordIndex).filter(
-    (e): e is InputEventNoMs => e.type === "input",
+  return getAllTestEvents().filter(
+    (event): event is InputEventNoMs =>
+      event.type === "input" && event.data.wordIndex === wordIndex,
+  );
+}
+
+function expectRecordedInput(index: number): void {
+  expect(inputEventsForWord(index).at(-1)?.data.inputValue ?? "").toBe(
+    getEngineSession().getInputForWord(index),
   );
 }
 
@@ -242,7 +243,7 @@ describe("onInsertText - delete on error", () => {
         ["deleteContentBackward", 2, "h"],
       ]);
       expect(getInput()).toBe("h");
-      expect(findInputValueMismatches(inputEventsForWord(0))).toEqual([]);
+      expectRecordedInput(0);
     });
 
     it("deletes only the incorrect char at the start of a word", async () => {
@@ -251,7 +252,7 @@ describe("onInsertText - delete on error", () => {
 
       expect(deletesForWord(0)).toEqual([["deleteContentBackward", 1, ""]]);
       expect(getInput()).toBe("");
-      expect(findInputValueMismatches(inputEventsForWord(0))).toEqual([]);
+      expectRecordedInput(0);
     });
 
     it("does not go back a word without a hard variant", async () => {
@@ -281,7 +282,7 @@ describe("onInsertText - delete on error", () => {
         ["deleteContentBackward", 3, "he"],
         ["deleteContentBackward", 2, "h"],
       ]);
-      expect(findInputValueMismatches(inputEventsForWord(0))).toEqual([]);
+      expectRecordedInput(0);
     });
   });
 
@@ -298,7 +299,7 @@ describe("onInsertText - delete on error", () => {
 
       expect(deletesForWord(0)).toEqual([["deleteWordBackward", 3, ""]]);
       expect(getInput()).toBe("");
-      expect(findInputValueMismatches(inputEventsForWord(0))).toEqual([]);
+      expectRecordedInput(0);
     });
   });
 
@@ -320,8 +321,8 @@ describe("onInsertText - delete on error", () => {
         ["deleteContentBackward", 5, "hello"],
       ]);
       expect(getInput()).toBe("hello");
-      expect(findInputValueMismatches(inputEventsForWord(0))).toEqual([]);
-      expect(findInputValueMismatches(inputEventsForWord(1))).toEqual([]);
+      expectRecordedInput(0);
+      expectRecordedInput(1);
     });
 
     it("word_hard clears the word it regresses into", async () => {

@@ -42,7 +42,7 @@ vi.mock("../../../src/ts/components/common/AnimatedModal", () => ({
   AnimatedModal: (props: ParentProps) => <div>{props.children}</div>,
 }));
 
-import fixture from "../../../../packages/typing-core/__fixtures__/keystrokes/words-10-clean.json";
+import fixture from "../../../../packages/typing-fixtures/reference/keystrokes/words-10-clean.json";
 import {
   LastSignedOutResultModal,
   updateUidAndHash,

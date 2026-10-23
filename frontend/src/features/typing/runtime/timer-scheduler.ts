@@ -1,4 +1,8 @@
-import type { TestTimer } from "@oxytype/typing-core/timer";
+export type TestTimer = {
+  start: (now: number) => void;
+  stop: () => void;
+  advance: (now: number) => number | null;
+};
 
 /** Schedule the wall-clock timer independently of cosmetic animation frames. */
 export function createTimerScheduler(clock: TestTimer): {
