@@ -27,6 +27,9 @@ const mocks = vi.hoisted(() => ({
   noQuit: false,
   inputAccuracy: 96.789,
   generatedWords: ["hello ", "world"],
+  allGenerated: true,
+  pullSection: undefined as undefined | (() => Promise<false | undefined>),
+  sourceActions: [] as unknown[],
   generate: vi.fn(),
   complete: vi.fn(),
   sessionStart: vi.fn(),
@@ -145,13 +148,16 @@ vi.mock("../../src/features/typing/runtime/events/data", () => ({
   }),
 }));
 vi.mock("../../src/features/typing/runtime/words-generator", () => ({
-  areAllWordsGenerated: () => true,
+  areAllWordsGenerated: () => mocks.allGenerated,
 }));
 vi.mock("../../src/features/typing/runtime/funbox/list", () => ({
   getActiveFunboxes: () => [],
   getActiveFunboxesWithFunction: () => [],
   getActiveFunboxNames: () => [],
-  findSingleActiveFunboxWithFunction: () => undefined,
+  findSingleActiveFunboxWithFunction: () =>
+    mocks.pullSection === undefined
+      ? undefined
+      : { name: "poetry", functions: { pullSection: mocks.pullSection } },
   isFunboxActive: (name: string) => name === "no_quit" && mocks.noQuit,
   isFunboxActiveWithProperty: () => false,
 }));
@@ -213,7 +219,8 @@ vi.mock("../../src/ts/config/setters", async () => {
       Object.assign(getMutableConfig(), { [key]: value });
     },
     setQuoteLengthAll: vi.fn(),
-    toggleFunbox: vi.fn(),
+    toggleFunbox: (name: string) =>
+      mocks.sourceActions.push({ op: "disableFunbox", name, noRestart: false }),
   };
 });
 vi.mock("../../src/ts/db", () => ({
@@ -256,6 +263,7 @@ vi.mock("@oxytype/typing-core/result-validity", () => ({
 import { getMutableConfig } from "../../src/ts/config/store";
 import { getDefaultConfig } from "../../src/ts/constants/default-config";
 import {
+  addWord,
   fail,
   finish,
   restart,
@@ -274,6 +282,9 @@ beforeEach(() => {
     return dispose;
   });
   Object.assign(mocks, {
+    allGenerated: true,
+    pullSection: undefined,
+    sourceActions: [],
     active: false,
     restarting: false,
     calculating: false,
@@ -519,3 +530,42 @@ it("never applies a pending save acknowledgement to another actor", async () => 
 });
 
 mockHttpFixture("results.add", async (input) => await mocks.addResult(input));
+
+// Frozen behavior before the Rust host cutover. Source I/O failure is recovery, not a score failure.
+describe("section source recovery", () => {
+  it("reports, disables the source and restarts on an unavailable active section", async () => {
+    mocks.allGenerated = false;
+    mocks.pullSection = async () => false;
+    mocks.error.mockImplementation((message: string) =>
+      mocks.sourceActions.push({ op: "errorNotice", message }),
+    );
+    mocks.generate.mockImplementation(async () => {
+      mocks.sourceActions.push({ op: "restart" });
+      return {
+        words: mocks.generatedWords,
+        sectionIndexes: [0, 0],
+        hasTab: false,
+        hasNewline: false,
+      };
+    });
+    await addWord();
+    await vi.waitFor(() => expect(mocks.restarting).toBe(false));
+    expect(mocks.sourceActions).toEqual([
+      {
+        op: "errorNotice",
+        message: "Error while getting section. Please try again later",
+      },
+      { op: "disableFunbox", name: "poetry", noRestart: false },
+      { op: "restart" },
+    ]);
+    expect(mocks.complete).not.toHaveBeenCalled();
+  });
+  it("ignores an undefined active section without reporting a failure", async () => {
+    mocks.allGenerated = false;
+    mocks.pullSection = async () => undefined;
+    await addWord();
+    expect(mocks.sourceActions).toEqual([]);
+    expect(mocks.generate).not.toHaveBeenCalled();
+    expect(mocks.error).not.toHaveBeenCalled();
+  });
+});
