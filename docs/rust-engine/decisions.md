@@ -34,3 +34,7 @@ One outstanding section request per generator, with at most 16 prefetched sectio
 ## Selected command serialization
 
 Archived native/browser measurements compare incremental object conversion and JSON (proof-performance.json, profile-z-proof-performance.json). JSON is faster at the frozen 200-unit workload. Retire the benchmark-only object facade and serde-wasm-bindgen conversion dependency after the expanded 13-test browser parity pass; production uses one synchronous JSON interface. Keep original measurement evidence. Deployed glue is the minified Vite asset containing generated glue and the host facade (15,975 bytes at the policy checkpoint); generated development-source comments are not transferred. Numeric budgets remain unchanged.
+
+### Fractional-limit capture harness correction
+
+Before the fractional Rust port, the first new capture accidentally preloaded the generator through the shared oracle's units helper, pinning the host RNG before seeding. It also supplied a constant zero host word count. Preserve that diagnostic unchanged at diagnostics/fractional-capture-before-harness-fix.json; it is not a parity reference. The corrected standalone capture defines UTF-16 conversion locally, imports the original generator after seeding, and tracks returned host words. Its new write-once reference is fractional-limits-v2.json. No existing reference/snapshot was regenerated, and this harness correction precedes the engine implementation.
