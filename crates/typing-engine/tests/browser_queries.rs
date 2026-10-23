@@ -92,3 +92,60 @@ fn metadata_deltas_report_changed_generation_flags_without_copying_targets() {
     assert!(update.metadata.unwrap().all_words_generated);
     assert_eq!(session.live_stats(2.0).unwrap().time_limit_seconds, None);
 }
+
+#[test]
+fn final_word_batch_matches_immutable_browser_dom_observation() {
+    let oracle: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../packages/typing-fixtures/oracle/browser-final-word-batch.json"
+    ))
+    .unwrap();
+    let mut session = Session::new(
+        Config {
+            mode: "words".into(),
+            words: 1,
+            ..Config::default()
+        },
+        vec![Text::from("one")],
+    )
+    .unwrap();
+    let update = session
+        .apply(command(
+            json!({"op":"insert","now":0,"data":Text::from("one extra")}),
+        ))
+        .unwrap();
+    let mut inputs = serde_json::to_value(update.events).unwrap();
+    let inputs = inputs.as_array_mut().unwrap();
+    inputs.retain(|event| event["type"] == "input");
+    for event in inputs.iter_mut() {
+        for key in ["data", "inputValue"] {
+            let units: Vec<u16> = serde_json::from_value(event["data"][key].clone()).unwrap();
+            event["data"][key] = json!(String::from_utf16(&units).unwrap());
+        }
+    }
+    let expected = oracle["input"].as_array().unwrap();
+    assert_eq!(inputs.len(), expected.len());
+    for (actual, expected) in inputs.iter().zip(expected) {
+        assert_eq!(actual["type"], expected["type"]);
+        assert_eq!(actual["testMs"].as_f64(), expected["testMs"].as_f64());
+        assert_eq!(actual["data"], expected["data"]);
+    }
+    assert_eq!(session.state().input_value, Text::from("extra"));
+}
+
+#[test]
+fn preflight_expansion_uses_the_same_target_dependent_rule_as_insertion() {
+    let session = Session::new(Config::default(), vec![Text::from("... ")]).unwrap();
+    assert_eq!(
+        session
+            .preflight(Text::from("…"), &Default::default())
+            .expanded,
+        Some(Text::from("..."))
+    );
+    let literal = Session::new(Config::default(), vec![Text::from("… ")]).unwrap();
+    assert_eq!(
+        literal
+            .preflight(Text::from("…"), &Default::default())
+            .expanded,
+        None
+    );
+}

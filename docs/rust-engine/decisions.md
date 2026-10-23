@@ -38,3 +38,19 @@ Archived native/browser measurements compare incremental object conversion and J
 ### Fractional-limit capture harness correction
 
 Before the fractional Rust port, the first new capture accidentally preloaded the generator through the shared oracle's units helper, pinning the host RNG before seeding. It also supplied a constant zero host word count. Preserve that diagnostic unchanged at diagnostics/fractional-capture-before-harness-fix.json; it is not a parity reference. The corrected standalone capture defines UTF-16 conversion locally, imports the original generator after seeding, and tracks returned host words. Its new write-once reference is fractional-limits-v2.json. No existing reference/snapshot was regenerated, and this harness correction precedes the engine implementation.
+
+### Browser final-word batch observation
+
+Before connecting the Rust loop, the existing built TypeScript website recorded
+`one extra` against the finite custom target `one` (normal difficulty). Capture:
+`frontend/e2e/engine-input-observations.migration.ts`; immutable output:
+`packages/typing-fixtures/oracle/browser-final-word-batch.json`. All nine input
+observations share the original batch time. Committing clears the textarea even
+when the last target cannot advance; the next event retains the prior log's
+character index but records the freshly cleared DOM input. Rust now owns this
+distinction and exposes an optional empty `inputDisplayValue` projection. State
+and event-log input remain unchanged for existing fixtures. No reference updated.
+
+Browser batches are split only to observe layout between UTF-16 units. Target
+normalization/expansion come from native preflight, using the same expansion rule
+as native insertion; the browser provides `finalInBatch` for completion policy.
