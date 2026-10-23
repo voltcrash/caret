@@ -12,7 +12,7 @@ empty commits to inflate count. Do not publish production or releases implicitly
 
 ## Current position
 
-Stage 1 engine gate passed. Stage 2 Phase 2.3 active on `stack/rust-engine-website`; Stage 3 remains pending. Read root AGENTS.md and the complete migration
+Stage 1 engine gate passed. Stage 2 Phase 2.4 active on `stack/rust-engine-website`; Stage 3 remains pending. Read root AGENTS.md and the complete migration
 plan before edits. Installed workspace dependencies with frozen lockfile.
 Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen oracle and mismatch detection. Existing website engine remains authoritative until Stage 2.
 
@@ -27,8 +27,9 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | 1.7 Binding / engine gate | Complete | 24 built-browser cases, unchanged results/hashes, frozen payload/performance limits, fresh production build/typechecks; CI engine/native/Wasm and quality/package/SSR/delivery/update jobs pass at e7b7ad864. Existing website browser shards still running when this record was written. |
 | 2.1 Browser owner / loading | Complete | App-owned loader/content/session resource; 51 unit cases; actual Cloudflare delayed-download/503/retry browser checks pass; server bundles contain no Wasm initializer. |
 | 2.2 Input / timer projection | Complete | Native website loop; 1,575 unit cases, 19 built typing parity cases and 8 loading/input/IME/commit browser checks pass. |
-| 2.3 Generation / settings consumers | Active | Raw asset/source host, owned content preparation, cancellation and cached quote recovery implemented; typing-loop connection pending. |
-| 2.4–2.6 Results / delivery / cutover | Pending | Results/replay integration and TypeScript retirement remain. |
+| 2.3 Generation / settings consumers | Complete | Native generation/catalog/settings/restart/practice; source cancellation/recovery; SSR-safe settings extraction; 1,577 unit tests and built-browser gates pass. |
+| 2.4 Results / replay | Active | Completion validity, history/chart consumers and playback remain. |
+| 2.5–2.6 Delivery / cutover | Pending | Full delivery/performance and TypeScript retirement remain. |
 | 3.1–3.5 Terminal | Pending | Requires Stage 2 gate. |
 
 ## Verification log
@@ -302,3 +303,63 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
 - Phase 2.2 gate passed at `af262a763`: typing-loop replacement committed. Subsequent
   eight-case browser edge gate also passes; continue immediately with Phase 2.3.
   Actual hardware IME/OS keyboard matrix is not represented by synthetic events.
+
+## Phase 2.3 active checkpoint — settings and catalogs
+
+- Native stateless quick-restart and batched setting-conflict queries committed
+  (`efb5964fe`); catalog ownership/binding committed (`1c7d6ac75`). Native full
+  tests and Clippy pass, including all immutable generator/result references and
+  new catalog queue/normalization captures. Diagnostic capture retained separately.
+- Pinned Binaryen convergence committed (`a669b6f43`); current generated payload
+  773,252 raw / 305,988 gzip6 bytes. Original payload limits unchanged.
+- Current working tree connects native policies to settings, funbox compatibility,
+  no-quit/navigation/restart, default projection and practice. Normal browser routes
+  preload policies alongside preferences; proof route skips this preload.
+- Word generation facade removed from active frontend; all 61 frontend generator
+  cases now call the actual optimized Wasm/asset conversion and compare unchanged
+  independent snapshots. Funbox hook registry contains host visual/audio/input
+  hooks only; grouping/quote queue/catalog mutation now share Rust ownership.
+- Current-tree whole frontend type-aware lint/typecheck passes. Unit frontend:
+  132 files / 1,576 tests pass. Actual Cloudflare build + all 30 engine/browser
+  cases pass (49.5 s), including the new catalog normalization round trip. The
+  native/browser 61 generators, result schemas/hashes, loader/memory/init/parity
+  cases remain unchanged and passing.
+- Broader current built-site settings/command/modal/quote/restart/external-content
+  check: 54 pass (1.8 m). Early loader-count regression exposed unintended proof
+  preloading; isolated the probe, preserved its original six-download assertion,
+  and reran all 30 successfully. Hook inventory now explicitly accounts for Rust
+  word hooks and checks every remaining browser implementation.
+- Remaining before Phase 2.3 sign-off: new actual-website delayed section batch,
+  navigation cancellation and failed-source recovery checks. Added lease-aware
+  cancellation handling and malformed-source rejection; these latest small edits
+  are not included in the 30/54/1,576-pass evidence above and require verification.
+- Then commit remaining coherent settings/host changes, update inventory/features,
+  and continue Phase 2.4 result analysis/playback. Phase 2.5/2.6 and Stage 3 still
+  pending. Never claim the migration or terminal release finished at this checkpoint.
+
+## Phase 2.3 gate passed
+
+- Native policies, catalogs, generation, repeat/restart, pace, learning and practice
+  now serve browser consumers. Host hooks retain display/audio/platform I/O.
+- Three built-site source edge checks pass (9.1 s): delayed 408-unit batch retains
+  original zero testMs; navigation aborts without stale input/unhandled rejection;
+  failed active source recovers without scoring a failed typing test.
+- Extracted SSR-safe settings/themes/metadata into `@oxytype/web-shared`; native
+  defaults authoritative. Preserved original default enumeration order, which
+  controls legacy full-import preference sequencing. Existing 25 setter regressions
+  caught that dependency and pass after correction; all 372 core tests pass.
+- Fixed saved-funbox startup race. Full constrained imports await native policy
+  readiness before mutation. Failed local startup retains the original config for
+  Restart; it never saves an incomplete replacement. Actual delayed/503 browser
+  cases now use saved ALL_CAPS settings and verify they survive both paths.
+- Current built Cloudflare input/source/settings-loading gate: 8 pass (31.2 s).
+  Workerd SSR document gate: 6 pass (8.63 s). Server JS scan contains no engine
+  initializer/Wasm import. Whole frontend/shared type-aware lint passes. Dependency
+  graph: 789 files, no cycle.
+- Frontend unit gate: 132 files / 1,577 tests pass (23.23 s, maxWorkers=4).
+  Earlier simultaneous build/full-test runs exceeded the palette cold-import
+  test's existing 5 s deadline; isolated test and bounded-worker whole suite pass
+  without changing deadlines/assertions. Actual browser settings/catalog evidence
+  from the previous checkpoint remains valid for unchanged native outputs.
+- Continue Phase 2.4 now. Helpers still used by results are deliberately retained
+  until that gate; legacy oracle re-exports retire in Phase 2.6. Stage 3 pending.

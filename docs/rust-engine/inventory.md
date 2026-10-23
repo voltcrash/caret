@@ -275,3 +275,22 @@ Rule hooks move to Rust; visual/audio effects, fetch and notifications stay host
 SHA-256 of all current fixtures: `reference-manifest.json`. Never regenerate
 snapshots/hashes to make a port pass. Existing backend anticheat consumers retained.
 
+
+## Website destinations after Phase 2.3
+
+| Consumer | Implemented destination |
+| --- | --- |
+| Browser input/deletion/composition/timing | `runtime/session.client.ts` → owned native BrowserSession; `input-projection.client.ts` renders deltas |
+| Words/sections/custom/repeat/quote queue/catalog | `runtime/content.client.ts` → native BrowserContent; raw assets in `content-assets.client.ts` |
+| Funbox rule hooks | Rust generator/transform/policy modules; browser registry contains visual/audio/platform hooks |
+| Funbox eligibility/forced config | `policy.client.ts` → native policy queries |
+| Restart/no quit/long-test/pace decisions | native session restart policy; web orchestrates animations/storage |
+| Practice/weak-spot learning | native analysis/content owner; web retains practice UI/preferences |
+| Defaults/themes/config metadata/migration/import order | `packages/web-shared/src` (SSR safe); engine defaults from Rust artifacts; browser injects native funbox policies |
+| Completion/history/chart/replay playback | Phase 2.4 active; original consumers listed above remain until migrated |
+| Remaining generic TS helpers/types | Phase 2.6 extraction/removal tracked; never keep legacy rule implementations as helpers |
+
+Evidence: all 61 frozen frontend generators run actual optimized Wasm; 54 broad
+built-site settings/command/modal/quote/restart checks; source/loading edge checks;
+1,577 frontend units and six workerd SSR document cases. Historical consumer map
+above records the original audit, not current imports.

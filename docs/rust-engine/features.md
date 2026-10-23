@@ -86,3 +86,15 @@ Rust parity is complete for the shared-rule rows below. Website integration rema
 | `asl` | Host visual/audio/layout; Rust retains metadata effects on eligibility/config | Native/Wasm metadata + forced/compatibility policies pass; rule transforms in generation oracle; host hooks Stage 2 |
 | `rot13` | Rust rules; retain any visual/input hooks in host | Native/Wasm metadata + forced/compatibility policies pass; rule transforms in generation oracle; host hooks Stage 2 |
 | `no_quit` | Rust rules; retain any visual/input hooks in host | Native/Wasm metadata + forced/compatibility policies pass; rule transforms in generation oracle; host hooks Stage 2 |
+
+## Website generation/support gate (Phase 2.3)
+
+All modes and rule-bearing funboxes now use native BrowserContent/BrowserSession.
+The frontend registry retains visual/audio/platform hooks only. Native policies
+serve settings compatibility/forced configuration and restart eligibility. Practice,
+learning and pace decisions use native queries. Quote modal/catalog shares native
+queue storage and selected-object normalization with test generation. All 61
+original generator snapshots pass through the actual browser binding/asset adapter.
+Built-site source tests cover delayed batches, cancellation, source failure and
+retained original event timing; settings imports/commands/quotes/restarts pass the
+broader existing browser suite. Results/replay consumers remain Phase 2.4 work.

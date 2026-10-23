@@ -54,3 +54,48 @@ and event-log input remain unchanged for existing fixtures. No reference updated
 Browser batches are split only to observe layout between UTF-16 units. Target
 normalization/expansion come from native preflight, using the same expansion rule
 as native insertion; the browser provides `finalInBatch` for completion policy.
+
+### Catalog reads share native quote ownership
+
+Quote search/report previously shared the generator's catalog/queue object. The
+new raw asset host delegates catalog grouping and cache mutation to the same Rust
+content resource. A catalog read with no explicit length selection preserves an
+already-built queue, including old-language quote objects. Selecting a quote
+normalizes its stored text/language/textSplit, which remains visible to catalog
+readers. Preserve both effects; separate UI selectors must not reseed a queue.
+
+Original TypeScript captures are write-once `quote-catalog-v2.json` (catalog/queue
+ordering and RNG state) and `quote-catalog-selection.json` (selected-object
+normalization). The first catalog capture imported pinned RNG helpers before
+installing its deterministic stream; retain its bytes as
+`diagnostics/quote-catalog-unseeded.json`, classify it as a diagnostic, and use the
+separately named corrected capture. No fixture regenerated for a port mismatch.
+
+The binding sends catalog reads through the existing prepared-asset envelope;
+only quotes/random/quote lengths participate. Catalog groups are native indices
+into returned quotes; the UI mechanically projects these into object arrays.
+
+### Binding optimization after catalog coverage
+
+The unoptimized size boundary correctly rejected catalog additions at 308,493
+bytes gzip6 (and later 307,784 after serializer sharing). Frozen 307,200-byte budget
+unchanged. Pinned Binaryen `-Oz --converge` reaches a smaller fixed point; an
+isolated candidate measured 772,919 raw / 305,790 gzip6. Build/cache reuse still
+checks the original limits. Current-head browser parity and recorded final website
+performance remain required; the optimizer experiment alone is not that evidence.
+
+The proof route skips app policy preloading so cold initialization probes remain
+cold. Normal browser routes preload the app-owned engine concurrently with local
+preferences/themes; engine-dependent funbox controls wait for policy readiness.
+
+### SSR-safe web helpers and policy readiness
+
+Extract settings migration, themes, preference metadata/order to `web-shared`.
+Engine defaults are generated Rust fields; preserve web default field enumeration
+order because imports apply dependent preferences in that order. Browser funbox
+eligibility calls native policies; no browser initializer enters server imports.
+Full constrained config application waits for Rust before mutating settings.
+Failed local startup preserves the saved config for Restart and does not persist
+partial defaults. Empty selections have no constraints and permit theme/preference
+bootstrap independently. Tests retain existing cold-import timeout; limit local
+concurrent workers when CPU-heavy production builds compete for the same host.
