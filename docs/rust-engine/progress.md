@@ -27,7 +27,8 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | 1.7 Binding / engine gate | Complete | 24 built-browser cases, unchanged results/hashes, frozen payload/performance limits, fresh production build/typechecks; CI engine/native/Wasm and quality/package/SSR/delivery/update jobs pass at e7b7ad864. Existing website browser shards still running when this record was written. |
 | 2.1 Browser owner / loading | Complete | App-owned loader/content/session resource; 51 unit cases; actual Cloudflare delayed-download/503/retry browser checks pass; server bundles contain no Wasm initializer. |
 | 2.2 Input / timer projection | Active | Native beforeinput/live queries and thin app-owned update projection under integration; full loop cutover pending. |
-| 2.3–2.6 Supporting consumers / delivery / cutover | Pending | Generation/results/replay integration and TypeScript retirement remain. |
+| 2.3 Generation / settings consumers | Active | Raw asset/source host, owned content preparation, cancellation and cached quote recovery implemented; typing-loop connection pending. |
+| 2.4–2.6 Results / delivery / cutover | Pending | Results/replay integration and TypeScript retirement remain. |
 | 3.1–3.5 Terminal | Pending | Requires Stage 2 gate. |
 
 ## Verification log
@@ -260,3 +261,5 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
 - Empty source cleanup now returns structured emptyContent while preserving the single pending token. Native test matches the write-once original Wikipedia retry/output reference. Full native suite/Clippy pass. No reference changed; the host retries only Wikipedia emptiness and retains cancellation/source-failure behavior.
 
 - Native IME quick-finish query now compares owned finite targets/input in exact UTF-16; ended/infinite/pending sessions reject it. Small metadata deltas report generation flag changes without exporting targets. Native query regressions, full native suite and Clippy pass. All 26 built Cloudflare browser cases pass (55.2 s), including surrogate composition and metadata reads. Wasm 757,683 raw / 302,634 gzip6 bytes remains within budget. Owner invalidation now aborts source/automatic continuations on reset/end while retaining the native handle for result reads. Timer/explicit failure acknowledgement retains its captured clock; input completion retains the later observed browser clock. Focused transport/content/owner suite passes 15 checks.
+
+- Added the browser content host: converts raw language/quote/custom assets into lossless native DTOs; loads account favorite IDs/polyglot assets; delegates prepare/repeat/selection/generation entirely to Rust; supplies one requested raw source at a time. Empty Wikipedia cleanup retries the exact token; active requests share one promise and abort on invalidation. Quote queue refresh also works after failed selection, and raw cached-language data remains reusable. Six initial asset/content checks plus shared-request regression pass; combined owner/projection/content suite passes 15 checks. This host is not yet used by the production typing loop.
