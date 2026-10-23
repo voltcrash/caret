@@ -4,7 +4,7 @@ import { spread } from "solid-js/web";
 import { useWordsInputScroll } from "../../../ts/hooks/useWordsInputScroll";
 import { isInputElementFocused } from "../../../ts/input/input-element";
 import { isWordsWrapperVisible } from "../../../ts/states/funbox";
-import { isTestRestarting, getTestInitError } from "../../../ts/states/test";
+import { getTestInitError } from "../../../ts/states/test";
 import { setTestElements } from "../../../ts/states/test-dom";
 import {
   getWordsWrapperHeight,
@@ -116,7 +116,6 @@ export function TestPage(
             aria-label="Typing input"
             disabled={
               getBrowserEngine().status().state !== "ready" ||
-              isTestRestarting() ||
               getTestInitError() !== null
             }
             ref={(el) => (refs.wordsInput = el)}
