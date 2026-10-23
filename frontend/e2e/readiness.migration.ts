@@ -1,3 +1,5 @@
+import budgets from "../../docs/rust-engine/performance-budgets.json" with { type: "json" };
+import { summarize } from "../scripts/migration-performance";
 import { writeFile } from "node:fs/promises";
 import { expect, test } from "playwright/test";
 
@@ -53,4 +55,10 @@ test("repeated production cold/warm input and public route readiness", async ({
     output,
     `${JSON.stringify({ fixture: "production assets, guest API fixtures, desktop Chromium, HTTP cache cold/warm, SW bypass", cold, warm, settings }, null, 2)}\n`,
   );
+  if (process.env["ENGINE_ENFORCE_PERFORMANCE"] === "true") {
+    expect(summarize(cold).median).toBeLessThanOrEqual(budgets.coldMedianMs);
+    expect(summarize(cold).p95).toBeLessThanOrEqual(budgets.coldP95Ms);
+    expect(summarize(warm).median).toBeLessThanOrEqual(budgets.warmMedianMs);
+    expect(summarize(warm).p95).toBeLessThanOrEqual(budgets.warmP95Ms);
+  }
 });

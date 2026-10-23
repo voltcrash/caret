@@ -10,6 +10,7 @@ import {
   useKeymapEvents,
 } from "../../ts/states/test";
 import { addToGlobal } from "../../ts/utils/misc";
+import { getBrowserEngine } from "./engine.client";
 import { buildEventLog, getTestSession } from "./runtime/events/data";
 import { useFunboxEvents } from "./runtime/funbox/funbox";
 import { useEngineInputProjection } from "./runtime/input-projection.client";
@@ -43,6 +44,8 @@ export function TypingRuntime(): null {
         lastEventLog: getLastEventLog,
         ...(import.meta.env.OXYTYPE_ENGINE_PROOF
           ? {
+              engineMigrationMemory: () =>
+                getBrowserEngine().api().memoryBytes(),
               engineMigrationState: () => ({
                 wordIndex: getActiveWordIndex(),
                 reason: getTestSession().getFinishReason(),
