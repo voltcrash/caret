@@ -1,0 +1,120 @@
+{
+  "asset": {
+    "language": "english",
+    "groups": [
+      [0, 10],
+      [11, 100]
+    ],
+    "quotes": [
+      {
+        "id": 1,
+        "text": "short",
+        "length": 5,
+        "source": "fixture"
+      },
+      {
+        "id": 2,
+        "text": "long first words",
+        "length": 16,
+        "source": "fixture"
+      },
+      {
+        "id": 3,
+        "text": "long second words",
+        "length": 17,
+        "source": "fixture"
+      }
+    ]
+  },
+  "initialId": 1,
+  "cycles": [
+    {
+      "lengths": [1],
+      "afterUpdateState": 1831565904,
+      "selected": [
+        {
+          "id": 2,
+          "afterSelectState": 91
+        },
+        {
+          "id": 3,
+          "afterSelectState": 91
+        },
+        {
+          "id": 2,
+          "afterSelectState": 1831565904
+        },
+        {
+          "id": 3,
+          "afterSelectState": 91
+        }
+      ]
+    },
+    {
+      "lengths": [0, 1],
+      "afterUpdateState": 3663131717,
+      "selected": [
+        {
+          "id": 3,
+          "afterSelectState": 91
+        },
+        {
+          "id": 1,
+          "afterSelectState": 91
+        },
+        {
+          "id": 2,
+          "afterSelectState": 91
+        },
+        {
+          "id": 2,
+          "afterSelectState": 3663131717
+        }
+      ]
+    },
+    {
+      "lengths": [0],
+      "afterUpdateState": 91,
+      "selected": [
+        {
+          "id": 1,
+          "afterSelectState": 91
+        },
+        {
+          "id": 1,
+          "afterSelectState": 91
+        },
+        {
+          "id": 1,
+          "afterSelectState": 91
+        },
+        {
+          "id": 1,
+          "afterSelectState": 91
+        }
+      ]
+    },
+    {
+      "lengths": [1],
+      "afterUpdateState": 1831565904,
+      "selected": [
+        {
+          "id": 2,
+          "afterSelectState": 91
+        },
+        {
+          "id": 3,
+          "afterSelectState": 91
+        },
+        {
+          "id": 2,
+          "afterSelectState": 1831565904
+        },
+        {
+          "id": 3,
+          "afterSelectState": 91
+        }
+      ]
+    }
+  ]
+}
