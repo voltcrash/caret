@@ -68,6 +68,8 @@ export type { LiveMetrics };
 import type { PolicyQuery } from "../generated/types/PolicyQuery";
 import type { PolicyResponse } from "../generated/types/PolicyResponse";
 export type { PolicyQuery, PolicyResponse };
+import type { Random } from "../generated/types/Random";
+export type { Random };
 const BINDING_VERSION = 1;
 
 export { encodeText, decodeText, toEngineLog, toWebLog } from "./text";
@@ -270,6 +272,17 @@ export class BrowserContent {
   }
   prepare(input: Prepare, repeating = false): void {
     invoke(() => this.live().prepare(JSON.stringify(input), repeating));
+  }
+  updateQuoteQueue(lengths: number[], random: Random): Random {
+    return invoke(
+      () =>
+        JSON.parse(
+          this.live().update_quote_queue(
+            JSON.stringify(lengths),
+            JSON.stringify(random),
+          ),
+        ) as Random,
+    );
   }
   configure(config: Config): void {
     invoke(() => this.live().configure(JSON.stringify(config)));

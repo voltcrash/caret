@@ -148,6 +148,17 @@ impl WasmContent {
             .prepare_repeating(input, repeating)
             .map_err(bind_error)
     }
+    pub fn update_quote_queue(&mut self, lengths: &str, random: &str) -> Result<String, JsError> {
+        let lengths: Vec<i32> = parse(lengths)?;
+        let random = parse(random)?;
+        let random = self
+            .content
+            .as_mut()
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Content disposed"))?
+            .update_quote_queue(&lengths, random)
+            .map_err(bind_error)?;
+        serialize(&random)
+    }
     pub fn configure(&mut self, config: &str) -> Result<(), JsError> {
         let config = parse(config)?;
         self.content

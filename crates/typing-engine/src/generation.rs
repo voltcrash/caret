@@ -1009,6 +1009,25 @@ impl Content {
         self.has_prepared = true;
         self.generator = None;
     }
+    pub fn update_quote_queue(
+        &mut self,
+        lengths: &[i32],
+        mut random: Random,
+    ) -> Result<Random, EngineError> {
+        if lengths.len() > 64
+            || lengths
+                .iter()
+                .any(|length| ![-3, -2, 0, 1, 2, 3].contains(length))
+        {
+            return Err(EngineError::new(
+                ErrorCode::InvalidConfig,
+                "Invalid quote length selection",
+            ));
+        }
+        crate::validation::random(&random)?;
+        self.assets.quotes.update_queue(lengths, &mut random)?;
+        Ok(random)
+    }
     pub fn prepare(&mut self, input: Prepare) -> Result<(), crate::error::EngineError> {
         self.prepare_repeating(input, false)
     }
