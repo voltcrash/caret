@@ -1,3 +1,4 @@
+import { EngineFailure } from "@oxytype/typing-engine/failure";
 import { decodeText, encodeText } from "@oxytype/typing-engine/text";
 import { getBrowserEngine } from "../../../features/typing/engine.client";
 import { getEngineSession } from "../../../features/typing/runtime/session.client";
@@ -68,7 +69,18 @@ export async function onInsertText(options: OnInsertTextParams): Promise<void> {
         },
       });
       if (update.awaitingContent && update.contentRequest !== undefined) {
-        await getContentHost().supplyActive(update.contentRequest);
+        try {
+          await getContentHost().supplyActive(update.contentRequest);
+        } catch (error) {
+          if (
+            !lease.isCurrent() ||
+            (error instanceof DOMException && error.name === "AbortError") ||
+            (error instanceof EngineFailure && error.code === "staleRequest")
+          ) {
+            return;
+          }
+          throw error;
+        }
       }
     }
   }
