@@ -424,6 +424,86 @@ function EngineProof() {
       setFailure(error instanceof Error ? error.message : String(error));
     }
   };
+  const runRecovery = async (): Promise<void> => {
+    setResult("");
+    setFailure("");
+    try {
+      const inputs = JSON.parse(fixture()) as { input: Prepare }[];
+      const { loadEngine, EngineFailure } =
+        await import("@oxytype/typing-engine/browser.client");
+      const engine = await loadEngine();
+      if (disposed) return;
+      const results = inputs.map(({ input }) => {
+        const content = engine.createContent();
+        let session: BrowserSession | undefined;
+        try {
+          let failure: InstanceType<typeof EngineFailure> | undefined;
+          try {
+            content.prepare(input);
+          } catch (error) {
+            if (!(error instanceof EngineFailure)) throw error;
+            failure = error;
+          }
+          if (failure === undefined) {
+            throw new Error("Expected typed preparation failure");
+          }
+          content.prepare({
+            ...input,
+            config: { ...input.config, mode: "words", words: 2, funbox: [] },
+            language: {
+              ...input.language,
+              name: "english",
+              words: [[97], [98]],
+            },
+            quotes: null,
+            polyglot: [],
+          });
+          session = content.createSession();
+          const recovered = session.snapshot().words.length === 2;
+          const log = JSON.stringify(session.log());
+          let invalidCode: string | undefined;
+          try {
+            session.command({
+              op: "insert",
+              data: [-1],
+              now: 0,
+              date: 0,
+              automatic: null,
+              isCompositionEnding: null,
+              correctShiftUsed: null,
+            });
+          } catch (error) {
+            if (!(error instanceof EngineFailure)) throw error;
+            invalidCode = error.code;
+          }
+          const unchanged = log === JSON.stringify(session.log());
+          content.dispose();
+          let disposedCode: string | undefined;
+          try {
+            content.request();
+          } catch (error) {
+            if (!(error instanceof EngineFailure)) throw error;
+            disposedCode = error.code;
+          }
+          return {
+            message: failure.message,
+            recovery: failure.recovery,
+            code: failure.code,
+            recovered,
+            invalidCode,
+            unchanged,
+            disposedCode,
+          };
+        } finally {
+          session?.dispose();
+          content.dispose();
+        }
+      });
+      setResult(JSON.stringify(results));
+    } catch (error) {
+      setFailure(error instanceof Error ? error.message : String(error));
+    }
+  };
   const runGeneration = async (): Promise<void> => {
     setResult("");
     setFailure("");
@@ -707,6 +787,14 @@ function EngineProof() {
           }}
         >
           Run policies
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            void runRecovery();
+          }}
+        >
+          Run recovery
         </button>
         <pre data-testid="engine-proof-result">{result()}</pre>
         <pre data-testid="engine-proof-error">{failure()}</pre>

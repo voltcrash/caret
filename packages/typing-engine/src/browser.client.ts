@@ -59,6 +59,9 @@ export type {
   NextWord,
   Quote,
 };
+import { EngineFailure, disposed, invoke } from "./failure";
+export { EngineFailure } from "./failure";
+export type { EngineError, ErrorCode, Recovery } from "./failure";
 const BINDING_VERSION = 1;
 
 export { encodeText, decodeText, toEngineLog, toWebLog } from "./text";
@@ -85,7 +88,11 @@ export async function loadEngine(signal?: AbortSignal): Promise<{
   signal?.throwIfAborted();
   const module = initSync({ module: compiled });
   if (binding_version() !== BINDING_VERSION) {
-    throw new Error("Typing engine binding version mismatch");
+    throw new EngineFailure({
+      code: "bindingMismatch",
+      message: "Typing engine binding version mismatch",
+      recovery: [],
+    });
   }
   return {
     createSession: (config, words) => new BrowserSession(config, words),
@@ -104,12 +111,12 @@ export function createEngineLoader(): {
 } {
   const controller = new AbortController();
   let pending: Promise<Engine> | undefined;
-  let disposed = false;
+  let released = false;
   return {
     // oxlint-disable-next-line typescript/promise-function-async -- Owners share the exact pending promise.
     load: () => {
-      if (disposed) {
-        return Promise.reject(new Error("Typing engine loader disposed"));
+      if (released) {
+        return Promise.reject(disposed("Typing engine loader disposed"));
       }
       pending ??= loadEngine(controller.signal).catch((error: unknown) => {
         pending = undefined;
@@ -118,8 +125,8 @@ export function createEngineLoader(): {
       return pending;
     },
     dispose: () => {
-      if (disposed) return;
-      disposed = true;
+      if (released) return;
+      released = true;
       controller.abort();
       pending = undefined;
     },
@@ -128,70 +135,69 @@ export function createEngineLoader(): {
 
 export class BrowserSession {
   private handle: WasmSession | undefined;
-
   constructor(config: Partial<Config>, words: Text[], handle?: WasmSession) {
     this.handle =
       handle ??
-      new WasmSession(
-        JSON.stringify(config),
-        JSON.stringify(words),
-        BINDING_VERSION,
+      invoke(
+        () =>
+          new WasmSession(
+            JSON.stringify(config),
+            JSON.stringify(words),
+            BINDING_VERSION,
+          ),
       );
   }
-  command(command: Command): Update {
+  private live(): WasmSession {
     if (this.handle === undefined) {
-      throw new Error("Typing engine session disposed");
+      throw disposed("Typing engine session disposed");
     }
-    return JSON.parse(this.handle.command(JSON.stringify(command))) as Update;
+    return this.handle;
+  }
+  command(command: Command): Update {
+    return invoke(
+      () => JSON.parse(this.live().command(JSON.stringify(command))) as Update,
+    );
   }
   restartPolicy(options: Partial<RestartOptions> = {}): RestartDecision {
-    if (this.handle === undefined) {
-      throw new Error("Typing engine session disposed");
-    }
-    return JSON.parse(
-      this.handle.restart_policy(JSON.stringify(options)),
-    ) as RestartDecision;
+    return invoke(
+      () =>
+        JSON.parse(
+          this.live().restart_policy(JSON.stringify(options)),
+        ) as RestartDecision,
+    );
   }
   pace(command: PaceCommand): PaceUpdate {
-    if (this.handle === undefined) {
-      throw new Error("Typing engine session disposed");
-    }
-    return JSON.parse(this.handle.pace(JSON.stringify(command))) as PaceUpdate;
+    return invoke(
+      () => JSON.parse(this.live().pace(JSON.stringify(command))) as PaceUpdate,
+    );
   }
   /** @internal Ownership transfer used by the app's content resource. */
   recycleTo(content: WasmContent): void {
-    if (this.handle === undefined) {
-      throw new Error("Typing engine session disposed");
-    }
-    content.recycle_session(this.handle);
+    invoke(() => content.recycle_session(this.live()));
     this.dispose();
   }
   preflight(data: Text, layout: Partial<InsertionLayout> = {}): Preflight {
-    if (this.handle === undefined) {
-      throw new Error("Typing engine session disposed");
-    }
-    return JSON.parse(
-      this.handle.preflight(JSON.stringify(data), JSON.stringify(layout)),
-    ) as Preflight;
+    return invoke(
+      () =>
+        JSON.parse(
+          this.live().preflight(JSON.stringify(data), JSON.stringify(layout)),
+        ) as Preflight,
+    );
   }
   snapshot(): Snapshot {
-    if (this.handle === undefined) {
-      throw new Error("Typing engine session disposed");
-    }
-    return JSON.parse(this.handle.snapshot()) as Snapshot;
+    return invoke(() => JSON.parse(this.live().snapshot()) as Snapshot);
   }
   log(): Log {
-    if (this.handle === undefined) {
-      throw new Error("Typing engine session disposed");
-    }
-    return JSON.parse(this.handle.log()) as Log;
+    return invoke(() => JSON.parse(this.live().log()) as Log);
   }
   dispose(): void {
     const handle = this.handle;
     if (handle === undefined) return;
     this.handle = undefined;
-    handle.dispose();
-    handle.free();
+    invoke(() => {
+      handle.dispose();
+      handle.free();
+    });
   }
 }
 
@@ -227,10 +233,12 @@ export function benchmarkBoundary(): { jsonMs: number[] } {
 }
 
 export class BrowserContent {
-  private handle: WasmContent | undefined = new WasmContent(BINDING_VERSION);
+  private handle: WasmContent | undefined = invoke(
+    () => new WasmContent(BINDING_VERSION),
+  );
   private live(): WasmContent {
     if (this.handle === undefined) {
-      throw new Error("Typing engine content disposed");
+      throw disposed("Typing engine content disposed");
     }
     return this.handle;
   }
@@ -238,10 +246,12 @@ export class BrowserContent {
     session.recycleTo(this.live());
   }
   prepare(input: Prepare, repeating = false): void {
-    this.live().prepare(JSON.stringify(input), repeating);
+    invoke(() => this.live().prepare(JSON.stringify(input), repeating));
   }
   generate(repeating = false): Generated {
-    return JSON.parse(this.live().generate(repeating)) as Generated;
+    return invoke(
+      () => JSON.parse(this.live().generate(repeating)) as Generated,
+    );
   }
   next(
     index: number,
@@ -249,36 +259,52 @@ export class BrowserContent {
     previous: Text | null,
     previous2: Text | null,
   ): NextWord {
-    return JSON.parse(
-      this.live().next(
-        index,
-        bound,
-        JSON.stringify(previous),
-        JSON.stringify(previous2),
-      ),
-    ) as NextWord;
+    return invoke(
+      () =>
+        JSON.parse(
+          this.live().next(
+            index,
+            bound,
+            JSON.stringify(previous),
+            JSON.stringify(previous2),
+          ),
+        ) as NextWord,
+    );
   }
   request(): ContentRequest | null {
-    return JSON.parse(this.live().request()) as ContentRequest | null;
+    return invoke(
+      () => JSON.parse(this.live().request()) as ContentRequest | null,
+    );
   }
   supply(request: ContentRequest, source: Source): void {
-    this.live().supply(JSON.stringify(request), JSON.stringify(source));
+    invoke(() =>
+      this.live().supply(JSON.stringify(request), JSON.stringify(source)),
+    );
   }
   createSession(repeating = false): BrowserSession {
-    return new BrowserSession({}, [], this.live().session(repeating));
+    return new BrowserSession(
+      {},
+      [],
+      invoke(() => this.live().session(repeating)),
+    );
   }
   metadata(): { allWordsGenerated: boolean; currentQuote: Quote | null } {
-    return JSON.parse(this.live().metadata()) as {
-      allWordsGenerated: boolean;
-      currentQuote: Quote | null;
-    };
+    return invoke(
+      () =>
+        JSON.parse(this.live().metadata()) as {
+          allWordsGenerated: boolean;
+          currentQuote: Quote | null;
+        },
+    );
   }
   dispose(): void {
     const handle = this.handle;
     if (handle === undefined) return;
     this.handle = undefined;
-    handle.dispose();
-    handle.free();
+    invoke(() => {
+      handle.dispose();
+      handle.free();
+    });
   }
 }
 
@@ -287,39 +313,49 @@ export function analyzeLog<Q extends Query>(
   log: Log,
   query: Q,
 ): Extract<Response, { op: Q["op"] }> {
-  return JSON.parse(
-    analyze(JSON.stringify(log), JSON.stringify(query)),
-  ) as Extract<Response, { op: Q["op"] }>;
+  return invoke(
+    () =>
+      JSON.parse(
+        analyze(JSON.stringify(log), JSON.stringify(query)),
+      ) as Extract<Response, { op: Q["op"] }>,
+  );
 }
 
 /** Persistent playback: scheduling/audio/DOM belong to the host. */
 export class BrowserReplay {
   private handle: WasmReplay | undefined;
   constructor(log: Log, zen: boolean) {
-    this.handle = new WasmReplay(JSON.stringify(log), zen, BINDING_VERSION);
+    this.handle = invoke(
+      () => new WasmReplay(JSON.stringify(log), zen, BINDING_VERSION),
+    );
   }
   private live(): WasmReplay {
     if (this.handle === undefined) {
-      throw new Error("Typing engine replay disposed");
+      throw disposed("Typing engine replay disposed");
     }
     return this.handle;
   }
   snapshot(): PlaybackSnapshot {
-    return JSON.parse(this.live().snapshot()) as PlaybackSnapshot;
+    return invoke(() => JSON.parse(this.live().snapshot()) as PlaybackSnapshot);
   }
   step(): PlaybackUpdate {
-    return JSON.parse(this.live().step()) as PlaybackUpdate;
+    return invoke(() => JSON.parse(this.live().step()) as PlaybackUpdate);
   }
   seek(cursor: Cursor): PlaybackSnapshot {
-    return JSON.parse(
-      this.live().seek(JSON.stringify(cursor)),
-    ) as PlaybackSnapshot;
+    return invoke(
+      () =>
+        JSON.parse(
+          this.live().seek(JSON.stringify(cursor)),
+        ) as PlaybackSnapshot,
+    );
   }
   dispose(): void {
     const handle = this.handle;
     if (handle === undefined) return;
     this.handle = undefined;
-    handle.dispose();
-    handle.free();
+    invoke(() => {
+      handle.dispose();
+      handle.free();
+    });
   }
 }

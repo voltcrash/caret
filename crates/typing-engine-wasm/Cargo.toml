@@ -12,6 +12,7 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 typing-engine = { path = "../typing-engine" }
 serde_json.workspace = true
+serde.workspace = true
 wasm-bindgen.workspace = true
 
 [lints]

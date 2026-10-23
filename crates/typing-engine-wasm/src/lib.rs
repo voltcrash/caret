@@ -1,5 +1,21 @@
+use typing_engine::error::{EngineError, ErrorCode};
 use typing_engine::{BINDING_VERSION, Config, Session, Text};
 use wasm_bindgen::prelude::*;
+
+fn bind_error(error: EngineError) -> JsError {
+    let payload = serde_json::to_string(&error)
+        .expect("Engine errors contain serializable strings and actions");
+    JsError::new(&payload)
+}
+fn failure(code: ErrorCode, message: &str) -> JsError {
+    bind_error(EngineError::new(code, message))
+}
+fn parse<'a, T: serde::Deserialize<'a>>(source: &'a str) -> Result<T, JsError> {
+    serde_json::from_str(source).map_err(|error| bind_error(EngineError::from(error.to_string())))
+}
+fn serialize<T: serde::Serialize>(value: &T) -> Result<String, JsError> {
+    serde_json::to_string(value).map_err(|error| bind_error(EngineError::from(error.to_string())))
+}
 
 #[wasm_bindgen]
 pub fn binding_version() -> u32 {
@@ -17,67 +33,64 @@ impl WasmSession {
     #[wasm_bindgen(constructor)]
     pub fn new(config: &str, words: &str, version: u32) -> Result<WasmSession, JsError> {
         if version != BINDING_VERSION {
-            return Err(JsError::new("Binding version mismatch"));
+            return Err(failure(
+                ErrorCode::BindingMismatch,
+                "Binding version mismatch",
+            ));
         }
-        let config: Config = serde_json::from_str(config)?;
-        let words: Vec<Text> = serde_json::from_str(words)?;
+        let config: Config = parse(config)?;
+        let words: Vec<Text> = parse(words)?;
         Ok(Self {
-            session: Some(Session::new(config, words).map_err(|message| JsError::new(&message))?),
+            session: Some(Session::new(config, words).map_err(bind_error)?),
         })
     }
     pub fn command(&mut self, command: &str) -> Result<String, JsError> {
-        let command = serde_json::from_str(command)?;
+        let command = parse(command)?;
         let session = self
             .session
             .as_mut()
-            .ok_or_else(|| JsError::new("Session disposed"))?;
-        let update = session
-            .apply(command)
-            .map_err(|message| JsError::new(&message))?;
-        Ok(serde_json::to_string(&update)?)
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Session disposed"))?;
+        let update = session.apply(command).map_err(bind_error)?;
+        serialize(&update)
     }
     pub fn preflight(&self, data: &str, layout: &str) -> Result<String, JsError> {
-        let data = serde_json::from_str(data)?;
-        let layout = serde_json::from_str(layout)?;
+        let data = parse(data)?;
+        let layout = parse(layout)?;
         let session = self
             .session
             .as_ref()
-            .ok_or_else(|| JsError::new("Session disposed"))?;
-        Ok(serde_json::to_string(&session.preflight(data, &layout))?)
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Session disposed"))?;
+        serialize(&session.preflight(data, &layout))
     }
     pub fn pace(&mut self, command: &str) -> Result<String, JsError> {
-        let command = serde_json::from_str(command)?;
+        let command = parse(command)?;
         let session = self
             .session
             .as_mut()
-            .ok_or_else(|| JsError::new("Session disposed"))?;
-        Ok(serde_json::to_string(
-            &session
-                .pace_command(command)
-                .map_err(|message| JsError::new(&message))?,
-        )?)
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Session disposed"))?;
+        serialize(&session.pace_command(command).map_err(bind_error)?)
     }
     pub fn restart_policy(&self, options: &str) -> Result<String, JsError> {
-        let options = serde_json::from_str(options)?;
+        let options = parse(options)?;
         let session = self
             .session
             .as_ref()
-            .ok_or_else(|| JsError::new("Session disposed"))?;
-        Ok(serde_json::to_string(&session.restart_policy(options))?)
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Session disposed"))?;
+        serialize(&session.restart_policy(options))
     }
     pub fn snapshot(&self) -> Result<String, JsError> {
         let session = self
             .session
             .as_ref()
-            .ok_or_else(|| JsError::new("Session disposed"))?;
-        Ok(serde_json::to_string(&session.snapshot())?)
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Session disposed"))?;
+        serialize(&session.snapshot())
     }
     pub fn log(&self) -> Result<String, JsError> {
         let session = self
             .session
             .as_ref()
-            .ok_or_else(|| JsError::new("Session disposed"))?;
-        Ok(serde_json::to_string(&session.log())?)
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Session disposed"))?;
+        serialize(&session.log())
     }
     pub fn dispose(&mut self) {
         self.session = None;
@@ -94,42 +107,43 @@ impl WasmContent {
         let content = self
             .content
             .as_mut()
-            .ok_or_else(|| JsError::new("Content disposed"))?;
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Content disposed"))?;
         let session = session
             .session
             .take()
-            .ok_or_else(|| JsError::new("Session disposed"))?;
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Session disposed"))?;
         content.recycle_session(session);
         Ok(())
     }
     #[wasm_bindgen(constructor)]
     pub fn new(version: u32) -> Result<Self, JsError> {
         if version != BINDING_VERSION {
-            return Err(JsError::new("Binding version mismatch"));
+            return Err(failure(
+                ErrorCode::BindingMismatch,
+                "Binding version mismatch",
+            ));
         }
         Ok(Self {
             content: Some(typing_engine::generation::Content::default()),
         })
     }
     pub fn prepare(&mut self, input: &str, repeating: bool) -> Result<(), JsError> {
-        let input = serde_json::from_str(input)?;
+        let input = parse(input)?;
         self.content
             .as_mut()
-            .ok_or_else(|| JsError::new("Content disposed"))?
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Content disposed"))?
             .prepare_repeating(input, repeating)
-            .map_err(|message| JsError::new(&message))
+            .map_err(bind_error)
     }
     pub fn generate(&mut self, repeating: bool) -> Result<String, JsError> {
         let generator = self
             .content
             .as_mut()
-            .ok_or_else(|| JsError::new("Content disposed"))?
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Content disposed"))?
             .generator()
-            .map_err(|message| JsError::new(&message))?;
-        let generated = generator
-            .generate(repeating)
-            .map_err(|message| JsError::new(&message))?;
-        Ok(serde_json::to_string(&generated)?)
+            .map_err(bind_error)?;
+        let generated = generator.generate(repeating).map_err(bind_error)?;
+        serialize(&generated)
     }
     pub fn next(
         &mut self,
@@ -138,57 +152,57 @@ impl WasmContent {
         previous: &str,
         previous2: &str,
     ) -> Result<String, JsError> {
-        let previous: Option<Text> = serde_json::from_str(previous)?;
-        let previous2: Option<Text> = serde_json::from_str(previous2)?;
+        let previous: Option<Text> = parse(previous)?;
+        let previous2: Option<Text> = parse(previous2)?;
         let generator = self
             .content
             .as_mut()
-            .ok_or_else(|| JsError::new("Content disposed"))?
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Content disposed"))?
             .generator()
-            .map_err(|message| JsError::new(&message))?;
+            .map_err(bind_error)?;
         let next = generator
             .next(index, bound, previous.as_ref(), previous2.as_ref())
-            .map_err(|message| JsError::new(&message))?;
-        Ok(serde_json::to_string(&next)?)
+            .map_err(bind_error)?;
+        serialize(&next)
     }
     pub fn metadata(&mut self) -> Result<String, JsError> {
         let generator = self
             .content
             .as_mut()
-            .ok_or_else(|| JsError::new("Content disposed"))?
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Content disposed"))?
             .generator()
-            .map_err(|message| JsError::new(&message))?;
-        Ok(serde_json::to_string(
+            .map_err(bind_error)?;
+        serialize(
             &serde_json::json!({ "allWordsGenerated": generator.all_generated(), "currentQuote": generator.current_quote }),
-        )?)
+        )
     }
     pub fn request(&mut self) -> Result<String, JsError> {
         let generator = self
             .content
             .as_mut()
-            .ok_or_else(|| JsError::new("Content disposed"))?
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Content disposed"))?
             .generator()
-            .map_err(|message| JsError::new(&message))?;
-        Ok(serde_json::to_string(&generator.pending_request())?)
+            .map_err(bind_error)?;
+        serialize(&generator.pending_request())
     }
     pub fn supply(&mut self, request: &str, source: &str) -> Result<(), JsError> {
-        let request = serde_json::from_str(request)?;
-        let source = serde_json::from_str(source)?;
+        let request = parse(request)?;
+        let source = parse(source)?;
         self.content
             .as_mut()
-            .ok_or_else(|| JsError::new("Content disposed"))?
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Content disposed"))?
             .generator()
-            .map_err(|message| JsError::new(&message))?
+            .map_err(bind_error)?
             .supply(&request, source)
-            .map_err(|message| JsError::new(&message))
+            .map_err(bind_error)
     }
     pub fn session(&mut self, repeating: bool) -> Result<WasmSession, JsError> {
         let session = self
             .content
             .as_mut()
-            .ok_or_else(|| JsError::new("Content disposed"))?
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Content disposed"))?
             .start_session(repeating)
-            .map_err(|message| JsError::new(&message))?;
+            .map_err(bind_error)?;
         Ok(WasmSession {
             session: Some(session),
         })
@@ -200,11 +214,9 @@ impl WasmContent {
 
 #[wasm_bindgen]
 pub fn analyze(log: &str, query: &str) -> Result<String, JsError> {
-    let log = serde_json::from_str(log)?;
-    let query = serde_json::from_str(query)?;
-    Ok(serde_json::to_string(&typing_engine::analysis::analyze(
-        &log, query,
-    ))?)
+    let log = parse(log)?;
+    let query = parse(query)?;
+    serialize(&typing_engine::analysis::analyze(&log, query))
 }
 
 #[wasm_bindgen]
@@ -216,9 +228,12 @@ impl WasmReplay {
     #[wasm_bindgen(constructor)]
     pub fn new(log: &str, zen: bool, version: u32) -> Result<Self, JsError> {
         if version != BINDING_VERSION {
-            return Err(JsError::new("Binding version mismatch"));
+            return Err(failure(
+                ErrorCode::BindingMismatch,
+                "Binding version mismatch",
+            ));
         }
-        let log = serde_json::from_str(log)?;
+        let log = parse(log)?;
         Ok(Self {
             playback: Some(typing_engine::replay::Playback::new(&log, zen)),
         })
@@ -227,23 +242,23 @@ impl WasmReplay {
         let playback = self
             .playback
             .as_ref()
-            .ok_or_else(|| JsError::new("Replay disposed"))?;
-        Ok(serde_json::to_string(&playback.snapshot())?)
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Replay disposed"))?;
+        serialize(&playback.snapshot())
     }
     pub fn step(&mut self) -> Result<String, JsError> {
         let playback = self
             .playback
             .as_mut()
-            .ok_or_else(|| JsError::new("Replay disposed"))?;
-        Ok(serde_json::to_string(&playback.step())?)
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Replay disposed"))?;
+        serialize(&playback.step())
     }
     pub fn seek(&mut self, cursor: &str) -> Result<String, JsError> {
-        let cursor = serde_json::from_str(cursor)?;
+        let cursor = parse(cursor)?;
         let playback = self
             .playback
             .as_mut()
-            .ok_or_else(|| JsError::new("Replay disposed"))?;
-        Ok(serde_json::to_string(&playback.seek(cursor))?)
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Replay disposed"))?;
+        serialize(&playback.seek(cursor))
     }
     pub fn dispose(&mut self) {
         self.playback = None;

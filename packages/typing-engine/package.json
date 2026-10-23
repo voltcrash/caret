@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     "./browser.client": "./src/browser.client.ts",
-    "./text": "./src/text.ts"
+    "./text": "./src/text.ts",
+    "./failure": "./src/failure.ts"
   },
   "scripts": {
     "ts-check": "vp lint . --type-aware --type-check --format agent",

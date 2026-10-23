@@ -921,3 +921,71 @@ test("historical surrogate halves cross browser Wasm without lossy strings", asy
     ]);
   }
 });
+
+test("Wasm exposes frozen recovery actions and structured validation/disposal errors", async ({
+  page,
+}) => {
+  const references = JSON.parse(
+    await readFile(resolve(root, "oracle/recovery.json"), "utf8"),
+  ) as {
+    expected: { message: string; recovery: unknown[] };
+  }[];
+  const codes = [
+    "noQuotes",
+    "selectedQuoteMissing",
+    "noFavorites",
+    "noFavorites",
+    "noQuoteLength",
+    "noPolyglotLanguages",
+    "onePolyglotLanguage",
+    "polyglotDirection",
+  ];
+  await page.goto("/engine-proof");
+  await page
+    .getByRole("textbox", { name: "Command fixture" })
+    .fill(JSON.stringify(references));
+  await page.getByRole("button", { name: "Run recovery", exact: true }).click();
+  await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
+  await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+  expect(
+    JSON.parse(await page.getByTestId("engine-proof-result").innerText()),
+  ).toEqual(
+    references.map((reference, index) => ({
+      ...reference.expected,
+      code: codes[index],
+      recovered: true,
+      invalidCode: "invalidInput",
+      unchanged: true,
+      disposedCode: "disposed",
+    })),
+  );
+});
+
+test("binding version mismatch prevents creating a usable browser session", async ({
+  page,
+}) => {
+  await page.addInitScript({
+    content: `
+    const NativeInstance = WebAssembly.Instance;
+    WebAssembly.Instance = new Proxy(NativeInstance, {
+      construct(target, args) {
+        const instance = Reflect.construct(target, args);
+        return { exports: { ...instance.exports, binding_version: () => 999 } };
+      }
+    });
+  `,
+  });
+  await page.goto("/engine-proof");
+  await page
+    .getByRole("textbox", { name: "Command fixture" })
+    .fill(await readFile(resolve(root, "commands/finite-edit.json"), "utf8"));
+  await page.getByRole("button", { name: "Run fixture", exact: true }).click();
+  await expect(page.getByTestId("engine-proof-error")).toHaveText(
+    "Typing engine binding version mismatch",
+  );
+  await expect(page.getByTestId("engine-proof-result")).toBeEmpty();
+  await page
+    .getByRole("textbox", { name: "Type finite slice" })
+    .pressSequentially("one two");
+  await expect(page.getByLabel("Finite slice state")).toBeEmpty();
+});
