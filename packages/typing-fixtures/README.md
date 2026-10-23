@@ -10,3 +10,9 @@ TypeScript output at every command. New captures refuse to overwrite output.
 
 See `docs/rust-engine/contract.md` and `reference-manifest.json`. Fixture schemas
 remain data contracts, independent of either engine implementation.
+
+The legacy engine package was removed in Stage 2. `reference/` is now the sole
+fixture location. The unchanged historical manifest retains original path names
+for provenance; the integrity test maps those paths to this directory. Native
+tests and built browser Wasm compare against frozen outputs directly. One-time
+capture sources are archived as inert `.txt` files in `provenance/`.

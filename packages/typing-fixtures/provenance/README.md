@@ -22,3 +22,10 @@ TypeScript engine dependency.
 string-rule re-exports. All 157 original string tests passed; captured 68 distinct
 space/equivalence/character-count calls. `string_rules.rs` checks every original
 result using Rust. Generic display/editor helpers retain their TypeScript tests.
+
+`legacy-captures/`: original one-time capture tools from the retired package,
+including the command oracle and baseline profiling script. Historical source
+imports deliberately retain their original paths. Run only from the source commit
+recorded by each immutable output / migration progress record. The entire original
+TypeScript implementation and unit suites remain in Git at `1f69247bf`; they are
+not installed, built or maintained after retirement.

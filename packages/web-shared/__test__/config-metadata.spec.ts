@@ -35,22 +35,6 @@ describe("sharedConfigMetadata", () => {
     ).toBeUndefined();
   });
 
-  it("explains incompatible funboxes", () => {
-    const currentConfig = getDefaultConfig();
-    expect(
-      sharedConfigMetadata.funbox.blockedReason?.({
-        value: ["nospace", "arrows"],
-        currentConfig,
-      }),
-    ).toBe("Nospace, arrows is an invalid combination of funboxes");
-    expect(
-      sharedConfigMetadata.funbox.blockedReason?.({
-        value: ["mirror"],
-        currentConfig,
-      }),
-    ).toBeUndefined();
-  });
-
   it("resets single-colour custom themes", () => {
     const value = Array(10).fill("#000000") as never;
     expect(

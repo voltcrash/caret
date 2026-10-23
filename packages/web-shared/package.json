@@ -20,6 +20,7 @@
     "zod": "4.6.5"
   },
   "devDependencies": {
+    "@oxytype/funbox": "workspace:*",
     "@oxytype/typescript-config": "workspace:*",
     "@types/node": "24.19.0",
     "@types/object-hash": "3.0.6",

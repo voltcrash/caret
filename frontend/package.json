@@ -59,7 +59,6 @@
     "@oxytype/contracts": "workspace:*",
     "@oxytype/funbox": "workspace:*",
     "@oxytype/schemas": "workspace:*",
-    "@oxytype/typing-core": "workspace:*",
     "@oxytype/typing-engine": "workspace:*",
     "@oxytype/util": "workspace:*",
     "@oxytype/web-shared": "workspace:*",
