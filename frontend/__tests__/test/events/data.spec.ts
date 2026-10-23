@@ -11,7 +11,7 @@ import {
   resetTestEvents,
   getTestSession,
   forceReleaseAllKeys,
-} from "../../../src/features/typing/runtime/events/data";
+} from "../../__harness__/legacy-event-recorder";
 import type {
   InputEventData,
   KeydownEvent,

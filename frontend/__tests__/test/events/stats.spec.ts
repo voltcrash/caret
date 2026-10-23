@@ -67,7 +67,7 @@ import {
   cleanupData,
   buildEventLog,
   getTestSession,
-} from "../../../src/features/typing/runtime/events/data";
+} from "../../__harness__/legacy-event-recorder";
 import {
   findInputValueMismatches,
   getEventsForWord,
