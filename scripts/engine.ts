@@ -224,6 +224,7 @@ switch (process.argv[2]) {
       "engine-input-contract.migration.ts",
       "engine-input-observations.migration.ts",
       "engine-content-website.migration.ts",
+      "engine-results-website.migration.ts",
       "engine-lifecycle.migration.ts",
       "engine-website.migration.ts",
     ]);

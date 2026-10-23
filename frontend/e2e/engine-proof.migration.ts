@@ -1233,3 +1233,35 @@ test("quote catalog reads retain the original selected-object normalization thro
     JSON.parse(await page.getByTestId("engine-proof-result").innerText()),
   ).toEqual(reference.stages.map((stage) => neutral(stage.expected)));
 });
+
+test("native inspector preserves every original log prefix through browser Wasm", async ({
+  page,
+}) => {
+  const units = (value: string): number[] =>
+    Array.from({ length: value.length }, (_, index) => value.charCodeAt(index));
+  const references = JSON.parse(
+    await readFile(resolve(root, "oracle/inspection.json"), "utf8"),
+  ) as { log: unknown; expected: { inputs: string[] } }[];
+  await page.goto("/engine-proof");
+  await page
+    .getByRole("textbox", { name: "Command fixture" })
+    .fill(
+      JSON.stringify(
+        references.map(({ log }) => ({ log, queries: [{ op: "inspect" }] })),
+      ),
+    );
+  await page.getByRole("button", { name: "Run analysis", exact: true }).click();
+  await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+  await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
+  const actual = JSON.parse(
+    await page.getByTestId("engine-proof-result").innerText(),
+  ) as unknown;
+  expect(actual).toEqual(
+    references.map(({ expected }) => [
+      {
+        op: "inspect",
+        inspection: { ...expected, inputs: expected.inputs.map(units) },
+      },
+    ]),
+  );
+});
