@@ -1,0 +1,38 @@
+import { writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import type { Language } from "@oxytype/schemas/languages";
+import { normalizeData } from "../src/input/util";
+
+const units = (text: string): number[] =>
+  Array.from({ length: text.length }, (_, i) => text.charCodeAt(i));
+const cases = [];
+for (const language of [
+  "russian",
+  "russian_1k",
+  "russian_25k",
+  "russian_phonetic",
+  "russian_phonetic_1k",
+  "russian_k",
+  "russian_1kk",
+  "dutch",
+  "dutch_1k",
+]) {
+  for (const data of ["e", "е", "ё", "‘", "'", " ", "\u2002", "…", "\ud800"]) {
+    for (const target of ["e", "е", "ё", "'", " ", "\u2002", "\ud800"]) {
+      cases.push({
+        language,
+        data: units(data),
+        target: units(target),
+        expected: units(normalizeData(data, "", target, language as Language)),
+      });
+    }
+  }
+}
+writeFileSync(
+  resolve(
+    import.meta.dirname,
+    "../../typing-fixtures/oracle/normalization.json",
+  ),
+  `${JSON.stringify(cases, null, 2)}\n`,
+  { flag: "wx" },
+);

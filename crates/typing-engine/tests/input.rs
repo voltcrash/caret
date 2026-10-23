@@ -1,5 +1,24 @@
 use serde_json::Value;
 #[test]
+fn language_equivalence_strips_only_the_legacy_size_suffix() {
+    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../packages/typing-fixtures/oracle/normalization.json");
+    let cases: Vec<Value> = serde_json::from_slice(&std::fs::read(path).unwrap()).unwrap();
+    for case in cases {
+        let data: typing_engine::Text = serde_json::from_value(case["data"].clone()).unwrap();
+        let target: typing_engine::Text = serde_json::from_value(case["target"].clone()).unwrap();
+        assert_eq!(
+            serde_json::json!([typing_engine::text::normalize(
+                data.0[0],
+                target.0.first().copied(),
+                case["language"].as_str().unwrap()
+            )]),
+            case["expected"],
+            "{case}"
+        );
+    }
+}
+#[test]
 fn input_decisions_match_frozen_typescript_matrix() {
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../packages/typing-fixtures/oracle/input-rules.json");

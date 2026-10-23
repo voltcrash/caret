@@ -1059,7 +1059,7 @@ impl Session {
         let replacement = if unit == 0x2026 && target.0.get(input.len()) != Some(&unit) {
             Some("...")
         } else if unit == 0x0133
-            && self.config.language.starts_with("dutch")
+            && crate::text::base_language(&self.config.language) == "dutch"
             && target.0.get(input.len()) != Some(&unit)
         {
             Some("ij")

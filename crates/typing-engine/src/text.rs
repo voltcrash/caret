@@ -51,7 +51,7 @@ pub fn normalize(unit: u16, target: Option<u16>, language: &str) -> u16 {
             || ["’‘'ʼ׳ʻ᾽", "\"”“„", "–—-‐‑", ",‚"].iter().any(|set| {
                 set.encode_utf16().any(|c| c == unit) && set.encode_utf16().any(|c| c == target)
             })
-            || (language.split('_').next() == Some("russian")
+            || (base_language(language) == "russian"
                 && "ёеe".encode_utf16().any(|c| c == unit)
                 && "ёеe".encode_utf16().any(|c| c == target));
         if equivalent {
@@ -59,6 +59,18 @@ pub fn normalize(unit: u16, target: Option<u16>, language: &str) -> u16 {
         }
     }
     if is_space(unit) { 32 } else { unit }
+}
+
+/// Match JavaScript /_\d*k$/ exactly; named variants are not size suffixes.
+pub fn base_language(language: &str) -> &str {
+    if let Some((base, suffix)) = language.rsplit_once('_')
+        && let Some(digits) = suffix.strip_suffix('k')
+        && digits.bytes().all(|unit| unit.is_ascii_digit())
+    {
+        base
+    } else {
+        language
+    }
 }
 
 /// JavaScript \s, distinct from the app's directly typable space set.
