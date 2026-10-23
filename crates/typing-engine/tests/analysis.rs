@@ -59,6 +59,25 @@ fn replay_seeking_practice_and_validity_match_frozen_typescript_oracle() {
             equal(&json!(sounds), &expected["sounds"], name);
             equal(&json!(prompt), &expected["final"], name);
             equal(&json!(cursor), &expected["cursor"], name);
+            let mut playback = replay::Playback::new(&log, expected["zen"].as_bool().unwrap());
+            let mut rendered = playback.snapshot().words;
+            let mut sounds = vec![];
+            while playback.snapshot().next_time.is_some() {
+                let update = playback.step();
+                sounds.push(update.sound);
+                assert!(update.words.len() <= 2);
+                for change in update.words {
+                    rendered[change.index] = change.word;
+                }
+            }
+            equal(&json!(rendered), &expected["final"], name);
+            equal(&json!(sounds), &expected["sounds"], name);
+            equal(
+                &json!(playback.snapshot().cursor),
+                &expected["cursor"],
+                name,
+            );
+            assert!(playback.step().words.is_empty());
             for expected in expected["seeks"].as_array().unwrap() {
                 let mut prompt = replay::prompt(&words, &steps);
                 let target = serde_json::from_value(expected["target"].clone()).unwrap();
@@ -66,6 +85,11 @@ fn replay_seeking_practice_and_validity_match_frozen_typescript_oracle() {
                 equal(&json!(actual.cursor), &expected["cursor"], name);
                 equal(&json!(actual.next_index), &expected["nextIndex"], name);
                 equal(&json!(prompt), &expected["words"], name);
+                let actual =
+                    playback.seek(serde_json::from_value(expected["target"].clone()).unwrap());
+                equal(&json!(actual.cursor), &expected["cursor"], name);
+                equal(&json!(actual.next_index), &expected["nextIndex"], name);
+                equal(&json!(actual.words), &expected["words"], name);
             }
         }
         let words: Vec<_> = log

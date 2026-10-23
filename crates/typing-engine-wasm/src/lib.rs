@@ -187,3 +187,46 @@ pub fn analyze(log: &str, query: &str) -> Result<String, JsError> {
         &log, query,
     ))?)
 }
+
+#[wasm_bindgen]
+pub struct WasmReplay {
+    playback: Option<typing_engine::replay::Playback>,
+}
+#[wasm_bindgen]
+impl WasmReplay {
+    #[wasm_bindgen(constructor)]
+    pub fn new(log: &str, zen: bool, version: u32) -> Result<Self, JsError> {
+        if version != BINDING_VERSION {
+            return Err(JsError::new("Binding version mismatch"));
+        }
+        let log = serde_json::from_str(log)?;
+        Ok(Self {
+            playback: Some(typing_engine::replay::Playback::new(&log, zen)),
+        })
+    }
+    pub fn snapshot(&self) -> Result<String, JsError> {
+        let playback = self
+            .playback
+            .as_ref()
+            .ok_or_else(|| JsError::new("Replay disposed"))?;
+        Ok(serde_json::to_string(&playback.snapshot())?)
+    }
+    pub fn step(&mut self) -> Result<String, JsError> {
+        let playback = self
+            .playback
+            .as_mut()
+            .ok_or_else(|| JsError::new("Replay disposed"))?;
+        Ok(serde_json::to_string(&playback.step())?)
+    }
+    pub fn seek(&mut self, cursor: &str) -> Result<String, JsError> {
+        let cursor = serde_json::from_str(cursor)?;
+        let playback = self
+            .playback
+            .as_mut()
+            .ok_or_else(|| JsError::new("Replay disposed"))?;
+        Ok(serde_json::to_string(&playback.seek(cursor))?)
+    }
+    pub fn dispose(&mut self) {
+        self.playback = None;
+    }
+}

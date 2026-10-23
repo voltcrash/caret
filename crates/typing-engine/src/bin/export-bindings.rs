@@ -30,6 +30,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     typing_engine::analysis::Response::export_all(&config)?;
     typing_engine::replay::Word::export_all(&config)?;
     typing_engine::replay::Seek::export_all(&config)?;
+    typing_engine::replay::PlaybackSnapshot::export_all(&config)?;
+    typing_engine::replay::PlaybackUpdate::export_all(&config)?;
     typing_engine::generation::Prepare::export_all(&config)?;
     typing_engine::generation::Generated::export_all(&config)?;
     typing_engine::generation::NextWord::export_all(&config)?;

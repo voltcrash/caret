@@ -305,3 +305,96 @@ pub fn seek(words: &mut [Word], steps: &[Step], target: Cursor) -> Seek {
     }
     Seek { cursor, next_index }
 }
+
+#[derive(Serialize, TS)]
+#[serde(rename_all = "camelCase")]
+pub struct PlaybackSnapshot {
+    pub words: Vec<Word>,
+    pub cursor: Cursor,
+    pub next_index: usize,
+    pub next_time: Option<f64>,
+    pub duration: f64,
+}
+#[derive(Serialize, TS)]
+pub struct ReplayWordChange {
+    pub index: usize,
+    pub word: Word,
+}
+#[derive(Serialize, TS)]
+#[serde(rename_all = "camelCase")]
+pub struct PlaybackUpdate {
+    pub words: Vec<ReplayWordChange>,
+    pub cursor: Cursor,
+    pub next_index: usize,
+    pub next_time: Option<f64>,
+    pub sound: Option<String>,
+}
+/// Owns playback state. Hosts schedule steps and render returned word deltas.
+pub struct Playback {
+    initial: Vec<Word>,
+    words: Vec<Word>,
+    steps: Vec<Step>,
+    cursor: Cursor,
+    next_index: usize,
+    duration: f64,
+}
+impl Playback {
+    pub fn new(log: &Log, zen: bool) -> Self {
+        let steps = steps(log, zen);
+        let words = prompt(&words(log, zen), &steps);
+        Self {
+            initial: words.clone(),
+            words,
+            steps,
+            cursor: Cursor::default(),
+            next_index: 0,
+            duration: duration(log),
+        }
+    }
+    pub fn snapshot(&self) -> PlaybackSnapshot {
+        PlaybackSnapshot {
+            words: self.words.clone(),
+            cursor: self.cursor,
+            next_index: self.next_index,
+            next_time: self.steps.get(self.next_index).map(|step| step.time),
+            duration: self.duration,
+        }
+    }
+    pub fn step(&mut self) -> PlaybackUpdate {
+        let previous = self.cursor.word_index;
+        let sound = self.steps.get(self.next_index).and_then(|step| {
+            self.next_index += 1;
+            apply(&mut self.words, &mut self.cursor, step)
+        });
+        let mut changed = vec![];
+        if sound.is_some() {
+            for index in [previous, self.cursor.word_index] {
+                if let Ok(index) = usize::try_from(index)
+                    && !changed
+                        .iter()
+                        .any(|change: &ReplayWordChange| change.index == index)
+                    && let Some(word) = self.words.get(index)
+                {
+                    changed.push(ReplayWordChange {
+                        index,
+                        word: word.clone(),
+                    });
+                }
+            }
+        }
+        PlaybackUpdate {
+            words: changed,
+            cursor: self.cursor,
+            next_index: self.next_index,
+            next_time: self.steps.get(self.next_index).map(|step| step.time),
+            sound: sound.map(str::to_owned),
+        }
+    }
+    pub fn seek(&mut self, target: Cursor) -> PlaybackSnapshot {
+        self.words.clone_from(&self.initial);
+        let result = seek(&mut self.words, &self.steps, target);
+        self.cursor = result.cursor;
+        self.next_index = result.next_index;
+        self.snapshot()
+    }
+}
