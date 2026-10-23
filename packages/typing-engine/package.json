@@ -6,7 +6,8 @@
   "exports": {
     "./browser.client": "./src/browser.client.ts",
     "./text": "./src/text.ts",
-    "./failure": "./src/failure.ts"
+    "./failure": "./src/failure.ts",
+    "./config": "./src/config.ts"
   },
   "scripts": {
     "ts-check": "vp lint . --type-aware --type-check --format agent",
