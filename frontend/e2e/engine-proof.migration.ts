@@ -1027,3 +1027,30 @@ test("failed source replies preserve captured input and return exact recovery ac
     })),
   });
 });
+
+test("fractional custom limits preserve original generation and funbox boundaries", async ({
+  page,
+}) => {
+  const refs = JSON.parse(
+    await readFile(resolve(root, "oracle/fractional-limits-v2.json"), "utf8"),
+  ) as { expected: unknown; allGenerated: boolean }[];
+  await page.goto("/engine-proof");
+  await page
+    .getByRole("textbox", { name: "Command fixture" })
+    .fill(JSON.stringify(refs));
+  await page
+    .getByRole("button", { name: "Run generation", exact: true })
+    .click();
+  await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
+  await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+  expect(
+    JSON.parse(await page.getByTestId("engine-proof-result").innerText()),
+  ).toEqual(
+    refs.map((ref) => ({
+      ...(ref.expected as Record<string, unknown>),
+      extra: [],
+      allWordsGenerated: ref.allGenerated,
+      currentQuote: null,
+    })),
+  );
+});
