@@ -217,6 +217,16 @@ impl Queue {
         self.pending = None;
         Ok(())
     }
+    pub fn reject(&mut self, request: &Request) -> Result<(), crate::error::EngineError> {
+        if self.pending.as_ref() != Some(request) {
+            return Err(crate::error::EngineError::new(
+                crate::error::ErrorCode::StaleRequest,
+                "Stale or mismatched content request",
+            ));
+        }
+        self.pending = None;
+        Ok(())
+    }
     pub fn pop(&mut self) -> Option<Section> {
         self.ready.pop_front()
     }

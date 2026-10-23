@@ -88,6 +88,7 @@ pub struct Generator {
     word_languages: std::collections::BTreeMap<Vec<u16>, usize>,
     section_queue: Option<crate::content::Queue>,
     batch: Option<Batch>,
+    source_failure: Option<EngineError>,
     pub(crate) prepared_generation: u32,
 }
 pub(crate) fn case(text: &Text, upper: bool) -> Text {
@@ -376,6 +377,7 @@ impl Generator {
             word_languages,
             section_queue,
             batch: None,
+            source_failure: None,
             prepared_generation: 0,
         })
     }
@@ -508,13 +510,49 @@ impl Generator {
             .ok_or("Generator has no section source")?
             .supply(request, source)
     }
+    /// A failed fetch consumes its exact token. Reprepare/reset is required before more generation.
+    pub fn fail_source(
+        &mut self,
+        request: &crate::content::Request,
+        active: bool,
+    ) -> Result<EngineError, EngineError> {
+        self.section_queue
+            .as_mut()
+            .ok_or("Generator has no section source")?
+            .reject(request)?;
+        let mut recovery = vec![];
+        if active {
+            recovery.push(Recovery::ErrorNotice {
+                message: "Error while getting section. Please try again later".into(),
+            });
+        }
+        recovery.push(Recovery::DisableFunbox {
+            name: request.kind.clone(),
+            no_restart: false,
+        });
+        if active {
+            recovery.push(Recovery::Restart);
+        }
+        let error = EngineError::recover(
+            ErrorCode::SourceUnavailable,
+            if active { "" } else { "Failed to pull section" },
+            recovery,
+        );
+        self.source_failure = Some(error.clone());
+        self.batch = None;
+        Ok(error)
+    }
     pub fn reset_requests(&mut self, generation: u32) {
+        self.source_failure = None;
         if let Some(queue) = &mut self.section_queue {
             queue.reset(generation);
         }
         self.batch = None;
     }
     pub fn generate(&mut self, repeating: bool) -> Result<Generated, crate::error::EngineError> {
+        if let Some(error) = &self.source_failure {
+            return Err(error.clone());
+        }
         let mut batch = if let Some(batch) = self.batch.take() {
             if batch.repeating != repeating {
                 self.batch = Some(batch);
@@ -605,6 +643,9 @@ impl Generator {
         previous: Option<&Text>,
         previous2: Option<&Text>,
     ) -> Result<NextWord, crate::error::EngineError> {
+        if let Some(error) = &self.source_failure {
+            return Err(error.clone());
+        }
         if self.repeating
             && self.config.mode != "quote"
             && let Some(next) = self.previous.get(index)

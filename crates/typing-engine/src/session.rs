@@ -266,6 +266,11 @@ pub enum Command {
         request: crate::content::Request,
         source: Box<crate::content::Source>,
     },
+    #[serde(rename_all = "camelCase")]
+    FailContent {
+        now: f64,
+        request: crate::content::Request,
+    },
     Configure {
         now: f64,
         config: Box<Config>,
@@ -314,6 +319,9 @@ pub struct State {
     pub input_value: Text,
     pub active: bool,
     pub ended: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub awaiting_recovery: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub reason: Option<String>,
@@ -448,6 +456,7 @@ pub struct Session {
     has_tab: bool,
     has_newline: bool,
     pending_commit: Option<Checkpoint>,
+    awaiting_recovery: bool,
     deferred_input: Option<DeferredInput>,
     defer_finish: bool,
     pending_finish: Option<FinishRequest>,
@@ -550,6 +559,7 @@ impl Session {
             has_tab,
             has_newline,
             pending_commit: None,
+            awaiting_recovery: false,
             deferred_input: None,
             defer_finish: false,
             pending_finish: None,
@@ -607,6 +617,7 @@ impl Session {
             ..observation
         };
         let blocked = self.ended
+            || self.awaiting_recovery
             || self.pending_commit.is_some()
             || self.pending_finish.is_some()
             || crate::input::blocked(&self.config, &observation, self.has_newline);
@@ -693,6 +704,7 @@ impl Session {
             input_value: self.current(),
             active: self.active,
             ended: self.ended,
+            awaiting_recovery: self.awaiting_recovery.then_some(true),
             reason: self.reason.clone(),
         }
     }
@@ -773,6 +785,7 @@ impl Session {
             | Command::Configure { now, .. }
             | Command::CustomLimit { now, .. }
             | Command::Bailout { now, .. }
+            | Command::FailContent { now, .. }
             | Command::SupplyContent { now, .. }
             | Command::AcknowledgeFinish { now, .. } => *now,
         };
@@ -809,6 +822,21 @@ impl Session {
                 .is_some_and(|start| (now - start) / 1000.0 - f64::from(self.ticks) > 1_000_000.0)
         {
             return Err("Timer catchup exceeds bounded work".into());
+        }
+        if self.awaiting_recovery
+            && matches!(
+                command,
+                Command::Start { .. }
+                    | Command::Observe { .. }
+                    | Command::FlushAutomatic { .. }
+                    | Command::Bailout { .. }
+                    | Command::Finish { .. }
+            )
+        {
+            return Err(crate::error::EngineError::new(
+                crate::error::ErrorCode::SourceUnavailable,
+                "Session awaits content recovery",
+            ));
         }
         let before = self.events.len();
         let previous_origin = self.origin();
@@ -859,6 +887,18 @@ impl Session {
                     composition: is_composition_ending == Some(true),
                     final_in_batch: layout.final_in_batch != Some(false),
                 });
+            }
+            Command::FailContent { request, .. } => {
+                let error = self
+                    .generator
+                    .as_mut()
+                    .ok_or("Session has no generated content")?
+                    .fail_source(&request, true)?;
+                self.awaiting_recovery = true;
+                self.pending_commit = None;
+                self.deferred_input = None;
+                self.automatic.clear();
+                return Err(error);
             }
             Command::SupplyContent {
                 now,
@@ -947,6 +987,7 @@ impl Session {
             Command::Reset { .. } => {
                 self.index = 0;
                 self.bailed_out = false;
+                self.awaiting_recovery = false;
                 self.pending_commit = None;
                 self.deferred_input = None;
                 self.pending_finish = None;
@@ -1366,6 +1407,7 @@ impl Session {
     fn delete(&mut self, kind: &str, now: f64, observed: Option<Text>, sentinel_removed: bool) {
         if !self.active
             || self.ended
+            || self.awaiting_recovery
             || self.pending_commit.is_some()
             || self.pending_finish.is_some()
         {
@@ -1446,7 +1488,7 @@ impl Session {
     }
 
     fn advance(&mut self, now: f64, date: f64) {
-        if !self.active || self.pending_finish.is_some() {
+        if !self.active || self.awaiting_recovery || self.pending_finish.is_some() {
             return;
         }
         let start = self.start.unwrap_or(now);

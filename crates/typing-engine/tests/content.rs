@@ -491,3 +491,136 @@ fn section_generation_and_random_draw_order_match_frozen_typescript() {
         );
     }
 }
+
+#[test]
+fn initial_source_failure_matches_frozen_recovery_and_requires_reprepare() {
+    use typing_engine::error::ErrorCode;
+    let references: Vec<Value> = serde_json::from_slice(
+        &std::fs::read(
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("../../packages/typing-fixtures/oracle/source-recovery.json"),
+        )
+        .unwrap(),
+    )
+    .unwrap();
+    for reference in references {
+        let mut content = typing_engine::generation::Content::default();
+        let mut preparation = source_preparation(vec![]);
+        preparation.config.funbox = vec![reference["kind"].as_str().unwrap().into()];
+        content.prepare(preparation).unwrap();
+        assert!(content.start_session(false).is_err());
+        let generator = content.generator().unwrap();
+        let request = generator.pending_request().unwrap().clone();
+        let error = generator.fail_source(&request, false).unwrap();
+        assert_eq!(error.code, ErrorCode::SourceUnavailable);
+        assert_eq!(
+            serde_json::json!({"message":error.message,"recovery":error.recovery}),
+            reference["expected"]
+        );
+        assert!(generator.pending_request().is_none());
+        assert_eq!(
+            generator.generate(false).unwrap_err().code,
+            ErrorCode::SourceUnavailable
+        );
+        assert_eq!(
+            generator.supply(&request, poem("late")).unwrap_err().code,
+            ErrorCode::StaleRequest
+        );
+        content
+            .prepare(source_preparation(vec![poem(&vec!["one"; 100].join(" "))]))
+            .unwrap();
+        assert!(content.start_session(false).is_ok());
+    }
+}
+#[test]
+fn active_source_failure_preserves_captured_input_and_never_scores_an_io_failure() {
+    use typing_engine::{Command, error::ErrorCode};
+    for exhausted in [false, true] {
+        let mut session = running_section_session("normal");
+        let batch = if exhausted {
+            "one ".repeat(101)
+        } else {
+            "one ".into()
+        };
+        let waiting = commit(&mut session, &batch, 0.0);
+        let request = waiting.content_request.unwrap();
+        let mut stale = request.clone();
+        stale.generation += 1;
+        let before = session.log();
+        assert_eq!(
+            session
+                .apply(Command::FailContent {
+                    now: 10.0,
+                    request: stale
+                })
+                .err()
+                .unwrap()
+                .code,
+            ErrorCode::StaleRequest
+        );
+        assert_eq!(session.log(), before);
+        let error = session
+            .apply(Command::FailContent {
+                now: 10.0,
+                request: request.clone(),
+            })
+            .err()
+            .unwrap();
+        assert_eq!(error.code, ErrorCode::SourceUnavailable);
+        assert_eq!(
+            serde_json::to_value(error.recovery).unwrap(),
+            serde_json::json!([
+                {"op":"errorNotice","message":"Error while getting section. Please try again later"},
+                {"op":"disableFunbox","name":"poetry","noRestart":false}, {"op":"restart"}
+            ])
+        );
+        assert_eq!(session.state().awaiting_recovery, Some(true));
+        assert!(session.state().reason.is_none());
+        assert_eq!(session.log(), before);
+        assert!(commit(&mut session, "discarded", 20.0).events.is_empty());
+        assert!(
+            session
+                .apply(Command::Advance {
+                    now: 5000.0,
+                    date: 0.0
+                })
+                .unwrap()
+                .events
+                .is_empty()
+        );
+        assert_eq!(session.log(), before);
+        assert_eq!(
+            session
+                .apply(Command::SupplyContent {
+                    now: 5000.0,
+                    date: 0.0,
+                    request,
+                    source: Box::new(poem("late"))
+                })
+                .err()
+                .unwrap()
+                .code,
+            ErrorCode::StaleRequest
+        );
+        session
+            .apply(Command::Abandon {
+                now: 5010.0,
+                date: 9000.0,
+            })
+            .unwrap();
+        assert!(session.state().ended);
+        assert!(session.state().reason.is_none());
+        let after = session.log();
+        assert_eq!(
+            after["events"].as_array().unwrap().len(),
+            before["events"].as_array().unwrap().len() + 1
+        );
+        assert_eq!(
+            after["events"].as_array().unwrap().last().unwrap()["testMs"],
+            5010.0
+        );
+        session.apply(Command::Reset { now: 5020.0 }).unwrap();
+        assert!(session.state().awaiting_recovery.is_none());
+        assert!(session.log()["events"].as_array().unwrap().is_empty());
+    }
+}

@@ -135,3 +135,7 @@ Content preparation advances an owner-local generation. Recycling takes the maxi
 ### Structured failures
 
 Native operations return EngineError with a stable code, display message and ordered Recovery actions. Wasm carries this DTO as JSON in its private generated exception message; the public browser facade decodes EngineFailure. Consumers inspect code/actions, never parse human wording. Empty messages are intentional for recovery paths that supply a notice. Corrected content preparation may retry after validation/recovery failures. Disposal and ABI mismatch are explicit failures; no session becomes usable after failed initialization.
+
+### Unavailable section replies
+
+Initial Content.fail_source returns sourceUnavailable with the frozen disable-funbox action. Active FailContent consumes the exact pending token and returns ordered errorNotice, disableFunbox, restart actions. No I/O error is recorded as a typing failure. State.awaitingRecovery blocks further input/ticks until host abandon/end/reset/replacement. Already logged input survives; unprocessed units awaiting the failed reply are discarded with the abandoned lifecycle. Abandon uses the host's actual captured clock. Late replies and stale failures cannot affect replacement state. Browser undefined section replies retain the original no-op behavior while buffered words remain; route cancellation disposes the owner, rather than reporting a source failure. Only an explicitly unavailable source (legacy false) invokes recovery.

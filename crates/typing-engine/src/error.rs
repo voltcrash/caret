@@ -43,6 +43,9 @@ pub enum Recovery {
         message: String,
         duration_ms: u32,
     },
+    ErrorNotice {
+        message: String,
+    },
     Restart,
 }
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize, TS)]
