@@ -12,7 +12,7 @@ empty commits to inflate count. Do not publish production or releases implicitly
 
 ## Current position
 
-Stage 1 engine gate passed. Stage 2 website integration next; Stage 3 remains pending. Read root AGENTS.md and the complete migration
+Stage 1 engine gate passed. Stage 2 Phase 2.1 active on `stack/rust-engine-website`; Stage 3 remains pending. Read root AGENTS.md and the complete migration
 plan before edits. Installed workspace dependencies with frozen lockfile.
 Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen oracle and mismatch detection. Existing website engine remains authoritative until Stage 2.
 
@@ -25,7 +25,8 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | 1.5 Generation / configuration | Complete | 61 original snapshots; section/fractional/live generation; all funbox policies; quote refresh RNG; typed recovery and bounded malformed content. |
 | 1.6 Events / results / replay | Complete | Eight exact original CompletedEvents/hashes/schema/backend outcomes, replay/seek, Unicode history, 1,387 live prefixes and malformed-log validation. |
 | 1.7 Binding / engine gate | Complete | 24 built-browser cases, unchanged results/hashes, frozen payload/performance limits, fresh production build/typechecks; CI engine/native/Wasm and quality/package/SSR/delivery/update jobs pass at e7b7ad864. Existing website browser shards still running when this record was written. |
-| 2.1–2.6 Website | Pending | Requires Stage 1 gate. |
+| 2.1 Browser owner / loading | Active | App-owned browser resource; loading/retry/replacement/disposal tests pass. Wiring route loading next. |
+| 2.2–2.6 Website integration / cutover | Pending | Requires browser ownership, then typing/generation/results/delivery parity. |
 | 3.1–3.5 Terminal | Pending | Requires Stage 2 gate. |
 
 ## Verification log
@@ -240,3 +241,5 @@ do not rerun completed checks without a new reason.
 Engine gate passed at e7b7ad864 plus automated payload checks ee676ab63. Current API behavior/native/Wasm parity, bounded failures/lifecycles, exact legacy result transport, frozen performance limits and isolated fresh-checkout build/typechecks verified. All original references remain unchanged. Full CI 39932135295 has passed engine, package/frontend/backend, quality, SSR, delivery, assets and update jobs; four existing website browser shards were still running at this handoff. Track their actual final outcome without claiming it early.
 
 Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: browser-only app resource, loading/retry/disposal and configuration projection, then replace the typing loop and asset/result/replay consumers. The production website still uses TypeScript until integration passes. No production deployment or release publication performed. Stage 3 remains entirely pending.
+
+- Stage 2: added browser-only app resource with lazy owned loader, explicit loading/ready/failed/disposed status, retry, session replacement generations and retained content learning. App disposal aborts loading and releases active session/content; stale initialization cannot publish. Three focused ownership/lifecycle tests and type-aware lint pass. Production typing loop still uses TypeScript at this incremental checkpoint.
