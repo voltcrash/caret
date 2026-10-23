@@ -20,6 +20,11 @@ export type LifecycleProof = {
   restarts: number[];
   live: LiveMetrics[];
   invalid: number;
+  hostQueries: {
+    burst: number;
+    canDelete: boolean;
+    timeLimitSeconds: number | null;
+  };
 };
 /** Opt-in proof route only. No production typing state or platform clock enters the core implicitly. */
 export async function runEngineLifecycle(
@@ -136,7 +141,21 @@ export async function runEngineLifecycle(
         throw new Error("Invalid input mutated log");
       }
     }
+    if (session.canDelete()) {
+      throw new Error("Inactive deletion preflight accepted");
+    }
+    session.command(command([97], 100));
+    if (!session.canDelete()) {
+      throw new Error("Active deletion preflight rejected");
+    }
+    session.command(command([32], 200));
+    const hostQueries = {
+      burst: session.wordBurst(0, 250),
+      canDelete: session.canDelete(),
+      timeLimitSeconds: session.liveStats(250).timeLimitSeconds,
+    };
     return {
+      hostQueries,
       initializationMs,
       initial,
       memory,

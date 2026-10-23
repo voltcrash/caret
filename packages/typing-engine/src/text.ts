@@ -31,6 +31,13 @@ type WebContext = Omit<
   customTextLimitValue?: number;
   isFunboxWithNospacePropertyActive?: boolean;
 };
+type WebData<D> = D extends unknown
+  ? { [K in keyof D]: D[K] extends Text ? string : D[K] }
+  : never;
+type DecodedEvent<E extends Event> = E extends Event
+  ? Omit<E, "data"> & { data: WebData<E["data"]> }
+  : never;
+export type WebEvent = DecodedEvent<Event>;
 export type TransportEvent = { type: string; testMs: number; data: JsonValue };
 export type WebLog = {
   version: number;
@@ -62,13 +69,13 @@ export function toEngineEvent(event: TransportEvent): Event {
     ),
   } as Event;
 }
-export function toWebEvent(event: Event): TransportEvent {
+export function toWebEvent(event: Event): WebEvent {
   return {
     ...event,
     data: fields(event.data, (value) =>
       Array.isArray(value) ? decodeText(value as Text) : value,
     ),
-  };
+  } as WebEvent;
 }
 export function toEngineLog(log: WebLog): Log {
   return {

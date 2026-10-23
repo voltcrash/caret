@@ -62,11 +62,16 @@ it("recycles a replaced session, invalidates host work and releases all app reso
   await resource.load();
   const content = resource.beginReplacement();
   const generation = resource.generation();
+  const lease = resource.captureSession();
+  expect(lease.signal.aborted).toBe(false);
   const session = resource.createPreparedSession();
   expect(resource.session()).toBe(session);
   expect(() => resource.createPreparedSession()).toThrow("prior session");
   expect(resource.beginReplacement()).toBe(content);
   expect(resource.generation()).toBeGreaterThan(generation);
+  expect(lease.signal.aborted).toBe(true);
+  expect(lease.isCurrent()).toBe(false);
+  expect(resource.captureSession().signal.aborted).toBe(false);
   expect(mocks.content.recycleSession).toHaveBeenCalledExactlyOnceWith(session);
   resource.createPreparedSession(true);
   dispose();

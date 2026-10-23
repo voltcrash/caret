@@ -411,6 +411,7 @@ pub struct LiveMetrics {
     pub seconds: f64,
     pub duration_ms: f64,
     pub timer_start_ms: Option<f64>,
+    pub time_limit_seconds: Option<f64>,
     pub ms_since_last_input: Option<f64>,
 }
 
@@ -520,8 +521,31 @@ impl Session {
             seconds: seconds.floor(),
             duration_ms,
             timer_start_ms: self.start,
+            time_limit_seconds: self.time_limit(),
             ms_since_last_input: self.live.spacing(),
         })
+    }
+    pub fn time_limit(&self) -> Option<f64> {
+        if self.config.mode == "time" {
+            Some(self.config.time)
+        } else if self.config.mode == "custom" {
+            self.custom_limit
+                .as_ref()
+                .filter(|limit| limit.mode == "time")
+                .map(|limit| limit.value)
+        } else {
+            None
+        }
+    }
+    pub fn word_burst(&self, index: usize, now: f64) -> Result<f64, crate::error::EngineError> {
+        if !now.is_finite()
+            || now.abs() > 9_007_199_254_740_991.0
+            || index > crate::validation::MAX_WORDS
+        {
+            return Err("Invalid live word query".into());
+        }
+        let origin = self.start.unwrap_or_else(|| self.origin());
+        Ok(self.live.burst(index, origin, now - origin))
     }
     pub fn restart_policy(
         &self,
@@ -1493,35 +1517,37 @@ impl Session {
         }
     }
 
-    fn delete(&mut self, kind: &str, now: f64, observed: Option<Text>, sentinel_removed: bool) {
+    /// Pure beforeinput guard; deletion repeats this check before mutation.
+    pub fn can_delete(&self) -> bool {
         if !self.active
             || self.ended
             || self.awaiting_recovery
             || self.pending_commit.is_some()
             || self.pending_finish.is_some()
         {
-            return;
+            return false;
         }
         let input = self.current();
-        if input.is_empty() && self.index <= self.earliest_visible_word {
-            return;
-        }
-        let prev = self
+        let empty = Text::default();
+        let previous = self
             .index
             .checked_sub(1)
             .and_then(|index| self.input.get(index))
-            .cloned()
-            .unwrap_or_default();
-        let previous_correct = self.index > 0 && self.words.get(self.index - 1) == Some(&prev);
-        if !crate::input::can_delete(
+            .unwrap_or(&empty);
+        let previous_correct = self.index > 0 && self.words.get(self.index - 1) == Some(previous);
+        crate::input::can_delete(
             &self.config,
             &input,
             self.index,
             previous_correct,
             self.index > self.earliest_visible_word,
-        ) {
+        )
+    }
+    fn delete(&mut self, kind: &str, now: f64, observed: Option<Text>, sentinel_removed: bool) {
+        if !self.can_delete() {
             return;
         }
+        let input = self.current();
         let after = observed.unwrap_or_else(|| {
             if kind == "deleteWordBackward" {
                 delete_word(&input)
@@ -1643,16 +1669,7 @@ impl Session {
                     self.finish(now, date, Some(reason.into()));
                 }
             }
-            let limit = if self.config.mode == "time" {
-                Some(self.config.time)
-            } else if self.config.mode == "custom" {
-                self.custom_limit
-                    .as_ref()
-                    .filter(|limit| limit.mode == "time")
-                    .map(|limit| limit.value)
-            } else {
-                None
-            };
+            let limit = self.time_limit();
             if limit.is_some_and(|limit| limit > 0.0 && f64::from(self.ticks) >= limit) {
                 self.finish(now, date, None);
             }

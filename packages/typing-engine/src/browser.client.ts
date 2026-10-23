@@ -82,6 +82,7 @@ export async function loadEngine(signal?: AbortSignal): Promise<{
   createContent: () => BrowserContent;
   createReplay: (log: Log, zen: boolean) => BrowserReplay;
   policy: typeof evaluatePolicy;
+  analyze: typeof analyzeLog;
 }> {
   // Compile asynchronously, then use wasm-bindgen's synchronous guard. Two
   // concurrent async initializers could otherwise replace memory under handles.
@@ -109,6 +110,7 @@ export async function loadEngine(signal?: AbortSignal): Promise<{
     createContent: () => new BrowserContent(),
     createReplay: (log, zen) => new BrowserReplay(log, zen),
     policy: evaluatePolicy,
+    analyze: analyzeLog,
   };
 }
 
@@ -208,6 +210,12 @@ export class BrowserSession {
   }
   liveStats(now: number): LiveMetrics {
     return invoke(() => JSON.parse(this.live().live_stats(now)) as LiveMetrics);
+  }
+  canDelete(): boolean {
+    return invoke(() => this.live().can_delete());
+  }
+  wordBurst(index: number, now: number): number {
+    return invoke(() => this.live().word_burst(index, now));
   }
   snapshot(): Snapshot {
     return invoke(() => JSON.parse(this.live().snapshot()) as Snapshot);

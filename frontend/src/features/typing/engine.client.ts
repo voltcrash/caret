@@ -23,6 +23,7 @@ export const getBrowserEngine = createAppOwned(() => {
   let session: BrowserSession | undefined;
   let pending: Promise<Engine> | undefined;
   let generation = 0;
+  let sessionAbort = new AbortController();
   let disposed = false;
   const assertLive = (): void => {
     if (disposed) {
@@ -72,6 +73,8 @@ export const getBrowserEngine = createAppOwned(() => {
     return (content ??= engine.createContent());
   };
   const releaseSession = (retainLearning = true): void => {
+    sessionAbort.abort();
+    if (!disposed) sessionAbort = new AbortController();
     generation++;
     const previous = session;
     session = undefined;
@@ -96,10 +99,23 @@ export const getBrowserEngine = createAppOwned(() => {
   };
   onCleanup(dispose);
   return {
+    api: (): Engine => {
+      assertLive();
+      if (engine === undefined) throw new Error("Typing engine is not ready");
+      return engine;
+    },
     status,
     load,
     dispose,
     generation: () => generation,
+    captureSession: () => {
+      assertLive();
+      const captured = generation;
+      return {
+        signal: sessionAbort.signal,
+        isCurrent: () => !disposed && captured === generation,
+      };
+    },
     session: () => {
       assertLive();
       return session;

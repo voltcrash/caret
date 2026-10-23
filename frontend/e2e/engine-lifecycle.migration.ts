@@ -17,6 +17,11 @@ test("browser Wasm long sessions and repeated ownership release retain bounded w
     await page.getByTestId("engine-proof-result").innerText(),
   ) as LifecycleProof;
   expect(output.invalid).toBe(3);
+  expect(output.hostQueries).toEqual({
+    burst: 240,
+    canDelete: false,
+    timeLimitSeconds: null,
+  });
   expect(output.events).toBeGreaterThanOrEqual(20000);
   expect(output.live).toHaveLength(10);
   for (const [index, metrics] of output.live.entries()) {
