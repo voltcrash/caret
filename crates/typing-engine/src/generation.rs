@@ -37,7 +37,7 @@ pub struct NextWord {
     pub word_raw: Text,
     pub section_index: usize,
 }
-#[derive(Debug, Serialize, TS)]
+#[derive(Clone, Debug, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
 pub struct Generated {
     pub words: Vec<Text>,
@@ -987,6 +987,7 @@ pub struct Prepare {
 /// Retains only explicitly owned content-selection state across restarts.
 #[derive(Default)]
 pub struct Content {
+    prepared: Option<(bool, Generated)>,
     assets: Assets,
     generator: Option<Generator>,
     weak_spot: crate::weak_spot::WeakSpot,
@@ -1008,6 +1009,7 @@ impl Content {
         self.generation = self.generation.max(memory.generation);
         self.has_prepared = true;
         self.generator = None;
+        self.prepared = None;
     }
     pub fn update_quote_queue(
         &mut self,
@@ -1047,6 +1049,7 @@ impl Content {
         }
         self.has_prepared = true;
         self.generator = None;
+        self.prepared = None;
         self.assets.quote_asset = input.quotes;
         self.assets.polyglot = input.polyglot;
         self.assets.selected_quote_id = input.selected_quote_id;
@@ -1077,13 +1080,27 @@ impl Content {
         &mut self,
         repeating: bool,
     ) -> Result<crate::Session, crate::error::EngineError> {
-        let generated = self.generator()?.generate(repeating)?;
+        let generated = match self.prepared.take() {
+            Some((prepared_repeat, generated)) if prepared_repeat == repeating => generated,
+            _ => self.generator()?.generate(repeating)?,
+        };
         let generator = self.generator.take().ok_or("Content not prepared")?;
         let mut session = crate::Session::from_generated(generator, generated)?;
         session.pace.remember(self.last_pace_wpm, false);
         Ok(session)
     }
-    pub fn generator(&mut self) -> Result<&mut Generator, crate::error::EngineError> {
+    /// Inspect prepared output without restarting generation or consuming RNG/source content.
+    pub fn generate(&mut self, repeating: bool) -> Result<Generated, EngineError> {
+        let generated = self.generator()?.generate(repeating)?;
+        self.prepared = Some((repeating, generated.clone()));
+        Ok(generated)
+    }
+    pub fn prepared_generator(&self) -> Result<&Generator, EngineError> {
+        self.generator.as_ref().ok_or("Content not prepared".into())
+    }
+    /// Mutable generator access invalidates any prior presentation snapshot.
+    pub fn generator(&mut self) -> Result<&mut Generator, EngineError> {
+        self.prepared = None;
         self.generator.as_mut().ok_or("Content not prepared".into())
     }
 }

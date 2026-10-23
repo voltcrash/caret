@@ -624,3 +624,26 @@ fn active_source_failure_preserves_captured_input_and_never_scores_an_io_failure
         assert!(session.log()["events"].as_array().unwrap().is_empty());
     }
 }
+
+#[test]
+fn inspecting_generated_content_then_starting_uses_one_source_and_rng_sequence() {
+    let mut content = typing_engine::generation::Content::default();
+    content
+        .prepare(source_preparation(vec![poem(&vec!["one"; 100].join(" "))]))
+        .unwrap();
+    let generated = content.generate(false).unwrap();
+    assert!(
+        content
+            .prepared_generator()
+            .unwrap()
+            .pending_request()
+            .is_none()
+    );
+    let session = content.start_session(false).unwrap();
+    assert_eq!(session.snapshot().words, generated.words);
+    assert_eq!(
+        session.snapshot().section_indexes,
+        generated.section_indexes
+    );
+    assert!(content.start_session(false).is_err());
+}

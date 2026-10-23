@@ -192,13 +192,12 @@ impl WasmContent {
             .map_err(bind_error)
     }
     pub fn generate(&mut self, repeating: bool) -> Result<String, JsError> {
-        let generator = self
+        let generated = self
             .content
             .as_mut()
             .ok_or_else(|| failure(ErrorCode::Disposed, "Content disposed"))?
-            .generator()
+            .generate(repeating)
             .map_err(bind_error)?;
-        let generated = generator.generate(repeating).map_err(bind_error)?;
         serialize(&generated)
     }
     pub fn next(
@@ -224,9 +223,9 @@ impl WasmContent {
     pub fn metadata(&mut self) -> Result<String, JsError> {
         let generator = self
             .content
-            .as_mut()
+            .as_ref()
             .ok_or_else(|| failure(ErrorCode::Disposed, "Content disposed"))?
-            .generator()
+            .prepared_generator()
             .map_err(bind_error)?;
         serialize(
             &serde_json::json!({ "allWordsGenerated": generator.all_generated(), "currentQuote": generator.current_quote }),
@@ -235,9 +234,9 @@ impl WasmContent {
     pub fn request(&mut self) -> Result<String, JsError> {
         let generator = self
             .content
-            .as_mut()
+            .as_ref()
             .ok_or_else(|| failure(ErrorCode::Disposed, "Content disposed"))?
-            .generator()
+            .prepared_generator()
             .map_err(bind_error)?;
         serialize(&generator.pending_request())
     }
