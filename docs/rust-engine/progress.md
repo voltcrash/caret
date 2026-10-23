@@ -177,3 +177,5 @@ do not rerun completed checks without a new reason.
 - Stage 2/3 implementation and their two stacked PRs still pending. No deployment or release publication performed.
 
 - Fixed generated-output publication: build/optimization occurs in a staging directory, then complete files replace prior output; obsolete declarations are removed afterwards. Forced rebuild probe observed 2,000 polls with no missing prior Wasm/glue/types and verified obsolete-file removal. The following build is a verified cache hit. Build target directory is explicit. This avoids the prior long typechecking gap; normal build success alone is not a concurrent-build/process-lock claim.
+
+- Captured eight original TypeScript recovery paths once: absent quotes, selected/favorite IDs, empty length, zero/one polyglot languages and direction conflict. Fixture includes exact messages, ordered setting/funbox changes, no-save/no-restart flags and notice durations. Capture typechecks and refuses overwrite. Rust typed recovery port is next; no recovery gate claimed yet.

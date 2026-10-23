@@ -1,0 +1,154 @@
+import { writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import type { Config } from "@oxytype/schemas/configs";
+import type { LanguageObject } from "@oxytype/schemas/languages";
+import { getDefaultConfig } from "../src/config/default-config";
+import { QuotesController } from "../src/quote-source";
+import { getQuoteWordList } from "../src/words-generator/quotes";
+import type { WordsGeneratorDeps } from "../src/words-generator/types";
+import { createFunboxWordFunctions } from "../src/funbox-word-functions";
+import { units } from "./rust-oracle";
+
+const language: LanguageObject = { name: "english", words: ["one", "two"] };
+const references = [];
+async function failure(action: () => Promise<unknown>): Promise<Error> {
+  try {
+    await action();
+  } catch (error) {
+    if (!(error instanceof Error)) throw error;
+    return error;
+  }
+  throw new Error("Expected source failure");
+}
+for (const [caseName, lengths, empty, favorites] of [
+  ["no-quotes", [0], true, []],
+  ["missing-selected", [-2], false, []],
+  ["no-favorites", [-3], false, []],
+  ["missing-favorite", [-3], false, [99]],
+  ["empty-length", [3], false, []],
+] as const) {
+  const config = {
+    ...getDefaultConfig(),
+    mode: "quote" as const,
+    quoteLength: [...lengths],
+  };
+  const asset = {
+    language: "english",
+    groups: [[0, 100]],
+    quotes: empty
+      ? []
+      : [{ id: 1, text: "one two", length: 7, source: "fixture" }],
+  };
+  const actions: unknown[] = [];
+  const deps: WordsGeneratorDeps = {
+    getConfig: () => config,
+    getActiveFunboxes: () => [],
+    customText: {
+      getText: () => [],
+      getMode: () => "repeat",
+      getLimitMode: () => "word",
+      getLimitValue: () => 0,
+      getPipeDelimiter: () => false,
+    },
+    quotes: new QuotesController({
+      fetchJson: async () => asset,
+      getSnapshot: () => ({
+        favoriteQuotes: { english: favorites.map(String) },
+      }),
+    }),
+    transforms: {
+      replaceAccents: (word) => word,
+      britishEnglish: async (word) => word,
+      englishPunctuation: {
+        check: async () => false,
+        replace: async (word) => word,
+      },
+    },
+    isRepeated: () => false,
+    isPractiseWordsActive: () => false,
+    getCurrentQuote: () => null,
+    setCurrentQuote: () => undefined,
+    getSelectedQuoteId: () => 99,
+    getWordsLength: () => 0,
+    setMode: (mode) => actions.push({ op: "setMode", mode }),
+    setQuoteLengthAll: () => actions.push({ op: "setQuoteLengthAll" }),
+    disableFunbox: () => undefined,
+  };
+  {
+    const error = await failure(async () =>
+      getQuoteWordList(deps, language, null, null),
+    );
+    references.push({
+      name: caseName,
+      input: {
+        config,
+        language: { ...language, words: language.words.map(units) },
+        quotes: {
+          ...asset,
+          quotes: asset.quotes.map((quote) => ({
+            ...quote,
+            text: units(quote.text),
+          })),
+        },
+        favoriteQuoteIds: favorites,
+        selectedQuoteId: 99,
+        random: { kind: "seeded", state: 1 },
+      },
+      expected: { message: error.message, recovery: actions },
+    });
+  }
+}
+for (const [caseName, main, selected] of [
+  ["no-polyglot", "english", []],
+  ["one-polyglot", "english", ["english"]],
+  ["polyglot-direction", "english", ["arabic", "hebrew"]],
+] as const) {
+  const config: Config = {
+    ...getDefaultConfig(),
+    funbox: ["polyglot"],
+    language: main,
+    customPolyglot: [...selected],
+  };
+  const languages: LanguageObject[] = selected.map((name) => ({
+    name,
+    words: ["one", "two"],
+    rightToLeft: name !== "english",
+  }));
+  const actions: unknown[] = [];
+  const functions = createFunboxWordFunctions({
+    getConfig: () => config,
+    getLanguage: async (name) =>
+      languages.find((lang) => lang.name === name) ?? language,
+    getPoem: async () => false,
+    getSection: async () => false,
+    disableFunbox: (name, noRestart = false) =>
+      actions.push({ op: "disableFunbox", name, noRestart }),
+    setLanguage: (nextLanguage, noSave = false) =>
+      actions.push({ op: "setLanguage", language: nextLanguage, noSave }),
+    notify: (message, options) =>
+      actions.push({ op: "notice", message, ...options }),
+  });
+  {
+    const error = await failure(async () =>
+      functions.polyglot?.withWords?.([]),
+    );
+    references.push({
+      name: caseName,
+      input: {
+        config,
+        language: { ...language, words: language.words.map(units) },
+        polyglot: languages.map((lang) => ({
+          ...lang,
+          words: lang.words.map(units),
+        })),
+        random: { kind: "seeded", state: 1 },
+      },
+      expected: { message: error.message, recovery: actions },
+    });
+  }
+}
+writeFileSync(
+  resolve(import.meta.dirname, "../../typing-fixtures/oracle/recovery.json"),
+  `${JSON.stringify(references, null, 2)}\n`,
+  { flag: "wx" },
+);
