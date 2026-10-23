@@ -222,6 +222,7 @@ switch (process.argv[2]) {
       "engine-proof.migration.ts",
       "engine-input-contract.migration.ts",
       "engine-lifecycle.migration.ts",
+      "engine-website.migration.ts",
     ]);
     break;
   case "parity":

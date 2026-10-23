@@ -30,6 +30,7 @@ const mocks = vi.hoisted(() => ({
   allGenerated: true,
   pullSection: undefined as undefined | (() => Promise<false | undefined>),
   sourceActions: [] as unknown[],
+  engineLoad: vi.fn(async () => undefined),
   generate: vi.fn(),
   complete: vi.fn(),
   sessionStart: vi.fn(),
@@ -49,6 +50,10 @@ const mocks = vi.hoisted(() => ({
   saveLocal: vi.fn(),
   finishReason: undefined as string | undefined,
   onFinish: undefined as ((event: { reason?: string }) => void) | undefined,
+}));
+
+vi.mock("../../src/features/typing/engine.client", () => ({
+  getBrowserEngine: () => ({ load: mocks.engineLoad }),
 }));
 
 vi.mock("../../src/ts/states/test", () => ({
@@ -275,6 +280,7 @@ import {
 let disposeRuntime: () => void;
 afterEach(() => disposeRuntime());
 beforeEach(() => {
+  mocks.engineLoad.mockReset().mockResolvedValue(undefined);
   vi.clearAllMocks();
   disposeRuntime = createRoot((dispose) => {
     onCleanup(bindTypingActivity(() => !mocks.transition));
@@ -370,6 +376,21 @@ describe("test lifecycle state", () => {
       expect(mocks.generate).not.toHaveBeenCalled();
     },
   );
+
+  it("keeps failed Wasm loading out of the typing loop and retries on restart", async () => {
+    mocks.engineLoad.mockRejectedValueOnce(
+      new Error("Typing engine download failed: 503"),
+    );
+    await restart();
+    expect(mocks.setInitError).toHaveBeenCalledWith({
+      message: "Typing engine download failed: 503",
+    });
+    expect(mocks.generate).not.toHaveBeenCalled();
+    expect(mocks.restarting).toBe(false);
+    await restart();
+    expect(mocks.generate).toHaveBeenCalledOnce();
+    expect(mocks.uiRestart).toHaveBeenCalledWith("testPage");
+  });
 
   it("caps initialization retries and starts a fresh retry budget on restart", async () => {
     const error = new Error("generation failed");

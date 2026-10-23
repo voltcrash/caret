@@ -24,6 +24,7 @@ import {
 } from "../../ts/utils/debounced-animation-frame";
 import { captureTypingMount } from "./scope";
 import { getTestSession } from "./runtime/events/data";
+import { getBrowserEngine } from "./engine.client";
 import * as Funbox from "./runtime/funbox/funbox";
 import { getActiveFunboxesWithFunction } from "./runtime/funbox/list";
 import * as Layoutfluid from "./runtime/funbox/layoutfluid-funbox-timer";
@@ -63,6 +64,7 @@ export function exitTypingRoute(): void {
   PaceCaret.reset();
   Replay.pauseReplay();
   getTestSession().reset();
+  getBrowserEngine().releaseSession();
   for (const funbox of getActiveFunboxesWithFunction("clearGlobal")) {
     funbox.functions.clearGlobal();
   }

@@ -1,4 +1,5 @@
 import { captureTypingRoute, isTypingRouteActive } from "../scope";
+import { getBrowserEngine } from "../engine.client";
 import { updateClassNames } from "../../../ts/utils/cn";
 
 import * as TestUI from "./test-ui";
@@ -76,6 +77,21 @@ export async function init(lease = captureTypingRoute()): Promise<boolean> {
     setIsTestRestarting(false);
     return false;
   }
+
+  showLoaderBar();
+  try {
+    await getBrowserEngine().load();
+  } catch (error) {
+    if (!lease.isCurrent()) return false;
+    hideLoaderBar();
+    setTestInitError({
+      message:
+        error instanceof Error ? error.message : "Typing engine failed to load",
+    });
+    setIsTestRestarting(false);
+    return false;
+  }
+  if (!lease.isCurrent()) return false;
 
   TestWords.words.reset();
   resetActiveWordIndex();

@@ -4,6 +4,7 @@ import { spread } from "solid-js/web";
 import { useWordsInputScroll } from "../../../ts/hooks/useWordsInputScroll";
 import { isInputElementFocused } from "../../../ts/input/input-element";
 import { isWordsWrapperVisible } from "../../../ts/states/funbox";
+import { isTestRestarting, getTestInitError } from "../../../ts/states/test";
 import { setTestElements } from "../../../ts/states/test-dom";
 import {
   getWordsWrapperHeight,
@@ -11,6 +12,7 @@ import {
 } from "../../../ts/states/words-layout";
 import { cn } from "../../../ts/utils/cn";
 import { isCoarsePointer } from "../../../ts/utils/pointer";
+import { getBrowserEngine } from "../engine.client";
 import { focusWords } from "../runtime/test-ui";
 import { CapsWarning } from "./CapsWarning";
 import { CompositionDisplay } from "./CompositionDisplay";
@@ -112,6 +114,11 @@ export function TestPage(
           <textarea
             id="wordsInput"
             aria-label="Typing input"
+            disabled={
+              getBrowserEngine().status().state !== "ready" ||
+              isTestRestarting() ||
+              getTestInitError() !== null
+            }
             ref={(el) => (refs.wordsInput = el)}
             class={cn(
               "full-width pointer-events-none absolute -z-1 mx-auto block h-[1em] w-0 cursor-default resize-none overflow-hidden rounded-none border-none p-0 text-[1em] [caret-color:transparent] opacity-0 [contain:strict] outline-none [text-wrap-mode:nowrap]",

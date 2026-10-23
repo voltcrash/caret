@@ -35,6 +35,10 @@ const mocks = vi.hoisted(() => ({
   lowFps: vi.fn(),
 }));
 
+vi.mock("../../../src/features/typing/engine.client", () => ({
+  getBrowserEngine: () => ({ load: async () => undefined }),
+}));
+
 vi.mock("../../../src/ts/states/test", () => ({
   isTestActive: () => mocks.active,
   setTestActive: (value: boolean) => {

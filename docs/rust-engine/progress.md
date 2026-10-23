@@ -25,7 +25,7 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | 1.5 Generation / configuration | Complete | 61 original snapshots; section/fractional/live generation; all funbox policies; quote refresh RNG; typed recovery and bounded malformed content. |
 | 1.6 Events / results / replay | Complete | Eight exact original CompletedEvents/hashes/schema/backend outcomes, replay/seek, Unicode history, 1,387 live prefixes and malformed-log validation. |
 | 1.7 Binding / engine gate | Complete | 24 built-browser cases, unchanged results/hashes, frozen payload/performance limits, fresh production build/typechecks; CI engine/native/Wasm and quality/package/SSR/delivery/update jobs pass at e7b7ad864. Existing website browser shards still running when this record was written. |
-| 2.1 Browser owner / loading | Active | App-owned browser resource; loading/retry/replacement/disposal tests pass. Wiring route loading next. |
+| 2.1 Browser owner / loading | Complete | App-owned loader/content/session resource; 51 unit cases; actual Cloudflare delayed-download/503/retry browser checks pass; server bundles contain no Wasm initializer. |
 | 2.2–2.6 Website integration / cutover | Pending | Requires browser ownership, then typing/generation/results/delivery parity. |
 | 3.1–3.5 Terminal | Pending | Requires Stage 2 gate. |
 
@@ -243,3 +243,5 @@ Engine gate passed at e7b7ad864 plus automated payload checks ee676ab63. Current
 Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: browser-only app resource, loading/retry/disposal and configuration projection, then replace the typing loop and asset/result/replay consumers. The production website still uses TypeScript until integration passes. No production deployment or release publication performed. Stage 3 remains entirely pending.
 
 - Stage 2: added browser-only app resource with lazy owned loader, explicit loading/ready/failed/disposed status, retry, session replacement generations and retained content learning. App disposal aborts loading and releases active session/content; stale initialization cannot publish. Three focused ownership/lifecycle tests and type-aware lint pass. Production typing loop still uses TypeScript at this incremental checkpoint.
+
+- Phase 2.1 route startup now waits for usable Wasm, disables textarea during loading/restart/failure, uses the existing initialization-error UI and Restart retry, and releases sessions on route exit. Cloudflare production build and 51 lifecycle/unit cases pass; actual website delayed-download and 503/Restart cases pass (2 tests, 6.8 s). Server JS scan finds no engine_bg/wasm_bindgen/WebAssembly/binding initializer. These website cases are included in the shared browser CI task. No typing commands have switched engines yet; Phase 2.2 replaces the loop as a whole.
