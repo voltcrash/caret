@@ -1,3 +1,4 @@
+import { prepareTypingEngine } from "./scripts/prepare-engine";
 import {
   sharedLint,
   pluginLint,
@@ -29,6 +30,14 @@ function applicationOverrides(
       }),
     ),
   ];
+}
+
+// Direct typechecking must work before any dev/build task has run.
+if (
+  process.argv.includes("--type-aware") ||
+  process.argv.includes("--type-check")
+) {
+  prepareTypingEngine();
 }
 
 export default defineConfig({

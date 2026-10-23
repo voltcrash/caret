@@ -77,7 +77,7 @@ jobs:
               - 'crates/**'
               - 'Cargo.{toml,lock}'
               - 'rust-toolchain.toml'
-              - 'scripts/engine.ts'
+              - 'scripts/{engine,prepare-engine}.ts'
               - '!packages/*/{__test__,__tests__,__fixtures__}/**'
               - '!**/*.md'
             packages:
@@ -87,7 +87,7 @@ jobs:
               - 'crates/**'
               - 'Cargo.{toml,lock}'
               - 'rust-toolchain.toml'
-              - 'scripts/engine.ts'
+              - 'scripts/{engine,prepare-engine}.ts'
               - 'packages/typing-{engine,fixtures}/**'
             backend:
               - 'backend/**'
@@ -200,14 +200,10 @@ jobs:
       - uses: ./.github/actions/setup
       - name: Native formatting, lint and parity
         run: vp run engine:fmt && vp run engine:lint && vp run engine:test
-      - name: Build Cloudflare browser proof
-        env:
-          OXYTYPE_ENGINE_PROOF: "true"
-        run: vp run --filter @oxytype/frontend build:start
       - name: Install Chromium
         run: vp -C frontend exec playwright install --with-deps --only-shell chromium
       - name: Browser Wasm parity
-        run: vp run --filter @oxytype/frontend benchmark-migration engine-proof.migration.ts
+        run: vp run engine:test:wasm
 
   quality:
     name: quality

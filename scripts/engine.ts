@@ -76,8 +76,8 @@ function cached(key: string): boolean {
     return false;
   }
 }
-function run(command: string, args: string[]): void {
-  const result = spawnSync(command, args, { cwd: root, stdio: "inherit" });
+function run(command: string, args: string[], env = process.env): void {
+  const result = spawnSync(command, args, { cwd: root, stdio: "inherit", env });
   if (result.error !== undefined) throw result.error;
   if (result.status !== 0) process.exit(result.status ?? 1);
 }
@@ -188,6 +188,25 @@ switch (process.argv[2]) {
     renameSync(temporary, cacheFile);
     break;
   }
+  case "browser":
+    run("vp", ["run", "--filter", "@oxytype/frontend", "build:start"], {
+      ...process.env,
+      OXYTYPE_ENGINE_PROOF: "true",
+    });
+    run("vp", [
+      "run",
+      "--filter",
+      "@oxytype/frontend",
+      "benchmark-migration",
+      "engine-proof.migration.ts",
+      "engine-input-contract.migration.ts",
+      "engine-lifecycle.migration.ts",
+    ]);
+    break;
+  case "parity":
+    run("vp", ["run", "engine:test"]);
+    run("vp", ["run", "engine:test:wasm"]);
+    break;
   case "test":
     run("cargo", ["test", "--locked", "--workspace"]);
     break;
@@ -210,6 +229,6 @@ switch (process.argv[2]) {
     break;
   default:
     throw new Error(
-      "Usage: vp run engine:build|engine:test|engine:lint|engine:fmt|engine:fmt-fix",
+      "Usage: vp run engine:build|engine:test|engine:test:wasm|engine:parity|engine:lint|engine:fmt|engine:fmt-fix",
     );
 }
