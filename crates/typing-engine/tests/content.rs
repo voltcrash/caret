@@ -27,6 +27,104 @@ fn poem(word: &str) -> Source {
         lines: vec![Text::from(word)],
     }
 }
+fn source_preparation(sections: Vec<Source>) -> typing_engine::generation::Prepare {
+    serde_json::from_value(serde_json::json!({
+        "config":{"mode":"time","time":0,"funbox":["poetry"]},
+        "language":{"name":"english","words":[[98,97,115,101]]},
+        "random":{"kind":"seeded","state":1},
+        "sections":sections
+    }))
+    .unwrap()
+}
+#[test]
+fn replacing_initial_preparation_cannot_reuse_an_old_pending_request_token() {
+    let mut content = typing_engine::generation::Content::default();
+    content.prepare(source_preparation(vec![])).unwrap();
+    assert!(content.start_session(false).is_err());
+    let old = content
+        .generator()
+        .unwrap()
+        .pending_request()
+        .unwrap()
+        .clone();
+    content.prepare(source_preparation(vec![])).unwrap();
+    assert!(content.start_session(false).is_err());
+    let current = content
+        .generator()
+        .unwrap()
+        .pending_request()
+        .unwrap()
+        .clone();
+    assert_eq!(old.id, current.id);
+    assert_eq!(old.generation + 1, current.generation);
+    assert!(
+        content
+            .generator()
+            .unwrap()
+            .supply(&old, poem("stale"))
+            .is_err()
+    );
+    assert_eq!(
+        content.generator().unwrap().pending_request(),
+        Some(&current)
+    );
+    content
+        .generator()
+        .unwrap()
+        .supply(&current, poem(&vec!["one"; 100].join(" ")))
+        .unwrap();
+    let mut session = content.start_session(false).unwrap();
+    assert_eq!(
+        session
+            .apply(serde_json::from_value(serde_json::json!({"op":"view","now":0})).unwrap())
+            .unwrap()
+            .generation,
+        current.generation
+    );
+}
+#[test]
+fn recycling_after_session_resets_advances_automatic_and_content_generations() {
+    let mut content = typing_engine::generation::Content::default();
+    let sources = || vec![poem(&vec!["one"; 100].join(" "))];
+    content.prepare(source_preparation(sources())).unwrap();
+    let mut first = content.start_session(false).unwrap();
+    let command = |value| serde_json::from_value(value).unwrap();
+    first
+        .apply(command(serde_json::json!({"op":"reset","now":0})))
+        .unwrap();
+    first
+        .apply(command(serde_json::json!({"op":"reset","now":0})))
+        .unwrap();
+    let old = first
+        .apply(command(
+            serde_json::json!({"op":"insert","data":Text::from("one "),"now":0}),
+        ))
+        .unwrap()
+        .content_request
+        .unwrap();
+    assert_eq!(old.generation, 2);
+    content.recycle_session(first);
+    content.prepare(source_preparation(sources())).unwrap();
+    let mut second = content.start_session(false).unwrap();
+    let update = second
+        .apply(command(
+            serde_json::json!({"op":"insert","data":Text::from("one "),"now":0}),
+        ))
+        .unwrap();
+    let current = update.content_request.unwrap();
+    assert_eq!(update.generation, 3);
+    assert_eq!(current.generation, 3);
+    let log = second.log();
+    assert!(second.apply(command(serde_json::json!({"op":"supplyContent","request":old,"source":poem("stale"),"now":10}))).is_err());
+    assert_eq!(second.log(), log);
+    assert_eq!(
+        second
+            .apply(command(serde_json::json!({"op":"view","now":10})))
+            .unwrap()
+            .content_request,
+        Some(current)
+    );
+}
 #[test]
 fn section_requests_are_owned_bounded_and_cancelled_by_generation() {
     let mut queue = Queue::new("poetry".into(), "english".into(), true);

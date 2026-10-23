@@ -129,3 +129,5 @@ overwrite files. Existing snapshots are never updated by the harness.
 ## Retained learning and pace
 
 An app owns `Content` across test replacements. Call `recycle_session` before preparing a replacement to consume the old session and retain only weak-spot learning and remembered pace WPM. Its log, input, pending content and completion state are dropped; the consumed handle rejects subsequent calls. Independent content owners retain independent learning. Explicit disposal drops an owner entirely. Pace commands are synchronous; Rust uses bare UTF-16 word lengths for caret stepping and full targets for mistake correction. Hosts supply speed selection from account/PB data and schedule/render steps.
+
+Content preparation advances an owner-local generation. Recycling takes the maximum of the owner's generation and the consumed session's reset generation; the next preparation advances it. Old content/automatic tokens cannot match a replacement session. Owner instances route their own replies. Explicit repeated preparation retains generated words and quote identity; quote repetition does not advance the selection queue.

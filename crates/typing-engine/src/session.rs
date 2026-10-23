@@ -397,6 +397,13 @@ struct DeferredInput {
     composition: bool,
     final_in_batch: bool,
 }
+pub(crate) struct Retained {
+    pub weak_spot: crate::weak_spot::WeakSpot,
+    pub last_pace_wpm: f64,
+    pub previous: Vec<crate::generation::NextWord>,
+    pub quote: Option<crate::quotes::Quote>,
+    pub generation: u32,
+}
 pub struct Session {
     pub pace: crate::pace::Pace,
     pub weak_spot: crate::weak_spot::WeakSpot,
@@ -448,14 +455,7 @@ impl Session {
         self.pace
             .command(command, &self.words, self.config.blind_mode)
     }
-    pub(crate) fn into_learning(
-        self,
-    ) -> (
-        crate::weak_spot::WeakSpot,
-        f64,
-        Vec<crate::generation::NextWord>,
-        Option<crate::quotes::Quote>,
-    ) {
+    pub(crate) fn into_learning(self) -> Retained {
         let (learner, previous, quote) =
             self.generator
                 .map_or((self.weak_spot, vec![], None), |generator| {
@@ -465,7 +465,13 @@ impl Session {
                         generator.current_quote,
                     )
                 });
-        (learner, self.pace.last_wpm(), previous, quote)
+        Retained {
+            weak_spot: learner,
+            last_pace_wpm: self.pace.last_wpm(),
+            previous,
+            quote,
+            generation: self.generation,
+        }
     }
     pub fn new(config: Config, words: Vec<Text>) -> Result<Self, String> {
         config.validate()?;
@@ -534,6 +540,7 @@ impl Session {
         generated: crate::generation::Generated,
     ) -> Result<Self, String> {
         let mut session = Self::new(generator.config().clone(), generated.words)?;
+        session.generation = generator.prepared_generation;
         session.sections = generated.section_indexes;
         session.has_tab = generated.has_tab;
         session.has_newline = generated.has_newline;

@@ -87,6 +87,7 @@ pub struct Generator {
     word_languages: std::collections::BTreeMap<Vec<u16>, usize>,
     section_queue: Option<crate::content::Queue>,
     batch: Option<Batch>,
+    pub(crate) prepared_generation: u32,
 }
 pub(crate) fn case(text: &Text, upper: bool) -> Text {
     let mut output = vec![];
@@ -299,6 +300,7 @@ impl Generator {
             word_languages,
             section_queue,
             batch: None,
+            prepared_generation: 0,
         })
     }
     fn limit(&self) -> usize {
@@ -823,17 +825,20 @@ pub struct Content {
     last_pace_wpm: f64,
     previous: Vec<NextWord>,
     previous_quote: Option<crate::quotes::Quote>,
+    generation: u32,
+    has_prepared: bool,
 }
 impl Content {
     /// Consume the prior session before preparing its replacement. Only learning
     /// survives; logs, pending replies and input state are dropped with the session.
     pub fn recycle_session(&mut self, session: crate::Session) {
-        (
-            self.weak_spot,
-            self.last_pace_wpm,
-            self.previous,
-            self.previous_quote,
-        ) = session.into_learning();
+        let memory = session.into_learning();
+        self.weak_spot = memory.weak_spot;
+        self.last_pace_wpm = memory.last_pace_wpm;
+        self.previous = memory.previous;
+        self.previous_quote = memory.quote;
+        self.generation = self.generation.max(memory.generation);
+        self.has_prepared = true;
         self.generator = None;
     }
     pub fn prepare(&mut self, input: Prepare) -> Result<(), String> {
@@ -843,6 +848,13 @@ impl Content {
         if repeating && input.config.mode == "quote" && self.previous_quote.is_none() {
             return Err("Missing previous quote".into());
         }
+        if self.has_prepared {
+            self.generation = self
+                .generation
+                .checked_add(1)
+                .ok_or("Content generation exhausted")?;
+        }
+        self.has_prepared = true;
         self.generator = None;
         self.assets.quote_asset = input.quotes;
         self.assets.polyglot = input.polyglot;
@@ -863,6 +875,11 @@ impl Content {
         )?);
         self.generator.as_mut().unwrap().weak_spot = self.weak_spot.clone();
         self.generator.as_mut().unwrap().previous = self.previous.clone();
+        let generator = self.generator.as_mut().unwrap();
+        generator.prepared_generation = self.generation;
+        if let Some(queue) = &mut generator.section_queue {
+            queue.set_generation(self.generation);
+        }
         Ok(())
     }
     pub fn start_session(&mut self, repeating: bool) -> Result<crate::Session, String> {

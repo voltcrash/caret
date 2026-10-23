@@ -224,4 +224,8 @@ impl Queue {
         self.pending = None;
         self.ready.clear();
     }
+    pub(crate) fn set_generation(&mut self, generation: u32) {
+        self.generation = generation;
+        self.pending = None;
+    }
 }
