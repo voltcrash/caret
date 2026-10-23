@@ -1,0 +1,14 @@
+{
+  "extracts": ["[1]​Å", "A [2] useful word."],
+  "requests": [
+    "https://en.wikipedia.org/api/rest_v1/page/random/summary",
+    "https://en.wikipedia.org/w/api.php?action=query&format=json&pageids=1&prop=extracts&exintro=true&origin=*",
+    "https://en.wikipedia.org/api/rest_v1/page/random/summary",
+    "https://en.wikipedia.org/w/api.php?action=query&format=json&pageids=2&prop=extracts&exintro=true&origin=*"
+  ],
+  "expected": {
+    "title": "Article 2",
+    "author": "Writer",
+    "words": ["A", "useful", "word."]
+  }
+}
