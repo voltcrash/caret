@@ -9,7 +9,7 @@ import {
   getCorrectedWordsHistory,
   getInputHistory,
   getWordBurstHistory,
-} from "@oxytype/typing-core/events/stats";
+} from "../../analysis.client";
 import * as TestWords from "../test-words";
 import { buildWordsHistory } from "../word-markup";
 import { resultState, setResultState } from "../../../../ts/states/result";

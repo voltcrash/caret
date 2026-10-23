@@ -5,7 +5,6 @@ import type {
   TooltipItem,
 } from "chart.js";
 
-import { getWordIndexesForSecond } from "@oxytype/typing-core/events/stats";
 import { typedKeys } from "@oxytype/util/objects";
 import { For, JSXElement, onCleanup, Show } from "solid-js";
 
@@ -28,6 +27,7 @@ import * as Arrays from "../../../../ts/utils/arrays";
 import { cn } from "../../../../ts/utils/cn";
 import { blendTwoHexColors } from "../../../../ts/utils/colors";
 import { applyReducedMotion } from "../../../../ts/utils/misc";
+import { getWordIndexesForSecond } from "../../analysis.client";
 import { toggleResultChartLegend } from "../../runtime/result";
 
 type LegendButton = {

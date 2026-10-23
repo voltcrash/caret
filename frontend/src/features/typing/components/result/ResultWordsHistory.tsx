@@ -1,9 +1,4 @@
 import {
-  getInputHistory,
-  getMissedWords,
-  getWordBurstHistory,
-} from "@oxytype/typing-core/events/stats";
-import {
   createMemo,
   createEffect,
   createSelector,
@@ -36,6 +31,11 @@ import { getTheme } from "../../../../ts/states/theme";
 import { FaSolidIcon } from "../../../../ts/types/font-awesome";
 import { cn, updateClassNames } from "../../../../ts/utils/cn";
 import { get as getTypingSpeedUnit } from "../../../../ts/utils/typing-speed-units";
+import {
+  getInputHistory,
+  getMissedWords,
+  getWordBurstHistory,
+} from "../../analysis.client";
 import {
   buildBurstHeatmap,
   getBurstHeatmapWordColor,

@@ -10,7 +10,7 @@ import { getMutableConfig } from "../../config/store";
 import * as PractiseWords from "../../../features/typing/runtime/practise-words";
 import { Command, CommandsSubgroup } from "../types";
 import * as TestScreenshot from "../../../features/typing/runtime/test-screenshot";
-import { getInputHistory } from "@oxytype/typing-core/events/stats";
+import { getInputHistory } from "../../../features/typing/analysis.client";
 import { getLastEventLog, getResultVisible } from "../../states/test";
 
 const practiceSubgroup: CommandsSubgroup = {

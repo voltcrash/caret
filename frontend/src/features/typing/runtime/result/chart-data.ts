@@ -9,10 +9,7 @@ import { get as getTypingSpeedUnit } from "../../../../ts/utils/typing-speed-uni
 import { getActiveFunboxes } from "../funbox/list";
 import { getTheme } from "../../../../ts/states/theme";
 import { getLastEventLog, getResultVisible } from "../../../../ts/states/test";
-import {
-  getRawHistory,
-  getTimerBoundaryLabels,
-} from "@oxytype/typing-core/events/stats";
+import { getRawHistory, getTimerBoundaryLabels } from "../../analysis.client";
 import {
   getResultChart,
   getResultChartDataset,
