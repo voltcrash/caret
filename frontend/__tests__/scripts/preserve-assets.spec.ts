@@ -122,3 +122,58 @@ it("retains previous files in the artifact and rejects conflicting content-addre
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+it("retains matched Wasm/glue from the public graph and verifies their bytes", async () => {
+  const wasm = "\0asm\u0001\0\0\0";
+  const glue =
+    'export const wasm = new URL("./engine-oldhash.wasm", import.meta.url);';
+  const old = fixture({
+    "/": '<script src="/assets/engine-oldhash.js"></script>',
+    "/assets/engine-oldhash.js": glue,
+    "/assets/engine-oldhash.wasm": wasm,
+  });
+  const previous = await snapshotAssets(origin, old.request);
+  expect([...previous.keys()].sort()).toEqual([
+    "/assets/engine-oldhash.js",
+    "/assets/engine-oldhash.wasm",
+  ]);
+  const directory = await mkdtemp(resolve(tmpdir(), "oxytype-wasm-history-"));
+  try {
+    await mkdir(resolve(directory, "assets"));
+    await writeFile(
+      resolve(directory, "assets/engine-newhash.wasm"),
+      `${wasm}new revision`,
+    );
+    await preserveAssets(directory, previous);
+    const files = JSON.parse(
+      await readFile(resolve(directory, "_asset-history.json"), "utf8"),
+    ) as { files: Record<string, string> };
+    expect(files.files).toMatchObject({
+      "/assets/engine-oldhash.js": hash(glue),
+      "/assets/engine-oldhash.wasm": hash(wasm),
+      "/assets/engine-newhash.wasm": hash(`${wasm}new revision`),
+    });
+    const retained = fixture({
+      "/_asset-history.json": JSON.stringify(files),
+      "/assets/engine-oldhash.js": glue,
+      "/assets/engine-oldhash.wasm": wasm,
+      "/assets/engine-newhash.wasm": `${wasm}new revision`,
+    });
+    expect(
+      (await snapshotAssets(origin, retained.request)).get(
+        "/assets/engine-oldhash.wasm",
+      ),
+    ).toEqual(new TextEncoder().encode(wasm));
+    const corrupted = fixture({
+      "/_asset-history.json": JSON.stringify({
+        files: { "/assets/engine-oldhash.wasm": hash(wasm) },
+      }),
+      "/assets/engine-oldhash.wasm": "wrong engine",
+    });
+    await expect(snapshotAssets(origin, corrupted.request)).rejects.toThrow(
+      "Previous asset changed",
+    );
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});

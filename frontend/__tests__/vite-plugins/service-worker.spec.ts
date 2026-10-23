@@ -88,6 +88,31 @@ describe("service-worker precache", () => {
     ).toThrow(/renamed\.client\.tsx/);
   });
 
+  it("precaches the browser engine, its glue and paired Wasm", () => {
+    const engine = "packages/typing-engine/src/browser.client.ts";
+    const nativeBundle = {
+      ...bundle,
+      engine: {
+        ...chunk("assets/browser.client-hash.js", null, {
+          imports: ["assets/glue-hash.js"],
+        }),
+        facadeModuleId: `/repo/${engine}`,
+      },
+      glue: chunk("assets/glue-hash.js", null),
+      wasm: { type: "asset" as const, fileName: "assets/engine_bg-hash.wasm" },
+    };
+    const files = precacheFromBundle(nativeBundle, [engine]);
+    expect(files).toEqual(
+      expect.arrayContaining([
+        "/assets/browser.client-hash.js",
+        "/assets/glue-hash.js",
+        "/assets/engine_bg-hash.wasm",
+      ]),
+    );
+    expect(files).not.toContain("/assets/settings-only.js");
+    expect(() => precacheFromBundle(bundle, [engine])).toThrow(engine);
+  });
+
   it("adds the default language, fonts and manifest", () => {
     expect(offlineStaticFiles("0123456789abcdef0123")).toEqual([
       "/languages/english.json?v=0123456789abcdef",
