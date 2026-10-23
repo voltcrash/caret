@@ -169,7 +169,7 @@ do not rerun completed checks without a new reason.
 
 ## Remaining Stage 1 exit work
 
-- Structured native/binding errors and original quote/favorite/polyglot recovery actions; explicit failed-content reply lifecycle.
+- Structured native/binding errors, quote/favorite/polyglot recovery and failed-content lifecycle implemented; final malformed-input and lifecycle stress gates remain.
 - Bounded live-stat and word-burst reads without full-log cloning on commits/ticks.
 - Complete content/config/observation/log validation, checked transport DTO compatibility, randomized lifecycle/stale-handle checks.
 - Final engine initialization distributions, long-session/restart memory and per-key performance budgets; full website startup/input/restart comparison belongs to Stage 2 after integration.
@@ -187,3 +187,5 @@ do not rerun completed checks without a new reason.
 - Frozen source-error behavior before host cutover: initial poetry/Wikipedia false replies disable their funbox and throw the original message (new immutable source-recovery.json); active false replies show the exact error notice, disable the source and restart without completion. Actual website lifecycle characterization now passes 24 tests, including active undefined replies producing no error/restart. Capture typechecks and refuses overwrite. Native source-rejection implementation/tests are in progress separately.
 
 - Native failed-source lifecycle now consumes only the matching token, returns the frozen initial/active recovery actions and rejects late/duplicate replies. An active failure blocks input/ticks pending host recovery, preserves already captured events, drops unlogged deferred units and leaves score failure unset. Host abandon records its actual clock; reset permits a new lifecycle. Two new regressions cover prefetched and exhausted states. Full native suite/Clippy pass; browser checks running.
+
+- Built Cloudflare proof plus actual website input-contract suite: 17 tests pass (26.7 s). New browser checks match initial source errors and both buffered/exhausted active failures, preserve the log, block subsequent typing/ticks, reject late replies and abandon without a score failure. Type-aware lint and Clippy pass. Wasm remains within frozen transfer limits: 701.91 kB raw / 282.63 kB Vite gzip.

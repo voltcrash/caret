@@ -424,6 +424,143 @@ function EngineProof() {
       setFailure(error instanceof Error ? error.message : String(error));
     }
   };
+  const runSourceFailures = async (): Promise<void> => {
+    setResult("");
+    setFailure("");
+    try {
+      const { loadEngine, EngineFailure, encodeText } =
+        await import("@oxytype/typing-engine/browser.client");
+      const engine = await loadEngine();
+      if (disposed) return;
+      const refs = JSON.parse(fixture()) as { kind: string }[];
+      const output = [];
+      const preparation = (
+        kind: string,
+        sections: Prepare["sections"],
+      ): Prepare =>
+        ({
+          config: { mode: "time", time: 0, funbox: [kind] },
+          language: { name: "english", words: [encodeText("base")] },
+          random: { kind: "seeded", state: 1 },
+          sections,
+        }) as Prepare;
+      for (const ref of refs) {
+        const content = engine.createContent();
+        try {
+          content.prepare(preparation(ref.kind, []));
+          try {
+            content.createSession();
+          } catch (error) {
+            if (
+              !(error instanceof EngineFailure) ||
+              error.code !== "contentRequired"
+            ) {
+              throw error;
+            }
+          }
+          const request = content.request();
+          if (request === null) throw new Error("Missing initial request");
+          try {
+            content.failSource(request);
+          } catch (error) {
+            if (
+              !(error instanceof EngineFailure) ||
+              error.code !== "sourceUnavailable"
+            ) {
+              throw error;
+            }
+            output.push({ message: error.message, recovery: error.recovery });
+          }
+        } finally {
+          content.dispose();
+        }
+      }
+      const active = [];
+      for (const exhausted of [false, true]) {
+        const content = engine.createContent();
+        let session: BrowserSession | undefined;
+        try {
+          const source = {
+            kind: "poem" as const,
+            title: [],
+            author: [],
+            lines: [encodeText("one ".repeat(100))],
+          };
+          content.prepare(preparation("poetry", [source]));
+          session = content.createSession();
+          const waiting = session.command({
+            op: "insert",
+            data: encodeText("one ".repeat(exhausted ? 101 : 1)),
+            correctShiftUsed: null,
+            automatic: null,
+            isCompositionEnding: null,
+            now: 0,
+            date: 0,
+          });
+          if (waiting.contentRequest === undefined) {
+            throw new Error("Missing active request");
+          }
+          const before = JSON.stringify(session.log());
+          let recovery;
+          try {
+            session.command({
+              op: "failContent",
+              now: 10,
+              request: waiting.contentRequest,
+            });
+          } catch (error) {
+            if (
+              !(error instanceof EngineFailure) ||
+              error.code !== "sourceUnavailable"
+            ) {
+              throw error;
+            }
+            recovery = error.recovery;
+          }
+          session.command({
+            op: "insert",
+            now: 20,
+            date: 0,
+            data: encodeText("discarded"),
+            correctShiftUsed: null,
+            automatic: null,
+            isCompositionEnding: null,
+          });
+          session.command({ op: "advance", now: 5000, date: 0 });
+          const preserved = before === JSON.stringify(session.log());
+          const state = session.snapshot().state;
+          let stale = false;
+          try {
+            session.command({
+              op: "supplyContent",
+              now: 5001,
+              date: 0,
+              request: waiting.contentRequest,
+              source,
+            });
+          } catch (error) {
+            stale =
+              error instanceof EngineFailure && error.code === "staleRequest";
+          }
+          session.command({ op: "abandon", now: 5010, date: 9000 });
+          active.push({
+            recovery,
+            preserved,
+            awaitingRecovery: state.awaitingRecovery,
+            failed: state.reason !== undefined,
+            stale,
+            ended: session.snapshot().state.ended,
+          });
+        } finally {
+          session?.dispose();
+          content.dispose();
+        }
+      }
+      setResult(JSON.stringify({ initial: output, active }));
+    } catch (error) {
+      setFailure(error instanceof Error ? error.message : String(error));
+    }
+  };
   const runRecovery = async (): Promise<void> => {
     setResult("");
     setFailure("");
@@ -787,6 +924,14 @@ function EngineProof() {
           }}
         >
           Run policies
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            void runSourceFailures();
+          }}
+        >
+          Run source failures
         </button>
         <button
           type="button"

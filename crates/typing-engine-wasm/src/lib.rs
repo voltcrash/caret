@@ -196,6 +196,18 @@ impl WasmContent {
             .supply(&request, source)
             .map_err(bind_error)
     }
+    pub fn fail_source(&mut self, request: &str) -> Result<(), JsError> {
+        let request = parse(request)?;
+        let error = self
+            .content
+            .as_mut()
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Content disposed"))?
+            .generator()
+            .map_err(bind_error)?
+            .fail_source(&request, false)
+            .map_err(bind_error)?;
+        Err(bind_error(error))
+    }
     pub fn session(&mut self, repeating: bool) -> Result<WasmSession, JsError> {
         let session = self
             .content

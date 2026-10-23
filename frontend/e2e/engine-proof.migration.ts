@@ -989,3 +989,40 @@ test("binding version mismatch prevents creating a usable browser session", asyn
     .pressSequentially("one two");
   await expect(page.getByLabel("Finite slice state")).toBeEmpty();
 });
+
+test("failed source replies preserve captured input and return exact recovery actions", async ({
+  page,
+}) => {
+  const refs = JSON.parse(
+    await readFile(resolve(root, "oracle/source-recovery.json"), "utf8"),
+  ) as { expected: unknown }[];
+  await page.goto("/engine-proof");
+  await page
+    .getByRole("textbox", { name: "Command fixture" })
+    .fill(JSON.stringify(refs));
+  await page
+    .getByRole("button", { name: "Run source failures", exact: true })
+    .click();
+  await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
+  await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+  expect(
+    JSON.parse(await page.getByTestId("engine-proof-result").innerText()),
+  ).toEqual({
+    initial: refs.map((ref) => ref.expected),
+    active: [false, true].map(() => ({
+      recovery: [
+        {
+          op: "errorNotice",
+          message: "Error while getting section. Please try again later",
+        },
+        { op: "disableFunbox", name: "poetry", noRestart: false },
+        { op: "restart" },
+      ],
+      preserved: true,
+      awaitingRecovery: true,
+      failed: false,
+      stale: true,
+      ended: true,
+    })),
+  });
+});

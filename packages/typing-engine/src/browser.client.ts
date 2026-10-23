@@ -281,6 +281,10 @@ export class BrowserContent {
       this.live().supply(JSON.stringify(request), JSON.stringify(source)),
     );
   }
+  failSource(request: ContentRequest): never {
+    invoke(() => this.live().fail_source(JSON.stringify(request)));
+    throw new Error("Expected content failure");
+  }
   createSession(repeating = false): BrowserSession {
     return new BrowserSession(
       {},
