@@ -816,6 +816,9 @@ impl Session {
         }
     }
     fn refill(&mut self) -> Result<(), crate::error::EngineError> {
+        if self.config.mode == "zen" {
+            return Ok(());
+        }
         let bound = crate::funboxes::to_push(&self.config.funbox)
             .map_or(100, |count| count.saturating_sub(1));
         if self.all_generated || self.words.len().saturating_sub(self.index + 1) > bound {

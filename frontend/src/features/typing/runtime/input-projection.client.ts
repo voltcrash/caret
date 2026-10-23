@@ -146,6 +146,14 @@ export function useEngineInputProjection(): void {
               }
             }
           }
+          // Zen has no generated targets. Project the native cursor into an
+          // empty display word; backward navigation may have removed that node.
+          if (
+            getMutableConfig().mode === "zen" &&
+            TestUI.getWordElement(update.state.wordIndex) === null
+          ) {
+            TestUI.appendEmptyWordElement(update.state.wordIndex);
+          }
           const inputs = events.filter((event) => event.type === "input");
           let lastBurst: number | null = null;
           for (const event of inputs) {

@@ -124,3 +124,48 @@ test.describe("native input projection", () => {
     ).toHaveLength(1);
   });
 });
+
+test.describe("zen native projection", () => {
+  test.use({
+    config: { mode: "zen", smoothCaret: "off", quickRestart: "off" },
+  });
+  test("renders consecutive zen words, backward navigation and restart without generated targets", async ({
+    page,
+  }) => {
+    const errors: string[] = [];
+    page.on("pageerror", (error) => {
+      errors.push(error.message);
+    });
+    await openTest(page);
+    for (let run = 0; run < 2; run++) {
+      await page.locator("#words").click();
+      await page.keyboard.type("one two ");
+      await expect(page.locator("#words .word.active")).toHaveAttribute(
+        "data-wordindex",
+        "2",
+      );
+      await page.keyboard.press("Backspace");
+      await expect(page.locator("#wordsInput")).toHaveValue(" two");
+      await page.keyboard.type(" three ");
+      await expect(page.locator("#words .word.active")).toHaveAttribute(
+        "data-wordindex",
+        "3",
+      );
+      const log = await page.evaluate(() =>
+        (
+          window as unknown as { currentEventLog: () => EventLog }
+        ).currentEventLog(),
+      );
+      expect(log.context.targetWords).toEqual([]);
+      expect(
+        log.events.filter(
+          (event) => event.type === "input" && "lastWord" in event.data,
+        ),
+      ).toEqual([]);
+      await page.locator("#restartTestButton").click();
+      await expect(page.locator("#typingTest")).toHaveCSS("opacity", "1");
+      await expect(page.locator("#words .word")).toHaveCount(1);
+    }
+    expect(errors).toEqual([]);
+  });
+});
