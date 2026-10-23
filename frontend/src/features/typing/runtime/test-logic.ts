@@ -6,10 +6,7 @@ import * as Strings from "../../../ts/utils/strings";
 
 import * as JSONData from "../../../ts/utils/json-data";
 import * as Numbers from "@oxytype/util/numbers";
-import {
-  showNoticeNotification,
-  showErrorNotification,
-} from "../../../ts/states/notifications";
+import { showNoticeNotification } from "../../../ts/states/notifications";
 import * as CustomText from "./custom-text";
 import * as PractiseWords from "./practise-words";
 import * as Funbox from "./funbox/funbox";
@@ -36,7 +33,6 @@ import {
   setIsPaceRepeat,
   setIsRepeated,
   setIsTestInvalid,
-  getActiveWordIndex,
   isResultCalculating,
   setBailedOut,
   setResultVisible,
@@ -45,7 +41,6 @@ import {
 } from "../../../ts/states/test";
 import { restartTestEvent } from "../../../ts/events/test";
 import * as TestWords from "./test-words";
-import * as WordsGenerator from "./words-generator";
 import { configEvent } from "../../../ts/events/config";
 import * as AnalyticsController from "../../../ts/controllers/analytics-controller";
 import { preloadResultHasher } from "../../../ts/utils/result-hash";
@@ -53,12 +48,7 @@ import { preloadResultHasher } from "../../../ts/utils/result-hash";
 import { highlight } from "../../../ts/events/keymap";
 import * as LazyModeState from "../../../ts/states/remember-lazy-mode";
 
-import {
-  findSingleActiveFunboxWithFunction,
-  getActiveFunboxes,
-  getActiveFunboxesWithFunction,
-  isFunboxActive,
-} from "./funbox/list";
+import { getActiveFunboxesWithFunction, isFunboxActive } from "./funbox/list";
 
 import * as CompositionState from "../../../ts/states/composition";
 
@@ -67,7 +57,7 @@ import { setInputElementValue } from "../../../ts/input/input-element";
 import { debounce } from "throttle-debounce";
 
 import { getMutableConfig } from "../../../ts/config/store";
-import { toggleFunbox, setConfig } from "../../../ts/config/setters";
+import { setConfig } from "../../../ts/config/setters";
 import { getTestSession, resetTestEvents } from "./events/data";
 
 import { resetModifierState } from "../../../ts/states/modifiers";
@@ -299,104 +289,6 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
   await TestUI.fadeInAfterRestart(noAnim);
   if (!lease.isCurrent()) return;
   setIsTestRestarting(false);
-}
-
-//add word during the test
-export async function addWord(): Promise<void> {
-  const lease = captureTypingRoute();
-  if (!lease.isCurrent()) return;
-  if (getMutableConfig().mode === "zen") {
-    TestUI.appendEmptyWordElement(getActiveWordIndex() + 1);
-    return;
-  }
-
-  let bound = 100; // how many extra words to aim for AFTER the current word
-
-  const funboxToPush =
-    getActiveFunboxes()
-      .flatMap((fb) => fb.properties ?? [])
-      .find((prop) => prop.startsWith("toPush:")) ?? "";
-
-  const toPushCount = funboxToPush?.split(":")[1];
-  if (toPushCount !== undefined) bound = +toPushCount - 1;
-
-  if (TestWords.words.length - (getActiveWordIndex() + 1) > bound) {
-    console.debug("Not adding word, enough words already");
-    return;
-  }
-  if (WordsGenerator.areAllWordsGenerated()) {
-    console.debug("Not adding word, all words generated");
-    return;
-  }
-  const sectionFunbox = findSingleActiveFunboxWithFunction("pullSection");
-  if (sectionFunbox) {
-    if (TestWords.words.length - getActiveWordIndex() < 20) {
-      const section = await sectionFunbox.functions.pullSection(
-        getMutableConfig().language,
-      );
-
-      if (!lease.isCurrent()) return;
-      if (section === false) {
-        showErrorNotification(
-          "Error while getting section. Please try again later",
-        );
-        toggleFunbox(sectionFunbox.name);
-        void restart();
-        return;
-      }
-
-      if (section === undefined) return;
-
-      let wordCount = 0;
-      for (let i = 0; i < section.words.length; i++) {
-        const word = section.words[i] as string;
-        if (
-          wordCount >= getMutableConfig().words &&
-          getMutableConfig().mode === "words"
-        ) {
-          break;
-        }
-        wordCount++;
-        const newWord = TestWords.words.push(
-          WordsGenerator.appendCommitCharacter(word),
-          i,
-        );
-        TestUI.addWord(newWord.display);
-      }
-    }
-  }
-
-  try {
-    const randomWord = await getTestSession().nextWord(
-      TestWords.words.length,
-      bound,
-      TestWords.words.get(TestWords.words.length - 1)?.text ?? "",
-      TestWords.words.get(TestWords.words.length - 2)?.text,
-      WordsGenerator,
-    );
-
-    if (!lease.isCurrent()) return;
-    const newWord = TestWords.words.push(
-      randomWord.word,
-      randomWord.sectionIndex,
-    );
-    TestUI.addWord(newWord.display);
-  } catch (e) {
-    fail("word generation error");
-    showErrorNotification(
-      "Error while getting next word. Please try again later",
-      {
-        error: e,
-        important: true,
-      },
-    );
-  }
-
-  // strip the trailing commit separator once the final word has been generated
-  // (covers the section and lazy paths)
-  if (WordsGenerator.areAllWordsGenerated()) {
-    TestWords.words.removeCommitCharacterFromLastWord();
-  }
 }
 
 export function fail(reason: string): void {

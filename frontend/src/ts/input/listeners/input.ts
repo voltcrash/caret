@@ -9,15 +9,9 @@ import {
 import * as TestUI from "../../../features/typing/runtime/test-ui";
 import { onBeforeInsertText } from "../handlers/before-insert-text";
 import { onBeforeDelete } from "../handlers/before-delete";
-import * as TestWords from "../../../features/typing/runtime/test-words";
 import * as CompositionState from "../../states/composition";
-import {
-  isTestRestarting,
-  getActiveWordIndex,
-  isResultCalculating,
-} from "../../states/test";
-import { getCurrentInput } from "../../../features/typing/runtime/events/data";
-import { areAllWordsGenerated } from "../../../features/typing/runtime/words-generator";
+import { isTestRestarting, isResultCalculating } from "../../states/test";
+import { getEngineSession } from "../../../features/typing/runtime/session.client";
 
 export function bindInputListeners(inputEl: HTMLTextAreaElement): void {
   useInputListener(inputEl, "beforeinput", async (event: Event) => {
@@ -123,20 +117,11 @@ export function bindInputListeners(inputEl: HTMLTextAreaElement): void {
       inputType === "insertCompositionText" ||
       inputType === "insertFromComposition"
     ) {
-      const allWordsTyped = getActiveWordIndex() >= TestWords.words.length - 1;
-      const inputPlusComposition =
-        getCurrentInput() + (CompositionState.getData() ?? "");
-      const inputPlusCompositionIsCorrect =
-        TestWords.words.getCurrent()?.textWithCommit === inputPlusComposition;
-
-      // composition quick end
-      // if the user typed the entire word correctly but is still in composition
-      // dont wait for them to end the composition manually, just end the test
-      // by dispatching a compositionend which will trigger onInsertText
+      // Rust owns finite-target completion; the browser ends its composition.
       if (
-        areAllWordsGenerated() &&
-        allWordsTyped &&
-        inputPlusCompositionIsCorrect
+        getEngineSession().compositionCompletes(
+          CompositionState.getData() ?? "",
+        )
       ) {
         inputEl.dispatchEvent(
           new CompositionEvent("compositionend", { data: event.data ?? "" }),

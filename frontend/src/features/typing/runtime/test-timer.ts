@@ -1,10 +1,8 @@
 import { onCleanup } from "solid-js";
 import { createTypingOwned } from "../scope";
-import type { SessionEvents } from "@oxytype/typing-core/session";
-import { getTimeLimit } from "@oxytype/typing-core/timer";
+import type { SessionEvents } from "./session.client";
 import { getMutableConfig } from "../../../ts/config/store";
 import { setConfig } from "../../../ts/config/setters";
-import * as CustomText from "./custom-text";
 import * as TestWords from "./test-words";
 import {
   showNoticeNotification,
@@ -17,7 +15,7 @@ import { highlight } from "../../../ts/events/keymap";
 import * as LayoutfluidFunboxTimer from "./funbox/layoutfluid-funbox-timer";
 import { KeymapLayout, Layout } from "@oxytype/schemas/configs";
 import * as SoundController from "../../../ts/controllers/sound-controller";
-import { clearLowFpsMode, setLowFpsMode } from "../../../ts/anim";
+import { clearLowFpsMode } from "../../../ts/anim";
 import { createTimerScheduler } from "./timer-scheduler";
 import { getCurrentInput, getTestSession } from "./events/data";
 import { setCurrentLiveStats } from "../../../ts/states/test";
@@ -28,11 +26,9 @@ function createTiming(): {
   start: typeof start;
 } {
   const scheduler = createTimerScheduler(getTestSession().clock);
-  let slowTimerCount = 0;
   let slowTimerNotifIds: number[] = [];
-  let slowTimerFailEnabled = true;
   function disableSlowTimerFail(): void {
-    slowTimerFailEnabled = false;
+    getTestSession().setRenderDriftMonitoring(false);
   }
   let timerDebug = false;
   function enableTimerDebug(): void {
@@ -93,10 +89,10 @@ function createTiming(): {
   function playTimeWarning(testTime: number): void {
     if (timerDebug) console.time("play timer warning");
 
-    const maxTime = getTimeLimit(getMutableConfig(), CustomText.getLimit());
+    const maxTime = getTestSession().liveStats().timeLimitSeconds;
 
     if (
-      maxTime !== undefined &&
+      maxTime !== null &&
       testTime === maxTime - parseInt(getMutableConfig().playTimeWarning, 10)
     ) {
       void SoundController.playTimeWarning();
@@ -122,51 +118,21 @@ function createTiming(): {
 
     if (timerDebug) console.timeEnd("timer step -----------------------------");
   }
-  function checkIfTimerIsSlow(drift: number, now: number): void {
-    if (!slowTimerFailEnabled) return;
-    if (
-      (getMutableConfig().mode === "time" &&
-        getMutableConfig().time < 130 &&
-        getMutableConfig().time > 0) ||
-      (getMutableConfig().mode === "words" &&
-        getMutableConfig().words < 250 &&
-        getMutableConfig().words > 0)
-    ) {
-      if (drift > 125) {
-        //slow timer
-        SlowTimer.set();
-        setLowFpsMode();
-      }
-      if (drift > 250) {
-        slowTimerCount++;
-      }
-
-      if (drift > 500 || slowTimerCount > 5) {
-        //slow timer
-
-        showNoticeNotification(
-          'This could be caused by "efficiency mode" on Microsoft Edge.',
-        );
-
-        slowTimerNotifIds.push(
-          showErrorNotification(
-            "Stopping the test due to bad performance. This would cause test calculations to be incorrect. If this happens a lot, please report this.",
-          ),
-        );
-
-        getTestSession().finish(now, "slow timer");
-      }
-    }
-  }
   function onFinish(reason: string | undefined): void {
     SlowTimer.clear();
-    slowTimerCount = 0;
+    if (reason === "slow timer") {
+      showNoticeNotification(
+        'This could be caused by "efficiency mode" on Microsoft Edge.',
+      );
+      slowTimerNotifIds.push(
+        showErrorNotification(
+          "Stopping the test due to bad performance. This would cause test calculations to be incorrect. If this happens a lot, please report this.",
+        ),
+      );
+    }
     if (reason === undefined) Caret.hide();
   }
   const unsubscribe = [
-    getTestSession().on("drift", ({ drift, now }) =>
-      checkIfTimerIsSlow(drift, now),
-    ),
     getTestSession().on("tick", timerStep),
     getTestSession().on("finish", ({ reason }) => onFinish(reason)),
   ];
@@ -176,7 +142,6 @@ function createTiming(): {
   });
   function start(now: number): void {
     SlowTimer.clear();
-    slowTimerCount = 0;
     for (const id of slowTimerNotifIds) {
       removeNotification(id, "clear");
     }

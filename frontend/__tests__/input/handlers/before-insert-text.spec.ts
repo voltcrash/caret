@@ -1,4 +1,11 @@
-import { describe, it, expect, beforeEach, vi } from "vite-plus/test";
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  vi,
+} from "vite-plus/test";
 
 const mockState = vi.hoisted(() => ({
   inputValue: "",
@@ -24,10 +31,23 @@ vi.mock("../../../src/features/typing/runtime/test-words", () => ({
   },
 }));
 
-vi.mock("../../../src/features/typing/runtime/events/data", () => ({
-  getCurrentInput: () => mockState.currentInput,
+const native = vi.hoisted(() => ({
+  session: undefined as
+    | import("@oxytype/typing-engine/browser.client").BrowserSession
+    | undefined,
 }));
-
+vi.mock("../../../src/features/typing/runtime/session.client", () => ({
+  getEngineSession: () => ({
+    isPrepared: () => native.session !== undefined,
+    command: (
+      command: import("@oxytype/typing-engine/browser.client").Command,
+    ) => native.session?.command(command),
+    preflight: (
+      data: string,
+      layout: import("@oxytype/typing-engine/browser.client").InsertionLayout,
+    ) => native.session?.preflight(encodeText(data), layout),
+  }),
+}));
 vi.mock("../../../src/features/typing/runtime/test-ui", () => ({
   activeWordTop: 0,
   activeWordHeight: 10,
@@ -56,6 +76,13 @@ vi.mock("../../../src/features/typing/runtime/funbox/list", () => ({
 }));
 
 import { onBeforeInsertText } from "../../../src/ts/input/handlers/before-insert-text";
+import { nativeSession } from "../../__harness__/native-engine";
+import { encodeText } from "@oxytype/typing-engine/text";
+import { getMutableConfig } from "../../../src/ts/config/store";
+afterEach(() => {
+  native.session?.dispose();
+  native.session = undefined;
+});
 import { __testing } from "../../../src/ts/config/testing";
 
 const { replaceConfig } = __testing;
@@ -74,6 +101,16 @@ describe("onBeforeInsertText - line overflow", () => {
       deleteOnError: "off",
       difficulty: "normal",
       strictSpace: false,
+    });
+    native.session = nativeSession(getMutableConfig(), ["hello ", "world"]);
+    native.session.command({
+      op: "insert",
+      data: encodeText("hello"),
+      now: 0,
+      date: 0,
+      correctShiftUsed: null,
+      automatic: null,
+      isCompositionEnding: null,
     });
   });
 

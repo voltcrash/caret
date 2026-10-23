@@ -12,6 +12,7 @@ import {
 import { addToGlobal } from "../../ts/utils/misc";
 import { buildEventLog, getTestSession } from "./runtime/events/data";
 import { useFunboxEvents } from "./runtime/funbox/funbox";
+import { useEngineInputProjection } from "./runtime/input-projection.client";
 import { usePaceCaretEvents } from "./runtime/pace-caret";
 import { usePractiseEvents } from "./runtime/practise-words";
 import { useTestLogicEvents } from "./runtime/test-logic";
@@ -21,6 +22,7 @@ import { useTtsEvents } from "./runtime/tts";
 /** Session subscriptions belong to the mounted typing leaf. */
 export function TypingRuntime(): null {
   initializeTypingState();
+  useEngineInputProjection();
   useKeymapEvents();
   useChallengeEvents();
   useQuoteEvents();

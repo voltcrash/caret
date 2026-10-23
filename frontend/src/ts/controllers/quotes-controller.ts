@@ -1,3 +1,4 @@
+import { getContentHost } from "../../features/typing/runtime/content.client";
 import { operation } from "../../data/operations";
 import { createAppOwned } from "../../app/application";
 import { appObject } from "../../app/state";
@@ -85,7 +86,7 @@ export default quoteController;
 export function useQuoteEvents(): void {
   configEvent.useListener(({ key, newValue }) => {
     if (key === "quoteLength") {
-      quoteController.updateQuoteQueue(newValue);
+      getContentHost().quoteLengthsChanged(newValue);
     }
   });
 }

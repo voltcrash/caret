@@ -1,4 +1,4 @@
-import { createRoot } from "solid-js";
+import { createRoot, onCleanup } from "solid-js";
 import type { LanguageObject } from "@oxytype/schemas/languages";
 import type { EventLog } from "@oxytype/typing-core/events/types";
 import {
@@ -18,7 +18,7 @@ const mocks = vi.hoisted(() => ({
   restarting: false,
   calculating: false,
   wordIndex: 0,
-  generatedWords: ["hello ", "world "],
+  generatedWords: ["hello ", "world ", "hello ", "world ", "last"],
   liveStats: [] as Record<string, number | undefined>[],
   incomplete: vi.fn(),
   resultUpdate: vi.fn(),
@@ -33,10 +33,22 @@ const mocks = vi.hoisted(() => ({
   paceLastWpm: vi.fn(),
   todaySeconds: vi.fn(),
   lowFps: vi.fn(),
+  session: undefined as
+    | import("@oxytype/typing-engine/browser.client").BrowserSession
+    | undefined,
+  generation: 0,
 }));
 
 vi.mock("../../../src/features/typing/engine.client", () => ({
-  getBrowserEngine: () => ({ load: async () => undefined }),
+  getBrowserEngine: () => ({
+    load: async () => undefined,
+    session: () => mocks.session,
+    invalidateSession: () => {
+      mocks.generation++;
+    },
+    generation: () => mocks.generation,
+    api: () => ({ analyze: analyzeLog }),
+  }),
 }));
 
 vi.mock("../../../src/ts/states/test", () => ({
@@ -109,15 +121,21 @@ vi.mock("../../../src/features/typing/runtime/test-ui", () => ({
   appendEmptyWordElement: vi.fn(),
   addWord: vi.fn(),
 }));
-vi.mock("../../../src/features/typing/runtime/words-generator", () => ({
-  generateWords: async () => ({
-    words: [...mocks.generatedWords],
-    sectionIndexes: mocks.generatedWords.map(() => 0),
-    hasTab: false,
-    hasNewline: false,
+vi.mock("../../../src/features/typing/runtime/content.client", () => ({
+  getContentHost: () => ({
+    prepare: async () => {
+      mocks.session?.dispose();
+      mocks.session = nativeSession(getMutableConfig(), mocks.generatedWords);
+      const session = getEngineSession();
+      session.attach();
+      return {
+        words: [...mocks.generatedWords],
+        sectionIndexes: mocks.generatedWords.map(() => 0),
+        hasTab: false,
+        hasNewline: false,
+      };
+    },
   }),
-  areAllWordsGenerated: () => true,
-  appendCommitCharacter: (word: string) => `${word} `,
 }));
 vi.mock("../../../src/features/typing/runtime/funbox/list", () => ({
   getActiveFunboxes: () => [],
@@ -232,8 +250,12 @@ import { getMutableConfig } from "../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../src/ts/constants/default-config";
 import {
   getAllTestEvents,
-  logTestEvent,
+  getTestSession,
 } from "../../../src/features/typing/runtime/events/data";
+import { nativeSession } from "../../__harness__/native-engine";
+import { getEngineSession } from "../../../src/features/typing/runtime/session.client";
+import { analyzeLog } from "@oxytype/typing-engine/browser.client";
+import { encodeText } from "@oxytype/typing-engine/text";
 import * as SlowTimer from "../../../src/ts/states/slow-timer";
 import * as CustomText from "../../../src/features/typing/runtime/custom-text";
 import {
@@ -244,17 +266,34 @@ import {
 
 function type(
   now: number,
-  wordIndex: number,
+  _wordIndex: number,
   typed: string,
-  correct = true,
+  _correct = true,
 ): void {
-  logTestEvent("input", now, {
-    inputType: "insertText",
-    data: typed.at(-1) ?? "",
-    correct,
-    wordIndex,
-    charIndex: typed.length - 1,
-    inputValue: typed,
+  const session = getEngineSession();
+  const before = session.getCurrentInput();
+  let prefix = 0;
+  while (prefix < before.length && before[prefix] === typed[prefix]) {
+    prefix++;
+  }
+  if (prefix < before.length) {
+    session.command({
+      op: "delete",
+      now,
+      date: Date.now(),
+      kind: "deleteContentBackward",
+      observedInput: encodeText(before.slice(0, prefix)),
+      sentinelRemoved: false,
+    });
+  }
+  session.command({
+    op: "insert",
+    now,
+    date: Date.now(),
+    data: encodeText(typed.slice(prefix)),
+    correctShiftUsed: null,
+    automatic: null,
+    isCompositionEnding: null,
   });
 }
 
@@ -274,7 +313,11 @@ function failReason(): unknown {
 }
 
 let disposeRuntime: () => void;
-afterEach(() => disposeRuntime());
+afterEach(() => {
+  disposeRuntime();
+  mocks.session?.dispose();
+  mocks.session = undefined;
+});
 beforeEach(async () => {
   vi.useFakeTimers({
     toFake: ["setTimeout", "clearTimeout", "performance", "Date"],
@@ -282,6 +325,14 @@ beforeEach(async () => {
   vi.clearAllMocks();
   disposeRuntime = createRoot((dispose) => {
     useTestLogicEvents();
+    const unsubscribe = getEngineSession().subscribe((update) => {
+      mocks.wordIndex = update.state.wordIndex;
+      if (update.slowTimer) {
+        SlowTimer.set();
+        mocks.lowFps();
+      }
+    });
+    onCleanup(unsubscribe);
     return dispose;
   });
   Object.assign(mocks, {
@@ -291,7 +342,7 @@ beforeEach(async () => {
     wordIndex: 0,
     liveStats: [],
     lastEventLog: undefined,
-    generatedWords: ["hello ", "world "],
+    generatedWords: ["hello ", "world ", "hello ", "world ", "last"],
   });
   mocks.resultUpdate.mockResolvedValue(undefined);
   Object.assign(getMutableConfig(), getDefaultConfig(), {
@@ -456,10 +507,28 @@ describe("failure", () => {
     const start = performance.now();
     startTest(start);
     type(start + 100, 0, "h");
-    mocks.wordIndex = 3;
+    for (let index = 0; index < 3; index++) {
+      getTestSession().command({
+        op: "insert",
+        now: start + 300,
+        date: Date.now(),
+        data: [120, 32],
+        correctShiftUsed: null,
+        automatic: null,
+        isCompositionEnding: null,
+      });
+    }
     vi.advanceTimersByTime(1000);
     expect(mocks.resultUpdate).not.toHaveBeenCalled();
-    mocks.wordIndex = 4;
+    getTestSession().command({
+      op: "insert",
+      now: start + 1200,
+      date: Date.now(),
+      data: [120, 32],
+      correctShiftUsed: null,
+      automatic: null,
+      isCompositionEnding: null,
+    });
     vi.advanceTimersByTime(1000);
     await vi.waitFor(() => expect(mocks.resultUpdate).toHaveBeenCalled());
     expect(failReason()).toBe("min speed");

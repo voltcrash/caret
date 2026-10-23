@@ -1,74 +1,44 @@
-import { onCleanup } from "solid-js";
-import { createAppOwned } from "../../../../app/application";
-import { appMethod } from "../../../../app/state";
-import { createTestSession } from "@oxytype/typing-core/session";
-import { EventLogContext } from "@oxytype/typing-core/events/types";
-import { getLiveCache } from "./live-cache";
-import * as TestWords from "../test-words";
+import type {
+  EventLog,
+  TestEventType,
+  TestEventData,
+} from "@oxytype/typing-core/events/types";
+import { getEngineSession } from "../session.client";
+import { getActiveWordIndex } from "../../../../ts/states/test";
 import { getMutableConfig } from "../../../../ts/config/store";
-import * as CustomText from "../custom-text";
-import { getMode2 } from "../../../../ts/utils/misc";
-import {
-  getKoreanStatus,
-  getActiveWordIndex,
-  getCurrentQuote,
-  getBailedOut,
-  isResultCalculating,
-} from "../../../../ts/states/test";
-import { isFunboxActiveWithProperty } from "../funbox/active";
-import * as SlowTimer from "../../../../ts/states/slow-timer";
-export const getTestSession = createAppOwned(() => {
-  const session = createTestSession(() => getMutableConfig(), {
-    getContext,
-    getActiveWordIndex: () => getActiveWordIndex(),
-    isResultCalculating: () => isResultCalculating(),
-    liveCache: getLiveCache(),
-    customLimit: () => CustomText.getLimit(),
-    isSlowTimer: () => SlowTimer.get(),
-  });
-  onCleanup(() => session.reset());
-  return session;
-});
-export const logTestEvent = appMethod(
-  () => getTestSession().recorder.logTestEvent,
-);
-export const getCurrentInput = appMethod(
-  () => getTestSession().recorder.getCurrentInput,
-);
-export const getInputForWord = appMethod(
-  () => getTestSession().recorder.getInputForWord,
-);
-export const cleanupData = appMethod(
-  () => getTestSession().recorder.cleanupData,
-);
-export const getAllTestEvents = appMethod(
-  () => getTestSession().recorder.getAllTestEvents,
-);
-export const logEventsDataToTheConsoleTable = appMethod(
-  () => getTestSession().recorder.logEventsDataToTheConsoleTable,
-);
-export const forceReleaseAllKeys = appMethod(
-  () => getTestSession().recorder.forceReleaseAllKeys,
-);
-function getContext(): EventLogContext {
-  const context = {
-    targetWords: [...TestWords.words.get().map((w) => w.textWithCommit)],
-    mode: getMutableConfig().mode,
-    mode2: getMode2(getMutableConfig(), getCurrentQuote()),
-    koreanStatus: getKoreanStatus(),
-    bailedOut: getBailedOut(),
-    ...(getMutableConfig().mode === "custom" && {
-      customTextLimitMode: CustomText.getLimit().mode,
-      customTextLimitValue: CustomText.getLimit().value,
-    }),
-    ...(getMutableConfig().funbox.length !== 0 && {
-      isFunboxWithNospacePropertyActive: isFunboxActiveWithProperty("nospace"),
-    }),
-  };
 
-  return context;
+/** Legacy string transport is a mechanical view of the owned native session. */
+export const getTestSession = getEngineSession;
+export function logTestEvent(
+  type: TestEventType,
+  now: number,
+  data: TestEventData,
+): void {
+  const session = getEngineSession();
+  if (!session.isPrepared()) return;
+  if (type === "input") {
+    throw new Error("Typing input must use native session commands");
+  }
+  session.observe({ type, testMs: 0, data }, now);
 }
-export const resetTestEvents = (): void => getTestSession().reset();
-export const buildEventLog = (): ReturnType<
-  ReturnType<typeof getTestSession>["buildEventLog"]
-> => getTestSession().buildEventLog();
+export const getCurrentInput = (): string =>
+  getEngineSession().getInputForWord(getActiveWordIndex());
+export const getInputForWord = (index: number): string =>
+  getEngineSession().getInputForWord(index);
+export const cleanupData = (): void => getEngineSession().finalize();
+export const forceReleaseAllKeys = (): void => getEngineSession().finalize();
+export const getAllTestEvents = (): EventLog["events"] =>
+  buildEventLog().events;
+export const logEventsDataToTheConsoleTable = (): void => {
+  console.table(getAllTestEvents());
+};
+export const resetTestEvents = (): void => getEngineSession().reset();
+export function buildEventLog(): EventLog {
+  const log = getEngineSession().buildEventLog();
+  if (getMutableConfig().funbox.length === 0) {
+    delete log.context.isFunboxWithNospacePropertyActive;
+  }
+  // Native validation/wire fixtures check the discriminants and optional flags;
+  // strings preserve the existing web DTO's UTF-16 representation.
+  return log as EventLog;
+}

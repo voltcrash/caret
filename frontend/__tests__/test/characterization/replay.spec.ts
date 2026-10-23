@@ -22,10 +22,16 @@ vi.mock("../../../src/ts/controllers/sound-controller", () => ({
 import { getMutableConfig } from "../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../src/ts/constants/default-config";
 import { resultState, setResultState } from "../../../src/ts/states/result";
-import {
-  logTestEvent,
-  resetTestEvents,
-} from "../../../src/features/typing/runtime/events/data";
+import "../../__harness__/native-engine";
+import { analyzeLog } from "@oxytype/typing-engine/browser.client";
+import { toEngineLog } from "@oxytype/typing-engine/text";
+const recorded = vi.hoisted(() => ({ log: undefined as EventLog | undefined }));
+vi.mock("../../../src/features/typing/engine.client", () => ({
+  getBrowserEngine: () => ({
+    api: () => ({ analyze: analyzeLog }),
+    session: () => ({ log: () => toEngineLog(recorded.log as EventLog) }),
+  }),
+}));
 import * as Replay from "../../../src/features/typing/runtime/replay";
 import * as TestWords from "../../../src/features/typing/runtime/test-words";
 
@@ -39,15 +45,20 @@ const fixture = JSON.parse(
   ),
 ) as { eventLog: EventLog };
 
-const START = 10_000;
-
 function load(words: string[], events: EventLog["events"]): void {
   TestWords.words.reset();
   for (const word of words) TestWords.words.push(word, 0);
-  resetTestEvents();
-  for (const event of events) {
-    logTestEvent(event.type, START + event.testMs, event.data);
-  }
+  recorded.log = {
+    version: 1,
+    context: {
+      targetWords: words,
+      mode: getMutableConfig().mode,
+      mode2: String(words.length),
+      koreanStatus: false,
+      bailedOut: false,
+    },
+    events,
+  };
 }
 
 function render(): string[] {

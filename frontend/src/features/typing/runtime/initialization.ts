@@ -1,5 +1,11 @@
 import { captureTypingRoute, isTypingRouteActive } from "../scope";
 import { getBrowserEngine } from "../engine.client";
+import { getContentHost } from "./content.client";
+import { EngineFailure } from "@oxytype/typing-engine/failure";
+import {
+  applyEngineRecovery,
+  generationFailureIsNotice,
+} from "./recovery.client";
 import { updateClassNames } from "../../../ts/utils/cn";
 
 import * as TestUI from "./test-ui";
@@ -30,7 +36,6 @@ import {
 } from "../../../ts/states/test";
 
 import * as TestWords from "./test-words";
-import * as WordsGenerator from "./words-generator";
 
 import { highlight } from "../../../ts/events/keymap";
 import * as LazyModeState from "../../../ts/states/remember-lazy-mode";
@@ -49,7 +54,6 @@ import { getTypingTestElement } from "../../../ts/states/test-dom";
 
 import { getMutableConfig } from "../../../ts/config/store";
 import { setQuoteLengthAll, setConfig } from "../../../ts/config/setters";
-import { getTestSession } from "./events/data";
 
 import { nthElementFromArray } from "../../../ts/utils/arrays";
 import { hasKoreanCharacters } from "@oxytype/typing-core/strings";
@@ -210,7 +214,7 @@ export async function init(lease = captureTypingRoute()): Promise<boolean> {
   let generatedWords: string[] = [];
   let generatedSectionIndexes: number[] = [];
   try {
-    const gen = await getTestSession().generate(language, WordsGenerator);
+    const gen = await getContentHost().prepare(language);
     if (!lease.isCurrent()) return false;
     generatedWords = gen.words;
     generatedSectionIndexes = gen.sectionIndexes;
@@ -224,7 +228,11 @@ export async function init(lease = captureTypingRoute()): Promise<boolean> {
       testLogicState.lastInitError = e;
     }
     console.error(e);
-    if (e instanceof WordGenError) {
+    if (e instanceof EngineFailure) applyEngineRecovery(e);
+    if (
+      e instanceof WordGenError ||
+      (e instanceof EngineFailure && generationFailureIsNotice(e))
+    ) {
       if (e.message.length > 0) {
         showNoticeNotification(e.message, {
           important: true,
@@ -261,10 +269,6 @@ export async function init(lease = captureTypingRoute()): Promise<boolean> {
       generatedWords[i] as string,
       generatedSectionIndexes[i] as number,
     );
-  }
-
-  if (WordsGenerator.areAllWordsGenerated()) {
-    TestWords.words.removeCommitCharacterFromLastWord();
   }
 
   if (

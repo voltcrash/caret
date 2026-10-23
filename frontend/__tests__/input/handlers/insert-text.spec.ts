@@ -1,4 +1,11 @@
-import { describe, it, expect, beforeEach, vi } from "vite-plus/test";
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  vi,
+} from "vite-plus/test";
 
 // The input element and the event log are the two things delete-on-error
 // writes to, and they must agree. The element is faked (mirroring the real
@@ -34,12 +41,22 @@ const mockState = vi.hoisted(() => ({
   wordsScrolledOff: new Set<number>(),
 }));
 
-const nav = vi.hoisted(() => ({
-  goToNextWord: vi.fn(),
-  goToPreviousWord: vi.fn(),
+const native = vi.hoisted(() => ({
+  session: undefined as
+    | import("@oxytype/typing-engine/browser.client").BrowserSession
+    | undefined,
 }));
-vi.mock("../../../src/ts/input/helpers/word-navigation", () => nav);
-
+vi.mock("../../../src/features/typing/engine.client", () => ({
+  getBrowserEngine: () => ({
+    session: () => native.session,
+    generation: () => 1,
+    invalidateSession: () => undefined,
+    captureSession: () => ({ isCurrent: () => true }),
+  }),
+}));
+vi.mock("../../../src/features/typing/runtime/content.client", () => ({
+  getContentHost: () => ({ supplyActive: vi.fn() }),
+}));
 vi.mock("../../../src/features/typing/runtime/test-words", () => {
   type CommitChar = " " | "\n" | "";
   type Word = { text: string; textWithCommit: string; commit: CommitChar };
@@ -122,20 +139,10 @@ vi.mock("../../../src/ts/states/composition", () => ({
 vi.mock("../../../src/features/typing/runtime/words-generator", () => ({
   areAllWordsGenerated: () => true,
 }));
-vi.mock("../../../src/ts/input/handlers/before-insert-text", () => ({
-  onBeforeInsertText: () => false,
-}));
-vi.mock("../../../src/ts/input/helpers/fail-or-finish", () => ({
-  checkIfFailedDueToDifficulty: () => false,
-  checkIfFailedDueToMinBurst: () => false,
-  checkIfFinished: () => false,
-}));
-
 import { onInsertText } from "../../../src/ts/input/handlers/insert-text";
 import {
   resetTestEvents,
   getAllTestEvents,
-  getInputForWord,
 } from "../../../src/features/typing/runtime/events/data";
 import {
   findInputValueMismatches,
@@ -144,7 +151,16 @@ import {
 import type { InputEventNoMs } from "@oxytype/typing-core/events/types";
 import { words as TestWords } from "../../../src/features/typing/runtime/test-words";
 import { __testing } from "../../../src/ts/config/testing";
-import { DeleteInputType } from "../../../src/ts/input/helpers/input-type";
+import { nativeSession } from "../../__harness__/native-engine";
+import { getEngineSession } from "../../../src/features/typing/runtime/session.client";
+import { getMutableConfig } from "../../../src/ts/config/store";
+import { decodeText } from "@oxytype/typing-engine/text";
+let unsubscribe: (() => void) | undefined;
+afterEach(() => {
+  unsubscribe?.();
+  native.session?.dispose();
+  native.session = undefined;
+});
 
 const { replaceConfig } = __testing;
 
@@ -155,34 +171,21 @@ function getInput(): string {
   return inputEl.value.slice(1);
 }
 
-// mirrors goToNextWord's observable effects: clear the input, advance the word
-nav.goToNextWord.mockImplementation(async () => {
-  setInput("");
-  mockState.activeWordIndex++;
-  return { increasedWordIndex: true, lastBurst: null };
-});
-
-// mirrors goToPreviousWord (minus the nospace branch): step back a word and
-// restore that word's input, dropping its separator for a single backspace
-nav.goToPreviousWord.mockImplementation((inputType: DeleteInputType) => {
-  if (mockState.activeWordIndex === 0) {
-    setInput("");
-    return;
-  }
-  mockState.activeWordIndex--;
-  if (inputType === "deleteWordBackward") {
-    setInput("");
-    return;
-  }
-  const word = getInputForWord(mockState.activeWordIndex);
-  setInput(
-    word.endsWith("\n") || word.endsWith(" ") ? word.slice(0, -1) : word,
-  );
-});
-
 function pushWords(...words: string[]): void {
   words.forEach((word, i) => {
     TestWords.push(i === words.length - 1 ? word : `${word} `, i);
+  });
+  native.session = nativeSession(
+    getMutableConfig(),
+    words.map((word, index) =>
+      index + 1 === words.length ? word : `${word} `,
+    ),
+  );
+  const session = getEngineSession();
+  session.attach();
+  unsubscribe = session.subscribe((update) => {
+    mockState.activeWordIndex = update.state.wordIndex;
+    setInput(decodeText(update.inputDisplayValue ?? update.state.inputValue));
   });
 }
 
@@ -266,7 +269,6 @@ describe("onInsertText - delete on error", () => {
 
       await type("x");
 
-      expect(nav.goToPreviousWord).not.toHaveBeenCalled();
       expect(mockState.activeWordIndex).toBe(1);
     });
 
@@ -276,7 +278,7 @@ describe("onInsertText - delete on error", () => {
       await type("e");
       await type(" ");
 
-      expect(nav.goToNextWord).not.toHaveBeenCalled();
+      expect(getEngineSession().state()?.wordIndex).toBe(0);
       expect(mockState.activeWordIndex).toBe(0);
       expect(deletesForWord(0)).toEqual([
         ["deleteContentBackward", 3, "he"],
@@ -312,9 +314,7 @@ describe("onInsertText - delete on error", () => {
 
       await type("x");
 
-      expect(nav.goToPreviousWord).toHaveBeenCalledWith(
-        "deleteContentBackward",
-      );
+      expect(getEngineSession().state()?.wordIndex).toBe(0);
       expect(mockState.activeWordIndex).toBe(0);
       // the incorrect char is deleted from the word it was typed in...
       expect(deletesForWord(1)).toEqual([["deleteContentBackward", 1, ""]]);
@@ -334,7 +334,7 @@ describe("onInsertText - delete on error", () => {
 
       await type("x");
 
-      expect(nav.goToPreviousWord).toHaveBeenCalledWith("deleteWordBackward");
+      expect(getEngineSession().state()?.wordIndex).toBe(0);
       expect(deletesForWord(1)).toEqual([["deleteWordBackward", 1, ""]]);
       // the whole previous word goes too, so the post-navigation length is 0
       expect(deletesForWord(0)).toEqual([["deleteWordBackward", 0, ""]]);
@@ -347,7 +347,6 @@ describe("onInsertText - delete on error", () => {
 
       await type("x");
 
-      expect(nav.goToPreviousWord).not.toHaveBeenCalled();
       expect(mockState.activeWordIndex).toBe(0);
       expect(deletesForWord(0)).toEqual([["deleteContentBackward", 1, ""]]);
     });
@@ -360,7 +359,6 @@ describe("onInsertText - delete on error", () => {
 
       await type("x");
 
-      expect(nav.goToPreviousWord).not.toHaveBeenCalled();
       expect(mockState.activeWordIndex).toBe(1);
       expect(deletesForWord(1)).toEqual([["deleteContentBackward", 1, ""]]);
       expect(getInput()).toBe("");
@@ -374,7 +372,6 @@ describe("onInsertText - delete on error", () => {
 
       await type("x");
 
-      expect(nav.goToPreviousWord).not.toHaveBeenCalled();
       expect(mockState.activeWordIndex).toBe(1);
       expect(getInput()).toBe("");
     });

@@ -52,6 +52,9 @@ const mocks = vi.hoisted(() => ({
   onFinish: undefined as ((event: { reason?: string }) => void) | undefined,
 }));
 
+vi.mock("../../src/features/typing/runtime/content.client", () => ({
+  getContentHost: () => ({ prepare: mocks.generate }),
+}));
 vi.mock("../../src/features/typing/engine.client", () => ({
   getBrowserEngine: () => ({ load: mocks.engineLoad }),
 }));
@@ -268,7 +271,6 @@ vi.mock("@oxytype/typing-core/result-validity", () => ({
 import { getMutableConfig } from "../../src/ts/config/store";
 import { getDefaultConfig } from "../../src/ts/constants/default-config";
 import {
-  addWord,
   fail,
   finish,
   restart,
@@ -552,41 +554,7 @@ it("never applies a pending save acknowledgement to another actor", async () => 
 
 mockHttpFixture("results.add", async (input) => await mocks.addResult(input));
 
-// Frozen behavior before the Rust host cutover. Source I/O failure is recovery, not a score failure.
-describe("section source recovery", () => {
-  it("reports, disables the source and restarts on an unavailable active section", async () => {
-    mocks.allGenerated = false;
-    mocks.pullSection = async () => false;
-    mocks.error.mockImplementation((message: string) =>
-      mocks.sourceActions.push({ op: "errorNotice", message }),
-    );
-    mocks.generate.mockImplementation(async () => {
-      mocks.sourceActions.push({ op: "restart" });
-      return {
-        words: mocks.generatedWords,
-        sectionIndexes: [0, 0],
-        hasTab: false,
-        hasNewline: false,
-      };
-    });
-    await addWord();
-    await vi.waitFor(() => expect(mocks.restarting).toBe(false));
-    expect(mocks.sourceActions).toEqual([
-      {
-        op: "errorNotice",
-        message: "Error while getting section. Please try again later",
-      },
-      { op: "disableFunbox", name: "poetry", noRestart: false },
-      { op: "restart" },
-    ]);
-    expect(mocks.complete).not.toHaveBeenCalled();
-  });
-  it("ignores an undefined active section without reporting a failure", async () => {
-    mocks.allGenerated = false;
-    mocks.pullSection = async () => undefined;
-    await addWord();
-    expect(mocks.sourceActions).toEqual([]);
-    expect(mocks.generate).not.toHaveBeenCalled();
-    expect(mocks.error).not.toHaveBeenCalled();
-  });
-});
+// Active source failure ordering is frozen in source-recovery.json and verified
+// natively (content.rs), through Wasm (engine-proof.migration.ts), and by the
+// owned browser content/projection tests. The removed addWord callback no longer
+// owns source fetching or completion.

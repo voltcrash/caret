@@ -5,6 +5,7 @@ import { applyReducedMotion, sleep } from "../../../ts/utils/misc";
 import { getTypingTestElement } from "../../../ts/states/test-dom";
 import {
   isTestActive,
+  getBailedOut,
   isResultCalculating,
   setResultCalculating,
   setResultLoading,
@@ -19,6 +20,7 @@ export async function finish(difficultyFailed = false): Promise<void> {
   setResultCalculating(true);
   const now = performance.now();
   TestTimer.clear();
+  if (getBailedOut()) getTestSession().bailout(now);
   getTestSession().end(now);
 
   const [completion] = await Promise.all([

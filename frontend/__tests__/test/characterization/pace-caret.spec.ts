@@ -25,8 +25,18 @@ const mocks = vi.hoisted(() => ({
   hidden: true,
   goTo: [] as GoTo[],
   localPb: undefined as { wpm: number } | undefined,
+  session: undefined as
+    | import("@oxytype/typing-engine/browser.client").BrowserSession
+    | undefined,
 }));
 
+vi.mock("../../../src/features/typing/engine.client", () => ({
+  getBrowserEngine: () => ({
+    session: () => mocks.session,
+    generation: () => 0,
+    invalidateSession: () => undefined,
+  }),
+}));
 vi.mock("../../../src/ts/states/test", () => ({
   isTestActive: () => mocks.active,
   getResultVisible: () => mocks.resultVisible,
@@ -72,11 +82,35 @@ vi.mock("../../../src/features/typing/runtime/funbox/list", () => ({
   getActiveFunboxes: () => [],
 }));
 
+import { nativeSession } from "../../__harness__/native-engine";
+import { getEngineSession } from "../../../src/features/typing/runtime/session.client";
+import { encodeText } from "@oxytype/typing-engine/text";
 import { getMutableConfig } from "../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../src/ts/constants/default-config";
 import * as PaceCaret from "../../../src/features/typing/runtime/pace-caret";
 import * as TestWords from "../../../src/features/typing/runtime/test-words";
 
+function commit(text: string): void {
+  getEngineSession().command({
+    op: "insert",
+    data: encodeText(text),
+    now: performance.now(),
+    date: 0,
+    correctShiftUsed: null,
+    automatic: null,
+    isCompositionEnding: null,
+  });
+}
+function back(): void {
+  getEngineSession().command({
+    op: "delete",
+    kind: "deleteWordBackward",
+    now: performance.now(),
+    date: 0,
+    observedInput: null,
+    sentinelRemoved: false,
+  });
+}
 function positions(): string[] {
   return mocks.goTo
     .filter((call) => call.animate)
@@ -106,9 +140,14 @@ beforeEach(() => {
   TestWords.words.push("hi ", 0);
   TestWords.words.push("you ", 0);
   TestWords.words.push("all", 0);
+  mocks.session = nativeSession(getMutableConfig(), ["hi ", "you ", "all"]);
+  getEngineSession().attach();
+  getEngineSession().start(performance.now());
 });
 afterEach(() => {
   PaceCaret.reset();
+  mocks.session?.dispose();
+  mocks.session = undefined;
   vi.useRealTimers();
 });
 
@@ -148,11 +187,13 @@ describe("pace caret", () => {
   it("jumps ahead by the length of a mistyped word and back when corrected", async () => {
     await PaceCaret.init();
     PaceCaret.start();
-    PaceCaret.handleSpace(false, "hi ");
+    commit("x ");
     vi.advanceTimersByTime(200);
     expect(positions().at(-1)).toBe("1:2");
-    PaceCaret.handleSpace(false, "hi ");
-    PaceCaret.handleSpace(true, "hi ");
+    back();
+    commit("x ");
+    back();
+    commit("hi ");
     vi.advanceTimersByTime(200);
     expect(positions().at(-1)).toBe("1:0");
   });
@@ -161,7 +202,7 @@ describe("pace caret", () => {
     getMutableConfig().blindMode = true;
     await PaceCaret.init();
     PaceCaret.start();
-    PaceCaret.handleSpace(false, "hi ");
+    commit("x ");
     vi.advanceTimersByTime(200);
     expect(positions()).toEqual(["0:1", "0:2"]);
   });
