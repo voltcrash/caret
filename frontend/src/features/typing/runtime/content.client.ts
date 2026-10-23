@@ -15,6 +15,7 @@ import type {
 import {
   LanguageSchema,
   type LanguageObject,
+  type Language,
 } from "@oxytype/schemas/languages";
 import { QuoteDataSchema } from "@oxytype/schemas/quotes";
 import { getMutableConfig } from "../../../ts/config/store";
@@ -24,6 +25,7 @@ import {
   getSelectedQuoteId,
   isRepeated,
   setCurrentQuote,
+  getCurrentQuote,
 } from "../../../ts/states/test";
 import { showNoticeNotification } from "../../../ts/states/notifications";
 import { getSnapshot } from "../../../ts/db";
@@ -42,7 +44,7 @@ function random(): Random {
 }
 function webQuote(
   quote: Quote,
-): NonNullable<Parameters<typeof setCurrentQuote>[0]> {
+): NonNullable<ReturnType<typeof getCurrentQuote>> {
   return {
     ...quote,
     text: decodeText(quote.text),
@@ -66,6 +68,41 @@ export const getContentHost = createAppOwned(() => {
   let cachedQuotes:
     | { name: string; asset: NonNullable<Prepare["quotes"]> }
     | undefined;
+  const rawQuotes = async (
+    name: string,
+    signal?: AbortSignal,
+  ): Promise<NonNullable<Prepare["quotes"]>> => {
+    if (cachedQuotes?.name === name) {
+      return cachedQuotes.asset;
+    }
+    const empty = { language: name, groups: [], quotes: [] };
+    try {
+      const asset = await cachedFetchJson<unknown>(`quotes/${name}.json`);
+      signal?.throwIfAborted();
+      if (
+        asset !== null &&
+        typeof asset === "object" &&
+        "quotes" in asset &&
+        Array.isArray(asset.quotes) &&
+        asset.quotes.length !== 0
+      ) {
+        const converted = engineQuotes(QuoteDataSchema.parse(asset));
+        cachedQuotes = { name, asset: converted };
+        return converted;
+      }
+      return empty;
+    } catch (error) {
+      signal?.throwIfAborted();
+      if (
+        !(error instanceof Error) ||
+        (!error.message.includes("404") &&
+          !error.message.includes("Content is not JSON"))
+      ) {
+        throw error;
+      }
+      return empty;
+    }
+  };
   const supply = async (
     request: ContentRequest,
     lease: ReturnType<typeof owner.captureSession>,
@@ -104,11 +141,40 @@ export const getContentHost = createAppOwned(() => {
         ) {
           continue;
         }
+        if (
+          error instanceof EngineFailure &&
+          ["invalidInput", "invalidContent", "emptyContent"].includes(
+            error.code,
+          )
+        ) {
+          reject();
+        }
         throw error;
       }
     }
   };
   return {
+    getQuotes: async (language: Language, lengths?: number[]) => {
+      await owner.load();
+      const asset = await rawQuotes(removeLanguageSize(language));
+      const collection = owner
+        .content()
+        .quoteCatalog(asset, lengths ?? null, random());
+      const quotes = collection.quotes.map(webQuote);
+      return {
+        ...collection,
+        quotes,
+        groups: collection.groups.map((group) =>
+          group.map((index) => {
+            const quote = quotes[index];
+            if (quote === undefined) {
+              throw new Error("Invalid native quote catalog index");
+            }
+            return quote;
+          }),
+        ),
+      };
+    },
     quoteLengthsChanged: (lengths: number[]): void => {
       if (owner.status().state === "ready") {
         owner.content().updateQuoteQueue(lengths, random());
@@ -130,35 +196,7 @@ export const getContentHost = createAppOwned(() => {
         const name = language.name.startsWith("swiss_german")
           ? "german"
           : removeLanguageSize(language.name);
-        quotes = { language: name, groups: [], quotes: [] };
-        if (cachedQuotes?.name === name) {
-          quotes = cachedQuotes.asset;
-        } else {
-          try {
-            const asset = await cachedFetchJson<unknown>(`quotes/${name}.json`);
-            lease.signal.throwIfAborted();
-            // Missing/empty collections follow native no-quotes recovery.
-            if (
-              asset !== null &&
-              typeof asset === "object" &&
-              "quotes" in asset &&
-              Array.isArray(asset.quotes) &&
-              asset.quotes.length !== 0
-            ) {
-              quotes = engineQuotes(QuoteDataSchema.parse(asset));
-              cachedQuotes = { name, asset: quotes };
-            }
-          } catch (error) {
-            lease.signal.throwIfAborted();
-            if (
-              !(error instanceof Error) ||
-              (!error.message.includes("404") &&
-                !error.message.includes("Content is not JSON"))
-            ) {
-              throw error;
-            }
-          }
-        }
+        quotes = await rawQuotes(name, lease.signal);
       }
       const polyglot = config.funbox.includes("polyglot")
         ? (

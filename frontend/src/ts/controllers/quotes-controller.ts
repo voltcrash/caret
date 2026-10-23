@@ -2,18 +2,19 @@ import { getContentHost } from "../../features/typing/runtime/content.client";
 import { operation } from "../../data/operations";
 import { createAppOwned } from "../../app/application";
 import { appObject } from "../../app/state";
-import { QuotesController as CoreQuotesController } from "@oxytype/typing-core/quote-source";
 import { Quote } from "@oxytype/typing-core/quotes";
 export type { Quote } from "@oxytype/typing-core/quotes";
 import { removeLanguageSize } from "../utils/strings";
-import { cachedFetchJson } from "../utils/json-data";
 import { configEvent } from "../events/config";
 import * as DB from "../db";
 import { Language } from "@oxytype/schemas/languages";
 
-class QuotesController extends CoreQuotesController {
-  constructor() {
-    super({ fetchJson: cachedFetchJson, getSnapshot: DB.getSnapshot });
+class QuotesController {
+  async getQuotes(
+    language: Language,
+    lengths?: number[],
+  ): ReturnType<ReturnType<typeof getContentHost>["getQuotes"]> {
+    return getContentHost().getQuotes(language, lengths);
   }
   isQuoteFavorite({ language: quoteLanguage, id }: Quote): boolean {
     const snapshot = DB.getSnapshot();

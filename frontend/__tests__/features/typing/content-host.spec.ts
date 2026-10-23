@@ -9,8 +9,9 @@ const mocks = vi.hoisted(() => ({
   supply: vi.fn(),
   failSource: vi.fn(),
   updateQuoteQueue: vi.fn(),
+  quoteCatalog: vi.fn(),
   request: { id: 1, generation: 1, kind: "wikipedia", language: "english" },
-  sessionCommand: vi.fn(),
+  sessionCommand: vi.fn<(command: { op: string; request?: unknown }) => void>(),
   getLanguage: vi.fn(),
   cachedFetchJson: vi.fn(),
   createSession: vi.fn(),
@@ -32,7 +33,10 @@ vi.mock("../../../src/features/typing/engine.client", () => ({
       return { signal, isCurrent: () => !signal.aborted };
     },
     createPreparedSession: mocks.createSession,
-    content: () => ({ updateQuoteQueue: mocks.updateQuoteQueue }),
+    content: () => ({
+      updateQuoteQueue: mocks.updateQuoteQueue,
+      quoteCatalog: mocks.quoteCatalog,
+    }),
   }),
 }));
 vi.mock("../../../src/features/typing/runtime/session.client", () => ({
@@ -61,6 +65,7 @@ beforeEach(() => {
   mocks.controller = new AbortController();
   mocks.prepare.mockReset();
   mocks.supply.mockReset();
+  mocks.sessionCommand.mockReset();
   mocks.generate.mockReset().mockReturnValue({
     words: [[97, 32]],
     sectionIndexes: [0],
@@ -237,5 +242,77 @@ it("shares one source fetch and one supply command for repeated observations of 
       request,
       source: expect.objectContaining({ kind: "poem" }),
     }),
+  );
+});
+
+it("shares raw quote assets with catalog readers and projects native group indices without another fetch", async () => {
+  Object.assign(getMutableConfig(), { mode: "quote", funbox: [] });
+  mocks.quoteCatalog.mockReturnValue({
+    language: "english",
+    length: 1,
+    groups: [[0], [], [], []],
+    quotes: [
+      {
+        id: 1,
+        text: [0xd800],
+        source: "Source",
+        length: 1,
+        group: 0,
+        language: "english",
+        textSplit: [],
+      },
+    ],
+  });
+  const host = getContentHost();
+  const catalog = await host.getQuotes("english");
+  expect(catalog.quotes[0]?.text).toBe("\ud800");
+  expect(catalog.groups[0]?.[0]).toBe(catalog.quotes[0]);
+  expect(mocks.quoteCatalog).toHaveBeenCalledWith(
+    expect.any(Object),
+    null,
+    expect.objectContaining({ kind: "seeded" }),
+  );
+  await host.prepare({ ...language, words: [...language.words] });
+  expect(mocks.cachedFetchJson).toHaveBeenCalledOnce();
+  expect(mocks.prepare.mock.calls[0]?.[0].quotes).toEqual(
+    mocks.quoteCatalog.mock.calls[0]?.[0],
+  );
+});
+
+it("rejects an invalid active source through native recovery without scoring it as typing failure", async () => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify([
+            { title: "Poem", author: "Writer", lines: ["raw text"] },
+          ]),
+        ),
+    ),
+  );
+  const request = { ...mocks.request, kind: "poetry" };
+  mocks.sessionCommand.mockImplementation((command: { op: string }) => {
+    if (command.op === "supplyContent") {
+      throw new EngineFailure({
+        code: "invalidContent",
+        message: "Content exceeds bound",
+        recovery: [],
+      });
+    }
+    throw new EngineFailure({
+      code: "sourceUnavailable",
+      message: "Source unavailable",
+      recovery: [],
+    });
+  });
+  await expect(getContentHost().supplyActive(request)).rejects.toMatchObject({
+    code: "sourceUnavailable",
+  });
+  expect(
+    mocks.sessionCommand.mock.calls.map(([command]) => command.op),
+  ).toEqual(["supplyContent", "failContent"]);
+  expect(mocks.sessionCommand.mock.calls[1]?.[0]).toEqual(
+    expect.objectContaining({ request }),
   );
 });
