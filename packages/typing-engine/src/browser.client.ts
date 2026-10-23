@@ -23,6 +23,8 @@ import type { Source } from "../generated/types/Source";
 import type { Preflight } from "../generated/types/Preflight";
 import type { InsertionLayout } from "../generated/types/InsertionLayout";
 import type { Snapshot } from "../generated/types/Snapshot";
+import type { PaceCommand } from "../generated/types/PaceCommand";
+import type { PaceUpdate } from "../generated/types/PaceUpdate";
 import type { PlaybackSnapshot } from "../generated/types/PlaybackSnapshot";
 import type { PlaybackUpdate } from "../generated/types/PlaybackUpdate";
 import type { Cursor } from "../generated/types/Cursor";
@@ -30,6 +32,8 @@ import type { Log } from "../generated/types/Log";
 export type {
   Query,
   Response,
+  PaceCommand,
+  PaceUpdate,
   PlaybackSnapshot,
   PlaybackUpdate,
   Cursor,
@@ -146,6 +150,20 @@ export class BrowserSession {
     }
     return JSON.parse(this.handle.command(JSON.stringify(command))) as Update;
   }
+  pace(command: PaceCommand): PaceUpdate {
+    if (this.handle === undefined) {
+      throw new Error("Typing engine session disposed");
+    }
+    return JSON.parse(this.handle.pace(JSON.stringify(command))) as PaceUpdate;
+  }
+  /** @internal Ownership transfer used by the app's content resource. */
+  recycleTo(content: WasmContent): void {
+    if (this.handle === undefined) {
+      throw new Error("Typing engine session disposed");
+    }
+    content.recycle_session(this.handle);
+    this.dispose();
+  }
   preflight(data: Text, layout: Partial<InsertionLayout> = {}): Preflight {
     if (this.handle === undefined) {
       throw new Error("Typing engine session disposed");
@@ -228,6 +246,9 @@ export class BrowserContent {
       throw new Error("Typing engine content disposed");
     }
     return this.handle;
+  }
+  recycleSession(session: BrowserSession): void {
+    session.recycleTo(this.live());
   }
   prepare(input: Prepare): void {
     this.live().prepare(JSON.stringify(input));

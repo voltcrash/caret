@@ -10,6 +10,7 @@ import type {
   ContentRequest,
   Update,
   Cursor,
+  PaceCommand,
 } from "@oxytype/typing-engine/browser.client";
 
 import { createFileRoute } from "@tanstack/solid-router";
@@ -162,6 +163,98 @@ function EngineProof() {
       for (const session of sessions) session.dispose();
       loader.dispose();
       loaders.delete(loader);
+    }
+  };
+  const runContext = async (): Promise<void> => {
+    setResult("");
+    setFailure("");
+    try {
+      const input = JSON.parse(fixture()) as {
+        pace: { targets: Text[]; frames: { command: PaceCommand }[] };
+        normalization: { language: string; data: Text; target: Text }[];
+        learning: Prepare;
+      };
+      const { loadEngine, encodeText } =
+        await import("@oxytype/typing-engine/browser.client");
+      const engine = await loadEngine();
+      if (disposed) return;
+      const pace = engine.createSession(
+        { mode: "words", words: 0 },
+        input.pace.targets,
+      );
+      const content = engine.createContent();
+      const isolated = engine.createContent();
+      const sessions: BrowserSession[] = [pace];
+      try {
+        const frames = input.pace.frames.map(({ command }) =>
+          pace.pace(command),
+        );
+        const normalization = input.normalization.map((item) => {
+          const session = engine.createSession({ language: item.language }, [
+            item.target,
+          ]);
+          try {
+            return session.preflight(item.data).normalized;
+          } finally {
+            session.dispose();
+          }
+        });
+        content.prepare(input.learning);
+        const first = content.createSession();
+        sessions.push(first);
+        first.command({
+          op: "insert",
+          data: encodeText("a"),
+          now: 0,
+          date: 0,
+          automatic: null,
+          isCompositionEnding: null,
+          correctShiftUsed: null,
+        });
+        first.command({
+          op: "insert",
+          data: encodeText("x"),
+          now: 100,
+          date: 100,
+          automatic: null,
+          isCompositionEnding: null,
+          correctShiftUsed: null,
+        });
+        first.pace({ op: "remember", wpm: 77, repeating: false });
+        first.pace({ op: "remember", wpm: 40, repeating: true });
+        content.recycleSession(first);
+        let stale = false;
+        try {
+          first.snapshot();
+        } catch {
+          stale = true;
+        }
+        content.prepare(input.learning);
+        const next = content.createSession();
+        sessions.push(next);
+        isolated.prepare(input.learning);
+        const fresh = isolated.createSession();
+        sessions.push(fresh);
+        setResult(
+          JSON.stringify({
+            frames,
+            normalization,
+            stale,
+            learnedWords: next.snapshot().words,
+            freshWords: fresh.snapshot().words,
+            remembered: next.pace({ op: "reset", wpm: null }).lastWpm,
+            isolated: fresh.pace({ op: "reset", wpm: null }).lastWpm,
+            emptyLog: (next.log() as Log).events.length === 0,
+            active: next.snapshot().state.active,
+          }),
+        );
+      } finally {
+        for (const session of sessions) session.dispose();
+        content.dispose();
+        isolated.dispose();
+      }
+    } catch (error) {
+      setFailure(error instanceof Error ? error.message : String(error));
     }
   };
   const runGeneration = async (): Promise<void> => {
@@ -415,6 +508,14 @@ function EngineProof() {
           }}
         >
           Run loading
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            void runContext();
+          }}
+        >
+          Run context
         </button>
         <pre data-testid="engine-proof-result">{result()}</pre>
         <pre data-testid="engine-proof-error">{failure()}</pre>

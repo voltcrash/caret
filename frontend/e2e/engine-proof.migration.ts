@@ -608,3 +608,51 @@ test("owned Wasm loading retries failed downloads and preserves concurrent handl
   });
   expect(downloads).toBe(6);
 });
+
+test("browser Wasm preserves learning, pace clocks and language normalization", async ({
+  page,
+}) => {
+  const pace = JSON.parse(
+    await readFile(resolve(root, "oracle/pace.json"), "utf8"),
+  ) as { frames: { expected: unknown }[] };
+  const normalization = JSON.parse(
+    await readFile(resolve(root, "oracle/normalization.json"), "utf8"),
+  ) as { expected: number[] }[];
+  const learning = {
+    config: { mode: "words", words: 30, funbox: ["weakspot"] },
+    language: { name: "english", words: [[97], [120]] },
+    random: { kind: "seeded", state: 1 },
+  };
+  await page.goto("/engine-proof");
+  await page
+    .getByRole("textbox", { name: "Command fixture" })
+    .fill(JSON.stringify({ pace, normalization, learning }));
+  await page.getByRole("button", { name: "Run context", exact: true }).click();
+  await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
+  await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+  const result = JSON.parse(
+    await page.getByTestId("engine-proof-result").innerText(),
+  ) as {
+    frames: unknown[];
+    normalization: number[][];
+    stale: boolean;
+    remembered: number;
+    isolated: number;
+    learnedWords: number[][];
+    freshWords: number[][];
+    emptyLog: boolean;
+    active: boolean;
+  };
+  expect(result.frames).toEqual(pace.frames.map((frame) => frame.expected));
+  expect(result.normalization).toEqual(
+    normalization.map((item) => item.expected),
+  );
+  expect(result.stale).toBe(true);
+  expect(result.remembered).toBe(77);
+  expect(result.isolated).toBe(0);
+  expect(result.learnedWords).toHaveLength(30);
+  expect(result.learnedWords.every((word) => word[0] === 120)).toBe(true);
+  expect(result.freshWords.some((word) => word[0] === 97)).toBe(true);
+  expect(result.emptyLog).toBe(true);
+  expect(result.active).toBe(false);
+});
