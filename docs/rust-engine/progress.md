@@ -12,7 +12,7 @@ empty commits to inflate count. Do not publish production or releases implicitly
 
 ## Current position
 
-Stage 1 engine gate passed. Stage 2 Phase 2.5 active on `stack/rust-engine-website`; Stage 3 remains pending. Read root AGENTS.md and the complete migration
+Stage 1 engine gate passed. Stage 2 Phase 2.6 active on `stack/rust-engine-website`; Stage 3 remains pending. Read root AGENTS.md and the complete migration
 plan before edits. Installed workspace dependencies with frozen lockfile.
 Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen oracle and mismatch detection. Existing website engine remains authoritative until Stage 2.
 
@@ -29,8 +29,8 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | 2.2 Input / timer projection | Complete | Native website loop; 1,575 unit cases, 19 built typing parity cases and 8 loading/input/IME/commit browser checks pass. |
 | 2.3 Generation / settings consumers | Complete | Native generation/catalog/settings/restart/practice; source cancellation/recovery; SSR-safe settings extraction; 1,577 unit tests and built-browser gates pass. |
 | 2.4 Results / replay | Complete | Native validity/progress/history/charts/inspector/playback; unit/JSX, frozen parity, save retry and real Start/D1 persistence pass. |
-| 2.5 Delivery / performance | Active | Asset retention/precache, updates/rollback, clean builds and full website budgets remain. |
-| 2.6 TypeScript retirement | Pending | Remove old engine/facades after delivery/performance checks. |
+| 2.5 Delivery / performance | Complete | Fresh Cloudflare build/preview/types, 86 Start checks, update/rollback, full website and controlled Wasm budgets pass. |
+| 2.6 TypeScript retirement | Active | Extract host helpers/wire types; archive oracle provenance; remove old engine/facades. |
 | 3.1–3.5 Terminal | Pending | Requires Stage 2 gate. |
 
 ## Verification log
@@ -425,3 +425,22 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
 - Remaining gate: clean checkout, current whole proof/SSR/browser regression and
   controlled initialization/boundary distribution. Then Phase 2.6 retirement.
   No external deployment, release or Stage 3 completion claimed.
+
+## Phase 2.5 gate passed
+
+- Fresh detached checkout `24b3a3819`: frozen install, no generated/target/dist;
+  actual Cloudflare build automatically produces Rust/Wasm/bindings. All workspace
+  typechecks pass. Fresh workerd preview: 14 document/delivery cases pass (5.36 s).
+- Main current-build Start suite: 14 files / 86 checks pass (48.69 s). Combined engine
+  suite: 37 pass; one replay UI fixture clicked an invisible separator on a random
+  one-letter word. Corrected locator to its visible first letter; rerun passes.
+- Controlled final browser checks: three pass (35.5 s), including replay history/
+  clipboard/seek, original native fixture and 30 fresh initialization contexts.
+  Initialization p95 66.7 ms (<100); boundary and deployed payload/glue checks pass.
+  Raw website-engine-{initialization,boundary}.json retained separately.
+- No server-side engine initialization; no backend validation changes. Ready for
+  release review through the established matched-artifact workflow; hosted staging
+  and production deployment remain unperformed and are not implicitly authorized.
+- Continue immediately with TypeScript retirement. Additional synthetic legacy
+  analysis calls captured once before deleting that test-only recorder; native
+  parity verification is in progress. Original reference snapshots remain unchanged.
