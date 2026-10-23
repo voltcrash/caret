@@ -19,6 +19,8 @@ import type {
   Command,
   Update,
   Query,
+  Response,
+  Config,
   PaceCommand,
   PaceUpdate,
   Snapshot,
@@ -27,7 +29,23 @@ import type {
   InsertionLayout,
 } from "@oxytype/typing-engine/browser.client";
 import { getMutableConfig } from "../../../ts/config/store";
+import * as CustomText from "./custom-text";
+import type { CompletedEvent } from "@oxytype/schemas/results";
 
+type NativeCompletion = Extract<Query, { op: "completed" }>["context"];
+type CompletedEventContext = Omit<
+  NativeCompletion,
+  "config" | "client" | "offline" | "customText"
+> & {
+  config: Partial<Config>;
+  client?: NativeCompletion["client"];
+  offline?: boolean;
+  customText?: NativeCompletion["customText"];
+};
+type ReplayStep = Omit<
+  Extract<Response, { op: "replay" }>["steps"][number],
+  "value"
+> & { value?: string | number };
 type NativeState = Update["state"];
 type Live = LiveMetrics;
 type Tick = {
@@ -36,7 +54,7 @@ type Tick = {
   drift?: number;
   catchup?: boolean;
 } & Pick<Live, "wpm" | "raw" | "acc" | "seconds">;
-type SessionEvents = {
+export type SessionEvents = {
   tick: Tick;
   drift: { now: number; drift: number };
   finish: { reason?: string };
@@ -62,8 +80,10 @@ export const getEngineSession = createAppOwned(() => {
   let state: NativeState | undefined;
   let metadata: Update["metadata"];
   let configuration = "";
+  let limitConfiguration = "";
   let lastTick = 0;
   let running = false;
+  let monitorRenderDrift = true;
   let finishNotified = false;
   let reason: string | undefined;
   let finishClock: { now: number; date: number } | undefined;
@@ -149,6 +169,20 @@ export const getEngineSession = createAppOwned(() => {
       consume(live().command(input), input);
       configuration = serialized;
     }
+    if (config.mode === "custom") {
+      const limit = CustomText.getLimit();
+      const serialized = JSON.stringify(limit);
+      if (serialized !== limitConfiguration) {
+        const input: Command = {
+          op: "customLimit",
+          now,
+          mode: limit.mode,
+          value: limit.value,
+        };
+        consume(live().command(input), input);
+        limitConfiguration = serialized;
+      }
+    }
   };
   const command = (input: Command): Update => {
     if (input.op !== "configure" && input.op !== "reset") {
@@ -159,11 +193,14 @@ export const getEngineSession = createAppOwned(() => {
     return update;
   };
   const paceCommand = (input: PaceCommand): PaceUpdate => {
+    synchronize(performance.now());
     pace = live().pace(input);
     return pace;
   };
   onCleanup(() => {
     running = false;
+    state = undefined;
+    metadata = undefined;
     projections.clear();
     for (const group of Object.values(listeners)) group.clear();
     inputs.clear();
@@ -196,6 +233,7 @@ export const getEngineSession = createAppOwned(() => {
       reason = undefined;
       finishClock = undefined;
       configuration = JSON.stringify(projectEngineConfig(getMutableConfig()));
+      limitConfiguration = JSON.stringify(CustomText.getLimit());
       paceCommand({ op: "reset", wpm: null });
       command({
         op: "view",
@@ -203,11 +241,25 @@ export const getEngineSession = createAppOwned(() => {
         earliestVisibleWord: 0,
         deferAutomatic: true,
         deferFinish: true,
-        monitorRenderDrift: true,
+        monitorRenderDrift,
       });
       return snapshot;
     },
     state: () => state,
+    isPrepared: (): boolean => owner.session() !== undefined,
+    setRenderDriftMonitoring: (enabled: boolean): void => {
+      monitorRenderDrift = enabled;
+      if (owner.session() !== undefined) {
+        command({
+          op: "view",
+          now: performance.now(),
+          earliestVisibleWord: null,
+          deferAutomatic: null,
+          monitorRenderDrift: enabled,
+        });
+      }
+    },
+    isActive: (): boolean => state?.active === true && !state.ended,
     metadata: () => metadata,
     compositionCompletes: (data: string): boolean => {
       synchronize(performance.now());
@@ -247,6 +299,9 @@ export const getEngineSession = createAppOwned(() => {
     start: (now: number): void => {
       command({ op: "start", now, date: Date.now() });
     },
+    bailout: (now: number): void => {
+      command({ op: "bailout", now, date: Date.now() });
+    },
     finish: (now: number, failure?: string): void => {
       command({ op: "finish", now, date: Date.now(), reason: failure ?? null });
     },
@@ -274,6 +329,57 @@ export const getEngineSession = createAppOwned(() => {
           }
         }
       }
+    },
+    abandon: (now: number): { acc: number; seconds: number } => {
+      owner.invalidateSession();
+      command({ op: "abandon", now, date: Date.now() });
+      const stats = owner
+        .api()
+        .analyze(live().log(), { op: "stats", now }).stats;
+      return {
+        acc: live().liveStats(now).acc,
+        seconds: stats.incompleteTestSeconds,
+      };
+    },
+    complete: (
+      log: WebLog,
+      context: CompletedEventContext,
+    ): Omit<CompletedEvent, "hash" | "uid"> => {
+      const result = owner.api().analyze(toEngineLog(log), {
+        op: "completed",
+        context: {
+          ...context,
+          config: projectEngineConfig(context.config),
+          client: context.client ?? null,
+          offline: context.offline ?? null,
+          currentQuote:
+            context.currentQuote === null
+              ? null
+              : {
+                  id: context.currentQuote.id,
+                  group: context.currentQuote.group,
+                },
+          customText: context.customText ?? null,
+        },
+      }).result;
+      // Only representation/narrowed web identifiers differ. Frozen native/Wasm
+      // DTO-schema/hash fixtures mechanically check this transport contract.
+      return result as Omit<CompletedEvent, "hash" | "uid">;
+    },
+    getReplay: (): { words: string[]; steps: ReplayStep[] } => {
+      const replay = owner.api().analyze(live().log(), {
+        op: "replay",
+        zen: getMutableConfig().mode === "zen",
+      });
+      return {
+        words: replay.words.map(decodeText),
+        steps: replay.steps.map((step) => ({
+          ...step,
+          ...(Array.isArray(step.value)
+            ? { value: decodeText(step.value) }
+            : {}),
+        })) as ReplayStep[],
+      };
     },
     liveStats: (now = performance.now()): Live => live().liveStats(now),
     clock: {
