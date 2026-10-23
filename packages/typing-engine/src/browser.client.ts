@@ -62,6 +62,8 @@ export type {
 import { EngineFailure, disposed, invoke } from "./failure";
 export { EngineFailure } from "./failure";
 export type { EngineError, ErrorCode, Recovery } from "./failure";
+import type { LiveMetrics } from "../generated/types/LiveMetrics";
+export type { LiveMetrics };
 const BINDING_VERSION = 1;
 
 export { encodeText, decodeText, toEngineLog, toWebLog } from "./text";
@@ -183,6 +185,9 @@ export class BrowserSession {
           this.live().preflight(JSON.stringify(data), JSON.stringify(layout)),
         ) as Preflight,
     );
+  }
+  liveStats(now: number): LiveMetrics {
+    return invoke(() => JSON.parse(this.live().live_stats(now)) as LiveMetrics);
   }
   snapshot(): Snapshot {
     return invoke(() => JSON.parse(this.live().snapshot()) as Snapshot);

@@ -388,6 +388,19 @@ pub struct Snapshot {
     pub finish: Option<FinishRequest>,
 }
 
+#[derive(Clone, Debug, Serialize, TS)]
+#[serde(rename_all = "camelCase")]
+pub struct LiveMetrics {
+    pub chars: crate::stats::Chars,
+    pub wpm: f64,
+    pub raw: f64,
+    pub acc: f64,
+    pub seconds: f64,
+    pub duration_ms: f64,
+    pub timer_start_ms: Option<f64>,
+    pub ms_since_last_input: Option<f64>,
+}
+
 #[derive(Clone)]
 struct Recorded {
     kind: String,
@@ -470,6 +483,31 @@ pub struct Session {
 }
 
 impl Session {
+    pub fn live_stats(&self, now: f64) -> Result<LiveMetrics, crate::error::EngineError> {
+        if !now.is_finite() || now.abs() > 9_007_199_254_740_991.0 {
+            return Err("Invalid timestamp".into());
+        }
+        let chars = self.live.chars(true);
+        let duration_ms = now - self.start.unwrap_or(now);
+        let seconds = duration_ms / 1000.0;
+        Ok(LiveMetrics {
+            wpm: crate::js_round(crate::stats::wpm(chars.correct_word, seconds)),
+            raw: crate::js_round(crate::stats::wpm(
+                chars.all_correct + chars.extra + chars.incorrect,
+                seconds,
+            )),
+            acc: if self.live.has_input() {
+                self.live.accuracy()
+            } else {
+                100.0
+            },
+            chars,
+            seconds: seconds.floor(),
+            duration_ms,
+            timer_start_ms: self.start,
+            ms_since_last_input: self.live.spacing(),
+        })
+    }
     pub fn restart_policy(
         &self,
         options: crate::restart::RestartOptions,

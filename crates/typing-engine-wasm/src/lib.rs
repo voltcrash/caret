@@ -78,6 +78,13 @@ impl WasmSession {
             .ok_or_else(|| failure(ErrorCode::Disposed, "Session disposed"))?;
         serialize(&session.restart_policy(options))
     }
+    pub fn live_stats(&self, now: f64) -> Result<String, JsError> {
+        let session = self
+            .session
+            .as_ref()
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Session disposed"))?;
+        serialize(&session.live_stats(now).map_err(bind_error)?)
+    }
     pub fn snapshot(&self) -> Result<String, JsError> {
         let session = self
             .session

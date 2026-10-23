@@ -95,6 +95,7 @@ pub(crate) struct Live {
     total: usize,
     sequence: usize,
     last_input_at: Option<f64>,
+    spacing: Option<f64>,
 }
 impl Live {
     pub fn record(&mut self, kind: &str, now: f64, data: &Value, targets: &[Text], korean: bool) {
@@ -111,6 +112,7 @@ impl Live {
         };
         self.sequence += 1;
         if kind == "input" {
+            self.spacing = self.last_input_at.map(|last| round2(stamp.at - last));
             self.last_input_at = Some(stamp.at);
             if data.get("correct").is_some() {
                 self.total += 1;
@@ -161,6 +163,9 @@ impl Live {
     }
     pub fn last_input_at(&self) -> Option<f64> {
         self.last_input_at
+    }
+    pub fn spacing(&self) -> Option<f64> {
+        self.spacing
     }
     pub fn has_input(&self) -> bool {
         self.total > 0
