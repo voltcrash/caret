@@ -1,5 +1,7 @@
 import { readFile, readdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { gzipSync } from "node:zlib";
+import budgets from "../../docs/rust-engine/performance-budgets.json" with { type: "json" };
 import { expect, test } from "playwright/test";
 import { toWebLog } from "@oxytype/typing-engine/text";
 import { CompletedEventSchema } from "@oxytype/schemas/results";
@@ -22,6 +24,23 @@ test("native fixture matches browser Wasm through built Cloudflare assets", asyn
   await page.getByRole("button", { name: "Run fixture" }).click();
   const wasm = await response;
   expect(wasm.status()).toBe(200);
+  const wasmBody = await wasm.body();
+  expect(wasmBody.byteLength).toBeLessThanOrEqual(budgets.wasmRawBytes);
+  expect(gzipSync(wasmBody, { level: 6 }).byteLength).toBeLessThanOrEqual(
+    budgets.wasmGzipBytes,
+  );
+  const assetDirectory = resolve(
+    import.meta.dirname,
+    "../dist/start/client/assets",
+  );
+  const facadeAssets = (await readdir(assetDirectory)).filter(
+    (name) => name.startsWith("browser.client-") && name.endsWith(".js"),
+  );
+  expect(facadeAssets).toHaveLength(1);
+  const facade = await readFile(
+    resolve(assetDirectory, facadeAssets[0] as string),
+  );
+  expect(facade.byteLength).toBeLessThanOrEqual(budgets.glueRawBytes);
   expect(wasm.headers()["content-type"]).toContain("application/wasm");
   await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
   const actual: unknown = JSON.parse(

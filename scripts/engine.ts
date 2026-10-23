@@ -12,10 +12,29 @@ import {
 import { dirname, relative, resolve } from "node:path";
 import { createRequire } from "node:module";
 import { createHash } from "node:crypto";
+import { gzipSync } from "node:zlib";
 
 const root = resolve(import.meta.dirname, "..");
 const output = resolve(root, "packages/typing-engine/generated");
 const cacheFile = resolve(output, "build-cache.json");
+function checkPayload(): void {
+  const budgets = JSON.parse(
+    readFileSync(
+      resolve(root, "docs/rust-engine/performance-budgets.json"),
+      "utf8",
+    ),
+  ) as { wasmRawBytes: number; wasmGzipBytes: number };
+  const wasm = readFileSync(resolve(output, "engine_bg.wasm"));
+  const gzipBytes = gzipSync(wasm, { level: 6 }).byteLength;
+  if (
+    wasm.byteLength > budgets.wasmRawBytes ||
+    gzipBytes > budgets.wasmGzipBytes
+  ) {
+    throw new Error(
+      `Typing engine payload exceeds frozen budget: ${wasm.byteLength} raw / ${gzipBytes} gzip bytes`,
+    );
+  }
+}
 function files(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true })
     .flatMap((entry) => {
@@ -86,6 +105,7 @@ switch (process.argv[2]) {
   case "build": {
     const key = fingerprint();
     if (!process.argv.includes("--force") && cached(key)) {
+      checkPayload();
       process.stdout.write(
         "Typing engine bindings verified; build cache hit\n",
       );
@@ -186,6 +206,7 @@ switch (process.argv[2]) {
     const temporary = `${cacheFile}.tmp-${process.pid}`;
     writeFileSync(temporary, JSON.stringify(cache));
     renameSync(temporary, cacheFile);
+    checkPayload();
     break;
   }
   case "browser":
