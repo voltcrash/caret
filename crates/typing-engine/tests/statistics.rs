@@ -108,6 +108,12 @@ fn summary_fields_match_all_unchanged_browser_results_exactly() {
             &format!("{}.completed", path.display()),
         );
 
+        equal(
+            &serde_json::to_value(typing_engine::results::typed_completed(&log, &context).unwrap())
+                .unwrap(),
+            recorded,
+            &format!("{}.typedCompleted", path.display()),
+        );
         let actual = summary(&log);
         for (key, actual) in actual.as_object().unwrap() {
             equal(

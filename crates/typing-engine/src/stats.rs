@@ -5,7 +5,7 @@ use crate::{
     text::{is_space, js_whitespace},
 };
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
+use serde_json::Value;
 use ts_rs::TS;
 
 #[derive(Clone, Debug, Deserialize, Serialize, TS)]
@@ -404,14 +404,37 @@ pub struct Summary {
     pub key_overlap: f64,
 }
 pub fn typed_summary(log: &Log) -> Result<Summary, crate::error::EngineError> {
-    serde_json::from_value(summary(log)).map_err(|error| {
-        crate::error::EngineError::new(
+    let summary = build_summary(log);
+    if ![
+        summary.wpm,
+        summary.raw_wpm,
+        summary.acc,
+        summary.test_duration,
+        summary.last_key_to_end,
+        summary.start_to_first_key,
+        summary.consistency,
+        summary.wpm_consistency,
+        summary.key_consistency,
+        summary.key_overlap,
+    ]
+    .into_iter()
+    .chain(summary.chart_data.wpm.iter().copied())
+    .chain(summary.chart_data.burst.iter().copied())
+    .chain(summary.key_spacing.iter().copied())
+    .chain(summary.key_duration.iter().copied())
+    .all(f64::is_finite)
+    {
+        return Err(crate::error::EngineError::new(
             crate::error::ErrorCode::InvalidLog,
-            format!("Unrepresentable result metrics: {error}"),
-        )
-    })
+            "Unrepresentable result metrics: non-finite number",
+        ));
+    }
+    Ok(summary)
 }
 pub fn summary(log: &Log) -> Value {
+    serde_json::to_value(build_summary(log)).expect("Serializable summary")
+}
+pub(crate) fn build_summary(log: &Log) -> Summary {
     let counts = chars(log, false, None);
     let seconds = duration(log) / 1000.0;
     let burst = burst_history(log);
@@ -466,12 +489,44 @@ pub fn summary(log: &Log) -> Value {
             }
         }
     }
-    json!({"wpm":round2(wpm(counts.correct_word,seconds)),"rawWpm":round2(wpm(counts.all_correct+counts.incorrect+counts.extra,seconds)),
-        "charStats":[counts.correct_word,counts.incorrect,counts.extra,counts.missed],"charTotal":counts.all_correct+counts.incorrect+counts.extra,
-        "acc":round2(accuracy(log,None)),"testDuration":seconds,"lastKeyToEnd":if log.context.mode=="zen" {0.0} else {raw_last_key_to_end(log)},
-        "startToFirstKey":if log.context.mode=="zen" {0.0} else {round2(first)},"afkDuration":afk(log),
-        "consistency":consistency(&burst),"wpmConsistency":consistency(&speed),"keyConsistency":consistency(&spacing[..spacing.len().saturating_sub(1)]),
-        "chartData":{"wpm":speed,"burst":burst,"err":errors},"keySpacing":spacing,"keyDuration":durations,"keyOverlap":round2(overlap)})
+    Summary {
+        wpm: round2(wpm(counts.correct_word, seconds)),
+        raw_wpm: round2(wpm(
+            counts.all_correct + counts.incorrect + counts.extra,
+            seconds,
+        )),
+        char_stats: [
+            counts.correct_word,
+            counts.incorrect,
+            counts.extra,
+            counts.missed,
+        ],
+        char_total: counts.all_correct + counts.incorrect + counts.extra,
+        acc: round2(accuracy(log, None)),
+        test_duration: seconds,
+        last_key_to_end: if log.context.mode == "zen" {
+            0.0
+        } else {
+            raw_last_key_to_end(log)
+        },
+        start_to_first_key: if log.context.mode == "zen" {
+            0.0
+        } else {
+            round2(first)
+        },
+        afk_duration: afk(log),
+        consistency: consistency(&burst),
+        wpm_consistency: consistency(&speed),
+        key_consistency: consistency(&spacing[..spacing.len().saturating_sub(1)]),
+        chart_data: ChartData {
+            wpm: speed,
+            burst,
+            err: errors,
+        },
+        key_spacing: spacing,
+        key_duration: durations,
+        key_overlap: round2(overlap),
+    }
 }
 
 pub fn input_history(log: &Log) -> Vec<Text> {

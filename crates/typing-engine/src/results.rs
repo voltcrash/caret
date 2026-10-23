@@ -3,7 +3,7 @@ use crate::{
     stats::{self, Log},
 };
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
+use serde_json::Value;
 use ts_rs::TS;
 
 #[derive(Clone, Debug, Deserialize, Serialize, TS)]
@@ -60,12 +60,24 @@ pub fn typed_completed(
     log: &Log,
     context: &CompletedContext,
 ) -> Result<CompletedMetrics, crate::error::EngineError> {
-    serde_json::from_value(completed(log, context)).map_err(|error| {
-        crate::error::EngineError::new(
+    if !context.timestamp.is_finite()
+        || !context.incomplete_seconds.is_finite()
+        || context
+            .incomplete_tests
+            .iter()
+            .any(|test| !test.acc.is_finite() || !test.seconds.is_finite())
+        || context
+            .custom_text
+            .as_ref()
+            .is_some_and(|custom| !custom.limit.value.is_finite())
+    {
+        return Err(crate::error::EngineError::new(
             crate::error::ErrorCode::InvalidLog,
-            format!("Unrepresentable completed result: {error}"),
-        )
-    })
+            "Unrepresentable completed result: non-finite metadata",
+        ));
+    }
+    let summary = stats::typed_summary(log)?;
+    Ok(build_completed(context, summary))
 }
 #[derive(Clone, Debug, Deserialize, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
@@ -91,42 +103,57 @@ pub fn mode2(config: &Config, quote: Option<&QuoteRef>) -> String {
     }
 }
 pub fn completed(log: &Log, context: &CompletedContext) -> Value {
+    serde_json::to_value(build_completed(context, stats::build_summary(log)))
+        .expect("Serializable completed result")
+}
+fn build_completed(context: &CompletedContext, summary: stats::Summary) -> CompletedMetrics {
     let config = &context.config;
-    let mut value = stats::summary(log);
-    let object = value.as_object_mut().expect("summary object");
-    let metadata = json!({
-        "client": context.client.as_deref().unwrap_or("web"),
-        "language": if config.mode == "quote" { crate::quotes::remove_language_size(&config.language) } else { config.language.clone() },
-        "tags": context.tags, "punctuation": config.punctuation, "numbers": config.numbers,
-        "lazyMode": config.lazy_mode, "timestamp": context.timestamp, "mode": config.mode,
-        "mode2": mode2(config,context.current_quote.as_ref()), "bailedOut": context.bailed_out,
-        "funbox": config.funbox, "difficulty": config.difficulty, "blindMode": config.blind_mode,
-        "stopOnLetter": config.stop_on_error == "letter", "restartCount": context.restart_count,
-        "incompleteTests": context.incomplete_tests,
-        "incompleteTestSeconds": if context.incomplete_seconds < 0.0 { 0.0 } else { round2(context.incomplete_seconds) }
-    });
-    object.extend(metadata.as_object().expect("metadata object").clone());
-    if let Some(offline) = context.offline {
-        object.insert("offline".into(), json!(offline));
-    }
-    if config.mode == "custom"
-        && let Some(custom) = &context.custom_text
-    {
-        object.insert("customText".into(), json!(custom));
-    }
-    if config.mode == "quote" {
-        object.insert(
-            "quoteLength".into(),
-            json!(
+    CompletedMetrics {
+        summary,
+        client: context.client.as_deref().unwrap_or("web").into(),
+        offline: context.offline,
+        language: if config.mode == "quote" {
+            crate::quotes::remove_language_size(&config.language)
+        } else {
+            config.language.clone()
+        },
+        tags: context.tags.clone(),
+        punctuation: config.punctuation,
+        numbers: config.numbers,
+        lazy_mode: config.lazy_mode,
+        timestamp: context.timestamp,
+        mode: config.mode.clone(),
+        mode2: mode2(config, context.current_quote.as_ref()),
+        bailed_out: context.bailed_out,
+        funbox: config.funbox.clone(),
+        difficulty: config.difficulty.clone(),
+        blind_mode: config.blind_mode,
+        stop_on_letter: config.stop_on_error == "letter",
+        restart_count: context.restart_count,
+        incomplete_tests: context.incomplete_tests.clone(),
+        incomplete_test_seconds: if context.incomplete_seconds < 0.0 {
+            0.0
+        } else {
+            round2(context.incomplete_seconds)
+        },
+        custom_text: if config.mode == "custom" {
+            context.custom_text.clone()
+        } else {
+            None
+        },
+        quote_length: if config.mode == "quote" {
+            Some(
                 context
                     .current_quote
                     .as_ref()
-                    .map_or(-1, |quote| quote.group as i64)
-            ),
-        );
+                    .map_or(-1, |quote| quote.group as i32),
+            )
+        } else {
+            None
+        },
     }
-    value
 }
+
 #[derive(Clone, Debug, Deserialize, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
 pub struct ValidityResult {
