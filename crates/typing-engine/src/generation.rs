@@ -1011,6 +1011,28 @@ impl Content {
         self.generator = None;
         self.prepared = None;
     }
+    pub fn quote_catalog(
+        &mut self,
+        asset: crate::quotes::QuoteAsset,
+        lengths: Option<Vec<i32>>,
+        mut random: Random,
+    ) -> Result<crate::quotes::QuoteCollection, EngineError> {
+        crate::validation::random(&random)?;
+        if lengths.as_ref().is_some_and(|lengths| {
+            lengths.len() > 64
+                || lengths
+                    .iter()
+                    .any(|length| ![-3, -2, 0, 1, 2, 3].contains(length))
+        }) {
+            return Err(EngineError::new(
+                ErrorCode::InvalidConfig,
+                "Invalid quote length selection",
+            ));
+        }
+        self.assets
+            .quotes
+            .load_catalog(asset, lengths.as_deref(), &mut random)
+    }
     pub fn update_quote_queue(
         &mut self,
         lengths: &[i32],

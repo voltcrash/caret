@@ -170,6 +170,22 @@ impl WasmContent {
             .prepare_repeating(input, repeating)
             .map_err(bind_error)
     }
+    // Reuse the existing prepared-asset envelope/parser. Only quotes, random and
+    // quote lengths participate; other preparation fields do not affect catalogs.
+    pub fn quote_catalog(&mut self, input: &str, refresh_lengths: bool) -> Result<String, JsError> {
+        let input: typing_engine::generation::Prepare = parse(input)?;
+        let asset = input
+            .quotes
+            .ok_or_else(|| failure(ErrorCode::InvalidContent, "Quote catalog asset missing"))?;
+        let lengths = refresh_lengths.then_some(input.config.quote_length);
+        let collection = self
+            .content
+            .as_mut()
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Content disposed"))?
+            .quote_catalog(asset, lengths, input.random)
+            .map_err(bind_error)?;
+        serialize(&collection)
+    }
     pub fn update_quote_queue(&mut self, lengths: &str, random: &str) -> Result<String, JsError> {
         let lengths: Vec<i32> = parse(lengths)?;
         let random = parse(random)?;

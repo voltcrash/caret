@@ -16,6 +16,7 @@ import type { Update } from "../generated/types/Update";
 import type { Prepare } from "../generated/types/Prepare";
 import type { Generated } from "../generated/types/Generated";
 import type { NextWord } from "../generated/types/NextWord";
+import type { QuoteCollection } from "../generated/types/QuoteCollection";
 import type { Quote } from "../generated/types/Quote";
 import type { Query } from "../generated/types/Query";
 import type { Response } from "../generated/types/Response";
@@ -59,6 +60,7 @@ export type {
   Generated,
   NextWord,
   Quote,
+  QuoteCollection,
 };
 import { EngineFailure, disposed, invoke } from "./failure";
 export { EngineFailure } from "./failure";
@@ -285,6 +287,26 @@ export class BrowserContent {
   }
   prepare(input: Prepare, repeating = false): void {
     invoke(() => this.live().prepare(JSON.stringify(input), repeating));
+  }
+  quoteCatalog(
+    asset: NonNullable<Prepare["quotes"]>,
+    lengths: number[] | null,
+    random: Random,
+  ): QuoteCollection {
+    return invoke(
+      () =>
+        JSON.parse(
+          this.live().quote_catalog(
+            JSON.stringify({
+              quotes: asset,
+              random,
+              config: { quoteLength: lengths ?? [] },
+              language: { name: "", words: [] },
+            }),
+            lengths !== null,
+          ),
+        ) as QuoteCollection,
+    );
   }
   updateQuoteQueue(lengths: number[], random: Random): Random {
     return invoke(
