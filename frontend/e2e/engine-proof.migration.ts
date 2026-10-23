@@ -66,7 +66,7 @@ test("native fixture matches browser Wasm through built Cloudflare assets", asyn
     );
     await writeFile(
       output,
-      `${JSON.stringify({ fixture: "built Cloudflare Start; Desktop Chrome; 50 warmed samples per boundary; 200 UTF-16 units per sample; 7 real keyboard commits with double-rAF paint", browser: page.context().browser()?.version(), wasmBytes: (await wasm.body()).byteLength, wasmHeaders: wasm.headers(), inputToPaint, benchmark }, null, 2)}\n`,
+      `${JSON.stringify({ fixture: "built Cloudflare Start; Desktop Chrome; 50 warmed JSON samples; 200 UTF-16 units per sample; 7 real keyboard commits with double-rAF paint", browser: page.context().browser()?.version(), wasmBytes: (await wasm.body()).byteLength, wasmHeaders: wasm.headers(), inputToPaint, benchmark }, null, 2)}\n`,
     );
   }
   // Invalid creation must be recoverable; subsequent valid creation still works.

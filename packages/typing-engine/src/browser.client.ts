@@ -196,12 +196,6 @@ export class BrowserSession {
     }
     return JSON.parse(this.handle.log()) as unknown;
   }
-  commandObject(command: Command): Update {
-    if (this.handle === undefined) {
-      throw new Error("Typing engine session disposed");
-    }
-    return this.handle.command_value(command) as Update;
-  }
   dispose(): void {
     const handle = this.handle;
     if (handle === undefined) return;
@@ -211,44 +205,35 @@ export class BrowserSession {
   }
 }
 
-/** Compare incremental object conversion with a JSON boundary, same core. */
-export function benchmarkBoundary(): { jsonMs: number[]; objectMs: number[] } {
+/** Selected synchronous JSON boundary; prior object-control measurements are archived. */
+export function benchmarkBoundary(): { jsonMs: number[] } {
   const jsonMs: number[] = [];
-  const objectMs: number[] = [];
   const config: Partial<Config> = { mode: "words", words: 0 };
   const words = Array.from({ length: 101 }, () => encodeText("a "));
   for (let sample = 0; sample < 60; sample++) {
-    for (const [object, measurements] of [
-      [false, jsonMs],
-      [true, objectMs],
-    ] as const) {
-      const session = new BrowserSession(config, words);
-      try {
-        const start = performance.now();
-        for (let index = 0; index < 100; index++) {
-          const command: Command = {
-            op: "insert",
-            data: [97, 32],
-            now: index * 100,
-            date: 0,
-            automatic: null,
-            isCompositionEnding: null,
-            correctShiftUsed: null,
-          };
-          const update = object
-            ? session.commandObject(command)
-            : session.command(command);
-          if (update.state.wordIndex !== index + 1) {
-            throw new Error("Boundary benchmark lost progress");
-          }
+    const session = new BrowserSession(config, words);
+    try {
+      const start = performance.now();
+      for (let index = 0; index < 100; index++) {
+        const update = session.command({
+          op: "insert",
+          data: [97, 32],
+          now: index * 100,
+          date: 0,
+          automatic: null,
+          isCompositionEnding: null,
+          correctShiftUsed: null,
+        });
+        if (update.state.wordIndex !== index + 1) {
+          throw new Error("Boundary benchmark lost progress");
         }
-        if (sample >= 10) measurements.push((performance.now() - start) / 200);
-      } finally {
-        session.dispose();
       }
+      if (sample >= 10) jsonMs.push((performance.now() - start) / 200);
+    } finally {
+      session.dispose();
     }
   }
-  return { jsonMs, objectMs };
+  return { jsonMs };
 }
 
 export class BrowserContent {

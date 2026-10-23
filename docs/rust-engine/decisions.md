@@ -30,3 +30,7 @@ Actual built-Cloudflare browser tests show both master and minimum-burst failure
 ## Section request ordering
 
 One outstanding section request per generator, with at most 16 prefetched sections. Background prefetch does not disable typing while already prepared words remain. At exhaustion, preserve the current commit and its bounded remaining UTF-16 batch; reject new insertion/deletion until a matching response arrives. Generation and input timestamps remain stable. Reset/end cancel requests. Resume-time completion uses the reply's explicit monotonic and wall-clock timestamps, matching the browser's post-await finish ordering. This replaces the old possibility of concurrent, out-of-order section fetches with explicit ordering as required by the migration contract; the browser adapter must not start duplicate requests.
+
+## Selected command serialization
+
+Archived native/browser measurements compare incremental object conversion and JSON (proof-performance.json, profile-z-proof-performance.json). JSON is faster at the frozen 200-unit workload. Retire the benchmark-only object facade and serde-wasm-bindgen conversion dependency after the expanded 13-test browser parity pass; production uses one synchronous JSON interface. Keep original measurement evidence. Deployed glue is the minified Vite asset containing generated glue and the host facade (15,975 bytes at the policy checkpoint); generated development-source comments are not transferred. Numeric budgets remain unchanged.
