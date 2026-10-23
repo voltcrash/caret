@@ -1184,3 +1184,52 @@ test("quote length changes refresh only the owned queue and preserve cached-lang
     })),
   });
 });
+
+test("quote catalog reads retain the original selected-object normalization through Wasm", async ({
+  page,
+}) => {
+  const reference = JSON.parse(
+    await readFile(
+      resolve(root, "oracle/quote-catalog-selection.json"),
+      "utf8",
+    ),
+  ) as {
+    asset: { quotes: { text: string; britishText: string }[] };
+    stages: { british: boolean; expected: unknown }[];
+  };
+  const units = (value: string): number[] =>
+    Array.from({ length: value.length }, (_, index) => value.charCodeAt(index));
+  const neutral = (value: unknown, key = ""): unknown => {
+    if (
+      typeof value === "string" &&
+      ["text", "britishText", "textSplit", "words"].includes(key)
+    ) {
+      return units(value);
+    }
+    if (Array.isArray(value)) return value.map((item) => neutral(item, key));
+    if (value !== null && typeof value === "object") {
+      return Object.fromEntries(
+        Object.entries(value).map(([name, item]) => [
+          name,
+          neutral(item, name),
+        ]),
+      );
+    }
+    return value;
+  };
+  await page.goto("/engine-proof");
+  await page.getByRole("textbox", { name: "Command fixture" }).fill(
+    JSON.stringify({
+      asset: neutral(reference.asset),
+      stages: reference.stages.map(({ british }) => ({ british })),
+    }),
+  );
+  await page
+    .getByRole("button", { name: "Run quote catalog", exact: true })
+    .click();
+  await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
+  await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+  expect(
+    JSON.parse(await page.getByTestId("engine-proof-result").innerText()),
+  ).toEqual(reference.stages.map((stage) => neutral(stage.expected)));
+});

@@ -696,6 +696,58 @@ function EngineProof() {
       setFailure(error instanceof Error ? error.message : String(error));
     }
   };
+  const runQuoteCatalog = async (): Promise<void> => {
+    setResult("");
+    setFailure("");
+    try {
+      const input = JSON.parse(fixture()) as {
+        asset: NonNullable<Prepare["quotes"]>;
+        stages: { british: boolean }[];
+      };
+      const { loadEngine } =
+        await import("@oxytype/typing-engine/browser.client");
+      const engine = await loadEngine();
+      if (disposed) return;
+      const content = engine.createContent();
+      try {
+        content.quoteCatalog(input.asset, [-2], { kind: "seeded", state: 11 });
+        const results = input.stages.map(({ british }) => {
+          content.prepare({
+            config: {
+              mode: "quote",
+              language: "swiss_german",
+              quoteLength: [-2],
+              britishEnglish: british,
+            },
+            language: { name: "swiss_german", words: [[97]] },
+            quotes: null,
+            random: { kind: "seeded", state: 11 },
+            selectedQuoteId: 1,
+          } as Prepare);
+          const currentQuote = content.metadata().currentQuote;
+          const collection = content.quoteCatalog(input.asset, null, {
+            kind: "seeded",
+            state: 11,
+          });
+          return {
+            currentQuote,
+            words: currentQuote?.textSplit,
+            collection: {
+              ...collection,
+              groups: collection.groups.map((group) =>
+                group.map((index) => collection.quotes[index]),
+              ),
+            },
+          };
+        });
+        setResult(JSON.stringify(results));
+      } finally {
+        content.dispose();
+      }
+    } catch (error) {
+      setFailure(error instanceof Error ? error.message : String(error));
+    }
+  };
   const runQuoteQueue = async (): Promise<void> => {
     setResult("");
     setFailure("");
@@ -1055,6 +1107,14 @@ function EngineProof() {
           }}
         >
           Run quote queue
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            void runQuoteCatalog();
+          }}
+        >
+          Run quote catalog
         </button>
         <button
           type="button"
