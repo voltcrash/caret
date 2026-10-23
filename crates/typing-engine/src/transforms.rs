@@ -78,6 +78,15 @@ pub fn alter(
     bound: usize,
     random: &mut Random,
 ) -> Result<Text, String> {
+    alter_with_bound(name, word, index, bound as f64, random)
+}
+pub fn alter_with_bound(
+    name: &str,
+    word: Text,
+    index: usize,
+    bound: f64,
+    random: &mut Random,
+) -> Result<Text, String> {
     let mut word = word;
     match name {
         "morse" => word = morse(word),
@@ -187,7 +196,7 @@ pub fn alter(
             }
             word = Text(output);
         }
-        "underscore_spaces" if index + 1 != bound => {
+        "underscore_spaces" if (index + 1) as f64 != bound => {
             append(&mut word, "_");
         }
         _ => {}

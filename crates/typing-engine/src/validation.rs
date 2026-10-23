@@ -67,7 +67,10 @@ pub fn random(random: &crate::random::Random) -> Result<(), EngineError> {
 
 pub fn custom(custom: &crate::generation::CustomText) -> Result<(), EngineError> {
     words(&custom.text)?;
-    if custom.limit.value > MAX_WORDS {
+    if !custom.limit.value.is_finite()
+        || custom.limit.value < 0.0
+        || custom.limit.value > MAX_WORDS as f64
+    {
         return Err(invalid(
             ErrorCode::InvalidContent,
             "Custom limit exceeds bound",

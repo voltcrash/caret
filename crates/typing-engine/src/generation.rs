@@ -20,7 +20,7 @@ pub type GenerationConfig = crate::Config;
 #[derive(Clone, Debug, Deserialize, TS)]
 pub struct CustomLimit {
     pub mode: String,
-    pub value: usize,
+    pub value: f64,
 }
 #[derive(Clone, Debug, Deserialize, TS)]
 #[serde(rename_all = "camelCase")]
@@ -59,7 +59,7 @@ pub struct Assets {
 }
 struct Batch {
     repeating: bool,
-    limit: usize,
+    limit: f64,
     words: Vec<Text>,
     indexes: Vec<usize>,
     raw: Vec<Text>,
@@ -157,7 +157,7 @@ impl Generator {
     pub fn custom_limit(&self) -> Option<crate::results::Limit> {
         self.custom.as_ref().map(|custom| crate::results::Limit {
             mode: custom.limit.mode.clone(),
-            value: custom.limit.value as f64,
+            value: custom.limit.value,
         })
     }
     pub fn new(
@@ -401,50 +401,57 @@ impl Generator {
             prepared_generation: 0,
         })
     }
-    fn limit(&self) -> usize {
+    fn limit(&self) -> f64 {
         if self.config.mode == "zen" {
-            return 0;
+            return 0.0;
         }
-        let mut limit = 100;
+        let mut limit = 100.0;
         if self.config.show_all_lines && self.config.mode == "words" {
-            limit = self.config.words as usize;
+            limit = self.config.words as f64;
         }
-        if self.config.mode == "words" && self.config.words as usize == 0 {
-            limit = 100;
+        if self.config.mode == "words" && self.config.words as f64 == 0.0 {
+            limit = 100.0;
         }
         if let Some(custom) = &self.custom
             && self.config.mode == "custom"
         {
-            limit = if custom.limit.value == 0 || custom.limit.mode == "time" {
-                100
+            limit = if custom.limit.value == 0.0 || custom.limit.mode == "time" {
+                100.0
             } else {
-                custom.limit.value.min(100)
+                custom.limit.value.min(100.0)
             };
         }
-        if self.config.mode == "words" && self.config.words as usize > 0 {
-            limit = limit.min(self.config.words as usize);
+        if self.config.mode == "words" && self.config.words as f64 > 0.0 {
+            limit = limit.min(self.config.words as f64);
         }
         for funbox in &self.config.funbox {
             if let Some(count) = match funbox.as_str() {
-                "plus_zero" => Some(1),
-                "plus_one" => Some(2),
-                "plus_two" => Some(3),
-                "plus_three" => Some(4),
+                "plus_zero" => Some(1.0),
+                "plus_one" => Some(2.0),
+                "plus_two" => Some(3.0),
+                "plus_three" => Some(4.0),
                 _ => None,
             } {
                 limit = count;
                 break;
             }
         }
-        if self.config.mode == "words" && self.config.words as usize > 0 {
-            limit = limit.min(self.config.words as usize);
+        if self.config.mode == "words" && self.config.words as f64 > 0.0 {
+            limit = limit.min(self.config.words as f64);
         }
         if let Some(quote) = &self.current_quote {
             limit = if self.config.show_all_lines {
-                quote.text_split.len()
+                quote.text_split.len() as f64
             } else {
-                limit.min(quote.text_split.len())
+                limit.min(quote.text_split.len() as f64)
             };
+        }
+        if self.config.mode == "custom"
+            && let Some(custom) = &self.custom
+            && custom.limit.mode == "word"
+            && custom.limit.value != 0.0
+        {
+            limit = limit.min(custom.limit.value);
         }
         limit
     }
@@ -458,11 +465,11 @@ impl Generator {
         if self.config.mode == "custom"
             && let Some(custom) = &self.custom
         {
-            return custom.limit.value > 0
+            return custom.limit.value > 0.0
                 && match custom.limit.mode.as_str() {
-                    "word" => self.generated >= custom.limit.value,
+                    "word" => self.generated as f64 >= custom.limit.value,
                     "section" => {
-                        self.section_index >= custom.limit.value && self.section.is_empty()
+                        self.section_index as f64 >= custom.limit.value && self.section.is_empty()
                     }
                     _ => false,
                 };
@@ -591,7 +598,7 @@ impl Generator {
                 self.previous.clear();
             }
             let limit = self.limit();
-            if limit > 1_000_000 {
+            if limit > 1_000_000.0 {
                 return Err("Generation request exceeds bound".into());
             }
             Batch {
@@ -602,9 +609,9 @@ impl Generator {
                 raw: vec![],
             }
         };
-        if batch.limit > 0 {
+        if batch.limit > 0.0 {
             loop {
-                let next = match self.next(
+                let next = match self.next_with_bound(
                     batch.words.len(),
                     batch.limit,
                     batch.raw.last(),
@@ -627,9 +634,9 @@ impl Generator {
                         .as_ref()
                         .is_some_and(|custom| custom.pipe_delimiter);
                 if (sections
-                    && ((self.section.is_empty() && self.section_index >= batch.limit)
+                    && ((self.section.is_empty() && self.section_index as f64 >= batch.limit)
                         || batch.words.len() >= 100))
-                    || (!sections && batch.words.len() >= batch.limit)
+                    || (!sections && batch.words.len() as f64 >= batch.limit)
                 {
                     break;
                 }
@@ -663,6 +670,19 @@ impl Generator {
         previous: Option<&Text>,
         previous2: Option<&Text>,
     ) -> Result<NextWord, crate::error::EngineError> {
+        self.next_with_bound(index, bound as f64, previous, previous2)
+    }
+    pub fn next_with_bound(
+        &mut self,
+        index: usize,
+        bound: f64,
+        previous: Option<&Text>,
+        previous2: Option<&Text>,
+    ) -> Result<NextWord, crate::error::EngineError> {
+        if !bound.is_finite() || !(0.0..=1_000_000.0).contains(&bound) || index > 1_000_000 {
+            return Err("Invalid generation position/bound".into());
+        }
+
         if let Some(error) = &self.source_failure {
             return Err(error.clone());
         }
@@ -680,9 +700,9 @@ impl Generator {
                 || (self.config.mode == "custom"
                     && self.custom.as_ref().is_some_and(|custom| {
                         custom.limit.mode == "time"
-                            || (custom.limit.mode == "word" && index < custom.limit.value)
+                            || (custom.limit.mode == "word" && (index as f64) < custom.limit.value)
                             || (custom.limit.mode == "section"
-                                && self.section_index < custom.limit.value)
+                                && (self.section_index as f64) < custom.limit.value)
                     }));
             if !continuation {
                 return Err("Repeated word is undefined".into());
@@ -913,7 +933,7 @@ impl Generator {
             );
         }
         for name in &self.config.funbox {
-            word = crate::transforms::alter(name, word, index, bound, &mut self.random)?;
+            word = crate::transforms::alter_with_bound(name, word, index, bound, &mut self.random)?;
         }
         let mut committed = word.clone();
         if committed.0.last() != Some(&10)

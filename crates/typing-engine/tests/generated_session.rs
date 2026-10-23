@@ -90,7 +90,7 @@ fn custom_time_and_infinite_limits_do_not_finish_at_prepared_content_end() {
             mode: "repeat".into(),
             limit: CustomLimit {
                 mode: "time".into(),
-                value,
+                value: value as f64,
             },
             pipe_delimiter: false,
         };
@@ -209,7 +209,7 @@ fn prepared_content_flags_include_tabs_and_newlines_beyond_initial_window() {
         mode: "repeat".into(),
         limit: CustomLimit {
             mode: "time".into(),
-            value: 30,
+            value: 30.0,
         },
         pipe_delimiter: false,
     };

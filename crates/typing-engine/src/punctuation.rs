@@ -6,7 +6,7 @@ pub struct Punctuation {
 pub struct PunctuationContext<'a> {
     pub previous: Option<&'a Text>,
     pub index: usize,
-    pub bound: usize,
+    pub bound: f64,
     pub language: &'a str,
     pub funboxes: &'a [String],
 }
@@ -141,8 +141,8 @@ impl Punctuation {
                     self.spanish = Some(33);
                 }
             }
-        } else if (random.draw()? < 0.1 && no_end && index != bound.saturating_sub(2))
-            || index + 1 == bound
+        } else if (random.draw()? < 0.1 && no_end && index as f64 != bound - 2.0)
+            || (index + 1) as f64 == bound
         {
             if lang == "spanish" {
                 if let Some(end) = self.spanish.take() {

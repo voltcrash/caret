@@ -161,7 +161,7 @@ impl WasmContent {
     pub fn next(
         &mut self,
         index: usize,
-        bound: usize,
+        bound: f64,
         previous: &str,
         previous2: &str,
     ) -> Result<String, JsError> {
@@ -174,7 +174,7 @@ impl WasmContent {
             .generator()
             .map_err(bind_error)?;
         let next = generator
-            .next(index, bound, previous.as_ref(), previous2.as_ref())
+            .next_with_bound(index, bound, previous.as_ref(), previous2.as_ref())
             .map_err(bind_error)?;
         serialize(&next)
     }
