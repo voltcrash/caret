@@ -12,7 +12,7 @@ empty commits to inflate count. Do not publish production or releases implicitly
 
 ## Current position
 
-Stage 1 engine gate passed. Stage 2 Phase 2.1 active on `stack/rust-engine-website`; Stage 3 remains pending. Read root AGENTS.md and the complete migration
+Stage 1 engine gate passed. Stage 2 Phase 2.3 active on `stack/rust-engine-website`; Stage 3 remains pending. Read root AGENTS.md and the complete migration
 plan before edits. Installed workspace dependencies with frozen lockfile.
 Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen oracle and mismatch detection. Existing website engine remains authoritative until Stage 2.
 
@@ -26,7 +26,7 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | 1.6 Events / results / replay | Complete | Eight exact original CompletedEvents/hashes/schema/backend outcomes, replay/seek, Unicode history, 1,387 live prefixes and malformed-log validation. |
 | 1.7 Binding / engine gate | Complete | 24 built-browser cases, unchanged results/hashes, frozen payload/performance limits, fresh production build/typechecks; CI engine/native/Wasm and quality/package/SSR/delivery/update jobs pass at e7b7ad864. Existing website browser shards still running when this record was written. |
 | 2.1 Browser owner / loading | Complete | App-owned loader/content/session resource; 51 unit cases; actual Cloudflare delayed-download/503/retry browser checks pass; server bundles contain no Wasm initializer. |
-| 2.2 Input / timer projection | Active | Native beforeinput/live queries and thin app-owned update projection under integration; full loop cutover pending. |
+| 2.2 Input / timer projection | Complete | Native website loop; 1,575 unit cases, 19 built typing parity cases and 8 loading/input/IME/commit browser checks pass. |
 | 2.3 Generation / settings consumers | Active | Raw asset/source host, owned content preparation, cancellation and cached quote recovery implemented; typing-loop connection pending. |
 | 2.4–2.6 Results / delivery / cutover | Pending | Results/replay integration and TypeScript retirement remain. |
 | 3.1–3.5 Terminal | Pending | Requires Stage 2 gate. |
@@ -263,3 +263,42 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
 - Native IME quick-finish query now compares owned finite targets/input in exact UTF-16; ended/infinite/pending sessions reject it. Small metadata deltas report generation flag changes without exporting targets. Native query regressions, full native suite and Clippy pass. All 26 built Cloudflare browser cases pass (55.2 s), including surrogate composition and metadata reads. Wasm 757,683 raw / 302,634 gzip6 bytes remains within budget. Owner invalidation now aborts source/automatic continuations on reset/end while retaining the native handle for result reads. Timer/explicit failure acknowledgement retains its captured clock; input completion retains the later observed browser clock. Focused transport/content/owner suite passes 15 checks.
 
 - Added the browser content host: converts raw language/quote/custom assets into lossless native DTOs; loads account favorite IDs/polyglot assets; delegates prepare/repeat/selection/generation entirely to Rust; supplies one requested raw source at a time. Empty Wikipedia cleanup retries the exact token; active requests share one promise and abort on invalidation. Quote queue refresh also works after failed selection, and raw cached-language data remains reusable. Six initial asset/content checks plus shared-request regression pass; combined owner/projection/content suite passes 15 checks. This host is not yet used by the production typing loop.
+
+## Website typing-loop cutover checkpoint
+
+- Native commands now drive the website input/deletion/IME loop. Browser handlers
+  supply UTF-16 units, actual textarea deletion and measured layout/visibility;
+  Rust owns normalization/expansion, acceptance, navigation, automatic indentation,
+  finish/failure, recorder cleanup, live statistics, timing and pace correction.
+- Component-owned subscription projects deltas into existing word/caret rendering,
+  visual/audio hooks and loading UI. Initial and incremental content use the owned
+  raw-source adapter, with generation cancellation and exact source-token reuse.
+- Fixed two integration defects found by broad browser checks: generated content
+  must transfer into its session without another generation/RNG/source pass;
+  omitted quote `britishText` must be optional in generated declarations. Existing
+  restart focus is preserved while loading/error gates still disable unavailable input.
+- Added immutable original-browser `browser-final-word-batch.json`; native test
+  matches all nine entries and the actual migrated website matches it exactly.
+  No snapshot regenerated. Composition and blind commit ordering checks added.
+- `vp run engine:test`: full native pass after content handoff; Clippy passes.
+- Actual Cloudflare build + migration suite: 27 pass (54.2 s). Subsequent built-site
+  typing parity: 19 pass (1.0 m), including external poetry/Wikipedia in two
+  languages, quotes, restart focus, words/time and signed-in result submission.
+- `vp test run --project=unit-frontend`: 132 files / 1,575 tests pass after adapting
+  lifecycle, input, pace, app ownership and replay derivation to actual optimized
+  Wasm. Frozen replay snapshots remain byte-for-byte unchanged. Latest visual
+  ordering/metadata changes pass the subsequent 8-case built-browser rerun (15.0 s),
+  including synthetic composition quick finish and blind-mode commit rendering.
+- Whole frontend type-aware lint/typecheck passes. Native source generation and
+  all frontend validation evidence above are local; current PR CI remains pending.
+- Transitional test-only `__harness__/legacy-event-recorder.ts` isolates deliberately
+  synthetic legacy recorder/statistics cases. It is not imported by production.
+  Retire it with the old core in Phase 2.6 after moving those cases to neutral/native
+  analysis fixtures. This is outstanding migration work, not final architecture.
+- Next: finish browser input/source edge checks; migrate remaining settings/restart/
+  practice policies and result/history/replay playback; delivery/performance and
+  TypeScript retirement remain open. Terminal Stage 3 remains pending.
+
+- Phase 2.2 gate passed at `af262a763`: typing-loop replacement committed. Subsequent
+  eight-case browser edge gate also passes; continue immediately with Phase 2.3.
+  Actual hardware IME/OS keyboard matrix is not represented by synthetic events.
