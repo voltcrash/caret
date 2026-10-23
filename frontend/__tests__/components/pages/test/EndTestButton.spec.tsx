@@ -1,3 +1,5 @@
+import "../../../__harness__/native-engine";
+import { evaluatePolicy } from "@oxytype/typing-engine/browser.client";
 import { cleanup, fireEvent, render, screen } from "@solidjs/testing-library";
 import {
   afterEach,
@@ -76,3 +78,10 @@ describe("EndTestButton", () => {
     ).toBeInTheDocument();
   });
 });
+
+vi.mock("../../../../src/features/typing/engine.client", () => ({
+  getBrowserEngine: () => ({
+    status: () => ({ state: "ready" }),
+    api: () => ({ policy: evaluatePolicy }),
+  }),
+}));
