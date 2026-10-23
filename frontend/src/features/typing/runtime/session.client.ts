@@ -60,11 +60,13 @@ export const getEngineSession = createAppOwned(() => {
   const projections = new Set<Projection>();
   const inputs = new Map<number, string>();
   let state: NativeState | undefined;
+  let metadata: Update["metadata"];
   let configuration = "";
   let lastTick = 0;
   let running = false;
   let finishNotified = false;
   let reason: string | undefined;
+  let finishClock: { now: number; date: number } | undefined;
   let pace: PaceUpdate = { position: null, stepEnd: 0, lastWpm: 0 };
   const live = (): BrowserSession => {
     const session = owner.session();
@@ -82,6 +84,7 @@ export const getEngineSession = createAppOwned(() => {
   const consume = (update: Update, command: Command): Update => {
     const generation = owner.generation();
     state = update.state;
+    if (update.metadata !== undefined) metadata = update.metadata;
     const events = update.events.map(toWebEvent);
     if (command.op === "reset") {
       inputs.clear();
@@ -89,6 +92,7 @@ export const getEngineSession = createAppOwned(() => {
       running = false;
       finishNotified = false;
       reason = undefined;
+      finishClock = undefined;
     }
     for (const event of events) {
       if (event.type === "input") {
@@ -121,6 +125,12 @@ export const getEngineSession = createAppOwned(() => {
     }
     if (update.finish !== undefined && !finishNotified) {
       finishNotified = true;
+      finishClock =
+        command.op === "advance" ||
+        command.op === "finish" ||
+        command.op === "bailout"
+          ? { now: command.now, date: command.date }
+          : undefined;
       reason = update.finish.reason ?? undefined;
       running = false;
       emit("finish", { reason });
@@ -174,11 +184,17 @@ export const getEngineSession = createAppOwned(() => {
     attach: (): Snapshot => {
       const snapshot = live().snapshot();
       state = snapshot.state;
+      metadata = {
+        allWordsGenerated: snapshot.allWordsGenerated,
+        hasTab: snapshot.hasTab,
+        hasNewline: snapshot.hasNewline,
+      };
       inputs.clear();
       lastTick = 0;
       running = false;
       finishNotified = false;
       reason = undefined;
+      finishClock = undefined;
       configuration = JSON.stringify(projectEngineConfig(getMutableConfig()));
       paceCommand({ op: "reset", wpm: null });
       command({
@@ -192,6 +208,11 @@ export const getEngineSession = createAppOwned(() => {
       return snapshot;
     },
     state: () => state,
+    metadata: () => metadata,
+    compositionCompletes: (data: string): boolean => {
+      synchronize(performance.now());
+      return live().compositionCompletes(encodeText(data));
+    },
     getCurrentInput: (): string =>
       state === undefined ? "" : decodeText(state.inputValue),
     getInputForWord: (index: number): string => inputs.get(index) ?? "",
@@ -218,6 +239,7 @@ export const getEngineSession = createAppOwned(() => {
       return () => listeners[kind].delete(listener);
     },
     reset: (): void => {
+      owner.invalidateSession();
       if (owner.session() !== undefined) {
         command({ op: "reset", now: performance.now() });
       }
@@ -229,11 +251,14 @@ export const getEngineSession = createAppOwned(() => {
       command({ op: "finish", now, date: Date.now(), reason: failure ?? null });
     },
     end: (now: number): void => {
+      owner.invalidateSession();
+      const clock = finishClock ?? { now, date: Date.now() };
       if (finishNotified && !state?.ended) {
-        command({ op: "acknowledgeFinish", now, date: Date.now() });
+        command({ op: "acknowledgeFinish", ...clock });
       } else {
-        command({ op: "end", now, date: Date.now() });
+        command({ op: "end", ...clock });
       }
+      finishClock = undefined;
     },
     finalize: (now = performance.now()): void => {
       command({ op: "finalize", now });

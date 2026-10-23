@@ -24,6 +24,10 @@ export type LifecycleProof = {
     burst: number;
     canDelete: boolean;
     timeLimitSeconds: number | null;
+    compositionReady: boolean;
+    metadata:
+      | { allWordsGenerated: boolean; hasTab: boolean; hasNewline: boolean }
+      | undefined;
   };
 };
 /** Opt-in proof route only. No production typing state or platform clock enters the core implicitly. */
@@ -149,7 +153,33 @@ export async function runEngineLifecycle(
       throw new Error("Active deletion preflight rejected");
     }
     session.command(command([32], 200));
+    const composition = engine.createSession({ mode: "words", words: 1 }, [
+      [0xd800, 0xdc00],
+    ]);
+    let compositionReady: boolean;
+    try {
+      composition.command({ op: "start", now: 0, date: 0 });
+      compositionReady = composition.compositionCompletes([0xd800, 0xdc00]);
+    } finally {
+      composition.dispose();
+    }
+    const custom = engine.createSession({ mode: "custom" }, [
+      encodeText("\ta\n"),
+    ]);
+    let metadata;
+    try {
+      metadata = custom.command({
+        op: "customLimit",
+        now: 0,
+        mode: "time",
+        value: 1.5,
+      }).metadata;
+    } finally {
+      custom.dispose();
+    }
     const hostQueries = {
+      compositionReady,
+      metadata,
       burst: session.wordBurst(0, 250),
       canDelete: session.canDelete(),
       timeLimitSeconds: session.liveStats(250).timeLimitSeconds,

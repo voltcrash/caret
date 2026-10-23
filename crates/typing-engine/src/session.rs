@@ -352,6 +352,9 @@ pub struct Event {
 #[derive(Serialize, TS)]
 pub struct Update {
     pub state: State,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub metadata: Option<SessionMetadata>,
     pub events: Vec<Event>,
     pub generation: u32,
     #[serde(rename = "automaticPending")]
@@ -378,6 +381,13 @@ pub struct Update {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub drift: Option<f64>,
+}
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, TS)]
+#[serde(rename_all = "camelCase")]
+pub struct SessionMetadata {
+    pub all_words_generated: bool,
+    pub has_tab: bool,
+    pub has_newline: bool,
 }
 #[derive(Clone, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
@@ -720,6 +730,31 @@ impl Session {
             normalized,
         }
     }
+    pub fn metadata(&self) -> SessionMetadata {
+        SessionMetadata {
+            all_words_generated: self.all_generated,
+            has_tab: self.has_tab,
+            has_newline: self.has_newline,
+        }
+    }
+    pub fn composition_completes(&self, data: &Text) -> Result<bool, crate::error::EngineError> {
+        if data.len() > 65536 {
+            return Err("Composition exceeds input bound".into());
+        }
+        if !self.active
+            || self.ended
+            || self.awaiting_recovery
+            || self.pending_finish.is_some()
+            || self.pending_commit.is_some()
+            || !self.all_generated
+            || self.index + 1 < self.words.len()
+        {
+            return Ok(false);
+        }
+        let mut combined = self.current().0;
+        combined.extend_from_slice(&data.0);
+        Ok(self.target().0 == combined)
+    }
     pub fn snapshot(&self) -> Snapshot {
         Snapshot {
             state: self.state(),
@@ -949,6 +984,7 @@ impl Session {
             ));
         }
         let before = self.events.len();
+        let previous_metadata = self.metadata();
         let previous_origin = self.origin();
         let invalidated = matches!(command, Command::Finalize { .. } | Command::Reset { .. });
         self.word_changes.clear();
@@ -972,6 +1008,7 @@ impl Session {
                 if self.preflight(data.clone(), &layout).blocked {
                     return Ok(Update {
                         state: self.state(),
+                        metadata: None,
                         events: vec![],
                         generation: self.generation,
                         automatic_pending: !self.automatic.is_empty(),
@@ -1175,6 +1212,7 @@ impl Session {
             .collect();
         Ok(Update {
             state: self.state(),
+            metadata: (self.metadata() != previous_metadata).then(|| self.metadata()),
             events,
             generation: self.generation,
             automatic_pending: !self.automatic.is_empty(),

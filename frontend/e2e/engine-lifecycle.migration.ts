@@ -18,6 +18,8 @@ test("browser Wasm long sessions and repeated ownership release retain bounded w
   ) as LifecycleProof;
   expect(output.invalid).toBe(3);
   expect(output.hostQueries).toEqual({
+    compositionReady: true,
+    metadata: { allWordsGenerated: false, hasTab: true, hasNewline: true },
     burst: 240,
     canDelete: false,
     timeLimitSeconds: null,

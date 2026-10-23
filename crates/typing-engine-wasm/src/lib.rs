@@ -91,6 +91,14 @@ impl WasmSession {
             .ok_or_else(|| failure(ErrorCode::Disposed, "Session disposed"))?;
         serialize(&session.live_stats(now).map_err(bind_error)?)
     }
+    pub fn composition_completes(&self, data: &str) -> Result<bool, JsError> {
+        let data = parse(data)?;
+        let session = self
+            .session
+            .as_ref()
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Session disposed"))?;
+        session.composition_completes(&data).map_err(bind_error)
+    }
     pub fn can_delete(&self) -> Result<bool, JsError> {
         let session = self
             .session

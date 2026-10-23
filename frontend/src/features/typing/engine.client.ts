@@ -72,10 +72,13 @@ export const getBrowserEngine = createAppOwned(() => {
     if (engine === undefined) throw new Error("Typing engine is not ready");
     return (content ??= engine.createContent());
   };
-  const releaseSession = (retainLearning = true): void => {
+  const invalidateSession = (): void => {
     sessionAbort.abort();
     if (!disposed) sessionAbort = new AbortController();
     generation++;
+  };
+  const releaseSession = (retainLearning = true): void => {
+    invalidateSession();
     const previous = session;
     session = undefined;
     if (previous === undefined) return;
@@ -137,5 +140,6 @@ export const getBrowserEngine = createAppOwned(() => {
     },
     content: preparedContent,
     releaseSession,
+    invalidateSession,
   };
 });

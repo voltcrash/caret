@@ -50,6 +50,9 @@ vi.mock("../../../src/features/typing/engine.client", () => ({
   getBrowserEngine: () => ({
     session: () => mocks,
     generation: () => mocks.generation,
+    invalidateSession: () => {
+      mocks.generation++;
+    },
     api: () => ({ analyze: mocks.analyze }),
   }),
 }));
@@ -107,6 +110,7 @@ it("projects lossless command deltas and observations without exporting a growin
     correctShiftUsed: null,
   });
   expect(session.getCurrentInput()).toBe("\ud800");
+  expect(session.metadata()?.allWordsGenerated).toBe(true);
   expect(session.getInputForWord(0)).toBe("\ud800");
   expect(project.mock.calls[0]?.[2][0].data).toMatchObject({
     data: "\ud800",
@@ -139,7 +143,15 @@ it("notifies a deferred finish exactly once and acknowledges at the host complet
     state: { ...mocks.empty.state, active: true },
     finish: { reason: "difficulty" },
   });
-  session.finish(500, "difficulty");
+  session.command({
+    op: "insert",
+    now: 500,
+    date: 1,
+    data: [97],
+    automatic: null,
+    isCompositionEnding: null,
+    correctShiftUsed: null,
+  });
   session.command({ op: "advance", now: 501, date: 1 });
   expect(finish).toHaveBeenCalledExactlyOnceWith({ reason: "difficulty" });
   expect(session.getFinishReason()).toBe("difficulty");
@@ -206,4 +218,22 @@ it("projects cleared-next-word deletion without retaining the Firefox residue", 
     sentinelRemoved: true,
   });
   expect(session.getInputForWord(1)).toBe("");
+});
+
+it("retains the captured tick/explicit finish clock when acknowledging a deferred timer result", () => {
+  const session = getEngineSession();
+  session.attach();
+  mocks.command.mockReturnValue({
+    ...mocks.empty,
+    state: { ...mocks.empty.state, active: true },
+    finish: { reason: "min accuracy" },
+  });
+  session.command({ op: "advance", now: 1000.25, date: 1234 });
+  mocks.command.mockReturnValue(mocks.empty);
+  session.end(1050);
+  expect(mocks.command).toHaveBeenLastCalledWith({
+    op: "acknowledgeFinish",
+    now: 1000.25,
+    date: 1234,
+  });
 });

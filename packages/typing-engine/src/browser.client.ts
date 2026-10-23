@@ -211,6 +211,11 @@ export class BrowserSession {
   liveStats(now: number): LiveMetrics {
     return invoke(() => JSON.parse(this.live().live_stats(now)) as LiveMetrics);
   }
+  compositionCompletes(data: Text): boolean {
+    return invoke(() =>
+      this.live().composition_completes(JSON.stringify(data)),
+    );
+  }
   canDelete(): boolean {
     return invoke(() => this.live().can_delete());
   }

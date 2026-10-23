@@ -74,6 +74,11 @@ it("recycles a replaced session, invalidates host work and releases all app reso
   expect(resource.captureSession().signal.aborted).toBe(false);
   expect(mocks.content.recycleSession).toHaveBeenCalledExactlyOnceWith(session);
   resource.createPreparedSession(true);
+  const active = resource.session();
+  const pending = resource.captureSession();
+  resource.invalidateSession();
+  expect(pending.signal.aborted).toBe(true);
+  expect(resource.session()).toBe(active);
   dispose();
   expect(mocks.session.dispose).toHaveBeenCalledOnce();
   expect(mocks.content.dispose).toHaveBeenCalledOnce();
