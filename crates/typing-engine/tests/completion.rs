@@ -3,7 +3,7 @@ use typing_engine::{Config, Session, Text};
 fn command(
     session: &mut Session,
     value: serde_json::Value,
-) -> Result<typing_engine::session::Update, String> {
+) -> Result<typing_engine::session::Update, typing_engine::error::EngineError> {
     session.apply(serde_json::from_value(value).unwrap())
 }
 fn session() -> Session {

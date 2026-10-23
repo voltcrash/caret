@@ -2,6 +2,7 @@
 pub mod analysis;
 pub mod content;
 pub mod custom_progress;
+pub mod error;
 pub mod funboxes;
 mod generated_funboxes;
 pub mod generation;

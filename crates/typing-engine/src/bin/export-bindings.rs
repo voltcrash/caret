@@ -24,6 +24,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     )?;
     Command::export_all(&config)?;
     Config::export_all(&config)?;
+    typing_engine::error::EngineError::export_all(&config)?;
     State::export_all(&config)?;
     typing_engine::content::Request::export_all(&config)?;
     typing_engine::session::Preflight::export_all(&config)?;

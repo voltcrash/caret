@@ -481,9 +481,10 @@ impl Session {
     pub fn pace_command(
         &mut self,
         command: crate::pace::PaceCommand,
-    ) -> Result<crate::pace::PaceUpdate, String> {
+    ) -> Result<crate::pace::PaceUpdate, crate::error::EngineError> {
         self.pace
             .command(command, &self.words, self.config.blind_mode)
+            .map_err(Into::into)
     }
     pub(crate) fn into_learning(self) -> Retained {
         let (learner, previous, quote) =
@@ -503,8 +504,10 @@ impl Session {
             generation: self.generation,
         }
     }
-    pub fn new(config: Config, words: Vec<Text>) -> Result<Self, String> {
-        config.validate()?;
+    pub fn new(config: Config, words: Vec<Text>) -> Result<Self, crate::error::EngineError> {
+        config.validate().map_err(|message| {
+            crate::error::EngineError::new(crate::error::ErrorCode::InvalidConfig, message)
+        })?;
         if words.len() > 1_000_000 || words.iter().any(|word| word.len() > 1_000_000) {
             return Err("Content exceeds session bound".into());
         }
@@ -561,14 +564,14 @@ impl Session {
     pub fn from_generator(
         mut generator: crate::generation::Generator,
         repeating: bool,
-    ) -> Result<Self, String> {
+    ) -> Result<Self, crate::error::EngineError> {
         let generated = generator.generate(repeating)?;
         Self::from_generated(generator, generated)
     }
     pub fn from_generated(
         generator: crate::generation::Generator,
         generated: crate::generation::Generated,
-    ) -> Result<Self, String> {
+    ) -> Result<Self, crate::error::EngineError> {
         let mut session = Self::new(generator.config().clone(), generated.words)?;
         session.generation = generator.prepared_generation;
         session.sections = generated.section_indexes;
@@ -651,7 +654,7 @@ impl Session {
             });
         }
     }
-    fn refill(&mut self) -> Result<(), String> {
+    fn refill(&mut self) -> Result<(), crate::error::EngineError> {
         let bound = crate::funboxes::to_push(&self.config.funbox)
             .map_or(100, |count| count.saturating_sub(1));
         if self.all_generated || self.words.len().saturating_sub(self.index + 1) > bound {
@@ -753,7 +756,7 @@ impl Session {
         self.record("timer", now, json!({"event":"end", "timer":((now-self.start.unwrap_or(now))/1000.0).floor(), "date":date}));
     }
 
-    pub fn apply(&mut self, command: Command) -> Result<Update, String> {
+    pub fn apply(&mut self, command: Command) -> Result<Update, crate::error::EngineError> {
         let now = match &command {
             Command::Insert { now, .. }
             | Command::Delete { now, .. }
@@ -1541,7 +1544,12 @@ impl Session {
         }
     }
 
-    fn observe(&mut self, kind: &str, now: f64, mut data: Value) -> Result<(), String> {
+    fn observe(
+        &mut self,
+        kind: &str,
+        now: f64,
+        mut data: Value,
+    ) -> Result<(), crate::error::EngineError> {
         if !data.is_object() {
             return Err("Observation data must be an object".into());
         }

@@ -31,7 +31,7 @@ impl Source {
             Self::Article { .. } => "wikipedia",
         }
     }
-    pub fn normalize(self, english: bool) -> Result<Section, String> {
+    pub fn normalize(self, english: bool) -> Result<Section, crate::error::EngineError> {
         match self {
             Self::Poem {
                 title,
@@ -174,7 +174,7 @@ impl Queue {
             ready: VecDeque::new(),
         }
     }
-    pub fn prefetch(&mut self, source: Source) -> Result<(), String> {
+    pub fn prefetch(&mut self, source: Source) -> Result<(), crate::error::EngineError> {
         if source.kind() != self.kind {
             return Err("Unexpected section source kind".into());
         }
@@ -202,9 +202,16 @@ impl Queue {
         self.pending = Some(request.clone());
         request
     }
-    pub fn supply(&mut self, request: &Request, source: Source) -> Result<(), String> {
+    pub fn supply(
+        &mut self,
+        request: &Request,
+        source: Source,
+    ) -> Result<(), crate::error::EngineError> {
         if self.pending.as_ref() != Some(request) {
-            return Err("Stale or mismatched content request".into());
+            return Err(crate::error::EngineError::new(
+                crate::error::ErrorCode::StaleRequest,
+                "Stale or mismatched content request",
+            ));
         }
         self.prefetch(source)?;
         self.pending = None;

@@ -1,3 +1,4 @@
+use crate::error::{EngineError, ErrorCode, Recovery};
 use crate::{Text, random::Random};
 use serde::{Deserialize, Serialize};
 use std::collections::VecDeque;
@@ -163,7 +164,7 @@ impl Generator {
         language: Language,
         custom: Option<CustomText>,
         random: Random,
-    ) -> Result<Self, String> {
+    ) -> Result<Self, crate::error::EngineError> {
         Self::with_assets(config, language, custom, random, &mut Assets::default())
     }
     pub fn with_assets(
@@ -172,7 +173,7 @@ impl Generator {
         custom: Option<CustomText>,
         random: Random,
         assets: &mut Assets,
-    ) -> Result<Self, String> {
+    ) -> Result<Self, crate::error::EngineError> {
         Self::with_repeated_quote(config, language, custom, random, assets, None)
     }
     fn with_repeated_quote(
@@ -182,8 +183,10 @@ impl Generator {
         mut random: Random,
         assets: &mut Assets,
         repeated_quote: Option<crate::quotes::Quote>,
-    ) -> Result<Self, String> {
-        config.validate()?;
+    ) -> Result<Self, crate::error::EngineError> {
+        config
+            .validate()
+            .map_err(|message| EngineError::new(ErrorCode::InvalidConfig, message))?;
         let section_queue = if let Some(name) = config.funbox.iter().find(|name| {
             crate::funboxes::get(name).is_some_and(|metadata| {
                 metadata
@@ -217,7 +220,28 @@ impl Generator {
             if let Some(asset) = assets.quote_asset.take() {
                 assets
                     .quotes
-                    .load(asset, &config.quote_length, &mut random)?;
+                    .load(asset, &config.quote_length, &mut random)
+                    .map_err(|mut error| {
+                        if error.code == ErrorCode::NoQuotes {
+                            error.message = format!(
+                                "No {} quotes found",
+                                crate::text::base_language(&config.language).replace('_', " ")
+                            );
+                        }
+                        error
+                    })?;
+            }
+            if assets.quotes.is_empty() {
+                return Err(EngineError::recover(
+                    ErrorCode::NoQuotes,
+                    format!(
+                        "No {} quotes found",
+                        crate::text::base_language(&config.language).replace('_', " ")
+                    ),
+                    vec![Recovery::SetMode {
+                        mode: "words".into(),
+                    }],
+                ));
             }
             Some(assets.quotes.select(
                 &config.language,
@@ -239,8 +263,41 @@ impl Generator {
         };
         let mut word_languages = std::collections::BTreeMap::new();
         let polyglot = if config.funbox.iter().any(|name| name == "polyglot") {
-            if assets.polyglot.len() < 2 {
-                return Err("Polyglot requires at least two valid languages".into());
+            if assets.polyglot.is_empty() {
+                return Err(EngineError::recover(
+                    ErrorCode::NoPolyglotLanguages,
+                    format!(
+                        "No valid languages found. Please check your polyglot languages config ({}).",
+                        config.custom_polyglot.join(", ")
+                    ),
+                    vec![Recovery::DisableFunbox {
+                        name: "polyglot".into(),
+                        no_restart: false,
+                    }],
+                ));
+            }
+            if assets.polyglot.len() == 1 {
+                return Err(EngineError::recover(
+                    ErrorCode::OnePolyglotLanguage,
+                    "",
+                    vec![
+                        Recovery::SetLanguage {
+                            language: assets.polyglot[0].name.clone(),
+                            no_save: true,
+                        },
+                        Recovery::DisableFunbox {
+                            name: "polyglot".into(),
+                            no_restart: true,
+                        },
+                        Recovery::Notice {
+                            message: format!(
+                                "Disabled polyglot funbox because only one valid language was found. Check your polyglot languages config ({}).",
+                                config.custom_polyglot.join(", ")
+                            ),
+                            duration_ms: 7000,
+                        },
+                    ],
+                ));
             }
             let all_rtl = assets
                 .polyglot
@@ -253,7 +310,23 @@ impl Generator {
             if (language.right_to_left == Some(true) && all_ltr)
                 || (language.right_to_left != Some(true) && all_rtl)
             {
-                return Err("Polyglot language direction conflict; update main language".into());
+                let fallback = assets.polyglot[0].name.clone();
+                return Err(EngineError::recover(
+                    ErrorCode::PolyglotDirection,
+                    "",
+                    vec![
+                        Recovery::SetLanguage {
+                            language: fallback.clone(),
+                            no_save: false,
+                        },
+                        Recovery::Notice {
+                            message: format!(
+                                "Language direction conflict: switched to {fallback} for consistency."
+                            ),
+                            duration_ms: 5000,
+                        },
+                    ],
+                ));
             }
             wordset.clear();
             for (index, lang) in assets.polyglot.iter().enumerate() {
@@ -374,12 +447,12 @@ impl Generator {
         }
         false
     }
-    fn random_word(&mut self) -> Result<Text, String> {
+    fn random_word(&mut self) -> Result<Text, crate::error::EngineError> {
         if self.config.funbox.iter().any(|name| name == "pseudolang") {
             let generator = self
                 .pseudolang
                 .get_or_insert_with(|| crate::generated_funboxes::Pseudolang::new(&self.wordset));
-            return generator.word(&mut self.random);
+            return generator.word(&mut self.random).map_err(Into::into);
         }
         let index = if self.config.funbox.iter().any(|name| name == "zipf") {
             self.random.zipf_index(self.wordset.len())?
@@ -413,7 +486,7 @@ impl Generator {
         self.ordered += 1;
         word
     }
-    fn next_shuffled(&mut self) -> Result<Text, String> {
+    fn next_shuffled(&mut self) -> Result<Text, crate::error::EngineError> {
         if self.shuffled.is_empty() {
             self.shuffled = (0..self.wordset.len()).collect();
             self.random.shuffle(&mut self.shuffled)?;
@@ -429,7 +502,7 @@ impl Generator {
         &mut self,
         request: &crate::content::Request,
         source: crate::content::Source,
-    ) -> Result<(), String> {
+    ) -> Result<(), crate::error::EngineError> {
         self.section_queue
             .as_mut()
             .ok_or("Generator has no section source")?
@@ -441,7 +514,7 @@ impl Generator {
         }
         self.batch = None;
     }
-    pub fn generate(&mut self, repeating: bool) -> Result<Generated, String> {
+    pub fn generate(&mut self, repeating: bool) -> Result<Generated, crate::error::EngineError> {
         let mut batch = if let Some(batch) = self.batch.take() {
             if batch.repeating != repeating {
                 self.batch = Some(batch);
@@ -531,7 +604,7 @@ impl Generator {
         bound: usize,
         previous: Option<&Text>,
         previous2: Option<&Text>,
-    ) -> Result<NextWord, String> {
+    ) -> Result<NextWord, crate::error::EngineError> {
         if self.repeating
             && self.config.mode != "quote"
             && let Some(next) = self.previous.get(index)
@@ -559,7 +632,10 @@ impl Generator {
             && queue.is_empty()
         {
             queue.request();
-            return Err("Section content required".into());
+            return Err(EngineError::new(
+                ErrorCode::ContentRequired,
+                "Section content required",
+            ));
         }
         let mut word = self.random_word()?;
         let previous_original = previous.cloned();
@@ -844,10 +920,14 @@ impl Content {
         self.has_prepared = true;
         self.generator = None;
     }
-    pub fn prepare(&mut self, input: Prepare) -> Result<(), String> {
+    pub fn prepare(&mut self, input: Prepare) -> Result<(), crate::error::EngineError> {
         self.prepare_repeating(input, false)
     }
-    pub fn prepare_repeating(&mut self, input: Prepare, repeating: bool) -> Result<(), String> {
+    pub fn prepare_repeating(
+        &mut self,
+        input: Prepare,
+        repeating: bool,
+    ) -> Result<(), crate::error::EngineError> {
         if repeating && input.config.mode == "quote" && self.previous_quote.is_none() {
             return Err("Missing previous quote".into());
         }
@@ -885,14 +965,17 @@ impl Content {
         }
         Ok(())
     }
-    pub fn start_session(&mut self, repeating: bool) -> Result<crate::Session, String> {
+    pub fn start_session(
+        &mut self,
+        repeating: bool,
+    ) -> Result<crate::Session, crate::error::EngineError> {
         let generated = self.generator()?.generate(repeating)?;
         let generator = self.generator.take().ok_or("Content not prepared")?;
         let mut session = crate::Session::from_generated(generator, generated)?;
         session.pace.remember(self.last_pace_wpm, false);
         Ok(session)
     }
-    pub fn generator(&mut self) -> Result<&mut Generator, String> {
+    pub fn generator(&mut self) -> Result<&mut Generator, crate::error::EngineError> {
         self.generator.as_mut().ok_or("Content not prepared".into())
     }
 }

@@ -1,3 +1,4 @@
+use crate::error::{EngineError, ErrorCode, Recovery};
 use crate::{Text, random::Random};
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
@@ -34,17 +35,26 @@ pub struct Quotes {
     cursor: usize,
 }
 impl Quotes {
+    pub fn is_empty(&self) -> bool {
+        self.quotes.is_empty()
+    }
     pub fn load(
         &mut self,
         mut asset: QuoteAsset,
         lengths: &[i32],
         random: &mut Random,
-    ) -> Result<(), String> {
+    ) -> Result<(), crate::error::EngineError> {
         if self.language.as_ref() == Some(&asset.language) {
             return Ok(());
         }
         if asset.quotes.is_empty() {
-            return Err("No quotes found".into());
+            return Err(EngineError::recover(
+                ErrorCode::NoQuotes,
+                "No quotes found",
+                vec![Recovery::SetMode {
+                    mode: "words".into(),
+                }],
+            ));
         }
         if asset.quotes.len() > 1_000_000
             || asset
@@ -79,7 +89,11 @@ impl Quotes {
         self.quotes = asset.quotes;
         self.update_queue(lengths, random)
     }
-    pub fn update_queue(&mut self, lengths: &[i32], random: &mut Random) -> Result<(), String> {
+    pub fn update_queue(
+        &mut self,
+        lengths: &[i32],
+        random: &mut Random,
+    ) -> Result<(), crate::error::EngineError> {
         self.queue.clear();
         for group in lengths {
             if *group >= 0
@@ -100,23 +114,46 @@ impl Quotes {
         favorites: &[u32],
         british: bool,
         random: &mut Random,
-    ) -> Result<Quote, String> {
+    ) -> Result<Quote, crate::error::EngineError> {
         let mut quote = if lengths == [-2] {
             self.quotes
                 .iter()
                 .find(|q| q.id == selected)
                 .cloned()
-                .ok_or("Selected quote does not exist")?
+                .ok_or_else(|| {
+                    EngineError::recover(
+                        ErrorCode::SelectedQuoteMissing,
+                        format!("Quote {selected} does not exist"),
+                        vec![Recovery::SetQuoteLengthAll],
+                    )
+                })?
         } else if lengths.contains(&-3) {
+            if favorites.is_empty() {
+                return Err(EngineError::recover(
+                    ErrorCode::NoFavorites,
+                    "No favorite quotes found",
+                    vec![Recovery::SetQuoteLengthAll],
+                ));
+            }
             let id = favorites[random.index(favorites.len())?];
             self.quotes
                 .iter()
                 .find(|q| q.id == id)
                 .cloned()
-                .ok_or("Favorite quote does not exist")?
+                .ok_or_else(|| {
+                    EngineError::recover(
+                        ErrorCode::NoFavorites,
+                        "No favorite quotes found",
+                        vec![Recovery::SetQuoteLengthAll],
+                    )
+                })?
         } else {
             if self.queue.is_empty() {
-                return Err("No quotes found for selected length".into());
+                return Err(EngineError::recover(
+                    ErrorCode::NoQuoteLength,
+                    "No quotes found for selected quote length",
+                    vec![Recovery::SetQuoteLengthAll],
+                ));
             }
             if self.cursor >= self.queue.len() {
                 self.cursor = 0;
