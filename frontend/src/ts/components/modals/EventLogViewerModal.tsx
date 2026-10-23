@@ -1,7 +1,9 @@
 import type { EventLog } from "@oxytype/typing-core/events/types";
 
-import { JSXElement, Show } from "solid-js";
+import { JSXElement, Show, createSignal, onCleanup } from "solid-js";
 
+import { getInspection } from "../../../features/typing/analysis.client";
+import { getBrowserEngine } from "../../../features/typing/engine.client";
 import {
   getError,
   getEventLog,
@@ -26,18 +28,33 @@ export function EventLogViewerModal(): JSXElement {
   const ctx = getEventLog;
   const err = getError;
 
-  const loadFrom = (json: string): void => {
+  const [loading, setLoading] = createSignal(false);
+  let generation = 0;
+  onCleanup(() => {
+    generation++;
+  });
+  const loadFrom = async (json: string): Promise<void> => {
+    const current = ++generation;
+    setLoading(true);
     try {
       const parsed = parseContext(json);
+      await getBrowserEngine().load();
+      if (generation !== current) return;
+      getInspection(parsed);
       setEventLog(parsed);
       setError(null);
       setStage("preview");
     } catch (e) {
+      if (generation !== current) return;
       setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      if (generation === current) setLoading(false);
     }
   };
 
-  const onShow = (): void => loadFrom(raw());
+  const onShow = (): void => {
+    void loadFrom(raw());
+  };
 
   const onLoadLatest = (): void => {
     const log = getLastEventLog();
@@ -47,7 +64,7 @@ export function EventLogViewerModal(): JSXElement {
     }
     const json = JSON.stringify(log);
     setRaw(json);
-    loadFrom(json);
+    void loadFrom(json);
   };
 
   return (
@@ -84,7 +101,11 @@ export function EventLogViewerModal(): JSXElement {
             />
             <Button
               variant="button"
-              onClick={resetEventLogViewer}
+              onClick={() => {
+                generation++;
+                setLoading(false);
+                resetEventLogViewer();
+              }}
               fa={{ icon: "fa-trash" }}
               text="Clear"
               balloon={{
@@ -96,7 +117,12 @@ export function EventLogViewerModal(): JSXElement {
               onClick={() => hideModal("EventLogViewer")}
               text="Cancel"
             />
-            <Button variant="button" onClick={onShow} text="Show" />
+            <Button
+              variant="button"
+              onClick={onShow}
+              disabled={loading()}
+              text={loading() ? "Loading" : "Show"}
+            />
           </div>
         </div>
       </Show>
