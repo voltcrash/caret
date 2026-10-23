@@ -1,6 +1,4 @@
 import { createWordIcon } from "../../components/words/icons";
-import { FunboxWordFunctions } from "@oxytype/typing-core/active-funboxes";
-import { createFunboxWordFunctions } from "@oxytype/typing-core/funbox-word-functions";
 import {
   setCrt,
   setReadAheadDisabled,
@@ -20,14 +18,10 @@ import { getCurrentInput, getInputForWord } from "../events/data";
 import * as LayoutfluidFunboxTimer from "./layoutfluid-funbox-timer";
 import { highlight } from "../../../../ts/events/keymap";
 import * as MemoryTimer from "./memory-funbox-timer";
-import { getPoem } from "../poetry";
-import * as JSONData from "../../../../ts/utils/json-data";
-import { getSection } from "../wikipedia";
-import * as WeakSpot from "../weak-spot";
 import { getActiveWordIndex } from "../../../../ts/states/test";
 import { FunboxName, KeymapLayout, Layout } from "@oxytype/schemas/configs";
 
-export type FunboxFunctions = FunboxWordFunctions & {
+export type FunboxFunctions = {
   applyConfig?: () => void;
   applyGlobalCSS?: () => void;
   clearGlobal?: () => void;
@@ -342,25 +336,9 @@ const list: Partial<Record<FunboxName, FunboxFunctions>> = {
   polyglot: {},
 };
 
-export function getFunboxFunctions(): Record<FunboxName, FunboxFunctions> {
-  const wordFunctions = createFunboxWordFunctions({
-    getConfig: () => getMutableConfig(),
-    getLanguage: JSONData.getLanguage,
-    getPoem,
-    getSection,
-    getWeakSpotWord: (wordset) => WeakSpot.getWord(wordset),
-    notify: showNoticeNotification,
-    disableFunbox: (name, noRestart) => {
-      toggleFunbox(name, noRestart);
-    },
-    setLanguage: (language, noSave) => {
-      setConfig("language", language, { nosave: noSave });
-    },
-  });
-  const merged = { ...list } as Record<FunboxName, FunboxFunctions>;
-  for (const [name, hooks] of Object.entries(wordFunctions)) {
-    const key = name as FunboxName;
-    merged[key] = { ...merged[key], ...hooks };
-  }
-  return merged;
+/** Platform input, appearance and audio hooks only. Word rules live in Rust. */
+export function getFunboxFunctions(): Partial<
+  Record<FunboxName, FunboxFunctions>
+> {
+  return list;
 }

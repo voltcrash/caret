@@ -136,9 +136,6 @@ vi.mock("../../../src/ts/states/composition", () => ({
   getComposing: () => false,
   getData: () => "",
 }));
-vi.mock("../../../src/features/typing/runtime/words-generator", () => ({
-  areAllWordsGenerated: () => true,
-}));
 import { onInsertText } from "../../../src/ts/input/handlers/insert-text";
 import {
   resetTestEvents,
