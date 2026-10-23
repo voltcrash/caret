@@ -58,3 +58,33 @@ fn all_funbox_pairs_and_forced_configuration_match_frozen_typescript() {
         );
     }
 }
+
+#[test]
+fn batch_setting_conflicts_preserve_host_field_order_and_original_decisions() {
+    use typing_engine::policy::{Query, evaluate};
+    let values = vec![
+        ("mode".to_owned(), serde_json::json!("zen")),
+        ("theme".to_owned(), serde_json::json!("dark")),
+        ("words".to_owned(), serde_json::json!(0)),
+    ];
+    for names in [
+        vec!["poetry".to_owned()],
+        vec!["nospace".to_owned()],
+        vec![],
+    ] {
+        let expected: Vec<_> = values
+            .iter()
+            .filter(|(key, value)| !typing_engine::funboxes::can_set(key, value, &names).unwrap())
+            .map(|(key, _)| key.clone())
+            .collect();
+        let response = evaluate(Query::SettingConflicts {
+            names,
+            values: values.clone(),
+        })
+        .unwrap();
+        assert_eq!(
+            serde_json::to_value(response).unwrap()["keys"],
+            serde_json::json!(expected)
+        );
+    }
+}
