@@ -17,3 +17,8 @@ the browser recordings. No frozen fixture was overwritten. Native
 `synthetic_analysis.rs` compares every captured output exactly. The original suite
 is available at that commit; this capture is inert provenance, never a maintained
 TypeScript engine dependency.
+
+`capture-string-rules.spec.ts.txt`: executed once before removing the frontend
+string-rule re-exports. All 157 original string tests passed; captured 68 distinct
+space/equivalence/character-count calls. `string_rules.rs` checks every original
+result using Rust. Generic display/editor helpers retain their TypeScript tests.

@@ -1,0 +1,480 @@
+[
+  {
+    "name": "isSpace",
+    "args": [" "],
+    "expected": true
+  },
+  {
+    "name": "isSpace",
+    "args": [" "],
+    "expected": true
+  },
+  {
+    "name": "isSpace",
+    "args": [" "],
+    "expected": true
+  },
+  {
+    "name": "isSpace",
+    "args": [" "],
+    "expected": true
+  },
+  {
+    "name": "isSpace",
+    "args": ["　"],
+    "expected": true
+  },
+  {
+    "name": "isSpace",
+    "args": [" "],
+    "expected": true
+  },
+  {
+    "name": "isSpace",
+    "args": [" "],
+    "expected": true
+  },
+  {
+    "name": "isSpace",
+    "args": [" "],
+    "expected": true
+  },
+  {
+    "name": "isSpace",
+    "args": [" "],
+    "expected": true
+  },
+  {
+    "name": "isSpace",
+    "args": ["​"],
+    "expected": true
+  },
+  {
+    "name": "isSpace",
+    "args": ["\t"],
+    "expected": false
+  },
+  {
+    "name": "isSpace",
+    "args": ["a"],
+    "expected": false
+  },
+  {
+    "name": "isSpace",
+    "args": ["A"],
+    "expected": false
+  },
+  {
+    "name": "isSpace",
+    "args": ["1"],
+    "expected": false
+  },
+  {
+    "name": "isSpace",
+    "args": ["!"],
+    "expected": false
+  },
+  {
+    "name": "isSpace",
+    "args": ["\n"],
+    "expected": false
+  },
+  {
+    "name": "isSpace",
+    "args": ["\r"],
+    "expected": false
+  },
+  {
+    "name": "isSpace",
+    "args": [""],
+    "expected": false
+  },
+  {
+    "name": "isSpace",
+    "args": ["  "],
+    "expected": false
+  },
+  {
+    "name": "isSpace",
+    "args": ["ab"],
+    "expected": false
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": ["a", "a"],
+    "expected": true
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": ["!", "!"],
+    "expected": true
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": ["a", "b"],
+    "expected": false
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": ["!", "?"],
+    "expected": false
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": ["'", "'"],
+    "expected": true
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": ["'", "ʼ"],
+    "expected": true
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": ["\"", "\""],
+    "expected": true
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": ["\"", "„"],
+    "expected": true
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": ["-", "–"],
+    "expected": true
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": ["-", "—"],
+    "expected": true
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": ["–", "—"],
+    "expected": true
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": [",", "‚"],
+    "expected": true
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": ["'", "\""],
+    "expected": false
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": ["-", "'"],
+    "expected": false
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": [",", "\""],
+    "expected": false
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": ["　", " "],
+    "expected": true
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": [" ", " "],
+    "expected": true
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": [" ", " "],
+    "expected": true
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": [" ", "a"],
+    "expected": false
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": [" ", "\n"],
+    "expected": false
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": ["е", "ё", "russian"],
+    "expected": true
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": ["e", "ё", "russian"],
+    "expected": true
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": ["е", "e", "russian"],
+    "expected": true
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": ["а", "б", "russian"],
+    "expected": false
+  },
+  {
+    "name": "areCharactersVisuallyEqual",
+    "args": ["a", "б", "russian"],
+    "expected": false
+  },
+  {
+    "name": "countChars",
+    "args": ["hel", "hello ", false],
+    "expected": {
+      "allCorrect": 3,
+      "correctWord": 0,
+      "incorrect": 0,
+      "extra": 0,
+      "missed": 3
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["hel", "hello ", true],
+    "expected": {
+      "allCorrect": 3,
+      "correctWord": 3,
+      "incorrect": 0,
+      "extra": 0,
+      "missed": 0
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["hello ", "hello ", true],
+    "expected": {
+      "allCorrect": 6,
+      "correctWord": 6,
+      "incorrect": 0,
+      "extra": 0,
+      "missed": 0
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["hello", "hello ", true],
+    "expected": {
+      "allCorrect": 5,
+      "correctWord": 5,
+      "incorrect": 0,
+      "extra": 0,
+      "missed": 0
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["xello", "hello", false],
+    "expected": {
+      "allCorrect": 4,
+      "correctWord": 0,
+      "incorrect": 1,
+      "extra": 0,
+      "missed": 0
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["he ", "hello", false],
+    "expected": {
+      "allCorrect": 2,
+      "correctWord": 0,
+      "incorrect": 1,
+      "extra": 0,
+      "missed": 2
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["xello ", "hello", false],
+    "expected": {
+      "allCorrect": 4,
+      "correctWord": 0,
+      "incorrect": 1,
+      "extra": 1,
+      "missed": 0
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["helol ", "hello ", false],
+    "expected": {
+      "allCorrect": 3,
+      "correctWord": 0,
+      "incorrect": 2,
+      "extra": 1,
+      "missed": 0
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["hxllo ", "hello ", false],
+    "expected": {
+      "allCorrect": 4,
+      "correctWord": 0,
+      "incorrect": 1,
+      "extra": 1,
+      "missed": 0
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["hel", "hello", true],
+    "expected": {
+      "allCorrect": 3,
+      "correctWord": 3,
+      "incorrect": 0,
+      "extra": 0,
+      "missed": 0
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["xxx", "hello", true],
+    "expected": {
+      "allCorrect": 0,
+      "correctWord": 0,
+      "incorrect": 3,
+      "extra": 0,
+      "missed": 0
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["hel", "hello", false],
+    "expected": {
+      "allCorrect": 3,
+      "correctWord": 0,
+      "incorrect": 0,
+      "extra": 0,
+      "missed": 2
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["helxx ", "hello ", false],
+    "expected": {
+      "allCorrect": 3,
+      "correctWord": 0,
+      "incorrect": 2,
+      "extra": 1,
+      "missed": 0
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["abcx", "abc ", true],
+    "expected": {
+      "allCorrect": 3,
+      "correctWord": 0,
+      "incorrect": 0,
+      "extra": 1,
+      "missed": 0
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["abcx ", "abc ", true],
+    "expected": {
+      "allCorrect": 3,
+      "correctWord": 0,
+      "incorrect": 1,
+      "extra": 1,
+      "missed": 0
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["jhow ", "how", true],
+    "expected": {
+      "allCorrect": 0,
+      "correctWord": 0,
+      "incorrect": 3,
+      "extra": 2,
+      "missed": 0
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["xow ", "how", true],
+    "expected": {
+      "allCorrect": 2,
+      "correctWord": 0,
+      "incorrect": 1,
+      "extra": 1,
+      "missed": 0
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["xonl  ", "only ", true],
+    "expected": {
+      "allCorrect": 0,
+      "correctWord": 0,
+      "incorrect": 4,
+      "extra": 2,
+      "missed": 0
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["x ", "get", true],
+    "expected": {
+      "allCorrect": 0,
+      "correctWord": 0,
+      "incorrect": 2,
+      "extra": 0,
+      "missed": 0
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["xello ", "hello ", false],
+    "expected": {
+      "allCorrect": 4,
+      "correctWord": 0,
+      "incorrect": 1,
+      "extra": 1,
+      "missed": 0
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["", "hello", true],
+    "expected": {
+      "allCorrect": 0,
+      "correctWord": 0,
+      "incorrect": 0,
+      "extra": 0,
+      "missed": 0
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["hello", "hello", false],
+    "expected": {
+      "allCorrect": 5,
+      "correctWord": 5,
+      "incorrect": 0,
+      "extra": 0,
+      "missed": 0
+    }
+  },
+  {
+    "name": "countChars",
+    "args": ["hel o", "hello ", false],
+    "expected": {
+      "allCorrect": 4,
+      "correctWord": 0,
+      "incorrect": 1,
+      "extra": 0,
+      "missed": 1
+    }
+  }
+]
