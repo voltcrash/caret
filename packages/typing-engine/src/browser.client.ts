@@ -23,6 +23,8 @@ import type { Source } from "../generated/types/Source";
 import type { Preflight } from "../generated/types/Preflight";
 import type { InsertionLayout } from "../generated/types/InsertionLayout";
 import type { Snapshot } from "../generated/types/Snapshot";
+import type { RestartOptions } from "../generated/types/RestartOptions";
+import type { RestartDecision } from "../generated/types/RestartDecision";
 import type { PaceCommand } from "../generated/types/PaceCommand";
 import type { PaceUpdate } from "../generated/types/PaceUpdate";
 import type { PlaybackSnapshot } from "../generated/types/PlaybackSnapshot";
@@ -32,6 +34,8 @@ import type { Log } from "../generated/types/Log";
 export type {
   Query,
   Response,
+  RestartOptions,
+  RestartDecision,
   PaceCommand,
   PaceUpdate,
   PlaybackSnapshot,
@@ -149,6 +153,14 @@ export class BrowserSession {
       throw new Error("Typing engine session disposed");
     }
     return JSON.parse(this.handle.command(JSON.stringify(command))) as Update;
+  }
+  restartPolicy(options: Partial<RestartOptions> = {}): RestartDecision {
+    if (this.handle === undefined) {
+      throw new Error("Typing engine session disposed");
+    }
+    return JSON.parse(
+      this.handle.restart_policy(JSON.stringify(options)),
+    ) as RestartDecision;
   }
   pace(command: PaceCommand): PaceUpdate {
     if (this.handle === undefined) {

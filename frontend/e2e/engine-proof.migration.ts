@@ -728,3 +728,92 @@ test("replacement Wasm sessions repeat exact targets and reject old source repli
   expect(actual.staleRejected).toBe(true);
   expect(actual.pending).toEqual(actual.current);
 });
+
+test("Wasm restart policy matches every frozen threshold and quote preference", async ({
+  page,
+}) => {
+  const fixture = JSON.parse(
+    await readFile(resolve(root, "oracle/restart.json"), "utf8"),
+  ) as {
+    quick: { expected: boolean }[];
+    quotes: { expected: boolean }[];
+  };
+  await page.goto("/engine-proof");
+  await page.getByRole("textbox", { name: "Command fixture" }).fill(
+    JSON.stringify({
+      ...fixture,
+      quotePreparation: {
+        config: { mode: "quote", quoteLength: [0] },
+        language: { name: "english", words: [[97]] },
+        random: { kind: "seeded", state: 1 },
+        quotes: {
+          language: "english",
+          groups: [[0, 100]],
+          quotes: [{ id: 1, text: [97, 32, 98], length: 3, source: "fixture" }],
+        },
+      },
+    }),
+  );
+  await page.getByRole("button", { name: "Run policies", exact: true }).click();
+  await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
+  await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+  expect(
+    JSON.parse(await page.getByTestId("engine-proof-result").innerText()),
+  ).toEqual({
+    quick: fixture.quick.map((item) => item.expected),
+    quotes: fixture.quotes.map((item) => item.expected),
+  });
+});
+
+test("Wasm long custom progress keeps UTF-16, newline and bailout boundaries", async ({
+  page,
+}) => {
+  const units = (text: string): number[] =>
+    Array.from({ length: text.length }, (_, i) => text.charCodeAt(i));
+  const cases: [string[], string[], boolean, number, boolean, number][] = [
+    [["one ", "two"], ["on"], false, 30, false, 30],
+    [["one ", "two"], ["one"], false, 30, false, 31],
+    [["one\n", "two"], ["one"], false, 30, false, 30],
+    [["😀 ", "two"], ["😀"], false, 30, false, 31],
+    [["one ", "two"], ["one ", "t"], false, 10, true, 0],
+    [["one ", "two"], ["one ", "t"], true, 10, false, 11],
+    [["\ud800 ", "two"], ["\ud800"], true, 4294967295, false, 4294967296],
+  ];
+  const inputs = cases.map(([words, history, bailedOut, previous]) => ({
+    log: {
+      version: 1,
+      context: {
+        mode: "custom",
+        mode2: "custom",
+        targetWords: words.map(units),
+        bailedOut,
+      },
+      events: history.map((inputValue, wordIndex) => ({
+        type: "input",
+        testMs: wordIndex,
+        data: {
+          inputType: "insertText",
+          inputValue: units(inputValue),
+          data: units(inputValue.slice(-1)),
+          wordIndex,
+          correct: true,
+        },
+      })),
+    },
+    queries: [{ op: "customProgress", previous }],
+  }));
+  await page.goto("/engine-proof");
+  await page
+    .getByRole("textbox", { name: "Command fixture" })
+    .fill(JSON.stringify(inputs));
+  await page.getByRole("button", { name: "Run analysis", exact: true }).click();
+  await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
+  await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+  expect(
+    JSON.parse(await page.getByTestId("engine-proof-result").innerText()),
+  ).toEqual(
+    cases.map(([, , , , completed, progress]) => [
+      { op: "customProgress", progress: { completed, progress } },
+    ]),
+  );
+});

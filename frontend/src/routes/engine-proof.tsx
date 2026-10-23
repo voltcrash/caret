@@ -361,6 +361,68 @@ function EngineProof() {
       setFailure(error instanceof Error ? error.message : String(error));
     }
   };
+  const runPolicies = async (): Promise<void> => {
+    setResult("");
+    setFailure("");
+    try {
+      const input = JSON.parse(fixture()) as {
+        quick: {
+          mode: string;
+          words: number;
+          time: number;
+          limit: { mode: string; value: number };
+          customIsLong: boolean;
+        }[];
+        quotes: { mode: string; repeatQuotes: string }[];
+        quotePreparation: Prepare;
+      };
+      const { loadEngine } =
+        await import("@oxytype/typing-engine/browser.client");
+      const engine = await loadEngine();
+      if (disposed) return;
+      const quick = input.quick.map((item) => {
+        const session = engine.createSession(item, [[97, 32]]);
+        try {
+          session.command({
+            op: "customLimit",
+            now: 0,
+            mode: item.limit.mode,
+            value: item.limit.value,
+          });
+          session.command({ op: "start", now: 0, date: 0 });
+          return session.restartPolicy({
+            quick: true,
+            customIsLong: item.customIsLong,
+          }).allowed;
+        } finally {
+          session.dispose();
+        }
+      });
+      const quotes = input.quotes.map((item) => {
+        const content = engine.createContent();
+        let session: BrowserSession | undefined;
+        try {
+          if (item.mode === "quote") {
+            content.prepare({
+              ...input.quotePreparation,
+              config: { ...input.quotePreparation.config, ...item },
+            });
+            session = content.createSession();
+          } else {
+            session = engine.createSession(item, [[97, 32]]);
+          }
+          session.command({ op: "start", now: 0, date: 0 });
+          return session.restartPolicy().withSameWordset;
+        } finally {
+          session?.dispose();
+          content.dispose();
+        }
+      });
+      setResult(JSON.stringify({ quick, quotes }));
+    } catch (error) {
+      setFailure(error instanceof Error ? error.message : String(error));
+    }
+  };
   const runGeneration = async (): Promise<void> => {
     setResult("");
     setFailure("");
@@ -628,6 +690,14 @@ function EngineProof() {
           }}
         >
           Run restarts
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            void runPolicies();
+          }}
+        >
+          Run policies
         </button>
         <pre data-testid="engine-proof-result">{result()}</pre>
         <pre data-testid="engine-proof-error">{failure()}</pre>
