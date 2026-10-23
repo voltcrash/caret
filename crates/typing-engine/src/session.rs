@@ -238,6 +238,9 @@ pub enum Command {
         #[serde(default)]
         #[ts(optional)]
         defer_finish: Option<bool>,
+        #[serde(default)]
+        #[ts(optional)]
+        monitor_render_drift: Option<bool>,
     },
     AcknowledgeFinish {
         now: f64,
@@ -338,6 +341,11 @@ pub struct Update {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub finish: Option<FinishRequest>,
+    #[serde(rename = "slowTimer")]
+    pub slow_timer: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub drift: Option<f64>,
 }
 #[derive(Clone, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
@@ -426,6 +434,10 @@ pub struct Session {
     defer_finish: bool,
     pending_finish: Option<FinishRequest>,
     pending_finish_at: f64,
+    monitor_render_drift: bool,
+    slow_timer: bool,
+    slow_timer_count: u8,
+    last_drift: Option<f64>,
 }
 
 impl Session {
@@ -477,6 +489,10 @@ impl Session {
             defer_finish: false,
             pending_finish: None,
             pending_finish_at: 0.0,
+            monitor_render_drift: false,
+            slow_timer: false,
+            slow_timer_count: 0,
+            last_drift: None,
         })
     }
 
@@ -531,6 +547,7 @@ impl Session {
         let display_length = target.len() - usize::from(target.0.last() == Some(&32));
         let measure_overflow = !blocked
             && !layout.slow_timer
+            && !self.slow_timer
             && observation.data.len() == 1
             && !self.config.blind_mode
             && !self.config.hide_extra_letters
@@ -634,6 +651,8 @@ impl Session {
             return;
         }
         self.active = true;
+        self.slow_timer = false;
+        self.slow_timer_count = 0;
         self.start = Some(now);
         self.pace.start(now);
         self.record(
@@ -660,6 +679,8 @@ impl Session {
         self.active = false;
         self.ended = true;
         self.reason = reason;
+        self.slow_timer = false;
+        self.slow_timer_count = 0;
         self.pending_finish = None;
         self.pending_commit = None;
         self.deferred_input = None;
@@ -728,6 +749,7 @@ impl Session {
         let invalidated = matches!(command, Command::Finalize { .. } | Command::Reset { .. });
         self.word_changes.clear();
         self.visual_input_override = None;
+        self.last_drift = None;
         match command {
             Command::Insert {
                 data,
@@ -758,6 +780,8 @@ impl Session {
                             .cloned(),
                         awaiting_content: self.pending_commit.is_some(),
                         finish: self.pending_finish.clone(),
+                        slow_timer: self.slow_timer,
+                        drift: None,
                     });
                 }
                 self.process_input(DeferredInput {
@@ -860,6 +884,8 @@ impl Session {
                 self.pending_commit = None;
                 self.deferred_input = None;
                 self.pending_finish = None;
+                self.slow_timer = false;
+                self.slow_timer_count = 0;
                 self.active = false;
                 self.ended = false;
                 self.reason = None;
@@ -889,6 +915,7 @@ impl Session {
                 earliest_visible_word,
                 defer_automatic,
                 defer_finish,
+                monitor_render_drift,
                 ..
             } => {
                 self.earliest_visible_word = earliest_visible_word.unwrap_or(0);
@@ -897,6 +924,9 @@ impl Session {
                 }
                 if let Some(defer) = defer_finish {
                     self.defer_finish = defer;
+                }
+                if let Some(monitor) = monitor_render_drift {
+                    self.monitor_render_drift = monitor;
                 }
             }
             Command::FlushAutomatic { generation, .. } => {
@@ -934,6 +964,8 @@ impl Session {
                 .cloned(),
             awaiting_content: self.pending_commit.is_some(),
             finish: self.pending_finish.clone(),
+            slow_timer: self.slow_timer,
+            drift: self.last_drift,
         })
     }
 
@@ -1356,10 +1388,31 @@ impl Session {
         if drift < 0.0 {
             return;
         }
+        self.last_drift = Some(drift);
+        if self.monitor_render_drift
+            && ((self.config.mode == "time" && self.config.time > 0.0 && self.config.time < 130.0)
+                || (self.config.mode == "words"
+                    && self.config.words > 0
+                    && self.config.words < 250))
+        {
+            if drift > 125.0 {
+                self.slow_timer = true;
+            }
+            if drift > 250.0 {
+                self.slow_timer_count = self.slow_timer_count.saturating_add(1);
+            }
+            if drift > 500.0 || self.slow_timer_count > 5 {
+                self.finish(now, date, Some("slow timer".into()));
+                return;
+            }
+        }
         let due = ((now - start) / 1000.0).floor() as u32;
         while self.active && self.pending_finish.is_none() && self.ticks < due {
             self.ticks += 1;
             let mut data = json!({"event":"step","timer":self.ticks});
+            if self.slow_timer {
+                data["slowTimer"] = json!(true);
+            }
             if self.ticks < due {
                 data["catchup"] = json!(true);
             } else {

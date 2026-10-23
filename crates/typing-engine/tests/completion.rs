@@ -61,20 +61,20 @@ fn host_observes_completion_time_without_deciding_completion() {
     assert_eq!(log, session.log());
     let update = command(
         &mut session,
-        json!({"op":"acknowledgeFinish","now":1050,"date":1000050}),
+        json!({"op":"acknowledgeFinish","now":5050,"date":1004050}),
     )
     .unwrap();
     assert!(update.state.ended);
     assert!(update.finish.is_none());
     assert_eq!(
         session.log()["events"].as_array().unwrap().last().unwrap()["testMs"].as_f64(),
-        Some(50.0)
+        Some(4050.0)
     );
     let log = session.log();
     assert!(
         command(
             &mut session,
-            json!({"op":"acknowledgeFinish","now":1060,"date":1000060})
+            json!({"op":"acknowledgeFinish","now":5060,"date":1004060})
         )
         .is_err()
     );

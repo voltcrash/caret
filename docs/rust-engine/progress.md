@@ -128,3 +128,14 @@ do not rerun completed checks without a new reason.
 - Dedicated Wasm `z` profile passes the actual Cloudflare browser proof: all 61 original + 5 section references, historical derivation, lifecycle/content requests, and both web behavior contracts (6 tests, 19.8 seconds). Boundary sample: JSON median 0.0065 ms / p95 0.0075 ms per UTF-16 unit; object p95 0.0105 ms; initialization 30 ms (single sample); 7 keyboard input-to-paint maximum 36 ms; Wasm memory 1,376,256 bytes. Raw evidence: profile-z-proof-performance.json. Full initialization distribution/soak/performance acceptance remains pending.
 
 - Added opt-in host-observed finish acknowledgement: Rust requests completion/failure and blocks further input/ticks; the host supplies actual completion time after its navigation/hooks. Duplicate/stale/earlier acknowledgements are rejected. Native tests cover score-timing origin, blocked input, timer/failure reasons and reset cancellation. Default immediate sessions retain all command-oracle behavior. Browser proof for acknowledgement still pending.
+
+## Additional cutover dependencies identified during integration review
+
+- Preserve app-lifetime weak-spot learning and remembered pace across session replacement through an explicit owned engine context; current newly created generators start fresh.
+- Complete Wasm pace operations and a persistent replay handle.
+- Replace min-burst whole-log cloning and provide bounded live-stat queries before long-session/per-key performance acceptance.
+- Initialization must be safe for concurrent owners without module-level app state; consider async module compilation followed by synchronous guarded wasm-bindgen initialization, plus app-owned load promises.
+- Expose structured recovery actions for missing quote/favorite/polyglot content and active content failures; avoid string-matching rules in hosts.
+- Port restart/no-quit/long-test and custom-progress calculations; preserve browser input normalization boundaries in helper extraction.
+
+- Slow-render policy now belongs to Rust: exact short-test thresholds/counters, failure before ticks, long/infinite catchup and overflow suppression. Native full suite/Clippy pass. Built Cloudflare browser proof passes all 5 Wasm tests, including observed completion time and slow-render failure; the actual website's slow-render contract passes separately. Initial web test hit an offscreen words-container click; corrected to the visible first word and reran (1 pass, 7.5 s). Existing master/min-burst tests also pass. Loader concurrency and persistent replay changes are subsequent work, not included in this evidence.

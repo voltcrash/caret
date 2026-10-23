@@ -71,3 +71,39 @@ test.describe("minimum burst progression", () => {
     expect(state.wordIndex).toBe(1);
   });
 });
+
+test.describe("web slow render policy", () => {
+  test.use({
+    config: {
+      mode: "time",
+      time: 30,
+      difficulty: "normal",
+      minBurst: "off",
+      smoothCaret: "off",
+    },
+  });
+  test("stops a short test before ticking after a long render stall", async ({
+    page,
+  }) => {
+    await openTest(page);
+    await page.locator("#words .word").first().click();
+    await expect(page.locator("#wordsInput")).toBeFocused();
+    await page.keyboard.insertText("a");
+    await page.evaluate(() => {
+      const until = performance.now() + 1600;
+      while (performance.now() < until) {
+        /* Simulate a main-thread render stall. */
+      }
+    });
+    await expect(page.locator("#result")).toBeVisible();
+    const reason = await page.evaluate(
+      () =>
+        (
+          window as unknown as {
+            engineMigrationState: () => { reason?: string };
+          }
+        ).engineMigrationState().reason,
+    );
+    expect(reason).toBe("slow timer");
+  });
+});
