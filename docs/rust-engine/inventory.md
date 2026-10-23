@@ -294,3 +294,17 @@ Evidence: all 61 frozen frontend generators run actual optimized Wasm; 54 broad
 built-site settings/command/modal/quote/restart checks; source/loading edge checks;
 1,577 frontend units and six workerd SSR document cases. Historical consumer map
 above records the original audit, not current imports.
+
+## Website result destinations after Phase 2.4
+
+- `features/typing/analysis.client.ts`: owned native result/inspector queries and
+  mechanical UTF-16/infinite-burst projections; WeakMap caches immutable views.
+- `runtime/completion.client.ts`: Rust validity/AFK/custom-progress decisions;
+  existing account metadata, tags/challenges, storage/hash/submission preserved.
+- Result history/chart/accuracy components and command palette consume that facade.
+- `runtime/replay.ts`: native BrowserReplay mutates/seeks; route-owned timers/audio
+  and existing result rendering retained. `replay-view.ts` contains DTO view types.
+- Event-log viewer input/position/timing derives from native inspection; malformed
+  loads fail in its existing error UI. Timeline/video/chart presentation stays TS.
+- Old inspector reconstruction removed; its capture source preserved inertly under
+  `typing-fixtures/provenance`. Remaining legacy engine utilities retire in 2.6.

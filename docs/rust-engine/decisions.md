@@ -99,3 +99,18 @@ Failed local startup preserves the saved config for Restart and does not persist
 partial defaults. Empty selections have no constraints and permit theme/preference
 bootstrap independently. Tests retain existing cold-import timeout; limit local
 concurrent workers when CPU-heavy production builds compete for the same host.
+
+### Native historical inspection and display-only non-finite bursts
+
+Expose inspection separately from completed scoring so partial logs preserve
+unreleased zero-duration placeholders and original inspector DOM snapshots without
+requiring a completed timer. Inspector word position is the original last input
+position; session/replay Frame active position retains its separate contract.
+Factor existing native timing/accuracy scans; no scoring formulas change.
+
+Per-word burst can be positive infinity in the original engine. serde_json emits
+null; generated types declare that wire representation explicitly, and the host
+restores Infinity only for presentation. Completed metrics retain strict finite
+validation. Do not allocate an intermediate Option array solely for JSON conversion.
+Historical capture sources that refer to removed functions are archived as inert
+text; parity CI runs directly against immutable outputs without the old engine.

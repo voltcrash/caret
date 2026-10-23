@@ -12,7 +12,7 @@ empty commits to inflate count. Do not publish production or releases implicitly
 
 ## Current position
 
-Stage 1 engine gate passed. Stage 2 Phase 2.4 active on `stack/rust-engine-website`; Stage 3 remains pending. Read root AGENTS.md and the complete migration
+Stage 1 engine gate passed. Stage 2 Phase 2.5 active on `stack/rust-engine-website`; Stage 3 remains pending. Read root AGENTS.md and the complete migration
 plan before edits. Installed workspace dependencies with frozen lockfile.
 Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen oracle and mismatch detection. Existing website engine remains authoritative until Stage 2.
 
@@ -28,8 +28,9 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | 2.1 Browser owner / loading | Complete | App-owned loader/content/session resource; 51 unit cases; actual Cloudflare delayed-download/503/retry browser checks pass; server bundles contain no Wasm initializer. |
 | 2.2 Input / timer projection | Complete | Native website loop; 1,575 unit cases, 19 built typing parity cases and 8 loading/input/IME/commit browser checks pass. |
 | 2.3 Generation / settings consumers | Complete | Native generation/catalog/settings/restart/practice; source cancellation/recovery; SSR-safe settings extraction; 1,577 unit tests and built-browser gates pass. |
-| 2.4 Results / replay | Active | Completion validity, history/chart consumers and playback remain. |
-| 2.5–2.6 Delivery / cutover | Pending | Full delivery/performance and TypeScript retirement remain. |
+| 2.4 Results / replay | Complete | Native validity/progress/history/charts/inspector/playback; unit/JSX, frozen parity, save retry and real Start/D1 persistence pass. |
+| 2.5 Delivery / performance | Active | Asset retention/precache, updates/rollback, clean builds and full website budgets remain. |
+| 2.6 TypeScript retirement | Pending | Remove old engine/facades after delivery/performance checks. |
 | 3.1–3.5 Terminal | Pending | Requires Stage 2 gate. |
 
 ## Verification log
@@ -363,3 +364,36 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
   from the previous checkpoint remains valid for unchanged native outputs.
 - Continue Phase 2.4 now. Helpers still used by results are deliberately retained
   until that gate; legacy oracle re-exports retire in Phase 2.6. Stage 3 pending.
+
+## Phase 2.4 gate passed
+
+- Rust now owns completion validity/AFK decisions, long custom progress, result
+  histories/raw/burst/accuracy/chart buckets, event-log inspector reconstruction,
+  and replay prompt mutation/seeking. The website retains transport/hash/account
+  metadata, tags/challenges, saved-text storage, screenshots, display and timers.
+- New immutable inspector reference: 64 prefixes across eight original web logs.
+  Native tests and optimized Wasm check exact DOM text, last input position,
+  accuracy, unreleased timing placeholders and unlagged chart labels. One-time
+  source archived as inert provenance after original inspector removal.
+- App-owned WeakMaps cache immutable result/prefix views without retaining logs.
+  Replay handles/timers are route-owned and disposed on exit; original seven
+  replay snapshots and component playback/seek expectations remain unchanged.
+- Explicit binding contract: infinite per-word burst is JSON null; the host
+  restores Infinity for display. Native f64 stats are unchanged; completed-result
+  finite validation stays strict. A temporary redundant Option allocation was
+  removed; final payload 774,741 raw / 306,988 gzip6 bytes, within frozen limits.
+- Native full suite, Clippy, format and whole frontend type-aware checks pass.
+  Unit + JSX: 224 files / 2,191 tests pass (62.83 s). Two added native-completion
+  long-book tests also pass in the 18-case lifecycle file (partial bailout saves
+  progress; completing the remaining tail resets progress/restores full text).
+- Built Cloudflare proof: original 19 cases pass, including all original generator,
+  result/hash/schema/backend/replay references. New 64-prefix inspector browser
+  case passes separately (11.7 s after fixing its fs read). Signed-out native result
+  history/clipboard/replay seek passes (12.5 s); authenticated same-payload save
+  retry and invalid short-test non-submission pass (2 cases, 15.6 s).
+- Retry fixture needed the seeded Start session and settled account config; its
+  earlier guest/mid-settings attempts were fixture failures. Existing real browser
+  completion through Start/D1 passes (14.5 s): one persisted result/account update.
+  Independent backend result (21) and anticheat detector (19) checks pass unchanged.
+- All result browser cases added to engine browser CI task. No production/staging
+  publication. Continue Phase 2.5; TypeScript retirement and terminal remain open.
