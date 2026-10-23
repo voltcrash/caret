@@ -424,6 +424,60 @@ function EngineProof() {
       setFailure(error instanceof Error ? error.message : String(error));
     }
   };
+  const runInitialization = async (): Promise<void> => {
+    setResult("");
+    setFailure("");
+    const started = performance.now();
+    try {
+      const { loadEngine } =
+        await import("@oxytype/typing-engine/browser.client");
+      const engine = await loadEngine();
+      if (disposed) return;
+      const session = engine.createSession({ mode: "words", words: 1 }, [[97]]);
+      try {
+        const update = session.command({
+          op: "insert",
+          data: [97],
+          now: 0,
+          date: 0,
+          automatic: null,
+          correctShiftUsed: null,
+          isCompositionEnding: null,
+        });
+        if (!update.state.ended) {
+          throw new Error("Initialization did not produce a usable engine");
+        }
+        setResult(
+          JSON.stringify({
+            initializationMs: performance.now() - started,
+            memory: engine.memoryBytes(),
+          }),
+        );
+      } finally {
+        session.dispose();
+      }
+    } catch (error) {
+      if (!disposed) {
+        setFailure(error instanceof Error ? error.message : String(error));
+      }
+    }
+  };
+  const runLifecycle = async (): Promise<void> => {
+    setResult("");
+    setFailure("");
+    try {
+      const { runEngineLifecycle } =
+        await import("../testing/engine-lifecycle.client");
+      const options =
+        fixture() === "" ? {} : (JSON.parse(fixture()) as { words?: number });
+      const output = await runEngineLifecycle(() => !disposed, options.words);
+      if (!disposed) setResult(JSON.stringify(output));
+    } catch (error) {
+      if (!disposed) {
+        setFailure(error instanceof Error ? error.message : String(error));
+      }
+    }
+  };
   const runSourceFailures = async (): Promise<void> => {
     setResult("");
     setFailure("");
@@ -924,6 +978,22 @@ function EngineProof() {
           }}
         >
           Run policies
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            void runInitialization();
+          }}
+        >
+          Run initialization
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            void runLifecycle();
+          }}
+        >
+          Run lifecycle
         </button>
         <button
           type="button"
