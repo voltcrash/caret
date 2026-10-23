@@ -67,7 +67,7 @@ type InvalidResultReason =
 
 import { isDevEnvironment } from "../../../ts/utils/env";
 
-import { countInvalidResultFields } from "@oxytype/typing-core/result-fields";
+import { countInvalidResultFields } from "@oxytype/web-shared/result-fields";
 
 import { saveResult } from "./result-saving";
 const invalidMessages: Record<

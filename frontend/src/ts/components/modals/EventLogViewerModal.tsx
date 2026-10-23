@@ -1,4 +1,4 @@
-import type { EventLog } from "@oxytype/typing-core/events/types";
+import type { EventLog } from "@oxytype/web-shared/events/types";
 
 import { JSXElement, Show, createSignal, onCleanup } from "solid-js";
 

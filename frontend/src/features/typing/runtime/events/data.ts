@@ -2,7 +2,7 @@ import type {
   EventLog,
   TestEventType,
   TestEventData,
-} from "@oxytype/typing-core/events/types";
+} from "@oxytype/web-shared/events/types";
 import { getEngineSession } from "../session.client";
 import { getActiveWordIndex } from "../../../../ts/states/test";
 import { getMutableConfig } from "../../../../ts/config/store";

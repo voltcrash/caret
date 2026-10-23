@@ -1,1 +1,1 @@
-export * from "@oxytype/typing-core/result-hash";
+export * from "@oxytype/web-shared/result-hash";

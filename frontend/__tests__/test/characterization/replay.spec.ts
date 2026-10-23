@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import { resolve } from "path";
 import { fileURLToPath } from "url";
-import type { EventLog } from "@oxytype/typing-core/events/types";
+import type { EventLog } from "@oxytype/web-shared/events/types";
 import {
   afterEach,
   beforeEach,

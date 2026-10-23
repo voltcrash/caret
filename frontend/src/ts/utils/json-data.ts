@@ -6,7 +6,7 @@ import { toHex } from "./strings";
 import {
   createLanguageLoader,
   memoizeAsync,
-} from "@oxytype/typing-core/languages";
+} from "@oxytype/web-shared/languages";
 
 //pin implementation
 const fetch = window.fetch;

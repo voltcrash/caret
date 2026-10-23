@@ -1,1 +1,1 @@
-export * from "@oxytype/typing-core/input/input-type";
+export * from "@oxytype/web-shared/input/input-type";

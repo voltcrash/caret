@@ -1,4 +1,4 @@
-import type { TestEventNoMs } from "@oxytype/typing-core/events/types";
+import type { TestEventNoMs } from "@oxytype/web-shared/events/types";
 
 import { probit } from "@oxytype/util/timing-stats";
 

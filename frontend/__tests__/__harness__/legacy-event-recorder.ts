@@ -5,7 +5,7 @@ import { onCleanup } from "solid-js";
 import { createAppOwned } from "../../src/app/application";
 import { appMethod } from "../../src/app/state";
 import { createTestSession } from "@oxytype/typing-core/session";
-import { EventLogContext } from "@oxytype/typing-core/events/types";
+import { EventLogContext } from "@oxytype/web-shared/events/types";
 import * as TestWords from "../../src/features/typing/runtime/test-words";
 import { getMutableConfig } from "../../src/ts/config/store";
 import * as CustomText from "../../src/features/typing/runtime/custom-text";

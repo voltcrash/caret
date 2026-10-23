@@ -69,7 +69,7 @@ type LastIndex = {
   return match ? this.lastIndexOf(lastElementFromArray(match) as string) : -1;
 };
 
-export { getMode2 } from "@oxytype/typing-core/mode";
+export { getMode2 } from "@oxytype/web-shared/mode";
 
 export async function downloadResultsCSV(array: Result<Mode>[]): Promise<void> {
   const csvString = [

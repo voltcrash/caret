@@ -6,5 +6,9 @@ This package never imports the browser Wasm initializer. The website supplies
 native funbox policy checks; labels, dependent UI preferences, storage and browser
 shortcuts remain host responsibilities.
 
-Legacy typing-core re-exports are temporary oracle dependencies and are retired
-with that engine in migration Phase 2.6.
+Also owns browser event wire types, physical layout translation, content loading,
+command matching, result hashing and display formatting. `live-stats` formats
+native metrics and maps native cursor/config values to progress labels; it never
+advances a session, ends a timer, generates targets or computes typing scores.
+Typography cleanup is an explicit custom-text editor action, not typing input
+normalization. Account daily totals remain storage/display helpers.

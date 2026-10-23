@@ -1,4 +1,4 @@
-import type { EventLog } from "@oxytype/typing-core/events/types";
+import type { EventLog } from "@oxytype/web-shared/events/types";
 
 import { cleanup, fireEvent, render } from "@solidjs/testing-library";
 import {

@@ -145,7 +145,7 @@ import {
   findInputValueMismatches,
   getEventsForWord,
 } from "@oxytype/typing-core/events/helpers";
-import type { InputEventNoMs } from "@oxytype/typing-core/events/types";
+import type { InputEventNoMs } from "@oxytype/web-shared/events/types";
 import { words as TestWords } from "../../../src/features/typing/runtime/test-words";
 import { __testing } from "../../../src/ts/config/testing";
 import { nativeSession } from "../../__harness__/native-engine";

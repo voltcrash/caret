@@ -46,7 +46,6 @@ import {
   isFunboxActiveWithProperty,
 } from "./funbox/list";
 
-import { WordGenError } from "@oxytype/typing-core/errors";
 import { tryCatch } from "@oxytype/util/trycatch";
 import * as Sentry from "../../../ts/sentry";
 import { showLoaderBar, hideLoaderBar } from "../../../ts/states/loader-bar";
@@ -57,7 +56,7 @@ import { getMutableConfig } from "../../../ts/config/store";
 import { setQuoteLengthAll, setConfig } from "../../../ts/config/setters";
 
 import { nthElementFromArray } from "../../../ts/utils/arrays";
-import { hasKoreanCharacters } from "@oxytype/typing-core/strings";
+import { hasKoreanCharacters } from "@oxytype/web-shared/strings";
 
 import { testLogicState } from "./logic-state";
 export async function init(lease = captureTypingRoute()): Promise<boolean> {
@@ -226,15 +225,12 @@ export async function init(lease = captureTypingRoute()): Promise<boolean> {
   } catch (e) {
     if (!lease.isCurrent()) return false;
     hideLoaderBar();
-    if (e instanceof WordGenError || e instanceof Error) {
+    if (e instanceof Error) {
       testLogicState.lastInitError = e;
     }
     console.error(e);
     if (e instanceof EngineFailure) applyEngineRecovery(e);
-    if (
-      e instanceof WordGenError ||
-      (e instanceof EngineFailure && generationFailureIsNotice(e))
-    ) {
+    if (e instanceof EngineFailure && generationFailureIsNotice(e)) {
       if (e.message.length > 0) {
         showNoticeNotification(e.message, {
           important: true,

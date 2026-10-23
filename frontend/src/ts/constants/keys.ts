@@ -1,5 +1,5 @@
-import { Keycode } from "@oxytype/typing-core/keys";
-export type { Keycode } from "@oxytype/typing-core/keys";
+import { Keycode } from "@oxytype/web-shared/keys";
+export type { Keycode } from "@oxytype/web-shared/keys";
 
 export const qwertyKeycodeKeymap: Keycode[][] = [
   [

@@ -1,4 +1,4 @@
-import type { TestEventType } from "@oxytype/typing-core/events/types";
+import type { TestEventType } from "@oxytype/web-shared/events/types";
 
 import { For, JSXElement, Show } from "solid-js";
 

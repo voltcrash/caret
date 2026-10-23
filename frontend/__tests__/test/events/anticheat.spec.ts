@@ -11,10 +11,7 @@ import {
   getTimingReview,
 } from "../../../../backend/src/anticheat";
 import { calculateWpm } from "@oxytype/typing-core/stats-math";
-import type {
-  EventLog,
-  TestEventNoMs,
-} from "@oxytype/typing-core/events/types";
+import type { EventLog, TestEventNoMs } from "@oxytype/web-shared/events/types";
 import {
   getChars,
   getAccuracy,

@@ -1,7 +1,7 @@
 import type {
   TestEventNoMs,
   TestEventType,
-} from "@oxytype/typing-core/events/types";
+} from "@oxytype/web-shared/events/types";
 
 import { createEffect, For, JSXElement } from "solid-js";
 

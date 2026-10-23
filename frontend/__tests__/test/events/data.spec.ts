@@ -19,7 +19,7 @@ import type {
   KeyupEvent,
   KeyupEventData,
   TimerEventData,
-} from "@oxytype/typing-core/events/types";
+} from "@oxytype/web-shared/events/types";
 import { Keycode } from "../../../src/ts/constants/keys";
 import { getEventsPerWord } from "@oxytype/typing-core/events/helpers";
 
