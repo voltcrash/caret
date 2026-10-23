@@ -1,0 +1,5529 @@
+[
+  {
+    "name": "getStartToFirstKeypressMs",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 150,
+            "data": {
+              "code": "KeyA"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 150
+  },
+  {
+    "name": "getStartToFirstKeypressMs",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "keydown",
+            "testMs": -100,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 0
+  },
+  {
+    "name": "getStartToFirstKeypressMs",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 150,
+            "data": {
+              "code": "KeyA"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "zen",
+          "mode2": "zen",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 0
+  },
+  {
+    "name": "getStartToFirstKeypressMs",
+    "args": [
+      {
+        "version": 1,
+        "events": [],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 0
+  },
+  {
+    "name": "getLastKeypressToEndMs",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 500,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 600,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 800,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "end",
+              "timer": 1,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 200
+  },
+  {
+    "name": "getLastKeypressToEndMs",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 500,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "end",
+              "timer": 1,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "zen",
+          "mode2": "zen",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 0
+  },
+  {
+    "name": "getTestDurationMs",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 500,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 3000,
+            "data": {
+              "event": "end",
+              "timer": 3,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 3000
+  },
+  {
+    "name": "getTestDurationMs",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 0
+  },
+  {
+    "name": "getBurstHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 400,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aa"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 600,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aaa"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 1200,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aaaa"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 1400,
+            "data": {
+              "charIndex": 4,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aaaaa"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 2000,
+            "data": {
+              "event": "step",
+              "timer": 2,
+              "drift": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 2200,
+            "data": {
+              "charIndex": 5,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aaaaaa"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 3000,
+            "data": {
+              "event": "step",
+              "timer": 3,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 3000,
+            "data": {
+              "event": "end",
+              "timer": 3,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": [36, 24, 12]
+  },
+  {
+    "name": "getBurstHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 400,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "deleteContentBackward"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "end",
+              "timer": 1,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": [12]
+  },
+  {
+    "name": "getErrorCountHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": false,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 400,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aa"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 1200,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": false,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aaa"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 1400,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": false,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aaaa"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 2000,
+            "data": {
+              "event": "step",
+              "timer": 2,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 2000,
+            "data": {
+              "event": "end",
+              "timer": 2,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": [1, 2]
+  },
+  {
+    "name": "getErrorCountHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 400,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aa"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 600,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aaa"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 1200,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aaaa"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 1400,
+            "data": {
+              "charIndex": 4,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aaaaa"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 2000,
+            "data": {
+              "event": "step",
+              "timer": 2,
+              "drift": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 2200,
+            "data": {
+              "charIndex": 5,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aaaaaa"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 3000,
+            "data": {
+              "event": "step",
+              "timer": 3,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 3000,
+            "data": {
+              "event": "end",
+              "timer": 3,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": [0, 0, 0]
+  },
+  {
+    "name": "getAfkDuration",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 200,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 300,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 2000,
+            "data": {
+              "event": "step",
+              "timer": 2,
+              "drift": 0
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 2200,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 2300,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 3000,
+            "data": {
+              "event": "step",
+              "timer": 3,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 3000,
+            "data": {
+              "event": "end",
+              "timer": 3,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 1
+  },
+  {
+    "name": "getAfkDuration",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 50,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 150,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 10000,
+            "data": {
+              "event": "end",
+              "timer": 0,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 9
+  },
+  {
+    "name": "getAfkDuration",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 200,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 300,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 1200,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 1300,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 2000,
+            "data": {
+              "event": "step",
+              "timer": 2,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 2000,
+            "data": {
+              "event": "end",
+              "timer": 2,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 0
+  },
+  {
+    "name": "getIncompleteTestSeconds",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 1200,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aa"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 2200,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aaa"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 60000,
+            "data": {
+              "event": "end",
+              "timer": 60,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 3
+  },
+  {
+    "name": "getIncompleteTestSeconds",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 1200,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aa"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 2200,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aaa"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 3200,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aaaa"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 4200,
+            "data": {
+              "charIndex": 4,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aaaaa"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 5000,
+            "data": {
+              "event": "end",
+              "timer": 5,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 5
+  },
+  {
+    "name": "getIncompleteTestSeconds",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 0
+  },
+  {
+    "name": "getIncompleteTestSeconds",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 3000,
+            "data": {
+              "event": "end",
+              "timer": 3,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 0
+  },
+  {
+    "name": "getInputHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "h",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "h"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 110,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "e",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "he"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 120,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "l",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hel"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 130,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "l",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hell"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 140,
+            "data": {
+              "charIndex": 4,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "o",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hello"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 150,
+            "data": {
+              "charIndex": 5,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": " ",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hello ",
+              "commitsWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 1,
+              "inputType": "insertText",
+              "data": "=",
+              "correct": false,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "="
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 210,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 1,
+              "inputType": "insertText",
+              "data": "r",
+              "correct": false,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "=r"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 220,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 1,
+              "inputType": "insertText",
+              "data": "i",
+              "correct": false,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "=ri"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 300,
+            "data": {
+              "wordIndex": 1,
+              "charIndex": 3,
+              "inputType": "deleteWordBackward",
+              "inputValue": "="
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 400,
+            "data": {
+              "wordIndex": 0,
+              "charIndex": 0,
+              "inputType": "deleteWordBackward",
+              "inputValue": "",
+              "clearedNextWord": true
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 4000,
+            "data": {
+              "event": "end",
+              "timer": 4,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": ["hello ", "leave"],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": ["", ""]
+  },
+  {
+    "name": "getAccuracy",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aa"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": false,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aaa"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": {
+      "correct": 2,
+      "incorrect": 1,
+      "percentage": 66.66666666666666
+    }
+  },
+  {
+    "name": "getAccuracy",
+    "args": [
+      {
+        "version": 1,
+        "events": [],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": {
+      "correct": 0,
+      "incorrect": 0,
+      "percentage": 0
+    }
+  },
+  {
+    "name": "getAccuracy",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "deleteContentBackward"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": {
+      "correct": 1,
+      "incorrect": 0,
+      "percentage": 100
+    }
+  },
+  {
+    "name": "getAccuracy",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": false,
+              "isCompositionEnding": false,
+              "inputStopped": true,
+              "inputValue": "a"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": {
+      "correct": 1,
+      "incorrect": 1,
+      "percentage": 50
+    }
+  },
+  {
+    "name": "getKeypressSpacing",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "keydown",
+            "testMs": 0,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 50,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 100,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 150,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 250,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 300,
+            "data": {
+              "code": "KeyA"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": [100, 150]
+  },
+  {
+    "name": "getKeypressSpacing",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "keydown",
+            "testMs": 0,
+            "data": {
+              "code": "KeyA"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": []
+  },
+  {
+    "name": "getKeypressSpacing",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "keydown",
+            "testMs": -16240,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 100,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 500,
+            "data": {
+              "code": "KeyS"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 580,
+            "data": {
+              "code": "KeyS"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "end",
+              "timer": 1,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "time",
+          "mode2": "0",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": [500]
+  },
+  {
+    "name": "getStartToFirstKeypressMs",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "keydown",
+            "testMs": -16240,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 100,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 500,
+            "data": {
+              "code": "KeyS"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 580,
+            "data": {
+              "code": "KeyS"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "end",
+              "timer": 1,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "time",
+          "mode2": "0",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 0
+  },
+  {
+    "name": "getLastKeypressToEndMs",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "keydown",
+            "testMs": -16240,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 100,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 500,
+            "data": {
+              "code": "KeyS"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 580,
+            "data": {
+              "code": "KeyS"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "end",
+              "timer": 1,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "time",
+          "mode2": "0",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 500
+  },
+  {
+    "name": "getTestDurationMs",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "keydown",
+            "testMs": -16240,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 100,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 500,
+            "data": {
+              "code": "KeyS"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 580,
+            "data": {
+              "code": "KeyS"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "end",
+              "timer": 1,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "time",
+          "mode2": "0",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 1000
+  },
+  {
+    "name": "getKeypressSpacing",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 500,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 580,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 700,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 780,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "end",
+              "timer": 1,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "time",
+          "mode2": "0",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": [200]
+  },
+  {
+    "name": "getStartToFirstKeypressMs",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 500,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 580,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 700,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 780,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "end",
+              "timer": 1,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "time",
+          "mode2": "0",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 500
+  },
+  {
+    "name": "getLastKeypressToEndMs",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 500,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 580,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 700,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 780,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "end",
+              "timer": 1,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "time",
+          "mode2": "0",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 300
+  },
+  {
+    "name": "getTestDurationMs",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 500,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 580,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 700,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 780,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "end",
+              "timer": 1,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "time",
+          "mode2": "0",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 1000
+  },
+  {
+    "name": "getKeypressOverlap",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "keydown",
+            "testMs": 0,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 50,
+            "data": {
+              "code": "KeyS"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 80,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 100,
+            "data": {
+              "code": "KeyS"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 30
+  },
+  {
+    "name": "getKeypressOverlap",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "keydown",
+            "testMs": 0,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 50,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 100,
+            "data": {
+              "code": "KeyS"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 150,
+            "data": {
+              "code": "KeyS"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": 0
+  },
+  {
+    "name": "getKeypressDurations",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "keydown",
+            "testMs": 0,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 80,
+            "data": {
+              "code": "KeyA"
+            }
+          },
+          {
+            "type": "keydown",
+            "testMs": 100,
+            "data": {
+              "code": "KeyS"
+            }
+          },
+          {
+            "type": "keyup",
+            "testMs": 200,
+            "data": {
+              "code": "KeyS"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": [80, 100]
+  },
+  {
+    "name": "getKeypressDurations",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "keydown",
+            "testMs": 0,
+            "data": {
+              "code": "KeyA"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": [0]
+  },
+  {
+    "name": "getKeypressesPerSecond",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 400,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aa"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 600,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aaa"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 1200,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aaaa"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 1400,
+            "data": {
+              "charIndex": 4,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aaaaa"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 2000,
+            "data": {
+              "event": "step",
+              "timer": 2,
+              "drift": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 2200,
+            "data": {
+              "charIndex": 5,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aaaaaa"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 3000,
+            "data": {
+              "event": "step",
+              "timer": 3,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 3000,
+            "data": {
+              "event": "end",
+              "timer": 3,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": [3, 2, 1]
+  },
+  {
+    "name": "getKeypressesPerSecond",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 400,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "deleteContentBackward"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "end",
+              "timer": 1,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": [1]
+  },
+  {
+    "name": "getKeypressesPerSecond",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": []
+  },
+  {
+    "name": "getKeypressesPerSecond",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 1200,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aa"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 1400,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "aaa"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1496,
+            "data": {
+              "event": "end",
+              "timer": 1,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": [1, 2]
+  },
+  {
+    "name": "getMissedWords",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "x",
+              "correct": false,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "x"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": ["foo\t ", "bar"],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": {
+      "foo\t": 1
+    }
+  },
+  {
+    "name": "getMissedWords",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "x",
+              "correct": false,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "x"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": ["hello ", "world"],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": {
+      "hello": 1
+    }
+  },
+  {
+    "name": "getChars",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "h",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "h"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 150,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "e",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "he"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "l",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hel"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 250,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "l",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hell"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 300,
+            "data": {
+              "charIndex": 4,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "o",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hello"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": ["hello"],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": {
+      "allCorrect": 5,
+      "correctWord": 5,
+      "incorrect": 0,
+      "extra": 0,
+      "missed": 0
+    }
+  },
+  {
+    "name": "getChars",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 150,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "x",
+              "correct": false,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "ax"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": ["ab"],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": {
+      "allCorrect": 1,
+      "correctWord": 0,
+      "incorrect": 1,
+      "extra": 0,
+      "missed": 0
+    }
+  },
+  {
+    "name": "getChars",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 150,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "b",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "ab"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "c",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "abc"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": ["ab"],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": {
+      "allCorrect": 2,
+      "correctWord": 0,
+      "incorrect": 0,
+      "extra": 1,
+      "missed": 0
+    }
+  },
+  {
+    "name": "getChars",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "h",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "h"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 150,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "e",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "he"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "l",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hel"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 250,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": " ",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hel ",
+              "commitsWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 300,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 1,
+              "inputType": "insertText",
+              "data": "w",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "w"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": ["hello ", "world"],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": {
+      "allCorrect": 4,
+      "correctWord": 0,
+      "incorrect": 1,
+      "extra": 0,
+      "missed": 6
+    }
+  },
+  {
+    "name": "getChars",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "し",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "し"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 150,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "り",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "しり"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "　",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "しり　",
+              "commitsWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 300,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 1,
+              "inputType": "insertText",
+              "data": "か",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "か"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": ["しり ", "かこ"],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": {
+      "allCorrect": 4,
+      "correctWord": 3,
+      "incorrect": 0,
+      "extra": 0,
+      "missed": 1
+    }
+  },
+  {
+    "name": "getWpmHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "h",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "h"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 150,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "e",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "he"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "l",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hel"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 250,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "l",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hell"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 300,
+            "data": {
+              "charIndex": 4,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "o",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hello"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "end",
+              "timer": 1,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": ["hello"],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": [60]
+  },
+  {
+    "name": "getWpmHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "b",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "ab"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 300,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": " ",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "ab "
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 1100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 1,
+              "inputType": "insertText",
+              "data": "c",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "c"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 1200,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 1,
+              "inputType": "insertText",
+              "data": "d",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "cd"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 2000,
+            "data": {
+              "event": "step",
+              "timer": 2,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 2000,
+            "data": {
+              "event": "end",
+              "timer": 2,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": ["ab ", "cd"],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": [36, 30]
+  },
+  {
+    "name": "getWpmHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "b",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "ab"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 300,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 1,
+              "inputType": "insertText",
+              "data": "c",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "c"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 400,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 1,
+              "inputType": "insertText",
+              "data": "d",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "cd"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "end",
+              "timer": 1,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": ["ab", "cd"],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false,
+          "isFunboxWithNospacePropertyActive": true
+        }
+      }
+    ],
+    "expected": [48]
+  },
+  {
+    "name": "getWpmHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "h",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "h"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 150,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "e",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "he"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "l",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hel"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 250,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "l",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hell"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 300,
+            "data": {
+              "charIndex": 4,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "o",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hello"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 350,
+            "data": {
+              "charIndex": 5,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "\n",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hello\n"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 500,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 1,
+              "inputType": "insertText",
+              "data": "w",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "w"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 550,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 1,
+              "inputType": "insertText",
+              "data": "o",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "wo"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 600,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 1,
+              "inputType": "insertText",
+              "data": "r",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "wor"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 650,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 1,
+              "inputType": "insertText",
+              "data": "l",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "worl"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 700,
+            "data": {
+              "charIndex": 4,
+              "wordIndex": 1,
+              "inputType": "insertText",
+              "data": "d",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "world"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "end",
+              "timer": 1,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": ["hello\n", "world"],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": [132]
+  },
+  {
+    "name": "getCorrectedWordsHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "t",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "t"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 150,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "e",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "te"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "s",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "tes"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 250,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "t",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "test"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": ["test"]
+  },
+  {
+    "name": "getCorrectedWordsHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "x",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "x"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 150,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xa"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "c",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xac"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 250,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "t",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xact"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 300,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "deleteContentBackward"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 350,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "deleteContentBackward"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 400,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "deleteContentBackward"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 450,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "deleteContentBackward"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 500,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "f",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xactf"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 550,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xactfa"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 600,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "c",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xactfac"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 650,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "t",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xactfact"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": ["xact"]
+  },
+  {
+    "name": "getCorrectedWordsHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "x",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "x"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 150,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "e",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xe"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "s",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xes"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 250,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "t",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xest"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 300,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "deleteWordBackward"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 400,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "w",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xestw"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 450,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "e",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xestwe"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 500,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "s",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xestwes"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 550,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "t",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xestwest"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 600,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "deleteWordBackward"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 700,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "t",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xestwestt"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 750,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "e",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xestwestte"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 800,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "s",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xestwesttes"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 850,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "t",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xestwesttest"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": ["west"]
+  },
+  {
+    "name": "getCorrectedWordsHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "t",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "t"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 150,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "s",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "ts"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "e",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "tse"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 250,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "t",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "tset"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 300,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "deleteContentBackward"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 350,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "deleteContentBackward"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 400,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "s",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "tsets"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 450,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "t",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "tsetst"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": ["tset"]
+  },
+  {
+    "name": "getCorrectedWordsHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "a",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "a"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 150,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "b",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "ab"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 1,
+              "inputType": "insertText",
+              "data": "x",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "x"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 250,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 1,
+              "inputType": "insertText",
+              "data": "y",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xy"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 300,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 1,
+              "inputType": "deleteContentBackward"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 350,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 1,
+              "inputType": "deleteContentBackward"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 400,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 1,
+              "inputType": "insertText",
+              "data": "z",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xyz"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 450,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 1,
+              "inputType": "insertText",
+              "data": "w",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "xyzw"
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": ["ab", "xy"]
+  },
+  {
+    "name": "getCorrectedWordsHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "t",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "t"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 150,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "e",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "te"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "s",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "tes"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 250,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "t",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "test"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 300,
+            "data": {
+              "charIndex": 4,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": " ",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "test ",
+              "commitsWord": true
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": ["test "]
+  },
+  {
+    "name": "getInputHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "h",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "h"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 110,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "e",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "he"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 120,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "x",
+              "correct": false,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hex"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 120,
+            "data": {
+              "wordIndex": 0,
+              "charIndex": 3,
+              "inputType": "deleteContentBackward",
+              "automatic": true,
+              "inputValue": "he"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 120,
+            "data": {
+              "wordIndex": 0,
+              "charIndex": 2,
+              "inputType": "deleteContentBackward",
+              "automatic": true,
+              "inputValue": "h"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 4000,
+            "data": {
+              "event": "end",
+              "timer": 4,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": ["hello ", "world"],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": ["h"]
+  },
+  {
+    "name": "getAccuracy",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "h",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "h"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 110,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "e",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "he"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 120,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "x",
+              "correct": false,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hex"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 120,
+            "data": {
+              "wordIndex": 0,
+              "charIndex": 3,
+              "inputType": "deleteContentBackward",
+              "automatic": true,
+              "inputValue": "he"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 120,
+            "data": {
+              "wordIndex": 0,
+              "charIndex": 2,
+              "inputType": "deleteContentBackward",
+              "automatic": true,
+              "inputValue": "h"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 4000,
+            "data": {
+              "event": "end",
+              "timer": 4,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": ["hello ", "world"],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": {
+      "correct": 2,
+      "incorrect": 1,
+      "percentage": 66.66666666666666
+    }
+  },
+  {
+    "name": "getCorrectedWordsHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "h",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "h"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 110,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "e",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "he"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 120,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "x",
+              "correct": false,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hex"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 120,
+            "data": {
+              "wordIndex": 0,
+              "charIndex": 3,
+              "inputType": "deleteContentBackward",
+              "automatic": true,
+              "inputValue": "he"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 120,
+            "data": {
+              "wordIndex": 0,
+              "charIndex": 2,
+              "inputType": "deleteContentBackward",
+              "automatic": true,
+              "inputValue": "h"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 4000,
+            "data": {
+              "event": "end",
+              "timer": 4,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": ["hello ", "world"],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": ["hex"]
+  },
+  {
+    "name": "getInputHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "x",
+              "correct": false,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "x"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "wordIndex": 0,
+              "charIndex": 1,
+              "inputType": "deleteContentBackward",
+              "automatic": true,
+              "inputValue": ""
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 4000,
+            "data": {
+              "event": "end",
+              "timer": 4,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": ["hello ", "world"],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": [""]
+  },
+  {
+    "name": "getInputHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "h",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "h"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 110,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "e",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "he"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 120,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "x",
+              "correct": false,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hex"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 120,
+            "data": {
+              "wordIndex": 0,
+              "charIndex": 3,
+              "inputType": "deleteWordBackward",
+              "automatic": true,
+              "inputValue": ""
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 4000,
+            "data": {
+              "event": "end",
+              "timer": 4,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": ["hello ", "world"],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": [""]
+  },
+  {
+    "name": "getCorrectedWordsHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "h",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "h"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 110,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "e",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "he"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 120,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "x",
+              "correct": false,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hex"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 120,
+            "data": {
+              "wordIndex": 0,
+              "charIndex": 3,
+              "inputType": "deleteWordBackward",
+              "automatic": true,
+              "inputValue": ""
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 4000,
+            "data": {
+              "event": "end",
+              "timer": 4,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": ["hello ", "world"],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": ["hex"]
+  },
+  {
+    "name": "getInputHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "h",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "h"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 110,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "e",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "he"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 120,
+            "data": {
+              "charIndex": 2,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "l",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hel"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 130,
+            "data": {
+              "charIndex": 3,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "l",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hell"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 140,
+            "data": {
+              "charIndex": 4,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "o",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hello"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 150,
+            "data": {
+              "charIndex": 5,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": " ",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hello ",
+              "commitsWord": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 1,
+              "inputType": "insertText",
+              "data": "x",
+              "correct": false,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "x"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "wordIndex": 1,
+              "charIndex": 1,
+              "inputType": "deleteContentBackward",
+              "automatic": true,
+              "inputValue": ""
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 200,
+            "data": {
+              "wordIndex": 0,
+              "charIndex": 5,
+              "inputType": "deleteContentBackward",
+              "automatic": true,
+              "inputValue": "hello"
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 4000,
+            "data": {
+              "event": "end",
+              "timer": 4,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": ["hello ", "world"],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": ["hello", ""]
+  },
+  {
+    "name": "getInputHistory",
+    "args": [
+      {
+        "version": 1,
+        "events": [
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 100,
+            "data": {
+              "charIndex": 0,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "h",
+              "correct": true,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "h"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 110,
+            "data": {
+              "charIndex": 1,
+              "wordIndex": 0,
+              "inputType": "insertText",
+              "data": "x",
+              "correct": false,
+              "isCompositionEnding": false,
+              "inputStopped": false,
+              "inputValue": "hx"
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 110,
+            "data": {
+              "wordIndex": 0,
+              "charIndex": 2,
+              "inputType": "deleteContentBackward",
+              "inputValue": "h",
+              "automatic": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 110,
+            "data": {
+              "wordIndex": 0,
+              "charIndex": 1,
+              "inputType": "deleteContentBackward",
+              "inputValue": "",
+              "automatic": true
+            }
+          },
+          {
+            "type": "input",
+            "testMs": 300,
+            "data": {
+              "wordIndex": 0,
+              "charIndex": 0,
+              "inputType": "deleteContentBackward",
+              "inputValue": ""
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 4000,
+            "data": {
+              "event": "end",
+              "timer": 4,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": ["hello ", "world"],
+          "mode": "words",
+          "mode2": "25",
+          "koreanStatus": false,
+          "bailedOut": false
+        }
+      }
+    ],
+    "expected": [""]
+  }
+]
