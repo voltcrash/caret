@@ -175,3 +175,5 @@ do not rerun completed checks without a new reason.
 - Final engine initialization distributions, long-session/restart memory and per-key performance budgets; full website startup/input/restart comparison belongs to Stage 2 after integration.
 - Current-head full regression/backend submission/hash checks, fresh-checkout bootstrap and complete CI evidence.
 - Stage 2/3 implementation and their two stacked PRs still pending. No deployment or release publication performed.
+
+- Fixed generated-output publication: build/optimization occurs in a staging directory, then complete files replace prior output; obsolete declarations are removed afterwards. Forced rebuild probe observed 2,000 polls with no missing prior Wasm/glue/types and verified obsolete-file removal. The following build is a verified cache hit. Build target directory is explicit. This avoids the prior long typechecking gap; normal build success alone is not a concurrent-build/process-lock claim.

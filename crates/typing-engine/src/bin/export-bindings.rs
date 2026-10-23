@@ -5,8 +5,13 @@ use typing_engine::{
 };
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("../../packages/typing-engine/generated/types");
+    let root = std::env::args_os()
+        .nth(1)
+        .map(std::path::PathBuf::from)
+        .unwrap_or_else(|| {
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("../../packages/typing-engine/generated/types")
+        });
     let config = ts_rs::Config::new().with_out_dir(root.clone());
     std::fs::create_dir_all(root.parent().unwrap())?;
     std::fs::write(

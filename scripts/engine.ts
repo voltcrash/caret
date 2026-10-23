@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process";
 import {
   existsSync,
   mkdirSync,
+  mkdtempSync,
   readFileSync,
   readdirSync,
   rmSync,
@@ -108,18 +109,21 @@ switch (process.argv[2]) {
       "--locked",
       "--profile",
       "wasm",
+      "--target-dir",
+      resolve(root, "target"),
       "--target",
       "wasm32-unknown-unknown",
       "-p",
       "typing-engine-wasm",
     ]);
-    rmSync(output, { recursive: true, force: true });
-    mkdirSync(output, { recursive: true });
+    const staging = mkdtempSync(
+      resolve(root, "target/typing-engine-bindings-"),
+    );
     run("wasm-bindgen", [
       "--target",
       "web",
       "--out-dir",
-      output,
+      staging,
       "--out-name",
       "engine",
       resolve(
@@ -130,7 +134,7 @@ switch (process.argv[2]) {
     const binaryen = dirname(
       createRequire(import.meta.url).resolve("binaryen/package.json"),
     );
-    const wasm = resolve(output, "engine_bg.wasm");
+    const wasm = resolve(staging, "engine_bg.wasm");
     run(process.execPath, [
       resolve(binaryen, "bin/wasm-opt"),
       wasm,
@@ -151,7 +155,25 @@ switch (process.argv[2]) {
       "typing-engine",
       "--bin",
       "export-bindings",
+      "--",
+      resolve(staging, "types"),
     ]);
+    // Keep the prior declarations available throughout compilation/optimization.
+    // Publish only complete files, then remove obsolete generated output.
+    const produced = new Set(
+      files(staging).map((path) => relative(staging, path)),
+    );
+    for (const path of produced) {
+      const destination = resolve(output, path);
+      mkdirSync(dirname(destination), { recursive: true });
+      renameSync(resolve(staging, path), destination);
+    }
+    for (const path of files(output)) {
+      if (path !== cacheFile && !produced.has(relative(output, path))) {
+        rmSync(path);
+      }
+    }
+    rmSync(staging, { recursive: true, force: true });
     const cache: BuildCache = {
       fingerprint: key,
       outputs: files(output)
