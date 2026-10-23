@@ -19,6 +19,57 @@ fn equal(a: &Value, b: &Value, path: &str) {
     }
 }
 #[test]
+fn historical_surrogate_halves_keep_exact_stats_frames_playback_and_seeking() {
+    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../packages/typing-fixtures/oracle/historical-unicode.json");
+    let references: Vec<Value> = serde_json::from_slice(&std::fs::read(path).unwrap()).unwrap();
+    for reference in references {
+        let name = reference["name"].as_str().unwrap();
+        let log: Log = serde_json::from_value(reference["log"].clone()).unwrap();
+        for (query, expected) in reference["queries"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .zip(reference["expected"].as_array().unwrap())
+        {
+            let query = serde_json::from_value(query.clone()).unwrap();
+            equal(
+                &json!(typing_engine::analysis::analyze(&log, query)),
+                expected,
+                name,
+            );
+        }
+        let stats = json!({
+            "chars":typing_engine::stats::chars(&log,true,None),
+            "acc":typing_engine::stats::accuracy(&log,None),
+            "history":typing_engine::stats::input_history(&log),
+            "corrected":typing_engine::stats::corrected_history(&log),
+            "wpm":typing_engine::stats::speed_history(&log,false),
+            "raw":typing_engine::stats::speed_history(&log,true),
+            "burst":typing_engine::stats::word_burst_history(&log,1000.0)
+        });
+        equal(&stats, &reference["stats"], name);
+        for expected in reference["playback"].as_array().unwrap() {
+            let mut playback = replay::Playback::new(&log, expected["zen"].as_bool().unwrap());
+            let mut sounds = vec![];
+            while playback.snapshot().next_time.is_some() {
+                sounds.push(playback.step().sound);
+            }
+            let snapshot = playback.snapshot();
+            equal(&json!(snapshot.words), &expected["words"], name);
+            equal(&json!(snapshot.cursor), &expected["cursor"], name);
+            equal(&json!(sounds), &expected["sounds"], name);
+            for target in expected["seeks"].as_array().unwrap() {
+                let snapshot =
+                    playback.seek(serde_json::from_value(target["target"].clone()).unwrap());
+                equal(&json!(snapshot.words), &target["words"], name);
+                equal(&json!(snapshot.cursor), &target["cursor"], name);
+                equal(&json!(snapshot.next_index), &target["nextIndex"], name);
+            }
+        }
+    }
+}
+#[test]
 fn replay_seeking_practice_and_validity_match_frozen_typescript_oracle() {
     let root =
         std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../packages/typing-fixtures");

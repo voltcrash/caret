@@ -21,9 +21,9 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | 1.1 Inventory / baselines | Complete | See inventory.md, features.md, baseline.md and raw measurements. |
 | 1.2 Contracts / fixtures | Complete | 19 command traces, 21 oracle/integrity tests; contract and classified gaps. |
 | 1.3 Native / browser proof | Complete | Native 7 traces; Cloudflare real-browser finite slice; MIME/CSP, lifecycle, boundary benchmark. Budgets frozen. |
-| 1.4 Input / lifecycle / timing | Active | 19 native/browser command traces; 8 original recordings. Composition, batch failure, deferred work, visible-word bounds and browser deletion observations covered. Full generator/session integration remains open. |
-| 1.5 Generation / configuration | Active | 61/61 unchanged generator snapshots. Content requests, configuration validation and generator/session integration pending. |
-| 1.6 Events / results / replay | Active | All computed summary fields match 8 original CompletedEvents exactly. Full results, eligibility, histories and replay pass native/browser references; malformed/historical edge coverage and incremental playback facade pending. |
+| 1.4 Input / lifecycle / timing | Active | 19 native/browser command traces; 8 original recordings. Composition, batch failure, deferred work, visible-word bounds and browser deletion observations covered. Owned generation, delayed completion and restart rules now pass; randomized lifecycle/live-stat performance gate remains open. |
+| 1.5 Generation / configuration | Active | 61/61 unchanged generator snapshots. Content requests and owned session continuation pass; structured quote/polyglot recovery and malformed-input coverage remain open. |
+| 1.6 Events / results / replay | Active | All computed summary fields match 8 original CompletedEvents exactly. Full results, eligibility, histories and replay pass native/browser references; persistent playback and historical UTF-16 edges pass; schema/hash/backend and malformed-log gates remain open. |
 | 1.7 Binding / engine gate | Pending | Full three-path parity and budgets. |
 | 2.1–2.6 Website | Pending | Requires Stage 1 gate. |
 | 3.1–3.5 Terminal | Pending | Requires Stage 2 gate. |
@@ -131,12 +131,12 @@ do not rerun completed checks without a new reason.
 
 ## Additional cutover dependencies identified during integration review
 
-- Preserve app-lifetime weak-spot learning and remembered pace across session replacement through an explicit owned engine context; current newly created generators start fresh.
-- Complete Wasm pace operations and a persistent replay handle.
+- Completed: owned recycling retains learning, remembered pace, repeat words and quote identity; generations survive reset/replacement.
+- Completed: typed Wasm pace operations and persistent replay handle.
 - Replace min-burst whole-log cloning and provide bounded live-stat queries before long-session/per-key performance acceptance.
-- Initialization must be safe for concurrent owners without module-level app state; consider async module compilation followed by synchronous guarded wasm-bindgen initialization, plus app-owned load promises.
+- Completed: concurrent compile/guarded initialization and owned retryable loader verified in the real browser.
 - Expose structured recovery actions for missing quote/favorite/polyglot content and active content failures; avoid string-matching rules in hosts.
-- Port restart/no-quit/long-test and custom-progress calculations; preserve browser input normalization boundaries in helper extraction.
+- Completed: restart/no-quit/long-test and custom progress ported and checked natively/in browser. Production input adapter still awaits Stage 2.
 
 - Slow-render policy now belongs to Rust: exact short-test thresholds/counters, failure before ticks, long/infinite catchup and overflow suppression. Native full suite/Clippy pass. Built Cloudflare browser proof passes all 5 Wasm tests, including observed completion time and slow-render failure; the actual website's slow-render contract passes separately. Initial web test hit an offscreen words-container click; corrected to the visible first word and reran (1 pass, 7.5 s). Existing master/min-burst tests also pass. Loader concurrency and persistent replay changes are subsequent work, not included in this evidence.
 
@@ -164,3 +164,14 @@ do not rerun completed checks without a new reason.
 - Built-browser restart/progress checks pass: 13 migration tests, 27.9 s, including all 180 quick-restart boundaries/10 quote preferences and seven long-text progress cases (Unicode/newline/bailout/u32 boundary). Type-aware lint passes. Wasm 796,283 bytes; gzip level 6 304,335 bytes (Vite 306.77 kB). Generated development glue is 34,048 bytes; actual deployed minified facade/glue asset remains below the 32 KiB transfer budget. Further additions need size work; the unused measured object boundary is next to retire.
 
 - Retiring the unused object-conversion benchmark removes serde-wasm-bindgen/js-sys and reduces Wasm to 688,430 raw / 274,470 gzip level 6 (Vite 276.52 kB), with deployed glue/facade 10,948 bytes. All 13 browser migration tests still pass (24.2 s); Clippy/type-aware lint pass. New JSON sample: median 0.0075 ms / p95 0.01 ms per UTF-16 unit; initialization 48.7 ms (single sample); paint maximum 35.7 ms; memory 1,376,256 bytes. Evidence: selected-json-proof-performance.json. Full initialization/soak/website performance gates remain open.
+
+- Historical log bridge is SSR-safe and losslessly converts target words, input snapshots and composition data between JavaScript strings and UTF-16 arrays. Three tests cover every UTF-16 unit, original recordings/optional metadata and isolated text. Two new immutable historical Unicode references match native stats/frames/replay/seeks, then match real-browser Wasm through actual legacy string conversion. All 14 browser migration tests pass (26.1 s); native analysis, Clippy and type-aware lint pass. A parallel typecheck briefly ran while the prior builder had removed generated declarations; sequential rerun passed. Builder publication is being fixed separately.
+
+## Remaining Stage 1 exit work
+
+- Structured native/binding errors and original quote/favorite/polyglot recovery actions; explicit failed-content reply lifecycle.
+- Bounded live-stat and word-burst reads without full-log cloning on commits/ticks.
+- Complete content/config/observation/log validation, checked transport DTO compatibility, randomized lifecycle/stale-handle checks.
+- Final engine initialization distributions, long-session/restart memory and per-key performance budgets; full website startup/input/restart comparison belongs to Stage 2 after integration.
+- Current-head full regression/backend submission/hash checks, fresh-checkout bootstrap and complete CI evidence.
+- Stage 2/3 implementation and their two stacked PRs still pending. No deployment or release publication performed.

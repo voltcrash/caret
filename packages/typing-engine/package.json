@@ -4,7 +4,8 @@
   "license": "GPL-3.0",
   "type": "module",
   "exports": {
-    "./browser.client": "./src/browser.client.ts"
+    "./browser.client": "./src/browser.client.ts",
+    "./text": "./src/text.ts"
   },
   "scripts": {
     "ts-check": "vp lint . --type-aware --type-check --format agent",

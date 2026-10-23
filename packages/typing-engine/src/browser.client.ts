@@ -61,18 +61,8 @@ export type {
 };
 const BINDING_VERSION = 1;
 
-export function encodeText(value: string): Text {
-  return Array.from({ length: value.length }, (_, index) =>
-    value.charCodeAt(index),
-  );
-}
-export function decodeText(units: Text): string {
-  let value = "";
-  for (let i = 0; i < units.length; i += 4096) {
-    value += String.fromCharCode(...units.slice(i, i + 4096));
-  }
-  return value;
-}
+export { encodeText, decodeText, toEngineLog, toWebLog } from "./text";
+import { encodeText } from "./text";
 
 /** Module preparation is async; all prepared session commands are synchronous. */
 export async function loadEngine(signal?: AbortSignal): Promise<{
@@ -190,11 +180,11 @@ export class BrowserSession {
     }
     return JSON.parse(this.handle.snapshot()) as Snapshot;
   }
-  log(): unknown {
+  log(): Log {
     if (this.handle === undefined) {
       throw new Error("Typing engine session disposed");
     }
-    return JSON.parse(this.handle.log()) as unknown;
+    return JSON.parse(this.handle.log()) as Log;
   }
   dispose(): void {
     const handle = this.handle;

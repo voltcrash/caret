@@ -5,7 +5,7 @@
     "module": "ESNext",
     "target": "ES2022",
     "lib": ["es2022", "dom"],
-    "types": ["vite-plus/client"]
+    "types": ["vite-plus/client", "node"]
   },
-  "include": ["src", "generated"]
+  "include": ["src", "generated", "__test__"]
 }

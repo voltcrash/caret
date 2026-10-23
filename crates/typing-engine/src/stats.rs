@@ -18,7 +18,11 @@ pub struct Context {
     pub bailed_out: bool,
     #[serde(default)]
     pub korean_status: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
     pub custom_text_limit_mode: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
     pub custom_text_limit_value: Option<f64>,
 }
 #[derive(Clone, Debug, Deserialize, Serialize, TS)]

@@ -12,6 +12,7 @@ import type {
   Cursor,
   PaceCommand,
 } from "@oxytype/typing-engine/browser.client";
+import type { WebLog } from "@oxytype/typing-engine/text";
 
 import { createFileRoute } from "@tanstack/solid-router";
 import { createSignal, onCleanup, Show } from "solid-js";
@@ -244,7 +245,7 @@ function EngineProof() {
             freshWords: fresh.snapshot().words,
             remembered: next.pace({ op: "reset", wpm: null }).lastWpm,
             isolated: fresh.pace({ op: "reset", wpm: null }).lastWpm,
-            emptyLog: (next.log() as Log).events.length === 0,
+            emptyLog: next.log().events.length === 0,
             active: next.snapshot().state.active,
           }),
         );
@@ -487,21 +488,29 @@ function EngineProof() {
     setFailure("");
     try {
       const inputs = JSON.parse(fixture()) as {
-        log: Log;
+        log?: Log;
+        webLog?: WebLog;
         queries: Query[];
         playback?: { zen: boolean; targets: Cursor[] }[];
       }[];
-      const { loadEngine, analyzeLog } =
+      const { loadEngine, analyzeLog, toEngineLog, toWebLog } =
         await import("@oxytype/typing-engine/browser.client");
       const engine = await loadEngine();
       if (disposed) return;
       setResult(
         JSON.stringify(
-          inputs.map(({ log, queries, playback }) => {
+          inputs.map(({ log: neutral, webLog, queries, playback }) => {
+            const log = webLog === undefined ? neutral : toEngineLog(webLog);
+            if (log === undefined) throw new Error("Missing analysis log");
             const analysis = queries.map((query) => analyzeLog(log, query));
-            if (playback === undefined) return analysis;
+            if (playback === undefined) {
+              return webLog === undefined
+                ? analysis
+                : { analysis, roundTrip: toWebLog(log) };
+            }
             return {
               analysis,
+              ...(webLog === undefined ? {} : { roundTrip: toWebLog(log) }),
               playback: playback.map(({ zen, targets }) => {
                 const replay = engine.createReplay(log, zen);
                 try {

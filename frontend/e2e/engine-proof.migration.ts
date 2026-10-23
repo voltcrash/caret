@@ -1,6 +1,7 @@
 import { readFile, readdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { expect, test } from "playwright/test";
+import { toWebLog } from "@oxytype/typing-engine/text";
 
 const root = resolve(import.meta.dirname, "../../packages/typing-fixtures");
 test("native fixture matches browser Wasm through built Cloudflare assets", async ({
@@ -816,4 +817,107 @@ test("Wasm long custom progress keeps UTF-16, newline and bailout boundaries", a
       { op: "customProgress", progress: { completed, progress } },
     ]),
   );
+});
+
+test("historical surrogate halves cross browser Wasm without lossy strings", async ({
+  page,
+}) => {
+  const references = JSON.parse(
+    await readFile(resolve(root, "oracle/historical-unicode.json"), "utf8"),
+  ) as {
+    name: string;
+    log: Parameters<typeof toWebLog>[0];
+    queries: unknown[];
+    expected: unknown[];
+    playback: {
+      zen: boolean;
+      words: unknown;
+      cursor: unknown;
+      sounds: unknown;
+      seeks: {
+        target: unknown;
+        words: unknown;
+        cursor: unknown;
+        nextIndex: number;
+      }[];
+    }[];
+    stats: {
+      history: unknown;
+      corrected: unknown;
+      wpm: unknown;
+      raw: unknown;
+      chars: {
+        correctWord: number;
+        incorrect: number;
+        extra: number;
+        missed: number;
+      };
+    };
+  }[];
+  const inputs = references.map((reference) => ({
+    webLog: toWebLog(reference.log),
+    queries: [...reference.queries, { op: "stats", now: 1000 }],
+    playback: reference.playback.map((replay) => ({
+      zen: replay.zen,
+      targets: replay.seeks.map((seek) => seek.target),
+    })),
+  }));
+  await page.goto("/engine-proof");
+  await page
+    .getByRole("textbox", { name: "Command fixture" })
+    .fill(JSON.stringify(inputs));
+  await page.getByRole("button", { name: "Run analysis", exact: true }).click();
+  await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
+  await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+  const actual = JSON.parse(
+    await page.getByTestId("engine-proof-result").innerText(),
+  ) as {
+    analysis: unknown[];
+    roundTrip: unknown;
+    playback: unknown;
+  }[];
+  expect(actual).toHaveLength(references.length);
+  for (const [index, reference] of references.entries()) {
+    const value = actual[index];
+    if (value === undefined) throw new Error("Missing Unicode output");
+    expect(
+      { ...value, analysis: value.analysis.slice(0, -1) },
+      reference.name,
+    ).toEqual({
+      analysis: reference.expected,
+      roundTrip: toWebLog(reference.log),
+      playback: reference.playback.map((replay) => ({
+        words: replay.words,
+        cursor: replay.cursor,
+        sounds: replay.sounds,
+        stale: true,
+        seeks: replay.seeks.map(({ words, cursor, nextIndex }) => ({
+          words,
+          cursor,
+          nextIndex,
+        })),
+      })),
+    });
+    const stats = value.analysis.at(-1) as {
+      stats: {
+        inputHistory: unknown;
+        correctedWordsHistory: unknown;
+        rawHistory: unknown;
+        summary: { charStats: unknown; chartData: { wpm: unknown } };
+      };
+    };
+    expect(stats.stats.inputHistory).toEqual(reference.stats.history);
+    expect(stats.stats.correctedWordsHistory).toEqual(
+      reference.stats.corrected,
+    );
+    expect(stats.stats.rawHistory).toEqual(reference.stats.raw);
+    expect(stats.stats.summary.chartData.wpm).toEqual(reference.stats.wpm);
+    const counts = reference.stats.chars;
+    expect(stats.stats.summary.charStats).toEqual([
+      counts.correctWord,
+      counts.incorrect,
+      counts.extra,
+      counts.missed,
+    ]);
+  }
 });
