@@ -6,6 +6,14 @@ fn all_funbox_pairs_and_forced_configuration_match_frozen_typescript() {
     let cases: Value = serde_json::from_slice(&std::fs::read(root).unwrap()).unwrap();
     for case in cases["combinations"].as_array().unwrap() {
         let names: Vec<String> = serde_json::from_value(case["names"].clone()).unwrap();
+        let response = typing_engine::policy::evaluate(typing_engine::policy::Query::Compatible {
+            names: names.clone(),
+        })
+        .unwrap();
+        assert_eq!(
+            serde_json::to_value(response).unwrap()["result"],
+            case["compatible"]
+        );
         assert_eq!(
             typing_engine::funboxes::compatible(&names),
             case["compatible"].as_bool().unwrap(),
@@ -16,6 +24,27 @@ fn all_funbox_pairs_and_forced_configuration_match_frozen_typescript() {
         let names: Vec<String> = serde_json::from_value(case["names"].clone()).unwrap();
         let key = case["key"].as_str().unwrap();
         let value = &case["value"];
+        let response = typing_engine::policy::evaluate(typing_engine::policy::Query::Forced {
+            key: key.into(),
+            value: value.clone(),
+            names: names.clone(),
+        })
+        .unwrap();
+        assert_eq!(
+            serde_json::to_value(response).unwrap()["result"],
+            case["forced"]
+        );
+        let response = typing_engine::policy::evaluate(typing_engine::policy::Query::CanSet {
+            key: key.into(),
+            value: value.clone(),
+            names: names.clone(),
+        })
+        .unwrap();
+        assert_eq!(
+            serde_json::to_value(response).unwrap()["result"],
+            case["canSet"]
+        );
+
         assert_eq!(
             serde_json::to_value(typing_engine::funboxes::forced(key, value, &names).unwrap())
                 .unwrap(),

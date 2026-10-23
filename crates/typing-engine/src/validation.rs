@@ -195,6 +195,11 @@ pub fn observation(kind: &str, data: &Value) -> Result<(), EngineError> {
     value(data, 0, &mut remaining)
         .map_err(|_| invalid(ErrorCode::InvalidInput, "Observation exceeds bound"))
 }
+pub fn json_value(data: &Value) -> Result<(), EngineError> {
+    let mut remaining = 100000;
+    value(data, 0, &mut remaining)
+        .map_err(|_| invalid(ErrorCode::InvalidInput, "JSON value exceeds bound"))
+}
 fn value(data: &Value, depth: usize, remaining: &mut usize) -> Result<(), ()> {
     if depth > 16 || *remaining == 0 {
         return Err(());

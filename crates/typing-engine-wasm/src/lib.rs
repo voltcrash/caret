@@ -148,6 +148,16 @@ impl WasmContent {
             .prepare_repeating(input, repeating)
             .map_err(bind_error)
     }
+    pub fn configure(&mut self, config: &str) -> Result<(), JsError> {
+        let config = parse(config)?;
+        self.content
+            .as_mut()
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Content disposed"))?
+            .generator()
+            .map_err(bind_error)?
+            .configure(config)
+            .map_err(bind_error)
+    }
     pub fn generate(&mut self, repeating: bool) -> Result<String, JsError> {
         let generator = self
             .content
@@ -235,6 +245,12 @@ impl WasmContent {
     pub fn dispose(&mut self) {
         self.content = None;
     }
+}
+
+#[wasm_bindgen]
+pub fn policy(query: &str) -> Result<String, JsError> {
+    let query = parse(query)?;
+    serialize(&typing_engine::policy::evaluate(query).map_err(bind_error)?)
 }
 
 #[wasm_bindgen]

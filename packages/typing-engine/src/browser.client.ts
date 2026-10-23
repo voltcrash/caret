@@ -2,6 +2,7 @@ import {
   initSync,
   binding_version,
   analyze,
+  policy as rawPolicy,
   WasmSession,
   WasmContent,
   WasmReplay,
@@ -64,6 +65,9 @@ export { EngineFailure } from "./failure";
 export type { EngineError, ErrorCode, Recovery } from "./failure";
 import type { LiveMetrics } from "../generated/types/LiveMetrics";
 export type { LiveMetrics };
+import type { PolicyQuery } from "../generated/types/PolicyQuery";
+import type { PolicyResponse } from "../generated/types/PolicyResponse";
+export type { PolicyQuery, PolicyResponse };
 const BINDING_VERSION = 1;
 
 export { encodeText, decodeText, toEngineLog, toWebLog } from "./text";
@@ -75,6 +79,7 @@ export async function loadEngine(signal?: AbortSignal): Promise<{
   memoryBytes: () => number;
   createContent: () => BrowserContent;
   createReplay: (log: Log, zen: boolean) => BrowserReplay;
+  policy: typeof evaluatePolicy;
 }> {
   // Compile asynchronously, then use wasm-bindgen's synchronous guard. Two
   // concurrent async initializers could otherwise replace memory under handles.
@@ -101,7 +106,20 @@ export async function loadEngine(signal?: AbortSignal): Promise<{
     memoryBytes: () => module.memory.buffer.byteLength,
     createContent: () => new BrowserContent(),
     createReplay: (log, zen) => new BrowserReplay(log, zen),
+    policy: evaluatePolicy,
   };
+}
+
+export function evaluatePolicy<Q extends PolicyQuery>(
+  query: Q,
+): Extract<PolicyResponse, { op: Q["op"] }> {
+  return invoke(
+    () =>
+      JSON.parse(rawPolicy(JSON.stringify(query))) as Extract<
+        PolicyResponse,
+        { op: Q["op"] }
+      >,
+  );
 }
 
 export type Engine = Awaited<ReturnType<typeof loadEngine>>;
@@ -252,6 +270,9 @@ export class BrowserContent {
   }
   prepare(input: Prepare, repeating = false): void {
     invoke(() => this.live().prepare(JSON.stringify(input), repeating));
+  }
+  configure(config: Config): void {
+    invoke(() => this.live().configure(JSON.stringify(config)));
   }
   generate(repeating = false): Generated {
     return invoke(

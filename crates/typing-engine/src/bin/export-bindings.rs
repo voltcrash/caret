@@ -32,6 +32,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     typing_engine::session::InsertionLayout::export_all(&config)?;
     typing_engine::session::Snapshot::export_all(&config)?;
     Update::export_all(&config)?;
+    typing_engine::policy::Query::export_all(&config)?;
+    typing_engine::policy::Response::export_all(&config)?;
     typing_engine::stats::Log::export_all(&config)?;
     typing_engine::analysis::Query::export_all(&config)?;
     typing_engine::analysis::Response::export_all(&config)?;

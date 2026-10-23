@@ -1037,6 +1037,10 @@ impl Session {
                 self.delete(&kind, now, observed_input, sentinel_removed);
             }
             Command::Configure { config, .. } => {
+                if let Some(generator) = &mut self.generator {
+                    generator.configure((*config).clone())?;
+                    self.all_generated = generator.all_generated();
+                }
                 self.config = *config;
             }
             Command::CustomLimit { mode, value, .. } => {

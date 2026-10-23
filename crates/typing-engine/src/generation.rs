@@ -145,6 +145,14 @@ fn collapse_spaces(text: Text) -> Text {
     Text(result)
 }
 impl Generator {
+    /// Effective rule reads are live; prepared assets, RNG and learning keep their owner lifetime.
+    pub fn configure(&mut self, config: GenerationConfig) -> Result<(), EngineError> {
+        config
+            .validate()
+            .map_err(|message| EngineError::new(ErrorCode::InvalidConfig, message))?;
+        self.config = config;
+        Ok(())
+    }
     pub fn random_state(&self) -> &Random {
         &self.random
     }
