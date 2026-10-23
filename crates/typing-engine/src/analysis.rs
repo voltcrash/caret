@@ -22,6 +22,7 @@ pub enum Query {
     Frame {
         time: f64,
     },
+    Inspect,
     CustomProgress {
         previous: u32,
     },
@@ -53,6 +54,9 @@ pub enum Response {
     Frame {
         frame: replay::Frame,
     },
+    Inspect {
+        inspection: Box<Inspection>,
+    },
     CustomProgress {
         progress: crate::custom_progress::LongProgress,
     },
@@ -67,6 +71,8 @@ pub struct Overview {
     pub input_history: Vec<Text>,
     pub corrected_words_history: Vec<Text>,
     pub missed_words: Vec<(Text, usize)>,
+    // serde_json writes positive infinity as null; the browser restores its display value.
+    #[ts(type = "Array<number | null>")]
     pub word_burst_history: Vec<f64>,
     pub raw_history: Vec<f64>,
     pub keypresses_per_second: Vec<usize>,
@@ -76,6 +82,40 @@ pub struct Overview {
     pub boundary_labels: Vec<String>,
     pub date_duration_ms: f64,
     pub word_indexes_per_second: Vec<Vec<usize>>,
+}
+#[derive(Serialize, TS)]
+#[serde(rename_all = "camelCase")]
+pub struct Inspection {
+    pub accuracy: stats::Accuracy,
+    pub key_spacing: Vec<f64>,
+    pub key_duration: Vec<f64>,
+    pub boundary_labels: Vec<String>,
+    pub inputs: Vec<Text>,
+    pub word_index: i32,
+}
+fn inspect(log: &Log) -> Inspection {
+    let timing = stats::key_timing(log);
+    let mut inputs = vec![Text::default(); log.context.target_words.len()];
+    let mut word_index = -1;
+    // Total observed input text is bounded before this scan. Preserve each last
+    // DOM snapshot, including legacy final-commit trim, without a second index.
+    for event in &log.events {
+        if event.kind == "input" {
+            let index = stats::word_index(event).expect("Validated input index");
+            if let Some(value) = inputs.get_mut(index) {
+                *value = stats::input_value(&event.data);
+            }
+            word_index = index as i32;
+        }
+    }
+    Inspection {
+        accuracy: stats::accuracy_counts(log, None),
+        key_spacing: timing.spacing,
+        key_duration: timing.durations,
+        boundary_labels: stats::boundary_labels(log, false),
+        inputs,
+        word_index,
+    }
 }
 pub fn analyze(log: &Log, query: Query) -> Result<Response, crate::error::EngineError> {
     crate::validation::log(log)?;
@@ -137,6 +177,9 @@ pub fn analyze(log: &Log, query: Query) -> Result<Response, crate::error::Engine
             words: replay::words(log, zen),
             steps: replay::steps(log, zen),
             duration: replay::duration(log),
+        },
+        Query::Inspect => Response::Inspect {
+            inspection: Box::new(inspect(log)),
         },
         Query::Frame { time } => Response::Frame {
             frame: replay::frame(log, time),
