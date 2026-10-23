@@ -131,6 +131,18 @@ impl Config {
                 return Err(format!("Invalid {name}"));
             }
         }
+        if self.words > crate::validation::MAX_WORDS as u32
+            || self
+                .quote_length
+                .iter()
+                .any(|length| ![-3, -2, 0, 1, 2, 3].contains(length))
+            || self
+                .custom_polyglot
+                .iter()
+                .any(|language| language.len() > 128)
+        {
+            return Err("Invalid content selection bound".into());
+        }
         if !self.time.is_finite() || self.time < 0.0 {
             return Err("Invalid time limit".into());
         }
@@ -557,9 +569,7 @@ impl Session {
         config.validate().map_err(|message| {
             crate::error::EngineError::new(crate::error::ErrorCode::InvalidConfig, message)
         })?;
-        if words.len() > 1_000_000 || words.iter().any(|word| word.len() > 1_000_000) {
-            return Err("Content exceeds session bound".into());
-        }
+        crate::validation::words(&words)?;
         let all_generated = config.mode != "time"
             && config.mode != "zen"
             && !(config.mode == "words" && config.words == 0);
@@ -842,7 +852,14 @@ impl Session {
             return Err("Invalid timestamp".into());
         }
         match &command {
-            Command::Configure { config, .. } => config.validate()?,
+            Command::Configure { config, .. } => config.validate().map_err(|message| {
+                crate::error::EngineError::new(crate::error::ErrorCode::InvalidConfig, message)
+            })?,
+            Command::Observe {
+                event_type,
+                event_data,
+                ..
+            } => crate::validation::observation(event_type, event_data)?,
             Command::Insert { data, date, .. } => {
                 if data.len() > 65536 {
                     return Err("Committed input exceeds bound".into());
@@ -856,6 +873,7 @@ impl Session {
             | Command::Finish { date, .. }
             | Command::End { date, .. }
             | Command::Abandon { date, .. }
+            | Command::Delete { date, .. }
             | Command::Bailout { date, .. }
             | Command::SupplyContent { date, .. }
             | Command::AcknowledgeFinish { date, .. }

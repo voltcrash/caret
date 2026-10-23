@@ -188,6 +188,26 @@ impl Generator {
         config
             .validate()
             .map_err(|message| EngineError::new(ErrorCode::InvalidConfig, message))?;
+        crate::validation::language(&language)?;
+        crate::validation::random(&random)?;
+        if let Some(custom) = &custom {
+            crate::validation::custom(custom)?;
+        }
+        if assets.polyglot.len() > 64
+            || assets.favorite_quote_ids.len() > 1_000_000
+            || assets.sections.len() > 16
+        {
+            return Err(EngineError::new(
+                ErrorCode::InvalidContent,
+                "Content asset count exceeds bound",
+            ));
+        }
+        for language in &assets.polyglot {
+            crate::validation::language(language)?;
+        }
+        if let Some(quotes) = &assets.quote_asset {
+            crate::validation::quote_asset(quotes)?;
+        }
         let section_queue = if let Some(name) = config.funbox.iter().find(|name| {
             crate::funboxes::get(name).is_some_and(|metadata| {
                 metadata

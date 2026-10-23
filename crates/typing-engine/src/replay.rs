@@ -339,17 +339,18 @@ pub struct Playback {
     duration: f64,
 }
 impl Playback {
-    pub fn new(log: &Log, zen: bool) -> Self {
+    pub fn new(log: &Log, zen: bool) -> Result<Self, crate::error::EngineError> {
+        crate::validation::log(log)?;
         let steps = steps(log, zen);
         let words = prompt(&words(log, zen), &steps);
-        Self {
+        Ok(Self {
             initial: words.clone(),
             words,
             steps,
             cursor: Cursor::default(),
             next_index: 0,
             duration: duration(log),
-        }
+        })
     }
     pub fn snapshot(&self) -> PlaybackSnapshot {
         PlaybackSnapshot {

@@ -32,6 +32,33 @@ impl Source {
         }
     }
     pub fn normalize(self, english: bool) -> Result<Section, crate::error::EngineError> {
+        let (title, author, content_units, content_count) = match &self {
+            Self::Poem {
+                title,
+                author,
+                lines,
+            } => (
+                title,
+                Some(author),
+                lines.iter().map(Text::len).sum::<usize>(),
+                lines.len(),
+            ),
+            Self::Article {
+                title,
+                author,
+                plain_text,
+            } => (title, author.as_ref(), plain_text.len(), 0),
+        };
+        if title.len() > 10000
+            || author.is_some_and(|author| author.len() > 10000)
+            || content_units > crate::validation::MAX_CONTENT_UNITS
+            || content_count > crate::validation::MAX_WORDS
+        {
+            return Err(crate::error::EngineError::new(
+                crate::error::ErrorCode::InvalidContent,
+                "Section metadata/content exceeds bound",
+            ));
+        }
         match self {
             Self::Poem {
                 title,
@@ -135,6 +162,7 @@ impl Source {
                         .map(|word| Text(word.to_vec()))
                         .collect()
                 };
+                crate::validation::words(&words)?;
                 Ok(Section {
                     title,
                     author,

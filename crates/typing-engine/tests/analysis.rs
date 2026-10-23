@@ -34,7 +34,7 @@ fn historical_surrogate_halves_keep_exact_stats_frames_playback_and_seeking() {
         {
             let query = serde_json::from_value(query.clone()).unwrap();
             equal(
-                &json!(typing_engine::analysis::analyze(&log, query)),
+                &json!(typing_engine::analysis::analyze(&log, query).unwrap()),
                 expected,
                 name,
             );
@@ -50,7 +50,8 @@ fn historical_surrogate_halves_keep_exact_stats_frames_playback_and_seeking() {
         });
         equal(&stats, &reference["stats"], name);
         for expected in reference["playback"].as_array().unwrap() {
-            let mut playback = replay::Playback::new(&log, expected["zen"].as_bool().unwrap());
+            let mut playback =
+                replay::Playback::new(&log, expected["zen"].as_bool().unwrap()).unwrap();
             let mut sounds = vec![];
             while playback.snapshot().next_time.is_some() {
                 sounds.push(playback.step().sound);
@@ -110,7 +111,8 @@ fn replay_seeking_practice_and_validity_match_frozen_typescript_oracle() {
             equal(&json!(sounds), &expected["sounds"], name);
             equal(&json!(prompt), &expected["final"], name);
             equal(&json!(cursor), &expected["cursor"], name);
-            let mut playback = replay::Playback::new(&log, expected["zen"].as_bool().unwrap());
+            let mut playback =
+                replay::Playback::new(&log, expected["zen"].as_bool().unwrap()).unwrap();
             let mut rendered = playback.snapshot().words;
             let mut sounds = vec![];
             while playback.snapshot().next_time.is_some() {

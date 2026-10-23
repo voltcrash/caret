@@ -44,6 +44,7 @@ impl Quotes {
         lengths: &[i32],
         random: &mut Random,
     ) -> Result<(), crate::error::EngineError> {
+        crate::validation::quote_asset(&asset)?;
         if self.language.as_ref() == Some(&asset.language) {
             return Ok(());
         }

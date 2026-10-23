@@ -78,8 +78,36 @@ pub struct Overview {
     pub date_duration_ms: f64,
     pub word_indexes_per_second: Vec<Vec<usize>>,
 }
-pub fn analyze(log: &Log, query: Query) -> Response {
-    match query {
+pub fn analyze(log: &Log, query: Query) -> Result<Response, crate::error::EngineError> {
+    crate::validation::log(log)?;
+    match &query {
+        Query::Stats { now } | Query::Practice { now, .. } | Query::Frame { time: now }
+            if !now.is_finite() || now.abs() > 9_007_199_254_740_991.0 =>
+        {
+            return Err("Invalid query timestamp".into());
+        }
+        Query::Practice { words, missed, .. } => {
+            crate::validation::words(words)?;
+            if !["off", "words", "biwords"].contains(&missed.as_str()) {
+                return Err("Invalid practice selection".into());
+            }
+        }
+        Query::Completed { context } => {
+            context.config.validate().map_err(|message| {
+                crate::error::EngineError::new(crate::error::ErrorCode::InvalidConfig, message)
+            })?;
+            if !context.timestamp.is_finite()
+                || !context.incomplete_seconds.is_finite()
+                || context.tags.len() > 10000
+                || context.tags.iter().any(|tag| tag.len() > 128)
+                || context.incomplete_tests.len() > 10000
+            {
+                return Err("Invalid result metadata".into());
+            }
+        }
+        _ => {}
+    }
+    Ok(match query {
         Query::Stats { now } => Response::Stats {
             stats: Box::new(Overview {
                 summary: stats::summary(log),
@@ -125,5 +153,5 @@ pub fn analyze(log: &Log, query: Query) -> Response {
         } => Response::Practice {
             selection: practice::select(log, &words, &missed, slow, now),
         },
-    }
+    })
 }

@@ -11,6 +11,12 @@ fn failure(code: ErrorCode, message: &str) -> JsError {
     bind_error(EngineError::new(code, message))
 }
 fn parse<'a, T: serde::Deserialize<'a>>(source: &'a str) -> Result<T, JsError> {
+    if source.len() > typing_engine::validation::MAX_JSON_BYTES {
+        return Err(failure(
+            ErrorCode::InvalidInput,
+            "Binding JSON exceeds byte bound",
+        ));
+    }
     serde_json::from_str(source).map_err(|error| bind_error(EngineError::from(error.to_string())))
 }
 fn serialize<T: serde::Serialize>(value: &T) -> Result<String, JsError> {
@@ -235,7 +241,7 @@ impl WasmContent {
 pub fn analyze(log: &str, query: &str) -> Result<String, JsError> {
     let log = parse(log)?;
     let query = parse(query)?;
-    serialize(&typing_engine::analysis::analyze(&log, query))
+    serialize(&typing_engine::analysis::analyze(&log, query).map_err(bind_error)?)
 }
 
 #[wasm_bindgen]
@@ -254,7 +260,7 @@ impl WasmReplay {
         }
         let log = parse(log)?;
         Ok(Self {
-            playback: Some(typing_engine::replay::Playback::new(&log, zen)),
+            playback: Some(typing_engine::replay::Playback::new(&log, zen).map_err(bind_error)?),
         })
     }
     pub fn snapshot(&self) -> Result<String, JsError> {
