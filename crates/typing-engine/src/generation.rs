@@ -807,8 +807,16 @@ pub struct Prepare {
 pub struct Content {
     assets: Assets,
     generator: Option<Generator>,
+    weak_spot: crate::weak_spot::WeakSpot,
+    last_pace_wpm: f64,
 }
 impl Content {
+    /// Consume the prior session before preparing its replacement. Only learning
+    /// survives; logs, pending replies and input state are dropped with the session.
+    pub fn recycle_session(&mut self, session: crate::Session) {
+        (self.weak_spot, self.last_pace_wpm) = session.into_learning();
+        self.generator = None;
+    }
     pub fn prepare(&mut self, input: Prepare) -> Result<(), String> {
         self.generator = None;
         self.assets.quote_asset = input.quotes;
@@ -823,12 +831,15 @@ impl Content {
             input.random,
             &mut self.assets,
         )?);
+        self.generator.as_mut().unwrap().weak_spot = self.weak_spot.clone();
         Ok(())
     }
     pub fn start_session(&mut self, repeating: bool) -> Result<crate::Session, String> {
         let generated = self.generator()?.generate(repeating)?;
         let generator = self.generator.take().ok_or("Content not prepared")?;
-        crate::Session::from_generated(generator, generated)
+        let mut session = crate::Session::from_generated(generator, generated)?;
+        session.pace.remember(self.last_pace_wpm, false);
+        Ok(session)
     }
     pub fn generator(&mut self) -> Result<&mut Generator, String> {
         self.generator.as_mut().ok_or("Content not prepared".into())

@@ -3,6 +3,20 @@ use typing_engine::{
     pace::{Pace, Position, TypingTime},
 };
 #[test]
+fn pace_commands_match_frozen_typescript_positions_and_clock_values_exactly() {
+    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../packages/typing-fixtures/oracle/pace.json");
+    let fixture: serde_json::Value = serde_json::from_slice(&std::fs::read(path).unwrap()).unwrap();
+    let words: Vec<Text> = serde_json::from_value(fixture["targets"].clone()).unwrap();
+    let mut pace = Pace::default();
+    for frame in fixture["frames"].as_array().unwrap() {
+        let command = serde_json::from_value(frame["command"].clone()).unwrap();
+        let expected: typing_engine::pace::PaceUpdate =
+            serde_json::from_value(frame["expected"].clone()).unwrap();
+        assert_eq!(pace.command(command, &words, false).unwrap(), expected);
+    }
+}
+#[test]
 fn pace_corrects_each_error_once_and_remembers_repeated_speed() {
     let words = vec![Text::from("abc"), Text::from("def"), Text::from("ghi")];
     let mut pace = Pace::default();

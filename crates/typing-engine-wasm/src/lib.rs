@@ -46,6 +46,18 @@ impl WasmSession {
             .ok_or_else(|| JsError::new("Session disposed"))?;
         Ok(serde_json::to_string(&session.preflight(data, &layout))?)
     }
+    pub fn pace(&mut self, command: &str) -> Result<String, JsError> {
+        let command = serde_json::from_str(command)?;
+        let session = self
+            .session
+            .as_mut()
+            .ok_or_else(|| JsError::new("Session disposed"))?;
+        Ok(serde_json::to_string(
+            &session
+                .pace_command(command)
+                .map_err(|message| JsError::new(&message))?,
+        )?)
+    }
     pub fn snapshot(&self) -> Result<String, JsError> {
         let session = self
             .session
@@ -83,6 +95,18 @@ pub struct WasmContent {
 }
 #[wasm_bindgen]
 impl WasmContent {
+    pub fn recycle_session(&mut self, session: &mut WasmSession) -> Result<(), JsError> {
+        let content = self
+            .content
+            .as_mut()
+            .ok_or_else(|| JsError::new("Content disposed"))?;
+        let session = session
+            .session
+            .take()
+            .ok_or_else(|| JsError::new("Session disposed"))?;
+        content.recycle_session(session);
+        Ok(())
+    }
     #[wasm_bindgen(constructor)]
     pub fn new(version: u32) -> Result<Self, JsError> {
         if version != BINDING_VERSION {

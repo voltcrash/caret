@@ -125,3 +125,7 @@ overwrite files. Existing snapshots are never updated by the harness.
 ## Observed web completion
 
 `view {deferFinish:true}` enables a finish-request/acknowledgement handshake. Rust decides completion and returns `finish` in the update; hosts disable input and stop scheduling, perform the same platform navigation/hooks as before, then send `acknowledgeFinish {now,date}`. The end event uses that explicit observation, preserving the website's later completion clock without a hidden Rust clock. New typing/ticks cannot change the decision while awaiting acknowledgement. Reset/end cancel it; stale/duplicate acknowledgement is an error. Native callers can keep immediate completion.
+
+## Retained learning and pace
+
+An app owns `Content` across test replacements. Call `recycle_session` before preparing a replacement to consume the old session and retain only weak-spot learning and remembered pace WPM. Its log, input, pending content and completion state are dropped; the consumed handle rejects subsequent calls. Independent content owners retain independent learning. Explicit disposal drops an owner entirely. Pace commands are synchronous; Rust uses bare UTF-16 word lengths for caret stepping and full targets for mistake correction. Hosts supply speed selection from account/PB data and schedule/render steps.

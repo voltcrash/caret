@@ -1,0 +1,363 @@
+{
+  "targets": [
+    [111, 110, 101, 32],
+    [116, 119, 111, 32],
+    [55357, 56832, 32]
+  ],
+  "frames": [
+    {
+      "command": {
+        "op": "reset",
+        "wpm": 120
+      },
+      "expected": {
+        "position": {
+          "wordIndex": 0,
+          "letterIndex": 0,
+          "wpm": 120
+        },
+        "stepEnd": 0,
+        "lastWpm": 0
+      }
+    },
+    {
+      "command": {
+        "op": "start",
+        "now": 100
+      },
+      "expected": {
+        "position": {
+          "wordIndex": 0,
+          "letterIndex": 0,
+          "wpm": 120
+        },
+        "stepEnd": 100,
+        "lastWpm": 0
+      }
+    },
+    {
+      "command": {
+        "op": "step"
+      },
+      "expected": {
+        "position": {
+          "wordIndex": 0,
+          "letterIndex": 1,
+          "wpm": 120
+        },
+        "stepEnd": 200,
+        "lastWpm": 0
+      }
+    },
+    {
+      "command": {
+        "op": "step"
+      },
+      "expected": {
+        "position": {
+          "wordIndex": 0,
+          "letterIndex": 2,
+          "wpm": 120
+        },
+        "stepEnd": 300,
+        "lastWpm": 0
+      }
+    },
+    {
+      "command": {
+        "op": "step"
+      },
+      "expected": {
+        "position": {
+          "wordIndex": 0,
+          "letterIndex": 3,
+          "wpm": 120
+        },
+        "stepEnd": 400.00000000000006,
+        "lastWpm": 0
+      }
+    },
+    {
+      "command": {
+        "op": "step"
+      },
+      "expected": {
+        "position": {
+          "wordIndex": 1,
+          "letterIndex": 0,
+          "wpm": 120
+        },
+        "stepEnd": 500,
+        "lastWpm": 0
+      }
+    },
+    {
+      "command": {
+        "op": "step"
+      },
+      "expected": {
+        "position": {
+          "wordIndex": 1,
+          "letterIndex": 1,
+          "wpm": 120
+        },
+        "stepEnd": 600,
+        "lastWpm": 0
+      }
+    },
+    {
+      "command": {
+        "op": "advance",
+        "now": 1200
+      },
+      "expected": {
+        "position": {
+          "wordIndex": 3,
+          "letterIndex": 0,
+          "wpm": 120
+        },
+        "stepEnd": 1200,
+        "lastWpm": 0
+      }
+    },
+    {
+      "command": {
+        "op": "advance",
+        "now": 5000
+      },
+      "expected": {
+        "position": null,
+        "stepEnd": 100,
+        "lastWpm": 0
+      }
+    },
+    {
+      "command": {
+        "op": "remember",
+        "wpm": 77,
+        "repeating": false
+      },
+      "expected": {
+        "position": null,
+        "stepEnd": 100,
+        "lastWpm": 77
+      }
+    },
+    {
+      "command": {
+        "op": "remember",
+        "wpm": 40,
+        "repeating": true
+      },
+      "expected": {
+        "position": null,
+        "stepEnd": 100,
+        "lastWpm": 77
+      }
+    },
+    {
+      "command": {
+        "op": "remember",
+        "wpm": 90,
+        "repeating": true
+      },
+      "expected": {
+        "position": null,
+        "stepEnd": 100,
+        "lastWpm": 90
+      }
+    },
+    {
+      "command": {
+        "op": "reset",
+        "wpm": null
+      },
+      "expected": {
+        "position": null,
+        "stepEnd": 0,
+        "lastWpm": 90
+      }
+    },
+    {
+      "command": {
+        "op": "reset",
+        "wpm": 0
+      },
+      "expected": {
+        "position": null,
+        "stepEnd": 0,
+        "lastWpm": 90
+      }
+    },
+    {
+      "command": {
+        "op": "reset",
+        "wpm": 33
+      },
+      "expected": {
+        "position": {
+          "wordIndex": 0,
+          "letterIndex": 0,
+          "wpm": 33
+        },
+        "stepEnd": 0,
+        "lastWpm": 90
+      }
+    },
+    {
+      "command": {
+        "op": "start",
+        "now": 6000
+      },
+      "expected": {
+        "position": {
+          "wordIndex": 0,
+          "letterIndex": 0,
+          "wpm": 33
+        },
+        "stepEnd": 6000,
+        "lastWpm": 90
+      }
+    },
+    {
+      "command": {
+        "op": "step"
+      },
+      "expected": {
+        "position": {
+          "wordIndex": 0,
+          "letterIndex": 1,
+          "wpm": 33
+        },
+        "stepEnd": 6363.636363636364,
+        "lastWpm": 90
+      }
+    },
+    {
+      "command": {
+        "op": "step"
+      },
+      "expected": {
+        "position": {
+          "wordIndex": 0,
+          "letterIndex": 2,
+          "wpm": 33
+        },
+        "stepEnd": 6727.272727272727,
+        "lastWpm": 90
+      }
+    },
+    {
+      "command": {
+        "op": "step"
+      },
+      "expected": {
+        "position": {
+          "wordIndex": 0,
+          "letterIndex": 3,
+          "wpm": 33
+        },
+        "stepEnd": 7090.909090909091,
+        "lastWpm": 90
+      }
+    },
+    {
+      "command": {
+        "op": "step"
+      },
+      "expected": {
+        "position": {
+          "wordIndex": 1,
+          "letterIndex": 0,
+          "wpm": 33
+        },
+        "stepEnd": 7454.545454545454,
+        "lastWpm": 90
+      }
+    },
+    {
+      "command": {
+        "op": "step"
+      },
+      "expected": {
+        "position": {
+          "wordIndex": 1,
+          "letterIndex": 1,
+          "wpm": 33
+        },
+        "stepEnd": 7818.181818181818,
+        "lastWpm": 90
+      }
+    },
+    {
+      "command": {
+        "op": "step"
+      },
+      "expected": {
+        "position": {
+          "wordIndex": 1,
+          "letterIndex": 2,
+          "wpm": 33
+        },
+        "stepEnd": 8181.818181818182,
+        "lastWpm": 90
+      }
+    },
+    {
+      "command": {
+        "op": "step"
+      },
+      "expected": {
+        "position": {
+          "wordIndex": 1,
+          "letterIndex": 3,
+          "wpm": 33
+        },
+        "stepEnd": 8545.454545454546,
+        "lastWpm": 90
+      }
+    },
+    {
+      "command": {
+        "op": "step"
+      },
+      "expected": {
+        "position": {
+          "wordIndex": 2,
+          "letterIndex": 0,
+          "wpm": 33
+        },
+        "stepEnd": 8909.090909090908,
+        "lastWpm": 90
+      }
+    },
+    {
+      "command": {
+        "op": "step"
+      },
+      "expected": {
+        "position": {
+          "wordIndex": 2,
+          "letterIndex": 1,
+          "wpm": 33
+        },
+        "stepEnd": 9272.727272727272,
+        "lastWpm": 90
+      }
+    },
+    {
+      "command": {
+        "op": "step"
+      },
+      "expected": {
+        "position": {
+          "wordIndex": 2,
+          "letterIndex": 2,
+          "wpm": 33
+        },
+        "stepEnd": 9636.363636363636,
+        "lastWpm": 90
+      }
+    }
+  ]
+}

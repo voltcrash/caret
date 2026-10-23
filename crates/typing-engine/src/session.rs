@@ -441,6 +441,20 @@ pub struct Session {
 }
 
 impl Session {
+    pub fn pace_command(
+        &mut self,
+        command: crate::pace::PaceCommand,
+    ) -> Result<crate::pace::PaceUpdate, String> {
+        self.pace
+            .command(command, &self.words, self.config.blind_mode)
+    }
+    pub(crate) fn into_learning(self) -> (crate::weak_spot::WeakSpot, f64) {
+        (
+            self.generator
+                .map_or(self.weak_spot, |generator| generator.weak_spot),
+            self.pace.last_wpm(),
+        )
+    }
     pub fn new(config: Config, words: Vec<Text>) -> Result<Self, String> {
         config.validate()?;
         if words.len() > 1_000_000 || words.iter().any(|word| word.len() > 1_000_000) {

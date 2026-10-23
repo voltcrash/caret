@@ -1,11 +1,11 @@
 use crate::Text;
 use std::collections::BTreeMap;
 
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct WeakSpot {
     scores: BTreeMap<Vec<u16>, Score>,
 }
-#[derive(Default)]
+#[derive(Clone, Default)]
 struct Score {
     average: f64,
     count: u32,

@@ -1,14 +1,30 @@
 use crate::Text;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::collections::BTreeSet;
 use ts_rs::TS;
 
-#[derive(Clone, Debug, Serialize, TS, PartialEq)]
+#[derive(Clone, Debug, Deserialize, Serialize, TS, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct Position {
     pub word_index: usize,
     pub letter_index: usize,
     pub wpm: f64,
+}
+#[derive(Deserialize, TS)]
+#[serde(tag = "op", rename_all = "camelCase")]
+pub enum PaceCommand {
+    Reset { wpm: Option<f64> },
+    Start { now: f64 },
+    Step,
+    Advance { now: f64 },
+    Remember { wpm: f64, repeating: bool },
+}
+#[derive(Debug, Deserialize, Serialize, TS, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct PaceUpdate {
+    pub position: Option<Position>,
+    pub step_end: f64,
+    pub last_wpm: f64,
 }
 #[derive(Default)]
 pub struct Pace {
@@ -56,12 +72,19 @@ impl Pace {
         }
     }
     pub fn step(&mut self, words: &[Text], blind: bool) -> Option<Position> {
+        self.step_lengths(|index| words.get(index).map(Text::len), blind)
+    }
+    fn step_lengths(
+        &mut self,
+        length: impl Fn(usize) -> Option<usize>,
+        blind: bool,
+    ) -> Option<Position> {
         self.wpm?;
-        let Some(word) = words.get(self.word_index) else {
+        let Some(word_length) = length(self.word_index) else {
             self.wpm = None;
             return None;
         };
-        if self.letter_index >= word.len() {
+        if self.letter_index >= word_length {
             self.letter_index = 0;
             self.word_index += 1;
         } else {
@@ -70,28 +93,24 @@ impl Pace {
         if !blind {
             while self.correction < 0 {
                 if self.letter_index == 0 {
-                    let Some(previous) = self
-                        .word_index
-                        .checked_sub(1)
-                        .and_then(|index| words.get(index))
-                    else {
+                    let Some(previous) = self.word_index.checked_sub(1).and_then(&length) else {
                         self.wpm = None;
                         return None;
                     };
                     self.word_index -= 1;
-                    self.letter_index = previous.len();
+                    self.letter_index = previous;
                 } else {
                     self.letter_index -= 1;
                 }
                 self.correction += 1;
             }
             while self.correction > 0 {
-                let Some(word) = words.get(self.word_index) else {
+                let Some(word_length) = length(self.word_index) else {
                     self.wpm = None;
                     return None;
                 };
                 self.letter_index += 1;
-                if self.letter_index > word.len() {
+                if self.letter_index > word_length {
                     self.letter_index = 0;
                     self.word_index += 1;
                 }
@@ -120,6 +139,60 @@ impl Pace {
     }
     pub fn last_wpm(&self) -> f64 {
         self.last_wpm
+    }
+    /// Session targets include commits; the browser pace caret uses bare text.
+    pub fn command(
+        &mut self,
+        command: PaceCommand,
+        targets: &[Text],
+        blind: bool,
+    ) -> Result<PaceUpdate, String> {
+        let length = |index| {
+            targets
+                .get(index)
+                .map(|word: &Text| word.len() - usize::from(matches!(word.0.last(), Some(32 | 10))))
+        };
+        match &command {
+            PaceCommand::Start { now } | PaceCommand::Advance { now } => {
+                if !now.is_finite() || now.abs() > 9_007_199_254_740_991.0 {
+                    return Err("Invalid pace time".into());
+                }
+            }
+            PaceCommand::Reset { wpm: Some(wpm) } | PaceCommand::Remember { wpm, .. }
+                if !wpm.is_finite() =>
+            {
+                return Err("Invalid pace speed".into());
+            }
+            _ => {}
+        }
+        match command {
+            PaceCommand::Reset { wpm } => {
+                self.reset(wpm);
+            }
+            PaceCommand::Start { now } => self.start(now),
+            PaceCommand::Step => {
+                self.step_lengths(length, blind);
+            }
+            PaceCommand::Advance { now } => {
+                if let Some(wpm) = self.wpm {
+                    let due = ((now - self.start_ms) / (60.0 / (wpm * 5.0) * 1000.0)).floor();
+                    if due - self.steps as f64 > 1_000_000.0 {
+                        return Err("Pace catchup exceeds bound".into());
+                    }
+                    while (self.steps as f64) < due {
+                        if self.step_lengths(length, blind).is_none() {
+                            break;
+                        }
+                    }
+                }
+            }
+            PaceCommand::Remember { wpm, repeating } => self.remember(wpm, repeating),
+        }
+        Ok(PaceUpdate {
+            position: self.position(),
+            step_end: self.step_end(),
+            last_wpm: self.last_wpm(),
+        })
     }
 }
 
