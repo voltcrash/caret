@@ -1,6 +1,10 @@
 import * as Funbox from "../../../features/typing/runtime/funbox/funbox";
 import * as TestLogic from "../../../features/typing/runtime/test-logic";
-import { getAllFunboxes, checkCompatibility } from "@oxytype/funbox";
+import { getAllFunboxes } from "@oxytype/funbox";
+import {
+  checkCompatibility,
+  enginePolicyReady,
+} from "../../../features/typing/policy.client";
 import { Command, CommandsSubgroup } from "../types";
 import { getActiveFunboxNames } from "../../../features/typing/runtime/funbox/list";
 
@@ -24,6 +28,7 @@ for (const funbox of getAllFunboxes()) {
     id: `changeFunbox${funbox.name}`,
     display: funbox.name.replace(/_/g, " "),
     available: () => {
+      if (!enginePolicyReady()) return false;
       const activeNames = getActiveFunboxNames();
       if (activeNames.includes(funbox.name)) return true;
       return checkCompatibility(activeNames, funbox.name);

@@ -20,10 +20,9 @@ import * as MemoryTimer from "./memory-funbox-timer";
 import * as FunboxMemory from "./funbox-memory";
 import { HighlightMode, FunboxName } from "@oxytype/schemas/configs";
 import { Mode } from "@oxytype/schemas/shared";
-import { checkCompatibility, checkForcedConfig } from "@oxytype/funbox";
+import { checkCompatibility, checkForcedConfig } from "../../policy.client";
 import {
   getAllFunboxes,
-  getActiveFunboxes,
   getActiveFunboxNames,
   getActiveFunboxesWithFunction,
   isFunboxActiveWithProperty,
@@ -137,7 +136,7 @@ export async function activate(
     const check = checkForcedConfig(
       configKey,
       configValue,
-      getActiveFunboxes(),
+      getActiveFunboxNames(),
     );
     if (check.result) continue;
     if (!check.result) {
