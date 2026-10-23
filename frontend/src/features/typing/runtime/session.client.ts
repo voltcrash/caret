@@ -27,6 +27,7 @@ import type {
   BrowserSession,
   LiveMetrics,
   InsertionLayout,
+  RestartOptions,
 } from "@oxytype/typing-engine/browser.client";
 import { getMutableConfig } from "../../../ts/config/store";
 import * as CustomText from "./custom-text";
@@ -207,6 +208,10 @@ export const getEngineSession = createAppOwned(() => {
   });
   return {
     command,
+    restartPolicy: (options: Partial<RestartOptions> = {}) => {
+      synchronize(performance.now());
+      return live().restartPolicy(options);
+    },
     preflight: (data: string, layout: Partial<InsertionLayout> = {}) => {
       synchronize(performance.now());
       return live().preflight(encodeText(data), layout);
@@ -418,3 +423,9 @@ export const getEngineSession = createAppOwned(() => {
     },
   };
 });
+
+/** Host guards consume a native decision, never infer rules from funbox names. */
+export function isNoQuitActive(): boolean {
+  const session = getEngineSession();
+  return session.isPrepared() && session.restartPolicy().reason === "noQuit";
+}

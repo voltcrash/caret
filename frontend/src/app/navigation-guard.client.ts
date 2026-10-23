@@ -5,7 +5,7 @@ import {
   isTestRestarting,
   isResultCalculating,
 } from "../ts/states/test";
-import { isFunboxActive } from "../features/typing/runtime/funbox/list";
+import { isNoQuitActive } from "../features/typing/runtime/session.client";
 
 /** Router-independent test guard; hosts add their own transition state. */
 export function canNavigate(options: NavigateOptions = {}): boolean {
@@ -13,7 +13,7 @@ export function canNavigate(options: NavigateOptions = {}): boolean {
     return false;
   }
 
-  if (isTestActive() && isFunboxActive("no_quit")) {
+  if (isTestActive() && isNoQuitActive()) {
     showNoticeNotification(
       "No quit funbox is active. Please finish the test.",
       { important: true },

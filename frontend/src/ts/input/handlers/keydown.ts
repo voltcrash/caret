@@ -41,13 +41,13 @@ async function handleEnter(e: KeyboardEvent, _now: number): Promise<void> {
       void TestLogic.finish();
       return;
     } else if (
-      !canQuickRestart(
+      canQuickRestart(
         getMutableConfig().mode,
         getMutableConfig().words,
         getMutableConfig().time,
         CustomText.getData(),
         getCustomTextIndicator()?.isLong ?? false,
-      )
+      ) === false
     ) {
       const delay = Date.now() - getLastBailoutAttempt();
       if (getLastBailoutAttempt() === -1 || delay > 200) {

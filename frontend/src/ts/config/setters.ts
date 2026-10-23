@@ -1,3 +1,4 @@
+import { isNoQuitActive } from "../../features/typing/runtime/session.client";
 import * as ConfigSchemas from "@oxytype/schemas/configs";
 import { ZodType as ZodSchema } from "zod";
 import { saveToLocalStorage } from "../config/persistence";
@@ -38,11 +39,7 @@ export function setConfig<T extends keyof ConfigSchemas.Config>(
 
   const previousValue = getMutableConfig()[key];
 
-  if (
-    metadata.changeRequiresRestart &&
-    isTestActive() &&
-    getMutableConfig().funbox.includes("no_quit")
-  ) {
+  if (metadata.changeRequiresRestart && isTestActive() && isNoQuitActive()) {
     showNoticeNotification(
       "No quit funbox is active. Please finish the test.",
       {
@@ -153,7 +150,7 @@ export function setQuoteLengthAll(nosave?: boolean): boolean {
 }
 
 export function toggleFunbox(funbox: FunboxName, nosave?: boolean): boolean {
-  if (isTestActive() && getMutableConfig().funbox.includes("no_quit")) {
+  if (isTestActive() && isNoQuitActive()) {
     showNoticeNotification(
       "No quit funbox is active. Please finish the test.",
       {

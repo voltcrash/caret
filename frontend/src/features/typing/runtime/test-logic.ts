@@ -25,9 +25,7 @@ import {
   setKoreanStatus,
   setIsTestRestarting,
   isTestRestarting,
-  getCurrentQuote,
   isPaceRepeat,
-  isRepeated,
   isTestActive,
   pushIncompleteTest,
   setIsPaceRepeat,
@@ -48,11 +46,10 @@ import { preloadResultHasher } from "../../../ts/utils/result-hash";
 import { highlight } from "../../../ts/events/keymap";
 import * as LazyModeState from "../../../ts/states/remember-lazy-mode";
 
-import { getActiveFunboxesWithFunction, isFunboxActive } from "./funbox/list";
+import { getActiveFunboxesWithFunction } from "./funbox/list";
 
 import * as CompositionState from "../../../ts/states/composition";
 
-import { canQuickRestart } from "../../../ts/utils/quick-restart";
 import { setInputElementValue } from "../../../ts/input/input-element";
 import { debounce } from "throttle-debounce";
 
@@ -62,8 +59,6 @@ import { getTestSession, resetTestEvents } from "./events/data";
 
 import { resetModifierState } from "../../../ts/states/modifiers";
 import { nthElementFromArray } from "../../../ts/utils/arrays";
-
-import { shouldRepeatQuote } from "@oxytype/typing-core/restart";
 
 import { testLogicState } from "./logic-state";
 import { init } from "./initialization";
@@ -131,8 +126,15 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
 
   // guards
 
-  const noQuit = isFunboxActive("no_quit");
-  if (isTestActive() && noQuit) {
+  const session = getTestSession();
+  const decision = session.isPrepared()
+    ? session.restartPolicy({
+        quick: options.isQuickRestart ?? false,
+        withSameWordset: options.withSameWordset ?? false,
+        customIsLong: getCustomTextIndicator()?.isLong ?? false,
+      })
+    : undefined;
+  if (decision?.reason === "noQuit") {
     showNoticeNotification(
       "No quit funbox is active. Please finish the test.",
       {
@@ -149,16 +151,8 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
   }
   if (isTestActive()) {
     if (options.isQuickRestart) {
-      if (getMutableConfig().mode !== "zen") options.event?.preventDefault();
-      if (
-        !canQuickRestart(
-          getMutableConfig().mode,
-          getMutableConfig().words,
-          getMutableConfig().time,
-          CustomText.getData(),
-          getCustomTextIndicator()?.isLong ?? false,
-        )
-      ) {
+      if (decision?.preventDefault) options.event?.preventDefault();
+      if (decision?.reason === "longTest") {
         let message = "Use your mouse to confirm.";
         if (getMutableConfig().quickRestart === "tab") {
           message = "Press shift + tab or use your mouse to confirm.";
@@ -180,11 +174,7 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
 
     // close out the abandoned test
 
-    if (isRepeated()) {
-      options.withSameWordset = true;
-    }
-
-    if (getMutableConfig().resultSaving) {
+    if (decision?.recordIncomplete) {
       // Abandoning logs the timer "end" event before measuring, so idle time
       // is subtracted instead of the whole wall-clock lifetime.
       TestTimer.clear();
@@ -193,14 +183,8 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
     }
   }
 
-  const currentQuote = getCurrentQuote();
-  if (
-    shouldRepeatQuote(getMutableConfig()) &&
-    currentQuote !== null &&
-    getMutableConfig().language.startsWith(currentQuote.language) &&
-    (isTestActive() || getTestSession().getFinishReason() !== undefined)
-  ) {
-    options.withSameWordset = true;
+  if (decision !== undefined) {
+    options.withSameWordset = decision.withSameWordset;
   }
 
   if (
@@ -246,8 +230,7 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
   Strings.clearWordDirectionCache();
   testLogicState.testReinitCount = 0;
 
-  const repeatWithPace =
-    (getMutableConfig().repeatedPace && options.withSameWordset) ?? false;
+  const repeatWithPace = decision?.repeatWithPace ?? false;
   setIsRepeated(options.withSameWordset ?? false);
   setIsPaceRepeat(repeatWithPace);
 

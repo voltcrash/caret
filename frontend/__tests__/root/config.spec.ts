@@ -13,6 +13,7 @@ import * as ConfigValidation from "../../src/ts/config/validation";
 import { configEvent } from "../../src/ts/events/config";
 import * as RemoteConfig from "../../src/ts/config/sync";
 import * as Notifications from "../../src/ts/states/notifications";
+import * as NativeSession from "../../src/features/typing/runtime/session.client";
 import * as TestState from "../../src/ts/states/test";
 import { getConfig as getConfigStore } from "../../src/ts/config/store";
 
@@ -57,6 +58,7 @@ describe("Config", () => {
     );
     const miscTriggerResizeMock = vi.spyOn(window, "dispatchEvent");
     const stateIsTestActiveMock = vi.spyOn(TestState, "isTestActive");
+    const nativeNoQuitMock = vi.spyOn(NativeSession, "isNoQuitActive");
 
     const mocks = [
       canSetConfigWithCurrentFunboxesMock,
@@ -66,6 +68,7 @@ describe("Config", () => {
       notificationAddMock,
       miscTriggerResizeMock,
       stateIsTestActiveMock,
+      nativeNoQuitMock,
     ];
 
     beforeEach(async () => {
@@ -76,6 +79,7 @@ describe("Config", () => {
       canSetConfigWithCurrentFunboxesMock.mockReturnValue(true);
       dbSaveConfigMock.mockResolvedValue();
       stateIsTestActiveMock.mockReturnValue(true);
+      nativeNoQuitMock.mockReturnValue(false);
 
       replaceConfig({});
     });
@@ -94,6 +98,7 @@ describe("Config", () => {
     it("fails if test is active and funbox no_quit", () => {
       //GIVEN
       replaceConfig({ funbox: ["no_quit"], numbers: false });
+      nativeNoQuitMock.mockReturnValue(true);
 
       //WHEN
       expect(

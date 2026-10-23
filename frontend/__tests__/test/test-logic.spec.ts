@@ -31,6 +31,7 @@ const mocks = vi.hoisted(() => ({
   pullSection: undefined as undefined | (() => Promise<false | undefined>),
   sourceActions: [] as unknown[],
   engineLoad: vi.fn(async () => undefined),
+  restartPolicy: vi.fn(),
   generate: vi.fn(),
   complete: vi.fn(),
   sessionStart: vi.fn(),
@@ -127,6 +128,8 @@ vi.mock("../../src/features/typing/runtime/test-ui", () => ({
 vi.mock("../../src/features/typing/runtime/events/data", () => ({
   getTestSession: (() => {
     const session = {
+      isPrepared: () => true,
+      restartPolicy: mocks.restartPolicy,
       start: mocks.sessionStart,
       generate: mocks.generate,
       complete: mocks.complete,
@@ -154,9 +157,6 @@ vi.mock("../../src/features/typing/runtime/events/data", () => ({
     events: [],
     context: { targetWords: mocks.generatedWords },
   }),
-}));
-vi.mock("../../src/features/typing/runtime/words-generator", () => ({
-  areAllWordsGenerated: () => mocks.allGenerated,
 }));
 vi.mock("../../src/features/typing/runtime/funbox/list", () => ({
   getActiveFunboxes: () => [],
@@ -283,6 +283,16 @@ let disposeRuntime: () => void;
 afterEach(() => disposeRuntime());
 beforeEach(() => {
   mocks.engineLoad.mockReset().mockResolvedValue(undefined);
+  mocks.restartPolicy
+    .mockReset()
+    .mockImplementation((options: { withSameWordset?: boolean }) => ({
+      allowed: true,
+      reason: null,
+      withSameWordset: options.withSameWordset ?? false,
+      recordIncomplete: true,
+      preventDefault: false,
+      repeatWithPace: false,
+    }));
   vi.clearAllMocks();
   disposeRuntime = createRoot((dispose) => {
     onCleanup(bindTypingActivity(() => !mocks.transition));
@@ -371,6 +381,16 @@ describe("test lifecycle state", () => {
     "rejects restarts while %s",
     async (guard) => {
       mocks[guard] = true;
+      if (guard === "noQuit") {
+        mocks.restartPolicy.mockReturnValueOnce({
+          allowed: false,
+          reason: "noQuit",
+          preventDefault: true,
+          withSameWordset: false,
+          recordIncomplete: false,
+          repeatWithPace: false,
+        });
+      }
       mocks.active = true;
       const event = { preventDefault: vi.fn() } as unknown as KeyboardEvent;
       await restart({ event });
@@ -487,6 +507,14 @@ describe("shared test decisions", () => {
       getMutableConfig().mode = "quote";
       getMutableConfig().repeatQuotes = repeatQuotes;
       mocks.quote = { language: "english", id: 1 } as QuoteWithTextSplit;
+      mocks.restartPolicy.mockReturnValueOnce({
+        allowed: true,
+        reason: null,
+        withSameWordset: repeatQuotes === "typing",
+        repeatWithPace: repeatQuotes === "typing",
+        recordIncomplete: true,
+        preventDefault: false,
+      });
       mocks.active = true;
       await restart();
       expect(mocks.repeated).toBe(repeatQuotes === "typing");

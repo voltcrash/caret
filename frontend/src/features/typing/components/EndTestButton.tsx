@@ -22,13 +22,13 @@ export function EndTestButton(): JSXElement {
     isTestActive() &&
     getConfig.mode !== "zen" &&
     getCustomTextIndicator()?.isLong !== true &&
-    !canQuickRestart(
+    canQuickRestart(
       getConfig.mode,
       getConfig.words,
       getConfig.time,
       CustomText.getData(),
       false,
-    );
+    ) === false;
 
   createEffectOn(canBailOut, (available) => {
     if (available) return;

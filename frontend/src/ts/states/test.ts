@@ -139,13 +139,13 @@ export const [currentLiveStats, setCurrentLiveStats] = createAppStore<{
 export const initializeTypingState = createAppOwned(() =>
   createEffect(() => {
     setIsLongTest(
-      !canQuickRestart(
+      canQuickRestart(
         getConfig.mode,
         getConfig.words,
         getConfig.time,
         CustomText.getData(),
         getCustomTextIndicator()?.isLong ?? false,
-      ),
+      ) === false,
     );
   }),
 );
