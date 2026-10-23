@@ -11,6 +11,7 @@ import type {
   Update,
   Cursor,
   PaceCommand,
+  PolicyQuery,
 } from "@oxytype/typing-engine/browser.client";
 import type { WebLog } from "@oxytype/typing-engine/text";
 
@@ -695,6 +696,130 @@ function EngineProof() {
       setFailure(error instanceof Error ? error.message : String(error));
     }
   };
+  const runQuoteQueue = async (): Promise<void> => {
+    setResult("");
+    setFailure("");
+    try {
+      const reference = JSON.parse(fixture()) as {
+        asset: { quotes: { text: string }[] };
+        cycles: { lengths: number[]; selected: unknown[] }[];
+      };
+      const { loadEngine, encodeText } =
+        await import("@oxytype/typing-engine/browser.client");
+      const engine = await loadEngine();
+      if (disposed) return;
+      const content = engine.createContent();
+      const asset = {
+        ...reference.asset,
+        quotes: reference.asset.quotes.map((quote) => ({
+          ...quote,
+          text: encodeText(quote.text),
+        })),
+      };
+      const preparation = (lengths: number[], quotes: unknown): Prepare =>
+        ({
+          config: { mode: "quote", quoteLength: lengths },
+          language: { name: "english", words: [[97]] },
+          quotes,
+          random: { kind: "seeded", state: 91 },
+        }) as Prepare;
+      try {
+        content.prepare(preparation([0], asset));
+        const initialId = content.metadata().currentQuote?.id;
+        const cycles = reference.cycles.map((cycle) => {
+          const random = content.updateQuoteQueue(cycle.lengths, {
+            kind: "seeded",
+            state: 91,
+          });
+          const selected = cycle.selected.map(() => {
+            content.prepare(preparation(cycle.lengths, null));
+            return content.metadata().currentQuote?.id;
+          });
+          return { random, selected };
+        });
+        setResult(JSON.stringify({ initialId, cycles }));
+      } finally {
+        content.dispose();
+      }
+    } catch (error) {
+      setFailure(error instanceof Error ? error.message : String(error));
+    }
+  };
+  const runSettingPolicies = async (): Promise<void> => {
+    setResult("");
+    setFailure("");
+    try {
+      const cases = JSON.parse(fixture()) as {
+        combinations: { names: string[] }[];
+        forced: {
+          names: string[];
+          key: string;
+          value: Extract<PolicyQuery, { op: "forced" }>["value"];
+        }[];
+      };
+      const { loadEngine } =
+        await import("@oxytype/typing-engine/browser.client");
+      const engine = await loadEngine();
+      if (disposed) return;
+      setResult(
+        JSON.stringify({
+          combinations: cases.combinations.map(
+            ({ names }) => engine.policy({ op: "compatible", names }).result,
+          ),
+          forced: cases.forced.map((input) => ({
+            forced: engine.policy({ op: "forced", ...input }).result,
+            canSet: engine.policy({ op: "canSet", ...input }).result,
+          })),
+        }),
+      );
+    } catch (error) {
+      setFailure(error instanceof Error ? error.message : String(error));
+    }
+  };
+  const runLiveGeneration = async (): Promise<void> => {
+    setResult("");
+    setFailure("");
+    try {
+      const input = JSON.parse(fixture()) as {
+        input: Prepare;
+        steps: { config: Config; extra: unknown[] }[];
+      };
+      const { loadEngine } =
+        await import("@oxytype/typing-engine/browser.client");
+      const engine = await loadEngine();
+      if (disposed) return;
+      const content = engine.createContent();
+      try {
+        content.prepare(input.input);
+        const generated = content.generate();
+        const words = [...generated.words];
+        const strip = (word: Text | undefined): Text | null =>
+          word === undefined
+            ? null
+            : [32, 10].includes(word.at(-1) ?? -1)
+              ? word.slice(0, -1)
+              : word;
+        const steps = input.steps.map((step) => {
+          content.configure(step.config);
+          return step.extra.map(() => {
+            const next = content.next(
+              words.length,
+              100,
+              strip(words.at(-1)),
+              strip(words.at(-2)),
+            );
+            words.push(next.word);
+            return next;
+          });
+        });
+        setResult(JSON.stringify({ generated, steps }));
+      } finally {
+        content.dispose();
+      }
+    } catch (error) {
+      setFailure(error instanceof Error ? error.message : String(error));
+    }
+  };
   const runGeneration = async (): Promise<void> => {
     setResult("");
     setFailure("");
@@ -922,6 +1047,30 @@ function EngineProof() {
           }}
         >
           Run fixture
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            void runQuoteQueue();
+          }}
+        >
+          Run quote queue
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            void runSettingPolicies();
+          }}
+        >
+          Run setting policies
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            void runLiveGeneration();
+          }}
+        >
+          Run live generation
         </button>
         <button
           type="button"

@@ -1087,3 +1087,81 @@ test("fractional custom limits preserve original generation and funbox boundarie
     })),
   );
 });
+
+test("Wasm setting policies match every frozen compatibility and forced-setting case", async ({
+  page,
+}) => {
+  const cases = JSON.parse(
+    await readFile(resolve(root, "oracle/funboxes.json"), "utf8"),
+  ) as {
+    combinations: { compatible: boolean }[];
+    forced: { forced: unknown; canSet: boolean }[];
+  };
+  await page.goto("/engine-proof");
+  await page
+    .getByRole("textbox", { name: "Command fixture" })
+    .fill(JSON.stringify(cases));
+  await page
+    .getByRole("button", { name: "Run setting policies", exact: true })
+    .click();
+  await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
+  await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+  expect(
+    JSON.parse(await page.getByTestId("engine-proof-result").innerText()),
+  ).toEqual({
+    combinations: cases.combinations.map((item) => item.compatible),
+    forced: cases.forced.map(({ forced, canSet }) => ({ forced, canSet })),
+  });
+});
+
+test("live generation changes preserve original targets and configuration boundaries in Wasm", async ({
+  page,
+}) => {
+  const reference = JSON.parse(
+    await readFile(resolve(root, "oracle/live-generation.json"), "utf8"),
+  ) as { generated: unknown; steps: { extra: unknown[] }[] };
+  await page.goto("/engine-proof");
+  await page
+    .getByRole("textbox", { name: "Command fixture" })
+    .fill(JSON.stringify(reference));
+  await page
+    .getByRole("button", { name: "Run live generation", exact: true })
+    .click();
+  await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
+  await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+  expect(
+    JSON.parse(await page.getByTestId("engine-proof-result").innerText()),
+  ).toEqual({
+    generated: reference.generated,
+    steps: reference.steps.map((step) => step.extra),
+  });
+});
+
+test("quote length changes refresh only the owned queue and preserve cached-language selection", async ({
+  page,
+}) => {
+  const reference = JSON.parse(
+    await readFile(resolve(root, "oracle/quote-queue.json"), "utf8"),
+  ) as {
+    initialId: number;
+    cycles: { afterUpdateState: number; selected: { id: number }[] }[];
+  };
+  await page.goto("/engine-proof");
+  await page
+    .getByRole("textbox", { name: "Command fixture" })
+    .fill(JSON.stringify(reference));
+  await page
+    .getByRole("button", { name: "Run quote queue", exact: true })
+    .click();
+  await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
+  await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+  expect(
+    JSON.parse(await page.getByTestId("engine-proof-result").innerText()),
+  ).toEqual({
+    initialId: reference.initialId,
+    cycles: reference.cycles.map((cycle) => ({
+      random: { kind: "seeded", state: cycle.afterUpdateState },
+      selected: cycle.selected.map((quote) => quote.id),
+    })),
+  });
+});
