@@ -25,6 +25,31 @@ export function abbreviateNumber(num: number, decimalPoints = 1): string {
 }
 
 /**
+ * Least squares fit over (x, y) points.
+ * @returns the fitted line as a function of x, or null for fewer than two distinct x values.
+ */
+export function fitLine(
+  points: { x: number; y: number }[],
+): ((x: number) => number) | null {
+  const n = points.length;
+  let sumX = 0;
+  let sumY = 0;
+  let sumXY = 0;
+  let sumXX = 0;
+  for (const { x, y } of points) {
+    sumX += x;
+    sumY += y;
+    sumXY += x * y;
+    sumXX += x * x;
+  }
+  const denominator = n * sumXX - sumX * sumX;
+  if (n < 2 || denominator === 0) return null;
+  const slope = (n * sumXY - sumX * sumY) / denominator;
+  const intercept = (sumY - slope * sumX) / n;
+  return (x) => slope * x + intercept;
+}
+
+/**
  * Finds the line of best fit (least squares regression line) for a set of y-values.
  * @param values_y An array of y-values.
  * @returns An array of two points representing the line (start and end points),
