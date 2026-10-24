@@ -171,8 +171,24 @@ export async function validateSubmission(
       {
         reason: resultFailure,
         submissionHash: resulthash,
+        client: completedEvent.client,
         mode: completedEvent.mode,
         mode2: completedEvent.mode2,
+        ...(resultFailure === "key-timeline-mismatch" &&
+        completedEvent.keySpacing !== "toolong"
+          ? {
+              keyTimeline: {
+                testDurationMs: completedEvent.testDuration * 1000,
+                startToFirstKey: completedEvent.startToFirstKey,
+                keySpacingTotal: completedEvent.keySpacing.reduce(
+                  (sum, value) => sum + value,
+                  0,
+                ),
+                lastKeyToEnd: completedEvent.lastKeyToEnd,
+                keyCount: completedEvent.keySpacing.length + 1,
+              },
+            }
+          : {}),
       },
       uid,
     );

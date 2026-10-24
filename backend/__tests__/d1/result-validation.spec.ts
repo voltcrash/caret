@@ -43,6 +43,37 @@ describe("result submission validation with D1", () => {
     ).toBeUndefined();
   });
 
+  it("records numeric endpoints for rejected key timelines", async () => {
+    const account = await test.account();
+    const response = await test.submit(account, { lastKeyToEnd: 0 });
+    expect(response.status, await response.clone().text()).toBe(463);
+    const data = await test.env.DB.prepare(
+      "SELECT data FROM audit_logs WHERE uid=? AND event='anticheat_rejected'",
+    )
+      .bind(account.uid)
+      .first<string>("data");
+    const result = scoreEvent(account.uid, 80);
+    expect(JSON.parse(data ?? "null")).toEqual({
+      message: {
+        reason: "key-timeline-mismatch",
+        submissionHash: expect.any(String),
+        client: "web",
+        mode: "time",
+        mode2: "15",
+        keyTimeline: {
+          testDurationMs: 15000,
+          startToFirstKey: 0,
+          keySpacingTotal:
+            result.keySpacing === "toolong"
+              ? 0
+              : result.keySpacing.reduce((sum, value) => sum + value, 0),
+          lastKeyToEnd: 0,
+          keyCount: 110,
+        },
+      },
+    });
+  });
+
   it.each([
     ["character counts", { charTotal: 1 }],
     ["unearned restart credit", { restartCount: 1 }],
