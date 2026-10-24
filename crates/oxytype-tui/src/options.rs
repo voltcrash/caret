@@ -149,6 +149,20 @@ impl Cli {
 }
 pub fn custom_text(text: &str, order: &str, limit: &str, value: f64) -> Result<CustomText> {
     let text = crate::content::line_endings(text);
+    // Decode plain-text entry boundaries using the core's separator set. Leaving
+    // a nonbreaking space inside one entry would make Space commit it early.
+    // Work in UTF-16 so non-BMP scalars cannot alias a BMP separator by truncation.
+    let units: Vec<_> = text
+        .encode_utf16()
+        .map(|unit| {
+            if typing_engine::text::is_space(unit) {
+                32
+            } else {
+                unit
+            }
+        })
+        .collect();
+    let text = String::from_utf16(&units)?;
     safe_text(&text)?;
     if text.trim().is_empty() {
         return Err("Custom text is empty".into());

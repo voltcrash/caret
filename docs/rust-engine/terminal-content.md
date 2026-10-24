@@ -19,7 +19,8 @@ This implies custom mode unless another mode is explicitly supplied (an error).
 default word limit covers all supplied words. An omitted time length uses core's
 default time. Explicit zero retains native infinite behavior. Zero means infinite
 where defined by core. Literal spaces separate supplied entries. CRLF/CR decode as LF; LF terminates
-an entry so Enter commits it. Tab and Unicode text retain their literal units.
+an entry so Enter commits it. The core's space equivalents (including NBSP and a UTF-8 BOM) become entry
+separators. Tab and other Unicode text retain their literal UTF-16 units.
 No NFC rewrite is imposed by the terminal adapter. Native rules retain all normalization and scoring responsibility.
 
 Extend offline content with `--pack pack.json`. Version 1:

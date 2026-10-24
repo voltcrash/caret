@@ -196,3 +196,32 @@ fn default_custom_uses_the_whole_passage_and_explicit_zero_stays_infinite() {
         .unwrap();
     assert_eq!(custom.unwrap().limit.value, 0.0);
 }
+
+#[test]
+fn plain_text_separators_and_bom_do_not_truncate_non_bmp_units() {
+    let custom = oxytype_tui::options::custom_text_auto(
+        "\u{feff}one\u{a0}two\u{200b}\u{12000}",
+        "repeat",
+        "word",
+        None,
+    )
+    .unwrap();
+    assert_eq!(custom.text.len(), 3);
+    assert_eq!(custom.text[2], typing_engine::Text::from("\u{12000}"));
+    let mut host = EngineHost::offline(
+        Config {
+            mode: "custom".into(),
+            ..Default::default()
+        },
+        OfflineContent::bundled().unwrap(),
+        Some(custom),
+        42,
+    )
+    .unwrap();
+    for (i, text) in ["one ", "two ", "\u{12000}"].iter().enumerate() {
+        host.insert(text, 100.0 + i as f64 * 1000.0, 1000.0 + i as f64 * 1000.0)
+            .unwrap();
+    }
+    assert!(host.state().ended);
+    assert_eq!(host.result.unwrap().acc, 100.0);
+}
