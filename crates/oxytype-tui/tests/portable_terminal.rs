@@ -44,13 +44,32 @@ fn native_terminal_decodes_edits_and_persists_actual_input_without_physical_tele
     let parser = Arc::new(Mutex::new(vt100::Parser::new(24, 100, 0)));
     let mut reader = pair.master.try_clone_reader().unwrap();
     let output = parser.clone();
+    let writer = Arc::new(Mutex::new(pair.master.take_writer().unwrap()));
+    let responses = writer.clone();
     let reading = std::thread::spawn(move || {
         let mut buffer = [0u8; 8192];
+        let mut query = std::collections::VecDeque::new();
         while let Ok(count) = reader.read(&mut buffer) {
             if count == 0 {
                 break;
             }
-            output.lock().unwrap().process(&buffer[..count]);
+            let mut parser = output.lock().unwrap();
+            for byte in &buffer[..count] {
+                parser.process(&[*byte]);
+                query.push_back(*byte);
+                if query.len() > 4 {
+                    query.pop_front();
+                }
+                if query.make_contiguous() == b"\x1b[6n" {
+                    // ConPTY inherits its host cursor and asks the emulator for
+                    // its actual position. Reply from the parsed screen state;
+                    // this is terminal protocol, never typing/timing telemetry.
+                    let (row, col) = parser.screen().cursor_position();
+                    let mut reply = responses.lock().unwrap();
+                    write!(reply, "\x1b[{};{}R", row + 1, col + 1).unwrap();
+                    reply.flush().unwrap();
+                }
+            }
         }
     });
     let mut command = CommandBuilder::new(env!("CARGO_BIN_EXE_oxytype"));
@@ -70,13 +89,12 @@ fn native_terminal_decodes_edits_and_persists_actual_input_without_physical_tele
     command.env("TERM", "xterm-256color");
     let mut child = ChildGuard(pair.slave.spawn_command(command).unwrap());
     drop(pair.slave);
-    let mut writer = pair.master.take_writer().unwrap();
     wait_screen(&parser, "Input:");
-    writer.write_all(b"one twx").unwrap();
-    writer.flush().unwrap();
+    writer.lock().unwrap().write_all(b"one twx").unwrap();
+    writer.lock().unwrap().flush().unwrap();
     wait_screen(&parser, "Input: twx");
-    writer.write_all(b"\x7f").unwrap();
-    writer.flush().unwrap();
+    writer.lock().unwrap().write_all(b"\x7f").unwrap();
+    writer.lock().unwrap().flush().unwrap();
     wait_screen(&parser, "Input: tw ");
     assert!(
         !parser
@@ -87,14 +105,14 @@ fn native_terminal_decodes_edits_and_persists_actual_input_without_physical_tele
             .contains("Input: twx")
     );
     std::thread::sleep(Duration::from_millis(1100));
-    writer.write_all(b"o").unwrap();
-    writer.flush().unwrap();
+    writer.lock().unwrap().write_all(b"o").unwrap();
+    writer.lock().unwrap().flush().unwrap();
     wait_screen(&parser, "Result saved locally.");
-    writer.write_all(b"\x1bOR").unwrap();
-    writer.flush().unwrap();
+    writer.lock().unwrap().write_all(b"\x1bOR").unwrap();
+    writer.lock().unwrap().flush().unwrap();
     wait_screen(&parser, "Local history");
-    writer.write_all(b"\x1b[21~").unwrap();
-    writer.flush().unwrap(); // F10 works with basic keyboard reports.
+    writer.lock().unwrap().write_all(b"\x1b[21~").unwrap();
+    writer.lock().unwrap().flush().unwrap(); // F10 works with basic keyboard reports.
     let deadline = Instant::now() + Duration::from_secs(10);
     loop {
         if let Some(status) = child.0.try_wait().unwrap() {
