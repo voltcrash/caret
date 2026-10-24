@@ -119,6 +119,11 @@ def smoke(path):
         env=dict(os.environ,PATH="")
         for args in [["--version"],["--help"],["--diagnostics"],["--smoke-test"]]:
             subprocess.run([str(binary),*args],cwd=isolated,env=env,check=True)
+        diagnostic=subprocess.run([str(binary),"--diagnostics"],cwd=isolated,env=env,check=True,stdout=subprocess.PIPE,text=True,encoding="utf-8")
+        version_info=json.loads(diagnostic.stdout)
+        revision=(binary.parent / "SOURCE.md").read_text(encoding="utf-8").splitlines()[0].removeprefix("Source revision: ")
+        assert f"build {revision})" in version_info["version"], "Binary/source provenance mismatch"
+        assert version_info["architecture"]==("aarch64" if "aarch64" in binary.parent.name else "x86_64")
         export=isolated / "history.json"
         subprocess.run([str(binary),"--config-dir",str(isolated / "config"),"--data-dir",str(isolated / "data"),"--export",str(export)],cwd=isolated,env=env,check=True)
         assert json.loads(export.read_text())["results"]==[]
