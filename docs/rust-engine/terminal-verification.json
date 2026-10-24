@@ -1,0 +1,8 @@
+{
+  "formatVersion": 1,
+  "manualTerminals": {
+    "linuxEnhanced": { "status": "pending", "evidence": null },
+    "macOS": { "status": "pending", "evidence": null },
+    "windowsTerminal": { "status": "pending", "evidence": null }
+  }
+}

@@ -131,7 +131,7 @@ class Child:
         self.profile.cleanup()
 
 
-def run(binary):
+def run(binary, release=False):
     child = Child(binary)
     try:
         child.until(b"Oxytype")
@@ -242,7 +242,7 @@ def run(binary):
     finally:
         child.close()
 
-    for failure in ("error", "panic", "signal", "suspend"):
+    for failure in (("signal", "suspend") if release else ("error", "panic", "signal", "suspend")):
         child = Child(binary, failure if failure in ("error", "panic") else None)
         try:
             if failure in ("error", "panic"):
@@ -269,8 +269,8 @@ def run(binary):
             child.restored()
         finally:
             child.close()
-    print("PTY: five modes, settings/custom editor, typing/finish/restart/resize/quit, error, panic, SIGTERM, suspend/resume pass")
+    print("PTY: five modes, settings/editor, history/export/replay, basic/enhanced protocol, typing/finish/restart/resize/quit, SIGTERM, suspend/resume pass" + ("; debug error/panic cleanup pass" if not release else ""))
 
 
 if __name__ == "__main__":
-    run(str(pathlib.Path(sys.argv[1]).resolve()))
+    run(str(pathlib.Path(sys.argv[1]).resolve()), "--release" in sys.argv)
