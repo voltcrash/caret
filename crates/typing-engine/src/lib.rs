@@ -26,6 +26,7 @@ pub mod timing_review;
 pub mod timing_stats;
 pub mod transforms;
 pub mod validation;
+pub mod verification;
 pub mod weak_spot;
 pub mod wire;
 
