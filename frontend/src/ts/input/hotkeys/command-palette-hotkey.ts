@@ -1,7 +1,7 @@
 import { QuickRestart } from "@oxytype/schemas/configs";
 import {
   detectPlatform,
-  Hotkey,
+  HotkeyChord,
   normalizeHotkey,
   parseHotkey,
   validateHotkey,
@@ -9,10 +9,10 @@ import {
 
 type Platform = "mac" | "windows" | "linux";
 
-export const DEFAULT_COMMAND_PALETTE_HOTKEY: Hotkey = "Mod+K";
+export const DEFAULT_COMMAND_PALETTE_HOTKEY: HotkeyChord = "Mod+K";
 
 // always opens the command palette too, regardless of the configured hotkey
-export const SECONDARY_COMMAND_PALETTE_HOTKEY: Hotkey = "Mod+Shift+P";
+export const SECONDARY_COMMAND_PALETTE_HOTKEY: HotkeyChord = "Mod+Shift+P";
 
 // keys that may be used without modifiers because they never type a character
 const BARE_KEYS = new Set(["Escape", "Tab", "F2", "F4", "F8", "F9"]);

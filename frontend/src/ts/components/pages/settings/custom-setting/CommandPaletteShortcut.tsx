@@ -1,4 +1,4 @@
-import { createHotkeyRecorder, Hotkey } from "@tanstack/solid-hotkeys";
+import { createHotkeyRecorder, HotkeyChord } from "@tanstack/solid-hotkeys";
 import { createSignal, For, JSXElement, Show } from "solid-js";
 
 import { configMetadata } from "../../../../config/metadata";
@@ -12,13 +12,17 @@ import { Button } from "../../../common/Button";
 import { formatHotkey } from "../../../common/Kbd";
 import { SearchableSetting } from "../SearchableSetting";
 
-const PRESETS: Hotkey[] = [DEFAULT_COMMAND_PALETTE_HOTKEY, "Escape", "Tab"];
+const PRESETS: HotkeyChord[] = [
+  DEFAULT_COMMAND_PALETTE_HOTKEY,
+  "Escape",
+  "Tab",
+];
 
 export function CommandPaletteShortcut(): JSXElement {
   const [error, setError] = createSignal<string>();
 
   const isCustom = (): boolean =>
-    !PRESETS.includes(getConfig.commandPaletteHotkey as Hotkey);
+    !PRESETS.includes(getConfig.commandPaletteHotkey as HotkeyChord);
 
   const recorder = createHotkeyRecorder({
     // record the produced character, not the physical key, so the shortcut
@@ -35,7 +39,7 @@ export function CommandPaletteShortcut(): JSXElement {
     onClear: () => setError(undefined),
   });
 
-  const presetError = (hotkey: Hotkey): string | undefined =>
+  const presetError = (hotkey: HotkeyChord): string | undefined =>
     getCommandPaletteHotkeyError(hotkey, getConfig.quickRestart);
 
   return (
@@ -86,7 +90,7 @@ export function CommandPaletteShortcut(): JSXElement {
               fallback="press a shortcut (esc to cancel)"
             >
               <Show when={isCustom()} fallback="record custom shortcut">
-                {formatHotkey(getConfig.commandPaletteHotkey as Hotkey)}
+                {formatHotkey(getConfig.commandPaletteHotkey as HotkeyChord)}
               </Show>
             </Show>
           </Button>

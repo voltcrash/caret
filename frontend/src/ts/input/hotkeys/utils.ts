@@ -1,6 +1,6 @@
 import {
   CreateHotkeyOptions,
-  Hotkey,
+  HotkeyChord,
   HotkeyCallback,
   HotkeyCallbackContext,
   createHotkey as registerHotkey,
@@ -9,10 +9,10 @@ import { isAnyPopupVisible } from "../../states/overlay-visibility";
 import { isInputElementFocused } from "../input-element";
 import * as CompositionState from "../../states/composition";
 
-export const NoKey = "" as Hotkey;
+export const NoKey = "" as HotkeyChord;
 
 export function createHotkey(
-  hotkey: Hotkey | (() => Hotkey),
+  hotkey: HotkeyChord | (() => HotkeyChord),
   callback: HotkeyCallback,
   options: () => Partial<
     Omit<
