@@ -12,6 +12,7 @@ pub struct EngineHost {
     pub config: Config,
     pub words: Vec<Text>,
     pub inputs: Vec<Text>,
+    pub visual_input: Option<Text>,
     pub result: Option<Summary>,
     pub result_error: Option<String>,
     pub seed: u32,
@@ -60,6 +61,7 @@ impl EngineHost {
             session: None,
             words: vec![],
             inputs: vec![],
+            visual_input: None,
             result: None,
             result_error: None,
         };
@@ -127,6 +129,7 @@ impl EngineHost {
             terminal_text(word)?;
         }
         self.inputs.clear();
+        self.visual_input = None;
         self.result = None;
         self.result_error = None;
         self.session = Some(session);
@@ -138,6 +141,7 @@ impl EngineHost {
             .as_mut()
             .expect("Prepared terminal session")
             .apply(command)?;
+        self.visual_input = update.visual_input_override;
         for change in update.words {
             terminal_text(&change.word)?;
             self.words

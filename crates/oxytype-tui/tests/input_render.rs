@@ -119,3 +119,38 @@ fn extra_emoji_and_error_markers_never_split_surrogates() {
     let content = OfflineContent::parse(r#"{"formatVersion":1,"license":"CC0","attribution":"test","language":{"name":"english","words":["😀","abc"]}}"#).unwrap();
     assert!(EngineHost::offline(config, content, None, 42).is_err());
 }
+
+#[test]
+fn stopped_letter_projects_native_visual_feedback_without_mutating_input() {
+    let mut host = EngineHost::offline(
+        Config {
+            stop_on_error: "letter".into(),
+            ..Default::default()
+        },
+        OfflineContent::bundled().unwrap(),
+        None,
+        42,
+    )
+    .unwrap();
+    host.insert("☃", 100.0, 1000.0).unwrap();
+    assert!(host.state().input_value.is_empty());
+    assert_eq!(host.visual_input, Some(Text::from("☃")));
+    assert!(
+        text_view(
+            &host.words[0],
+            host.visual_input.as_ref().unwrap(),
+            "english",
+            20,
+            4
+        )
+        .errors
+    );
+}
+
+#[test]
+fn deleting_partial_surrogate_feedback_preserves_original_utf16_prefix() {
+    let original = Text(vec![0xd83d, 97, 0x301]);
+    let after = input::delete_observation(&original).unwrap();
+    assert_eq!(after, Text(vec![0xd83d]));
+    assert!(input::delete_observation(&after).unwrap().is_empty());
+}

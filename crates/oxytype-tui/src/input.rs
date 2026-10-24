@@ -29,9 +29,12 @@ pub fn pop_grapheme(value: &mut String) {
 /// Mechanical text-control edit, expressed losslessly in UTF-16 for the core.
 /// Core still decides deletion eligibility, regression and event accounting.
 pub fn delete_observation(input: &Text) -> Result<Text> {
-    let mut value = String::from_utf16(&input.0)?;
+    // Legacy per-unit error policies can leave a partial surrogate. The lossy
+    // view preserves UTF-16 length (one replacement per isolated unit); use its
+    // grapheme boundary only, then slice original units without round-tripping.
+    let mut value = input.display_lossy();
     pop_grapheme(&mut value);
-    Ok(Text::from(value.as_str()))
+    Ok(Text(input.0[..value.encode_utf16().count()].to_vec()))
 }
 pub fn apply(host: &mut EngineHost, key: KeyEvent, now: f64, date: f64) -> Result<()> {
     if key.kind == KeyEventKind::Release || host.state().ended {

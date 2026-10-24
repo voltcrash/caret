@@ -510,7 +510,7 @@ fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
                     live.wpm, live.acc, live.seconds
                 )));
             }
-            let input = state.input_value;
+            let input = host.visual_input.clone().unwrap_or(state.input_value);
             let mut target = typing_engine::Text::default();
             if host.config.mode != "zen" {
                 for word in host.words.iter().skip(state.word_index).take(35) {
