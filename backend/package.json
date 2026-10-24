@@ -52,6 +52,7 @@
     "@oxytype/contracts": "workspace:*",
     "@oxytype/funbox": "workspace:*",
     "@oxytype/schemas": "workspace:*",
+    "@oxytype/typing-engine": "workspace:*",
     "@oxytype/util": "workspace:*",
     "@ts-rest/core": "3.52.1",
     "@ts-rest/open-api": "3.52.1",

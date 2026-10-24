@@ -294,6 +294,9 @@ importers:
       '@oxytype/schemas':
         specifier: workspace:*
         version: link:../packages/schemas
+      '@oxytype/typing-engine':
+        specifier: workspace:*
+        version: link:../packages/typing-engine
       '@oxytype/util':
         specifier: workspace:*
         version: link:../packages/util
