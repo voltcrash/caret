@@ -190,3 +190,8 @@ describe("Theme component", () => {
     return { style, css, metaThemeColor, favIcon };
   }
 });
+
+// Browser module exports are sealed; register spies before imports run.
+vi.mock("../../../src/ts/states/loader-bar", { spy: true });
+vi.mock("../../../src/ts/states/notifications", { spy: true });
+vi.mock("../../../src/ts/states/theme", { spy: true });

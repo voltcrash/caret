@@ -14,7 +14,8 @@ const { animations } = vi.hoisted(() => ({
   animations: [] as { element: HTMLElement; params: AnimationParams }[],
 }));
 
-vi.mock("animejs", () => ({
+vi.mock("animejs", async (original) => ({
+  ...(await original<typeof import("animejs")>()),
   animate: (element: HTMLElement, params: AnimationParams) => {
     animations.push({ element, params });
     return { cancel: vi.fn() };

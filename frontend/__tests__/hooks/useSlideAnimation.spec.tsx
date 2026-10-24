@@ -8,7 +8,10 @@ const mocks = vi.hoisted(() => ({
     cancel: vi.fn(),
   })),
 }));
-vi.mock("animejs", () => ({ animate: mocks.animate }));
+vi.mock("animejs", async (original) => ({
+  ...(await original<typeof import("animejs")>()),
+  animate: mocks.animate,
+}));
 
 import { useSlideAnimation } from "../../src/ts/hooks/useSlideAnimation";
 

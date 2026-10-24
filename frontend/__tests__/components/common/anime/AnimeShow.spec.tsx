@@ -25,7 +25,8 @@ const { mockAnimate } = vi.hoisted(() => ({
   }),
 }));
 
-vi.mock("animejs", () => ({
+vi.mock("animejs", async (original) => ({
+  ...(await original<typeof import("animejs")>()),
   animate: mockAnimate,
 }));
 
