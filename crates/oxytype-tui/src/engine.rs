@@ -217,9 +217,58 @@ pub fn smoke() -> Result<()> {
     {
         return Err("Smoke inserted unobserved keyboard telemetry".into());
     }
+    let modes = ["time", "words", "quote", "custom", "zen"];
+    for mode in modes {
+        let custom = if mode == "custom" {
+            Some(crate::options::custom_text(
+                "alpha beta",
+                "repeat",
+                "section",
+                1.0,
+            )?)
+        } else {
+            None
+        };
+        let mut host = EngineHost::offline(
+            Config {
+                mode: mode.into(),
+                words: 2,
+                time: 1.0,
+                ..Default::default()
+            },
+            crate::content::OfflineContent::bundled()?,
+            custom,
+            42,
+        )?;
+        if mode == "zen" {
+            host.insert("alpha ", 100.0, 1000.0)?;
+            host.command(Command::Bailout {
+                now: 1100.0,
+                date: 2000.0,
+            })?;
+        } else if mode == "time" {
+            let word = host.words[0].display_lossy();
+            host.insert(&word, 100.0, 1000.0)?;
+            host.command(Command::Advance {
+                now: 1200.0,
+                date: 2100.0,
+            })?;
+        } else {
+            for i in 0..1000 {
+                if host.state().ended {
+                    break;
+                }
+                let word = host.words[i].display_lossy();
+                host.insert(&word, 100.0 + i as f64 * 1000.0, 1000.0 + i as f64 * 1000.0)?;
+            }
+        }
+        if !host.state().ended || host.result.is_none() {
+            return Err(format!("Bundled offline {mode} smoke did not complete").into());
+        }
+    }
     println!(
         "{}",
-        serde_json::json!({"syntheticSmoke":true,"completed":true,"engineVersion":typing_engine::BEHAVIOR_VERSION})
+        serde_json::json!({"syntheticSmoke":true,"completed":true,"bundledModes":modes,"engineVersion":typing_engine::BEHAVIOR_VERSION})
     );
     Ok(())
 }

@@ -48,6 +48,13 @@ fn run() -> Result<()> {
         println!("{}", oxytype_tui::options::capabilities());
         return Ok(());
     }
+    if cli.diagnostics {
+        println!(
+            "{}",
+            serde_json::json!({"version":oxytype_tui::version(),"os":std::env::consts::OS,"architecture":std::env::consts::ARCH,"bindingVersion":typing_engine::BINDING_VERSION,"offlinePackVersion":1,"keyboard":"Inspect F1 after terminal negotiation","physicalKeyTiming":null})
+        );
+        return Ok(());
+    }
     let paths = Paths::resolve(cli.config_dir.as_deref(), cli.data_dir.as_deref())?;
     if cli.paths {
         println!(

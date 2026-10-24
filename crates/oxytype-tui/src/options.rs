@@ -87,6 +87,9 @@ pub struct Cli {
     pub record_replay: bool,
     #[arg(long, value_parser=["terminal","high-contrast","light"])]
     pub theme: Option<String>,
+    /// Version/platform diagnostics; no environment variables or private text.
+    #[arg(long)]
+    pub diagnostics: bool,
 }
 impl Cli {
     pub fn prepare(
