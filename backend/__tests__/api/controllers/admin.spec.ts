@@ -11,7 +11,7 @@ import * as WeeklyXpLeaderboard from "../../../src/services/weekly-xp-leaderboar
 import * as UserDeletion from "../../../src/services/user-deletion";
 
 import { enableRateLimitExpects } from "../../__testData__/rate-limit";
-import Test from "supertest/lib/test";
+import type { TestRequest } from "../../__testData__/test-client";
 
 const { mockApp, uid } = setup();
 const configuration = Configuration.getCachedConfiguration();
@@ -800,12 +800,14 @@ describe("AdminController", () => {
     });
   });
 
-  async function expectFailForNonAdmin(call: Test): Promise<void> {
+  async function expectFailForNonAdmin(call: TestRequest): Promise<void> {
     isAdminMock.mockResolvedValue(false);
     const { body } = await call.expect(403);
     expect(body.message).toEqual("You don't have permission to do this.");
   }
-  async function expectFailForDisabledEndpoint(call: Test): Promise<void> {
+  async function expectFailForDisabledEndpoint(
+    call: TestRequest,
+  ): Promise<void> {
     await enableAdminEndpoints(false);
     const { body } = await call.expect(503);
     expect(body.message).toEqual("Admin endpoints are currently disabled.");
