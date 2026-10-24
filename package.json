@@ -4,7 +4,6 @@
   "license": "GPL-3.0",
   "type": "module",
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
     "full-check": "vp run lint && vp run build && vp run test && vp run lint-styles && vp run check-assets",
     "prepare": "husky",
     "pre-commit": "lint-staged",
@@ -71,7 +70,6 @@
     "husky": "9.1.7",
     "knip": "6.39.0",
     "lint-staged": "17.6.0",
-    "only-allow": "1.2.2",
     "stylelint": "17.16.0",
     "stylelint-config-standard": "40.0.0",
     "vite-plus": "catalog:",
@@ -88,9 +86,14 @@
       "stylelint"
     ]
   },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "onFail": "error"
+    }
+  },
   "engines": {
     "node": ">=24.21.0 <25"
   },
-  "packageManager": "pnpm@12.8.1",
-  "//": "preinstall keeps npx: deps aren't installed yet, and `vp dlx` (pnpm dlx) overrides the user agent so only-allow always passes."
+  "packageManager": "pnpm@12.8.1"
 }
