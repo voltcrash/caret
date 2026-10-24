@@ -10,7 +10,7 @@ import { toEngineLog, type WebLog } from "@oxytype/typing-engine/text";
 // Keystroke logs compress about tenfold; this bounds a forged decompression bomb.
 const MAX_DECODED_BYTES = 4 * 1024 * 1024;
 
-export type EventLogMismatch = {
+type EventLogMismatch = {
   field: string;
   submitted: unknown;
   replayed: unknown;
