@@ -20,7 +20,6 @@
     "test": "vp test run",
     "test-e2e": "playwright test --config playwright.start.config.ts",
     "test-coverage": "vp test run --coverage",
-    "dev-test": "concurrently --kill-others \"vp dev\" \"vp test watch\"",
     "storybook": "vp run @oxytype/frontend-storybook#storybook",
     "import-tree": "tsx ./scripts/import-tree.ts",
     "generate-icon-types": "tsx scripts/generate-fontawesome-types.ts",
