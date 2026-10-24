@@ -467,3 +467,26 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
 - Remaining: current retired-engine production build/browser/full-workspace types,
   final fresh checkout, performance confirmation, rollback documentation and PR2
   sign-off. Stage 3 still pending; no live deployment performed.
+
+## Cross-platform delivery follow-up
+
+- Current retirement checkout `19871ed8e`: frozen install, automatic fresh Rust/Wasm
+  Cloudflare build and all nine remaining workspace typechecks pass without the
+  legacy package. Broad website suite: 146 pass (5.4 m); the single authenticated
+  save test raced account settings (14/15 typed after config replacement). Waiting
+  for settled fixture settings fixes it; isolated existing test passes (14.6 s).
+- x86_64 CI run `40041357470` failed during common bootstrap: Wasm 775,342 raw /
+  307,376 gzip6, exceeding the unchanged 307,200-byte limit. ARM passing locally
+  was insufficient evidence; cross-platform payload gate reopened before sign-off.
+- Borrow timing codes instead of allocating strings per event; exact native parity
+  passes. Float-label and cold-error/extra Binaryen experiments did not produce
+  sufficient gzip savings and were discarded, not shipped.
+- Share the already-required JSON Value parser for the immutable British dictionary,
+  eliminating its redundant untagged-enum deserializer. Dictionary bytes unchanged;
+  explicit schema/replacement test and full native parity/Clippy pass. Current ARM
+  payload 765,852 raw / 303,619 gzip6, leaving 3,581 bytes of unchanged-budget margin.
+- Wasm cache inputs now cover actual engine/adapter sources, data, manifests, build
+  scripts, environment/toolchain and output hashes. Native tests and future terminal
+  sources cannot affect generated browser output and no longer force Wasm rebuilds.
+- Pushed through `3d7a509a2`; current optimized browser/performance and new x86_64 CI
+  remain pending. Stage 2 is not signed off yet; Stage 3 remains pending.
