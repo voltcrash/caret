@@ -9,7 +9,9 @@ import {
   getTimingReview,
   type TimingReview,
 } from "../../src/anticheat/signals";
-import { probit } from "@oxytype/util/timing-stats";
+import { serverAudit } from "@oxytype/typing-engine/audit.server";
+
+const probit = (p: number): number => serverAudit().probit([p])[0] as number;
 
 function review(
   timings: KeyTimings,

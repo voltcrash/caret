@@ -1,4 +1,6 @@
-import { probit } from "@oxytype/util/timing-stats";
+import { serverAudit } from "@oxytype/typing-engine/audit.server";
+
+const probit = (p: number): number => serverAudit().probit([p])[0] as number;
 
 export type KeyTimings = { keySpacing: number[]; keyDuration: number[] };
 
