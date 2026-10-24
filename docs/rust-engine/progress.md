@@ -12,7 +12,7 @@ empty commits to inflate count. Do not publish production or releases implicitly
 
 ## Current position
 
-Stage 1 engine gate passed. Stage 2 Phase 2.6 active on `stack/rust-engine-website`; Stage 3 remains pending. Read root AGENTS.md and the complete migration
+Stage 1 and Stage 2 gates passed. Stage 3 begins next on a branch stacked above `stack/rust-engine-website`. Read root AGENTS.md and the complete migration
 plan before edits. Installed workspace dependencies with frozen lockfile.
 Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen oracle and mismatch detection. Existing website engine remains authoritative until Stage 2.
 
@@ -30,7 +30,7 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | 2.3 Generation / settings consumers | Complete | Native generation/catalog/settings/restart/practice; source cancellation/recovery; SSR-safe settings extraction; 1,577 unit tests and built-browser gates pass. |
 | 2.4 Results / replay | Complete | Native validity/progress/history/charts/inspector/playback; unit/JSX, frozen parity, save retry and real Start/D1 persistence pass. |
 | 2.5 Delivery / performance | Complete | Fresh Cloudflare build/preview/types, 86 Start checks, update/rollback, full website and controlled Wasm budgets pass. |
-| 2.6 TypeScript retirement | Active | Extract host helpers/wire types; archive oracle provenance; remove old engine/facades. |
+| 2.6 TypeScript retirement | Complete | Legacy package removed; full native/Wasm/website/quality CI, fresh build/types and frozen performance gates pass. |
 | 3.1–3.5 Terminal | Pending | Requires Stage 2 gate. |
 
 ## Verification log
@@ -512,3 +512,24 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
   type-aware checks pass locally; changed host/render tests: 35 pass.
 - Pushed `0b17aabeb`; final fresh checkout/build/types and resulting CI gate still
   running. No Stage 2 sign-off or terminal completion claimed yet.
+
+## Stage 2 gate passed
+
+- Final runtime source `0b17aabeb`; full CI `40043812060` succeeds: native/Wasm,
+  package/backend/frontend, quality/format/Knip, SSR, delivery/assets, four broad
+  browser shards and update/rollback jobs. No weakened checks or regenerated
+  reference snapshots. PR #185 is ready for review, stacked on #184.
+- Fresh isolated checkout at the final runtime source, with target/generated/dist
+  removed: frozen install, automatic Cloudflare Rust/Wasm build and all nine
+  workspace typechecks pass. Current Wrangler dry-run and whole-repo format pass.
+- Final built browser gate: all 38 pass (1.3 m) with controlled timing enforcement,
+  including new Wasm preload and exact original behavior/result/hash contracts.
+  Full website cold/warm, input/restart, heap and long/repeated-session budgets
+  pass; raw evidence and failed diagnostic run retained. Wasm 765,852 raw /
+  303,619 gzip6 bytes. Stage 2 contains 70+ coherent commits, without empty commits.
+- Website is ready for the established release review/deployment process. Hosted
+  staging/production deployment, current Cloudflare rollback-version capture and
+  actual hardware IME/OS checks remain unperformed; no publication authorized or
+  claimed. Local matched-artifact rollback/offline/save checks pass.
+- Continue Stage 3 immediately. Native Ratatui implementation, capabilities, local
+  history and platform release gates remain required; do not stop at this stage.
