@@ -93,7 +93,6 @@
     "object-hash": "3.0.0",
     "stemmer": "2.0.1",
     "tailwind-merge": "3.7.0",
-    "throttle-debounce": "5.0.2",
     "zod": "4.6.5",
     "zod-urlsearchparams": "0.0.16"
   },
@@ -121,7 +120,6 @@
     "@types/howler": "2.2.13",
     "@types/node": "24.19.0",
     "@types/object-hash": "3.0.6",
-    "@types/throttle-debounce": "5.0.2",
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "caniuse-lite": "1.0.30001814",

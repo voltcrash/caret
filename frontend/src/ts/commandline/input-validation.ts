@@ -6,7 +6,7 @@ import { captureAccount, createAccountOwned } from "../../app/account-scope";
 import { onCleanup } from "solid-js";
 import { Command, CommandWithValidation } from "./types";
 
-import { debounce } from "throttle-debounce";
+import { debounce } from "@oxytype/util/timing";
 
 import { useInputValidation } from "../hooks/useInputValidation";
 
