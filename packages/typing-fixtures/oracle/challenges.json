@@ -1,0 +1,4145 @@
+{
+  "results": {
+    "strong": {
+      "wpm": 151.4,
+      "rawWpm": 160.5,
+      "acc": 100,
+      "consistency": 82.5,
+      "afkDuration": 0,
+      "testDuration": 3600.2,
+      "funbox": []
+    },
+    "weak": {
+      "wpm": 39.5,
+      "rawWpm": 44.4,
+      "acc": 91.25,
+      "consistency": 40.5,
+      "afkDuration": 3,
+      "testDuration": 29.6,
+      "funbox": ["nausea", "mirror"]
+    },
+    "exact": {
+      "wpm": 69.5,
+      "rawWpm": 69.5,
+      "acc": 99,
+      "consistency": 100.4,
+      "afkDuration": 1,
+      "testDuration": 15,
+      "funbox": ["layoutfluid"]
+    },
+    "afk": {
+      "wpm": 100,
+      "rawWpm": 100,
+      "acc": 100,
+      "consistency": 100,
+      "afkDuration": 7,
+      "testDuration": 60,
+      "funbox": []
+    },
+    "zeroDuration": {
+      "wpm": 0,
+      "rawWpm": 0,
+      "acc": 0,
+      "consistency": 0,
+      "afkDuration": 0,
+      "testDuration": 0,
+      "funbox": []
+    }
+  },
+  "configs": {
+    "matching": {
+      "language": "english_10k",
+      "punctuation": true,
+      "numbers": true,
+      "tapeMode": "off",
+      "liveSpeedStyle": "off",
+      "paceCaret": "off",
+      "difficulty": "normal"
+    },
+    "other": {
+      "language": "french",
+      "punctuation": false,
+      "numbers": false,
+      "tapeMode": "letter",
+      "liveSpeedStyle": "mini",
+      "paceCaret": "pb",
+      "difficulty": "expert"
+    }
+  },
+  "challenges": [
+    {
+      "name": "69",
+      "requirements": {
+        "wpm": { "exact": 69 },
+        "raw": { "exact": 69 },
+        "acc": { "exact": 69 },
+        "con": { "exact": 69 }
+      }
+    },
+    { "name": "oneHourWarrior", "requirements": { "time": { "min": 3600 } } },
+    { "name": "doubleDown", "requirements": { "time": { "min": 7200 } } },
+    { "name": "tripleTrouble", "requirements": { "time": { "min": 10800 } } },
+    { "name": "quad", "requirements": { "time": { "min": 14400 } } },
+    { "name": "8Ball", "requirements": { "time": { "min": 28800 } } },
+    { "name": "theBig12", "requirements": { "time": { "min": 43200 } } },
+    { "name": "1Day", "requirements": { "time": { "min": 86400 } } },
+    { "name": "bigramSalad", "requirements": { "wpm": { "min": 100 } } },
+    { "name": "antidiseWhat", "requirements": { "wpm": { "min": 200 } } },
+    { "name": "developd", "requirements": null },
+    {
+      "name": "slowAndSteady",
+      "requirements": {
+        "wpm": { "exact": 60 },
+        "config": { "liveSpeedStyle": "off", "paceCaret": "off" }
+      }
+    },
+    { "name": "speedSpacer", "requirements": { "wpm": { "min": 100 } } },
+    { "name": "iveGotThePower", "requirements": { "wpm": { "min": 400 } } },
+    {
+      "name": "accuracyExpert",
+      "requirements": {
+        "wpm": { "min": 60 },
+        "acc": { "exact": 100 },
+        "afk": { "max": 5 },
+        "time": { "min": 600 }
+      }
+    },
+    {
+      "name": "accuracyMaster",
+      "requirements": {
+        "wpm": { "min": 60 },
+        "acc": { "exact": 100 },
+        "afk": { "max": 5 },
+        "time": { "min": 1200 }
+      }
+    },
+    {
+      "name": "accuracyGod",
+      "requirements": {
+        "wpm": { "min": 60 },
+        "acc": { "exact": 100 },
+        "afk": { "max": 5 },
+        "time": { "min": 1800 }
+      }
+    },
+    {
+      "name": "inAGalaxyFarFarAway",
+      "requirements": { "config": { "tapeMode": "off" } }
+    },
+    {
+      "name": "beepBoop",
+      "requirements": {
+        "wpm": { "min": 45 },
+        "acc": { "min": 100 },
+        "funbox": { "exact": ["nospace"] }
+      }
+    },
+    {
+      "name": "whosYourDaddy",
+      "requirements": { "config": { "tapeMode": "off" } }
+    },
+    { "name": "itsATrap", "requirements": { "config": { "tapeMode": "off" } } },
+    { "name": "jolly", "requirements": { "wpm": { "min": 70 } } },
+    { "name": "gottaCatchEmAll", "requirements": null },
+    {
+      "name": "rapGod",
+      "requirements": {
+        "wpm": { "min": 85 },
+        "acc": { "min": 90 },
+        "afk": { "max": 5 }
+      }
+    },
+    {
+      "name": "navySeal",
+      "requirements": {
+        "wpm": { "min": 60 },
+        "acc": { "exact": 100 },
+        "afk": { "max": 5 }
+      }
+    },
+    { "name": "littleChef", "requirements": null },
+    { "name": "crosstalk", "requirements": null },
+    { "name": "bees", "requirements": null },
+    { "name": "getOffMySwamp", "requirements": null },
+    { "name": "beLikeWater", "requirements": null },
+    {
+      "name": "rollercoaster",
+      "requirements": {
+        "time": { "min": 3600 },
+        "funbox": { "exact": ["round_round_baby"] }
+      }
+    },
+    {
+      "name": "oneHourMirror",
+      "requirements": {
+        "time": { "min": 3600 },
+        "funbox": { "exact": ["mirror"] }
+      }
+    },
+    {
+      "name": "chooChoo",
+      "requirements": {
+        "time": { "min": 3600 },
+        "funbox": { "exact": ["choo_choo"] }
+      }
+    },
+    {
+      "name": "mnemonist",
+      "requirements": { "config": { "tapeMode": "off" } }
+    },
+    {
+      "name": "earfquake",
+      "requirements": {
+        "time": { "min": 3600 },
+        "funbox": { "exact": ["earthquake"] }
+      }
+    },
+    {
+      "name": "simonSez",
+      "requirements": {
+        "time": { "min": 3600 },
+        "funbox": { "exact": ["simon_says"] }
+      }
+    },
+    {
+      "name": "accountant",
+      "requirements": {
+        "time": { "min": 3600 },
+        "funbox": { "exact": ["58008"] }
+      }
+    },
+    {
+      "name": "hidden",
+      "requirements": {
+        "wpm": { "min": 100 },
+        "time": { "min": 60 },
+        "funbox": { "exact": ["read_ahead"] },
+        "config": { "tapeMode": "off" }
+      }
+    },
+    {
+      "name": "iCanSeeTheFuture",
+      "requirements": {
+        "wpm": { "min": 100 },
+        "time": { "min": 60 },
+        "funbox": { "exact": ["read_ahead_hard"] },
+        "config": { "tapeMode": "off" }
+      }
+    },
+    {
+      "name": "whatAreWordsAtThisPoint",
+      "requirements": {
+        "time": { "min": 60 },
+        "funbox": { "exact": ["gibberish"] }
+      }
+    },
+    {
+      "name": "specials",
+      "requirements": {
+        "time": { "min": 60 },
+        "funbox": { "exact": ["specials"] }
+      }
+    },
+    {
+      "name": "aeiou",
+      "requirements": { "time": { "min": 60 }, "funbox": { "exact": ["tts"] } }
+    },
+    {
+      "name": "asciiWarrior",
+      "requirements": {
+        "time": { "min": 60 },
+        "funbox": { "exact": ["ascii"] }
+      }
+    },
+    {
+      "name": "iKiNdAlIkEhOwInEfFiCiEnTqWeRtYiS",
+      "requirements": {
+        "time": { "min": 60 },
+        "funbox": { "exact": ["sPoNgEcAsE"] }
+      }
+    },
+    {
+      "name": "oneNauseousMonkey",
+      "requirements": {
+        "time": { "min": 60 },
+        "funbox": { "exact": ["nausea"] }
+      }
+    },
+    { "name": "thumbWarrior", "requirements": null },
+    { "name": "mouseWarrior", "requirements": null },
+    { "name": "mobileWarrior", "requirements": null },
+    { "name": "upsideDown", "requirements": null },
+    { "name": "oneArmedBandit", "requirements": null },
+    {
+      "name": "englishMaster",
+      "requirements": {
+        "time": { "min": 3600 },
+        "config": {
+          "language": "english_10k",
+          "punctuation": true,
+          "numbers": true
+        }
+      }
+    },
+    { "name": "feetWarrior", "requirements": null },
+    { "name": "wingdings", "requirements": { "acc": { "exact": 100 } } },
+    {
+      "name": "synthetic-0",
+      "requirements": {
+        "wpm": { "exact": 70 },
+        "acc": { "min": 99.5 },
+        "raw": { "exact": 70 },
+        "con": { "exact": 100 }
+      }
+    },
+    {
+      "name": "synthetic-1",
+      "requirements": {
+        "afk": { "max": 0 },
+        "time": { "min": 0 },
+        "raw": { "exact": 0 },
+        "con": { "exact": 0 }
+      }
+    },
+    {
+      "name": "synthetic-2",
+      "requirements": {
+        "afk": { "max": 1 },
+        "time": { "min": 3600 },
+        "funbox": { "exact": ["mirror", "nausea"] }
+      }
+    },
+    {
+      "name": "synthetic-3",
+      "requirements": {
+        "funbox": { "exact": ["mirror"] },
+        "config": { "tapeMode": "off", "numbers": true }
+      }
+    },
+    {
+      "name": "synthetic-4",
+      "requirements": { "acc": { "exact": 91.25 }, "wpm": { "min": 39.5 } }
+    },
+    { "name": "synthetic-5", "requirements": {} }
+  ],
+  "cases": [
+    {
+      "challenge": "69",
+      "result": "strong",
+      "config": "matching",
+      "expected": [
+        "WPM not 69",
+        "Raw WPM not 69",
+        "Accuracy not 69",
+        "Consistency not 69"
+      ]
+    },
+    {
+      "challenge": "69",
+      "result": "strong",
+      "config": "other",
+      "expected": [
+        "WPM not 69",
+        "Raw WPM not 69",
+        "Accuracy not 69",
+        "Consistency not 69"
+      ]
+    },
+    {
+      "challenge": "69",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "69",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "69",
+      "result": "exact",
+      "config": "matching",
+      "expected": [
+        "WPM not 69",
+        "Raw WPM not 69",
+        "Accuracy not 69",
+        "Consistency not 69"
+      ]
+    },
+    {
+      "challenge": "69",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "WPM not 69",
+        "Raw WPM not 69",
+        "Accuracy not 69",
+        "Consistency not 69"
+      ]
+    },
+    {
+      "challenge": "69",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "69",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "69",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": [
+        "WPM not 69",
+        "Raw WPM not 69",
+        "Accuracy not 69",
+        "Consistency not 69"
+      ]
+    },
+    {
+      "challenge": "69",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": [
+        "WPM not 69",
+        "Raw WPM not 69",
+        "Accuracy not 69",
+        "Consistency not 69"
+      ]
+    },
+    {
+      "challenge": "oneHourWarrior",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "oneHourWarrior",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "oneHourWarrior",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "oneHourWarrior",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "oneHourWarrior",
+      "result": "exact",
+      "config": "matching",
+      "expected": ["Test time below 3600"]
+    },
+    {
+      "challenge": "oneHourWarrior",
+      "result": "exact",
+      "config": "other",
+      "expected": ["Test time below 3600"]
+    },
+    {
+      "challenge": "oneHourWarrior",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "oneHourWarrior",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "oneHourWarrior",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Test time below 3600"]
+    },
+    {
+      "challenge": "oneHourWarrior",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Test time below 3600"]
+    },
+    {
+      "challenge": "doubleDown",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["Test time below 7200"]
+    },
+    {
+      "challenge": "doubleDown",
+      "result": "strong",
+      "config": "other",
+      "expected": ["Test time below 7200"]
+    },
+    {
+      "challenge": "doubleDown",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "doubleDown",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "doubleDown",
+      "result": "exact",
+      "config": "matching",
+      "expected": ["Test time below 7200"]
+    },
+    {
+      "challenge": "doubleDown",
+      "result": "exact",
+      "config": "other",
+      "expected": ["Test time below 7200"]
+    },
+    {
+      "challenge": "doubleDown",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "doubleDown",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "doubleDown",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Test time below 7200"]
+    },
+    {
+      "challenge": "doubleDown",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Test time below 7200"]
+    },
+    {
+      "challenge": "tripleTrouble",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["Test time below 10800"]
+    },
+    {
+      "challenge": "tripleTrouble",
+      "result": "strong",
+      "config": "other",
+      "expected": ["Test time below 10800"]
+    },
+    {
+      "challenge": "tripleTrouble",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "tripleTrouble",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "tripleTrouble",
+      "result": "exact",
+      "config": "matching",
+      "expected": ["Test time below 10800"]
+    },
+    {
+      "challenge": "tripleTrouble",
+      "result": "exact",
+      "config": "other",
+      "expected": ["Test time below 10800"]
+    },
+    {
+      "challenge": "tripleTrouble",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "tripleTrouble",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "tripleTrouble",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Test time below 10800"]
+    },
+    {
+      "challenge": "tripleTrouble",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Test time below 10800"]
+    },
+    {
+      "challenge": "quad",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["Test time below 14400"]
+    },
+    {
+      "challenge": "quad",
+      "result": "strong",
+      "config": "other",
+      "expected": ["Test time below 14400"]
+    },
+    {
+      "challenge": "quad",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "quad",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "quad",
+      "result": "exact",
+      "config": "matching",
+      "expected": ["Test time below 14400"]
+    },
+    {
+      "challenge": "quad",
+      "result": "exact",
+      "config": "other",
+      "expected": ["Test time below 14400"]
+    },
+    {
+      "challenge": "quad",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "quad",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "quad",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Test time below 14400"]
+    },
+    {
+      "challenge": "quad",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Test time below 14400"]
+    },
+    {
+      "challenge": "8Ball",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["Test time below 28800"]
+    },
+    {
+      "challenge": "8Ball",
+      "result": "strong",
+      "config": "other",
+      "expected": ["Test time below 28800"]
+    },
+    {
+      "challenge": "8Ball",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "8Ball",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "8Ball",
+      "result": "exact",
+      "config": "matching",
+      "expected": ["Test time below 28800"]
+    },
+    {
+      "challenge": "8Ball",
+      "result": "exact",
+      "config": "other",
+      "expected": ["Test time below 28800"]
+    },
+    {
+      "challenge": "8Ball",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "8Ball",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "8Ball",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Test time below 28800"]
+    },
+    {
+      "challenge": "8Ball",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Test time below 28800"]
+    },
+    {
+      "challenge": "theBig12",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["Test time below 43200"]
+    },
+    {
+      "challenge": "theBig12",
+      "result": "strong",
+      "config": "other",
+      "expected": ["Test time below 43200"]
+    },
+    {
+      "challenge": "theBig12",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "theBig12",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "theBig12",
+      "result": "exact",
+      "config": "matching",
+      "expected": ["Test time below 43200"]
+    },
+    {
+      "challenge": "theBig12",
+      "result": "exact",
+      "config": "other",
+      "expected": ["Test time below 43200"]
+    },
+    {
+      "challenge": "theBig12",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "theBig12",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "theBig12",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Test time below 43200"]
+    },
+    {
+      "challenge": "theBig12",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Test time below 43200"]
+    },
+    {
+      "challenge": "1Day",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["Test time below 86400"]
+    },
+    {
+      "challenge": "1Day",
+      "result": "strong",
+      "config": "other",
+      "expected": ["Test time below 86400"]
+    },
+    {
+      "challenge": "1Day",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "1Day",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "1Day",
+      "result": "exact",
+      "config": "matching",
+      "expected": ["Test time below 86400"]
+    },
+    {
+      "challenge": "1Day",
+      "result": "exact",
+      "config": "other",
+      "expected": ["Test time below 86400"]
+    },
+    {
+      "challenge": "1Day",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "1Day",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "1Day",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Test time below 86400"]
+    },
+    {
+      "challenge": "1Day",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Test time below 86400"]
+    },
+    {
+      "challenge": "bigramSalad",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "bigramSalad",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "bigramSalad",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "bigramSalad",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "bigramSalad",
+      "result": "exact",
+      "config": "matching",
+      "expected": ["WPM below 100"]
+    },
+    {
+      "challenge": "bigramSalad",
+      "result": "exact",
+      "config": "other",
+      "expected": ["WPM below 100"]
+    },
+    {
+      "challenge": "bigramSalad",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "bigramSalad",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "bigramSalad",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["WPM below 100"]
+    },
+    {
+      "challenge": "bigramSalad",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["WPM below 100"]
+    },
+    {
+      "challenge": "antidiseWhat",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["WPM below 200"]
+    },
+    {
+      "challenge": "antidiseWhat",
+      "result": "strong",
+      "config": "other",
+      "expected": ["WPM below 200"]
+    },
+    {
+      "challenge": "antidiseWhat",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "antidiseWhat",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "antidiseWhat",
+      "result": "exact",
+      "config": "matching",
+      "expected": ["WPM below 200"]
+    },
+    {
+      "challenge": "antidiseWhat",
+      "result": "exact",
+      "config": "other",
+      "expected": ["WPM below 200"]
+    },
+    {
+      "challenge": "antidiseWhat",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "antidiseWhat",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "antidiseWhat",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["WPM below 200"]
+    },
+    {
+      "challenge": "antidiseWhat",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["WPM below 200"]
+    },
+    {
+      "challenge": "developd",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "developd",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "developd",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "developd",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "developd",
+      "result": "exact",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "developd",
+      "result": "exact",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "developd",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "developd",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "developd",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "developd",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "slowAndSteady",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["WPM not 60"]
+    },
+    {
+      "challenge": "slowAndSteady",
+      "result": "strong",
+      "config": "other",
+      "expected": [
+        "WPM not 60",
+        "liveSpeedStyle not set to off",
+        "paceCaret not set to off"
+      ]
+    },
+    {
+      "challenge": "slowAndSteady",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "slowAndSteady",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "slowAndSteady",
+      "result": "exact",
+      "config": "matching",
+      "expected": ["WPM not 60"]
+    },
+    {
+      "challenge": "slowAndSteady",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "WPM not 60",
+        "liveSpeedStyle not set to off",
+        "paceCaret not set to off"
+      ]
+    },
+    {
+      "challenge": "slowAndSteady",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "slowAndSteady",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "slowAndSteady",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["WPM not 60"]
+    },
+    {
+      "challenge": "slowAndSteady",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": [
+        "WPM not 60",
+        "liveSpeedStyle not set to off",
+        "paceCaret not set to off"
+      ]
+    },
+    {
+      "challenge": "speedSpacer",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "speedSpacer",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "speedSpacer",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "speedSpacer",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "speedSpacer",
+      "result": "exact",
+      "config": "matching",
+      "expected": ["WPM below 100"]
+    },
+    {
+      "challenge": "speedSpacer",
+      "result": "exact",
+      "config": "other",
+      "expected": ["WPM below 100"]
+    },
+    {
+      "challenge": "speedSpacer",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "speedSpacer",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "speedSpacer",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["WPM below 100"]
+    },
+    {
+      "challenge": "speedSpacer",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["WPM below 100"]
+    },
+    {
+      "challenge": "iveGotThePower",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["WPM below 400"]
+    },
+    {
+      "challenge": "iveGotThePower",
+      "result": "strong",
+      "config": "other",
+      "expected": ["WPM below 400"]
+    },
+    {
+      "challenge": "iveGotThePower",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "iveGotThePower",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "iveGotThePower",
+      "result": "exact",
+      "config": "matching",
+      "expected": ["WPM below 400"]
+    },
+    {
+      "challenge": "iveGotThePower",
+      "result": "exact",
+      "config": "other",
+      "expected": ["WPM below 400"]
+    },
+    {
+      "challenge": "iveGotThePower",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "iveGotThePower",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "iveGotThePower",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["WPM below 400"]
+    },
+    {
+      "challenge": "iveGotThePower",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["WPM below 400"]
+    },
+    {
+      "challenge": "accuracyExpert",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "accuracyExpert",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "accuracyExpert",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "accuracyExpert",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "accuracyExpert",
+      "result": "exact",
+      "config": "matching",
+      "expected": [
+        "Accuracy not 100",
+        "AFK percentage above 5",
+        "Test time below 600"
+      ]
+    },
+    {
+      "challenge": "accuracyExpert",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "Accuracy not 100",
+        "AFK percentage above 5",
+        "Test time below 600"
+      ]
+    },
+    {
+      "challenge": "accuracyExpert",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "accuracyExpert",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "accuracyExpert",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["WPM below 60", "Accuracy not 100", "Test time below 600"]
+    },
+    {
+      "challenge": "accuracyExpert",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["WPM below 60", "Accuracy not 100", "Test time below 600"]
+    },
+    {
+      "challenge": "accuracyMaster",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "accuracyMaster",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "accuracyMaster",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "accuracyMaster",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "accuracyMaster",
+      "result": "exact",
+      "config": "matching",
+      "expected": [
+        "Accuracy not 100",
+        "AFK percentage above 5",
+        "Test time below 1200"
+      ]
+    },
+    {
+      "challenge": "accuracyMaster",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "Accuracy not 100",
+        "AFK percentage above 5",
+        "Test time below 1200"
+      ]
+    },
+    {
+      "challenge": "accuracyMaster",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "accuracyMaster",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "accuracyMaster",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["WPM below 60", "Accuracy not 100", "Test time below 1200"]
+    },
+    {
+      "challenge": "accuracyMaster",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["WPM below 60", "Accuracy not 100", "Test time below 1200"]
+    },
+    {
+      "challenge": "accuracyGod",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "accuracyGod",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "accuracyGod",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "accuracyGod",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "accuracyGod",
+      "result": "exact",
+      "config": "matching",
+      "expected": [
+        "Accuracy not 100",
+        "AFK percentage above 5",
+        "Test time below 1800"
+      ]
+    },
+    {
+      "challenge": "accuracyGod",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "Accuracy not 100",
+        "AFK percentage above 5",
+        "Test time below 1800"
+      ]
+    },
+    {
+      "challenge": "accuracyGod",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "accuracyGod",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "accuracyGod",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["WPM below 60", "Accuracy not 100", "Test time below 1800"]
+    },
+    {
+      "challenge": "accuracyGod",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["WPM below 60", "Accuracy not 100", "Test time below 1800"]
+    },
+    {
+      "challenge": "inAGalaxyFarFarAway",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "inAGalaxyFarFarAway",
+      "result": "strong",
+      "config": "other",
+      "expected": ["tapeMode not set to off"]
+    },
+    {
+      "challenge": "inAGalaxyFarFarAway",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "inAGalaxyFarFarAway",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "inAGalaxyFarFarAway",
+      "result": "exact",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "inAGalaxyFarFarAway",
+      "result": "exact",
+      "config": "other",
+      "expected": ["tapeMode not set to off"]
+    },
+    {
+      "challenge": "inAGalaxyFarFarAway",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "inAGalaxyFarFarAway",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "inAGalaxyFarFarAway",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "inAGalaxyFarFarAway",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["tapeMode not set to off"]
+    },
+    {
+      "challenge": "beepBoop",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["nospace funbox not active"]
+    },
+    {
+      "challenge": "beepBoop",
+      "result": "strong",
+      "config": "other",
+      "expected": ["nospace funbox not active"]
+    },
+    {
+      "challenge": "beepBoop",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "beepBoop",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "beepBoop",
+      "result": "exact",
+      "config": "matching",
+      "expected": [
+        "Accuracy below 100",
+        "nospace funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "beepBoop",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "Accuracy below 100",
+        "nospace funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "beepBoop",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "beepBoop",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "beepBoop",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": [
+        "WPM below 45",
+        "Accuracy below 100",
+        "nospace funbox not active"
+      ]
+    },
+    {
+      "challenge": "beepBoop",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": [
+        "WPM below 45",
+        "Accuracy below 100",
+        "nospace funbox not active"
+      ]
+    },
+    {
+      "challenge": "whosYourDaddy",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "whosYourDaddy",
+      "result": "strong",
+      "config": "other",
+      "expected": ["tapeMode not set to off"]
+    },
+    {
+      "challenge": "whosYourDaddy",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "whosYourDaddy",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "whosYourDaddy",
+      "result": "exact",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "whosYourDaddy",
+      "result": "exact",
+      "config": "other",
+      "expected": ["tapeMode not set to off"]
+    },
+    {
+      "challenge": "whosYourDaddy",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "whosYourDaddy",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "whosYourDaddy",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "whosYourDaddy",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["tapeMode not set to off"]
+    },
+    {
+      "challenge": "itsATrap",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "itsATrap",
+      "result": "strong",
+      "config": "other",
+      "expected": ["tapeMode not set to off"]
+    },
+    {
+      "challenge": "itsATrap",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "itsATrap",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "itsATrap",
+      "result": "exact",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "itsATrap",
+      "result": "exact",
+      "config": "other",
+      "expected": ["tapeMode not set to off"]
+    },
+    {
+      "challenge": "itsATrap",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "itsATrap",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "itsATrap",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "itsATrap",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["tapeMode not set to off"]
+    },
+    {
+      "challenge": "jolly",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "jolly",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "jolly",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "jolly",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "jolly",
+      "result": "exact",
+      "config": "matching",
+      "expected": ["WPM below 70"]
+    },
+    {
+      "challenge": "jolly",
+      "result": "exact",
+      "config": "other",
+      "expected": ["WPM below 70"]
+    },
+    {
+      "challenge": "jolly",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "jolly",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "jolly",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["WPM below 70"]
+    },
+    {
+      "challenge": "jolly",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["WPM below 70"]
+    },
+    {
+      "challenge": "gottaCatchEmAll",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "gottaCatchEmAll",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "gottaCatchEmAll",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "gottaCatchEmAll",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "gottaCatchEmAll",
+      "result": "exact",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "gottaCatchEmAll",
+      "result": "exact",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "gottaCatchEmAll",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "gottaCatchEmAll",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "gottaCatchEmAll",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "gottaCatchEmAll",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "rapGod",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "rapGod",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "rapGod",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "rapGod",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "rapGod",
+      "result": "exact",
+      "config": "matching",
+      "expected": ["WPM below 85", "AFK percentage above 5"]
+    },
+    {
+      "challenge": "rapGod",
+      "result": "exact",
+      "config": "other",
+      "expected": ["WPM below 85", "AFK percentage above 5"]
+    },
+    {
+      "challenge": "rapGod",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "rapGod",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "rapGod",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["WPM below 85", "Accuracy below 90"]
+    },
+    {
+      "challenge": "rapGod",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["WPM below 85", "Accuracy below 90"]
+    },
+    {
+      "challenge": "navySeal",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "navySeal",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "navySeal",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "navySeal",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "navySeal",
+      "result": "exact",
+      "config": "matching",
+      "expected": ["Accuracy not 100", "AFK percentage above 5"]
+    },
+    {
+      "challenge": "navySeal",
+      "result": "exact",
+      "config": "other",
+      "expected": ["Accuracy not 100", "AFK percentage above 5"]
+    },
+    {
+      "challenge": "navySeal",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "navySeal",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "navySeal",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["WPM below 60", "Accuracy not 100"]
+    },
+    {
+      "challenge": "navySeal",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["WPM below 60", "Accuracy not 100"]
+    },
+    {
+      "challenge": "littleChef",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "littleChef",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "littleChef",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "littleChef",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "littleChef",
+      "result": "exact",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "littleChef",
+      "result": "exact",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "littleChef",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "littleChef",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "littleChef",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "littleChef",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "crosstalk",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "crosstalk",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "crosstalk",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "crosstalk",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "crosstalk",
+      "result": "exact",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "crosstalk",
+      "result": "exact",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "crosstalk",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "crosstalk",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "crosstalk",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "crosstalk",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "bees",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "bees",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "bees",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "bees",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "bees",
+      "result": "exact",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "bees",
+      "result": "exact",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "bees",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "bees",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "bees",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "bees",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "getOffMySwamp",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "getOffMySwamp",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "getOffMySwamp",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "getOffMySwamp",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "getOffMySwamp",
+      "result": "exact",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "getOffMySwamp",
+      "result": "exact",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "getOffMySwamp",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "getOffMySwamp",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "getOffMySwamp",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "getOffMySwamp",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "beLikeWater",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "beLikeWater",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "beLikeWater",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "beLikeWater",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "beLikeWater",
+      "result": "exact",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "beLikeWater",
+      "result": "exact",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "beLikeWater",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "beLikeWater",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "beLikeWater",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "beLikeWater",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "rollercoaster",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["round_round_baby funbox not active"]
+    },
+    {
+      "challenge": "rollercoaster",
+      "result": "strong",
+      "config": "other",
+      "expected": ["round_round_baby funbox not active"]
+    },
+    {
+      "challenge": "rollercoaster",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "rollercoaster",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "rollercoaster",
+      "result": "exact",
+      "config": "matching",
+      "expected": [
+        "Test time below 3600",
+        "round_round_baby funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "rollercoaster",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "Test time below 3600",
+        "round_round_baby funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "rollercoaster",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "rollercoaster",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "rollercoaster",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Test time below 3600", "round_round_baby funbox not active"]
+    },
+    {
+      "challenge": "rollercoaster",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Test time below 3600", "round_round_baby funbox not active"]
+    },
+    {
+      "challenge": "oneHourMirror",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["mirror funbox not active"]
+    },
+    {
+      "challenge": "oneHourMirror",
+      "result": "strong",
+      "config": "other",
+      "expected": ["mirror funbox not active"]
+    },
+    {
+      "challenge": "oneHourMirror",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "oneHourMirror",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "oneHourMirror",
+      "result": "exact",
+      "config": "matching",
+      "expected": [
+        "Test time below 3600",
+        "mirror funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "oneHourMirror",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "Test time below 3600",
+        "mirror funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "oneHourMirror",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "oneHourMirror",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "oneHourMirror",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Test time below 3600", "mirror funbox not active"]
+    },
+    {
+      "challenge": "oneHourMirror",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Test time below 3600", "mirror funbox not active"]
+    },
+    {
+      "challenge": "chooChoo",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["choo_choo funbox not active"]
+    },
+    {
+      "challenge": "chooChoo",
+      "result": "strong",
+      "config": "other",
+      "expected": ["choo_choo funbox not active"]
+    },
+    {
+      "challenge": "chooChoo",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "chooChoo",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "chooChoo",
+      "result": "exact",
+      "config": "matching",
+      "expected": [
+        "Test time below 3600",
+        "choo_choo funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "chooChoo",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "Test time below 3600",
+        "choo_choo funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "chooChoo",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "chooChoo",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "chooChoo",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Test time below 3600", "choo_choo funbox not active"]
+    },
+    {
+      "challenge": "chooChoo",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Test time below 3600", "choo_choo funbox not active"]
+    },
+    {
+      "challenge": "mnemonist",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "mnemonist",
+      "result": "strong",
+      "config": "other",
+      "expected": ["tapeMode not set to off"]
+    },
+    {
+      "challenge": "mnemonist",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "mnemonist",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "mnemonist",
+      "result": "exact",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "mnemonist",
+      "result": "exact",
+      "config": "other",
+      "expected": ["tapeMode not set to off"]
+    },
+    {
+      "challenge": "mnemonist",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "mnemonist",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "mnemonist",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "mnemonist",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["tapeMode not set to off"]
+    },
+    {
+      "challenge": "earfquake",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["earthquake funbox not active"]
+    },
+    {
+      "challenge": "earfquake",
+      "result": "strong",
+      "config": "other",
+      "expected": ["earthquake funbox not active"]
+    },
+    {
+      "challenge": "earfquake",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "earfquake",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "earfquake",
+      "result": "exact",
+      "config": "matching",
+      "expected": [
+        "Test time below 3600",
+        "earthquake funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "earfquake",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "Test time below 3600",
+        "earthquake funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "earfquake",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "earfquake",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "earfquake",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Test time below 3600", "earthquake funbox not active"]
+    },
+    {
+      "challenge": "earfquake",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Test time below 3600", "earthquake funbox not active"]
+    },
+    {
+      "challenge": "simonSez",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["simon_says funbox not active"]
+    },
+    {
+      "challenge": "simonSez",
+      "result": "strong",
+      "config": "other",
+      "expected": ["simon_says funbox not active"]
+    },
+    {
+      "challenge": "simonSez",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "simonSez",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "simonSez",
+      "result": "exact",
+      "config": "matching",
+      "expected": [
+        "Test time below 3600",
+        "simon_says funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "simonSez",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "Test time below 3600",
+        "simon_says funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "simonSez",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "simonSez",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "simonSez",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Test time below 3600", "simon_says funbox not active"]
+    },
+    {
+      "challenge": "simonSez",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Test time below 3600", "simon_says funbox not active"]
+    },
+    {
+      "challenge": "accountant",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["58008 funbox not active"]
+    },
+    {
+      "challenge": "accountant",
+      "result": "strong",
+      "config": "other",
+      "expected": ["58008 funbox not active"]
+    },
+    {
+      "challenge": "accountant",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "accountant",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "accountant",
+      "result": "exact",
+      "config": "matching",
+      "expected": [
+        "Test time below 3600",
+        "58008 funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "accountant",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "Test time below 3600",
+        "58008 funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "accountant",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "accountant",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "accountant",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Test time below 3600", "58008 funbox not active"]
+    },
+    {
+      "challenge": "accountant",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Test time below 3600", "58008 funbox not active"]
+    },
+    {
+      "challenge": "hidden",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["read_ahead funbox not active"]
+    },
+    {
+      "challenge": "hidden",
+      "result": "strong",
+      "config": "other",
+      "expected": ["read_ahead funbox not active", "tapeMode not set to off"]
+    },
+    {
+      "challenge": "hidden",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "hidden",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "hidden",
+      "result": "exact",
+      "config": "matching",
+      "expected": [
+        "WPM below 100",
+        "Test time below 60",
+        "read_ahead funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "hidden",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "WPM below 100",
+        "Test time below 60",
+        "read_ahead funbox not active",
+        "layoutfluid funbox active",
+        "tapeMode not set to off"
+      ]
+    },
+    {
+      "challenge": "hidden",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "hidden",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "hidden",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": [
+        "WPM below 100",
+        "Test time below 60",
+        "read_ahead funbox not active"
+      ]
+    },
+    {
+      "challenge": "hidden",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": [
+        "WPM below 100",
+        "Test time below 60",
+        "read_ahead funbox not active",
+        "tapeMode not set to off"
+      ]
+    },
+    {
+      "challenge": "iCanSeeTheFuture",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["read_ahead_hard funbox not active"]
+    },
+    {
+      "challenge": "iCanSeeTheFuture",
+      "result": "strong",
+      "config": "other",
+      "expected": [
+        "read_ahead_hard funbox not active",
+        "tapeMode not set to off"
+      ]
+    },
+    {
+      "challenge": "iCanSeeTheFuture",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "iCanSeeTheFuture",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "iCanSeeTheFuture",
+      "result": "exact",
+      "config": "matching",
+      "expected": [
+        "WPM below 100",
+        "Test time below 60",
+        "read_ahead_hard funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "iCanSeeTheFuture",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "WPM below 100",
+        "Test time below 60",
+        "read_ahead_hard funbox not active",
+        "layoutfluid funbox active",
+        "tapeMode not set to off"
+      ]
+    },
+    {
+      "challenge": "iCanSeeTheFuture",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "iCanSeeTheFuture",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "iCanSeeTheFuture",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": [
+        "WPM below 100",
+        "Test time below 60",
+        "read_ahead_hard funbox not active"
+      ]
+    },
+    {
+      "challenge": "iCanSeeTheFuture",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": [
+        "WPM below 100",
+        "Test time below 60",
+        "read_ahead_hard funbox not active",
+        "tapeMode not set to off"
+      ]
+    },
+    {
+      "challenge": "whatAreWordsAtThisPoint",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["gibberish funbox not active"]
+    },
+    {
+      "challenge": "whatAreWordsAtThisPoint",
+      "result": "strong",
+      "config": "other",
+      "expected": ["gibberish funbox not active"]
+    },
+    {
+      "challenge": "whatAreWordsAtThisPoint",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "whatAreWordsAtThisPoint",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "whatAreWordsAtThisPoint",
+      "result": "exact",
+      "config": "matching",
+      "expected": [
+        "Test time below 60",
+        "gibberish funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "whatAreWordsAtThisPoint",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "Test time below 60",
+        "gibberish funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "whatAreWordsAtThisPoint",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "whatAreWordsAtThisPoint",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "whatAreWordsAtThisPoint",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Test time below 60", "gibberish funbox not active"]
+    },
+    {
+      "challenge": "whatAreWordsAtThisPoint",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Test time below 60", "gibberish funbox not active"]
+    },
+    {
+      "challenge": "specials",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["specials funbox not active"]
+    },
+    {
+      "challenge": "specials",
+      "result": "strong",
+      "config": "other",
+      "expected": ["specials funbox not active"]
+    },
+    {
+      "challenge": "specials",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "specials",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "specials",
+      "result": "exact",
+      "config": "matching",
+      "expected": [
+        "Test time below 60",
+        "specials funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "specials",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "Test time below 60",
+        "specials funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "specials",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "specials",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "specials",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Test time below 60", "specials funbox not active"]
+    },
+    {
+      "challenge": "specials",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Test time below 60", "specials funbox not active"]
+    },
+    {
+      "challenge": "aeiou",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["tts funbox not active"]
+    },
+    {
+      "challenge": "aeiou",
+      "result": "strong",
+      "config": "other",
+      "expected": ["tts funbox not active"]
+    },
+    {
+      "challenge": "aeiou",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "aeiou",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "aeiou",
+      "result": "exact",
+      "config": "matching",
+      "expected": [
+        "Test time below 60",
+        "tts funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "aeiou",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "Test time below 60",
+        "tts funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "aeiou",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "aeiou",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "aeiou",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Test time below 60", "tts funbox not active"]
+    },
+    {
+      "challenge": "aeiou",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Test time below 60", "tts funbox not active"]
+    },
+    {
+      "challenge": "asciiWarrior",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["ascii funbox not active"]
+    },
+    {
+      "challenge": "asciiWarrior",
+      "result": "strong",
+      "config": "other",
+      "expected": ["ascii funbox not active"]
+    },
+    {
+      "challenge": "asciiWarrior",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "asciiWarrior",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "asciiWarrior",
+      "result": "exact",
+      "config": "matching",
+      "expected": [
+        "Test time below 60",
+        "ascii funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "asciiWarrior",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "Test time below 60",
+        "ascii funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "asciiWarrior",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "asciiWarrior",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "asciiWarrior",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Test time below 60", "ascii funbox not active"]
+    },
+    {
+      "challenge": "asciiWarrior",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Test time below 60", "ascii funbox not active"]
+    },
+    {
+      "challenge": "iKiNdAlIkEhOwInEfFiCiEnTqWeRtYiS",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["sPoNgEcAsE funbox not active"]
+    },
+    {
+      "challenge": "iKiNdAlIkEhOwInEfFiCiEnTqWeRtYiS",
+      "result": "strong",
+      "config": "other",
+      "expected": ["sPoNgEcAsE funbox not active"]
+    },
+    {
+      "challenge": "iKiNdAlIkEhOwInEfFiCiEnTqWeRtYiS",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "iKiNdAlIkEhOwInEfFiCiEnTqWeRtYiS",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "iKiNdAlIkEhOwInEfFiCiEnTqWeRtYiS",
+      "result": "exact",
+      "config": "matching",
+      "expected": [
+        "Test time below 60",
+        "sPoNgEcAsE funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "iKiNdAlIkEhOwInEfFiCiEnTqWeRtYiS",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "Test time below 60",
+        "sPoNgEcAsE funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "iKiNdAlIkEhOwInEfFiCiEnTqWeRtYiS",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "iKiNdAlIkEhOwInEfFiCiEnTqWeRtYiS",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "iKiNdAlIkEhOwInEfFiCiEnTqWeRtYiS",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Test time below 60", "sPoNgEcAsE funbox not active"]
+    },
+    {
+      "challenge": "iKiNdAlIkEhOwInEfFiCiEnTqWeRtYiS",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Test time below 60", "sPoNgEcAsE funbox not active"]
+    },
+    {
+      "challenge": "oneNauseousMonkey",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["nausea funbox not active"]
+    },
+    {
+      "challenge": "oneNauseousMonkey",
+      "result": "strong",
+      "config": "other",
+      "expected": ["nausea funbox not active"]
+    },
+    {
+      "challenge": "oneNauseousMonkey",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "oneNauseousMonkey",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "oneNauseousMonkey",
+      "result": "exact",
+      "config": "matching",
+      "expected": [
+        "Test time below 60",
+        "nausea funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "oneNauseousMonkey",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "Test time below 60",
+        "nausea funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "oneNauseousMonkey",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "oneNauseousMonkey",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "oneNauseousMonkey",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Test time below 60", "nausea funbox not active"]
+    },
+    {
+      "challenge": "oneNauseousMonkey",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Test time below 60", "nausea funbox not active"]
+    },
+    {
+      "challenge": "thumbWarrior",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "thumbWarrior",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "thumbWarrior",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "thumbWarrior",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "thumbWarrior",
+      "result": "exact",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "thumbWarrior",
+      "result": "exact",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "thumbWarrior",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "thumbWarrior",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "thumbWarrior",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "thumbWarrior",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "mouseWarrior",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "mouseWarrior",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "mouseWarrior",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "mouseWarrior",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "mouseWarrior",
+      "result": "exact",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "mouseWarrior",
+      "result": "exact",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "mouseWarrior",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "mouseWarrior",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "mouseWarrior",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "mouseWarrior",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "mobileWarrior",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "mobileWarrior",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "mobileWarrior",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "mobileWarrior",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "mobileWarrior",
+      "result": "exact",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "mobileWarrior",
+      "result": "exact",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "mobileWarrior",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "mobileWarrior",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "mobileWarrior",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "mobileWarrior",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "upsideDown",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "upsideDown",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "upsideDown",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "upsideDown",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "upsideDown",
+      "result": "exact",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "upsideDown",
+      "result": "exact",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "upsideDown",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "upsideDown",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "upsideDown",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "upsideDown",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "oneArmedBandit",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "oneArmedBandit",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "oneArmedBandit",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "oneArmedBandit",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "oneArmedBandit",
+      "result": "exact",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "oneArmedBandit",
+      "result": "exact",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "oneArmedBandit",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "oneArmedBandit",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "oneArmedBandit",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "oneArmedBandit",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "englishMaster",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "englishMaster",
+      "result": "strong",
+      "config": "other",
+      "expected": [
+        "language not set to english_10k",
+        "punctuation not set to true",
+        "numbers not set to true"
+      ]
+    },
+    {
+      "challenge": "englishMaster",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "englishMaster",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "englishMaster",
+      "result": "exact",
+      "config": "matching",
+      "expected": ["Test time below 3600"]
+    },
+    {
+      "challenge": "englishMaster",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "Test time below 3600",
+        "language not set to english_10k",
+        "punctuation not set to true",
+        "numbers not set to true"
+      ]
+    },
+    {
+      "challenge": "englishMaster",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "englishMaster",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "englishMaster",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Test time below 3600"]
+    },
+    {
+      "challenge": "englishMaster",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": [
+        "Test time below 3600",
+        "language not set to english_10k",
+        "punctuation not set to true",
+        "numbers not set to true"
+      ]
+    },
+    {
+      "challenge": "feetWarrior",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "feetWarrior",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "feetWarrior",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "feetWarrior",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "feetWarrior",
+      "result": "exact",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "feetWarrior",
+      "result": "exact",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "feetWarrior",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "feetWarrior",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "feetWarrior",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "feetWarrior",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "wingdings",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "wingdings",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "wingdings",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "wingdings",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "wingdings",
+      "result": "exact",
+      "config": "matching",
+      "expected": ["Accuracy not 100"]
+    },
+    {
+      "challenge": "wingdings",
+      "result": "exact",
+      "config": "other",
+      "expected": ["Accuracy not 100"]
+    },
+    {
+      "challenge": "wingdings",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "wingdings",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "wingdings",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Accuracy not 100"]
+    },
+    {
+      "challenge": "wingdings",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Accuracy not 100"]
+    },
+    {
+      "challenge": "synthetic-0",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["WPM not 70", "Raw WPM not 70", "Consistency not 100"]
+    },
+    {
+      "challenge": "synthetic-0",
+      "result": "strong",
+      "config": "other",
+      "expected": ["WPM not 70", "Raw WPM not 70", "Consistency not 100"]
+    },
+    {
+      "challenge": "synthetic-0",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-0",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-0",
+      "result": "exact",
+      "config": "matching",
+      "expected": ["Accuracy below 99.5"]
+    },
+    {
+      "challenge": "synthetic-0",
+      "result": "exact",
+      "config": "other",
+      "expected": ["Accuracy below 99.5"]
+    },
+    {
+      "challenge": "synthetic-0",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-0",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-0",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": [
+        "WPM not 70",
+        "Accuracy below 99.5",
+        "Raw WPM not 70",
+        "Consistency not 100"
+      ]
+    },
+    {
+      "challenge": "synthetic-0",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": [
+        "WPM not 70",
+        "Accuracy below 99.5",
+        "Raw WPM not 70",
+        "Consistency not 100"
+      ]
+    },
+    {
+      "challenge": "synthetic-1",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "synthetic-1",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "synthetic-1",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-1",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-1",
+      "result": "exact",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "synthetic-1",
+      "result": "exact",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "synthetic-1",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-1",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-1",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "synthetic-1",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "synthetic-2",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["mirror funbox not active", "nausea funbox not active"]
+    },
+    {
+      "challenge": "synthetic-2",
+      "result": "strong",
+      "config": "other",
+      "expected": ["mirror funbox not active", "nausea funbox not active"]
+    },
+    {
+      "challenge": "synthetic-2",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-2",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-2",
+      "result": "exact",
+      "config": "matching",
+      "expected": [
+        "AFK percentage above 1",
+        "Test time below 3600",
+        "mirror funbox not active",
+        "nausea funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "synthetic-2",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "AFK percentage above 1",
+        "Test time below 3600",
+        "mirror funbox not active",
+        "nausea funbox not active",
+        "layoutfluid funbox active"
+      ]
+    },
+    {
+      "challenge": "synthetic-2",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-2",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-2",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": [
+        "Test time below 3600",
+        "mirror funbox not active",
+        "nausea funbox not active"
+      ]
+    },
+    {
+      "challenge": "synthetic-2",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": [
+        "Test time below 3600",
+        "mirror funbox not active",
+        "nausea funbox not active"
+      ]
+    },
+    {
+      "challenge": "synthetic-3",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["mirror funbox not active"]
+    },
+    {
+      "challenge": "synthetic-3",
+      "result": "strong",
+      "config": "other",
+      "expected": [
+        "mirror funbox not active",
+        "tapeMode not set to off",
+        "numbers not set to true"
+      ]
+    },
+    {
+      "challenge": "synthetic-3",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-3",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-3",
+      "result": "exact",
+      "config": "matching",
+      "expected": ["mirror funbox not active", "layoutfluid funbox active"]
+    },
+    {
+      "challenge": "synthetic-3",
+      "result": "exact",
+      "config": "other",
+      "expected": [
+        "mirror funbox not active",
+        "layoutfluid funbox active",
+        "tapeMode not set to off",
+        "numbers not set to true"
+      ]
+    },
+    {
+      "challenge": "synthetic-3",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-3",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-3",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["mirror funbox not active"]
+    },
+    {
+      "challenge": "synthetic-3",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": [
+        "mirror funbox not active",
+        "tapeMode not set to off",
+        "numbers not set to true"
+      ]
+    },
+    {
+      "challenge": "synthetic-4",
+      "result": "strong",
+      "config": "matching",
+      "expected": ["Accuracy not 91.25"]
+    },
+    {
+      "challenge": "synthetic-4",
+      "result": "strong",
+      "config": "other",
+      "expected": ["Accuracy not 91.25"]
+    },
+    {
+      "challenge": "synthetic-4",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-4",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-4",
+      "result": "exact",
+      "config": "matching",
+      "expected": ["Accuracy not 91.25"]
+    },
+    {
+      "challenge": "synthetic-4",
+      "result": "exact",
+      "config": "other",
+      "expected": ["Accuracy not 91.25"]
+    },
+    {
+      "challenge": "synthetic-4",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-4",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-4",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": ["Accuracy not 91.25", "WPM below 39.5"]
+    },
+    {
+      "challenge": "synthetic-4",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": ["Accuracy not 91.25", "WPM below 39.5"]
+    },
+    {
+      "challenge": "synthetic-5",
+      "result": "strong",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "synthetic-5",
+      "result": "strong",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "synthetic-5",
+      "result": "weak",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-5",
+      "result": "weak",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-5",
+      "result": "exact",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "synthetic-5",
+      "result": "exact",
+      "config": "other",
+      "expected": []
+    },
+    {
+      "challenge": "synthetic-5",
+      "result": "afk",
+      "config": "matching",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-5",
+      "result": "afk",
+      "config": "other",
+      "expected": ["AFK time is greater than 10%"]
+    },
+    {
+      "challenge": "synthetic-5",
+      "result": "zeroDuration",
+      "config": "matching",
+      "expected": []
+    },
+    {
+      "challenge": "synthetic-5",
+      "result": "zeroDuration",
+      "config": "other",
+      "expected": []
+    }
+  ]
+}

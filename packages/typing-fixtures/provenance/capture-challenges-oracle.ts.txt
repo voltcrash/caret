@@ -1,0 +1,105 @@
+// One-time capture before retiring the TypeScript challenge verification.
+// Run from the repository root with backend tsx:
+//   cp this file to capture.ts beside it, run it, then delete the copy.
+import { writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { getChallenges, verifyChallenge } from "../../challenges/src/index.ts";
+import type { Challenge, ChallengeResult } from "../../challenges/src/types.ts";
+import type { Config } from "../../schemas/src/configs.ts";
+
+const results: Record<string, ChallengeResult> = {
+  strong: {
+    wpm: 151.4,
+    rawWpm: 160.5,
+    acc: 100,
+    consistency: 82.5,
+    afkDuration: 0,
+    testDuration: 3600.2,
+    funbox: [],
+  },
+  weak: {
+    wpm: 39.5,
+    rawWpm: 44.4,
+    acc: 91.25,
+    consistency: 40.5,
+    afkDuration: 3,
+    testDuration: 29.6,
+    funbox: ["nausea", "mirror"],
+  },
+  exact: {
+    wpm: 69.5,
+    rawWpm: 69.5,
+    acc: 99,
+    consistency: 100.4,
+    afkDuration: 1,
+    testDuration: 15,
+    funbox: ["layoutfluid"],
+  },
+  afk: {
+    wpm: 100,
+    rawWpm: 100,
+    acc: 100,
+    consistency: 100,
+    afkDuration: 7,
+    testDuration: 60,
+    funbox: [],
+  },
+  zeroDuration: {
+    wpm: 0,
+    rawWpm: 0,
+    acc: 0,
+    consistency: 0,
+    afkDuration: 0,
+    testDuration: 0,
+    funbox: [],
+  },
+};
+const configs: Record<string, Partial<Config>> = {
+  matching: {
+    language: "english_10k",
+    punctuation: true,
+    numbers: true,
+    tapeMode: "off",
+    liveSpeedStyle: "off",
+    paceCaret: "off",
+    difficulty: "normal",
+  },
+  other: {
+    language: "french",
+    punctuation: false,
+    numbers: false,
+    tapeMode: "letter",
+    liveSpeedStyle: "mini",
+    paceCaret: "pb",
+    difficulty: "expert",
+  },
+};
+const synthetic: Challenge["settings"]["requirements"][] = [
+  { wpm: { exact: 70 }, acc: { min: 99.5 }, raw: { exact: 70 }, con: { exact: 100 } },
+  { afk: { max: 0 }, time: { min: 0 }, raw: { exact: 0 }, con: { exact: 0 } },
+  { afk: { max: 1 }, time: { min: 3600 }, funbox: { exact: ["mirror", "nausea"] } },
+  { funbox: { exact: ["mirror"] }, config: { tapeMode: "off", numbers: true } },
+  { acc: { exact: 91.25 }, wpm: { min: 39.5 } },
+  {},
+];
+const challenges: { name: string; requirements: unknown }[] = [
+  ...getChallenges().map((c) => ({ name: c.name, requirements: c.settings.requirements ?? null })),
+  ...synthetic.map((requirements, i) => ({ name: `synthetic-${i}`, requirements })),
+];
+const cases = challenges.flatMap((challenge) =>
+  Object.entries(results).flatMap(([resultName, result]) =>
+    Object.entries(configs).map(([configName, config]) => ({
+      challenge: challenge.name,
+      result: resultName,
+      config: configName,
+      expected: verifyChallenge(result, config as Config, {
+        settings: { requirements: challenge.requirements ?? undefined },
+      } as Challenge),
+    })),
+  ),
+);
+writeFileSync(
+  resolve(import.meta.dirname, "../oracle/challenges.json"),
+  `${JSON.stringify({ results, configs, challenges, cases })}\n`,
+  { flag: "wx" },
+);
