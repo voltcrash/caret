@@ -3,6 +3,8 @@ import { resolve } from "node:path";
 
 const command = process.argv[2];
 const args = process.argv.slice(3);
+// vp forwards its separator; strip only that first token, preserving values.
+if (args[0] === "--") args.shift();
 if (command === "tools-test") {
   const result = spawnSync(
     "python3",
@@ -18,11 +20,7 @@ if (
 ) {
   const result = spawnSync(
     "python3",
-    [
-      "scripts/terminal_release.py",
-      command,
-      ...args.filter((arg) => arg !== "--"),
-    ],
+    ["scripts/terminal_release.py", command, ...args],
     { cwd: resolve(import.meta.dirname, ".."), stdio: "inherit" },
   );
   if (result.error !== undefined) throw result.error;
@@ -50,7 +48,7 @@ if ((command === "pty" || command === "emulator") && result.status === 0) {
     "python3",
     command === "pty"
       ? ["scripts/terminal_pty.py", "target/debug/oxytype"]
-      : ["scripts/terminal_emulator.py", ...args.filter((arg) => arg !== "--")],
+      : ["scripts/terminal_emulator.py", ...args],
     {
       cwd: resolve(import.meta.dirname, ".."),
       stdio: "inherit",
