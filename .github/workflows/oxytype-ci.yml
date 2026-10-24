@@ -74,7 +74,7 @@ jobs:
             # Workspace packages bundled into the backend and frontend.
             runtime-packages:
               - 'packages/{challenges,contracts,funbox,schemas,typing-engine,typing-fixtures,util,web-shared}/**'
-              - 'crates/{typing-engine,typing-engine-wasm}/**'
+              - 'crates/{typing-engine,typing-engine-wasm,typing-audit-wasm}/**'
               - 'Cargo.{toml,lock}'
               - 'rust-toolchain.toml'
               - 'scripts/{engine,prepare-engine}.ts'
@@ -84,7 +84,7 @@ jobs:
               - 'packages/**'
               - '!**/*.md'
             engine:
-              - 'crates/{typing-engine,typing-engine-wasm}/**'
+              - 'crates/{typing-engine,typing-engine-wasm,typing-audit-wasm}/**'
               - 'Cargo.{toml,lock}'
               - 'rust-toolchain.toml'
               - 'scripts/{engine,prepare-engine}.ts'
