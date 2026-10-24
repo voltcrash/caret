@@ -26,6 +26,9 @@ Date: 2026-10-25. Base: `bfbc3c1cb01aa516ce747d81db0714ee2e8abf5c`.
 
 This removes six direct dependency entries and eight package versions from the
 lockfile, including an old Vitest 4 runner. No package versions were added.
+The root test runner explicitly lists the existing Playwright provider because
+it also runs frontend browser projects. This keeps root and frontend Vitest
+provider types compatible after the Storybook test packages are removed.
 
 ## Validation
 
@@ -33,6 +36,7 @@ lockfile, including an old Vitest 4 runner. No package versions were added.
   One initial shard run timed out during concurrent builds. The targeted file
   and whole shard passed after the builds completed.
 - Frontend lint, type checks, and Knip pass.
+- The root lint/type check used by `ci-pkg` and all 437 shared package tests pass.
 - The app build passes with a public fixture Sentry DSN and an empty auth token.
   This enables the build plugin without creating a release or uploading maps.
 - Package checks confirm the removals, Sentry's dependency placement, and the
