@@ -67,8 +67,10 @@ database's per-user submission-hash constraint.
 ## Review signals (log only)
 
 `anticheat.review` (enabled, results at or above 100 WPM) describes the
-interior gaps and holds of every saved result with the shared timing statistics
-in `@oxytype/util/timing-stats`, the same code as the event log viewer. Signals
+interior gaps and holds of every saved result with the Rust timing statistics
+and review in `crates/typing-engine` (`timing_stats.rs`, `timing_review.rs`),
+served through the audit Wasm module, the same code as the event log viewer.
+Signals
 name properties that generators commonly have and human samples rarely show:
 
 | Signal | Raised when |
