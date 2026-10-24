@@ -55,11 +55,7 @@ export default defineMain({
       // },
     },
   },
-  addons: [
-    "@storybook/addon-docs",
-    "@storybook/addon-a11y",
-    "@storybook/addon-vitest",
-  ],
+  addons: ["@storybook/addon-docs", "@storybook/addon-a11y"],
   stories: [
     "../stories/**/*.mdx",
     "../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)",
