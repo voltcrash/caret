@@ -27,6 +27,10 @@ controlled; structural/size/parity assertions remain mandatory everywhere.
 Use synchronous JSON commands + bounded deltas after async preparation. JSON won the benchmark; the object-only measurement path is retired, with original evidence retained.
 No full history is returned per key; explicit log reads only.
 Raw Wasm <=1 MiB, gzip <=300 KiB, glue <=32 KiB. Binding p95 <=0.1 ms/unit.
+Audit module (`typing-audit-wasm`: result replay, timing statistics, challenge
+and funbox rules) is separate: raw <=512 KiB, gzip <=200 KiB. It never ships in
+the typing payload or the offline precache; the Worker receives it precompiled
+and the event log viewer and challenges fetch it on demand.
 Initialization p95 <=100 ms (collect repeated cold samples at final gate).
 Startup cold/warm median <=baseline+75 ms, p95 <=baseline+100 ms.
 Input paint p95 <=baseline+5 ms. Restart median <=baseline+25 ms, p95 <=baseline+50 ms.
