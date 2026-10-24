@@ -128,3 +128,18 @@ checks govern merge readiness. Unperformed macOS/IME checks stay pending and are
 not reported as passed. Release publication remains separately authorized/gated.
 The application renders text; Kitty graphics support is independent of keyboard
 protocol support, negotiated without terminal-brand or TERM-name assumptions.
+
+Linux's former manual/contributor gate is replaced by required real-emulator CI;
+macOS is the sole manual publication gate, owned by the user after merge. The
+publisher depends on native builds, both Linux emulator jobs and corresponding
+source, then checks the nonempty macOS record. Physical Linux IME/font inspection
+remains explicitly unperformed; it is not an implicit external tester requirement.
+
+### Minimal Kitty keyboard enhancement
+
+Real Kitty 0.32.2 emits duplicate legacy Backspace deliveries when release reports
+are requested. The app only needs key disambiguation; auto now requests flag 1,
+leaving text/IME on ordinary UTF-8. It does not request event types/all keys/text
+association. Repeats remain one insertion per delivery; unobserved event kinds
+remain false/null in history. Explicit release/repeat wire fixtures still verify
+correct handling if such packets arrive. Core input/scoring rules are unchanged.

@@ -28,8 +28,10 @@ not the current target list. Current-scope evidence is recorded in progress.md.
 Do not claim lower OS/libc versions or untested terminals supported. Runner labels
 were checked against [GitHub's runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners).
 Linux emulator checks plus four native/archive jobs govern merge readiness.
-The owner will perform macOS manual verification after merge. Unperformed
-font/IME checks stay pending in terminal-verification.json. This does not block PR
+The owner will perform [macOS manual verification](terminal-macos-check.md) after
+merge; that remains the sole manual publication record in terminal-verification.json.
+Linux automated emulator jobs replace the former external-contributor requirement.
+Unperformed physical IME/font checks remain explicit. This does not block PR
 review/merge under the owner's revised scope; publication remains a separate gate.
 
 Build locally: `vp run terminal:package -- --target TARGET`; use the matching native

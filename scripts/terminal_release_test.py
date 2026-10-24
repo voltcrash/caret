@@ -1,5 +1,6 @@
 """Archive integrity and supported release targets, using actual files."""
 import hashlib
+import json
 import os
 import pathlib
 import tarfile
@@ -52,6 +53,20 @@ class ArchiveTest(unittest.TestCase):
             self.assertEqual(len((root / "SHA256SUMS").read_text().splitlines()),5)
             (root / names[0]).write_bytes(b"corruption")
             with self.assertRaises(AssertionError): terminal_release.checksums(root)
+
+    def test_release_gate_requires_the_owner_mac_record_and_never_accepts_an_empty_matrix(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=pathlib.Path(temporary)
+            matrix=root / "docs/rust-engine/terminal-verification.json"
+            matrix.parent.mkdir(parents=True)
+            with patch.object(terminal_release,"ROOT",root):
+                for record in [{}, {"status":"pending","evidence":None}, {"status":"pass","evidence":" "}]:
+                    matrix.write_text(json.dumps({"formatVersion":1,"manualTerminals":{"macOS":record}}))
+                    with self.assertRaises(RuntimeError): terminal_release.gate()
+                matrix.write_text(json.dumps({"formatVersion":1,"manualTerminals":{}}))
+                with self.assertRaisesRegex(RuntimeError,"requires the current macOS"): terminal_release.gate()
+                matrix.write_text(json.dumps({"formatVersion":1,"manualTerminals":{"macOS":{"status":"pass","evidence":"test record only"}}}))
+                terminal_release.gate()
 
 
 if __name__=="__main__":
