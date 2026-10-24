@@ -154,3 +154,45 @@ fn local_pack_validation_is_lossless_utf16_and_bounded() {
     }
     assert!(OfflineContent::parse(&" ".repeat(8 * 1024 * 1024 + 1)).is_err());
 }
+
+#[test]
+fn custom_crlf_newline_tab_and_non_bmp_text_remain_typable() {
+    let custom =
+        oxytype_tui::options::custom_text_auto("one\r\n\t界😀", "repeat", "word", None).unwrap();
+    let mut host = EngineHost::offline(
+        Config {
+            mode: "custom".into(),
+            ..Default::default()
+        },
+        OfflineContent::bundled().unwrap(),
+        Some(custom),
+        42,
+    )
+    .unwrap();
+    assert_eq!(host.words[0], typing_engine::Text::from("one\n"));
+    host.insert("one", 100.0, 1000.0).unwrap();
+    host.insert("\n", 1100.0, 2000.0).unwrap();
+    assert_eq!(host.state().word_index, 1);
+    host.insert("\t界😀", 2100.0, 3000.0).unwrap();
+    assert!(host.state().ended);
+    assert_eq!(host.result.unwrap().acc, 100.0);
+}
+
+#[test]
+fn default_custom_uses_the_whole_passage_and_explicit_zero_stays_infinite() {
+    let (config, content, custom) = Cli::parse_from(["oxytype", "--text", "one two three"])
+        .prepare(Config::default())
+        .unwrap();
+    assert_eq!(custom.as_ref().unwrap().limit.value, 3.0);
+    assert_eq!(
+        EngineHost::offline(config, content, custom, 42)
+            .unwrap()
+            .words
+            .len(),
+        3
+    );
+    let (_, _, custom) = Cli::parse_from(["oxytype", "--text", "one two", "--custom-length", "0"])
+        .prepare(Config::default())
+        .unwrap();
+    assert_eq!(custom.unwrap().limit.value, 0.0);
+}

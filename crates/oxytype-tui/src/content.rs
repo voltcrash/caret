@@ -9,6 +9,10 @@ use typing_engine::{
 };
 
 pub const MAX_FILE_BYTES: u64 = 8 * 1024 * 1024;
+/// Decode text-file/clipboard line endings as logical terminal Enter characters.
+pub fn line_endings(value: &str) -> String {
+    value.replace("\r\n", "\n").replace('\r', "\n")
+}
 pub fn read_utf8(path: &Path) -> Result<String> {
     let mut bytes = vec![];
     File::open(path)?

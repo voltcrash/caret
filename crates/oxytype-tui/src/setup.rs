@@ -9,7 +9,7 @@ pub struct Setup {
     pub text: String,
     pub order: String,
     pub limit: String,
-    pub length: f64,
+    pub length: Option<f64>,
     pub theme: String,
     pub reduced_animation: bool,
     pub record_replay: bool,
@@ -33,8 +33,8 @@ impl Setup {
                 })
                 .unwrap_or_default(),
             order: custom.map_or("repeat", |c| c.mode.as_str()).into(),
-            limit: custom.map_or("section", |c| c.limit.mode.as_str()).into(),
-            length: custom.map_or(1.0, |c| c.limit.value),
+            limit: custom.map_or("word", |c| c.limit.mode.as_str()).into(),
+            length: custom.map(|c| c.limit.value),
             theme: "terminal".into(),
             reduced_animation: true,
             record_replay: false,
@@ -44,7 +44,7 @@ impl Setup {
         if self.config.mode != "custom" {
             return Ok(None);
         }
-        Ok(Some(options::custom_text(
+        Ok(Some(options::custom_text_auto(
             &self.text,
             &self.order,
             &self.limit,
@@ -144,10 +144,20 @@ impl Setup {
             Line::from("Private custom text · type or paste · F8 apply · Esc cancel"),
             Line::from(format!(
                 "F6 order: {} · F7 limit: {} · F9 length: {}",
-                self.order, self.limit, self.length
+                self.order,
+                self.limit,
+                self.length
+                    .map(|v| v.to_string())
+                    .unwrap_or_else(|| "auto".into())
             )),
             Line::from(format!("{}▌", self.text)),
         ]
+    }
+    pub fn increase_length(&mut self) {
+        let value = options::custom_text_auto(&self.text, &self.order, &self.limit, self.length)
+            .map(|c| c.limit.value)
+            .unwrap_or(0.0);
+        self.length = Some(value + 1.0);
     }
     pub fn cycle_order(&mut self) {
         cycle(&mut self.order, &["repeat", "random", "shuffle"], 1);

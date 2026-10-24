@@ -220,11 +220,11 @@ pub fn smoke() -> Result<()> {
     let modes = ["time", "words", "quote", "custom", "zen"];
     for mode in modes {
         let custom = if mode == "custom" {
-            Some(crate::options::custom_text(
+            Some(crate::options::custom_text_auto(
                 "alpha beta",
                 "repeat",
-                "section",
-                1.0,
+                "word",
+                None,
             )?)
         } else {
             None

@@ -169,6 +169,7 @@ fn run() -> Result<()> {
             // clear queries cursor position, which basic terminals need not report.
             Event::Resize(_, _) => {}
             Event::Paste(text) if screen == Screen::Editor => {
+                let text = oxytype_tui::content::line_endings(&text);
                 match oxytype_tui::content::safe_text(&text) {
                     Ok(()) if setup.text.len() + text.len() <= 8 * 1024 * 1024 => {
                         setup.text.push_str(&text)
@@ -186,7 +187,11 @@ fn run() -> Result<()> {
                     break;
                 }
                 if control && key.code == KeyCode::Char('z') {
-                    guard.suspend.store(true, Ordering::SeqCst);
+                    if cfg!(unix) {
+                        guard.suspend.store(true, Ordering::SeqCst);
+                    } else {
+                        notice = "Suspend is unavailable on this platform.".into();
+                    }
                     continue;
                 }
                 match key.code {
@@ -199,8 +204,14 @@ fn run() -> Result<()> {
                     KeyCode::F(4) if !host.state().active => screen = Screen::Editor,
                     KeyCode::F(6) if screen == Screen::Editor => setup.cycle_order(),
                     KeyCode::F(7) if screen == Screen::Editor => setup.cycle_limit(),
-                    KeyCode::F(9) if screen == Screen::Editor => setup.length += 1.0,
+                    KeyCode::F(9) if screen == Screen::Editor => setup.increase_length(),
                     KeyCode::F(8) if screen == Screen::Editor => {
+                        if !local.pending.is_empty() {
+                            notice =
+                                "Save the pending result with F9 before starting another test."
+                                    .into();
+                            continue;
+                        }
                         setup.config.mode = "custom".into();
                         match setup.build(&content, host.seed.wrapping_add(1)) {
                             Ok(next) => {
@@ -304,12 +315,24 @@ fn run() -> Result<()> {
                     }
                     KeyCode::Esc if screen != Screen::Test => screen = Screen::Test,
                     KeyCode::F(5) | KeyCode::F(6) => {
+                        if !local.pending.is_empty() {
+                            notice =
+                                "Save the pending result with F9 before starting another test."
+                                    .into();
+                            continue;
+                        }
                         host.restart(key.code == KeyCode::F(6), now, date())?;
                         local.restarted();
                         screen = Screen::Test;
                         notice.clear();
                     }
                     KeyCode::Enter if screen == Screen::Settings => {
+                        if !local.pending.is_empty() {
+                            notice =
+                                "Save the pending result with F9 before starting another test."
+                                    .into();
+                            continue;
+                        }
                         if setup.config.mode == "custom" && setup.text.trim().is_empty() {
                             screen = Screen::Editor;
                         } else {

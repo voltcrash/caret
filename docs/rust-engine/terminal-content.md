@@ -15,9 +15,12 @@ settings are rejected using native metadata.
 Custom text: `--text 'one two three'` or `--file practice.txt` (UTF-8, ≤8 MiB).
 This implies custom mode unless another mode is explicitly supplied (an error).
 `--custom-order repeat|random|shuffle`, `--custom-limit word|time|section`, and
-`--custom-length N` feed the core's custom content contract. Zero means infinite
-where defined by core. Literal spaces separate custom sections; Tab/LF remain
-in sections. Native rules retain all normalization and scoring responsibility.
+`--custom-length N` feed the core's custom content contract. Default order is repeat;
+default word limit covers all supplied words. An omitted time length uses core's
+default time. Explicit zero retains native infinite behavior. Zero means infinite
+where defined by core. Literal spaces separate supplied entries. CRLF/CR decode as LF; LF terminates
+an entry so Enter commits it. Tab and Unicode text retain their literal units.
+No NFC rewrite is imposed by the terminal adapter. Native rules retain all normalization and scoring responsibility.
 
 Extend offline content with `--pack pack.json`. Version 1:
 

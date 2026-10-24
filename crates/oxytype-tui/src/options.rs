@@ -39,10 +39,10 @@ pub struct Cli {
     pub file: Option<PathBuf>,
     #[arg(long, default_value = "repeat")]
     pub custom_order: String,
-    #[arg(long, default_value = "section")]
+    #[arg(long, default_value = "word")]
     pub custom_limit: String,
-    #[arg(long, default_value_t = 1.0)]
-    pub custom_length: f64,
+    #[arg(long)]
+    pub custom_length: Option<f64>,
     /// Comma-separated quote groups: 0 short, 1 medium, 2 long, 3 very long.
     #[arg(long, value_delimiter = ',')]
     pub quote_length: Option<Vec<i32>>,
@@ -135,7 +135,7 @@ impl Cli {
         }
         let custom = text
             .map(|text| {
-                custom_text(
+                custom_text_auto(
                     &text,
                     &self.custom_order,
                     &self.custom_limit,
@@ -148,7 +148,8 @@ impl Cli {
     }
 }
 pub fn custom_text(text: &str, order: &str, limit: &str, value: f64) -> Result<CustomText> {
-    safe_text(text)?;
+    let text = crate::content::line_endings(text);
+    safe_text(&text)?;
     if text.trim().is_empty() {
         return Err("Custom text is empty".into());
     }
@@ -157,6 +158,9 @@ pub fn custom_text(text: &str, order: &str, limit: &str, value: f64) -> Result<C
     {
         return Err("Invalid custom order/limit".into());
     }
+    // A terminal line ending is a commit separator. Keep it at the end of its
+    // supplied word, rather than hiding following text inside an untypable word.
+    let text = text.replace('\n', "\n ");
     let custom = CustomText {
         text: text
             .split(' ')
@@ -170,6 +174,23 @@ pub fn custom_text(text: &str, order: &str, limit: &str, value: f64) -> Result<C
         },
         pipe_delimiter: false,
     };
+    typing_engine::validation::custom(&custom)?;
+    Ok(custom)
+}
+pub fn custom_text_auto(
+    text: &str,
+    order: &str,
+    limit: &str,
+    value: Option<f64>,
+) -> Result<CustomText> {
+    let mut custom = custom_text(text, order, limit, 0.0)?;
+    custom.limit.value = value.unwrap_or_else(|| {
+        if limit == "time" {
+            Config::default().time
+        } else {
+            custom.text.len() as f64
+        }
+    });
     typing_engine::validation::custom(&custom)?;
     Ok(custom)
 }

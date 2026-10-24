@@ -18,7 +18,9 @@ fn settings_edit_drafts_and_apply_the_same_native_configuration() {
     setup.text = "one two".into();
     setup.cycle_order();
     setup.cycle_limit();
-    setup.length = 7.0;
+    assert_eq!(setup.limit, "time");
+    setup.limit = "word".into();
+    setup.length = Some(7.0);
     assert_eq!(setup.build(&content, 42).unwrap().words.len(), 7);
     setup.config.funbox = vec!["tts".into()];
     assert!(setup.build(&content, 42).is_err());
