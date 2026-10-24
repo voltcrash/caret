@@ -107,6 +107,53 @@ available for an explicit retry with the same approval idempotency key.
 
 ## Database capacity and recovery
 
+### Read replication
+
+Both deployment commands enable D1 global read replication (`mode: auto`)
+and verify the database identity and persisted setting before uploading the
+Worker. This includes automatic production releases. The operation is
+idempotent and reads the `DB` binding from the matching Wrangler config.
+The deployment token needs D1 read/edit permissions. Missing credentials,
+API errors or failed verification stop deployment.
+
+To enable or verify independently with `CLOUDFLARE_API_TOKEN` configured:
+
+```sh
+vp run --filter @oxytype/frontend db:replication:staging
+vp run --filter @oxytype/frontend db:replication:production
+vp exec wrangler d1 info oxytype-production --config frontend/wrangler.production.json --json
+```
+
+No schema migration is needed. Enabling the database setting alone does not
+route existing non-session queries to replicas: deploy the session-enabled
+Worker too. All application Drizzle queries, raw SQL and atomic batches share
+one session per fetch/Cron invocation. `first-primary` establishes a fresh
+baseline, then replicas may handle subsequent reads without losing that
+invocation's writes. A new invocation starts fresh on the primary; no client
+bookmark storage or cookie is required. Single-query invocations still use
+the primary. Auth checks and optimistic mutation snapshots always read the
+primary, including retries after a failed version guard.
+
+Cloudflare manages replica locations. Writes still run on the primary, so
+replication improves read latency/throughput, not write capacity. Replicas
+have no additional storage/compute charge beyond normal D1 query billing.
+Local Miniflare tests cover session routing and consistency plumbing; they
+do not simulate remote replica lag or prove geographic latency improvements.
+
+After deployment, inspect D1 dashboard metrics by serving region. Raw D1
+results expose `meta.served_by_region` and `meta.served_by_primary`; these
+are undefined locally. Confirm replica traffic under a multi-query workload.
+
+To roll back routing, disable Read Replication in the database's Cloudflare
+Settings (`read_replication.mode: disabled` via API). Cloudflare says stopping
+replica traffic can take up to 24 hours. Sessions continue working with
+replication disabled. Deployment commands re-enable replication, so remove
+their `db:replication:*` steps before deploying a lasting disablement.
+
+Reference: [Cloudflare global read replication](https://developers.cloudflare.com/d1/best-practices/read-replication/).
+
+### Capacity and migrations
+
 Measure DB+indexes against the account tier and projected growth; benchmark
 result saves, exact rate counters and ranking reads/rebuilds. Large
 history may need external SQL, partitioning or R2 archival.

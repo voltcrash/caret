@@ -2,6 +2,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { drizzle } from "drizzle-orm/d1";
 import type {
   D1Database,
+  D1DatabaseSession,
   ExecutionContext,
   Fetcher,
   KVNamespace,
@@ -37,6 +38,8 @@ export type Runtime = {
   configuration?: import("@oxytype/schemas/configuration").Configuration;
   env: WorkerEnv;
   db: ReturnType<typeof drizzle>;
+  session: D1DatabaseSession;
+  primaryDb: ReturnType<typeof drizzle>;
   execution?: Pick<ExecutionContext, "waitUntil">;
 };
 
@@ -48,7 +51,19 @@ export function withRuntime<T>(
   fn: () => T,
   execution?: Runtime["execution"],
 ): T {
-  return storage.run({ env, db: drizzle(env.DB), execution }, fn);
+  // Start fresh on every invocation; subsequent reads may use replicas without
+  // going backwards or missing this invocation's writes. Never share sessions.
+  const session = env.DB.withSession("first-primary");
+  return storage.run(
+    {
+      env,
+      session,
+      db: drizzle(session),
+      primaryDb: drizzle(env.DB),
+      execution,
+    },
+    fn,
+  );
 }
 
 export function runtime(): Runtime {
