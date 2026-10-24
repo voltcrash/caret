@@ -84,7 +84,10 @@ def package(target):
     tag = os.environ.get("GITHUB_REF_NAME", "")
     if os.environ.get("GITHUB_REF_TYPE") == "tag" and tag != f"terminal-v{version()}":
         raise RuntimeError("Terminal tag must match Cargo workspace version")
-    run(["cargo", "build", "--locked", "--release", "-p", "oxytype-tui", "--target", target])
+    revision = os.environ.get("OXYTYPE_BUILD_REV") or capture(["git","rev-parse","HEAD"]).strip()
+    if revision != capture(["git","rev-parse","HEAD"]).strip(): raise RuntimeError("Archive build revision must match checked-out source")
+    run(["git","diff","--quiet","HEAD","--"])
+    run(["cargo", "build", "--locked", "--release", "-p", "oxytype-tui", "--target", target],env=dict(os.environ,OXYTYPE_BUILD_REV=revision))
     name = f"oxytype-v{version()}-{target}"
     directory = OUT / name
     if directory.exists(): shutil.rmtree(directory)
@@ -93,7 +96,6 @@ def package(target):
     shutil.copy2(ROOT / "target" / target / "release" / binary, directory / binary)
     for source, dest in [("LICENSE","LICENSE"),("crates/oxytype-tui/assets/ATTRIBUTION.md","ATTRIBUTION.md"),("docs/rust-engine/terminal.md","README.md"),("docs/rust-engine/terminal-content.md","terminal-content.md"),("docs/rust-engine/terminal-storage.md","terminal-storage.md")]:
         shutil.copy2(ROOT / source,directory / dest)
-    revision = os.environ.get("OXYTYPE_BUILD_REV") or capture(["git","rev-parse","HEAD"]).strip()
     (directory / "SOURCE.md").write_text(f"Source revision: {revision}\n\nGPL-3.0-only corresponding source is the matching oxytype-v{version()}-source.tar.gz release asset, including locked vendored dependencies.\n\nRepository: https://github.com/voltcrash/oxytype/tree/{revision}\n")
     licenses(directory,target)
     output = archive(directory,"windows" in target)
