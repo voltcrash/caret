@@ -45,7 +45,8 @@ vi.mock("../../../src/features/typing/runtime/session.client", () => ({
     command: mocks.sessionCommand,
   }),
 }));
-vi.mock("../../../src/ts/utils/json-data", () => ({
+vi.mock("../../../src/ts/utils/json-data", async (original) => ({
+  ...(await original<typeof import("../../../src/ts/utils/json-data")>()),
   getLanguage: mocks.getLanguage,
   cachedFetchJson: mocks.cachedFetchJson,
 }));
@@ -56,7 +57,7 @@ import { getContentHost } from "../../../src/features/typing/runtime/content.cli
 import {
   createTestApplication,
   releaseTestApplication,
-} from "../../__harness__/mock-application";
+} from "../../__harness__/test-application";
 releaseTestApplication();
 let dispose: () => void;
 const language = { name: "english", words: ["a"], bcp47: "en" } as const;

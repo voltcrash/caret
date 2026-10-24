@@ -6,8 +6,14 @@ const requests = vi.hoisted(() => ({
   save: vi.fn(async () => undefined),
 }));
 
-vi.mock("../../src/ts/config/sync", () => ({ saveConfig: requests.save }));
-vi.mock("../../src/ts/states/server-configuration", () => ({
+vi.mock("../../src/ts/config/sync", async (original) => ({
+  ...(await original<typeof import("../../src/ts/config/sync")>()),
+  saveConfig: requests.save,
+}));
+vi.mock("../../src/ts/states/server-configuration", async (original) => ({
+  ...(await original<
+    typeof import("../../src/ts/states/server-configuration")
+  >()),
   sync: async () => undefined,
 }));
 

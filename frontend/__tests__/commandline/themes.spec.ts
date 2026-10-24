@@ -30,7 +30,10 @@ import { getTheme } from "../../src/ts/states/theme";
 import * as Arrays from "../../src/ts/utils/arrays";
 
 vi.mock("../../src/features/typing/runtime/focus", () => ({ set: vi.fn() }));
-vi.mock("../../src/ts/ui", () => ({ clearFontPreview: vi.fn() }));
+vi.mock("../../src/ts/ui", async (original) => ({
+  ...(await original<typeof import("../../src/ts/ui")>()),
+  clearFontPreview: vi.fn(),
+}));
 
 describe("theme picker selection", () => {
   let dispose: () => void;
@@ -198,3 +201,6 @@ describe("theme picker selection", () => {
     }
   });
 });
+
+// Browser module exports are sealed; register spies before imports run.
+vi.mock("../../src/ts/utils/arrays", { spy: true });

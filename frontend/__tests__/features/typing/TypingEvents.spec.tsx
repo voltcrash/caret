@@ -45,6 +45,11 @@ vi.mock("../../../src/ts/config/store", () => ({
     };
     return () => storedConfig;
   })(),
+  getConfig: {
+    get showOutOfFocusWarning() {
+      return state.warning;
+    },
+  },
 }));
 vi.mock("../../../src/features/typing/scope", () => ({
   isTypingRouteActive: () => state.route,
