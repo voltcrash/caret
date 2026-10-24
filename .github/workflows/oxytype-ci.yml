@@ -283,9 +283,21 @@ jobs:
       - name: Set up Vite+ and install dependencies
         uses: ./.github/actions/setup
 
+      - name: Install Chromium for frontend component tests
+        run: vp -C frontend exec playwright install --with-deps --only-shell chromium
+
       - name: Test
         working-directory: frontend
         run: vp test run --shard=${{ matrix.shard }}/2
+
+      - name: Upload frontend browser failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: frontend-browser-failures-${{ matrix.shard }}
+          path: frontend/.vitest/attachments
+          retention-days: 7
+          if-no-files-found: ignore
 
   # SSR and browser shards consume the exact same production Worker.
   start-build:
