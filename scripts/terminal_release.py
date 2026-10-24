@@ -171,5 +171,7 @@ if __name__=="__main__":
     elif args.command=="release-gate": gate()
     elif args.command=="checksums": checksums(args.archive.resolve())
     else:
-        if args.archive is None: parser.error("--archive required")
+        if args.archive is None:
+            if args.target not in TARGETS: parser.error("--archive or a supported --target required")
+            args.archive=OUT / (f"oxytype-v{version()}-{args.target}"+(".zip" if "windows" in args.target else ".tar.gz"))
         smoke(args.archive.resolve())

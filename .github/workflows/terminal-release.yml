@@ -75,10 +75,7 @@ jobs:
       - name: Build licensed versioned archive
         run: vp run terminal:package -- --target ${{ matrix.target }}
       - name: Verify extracted binary without runtime tools or checkout files
-        shell: bash
-        run: |
-          archive=$(vp exec find target/terminal-release -maxdepth 1 -type f \( -name '*-${{ matrix.target }}.tar.gz' -o -name '*-${{ matrix.target }}.zip' \))
-          vp run terminal:archive-smoke -- --archive "$archive"
+        run: vp run terminal:archive-smoke -- --target ${{ matrix.target }}
       - name: Upload candidate archives and checksums
         uses: actions/upload-artifact@v7.0.2
         with:
