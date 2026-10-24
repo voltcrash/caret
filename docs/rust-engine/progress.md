@@ -12,9 +12,13 @@ empty commits to inflate count. Do not publish production or releases implicitly
 
 ## Current position
 
-Stage 1 and Stage 2 gates passed. Stage 3 begins next on a branch stacked above `stack/rust-engine-website`. Read root AGENTS.md and the complete migration
-plan before edits. Installed workspace dependencies with frozen lockfile.
-Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen oracle and mismatch detection. Existing website engine remains authoritative until Stage 2.
+Stages 1/2 merged into main (#184/#185). PR #186 now targets main. Owner revised
+terminal scope to Linux/macOS only and explicitly requested merge readiness with
+macOS manual verification after merge. Windows targets removed; no contributor
+or external-machine requirement blocks merge. Real Linux Kitty/Alacritty/Ghostty
+regressions, four-target CI and full website CI pass at runtime source 6f6b25f7f. Release publication remains a
+separate authorized action; pending manual checks are never fabricated.
+Earlier entries below are chronological evidence, superseded where scope changed.
 
 | Phase | Status | Evidence / remaining gate |
 | --- | --- | --- |
@@ -24,14 +28,18 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | 1.4 Input / lifecycle / timing | Complete | Native/built-Wasm traces, observed browser input, delayed completion, stale sources, reset/restart and 12,800 randomized commands. |
 | 1.5 Generation / configuration | Complete | 61 original snapshots; section/fractional/live generation; all funbox policies; quote refresh RNG; typed recovery and bounded malformed content. |
 | 1.6 Events / results / replay | Complete | Eight exact original CompletedEvents/hashes/schema/backend outcomes, replay/seek, Unicode history, 1,387 live prefixes and malformed-log validation. |
-| 1.7 Binding / engine gate | Complete | 24 built-browser cases, unchanged results/hashes, frozen payload/performance limits, fresh production build/typechecks; CI engine/native/Wasm and quality/package/SSR/delivery/update jobs pass at e7b7ad864. Existing website browser shards still running when this record was written. |
+| 1.7 Binding / engine gate | Complete | Native/browser frozen parity, payload/performance, fresh builds/types and full CI passed; final Stage 1 CI 39932792599. |
 | 2.1 Browser owner / loading | Complete | App-owned loader/content/session resource; 51 unit cases; actual Cloudflare delayed-download/503/retry browser checks pass; server bundles contain no Wasm initializer. |
 | 2.2 Input / timer projection | Complete | Native website loop; 1,575 unit cases, 19 built typing parity cases and 8 loading/input/IME/commit browser checks pass. |
 | 2.3 Generation / settings consumers | Complete | Native generation/catalog/settings/restart/practice; source cancellation/recovery; SSR-safe settings extraction; 1,577 unit tests and built-browser gates pass. |
 | 2.4 Results / replay | Complete | Native validity/progress/history/charts/inspector/playback; unit/JSX, frozen parity, save retry and real Start/D1 persistence pass. |
 | 2.5 Delivery / performance | Complete | Fresh Cloudflare build/preview/types, 86 Start checks, update/rollback, full website and controlled Wasm budgets pass. |
 | 2.6 TypeScript retirement | Complete | Legacy package removed; full native/Wasm/website/quality CI, fresh build/types and frozen performance gates pass. |
-| 3.1–3.5 Terminal | Pending | Requires Stage 2 gate. |
+| 3.1 Terminal shell | Complete | Native smoke/score test; real PTY typing, finish/restart, resize, error/panic, SIGTERM and suspend/resume pass. |
+| 3.2 Offline content | Complete | Bundled words/eight original quotes; five modes, CLI/settings/editor, bounded v1 packs; native/full-fixture and actual PTY checks pass. |
+| 3.3 Input / Unicode | Complete for revised merge scope | Real Kitty 0.32.2/0.49.2, Alacritty 0.17.0 and Ghostty 1.3.1 auto/basic pass; native UTF-16/TestBackend/wire/PTY pass. Mac manual deferred by owner. |
+| 3.4 Settings / history | Complete | SQLite reopen/concurrency/corruption/retry/export and actual history/replay PTY pass. |
+| 3.5 Packaging / release | Merge gates complete; publication gated | Four Linux/macOS targets, two real emulator jobs/source pass CI 40085257392; full CI 40085257400 passes. Hash/source pairing verified. Owner Mac manual record remains pending only for publication. |
 
 ## Verification log
 
@@ -64,13 +72,19 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 
 ## Blockers
 
-None established. Missing verification is pending work, not a passed gate.
+No external blocker under the owner's revised merge requirements. macOS manual
+checks will be performed by the owner after merge; Windows is out of scope.
+All available merge checks pass at runtime source 6f6b25f7f. macOS manual
+verification remains pending for later publication, owned by the user after
+merge. No external contributor, Windows machine or physical Linux tester is
+required by the revised merge scope. No manual check is falsely marked passed.
 
 ## Resume
 
-Read this file, inventory, contract, decisions, then `vp exec git status --short`.
-Continue the first incomplete gate. Record commands and actual outcomes here;
-do not rerun completed checks without a new reason.
+Implementation and verification are complete for the revised merge scope.
+Only final evidence commits/PR readiness and their CI remain to settle. Do not
+redo completed engine/website/native work. After merge, follow terminal-macos-check.md;
+publication still requires its actual record and separately authorized version tag.
 
 ## Latest implementation evidence
 
@@ -533,3 +547,279 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
   claimed. Local matched-artifact rollback/offline/save checks pass.
 - Continue Stage 3 immediately. Native Ratatui implementation, capabilities, local
   history and platform release gates remain required; do not stop at this stage.
+
+## Phase 3.1 gate passed
+
+- `cd94afa0c`: native Ratatui shell, direct owned engine sessions and display deltas;
+  input timestamps captured after terminal read using `Instant`. No physical-key
+  events or durations invented. `92c1a5203`: vp terminal tasks and real PTY checks.
+- `vp run terminal:test`: native score/projection/repeat regression passes.
+  `vp run terminal:dev -- --smoke-test`: deterministic synthetic smoke passes,
+  never persisted. `vp exec cargo clippy -p oxytype-tui --all-targets -- -D warnings`: pass.
+- `vp run terminal:test:pty`: actual POSIX PTY passes typing/finish/restart/resize,
+  normal quit, injected error/panic, SIGTERM and suspend/resume. Raw/canonical
+  mode and alternate screen restored. Process-group suspend covers vp launcher.
+- CLI help/version pass without a terminal; interactive invocation without a
+  terminal fails clearly (exit 1). Idle loop polls and redraws only when dirty;
+  active timer draws at 10 Hz. Minimum size is 60×18.
+- This is the shell gate only. Current settings/history are temporary in-memory
+  screens. Full offline content, input/rendering, durable storage and packaging
+  remain required. Linux PTY coverage does not claim real macOS/Windows hardware.
+
+## Phase 3.2 gate passed
+
+- Bundled exact 200-word English asset plus eight original GPL-3.0-only practice
+  passages spanning all four native quote groups. Attribution/source hash retained;
+  binary embeds content. No first-run download. Local UTF-8 v1 packs/text files
+  bounded at 8 MiB; invalid encoding, controls, metadata, duplicate IDs and unknown
+  versions rejected. No unavailable-language fallback.
+- Time/words/quote/custom/zen, custom ordering/limits, punctuation/numbers and
+  applicable difficulty/error settings use native Config/generation/session/stats.
+  CLI and settings draft share validation. Private editor accepts setup paste;
+  unsupported web hooks and conflicting forced settings rejected explicitly.
+- `vp run engine:test`: full native workspace/frozen-fixture suite passes unchanged.
+  Six terminal integration tests pass (all modes/groups/transforms, exact known
+  score/repeat, invalid packs/options, draft application). Clippy passes.
+- `vp run terminal:test:pty`: five actual offline modes, settings/editor/paste and
+  lifecycle checks pass. Test reader now reconstructs incremental VT cells because
+  unchanged characters are not re-emitted by Ratatui; no app behavior weakened.
+- Accurate grapheme/cell rendering, negotiated capabilities and durable history
+  remain next. No native physical-key timing is inferred from committed input.
+
+## Phase 3.3 implementation / Linux checks
+
+- Grapheme Backspace supplies observed UTF-16 text to native deletion; releases
+  never become input and each repeat delivery commits once. Native rules retain
+  eligibility/progression. Isolated-surrogate generated targets fail explicitly.
+- Cell-aware target rendering handles combining marks, CJK, emoji, visible Tab/LF,
+  wrapping, caret scrolling and color-independent underlined error notice. Input
+  disabled below minimum dimensions; native clock continues.
+- Auto keyboard negotiation runs before event polling. Owned enhanced flags are
+  popped on exit/error/panic/suspend; basic mode avoids queries. Negotiated event
+  support and observed releases/repeats are distinct from physical timing, which
+  remains unavailable. F8 provides finish without modified Enter support.
+- `vp run terminal:test:pty` passes five modes/editor/lifecycle plus simulated
+  enhanced negotiation/press/repeat/release/cleanup. `cargo test -p oxytype-tui`
+  (via vp) passes nine integration tests, including Ratatui TestBackend Unicode
+  cells/caret/extra emoji and UTF-16 deletion. Clippy passes.
+- Real macOS/Windows Terminal and enhanced hardware-terminal manual matrix is
+  unperformed, not a passed acceptance gate. Asked for machine/test access;
+  continue independent durable history and packaging work while awaiting it.
+
+## Phase 3.4 gate passed
+
+- SQLite settings/history with OS directories and explicit overrides, WAL/FULL
+  transactions, settings revision conflict detection, append-only UUID results and
+  idempotent retry. No network/accounts/tokens. New Unix data is private.
+- Native summaries/config/content identity/seed/quote/timestamps/engine versions,
+  capabilities and native validity stored. Unavailable physical timing fields null.
+  Raw custom text/logs absent by default; explicit replay opt-in warns in UI.
+- History pages/filter/details/PBs/export use stored summaries; native PB validity
+  and funbox metadata preserved. Compatible recorded replay steps/seeks call core.
+  Unknown record fields/versions export unchanged, with no score recomputation.
+- Fourteen terminal integration tests pass: reopen, concurrent instances, malformed
+  and future formats, dropped transaction, write-lock queue retry, native PB value,
+  no-clobber export, privacy defaults and replay compatibility. Clippy passes.
+- Actual PTY passes saved-result/history/export and opted-in replay stepping, plus
+  prior input/settings/lifecycle cases. PTY profiles isolated in temporary dirs.
+  Readable themes, reduced redraws and color-independent errors implemented.
+- Private custom text is intentionally not restored from settings; a saved custom
+  mode requires new --text/--file (or choose --mode words and F4 editor). Local
+  packs must be explicitly supplied again. No silent content substitution.
+- Platform/manual terminal gate remains unperformed; continue packaging.
+
+## Phase 3.5 verification checkpoint (platform gate still active)
+
+- Source `ba66f8ebb`: isolated fresh checkout `/tmp/oxytype-stage3-clean`, empty
+  target/generated/dist, frozen install, native tests, actual Cloudflare build,
+  Wrangler dry-run and all nine workspace typechecks pass. Whole-repo format/Knip
+  pass. Full website/native/Wasm CI `40064612700` succeeds at this source.
+- Wasm remains 765,852 bytes, exact SHA-256 matches current/fresh checkout. Shared
+  core/browser runtime is unchanged by terminal implementation; original web
+  performance budgets and references remain untouched.
+- Native release tooling produces GPL/attribution/third-party-notice archives and
+  checksums; Linux ARM64 local archive 1.6 MiB passes installed binary checks with
+  empty PATH/cwd, bundled synthetic modes, storage/export and release PTY. Host
+  GNU libc 2.43; do not infer lower compatibility from that local check.
+- `vp run terminal:source`: 69 MiB corresponding-source archive, locked vendored
+  dependencies, relative Cargo vendor config and separate offline native compile
+  pass. Pinned upstream ts-rs LICENSE supplies text omitted by its crates.io
+  packages; revision/license/hash mechanically checked. Missing notices fail.
+- Five native jobs plus source job added separately from website CI. Narrowed
+  Rust runtime paths; 64 routing checks pass, including terminal-only independence.
+  PR #186 draft: https://github.com/voltcrash/oxytype/pull/186, stacked on #185.
+- Initial platform CI `40064530451`: both Linux archives/source pass. Windows
+  found an unused Unix-only suspend parameter; fixed. macOS PTY output required
+  continuous draining; then Darwin revoked the PTY after session-leader exit.
+  Harness now retains a shell-like session leader to inspect actual cleanup;
+  Linux revised lifecycle checks pass. macOS rerun is required, not claimed.
+- Additional terminal review fixed full-passage custom defaults (previous section-1
+  default stopped after first word), CRLF/LF entry preparation, native stopped
+  letter visual feedback and lossless deletion of partial UTF-16 feedback. Tests
+  require all multiline/emoji text, not only completion. No shared fixture changed.
+- Nineteen terminal integration tests pass (plus one ignored subprocess helper
+  explicitly launched/killed by its parent test). Actual process termination during
+  a write preserves committed history. Clippy passes. Pending writes block new
+  sessions until retry; unknown stored formats are labelled without validation
+  claims. Latest native platform rerun follows the PTY keeper fix.
+- Real Linux enhanced/macOS/Windows Terminal manual checks remain unavailable.
+  Requested access/test records asynchronously; no answer yet. Publish workflow
+  refuses the pending manual matrix. No release tag/publication or production
+  deployment performed. Continue all available checks before stopping.
+
+## Latest terminal portability checkpoint
+
+- Terminal runtime source is implemented through all modes, Unicode/input, local
+  history/export/replay and packaging. Twenty native integration tests pass locally
+  (one intentionally ignored helper is launched/killed by the durability parent).
+  Native Clippy, format, package routing and ZIP regression checks pass.
+- Native/core tests also pass fully offline from the extracted vendored source at
+  `1495a30fc`, using a fresh separate target directory. Current local Linux archive
+  matches its SOURCE revision and passes empty-PATH install plus full release PTY.
+- Wasm matches the Stage 2 clean checkout byte-for-byte: SHA-256
+  `4b1a0c8d5d006b367888b7cf4c76b104ab5037a7473ff7b46983a9109aba9e3d`,
+  765,852 raw / 303,619 Node gzip6 bytes. No shared runtime/fixture/budget changes.
+- Platform CI `40065958315`: Linux x86/ARM and both macOS candidates pass archive
+  and PTY checks; Windows native tests/build pass, ZIP failed on registry files
+  predating 1980. ZIP now clamps only unsupported timestamps; real byte/checksum
+  regression passes. Pinned license EOL and source-provenance issues also fixed.
+- Added portable PTY integration to exercise native event decoding on all targets,
+  including actual Windows ConPTY, with edits, known native accuracy, saved history
+  and no invented physical telemetry. Linux passes. Windows first run waited for
+  ConPTY's inherited-cursor query; test emulator now answers DSR from actual parsed
+  screen coordinates. This is protocol handling, not fabricated key/timing data.
+- Latest platform rerun includes the ConPTY query fix; check GitHub runs for current
+  `stack/rust-engine-terminal` head. Shared fixtures/native terminal/packaging steps
+  are separated for useful diagnostics. Do not skip failed checks.
+- Manual Linux enhanced/macOS emulator/Windows Terminal records remain pending;
+  no machine/test record supplied to the asynchronous question yet. Publication
+  gate correctly rejects the pending matrix. PR #186 stays draft.
+
+
+## Final automated verification / remaining external gate
+
+- Runtime source `5703c1f10bd949478d3801d027965ac2214f3738` passes full
+  [website/native/Wasm CI 40068412135](https://github.com/voltcrash/oxytype/actions/runs/40068412135):
+  frozen parity, frontend/backend/packages, lint/types/Knip, actual Cloudflare
+  SSR/workerd/delivery, all four browser shards and updates/rollback. No frozen
+  reference, backend acceptance rule or performance budget changed.
+- [Terminal CI 40068412137](https://github.com/voltcrash/oxytype/actions/runs/40068412137)
+  succeeds on Linux x86_64/ARM64, macOS Intel/Apple Silicon and Windows x86_64.
+  All five run native format/Clippy/core fixtures, 21 terminal integration tests,
+  archive portability regression, native compilation and extracted archive smoke
+  without runtime tools/source files. The one ignored durability helper is
+  explicitly launched and killed by its parent test, not omitted coverage.
+- Linux/macOS jobs additionally pass debug and extracted-release POSIX PTY checks
+  (input, five modes, paste policy, resize, history/replay, cleanup and supported
+  signals/suspend). Windows passes actual ConPTY typing/editing/history/native
+  accuracy and quit. ConPTY cursor replies must be one write_all call; fragmented
+  formatted writes caused the earlier harness stall. No physical timing invented.
+- Corresponding-source job passes vendoring and a separate offline locked build.
+  Downloaded all six archives, verified every sidecar hash and all five binary
+  SOURCE.md revisions against source SOURCE_REVISION; publisher checksum collector
+  passes. Exact sizes/hashes and GitHub PR merge revision are recorded in
+  terminal-artifacts.json. This immutable record describes CI candidates, not a
+  published release; subsequent documentation commits do not replace it.
+- Existing fresh-checkout native/Cloudflare build, Wrangler dry-run, all nine
+  typechecks and vendored full offline tests remain valid. Browser Wasm remains
+  exactly Stage 2: 765,852 raw / 303,619 Node gzip6 bytes, SHA-256
+  `4b1a0c8d5d006b367888b7cf4c76b104ab5037a7473ff7b46983a9109aba9e3d`.
+- User confirmed no other test machine is available. Real Linux enhanced,
+  macOS emulator and Windows Terminal font/IME/rapid-input/scrollback verification
+  remains unperformed. `vp run terminal:release-gate` correctly exits 1 and names
+  linuxEnhanced, macOS, windowsTerminal. terminal-verification.json stays pending;
+  no waiver, release tag, artifact publication or production deployment made.
+- Review stack: [#184 engine](https://github.com/voltcrash/oxytype/pull/184) →
+  [#185 website](https://github.com/voltcrash/oxytype/pull/185) →
+  [#186 terminal](https://github.com/voltcrash/oxytype/pull/186). First two ready;
+  terminal draft solely for the unmet real-terminal gate. All available independent
+  work is complete; resume that gate when actual machine access/records exist.
+
+
+## Owner-directed merge readiness follow-up
+
+- PRs #184/#185 merged; integrated origin/main with a merge commit and retargeted
+  PR #186 to main, preserving all coherent implementation commits.
+- Owner removed Windows support entirely. Four release targets now: Linux GNU
+  x86_64/ARM64, macOS Intel/Apple Silicon. Removed Windows archive/CI machinery;
+  actual tar integrity, unsupported-target and four-binary/source checks pass.
+- Owner will check macOS after merge. Original external-contributor/manual
+  pre-merge gate is superseded by this explicit instruction. Manual evidence is
+  still pending; release publication is neither requested nor performed.
+- Extended real PTY suite passes CSI-u shifted/Unicode/modifier/repeat/release,
+  fragmented CSI payload/UTF-8, unknown TERM fallback, and enhanced error/panic/
+  signal/suspend cleanup. Query simulation now handles every resume handshake.
+  The test screen reader correctly joins combining marks and wide continuations.
+- Investigated a bare ESC split from its CSI introducer: Crossterm treats an
+  isolated ESC as Esc immediately. Fragmentation checks retain the atomic CSI
+  introducer and split its payload/UTF-8; no SSH/transport-wide robustness claim.
+- Real Kitty 0.49.2/Alacritty 0.17.0/Ghostty 1.3.1 launch on Linux. Added a private
+  Xvfb/XTest harness with untouched emulator input/query bytes, native results,
+  Unicode, repeats, resize/history/editor/replay and terminal cleanup assertions.
+  Kitty auto/basic pass; Alacritty follow-up still under investigation. Do not
+  mark the new emulator/CI gates passed until final runs complete.
+
+
+## Linux emulator acceptance checkpoint (revised scope)
+
+- Runtime/harness `6f6b25f7f4c2dc63958b3c3ccfa84d47676a4f1f`: all eight real
+  auto/basic runs pass on Kitty 0.32.2 and 0.49.2, Alacritty 0.17.0 and Ghostty
+  1.3.1. Exact binary version/hash, host, capabilities, Unicode fixture and repeat
+  deliveries recorded in terminal-emulators.json. Each run uses an isolated Xvfb
+  server and fresh app/emulator config; no user windows or profiles are targeted.
+- Older Kitty reproduced two legacy Backspace deliveries per action with release
+  reporting enabled. Fixed native auto negotiation to request disambiguation only
+  (flag 1), preserving ordinary committed UTF-8. Real old/new Kitty now pass with
+  one grapheme deleted. No scoring/input rules moved out of shared Rust core.
+- All runs verify actual native result/history/replay/editor flow, 87.5% edited
+  custom accuracy, resize blocking, held repeat deliveries, unavailable physical
+  timing, raw mode restored and the real terminal's keyboard query returns zero
+  after exit. Release/repeat kinds remain false when unobserved; explicit CSI-u
+  release/repeat/fallback/fragmented-payload behavior is still covered by PTY tests.
+- Harness fixes: Xvfb -noreset retains the preloaded Unicode keymap; direct XTest
+  function/Unicode codes avoid xdotool aliases; await mapped/visible focus before
+  handshake. Unknown multimedia scancodes, dynamic keymap races and async resize
+  were test-driver problems, not evidence of app typing support or failures.
+- Ghostty's default Ctrl+Enter is intercepted for fullscreen; F8 is the portable
+  finish action. GTK basic standalone combining-key input can remain preedit;
+  its basic case uses committed é. Enhanced cases verify combining clusters;
+  hardware/IME/font appearance remains unperformed and is not falsely certified.
+- Current local native 21 integration tests, engine Clippy/format, all shared core
+  tests, enhanced lifecycle PTY, four release-tool/gate regressions and task-wrapper
+  diagnostics pass. `terminal:release-gate` correctly fails only on pending macOS.
+- CI 40085257392 (four native targets, two emulator jobs, source) and full website
+  CI 40085257400 started at this source. Finish these checks and fix failures;
+  then record packaging evidence and make #186 ready. Earlier CI failures were
+  investigated: missing Alacritty XKB runtime, map-before-focus race and old Kitty
+  key-up duplication. No check skipped or fixture/budget changed to pass.
+
+
+## Current-scope merge acceptance
+
+- Runtime/harness source `6f6b25f7f4c2dc63958b3c3ccfa84d47676a4f1f`:
+  [native CI 40085257392](https://github.com/voltcrash/oxytype/actions/runs/40085257392)
+  passes all four Linux/macOS native format/Clippy/shared fixtures/terminal tests,
+  debug and extracted-release PTY checks, packaging and empty-PATH install smoke.
+  Both real Linux emulator jobs (Kitty 0.32.2 and Alacritty 0.13.2 auto/basic) and
+  vendored corresponding-source offline build pass. Publication job is skipped
+  because no authorized tag was pushed.
+- [Full website CI 40085257400](https://github.com/voltcrash/oxytype/actions/runs/40085257400)
+  succeeds: native/Wasm parity, frontend/backend/packages, lint/types/Knip,
+  Cloudflare SSR/workerd/delivery, all four browser shards and update/rollback.
+  Final local full format (2,753 files) and Knip pass. Wasm is byte-identical to
+  Stage 2: 765,852 raw / 303,619 Node gzip6 bytes, SHA-256
+  `4b1a0c8d5d006b367888b7cf4c76b104ab5037a7473ff7b46983a9109aba9e3d`.
+- Downloaded all four native archives plus source. Every sidecar hash and all
+  binary/source revision pairs match tested GitHub merge revision
+  `1258809f217c112e5566f33e803b9a19d6b6aefb`; actual publisher checksum collector
+  succeeds. terminal-artifacts.json records exact five candidates. Prior Windows
+  evidence is retained unchanged under archive/terminal-artifacts-40068412137.json,
+  separate from current supported targets. No release published.
+- terminal-emulators.json retains eight exact local runs plus four CI runs,
+  including binary version/hash and real observed capabilities. Native key-up
+  fields stay unavailable; explicit release/repeat packet regressions still pass.
+- Stage 3 satisfies the owner's revised merge scope. Physical macOS/IME/font
+  checks are explicitly unperformed; owner will perform them after merge using
+  terminal-macos-check.md. Linux emulator CI replaces the external tester gate;
+  macOS is the sole manual publication gate. No requested production deployment,
+  release publication, account or cloud sync added.

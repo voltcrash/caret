@@ -309,3 +309,13 @@ it("builds the production Worker once and shares it with SSR and browser shards"
   }
   expect(workflow.jobs["ci-ok"].needs).toContain("start-build");
 });
+
+// Native UI changes belong to the separate terminal matrix, not web deployments.
+it.each([
+  "crates/oxytype-tui/src/main.rs",
+  "crates/oxytype-tui/tests/storage.rs",
+  "scripts/terminal_release.py",
+  ".github/workflows/terminal-release.yml",
+])("keeps terminal-only %s independent from web consumers", (file) => {
+  expect(selected([file])).toEqual(["code"]);
+});

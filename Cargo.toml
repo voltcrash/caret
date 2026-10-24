@@ -1,5 +1,9 @@
 [workspace]
-members = ["crates/typing-engine", "crates/typing-engine-wasm"]
+members = [
+  "crates/typing-engine",
+  "crates/typing-engine-wasm",
+  "crates/oxytype-tui",
+]
 resolver = "3"
 
 [workspace.package]

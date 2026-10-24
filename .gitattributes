@@ -1,0 +1,2 @@
+# Preserve the verified upstream license bytes on Windows checkouts.
+docs/rust-engine/third-party/*.LICENSE text eol=lf

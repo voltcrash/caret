@@ -48,7 +48,17 @@
     "engine:fmt": "node scripts/engine.ts fmt",
     "engine:fmt-fix": "node scripts/engine.ts fmt-fix",
     "engine:test:wasm": "node scripts/engine.ts browser",
-    "engine:parity": "node scripts/engine.ts parity"
+    "engine:parity": "node scripts/engine.ts parity",
+    "terminal:dev": "node scripts/terminal.ts dev",
+    "terminal:build": "node scripts/terminal.ts build",
+    "terminal:test": "node scripts/terminal.ts test",
+    "terminal:test:pty": "node scripts/terminal.ts pty",
+    "terminal:test:emulator": "node scripts/terminal.ts emulator",
+    "terminal:package": "node scripts/terminal.ts package",
+    "terminal:source": "node scripts/terminal.ts source",
+    "terminal:archive-smoke": "node scripts/terminal.ts archive-smoke",
+    "terminal:release-gate": "node scripts/terminal.ts release-gate",
+    "terminal:test:release-tools": "node scripts/terminal.ts tools-test"
   },
   "devDependencies": {
     "@commitlint/cli": "21.2.3",

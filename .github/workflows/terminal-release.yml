@@ -1,0 +1,180 @@
+name: Terminal binaries
+
+on:
+  pull_request:
+    branches: [main, "stack/**", "t3/rust-engine-migration"]
+    paths:
+      - "crates/typing-engine/**"
+      - "crates/oxytype-tui/**"
+      - "Cargo.*"
+      - "rust-toolchain.toml"
+      - ".cargo/**"
+      - ".node-version"
+      - "package.json"
+      - "pnpm-workspace.yaml"
+      - "pnpm-lock.yaml"
+      - "scripts/terminal*"
+      - "docs/rust-engine/terminal*"
+      - "docs/rust-engine/third-party/**"
+      - ".github/workflows/terminal-release.yml"
+  push:
+    tags: ["terminal-v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: terminal-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref_type != 'tag' }}
+
+env:
+  OXYTYPE_BUILD_REV: ${{ github.sha }}
+  CARGO_TERM_COLOR: always
+
+jobs:
+  binaries:
+    name: native (${{ matrix.target }})
+    timeout-minutes: 30
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-24.04, target: x86_64-unknown-linux-gnu }
+          - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu }
+          - { os: macos-15-intel, target: x86_64-apple-darwin }
+          - { os: macos-15, target: aarch64-apple-darwin }
+    env:
+      MACOSX_DEPLOYMENT_TARGET: "15.0"
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: voidzero-dev/setup-vp@v1.21.2
+        with:
+          node-version-file: .node-version
+          run-install: false
+      - uses: actions/cache@v5.0.3
+        with:
+          path: |
+            ~/.cargo/registry
+            target
+          key: terminal-${{ matrix.target }}-${{ hashFiles('Cargo.lock', 'rust-toolchain.toml') }}
+      - name: Native formatting
+        run: vp run engine:fmt
+      - name: Archive portability regressions
+        run: vp run terminal:test:release-tools
+      - name: Native lint
+        run: vp exec cargo clippy --locked -p typing-engine -p oxytype-tui --all-targets -- -D warnings
+      - name: Shared engine fixtures
+        run: vp exec cargo test --locked -p typing-engine
+      - name: Native terminal input and durable history
+        run: vp run terminal:test
+      - name: POSIX terminal lifecycle and persistence
+        run: vp run terminal:test:pty
+      - name: Build licensed versioned archive
+        run: vp run terminal:package -- --target ${{ matrix.target }}
+      - name: Verify extracted binary without runtime tools or checkout files
+        run: vp run terminal:archive-smoke -- --target ${{ matrix.target }}
+      - name: Upload candidate archives and checksums
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: terminal-${{ matrix.target }}
+          path: |
+            target/terminal-release/*.tar.gz
+            target/terminal-release/*.sha256
+          retention-days: 14
+          if-no-files-found: error
+
+  emulators:
+    name: Linux emulator (${{ matrix.emulator }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        emulator: [kitty, alacritty]
+    env:
+      LIBGL_ALWAYS_SOFTWARE: "true"
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: voidzero-dev/setup-vp@v1.21.2
+        with:
+          node-version-file: .node-version
+          run-install: false
+      - uses: actions/cache@v5.0.3
+        with:
+          path: |
+            ~/.cargo/registry
+            target
+          key: terminal-emulator-${{ matrix.emulator }}-${{ hashFiles('Cargo.lock', 'rust-toolchain.toml') }}
+      - name: Install distribution emulator and isolated display tools
+        run: |
+          vp exec sudo apt-get update
+          vp exec sudo apt-get install --no-install-recommends -y ${{ matrix.emulator }} xvfb xdotool libxkbcommon-x11-0 fonts-dejavu-core fonts-noto-cjk fonts-noto-color-emoji
+      - name: Real key encoding, Unicode, resize, history and cleanup
+        run: vp run terminal:test:emulator -- --emulator ${{ matrix.emulator }} --command /usr/bin/${{ matrix.emulator }} --evidence target/terminal-emulator-evidence
+      - name: Retain exact emulator versions and test traces
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: emulator-${{ matrix.emulator }}
+          path: target/terminal-emulator-evidence
+          retention-days: 14
+          if-no-files-found: warn
+
+  source:
+    name: corresponding source
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: voidzero-dev/setup-vp@v1.21.2
+        with:
+          node-version-file: .node-version
+          run-install: false
+      - name: Vendor and prove an offline source build
+        run: vp run terminal:source
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: terminal-source
+          path: |
+            target/terminal-release/*-source.tar.gz
+            target/terminal-release/*-source.tar.gz.sha256
+          retention-days: 14
+          if-no-files-found: error
+
+  publish:
+    name: authorized tagged release
+    if: github.event_name == 'push' && github.ref_type == 'tag' && github.repository == 'voltcrash/oxytype'
+    needs: [binaries, emulators, source]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: voidzero-dev/setup-vp@v1.21.2
+        with:
+          node-version-file: .node-version
+          run-install: false
+      - name: Require recorded real terminal verification
+        run: vp run terminal:release-gate
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          pattern: terminal-*
+          path: release
+          merge-multiple: true
+      - name: Verify all platform/source checksums
+        run: vp exec python3 scripts/terminal_release.py checksums --archive release
+      - name: Publish the explicitly pushed terminal tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: vp exec gh release create "$GITHUB_REF_NAME" release/*.tar.gz release/SHA256SUMS --verify-tag --title "Oxytype terminal ${GITHUB_REF_NAME#terminal-v}" --notes-file docs/rust-engine/terminal-release-notes.md
