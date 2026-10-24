@@ -12,7 +12,7 @@ empty commits to inflate count. Do not publish production or releases implicitly
 
 ## Current position
 
-Stage 1 and Stage 2 gates passed. Stage 3 begins next on a branch stacked above `stack/rust-engine-website`. Read root AGENTS.md and the complete migration
+Stage 1 and Stage 2 gates passed. Stage 3 Phase 3.2 active on `stack/rust-engine-terminal`, stacked above `stack/rust-engine-website`. Read root AGENTS.md and the complete migration
 plan before edits. Installed workspace dependencies with frozen lockfile.
 Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen oracle and mismatch detection. Existing website engine remains authoritative until Stage 2.
 
@@ -31,7 +31,9 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | 2.4 Results / replay | Complete | Native validity/progress/history/charts/inspector/playback; unit/JSX, frozen parity, save retry and real Start/D1 persistence pass. |
 | 2.5 Delivery / performance | Complete | Fresh Cloudflare build/preview/types, 86 Start checks, update/rollback, full website and controlled Wasm budgets pass. |
 | 2.6 TypeScript retirement | Complete | Legacy package removed; full native/Wasm/website/quality CI, fresh build/types and frozen performance gates pass. |
-| 3.1–3.5 Terminal | Pending | Requires Stage 2 gate. |
+| 3.1 Terminal shell | Complete | Native smoke/score test; real PTY typing, finish/restart, resize, error/panic, SIGTERM and suspend/resume pass. |
+| 3.2 Offline content | Active | Bundled licensed words/quotes, local packs and full modes/settings next. |
+| 3.3–3.5 Terminal | Pending | Input/capabilities, durable history and release gates remain. |
 
 ## Verification log
 
@@ -533,3 +535,21 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
   claimed. Local matched-artifact rollback/offline/save checks pass.
 - Continue Stage 3 immediately. Native Ratatui implementation, capabilities, local
   history and platform release gates remain required; do not stop at this stage.
+
+## Phase 3.1 gate passed
+
+- `cd94afa0c`: native Ratatui shell, direct owned engine sessions and display deltas;
+  input timestamps captured after terminal read using `Instant`. No physical-key
+  events or durations invented. `92c1a5203`: vp terminal tasks and real PTY checks.
+- `vp run terminal:test`: native score/projection/repeat regression passes.
+  `vp run terminal:dev -- --smoke-test`: deterministic synthetic smoke passes,
+  never persisted. `vp exec cargo clippy -p oxytype-tui --all-targets -- -D warnings`: pass.
+- `vp run terminal:test:pty`: actual POSIX PTY passes typing/finish/restart/resize,
+  normal quit, injected error/panic, SIGTERM and suspend/resume. Raw/canonical
+  mode and alternate screen restored. Process-group suspend covers vp launcher.
+- CLI help/version pass without a terminal; interactive invocation without a
+  terminal fails clearly (exit 1). Idle loop polls and redraws only when dirty;
+  active timer draws at 10 Hz. Minimum size is 60×18.
+- This is the shell gate only. Current settings/history are temporary in-memory
+  screens. Full offline content, input/rendering, durable storage and packaging
+  remain required. Linux PTY coverage does not claim real macOS/Windows hardware.
