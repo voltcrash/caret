@@ -92,11 +92,15 @@ protect prior committed data; a result not yet committed can be lost.
 | --- | --- | --- |
 | Linux ARM64, POSIX PTY/basic protocol | Five modes, settings/editor, history/export/replay, resize, cleanup, SIGTERM, suspend/resume | Pass |
 | Linux ARM64, simulated enhanced protocol in PTY | Negotiation, press/repeat/release, owned flag cleanup | Pass; protocol simulation |
+| Linux x86_64/ARM64 and macOS Intel/Apple Silicon CI PTYs | Native input/editing/history; POSIX lifecycle, resize, suspend/resume, extracted release input | Pass; automated PTY |
+| Windows Server 2025 CI ConPTY | Actual native typing/editing, native accuracy, history, quit | Pass; automated ConPTY |
 | Ratatui TestBackend | Combining/CJK/emoji/tab/newline/cell wrapping/caret/UTF-16 deletion | Pass; simulated display |
 | Real Linux enhanced terminal | Rapid input, scrollback, Unicode/IME, resize | Pending |
 | Real macOS terminal | Basic/enhanced input, Unicode/IME, resize, suspend | Pending |
 | Real Windows Terminal | Input/repeats/releases, Unicode/IME, resize, cleanup | Pending |
 
 Build/smoke archive verification is recorded separately in terminal-release.md.
+Cross-platform automated evidence: [run 40068412137](https://github.com/voltcrash/oxytype/actions/runs/40068412137).
 A runner build or PTY simulation does not satisfy real emulator/manual coverage.
 Do not claim the untested combinations supported until their records exist.
+No macOS/Windows test machine is available; the manual entries remain pending.
