@@ -15,6 +15,8 @@ pub struct EngineHost {
     pub result: Option<Summary>,
     pub result_error: Option<String>,
     pub seed: u32,
+    pub content_identity: String,
+    pub repeated: bool,
     content: Content,
     session: Option<Session>,
     language: Language,
@@ -52,6 +54,8 @@ impl EngineHost {
             custom,
             quotes,
             seed,
+            content_identity: String::new(),
+            repeated: false,
             content: Content::default(),
             session: None,
             words: vec![],
@@ -59,6 +63,11 @@ impl EngineHost {
             result: None,
             result_error: None,
         };
+        host.content_identity = crate::storage::hash(&(
+            &host.language.words,
+            &host.quotes.as_ref().map(|q| &q.quotes),
+            &host.custom.as_ref().map(|c| &c.text),
+        ))?;
         host.restart(false, 0.0, 0.0)?;
         Ok(host)
     }
@@ -73,6 +82,12 @@ impl EngineHost {
     }
     pub fn log(&self) -> Result<Log> {
         Ok(serde_json::from_value(self.session().log())?)
+    }
+    pub fn custom_limit(&self) -> Option<typing_engine::results::Limit> {
+        self.custom.as_ref().map(|c| typing_engine::results::Limit {
+            mode: c.limit.mode.clone(),
+            value: c.limit.value,
+        })
     }
     pub fn restart(&mut self, repeat: bool, now: f64, date: f64) -> Result<()> {
         let mut same = repeat;
@@ -106,6 +121,7 @@ impl EngineHost {
             sections: vec![],
         })?;
         let session = self.content.start_session(same)?;
+        self.repeated = same;
         self.words = session.snapshot().words;
         for word in &self.words {
             terminal_text(word)?;
