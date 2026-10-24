@@ -114,3 +114,17 @@ restores Infinity only for presentation. Completed metrics retain strict finite
 validation. Do not allocate an intermediate Option array solely for JSON conversion.
 Historical capture sources that refer to removed functions are archived as inert
 text; parity CI runs directly against immutable outputs without the old engine.
+
+
+### Terminal scope and merge gate superseded by owner
+
+After merging PRs #184/#185, the owner explicitly requested Linux/macOS only,
+Kitty-compatible terminal coverage, and PR #186 ready for merge. Windows is removed
+from release targets and verification requirements; historical CI evidence remains
+an immutable record of earlier scope. Linux/macOS Intel/ARM64 are the four targets.
+The owner will verify macOS manually after merge; recruiting external testers is
+not a pre-merge requirement. Automated native/archive and real Linux emulator
+checks govern merge readiness. Unperformed macOS/IME checks stay pending and are
+not reported as passed. Release publication remains separately authorized/gated.
+The application renders text; Kitty graphics support is independent of keyboard
+protocol support, negotiated without terminal-brand or TERM-name assumptions.

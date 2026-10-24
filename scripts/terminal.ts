@@ -5,7 +5,7 @@ const command = process.argv[2];
 const args = process.argv.slice(3);
 if (command === "tools-test") {
   const result = spawnSync(
-    process.platform === "win32" ? "python" : "python3",
+    "python3",
     ["-m", "unittest", "scripts/terminal_release_test.py"],
     { cwd: resolve(import.meta.dirname, ".."), stdio: "inherit" },
   );
@@ -17,7 +17,7 @@ if (
   ["package", "source", "archive-smoke", "release-gate"].includes(command)
 ) {
   const result = spawnSync(
-    process.platform === "win32" ? "python" : "python3",
+    "python3",
     [
       "scripts/terminal_release.py",
       command,

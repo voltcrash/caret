@@ -10,11 +10,10 @@ import sys
 import tarfile
 import tempfile
 import tomllib
-import zipfile
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / "target/terminal-release"
-TARGETS = ("x86_64-unknown-linux-gnu", "aarch64-unknown-linux-gnu", "x86_64-apple-darwin", "aarch64-apple-darwin", "x86_64-pc-windows-msvc")
+TARGETS = ("x86_64-unknown-linux-gnu", "aarch64-unknown-linux-gnu", "x86_64-apple-darwin", "aarch64-apple-darwin")
 
 
 def run(args, **kwargs):
@@ -35,15 +34,10 @@ def checksum(path):
     path.with_name(path.name + ".sha256").write_text(f"{digest}  {path.name}\n")
 
 
-def archive(directory, windows=False):
-    output = directory.with_name(directory.name + (".zip" if windows else ".tar.gz"))
-    if windows:
-        with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED, strict_timestamps=False) as package:
-            for path in sorted(directory.rglob("*")):
-                if path.is_file(): package.write(path, path.relative_to(directory.parent))
-    else:
-        with tarfile.open(output, "w:gz") as package:
-            package.add(directory, arcname=directory.name)
+def archive(directory):
+    output = directory.with_name(directory.name + ".tar.gz")
+    with tarfile.open(output, "w:gz") as package:
+        package.add(directory, arcname=directory.name)
     checksum(output)
     return output
 
@@ -93,13 +87,13 @@ def package(target):
     directory = OUT / name
     if directory.exists(): shutil.rmtree(directory)
     directory.mkdir(parents=True)
-    binary = "oxytype.exe" if "windows" in target else "oxytype"
+    binary = "oxytype"
     shutil.copy2(ROOT / "target" / target / "release" / binary, directory / binary)
     for source, dest in [("LICENSE","LICENSE"),("crates/oxytype-tui/assets/ATTRIBUTION.md","ATTRIBUTION.md"),("docs/rust-engine/terminal.md","README.md"),("docs/rust-engine/terminal-content.md","terminal-content.md"),("docs/rust-engine/terminal-storage.md","terminal-storage.md")]:
         shutil.copy2(ROOT / source,directory / dest)
     (directory / "SOURCE.md").write_text(f"Source revision: {revision}\n\nGPL-3.0-only corresponding source is the matching oxytype-v{version()}-source.tar.gz release asset, including locked vendored dependencies.\n\nRepository: https://github.com/voltcrash/oxytype/tree/{revision}\n")
     licenses(directory,target)
-    output = archive(directory,"windows" in target)
+    output = archive(directory)
     print(f"Archive: {output}")
     return output
 
@@ -109,11 +103,8 @@ def smoke(path):
     assert hashlib.sha256(path.read_bytes()).hexdigest()==expected, "Archive checksum mismatch"
     with tempfile.TemporaryDirectory(prefix="oxytype-install-") as temporary:
         directory=pathlib.Path(temporary)
-        if path.suffix == ".zip":
-            with zipfile.ZipFile(path) as package: package.extractall(directory)
-        else:
-            with tarfile.open(path) as package: package.extractall(directory,filter="data")
-        binaries = list(directory.rglob("oxytype.exe" if os.name == "nt" else "oxytype"))
+        with tarfile.open(path) as package: package.extractall(directory,filter="data")
+        binaries = list(directory.rglob("oxytype"))
         if len(binaries)!=1: raise RuntimeError("Expected one installed executable")
         binary=binaries[0]
         isolated=directory / "empty";isolated.mkdir()
@@ -128,8 +119,7 @@ def smoke(path):
         export=isolated / "history.json"
         subprocess.run([str(binary),"--config-dir",str(isolated / "config"),"--data-dir",str(isolated / "data"),"--export",str(export)],cwd=isolated,env=env,check=True)
         assert json.loads(export.read_text())["results"]==[]
-        if os.name != "nt":
-            run([sys.executable,"scripts/terminal_pty.py",str(binary),"--release"])
+        run([sys.executable,"scripts/terminal_pty.py",str(binary),"--release"])
         print("Installed archive: empty PATH/cwd, offline smoke, storage/export and supported POSIX PTY pass")
 
 
@@ -158,7 +148,7 @@ def gate():
 
 
 def checksums(directory):
-    expected=[f"oxytype-v{version()}-{target}"+(".zip" if "windows" in target else ".tar.gz") for target in TARGETS]+[f"oxytype-v{version()}-source.tar.gz"]
+    expected=[f"oxytype-v{version()}-{target}.tar.gz" for target in TARGETS]+[f"oxytype-v{version()}-source.tar.gz"]
     rows=[]
     for name in expected:
         path=directory / name
@@ -181,5 +171,5 @@ if __name__=="__main__":
     else:
         if args.archive is None:
             if args.target not in TARGETS: parser.error("--archive or a supported --target required")
-            args.archive=OUT / (f"oxytype-v{version()}-{args.target}"+(".zip" if "windows" in args.target else ".tar.gz"))
+            args.archive=OUT / f"oxytype-v{version()}-{args.target}.tar.gz"
         smoke(args.archive.resolve())

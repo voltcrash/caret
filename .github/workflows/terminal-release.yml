@@ -45,10 +45,8 @@ jobs:
           - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu }
           - { os: macos-15-intel, target: x86_64-apple-darwin }
           - { os: macos-15, target: aarch64-apple-darwin }
-          - { os: windows-2025, target: x86_64-pc-windows-msvc }
     env:
       MACOSX_DEPLOYMENT_TARGET: "15.0"
-      RUSTFLAGS: ${{ matrix.os == 'windows-2025' && '-C target-feature=+crt-static' || '' }}
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -74,7 +72,6 @@ jobs:
       - name: Native terminal input and durable history
         run: vp run terminal:test
       - name: POSIX terminal lifecycle and persistence
-        if: runner.os != 'Windows'
         run: vp run terminal:test:pty
       - name: Build licensed versioned archive
         run: vp run terminal:package -- --target ${{ matrix.target }}
@@ -86,7 +83,6 @@ jobs:
           name: terminal-${{ matrix.target }}
           path: |
             target/terminal-release/*.tar.gz
-            target/terminal-release/*.zip
             target/terminal-release/*.sha256
           retention-days: 14
           if-no-files-found: error
@@ -142,4 +138,4 @@ jobs:
       - name: Publish the explicitly pushed terminal tag
         env:
           GH_TOKEN: ${{ github.token }}
-        run: vp exec gh release create "$GITHUB_REF_NAME" release/*.tar.gz release/*.zip release/SHA256SUMS --verify-tag --title "Oxytype terminal ${GITHUB_REF_NAME#terminal-v}" --notes-file docs/rust-engine/terminal-release-notes.md
+        run: vp exec gh release create "$GITHUB_REF_NAME" release/*.tar.gz release/SHA256SUMS --verify-tag --title "Oxytype terminal ${GITHUB_REF_NAME#terminal-v}" --notes-file docs/rust-engine/terminal-release-notes.md

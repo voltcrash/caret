@@ -1,4 +1,4 @@
-//! Actual native terminal event decoding, including Windows ConPTY.
+//! Actual native terminal event decoding on the supported Linux/macOS PTYs.
 use oxytype_tui::storage::{Paths, Store};
 use portable_pty::{CommandBuilder, PtySize, native_pty_system};
 use std::{
