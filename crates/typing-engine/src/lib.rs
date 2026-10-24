@@ -1,5 +1,6 @@
 //! Platform-independent typing rules. Hosts provide content, observations and time.
 pub mod analysis;
+pub mod challenges;
 pub mod content;
 pub mod custom_progress;
 pub mod error;
