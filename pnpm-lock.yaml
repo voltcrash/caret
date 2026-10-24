@@ -317,9 +317,6 @@ importers:
       drizzle-orm:
         specifier: 0.45.3
         version: 0.45.3(@cloudflare/workers-types@5.20261001.1)(@electric-sql/pglite@0.3.16)(@opentelemetry/api@1.9.1)(bun-types@1.4.2)(kysely@0.29.6)(pg@8.12.0)
-      ip-address:
-        specifier: 10.7.2
-        version: 10.7.2
       object-hash:
         specifier: 3.0.0
         version: 3.0.0
@@ -5232,10 +5229,6 @@ packages:
 
   inline-style-parser@0.2.7:
     resolution: {integrity: sha512-Nb2ctOyNR8DqQoR0OwRG95uNWIC0C1lCgf5Naz5H6Ji72KZ8OcFZLz2P5sNgwlyoJ8Yif11oMuYs5pBQa86csA==}
-
-  ip-address@10.7.2:
-    resolution: {integrity: sha512-7H/2gFSIitxc0hG3nOI1glS8QLo/EHBFFLk8vEUjXY/xu0AdL8jZ9U1IzO2PUm0d2D/ofQcAifb0g6OBkt8U7w==}
-    engines: {node: '>= 12'}
 
   is-arrayish@0.2.1:
     resolution: {integrity: sha512-zz06S8t0ozoDXMG+ube26zeCTNXcKIPJZJi8hBrF4idCLms4CG9QtK7qBl1boi5ODzFpjswb5JPmHCbMpjaYzg==}
@@ -10828,8 +10821,6 @@ snapshots:
   ini@6.0.0: {}
 
   inline-style-parser@0.2.7: {}
-
-  ip-address@10.7.2: {}
 
   is-arrayish@0.2.1: {}
 
