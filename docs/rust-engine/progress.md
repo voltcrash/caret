@@ -12,7 +12,7 @@ empty commits to inflate count. Do not publish production or releases implicitly
 
 ## Current position
 
-Stage 1 and Stage 2 gates passed. Stage 3 Phase 3.3 active on `stack/rust-engine-terminal`, stacked above `stack/rust-engine-website`. Read root AGENTS.md and the complete migration
+Stage 1 and Stage 2 gates passed. Stage 3 Phase 3.5 active on `stack/rust-engine-terminal`, stacked above `stack/rust-engine-website`. Read root AGENTS.md and the complete migration
 plan before edits. Installed workspace dependencies with frozen lockfile.
 Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen oracle and mismatch detection. Existing website engine remains authoritative until Stage 2.
 
@@ -33,8 +33,9 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | 2.6 TypeScript retirement | Complete | Legacy package removed; full native/Wasm/website/quality CI, fresh build/types and frozen performance gates pass. |
 | 3.1 Terminal shell | Complete | Native smoke/score test; real PTY typing, finish/restart, resize, error/panic, SIGTERM and suspend/resume pass. |
 | 3.2 Offline content | Complete | Bundled words/eight original quotes; five modes, CLI/settings/editor, bounded v1 packs; native/full-fixture and actual PTY checks pass. |
-| 3.3 Input / Unicode | Active | Capability negotiation and grapheme/cell rendering next. |
-| 3.4–3.5 Terminal | Pending | Durable history and release gates remain. |
+| 3.3 Input / Unicode | Implemented; manual gate pending | Native Unicode/TestBackend + basic/enhanced-protocol PTY pass; real macOS/Windows/enhanced terminal records unavailable. |
+| 3.4 Settings / history | Complete | SQLite reopen/concurrency/corruption/retry/export and actual history/replay PTY pass. |
+| 3.5 Packaging / release | Active | Platform build/smoke archives, fresh install and release docs next. |
 
 ## Verification log
 
@@ -594,3 +595,25 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
 - Real macOS/Windows Terminal and enhanced hardware-terminal manual matrix is
   unperformed, not a passed acceptance gate. Asked for machine/test access;
   continue independent durable history and packaging work while awaiting it.
+
+## Phase 3.4 gate passed
+
+- SQLite settings/history with OS directories and explicit overrides, WAL/FULL
+  transactions, settings revision conflict detection, append-only UUID results and
+  idempotent retry. No network/accounts/tokens. New Unix data is private.
+- Native summaries/config/content identity/seed/quote/timestamps/engine versions,
+  capabilities and native validity stored. Unavailable physical timing fields null.
+  Raw custom text/logs absent by default; explicit replay opt-in warns in UI.
+- History pages/filter/details/PBs/export use stored summaries; native PB validity
+  and funbox metadata preserved. Compatible recorded replay steps/seeks call core.
+  Unknown record fields/versions export unchanged, with no score recomputation.
+- Fourteen terminal integration tests pass: reopen, concurrent instances, malformed
+  and future formats, dropped transaction, write-lock queue retry, native PB value,
+  no-clobber export, privacy defaults and replay compatibility. Clippy passes.
+- Actual PTY passes saved-result/history/export and opted-in replay stepping, plus
+  prior input/settings/lifecycle cases. PTY profiles isolated in temporary dirs.
+  Readable themes, reduced redraws and color-independent errors implemented.
+- Private custom text is intentionally not restored from settings; a saved custom
+  mode requires new --text/--file (or choose --mode words and F4 editor). Local
+  packs must be explicitly supplied again. No silent content substitution.
+- Platform/manual terminal gate remains unperformed; continue packaging.
