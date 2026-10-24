@@ -5,8 +5,7 @@ use oxytype_tui::{options::Cli, setup::Setup};
 use ratatui::{
     Frame,
     layout::{Constraint, Layout},
-    style::{Color, Modifier, Style},
-    text::{Line, Span},
+    text::Line,
     widgets::{Block, Paragraph, Wrap},
 };
 use std::{
@@ -52,13 +51,17 @@ fn run() -> Result<()> {
         custom,
         cli.seed.unwrap_or(date() as u32),
     )?;
-    let (guard, mut terminal) = TerminalGuard::enter()?;
+    let (guard, mut terminal) = TerminalGuard::enter(cli.keyboard != "basic")?;
     #[cfg(debug_assertions)]
     match std::env::var("OXYTYPE_TERMINAL_TEST_FAILURE").as_deref() {
         Ok("panic") => panic!("Injected terminal cleanup test panic"),
         Ok("error") => return Err("Injected terminal cleanup test error".into()),
         _ => {}
     }
+    let mut capabilities = oxytype_tui::input::Capabilities {
+        enhanced_keyboard_negotiated: guard.enhanced.load(Ordering::SeqCst),
+        ..Default::default()
+    };
     let origin = Instant::now();
     let mut screen = Screen::Test;
     let mut notice = String::new();
@@ -67,6 +70,7 @@ fn run() -> Result<()> {
     let mut dirty = true;
     loop {
         if guard.resume_if_requested(&mut terminal)? {
+            capabilities.enhanced_keyboard_negotiated = guard.enhanced.load(Ordering::SeqCst);
             dirty = true;
         }
         if guard.quit.load(Ordering::SeqCst) {
@@ -77,7 +81,20 @@ fn run() -> Result<()> {
             host.command(Command::Advance { now, date: date() })?;
         }
         if dirty || (host.state().active && last_draw.elapsed() >= Duration::from_millis(100)) {
-            terminal.draw(|frame| draw(frame, &host, screen, &notice, &history, now, &setup))?;
+            terminal.draw(|frame| {
+                draw(
+                    frame,
+                    &host,
+                    now,
+                    View {
+                        screen,
+                        notice: &notice,
+                        history: &history,
+                        setup: &setup,
+                        capabilities: &capabilities,
+                    },
+                )
+            })?;
             dirty = false;
             last_draw = Instant::now();
         }
@@ -91,6 +108,9 @@ fn run() -> Result<()> {
         let event = event::read()?;
         // Capture delivery time after poll/read, never the earlier polling time.
         let now = origin.elapsed().as_secs_f64() * 1000.0;
+        if let Event::Key(key) = event {
+            capabilities.observe(key);
+        }
         match event {
             // Fullscreen draw autoresizes and invalidates its viewport. An extra
             // clear queries cursor position, which basic terminals need not report.
@@ -147,7 +167,7 @@ fn run() -> Result<()> {
                         }
                     }
                     KeyCode::Backspace if screen == Screen::Editor => {
-                        setup.text.pop();
+                        oxytype_tui::input::pop_grapheme(&mut setup.text);
                     }
                     KeyCode::Enter if screen == Screen::Editor => setup.text.push('\n'),
                     KeyCode::Tab if screen == Screen::Editor => setup.text.push('\t'),
@@ -188,33 +208,11 @@ fn run() -> Result<()> {
                     KeyCode::Enter if control && screen == Screen::Test => {
                         host.command(Command::Bailout { now, date: date() })?;
                     }
-                    KeyCode::Backspace if screen == Screen::Test && !host.state().ended => {
-                        host.command(Command::Delete {
-                            kind: if control || key.modifiers.contains(KeyModifiers::ALT) {
-                                "deleteWordBackward"
-                            } else {
-                                "deleteContentBackward"
-                            }
-                            .into(),
-                            now,
-                            date: date(),
-                            observed_input: None,
-                            sentinel_removed: false,
-                        })?;
-                    }
-                    KeyCode::Char(char)
-                        if screen == Screen::Test
-                            && !host.state().ended
-                            && !control
-                            && !key.modifiers.contains(KeyModifiers::ALT) =>
-                    {
-                        host.insert(&char.to_string(), now, date())?;
-                    }
-                    KeyCode::Enter if screen == Screen::Test && !host.state().ended => {
-                        host.insert("\n", now, date())?
-                    }
-                    KeyCode::Tab if screen == Screen::Test && !host.state().ended => {
-                        host.insert("\t", now, date())?
+                    _ if screen == Screen::Test && !host.state().ended => {
+                        let (columns, rows) = crossterm::terminal::size()?;
+                        if columns >= 60 && rows >= 18 {
+                            oxytype_tui::input::apply(&mut host, key, now, date())?;
+                        }
                     }
                     _ => {}
                 }
@@ -224,15 +222,21 @@ fn run() -> Result<()> {
     }
     Ok(())
 }
-fn draw(
-    frame: &mut Frame,
-    host: &EngineHost,
+struct View<'a> {
     screen: Screen,
-    notice: &str,
-    history: &[String],
-    now: f64,
-    setup: &Setup,
-) {
+    notice: &'a str,
+    history: &'a [String],
+    setup: &'a Setup,
+    capabilities: &'a oxytype_tui::input::Capabilities,
+}
+fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
+    let View {
+        screen,
+        notice,
+        history,
+        setup,
+        capabilities,
+    } = view;
     let area = frame.area();
     if area.width < 60 || area.height < 18 {
         frame.render_widget(
@@ -263,6 +267,16 @@ fn draw(
             Line::from("F8 finish · Backspace delete · Ctrl+Backspace delete word"),
             Line::from("Ctrl+Q / Ctrl+C quit · Ctrl+Z suspend (Unix)"),
             Line::from("Physical-key timing is unavailable; no key releases are invented."),
+            Line::from(format!(
+                "Keyboard: {} · release observed: {} · repeat observed: {}",
+                if capabilities.enhanced_keyboard_negotiated {
+                    "enhanced"
+                } else {
+                    "basic"
+                },
+                capabilities.release_observed,
+                capabilities.repeat_observed
+            )),
         ],
         Screen::Settings => {
             let lines = setup.lines();
@@ -310,33 +324,32 @@ fn draw(
                     live.wpm, live.acc, live.seconds
                 )));
             }
-            let mut spans = vec![];
-            let targets = if host.config.mode == "zen" {
-                &host.inputs
-            } else {
-                &host.words
-            };
-            for (index, word) in targets
-                .iter()
-                .enumerate()
-                .skip(state.word_index.saturating_sub(5))
-                .take(35)
-            {
-                spans.push(Span::styled(
-                    word.display_lossy(),
-                    if index == state.word_index {
-                        Style::new()
-                            .fg(Color::Cyan)
-                            .add_modifier(Modifier::UNDERLINED)
-                    } else {
-                        Style::new()
-                    },
-                ));
+            let input = state.input_value;
+            let mut target = typing_engine::Text::default();
+            if host.config.mode != "zen" {
+                for word in host.words.iter().skip(state.word_index).take(35) {
+                    target.0.extend(&word.0);
+                }
             }
-            lines.push(Line::from(spans));
+            let view = oxytype_tui::render::text_view(
+                &target,
+                &input,
+                &host.config.language,
+                rows[1].width.saturating_sub(2),
+                rows[1].height.saturating_sub(5),
+            );
+            if view.errors {
+                lines.push(Line::from("! Incorrect text is underlined"));
+            }
+            let caret_y = rows[1].y + 1 + lines.len() as u16 + view.caret.1;
+            frame.set_cursor_position((rows[1].x + 1 + view.caret.0, caret_y));
+            lines.extend(view.lines);
             lines.push(Line::from(format!(
-                "Input: {}▌",
-                state.input_value.display_lossy()
+                "Input: {}",
+                input
+                    .display_lossy()
+                    .replace('\t', "→   ")
+                    .replace('\n', "↵")
             )));
             lines
         }

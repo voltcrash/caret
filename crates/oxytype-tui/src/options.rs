@@ -67,6 +67,9 @@ pub struct Cli {
     pub funbox: Option<Vec<String>>,
     #[arg(long)]
     pub capabilities: bool,
+    /// auto negotiates enhanced events; basic avoids protocol queries.
+    #[arg(long, default_value="auto", value_parser=["auto","basic"])]
+    pub keyboard: String,
 }
 impl Cli {
     pub fn prepare(

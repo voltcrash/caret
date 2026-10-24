@@ -1,6 +1,8 @@
 pub mod content;
 pub mod engine;
+pub mod input;
 pub mod options;
+pub mod render;
 pub mod setup;
 pub mod terminal;
 

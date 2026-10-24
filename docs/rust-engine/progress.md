@@ -574,3 +574,23 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
   unchanged characters are not re-emitted by Ratatui; no app behavior weakened.
 - Accurate grapheme/cell rendering, negotiated capabilities and durable history
   remain next. No native physical-key timing is inferred from committed input.
+
+## Phase 3.3 implementation / Linux checks
+
+- Grapheme Backspace supplies observed UTF-16 text to native deletion; releases
+  never become input and each repeat delivery commits once. Native rules retain
+  eligibility/progression. Isolated-surrogate generated targets fail explicitly.
+- Cell-aware target rendering handles combining marks, CJK, emoji, visible Tab/LF,
+  wrapping, caret scrolling and color-independent underlined error notice. Input
+  disabled below minimum dimensions; native clock continues.
+- Auto keyboard negotiation runs before event polling. Owned enhanced flags are
+  popped on exit/error/panic/suspend; basic mode avoids queries. Negotiated event
+  support and observed releases/repeats are distinct from physical timing, which
+  remains unavailable. F8 provides finish without modified Enter support.
+- `vp run terminal:test:pty` passes five modes/editor/lifecycle plus simulated
+  enhanced negotiation/press/repeat/release/cleanup. `cargo test -p oxytype-tui`
+  (via vp) passes nine integration tests, including Ratatui TestBackend Unicode
+  cells/caret/extra emoji and UTF-16 deletion. Clippy passes.
+- Real macOS/Windows Terminal and enhanced hardware-terminal manual matrix is
+  unperformed, not a passed acceptance gate. Asked for machine/test access;
+  continue independent durable history and packaging work while awaiting it.

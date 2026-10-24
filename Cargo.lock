@@ -535,6 +535,8 @@ dependencies = [
  "serde_json",
  "signal-hook 0.4.5",
  "typing-engine",
+ "unicode-segmentation",
+ "unicode-width",
 ]
 
 [[package]]

@@ -107,6 +107,9 @@ impl EngineHost {
         })?;
         let session = self.content.start_session(same)?;
         self.words = session.snapshot().words;
+        for word in &self.words {
+            terminal_text(word)?;
+        }
         self.inputs.clear();
         self.result = None;
         self.result_error = None;
@@ -120,6 +123,7 @@ impl EngineHost {
             .expect("Prepared terminal session")
             .apply(command)?;
         for change in update.words {
+            terminal_text(&change.word)?;
             self.words
                 .resize(self.words.len().max(change.index + 1), Text::default());
             self.words[change.index] = change.word;
@@ -202,4 +206,11 @@ pub fn smoke() -> Result<()> {
         serde_json::json!({"syntheticSmoke":true,"completed":true,"engineVersion":typing_engine::BEHAVIOR_VERSION})
     );
     Ok(())
+}
+
+fn terminal_text(text: &Text) -> Result<()> {
+    let text = String::from_utf16(&text.0).map_err(
+        |_| "Generated content contains isolated UTF-16 surrogates; unavailable in terminal input",
+    )?;
+    crate::content::safe_text(&text)
 }

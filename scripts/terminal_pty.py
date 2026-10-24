@@ -20,7 +20,9 @@ def dimensions(slave, columns=100, rows=24):
 
 
 class Child:
-    def __init__(self, binary, failure=None, args=()):
+    def __init__(self, binary, failure=None, args=(), enhanced=False):
+        self.enhanced = enhanced
+        self.query_replied = False
         self.master, self.slave = pty.openpty()
         dimensions(self.slave)
         self.original = termios.tcgetattr(self.slave)
@@ -33,7 +35,7 @@ class Child:
             os.setsid()
             fcntl.ioctl(self.slave, termios.TIOCSCTTY, 0)
 
-        self.process = subprocess.Popen([binary, *args], stdin=self.slave, stdout=self.slave,
+        self.process = subprocess.Popen([binary, "--keyboard", "auto" if enhanced else "basic", *args], stdin=self.slave, stdout=self.slave,
                                         stderr=self.slave, env=env,
                                         preexec_fn=controlling_terminal)
 
@@ -41,6 +43,10 @@ class Child:
         if select.select([self.master], [], [], seconds)[0]:
             try:
                 self.output.extend(os.read(self.master, 65536))
+                if self.enhanced and not self.query_replied and b"\x1b[?u" in self.output:
+                    # Protocol simulation, not a claim of hardware-terminal coverage.
+                    self.send(b"\x1b[?0u\x1b[?1;2c")
+                    self.query_replied = True
             except OSError as error:
                 if error.errno != errno.EIO:
                     raise
@@ -180,6 +186,22 @@ def run(binary):
         child.send(b"\x11")
         assert child.process.wait(timeout=5) == 0
         child.restored()
+    finally:
+        child.close()
+
+    child = Child(binary, args=["--mode", "zen"], enhanced=True)
+    try:
+        child.until(b"Oxytype")
+        assert b"\x1b[>3u" in child.output, "enhanced flags not pushed"
+        child.send(b"\x1b[97;1u\x1b[97;1:2u\x1b[97;1:3u")  # press/repeat/release
+        child.until(b"Input: aa")
+        child.send(b"\x1bOP")
+        child.until(b"Keyboard: enhanced")
+        child.until(b"release observed: true")
+        child.send(b"\x11")
+        assert child.process.wait(timeout=5) == 0
+        child.restored()
+        assert b"\x1b[<1u" in child.output, "enhanced flags not popped"
     finally:
         child.close()
 
