@@ -2,7 +2,13 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { eq } from "drizzle-orm";
 import type { D1PreparedStatement } from "@cloudflare/workers-types";
 import { users } from "./schema";
-import { binding, database, encode, statement } from "./client";
+import {
+  binding,
+  database,
+  primaryDatabase,
+  encode,
+  statement,
+} from "./client";
 import { newId } from "../utils/id";
 import MonkeyError from "../utils/error";
 import type { DBUser } from "../dal/user";
@@ -59,7 +65,8 @@ export async function atomicUser<T>(
 ): Promise<T> {
   if (currentUserDraft(uid)) return await action();
   for (let attempt = 0; attempt < 8; attempt++) {
-    const row = await database()
+    // Failed guards do not advance bookmarks; bypass lagging replicas on retry.
+    const row = await primaryDatabase()
       .select()
       .from(users)
       .where(eq(users.uid, uid))
