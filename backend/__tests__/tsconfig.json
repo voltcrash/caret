@@ -7,6 +7,8 @@
     "useUnknownInCatchVariables": false,
     "strictPropertyInitialization": false,
     "target": "ES2022",
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
     "lib": ["ES2022", "DOM"],
     "types": ["node"]
   },

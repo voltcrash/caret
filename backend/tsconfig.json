@@ -4,6 +4,9 @@
     "outDir": "dist",
     "rootDir": "src",
     "target": "ES2022",
+    // Bundled into the Worker by Vite; ESM workspace sources import extensionless.
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
     "types": ["node"],
     "lib": ["ES2022", "DOM"],
     "noImplicitAny": false,
