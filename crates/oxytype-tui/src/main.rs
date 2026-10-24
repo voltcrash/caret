@@ -1,5 +1,6 @@
 use clap::Parser;
 use crossterm::event::{self, Event, KeyCode, KeyEventKind, KeyModifiers};
+use oxytype_tui::options::Cli;
 use oxytype_tui::{Result, engine::EngineHost, terminal::TerminalGuard};
 use ratatui::{
     Frame,
@@ -12,19 +13,8 @@ use std::{
     sync::atomic::Ordering,
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
-use typing_engine::{Command, Config, Text, generation::Language};
+use typing_engine::{Command, Config};
 
-#[derive(Parser)]
-#[command(
-    name = "oxytype",
-    version = oxytype_tui::version(),
-    about = "Offline typing with the shared Oxytype Rust engine"
-)]
-struct Cli {
-    /// Exercise a deterministic synthetic session without a terminal or saved data.
-    #[arg(long)]
-    smoke_test: bool,
-}
 #[derive(Clone, Copy, PartialEq)]
 enum Screen {
     Test,
@@ -49,19 +39,12 @@ fn run() -> Result<()> {
     if cli.smoke_test {
         return oxytype_tui::engine::smoke();
     }
-    let mut host = EngineHost::new(
-        Config::default(),
-        Language {
-            name: "english".into(),
-            words: ["one", "two", "three", "four"]
-                .into_iter()
-                .map(Text::from)
-                .collect(),
-            ..Default::default()
-        },
-        None,
-        date() as u32,
-    )?;
+    if cli.capabilities {
+        println!("{}", oxytype_tui::options::capabilities());
+        return Ok(());
+    }
+    let (config, content, custom) = cli.prepare(Config::default())?;
+    let mut host = EngineHost::offline(config, content, custom, cli.seed.unwrap_or(date() as u32))?;
     let (guard, mut terminal) = TerminalGuard::enter()?;
     #[cfg(debug_assertions)]
     match std::env::var("OXYTYPE_TERMINAL_TEST_FAILURE").as_deref() {

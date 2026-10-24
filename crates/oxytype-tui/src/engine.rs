@@ -19,6 +19,7 @@ pub struct EngineHost {
     session: Option<Session>,
     language: Language,
     custom: Option<CustomText>,
+    quotes: Option<typing_engine::quotes::QuoteAsset>,
 }
 impl EngineHost {
     pub fn new(
@@ -27,10 +28,29 @@ impl EngineHost {
         custom: Option<CustomText>,
         seed: u32,
     ) -> Result<Self> {
+        Self::with_assets(config, language, custom, seed, None)
+    }
+    pub fn offline(
+        config: Config,
+        content: crate::content::OfflineContent,
+        custom: Option<CustomText>,
+        seed: u32,
+    ) -> Result<Self> {
+        crate::options::validate(&config, &content, custom.as_ref())?;
+        Self::with_assets(config, content.language, custom, seed, Some(content.quotes))
+    }
+    fn with_assets(
+        config: Config,
+        language: Language,
+        custom: Option<CustomText>,
+        seed: u32,
+        quotes: Option<typing_engine::quotes::QuoteAsset>,
+    ) -> Result<Self> {
         let mut host = Self {
             config,
             language,
             custom,
+            quotes,
             seed,
             content: Content::default(),
             session: None,
@@ -79,7 +99,7 @@ impl EngineHost {
             language: self.language.clone(),
             custom: self.custom.clone(),
             random: Random::seeded(self.seed),
-            quotes: None,
+            quotes: self.quotes.clone(),
             polyglot: vec![],
             selected_quote_id: 0,
             favorite_quote_ids: vec![],
