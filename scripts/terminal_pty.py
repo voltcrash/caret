@@ -31,7 +31,8 @@ class Child:
         dimensions(self.slave)
         self.original = termios.tcgetattr(self.slave)
         self.output = bytearray()
-        env = dict(os.environ, TERM="xterm-256color")
+        self.status_path = pathlib.Path(self.profile.name) / "exit-status"
+        env = dict(os.environ, TERM="xterm-256color", OXYTYPE_PTY_STATUS=str(self.status_path))
         if failure:
             env["OXYTYPE_TERMINAL_TEST_FAILURE"] = failure
 
@@ -39,7 +40,7 @@ class Child:
             os.setsid()
             fcntl.ioctl(self.slave, termios.TIOCSCTTY, 0)
 
-        self.process = subprocess.Popen([binary, "--config-dir", self.profile.name + "/config", "--data-dir", self.profile.name + "/data", "--keyboard", "auto" if enhanced else "basic", *args], stdin=self.slave, stdout=self.slave,
+        self.process = subprocess.Popen([sys.executable, str(pathlib.Path(__file__).resolve()), "--keeper", binary, "--config-dir", self.profile.name + "/config", "--data-dir", self.profile.name + "/data", "--keyboard", "auto" if enhanced else "basic", *args], stdin=self.slave, stdout=self.slave,
                                         stderr=self.slave, env=env,
                                         preexec_fn=controlling_terminal)
 
@@ -55,13 +56,14 @@ class Child:
                 if error.errno != errno.EIO:
                     raise
 
-    def until(self, text, seconds=5):
+    def until(self, text, seconds=5, fresh=False):
         deadline = time.monotonic() + seconds
+        start = len(self.output)
         while time.monotonic() < deadline:
             self.read()
-            if text.decode("utf-8") in self.screen_text():
+            if (not fresh or len(self.output) > start) and text.decode("utf-8") in self.screen_text():
                 return
-            if self.process.poll() is not None:
+            if self.status_path.exists() or self.process.poll() is not None:
                 break
         raise AssertionError(f"Missing {text!r}; process={self.process.poll()}; output={bytes(self.output[-2000:])!r}")
 
@@ -116,9 +118,13 @@ class Child:
         # A real emulator continuously consumes output. macOS PTYs have a small
         # output buffer; waiting without reading can block the app before quit.
         deadline = time.monotonic() + timeout
-        while self.process.poll() is None and time.monotonic() < deadline:
+        while not self.status_path.exists() and time.monotonic() < deadline:
             self.read(0.02)
-        return self.process.wait(timeout=0.1)
+            if self.process.poll() is not None:
+                raise AssertionError("PTY session keeper exited before app status")
+        if not self.status_path.exists():
+            raise subprocess.TimeoutExpired(self.process.args, timeout)
+        return int(self.status_path.read_text())
 
     def restored(self):
         current = termios.tcgetattr(self.slave)
@@ -130,13 +136,15 @@ class Child:
         assert b"\x1b[?2004l" in self.output, "bracketed paste not disabled"
 
     def close(self):
-        if self.process.poll() is None:
-            os.kill(self.process.pid, signal.SIGCONT)
-            self.process.kill()
-            self.wait_exit(timeout=3)
-        os.close(self.master)
-        os.close(self.slave)
-        self.profile.cleanup()
+        try:
+            if self.process.poll() is None:
+                os.killpg(self.process.pid, signal.SIGCONT)
+                os.killpg(self.process.pid, signal.SIGKILL)
+                self.process.wait(timeout=3)
+        finally:
+            os.close(self.master)
+            os.close(self.slave)
+            self.profile.cleanup()
 
 
 def run(binary, release=False):
@@ -270,8 +278,8 @@ def run(binary, release=False):
                     else:
                         raise AssertionError("Did not suspend")
                     child.restored()
-                    os.kill(child.process.pid, signal.SIGCONT)
-                    child.until(b"Oxytype")
+                    os.killpg(child.process.pid, signal.SIGCONT)
+                    child.until(b"Oxytype", fresh=True)
                     child.send(b"\x11")
                 assert child.wait_exit() == 0
             child.restored()
@@ -280,5 +288,27 @@ def run(binary, release=False):
     print("PTY: five modes, settings/editor, history/export/replay, basic/enhanced protocol, typing/finish/restart/resize/quit, SIGTERM, suspend/resume pass" + ("; debug error/panic cleanup pass" if not release else ""))
 
 
+def keep_session(binary_args):
+    # Like a real shell, remain the session leader after the app exits. Darwin
+    # revokes a controlling PTY when its session leader dies, making tcgetattr
+    # impossible; retaining the session lets us verify actual cleanup unchanged.
+    child = subprocess.Popen(binary_args)
+    def forward(signum, _frame):
+        if child.poll() is None:
+            child.send_signal(signum)
+    for signum in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP, signal.SIGTSTP):
+        signal.signal(signum, forward)
+    status = child.wait()
+    status_path=pathlib.Path(os.environ["OXYTYPE_PTY_STATUS"])
+    temporary=status_path.with_suffix(".tmp")
+    temporary.write_text(str(status))
+    temporary.replace(status_path)
+    while True:
+        signal.pause()
+
+
 if __name__ == "__main__":
-    run(str(pathlib.Path(sys.argv[1]).resolve()), "--release" in sys.argv)
+    if sys.argv[1] == "--keeper":
+        keep_session(sys.argv[2:])
+    else:
+        run(str(pathlib.Path(sys.argv[1]).resolve()), "--release" in sys.argv)
