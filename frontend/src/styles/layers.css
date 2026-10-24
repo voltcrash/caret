@@ -1,5 +1,4 @@
 /* Shared order: utilities override component hooks and default controls. */
-@layer normalize;
 @layer theme;
 @layer base;
 @layer components;
