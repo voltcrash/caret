@@ -1,11 +1,12 @@
 import { runtime, type Runtime } from "../runtime/env";
 import type {
   D1PreparedStatement,
-  D1Database,
+  D1DatabaseSession,
 } from "@cloudflare/workers-types";
 
 export const database = (): Runtime["db"] => runtime().db;
-export const binding = (): D1Database => runtime().env.DB;
+export const primaryDatabase = (): Runtime["primaryDb"] => runtime().primaryDb;
+export const binding = (): D1DatabaseSession => runtime().session;
 
 export function statement(
   query: string,
