@@ -154,7 +154,7 @@ jobs:
               - '!LICENSE'
               - '!frontend/static/**'
               - '!.github/{ISSUE_TEMPLATE/**,dependabot.yml,labeler.yml,workflows/labeler.yml}'
-              - '!.{claude,husky}/**'
+              - '!.{claude,vite-hooks}/**'
 
       - name: Select jobs
         id: select

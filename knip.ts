@@ -86,7 +86,7 @@ export default {
     "caniuse-lite",
     // scripts/engine.ts resolves Binaryen's package metadata to invoke wasm-opt.
     "binaryen",
-    // .husky/commit-msg invokes the commitlint binary.
+    // .vite-hooks/commit-msg invokes the commitlint binary.
     "@commitlint/cli",
   ],
 } satisfies KnipConfig;
