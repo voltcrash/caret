@@ -419,7 +419,7 @@ describe("Loaderboard Controller", () => {
 
     beforeEach(async () => {
       [getDailyLeaderboardMock, getResultMock].forEach((it) => it.mockClear());
-      vi.useFakeTimers();
+      vi.useFakeTimers({ toFake: ["Date"] });
       vi.setSystemTime(1722606812000);
       await dailyLeaderboardEnabled(true);
 
@@ -712,7 +712,7 @@ describe("Loaderboard Controller", () => {
         getRank: getRankMock,
       } as any);
 
-      vi.useFakeTimers();
+      vi.useFakeTimers({ toFake: ["Date"] });
       vi.setSystemTime(1722606812000);
       await dailyLeaderboardEnabled(true);
     });
@@ -892,7 +892,7 @@ describe("Loaderboard Controller", () => {
       [getXpWeeklyLeaderboardMock, getResultMock].forEach((it) =>
         it.mockClear(),
       );
-      vi.useFakeTimers();
+      vi.useFakeTimers({ toFake: ["Date"] });
       vi.setSystemTime(1722606812000);
       await weeklyLeaderboardEnabled(true);
 
@@ -1077,7 +1077,7 @@ describe("Loaderboard Controller", () => {
       [getXpWeeklyLeaderboardMock, getRankMock].forEach((it) => it.mockClear());
 
       await weeklyLeaderboardEnabled(true);
-      vi.useFakeTimers();
+      vi.useFakeTimers({ toFake: ["Date"] });
       vi.setSystemTime(1722606812000);
 
       getXpWeeklyLeaderboardMock.mockReturnValue({
