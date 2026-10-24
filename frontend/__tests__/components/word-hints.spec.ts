@@ -1,36 +1,27 @@
-import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
+import { beforeEach, describe, expect, it } from "vite-plus/test";
 import {
   createHintsNodes,
   joinOverlappingHints,
   updateHintsPositionDebounced,
 } from "../../src/features/typing/components/words/hints";
 import * as TestWords from "../../src/features/typing/runtime/test-words";
-
-const state = vi.hoisted(() => ({ rtl: false, result: false }));
-vi.mock("../../src/ts/config/store", () => ({
-  getMutableConfig: (() => {
-    const storedConfig = { indicateTypos: "below" };
-    return () => storedConfig;
-  })(),
-}));
-vi.mock("../../src/ts/states/test", () => ({
-  getActiveWordIndex: () => 0,
-  isLanguageRightToLeft: () => state.rtl,
-  isDirectionReversed: () => false,
-  getResultVisible: () => state.result,
-}));
-vi.mock("../../src/ts/states/test-dom", () => ({
-  getWordsElement: () => document.getElementById("words"),
-}));
-vi.mock("../../src/ts/utils/misc", () => ({
-  debounceUntilResolved: (fn: () => Promise<void>) => fn,
-}));
+import { getMutableConfig } from "../../src/ts/config/store";
+import { setTestElements } from "../../src/ts/states/test-dom";
+import {
+  isLanguageRightToLeft,
+  setIsLanguageRightToLeft,
+  setIsDirectionReversed,
+  setResultVisible,
+  resetActiveWordIndex,
+} from "../../src/ts/states/test";
 
 function createLetters(count = 3): HTMLElement[] {
   return Array.from({ length: count }, (_, index) => {
     const letter = document.createElement("letter");
     Object.defineProperties(letter, {
-      offsetLeft: { value: state.rtl ? (count - index - 1) * 10 : index * 10 },
+      offsetLeft: {
+        value: isLanguageRightToLeft() ? (count - index - 1) * 10 : index * 10,
+      },
       offsetWidth: { value: 10 },
       offsetTop: { value: 0, configurable: true },
     });
@@ -54,13 +45,25 @@ function measureHints(word: HTMLElement): void {
 }
 
 beforeEach(() => {
-  state.rtl = false;
-  state.result = false;
+  setIsLanguageRightToLeft(false);
+  setIsDirectionReversed(false);
+  setResultVisible(false);
+  resetActiveWordIndex();
+  getMutableConfig().indicateTypos = "below";
   TestWords.words.reset();
   TestWords.words.push("abc ", 0);
   const words = document.createElement("div");
   words.id = "words";
   document.body.replaceChildren(words);
+  setTestElements({
+    words,
+    wordsWrapper: document.createElement("div"),
+    wordsInput: document.createElement("textarea"),
+    caret: document.createElement("div"),
+    paceCaret: document.createElement("div"),
+    typingTest: document.createElement("div"),
+    keyboardProxy: document.createElement("input"),
+  });
 });
 
 describe("word hints", () => {
@@ -101,7 +104,7 @@ describe("word hints", () => {
   it.each([false, true])(
     "joins overlapping hints without parsing their text (RTL=%s)",
     async (rtl) => {
-      state.rtl = rtl;
+      setIsLanguageRightToLeft(rtl);
       if (rtl) {
         TestWords.words.reset();
         TestWords.words.push("אבג ", 0);
@@ -146,6 +149,10 @@ describe("word hints", () => {
       letters,
       word.getElementsByTagName("hint"),
     );
+    // Resize onto separate lines so native hint widths cannot join them again.
+    letters.forEach((letter, index) =>
+      Object.defineProperty(letter, "offsetTop", { value: index * 20 }),
+    );
     await updateHintsPositionDebounced();
     expect(word.querySelector(".hints")?.textContent).toBe('<&"');
     expect(
@@ -156,7 +163,7 @@ describe("word hints", () => {
   it("leaves hints alone when the result is visible", async () => {
     const word = attachHints(createLetters(), "abc");
     const first = word.querySelector("hint");
-    state.result = true;
+    setResultVisible(true);
     await updateHintsPositionDebounced();
     expect(word.querySelector("hint")).toBe(first);
   });

@@ -109,7 +109,7 @@ describe("ScrollToTop", () => {
   });
 
   it("follows the page scroll container when there is one", async () => {
-    const scroller = document.createElement("div");
+    const scroller = createScroller();
     const scrollToSpy = vi.fn();
     scroller.scrollTo = scrollToSpy;
     setPageScroller(scroller);
@@ -127,7 +127,7 @@ describe("ScrollToTop", () => {
 
   it("follows a page scroll container registered after mount", () => {
     const { button } = renderElement();
-    const scroller = document.createElement("div");
+    const scroller = createScroller();
     setPageScroller(scroller);
 
     scroller.scrollTop = 150;
@@ -141,5 +141,19 @@ describe("ScrollToTop", () => {
   function scrollTo(value: number): void {
     Object.defineProperty(window, "scrollY", { value, writable: true });
     window.dispatchEvent(new Event("scroll"));
+  }
+
+  function createScroller(): HTMLDivElement {
+    // Real scrolling needs a connected element with overflowing content.
+    const { container } = render(() => (
+      <div style={{ height: "100px", overflow: "auto" }}>
+        <div style={{ height: "400px" }} />
+      </div>
+    ));
+    const scroller = container.firstElementChild;
+    if (!(scroller instanceof HTMLDivElement)) {
+      throw new Error("Missing scroll fixture");
+    }
+    return scroller;
   }
 });
