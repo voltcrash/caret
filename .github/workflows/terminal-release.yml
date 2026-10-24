@@ -114,7 +114,7 @@ jobs:
       - name: Install distribution emulator and isolated display tools
         run: |
           vp exec sudo apt-get update
-          vp exec sudo apt-get install --no-install-recommends -y ${{ matrix.emulator }} xvfb xdotool fonts-dejavu-core fonts-noto-cjk fonts-noto-color-emoji
+          vp exec sudo apt-get install --no-install-recommends -y ${{ matrix.emulator }} xvfb xdotool libxkbcommon-x11-0 fonts-dejavu-core fonts-noto-cjk fonts-noto-color-emoji
       - name: Real key encoding, Unicode, resize, history and cleanup
         run: vp run terminal:test:emulator -- --emulator ${{ matrix.emulator }} --command /usr/bin/${{ matrix.emulator }} --evidence target/terminal-emulator-evidence
       - name: Retain exact emulator versions and test traces
