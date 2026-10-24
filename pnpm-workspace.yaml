@@ -22,7 +22,7 @@ overrides:
   "form-data@^4": "4.0.6"
   "tmp": "0.2.7"
   "esbuild": "0.28.2"
-  "@babel/core@^7": "7.29.6"
+  "@babel/core@^7": "7.29.7"
   "yaml@^1": "1.10.3"
   "source-map-js": "1.2.2"
   "browserslist": "4.28.7"
