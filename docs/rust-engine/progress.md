@@ -617,3 +617,42 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
   mode requires new --text/--file (or choose --mode words and F4 editor). Local
   packs must be explicitly supplied again. No silent content substitution.
 - Platform/manual terminal gate remains unperformed; continue packaging.
+
+## Phase 3.5 verification checkpoint (platform gate still active)
+
+- Source `ba66f8ebb`: isolated fresh checkout `/tmp/oxytype-stage3-clean`, empty
+  target/generated/dist, frozen install, native tests, actual Cloudflare build,
+  Wrangler dry-run and all nine workspace typechecks pass. Whole-repo format/Knip
+  pass. Full website/native/Wasm CI `40064612700` succeeds at this source.
+- Wasm remains 765,852 bytes, exact SHA-256 matches current/fresh checkout. Shared
+  core/browser runtime is unchanged by terminal implementation; original web
+  performance budgets and references remain untouched.
+- Native release tooling produces GPL/attribution/third-party-notice archives and
+  checksums; Linux ARM64 local archive 1.6 MiB passes installed binary checks with
+  empty PATH/cwd, bundled synthetic modes, storage/export and release PTY. Host
+  GNU libc 2.43; do not infer lower compatibility from that local check.
+- `vp run terminal:source`: 69 MiB corresponding-source archive, locked vendored
+  dependencies, relative Cargo vendor config and separate offline native compile
+  pass. Pinned upstream ts-rs LICENSE supplies text omitted by its crates.io
+  packages; revision/license/hash mechanically checked. Missing notices fail.
+- Five native jobs plus source job added separately from website CI. Narrowed
+  Rust runtime paths; 64 routing checks pass, including terminal-only independence.
+  PR #186 draft: https://github.com/voltcrash/oxytype/pull/186, stacked on #185.
+- Initial platform CI `40064530451`: both Linux archives/source pass. Windows
+  found an unused Unix-only suspend parameter; fixed. macOS PTY output required
+  continuous draining; then Darwin revoked the PTY after session-leader exit.
+  Harness now retains a shell-like session leader to inspect actual cleanup;
+  Linux revised lifecycle checks pass. macOS rerun is required, not claimed.
+- Additional terminal review fixed full-passage custom defaults (previous section-1
+  default stopped after first word), CRLF/LF entry preparation, native stopped
+  letter visual feedback and lossless deletion of partial UTF-16 feedback. Tests
+  require all multiline/emoji text, not only completion. No shared fixture changed.
+- Nineteen terminal integration tests pass (plus one ignored subprocess helper
+  explicitly launched/killed by its parent test). Actual process termination during
+  a write preserves committed history. Clippy passes. Pending writes block new
+  sessions until retry; unknown stored formats are labelled without validation
+  claims. Latest native platform rerun follows the PTY keeper fix.
+- Real Linux enhanced/macOS/Windows Terminal manual checks remain unavailable.
+  Requested access/test records asynchronously; no answer yet. Publish workflow
+  refuses the pending manual matrix. No release tag/publication or production
+  deployment performed. Continue all available checks before stopping.
