@@ -23,16 +23,16 @@ def dimensions(slave, columns=100, rows=24):
 
 
 class Child:
-    def __init__(self, binary, failure=None, args=(), enhanced=False):
+    def __init__(self, binary, failure=None, args=(), enhanced=False, keyboard=None, term="xterm-256color"):
         self.profile = tempfile.TemporaryDirectory(prefix="oxytype-pty-")
         self.enhanced = enhanced
-        self.query_replied = False
+        self.queries_replied = 0
         self.master, self.slave = pty.openpty()
         dimensions(self.slave)
         self.original = termios.tcgetattr(self.slave)
         self.output = bytearray()
         self.status_path = pathlib.Path(self.profile.name) / "exit-status"
-        env = dict(os.environ, TERM="xterm-256color", OXYTYPE_PTY_STATUS=str(self.status_path))
+        env = dict(os.environ, TERM=term, OXYTYPE_PTY_STATUS=str(self.status_path))
         if failure:
             env["OXYTYPE_TERMINAL_TEST_FAILURE"] = failure
 
@@ -40,7 +40,7 @@ class Child:
             os.setsid()
             fcntl.ioctl(self.slave, termios.TIOCSCTTY, 0)
 
-        self.process = subprocess.Popen([sys.executable, str(pathlib.Path(__file__).resolve()), "--keeper", binary, "--config-dir", self.profile.name + "/config", "--data-dir", self.profile.name + "/data", "--keyboard", "auto" if enhanced else "basic", *args], stdin=self.slave, stdout=self.slave,
+        self.process = subprocess.Popen([sys.executable, str(pathlib.Path(__file__).resolve()), "--keeper", binary, "--config-dir", self.profile.name + "/config", "--data-dir", self.profile.name + "/data", "--keyboard", keyboard or ("auto" if enhanced else "basic"), *args], stdin=self.slave, stdout=self.slave,
                                         stderr=self.slave, env=env,
                                         preexec_fn=controlling_terminal)
 
@@ -48,10 +48,10 @@ class Child:
         if select.select([self.master], [], [], seconds)[0]:
             try:
                 self.output.extend(os.read(self.master, 65536))
-                if self.enhanced and not self.query_replied and b"\x1b[?u" in self.output:
+                if self.enhanced and self.output.count(b"\x1b[?u") > self.queries_replied:
                     # Protocol simulation, not a claim of hardware-terminal coverage.
                     self.send(b"\x1b[?0u\x1b[?1;2c")
-                    self.query_replied = True
+                    self.queries_replied += 1
             except OSError as error:
                 if error.errno != errno.EIO:
                     raise
@@ -68,48 +68,7 @@ class Child:
         raise AssertionError(f"Missing {text!r}; process={self.process.poll()}; output={bytes(self.output[-2000:])!r}")
 
     def screen_text(self):
-        # Minimal VT screen reader for assertions. Preserve unchanged cells and
-        # cursor moves between Ratatui frames, unlike stripping ANSI bytes.
-        grid, row, col = {}, 0, 0
-        data = self.output.decode("utf-8", errors="replace")
-        i = 0
-        while i < len(data):
-            if data[i] == "\x1b":
-                match = re.match(r"\x1b\[([0-?]*)([ -/]*)([@-~])", data[i:])
-                if match:
-                    params, _, command = match.groups()
-                    private = params.startswith("?")
-                    values = [int(v or 0) for v in params.lstrip("?>").split(";") if v.isdigit() or not v]
-                    first = (values or [0])[0]
-                    amount = first or 1
-                    if command in ("H", "f"):
-                        row = amount - 1
-                        col = (values[1] or 1) - 1 if len(values) > 1 else 0
-                    elif command == "G": col = amount - 1
-                    elif command == "d": row = amount - 1
-                    elif command == "A": row = max(0, row - amount)
-                    elif command == "B": row += amount
-                    elif command == "C": col += amount
-                    elif command == "D": col = max(0, col - amount)
-                    elif command == "J" and first in (2, 3): grid.clear()
-                    elif command == "K":
-                        for key in list(grid):
-                            if key[0] == row and (first == 2 or (first == 0 and key[1] >= col) or (first == 1 and key[1] <= col)):
-                                del grid[key]
-                    elif command == "h" and private and first == 1049:
-                        grid.clear(); row = col = 0
-                    i += len(match.group())
-                    continue
-                i += 2
-                continue
-            char = data[i]
-            if char == "\r": col = 0
-            elif char == "\n": row += 1
-            elif not unicodedata.category(char).startswith("C"):
-                grid[row, col] = char
-                col += 0 if unicodedata.combining(char) else (2 if unicodedata.east_asian_width(char) in ("W", "F") else 1)
-            i += 1
-        return "\n".join("".join(grid.get((y, x), " ") for x in range(200)) for y in range(100))
+        return screen_text(self.output)
 
     def send(self, text):
         os.write(self.master, text)
@@ -148,6 +107,58 @@ class Child:
             os.close(self.master)
             os.close(self.slave)
             self.profile.cleanup()
+
+
+def screen_text(output):
+    # Minimal VT screen reader for assertions. Preserve unchanged cells and
+    # cursor moves between Ratatui frames, unlike stripping ANSI bytes.
+    grid, row, col = {}, 0, 0
+    data = output.decode("utf-8", errors="replace")
+    i = 0
+    while i < len(data):
+        if data[i] == "\x1b":
+            match = re.match(r"\x1b\[([0-?]*)([ -/]*)([@-~])", data[i:])
+            if match:
+                params, _, command = match.groups()
+                private = params.startswith("?")
+                values = [int(v or 0) for v in params.lstrip("?>").split(";") if v.isdigit() or not v]
+                first = (values or [0])[0]
+                amount = first or 1
+                if command in ("H", "f"):
+                    row = amount - 1
+                    col = (values[1] or 1) - 1 if len(values) > 1 else 0
+                elif command == "G": col = amount - 1
+                elif command == "d": row = amount - 1
+                elif command == "A": row = max(0, row - amount)
+                elif command == "B": row += amount
+                elif command == "C": col += amount
+                elif command == "D": col = max(0, col - amount)
+                elif command == "J" and first in (2, 3): grid.clear()
+                elif command == "K":
+                    for key in list(grid):
+                        if key[0] == row and (first == 2 or (first == 0 and key[1] >= col) or (first == 1 and key[1] <= col)):
+                            del grid[key]
+                elif command == "h" and private and first == 1049:
+                    grid.clear(); row = col = 0
+                i += len(match.group())
+                continue
+            i += 2
+            continue
+        char = data[i]
+        if char == "\r": col = 0
+        elif char == "\n": row += 1
+        elif not unicodedata.category(char).startswith("C"):
+            if unicodedata.category(char).startswith("M"):
+                previous=col-1
+                while previous>0 and grid.get((row,previous))=="": previous-=1
+                grid[row,previous]=grid.get((row,previous),"")+char
+            else:
+                grid[row,col]=char
+                width=2 if unicodedata.east_asian_width(char) in ("W","F") else 1
+                if width==2: grid[row,col+1]=""  # Occupied continuation cell, not a space.
+                col+=width
+        i += 1
+    return "\n".join("".join(grid.get((y, x), " ") for x in range(200)) for y in range(100))
 
 
 def run(binary, release=False):
@@ -270,8 +281,65 @@ def run(binary, release=False):
     finally:
         child.close()
 
+    # CSI-u protocol boundaries are shared by Kitty-compatible implementations.
+    # Deliberately fragment sequences and UTF-8; do not assume one read per key.
+    child = Child(binary, args=["--mode", "zen", "--record-replay"], enhanced=True)
+    try:
+        child.until(b"Input:")
+        for packet in (b"\x1b[65;2u", b"\x1b[98:66;2u", b"\x1b[33;2u", "e\u0301界😀".encode()):
+            # A bare ESC is ambiguous with Esc; terminal CSI introducers are
+            # atomic. Exercise buffering after the introducer and within UTF-8.
+            if packet.startswith(b"\x1b["):
+                child.send(packet[:2])
+                packet=packet[2:]
+            for octet in packet:
+                child.send(bytes([octet]))
+                time.sleep(0.002)
+        child.until("Input: AB!e\u0301界😀".encode())
+        child.send(b"\x1b[127u\x1b[127;1:3u")  # Emoji grapheme once, ignore release.
+        child.until("Input: AB!e\u0301界".encode())
+        child.send(b"\x1b[120;5u\x1b[120;3u")  # Ctrl/Alt shortcuts never type x.
+        child.send(b"\x1b[13;5:3u\x1b[19;1:3~")  # Finish releases never finish.
+        child.send(b"\x1b[97;65u")  # Caps-lock modifier does not discard committed text.
+        child.until("Input: AB!e\u0301界a".encode())
+        child.send(b"\x1b[127;5u")  # Ctrl+Backspace deletes word through the core.
+        child.until(b"Input:")
+        child.send(b"\x1b[122;1u\x1b[122;1:2u\x1b[122;1:3u")
+        child.until(b"Input: zz")
+        child.send(b"\x1b[13;5u")
+        child.until(b"Result saved locally.")
+        with sqlite3.connect(pathlib.Path(child.profile.name) / "data/history.sqlite3") as db:
+            saved=json.loads(db.execute("SELECT json FROM results").fetchone()[0])
+        assert saved["capabilities"]["releaseObserved"]
+        assert saved["capabilities"]["repeatObserved"]
+        assert saved["summary"]["keyDuration"] is None
+        inputs=[e["data"] for e in saved["replayLog"]["events"] if e["type"]=="input"]
+        assert inputs[-1]["inputValue"]==[122,122], inputs
+        assert not any(e.get("data")==[120] for e in inputs), "Shortcut became typing"
+        child.send(b"\x1b[21~")  # F10 legacy functional encoding.
+        assert child.wait_exit()==0
+        child.restored()
+    finally:
+        child.close()
+
+    # A graphics-capable or unknown terminal need not support enhanced keys.
+    # The unanswered bounded query falls back without swallowing ordinary input.
+    child = Child(binary, args=["--mode", "zen"], keyboard="auto", term="xterm-kitty")
+    try:
+        child.until(b"Input:")
+        assert b"\x1b[>3u" not in child.output
+        child.send(b"fallback")
+        child.until(b"Input: fallback")
+        child.send(b"\x1bOP")
+        child.until(b"Keyboard: basic")
+        child.send(b"\x11")
+        assert child.wait_exit()==0
+        child.restored()
+    finally:
+        child.close()
+
     for failure in (("signal", "suspend") if release else ("error", "panic", "signal", "suspend")):
-        child = Child(binary, failure if failure in ("error", "panic") else None)
+        child = Child(binary, failure if failure in ("error", "panic") else None, enhanced=True)
         try:
             if failure in ("error", "panic"):
                 assert child.wait_exit() != 0
@@ -298,7 +366,7 @@ def run(binary, release=False):
             child.restored()
         finally:
             child.close()
-    print("PTY: five modes, settings/editor, history/export/replay, basic/enhanced protocol, typing/finish/restart/resize/quit, SIGTERM, suspend/resume pass" + ("; debug error/panic cleanup pass" if not release else ""))
+    print("PTY: five modes, settings/editor, history/export/replay, basic/enhanced/fragmented/fallback protocol, typing/finish/restart/resize/quit, SIGTERM, suspend/resume pass" + ("; debug error/panic cleanup pass" if not release else ""))
 
 
 def keep_session(binary_args):
