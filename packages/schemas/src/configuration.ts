@@ -119,6 +119,13 @@ export const ConfigurationSchema = z.object({
       enabled: z.boolean(),
       maxFingerprints: z.number().int().nonnegative(),
     }),
+    logVerification: z.object({
+      enabled: z
+        .boolean()
+        .describe(
+          "Replay attached event logs and reject results whose metrics disagree",
+        ),
+    }),
   }),
 });
 export type Configuration = z.infer<typeof ConfigurationSchema>;

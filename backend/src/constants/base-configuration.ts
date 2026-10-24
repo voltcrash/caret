@@ -383,6 +383,17 @@ export const CONFIGURATION_FORM_SCHEMA: FormSchema = {
             },
           },
         },
+        logVerification: {
+          type: "object",
+          label: "Event Log Verification",
+          fields: {
+            enabled: {
+              type: "boolean",
+              label: "Enabled",
+              hint: "Replay attached event logs with the Rust engine and reject results whose metrics disagree.",
+            },
+          },
+        },
       },
     },
   },
