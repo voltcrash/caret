@@ -58,7 +58,7 @@
     "@ts-rest/open-api": "3.52.1",
     "better-auth": "1.7.12",
     "date-fns": "4.4.0",
-    "drizzle-orm": "0.45.3",
+    "drizzle-orm": "0.45.4",
     "object-hash": "3.0.0",
     "qs": "6.16.0",
     "zod": "4.6.5"
