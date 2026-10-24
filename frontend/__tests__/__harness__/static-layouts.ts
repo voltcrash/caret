@@ -2,7 +2,6 @@
 import { vi } from "vite-plus/test";
 
 const layouts = import.meta.glob("../../static/layouts/*.json", {
-  eager: true,
   import: "default",
 });
 
@@ -12,9 +11,9 @@ vi.mock("../../src/ts/utils/json-data", async (importOriginal) => {
   return {
     ...original,
     getLayout: async (name: string): ReturnType<typeof original.getLayout> => {
-      const layout = layouts[`../../static/layouts/${name}.json`];
-      if (layout === undefined) throw new Error(`Missing test layout: ${name}`);
-      return structuredClone(layout) as Awaited<
+      const load = layouts[`../../static/layouts/${name}.json`];
+      if (load === undefined) throw new Error(`Missing test layout: ${name}`);
+      return structuredClone(await load()) as Awaited<
         ReturnType<typeof original.getLayout>
       >;
     },
