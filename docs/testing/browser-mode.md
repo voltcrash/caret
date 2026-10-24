@@ -31,8 +31,10 @@ vp -C frontend test run --project node
 vp -C frontend test run __tests__/browser/native.browser.tsx __tests__/browser/lifecycle.browser.tsx
 ```
 
-Browser files run in sequence with one worker. The pinned browser provider
-can fail while it removes concurrent mock routes. CI keeps its two file shards.
+Browser files run in sequence with one worker. CI keeps its two file shards.
+Vitest and its browser packages use 5.0.5, which includes the upstream fixes for
+[mock interception](https://github.com/vitest-dev/vitest/commit/d6620fae6) and
+[mock cleanup](https://github.com/vitest-dev/vitest/commit/e9c3d72f0).
 Both shards install Chromium with system libraries. Failed tests save
 screenshots in `frontend/.vitest/attachments`; CI uploads them for seven days.
 

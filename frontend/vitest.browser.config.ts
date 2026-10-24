@@ -112,8 +112,7 @@ export const browserProject = {
     globals: true,
     testTimeout: 10_000,
     hookTimeout: 10_000,
-    // Concurrent mock-route teardown can fail in the pinned browser provider.
-    // CI parallelizes independent file shards instead.
+    // Keep browser resource use bounded; CI parallelizes independent file shards.
     fileParallelism: false,
     maxWorkers: 1,
     browser: {
