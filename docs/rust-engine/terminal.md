@@ -106,6 +106,9 @@ protect prior committed data; a result not yet committed can be lost.
 | Linux ARM64, POSIX PTY/basic protocol | Five modes, settings/editor, history/export/replay, resize, cleanup, SIGTERM, suspend/resume | Pass |
 | Linux ARM64, simulated enhanced protocol in PTY | Negotiation, press/repeat/release, owned flag cleanup | Pass; protocol simulation |
 | Linux x86_64/ARM64 and macOS Intel/Apple Silicon CI PTYs | Native input/editing/history; POSIX lifecycle, resize, suspend/resume, extracted release input | Pass; automated PTY |
+| Kitty 0.32.2 and 0.49.2, Linux Xvfb | Auto/basic, real text/key encoding, Unicode, repeats, resize, history/editor/replay, native results, cleanup | Pass; automated real emulator |
+| Alacritty 0.17.0, Linux Xvfb | Same auto/basic flow; native UTF-16/grapheme input and cleanup | Pass; automated real emulator |
+| Ghostty 1.3.1, Linux Xvfb | Same auto/basic flow; basic uses committed é; F8 avoids default fullscreen binding | Pass; automated real emulator |
 | Ratatui TestBackend | Combining/CJK/emoji/tab/newline/cell wrapping/caret/UTF-16 deletion | Pass; simulated display |
 | Physical Linux input/IME | Hardware/IME, font appearance and scrollback | Unperformed; not a merge requirement |
 | Real macOS terminal | Hardware/IME, font appearance, resize, suspend | Owner will check after merge |
@@ -115,7 +118,8 @@ Real Linux emulator tests run actual Kitty/Ghostty/Alacritty processes with
 XTest input in private Xvfb displays. They exercise key encoding, combining/CJK/
 emoji UTF-16/grapheme deletion, repeats/releases, resize/input blocking, native
 scores, history/replay/editor and actual keyboard-stack/raw-mode cleanup. They
-are automated emulator checks; hardware IME and visual font inspection remain
+are automated emulator checks; [terminal-emulators.json](terminal-emulators.json)
+records exact binary/emulator versions and capabilities. Hardware IME and visual font inspection remain
 unperformed. Exact versions/results are recorded in progress.md.
 
 `terminal:test:emulator` requires Linux Xvfb, xdotool, libX11 and the selected

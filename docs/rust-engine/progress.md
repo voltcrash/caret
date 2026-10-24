@@ -37,9 +37,9 @@ Earlier entries below are chronological evidence, superseded where scope changed
 | 2.6 TypeScript retirement | Complete | Legacy package removed; full native/Wasm/website/quality CI, fresh build/types and frozen performance gates pass. |
 | 3.1 Terminal shell | Complete | Native smoke/score test; real PTY typing, finish/restart, resize, error/panic, SIGTERM and suspend/resume pass. |
 | 3.2 Offline content | Complete | Bundled words/eight original quotes; five modes, CLI/settings/editor, bounded v1 packs; native/full-fixture and actual PTY checks pass. |
-| 3.3 Input / Unicode | Implemented; manual gate blocked | Native Unicode/TestBackend, Linux/macOS PTY and Windows ConPTY pass; real emulator/font/IME checks unavailable. |
+| 3.3 Input / Unicode | Complete for revised merge scope | Real Kitty 0.32.2/0.49.2, Alacritty 0.17.0 and Ghostty 1.3.1 auto/basic pass; native UTF-16/TestBackend/wire/PTY pass. Mac manual deferred by owner. |
 | 3.4 Settings / history | Complete | SQLite reopen/concurrency/corruption/retry/export and actual history/replay PTY pass. |
-| 3.5 Packaging / release | Automated gates complete; publication gated | All five native candidates and corresponding source pass CI 40068412137; downloaded checksums/source pairing verified. Required manual matrix pending. |
+| 3.5 Packaging / release | Current-scope CI active; publication gated | Four Linux/macOS targets and required Linux emulator CI running. Owner Mac manual record required only for later publication. |
 
 ## Verification log
 
@@ -756,3 +756,37 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
   Unicode, repeats, resize/history/editor/replay and terminal cleanup assertions.
   Kitty auto/basic pass; Alacritty follow-up still under investigation. Do not
   mark the new emulator/CI gates passed until final runs complete.
+
+
+## Linux emulator acceptance checkpoint (revised scope)
+
+- Runtime/harness `6f6b25f7f4c2dc63958b3c3ccfa84d47676a4f1f`: all eight real
+  auto/basic runs pass on Kitty 0.32.2 and 0.49.2, Alacritty 0.17.0 and Ghostty
+  1.3.1. Exact binary version/hash, host, capabilities, Unicode fixture and repeat
+  deliveries recorded in terminal-emulators.json. Each run uses an isolated Xvfb
+  server and fresh app/emulator config; no user windows or profiles are targeted.
+- Older Kitty reproduced two legacy Backspace deliveries per action with release
+  reporting enabled. Fixed native auto negotiation to request disambiguation only
+  (flag 1), preserving ordinary committed UTF-8. Real old/new Kitty now pass with
+  one grapheme deleted. No scoring/input rules moved out of shared Rust core.
+- All runs verify actual native result/history/replay/editor flow, 87.5% edited
+  custom accuracy, resize blocking, held repeat deliveries, unavailable physical
+  timing, raw mode restored and the real terminal's keyboard query returns zero
+  after exit. Release/repeat kinds remain false when unobserved; explicit CSI-u
+  release/repeat/fallback/fragmented-payload behavior is still covered by PTY tests.
+- Harness fixes: Xvfb -noreset retains the preloaded Unicode keymap; direct XTest
+  function/Unicode codes avoid xdotool aliases; await mapped/visible focus before
+  handshake. Unknown multimedia scancodes, dynamic keymap races and async resize
+  were test-driver problems, not evidence of app typing support or failures.
+- Ghostty's default Ctrl+Enter is intercepted for fullscreen; F8 is the portable
+  finish action. GTK basic standalone combining-key input can remain preedit;
+  its basic case uses committed é. Enhanced cases verify combining clusters;
+  hardware/IME/font appearance remains unperformed and is not falsely certified.
+- Current local native 21 integration tests, engine Clippy/format, all shared core
+  tests, enhanced lifecycle PTY, four release-tool/gate regressions and task-wrapper
+  diagnostics pass. `terminal:release-gate` correctly fails only on pending macOS.
+- CI 40085257392 (four native targets, two emulator jobs, source) and full website
+  CI 40085257400 started at this source. Finish these checks and fix failures;
+  then record packaging evidence and make #186 ready. Earlier CI failures were
+  investigated: missing Alacritty XKB runtime, map-before-focus race and old Kitty
+  key-up duplication. No check skipped or fixture/budget changed to pass.
