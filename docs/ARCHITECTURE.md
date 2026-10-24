@@ -21,7 +21,7 @@ Package versions come from the workspace manifests and lockfile.
 
 The root is a private pnpm workspace. Vite+ (`vp run`) runs workspace tasks.
 TypeScript packages use the `@oxytype` scope and export source. Vite, Vitest,
-wrangler and tsx compile it. Rust/Wasm and declarations build automatically before
+wrangler and `vpx` compile it. Rust/Wasm and declarations build automatically before
 development, production, tests and typechecks; see the [engine SDK](../packages/typing-engine/README.md).
 
 ## Application
