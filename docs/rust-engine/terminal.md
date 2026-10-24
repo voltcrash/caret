@@ -54,7 +54,8 @@ app renders text and does not require or send Kitty graphics commands. Protocol
 reference: [Kitty keyboard](https://sw.kovidgoyal.net/kitty/keyboard-protocol/).
 
 `--keyboard basic` skips queries for troublesome terminals/multiplexers. Modified
-Enter may be indistinguishable in basic mode; F8 is always available. Repeat
+Enter may be indistinguishable in basic mode or intercepted by emulator bindings
+(e.g. Ghostty fullscreen); use F8 to finish. Repeat
 deliveries type once each; release events never type. Bracketed paste is blocked
 during tests. Terminals that send unmarked paste cannot be distinguished from
 typing. IME committed text works when delivered as ordinary characters; terminal

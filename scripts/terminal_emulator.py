@@ -86,7 +86,7 @@ def check(args):
     with tempfile.TemporaryDirectory(prefix="oxytype-xserver-") as temporary:
         reader,writer=os.pipe()
         with (pathlib.Path(temporary) / "xserver.log").open("w") as log:
-            server=subprocess.Popen([args.xvfb,"-displayfd",str(writer),"-screen","0","1280x800x24","-nolisten","tcp"],
+            server=subprocess.Popen([args.xvfb,"-displayfd",str(writer),"-noreset","-screen","0","1280x800x24","-nolisten","tcp"],
                                     pass_fds=[writer],stdout=log,stderr=log)
             os.close(writer)
             try:
@@ -105,8 +105,11 @@ def check(args):
                 x11.XChangeKeyboardMapping.argtypes=[ctypes.c_void_p,ctypes.c_int,ctypes.c_int,ctypes.POINTER(ctypes.c_ulong),ctypes.c_int]
                 x11.XSync.argtypes=[ctypes.c_void_p,ctypes.c_int]
                 x11.XCloseDisplay.argtypes=[ctypes.c_void_p]
-                symbols=(ctypes.c_ulong*3)(0x01000301,0x0100754c,0x0101f600)
-                x11.XChangeKeyboardMapping(display,240,1,symbols,3)
+                # Use ordinary letter positions: some GLFW versions ignore text
+                # from unrecognized multimedia scancodes even with Unicode keysyms.
+                for code,symbol in [(24,0x010000e9),(29,0x01000301),(30,0x0100754c),(31,0x0101f600)]:
+                    symbols=(ctypes.c_ulong*1)(symbol)
+                    x11.XChangeKeyboardMapping(display,code,1,symbols,1)
                 x11.XSync(display,False)
                 x11.XCloseDisplay(display)
                 exercise(args)
@@ -157,26 +160,51 @@ def exercise(args):
                         wait(lambda: (profile / "output.vt").exists() and text in screen_text((profile / "output.vt").read_bytes()),text)
                     def xdo(*command):
                         return subprocess.run([args.xdotool,*command],capture_output=True,text=True,check=True,timeout=10).stdout.strip()
-                    visible("Input:")
-                    window=xdo("search","--name","^"+title+"$").splitlines()[-1]
+                    # Older Kitty versions defer PTY query handling until their
+                    # window is focused. Focus the mapped window before waiting
+                    # for the app's keyboard handshake and first frame.
+                    window=xdo("search","--sync","--name","^"+title+"$").splitlines()[-1]
                     xdo("windowfocus",window)
+                    visible("Input:")
                     def key(*keys):
-                        # Explicit physical function-key codes avoid duplicate XKB
-                        # F-key aliases (Alt+Fx) selected by xdotool's name lookup.
-                        keys=[str(66+int(k[1:])) if re.fullmatch(r"F\d+",k) else k for k in keys]
-                        xdo("key","--delay","20",*keys)
+                        # XTest physical codes avoid xdotool's duplicate F-key
+                        # aliases and numeric/Unicode name parsing ambiguities.
+                        unicode_codes={"U00E9":24,"U0301":29,"U754C":30,"U1F600":31}
+                        for k in keys:
+                            code=unicode_codes.get(k,66+int(k[1:]) if re.fullmatch(r"F\d+",k) else None)
+                            if code is None:
+                                xdo("key","--delay","20",k)
+                                continue
+                            x11=ctypes.CDLL("libX11.so.6")
+                            x11.XOpenDisplay.restype=ctypes.c_void_p
+                            display=x11.XOpenDisplay(None)
+                            if not display: raise RuntimeError("Private X display closed")
+                            xtst=ctypes.CDLL("libXtst.so.6")
+                            xtst.XTestFakeKeyEvent.argtypes=[ctypes.c_void_p,ctypes.c_uint,ctypes.c_int,ctypes.c_ulong]
+                            assert xtst.XTestFakeKeyEvent(display,code,True,0)
+                            assert xtst.XTestFakeKeyEvent(display,code,False,0)
+                            x11.XSync.argtypes=[ctypes.c_void_p,ctypes.c_int]
+                            x11.XSync(display,False)
+                            x11.XCloseDisplay.argtypes=[ctypes.c_void_p]
+                            x11.XCloseDisplay(display)
                     def type_text(text): xdo("type","--delay","10",text)
                     key("A","B","exclam")
                     visible("Input: AB!")
-                    type_text("e")
-                    key("U0301")
-                    visible("Input: AB!e\u0301")
+                    # GTK consumes a standalone combining-key press as IME
+                    # preedit in Ghostty basic mode. Test its committed accented
+                    # character; all enhanced paths exercise combining clusters.
+                    accent="é" if args.emulator=="ghostty" and keyboard=="basic" else "e\u0301"
+                    if accent=="é": key("U00E9")
+                    else:
+                        type_text("e")
+                        key("U0301")
+                    visible("Input: AB!"+accent)
                     key("U754C")
-                    visible("Input: AB!e\u0301界")
+                    visible("Input: AB!"+accent+"界")
                     key("U1F600")
-                    visible("Input: AB!e\u0301界😀")
+                    visible("Input: AB!"+accent+"界😀")
                     key("BackSpace")
-                    visible("Input: AB!e\u0301界")
+                    visible("Input: AB!"+accent+"界")
                     key("BackSpace","BackSpace")
                     visible("Input: AB!")
                     key("ctrl+BackSpace" if keyboard=="auto" else "alt+BackSpace")
@@ -194,7 +222,9 @@ def exercise(args):
                     xdo("windowsize",window,"380","180")
                     visible("Resize")
                     type_text("BLOCKED")
-                    key("ctrl+Return" if keyboard=="auto" else "F8")
+                    # Ghostty's default Ctrl+Enter binding toggles fullscreen and
+                    # never reaches the app. F8 is the portable finish binding.
+                    key("ctrl+Return" if keyboard=="auto" and args.emulator!="ghostty" else "F8")
                     # Finish while undersized, then await the durable result before
                     # resizing: XTest delivery is asynchronous, and enlarging early
                     # would allow queued keys to arrive in a correctly enabled UI.
@@ -236,7 +266,7 @@ def exercise(args):
                     evidence.append({"emulator":args.emulator,"version":version,"keyboard":keyboard,
                                      "term":json.loads((profile / "ready.json").read_text())["term"],
                                      "exitCode":0,"keyboardFlagsAfterExit":0,"customAccuracy":87.5,
-                                     "repeatDeliveries":len(final)-6,"capabilities":zen["capabilities"]})
+                                     "repeatDeliveries":len(final)-6,"accentInput":accent,"capabilities":zen["capabilities"]})
                     print(f"{args.emulator}/{keyboard}: real keys, Unicode/grapheme delete, repeat/release, resize, finish, history/replay/editor, native score, cleanup pass",flush=True)
                 finally:
                     if output:
