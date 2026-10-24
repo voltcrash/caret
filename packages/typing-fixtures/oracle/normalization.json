@@ -1,0 +1,3404 @@
+[
+  {
+    "language": "russian",
+    "data": [101],
+    "target": [101],
+    "expected": [101]
+  },
+  {
+    "language": "russian",
+    "data": [101],
+    "target": [1077],
+    "expected": [1077]
+  },
+  {
+    "language": "russian",
+    "data": [101],
+    "target": [1105],
+    "expected": [1105]
+  },
+  {
+    "language": "russian",
+    "data": [101],
+    "target": [39],
+    "expected": [101]
+  },
+  {
+    "language": "russian",
+    "data": [101],
+    "target": [32],
+    "expected": [101]
+  },
+  {
+    "language": "russian",
+    "data": [101],
+    "target": [8194],
+    "expected": [101]
+  },
+  {
+    "language": "russian",
+    "data": [101],
+    "target": [55296],
+    "expected": [101]
+  },
+  {
+    "language": "russian",
+    "data": [1077],
+    "target": [101],
+    "expected": [101]
+  },
+  {
+    "language": "russian",
+    "data": [1077],
+    "target": [1077],
+    "expected": [1077]
+  },
+  {
+    "language": "russian",
+    "data": [1077],
+    "target": [1105],
+    "expected": [1105]
+  },
+  {
+    "language": "russian",
+    "data": [1077],
+    "target": [39],
+    "expected": [1077]
+  },
+  {
+    "language": "russian",
+    "data": [1077],
+    "target": [32],
+    "expected": [1077]
+  },
+  {
+    "language": "russian",
+    "data": [1077],
+    "target": [8194],
+    "expected": [1077]
+  },
+  {
+    "language": "russian",
+    "data": [1077],
+    "target": [55296],
+    "expected": [1077]
+  },
+  {
+    "language": "russian",
+    "data": [1105],
+    "target": [101],
+    "expected": [101]
+  },
+  {
+    "language": "russian",
+    "data": [1105],
+    "target": [1077],
+    "expected": [1077]
+  },
+  {
+    "language": "russian",
+    "data": [1105],
+    "target": [1105],
+    "expected": [1105]
+  },
+  {
+    "language": "russian",
+    "data": [1105],
+    "target": [39],
+    "expected": [1105]
+  },
+  {
+    "language": "russian",
+    "data": [1105],
+    "target": [32],
+    "expected": [1105]
+  },
+  {
+    "language": "russian",
+    "data": [1105],
+    "target": [8194],
+    "expected": [1105]
+  },
+  {
+    "language": "russian",
+    "data": [1105],
+    "target": [55296],
+    "expected": [1105]
+  },
+  {
+    "language": "russian",
+    "data": [8216],
+    "target": [101],
+    "expected": [8216]
+  },
+  {
+    "language": "russian",
+    "data": [8216],
+    "target": [1077],
+    "expected": [8216]
+  },
+  {
+    "language": "russian",
+    "data": [8216],
+    "target": [1105],
+    "expected": [8216]
+  },
+  {
+    "language": "russian",
+    "data": [8216],
+    "target": [39],
+    "expected": [39]
+  },
+  {
+    "language": "russian",
+    "data": [8216],
+    "target": [32],
+    "expected": [8216]
+  },
+  {
+    "language": "russian",
+    "data": [8216],
+    "target": [8194],
+    "expected": [8216]
+  },
+  {
+    "language": "russian",
+    "data": [8216],
+    "target": [55296],
+    "expected": [8216]
+  },
+  {
+    "language": "russian",
+    "data": [39],
+    "target": [101],
+    "expected": [39]
+  },
+  {
+    "language": "russian",
+    "data": [39],
+    "target": [1077],
+    "expected": [39]
+  },
+  {
+    "language": "russian",
+    "data": [39],
+    "target": [1105],
+    "expected": [39]
+  },
+  {
+    "language": "russian",
+    "data": [39],
+    "target": [39],
+    "expected": [39]
+  },
+  {
+    "language": "russian",
+    "data": [39],
+    "target": [32],
+    "expected": [39]
+  },
+  {
+    "language": "russian",
+    "data": [39],
+    "target": [8194],
+    "expected": [39]
+  },
+  {
+    "language": "russian",
+    "data": [39],
+    "target": [55296],
+    "expected": [39]
+  },
+  {
+    "language": "russian",
+    "data": [32],
+    "target": [101],
+    "expected": [32]
+  },
+  {
+    "language": "russian",
+    "data": [32],
+    "target": [1077],
+    "expected": [32]
+  },
+  {
+    "language": "russian",
+    "data": [32],
+    "target": [1105],
+    "expected": [32]
+  },
+  {
+    "language": "russian",
+    "data": [32],
+    "target": [39],
+    "expected": [32]
+  },
+  {
+    "language": "russian",
+    "data": [32],
+    "target": [32],
+    "expected": [32]
+  },
+  {
+    "language": "russian",
+    "data": [32],
+    "target": [8194],
+    "expected": [8194]
+  },
+  {
+    "language": "russian",
+    "data": [32],
+    "target": [55296],
+    "expected": [32]
+  },
+  {
+    "language": "russian",
+    "data": [8194],
+    "target": [101],
+    "expected": [32]
+  },
+  {
+    "language": "russian",
+    "data": [8194],
+    "target": [1077],
+    "expected": [32]
+  },
+  {
+    "language": "russian",
+    "data": [8194],
+    "target": [1105],
+    "expected": [32]
+  },
+  {
+    "language": "russian",
+    "data": [8194],
+    "target": [39],
+    "expected": [32]
+  },
+  {
+    "language": "russian",
+    "data": [8194],
+    "target": [32],
+    "expected": [32]
+  },
+  {
+    "language": "russian",
+    "data": [8194],
+    "target": [8194],
+    "expected": [8194]
+  },
+  {
+    "language": "russian",
+    "data": [8194],
+    "target": [55296],
+    "expected": [32]
+  },
+  {
+    "language": "russian",
+    "data": [8230],
+    "target": [101],
+    "expected": [8230]
+  },
+  {
+    "language": "russian",
+    "data": [8230],
+    "target": [1077],
+    "expected": [8230]
+  },
+  {
+    "language": "russian",
+    "data": [8230],
+    "target": [1105],
+    "expected": [8230]
+  },
+  {
+    "language": "russian",
+    "data": [8230],
+    "target": [39],
+    "expected": [8230]
+  },
+  {
+    "language": "russian",
+    "data": [8230],
+    "target": [32],
+    "expected": [8230]
+  },
+  {
+    "language": "russian",
+    "data": [8230],
+    "target": [8194],
+    "expected": [8230]
+  },
+  {
+    "language": "russian",
+    "data": [8230],
+    "target": [55296],
+    "expected": [8230]
+  },
+  {
+    "language": "russian",
+    "data": [55296],
+    "target": [101],
+    "expected": [55296]
+  },
+  {
+    "language": "russian",
+    "data": [55296],
+    "target": [1077],
+    "expected": [55296]
+  },
+  {
+    "language": "russian",
+    "data": [55296],
+    "target": [1105],
+    "expected": [55296]
+  },
+  {
+    "language": "russian",
+    "data": [55296],
+    "target": [39],
+    "expected": [55296]
+  },
+  {
+    "language": "russian",
+    "data": [55296],
+    "target": [32],
+    "expected": [55296]
+  },
+  {
+    "language": "russian",
+    "data": [55296],
+    "target": [8194],
+    "expected": [55296]
+  },
+  {
+    "language": "russian",
+    "data": [55296],
+    "target": [55296],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_1k",
+    "data": [101],
+    "target": [101],
+    "expected": [101]
+  },
+  {
+    "language": "russian_1k",
+    "data": [101],
+    "target": [1077],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_1k",
+    "data": [101],
+    "target": [1105],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_1k",
+    "data": [101],
+    "target": [39],
+    "expected": [101]
+  },
+  {
+    "language": "russian_1k",
+    "data": [101],
+    "target": [32],
+    "expected": [101]
+  },
+  {
+    "language": "russian_1k",
+    "data": [101],
+    "target": [8194],
+    "expected": [101]
+  },
+  {
+    "language": "russian_1k",
+    "data": [101],
+    "target": [55296],
+    "expected": [101]
+  },
+  {
+    "language": "russian_1k",
+    "data": [1077],
+    "target": [101],
+    "expected": [101]
+  },
+  {
+    "language": "russian_1k",
+    "data": [1077],
+    "target": [1077],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_1k",
+    "data": [1077],
+    "target": [1105],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_1k",
+    "data": [1077],
+    "target": [39],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_1k",
+    "data": [1077],
+    "target": [32],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_1k",
+    "data": [1077],
+    "target": [8194],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_1k",
+    "data": [1077],
+    "target": [55296],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_1k",
+    "data": [1105],
+    "target": [101],
+    "expected": [101]
+  },
+  {
+    "language": "russian_1k",
+    "data": [1105],
+    "target": [1077],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_1k",
+    "data": [1105],
+    "target": [1105],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_1k",
+    "data": [1105],
+    "target": [39],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_1k",
+    "data": [1105],
+    "target": [32],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_1k",
+    "data": [1105],
+    "target": [8194],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_1k",
+    "data": [1105],
+    "target": [55296],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8216],
+    "target": [101],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8216],
+    "target": [1077],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8216],
+    "target": [1105],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8216],
+    "target": [39],
+    "expected": [39]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8216],
+    "target": [32],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8216],
+    "target": [8194],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8216],
+    "target": [55296],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_1k",
+    "data": [39],
+    "target": [101],
+    "expected": [39]
+  },
+  {
+    "language": "russian_1k",
+    "data": [39],
+    "target": [1077],
+    "expected": [39]
+  },
+  {
+    "language": "russian_1k",
+    "data": [39],
+    "target": [1105],
+    "expected": [39]
+  },
+  {
+    "language": "russian_1k",
+    "data": [39],
+    "target": [39],
+    "expected": [39]
+  },
+  {
+    "language": "russian_1k",
+    "data": [39],
+    "target": [32],
+    "expected": [39]
+  },
+  {
+    "language": "russian_1k",
+    "data": [39],
+    "target": [8194],
+    "expected": [39]
+  },
+  {
+    "language": "russian_1k",
+    "data": [39],
+    "target": [55296],
+    "expected": [39]
+  },
+  {
+    "language": "russian_1k",
+    "data": [32],
+    "target": [101],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1k",
+    "data": [32],
+    "target": [1077],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1k",
+    "data": [32],
+    "target": [1105],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1k",
+    "data": [32],
+    "target": [39],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1k",
+    "data": [32],
+    "target": [32],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1k",
+    "data": [32],
+    "target": [8194],
+    "expected": [8194]
+  },
+  {
+    "language": "russian_1k",
+    "data": [32],
+    "target": [55296],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8194],
+    "target": [101],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8194],
+    "target": [1077],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8194],
+    "target": [1105],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8194],
+    "target": [39],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8194],
+    "target": [32],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8194],
+    "target": [8194],
+    "expected": [8194]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8194],
+    "target": [55296],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8230],
+    "target": [101],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8230],
+    "target": [1077],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8230],
+    "target": [1105],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8230],
+    "target": [39],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8230],
+    "target": [32],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8230],
+    "target": [8194],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_1k",
+    "data": [8230],
+    "target": [55296],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_1k",
+    "data": [55296],
+    "target": [101],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_1k",
+    "data": [55296],
+    "target": [1077],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_1k",
+    "data": [55296],
+    "target": [1105],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_1k",
+    "data": [55296],
+    "target": [39],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_1k",
+    "data": [55296],
+    "target": [32],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_1k",
+    "data": [55296],
+    "target": [8194],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_1k",
+    "data": [55296],
+    "target": [55296],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_25k",
+    "data": [101],
+    "target": [101],
+    "expected": [101]
+  },
+  {
+    "language": "russian_25k",
+    "data": [101],
+    "target": [1077],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_25k",
+    "data": [101],
+    "target": [1105],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_25k",
+    "data": [101],
+    "target": [39],
+    "expected": [101]
+  },
+  {
+    "language": "russian_25k",
+    "data": [101],
+    "target": [32],
+    "expected": [101]
+  },
+  {
+    "language": "russian_25k",
+    "data": [101],
+    "target": [8194],
+    "expected": [101]
+  },
+  {
+    "language": "russian_25k",
+    "data": [101],
+    "target": [55296],
+    "expected": [101]
+  },
+  {
+    "language": "russian_25k",
+    "data": [1077],
+    "target": [101],
+    "expected": [101]
+  },
+  {
+    "language": "russian_25k",
+    "data": [1077],
+    "target": [1077],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_25k",
+    "data": [1077],
+    "target": [1105],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_25k",
+    "data": [1077],
+    "target": [39],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_25k",
+    "data": [1077],
+    "target": [32],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_25k",
+    "data": [1077],
+    "target": [8194],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_25k",
+    "data": [1077],
+    "target": [55296],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_25k",
+    "data": [1105],
+    "target": [101],
+    "expected": [101]
+  },
+  {
+    "language": "russian_25k",
+    "data": [1105],
+    "target": [1077],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_25k",
+    "data": [1105],
+    "target": [1105],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_25k",
+    "data": [1105],
+    "target": [39],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_25k",
+    "data": [1105],
+    "target": [32],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_25k",
+    "data": [1105],
+    "target": [8194],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_25k",
+    "data": [1105],
+    "target": [55296],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8216],
+    "target": [101],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8216],
+    "target": [1077],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8216],
+    "target": [1105],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8216],
+    "target": [39],
+    "expected": [39]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8216],
+    "target": [32],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8216],
+    "target": [8194],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8216],
+    "target": [55296],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_25k",
+    "data": [39],
+    "target": [101],
+    "expected": [39]
+  },
+  {
+    "language": "russian_25k",
+    "data": [39],
+    "target": [1077],
+    "expected": [39]
+  },
+  {
+    "language": "russian_25k",
+    "data": [39],
+    "target": [1105],
+    "expected": [39]
+  },
+  {
+    "language": "russian_25k",
+    "data": [39],
+    "target": [39],
+    "expected": [39]
+  },
+  {
+    "language": "russian_25k",
+    "data": [39],
+    "target": [32],
+    "expected": [39]
+  },
+  {
+    "language": "russian_25k",
+    "data": [39],
+    "target": [8194],
+    "expected": [39]
+  },
+  {
+    "language": "russian_25k",
+    "data": [39],
+    "target": [55296],
+    "expected": [39]
+  },
+  {
+    "language": "russian_25k",
+    "data": [32],
+    "target": [101],
+    "expected": [32]
+  },
+  {
+    "language": "russian_25k",
+    "data": [32],
+    "target": [1077],
+    "expected": [32]
+  },
+  {
+    "language": "russian_25k",
+    "data": [32],
+    "target": [1105],
+    "expected": [32]
+  },
+  {
+    "language": "russian_25k",
+    "data": [32],
+    "target": [39],
+    "expected": [32]
+  },
+  {
+    "language": "russian_25k",
+    "data": [32],
+    "target": [32],
+    "expected": [32]
+  },
+  {
+    "language": "russian_25k",
+    "data": [32],
+    "target": [8194],
+    "expected": [8194]
+  },
+  {
+    "language": "russian_25k",
+    "data": [32],
+    "target": [55296],
+    "expected": [32]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8194],
+    "target": [101],
+    "expected": [32]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8194],
+    "target": [1077],
+    "expected": [32]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8194],
+    "target": [1105],
+    "expected": [32]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8194],
+    "target": [39],
+    "expected": [32]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8194],
+    "target": [32],
+    "expected": [32]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8194],
+    "target": [8194],
+    "expected": [8194]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8194],
+    "target": [55296],
+    "expected": [32]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8230],
+    "target": [101],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8230],
+    "target": [1077],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8230],
+    "target": [1105],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8230],
+    "target": [39],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8230],
+    "target": [32],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8230],
+    "target": [8194],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_25k",
+    "data": [8230],
+    "target": [55296],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_25k",
+    "data": [55296],
+    "target": [101],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_25k",
+    "data": [55296],
+    "target": [1077],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_25k",
+    "data": [55296],
+    "target": [1105],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_25k",
+    "data": [55296],
+    "target": [39],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_25k",
+    "data": [55296],
+    "target": [32],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_25k",
+    "data": [55296],
+    "target": [8194],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_25k",
+    "data": [55296],
+    "target": [55296],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [101],
+    "target": [101],
+    "expected": [101]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [101],
+    "target": [1077],
+    "expected": [101]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [101],
+    "target": [1105],
+    "expected": [101]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [101],
+    "target": [39],
+    "expected": [101]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [101],
+    "target": [32],
+    "expected": [101]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [101],
+    "target": [8194],
+    "expected": [101]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [101],
+    "target": [55296],
+    "expected": [101]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [1077],
+    "target": [101],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [1077],
+    "target": [1077],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [1077],
+    "target": [1105],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [1077],
+    "target": [39],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [1077],
+    "target": [32],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [1077],
+    "target": [8194],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [1077],
+    "target": [55296],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [1105],
+    "target": [101],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [1105],
+    "target": [1077],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [1105],
+    "target": [1105],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [1105],
+    "target": [39],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [1105],
+    "target": [32],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [1105],
+    "target": [8194],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [1105],
+    "target": [55296],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8216],
+    "target": [101],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8216],
+    "target": [1077],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8216],
+    "target": [1105],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8216],
+    "target": [39],
+    "expected": [39]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8216],
+    "target": [32],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8216],
+    "target": [8194],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8216],
+    "target": [55296],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [39],
+    "target": [101],
+    "expected": [39]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [39],
+    "target": [1077],
+    "expected": [39]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [39],
+    "target": [1105],
+    "expected": [39]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [39],
+    "target": [39],
+    "expected": [39]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [39],
+    "target": [32],
+    "expected": [39]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [39],
+    "target": [8194],
+    "expected": [39]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [39],
+    "target": [55296],
+    "expected": [39]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [32],
+    "target": [101],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [32],
+    "target": [1077],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [32],
+    "target": [1105],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [32],
+    "target": [39],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [32],
+    "target": [32],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [32],
+    "target": [8194],
+    "expected": [8194]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [32],
+    "target": [55296],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8194],
+    "target": [101],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8194],
+    "target": [1077],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8194],
+    "target": [1105],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8194],
+    "target": [39],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8194],
+    "target": [32],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8194],
+    "target": [8194],
+    "expected": [8194]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8194],
+    "target": [55296],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8230],
+    "target": [101],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8230],
+    "target": [1077],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8230],
+    "target": [1105],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8230],
+    "target": [39],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8230],
+    "target": [32],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8230],
+    "target": [8194],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [8230],
+    "target": [55296],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [55296],
+    "target": [101],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [55296],
+    "target": [1077],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [55296],
+    "target": [1105],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [55296],
+    "target": [39],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [55296],
+    "target": [32],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [55296],
+    "target": [8194],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_phonetic",
+    "data": [55296],
+    "target": [55296],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [101],
+    "target": [101],
+    "expected": [101]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [101],
+    "target": [1077],
+    "expected": [101]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [101],
+    "target": [1105],
+    "expected": [101]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [101],
+    "target": [39],
+    "expected": [101]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [101],
+    "target": [32],
+    "expected": [101]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [101],
+    "target": [8194],
+    "expected": [101]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [101],
+    "target": [55296],
+    "expected": [101]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [1077],
+    "target": [101],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [1077],
+    "target": [1077],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [1077],
+    "target": [1105],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [1077],
+    "target": [39],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [1077],
+    "target": [32],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [1077],
+    "target": [8194],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [1077],
+    "target": [55296],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [1105],
+    "target": [101],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [1105],
+    "target": [1077],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [1105],
+    "target": [1105],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [1105],
+    "target": [39],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [1105],
+    "target": [32],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [1105],
+    "target": [8194],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [1105],
+    "target": [55296],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8216],
+    "target": [101],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8216],
+    "target": [1077],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8216],
+    "target": [1105],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8216],
+    "target": [39],
+    "expected": [39]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8216],
+    "target": [32],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8216],
+    "target": [8194],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8216],
+    "target": [55296],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [39],
+    "target": [101],
+    "expected": [39]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [39],
+    "target": [1077],
+    "expected": [39]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [39],
+    "target": [1105],
+    "expected": [39]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [39],
+    "target": [39],
+    "expected": [39]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [39],
+    "target": [32],
+    "expected": [39]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [39],
+    "target": [8194],
+    "expected": [39]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [39],
+    "target": [55296],
+    "expected": [39]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [32],
+    "target": [101],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [32],
+    "target": [1077],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [32],
+    "target": [1105],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [32],
+    "target": [39],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [32],
+    "target": [32],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [32],
+    "target": [8194],
+    "expected": [8194]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [32],
+    "target": [55296],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8194],
+    "target": [101],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8194],
+    "target": [1077],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8194],
+    "target": [1105],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8194],
+    "target": [39],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8194],
+    "target": [32],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8194],
+    "target": [8194],
+    "expected": [8194]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8194],
+    "target": [55296],
+    "expected": [32]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8230],
+    "target": [101],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8230],
+    "target": [1077],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8230],
+    "target": [1105],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8230],
+    "target": [39],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8230],
+    "target": [32],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8230],
+    "target": [8194],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [8230],
+    "target": [55296],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [55296],
+    "target": [101],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [55296],
+    "target": [1077],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [55296],
+    "target": [1105],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [55296],
+    "target": [39],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [55296],
+    "target": [32],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [55296],
+    "target": [8194],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_phonetic_1k",
+    "data": [55296],
+    "target": [55296],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_k",
+    "data": [101],
+    "target": [101],
+    "expected": [101]
+  },
+  {
+    "language": "russian_k",
+    "data": [101],
+    "target": [1077],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_k",
+    "data": [101],
+    "target": [1105],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_k",
+    "data": [101],
+    "target": [39],
+    "expected": [101]
+  },
+  {
+    "language": "russian_k",
+    "data": [101],
+    "target": [32],
+    "expected": [101]
+  },
+  {
+    "language": "russian_k",
+    "data": [101],
+    "target": [8194],
+    "expected": [101]
+  },
+  {
+    "language": "russian_k",
+    "data": [101],
+    "target": [55296],
+    "expected": [101]
+  },
+  {
+    "language": "russian_k",
+    "data": [1077],
+    "target": [101],
+    "expected": [101]
+  },
+  {
+    "language": "russian_k",
+    "data": [1077],
+    "target": [1077],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_k",
+    "data": [1077],
+    "target": [1105],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_k",
+    "data": [1077],
+    "target": [39],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_k",
+    "data": [1077],
+    "target": [32],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_k",
+    "data": [1077],
+    "target": [8194],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_k",
+    "data": [1077],
+    "target": [55296],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_k",
+    "data": [1105],
+    "target": [101],
+    "expected": [101]
+  },
+  {
+    "language": "russian_k",
+    "data": [1105],
+    "target": [1077],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_k",
+    "data": [1105],
+    "target": [1105],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_k",
+    "data": [1105],
+    "target": [39],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_k",
+    "data": [1105],
+    "target": [32],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_k",
+    "data": [1105],
+    "target": [8194],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_k",
+    "data": [1105],
+    "target": [55296],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_k",
+    "data": [8216],
+    "target": [101],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_k",
+    "data": [8216],
+    "target": [1077],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_k",
+    "data": [8216],
+    "target": [1105],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_k",
+    "data": [8216],
+    "target": [39],
+    "expected": [39]
+  },
+  {
+    "language": "russian_k",
+    "data": [8216],
+    "target": [32],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_k",
+    "data": [8216],
+    "target": [8194],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_k",
+    "data": [8216],
+    "target": [55296],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_k",
+    "data": [39],
+    "target": [101],
+    "expected": [39]
+  },
+  {
+    "language": "russian_k",
+    "data": [39],
+    "target": [1077],
+    "expected": [39]
+  },
+  {
+    "language": "russian_k",
+    "data": [39],
+    "target": [1105],
+    "expected": [39]
+  },
+  {
+    "language": "russian_k",
+    "data": [39],
+    "target": [39],
+    "expected": [39]
+  },
+  {
+    "language": "russian_k",
+    "data": [39],
+    "target": [32],
+    "expected": [39]
+  },
+  {
+    "language": "russian_k",
+    "data": [39],
+    "target": [8194],
+    "expected": [39]
+  },
+  {
+    "language": "russian_k",
+    "data": [39],
+    "target": [55296],
+    "expected": [39]
+  },
+  {
+    "language": "russian_k",
+    "data": [32],
+    "target": [101],
+    "expected": [32]
+  },
+  {
+    "language": "russian_k",
+    "data": [32],
+    "target": [1077],
+    "expected": [32]
+  },
+  {
+    "language": "russian_k",
+    "data": [32],
+    "target": [1105],
+    "expected": [32]
+  },
+  {
+    "language": "russian_k",
+    "data": [32],
+    "target": [39],
+    "expected": [32]
+  },
+  {
+    "language": "russian_k",
+    "data": [32],
+    "target": [32],
+    "expected": [32]
+  },
+  {
+    "language": "russian_k",
+    "data": [32],
+    "target": [8194],
+    "expected": [8194]
+  },
+  {
+    "language": "russian_k",
+    "data": [32],
+    "target": [55296],
+    "expected": [32]
+  },
+  {
+    "language": "russian_k",
+    "data": [8194],
+    "target": [101],
+    "expected": [32]
+  },
+  {
+    "language": "russian_k",
+    "data": [8194],
+    "target": [1077],
+    "expected": [32]
+  },
+  {
+    "language": "russian_k",
+    "data": [8194],
+    "target": [1105],
+    "expected": [32]
+  },
+  {
+    "language": "russian_k",
+    "data": [8194],
+    "target": [39],
+    "expected": [32]
+  },
+  {
+    "language": "russian_k",
+    "data": [8194],
+    "target": [32],
+    "expected": [32]
+  },
+  {
+    "language": "russian_k",
+    "data": [8194],
+    "target": [8194],
+    "expected": [8194]
+  },
+  {
+    "language": "russian_k",
+    "data": [8194],
+    "target": [55296],
+    "expected": [32]
+  },
+  {
+    "language": "russian_k",
+    "data": [8230],
+    "target": [101],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_k",
+    "data": [8230],
+    "target": [1077],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_k",
+    "data": [8230],
+    "target": [1105],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_k",
+    "data": [8230],
+    "target": [39],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_k",
+    "data": [8230],
+    "target": [32],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_k",
+    "data": [8230],
+    "target": [8194],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_k",
+    "data": [8230],
+    "target": [55296],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_k",
+    "data": [55296],
+    "target": [101],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_k",
+    "data": [55296],
+    "target": [1077],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_k",
+    "data": [55296],
+    "target": [1105],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_k",
+    "data": [55296],
+    "target": [39],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_k",
+    "data": [55296],
+    "target": [32],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_k",
+    "data": [55296],
+    "target": [8194],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_k",
+    "data": [55296],
+    "target": [55296],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [101],
+    "target": [101],
+    "expected": [101]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [101],
+    "target": [1077],
+    "expected": [101]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [101],
+    "target": [1105],
+    "expected": [101]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [101],
+    "target": [39],
+    "expected": [101]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [101],
+    "target": [32],
+    "expected": [101]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [101],
+    "target": [8194],
+    "expected": [101]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [101],
+    "target": [55296],
+    "expected": [101]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [1077],
+    "target": [101],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [1077],
+    "target": [1077],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [1077],
+    "target": [1105],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [1077],
+    "target": [39],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [1077],
+    "target": [32],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [1077],
+    "target": [8194],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [1077],
+    "target": [55296],
+    "expected": [1077]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [1105],
+    "target": [101],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [1105],
+    "target": [1077],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [1105],
+    "target": [1105],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [1105],
+    "target": [39],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [1105],
+    "target": [32],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [1105],
+    "target": [8194],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [1105],
+    "target": [55296],
+    "expected": [1105]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8216],
+    "target": [101],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8216],
+    "target": [1077],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8216],
+    "target": [1105],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8216],
+    "target": [39],
+    "expected": [39]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8216],
+    "target": [32],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8216],
+    "target": [8194],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8216],
+    "target": [55296],
+    "expected": [8216]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [39],
+    "target": [101],
+    "expected": [39]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [39],
+    "target": [1077],
+    "expected": [39]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [39],
+    "target": [1105],
+    "expected": [39]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [39],
+    "target": [39],
+    "expected": [39]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [39],
+    "target": [32],
+    "expected": [39]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [39],
+    "target": [8194],
+    "expected": [39]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [39],
+    "target": [55296],
+    "expected": [39]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [32],
+    "target": [101],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [32],
+    "target": [1077],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [32],
+    "target": [1105],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [32],
+    "target": [39],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [32],
+    "target": [32],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [32],
+    "target": [8194],
+    "expected": [8194]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [32],
+    "target": [55296],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8194],
+    "target": [101],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8194],
+    "target": [1077],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8194],
+    "target": [1105],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8194],
+    "target": [39],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8194],
+    "target": [32],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8194],
+    "target": [8194],
+    "expected": [8194]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8194],
+    "target": [55296],
+    "expected": [32]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8230],
+    "target": [101],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8230],
+    "target": [1077],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8230],
+    "target": [1105],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8230],
+    "target": [39],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8230],
+    "target": [32],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8230],
+    "target": [8194],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [8230],
+    "target": [55296],
+    "expected": [8230]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [55296],
+    "target": [101],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [55296],
+    "target": [1077],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [55296],
+    "target": [1105],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [55296],
+    "target": [39],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [55296],
+    "target": [32],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [55296],
+    "target": [8194],
+    "expected": [55296]
+  },
+  {
+    "language": "russian_1kk",
+    "data": [55296],
+    "target": [55296],
+    "expected": [55296]
+  },
+  {
+    "language": "dutch",
+    "data": [101],
+    "target": [101],
+    "expected": [101]
+  },
+  {
+    "language": "dutch",
+    "data": [101],
+    "target": [1077],
+    "expected": [101]
+  },
+  {
+    "language": "dutch",
+    "data": [101],
+    "target": [1105],
+    "expected": [101]
+  },
+  {
+    "language": "dutch",
+    "data": [101],
+    "target": [39],
+    "expected": [101]
+  },
+  {
+    "language": "dutch",
+    "data": [101],
+    "target": [32],
+    "expected": [101]
+  },
+  {
+    "language": "dutch",
+    "data": [101],
+    "target": [8194],
+    "expected": [101]
+  },
+  {
+    "language": "dutch",
+    "data": [101],
+    "target": [55296],
+    "expected": [101]
+  },
+  {
+    "language": "dutch",
+    "data": [1077],
+    "target": [101],
+    "expected": [1077]
+  },
+  {
+    "language": "dutch",
+    "data": [1077],
+    "target": [1077],
+    "expected": [1077]
+  },
+  {
+    "language": "dutch",
+    "data": [1077],
+    "target": [1105],
+    "expected": [1077]
+  },
+  {
+    "language": "dutch",
+    "data": [1077],
+    "target": [39],
+    "expected": [1077]
+  },
+  {
+    "language": "dutch",
+    "data": [1077],
+    "target": [32],
+    "expected": [1077]
+  },
+  {
+    "language": "dutch",
+    "data": [1077],
+    "target": [8194],
+    "expected": [1077]
+  },
+  {
+    "language": "dutch",
+    "data": [1077],
+    "target": [55296],
+    "expected": [1077]
+  },
+  {
+    "language": "dutch",
+    "data": [1105],
+    "target": [101],
+    "expected": [1105]
+  },
+  {
+    "language": "dutch",
+    "data": [1105],
+    "target": [1077],
+    "expected": [1105]
+  },
+  {
+    "language": "dutch",
+    "data": [1105],
+    "target": [1105],
+    "expected": [1105]
+  },
+  {
+    "language": "dutch",
+    "data": [1105],
+    "target": [39],
+    "expected": [1105]
+  },
+  {
+    "language": "dutch",
+    "data": [1105],
+    "target": [32],
+    "expected": [1105]
+  },
+  {
+    "language": "dutch",
+    "data": [1105],
+    "target": [8194],
+    "expected": [1105]
+  },
+  {
+    "language": "dutch",
+    "data": [1105],
+    "target": [55296],
+    "expected": [1105]
+  },
+  {
+    "language": "dutch",
+    "data": [8216],
+    "target": [101],
+    "expected": [8216]
+  },
+  {
+    "language": "dutch",
+    "data": [8216],
+    "target": [1077],
+    "expected": [8216]
+  },
+  {
+    "language": "dutch",
+    "data": [8216],
+    "target": [1105],
+    "expected": [8216]
+  },
+  {
+    "language": "dutch",
+    "data": [8216],
+    "target": [39],
+    "expected": [39]
+  },
+  {
+    "language": "dutch",
+    "data": [8216],
+    "target": [32],
+    "expected": [8216]
+  },
+  {
+    "language": "dutch",
+    "data": [8216],
+    "target": [8194],
+    "expected": [8216]
+  },
+  {
+    "language": "dutch",
+    "data": [8216],
+    "target": [55296],
+    "expected": [8216]
+  },
+  {
+    "language": "dutch",
+    "data": [39],
+    "target": [101],
+    "expected": [39]
+  },
+  {
+    "language": "dutch",
+    "data": [39],
+    "target": [1077],
+    "expected": [39]
+  },
+  {
+    "language": "dutch",
+    "data": [39],
+    "target": [1105],
+    "expected": [39]
+  },
+  {
+    "language": "dutch",
+    "data": [39],
+    "target": [39],
+    "expected": [39]
+  },
+  {
+    "language": "dutch",
+    "data": [39],
+    "target": [32],
+    "expected": [39]
+  },
+  {
+    "language": "dutch",
+    "data": [39],
+    "target": [8194],
+    "expected": [39]
+  },
+  {
+    "language": "dutch",
+    "data": [39],
+    "target": [55296],
+    "expected": [39]
+  },
+  {
+    "language": "dutch",
+    "data": [32],
+    "target": [101],
+    "expected": [32]
+  },
+  {
+    "language": "dutch",
+    "data": [32],
+    "target": [1077],
+    "expected": [32]
+  },
+  {
+    "language": "dutch",
+    "data": [32],
+    "target": [1105],
+    "expected": [32]
+  },
+  {
+    "language": "dutch",
+    "data": [32],
+    "target": [39],
+    "expected": [32]
+  },
+  {
+    "language": "dutch",
+    "data": [32],
+    "target": [32],
+    "expected": [32]
+  },
+  {
+    "language": "dutch",
+    "data": [32],
+    "target": [8194],
+    "expected": [8194]
+  },
+  {
+    "language": "dutch",
+    "data": [32],
+    "target": [55296],
+    "expected": [32]
+  },
+  {
+    "language": "dutch",
+    "data": [8194],
+    "target": [101],
+    "expected": [32]
+  },
+  {
+    "language": "dutch",
+    "data": [8194],
+    "target": [1077],
+    "expected": [32]
+  },
+  {
+    "language": "dutch",
+    "data": [8194],
+    "target": [1105],
+    "expected": [32]
+  },
+  {
+    "language": "dutch",
+    "data": [8194],
+    "target": [39],
+    "expected": [32]
+  },
+  {
+    "language": "dutch",
+    "data": [8194],
+    "target": [32],
+    "expected": [32]
+  },
+  {
+    "language": "dutch",
+    "data": [8194],
+    "target": [8194],
+    "expected": [8194]
+  },
+  {
+    "language": "dutch",
+    "data": [8194],
+    "target": [55296],
+    "expected": [32]
+  },
+  {
+    "language": "dutch",
+    "data": [8230],
+    "target": [101],
+    "expected": [8230]
+  },
+  {
+    "language": "dutch",
+    "data": [8230],
+    "target": [1077],
+    "expected": [8230]
+  },
+  {
+    "language": "dutch",
+    "data": [8230],
+    "target": [1105],
+    "expected": [8230]
+  },
+  {
+    "language": "dutch",
+    "data": [8230],
+    "target": [39],
+    "expected": [8230]
+  },
+  {
+    "language": "dutch",
+    "data": [8230],
+    "target": [32],
+    "expected": [8230]
+  },
+  {
+    "language": "dutch",
+    "data": [8230],
+    "target": [8194],
+    "expected": [8230]
+  },
+  {
+    "language": "dutch",
+    "data": [8230],
+    "target": [55296],
+    "expected": [8230]
+  },
+  {
+    "language": "dutch",
+    "data": [55296],
+    "target": [101],
+    "expected": [55296]
+  },
+  {
+    "language": "dutch",
+    "data": [55296],
+    "target": [1077],
+    "expected": [55296]
+  },
+  {
+    "language": "dutch",
+    "data": [55296],
+    "target": [1105],
+    "expected": [55296]
+  },
+  {
+    "language": "dutch",
+    "data": [55296],
+    "target": [39],
+    "expected": [55296]
+  },
+  {
+    "language": "dutch",
+    "data": [55296],
+    "target": [32],
+    "expected": [55296]
+  },
+  {
+    "language": "dutch",
+    "data": [55296],
+    "target": [8194],
+    "expected": [55296]
+  },
+  {
+    "language": "dutch",
+    "data": [55296],
+    "target": [55296],
+    "expected": [55296]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [101],
+    "target": [101],
+    "expected": [101]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [101],
+    "target": [1077],
+    "expected": [101]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [101],
+    "target": [1105],
+    "expected": [101]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [101],
+    "target": [39],
+    "expected": [101]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [101],
+    "target": [32],
+    "expected": [101]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [101],
+    "target": [8194],
+    "expected": [101]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [101],
+    "target": [55296],
+    "expected": [101]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [1077],
+    "target": [101],
+    "expected": [1077]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [1077],
+    "target": [1077],
+    "expected": [1077]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [1077],
+    "target": [1105],
+    "expected": [1077]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [1077],
+    "target": [39],
+    "expected": [1077]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [1077],
+    "target": [32],
+    "expected": [1077]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [1077],
+    "target": [8194],
+    "expected": [1077]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [1077],
+    "target": [55296],
+    "expected": [1077]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [1105],
+    "target": [101],
+    "expected": [1105]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [1105],
+    "target": [1077],
+    "expected": [1105]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [1105],
+    "target": [1105],
+    "expected": [1105]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [1105],
+    "target": [39],
+    "expected": [1105]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [1105],
+    "target": [32],
+    "expected": [1105]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [1105],
+    "target": [8194],
+    "expected": [1105]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [1105],
+    "target": [55296],
+    "expected": [1105]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8216],
+    "target": [101],
+    "expected": [8216]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8216],
+    "target": [1077],
+    "expected": [8216]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8216],
+    "target": [1105],
+    "expected": [8216]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8216],
+    "target": [39],
+    "expected": [39]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8216],
+    "target": [32],
+    "expected": [8216]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8216],
+    "target": [8194],
+    "expected": [8216]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8216],
+    "target": [55296],
+    "expected": [8216]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [39],
+    "target": [101],
+    "expected": [39]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [39],
+    "target": [1077],
+    "expected": [39]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [39],
+    "target": [1105],
+    "expected": [39]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [39],
+    "target": [39],
+    "expected": [39]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [39],
+    "target": [32],
+    "expected": [39]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [39],
+    "target": [8194],
+    "expected": [39]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [39],
+    "target": [55296],
+    "expected": [39]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [32],
+    "target": [101],
+    "expected": [32]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [32],
+    "target": [1077],
+    "expected": [32]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [32],
+    "target": [1105],
+    "expected": [32]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [32],
+    "target": [39],
+    "expected": [32]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [32],
+    "target": [32],
+    "expected": [32]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [32],
+    "target": [8194],
+    "expected": [8194]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [32],
+    "target": [55296],
+    "expected": [32]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8194],
+    "target": [101],
+    "expected": [32]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8194],
+    "target": [1077],
+    "expected": [32]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8194],
+    "target": [1105],
+    "expected": [32]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8194],
+    "target": [39],
+    "expected": [32]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8194],
+    "target": [32],
+    "expected": [32]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8194],
+    "target": [8194],
+    "expected": [8194]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8194],
+    "target": [55296],
+    "expected": [32]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8230],
+    "target": [101],
+    "expected": [8230]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8230],
+    "target": [1077],
+    "expected": [8230]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8230],
+    "target": [1105],
+    "expected": [8230]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8230],
+    "target": [39],
+    "expected": [8230]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8230],
+    "target": [32],
+    "expected": [8230]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8230],
+    "target": [8194],
+    "expected": [8230]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [8230],
+    "target": [55296],
+    "expected": [8230]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [55296],
+    "target": [101],
+    "expected": [55296]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [55296],
+    "target": [1077],
+    "expected": [55296]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [55296],
+    "target": [1105],
+    "expected": [55296]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [55296],
+    "target": [39],
+    "expected": [55296]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [55296],
+    "target": [32],
+    "expected": [55296]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [55296],
+    "target": [8194],
+    "expected": [55296]
+  },
+  {
+    "language": "dutch_1k",
+    "data": [55296],
+    "target": [55296],
+    "expected": [55296]
+  }
+]

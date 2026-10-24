@@ -1,0 +1,1230 @@
+[
+  {
+    "name": "paired-target-split-events",
+    "log": {
+      "version": 1,
+      "events": [
+        {
+          "type": "input",
+          "testMs": 0,
+          "data": {
+            "inputType": "insertText",
+            "data": [55357],
+            "correct": true,
+            "wordIndex": 0,
+            "charIndex": 0,
+            "inputValue": [55357]
+          }
+        },
+        {
+          "type": "timer",
+          "testMs": 0,
+          "data": {
+            "event": "start",
+            "timer": 0,
+            "date": 0
+          }
+        },
+        {
+          "type": "input",
+          "testMs": 20,
+          "data": {
+            "inputType": "insertText",
+            "data": [56832],
+            "correct": true,
+            "wordIndex": 0,
+            "charIndex": 1,
+            "inputValue": [55357, 56832]
+          }
+        },
+        {
+          "type": "input",
+          "testMs": 40,
+          "data": {
+            "inputType": "insertText",
+            "data": [32],
+            "correct": true,
+            "wordIndex": 0,
+            "charIndex": 2,
+            "inputValue": [55357, 56832, 32],
+            "commitsWord": true
+          }
+        },
+        {
+          "type": "input",
+          "testMs": 100,
+          "data": {
+            "inputType": "insertText",
+            "data": [101],
+            "correct": true,
+            "wordIndex": 1,
+            "charIndex": 0,
+            "inputValue": [101],
+            "lastWord": true
+          }
+        },
+        {
+          "type": "input",
+          "testMs": 100,
+          "data": {
+            "inputType": "insertText",
+            "data": [769],
+            "correct": true,
+            "wordIndex": 1,
+            "charIndex": 1,
+            "inputValue": [101, 769],
+            "lastWord": true
+          }
+        },
+        {
+          "type": "timer",
+          "testMs": 100,
+          "data": {
+            "event": "end",
+            "timer": 0,
+            "date": 0
+          }
+        }
+      ],
+      "context": {
+        "targetWords": [
+          [55357, 56832, 32],
+          [101, 769]
+        ],
+        "mode": "words",
+        "mode2": "2",
+        "koreanStatus": false,
+        "bailedOut": false,
+        "isFunboxWithNospacePropertyActive": false
+      }
+    },
+    "queries": [
+      {
+        "op": "frame",
+        "time": -1
+      },
+      {
+        "op": "frame",
+        "time": 0
+      },
+      {
+        "op": "frame",
+        "time": 10
+      },
+      {
+        "op": "frame",
+        "time": 20
+      },
+      {
+        "op": "frame",
+        "time": 50
+      },
+      {
+        "op": "frame",
+        "time": 100
+      },
+      {
+        "op": "replay",
+        "zen": false
+      },
+      {
+        "op": "replay",
+        "zen": true
+      }
+    ],
+    "expected": [
+      {
+        "op": "frame",
+        "frame": {
+          "inputs": [],
+          "activeIndex": 0
+        }
+      },
+      {
+        "op": "frame",
+        "frame": {
+          "inputs": [[55357]],
+          "activeIndex": 0
+        }
+      },
+      {
+        "op": "frame",
+        "frame": {
+          "inputs": [[55357]],
+          "activeIndex": 0
+        }
+      },
+      {
+        "op": "frame",
+        "frame": {
+          "inputs": [[55357, 56832]],
+          "activeIndex": 0
+        }
+      },
+      {
+        "op": "frame",
+        "frame": {
+          "inputs": [[55357, 56832, 32]],
+          "activeIndex": 1
+        }
+      },
+      {
+        "op": "frame",
+        "frame": {
+          "inputs": [
+            [55357, 56832, 32],
+            [101, 769]
+          ],
+          "activeIndex": 1
+        }
+      },
+      {
+        "op": "replay",
+        "words": [
+          [55357, 56832, 32],
+          [101, 769]
+        ],
+        "steps": [
+          {
+            "action": "correctLetter",
+            "value": [55357],
+            "time": 0
+          },
+          {
+            "action": "correctLetter",
+            "value": [56832],
+            "time": 20
+          },
+          {
+            "action": "correctLetter",
+            "value": [32],
+            "time": 40
+          },
+          {
+            "action": "submitCorrectWord",
+            "time": 100
+          },
+          {
+            "action": "correctLetter",
+            "value": [101],
+            "time": 100
+          },
+          {
+            "action": "correctLetter",
+            "value": [769],
+            "time": 100
+          }
+        ],
+        "duration": 100
+      },
+      {
+        "op": "replay",
+        "words": [
+          [55357, 56832, 32],
+          [101, 769]
+        ],
+        "steps": [
+          {
+            "action": "correctLetter",
+            "value": [55357],
+            "time": 0
+          },
+          {
+            "action": "correctLetter",
+            "value": [56832],
+            "time": 20
+          },
+          {
+            "action": "correctLetter",
+            "value": [32],
+            "time": 40
+          },
+          {
+            "action": "submitCorrectWord",
+            "time": 100
+          },
+          {
+            "action": "correctLetter",
+            "value": [101],
+            "time": 100
+          },
+          {
+            "action": "correctLetter",
+            "value": [769],
+            "time": 100
+          }
+        ],
+        "duration": 100
+      }
+    ],
+    "playback": [
+      {
+        "zen": false,
+        "words": [
+          {
+            "letters": [
+              {
+                "char": [55357, 56832],
+                "correct": true,
+                "incorrect": false,
+                "extra": false
+              },
+              {
+                "char": [32],
+                "correct": true,
+                "incorrect": false,
+                "extra": false
+              }
+            ],
+            "error": false
+          },
+          {
+            "letters": [
+              {
+                "char": [101],
+                "correct": true,
+                "incorrect": false,
+                "extra": false
+              },
+              {
+                "char": [769],
+                "correct": true,
+                "incorrect": false,
+                "extra": false
+              }
+            ],
+            "error": false
+          }
+        ],
+        "cursor": {
+          "wordIndex": 1,
+          "letterIndex": 2
+        },
+        "sounds": ["click", "click", "click", "click", "click", "click"],
+        "seeks": [
+          {
+            "target": {
+              "wordIndex": 0,
+              "letterIndex": 0
+            },
+            "cursor": {
+              "wordIndex": 0,
+              "letterIndex": 0
+            },
+            "nextIndex": 0,
+            "words": [
+              {
+                "letters": [
+                  {
+                    "char": [55357, 56832],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  },
+                  {
+                    "char": [32],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              },
+              {
+                "letters": [
+                  {
+                    "char": [101],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  },
+                  {
+                    "char": [769],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              }
+            ]
+          },
+          {
+            "target": {
+              "wordIndex": 0,
+              "letterIndex": 1
+            },
+            "cursor": {
+              "wordIndex": 0,
+              "letterIndex": 1
+            },
+            "nextIndex": 1,
+            "words": [
+              {
+                "letters": [
+                  {
+                    "char": [55357, 56832],
+                    "correct": true,
+                    "incorrect": false,
+                    "extra": false
+                  },
+                  {
+                    "char": [32],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              },
+              {
+                "letters": [
+                  {
+                    "char": [101],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  },
+                  {
+                    "char": [769],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              }
+            ]
+          },
+          {
+            "target": {
+              "wordIndex": 1,
+              "letterIndex": 1
+            },
+            "cursor": {
+              "wordIndex": 1,
+              "letterIndex": 1
+            },
+            "nextIndex": 5,
+            "words": [
+              {
+                "letters": [
+                  {
+                    "char": [55357, 56832],
+                    "correct": true,
+                    "incorrect": false,
+                    "extra": false
+                  },
+                  {
+                    "char": [32],
+                    "correct": true,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              },
+              {
+                "letters": [
+                  {
+                    "char": [101],
+                    "correct": true,
+                    "incorrect": false,
+                    "extra": false
+                  },
+                  {
+                    "char": [769],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "zen": true,
+        "words": [
+          {
+            "letters": [
+              {
+                "char": [55357, 56832],
+                "correct": true,
+                "incorrect": false,
+                "extra": false
+              },
+              {
+                "char": [32],
+                "correct": true,
+                "incorrect": false,
+                "extra": false
+              }
+            ],
+            "error": false
+          },
+          {
+            "letters": [
+              {
+                "char": [101],
+                "correct": true,
+                "incorrect": false,
+                "extra": false
+              },
+              {
+                "char": [769],
+                "correct": true,
+                "incorrect": false,
+                "extra": false
+              }
+            ],
+            "error": false
+          }
+        ],
+        "cursor": {
+          "wordIndex": 1,
+          "letterIndex": 2
+        },
+        "sounds": ["click", "click", "click", "click", "click", "click"],
+        "seeks": [
+          {
+            "target": {
+              "wordIndex": 0,
+              "letterIndex": 0
+            },
+            "cursor": {
+              "wordIndex": 0,
+              "letterIndex": 0
+            },
+            "nextIndex": 0,
+            "words": [
+              {
+                "letters": [
+                  {
+                    "char": [55357, 56832],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  },
+                  {
+                    "char": [32],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              },
+              {
+                "letters": [
+                  {
+                    "char": [101],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  },
+                  {
+                    "char": [769],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              }
+            ]
+          },
+          {
+            "target": {
+              "wordIndex": 0,
+              "letterIndex": 1
+            },
+            "cursor": {
+              "wordIndex": 0,
+              "letterIndex": 1
+            },
+            "nextIndex": 1,
+            "words": [
+              {
+                "letters": [
+                  {
+                    "char": [55357, 56832],
+                    "correct": true,
+                    "incorrect": false,
+                    "extra": false
+                  },
+                  {
+                    "char": [32],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              },
+              {
+                "letters": [
+                  {
+                    "char": [101],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  },
+                  {
+                    "char": [769],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              }
+            ]
+          },
+          {
+            "target": {
+              "wordIndex": 1,
+              "letterIndex": 1
+            },
+            "cursor": {
+              "wordIndex": 1,
+              "letterIndex": 1
+            },
+            "nextIndex": 5,
+            "words": [
+              {
+                "letters": [
+                  {
+                    "char": [55357, 56832],
+                    "correct": true,
+                    "incorrect": false,
+                    "extra": false
+                  },
+                  {
+                    "char": [32],
+                    "correct": true,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              },
+              {
+                "letters": [
+                  {
+                    "char": [101],
+                    "correct": true,
+                    "incorrect": false,
+                    "extra": false
+                  },
+                  {
+                    "char": [769],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "stats": {
+      "chars": {
+        "allCorrect": 5,
+        "correctWord": 5,
+        "incorrect": 0,
+        "extra": 0,
+        "missed": 0
+      },
+      "acc": 100,
+      "history": [
+        [55357, 56832, 32],
+        [101, 769]
+      ],
+      "corrected": [
+        [55357, 56832, 32],
+        [101, 769]
+      ],
+      "wpm": [],
+      "raw": [],
+      "burst": [900, null]
+    }
+  },
+  {
+    "name": "isolated-targets-and-composition",
+    "log": {
+      "version": 1,
+      "events": [
+        {
+          "type": "input",
+          "testMs": 0,
+          "data": {
+            "inputType": "insertText",
+            "data": [55296],
+            "correct": true,
+            "wordIndex": 0,
+            "charIndex": 0,
+            "inputValue": [55296]
+          }
+        },
+        {
+          "type": "timer",
+          "testMs": 0,
+          "data": {
+            "event": "start",
+            "timer": 0,
+            "date": 0
+          }
+        },
+        {
+          "type": "input",
+          "testMs": 10,
+          "data": {
+            "inputType": "insertText",
+            "data": [32],
+            "correct": true,
+            "wordIndex": 0,
+            "charIndex": 1,
+            "inputValue": [55296, 32],
+            "commitsWord": true
+          }
+        },
+        {
+          "type": "composition",
+          "testMs": 20,
+          "data": {
+            "event": "start",
+            "wordIndex": 1
+          }
+        },
+        {
+          "type": "composition",
+          "testMs": 21,
+          "data": {
+            "event": "update",
+            "data": [56320],
+            "wordIndex": 1
+          }
+        },
+        {
+          "type": "input",
+          "testMs": 30,
+          "data": {
+            "inputType": "insertText",
+            "data": [56320],
+            "correct": true,
+            "wordIndex": 1,
+            "charIndex": 0,
+            "inputValue": [56320],
+            "lastWord": true,
+            "isCompositionEnding": true
+          }
+        },
+        {
+          "type": "timer",
+          "testMs": 30,
+          "data": {
+            "event": "end",
+            "timer": 0,
+            "date": 0
+          }
+        },
+        {
+          "type": "composition",
+          "testMs": 40,
+          "data": {
+            "event": "end",
+            "data": [56320],
+            "wordIndex": 1
+          }
+        }
+      ],
+      "context": {
+        "targetWords": [[55296, 32], [56320]],
+        "mode": "words",
+        "mode2": "2",
+        "koreanStatus": false,
+        "bailedOut": false,
+        "isFunboxWithNospacePropertyActive": false
+      }
+    },
+    "queries": [
+      {
+        "op": "frame",
+        "time": -1
+      },
+      {
+        "op": "frame",
+        "time": 0
+      },
+      {
+        "op": "frame",
+        "time": 10
+      },
+      {
+        "op": "frame",
+        "time": 20
+      },
+      {
+        "op": "frame",
+        "time": 50
+      },
+      {
+        "op": "frame",
+        "time": 100
+      },
+      {
+        "op": "replay",
+        "zen": false
+      },
+      {
+        "op": "replay",
+        "zen": true
+      }
+    ],
+    "expected": [
+      {
+        "op": "frame",
+        "frame": {
+          "inputs": [],
+          "activeIndex": 0
+        }
+      },
+      {
+        "op": "frame",
+        "frame": {
+          "inputs": [[55296]],
+          "activeIndex": 0
+        }
+      },
+      {
+        "op": "frame",
+        "frame": {
+          "inputs": [[55296, 32]],
+          "activeIndex": 1
+        }
+      },
+      {
+        "op": "frame",
+        "frame": {
+          "inputs": [[55296, 32]],
+          "activeIndex": 1
+        }
+      },
+      {
+        "op": "frame",
+        "frame": {
+          "inputs": [[55296, 32], [56320]],
+          "activeIndex": 1
+        }
+      },
+      {
+        "op": "frame",
+        "frame": {
+          "inputs": [[55296, 32], [56320]],
+          "activeIndex": 1
+        }
+      },
+      {
+        "op": "replay",
+        "words": [[55296, 32], [56320]],
+        "steps": [
+          {
+            "action": "correctLetter",
+            "value": [55296],
+            "time": 0
+          },
+          {
+            "action": "correctLetter",
+            "value": [32],
+            "time": 10
+          },
+          {
+            "action": "submitCorrectWord",
+            "time": 30
+          },
+          {
+            "action": "correctLetter",
+            "value": [56320],
+            "time": 30
+          }
+        ],
+        "duration": 40
+      },
+      {
+        "op": "replay",
+        "words": [[55296, 32], [56320]],
+        "steps": [
+          {
+            "action": "correctLetter",
+            "value": [55296],
+            "time": 0
+          },
+          {
+            "action": "correctLetter",
+            "value": [32],
+            "time": 10
+          },
+          {
+            "action": "submitCorrectWord",
+            "time": 30
+          },
+          {
+            "action": "correctLetter",
+            "value": [56320],
+            "time": 30
+          }
+        ],
+        "duration": 40
+      }
+    ],
+    "playback": [
+      {
+        "zen": false,
+        "words": [
+          {
+            "letters": [
+              {
+                "char": [55296],
+                "correct": true,
+                "incorrect": false,
+                "extra": false
+              },
+              {
+                "char": [32],
+                "correct": true,
+                "incorrect": false,
+                "extra": false
+              }
+            ],
+            "error": false
+          },
+          {
+            "letters": [
+              {
+                "char": [56320],
+                "correct": true,
+                "incorrect": false,
+                "extra": false
+              }
+            ],
+            "error": false
+          }
+        ],
+        "cursor": {
+          "wordIndex": 1,
+          "letterIndex": 1
+        },
+        "sounds": ["click", "click", "click", "click"],
+        "seeks": [
+          {
+            "target": {
+              "wordIndex": 0,
+              "letterIndex": 0
+            },
+            "cursor": {
+              "wordIndex": 0,
+              "letterIndex": 0
+            },
+            "nextIndex": 0,
+            "words": [
+              {
+                "letters": [
+                  {
+                    "char": [55296],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  },
+                  {
+                    "char": [32],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              },
+              {
+                "letters": [
+                  {
+                    "char": [56320],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              }
+            ]
+          },
+          {
+            "target": {
+              "wordIndex": 0,
+              "letterIndex": 1
+            },
+            "cursor": {
+              "wordIndex": 0,
+              "letterIndex": 1
+            },
+            "nextIndex": 1,
+            "words": [
+              {
+                "letters": [
+                  {
+                    "char": [55296],
+                    "correct": true,
+                    "incorrect": false,
+                    "extra": false
+                  },
+                  {
+                    "char": [32],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              },
+              {
+                "letters": [
+                  {
+                    "char": [56320],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              }
+            ]
+          },
+          {
+            "target": {
+              "wordIndex": 1,
+              "letterIndex": 1
+            },
+            "cursor": {
+              "wordIndex": 1,
+              "letterIndex": 1
+            },
+            "nextIndex": 4,
+            "words": [
+              {
+                "letters": [
+                  {
+                    "char": [55296],
+                    "correct": true,
+                    "incorrect": false,
+                    "extra": false
+                  },
+                  {
+                    "char": [32],
+                    "correct": true,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              },
+              {
+                "letters": [
+                  {
+                    "char": [56320],
+                    "correct": true,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "zen": true,
+        "words": [
+          {
+            "letters": [
+              {
+                "char": [55296],
+                "correct": true,
+                "incorrect": false,
+                "extra": false
+              },
+              {
+                "char": [32],
+                "correct": true,
+                "incorrect": false,
+                "extra": false
+              }
+            ],
+            "error": false
+          },
+          {
+            "letters": [
+              {
+                "char": [56320],
+                "correct": true,
+                "incorrect": false,
+                "extra": false
+              }
+            ],
+            "error": false
+          }
+        ],
+        "cursor": {
+          "wordIndex": 1,
+          "letterIndex": 1
+        },
+        "sounds": ["click", "click", "click", "click"],
+        "seeks": [
+          {
+            "target": {
+              "wordIndex": 0,
+              "letterIndex": 0
+            },
+            "cursor": {
+              "wordIndex": 0,
+              "letterIndex": 0
+            },
+            "nextIndex": 0,
+            "words": [
+              {
+                "letters": [
+                  {
+                    "char": [55296],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  },
+                  {
+                    "char": [32],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              },
+              {
+                "letters": [
+                  {
+                    "char": [56320],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              }
+            ]
+          },
+          {
+            "target": {
+              "wordIndex": 0,
+              "letterIndex": 1
+            },
+            "cursor": {
+              "wordIndex": 0,
+              "letterIndex": 1
+            },
+            "nextIndex": 1,
+            "words": [
+              {
+                "letters": [
+                  {
+                    "char": [55296],
+                    "correct": true,
+                    "incorrect": false,
+                    "extra": false
+                  },
+                  {
+                    "char": [32],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              },
+              {
+                "letters": [
+                  {
+                    "char": [56320],
+                    "correct": false,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              }
+            ]
+          },
+          {
+            "target": {
+              "wordIndex": 1,
+              "letterIndex": 1
+            },
+            "cursor": {
+              "wordIndex": 1,
+              "letterIndex": 1
+            },
+            "nextIndex": 4,
+            "words": [
+              {
+                "letters": [
+                  {
+                    "char": [55296],
+                    "correct": true,
+                    "incorrect": false,
+                    "extra": false
+                  },
+                  {
+                    "char": [32],
+                    "correct": true,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              },
+              {
+                "letters": [
+                  {
+                    "char": [56320],
+                    "correct": true,
+                    "incorrect": false,
+                    "extra": false
+                  }
+                ],
+                "error": false
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "stats": {
+      "chars": {
+        "allCorrect": 3,
+        "correctWord": 3,
+        "incorrect": 0,
+        "extra": 0,
+        "missed": 0
+      },
+      "acc": 100,
+      "history": [[55296, 32], [56320]],
+      "corrected": [[55296, 32], [56320]],
+      "wpm": [],
+      "raw": [],
+      "burst": [2400, 2400]
+    }
+  }
+]

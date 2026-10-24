@@ -1,0 +1,21 @@
+[
+  {
+    "fixture": "min-burst",
+    "frame": 1,
+    "headlessState": {
+      "wordIndex": 0,
+      "inputValue": [111, 110, 101, 32],
+      "active": false,
+      "ended": true,
+      "reason": "min burst"
+    },
+    "browserState": {
+      "wordIndex": 1,
+      "inputValue": [],
+      "active": false,
+      "ended": true,
+      "reason": "min burst"
+    },
+    "evidence": "frontend/e2e/engine-input-contract.migration.ts: minimum burst progression; actual built Cloudflare browser advances before failure"
+  }
+]

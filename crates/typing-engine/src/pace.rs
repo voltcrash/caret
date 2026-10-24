@@ -1,0 +1,224 @@
+use crate::Text;
+use serde::{Deserialize, Serialize};
+use std::collections::BTreeSet;
+use ts_rs::TS;
+
+#[derive(Clone, Debug, Deserialize, Serialize, TS, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct Position {
+    pub word_index: usize,
+    pub letter_index: usize,
+    pub wpm: f64,
+}
+#[derive(Deserialize, TS)]
+#[serde(tag = "op", rename_all = "camelCase")]
+pub enum PaceCommand {
+    Reset { wpm: Option<f64> },
+    Start { now: f64 },
+    Step,
+    Advance { now: f64 },
+    Remember { wpm: f64, repeating: bool },
+}
+#[derive(Debug, Deserialize, Serialize, TS, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct PaceUpdate {
+    pub position: Option<Position>,
+    pub step_end: f64,
+    pub last_wpm: f64,
+}
+#[derive(Default)]
+pub struct Pace {
+    wpm: Option<f64>,
+    word_index: usize,
+    letter_index: usize,
+    correction: isize,
+    mistakes: BTreeSet<usize>,
+    start_ms: f64,
+    steps: u64,
+    last_wpm: f64,
+}
+impl Pace {
+    pub fn reset(&mut self, wpm: Option<f64>) -> bool {
+        self.wpm = wpm.filter(|value| value.is_finite() && *value >= 1.0);
+        self.word_index = 0;
+        self.letter_index = 0;
+        self.correction = 0;
+        self.mistakes.clear();
+        self.start_ms = 0.0;
+        self.steps = 0;
+        self.wpm.is_some()
+    }
+    pub fn start(&mut self, now: f64) {
+        self.start_ms = now;
+        self.steps = 0;
+    }
+    pub fn position(&self) -> Option<Position> {
+        self.wpm.map(|wpm| Position {
+            word_index: self.word_index,
+            letter_index: self.letter_index,
+            wpm,
+        })
+    }
+    pub fn correct(&mut self, index: usize, correct: bool, word: &Text, blind: bool) {
+        if self.wpm.is_none() || blind {
+            return;
+        }
+        if correct {
+            if self.mistakes.remove(&index) {
+                self.correction -= word.len() as isize;
+            }
+        } else if self.mistakes.insert(index) {
+            self.correction += word.len() as isize;
+        }
+    }
+    pub fn step(&mut self, words: &[Text], blind: bool) -> Option<Position> {
+        self.step_lengths(|index| words.get(index).map(Text::len), blind)
+    }
+    fn step_lengths(
+        &mut self,
+        length: impl Fn(usize) -> Option<usize>,
+        blind: bool,
+    ) -> Option<Position> {
+        self.wpm?;
+        let Some(word_length) = length(self.word_index) else {
+            self.wpm = None;
+            return None;
+        };
+        if self.letter_index >= word_length {
+            self.letter_index = 0;
+            self.word_index += 1;
+        } else {
+            self.letter_index += 1;
+        }
+        if !blind {
+            while self.correction < 0 {
+                if self.letter_index == 0 {
+                    let Some(previous) = self.word_index.checked_sub(1).and_then(&length) else {
+                        self.wpm = None;
+                        return None;
+                    };
+                    self.word_index -= 1;
+                    self.letter_index = previous;
+                } else {
+                    self.letter_index -= 1;
+                }
+                self.correction += 1;
+            }
+            while self.correction > 0 {
+                let Some(word_length) = length(self.word_index) else {
+                    self.wpm = None;
+                    return None;
+                };
+                self.letter_index += 1;
+                if self.letter_index > word_length {
+                    self.letter_index = 0;
+                    self.word_index += 1;
+                }
+                self.correction -= 1;
+            }
+        }
+        self.steps += 1;
+        self.position()
+    }
+    pub fn advance(&mut self, now: f64, words: &[Text], blind: bool) -> Option<Position> {
+        let speed = self.wpm?;
+        let due = ((now - self.start_ms) / (60.0 / (speed * 5.0) * 1000.0)).floor();
+        while (self.steps as f64) < due {
+            self.step(words, blind)?;
+        }
+        self.position()
+    }
+    pub fn step_end(&self) -> f64 {
+        self.start_ms
+            + self.steps as f64 * self.wpm.map(|wpm| 60.0 / (wpm * 5.0)).unwrap_or(0.0) * 1000.0
+    }
+    pub fn remember(&mut self, wpm: f64, repeating: bool) {
+        if !repeating || wpm > self.last_wpm {
+            self.last_wpm = wpm;
+        }
+    }
+    pub fn last_wpm(&self) -> f64 {
+        self.last_wpm
+    }
+    /// Session targets include commits; the browser pace caret uses bare text.
+    pub fn command(
+        &mut self,
+        command: PaceCommand,
+        targets: &[Text],
+        blind: bool,
+    ) -> Result<PaceUpdate, String> {
+        let length = |index| {
+            targets
+                .get(index)
+                .map(|word: &Text| word.len() - usize::from(matches!(word.0.last(), Some(32 | 10))))
+        };
+        match &command {
+            PaceCommand::Start { now } | PaceCommand::Advance { now } => {
+                if !now.is_finite() || now.abs() > 9_007_199_254_740_991.0 {
+                    return Err("Invalid pace time".into());
+                }
+            }
+            PaceCommand::Reset { wpm: Some(wpm) } | PaceCommand::Remember { wpm, .. }
+                if !wpm.is_finite() =>
+            {
+                return Err("Invalid pace speed".into());
+            }
+            _ => {}
+        }
+        match command {
+            PaceCommand::Reset { wpm } => {
+                self.reset(wpm);
+            }
+            PaceCommand::Start { now } => self.start(now),
+            PaceCommand::Step => {
+                self.step_lengths(length, blind);
+            }
+            PaceCommand::Advance { now } => {
+                if let Some(wpm) = self.wpm {
+                    let due = ((now - self.start_ms) / (60.0 / (wpm * 5.0) * 1000.0)).floor();
+                    if due - self.steps as f64 > 1_000_000.0 {
+                        return Err("Pace catchup exceeds bound".into());
+                    }
+                    while (self.steps as f64) < due {
+                        if self.step_lengths(length, blind).is_none() {
+                            break;
+                        }
+                    }
+                }
+            }
+            PaceCommand::Remember { wpm, repeating } => self.remember(wpm, repeating),
+        }
+        Ok(PaceUpdate {
+            position: self.position(),
+            step_end: self.step_end(),
+            last_wpm: self.last_wpm(),
+        })
+    }
+}
+
+#[derive(Default)]
+pub struct TypingTime {
+    seconds: f64,
+    day: Option<i64>,
+}
+impl TypingTime {
+    /// The host supplies its local-calendar day token; no hidden system clock.
+    pub fn add(&mut self, seconds: f64, today: i64) {
+        if self.day.is_some_and(|day| day != today) {
+            self.day = Some(today);
+            self.seconds = seconds;
+        } else {
+            self.seconds += seconds;
+        }
+    }
+    pub fn load_today(&mut self, seconds: f64, today: i64) {
+        self.day = Some(today);
+        self.seconds = seconds;
+    }
+    pub fn seconds(&self) -> f64 {
+        self.seconds
+    }
+    pub fn is_today(&self) -> bool {
+        self.day.is_some()
+    }
+}

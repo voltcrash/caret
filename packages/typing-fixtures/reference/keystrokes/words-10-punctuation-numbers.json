@@ -1,0 +1,1855 @@
+{
+  "name": "words-10-punctuation-numbers",
+  "description": "words 10 with punctuation and numbers",
+  "recordedWith": "web",
+  "config": {
+    "mode": "words",
+    "time": 30,
+    "words": 10,
+    "language": "english",
+    "punctuation": true,
+    "numbers": true,
+    "lazyMode": false,
+    "funbox": [],
+    "difficulty": "normal",
+    "blindMode": false,
+    "stopOnError": "off",
+    "confidenceMode": "off",
+    "freedomMode": false,
+    "strictSpace": false,
+    "quickEnd": false,
+    "deleteOnError": "off",
+    "oppositeShiftMode": "off",
+    "britishEnglish": false,
+    "quoteLength": [1]
+  },
+  "keystrokes": [
+    {
+      "kind": "key",
+      "key": "2",
+      "gap": 109,
+      "hold": 109
+    },
+    {
+      "kind": "key",
+      "key": "5",
+      "gap": 126,
+      "hold": 117
+    },
+    {
+      "kind": "key",
+      "key": " ",
+      "gap": 160,
+      "hold": 89
+    },
+    {
+      "kind": "key",
+      "key": "f",
+      "gap": 188,
+      "hold": 66
+    },
+    {
+      "kind": "key",
+      "key": "o",
+      "gap": 151,
+      "hold": 47
+    },
+    {
+      "kind": "key",
+      "key": "r",
+      "gap": 152,
+      "hold": 48
+    },
+    {
+      "kind": "key",
+      "key": ".",
+      "gap": 158,
+      "hold": 64
+    },
+    {
+      "kind": "key",
+      "key": " ",
+      "gap": 109,
+      "hold": 145
+    },
+    {
+      "kind": "key",
+      "key": "B",
+      "gap": 173,
+      "hold": 50
+    },
+    {
+      "kind": "key",
+      "key": "e",
+      "gap": 105,
+      "hold": 44
+    },
+    {
+      "kind": "key",
+      "key": "f",
+      "gap": 157,
+      "hold": 89
+    },
+    {
+      "kind": "key",
+      "key": "o",
+      "gap": 180,
+      "hold": 125
+    },
+    {
+      "kind": "key",
+      "key": "r",
+      "gap": 95,
+      "hold": 90
+    },
+    {
+      "kind": "key",
+      "key": "e",
+      "gap": 133,
+      "hold": 95
+    },
+    {
+      "kind": "key",
+      "key": " ",
+      "gap": 129,
+      "hold": 97
+    },
+    {
+      "kind": "key",
+      "key": "t",
+      "gap": 105,
+      "hold": 135
+    },
+    {
+      "kind": "key",
+      "key": "u",
+      "gap": 129,
+      "hold": 121
+    },
+    {
+      "kind": "key",
+      "key": "r",
+      "gap": 198,
+      "hold": 96
+    },
+    {
+      "kind": "key",
+      "key": "n",
+      "gap": 172,
+      "hold": 123
+    },
+    {
+      "kind": "key",
+      "key": " ",
+      "gap": 168,
+      "hold": 74
+    },
+    {
+      "kind": "key",
+      "key": "s",
+      "gap": 123,
+      "hold": 51
+    },
+    {
+      "kind": "key",
+      "key": "c",
+      "gap": 127,
+      "hold": 150
+    },
+    {
+      "kind": "key",
+      "key": "h",
+      "gap": 158,
+      "hold": 84
+    },
+    {
+      "kind": "key",
+      "key": "o",
+      "gap": 96,
+      "hold": 89
+    },
+    {
+      "kind": "key",
+      "key": "o",
+      "gap": 185,
+      "hold": 150
+    },
+    {
+      "kind": "key",
+      "key": "l",
+      "gap": 120,
+      "hold": 135
+    },
+    {
+      "kind": "key",
+      "key": " ",
+      "gap": 99,
+      "hold": 100
+    },
+    {
+      "kind": "key",
+      "key": "l",
+      "gap": 154,
+      "hold": 60
+    },
+    {
+      "kind": "key",
+      "key": "i",
+      "gap": 139,
+      "hold": 53
+    },
+    {
+      "kind": "key",
+      "key": "n",
+      "gap": 103,
+      "hold": 149
+    },
+    {
+      "kind": "key",
+      "key": "e",
+      "gap": 191,
+      "hold": 61
+    },
+    {
+      "kind": "key",
+      "key": " ",
+      "gap": 93,
+      "hold": 145
+    },
+    {
+      "kind": "key",
+      "key": "3",
+      "gap": 163,
+      "hold": 127
+    },
+    {
+      "kind": "key",
+      "key": "4",
+      "gap": 138,
+      "hold": 89
+    },
+    {
+      "kind": "key",
+      "key": " ",
+      "gap": 94,
+      "hold": 86
+    },
+    {
+      "kind": "key",
+      "key": "e",
+      "gap": 126,
+      "hold": 117
+    },
+    {
+      "kind": "key",
+      "key": "a",
+      "gap": 90,
+      "hold": 123
+    },
+    {
+      "kind": "key",
+      "key": "r",
+      "gap": 135,
+      "hold": 68
+    },
+    {
+      "kind": "key",
+      "key": "l",
+      "gap": 208,
+      "hold": 138
+    },
+    {
+      "kind": "key",
+      "key": "y",
+      "gap": 191,
+      "hold": 105
+    },
+    {
+      "kind": "key",
+      "key": " ",
+      "gap": 170,
+      "hold": 145
+    },
+    {
+      "kind": "key",
+      "key": "n",
+      "gap": 127,
+      "hold": 50
+    },
+    {
+      "kind": "key",
+      "key": "o",
+      "gap": 160,
+      "hold": 84
+    },
+    {
+      "kind": "key",
+      "key": "t",
+      "gap": 130,
+      "hold": 138
+    },
+    {
+      "kind": "key",
+      "key": ",",
+      "gap": 129,
+      "hold": 100
+    },
+    {
+      "kind": "key",
+      "key": " ",
+      "gap": 124,
+      "hold": 120
+    },
+    {
+      "kind": "key",
+      "key": "m",
+      "gap": 154,
+      "hold": 84
+    },
+    {
+      "kind": "key",
+      "key": "o",
+      "gap": 179,
+      "hold": 97
+    },
+    {
+      "kind": "key",
+      "key": "s",
+      "gap": 176,
+      "hold": 131
+    },
+    {
+      "kind": "key",
+      "key": "t",
+      "gap": 134,
+      "hold": 69
+    },
+    {
+      "kind": "key",
+      "key": ".",
+      "gap": 207,
+      "hold": 47
+    }
+  ],
+  "eventLog": {
+    "version": 1,
+    "events": [
+      {
+        "type": "keydown",
+        "testMs": -6.6,
+        "data": {
+          "code": "Digit2"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 0,
+        "data": {
+          "inputType": "insertText",
+          "data": "2",
+          "correct": true,
+          "wordIndex": 0,
+          "charIndex": 0,
+          "inputValue": "2"
+        }
+      },
+      {
+        "type": "timer",
+        "testMs": 0,
+        "data": {
+          "event": "start",
+          "timer": 0,
+          "date": 1791473772708
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 98.8,
+        "data": {
+          "code": "Digit2"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 117.1,
+        "data": {
+          "code": "Digit5"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 118,
+        "data": {
+          "inputType": "insertText",
+          "data": "5",
+          "correct": true,
+          "wordIndex": 0,
+          "charIndex": 1,
+          "inputValue": "25"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 232.9,
+        "data": {
+          "code": "Digit5"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 276.7,
+        "data": {
+          "code": "Space"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 278.8,
+        "data": {
+          "inputType": "insertText",
+          "data": " ",
+          "correct": true,
+          "wordIndex": 0,
+          "charIndex": 2,
+          "inputValue": "25 ",
+          "commitsWord": true
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 366,
+        "data": {
+          "code": "Space"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 565.6,
+        "data": {
+          "code": "KeyF"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 568.2,
+        "data": {
+          "inputType": "insertText",
+          "data": "f",
+          "correct": true,
+          "wordIndex": 1,
+          "charIndex": 0,
+          "inputValue": "f"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 630.7,
+        "data": {
+          "code": "KeyF"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 716.4,
+        "data": {
+          "code": "KeyO"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 718.9,
+        "data": {
+          "inputType": "insertText",
+          "data": "o",
+          "correct": true,
+          "wordIndex": 1,
+          "charIndex": 1,
+          "inputValue": "fo"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 762.8,
+        "data": {
+          "code": "KeyO"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 868.1,
+        "data": {
+          "code": "KeyR"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 869.9,
+        "data": {
+          "inputType": "insertText",
+          "data": "r",
+          "correct": true,
+          "wordIndex": 1,
+          "charIndex": 2,
+          "inputValue": "for"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 915.1,
+        "data": {
+          "code": "KeyR"
+        }
+      },
+      {
+        "type": "timer",
+        "testMs": 1001.3,
+        "data": {
+          "event": "step",
+          "timer": 1,
+          "drift": 1.3
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 1025.5,
+        "data": {
+          "code": "Period"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 1027.4,
+        "data": {
+          "inputType": "insertText",
+          "data": ".",
+          "correct": true,
+          "wordIndex": 1,
+          "charIndex": 3,
+          "inputValue": "for."
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 1088.8,
+        "data": {
+          "code": "Period"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 1130.4,
+        "data": {
+          "code": "Space"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 1131.8,
+        "data": {
+          "inputType": "insertText",
+          "data": " ",
+          "correct": true,
+          "wordIndex": 1,
+          "charIndex": 4,
+          "inputValue": "for. ",
+          "commitsWord": true
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 1279.9,
+        "data": {
+          "code": "Space"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 1461.6,
+        "data": {
+          "code": "KeyB"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 1464.2,
+        "data": {
+          "inputType": "insertText",
+          "data": "B",
+          "correct": true,
+          "wordIndex": 2,
+          "charIndex": 0,
+          "inputValue": "B"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 1511.8,
+        "data": {
+          "code": "KeyB"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 1565.6,
+        "data": {
+          "code": "KeyE"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 1566.8,
+        "data": {
+          "inputType": "insertText",
+          "data": "e",
+          "correct": true,
+          "wordIndex": 2,
+          "charIndex": 1,
+          "inputValue": "Be"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 1609.6,
+        "data": {
+          "code": "KeyE"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 1725.2,
+        "data": {
+          "code": "KeyF"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 1727.5,
+        "data": {
+          "inputType": "insertText",
+          "data": "f",
+          "correct": true,
+          "wordIndex": 2,
+          "charIndex": 2,
+          "inputValue": "Bef"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 1813,
+        "data": {
+          "code": "KeyF"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 1904.7,
+        "data": {
+          "code": "KeyO"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 1907.1,
+        "data": {
+          "inputType": "insertText",
+          "data": "o",
+          "correct": true,
+          "wordIndex": 2,
+          "charIndex": 3,
+          "inputValue": "Befo"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 1998.8,
+        "data": {
+          "code": "KeyR"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 1999.9,
+        "data": {
+          "inputType": "insertText",
+          "data": "r",
+          "correct": true,
+          "wordIndex": 2,
+          "charIndex": 4,
+          "inputValue": "Befor"
+        }
+      },
+      {
+        "type": "timer",
+        "testMs": 2000.8,
+        "data": {
+          "event": "step",
+          "timer": 2,
+          "drift": 0.8
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 2027.7,
+        "data": {
+          "code": "KeyO"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 2088.9,
+        "data": {
+          "code": "KeyR"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 2132.3,
+        "data": {
+          "code": "KeyE"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 2134.7,
+        "data": {
+          "inputType": "insertText",
+          "data": "e",
+          "correct": true,
+          "wordIndex": 2,
+          "charIndex": 5,
+          "inputValue": "Before"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 2227.8,
+        "data": {
+          "code": "KeyE"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 2261.7,
+        "data": {
+          "code": "Space"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 2263.6,
+        "data": {
+          "inputType": "insertText",
+          "data": " ",
+          "correct": true,
+          "wordIndex": 2,
+          "charIndex": 6,
+          "inputValue": "Before ",
+          "commitsWord": true
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 2356.4,
+        "data": {
+          "code": "Space"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 2470.2,
+        "data": {
+          "code": "KeyT"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 2472.5,
+        "data": {
+          "inputType": "insertText",
+          "data": "t",
+          "correct": true,
+          "wordIndex": 3,
+          "charIndex": 0,
+          "inputValue": "t"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 2598,
+        "data": {
+          "code": "KeyU"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 2599.6,
+        "data": {
+          "inputType": "insertText",
+          "data": "u",
+          "correct": true,
+          "wordIndex": 3,
+          "charIndex": 1,
+          "inputValue": "tu"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 2602.1,
+        "data": {
+          "code": "KeyT"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 2719,
+        "data": {
+          "code": "KeyU"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 2796.3,
+        "data": {
+          "code": "KeyR"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 2798.1,
+        "data": {
+          "inputType": "insertText",
+          "data": "r",
+          "correct": true,
+          "wordIndex": 3,
+          "charIndex": 2,
+          "inputValue": "tur"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 2891.2,
+        "data": {
+          "code": "KeyR"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 2968.8,
+        "data": {
+          "code": "KeyN"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 2970.5,
+        "data": {
+          "inputType": "insertText",
+          "data": "n",
+          "correct": true,
+          "wordIndex": 3,
+          "charIndex": 3,
+          "inputValue": "turn"
+        }
+      },
+      {
+        "type": "timer",
+        "testMs": 3000.1,
+        "data": {
+          "event": "step",
+          "timer": 3,
+          "drift": 0.1
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 3089.8,
+        "data": {
+          "code": "KeyN"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 3133.8,
+        "data": {
+          "code": "Space"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 3134.8,
+        "data": {
+          "inputType": "insertText",
+          "data": " ",
+          "correct": true,
+          "wordIndex": 3,
+          "charIndex": 4,
+          "inputValue": "turn ",
+          "commitsWord": true
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 3209.1,
+        "data": {
+          "code": "Space"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 3338.1,
+        "data": {
+          "code": "KeyS"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 3339.6,
+        "data": {
+          "inputType": "insertText",
+          "data": "s",
+          "correct": true,
+          "wordIndex": 4,
+          "charIndex": 0,
+          "inputValue": "s"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 3389.6,
+        "data": {
+          "code": "KeyS"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 3464.7,
+        "data": {
+          "code": "KeyC"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 3466.7,
+        "data": {
+          "inputType": "insertText",
+          "data": "c",
+          "correct": true,
+          "wordIndex": 4,
+          "charIndex": 1,
+          "inputValue": "sc"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 3616.4,
+        "data": {
+          "code": "KeyC"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 3622.3,
+        "data": {
+          "code": "KeyH"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 3624.3,
+        "data": {
+          "inputType": "insertText",
+          "data": "h",
+          "correct": true,
+          "wordIndex": 4,
+          "charIndex": 2,
+          "inputValue": "sch"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 3707.1,
+        "data": {
+          "code": "KeyH"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 3718.5,
+        "data": {
+          "code": "KeyO"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 3719.6,
+        "data": {
+          "inputType": "insertText",
+          "data": "o",
+          "correct": true,
+          "wordIndex": 4,
+          "charIndex": 3,
+          "inputValue": "scho"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 3808.9,
+        "data": {
+          "code": "KeyO"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 3905.3,
+        "data": {
+          "code": "KeyO"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 3907.3,
+        "data": {
+          "inputType": "insertText",
+          "data": "o",
+          "correct": true,
+          "wordIndex": 4,
+          "charIndex": 4,
+          "inputValue": "schoo"
+        }
+      },
+      {
+        "type": "timer",
+        "testMs": 4001.3,
+        "data": {
+          "event": "step",
+          "timer": 4,
+          "drift": 1.3
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 4025.1,
+        "data": {
+          "code": "KeyL"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 4026,
+        "data": {
+          "inputType": "insertText",
+          "data": "l",
+          "correct": true,
+          "wordIndex": 4,
+          "charIndex": 5,
+          "inputValue": "school"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 4053.2,
+        "data": {
+          "code": "KeyO"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 4123.7,
+        "data": {
+          "code": "Space"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 4124.6,
+        "data": {
+          "inputType": "insertText",
+          "data": " ",
+          "correct": true,
+          "wordIndex": 4,
+          "charIndex": 6,
+          "inputValue": "school ",
+          "commitsWord": true
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 4159.8,
+        "data": {
+          "code": "KeyL"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 4224.2,
+        "data": {
+          "code": "Space"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 4386.8,
+        "data": {
+          "code": "KeyL"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 4389.2,
+        "data": {
+          "inputType": "insertText",
+          "data": "l",
+          "correct": true,
+          "wordIndex": 5,
+          "charIndex": 0,
+          "inputValue": "l"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 4446.8,
+        "data": {
+          "code": "KeyL"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 4526.5,
+        "data": {
+          "code": "KeyI"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 4528.7,
+        "data": {
+          "inputType": "insertText",
+          "data": "i",
+          "correct": true,
+          "wordIndex": 5,
+          "charIndex": 1,
+          "inputValue": "li"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 4578.6,
+        "data": {
+          "code": "KeyI"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 4628.3,
+        "data": {
+          "code": "KeyN"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 4629.9,
+        "data": {
+          "inputType": "insertText",
+          "data": "n",
+          "correct": true,
+          "wordIndex": 5,
+          "charIndex": 2,
+          "inputValue": "lin"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 4778.5,
+        "data": {
+          "code": "KeyN"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 4820,
+        "data": {
+          "code": "KeyE"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 4822,
+        "data": {
+          "inputType": "insertText",
+          "data": "e",
+          "correct": true,
+          "wordIndex": 5,
+          "charIndex": 3,
+          "inputValue": "line"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 4880.9,
+        "data": {
+          "code": "KeyE"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 4913.1,
+        "data": {
+          "code": "Space"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 4915.5,
+        "data": {
+          "inputType": "insertText",
+          "data": " ",
+          "correct": true,
+          "wordIndex": 5,
+          "charIndex": 4,
+          "inputValue": "line ",
+          "commitsWord": true
+        }
+      },
+      {
+        "type": "timer",
+        "testMs": 5000.9,
+        "data": {
+          "event": "step",
+          "timer": 5,
+          "drift": 0.9
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 5056.6,
+        "data": {
+          "code": "Space"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 5229.8,
+        "data": {
+          "code": "Digit3"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 5232,
+        "data": {
+          "inputType": "insertText",
+          "data": "3",
+          "correct": true,
+          "wordIndex": 6,
+          "charIndex": 0,
+          "inputValue": "3"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 5356.2,
+        "data": {
+          "code": "Digit3"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 5366.1,
+        "data": {
+          "code": "Digit4"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 5367.3,
+        "data": {
+          "inputType": "insertText",
+          "data": "4",
+          "correct": true,
+          "wordIndex": 6,
+          "charIndex": 1,
+          "inputValue": "34"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 5456.2,
+        "data": {
+          "code": "Digit4"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 5457.7,
+        "data": {
+          "code": "Space"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 5458.8,
+        "data": {
+          "inputType": "insertText",
+          "data": " ",
+          "correct": true,
+          "wordIndex": 6,
+          "charIndex": 2,
+          "inputValue": "34 ",
+          "commitsWord": true
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 5547.2,
+        "data": {
+          "code": "Space"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 5682.7,
+        "data": {
+          "code": "KeyE"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 5685,
+        "data": {
+          "inputType": "insertText",
+          "data": "e",
+          "correct": true,
+          "wordIndex": 7,
+          "charIndex": 0,
+          "inputValue": "e"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 5773.6,
+        "data": {
+          "code": "KeyA"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 5774.9,
+        "data": {
+          "inputType": "insertText",
+          "data": "a",
+          "correct": true,
+          "wordIndex": 7,
+          "charIndex": 1,
+          "inputValue": "ea"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 5799,
+        "data": {
+          "code": "KeyE"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 5896.3,
+        "data": {
+          "code": "KeyA"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 5907,
+        "data": {
+          "code": "KeyR"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 5908.8,
+        "data": {
+          "inputType": "insertText",
+          "data": "r",
+          "correct": true,
+          "wordIndex": 7,
+          "charIndex": 2,
+          "inputValue": "ear"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 5977.8,
+        "data": {
+          "code": "KeyR"
+        }
+      },
+      {
+        "type": "timer",
+        "testMs": 6001.2,
+        "data": {
+          "event": "step",
+          "timer": 6,
+          "drift": 1.2
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 6116.4,
+        "data": {
+          "code": "KeyL"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 6118.6,
+        "data": {
+          "inputType": "insertText",
+          "data": "l",
+          "correct": true,
+          "wordIndex": 7,
+          "charIndex": 3,
+          "inputValue": "earl"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 6254.6,
+        "data": {
+          "code": "KeyL"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 6307.5,
+        "data": {
+          "code": "KeyY"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 6309.5,
+        "data": {
+          "inputType": "insertText",
+          "data": "y",
+          "correct": true,
+          "wordIndex": 7,
+          "charIndex": 4,
+          "inputValue": "early"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 6412.3,
+        "data": {
+          "code": "KeyY"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 6477.9,
+        "data": {
+          "code": "Space"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 6480.4,
+        "data": {
+          "inputType": "insertText",
+          "data": " ",
+          "correct": true,
+          "wordIndex": 7,
+          "charIndex": 5,
+          "inputValue": "early ",
+          "commitsWord": true
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 6624.2,
+        "data": {
+          "code": "Space"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 6762.1,
+        "data": {
+          "code": "KeyN"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 6764.6,
+        "data": {
+          "inputType": "insertText",
+          "data": "n",
+          "correct": true,
+          "wordIndex": 8,
+          "charIndex": 0,
+          "inputValue": "n"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 6811.1,
+        "data": {
+          "code": "KeyN"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 6921.9,
+        "data": {
+          "code": "KeyO"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 6924.1,
+        "data": {
+          "inputType": "insertText",
+          "data": "o",
+          "correct": true,
+          "wordIndex": 8,
+          "charIndex": 1,
+          "inputValue": "no"
+        }
+      },
+      {
+        "type": "timer",
+        "testMs": 7001.1,
+        "data": {
+          "event": "step",
+          "timer": 7,
+          "drift": 1.1
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 7005.1,
+        "data": {
+          "code": "KeyO"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 7051.7,
+        "data": {
+          "code": "KeyT"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 7053.6,
+        "data": {
+          "inputType": "insertText",
+          "data": "t",
+          "correct": true,
+          "wordIndex": 8,
+          "charIndex": 2,
+          "inputValue": "not"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 7180.6,
+        "data": {
+          "code": "Comma"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 7182.7,
+        "data": {
+          "inputType": "insertText",
+          "data": ",",
+          "correct": true,
+          "wordIndex": 8,
+          "charIndex": 3,
+          "inputValue": "not,"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 7186.8,
+        "data": {
+          "code": "KeyT"
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 7279.4,
+        "data": {
+          "code": "Comma"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 7304.7,
+        "data": {
+          "code": "Space"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 7306.5,
+        "data": {
+          "inputType": "insertText",
+          "data": " ",
+          "correct": true,
+          "wordIndex": 8,
+          "charIndex": 4,
+          "inputValue": "not, ",
+          "commitsWord": true
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 7424.3,
+        "data": {
+          "code": "Space"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 7586.9,
+        "data": {
+          "code": "KeyM"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 7589.2,
+        "data": {
+          "inputType": "insertText",
+          "data": "m",
+          "correct": true,
+          "wordIndex": 9,
+          "charIndex": 0,
+          "inputValue": "m",
+          "lastWord": true
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 7671,
+        "data": {
+          "code": "KeyM"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 7764.9,
+        "data": {
+          "code": "KeyO"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 7765.5,
+        "data": {
+          "inputType": "insertText",
+          "data": "o",
+          "correct": true,
+          "wordIndex": 9,
+          "charIndex": 1,
+          "inputValue": "mo",
+          "lastWord": true
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 7861.7,
+        "data": {
+          "code": "KeyO"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 7941.2,
+        "data": {
+          "code": "KeyS"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 7942.1,
+        "data": {
+          "inputType": "insertText",
+          "data": "s",
+          "correct": true,
+          "wordIndex": 9,
+          "charIndex": 2,
+          "inputValue": "mos",
+          "lastWord": true
+        }
+      },
+      {
+        "type": "timer",
+        "testMs": 8001,
+        "data": {
+          "event": "step",
+          "timer": 8,
+          "drift": 1
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 8073.8,
+        "data": {
+          "code": "KeyS"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 8075.8,
+        "data": {
+          "code": "KeyT"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 8077.4,
+        "data": {
+          "inputType": "insertText",
+          "data": "t",
+          "correct": true,
+          "wordIndex": 9,
+          "charIndex": 3,
+          "inputValue": "most",
+          "lastWord": true
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 8146,
+        "data": {
+          "code": "KeyT"
+        }
+      },
+      {
+        "type": "keydown",
+        "testMs": 8283.8,
+        "data": {
+          "code": "Period"
+        }
+      },
+      {
+        "type": "input",
+        "testMs": 8286.1,
+        "data": {
+          "inputType": "insertText",
+          "data": ".",
+          "correct": true,
+          "wordIndex": 9,
+          "charIndex": 4,
+          "inputValue": "most.",
+          "lastWord": true
+        }
+      },
+      {
+        "type": "timer",
+        "testMs": 8287.6,
+        "data": {
+          "event": "end",
+          "timer": 8,
+          "date": 1791473780994
+        }
+      },
+      {
+        "type": "keyup",
+        "testMs": 8330.1,
+        "data": {
+          "code": "Period"
+        }
+      }
+    ],
+    "context": {
+      "targetWords": [
+        "25 ",
+        "for. ",
+        "Before ",
+        "turn ",
+        "school ",
+        "line ",
+        "34 ",
+        "early ",
+        "not, ",
+        "most."
+      ],
+      "mode": "words",
+      "mode2": "10",
+      "koreanStatus": false,
+      "bailedOut": false
+    }
+  },
+  "completedEvent": {
+    "wpm": 73.82,
+    "rawWpm": 73.82,
+    "charStats": [51, 0, 0, 0],
+    "charTotal": 51,
+    "acc": 100,
+    "language": "english",
+    "testDuration": 8.29,
+    "lastKeyToEnd": 3.8,
+    "startToFirstKey": 0,
+    "afkDuration": 0,
+    "tags": [],
+    "punctuation": true,
+    "numbers": true,
+    "lazyMode": false,
+    "timestamp": 1791473781136,
+    "mode": "words",
+    "mode2": "10",
+    "bailedOut": false,
+    "funbox": [],
+    "difficulty": "normal",
+    "blindMode": false,
+    "stopOnLetter": false,
+    "restartCount": 0,
+    "incompleteTests": [],
+    "incompleteTestSeconds": 0,
+    "consistency": 90.21,
+    "wpmConsistency": 97.63,
+    "keyConsistency": 63.72,
+    "chartData": {
+      "wpm": [72, 78, 76, 75, 77, 76, 74, 74],
+      "burst": [72, 84, 72, 72, 84, 72, 60, 72],
+      "err": [0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    "keySpacing": [
+      117.1, 159.6, 288.90000000000003, 150.79999999999995, 151.70000000000005,
+      157.39999999999998, 104.90000000000009, 331.1999999999998, 104,
+      159.60000000000014, 179.5, 94.09999999999991, 133.50000000000023,
+      129.39999999999964, 208.5, 127.80000000000018, 198.30000000000018, 172.5,
+      165, 204.29999999999973, 126.59999999999991, 157.60000000000036,
+      96.19999999999982, 186.80000000000018, 119.79999999999973,
+      98.59999999999991, 263.10000000000036, 139.69999999999982,
+      101.80000000000018, 191.69999999999982, 93.10000000000036,
+      316.6999999999998, 136.30000000000018, 91.59999999999945, 225,
+      90.90000000000055, 133.39999999999964, 209.39999999999964,
+      191.10000000000036, 170.39999999999964, 284.2000000000007,
+      159.79999999999927, 129.80000000000018, 128.90000000000055,
+      124.09999999999945, 282.1999999999998, 178, 176.30000000000018,
+      134.60000000000036, 207.9999999999991
+    ],
+    "keyDuration": [
+      105.39999999999999, 115.80000000000001, 89.30000000000001,
+      65.10000000000002, 46.39999999999998, 47, 63.299999999999955, 149.5,
+      50.200000000000045, 44, 87.79999999999995, 123, 90.10000000000014, 95.5,
+      94.70000000000027, 131.9000000000001, 121, 94.89999999999964, 121,
+      75.29999999999973, 51.5, 151.70000000000027, 84.79999999999973,
+      90.40000000000009, 147.89999999999964, 134.70000000000027, 100.5, 60,
+      52.100000000000364, 150.19999999999982, 60.899999999999636, 143.5,
+      126.39999999999964, 90.09999999999945, 89.5, 116.30000000000018,
+      122.69999999999982, 70.80000000000018, 138.20000000000073,
+      104.80000000000018, 146.30000000000018, 49, 83.20000000000073,
+      135.10000000000036, 98.79999999999927, 119.60000000000036,
+      84.10000000000036, 96.80000000000018, 132.60000000000036,
+      70.19999999999982, 46.30000000000109
+    ],
+    "keyOverlap": 128.8,
+    "client": "web"
+  }
+}

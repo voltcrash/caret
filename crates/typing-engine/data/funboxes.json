@@ -1,0 +1,511 @@
+[
+  {
+    "name": "58008",
+    "properties": ["ignoresLanguage", "ignoresLayout", "noLetters"],
+    "frontendFunctions": [
+      "getWord",
+      "punctuateWord",
+      "rememberSettings",
+      "getEmulatedChar"
+    ],
+    "frontendForcedConfig": {
+      "numbers": [false]
+    },
+    "canGetPb": false,
+    "difficultyLevel": 1,
+    "cssModifications": []
+  },
+  {
+    "name": "mirror",
+    "properties": ["hasCssFile"],
+    "frontendFunctions": [],
+    "frontendForcedConfig": {},
+    "canGetPb": true,
+    "difficultyLevel": 3,
+    "cssModifications": ["main"]
+  },
+  {
+    "name": "upside_down",
+    "properties": ["hasCssFile"],
+    "frontendFunctions": [],
+    "frontendForcedConfig": {},
+    "canGetPb": true,
+    "difficultyLevel": 3,
+    "cssModifications": ["main"]
+  },
+  {
+    "name": "nausea",
+    "properties": ["hasCssFile", "ignoreReducedMotion"],
+    "frontendFunctions": [],
+    "frontendForcedConfig": {},
+    "canGetPb": true,
+    "difficultyLevel": 2,
+    "cssModifications": ["typingTest"]
+  },
+  {
+    "name": "round_round_baby",
+    "properties": ["hasCssFile", "ignoreReducedMotion"],
+    "frontendFunctions": [],
+    "frontendForcedConfig": {},
+    "canGetPb": true,
+    "difficultyLevel": 3,
+    "cssModifications": ["typingTest"]
+  },
+  {
+    "name": "simon_says",
+    "properties": ["hasCssFile", "changesWordsVisibility", "usesLayout"],
+    "frontendFunctions": ["applyConfig", "rememberSettings"],
+    "frontendForcedConfig": {
+      "highlightMode": ["letter", "off"]
+    },
+    "canGetPb": true,
+    "difficultyLevel": 1,
+    "cssModifications": []
+  },
+  {
+    "name": "tts",
+    "properties": ["hasCssFile", "changesWordsVisibility", "speaks"],
+    "frontendFunctions": ["applyConfig", "rememberSettings", "toggleScript"],
+    "frontendForcedConfig": {
+      "highlightMode": ["letter", "off"]
+    },
+    "canGetPb": true,
+    "difficultyLevel": 1,
+    "cssModifications": ["words"]
+  },
+  {
+    "name": "choo_choo",
+    "properties": [
+      "hasCssFile",
+      "noJoiningScript",
+      "conflictsWithSymmetricChars",
+      "ignoreReducedMotion"
+    ],
+    "frontendFunctions": [],
+    "frontendForcedConfig": {},
+    "canGetPb": true,
+    "difficultyLevel": 2,
+    "cssModifications": ["words"]
+  },
+  {
+    "name": "arrows",
+    "properties": [
+      "ignoresLanguage",
+      "ignoresLayout",
+      "nospace",
+      "noLetters",
+      "symmetricChars"
+    ],
+    "frontendFunctions": [
+      "getWord",
+      "rememberSettings",
+      "getEmulatedChar",
+      "getWordNode"
+    ],
+    "frontendForcedConfig": {
+      "punctuation": [false],
+      "numbers": [false],
+      "highlightMode": ["letter", "off"]
+    },
+    "canGetPb": false,
+    "difficultyLevel": 1,
+    "cssModifications": []
+  },
+  {
+    "name": "rAnDoMcAsE",
+    "properties": ["changesCapitalisation"],
+    "frontendFunctions": ["alterText"],
+    "frontendForcedConfig": {},
+    "canGetPb": false,
+    "difficultyLevel": 2,
+    "cssModifications": []
+  },
+  {
+    "name": "sPoNgEcAsE",
+    "properties": ["changesCapitalisation"],
+    "frontendFunctions": ["alterText"],
+    "frontendForcedConfig": {},
+    "canGetPb": false,
+    "difficultyLevel": 2,
+    "cssModifications": []
+  },
+  {
+    "name": "capitals",
+    "properties": ["changesCapitalisation"],
+    "frontendFunctions": ["alterText"],
+    "frontendForcedConfig": {},
+    "canGetPb": false,
+    "difficultyLevel": 1,
+    "cssModifications": []
+  },
+  {
+    "name": "layout_mirror",
+    "properties": ["changesLayout"],
+    "frontendFunctions": ["applyConfig", "rememberSettings"],
+    "frontendForcedConfig": {},
+    "canGetPb": true,
+    "difficultyLevel": 3,
+    "cssModifications": []
+  },
+  {
+    "name": "layoutfluid",
+    "properties": ["changesLayout", "noInfiniteDuration"],
+    "frontendFunctions": [
+      "applyConfig",
+      "rememberSettings",
+      "handleSpace",
+      "getResultContent"
+    ],
+    "frontendForcedConfig": {},
+    "canGetPb": true,
+    "difficultyLevel": 1,
+    "cssModifications": []
+  },
+  {
+    "name": "earthquake",
+    "properties": ["hasCssFile", "noJoiningScript", "ignoreReducedMotion"],
+    "frontendFunctions": [],
+    "frontendForcedConfig": {},
+    "canGetPb": true,
+    "difficultyLevel": 1,
+    "cssModifications": ["words"]
+  },
+  {
+    "name": "space_balls",
+    "properties": ["hasCssFile", "ignoreReducedMotion"],
+    "frontendFunctions": [],
+    "frontendForcedConfig": {},
+    "canGetPb": true,
+    "difficultyLevel": 0,
+    "cssModifications": ["body"]
+  },
+  {
+    "name": "gibberish",
+    "properties": ["ignoresLanguage", "unspeakable"],
+    "frontendFunctions": ["getWord"],
+    "frontendForcedConfig": {},
+    "canGetPb": false,
+    "difficultyLevel": 1,
+    "cssModifications": []
+  },
+  {
+    "name": "ascii",
+    "properties": ["ignoresLanguage", "noLetters", "unspeakable"],
+    "frontendFunctions": ["getWord"],
+    "frontendForcedConfig": {
+      "punctuation": [false],
+      "numbers": [false]
+    },
+    "canGetPb": false,
+    "difficultyLevel": 1,
+    "cssModifications": []
+  },
+  {
+    "name": "specials",
+    "properties": ["ignoresLanguage", "noLetters", "unspeakable"],
+    "frontendFunctions": ["getWord"],
+    "frontendForcedConfig": {
+      "punctuation": [false],
+      "numbers": [false]
+    },
+    "canGetPb": false,
+    "difficultyLevel": 1,
+    "cssModifications": []
+  },
+  {
+    "name": "plus_zero",
+    "properties": ["changesWordsVisibility", "toPush:1", "noInfiniteDuration"],
+    "frontendFunctions": [],
+    "frontendForcedConfig": {},
+    "canGetPb": true,
+    "difficultyLevel": 1,
+    "cssModifications": []
+  },
+  {
+    "name": "plus_one",
+    "properties": ["changesWordsVisibility", "toPush:2", "noInfiniteDuration"],
+    "frontendFunctions": [],
+    "frontendForcedConfig": {},
+    "canGetPb": true,
+    "difficultyLevel": 0,
+    "cssModifications": []
+  },
+  {
+    "name": "plus_two",
+    "properties": ["changesWordsVisibility", "toPush:3", "noInfiniteDuration"],
+    "frontendFunctions": [],
+    "frontendForcedConfig": {},
+    "canGetPb": true,
+    "difficultyLevel": 0,
+    "cssModifications": []
+  },
+  {
+    "name": "plus_three",
+    "properties": ["changesWordsVisibility", "toPush:4", "noInfiniteDuration"],
+    "frontendFunctions": [],
+    "frontendForcedConfig": {},
+    "canGetPb": true,
+    "difficultyLevel": 0,
+    "cssModifications": []
+  },
+  {
+    "name": "read_ahead_easy",
+    "properties": ["changesWordsVisibility", "hasCssFile"],
+    "frontendFunctions": ["rememberSettings", "handleKeydown"],
+    "frontendForcedConfig": {
+      "highlightMode": ["letter", "off"]
+    },
+    "canGetPb": true,
+    "difficultyLevel": 1,
+    "cssModifications": []
+  },
+  {
+    "name": "read_ahead",
+    "properties": ["changesWordsVisibility", "hasCssFile"],
+    "frontendFunctions": ["rememberSettings", "handleKeydown"],
+    "frontendForcedConfig": {
+      "highlightMode": ["letter", "off"]
+    },
+    "canGetPb": true,
+    "difficultyLevel": 2,
+    "cssModifications": []
+  },
+  {
+    "name": "read_ahead_hard",
+    "properties": ["changesWordsVisibility", "hasCssFile"],
+    "frontendFunctions": ["rememberSettings", "handleKeydown"],
+    "frontendForcedConfig": {
+      "highlightMode": ["letter", "off"]
+    },
+    "canGetPb": true,
+    "difficultyLevel": 3,
+    "cssModifications": []
+  },
+  {
+    "name": "memory",
+    "properties": ["changesWordsVisibility", "noInfiniteDuration"],
+    "frontendFunctions": [
+      "applyConfig",
+      "rememberSettings",
+      "start",
+      "restart"
+    ],
+    "frontendForcedConfig": {
+      "mode": ["words", "quote", "custom"]
+    },
+    "canGetPb": true,
+    "difficultyLevel": 3,
+    "cssModifications": []
+  },
+  {
+    "name": "nospace",
+    "properties": ["nospace"],
+    "frontendFunctions": ["rememberSettings"],
+    "frontendForcedConfig": {
+      "highlightMode": ["letter", "off"]
+    },
+    "canGetPb": false,
+    "difficultyLevel": 0,
+    "cssModifications": []
+  },
+  {
+    "name": "poetry",
+    "properties": ["noInfiniteDuration", "ignoresLanguage"],
+    "frontendFunctions": ["pullSection"],
+    "frontendForcedConfig": {
+      "punctuation": [false],
+      "numbers": [false]
+    },
+    "canGetPb": false,
+    "difficultyLevel": 0,
+    "cssModifications": []
+  },
+  {
+    "name": "wikipedia",
+    "properties": ["noInfiniteDuration", "ignoresLanguage"],
+    "frontendFunctions": ["pullSection"],
+    "frontendForcedConfig": {
+      "punctuation": [false],
+      "numbers": [false]
+    },
+    "canGetPb": false,
+    "difficultyLevel": 0,
+    "cssModifications": []
+  },
+  {
+    "name": "weakspot",
+    "properties": ["changesWordsFrequency"],
+    "frontendFunctions": ["getWord"],
+    "frontendForcedConfig": {},
+    "canGetPb": false,
+    "difficultyLevel": 0,
+    "cssModifications": []
+  },
+  {
+    "name": "pseudolang",
+    "properties": ["unspeakable", "ignoresLanguage"],
+    "frontendFunctions": ["withWords"],
+    "frontendForcedConfig": {},
+    "canGetPb": false,
+    "difficultyLevel": 0,
+    "cssModifications": []
+  },
+  {
+    "name": "IPv4",
+    "properties": ["ignoresLanguage", "ignoresLayout", "noLetters"],
+    "frontendFunctions": ["getWord", "punctuateWord", "rememberSettings"],
+    "frontendForcedConfig": {
+      "numbers": [false]
+    },
+    "canGetPb": false,
+    "difficultyLevel": 1,
+    "cssModifications": []
+  },
+  {
+    "name": "IPv6",
+    "properties": ["ignoresLanguage", "ignoresLayout", "noLetters"],
+    "frontendFunctions": ["getWord", "punctuateWord", "rememberSettings"],
+    "frontendForcedConfig": {
+      "numbers": [false]
+    },
+    "canGetPb": false,
+    "difficultyLevel": 1,
+    "cssModifications": []
+  },
+  {
+    "name": "binary",
+    "properties": ["ignoresLanguage", "ignoresLayout", "noLetters"],
+    "frontendFunctions": ["getWord"],
+    "frontendForcedConfig": {
+      "numbers": [false],
+      "punctuation": [false]
+    },
+    "canGetPb": false,
+    "difficultyLevel": 1,
+    "cssModifications": []
+  },
+  {
+    "name": "hexadecimal",
+    "properties": ["ignoresLanguage", "ignoresLayout", "noLetters"],
+    "frontendFunctions": ["getWord", "punctuateWord", "rememberSettings"],
+    "frontendForcedConfig": {
+      "numbers": [false]
+    },
+    "canGetPb": false,
+    "difficultyLevel": 1,
+    "cssModifications": []
+  },
+  {
+    "name": "zipf",
+    "properties": ["changesWordsFrequency"],
+    "frontendFunctions": ["getWordsFrequencyMode"],
+    "frontendForcedConfig": {},
+    "canGetPb": false,
+    "difficultyLevel": 0,
+    "cssModifications": []
+  },
+  {
+    "name": "morse",
+    "properties": ["ignoresLanguage", "ignoresLayout", "noLetters", "nospace"],
+    "frontendFunctions": ["alterText"],
+    "frontendForcedConfig": {},
+    "canGetPb": false,
+    "difficultyLevel": 1,
+    "cssModifications": []
+  },
+  {
+    "name": "crt",
+    "properties": ["hasCssFile", "noJoiningScript"],
+    "frontendFunctions": ["applyGlobalCSS", "clearGlobal"],
+    "frontendForcedConfig": {},
+    "canGetPb": true,
+    "difficultyLevel": 0,
+    "cssModifications": ["body"]
+  },
+  {
+    "name": "backwards",
+    "properties": [
+      "hasCssFile",
+      "conflictsWithSymmetricChars",
+      "wordOrder:reverse",
+      "reverseDirection"
+    ],
+    "frontendFunctions": ["alterText"],
+    "frontendForcedConfig": {},
+    "canGetPb": true,
+    "difficultyLevel": 3,
+    "cssModifications": ["words"]
+  },
+  {
+    "name": "ddoouubblleedd",
+    "properties": ["noJoiningScript"],
+    "frontendFunctions": ["alterText"],
+    "frontendForcedConfig": {},
+    "canGetPb": true,
+    "difficultyLevel": 1,
+    "cssModifications": []
+  },
+  {
+    "name": "instant_messaging",
+    "properties": ["changesCapitalisation"],
+    "frontendFunctions": ["alterText"],
+    "frontendForcedConfig": {},
+    "canGetPb": false,
+    "difficultyLevel": 0,
+    "cssModifications": []
+  },
+  {
+    "name": "underscore_spaces",
+    "properties": ["ignoresLanguage", "ignoresLayout", "nospace"],
+    "frontendFunctions": ["alterText"],
+    "frontendForcedConfig": {},
+    "canGetPb": false,
+    "difficultyLevel": 1,
+    "cssModifications": []
+  },
+  {
+    "name": "ALL_CAPS",
+    "properties": ["changesCapitalisation"],
+    "frontendFunctions": ["alterText"],
+    "frontendForcedConfig": {},
+    "canGetPb": false,
+    "difficultyLevel": 1,
+    "cssModifications": []
+  },
+  {
+    "name": "polyglot",
+    "properties": ["ignoresLanguage"],
+    "frontendFunctions": ["withWords"],
+    "frontendForcedConfig": {},
+    "canGetPb": false,
+    "difficultyLevel": 1,
+    "cssModifications": []
+  },
+  {
+    "name": "asl",
+    "properties": ["hasCssFile", "noJoiningScript"],
+    "frontendFunctions": [],
+    "frontendForcedConfig": {},
+    "canGetPb": true,
+    "difficultyLevel": 1,
+    "cssModifications": ["words"]
+  },
+  {
+    "name": "rot13",
+    "properties": [],
+    "frontendFunctions": ["alterText"],
+    "frontendForcedConfig": {},
+    "canGetPb": true,
+    "difficultyLevel": 1,
+    "cssModifications": []
+  },
+  {
+    "name": "no_quit",
+    "properties": [],
+    "frontendFunctions": [],
+    "frontendForcedConfig": {},
+    "canGetPb": true,
+    "difficultyLevel": 0,
+    "cssModifications": []
+  }
+]

@@ -36,7 +36,7 @@ export function applyResponsePolicy(
         "frame-ancestors 'self'",
         "object-src 'none'",
         "frame-src https://challenges.cloudflare.com",
-        `script-src 'self' https://challenges.cloudflare.com 'nonce-${nonce}'${development ? " 'unsafe-eval'" : ""}`,
+        `script-src 'self' 'wasm-unsafe-eval' https://challenges.cloudflare.com 'nonce-${nonce}'${development ? " 'unsafe-eval'" : ""}`,
         `script-src-attr 'unsafe-hashes' 'sha256-${recoveryHash}'`,
         "style-src 'self' 'unsafe-inline'",
         "font-src 'self' data:",

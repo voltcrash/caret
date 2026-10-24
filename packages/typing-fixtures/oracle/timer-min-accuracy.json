@@ -1,0 +1,114 @@
+{
+  "name": "timer-min-accuracy",
+  "frames": [
+    {
+      "state": {
+        "wordIndex": 0,
+        "inputValue": [120],
+        "active": true,
+        "ended": false
+      },
+      "log": {
+        "version": 1,
+        "events": [
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [120],
+              "correct": false,
+              "wordIndex": 0,
+              "charIndex": 0,
+              "inputValue": [120]
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [
+            [111, 110, 101, 32],
+            [116, 119, 111]
+          ],
+          "mode": "words",
+          "mode2": "2",
+          "koreanStatus": false,
+          "bailedOut": false,
+          "isFunboxWithNospacePropertyActive": false
+        }
+      }
+    },
+    {
+      "state": {
+        "wordIndex": 0,
+        "inputValue": [120],
+        "active": false,
+        "ended": true,
+        "reason": "min accuracy"
+      },
+      "log": {
+        "version": 1,
+        "events": [
+          {
+            "type": "input",
+            "testMs": 0,
+            "data": {
+              "inputType": "insertText",
+              "data": [120],
+              "correct": false,
+              "wordIndex": 0,
+              "charIndex": 0,
+              "inputValue": [120]
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 0,
+            "data": {
+              "event": "start",
+              "timer": 0,
+              "date": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "step",
+              "timer": 1,
+              "drift": 0
+            }
+          },
+          {
+            "type": "timer",
+            "testMs": 1000,
+            "data": {
+              "event": "end",
+              "timer": 1,
+              "date": 0
+            }
+          }
+        ],
+        "context": {
+          "targetWords": [
+            [111, 110, 101, 32],
+            [116, 119, 111]
+          ],
+          "mode": "words",
+          "mode2": "2",
+          "koreanStatus": false,
+          "bailedOut": false,
+          "isFunboxWithNospacePropertyActive": false
+        }
+      }
+    }
+  ]
+}

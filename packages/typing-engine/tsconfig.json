@@ -1,0 +1,11 @@
+{
+  "extends": "@oxytype/typescript-config/base.json",
+  "compilerOptions": {
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "target": "ES2022",
+    "lib": ["es2022", "dom"],
+    "types": ["vite-plus/client", "node"]
+  },
+  "include": ["src", "generated", "__test__"]
+}

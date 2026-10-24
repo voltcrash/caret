@@ -9,7 +9,7 @@ permissions:
 
 on:
   pull_request:
-    branches: [main, "stack/**"]
+    branches: [main, "stack/**", "t3/rust-engine-migration"]
     types: [opened, reopened, synchronize, ready_for_review]
   push:
     branches: [main]
@@ -41,6 +41,7 @@ jobs:
       packages: ${{ steps.select.outputs.packages }}
       assets: ${{ steps.select.outputs.assets }}
       code: ${{ steps.select.outputs.code }}
+      engine: ${{ steps.select.outputs.engine }}
 
     steps:
       # PRs read changed files from the API, so no checkout is needed.
@@ -72,12 +73,22 @@ jobs:
               - 'packages/oxlint-config/**'
             # Workspace packages bundled into the backend and frontend.
             runtime-packages:
-              - 'packages/{challenges,contracts,funbox,schemas,typing-core,util}/**'
+              - 'packages/{challenges,contracts,funbox,schemas,typing-core,typing-engine,typing-fixtures,util}/**'
+              - 'crates/**'
+              - 'Cargo.{toml,lock}'
+              - 'rust-toolchain.toml'
+              - 'scripts/{engine,prepare-engine}.ts'
               - '!packages/*/{__test__,__tests__,__fixtures__}/**'
               - '!**/*.md'
             packages:
               - 'packages/**'
               - '!**/*.md'
+            engine:
+              - 'crates/**'
+              - 'Cargo.{toml,lock}'
+              - 'rust-toolchain.toml'
+              - 'scripts/{engine,prepare-engine}.ts'
+              - 'packages/typing-{engine,fixtures}/**'
             backend:
               - 'backend/**'
               - '!backend/__tests__/**'
@@ -173,9 +184,26 @@ jobs:
           enable start-browser "${runtime[@]}" frontend start-tests browser-tests static-delivery
           enable start-updates "${runtime[@]}" frontend start-tests update-tests static-delivery
           enable start-delivery "${runtime[@]}" frontend static-delivery
-          enable packages packages lint-config static-layouts static-challenges
+          enable packages packages lint-config static-layouts static-challenges engine
           enable assets assets runtime-packages
           enable code code
+          enable engine engine runtime-packages
+
+  engine:
+    name: engine
+    needs: [changes]
+    if: needs.changes.outputs.engine == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+      - name: Native formatting, lint and parity
+        run: vp run engine:fmt && vp run engine:lint && vp run engine:test
+      - name: Install Chromium
+        run: vp -C frontend exec playwright install --with-deps --only-shell chromium
+      - name: Browser Wasm parity
+        run: vp run engine:test:wasm
 
   quality:
     name: quality
@@ -475,6 +503,7 @@ jobs:
         start-delivery,
         ci-assets,
         ci-pkg,
+        engine,
       ]
     runs-on: ubuntu-latest
     timeout-minutes: 2

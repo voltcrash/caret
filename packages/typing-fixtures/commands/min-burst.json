@@ -1,0 +1,25 @@
+{
+  "name": "min-burst",
+  "config": {
+    "mode": "words",
+    "words": 2,
+    "minBurst": "fixed",
+    "minBurstCustomSpeed": 100
+  },
+  "words": [
+    [111, 110, 101, 32],
+    [116, 119, 111]
+  ],
+  "commands": [
+    {
+      "op": "insert",
+      "now": 0,
+      "data": [111]
+    },
+    {
+      "op": "insert",
+      "now": 10000,
+      "data": [110, 101, 32]
+    }
+  ]
+}

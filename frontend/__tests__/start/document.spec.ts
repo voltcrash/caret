@@ -44,12 +44,14 @@ describe("Start document and response policy in workerd", () => {
     expect(directives.get("frame-src")).toEqual([
       "https://challenges.cloudflare.com",
     ]);
-    expect(directives.get("script-src")).toHaveLength(3);
+    expect(directives.get("script-src")).toHaveLength(4);
     expect(directives.get("script-src")).toEqual([
       "'self'",
+      "'wasm-unsafe-eval'",
       "https://challenges.cloudflare.com",
       expect.stringMatching(/^'nonce-[^']+'$/),
     ]);
+    expect(directives.get("script-src")).not.toContain("'unsafe-eval'");
   });
 
   it("renders static fallbacks and gives every executable script a fresh CSP nonce", async () => {

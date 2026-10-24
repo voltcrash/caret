@@ -5,11 +5,12 @@ import { useQuoteEvents } from "../../ts/controllers/quotes-controller";
 import { useSoundEvents } from "../../ts/controllers/sound-controller";
 import {
   getLastEventLog,
+  getActiveWordIndex,
   initializeTypingState,
   useKeymapEvents,
 } from "../../ts/states/test";
 import { addToGlobal } from "../../ts/utils/misc";
-import { buildEventLog } from "./runtime/events/data";
+import { buildEventLog, getTestSession } from "./runtime/events/data";
 import { useFunboxEvents } from "./runtime/funbox/funbox";
 import { usePaceCaretEvents } from "./runtime/pace-caret";
 import { usePractiseEvents } from "./runtime/practise-words";
@@ -38,6 +39,14 @@ export function TypingRuntime(): null {
           Result.toggleSmoothedBurst();
         },
         lastEventLog: getLastEventLog,
+        ...(import.meta.env.OXYTYPE_ENGINE_PROOF
+          ? {
+              engineMigrationState: () => ({
+                wordIndex: getActiveWordIndex(),
+                reason: getTestSession().getFinishReason(),
+              }),
+            }
+          : {}),
         currentEventLog: buildEventLog,
       }),
     );

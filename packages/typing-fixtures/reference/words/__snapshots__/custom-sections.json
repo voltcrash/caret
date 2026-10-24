@@ -1,0 +1,25 @@
+{
+  "words": [
+    "a ",
+    "dog ",
+    "ran ",
+    "on ",
+    "the ",
+    "mat ",
+    "far ",
+    "away ",
+    "the ",
+    "cat ",
+    "sat ",
+    "on ",
+    "the ",
+    "mat "
+  ],
+  "sectionIndexes": [1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 4, 5, 5, 5],
+  "hasTab": false,
+  "hasNewline": false,
+  "allJoiningScript": false,
+  "extra": [],
+  "allWordsGenerated": true,
+  "currentQuote": null
+}

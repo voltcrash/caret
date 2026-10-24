@@ -1,0 +1,687 @@
+[
+  {
+    "name": "words-10",
+    "phase": "base",
+    "seed": 1,
+    "config": {
+      "mode": "words",
+      "words": 10
+    }
+  },
+  {
+    "name": "words-0-infinite",
+    "phase": "base",
+    "seed": 2,
+    "config": {
+      "mode": "words",
+      "words": 0
+    },
+    "extraWords": 5
+  },
+  {
+    "name": "time-30",
+    "phase": "base",
+    "seed": 3,
+    "config": {
+      "mode": "time",
+      "time": 30
+    },
+    "extraWords": 10
+  },
+  {
+    "name": "words-25-punctuation",
+    "phase": "base",
+    "seed": 4,
+    "config": {
+      "mode": "words",
+      "words": 25,
+      "punctuation": true
+    }
+  },
+  {
+    "name": "words-25-numbers",
+    "phase": "base",
+    "seed": 5,
+    "config": {
+      "mode": "words",
+      "words": 25,
+      "numbers": true
+    }
+  },
+  {
+    "name": "words-50-punctuation-numbers",
+    "phase": "base",
+    "seed": 6,
+    "config": {
+      "mode": "words",
+      "words": 50,
+      "punctuation": true,
+      "numbers": true
+    }
+  },
+  {
+    "name": "words-100-show-all-lines",
+    "phase": "base",
+    "seed": 7,
+    "config": {
+      "mode": "words",
+      "words": 150,
+      "showAllLines": true
+    }
+  },
+  {
+    "name": "time-15-english-1k",
+    "phase": "base",
+    "seed": 8,
+    "config": {
+      "mode": "time",
+      "time": 15,
+      "language": "english_1k"
+    }
+  },
+  {
+    "name": "words-30-spanish-punctuation",
+    "phase": "base",
+    "seed": 9,
+    "config": {
+      "mode": "words",
+      "words": 30,
+      "language": "spanish",
+      "punctuation": true
+    }
+  },
+  {
+    "name": "words-30-french-punctuation",
+    "phase": "base",
+    "seed": 10,
+    "config": {
+      "mode": "words",
+      "words": 30,
+      "language": "french",
+      "punctuation": true
+    }
+  },
+  {
+    "name": "words-30-german",
+    "phase": "base",
+    "seed": 11,
+    "config": {
+      "mode": "words",
+      "words": 30,
+      "language": "german"
+    }
+  },
+  {
+    "name": "words-30-code-javascript-punctuation",
+    "phase": "base",
+    "seed": 12,
+    "config": {
+      "mode": "words",
+      "words": 30,
+      "language": "code_javascript",
+      "punctuation": true
+    }
+  },
+  {
+    "name": "words-30-arabic-numbers",
+    "phase": "base",
+    "seed": 13,
+    "config": {
+      "mode": "words",
+      "words": 30,
+      "language": "arabic",
+      "numbers": true,
+      "punctuation": true
+    }
+  },
+  {
+    "name": "words-20-repeated",
+    "phase": "base",
+    "seed": 14,
+    "config": {
+      "mode": "words",
+      "words": 20
+    },
+    "repeat": true
+  },
+  {
+    "name": "quote-short",
+    "phase": "quote-custom-zen",
+    "seed": 20,
+    "config": {
+      "mode": "quote",
+      "quoteLength": [0]
+    }
+  },
+  {
+    "name": "quote-all",
+    "phase": "quote-custom-zen",
+    "seed": 21,
+    "config": {
+      "mode": "quote",
+      "quoteLength": [0, 1, 2, 3]
+    }
+  },
+  {
+    "name": "quote-repeated",
+    "phase": "quote-custom-zen",
+    "seed": 22,
+    "config": {
+      "mode": "quote",
+      "quoteLength": [1]
+    },
+    "repeat": true
+  },
+  {
+    "name": "quote-by-id",
+    "phase": "quote-custom-zen",
+    "seed": 23,
+    "config": {
+      "mode": "quote",
+      "quoteLength": [-2]
+    },
+    "selectedQuoteId": 13
+  },
+  {
+    "name": "custom-repeat",
+    "phase": "quote-custom-zen",
+    "seed": 24,
+    "config": {
+      "mode": "custom"
+    },
+    "customText": {
+      "text": [
+        "The",
+        "quick",
+        "brown",
+        "fox",
+        "jumps",
+        "over",
+        "the",
+        "lazy",
+        "dog"
+      ],
+      "mode": "repeat",
+      "limit": {
+        "value": 9,
+        "mode": "word"
+      },
+      "pipeDelimiter": false
+    }
+  },
+  {
+    "name": "custom-random",
+    "phase": "quote-custom-zen",
+    "seed": 25,
+    "config": {
+      "mode": "custom"
+    },
+    "customText": {
+      "text": ["alpha", "beta", "gamma", "delta", "epsilon", "zeta"],
+      "mode": "random",
+      "limit": {
+        "value": 30,
+        "mode": "word"
+      },
+      "pipeDelimiter": false
+    }
+  },
+  {
+    "name": "custom-shuffle",
+    "phase": "quote-custom-zen",
+    "seed": 26,
+    "config": {
+      "mode": "custom"
+    },
+    "customText": {
+      "text": ["one", "two", "three", "four", "five"],
+      "mode": "shuffle",
+      "limit": {
+        "value": 10,
+        "mode": "word"
+      },
+      "pipeDelimiter": false
+    }
+  },
+  {
+    "name": "custom-time",
+    "phase": "quote-custom-zen",
+    "seed": 27,
+    "config": {
+      "mode": "custom"
+    },
+    "customText": {
+      "text": ["tick", "tock", "clock"],
+      "mode": "random",
+      "limit": {
+        "value": 30,
+        "mode": "time"
+      },
+      "pipeDelimiter": false
+    },
+    "extraWords": 5
+  },
+  {
+    "name": "custom-sections",
+    "phase": "quote-custom-zen",
+    "seed": 28,
+    "config": {
+      "mode": "custom"
+    },
+    "customText": {
+      "text": ["the cat sat", "on the mat", "a dog ran", "far away"],
+      "mode": "random",
+      "limit": {
+        "value": 5,
+        "mode": "section"
+      },
+      "pipeDelimiter": true
+    }
+  },
+  {
+    "name": "custom-newlines-tabs",
+    "phase": "quote-custom-zen",
+    "seed": 29,
+    "config": {
+      "mode": "custom"
+    },
+    "customText": {
+      "text": ["line\n", "\tindented", "word", "end\n"],
+      "mode": "repeat",
+      "limit": {
+        "value": 4,
+        "mode": "word"
+      },
+      "pipeDelimiter": false
+    }
+  },
+  {
+    "name": "custom-repeated",
+    "phase": "quote-custom-zen",
+    "seed": 30,
+    "config": {
+      "mode": "custom"
+    },
+    "customText": {
+      "text": ["red", "green", "blue", "cyan"],
+      "mode": "random",
+      "limit": {
+        "value": 12,
+        "mode": "word"
+      },
+      "pipeDelimiter": false
+    },
+    "repeat": true
+  },
+  {
+    "name": "zen",
+    "phase": "quote-custom-zen",
+    "seed": 31,
+    "config": {
+      "mode": "zen"
+    }
+  },
+  {
+    "name": "words-30-lazy-french",
+    "phase": "language-helpers",
+    "seed": 40,
+    "config": {
+      "mode": "words",
+      "words": 30,
+      "language": "french",
+      "lazyMode": true
+    }
+  },
+  {
+    "name": "words-30-lazy-polish-punctuation",
+    "phase": "language-helpers",
+    "seed": 41,
+    "config": {
+      "mode": "words",
+      "words": 30,
+      "language": "polish",
+      "lazyMode": true,
+      "punctuation": true
+    }
+  },
+  {
+    "name": "words-50-english-punctuation-contractions",
+    "phase": "language-helpers",
+    "seed": 42,
+    "config": {
+      "mode": "words",
+      "words": 50,
+      "punctuation": true
+    }
+  },
+  {
+    "name": "words-50-british-english",
+    "phase": "language-helpers",
+    "seed": 43,
+    "config": {
+      "mode": "words",
+      "words": 50,
+      "language": "english_1k",
+      "britishEnglish": true,
+      "punctuation": true
+    }
+  },
+  {
+    "name": "quote-british-english",
+    "phase": "language-helpers",
+    "seed": 44,
+    "config": {
+      "mode": "quote",
+      "quoteLength": [2],
+      "britishEnglish": true
+    }
+  },
+  {
+    "name": "words-30-swiss-german",
+    "phase": "language-helpers",
+    "seed": 45,
+    "config": {
+      "mode": "words",
+      "words": 30,
+      "language": "swiss_german"
+    }
+  },
+  {
+    "name": "words-30-turkish-punctuation",
+    "phase": "language-helpers",
+    "seed": 46,
+    "config": {
+      "mode": "words",
+      "words": 30,
+      "language": "turkish",
+      "punctuation": true
+    }
+  },
+  {
+    "name": "funbox-58008",
+    "phase": "funbox",
+    "seed": 60,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["58008"],
+      "punctuation": true
+    }
+  },
+  {
+    "name": "funbox-arrows",
+    "phase": "funbox",
+    "seed": 61,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["arrows"]
+    }
+  },
+  {
+    "name": "funbox-rAnDoMcAsE",
+    "phase": "funbox",
+    "seed": 62,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["rAnDoMcAsE"]
+    }
+  },
+  {
+    "name": "funbox-sPoNgEcAsE",
+    "phase": "funbox",
+    "seed": 63,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["sPoNgEcAsE"]
+    }
+  },
+  {
+    "name": "funbox-capitals",
+    "phase": "funbox",
+    "seed": 64,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["capitals"]
+    }
+  },
+  {
+    "name": "funbox-gibberish",
+    "phase": "funbox",
+    "seed": 65,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["gibberish"]
+    }
+  },
+  {
+    "name": "funbox-ascii",
+    "phase": "funbox",
+    "seed": 66,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["ascii"]
+    }
+  },
+  {
+    "name": "funbox-specials",
+    "phase": "funbox",
+    "seed": 67,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["specials"]
+    }
+  },
+  {
+    "name": "funbox-plus_one",
+    "phase": "funbox",
+    "seed": 68,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["plus_one"]
+    }
+  },
+  {
+    "name": "funbox-plus_three",
+    "phase": "funbox",
+    "seed": 69,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["plus_three"]
+    }
+  },
+  {
+    "name": "funbox-nospace",
+    "phase": "funbox",
+    "seed": 70,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["nospace"]
+    }
+  },
+  {
+    "name": "funbox-weakspot",
+    "phase": "funbox",
+    "seed": 71,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["weakspot"]
+    }
+  },
+  {
+    "name": "funbox-pseudolang",
+    "phase": "funbox",
+    "seed": 72,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["pseudolang"]
+    }
+  },
+  {
+    "name": "funbox-IPv4",
+    "phase": "funbox",
+    "seed": 73,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["IPv4"],
+      "punctuation": true
+    }
+  },
+  {
+    "name": "funbox-IPv6",
+    "phase": "funbox",
+    "seed": 74,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["IPv6"],
+      "punctuation": true
+    }
+  },
+  {
+    "name": "funbox-binary",
+    "phase": "funbox",
+    "seed": 75,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["binary"]
+    }
+  },
+  {
+    "name": "funbox-hexadecimal",
+    "phase": "funbox",
+    "seed": 76,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["hexadecimal"],
+      "punctuation": true
+    }
+  },
+  {
+    "name": "funbox-zipf",
+    "phase": "funbox",
+    "seed": 77,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["zipf"]
+    }
+  },
+  {
+    "name": "funbox-morse",
+    "phase": "funbox",
+    "seed": 78,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["morse"]
+    }
+  },
+  {
+    "name": "funbox-backwards",
+    "phase": "funbox",
+    "seed": 79,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["backwards"]
+    }
+  },
+  {
+    "name": "funbox-ddoouubblleedd",
+    "phase": "funbox",
+    "seed": 80,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["ddoouubblleedd"]
+    }
+  },
+  {
+    "name": "funbox-instant_messaging",
+    "phase": "funbox",
+    "seed": 81,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["instant_messaging"],
+      "punctuation": true
+    }
+  },
+  {
+    "name": "funbox-underscore_spaces",
+    "phase": "funbox",
+    "seed": 82,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["underscore_spaces"]
+    }
+  },
+  {
+    "name": "funbox-ALL_CAPS",
+    "phase": "funbox",
+    "seed": 83,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["ALL_CAPS"]
+    }
+  },
+  {
+    "name": "funbox-rot13",
+    "phase": "funbox",
+    "seed": 84,
+    "config": {
+      "mode": "words",
+      "words": 20,
+      "funbox": ["rot13"]
+    }
+  },
+  {
+    "name": "funbox-polyglot",
+    "phase": "funbox",
+    "seed": 85,
+    "config": {
+      "mode": "words",
+      "words": 30,
+      "funbox": ["polyglot"],
+      "customPolyglot": ["english", "spanish", "french"]
+    }
+  },
+  {
+    "name": "funbox-rot13-capitals-time",
+    "phase": "funbox",
+    "seed": 86,
+    "config": {
+      "mode": "time",
+      "time": 30,
+      "funbox": ["rot13", "capitals"]
+    },
+    "extraWords": 5
+  },
+  {
+    "name": "funbox-backwards-quote",
+    "phase": "funbox",
+    "seed": 87,
+    "config": {
+      "mode": "quote",
+      "quoteLength": [0],
+      "funbox": ["backwards"]
+    }
+  }
+]

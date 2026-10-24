@@ -1,0 +1,26 @@
+{
+  "name": "time-zero",
+  "config": {
+    "mode": "time",
+    "time": 0
+  },
+  "words": [
+    [111, 110, 101, 32],
+    [116, 119, 111, 32]
+  ],
+  "commands": [
+    {
+      "op": "insert",
+      "now": 0,
+      "data": [111]
+    },
+    {
+      "op": "advance",
+      "now": 5000
+    },
+    {
+      "op": "end",
+      "now": 6000
+    }
+  ]
+}

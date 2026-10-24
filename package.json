@@ -41,12 +41,20 @@
     "check-assets-others": "vp run --filter @oxytype/frontend check-assets others",
     "check-assets-json": "vp run --filter @oxytype/frontend check-assets json",
     "knip": "knip",
-    "oxlint": "vp lint"
+    "oxlint": "vp lint",
+    "engine:build": "node scripts/engine.ts build",
+    "engine:test": "node scripts/engine.ts test",
+    "engine:lint": "node scripts/engine.ts lint",
+    "engine:fmt": "node scripts/engine.ts fmt",
+    "engine:fmt-fix": "node scripts/engine.ts fmt-fix",
+    "engine:test:wasm": "node scripts/engine.ts browser",
+    "engine:parity": "node scripts/engine.ts parity"
   },
   "devDependencies": {
     "@commitlint/cli": "21.2.3",
     "@types/node": "24.19.0",
     "@vitest/coverage-v8": "catalog:",
+    "binaryen": "132.0.0",
     "caniuse-lite": "1.0.30001814",
     "conventional-changelog-conventionalcommits": "10.4.0",
     "husky": "9.1.7",

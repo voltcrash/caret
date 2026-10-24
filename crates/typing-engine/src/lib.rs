@@ -1,0 +1,49 @@
+//! Platform-independent typing rules. Hosts provide content, observations and time.
+pub mod analysis;
+pub mod content;
+pub mod custom_progress;
+pub mod error;
+pub mod funboxes;
+mod generated_funboxes;
+pub mod generation;
+pub mod input;
+pub mod language_rules;
+mod live;
+pub mod pace;
+pub mod policy;
+pub mod practice;
+pub mod punctuation;
+pub mod quotes;
+pub mod random;
+pub mod replay;
+pub mod restart;
+pub mod results;
+pub mod session;
+pub mod stats;
+pub mod text;
+pub mod transforms;
+pub mod validation;
+pub mod weak_spot;
+pub mod wire;
+
+pub use session::{Command, Config, Session};
+pub use text::Text;
+
+pub const BINDING_VERSION: u32 = 1;
+pub const BEHAVIOR_VERSION: u32 = 1;
+pub const EVENT_LOG_VERSION: u32 = 1;
+
+/// Match JavaScript Math.round: halfway values round toward positive infinity.
+pub fn js_round(value: f64) -> f64 {
+    let floor = value.floor();
+    if value - floor < 0.5 {
+        floor
+    } else {
+        floor + 1.0
+    }
+}
+
+/// Existing roundTo2 uses Number.EPSILON before rounding.
+pub fn round2(value: f64) -> f64 {
+    js_round((value + f64::EPSILON) * 100.0) / 100.0
+}

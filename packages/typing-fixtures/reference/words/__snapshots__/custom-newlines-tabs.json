@@ -1,0 +1,10 @@
+{
+  "words": ["line\n", "\tindented ", "word ", "end\n"],
+  "sectionIndexes": [1, 2, 3, 4],
+  "hasTab": true,
+  "hasNewline": true,
+  "allJoiningScript": false,
+  "extra": [],
+  "allWordsGenerated": true,
+  "currentQuote": null
+}

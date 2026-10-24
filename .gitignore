@@ -138,3 +138,7 @@ frontend/playwright-report/
 
 # TanStack Router generator scratch files
 .tanstack/
+
+# Rust / generated Wasm and type bindings
+/target/
+/packages/typing-engine/generated/

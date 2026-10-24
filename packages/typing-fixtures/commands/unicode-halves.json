@@ -1,0 +1,33 @@
+{
+  "name": "unicode-halves",
+  "config": {
+    "mode": "words",
+    "words": 2
+  },
+  "words": [
+    [55357, 56832, 32],
+    [101, 769]
+  ],
+  "commands": [
+    {
+      "op": "insert",
+      "data": [55357],
+      "now": 0
+    },
+    {
+      "op": "insert",
+      "data": [56832],
+      "now": 20
+    },
+    {
+      "op": "insert",
+      "data": [32],
+      "now": 40
+    },
+    {
+      "op": "insert",
+      "data": [101, 769],
+      "now": 100
+    }
+  ]
+}

@@ -1,0 +1,127 @@
+{
+  "browser": "153.0.8010.12",
+  "fixture": "30 fresh browser contexts; HTTP cache disabled; built Cloudflare Worker; from browser-only import through usable finite session; no CPU/network throttle",
+  "samples": [
+    {
+      "initializationMs": 56.900000005960464,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 42.099999994039536,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 30.900000005960464,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 47.79999998211861,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 54.69999998807907,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 42.5,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 49.099999994039536,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 54.5,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 45.79999998211861,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 47.19999998807907,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 62.599999994039536,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 48.5,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 102,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 57.400000005960464,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 54.900000005960464,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 63.69999998807907,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 47.80000001192093,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 55.400000005960464,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 45.39999997615814,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 47.400000005960464,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 62.79999998211861,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 68.40000000596046,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 50.30000001192093,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 35.10000002384186,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 43,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 62.900000005960464,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 38.099999994039536,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 55.30000001192093,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 45.39999997615814,
+      "memory": 1245184
+    },
+    {
+      "initializationMs": 61.099999994039536,
+      "memory": 1245184
+    }
+  ],
+  "p95": 68.40000000596046
+}

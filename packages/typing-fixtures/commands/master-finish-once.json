@@ -1,0 +1,37 @@
+{
+  "name": "master-finish-once",
+  "config": {
+    "mode": "words",
+    "words": 2,
+    "difficulty": "master"
+  },
+  "words": [
+    [111, 110, 101, 32],
+    [116, 119, 111]
+  ],
+  "commands": [
+    {
+      "op": "insert",
+      "data": [120],
+      "now": 0
+    },
+    {
+      "op": "insert",
+      "data": [111, 110, 101, 32, 116, 119, 111],
+      "now": 100
+    },
+    {
+      "op": "finish",
+      "now": 100
+    },
+    {
+      "op": "reset",
+      "now": 200
+    },
+    {
+      "op": "insert",
+      "data": [111, 110, 101, 32, 116, 119, 111],
+      "now": 300
+    }
+  ]
+}

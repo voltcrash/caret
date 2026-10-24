@@ -1,0 +1,20 @@
+{
+  "name": "@oxytype/typing-engine",
+  "private": true,
+  "license": "GPL-3.0",
+  "type": "module",
+  "exports": {
+    "./browser.client": "./src/browser.client.ts",
+    "./text": "./src/text.ts",
+    "./failure": "./src/failure.ts"
+  },
+  "scripts": {
+    "ts-check": "vp lint . --type-aware --type-check --format agent",
+    "lint": "vp lint . --type-aware --type-check --format agent",
+    "lint-fast": "vp lint . --format agent"
+  },
+  "devDependencies": {
+    "@oxytype/typescript-config": "workspace:*",
+    "vite-plus": "catalog:"
+  }
+}

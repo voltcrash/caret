@@ -1,0 +1,21 @@
+{
+  "name": "timer-min-speed",
+  "config": {
+    "mode": "words",
+    "words": 5,
+    "minWpm": "custom",
+    "minWpmCustomSpeed": 100
+  },
+  "words": [[97, 32], [98, 32], [99, 32], [100, 32], [101]],
+  "commands": [
+    {
+      "op": "insert",
+      "now": 0,
+      "data": [97, 32, 98, 32, 99, 32, 100, 32]
+    },
+    {
+      "op": "advance",
+      "now": 2000
+    }
+  ]
+}

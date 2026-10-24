@@ -1,0 +1,38 @@
+{
+  "name": "timer-stall",
+  "config": {
+    "mode": "words",
+    "words": 2
+  },
+  "words": [
+    [111, 110, 101, 32],
+    [116, 119, 111]
+  ],
+  "commands": [
+    {
+      "op": "insert",
+      "data": [111],
+      "now": 100
+    },
+    {
+      "op": "advance",
+      "now": 3400
+    },
+    {
+      "op": "advance",
+      "now": 5000
+    },
+    {
+      "op": "finish",
+      "now": 5000
+    },
+    {
+      "op": "reset",
+      "now": 5001
+    },
+    {
+      "op": "advance",
+      "now": 9000
+    }
+  ]
+}

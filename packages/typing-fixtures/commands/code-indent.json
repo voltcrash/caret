@@ -1,0 +1,30 @@
+{
+  "name": "code-indent",
+  "config": {
+    "mode": "words",
+    "words": 2,
+    "language": "code_javascript",
+    "codeUnindentOnBackspace": true
+  },
+  "words": [
+    [111, 110, 101, 10],
+    [9, 9, 116, 119, 111]
+  ],
+  "commands": [
+    {
+      "op": "insert",
+      "data": [111, 110, 101, 10],
+      "now": 0
+    },
+    {
+      "op": "delete",
+      "now": 100,
+      "kind": "deleteContentBackward"
+    },
+    {
+      "op": "insert",
+      "data": [10, 111, 110, 101, 10],
+      "now": 200
+    }
+  ]
+}

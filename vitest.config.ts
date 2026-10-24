@@ -1,6 +1,9 @@
+import { prepareTypingEngine } from "./scripts/prepare-engine";
 import { defineConfig, TestProjectInlineConfiguration } from "vite-plus";
 import { projects as backendProjects } from "./backend/vitest.config";
 import { projects as frontendProjects } from "./frontend/vitest.config";
+
+prepareTypingEngine();
 
 export default defineConfig({
   test: {

@@ -85,6 +85,9 @@ jobs:
       - name: Install dependencies
         run: vp install --frozen-lockfile
 
+      - name: Prepare pinned Rust and browser Wasm
+        uses: ./.github/actions/setup-engine
+
       - name: Build production frontend and Worker
         env:
           OXYTYPE_BUILD_ID: ${{ env.DEPLOYMENT_SHA }}-${{ github.run_id }}-${{ github.run_attempt }}

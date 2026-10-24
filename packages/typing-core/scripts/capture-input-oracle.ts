@@ -1,0 +1,116 @@
+import { writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import type { Language } from "@oxytype/schemas/languages";
+import { getDefaultConfig } from "../src/config/default-config";
+import {
+  evaluateInsert,
+  shouldBlockInsertion,
+  canDelete,
+} from "../src/input/engine";
+import { mulberry32 } from "./lib/keystroke-plan";
+import { units } from "./rust-oracle";
+const random = mulberry32(49);
+const pick = <T>(items: readonly T[]): T =>
+  items[Math.floor(random() * items.length)] as T;
+const output: {
+  config: ReturnType<typeof getDefaultConfig>;
+  input: Record<string, unknown>;
+  state: Record<string, unknown>;
+  blocked: boolean;
+  canDelete: boolean;
+  decision: Record<string, unknown>;
+}[] = [];
+for (let index = 0; index < 2048; index++) {
+  const config = {
+    ...getDefaultConfig(),
+    mode: pick(["words", "zen"] as const),
+    difficulty: pick(["normal", "expert", "master"] as const),
+    strictSpace: pick([true, false]),
+    stopOnError: pick(["off", "letter", "word"] as const),
+    deleteOnError: pick([
+      "off",
+      "letter",
+      "word",
+      "letter_hard",
+      "word_hard",
+    ] as const),
+    freedomMode: pick([true, false]),
+    confidenceMode: pick(["off", "on", "max"] as const),
+    blindMode: pick([true, false]),
+    language: pick([
+      "english",
+      "russian",
+      "russian_1k",
+      "russian_phonetic",
+      "dutch",
+    ] as Language[]),
+  };
+  const options = {
+    data: pick(["a", " ", "\n", "\u3000", "é", "…", "😀", "\ud83d", "e", "ab"]),
+    inputValue: pick(["", "a", "ab", "xx", "a ", "x".repeat(32), "\ud83d"]),
+    targetWord: pick([
+      "a",
+      "ab ",
+      "e ",
+      "е ",
+      "ab\n",
+      "😀",
+      "a\t",
+      "\ud83d",
+      " ",
+    ]),
+    nospace: pick([true, false]),
+    correctShiftUsed: pick([true, false, null]),
+    hasNewline: pick([true, false]),
+  };
+  const state = {
+    inputValue: options.inputValue,
+    wordIndex: pick([0, 1, 3]),
+    previousWordCorrect: pick([true, false]),
+    previousWordAvailable: pick([true, false]),
+  };
+  const decision = evaluateInsert(config, options);
+  const neutral = {
+    ...options,
+    data: units(options.data),
+    inputValue: units(options.inputValue),
+    targetWord: units(options.targetWord),
+  };
+  output.push({
+    config,
+    input: neutral,
+    state: { ...state, inputValue: units(state.inputValue) },
+    blocked: shouldBlockInsertion(config, options),
+    canDelete: canDelete(config, state),
+    decision: {
+      ...decision,
+      data: units(decision.data),
+      inputValue: units(decision.inputValue),
+      ...(decision.visualInputOverride === undefined
+        ? {}
+        : { visualInputOverride: units(decision.visualInputOverride) }),
+    },
+  });
+}
+const first = output[0];
+if (first === undefined) throw new Error("Missing input references");
+const defaults = Object.fromEntries(
+  Object.entries(first.config).filter(([key, value]) =>
+    output.every(
+      (item) =>
+        JSON.stringify(item.config[key as keyof typeof item.config]) ===
+        JSON.stringify(value),
+    ),
+  ),
+);
+const cases = output.map((item) => ({
+  ...item,
+  config: Object.fromEntries(
+    Object.entries(item.config).filter(([key]) => !(key in defaults)),
+  ),
+}));
+writeFileSync(
+  resolve(import.meta.dirname, "../../typing-fixtures/oracle/input-rules.json"),
+  `${JSON.stringify({ defaults, cases }, null, 2)}\n`,
+  { flag: "wx" },
+);

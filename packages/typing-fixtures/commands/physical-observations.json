@@ -1,0 +1,113 @@
+{
+  "name": "physical-observations",
+  "config": {
+    "mode": "words",
+    "words": 1
+  },
+  "words": [[97, 98, 99]],
+  "commands": [
+    {
+      "op": "observe",
+      "now": 900,
+      "eventType": "keydown",
+      "eventData": {
+        "code": "KeyX"
+      }
+    },
+    {
+      "op": "observe",
+      "now": 910,
+      "eventType": "keyup",
+      "eventData": {
+        "code": "KeyX"
+      }
+    },
+    {
+      "op": "observe",
+      "now": 950,
+      "eventType": "keydown",
+      "eventData": {
+        "code": "KeyA"
+      }
+    },
+    {
+      "op": "start",
+      "now": 1000,
+      "date": 5000
+    },
+    {
+      "op": "observe",
+      "now": 1020,
+      "eventType": "keyup",
+      "eventData": {
+        "code": "KeyA"
+      }
+    },
+    {
+      "op": "observe",
+      "now": 1100,
+      "eventType": "keydown",
+      "eventData": {
+        "code": "KeyB"
+      }
+    },
+    {
+      "op": "observe",
+      "now": 1120,
+      "eventType": "keydown",
+      "eventData": {
+        "code": "KeyB"
+      }
+    },
+    {
+      "op": "observe",
+      "now": 1180,
+      "eventType": "keyup",
+      "eventData": {
+        "code": "KeyB"
+      }
+    },
+    {
+      "op": "observe",
+      "now": 1200,
+      "eventType": "keydown",
+      "eventData": {
+        "code": "ShiftLeft"
+      }
+    },
+    {
+      "op": "observe",
+      "now": 1250,
+      "eventType": "keydown",
+      "eventData": {
+        "code": "NoCode"
+      }
+    },
+    {
+      "op": "observe",
+      "now": 1260,
+      "eventType": "keydown",
+      "eventData": {
+        "code": "NoCode"
+      }
+    },
+    {
+      "op": "observe",
+      "now": 1270,
+      "eventType": "keyup",
+      "eventData": {
+        "code": "NoCode"
+      }
+    },
+    {
+      "op": "insert",
+      "data": [97, 98, 99],
+      "now": 1300,
+      "date": 5300
+    },
+    {
+      "op": "finalize",
+      "now": 1400
+    }
+  ]
+}

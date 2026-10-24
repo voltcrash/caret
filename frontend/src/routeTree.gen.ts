@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as R404DothtmlRouteImport } from './routes/404[.]html'
 import { Route as AppRouteImport } from './routes/_app'
+import { Route as EngineProofRouteImport } from './routes/engine-proof'
 import { Route as OauthCallbackDothtmlRouteImport } from './routes/oauth-callback[.]html'
 import { Route as PrivacyPolicyDothtmlRouteImport } from './routes/privacy-policy[.]html'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
@@ -97,6 +98,11 @@ const R404DothtmlRoute = R404DothtmlRouteImport.update({
 } as any)
 const AppRoute = AppRouteImport.update({
   id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EngineProofRoute = EngineProofRouteImport.update({
+  id: '/engine-proof',
+  path: '/engine-proof',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OauthCallbackDothtmlRoute = OauthCallbackDothtmlRouteImport.update({
@@ -506,6 +512,7 @@ const ApiUsersTagsTagIdPersonalBestRoute =
 export interface FileRoutesByFullPath {
   '/404.html': typeof R404DothtmlRoute
   '/': typeof AppIndexRoute
+  '/engine-proof': typeof EngineProofRoute
   '/oauth-callback.html': typeof OauthCallbackDothtmlRoute
   '/privacy-policy.html': typeof PrivacyPolicyDothtmlRoute
   '/leaderboards': typeof AppLeaderboardsRoute
@@ -585,6 +592,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/404.html': typeof R404DothtmlRoute
+  '/engine-proof': typeof EngineProofRoute
   '/oauth-callback.html': typeof OauthCallbackDothtmlRoute
   '/privacy-policy.html': typeof PrivacyPolicyDothtmlRoute
   '/': typeof AppIndexRoute
@@ -667,6 +675,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/404.html': typeof R404DothtmlRoute
   '/_app': typeof AppRouteWithChildren
+  '/engine-proof': typeof EngineProofRoute
   '/oauth-callback.html': typeof OauthCallbackDothtmlRoute
   '/privacy-policy.html': typeof PrivacyPolicyDothtmlRoute
   '/_app/_authenticated': typeof AppAuthenticatedRouteWithChildren
@@ -751,6 +760,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/404.html'
     | '/'
+    | '/engine-proof'
     | '/oauth-callback.html'
     | '/privacy-policy.html'
     | '/leaderboards'
@@ -830,6 +840,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/404.html'
+    | '/engine-proof'
     | '/oauth-callback.html'
     | '/privacy-policy.html'
     | '/'
@@ -911,6 +922,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/404.html'
     | '/_app'
+    | '/engine-proof'
     | '/oauth-callback.html'
     | '/privacy-policy.html'
     | '/_app/_authenticated'
@@ -994,6 +1006,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   R404DothtmlRoute: typeof R404DothtmlRoute
   AppRoute: typeof AppRouteWithChildren
+  EngineProofRoute: typeof EngineProofRoute
   OauthCallbackDothtmlRoute: typeof OauthCallbackDothtmlRoute
   PrivacyPolicyDothtmlRoute: typeof PrivacyPolicyDothtmlRoute
   ApiSplatRoute: typeof ApiSplatRoute
@@ -1030,6 +1043,13 @@ declare module '@tanstack/solid-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/engine-proof': {
+      id: '/engine-proof'
+      path: '/engine-proof'
+      fullPath: '/engine-proof'
+      preLoaderRoute: typeof EngineProofRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/oauth-callback.html': {
@@ -1869,6 +1889,7 @@ const ApiPrefixDocsRouteWithChildren = ApiPrefixDocsRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   R404DothtmlRoute: R404DothtmlRoute,
   AppRoute: AppRouteWithChildren,
+  EngineProofRoute: EngineProofRoute,
   OauthCallbackDothtmlRoute: OauthCallbackDothtmlRoute,
   PrivacyPolicyDothtmlRoute: PrivacyPolicyDothtmlRoute,
   ApiSplatRoute: ApiSplatRoute,

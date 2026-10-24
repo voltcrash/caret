@@ -1,0 +1,796 @@
+[
+  {
+    "name": "backwards",
+    "word": [104, 101, 108, 108, 111],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [111, 108, 108, 101, 104]
+  },
+  {
+    "name": "backwards",
+    "word": [97, 55357, 56832, 98],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [98, 56832, 55357, 97]
+  },
+  {
+    "name": "backwards",
+    "word": [223, 233, 931, 97],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 931, 233, 223]
+  },
+  {
+    "name": "backwards",
+    "word": [97, 98, 33, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [10, 33, 98, 97]
+  },
+  {
+    "name": "backwards",
+    "word": [97, 98, 63, 13],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [13, 63, 98, 97]
+  },
+  {
+    "name": "backwards",
+    "word": [97, 98, 46, 13, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [10, 13, 46, 98, 97]
+  },
+  {
+    "name": "backwards",
+    "word": [97, 55357],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [55357, 97]
+  },
+  {
+    "name": "backwards",
+    "word": [9, 72, 105, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [10, 105, 72, 9]
+  },
+  {
+    "name": "backwards",
+    "word": [111, 110, 101, 32, 32, 116, 119, 111],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [111, 119, 116, 32, 32, 101, 110, 111]
+  },
+  {
+    "name": "backwards",
+    "word": [8490, 304, 383],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [383, 304, 8490]
+  },
+  {
+    "name": "backwards",
+    "word": [8232, 120, 8233],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [8233, 120, 8232]
+  },
+  {
+    "name": "ALL_CAPS",
+    "word": [104, 101, 108, 108, 111],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [72, 69, 76, 76, 79]
+  },
+  {
+    "name": "ALL_CAPS",
+    "word": [97, 55357, 56832, 98],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [65, 55357, 56832, 66]
+  },
+  {
+    "name": "ALL_CAPS",
+    "word": [223, 233, 931, 97],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [83, 83, 201, 931, 65]
+  },
+  {
+    "name": "ALL_CAPS",
+    "word": [97, 98, 33, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [65, 66, 33, 10]
+  },
+  {
+    "name": "ALL_CAPS",
+    "word": [97, 98, 63, 13],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [65, 66, 63, 13]
+  },
+  {
+    "name": "ALL_CAPS",
+    "word": [97, 98, 46, 13, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [65, 66, 46, 13, 10]
+  },
+  {
+    "name": "ALL_CAPS",
+    "word": [97, 55357],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [65, 55357]
+  },
+  {
+    "name": "ALL_CAPS",
+    "word": [9, 72, 105, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [9, 72, 73, 10]
+  },
+  {
+    "name": "ALL_CAPS",
+    "word": [111, 110, 101, 32, 32, 116, 119, 111],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [79, 78, 69, 32, 32, 84, 87, 79]
+  },
+  {
+    "name": "ALL_CAPS",
+    "word": [8490, 304, 383],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [8490, 304, 83]
+  },
+  {
+    "name": "ALL_CAPS",
+    "word": [8232, 120, 8233],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [8232, 88, 8233]
+  },
+  {
+    "name": "capitals",
+    "word": [104, 101, 108, 108, 111],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [72, 101, 108, 108, 111]
+  },
+  {
+    "name": "capitals",
+    "word": [97, 55357, 56832, 98],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [65, 55357, 56832, 98]
+  },
+  {
+    "name": "capitals",
+    "word": [223, 233, 931, 97],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [83, 83, 233, 931, 97]
+  },
+  {
+    "name": "capitals",
+    "word": [97, 98, 33, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [65, 98, 33, 10]
+  },
+  {
+    "name": "capitals",
+    "word": [97, 98, 63, 13],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [65, 98, 63, 13]
+  },
+  {
+    "name": "capitals",
+    "word": [97, 98, 46, 13, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [65, 98, 46, 13, 10]
+  },
+  {
+    "name": "capitals",
+    "word": [97, 55357],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [65, 55357]
+  },
+  {
+    "name": "capitals",
+    "word": [9, 72, 105, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [9, 72, 105, 10]
+  },
+  {
+    "name": "capitals",
+    "word": [111, 110, 101, 32, 32, 116, 119, 111],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [79, 110, 101, 32, 84, 119, 111]
+  },
+  {
+    "name": "capitals",
+    "word": [8490, 304, 383],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [8490, 304, 383]
+  },
+  {
+    "name": "capitals",
+    "word": [8232, 120, 8233],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [8232, 120, 8233]
+  },
+  {
+    "name": "sPoNgEcAsE",
+    "word": [104, 101, 108, 108, 111],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [104, 69, 108, 76, 111]
+  },
+  {
+    "name": "sPoNgEcAsE",
+    "word": [97, 55357, 56832, 98],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 55357, 56832, 66]
+  },
+  {
+    "name": "sPoNgEcAsE",
+    "word": [223, 233, 931, 97],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [223, 201, 963, 65]
+  },
+  {
+    "name": "sPoNgEcAsE",
+    "word": [97, 98, 33, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 66, 33, 10]
+  },
+  {
+    "name": "sPoNgEcAsE",
+    "word": [97, 98, 63, 13],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 66, 63, 13]
+  },
+  {
+    "name": "sPoNgEcAsE",
+    "word": [97, 98, 46, 13, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 66, 46, 13, 10]
+  },
+  {
+    "name": "sPoNgEcAsE",
+    "word": [97, 55357],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 55357]
+  },
+  {
+    "name": "sPoNgEcAsE",
+    "word": [9, 72, 105, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [9, 72, 105, 10]
+  },
+  {
+    "name": "sPoNgEcAsE",
+    "word": [111, 110, 101, 32, 32, 116, 119, 111],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [111, 78, 101, 32, 32, 84, 119, 79]
+  },
+  {
+    "name": "sPoNgEcAsE",
+    "word": [8490, 304, 383],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [107, 304, 383]
+  },
+  {
+    "name": "sPoNgEcAsE",
+    "word": [8232, 120, 8233],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [8232, 88, 8233]
+  },
+  {
+    "name": "rAnDoMcAsE",
+    "word": [104, 101, 108, 108, 111],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [104, 69, 108, 108, 79]
+  },
+  {
+    "name": "rAnDoMcAsE",
+    "word": [97, 55357, 56832, 98],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 55357, 56832, 98]
+  },
+  {
+    "name": "rAnDoMcAsE",
+    "word": [223, 233, 931, 97],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [223, 201, 963, 97]
+  },
+  {
+    "name": "rAnDoMcAsE",
+    "word": [97, 98, 33, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 66, 33, 10]
+  },
+  {
+    "name": "rAnDoMcAsE",
+    "word": [97, 98, 63, 13],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 66, 63, 13]
+  },
+  {
+    "name": "rAnDoMcAsE",
+    "word": [97, 98, 46, 13, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 66, 46, 13, 10]
+  },
+  {
+    "name": "rAnDoMcAsE",
+    "word": [97, 55357],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 55357]
+  },
+  {
+    "name": "rAnDoMcAsE",
+    "word": [9, 72, 105, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [9, 72, 105, 10]
+  },
+  {
+    "name": "rAnDoMcAsE",
+    "word": [111, 110, 101, 32, 32, 116, 119, 111],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [111, 78, 101, 32, 32, 116, 87, 111]
+  },
+  {
+    "name": "rAnDoMcAsE",
+    "word": [8490, 304, 383],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [107, 304, 383]
+  },
+  {
+    "name": "rAnDoMcAsE",
+    "word": [8232, 120, 8233],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [8232, 88, 8233]
+  },
+  {
+    "name": "rot13",
+    "word": [104, 101, 108, 108, 111],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [117, 114, 121, 121, 98]
+  },
+  {
+    "name": "rot13",
+    "word": [97, 55357, 56832, 98],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [110, 55357, 56832, 111]
+  },
+  {
+    "name": "rot13",
+    "word": [223, 233, 931, 97],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [223, 233, 931, 110]
+  },
+  {
+    "name": "rot13",
+    "word": [97, 98, 33, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [110, 111, 33, 10]
+  },
+  {
+    "name": "rot13",
+    "word": [97, 98, 63, 13],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [110, 111, 63, 13]
+  },
+  {
+    "name": "rot13",
+    "word": [97, 98, 46, 13, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [110, 111, 46, 13, 10]
+  },
+  {
+    "name": "rot13",
+    "word": [97, 55357],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [110, 55357]
+  },
+  {
+    "name": "rot13",
+    "word": [9, 72, 105, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [9, 85, 118, 10]
+  },
+  {
+    "name": "rot13",
+    "word": [111, 110, 101, 32, 32, 116, 119, 111],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [98, 97, 114, 32, 32, 103, 106, 98]
+  },
+  {
+    "name": "rot13",
+    "word": [8490, 304, 383],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [88, 304, 383]
+  },
+  {
+    "name": "rot13",
+    "word": [8232, 120, 8233],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [8232, 107, 8233]
+  },
+  {
+    "name": "ddoouubblleedd",
+    "word": [104, 101, 108, 108, 111],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [104, 104, 101, 101, 108, 108, 108, 108, 111, 111]
+  },
+  {
+    "name": "ddoouubblleedd",
+    "word": [97, 55357, 56832, 98],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 97, 55357, 56832, 55357, 56832, 98, 98]
+  },
+  {
+    "name": "ddoouubblleedd",
+    "word": [223, 233, 931, 97],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [223, 223, 233, 233, 931, 931, 97, 97]
+  },
+  {
+    "name": "ddoouubblleedd",
+    "word": [97, 98, 33, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 97, 98, 98, 33, 33, 10]
+  },
+  {
+    "name": "ddoouubblleedd",
+    "word": [97, 98, 63, 13],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 97, 98, 98, 63, 63, 13]
+  },
+  {
+    "name": "ddoouubblleedd",
+    "word": [97, 98, 46, 13, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 97, 98, 98, 46, 46, 13, 10]
+  },
+  {
+    "name": "ddoouubblleedd",
+    "word": [97, 55357],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 97, 55357, 55357]
+  },
+  {
+    "name": "ddoouubblleedd",
+    "word": [9, 72, 105, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [9, 9, 72, 72, 105, 105, 10]
+  },
+  {
+    "name": "ddoouubblleedd",
+    "word": [111, 110, 101, 32, 32, 116, 119, 111],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [
+      111, 111, 110, 110, 101, 101, 32, 32, 32, 32, 116, 116, 119, 119, 111, 111
+    ]
+  },
+  {
+    "name": "ddoouubblleedd",
+    "word": [8490, 304, 383],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [8490, 8490, 304, 304, 383, 383]
+  },
+  {
+    "name": "ddoouubblleedd",
+    "word": [8232, 120, 8233],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [8232, 120, 120, 8233]
+  },
+  {
+    "name": "instant_messaging",
+    "word": [104, 101, 108, 108, 111],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [104, 101, 108, 108, 111]
+  },
+  {
+    "name": "instant_messaging",
+    "word": [97, 55357, 56832, 98],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 55357, 56832, 98]
+  },
+  {
+    "name": "instant_messaging",
+    "word": [223, 233, 931, 97],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [223, 233, 963, 97]
+  },
+  {
+    "name": "instant_messaging",
+    "word": [97, 98, 33, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 98, 33, 10]
+  },
+  {
+    "name": "instant_messaging",
+    "word": [97, 98, 63, 13],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 98, 63, 13]
+  },
+  {
+    "name": "instant_messaging",
+    "word": [97, 98, 46, 13, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 98, 13, 10]
+  },
+  {
+    "name": "instant_messaging",
+    "word": [97, 55357],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 55357]
+  },
+  {
+    "name": "instant_messaging",
+    "word": [9, 72, 105, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [9, 104, 105, 10]
+  },
+  {
+    "name": "instant_messaging",
+    "word": [111, 110, 101, 32, 32, 116, 119, 111],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [111, 110, 101, 32, 32, 116, 119, 111]
+  },
+  {
+    "name": "instant_messaging",
+    "word": [8490, 304, 383],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [107, 105, 775, 383]
+  },
+  {
+    "name": "instant_messaging",
+    "word": [8232, 120, 8233],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [8232, 120, 8233]
+  },
+  {
+    "name": "underscore_spaces",
+    "word": [104, 101, 108, 108, 111],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [104, 101, 108, 108, 111, 95]
+  },
+  {
+    "name": "underscore_spaces",
+    "word": [97, 55357, 56832, 98],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 55357, 56832, 98, 95]
+  },
+  {
+    "name": "underscore_spaces",
+    "word": [223, 233, 931, 97],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [223, 233, 931, 97, 95]
+  },
+  {
+    "name": "underscore_spaces",
+    "word": [97, 98, 33, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 98, 33, 10, 95]
+  },
+  {
+    "name": "underscore_spaces",
+    "word": [97, 98, 63, 13],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 98, 63, 13, 95]
+  },
+  {
+    "name": "underscore_spaces",
+    "word": [97, 98, 46, 13, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 98, 46, 13, 10, 95]
+  },
+  {
+    "name": "underscore_spaces",
+    "word": [97, 55357],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [97, 55357, 95]
+  },
+  {
+    "name": "underscore_spaces",
+    "word": [9, 72, 105, 10],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [9, 72, 105, 10, 95]
+  },
+  {
+    "name": "underscore_spaces",
+    "word": [111, 110, 101, 32, 32, 116, 119, 111],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [111, 110, 101, 32, 32, 116, 119, 111, 95]
+  },
+  {
+    "name": "underscore_spaces",
+    "word": [8490, 304, 383],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [8490, 304, 383, 95]
+  },
+  {
+    "name": "underscore_spaces",
+    "word": [8232, 120, 8233],
+    "index": 1,
+    "bound": 3,
+    "seed": 42,
+    "expected": [8232, 120, 8233, 95]
+  }
+]

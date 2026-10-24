@@ -1,0 +1,30 @@
+[
+  {
+    "kind": "poetry",
+    "absent": "false",
+    "expected": {
+      "message": "Failed to pull section",
+      "recovery": [
+        {
+          "op": "disableFunbox",
+          "name": "poetry",
+          "noRestart": false
+        }
+      ]
+    }
+  },
+  {
+    "kind": "wikipedia",
+    "absent": "false",
+    "expected": {
+      "message": "Failed to pull section",
+      "recovery": [
+        {
+          "op": "disableFunbox",
+          "name": "wikipedia",
+          "noRestart": false
+        }
+      ]
+    }
+  }
+]
