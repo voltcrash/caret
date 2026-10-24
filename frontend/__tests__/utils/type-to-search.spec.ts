@@ -15,8 +15,6 @@ describe("isEditableElement", () => {
   it("accepts contenteditable elements", () => {
     const div = document.createElement("div");
     div.contentEditable = "true";
-    // jsdom doesn't derive isContentEditable from the attribute
-    Object.defineProperty(div, "isContentEditable", { value: true });
     expect(isEditableElement(div)).toBe(true);
   });
 

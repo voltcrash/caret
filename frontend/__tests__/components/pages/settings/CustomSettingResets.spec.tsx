@@ -15,10 +15,13 @@ import { getConfig, setFullConfigStore } from "../../../../src/ts/config/store";
 import { __testing } from "../../../../src/ts/config/testing";
 import { getDefaultConfig } from "../../../../src/ts/constants/default-config";
 
+const { saveToLocalStorage: save } = await vi.importActual<typeof Persistence>(
+  "../../../../src/ts/config/persistence",
+);
+
 beforeEach(() => {
   __testing.replaceConfig({});
   setFullConfigStore(getDefaultConfig());
-  const save = Persistence.saveToLocalStorage;
   vi.spyOn(Persistence, "saveToLocalStorage").mockImplementation((key) =>
     save(key, false, true),
   );
@@ -116,3 +119,6 @@ it("resets the FPS limit to native and clears the edited field", async () => {
   expect(getfpsLimit()).toBe(1000);
   expect(localStorage.getItem("fpsLimit")).toBe("1000");
 });
+
+// Browser module exports are sealed; register spies before imports run.
+vi.mock("../../../../src/ts/config/persistence", { spy: true });

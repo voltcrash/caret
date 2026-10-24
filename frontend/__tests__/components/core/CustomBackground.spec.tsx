@@ -78,10 +78,10 @@ it("replaces failed images on reapply and retains filter and size geometry", () 
   setBackground({ url: "https://example.com/background.png" });
   const image = container.querySelector("img");
   expect(image).toHaveStyle({
-    filter: "blur(2rem)",
     "object-fit": "contain",
   });
-  // Computed styles normalize rem to px in jsdom; assert the authored geometry.
+  // Native computed styles normalize rem to px; check the authored geometry.
+  expect(image?.style.filter).toBe("blur(2rem)");
   expect(image?.style.width).toBe("calc(100% + 16rem)");
   expect(image?.style.top).toBe("-8rem");
   fireEvent.error(image as HTMLImageElement);
@@ -94,3 +94,6 @@ it("replaces failed images on reapply and retains filter and size geometry", () 
   expect(container.querySelector("img")).toBeNull();
   window.removeEventListener("customBackgroundFailed", failed);
 });
+
+// Browser module exports are sealed; register spies before imports run.
+vi.mock("../../../src/ts/states/notifications", { spy: true });

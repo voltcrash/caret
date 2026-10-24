@@ -649,3 +649,11 @@ vi.mock("../../src/features/typing/engine.client", () => ({
     session: () => undefined,
   }),
 }));
+
+// Browser module exports are sealed; register spies before imports run.
+vi.mock("../../src/ts/config/funbox-validation", { spy: true });
+vi.mock("../../src/ts/config/validation", { spy: true });
+vi.mock("../../src/ts/config/sync", { spy: true });
+vi.mock("../../src/ts/states/notifications", { spy: true });
+vi.mock("../../src/features/typing/runtime/session.client", { spy: true });
+vi.mock("../../src/ts/states/test", { spy: true });

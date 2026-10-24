@@ -86,8 +86,8 @@ describe("useResultWordHighlight", () => {
     resultWordHighlightEvent.dispatch({ type: "hoverChart", hovering: true });
     await highlight(0, 1);
 
-    // happy-dom has no layout, so all words are on one line
-    expect(container.querySelectorAll(".highlightContainer")).toHaveLength(1);
+    // Each block word has its own measured line in a real browser.
+    expect(container.querySelectorAll(".highlightContainer")).toHaveLength(3);
     expect(
       [...container.querySelectorAll(".inputWord")].map((w) => w.textContent),
     ).toEqual(["hxllo", "a_b"]);

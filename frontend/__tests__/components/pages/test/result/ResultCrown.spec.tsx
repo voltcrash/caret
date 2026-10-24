@@ -1,7 +1,10 @@
 import { cleanup, render } from "@solidjs/testing-library";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
-vi.mock("animejs", () => ({ animate: vi.fn() }));
+vi.mock("animejs", async (original) => ({
+  ...(await original<typeof import("animejs")>()),
+  animate: vi.fn(),
+}));
 
 import { ResultCrown } from "../../../../../src/features/typing/components/result/ResultCrown";
 import { setResultState } from "../../../../../src/ts/states/result";

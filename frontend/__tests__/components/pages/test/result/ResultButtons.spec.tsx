@@ -170,7 +170,7 @@ describe("ResultButtons", () => {
   });
 
   it("focuses the keyboard proxy during next and repeat taps on touch", () => {
-    vi.mocked(window.matchMedia).mockImplementation((query) =>
+    vi.spyOn(window, "matchMedia").mockImplementation((query) =>
       Object.assign(new EventTarget(), {
         matches: query === "(pointer: coarse)",
         media: query,
@@ -195,7 +195,7 @@ describe("ResultButtons", () => {
   });
 
   it("uses native sharing on touch and preserves shift-download", () => {
-    vi.mocked(window.matchMedia).mockImplementation((query) =>
+    vi.spyOn(window, "matchMedia").mockImplementation((query) =>
       Object.assign(new EventTarget(), {
         matches: query === "(pointer: coarse)",
         media: query,

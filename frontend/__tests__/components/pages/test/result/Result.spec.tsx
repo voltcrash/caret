@@ -6,10 +6,14 @@ const { stub, environment } = vi.hoisted(() => ({
   environment: { isDevelopment: false, devPrefetch: false },
 }));
 vi.mock("virtual:env-config", () => ({ envConfig: environment }));
-vi.mock("../../../../../src/ts/states/test", async () => {
+vi.mock("../../../../../src/ts/states/test", async (original) => {
   const { createSignal } = await import("solid-js");
   const [isTestActive, setTestActive] = createSignal(false);
-  return { isTestActive, setTestActive };
+  return {
+    ...(await original<typeof import("../../../../../src/ts/states/test")>()),
+    isTestActive,
+    setTestActive,
+  };
 });
 vi.mock(
   "../../../../../src/features/typing/components/result/ResultStats",

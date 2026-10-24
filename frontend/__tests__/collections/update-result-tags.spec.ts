@@ -6,23 +6,32 @@ const { get, update, saveLocalTagPB } = vi.hoisted(() => ({
   update: vi.fn(),
   saveLocalTagPB: vi.fn(),
 }));
-vi.mock("../../src/ts/states/core", () => ({
+vi.mock("../../src/ts/states/core", async (original) => ({
+  ...(await original<typeof import("../../src/ts/states/core")>()),
   isAuthenticated: () => true,
   getUserId: () => "tags-user",
 }));
 
-vi.mock("../../src/ts/collections/tags", () => ({
+vi.mock("../../src/ts/collections/tags", async (original) => ({
+  ...(await original<typeof import("../../src/ts/collections/tags")>()),
   getTagsOnce: async () => [],
   getActiveTagsOnce: async () => [],
   useActiveTagsLiveQuery: () => [],
   reconcileLocalTagPB: vi.fn(),
   saveLocalTagPB,
 }));
-vi.mock("../../src/ts/config/store", () => ({ getConfig: {} }));
-vi.mock("../../src/ts/states/test", () => ({
+vi.mock("../../src/ts/config/store", async (original) => ({
+  ...(await original<typeof import("../../src/ts/config/store")>()),
+  getConfig: {},
+}));
+vi.mock("../../src/ts/states/test", async (original) => ({
+  ...(await original<typeof import("../../src/ts/states/test")>()),
   getCurrentQuote: () => undefined,
 }));
-vi.mock("../../src/ts/utils/misc", () => ({ getMode2: () => "15" }));
+vi.mock("../../src/ts/utils/misc", async (original) => ({
+  ...(await original<typeof import("../../src/ts/utils/misc")>()),
+  getMode2: () => "15",
+}));
 
 import type { SnapshotResult } from "../../src/ts/constants/default-snapshot";
 import type { Mode } from "@oxytype/schemas/shared";

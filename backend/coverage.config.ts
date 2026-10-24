@@ -3,7 +3,7 @@ import { createRequire } from "node:module";
 import { projects } from "./vitest.config";
 
 // Vite+ 1.0's guard compares against its compiled-in 5.0.1 constant, despite
-// pnpm's override running Vitest 5.0.3. Check the actual installed pair instead.
+// pnpm's override running Vitest 5.0.5. Check the actual installed pair instead.
 const require = createRequire(import.meta.url);
 const runner = require("vitest/package.json") as { version: string };
 const coverage = require("@vitest/coverage-v8/package.json") as {

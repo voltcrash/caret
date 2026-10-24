@@ -1,6 +1,11 @@
-import { describe, expect, it } from "vite-plus/test";
+import { afterEach, describe, expect, it } from "vite-plus/test";
 
 import { scrollRowIntoView } from "../../../../src/ts/components/modals/event-log-viewer/scroll-row";
+
+const containers: HTMLDivElement[] = [];
+afterEach(() =>
+  containers.splice(0).forEach((container) => container.remove()),
+);
 
 function rect(top: number, bottom: number): DOMRect {
   return { top, bottom, height: bottom - top } as DOMRect;
@@ -13,6 +18,11 @@ function setup(
 ): HTMLDivElement {
   const container = document.createElement("div");
   container.innerHTML = `<table><thead></thead><tbody><tr data-row="3"></tr></tbody></table>`;
+  // Native scrollTop changes only on a connected, overflowing element.
+  container.style.cssText = "height: 200px; overflow: auto";
+  (container.firstElementChild as HTMLElement).style.height = "2000px";
+  document.body.append(container);
+  containers.push(container);
   container.getBoundingClientRect = () => rect(100, 300);
   const head = container.querySelector("thead") as HTMLElement;
   head.getBoundingClientRect = () => rect(100, 100 + headHeight);

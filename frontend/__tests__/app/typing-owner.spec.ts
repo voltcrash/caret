@@ -1,14 +1,12 @@
-import { expect, it, vi } from "vite-plus/test";
+import { expect, it } from "vite-plus/test";
 
 import { mountApplication } from "../../src/app/application";
 import {
   createTestApplication,
   releaseTestApplication,
-} from "../__harness__/mock-application";
+} from "../__harness__/test-application";
 
 releaseTestApplication();
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
 import { getBrowserEngine } from "../../src/features/typing/engine.client";
 import { projectEngineConfig } from "@oxytype/typing-engine/config";
 import { getMutableConfig } from "../../src/ts/config/store";
@@ -22,23 +20,6 @@ it("imports typing adapters without a mounted app, then recreates and stops each
   await import("../../src/features/typing/runtime/test-timer");
   const first = createTestApplication();
   const release = mountApplication(first.application);
-  vi.stubGlobal(
-    "fetch",
-    async () =>
-      new Response(
-        readFileSync(
-          resolve(
-            import.meta.dirname,
-            "../../../packages/typing-engine/generated/engine_bg.wasm",
-          ),
-        ),
-        { headers: { "content-type": "application/wasm" } },
-      ),
-  );
-  vi.spyOn(WebAssembly, "compileStreaming").mockImplementation(
-    async (response) =>
-      WebAssembly.compile(await (await response).arrayBuffer()),
-  );
   const engine = getBrowserEngine();
   await engine.load();
   engine.beginReplacement().prepare({
@@ -78,6 +59,4 @@ it("imports typing adapters without a mounted app, then recreates and stops each
   expect(words.length).toBe(0);
   next.dispose();
   releaseNext();
-  vi.unstubAllGlobals();
-  vi.restoreAllMocks();
 });

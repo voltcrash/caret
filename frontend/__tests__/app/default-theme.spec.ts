@@ -1,10 +1,20 @@
-import { afterEach, describe, expect, it, vi } from "vite-plus/test";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vite-plus/test";
 
 import { getDefaultConfig } from "../../src/ts/constants/default-config";
 import {
   DEFAULT_THEME_KEY,
   getBrowserDefaultTheme,
 } from "../../src/app/default-theme";
+
+// App fixtures can read the default theme while importing their dependencies.
+beforeEach(() => localStorage.removeItem(DEFAULT_THEME_KEY));
 
 afterEach(() => {
   localStorage.removeItem(DEFAULT_THEME_KEY);

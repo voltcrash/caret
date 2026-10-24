@@ -7,7 +7,7 @@ vi.mock("../../../src/ts/states/overlay-visibility", () => ({
   isAnyPopupVisible: () => state.popup,
 }));
 
-// jsdom has no ResizeObserver
+// Control resize notifications independently of browser layout.
 vi.stubGlobal(
   "ResizeObserver",
   class {
@@ -28,7 +28,7 @@ const items = {
   two: { text: "two", icon: "fa-keyboard" },
 } as const;
 
-// jsdom isn't a mac, so mod is ctrl
+// The test browser uses Linux, so mod is ctrl.
 function pressMod(key: string): KeyboardEvent {
   const event = new KeyboardEvent("keydown", {
     key,

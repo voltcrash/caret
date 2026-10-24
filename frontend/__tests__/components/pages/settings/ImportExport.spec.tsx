@@ -24,8 +24,11 @@ beforeEach(() => {
   Object.assign(getMutableConfig(), getDefaultConfig());
   writeText.mockReset().mockResolvedValue();
   createObjectURL.mockClear();
-  vi.stubGlobal("navigator", { clipboard: { writeText } });
-  vi.stubGlobal("URL", { createObjectURL, revokeObjectURL: vi.fn() });
+  vi.spyOn(navigator.clipboard, "writeText").mockImplementation(writeText);
+  vi.spyOn(URL, "createObjectURL").mockImplementation((data) =>
+    createObjectURL(data as Blob),
+  );
+  vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => undefined);
   vi.spyOn(Notifications, "showSuccessNotification").mockReturnValue(0);
   vi.spyOn(Notifications, "showNoticeNotification").mockReturnValue(0);
   vi.spyOn(SimpleModal, "showSimpleModal").mockImplementation(() => undefined);
@@ -152,3 +155,7 @@ it("allows downloading when clipboard copying fails", async () => {
   expect(createObjectURL).toHaveBeenCalledOnce();
   expect(view.getByRole("button", { name: "export" })).toBeEnabled();
 });
+
+// Browser module exports are sealed; register spies before imports run.
+vi.mock("../../../../src/ts/states/notifications", { spy: true });
+vi.mock("../../../../src/ts/states/simple-modal", { spy: true });

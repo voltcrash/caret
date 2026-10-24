@@ -10,7 +10,7 @@ import { ttsEvent } from "../../../src/ts/events/tts";
 import {
   createTestApplication,
   releaseTestApplication,
-} from "../../__harness__/mock-application";
+} from "../../__harness__/test-application";
 
 const mocks = vi.hoisted(() => ({ language: vi.fn() }));
 vi.mock("../../../src/ts/utils/json-data", () => ({

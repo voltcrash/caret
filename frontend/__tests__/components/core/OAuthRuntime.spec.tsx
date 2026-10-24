@@ -65,13 +65,10 @@ function sendMessage(
   data: Record<string, unknown>,
   origin = window.location.origin,
 ): void {
-  window.dispatchEvent(
-    new MessageEvent("message", {
-      data,
-      origin,
-      source: popup as unknown as Window,
-    }),
-  );
+  const event = new MessageEvent("message", { data, origin });
+  // The popup is a controlled fixture rather than a real WindowProxy.
+  Object.defineProperty(event, "source", { value: popup });
+  window.dispatchEvent(event);
 }
 it("opens synchronously and starts social sign-in", async () => {
   start();

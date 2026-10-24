@@ -29,7 +29,7 @@ import { useUrlSettings } from "../../../src/features/typing/url-settings.client
 import {
   createTestApplication,
   releaseTestApplication,
-} from "../../__harness__/mock-application";
+} from "../../__harness__/test-application";
 
 releaseTestApplication();
 let dispose: () => void;

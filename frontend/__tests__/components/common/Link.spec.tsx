@@ -10,7 +10,7 @@ describe("Link", () => {
   afterEach(cleanup);
 
   it("renders a plain anchor outside the app layout", () => {
-    const onClick = vi.fn();
+    const onClick = vi.fn((event: MouseEvent) => event.preventDefault());
     const { getByText } = render(() => (
       <Link href="/settings" class="text-sub" onClick={onClick}>
         settings

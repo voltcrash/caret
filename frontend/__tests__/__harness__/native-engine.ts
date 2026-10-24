@@ -1,17 +1,13 @@
-import { resolve } from "node:path";
-import { readFileSync } from "node:fs";
-import { initSync } from "../../../packages/typing-engine/generated/engine.js";
+import init from "../../../packages/typing-engine/generated/engine.js";
 import { BrowserSession } from "@oxytype/typing-engine/browser.client";
 import { encodeText } from "@oxytype/typing-engine/text";
 import { projectEngineConfig } from "@oxytype/typing-engine/config";
 
 // Exercise the same generated/optimized Wasm and SDK used by the website.
-initSync({
-  module: readFileSync(
-    resolve(
-      import.meta.dirname,
-      "../../../packages/typing-engine/generated/engine_bg.wasm",
-    ),
+await init({
+  module_or_path: new URL(
+    "../../../packages/typing-engine/generated/engine_bg.wasm",
+    import.meta.url,
   ),
 });
 export function nativeSession(

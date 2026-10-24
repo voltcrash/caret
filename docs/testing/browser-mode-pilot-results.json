@@ -1,0 +1,236 @@
+{
+  "platform": "Linux-7.1.13-402.asahi.fc44.aarch64+16k-aarch64-with-glibc2.43",
+  "processor": "aarch64",
+  "head": "d2cb7438ebc6dba8f934385be355d7e76bb606a1",
+  "method": "One warm-up per mode, then three fresh-process runs per mode, alternating order. One worker, file parallelism disabled, retries zero. Existing five test files unchanged. Browser-native checks excluded from timing comparison. Same machine, installed dependency and transform caches. Wall time includes command startup, transforms, environment/browser setup, tests and teardown.",
+  "runs": [
+    {
+      "round": 1,
+      "mode": "original",
+      "wallSeconds": 4.311,
+      "exitCode": 0,
+      "passed": 54,
+      "failed": 0,
+      "total": 54,
+      "testFiles": [
+        {
+          "name": "frontend/__tests__/utils/local-storage-with-schema.spec.ts",
+          "status": "passed",
+          "durationMs": 28.68
+        },
+        {
+          "name": "frontend/__tests__/utils/type-to-search.spec.ts",
+          "status": "passed",
+          "durationMs": 3.207
+        },
+        {
+          "name": "frontend/__tests__/hooks/useInputListener.spec.tsx",
+          "status": "passed",
+          "durationMs": 5.188
+        },
+        {
+          "name": "frontend/__tests__/components/common/Button.spec.tsx",
+          "status": "passed",
+          "durationMs": 69.689
+        },
+        {
+          "name": "frontend/__tests__/components/ui/Select.spec.tsx",
+          "status": "passed",
+          "durationMs": 419.271
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "mode": "browser",
+      "wallSeconds": 3.466,
+      "exitCode": 0,
+      "passed": 54,
+      "failed": 0,
+      "total": 54,
+      "testFiles": [
+        {
+          "name": "frontend/__tests__/hooks/useInputListener.spec.tsx",
+          "status": "passed",
+          "durationMs": 2.1
+        },
+        {
+          "name": "frontend/__tests__/utils/local-storage-with-schema.spec.ts",
+          "status": "passed",
+          "durationMs": 37.7
+        },
+        {
+          "name": "frontend/__tests__/utils/type-to-search.spec.ts",
+          "status": "passed",
+          "durationMs": 2.3
+        },
+        {
+          "name": "frontend/__tests__/components/common/Button.spec.tsx",
+          "status": "passed",
+          "durationMs": 23.1
+        },
+        {
+          "name": "frontend/__tests__/components/ui/Select.spec.tsx",
+          "status": "passed",
+          "durationMs": 504.0
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "mode": "browser",
+      "wallSeconds": 3.274,
+      "exitCode": 0,
+      "passed": 54,
+      "failed": 0,
+      "total": 54,
+      "testFiles": [
+        {
+          "name": "frontend/__tests__/hooks/useInputListener.spec.tsx",
+          "status": "passed",
+          "durationMs": 2.1
+        },
+        {
+          "name": "frontend/__tests__/utils/local-storage-with-schema.spec.ts",
+          "status": "passed",
+          "durationMs": 38.4
+        },
+        {
+          "name": "frontend/__tests__/utils/type-to-search.spec.ts",
+          "status": "passed",
+          "durationMs": 2.3
+        },
+        {
+          "name": "frontend/__tests__/components/common/Button.spec.tsx",
+          "status": "passed",
+          "durationMs": 6.4
+        },
+        {
+          "name": "frontend/__tests__/components/ui/Select.spec.tsx",
+          "status": "passed",
+          "durationMs": 465.8
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "mode": "original",
+      "wallSeconds": 4.812,
+      "exitCode": 0,
+      "passed": 54,
+      "failed": 0,
+      "total": 54,
+      "testFiles": [
+        {
+          "name": "frontend/__tests__/utils/local-storage-with-schema.spec.ts",
+          "status": "passed",
+          "durationMs": 36.718
+        },
+        {
+          "name": "frontend/__tests__/utils/type-to-search.spec.ts",
+          "status": "passed",
+          "durationMs": 3.09
+        },
+        {
+          "name": "frontend/__tests__/hooks/useInputListener.spec.tsx",
+          "status": "passed",
+          "durationMs": 5.582
+        },
+        {
+          "name": "frontend/__tests__/components/ui/Select.spec.tsx",
+          "status": "passed",
+          "durationMs": 417.422
+        },
+        {
+          "name": "frontend/__tests__/components/common/Button.spec.tsx",
+          "status": "passed",
+          "durationMs": 60.755
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "mode": "original",
+      "wallSeconds": 4.508,
+      "exitCode": 0,
+      "passed": 54,
+      "failed": 0,
+      "total": 54,
+      "testFiles": [
+        {
+          "name": "frontend/__tests__/utils/local-storage-with-schema.spec.ts",
+          "status": "passed",
+          "durationMs": 41.72
+        },
+        {
+          "name": "frontend/__tests__/utils/type-to-search.spec.ts",
+          "status": "passed",
+          "durationMs": 2.277
+        },
+        {
+          "name": "frontend/__tests__/hooks/useInputListener.spec.tsx",
+          "status": "passed",
+          "durationMs": 5.108
+        },
+        {
+          "name": "frontend/__tests__/components/common/Button.spec.tsx",
+          "status": "passed",
+          "durationMs": 65.702
+        },
+        {
+          "name": "frontend/__tests__/components/ui/Select.spec.tsx",
+          "status": "passed",
+          "durationMs": 443.025
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "mode": "browser",
+      "wallSeconds": 3.417,
+      "exitCode": 0,
+      "passed": 54,
+      "failed": 0,
+      "total": 54,
+      "testFiles": [
+        {
+          "name": "frontend/__tests__/hooks/useInputListener.spec.tsx",
+          "status": "passed",
+          "durationMs": 2.3
+        },
+        {
+          "name": "frontend/__tests__/utils/local-storage-with-schema.spec.ts",
+          "status": "passed",
+          "durationMs": 39.9
+        },
+        {
+          "name": "frontend/__tests__/utils/type-to-search.spec.ts",
+          "status": "passed",
+          "durationMs": 2.1
+        },
+        {
+          "name": "frontend/__tests__/components/common/Button.spec.tsx",
+          "status": "passed",
+          "durationMs": 22.6
+        },
+        {
+          "name": "frontend/__tests__/components/ui/Select.spec.tsx",
+          "status": "passed",
+          "durationMs": 457.3
+        }
+      ]
+    }
+  ],
+  "medians": {
+    "original": 4.508,
+    "browser": 3.417
+  },
+  "stability": {
+    "command": "vp test run --config frontend/storybook/vitest.pilot.config.ts --project pilot-browser --repeats 4",
+    "passedCases": 58,
+    "failedCases": 0,
+    "success": true,
+    "repeats": 4,
+    "retries": 0
+  }
+}

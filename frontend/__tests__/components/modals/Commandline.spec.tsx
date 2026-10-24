@@ -19,7 +19,8 @@ const { command, hotkeyHandlers } = vi.hoisted(() => ({
   hotkeyHandlers: new Map<string, (event: KeyboardEvent) => void>(),
 }));
 
-vi.mock("animejs", () => ({
+vi.mock("animejs", async (original) => ({
+  ...(await original<typeof import("animejs")>()),
   animate: (_element: HTMLElement, params: AnimationParams) => {
     queueMicrotask(() => {
       // @ts-expect-error animation callback arguments unused by the lifecycle
@@ -28,18 +29,28 @@ vi.mock("animejs", () => ({
     return { cancel: vi.fn() };
   },
 }));
-vi.mock("../../../src/ts/utils/misc", () => ({
+vi.mock("../../../src/ts/utils/misc", async (original) => ({
+  ...(await original<typeof import("../../../src/ts/utils/misc")>()),
   applyReducedMotion: (duration: number) => duration,
 }));
 vi.mock("../../../src/features/typing/runtime/focus", () => ({ set: vi.fn() }));
-vi.mock("../../../src/ts/ui", () => ({ clearFontPreview: vi.fn() }));
+vi.mock("../../../src/ts/ui", async (original) => ({
+  ...(await original<typeof import("../../../src/ts/ui")>()),
+  clearFontPreview: vi.fn(),
+}));
 vi.mock("../../../src/ts/controllers/analytics-controller", () => ({
   log: vi.fn(),
 }));
-vi.mock("../../../src/ts/controllers/theme-controller", () => ({
+vi.mock("../../../src/ts/controllers/theme-controller", async (original) => ({
+  ...(await original<
+    typeof import("../../../src/ts/controllers/theme-controller")
+  >()),
   clearPreview: vi.fn(),
 }));
-vi.mock("../../../src/ts/config/setters", () => ({ setConfig: vi.fn() }));
+vi.mock("../../../src/ts/config/setters", async (original) => ({
+  ...(await original<typeof import("../../../src/ts/config/setters")>()),
+  setConfig: vi.fn(),
+}));
 vi.mock("../../../src/ts/collections/custom-themes", () => ({
   useCustomThemesLiveQuery: () => () => [],
 }));
@@ -58,7 +69,8 @@ vi.mock("../../../src/ts/commandline/util", () => ({
   COMMAND_SEPARATOR_HTML:
     '<i class="fas fa-fw fa-chevron-right chevronIcon"></i>',
 }));
-vi.mock("../../../src/ts/states/test", () => ({
+vi.mock("../../../src/ts/states/test", async (original) => ({
+  ...(await original<typeof import("../../../src/ts/states/test")>()),
   setTestFocusState: vi.fn(),
   isLongTest: () => false,
   wordsHaveNewline: () => false,
@@ -263,7 +275,7 @@ describe("theme picker lifecycle", () => {
     fireEvent.keyDown(view.getByRole("textbox"), {
       key: "k",
       code: "KeyK",
-      // jsdom isn't mac, so mod is ctrl
+      // The test browser uses Linux, so mod is ctrl.
       ctrlKey: true,
     });
     await waitFor(() => expect(commandlineState.open).toBe(false));

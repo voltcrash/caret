@@ -24,7 +24,6 @@ vi.mock("../../src/ts/commandline/commandline-metadata", () => ({
 
 describe("CommandlineUtils", () => {
   afterAll(() => {
-    vi.resetModules();
     vi.restoreAllMocks();
   });
   describe("buildCommandWithSubgroup", () => {

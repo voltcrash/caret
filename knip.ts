@@ -29,6 +29,11 @@ export default {
         "scripts/*.{ts,cjs}",
         // Vitest's operation map is an aliased entry (operation-transport).
         "__tests__/__harness__/operations.ts",
+        // Browser tests replace Start compiler/server entries through Vite aliases.
+        "__tests__/__harness__/start-client.ts",
+        "__tests__/__harness__/session-function.ts",
+        "__tests__/__harness__/signup-function.ts",
+        "__tests__/__harness__/read-functions.ts",
         // Built-Worker test entry, selected by `vp build --mode runtime-test`.
         "__tests__/start/worker-entry.ts",
         // Compiled independently by the Start service-worker build plugin.

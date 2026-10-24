@@ -8,7 +8,12 @@ if (args[0] === "--") args.shift();
 if (command === "tools-test") {
   const result = spawnSync(
     "python3",
-    ["-m", "unittest", "scripts/terminal_release_test.py"],
+    [
+      "-m",
+      "unittest",
+      "scripts/terminal_release_test.py",
+      "scripts/terminal_emulator_test.py",
+    ],
     { cwd: resolve(import.meta.dirname, ".."), stdio: "inherit" },
   );
   if (result.error !== undefined) throw result.error;

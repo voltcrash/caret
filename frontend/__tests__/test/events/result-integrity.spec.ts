@@ -1,5 +1,5 @@
 import { expect, it } from "vite-plus/test";
-import { nativeSession } from "../../__harness__/native-engine";
+import { nativeSession } from "../../__harness__/native-engine.node";
 import { analyzeLog, encodeText } from "@oxytype/typing-engine/browser.client";
 import { projectEngineConfig } from "@oxytype/typing-engine/config";
 import { CompletedEventSchema } from "@oxytype/schemas/results";

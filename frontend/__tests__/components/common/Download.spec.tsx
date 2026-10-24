@@ -12,7 +12,8 @@ afterEach(() => {
 it("downloads from a connected anchor with the requested name, then revokes its URL", () => {
   const createObjectURL = vi.fn(() => "blob:download");
   const revokeObjectURL = vi.fn();
-  vi.stubGlobal("URL", { createObjectURL, revokeObjectURL });
+  vi.spyOn(URL, "createObjectURL").mockImplementation(createObjectURL);
+  vi.spyOn(URL, "revokeObjectURL").mockImplementation(revokeObjectURL);
   const click = vi
     .spyOn(HTMLAnchorElement.prototype, "click")
     .mockImplementation(function (this: HTMLAnchorElement) {

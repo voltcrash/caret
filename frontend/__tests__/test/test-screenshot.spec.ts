@@ -80,6 +80,10 @@ beforeEach(() => {
   vi.spyOn(document.documentElement, "clientHeight", "get").mockReturnValue(
     600,
   );
+  vi.spyOn(document.documentElement, "scrollWidth", "get").mockReturnValue(800);
+  vi.spyOn(document.documentElement, "scrollHeight", "get").mockReturnValue(
+    600,
+  );
   vi.spyOn(window, "scrollTo").mockImplementation(() => undefined);
   vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
     callback(0);

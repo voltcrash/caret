@@ -388,3 +388,6 @@ describe("AsyncContent", () => {
     }
   });
 });
+
+// Browser module exports are sealed; register spies before imports run.
+vi.mock("../../../src/ts/states/notifications", { spy: true });

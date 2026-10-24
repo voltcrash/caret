@@ -37,6 +37,8 @@ beforeEach(() => {
   );
   input.scrollIntoView = scroll;
   scroll.mockClear();
+  // Desktop cases control innerHeight; phone cases install their own viewport.
+  vi.stubGlobal("visualViewport", undefined);
 });
 afterEach(() => {
   cleanup();

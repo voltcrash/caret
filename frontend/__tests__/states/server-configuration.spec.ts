@@ -7,6 +7,14 @@ import {
   vi,
 } from "vite-plus/test";
 
+import { mountApplication } from "../../src/app/application";
+import {
+  createTestApplication,
+  releaseTestApplication,
+} from "../__harness__/test-application";
+releaseTestApplication();
+let dispose: () => void;
+
 const { query } = vi.hoisted(() => ({ query: vi.fn() }));
 
 vi.mock("../../src/ts/queries", () => ({
@@ -19,15 +27,19 @@ vi.mock("../../src/ts/queries/server-configuration", () => ({
 }));
 
 describe("server configuration startup", () => {
-  beforeEach(async () => {
-    vi.resetModules();
-    await import("../__harness__/mock-application");
+  beforeEach(() => {
+    const root = createTestApplication();
+    const release = mountApplication(root.application);
+    dispose = () => {
+      release();
+      root.dispose();
+    };
     query.mockReset();
     vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
-  afterEach(async () => {
-    (await import("../__harness__/mock-application")).releaseTestApplication();
+  afterEach(() => {
+    dispose();
     vi.restoreAllMocks();
   });
 

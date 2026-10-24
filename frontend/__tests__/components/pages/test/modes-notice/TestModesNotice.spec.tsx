@@ -21,7 +21,7 @@ import { getDefaultConfig } from "../../../../../src/ts/constants/default-config
 import { setUserId } from "../../../../../src/ts/states/core";
 import { mockOperation, ok } from "../../../../__harness__/operations";
 
-// Imported transitively via the theme controller; jsdom has no IndexedDB.
+// Isolate the theme controller's transitive storage dependency.
 vi.mock("idb", () => ({ openDB: async () => ({}) }));
 
 describe("TestModesNotice", () => {

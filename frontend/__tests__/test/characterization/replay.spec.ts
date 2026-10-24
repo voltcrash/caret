@@ -1,6 +1,4 @@
-import { readFileSync } from "fs";
-import { resolve } from "path";
-import { fileURLToPath } from "url";
+import recording from "../../../../packages/typing-fixtures/reference/keystrokes/words-10-errors.json";
 import type { EventLog } from "@oxytype/web-shared/events/types";
 import {
   afterEach,
@@ -42,15 +40,7 @@ vi.mock("../../../src/features/typing/engine.client", () => ({
 import * as Replay from "../../../src/features/typing/runtime/replay";
 import * as TestWords from "../../../src/features/typing/runtime/test-words";
 
-const fixture = JSON.parse(
-  readFileSync(
-    resolve(
-      fileURLToPath(import.meta.url),
-      "../../../../../packages/typing-fixtures/reference/keystrokes/words-10-errors.json",
-    ),
-    "utf-8",
-  ),
-) as { eventLog: EventLog };
+const fixture = recording as unknown as { eventLog: EventLog };
 
 function load(words: string[], events: EventLog["events"]): void {
   TestWords.words.reset();

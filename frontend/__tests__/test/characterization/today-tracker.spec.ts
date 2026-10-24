@@ -16,19 +16,30 @@ vi.mock("../../../src/ts/collections/results", () => ({
   getResultsSinceDayOnce: results.since,
 }));
 
-type Tracker =
-  typeof import("../../../src/features/typing/runtime/today-tracker");
-let TodayTracker: Tracker;
+import { mountApplication } from "../../../src/app/application";
+import {
+  createTestApplication,
+  releaseTestApplication,
+} from "../../__harness__/test-application";
+import * as TodayTracker from "../../../src/features/typing/runtime/today-tracker";
+releaseTestApplication();
+let dispose: () => void;
 
-beforeEach(async () => {
+beforeEach(() => {
   vi.useFakeTimers({ toFake: ["Date"] });
   vi.setSystemTime(new Date(2026, 9, 14, 15, 30));
-  vi.resetModules();
+  const root = createTestApplication();
+  const release = mountApplication(root.application);
+  dispose = () => {
+    release();
+    root.dispose();
+  };
   results.since.mockReset();
-  TodayTracker =
-    await import("../../../src/features/typing/runtime/today-tracker");
 });
-afterEach(() => vi.useRealTimers());
+afterEach(() => {
+  dispose();
+  vi.useRealTimers();
+});
 
 describe("today tracker", () => {
   it("counts this session until today's results are loaded", () => {

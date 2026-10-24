@@ -5,7 +5,7 @@ import { describe, expect, it } from "vite-plus/test";
 import { currentApplication } from "../../src/app/application";
 import { AppProviders } from "../../src/app/providers";
 import { createQueryClient } from "../../src/app/query-client";
-import { releaseTestApplication } from "../__harness__/mock-application";
+import { releaseTestApplication } from "../__harness__/test-application";
 
 releaseTestApplication();
 

@@ -50,6 +50,10 @@ vi.mock("idb", () => {
 });
 
 let disposeEvents: () => void;
+const { saveToLocalStorage: save } = await vi.importActual<typeof Persistence>(
+  "../../../../src/ts/config/persistence",
+);
+
 beforeEach(async () => {
   disposeEvents = createRoot((dispose) => {
     useThemeEvents();
@@ -57,7 +61,6 @@ beforeEach(async () => {
   });
   __testing.replaceConfig({});
   setFullConfigStore(getDefaultConfig());
-  const save = Persistence.saveToLocalStorage;
   vi.spyOn(Persistence, "saveToLocalStorage").mockImplementation((key) =>
     save(key, false, true),
   );
@@ -177,3 +180,7 @@ it("does not apply a pending color-picker edit after resetting the theme", async
   expect(getConfig.customTheme).toBe(false);
   expect(view.queryByRole("button", { name: "Reset to default" })).toBeNull();
 });
+
+// Browser module exports are sealed; register spies before imports run.
+vi.mock("../../../../src/ts/config/persistence", { spy: true });
+vi.mock("../../../../src/ts/utils/json-data", { spy: true });

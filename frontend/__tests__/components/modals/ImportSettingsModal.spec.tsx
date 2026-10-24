@@ -1,5 +1,4 @@
 import { cleanup, fireEvent, render, waitFor } from "@solidjs/testing-library";
-import { File as NodeFile } from "node:buffer";
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 
 import "../../__harness__/mock-static";
@@ -70,13 +69,9 @@ it("opens the file picker and loads a formatted JSON preview before importing", 
   fireEvent.click(view.getByRole("button", { name: "choose file" }));
   expect(click).toHaveBeenCalledOnce();
 
-  const file = new NodeFile(
-    ['\uFEFF{"theme":"nord","time":60}'],
-    "settings.json",
-    {
-      type: "application/json",
-    },
-  );
+  const file = new File(['\uFEFF{"theme":"nord","time":60}'], "settings.json", {
+    type: "application/json",
+  });
   fireEvent.change(view.getByLabelText("Choose settings JSON file"), {
     target: { files: [file] },
   });
@@ -97,11 +92,11 @@ it("loads a dropped JSON file into the editor", async () => {
   const zone = view.getByRole("region", { name: "JSON file upload" });
   fireEvent.dragEnter(zone);
   expect(view.getByText("Release to load your file")).toBeInTheDocument();
-  fireEvent.drop(zone, {
-    dataTransfer: {
-      files: [new NodeFile(['{"time":15}'], "my-settings.json")],
-    },
-  });
+  const dataTransfer = new DataTransfer();
+  dataTransfer.items.add(new File(['{"time":15}'], "my-settings.json"));
+  zone.dispatchEvent(
+    new DragEvent("drop", { dataTransfer, bubbles: true, cancelable: true }),
+  );
   await waitFor(() =>
     expect(view.getByRole("textbox", { name: "settings JSON" })).toHaveValue(
       '{\n  "time": 15\n}',
@@ -150,14 +145,14 @@ it("rejects multiple files without overwriting the draft", async () => {
   fireEvent.input(view.getByRole("textbox", { name: "settings JSON" }), {
     target: { value: '{"time":30}' },
   });
-  fireEvent.drop(view.getByRole("region", { name: "JSON file upload" }), {
-    dataTransfer: {
-      files: [
-        new NodeFile(["{}"], "one.json"),
-        new NodeFile(["{}"], "two.json"),
-      ],
-    },
-  });
+  const dataTransfer = new DataTransfer();
+  dataTransfer.items.add(new File(["{}"], "one.json"));
+  dataTransfer.items.add(new File(["{}"], "two.json"));
+  view
+    .getByRole("region", { name: "JSON file upload" })
+    .dispatchEvent(
+      new DragEvent("drop", { dataTransfer, bubbles: true, cancelable: true }),
+    );
   expect(view.getByRole("alert")).toHaveTextContent("one JSON file at a time");
   expect(view.getByRole("textbox", { name: "settings JSON" })).toHaveValue(
     '{"time":30}',
@@ -168,7 +163,7 @@ it("rejects multiple files without overwriting the draft", async () => {
 it("shows invalid file contents for correction without applying them", async () => {
   const view = await renderImport();
   fireEvent.change(view.getByLabelText("Choose settings JSON file"), {
-    target: { files: [new NodeFile(["not JSON"], "broken.json")] },
+    target: { files: [new File(["not JSON"], "broken.json")] },
   });
   expect(await view.findByRole("alert")).toHaveTextContent("Invalid JSON");
   expect(view.getByRole("textbox", { name: "settings JSON" })).toHaveValue(

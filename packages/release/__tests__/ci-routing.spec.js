@@ -172,6 +172,18 @@ describe("application sources", () => {
 
 describe("test-only changes", () => {
   it.each([
+    "frontend/vitest.config.ts",
+    "frontend/vitest.browser.config.ts",
+    "frontend/vitest.node-tests.ts",
+  ])("runs frontend checks for runner configuration %s", (file) => {
+    expect(selected([file])).toEqual([
+      "frontend-lint",
+      "frontend-test",
+      "code",
+    ]);
+  });
+
+  it.each([
     [
       "frontend/__tests__/utils/format.spec.ts",
       ["frontend-lint", "frontend-test"],
@@ -308,6 +320,23 @@ it("builds the production Worker once and shares it with SSR and browser shards"
     ).toBe(false);
   }
   expect(workflow.jobs["ci-ok"].needs).toContain("start-build");
+});
+
+it("installs Chromium before frontend tests and preserves browser failure evidence", () => {
+  const job = workflow.jobs["ci-fe-test"];
+  const install = job.steps.findIndex((step) =>
+    step.run?.includes("playwright install"),
+  );
+  const test = job.steps.findIndex((step) => step.name === "Test");
+  expect(install).toBeGreaterThan(0);
+  expect(install).toBeLessThan(test);
+  expect(job.steps[install].run).toContain("--with-deps --only-shell chromium");
+  const evidence = job.steps.find(
+    (step) => step.name === "Upload frontend browser failure evidence",
+  );
+  expect(evidence.if).toBe("failure()");
+  expect(evidence.with.path).toBe("frontend/.vitest/attachments");
+  expect(workflow.jobs["ci-ok"].needs).toContain("ci-fe-test");
 });
 
 // Native UI changes belong to the separate terminal matrix, not web deployments.

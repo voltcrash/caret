@@ -23,7 +23,10 @@ vi.mock("../../../../../src/features/typing/runtime/test-words", () => ({
   words: { get: () => ({ display: "ab" }) },
 }));
 const anime = vi.hoisted(() => ({ animate: vi.fn() }));
-vi.mock("animejs", () => ({ animate: anime.animate }));
+vi.mock("animejs", async (original) => ({
+  ...(await original<typeof import("animejs")>()),
+  animate: anime.animate,
+}));
 vi.mock("../../../../../src/ts/utils/debounced-animation-frame", () => ({
   requestDebouncedAnimationFrame: (_key: string, callback: () => void) =>
     callback(),

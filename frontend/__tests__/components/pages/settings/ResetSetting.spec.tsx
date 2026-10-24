@@ -9,11 +9,14 @@ import { getConfig, setFullConfigStore } from "../../../../src/ts/config/store";
 import { __testing } from "../../../../src/ts/config/testing";
 import { getDefaultConfig } from "../../../../src/ts/constants/default-config";
 
+const { saveToLocalStorage: save } = await vi.importActual<typeof Persistence>(
+  "../../../../src/ts/config/persistence",
+);
+
 beforeEach(() => {
   __testing.replaceConfig({});
   setFullConfigStore(getDefaultConfig());
   localStorage.clear();
-  const save = Persistence.saveToLocalStorage;
   // Keep real local persistence; avoid scheduling remote account sync.
   vi.spyOn(Persistence, "saveToLocalStorage").mockImplementation((key) =>
     save(key, false, true),
@@ -108,3 +111,7 @@ it("keeps reset available when a config restriction blocks it", async () => {
     ).toBeEnabled();
   });
 });
+
+// Browser module exports are sealed; register spies before imports run.
+vi.mock("../../../../src/ts/config/persistence", { spy: true });
+vi.mock("../../../../src/ts/config/setters", { spy: true });

@@ -118,7 +118,10 @@ vi.mock("../../../../src/features/typing/components/MonkeyPower", () => ({
 vi.mock("../../../../src/ts/anim", () => ({
   animateAsync: vi.fn().mockResolvedValue(undefined),
 }));
-vi.mock("animejs", () => ({ animate: vi.fn() }));
+vi.mock("animejs", async (original) => ({
+  ...(await original<typeof import("animejs")>()),
+  animate: vi.fn(),
+}));
 
 import { Words } from "../../../../src/features/typing/components/Words";
 import { getWordElement } from "../../../../src/features/typing/components/words/elements";
