@@ -1,39 +1,34 @@
 {
   "formatVersion": 1,
-  "workflowRun": "https://github.com/voltcrash/oxytype/actions/runs/40068412137",
-  "sourceHead": "5703c1f10bd949478d3801d027965ac2214f3738",
-  "artifactSourceRevision": "b62151798e1c1f469d13501a1cf9479a83bdca0b",
-  "status": "All five native build/test/archive smoke jobs and corresponding-source job passed; downloaded hashes and cross-archive source pairing verified. Candidate CI artifacts only; no release published.",
+  "workflowRun": "https://github.com/voltcrash/oxytype/actions/runs/40085257392",
+  "sourceHead": "6f6b25f7f4c2dc63958b3c3ccfa84d47676a4f1f",
+  "artifactSourceRevision": "1258809f217c112e5566f33e803b9a19d6b6aefb",
+  "status": "Four Linux/macOS native build/test/archive smoke jobs, both real Linux emulator jobs and corresponding-source job passed. Downloaded checksums and binary/source revision pairing verified. CI candidates only; no release published.",
   "artifacts": [
     {
       "file": "oxytype-v0.1.0-aarch64-apple-darwin.tar.gz",
-      "bytes": 1579709,
-      "sha256": "4cb2dfea5e35ea3564a490c33c60dd92493fb03680ed3a5aa6c9f82213622c48"
+      "bytes": 1580840,
+      "sha256": "626bbbabffabeada070b392f1480ab32378ebe69a7de36bf2ccf081d228abce6"
     },
     {
       "file": "oxytype-v0.1.0-aarch64-unknown-linux-gnu.tar.gz",
-      "bytes": 1635357,
-      "sha256": "786ec2a486c8de0903e89e261b7112ee41baf73649cbfcc937561dc87fd0502a"
+      "bytes": 1636398,
+      "sha256": "22d8edd98ed5dcf3491be22636e03d7fe98adaeddd9cf2e712185df224cb0a0d"
     },
     {
       "file": "oxytype-v0.1.0-source.tar.gz",
-      "bytes": 72362837,
-      "sha256": "5e42065bf844eeb2be2bef9b419ca2b23558f6c57f8425e7f32d1dffcf78fcb9"
+      "bytes": 72373083,
+      "sha256": "4589632e679d1ff55ee76d52d0a2f9357fb92375b60c5d10fd72b1837faa8464"
     },
     {
       "file": "oxytype-v0.1.0-x86_64-apple-darwin.tar.gz",
-      "bytes": 1651285,
-      "sha256": "9d97b757d2e47886c24e07eb51e1c57b21425535ad713788ede29787664a75a7"
-    },
-    {
-      "file": "oxytype-v0.1.0-x86_64-pc-windows-msvc.zip",
-      "bytes": 2077503,
-      "sha256": "db476da1059a4f1605907d89e7ef0e36b2f5e6b04d8822fff0e6c1fcb700c43b"
+      "bytes": 1651751,
+      "sha256": "fa32a8b12023f87c2221f172e916c779b975db1ee92553e72df312e1440c1068"
     },
     {
       "file": "oxytype-v0.1.0-x86_64-unknown-linux-gnu.tar.gz",
-      "bytes": 1640282,
-      "sha256": "34aa336e8a50b18bc84d07e04ae01657f5192b4dee025bc6cd1869c4134c6db8"
+      "bytes": 1641068,
+      "sha256": "3cec443a921e6c986f3e3cb1c0c732f0d7c174a8edb3addb252ae70cd05a2c11"
     }
   ]
 }

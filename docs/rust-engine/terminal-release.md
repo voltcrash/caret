@@ -19,11 +19,20 @@ private Xvfb displays, retaining exact versions and input/output/cleanup evidenc
 | x86_64-apple-darwin | macOS 15 Intel; deployment target explicitly 15.0 | Pass |
 | aarch64-apple-darwin | macOS 15 Apple Silicon; deployment target explicitly 15.0 | Pass |
 
+All four native candidates, both real Linux emulator jobs and corresponding
+source passed [run 40085257392](https://github.com/voltcrash/oxytype/actions/runs/40085257392)
+for source head `6f6b25f7f4c2dc63958b3c3ccfa84d47676a4f1f`.
+[terminal-artifacts.json](terminal-artifacts.json) records exact downloaded sizes
+and SHA-256 hashes. All five checksums and binary/source revision pairs were
+verified with the publisher's checksum collector. All SOURCE.md/SOURCE_REVISION
+files identify GitHub's tested PR merge revision
+`1258809f217c112e5566f33e803b9a19d6b6aefb`.
+These are temporary CI candidates (14-day retention), not published releases.
+Subsequent evidence-only commits do not retroactively change this record.
+
 The owner narrowed support to Linux/macOS after #184/#185 merged; Windows is out
-of scope. The four retained targets passed [run 40068412137](https://github.com/voltcrash/oxytype/actions/runs/40068412137)
-under the earlier matrix. [terminal-artifacts.json](terminal-artifacts.json) is an
-immutable historical record, including the then-supported Windows archive; it is
-not the current target list. Current-scope evidence is recorded in progress.md.
+of scope. [Earlier five-target evidence](archive/terminal-artifacts-40068412137.json)
+is archived unchanged for provenance and is not the supported target list.
 
 Do not claim lower OS/libc versions or untested terminals supported. Runner labels
 were checked against [GitHub's runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners).

@@ -16,7 +16,7 @@ Stages 1/2 merged into main (#184/#185). PR #186 now targets main. Owner revised
 terminal scope to Linux/macOS only and explicitly requested merge readiness with
 macOS manual verification after merge. Windows targets removed; no contributor
 or external-machine requirement blocks merge. Real Linux Kitty/Alacritty/Ghostty
-regressions and four-target CI are in progress. Release publication remains a
+regressions, four-target CI and full website CI pass at runtime source 6f6b25f7f. Release publication remains a
 separate authorized action; pending manual checks are never fabricated.
 Earlier entries below are chronological evidence, superseded where scope changed.
 
@@ -39,7 +39,7 @@ Earlier entries below are chronological evidence, superseded where scope changed
 | 3.2 Offline content | Complete | Bundled words/eight original quotes; five modes, CLI/settings/editor, bounded v1 packs; native/full-fixture and actual PTY checks pass. |
 | 3.3 Input / Unicode | Complete for revised merge scope | Real Kitty 0.32.2/0.49.2, Alacritty 0.17.0 and Ghostty 1.3.1 auto/basic pass; native UTF-16/TestBackend/wire/PTY pass. Mac manual deferred by owner. |
 | 3.4 Settings / history | Complete | SQLite reopen/concurrency/corruption/retry/export and actual history/replay PTY pass. |
-| 3.5 Packaging / release | Current-scope CI active; publication gated | Four Linux/macOS targets and required Linux emulator CI running. Owner Mac manual record required only for later publication. |
+| 3.5 Packaging / release | Merge gates complete; publication gated | Four Linux/macOS targets, two real emulator jobs/source pass CI 40085257392; full CI 40085257400 passes. Hash/source pairing verified. Owner Mac manual record remains pending only for publication. |
 
 ## Verification log
 
@@ -74,15 +74,17 @@ Earlier entries below are chronological evidence, superseded where scope changed
 
 No external blocker under the owner's revised merge requirements. macOS manual
 checks will be performed by the owner after merge; Windows is out of scope.
-Finish the real Linux emulator suite and four-target build/archive CI before
-marking #186 ready. Keep unperformed macOS/font/IME checks explicit. Publication
-continues to require its separate recorded release gate.
+All available merge checks pass at runtime source 6f6b25f7f. macOS manual
+verification remains pending for later publication, owned by the user after
+merge. No external contributor, Windows machine or physical Linux tester is
+required by the revised merge scope. No manual check is falsely marked passed.
 
 ## Resume
 
-Read current position and latest checkpoint, then `vp exec git status --short`.
-Complete the real emulator regressions, document exact versions/capabilities,
-verify CI and make PR #186 ready. Do not redo completed engine/website stages.
+Implementation and verification are complete for the revised merge scope.
+Only final evidence commits/PR readiness and their CI remain to settle. Do not
+redo completed engine/website/native work. After merge, follow terminal-macos-check.md;
+publication still requires its actual record and separately authorized version tag.
 
 ## Latest implementation evidence
 
@@ -790,3 +792,34 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
   then record packaging evidence and make #186 ready. Earlier CI failures were
   investigated: missing Alacritty XKB runtime, map-before-focus race and old Kitty
   key-up duplication. No check skipped or fixture/budget changed to pass.
+
+
+## Current-scope merge acceptance
+
+- Runtime/harness source `6f6b25f7f4c2dc63958b3c3ccfa84d47676a4f1f`:
+  [native CI 40085257392](https://github.com/voltcrash/oxytype/actions/runs/40085257392)
+  passes all four Linux/macOS native format/Clippy/shared fixtures/terminal tests,
+  debug and extracted-release PTY checks, packaging and empty-PATH install smoke.
+  Both real Linux emulator jobs (Kitty 0.32.2 and Alacritty 0.13.2 auto/basic) and
+  vendored corresponding-source offline build pass. Publication job is skipped
+  because no authorized tag was pushed.
+- [Full website CI 40085257400](https://github.com/voltcrash/oxytype/actions/runs/40085257400)
+  succeeds: native/Wasm parity, frontend/backend/packages, lint/types/Knip,
+  Cloudflare SSR/workerd/delivery, all four browser shards and update/rollback.
+  Final local full format (2,753 files) and Knip pass. Wasm is byte-identical to
+  Stage 2: 765,852 raw / 303,619 Node gzip6 bytes, SHA-256
+  `4b1a0c8d5d006b367888b7cf4c76b104ab5037a7473ff7b46983a9109aba9e3d`.
+- Downloaded all four native archives plus source. Every sidecar hash and all
+  binary/source revision pairs match tested GitHub merge revision
+  `1258809f217c112e5566f33e803b9a19d6b6aefb`; actual publisher checksum collector
+  succeeds. terminal-artifacts.json records exact five candidates. Prior Windows
+  evidence is retained unchanged under archive/terminal-artifacts-40068412137.json,
+  separate from current supported targets. No release published.
+- terminal-emulators.json retains eight exact local runs plus four CI runs,
+  including binary version/hash and real observed capabilities. Native key-up
+  fields stay unavailable; explicit release/repeat packet regressions still pass.
+- Stage 3 satisfies the owner's revised merge scope. Physical macOS/IME/font
+  checks are explicitly unperformed; owner will perform them after merge using
+  terminal-macos-check.md. Linux emulator CI replaces the external tester gate;
+  macOS is the sole manual publication gate. No requested production deployment,
+  release publication, account or cloud sync added.
