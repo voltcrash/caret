@@ -1,7 +1,7 @@
 use clap::Parser;
 use crossterm::event::{self, Event, KeyCode, KeyEventKind, KeyModifiers};
-use oxytype_tui::options::Cli;
 use oxytype_tui::{Result, engine::EngineHost, terminal::TerminalGuard};
+use oxytype_tui::{options::Cli, setup::Setup};
 use ratatui::{
     Frame,
     layout::{Constraint, Layout},
@@ -21,6 +21,7 @@ enum Screen {
     Help,
     Settings,
     History,
+    Editor,
 }
 fn date() -> f64 {
     SystemTime::now()
@@ -44,7 +45,13 @@ fn run() -> Result<()> {
         return Ok(());
     }
     let (config, content, custom) = cli.prepare(Config::default())?;
-    let mut host = EngineHost::offline(config, content, custom, cli.seed.unwrap_or(date() as u32))?;
+    let mut setup = Setup::new(config.clone(), custom.as_ref());
+    let mut host = EngineHost::offline(
+        config,
+        content.clone(),
+        custom,
+        cli.seed.unwrap_or(date() as u32),
+    )?;
     let (guard, mut terminal) = TerminalGuard::enter()?;
     #[cfg(debug_assertions)]
     match std::env::var("OXYTYPE_TERMINAL_TEST_FAILURE").as_deref() {
@@ -70,7 +77,7 @@ fn run() -> Result<()> {
             host.command(Command::Advance { now, date: date() })?;
         }
         if dirty || (host.state().active && last_draw.elapsed() >= Duration::from_millis(100)) {
-            terminal.draw(|frame| draw(frame, &host, screen, &notice, &history, now))?;
+            terminal.draw(|frame| draw(frame, &host, screen, &notice, &history, now, &setup))?;
             dirty = false;
             last_draw = Instant::now();
         }
@@ -88,6 +95,15 @@ fn run() -> Result<()> {
             // Fullscreen draw autoresizes and invalidates its viewport. An extra
             // clear queries cursor position, which basic terminals need not report.
             Event::Resize(_, _) => {}
+            Event::Paste(text) if screen == Screen::Editor => {
+                match oxytype_tui::content::safe_text(&text) {
+                    Ok(()) if setup.text.len() + text.len() <= 8 * 1024 * 1024 => {
+                        setup.text.push_str(&text)
+                    }
+                    Ok(()) => notice = "Custom text exceeds 8 MiB".into(),
+                    Err(error) => notice = error.to_string(),
+                }
+            }
             Event::Paste(_) => notice = "Paste blocked during typing.".into(),
             Event::Key(key) if key.kind != KeyEventKind::Release => {
                 let control = key.modifiers.contains(KeyModifiers::CONTROL);
@@ -102,7 +118,43 @@ fn run() -> Result<()> {
                 }
                 match key.code {
                     KeyCode::F(1) => screen = Screen::Help,
-                    KeyCode::F(2) if !host.state().active => screen = Screen::Settings,
+                    KeyCode::F(2) if !host.state().active => {
+                        setup.config = host.config.clone();
+                        screen = Screen::Settings;
+                    }
+                    KeyCode::F(4) if !host.state().active => screen = Screen::Editor,
+                    KeyCode::F(6) if screen == Screen::Editor => setup.cycle_order(),
+                    KeyCode::F(7) if screen == Screen::Editor => setup.cycle_limit(),
+                    KeyCode::F(9) if screen == Screen::Editor => setup.length += 1.0,
+                    KeyCode::F(8) if screen == Screen::Editor => {
+                        setup.config.mode = "custom".into();
+                        match setup.build(&content, host.seed.wrapping_add(1)) {
+                            Ok(next) => {
+                                host = next;
+                                screen = Screen::Test;
+                                notice.clear();
+                            }
+                            Err(error) => notice = error.to_string(),
+                        }
+                    }
+                    KeyCode::Char(c)
+                        if screen == Screen::Editor
+                            && !control
+                            && !key.modifiers.contains(KeyModifiers::ALT) =>
+                    {
+                        if !c.is_control() && setup.text.len() < 8 * 1024 * 1024 {
+                            setup.text.push(c);
+                        }
+                    }
+                    KeyCode::Backspace if screen == Screen::Editor => {
+                        setup.text.pop();
+                    }
+                    KeyCode::Enter if screen == Screen::Editor => setup.text.push('\n'),
+                    KeyCode::Tab if screen == Screen::Editor => setup.text.push('\t'),
+                    KeyCode::Up if screen == Screen::Settings => setup.select(-1),
+                    KeyCode::Down if screen == Screen::Settings => setup.select(1),
+                    KeyCode::Left if screen == Screen::Settings => setup.adjust(-1),
+                    KeyCode::Right if screen == Screen::Settings => setup.adjust(1),
                     KeyCode::F(3) if !host.state().active => screen = Screen::History,
                     KeyCode::Esc if screen != Screen::Test => screen = Screen::Test,
                     KeyCode::F(5) | KeyCode::F(6) => {
@@ -117,20 +169,18 @@ fn run() -> Result<()> {
                         notice.clear();
                     }
                     KeyCode::Enter if screen == Screen::Settings => {
-                        host.restart(false, now, date())?;
-                        screen = Screen::Test;
-                    }
-                    KeyCode::Char('m') if screen == Screen::Settings => {
-                        host.config.mode = match host.config.mode.as_str() {
-                            "time" => "words",
-                            "words" => "zen",
-                            _ => "time",
+                        if setup.config.mode == "custom" && setup.text.trim().is_empty() {
+                            screen = Screen::Editor;
+                        } else {
+                            match setup.build(&content, host.seed.wrapping_add(1)) {
+                                Ok(next) => {
+                                    host = next;
+                                    screen = Screen::Test;
+                                    notice.clear();
+                                }
+                                Err(error) => notice = error.to_string(),
+                            }
                         }
-                        .into()
-                    }
-                    KeyCode::Char('+') if screen == Screen::Settings => {
-                        host.config.words += 10;
-                        host.config.time += 15.0;
                     }
                     KeyCode::F(8) if screen == Screen::Test => {
                         host.command(Command::Bailout { now, date: date() })?;
@@ -181,6 +231,7 @@ fn draw(
     notice: &str,
     history: &[String],
     now: f64,
+    setup: &Setup,
 ) {
     let area = frame.area();
     if area.width < 60 || area.height < 18 {
@@ -208,21 +259,20 @@ fn draw(
     let state = host.state();
     let body = match screen {
         Screen::Help => vec![
-            Line::from("F5 new · F6 repeat · F2 settings · F3 history · Esc return"),
+            Line::from("F5 new · F6 repeat · F2 settings · F3 history · F4 custom · Esc return"),
             Line::from("F8 finish · Backspace delete · Ctrl+Backspace delete word"),
             Line::from("Ctrl+Q / Ctrl+C quit · Ctrl+Z suspend (Unix)"),
             Line::from("Physical-key timing is unavailable; no key releases are invented."),
         ],
-        Screen::Settings => vec![
-            Line::from(format!(
-                "m: mode {} · +: increase length · Enter: start",
-                host.config.mode
-            )),
-            Line::from(format!(
-                "Words {} · Time {} seconds",
-                host.config.words, host.config.time
-            )),
-        ],
+        Screen::Settings => {
+            let lines = setup.lines();
+            let visible = rows[1].height.saturating_sub(3) as usize;
+            let skip = setup.selected.saturating_sub(visible.saturating_sub(1));
+            std::iter::once(lines[0].clone())
+                .chain(lines.into_iter().skip(skip + 1).take(visible))
+                .collect()
+        }
+        Screen::Editor => setup.editor_lines(),
         Screen::History => history
             .iter()
             .rev()
@@ -243,7 +293,13 @@ fn draw(
                     )
                 },
             )),
-            Line::from(state.reason.unwrap_or_else(|| "Completed".into())),
+            Line::from(state.reason.unwrap_or_else(|| {
+                if host.log().is_ok_and(|log| log.context.bailed_out) {
+                    "Finished manually".into()
+                } else {
+                    "Completed".into()
+                }
+            })),
             Line::from("F5 new test · F6 repeat"),
         ],
         Screen::Test => {

@@ -1,6 +1,7 @@
 pub mod content;
 pub mod engine;
 pub mod options;
+pub mod setup;
 pub mod terminal;
 
 pub type Error = Box<dyn std::error::Error + Send + Sync>;

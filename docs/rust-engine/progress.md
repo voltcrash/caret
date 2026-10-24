@@ -12,7 +12,7 @@ empty commits to inflate count. Do not publish production or releases implicitly
 
 ## Current position
 
-Stage 1 and Stage 2 gates passed. Stage 3 Phase 3.2 active on `stack/rust-engine-terminal`, stacked above `stack/rust-engine-website`. Read root AGENTS.md and the complete migration
+Stage 1 and Stage 2 gates passed. Stage 3 Phase 3.3 active on `stack/rust-engine-terminal`, stacked above `stack/rust-engine-website`. Read root AGENTS.md and the complete migration
 plan before edits. Installed workspace dependencies with frozen lockfile.
 Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen oracle and mismatch detection. Existing website engine remains authoritative until Stage 2.
 
@@ -32,8 +32,9 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | 2.5 Delivery / performance | Complete | Fresh Cloudflare build/preview/types, 86 Start checks, update/rollback, full website and controlled Wasm budgets pass. |
 | 2.6 TypeScript retirement | Complete | Legacy package removed; full native/Wasm/website/quality CI, fresh build/types and frozen performance gates pass. |
 | 3.1 Terminal shell | Complete | Native smoke/score test; real PTY typing, finish/restart, resize, error/panic, SIGTERM and suspend/resume pass. |
-| 3.2 Offline content | Active | Bundled licensed words/quotes, local packs and full modes/settings next. |
-| 3.3–3.5 Terminal | Pending | Input/capabilities, durable history and release gates remain. |
+| 3.2 Offline content | Complete | Bundled words/eight original quotes; five modes, CLI/settings/editor, bounded v1 packs; native/full-fixture and actual PTY checks pass. |
+| 3.3 Input / Unicode | Active | Capability negotiation and grapheme/cell rendering next. |
+| 3.4–3.5 Terminal | Pending | Durable history and release gates remain. |
 
 ## Verification log
 
@@ -553,3 +554,23 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
 - This is the shell gate only. Current settings/history are temporary in-memory
   screens. Full offline content, input/rendering, durable storage and packaging
   remain required. Linux PTY coverage does not claim real macOS/Windows hardware.
+
+## Phase 3.2 gate passed
+
+- Bundled exact 200-word English asset plus eight original GPL-3.0-only practice
+  passages spanning all four native quote groups. Attribution/source hash retained;
+  binary embeds content. No first-run download. Local UTF-8 v1 packs/text files
+  bounded at 8 MiB; invalid encoding, controls, metadata, duplicate IDs and unknown
+  versions rejected. No unavailable-language fallback.
+- Time/words/quote/custom/zen, custom ordering/limits, punctuation/numbers and
+  applicable difficulty/error settings use native Config/generation/session/stats.
+  CLI and settings draft share validation. Private editor accepts setup paste;
+  unsupported web hooks and conflicting forced settings rejected explicitly.
+- `vp run engine:test`: full native workspace/frozen-fixture suite passes unchanged.
+  Six terminal integration tests pass (all modes/groups/transforms, exact known
+  score/repeat, invalid packs/options, draft application). Clippy passes.
+- `vp run terminal:test:pty`: five actual offline modes, settings/editor/paste and
+  lifecycle checks pass. Test reader now reconstructs incremental VT cells because
+  unchanged characters are not re-emitted by Ratatui; no app behavior weakened.
+- Accurate grapheme/cell rendering, negotiated capabilities and durable history
+  remain next. No native physical-key timing is inferred from committed input.

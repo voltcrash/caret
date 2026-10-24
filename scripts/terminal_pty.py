@@ -4,6 +4,7 @@ import fcntl
 import os
 import pathlib
 import pty
+import re
 import select
 import signal
 import struct
@@ -11,6 +12,7 @@ import subprocess
 import sys
 import termios
 import time
+import unicodedata
 
 
 def dimensions(slave, columns=100, rows=24):
@@ -18,7 +20,7 @@ def dimensions(slave, columns=100, rows=24):
 
 
 class Child:
-    def __init__(self, binary, failure=None):
+    def __init__(self, binary, failure=None, args=()):
         self.master, self.slave = pty.openpty()
         dimensions(self.slave)
         self.original = termios.tcgetattr(self.slave)
@@ -31,7 +33,7 @@ class Child:
             os.setsid()
             fcntl.ioctl(self.slave, termios.TIOCSCTTY, 0)
 
-        self.process = subprocess.Popen([binary], stdin=self.slave, stdout=self.slave,
+        self.process = subprocess.Popen([binary, *args], stdin=self.slave, stdout=self.slave,
                                         stderr=self.slave, env=env,
                                         preexec_fn=controlling_terminal)
 
@@ -45,14 +47,57 @@ class Child:
 
     def until(self, text, seconds=5):
         deadline = time.monotonic() + seconds
-        start = len(self.output)
         while time.monotonic() < deadline:
             self.read()
-            if text in self.output[start:]:
+            if text.decode("utf-8") in self.screen_text():
                 return
             if self.process.poll() is not None:
                 break
         raise AssertionError(f"Missing {text!r}; process={self.process.poll()}; output={bytes(self.output[-2000:])!r}")
+
+    def screen_text(self):
+        # Minimal VT screen reader for assertions. Preserve unchanged cells and
+        # cursor moves between Ratatui frames, unlike stripping ANSI bytes.
+        grid, row, col = {}, 0, 0
+        data = self.output.decode("utf-8", errors="replace")
+        i = 0
+        while i < len(data):
+            if data[i] == "\x1b":
+                match = re.match(r"\x1b\[([0-?]*)([ -/]*)([@-~])", data[i:])
+                if match:
+                    params, _, command = match.groups()
+                    private = params.startswith("?")
+                    values = [int(v or 0) for v in params.lstrip("?>").split(";") if v.isdigit() or not v]
+                    first = (values or [0])[0]
+                    amount = first or 1
+                    if command in ("H", "f"):
+                        row = amount - 1
+                        col = (values[1] or 1) - 1 if len(values) > 1 else 0
+                    elif command == "G": col = amount - 1
+                    elif command == "d": row = amount - 1
+                    elif command == "A": row = max(0, row - amount)
+                    elif command == "B": row += amount
+                    elif command == "C": col += amount
+                    elif command == "D": col = max(0, col - amount)
+                    elif command == "J" and first in (2, 3): grid.clear()
+                    elif command == "K":
+                        for key in list(grid):
+                            if key[0] == row and (first == 2 or (first == 0 and key[1] >= col) or (first == 1 and key[1] <= col)):
+                                del grid[key]
+                    elif command == "h" and private and first == 1049:
+                        grid.clear(); row = col = 0
+                    i += len(match.group())
+                    continue
+                i += 2
+                continue
+            char = data[i]
+            if char == "\r": col = 0
+            elif char == "\n": row += 1
+            elif not unicodedata.category(char).startswith("C"):
+                grid[row, col] = char
+                col += 0 if unicodedata.combining(char) else (2 if unicodedata.east_asian_width(char) in ("W", "F") else 1)
+            i += 1
+        return "\n".join("".join(grid.get((y, x), " ") for x in range(200)) for y in range(100))
 
     def send(self, text):
         os.write(self.master, text)
@@ -100,6 +145,44 @@ def run(binary):
     finally:
         child.close()
 
+    for mode in ("time", "words", "quote", "custom", "zen"):
+        args = ["--mode", mode]
+        if mode == "custom":
+            args += ["--text", "one two three"]
+        child = Child(binary, args=args)
+        try:
+            child.until(b"Oxytype")
+            child.send(b"one ")
+            time.sleep(0.15)
+            child.send(b"\x1b[19~")
+            child.until(b"F5 new test")
+            child.send(b"\x11")
+            assert child.process.wait(timeout=5) == 0
+            child.restored()
+        finally:
+            child.close()
+
+    child = Child(binary)
+    try:
+        child.until(b"Oxytype")
+        child.send(b"\x1bOQ")  # F2: settings
+        child.until(b"select")
+        child.send(b"\x1bOS")  # F4: private editor
+        child.until(b"Private")
+        child.send(b"\x1b[200~one two\x1b[201~")
+        time.sleep(0.1)
+        child.send(b"\x1b[19~")
+        child.until(b"Input:")
+        child.send(b"one ")
+        time.sleep(0.15)
+        child.send(b"two")
+        child.until(b"F5 new test")
+        child.send(b"\x11")
+        assert child.process.wait(timeout=5) == 0
+        child.restored()
+    finally:
+        child.close()
+
     for failure in ("error", "panic", "signal", "suspend"):
         child = Child(binary, failure if failure in ("error", "panic") else None)
         try:
@@ -127,7 +210,7 @@ def run(binary):
             child.restored()
         finally:
             child.close()
-    print("PTY: typing/finish/restart/resize/quit, error, panic, SIGTERM, suspend/resume pass")
+    print("PTY: five modes, settings/custom editor, typing/finish/restart/resize/quit, error, panic, SIGTERM, suspend/resume pass")
 
 
 if __name__ == "__main__":
