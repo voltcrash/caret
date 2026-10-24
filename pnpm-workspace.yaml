@@ -41,6 +41,9 @@ overrides:
   "zod-urlsearchparams>zod": "4.6.5"
   vite@*: "catalog:"
   vitest@*: "catalog:"
+  # DOM tests use Chromium; do not retain Vitest's unused optional emulators.
+  "vitest>happy-dom": "-"
+  "vitest>jsdom": "-"
   "@vitest/browser-preview": "5.0.3"
   "@types/chartjs-plugin-trendline>chart.js": "4.5.1"
   "@vitest/browser": "5.0.3"
