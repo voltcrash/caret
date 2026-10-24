@@ -87,6 +87,45 @@ jobs:
           retention-days: 14
           if-no-files-found: error
 
+  emulators:
+    name: Linux emulator (${{ matrix.emulator }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        emulator: [kitty, alacritty]
+    env:
+      LIBGL_ALWAYS_SOFTWARE: "true"
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: voidzero-dev/setup-vp@v1.21.2
+        with:
+          node-version-file: .node-version
+          run-install: false
+      - uses: actions/cache@v5.0.3
+        with:
+          path: |
+            ~/.cargo/registry
+            target
+          key: terminal-emulator-${{ matrix.emulator }}-${{ hashFiles('Cargo.lock', 'rust-toolchain.toml') }}
+      - name: Install distribution emulator and isolated display tools
+        run: |
+          vp exec sudo apt-get update
+          vp exec sudo apt-get install --no-install-recommends -y ${{ matrix.emulator }} xvfb xdotool fonts-dejavu-core fonts-noto-cjk fonts-noto-color-emoji
+      - name: Real key encoding, Unicode, resize, history and cleanup
+        run: vp run terminal:test:emulator -- --emulator ${{ matrix.emulator }} --command /usr/bin/${{ matrix.emulator }} --evidence target/terminal-emulator-evidence
+      - name: Retain exact emulator versions and test traces
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: emulator-${{ matrix.emulator }}
+          path: target/terminal-emulator-evidence
+          retention-days: 14
+          if-no-files-found: warn
+
   source:
     name: corresponding source
     runs-on: ubuntu-24.04
@@ -113,7 +152,7 @@ jobs:
   publish:
     name: authorized tagged release
     if: github.event_name == 'push' && github.ref_type == 'tag' && github.repository == 'voltcrash/oxytype'
-    needs: [binaries, source]
+    needs: [binaries, emulators, source]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
