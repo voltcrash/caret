@@ -38,15 +38,26 @@ export async function createWorkerd(
     root,
     `frontend/dist/${fixture.build ?? (testEntry ? "start-test" : "start")}/server`,
   );
+  // Wasm the Worker imports (`.wasm?module`) uploads as a precompiled module,
+  // exactly as wrangler deploys it.
   const modules = Object.fromEntries(
     readdirSync(dir, { recursive: true, encoding: "utf8" })
-      .filter((name) => typeof name === "string" && name.endsWith(".js"))
+      .filter(
+        (name) =>
+          typeof name === "string" &&
+          (name.endsWith(".js") || name.endsWith(".wasm")),
+      )
       .map((name) => [
         relative(dir, resolve(dir, name)).replaceAll("\\", "/"),
-        {
-          type: "esm" as const,
-          contents: readFileSync(resolve(dir, name), "utf8"),
-        },
+        name.endsWith(".wasm")
+          ? {
+              type: "wasm" as const,
+              contents: new Uint8Array(readFileSync(resolve(dir, name))),
+            }
+          : {
+              type: "esm" as const,
+              contents: readFileSync(resolve(dir, name), "utf8"),
+            },
       ]),
   );
   const origin =
