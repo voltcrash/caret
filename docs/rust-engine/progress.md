@@ -12,9 +12,13 @@ empty commits to inflate count. Do not publish production or releases implicitly
 
 ## Current position
 
-Stage 1 and Stage 2 gates passed. Stage 3 Phase 3.5 active on `stack/rust-engine-terminal`, stacked above `stack/rust-engine-website`. Read root AGENTS.md and the complete migration
-plan before edits. Installed workspace dependencies with frozen lockfile.
-Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen oracle and mismatch detection. Existing website engine remains authoritative until Stage 2.
+Stage 1 and Stage 2 gates passed. Stage 3 implementation and automated native
+packaging gates passed on `stack/rust-engine-terminal`, stacked above
+`stack/rust-engine-website`. Required real-terminal verification remains blocked:
+this workspace is Linux only and the user confirmed no other test machine is
+available. PR #186 stays draft; no manual gate is waived. No release or production
+deployment published. Read the final checkpoint below before resuming; earlier
+entries are chronological records, not current outstanding work.
 
 | Phase | Status | Evidence / remaining gate |
 | --- | --- | --- |
@@ -24,7 +28,7 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | 1.4 Input / lifecycle / timing | Complete | Native/built-Wasm traces, observed browser input, delayed completion, stale sources, reset/restart and 12,800 randomized commands. |
 | 1.5 Generation / configuration | Complete | 61 original snapshots; section/fractional/live generation; all funbox policies; quote refresh RNG; typed recovery and bounded malformed content. |
 | 1.6 Events / results / replay | Complete | Eight exact original CompletedEvents/hashes/schema/backend outcomes, replay/seek, Unicode history, 1,387 live prefixes and malformed-log validation. |
-| 1.7 Binding / engine gate | Complete | 24 built-browser cases, unchanged results/hashes, frozen payload/performance limits, fresh production build/typechecks; CI engine/native/Wasm and quality/package/SSR/delivery/update jobs pass at e7b7ad864. Existing website browser shards still running when this record was written. |
+| 1.7 Binding / engine gate | Complete | Native/browser frozen parity, payload/performance, fresh builds/types and full CI passed; final Stage 1 CI 39932792599. |
 | 2.1 Browser owner / loading | Complete | App-owned loader/content/session resource; 51 unit cases; actual Cloudflare delayed-download/503/retry browser checks pass; server bundles contain no Wasm initializer. |
 | 2.2 Input / timer projection | Complete | Native website loop; 1,575 unit cases, 19 built typing parity cases and 8 loading/input/IME/commit browser checks pass. |
 | 2.3 Generation / settings consumers | Complete | Native generation/catalog/settings/restart/practice; source cancellation/recovery; SSR-safe settings extraction; 1,577 unit tests and built-browser gates pass. |
@@ -33,9 +37,9 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | 2.6 TypeScript retirement | Complete | Legacy package removed; full native/Wasm/website/quality CI, fresh build/types and frozen performance gates pass. |
 | 3.1 Terminal shell | Complete | Native smoke/score test; real PTY typing, finish/restart, resize, error/panic, SIGTERM and suspend/resume pass. |
 | 3.2 Offline content | Complete | Bundled words/eight original quotes; five modes, CLI/settings/editor, bounded v1 packs; native/full-fixture and actual PTY checks pass. |
-| 3.3 Input / Unicode | Implemented; manual gate pending | Native Unicode/TestBackend + basic/enhanced-protocol PTY pass; real macOS/Windows/enhanced terminal records unavailable. |
+| 3.3 Input / Unicode | Implemented; manual gate blocked | Native Unicode/TestBackend, Linux/macOS PTY and Windows ConPTY pass; real emulator/font/IME checks unavailable. |
 | 3.4 Settings / history | Complete | SQLite reopen/concurrency/corruption/retry/export and actual history/replay PTY pass. |
-| 3.5 Packaging / release | Active | Platform build/smoke archives, fresh install and release docs next. |
+| 3.5 Packaging / release | Automated gates complete; publication gated | All five native candidates and corresponding source pass CI 40068412137; downloaded checksums/source pairing verified. Required manual matrix pending. |
 
 ## Verification log
 
@@ -68,13 +72,20 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 
 ## Blockers
 
-None established. Missing verification is pending work, not a passed gate.
+Required real Linux enhanced terminal, macOS emulator and Windows Terminal
+verification is unperformed. The Linux-only workspace cannot provide the latter
+two machines; user confirmed no other machine available. Automated PTY/ConPTY and
+all five build/archive jobs pass, but do not establish emulator/font/IME behavior.
+Keep terminal-verification.json pending and PR #186 draft. Stage 3 cannot honestly
+be declared fully accepted or release-ready until the recorded manual matrix
+passes. No remaining implementation or automated failure is established.
 
 ## Resume
 
 Read this file, inventory, contract, decisions, then `vp exec git status --short`.
-Continue the first incomplete gate. Record commands and actual outcomes here;
-do not rerun completed checks without a new reason.
+Resume the real-terminal matrix when actual test access/records become available.
+Do not repeat completed implementation or automated checks without source changes
+or new evidence. Record actual outcomes; never infer manual passes from CI.
 
 ## Latest implementation evidence
 
@@ -684,3 +695,43 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
 - Manual Linux enhanced/macOS emulator/Windows Terminal records remain pending;
   no machine/test record supplied to the asynchronous question yet. Publication
   gate correctly rejects the pending matrix. PR #186 stays draft.
+
+
+## Final automated verification / remaining external gate
+
+- Runtime source `5703c1f10bd949478d3801d027965ac2214f3738` passes full
+  [website/native/Wasm CI 40068412135](https://github.com/voltcrash/oxytype/actions/runs/40068412135):
+  frozen parity, frontend/backend/packages, lint/types/Knip, actual Cloudflare
+  SSR/workerd/delivery, all four browser shards and updates/rollback. No frozen
+  reference, backend acceptance rule or performance budget changed.
+- [Terminal CI 40068412137](https://github.com/voltcrash/oxytype/actions/runs/40068412137)
+  succeeds on Linux x86_64/ARM64, macOS Intel/Apple Silicon and Windows x86_64.
+  All five run native format/Clippy/core fixtures, 21 terminal integration tests,
+  archive portability regression, native compilation and extracted archive smoke
+  without runtime tools/source files. The one ignored durability helper is
+  explicitly launched and killed by its parent test, not omitted coverage.
+- Linux/macOS jobs additionally pass debug and extracted-release POSIX PTY checks
+  (input, five modes, paste policy, resize, history/replay, cleanup and supported
+  signals/suspend). Windows passes actual ConPTY typing/editing/history/native
+  accuracy and quit. ConPTY cursor replies must be one write_all call; fragmented
+  formatted writes caused the earlier harness stall. No physical timing invented.
+- Corresponding-source job passes vendoring and a separate offline locked build.
+  Downloaded all six archives, verified every sidecar hash and all five binary
+  SOURCE.md revisions against source SOURCE_REVISION; publisher checksum collector
+  passes. Exact sizes/hashes and GitHub PR merge revision are recorded in
+  terminal-artifacts.json. This immutable record describes CI candidates, not a
+  published release; subsequent documentation commits do not replace it.
+- Existing fresh-checkout native/Cloudflare build, Wrangler dry-run, all nine
+  typechecks and vendored full offline tests remain valid. Browser Wasm remains
+  exactly Stage 2: 765,852 raw / 303,619 Node gzip6 bytes, SHA-256
+  `4b1a0c8d5d006b367888b7cf4c76b104ab5037a7473ff7b46983a9109aba9e3d`.
+- User confirmed no other test machine is available. Real Linux enhanced,
+  macOS emulator and Windows Terminal font/IME/rapid-input/scrollback verification
+  remains unperformed. `vp run terminal:release-gate` correctly exits 1 and names
+  linuxEnhanced, macOS, windowsTerminal. terminal-verification.json stays pending;
+  no waiver, release tag, artifact publication or production deployment made.
+- Review stack: [#184 engine](https://github.com/voltcrash/oxytype/pull/184) →
+  [#185 website](https://github.com/voltcrash/oxytype/pull/185) →
+  [#186 terminal](https://github.com/voltcrash/oxytype/pull/186). First two ready;
+  terminal draft solely for the unmet real-terminal gate. All available independent
+  work is complete; resume that gate when actual machine access/records exist.
