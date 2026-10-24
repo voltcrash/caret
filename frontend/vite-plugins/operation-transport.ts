@@ -22,9 +22,8 @@ export function operationTransport(target: string): Plugin {
         skipSelf: true,
       });
       // Another instance of this plugin may already have substituted it.
-      return resolved?.id === startOperations || resolved?.id === target
-        ? target
-        : null;
+      const id = resolved?.id.split("?")[0];
+      return id === startOperations || id === target ? target : null;
     },
   };
 }
