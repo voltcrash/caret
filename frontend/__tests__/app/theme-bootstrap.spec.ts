@@ -1,4 +1,3 @@
-import { runInNewContext } from "node:vm";
 import { afterEach, expect, it, vi } from "vite-plus/test";
 
 import { themeBootstrap } from "../../src/app/theme-bootstrap";
@@ -8,12 +7,15 @@ afterEach(() => {
   localStorage.removeItem("themeColors");
   localStorage.removeItem("config");
   localStorage.removeItem("defaultTheme");
+  vi.restoreAllMocks();
 });
 
 function run(random = 0): void {
-  const math = Object.create(Math) as Math;
-  math.random = vi.fn(() => random);
-  runInNewContext(themeBootstrap, { document, localStorage, Math: math });
+  vi.spyOn(Math, "random").mockReturnValue(random);
+  const script = document.createElement("script");
+  script.textContent = themeBootstrap;
+  document.head.appendChild(script);
+  script.remove();
 }
 
 it("paints only saved theme colors without touching application state", () => {
