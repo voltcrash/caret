@@ -656,3 +656,31 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
   Requested access/test records asynchronously; no answer yet. Publish workflow
   refuses the pending manual matrix. No release tag/publication or production
   deployment performed. Continue all available checks before stopping.
+
+## Latest terminal portability checkpoint
+
+- Terminal runtime source is implemented through all modes, Unicode/input, local
+  history/export/replay and packaging. Twenty native integration tests pass locally
+  (one intentionally ignored helper is launched/killed by the durability parent).
+  Native Clippy, format, package routing and ZIP regression checks pass.
+- Native/core tests also pass fully offline from the extracted vendored source at
+  `1495a30fc`, using a fresh separate target directory. Current local Linux archive
+  matches its SOURCE revision and passes empty-PATH install plus full release PTY.
+- Wasm matches the Stage 2 clean checkout byte-for-byte: SHA-256
+  `4b1a0c8d5d006b367888b7cf4c76b104ab5037a7473ff7b46983a9109aba9e3d`,
+  765,852 raw / 303,619 Node gzip6 bytes. No shared runtime/fixture/budget changes.
+- Platform CI `40065958315`: Linux x86/ARM and both macOS candidates pass archive
+  and PTY checks; Windows native tests/build pass, ZIP failed on registry files
+  predating 1980. ZIP now clamps only unsupported timestamps; real byte/checksum
+  regression passes. Pinned license EOL and source-provenance issues also fixed.
+- Added portable PTY integration to exercise native event decoding on all targets,
+  including actual Windows ConPTY, with edits, known native accuracy, saved history
+  and no invented physical telemetry. Linux passes. Windows first run waited for
+  ConPTY's inherited-cursor query; test emulator now answers DSR from actual parsed
+  screen coordinates. This is protocol handling, not fabricated key/timing data.
+- Latest platform rerun includes the ConPTY query fix; check GitHub runs for current
+  `stack/rust-engine-terminal` head. Shared fixtures/native terminal/packaging steps
+  are separated for useful diagnostics. Do not skip failed checks.
+- Manual Linux enhanced/macOS emulator/Windows Terminal records remain pending;
+  no machine/test record supplied to the asynchronous question yet. Publication
+  gate correctly rejects the pending matrix. PR #186 stays draft.

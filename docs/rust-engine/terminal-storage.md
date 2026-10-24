@@ -43,3 +43,10 @@ Local personal bests compare stored native WPM within the effective config,
 native mode2 and content identity. Shared validity and funbox PB metadata decide
 eligibility; repeated, failed or otherwise invalid results remain in history.
 No score formula or acceptance policy is reimplemented by storage.
+
+Optional replay logs use the native Rust DTO: Text fields retain arrays of UTF-16
+units, including partial surrogates where legacy rules produce them. The local
+envelope version distinguishes this representation from browser transport JSON.
+Core event semantics/log version remain shared; converting stored web records
+into local terminal history is outside this release. Never interpret Rust scalar
+or byte offsets as JavaScript event indices.
