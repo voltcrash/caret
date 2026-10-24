@@ -1,4 +1,4 @@
-import { cleanup, render } from "@solidjs/testing-library";
+import { cleanup, render, waitFor } from "@solidjs/testing-library";
 import { QueryClientProvider } from "@tanstack/solid-query";
 import { afterEach, expect, it, vi } from "vite-plus/test";
 
@@ -6,6 +6,11 @@ const loads = vi.hoisted(() => vi.fn(async () => undefined));
 vi.mock("../../../src/ts/auth", () => ({ loadUser: loads }));
 const clearSentryUser = vi.hoisted(() => vi.fn(async () => undefined));
 vi.mock("../../../src/ts/sentry", () => ({ clearUser: clearSentryUser }));
+// Account page warmup is outside these actor/session tests. Keep its idle import
+// from continuing after the browser test frame has closed.
+vi.mock("../../../src/features/account/page", () => ({
+  preloadAccount: vi.fn(async () => undefined),
+}));
 // Session refetches stay pending; tests drive the cached session directly.
 vi.mock("../../../src/functions/session", () => ({
   getSessionState: async () => new Promise(() => undefined),
@@ -61,7 +66,7 @@ it("loads account data once per registered actor after the actor switches", asyn
   expect(isAuthAvailable()).toBe(true);
   setUserState(user("a"));
   await tick();
-  expect(loads).toHaveBeenCalledTimes(1);
+  await waitFor(() => expect(loads).toHaveBeenCalledTimes(1));
   app.queryClient.setQueryData(sessionKey, {
     user: user("a"),
     signUpEnabled: true,
@@ -74,7 +79,7 @@ it("loads account data once per registered actor after the actor switches", asyn
   });
   setUserState(user("b"));
   await tick();
-  expect(loads).toHaveBeenCalledTimes(2);
+  await waitFor(() => expect(loads).toHaveBeenCalledTimes(2));
   expect(loads).toHaveBeenLastCalledWith(expect.objectContaining({ uid: "b" }));
 });
 
@@ -121,14 +126,15 @@ it("settles guests with the session and registered actors after their load", asy
   });
   setUserState(user("a"));
   await tick();
+  await waitFor(() => expect(loads).toHaveBeenCalledTimes(1));
   expect(settled()).toBeUndefined();
   finish();
   await tick();
-  expect(settled()).toBe(true);
+  await waitFor(() => expect(settled()).toBe(true));
   setUserState(null);
   app.queryClient.setQueryData(sessionKey, { user: null, signUpEnabled: true });
   await tick();
-  expect(settled()).toBe(false);
+  await waitFor(() => expect(settled()).toBe(false));
   // Signing back in waits for a fresh load of the same account.
   loads.mockImplementationOnce(
     async () =>
@@ -140,10 +146,11 @@ it("settles guests with the session and registered actors after their load", asy
   });
   setUserState(user("a"));
   await tick();
+  await waitFor(() => expect(loads).toHaveBeenCalledTimes(2));
   expect(settled()).toBeUndefined();
   finish();
   await tick();
-  expect(settled()).toBe(true);
+  await waitFor(() => expect(settled()).toBe(true));
 });
 
 it("retries a transient load failure once back online and stops after success", async () => {
@@ -162,10 +169,10 @@ it("retries a transient load failure once back online and stops after success", 
   ));
   setUserState(user("retry"));
   await tick();
-  expect(loads).toHaveBeenCalledTimes(1);
+  await waitFor(() => expect(loads).toHaveBeenCalledTimes(1));
   window.dispatchEvent(new Event("online"));
   await tick();
-  expect(loads).toHaveBeenCalledTimes(2);
+  await waitFor(() => expect(loads).toHaveBeenCalledTimes(2));
   expect(loads).toHaveBeenLastCalledWith(user("retry"), {
     notifyOnFailure: false,
   });
@@ -187,9 +194,10 @@ it("clears the error-report identity when the account signs out", async () => {
     </QueryClientProvider>
   ));
   await tick();
+  await waitFor(() => expect(loads).toHaveBeenCalledOnce());
   clearSentryUser.mockClear();
   app.queryClient.setQueryData(sessionKey, { user: null, signUpEnabled: true });
   setUserState(null);
   await tick();
-  expect(clearSentryUser).toHaveBeenCalledOnce();
+  await waitFor(() => expect(clearSentryUser).toHaveBeenCalledOnce());
 });
