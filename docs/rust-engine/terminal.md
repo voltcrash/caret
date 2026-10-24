@@ -1,11 +1,11 @@
 # Oxytype offline terminal
 
-First native release: offline typing and local history, using the same Rust engine
-as the website. No account login, cloud sync, telemetry or first-run download.
+First native release: Linux/macOS offline typing and local history, using the same
+Rust engine as the website. No account login, cloud sync, telemetry or first-run download.
 
 Download the matching `oxytype-vVERSION-TARGET` archive from the repository's
 GitHub Releases when a maintainer publishes one. Verify its SHA-256 against
-`SHA256SUMS`, extract, and put `oxytype` (`oxytype.exe` on Windows) on PATH.
+`SHA256SUMS`, extract, and put `oxytype` on PATH.
 Users need no Rust, Node, vp, source checkout or network access. Keep LICENSE,
 attribution and third-party notices with redistributed copies.
 
@@ -28,6 +28,7 @@ Binary invocation above is for installed users. Repository development commands:
 vp run terminal:dev
 vp run terminal:test
 vp run terminal:test:pty
+vp run terminal:test:emulator -- --emulator kitty --command /usr/bin/kitty
 vp run terminal:build
 vp run terminal:package
 vp run engine:lint
@@ -44,7 +45,14 @@ foreground job; resume with the shell. Native elapsed time continues while
 suspended or too small. Typing is disabled below 60×18; resizing does not pause.
 
 Input maps characters, Backspace, Ctrl/Alt+Backspace word deletion, Enter and Tab.
-Enhanced keyboard reporting is queried before reading events; fallback is basic.
+Ctrl+Backspace can be indistinguishable from Backspace in basic mode; use
+Alt+Backspace when the terminal reports that combination. Kitty keyboard reporting
+is queried before reading events; fallback is basic. Kitty, Ghostty, Alacritty and
+other implementations use the same negotiated protocol, without a terminal-brand
+allowlist or reliance on TERM naming. Graphics/image support is independent: this
+app renders text and does not require or send Kitty graphics commands. Protocol
+reference: [Kitty keyboard](https://sw.kovidgoyal.net/kitty/keyboard-protocol/).
+
 `--keyboard basic` skips queries for troublesome terminals/multiplexers. Modified
 Enter may be indistinguishable in basic mode; F8 is always available. Repeat
 deliveries type once each; release events never type. Bracketed paste is blocked
@@ -93,14 +101,25 @@ protect prior committed data; a result not yet committed can be lost.
 | Linux ARM64, POSIX PTY/basic protocol | Five modes, settings/editor, history/export/replay, resize, cleanup, SIGTERM, suspend/resume | Pass |
 | Linux ARM64, simulated enhanced protocol in PTY | Negotiation, press/repeat/release, owned flag cleanup | Pass; protocol simulation |
 | Linux x86_64/ARM64 and macOS Intel/Apple Silicon CI PTYs | Native input/editing/history; POSIX lifecycle, resize, suspend/resume, extracted release input | Pass; automated PTY |
-| Windows Server 2025 CI ConPTY | Actual native typing/editing, native accuracy, history, quit | Pass; automated ConPTY |
 | Ratatui TestBackend | Combining/CJK/emoji/tab/newline/cell wrapping/caret/UTF-16 deletion | Pass; simulated display |
-| Real Linux enhanced terminal | Rapid input, scrollback, Unicode/IME, resize | Pending |
-| Real macOS terminal | Basic/enhanced input, Unicode/IME, resize, suspend | Pending |
-| Real Windows Terminal | Input/repeats/releases, Unicode/IME, resize, cleanup | Pending |
+| Physical Linux input/IME | Hardware/IME, font appearance and scrollback | Unperformed; not a merge requirement |
+| Real macOS terminal | Hardware/IME, font appearance, resize, suspend | Owner will check after merge |
 
 Build/smoke archive verification is recorded separately in terminal-release.md.
-Cross-platform automated evidence: [run 40068412137](https://github.com/voltcrash/oxytype/actions/runs/40068412137).
-A runner build or PTY simulation does not satisfy real emulator/manual coverage.
-Do not claim the untested combinations supported until their records exist.
-No macOS/Windows test machine is available; the manual entries remain pending.
+Real Linux emulator tests run actual Kitty/Ghostty/Alacritty processes with
+XTest input in private Xvfb displays. They exercise key encoding, combining/CJK/
+emoji UTF-16/grapheme deletion, repeats/releases, resize/input blocking, native
+scores, history/replay/editor and actual keyboard-stack/raw-mode cleanup. They
+are automated emulator checks; hardware IME and visual font inspection remain
+unperformed. Exact versions/results are recorded in progress.md.
+
+`terminal:test:emulator` requires Linux Xvfb, xdotool, libX11 and the selected
+emulator. It creates its own display, fresh emulator configuration and app profile;
+it never targets the user's desktop windows. `--emulator` accepts kitty, alacritty
+or ghostty; `--command` names the installed executable. `--evidence DIR` retains
+version/capability JSON and private test input/output traces. Distribution Kitty
+and Alacritty are checked in native CI; local checks also cover Ghostty.
+
+Compatibility depends on the implemented text/keyboard protocol, terminal version
+and configuration. Do not infer certification of every version/fork from graphics
+support alone. Basic text fallback and unavailable observations remain explicit.

@@ -12,13 +12,13 @@ empty commits to inflate count. Do not publish production or releases implicitly
 
 ## Current position
 
-Stage 1 and Stage 2 gates passed. Stage 3 implementation and automated native
-packaging gates passed on `stack/rust-engine-terminal`, stacked above
-`stack/rust-engine-website`. Required real-terminal verification remains blocked:
-this workspace is Linux only and the user confirmed no other test machine is
-available. PR #186 stays draft; no manual gate is waived. No release or production
-deployment published. Read the final checkpoint below before resuming; earlier
-entries are chronological records, not current outstanding work.
+Stages 1/2 merged into main (#184/#185). PR #186 now targets main. Owner revised
+terminal scope to Linux/macOS only and explicitly requested merge readiness with
+macOS manual verification after merge. Windows targets removed; no contributor
+or external-machine requirement blocks merge. Real Linux Kitty/Alacritty/Ghostty
+regressions and four-target CI are in progress. Release publication remains a
+separate authorized action; pending manual checks are never fabricated.
+Earlier entries below are chronological evidence, superseded where scope changed.
 
 | Phase | Status | Evidence / remaining gate |
 | --- | --- | --- |
@@ -72,20 +72,17 @@ entries are chronological records, not current outstanding work.
 
 ## Blockers
 
-Required real Linux enhanced terminal, macOS emulator and Windows Terminal
-verification is unperformed. The Linux-only workspace cannot provide the latter
-two machines; user confirmed no other machine available. Automated PTY/ConPTY and
-all five build/archive jobs pass, but do not establish emulator/font/IME behavior.
-Keep terminal-verification.json pending and PR #186 draft. Stage 3 cannot honestly
-be declared fully accepted or release-ready until the recorded manual matrix
-passes. No remaining implementation or automated failure is established.
+No external blocker under the owner's revised merge requirements. macOS manual
+checks will be performed by the owner after merge; Windows is out of scope.
+Finish the real Linux emulator suite and four-target build/archive CI before
+marking #186 ready. Keep unperformed macOS/font/IME checks explicit. Publication
+continues to require its separate recorded release gate.
 
 ## Resume
 
-Read this file, inventory, contract, decisions, then `vp exec git status --short`.
-Resume the real-terminal matrix when actual test access/records become available.
-Do not repeat completed implementation or automated checks without source changes
-or new evidence. Record actual outcomes; never infer manual passes from CI.
+Read current position and latest checkpoint, then `vp exec git status --short`.
+Complete the real emulator regressions, document exact versions/capabilities,
+verify CI and make PR #186 ready. Do not redo completed engine/website stages.
 
 ## Latest implementation evidence
 
@@ -735,3 +732,27 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
   [#186 terminal](https://github.com/voltcrash/oxytype/pull/186). First two ready;
   terminal draft solely for the unmet real-terminal gate. All available independent
   work is complete; resume that gate when actual machine access/records exist.
+
+
+## Owner-directed merge readiness follow-up
+
+- PRs #184/#185 merged; integrated origin/main with a merge commit and retargeted
+  PR #186 to main, preserving all coherent implementation commits.
+- Owner removed Windows support entirely. Four release targets now: Linux GNU
+  x86_64/ARM64, macOS Intel/Apple Silicon. Removed Windows archive/CI machinery;
+  actual tar integrity, unsupported-target and four-binary/source checks pass.
+- Owner will check macOS after merge. Original external-contributor/manual
+  pre-merge gate is superseded by this explicit instruction. Manual evidence is
+  still pending; release publication is neither requested nor performed.
+- Extended real PTY suite passes CSI-u shifted/Unicode/modifier/repeat/release,
+  fragmented CSI payload/UTF-8, unknown TERM fallback, and enhanced error/panic/
+  signal/suspend cleanup. Query simulation now handles every resume handshake.
+  The test screen reader correctly joins combining marks and wide continuations.
+- Investigated a bare ESC split from its CSI introducer: Crossterm treats an
+  isolated ESC as Esc immediately. Fragmentation checks retain the atomic CSI
+  introducer and split its payload/UTF-8; no SSH/transport-wide robustness claim.
+- Real Kitty 0.49.2/Alacritty 0.17.0/Ghostty 1.3.1 launch on Linux. Added a private
+  Xvfb/XTest harness with untouched emulator input/query bytes, native results,
+  Unicode, repeats, resize/history/editor/replay and terminal cleanup assertions.
+  Kitty auto/basic pass; Alacritty follow-up still under investigation. Do not
+  mark the new emulator/CI gates passed until final runs complete.

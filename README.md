@@ -31,10 +31,13 @@ behavior against immutable original references. `vp run engine:lint` and
 ## Offline terminal
 
 The native [Ratatui app](./docs/rust-engine/terminal.md) uses the same engine
-without Wasm. It includes English words/quotes, five typing modes, settings,
+on Linux/macOS without Wasm. It includes English words/quotes, five typing modes, settings,
 durable local history and JSON export. No account, sync or first-run download.
 `vp run terminal:dev` runs it; `vp run terminal:test` and
 `vp run terminal:test:pty` check native behavior and terminal lifecycle.
+`vp run terminal:test:emulator -- --emulator kitty --command /usr/bin/kitty`
+checks actual Kitty keyboard input in a private Linux display; Ghostty and
+Alacritty are also supported by the harness. See the terminal docs for tools.
 `vp run terminal:package` prepares a licensed binary archive. Installed users
 need no development runtime. See [release verification/status](./docs/rust-engine/terminal-release.md)
 for tested platforms and pending real-terminal checks; no release published yet.
