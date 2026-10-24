@@ -7,7 +7,7 @@ import { resolve } from "node:path";
 export function apiDocs(): Plugin {
   // Workspace TS packages need a TypeScript runner in build tooling.
   const internal = JSON.parse(
-    execFileSync("vpx", ["scripts/openapi.ts", "--start"], {
+    execFileSync("vpx", ["./scripts/openapi.ts", "--start"], {
       cwd: resolve(import.meta.dirname, "../../backend"),
       encoding: "utf8",
       maxBuffer: 8 * 1024 * 1024,

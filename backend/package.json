@@ -39,11 +39,11 @@
     "test": "vp test run --excludeProject=d1",
     "integration-test": "vp test run --project=d1",
     "test-coverage": "vp test run --config coverage.config.ts --coverage",
-    "anticheat:calibrate": "vpx scripts/anticheat-calibrate.ts",
+    "anticheat:calibrate": "vpx ./scripts/anticheat-calibrate.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "wrangler d1 migrations apply oxytype-staging --local",
     "db:bootstrap:production": "wrangler d1 execute oxytype-production --remote --config ../frontend/wrangler.production.json --file bootstrap/production.sql",
-    "migration-inventory": "vpx scripts/migration-inventory.ts"
+    "migration-inventory": "vpx ./scripts/migration-inventory.ts"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "1.7.7",
