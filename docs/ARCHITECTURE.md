@@ -80,6 +80,13 @@ writes use optimistic version guards inside atomic batches. Cron refreshes
 rankings and purges expired records. Structured logs carry the
 build ID and feed Workers observability.
 
+Each invocation owns one D1 session (`first-primary`), shared by Drizzle,
+raw statements and batches. Its first query reads current primary state;
+subsequent reads can use sequentially consistent replicas. Auth reads and
+optimistic mutation snapshots use the primary directly to preserve immediate
+revocation and fresh conflict retries. Deployment enables and verifies global
+read replication for its configured database; see [operations](CLOUDFLARE_OPERATIONS.md#read-replication).
+
 ```mermaid
 flowchart LR
   Browser[Start/Solid client] --> Worker[Start Worker]
