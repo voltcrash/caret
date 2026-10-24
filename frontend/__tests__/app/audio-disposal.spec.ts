@@ -22,7 +22,7 @@ import { previewError } from "../../src/ts/controllers/sound-controller";
 import {
   createTestApplication,
   releaseTestApplication,
-} from "../__harness__/mock-application";
+} from "../__harness__/test-application";
 
 releaseTestApplication();
 it("discards an audio resource import that finishes after its app is replaced", async () => {

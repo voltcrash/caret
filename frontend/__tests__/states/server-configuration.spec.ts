@@ -21,13 +21,13 @@ vi.mock("../../src/ts/queries/server-configuration", () => ({
 describe("server configuration startup", () => {
   beforeEach(async () => {
     vi.resetModules();
-    await import("../__harness__/mock-application");
+    await import("../__harness__/test-application");
     query.mockReset();
     vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
   afterEach(async () => {
-    (await import("../__harness__/mock-application")).releaseTestApplication();
+    (await import("../__harness__/test-application")).releaseTestApplication();
     vi.restoreAllMocks();
   });
 

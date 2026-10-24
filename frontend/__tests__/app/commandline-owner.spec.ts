@@ -3,7 +3,7 @@ import { mountApplication } from "../../src/app/application";
 import {
   createTestApplication,
   releaseTestApplication,
-} from "../__harness__/mock-application";
+} from "../__harness__/test-application";
 
 releaseTestApplication();
 it("imports palette definitions without an app and recreates its mutable tree on remount", async () => {

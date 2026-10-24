@@ -6,7 +6,7 @@ import { createAppSignal, createAppStore } from "../../src/app/state";
 import {
   createTestApplication,
   releaseTestApplication,
-} from "../__harness__/mock-application";
+} from "../__harness__/test-application";
 
 releaseTestApplication();
 

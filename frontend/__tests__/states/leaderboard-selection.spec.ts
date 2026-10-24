@@ -15,10 +15,10 @@ import {
 } from "../../src/features/leaderboards/selection";
 
 beforeEach(async () => {
-  await import("../__harness__/mock-application");
+  await import("../__harness__/test-application");
 });
 afterEach(async () => {
-  (await import("../__harness__/mock-application")).releaseTestApplication();
+  (await import("../__harness__/test-application")).releaseTestApplication();
   localStorage.removeItem("leaderboardSelector");
   vi.resetModules();
 });
