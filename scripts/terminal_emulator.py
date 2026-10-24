@@ -215,8 +215,9 @@ def exercise(args):
                     visible("Input: repeatxx")
                     key("F1")
                     visible("Keyboard: "+("enhanced" if keyboard=="auto" else "basic"))
-                    if keyboard=="auto":
-                        visible("release observed: true")
+                    # Default negotiation deliberately does not request releases;
+                    # explicit reported release/repeat packets are covered in PTY.
+                    visible("release observed: false")
                     key("Escape")
                     visible("Input:")
                     xdo("windowsize",window,"380","180")

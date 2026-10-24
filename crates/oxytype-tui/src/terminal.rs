@@ -42,10 +42,10 @@ fn initialize(enhanced: &AtomicBool, auto_keyboard: bool) -> std::io::Result<Def
         enhanced.store(true, Ordering::SeqCst);
         execute!(
             io::stdout(),
-            PushKeyboardEnhancementFlags(
-                KeyboardEnhancementFlags::DISAMBIGUATE_ESCAPE_CODES
-                    | KeyboardEnhancementFlags::REPORT_EVENT_TYPES
-            )
+            // Committed-text typing needs disambiguation, not key-up telemetry.
+            // Older Kitty versions emit duplicate legacy Backspace on release
+            // with REPORT_EVENT_TYPES. Keep text/IME in their ordinary UTF-8 path.
+            PushKeyboardEnhancementFlags(KeyboardEnhancementFlags::DISAMBIGUATE_ESCAPE_CODES)
         )?;
     }
     ratatui::Terminal::new(CrosstermBackend::new(io::stdout()))

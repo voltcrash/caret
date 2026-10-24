@@ -268,7 +268,7 @@ def run(binary, release=False):
     child = Child(binary, args=["--mode", "zen"], enhanced=True)
     try:
         child.until(b"Oxytype")
-        assert b"\x1b[>3u" in child.output, "enhanced flags not pushed"
+        assert b"\x1b[>1u" in child.output, "enhanced flags not pushed"
         child.send(b"\x1b[97;1u\x1b[97;1:2u\x1b[97;1:3u")  # press/repeat/release
         child.until(b"Input: aa")
         child.send(b"\x1bOP")
@@ -327,7 +327,7 @@ def run(binary, release=False):
     child = Child(binary, args=["--mode", "zen"], keyboard="auto", term="xterm-kitty")
     try:
         child.until(b"Input:")
-        assert b"\x1b[>3u" not in child.output
+        assert b"\x1b[>1u" not in child.output
         child.send(b"fallback")
         child.until(b"Input: fallback")
         child.send(b"\x1bOP")

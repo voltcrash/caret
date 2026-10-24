@@ -47,7 +47,11 @@ suspended or too small. Typing is disabled below 60×18; resizing does not pause
 Input maps characters, Backspace, Ctrl/Alt+Backspace word deletion, Enter and Tab.
 Ctrl+Backspace can be indistinguishable from Backspace in basic mode; use
 Alt+Backspace when the terminal reports that combination. Kitty keyboard reporting
-is queried before reading events; fallback is basic. Kitty, Ghostty, Alacritty and
+is queried before reading events; fallback is basic. Auto mode requests key
+ambiguity disambiguation only, preserving ordinary UTF-8/IME delivery. Release
+reports are unnecessary for typing and can duplicate legacy Backspace on older
+Kitty versions, so they are not requested. Repeats still type once per delivery;
+unreported release/repeat distinctions remain unavailable. Kitty, Ghostty, Alacritty and
 other implementations use the same negotiated protocol, without a terminal-brand
 allowlist or reliance on TERM naming. Graphics/image support is independent: this
 app renders text and does not require or send Kitty graphics commands. Protocol
