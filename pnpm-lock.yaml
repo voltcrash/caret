@@ -781,9 +781,6 @@ importers:
       '@oxytype/schemas':
         specifier: workspace:*
         version: link:../schemas
-      '@oxytype/util':
-        specifier: workspace:*
-        version: link:../util
     devDependencies:
       '@oxytype/typescript-config':
         specifier: workspace:*

@@ -1,10 +1,9 @@
 import { FunboxName } from "@oxytype/schemas/configs";
 import { getList, getFunbox, getObject, getFunboxNames } from "./list";
 import { FunboxMetadata, FunboxProperty } from "./types";
-import { checkCompatibility, checkForcedConfig } from "./validation";
 
 export type { FunboxMetadata, FunboxProperty };
-export { checkCompatibility, checkForcedConfig, getFunbox, getFunboxNames };
+export { getFunbox, getFunboxNames };
 
 export function getAllFunboxes(): FunboxMetadata[] {
   return getList();
