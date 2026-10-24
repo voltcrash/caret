@@ -21,6 +21,7 @@ pub mod results;
 pub mod session;
 pub mod stats;
 pub mod text;
+pub mod timing_stats;
 pub mod transforms;
 pub mod validation;
 pub mod weak_spot;
