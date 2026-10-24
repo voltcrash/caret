@@ -326,9 +326,6 @@ importers:
       qs:
         specifier: 6.16.0
         version: 6.16.0
-      ua-parser-js:
-        specifier: 2.0.10
-        version: 2.0.10
       zod:
         specifier: 4.6.5
         version: 4.6.5
@@ -4695,9 +4692,6 @@ packages:
   destr@2.0.5:
     resolution: {integrity: sha512-ugFTXCtDZunbzasqBxrK93Ik/DRYsO6S/fedkWEMKqt04xZ4csmnmwGDBAb07QWNaGMAmnTIemsYZCksjATwsA==}
 
-  detect-europe-js@0.1.2:
-    resolution: {integrity: sha512-lgdERlL3u0aUdHocoouzT10d9I89VVhk0qNRmll7mXdGfJT1/wqZ2ZLA4oJAjeACPY5fT1wsbq2AT+GkuInsow==}
-
   detect-libc@2.1.2:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
@@ -5287,9 +5281,6 @@ packages:
   is-plain-obj@4.1.0:
     resolution: {integrity: sha512-+Pgi+vMuUNkJyExiMBt5IlFoMyKnr5zhJ4Uspz58WOhBF5QoIZkFyNHIbBAtHwzVAgk5RtndVNsDRN61/mmDqg==}
     engines: {node: '>=12'}
-
-  is-standalone-pwa@0.1.1:
-    resolution: {integrity: sha512-9Cbovsa52vNQCjdXOzeQq5CnCbAcRk05aU62K20WO372NrTv0NxibLFCK6lQ4/iZEFdEA3p3t2VNOn8AJ53F5g==}
 
   is-what@4.1.16:
     resolution: {integrity: sha512-ZhMwEosbFJkA0YhFnNDgTM4ZxDRsS6HqTo7qsZM08fehyRYIYa0yHu5R6mgo1n/8MgaPBXiPimPD77baVFYg+A==}
@@ -6425,13 +6416,6 @@ packages:
   typescript@7.0.2:
     resolution: {integrity: sha512-8FYau96o3NKOhbjKi/qNvG/W5jhzxkbdm5sj9AbZ/5T5sWqn3hJgLfGx27sRKZWTvyzCP8dLRBTf5tBTSRVUNA==}
     engines: {node: '>=16.20.0'}
-    hasBin: true
-
-  ua-is-frozen@0.1.2:
-    resolution: {integrity: sha512-RwKDW2p3iyWn4UbaxpP2+VxwqXh0jpvdxsYpZ5j/MLLiQOfbsV5shpgQiw93+KMYQPcteeMQ289MaAFzs3G9pw==}
-
-  ua-parser-js@2.0.10:
-    resolution: {integrity: sha512-t+3Ktbq0Ies2vaSezfOaWiolH4OigQIO1dk+1xDpOydB1COVPocVYOrEV5rqZ0kFY9XYG1v9LutCyMgYBpABcw==}
     hasBin: true
 
   ufo@1.6.4:
@@ -10375,8 +10359,6 @@ snapshots:
 
   destr@2.0.5: {}
 
-  detect-europe-js@0.1.2: {}
-
   detect-libc@2.1.2: {}
 
   devframe@0.8.2(srvx@1.0.5):
@@ -10876,8 +10858,6 @@ snapshots:
   is-path-inside@4.0.0: {}
 
   is-plain-obj@4.1.0: {}
-
-  is-standalone-pwa@0.1.1: {}
 
   is-what@4.1.16: {}
 
@@ -12226,14 +12206,6 @@ snapshots:
       '@typescript/typescript-sunos-x64': 7.0.2
       '@typescript/typescript-win32-arm64': 7.0.2
       '@typescript/typescript-win32-x64': 7.0.2
-
-  ua-is-frozen@0.1.2: {}
-
-  ua-parser-js@2.0.10:
-    dependencies:
-      detect-europe-js: 0.1.2
-      is-standalone-pwa: 0.1.1
-      ua-is-frozen: 0.1.2
 
   ufo@1.6.4: {}
 
