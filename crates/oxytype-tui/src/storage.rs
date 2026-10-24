@@ -194,10 +194,19 @@ impl Store {
         Ok(())
     }
     pub fn history(&self, mode: Option<&str>, limit: usize) -> Result<Vec<Value>> {
-        let mut query=self.history.prepare("SELECT json FROM results WHERE (?1 IS NULL OR mode=?1) ORDER BY created_ms DESC,id DESC LIMIT ?2")?;
-        let rows = query.query_map(params![mode, limit.min(100_000) as i64], |r| {
-            r.get::<_, String>(0)
-        })?;
+        self.history_page(mode, limit, 0)
+    }
+    pub fn history_page(
+        &self,
+        mode: Option<&str>,
+        limit: usize,
+        offset: usize,
+    ) -> Result<Vec<Value>> {
+        let mut query=self.history.prepare("SELECT json FROM results WHERE (?1 IS NULL OR mode=?1) ORDER BY created_ms DESC,id DESC LIMIT ?2 OFFSET ?3")?;
+        let rows = query.query_map(
+            params![mode, limit.min(100_000) as i64, offset as i64],
+            |r| r.get::<_, String>(0),
+        )?;
         rows.map(|row| Ok(serde_json::from_str(&row?)?)).collect()
     }
     pub fn best(&self, group: &str) -> Result<Option<f64>> {
@@ -297,20 +306,6 @@ pub fn record(
             .iter()
             .all(|n| typing_engine::funboxes::get(n).is_some_and(|f| f.can_get_pb));
     Ok(
-        json!({ "formatVersion":1,"id":uuid::Uuid::new_v4().to_string(),"createdMs":created,"engineBehaviorVersion":typing_engine::BEHAVIOR_VERSION,"eventLogVersion":typing_engine::EVENT_LOG_VERSION,"buildVersion":crate::version(),"config":host.config,"mode2":mode2,"seed":host.seed,"contentIdentity":host.content_identity,"quoteId":quote.map(|q|q.id),"customLimit":limit,"capabilities":capabilities,"measurements":{"clock":"monotonic terminal event delivery","physicalKeyTiming":null},"summary":summary,"summaryError":host.result_error,"invalidReason":invalid,"personalBestEligible":pb_eligible,"personalBestGroup":hash(&(&host.config,&host.content_identity,&mode2))?,"repeated":host.repeated,"bailedOut":log.context.bailed_out,"failureReason":host.state().reason,"replayLog":if replay { Some(log) } else { None } }),
+        json!({ "formatVersion":1,"id":uuid::Uuid::new_v4().to_string(),"createdMs":created,"startedMs":log.events.iter().find(|e|e.kind=="timer" && e.data["event"]=="start").map(|e|e.data["date"].clone()),"endedMs":log.events.iter().find(|e|e.kind=="timer" && e.data["event"]=="end").map(|e|e.data["date"].clone()),"engineBehaviorVersion":typing_engine::BEHAVIOR_VERSION,"eventLogVersion":typing_engine::EVENT_LOG_VERSION,"buildVersion":crate::version(),"config":host.config,"mode2":mode2,"seed":host.seed,"contentIdentity":host.content_identity,"quoteId":quote.map(|q|q.id),"customLimit":limit,"capabilities":capabilities,"measurements":{"clock":"monotonic terminal event delivery","physicalKeyTiming":null},"summary":summary,"summaryError":host.result_error,"invalidReason":invalid,"personalBestEligible":pb_eligible,"personalBestGroup":hash(&(typing_engine::BEHAVIOR_VERSION,&host.config,&host.content_identity,&mode2))?,"repeated":host.repeated,"bailedOut":log.context.bailed_out,"failureReason":host.state().reason,"replayLog":if replay { Some(log) } else { None } }),
     )
-}
-pub fn is_personal_best(record: &Value, history: &[Value]) -> bool {
-    record["personalBestEligible"] == true
-        && record["summary"]["wpm"].as_f64().is_some_and(|wpm| {
-            history
-                .iter()
-                .filter(|r| {
-                    r["personalBestEligible"] == true
-                        && r["personalBestGroup"] == record["personalBestGroup"]
-                        && r["id"] != record["id"]
-                })
-                .filter_map(|r| r["summary"]["wpm"].as_f64())
-                .all(|prior| wpm > prior)
-        })
 }

@@ -10,6 +10,9 @@ pub struct Setup {
     pub order: String,
     pub limit: String,
     pub length: f64,
+    pub theme: String,
+    pub reduced_animation: bool,
+    pub record_replay: bool,
 }
 fn cycle(value: &mut String, values: &[&str], direction: i32) {
     let index = values.iter().position(|v| v == value).unwrap_or(0) as i32;
@@ -32,6 +35,9 @@ impl Setup {
             order: custom.map_or("repeat", |c| c.mode.as_str()).into(),
             limit: custom.map_or("section", |c| c.limit.mode.as_str()).into(),
             length: custom.map_or(1.0, |c| c.limit.value),
+            theme: "terminal".into(),
+            reduced_animation: true,
+            record_replay: false,
         }
     }
     pub fn custom(&self) -> Result<Option<CustomText>> {
@@ -49,7 +55,7 @@ impl Setup {
         EngineHost::offline(self.config.clone(), content.clone(), self.custom()?, seed)
     }
     pub fn select(&mut self, direction: i32) {
-        self.selected = (self.selected as i32 + direction).rem_euclid(13) as usize;
+        self.selected = (self.selected as i32 + direction).rem_euclid(16) as usize;
     }
     pub fn adjust(&mut self, direction: i32) {
         let c = &mut self.config;
@@ -89,6 +95,13 @@ impl Setup {
                 cycle(&mut name, &choices, direction);
                 c.funbox = if name.is_empty() { vec![] } else { vec![name] };
             }
+            13 => cycle(
+                &mut self.theme,
+                &["terminal", "high-contrast", "light"],
+                direction,
+            ),
+            14 => self.reduced_animation = !self.reduced_animation,
+            15 => self.record_replay = !self.record_replay,
             _ => {}
         }
     }
@@ -108,6 +121,12 @@ impl Setup {
             format!("Strict space: {}", c.strict_space),
             format!("Quote group: {:?}", c.quote_length),
             format!("Funbox: {}", c.funbox.join(", ")),
+            format!("Theme: {}", self.theme),
+            format!("Reduced animation: {}", self.reduced_animation),
+            format!(
+                "Record replay (stores PRIVATE text/input): {}",
+                self.record_replay
+            ),
         ];
         std::iter::once(Line::from(
             "↑↓ select · ←→ change · Enter apply · F4 custom text · Esc cancel",

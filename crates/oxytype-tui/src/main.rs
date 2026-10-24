@@ -1,6 +1,10 @@
 use clap::Parser;
 use crossterm::event::{self, Event, KeyCode, KeyEventKind, KeyModifiers};
 use oxytype_tui::{Result, engine::EngineHost, terminal::TerminalGuard};
+use oxytype_tui::{
+    local::Local,
+    storage::{Paths, Store},
+};
 use oxytype_tui::{options::Cli, setup::Setup};
 use ratatui::{
     Frame,
@@ -12,7 +16,7 @@ use std::{
     sync::atomic::Ordering,
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
-use typing_engine::{Command, Config};
+use typing_engine::Command;
 
 #[derive(Clone, Copy, PartialEq)]
 enum Screen {
@@ -21,6 +25,7 @@ enum Screen {
     Settings,
     History,
     Editor,
+    Replay,
 }
 fn date() -> f64 {
     SystemTime::now()
@@ -43,8 +48,30 @@ fn run() -> Result<()> {
         println!("{}", oxytype_tui::options::capabilities());
         return Ok(());
     }
-    let (config, content, custom) = cli.prepare(Config::default())?;
+    let paths = Paths::resolve(cli.config_dir.as_deref(), cli.data_dir.as_deref())?;
+    if cli.paths {
+        println!(
+            "Config: {}\nData: {}",
+            paths.config.display(),
+            paths.data.display()
+        );
+        return Ok(());
+    }
+    let mut store = Store::open(&paths)?;
+    if let Some(output) = &cli.export {
+        store.export(output, cli.history_mode.as_deref())?;
+        println!("Exported to {}", output.display());
+        return Ok(());
+    }
+    let mut preferences = store.settings()?;
+    preferences.record_replay |= cli.record_replay;
+    if let Some(theme) = &cli.theme {
+        preferences.theme = theme.clone();
+    }
+    let (config, content, custom) = cli.prepare(preferences.config.clone())?;
+    let mut local = Local::new(store, preferences);
     let mut setup = Setup::new(config.clone(), custom.as_ref());
+    local.configure_setup(&mut setup);
     let mut host = EngineHost::offline(
         config,
         content.clone(),
@@ -65,7 +92,6 @@ fn run() -> Result<()> {
     let origin = Instant::now();
     let mut screen = Screen::Test;
     let mut notice = String::new();
-    let mut history = vec![];
     let mut last_draw = Instant::now();
     let mut dirty = true;
     loop {
@@ -73,14 +99,34 @@ fn run() -> Result<()> {
             capabilities.enhanced_keyboard_negotiated = guard.enhanced.load(Ordering::SeqCst);
             dirty = true;
         }
-        if guard.quit.load(Ordering::SeqCst) {
-            break;
-        }
         let now = origin.elapsed().as_secs_f64() * 1000.0;
         if host.state().active {
             host.command(Command::Advance { now, date: date() })?;
         }
-        if dirty || (host.state().active && last_draw.elapsed() >= Duration::from_millis(100)) {
+        match local.capture(&host, &capabilities, date()) {
+            Ok(true) => {
+                notice = "Result saved locally.".into();
+                dirty = true;
+            }
+            Ok(false) => {}
+            Err(error) => {
+                notice =
+                    format!("UNSAVED result: {error}. F9 retries; quitting loses pending data.");
+                dirty = true;
+            }
+        }
+        if guard.quit.load(Ordering::SeqCst) {
+            break;
+        }
+        if dirty
+            || (host.state().active
+                && last_draw.elapsed()
+                    >= Duration::from_millis(if local.preferences.reduced_animation {
+                        250
+                    } else {
+                        100
+                    }))
+        {
             terminal.draw(|frame| {
                 draw(
                     frame,
@@ -89,7 +135,7 @@ fn run() -> Result<()> {
                     View {
                         screen,
                         notice: &notice,
-                        history: &history,
+                        local: &local,
                         setup: &setup,
                         capabilities: &capabilities,
                     },
@@ -140,6 +186,7 @@ fn run() -> Result<()> {
                     KeyCode::F(1) => screen = Screen::Help,
                     KeyCode::F(2) if !host.state().active => {
                         setup.config = host.config.clone();
+                        local.configure_setup(&mut setup);
                         screen = Screen::Settings;
                     }
                     KeyCode::F(4) if !host.state().active => screen = Screen::Editor,
@@ -151,8 +198,13 @@ fn run() -> Result<()> {
                         match setup.build(&content, host.seed.wrapping_add(1)) {
                             Ok(next) => {
                                 host = next;
+                                local.restarted();
                                 screen = Screen::Test;
-                                notice.clear();
+                                notice = local
+                                    .apply(&setup)
+                                    .err()
+                                    .map(|e| format!("Settings not saved: {e}"))
+                                    .unwrap_or_default();
                             }
                             Err(error) => notice = error.to_string(),
                         }
@@ -175,16 +227,78 @@ fn run() -> Result<()> {
                     KeyCode::Down if screen == Screen::Settings => setup.select(1),
                     KeyCode::Left if screen == Screen::Settings => setup.adjust(-1),
                     KeyCode::Right if screen == Screen::Settings => setup.adjust(1),
-                    KeyCode::F(3) if !host.state().active => screen = Screen::History,
+                    KeyCode::F(3) if !host.state().active => {
+                        local.history.refresh(&local.store)?;
+                        screen = Screen::History;
+                    }
+                    KeyCode::Up if screen == Screen::History => local.history.select(-1),
+                    KeyCode::Down if screen == Screen::History => local.history.select(1),
+                    KeyCode::PageUp if screen == Screen::History => {
+                        local.history.page(-1, &local.store)?
+                    }
+                    KeyCode::PageDown if screen == Screen::History => {
+                        local.history.page(1, &local.store)?
+                    }
+                    KeyCode::Enter if screen == Screen::History => {
+                        local.history.details = !local.history.details;
+                        local.history.scroll = 0;
+                    }
+                    KeyCode::Char('m') if screen == Screen::History => {
+                        local.history.filter(&local.store)?
+                    }
+                    KeyCode::F(7) if screen == Screen::History => {
+                        let output = paths
+                            .data
+                            .join(format!("export-{}.json", uuid::Uuid::new_v4()));
+                        notice = match local.store.export(&output, local.history.mode()) {
+                            Ok(()) => format!("Exported {}", output.display()),
+                            Err(e) => format!("Export failed: {e}"),
+                        };
+                    }
+                    KeyCode::F(8) if screen == Screen::History => {
+                        if let Some(record) = local.history.current() {
+                            match oxytype_tui::replay::Replay::new(record) {
+                                Ok(replay) => {
+                                    local.replay = Some(replay);
+                                    screen = Screen::Replay;
+                                }
+                                Err(e) => notice = e.to_string(),
+                            }
+                        }
+                    }
+                    KeyCode::Right | KeyCode::Char(' ') if screen == Screen::Replay => {
+                        if let Some(replay) = &mut local.replay {
+                            replay.step();
+                        }
+                    }
+                    KeyCode::Home if screen == Screen::Replay => {
+                        if let Some(replay) = &mut local.replay {
+                            replay.seek(typing_engine::replay::Cursor::default());
+                        }
+                    }
+                    KeyCode::PageUp | KeyCode::PageDown if screen == Screen::Replay => {
+                        if let Some(replay) = &mut local.replay {
+                            let direction = if key.code == KeyCode::PageUp { -1 } else { 1 };
+                            replay.seek(typing_engine::replay::Cursor {
+                                word_index: (replay.frame.cursor.word_index + direction).max(0),
+                                letter_index: 0,
+                            });
+                        }
+                    }
+                    KeyCode::Esc if screen == Screen::Replay => {
+                        local.replay = None;
+                        screen = Screen::History;
+                    }
+                    KeyCode::F(9) => {
+                        notice = match local.retry() {
+                            Ok(()) => "Pending results saved.".into(),
+                            Err(e) => format!("Still unsaved: {e}"),
+                        }
+                    }
                     KeyCode::Esc if screen != Screen::Test => screen = Screen::Test,
                     KeyCode::F(5) | KeyCode::F(6) => {
-                        if let Some(summary) = host.result.clone() {
-                            history.push(format!(
-                                "{}: {:.1} WPM / {:.1}%",
-                                host.config.mode, summary.wpm, summary.acc
-                            ));
-                        }
                         host.restart(key.code == KeyCode::F(6), now, date())?;
+                        local.restarted();
                         screen = Screen::Test;
                         notice.clear();
                     }
@@ -195,8 +309,13 @@ fn run() -> Result<()> {
                             match setup.build(&content, host.seed.wrapping_add(1)) {
                                 Ok(next) => {
                                     host = next;
+                                    local.restarted();
                                     screen = Screen::Test;
-                                    notice.clear();
+                                    notice = local
+                                        .apply(&setup)
+                                        .err()
+                                        .map(|e| format!("Settings not saved: {e}"))
+                                        .unwrap_or_default();
                                 }
                                 Err(error) => notice = error.to_string(),
                             }
@@ -220,12 +339,19 @@ fn run() -> Result<()> {
             _ => {}
         }
     }
+    if !local.pending.is_empty() {
+        return Err(format!(
+            "{} result(s) could not be saved; prior history is intact",
+            local.pending.len()
+        )
+        .into());
+    }
     Ok(())
 }
 struct View<'a> {
     screen: Screen,
     notice: &'a str,
-    history: &'a [String],
+    local: &'a Local,
     setup: &'a Setup,
     capabilities: &'a oxytype_tui::input::Capabilities,
 }
@@ -233,11 +359,21 @@ fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
     let View {
         screen,
         notice,
-        history,
+        local,
         setup,
         capabilities,
     } = view;
     let area = frame.area();
+    let theme = match local.preferences.theme.as_str() {
+        "high-contrast" => ratatui::style::Style::new()
+            .fg(ratatui::style::Color::White)
+            .bg(ratatui::style::Color::Black),
+        "light" => ratatui::style::Style::new()
+            .fg(ratatui::style::Color::Black)
+            .bg(ratatui::style::Color::White),
+        _ => ratatui::style::Style::default(),
+    };
+    frame.render_widget(Block::default().style(theme), area);
     if area.width < 60 || area.height < 18 {
         frame.render_widget(
             Paragraph::new("Resize to at least 60×18. Active test clock continues. Ctrl+Q quits."),
@@ -253,9 +389,19 @@ fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
     .split(area);
     frame.render_widget(
         Paragraph::new(format!(
-            "Oxytype {} | {}",
+            "Oxytype {} | {}{}{}",
             env!("CARGO_PKG_VERSION"),
-            host.config.mode
+            host.config.mode,
+            if local.preferences.record_replay {
+                " | RECORDING PRIVATE TEXT"
+            } else {
+                ""
+            },
+            if local.pending.is_empty() {
+                String::new()
+            } else {
+                format!(" | {} UNSAVED", local.pending.len())
+            }
         ))
         .block(Block::bordered()),
         rows[0],
@@ -287,12 +433,10 @@ fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
                 .collect()
         }
         Screen::Editor => setup.editor_lines(),
-        Screen::History => history
-            .iter()
-            .rev()
-            .map(|row| Line::from(row.clone()))
-            .chain(std::iter::once(Line::from("Session history")))
-            .collect(),
+        Screen::Replay => local.replay.as_ref().map(|r| r.lines()).unwrap_or_default(),
+        Screen::History => local
+            .history
+            .lines(&local.store, rows[1].height.saturating_sub(2) as usize),
         Screen::Test if state.ended => vec![
             Line::from(host.result.as_ref().map_or_else(
                 || {
@@ -314,6 +458,18 @@ fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
                     "Completed".into()
                 }
             })),
+            Line::from(
+                local
+                    .latest_result
+                    .as_ref()
+                    .map(|r| {
+                        format!(
+                            "Local validity: {}",
+                            r["invalidReason"].as_str().unwrap_or("valid")
+                        )
+                    })
+                    .unwrap_or_else(|| "Preparing local result…".into()),
+            ),
             Line::from("F5 new test · F6 repeat"),
         ],
         Screen::Test => {
@@ -362,7 +518,7 @@ fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
     );
     frame.render_widget(
         Paragraph::new(format!(
-            "F1 help · F5 new · F6 repeat · Ctrl+Q quit\n{notice}"
+            "F1 help · F5 new · F6 repeat · Ctrl+Q quit · F9 retry saves\n{notice}"
         )),
         rows[2],
     );

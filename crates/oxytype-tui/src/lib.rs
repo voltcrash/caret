@@ -1,8 +1,11 @@
 pub mod content;
 pub mod engine;
+pub mod history;
 pub mod input;
+pub mod local;
 pub mod options;
 pub mod render;
+pub mod replay;
 pub mod setup;
 pub mod storage;
 pub mod terminal;

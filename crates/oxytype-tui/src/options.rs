@@ -70,6 +70,23 @@ pub struct Cli {
     /// auto negotiates enhanced events; basic avoids protocol queries.
     #[arg(long, default_value="auto", value_parser=["auto","basic"])]
     pub keyboard: String,
+    #[arg(long)]
+    pub config_dir: Option<PathBuf>,
+    #[arg(long)]
+    pub data_dir: Option<PathBuf>,
+    /// Export all stored results (or --history-mode) without entering a terminal.
+    #[arg(long)]
+    pub export: Option<PathBuf>,
+    #[arg(long, value_parser=["time","words","quote","custom","zen"])]
+    pub history_mode: Option<String>,
+    /// Print effective storage directories without opening databases.
+    #[arg(long)]
+    pub paths: bool,
+    /// Explicit opt-in: persist target text and full input log for replay.
+    #[arg(long)]
+    pub record_replay: bool,
+    #[arg(long, value_parser=["terminal","high-contrast","light"])]
+    pub theme: Option<String>,
 }
 impl Cli {
     pub fn prepare(
@@ -163,7 +180,7 @@ pub fn validate(
         return Err("Selected language is unavailable; supply a matching --pack".into());
     }
     if config.mode == "custom" && custom.is_none() {
-        return Err("Custom mode requires --text, --file, or the custom-text editor".into());
+        return Err("Custom mode requires private text: use --text/--file, or --mode words then F4 for the editor".into());
     }
     if config.quote_length.is_empty() || config.quote_length.iter().any(|g| !(0..=3).contains(g)) {
         return Err("Terminal quote lengths must be groups 0,1,2,3".into());

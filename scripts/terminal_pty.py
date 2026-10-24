@@ -7,10 +7,13 @@ import pty
 import re
 import select
 import signal
+import sqlite3
+import json
 import struct
 import subprocess
 import sys
 import termios
+import tempfile
 import time
 import unicodedata
 
@@ -21,6 +24,7 @@ def dimensions(slave, columns=100, rows=24):
 
 class Child:
     def __init__(self, binary, failure=None, args=(), enhanced=False):
+        self.profile = tempfile.TemporaryDirectory(prefix="oxytype-pty-")
         self.enhanced = enhanced
         self.query_replied = False
         self.master, self.slave = pty.openpty()
@@ -35,7 +39,7 @@ class Child:
             os.setsid()
             fcntl.ioctl(self.slave, termios.TIOCSCTTY, 0)
 
-        self.process = subprocess.Popen([binary, "--keyboard", "auto" if enhanced else "basic", *args], stdin=self.slave, stdout=self.slave,
+        self.process = subprocess.Popen([binary, "--config-dir", self.profile.name + "/config", "--data-dir", self.profile.name + "/data", "--keyboard", "auto" if enhanced else "basic", *args], stdin=self.slave, stdout=self.slave,
                                         stderr=self.slave, env=env,
                                         preexec_fn=controlling_terminal)
 
@@ -124,6 +128,7 @@ class Child:
             self.process.wait(timeout=3)
         os.close(self.master)
         os.close(self.slave)
+        self.profile.cleanup()
 
 
 def run(binary):
@@ -135,6 +140,19 @@ def run(binary):
         time.sleep(0.15)
         child.send(b"\x1b[19~")  # F8 is available without enhanced Ctrl+Enter.
         child.until(b"F5 new test")
+        child.until(b"Result saved locally.")
+        history_path = pathlib.Path(child.profile.name) / "data/history.sqlite3"
+        with sqlite3.connect(history_path) as db:
+            record = json.loads(db.execute("SELECT json FROM results").fetchone()[0])
+            assert record["replayLog"] is None
+            assert record["summary"]["keyDuration"] is None
+        child.send(b"\x1bOR")  # F3 history
+        child.until(b"Local history")
+        child.send(b"\x1b[18~")  # F7 export
+        child.until(b"Exported")
+        exported = list((pathlib.Path(child.profile.name) / "data").glob("export-*.json"))
+        assert len(exported) == 1
+        assert json.loads(exported[0].read_text())["results"][0]["id"] == record["id"]
         child.send(b"\x1b[15~")
         child.until(b"Input:")
         dimensions(child.slave, 30, 8)
@@ -183,6 +201,25 @@ def run(binary):
         time.sleep(0.15)
         child.send(b"two")
         child.until(b"F5 new test")
+        child.send(b"\x11")
+        assert child.process.wait(timeout=5) == 0
+        child.restored()
+    finally:
+        child.close()
+
+    child = Child(binary, args=["--mode", "custom", "--text", "one two", "--record-replay"])
+    try:
+        child.until(b"RECORDING PRIVATE TEXT")
+        child.send(b"one ")
+        time.sleep(0.15)
+        child.send(b"two")
+        child.until(b"Result saved locally.")
+        child.send(b"\x1bOR")
+        child.until(b"Local history")
+        child.send(b"\x1b[19~")
+        child.until(b"Recorded replay")
+        child.send(b"\x1b[C")
+        child.until(b"step 1")
         child.send(b"\x11")
         assert child.process.wait(timeout=5) == 0
         child.restored()
