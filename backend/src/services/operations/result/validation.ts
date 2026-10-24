@@ -11,6 +11,7 @@ import {
   getKeyDataFailure,
   getBotFailure,
   getTimingFingerprint,
+  verifyEventLog,
 } from "../../../anticheat/index";
 import MonkeyStatusCodes from "../../../constants/monkey-status-codes";
 import { purgeUserFromDailyLeaderboards } from "../../../utils/daily-leaderboards";
@@ -194,6 +195,41 @@ export async function validateSubmission(
     );
     const status = MonkeyStatusCodes.RESULT_DATA_INVALID;
     return new MonkeyError(status.code, "Result data doesn't make sense");
+  }
+
+  const { eventLog } = input.body;
+  if (
+    eventLog !== undefined &&
+    context.configuration.anticheat.logVerification.enabled
+  ) {
+    // The submitted payload, before server normalization touches it.
+    const verdict = verifyEventLog(input.body.result, eventLog);
+    if (verdict.kind === "mismatch") {
+      await addImportantLog(
+        "anticheat_rejected",
+        {
+          reason: "event-log-mismatch",
+          submissionHash: resulthash,
+          client: completedEvent.client,
+          mode: completedEvent.mode,
+          mode2: completedEvent.mode2,
+          mismatches: verdict.mismatches,
+        },
+        uid,
+      );
+      const status = MonkeyStatusCodes.RESULT_DATA_INVALID;
+      return new MonkeyError(
+        status.code,
+        "Result data doesn't match its event log",
+      );
+    }
+    if (verdict.kind === "unverifiable") {
+      await addLog(
+        "event_log_unverified",
+        { reason: verdict.reason, submissionHash: resulthash },
+        uid,
+      );
+    }
   }
 
   //dont use - result timestamp is unreliable, can be changed by system time and stuff
