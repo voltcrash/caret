@@ -194,7 +194,7 @@ describe("theme picker lifecycle", () => {
         } else {
           fireEvent.click(
             view.getByRole("button", {
-              name: "Shift-click to toggle custom theme",
+              name: /shift-click to toggle custom theme/,
             }),
           );
         }
