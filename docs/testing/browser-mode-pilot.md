@@ -2,13 +2,16 @@
 
 Date: 2026-10-24. Base commit: `d2cb7438e`.
 
+Historical pilot. The final migration replaces this temporary config. See
+[browser-mode.md](browser-mode.md) for current commands and full-suite results.
+
 ## Result
 
 All 54 existing tests pass in both the current setup and Chromium Browser Mode.
 Their test files required no changes. Four extra browser tests also pass.
 The final Browser Mode check passed all 58 cases with `--repeats 4` and no retries.
 
-The pilot supports a gradual move to Browser Mode. It does not yet support
+The pilot supported a gradual move to Browser Mode. It did not yet justify
 removing JSDOM or Happy DOM from the full project.
 
 ## Sample
@@ -70,11 +73,11 @@ Raw per-run measurements: [browser-mode-pilot-results.json](browser-mode-pilot-r
 
 ## Implementation and limits
 
-The opt-in config is `frontend/storybook/vitest.pilot.config.ts`. It uses the
+The original opt-in config was `frontend/storybook/vitest.pilot.config.ts`. It used the
 browser provider already installed in the Storybook workspace. No package or
-lockfile change was needed. The normal test config and application code are
-unchanged. The native test file uses `.browser.tsx`, so normal test discovery
-does not select it.
+lockfile change was needed. The pilot left the normal test config and application code
+unchanged. The native test file uses `.browser.tsx`, so the original test discovery
+did not select it.
 
 Browser setup retains the application owner, test element fixtures and auth
 mock. It uses real `matchMedia`. It omits the Node filesystem asset mock;
@@ -92,35 +95,14 @@ time, memory use, Firefox, WebKit, complete user tasks, the full typing page,
 native dialogs, or the full test suite. Node-dependent tests and tests that
 spy directly on imported module exports can need further changes.
 
-## Run again
+## After the pilot
 
-From the repository root:
+The next trial covered modal focus, typing input, scrolling, and tests with many
+mocks. It passed all 15 existing scrolling/focus checks. The final migration also
+adds native dialog, keyboard, listener cleanup, and viewport scrolling checks.
 
-```sh
-# Original 54 cases in their existing environments.
-vp test run --config frontend/storybook/vitest.pilot.config.ts --project pilot-jsdom --project pilot-happy-dom
-
-# The same 54 cases in Chromium.
-vp test run --config frontend/storybook/vitest.pilot.config.ts --project pilot-browser --exclude '**/native.browser.tsx'
-
-# All 58 cases, with four additional executions of each case.
-vp test run --config frontend/storybook/vitest.pilot.config.ts --project pilot-browser --repeats 4
-
-# Check pilot source files.
-vp lint frontend/storybook/vitest.pilot.config.ts frontend/__tests__/browser-pilot --type-aware --type-check --format agent
-```
-
-If Chromium is absent, run this command in `frontend/storybook`:
-
-```sh
-vp exec playwright install chromium
-```
-
-## Recommended next step
-
-Expand the trial to modal focus, typing input, scrolling, and tests with many
-mocks. Test that group in CI. Keep pure logic tests in Node where possible.
-Remove a DOM library only after its remaining tests have a verified home.
+The temporary Storybook pilot config was removed. Current commands and the
+full-suite report are in [browser-mode.md](browser-mode.md).
 
 References:
 
