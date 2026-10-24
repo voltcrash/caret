@@ -63,13 +63,16 @@ jobs:
             ~/.cargo/registry
             target
           key: terminal-${{ matrix.target }}-${{ hashFiles('Cargo.lock', 'rust-toolchain.toml') }}
-      - name: Native formatting, lint and shared fixture tests
-        shell: bash
-        run: |
-          vp run engine:fmt
-          vp run terminal:test:release-tools
-          vp exec cargo clippy --locked -p typing-engine -p oxytype-tui --all-targets -- -D warnings
-          vp exec cargo test --locked -p typing-engine -p oxytype-tui
+      - name: Native formatting
+        run: vp run engine:fmt
+      - name: Archive portability regressions
+        run: vp run terminal:test:release-tools
+      - name: Native lint
+        run: vp exec cargo clippy --locked -p typing-engine -p oxytype-tui --all-targets -- -D warnings
+      - name: Shared engine fixtures
+        run: vp exec cargo test --locked -p typing-engine
+      - name: Native terminal input and durable history
+        run: vp run terminal:test
       - name: POSIX terminal lifecycle and persistence
         if: runner.os != 'Windows'
         run: vp run terminal:test:pty
