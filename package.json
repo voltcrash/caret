@@ -59,7 +59,7 @@
     "terminal:test:release-tools": "node scripts/terminal.ts tools-test"
   },
   "devDependencies": {
-    "@commitlint/cli": "21.2.3",
+    "@commitlint/cli": "21.2.4",
     "@types/node": "24.19.0",
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
