@@ -86,6 +86,11 @@ impl History {
             let skip = self.selected.saturating_sub(visible - 1);
             for (index, row) in self.rows.iter().enumerate().skip(skip).take(visible) {
                 let summary = &row["summary"];
+                let validity = if row["formatVersion"] == 1 {
+                    row["invalidReason"].as_str().unwrap_or("valid")
+                } else {
+                    "unknown format; details/export"
+                };
                 let best = row["formatVersion"] == 1
                     && row["personalBestEligible"] == true
                     && row["personalBestGroup"]
@@ -99,7 +104,7 @@ impl History {
                     row["config"]["mode"].as_str().unwrap_or("unknown"),
                     summary["wpm"],
                     summary["acc"],
-                    row["invalidReason"].as_str().unwrap_or("valid"),
+                    validity,
                     if best { " · PB" } else { "" }
                 )));
             }

@@ -168,3 +168,51 @@ fn malformed_future_and_interrupted_storage_preserve_prior_data() {
     );
     assert_eq!(std::fs::read(path).unwrap(), b"not a database");
 }
+
+#[test]
+#[ignore = "Helper launched and terminated by abrupt_process_interruption_keeps_committed_history"]
+fn interrupted_writer_process() {
+    let path = std::env::var_os("OXYTYPE_INTERRUPTION_DB").expect("Test database path");
+    let ready = std::env::var_os("OXYTYPE_INTERRUPTION_READY").expect("Test readiness path");
+    let db = rusqlite::Connection::open(path).unwrap();
+    db.execute_batch(
+        "BEGIN IMMEDIATE; INSERT INTO results VALUES('interrupted-process',1,'words','{}');",
+    )
+    .unwrap();
+    std::fs::write(ready, b"transaction open").unwrap();
+    loop {
+        std::thread::park();
+    }
+}
+
+#[test]
+fn abrupt_process_interruption_keeps_committed_history() {
+    let temp = tempfile::tempdir().unwrap();
+    let paths = paths(temp.path());
+    let mut store = Store::open(&paths).unwrap();
+    let record = storage::record(&finished(), &Capabilities::default(), false, 10000.0).unwrap();
+    store.save(&record).unwrap();
+    drop(store);
+    let ready = temp.path().join("writer-ready");
+    let mut child = std::process::Command::new(std::env::current_exe().unwrap())
+        .args(["--ignored", "--exact", "interrupted_writer_process"])
+        .env(
+            "OXYTYPE_INTERRUPTION_DB",
+            paths.data.join("history.sqlite3"),
+        )
+        .env("OXYTYPE_INTERRUPTION_READY", &ready)
+        .spawn()
+        .unwrap();
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(10);
+    while !ready.exists() && std::time::Instant::now() < deadline {
+        std::thread::sleep(std::time::Duration::from_millis(10));
+    }
+    let initialized = ready.exists();
+    child.kill().unwrap();
+    child.wait().unwrap();
+    assert!(initialized, "Writer did not begin transaction");
+    assert_eq!(
+        Store::open(&paths).unwrap().history(None, 100).unwrap(),
+        vec![record]
+    );
+}
