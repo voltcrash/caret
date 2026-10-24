@@ -185,7 +185,7 @@ catalogs:
 
 overrides:
   '@anatine/zod-openapi>ts-deepmerge': 8.0.0
-  shell-quote: 1.11.0
+  shell-quote: 1.12.0
   sharp@^0.35: 0.35.5
   baseline-browser-mapping: 2.11.0
   fast-uri: 3.1.8
