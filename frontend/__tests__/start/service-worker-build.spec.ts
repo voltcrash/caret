@@ -143,6 +143,16 @@ describe("built Start service worker", () => {
     expect(wasm).toHaveLength(1);
     const runtime = await createWorkerd();
     try {
+      const html = await (
+        await runtime.dispatchFetch("http://localhost:3000/")
+      ).text();
+      const preload = [...html.matchAll(/<link\b[^>]*>/g)]
+        .map((match) => match[0])
+        .find((tag) => tag.includes(`href="${wasm[0]}"`));
+      expect(preload).toContain('rel="preload"');
+      expect(preload).toContain('as="fetch"');
+      expect(preload).toContain('type="application/wasm"');
+      expect(preload).toContain('crossorigin="anonymous"');
       const response = await runtime.dispatchFetch(
         `http://localhost:3000${wasm[0]}`,
       );

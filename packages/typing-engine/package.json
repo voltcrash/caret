@@ -4,6 +4,7 @@
   "license": "GPL-3.0",
   "type": "module",
   "exports": {
+    "./asset": "./src/asset.ts",
     "./browser.client": "./src/browser.client.ts",
     "./text": "./src/text.ts",
     "./failure": "./src/failure.ts",

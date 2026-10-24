@@ -7,7 +7,7 @@ import {
   WasmContent,
   WasmReplay,
 } from "../generated/engine.js";
-import wasmUrl from "../generated/engine_bg.wasm?url";
+import { wasmUrl } from "./asset";
 import type { Command } from "../generated/types/Command";
 import type { Config } from "../generated/types/Config";
 import type { Text } from "../generated/types/Text";
