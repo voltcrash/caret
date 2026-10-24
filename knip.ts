@@ -46,11 +46,8 @@ export default {
         "__tests__/**/*.{ts,tsx}",
       ],
       ignoreDependencies: [
-        // Vite+ resolves the shared lint config and ESLint plugins at runtime.
+        // Vite+ resolves the shared lint config at runtime.
         "@oxytype/oxlint-config",
-        "@tanstack/eslint-plugin-query",
-        "eslint-plugin-compat",
-        "eslint-plugin-solid",
         // font-styles.ts provides these CSS modules through its Vite plugin.
         "oxytype-fontawesome.css",
         "oxytype-fonts.css",
