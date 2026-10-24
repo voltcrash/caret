@@ -91,8 +91,12 @@ fn native_terminal_decodes_edits_and_persists_actual_input_without_physical_tele
                     // this is terminal protocol, never typing/timing telemetry.
                     let (row, col) = parser.screen().cursor_position();
                     let mut reply = responses.lock().unwrap();
-                    write!(reply, "\x1b[{};{}R", row + 1, col + 1).unwrap();
+                    let response = format!("\x1b[{};{}R", row + 1, col + 1);
+                    // One complete protocol packet, rather than write_fmt's
+                    // separate writes for CSI prefix, numbers and terminator.
+                    reply.write_all(response.as_bytes()).unwrap();
                     reply.flush().unwrap();
+                    eprintln!("PTY cursor response: {response:?}");
                 }
             }
         }
