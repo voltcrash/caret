@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import { betterAuth, type BetterAuthOptions } from "better-auth";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { dash } from "@better-auth/infra";
-import { database } from "../db/client";
+import { primaryDatabase } from "../db/client";
 import {
   authUsers,
   authSessions,
@@ -147,7 +147,7 @@ export function createAuth(
           before: async (session, ctx) => {
             const authUser =
               ctx === null || ctx === undefined
-                ? await database()
+                ? await primaryDatabase()
                     .select()
                     .from(authUsers)
                     .where(eq(authUsers.id, session.userId))
@@ -203,7 +203,9 @@ export function createAuth(
 export function getAuth(): ReturnType<typeof createAuth> {
   const scope = runtime();
   scope.auth ??= createAuth(
-    drizzleAdapter(database(), {
+    // Revocation and account disablement must observe current primary state,
+    // even after unrelated application reads have established a bookmark.
+    drizzleAdapter(primaryDatabase(), {
       provider: "sqlite",
       schema: {
         authUsers,
