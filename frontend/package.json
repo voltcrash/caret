@@ -125,6 +125,7 @@
     "@types/node": "24.19.0",
     "@types/object-hash": "3.0.6",
     "@types/throttle-debounce": "5.0.2",
+    "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "caniuse-lite": "1.0.30001814",
     "concurrently": "10.0.5",
