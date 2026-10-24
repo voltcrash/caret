@@ -64,7 +64,7 @@
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "binaryen": "132.0.0",
-    "caniuse-lite": "1.0.30001814",
+    "caniuse-lite": "1.0.30001819",
     "conventional-changelog-conventionalcommits": "10.4.1",
     "knip": "6.39.0",
     "stylelint": "17.16.0",

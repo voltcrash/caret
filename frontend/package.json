@@ -120,7 +120,7 @@
     "@types/object-hash": "3.0.6",
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "caniuse-lite": "1.0.30001814",
+    "caniuse-lite": "1.0.30001819",
     "eslint-plugin-compat": "7.0.2",
     "eslint-plugin-solid": "0.18.0",
     "miniflare": "5.20261001.0-alpha",
