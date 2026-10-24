@@ -1,0 +1,30 @@
+[package]
+name = "oxytype-tui"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Offline Oxytype terminal client using the shared Rust typing engine"
+
+[[bin]]
+name = "oxytype"
+path = "src/main.rs"
+
+[dependencies]
+typing-engine = { path = "../typing-engine" }
+serde.workspace = true
+serde_json.workspace = true
+ratatui = { version = "=0.30.2", default-features = false, features = [
+  "crossterm",
+  "layout-cache",
+] }
+crossterm = "=0.29.0"
+clap = { version = "4.5", features = ["derive", "env", "string"] }
+signal-hook = "=0.4.5"
+
+[target.'cfg(unix)'.dependencies]
+nix = { version = "0.30", features = ["signal", "process"] }
+
+[lints]
+workspace = true
