@@ -1,0 +1,102 @@
+// One-time capture before retiring the TypeScript timing statistics and review
+// signals. Run from the repository root with backend tsx:
+//   cp this file to capture.ts beside it, run it, then delete the copy.
+import { writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import {
+  computeBellness,
+  computeCrossStats,
+  computeDistStats,
+  probit,
+} from "../../util/src/timing-stats.ts";
+import { reviewKeyTimings } from "../../../backend/src/anticheat/signals.ts";
+
+function lcg(seed: number): () => number {
+  let state = seed;
+  return () => {
+    state = (state * 1664525 + 1013904223) % 2 ** 32;
+    return state / 2 ** 32;
+  };
+}
+function normal(random: () => number): number {
+  const u = Math.max(random(), 1e-12);
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * random());
+}
+const round = (grid: number) => (v: number) => Math.round(v / grid) * grid;
+function human(n: number, seed: number, grid = 0.1): number[] {
+  const random = lcg(seed);
+  let speed = 0;
+  return Array.from({ length: n }, () => {
+    speed = 0.7 * speed + 0.3 * normal(random);
+    const pause = random() < 0.04 ? 400 + random() * 900 : 0;
+    return round(grid)(Math.exp(Math.log(110) + 0.35 * speed) + pause);
+  });
+}
+function holdsFor(gaps: number[], seed: number): number[] {
+  const random = lcg(seed);
+  return gaps.map((gap) =>
+    random() < 0.02 ? 0 : round(0.1)(55 + 0.25 * Math.min(gap, 300) + 15 * normal(random)),
+  );
+}
+function uniform(n: number, low: number, high: number, seed: number): number[] {
+  const random = lcg(seed);
+  return Array.from({ length: n }, () => low + random() * (high - low));
+}
+function pool(n: number, values: number[], seed: number): number[] {
+  const random = lcg(seed);
+  return Array.from({ length: n }, () => values[Math.floor(random() * values.length)] as number);
+}
+
+const series: Record<string, number[]> = {
+  empty: [],
+  single: [5],
+  tiny: [1, 2, 3],
+  ties: [0.0625, 1.0005, 2.0625, 12.3456, 80, 80, 80.0004],
+  human40: human(40, 1),
+  human120: human(120, 2),
+  human400: human(400, 3),
+  firefox500: human(500, 4, 1),
+  coarse8: human(300, 5, 8),
+  uniform300: uniform(300, 80, 120, 6),
+  fixed150: Array.from({ length: 150 }, () => 80),
+  pool250: pool(250, [70, 85, 95, 110], 7),
+  trending200: Array.from({ length: 200 }, (_, i) => 80 + i),
+  zeros: human(160, 8).map((v, i) => (i % 9 === 0 ? 0 : v)),
+};
+const pairs: Record<string, [number[], number[]]> = {
+  human400: [series["human400"] as number[], holdsFor(series["human400"] as number[], 11)],
+  human1000: [human(1000, 12), holdsFor(human(1000, 12), 13)],
+  firefox500: [series["firefox500"] as number[], holdsFor(series["firefox500"] as number[], 14).map(Math.round)],
+  uniform: [uniform(400, 80, 120, 15), uniform(400, 40, 90, 16)],
+  fixed: [Array.from({ length: 150 }, () => 80), Array.from({ length: 150 }, () => 50)],
+  pool: [pool(300, [70, 85, 95, 110], 17), pool(300, [40, 55, 65], 18)],
+  coarse: [human(300, 19, 8), holdsFor(human(300, 19, 8), 20).map(round(8))],
+  short: [human(60, 21), holdsFor(human(60, 21), 22)],
+  misaligned: [human(220, 23), holdsFor(human(200, 23), 24)],
+};
+
+const output = {
+  probit: [0.001, 0.01, 0.02425, 0.1, 0.375, 0.5, 0.9, 0.975, 0.999].map((p) => ({
+    p,
+    expected: probit(p),
+  })),
+  distributions: Object.entries(series).map(([name, values]) => ({
+    name,
+    values,
+    stats: computeDistStats(values),
+    bellLogs: computeBellness(values, true),
+    bellLinear: computeBellness(values, false),
+  })),
+  pairs: Object.entries(pairs).map(([name, [spacing, duration]]) => ({
+    name,
+    spacing,
+    duration,
+    cross: computeCrossStats(spacing, duration),
+    review: reviewKeyTimings(spacing, duration) ?? null,
+  })),
+};
+writeFileSync(
+  resolve(import.meta.dirname, "../oracle/timing-stats.json"),
+  `${JSON.stringify(output)}\n`,
+  { flag: "wx" },
+);
