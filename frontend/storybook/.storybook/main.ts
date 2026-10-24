@@ -58,7 +58,6 @@ export default defineMain({
   addons: [
     "@storybook/addon-docs",
     "@storybook/addon-a11y",
-    "@storybook/addon-links",
     "@storybook/addon-vitest",
   ],
   stories: [
