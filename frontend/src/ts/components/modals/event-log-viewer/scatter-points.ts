@@ -1,6 +1,6 @@
 import type { TestEventNoMs } from "@oxytype/web-shared/events/types";
 
-import { probit } from "@oxytype/util/timing-stats";
+import type { Audit } from "@oxytype/typing-engine/audit";
 
 export type ScatterPoint = { x: number; y: number };
 
@@ -198,7 +198,10 @@ export function getPerKeyPoints(
  * stat row where it reads as a verdict. probit (Acklam's inverse normal CDF)
  * places the theoretical quantiles on the Q-Q plot.
  */
-export function getLognormalFit(spacing: number[]): {
+export function getLognormalFit(
+  spacing: number[],
+  audit: Audit,
+): {
   points: ScatterPoint[];
   sigma: number | null;
 } {
@@ -209,9 +212,12 @@ export function getLognormalFit(spacing: number[]): {
   const sigma = Math.sqrt(
     logs.reduce((a, b) => a + (b - mean) ** 2, 0) / logs.length,
   );
+  const quantiles = audit.probit(
+    values.map((_, i) => (i + 0.5) / values.length),
+  );
   return {
     points: values.map((value, i) => ({
-      x: Math.exp(mean + sigma * probit((i + 0.5) / values.length)),
+      x: Math.exp(mean + sigma * (quantiles[i] as number)),
       y: value,
     })),
     sigma,

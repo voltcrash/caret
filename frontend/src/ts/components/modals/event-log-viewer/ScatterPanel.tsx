@@ -6,6 +6,7 @@ import {
   getKeypressDurations,
   getKeypressSpacing,
 } from "../../../../features/typing/analysis.client";
+import { requireBrowserAudit } from "../../../../features/typing/audit.client";
 import {
   getScatterOpen,
   setScatterOpen,
@@ -53,7 +54,8 @@ export function ScatterPanel(props: {
   const holdFlightPoints = (): ScatterPoint[] =>
     getHoldFlightPoints(spacing(), durations());
 
-  const lognormalFit = createMemo(() => getLognormalFit(spacing()));
+  const audit = requireBrowserAudit();
+  const lognormalFit = createMemo(() => getLognormalFit(spacing(), audit));
 
   const charPositionPoints = (): ScatterPoint[] =>
     getCharPositionPoints(inserts());
