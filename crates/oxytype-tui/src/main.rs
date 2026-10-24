@@ -440,7 +440,7 @@ fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
     let body = match screen {
         Screen::Help => vec![
             Line::from("F5 new · F6 repeat · F2 settings · F3 history · F4 custom · Esc return"),
-            Line::from("F8 finish · Backspace delete · Ctrl+Backspace delete word"),
+            Line::from("F8 finish · Backspace delete · Ctrl/Alt+Backspace delete word"),
             Line::from("Ctrl+Q / Ctrl+C quit · Ctrl+Z suspend (Unix)"),
             Line::from("Physical-key timing is unavailable; no key releases are invented."),
             Line::from(format!(

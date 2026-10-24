@@ -67,7 +67,7 @@ pub struct Cli {
     pub funbox: Option<Vec<String>>,
     #[arg(long)]
     pub capabilities: bool,
-    /// auto negotiates enhanced events; basic avoids protocol queries.
+    /// auto negotiates Kitty keyboard events; basic avoids protocol queries.
     #[arg(long, default_value="auto", value_parser=["auto","basic"])]
     pub keyboard: String,
     #[arg(long)]
@@ -245,7 +245,7 @@ pub fn validate(
 }
 pub fn capabilities() -> String {
     format!(
-        "Modes: time, words, quote, custom text/file, zen\nOffline English + original quotes; local v1 packs\nFunboxes: {}\nOther web-only visual/audio/network/layout hooks: unavailable (rejected)\nInput: committed characters, Backspace/word delete, Enter, Tab, repeats\nPhysical-key identity/composition lifecycle: unavailable\nKey duration/spacing/overlap: unavailable; no synthetic releases\nPaste: blocked during tests; unmarked paste cannot be detected\n",
+        "Platforms: Linux, macOS\nModes: time, words, quote, custom text/file, zen\nOffline English + original quotes; local v1 packs\nFunboxes: {}\nOther web-only visual/audio/network/layout hooks: unavailable (rejected)\nInput: committed characters, Backspace, Enter, Tab, repeats\nKeyboard: auto negotiates Kitty enhancements; --keyboard basic skips queries\nWord delete: Ctrl/Alt+Backspace when distinguishable; try Alt in basic mode\nGraphics: text only; no image protocol required\nPhysical-key identity/composition lifecycle: unavailable\nKey duration/spacing/overlap: unavailable; no synthetic releases\nPaste: blocked during tests; unmarked paste cannot be detected\n",
         FUNBOXES.join(", ")
     )
 }
