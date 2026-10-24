@@ -43,7 +43,8 @@ type Answer<O extends AuditQuery["op"]> = Extract<
 
 /** Synchronous result auditing over one instantiated audit module. */
 export type Audit = {
-  verify: (log: Log, result: unknown) => Verification;
+  /** `behaviorVersion` is the submitting client's `versions.behavior`. */
+  verify: (log: Log, result: unknown, behaviorVersion: number) => Verification;
   review: (keySpacing: number[], keyDuration: number[]) => TimingReview | null;
   distribution: (values: number[]) => DistStats | null;
   bellness: (values: number[], useLogs: boolean) => number | null;
@@ -77,7 +78,8 @@ export function createAudit(module: WebAssembly.Module): Audit {
           .result as Answer<Q["op"]>,
     );
   return {
-    verify: (log, result) => query({ op: "verify", log, result }),
+    verify: (log, result, behaviorVersion) =>
+      query({ op: "verify", log, result, behaviorVersion }),
     review: (keySpacing, keyDuration) =>
       query({ op: "review", keySpacing, keyDuration }),
     distribution: (values) => query({ op: "distribution", values }),

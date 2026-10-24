@@ -1,5 +1,5 @@
 use serde_json::{Value, json};
-use typing_engine::{Text, stats::Log, verification::verify};
+use typing_engine::{BEHAVIOR_VERSION, Text, stats::Log, verification::verify};
 
 /// Unchanged browser recordings with the completed events they produced.
 fn recordings() -> Vec<(String, Log, Value)> {
@@ -31,7 +31,7 @@ fn recordings() -> Vec<(String, Log, Value)> {
     recordings
 }
 fn fields(log: &Log, submitted: &Value) -> Vec<String> {
-    verify(log, submitted)
+    verify(log, submitted, BEHAVIOR_VERSION)
         .unwrap()
         .mismatches
         .into_iter()
@@ -92,5 +92,19 @@ fn long_test_sentinels_skip_only_their_arrays() {
 fn invalid_logs_fail_validation() {
     let (_, mut log, completed) = recordings().into_iter().next().unwrap();
     log.version = 0;
-    assert!(verify(&log, &completed).is_err());
+    assert!(verify(&log, &completed, BEHAVIOR_VERSION).is_err());
+}
+
+#[test]
+fn other_scoring_rules_are_not_compared() {
+    let (_, log, mut completed) = recordings().into_iter().next().unwrap();
+    completed["wpm"] = json!(999);
+    let verdict = verify(&log, &completed, BEHAVIOR_VERSION + 1).unwrap();
+    assert!(!verdict.same_behavior);
+    assert!(verdict.mismatches.is_empty());
+    assert!(
+        verify(&log, &completed, BEHAVIOR_VERSION)
+            .unwrap()
+            .same_behavior
+    );
 }

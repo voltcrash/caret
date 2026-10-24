@@ -18,7 +18,11 @@ pub struct Mismatch {
     pub replayed: Value,
 }
 #[derive(Clone, Debug, PartialEq, Serialize, TS)]
+#[serde(rename_all = "camelCase")]
 pub struct Verification {
+    /// False when the client ran other scoring rules (a tab open across a
+    /// deploy); nothing is compared then, since honest numbers may differ.
+    pub same_behavior: bool,
     /// Empty when every replayed field matches the submission.
     pub mismatches: Vec<Mismatch>,
 }
@@ -65,8 +69,19 @@ fn same(submitted: &Value, replayed: &Value) -> bool {
 }
 
 /// Compare a submitted completed result with the one its log replays to.
-pub fn verify(log: &Log, submitted: &Value) -> Result<Verification, EngineError> {
+/// `behavior_version` is the client engine's `BEHAVIOR_VERSION`.
+pub fn verify(
+    log: &Log,
+    submitted: &Value,
+    behavior_version: u32,
+) -> Result<Verification, EngineError> {
     validation::log(log)?;
+    if behavior_version != crate::BEHAVIOR_VERSION {
+        return Ok(Verification {
+            same_behavior: false,
+            mismatches: vec![],
+        });
+    }
     let summary = serde_json::to_value(stats::typed_summary(log)?).expect("Serializable summary");
     let mut expected: Vec<(&str, Value)> = SUMMARY_FIELDS
         .iter()
@@ -89,5 +104,8 @@ pub fn verify(log: &Log, submitted: &Value) -> Result<Verification, EngineError>
             replayed,
         })
         .collect();
-    Ok(Verification { mismatches })
+    Ok(Verification {
+        same_behavior: true,
+        mismatches,
+    })
 }

@@ -18,10 +18,12 @@ use ts_rs::TS;
 #[serde(tag = "op", rename_all = "camelCase")]
 #[ts(rename = "AuditQuery")]
 pub enum Query {
+    #[serde(rename_all = "camelCase")]
     Verify {
         log: Box<Log>,
         #[ts(type = "unknown")]
         result: Value,
+        behavior_version: u32,
     },
     #[serde(rename_all = "camelCase")]
     Review {
@@ -81,8 +83,12 @@ fn finite(values: &[f64]) -> Result<(), EngineError> {
 
 pub fn audit(query: Query) -> Result<Response, EngineError> {
     Ok(match query {
-        Query::Verify { log, result } => Response::Verify {
-            result: verification::verify(&log, &result)?,
+        Query::Verify {
+            log,
+            result,
+            behavior_version,
+        } => Response::Verify {
+            result: verification::verify(&log, &result, behavior_version)?,
         },
         Query::Review {
             key_spacing,

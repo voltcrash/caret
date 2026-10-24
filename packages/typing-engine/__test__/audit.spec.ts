@@ -4,6 +4,7 @@ import { expect, it } from "vite-plus/test";
 import { serverAudit } from "../src/audit.server";
 import { EngineFailure } from "../src/failure";
 import { toEngineLog, type WebLog } from "../src/text";
+import { versions } from "../src/versions";
 
 const recording = JSON.parse(
   readFileSync(
@@ -18,18 +19,20 @@ const recording = JSON.parse(
 it("verifies a browser recording through the Node-compiled module", () => {
   const audit = serverAudit();
   const log = toEngineLog(recording.eventLog);
-  expect(audit.verify(log, recording.completedEvent).mismatches).toEqual([]);
+  expect(
+    audit.verify(log, recording.completedEvent, versions.behavior).mismatches,
+  ).toEqual([]);
   const edited = { ...recording.completedEvent, wpm: 250 };
-  expect(audit.verify(log, edited).mismatches.map((m) => m.field)).toEqual([
-    "wpm",
-  ]);
+  expect(
+    audit.verify(log, edited, versions.behavior).mismatches.map((m) => m.field),
+  ).toEqual(["wpm"]);
 });
 it("shares one instance and reports engine errors as EngineFailure", () => {
   expect(serverAudit()).toBe(serverAudit());
   const log = { ...toEngineLog(recording.eventLog), version: 0 };
-  expect(() => serverAudit().verify(log, recording.completedEvent)).toThrow(
-    EngineFailure,
-  );
+  expect(() =>
+    serverAudit().verify(log, recording.completedEvent, versions.behavior),
+  ).toThrow(EngineFailure);
 });
 it("answers statistics and rule queries", () => {
   const audit = serverAudit();
@@ -53,4 +56,12 @@ it("answers statistics and rule queries", () => {
       { wpm: { min: 20 } },
     ),
   ).toEqual(["WPM below 20"]);
+});
+it("skips comparison for clients on other scoring rules", () => {
+  const log = toEngineLog(recording.eventLog);
+  const edited = { ...recording.completedEvent, wpm: 250 };
+  expect(serverAudit().verify(log, edited, versions.behavior + 1)).toEqual({
+    sameBehavior: false,
+    mismatches: [],
+  });
 });
