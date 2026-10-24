@@ -136,14 +136,6 @@
     "vitest": "catalog:",
     "wrangler": "4.146.0"
   },
-  "lint-staged": {
-    "*": [
-      "vp fmt --no-error-on-unmatched-pattern"
-    ],
-    "*.{ts,js,tsx}": [
-      "vp lint --type-aware --type-check --format agent"
-    ]
-  },
   "browserslist": [
     "baseline widely available and > 0.002%"
   ],

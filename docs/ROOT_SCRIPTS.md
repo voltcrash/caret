@@ -6,7 +6,7 @@ dev server. Production/staging build, artifact checks and deployment commands
 live in @oxytype/frontend.
 
 Other workspace aggregates remain unchanged. Package aliases stay when CI, contributor
-docs, hooks, lint-staged, or AGENTS.md use them. All filtered root scripts were
+docs, hooks, `vp staged`, or AGENTS.md use them. All filtered root scripts were
 searched across tracked files before removing unused aliases.
 
 Removed aliases:

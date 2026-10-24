@@ -1,1 +1,1 @@
-vp run pre-commit
+vp staged
