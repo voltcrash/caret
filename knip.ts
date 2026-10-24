@@ -58,8 +58,6 @@ export default {
         "stories/**/*.{stories.ts,stories.tsx,mdx}",
       ],
       project: [".storybook/**/*.{ts,tsx}", "stories/**/*.{ts,tsx,css}"],
-      // Storybook resolves this addon by name in .storybook/main.ts.
-      ignoreDependencies: ["@storybook/addon-links"],
     },
     "packages/release": {
       entry: ["src/production-validation.js", "__tests__/*.spec.js"],
