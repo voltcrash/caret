@@ -19,6 +19,8 @@ import { getResultVisible } from "../../../ts/states/test";
 import { hashResult } from "../../../ts/utils/result-hash";
 
 import { CompletedEvent } from "@oxytype/schemas/results";
+import type { WebLog } from "@oxytype/typing-engine/text";
+import { encodeEventLog } from "./event-log-transport";
 
 import { getFunbox } from "@oxytype/funbox";
 
@@ -30,16 +32,18 @@ import { getMutableConfig } from "../../../ts/config/store";
 const retrySavingState = appObject(
   createAccountOwned<RetrySaving>(() => ({
     completedEvent: null,
+    eventLog: null,
     canRetry: false,
   })),
 );
 type RetrySaving = {
   completedEvent: CompletedEvent | null;
+  eventLog: WebLog | null;
   canRetry: boolean;
 };
 
 export async function retrySavingResult(): Promise<void> {
-  const { completedEvent } = retrySavingState;
+  const { completedEvent, eventLog } = retrySavingState;
 
   if (completedEvent === null) {
     showNoticeNotification(
@@ -63,12 +67,14 @@ export async function retrySavingResult(): Promise<void> {
 
   showNoticeNotification("Retrying to save...");
 
-  await saveResult(completedEvent, true);
+  await saveResult(completedEvent, true, eventLog ?? undefined);
 }
 
+/** `eventLog` is the log the result was scored from; the server replays it. */
 export async function saveResult(
   completedEvent: CompletedEvent,
   isRetrying: boolean,
+  eventLog?: WebLog,
 ): Promise<null | OperationResult<OperationResponse<"results.add">>> {
   const account = captureAccount();
   const presentation = captureTypingRoute();
@@ -91,6 +97,8 @@ export async function saveResult(
   const unhashed: Omit<CompletedEvent, "hash"> & { hash?: string } = result;
   delete unhashed.hash;
   result.hash = await hashResult(result);
+  const encodedLog =
+    eventLog === undefined ? undefined : await encodeEventLog(eventLog, result);
   if (!account.isCurrent()) return null;
 
   setAccountButtonSpinner(true);
@@ -98,7 +106,12 @@ export async function saveResult(
   let response: OperationResult<OperationResponse<"results.add">>;
   try {
     response = await trackResultSave(
-      operation("results.add", { body: { result } }),
+      operation("results.add", {
+        body:
+          encodedLog === undefined
+            ? { result }
+            : { result, eventLog: encodedLog },
+      }),
     );
   } catch (error) {
     if (!account.isCurrent()) return null;
@@ -116,6 +129,7 @@ export async function saveResult(
       if (presentation.isCurrent()) Result.updateRetrySaving(true);
       if (!isRetrying) {
         retrySavingState.completedEvent = result;
+        retrySavingState.eventLog = eventLog ?? null;
       }
     }
     console.log("Error saving result", result);

@@ -100,6 +100,7 @@ describe("service-worker precache", () => {
       },
       glue: chunk("assets/glue-hash.js", null),
       wasm: { type: "asset" as const, fileName: "assets/engine_bg-hash.wasm" },
+      audit: { type: "asset" as const, fileName: "assets/audit_bg-hash.wasm" },
     };
     const files = precacheFromBundle(nativeBundle, [engine]);
     expect(files).toEqual(
@@ -110,6 +111,8 @@ describe("service-worker precache", () => {
       ]),
     );
     expect(files).not.toContain("/assets/settings-only.js");
+    // diagnostics only: the event log viewer fetches it when opened
+    expect(files).not.toContain("/assets/audit_bg-hash.wasm");
     expect(() => precacheFromBundle(bundle, [engine])).toThrow(engine);
   });
 

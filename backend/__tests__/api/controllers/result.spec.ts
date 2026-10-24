@@ -27,6 +27,11 @@ import { BASE_CONFIGURATION } from "../../../src/constants/base-configuration";
 import { consistency } from "../../../src/anticheat/result";
 import { getTimingFingerprint } from "../../../src/anticheat/replay";
 import { completedEvent as typedEvent } from "../../__testData__/completed-event";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { gzipSync } from "node:zlib";
+import { versions } from "@oxytype/typing-engine/versions";
+import type { ResultEventLog } from "@oxytype/contracts/results";
 
 const { mockApp, uid } = setup();
 const configuration = Configuration.getCachedConfiguration();
@@ -1314,6 +1319,113 @@ describe("result controller test", () => {
         });
       });
 
+      describe("event log verification", () => {
+        // the cached configuration is the shared base object; restore it
+        beforeEach(async () => {
+          await setAnticheatConfig({ logVerification: { enabled: true } });
+        });
+        // an unchanged browser recording and the result it produced
+        const recording = JSON.parse(
+          readFileSync(
+            resolve(
+              __dirname,
+              "../../../../packages/typing-fixtures/reference/keystrokes/time-15.json",
+            ),
+            "utf8",
+          ),
+        ) as { eventLog: unknown; completedEvent: CompletedEvent };
+        const recorded = (
+          overrides: Partial<CompletedEvent> = {},
+        ): CompletedEvent => ({
+          ...recording.completedEvent,
+          uid,
+          hash: "hash",
+          ...overrides,
+        });
+        // passes every structural check; only the log shows the hold was edited
+        const edited = (): CompletedEvent => {
+          const keyDuration = [
+            ...(recording.completedEvent.keyDuration as number[]),
+          ];
+          keyDuration[5] = (keyDuration[5] as number) + 30;
+          return recorded({ keyDuration });
+        };
+        const eventLog = (
+          behaviorVersion = versions.behavior,
+        ): ResultEventLog => ({
+          behaviorVersion,
+          log: gzipSync(JSON.stringify(recording.eventLog)).toString("base64"),
+        });
+
+        it("should accept a result its event log reproduces", async () => {
+          await mockApp
+            .post("/results")
+            .set("Authorization", `Bearer ${uid}`)
+            .send({ result: recorded(), eventLog: eventLog() })
+            .expect(200);
+          expect(addImportantLogMock).not.toHaveBeenCalledWith(
+            "anticheat_rejected",
+            expect.anything(),
+            uid,
+          );
+        });
+        it("should reject metrics the event log does not produce", async () => {
+          //WHEN
+          const { body } = await mockApp
+            .post("/results")
+            .set("Authorization", `Bearer ${uid}`)
+            .send({ result: edited(), eventLog: eventLog() })
+            .expect(463);
+
+          //THEN
+          expect(body.message).toEqual(
+            "Result data doesn't match its event log",
+          );
+          expect(addImportantLogMock).toHaveBeenCalledWith(
+            "anticheat_rejected",
+            expect.objectContaining({
+              reason: "event-log-mismatch",
+              mismatches: [expect.objectContaining({ field: "keyDuration" })],
+            }),
+            uid,
+          );
+          expectNoProgress();
+        });
+        it("should not check when disabled", async () => {
+          await setAnticheatConfig({ logVerification: { enabled: false } });
+          await mockApp
+            .post("/results")
+            .set("Authorization", `Bearer ${uid}`)
+            .send({ result: edited(), eventLog: eventLog() })
+            .expect(200);
+        });
+        it("should accept and log results scored by other rules", async () => {
+          await mockApp
+            .post("/results")
+            .set("Authorization", `Bearer ${uid}`)
+            .send({
+              result: edited(),
+              eventLog: eventLog(versions.behavior + 1),
+            })
+            .expect(200);
+          expect(addLogMock).toHaveBeenCalledWith(
+            "event_log_unverified",
+            expect.objectContaining({ reason: "other-behavior" }),
+            uid,
+          );
+        });
+        it("should refuse oversized event logs", async () => {
+          const { body } = await mockApp
+            .post("/results")
+            .set("Authorization", `Bearer ${uid}`)
+            .send({
+              result: recorded(),
+              eventLog: { behaviorVersion: 1, log: "A".repeat(64 * 1024 + 4) },
+            })
+            .expect(422);
+          expect(body.message).toEqual("Invalid request data schema");
+        });
+      });
       describe("replay check", () => {
         it("should reject replayed key timings", async () => {
           //GIVEN

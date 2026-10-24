@@ -1,4 +1,4 @@
-import { computeDistStats } from "@oxytype/util/timing-stats";
+import type { Audit } from "@oxytype/typing-engine/audit";
 
 import type { MetricKind } from "./stat-notes";
 
@@ -98,9 +98,10 @@ export type Histogram = {
 export function getBucketDivisor(
   spec: BucketSpec,
   scaleValues: number[],
+  audit: Audit,
 ): number {
   if (!spec.relativeToMedian) return 1;
-  const scale = computeDistStats(scaleValues);
+  const scale = audit.distribution(scaleValues);
   return scale !== null && scale.p50 > 0 ? scale.p50 : 1;
 }
 

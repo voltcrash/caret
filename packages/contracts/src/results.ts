@@ -55,8 +55,36 @@ export const GetResultByIdResponseSchema = responseWithData(ResultSchema);
 
 export type GetResultByIdResponse = z.infer<typeof GetResultByIdResponseSchema>;
 
+/**
+ * Leaves room for the result itself under the 100 KiB request ceiling. Clients
+ * omit the log rather than send a larger one.
+ */
+export const MAX_RESULT_EVENT_LOG_CHARS = 64 * 1024;
+
+export const ResultEventLogSchema = z
+  .object({
+    behaviorVersion: z
+      .number()
+      .int()
+      .nonnegative()
+      .describe(
+        "Scoring rules version of the engine that produced the result.",
+      ),
+    log: z
+      .string()
+      .min(1)
+      .max(MAX_RESULT_EVENT_LOG_CHARS)
+      .regex(/^[A-Za-z0-9+/]+={0,2}$/)
+      .describe("Base64 of the gzip-compressed web event log JSON."),
+  })
+  .strict();
+export type ResultEventLog = z.infer<typeof ResultEventLogSchema>;
+
 export const AddResultRequestSchema = z.object({
   result: CompletedEventSchema,
+  eventLog: ResultEventLogSchema.optional().describe(
+    "The test's event log. The server replays it and rejects a result whose metrics disagree.",
+  ),
 });
 export type AddResultRequest = z.infer<typeof AddResultRequestSchema>;
 

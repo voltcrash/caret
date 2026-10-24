@@ -1,5 +1,7 @@
 //! Platform-independent typing rules. Hosts provide content, observations and time.
 pub mod analysis;
+pub mod audit;
+pub mod challenges;
 pub mod content;
 pub mod custom_progress;
 pub mod error;
@@ -21,8 +23,11 @@ pub mod results;
 pub mod session;
 pub mod stats;
 pub mod text;
+pub mod timing_review;
+pub mod timing_stats;
 pub mod transforms;
 pub mod validation;
+pub mod verification;
 pub mod weak_spot;
 pub mod wire;
 

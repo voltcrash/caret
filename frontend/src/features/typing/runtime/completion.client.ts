@@ -246,7 +246,7 @@ export async function finish(
 
       completedEvent.uid = user.uid;
 
-      savingResultPromise = saveResult(completedEvent, false);
+      savingResultPromise = saveResult(completedEvent, false, eventLog);
       void savingResultPromise.then((response) => {
         if (response?.status === 200) {
           void AnalyticsController.log("testCompleted");

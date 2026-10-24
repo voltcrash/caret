@@ -1,12 +1,12 @@
 import type { EventLog } from "@oxytype/web-shared/events/types";
 
-import { computeCrossStats } from "@oxytype/util/timing-stats";
 import { createMemo, JSXElement, Show } from "solid-js";
 
 import {
   getKeypressDurations,
   getKeypressSpacing,
 } from "../../../../features/typing/analysis.client";
+import { requireBrowserAudit } from "../../../../features/typing/audit.client";
 import {
   getDistributionOpen,
   setDistributionOpen,
@@ -38,7 +38,8 @@ export function DistributionPanel(props: {
   // these need both arrays at once, so they sit under the two charts rather
   // than inside either. durationsRaw keeps its 0 placeholders here on purpose -
   // dropping them would shift every later index out of alignment with spacing
-  const cross = createMemo(() => computeCrossStats(spacing(), durationsRaw()));
+  const audit = requireBrowserAudit();
+  const cross = createMemo(() => audit.cross(spacing(), durationsRaw()));
 
   const open = getDistributionOpen;
   const setOpen = setDistributionOpen;

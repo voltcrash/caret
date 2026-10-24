@@ -23,16 +23,23 @@ function checkPayload(): void {
       resolve(root, "docs/rust-engine/performance-budgets.json"),
       "utf8",
     ),
-  ) as { wasmRawBytes: number; wasmGzipBytes: number };
-  const wasm = readFileSync(resolve(output, "engine_bg.wasm"));
-  const gzipBytes = gzipSync(wasm, { level: 6 }).byteLength;
-  if (
-    wasm.byteLength > budgets.wasmRawBytes ||
-    gzipBytes > budgets.wasmGzipBytes
-  ) {
-    throw new Error(
-      `Typing engine payload exceeds frozen budget: ${wasm.byteLength} raw / ${gzipBytes} gzip bytes`,
-    );
+  ) as {
+    wasmRawBytes: number;
+    wasmGzipBytes: number;
+    auditWasmRawBytes: number;
+    auditWasmGzipBytes: number;
+  };
+  for (const [name, raw, gzip] of [
+    ["engine", budgets.wasmRawBytes, budgets.wasmGzipBytes],
+    ["audit", budgets.auditWasmRawBytes, budgets.auditWasmGzipBytes],
+  ] as const) {
+    const wasm = readFileSync(resolve(output, `${name}_bg.wasm`));
+    const gzipBytes = gzipSync(wasm, { level: 6 }).byteLength;
+    if (wasm.byteLength > raw || gzipBytes > gzip) {
+      throw new Error(
+        `Typing ${name} payload exceeds frozen budget: ${wasm.byteLength} raw / ${gzipBytes} gzip bytes`,
+      );
+    }
   }
 }
 function files(directory: string): string[] {
@@ -55,6 +62,7 @@ function fingerprint(): string {
     "scripts/engine.ts",
     "crates/typing-engine/Cargo.toml",
     "crates/typing-engine-wasm/Cargo.toml",
+    "crates/typing-audit-wasm/Cargo.toml",
   ].map((path) => resolve(root, path));
   // Tests and terminal sources cannot affect Wasm/binding output. Keep native
   // iteration independent; all actual runtime data, declarations and build inputs
@@ -63,12 +71,17 @@ function fingerprint(): string {
     "crates/typing-engine/src",
     "crates/typing-engine/data",
     "crates/typing-engine-wasm/src",
+    "crates/typing-audit-wasm/src",
     ".cargo",
   ]) {
     const directory = resolve(root, path);
     if (existsSync(directory)) sources.push(...files(directory));
   }
-  for (const crate of ["typing-engine", "typing-engine-wasm"]) {
+  for (const crate of [
+    "typing-engine",
+    "typing-engine-wasm",
+    "typing-audit-wasm",
+  ]) {
     const buildScript = resolve(root, "crates", crate, "build.rs");
     if (existsSync(buildScript)) sources.push(buildScript);
   }
@@ -138,6 +151,12 @@ switch (process.argv[2]) {
         "--locked",
       ]);
     }
+    // The audit binding is a separate module: only the server and the event
+    // log viewer load it, so the typing payload budget stays untouched.
+    const bindings = [
+      { crate: "typing-engine-wasm", name: "engine" },
+      { crate: "typing-audit-wasm", name: "audit" },
+    ];
     run("cargo", [
       "build",
       "--locked",
@@ -147,41 +166,42 @@ switch (process.argv[2]) {
       resolve(root, "target"),
       "--target",
       "wasm32-unknown-unknown",
-      "-p",
-      "typing-engine-wasm",
+      ...bindings.flatMap(({ crate }) => ["-p", crate]),
     ]);
     const staging = mkdtempSync(
       resolve(root, "target/typing-engine-bindings-"),
     );
-    run("wasm-bindgen", [
-      "--target",
-      "web",
-      "--out-dir",
-      staging,
-      "--out-name",
-      "engine",
-      resolve(
-        root,
-        "target/wasm32-unknown-unknown/wasm/typing_engine_wasm.wasm",
-      ),
-    ]);
     const binaryen = dirname(
       createRequire(import.meta.url).resolve("binaryen/package.json"),
     );
-    const wasm = resolve(staging, "engine_bg.wasm");
-    run(process.execPath, [
-      resolve(binaryen, "bin/wasm-opt"),
-      wasm,
-      "-Oz",
-      "--converge",
-      "--enable-bulk-memory",
-      "--enable-nontrapping-float-to-int",
-      "--enable-sign-ext",
-      "--enable-multivalue",
-      "--enable-reference-types",
-      "-o",
-      wasm,
-    ]);
+    for (const { crate, name } of bindings) {
+      run("wasm-bindgen", [
+        "--target",
+        "web",
+        "--out-dir",
+        staging,
+        "--out-name",
+        name,
+        resolve(
+          root,
+          `target/wasm32-unknown-unknown/wasm/${crate.replaceAll("-", "_")}.wasm`,
+        ),
+      ]);
+      const wasm = resolve(staging, `${name}_bg.wasm`);
+      run(process.execPath, [
+        resolve(binaryen, "bin/wasm-opt"),
+        wasm,
+        "-Oz",
+        "--converge",
+        "--enable-bulk-memory",
+        "--enable-nontrapping-float-to-int",
+        "--enable-sign-ext",
+        "--enable-multivalue",
+        "--enable-reference-types",
+        "-o",
+        wasm,
+      ]);
+    }
     run("cargo", [
       "run",
       "--locked",

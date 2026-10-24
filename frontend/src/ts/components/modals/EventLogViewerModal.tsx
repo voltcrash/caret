@@ -3,6 +3,7 @@ import type { EventLog } from "@oxytype/web-shared/events/types";
 import { JSXElement, Show, createSignal, onCleanup } from "solid-js";
 
 import { getInspection } from "../../../features/typing/analysis.client";
+import { getBrowserAudit } from "../../../features/typing/audit.client";
 import { getBrowserEngine } from "../../../features/typing/engine.client";
 import {
   getError,
@@ -38,7 +39,8 @@ export function EventLogViewerModal(): JSXElement {
     setLoading(true);
     try {
       const parsed = parseContext(json);
-      await getBrowserEngine().load();
+      // timing statistics come from the separate audit module
+      await Promise.all([getBrowserEngine().load(), getBrowserAudit().load()]);
       if (generation !== current) return;
       getInspection(parsed);
       setEventLog(parsed);

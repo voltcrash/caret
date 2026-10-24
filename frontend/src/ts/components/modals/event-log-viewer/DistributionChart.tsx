@@ -1,7 +1,7 @@
-import { computeBellness, computeDistStats } from "@oxytype/util/timing-stats";
 import { type AnnotationOptions } from "chartjs-plugin-annotation";
 import { createMemo, JSXElement, Show } from "solid-js";
 
+import { requireBrowserAudit } from "../../../../features/typing/audit.client";
 import { getTheme } from "../../../states/theme";
 import { ChartJs } from "../../common/ChartJs";
 import "./chart-setup";
@@ -37,7 +37,9 @@ export function DistributionChart(props: {
   scaleValues: number[];
   note?: string;
 }): JSXElement {
-  const stats = createMemo(() => computeDistStats(props.values));
+  // the viewer opens only once the audit module has loaded
+  const audit = requireBrowserAudit();
+  const stats = createMemo(() => audit.distribution(props.values));
 
   const spec = (): BucketSpec => BUCKETS[props.kind];
 
@@ -45,7 +47,9 @@ export function DistributionChart(props: {
   // before being bucketed. taken from the whole log rather than what is
   // currently visible, so the buckets do not slide around underneath the bars
   // while the timeline plays
-  const divisor = createMemo(() => getBucketDivisor(spec(), props.scaleValues));
+  const divisor = createMemo(() =>
+    getBucketDivisor(spec(), props.scaleValues, audit),
+  );
 
   const histogram = createMemo(() =>
     buildHistogram(spec(), props.values, divisor()),
@@ -54,7 +58,7 @@ export function DistributionChart(props: {
   // gaps between keys are multiplicative so the bell is expected on their
   // logs, hold times are already on the scale they are symmetric on
   const bell = createMemo(() =>
-    computeBellness(props.values, props.kind === "spacing"),
+    audit.bellness(props.values, props.kind === "spacing"),
   );
 
   const limits = (): SuspicionLimits => SUSPICIOUS[props.kind];

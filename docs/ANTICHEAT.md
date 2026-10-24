@@ -64,11 +64,41 @@ coarsened clocks. Repeats return 466 with an `anticheat_rejected` audit
 from user responses. Exact duplicate submissions are also rejected by the
 database's per-user submission-hash constraint.
 
+## Event log replay
+
+The web client attaches the event log its result was scored from as
+`eventLog`: `{ behaviorVersion, log }`, where `log` is base64 of the gzipped
+web log, at most 64 KiB so result and log fit the 100 KiB request ceiling.
+Logs that do not fit, mostly from long tests, are omitted, as on clients
+without `CompressionStream`; such results save unverified, as before.
+
+With `anticheat.logVerification` (enabled), `anticheat/event-log.ts` inflates
+the log (at most 4 MiB) and replays it through the Rust engine in the audit
+Wasm module (`verification.rs`). The engine validates the log, rederives WPM,
+raw WPM, character stats and total, accuracy, duration, first/last key
+offsets, AFK time, the three consistencies, key overlap, chart data and both
+key timelines, and checks mode, mode2 and bailout against the log context.
+Key and chart arrays are skipped when the result carries `toolong`.
+Clients score with this same engine, so honest results match exactly.
+
+- Mismatch: 463 `Result data doesn't match its event log` with an
+  `anticheat_rejected` audit (`event-log-mismatch`) listing each field and its
+  submitted and replayed values; arrays are logged as lengths. No strike.
+- Unverifiable: an `event_log_unverified` log (`undecodable`, `invalid-log`, or
+  `other-behavior` for a client on other scoring rules, such as a tab open
+  across a deploy), and the result is accepted.
+
+The log is client data too. A forger can build a self-consistent fake log, but
+then every metric, chart point and key timing must come from one coherent event
+sequence. Target words are not checked against the language or a seed.
+
 ## Review signals (log only)
 
 `anticheat.review` (enabled, results at or above 100 WPM) describes the
-interior gaps and holds of every saved result with the shared timing statistics
-in `@oxytype/util/timing-stats`, the same code as the event log viewer. Signals
+interior gaps and holds of every saved result with the Rust timing statistics
+and review in `crates/typing-engine` (`timing_stats.rs`, `timing_review.rs`),
+served through the audit Wasm module, the same code as the event log viewer.
+Signals
 name properties that generators commonly have and human samples rarely show:
 
 | Signal | Raised when |
@@ -179,8 +209,8 @@ before tightening thresholds or enabling enforcement.
 
 ## Limits and monitoring
 
-This is consistency validation, a deliberately narrow bot heuristic, per-user
-replay detection and log-only review. Client telemetry remains forgeable;
+This is consistency validation, event log replay, a deliberately narrow bot
+heuristic, per-user replay detection and log-only review. Client telemetry remains forgeable;
 coherent fabricated scores, freshly generated human-like timing, recordings
 from another account and recordings whose perturbations cross whole-ms rounding
 boundaries can
@@ -198,7 +228,8 @@ review real user samples before tightening rules or acting on signals.
 
 Follow [staging setup](STAGING_SETUP.md) to configure credentials and repeat signup,
 save, refresh and sign-out/sign-in checks. Monitor `anticheat_rejected` audits
-by reason, `anticheat_flagged` audits by signal and important-audit growth.
+by reason, `anticheat_flagged` audits by signal, `event_log_unverified` logs by
+reason and important-audit growth.
 
 Apply pending D1 migrations before deploying.
 Watch the summary endpoint, enable `samples.randomRate` briefly (for example

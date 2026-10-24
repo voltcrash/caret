@@ -92,10 +92,12 @@ export function precacheFromBundle(
     pending.push(...chunk.imports);
   }
   for (const output of Object.values(bundle)) {
-    // Document CSS is linked by URL from the root route, not imported.
+    // Document CSS is linked by URL from the root route, not imported. The
+    // audit module serves only the event log viewer and loads on demand.
     if (
       output.type === "asset" &&
-      /\.(?:css|woff2|wasm)$/.test(output.fileName)
+      /\.(?:css|woff2|wasm)$/.test(output.fileName) &&
+      !/(?:^|\/)audit_bg-[^/]*\.wasm$/.test(output.fileName)
     ) {
       files.add(output.fileName);
     }

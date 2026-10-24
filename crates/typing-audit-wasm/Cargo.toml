@@ -1,0 +1,19 @@
+[package]
+name = "typing-audit-wasm"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Result audit binding for the server and event log viewer"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+typing-engine = { path = "../typing-engine" }
+serde_json.workspace = true
+wasm-bindgen.workspace = true
+
+[lints]
+workspace = true

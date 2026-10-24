@@ -48,3 +48,10 @@ Generated events discriminate input/key/timer/composition payloads. Result/chart
 `BrowserReplay` owns playback cursor/prompt; step returns word deltas/sound/next time, seek returns a snapshot. Hosts schedule and render. Historical UTF-16 indexing quirks stay versioned and unchanged.
 
 See `docs/rust-engine/contract.md`, `features.md`, `progress.md` and performance artifacts for exact compatibility decisions, bounds and remaining gates. Wasm linear memory retains its high-water allocation after disposal/reset; the frozen 2,000-unit reset budget and longer growth/ownership soaks are reported separately.
+
+## Result audit
+
+`crates/typing-audit-wasm` is a second, separately budgeted module for hosts that judge results instead of running tests. `createAudit(module)` (`@oxytype/typing-engine/audit`) wraps it with synchronous typed queries: replay `verify`, timing `review`, `distribution`/`bellness`/`cross`/`probit` statistics, `challenge` requirements and funbox `compatible`.
+
+- Server: `serverAudit()` from `audit.server`. The `#audit-module` import resolves to a precompiled `.wasm?module` under the `workerd` condition and to a synchronous Node compile elsewhere (tests, calibration scripts).
+- Browser: `loadAudit(signal)` from `audit.client` fetches the module on demand. The caller's owner retains the returned audit; the typing payload never includes it.

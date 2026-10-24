@@ -19,6 +19,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         serde_json::to_vec_pretty(&typing_engine::Config::default())?,
     )?;
     std::fs::write(
+        root.parent().unwrap().join("versions.json"),
+        serde_json::to_vec_pretty(&serde_json::json!({
+            "binding": typing_engine::BINDING_VERSION,
+            "behavior": typing_engine::BEHAVIOR_VERSION,
+            "eventLog": typing_engine::EVENT_LOG_VERSION,
+        }))?,
+    )?;
+    std::fs::write(
         root.parent().unwrap().join("funboxes.json"),
         serde_json::to_vec_pretty(typing_engine::funboxes::all())?,
     )?;
@@ -37,6 +45,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     typing_engine::stats::Log::export_all(&config)?;
     typing_engine::analysis::Query::export_all(&config)?;
     typing_engine::analysis::Response::export_all(&config)?;
+    typing_engine::audit::Query::export_all(&config)?;
+    typing_engine::audit::Response::export_all(&config)?;
     typing_engine::replay::Word::export_all(&config)?;
     typing_engine::replay::Seek::export_all(&config)?;
     typing_engine::replay::PlaybackSnapshot::export_all(&config)?;

@@ -15,8 +15,6 @@ export function getChallenges(): Challenge[] {
 export function getChallenge(name: ChallengeName): Challenge {
   return map[name];
 }
-export type { Challenge, ChallengeSettings, ChallengeResult } from "./types";
-
-export { verifyChallenge } from "./verification";
+export type { Challenge, ChallengeSettings } from "./types";
 
 export { challengeSetup } from "./setup";

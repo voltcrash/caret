@@ -2,6 +2,8 @@
   "sourceCommit": "b5bc52672",
   "wasmRawBytes": 1048576,
   "wasmGzipBytes": 307200,
+  "auditWasmRawBytes": 524288,
+  "auditWasmGzipBytes": 204800,
   "glueRawBytes": 32768,
   "bindingP95Ms": 0.1,
   "initializationP95Ms": 100,

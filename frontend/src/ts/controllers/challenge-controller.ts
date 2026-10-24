@@ -1,4 +1,5 @@
 import { createAppOwned } from "../../app/application";
+import { getBrowserAudit } from "../../features/typing/audit.client";
 import { captureTypingMount } from "../../features/typing/scope";
 import {
   showErrorNotification,
@@ -40,11 +41,19 @@ export async function verify(
   const loadedChallenge = getLoadedChallenge();
   if (loadedChallenge === null) return null;
   try {
-    const { verifyChallenge } = await import("@oxytype/challenges");
-    const failReasons = verifyChallenge(
-      result,
-      getMutableConfig(),
-      loadedChallenge,
+    const audit = await getBrowserAudit().load();
+    const failReasons = audit.challenge(
+      {
+        wpm: result.wpm,
+        acc: result.acc,
+        rawWpm: result.rawWpm,
+        consistency: result.consistency,
+        afkDuration: result.afkDuration,
+        testDuration: result.testDuration,
+        funbox: result.funbox,
+      },
+      { ...getMutableConfig() },
+      loadedChallenge.settings.requirements ?? null,
     );
     if (failReasons.length === 0) {
       showSuccessNotification(`${loadedChallenge.display} challenge passed!`);
@@ -80,6 +89,11 @@ export async function setup(challengeName: ChallengeName): Promise<boolean> {
   }
   const challenge = getChallenge(challengeName);
   const settings = challenge.settings;
+  // fetch the rules module now so verifying the result never waits on it;
+  // verify retries the download if this attempt fails
+  void getBrowserAudit()
+    .load()
+    .catch(() => undefined);
 
   let notitext;
   try {

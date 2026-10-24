@@ -1,4 +1,3 @@
-import type { CompletedEvent } from "@oxytype/schemas/results";
 import { ChallengeName } from "@oxytype/schemas/challenges";
 import {
   Config,
@@ -66,13 +65,3 @@ export type ChallengeSettings = {
     config?: Partial<Config>;
   };
 } & ChallengeParameter;
-export type ChallengeResult = Pick<
-  CompletedEvent,
-  | "wpm"
-  | "acc"
-  | "rawWpm"
-  | "consistency"
-  | "afkDuration"
-  | "testDuration"
-  | "funbox"
->;

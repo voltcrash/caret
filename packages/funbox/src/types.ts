@@ -1,6 +1,6 @@
 import { FunboxName } from "@oxytype/schemas/configs";
 
-export type FunboxForcedConfig = Record<string, string[] | boolean[]>;
+type FunboxForcedConfig = Record<string, string[] | boolean[]>;
 
 export type FunboxProperty =
   | "hasCssFile"

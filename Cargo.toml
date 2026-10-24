@@ -2,6 +2,7 @@
 members = [
   "crates/typing-engine",
   "crates/typing-engine-wasm",
+  "crates/typing-audit-wasm",
   "crates/oxytype-tui",
 ]
 resolver = "3"

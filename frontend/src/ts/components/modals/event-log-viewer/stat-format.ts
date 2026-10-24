@@ -1,4 +1,4 @@
-import type { QuantumFit, Significant } from "@oxytype/util/timing-stats";
+import type { QuantumFit, Significant } from "@oxytype/typing-engine/audit";
 
 /** placeholder shown for any stat that could not be computed */
 export const MISSING_STAT = "-";

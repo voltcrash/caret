@@ -5,15 +5,13 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "test": "vp test run",
     "madge": " madge --circular --extensions ts ./src",
     "ts-check": "vp lint . --type-aware --type-check --format agent",
     "lint": "vp run madge && vp lint . --type-aware --type-check --format agent",
     "lint-fast": "vp lint . --format agent"
   },
   "dependencies": {
-    "@oxytype/schemas": "workspace:*",
-    "@oxytype/util": "workspace:*"
+    "@oxytype/schemas": "workspace:*"
   },
   "devDependencies": {
     "@oxytype/typescript-config": "workspace:*",

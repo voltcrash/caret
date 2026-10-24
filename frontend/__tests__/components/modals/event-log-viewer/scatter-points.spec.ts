@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
+import { serverAudit } from "@oxytype/typing-engine/audit.server";
 
 import {
   getCharPositionPoints,
@@ -165,11 +166,14 @@ describe("getPerKeyPoints", () => {
 
 describe("getLognormalFit", () => {
   it("needs at least 5 values", () => {
-    expect(getLognormalFit([1, 2, 3, 4])).toEqual({ points: [], sigma: null });
+    expect(getLognormalFit([1, 2, 3, 4], serverAudit())).toEqual({
+      points: [],
+      sigma: null,
+    });
   });
 
   it("fits a constant sample exactly", () => {
-    const fit = getLognormalFit([100, 100, 100, 100, 100]);
+    const fit = getLognormalFit([100, 100, 100, 100, 100], serverAudit());
     expect(fit.sigma).toBe(0);
     for (const point of fit.points) {
       expect(point.x).toBeCloseTo(100);
@@ -178,7 +182,7 @@ describe("getLognormalFit", () => {
   });
 
   it("returns sorted observations with ascending quantiles", () => {
-    const fit = getLognormalFit([300, 100, 200, 150, 120, 0]);
+    const fit = getLognormalFit([300, 100, 200, 150, 120, 0], serverAudit());
     expect(fit.points.map((p) => p.y)).toEqual([100, 120, 150, 200, 300]);
     const xs = fit.points.map((p) => p.x);
     expect([...xs].sort((a, b) => a - b)).toEqual(xs);

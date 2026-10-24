@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
+import { serverAudit } from "@oxytype/typing-engine/audit.server";
 
 import {
   bucketIndex,
@@ -78,15 +79,17 @@ describe("categoryPosition", () => {
 
 describe("getBucketDivisor", () => {
   it("is 1 for absolute buckets", () => {
-    expect(getBucketDivisor(absolute, [100, 200, 300])).toBe(1);
+    expect(getBucketDivisor(absolute, [100, 200, 300], serverAudit())).toBe(1);
   });
 
   it("is the median for relative buckets", () => {
-    expect(getBucketDivisor(relative, [100, 200, 300])).toBe(200);
+    expect(getBucketDivisor(relative, [100, 200, 300], serverAudit())).toBe(
+      200,
+    );
   });
 
   it("falls back to 1 without data", () => {
-    expect(getBucketDivisor(relative, [])).toBe(1);
+    expect(getBucketDivisor(relative, [], serverAudit())).toBe(1);
   });
 });
 

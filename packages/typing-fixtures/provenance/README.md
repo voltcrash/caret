@@ -29,3 +29,14 @@ imports deliberately retain their original paths. Run only from the source commi
 recorded by each immutable output / migration progress record. The entire original
 TypeScript implementation and unit suites remain in Git at `1f69247bf`; they are
 not installed, built or maintained after retirement.
+
+`capture-timing-stats-oracle.ts.txt`: executed once against `packages/util`
+timing-stats and backend `signals.ts` at `c95d5910b`, before both were retired.
+Records probit, distribution, bellness, cross-channel and review outputs over
+synthetic human-like, uniform, fixed, pooled, coarse and edge-case series.
+`timing_stats.rs` compares every output within libm last-place tolerance.
+
+`capture-challenges-oracle.ts.txt`: executed once against `verifyChallenge` at
+`c95d5910b`, before it was retired. Records 590 cases: every catalog challenge
+and synthetic edge requirements across five results and two configs.
+`challenges.rs` compares every reason list exactly.

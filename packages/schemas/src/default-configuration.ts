@@ -102,5 +102,9 @@ export const BASE_CONFIGURATION: Configuration = {
       enabled: true,
       maxFingerprints: 50,
     },
+    // Honest clients score with the same engine, so logs replay exactly.
+    logVerification: {
+      enabled: true,
+    },
   },
 };
