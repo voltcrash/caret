@@ -93,6 +93,8 @@ impl TerminalGuard {
         Ok((guard, terminal))
     }
     pub fn resume_if_requested(&self, terminal: &mut DefaultTerminal) -> Result<bool> {
+        #[cfg(not(unix))]
+        let _ = terminal;
         if !self.suspend.swap(false, Ordering::SeqCst) {
             return Ok(false);
         }

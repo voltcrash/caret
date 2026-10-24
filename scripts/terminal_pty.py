@@ -112,6 +112,14 @@ class Child:
     def send(self, text):
         os.write(self.master, text)
 
+    def wait_exit(self, timeout=5):
+        # A real emulator continuously consumes output. macOS PTYs have a small
+        # output buffer; waiting without reading can block the app before quit.
+        deadline = time.monotonic() + timeout
+        while self.process.poll() is None and time.monotonic() < deadline:
+            self.read(0.02)
+        return self.process.wait(timeout=0.1)
+
     def restored(self):
         current = termios.tcgetattr(self.slave)
         mask = termios.ICANON | termios.ECHO
@@ -125,7 +133,7 @@ class Child:
         if self.process.poll() is None:
             os.kill(self.process.pid, signal.SIGCONT)
             self.process.kill()
-            self.process.wait(timeout=3)
+            self.wait_exit(timeout=3)
         os.close(self.master)
         os.close(self.slave)
         self.profile.cleanup()
@@ -164,7 +172,7 @@ def run(binary, release=False):
         os.kill(child.process.pid, signal.SIGWINCH)
         child.until(b"Oxytype")
         child.send(b"\x11")
-        assert child.process.wait(timeout=5) == 0
+        assert child.wait_exit() == 0
         child.restored()
     finally:
         child.close()
@@ -181,7 +189,7 @@ def run(binary, release=False):
             child.send(b"\x1b[19~")
             child.until(b"F5 new test")
             child.send(b"\x11")
-            assert child.process.wait(timeout=5) == 0
+            assert child.wait_exit() == 0
             child.restored()
         finally:
             child.close()
@@ -202,7 +210,7 @@ def run(binary, release=False):
         child.send(b"two")
         child.until(b"F5 new test")
         child.send(b"\x11")
-        assert child.process.wait(timeout=5) == 0
+        assert child.wait_exit() == 0
         child.restored()
     finally:
         child.close()
@@ -221,7 +229,7 @@ def run(binary, release=False):
         child.send(b"\x1b[C")
         child.until(b"step 1")
         child.send(b"\x11")
-        assert child.process.wait(timeout=5) == 0
+        assert child.wait_exit() == 0
         child.restored()
     finally:
         child.close()
@@ -236,7 +244,7 @@ def run(binary, release=False):
         child.until(b"Keyboard: enhanced")
         child.until(b"release observed: true")
         child.send(b"\x11")
-        assert child.process.wait(timeout=5) == 0
+        assert child.wait_exit() == 0
         child.restored()
         assert b"\x1b[<1u" in child.output, "enhanced flags not popped"
     finally:
@@ -246,7 +254,7 @@ def run(binary, release=False):
         child = Child(binary, failure if failure in ("error", "panic") else None)
         try:
             if failure in ("error", "panic"):
-                assert child.process.wait(timeout=5) != 0
+                assert child.wait_exit() != 0
             else:
                 child.until(b"Oxytype")
                 if failure == "signal":
@@ -265,7 +273,7 @@ def run(binary, release=False):
                     os.kill(child.process.pid, signal.SIGCONT)
                     child.until(b"Oxytype")
                     child.send(b"\x11")
-                assert child.process.wait(timeout=5) == 0
+                assert child.wait_exit() == 0
             child.restored()
         finally:
             child.close()
