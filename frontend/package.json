@@ -112,7 +112,7 @@
     "@tanstack/solid-query-devtools": "5.104.5",
     "@testing-library/dom": "10.4.2",
     "@testing-library/jest-dom": "7.0.1",
-    "@testing-library/user-event": "14.6.7",
+    "@testing-library/user-event": "14.6.8",
     "@types/canvas-confetti": "1.9.0",
     "@types/damerau-levenshtein": "1.0.2",
     "@types/howler": "2.2.13",
