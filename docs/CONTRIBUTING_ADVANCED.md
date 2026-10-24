@@ -38,6 +38,10 @@ Restart the server after changing these flags. Automatic lint uses a 750 ms
 debounce. Run `vp run lint-fe` for full frontend checks on demand; commit hooks
 and [CI](CI.md) also check changes.
 
+For development with tests, use two terminals. Run `vp run dev` in one and
+`vp -C frontend test watch` in the other. Stop each with Ctrl+C. The combined
+`dev-test` command has been retired.
+
 ```sh
 DEV_TOOLS=true vp run dev
 DEV_LINT=fast DEV_INSPECT=true vp run dev
