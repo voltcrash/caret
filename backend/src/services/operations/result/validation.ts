@@ -23,7 +23,7 @@ import { KeyStats } from "@oxytype/schemas/results";
 import { isSafeNumber, roundTo2, stdDev } from "@oxytype/util/numbers";
 
 import type { ServiceContext, OperationInput } from "../../context";
-import { checkCompatibility } from "@oxytype/funbox";
+import { serverAudit } from "@oxytype/typing-engine/audit.server";
 import { tryCatch } from "@oxytype/util/trycatch";
 
 import type { ValidatedSubmission } from "./context";
@@ -118,7 +118,7 @@ export async function validateSubmission(
     throw new MonkeyError(400, "Duplicate funboxes");
   }
 
-  if (!checkCompatibility(completedEvent.funbox)) {
+  if (!serverAudit().compatible(completedEvent.funbox)) {
     throw new MonkeyError(400, "Impossible funbox combination");
   }
 
