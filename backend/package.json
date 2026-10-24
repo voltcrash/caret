@@ -72,11 +72,11 @@
     "@types/qs": "6.15.1",
     "@vitest/coverage-v8": "catalog:",
     "drizzle-kit": "0.31.11",
-    "miniflare": "5.20261001.0-alpha",
+    "miniflare": "5.20261019.2-beta",
     "typescript": "7.0.2",
     "vite-plus": "catalog:",
     "vitest": "catalog:",
-    "wrangler": "4.146.0"
+    "wrangler": "4.152.0"
   },
   "engines": {
     "node": ">=24.22.1 <25"
