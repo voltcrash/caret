@@ -12,14 +12,14 @@ import {
   getLoadedChallenge,
   setLoadedChallenge,
 } from "../../../src/ts/states/test";
-import { serverAudit } from "@oxytype/typing-engine/audit.server";
+import { browserAudit } from "../../__harness__/browser-audit";
 import type { Challenge } from "@oxytype/challenges";
 import type { CompletedEvent } from "@oxytype/schemas/results";
 
 vi.mock("../../../src/ts/config/setters", () => ({ setConfig: vi.fn() }));
-// the Node-compiled module, so rules run without a browser download
+// Reuse the real browser audit module while controlling the route lifecycle.
 vi.mock("../../../src/features/typing/audit.client", () => ({
-  getBrowserAudit: () => ({ load: async () => serverAudit() }),
+  getBrowserAudit: () => ({ load: async () => browserAudit }),
 }));
 vi.mock("@oxytype/challenges", () => ({
   getChallenge: () => ({

@@ -1,6 +1,4 @@
 import { afterAll, describe, expect, it } from "vite-plus/test";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
 import "../__harness__/native-engine";
 import { BrowserContent } from "@oxytype/typing-engine/browser.client";
 import type { Prepare } from "@oxytype/typing-engine/browser.client";
@@ -18,13 +16,20 @@ import { getDefaultConfig } from "../../src/ts/constants/default-config";
 
 // The original snapshots are independent, immutable references. Test the actual
 // web asset conversion and optimized Wasm, without retaining the old web engine.
-const root = resolve(
-  import.meta.dirname,
-  "../../../packages/typing-fixtures/reference/words",
+const root = "../../../packages/typing-fixtures/reference/words";
+const staticRoot = "../../static";
+const fixtures = import.meta.glob(
+  [
+    "../../../packages/typing-fixtures/reference/words/**/*.json",
+    "../../static/quotes/english.json",
+    "../../static/languages/{english,english_1k,spanish,french,german,code_javascript,arabic,polish,swiss_german,turkish}.json",
+  ],
+  { eager: true, import: "default" },
 );
-const staticRoot = resolve(import.meta.dirname, "../../static");
 function read<T>(path: string): T {
-  return JSON.parse(readFileSync(path, "utf8")) as T;
+  const fixture = fixtures[path];
+  if (fixture === undefined) throw new Error(`Missing parity fixture: ${path}`);
+  return structuredClone(fixture) as T;
 }
 type Case = {
   name: string;
@@ -35,7 +40,7 @@ type Case = {
   extraWords?: number;
   selectedQuoteId?: number;
 };
-const cases = read<Case[]>(resolve(root, "cases.json"));
+const cases = read<Case[]>(`${root}/cases.json`);
 const content = new BrowserContent();
 let quotesLoaded = false;
 afterAll(() => content.dispose());
@@ -46,17 +51,13 @@ function run(fixture: Case): unknown {
   });
   let quotes: Prepare["quotes"] = null;
   if (config.mode === "quote" && !quotesLoaded) {
-    quotes = engineQuotes(
-      read<QuoteData>(resolve(staticRoot, "quotes/english.json")),
-    );
+    quotes = engineQuotes(read<QuoteData>(`${staticRoot}/quotes/english.json`));
     quotesLoaded = true;
   }
   content.prepare({
     config,
     language: engineLanguage(
-      read<LanguageObject>(
-        resolve(staticRoot, `languages/${config.language}.json`),
-      ),
+      read<LanguageObject>(`${staticRoot}/languages/${config.language}.json`),
     ),
     custom:
       fixture.customText === undefined
@@ -70,7 +71,7 @@ function run(fixture: Case): unknown {
     polyglot: config.funbox.includes("polyglot")
       ? config.customPolyglot.map((name) =>
           engineLanguage(
-            read<LanguageObject>(resolve(staticRoot, `languages/${name}.json`)),
+            read<LanguageObject>(`${staticRoot}/languages/${name}.json`),
           ),
         )
       : [],
@@ -118,7 +119,7 @@ describe("native web generator parity", () => {
   it.each(cases)("$name", (fixture) => {
     const actual = JSON.parse(JSON.stringify(run(fixture))) as unknown;
     expect(actual).toEqual(
-      read<unknown>(resolve(root, "__snapshots__", `${fixture.name}.json`)),
+      read<unknown>(`${root}/__snapshots__/${fixture.name}.json`),
     );
   });
 });

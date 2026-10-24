@@ -10,7 +10,7 @@ import {
   getTimingReview,
 } from "../../../../backend/src/anticheat";
 import type { EventLog, TestEventNoMs } from "@oxytype/web-shared/events/types";
-import "../../__harness__/native-engine";
+import "../../__harness__/native-engine.node";
 import { analyzeLog } from "@oxytype/typing-engine/browser.client";
 import { toEngineLog } from "@oxytype/typing-engine/text";
 
