@@ -6,6 +6,7 @@ and cleanup evidence. Only test-owned windows, profiles and processes are used.
 """
 import argparse
 import ctypes
+import hashlib
 import json
 import os
 import pathlib
@@ -124,6 +125,8 @@ def exercise(args):
     emulator=str(pathlib.Path(args.command).resolve())
     binary=str(pathlib.Path(args.binary).resolve())
     version=subprocess.run([emulator,"--version"],capture_output=True,text=True,check=True,timeout=10).stdout.strip()
+    binary_version=subprocess.run([binary,"--version"],capture_output=True,text=True,check=True,timeout=10).stdout.strip()
+    binary_sha256=hashlib.sha256(pathlib.Path(binary).read_bytes()).hexdigest()
     evidence=[]
     output=pathlib.Path(args.evidence).resolve() if args.evidence else None
     if output: output.mkdir(parents=True,exist_ok=True)
@@ -163,7 +166,7 @@ def exercise(args):
                     # Older Kitty versions defer PTY query handling until their
                     # window is focused. Focus the mapped window before waiting
                     # for the app's keyboard handshake and first frame.
-                    window=xdo("search","--sync","--name","^"+title+"$").splitlines()[-1]
+                    window=xdo("search","--sync","--onlyvisible","--name","^"+title+"$").splitlines()[-1]
                     xdo("windowfocus",window)
                     visible("Input:")
                     def key(*keys):
@@ -264,7 +267,7 @@ def exercise(args):
                     assert zen["capabilities"]["enhancedKeyboardNegotiated"]==(keyboard=="auto")
                     assert zen["summary"]["keyDuration"] is None
                     assert custom["summary"]["acc"]==87.5,custom
-                    evidence.append({"emulator":args.emulator,"version":version,"keyboard":keyboard,
+                    evidence.append({"emulator":args.emulator,"version":version,"appVersion":binary_version,"binarySha256":binary_sha256,"keyboard":keyboard,
                                      "term":json.loads((profile / "ready.json").read_text())["term"],
                                      "exitCode":0,"keyboardFlagsAfterExit":0,"customAccuracy":87.5,
                                      "repeatDeliveries":len(final)-6,"accentInput":accent,"capabilities":zen["capabilities"]})
