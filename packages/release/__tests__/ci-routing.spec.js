@@ -172,6 +172,18 @@ describe("application sources", () => {
 
 describe("test-only changes", () => {
   it.each([
+    "frontend/vitest.config.ts",
+    "frontend/vitest.browser.config.ts",
+    "frontend/vitest.node-tests.ts",
+  ])("runs frontend checks for runner configuration %s", (file) => {
+    expect(selected([file])).toEqual([
+      "frontend-lint",
+      "frontend-test",
+      "code",
+    ]);
+  });
+
+  it.each([
     [
       "frontend/__tests__/utils/format.spec.ts",
       ["frontend-lint", "frontend-test"],
