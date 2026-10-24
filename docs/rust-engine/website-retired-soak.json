@@ -1,0 +1,18 @@
+{
+  "fixture": "3 real-keyboard 2000-unit zen sessions; restart and forced GC",
+  "samples": [
+    {
+      "heap": 11903840,
+      "wasm": 15335424
+    },
+    {
+      "heap": 12071364,
+      "wasm": 15335424
+    },
+    {
+      "heap": 12183256,
+      "wasm": 15335424
+    }
+  ],
+  "errors": []
+}

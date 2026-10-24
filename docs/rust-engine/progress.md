@@ -490,3 +490,25 @@ Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: bro
   sources cannot affect generated browser output and no longer force Wasm rebuilds.
 - Pushed through `3d7a509a2`; current optimized browser/performance and new x86_64 CI
   remain pending. Stage 2 is not signed off yet; Stage 3 remains pending.
+
+## Final startup and quality follow-up
+
+- Optimized actual Cloudflare browser suite: all 30 pass (1.1 m), including frozen
+  generators/results/inspection/replay, retries, input/IME, lifecycle/memory and
+  controlled initialization (p95 60.9 ms). Raw retired-engine artifacts retained.
+- Whole-website input/restart/heap and long/repeated-session gates pass; reset Wasm
+  remains 15,335,424 bytes. Cold-readiness median initially failed at 1,078.3 ms.
+  Trace shows startup-cover polling falls into a later interval. Added SSR-safe
+  hashed Wasm URL metadata and document preload so transfer overlaps hydration;
+  there is still no server initializer. After change cold median 684.3 ms / p95
+  1,159.5; warm median 596.3 / p95 734.8, within unchanged budgets. Failed raw run
+  retained separately in diagnostics, never substituted for the frozen baseline.
+- Actual workerd head/precache/MIME/CSP/cache gate: 14 pass (5.53 s). Browser loading/
+  saved-settings/retry plus frozen native trace proof: three pass (11.7 s). Updated
+  matched-artifact deploy/rollback suite: three pass (37.2 s), including offline typing.
+- CI `40042712384` passes native/Wasm payload and functional jobs; quality found four
+  dead exports plus a false unused-base-tsconfig report. Removed dead APIs and used
+  the existing SDK Knip convention for the actual tsconfig dependency. Knip and
+  type-aware checks pass locally; changed host/render tests: 35 pass.
+- Pushed `0b17aabeb`; final fresh checkout/build/types and resulting CI gate still
+  running. No Stage 2 sign-off or terminal completion claimed yet.
