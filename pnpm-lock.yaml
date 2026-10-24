@@ -432,9 +432,6 @@ importers:
       '@sentry/browser':
         specifier: 11.1.0
         version: 11.1.0
-      '@sentry/vite-plugin':
-        specifier: 5.4.0
-        version: 5.4.0(encoding@0.1.13)(rollup@4.60.1)(supports-color@10.2.2)
       '@solid-primitives/refs':
         specifier: 1.1.4
         version: 1.1.4(solid-js@1.9.15)
@@ -562,6 +559,9 @@ importers:
       '@oxytype/typescript-config':
         specifier: workspace:*
         version: link:../packages/typescript-config
+      '@sentry/vite-plugin':
+        specifier: 5.4.0
+        version: 5.4.0(encoding@0.1.13)(rollup@4.60.1)(supports-color@10.2.2)
       '@solid-devtools/overlay':
         specifier: 0.33.5
         version: 0.33.5(solid-js@1.9.15)
