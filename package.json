@@ -53,6 +53,7 @@
     "terminal:build": "node scripts/terminal.ts build",
     "terminal:test": "node scripts/terminal.ts test",
     "terminal:test:pty": "node scripts/terminal.ts pty",
+    "terminal:test:emulator": "node scripts/terminal.ts emulator",
     "terminal:package": "node scripts/terminal.ts package",
     "terminal:source": "node scripts/terminal.ts source",
     "terminal:archive-smoke": "node scripts/terminal.ts archive-smoke",
