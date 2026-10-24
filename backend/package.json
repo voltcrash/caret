@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "1.7.12",
-    "@better-auth/infra": "0.4.14",
+    "@better-auth/infra": "0.4.22",
     "@date-fns/utc": "2.1.1",
     "@oxytype/contracts": "workspace:*",
     "@oxytype/funbox": "workspace:*",

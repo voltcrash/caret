@@ -49,7 +49,7 @@
     "check:staging:runtime": "vpx ./scripts/check-staging-runtime.ts"
   },
   "dependencies": {
-    "@better-auth/infra": "0.4.14",
+    "@better-auth/infra": "0.4.22",
     "@date-fns/utc": "2.1.1",
     "@leonabcd123/modern-caps-lock": "3.1.7",
     "@oxytype/backend": "workspace:*",
