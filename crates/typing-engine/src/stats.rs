@@ -239,7 +239,9 @@ fn raw_last_key_to_end(log: &Log) -> f64 {
         .iter()
         .rev()
         .find(|event| event.kind == "keydown");
-    last.map(|event| round2((end(log) - event.test_ms).max(0.0)))
+    // Pre-start keydowns are retained for holds, but contribute no time before
+    // zero to key spacing or startToFirstKey. Use the same origin at this end.
+    last.map(|event| round2((end(log) - event.test_ms.max(0.0)).max(0.0)))
         .unwrap_or(0.0)
 }
 fn adjusted_end(log: &Log) -> f64 {
