@@ -3,12 +3,21 @@
   "private": true,
   "license": "GPL-3.0",
   "type": "module",
+  "imports": {
+    "#audit-module": {
+      "workerd": "./src/audit-module.workerd.ts",
+      "default": "./src/audit-module.node.ts"
+    }
+  },
   "exports": {
     "./asset": "./src/asset.ts",
     "./browser.client": "./src/browser.client.ts",
     "./text": "./src/text.ts",
     "./failure": "./src/failure.ts",
-    "./config": "./src/config.ts"
+    "./config": "./src/config.ts",
+    "./audit": "./src/audit.ts",
+    "./audit.server": "./src/audit.server.ts",
+    "./audit.client": "./src/audit.client.ts"
   },
   "scripts": {
     "ts-check": "vp lint . --type-aware --type-check --format agent",
