@@ -74,6 +74,50 @@ describe("result submission validation with D1", () => {
     });
   });
 
+  it("persists sparse key telemetry only when its endpoints cover the test", async () => {
+    // The Wasm regression exercises this shape from a retained pre-start key
+    // followed by input events without keydowns. No anticheat bypass is used.
+    const result: Partial<CompletedEvent> = {
+      wpm: 123.2,
+      rawWpm: 123.2,
+      acc: 100,
+      charStats: [154, 0, 0, 0],
+      charTotal: 154,
+      chartData: { wpm: [123], burst: [120], err: [0] },
+      consistency: 100,
+      wpmConsistency: 100,
+      keySpacing: [],
+      keyDuration: [0],
+      keyConsistency: 0,
+      startToFirstKey: 0,
+      lastKeyToEnd: 15000,
+      keyOverlap: 0,
+    };
+    for (const extraTime of [0, 201]) {
+      const account = await test.account();
+      const response = await test.submit(account, {
+        ...result,
+        lastKeyToEnd: 15000 + extraTime,
+      });
+      const accepted = extraTime === 0;
+      expect(response.status, await response.clone().text()).toBe(
+        accepted ? 200 : 463,
+      );
+      const profile = await withRuntime(
+        test.env,
+        async () => await Users.getUser(account.uid, "test"),
+      );
+      expect(profile.completedTests ?? 0).toBe(accepted ? 1 : 0);
+      expect(
+        await test.env.DB.prepare(
+          "SELECT count(*) AS n FROM results WHERE uid=?",
+        )
+          .bind(account.uid)
+          .first("n"),
+      ).toBe(accepted ? 1 : 0);
+    }
+  });
+
   it.each([
     ["character counts", { charTotal: 1 }],
     ["unearned restart credit", { restartCount: 1 }],
