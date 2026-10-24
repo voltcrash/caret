@@ -7,14 +7,24 @@ use std::{
     time::{Duration, Instant},
 };
 
-fn wait_screen(parser: &Arc<Mutex<vt100::Parser>>, needle: &str) {
+fn wait_screen(
+    parser: &Arc<Mutex<vt100::Parser>>,
+    trace: &Arc<Mutex<Vec<u8>>>,
+    child: &mut ChildGuard,
+    needle: &str,
+) {
     let deadline = Instant::now() + Duration::from_secs(10);
     loop {
         let screen = parser.lock().unwrap().screen().contents();
         if screen.contains(needle) {
             return;
         }
-        assert!(Instant::now() < deadline, "Missing {needle:?}: {screen}");
+        let exit = child.0.try_wait().unwrap();
+        assert!(
+            exit.is_none() && Instant::now() < deadline,
+            "Missing {needle:?}; exit={exit:?}; screen={screen:?}; raw={:?}",
+            String::from_utf8_lossy(&trace.lock().unwrap())
+        );
         std::thread::sleep(Duration::from_millis(10));
     }
 }
@@ -44,14 +54,29 @@ fn native_terminal_decodes_edits_and_persists_actual_input_without_physical_tele
     let parser = Arc::new(Mutex::new(vt100::Parser::new(24, 100, 0)));
     let mut reader = pair.master.try_clone_reader().unwrap();
     let output = parser.clone();
+    let trace = Arc::new(Mutex::new(Vec::new()));
+    let raw = trace.clone();
     let writer = Arc::new(Mutex::new(pair.master.take_writer().unwrap()));
     let responses = writer.clone();
     let reading = std::thread::spawn(move || {
         let mut buffer = [0u8; 8192];
         let mut query = std::collections::VecDeque::new();
-        while let Ok(count) = reader.read(&mut buffer) {
+        loop {
+            let count = match reader.read(&mut buffer) {
+                Ok(count) => count,
+                Err(error) => {
+                    eprintln!("PTY reader ended: {error}");
+                    break;
+                }
+            };
             if count == 0 {
                 break;
+            }
+            {
+                let mut trace = raw.lock().unwrap();
+                trace.extend_from_slice(&buffer[..count]);
+                let excess = trace.len().saturating_sub(16384);
+                trace.drain(..excess);
             }
             let mut parser = output.lock().unwrap();
             for byte in &buffer[..count] {
@@ -89,13 +114,13 @@ fn native_terminal_decodes_edits_and_persists_actual_input_without_physical_tele
     command.env("TERM", "xterm-256color");
     let mut child = ChildGuard(pair.slave.spawn_command(command).unwrap());
     drop(pair.slave);
-    wait_screen(&parser, "Input:");
+    wait_screen(&parser, &trace, &mut child, "Input:");
     writer.lock().unwrap().write_all(b"one twx").unwrap();
     writer.lock().unwrap().flush().unwrap();
-    wait_screen(&parser, "Input: twx");
+    wait_screen(&parser, &trace, &mut child, "Input: twx");
     writer.lock().unwrap().write_all(b"\x7f").unwrap();
     writer.lock().unwrap().flush().unwrap();
-    wait_screen(&parser, "Input: tw ");
+    wait_screen(&parser, &trace, &mut child, "Input: tw ");
     assert!(
         !parser
             .lock()
@@ -107,10 +132,10 @@ fn native_terminal_decodes_edits_and_persists_actual_input_without_physical_tele
     std::thread::sleep(Duration::from_millis(1100));
     writer.lock().unwrap().write_all(b"o").unwrap();
     writer.lock().unwrap().flush().unwrap();
-    wait_screen(&parser, "Result saved locally.");
+    wait_screen(&parser, &trace, &mut child, "Result saved locally.");
     writer.lock().unwrap().write_all(b"\x1bOR").unwrap();
     writer.lock().unwrap().flush().unwrap();
-    wait_screen(&parser, "Local history");
+    wait_screen(&parser, &trace, &mut child, "Local history");
     writer.lock().unwrap().write_all(b"\x1b[21~").unwrap();
     writer.lock().unwrap().flush().unwrap(); // F10 works with basic keyboard reports.
     let deadline = Instant::now() + Duration::from_secs(10);
