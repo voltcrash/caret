@@ -12,6 +12,19 @@ pub struct TextView {
     pub caret: (u16, u16),
     pub errors: bool,
 }
+pub fn clip_cells(value: &str, width: usize) -> String {
+    let mut result = String::new();
+    let mut used = 0;
+    for grapheme in value.graphemes(true) {
+        let cells = UnicodeWidthStr::width(grapheme);
+        if used + cells > width {
+            break;
+        }
+        result.push_str(grapheme);
+        used += cells;
+    }
+    result
+}
 /// Expand controls visibly and wrap whole graphemes without splitting wide cells.
 pub fn text_view(target: &Text, input: &Text, language: &str, width: u16, height: u16) -> TextView {
     let width = width.max(2) as usize;

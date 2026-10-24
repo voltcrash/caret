@@ -150,7 +150,6 @@ impl Setup {
                     .map(|v| v.to_string())
                     .unwrap_or_else(|| "auto".into())
             )),
-            Line::from(format!("{}▌", self.text)),
         ]
     }
     pub fn increase_length(&mut self) {

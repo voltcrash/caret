@@ -45,6 +45,8 @@ impl History {
             self.refresh(store)?;
         }
         self.selected = 0;
+        self.details = false;
+        self.scroll = 0;
         Ok(())
     }
     pub fn select(&mut self, direction: i32) {

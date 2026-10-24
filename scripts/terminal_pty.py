@@ -176,9 +176,12 @@ def run(binary, release=False):
         # Ratatui skips blank cells with cursor moves; words need not be emitted
         # as one contiguous byte string in a real incremental terminal frame.
         child.until(b"Resize")
+        child.send(b"lost")
+        time.sleep(0.1)
         dimensions(child.slave)
         os.kill(child.process.pid, signal.SIGWINCH)
         child.until(b"Oxytype")
+        assert "Input: lost" not in child.screen_text()
         child.send(b"\x11")
         assert child.wait_exit() == 0
         child.restored()
@@ -226,6 +229,8 @@ def run(binary, release=False):
     child = Child(binary, args=["--mode", "custom", "--text", "one two", "--record-replay"])
     try:
         child.until(b"RECORDING PRIVATE TEXT")
+        child.send(b"\x1b[200~PASTE_BLOCKED\x1b[201~")
+        child.until(b"Paste blocked during typing.")
         child.send(b"one ")
         time.sleep(0.15)
         child.send(b"two")
@@ -234,6 +239,10 @@ def run(binary, release=False):
         child.until(b"Local history")
         child.send(b"\x1b[19~")
         child.until(b"Recorded replay")
+        with sqlite3.connect(pathlib.Path(child.profile.name) / "data/history.sqlite3") as db:
+            saved = json.loads(db.execute("SELECT json FROM results").fetchone()[0])
+            committed = [event for event in saved["replayLog"]["events"] if event["type"] == "input" and event["data"]["inputType"] == "insertText"]
+            assert len(committed) == 7, "Paste entered the native log or custom text did not complete"
         child.send(b"\x1b[C")
         child.until(b"step 1")
         child.send(b"\x11")

@@ -462,7 +462,34 @@ fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
                 .chain(lines.into_iter().skip(skip + 1).take(visible))
                 .collect()
         }
-        Screen::Editor => setup.editor_lines(),
+        Screen::Editor => {
+            let mut lines = setup.editor_lines();
+            for line in &mut lines {
+                *line = Line::from(oxytype_tui::render::clip_cells(
+                    &line.to_string(),
+                    rows[1].width.saturating_sub(2) as usize,
+                ));
+            }
+            let input = typing_engine::Text::from(setup.text.as_str());
+            let mut view = oxytype_tui::render::text_view(
+                &typing_engine::Text::default(),
+                &input,
+                &host.config.language,
+                rows[1].width.saturating_sub(2),
+                rows[1].height.saturating_sub(4),
+            );
+            frame.set_cursor_position((
+                rows[1].x + 1 + view.caret.0,
+                rows[1].y + 1 + lines.len() as u16 + view.caret.1,
+            ));
+            for line in &mut view.lines {
+                for span in &mut line.spans {
+                    span.style = ratatui::style::Style::default();
+                }
+            }
+            lines.extend(view.lines);
+            lines
+        }
         Screen::Replay => local.replay.as_ref().map(|r| r.lines()).unwrap_or_default(),
         Screen::History => local
             .history
@@ -513,29 +540,54 @@ fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
             let input = host.visual_input.clone().unwrap_or(state.input_value);
             let mut target = typing_engine::Text::default();
             if host.config.mode != "zen" {
-                for word in host.words.iter().skip(state.word_index).take(35) {
-                    target.0.extend(&word.0);
-                }
+                target = host
+                    .words
+                    .get(state.word_index)
+                    .cloned()
+                    .unwrap_or_default();
             }
             let view = oxytype_tui::render::text_view(
                 &target,
                 &input,
                 &host.config.language,
                 rows[1].width.saturating_sub(2),
-                rows[1].height.saturating_sub(5),
+                rows[1].height.saturating_sub(6),
             );
             if view.errors {
                 lines.push(Line::from("! Incorrect text is underlined"));
             }
             let caret_y = rows[1].y + 1 + lines.len() as u16 + view.caret.1;
             frame.set_cursor_position((rows[1].x + 1 + view.caret.0, caret_y));
-            lines.extend(view.lines);
+            lines.extend(view.lines.into_iter().map(|line| {
+                line.style(
+                    ratatui::style::Style::new().add_modifier(ratatui::style::Modifier::BOLD),
+                )
+            }));
+            if host.config.mode != "zen" {
+                let next = host
+                    .words
+                    .iter()
+                    .skip(state.word_index + 1)
+                    .take(5)
+                    .map(|w| w.display_lossy().replace('\n', "↵").replace('\t', "→"))
+                    .collect::<String>();
+                lines.push(Line::from(format!(
+                    "Next: {}",
+                    oxytype_tui::render::clip_cells(
+                        &next,
+                        rows[1].width.saturating_sub(8) as usize
+                    )
+                )));
+            }
             lines.push(Line::from(format!(
                 "Input: {}",
-                input
-                    .display_lossy()
-                    .replace('\t', "→   ")
-                    .replace('\n', "↵")
+                oxytype_tui::render::clip_cells(
+                    &input
+                        .display_lossy()
+                        .replace('\t', "→   ")
+                        .replace('\n', "↵"),
+                    rows[1].width.saturating_sub(9) as usize
+                )
             )));
             lines
         }
