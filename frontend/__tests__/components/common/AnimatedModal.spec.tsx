@@ -49,8 +49,7 @@ describe("AnimatedModal", () => {
     showModal("QuoteRate");
     vi.clearAllMocks();
     animations.length = 0;
-    // jsdom has no Tailwind stylesheet or layout. Model its display utilities
-    // so overlay checks observe the same native open/closed state as browsers.
+    // Model display utilities without loading the full app CSS in this unit test.
     displayStyles = document.createElement("style");
     displayStyles.textContent = `
       dialog { display: none; }
@@ -60,7 +59,7 @@ describe("AnimatedModal", () => {
     `;
     document.head.append(displayStyles);
 
-    // Mock dialog methods that don't exist in jsdom
+    // Control dialog transitions; browser/lifecycle covers native modal behavior.
     HTMLDialogElement.prototype.showModal = vi.fn(function (
       this: HTMLDialogElement,
     ) {
