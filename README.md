@@ -28,6 +28,17 @@ behavior against immutable original references. `vp run engine:lint` and
 `vp run engine:fmt` check Rust. Reference provenance and measured budgets are in
 [migration progress](./docs/rust-engine/progress.md).
 
+## Offline terminal
+
+The native [Ratatui app](./docs/rust-engine/terminal.md) uses the same engine
+without Wasm. It includes English words/quotes, five typing modes, settings,
+durable local history and JSON export. No account, sync or first-run download.
+`vp run terminal:dev` runs it; `vp run terminal:test` and
+`vp run terminal:test:pty` check native behavior and terminal lifecycle.
+`vp run terminal:package` prepares a licensed binary archive. Installed users
+need no development runtime. See [release verification/status](./docs/rust-engine/terminal-release.md)
+for tested platforms and pending real-terminal checks; no release published yet.
+
 ## Contributing
 
 See [CONTRIBUTING.md](./docs/CONTRIBUTING.md) and the [code of conduct](./docs/CODE_OF_CONDUCT.md). Report bugs in the [Oxytype repository](https://github.com/voltcrash/oxytype/issues).

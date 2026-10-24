@@ -1,0 +1,144 @@
+name: Terminal binaries
+
+on:
+  pull_request:
+    branches: [main, "stack/**", "t3/rust-engine-migration"]
+    paths:
+      - "crates/typing-engine/**"
+      - "crates/oxytype-tui/**"
+      - "Cargo.*"
+      - "rust-toolchain.toml"
+      - ".cargo/**"
+      - ".node-version"
+      - "package.json"
+      - "pnpm-workspace.yaml"
+      - "pnpm-lock.yaml"
+      - "scripts/terminal*"
+      - "docs/rust-engine/terminal*"
+      - "docs/rust-engine/third-party/**"
+      - ".github/workflows/terminal-release.yml"
+  push:
+    tags: ["terminal-v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: terminal-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref_type != 'tag' }}
+
+env:
+  OXYTYPE_BUILD_REV: ${{ github.sha }}
+  CARGO_TERM_COLOR: always
+
+jobs:
+  binaries:
+    name: native (${{ matrix.target }})
+    timeout-minutes: 30
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-24.04, target: x86_64-unknown-linux-gnu }
+          - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu }
+          - { os: macos-15-intel, target: x86_64-apple-darwin }
+          - { os: macos-15, target: aarch64-apple-darwin }
+          - { os: windows-2025, target: x86_64-pc-windows-msvc }
+    env:
+      MACOSX_DEPLOYMENT_TARGET: "15.0"
+      RUSTFLAGS: ${{ matrix.os == 'windows-2025' && '-C target-feature=+crt-static' || '' }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: voidzero-dev/setup-vp@v1.21.2
+        with:
+          node-version-file: .node-version
+          run-install: false
+      - uses: actions/cache@v5.0.3
+        with:
+          path: |
+            ~/.cargo/registry
+            target
+          key: terminal-${{ matrix.target }}-${{ hashFiles('Cargo.lock', 'rust-toolchain.toml') }}
+      - name: Native formatting, lint and shared fixture tests
+        shell: bash
+        run: |
+          vp run engine:fmt
+          vp exec cargo clippy --locked -p typing-engine -p oxytype-tui --all-targets -- -D warnings
+          vp exec cargo test --locked -p typing-engine -p oxytype-tui
+      - name: POSIX terminal lifecycle and persistence
+        if: runner.os != 'Windows'
+        run: vp run terminal:test:pty
+      - name: Build licensed versioned archive
+        run: vp run terminal:package -- --target ${{ matrix.target }}
+      - name: Verify extracted binary without runtime tools or checkout files
+        shell: bash
+        run: |
+          archive=$(vp exec find target/terminal-release -maxdepth 1 -type f \( -name '*-${{ matrix.target }}.tar.gz' -o -name '*-${{ matrix.target }}.zip' \))
+          vp run terminal:archive-smoke -- --archive "$archive"
+      - name: Upload candidate archives and checksums
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: terminal-${{ matrix.target }}
+          path: |
+            target/terminal-release/*.tar.gz
+            target/terminal-release/*.zip
+            target/terminal-release/*.sha256
+          retention-days: 14
+          if-no-files-found: error
+
+  source:
+    name: corresponding source
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: voidzero-dev/setup-vp@v1.21.2
+        with:
+          node-version-file: .node-version
+          run-install: false
+      - name: Vendor and prove an offline source build
+        run: vp run terminal:source
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: terminal-source
+          path: |
+            target/terminal-release/*-source.tar.gz
+            target/terminal-release/*-source.tar.gz.sha256
+          retention-days: 14
+          if-no-files-found: error
+
+  publish:
+    name: authorized tagged release
+    if: github.event_name == 'push' && github.ref_type == 'tag' && github.repository == 'voltcrash/oxytype'
+    needs: [binaries, source]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: voidzero-dev/setup-vp@v1.21.2
+        with:
+          node-version-file: .node-version
+          run-install: false
+      - name: Require recorded real terminal verification
+        run: vp run terminal:release-gate
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          pattern: terminal-*
+          path: release
+          merge-multiple: true
+      - name: Verify all platform/source checksums
+        run: vp exec python3 scripts/terminal_release.py checksums --archive release
+      - name: Publish the explicitly pushed terminal tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: vp exec gh release create "$GITHUB_REF_NAME" release/*.tar.gz release/*.zip release/SHA256SUMS --verify-tag --title "Oxytype terminal ${GITHUB_REF_NAME#terminal-v}" --notes-file docs/rust-engine/terminal-release-notes.md
