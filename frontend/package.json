@@ -60,7 +60,7 @@
     "@oxytype/typing-engine": "workspace:*",
     "@oxytype/util": "workspace:*",
     "@oxytype/web-shared": "workspace:*",
-    "@sentry/browser": "11.1.0",
+    "@sentry/browser": "11.9.0",
     "@solid-primitives/refs": "1.1.4",
     "@solid-primitives/transition-group": "1.1.2",
     "@solidjs/meta": "0.29.4",
