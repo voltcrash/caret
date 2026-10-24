@@ -24,9 +24,6 @@ vi.mock("../../../src/ts/input/input-element", () => ({
   appendToInputElementValue: (value: string) => {
     inputEl.value += value;
   },
-  replaceInputElementLastValueChar: (char: string) => {
-    inputEl.value = ` ${inputEl.value.slice(1).slice(0, -1)}${char}`;
-  },
   getInputElement: () => null,
   moveInputElementCaretToTheEnd: () => undefined,
   isInputElementFocused: () => true,
