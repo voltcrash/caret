@@ -140,7 +140,10 @@ class Child:
             if self.process.poll() is None:
                 os.killpg(self.process.pid, signal.SIGCONT)
                 os.killpg(self.process.pid, signal.SIGKILL)
-                self.process.wait(timeout=3)
+                deadline=time.monotonic()+3
+                while self.process.poll() is None and time.monotonic()<deadline:
+                    self.read(0.02)
+                self.process.wait(timeout=0.1)
         finally:
             os.close(self.master)
             os.close(self.slave)
@@ -280,6 +283,7 @@ def run(binary, release=False):
                     os.kill(child.process.pid, signal.SIGTSTP)
                     deadline = time.monotonic() + 5
                     while time.monotonic() < deadline:
+                        child.read(0.02)  # Drain restoration output before SIGSTOP.
                         pid, status = os.waitpid(child.process.pid, os.WNOHANG | os.WUNTRACED)
                         if pid and os.WIFSTOPPED(status):
                             break
