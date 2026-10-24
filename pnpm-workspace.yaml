@@ -45,7 +45,6 @@ overrides:
   "vitest>happy-dom": "-"
   "vitest>jsdom": "-"
   "@vitest/browser-preview": "5.0.5"
-  "@types/chartjs-plugin-trendline>chart.js": "4.5.1"
   "@vitest/browser": "5.0.5"
   "@vitest/mocker": "5.0.5"
   "@vitest/pretty-format": "5.0.5"
