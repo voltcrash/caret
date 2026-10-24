@@ -33,7 +33,7 @@ overrides:
   # Authentication uses Drizzle; exclude the unused adapter and optional driver.
   "better-auth>@better-auth/mongo-adapter": "-"
   "better-auth>mongodb": "-"
-  "postcss": "8.5.28"
+  "postcss": "8.5.31"
   "cssnano": "8.0.10"
   "@ts-rest/core>zod": "4.6.7"
   "@ts-rest/open-api>zod": "4.6.7"
