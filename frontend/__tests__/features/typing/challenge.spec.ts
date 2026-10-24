@@ -16,7 +16,10 @@ import { browserAudit } from "../../__harness__/browser-audit";
 import type { Challenge } from "@oxytype/challenges";
 import type { CompletedEvent } from "@oxytype/schemas/results";
 
-vi.mock("../../../src/ts/config/setters", () => ({ setConfig: vi.fn() }));
+vi.mock("../../../src/ts/config/setters", async (original) => ({
+  ...(await original<typeof import("../../../src/ts/config/setters")>()),
+  setConfig: vi.fn(),
+}));
 // Reuse the real browser audit module while controlling the route lifecycle.
 vi.mock("../../../src/features/typing/audit.client", () => ({
   getBrowserAudit: () => ({ load: async () => browserAudit }),
