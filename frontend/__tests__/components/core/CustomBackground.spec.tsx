@@ -94,3 +94,6 @@ it("replaces failed images on reapply and retains filter and size geometry", () 
   expect(container.querySelector("img")).toBeNull();
   window.removeEventListener("customBackgroundFailed", failed);
 });
+
+// Browser module exports are sealed; register spies before imports run.
+vi.mock("../../../src/ts/states/notifications", { spy: true });

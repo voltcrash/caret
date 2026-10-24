@@ -170,3 +170,12 @@ describe("PresetController", () => {
     };
   });
 });
+
+// Browser module exports are sealed; register spies before imports run.
+vi.mock("../../src/ts/db", { spy: true });
+vi.mock("../../src/ts/config/lifecycle", { spy: true });
+vi.mock("../../src/ts/config/utils", { spy: true });
+vi.mock("../../src/ts/config/persistence", { spy: true });
+vi.mock("../../src/ts/states/notifications", { spy: true });
+vi.mock("../../src/ts/collections/tags", { spy: true });
+vi.mock("../../src/ts/collections/presets", { spy: true });

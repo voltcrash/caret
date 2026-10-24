@@ -171,3 +171,6 @@ describe("memory funbox lifecycle", () => {
     expect(getMemoryTimerVisibility()).toBe("hidden");
   });
 });
+
+// Browser module exports are sealed; register spies before imports run.
+vi.mock("../../../src/ts/utils/json-data", { spy: true });
