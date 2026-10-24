@@ -23,6 +23,21 @@ import tty
 from terminal_pty import Child, dimensions, screen_text
 
 
+def wait_for_window(process, xdotool, title, log_path, timeout=60):
+    # A cold software renderer can take longer than the input checks' 10s budget.
+    # Poll instead of blocking in xdotool --sync, so early exits retain diagnostics.
+    deadline=time.monotonic()+timeout
+    while time.monotonic()<deadline and process.poll() is None:
+        result=subprocess.run([xdotool,"search","--onlyvisible","--name","^"+re.escape(title)+"$"],
+                              capture_output=True,text=True,timeout=2)
+        if result.returncode==0 and result.stdout.strip():
+            return result.stdout.strip().splitlines()[-1]
+        if result.returncode not in (0,1):
+            raise RuntimeError("Cannot search private X display: "+result.stderr)
+        time.sleep(0.1)
+    raise AssertionError(f"Visible emulator window not found within {timeout}s (exit={process.poll()})\n{log_path.read_text()[-2000:]}")
+
+
 def write_all(fd, data):
     while data:
         count=os.write(fd,data)
@@ -166,7 +181,7 @@ def exercise(args):
                     # Older Kitty versions defer PTY query handling until their
                     # window is focused. Focus the mapped window before waiting
                     # for the app's keyboard handshake and first frame.
-                    window=xdo("search","--sync","--onlyvisible","--name","^"+title+"$").splitlines()[-1]
+                    window=wait_for_window(process,args.xdotool,title,profile / "emulator.log")
                     xdo("windowfocus",window)
                     visible("Input:")
                     def key(*keys):
