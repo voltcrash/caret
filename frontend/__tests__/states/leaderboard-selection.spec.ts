@@ -1,12 +1,10 @@
 import { safeParse, serialize } from "zod-urlsearchparams";
+import { afterEach, beforeEach, describe, expect, it } from "vite-plus/test";
+import { mountApplication } from "../../src/app/application";
 import {
-  afterEach,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vite-plus/test";
+  createTestApplication,
+  releaseTestApplication,
+} from "../__harness__/test-application";
 
 import {
   applyUrlParams,
@@ -14,13 +12,19 @@ import {
   urlParams,
 } from "../../src/features/leaderboards/selection";
 
-beforeEach(async () => {
-  await import("../__harness__/test-application");
+releaseTestApplication();
+let dispose: () => void;
+beforeEach(() => {
+  const root = createTestApplication();
+  const release = mountApplication(root.application);
+  dispose = () => {
+    release();
+    root.dispose();
+  };
 });
-afterEach(async () => {
-  (await import("../__harness__/test-application")).releaseTestApplication();
+afterEach(() => {
+  dispose();
   localStorage.removeItem("leaderboardSelector");
-  vi.resetModules();
 });
 
 describe("leaderboard selection", () => {

@@ -1,4 +1,4 @@
-import { describe, it, expect, afterAll, vi } from "vite-plus/test";
+import { describe, it, expect, afterAll } from "vite-plus/test";
 import { configMetadata } from "../../src/ts/config/metadata";
 import { __testing } from "../../src/ts/config/testing";
 import { setConfig } from "../../src/ts/config/setters";
@@ -13,7 +13,6 @@ type TestsByConfig<T> = Partial<{
 describe("ConfigMeta", () => {
   afterAll(() => {
     replaceConfig({});
-    vi.resetModules();
   });
   it("should have changeRequiresRestart defined", () => {
     const configsRequiringRestarts = Object.entries(configMetadata)

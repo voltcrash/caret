@@ -46,8 +46,6 @@ describe("migrated state", () => {
   });
 
   it("reads persisted lazy-mode preferences on first access and reacts to writes", async () => {
-    vi.resetModules();
-    await import("../__harness__/test-application");
     localStorage.setItem("rememberLazyMode", "true");
     localStorage.setItem("prefersArabicLazyMode", "false");
     const storageRead = vi.spyOn(Storage.prototype, "getItem");
