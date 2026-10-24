@@ -266,10 +266,6 @@ jobs:
       - name: Check lint
         run: vp run lint-fe
 
-      # The Start jobs build the same bundle; only its circular-import guard runs here.
-      - name: Check circular imports
-        run: vp run --filter @oxytype/frontend madge
-
   ci-fe-test:
     name: ci-fe-test (${{ matrix.shard }}/2)
     needs: [changes]

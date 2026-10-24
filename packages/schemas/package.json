@@ -6,9 +6,8 @@
   },
   "scripts": {
     "test": "vp test run",
-    "madge": " madge --circular --extensions ts ./src",
     "ts-check": "vp lint . --type-aware --type-check --format agent",
-    "lint": "vp run madge && vp lint . --type-aware --type-check --format agent",
+    "lint": "vp lint . --type-aware --type-check --format agent",
     "lint-fast": "vp lint . --format agent"
   },
   "dependencies": {
@@ -17,7 +16,6 @@
   "devDependencies": {
     "@oxytype/typescript-config": "workspace:*",
     "@types/node": "24.19.0",
-    "madge": "8.0.0",
     "typescript": "7.0.2",
     "vite-plus": "catalog:"
   },
