@@ -80,13 +80,13 @@ export function TypingEvents(): null {
       if (
         isTypingRouteActive() &&
         isTestActive() &&
-        !canQuickRestart(
+        canQuickRestart(
           getMutableConfig().mode,
           getMutableConfig().words,
           getMutableConfig().time,
           CustomText.getData(),
           getCustomTextIndicator()?.isLong ?? false,
-        )
+        ) === false
       ) {
         event.preventDefault();
         // Included for legacy support, e.g. Chrome/Edge < 119.

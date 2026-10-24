@@ -1,1 +1,1 @@
-export { Formatting } from "@oxytype/typing-core/format";
+export { Formatting } from "@oxytype/web-shared/format";

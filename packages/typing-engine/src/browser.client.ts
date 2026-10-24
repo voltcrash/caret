@@ -7,7 +7,7 @@ import {
   WasmContent,
   WasmReplay,
 } from "../generated/engine.js";
-import wasmUrl from "../generated/engine_bg.wasm?url";
+import { wasmUrl } from "./asset";
 import type { Command } from "../generated/types/Command";
 import type { Config } from "../generated/types/Config";
 import type { Text } from "../generated/types/Text";
@@ -16,6 +16,7 @@ import type { Update } from "../generated/types/Update";
 import type { Prepare } from "../generated/types/Prepare";
 import type { Generated } from "../generated/types/Generated";
 import type { NextWord } from "../generated/types/NextWord";
+import type { QuoteCollection } from "../generated/types/QuoteCollection";
 import type { Quote } from "../generated/types/Quote";
 import type { Query } from "../generated/types/Query";
 import type { Response } from "../generated/types/Response";
@@ -59,6 +60,7 @@ export type {
   Generated,
   NextWord,
   Quote,
+  QuoteCollection,
 };
 import { EngineFailure, disposed, invoke } from "./failure";
 export { EngineFailure } from "./failure";
@@ -82,6 +84,7 @@ export async function loadEngine(signal?: AbortSignal): Promise<{
   createContent: () => BrowserContent;
   createReplay: (log: Log, zen: boolean) => BrowserReplay;
   policy: typeof evaluatePolicy;
+  analyze: typeof analyzeLog;
 }> {
   // Compile asynchronously, then use wasm-bindgen's synchronous guard. Two
   // concurrent async initializers could otherwise replace memory under handles.
@@ -109,6 +112,7 @@ export async function loadEngine(signal?: AbortSignal): Promise<{
     createContent: () => new BrowserContent(),
     createReplay: (log, zen) => new BrowserReplay(log, zen),
     policy: evaluatePolicy,
+    analyze: analyzeLog,
   };
 }
 
@@ -209,6 +213,17 @@ export class BrowserSession {
   liveStats(now: number): LiveMetrics {
     return invoke(() => JSON.parse(this.live().live_stats(now)) as LiveMetrics);
   }
+  compositionCompletes(data: Text): boolean {
+    return invoke(() =>
+      this.live().composition_completes(JSON.stringify(data)),
+    );
+  }
+  canDelete(): boolean {
+    return invoke(() => this.live().can_delete());
+  }
+  wordBurst(index: number, now: number): number {
+    return invoke(() => this.live().word_burst(index, now));
+  }
   snapshot(): Snapshot {
     return invoke(() => JSON.parse(this.live().snapshot()) as Snapshot);
   }
@@ -272,6 +287,26 @@ export class BrowserContent {
   }
   prepare(input: Prepare, repeating = false): void {
     invoke(() => this.live().prepare(JSON.stringify(input), repeating));
+  }
+  quoteCatalog(
+    asset: NonNullable<Prepare["quotes"]>,
+    lengths: number[] | null,
+    random: Random,
+  ): QuoteCollection {
+    return invoke(
+      () =>
+        JSON.parse(
+          this.live().quote_catalog(
+            JSON.stringify({
+              quotes: asset,
+              random,
+              config: { quoteLength: lengths ?? [] },
+              language: { name: "", words: [] },
+            }),
+            lengths !== null,
+          ),
+        ) as QuoteCollection,
+    );
   }
   updateQuoteQueue(lengths: number[], random: Random): Random {
     return invoke(

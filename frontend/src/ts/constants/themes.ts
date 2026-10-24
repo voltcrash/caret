@@ -1,1 +1,1 @@
-export * from "@oxytype/typing-core/themes";
+export * from "@oxytype/web-shared/themes";

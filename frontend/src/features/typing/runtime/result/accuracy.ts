@@ -1,5 +1,5 @@
 import { getLastEventLog } from "../../../../ts/states/test";
-import { getAccuracy } from "@oxytype/typing-core/events/stats";
+import { getAccuracy } from "../../analysis.client";
 
 export function getEventLogAccuracy(): {
   correct: number;

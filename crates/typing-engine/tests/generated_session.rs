@@ -258,3 +258,27 @@ fn timestamp_ties_and_delayed_inputs_signal_sorted_log_invalidation() {
     assert!(delayed.log_invalidated);
     assert_eq!(session.log()["events"][0]["testMs"], -10.0);
 }
+
+#[test]
+fn attached_zen_generation_never_refills_targets_or_changes_headless_input_contract() {
+    let config = Config {
+        mode: "zen".into(),
+        ..Config::default()
+    };
+    let mut prepared = Session::from_generator(generator(config.clone(), None), false).unwrap();
+    let mut headless = Session::new(config, vec![]).unwrap();
+    for index in 0..150 {
+        let now = index as f64 * 100.0;
+        let update = insert(&mut prepared, Text::from("one "), now);
+        let expected = insert(&mut headless, Text::from("one "), now);
+        assert_eq!(
+            serde_json::to_value(update.state).unwrap(),
+            serde_json::to_value(expected.state).unwrap()
+        );
+        assert!(update.words.is_empty());
+    }
+    assert_eq!(prepared.log(), headless.log());
+    assert!(prepared.snapshot().words.is_empty());
+    assert_eq!(prepared.state().word_index, 150);
+    assert!(!prepared.state().ended);
+}

@@ -11,14 +11,18 @@ Package versions come from the workspace manifests and lockfile.
 | `packages/contracts/` | Retained external HTTP API contracts |
 | `packages/schemas/` | Shared Zod schemas and domain types |
 | `packages/util/`, `packages/funbox/`, `packages/challenges/` | Shared helpers and typing features |
-| `packages/typing-core/` | Headless typing test logic |
+| `crates/typing-engine/` | Platform-independent typing rules, generation, scoring and replay |
+| `crates/typing-engine-wasm/`, `packages/typing-engine/` | Browser-only Wasm boundary, generated types and owned handles |
+| `packages/typing-fixtures/` | Immutable original behavior references and capture provenance |
+| `packages/web-shared/` | SSR-safe preferences, browser wire types, transport and display helpers |
 | `packages/oxlint-config/`, `packages/typescript-config/` | Shared tooling configuration |
 | `packages/release/` | Production CI validation helpers |
 | `.github/workflows/` | [CI](CI.md), automatic production deployments after successful main CI, manual retries, labeling, and repository automation |
 
 The root is a private pnpm workspace. Vite+ (`vp run`) runs workspace tasks.
-Internal packages use the `@oxytype` scope and export TypeScript source; Vite,
-Vitest, wrangler and tsx compile it, so packages have no build step.
+TypeScript packages use the `@oxytype` scope and export source. Vite, Vitest,
+wrangler and tsx compile it. Rust/Wasm and declarations build automatically before
+development, production, tests and typechecks; see the [engine SDK](../packages/typing-engine/README.md).
 
 ## Application
 

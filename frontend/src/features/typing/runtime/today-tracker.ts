@@ -1,7 +1,7 @@
 import {
   getLocalMidnight,
   TypingTimeTracker,
-} from "@oxytype/typing-core/typing-time";
+} from "@oxytype/web-shared/typing-time";
 import * as DateTime from "../../../ts/utils/date-and-time";
 
 const tracker = new TypingTimeTracker();

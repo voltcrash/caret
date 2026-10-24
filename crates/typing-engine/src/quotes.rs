@@ -8,6 +8,7 @@ use ts_rs::TS;
 pub struct Quote {
     pub text: Text,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
     pub british_text: Option<Text>,
     pub source: String,
     pub length: usize,
@@ -25,6 +26,13 @@ pub struct QuoteAsset {
     pub groups: Vec<(usize, usize)>,
     pub quotes: Vec<Quote>,
 }
+#[derive(Default, Serialize, TS)]
+pub struct QuoteCollection {
+    pub quotes: Vec<Quote>,
+    pub length: usize,
+    pub language: Option<String>,
+    pub groups: Vec<Vec<usize>>,
+}
 /// Host-owned lifetime, engine-owned selection; never a process-global queue.
 #[derive(Default)]
 pub struct Quotes {
@@ -32,6 +40,7 @@ pub struct Quotes {
     quotes: Vec<Quote>,
     groups: Vec<Vec<usize>>,
     queue: Vec<usize>,
+    queued_quotes: Option<Vec<Quote>>,
     cursor: usize,
 }
 impl Quotes {
@@ -90,12 +99,69 @@ impl Quotes {
         self.quotes = asset.quotes;
         self.update_queue(lengths, random)
     }
+    pub fn collection(&self) -> QuoteCollection {
+        QuoteCollection {
+            quotes: self.quotes.clone(),
+            length: self.quotes.len(),
+            language: self.language.clone(),
+            groups: self.groups.clone(),
+        }
+    }
+    /// Legacy catalog reads replace the collection but preserve an already-built
+    /// queue unless lengths were explicitly supplied. Old queue objects retain
+    /// their original language/content even after the catalog changes.
+    pub fn load_catalog(
+        &mut self,
+        asset: QuoteAsset,
+        lengths: Option<&[i32]>,
+        random: &mut Random,
+    ) -> Result<QuoteCollection, EngineError> {
+        crate::validation::quote_asset(&asset)?;
+        if self.language.as_ref() == Some(&asset.language) {
+            return Ok(self.collection());
+        }
+        if asset.quotes.is_empty() {
+            return Ok(QuoteCollection::default());
+        }
+        let retained = if lengths.is_none() {
+            Some((
+                self.queue.clone(),
+                self.cursor,
+                self.queued_quotes
+                    .take()
+                    .unwrap_or_else(|| self.quotes.clone()),
+            ))
+        } else {
+            None
+        };
+        self.load(asset, lengths.unwrap_or_default(), random)?;
+        if let Some((queue, cursor, quotes)) = retained {
+            self.queue = queue;
+            self.cursor = cursor;
+            self.queued_quotes = Some(quotes);
+        }
+        Ok(self.collection())
+    }
+    pub fn random_quote(&mut self, random: &mut Random) -> Result<Option<Quote>, EngineError> {
+        if self.queue.is_empty() {
+            return Ok(None);
+        }
+        if self.cursor >= self.queue.len() {
+            self.cursor = 0;
+            random.shuffle(&mut self.queue)?;
+        }
+        let quotes = self.queued_quotes.as_ref().unwrap_or(&self.quotes);
+        let quote = quotes[self.queue[self.cursor]].clone();
+        self.cursor += 1;
+        Ok(Some(quote))
+    }
     pub fn update_queue(
         &mut self,
         lengths: &[i32],
         random: &mut Random,
     ) -> Result<(), crate::error::EngineError> {
         self.queue.clear();
+        self.queued_quotes = None;
         for group in lengths {
             if *group >= 0
                 && let Some(indexes) = self.groups.get(*group as usize)
@@ -116,6 +182,7 @@ impl Quotes {
         british: bool,
         random: &mut Random,
     ) -> Result<Quote, crate::error::EngineError> {
+        let queued = lengths != [-2] && !lengths.contains(&-3);
         let mut quote = if lengths == [-2] {
             self.quotes
                 .iter()
@@ -156,13 +223,7 @@ impl Quotes {
                     vec![Recovery::SetQuoteLengthAll],
                 ));
             }
-            if self.cursor >= self.queue.len() {
-                self.cursor = 0;
-                random.shuffle(&mut self.queue)?;
-            }
-            let quote = self.quotes[self.queue[self.cursor]].clone();
-            self.cursor += 1;
-            quote
+            self.random_quote(random)?.unwrap()
         };
         quote.language = remove_language_size(language);
         quote.text = normalize(quote.text);
@@ -180,6 +241,14 @@ impl Quotes {
             .split(|unit| *unit == 32)
             .map(|word| Text(word.to_vec()))
             .collect();
+        // The original selected object is also visible to catalog reads. Keep
+        // its normalized text/language/split, including a retained older queue.
+        if queued {
+            let index = self.queue[self.cursor - 1];
+            self.queued_quotes.as_mut().unwrap_or(&mut self.quotes)[index] = quote.clone();
+        } else if let Some(stored) = self.quotes.iter_mut().find(|stored| stored.id == quote.id) {
+            *stored = quote.clone();
+        }
         Ok(quote)
     }
 }

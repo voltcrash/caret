@@ -134,6 +134,39 @@ describe("built Start service worker", () => {
     });
   });
 
+  it("precaches the matching browser engine and delivers Wasm with compilation headers", async () => {
+    const files = builtConfig().precache;
+    expect(files.some((path) => /\/browser\.client-.+\.js$/.test(path))).toBe(
+      true,
+    );
+    const wasm = files.filter((path) => path.endsWith(".wasm"));
+    expect(wasm).toHaveLength(1);
+    const runtime = await createWorkerd();
+    try {
+      const html = await (
+        await runtime.dispatchFetch("http://localhost:3000/")
+      ).text();
+      const preload = [...html.matchAll(/<link\b[^>]*>/g)]
+        .map((match) => match[0])
+        .find((tag) => tag.includes(`href="${wasm[0]}"`));
+      expect(preload).toContain('rel="preload"');
+      expect(preload).toContain('as="fetch"');
+      expect(preload).toContain('type="application/wasm"');
+      expect(preload).toContain('crossorigin="anonymous"');
+      const response = await runtime.dispatchFetch(
+        `http://localhost:3000${wasm[0]}`,
+      );
+      expect(response.status).toBe(200);
+      expect(response.headers.get("Content-Type")).toBe("application/wasm");
+      expect(response.headers.get("Cache-Control")).toContain("immutable");
+      expect(new Uint8Array(await response.arrayBuffer())).toEqual(
+        new Uint8Array(readFileSync(resolve(client, `.${wasm[0]}`))),
+      );
+    } finally {
+      await runtime.dispose();
+    }
+  });
+
   it("is a self-contained classic script without backend code", () => {
     const source = readFileSync(resolve(client, "sw.js"), "utf8");
     expect(source).not.toMatch(/\bimport\s*[({"'`]|^export\s/m);

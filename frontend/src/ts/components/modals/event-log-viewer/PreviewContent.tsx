@@ -1,5 +1,6 @@
-import type { EventLog } from "@oxytype/typing-core/events/types";
+import type { EventLog } from "@oxytype/web-shared/events/types";
 
+import { decodeText } from "@oxytype/typing-engine/text";
 import {
   createDeferred,
   createMemo,
@@ -8,6 +9,7 @@ import {
   untrack,
 } from "solid-js";
 
+import { getInspection } from "../../../../features/typing/analysis.client";
 import {
   getCurrentMs,
   getVisibleTypes,
@@ -18,9 +20,7 @@ import { createVideoSync } from "./createVideoSync";
 import { DistributionPanel } from "./DistributionPanel";
 import {
   getCurrentEventIndex,
-  getCurrentWordIndex,
   getMaxTestMs,
-  inputsPerWord,
   visualizeWhitespace,
 } from "./event-log";
 import { EventsPanel } from "./EventsPanel";
@@ -66,11 +66,11 @@ export function PreviewContent(props: {
   const statsLog = createDeferred(visibleLog, { timeoutMs: 250 });
 
   const finalInputs = untrack(() =>
-    inputsPerWord(props.ctx.events, props.ctx.context.targetWords.length),
+    getInspection(props.ctx).inputs.map(decodeText),
   );
 
   const liveInputs = createMemo(() =>
-    inputsPerWord(visibleEvents(), props.ctx.context.targetWords.length),
+    getInspection(visibleLog()).inputs.map(decodeText),
   );
 
   const simulatedInput = createMemo(() =>
@@ -81,8 +81,8 @@ export function PreviewContent(props: {
     ),
   );
 
-  const currentWordIndex = createMemo(() =>
-    getCurrentWordIndex(visibleEvents()),
+  const currentWordIndex = createMemo(
+    () => getInspection(visibleLog()).wordIndex,
   );
 
   const visibleTypes = getVisibleTypes;

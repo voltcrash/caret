@@ -1,5 +1,5 @@
 import type { Mark } from "../../../states/event-log-viewer";
-import type { TestEventNoMs } from "@oxytype/typing-core/events/types";
+import type { TestEventNoMs } from "@oxytype/web-shared/events/types";
 import type { TimelineMark, VideoBar } from "./timeline-lanes";
 
 /** eventIndex (index into the log's events) → mark id */

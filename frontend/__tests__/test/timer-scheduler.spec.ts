@@ -1,4 +1,3 @@
-import { createTestTimer, type TimerTick } from "@oxytype/typing-core/timer";
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 import { createTimerScheduler } from "../../src/features/typing/runtime/timer-scheduler";
 beforeEach(() =>
@@ -6,43 +5,50 @@ beforeEach(() =>
 );
 afterEach(() => vi.useRealTimers());
 
-it("keeps one clock across restarts and stops synchronously when a test finishes", () => {
-  const ticks: number[] = [];
-  const clock = createTestTimer({
-    onTick: ({ timer }) => {
-      ticks.push(timer);
-      if (timer === 2) scheduler.stop();
-    },
-  });
+it("replaces scheduled callbacks and stops synchronously when native clock ends", () => {
+  const clock = {
+    start: vi.fn(),
+    stop: vi.fn(),
+    advance: vi.fn((_now: number): number | null => 1000),
+  };
   const scheduler = createTimerScheduler(clock);
+  clock.advance
+    .mockImplementationOnce(() => 1000)
+    .mockImplementationOnce(() => {
+      scheduler.stop();
+      return null;
+    });
   scheduler.start(performance.now());
   vi.advanceTimersByTime(500);
   scheduler.start(performance.now());
   vi.advanceTimersByTime(500);
-  expect(ticks).toEqual([]);
+  expect(clock.advance).not.toHaveBeenCalled();
   vi.advanceTimersByTime(1500);
-  expect(ticks).toEqual([1, 2]);
-  expect(clock.isRunning()).toBe(false);
+  expect(clock.advance).toHaveBeenCalledTimes(2);
   expect(vi.getTimerCount()).toBe(0);
   vi.advanceTimersByTime(5000);
-  expect(ticks).toEqual([1, 2]);
+  expect(clock.advance).toHaveBeenCalledTimes(2);
 });
 
-it("catches up a delayed callback and schedules the next anchored second", () => {
-  const tick = vi.fn<(value: TimerTick) => void>();
-  const clock = createTestTimer({ onTick: tick });
+it("schedules the next callback using the exact delay supplied by the native clock", () => {
+  const clock = {
+    start: vi.fn(),
+    stop: vi.fn(),
+    advance: vi.fn((_now: number): number | null => null),
+  };
+  clock.advance.mockReturnValueOnce(750);
   const scheduler = createTimerScheduler(clock);
   const now = vi.spyOn(performance, "now").mockReturnValue(0);
   scheduler.start(0);
   now.mockReturnValue(3250);
   vi.advanceTimersByTime(1000);
-  expect(tick.mock.calls.map(([value]) => value.timer)).toEqual([1, 2, 3]);
-  expect(tick.mock.calls[0]?.[0]).toMatchObject({ catchup: true });
+  expect(clock.advance).toHaveBeenCalledWith(3250);
   now.mockReturnValue(4000);
   vi.advanceTimersByTime(749);
-  expect(tick).toHaveBeenCalledTimes(3);
+  expect(clock.advance).toHaveBeenCalledTimes(1);
   vi.advanceTimersByTime(1);
-  expect(tick.mock.calls[3]?.[0]).toMatchObject({ timer: 4, drift: 0 });
+  expect(clock.advance).toHaveBeenLastCalledWith(4000);
+  expect(vi.getTimerCount()).toBe(0);
   scheduler.stop();
   now.mockRestore();
 });

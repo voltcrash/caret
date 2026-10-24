@@ -1,6 +1,7 @@
 import { createEffect, onCleanup, onMount } from "solid-js";
 import { type JSXElement } from "solid-js";
 
+import { getBrowserEngine } from "../features/typing/engine.client";
 import { applyEngineSettings } from "../ts/anim";
 import { Theme } from "../ts/components/core/Theme";
 import { ThemeEvents } from "../ts/components/core/ThemeEvents";
@@ -37,6 +38,13 @@ export default function BrowserRuntime(): JSXElement {
       }),
     );
     applyEngineSettings();
+    // Policies are shared with the typing route; preferences/themes still load
+    // independently, and the typing failure UI owns download retry.
+    if (window.location.pathname !== "/engine-proof") {
+      void getBrowserEngine()
+        .load()
+        .catch(() => undefined);
+    }
     void loadFromLocalStorage().catch((error: unknown) =>
       console.error("Failed to load preferences", error),
     );

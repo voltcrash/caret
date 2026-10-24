@@ -1,49 +1,53 @@
-let correctShiftUsed = true;
-let incorrectShiftsInARow = 0;
-let awaitingNextWord = false;
-let lastBailoutAttempt = -1;
-let lastInsertCompositionTextData = "";
+import { createAppOwned } from "../../app/application";
+
+const state = createAppOwned(() => ({
+  correctShiftUsed: true,
+  incorrectShiftsInARow: 0,
+  awaitingNextWord: false,
+  lastBailoutAttempt: -1,
+  lastInsertCompositionTextData: "",
+}));
 
 export function isCorrectShiftUsed(): boolean {
-  return correctShiftUsed;
+  return state().correctShiftUsed;
 }
 
 export function setCorrectShiftUsed(value: boolean): void {
-  correctShiftUsed = value;
+  state().correctShiftUsed = value;
 }
 
 export function getIncorrectShiftsInARow(): number {
-  return incorrectShiftsInARow;
+  return state().incorrectShiftsInARow;
 }
 
 export function incrementIncorrectShiftsInARow(): void {
-  incorrectShiftsInARow++;
+  state().incorrectShiftsInARow++;
 }
 
 export function resetIncorrectShiftsInARow(): void {
-  incorrectShiftsInARow = 0;
+  state().incorrectShiftsInARow = 0;
 }
 
 export function isAwaitingNextWord(): boolean {
-  return awaitingNextWord;
+  return state().awaitingNextWord;
 }
 
 export function setAwaitingNextWord(value: boolean): void {
-  awaitingNextWord = value;
+  state().awaitingNextWord = value;
 }
 
 export function getLastBailoutAttempt(): number {
-  return lastBailoutAttempt;
+  return state().lastBailoutAttempt;
 }
 
 export function setLastBailoutAttempt(value: number): void {
-  lastBailoutAttempt = value;
+  state().lastBailoutAttempt = value;
 }
 
 export function getLastInsertCompositionTextData(): string {
-  return lastInsertCompositionTextData;
+  return state().lastInsertCompositionTextData;
 }
 
 export function setLastInsertCompositionTextData(value: string): void {
-  lastInsertCompositionTextData = value;
+  state().lastInsertCompositionTextData = value;
 }

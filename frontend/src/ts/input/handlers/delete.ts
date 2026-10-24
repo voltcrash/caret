@@ -1,85 +1,22 @@
-import * as TestUI from "../../../features/typing/runtime/test-ui";
-import * as TestWords from "../../../features/typing/runtime/test-words";
-import { getInputElementValue, setInputElementValue } from "../input-element";
-
-import { getMutableConfig } from "../../config/store";
-import { goToPreviousWord } from "../helpers/word-navigation";
-import { DeleteInputType } from "../helpers/input-type";
-import {
-  getCurrentInput,
-  logTestEvent,
-} from "../../../features/typing/runtime/events/data";
-import { getActiveWordIndex } from "../../states/test";
+import { encodeText } from "@oxytype/typing-engine/text";
+import { getEngineSession } from "../../../features/typing/runtime/session.client";
+import { getInputElementValue } from "../input-element";
+import type { DeleteInputType } from "../helpers/input-type";
+import { observeInputView } from "./before-insert-text";
 
 export function onDelete(inputType: DeleteInputType, now: number): void {
-  const { realInputValue } = getInputElementValue();
-
-  const inputBeforeDelete = getCurrentInput();
-  const activeWordIndexBeforeDelete = getActiveWordIndex();
-
-  const inputAfterDelete = getInputElementValue().inputValue;
-
-  const beforeDeleteOnlyTabs = /^\t*$/.test(inputBeforeDelete);
-  const allTabsCorrect = TestWords.words
-    .getCurrent()
-    ?.textWithCommit.startsWith(inputAfterDelete);
-
-  //special check for code languages
-  if (
-    getMutableConfig().language.startsWith("code") &&
-    getMutableConfig().codeUnindentOnBackspace &&
-    inputBeforeDelete.length > 0 &&
-    beforeDeleteOnlyTabs &&
-    allTabsCorrect
-  ) {
-    // Clear N+1's tabs (the word the user was in)
-    logTestEvent("input", now, {
-      inputType: "deleteWordBackward",
-      wordIndex: activeWordIndexBeforeDelete,
-      charIndex: inputBeforeDelete.length,
-      inputValue: "",
-    });
-
-    setInputElementValue("");
-    goToPreviousWord(inputType);
-
-    // Record the resulting state of the previous word (newline removed)
-    const postNavInputValue = getInputElementValue().inputValue;
-    logTestEvent("input", now, {
-      inputType: "deleteContentBackward",
-      wordIndex: getActiveWordIndex(),
-      charIndex: postNavInputValue.length,
-      inputValue: postNavInputValue,
-    });
-
-    TestUI.afterTestDelete();
+  const session = getEngineSession();
+  if (!session.isPrepared()) {
     return;
   }
-
-  //normal backspace
-  if (realInputValue === "") {
-    // if the input is NOT empty, that means the ctrl backspace deleted more than just the fake space (THANKS FIREFOX)
-    // which means we need to force update the current word element when we move back
-    goToPreviousWord(inputType);
-
-    // Record the resulting state of the destination word
-    const postNavInputValue = getInputElementValue().inputValue;
-    logTestEvent("input", now, {
-      inputType: inputType,
-      wordIndex: getActiveWordIndex(),
-      charIndex: postNavInputValue.length,
-      inputValue: postNavInputValue,
-      ...(inputBeforeDelete !== "" ? { clearedNextWord: true } : {}),
-    });
-  } else {
-    // Delete within current word
-    logTestEvent("input", now, {
-      inputType: inputType,
-      wordIndex: activeWordIndexBeforeDelete,
-      charIndex: inputBeforeDelete.length,
-      inputValue: inputAfterDelete,
-    });
-  }
-
-  TestUI.afterTestDelete();
+  const { inputValue, realInputValue } = getInputElementValue();
+  observeInputView(now);
+  session.command({
+    op: "delete",
+    now,
+    date: Date.now(),
+    kind: inputType,
+    observedInput: encodeText(inputValue),
+    sentinelRemoved: realInputValue === "",
+  });
 }

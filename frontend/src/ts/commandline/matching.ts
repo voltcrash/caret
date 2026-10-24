@@ -1,1 +1,1 @@
-export { matchCommands } from "@oxytype/typing-core/command-matching";
+export { matchCommands } from "@oxytype/web-shared/command-matching";

@@ -11,6 +11,7 @@ pub enum ErrorCode {
     Disposed,
     BindingMismatch,
     ContentRequired,
+    EmptyContent,
     StaleRequest,
     NoQuotes,
     SelectedQuoteMissing,

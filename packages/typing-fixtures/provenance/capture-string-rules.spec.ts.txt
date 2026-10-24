@@ -1,0 +1,18 @@
+import { afterAll, vi } from "vite-plus/test";
+import { writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+const captured = vi.hoisted(() => new Map<string, unknown>());
+vi.mock("../../src/ts/utils/strings", async (importOriginal) => {
+  const original = await importOriginal<Record<string, unknown>>();
+  return Object.fromEntries(Object.entries(original).map(([name, value]) => [name,
+    !["countChars", "isSpace", "areCharactersVisuallyEqual"].includes(name) ? value : (...args: unknown[]) => {
+      const expected: unknown = (value as (...args: unknown[]) => unknown)(...args);
+      captured.set(JSON.stringify({name,args}), {name,args,expected});
+      return expected;
+    },
+  ]));
+});
+await import("./strings.spec");
+afterAll(() => {
+  writeFileSync(resolve(import.meta.dirname,"../../../packages/typing-fixtures/oracle/string-rules.json"), `${JSON.stringify([...captured.values()], null, 2)}\n`, {flag:"wx"});
+});

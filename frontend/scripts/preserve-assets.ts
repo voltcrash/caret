@@ -4,9 +4,10 @@ import { dirname, resolve } from "node:path";
 import { z } from "zod";
 
 const historyPath = "/_asset-history.json";
-const safePath = /^\/(?:assets|js|css|webfonts)\/[\w.-]+\.(?:js|css|woff2)$/;
+const safePath =
+  /^\/(?:assets|js|css|webfonts)\/[\w.-]+\.(?:js|css|woff2|wasm)$/;
 const legacyHashed =
-  /^\/(?:js|css|webfonts)\/[\w.-]+\.[\w-]{8}\.(?:js|css|woff2)$/;
+  /^\/(?:js|css|webfonts)\/[\w.-]+\.[\w-]{8}\.(?:js|css|woff2|wasm)$/;
 const historySchema = z.object({
   files: z.record(
     z.string().regex(safePath),
@@ -101,7 +102,7 @@ export async function snapshotAssets(
 
 function references(source: string, base: string, origin: string): string[] {
   const matches = source.matchAll(
-    /["'`(]([^"'`\s()<>]+\.(?:js|css|woff2))(?:[?#][^"'`\s()<>]*)?["'`)]/g,
+    /["'`(]([^"'`\s()<>]+\.(?:js|css|woff2|wasm))(?:[?#][^"'`\s()<>]*)?["'`)]/g,
   );
   return [...matches]
     .flatMap((match) => (match[1] ?? "").split(","))
@@ -142,7 +143,7 @@ export async function preserveAssets(
   }
   const paths = new Set(previous.keys());
   for (const name of await readdir(resolve(directory, "assets"))) {
-    if (/\.(?:js|css|woff2)$/.test(name)) paths.add(`/assets/${name}`);
+    if (/\.(?:js|css|woff2|wasm)$/.test(name)) paths.add(`/assets/${name}`);
   }
   const files: Record<string, string> = {};
   for (const path of [...paths].sort()) {

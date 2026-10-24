@@ -1,9 +1,6 @@
 import { createAppSignal } from "../../app/state";
 
-import type {
-  EventLog,
-  TestEventType,
-} from "@oxytype/typing-core/events/types";
+import type { EventLog, TestEventType } from "@oxytype/web-shared/events/types";
 
 /**
  * State for the dev event log viewer, deliberately kept outside the component.

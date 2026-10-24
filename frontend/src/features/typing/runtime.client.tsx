@@ -10,8 +10,10 @@ import {
   useKeymapEvents,
 } from "../../ts/states/test";
 import { addToGlobal } from "../../ts/utils/misc";
+import { getBrowserEngine } from "./engine.client";
 import { buildEventLog, getTestSession } from "./runtime/events/data";
 import { useFunboxEvents } from "./runtime/funbox/funbox";
+import { useEngineInputProjection } from "./runtime/input-projection.client";
 import { usePaceCaretEvents } from "./runtime/pace-caret";
 import { usePractiseEvents } from "./runtime/practise-words";
 import { useTestLogicEvents } from "./runtime/test-logic";
@@ -21,6 +23,7 @@ import { useTtsEvents } from "./runtime/tts";
 /** Session subscriptions belong to the mounted typing leaf. */
 export function TypingRuntime(): null {
   initializeTypingState();
+  useEngineInputProjection();
   useKeymapEvents();
   useChallengeEvents();
   useQuoteEvents();
@@ -41,6 +44,8 @@ export function TypingRuntime(): null {
         lastEventLog: getLastEventLog,
         ...(import.meta.env.OXYTYPE_ENGINE_PROOF
           ? {
+              engineMigrationMemory: () =>
+                getBrowserEngine().api().memoryBytes(),
               engineMigrationState: () => ({
                 wordIndex: getActiveWordIndex(),
                 reason: getTestSession().getFinishReason(),

@@ -64,8 +64,9 @@ export default {
     "packages/release": {
       entry: ["src/production-validation.js", "__tests__/*.spec.js"],
     },
-    "packages/typing-core": {
-      entry: ["scripts/*.ts"],
+    "packages/web-shared": {
+      // Base config is consumed through tsconfig extends, like the SDK package.
+      ignoreDependencies: ["@oxytype/typescript-config"],
     },
     "packages/typing-engine": {
       // This package's browser-only declarations use the workspace TS base;

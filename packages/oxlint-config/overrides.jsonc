@@ -4,7 +4,6 @@
     {
       // Wire/parity fixtures must omit undefined fields exactly like JSON transport.
       "files": [
-        "**/__tests__/test/typing-core-parity.spec.ts",
         "**/__tests__/test/words-generator-parity.spec.ts",
         "**/__test__/fixtures.ts",
         "**/__test__/completed-event.spec.ts",

@@ -2,37 +2,16 @@ import { describe, expect, it } from "vite-plus/test";
 
 import {
   getCurrentEventIndex,
-  getCurrentWordIndex,
   getMaxTestMs,
   getNextEventMs,
   getPreviousEventMs,
-  inputsPerWord,
   parseContext,
   visualizeWhitespace,
 } from "../../../../src/ts/components/modals/event-log-viewer/event-log";
-import type { TestEventNoMs } from "@oxytype/typing-core/events/types";
+import type { TestEventNoMs } from "@oxytype/web-shared/events/types";
 
 function keydown(testMs: number, code = "KeyA"): TestEventNoMs {
   return { type: "keydown", testMs, data: { code } } as TestEventNoMs;
-}
-
-function input(
-  testMs: number,
-  wordIndex: number,
-  inputValue: string,
-): TestEventNoMs {
-  return {
-    type: "input",
-    testMs,
-    data: {
-      inputType: "insertText",
-      data: inputValue.slice(-1),
-      correct: true,
-      charIndex: inputValue.length - 1,
-      wordIndex,
-      inputValue,
-    },
-  };
 }
 
 const validLog = {
@@ -94,22 +73,6 @@ describe("visualizeWhitespace", () => {
   });
 });
 
-describe("inputsPerWord", () => {
-  it("returns the last input value per word", () => {
-    const events = [
-      keydown(0),
-      input(1, 0, "h"),
-      input(2, 0, "hi"),
-      input(3, 1, "y"),
-    ];
-    expect(inputsPerWord(events, 3)).toEqual(["hi", "y", ""]);
-  });
-
-  it("returns empty strings without input", () => {
-    expect(inputsPerWord([keydown(0)], 2)).toEqual(["", ""]);
-  });
-});
-
 describe("getMaxTestMs", () => {
   it("returns the ceiling of the latest testMs", () => {
     expect(getMaxTestMs([keydown(10.2), keydown(5)])).toBe(11);
@@ -117,18 +80,6 @@ describe("getMaxTestMs", () => {
 
   it("returns 0 for an empty log", () => {
     expect(getMaxTestMs([])).toBe(0);
-  });
-});
-
-describe("getCurrentWordIndex", () => {
-  it("returns the word of the last input", () => {
-    expect(
-      getCurrentWordIndex([input(0, 0, "a"), input(1, 2, "b"), keydown(2)]),
-    ).toBe(2);
-  });
-
-  it("returns -1 without input", () => {
-    expect(getCurrentWordIndex([keydown(0)])).toBe(-1);
   });
 });
 

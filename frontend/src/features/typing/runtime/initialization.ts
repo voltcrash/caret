@@ -1,4 +1,12 @@
+import { applyPendingLocalConfig } from "../../../ts/config/lifecycle";
 import { captureTypingRoute, isTypingRouteActive } from "../scope";
+import { getBrowserEngine } from "../engine.client";
+import { getContentHost } from "./content.client";
+import { EngineFailure } from "@oxytype/typing-engine/failure";
+import {
+  applyEngineRecovery,
+  generationFailureIsNotice,
+} from "./recovery.client";
 import { updateClassNames } from "../../../ts/utils/cn";
 
 import * as TestUI from "./test-ui";
@@ -29,7 +37,6 @@ import {
 } from "../../../ts/states/test";
 
 import * as TestWords from "./test-words";
-import * as WordsGenerator from "./words-generator";
 
 import { highlight } from "../../../ts/events/keymap";
 import * as LazyModeState from "../../../ts/states/remember-lazy-mode";
@@ -39,7 +46,6 @@ import {
   isFunboxActiveWithProperty,
 } from "./funbox/list";
 
-import { WordGenError } from "@oxytype/typing-core/errors";
 import { tryCatch } from "@oxytype/util/trycatch";
 import * as Sentry from "../../../ts/sentry";
 import { showLoaderBar, hideLoaderBar } from "../../../ts/states/loader-bar";
@@ -48,10 +54,9 @@ import { getTypingTestElement } from "../../../ts/states/test-dom";
 
 import { getMutableConfig } from "../../../ts/config/store";
 import { setQuoteLengthAll, setConfig } from "../../../ts/config/setters";
-import { getTestSession } from "./events/data";
 
 import { nthElementFromArray } from "../../../ts/utils/arrays";
-import { hasKoreanCharacters } from "@oxytype/typing-core/strings";
+import { hasKoreanCharacters } from "@oxytype/web-shared/strings";
 
 import { testLogicState } from "./logic-state";
 export async function init(lease = captureTypingRoute()): Promise<boolean> {
@@ -76,6 +81,22 @@ export async function init(lease = captureTypingRoute()): Promise<boolean> {
     setIsTestRestarting(false);
     return false;
   }
+
+  showLoaderBar();
+  try {
+    await getBrowserEngine().load();
+    await applyPendingLocalConfig();
+  } catch (error) {
+    if (!lease.isCurrent()) return false;
+    hideLoaderBar();
+    setTestInitError({
+      message:
+        error instanceof Error ? error.message : "Typing engine failed to load",
+    });
+    setIsTestRestarting(false);
+    return false;
+  }
+  if (!lease.isCurrent()) return false;
 
   TestWords.words.reset();
   resetActiveWordIndex();
@@ -194,7 +215,7 @@ export async function init(lease = captureTypingRoute()): Promise<boolean> {
   let generatedWords: string[] = [];
   let generatedSectionIndexes: number[] = [];
   try {
-    const gen = await getTestSession().generate(language, WordsGenerator);
+    const gen = await getContentHost().prepare(language);
     if (!lease.isCurrent()) return false;
     generatedWords = gen.words;
     generatedSectionIndexes = gen.sectionIndexes;
@@ -204,11 +225,12 @@ export async function init(lease = captureTypingRoute()): Promise<boolean> {
   } catch (e) {
     if (!lease.isCurrent()) return false;
     hideLoaderBar();
-    if (e instanceof WordGenError || e instanceof Error) {
+    if (e instanceof Error) {
       testLogicState.lastInitError = e;
     }
     console.error(e);
-    if (e instanceof WordGenError) {
+    if (e instanceof EngineFailure) applyEngineRecovery(e);
+    if (e instanceof EngineFailure && generationFailureIsNotice(e)) {
       if (e.message.length > 0) {
         showNoticeNotification(e.message, {
           important: true,
@@ -245,10 +267,6 @@ export async function init(lease = captureTypingRoute()): Promise<boolean> {
       generatedWords[i] as string,
       generatedSectionIndexes[i] as number,
     );
-  }
-
-  if (WordsGenerator.areAllWordsGenerated()) {
-    TestWords.words.removeCommitCharacterFromLastWord();
   }
 
   if (

@@ -211,7 +211,10 @@ impl Queue {
         }
         let section = source.normalize(self.english)?;
         if section.words.is_empty() {
-            return Err("Section has no words".into());
+            return Err(crate::error::EngineError::new(
+                crate::error::ErrorCode::EmptyContent,
+                "Section has no words",
+            ));
         }
         self.ready.push_back(section);
         Ok(())

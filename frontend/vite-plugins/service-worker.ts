@@ -27,6 +27,7 @@ const shellRoutes = new Set(["_app", "_app.index"]);
  * dropping offline support.
  */
 const offlineTypingModules = [
+  "packages/typing-engine/src/browser.client.ts",
   "src/app/browser-runtime.client.tsx",
   "src/app/chrome.client.tsx",
   "src/features/typing/page.client.tsx",
@@ -43,7 +44,9 @@ const offlineTypingModules = [
 function moduleOf(facade: string | null): string | undefined {
   if (facade === null) return undefined;
   const index = facade.lastIndexOf("/frontend/");
-  return index < 0 ? undefined : facade.slice(index + "/frontend/".length);
+  if (index >= 0) return facade.slice(index + "/frontend/".length);
+  const packageIndex = facade.lastIndexOf("/packages/");
+  return packageIndex < 0 ? undefined : facade.slice(packageIndex + 1);
 }
 
 /**
@@ -90,7 +93,10 @@ export function precacheFromBundle(
   }
   for (const output of Object.values(bundle)) {
     // Document CSS is linked by URL from the root route, not imported.
-    if (output.type === "asset" && /\.(?:css|woff2)$/.test(output.fileName)) {
+    if (
+      output.type === "asset" &&
+      /\.(?:css|woff2|wasm)$/.test(output.fileName)
+    ) {
       files.add(output.fileName);
     }
   }

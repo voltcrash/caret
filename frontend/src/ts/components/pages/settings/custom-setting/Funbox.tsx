@@ -1,6 +1,10 @@
-import { checkCompatibility, getAllFunboxes } from "@oxytype/funbox";
+import { getAllFunboxes } from "@oxytype/funbox";
 import { For, JSXElement, type JSX } from "solid-js";
 
+import {
+  checkCompatibility,
+  enginePolicyReady,
+} from "../../../../../features/typing/policy.client";
 import { getActiveFunboxNames } from "../../../../../features/typing/runtime/funbox/list";
 // import { canSetFunboxWithConfig } from "../../../../config/funbox-validation";
 import { configMetadata } from "../../../../config/metadata";
@@ -23,6 +27,7 @@ export function Funbox(): JSXElement {
               const active = () => getConfig.funbox.includes(funbox.name);
 
               const disabled = () => {
+                if (!enginePolicyReady()) return true;
                 if (active()) return false;
                 const incompatible = !checkCompatibility(
                   getActiveFunboxNames(),

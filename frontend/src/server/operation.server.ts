@@ -16,7 +16,7 @@ import {
 import type { OperationId } from "@oxytype/backend/policies/operations";
 import type { OperationResult } from "../data/operation-result";
 import type { ServiceContext as RequestContext } from "./context.server";
-import { migrateConfig } from "@oxytype/typing-core/config/migrate";
+import { migrateConfig } from "@oxytype/web-shared/config/migrate";
 import { PartialConfigSchema } from "@oxytype/schemas/configs";
 import MonkeyError from "@oxytype/backend/errors";
 import {

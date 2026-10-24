@@ -2,7 +2,7 @@ export {
   nthElementFromArray,
   randomElementFromArray,
   shuffle,
-} from "@oxytype/typing-core/arrays";
+} from "@oxytype/web-shared/arrays";
 
 /**
  * Applies a conditional smoothing algorithm to an array of numbers.

@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import { resolve } from "path";
 import { fileURLToPath } from "url";
-import type { EventLog } from "@oxytype/typing-core/events/types";
+import type { EventLog } from "@oxytype/web-shared/events/types";
 import {
   afterEach,
   beforeEach,
@@ -22,10 +22,23 @@ vi.mock("../../../src/ts/controllers/sound-controller", () => ({
 import { getMutableConfig } from "../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../src/ts/constants/default-config";
 import { resultState, setResultState } from "../../../src/ts/states/result";
+import "../../__harness__/native-engine";
 import {
-  logTestEvent,
-  resetTestEvents,
-} from "../../../src/features/typing/runtime/events/data";
+  analyzeLog,
+  BrowserReplay,
+} from "@oxytype/typing-engine/browser.client";
+import { toEngineLog } from "@oxytype/typing-engine/text";
+const recorded = vi.hoisted(() => ({ log: undefined as EventLog | undefined }));
+vi.mock("../../../src/features/typing/engine.client", () => ({
+  getBrowserEngine: () => ({
+    api: () => ({
+      analyze: analyzeLog,
+      createReplay: (log: Parameters<typeof analyzeLog>[0], zen: boolean) =>
+        new BrowserReplay(log, zen),
+    }),
+    session: () => ({ log: () => toEngineLog(recorded.log as EventLog) }),
+  }),
+}));
 import * as Replay from "../../../src/features/typing/runtime/replay";
 import * as TestWords from "../../../src/features/typing/runtime/test-words";
 
@@ -33,21 +46,26 @@ const fixture = JSON.parse(
   readFileSync(
     resolve(
       fileURLToPath(import.meta.url),
-      "../../../../../packages/typing-core/__fixtures__/keystrokes/words-10-errors.json",
+      "../../../../../packages/typing-fixtures/reference/keystrokes/words-10-errors.json",
     ),
     "utf-8",
   ),
 ) as { eventLog: EventLog };
 
-const START = 10_000;
-
 function load(words: string[], events: EventLog["events"]): void {
   TestWords.words.reset();
   for (const word of words) TestWords.words.push(word, 0);
-  resetTestEvents();
-  for (const event of events) {
-    logTestEvent(event.type, START + event.testMs, event.data);
-  }
+  recorded.log = {
+    version: 1,
+    context: {
+      targetWords: words,
+      mode: getMutableConfig().mode,
+      mode2: String(words.length),
+      koreanStatus: false,
+      bailedOut: false,
+    },
+    events,
+  };
 }
 
 function render(): string[] {

@@ -12,6 +12,13 @@ fn long_test_thresholds_match_frozen_typescript_at_every_boundary() {
     for case in reference["quick"].as_array().unwrap() {
         let config: Config = serde_json::from_value(case.clone()).unwrap();
         let limit = serde_json::from_value(case["limit"].clone()).unwrap();
+        let policy = typing_engine::policy::evaluate(serde_json::from_value(json!({
+            "op":"quickRestart", "config":case, "limit":case["limit"], "customIsLong":case["customIsLong"]
+        })).unwrap()).unwrap();
+        assert_eq!(
+            serde_json::to_value(policy).unwrap()["result"],
+            case["expected"]
+        );
         assert_eq!(
             restart::can_quick_restart(
                 &config,

@@ -12,7 +12,7 @@ empty commits to inflate count. Do not publish production or releases implicitly
 
 ## Current position
 
-Stage 1 engine gate passed. Stage 2 website integration next; Stage 3 remains pending. Read root AGENTS.md and the complete migration
+Stage 1 and Stage 2 gates passed. Stage 3 begins next on a branch stacked above `stack/rust-engine-website`. Read root AGENTS.md and the complete migration
 plan before edits. Installed workspace dependencies with frozen lockfile.
 Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen oracle and mismatch detection. Existing website engine remains authoritative until Stage 2.
 
@@ -25,7 +25,12 @@ Phase 1.1 and 1.2 gates passed: inventory/baselines, lossless contract, frozen o
 | 1.5 Generation / configuration | Complete | 61 original snapshots; section/fractional/live generation; all funbox policies; quote refresh RNG; typed recovery and bounded malformed content. |
 | 1.6 Events / results / replay | Complete | Eight exact original CompletedEvents/hashes/schema/backend outcomes, replay/seek, Unicode history, 1,387 live prefixes and malformed-log validation. |
 | 1.7 Binding / engine gate | Complete | 24 built-browser cases, unchanged results/hashes, frozen payload/performance limits, fresh production build/typechecks; CI engine/native/Wasm and quality/package/SSR/delivery/update jobs pass at e7b7ad864. Existing website browser shards still running when this record was written. |
-| 2.1–2.6 Website | Pending | Requires Stage 1 gate. |
+| 2.1 Browser owner / loading | Complete | App-owned loader/content/session resource; 51 unit cases; actual Cloudflare delayed-download/503/retry browser checks pass; server bundles contain no Wasm initializer. |
+| 2.2 Input / timer projection | Complete | Native website loop; 1,575 unit cases, 19 built typing parity cases and 8 loading/input/IME/commit browser checks pass. |
+| 2.3 Generation / settings consumers | Complete | Native generation/catalog/settings/restart/practice; source cancellation/recovery; SSR-safe settings extraction; 1,577 unit tests and built-browser gates pass. |
+| 2.4 Results / replay | Complete | Native validity/progress/history/charts/inspector/playback; unit/JSX, frozen parity, save retry and real Start/D1 persistence pass. |
+| 2.5 Delivery / performance | Complete | Fresh Cloudflare build/preview/types, 86 Start checks, update/rollback, full website and controlled Wasm budgets pass. |
+| 2.6 TypeScript retirement | Complete | Legacy package removed; full native/Wasm/website/quality CI, fresh build/types and frozen performance gates pass. |
 | 3.1–3.5 Terminal | Pending | Requires Stage 2 gate. |
 
 ## Verification log
@@ -240,3 +245,291 @@ do not rerun completed checks without a new reason.
 Engine gate passed at e7b7ad864 plus automated payload checks ee676ab63. Current API behavior/native/Wasm parity, bounded failures/lifecycles, exact legacy result transport, frozen performance limits and isolated fresh-checkout build/typechecks verified. All original references remain unchanged. Full CI 39932135295 has passed engine, package/frontend/backend, quality, SSR, delivery, assets and update jobs; four existing website browser shards were still running at this handoff. Track their actual final outcome without claiming it early.
 
 Stage 2 begins on a child branch/PR based on the Stage 1 branch. First work: browser-only app resource, loading/retry/disposal and configuration projection, then replace the typing loop and asset/result/replay consumers. The production website still uses TypeScript until integration passes. No production deployment or release publication performed. Stage 3 remains entirely pending.
+
+- Stage 2: added browser-only app resource with lazy owned loader, explicit loading/ready/failed/disposed status, retry, session replacement generations and retained content learning. App disposal aborts loading and releases active session/content; stale initialization cannot publish. Three focused ownership/lifecycle tests and type-aware lint pass. Production typing loop still uses TypeScript at this incremental checkpoint.
+
+- Phase 2.1 route startup now waits for usable Wasm, disables textarea during loading/restart/failure, uses the existing initialization-error UI and Restart retry, and releases sessions on route exit. Cloudflare production build and 51 lifecycle/unit cases pass; actual website delayed-download and 503/Restart cases pass (2 tests, 6.8 s). Server JS scan finds no engine_bg/wasm_bindgen/WebAssembly/binding initializer. These website cases are included in the shared browser CI task. No typing commands have switched engines yet; Phase 2.2 replaces the loop as a whole.
+
+- Added SSR-safe normalized config projection from generated Rust defaults/field names. It copies mutable arrays, excludes web presentation fields and leaves validation to Rust. Focused projection test and type-aware lint pass; no duplicate default/rule table introduced.
+
+- Stage 1 PR #184 at dc843955a now has every CI check green, including all four website browser shards and ci-ok; marked ready for review. Stage 2 remains draft #185, stacked on #184, with force-full-ci enabled. No production deployment/publication.
+
+- Phase 2.2 supporting API: native deletion preflight reuses the same mutation guard; exposes cached word burst and shared time-limit metadata without full-log reads. Rust/native suite and Clippy pass; query values, metadata and startup/retry pass all 26 actual Cloudflare browser cases (54.3 s). Wasm 756,381 raw / 302,064 gzip6 bytes remains within frozen budget. Owner leases now abort/invalidate pending session work on replacement/route exit. Web event conversion retains generated discriminated types and lossless text.
+
+- Added the app-owned Rust session projection/controller: commands retain captured clocks, configuration is projected before native reads, physical/composition observations convert losslessly, input snapshots follow deltas without a growing JS event log, and native finish requests notify once before acknowledgement at the host completion clock. Host timer scheduling and pace rendering use native outputs. Four focused projection tests pass (UTF-16, no full-log hot reads, deferred finish, stale replacement, Firefox residue); owner/text regression group previously passed nine checks. Controller is not yet wired into production typing handlers; full Phase 2.2 gate remains open.
+
+- Before replacing external-source loading, captured the original Wikipedia empty-extract retry lifecycle once (wikipedia-retry.json): English cleanup makes the first raw extract empty; the original fetches another article and returns its exact words. Capture refuses overwrite and typechecks. Raw source adapters must retain this I/O retry without reimplementing text cleanup in TypeScript. Non-overlapping content preparation is proceeding under Phase 2.3 while the new input loop is connected.
+
+- Empty source cleanup now returns structured emptyContent while preserving the single pending token. Native test matches the write-once original Wikipedia retry/output reference. Full native suite/Clippy pass. No reference changed; the host retries only Wikipedia emptiness and retains cancellation/source-failure behavior.
+
+- Native IME quick-finish query now compares owned finite targets/input in exact UTF-16; ended/infinite/pending sessions reject it. Small metadata deltas report generation flag changes without exporting targets. Native query regressions, full native suite and Clippy pass. All 26 built Cloudflare browser cases pass (55.2 s), including surrogate composition and metadata reads. Wasm 757,683 raw / 302,634 gzip6 bytes remains within budget. Owner invalidation now aborts source/automatic continuations on reset/end while retaining the native handle for result reads. Timer/explicit failure acknowledgement retains its captured clock; input completion retains the later observed browser clock. Focused transport/content/owner suite passes 15 checks.
+
+- Added the browser content host: converts raw language/quote/custom assets into lossless native DTOs; loads account favorite IDs/polyglot assets; delegates prepare/repeat/selection/generation entirely to Rust; supplies one requested raw source at a time. Empty Wikipedia cleanup retries the exact token; active requests share one promise and abort on invalidation. Quote queue refresh also works after failed selection, and raw cached-language data remains reusable. Six initial asset/content checks plus shared-request regression pass; combined owner/projection/content suite passes 15 checks. This host is not yet used by the production typing loop.
+
+## Website typing-loop cutover checkpoint
+
+- Native commands now drive the website input/deletion/IME loop. Browser handlers
+  supply UTF-16 units, actual textarea deletion and measured layout/visibility;
+  Rust owns normalization/expansion, acceptance, navigation, automatic indentation,
+  finish/failure, recorder cleanup, live statistics, timing and pace correction.
+- Component-owned subscription projects deltas into existing word/caret rendering,
+  visual/audio hooks and loading UI. Initial and incremental content use the owned
+  raw-source adapter, with generation cancellation and exact source-token reuse.
+- Fixed two integration defects found by broad browser checks: generated content
+  must transfer into its session without another generation/RNG/source pass;
+  omitted quote `britishText` must be optional in generated declarations. Existing
+  restart focus is preserved while loading/error gates still disable unavailable input.
+- Added immutable original-browser `browser-final-word-batch.json`; native test
+  matches all nine entries and the actual migrated website matches it exactly.
+  No snapshot regenerated. Composition and blind commit ordering checks added.
+- `vp run engine:test`: full native pass after content handoff; Clippy passes.
+- Actual Cloudflare build + migration suite: 27 pass (54.2 s). Subsequent built-site
+  typing parity: 19 pass (1.0 m), including external poetry/Wikipedia in two
+  languages, quotes, restart focus, words/time and signed-in result submission.
+- `vp test run --project=unit-frontend`: 132 files / 1,575 tests pass after adapting
+  lifecycle, input, pace, app ownership and replay derivation to actual optimized
+  Wasm. Frozen replay snapshots remain byte-for-byte unchanged. Latest visual
+  ordering/metadata changes pass the subsequent 8-case built-browser rerun (15.0 s),
+  including synthetic composition quick finish and blind-mode commit rendering.
+- Whole frontend type-aware lint/typecheck passes. Native source generation and
+  all frontend validation evidence above are local; current PR CI remains pending.
+- Transitional test-only `__harness__/legacy-event-recorder.ts` isolates deliberately
+  synthetic legacy recorder/statistics cases. It is not imported by production.
+  Retire it with the old core in Phase 2.6 after moving those cases to neutral/native
+  analysis fixtures. This is outstanding migration work, not final architecture.
+- Next: finish browser input/source edge checks; migrate remaining settings/restart/
+  practice policies and result/history/replay playback; delivery/performance and
+  TypeScript retirement remain open. Terminal Stage 3 remains pending.
+
+- Phase 2.2 gate passed at `af262a763`: typing-loop replacement committed. Subsequent
+  eight-case browser edge gate also passes; continue immediately with Phase 2.3.
+  Actual hardware IME/OS keyboard matrix is not represented by synthetic events.
+
+## Phase 2.3 active checkpoint — settings and catalogs
+
+- Native stateless quick-restart and batched setting-conflict queries committed
+  (`efb5964fe`); catalog ownership/binding committed (`1c7d6ac75`). Native full
+  tests and Clippy pass, including all immutable generator/result references and
+  new catalog queue/normalization captures. Diagnostic capture retained separately.
+- Pinned Binaryen convergence committed (`a669b6f43`); current generated payload
+  773,252 raw / 305,988 gzip6 bytes. Original payload limits unchanged.
+- Current working tree connects native policies to settings, funbox compatibility,
+  no-quit/navigation/restart, default projection and practice. Normal browser routes
+  preload policies alongside preferences; proof route skips this preload.
+- Word generation facade removed from active frontend; all 61 frontend generator
+  cases now call the actual optimized Wasm/asset conversion and compare unchanged
+  independent snapshots. Funbox hook registry contains host visual/audio/input
+  hooks only; grouping/quote queue/catalog mutation now share Rust ownership.
+- Current-tree whole frontend type-aware lint/typecheck passes. Unit frontend:
+  132 files / 1,576 tests pass. Actual Cloudflare build + all 30 engine/browser
+  cases pass (49.5 s), including the new catalog normalization round trip. The
+  native/browser 61 generators, result schemas/hashes, loader/memory/init/parity
+  cases remain unchanged and passing.
+- Broader current built-site settings/command/modal/quote/restart/external-content
+  check: 54 pass (1.8 m). Early loader-count regression exposed unintended proof
+  preloading; isolated the probe, preserved its original six-download assertion,
+  and reran all 30 successfully. Hook inventory now explicitly accounts for Rust
+  word hooks and checks every remaining browser implementation.
+- Remaining before Phase 2.3 sign-off: new actual-website delayed section batch,
+  navigation cancellation and failed-source recovery checks. Added lease-aware
+  cancellation handling and malformed-source rejection; these latest small edits
+  are not included in the 30/54/1,576-pass evidence above and require verification.
+- Then commit remaining coherent settings/host changes, update inventory/features,
+  and continue Phase 2.4 result analysis/playback. Phase 2.5/2.6 and Stage 3 still
+  pending. Never claim the migration or terminal release finished at this checkpoint.
+
+## Phase 2.3 gate passed
+
+- Native policies, catalogs, generation, repeat/restart, pace, learning and practice
+  now serve browser consumers. Host hooks retain display/audio/platform I/O.
+- Three built-site source edge checks pass (9.1 s): delayed 408-unit batch retains
+  original zero testMs; navigation aborts without stale input/unhandled rejection;
+  failed active source recovers without scoring a failed typing test.
+- Extracted SSR-safe settings/themes/metadata into `@oxytype/web-shared`; native
+  defaults authoritative. Preserved original default enumeration order, which
+  controls legacy full-import preference sequencing. Existing 25 setter regressions
+  caught that dependency and pass after correction; all 372 core tests pass.
+- Fixed saved-funbox startup race. Full constrained imports await native policy
+  readiness before mutation. Failed local startup retains the original config for
+  Restart; it never saves an incomplete replacement. Actual delayed/503 browser
+  cases now use saved ALL_CAPS settings and verify they survive both paths.
+- Current built Cloudflare input/source/settings-loading gate: 8 pass (31.2 s).
+  Workerd SSR document gate: 6 pass (8.63 s). Server JS scan contains no engine
+  initializer/Wasm import. Whole frontend/shared type-aware lint passes. Dependency
+  graph: 789 files, no cycle.
+- Frontend unit gate: 132 files / 1,577 tests pass (23.23 s, maxWorkers=4).
+  Earlier simultaneous build/full-test runs exceeded the palette cold-import
+  test's existing 5 s deadline; isolated test and bounded-worker whole suite pass
+  without changing deadlines/assertions. Actual browser settings/catalog evidence
+  from the previous checkpoint remains valid for unchanged native outputs.
+- Continue Phase 2.4 now. Helpers still used by results are deliberately retained
+  until that gate; legacy oracle re-exports retire in Phase 2.6. Stage 3 pending.
+
+## Phase 2.4 gate passed
+
+- Rust now owns completion validity/AFK decisions, long custom progress, result
+  histories/raw/burst/accuracy/chart buckets, event-log inspector reconstruction,
+  and replay prompt mutation/seeking. The website retains transport/hash/account
+  metadata, tags/challenges, saved-text storage, screenshots, display and timers.
+- New immutable inspector reference: 64 prefixes across eight original web logs.
+  Native tests and optimized Wasm check exact DOM text, last input position,
+  accuracy, unreleased timing placeholders and unlagged chart labels. One-time
+  source archived as inert provenance after original inspector removal.
+- App-owned WeakMaps cache immutable result/prefix views without retaining logs.
+  Replay handles/timers are route-owned and disposed on exit; original seven
+  replay snapshots and component playback/seek expectations remain unchanged.
+- Explicit binding contract: infinite per-word burst is JSON null; the host
+  restores Infinity for display. Native f64 stats are unchanged; completed-result
+  finite validation stays strict. A temporary redundant Option allocation was
+  removed; final payload 774,741 raw / 306,988 gzip6 bytes, within frozen limits.
+- Native full suite, Clippy, format and whole frontend type-aware checks pass.
+  Unit + JSX: 224 files / 2,191 tests pass (62.83 s). Two added native-completion
+  long-book tests also pass in the 18-case lifecycle file (partial bailout saves
+  progress; completing the remaining tail resets progress/restores full text).
+- Built Cloudflare proof: original 19 cases pass, including all original generator,
+  result/hash/schema/backend/replay references. New 64-prefix inspector browser
+  case passes separately (11.7 s after fixing its fs read). Signed-out native result
+  history/clipboard/replay seek passes (12.5 s); authenticated same-payload save
+  retry and invalid short-test non-submission pass (2 cases, 15.6 s).
+- Retry fixture needed the seeded Start session and settled account config; its
+  earlier guest/mid-settings attempts were fixture failures. Existing real browser
+  completion through Start/D1 passes (14.5 s): one persisted result/account update.
+  Independent backend result (21) and anticheat detector (19) checks pass unchanged.
+- All result browser cases added to engine browser CI task. No production/staging
+  publication. Continue Phase 2.5; TypeScript retirement and terminal remain open.
+
+## Phase 2.5 active checkpoint
+
+- Fixed public asset retention to include hashed Wasm alongside matched glue;
+  service-worker precache explicitly includes browser SDK and Wasm. Nine retention/
+  precache unit checks and eight built workerd delivery checks pass (MIME, immutable
+  headers, complete cache and exact published bytes). Wrangler dry-run passes.
+- Long real-keyboard profiling exposed an attached-generator zen bug: refill
+  generated English targets behind the cursor. Rust now keeps zen targetless;
+  component-owned rendering projects native word indices into empty display nodes.
+  Native parity, full native tests/Clippy/format and actual browser backward/restart
+  regression pass. No reference changed.
+- Full website baseline passes unchanged budgets: 20 input/restart samples plus
+  2,000 keyboard characters, no page errors. Active JS 13,185,628 bytes; reset JS
+  13,006,284; reset Wasm 15,335,424 (<16 MiB). Three additional real-keyboard 2,000-unit
+  sessions remain flat at 15,335,424 Wasm bytes; reset JS maximum 12,227,996.
+  Raw measurements: website-candidate-{readiness,input,soak}.json. Earlier added-soak
+  attempt hit the original baseline deadline and exposed the zen defect; repeated
+  workloads now have a separate test, leaving original timing budgets unchanged.
+- Cold/warm startup gate passes (10 samples each), as do input-paint and restart
+  median/p95 gates. Current payload 774,770 raw bytes, gzip6 still within unchanged
+  307,200-byte build guard. Whole changed-source type-aware check passes.
+- Actual matched-build update/rollback suite: three pass (38.2 s). Old tab resolves
+  its engine/glue after deployment, both caches contain engine assets, rollback
+  types offline; pending real save and removed-function retry remain compatible.
+- Remaining gate: clean checkout, current whole proof/SSR/browser regression and
+  controlled initialization/boundary distribution. Then Phase 2.6 retirement.
+  No external deployment, release or Stage 3 completion claimed.
+
+## Phase 2.5 gate passed
+
+- Fresh detached checkout `24b3a3819`: frozen install, no generated/target/dist;
+  actual Cloudflare build automatically produces Rust/Wasm/bindings. All workspace
+  typechecks pass. Fresh workerd preview: 14 document/delivery cases pass (5.36 s).
+- Main current-build Start suite: 14 files / 86 checks pass (48.69 s). Combined engine
+  suite: 37 pass; one replay UI fixture clicked an invisible separator on a random
+  one-letter word. Corrected locator to its visible first letter; rerun passes.
+- Controlled final browser checks: three pass (35.5 s), including replay history/
+  clipboard/seek, original native fixture and 30 fresh initialization contexts.
+  Initialization p95 66.7 ms (<100); boundary and deployed payload/glue checks pass.
+  Raw website-engine-{initialization,boundary}.json retained separately.
+- No server-side engine initialization; no backend validation changes. Ready for
+  release review through the established matched-artifact workflow; hosted staging
+  and production deployment remain unperformed and are not implicitly authorized.
+- Continue immediately with TypeScript retirement. Additional synthetic legacy
+  analysis calls captured once before deleting that test-only recorder; native
+  parity verification is in progress. Original reference snapshots remain unchanged.
+
+## Phase 2.6 active checkpoint — legacy removal
+
+- Extracted host helpers and legacy wire DTO types into `web-shared`; 114 moved
+  utility tests pass. Removed all TypeScript engine sources/package/dependency,
+  unused rule facades and transitional test-only recorder. Retained every original
+  reference byte; original manifest unchanged. Capture scripts archived inertly.
+- Captured 67 synthetic public analysis calls and 68 string-rule calls once, before
+  deletion. Original legacy suites pass (100 and 157 cases respectively); all 135
+  native comparisons pass. Full native suite, Clippy and format pass.
+- Browser anticheat regression now passes actual optimized-Wasm summaries into the
+  unchanged independent backend validators, removing its previous JS score formulas.
+  Host input capture and timer scheduler tests no longer import the legacy engine.
+- Changed host/input/string/anticheat group: 126 pass. Whole workspace unit/JSX run:
+  338 files / 3,387 pass, one CI fixture-routing expectation failed because immutable
+  fixtures now correctly select the full engine gate. Corrected routing assertion;
+  all 68 routing/metadata/reference-integrity checks pass. No reference regenerated.
+- Whole frontend/shared type-aware check passes. Two earlier transient tsgolint
+  panics came from deleting a file during a running scan; subsequent complete check
+  after edits settled passes. Do not mutate scanned trees while lint/typecheck runs.
+- Remaining: current retired-engine production build/browser/full-workspace types,
+  final fresh checkout, performance confirmation, rollback documentation and PR2
+  sign-off. Stage 3 still pending; no live deployment performed.
+
+## Cross-platform delivery follow-up
+
+- Current retirement checkout `19871ed8e`: frozen install, automatic fresh Rust/Wasm
+  Cloudflare build and all nine remaining workspace typechecks pass without the
+  legacy package. Broad website suite: 146 pass (5.4 m); the single authenticated
+  save test raced account settings (14/15 typed after config replacement). Waiting
+  for settled fixture settings fixes it; isolated existing test passes (14.6 s).
+- x86_64 CI run `40041357470` failed during common bootstrap: Wasm 775,342 raw /
+  307,376 gzip6, exceeding the unchanged 307,200-byte limit. ARM passing locally
+  was insufficient evidence; cross-platform payload gate reopened before sign-off.
+- Borrow timing codes instead of allocating strings per event; exact native parity
+  passes. Float-label and cold-error/extra Binaryen experiments did not produce
+  sufficient gzip savings and were discarded, not shipped.
+- Share the already-required JSON Value parser for the immutable British dictionary,
+  eliminating its redundant untagged-enum deserializer. Dictionary bytes unchanged;
+  explicit schema/replacement test and full native parity/Clippy pass. Current ARM
+  payload 765,852 raw / 303,619 gzip6, leaving 3,581 bytes of unchanged-budget margin.
+- Wasm cache inputs now cover actual engine/adapter sources, data, manifests, build
+  scripts, environment/toolchain and output hashes. Native tests and future terminal
+  sources cannot affect generated browser output and no longer force Wasm rebuilds.
+- Pushed through `3d7a509a2`; current optimized browser/performance and new x86_64 CI
+  remain pending. Stage 2 is not signed off yet; Stage 3 remains pending.
+
+## Final startup and quality follow-up
+
+- Optimized actual Cloudflare browser suite: all 30 pass (1.1 m), including frozen
+  generators/results/inspection/replay, retries, input/IME, lifecycle/memory and
+  controlled initialization (p95 60.9 ms). Raw retired-engine artifacts retained.
+- Whole-website input/restart/heap and long/repeated-session gates pass; reset Wasm
+  remains 15,335,424 bytes. Cold-readiness median initially failed at 1,078.3 ms.
+  Trace shows startup-cover polling falls into a later interval. Added SSR-safe
+  hashed Wasm URL metadata and document preload so transfer overlaps hydration;
+  there is still no server initializer. After change cold median 684.3 ms / p95
+  1,159.5; warm median 596.3 / p95 734.8, within unchanged budgets. Failed raw run
+  retained separately in diagnostics, never substituted for the frozen baseline.
+- Actual workerd head/precache/MIME/CSP/cache gate: 14 pass (5.53 s). Browser loading/
+  saved-settings/retry plus frozen native trace proof: three pass (11.7 s). Updated
+  matched-artifact deploy/rollback suite: three pass (37.2 s), including offline typing.
+- CI `40042712384` passes native/Wasm payload and functional jobs; quality found four
+  dead exports plus a false unused-base-tsconfig report. Removed dead APIs and used
+  the existing SDK Knip convention for the actual tsconfig dependency. Knip and
+  type-aware checks pass locally; changed host/render tests: 35 pass.
+- Pushed `0b17aabeb`; final fresh checkout/build/types and resulting CI gate still
+  running. No Stage 2 sign-off or terminal completion claimed yet.
+
+## Stage 2 gate passed
+
+- Final runtime source `0b17aabeb`; full CI `40043812060` succeeds: native/Wasm,
+  package/backend/frontend, quality/format/Knip, SSR, delivery/assets, four broad
+  browser shards and update/rollback jobs. No weakened checks or regenerated
+  reference snapshots. PR #185 is ready for review, stacked on #184.
+- Fresh isolated checkout at the final runtime source, with target/generated/dist
+  removed: frozen install, automatic Cloudflare Rust/Wasm build and all nine
+  workspace typechecks pass. Current Wrangler dry-run and whole-repo format pass.
+- Final built browser gate: all 38 pass (1.3 m) with controlled timing enforcement,
+  including new Wasm preload and exact original behavior/result/hash contracts.
+  Full website cold/warm, input/restart, heap and long/repeated-session budgets
+  pass; raw evidence and failed diagnostic run retained. Wasm 765,852 raw /
+  303,619 gzip6 bytes. Stage 2 contains 70+ coherent commits, without empty commits.
+- Website is ready for the established release review/deployment process. Hosted
+  staging/production deployment, current Cloudflare rollback-version capture and
+  actual hardware IME/OS checks remain unperformed; no publication authorized or
+  claimed. Local matched-artifact rollback/offline/save checks pass.
+- Continue Stage 3 immediately. Native Ratatui implementation, capabilities, local
+  history and platform release gates remain required; do not stop at this stage.

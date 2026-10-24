@@ -1,0 +1,120 @@
+{
+  "asset": {
+    "language": "german",
+    "groups": [
+      [0, 100],
+      [101, 200],
+      [201, 300],
+      [301, 999]
+    ],
+    "quotes": [
+      {
+        "id": 1,
+        "text": "  one…\n line  ",
+        "britishText": "colour centre",
+        "length": 12,
+        "source": "fixture"
+      }
+    ]
+  },
+  "stages": [
+    {
+      "british": false,
+      "expected": {
+        "words": ["one...\n", "line"],
+        "currentQuote": {
+          "text": "one...\n line",
+          "britishText": "colour centre",
+          "source": "fixture",
+          "length": 12,
+          "id": 1,
+          "language": "swiss_german",
+          "group": 0,
+          "textSplit": ["one...\n", "line"]
+        },
+        "collection": {
+          "quotes": [
+            {
+              "text": "one...\n line",
+              "britishText": "colour centre",
+              "source": "fixture",
+              "length": 12,
+              "id": 1,
+              "language": "swiss_german",
+              "group": 0,
+              "textSplit": ["one...\n", "line"]
+            }
+          ],
+          "length": 1,
+          "groups": [
+            [
+              {
+                "text": "one...\n line",
+                "britishText": "colour centre",
+                "source": "fixture",
+                "length": 12,
+                "id": 1,
+                "language": "swiss_german",
+                "group": 0,
+                "textSplit": ["one...\n", "line"]
+              }
+            ],
+            [],
+            [],
+            []
+          ],
+          "language": "german"
+        }
+      }
+    },
+    {
+      "british": true,
+      "expected": {
+        "words": ["colour", "centre"],
+        "currentQuote": {
+          "text": "one...\n line",
+          "britishText": "colour centre",
+          "source": "fixture",
+          "length": 12,
+          "id": 1,
+          "language": "swiss_german",
+          "group": 0,
+          "textSplit": ["colour", "centre"]
+        },
+        "collection": {
+          "quotes": [
+            {
+              "text": "one...\n line",
+              "britishText": "colour centre",
+              "source": "fixture",
+              "length": 12,
+              "id": 1,
+              "language": "swiss_german",
+              "group": 0,
+              "textSplit": ["colour", "centre"]
+            }
+          ],
+          "length": 1,
+          "groups": [
+            [
+              {
+                "text": "one...\n line",
+                "britishText": "colour centre",
+                "source": "fixture",
+                "length": 12,
+                "id": 1,
+                "language": "swiss_german",
+                "group": 0,
+                "textSplit": ["colour", "centre"]
+              }
+            ],
+            [],
+            [],
+            []
+          ],
+          "language": "german"
+        }
+      }
+    }
+  ]
+}

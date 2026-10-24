@@ -1,11 +1,11 @@
-import type { EventLog } from "@oxytype/typing-core/events/types";
+import type { EventLog } from "@oxytype/web-shared/events/types";
+
+import { createMemo, JSXElement, Show } from "solid-js";
 
 import {
   getKeypressDurations,
   getKeypressSpacing,
-} from "@oxytype/typing-core/events/stats";
-import { createMemo, JSXElement, Show } from "solid-js";
-
+} from "../../../../features/typing/analysis.client";
 import {
   getScatterOpen,
   setScatterOpen,

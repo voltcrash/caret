@@ -1,11 +1,6 @@
-import type {
-  EventLog,
-  InputEventNoMs,
-  TestEventNoMs,
-} from "@oxytype/typing-core/events/types";
+import type { EventLog, TestEventNoMs } from "@oxytype/web-shared/events/types";
 
-import { getInputFromDom } from "@oxytype/typing-core/events/helpers";
-import { EVENT_LOG_VERSION } from "@oxytype/typing-core/events/types";
+import { EVENT_LOG_VERSION } from "@oxytype/web-shared/events/types";
 
 export function parseContext(raw: string): EventLog {
   const parsed = JSON.parse(raw) as unknown;
@@ -44,34 +39,9 @@ export function visualizeWhitespace(s: string): string {
   return s.replace(/ /g, "␣").replace(/\t/g, "→").replace(/\n/g, "↵");
 }
 
-export function inputsPerWord(
-  events: TestEventNoMs[],
-  wordCount: number,
-): string[] {
-  const buckets = new Map<number, InputEventNoMs[]>();
-  for (const e of events) {
-    if (e.type !== "input") continue;
-    const bucket = buckets.get(e.data.wordIndex) ?? [];
-    bucket.push(e);
-    buckets.set(e.data.wordIndex, bucket);
-  }
-  return Array.from({ length: wordCount }, (_, i) =>
-    getInputFromDom(buckets.get(i) ?? []),
-  );
-}
-
 /** latest testMs in the log, rounded up to a whole millisecond */
 export function getMaxTestMs(events: TestEventNoMs[]): number {
   return Math.ceil(events.reduce((m, e) => (e.testMs > m ? e.testMs : m), 0));
-}
-
-/** word index of the last input event, -1 when there is none */
-export function getCurrentWordIndex(events: TestEventNoMs[]): number {
-  for (let i = events.length - 1; i >= 0; i--) {
-    const e = events[i];
-    if (e?.type === "input") return e.data.wordIndex;
-  }
-  return -1;
 }
 
 /**

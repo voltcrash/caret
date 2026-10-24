@@ -1,3 +1,5 @@
+import "../__harness__/native-engine";
+import { evaluatePolicy } from "@oxytype/typing-engine/browser.client";
 import { describe, it, expect, beforeEach, vi } from "vite-plus/test";
 
 // Baseline for what test/result.ts#update shows on the result screen (stat
@@ -86,7 +88,7 @@ vi.mock("../../src/ts/states/test", async (importOriginal) => ({
   getKoreanStatus: () => false,
   isTestInvalid: () => state.testInvalid,
 }));
-vi.mock("@oxytype/typing-core/events/stats", () => ({
+vi.mock("../../src/features/typing/analysis.client", () => ({
   getAccuracy: () => state.accuracy,
   getRawHistory: () => [],
   getTimerBoundaryLabels: () => [],
@@ -654,3 +656,10 @@ describe("result update", () => {
     });
   });
 });
+
+vi.mock("../../src/features/typing/engine.client", () => ({
+  getBrowserEngine: () => ({
+    status: () => ({ state: "ready" }),
+    api: () => ({ policy: evaluatePolicy }),
+  }),
+}));

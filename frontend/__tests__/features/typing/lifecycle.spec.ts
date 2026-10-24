@@ -8,12 +8,17 @@ const mocks = vi.hoisted(() => {
     paceReset: vi.fn(),
     pauseReplay: vi.fn(),
     sessionReset: vi.fn(),
+    engineRelease: vi.fn(),
     funboxClear: vi.fn(async () => undefined),
     clearGlobal: vi.fn(),
     layoutfluidHide: vi.fn(),
     altGrReset: vi.fn(),
   };
 });
+vi.mock("../../../src/features/typing/engine.client", () => ({
+  getBrowserEngine: () => ({ releaseSession: mocks.engineRelease }),
+}));
+
 vi.mock("../../../src/app/readiness", () => ({
   preferencesReadiness: () => ({ wait: mocks.preferences }),
 }));
@@ -179,6 +184,7 @@ it("tears down timers, funboxes and incomplete state synchronously on exit", () 
   expect(mocks.paceReset).toHaveBeenCalledOnce();
   expect(mocks.pauseReplay).toHaveBeenCalledOnce();
   expect(mocks.sessionReset).toHaveBeenCalledOnce();
+  expect(mocks.engineRelease).toHaveBeenCalledOnce();
   expect(mocks.clearGlobal).toHaveBeenCalledOnce();
   expect(mocks.funboxClear).toHaveBeenCalledOnce();
   expect(mocks.layoutfluidHide).toHaveBeenCalledOnce();

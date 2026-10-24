@@ -1,6 +1,6 @@
 # Browser engine bindings
 
-Platform-independent rules live in `crates/typing-engine`; this package contains generated declarations and a thin synchronous JSON adapter. The production website continues using its existing engine until Stage 2.
+Platform-independent rules live in `crates/typing-engine`; this package contains generated declarations and a thin synchronous JSON adapter. The website uses this Rust engine exclusively. Browser rendering, input observations, storage and transport remain host responsibilities.
 
 ## Build and verify
 

@@ -1,5 +1,6 @@
+import { createAppOwned } from "../../../app/application";
+import { onCleanup } from "solid-js";
 import { captureTypingRoute } from "../scope";
-import * as TestWords from "./test-words";
 import { getTestSession } from "./events/data";
 import { getMutableConfig } from "../../../ts/config/store";
 import * as DB from "../../../ts/db";
@@ -14,7 +15,6 @@ import {
 import {
   isDirectionReversed,
   isLanguageRightToLeft,
-  getActiveWordIndex,
   getCurrentQuote,
   getResultVisible,
   isPaceRepeat,
@@ -23,20 +23,28 @@ import {
 } from "../../../ts/states/test";
 
 // The session owns pace state; this module schedules steps and renders them.
-let timeout: NodeJS.Timeout | undefined;
-
-let caret: CaretController | undefined;
+const state = createAppOwned(() => {
+  const value: {
+    timeout?: ReturnType<typeof setTimeout>;
+    caret?: CaretController;
+  } = {};
+  onCleanup(() => {
+    clearTimeout(value.timeout);
+    value.caret?.stopAllAnimations();
+  });
+  return value;
+});
 
 // The Caret component creates and disposes the controller.
 export function setCaret(controller: CaretController): () => void {
-  caret = controller;
+  state().caret = controller;
   return () => {
-    if (caret === controller) caret = undefined;
+    if (state().caret === controller) state().caret = undefined;
   };
 }
 
 export function getCaret(): CaretController {
-  return (caret ??= new CaretController(
+  return (state().caret ??= new CaretController(
     getPaceCaretElement(),
     getMutableConfig().paceCaretStyle,
   ));
@@ -66,7 +74,7 @@ export function resetCaretPosition(): void {
 export async function init(): Promise<void> {
   const lease = captureTypingRoute();
   if (!lease.isCurrent()) return;
-  clearTimeout(timeout);
+  clearTimeout(state().timeout);
   getCaret().hide();
   const mode2 = Misc.getMode2(getMutableConfig(), getCurrentQuote());
   let wpm = 0;
@@ -128,10 +136,7 @@ function update(): void {
     getCaret().show();
   }
 
-  const position = getTestSession().pace.step(
-    (index) => TestWords.words.get(index)?.text,
-    getMutableConfig().blindMode,
-  );
+  const position = getTestSession().pace.step();
   if (position === null) {
     getCaret().hide();
     return;
@@ -152,7 +157,7 @@ function update(): void {
       },
     });
 
-    timeout = setTimeout(update, Math.max(0, duration));
+    state().timeout = setTimeout(update, Math.max(0, duration));
   } catch (e) {
     console.error(e);
     getCaret().hide();
@@ -160,17 +165,8 @@ function update(): void {
 }
 
 export function reset(): void {
-  clearTimeout(timeout);
+  clearTimeout(state().timeout);
   getTestSession().pace.reset();
-}
-
-export function handleSpace(correct: boolean, currentWord: string): void {
-  getTestSession().pace.correct(
-    getActiveWordIndex(),
-    correct,
-    currentWord,
-    getMutableConfig().blindMode,
-  );
 }
 
 export function start(): void {

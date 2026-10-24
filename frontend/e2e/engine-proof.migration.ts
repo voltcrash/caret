@@ -5,7 +5,7 @@ import budgets from "../../docs/rust-engine/performance-budgets.json" with { typ
 import { expect, test } from "playwright/test";
 import { toWebLog } from "@oxytype/typing-engine/text";
 import { CompletedEventSchema } from "@oxytype/schemas/results";
-import { hashResult } from "@oxytype/typing-core/result-hash";
+import { hashResult } from "@oxytype/web-shared/result-hash";
 import { getResultFailure } from "../../backend/src/anticheat/result";
 
 const root = resolve(import.meta.dirname, "../../packages/typing-fixtures");
@@ -1183,4 +1183,85 @@ test("quote length changes refresh only the owned queue and preserve cached-lang
       selected: cycle.selected.map((quote) => quote.id),
     })),
   });
+});
+
+test("quote catalog reads retain the original selected-object normalization through Wasm", async ({
+  page,
+}) => {
+  const reference = JSON.parse(
+    await readFile(
+      resolve(root, "oracle/quote-catalog-selection.json"),
+      "utf8",
+    ),
+  ) as {
+    asset: { quotes: { text: string; britishText: string }[] };
+    stages: { british: boolean; expected: unknown }[];
+  };
+  const units = (value: string): number[] =>
+    Array.from({ length: value.length }, (_, index) => value.charCodeAt(index));
+  const neutral = (value: unknown, key = ""): unknown => {
+    if (
+      typeof value === "string" &&
+      ["text", "britishText", "textSplit", "words"].includes(key)
+    ) {
+      return units(value);
+    }
+    if (Array.isArray(value)) return value.map((item) => neutral(item, key));
+    if (value !== null && typeof value === "object") {
+      return Object.fromEntries(
+        Object.entries(value).map(([name, item]) => [
+          name,
+          neutral(item, name),
+        ]),
+      );
+    }
+    return value;
+  };
+  await page.goto("/engine-proof");
+  await page.getByRole("textbox", { name: "Command fixture" }).fill(
+    JSON.stringify({
+      asset: neutral(reference.asset),
+      stages: reference.stages.map(({ british }) => ({ british })),
+    }),
+  );
+  await page
+    .getByRole("button", { name: "Run quote catalog", exact: true })
+    .click();
+  await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
+  await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+  expect(
+    JSON.parse(await page.getByTestId("engine-proof-result").innerText()),
+  ).toEqual(reference.stages.map((stage) => neutral(stage.expected)));
+});
+
+test("native inspector preserves every original log prefix through browser Wasm", async ({
+  page,
+}) => {
+  const units = (value: string): number[] =>
+    Array.from({ length: value.length }, (_, index) => value.charCodeAt(index));
+  const references = JSON.parse(
+    await readFile(resolve(root, "oracle/inspection.json"), "utf8"),
+  ) as { log: unknown; expected: { inputs: string[] } }[];
+  await page.goto("/engine-proof");
+  await page
+    .getByRole("textbox", { name: "Command fixture" })
+    .fill(
+      JSON.stringify(
+        references.map(({ log }) => ({ log, queries: [{ op: "inspect" }] })),
+      ),
+    );
+  await page.getByRole("button", { name: "Run analysis", exact: true }).click();
+  await expect(page.getByTestId("engine-proof-error")).toBeEmpty();
+  await expect(page.getByTestId("engine-proof-result")).not.toBeEmpty();
+  const actual = JSON.parse(
+    await page.getByTestId("engine-proof-result").innerText(),
+  ) as unknown;
+  expect(actual).toEqual(
+    references.map(({ expected }) => [
+      {
+        op: "inspect",
+        inspection: { ...expected, inputs: expected.inputs.map(units) },
+      },
+    ]),
+  );
 });

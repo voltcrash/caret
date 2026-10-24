@@ -191,26 +191,40 @@ pub fn wpm(chars: usize, seconds: f64) -> f64 {
         chars as f64 / 5.0 / (seconds / 60.0)
     }
 }
-pub fn accuracy(log: &Log, limit: Option<f64>) -> f64 {
-    let mut correct = 0;
-    let mut total = 0;
+#[derive(Serialize, TS)]
+pub struct Accuracy {
+    pub correct: usize,
+    pub incorrect: usize,
+    pub percentage: f64,
+}
+pub fn accuracy_counts(log: &Log, limit: Option<f64>) -> Accuracy {
+    let mut counts = Accuracy {
+        correct: 0,
+        incorrect: 0,
+        percentage: 0.0,
+    };
     for event in &log.events {
         if limit.is_some_and(|limit| event.test_ms > limit) {
             break;
         }
         if event.kind == "input" && event.data.get("correct").is_some() {
-            total += 1;
             if event.data["correct"] == true {
-                correct += 1;
+                counts.correct += 1;
+            } else {
+                counts.incorrect += 1;
             }
         }
     }
-    if total == 0 {
-        0.0
-    } else {
-        correct as f64 / total as f64 * 100.0
+    let total = counts.correct + counts.incorrect;
+    if total != 0 {
+        counts.percentage = counts.correct as f64 / total as f64 * 100.0;
     }
+    counts
 }
+pub fn accuracy(log: &Log, limit: Option<f64>) -> f64 {
+    accuracy_counts(log, limit).percentage
+}
+
 fn end(log: &Log) -> f64 {
     log.events
         .iter()
@@ -444,51 +458,12 @@ pub(crate) fn build_summary(log: &Log) -> Summary {
             && event.data["inputType"] == "insertText"
             && event.data["correct"] == false
     });
-    let mut spacing = vec![];
-    let mut last = None;
-    let mut durations: Vec<f64> = vec![];
-    let mut held: Vec<(String, f64, usize)> = vec![];
-    let mut overlap = 0.0;
-    let mut overlap_start = None;
-    let start = log
-        .events
-        .iter()
-        .find(|event| event.kind == "timer" && event.data["event"] == "start")
-        .map(|event| event.test_ms);
-    let first = log
-        .events
-        .iter()
-        .find(|event| event.kind == "keydown")
-        .map(|event| (event.test_ms - start.unwrap_or(event.test_ms)).max(0.0))
-        .unwrap_or(0.0);
-    for event in &log.events {
-        let code = event.data["code"].as_str().unwrap_or_default().to_owned();
-        if event.kind == "keydown" {
-            if let Some(previous) = last {
-                spacing.push(event.test_ms - previous);
-            }
-            last = Some(event.test_ms.max(0.0));
-            if let Some(index) = held.iter().position(|(key, _, _)| key == &code) {
-                held.remove(index);
-            }
-            held.push((code, event.test_ms, durations.len()));
-            durations.push(0.0);
-            if overlap_start.is_none() && held.len() > 1 {
-                overlap_start = Some(event.test_ms);
-            }
-        } else if event.kind == "keyup" {
-            if let Some(index) = held.iter().position(|(key, _, _)| key == &code) {
-                let (_, time, index) = held.remove(index);
-                durations[index] = event.test_ms - time;
-            }
-            if let Some(start) = overlap_start
-                && held.len() == 1
-            {
-                overlap += event.test_ms - start;
-                overlap_start = None;
-            }
-        }
-    }
+    let KeyTiming {
+        spacing,
+        durations,
+        overlap,
+        first,
+    } = key_timing(log);
     Summary {
         wpm: round2(wpm(counts.correct_word, seconds)),
         raw_wpm: round2(wpm(
@@ -693,6 +668,7 @@ pub fn lagged_boundaries(log: &Log) -> Vec<f64> {
     }
     boundaries
 }
+#[inline(never)]
 pub fn boundary_labels(log: &Log, show_lag: bool) -> Vec<String> {
     let boundaries = boundaries(log);
     boundaries
@@ -720,4 +696,65 @@ pub fn boundary_labels(log: &Log, show_lag: bool) -> Vec<String> {
             }
         })
         .collect()
+}
+
+pub struct KeyTiming {
+    pub spacing: Vec<f64>,
+    pub durations: Vec<f64>,
+    pub overlap: f64,
+    pub first: f64,
+}
+#[inline(never)]
+pub fn key_timing(log: &Log) -> KeyTiming {
+    let mut spacing = vec![];
+    let mut last = None;
+    let mut durations: Vec<f64> = vec![];
+    let mut held: Vec<(&str, f64, usize)> = vec![];
+    let mut overlap = 0.0;
+    let mut overlap_start = None;
+    let start = log
+        .events
+        .iter()
+        .find(|event| event.kind == "timer" && event.data["event"] == "start")
+        .map(|event| event.test_ms);
+    let first = log
+        .events
+        .iter()
+        .find(|event| event.kind == "keydown")
+        .map(|event| (event.test_ms - start.unwrap_or(event.test_ms)).max(0.0))
+        .unwrap_or(0.0);
+    for event in &log.events {
+        let code = event.data["code"].as_str().unwrap_or_default();
+        if event.kind == "keydown" {
+            if let Some(previous) = last {
+                spacing.push(event.test_ms - previous);
+            }
+            last = Some(event.test_ms.max(0.0));
+            if let Some(index) = held.iter().position(|(key, _, _)| key == &code) {
+                held.remove(index);
+            }
+            held.push((code, event.test_ms, durations.len()));
+            durations.push(0.0);
+            if overlap_start.is_none() && held.len() > 1 {
+                overlap_start = Some(event.test_ms);
+            }
+        } else if event.kind == "keyup" {
+            if let Some(index) = held.iter().position(|(key, _, _)| key == &code) {
+                let (_, time, index) = held.remove(index);
+                durations[index] = event.test_ms - time;
+            }
+            if let Some(start) = overlap_start
+                && held.len() == 1
+            {
+                overlap += event.test_ms - start;
+                overlap_start = None;
+            }
+        }
+    }
+    KeyTiming {
+        spacing,
+        durations,
+        overlap,
+        first,
+    }
 }

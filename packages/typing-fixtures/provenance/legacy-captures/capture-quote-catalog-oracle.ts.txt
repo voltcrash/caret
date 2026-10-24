@@ -1,0 +1,98 @@
+import { writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import type { Language } from "@oxytype/schemas/languages";
+const seed = 19;
+let state = seed;
+const original = Math.random;
+Math.random = () => {
+  state |= 0;
+  state = (state + 0x6d2b79f5) | 0;
+  let value = Math.imul(state ^ (state >>> 15), 1 | state);
+  value = (value + Math.imul(value ^ (value >>> 7), 61 | value)) ^ value;
+  return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+};
+try {
+  const { QuotesController } = await import("../src/quote-source");
+  const assets = Object.fromEntries(
+    ["english", "german"].map((language, index) => [
+      language,
+      {
+        language,
+        groups: [
+          [0, 10],
+          [11, 100],
+          [101, 200],
+          [201, 999],
+        ],
+        quotes: [
+          {
+            id: index * 10 + 1,
+            text: `${language} short`,
+            length: 5,
+            source: "fixture",
+          },
+          {
+            id: index * 10 + 2,
+            text: `${language} first long`,
+            length: 16,
+            source: "fixture",
+          },
+          {
+            id: index * 10 + 3,
+            text: `${language} second long`,
+            length: 17,
+            source: "fixture",
+          },
+        ],
+      },
+    ]),
+  );
+  const controller = new QuotesController({
+    fetchJson: async (path) =>
+      assets[path.split("/").at(-1)?.replace(".json", "") ?? ""],
+    getSnapshot: () => null,
+  });
+  const actions: Record<string, unknown>[] = [];
+  const load = async (
+    language: Language,
+    lengths?: number[],
+  ): Promise<void> => {
+    const collection = await controller.getQuotes(language, lengths);
+    actions.push({
+      op: "load",
+      language,
+      ...(lengths === undefined ? {} : { lengths }),
+      expected: structuredClone(collection),
+      randomState: state >>> 0,
+    });
+  };
+  const select = (): void => {
+    actions.push({
+      op: "select",
+      expected: structuredClone(controller.getRandomQuote()),
+      randomState: state >>> 0,
+    });
+  };
+  await load("english", [1]);
+  select();
+  await load("german");
+  select();
+  select();
+  controller.updateQuoteQueue([1]);
+  actions.push({ op: "update", lengths: [1], randomState: state >>> 0 });
+  select();
+  await load("english");
+  select();
+  await load("english", [0]);
+  select();
+  writeFileSync(
+    resolve(
+      import.meta.dirname,
+      "../../typing-fixtures/oracle/quote-catalog-v2.json",
+    ),
+    `${JSON.stringify({ seed, assets, actions }, null, 2)}\n`,
+    { flag: "wx" },
+  );
+} finally {
+  Math.random = original;
+}

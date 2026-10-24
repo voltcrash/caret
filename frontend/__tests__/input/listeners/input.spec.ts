@@ -15,7 +15,6 @@ vi.mock("../../../src/ts/input/handlers/before-delete", () => ({
 }));
 vi.mock("../../../src/features/typing/runtime/test-ui", () => ({}));
 vi.mock("../../../src/features/typing/runtime/test-words", () => ({}));
-vi.mock("../../../src/features/typing/runtime/words-generator", () => ({}));
 
 it("cancels unexpected events while accepting browser beforeinput events", () => {
   const input = document.createElement("textarea");

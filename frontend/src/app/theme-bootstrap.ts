@@ -1,5 +1,5 @@
-import { defaultThemes } from "@oxytype/typing-core/config/default-config";
-import { themes } from "@oxytype/typing-core/themes";
+import { defaultThemes } from "@oxytype/web-shared/config/default-config";
+import { themes } from "@oxytype/web-shared/themes";
 import { DEFAULT_THEME_KEY } from "./default-theme";
 import { toThemeVars } from "./theme-vars";
 

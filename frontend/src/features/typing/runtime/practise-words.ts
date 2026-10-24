@@ -1,4 +1,7 @@
-import { buildPracticeWords } from "@oxytype/typing-core/practise-words";
+import { createAppOwned } from "../../../app/application";
+import { appObject } from "../../../app/state";
+import { encodeText, decodeText } from "@oxytype/typing-engine/text";
+import { getEngineSession } from "./session.client";
 import * as TestWords from "./test-words";
 import { showNoticeNotification } from "../../../ts/states/notifications";
 
@@ -18,12 +21,13 @@ type Before = {
   customText: CustomTextSettings | null;
 };
 
-export const before: Before = {
+const previous = createAppOwned((): Before => ({
   mode: null,
   punctuation: null,
   numbers: null,
   customText: null,
-};
+}));
+export const before = appObject(previous);
 
 export function init(
   missed: "off" | "words" | "biwords",
@@ -31,14 +35,17 @@ export function init(
 ): boolean {
   const eventLog = getLastEventLog();
   if (eventLog === null) return false;
-  if (getMutableConfig().mode === "zen") return false;
-  const practice = buildPracticeWords(
-    eventLog,
-    TestWords.words.get().map((word) => word.text),
+  const selection = getEngineSession().analyze(eventLog, {
+    op: "practice",
+    words: TestWords.words.get().map((word) => encodeText(word.text)),
     missed,
     slow,
-    showNoticeNotification,
-  );
+    now: performance.now(),
+  }).selection;
+  for (const message of selection.notifications) {
+    showNoticeNotification(message);
+  }
+  const practice = selection.result;
   if (practice === null) return false;
 
   const mode = before.mode ?? getMutableConfig().mode;
@@ -54,7 +61,7 @@ export function init(
     nosave: true,
   });
   CustomText.setPipeDelimiter(true);
-  CustomText.setText(practice.text);
+  CustomText.setText(practice.text.map(decodeText));
   CustomText.setLimitMode("section");
   CustomText.setMode("shuffle");
   CustomText.setLimitValue(practice.sectionLimit);

@@ -49,5 +49,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     typing_engine::generation::Generated::export_all(&config)?;
     typing_engine::generation::NextWord::export_all(&config)?;
     typing_engine::quotes::Quote::export_all(&config)?;
+    typing_engine::quotes::QuoteCollection::export_all(&config)?;
     Ok(())
 }

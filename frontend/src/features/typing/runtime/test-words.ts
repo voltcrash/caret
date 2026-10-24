@@ -52,6 +52,9 @@ class Words {
     return this.list[getActiveWordIndex()];
   }
   push(word: string, sectionIndex: number): Word {
+    return this.set(this.list.length, word, sectionIndex);
+  }
+  set(index: number, word: string, sectionIndex: number): Word {
     let commit: CommitChar = "";
     if (word.endsWith(" ")) {
       commit = " ";
@@ -67,7 +70,7 @@ class Words {
       display: word + (commitCharsToDisplay.has(commit) ? commit : ""),
       sectionIndex,
     };
-    this.list.push(wordObj);
+    this.list[index] = wordObj;
     this.length = this.list.length;
 
     return wordObj;

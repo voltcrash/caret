@@ -3,9 +3,21 @@ import { getAllFunboxes } from "../../src/features/typing/runtime/funbox/list";
 
 describe("funbox", () => {
   describe("list", () => {
-    it("should have every frontendFunctions function defined", () => {
+    it("accounts for every hook in its native or browser owner", () => {
+      // Shared word rules were removed from browser hooks. Native generation,
+      // source, transform and metadata parity suites exercise these six hooks.
+      const native = new Set([
+        "getWord",
+        "punctuateWord",
+        "withWords",
+        "alterText",
+        "pullSection",
+        "getWordsFrequencyMode",
+      ]);
       for (const funbox of getAllFunboxes()) {
-        const packageFunctions = (funbox.frontendFunctions ?? []).sort();
+        const packageFunctions = (funbox.frontendFunctions ?? [])
+          .filter((name) => !native.has(name))
+          .sort();
         const implementations = Object.keys(funbox.functions ?? {}).sort();
 
         let message = "has mismatched functions";

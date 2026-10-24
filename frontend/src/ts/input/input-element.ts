@@ -34,11 +34,6 @@ export function moveInputElementCaretToTheEnd(): void {
   );
 }
 
-export function replaceInputElementLastValueChar(char: string): void {
-  const { inputValue } = getInputElementValue();
-  setInputElementValue(inputValue.slice(0, -1) + char);
-}
-
 export function isInputElementFocused(): boolean {
   return (
     areTestElementsMounted() && document.activeElement === getInputElement()

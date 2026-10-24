@@ -91,6 +91,28 @@ impl WasmSession {
             .ok_or_else(|| failure(ErrorCode::Disposed, "Session disposed"))?;
         serialize(&session.live_stats(now).map_err(bind_error)?)
     }
+    pub fn composition_completes(&self, data: &str) -> Result<bool, JsError> {
+        let data = parse(data)?;
+        let session = self
+            .session
+            .as_ref()
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Session disposed"))?;
+        session.composition_completes(&data).map_err(bind_error)
+    }
+    pub fn can_delete(&self) -> Result<bool, JsError> {
+        let session = self
+            .session
+            .as_ref()
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Session disposed"))?;
+        Ok(session.can_delete())
+    }
+    pub fn word_burst(&self, index: usize, now: f64) -> Result<f64, JsError> {
+        let session = self
+            .session
+            .as_ref()
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Session disposed"))?;
+        session.word_burst(index, now).map_err(bind_error)
+    }
     pub fn snapshot(&self) -> Result<String, JsError> {
         let session = self
             .session
@@ -148,6 +170,22 @@ impl WasmContent {
             .prepare_repeating(input, repeating)
             .map_err(bind_error)
     }
+    // Reuse the existing prepared-asset envelope/parser. Only quotes, random and
+    // quote lengths participate; other preparation fields do not affect catalogs.
+    pub fn quote_catalog(&mut self, input: &str, refresh_lengths: bool) -> Result<String, JsError> {
+        let input: typing_engine::generation::Prepare = parse(input)?;
+        let asset = input
+            .quotes
+            .ok_or_else(|| failure(ErrorCode::InvalidContent, "Quote catalog asset missing"))?;
+        let lengths = refresh_lengths.then_some(input.config.quote_length);
+        let collection = self
+            .content
+            .as_mut()
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Content disposed"))?
+            .quote_catalog(asset, lengths, input.random)
+            .map_err(bind_error)?;
+        serialize(&collection)
+    }
     pub fn update_quote_queue(&mut self, lengths: &str, random: &str) -> Result<String, JsError> {
         let lengths: Vec<i32> = parse(lengths)?;
         let random = parse(random)?;
@@ -170,13 +208,12 @@ impl WasmContent {
             .map_err(bind_error)
     }
     pub fn generate(&mut self, repeating: bool) -> Result<String, JsError> {
-        let generator = self
+        let generated = self
             .content
             .as_mut()
             .ok_or_else(|| failure(ErrorCode::Disposed, "Content disposed"))?
-            .generator()
+            .generate(repeating)
             .map_err(bind_error)?;
-        let generated = generator.generate(repeating).map_err(bind_error)?;
         serialize(&generated)
     }
     pub fn next(
@@ -202,9 +239,9 @@ impl WasmContent {
     pub fn metadata(&mut self) -> Result<String, JsError> {
         let generator = self
             .content
-            .as_mut()
+            .as_ref()
             .ok_or_else(|| failure(ErrorCode::Disposed, "Content disposed"))?
-            .generator()
+            .prepared_generator()
             .map_err(bind_error)?;
         serialize(
             &serde_json::json!({ "allWordsGenerated": generator.all_generated(), "currentQuote": generator.current_quote }),
@@ -213,9 +250,9 @@ impl WasmContent {
     pub fn request(&mut self) -> Result<String, JsError> {
         let generator = self
             .content
-            .as_mut()
+            .as_ref()
             .ok_or_else(|| failure(ErrorCode::Disposed, "Content disposed"))?
-            .generator()
+            .prepared_generator()
             .map_err(bind_error)?;
         serialize(&generator.pending_request())
     }

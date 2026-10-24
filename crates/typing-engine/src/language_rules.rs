@@ -1,20 +1,8 @@
 use crate::{Text, generation::case};
-use serde::Deserialize;
-use std::collections::BTreeMap;
+use serde_json::Value;
 pub struct LanguageRules {
     accents: Vec<(Text, Text)>,
-    british: BTreeMap<String, BritishRule>,
-}
-#[derive(Deserialize)]
-#[serde(untagged)]
-enum BritishRule {
-    Word(String),
-    WithExceptions {
-        #[serde(rename = "britishWord")]
-        word: String,
-        #[serde(rename = "exceptPreviousWords")]
-        previous: Vec<String>,
-    },
+    british: Value,
 }
 impl LanguageRules {
     pub fn new() -> Result<Self, String> {
@@ -102,20 +90,23 @@ impl LanguageRules {
         let Some(rule) = self.british.get(&key) else {
             return word;
         };
-        let (replacement, exceptions) = match rule {
-            BritishRule::Word(word) => (word, &[][..]),
-            BritishRule::WithExceptions { word, previous } => (word, previous.as_slice()),
-        };
+        let replacement = rule
+            .as_str()
+            .or_else(|| rule["britishWord"].as_str())
+            .expect("Checked immutable British dictionary");
         if quote
             && previous.is_some_and(|previous| {
-                exceptions
-                    .iter()
-                    .any(|exception| Text::from(exception.as_str()) == *previous)
+                rule.get("exceptPreviousWords")
+                    .and_then(Value::as_array)
+                    .into_iter()
+                    .flatten()
+                    .filter_map(Value::as_str)
+                    .any(|exception| Text::from(exception) == *previous)
             })
         {
             return word;
         }
-        let mut replacement = Text::from(replacement.as_str());
+        let mut replacement = Text::from(replacement);
         if case(&Text(vec![middle.0[0]]), true).0 == [middle.0[0]] {
             if case(&middle, true) == middle {
                 replacement = case(&replacement, true);

@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from "vite-plus/test";
 import type { CompletedEvent } from "@oxytype/schemas/results";
-import { kogasa, mean, roundTo2, stdDev } from "@oxytype/util/numbers";
 import { completedEvent } from "../../../../backend/__tests__/__testData__/completed-event";
 import { humanTimings } from "../../../../backend/__tests__/__testData__/key-timings";
 import {
@@ -10,25 +9,10 @@ import {
   getTimingFingerprint,
   getTimingReview,
 } from "../../../../backend/src/anticheat";
-import { calculateWpm } from "@oxytype/typing-core/stats-math";
-import type {
-  EventLog,
-  TestEventNoMs,
-} from "@oxytype/typing-core/events/types";
-import {
-  getChars,
-  getAccuracy,
-  getTestDurationMs,
-  getAfkDuration,
-  getKeypressSpacing,
-  getKeypressDurations,
-  getKeypressOverlap,
-  getLastKeypressToEndMs,
-  getStartToFirstKeypressMs,
-  getWpmHistory,
-  getBurstHistory,
-  getErrorCountHistory,
-} from "@oxytype/typing-core/events/stats";
+import type { EventLog, TestEventNoMs } from "@oxytype/web-shared/events/types";
+import "../../__harness__/native-engine";
+import { analyzeLog } from "@oxytype/typing-engine/browser.client";
+import { toEngineLog } from "@oxytype/typing-engine/text";
 
 vi.mock("../../../src/ts/config/store", () => ({
   getMutableConfig: (() => {
@@ -166,36 +150,15 @@ function timedEventLog(gaps: number[], holds: number[]): EventLog {
 
 /** Build from the real client event reducers, not backend validator helpers. */
 function payload(log: EventLog): CompletedEvent {
-  const chars = getChars(log);
-  const testDuration = getTestDurationMs(log) / 1000;
-  const keySpacing = getKeypressSpacing(log);
-  const wpm = getWpmHistory(log);
-  const burst = getBurstHistory(log);
-  const consistency = (values: number[]): number => {
-    const value = roundTo2(kogasa(stdDev(values) / mean(values)));
-    return Number.isNaN(value) ? 0 : value;
-  };
-  const charTotal = chars.allCorrect + chars.incorrect + chars.extra;
+  const { summary } = analyzeLog(toEngineLog(log), {
+    op: "stats",
+    now: 0,
+  }).stats;
   return completedEvent({
+    ...summary,
     mode: log.context.mode,
     mode2: log.context.mode2,
     bailedOut: log.context.bailedOut,
-    testDuration,
-    afkDuration: getAfkDuration(log),
-    charStats: [chars.correctWord, chars.incorrect, chars.extra, chars.missed],
-    charTotal,
-    wpm: roundTo2(calculateWpm(chars.correctWord, testDuration)),
-    rawWpm: roundTo2(calculateWpm(charTotal, testDuration)),
-    acc: roundTo2(getAccuracy(log).percentage),
-    keySpacing,
-    keyDuration: getKeypressDurations(log),
-    keyOverlap: getKeypressOverlap(log),
-    keyConsistency: consistency(keySpacing.slice(0, -1)),
-    startToFirstKey: getStartToFirstKeypressMs(log),
-    lastKeyToEnd: getLastKeypressToEndMs(log),
-    chartData: { wpm, burst, err: getErrorCountHistory(log) },
-    consistency: consistency(burst),
-    wpmConsistency: consistency(wpm),
   });
 }
 

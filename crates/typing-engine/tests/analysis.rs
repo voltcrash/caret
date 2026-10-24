@@ -182,3 +182,30 @@ fn replay_seeking_practice_and_validity_match_frozen_typescript_oracle() {
         }
     }
 }
+
+#[test]
+fn inspector_preserves_64_original_dom_timing_and_accuracy_prefixes() {
+    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../packages/typing-fixtures/oracle/inspection.json");
+    let cases: Vec<Value> = serde_json::from_slice(&std::fs::read(path).unwrap()).unwrap();
+    for case in cases {
+        let log: Log = serde_json::from_value(case["log"].clone()).unwrap();
+        let result =
+            typing_engine::analysis::analyze(&log, typing_engine::analysis::Query::Inspect)
+                .unwrap();
+        let mut expected = case["expected"].clone();
+        expected["inputs"] = json!(
+            expected["inputs"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|value| Text::from(value.as_str().unwrap()))
+                .collect::<Vec<_>>()
+        );
+        equal(
+            &json!(result)["inspection"],
+            &expected,
+            case["name"].as_str().unwrap(),
+        );
+    }
+}

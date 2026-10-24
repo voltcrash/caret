@@ -1,5 +1,5 @@
 import { afterEach, expect, it, vi } from "vite-plus/test";
-import type { Quote } from "@oxytype/typing-core/quotes";
+import type { Quote } from "@oxytype/web-shared/quotes";
 import { getQueryClient } from "../../src/ts/queries";
 import { getQuoteRatingQueryOptions } from "../../src/ts/queries/quotes";
 import {

@@ -7,7 +7,7 @@ import { Language } from "@oxytype/schemas/languages";
 import { TypingSpeedUnit } from "@oxytype/schemas/configs";
 import type { WordsHistoryItem } from "../../features/typing/runtime/word-markup";
 import { createEvent } from "../hooks/createEvent";
-import type { ReplayWord } from "@oxytype/typing-core/replay";
+import type { ReplayWord } from "../../features/typing/replay-view";
 import type { SupportsFlags } from "../controllers/user-flag-controller";
 
 export type ResultCrownType =

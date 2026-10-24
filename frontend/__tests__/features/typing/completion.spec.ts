@@ -18,6 +18,7 @@ vi.mock("../../../src/ts/states/test-dom", () => ({
 }));
 vi.mock("../../../src/ts/states/test", () => ({
   isTestActive: () => true,
+  getBailedOut: () => false,
   isResultCalculating: () => mocks.calculating,
   setResultCalculating: (value: boolean) => {
     mocks.calculating = value;

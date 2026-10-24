@@ -33,8 +33,8 @@ vi.mock("../../src/ts/states/test", () => ({
   isResultCalculating: () => state.calculating,
   isTestActive: () => state.active,
 }));
-vi.mock("../../src/features/typing/runtime/funbox/list", () => ({
-  isFunboxActive: () => state.noQuit,
+vi.mock("../../src/features/typing/runtime/session.client", () => ({
+  isNoQuitActive: () => state.noQuit,
 }));
 vi.mock("../../src/ts/states/notifications", () => ({
   showNoticeNotification: state.notice,

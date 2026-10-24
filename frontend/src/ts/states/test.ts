@@ -4,7 +4,7 @@ import { createEffect, onCleanup } from "solid-js";
 import { z } from "zod";
 import { getConfig } from "../config/store";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-import { EventLog } from "@oxytype/typing-core/events/types";
+import { EventLog } from "@oxytype/web-shared/events/types";
 
 import type { Challenge } from "@oxytype/challenges";
 import { LayoutObject } from "@oxytype/schemas/layouts";
@@ -13,7 +13,7 @@ import { CompletedEvent, IncompleteTest } from "@oxytype/schemas/results";
 import { keymapEvent } from "../events/keymap";
 import { createAppSignalWithSetters } from "../hooks/createSignalWithSetters";
 import * as CustomText from "../../features/typing/runtime/custom-text";
-import { QuoteWithTextSplit } from "@oxytype/typing-core/quotes";
+import { QuoteWithTextSplit } from "@oxytype/web-shared/quotes";
 import { getLayout } from "../utils/json-data";
 import { mirrorLayoutKeys } from "../utils/key-converter";
 import { canQuickRestart } from "../utils/quick-restart";
@@ -113,11 +113,13 @@ export const [
     increase: increaseActiveWordIndex,
     decrease: decreaseActiveWordIndex,
     reset: resetActiveWordIndex,
+    fromEngine: setActiveWordIndex,
   },
 ] = createAppSignalWithSetters<number>(0)({
   increase: (set) => set((n) => n + 1),
   decrease: (set) => set((n) => n - 1),
   reset: (set) => set(0),
+  fromEngine: (set, index: number) => set(index),
 });
 
 /**
@@ -137,13 +139,13 @@ export const [currentLiveStats, setCurrentLiveStats] = createAppStore<{
 export const initializeTypingState = createAppOwned(() =>
   createEffect(() => {
     setIsLongTest(
-      !canQuickRestart(
+      canQuickRestart(
         getConfig.mode,
         getConfig.words,
         getConfig.time,
         CustomText.getData(),
         getCustomTextIndicator()?.isLong ?? false,
-      ),
+      ) === false,
     );
   }),
 );

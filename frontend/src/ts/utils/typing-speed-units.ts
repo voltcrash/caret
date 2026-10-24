@@ -1,2 +1,2 @@
-export { get } from "@oxytype/typing-core/typing-speed-units";
-export type { TypingSpeedUnitSettings } from "@oxytype/typing-core/typing-speed-units";
+export { get } from "@oxytype/web-shared/typing-speed-units";
+export type { TypingSpeedUnitSettings } from "@oxytype/web-shared/typing-speed-units";

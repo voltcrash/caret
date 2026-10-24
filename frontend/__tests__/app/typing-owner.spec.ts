@@ -1,4 +1,4 @@
-import { expect, it } from "vite-plus/test";
+import { expect, it, vi } from "vite-plus/test";
 
 import { mountApplication } from "../../src/app/application";
 import {
@@ -7,6 +7,12 @@ import {
 } from "../__harness__/mock-application";
 
 releaseTestApplication();
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { getBrowserEngine } from "../../src/features/typing/engine.client";
+import { projectEngineConfig } from "@oxytype/typing-engine/config";
+import { getMutableConfig } from "../../src/ts/config/store";
+import { encodeText } from "@oxytype/typing-engine/text";
 
 it("imports typing adapters without a mounted app, then recreates and stops each session on remount", async () => {
   const { getTestSession } =
@@ -16,7 +22,48 @@ it("imports typing adapters without a mounted app, then recreates and stops each
   await import("../../src/features/typing/runtime/test-timer");
   const first = createTestApplication();
   const release = mountApplication(first.application);
+  vi.stubGlobal(
+    "fetch",
+    async () =>
+      new Response(
+        readFileSync(
+          resolve(
+            import.meta.dirname,
+            "../../../packages/typing-engine/generated/engine_bg.wasm",
+          ),
+        ),
+        { headers: { "content-type": "application/wasm" } },
+      ),
+  );
+  vi.spyOn(WebAssembly, "compileStreaming").mockImplementation(
+    async (response) =>
+      WebAssembly.compile(await (await response).arrayBuffer()),
+  );
+  const engine = getBrowserEngine();
+  await engine.load();
+  engine.beginReplacement().prepare({
+    config: projectEngineConfig(getMutableConfig()),
+    language: {
+      name: "english",
+      words: [encodeText("hello")],
+      bcp47: null,
+      rightToLeft: null,
+      joiningScript: false,
+      originalPunctuation: false,
+      noLazyMode: false,
+      additionalAccents: [],
+    },
+    custom: null,
+    quotes: null,
+    polyglot: [],
+    selectedQuoteId: 1,
+    favoriteQuoteIds: [],
+    sections: [],
+    random: { kind: "seeded", state: 1 },
+  });
+  engine.createPreparedSession();
   const session = getTestSession();
+  session.attach();
   session.start(0);
   words.push("hello ", 0);
   expect(session.isActive()).toBe(true);
@@ -31,4 +78,6 @@ it("imports typing adapters without a mounted app, then recreates and stops each
   expect(words.length).toBe(0);
   next.dispose();
   releaseNext();
+  vi.unstubAllGlobals();
+  vi.restoreAllMocks();
 });

@@ -1,0 +1,27 @@
+import { writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { getSection } from "../src/wikipedia";
+import type { LanguageObject } from "@oxytype/schemas/languages";
+const extracts = ["[1]\u200bÅ", "A [2] useful word."];
+const requests: string[] = [];
+let page = 0;
+const result = await getSection("english", {
+  getLanguage: async () => ({ bcp47: "en" }) as LanguageObject,
+  fetchJson: async (url) => {
+    requests.push(url);
+    if (url.includes("/w/api.php")) {
+      return { query: { pages: { [page]: { extract: extracts[page - 1] } } } };
+    }
+    page++;
+    return { title: `Article ${page}`, author: "Writer", pageid: page };
+  },
+  htmlToText: (text) => text,
+});
+writeFileSync(
+  resolve(
+    import.meta.dirname,
+    "../../typing-fixtures/oracle/wikipedia-retry.json",
+  ),
+  `${JSON.stringify({ extracts, requests, expected: result }, null, 2)}\n`,
+  { flag: "wx" },
+);

@@ -138,10 +138,11 @@ const appendFrames = new Set<number>();
 export function addWord(
   word: string,
   wordIndex = TestWords.words.length - 1,
+  immediate = false,
 ): void {
   // if the current active word is the last word, we need to NOT use raf
   // because other ui parts depend on the word existing
-  if (getActiveWordIndex() === wordIndex - 1) {
+  if (immediate || getActiveWordIndex() === wordIndex - 1) {
     appendWordNodes(getWordsEl(), word, wordIndex);
   } else {
     const frame = requestAnimationFrame(() => {

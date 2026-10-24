@@ -275,3 +275,60 @@ Rule hooks move to Rust; visual/audio effects, fetch and notifications stay host
 SHA-256 of all current fixtures: `reference-manifest.json`. Never regenerate
 snapshots/hashes to make a port pass. Existing backend anticheat consumers retained.
 
+
+## Website destinations after Phase 2.3
+
+| Consumer | Implemented destination |
+| --- | --- |
+| Browser input/deletion/composition/timing | `runtime/session.client.ts` → owned native BrowserSession; `input-projection.client.ts` renders deltas |
+| Words/sections/custom/repeat/quote queue/catalog | `runtime/content.client.ts` → native BrowserContent; raw assets in `content-assets.client.ts` |
+| Funbox rule hooks | Rust generator/transform/policy modules; browser registry contains visual/audio/platform hooks |
+| Funbox eligibility/forced config | `policy.client.ts` → native policy queries |
+| Restart/no quit/long-test/pace decisions | native session restart policy; web orchestrates animations/storage |
+| Practice/weak-spot learning | native analysis/content owner; web retains practice UI/preferences |
+| Defaults/themes/config metadata/migration/import order | `packages/web-shared/src` (SSR safe); engine defaults from Rust artifacts; browser injects native funbox policies |
+| Completion/history/chart/replay playback | Phase 2.4 active; original consumers listed above remain until migrated |
+| Remaining generic TS helpers/types | Phase 2.6 extraction/removal tracked; never keep legacy rule implementations as helpers |
+
+Evidence: all 61 frozen frontend generators run actual optimized Wasm; 54 broad
+built-site settings/command/modal/quote/restart checks; source/loading edge checks;
+1,577 frontend units and six workerd SSR document cases. Historical consumer map
+above records the original audit, not current imports.
+
+## Website result destinations after Phase 2.4
+
+- `features/typing/analysis.client.ts`: owned native result/inspector queries and
+  mechanical UTF-16/infinite-burst projections; WeakMap caches immutable views.
+- `runtime/completion.client.ts`: Rust validity/AFK/custom-progress decisions;
+  existing account metadata, tags/challenges, storage/hash/submission preserved.
+- Result history/chart/accuracy components and command palette consume that facade.
+- `runtime/replay.ts`: native BrowserReplay mutates/seeks; route-owned timers/audio
+  and existing result rendering retained. `replay-view.ts` contains DTO view types.
+- Event-log viewer input/position/timing derives from native inspection; malformed
+  loads fail in its existing error UI. Timeline/video/chart presentation stays TS.
+- Old inspector reconstruction removed; its capture source preserved inertly under
+  `typing-fixtures/provenance`. Remaining legacy engine utilities retire in 2.6.
+
+## Final website consumer disposition (Phase 2.6)
+
+The earlier inventory is an immutable audit of the original source, not current
+imports. `@oxytype/typing-core` and all its implementations are removed.
+
+- Rust: normalization/acceptance/deletion/IME decisions; session/timer/fail/finish;
+  generation/transforms/catalog/learning/pace; score/validity/AFK/progress; inspection
+  and replay. All active browser rule facades call the owned native handles.
+- `web-shared`: wire event types and DOM input-type classification, settings migration/
+  metadata, command matching, physical layout translation, fetch/cache/integrity
+  helpers, custom-text initial editor content, result hash/field validation, display
+  units/formatting/progress labels and account daily totals. No session progression,
+  target generation, score derivation or replay mutation.
+- Removed browser facades: old input validation/util/fail-or-finish, poetry/Wikipedia
+  normalizers, weak-spot, British and IP generation. Test-only legacy recorder removed.
+- Backend independent validation remains TypeScript (including funbox compatibility);
+  no validation weakened. Backend fixture readers now use `typing-fixtures/reference`.
+- Generic host tests moved to `web-shared`; 67 original synthetic analysis calls and
+  68 string-rule cases captured once and checked natively. Original 100/157-case
+  suites passed during capture. Existing 19 command traces, 61 generator snapshots,
+  8 results/hashes and 1,387 live prefixes stay frozen.
+- Capture tools archived as inert provenance. The historical source and other old
+  unit suites remain retrievable at `1f69247bf`; no maintained TS engine needed.

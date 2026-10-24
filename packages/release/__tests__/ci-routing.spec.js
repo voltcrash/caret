@@ -125,6 +125,7 @@ it.each([
   "crates/typing-engine-wasm/src/lib.rs",
   "packages/typing-engine/src/browser.client.ts",
   "packages/typing-fixtures/commands/finite-edit.json",
+  "packages/typing-fixtures/reference/words/english.json",
   "scripts/engine.ts",
 ])("runs native, Wasm, parity and Cloudflare consumers for %s", (file) => {
   expect(selected([file])).toEqual(allJobs);
@@ -194,16 +195,6 @@ describe("test-only changes", () => {
     ["backend/__tests__/d1/users.spec.ts", ["backend-lint", "backend-test"]],
     ["packages/schemas/__tests__/results.spec.ts", ["packages"]],
     ["packages/funbox/__test__/list.spec.ts", ["packages"]],
-    [
-      "packages/typing-core/__fixtures__/words/english.json",
-      [
-        "backend-lint",
-        "backend-test",
-        "frontend-lint",
-        "frontend-test",
-        "packages",
-      ],
-    ],
   ])("%s runs only its own suite", (file, expected) => {
     expect(selected([file])).toEqual([...expected, "code"]);
   });

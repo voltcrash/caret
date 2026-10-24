@@ -1,0 +1,122 @@
+{
+  "input": [
+    {
+      "type": "input",
+      "testMs": 0,
+      "data": {
+        "inputType": "insertText",
+        "data": "o",
+        "correct": true,
+        "wordIndex": 0,
+        "charIndex": 0,
+        "inputValue": "o",
+        "lastWord": true
+      }
+    },
+    {
+      "type": "input",
+      "testMs": 0,
+      "data": {
+        "inputType": "insertText",
+        "data": "n",
+        "correct": true,
+        "wordIndex": 0,
+        "charIndex": 1,
+        "inputValue": "on",
+        "lastWord": true
+      }
+    },
+    {
+      "type": "input",
+      "testMs": 0,
+      "data": {
+        "inputType": "insertText",
+        "data": "e",
+        "correct": true,
+        "wordIndex": 0,
+        "charIndex": 2,
+        "inputValue": "one",
+        "lastWord": true
+      }
+    },
+    {
+      "type": "input",
+      "testMs": 0,
+      "data": {
+        "inputType": "insertText",
+        "data": " ",
+        "correct": false,
+        "wordIndex": 0,
+        "charIndex": 3,
+        "inputValue": "one ",
+        "commitsWord": true,
+        "lastWord": true
+      }
+    },
+    {
+      "type": "input",
+      "testMs": 0,
+      "data": {
+        "inputType": "insertText",
+        "data": "e",
+        "correct": false,
+        "wordIndex": 0,
+        "charIndex": 4,
+        "inputValue": "e",
+        "lastWord": true
+      }
+    },
+    {
+      "type": "input",
+      "testMs": 0,
+      "data": {
+        "inputType": "insertText",
+        "data": "x",
+        "correct": false,
+        "wordIndex": 0,
+        "charIndex": 1,
+        "inputValue": "ex",
+        "lastWord": true
+      }
+    },
+    {
+      "type": "input",
+      "testMs": 0,
+      "data": {
+        "inputType": "insertText",
+        "data": "t",
+        "correct": false,
+        "wordIndex": 0,
+        "charIndex": 2,
+        "inputValue": "ext",
+        "lastWord": true
+      }
+    },
+    {
+      "type": "input",
+      "testMs": 0,
+      "data": {
+        "inputType": "insertText",
+        "data": "r",
+        "correct": false,
+        "wordIndex": 0,
+        "charIndex": 3,
+        "inputValue": "extr",
+        "lastWord": true
+      }
+    },
+    {
+      "type": "input",
+      "testMs": 0,
+      "data": {
+        "inputType": "insertText",
+        "data": "a",
+        "correct": false,
+        "wordIndex": 0,
+        "charIndex": 4,
+        "inputValue": "extra",
+        "lastWord": true
+      }
+    }
+  ]
+}

@@ -44,6 +44,7 @@ test("logged-in completion submits a result and applies save acknowledgement", a
     await fulfillOperation(route, saved.data, saved.message);
   });
   await openTest(page);
+  await page.waitForLoadState("networkidle");
   const submission = page.waitForRequest(
     (request) =>
       new URL(request.url()).pathname === submissionPath &&

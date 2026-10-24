@@ -1,4 +1,4 @@
-import type { Theme } from "@oxytype/typing-core/themes";
+import type { Theme } from "@oxytype/web-shared/themes";
 
 /** Theme colors keyed by CSS custom property name, without the leading `--`. */
 export function toThemeVars(colors: Theme): Record<string, string> {

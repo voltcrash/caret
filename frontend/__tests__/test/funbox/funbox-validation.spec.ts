@@ -1,4 +1,6 @@
-import { describe, it, expect } from "vite-plus/test";
+import "../../__harness__/native-engine";
+import { evaluatePolicy } from "@oxytype/typing-engine/browser.client";
+import { describe, it, expect, vi } from "vite-plus/test";
 import { canSetConfigWithCurrentFunboxes } from "../../../src/ts/config/funbox-validation";
 
 import { FunboxName } from "@oxytype/schemas/configs";
@@ -72,3 +74,10 @@ describe("funbox-validation", () => {
     );
   });
 });
+
+vi.mock("../../../src/features/typing/engine.client", () => ({
+  getBrowserEngine: () => ({
+    status: () => ({ state: "ready" }),
+    api: () => ({ policy: evaluatePolicy }),
+  }),
+}));

@@ -19,6 +19,15 @@ vp run dev
 
 The TanStack Start app, its API and local D1 run at `http://localhost:3000`.
 
+Typing rules run in the platform-independent [Rust engine](./crates/typing-engine).
+The website loads its [Wasm SDK](./packages/typing-engine/README.md) only in the
+browser; Cloudflare continues serving SSR, auth and APIs. Install the toolchain
+pinned in `rust-toolchain.toml` with its Wasm target. Build bootstrap generates the
+bindings automatically; `vp run engine:parity` checks native and built-browser
+behavior against immutable original references. `vp run engine:lint` and
+`vp run engine:fmt` check Rust. Reference provenance and measured budgets are in
+[migration progress](./docs/rust-engine/progress.md).
+
 ## Contributing
 
 See [CONTRIBUTING.md](./docs/CONTRIBUTING.md) and the [code of conduct](./docs/CODE_OF_CONDUCT.md). Report bugs in the [Oxytype repository](https://github.com/voltcrash/oxytype/issues).

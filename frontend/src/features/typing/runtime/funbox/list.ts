@@ -6,13 +6,9 @@ import {
 
 import { FunboxFunctions, getFunboxFunctions } from "./funbox-functions";
 import { FunboxName } from "@oxytype/schemas/configs";
-import {
-  getActiveFunboxNames,
-  isFunboxActive,
-  isFunboxActiveWithProperty,
-} from "./active";
+import { getActiveFunboxNames, isFunboxActiveWithProperty } from "./active";
 
-export { getActiveFunboxNames, isFunboxActive, isFunboxActiveWithProperty };
+export { getActiveFunboxNames, isFunboxActiveWithProperty };
 
 type FunboxMetadataWithFunctions = FunboxMetadata & {
   functions?: FunboxFunctions;

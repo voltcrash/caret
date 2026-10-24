@@ -1,180 +1,124 @@
-import { describe, it, expect, vi, beforeEach } from "vite-plus/test";
-import { readFileSync } from "fs";
-import { resolve } from "path";
-import { fileURLToPath } from "url";
-
-// Snapshots of the words generator for the typing-core extraction. Every case
-// (packages/typing-core/__fixtures__/words/cases.json) runs with a seeded
-// Math.random, so typing-core can reproduce the exact same words.
-// Expected output is committed; missing fixtures must fail the test.
-
-const state = vi.hoisted(() => {
-  // mulberry32
-  const seeded = (seed: number): (() => number) => {
-    let a = seed;
-    return () => {
-      a |= 0;
-      a = (a + 0x6d2b79f5) | 0;
-      let t = Math.imul(a ^ (a >>> 15), 1 | a);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-  };
-  const s = {
-    seeded,
-    rng: seeded(0),
-    repeated: false,
-    currentQuote: null as unknown,
-    selectedQuoteId: 1,
-    customText: {
-      text: [] as string[],
-      mode: "repeat",
-      limit: { value: 0, mode: "word" },
-      pipeDelimiter: false,
-    },
-  };
-  // modules pin Math.random when they load, so it has to be swapped first
-  Math.random = () => s.rng();
-  return s;
-});
-
-const STATIC_DIR = resolve(fileURLToPath(import.meta.url), "../../../static");
-
-function readStatic(path: string): unknown {
-  return JSON.parse(
-    readFileSync(resolve(STATIC_DIR, path.replace(/^\//, "")), "utf-8"),
-  ) as unknown;
-}
-
-vi.mock("../../src/ts/config/store", async () => {
-  const { getDefaultConfig } =
-    await import("../../src/ts/constants/default-config");
-  return {
-    getMutableConfig: (() => {
-      const storedConfig = getDefaultConfig();
-      return () => storedConfig;
-    })(),
-    getConfig: {},
-  };
-});
-vi.mock("../../src/ts/config/setters", () => ({
-  setConfig: vi.fn(),
-  setQuoteLengthAll: vi.fn(),
-  toggleFunbox: vi.fn(),
-}));
-vi.mock("../../src/ts/states/test", () => ({
-  isRepeated: () => state.repeated,
-  getCurrentQuote: () => state.currentQuote,
-  setCurrentQuote: (quote: unknown) => {
-    state.currentQuote = quote;
-  },
-  getSelectedQuoteId: () => state.selectedQuoteId,
-  getActiveWordIndex: () => 0,
-}));
-vi.mock("../../src/ts/states/loader-bar", () => ({
-  showLoaderBar: vi.fn(),
-  hideLoaderBar: vi.fn(),
-}));
-vi.mock("../../src/features/typing/runtime/practise-words", () => ({
-  before: { mode: null },
-}));
-vi.mock("../../src/features/typing/runtime/custom-text", () => ({
-  getText: () => state.customText.text,
-  getMode: () => state.customText.mode,
-  getLimit: () => state.customText.limit,
-  getLimitMode: () => state.customText.limit.mode,
-  getLimitValue: () => state.customText.limit.value,
-  getPipeDelimiter: () => state.customText.pipeDelimiter,
-}));
-vi.mock("../../src/ts/utils/json-data", async (importOriginal) => ({
-  ...(await importOriginal<object>()),
-  // fresh objects every time - word order funboxes reverse the list in place
-  getLanguage: async (lang: string) => readStatic(`languages/${lang}.json`),
-  cachedFetchJson: async (url: string) => readStatic(url),
-}));
-
-import { getMutableConfig } from "../../src/ts/config/store";
+import { afterAll, describe, expect, it } from "vite-plus/test";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import "../__harness__/native-engine";
+import { BrowserContent } from "@oxytype/typing-engine/browser.client";
+import type { Prepare } from "@oxytype/typing-engine/browser.client";
+import { projectEngineConfig } from "@oxytype/typing-engine/config";
+import { encodeText, decodeText } from "@oxytype/typing-engine/text";
+import {
+  engineLanguage,
+  engineQuotes,
+} from "../../src/features/typing/runtime/content-assets.client";
+import type { Config } from "@oxytype/schemas/configs";
+import type { CustomTextSettings } from "@oxytype/schemas/results";
+import type { LanguageObject } from "@oxytype/schemas/languages";
+import type { QuoteData } from "@oxytype/schemas/quotes";
 import { getDefaultConfig } from "../../src/ts/constants/default-config";
-import * as WordsGenerator from "../../src/features/typing/runtime/words-generator";
-import * as TestWords from "../../src/features/typing/runtime/test-words";
-import * as JSONData from "../../src/ts/utils/json-data";
-import { Config as ConfigType } from "@oxytype/schemas/configs";
 
-const WORDS_DIR = resolve(
-  fileURLToPath(import.meta.url),
-  "../../../../packages/typing-core/__fixtures__/words",
+// The original snapshots are independent, immutable references. Test the actual
+// web asset conversion and optimized Wasm, without retaining the old web engine.
+const root = resolve(
+  import.meta.dirname,
+  "../../../packages/typing-fixtures/reference/words",
 );
-
-type GeneratorCase = {
+const staticRoot = resolve(import.meta.dirname, "../../static");
+function read<T>(path: string): T {
+  return JSON.parse(readFileSync(path, "utf8")) as T;
+}
+type Case = {
   name: string;
-  phase: string;
   seed: number;
-  config: Partial<ConfigType>;
-  customText?: typeof state.customText;
+  config: Partial<Config>;
+  customText?: CustomTextSettings;
   repeat?: boolean;
   extraWords?: number;
   selectedQuoteId?: number;
 };
-
-const cases = JSON.parse(
-  readFileSync(resolve(WORDS_DIR, "cases.json"), "utf-8"),
-) as GeneratorCase[];
-
-async function run(c: GeneratorCase): Promise<unknown> {
-  Object.assign(getMutableConfig(), getDefaultConfig(), c.config);
-  state.rng = state.seeded(c.seed);
-  state.repeated = false;
-  state.currentQuote = null;
-  state.selectedQuoteId = c.selectedQuoteId ?? 1;
-  if (c.customText !== undefined) {
-    state.customText = structuredClone(c.customText);
-  }
-
-  const language = await JSONData.getLanguage(getMutableConfig().language);
-
-  let gen = await WordsGenerator.generateWords(language);
-  if (c.repeat === true) {
-    state.repeated = true;
-    gen = await WordsGenerator.generateWords(
-      await JSONData.getLanguage(getMutableConfig().language),
-    );
-  }
-
-  TestWords.words.reset();
-  gen.words.forEach((word, i) => {
-    TestWords.words.push(word, gen.sectionIndexes[i] as number);
+const cases = read<Case[]>(resolve(root, "cases.json"));
+const content = new BrowserContent();
+let quotesLoaded = false;
+afterAll(() => content.dispose());
+function run(fixture: Case): unknown {
+  const config = projectEngineConfig({
+    ...getDefaultConfig(),
+    ...fixture.config,
   });
-
-  const extra: unknown[] = [];
-  for (let i = 0; i < (c.extraWords ?? 0); i++) {
-    const next = await WordsGenerator.getNextWord(
-      TestWords.words.length,
-      100,
-      TestWords.words.get(TestWords.words.length - 1)?.text ?? "",
-      TestWords.words.get(TestWords.words.length - 2)?.text,
+  let quotes: Prepare["quotes"] = null;
+  if (config.mode === "quote" && !quotesLoaded) {
+    quotes = engineQuotes(
+      read<QuoteData>(resolve(staticRoot, "quotes/english.json")),
     );
-    TestWords.words.push(next.word, next.sectionIndex);
-    extra.push(next);
+    quotesLoaded = true;
   }
-
-  const quote = state.currentQuote as { id: number; group: number } | null;
+  content.prepare({
+    config,
+    language: engineLanguage(
+      read<LanguageObject>(
+        resolve(staticRoot, `languages/${config.language}.json`),
+      ),
+    ),
+    custom:
+      fixture.customText === undefined
+        ? null
+        : {
+            ...fixture.customText,
+            text: fixture.customText.text.map(encodeText),
+          },
+    random: { kind: "seeded", state: fixture.seed },
+    quotes,
+    polyglot: config.funbox.includes("polyglot")
+      ? config.customPolyglot.map((name) =>
+          engineLanguage(
+            read<LanguageObject>(resolve(staticRoot, `languages/${name}.json`)),
+          ),
+        )
+      : [],
+    selectedQuoteId: fixture.selectedQuoteId ?? 1,
+    favoriteQuoteIds: [],
+    sections: [],
+  });
+  let generated = content.generate();
+  if (fixture.repeat === true) {
+    generated = content.generate(true);
+  }
+  const words = generated.words.map(decodeText);
+  const strip = (word: string): string =>
+    /[ \n]$/.test(word) ? word.slice(0, -1) : word;
+  const extra = [];
+  for (let index = 0; index < (fixture.extraWords ?? 0); index++) {
+    const next = content.next(
+      words.length,
+      100,
+      encodeText(strip(words.at(-1) ?? "")),
+      words.at(-2) === undefined
+        ? null
+        : encodeText(strip(words.at(-2) as string)),
+    );
+    words.push(decodeText(next.word));
+    extra.push({
+      ...next,
+      word: decodeText(next.word),
+      wordRaw: decodeText(next.wordRaw),
+    });
+  }
+  const metadata = content.metadata();
   return {
-    ...gen,
+    ...generated,
+    words: generated.words.map(decodeText),
     extra,
-    allWordsGenerated: WordsGenerator.areAllWordsGenerated(),
-    currentQuote: quote === null ? null : { id: quote.id, group: quote.group },
+    allWordsGenerated: metadata.allWordsGenerated,
+    currentQuote:
+      metadata.currentQuote === null
+        ? null
+        : { id: metadata.currentQuote.id, group: metadata.currentQuote.group },
   };
 }
-
-beforeEach(() => {
-  TestWords.words.reset();
-});
-
-describe("words generator parity", () => {
-  it.each(cases.map((c) => [c.name, c] as const))("%s", async (name, c) => {
-    // json round trip on purpose: drops undefined just like the file
-    const actual = JSON.parse(JSON.stringify(await run(c))) as unknown;
-    const file = resolve(WORDS_DIR, "__snapshots__", `${name}.json`);
-    expect(actual).toEqual(JSON.parse(readFileSync(file, "utf-8")));
+describe("native web generator parity", () => {
+  it.each(cases)("$name", (fixture) => {
+    const actual = JSON.parse(JSON.stringify(run(fixture))) as unknown;
+    expect(actual).toEqual(
+      read<unknown>(resolve(root, "__snapshots__", `${fixture.name}.json`)),
+    );
   });
 });

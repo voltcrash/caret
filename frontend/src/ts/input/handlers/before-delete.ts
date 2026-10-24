@@ -1,64 +1,15 @@
-import { canDelete } from "@oxytype/typing-core/input/engine";
-import { getMutableConfig } from "../../config/store";
-import * as TestWords from "../../../features/typing/runtime/test-words";
-import { getInputElementValue } from "../input-element";
-import * as TestUI from "../../../features/typing/runtime/test-ui";
-import { isAwaitingNextWord } from "../state";
-import { getInputForWord } from "../../../features/typing/runtime/events/data";
-import {
-  isTestRestarting,
-  getActiveWordIndex,
-  isResultCalculating,
-  isTestActive,
-} from "../../states/test";
+import { getEngineSession } from "../../../features/typing/runtime/session.client";
+import { isTestRestarting, isResultCalculating } from "../../states/test";
+import { observeInputView } from "./before-insert-text";
 
 export function onBeforeDelete(event: InputEvent): void {
-  if (!isTestActive()) {
+  const session = getEngineSession();
+  if (!session.isPrepared() || isTestRestarting() || isResultCalculating()) {
     event.preventDefault();
     return;
   }
-  if (isTestRestarting()) {
-    event.preventDefault();
-    return;
-  }
-  if (isAwaitingNextWord()) {
-    event.preventDefault();
-    return;
-  }
-  if (isResultCalculating()) {
-    event.preventDefault();
-    return;
-  }
-
-  const { inputValue } = getInputElementValue();
-  const inputIsEmpty = inputValue === "";
-
-  if (inputIsEmpty) {
-    // we are on the first word, just prevent default, nothing to go back to
-    if (getActiveWordIndex() === 0) {
-      event.preventDefault();
-      return;
-    }
-
-    // this is nested because we only wanna pull the element from the dom if needed
-    const previousWordElement = TestUI.getWordElement(getActiveWordIndex() - 1);
-    if (previousWordElement === null) {
-      event.preventDefault();
-      return;
-    }
-  }
-
-  const previousWord = TestWords.words.get(getActiveWordIndex() - 1);
-  if (
-    !canDelete(getMutableConfig(), {
-      inputValue,
-      wordIndex: getActiveWordIndex(),
-      previousWordCorrect:
-        getInputForWord(getActiveWordIndex() - 1) ===
-        previousWord?.textWithCommit,
-      previousWordAvailable: true,
-    })
-  ) {
+  observeInputView(performance.now());
+  if (!session.canDelete()) {
     event.preventDefault();
   }
 }

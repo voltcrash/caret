@@ -3,7 +3,7 @@ import { animateAsync } from "../../src/ts/anim";
 import { requireApplication } from "../../src/app/application";
 import { bindTypingActivity } from "../../src/features/typing/scope";
 import { createRoot, onCleanup } from "solid-js";
-import type { QuoteWithTextSplit } from "@oxytype/typing-core/quotes";
+import type { QuoteWithTextSplit } from "@oxytype/web-shared/quotes";
 import type { LanguageObject } from "@oxytype/schemas/languages";
 import {
   afterEach,
@@ -30,6 +30,8 @@ const mocks = vi.hoisted(() => ({
   allGenerated: true,
   pullSection: undefined as undefined | (() => Promise<false | undefined>),
   sourceActions: [] as unknown[],
+  engineLoad: vi.fn(async () => undefined),
+  restartPolicy: vi.fn(),
   generate: vi.fn(),
   complete: vi.fn(),
   sessionStart: vi.fn(),
@@ -49,6 +51,13 @@ const mocks = vi.hoisted(() => ({
   saveLocal: vi.fn(),
   finishReason: undefined as string | undefined,
   onFinish: undefined as ((event: { reason?: string }) => void) | undefined,
+}));
+
+vi.mock("../../src/features/typing/runtime/content.client", () => ({
+  getContentHost: () => ({ prepare: mocks.generate }),
+}));
+vi.mock("../../src/features/typing/engine.client", () => ({
+  getBrowserEngine: () => ({ load: mocks.engineLoad }),
 }));
 
 vi.mock("../../src/ts/states/test", () => ({
@@ -119,6 +128,8 @@ vi.mock("../../src/features/typing/runtime/test-ui", () => ({
 vi.mock("../../src/features/typing/runtime/events/data", () => ({
   getTestSession: (() => {
     const session = {
+      isPrepared: () => true,
+      restartPolicy: mocks.restartPolicy,
       start: mocks.sessionStart,
       generate: mocks.generate,
       complete: mocks.complete,
@@ -146,9 +157,6 @@ vi.mock("../../src/features/typing/runtime/events/data", () => ({
     events: [],
     context: { targetWords: mocks.generatedWords },
   }),
-}));
-vi.mock("../../src/features/typing/runtime/words-generator", () => ({
-  areAllWordsGenerated: () => mocks.allGenerated,
 }));
 vi.mock("../../src/features/typing/runtime/funbox/list", () => ({
   getActiveFunboxes: () => [],
@@ -255,15 +263,14 @@ vi.mock("../../src/ts/utils/result-hash", () => ({
   hashResult: vi.fn().mockResolvedValue("hash"),
   preloadResultHasher: vi.fn().mockResolvedValue(undefined),
 }));
-vi.mock("@oxytype/typing-core/result-validity", () => ({
-  getInvalidResultReason: () => undefined,
-  isAfkResult: () => false,
+vi.mock("../../src/features/typing/analysis.client", () => ({
+  analyze: () => ({ reason: null, afk: false }),
+  getAnalysis: () => ({ incompleteTestSeconds: 0, dateDurationMs: 0 }),
 }));
 
 import { getMutableConfig } from "../../src/ts/config/store";
 import { getDefaultConfig } from "../../src/ts/constants/default-config";
 import {
-  addWord,
   fail,
   finish,
   restart,
@@ -275,6 +282,17 @@ import {
 let disposeRuntime: () => void;
 afterEach(() => disposeRuntime());
 beforeEach(() => {
+  mocks.engineLoad.mockReset().mockResolvedValue(undefined);
+  mocks.restartPolicy
+    .mockReset()
+    .mockImplementation((options: { withSameWordset?: boolean }) => ({
+      allowed: true,
+      reason: null,
+      withSameWordset: options.withSameWordset ?? false,
+      recordIncomplete: true,
+      preventDefault: false,
+      repeatWithPace: false,
+    }));
   vi.clearAllMocks();
   disposeRuntime = createRoot((dispose) => {
     onCleanup(bindTypingActivity(() => !mocks.transition));
@@ -363,6 +381,16 @@ describe("test lifecycle state", () => {
     "rejects restarts while %s",
     async (guard) => {
       mocks[guard] = true;
+      if (guard === "noQuit") {
+        mocks.restartPolicy.mockReturnValueOnce({
+          allowed: false,
+          reason: "noQuit",
+          preventDefault: true,
+          withSameWordset: false,
+          recordIncomplete: false,
+          repeatWithPace: false,
+        });
+      }
       mocks.active = true;
       const event = { preventDefault: vi.fn() } as unknown as KeyboardEvent;
       await restart({ event });
@@ -370,6 +398,21 @@ describe("test lifecycle state", () => {
       expect(mocks.generate).not.toHaveBeenCalled();
     },
   );
+
+  it("keeps failed Wasm loading out of the typing loop and retries on restart", async () => {
+    mocks.engineLoad.mockRejectedValueOnce(
+      new Error("Typing engine download failed: 503"),
+    );
+    await restart();
+    expect(mocks.setInitError).toHaveBeenCalledWith({
+      message: "Typing engine download failed: 503",
+    });
+    expect(mocks.generate).not.toHaveBeenCalled();
+    expect(mocks.restarting).toBe(false);
+    await restart();
+    expect(mocks.generate).toHaveBeenCalledOnce();
+    expect(mocks.uiRestart).toHaveBeenCalledWith("testPage");
+  });
 
   it("caps initialization retries and starts a fresh retry budget on restart", async () => {
     const error = new Error("generation failed");
@@ -464,6 +507,14 @@ describe("shared test decisions", () => {
       getMutableConfig().mode = "quote";
       getMutableConfig().repeatQuotes = repeatQuotes;
       mocks.quote = { language: "english", id: 1 } as QuoteWithTextSplit;
+      mocks.restartPolicy.mockReturnValueOnce({
+        allowed: true,
+        reason: null,
+        withSameWordset: repeatQuotes === "typing",
+        repeatWithPace: repeatQuotes === "typing",
+        recordIncomplete: true,
+        preventDefault: false,
+      });
       mocks.active = true;
       await restart();
       expect(mocks.repeated).toBe(repeatQuotes === "typing");
@@ -531,41 +582,7 @@ it("never applies a pending save acknowledgement to another actor", async () => 
 
 mockHttpFixture("results.add", async (input) => await mocks.addResult(input));
 
-// Frozen behavior before the Rust host cutover. Source I/O failure is recovery, not a score failure.
-describe("section source recovery", () => {
-  it("reports, disables the source and restarts on an unavailable active section", async () => {
-    mocks.allGenerated = false;
-    mocks.pullSection = async () => false;
-    mocks.error.mockImplementation((message: string) =>
-      mocks.sourceActions.push({ op: "errorNotice", message }),
-    );
-    mocks.generate.mockImplementation(async () => {
-      mocks.sourceActions.push({ op: "restart" });
-      return {
-        words: mocks.generatedWords,
-        sectionIndexes: [0, 0],
-        hasTab: false,
-        hasNewline: false,
-      };
-    });
-    await addWord();
-    await vi.waitFor(() => expect(mocks.restarting).toBe(false));
-    expect(mocks.sourceActions).toEqual([
-      {
-        op: "errorNotice",
-        message: "Error while getting section. Please try again later",
-      },
-      { op: "disableFunbox", name: "poetry", noRestart: false },
-      { op: "restart" },
-    ]);
-    expect(mocks.complete).not.toHaveBeenCalled();
-  });
-  it("ignores an undefined active section without reporting a failure", async () => {
-    mocks.allGenerated = false;
-    mocks.pullSection = async () => undefined;
-    await addWord();
-    expect(mocks.sourceActions).toEqual([]);
-    expect(mocks.generate).not.toHaveBeenCalled();
-    expect(mocks.error).not.toHaveBeenCalled();
-  });
-});
+// Active source failure ordering is frozen in source-recovery.json and verified
+// natively (content.rs), through Wasm (engine-proof.migration.ts), and by the
+// owned browser content/projection tests. The removed addWord callback no longer
+// owns source fetching or completion.

@@ -5,7 +5,7 @@ import {
   CustomTextSettings,
   CustomTextSettingsSchema,
 } from "@oxytype/schemas/results";
-import { defaultCustomTextSettings } from "@oxytype/typing-core/custom-text";
+import { defaultCustomTextSettings } from "@oxytype/web-shared/custom-text";
 
 const CustomTextObjectSchema = z.record(z.string(), z.string());
 type CustomTextObject = z.infer<typeof CustomTextObjectSchema>;

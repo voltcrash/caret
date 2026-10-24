@@ -1,12 +1,12 @@
 import { Language } from "@oxytype/schemas/languages";
-import { removeLanguageSize } from "@oxytype/typing-core/strings";
+import { removeLanguageSize } from "@oxytype/web-shared/strings";
 import { escapeRegExp } from "./misc";
 
 export {
   capitalizeFirstLetterOfEachWord,
   removeLanguageSize,
   splitIntoCharacters,
-} from "@oxytype/typing-core/strings";
+} from "@oxytype/web-shared/strings";
 
 /**
  * Converts a camelCase string to words separated by spaces.
@@ -100,7 +100,7 @@ export function getLanguageDisplayString(
  * @param textToClean
  * @returns Cleaned text.
  */
-export { cleanTypographySymbols } from "@oxytype/typing-core/strings";
+export { cleanTypographySymbols } from "@oxytype/web-shared/strings";
 
 /**
  * Replaces escaped control characters with their literal equivalents.
@@ -182,8 +182,6 @@ export function isWordRightToLeft(
     : [result[0], result[1] === word.length];
 }
 
-export { areCharactersVisuallyEqual } from "@oxytype/typing-core/strings";
-
 export function toHex(buffer: ArrayBuffer): string {
   const u8 = new Uint8Array(buffer);
 
@@ -202,8 +200,6 @@ export function toHex(buffer: ArrayBuffer): string {
   return hashHex;
 }
 
-export { isSpace } from "@oxytype/typing-core/strings";
-
 export function replaceUnderscoresWithSpaces(text: string): string {
   return text.replace(/_/g, " ");
 }
@@ -211,8 +207,6 @@ export function replaceUnderscoresWithSpaces(text: string): string {
 export function replaceSpacesWithUnderscores(text: string): string {
   return text.replace(/ /g, "_");
 }
-
-export { countChars } from "@oxytype/typing-core/strings";
 
 // Export testing utilities for unit tests
 export const __testing = {
