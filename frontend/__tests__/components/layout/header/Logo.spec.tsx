@@ -29,11 +29,16 @@ describe("Logo", () => {
   });
 
   function renderLogo(): ReturnType<typeof render> {
-    return render(() => (
+    const view = render(() => (
       <TypingRouteHost.Provider value={typing}>
         <Logo />
       </TypingRouteHost.Provider>
     ));
+    // Observe the anchor click without navigating the test runner iframe.
+    view
+      .getByRole("link", { name: "Oxytype Home" })
+      .addEventListener("click", (event) => event.preventDefault());
+    return view;
   }
 
   it("has no tagline", () => {
