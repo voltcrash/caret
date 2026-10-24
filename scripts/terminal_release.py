@@ -30,14 +30,15 @@ def version():
 
 
 def checksum(path):
-    digest = hashlib.file_digest(path.open("rb"), "sha256").hexdigest()
+    with path.open("rb") as source:
+        digest = hashlib.file_digest(source, "sha256").hexdigest()
     path.with_name(path.name + ".sha256").write_text(f"{digest}  {path.name}\n")
 
 
 def archive(directory, windows=False):
     output = directory.with_name(directory.name + (".zip" if windows else ".tar.gz"))
     if windows:
-        with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED) as package:
+        with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED, strict_timestamps=False) as package:
             for path in sorted(directory.rglob("*")):
                 if path.is_file(): package.write(path, path.relative_to(directory.parent))
     else:

@@ -67,6 +67,7 @@ jobs:
         shell: bash
         run: |
           vp run engine:fmt
+          vp run terminal:test:release-tools
           vp exec cargo clippy --locked -p typing-engine -p oxytype-tui --all-targets -- -D warnings
           vp exec cargo test --locked -p typing-engine -p oxytype-tui
       - name: POSIX terminal lifecycle and persistence

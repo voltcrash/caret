@@ -56,7 +56,8 @@
     "terminal:package": "node scripts/terminal.ts package",
     "terminal:source": "node scripts/terminal.ts source",
     "terminal:archive-smoke": "node scripts/terminal.ts archive-smoke",
-    "terminal:release-gate": "node scripts/terminal.ts release-gate"
+    "terminal:release-gate": "node scripts/terminal.ts release-gate",
+    "terminal:test:release-tools": "node scripts/terminal.ts tools-test"
   },
   "devDependencies": {
     "@commitlint/cli": "21.2.3",

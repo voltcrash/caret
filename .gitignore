@@ -142,3 +142,6 @@ frontend/playwright-report/
 # Rust / generated Wasm and type bindings
 /target/
 /packages/typing-engine/generated/
+
+# Python terminal verification/release tooling
+__pycache__/
