@@ -1,8 +1,13 @@
-import { describe, expect, it, vi } from "vite-plus/test";
+import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
 
+const insertLocalResult = vi.hoisted(() => vi.fn());
 vi.mock("../src/ts/collections/results", () => ({
-  insertLocalResult: vi.fn(),
+  insertLocalResult,
 }));
+
+beforeEach(() => {
+  insertLocalResult.mockClear();
+});
 
 import { getDefaultSnapshot } from "../src/ts/constants/default-snapshot";
 import * as DB from "../src/ts/db";
@@ -50,7 +55,7 @@ describe("local personal bests", () => {
     expect(observedSnapshot()?.favoriteQuotes?.english).toEqual(["8"]);
     expect(DB.getSnapshot()?.xp).toBe(42);
   });
-  it("creates, updates and separates personal bests by settings", () => {
+  it("creates, updates and separates personal bests by settings", async () => {
     const snapshot = getDefaultSnapshot();
     snapshot.personalBests = { words: {} } as typeof snapshot.personalBests;
     DB.setSnapshot(snapshot, { dispatchEvent: false });
@@ -66,5 +71,8 @@ describe("local personal bests", () => {
 
     DB.saveLocalResult({ isPb: false, result: result(120) });
     expect(pb()).toMatchObject({ wpm: 90 });
+    // saveLocalResult imports the collection asynchronously. Keep the frame and
+    // its mock alive until every local save has reached that collection.
+    await vi.waitFor(() => expect(insertLocalResult).toHaveBeenCalledTimes(4));
   });
 });
