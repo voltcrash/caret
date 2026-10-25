@@ -67,7 +67,7 @@ it("enables Smart Placement directly in production without changing staging plac
   expect(production.vars.PLACEMENT_MODE).toBe("smart");
   for (const environment of ["staging", "production"]) {
     expect(frontend[`db:insights:${environment}`]).toBe(
-      `tsx scripts/report-d1-insights.ts ${environment}`,
+      `vpx ./scripts/report-d1-insights.ts ${environment}`,
     );
   }
 });

@@ -7,7 +7,7 @@ import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { resolve, relative, dirname } from "node:path";
 import { isDeepStrictEqual } from "node:util";
 
-const root = resolve(__dirname, "../..");
+const root = resolve(import.meta.dirname, "../..");
 
 function sources(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -157,7 +157,7 @@ export function inventory(): object[] {
   );
 }
 
-if (require.main === module) {
+if (import.meta.main) {
   const output = `${JSON.stringify(inventory(), null, 2)}\n`;
   const path = resolve(root, "docs/tanstack-start/operations.json");
   if (process.argv.includes("--check")) {

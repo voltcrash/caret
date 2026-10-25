@@ -87,7 +87,7 @@ const actions = {
         throw new Error("Failed to add custom theme: No data returned");
       }
 
-      customThemesCollection().utils.writeInsert({
+      await customThemesCollection().utils.writeInsert({
         _id: response.data._id,
         name,
         colors,
@@ -109,7 +109,7 @@ const actions = {
         throw new Error(`Failed to edit custom theme: ${response.message}`);
       }
 
-      customThemesCollection().utils.writeUpdate({
+      await customThemesCollection().utils.writeUpdate({
         _id: themeId,
         name,
         colors,
@@ -127,7 +127,7 @@ const actions = {
       if (!response.ok) {
         throw new Error(`Failed to delete custom theme: ${response.message}`);
       }
-      customThemesCollection().utils.writeDelete(themeId);
+      await customThemesCollection().utils.writeDelete(themeId);
     },
   }),
 };
@@ -156,19 +156,19 @@ export async function addCustomTheme(
   params: ActionType["addCustomTheme"],
 ): Promise<void> {
   const transaction = actions.addCustomTheme(params);
-  await transaction.isPersisted.promise;
+  await transaction.when("settled");
 }
 
 export async function editCustomTheme(
   params: ActionType["editCustomTheme"],
 ): Promise<void> {
   const transaction = actions.editCustomTheme(params);
-  await transaction.isPersisted.promise;
+  await transaction.when("settled");
 }
 
 export async function deleteCustomTheme(
   params: ActionType["deleteCustomTheme"],
 ): Promise<void> {
   const transaction = actions.deleteCustomTheme(params);
-  await transaction.isPersisted.promise;
+  await transaction.when("settled");
 }

@@ -1,5 +1,5 @@
 import type { Assertion, AsymmetricMatchersContaining } from "vite-plus/test";
-import type { Test as SuperTest } from "supertest";
+import type { TestRequest } from "./__testData__/test-client";
 import MonkeyError from "../src/utils/error";
 
 type ExpectedRateLimit = {
@@ -8,7 +8,7 @@ type ExpectedRateLimit = {
   /** window in milliseconds. Needs to be within 2500ms */
   windowMs: number;
 };
-interface RestRequestMatcher<R = Supertest> {
+interface RestRequestMatcher<R = TestRequest> {
   toBeRateLimited: (
     expected: ExpectedRateLimit,
   ) => Promise<RestRequestMatcher<R>>;

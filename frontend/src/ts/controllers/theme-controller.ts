@@ -11,7 +11,7 @@ import { setConfig } from "../config/setters";
 import { configEvent } from "../events/config";
 import * as CustomThemes from "../states/custom-themes";
 import { showNoticeNotification } from "../states/notifications";
-import { debounce } from "throttle-debounce";
+import { debounce } from "@oxytype/util/timing";
 import { untrack } from "solid-js";
 import { CustomThemeColors, ThemeName } from "@oxytype/schemas/configs";
 import {
@@ -104,7 +104,7 @@ export function preview(
   debouncedPreview();
 }
 
-const debouncedPreview = debounce<() => void>(250, () => {
+const debouncedPreview = debounce(250, () => {
   if (previewState) {
     isPreviewingTheme = true;
     void apply(previewState.theme, previewState.colors, true);

@@ -2,7 +2,6 @@ import { envValue } from "../runtime/env";
 import { MILLISECONDS_IN_DAY } from "@oxytype/util/date-and-time";
 import { roundTo2 } from "@oxytype/util/numbers";
 export { sanitizeString } from "@oxytype/util/strings";
-import { UAParser } from "ua-parser-js";
 import type { ServiceContext } from "../services/context";
 
 //todo split this file into smaller util files (grouped by functionality)
@@ -17,26 +16,10 @@ export function identity(value: unknown): string {
 type AgentLog = {
   ip: string;
   agent: string;
-  device?: string;
 };
 
 export function buildAgentLog(client: ServiceContext["client"]): AgentLog {
-  const agent = new UAParser(client.userAgent).getResult();
-
-  const agentLog: AgentLog = {
-    ip: client.ip,
-    agent: `${agent.os.name} ${agent.os.version} ${agent.browser.name} ${agent.browser.version}`,
-  };
-
-  const {
-    device: { vendor, model, type },
-  } = agent;
-
-  agentLog.device = `${vendor ?? "unknown vendor"} ${
-    model ?? "unknown model"
-  } ${type ?? "unknown type"}`;
-
-  return agentLog;
+  return { ip: client.ip, agent: client.userAgent ?? "unknown" };
 }
 
 export function matchesAPattern(text: string, pattern: string): boolean {

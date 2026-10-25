@@ -42,7 +42,11 @@ export function ThemeIndicator(props: { class?: string }): JSXElement {
         "p-0 text-xs leading-none whitespace-nowrap text-text/80 hover:text-main",
         props.class,
       )}
-      balloon={{ text: "Shift-click to toggle custom theme", position: "down" }}
+      // balloon-css renders aria-label, so it must include the visible text
+      balloon={{
+        text: `${getThemeIndicator().text}: shift-click to toggle custom theme`,
+        position: "down",
+      }}
       dataset={{ "data-ui-element": "themeIndicator" }}
       onClick={openThemePicker}
     >

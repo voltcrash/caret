@@ -1,12 +1,12 @@
 import { expect } from "vite-plus/test";
 import { REQUEST_MULTIPLIER } from "../../src/policies/rate-limit";
 import { MatcherResult, ExpectedRateLimit } from "../vitest";
-import { Test as SuperTest } from "supertest";
+import type { TestRequest } from "./test-client";
 
 export function enableRateLimitExpects(): void {
   expect.extend({
     toBeRateLimited: async (
-      received: SuperTest,
+      received: TestRequest,
       expected: ExpectedRateLimit,
     ): Promise<MatcherResult> => {
       const now = Date.now();

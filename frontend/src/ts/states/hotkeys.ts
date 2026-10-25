@@ -1,7 +1,7 @@
 import { appObject } from "../../app/state";
 import { createAppMemo } from "../../app/application";
 import { QuickRestart } from "@oxytype/schemas/configs";
-import { Hotkey } from "@tanstack/solid-hotkeys";
+import { HotkeyChord } from "@tanstack/solid-hotkeys";
 
 import { getConfig } from "../config/store";
 import { wordsHaveNewline, wordsHaveTab, isLongTest } from "./test";
@@ -12,7 +12,7 @@ import {
   getCommandPaletteHotkeyError,
 } from "../input/hotkeys/command-palette-hotkey";
 
-export const quickRestartHotkeyMap: Record<QuickRestart, Hotkey> = {
+export const quickRestartHotkeyMap: Record<QuickRestart, HotkeyChord> = {
   off: NoKey,
   esc: "Escape",
   tab: "Tab",
@@ -20,8 +20,8 @@ export const quickRestartHotkeyMap: Record<QuickRestart, Hotkey> = {
 };
 
 type Hotkeys = {
-  quickRestart: Hotkey;
-  commandPalette: Hotkey;
+  quickRestart: HotkeyChord;
+  commandPalette: HotkeyChord;
 };
 
 export const hotkeys = appObject(createAppMemo(updateHotkeys));
@@ -51,8 +51,8 @@ function updateHotkeys(): Hotkeys {
 
 // the config can come from another platform (or an older client), so fall back
 // to the default instead of hijacking a shortcut that is reserved here
-function getCommandPaletteHotkey(): Hotkey {
-  const hotkey = getConfig.commandPaletteHotkey as Hotkey;
+function getCommandPaletteHotkey(): HotkeyChord {
+  const hotkey = getConfig.commandPaletteHotkey as HotkeyChord;
   if (
     getCommandPaletteHotkeyError(hotkey, getConfig.quickRestart) !== undefined
   ) {
@@ -61,7 +61,7 @@ function getCommandPaletteHotkey(): Hotkey {
   return hotkey;
 }
 
-function shiftHotkey(hotkey: Hotkey, shift: boolean): Hotkey {
+function shiftHotkey(hotkey: HotkeyChord, shift: boolean): HotkeyChord {
   if (shift) {
     if (hotkey === "Tab") return "Shift+Tab";
     if (hotkey === "Enter") return "Shift+Enter";

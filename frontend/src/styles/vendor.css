@@ -1,4 +1,3 @@
-@import "normalize.css" layer(normalize);
 @import "oxytype-fontawesome.css" layer(vendor);
 @import "./icons.css" layer(vendor);
 @import "balloon-css/balloon.min.css" layer(vendor);

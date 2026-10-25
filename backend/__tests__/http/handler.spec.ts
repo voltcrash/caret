@@ -1,4 +1,3 @@
-import request from "supertest";
 import {
   afterEach,
   beforeEach,
@@ -16,7 +15,7 @@ import { BASE_CONFIGURATION } from "../../src/constants/base-configuration";
 import * as UserDal from "../../src/dal/user";
 import * as Configuration from "../../src/init/configuration";
 import { dispatchApi } from "../__testData__/http-worker";
-import { requestListener } from "../__testData__/node-listener";
+import { createTestClient, type TestClient } from "../__testData__/test-client";
 
 // Transport-independent HTTP behaviour of the handlers Start mounts under
 // /api. CORS, security headers and request bodies belong to Start's Worker
@@ -34,8 +33,7 @@ afterEach(() => {
   vi.unstubAllEnvs();
 });
 
-const client = (): ReturnType<typeof request> =>
-  request(requestListener(dispatchApi));
+const client = (): TestClient => createTestClient(dispatchApi);
 
 describe("HTTP operation handler", () => {
   it("serves health with the compatibility header", async () => {

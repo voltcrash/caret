@@ -1,11 +1,11 @@
-import { debounce } from "throttle-debounce";
+import { debounce, type Cancelable } from "@oxytype/util/timing";
 import "@oxytype/util/zod-messages";
 import type { Validation, ValidationResult } from "../types/validation";
 
 function debounceIfNeeded<A extends unknown[], R>(
   delay: number,
   callback: (...args: A) => R,
-): ((...args: A) => R) | debounce<(...args: A) => R> {
+): ((...args: A) => R) | Cancelable<A> {
   if (delay <= 0) {
     return callback;
   }

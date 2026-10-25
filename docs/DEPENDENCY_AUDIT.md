@@ -54,7 +54,7 @@ dependencies still target Zod 3 upstream:
 - `zod-urlsearchparams` treats pipes like Zod 3 effects and types results with
   `ZodSafeParseResult`.
 
-Run `tsx scripts/openapi.ts <file>` in `backend/` and diff the output against
+Run `vpx ./scripts/openapi.ts <file>` in `backend/` and diff the output against
 `main` after changing schemas or these patches. The Zod 4 migration kept the
 generated document byte-identical.
 

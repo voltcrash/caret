@@ -9,13 +9,15 @@ import {
   symlinkSync,
   writeFileSync,
 } from "node:fs";
-import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vite-plus/test";
 
 const repoRoot = resolve(__dirname, "../../..");
-const tsx = createRequire(__filename).resolve("tsx/cli");
+// Absolute so tests can hide `vp` from the script's PATH.
+const vpx = spawnSync("sh", ["-c", "command -v vpx"], {
+  encoding: "utf8",
+}).stdout.trim();
 
 type Build = {
   target: string;
@@ -36,8 +38,8 @@ describe("production build command", () => {
 
   function run(env: NodeJS.ProcessEnv = {}): SpawnSyncReturns<string> {
     return spawnSync(
-      process.execPath,
-      [tsx, resolve(root, "frontend/scripts/build-production-site.ts")],
+      vpx,
+      [resolve(root, "frontend/scripts/build-production-site.ts")],
       {
         // The script must locate its workspace independently of the caller.
         cwd: tmpdir(),

@@ -12,7 +12,7 @@ import { showLoaderBar, hideLoaderBar } from "../states/loader-bar";
 import { Command, CommandlineSubgroupKey } from "./types";
 
 import { parseIntOptional } from "../utils/numbers";
-import { debounce } from "throttle-debounce";
+import { debounce } from "@oxytype/util/timing";
 import { matchesKeyboardEvent } from "@tanstack/solid-hotkeys";
 
 import { hotkeys } from "../states/hotkeys";

@@ -22,6 +22,6 @@ was served or prove the absence of supported legacy mutation traffic.
 Validate the operation inventory from the repository root:
 
 ```sh
-vp -C backend exec tsx scripts/migration-inventory.ts --check
-vp -C frontend exec tsx scripts/generate-http-routes.ts --check
+vp -C backend exec vpx ./scripts/migration-inventory.ts --check
+vp -C frontend exec vpx ./scripts/generate-http-routes.ts --check
 ```

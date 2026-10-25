@@ -154,7 +154,7 @@ jobs:
               - '!LICENSE'
               - '!frontend/static/**'
               - '!.github/{ISSUE_TEMPLATE/**,dependabot.yml,labeler.yml,workflows/labeler.yml}'
-              - '!.{claude,husky}/**'
+              - '!.{claude,vite-hooks}/**'
 
       - name: Select jobs
         id: select
@@ -266,10 +266,6 @@ jobs:
       - name: Check lint
         run: vp run lint-fe
 
-      # The Start jobs build the same bundle; only its circular-import guard runs here.
-      - name: Check circular imports
-        run: vp run --filter @oxytype/frontend madge
-
   ci-fe-test:
     name: ci-fe-test (${{ matrix.shard }}/2)
     needs: [changes]
@@ -343,7 +339,7 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Check operation ownership and declared HTTP routes
-        run: vp -C backend exec tsx scripts/migration-inventory.ts --check && vp -C frontend exec tsx scripts/generate-http-routes.ts --check
+        run: vp -C backend exec vpx ./scripts/migration-inventory.ts --check && vp -C frontend exec vpx ./scripts/generate-http-routes.ts --check
 
       - name: Download Start Worker
         uses: actions/download-artifact@v8.0.2

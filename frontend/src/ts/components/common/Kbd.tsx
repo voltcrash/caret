@@ -1,11 +1,11 @@
-import { formatForDisplay, Hotkey } from "@tanstack/solid-hotkeys";
+import { formatForDisplay, HotkeyChord } from "@tanstack/solid-hotkeys";
 import { JSXElement } from "solid-js";
 
 type Props =
-  | { hotkey: Hotkey; text?: undefined }
+  | { hotkey: HotkeyChord; text?: undefined }
   | { hotkey?: undefined; text: string };
 
-export function formatHotkey(hotkey: Hotkey): string {
+export function formatHotkey(hotkey: HotkeyChord): string {
   return formatForDisplay(hotkey, { useSymbols: false })
     .toLowerCase()
     .replace(/\+/g, " + ");

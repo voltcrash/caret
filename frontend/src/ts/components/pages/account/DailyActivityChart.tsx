@@ -1,5 +1,3 @@
-import type {} from "chartjs-plugin-trendline";
-
 import { roundTo2 } from "@oxytype/util/numbers";
 import { TooltipItem } from "chart.js";
 import { format as dateFormat } from "date-fns/format";
@@ -12,9 +10,21 @@ import {
 import { getTheme } from "../../../states/theme";
 import { secondsToString } from "../../../utils/date-and-time";
 import { Formatting } from "../../../utils/format";
+import { fitLine } from "../../../utils/numbers";
 import { TypingSpeedUnitSettings } from "../../../utils/typing-speed-units";
 import AsyncContent from "../../common/AsyncContent";
 import { ChartJs } from "../../common/ChartJs";
+
+function trendline(
+  days: { dayTimestamp: unknown; timeTyping: number }[],
+): (number | null)[] {
+  const points = days.map((it) => ({
+    x: it.dayTimestamp as number,
+    y: it.timeTyping / 60,
+  }));
+  const line = fitLine(points);
+  return points.map(({ x }) => (line === null ? null : line(x)));
+}
 
 export function DailyActivityChart(props: {
   queryState: Accessor<ResultsQueryState | undefined>;
@@ -43,12 +53,20 @@ export function DailyActivityChart(props: {
                   yAxisID: "count",
                   data: dataQueryData().map((it) => it.timeTyping / 60),
                   backgroundColor: getTheme().main,
-                  trendlineLinear: {
-                    style: getTheme().sub,
-                    lineStyle: "dotted",
-                    width: 2,
-                  },
                   order: 3,
+                },
+                {
+                  yAxisID: "count",
+                  data: trendline(dataQueryData()),
+                  borderColor: getTheme().sub,
+                  borderDash: [2, 2],
+                  borderWidth: 2,
+                  pointRadius: 0,
+                  pointHoverRadius: 0,
+                  type: "line",
+                  order: 1,
+                  tension: 0,
+                  fill: false,
                 },
                 {
                   yAxisID: "avgWpm",
