@@ -30,6 +30,7 @@ export type WorkerEnv = {
   API_PATH_OVERRIDE?: string;
   MAINTENANCE?: string;
   VERSION?: string;
+  PLACEMENT_MODE?: string;
 };
 
 export type Runtime = {
