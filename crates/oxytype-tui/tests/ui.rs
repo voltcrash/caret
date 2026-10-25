@@ -263,3 +263,40 @@ fn tiny_terminals_get_a_centred_resize_notice() {
     assert_eq!(buffer[(x, y)].fg, palette.main);
     assert!(find(&buffer, "now 40×10").is_some());
 }
+
+#[test]
+fn every_screen_fits_the_minimum_terminal() {
+    let mut fixture = fixture(Config {
+        mode: "words".into(),
+        words: 10,
+        ..Default::default()
+    });
+    for screen in [
+        Screen::Test,
+        Screen::Help,
+        Screen::Settings,
+        Screen::History,
+        Screen::Editor,
+        Screen::Replay,
+    ] {
+        let buffer = render(&fixture, screen, 60, 18);
+        assert!(find(&buffer, "oxytype").is_some());
+    }
+    let buffer = render(&fixture, Screen::Test, 60, 18);
+    if std::env::var("OXYTYPE_UI_DUMP").is_ok() {
+        println!("{}", text(&buffer));
+    }
+    assert!(find(&buffer, "words").is_some());
+    for i in 0..10 {
+        let word = fixture.host.words[i].display_lossy();
+        fixture
+            .host
+            .insert(&word, 100.0 + i as f64 * 1000.0, 1100.0 + i as f64 * 1000.0)
+            .unwrap();
+    }
+    let buffer = render(&fixture, Screen::Test, 60, 18);
+    if std::env::var("OXYTYPE_UI_DUMP").is_ok() {
+        println!("{}", text(&buffer));
+    }
+    assert!(find(&buffer, "wpm").is_some());
+}
