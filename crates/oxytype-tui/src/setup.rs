@@ -3,6 +3,42 @@ use crate::{Result, content::OfflineContent, engine::EngineHost, options};
 use ratatui::text::Line;
 use typing_engine::{Config, generation::CustomText};
 
+/// One settings line: web button group, or a single value adjusted with ←→.
+pub struct Row {
+    pub section: Option<&'static str>,
+    pub label: &'static str,
+    pub options: Vec<String>,
+    pub active: usize,
+    pub note: Option<&'static str>,
+}
+impl Row {
+    fn choice(label: &'static str, options: &[&str], active: usize) -> Self {
+        Self {
+            section: None,
+            label,
+            options: options.iter().map(|o| o.replace('_', " ")).collect(),
+            active,
+            note: None,
+        }
+    }
+    fn value(label: &'static str, value: String) -> Self {
+        Self {
+            section: None,
+            label,
+            options: vec![value],
+            active: 0,
+            note: None,
+        }
+    }
+    fn section(mut self, name: &'static str) -> Self {
+        self.section = Some(name);
+        self
+    }
+    fn note(mut self, note: &'static str) -> Self {
+        self.note = Some(note);
+        self
+    }
+}
 pub struct Setup {
     pub config: Config,
     pub selected: usize,
@@ -55,7 +91,8 @@ impl Setup {
         EngineHost::offline(self.config.clone(), content.clone(), self.custom()?, seed)
     }
     pub fn select(&mut self, direction: i32) {
-        self.selected = (self.selected as i32 + direction).rem_euclid(16) as usize;
+        self.selected =
+            (self.selected as i32 + direction).rem_euclid(self.rows().len() as i32) as usize;
     }
     pub fn adjust(&mut self, direction: i32) {
         let c = &mut self.config;
@@ -101,39 +138,78 @@ impl Setup {
             _ => {}
         }
     }
-    pub fn lines(&self) -> Vec<Line<'static>> {
+    /// Web-style settings rows, in `selected`/`adjust` index order.
+    pub fn rows(&self) -> Vec<Row> {
         let c = &self.config;
-        let labels = [
-            format!("Mode: {}", c.mode),
-            format!("Words: {} (0 infinite)", c.words),
-            format!("Time: {}s (0 infinite)", c.time),
-            format!("Punctuation: {}", c.punctuation),
-            format!("Numbers: {}", c.numbers),
-            format!("Difficulty: {}", c.difficulty),
-            format!("Stop on error: {}", c.stop_on_error),
-            format!("Delete on error: {}", c.delete_on_error),
-            format!("Confidence: {}", c.confidence_mode),
-            format!("Freedom: {}", c.freedom_mode),
-            format!("Strict space: {}", c.strict_space),
-            format!("Quote group: {:?}", c.quote_length),
-            format!("Funbox: {}", c.funbox.join(", ")),
-            format!("Theme: {}", self.theme),
-            format!("Reduced animation: {}", self.reduced_animation),
-            format!(
-                "Record replay (stores PRIVATE text/input): {}",
-                self.record_replay
+        let toggle =
+            |label: &'static str, on: bool| Row::choice(label, &["off", "on"], usize::from(on));
+        let pick = |label: &'static str, values: &[&str], value: &str| {
+            Row::choice(
+                label,
+                values,
+                values.iter().position(|v| *v == value).unwrap_or(0),
+            )
+        };
+        let funboxes: Vec<_> = std::iter::once("none")
+            .chain(options::FUNBOXES.iter().copied())
+            .collect();
+        let themes = crate::theme::names();
+        vec![
+            pick(
+                "mode",
+                &["time", "words", "quote", "custom", "zen"],
+                &c.mode,
+            )
+            .section("test"),
+            Row::value(
+                "words",
+                if c.words == 0 {
+                    "infinite".into()
+                } else {
+                    c.words.to_string()
+                },
             ),
-        ];
-        std::iter::once(Line::from(
-            "↑↓ select · ←→ change · Enter apply · F4 custom text · Esc cancel",
-        ))
-        .chain(labels.into_iter().enumerate().map(|(i, s)| {
-            Line::from(format!(
-                "{} {s}",
-                if i == self.selected { ">" } else { " " }
-            ))
-        }))
-        .collect()
+            Row::value(
+                "time",
+                if c.time == 0.0 {
+                    "infinite".into()
+                } else {
+                    format!("{}s", c.time)
+                },
+            ),
+            toggle("punctuation", c.punctuation),
+            toggle("numbers", c.numbers),
+            pick("difficulty", &["normal", "expert", "master"], &c.difficulty).section("behavior"),
+            pick(
+                "stop on error",
+                &["off", "word", "letter"],
+                &c.stop_on_error,
+            ),
+            pick(
+                "delete on error",
+                &["off", "word", "letter", "word_hard", "letter_hard"],
+                &c.delete_on_error,
+            ),
+            pick("confidence mode", &["off", "on", "max"], &c.confidence_mode),
+            toggle("freedom mode", c.freedom_mode),
+            toggle("strict space", c.strict_space),
+            Row::choice(
+                "quote length",
+                &["short", "medium", "long", "thicc"],
+                c.quote_length.first().copied().unwrap_or(0).clamp(0, 3) as usize,
+            ),
+            pick(
+                "funbox",
+                &funboxes,
+                c.funbox.first().map_or("none", String::as_str),
+            )
+            .section("funbox"),
+            pick("theme", &themes, &self.theme).section("appearance"),
+            toggle("reduced animation", self.reduced_animation),
+            toggle("record replay", self.record_replay)
+                .section("privacy")
+                .note("stores private target text and input"),
+        ]
     }
     pub fn editor_lines(&self) -> Vec<Line<'static>> {
         vec![
