@@ -145,16 +145,6 @@ export function assertGoodAuthentication(
   }
 }
 
-export async function checkBadAuthentication(
-  context: RateContext,
-): Promise<void> {
-  if (!context.configuration.rateLimiting.badAuthentication.enabled) return;
-  assertGoodAuthentication(
-    context.configuration,
-    await badAuthenticationPoints(context.client.ip),
-  );
-}
-
 export async function recordBadAuthentication(
   context: RateContext,
   status: number,

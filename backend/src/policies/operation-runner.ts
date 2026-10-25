@@ -16,7 +16,8 @@ import { getOperation, type OperationId } from "./operations";
 import { verifyPermissions } from "./permission";
 import { ROOT_LIMIT } from "./rate-counter";
 import {
-  checkBadAuthentication,
+  assertGoodAuthentication,
+  badAuthenticationPoints,
   enforceLimit,
   enforceOperationLimit,
   recordBadAuthentication,
@@ -67,16 +68,25 @@ export type OperationOutcome<K extends OperationId> =
 
 /** Request-wide gates; run once before any operation is selected. */
 export async function admit(invocation: Invocation): Promise<PolicyScope> {
-  const scope: PolicyScope = {
-    actor: { ...GUEST },
-    configuration: await getCachedConfiguration(true),
-    client: {
-      ip: invocation.clientIp,
-      userAgent: invocation.headers.get("user-agent") ?? undefined,
-    },
+  const actor = { ...GUEST };
+  const client = {
+    ip: invocation.clientIp,
+    userAgent: invocation.headers.get("user-agent") ?? undefined,
   };
-  await checkBadAuthentication(scope);
-  await enforceLimit("root", ROOT_LIMIT, scope, invocation.setHeader, false);
+  // Independent gates; none waits on another's round trip.
+  const [configuration, badAuthentication] = await Promise.all([
+    getCachedConfiguration(true),
+    badAuthenticationPoints(client.ip),
+    enforceLimit(
+      "root",
+      ROOT_LIMIT,
+      { actor, client },
+      invocation.setHeader,
+      false,
+    ),
+  ]);
+  assertGoodAuthentication(configuration, badAuthentication);
+  const scope: PolicyScope = { actor, configuration, client };
   const slowdown = scope.configuration.dev.responseSlowdownMs;
   if (invocation.runtime.env.MODE === "dev" && slowdown > 0) {
     await new Promise((resolve) => setTimeout(resolve, slowdown));

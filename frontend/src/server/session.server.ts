@@ -2,7 +2,8 @@ import "@tanstack/solid-start/server-only";
 import { readUiSession } from "@oxytype/backend/auth/ui-session";
 import { getCachedConfiguration } from "@oxytype/backend/configuration";
 import {
-  checkBadAuthentication,
+  assertGoodAuthentication,
+  badAuthenticationPoints,
   enforceLimit,
 } from "@oxytype/backend/policies/rate-limit";
 import { ROOT_LIMIT, SESSION_LIMIT } from "@oxytype/backend/rate-counter";
@@ -19,24 +20,22 @@ export async function readSessionState(
   request: ServiceContext,
 ): Promise<SessionState> {
   try {
-    const configuration = await getCachedConfiguration();
-    const context = {
-      actor: GUEST,
-      runtime: request.runtime,
-      requestId: request.requestId,
-      background: request.background,
-      configuration,
-      client: { ip: request.clientIp },
-    };
-    await checkBadAuthentication(context);
-    await enforceLimit("root", ROOT_LIMIT, context, setResponseHeader, false);
-    await enforceLimit(
-      "auth.session",
-      SESSION_LIMIT,
-      context,
-      setResponseHeader,
-      false,
-    );
+    const client = { ip: request.clientIp };
+    const gate = { actor: GUEST, client };
+    // Independent gates run together; the session read waits for all of them.
+    const [configuration, badAuthentication] = await Promise.all([
+      getCachedConfiguration(),
+      badAuthenticationPoints(client.ip),
+      enforceLimit("root", ROOT_LIMIT, gate, setResponseHeader, false),
+      enforceLimit(
+        "auth.session",
+        SESSION_LIMIT,
+        gate,
+        setResponseHeader,
+        false,
+      ),
+    ]);
+    assertGoodAuthentication(configuration, badAuthentication);
     return {
       user: await readUiSession(request.request.headers),
       signUpEnabled:
