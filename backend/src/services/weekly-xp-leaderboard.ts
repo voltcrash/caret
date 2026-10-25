@@ -8,7 +8,12 @@ import type {
 import { getCurrentWeekTimestamp } from "@oxytype/util/date-and-time";
 import { statement, encode } from "../db/client";
 import { stage } from "../db/mutation";
-import { rankingPage, rankingUser, type RankingRow } from "../db/ranking";
+import type { D1PreparedStatement } from "@cloudflare/workers-types";
+import {
+  rankingPage,
+  rankingUserStatement,
+  type RankingRow,
+} from "../db/ranking";
 import { omit } from "../utils/misc";
 export type AddResultOpts = {
   entry: XpLeaderboardProfile;
@@ -85,14 +90,28 @@ export class WeeklyXpLeaderboard {
     uid: string,
     config: Configuration["leaderboards"]["weeklyXp"],
   ): Promise<XpLeaderboardEntry | null> {
+    const query = this.rankStatement(uid, config);
+    return query === null
+      ? null
+      : this.rankFrom(await query.first<RankingRow>());
+  }
+  /** `getRank` as a statement, so it can join another batch. */
+  public rankStatement(
+    uid: string,
+    config: Configuration["leaderboards"]["weeklyXp"],
+  ): D1PreparedStatement | null {
     if (!config.enabled) return null;
-    const row = await rankingUser(
+    return rankingUserStatement(
       "weekly_entries",
       this.period(),
       uid,
       undefined,
       this.client,
     );
+  }
+  public rankFrom(
+    row: RankingRow | null | undefined,
+  ): XpLeaderboardEntry | null {
     return row ? unpack(row) : null;
   }
 }

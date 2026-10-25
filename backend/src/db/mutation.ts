@@ -1,6 +1,6 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 import { eq } from "drizzle-orm";
-import type { D1PreparedStatement } from "@cloudflare/workers-types";
+import type { D1PreparedStatement, D1Result } from "@cloudflare/workers-types";
 import { users } from "./schema";
 import { database, primaryDatabase, encode, statement } from "./client";
 import { newId } from "../utils/id";
@@ -58,7 +58,23 @@ export async function atomicUser<T>(
   uid: string,
   action: () => Promise<T>,
 ): Promise<T> {
-  if (currentUserDraft(uid)) return await action();
+  return (await atomicUserWithReads(uid, action, () => [])).result;
+}
+
+/**
+ * `atomicUser`, plus reads appended to the committing batch: they observe its
+ * writes without another round trip. `reads` is undefined when the commit's
+ * acknowledgement was lost and recovered; callers then read separately.
+ * Nested calls join the outer batch and return no reads.
+ */
+export async function atomicUserWithReads<T>(
+  uid: string,
+  action: () => Promise<T>,
+  readsFor: (result: T) => D1PreparedStatement[],
+): Promise<{ result: T; reads: D1Result[] | undefined }> {
+  if (currentUserDraft(uid)) {
+    return { result: await action(), reads: undefined };
+  }
   for (let attempt = 0; attempt < 8; attempt++) {
     // Failed guards do not advance bookmarks; bypass lagging replicas on retry.
     const row = await primaryDatabase()
@@ -74,9 +90,10 @@ export async function atomicUser<T>(
       statements: [],
     };
     const result = await drafts.run(draft, action);
+    const reads = readsFor(result);
     const guard = newId();
     try {
-      await commitBatch([
+      const results = await commitBatch([
         statement(
           "INSERT INTO mutation_guards(id,valid) VALUES (?,(SELECT count(*) FROM users WHERE uid=? AND version=?))",
           guard,
@@ -86,8 +103,15 @@ export async function atomicUser<T>(
         userStatement(draft.user, row.version),
         ...draft.statements,
         statement("DELETE FROM mutation_guards WHERE id=?", guard),
+        ...reads,
       ]);
-      return result;
+      return {
+        result,
+        reads:
+          results === undefined || reads.length === 0
+            ? undefined
+            : results.slice(results.length - reads.length),
+      };
     } catch (error) {
       const message =
         error instanceof Error

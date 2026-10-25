@@ -11,7 +11,12 @@ import type { Client, Mode, Mode2 } from "@oxytype/schemas/shared";
 import { getCurrentDayTimestamp } from "@oxytype/util/date-and-time";
 import { statement, encode } from "../db/client";
 import { stage } from "../db/mutation";
-import { rankingPage, rankingUser, type RankingRow } from "../db/ranking";
+import type { D1PreparedStatement } from "@cloudflare/workers-types";
+import {
+  rankingPage,
+  rankingUserStatement,
+  type RankingRow,
+} from "../db/ranking";
 function unpack(row: RankingRow): LeaderboardEntry {
   return {
     ...(JSON.parse(row.data) as DailyLeaderboardEntry),
@@ -118,13 +123,25 @@ export class DailyLeaderboard {
     uid: string,
     config: Configuration["dailyLeaderboards"],
   ): Promise<LeaderboardEntry | null> {
+    const query = this.rankStatement(uid, config);
+    return query === null
+      ? null
+      : this.rankFrom(await query.first<RankingRow>());
+  }
+  /** `getRank` as a statement, so it can join another batch. */
+  public rankStatement(
+    uid: string,
+    config: Configuration["dailyLeaderboards"],
+  ): D1PreparedStatement | null {
     if (!config.enabled) return null;
-    const row = await rankingUser(
+    return rankingUserStatement(
       "daily_entries",
       this.period(),
       uid,
       this.board,
     );
+  }
+  public rankFrom(row: RankingRow | null | undefined): LeaderboardEntry | null {
     return row ? unpack(row) : null;
   }
 }

@@ -1,4 +1,5 @@
 import type { Client } from "@oxytype/schemas/shared";
+import type { D1PreparedStatement } from "@cloudflare/workers-types";
 import { statement } from "./client";
 export type RankingRow = {
   uid: string;
@@ -54,6 +55,23 @@ export async function rankingUser(
   board?: string,
   client: Client = "web",
 ): Promise<RankingRow | null> {
+  return await rankingUserStatement(
+    table,
+    period,
+    uid,
+    board,
+    client,
+  ).first<RankingRow>();
+}
+
+/** One user's row and rank; its result has at most one `RankingRow`. */
+export function rankingUserStatement(
+  table: "daily_entries" | "weekly_entries",
+  period: number,
+  uid: string,
+  board?: string,
+  client: Client = "web",
+): D1PreparedStatement {
   const score = table === "daily_entries" ? "score" : "xp";
   const clientScope = table === "weekly_entries" ? "AND client=?" : "";
   const scope = `period=? AND expires_at>? ${board === undefined ? "" : "AND board=?"} ${clientScope}`;
@@ -62,10 +80,10 @@ export async function rankingUser(
   if (table === "weekly_entries") scopeValues.push(client);
   // Read one profile, then count higher scores using the ranking index.
   const ahead = `SELECT count(*) FROM ${table} WHERE ${scope} AND (${score},uid)>(me.score,me.uid)`;
-  return await statement(
+  return statement(
     `WITH me AS (SELECT uid,data,${score} AS score${table === "weekly_entries" ? ",time_typed_seconds AS timeTypedSeconds" : ""} FROM ${table} WHERE ${scope} AND uid=?) SELECT me.*,(1+(${ahead})) AS rank FROM me`,
     ...scopeValues,
     uid,
     ...scopeValues,
-  ).first<RankingRow>();
+  );
 }

@@ -51,6 +51,16 @@ vi.mock("../src/db/mutation", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../src/db/mutation")>()),
   atomicUser: async (_uid: string, action: () => Promise<unknown>) =>
     await action(),
+  // No batch: callers fall back to separate reads.
+  atomicUserWithReads: async (
+    _uid: string,
+    action: () => Promise<unknown>,
+    readsFor: (result: unknown) => unknown[],
+  ) => {
+    const result = await action();
+    readsFor(result);
+    return { result, reads: undefined };
+  },
 }));
 beforeAll(async () => {
   testRuntime = await createTestRuntime();

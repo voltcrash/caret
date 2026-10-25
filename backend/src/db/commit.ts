@@ -1,4 +1,4 @@
-import type { D1PreparedStatement } from "@cloudflare/workers-types";
+import type { D1PreparedStatement, D1Result } from "@cloudflare/workers-types";
 import { binding, statement } from "./client";
 import {
   d1ErrorMessage,
@@ -7,10 +7,14 @@ import {
 } from "./retry";
 import { newId } from "../utils/id";
 
-/** Replay one prepared atomic batch, never its application callbacks. */
+/**
+ * Replay one prepared atomic batch, never its application callbacks.
+ * Resolves each query's result, or undefined when a lost acknowledgement was
+ * recovered through the receipt (the results are then unavailable).
+ */
 export async function commitBatch(
   queries: D1PreparedStatement[],
-): Promise<void> {
+): Promise<D1Result[] | undefined> {
   const receipt = newId();
   const batch = [
     statement(
@@ -20,9 +24,9 @@ export async function commitBatch(
     ),
     ...queries,
   ];
-  await retryIdempotentD1Write(async () => {
+  return await retryIdempotentD1Write(async () => {
     try {
-      await binding().batch(batch);
+      return (await binding().batch(batch)).slice(1);
     } catch (error) {
       const duplicateReceipt = d1ErrorMessage(error).includes(
         "UNIQUE constraint failed: write_receipts.id",
@@ -40,6 +44,7 @@ export async function commitBatch(
       if (committed === null) throw error;
       // Receipt and all effects commit together, or neither does. A duplicate
       // receipt aborts the entire replay before increments can execute twice.
+      return undefined;
     }
   });
 }
