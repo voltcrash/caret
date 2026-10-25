@@ -48,6 +48,8 @@ describe("D1 invocation sessions", () => {
             "SELECT points FROM rate_counters WHERE key='session'",
           ).first("points"),
         ).toBe(2);
+        // Drizzle, raw SQL and batched statements all count.
+        expect(runtime().metrics.d1Statements).toBe(4);
       });
     } finally {
       start.mockRestore();

@@ -125,6 +125,10 @@ export async function createWorkerd(
         env: {
           DB: { type: "d1" as const, name, id: name },
           ASSETS: { type: "assets" as const },
+          METRICS: {
+            type: "analytics-engine-dataset" as const,
+            name: `requests-${name}`,
+          },
           ...Object.fromEntries(
             requiredTiers().map((tier, index) => [
               bindingName(tier),

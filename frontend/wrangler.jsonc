@@ -119,6 +119,9 @@
       },
     },
   ],
+  "analytics_engine_datasets": [
+    { "binding": "METRICS", "dataset": "oxytype_local_requests" },
+  ],
   "d1_databases": [
     {
       "binding": "DB",

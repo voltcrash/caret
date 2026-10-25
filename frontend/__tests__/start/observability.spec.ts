@@ -3,6 +3,7 @@ import {
   clientBuildOf,
   requestKind,
   requestLog,
+  requestMetrics,
 } from "../../src/server/observability.server";
 
 function request(path: string, headers: Record<string, string> = {}): Request {
@@ -64,5 +65,48 @@ describe("request observability", () => {
     expect(log).toMatchObject({ kind: "api", staleClient: true });
     expect(log).not.toHaveProperty("operation");
     expect(log).not.toHaveProperty("clientBuild");
+  });
+
+  it("labels metrics by operation, or by kind for documents and batches", () => {
+    const log = requestLog({
+      request: request("/_serverFn/f00d?payload=secret"),
+      requestId: "request-2",
+      status: 200,
+      durationMs: 12,
+      release: "26.10.25",
+    });
+    const point = requestMetrics(
+      log,
+      { operations: ["leaderboards.get"], d1Statements: 3 },
+      true,
+    );
+    expect(point).toEqual({
+      indexes: ["leaderboards.get"],
+      blobs: [
+        "leaderboards.get",
+        "function",
+        "POST",
+        "200",
+        "hit",
+        "26.10.25",
+        log.build,
+      ],
+      doubles: [12, 200, 3, 1],
+    });
+    expect(JSON.stringify(point)).not.toContain("secret");
+    const document = requestLog({
+      request: request("/leaderboards"),
+      requestId: "request-3",
+      status: 200,
+      durationMs: 30,
+      release: undefined,
+    });
+    expect(
+      requestMetrics(
+        document,
+        { operations: ["leaderboards.get"], d1Statements: 2 },
+        false,
+      ).indexes,
+    ).toEqual(["document"]);
   });
 });

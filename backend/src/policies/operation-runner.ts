@@ -127,6 +127,7 @@ export async function execute<K extends OperationId>(
   options: { validateResponse: boolean },
 ): Promise<OperationOutcome<K>> {
   const operation = getOperation(id);
+  invocation.runtime.metrics.operations.push(id);
   scope.actor = await authenticate({
     headers: invocation.headers,
     options: operation.metadata.authenticationOptions,

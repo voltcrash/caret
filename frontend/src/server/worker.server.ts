@@ -6,9 +6,17 @@ import type {
 import { runtime, withRuntime, type WorkerEnv } from "@oxytype/backend/runtime";
 import { scheduled } from "@oxytype/backend/jobs";
 import { boundedRequest } from "./request-body.server";
-import { edgeCacheKey, storeEdgeCache } from "./edge-cache.server";
+import {
+  EDGE_CACHE_HIT,
+  edgeCacheKey,
+  storeEdgeCache,
+} from "./edge-cache.server";
 import { applyResponsePolicy } from "./response-policy.server";
-import { requestLog, serverBuildId } from "./observability.server";
+import {
+  requestLog,
+  requestMetrics,
+  serverBuildId,
+} from "./observability.server";
 
 async function observeScheduled(
   env: WorkerEnv,
@@ -95,18 +103,26 @@ export function createApplicationWorker(
             });
             response = new Response("Internal Server Error", { status: 500 });
           }
-          console.info(
-            JSON.stringify(
-              requestLog({
-                request,
-                requestId,
-                status: response.status,
-                durationMs: Date.now() - started,
-                release: env.VERSION,
-                staleClient: response.headers.has("X-Oxytype-Stale-Client"),
-              }),
-            ),
-          );
+          const log = requestLog({
+            request,
+            requestId,
+            status: response.status,
+            durationMs: Date.now() - started,
+            release: env.VERSION,
+            staleClient: response.headers.has("X-Oxytype-Stale-Client"),
+          });
+          console.info(JSON.stringify(log));
+          try {
+            env.METRICS?.writeDataPoint(
+              requestMetrics(
+                log,
+                runtime().metrics,
+                response.headers.has(EDGE_CACHE_HIT),
+              ),
+            );
+          } catch (error) {
+            console.error("Request metrics failed", error);
+          }
           return applyResponsePolicy(
             response,
             nonce,

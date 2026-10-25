@@ -1,6 +1,7 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 import { drizzle } from "drizzle-orm/d1";
 import type {
+  AnalyticsEngineDataset,
   D1Database,
   D1DatabaseSession,
   ExecutionContext,
@@ -13,6 +14,8 @@ export type WorkerEnv = {
   DB: D1Database;
   ASSETS?: Fetcher;
   CACHE?: KVNamespace;
+  /** Per-request latency and D1 usage; see docs/CLOUDFLARE_OPERATIONS.md. */
+  METRICS?: AnalyticsEngineDataset;
   MODE?: string;
   FRONTEND_URL?: string;
   SERVE_FRONTEND?: string;
@@ -46,7 +49,29 @@ export type Runtime = {
   session: D1DatabaseSession;
   primaryDb: ReturnType<typeof drizzle>;
   execution?: Pick<ExecutionContext, "waitUntil">;
+  metrics: InvocationMetrics;
 };
+
+export type InvocationMetrics = {
+  /** Operations this invocation ran, in order. */
+  operations: string[];
+  /** Prepared D1 statements, including those sent in a batch. */
+  d1Statements: number;
+};
+
+/** Counts statements without changing how bindings or sessions behave. */
+function counted<T extends object>(target: T, metrics: InvocationMetrics): T {
+  return new Proxy(target, {
+    get(object, property) {
+      const value: unknown = Reflect.get(object, property, object);
+      if (typeof value !== "function") return value;
+      return (...args: unknown[]): unknown => {
+        if (property === "prepare") metrics.d1Statements++;
+        return Reflect.apply(value, object, args) as unknown;
+      };
+    },
+  });
+}
 
 const storage = new AsyncLocalStorage<Runtime>();
 
@@ -58,14 +83,16 @@ export function withRuntime<T>(
 ): T {
   // Start fresh on every invocation; subsequent reads may use replicas without
   // going backwards or missing this invocation's writes. Never share sessions.
-  const session = env.DB.withSession("first-primary");
+  const metrics: InvocationMetrics = { operations: [], d1Statements: 0 };
+  const session = counted(env.DB.withSession("first-primary"), metrics);
   return storage.run(
     {
       env,
       session,
       db: drizzle(session),
-      primaryDb: drizzle(env.DB),
+      primaryDb: drizzle(counted(env.DB, metrics)),
       execution,
+      metrics,
     },
     fn,
   );
