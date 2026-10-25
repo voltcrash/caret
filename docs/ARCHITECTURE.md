@@ -75,16 +75,27 @@ external HTTP API. Drizzle describes D1 tables; Better Auth uses database-backed
 sessions for Google/GitHub accounts. Private operations require a session cookie
 or Bearer session token. External API keys are unsupported.
 
-D1 owns data, exact rate windows, result progression and rankings. User JSON
-writes use optimistic version guards inside atomic batches. Cron refreshes
-rankings and purges expired records. Structured logs carry the
-build ID and feed Workers observability.
+D1 owns data, result progression and rankings. User JSON writes use
+optimistic version guards inside atomic batches. Cron refreshes rankings and
+purges expired records. Structured logs carry the build ID and feed Workers
+observability; server errors never write to D1. Each request also writes one
+Analytics Engine data point (`METRICS`).
+
+Hot paths avoid D1 where staleness is bounded:
+
+- Rate limits: Workers rate limiting bindings, per location and approximate
+  (`policies/rate-counter.ts`). Bad-authentication points: Cache API.
+- Configuration: cached per isolate for 30s (`init/configuration.ts`).
+- Cookie sessions: Better Auth's signed cookie cache, at most 60s old.
+  Admin, fresh-token, auth-handler, UI-session and Bearer lookups read D1.
+- Public reads: operations in `policies/edge-cache.ts` are stored in the
+  location's Cache API for 30–300s. SSR documents stay `no-store`.
 
 Each invocation owns one D1 session (`first-primary`), shared by Drizzle,
 raw statements and batches. Its first query reads current primary state;
 subsequent reads can use sequentially consistent replicas. Auth reads and
-optimistic mutation snapshots use the primary directly to preserve immediate
-revocation and fresh conflict retries. Deployment enables and verifies global
+optimistic mutation snapshots use the primary directly to preserve
+revocation (subject to the cookie cache above) and fresh conflict retries. Deployment enables and verifies global
 read replication for its configured database; see [operations](CLOUDFLARE_OPERATIONS.md#read-replication).
 
 ```mermaid

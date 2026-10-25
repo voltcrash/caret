@@ -105,6 +105,66 @@ growth. Inspect Workers logs for failed maintenance invocations.
 Quote approval calls the external bridge directly. Failed submissions remain
 available for an explicit retry with the same approval idempotency key.
 
+## Rate limiting
+
+API, session-read and auth routes use Workers rate limiting bindings, not D1.
+Bindings allow only 10s or 60s periods with a fixed limit, so each distinct
+budget is one `RATE_LIMIT_<period>S_<limit>` binding. Contract windows over a
+minute become a per-minute budget of 4x their average rate, capped at the
+window's max (root: 1,000/hour becomes 67/minute). Day limits become
+1/minute. Counts are per Cloudflare location and eventually consistent.
+Development (`MODE=dev`) skips the bindings. Responses send
+`X-RateLimit-Limit` and, when limited, `Retry-After`; there is no
+Remaining/Reset.
+
+`frontend/__tests__/scripts/wrangler-bindings.spec.ts` fails when a contract
+change needs a binding a Wrangler config lacks. Namespace IDs are
+account-wide: production 1xxx, staging 2xxx, local 3xxx. Never reuse them.
+
+Bad-authentication points (when enabled in configuration) live in the
+location's Cache API for an hour. The Cache API is a no-op on `workers.dev`
+hostnames, so staging does not enforce this policy or the public-read cache.
+
+The `rate_counters` and `auth_rate_limits` tables receive no new rows. Hourly
+cleanup drains them; drop them in a later migration once no deployed version
+writes them.
+
+## Caching and staleness
+
+| Data | Where | Maximum staleness |
+| --- | --- | --- |
+| Configuration | Isolate memory | 30s (patching isolate: immediate) |
+| Cookie session | Signed cookie | 60s after revoke/disable |
+| Public reads (`policies/edge-cache.ts`) | Location Cache API | 30–300s |
+
+`Cache-Control: no-cache` requests bypass the public-read cache. Fresh-token
+and admin operations, Bearer tokens, the auth handler and the UI session
+always read the session row. Cached hits skip rate limits.
+
+## Request metrics
+
+Every request writes one data point to the `METRICS` Analytics Engine dataset
+(`oxytype_requests` production, `oxytype_staging_requests` staging).
+Columns are append-only:
+
+| Column | Value |
+| --- | --- |
+| `index1`, `blob1` | Operation ID, or route kind for documents/multi-op calls |
+| `blob2`–`blob5` | Kind, method, status, edge cache `hit`/`miss` |
+| `blob6`, `blob7` | Release, build |
+| `double1`–`double4` | Duration ms, status, D1 statements, operations |
+
+p95 latency per operation over the last hour (SQL API):
+
+```sql
+SELECT blob1 AS operation,
+  quantileExactWeighted(0.95)(double1, _sample_interval) AS p95_ms,
+  sum(_sample_interval * double3) / sum(_sample_interval) AS d1_per_request
+FROM oxytype_requests
+WHERE timestamp > NOW() - INTERVAL '1' HOUR
+GROUP BY operation ORDER BY p95_ms DESC
+```
+
 ## Database capacity and recovery
 
 ### Read replication
@@ -155,7 +215,7 @@ Reference: [Cloudflare global read replication](https://developers.cloudflare.co
 ### Capacity and migrations
 
 Measure DB+indexes against the account tier and projected growth; benchmark
-result saves, exact rate counters and ranking reads/rebuilds. Large
+result saves and ranking reads/rebuilds. Large
 history may need external SQL, partitioning or R2 archival.
 
 Back up the database and pause writes before schema changes. A code
@@ -173,3 +233,6 @@ sessions, typing results and unrelated legacy tables are retained.
 After this migration, rolling back to code that queries the removed table also
 requires a compatible database restore. A Worker-only rollback cannot restore
 deleted credentials. No API-key audit or restoration command remains.
+
+Migration `0016_daily_summary_index.sql` adds a covering expression index for
+the daily leaderboard summary. It is additive; older Workers ignore it.
