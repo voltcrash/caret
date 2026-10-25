@@ -221,3 +221,18 @@ fn history_lists_saved_results_in_a_table_with_pb_crown() {
     assert!(find(&buffer, "♛").is_some());
     assert!(find(&buffer, "Oct 2026").is_some());
 }
+
+#[test]
+fn help_groups_keybinds_as_key_chips() {
+    let fixture = fixture(Config::default());
+    let buffer = render(&fixture, Screen::Help, 100, 30);
+    if std::env::var("OXYTYPE_UI_DUMP").is_ok() {
+        println!("{}", text(&buffer));
+    }
+    let palette = oxytype_tui::theme::Palette::named("rust");
+    let (x, y) = find(&buffer, " F6 ").unwrap();
+    assert_eq!(buffer[(x + 1, y)].bg, palette.sub_alt);
+    assert!(find(&buffer, "- repeat test").is_some());
+    assert!(find(&buffer, "▸ terminal").is_some());
+    assert!(find(&buffer, "protocol basic").is_some());
+}
