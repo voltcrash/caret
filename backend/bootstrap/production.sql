@@ -18,6 +18,7 @@ SELECT 'main', CASE WHEN
   OR EXISTS (SELECT 1 FROM leaderboard_snapshots)
   OR EXISTS (SELECT 1 FROM audit_logs)
   OR EXISTS (SELECT 1 FROM mutation_guards)
+  OR EXISTS (SELECT 1 FROM write_receipts)
   OR EXISTS (SELECT 1 FROM presets)
   OR EXISTS (SELECT 1 FROM psas)
   OR EXISTS (SELECT 1 FROM public_stats)
