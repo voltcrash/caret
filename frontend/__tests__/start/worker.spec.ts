@@ -41,13 +41,11 @@ describe("built Start application in workerd", () => {
       (await worker.fetch(url, { headers: { "x-tsr-serverFn": "true" } }))
         .status,
     ).toBe(403);
-    const db = await mf.getD1Database("DB", "a");
-    await db
-      .prepare(
-        "UPDATE rate_counters SET points=60 WHERE key='rate:publicStatsGet:192.0.2.1'",
-      )
-      .run();
-    const limited = await worker.fetch(url, { headers });
+    // publicStatsGet allows 60 per minute.
+    let limited = response;
+    for (let sent = 1; limited.status === 200 && sent <= 61; sent++) {
+      limited = await worker.fetch(url, { headers });
+    }
     expect(limited.status).toBe(429);
     expect(limited.headers.get("Retry-After")).not.toBeNull();
   });

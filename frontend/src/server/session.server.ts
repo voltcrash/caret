@@ -5,6 +5,7 @@ import {
   checkBadAuthentication,
   enforceLimit,
 } from "@oxytype/backend/policies/rate-limit";
+import { ROOT_LIMIT, SESSION_LIMIT } from "@oxytype/backend/rate-counter";
 import { GUEST } from "@oxytype/backend/services/context";
 import {
   setResponseHeader,
@@ -28,16 +29,10 @@ export async function readSessionState(
       client: { ip: request.clientIp },
     };
     await checkBadAuthentication(context);
-    await enforceLimit(
-      "root",
-      { window: "hour", max: 1000 },
-      context,
-      setResponseHeader,
-      false,
-    );
+    await enforceLimit("root", ROOT_LIMIT, context, setResponseHeader, false);
     await enforceLimit(
       "auth.session",
-      { window: "minute", max: 60 },
+      SESSION_LIMIT,
       context,
       setResponseHeader,
       false,

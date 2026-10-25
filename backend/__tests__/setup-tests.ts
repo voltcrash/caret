@@ -54,10 +54,11 @@ vi.mock("../src/db/mutation", async (importOriginal) => ({
 }));
 beforeAll(async () => {
   testRuntime = await createTestRuntime();
+  // Workers Cache API (bad-authentication points) from the same Miniflare.
+  globalThis.caches = testRuntime.caches;
 });
-afterEach(async () => {
+afterEach(() => {
   vi.useRealTimers();
-  await testRuntime.env.DB.prepare("DELETE FROM rate_counters").run();
 });
 
 afterAll(async () => {

@@ -1,11 +1,20 @@
 import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
 import { toJSONAsync } from "seroval";
-import { createWorkerd, seedSession } from "./workerd";
+import { createWorkerd, relaxRateLimits, seedSession } from "./workerd";
 
 describe("pilot shared services in workerd", () => {
   let mf: Awaited<ReturnType<typeof createWorkerd>>;
   beforeAll(async () => {
-    mf = await createWorkerd(true);
+    // Admin probes (adminLimit) and fresh-session probes (userRevokeAllTokens) repeat.
+    mf = await createWorkerd(
+      true,
+      undefined,
+      false,
+      {},
+      {
+        onOptions: relaxRateLimits("RATE_LIMIT_10S_2", "RATE_LIMIT_60S_1"),
+      },
+    );
   });
   afterAll(async () => await mf?.dispose());
   it("requires a server-verified actor on a direct private RPC", async () => {
@@ -67,7 +76,6 @@ describe("pilot shared services in workerd", () => {
     const call = async (
       kind: string,
     ): Promise<Awaited<ReturnType<typeof worker.fetch>>> => {
-      await db.prepare("DELETE FROM rate_counters").run();
       return await worker.fetch(`http://localhost:3000/__test/${kind}`, {
         method: "POST",
         headers,
@@ -168,47 +176,40 @@ describe("pilot shared services in workerd", () => {
       .bind(session.token)
       .run();
     expect((await worker.fetch(url, { headers })).status).toBe(401);
-    expect(
-      await db
-        .prepare(
-          "SELECT key FROM rate_counters WHERE key='rate:root:192.0.2.83'",
-        )
-        .first(),
-    ).not.toBeNull();
-    expect(
-      await db
-        .prepare("SELECT key FROM rate_counters WHERE key LIKE '%1.2.3.4%'")
-        .first(),
-    ).toBeNull();
-    await db
-      .prepare(
-        "INSERT OR REPLACE INTO rate_counters(key,points,expires_at) VALUES('rate:root:192.0.2.83',1000,?)",
-      )
-      .bind(Date.now() + 60_000)
-      .run();
-    const limited = await worker.fetch(url, { headers });
+    // Root allows 67 per minute per trusted IP; the spoofed hop has no budget of its own.
+    let limited = await worker.fetch(url, { headers });
+    for (let sent = 2; limited.status !== 429 && sent <= 68; sent++) {
+      limited = await worker.fetch(url, {
+        headers: { ...headers, "x-forwarded-for": `1.2.3.${sent}` },
+      });
+    }
     expect(limited.status).toBe(429);
-    expect(limited.headers.get("Retry-After")).not.toBeNull();
-    await db.prepare("DELETE FROM rate_counters").run();
+    expect(limited.headers.get("Retry-After")).toBe("60");
+    const fresh = { ...headers, "cf-connecting-ip": "192.0.2.84" };
     await db
       .prepare(
-        "UPDATE configuration SET data=json_set(data,'$.rateLimiting.badAuthentication.enabled',json('true')) WHERE id='main'",
+        "UPDATE configuration SET data=json_set(data,'$.rateLimiting.badAuthentication.enabled',json('true'),'$.rateLimiting.badAuthentication.penalty',30,'$.rateLimiting.badAuthentication.flaggedStatusCodes',json('[401]')) WHERE id='main'",
       )
       .run();
+    expect((await worker.fetch(url, { headers: fresh })).status).toBe(401);
+    expect((await worker.fetch(url, { headers: fresh })).status).toBe(429);
     await db
       .prepare(
-        "INSERT INTO rate_counters(key,points,expires_at) VALUES('bad-auth:192.0.2.83',30,?)",
+        "UPDATE configuration SET data=json_set(data,'$.rateLimiting.badAuthentication.enabled',json('false')) WHERE id='main'",
       )
-      .bind(Date.now() + 60_000)
       .run();
-    expect((await worker.fetch(url, { headers })).status).toBe(429);
-    await db.prepare("DELETE FROM rate_counters").run();
     await db
       .prepare(
         "UPDATE configuration SET data=json_set(data,'$.maintenance',json('true')) WHERE id='main'",
       )
       .run();
-    expect((await worker.fetch(url, { headers })).status).toBe(503);
+    expect(
+      (
+        await worker.fetch(url, {
+          headers: { ...headers, "cf-connecting-ip": "192.0.2.85" },
+        })
+      ).status,
+    ).toBe(503);
     await db
       .prepare(
         "UPDATE configuration SET data=json_set(data,'$.maintenance',json('false')) WHERE id='main'",

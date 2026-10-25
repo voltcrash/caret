@@ -6,6 +6,7 @@ import type {
   ExecutionContext,
   Fetcher,
   KVNamespace,
+  RateLimit,
 } from "@cloudflare/workers-types";
 
 export type WorkerEnv = {
@@ -32,6 +33,8 @@ export type WorkerEnv = {
   VERSION?: string;
   /** Isolate configuration cache lifetime; tests set 0. */
   CONFIGURATION_CACHE_TTL_MS?: string;
+  /** Workers rate limiting bindings; see `policies/rate-counter`. */
+  [rateLimit: `RATE_LIMIT_${string}`]: RateLimit | undefined;
 };
 
 export type Runtime = {

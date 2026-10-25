@@ -20,6 +20,105 @@
     "BETTER_AUTH_URL": "http://localhost:3000/api/auth",
     "VERSION": "start-migration",
   },
+  // Namespace IDs are account-wide: production 1xxx, staging 2xxx, local 3xxx.
+  "ratelimits": [
+    {
+      "name": "RATE_LIMIT_10S_2",
+      "namespace_id": "3001",
+      "simple": {
+        "limit": 2,
+        "period": 10,
+      },
+    },
+    {
+      "name": "RATE_LIMIT_10S_3",
+      "namespace_id": "3002",
+      "simple": {
+        "limit": 3,
+        "period": 10,
+      },
+    },
+    {
+      "name": "RATE_LIMIT_10S_100",
+      "namespace_id": "3003",
+      "simple": {
+        "limit": 100,
+        "period": 10,
+      },
+    },
+    {
+      "name": "RATE_LIMIT_60S_1",
+      "namespace_id": "3004",
+      "simple": {
+        "limit": 1,
+        "period": 60,
+      },
+    },
+    {
+      "name": "RATE_LIMIT_60S_2",
+      "namespace_id": "3005",
+      "simple": {
+        "limit": 2,
+        "period": 60,
+      },
+    },
+    {
+      "name": "RATE_LIMIT_60S_4",
+      "namespace_id": "3006",
+      "simple": {
+        "limit": 4,
+        "period": 60,
+      },
+    },
+    {
+      "name": "RATE_LIMIT_60S_7",
+      "namespace_id": "3007",
+      "simple": {
+        "limit": 7,
+        "period": 60,
+      },
+    },
+    {
+      "name": "RATE_LIMIT_60S_8",
+      "namespace_id": "3008",
+      "simple": {
+        "limit": 8,
+        "period": 60,
+      },
+    },
+    {
+      "name": "RATE_LIMIT_60S_20",
+      "namespace_id": "3009",
+      "simple": {
+        "limit": 20,
+        "period": 60,
+      },
+    },
+    {
+      "name": "RATE_LIMIT_60S_34",
+      "namespace_id": "3010",
+      "simple": {
+        "limit": 34,
+        "period": 60,
+      },
+    },
+    {
+      "name": "RATE_LIMIT_60S_60",
+      "namespace_id": "3011",
+      "simple": {
+        "limit": 60,
+        "period": 60,
+      },
+    },
+    {
+      "name": "RATE_LIMIT_60S_67",
+      "namespace_id": "3012",
+      "simple": {
+        "limit": 67,
+        "period": 60,
+      },
+    },
+  ],
   "d1_databases": [
     {
       "binding": "DB",

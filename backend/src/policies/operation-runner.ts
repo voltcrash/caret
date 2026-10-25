@@ -14,6 +14,7 @@ import { authenticate } from "./authentication";
 import { verifyConfiguration } from "./configuration";
 import { getOperation, type OperationId } from "./operations";
 import { verifyPermissions } from "./permission";
+import { ROOT_LIMIT } from "./rate-counter";
 import {
   checkBadAuthentication,
   enforceLimit,
@@ -75,13 +76,7 @@ export async function admit(invocation: Invocation): Promise<PolicyScope> {
     },
   };
   await checkBadAuthentication(scope);
-  await enforceLimit(
-    "root",
-    { window: "hour", max: 1000 },
-    scope,
-    invocation.setHeader,
-    false,
-  );
+  await enforceLimit("root", ROOT_LIMIT, scope, invocation.setHeader, false);
   const slowdown = scope.configuration.dev.responseSlowdownMs;
   if (invocation.runtime.env.MODE === "dev" && slowdown > 0) {
     await new Promise((resolve) => setTimeout(resolve, slowdown));
