@@ -90,10 +90,18 @@ fn run() -> Result<()> {
     let mut notice = String::new();
     let mut last_draw = Instant::now();
     let mut dirty = true;
+    let mut caret_theme = String::new();
     loop {
         if guard.resume_if_requested(&mut terminal)? {
             capabilities.enhanced_keyboard_negotiated = guard.enhanced.load(Ordering::SeqCst);
             dirty = true;
+            caret_theme.clear();
+        }
+        if caret_theme != local.preferences.theme {
+            caret_theme.clone_from(&local.preferences.theme);
+            oxytype_tui::terminal::caret_color(
+                oxytype_tui::theme::Palette::named(&caret_theme).caret,
+            )?;
         }
         let now = origin.elapsed().as_secs_f64() * 1000.0;
         if host.state().active {
