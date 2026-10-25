@@ -47,7 +47,7 @@ Generated events discriminate input/key/timer/composition payloads. Result/chart
 
 `BrowserReplay` owns playback cursor/prompt; step returns word deltas/sound/next time, seek returns a snapshot. Hosts schedule and render. Historical UTF-16 indexing quirks stay versioned and unchanged.
 
-See `docs/rust-engine/contract.md`, `features.md`, `progress.md` and performance artifacts for exact compatibility decisions, bounds and remaining gates. Wasm linear memory retains its high-water allocation after disposal/reset; the frozen 2,000-unit reset budget and longer growth/ownership soaks are reported separately.
+See `docs/rust-engine/contract.md`, `features.md` and `performance-budgets.md` for exact compatibility decisions, bounds and remaining gates. Wasm linear memory retains its high-water allocation after disposal/reset; the frozen 2,000-unit reset budget and longer growth/ownership soaks are reported separately.
 
 ## Result audit
 

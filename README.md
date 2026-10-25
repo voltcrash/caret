@@ -25,8 +25,8 @@ browser; Cloudflare continues serving SSR, auth and APIs. Install the toolchain
 pinned in `rust-toolchain.toml` with its Wasm target. Build bootstrap generates the
 bindings automatically; `vp run engine:parity` checks native and built-browser
 behavior against immutable original references. `vp run engine:lint` and
-`vp run engine:fmt` check Rust. Reference provenance and measured budgets are in
-[migration progress](./docs/rust-engine/progress.md).
+`vp run engine:fmt` check Rust. Measured budgets are in
+[performance budgets](./docs/rust-engine/performance-budgets.md).
 
 ## Offline terminal
 
