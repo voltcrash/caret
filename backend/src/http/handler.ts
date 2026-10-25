@@ -14,6 +14,7 @@ import {
   type PolicyScope,
 } from "../policies/operation-runner";
 import type { OperationId } from "../policies/operations";
+import { edgeCacheControl } from "../policies/edge-cache";
 import MonkeyError from "../utils/error";
 import { createETagGenerator } from "../utils/etag";
 import { getFrontendUrl } from "../utils/misc";
@@ -149,6 +150,12 @@ async function handle(
     setHeader: (name, value) => {
       headers.set(name, value);
     },
+    appendCookie: (cookie) => {
+      headers.append("Set-Cookie", cookie);
+    },
+    cacheFor: (seconds) => {
+      headers.set("Cache-Control", edgeCacheControl(seconds));
+    },
   };
   let scope: PolicyScope | undefined;
   let response: Response;
@@ -185,7 +192,10 @@ async function handle(
     );
   }
   for (const [name, value] of headers) {
-    response.headers.set(name, value);
+    if (name !== "set-cookie") response.headers.set(name, value);
+  }
+  for (const cookie of headers.getSetCookie()) {
+    response.headers.append("Set-Cookie", cookie);
   }
   return await conditional(request, response);
 }

@@ -6,7 +6,12 @@ import type { CompletedEvent } from "@oxytype/schemas/results";
 import { AddResultResponseSchema } from "@oxytype/contracts/results";
 import { GetUserResponseSchema } from "@oxytype/contracts/users";
 import { scoreEvent } from "../../../backend/__tests__/d1/result-support";
-import { createWorkerd, enableConfiguration, seedSession } from "./workerd";
+import {
+  createWorkerd,
+  enableConfiguration,
+  exhaustRootLimit,
+  seedSession,
+} from "./workerd";
 import { rpcPath } from "./rpc";
 
 const outcome = z.discriminatedUnion("ok", [
@@ -267,13 +272,7 @@ describe("result server function in the built Worker with real D1", () => {
     expect((await call(session.token, result)).status).toBe(503);
     await enableConfiguration(mf, "a", "$.results.savingEnabled", true);
     expect((await call(session.token, "x".repeat(102_401))).status).toBe(413);
-    const db = await mf.getD1Database("DB", "a");
-    await db
-      .prepare(
-        "INSERT OR REPLACE INTO rate_counters(key,points,expires_at) VALUES('rate:root:192.0.2.196',1000,?)",
-      )
-      .bind(Date.now() + 60_000)
-      .run();
+    await exhaustRootLimit(mf, "a", "192.0.2.196");
     const limited = await call(session.token, result, {
       "cf-connecting-ip": "192.0.2.196",
     });

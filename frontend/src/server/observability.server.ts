@@ -1,4 +1,6 @@
 import "@tanstack/solid-start/server-only";
+import type { AnalyticsEngineDataPoint } from "@cloudflare/workers-types";
+import type { InvocationMetrics } from "@oxytype/backend/runtime";
 
 /** Build of this Worker; the browser reports the same ID to Sentry. */
 export const serverBuildId = import.meta.env.OXYTYPE_BUILD_ID;
@@ -81,6 +83,42 @@ export function requestLog(options: {
           ...(placement === undefined ? {} : { placement }),
         }
       : {}),
+  };
+}
+
+/**
+ * One Analytics Engine row per request, for per-operation p50/p95 latency and
+ * D1 statement counts. Column order is a query contract; append only.
+ * blobs: label, kind, method, status, cache, release, build
+ * doubles: durationMs, status, d1Statements, operations
+ */
+export function requestMetrics(
+  log: RequestLog,
+  metrics: InvocationMetrics,
+  cacheHit: boolean,
+): AnalyticsEngineDataPoint {
+  // A document may run several operations; label it by route kind instead.
+  const label =
+    log.kind === "document" || metrics.operations.length !== 1
+      ? log.kind
+      : (metrics.operations[0] ?? log.kind);
+  return {
+    indexes: [label],
+    blobs: [
+      label,
+      log.kind,
+      log.method,
+      String(log.status),
+      cacheHit ? "hit" : "miss",
+      log.release ?? "",
+      log.build,
+    ],
+    doubles: [
+      log.durationMs,
+      log.status,
+      metrics.d1Statements,
+      metrics.operations.length,
+    ],
   };
 }
 

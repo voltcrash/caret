@@ -1,19 +1,69 @@
-import { statement } from "../db/client";
-export type CounterResult = { points: number; expiresAt: number };
+import {
+  limits,
+  type RateLimitOptions,
+} from "@oxytype/contracts/rate-limit/index";
+import { runtime } from "../runtime/env";
+
+/**
+ * Workers rate limiting: per-location, eventually consistent, no D1 writes.
+ * Bindings support only 10s/60s periods and a fixed limit, so each distinct
+ * budget is one binding; limits sharing a budget are separated by key.
+ */
+export type RateTier = { period: 10 | 60; limit: number };
+
+/** Windows above a minute become a per-minute budget of this many times their average rate. */
+export const BURST = 4;
+
+const WINDOWS = { second: 1000, minute: 60000, hour: 3600000, day: 86400000 };
+
+export function windowMs(options: RateLimitOptions): number {
+  return typeof options.window === "number"
+    ? options.window
+    : WINDOWS[options.window];
+}
+
+export function tierFor(options: RateLimitOptions): RateTier {
+  const window = windowMs(options);
+  const period = window <= 10_000 ? 10 : 60;
+  const scaled =
+    window <= period * 1000
+      ? (options.max * period * 1000) / window
+      : Math.min(options.max, (options.max * BURST * period * 1000) / window);
+  return { period, limit: Math.max(1, Math.ceil(scaled)) };
+}
+
+export function bindingName(tier: RateTier): `RATE_LIMIT_${string}` {
+  return `RATE_LIMIT_${tier.period}S_${tier.limit}`;
+}
+
+/** Limits enforced outside the operation contracts. */
+export const ROOT_LIMIT: RateLimitOptions = { window: "hour", max: 1000 };
+export const SESSION_LIMIT: RateLimitOptions = { window: "minute", max: 60 };
+/** Better Auth's former defaults: all auth routes, then credential routes. */
+export const AUTH_LIMIT: RateLimitOptions = { window: 10_000, max: 100 };
+export const AUTH_SIGN_IN_LIMIT: RateLimitOptions = { window: 10_000, max: 3 };
+
+/** Every binding a deployment must declare; checked against Wrangler configs. */
+export function requiredTiers(): RateTier[] {
+  const all = [
+    ROOT_LIMIT,
+    SESSION_LIMIT,
+    AUTH_LIMIT,
+    AUTH_SIGN_IN_LIMIT,
+    ...Object.values(limits),
+  ].map(tierFor);
+  return [...new Map(all.map((tier) => [bindingName(tier), tier])).values()];
+}
+
+/** Count one request; resolves false once the key is over its budget. */
 export async function consume(
   key: string,
-  duration: number,
-  points = 1,
-): Promise<CounterResult> {
-  const now = Date.now();
-  const result = await statement(
-    "INSERT INTO rate_counters(key,points,expires_at) VALUES(?,?,?) ON CONFLICT(key) DO UPDATE SET points=CASE WHEN expires_at<=? THEN excluded.points ELSE points+excluded.points END,expires_at=CASE WHEN expires_at<=? THEN excluded.expires_at ELSE expires_at END RETURNING points,expires_at AS expiresAt",
-    key,
-    points,
-    now + duration,
-    now,
-    now,
-  ).first<CounterResult>();
-  if (result === null) throw new Error("Rate counter missing");
-  return result;
+  options: RateLimitOptions,
+): Promise<boolean> {
+  const name = bindingName(tierFor(options));
+  const limiter = runtime().env[name];
+  if (limiter === undefined) {
+    throw new Error(`Rate limit binding ${name} is not configured`);
+  }
+  return (await limiter.limit({ key })).success;
 }

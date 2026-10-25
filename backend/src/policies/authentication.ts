@@ -1,7 +1,7 @@
 import { getSessionCookie } from "better-auth/cookies";
 import type { RequestAuthenticationOptions } from "@oxytype/contracts/util/api";
 import MonkeyError from "../utils/error";
-import { verifySession } from "../utils/auth";
+import { verifySession, type SessionLookup } from "../utils/auth";
 import { isDevEnvironment } from "../utils/misc";
 import { GUEST, type Actor } from "../services/context";
 
@@ -31,12 +31,19 @@ export async function authenticate(input: {
   headers: Headers;
   options?: RequestAuthenticationOptions;
   endpoint: string;
+  /** Bypass the session cookie cache (admin operations). */
+  fresh?: boolean;
+  setCookie?: (cookie: string) => void;
 }): Promise<Actor> {
   const options = { ...DEFAULT_OPTIONS, ...input.options };
+  const lookup: SessionLookup = {
+    fresh: input.fresh === true || options.requireFreshToken === true,
+    setCookie: input.setCookie,
+  };
   const authHeader = input.headers.get("authorization");
 
   if (authHeader !== null && authHeader !== "") {
-    return await authenticateWithAuthHeader(authHeader, options);
+    return await authenticateWithAuthHeader(authHeader, options, lookup);
   }
   const cookie = input.headers.get("cookie") ?? "";
   if (
@@ -48,6 +55,7 @@ export async function authenticate(input: {
       new Headers({ cookie }),
       options,
       "Session",
+      lookup,
     );
   }
   if (isPublicOperation(options)) return { ...GUEST };
@@ -61,6 +69,7 @@ export async function authenticate(input: {
 async function authenticateWithAuthHeader(
   authHeader: string,
   options: RequestAuthenticationOptions,
+  lookup: SessionLookup,
 ): Promise<Actor> {
   const [authScheme, token] = authHeader.split(" ");
 
@@ -78,6 +87,7 @@ async function authenticateWithAuthHeader(
         new Headers({ authorization: `Bearer ${token}` }),
         options,
         "Bearer",
+        lookup,
       );
     case "Uid":
       return authenticateWithUid(token);
@@ -94,8 +104,9 @@ async function authenticateWithSession(
   headers: Headers,
   options: RequestAuthenticationOptions,
   type: "Bearer" | "Session",
+  lookup: SessionLookup,
 ): Promise<Actor> {
-  const session = await verifySession(headers);
+  const session = await verifySession(headers, lookup);
   if (
     options.requireFreshToken === true &&
     Date.now() - session.createdAt.getTime() > FRESH_SESSION_MS

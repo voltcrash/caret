@@ -8,9 +8,46 @@ import { readdirSync, readFileSync } from "node:fs";
 import { resolve, relative } from "node:path";
 import { withRuntime, type WorkerEnv } from "@oxytype/backend/runtime";
 import { getAuth } from "@oxytype/backend/auth/session";
+import { bindingName, requiredTiers } from "@oxytype/backend/rate-counter";
 
 const root = resolve(import.meta.dirname, "../../..");
 const testSecret = "stage-one-local-only-secret-at-least-32-characters";
+
+/** Lift named Workers rate limiting budgets for tests that repeat one operation. */
+export function relaxRateLimits(
+  ...names: string[]
+): (options: MiniflareOptions) => void {
+  return (options) => {
+    for (const worker of "workers" in options ? options.workers : []) {
+      const env = (worker as { config: { env: object } }).config.env as Record<
+        string,
+        { simple?: { limit: number } }
+      >;
+      for (const name of names) {
+        const simple = env[name]?.simple;
+        if (simple !== undefined) simple.limit = 1000;
+      }
+    }
+  };
+}
+
+/** Spend a client's root budget (67 per minute) on health checks. */
+export async function exhaustRootLimit(
+  mf: Miniflare,
+  worker: string,
+  ip: string,
+): Promise<void> {
+  const target = await mf.getWorker(worker);
+  // Headroom: the fixed one-minute window may roll over mid-loop.
+  for (let sent = 0; sent < 2 * 67 + 1; sent++) {
+    const response = await target.fetch("http://localhost:3000/api/", {
+      headers: { "cf-connecting-ip": ip },
+    });
+    await response.arrayBuffer();
+    if (response.status === 429) return;
+  }
+  throw new Error("Root limit never applied");
+}
 
 export async function createWorkerd(
   testEntry = false,
@@ -69,7 +106,7 @@ export async function createWorkerd(
   const started = performance.now();
   const options: MiniflareOptions = {
     ...(port === undefined ? {} : { port, host: "127.0.0.1" }),
-    workers: ["a", "b"].map((name) => ({
+    workers: ["a", "b"].map((name, worker) => ({
       config: {
         name,
         compatibilityDate: "2026-10-02",
@@ -89,6 +126,20 @@ export async function createWorkerd(
         env: {
           DB: { type: "d1" as const, name, id: name },
           ASSETS: { type: "assets" as const },
+          METRICS: {
+            type: "analytics-engine-dataset" as const,
+            name: `requests-${name}`,
+          },
+          ...Object.fromEntries(
+            requiredTiers().map((tier, index) => [
+              bindingName(tier),
+              {
+                type: "rate-limit" as const,
+                namespace: String((worker + 1) * 1000 + index + 1),
+                simple: { ...tier },
+              },
+            ]),
+          ),
           ...(captcha
             ? {
                 TURNSTILE_SECRET_KEY: {
@@ -108,6 +159,8 @@ export async function createWorkerd(
             value: `${origin}/api/auth`,
           },
           BETTER_AUTH_SECRET: { type: "text" as const, value: testSecret },
+          // Tests change configuration with SQL and expect the next request to see it.
+          CONFIGURATION_CACHE_TTL_MS: { type: "text" as const, value: "0" },
           ...Object.fromEntries(
             Object.entries(overrides).flatMap(([key, value]) =>
               value === undefined

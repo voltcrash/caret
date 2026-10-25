@@ -78,6 +78,9 @@ export async function validateArtifact(
     "routes",
     "d1_databases",
     "triggers",
+    // Missing bindings would fail open (no rate limits) or drop metrics.
+    "ratelimits",
+    "analytics_engine_datasets",
     "compatibility_date",
     "compatibility_flags",
     "secrets",

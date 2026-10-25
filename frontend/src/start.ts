@@ -8,6 +8,7 @@ import { ZodError } from "zod";
 import { setResponseStatus } from "@tanstack/solid-start/server";
 import { createServiceContext } from "./server/context.server";
 import { staleFunctionResponse } from "./server/stale-functions.server";
+import { matchEdgeCache } from "./server/edge-cache.server";
 import { serverFunctionFetch } from "./features/update/fetch.client";
 
 const services = createMiddleware().server(
@@ -30,6 +31,11 @@ const staleFunctions = createMiddleware().server(
       return response;
     }
   },
+);
+
+const edgeCache = createMiddleware().server(
+  async ({ request, next }) =>
+    (await matchEdgeCache(request)) ?? (await next()),
 );
 
 const functionErrors = createMiddleware({ type: "function" }).server(
@@ -58,6 +64,7 @@ export const startInstance = createStart(() => ({
     createCsrfMiddleware({
       filter: ({ handlerType }) => handlerType === "serverFn",
     }),
+    edgeCache,
     staleFunctions,
   ],
   serverFns: {

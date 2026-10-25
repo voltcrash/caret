@@ -6,8 +6,18 @@ import type {
 import { runtime, withRuntime, type WorkerEnv } from "@oxytype/backend/runtime";
 import { scheduled } from "@oxytype/backend/jobs";
 import { boundedRequest } from "./request-body.server";
+import {
+  EDGE_CACHE_HIT,
+  edgeCacheKey,
+  storeEdgeCache,
+} from "./edge-cache.server";
 import { applyResponsePolicy } from "./response-policy.server";
-import { placementOf, requestLog, serverBuildId } from "./observability.server";
+import {
+  placementOf,
+  requestLog,
+  requestMetrics,
+  serverBuildId,
+} from "./observability.server";
 
 async function observeScheduled(
   env: WorkerEnv,
@@ -66,10 +76,15 @@ export function createApplicationWorker(
           let response: Response;
           try {
             const bounded = await boundedRequest(request);
-            response =
-              bounded instanceof Response
-                ? bounded
-                : await handler(bounded, { context: { nonce } });
+            if (bounded instanceof Response) {
+              response = bounded;
+            } else {
+              response = await handler(bounded, { context: { nonce } });
+              const cacheKey = edgeCacheKey(bounded);
+              if (cacheKey !== undefined) {
+                storeEdgeCache(cacheKey, response, ctx);
+              }
+            }
             if (
               bounded instanceof Response &&
               new URL(request.url).pathname.startsWith("/api/") &&
@@ -89,19 +104,27 @@ export function createApplicationWorker(
             });
             response = new Response("Internal Server Error", { status: 500 });
           }
-          console.info(
-            JSON.stringify(
-              requestLog({
-                request,
-                requestId,
-                status: response.status,
-                durationMs: Date.now() - started,
-                release: env.VERSION,
-                staleClient: response.headers.has("X-Oxytype-Stale-Client"),
-                placementMode: env.PLACEMENT_MODE,
-              }),
-            ),
-          );
+          const log = requestLog({
+            request,
+            requestId,
+            status: response.status,
+            durationMs: Date.now() - started,
+            release: env.VERSION,
+            staleClient: response.headers.has("X-Oxytype-Stale-Client"),
+            placementMode: env.PLACEMENT_MODE,
+          });
+          console.info(JSON.stringify(log));
+          try {
+            env.METRICS?.writeDataPoint(
+              requestMetrics(
+                log,
+                runtime().metrics,
+                response.headers.has(EDGE_CACHE_HIT),
+              ),
+            );
+          } catch (error) {
+            console.error("Request metrics failed", error);
+          }
           const final = applyResponsePolicy(
             response,
             nonce,
@@ -129,7 +152,7 @@ export function createApplicationWorker(
         async () =>
           await observeScheduled(
             env,
-            async () => await scheduled(controller.scheduledTime),
+            async () => await scheduled(controller.cron),
           ),
         ctx,
       );

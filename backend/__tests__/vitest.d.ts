@@ -5,7 +5,7 @@ import MonkeyError from "../src/utils/error";
 type ExpectedRateLimit = {
   /** max calls */
   max: number;
-  /** window in milliseconds. Needs to be within 2500ms */
+  /** window in milliseconds; documents the contract, not asserted */
   windowMs: number;
 };
 interface RestRequestMatcher<R = TestRequest> {

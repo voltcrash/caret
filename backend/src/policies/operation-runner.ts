@@ -1,6 +1,5 @@
 import { checkZodSchema } from "@ts-rest/core";
 import { getCachedConfiguration } from "../init/configuration";
-import { addLog } from "../dal/logs";
 import { GUEST, type ServiceContext } from "../services/context";
 import {
   developmentOnlyOperations,
@@ -15,8 +14,11 @@ import { authenticate } from "./authentication";
 import { verifyConfiguration } from "./configuration";
 import { getOperation, type OperationId } from "./operations";
 import { verifyPermissions } from "./permission";
+import { EDGE_CACHE_SECONDS } from "./edge-cache";
+import { ROOT_LIMIT } from "./rate-counter";
 import {
-  checkBadAuthentication,
+  assertGoodAuthentication,
+  badAuthenticationPoints,
   enforceLimit,
   enforceOperationLimit,
   recordBadAuthentication,
@@ -39,6 +41,10 @@ export type Invocation = {
   /** Trusted client address (see `client-ip`). */
   clientIp: string;
   setHeader: SetPolicyHeader;
+  /** Adds a Set-Cookie header (refreshed session cookie cache). */
+  appendCookie?: (cookie: string) => void;
+  /** Marks a successful response shareable at the edge; absent for SSR. */
+  cacheFor?: (seconds: number) => void;
 };
 
 /** Identity/config/client state shared by every policy of one invocation. */
@@ -67,22 +73,25 @@ export type OperationOutcome<K extends OperationId> =
 
 /** Request-wide gates; run once before any operation is selected. */
 export async function admit(invocation: Invocation): Promise<PolicyScope> {
-  const scope: PolicyScope = {
-    actor: { ...GUEST },
-    configuration: await getCachedConfiguration(true),
-    client: {
-      ip: invocation.clientIp,
-      userAgent: invocation.headers.get("user-agent") ?? undefined,
-    },
+  const actor = { ...GUEST };
+  const client = {
+    ip: invocation.clientIp,
+    userAgent: invocation.headers.get("user-agent") ?? undefined,
   };
-  await checkBadAuthentication(scope);
-  await enforceLimit(
-    "root",
-    { window: "hour", max: 1000 },
-    scope,
-    invocation.setHeader,
-    false,
-  );
+  // Independent gates; none waits on another's round trip.
+  const [configuration, badAuthentication] = await Promise.all([
+    getCachedConfiguration(true),
+    badAuthenticationPoints(client.ip),
+    enforceLimit(
+      "root",
+      ROOT_LIMIT,
+      { actor, client },
+      invocation.setHeader,
+      false,
+    ),
+  ]);
+  assertGoodAuthentication(configuration, badAuthentication);
+  const scope: PolicyScope = { actor, configuration, client };
   const slowdown = scope.configuration.dev.responseSlowdownMs;
   if (invocation.runtime.env.MODE === "dev" && slowdown > 0) {
     await new Promise((resolve) => setTimeout(resolve, slowdown));
@@ -118,10 +127,13 @@ export async function execute<K extends OperationId>(
   options: { validateResponse: boolean },
 ): Promise<OperationOutcome<K>> {
   const operation = getOperation(id);
+  invocation.runtime.metrics.operations.push(id);
   scope.actor = await authenticate({
     headers: invocation.headers,
     options: operation.metadata.authenticationOptions,
     endpoint: id,
+    fresh: [operation.metadata.requirePermission].flat().includes("admin"),
+    setCookie: invocation.appendCookie,
   });
   await enforceOperationLimit(operation.metadata, scope, invocation.setHeader);
   verifyConfiguration(scope.configuration, operation.metadata);
@@ -176,12 +188,19 @@ export async function execute<K extends OperationId>(
       });
       throw new MonkeyError(500, "Invalid service response");
     }
+    shareable(invocation, id);
     return {
       ok: true,
       ...(validated.data as typeof result),
     } as OperationOutcome<K>;
   }
+  shareable(invocation, id);
   return { ok: true, ...result } as OperationOutcome<K>;
+}
+
+function shareable(invocation: Invocation, id: OperationId): void {
+  const seconds = EDGE_CACHE_SECONDS[id];
+  if (seconds !== undefined) invocation.cacheFor?.(seconds);
 }
 
 export type OperationFailure = {
@@ -193,7 +212,7 @@ export type OperationFailure = {
 };
 
 /**
- * Legacy error mapping, bad-authentication accounting and server-error audit
+ * Legacy error mapping, bad-authentication accounting and server-error
  * logging; shared so every transport reports failures identically.
  */
 export async function describeFailure(
@@ -219,13 +238,7 @@ export async function describeFailure(
   if (scope !== undefined) await recordBadAuthentication(scope, status);
   const detail = error instanceof Error ? error : new Error(String(error));
   if (!isDevEnvironment() && status >= 500 && status !== 503) {
-    invocation.background(
-      addLog(
-        "system_error",
-        `${status} ${errorId} ${detail.message} ${detail.stack}`,
-        uid,
-      ),
-    );
+    // Workers Logs only: a D1 outage must not turn into D1 error writes.
     console.error(
       JSON.stringify({
         errorId,

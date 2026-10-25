@@ -1,5 +1,6 @@
 import "@tanstack/solid-start/server-only";
 import {
+  appendResponseHeader,
   setResponseHeader,
   setResponseStatus,
 } from "@tanstack/solid-start/server";
@@ -14,6 +15,7 @@ import {
   type RawOperationInput,
 } from "@oxytype/backend/policies/operation-runner";
 import type { OperationId } from "@oxytype/backend/policies/operations";
+import { edgeCacheControl } from "@oxytype/backend/policies/edge-cache";
 import type { OperationResult } from "../data/operation-result";
 import type { ServiceContext as RequestContext } from "./context.server";
 import { migrateConfig } from "@oxytype/web-shared/config/migrate";
@@ -25,6 +27,12 @@ import {
 } from "@oxytype/contracts/presets";
 
 function invocation(request: RequestContext): Invocation {
+  // SSR documents carry a nonce and the viewer's state; never share them.
+  const cacheFor = request.rpc
+    ? (seconds: number): void => {
+        setResponseHeader("Cache-Control", edgeCacheControl(seconds));
+      }
+    : undefined;
   return {
     runtime: request.runtime,
     requestId: request.requestId,
@@ -32,6 +40,10 @@ function invocation(request: RequestContext): Invocation {
     headers: request.request.headers,
     clientIp: request.clientIp,
     setHeader: setResponseHeader,
+    appendCookie: (cookie) => {
+      appendResponseHeader("Set-Cookie", cookie);
+    },
+    cacheFor,
   };
 }
 

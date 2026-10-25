@@ -5,7 +5,7 @@ import { runtime, withRuntime } from "../../src/runtime/env";
 import { statement } from "../../src/db/client";
 import { commitBatch } from "../../src/db/commit";
 import { atomicUser, mutateUser, stage } from "../../src/db/mutation";
-import { scheduled } from "../../src/runtime/tasks";
+import { MAINTENANCE_CRON, scheduled } from "../../src/runtime/tasks";
 
 describe("receipt-protected D1 commits", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;
@@ -179,7 +179,7 @@ describe("receipt-protected D1 commits", () => {
       await commitBatch([
         statement("INSERT INTO public_stats(id) VALUES('recent-receipt')"),
       ]);
-      await scheduled(60 * 60 * 1000);
+      await scheduled(MAINTENANCE_CRON);
       expect(
         await statement(
           "SELECT id FROM write_receipts WHERE id='expired-receipt'",

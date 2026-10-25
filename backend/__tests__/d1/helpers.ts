@@ -3,11 +3,13 @@ import { readFile, readdir } from "node:fs/promises";
 import { resolve } from "node:path";
 import type { WorkerEnv } from "../../src/runtime/env";
 import type { D1Database } from "@cloudflare/workers-types";
+import { bindingName, requiredTiers } from "../../src/policies/rate-counter";
 
 export async function createTestRuntime(options?: {
   beforeMigration?: (db: D1Database, file: string) => Promise<void>;
 }): Promise<{
   env: WorkerEnv;
+  caches: CacheStorage;
   dispose: () => Promise<void>;
 }> {
   const mf = new Miniflare({
@@ -26,7 +28,21 @@ export async function createTestRuntime(options?: {
               },
             },
           },
-          env: { DB: { type: "d1", name: "d1-tests", id: "d1-tests" } },
+          env: {
+            DB: { type: "d1", name: "d1-tests", id: "d1-tests" },
+            // Limiter state outlives each case, so budgets here never bind;
+            // workerd suites exercise the real budgets.
+            ...Object.fromEntries(
+              requiredTiers().map((tier, index) => [
+                bindingName(tier),
+                {
+                  type: "rate-limit" as const,
+                  namespace: String(index + 1),
+                  simple: { period: tier.period, limit: 1_000_000 },
+                },
+              ]),
+            ),
+          },
         },
       },
     ],
@@ -42,8 +58,15 @@ export async function createTestRuntime(options?: {
       .filter((query) => query.trim());
     await db.batch(queries.map((query) => db.prepare(query)));
   }
+  const bindings = await mf.getBindings();
   return {
+    caches: (await mf.getCaches()) as unknown as CacheStorage,
     env: {
+      ...Object.fromEntries(
+        Object.entries(bindings).filter(([name]) =>
+          name.startsWith("RATE_LIMIT_"),
+        ),
+      ),
       DB: db,
       MODE: "dev",
       FRONTEND_URL: "http://localhost:3000",

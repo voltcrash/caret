@@ -7,13 +7,31 @@ export type AuthenticatedSession = {
   createdAt: Date;
 };
 
+export type SessionLookup = {
+  /** Skip the signed cookie cache and read the session row. */
+  fresh?: boolean;
+  /** Receives refreshed session/cache cookies; omitted callers drop them. */
+  setCookie?: (cookie: string) => void;
+};
+
+/**
+ * By default a signed session cookie cache (≤ `SESSION_COOKIE_CACHE_SECONDS`
+ * old) stands in for the D1 lookup, so revocation or disablement can take
+ * that long to apply. Bearer tokens always read D1.
+ */
 export async function verifySession(
   headers: Headers,
+  lookup: SessionLookup = { fresh: true },
 ): Promise<AuthenticatedSession> {
-  const result = await getAuth().api.getSession({
-    headers,
-    query: { disableCookieCache: true },
-  });
+  const { headers: responseHeaders, response: result } =
+    await getAuth().api.getSession({
+      headers,
+      query: { disableCookieCache: lookup.fresh === true },
+      returnHeaders: true,
+    });
+  for (const cookie of responseHeaders.getSetCookie()) {
+    lookup.setCookie?.(cookie);
+  }
   if (result === null) {
     throw new MonkeyError(
       401,

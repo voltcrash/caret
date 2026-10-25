@@ -9,21 +9,18 @@ export function enableRateLimitExpects(): void {
       received: TestRequest,
       expected: ExpectedRateLimit,
     ): Promise<MatcherResult> => {
-      const now = Date.now();
       const { headers } = await received.expect(200);
 
+      // Workers rate limiting reports no reset time; the budget derives from
+      // the window, which `rate-counter` tests cover.
       const max =
         parseInt(headers["x-ratelimit-limit"] as string) / REQUEST_MULTIPLIER;
-      const windowMs =
-        parseInt(headers["x-ratelimit-reset"] as string) * 1000 - now;
 
       return {
-        pass:
-          max === expected.max && Math.abs(expected.windowMs - windowMs) < 2500,
-        message: () =>
-          "Rate limit max not matching or windowMs is off by more then 2500ms",
-        actual: { max, windowMs },
-        expected: expected,
+        pass: max === expected.max,
+        message: () => "Rate limit max not matching",
+        actual: { max },
+        expected: { max: expected.max },
       };
     },
   });
