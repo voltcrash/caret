@@ -135,6 +135,7 @@ frontend/src/styles/generated/
 # Playwright failure diagnostics
 frontend/test-results/
 frontend/playwright-report/
+frontend/.reports/
 
 # TanStack Router generator scratch files
 .tanstack/
