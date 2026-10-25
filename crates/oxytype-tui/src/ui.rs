@@ -563,9 +563,20 @@ fn result(frame: &mut Frame, area: Rect, host: &EngineHost, local: &Local, palet
     };
     let [stats, graph] =
         Layout::horizontal([Constraint::Length(20), Constraint::Fill(1)]).areas(top);
-    let [wpm, acc] = Layout::vertical([Constraint::Length(4); 2]).areas(stats);
-    frame.render_widget(big("wpm", &format!("{:.0}", summary.wpm), palette), wpm);
-    frame.render_widget(big("acc", &format!("{:.0}%", summary.acc), palette), acc);
+    let (wpm_text, acc_text) = (
+        format!("{:.0}", summary.wpm),
+        format!("{:.0}%", summary.acc),
+    );
+    if stats.height >= 8 {
+        let [wpm, acc] = Layout::vertical([Constraint::Length(4); 2]).areas(stats);
+        frame.render_widget(big("wpm", &wpm_text, palette), wpm);
+        frame.render_widget(big("acc", &acc_text, palette), acc);
+    } else {
+        // Short terminals: plain figures rather than clipped block numerals.
+        let [wpm, acc] = Layout::vertical([Constraint::Length(2); 2]).areas(stats);
+        frame.render_widget(stat("wpm", vec![Line::from(wpm_text)], palette), wpm);
+        frame.render_widget(stat("acc", vec![Line::from(acc_text)], palette), acc);
+    }
     let series = Series::new(&summary.chart_data);
     frame.render_widget(series.chart(palette), graph);
     let [kind, raw, characters, consistency, time] = Layout::horizontal([
