@@ -146,7 +146,17 @@ always read the session row. Cached hits skip rate limits.
 ## Request metrics
 
 Every request writes one data point to the `METRICS` Analytics Engine dataset
-(`oxytype_requests` production, `oxytype_staging_requests` staging).
+when that binding exists. Production and staging do not bind it yet: Analytics
+Engine must first be enabled once for the Cloudflare account (Workers & Pages →
+Analytics Engine), or Worker uploads fail with code 10089. After enabling it,
+add to `wrangler.production.json` / `wrangler.staging.json`:
+
+```json
+"analytics_engine_datasets": [{ "binding": "METRICS", "dataset": "oxytype_requests" }]
+```
+
+(staging dataset: `oxytype_staging_requests`). Local `wrangler.jsonc` keeps the
+binding; local runtimes need no account setup.
 Columns are append-only:
 
 | Column | Value |

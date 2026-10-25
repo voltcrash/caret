@@ -132,9 +132,6 @@
       }
     }
   ],
-  "analytics_engine_datasets": [
-    { "binding": "METRICS", "dataset": "oxytype_requests" }
-  ],
   "d1_databases": [
     {
       "binding": "DB",
