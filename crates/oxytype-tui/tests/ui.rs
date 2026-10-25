@@ -129,3 +129,41 @@ fn active_test_hides_config_and_counts_words_in_main_color() {
     let (x, y) = find(&buffer, word.trim_end()).unwrap();
     assert_eq!(buffer[(x, y)].fg, palette.text);
 }
+
+#[test]
+fn result_shows_big_wpm_acc_chart_and_stat_groups() {
+    let mut fixture = fixture(Config {
+        mode: "words".into(),
+        words: 10,
+        ..Default::default()
+    });
+    for i in 0..10 {
+        let word = fixture.host.words[i].display_lossy();
+        fixture
+            .host
+            .insert(&word, 100.0 + i as f64 * 1000.0, 1100.0 + i as f64 * 1000.0)
+            .unwrap();
+    }
+    assert!(fixture.host.state().ended);
+    let buffer = render(&fixture, Screen::Test, 100, 30);
+    if std::env::var("OXYTYPE_UI_DUMP").is_ok() {
+        println!("{}", text(&buffer));
+    }
+    let palette = oxytype_tui::theme::Palette::named("rust");
+    for label in [
+        "wpm",
+        "acc",
+        "test type",
+        "raw",
+        "characters",
+        "consistency",
+        "time",
+    ] {
+        let (x, y) = find(&buffer, label).unwrap_or_else(|| panic!("missing {label}"));
+        assert_eq!(buffer[(x, y)].fg, palette.sub, "{label}");
+    }
+    let (x, y) = find(&buffer, "wpm").unwrap();
+    assert_eq!(buffer[(x, y + 1)].fg, palette.main);
+    assert!(find(&buffer, "words 10").is_some());
+    assert!(find(&buffer, "next test").is_some());
+}
