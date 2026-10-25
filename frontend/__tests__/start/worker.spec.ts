@@ -221,7 +221,7 @@ describe("built Start application in workerd", () => {
       .run();
     const scheduled = await worker.scheduled({
       scheduledTime: new Date(0),
-      cron: "* * * * *",
+      cron: "0 * * * *",
     });
     expect(scheduled.outcome).toBe("ok");
     expect(

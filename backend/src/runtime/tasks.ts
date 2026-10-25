@@ -1,9 +1,13 @@
 import { statement, binding } from "../db/client";
 import { updateLeaderboards } from "../jobs/update-leaderboards";
 
-export async function scheduled(scheduledTime: number): Promise<void> {
-  if (Math.floor(scheduledTime / 60000) % 15 === 0) await updateLeaderboards();
-  if (Math.floor(scheduledTime / 60000) % 60 === 0) {
+/** Cron expressions in every Wrangler config; each trigger owns one job. */
+export const LEADERBOARD_CRON = "*/15 * * * *";
+export const MAINTENANCE_CRON = "0 * * * *";
+
+export async function scheduled(cron: string): Promise<void> {
+  if (cron === LEADERBOARD_CRON) await updateLeaderboards();
+  if (cron === MAINTENANCE_CRON) {
     const now = Date.now();
     await binding().batch([
       statement(

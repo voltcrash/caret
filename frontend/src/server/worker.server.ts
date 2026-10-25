@@ -121,7 +121,7 @@ export function createApplicationWorker(
         async () =>
           await observeScheduled(
             env,
-            async () => await scheduled(controller.scheduledTime),
+            async () => await scheduled(controller.cron),
           ),
         ctx,
       );

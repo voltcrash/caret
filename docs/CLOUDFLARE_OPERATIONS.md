@@ -96,8 +96,8 @@ A bridge implementation and OAuth provider credentials are not supplied here.
 
 ## Scheduled maintenance
 
-Cron runs every minute. Every 15 minutes it rebuilds indexed all-time
-snapshots/histograms. Hourly it purges expired auth records/counters, 30-day
+Two Cron triggers: `*/15 * * * *` rebuilds indexed all-time
+snapshots/histograms; `0 * * * *` purges expired auth records/counters, 30-day
 nonimportant audits and expired daily/weekly leaderboard entries.
 Important audits and results have no automatic deletion policy; monitor their
 growth. Inspect Workers logs for failed maintenance invocations.

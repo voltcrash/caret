@@ -16,7 +16,7 @@
     "not_found_handling": "none"
   },
   "triggers": {
-    "crons": ["* * * * *"]
+    "crons": ["*/15 * * * *", "0 * * * *"]
   },
   "vars": {
     "MODE": "production",

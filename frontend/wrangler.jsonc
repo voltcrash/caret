@@ -28,5 +28,5 @@
       "migrations_dir": "../backend/migrations",
     },
   ],
-  "triggers": { "crons": ["* * * * *"] },
+  "triggers": { "crons": ["*/15 * * * *", "0 * * * *"] },
 }
