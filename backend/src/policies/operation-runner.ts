@@ -1,6 +1,5 @@
 import { checkZodSchema } from "@ts-rest/core";
 import { getCachedConfiguration } from "../init/configuration";
-import { addLog } from "../dal/logs";
 import { GUEST, type ServiceContext } from "../services/context";
 import {
   developmentOnlyOperations,
@@ -193,7 +192,7 @@ export type OperationFailure = {
 };
 
 /**
- * Legacy error mapping, bad-authentication accounting and server-error audit
+ * Legacy error mapping, bad-authentication accounting and server-error
  * logging; shared so every transport reports failures identically.
  */
 export async function describeFailure(
@@ -219,13 +218,7 @@ export async function describeFailure(
   if (scope !== undefined) await recordBadAuthentication(scope, status);
   const detail = error instanceof Error ? error : new Error(String(error));
   if (!isDevEnvironment() && status >= 500 && status !== 503) {
-    invocation.background(
-      addLog(
-        "system_error",
-        `${status} ${errorId} ${detail.message} ${detail.stack}`,
-        uid,
-      ),
-    );
+    // Workers Logs only: a D1 outage must not turn into D1 error writes.
     console.error(
       JSON.stringify({
         errorId,
