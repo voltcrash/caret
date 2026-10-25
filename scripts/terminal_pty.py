@@ -164,12 +164,12 @@ def screen_text(output):
 def run(binary, release=False):
     child = Child(binary)
     try:
-        child.until(b"Oxytype")
+        child.until(b"oxytype")
         assert termios.tcgetattr(child.slave)[3] & termios.ICANON == 0
         child.send(b"one ")
         time.sleep(0.15)
         child.send(b"\x1b[19~")  # F8 is available without enhanced Ctrl+Enter.
-        child.until(b"F5 new test")
+        child.until(b"next test")
         child.until(b"Result saved locally.")
         history_path = pathlib.Path(child.profile.name) / "data/history.sqlite3"
         with sqlite3.connect(history_path) as db:
@@ -184,18 +184,18 @@ def run(binary, release=False):
         assert len(exported) == 1
         assert json.loads(exported[0].read_text())["results"][0]["id"] == record["id"]
         child.send(b"\x1b[15~")
-        child.until(b"Input:")
+        child.until(b"quote  zen  custom")  # Idle test config bar.
         dimensions(child.slave, 30, 8)
         os.kill(child.process.pid, signal.SIGWINCH)
         # Ratatui skips blank cells with cursor moves; words need not be emitted
         # as one contiguous byte string in a real incremental terminal frame.
-        child.until(b"Resize")
+        child.until(b"resize to at least")
         child.send(b"lost")
         time.sleep(0.1)
         dimensions(child.slave)
         os.kill(child.process.pid, signal.SIGWINCH)
-        child.until(b"Oxytype")
-        assert "Input: lost" not in child.screen_text()
+        child.until(b"oxytype")
+        assert "quote  zen  custom" in child.screen_text(), "Undersized typing started a test"
         child.send(b"\x11")
         assert child.wait_exit() == 0
         child.restored()
@@ -208,11 +208,11 @@ def run(binary, release=False):
             args += ["--text", "one two three"]
         child = Child(binary, args=args)
         try:
-            child.until(b"Oxytype")
+            child.until(b"oxytype")
             child.send(b"one ")
             time.sleep(0.15)
             child.send(b"\x1b[19~")
-            child.until(b"F5 new test")
+            child.until(b"next test")
             child.send(b"\x11")
             assert child.wait_exit() == 0
             child.restored()
@@ -221,19 +221,19 @@ def run(binary, release=False):
 
     child = Child(binary)
     try:
-        child.until(b"Oxytype")
+        child.until(b"oxytype")
         child.send(b"\x1bOQ")  # F2: settings
         child.until(b"select")
         child.send(b"\x1bOS")  # F4: private editor
-        child.until(b"Private")
+        child.until(b"type or paste")
         child.send(b"\x1b[200~one two\x1b[201~")
         time.sleep(0.1)
         child.send(b"\x1b[19~")
-        child.until(b"Input:")
+        child.until(b"quote  zen  custom")
         child.send(b"one ")
         time.sleep(0.15)
         child.send(b"two")
-        child.until(b"F5 new test")
+        child.until(b"next test")
         child.send(b"\x11")
         assert child.wait_exit() == 0
         child.restored()
@@ -242,7 +242,7 @@ def run(binary, release=False):
 
     child = Child(binary, args=["--mode", "custom", "--text", "one two", "--record-replay"])
     try:
-        child.until(b"RECORDING PRIVATE TEXT")
+        child.until(b"recording private text")
         child.send(b"\x1b[200~PASTE_BLOCKED\x1b[201~")
         child.until(b"Paste blocked during typing.")
         child.send(b"one ")
@@ -252,7 +252,7 @@ def run(binary, release=False):
         child.send(b"\x1bOR")
         child.until(b"Local history")
         child.send(b"\x1b[19~")
-        child.until(b"Recorded replay")
+        child.until(b"watch replay")
         with sqlite3.connect(pathlib.Path(child.profile.name) / "data/history.sqlite3") as db:
             saved = json.loads(db.execute("SELECT json FROM results").fetchone()[0])
             committed = [event for event in saved["replayLog"]["events"] if event["type"] == "input" and event["data"]["inputType"] == "insertText"]
@@ -267,13 +267,13 @@ def run(binary, release=False):
 
     child = Child(binary, args=["--mode", "zen"], enhanced=True)
     try:
-        child.until(b"Oxytype")
+        child.until(b"oxytype")
         assert b"\x1b[>1u" in child.output, "enhanced flags not pushed"
         child.send(b"\x1b[97;1u\x1b[97;1:2u\x1b[97;1:3u")  # press/repeat/release
-        child.until(b"Input: aa")
+        child.until(b"aa")
         child.send(b"\x1bOP")
-        child.until(b"Keyboard: enhanced")
-        child.until(b"release observed: true")
+        child.until(b"protocol enhanced")
+        child.until(b"release observed yes")
         child.send(b"\x11")
         assert child.wait_exit() == 0
         child.restored()
@@ -285,7 +285,7 @@ def run(binary, release=False):
     # Deliberately fragment sequences and UTF-8; do not assume one read per key.
     child = Child(binary, args=["--mode", "zen", "--record-replay"], enhanced=True)
     try:
-        child.until(b"Input:")
+        child.until(b"quote  zen  custom")
         for packet in (b"\x1b[65;2u", b"\x1b[98:66;2u", b"\x1b[33;2u", "e\u0301界😀".encode()):
             # A bare ESC is ambiguous with Esc; terminal CSI introducers are
             # atomic. Exercise buffering after the introducer and within UTF-8.
@@ -295,17 +295,18 @@ def run(binary, release=False):
             for octet in packet:
                 child.send(bytes([octet]))
                 time.sleep(0.002)
-        child.until("Input: AB!e\u0301界😀".encode())
+        child.until("AB!e\u0301界😀".encode())
         child.send(b"\x1b[127u\x1b[127;1:3u")  # Emoji grapheme once, ignore release.
-        child.until("Input: AB!e\u0301界".encode())
+        child.until("AB!e\u0301界".encode())
+        assert "😀" not in child.screen_text()
         child.send(b"\x1b[120;5u\x1b[120;3u")  # Ctrl/Alt shortcuts never type x.
         child.send(b"\x1b[13;5:3u\x1b[19;1:3~")  # Finish releases never finish.
         child.send(b"\x1b[97;65u")  # Caps-lock modifier does not discard committed text.
-        child.until("Input: AB!e\u0301界a".encode())
+        child.until("AB!e\u0301界a".encode())
         child.send(b"\x1b[127;5u")  # Ctrl+Backspace deletes word through the core.
-        child.until(b"Input:")
         child.send(b"\x1b[122;1u\x1b[122;1:2u\x1b[122;1:3u")
-        child.until(b"Input: zz")
+        child.until(b"zz")
+        assert "AB!" not in child.screen_text(), "Ctrl+Backspace kept the word"
         child.send(b"\x1b[13;5u")
         child.until(b"Result saved locally.")
         with sqlite3.connect(pathlib.Path(child.profile.name) / "data/history.sqlite3") as db:
@@ -326,12 +327,12 @@ def run(binary, release=False):
     # The unanswered bounded query falls back without swallowing ordinary input.
     child = Child(binary, args=["--mode", "zen"], keyboard="auto", term="xterm-kitty")
     try:
-        child.until(b"Input:")
+        child.until(b"quote  zen  custom")
         assert b"\x1b[>1u" not in child.output
         child.send(b"fallback")
-        child.until(b"Input: fallback")
+        child.until(b"fallback")
         child.send(b"\x1bOP")
-        child.until(b"Keyboard: basic")
+        child.until(b"protocol basic")
         child.send(b"\x11")
         assert child.wait_exit()==0
         child.restored()
@@ -344,7 +345,7 @@ def run(binary, release=False):
             if failure in ("error", "panic"):
                 assert child.wait_exit() != 0
             else:
-                child.until(b"Oxytype")
+                child.until(b"oxytype")
                 if failure == "signal":
                     os.kill(child.process.pid, signal.SIGTERM)
                 else:
@@ -360,7 +361,7 @@ def run(binary, release=False):
                         raise AssertionError("Did not suspend")
                     child.restored()
                     os.killpg(child.process.pid, signal.SIGCONT)
-                    child.until(b"Oxytype", fresh=True)
+                    child.until(b"oxytype", fresh=True)
                     child.send(b"\x11")
                 assert child.wait_exit() == 0
             child.restored()
