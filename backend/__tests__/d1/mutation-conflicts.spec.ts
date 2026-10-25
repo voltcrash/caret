@@ -22,7 +22,7 @@ describe("D1 optimistic version guards", () => {
           await Users.incrementXp("exhaust", 100);
           await stage(
             statement(
-              "INSERT INTO rate_counters(key,points,expires_at) VALUES(?,1,0)",
+              "INSERT INTO write_receipts(id,created_at) VALUES(?,0)",
               `exhaust${attempts}`,
             ),
           );
@@ -38,7 +38,7 @@ describe("D1 optimistic version guards", () => {
       expect((await Users.getUser("exhaust", "test")).xp).toBeUndefined();
       expect(
         await statement(
-          "SELECT count(*) AS n FROM rate_counters WHERE key LIKE 'exhaust%'",
+          "SELECT count(*) AS n FROM write_receipts WHERE id LIKE 'exhaust%'",
         ).first("n"),
       ).toBe(0);
       expect(
@@ -57,7 +57,7 @@ describe("D1 optimistic version guards", () => {
         await Users.updateTypingStats("retry", 2, 30);
         await stage(
           statement(
-            "INSERT INTO rate_counters(key,points,expires_at) VALUES(?,1,0)",
+            "INSERT INTO write_receipts(id,created_at) VALUES(?,0)",
             `attempt${attempts}`,
           ),
         );
@@ -80,10 +80,10 @@ describe("D1 optimistic version guards", () => {
       expect(
         (
           await statement(
-            "SELECT key FROM rate_counters WHERE key LIKE 'attempt%' ORDER BY key",
-          ).all<{ key: string }>()
+            "SELECT id FROM write_receipts WHERE id LIKE 'attempt%' ORDER BY id",
+          ).all<{ id: string }>()
         ).results,
-      ).toEqual([{ key: "attempt2" }]);
+      ).toEqual([{ id: "attempt2" }]);
       expect(
         await statement("SELECT count(*) AS n FROM mutation_guards").first("n"),
       ).toBe(0);

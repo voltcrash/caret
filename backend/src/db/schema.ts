@@ -93,13 +93,6 @@ export const authVerifications = sqliteTable(
     index("auth_verifications_expiry_idx").on(t.expiresAt),
   ],
 );
-export const authRateLimits = sqliteTable("auth_rate_limits", {
-  id: id(),
-  key: text("key").notNull().unique(),
-  count: integer("count").notNull(),
-  lastRequest: integer("last_request").notNull(),
-});
-
 // Auth can exist before application registration; do not require an app row for sessions.
 export const users = sqliteTable("users", {
   uid: text("uid").primaryKey(),
@@ -356,15 +349,6 @@ export const userActivity = sqliteTable(
     count: integer("count").notNull(),
   },
   (t) => [primaryKey({ columns: [t.uid, t.client, t.day] })],
-);
-export const rateCounters = sqliteTable(
-  "rate_counters",
-  {
-    key: text("key").primaryKey(),
-    points: integer("points").notNull(),
-    expiresAt: integer("expires_at").notNull(),
-  },
-  (t) => [index("rate_counters_expiry_idx").on(t.expiresAt)],
 );
 export const mutationGuards = sqliteTable(
   "mutation_guards",

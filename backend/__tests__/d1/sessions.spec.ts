@@ -33,19 +33,21 @@ describe("D1 invocation sessions", () => {
         expect(binding() === runtime().session).toBe(true);
         expect(database().$client === binding()).toBe(true);
         await statement(
-          "INSERT INTO rate_counters(key,points,expires_at) VALUES('session',1,0)",
+          "INSERT INTO write_receipts(id,created_at) VALUES('session',1)",
         ).run();
         expect(
           await database().get(
-            sql`SELECT points FROM rate_counters WHERE key='session'`,
+            sql`SELECT created_at AS points FROM write_receipts WHERE id='session'`,
           ),
         ).toEqual({ points: 1 });
         await binding().batch([
-          statement("UPDATE rate_counters SET points=2 WHERE key='session'"),
+          statement(
+            "UPDATE write_receipts SET created_at=2 WHERE id='session'",
+          ),
         ]);
         expect(
           await statement(
-            "SELECT points FROM rate_counters WHERE key='session'",
+            "SELECT created_at AS points FROM write_receipts WHERE id='session'",
           ).first("points"),
         ).toBe(2);
         // Drizzle, raw SQL and batched statements all count.

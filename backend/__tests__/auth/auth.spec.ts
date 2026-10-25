@@ -27,7 +27,6 @@ beforeEach(() => {
     authAccounts: [],
     authSessions: [],
     authVerifications: [],
-    authRateLimits: [],
   };
   auth = createAuth(memoryAdapter(store));
   vi.spyOn(AuthInit, "getAuth").mockReturnValue(auth);

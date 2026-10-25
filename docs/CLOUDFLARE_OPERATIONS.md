@@ -127,9 +127,11 @@ Bad-authentication points (when enabled in configuration) live in the
 location's Cache API for an hour. The Cache API is a no-op on `workers.dev`
 hostnames, so staging does not enforce this policy or the public-read cache.
 
-The `rate_counters` and `auth_rate_limits` tables receive no new rows. Hourly
-cleanup drains them; drop them in a later migration once no deployed version
-writes them.
+Migration `0018_drop_d1_rate_counters.sql` drops the former `rate_counters`
+and `auth_rate_limits` tables. Deploy the Workers rate limiting release first:
+the migration step runs before the Worker upload, and older Workers write
+those tables on every request. A Worker-only rollback past that release
+needs the tables recreated.
 
 ## Caching and staleness
 

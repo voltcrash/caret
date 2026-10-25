@@ -14,8 +14,17 @@ describe("API key removal migration", () => {
       "resultsGetApe",
       "resultByIdGetApe",
     ];
+    let counters: string[] = [];
     const test = await createTestRuntime({
       beforeMigration: async (db, file) => {
+        // 0018 drops the counter table; capture what 0015 left first.
+        if (file === "0018_drop_d1_rate_counters.sql") {
+          const rows = await db
+            .prepare("SELECT key FROM rate_counters ORDER BY key")
+            .all<{ key: string }>();
+          counters = rows.results.map(({ key }) => key);
+          return;
+        }
         if (file !== "0015_remove_ape_keys.sql") return;
         await seedUser({ DB: db }, "legacy");
         await seedUser({ DB: db }, "clean");
@@ -114,10 +123,7 @@ describe("API key removal migration", () => {
           ).first("count"),
         ).toBe(1);
       }
-      const counters = await test.env.DB.prepare(
-        "SELECT key FROM rate_counters ORDER BY key",
-      ).all<{ key: string }>();
-      expect(counters.results.map(({ key }) => key)).toEqual([
+      expect(counters).toEqual([
         "rate:resultsGet:legacy",
         "rate:resultsGetApeSuffix:legacy",
       ]);

@@ -9,7 +9,6 @@ import {
   authSessions,
   authAccounts,
   authVerifications,
-  authRateLimits,
 } from "../db/schema";
 import { background, runtime, envValue, type WorkerEnv } from "../runtime/env";
 import { mutateUser } from "../db/mutation";
@@ -218,7 +217,6 @@ export function getAuth(): ReturnType<typeof createAuth> {
         authSessions,
         authAccounts,
         authVerifications,
-        authRateLimits,
       },
       transaction: false,
     }),

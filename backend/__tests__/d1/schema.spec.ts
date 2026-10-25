@@ -21,7 +21,6 @@ describe("D1 schema on workerd", () => {
         "auth_accounts",
         "auth_sessions",
         "auth_verifications",
-        "auth_rate_limits",
         "users",
         "results",
         "daily_entries",
@@ -35,6 +34,8 @@ describe("D1 schema on workerd", () => {
       "reward_grants",
       "scheduled_jobs",
       "outbox",
+      "rate_counters",
+      "auth_rate_limits",
     ]) {
       expect(tables.results.map((row) => row.name)).not.toContain(removed);
     }
