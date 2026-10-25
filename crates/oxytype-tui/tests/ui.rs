@@ -185,3 +185,39 @@ fn settings_render_button_groups_with_active_choice_in_main() {
     assert_eq!(buffer[(x, y)].fg, palette.main);
     assert!(find(&buffer, "▸ behavior").is_some());
 }
+
+#[test]
+fn history_lists_saved_results_in_a_table_with_pb_crown() {
+    let mut fixture = fixture(Config {
+        mode: "words".into(),
+        words: 10,
+        ..Default::default()
+    });
+    for i in 0..10 {
+        let word = fixture.host.words[i].display_lossy();
+        fixture
+            .host
+            .insert(&word, 100.0 + i as f64 * 1000.0, 1100.0 + i as f64 * 1000.0)
+            .unwrap();
+    }
+    assert!(
+        fixture
+            .local
+            .capture(&fixture.host, &Capabilities::default(), 1_793_000_000_000.0)
+            .unwrap()
+    );
+    fixture.local.history.refresh(&fixture.local.store).unwrap();
+    let buffer = render(&fixture, Screen::History, 110, 30);
+    if std::env::var("OXYTYPE_UI_DUMP").is_ok() {
+        println!("{}", text(&buffer));
+    }
+    let palette = oxytype_tui::theme::Palette::named("rust");
+    assert!(find(&buffer, "Local history").is_some());
+    let (x, y) = find(&buffer, "accuracy").unwrap();
+    assert_eq!(buffer[(x, y)].fg, palette.sub);
+    let (x, y) = find(&buffer, "words 10").unwrap();
+    assert_eq!(buffer[(x, y)].fg, palette.main);
+    assert_eq!(buffer[(x, y)].bg, palette.sub_alt);
+    assert!(find(&buffer, "♛").is_some());
+    assert!(find(&buffer, "Oct 2026").is_some());
+}
