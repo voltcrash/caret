@@ -34,7 +34,12 @@ pub fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
         capabilities,
     } = view;
     let area = frame.area();
-    let palette = crate::theme::Palette::named(&local.preferences.theme);
+    // Settings preview the drafted theme before it is applied, as the web does.
+    let palette = Palette::named(if screen == Screen::Settings {
+        &setup.theme
+    } else {
+        &local.preferences.theme
+    });
     frame.render_widget(Block::default().style(palette.base()), area);
     if area.width < 60 || area.height < 18 {
         frame.render_widget(
