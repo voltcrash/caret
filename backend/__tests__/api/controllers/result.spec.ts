@@ -555,7 +555,7 @@ describe("result controller test", () => {
       resultGetLastTimestampMock.mockResolvedValue(0);
       userIncrementXpMock.mockResolvedValue();
       userUpdateTypingStatsMock.mockResolvedValue();
-      weeklyXpAddResultMock.mockResolvedValue(1);
+      weeklyXpAddResultMock.mockResolvedValue(true);
       dailyAddResultMock.mockResolvedValue(-1);
     });
 

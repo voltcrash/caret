@@ -32,25 +32,17 @@ export class WeeklyXpLeaderboard {
   private period(): number {
     return this.customTime === -1 ? getCurrentWeekTimestamp() : this.customTime;
   }
+  /**
+   * Stage this gain; resolves false when the board is disabled. Callers read
+   * the committed rank afterwards with `getRank`.
+   */
   public async addResult(
     config: Configuration["leaderboards"]["weeklyXp"],
     opts: AddResultOpts,
-  ): Promise<number> {
-    if (!config.enabled) return -1;
+  ): Promise<boolean> {
+    if (!config.enabled) return false;
     const { entry, xpGained } = opts,
       period = this.period();
-    // Rank against this user's total after the gain, in a single read.
-    const ahead = await statement(
-      "WITH me AS (SELECT COALESCE((SELECT xp FROM weekly_entries WHERE client=? AND period=? AND uid=?),0)+? AS xp) SELECT count(*) AS count FROM weekly_entries,me WHERE client=? AND period=? AND uid<>? AND (weekly_entries.xp>me.xp OR (weekly_entries.xp=me.xp AND uid>?))",
-      this.client,
-      period,
-      entry.uid,
-      xpGained,
-      this.client,
-      period,
-      entry.uid,
-      entry.uid,
-    ).first<number>("count");
     await stage(
       statement(
         "INSERT INTO weekly_entries(client,period,uid,xp,time_typed_seconds,expires_at,data) VALUES(?,?,?,?,?,?,?) ON CONFLICT(client,period,uid) DO UPDATE SET xp=xp+excluded.xp,time_typed_seconds=time_typed_seconds+excluded.time_typed_seconds,data=excluded.data",
@@ -63,7 +55,7 @@ export class WeeklyXpLeaderboard {
         encode(entry),
       ),
     );
-    return (ahead ?? 0) + 1;
+    return true;
   }
   public async getResults(
     page: number,
