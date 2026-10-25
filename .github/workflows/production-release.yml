@@ -59,7 +59,7 @@ jobs:
             await core.summary.addLink('Validated Oxytype CI', run.html_url).write();
 
       - name: Set up Vite+
-        uses: voidzero-dev/setup-vp@v1.21.2
+        uses: voidzero-dev/setup-vp@v1.22.0
         with:
           node-version-file: .node-version
           run-install: false

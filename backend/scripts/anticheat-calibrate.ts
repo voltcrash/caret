@@ -19,7 +19,7 @@ rows, arrays of { keySpacing, keyDuration }, recorded fixtures
 A directory loads every .json file in it. Without arguments, the committed
 recordings and synthetic fixtures are used.`;
 
-const root = resolve(__dirname, "../..");
+const root = resolve(import.meta.dirname, "../..");
 const DEFAULT_SETS: [string, string][] = [
   // scripted Playwright input against the real web client, not human typing
   ["recorded-web", "packages/typing-fixtures/reference/keystrokes"],

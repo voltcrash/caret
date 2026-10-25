@@ -1,5 +1,5 @@
+import { debounce, throttle } from "@oxytype/util/timing";
 import { onCleanup, onMount } from "solid-js";
-import { debounce, throttle } from "throttle-debounce";
 
 import { getMutableConfig } from "../../../ts/config/store";
 import { ModifierKeys } from "../../../ts/constants/modifier-keys";

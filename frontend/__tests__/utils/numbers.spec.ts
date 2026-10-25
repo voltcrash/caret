@@ -77,3 +77,24 @@ describe("numbers", () => {
     });
   });
 });
+
+describe("fitLine", () => {
+  it("fits points with uneven x spacing", () => {
+    const line = Numbers.fitLine([
+      { x: 0, y: 1 },
+      { x: 1, y: 3 },
+      { x: 4, y: 9 },
+    ]);
+    expect(line?.(2)).toBeCloseTo(5);
+  });
+
+  it("returns null without two distinct x values", () => {
+    expect(Numbers.fitLine([{ x: 1, y: 1 }])).toBeNull();
+    expect(
+      Numbers.fitLine([
+        { x: 1, y: 1 },
+        { x: 1, y: 2 },
+      ]),
+    ).toBeNull();
+  });
+});

@@ -1,7 +1,7 @@
-import { createHotkeySequence } from "@tanstack/solid-hotkeys";
+import { createHotkey } from "@tanstack/solid-hotkeys";
 
 export function useKonamiHotkey(): void {
-  createHotkeySequence(
+  createHotkey(
     [
       "ArrowUp",
       "ArrowUp",

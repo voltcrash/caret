@@ -5,9 +5,9 @@ import { resolve } from "node:path";
 
 /** Public protocol docs only; the private editor is never emitted as a client asset. */
 export function apiDocs(): Plugin {
-  // Workspace TS packages require the repository's tsx loader in build tooling.
+  // Workspace TS packages need a TypeScript runner in build tooling.
   const internal = JSON.parse(
-    execFileSync("vp", ["exec", "tsx", "scripts/openapi.ts", "--start"], {
+    execFileSync("vpx", ["./scripts/openapi.ts", "--start"], {
       cwd: resolve(import.meta.dirname, "../../backend"),
       encoding: "utf8",
       maxBuffer: 8 * 1024 * 1024,

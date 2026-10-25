@@ -1,6 +1,6 @@
 # Advanced development setup
 
-Use Git, Node 24.21.0 and Vite+ (`vp`); pnpm 12.8.1 is the package manager
+Use Git, Node 24.22.1 and Vite+ (`vp`); pnpm 12.15.0 is the package manager
 under the hood (pins in `.node-version`/`.nvmrc`/`packageManager`). On
 Windows, disable Git autocrlf before cloning. Install dependencies with
 `vp install --frozen-lockfile`. Shared packages export TypeScript source and
@@ -85,10 +85,7 @@ Run the browser suites with `vp run test-e2e` after `vp run build`. Install the 
 Worker with seeded D1 fixtures on port 4185. Failed runs retain traces and
 screenshots in `frontend/test-results/`.
 
-Inspect frontend imports with `vp run --filter @oxytype/frontend madge`, or render
-`dep-graph.png` with `vp run --filter @oxytype/frontend dep-graph`. Image generation
-requires Graphviz (`dot` and `gvpr`) on `PATH`. Both commands traverse TypeScript
-and TSX throughout `frontend/src`, excluding the generated route tree.
+Circular imports are rejected by oxlint's `import/no-cycle` rule.
 
 Check unused code and dependencies:
 

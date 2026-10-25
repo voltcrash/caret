@@ -53,7 +53,6 @@ export const browserProject = {
       "hangul-js",
       "howler",
       "damerau-levenshtein",
-      "throttle-debounce",
       "lz-ts",
     ],
   },

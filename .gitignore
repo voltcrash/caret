@@ -99,9 +99,6 @@ backend/.env
 
 backend/migrationStats.txt
 
-# Madge
-dep-graph.png
-
 # TypeScript
 build/
 backend/workers

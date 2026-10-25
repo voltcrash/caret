@@ -1,8 +1,8 @@
+import { createHash } from "node:crypto";
 import { COMPATIBILITY_CHECK } from "@oxytype/contracts";
-import { default as etag } from "etag";
 
 /**
- * create etag generator, based on the express implementation https://github.com/expressjs/express/blob/9f4dbe3a1332cd883069ba9b73a9eed99234cfc7/lib/utils.js#L247
+ * create etag generator, matching the `etag` package used by express https://github.com/jshttp/etag/blob/v1.8.1/index.js#L39
  * Adds the api COMPATIBILITY_CHECK version in front of the etag.
  * @param options
  * @returns
@@ -12,13 +12,9 @@ export function createETagGenerator(options: {
 }): (body: Buffer | string, encoding: BufferEncoding | undefined) => string {
   return function generateETag(body, encoding) {
     const buf = !Buffer.isBuffer(body) ? Buffer.from(body, encoding) : body;
+    const hash = createHash("sha1").update(buf).digest("base64").slice(0, 27);
+    const tag = `V${COMPATIBILITY_CHECK}-${buf.length.toString(16)}-${hash}"`;
 
-    const generatedTag: string = etag(buf, options);
-
-    //custom code to add the version number
-    if (generatedTag.startsWith("W/")) {
-      return `W/"V${COMPATIBILITY_CHECK}-${generatedTag.slice(3)}`;
-    }
-    return `"V${COMPATIBILITY_CHECK}-${generatedTag.slice(1)}`;
+    return options.weak ? `W/"${tag}` : `"${tag}`;
   };
 }

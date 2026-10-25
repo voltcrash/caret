@@ -1,11 +1,9 @@
 import { spawnSync } from "node:child_process";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { describe, expect, it } from "vite-plus/test";
 
-const tsx = createRequire(import.meta.url).resolve("tsx");
 const script = resolve(__dirname, "../../scripts/retire-task-consumer.ts");
 
 describe("task consumer retirement command", () => {
@@ -36,20 +34,16 @@ describe("task consumer retirement command", () => {
       };`,
     );
     try {
-      return spawnSync(
-        process.execPath,
-        ["--import", tsx, "--import", fixture, script, environment],
-        {
-          cwd: directory,
-          env: {
-            ...process.env,
-            CLOUDFLARE_API_TOKEN: token,
-            FIXTURE_DENIED: String(denied),
-          },
-          encoding: "utf8",
-          timeout: 30_000,
+      return spawnSync("vpx", ["--import", fixture, script, environment], {
+        cwd: directory,
+        env: {
+          ...process.env,
+          CLOUDFLARE_API_TOKEN: token,
+          FIXTURE_DENIED: String(denied),
         },
-      );
+        encoding: "utf8",
+        timeout: 30_000,
+      });
     } finally {
       rmSync(directory, { recursive: true, force: true });
     }

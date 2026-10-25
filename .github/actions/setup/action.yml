@@ -10,7 +10,7 @@ runs:
   using: composite
   steps:
     - name: Set up Vite+ and install dependencies
-      uses: voidzero-dev/setup-vp@v1.21.2
+      uses: voidzero-dev/setup-vp@v1.22.0
       with:
         node-version-file: .node-version
         cache: true

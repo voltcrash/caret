@@ -148,7 +148,7 @@ const actions = {
         active: false,
       };
 
-      tagsCollection().utils.writeInsert(newTag);
+      await tagsCollection().utils.writeInsert(newTag);
       updateTagsInFilterStorage(
         [...tagsCollection().values()]
           .filter((it) => !isTempId(it._id))
@@ -170,7 +170,7 @@ const actions = {
         throw new Error(`Failed to update tag: ${response.message}`);
       }
 
-      tagsCollection().utils.writeUpdate({
+      await tagsCollection().utils.writeUpdate({
         _id: tagId,
         name: newName.replace(/_/g, " "),
       });
@@ -196,7 +196,7 @@ const actions = {
         throw new Error(`Failed to clear tag PBs: ${response.message}`);
       }
 
-      tagsCollection().utils.writeUpdate({
+      await tagsCollection().utils.writeUpdate({
         _id: tagId,
         personalBests: {
           time: {},
@@ -219,7 +219,7 @@ const actions = {
       if (!response.ok) {
         throw new Error(`Failed to delete tag: ${response.message}`);
       }
-      tagsCollection().utils.writeDelete(tagId);
+      await tagsCollection().utils.writeDelete(tagId);
       updateTagsInFilterStorage(
         [...tagsCollection().values()].map((it) => it._id),
       );
@@ -229,7 +229,7 @@ const actions = {
     onMutate: ({ tagId, noSave }) => {
       const tag = tagsCollection().get(tagId);
       if (tag === undefined) return;
-      tagsCollection().utils.writeUpdate({ ...tag, active: !tag.active });
+      void tagsCollection().utils.writeUpdate({ ...tag, active: !tag.active });
       if (!noSave) saveActiveToLocalStorage();
     },
     mutationFn: async () => {
@@ -240,7 +240,7 @@ const actions = {
     onMutate: ({ tagId, active, noSave }) => {
       const tag = tagsCollection().get(tagId);
       if (tag === undefined) return;
-      tagsCollection().utils.writeUpdate({ ...tag, active });
+      void tagsCollection().utils.writeUpdate({ ...tag, active });
       if (!noSave) saveActiveToLocalStorage();
     },
     mutationFn: async () => {
@@ -249,10 +249,10 @@ const actions = {
   }),
   clearActiveTags: createOptimisticAction<ActionType["clearActiveTags"]>({
     onMutate: ({ noSave }) => {
-      tagsCollection().utils.writeBatch(() => {
+      void tagsCollection().utils.writeBatch(() => {
         tagsCollection().forEach((tag) => {
           if (tag.active) {
-            tagsCollection().utils.writeUpdate({ ...tag, active: false });
+            void tagsCollection().utils.writeUpdate({ ...tag, active: false });
           }
         });
       });
@@ -278,49 +278,49 @@ export async function insertTag(
   params: ActionType["insertTag"],
 ): Promise<void> {
   const transaction = actions.insertTag(params);
-  await transaction.isPersisted.promise;
+  await transaction.when("settled");
 }
 
 export async function updateTagName(
   params: ActionType["updateTagName"],
 ): Promise<void> {
   const transaction = actions.updateTagName(params);
-  await transaction.isPersisted.promise;
+  await transaction.when("settled");
 }
 
 export async function clearTagPBs(
   params: ActionType["clearTagPBs"],
 ): Promise<void> {
   const transaction = actions.clearTagPBs(params);
-  await transaction.isPersisted.promise;
+  await transaction.when("settled");
 }
 
 export async function deleteTag(
   params: ActionType["deleteTag"],
 ): Promise<void> {
   const transaction = actions.deleteTag(params);
-  await transaction.isPersisted.promise;
+  await transaction.when("settled");
 }
 
 export async function toggleTagActive(
   params: ActionType["toggleTagActive"],
 ): Promise<void> {
   const transaction = actions.toggleTagActive(params);
-  await transaction.isPersisted.promise;
+  await transaction.when("settled");
 }
 
 export async function setTagActive(
   params: ActionType["setTagActive"],
 ): Promise<void> {
   const transaction = actions.setTagActive(params);
-  await transaction.isPersisted.promise;
+  await transaction.when("settled");
 }
 
 export async function clearActiveTags(
   params: ActionType["clearActiveTags"] = {},
 ): Promise<void> {
   const transaction = actions.clearActiveTags(params);
-  await transaction.isPersisted.promise;
+  await transaction.when("settled");
 }
 
 /** Reactive. Sorted by name. */
@@ -446,7 +446,7 @@ export function saveLocalTagPB<M extends Mode>(
 
   // using utils.writeUpdate instead of collection.update because we dont need to send this to the API
   // the result saving already updates the tag pb in the db
-  tagsCollection().utils.writeUpdate(tag);
+  void tagsCollection().utils.writeUpdate(tag);
 }
 
 export function reconcileLocalTagPB<M extends Mode>(

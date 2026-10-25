@@ -26,7 +26,7 @@ export default defineConfig<{ startSession: string | undefined }>({
     },
   ],
   webServer: {
-    command: "vp exec tsx scripts/serve-start-fixture.ts",
+    command: "vpx ./scripts/serve-start-fixture.ts",
     // The Worker listens before fixture sessions/config are seeded, so
     // readiness is the fixture's own signal, not the first HTTP response.
     wait: { stdout: /Start fixture ready/ },

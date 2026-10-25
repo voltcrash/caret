@@ -9,7 +9,7 @@ import { getDefaultConfig } from "../constants/default-config";
 import { migrateConfig } from "./utils";
 import { LocalStorageWithSchema } from "../utils/local-storage-with-schema";
 import { isObject } from "../utils/misc";
-import { debounce } from "throttle-debounce";
+import { debounce } from "@oxytype/util/timing";
 import { setProperty } from "@oxytype/util/objects";
 
 const pendingSync = createAccountOwned(() => {

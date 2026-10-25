@@ -104,7 +104,7 @@ const actions = {
         settingGroups,
       };
 
-      presetsCollection().utils.writeInsert(newPreset);
+      await presetsCollection().utils.writeInsert(newPreset);
     },
   }),
   editPreset: createOptimisticAction<ActionType["editPreset"]>({
@@ -142,7 +142,7 @@ const actions = {
       }
 
       // if this is missing getPreset is out of sync
-      presetsCollection().utils.writeUpdate({
+      await presetsCollection().utils.writeUpdate({
         _id: presetId,
         name: name.replace(/_/g, " "),
         ...(config !== undefined && { config }),
@@ -161,7 +161,7 @@ const actions = {
       if (!response.ok) {
         throw new Error(`Failed to delete preset: ${response.message}`);
       }
-      presetsCollection().utils.writeDelete(presetId);
+      await presetsCollection().utils.writeDelete(presetId);
     },
   }),
 };
@@ -189,19 +189,19 @@ export async function addPreset(
   params: ActionType["addPreset"],
 ): Promise<void> {
   const transaction = actions.addPreset(params);
-  await transaction.isPersisted.promise;
+  await transaction.when("settled");
 }
 
 export async function editPreset(
   params: ActionType["editPreset"],
 ): Promise<void> {
   const transaction = actions.editPreset(params);
-  await transaction.isPersisted.promise;
+  await transaction.when("settled");
 }
 
 export async function deletePreset(
   params: ActionType["deletePreset"],
 ): Promise<void> {
   const transaction = actions.deletePreset(params);
-  await transaction.isPersisted.promise;
+  await transaction.when("settled");
 }
