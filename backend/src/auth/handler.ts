@@ -4,6 +4,7 @@ import * as UserDAL from "../dal/user";
 import * as AuthUtils from "../utils/auth";
 import { getAuth } from "../init/auth";
 import { getFrontendUrl } from "../utils/misc";
+import { enforceAuthLimit } from "../policies/rate-limit";
 
 async function dispatchAuthRequest(
   incoming: Request,
@@ -15,6 +16,7 @@ async function dispatchAuthRequest(
     envValue("BETTER_AUTH_URL") ?? "http://localhost:5005/auth",
   );
   const path = `/auth${new URL(request.url).pathname.slice(base.pathname.replace(/\/$/, "").length)}`;
+  await enforceAuthLimit(path, ip);
   // Resolve through the API's proxy policy; never trust this caller-supplied header.
   request.headers.set("x-oxytype-auth-ip", ip);
   // Dashboard server requests use the plugin's signed JWT, rather than cookies.

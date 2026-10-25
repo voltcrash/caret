@@ -190,11 +190,8 @@ export function createAuth(
         ? [dash({ apiKey: dashboardApiKey })]
         : []),
     ],
-    rateLimit: {
-      enabled: true,
-      storage: "database",
-      modelName: "authRateLimits",
-    },
+    // Workers rate limiting guards these routes before Better Auth runs.
+    rateLimit: { enabled: false },
   };
   const auth = betterAuth(options);
   return auth;
