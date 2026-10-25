@@ -236,3 +236,19 @@ fn help_groups_keybinds_as_key_chips() {
     assert!(find(&buffer, "▸ terminal").is_some());
     assert!(find(&buffer, "protocol basic").is_some());
 }
+
+#[test]
+fn editor_shows_option_buttons_and_text_area() {
+    let mut fixture = fixture(Config::default());
+    fixture.setup.text = "hello world".into();
+    let buffer = render(&fixture, Screen::Editor, 100, 30);
+    if std::env::var("OXYTYPE_UI_DUMP").is_ok() {
+        println!("{}", text(&buffer));
+    }
+    let palette = oxytype_tui::theme::Palette::named("rust");
+    let (x, y) = find(&buffer, " repeat ").unwrap();
+    assert_eq!(buffer[(x + 1, y)].bg, palette.main);
+    let (x, y) = find(&buffer, "hello world").unwrap();
+    assert_eq!(buffer[(x, y)].bg, palette.sub_alt);
+    assert_eq!(buffer[(x, y)].fg, palette.text);
+}
