@@ -152,8 +152,6 @@ export const results = sqliteTable(
     index("results_client_time_idx").on(t.uid, t.client, t.timestamp, t.id),
     // Existing storage can retain legacy rows; request schemas accept web only.
     check("results_client", sql`${t.client} IN ('web','tui')`),
-    index("results_owner_time_idx").on(t.uid, t.timestamp, t.id),
-    index("results_mode_idx").on(t.uid, t.mode, t.mode2, t.language),
     uniqueIndex("results_submission_idx").on(t.uid, t.submissionHash),
   ],
 );

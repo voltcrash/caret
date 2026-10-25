@@ -40,6 +40,15 @@ describe("D1 schema on workerd", () => {
       expect(tables.results.map((row) => row.name)).not.toContain(removed);
     }
   });
+  it("keeps only the result indexes production queries use", async () => {
+    const indexes = await test.env.DB.prepare(
+      "SELECT name FROM sqlite_master WHERE type='index' AND tbl_name='results' AND sql IS NOT NULL ORDER BY name",
+    ).all<{ name: string }>();
+    expect(indexes.results.map((row) => row.name)).toEqual([
+      "results_client_time_idx",
+      "results_submission_idx",
+    ]);
+  });
   it("enforces normalized user names and cascades owned rows", async () => {
     await seedUser(test.env, "owner", "Name");
     await expect(seedUser(test.env, "other", "name")).rejects.toThrow(/UNIQUE/);
