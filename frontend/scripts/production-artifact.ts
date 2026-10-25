@@ -92,6 +92,11 @@ export async function validateArtifact(
       throw new Error(`Production artifact has a different ${key}`);
     }
   }
+  const builtPlacement = built["placement"] as { mode?: string } | undefined;
+  const sourcePlacement = source["placement"] as { mode?: string } | undefined;
+  if ((builtPlacement?.mode ?? "off") !== (sourcePlacement?.mode ?? "off")) {
+    throw new Error("Production artifact has a different placement mode");
+  }
   const vars = built["vars"] as Record<string, string>;
   const sourceVars = source["vars"] as Record<string, string>;
   const databases = built["d1_databases"] as { database_id: string }[];
