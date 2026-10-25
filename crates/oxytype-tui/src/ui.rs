@@ -51,22 +51,33 @@ pub fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
     .split(area);
     let state = host.state();
     header(frame, rows[0], &palette, screen, local, state.active);
-    if screen == Screen::Test {
-        if state.ended {
-            result(frame, rows[1], host, local, &palette);
-        } else {
-            test(frame, rows[1], host, now, &palette);
-        }
-        footer(
-            frame,
-            rows[2],
-            &palette,
-            notice,
-            state.active || state.ended,
-            !local.pending.is_empty(),
-        );
-        return;
+    let quiet = state.active || (screen == Screen::Test && state.ended);
+    match screen {
+        Screen::Test if state.ended => result(frame, rows[1], host, local, &palette),
+        Screen::Test => test(frame, rows[1], host, now, &palette),
+        Screen::Settings => settings(frame, rows[1], setup, &palette),
+        _ => fallback(frame, rows[1], host, local, setup, capabilities, screen),
     }
+    footer(
+        frame,
+        rows[2],
+        &palette,
+        notice,
+        quiet,
+        !local.pending.is_empty(),
+    );
+}
+/// Screens not yet given a web layout keep the bordered text view.
+fn fallback(
+    frame: &mut Frame,
+    area: Rect,
+    host: &EngineHost,
+    local: &Local,
+    setup: &Setup,
+    capabilities: &crate::input::Capabilities,
+    screen: Screen,
+) {
+    let rows = [area, area];
     let body = match screen {
         Screen::Help => vec![
             Line::from("F5 new · F6 repeat · F2 settings · F3 history · F4 custom · Esc return"),
@@ -84,14 +95,6 @@ pub fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
                 capabilities.repeat_observed
             )),
         ],
-        Screen::Settings => {
-            let lines = setup.lines();
-            let visible = rows[1].height.saturating_sub(3) as usize;
-            let skip = setup.selected.saturating_sub(visible.saturating_sub(1));
-            std::iter::once(lines[0].clone())
-                .chain(lines.into_iter().skip(skip + 1).take(visible))
-                .collect()
-        }
         Screen::Editor => {
             let mut lines = setup.editor_lines();
             for line in &mut lines {
@@ -124,22 +127,13 @@ pub fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
         Screen::History => local
             .history
             .lines(&local.store, rows[1].height.saturating_sub(2) as usize),
-        // Drawn by `test`/`result` before the bordered fallback.
-        Screen::Test => vec![],
+        Screen::Test | Screen::Settings => vec![],
     };
     frame.render_widget(
         Paragraph::new(body)
             .wrap(Wrap { trim: false })
             .block(Block::bordered()),
         rows[1],
-    );
-    footer(
-        frame,
-        rows[2],
-        &palette,
-        notice,
-        state.active,
-        !local.pending.is_empty(),
     );
 }
 /// One web `<kbd>`: key text on the sub-alt chip.
@@ -653,4 +647,87 @@ fn result(frame: &mut Frame, area: Rect, host: &EngineHost, local: &Local, palet
         ]),
     };
     frame.render_widget(Paragraph::new(line).alignment(Alignment::Center), message);
+}
+/// One web button: active uses main on bg, others text on sub-alt.
+fn button(palette: &Palette, label: &str, active: bool) -> Span<'static> {
+    let style = if active {
+        Style::new().fg(palette.bg).bg(palette.main)
+    } else {
+        Style::new().fg(palette.text).bg(palette.sub_alt)
+    };
+    Span::styled(format!(" {label} "), style)
+}
+/// Web settings page: section headings, labels left, button groups right.
+fn settings(frame: &mut Frame, area: Rect, setup: &Setup, palette: &Palette) {
+    let area = column(area, 100);
+    let [hints, _, list] = Layout::vertical([
+        Constraint::Length(1),
+        Constraint::Length(1),
+        Constraint::Fill(1),
+    ])
+    .areas(area);
+    let mut spans = tip(palette, "↑↓", "select");
+    for (label, action) in [
+        ("←→", "change"),
+        ("Enter", "apply"),
+        ("F4", "custom text"),
+        ("Esc", "cancel"),
+    ] {
+        spans.push(Span::raw("   "));
+        spans.extend(tip(palette, label, action));
+    }
+    frame.render_widget(Paragraph::new(Line::from(spans)), hints);
+    let label_width = 22;
+    let room = (list.width as usize).saturating_sub(label_width + 2);
+    let mut lines = vec![];
+    let mut selected_line = 0;
+    for (index, row) in setup.rows().into_iter().enumerate() {
+        if let Some(section) = row.section {
+            if !lines.is_empty() {
+                lines.push(Line::default());
+            }
+            lines.push(Line::styled(
+                format!("▸ {section}"),
+                Palette::fg(palette.sub).add_modifier(Modifier::BOLD),
+            ));
+        }
+        let selected = index == setup.selected;
+        if selected {
+            selected_line = lines.len();
+        }
+        let mut spans = vec![
+            Span::styled(
+                if selected { "› " } else { "  " },
+                Palette::fg(palette.main),
+            ),
+            Span::styled(
+                format!("{:<width$}", row.label, width = label_width - 2),
+                Palette::fg(if selected { palette.text } else { palette.sub }),
+            ),
+        ];
+        let width: usize = row.options.iter().map(|o| o.chars().count() + 3).sum();
+        if row.options.len() == 1 || width > room {
+            // Too wide for a group (or a free value): show the current choice with arrows.
+            spans.extend([
+                Span::styled("‹ ", Palette::fg(palette.sub)),
+                button(palette, &row.options[row.active], row.options.len() > 1),
+                Span::styled(" ›", Palette::fg(palette.sub)),
+            ]);
+        } else {
+            for (option, label) in row.options.iter().enumerate() {
+                spans.push(button(palette, label, option == row.active));
+                spans.push(Span::raw(" "));
+            }
+        }
+        if let Some(note) = row.note {
+            spans.push(Span::styled(
+                format!("  {note}"),
+                Palette::fg(palette.error),
+            ));
+        }
+        lines.push(Line::from(spans));
+    }
+    let visible = list.height as usize;
+    let skip = selected_line.saturating_sub(visible.saturating_sub(2));
+    frame.render_widget(Paragraph::new(lines).scroll((skip as u16, 0)), list);
 }
