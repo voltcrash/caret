@@ -112,7 +112,55 @@ pub fn names() -> Vec<&'static str> {
 pub fn known(name: &str) -> bool {
     THEMES.iter().any(|(n, _)| *n == name)
 }
+/// Whether the terminal advertises 24-bit colour (`COLORTERM`), as most modern emulators do.
+pub fn truecolor() -> bool {
+    std::env::var("COLORTERM").is_ok_and(|v| matches!(v.as_str(), "truecolor" | "24bit"))
+}
+/// Nearest xterm-256 index: 6×6×6 cube or the 24-step grey ramp, whichever is closer.
+pub fn indexed(color: Color) -> Color {
+    let Color::Rgb(r, g, b) = color else {
+        return color;
+    };
+    const LEVELS: [u8; 6] = [0, 95, 135, 175, 215, 255];
+    let level = |v: u8| {
+        (0..6)
+            .min_by_key(|&i| (i32::from(LEVELS[i]) - i32::from(v)).abs())
+            .unwrap_or(0)
+    };
+    let (ri, gi, bi) = (level(r), level(g), level(b));
+    let cube = (LEVELS[ri], LEVELS[gi], LEVELS[bi]);
+    let average = (u16::from(r) + u16::from(g) + u16::from(b)) / 3;
+    let grey_index = (average.saturating_sub(3) / 10).min(23) as u8;
+    let grey = 8 + 10 * grey_index;
+    let distance = |(x, y, z): (u8, u8, u8)| {
+        [(x, r), (y, g), (z, b)]
+            .iter()
+            .map(|(a, b)| (i32::from(*a) - i32::from(*b)).pow(2))
+            .sum::<i32>()
+    };
+    if distance((grey, grey, grey)) < distance(cube) {
+        Color::Indexed(232 + grey_index)
+    } else {
+        Color::Indexed(16 + 36 * ri as u8 + 6 * gi as u8 + bi as u8)
+    }
+}
 impl Palette {
+    /// Downgrade RGB to xterm-256 for terminals without truecolor.
+    pub fn adapt(self, truecolor: bool) -> Self {
+        if truecolor {
+            return self;
+        }
+        Self {
+            bg: indexed(self.bg),
+            main: indexed(self.main),
+            caret: indexed(self.caret),
+            sub: indexed(self.sub),
+            sub_alt: indexed(self.sub_alt),
+            text: indexed(self.text),
+            error: indexed(self.error),
+            error_extra: indexed(self.error_extra),
+        }
+    }
     pub fn named(name: &str) -> Self {
         THEMES
             .iter()
@@ -125,5 +173,20 @@ impl Palette {
     }
     pub fn fg(color: Color) -> Style {
         Style::new().fg(color)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn indexed_picks_cube_or_grey_ramp() {
+        assert_eq!(indexed(Color::Rgb(255, 0, 0)), Color::Indexed(196));
+        assert_eq!(indexed(Color::Rgb(0, 0, 0)), Color::Indexed(16));
+        assert_eq!(indexed(Color::Rgb(128, 128, 128)), Color::Indexed(244));
+        assert_eq!(indexed(Color::Yellow), Color::Yellow);
+        let rust = Palette::named("rust").adapt(false);
+        assert!(matches!(rust.main, Color::Indexed(_)));
+        assert_eq!(Palette::named("rust").adapt(true), Palette::named("rust"));
     }
 }
