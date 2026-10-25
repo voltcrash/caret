@@ -79,7 +79,7 @@ bar, live timer and a three-line word stream (untyped `sub`, correct `text`, mis
 the footer. Chrome fades while typing. Results show large wpm/acc beside a wpm/raw
 chart with error marks, then test type, raw, characters, consistency and time.
 Settings, history, help, custom text and replay use the same buttons and key chips.
-Themes reuse web palettes: `rust` (default), `serika_dark`, `carbon`, `nord`,
+Themes reuse web palettes: `azure` (default), `rust`, `serika_dark`, `carbon`, `nord`,
 `dracula`, `catppuccin`, `gruvbox_dark`, `light`, `high-contrast`, and `terminal`
 (the emulator's own ANSI colors). Settings preview a theme before Enter applies it.
 Without `COLORTERM=truecolor`/`24bit`, palettes map to the nearest xterm-256 colors.
