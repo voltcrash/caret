@@ -28,9 +28,15 @@ const fn web([bg, main, caret, sub, sub_alt, text, error, error_extra]: [u32; 8]
         error_extra: rgb(error_extra),
     }
 }
-pub const DEFAULT: &str = "rust";
+pub const DEFAULT: &str = "azure";
 /// Name order is the settings cycle order. `terminal` keeps the user's ANSI colors.
 pub const THEMES: &[(&str, Palette)] = &[
+    (
+        "azure",
+        web([
+            0x0b0d1c, 0x4ea8ff, 0x4ea8ff, 0x8290b4, 0x151a30, 0xe4ebff, 0xff6b5e, 0xb8423a,
+        ]),
+    ),
     (
         "rust",
         web([
