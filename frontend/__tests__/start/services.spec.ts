@@ -178,7 +178,8 @@ describe("pilot shared services in workerd", () => {
     expect((await worker.fetch(url, { headers })).status).toBe(401);
     // Root allows 67 per minute per trusted IP; the spoofed hop has no budget of its own.
     let limited = await worker.fetch(url, { headers });
-    for (let sent = 2; limited.status !== 429 && sent <= 68; sent++) {
+    // Headroom: the fixed one-minute window may roll over mid-loop.
+    for (let sent = 2; limited.status !== 429 && sent <= 2 * 67 + 1; sent++) {
       limited = await worker.fetch(url, {
         headers: { ...headers, "x-forwarded-for": `1.2.3.${sent}` },
       });

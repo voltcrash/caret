@@ -38,12 +38,15 @@ export async function exhaustRootLimit(
   ip: string,
 ): Promise<void> {
   const target = await mf.getWorker(worker);
-  for (let sent = 0; sent < 67; sent++) {
+  // Headroom: the fixed one-minute window may roll over mid-loop.
+  for (let sent = 0; sent < 2 * 67 + 1; sent++) {
     const response = await target.fetch("http://localhost:3000/api/", {
       headers: { "cf-connecting-ip": ip },
     });
     await response.arrayBuffer();
+    if (response.status === 429) return;
   }
+  throw new Error("Root limit never applied");
 }
 
 export async function createWorkerd(

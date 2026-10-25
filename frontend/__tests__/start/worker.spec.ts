@@ -61,9 +61,10 @@ describe("built Start application in workerd", () => {
     );
     expect(await shared.text()).toContain("testsCompleted");
     // publicStatsGet allows 60 per minute; no-cache reaches the limiter.
+    // Headroom: the fixed one-minute window may roll over mid-loop.
     const uncached = { ...headers, "cache-control": "no-cache" };
     let limited = response;
-    for (let sent = 1; limited.status === 200 && sent <= 61; sent++) {
+    for (let sent = 1; limited.status === 200 && sent <= 2 * 60 + 1; sent++) {
       limited = await worker.fetch(url, { headers: uncached });
     }
     expect(limited.status).toBe(429);
