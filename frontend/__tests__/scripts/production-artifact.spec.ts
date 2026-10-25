@@ -102,6 +102,18 @@ it("rejects a sealed artifact for a different Worker or release", async () => {
   ).rejects.toThrow("one release");
 });
 
+it.each(["ratelimits", "analytics_engine_datasets"])(
+  "rejects a built Worker whose %s differ from the source config",
+  async (key) => {
+    await expect(
+      validateArtifact(directory, {
+        ...settings,
+        config: { ...config, [key]: [] },
+      }),
+    ).rejects.toThrow(`different ${key}`);
+  },
+);
+
 it("rejects changing placement between the built artifact and source config", async () => {
   await expect(
     validateArtifact(directory, {
