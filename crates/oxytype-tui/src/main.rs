@@ -91,6 +91,7 @@ fn run() -> Result<()> {
     let mut last_draw = Instant::now();
     let mut dirty = true;
     let mut caret_theme = String::new();
+    let truecolor = oxytype_tui::theme::truecolor();
     loop {
         if guard.resume_if_requested(&mut terminal)? {
             capabilities.enhanced_keyboard_negotiated = guard.enhanced.load(Ordering::SeqCst);
@@ -142,6 +143,7 @@ fn run() -> Result<()> {
                         local: &local,
                         setup: &setup,
                         capabilities: &capabilities,
+                        truecolor,
                     },
                 )
             })?;

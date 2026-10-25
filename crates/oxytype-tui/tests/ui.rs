@@ -47,6 +47,7 @@ fn render(fixture: &Fixture, screen: Screen, width: u16, height: u16) -> Buffer 
                     local: &fixture.local,
                     setup: &fixture.setup,
                     capabilities: &Capabilities::default(),
+                    truecolor: true,
                 },
             )
         })

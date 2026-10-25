@@ -24,6 +24,8 @@ pub struct View<'a> {
     pub local: &'a Local,
     pub setup: &'a Setup,
     pub capabilities: &'a crate::input::Capabilities,
+    /// From `theme::truecolor()`; false downgrades RGB palettes to xterm-256.
+    pub truecolor: bool,
 }
 pub fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
     let View {
@@ -32,6 +34,7 @@ pub fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
         local,
         setup,
         capabilities,
+        truecolor,
     } = view;
     let area = frame.area();
     // Settings preview the drafted theme before it is applied, as the web does.
@@ -39,7 +42,8 @@ pub fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
         &setup.theme
     } else {
         &local.preferences.theme
-    });
+    })
+    .adapt(truecolor);
     frame.render_widget(Block::default().style(palette.base()), area);
     if area.width < 60 || area.height < 18 {
         // Mirrors the web's centred notices: headline in main, detail in sub.
