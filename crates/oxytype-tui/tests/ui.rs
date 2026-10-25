@@ -167,3 +167,21 @@ fn result_shows_big_wpm_acc_chart_and_stat_groups() {
     assert!(find(&buffer, "words 10").is_some());
     assert!(find(&buffer, "next test").is_some());
 }
+
+#[test]
+fn settings_render_button_groups_with_active_choice_in_main() {
+    let mut fixture = fixture(Config::default());
+    fixture.setup.selected = 3;
+    let buffer = render(&fixture, Screen::Settings, 100, 30);
+    if std::env::var("OXYTYPE_UI_DUMP").is_ok() {
+        println!("{}", text(&buffer));
+    }
+    let palette = oxytype_tui::theme::Palette::named("rust");
+    let (x, y) = find(&buffer, " time ").unwrap();
+    assert_eq!(buffer[(x + 1, y)].bg, palette.main);
+    let (x, y) = find(&buffer, " words ").unwrap();
+    assert_eq!(buffer[(x + 1, y)].bg, palette.sub_alt);
+    let (x, y) = find(&buffer, "› punctuation").unwrap();
+    assert_eq!(buffer[(x, y)].fg, palette.main);
+    assert!(find(&buffer, "▸ behavior").is_some());
+}
