@@ -153,6 +153,7 @@ fn native_terminal_decodes_edits_and_persists_actual_input_without_physical_tele
     command.arg("--data-dir");
     command.arg(&paths.data);
     command.env("TERM", "xterm-256color");
+    command.env("COLORTERM", "truecolor"); // Letter checks below compare RGB.
     let mut child = ChildGuard(pair.slave.spawn_command(command).unwrap());
     drop(pair.slave);
     // Web rust palette: untyped letters use sub, mistakes use error.
