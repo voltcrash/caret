@@ -51,6 +51,18 @@ pub fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
     .split(area);
     let state = host.state();
     header(frame, rows[0], &palette, screen, local, state.active);
+    if screen == Screen::Test && !state.ended {
+        test(frame, rows[1], host, now, &palette);
+        footer(
+            frame,
+            rows[2],
+            &palette,
+            notice,
+            state.active,
+            !local.pending.is_empty(),
+        );
+        return;
+    }
     let body = match screen {
         Screen::Help => vec![
             Line::from("F5 new · F6 repeat · F2 settings · F3 history · F4 custom · Esc return"),
@@ -143,65 +155,8 @@ pub fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
             ),
             Line::from("F5 new test · F6 repeat"),
         ],
-        Screen::Test => {
-            let mut lines = vec![];
-            if let Ok(live) = host.live(now) {
-                lines.push(Line::from(format!(
-                    "{:.1} WPM · {:.1}% · {:.0}s",
-                    live.wpm, live.acc, live.seconds
-                )));
-            }
-            let input = host.visual_input.clone().unwrap_or(state.input_value);
-            let mut target = typing_engine::Text::default();
-            if host.config.mode != "zen" {
-                target = host
-                    .words
-                    .get(state.word_index)
-                    .cloned()
-                    .unwrap_or_default();
-            }
-            let view = crate::render::text_view(
-                &target,
-                &input,
-                &host.config.language,
-                rows[1].width.saturating_sub(2),
-                rows[1].height.saturating_sub(6),
-            );
-            if view.errors {
-                lines.push(Line::from("! Incorrect text is underlined"));
-            }
-            let caret_y = rows[1].y + 1 + lines.len() as u16 + view.caret.1;
-            frame.set_cursor_position((rows[1].x + 1 + view.caret.0, caret_y));
-            lines.extend(view.lines.into_iter().map(|line| {
-                line.style(
-                    ratatui::style::Style::new().add_modifier(ratatui::style::Modifier::BOLD),
-                )
-            }));
-            if host.config.mode != "zen" {
-                let next = host
-                    .words
-                    .iter()
-                    .skip(state.word_index + 1)
-                    .take(5)
-                    .map(|w| w.display_lossy().replace('\n', "↵").replace('\t', "→"))
-                    .collect::<String>();
-                lines.push(Line::from(format!(
-                    "Next: {}",
-                    crate::render::clip_cells(&next, rows[1].width.saturating_sub(8) as usize)
-                )));
-            }
-            lines.push(Line::from(format!(
-                "Input: {}",
-                crate::render::clip_cells(
-                    &input
-                        .display_lossy()
-                        .replace('\t', "→   ")
-                        .replace('\n', "↵"),
-                    rows[1].width.saturating_sub(9) as usize
-                )
-            )));
-            lines
-        }
+        // Drawn by `test` before the bordered fallback.
+        Screen::Test => vec![],
     };
     frame.render_widget(
         Paragraph::new(body)
@@ -356,4 +311,148 @@ fn header(
         Paragraph::new(Line::from(nav)).alignment(Alignment::Right),
         top,
     );
+}
+/// Web test config: punctuation/numbers, modes, then the active mode's presets.
+fn config_bar(palette: &Palette, config: &typing_engine::Config) -> Line<'static> {
+    let on = |active: bool| Palette::fg(if active { palette.main } else { palette.sub });
+    let gap = || Span::raw("  ");
+    let divider = || Span::styled("  │  ", Palette::fg(palette.bg));
+    let mut spans = vec![Span::raw("  ")];
+    if matches!(config.mode.as_str(), "time" | "words") {
+        spans.extend([
+            Span::styled("@ punctuation", on(config.punctuation)),
+            gap(),
+            Span::styled("# numbers", on(config.numbers)),
+            divider(),
+        ]);
+    }
+    for (index, mode) in ["time", "words", "quote", "zen", "custom"]
+        .iter()
+        .enumerate()
+    {
+        if index > 0 {
+            spans.push(gap());
+        }
+        spans.push(Span::styled(*mode, on(config.mode == *mode)));
+    }
+    let presets: Vec<(String, bool)> = match config.mode.as_str() {
+        "time" => [15.0, 30.0, 60.0, 120.0]
+            .iter()
+            .map(|t| (t.to_string(), config.time == *t))
+            .collect(),
+        "words" => [10, 25, 50, 100]
+            .iter()
+            .map(|w| (w.to_string(), config.words == *w))
+            .collect(),
+        "quote" => ["short", "medium", "long", "thicc"]
+            .iter()
+            .enumerate()
+            .map(|(group, name)| {
+                (
+                    name.to_string(),
+                    config.quote_length.contains(&(group as i32)),
+                )
+            })
+            .collect(),
+        _ => vec![],
+    };
+    if !presets.is_empty() {
+        spans.push(divider());
+        let custom = !presets.iter().any(|(_, active)| *active);
+        for (index, (label, active)) in presets.into_iter().enumerate() {
+            if index > 0 {
+                spans.push(gap());
+            }
+            spans.push(Span::styled(label, on(active)));
+        }
+        if config.mode != "quote" {
+            spans.extend([gap(), Span::styled("⚙", on(custom))]);
+        }
+    }
+    spans.push(Span::raw("  "));
+    Line::from(spans).style(Style::new().bg(palette.sub_alt))
+}
+/// Web timer/progress: remaining time, typed/total words, or elapsed for infinite tests.
+fn progress(host: &EngineHost, live: &typing_engine::session::LiveMetrics) -> String {
+    let index = host.state().word_index;
+    match host.config.mode.as_str() {
+        "time" if host.config.time > 0.0 => {
+            format!("{:.0}", (host.config.time - live.seconds).max(0.0).ceil())
+        }
+        "words" if host.config.words > 0 => format!("{index}/{}", host.config.words),
+        "quote" | "custom"
+            if !host.words.is_empty() && host.custom_limit().is_none_or(|l| l.mode != "time") =>
+        {
+            format!("{index}/{}", host.words.len())
+        }
+        _ => format!("{:.0}", live.seconds),
+    }
+}
+fn test(frame: &mut Frame, area: Rect, host: &EngineHost, now: f64, palette: &Palette) {
+    let state = host.state();
+    let area = column(area, 100);
+    let [_, bar, _, live, words, _, restart, _] = Layout::vertical([
+        Constraint::Fill(1),
+        Constraint::Length(1),
+        Constraint::Length(2),
+        Constraint::Length(1),
+        Constraint::Length(3),
+        Constraint::Length(1),
+        Constraint::Length(1),
+        Constraint::Fill(2),
+    ])
+    .areas(area);
+    if !state.active {
+        let line = config_bar(palette, &host.config);
+        let width = (line.width() as u16).min(bar.width);
+        frame.render_widget(
+            Paragraph::new(line),
+            Rect {
+                x: bar.x + (bar.width - width) / 2,
+                width,
+                ..bar
+            },
+        );
+    }
+    if state.active
+        && let Ok(stats) = host.live(now)
+    {
+        frame.render_widget(
+            Paragraph::new(Line::from(vec![
+                Span::styled(progress(host, &stats), Palette::fg(palette.main)),
+                Span::styled(
+                    format!("   {:.0} wpm   {:.0}% acc", stats.wpm, stats.acc),
+                    Palette::fg(palette.sub),
+                ),
+            ])),
+            live,
+        );
+    }
+    let input = host.visual_input.clone().unwrap_or(state.input_value);
+    let targets: &[typing_engine::Text] = if host.config.mode == "zen" {
+        &[]
+    } else {
+        &host.words
+    };
+    let view = crate::words::view(
+        crate::words::Stream {
+            words: targets,
+            inputs: &host.inputs,
+            index: state.word_index,
+            input: &input,
+            language: &host.config.language,
+            palette,
+        },
+        words.width,
+        words.height,
+    );
+    frame.set_cursor_position((words.x + view.caret.0, words.y + view.caret.1));
+    frame.render_widget(Paragraph::new(view.lines), words);
+    if !state.active {
+        frame.render_widget(
+            Paragraph::new(Span::styled("↻", Palette::fg(palette.sub)))
+                .alignment(Alignment::Center),
+            restart,
+        );
+    }
 }

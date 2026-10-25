@@ -28,6 +28,43 @@ fn wait_screen(
         std::thread::sleep(Duration::from_millis(10));
     }
 }
+/// Foreground colour of the letter `offset` cells into the first `needle` match.
+fn letter_color(
+    parser: &Arc<Mutex<vt100::Parser>>,
+    needle: &str,
+    offset: u16,
+) -> Option<vt100::Color> {
+    let parser = parser.lock().unwrap();
+    let screen = parser.screen();
+    let (rows, columns) = screen.size();
+    (0..rows).find_map(|row| {
+        let line = screen.contents_between(row, 0, row, columns);
+        let column = line.find(needle)? as u16 + offset;
+        screen.cell(row, column).map(|cell| cell.fgcolor())
+    })
+}
+fn wait_color(
+    parser: &Arc<Mutex<vt100::Parser>>,
+    child: &mut ChildGuard,
+    needle: &str,
+    offset: u16,
+    color: vt100::Color,
+) {
+    let deadline = Instant::now() + Duration::from_secs(10);
+    loop {
+        let seen = letter_color(parser, needle, offset);
+        if seen == Some(color) {
+            return;
+        }
+        let exit = child.0.try_wait().unwrap();
+        assert!(
+            exit.is_none() && Instant::now() < deadline,
+            "Letter {offset} of {needle:?} is {seen:?}, not {color:?}; exit={exit:?}; screen={:?}",
+            parser.lock().unwrap().screen().contents()
+        );
+        std::thread::sleep(Duration::from_millis(10));
+    }
+}
 struct ChildGuard(Box<dyn portable_pty::Child + Send + Sync>);
 impl Drop for ChildGuard {
     fn drop(&mut self) {
@@ -118,21 +155,19 @@ fn native_terminal_decodes_edits_and_persists_actual_input_without_physical_tele
     command.env("TERM", "xterm-256color");
     let mut child = ChildGuard(pair.slave.spawn_command(command).unwrap());
     drop(pair.slave);
-    wait_screen(&parser, &trace, &mut child, "Input:");
+    // Web rust palette: untyped letters use sub, mistakes use error.
+    let sub = vt100::Color::Rgb(0x9c, 0x86, 0x7a);
+    let error = vt100::Color::Rgb(0xff, 0x4d, 0x6d);
+    let text = vt100::Color::Rgb(0xf3, 0xe7, 0xdc);
+    wait_screen(&parser, &trace, &mut child, "one two");
+    wait_color(&parser, &mut child, "one two", 6, sub);
     writer.lock().unwrap().write_all(b"one twx").unwrap();
     writer.lock().unwrap().flush().unwrap();
-    wait_screen(&parser, &trace, &mut child, "Input: twx");
+    wait_color(&parser, &mut child, "one two", 6, error);
+    assert_eq!(letter_color(&parser, "one two", 0), Some(text));
     writer.lock().unwrap().write_all(b"\x7f").unwrap();
     writer.lock().unwrap().flush().unwrap();
-    wait_screen(&parser, &trace, &mut child, "Input: tw ");
-    assert!(
-        !parser
-            .lock()
-            .unwrap()
-            .screen()
-            .contents()
-            .contains("Input: twx")
-    );
+    wait_color(&parser, &mut child, "one two", 6, sub);
     std::thread::sleep(Duration::from_millis(1100));
     writer.lock().unwrap().write_all(b"o").unwrap();
     writer.lock().unwrap().flush().unwrap();
