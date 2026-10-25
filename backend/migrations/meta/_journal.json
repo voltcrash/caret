@@ -113,6 +113,13 @@
       "when": 1792610789804,
       "tag": "0015_remove_ape_keys",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "6",
+      "when": 1792917563901,
+      "tag": "0016_daily_summary_index",
+      "breakpoints": true
     }
   ]
 }

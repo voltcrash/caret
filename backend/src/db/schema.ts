@@ -323,6 +323,8 @@ export const dailyEntries = sqliteTable(
   (t) => [
     primaryKey({ columns: [t.board, t.period, t.uid] }),
     index("daily_entries_rank_idx").on(t.board, t.period, t.score, t.uid),
+    // daily_entries_summary_idx (expression index) lives in migration 0016
+    // only: drizzle-kit cannot emit json_extract index keys.
     index("daily_entries_expiry_idx").on(t.expiresAt),
     index("daily_entries_owner_idx").on(t.uid),
   ],
