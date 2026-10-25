@@ -101,3 +101,29 @@ it("rejects a sealed artifact for a different Worker or release", async () => {
     validateArtifact(directory, { ...settings, config }),
   ).rejects.toThrow("one release");
 });
+
+it("rejects changing placement between the built artifact and source config", async () => {
+  await expect(
+    validateArtifact(directory, {
+      ...settings,
+      config: { ...config, placement: { mode: "off" } },
+    }),
+  ).rejects.toThrow("different placement mode");
+});
+
+it("accepts Wrangler's explicit off default when source placement is absent", async () => {
+  const file = resolve(directory, "server/wrangler.json");
+  const built = JSON.parse(await readFile(file, "utf8")) as Record<
+    string,
+    unknown
+  >;
+  built["placement"] = { mode: "off" };
+  await writeFile(file, JSON.stringify(built));
+  await writeArtifact(directory, settings);
+  await expect(
+    validateArtifact(directory, {
+      ...settings,
+      config: { ...config, placement: undefined },
+    }),
+  ).resolves.toBeUndefined();
+});

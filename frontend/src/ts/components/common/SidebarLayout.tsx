@@ -1,7 +1,7 @@
 import {
   createHotkeyHint,
   formatForDisplay,
-  Hotkey,
+  HotkeyChord,
 } from "@tanstack/solid-hotkeys";
 import {
   createSignal,
@@ -69,7 +69,8 @@ export function SidebarLayout<T extends string>(props: {
   };
 
   const keys = (): T[] => Object.keys(props.items) as T[];
-  const hotkey = (index: number): Hotkey => `Mod+${index + 1}` as Hotkey;
+  const hotkey = (index: number): HotkeyChord =>
+    `Mod+${index + 1}` as HotkeyChord;
   for (let i = 0; i < 9; i++) {
     createHotkey(
       hotkey(i),

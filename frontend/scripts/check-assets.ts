@@ -20,11 +20,11 @@ import { z } from "zod";
 import { LayoutObject, LayoutObjectSchema } from "@oxytype/schemas/layouts";
 import { QuoteDataSchema, QuoteData } from "@oxytype/schemas/quotes";
 import { clickSoundConfig } from "../src/ts/constants/sounds";
-import * as ghCore from "@actions/core";
 import { lintJson } from "./json-lint";
 
-const stepSummary =
-  process.env["GITHUB_STEP_SUMMARY"] !== undefined ? ghCore.summary : undefined;
+const stepSummaryPath = process.env["GITHUB_STEP_SUMMARY"];
+const stepSummary: string[] | undefined =
+  stepSummaryPath !== undefined ? [] : undefined;
 
 class Problems<K extends string, T extends string> {
   private type: string;
@@ -54,19 +54,19 @@ class Problems<K extends string, T extends string> {
     return Object.keys(this.problems).length !== 0;
   }
   public toString(): string {
-    stepSummary?.addHeading(`${this.type} Checks`, 2);
+    stepSummary?.push(`## ${this.type} Checks\n`);
     if (!this.hasError()) {
-      stepSummary?.addRaw("✅ all checks passed").addEOL();
+      stepSummary?.push("✅ all checks passed\n");
       return `${this.type} are all \u001b[32mvalid\u001b[0m`;
     }
 
     Object.entries(this.problems).forEach(([key, problems]) => {
       let label: string = this.labels[key as T] ?? `${key}`;
-      stepSummary
-        ?.addRaw(`❌ ${label}`)
-        .addEOL()
-        .addList(problems as string[])
-        .addEOL();
+      stepSummary?.push(
+        `❌ ${label}\n`,
+        ...(problems as string[]).map((problem) => `- ${problem}`),
+        "",
+      );
     });
 
     return `${this.type} are \u001b[31minvalid\u001b[0m\n${Object.entries(
@@ -528,7 +528,9 @@ async function main(): Promise<void> {
       [...tasks].map(async (validator) => validator()),
     );
 
-    await stepSummary?.write();
+    if (stepSummaryPath !== undefined && stepSummary !== undefined) {
+      fs.appendFileSync(stepSummaryPath, `${stepSummary.join("\n")}\n`);
+    }
 
     if (results.find((it) => it.status === "rejected") !== undefined) {
       throw new Error("One or more checks failed.");

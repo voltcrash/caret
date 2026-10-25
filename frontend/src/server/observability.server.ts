@@ -25,6 +25,8 @@ export type RequestLog = {
   /** Sending client's build; absent or "invalid" when not reported. */
   clientBuild?: string;
   staleClient?: true;
+  placementMode?: "smart";
+  placement?: string;
 };
 
 export function requestKind(pathname: string): RequestKind {
@@ -54,10 +56,12 @@ export function requestLog(options: {
   durationMs: number;
   release: string | undefined;
   staleClient?: boolean;
+  placementMode?: string;
 }): RequestLog {
   const { pathname } = new URL(options.request.url);
   const kind = requestKind(pathname);
   const clientBuild = clientBuildOf(options.request.headers);
+  const placement = placementOf(options.request.headers);
   return {
     event: "request",
     requestId: options.requestId,
@@ -73,6 +77,12 @@ export function requestLog(options: {
     release: options.release,
     ...(clientBuild === undefined ? {} : { clientBuild }),
     ...(options.staleClient === true ? { staleClient: true as const } : {}),
+    ...(options.placementMode === "smart"
+      ? {
+          placementMode: "smart" as const,
+          ...(placement === undefined ? {} : { placement }),
+        }
+      : {}),
   };
 }
 
@@ -110,4 +120,12 @@ export function requestMetrics(
       metrics.operations.length,
     ],
   };
+}
+
+/** Cloudflare injects this request header; never echo arbitrary header text. */
+export function placementOf(headers: Headers): string | undefined {
+  const value = headers.get("cf-placement");
+  return value !== null && /^(local|remote)-[A-Z]{3}$/.test(value)
+    ? value
+    : undefined;
 }

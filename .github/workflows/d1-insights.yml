@@ -1,0 +1,43 @@
+name: D1 Query Insights
+
+on:
+  schedule:
+    - cron: "23 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: d1-insights
+  cancel-in-progress: false
+
+jobs:
+  report:
+    if: github.repository == 'voltcrash/oxytype' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [production, staging]
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: voidzero-dev/setup-vp@v1.22.0
+        with:
+          node-version-file: .node-version
+      - name: Collect query metrics
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: vp run --filter @oxytype/frontend db:insights:${{ matrix.target }}
+      - name: Retain sanitized reports
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: d1-insights-${{ matrix.target }}
+          path: frontend/.reports/d1/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30

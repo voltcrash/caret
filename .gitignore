@@ -99,9 +99,6 @@ backend/.env
 
 backend/migrationStats.txt
 
-# Madge
-dep-graph.png
-
 # TypeScript
 build/
 backend/workers
@@ -135,6 +132,7 @@ frontend/src/styles/generated/
 # Playwright failure diagnostics
 frontend/test-results/
 frontend/playwright-report/
+frontend/.reports/
 
 # TanStack Router generator scratch files
 .tanstack/

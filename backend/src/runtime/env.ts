@@ -34,6 +34,7 @@ export type WorkerEnv = {
   API_PATH_OVERRIDE?: string;
   MAINTENANCE?: string;
   VERSION?: string;
+  PLACEMENT_MODE?: string;
   /** Isolate configuration cache lifetime; tests set 0. */
   CONFIGURATION_CACHE_TTL_MS?: string;
   /** Workers rate limiting bindings; see `policies/rate-counter`. */

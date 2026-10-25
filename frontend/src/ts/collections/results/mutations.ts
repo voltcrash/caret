@@ -52,7 +52,7 @@ function createActions(client: Client) {
           });
         }
 
-        resultsCollection().utils.writeUpdate({
+        await resultsCollection().utils.writeUpdate({
           _id: resultId,
           tags: newTagIds,
         });
@@ -62,7 +62,7 @@ function createActions(client: Client) {
     }),
     insertLocalResult: createOptimisticAction<ActionType["insertLocalResult"]>({
       onMutate: ({ result }) => {
-        resultsCollection().utils.writeInsert(normalizeResult(result));
+        void resultsCollection().utils.writeInsert(normalizeResult(result));
       },
       mutationFn: async () => {
         //we don't sync the changes back to the backend here, it is done already
@@ -74,7 +74,7 @@ function createActions(client: Client) {
         for (const result of [...resultsCollection().values()].filter((it) =>
           it.tags.includes(tagId),
         )) {
-          resultsCollection().utils.writeUpdate({
+          void resultsCollection().utils.writeUpdate({
             ...result,
             tags: result.tags.filter((it) => it !== tagId),
           });
@@ -148,7 +148,7 @@ export async function updateTags(
     ...params,
     persisted,
   });
-  await transaction.isPersisted.promise;
+  await transaction.when("settled");
   return persisted;
 }
 
@@ -161,7 +161,7 @@ export async function insertLocalResult(
     return;
   }
   const transaction = actionsByClient[client].insertLocalResult(params);
-  await transaction.isPersisted.promise;
+  await transaction.when("settled");
 }
 
 export async function deleteLocalTag(
@@ -169,5 +169,5 @@ export async function deleteLocalTag(
 ): Promise<void> {
   if (!resultsByClient.web().isReady()) return;
   const transaction = actionsByClient.web.deleteLocalTag(params);
-  await transaction.isPersisted.promise;
+  await transaction.when("settled");
 }

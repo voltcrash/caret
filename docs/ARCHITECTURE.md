@@ -21,7 +21,7 @@ Package versions come from the workspace manifests and lockfile.
 
 The root is a private pnpm workspace. Vite+ (`vp run`) runs workspace tasks.
 TypeScript packages use the `@oxytype` scope and export source. Vite, Vitest,
-wrangler and tsx compile it. Rust/Wasm and declarations build automatically before
+wrangler and `vpx` compile it. Rust/Wasm and declarations build automatically before
 development, production, tests and typechecks; see the [engine SDK](../packages/typing-engine/README.md).
 
 ## Application
@@ -97,6 +97,14 @@ subsequent reads can use sequentially consistent replicas. Auth reads and
 optimistic mutation snapshots use the primary directly to preserve
 revocation (subject to the cookie cache above) and fresh conflict retries. Deployment enables and verifies global
 read replication for its configured database; see [operations](CLOUDFLARE_OPERATIONS.md#read-replication).
+
+Atomic write batches include a durable commit receipt, allowing bounded
+transport retries without replaying application callbacks or duplicating
+progression. Cron expires receipts after seven days. Migration commands run
+`PRAGMA optimize` after successful schema updates; daily Actions reports
+surface expensive D1 query patterns using sanitized query IDs and metrics.
+Production uses Smart Placement; staging keeps default placement. Request
+logs record validated placement decisions without changing database consistency.
 
 ```mermaid
 flowchart LR

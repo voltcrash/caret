@@ -2,7 +2,7 @@ import { writeFileSync, mkdirSync } from "node:fs";
 import { getOpenApi } from "../src/http/openapi";
 
 //detect if we run this as a main
-if (require.main === module) {
+if (import.meta.main) {
   const args = process.argv.slice(2);
   if (args.length !== 1) {
     console.error("Provide filename.");

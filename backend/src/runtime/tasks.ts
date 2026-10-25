@@ -1,4 +1,5 @@
-import { statement, binding } from "../db/client";
+import { statement } from "../db/client";
+import { commitBatch } from "../db/commit";
 import { updateLeaderboards } from "../jobs/update-leaderboards";
 
 /** Cron expressions in every Wrangler config; each trigger owns one job. */
@@ -9,7 +10,7 @@ export async function scheduled(cron: string): Promise<void> {
   if (cron === LEADERBOARD_CRON) await updateLeaderboards();
   if (cron === MAINTENANCE_CRON) {
     const now = Date.now();
-    await binding().batch([
+    await commitBatch([
       statement(
         "DELETE FROM audit_logs WHERE important=0 AND timestamp<?",
         now - 30 * 86400000,
@@ -23,6 +24,10 @@ export async function scheduled(cron: string): Promise<void> {
       ),
       statement("DELETE FROM daily_entries WHERE expires_at<=?", now),
       statement("DELETE FROM weekly_entries WHERE expires_at<=?", now),
+      statement(
+        "DELETE FROM write_receipts WHERE created_at<?",
+        now - 7 * 86400000,
+      ),
     ]);
   }
 }

@@ -326,7 +326,7 @@ describe("user controller test", () => {
 
   describe("generateCurrentTestActivity", () => {
     beforeEach(() => {
-      vi.useFakeTimers().setSystemTime(1712102400000);
+      vi.useFakeTimers({ toFake: ["Date"] }).setSystemTime(1712102400000);
     });
     it("without any data", () => {
       expect(generateCurrentTestActivity(undefined)).toBeUndefined();
@@ -1801,7 +1801,7 @@ describe("user controller test", () => {
     });
     it("should get testActivity if enabled", async () => {
       //GIVEN
-      vi.useFakeTimers().setSystemTime(1712102400000);
+      vi.useFakeTimers({ toFake: ["Date"] }).setSystemTime(1712102400000);
       getUserByNameMock.mockResolvedValue({
         ...foundUser,
         profileDetails: { showActivityOnPublicProfile: true },
@@ -1823,7 +1823,7 @@ describe("user controller test", () => {
     });
     it("should not get testActivity if disabled", async () => {
       //GIVEN
-      vi.useFakeTimers().setSystemTime(1712102400000);
+      vi.useFakeTimers({ toFake: ["Date"] }).setSystemTime(1712102400000);
       getUserByNameMock.mockResolvedValue({
         ...foundUser,
         profileDetails: { showActivityOnPublicProfile: false },
@@ -2247,7 +2247,7 @@ describe("user controller test", () => {
     const verifyCaptchaMock = vi.spyOn(Captcha, "verify");
     const getPartialUserMock = vi.spyOn(UserDal, "getPartialUser");
     beforeEach(async () => {
-      vi.useFakeTimers();
+      vi.useFakeTimers({ toFake: ["Date"] });
       vi.setSystemTime(125000);
       createReportMock.mockClear().mockResolvedValue();
       verifyCaptchaMock.mockClear().mockResolvedValue(true);
@@ -2536,7 +2536,7 @@ describe("user controller test", () => {
     });
     it("gets", async () => {
       //GIVEN
-      vi.useFakeTimers().setSystemTime(1712102400000);
+      vi.useFakeTimers({ toFake: ["Date"] }).setSystemTime(1712102400000);
       const user = {
         uid: uid,
         testActivity: {

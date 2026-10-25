@@ -1,5 +1,5 @@
+import { debounce } from "@oxytype/util/timing";
 import { For, JSXElement, onCleanup, onMount, Show } from "solid-js";
-import { debounce } from "throttle-debounce";
 
 import { createEffectOn } from "../../../hooks/effects";
 import { useRef } from "../../../hooks/useRef";

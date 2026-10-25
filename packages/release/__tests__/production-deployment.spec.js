@@ -213,10 +213,10 @@ it("retires consumers and enables replicas on deployments while keeping dry-runs
       `vp run check:${environment} && vp run retire:${environment}-task-consumer && vp run db:replication:${environment} && wrangler deploy --config dist/start/server/wrangler.json --secrets-file .dev.vars.${environment}`,
     );
     expect(scripts[`retire:${environment}-task-consumer`]).toBe(
-      `tsx scripts/retire-task-consumer.ts ${environment}`,
+      `vpx ./scripts/retire-task-consumer.ts ${environment}`,
     );
     expect(scripts[`db:replication:${environment}`]).toBe(
-      `tsx scripts/enable-d1-read-replication.ts ${environment}`,
+      `vpx ./scripts/enable-d1-read-replication.ts ${environment}`,
     );
   }
   expect(scripts["deploy:production-dry-run"]).not.toContain("retire:");

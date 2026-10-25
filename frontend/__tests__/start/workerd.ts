@@ -62,6 +62,7 @@ export async function createWorkerd(
       | "BETTER_AUTH_URL"
       | "GITHUB_CLIENT_ID"
       | "GITHUB_CLIENT_SECRET"
+      | "PLACEMENT_MODE"
     >
   > = {},
   fixture: {

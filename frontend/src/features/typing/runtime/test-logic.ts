@@ -51,7 +51,7 @@ import { getActiveFunboxesWithFunction } from "./funbox/list";
 import * as CompositionState from "../../../ts/states/composition";
 
 import { setInputElementValue } from "../../../ts/input/input-element";
-import { debounce } from "throttle-debounce";
+import { debounce } from "@oxytype/util/timing";
 
 import { getMutableConfig } from "../../../ts/config/store";
 import { setConfig } from "../../../ts/config/setters";

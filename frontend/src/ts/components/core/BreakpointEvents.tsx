@@ -1,5 +1,5 @@
+import { debounce } from "@oxytype/util/timing";
 import { onCleanup, onMount } from "solid-js";
-import { debounce } from "throttle-debounce";
 
 import { Breakpoints, setBreakpoints } from "../../states/breakpoints";
 

@@ -1,5 +1,5 @@
 import { Accessor, createEffect, createSignal, onCleanup } from "solid-js";
-import { debounce } from "throttle-debounce";
+import { debounce } from "@oxytype/util/timing";
 
 /**
  * Derives a debounced accessor from a reactive source. The returned accessor

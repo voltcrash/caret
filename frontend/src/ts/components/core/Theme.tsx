@@ -1,3 +1,4 @@
+import { debounce } from "@oxytype/util/timing";
 import { Link, Meta, MetaProvider, Style } from "@solidjs/meta";
 import {
   createEffect,
@@ -6,7 +7,6 @@ import {
   onCleanup,
   Show,
 } from "solid-js";
-import { debounce } from "throttle-debounce";
 
 import { toThemeVars } from "../../../app/theme-vars";
 import { Theme as ThemeColors, themes } from "../../constants/themes";

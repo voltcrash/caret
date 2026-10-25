@@ -1,5 +1,5 @@
 import { createEffect, on, onCleanup } from "solid-js";
-import { debounce } from "throttle-debounce";
+import { debounce } from "@oxytype/util/timing";
 import type { AccessorArray } from "solid-js";
 
 type Accessor<T = unknown> = () => T;
@@ -36,9 +36,8 @@ export function createDebouncedEffectOn<
   deps: T,
   fn: (value: OnValue<T>, prev: OnValue<T> | undefined, prevValue?: U) => U,
   options: { defer?: boolean } = {},
-  debounceOptions: { atBegin?: boolean } = {},
 ): void {
-  const debouncedFn = debounce(delay, fn, debounceOptions);
+  const debouncedFn = debounce(delay, fn);
   onCleanup(() => debouncedFn.cancel());
   createEffect(
     on<OnValue<T>, undefined, U | undefined>(

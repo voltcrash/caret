@@ -117,8 +117,15 @@
     {
       "idx": 16,
       "version": "6",
+      "when": 1792872000000,
+      "tag": "0016_write_receipts",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "6",
       "when": 1792917563901,
-      "tag": "0016_daily_summary_index",
+      "tag": "0017_daily_summary_index",
       "breakpoints": true
     }
   ]

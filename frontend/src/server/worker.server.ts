@@ -13,6 +13,7 @@ import {
 } from "./edge-cache.server";
 import { applyResponsePolicy } from "./response-policy.server";
 import {
+  placementOf,
   requestLog,
   requestMetrics,
   serverBuildId,
@@ -110,6 +111,7 @@ export function createApplicationWorker(
             durationMs: Date.now() - started,
             release: env.VERSION,
             staleClient: response.headers.has("X-Oxytype-Stale-Client"),
+            placementMode: env.PLACEMENT_MODE,
           });
           console.info(JSON.stringify(log));
           try {
@@ -123,12 +125,19 @@ export function createApplicationWorker(
           } catch (error) {
             console.error("Request metrics failed", error);
           }
-          return applyResponsePolicy(
+          const final = applyResponsePolicy(
             response,
             nonce,
             requestId,
             env.MODE === "dev",
           );
+          if (env.PLACEMENT_MODE === "smart") {
+            const placement = placementOf(request.headers);
+            if (placement !== undefined) {
+              final.headers.set("X-Oxytype-Placement", placement);
+            }
+          }
+          return final;
         },
         ctx,
       );

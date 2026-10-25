@@ -96,7 +96,7 @@ describe("Logo", () => {
     const view = renderLogo();
     setThemeIndicator({ text: "aether", isFavorite: false });
     const indicator = view.getByRole("button", {
-      name: "Shift-click to toggle custom theme",
+      name: /shift-click to toggle custom theme/,
     });
     expect(indicator).toHaveTextContent("aether");
     fireEvent.click(indicator);
@@ -108,7 +108,7 @@ describe("Logo", () => {
     const view = renderLogo();
     setThemeIndicator({ text: "aether", isFavorite: true });
     const indicator = view.getByRole("button", {
-      name: "Shift-click to toggle custom theme",
+      name: /shift-click to toggle custom theme/,
     });
     expect(indicator).toHaveTextContent("aether");
     expect(indicator.querySelector(".fa-star")).toBeNull();

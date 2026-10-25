@@ -3,6 +3,7 @@ import {
   clientBuildOf,
   requestKind,
   requestLog,
+  placementOf,
   requestMetrics,
 } from "../../src/server/observability.server";
 
@@ -14,6 +15,32 @@ function request(path: string, headers: Record<string, string> = {}): Request {
 }
 
 describe("request observability", () => {
+  it.each(["remote-SIN", "local-BOM"])(
+    "records validated %s placement when Smart Placement is enabled",
+    (placement) => {
+      const options = {
+        request: request("/api", { "cf-placement": placement }),
+        requestId: "placement-test",
+        status: 200,
+        durationMs: 4,
+        release: "staging",
+      };
+      expect(requestLog({ ...options, placementMode: "smart" })).toMatchObject({
+        placementMode: "smart",
+        placement,
+      });
+      expect(requestLog(options)).not.toHaveProperty("placement");
+    },
+  );
+
+  it.each(["<script>", "remote-arbitrary-secret", "local-SIN?token=private"])(
+    "drops unsafe placement %s",
+    (value) => {
+      expect(
+        placementOf(new Headers({ "cf-placement": value })),
+      ).toBeUndefined();
+    },
+  );
   it.each([
     ["/_serverFn/abc123", "function"],
     ["/api/auth/get-session", "auth"],

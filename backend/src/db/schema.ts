@@ -323,7 +323,7 @@ export const dailyEntries = sqliteTable(
   (t) => [
     primaryKey({ columns: [t.board, t.period, t.uid] }),
     index("daily_entries_rank_idx").on(t.board, t.period, t.score, t.uid),
-    // daily_entries_summary_idx (expression index) lives in migration 0016
+    // daily_entries_summary_idx (expression index) lives in migration 0017
     // only: drizzle-kit cannot emit json_extract index keys.
     index("daily_entries_expiry_idx").on(t.expiresAt),
     index("daily_entries_owner_idx").on(t.uid),
@@ -370,4 +370,13 @@ export const mutationGuards = sqliteTable(
   "mutation_guards",
   { id: id(), valid: integer("valid").notNull() },
   (t) => [check("mutation_version", sql`${t.valid} = 1`)],
+);
+
+export const writeReceipts = sqliteTable(
+  "write_receipts",
+  {
+    id: id(),
+    createdAt: integer("created_at").notNull(),
+  },
+  (t) => [index("write_receipts_created_idx").on(t.createdAt)],
 );

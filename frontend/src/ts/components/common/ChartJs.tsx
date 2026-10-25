@@ -24,7 +24,6 @@ import {
 } from "chart.js";
 import "chartjs-adapter-date-fns";
 import chartAnnotation from "chartjs-plugin-annotation";
-import chartTrendline from "chartjs-plugin-trendline";
 import { createDeferred, JSXElement, onCleanup, onMount } from "solid-js";
 
 import { Theme } from "../../constants/themes";
@@ -47,7 +46,6 @@ Chart.register(
   TimeScale,
   TimeSeriesScale,
   Tooltip,
-  chartTrendline,
   chartAnnotation,
 );
 
