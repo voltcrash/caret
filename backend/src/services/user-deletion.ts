@@ -1,5 +1,6 @@
 import type { Configuration } from "@oxytype/schemas/configuration";
-import { binding, statement } from "../db/client";
+import { statement } from "../db/client";
+import { commitBatch } from "../db/commit";
 import { hash } from "../dal/blocklist";
 import { readUser, atomicUser, stage } from "../db/mutation";
 import type { DBUser } from "../dal/user";
@@ -10,9 +11,7 @@ export async function deleteUserAccount(
   _configuration: Configuration,
 ): Promise<DeletedUserInfo | undefined> {
   if ((await readUser(uid)) === undefined) {
-    await binding().batch([
-      statement("DELETE FROM auth_users WHERE id=?", uid),
-    ]);
+    await commitBatch([statement("DELETE FROM auth_users WHERE id=?", uid)]);
     return undefined;
   }
   return await atomicUser(uid, async () => {
