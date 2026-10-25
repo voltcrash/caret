@@ -90,3 +90,42 @@ fn header_shows_logo_theme_and_nav_until_typing_starts() {
     let buffer = render(&fixture, Screen::Test, 100, 30);
     assert!(find(&buffer, "settings").is_none());
 }
+
+#[test]
+fn idle_test_shows_config_bar_with_active_mode_and_untyped_words() {
+    let fixture = fixture(Config {
+        mode: "words".into(),
+        words: 25,
+        ..Default::default()
+    });
+    let palette = oxytype_tui::theme::Palette::named("rust");
+    let buffer = render(&fixture, Screen::Test, 100, 30);
+    let (x, y) = find(&buffer, "words  quote").unwrap();
+    assert_eq!(buffer[(x, y)].fg, palette.main);
+    assert_eq!(buffer[(x, y)].bg, palette.sub_alt);
+    let (x, y) = find(&buffer, "25").unwrap();
+    assert_eq!(buffer[(x, y)].fg, palette.main);
+    let (x, y) = find(&buffer, "time  words").unwrap();
+    assert_eq!(buffer[(x, y)].fg, palette.sub);
+    let first = fixture.host.words[0].display_lossy();
+    let (x, y) = find(&buffer, first.trim_end()).unwrap();
+    assert_eq!(buffer[(x, y)].fg, palette.sub);
+}
+
+#[test]
+fn active_test_hides_config_and_counts_words_in_main_color() {
+    let mut fixture = fixture(Config {
+        mode: "words".into(),
+        words: 25,
+        ..Default::default()
+    });
+    let palette = oxytype_tui::theme::Palette::named("rust");
+    let word = fixture.host.words[0].display_lossy();
+    fixture.host.insert(&word, 100.0, 1000.0).unwrap();
+    let buffer = render(&fixture, Screen::Test, 100, 30);
+    assert!(find(&buffer, "punctuation").is_none());
+    let (x, y) = find(&buffer, "1/25").unwrap();
+    assert_eq!(buffer[(x, y)].fg, palette.main);
+    let (x, y) = find(&buffer, word.trim_end()).unwrap();
+    assert_eq!(buffer[(x, y)].fg, palette.text);
+}
