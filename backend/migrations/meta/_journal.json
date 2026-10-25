@@ -134,6 +134,13 @@
       "when": 1792919415692,
       "tag": "0018_drop_d1_rate_counters",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "6",
+      "when": 1792920415692,
+      "tag": "0019_leaderboard_generation_entries",
+      "breakpoints": true
     }
   ]
 }

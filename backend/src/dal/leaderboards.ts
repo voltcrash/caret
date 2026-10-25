@@ -57,7 +57,8 @@ export async function getCount(
 ): Promise<number> {
   return (
     (await statement(
-      `SELECT count(*) AS count ${snapshot}`,
+      // coalesce short-circuits: only pre-0019 generations count their rows.
+      "SELECT coalesce(g.entries,(SELECT count(*) FROM leaderboard_snapshots s WHERE s.board=g.board AND s.generation=g.generation)) AS count FROM leaderboard_generations g WHERE g.board=?",
       board(mode, mode2, language, client),
     ).first<number>("count")) ?? 0
   );
@@ -101,10 +102,12 @@ export async function update(
       minimum,
     ),
     statement(
-      "INSERT INTO leaderboard_generations(board,generation,updated_at) VALUES(?,?,?) ON CONFLICT(board) DO UPDATE SET generation=excluded.generation,updated_at=excluded.updated_at",
+      "INSERT INTO leaderboard_generations(board,generation,updated_at,entries) VALUES(?,?,?,(SELECT count(*) FROM leaderboard_snapshots WHERE board=? AND generation=?)) ON CONFLICT(board) DO UPDATE SET generation=excluded.generation,updated_at=excluded.updated_at,entries=excluded.entries",
       key,
       generation,
       Date.now(),
+      key,
+      generation,
     ),
     statement("DELETE FROM speed_histograms WHERE board=?", key),
     statement(

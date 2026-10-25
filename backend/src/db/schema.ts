@@ -283,6 +283,8 @@ export const leaderboardGenerations = sqliteTable("leaderboard_generations", {
   board: text("board").primaryKey(),
   generation: text("generation").notNull(),
   updatedAt: integer("updated_at").notNull(),
+  /** Snapshot rows in `generation`; NULL for generations before 0019. */
+  entries: integer("entries"),
 });
 export const leaderboardSnapshots = sqliteTable(
   "leaderboard_snapshots",

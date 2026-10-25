@@ -153,6 +153,18 @@ describe("SQL ranking parity", () => {
       ).toBeNull();
       expect(
         await statement(
+          "SELECT entries FROM leaderboard_generations WHERE board='english_time_15'",
+        ).first<number>("entries"),
+      ).toBe(1);
+      expect(await Leaderboards.getCount("time", "15", "english")).toBe(1);
+      // Generations published before 0019 have no stored count.
+      await statement(
+        "UPDATE leaderboard_generations SET entries=NULL WHERE board='english_time_15'",
+      ).run();
+      expect(await Leaderboards.getCount("time", "15", "english")).toBe(1);
+      expect(await Leaderboards.getCount("time", "60", "english")).toBe(0);
+      expect(
+        await statement(
           "SELECT count(DISTINCT generation) AS count FROM leaderboard_snapshots",
         ).first<number>("count"),
       ).toBe(1);
