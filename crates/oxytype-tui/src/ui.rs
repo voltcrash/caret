@@ -1,9 +1,11 @@
 //! Screen composition. Imperative work stays in the terminal; this only paints frames.
+use crate::theme::Palette;
 use crate::{engine::EngineHost, local::Local, setup::Setup};
 use ratatui::{
     Frame,
-    layout::{Constraint, Layout},
-    text::Line,
+    layout::{Alignment, Constraint, Layout, Rect},
+    style::{Modifier, Style},
+    text::{Line, Span},
     widgets::{Block, Paragraph, Wrap},
 };
 
@@ -47,26 +49,8 @@ pub fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
         Constraint::Length(3),
     ])
     .split(area);
-    frame.render_widget(
-        Paragraph::new(format!(
-            "Oxytype {} | {}{}{}",
-            env!("CARGO_PKG_VERSION"),
-            host.config.mode,
-            if local.preferences.record_replay {
-                " | RECORDING PRIVATE TEXT"
-            } else {
-                ""
-            },
-            if local.pending.is_empty() {
-                String::new()
-            } else {
-                format!(" | {} UNSAVED", local.pending.len())
-            }
-        ))
-        .block(Block::bordered()),
-        rows[0],
-    );
     let state = host.state();
+    header(frame, rows[0], &palette, screen, local, state.active);
     let body = match screen {
         Screen::Help => vec![
             Line::from("F5 new · F6 repeat · F2 settings · F3 history · F4 custom · Esc return"),
@@ -230,5 +214,85 @@ pub fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
             "F1 help · F5 new · F6 repeat · Ctrl+Q quit · F9 retry saves\n{notice}"
         )),
         rows[2],
+    );
+}
+/// Horizontal content column: web `content-grid` with a two-cell gutter.
+fn column(area: Rect, max: u16) -> Rect {
+    let width = area.width.saturating_sub(4).min(max);
+    Rect {
+        x: area.x + (area.width - width) / 2,
+        width,
+        ..area
+    }
+}
+/// Logo, theme indicator and nav. Nav fades while typing, as on the web.
+fn header(
+    frame: &mut Frame,
+    area: Rect,
+    palette: &Palette,
+    screen: Screen,
+    local: &Local,
+    focus: bool,
+) {
+    let area = column(area, 120);
+    let [_, top, below] = Layout::vertical([Constraint::Length(1); 3]).areas(area);
+    let mut logo = vec![
+        Span::styled(
+            "◉ ",
+            Palette::fg(if focus { palette.text } else { palette.main }),
+        ),
+        Span::styled(
+            "oxytype",
+            Palette::fg(palette.text).add_modifier(Modifier::BOLD),
+        ),
+    ];
+    if local.preferences.record_replay {
+        logo.push(Span::styled(
+            "  ● recording private text",
+            Palette::fg(palette.error),
+        ));
+    }
+    if !local.pending.is_empty() {
+        logo.push(Span::styled(
+            format!("  {} unsaved", local.pending.len()),
+            Palette::fg(palette.error),
+        ));
+    }
+    frame.render_widget(Paragraph::new(Line::from(logo)), top);
+    if focus {
+        return;
+    }
+    frame.render_widget(
+        Paragraph::new(Span::styled(
+            format!("  {}", local.preferences.theme.replace('_', " ")),
+            Palette::fg(palette.sub),
+        )),
+        below,
+    );
+    let nav: Vec<_> = [
+        (Screen::Help, "F1", "help"),
+        (Screen::Settings, "F2", "settings"),
+        (Screen::History, "F3", "history"),
+        (Screen::Editor, "F4", "custom"),
+    ]
+    .into_iter()
+    .flat_map(|(target, key, label)| {
+        let color = if target == screen {
+            palette.main
+        } else {
+            palette.sub
+        };
+        [
+            Span::styled(
+                format!("   {key} "),
+                Palette::fg(palette.sub).add_modifier(Modifier::DIM),
+            ),
+            Span::styled(label, Style::new().fg(color)),
+        ]
+    })
+    .collect();
+    frame.render_widget(
+        Paragraph::new(Line::from(nav)).alignment(Alignment::Right),
+        top,
     );
 }
