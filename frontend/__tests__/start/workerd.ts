@@ -107,6 +107,8 @@ export async function createWorkerd(
             value: `${origin}/api/auth`,
           },
           BETTER_AUTH_SECRET: { type: "text" as const, value: testSecret },
+          // Tests change configuration with SQL and expect the next request to see it.
+          CONFIGURATION_CACHE_TTL_MS: { type: "text" as const, value: "0" },
           ...Object.fromEntries(
             Object.entries(overrides).flatMap(([key, value]) =>
               value === undefined

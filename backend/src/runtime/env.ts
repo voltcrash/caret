@@ -30,6 +30,8 @@ export type WorkerEnv = {
   API_PATH_OVERRIDE?: string;
   MAINTENANCE?: string;
   VERSION?: string;
+  /** Isolate configuration cache lifetime; tests set 0. */
+  CONFIGURATION_CACHE_TTL_MS?: string;
 };
 
 export type Runtime = {

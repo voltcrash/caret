@@ -37,12 +37,50 @@ function mergeConfigurations(
   merge(baseConfiguration, liveConfiguration);
 }
 
+/** Isolate-wide; requests clone a snapshot so services never share mutations. */
+const DEFAULT_CACHE_TTL_MS = 30_000;
+type CacheEntry = { loaded: Promise<Configuration>; expiresAt: number };
+const isolateCache = new WeakMap<object, CacheEntry>();
+
+function cacheTtl(): number {
+  const value = Number(runtime().env.CONFIGURATION_CACHE_TTL_MS);
+  return Number.isFinite(value) && value >= 0 ? value : DEFAULT_CACHE_TTL_MS;
+}
+
+/**
+ * Request-stable configuration. Within an isolate, D1 is read at most once per
+ * TTL per database; other isolates converge within the TTL after a patch.
+ */
 export async function getCachedConfiguration(
   _attemptCacheUpdate = false,
 ): Promise<Configuration> {
-  return runtime().configuration ?? (await getLiveConfiguration());
+  const scope = runtime();
+  if (scope.configuration !== undefined) return scope.configuration;
+  const key = scope.env.DB;
+  const ttl = cacheTtl();
+  let entry = ttl === 0 ? undefined : isolateCache.get(key);
+  if (entry === undefined || entry.expiresAt <= Date.now()) {
+    entry = { loaded: loadConfiguration(), expiresAt: Date.now() + ttl };
+    isolateCache.set(key, entry);
+    // Never cache a failed read.
+    entry.loaded.catch(() => {
+      if (isolateCache.get(key) === entry) isolateCache.delete(key);
+    });
+  }
+  scope.configuration ??= structuredClone(await entry.loaded);
+  return scope.configuration;
 }
 export async function getLiveConfiguration(): Promise<Configuration> {
+  const configuration = await loadConfiguration();
+  const scope = runtime();
+  isolateCache.set(scope.env.DB, {
+    loaded: Promise.resolve(configuration),
+    expiresAt: Date.now() + cacheTtl(),
+  });
+  scope.configuration = structuredClone(configuration);
+  return scope.configuration;
+}
+async function loadConfiguration(): Promise<Configuration> {
   const row = await database()
     .select()
     .from(configurationTable)
@@ -57,7 +95,6 @@ export async function getLiveConfiguration(): Promise<Configuration> {
       .values({ id: "main", data: configuration })
       .onConflictDoNothing();
   }
-  runtime().configuration = configuration;
   return configuration;
 }
 export async function patchConfiguration(
