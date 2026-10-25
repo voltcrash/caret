@@ -129,14 +129,28 @@ fn footer(
     let [status, version] =
         Layout::horizontal([Constraint::Min(1), Constraint::Length(10)]).areas(status);
     if !focus {
-        let mut spans = tip(palette, "F5", "restart test");
-        spans.push(Span::raw("    "));
-        spans.extend(tip(palette, "F6", "repeat test"));
-        spans.push(Span::raw("    "));
-        spans.extend(tip(palette, "Ctrl+Q", "quit"));
+        // Retry outranks the rest; narrow footers drop trailing tips instead of clipping.
+        let mut items = vec![
+            ("F5", "restart test"),
+            ("F6", "repeat test"),
+            ("Ctrl+Q", "quit"),
+        ];
         if unsaved {
-            spans.push(Span::raw("    "));
-            spans.extend(tip(palette, "F9", "retry saves"));
+            items.insert(0, ("F9", "retry saves"));
+        }
+        let mut spans = vec![];
+        for (label, action) in items {
+            let mut next = if spans.is_empty() {
+                vec![]
+            } else {
+                vec![Span::raw("    ")]
+            };
+            next.extend(tip(palette, label, action));
+            let width: usize = spans.iter().chain(&next).map(Span::width).sum();
+            if width > tips.width as usize {
+                break;
+            }
+            spans.extend(next);
         }
         frame.render_widget(
             Paragraph::new(Line::from(spans)).alignment(Alignment::Center),
@@ -203,7 +217,9 @@ fn header(
             Palette::fg(palette.error),
         ));
     }
-    frame.render_widget(Paragraph::new(Line::from(logo)), top);
+    let logo = Line::from(logo);
+    let room = (top.width as usize).saturating_sub(logo.width() + 2);
+    frame.render_widget(Paragraph::new(logo), top);
     if focus {
         return;
     }
@@ -214,40 +230,56 @@ fn header(
         )),
         below,
     );
-    let nav: Vec<_> = [
-        (Screen::Help, "F1", "help"),
-        (Screen::Settings, "F2", "settings"),
-        (Screen::History, "F3", "history"),
-        (Screen::Editor, "F4", "custom"),
-    ]
-    .into_iter()
-    .flat_map(|(target, key, label)| {
-        let color = if target == screen {
-            palette.main
-        } else {
-            palette.sub
-        };
-        [
-            Span::styled(
-                format!("   {key} "),
-                Palette::fg(palette.sub).add_modifier(Modifier::DIM),
-            ),
-            Span::styled(label, Style::new().fg(color)),
+    let nav = |keys: bool| -> Line<'static> {
+        let spans: Vec<_> = [
+            (Screen::Help, "F1", "help"),
+            (Screen::Settings, "F2", "settings"),
+            (Screen::History, "F3", "history"),
+            (Screen::Editor, "F4", "custom"),
         ]
-    })
-    .collect();
-    frame.render_widget(
-        Paragraph::new(Line::from(nav)).alignment(Alignment::Right),
-        top,
-    );
+        .into_iter()
+        .flat_map(|(target, key, label)| {
+            let color = if target == screen {
+                palette.main
+            } else {
+                palette.sub
+            };
+            [
+                Span::styled(
+                    if keys {
+                        format!("   {key} ")
+                    } else {
+                        "  ".into()
+                    },
+                    Palette::fg(palette.sub).add_modifier(Modifier::DIM),
+                ),
+                Span::styled(label, Style::new().fg(color)),
+            ]
+        })
+        .collect();
+        Line::from(spans)
+    };
+    // Narrow terminals drop the F-key prefixes, then the nav, before overlapping the logo.
+    let Some(nav) = [nav(true), nav(false)]
+        .into_iter()
+        .find(|line| line.width() <= room)
+    else {
+        return;
+    };
+    frame.render_widget(Paragraph::new(nav).alignment(Alignment::Right), top);
 }
 /// Web test config: punctuation/numbers, modes, then the active mode's presets.
-fn config_bar(palette: &Palette, config: &typing_engine::Config) -> Line<'static> {
+fn config_bar(
+    palette: &Palette,
+    config: &typing_engine::Config,
+    toggles: bool,
+    amounts: bool,
+) -> Line<'static> {
     let on = |active: bool| Palette::fg(if active { palette.main } else { palette.sub });
     let gap = || Span::raw("  ");
     let divider = || Span::styled("  │  ", Palette::fg(palette.bg));
     let mut spans = vec![Span::raw("  ")];
-    if matches!(config.mode.as_str(), "time" | "words") {
+    if toggles && matches!(config.mode.as_str(), "time" | "words") {
         spans.extend([
             Span::styled("@ punctuation", on(config.punctuation)),
             gap(),
@@ -285,7 +317,7 @@ fn config_bar(palette: &Palette, config: &typing_engine::Config) -> Line<'static
             .collect(),
         _ => vec![],
     };
-    if !presets.is_empty() {
+    if amounts && !presets.is_empty() {
         spans.push(divider());
         let custom = !presets.iter().any(|(_, active)| *active);
         for (index, (label, active)) in presets.into_iter().enumerate() {
@@ -332,7 +364,12 @@ fn test(frame: &mut Frame, area: Rect, host: &EngineHost, now: f64, palette: &Pa
     ])
     .areas(area);
     if !state.active {
-        let line = config_bar(palette, &host.config);
+        // Narrow terminals drop toggles, then presets, as the web collapses its bar.
+        let line = [(true, true), (false, true), (false, false)]
+            .into_iter()
+            .map(|(toggles, amounts)| config_bar(palette, &host.config, toggles, amounts))
+            .find(|line| line.width() <= bar.width as usize)
+            .unwrap_or_else(|| config_bar(palette, &host.config, false, false));
         let width = (line.width() as u16).min(bar.width);
         frame.render_widget(
             Paragraph::new(line),
