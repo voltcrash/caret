@@ -85,7 +85,7 @@ pub struct Cli {
     /// Explicit opt-in: persist target text and full input log for replay.
     #[arg(long)]
     pub record_replay: bool,
-    #[arg(long, value_parser=["terminal","high-contrast","light"])]
+    #[arg(long, value_parser=clap::builder::PossibleValuesParser::new(crate::theme::names()))]
     pub theme: Option<String>,
     /// Version/platform diagnostics; no environment variables or private text.
     #[arg(long)]

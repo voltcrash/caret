@@ -50,7 +50,7 @@ impl Default for Settings {
         Self {
             format_version: 1,
             config: Config::default(),
-            theme: "terminal".into(),
+            theme: crate::theme::DEFAULT.into(),
             reduced_animation: true,
             record_replay: false,
         }
@@ -62,7 +62,7 @@ impl Settings {
             return Err("Unsupported settings version; existing file preserved".into());
         }
         self.config.validate()?;
-        if !["terminal", "high-contrast", "light"].contains(&self.theme.as_str()) {
+        if !crate::theme::known(&self.theme) {
             return Err("Unknown terminal theme".into());
         }
         Ok(())

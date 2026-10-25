@@ -35,7 +35,7 @@ impl Setup {
             order: custom.map_or("repeat", |c| c.mode.as_str()).into(),
             limit: custom.map_or("word", |c| c.limit.mode.as_str()).into(),
             length: custom.map(|c| c.limit.value),
-            theme: "terminal".into(),
+            theme: crate::theme::DEFAULT.into(),
             reduced_animation: true,
             record_replay: false,
         }
@@ -95,11 +95,7 @@ impl Setup {
                 cycle(&mut name, &choices, direction);
                 c.funbox = if name.is_empty() { vec![] } else { vec![name] };
             }
-            13 => cycle(
-                &mut self.theme,
-                &["terminal", "high-contrast", "light"],
-                direction,
-            ),
+            13 => cycle(&mut self.theme, &crate::theme::names(), direction),
             14 => self.reduced_animation = !self.reduced_animation,
             15 => self.record_replay = !self.record_replay,
             _ => {}
