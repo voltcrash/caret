@@ -1,6 +1,5 @@
 //! Historical summaries are displayed/exported as stored, never recalculated.
 use crate::{Result, storage::Store};
-use ratatui::text::Line;
 use serde_json::Value;
 
 const MODES: &[Option<&str>] = &[
@@ -96,56 +95,6 @@ impl History {
     }
     pub fn current(&self) -> Option<&Value> {
         self.rows.get(self.selected)
-    }
-    pub fn lines(&self, store: &Store, height: usize) -> Vec<Line<'static>> {
-        let mut lines = vec![
-            Line::from(format!(
-                "Local history · {} · page {}",
-                self.mode().unwrap_or("all modes"),
-                self.page + 1
-            )),
-            Line::from(
-                "↑↓ select/scroll · Enter details · m filter · PgUp/PgDn · F7 export · F8 replay",
-            ),
-        ];
-        if self.details {
-            if let Some(row) = self.current() {
-                let details = serde_json::to_string_pretty(row).unwrap_or_default();
-                lines.extend(
-                    details
-                        .lines()
-                        .skip(self.scroll)
-                        .take(height.saturating_sub(2))
-                        .map(|s| Line::from(s.to_string())),
-                );
-            }
-        } else {
-            let visible = height.saturating_sub(2).max(1);
-            let skip = self.selected.saturating_sub(visible - 1);
-            for (index, row) in self.rows.iter().enumerate().skip(skip).take(visible) {
-                let summary = &row["summary"];
-                let validity = if row["formatVersion"] == 1 {
-                    row["invalidReason"].as_str().unwrap_or("valid")
-                } else {
-                    "unknown format; details/export"
-                };
-                let best = Self::best(row, store);
-                lines.push(Line::from(format!(
-                    "{} {} {} · {} WPM / {}% · {}{}",
-                    if index == self.selected { ">" } else { " " },
-                    row["createdMs"],
-                    row["config"]["mode"].as_str().unwrap_or("unknown"),
-                    summary["wpm"],
-                    summary["acc"],
-                    validity,
-                    if best { " · PB" } else { "" }
-                )));
-            }
-            if self.rows.is_empty() {
-                lines.push(Line::from("No saved results for this filter."));
-            }
-        }
-        lines
     }
 }
 
