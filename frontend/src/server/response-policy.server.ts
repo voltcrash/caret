@@ -13,7 +13,10 @@ export function applyResponsePolicy(
   development: boolean,
 ): Response {
   const result = new Response(response.body, response);
-  result.headers.set("Cache-Control", "no-store");
+  // Only shareable operation responses (see edge-cache) carry s-maxage.
+  if (!/\bs-maxage=\d+/.test(result.headers.get("Cache-Control") ?? "")) {
+    result.headers.set("Cache-Control", "no-store");
+  }
   result.headers.set("X-Request-Id", requestId);
   // Public, like /version.json: correlates a response with its client assets.
   result.headers.set("X-Oxytype-Build", serverBuildId);

@@ -17,6 +17,7 @@
     "./policies/permission": "./src/policies/permission.ts",
     "./policies/rate-limit": "./src/policies/rate-limit.ts",
     "./policies/operation-runner": "./src/policies/operation-runner.ts",
+    "./policies/edge-cache": "./src/policies/edge-cache.ts",
     "./configuration": "./src/init/configuration.ts",
     "./services/context": "./src/services/context.ts",
     "./services/public-operations": "./src/services/operations/public.ts",

@@ -41,10 +41,30 @@ describe("built Start application in workerd", () => {
       (await worker.fetch(url, { headers: { "x-tsr-serverFn": "true" } }))
         .status,
     ).toBe(403);
-    // publicStatsGet allows 60 per minute.
+    expect(response.headers.get("cache-control")).toBe(
+      "public, max-age=0, s-maxage=60",
+    );
+    // The Worker stores the copy in waitUntil; it may land after the response.
+    let shared = await worker.fetch(url, { headers });
+    for (
+      let tries = 0;
+      shared.headers.get("x-oxytype-cache") === null;
+      tries++
+    ) {
+      if (tries === 20) throw new Error("Public read was never cached");
+      await shared.arrayBuffer();
+      await new Promise((resolve) => setTimeout(resolve, 25));
+      shared = await worker.fetch(url, { headers });
+    }
+    expect(shared.headers.get("x-request-id")).not.toBe(
+      response.headers.get("x-request-id"),
+    );
+    expect(await shared.text()).toContain("testsCompleted");
+    // publicStatsGet allows 60 per minute; no-cache reaches the limiter.
+    const uncached = { ...headers, "cache-control": "no-cache" };
     let limited = response;
     for (let sent = 1; limited.status === 200 && sent <= 61; sent++) {
-      limited = await worker.fetch(url, { headers });
+      limited = await worker.fetch(url, { headers: uncached });
     }
     expect(limited.status).toBe(429);
     expect(limited.headers.get("Retry-After")).not.toBeNull();

@@ -6,6 +6,7 @@ import type {
 import { runtime, withRuntime, type WorkerEnv } from "@oxytype/backend/runtime";
 import { scheduled } from "@oxytype/backend/jobs";
 import { boundedRequest } from "./request-body.server";
+import { edgeCacheKey, storeEdgeCache } from "./edge-cache.server";
 import { applyResponsePolicy } from "./response-policy.server";
 import { requestLog, serverBuildId } from "./observability.server";
 
@@ -66,10 +67,15 @@ export function createApplicationWorker(
           let response: Response;
           try {
             const bounded = await boundedRequest(request);
-            response =
-              bounded instanceof Response
-                ? bounded
-                : await handler(bounded, { context: { nonce } });
+            if (bounded instanceof Response) {
+              response = bounded;
+            } else {
+              response = await handler(bounded, { context: { nonce } });
+              const cacheKey = edgeCacheKey(bounded);
+              if (cacheKey !== undefined) {
+                storeEdgeCache(cacheKey, response, ctx);
+              }
+            }
             if (
               bounded instanceof Response &&
               new URL(request.url).pathname.startsWith("/api/") &&

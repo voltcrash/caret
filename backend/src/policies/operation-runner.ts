@@ -14,6 +14,7 @@ import { authenticate } from "./authentication";
 import { verifyConfiguration } from "./configuration";
 import { getOperation, type OperationId } from "./operations";
 import { verifyPermissions } from "./permission";
+import { EDGE_CACHE_SECONDS } from "./edge-cache";
 import { ROOT_LIMIT } from "./rate-counter";
 import {
   assertGoodAuthentication,
@@ -42,6 +43,8 @@ export type Invocation = {
   setHeader: SetPolicyHeader;
   /** Adds a Set-Cookie header (refreshed session cookie cache). */
   appendCookie?: (cookie: string) => void;
+  /** Marks a successful response shareable at the edge; absent for SSR. */
+  cacheFor?: (seconds: number) => void;
 };
 
 /** Identity/config/client state shared by every policy of one invocation. */
@@ -184,12 +187,19 @@ export async function execute<K extends OperationId>(
       });
       throw new MonkeyError(500, "Invalid service response");
     }
+    shareable(invocation, id);
     return {
       ok: true,
       ...(validated.data as typeof result),
     } as OperationOutcome<K>;
   }
+  shareable(invocation, id);
   return { ok: true, ...result } as OperationOutcome<K>;
+}
+
+function shareable(invocation: Invocation, id: OperationId): void {
+  const seconds = EDGE_CACHE_SECONDS[id];
+  if (seconds !== undefined) invocation.cacheFor?.(seconds);
 }
 
 export type OperationFailure = {
