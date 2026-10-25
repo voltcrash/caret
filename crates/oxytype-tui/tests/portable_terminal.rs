@@ -156,10 +156,10 @@ fn native_terminal_decodes_edits_and_persists_actual_input_without_physical_tele
     command.env("COLORTERM", "truecolor"); // Letter checks below compare RGB.
     let mut child = ChildGuard(pair.slave.spawn_command(command).unwrap());
     drop(pair.slave);
-    // Web rust palette: untyped letters use sub, mistakes use error.
-    let sub = vt100::Color::Rgb(0x9c, 0x86, 0x7a);
-    let error = vt100::Color::Rgb(0xff, 0x4d, 0x6d);
-    let text = vt100::Color::Rgb(0xf3, 0xe7, 0xdc);
+    // Web azure palette (default): untyped letters use sub, mistakes use error.
+    let sub = vt100::Color::Rgb(0x82, 0x90, 0xb4);
+    let error = vt100::Color::Rgb(0xff, 0x6b, 0x5e);
+    let text = vt100::Color::Rgb(0xe4, 0xeb, 0xff);
     wait_screen(&parser, &trace, &mut child, "one two");
     wait_color(&parser, &mut child, "one two", 6, sub);
     writer.lock().unwrap().write_all(b"one twx").unwrap();

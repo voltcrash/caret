@@ -81,11 +81,11 @@ fn header_shows_logo_theme_and_nav_until_typing_starts() {
         println!("{}", text(&buffer));
     }
     let (x, y) = find(&buffer, "oxytype").unwrap();
-    let palette = oxytype_tui::theme::Palette::named("rust");
+    let palette = oxytype_tui::theme::Palette::named(oxytype_tui::theme::DEFAULT);
     assert_eq!(buffer[(x, y)].fg, palette.text);
     assert_eq!(buffer[(x - 2, y)].fg, palette.main);
     assert!(find(&buffer, "settings").is_some());
-    assert!(find(&buffer, "rust").is_some());
+    assert!(find(&buffer, "azure").is_some());
     let word = fixture.host.words[0].display_lossy();
     fixture.host.insert(&word[..1], 100.0, 1000.0).unwrap();
     let buffer = render(&fixture, Screen::Test, 100, 30);
@@ -99,7 +99,7 @@ fn idle_test_shows_config_bar_with_active_mode_and_untyped_words() {
         words: 25,
         ..Default::default()
     });
-    let palette = oxytype_tui::theme::Palette::named("rust");
+    let palette = oxytype_tui::theme::Palette::named(oxytype_tui::theme::DEFAULT);
     let buffer = render(&fixture, Screen::Test, 100, 30);
     let (x, y) = find(&buffer, "words  quote").unwrap();
     assert_eq!(buffer[(x, y)].fg, palette.main);
@@ -120,7 +120,7 @@ fn active_test_hides_config_and_counts_words_in_main_color() {
         words: 25,
         ..Default::default()
     });
-    let palette = oxytype_tui::theme::Palette::named("rust");
+    let palette = oxytype_tui::theme::Palette::named(oxytype_tui::theme::DEFAULT);
     let word = fixture.host.words[0].display_lossy();
     fixture.host.insert(&word, 100.0, 1000.0).unwrap();
     let buffer = render(&fixture, Screen::Test, 100, 30);
@@ -150,7 +150,7 @@ fn result_shows_big_wpm_acc_chart_and_stat_groups() {
     if std::env::var("OXYTYPE_UI_DUMP").is_ok() {
         println!("{}", text(&buffer));
     }
-    let palette = oxytype_tui::theme::Palette::named("rust");
+    let palette = oxytype_tui::theme::Palette::named(oxytype_tui::theme::DEFAULT);
     for label in [
         "wpm",
         "acc",
@@ -177,7 +177,7 @@ fn settings_render_button_groups_with_active_choice_in_main() {
     if std::env::var("OXYTYPE_UI_DUMP").is_ok() {
         println!("{}", text(&buffer));
     }
-    let palette = oxytype_tui::theme::Palette::named("rust");
+    let palette = oxytype_tui::theme::Palette::named(oxytype_tui::theme::DEFAULT);
     let (x, y) = find(&buffer, " time ").unwrap();
     assert_eq!(buffer[(x + 1, y)].bg, palette.main);
     let (x, y) = find(&buffer, " words ").unwrap();
@@ -212,7 +212,7 @@ fn history_lists_saved_results_in_a_table_with_pb_crown() {
     if std::env::var("OXYTYPE_UI_DUMP").is_ok() {
         println!("{}", text(&buffer));
     }
-    let palette = oxytype_tui::theme::Palette::named("rust");
+    let palette = oxytype_tui::theme::Palette::named(oxytype_tui::theme::DEFAULT);
     assert!(find(&buffer, "Local history").is_some());
     let (x, y) = find(&buffer, "accuracy").unwrap();
     assert_eq!(buffer[(x, y)].fg, palette.sub);
@@ -230,7 +230,7 @@ fn help_groups_keybinds_as_key_chips() {
     if std::env::var("OXYTYPE_UI_DUMP").is_ok() {
         println!("{}", text(&buffer));
     }
-    let palette = oxytype_tui::theme::Palette::named("rust");
+    let palette = oxytype_tui::theme::Palette::named(oxytype_tui::theme::DEFAULT);
     let (x, y) = find(&buffer, " F6 ").unwrap();
     assert_eq!(buffer[(x + 1, y)].bg, palette.sub_alt);
     assert!(find(&buffer, "- repeat test").is_some());
@@ -246,7 +246,7 @@ fn editor_shows_option_buttons_and_text_area() {
     if std::env::var("OXYTYPE_UI_DUMP").is_ok() {
         println!("{}", text(&buffer));
     }
-    let palette = oxytype_tui::theme::Palette::named("rust");
+    let palette = oxytype_tui::theme::Palette::named(oxytype_tui::theme::DEFAULT);
     let (x, y) = find(&buffer, " repeat ").unwrap();
     assert_eq!(buffer[(x + 1, y)].bg, palette.main);
     let (x, y) = find(&buffer, "hello world").unwrap();
@@ -258,7 +258,7 @@ fn editor_shows_option_buttons_and_text_area() {
 fn tiny_terminals_get_a_centred_resize_notice() {
     let fixture = fixture(Config::default());
     let buffer = render(&fixture, Screen::Test, 40, 10);
-    let palette = oxytype_tui::theme::Palette::named("rust");
+    let palette = oxytype_tui::theme::Palette::named(oxytype_tui::theme::DEFAULT);
     let (x, y) = find(&buffer, "terminal too small").unwrap();
     assert_eq!(buffer[(x, y)].fg, palette.main);
     assert!(find(&buffer, "now 40×10").is_some());
