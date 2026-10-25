@@ -154,3 +154,26 @@ fn extra_letters_sit_before_the_separator() {
     assert_eq!(shown.lines[0].spans[3].style.fg, Some(palette.error_extra));
     assert_eq!(shown.caret, (5, 0));
 }
+
+#[test]
+fn live_mistakes_are_underlined_without_relying_on_colour() {
+    let palette = Palette::named("rust");
+    let list = words(&["two "]);
+    let input = Text::from("tx");
+    let shown = view(
+        Stream {
+            words: &list,
+            inputs: &[],
+            index: 0,
+            input: &input,
+            language: "english",
+            palette: &palette,
+        },
+        20,
+        3,
+    );
+    let modifier = |i: usize| shown.lines[0].spans[i].style.add_modifier;
+    assert!(!modifier(0).contains(ratatui::style::Modifier::UNDERLINED));
+    assert!(modifier(1).contains(ratatui::style::Modifier::UNDERLINED));
+    assert!(!modifier(2).contains(ratatui::style::Modifier::UNDERLINED));
+}

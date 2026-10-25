@@ -68,7 +68,8 @@ fn style(palette: &Palette, letter: Letter, committed_error: bool) -> Style {
         Letter::Incorrect => palette.error,
         Letter::Extra => palette.error_extra,
     });
-    if committed_error {
+    // Underline keeps mistakes visible without relying on colour.
+    if committed_error || matches!(letter, Letter::Incorrect | Letter::Extra) {
         style.add_modifier(Modifier::UNDERLINED)
     } else {
         style
