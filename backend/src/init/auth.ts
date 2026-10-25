@@ -205,23 +205,44 @@ export function createAuth(
   return auth;
 }
 
+/**
+ * Resolves the invocation's primary database on every access, so one Better
+ * Auth instance can serve all invocations of an isolate.
+ */
+const invocationPrimary = new Proxy({} as ReturnType<typeof primaryDatabase>, {
+  get(_target, property): unknown {
+    const db = primaryDatabase();
+    const value: unknown = Reflect.get(db, property, db);
+    return typeof value === "function" ? value.bind(db) : value;
+  },
+});
+
+/** Building Better Auth costs CPU on every request; reuse it per env. */
+const isolateAuth = new WeakMap<WorkerEnv, ReturnType<typeof createAuth>>();
+
 export function getAuth(): ReturnType<typeof createAuth> {
   const scope = runtime();
-  scope.auth ??= createAuth(
-    // Revocation and account disablement must observe current primary state,
-    // even after unrelated application reads have established a bookmark.
-    drizzleAdapter(primaryDatabase(), {
-      provider: "sqlite",
-      schema: {
-        authUsers,
-        authSessions,
-        authAccounts,
-        authVerifications,
-      },
-      transaction: false,
-    }),
-  );
-  return scope.auth;
+  if (scope.auth !== undefined) return scope.auth;
+  let auth = isolateAuth.get(scope.env);
+  if (auth === undefined) {
+    auth = createAuth(
+      // Revocation and account disablement must observe current primary state,
+      // even after unrelated application reads have established a bookmark.
+      drizzleAdapter(invocationPrimary, {
+        provider: "sqlite",
+        schema: {
+          authUsers,
+          authSessions,
+          authAccounts,
+          authVerifications,
+        },
+        transaction: false,
+      }),
+    );
+    isolateAuth.set(scope.env, auth);
+  }
+  scope.auth = auth;
+  return auth;
 }
 export async function init(): Promise<void> {
   getAuth();

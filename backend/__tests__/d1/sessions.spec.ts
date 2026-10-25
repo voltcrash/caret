@@ -105,6 +105,21 @@ describe("D1 invocation sessions", () => {
     expect(() => runtime()).toThrow("Worker runtime is not initialized");
   });
 
+  it("reuses Better Auth per env while each invocation reads its own primary", async () => {
+    const first = await withRuntime(test.env, async () => getAuth());
+    const second = await withRuntime(test.env, async () => {
+      const auth = getAuth();
+      // The shared instance queries this invocation's database.
+      expect(
+        await (await auth.$context).internalAdapter.findSession("missing"),
+      ).toBeNull();
+      return auth;
+    });
+    expect(second).toBe(first);
+    const other = await withRuntime({ ...test.env }, async () => getAuth());
+    expect(other).not.toBe(first);
+  });
+
   it("keeps auth on the primary even after application reads", async () => {
     await withRuntime(test.env, async () => {
       await statement("SELECT 1").first();
