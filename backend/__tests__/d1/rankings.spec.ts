@@ -88,7 +88,8 @@ describe("SQL ranking parity", () => {
       const config = {
         ...BASE_CONFIGURATION.leaderboards.weeklyXp,
         enabled: true,
-        expirationTimeInDays: 14,
+        // Keep the historical week readable by getRank.
+        expirationTimeInDays: 365_000,
       };
       const entry = (
         uid: string,
@@ -103,21 +104,27 @@ describe("SQL ranking parity", () => {
         lastActivityTimestamp: Date.now(),
         timeTypedSeconds: 10,
       });
+      const rank = async (uid: string): Promise<number | undefined> =>
+        (await board.getRank(uid, config))?.rank;
       expect(
         await board.addResult(config, { entry: entry("b"), xpGained: 50 }),
-      ).toBe(1);
-      expect(
-        await board.addResult(config, { entry: entry("a"), xpGained: 30 }),
-      ).toBe(2);
+      ).toBe(true);
+      expect(await rank("b")).toBe(1);
+      await board.addResult(config, { entry: entry("a"), xpGained: 30 });
+      expect(await rank("a")).toBe(2);
       // 30 + 20 ties b at 50; reverse lexical order keeps b ahead
-      expect(
-        await board.addResult(config, { entry: entry("a"), xpGained: 20 }),
-      ).toBe(2);
+      await board.addResult(config, { entry: entry("a"), xpGained: 20 });
+      expect(await rank("a")).toBe(2);
       await atomicUser("c", async () => {
-        expect(
-          await board.addResult(config, { entry: entry("c"), xpGained: 60 }),
-        ).toBe(1);
+        await board.addResult(config, { entry: entry("c"), xpGained: 60 });
       });
+      expect(await rank("c")).toBe(1);
+      expect(
+        await board.addResult(
+          { ...config, enabled: false },
+          { entry: entry("d"), xpGained: 1 },
+        ),
+      ).toBe(false);
     });
   });
   it("publishes complete all-time generations and hides ineligible users", async () => {
@@ -144,6 +151,18 @@ describe("SQL ranking parity", () => {
       expect(
         await Leaderboards.getRank("time", "15", "english", "b"),
       ).toBeNull();
+      expect(
+        await statement(
+          "SELECT entries FROM leaderboard_generations WHERE board='english_time_15'",
+        ).first<number>("entries"),
+      ).toBe(1);
+      expect(await Leaderboards.getCount("time", "15", "english")).toBe(1);
+      // Generations published before 0019 have no stored count.
+      await statement(
+        "UPDATE leaderboard_generations SET entries=NULL WHERE board='english_time_15'",
+      ).run();
+      expect(await Leaderboards.getCount("time", "15", "english")).toBe(1);
+      expect(await Leaderboards.getCount("time", "60", "english")).toBe(0);
       expect(
         await statement(
           "SELECT count(DISTINCT generation) AS count FROM leaderboard_snapshots",

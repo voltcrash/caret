@@ -130,7 +130,7 @@ emoji UTF-16/grapheme deletion, repeats/releases, resize/input blocking, native
 scores, history/replay/editor and actual keyboard-stack/raw-mode cleanup. They
 are automated emulator checks; [terminal-emulators.json](terminal-emulators.json)
 records exact binary/emulator versions and capabilities. Hardware IME and visual font inspection remain
-unperformed. Exact versions/results are recorded in progress.md.
+unperformed.
 
 `terminal:test:emulator` requires Linux Xvfb, xdotool, libX11 and the selected
 emulator. It creates its own display, fresh emulator configuration and app profile;

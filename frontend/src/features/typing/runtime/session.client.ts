@@ -1,7 +1,10 @@
 import { onCleanup } from "solid-js";
 import { createAppOwned } from "../../../app/application";
 import { getBrowserEngine } from "../engine.client";
-import { projectEngineConfig } from "@oxytype/typing-engine/config";
+import {
+  engineConfigMatches,
+  projectEngineConfig,
+} from "@oxytype/typing-engine/config";
 import {
   decodeText,
   encodeText,
@@ -80,7 +83,8 @@ export const getEngineSession = createAppOwned(() => {
   const inputs = new Map<number, string>();
   let state: NativeState | undefined;
   let metadata: Update["metadata"];
-  let configuration = "";
+  /** Last engine settings sent; compared per command without serializing. */
+  let configuration: Config | undefined;
   let limitConfiguration = "";
   let lastTick = 0;
   let running = false;
@@ -163,14 +167,17 @@ export const getEngineSession = createAppOwned(() => {
     return update;
   };
   const synchronize = (now: number): void => {
-    const config = projectEngineConfig(getMutableConfig());
-    const serialized = JSON.stringify(config);
-    if (serialized !== configuration) {
+    const mutable = getMutableConfig();
+    if (
+      configuration === undefined ||
+      !engineConfigMatches(configuration, mutable)
+    ) {
+      const config = projectEngineConfig(mutable);
       const input: Command = { op: "configure", config, now };
       consume(live().command(input), input);
-      configuration = serialized;
+      configuration = config;
     }
-    if (config.mode === "custom") {
+    if (configuration.mode === "custom") {
       const limit = CustomText.getLimit();
       const serialized = JSON.stringify(limit);
       if (serialized !== limitConfiguration) {
@@ -190,7 +197,7 @@ export const getEngineSession = createAppOwned(() => {
       synchronize(input.now);
     }
     const update = consume(live().command(input), input);
-    if (input.op === "configure") configuration = JSON.stringify(input.config);
+    if (input.op === "configure") configuration = input.config;
     return update;
   };
   const paceCommand = (input: PaceCommand): PaceUpdate => {
@@ -237,7 +244,7 @@ export const getEngineSession = createAppOwned(() => {
       finishNotified = false;
       reason = undefined;
       finishClock = undefined;
-      configuration = JSON.stringify(projectEngineConfig(getMutableConfig()));
+      configuration = projectEngineConfig(getMutableConfig());
       limitConfiguration = JSON.stringify(CustomText.getLimit());
       paceCommand({ op: "reset", wpm: null });
       command({

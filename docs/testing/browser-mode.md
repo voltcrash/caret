@@ -79,10 +79,8 @@ Also passed: 27 checks through the root runner, 437 shared package checks
 (including 68 CI routing checks), frontend lint and type checks, and Knip.
 The package removal pruned 56 package versions and added no unrelated versions.
 
-Raw summary: [browser-mode-migration-results.json](browser-mode-migration-results.json).
 GitHub CI results are tracked on the pull request. These local checks cover
 Chromium; Firefox and WebKit were not tested.
 
-The [small pilot report](browser-mode-pilot.md) records the earlier timing
-comparison. Its 24% reduction applies only to that 54-case sample. It is not a
+An earlier pilot recorded a timing comparison. Its 24% reduction applies only to that 54-case sample. It is not a
 full-suite or CI speed claim. Chromium installation time was not in that sample.

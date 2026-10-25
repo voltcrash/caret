@@ -43,6 +43,11 @@ export type WorkerEnv = {
 
 export type Runtime = {
   request?: { nonce: string; requestId: string };
+  /**
+   * First-query routing for this invocation's D1 session; fixed once the
+   * session opens. See `preferReplicas`.
+   */
+  sessionConstraint: "first-primary" | "first-unconstrained";
   auth?: ReturnType<typeof import("../init/auth").createAuth>;
   configuration?: import("@oxytype/schemas/configuration").Configuration;
   env: WorkerEnv;
@@ -85,18 +90,39 @@ export function withRuntime<T>(
   // Start fresh on every invocation; subsequent reads may use replicas without
   // going backwards or missing this invocation's writes. Never share sessions.
   const metrics: InvocationMetrics = { operations: [], d1Statements: 0 };
-  const session = counted(env.DB.withSession("first-primary"), metrics);
-  return storage.run(
-    {
-      env,
-      session,
-      db: drizzle(session),
-      primaryDb: drizzle(counted(env.DB, metrics)),
-      execution,
-      metrics,
+  let session: D1DatabaseSession | undefined;
+  let db: Runtime["db"] | undefined;
+  const scope: Runtime = {
+    env,
+    sessionConstraint: "first-primary",
+    // Opened on first use so `preferReplicas` can still choose its routing.
+    get session(): D1DatabaseSession {
+      session ??= counted(env.DB.withSession(scope.sessionConstraint), metrics);
+      return session;
     },
-    fn,
-  );
+    set session(value: D1DatabaseSession) {
+      session = value;
+    },
+    get db(): Runtime["db"] {
+      db ??= drizzle(scope.session);
+      return db;
+    },
+    primaryDb: drizzle(counted(env.DB, metrics)),
+    execution,
+    metrics,
+  };
+  return storage.run(scope, fn);
+}
+
+/**
+ * Let this invocation's first D1 read use any replica. Only for invocations
+ * whose every read tolerates replication lag (shared, edge-cached public
+ * reads); writes still route to the primary. No effect once the session is
+ * open.
+ */
+export function preferReplicas(): void {
+  const scope = storage.getStore();
+  if (scope) scope.sessionConstraint = "first-unconstrained";
 }
 
 export function runtime(): Runtime {

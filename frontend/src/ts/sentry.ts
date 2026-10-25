@@ -1,15 +1,15 @@
 import { captureAccount } from "../app/account-scope";
 import { envConfig } from "virtual:env-config";
 
-async function getSentry(): Promise<typeof import("@sentry/browser")> {
-  return await import("@sentry/browser");
+async function getSentry(): Promise<typeof import("./sentry-sdk")> {
+  return await import("./sentry-sdk");
 }
 
 let debug = false;
 
 let activated = false;
 let generation = 0;
-let client: ReturnType<typeof import("@sentry/browser").init> | undefined;
+let client: ReturnType<typeof import("./sentry-sdk").init> | undefined;
 
 export async function activateSentry(): Promise<void> {
   const dsn = envConfig.sentryDsn;
@@ -68,9 +68,6 @@ export async function activateSentry(): Promise<void> {
     tracePropagationTargets: [
       new URL(envConfig.backendUrl, window.location.origin).href,
     ],
-    // Session Replay
-    replaysSessionSampleRate: 0, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
-    replaysOnErrorSampleRate: 0.5, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
     ignoreErrors: [
       /**
        * Thrown when firefox prevents an add-on from refrencing a DOM element that has been removed.

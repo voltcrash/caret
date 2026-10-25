@@ -57,6 +57,36 @@ describe("Worker HTTP with D1", () => {
       context,
     );
   }
+  it("lets only edge-cached public reads start on a replica", async () => {
+    const start = vi.fn((constraint?: string) =>
+      test.env.DB.withSession(constraint),
+    );
+    const env = {
+      ...test.env,
+      DB: new Proxy(test.env.DB, {
+        get(target, key): unknown {
+          return key === "withSession" ? start : Reflect.get(target, key);
+        },
+      }),
+    };
+    const fetch = async (path: string): Promise<number> =>
+      (
+        await Worker.fetch(
+          new Request(`http://localhost:5005/api${path}`, {
+            headers: {
+              authorization: `Bearer ${token}`,
+              origin: "http://localhost:3000",
+            },
+          }),
+          env,
+          context,
+        )
+      ).status;
+    expect(await fetch("/public/typingStats")).toBe(200);
+    expect(start).toHaveBeenLastCalledWith("first-unconstrained");
+    expect(await fetch("/users")).toBe(200);
+    expect(start).toHaveBeenLastCalledWith("first-primary");
+  });
   it("routes /api and serves the schema-valid signed-in user", async () => {
     expect((await request("/")).status).toBe(200);
     const response = await request("/users");

@@ -40,6 +40,31 @@ describe("D1 schema on workerd", () => {
       expect(tables.results.map((row) => row.name)).not.toContain(removed);
     }
   });
+  it("keeps only the result indexes production queries use", async () => {
+    const indexes = await test.env.DB.prepare(
+      "SELECT name FROM sqlite_master WHERE type='index' AND tbl_name='results' AND sql IS NOT NULL ORDER BY name",
+    ).all<{ name: string }>();
+    expect(indexes.results.map((row) => row.name)).toEqual([
+      "results_client_time_idx",
+      "results_submission_idx",
+    ]);
+  });
+  it("removes a user's leaderboard bests through an index", async () => {
+    for (const query of [
+      "DELETE FROM users WHERE uid='owner'",
+      "DELETE FROM leaderboard_bests WHERE uid='owner'",
+    ]) {
+      const plan = await test.env.DB.prepare(
+        `EXPLAIN QUERY PLAN ${query}`,
+      ).all<{
+        detail: string;
+      }>();
+      const details = plan.results.map(({ detail }) => detail);
+      expect(
+        details.filter((detail) => detail.includes("leaderboard_bests")),
+      ).toEqual([expect.stringContaining("leaderboard_bests_owner_idx")]);
+    }
+  });
   it("enforces normalized user names and cascades owned rows", async () => {
     await seedUser(test.env, "owner", "Name");
     await expect(seedUser(test.env, "other", "name")).rejects.toThrow(/UNIQUE/);

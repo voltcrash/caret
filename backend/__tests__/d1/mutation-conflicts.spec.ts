@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
 import { createTestRuntime, seedUser } from "./helpers";
 import { withRuntime } from "../../src/runtime/env";
-import { atomicUser, stage } from "../../src/db/mutation";
+import { atomicUser, atomicUserWithReads, stage } from "../../src/db/mutation";
 import { statement } from "../../src/db/client";
 import * as Users from "../../src/dal/user";
 
@@ -44,6 +44,27 @@ describe("D1 optimistic version guards", () => {
       expect(
         await statement("SELECT count(*) AS n FROM mutation_guards").first("n"),
       ).toBe(0);
+    });
+  });
+
+  it("returns reads appended to the committing batch, after its writes", async () => {
+    await seedUser(test.env, "batched-read");
+    await withRuntime(test.env, async () => {
+      const { result, reads } = await atomicUserWithReads(
+        "batched-read",
+        async () => {
+          await Users.incrementXp("batched-read", 40);
+          return "done";
+        },
+        (outcome) => {
+          expect(outcome).toBe("done");
+          return [
+            statement("SELECT xp FROM users WHERE uid=?", "batched-read"),
+          ];
+        },
+      );
+      expect(result).toBe("done");
+      expect(reads?.map((read) => read.results)).toEqual([[{ xp: 40 }]]);
     });
   });
 

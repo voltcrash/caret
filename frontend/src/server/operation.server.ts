@@ -13,6 +13,7 @@ import {
   type OperationData,
   type PolicyScope,
   type RawOperationInput,
+  routeSharedRead,
 } from "@oxytype/backend/policies/operation-runner";
 import type { OperationId } from "@oxytype/backend/policies/operations";
 import { edgeCacheControl } from "@oxytype/backend/policies/edge-cache";
@@ -58,6 +59,8 @@ export async function callOperation<K extends OperationId>(
   input: RawOperationInput,
 ): Promise<OperationResult<OperationData<K>>> {
   const call = invocation(request);
+  // SSR documents run several operations, some reading the viewer's own data.
+  if (request.rpc) routeSharedRead(id);
   let scope: PolicyScope | undefined;
   try {
     scope = await admit(call);

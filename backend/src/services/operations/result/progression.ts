@@ -181,7 +181,7 @@ export async function applyProgression(
   }
 
   const weeklyXpLeaderboardConfig = context.configuration.leaderboards.weeklyXp;
-  let weeklyXpLeaderboardRank = -1;
+  let weeklyXpLeaderboardEntered = false;
 
   const weeklyXpLeaderboard = WeeklyXpLeaderboard.get(
     weeklyXpLeaderboardConfig,
@@ -194,7 +194,7 @@ export async function applyProgression(
     xpGained.xp > 0 &&
     weeklyXpLeaderboard
   ) {
-    weeklyXpLeaderboardRank = await weeklyXpLeaderboard.addResult(
+    weeklyXpLeaderboardEntered = await weeklyXpLeaderboard.addResult(
       weeklyXpLeaderboardConfig,
       {
         entry: {
@@ -266,8 +266,9 @@ export async function applyProgression(
     data.dailyLeaderboardRank = dailyLeaderboardRank;
   }
 
-  if (weeklyXpLeaderboardRank !== -1) {
-    data.weeklyXpLeaderboardRank = weeklyXpLeaderboardRank;
+  if (weeklyXpLeaderboardEntered) {
+    // Placeholder: the caller replaces it with the committed rank.
+    data.weeklyXpLeaderboardRank = 0;
   }
 
   return new MonkeyResponse("Result saved", data);

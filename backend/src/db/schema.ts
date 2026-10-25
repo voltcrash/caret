@@ -152,8 +152,6 @@ export const results = sqliteTable(
     index("results_client_time_idx").on(t.uid, t.client, t.timestamp, t.id),
     // Existing storage can retain legacy rows; request schemas accept web only.
     check("results_client", sql`${t.client} IN ('web','tui')`),
-    index("results_owner_time_idx").on(t.uid, t.timestamp, t.id),
-    index("results_mode_idx").on(t.uid, t.mode, t.mode2, t.language),
     uniqueIndex("results_submission_idx").on(t.uid, t.submissionHash),
   ],
 );
@@ -277,12 +275,15 @@ export const leaderboardBests = sqliteTable(
   (t) => [
     primaryKey({ columns: [t.board, t.uid] }),
     index("leaderboard_bests_score_idx").on(t.board, t.wpm, t.acc, t.timestamp),
+    index("leaderboard_bests_owner_idx").on(t.uid),
   ],
 );
 export const leaderboardGenerations = sqliteTable("leaderboard_generations", {
   board: text("board").primaryKey(),
   generation: text("generation").notNull(),
   updatedAt: integer("updated_at").notNull(),
+  /** Snapshot rows in `generation`; NULL for generations before 0019. */
+  entries: integer("entries"),
 });
 export const leaderboardSnapshots = sqliteTable(
   "leaderboard_snapshots",

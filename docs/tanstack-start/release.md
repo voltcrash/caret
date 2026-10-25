@@ -51,10 +51,8 @@ for open tabs. Auth, functions, APIs, mutations and private HTML stay outside
 shared offline caches. Activation and page refresh wait for active typing and
 pending saves; updates/reconnects never automatically replay a failed result.
 
-Historical legacy/Start rollback rehearsals and deployment observations are
-in the [archived release record](../archive/tanstack-start/release.md) and
-[stage reports](../archive/tanstack-start/README.md). They do not close the
-compatibility window or certify the currently hosted deployment.
+Historical rollback rehearsals and deployment observations (in git history)
+do not close the compatibility window or certify the hosted deployment.
 
 ## Rust engine cutover
 
