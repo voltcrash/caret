@@ -1,12 +1,14 @@
 import type { Client } from "@oxytype/schemas/shared";
-import { and, desc, eq, gte, inArray } from "drizzle-orm";
+import { and, desc, eq, gte, inArray, sql } from "drizzle-orm";
 import MonkeyError from "../utils/error";
 import { database, encode, statement } from "../db/client";
 import { stage } from "../db/mutation";
 import { results } from "../db/schema";
 import { exists, getTags } from "./user";
 import { type DBResult, replaceLegacyValues } from "../utils/result";
-function unpack(row: typeof results.$inferSelect): DBResult {
+function unpack(
+  row: Pick<typeof results.$inferSelect, "id" | "uid" | "client" | "data">,
+): DBResult {
   return replaceLegacyValues({
     ...row.data,
     _id: row.id,
@@ -126,8 +128,14 @@ export async function getResults(
   opts: GetResultsOpts = {},
 ): Promise<DBResult[]> {
   const timestamp = opts.onOrAfterTimestamp;
+  // Drop the bulky per-result fields in SQLite: less D1 transfer and parsing.
   const rows = await database()
-    .select()
+    .select({
+      id: results.id,
+      uid: results.uid,
+      client: results.client,
+      data: sql<string>`json_remove(${results.data},'$.chartData','$.keySpacingStats','$.keyDurationStats','$.name')`,
+    })
     .from(results)
     .where(
       and(
@@ -141,15 +149,10 @@ export async function getResults(
     .orderBy(desc(results.timestamp), desc(results.id))
     .limit(Math.min(opts.limit ?? 1000, 1000))
     .offset(opts.offset ?? 0);
-  return rows.map((row) => {
-    const result = unpack(row);
-    const {
-      chartData: _chart,
-      keySpacingStats: _spacing,
-      keyDurationStats: _duration,
-      name: _name,
-      ...summary
-    } = result;
-    return summary as DBResult;
-  });
+  return rows.map((row) =>
+    unpack({
+      ...row,
+      data: JSON.parse(row.data) as typeof results.$inferSelect.data,
+    }),
+  );
 }

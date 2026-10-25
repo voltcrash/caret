@@ -64,6 +64,22 @@ describe("web result history", () => {
           await Results.getResults("client-history", { limit: 1, offset: 1 })
         ).map((row) => row.timestamp),
       ).toEqual([4000]);
+      const [summary] = await Results.getResults("client-history", {
+        limit: 1,
+      });
+      expect(summary).toMatchObject({ timestamp: 5000, uid: "client-history" });
+      for (const key of [
+        "chartData",
+        "keySpacingStats",
+        "keyDurationStats",
+        "name",
+      ]) {
+        expect(summary).not.toHaveProperty(key);
+      }
+      expect(
+        (await Results.getResult("client-history", summary?._id ?? ""))
+          .chartData,
+      ).toBeDefined();
       expect(await Results.getLastResultTimestamp("client-history")).toBe(5000);
     });
   });
