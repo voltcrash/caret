@@ -11,8 +11,14 @@ import { runtime } from "../runtime/env";
  */
 export type RateTier = { period: 10 | 60; limit: number };
 
-/** Windows above a minute become a per-minute budget of this many times their average rate. */
+/**
+ * Windows above a minute become a per-minute budget of this many times their
+ * average rate, but never below `MIN_BURST` (or the window's whole max): the
+ * D1 limiter allowed a window's budget at once, and a signed-in page load
+ * reads several low-volume operations together.
+ */
 export const BURST = 4;
+export const MIN_BURST = 30;
 
 const WINDOWS = { second: 1000, minute: 60000, hour: 3600000, day: 86400000 };
 
@@ -28,7 +34,10 @@ export function tierFor(options: RateLimitOptions): RateTier {
   const scaled =
     window <= period * 1000
       ? (options.max * period * 1000) / window
-      : Math.min(options.max, (options.max * BURST * period * 1000) / window);
+      : Math.min(
+          options.max,
+          Math.max(MIN_BURST, (options.max * BURST * period * 1000) / window),
+        );
   return { period, limit: Math.max(1, Math.ceil(scaled)) };
 }
 

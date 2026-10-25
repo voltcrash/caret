@@ -36,15 +36,23 @@ describe("Workers rate limiting budgets", () => {
     [ROOT_LIMIT, { period: 60, limit: 67 }],
     [
       { window: 30 * 60 * 1000, max: 50 },
-      { period: 60, limit: 7 },
+      { period: 60, limit: 30 },
     ],
     [
       { window: "hour", max: 10 },
-      { period: 60, limit: 1 },
+      { period: 60, limit: 10 },
+    ],
+    [
+      { window: "hour", max: 60 },
+      { period: 60, limit: 30 },
+    ],
+    [
+      { window: "hour", max: 500 },
+      { period: 60, limit: 34 },
     ],
     [
       { window: "day", max: 3 },
-      { period: 60, limit: 1 },
+      { period: 60, limit: 3 },
     ],
     [
       { window: "hour", max: 1 },
