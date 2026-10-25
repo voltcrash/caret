@@ -1,7 +1,8 @@
 //! Optional recorded replay; core owns every step, cursor and correctness flag.
 use crate::Result;
+use crate::theme::Palette;
 use ratatui::{
-    style::{Color, Modifier, Style},
+    style::{Modifier, Style},
     text::{Line, Span},
 };
 use serde_json::Value;
@@ -49,15 +50,9 @@ impl Replay {
     pub fn seek(&mut self, cursor: Cursor) {
         self.frame = self.playback.seek(cursor);
     }
-    pub fn lines(&self) -> Vec<Line<'static>> {
+    /// Replayed words in web letter colours; the cursor letter is reversed.
+    pub fn line(&self, palette: &Palette) -> Line<'static> {
         let cursor = self.frame.cursor;
-        let mut lines = vec![
-            Line::from(format!(
-                "Recorded replay · word {} / UTF-16 unit {} · step {}",
-                cursor.word_index, cursor.letter_index, self.frame.next_index
-            )),
-            Line::from("→ / Space step · Home restart · PgUp/PgDn seek word · Esc history"),
-        ];
         let mut spans = vec![];
         for (index, word) in self
             .frame
@@ -80,15 +75,16 @@ impl Replay {
                     [unit.min(word.letters.len())..(unit + len).min(word.letters.len())];
                 let wrong = letters.iter().any(|l| l.incorrect || l.extra);
                 let correct = letters.iter().all(|l| l.correct);
-                let mut style = if wrong {
-                    Style::new()
-                        .fg(Color::Red)
-                        .add_modifier(Modifier::UNDERLINED)
+                let mut style = Style::new().fg(if wrong {
+                    palette.error
                 } else if correct {
-                    Style::new().fg(Color::Green)
+                    palette.text
                 } else {
-                    Style::default()
-                };
+                    palette.sub
+                });
+                if wrong {
+                    style = style.add_modifier(Modifier::UNDERLINED);
+                }
                 if index as i32 == cursor.word_index
                     && unit <= cursor.letter_index
                     && cursor.letter_index < unit + len
@@ -102,10 +98,9 @@ impl Replay {
                 unit += len;
             }
             if word.error {
-                spans.push(Span::from("! "));
+                spans.push(Span::styled("! ", Style::new().fg(palette.error)));
             }
         }
-        lines.push(Line::from(spans));
-        lines
+        Line::from(spans)
     }
 }
