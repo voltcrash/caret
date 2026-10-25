@@ -62,7 +62,8 @@ pub fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
         Screen::Test => test(frame, rows[1], host, now, &palette),
         Screen::Settings => settings(frame, rows[1], setup, &palette),
         Screen::History => history(frame, rows[1], local, &palette),
-        _ => fallback(frame, rows[1], host, local, setup, capabilities, screen),
+        Screen::Help => help(frame, rows[1], capabilities, &palette),
+        _ => fallback(frame, rows[1], host, local, setup, screen),
     }
     footer(
         frame,
@@ -80,27 +81,10 @@ fn fallback(
     host: &EngineHost,
     local: &Local,
     setup: &Setup,
-    capabilities: &crate::input::Capabilities,
     screen: Screen,
 ) {
     let rows = [area, area];
     let body = match screen {
-        Screen::Help => vec![
-            Line::from("F5 new · F6 repeat · F2 settings · F3 history · F4 custom · Esc return"),
-            Line::from("F8 finish · Backspace delete · Ctrl/Alt+Backspace delete word"),
-            Line::from("Ctrl+Q / Ctrl+C quit · Ctrl+Z suspend (Unix)"),
-            Line::from("Physical-key timing is unavailable; no key releases are invented."),
-            Line::from(format!(
-                "Keyboard: {} · release observed: {} · repeat observed: {}",
-                if capabilities.enhanced_keyboard_negotiated {
-                    "enhanced"
-                } else {
-                    "basic"
-                },
-                capabilities.release_observed,
-                capabilities.repeat_observed
-            )),
-        ],
         Screen::Editor => {
             let mut lines = setup.editor_lines();
             for line in &mut lines {
@@ -130,7 +114,7 @@ fn fallback(
             lines
         }
         Screen::Replay => local.replay.as_ref().map(|r| r.lines()).unwrap_or_default(),
-        Screen::Test | Screen::Settings | Screen::History => vec![],
+        Screen::Test | Screen::Settings | Screen::History | Screen::Help => vec![],
     };
     frame.render_widget(
         Paragraph::new(body)
@@ -905,4 +889,106 @@ fn history(frame: &mut Frame, area: Rect, local: &Local, palette: &Palette) {
     )
     .header(header);
     frame.render_widget(table, list);
+}
+/// Keybind reference grouped like web keytips, plus negotiated terminal capabilities.
+fn help(
+    frame: &mut Frame,
+    area: Rect,
+    capabilities: &crate::input::Capabilities,
+    palette: &Palette,
+) {
+    let area = column(area, 100);
+    let groups: [(&str, &[(&str, &str)]); 4] = [
+        (
+            "test",
+            &[
+                ("F5", "new test"),
+                ("F6", "repeat test"),
+                ("F8 / Ctrl+Enter", "finish test"),
+                ("Backspace", "delete letter"),
+                ("Ctrl/Alt+Backspace", "delete word"),
+            ],
+        ),
+        (
+            "screens",
+            &[
+                ("F1", "help"),
+                ("F2", "settings"),
+                ("F3", "history"),
+                ("F4", "custom text"),
+                ("Esc", "back to test"),
+            ],
+        ),
+        (
+            "results",
+            &[
+                ("F9", "retry unsaved results"),
+                ("F7", "export (history)"),
+                ("F8", "replay (history)"),
+            ],
+        ),
+        (
+            "terminal",
+            &[
+                ("Ctrl+Q / Ctrl+C / F10", "quit"),
+                ("Ctrl+Z", "suspend (Unix)"),
+            ],
+        ),
+    ];
+    let section = |name: &str| {
+        Line::styled(
+            format!("▸ {name}"),
+            Palette::fg(palette.sub).add_modifier(Modifier::BOLD),
+        )
+    };
+    let mut left = vec![];
+    let mut right = vec![];
+    for (index, (name, keys)) in groups.iter().enumerate() {
+        let side = if index % 2 == 0 {
+            &mut left
+        } else {
+            &mut right
+        };
+        side.push(section(name));
+        for (label, action) in *keys {
+            side.push(Line::from(tip(palette, label, action)));
+        }
+        side.push(Line::default());
+    }
+    let keyboard = if capabilities.enhanced_keyboard_negotiated {
+        "enhanced"
+    } else {
+        "basic"
+    };
+    let yes = |on: bool| if on { "yes" } else { "no" };
+    let info = vec![
+        section("keyboard"),
+        Line::from(vec![
+            Span::styled("protocol ", Palette::fg(palette.sub)),
+            Span::styled(keyboard, Palette::fg(palette.main)),
+            Span::styled("   release observed ", Palette::fg(palette.sub)),
+            Span::styled(
+                yes(capabilities.release_observed),
+                Palette::fg(palette.main),
+            ),
+            Span::styled("   repeat observed ", Palette::fg(palette.sub)),
+            Span::styled(yes(capabilities.repeat_observed), Palette::fg(palette.main)),
+        ]),
+        Line::styled(
+            "Physical-key timing is unavailable; no key releases are invented.",
+            Palette::fg(palette.sub),
+        ),
+    ];
+    let height = left.len().max(right.len()) as u16;
+    let [_, keys, notes, _] = Layout::vertical([
+        Constraint::Fill(1),
+        Constraint::Length(height),
+        Constraint::Length(3),
+        Constraint::Fill(1),
+    ])
+    .areas(area);
+    let [l, r] = Layout::horizontal([Constraint::Fill(1); 2]).areas(keys);
+    frame.render_widget(Paragraph::new(left), l);
+    frame.render_widget(Paragraph::new(right), r);
+    frame.render_widget(Paragraph::new(info), notes);
 }
