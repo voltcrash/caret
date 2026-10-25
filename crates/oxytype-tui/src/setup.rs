@@ -1,6 +1,5 @@
 //! Presentation controls edit a draft core configuration, validated on apply.
 use crate::{Result, content::OfflineContent, engine::EngineHost, options};
-use ratatui::text::Line;
 use typing_engine::{Config, generation::CustomText};
 
 /// One settings line: web button group, or a single value adjusted with ←→.
@@ -209,19 +208,6 @@ impl Setup {
             toggle("record replay", self.record_replay)
                 .section("privacy")
                 .note("stores private target text and input"),
-        ]
-    }
-    pub fn editor_lines(&self) -> Vec<Line<'static>> {
-        vec![
-            Line::from("Private custom text · type or paste · F8 apply · Esc cancel"),
-            Line::from(format!(
-                "F6 order: {} · F7 limit: {} · F9 length: {}",
-                self.order,
-                self.limit,
-                self.length
-                    .map(|v| v.to_string())
-                    .unwrap_or_else(|| "auto".into())
-            )),
         ]
     }
     pub fn increase_length(&mut self) {

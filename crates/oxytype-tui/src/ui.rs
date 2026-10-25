@@ -63,7 +63,8 @@ pub fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
         Screen::Settings => settings(frame, rows[1], setup, &palette),
         Screen::History => history(frame, rows[1], local, &palette),
         Screen::Help => help(frame, rows[1], capabilities, &palette),
-        _ => fallback(frame, rows[1], host, local, setup, screen),
+        Screen::Editor => editor(frame, rows[1], host, setup, &palette),
+        _ => fallback(frame, rows[1], local, screen),
     }
     footer(
         frame,
@@ -75,46 +76,13 @@ pub fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
     );
 }
 /// Screens not yet given a web layout keep the bordered text view.
-fn fallback(
-    frame: &mut Frame,
-    area: Rect,
-    host: &EngineHost,
-    local: &Local,
-    setup: &Setup,
-    screen: Screen,
-) {
+fn fallback(frame: &mut Frame, area: Rect, local: &Local, screen: Screen) {
     let rows = [area, area];
     let body = match screen {
-        Screen::Editor => {
-            let mut lines = setup.editor_lines();
-            for line in &mut lines {
-                *line = Line::from(crate::render::clip_cells(
-                    &line.to_string(),
-                    rows[1].width.saturating_sub(2) as usize,
-                ));
-            }
-            let input = typing_engine::Text::from(setup.text.as_str());
-            let mut view = crate::render::text_view(
-                &typing_engine::Text::default(),
-                &input,
-                &host.config.language,
-                rows[1].width.saturating_sub(2),
-                rows[1].height.saturating_sub(4),
-            );
-            frame.set_cursor_position((
-                rows[1].x + 1 + view.caret.0,
-                rows[1].y + 1 + lines.len() as u16 + view.caret.1,
-            ));
-            for line in &mut view.lines {
-                for span in &mut line.spans {
-                    span.style = ratatui::style::Style::default();
-                }
-            }
-            lines.extend(view.lines);
-            lines
-        }
         Screen::Replay => local.replay.as_ref().map(|r| r.lines()).unwrap_or_default(),
-        Screen::Test | Screen::Settings | Screen::History | Screen::Help => vec![],
+        Screen::Test | Screen::Settings | Screen::History | Screen::Help | Screen::Editor => {
+            vec![]
+        }
     };
     frame.render_widget(
         Paragraph::new(body)
@@ -991,4 +959,92 @@ fn help(
     frame.render_widget(Paragraph::new(left), l);
     frame.render_widget(Paragraph::new(right), r);
     frame.render_widget(Paragraph::new(info), notes);
+}
+/// Web custom text modal: option groups above a sub-alt text area.
+fn editor(frame: &mut Frame, area: Rect, host: &EngineHost, setup: &Setup, palette: &Palette) {
+    let area = column(area, 100);
+    let [title, options, _, text, _, hints] = Layout::vertical([
+        Constraint::Length(1),
+        Constraint::Length(1),
+        Constraint::Length(1),
+        Constraint::Fill(1),
+        Constraint::Length(1),
+        Constraint::Length(1),
+    ])
+    .areas(area);
+    frame.render_widget(
+        Paragraph::new(Line::from(vec![
+            Span::styled(
+                "custom text",
+                Palette::fg(palette.text).add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "  private · type or paste · not saved unless replay recording is on",
+                Palette::fg(palette.sub),
+            ),
+        ])),
+        title,
+    );
+    let mut spans = vec![Span::styled("order ", Palette::fg(palette.sub))];
+    for order in ["repeat", "random", "shuffle"] {
+        spans.extend([button(palette, order, setup.order == order), Span::raw(" ")]);
+    }
+    spans.push(Span::styled("   limit ", Palette::fg(palette.sub)));
+    for limit in ["section", "word", "time"] {
+        spans.extend([button(palette, limit, setup.limit == limit), Span::raw(" ")]);
+    }
+    spans.extend([
+        Span::styled("   length ", Palette::fg(palette.sub)),
+        button(
+            palette,
+            &setup
+                .length
+                .map_or_else(|| "auto".into(), |v| v.to_string()),
+            setup.length.is_some(),
+        ),
+    ]);
+    frame.render_widget(Paragraph::new(Line::from(spans)), options);
+    frame.render_widget(
+        Block::default().style(Style::new().bg(palette.sub_alt)),
+        text,
+    );
+    let inner = Rect {
+        x: text.x + 1,
+        width: text.width.saturating_sub(2),
+        ..text
+    };
+    let view = crate::render::text_view(
+        &typing_engine::Text::default(),
+        &typing_engine::Text::from(setup.text.as_str()),
+        &host.config.language,
+        inner.width,
+        inner.height,
+    );
+    frame.set_cursor_position((inner.x + view.caret.0, inner.y + view.caret.1));
+    let lines: Vec<_> = view
+        .lines
+        .into_iter()
+        .map(|line| line.style(Style::new().fg(palette.text)))
+        .map(|mut line| {
+            for span in &mut line.spans {
+                span.style = Style::default();
+            }
+            line
+        })
+        .collect();
+    frame.render_widget(
+        Paragraph::new(lines).style(Style::new().bg(palette.sub_alt)),
+        inner,
+    );
+    let mut spans = tip(palette, "F6", "order");
+    for (label, action) in [
+        ("F7", "limit"),
+        ("F9", "length +1"),
+        ("F8", "apply"),
+        ("Esc", "cancel"),
+    ] {
+        spans.push(Span::raw("   "));
+        spans.extend(tip(palette, label, action));
+    }
+    frame.render_widget(Paragraph::new(Line::from(spans)), hints);
 }
