@@ -64,7 +64,7 @@ pub fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
         Screen::History => history(frame, rows[1], local, &palette),
         Screen::Help => help(frame, rows[1], capabilities, &palette),
         Screen::Editor => editor(frame, rows[1], host, setup, &palette),
-        _ => fallback(frame, rows[1], local, screen),
+        Screen::Replay => replay(frame, rows[1], local, &palette),
     }
     footer(
         frame,
@@ -73,22 +73,6 @@ pub fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
         notice,
         quiet,
         !local.pending.is_empty(),
-    );
-}
-/// Screens not yet given a web layout keep the bordered text view.
-fn fallback(frame: &mut Frame, area: Rect, local: &Local, screen: Screen) {
-    let rows = [area, area];
-    let body = match screen {
-        Screen::Replay => local.replay.as_ref().map(|r| r.lines()).unwrap_or_default(),
-        Screen::Test | Screen::Settings | Screen::History | Screen::Help | Screen::Editor => {
-            vec![]
-        }
-    };
-    frame.render_widget(
-        Paragraph::new(body)
-            .wrap(Wrap { trim: false })
-            .block(Block::bordered()),
-        rows[1],
     );
 }
 /// One web `<kbd>`: key text on the sub-alt chip.
@@ -1042,6 +1026,54 @@ fn editor(frame: &mut Frame, area: Rect, host: &EngineHost, setup: &Setup, palet
         ("F9", "length +1"),
         ("F8", "apply"),
         ("Esc", "cancel"),
+    ] {
+        spans.push(Span::raw("   "));
+        spans.extend(tip(palette, label, action));
+    }
+    frame.render_widget(Paragraph::new(Line::from(spans)), hints);
+}
+/// Recorded replay: word stream in letter colours with step hints.
+fn replay(frame: &mut Frame, area: Rect, local: &Local, palette: &Palette) {
+    let area = column(area, 100);
+    let [_, title, _, words, _, hints, _] = Layout::vertical([
+        Constraint::Fill(1),
+        Constraint::Length(1),
+        Constraint::Length(1),
+        Constraint::Length(6),
+        Constraint::Length(1),
+        Constraint::Length(1),
+        Constraint::Fill(2),
+    ])
+    .areas(area);
+    let Some(replay) = &local.replay else {
+        return;
+    };
+    let cursor = replay.frame.cursor;
+    frame.render_widget(
+        Paragraph::new(Line::from(vec![
+            Span::styled(
+                "watch replay",
+                Palette::fg(palette.text).add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                format!(
+                    "  word {} · UTF-16 unit {} · step {}",
+                    cursor.word_index, cursor.letter_index, replay.frame.next_index
+                ),
+                Palette::fg(palette.sub),
+            ),
+        ])),
+        title,
+    );
+    frame.render_widget(
+        Paragraph::new(replay.line(palette)).wrap(Wrap { trim: false }),
+        words,
+    );
+    let mut spans = tip(palette, "→ / Space", "step");
+    for (label, action) in [
+        ("Home", "restart"),
+        ("PgUp/PgDn", "seek word"),
+        ("Esc", "history"),
     ] {
         spans.push(Span::raw("   "));
         spans.extend(tip(palette, label, action));
