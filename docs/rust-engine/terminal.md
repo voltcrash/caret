@@ -70,9 +70,19 @@ terminal columns. It handles combining marks, CJK, emoji, tabs/newlines and wrap
 font/emulator Unicode width versions can differ. RTL ordering, Arabic/Indic
 shaping, emoji appearance and terminal IME behavior are not browser-equivalent
 guarantees. See the tested matrix below. Generated isolated surrogates are rejected
-as untypable rather than replaced. Underline plus `!` indicates errors without
-relying on color. Terminal/default, light and high-contrast themes are available;
-reduced animation lowers active redraw frequency.
+as untypable rather than replaced. Underlined letters (and `!` in replays) indicate
+errors without relying on color. Reduced animation lowers active redraw frequency.
+
+The layout follows the website: logo, theme indicator and nav up top; the test config
+bar, live timer and a three-line word stream (untyped `sub`, correct `text`, mistakes
+`error`, extras `errorExtra`) with a bar caret in the theme caret colour; keytips in
+the footer. Chrome fades while typing. Results show large wpm/acc beside a wpm/raw
+chart with error marks, then test type, raw, characters, consistency and time.
+Settings, history, help, custom text and replay use the same buttons and key chips.
+Themes reuse web palettes: `azure` (default), `rust`, `serika_dark`, `carbon`, `nord`,
+`dracula`, `catppuccin`, `gruvbox_dark`, `light`, `high-contrast`, and `terminal`
+(the emulator's own ANSI colors). Settings preview a theme before Enter applies it.
+Without `COLORTERM=truecolor`/`24bit`, palettes map to the nearest xterm-256 colors.
 
 Physical-key timing remains unavailable even if releases are reported. History
 stores null for absent measurements. WPM, accuracy, duration and validity come
@@ -83,11 +93,11 @@ Short/failed/repeated results remain in history with their native invalid reason
 CLI settings and explicit unavailable hooks. [Local storage](terminal-storage.md)
 documents paths, format, concurrency, privacy and export. Replay recording is an
 explicit opt-in in settings or `--record-replay`; it stores private target text and
-input. The header warns while enabled. Default summaries contain neither. Saved
+input. The header shows "recording private text" while enabled. Default summaries contain neither. Saved
 custom mode requires private text again; use `--text`, `--file`, or launch with
 `--mode words` and open F4. Packs must be supplied again with `--pack`.
 
-Failed result writes stay queued in memory with an UNSAVED indicator; F9 retries.
+Failed result writes stay queued in memory with an "unsaved" header badge; F9 retries.
 Quitting with pending results reports the loss and leaves prior history intact.
 Malformed/future data is preserved with a clear error. No automatic deletion or
 silent reset. Export never replaces an existing path. For uninstall, remove the

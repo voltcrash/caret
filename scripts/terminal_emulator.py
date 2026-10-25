@@ -183,7 +183,7 @@ def exercise(args):
                     # for the app's keyboard handshake and first frame.
                     window=wait_for_window(process,args.xdotool,title,profile / "emulator.log")
                     xdo("windowfocus",window)
-                    visible("Input:")
+                    visible("quote  zen  custom")  # Idle test config bar.
                     def key(*keys):
                         # XTest physical codes avoid xdotool's duplicate F-key
                         # aliases and numeric/Unicode name parsing ambiguities.
@@ -207,7 +207,7 @@ def exercise(args):
                             x11.XCloseDisplay(display)
                     def type_text(text): xdo("type","--delay","10",text)
                     key("A","B","exclam")
-                    visible("Input: AB!")
+                    visible("AB!")
                     # GTK consumes a standalone combining-key press as IME
                     # preedit in Ghostty basic mode. Test its committed accented
                     # character; all enhanced paths exercise combining clusters.
@@ -216,30 +216,30 @@ def exercise(args):
                     else:
                         type_text("e")
                         key("U0301")
-                    visible("Input: AB!"+accent)
+                    visible("AB!"+accent)
                     key("U754C")
-                    visible("Input: AB!"+accent+"界")
+                    visible("AB!"+accent+"界")
                     key("U1F600")
-                    visible("Input: AB!"+accent+"界😀")
+                    visible("AB!"+accent+"界😀")
                     key("BackSpace")
-                    visible("Input: AB!"+accent+"界")
+                    wait(lambda: "😀" not in screen_text((profile / "output.vt").read_bytes()),"emoji deleted")
                     key("BackSpace","BackSpace")
-                    visible("Input: AB!")
+                    wait(lambda: "界" not in screen_text((profile / "output.vt").read_bytes()),"graphemes deleted")
                     key("ctrl+BackSpace" if keyboard=="auto" else "alt+BackSpace")
                     type_text("repeat")
                     xdo("keydown","x")
                     time.sleep(0.8)
                     xdo("keyup","x")
-                    visible("Input: repeatxx")
+                    visible("repeatxx")
                     key("F1")
-                    visible("Keyboard: "+("enhanced" if keyboard=="auto" else "basic"))
+                    visible("protocol "+("enhanced" if keyboard=="auto" else "basic"))
                     # Default negotiation deliberately does not request releases;
                     # explicit reported release/repeat packets are covered in PTY.
-                    visible("release observed: false")
+                    visible("release observed no")
                     key("Escape")
-                    visible("Input:")
+                    visible("repeatxx")
                     xdo("windowsize",window,"380","180")
-                    visible("Resize")
+                    visible("resize to at least")
                     type_text("BLOCKED")
                     # Ghostty's default Ctrl+Enter binding toggles fullscreen and
                     # never reaches the app. F8 is the portable finish binding.
@@ -257,14 +257,14 @@ def exercise(args):
                     key("F3")
                     visible("Local history")
                     key("F8")
-                    visible("Recorded replay")
+                    visible("watch replay")
                     key("Right")
                     visible("step 1")
                     key("Escape","F5","F4")
-                    visible("Private")
+                    visible("type or paste")
                     type_text("one two")
                     key("F8")
-                    visible("Input:")
+                    visible("quote  zen  custom")
                     type_text("one twx")
                     key("BackSpace","o")
                     visible("Result saved locally.")

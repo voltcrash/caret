@@ -1,6 +1,6 @@
 use crate::Result;
 use crossterm::{
-    cursor::Show,
+    cursor::{SetCursorStyle, Show},
     event::{
         DisableBracketedPaste, EnableBracketedPaste, KeyboardEnhancementFlags,
         PopKeyboardEnhancementFlags, PushKeyboardEnhancementFlags,
@@ -28,7 +28,14 @@ fn restore(enhanced: &AtomicBool) {
     if enhanced.swap(false, Ordering::SeqCst) {
         let _ = execute!(io::stdout(), PopKeyboardEnhancementFlags);
     }
-    let _ = execute!(io::stdout(), DisableBracketedPaste, Show);
+    // OSC 112 resets the caret colour set by `caret_color`.
+    let _ = execute!(
+        io::stdout(),
+        DisableBracketedPaste,
+        SetCursorStyle::DefaultUserShape,
+        crossterm::style::Print("\x1b]112\x1b\\"),
+        Show
+    );
     ratatui::restore();
 }
 
@@ -36,7 +43,13 @@ fn initialize(enhanced: &AtomicBool, auto_keyboard: bool) -> std::io::Result<Def
     // Install our cleanup hook once, rather than nesting Ratatui hooks on every
     // suspend/resume cycle. The guard already exists if any setup step fails.
     enable_raw_mode()?;
-    execute!(io::stdout(), EnterAlternateScreen, EnableBracketedPaste)?;
+    execute!(
+        io::stdout(),
+        EnterAlternateScreen,
+        EnableBracketedPaste,
+        // The web caret is a thin bar, not a block.
+        SetCursorStyle::SteadyBar
+    )?;
     // Query before any event poll/read. Basic terminals may time out and use F8.
     if auto_keyboard && supports_keyboard_enhancement().unwrap_or(false) {
         enhanced.store(true, Ordering::SeqCst);
@@ -49,6 +62,15 @@ fn initialize(enhanced: &AtomicBool, auto_keyboard: bool) -> std::io::Result<Def
         )?;
     }
     ratatui::Terminal::new(CrosstermBackend::new(io::stdout()))
+}
+/// Tint the terminal caret like the web `--caret-color` (OSC 12); ANSI themes keep the default.
+pub fn caret_color(color: ratatui::style::Color) -> Result<()> {
+    let sequence = match color {
+        ratatui::style::Color::Rgb(r, g, b) => format!("\x1b]12;#{r:02x}{g:02x}{b:02x}\x1b\\"),
+        _ => "\x1b]112\x1b\\".into(),
+    };
+    execute!(io::stdout(), crossterm::style::Print(sequence))?;
+    Ok(())
 }
 impl TerminalGuard {
     pub fn enter(auto_keyboard: bool) -> Result<(Self, DefaultTerminal)> {
