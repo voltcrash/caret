@@ -252,3 +252,13 @@ fn editor_shows_option_buttons_and_text_area() {
     assert_eq!(buffer[(x, y)].bg, palette.sub_alt);
     assert_eq!(buffer[(x, y)].fg, palette.text);
 }
+
+#[test]
+fn tiny_terminals_get_a_centred_resize_notice() {
+    let fixture = fixture(Config::default());
+    let buffer = render(&fixture, Screen::Test, 40, 10);
+    let palette = oxytype_tui::theme::Palette::named("rust");
+    let (x, y) = find(&buffer, "terminal too small").unwrap();
+    assert_eq!(buffer[(x, y)].fg, palette.main);
+    assert!(find(&buffer, "now 40×10").is_some());
+}

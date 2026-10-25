@@ -42,9 +42,32 @@ pub fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
     });
     frame.render_widget(Block::default().style(palette.base()), area);
     if area.width < 60 || area.height < 18 {
+        // Mirrors the web's centred notices: headline in main, detail in sub.
+        let lines = vec![
+            Line::styled("terminal too small", Palette::fg(palette.main)),
+            Line::styled(
+                format!(
+                    "resize to at least 60×18 (now {}×{})",
+                    area.width, area.height
+                ),
+                Palette::fg(palette.text),
+            ),
+            Line::styled(
+                "Active test clock continues. Ctrl+Q quits.",
+                Palette::fg(palette.sub),
+            ),
+        ];
+        let [_, middle, _] = Layout::vertical([
+            Constraint::Fill(1),
+            Constraint::Length(4),
+            Constraint::Fill(1),
+        ])
+        .areas(area);
         frame.render_widget(
-            Paragraph::new("Resize to at least 60×18. Active test clock continues. Ctrl+Q quits."),
-            area,
+            Paragraph::new(lines)
+                .alignment(Alignment::Center)
+                .wrap(Wrap { trim: true }),
+            middle,
         );
         return;
     }
