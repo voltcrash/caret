@@ -2,7 +2,7 @@ import { useBlocker, useRouter } from "@tanstack/solid-router";
 import { onCleanup } from "solid-js";
 
 import { bindNavigation } from "./navigate";
-import { canNavigate } from "./navigation-guard.client";
+import { canNavigate, transitionSettled } from "./navigation-guard.client";
 
 /** Same-origin URL to a Router href; trailing slashes collapse like before. */
 export function navigationHref(url: string): string {
@@ -17,19 +17,24 @@ export function navigationHref(url: string): string {
 
 /**
  * Router owns navigation: links and history traversal pass the test guard as
- * a blocker; command palette, hotkeys and other imperative callers navigate
- * through the same router. `force` skips restart/result checks, never no_quit.
+ * a blocker once any restart or result calculation settles; command palette,
+ * hotkeys and other imperative callers navigate through the same router.
+ * `force` skips restart/result checks, never no_quit.
  */
 export function RouterNavigation(): null {
   const router = useRouter();
   useBlocker({
-    shouldBlockFn: () => !canNavigate(),
+    shouldBlockFn: async () => {
+      await transitionSettled();
+      return !canNavigate();
+    },
     // Router defaults to confirming every document exit while mounted.
     enableBeforeUnload: () => !canNavigate(),
   });
   onCleanup(
     bindNavigation({
       navigate: async (url, options) => {
+        if (options.force !== true) await transitionSettled();
         if (!canNavigate(options)) return;
         if (url === undefined) {
           await router.invalidate();
