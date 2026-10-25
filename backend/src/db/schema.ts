@@ -369,3 +369,12 @@ export const mutationGuards = sqliteTable(
   { id: id(), valid: integer("valid").notNull() },
   (t) => [check("mutation_version", sql`${t.valid} = 1`)],
 );
+
+export const writeReceipts = sqliteTable(
+  "write_receipts",
+  {
+    id: id(),
+    createdAt: integer("created_at").notNull(),
+  },
+  (t) => [index("write_receipts_created_idx").on(t.createdAt)],
+);

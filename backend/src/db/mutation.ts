@@ -2,15 +2,10 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { eq } from "drizzle-orm";
 import type { D1PreparedStatement } from "@cloudflare/workers-types";
 import { users } from "./schema";
-import {
-  binding,
-  database,
-  primaryDatabase,
-  encode,
-  statement,
-} from "./client";
+import { database, primaryDatabase, encode, statement } from "./client";
 import { newId } from "../utils/id";
 import MonkeyError from "../utils/error";
+import { commitBatch } from "./commit";
 import type { DBUser } from "../dal/user";
 
 type Draft = { uid: string; user: DBUser; statements: D1PreparedStatement[] };
@@ -81,7 +76,7 @@ export async function atomicUser<T>(
     const result = await drafts.run(draft, action);
     const guard = newId();
     try {
-      await binding().batch([
+      await commitBatch([
         statement(
           "INSERT INTO mutation_guards(id,valid) VALUES (?,(SELECT count(*) FROM users WHERE uid=? AND version=?))",
           guard,

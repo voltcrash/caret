@@ -154,6 +154,108 @@ Reference: [Cloudflare global read replication](https://developers.cloudflare.co
 
 ### Capacity and migrations
 
+Migration commands now run `PRAGMA optimize` only after successful migrations,
+on the same local persistence directory or configured remote database. This
+updates SQLite planner statistics when needed, including after new indexes.
+It does not run on the request path or during deployment dry runs. To run it
+independently:
+
+```sh
+vp run --filter @oxytype/frontend db:optimize
+vp run --filter @oxytype/frontend db:optimize:staging
+vp run --filter @oxytype/frontend db:optimize:production
+```
+
+### Query Insights reports
+
+The `D1 Query Insights` Actions workflow runs daily at 06:23 UTC on main and
+supports manual dispatch from main. It collects the last 24 hours for production
+and staging, ranked separately by total execution time, average execution time,
+rows read and rows written (top 20 per category). View each job's summary or its
+30-day JSON/Markdown artifacts. Collection failures fail the job; queries above
+advisory thresholds produce warnings rather than blocking deployments.
+
+Thresholds in `frontend/scripts/d1-query-insights.ts`: at least 10 executions,
+then average duration >=50 ms or average rows read >=1,000. A high row count is
+a review candidate, not proof of a missing index. Use `EXPLAIN QUERY PLAN` on
+the identified query before changing indexes. Metrics are sampled; ranked
+lists are not complete database totals and can overlap.
+
+The workflow uses the existing production environment's `CLOUDFLARE_API_TOKEN`;
+it needs D1 read and account Analytics read access. Production environment
+approval rules, if configured, also apply to these reporting jobs. It never
+deploys, changes schema or writes application data.
+
+```sh
+vp run --filter @oxytype/frontend db:insights:production
+vp run --filter @oxytype/frontend db:insights:staging
+```
+
+Local reports go to ignored `frontend/.reports/d1/`. Persisted reports and
+Actions logs contain SHA-256 query IDs and metrics, not captured SQL or literal
+values. For investigation, use Wrangler Insights locally, hash the exact
+captured SQL to match a report ID, then inspect the query plan. Cloudflare's
+query capture excludes bound parameters; SQL containing literal values can
+still be sensitive. Do not publish raw Wrangler output as an artifact.
+
+Reference: [D1 metrics and Insights](https://developers.cloudflare.com/d1/observability/metrics-analytics/).
+
+### Transient write failures
+
+Migration `0016_write_receipts.sql` adds an indexed receipt table. Apply it
+before deploying the new Worker through the normal migration command.
+Atomic user/result batches, account deletion batches, leaderboard publication
+and scheduled cleanup use receipt-protected commits. Each prepared batch gets
+one random receipt inserted in the same transaction as all its effects.
+
+Retryable connection/reset failures trigger a primary-routed receipt probe.
+An existing receipt proves the entire batch committed. Otherwise the same
+prepared batch can replay; its unique receipt prevents a delayed original
+commit from causing duplicate effects. The probe uses a no-op write so it also
+advances the request session's bookmark after a lost acknowledgement. Application
+callbacks are not repeated for transport retries. Existing optimistic version
+conflict handling still rebuilds a draft from the primary.
+
+Retries are limited to three retries/four attempts with exponential full jitter
+(100/200/400 ms caps). Recovery probes have the same retry bound. Only Cloudflare's
+documented connection-lost and object-reset messages qualify; constraint,
+capacity, overload and other errors propagate. Receipts add a row and index
+write per batch and expire through hourly cleanup after seven days. No user
+payloads are stored in receipts.
+
+This is internal batch replay protection, not cross-request idempotency.
+Result submission hashes still handle client resubmissions. Standalone rate
+counter increments and Better Auth writes are not blindly retried; they lack
+this batch receipt. D1 already retries eligible read-only queries itself.
+
+Reference: [D1 retry guidance](https://developers.cloudflare.com/d1/best-practices/retry-queries/).
+
+### Production Smart Placement
+
+`frontend/wrangler.production.json` enables `placement.mode: smart` directly
+on the production Worker. Staging and local placement stay unchanged. Deploy
+the production Worker normally; no performance experiment or staging promotion
+is required. Cloudflare learns from traffic and chooses locations when moving
+execution is expected to improve overall request duration. Learning can take
+up to 15 minutes and needs consistent traffic from multiple locations.
+
+Production request logs include `placementMode: smart` and a validated
+`placement` value from Cloudflare's `cf-placement` header when available
+(`local-BOM`, `remote-SIN`, etc.). Responses expose that validated value as
+`X-Oxytype-Placement`. Missing values mean unreported placement. Logs' `durationMs`
+measure Worker handling, not full forwarding latency; use Cloudflare's request
+duration analytics for total request performance. Placement does not change
+D1's primary/replica consistency rules, move static assets served directly by
+Cloudflare, or relocate Cron handlers.
+
+Build artifact checks reject a placement mode that differs from source config.
+To disable placement later, remove production's `placement` and `PLACEMENT_MODE`
+settings, rebuild and redeploy. Database replication is independent.
+
+Reference: [Workers Smart Placement](https://developers.cloudflare.com/workers/configuration/placement/).
+
+### Capacity and recovery
+
 Measure DB+indexes against the account tier and projected growth; benchmark
 result saves, exact rate counters and ranking reads/rebuilds. Large
 history may need external SQL, partitioning or R2 archival.

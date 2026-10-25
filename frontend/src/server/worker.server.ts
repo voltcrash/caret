@@ -7,7 +7,7 @@ import { runtime, withRuntime, type WorkerEnv } from "@oxytype/backend/runtime";
 import { scheduled } from "@oxytype/backend/jobs";
 import { boundedRequest } from "./request-body.server";
 import { applyResponsePolicy } from "./response-policy.server";
-import { requestLog, serverBuildId } from "./observability.server";
+import { placementOf, requestLog, serverBuildId } from "./observability.server";
 
 async function observeScheduled(
   env: WorkerEnv,
@@ -98,15 +98,23 @@ export function createApplicationWorker(
                 durationMs: Date.now() - started,
                 release: env.VERSION,
                 staleClient: response.headers.has("X-Oxytype-Stale-Client"),
+                placementMode: env.PLACEMENT_MODE,
               }),
             ),
           );
-          return applyResponsePolicy(
+          const final = applyResponsePolicy(
             response,
             nonce,
             requestId,
             env.MODE === "dev",
           );
+          if (env.PLACEMENT_MODE === "smart") {
+            const placement = placementOf(request.headers);
+            if (placement !== undefined) {
+              final.headers.set("X-Oxytype-Placement", placement);
+            }
+          }
+          return final;
         },
         ctx,
       );
