@@ -209,11 +209,72 @@ pub fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
             .block(Block::bordered()),
         rows[1],
     );
-    frame.render_widget(
-        Paragraph::new(format!(
-            "F1 help · F5 new · F6 repeat · Ctrl+Q quit · F9 retry saves\n{notice}"
-        )),
+    footer(
+        frame,
         rows[2],
+        &palette,
+        notice,
+        state.active,
+        !local.pending.is_empty(),
+    );
+}
+/// One web `<kbd>`: key text on the sub-alt chip.
+fn key(palette: &Palette, label: &str) -> Span<'static> {
+    Span::styled(
+        format!(" {label} "),
+        Style::new().fg(palette.text).bg(palette.sub_alt),
+    )
+}
+fn tip(palette: &Palette, label: &str, action: &str) -> Vec<Span<'static>> {
+    vec![
+        key(palette, label),
+        Span::styled(format!(" - {action}"), Palette::fg(palette.sub)),
+    ]
+}
+/// Keytips fade while typing; notices and version stay, like the web footer.
+fn footer(
+    frame: &mut Frame,
+    area: Rect,
+    palette: &Palette,
+    notice: &str,
+    focus: bool,
+    unsaved: bool,
+) {
+    let area = column(area, 120);
+    let [tips, _, status] = Layout::vertical([Constraint::Length(1); 3]).areas(area);
+    let [status, version] =
+        Layout::horizontal([Constraint::Min(1), Constraint::Length(10)]).areas(status);
+    if !focus {
+        let mut spans = tip(palette, "F5", "restart test");
+        spans.push(Span::raw("    "));
+        spans.extend(tip(palette, "F6", "repeat test"));
+        spans.push(Span::raw("    "));
+        spans.extend(tip(palette, "Ctrl+Q", "quit"));
+        if unsaved {
+            spans.push(Span::raw("    "));
+            spans.extend(tip(palette, "F9", "retry saves"));
+        }
+        frame.render_widget(
+            Paragraph::new(Line::from(spans)).alignment(Alignment::Center),
+            tips,
+        );
+    }
+    let color = if notice.starts_with("UNSAVED") || notice.contains("failed") {
+        palette.error
+    } else {
+        palette.main
+    };
+    frame.render_widget(
+        Paragraph::new(Span::styled(notice.to_string(), Palette::fg(color))),
+        status,
+    );
+    frame.render_widget(
+        Paragraph::new(Span::styled(
+            format!("v{}", env!("CARGO_PKG_VERSION")),
+            Palette::fg(palette.sub),
+        ))
+        .alignment(Alignment::Right),
+        version,
     );
 }
 /// Horizontal content column: web `content-grid` with a two-cell gutter.
