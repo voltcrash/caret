@@ -275,6 +275,7 @@ export const leaderboardBests = sqliteTable(
   (t) => [
     primaryKey({ columns: [t.board, t.uid] }),
     index("leaderboard_bests_score_idx").on(t.board, t.wpm, t.acc, t.timestamp),
+    index("leaderboard_bests_owner_idx").on(t.uid),
   ],
 );
 export const leaderboardGenerations = sqliteTable("leaderboard_generations", {

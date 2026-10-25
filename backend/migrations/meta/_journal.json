@@ -148,6 +148,13 @@
       "when": 1792921415692,
       "tag": "0020_drop_unused_result_indexes",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "6",
+      "when": 1792922415692,
+      "tag": "0021_leaderboard_bests_owner_index",
+      "breakpoints": true
     }
   ]
 }

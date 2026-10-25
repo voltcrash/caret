@@ -49,6 +49,22 @@ describe("D1 schema on workerd", () => {
       "results_submission_idx",
     ]);
   });
+  it("removes a user's leaderboard bests through an index", async () => {
+    for (const query of [
+      "DELETE FROM users WHERE uid='owner'",
+      "DELETE FROM leaderboard_bests WHERE uid='owner'",
+    ]) {
+      const plan = await test.env.DB.prepare(
+        `EXPLAIN QUERY PLAN ${query}`,
+      ).all<{
+        detail: string;
+      }>();
+      const details = plan.results.map(({ detail }) => detail);
+      expect(
+        details.filter((detail) => detail.includes("leaderboard_bests")),
+      ).toEqual([expect.stringContaining("leaderboard_bests_owner_idx")]);
+    }
+  });
   it("enforces normalized user names and cascades owned rows", async () => {
     await seedUser(test.env, "owner", "Name");
     await expect(seedUser(test.env, "other", "name")).rejects.toThrow(/UNIQUE/);
