@@ -107,14 +107,26 @@ pub fn view(stream: Stream<'_>, width: u16, height: u16) -> TextView {
             let at = typed.len();
             (typed, at)
         } else {
-            letters(&target, input, stream.language)
+            // Score letters without the separator so extras land before it, as on the web.
+            let core = |text: &Text| match text.0.split_last() {
+                Some((32, rest)) => Text(rest.to_vec()),
+                _ => text.clone(),
+            };
+            let (mut marked, at) = letters(&core(&target), &core(input), stream.language);
+            if target.0.last() == Some(&32) {
+                marked.push((" ".into(), Letter::Untyped));
+            }
+            (marked, at)
         };
         let wrong = letters
             .iter()
             .any(|(_, l)| matches!(l, Letter::Incorrect | Letter::Extra));
         let committed = index < stream.index && !target.is_empty();
         // A committed word typed short of its target is an error on the web too.
-        let missed = committed && letters.iter().any(|(_, l)| *l == Letter::Untyped);
+        let missed = committed
+            && letters
+                .iter()
+                .any(|(g, l)| *l == Letter::Untyped && g != " ");
         if index <= stream.index {
             errors |= wrong;
         }
@@ -125,12 +137,21 @@ pub fn view(stream: Stream<'_>, width: u16, height: u16) -> TextView {
             .iter()
             .map(|(g, _)| UnicodeWidthStr::width(shown(g).as_str()).max(1).min(width))
             .collect();
-        let total: usize = cells.iter().sum();
+        // Words carry their separator; a trailing space may hang past the edge.
+        let hanging = letters.last().is_some_and(|(g, _)| g == " ");
+        let total: usize = cells.iter().sum::<usize>() - usize::from(hanging);
         if x > 0 && x + total > width {
             lines.push(Line::default());
             x = 0;
         }
         for (position, ((grapheme, letter), cells)) in letters.iter().zip(&cells).enumerate() {
+            if grapheme == " " && x + cells > width {
+                if index == stream.index && position == at {
+                    caret = (x, lines.len() - 1);
+                }
+                x = width;
+                continue;
+            }
             if x + cells > width {
                 lines.push(Line::default());
                 x = 0;
@@ -141,7 +162,11 @@ pub fn view(stream: Stream<'_>, width: u16, height: u16) -> TextView {
             if !grapheme.is_empty() {
                 lines.last_mut().unwrap().spans.push(Span::styled(
                     shown(grapheme),
-                    style(stream.palette, *letter, committed && (wrong || missed)),
+                    style(
+                        stream.palette,
+                        *letter,
+                        committed && (wrong || missed) && grapheme != " ",
+                    ),
                 ));
             }
             x += cells;
@@ -152,10 +177,6 @@ pub fn view(stream: Stream<'_>, width: u16, height: u16) -> TextView {
         }
         if index == stream.index && at >= letters.len() {
             caret = (x, lines.len() - 1);
-        }
-        if x > 0 && x < width {
-            lines.last_mut().unwrap().spans.push(Span::raw(" "));
-            x += 1;
         }
         // Lookahead is bounded to what can be shown below the caret line.
         if index > stream.index && lines.len() > caret.1 + height as usize {

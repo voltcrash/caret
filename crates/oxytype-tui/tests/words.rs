@@ -30,8 +30,8 @@ fn letters_mark_correct_incorrect_untyped_and_extra() {
 #[test]
 fn stream_wraps_whole_words_and_keeps_caret_line_near_top() {
     let palette = Palette::named("rust");
-    let list = words(&["alpha", "beta", "gamma", "delta", "omega", "kappa"]);
-    let inputs = words(&["alpha", "beta", "gamma"]);
+    let list = words(&["alpha ", "beta ", "gamma ", "delta ", "omega ", "kappa "]);
+    let inputs = words(&["alpha ", "beta ", "gamma "]);
     let input = Text::from("de");
     let shown = view(
         Stream {
@@ -59,8 +59,8 @@ fn stream_wraps_whole_words_and_keeps_caret_line_near_top() {
 #[test]
 fn committed_mistakes_are_underlined_errors() {
     let palette = Palette::named("rust");
-    let list = words(&["one", "two"]);
-    let inputs = words(&["onx"]);
+    let list = words(&["one ", "two "]);
+    let inputs = words(&["onx "]);
     let input = Text::default();
     let shown = view(
         Stream {
@@ -90,7 +90,7 @@ fn committed_mistakes_are_underlined_errors() {
 #[test]
 fn zen_streams_typed_text_without_targets() {
     let palette = Palette::named("rust");
-    let inputs = words(&["hello"]);
+    let inputs = words(&["hello "]);
     let input = Text::from("wor");
     let shown = view(
         Stream {
@@ -111,8 +111,10 @@ fn zen_streams_typed_text_without_targets() {
 #[test]
 fn stream_scrolls_once_caret_reaches_third_line() {
     let palette = Palette::named("rust");
-    let list = words(&["alpha", "beta", "gamma", "delta", "omega", "kappa", "sigma"]);
-    let inputs = words(&["alpha", "beta", "gamma", "delta"]);
+    let list = words(&[
+        "alpha ", "beta ", "gamma ", "delta ", "omega ", "kappa ", "sigma ",
+    ]);
+    let inputs = words(&["alpha ", "beta ", "gamma ", "delta "]);
     let input = Text::default();
     let shown = view(
         Stream {
@@ -128,4 +130,27 @@ fn stream_scrolls_once_caret_reaches_third_line() {
     );
     assert_eq!(shown.lines[0].to_string().trim_end(), "gamma delta");
     assert_eq!(shown.caret, (0, 1));
+}
+
+#[test]
+fn extra_letters_sit_before_the_separator() {
+    let palette = Palette::named("rust");
+    let list = words(&["two ", "six "]);
+    let inputs = words(&["twox "]);
+    let input = Text::default();
+    let shown = view(
+        Stream {
+            words: &list,
+            inputs: &inputs,
+            index: 1,
+            input: &input,
+            language: "english",
+            palette: &palette,
+        },
+        20,
+        3,
+    );
+    assert_eq!(shown.lines[0].to_string().trim_end(), "twox six");
+    assert_eq!(shown.lines[0].spans[3].style.fg, Some(palette.error_extra));
+    assert_eq!(shown.caret, (5, 0));
 }
