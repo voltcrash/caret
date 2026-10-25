@@ -194,8 +194,8 @@ def run(binary, release=False):
         time.sleep(0.1)
         dimensions(child.slave)
         os.kill(child.process.pid, signal.SIGWINCH)
-        child.until(b"oxytype")
-        assert "quote  zen  custom" in child.screen_text(), "Undersized typing started a test"
+        # Await the full frame: the bar only returns if undersized typing never started a test.
+        child.until(b"quote  zen  custom")
         child.send(b"\x11")
         assert child.wait_exit() == 0
         child.restored()
