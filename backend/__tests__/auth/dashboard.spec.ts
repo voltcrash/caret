@@ -62,7 +62,6 @@ describe("Better Auth dashboard", () => {
       authAccounts: [],
       authSessions: [],
       authVerifications: [],
-      authRateLimits: [],
     };
     auth = createAuth(memoryAdapter(store));
     vi.spyOn(AuthInit, "getAuth").mockImplementation(() => auth);

@@ -234,9 +234,7 @@ describe("built Start application in workerd", () => {
     const worker = await mf.getWorker("a");
     const db = await mf.getD1Database("DB", "a");
     await db
-      .prepare(
-        "INSERT INTO rate_counters(key,points,expires_at) VALUES('expired',1,0)",
-      )
+      .prepare("INSERT INTO write_receipts(id,created_at) VALUES('expired',0)")
       .run();
     const scheduled = await worker.scheduled({
       scheduledTime: new Date(0),
@@ -245,7 +243,7 @@ describe("built Start application in workerd", () => {
     expect(scheduled.outcome).toBe("ok");
     expect(
       await db
-        .prepare("SELECT key FROM rate_counters WHERE key='expired'")
+        .prepare("SELECT id FROM write_receipts WHERE id='expired'")
         .first(),
     ).toBeNull();
   });

@@ -20,7 +20,6 @@ beforeEach(() => {
       authAccounts: [],
       authSessions: [],
       authVerifications: [],
-      authRateLimits: [],
     }),
   );
   vi.spyOn(AuthInit, "getAuth").mockReturnValue(auth);
