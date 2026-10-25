@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from "vite-plus/test";
 import { sql } from "drizzle-orm";
 import { createTestRuntime, seedUser } from "./helpers";
-import { runtime, withRuntime } from "../../src/runtime/env";
+import { preferReplicas, runtime, withRuntime } from "../../src/runtime/env";
 import { binding, database, statement } from "../../src/db/client";
 import { atomicUser, mutateUser } from "../../src/db/mutation";
 import { getAuth } from "../../src/init/auth";
@@ -29,8 +29,10 @@ describe("D1 invocation sessions", () => {
     };
     try {
       await withRuntime(env, async () => {
-        expect(start).toHaveBeenLastCalledWith("first-primary");
+        expect(start).not.toHaveBeenCalled();
         expect(binding() === runtime().session).toBe(true);
+        expect(start).toHaveBeenCalledTimes(1);
+        expect(start).toHaveBeenLastCalledWith("first-primary");
         expect(database().$client === binding()).toBe(true);
         await statement(
           "INSERT INTO write_receipts(id,created_at) VALUES('session',1)",
@@ -56,6 +58,32 @@ describe("D1 invocation sessions", () => {
     } finally {
       start.mockRestore();
     }
+  });
+
+  it("opens replica-first sessions only before first use", async () => {
+    const start = vi.fn((constraint?: string) =>
+      test.env.DB.withSession(constraint),
+    );
+    const env = {
+      ...test.env,
+      DB: new Proxy(test.env.DB, {
+        get(target, key): unknown {
+          return key === "withSession" ? start : Reflect.get(target, key);
+        },
+      }),
+    };
+    await withRuntime(env, async () => {
+      preferReplicas();
+      expect(await statement("SELECT 1 AS one").first("one")).toBe(1);
+    });
+    expect(start).toHaveBeenLastCalledWith("first-unconstrained");
+    await withRuntime(env, async () => {
+      await statement("SELECT 1").first();
+      preferReplicas();
+      await statement("SELECT 1").first();
+    });
+    expect(start).toHaveBeenCalledTimes(2);
+    expect(start).toHaveBeenLastCalledWith("first-primary");
   });
 
   it("isolates concurrent and nested invocation sessions", async () => {
