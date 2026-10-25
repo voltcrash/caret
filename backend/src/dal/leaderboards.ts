@@ -1,7 +1,8 @@
 import type { Client } from "@oxytype/schemas/shared";
 import type { LeaderboardEntry } from "@oxytype/schemas/leaderboards";
 import { newId } from "../utils/id";
-import { binding, statement } from "../db/client";
+import { statement } from "../db/client";
+import { commitBatch } from "../db/commit";
 import { getCachedConfiguration } from "../init/configuration";
 import { isDevEnvironment, omit } from "../utils/misc";
 export type DBLeaderboardEntry = Omit<LeaderboardEntry, "_id"> & {
@@ -87,7 +88,7 @@ export async function update(
     ? 0
     : (await getCachedConfiguration(true)).leaderboards.minTimeTyping;
   // Build + publish within one batch. Readers join one generation, never a partially rebuilt board.
-  await binding().batch([
+  await commitBatch([
     statement(
       `INSERT INTO leaderboard_snapshots(generation,board,uid,rank,data)
       SELECT ?,?,u.uid,row_number() OVER(ORDER BY b.wpm DESC,b.acc DESC,b.timestamp DESC,u.uid DESC),
