@@ -5,14 +5,14 @@ import { createWorkerd, relaxRateLimits, seedSession } from "./workerd";
 describe("pilot shared services in workerd", () => {
   let mf: Awaited<ReturnType<typeof createWorkerd>>;
   beforeAll(async () => {
-    // Admin probes (adminLimit) and fresh-session probes (userRevokeAllTokens) repeat.
+    // Admin probes repeat adminLimit (2 per 10s) for one account.
     mf = await createWorkerd(
       true,
       undefined,
       false,
       {},
       {
-        onOptions: relaxRateLimits("RATE_LIMIT_10S_2", "RATE_LIMIT_60S_1"),
+        onOptions: relaxRateLimits("RATE_LIMIT_10S_2"),
       },
     );
   });

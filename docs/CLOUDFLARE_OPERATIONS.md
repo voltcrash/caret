@@ -110,9 +110,11 @@ available for an explicit retry with the same approval idempotency key.
 API, session-read and auth routes use Workers rate limiting bindings, not D1.
 Bindings allow only 10s or 60s periods with a fixed limit, so each distinct
 budget is one `RATE_LIMIT_<period>S_<limit>` binding. Contract windows over a
-minute become a per-minute budget of 4x their average rate, capped at the
-window's max (root: 1,000/hour becomes 67/minute). Day limits become
-1/minute. Counts are per Cloudflare location and eventually consistent.
+minute become a per-minute budget of 4x their average rate, at least 30 and at
+most the window's max (root: 1,000/hour becomes 67/minute; 60/hour becomes
+30/minute; 3/day becomes 3/minute). The D1 limiter allowed a whole window at
+once, and a signed-in page load reads several low-volume operations, so
+smaller budgets rejected ordinary reloads. Counts are per Cloudflare location and eventually consistent.
 Development (`MODE=dev`) skips the bindings. Responses send
 `X-RateLimit-Limit` and, when limited, `Retry-After`; there is no
 Remaining/Reset.

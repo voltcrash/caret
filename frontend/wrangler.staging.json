@@ -50,14 +50,6 @@
       }
     },
     {
-      "name": "RATE_LIMIT_60S_1",
-      "namespace_id": "2004",
-      "simple": {
-        "limit": 1,
-        "period": 60
-      }
-    },
-    {
       "name": "RATE_LIMIT_60S_2",
       "namespace_id": "2005",
       "simple": {
@@ -66,34 +58,34 @@
       }
     },
     {
-      "name": "RATE_LIMIT_60S_4",
-      "namespace_id": "2006",
+      "name": "RATE_LIMIT_60S_3",
+      "namespace_id": "2013",
       "simple": {
-        "limit": 4,
+        "limit": 3,
         "period": 60
       }
     },
     {
-      "name": "RATE_LIMIT_60S_7",
-      "namespace_id": "2007",
+      "name": "RATE_LIMIT_60S_5",
+      "namespace_id": "2014",
       "simple": {
-        "limit": 7,
+        "limit": 5,
         "period": 60
       }
     },
     {
-      "name": "RATE_LIMIT_60S_8",
-      "namespace_id": "2008",
+      "name": "RATE_LIMIT_60S_10",
+      "namespace_id": "2015",
       "simple": {
-        "limit": 8,
+        "limit": 10,
         "period": 60
       }
     },
     {
-      "name": "RATE_LIMIT_60S_20",
-      "namespace_id": "2009",
+      "name": "RATE_LIMIT_60S_30",
+      "namespace_id": "2016",
       "simple": {
-        "limit": 20,
+        "limit": 30,
         "period": 60
       }
     },
