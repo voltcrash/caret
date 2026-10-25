@@ -8,7 +8,7 @@ import {
   vi,
 } from "vite-plus/test";
 import { memoryAdapter } from "better-auth/adapters/memory";
-import { createAuth } from "../../src/init/auth";
+import { createAuth, SESSION_COOKIE_CACHE_SECONDS } from "../../src/init/auth";
 import * as AuthInit from "../../src/init/auth";
 import * as AuthUtils from "../../src/utils/auth";
 import { signInWithOAuth } from "../__testData__/oauth";
@@ -196,6 +196,23 @@ describe("Better Auth social-only HTTP flow", () => {
     await expect(
       AuthUtils.verifySession(new Headers({ cookie })),
     ).rejects.toThrow("Session expired or revoked");
+  });
+  it("serves cookie sessions from the signed cache for at most a minute", async () => {
+    const { cookie } = await signInWithOAuth(auth, app);
+    expect(cookie).toContain("oxytype.session_data=");
+    const headers = new Headers({ cookie });
+    const session = await AuthUtils.verifySession(headers, {});
+    await AuthUtils.revokeTokensByUid(session.uid);
+    await expect(AuthUtils.verifySession(headers, {})).resolves.toMatchObject({
+      uid: session.uid,
+    });
+    await expect(AuthUtils.verifySession(headers)).rejects.toThrow(
+      "Session expired or revoked",
+    );
+    vi.setSystemTime(Date.now() + (SESSION_COOKIE_CACHE_SECONDS + 1) * 1000);
+    await expect(AuthUtils.verifySession(headers, {})).rejects.toThrow(
+      "Session expired or revoked",
+    );
   });
   it("signs out and rejects a removed cookie session", async () => {
     const { cookie } = await signInWithOAuth(auth, app);

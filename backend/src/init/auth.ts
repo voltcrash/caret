@@ -22,6 +22,9 @@ import { bearer } from "better-auth/plugins";
 import { getFrontendUrl, isDevEnvironment } from "../utils/misc";
 import * as UserDAL from "../dal/user";
 
+/** Longest a revoked or disabled cookie session can keep working. */
+export const SESSION_COOKIE_CACHE_SECONDS = 60;
+
 export function createAuth(
   adapter: BetterAuthOptions["database"],
 ): ReturnType<typeof betterAuth> {
@@ -92,7 +95,13 @@ export function createAuth(
     session: {
       modelName: "authSessions",
       freshAge: 60,
-      cookieCache: { enabled: false },
+      // Signed (HMAC) snapshot; expiry always falls back to D1. No stateless
+      // refresh, so a revoked session outlives revocation by at most maxAge.
+      cookieCache: {
+        enabled: true,
+        maxAge: SESSION_COOKIE_CACHE_SECONDS,
+        strategy: "compact",
+      },
     },
     verification: { modelName: "authVerifications" },
     disabledPaths: [

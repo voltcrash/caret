@@ -40,6 +40,8 @@ export type Invocation = {
   /** Trusted client address (see `client-ip`). */
   clientIp: string;
   setHeader: SetPolicyHeader;
+  /** Adds a Set-Cookie header (refreshed session cookie cache). */
+  appendCookie?: (cookie: string) => void;
 };
 
 /** Identity/config/client state shared by every policy of one invocation. */
@@ -126,6 +128,8 @@ export async function execute<K extends OperationId>(
     headers: invocation.headers,
     options: operation.metadata.authenticationOptions,
     endpoint: id,
+    fresh: [operation.metadata.requirePermission].flat().includes("admin"),
+    setCookie: invocation.appendCookie,
   });
   await enforceOperationLimit(operation.metadata, scope, invocation.setHeader);
   verifyConfiguration(scope.configuration, operation.metadata);

@@ -149,6 +149,9 @@ async function handle(
     setHeader: (name, value) => {
       headers.set(name, value);
     },
+    appendCookie: (cookie) => {
+      headers.append("Set-Cookie", cookie);
+    },
   };
   let scope: PolicyScope | undefined;
   let response: Response;
@@ -185,7 +188,10 @@ async function handle(
     );
   }
   for (const [name, value] of headers) {
-    response.headers.set(name, value);
+    if (name !== "set-cookie") response.headers.set(name, value);
+  }
+  for (const cookie of headers.getSetCookie()) {
+    response.headers.append("Set-Cookie", cookie);
   }
   return await conditional(request, response);
 }

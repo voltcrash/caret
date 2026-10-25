@@ -1,5 +1,6 @@
 import "@tanstack/solid-start/server-only";
 import {
+  appendResponseHeader,
   setResponseHeader,
   setResponseStatus,
 } from "@tanstack/solid-start/server";
@@ -32,6 +33,9 @@ function invocation(request: RequestContext): Invocation {
     headers: request.request.headers,
     clientIp: request.clientIp,
     setHeader: setResponseHeader,
+    appendCookie: (cookie) => {
+      appendResponseHeader("Set-Cookie", cookie);
+    },
   };
 }
 
