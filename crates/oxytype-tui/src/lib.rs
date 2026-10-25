@@ -10,6 +10,7 @@ pub mod setup;
 pub mod storage;
 pub mod terminal;
 pub mod theme;
+pub mod words;
 
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
 pub type Result<T> = std::result::Result<T, Error>;
