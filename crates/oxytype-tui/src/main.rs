@@ -394,16 +394,8 @@ fn draw(frame: &mut Frame, host: &EngineHost, now: f64, view: View<'_>) {
         capabilities,
     } = view;
     let area = frame.area();
-    let theme = match local.preferences.theme.as_str() {
-        "high-contrast" => ratatui::style::Style::new()
-            .fg(ratatui::style::Color::White)
-            .bg(ratatui::style::Color::Black),
-        "light" => ratatui::style::Style::new()
-            .fg(ratatui::style::Color::Black)
-            .bg(ratatui::style::Color::White),
-        _ => ratatui::style::Style::default(),
-    };
-    frame.render_widget(Block::default().style(theme), area);
+    let palette = oxytype_tui::theme::Palette::named(&local.preferences.theme);
+    frame.render_widget(Block::default().style(palette.base()), area);
     if area.width < 60 || area.height < 18 {
         frame.render_widget(
             Paragraph::new("Resize to at least 60×18. Active test clock continues. Ctrl+Q quits."),
