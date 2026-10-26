@@ -69,7 +69,7 @@ export function createAuth(
     advanced: {
       backgroundTasks: { handler: background },
       database: { generateId: () => randomUUID() },
-      cookiePrefix: "oxytype",
+      cookiePrefix: "caret",
       ...(new URL(baseURL).protocol === "https:" &&
       new URL(baseURL).hostname !== new URL(frontendUrl).hostname
         ? {

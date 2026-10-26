@@ -255,7 +255,7 @@ export async function seedSession(
     return {
       uid: user.id,
       token: session.token,
-      cookie: `oxytype.session_token=${encodeURIComponent(`${session.token}.${createHmac("sha256", testSecret).update(session.token).digest("base64")}`)}`,
+      cookie: `caret.session_token=${encodeURIComponent(`${session.token}.${createHmac("sha256", testSecret).update(session.token).digest("base64")}`)}`,
     };
   });
 }

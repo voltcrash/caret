@@ -48,7 +48,7 @@ export async function authenticate(input: {
   const cookie = input.headers.get("cookie") ?? "";
   if (
     typeof getSessionCookie(new Headers({ cookie }), {
-      cookiePrefix: "oxytype",
+      cookiePrefix: "caret",
     }) === "string"
   ) {
     return await authenticateWithSession(

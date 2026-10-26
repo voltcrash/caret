@@ -198,7 +198,7 @@ describe("Better Auth social-only HTTP flow", () => {
   });
   it("serves cookie sessions from the signed cache for at most a minute", async () => {
     const { cookie } = await signInWithOAuth(auth, app);
-    expect(cookie).toContain("oxytype.session_data=");
+    expect(cookie).toContain("caret.session_data=");
     const headers = new Headers({ cookie });
     const session = await AuthUtils.verifySession(headers, {});
     await AuthUtils.revokeTokensByUid(session.uid);

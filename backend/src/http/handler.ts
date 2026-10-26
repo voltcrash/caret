@@ -165,7 +165,7 @@ async function handle(
     const body = await parseBody(request);
     if (
       !["GET", "HEAD"].includes(request.method) &&
-      typeof getSessionCookie(request.headers, { cookiePrefix: "oxytype" }) ===
+      typeof getSessionCookie(request.headers, { cookiePrefix: "caret" }) ===
         "string" &&
       !request.headers.has("authorization") &&
       request.headers.get("origin") !== origin

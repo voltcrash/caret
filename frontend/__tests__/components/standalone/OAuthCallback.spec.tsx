@@ -26,7 +26,7 @@ it.each([null, "access_denied"])(
       `requestId=nonce${error === null ? "" : `&error=${error}`}`,
     );
     expect(postMessage).toHaveBeenCalledWith(
-      { type: "oxytype-auth", requestId: "nonce", error },
+      { type: "caret-auth", requestId: "nonce", error },
       window.location.origin,
     );
     expect(window.close).toHaveBeenCalledOnce();
@@ -36,7 +36,7 @@ it.each([null, "access_denied"])(
 it("decodes callback parameters", () => {
   mount("requestId=a%2Bb&error=access+denied");
   expect(postMessage).toHaveBeenCalledWith(
-    { type: "oxytype-auth", requestId: "a+b", error: "access denied" },
+    { type: "caret-auth", requestId: "a+b", error: "access denied" },
     window.location.origin,
   );
 });

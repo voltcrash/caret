@@ -207,7 +207,7 @@ test("a pending real save holds an update; refresh and rollback never submit it 
     .parse(await (await page.request.get("/__fixture/session")).json());
   await context.addCookies([
     {
-      name: "oxytype.session_token",
+      name: "caret.session_token",
       value: session.cookie.split("=").slice(1).join("="),
       url: baseURL ?? "",
     },
@@ -293,7 +293,7 @@ test("a removed result function shows refresh/retry UI without replaying the sav
     .parse(await (await page.request.get("/__fixture/session")).json());
   await context.addCookies([
     {
-      name: "oxytype.session_token",
+      name: "caret.session_token",
       value: session.cookie.split("=").slice(1).join("="),
       url: baseURL ?? "",
     },

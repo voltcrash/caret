@@ -57,7 +57,7 @@ describe("request observability", () => {
     const log = requestLog({
       request: request("/_serverFn/f00d/extra?payload=secret-result", {
         "X-Client-Version": "2026.10.16_08.17_abc1234",
-        cookie: "oxytype.session_token=secret",
+        cookie: "caret.session_token=secret",
       }),
       requestId: "request-1",
       status: 200,

@@ -63,7 +63,7 @@ async function fixture(): Promise<{
       token: session.token,
       otherToken: other.token,
       unrelatedToken: unrelatedSession.token,
-      cookie: `__Secure-oxytype.session_token=${encodeURIComponent(`${session.token}.${signature}`)}`,
+      cookie: `__Secure-caret.session_token=${encodeURIComponent(`${session.token}.${signature}`)}`,
     };
   });
 }

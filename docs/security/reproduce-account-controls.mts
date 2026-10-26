@@ -126,7 +126,7 @@ try {
     const signature = createHmac("sha256", test.env.BETTER_AUTH_SECRET ?? "")
       .update(cookieSession.token)
       .digest("base64");
-    const cookie = `__Secure-oxytype.session_token=${encodeURIComponent(`${cookieSession.token}.${signature}`)}`;
+    const cookie = `__Secure-caret.session_token=${encodeURIComponent(`${cookieSession.token}.${signature}`)}`;
     const disabledCookieSession = await request("/api/users/stats", { cookie });
     const disabledCookieMutation = await request(
       "/api/auth/update-user",

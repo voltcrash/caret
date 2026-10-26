@@ -56,7 +56,7 @@ export const test = base.extend<{
         authCookie(startSession).split(";")[0]?.split("=").slice(1).join("=") ??
         "";
       await context.addCookies([
-        { name: "oxytype.session_token", value, url: baseURL ?? "" },
+        { name: "caret.session_token", value, url: baseURL ?? "" },
       ]);
     }
     const user = GetUserResponseSchema.parse({

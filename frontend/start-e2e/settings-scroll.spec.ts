@@ -137,7 +137,7 @@ test("signed-in users can scroll through account settings too", async ({
       .slice(1)
       .join("=") ?? "";
   await context.addCookies([
-    { name: "oxytype.session_token", value, url: "http://127.0.0.1:4185" },
+    { name: "caret.session_token", value, url: "http://127.0.0.1:4185" },
   ]);
   await page.goto("/settings");
   await scrollThroughSettings(page, [

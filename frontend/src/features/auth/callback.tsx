@@ -16,7 +16,7 @@ export function OAuthCallback(): JSXElement {
     const callbackError = params.get("error");
     setError(callbackError);
     (window.opener as Window | null)?.postMessage(
-      { type: "oxytype-auth", requestId, error: callbackError },
+      { type: "caret-auth", requestId, error: callbackError },
       window.location.origin,
     );
     window.close();

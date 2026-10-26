@@ -48,7 +48,7 @@ it("preserves existing cookie identity and sends only safe session UI data", asy
       .getSetCookie()
       .some(
         (cookie) =>
-          cookie.includes("oxytype.session_token=") &&
+          cookie.includes("caret.session_token=") &&
           cookie.includes("Max-Age=0"),
       ),
   ).toBe(true);

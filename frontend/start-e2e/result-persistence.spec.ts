@@ -19,7 +19,7 @@ test("a real browser completion persists through Start/D1 and updates the accoun
       .slice(1)
       .join("=") ?? "";
   await context.addCookies([
-    { name: "oxytype.session_token", value, url: baseURL ?? "" },
+    { name: "caret.session_token", value, url: baseURL ?? "" },
   ]);
   const legacyWrites: string[] = [];
   page.on("request", (request) => {
