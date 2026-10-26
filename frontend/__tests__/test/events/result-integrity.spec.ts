@@ -123,3 +123,79 @@ it.each(["physical", "input-only", "single-prestart"])(
     }
   },
 );
+
+it.each([1000])(
+  "keeps results valid when typing continues during result loading, clock origin %i",
+  async (origin) => {
+    const config = {
+      ...getDefaultConfig(),
+      mode: "time" as const,
+      time: 15,
+      stopOnError: "word" as const,
+    };
+    const session = nativeSession(
+      config,
+      Array.from({ length: 80 }, () => "abc "),
+    );
+    try {
+      for (let i = 0; i < 144; i++) {
+        const now = origin + i * 104;
+        const data = "abc ".charAt(i % 4);
+        const code = data === " " ? "Space" : `Key${data.toUpperCase()}`;
+        session.command({
+          op: "observe",
+          eventType: "keydown",
+          eventData: { code },
+          now,
+        });
+        session.command({
+          op: "insert",
+          data: encodeText(data),
+          now: now + 1,
+          date: now + 1,
+          automatic: null,
+          isCompositionEnding: null,
+          correctShiftUsed: null,
+        });
+        session.command({
+          op: "observe",
+          eventType: "keyup",
+          eventData: { code },
+          now: now + 40,
+        });
+      }
+      session.command({
+        op: "advance",
+        now: origin + 15011,
+        date: origin + 15011,
+      });
+      session.command({ op: "finalize", now: origin + 15012 });
+      session.command({ op: "finalize", now: origin + 15013 });
+      const finished = session.log();
+      // A slow result import yields to further keyboard events after cleanup.
+      session.command({
+        op: "observe",
+        eventType: "keydown",
+        eventData: { code: "KeyA" },
+        now: origin + 1 + 15182.7,
+      });
+      session.command({
+        op: "observe",
+        eventType: "keyup",
+        eventData: { code: "KeyA" },
+        now: origin + 1 + 15220,
+      });
+      const { log, result } = completedResult(session, config);
+      expect(result).toMatchObject({
+        wpm: 115.12,
+        testDuration: 15.01,
+        charStats: [144, 0, 0, 0],
+      });
+      expect(getResultFailure(result)).toBeUndefined();
+      expect(getKeyDataFailure(result)).toBeUndefined();
+      expect(log).toEqual(finished);
+    } finally {
+      session.dispose();
+    }
+  },
+);
