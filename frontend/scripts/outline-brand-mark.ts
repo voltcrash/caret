@@ -121,19 +121,12 @@ function arc(
   );
 }
 
-// I-beam cursor with curled serifs.
+// I-beam cursor with curled serifs, centred on the grid.
 const beam = 5;
 const serif = 7.5;
-const stem = 16;
+const stem = 24;
 const [left, right] = [stem - serif, stem + serif];
 const [top, bottom] = [7, 41];
-// Subscript 2.
-const sub = 4;
-const bowl: Point = [34.5, 30.5];
-const base: [Point, Point] = [
-  [30, 41.5],
-  [40, 41.5],
-];
 
 console.log(
   [
@@ -142,8 +135,5 @@ console.log(
     line([stem, top + serif], [stem, bottom - serif], beam),
     arc([left, bottom - serif], serif, 0, 90 * deg, beam),
     arc([right, bottom - serif], serif, 90 * deg, 180 * deg, beam),
-    arc(bowl, 5, 180 * deg, 405 * deg, sub),
-    line(at(bowl, 5, 45 * deg), base[0], sub),
-    line(base[0], base[1], sub),
   ].join(""),
 );
