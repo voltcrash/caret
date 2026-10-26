@@ -22,8 +22,6 @@ import { CompletedEvent } from "@oxytype/schemas/results";
 import type { WebLog } from "@oxytype/typing-engine/text";
 import { encodeEventLog } from "./event-log-transport";
 
-import { getFunbox } from "@oxytype/funbox";
-
 import { SavedResult } from "../../../ts/constants/default-snapshot";
 
 import { setAccountButtonSpinner } from "../../../ts/states/header";
@@ -172,22 +170,11 @@ export async function saveResult(
   }
 
   if (data.isPb !== undefined && data.isPb) {
-    //new pb
-    const localPb = DB.getLocalPB(
-      result.mode,
-      result.mode2,
-      result.punctuation,
-      result.numbers,
-      result.language,
-      result.difficulty,
-      result.lazyMode,
-      getFunbox(result.funbox),
-    );
-
-    if (presentation.isCurrent() && localPb !== undefined) {
+    // The server compares the matching settings; the local PB cache may be empty.
+    if (presentation.isCurrent()) {
       void Result.showConfetti();
+      Result.showCrown("normal");
     }
-    if (presentation.isCurrent()) Result.showCrown("normal");
 
     localDataToSave.isPb = true;
   } else if (presentation.isCurrent()) {
