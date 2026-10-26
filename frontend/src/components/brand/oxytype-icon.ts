@@ -8,6 +8,9 @@ export const oxytypeMarkPath =
 
 export const oxytypeMarkViewBox = "0 0 48 48";
 
+/** The mark's ink bounds, for inline use without side padding. */
+export const oxytypeMarkInkViewBox = "13.5 4 21 40";
+
 /** Default (serika dark) brand colors for static icons. */
 export const oxytypeBrandColors = { bg: "#323437", main: "#e2b714" } as const;
 
