@@ -43,7 +43,7 @@ function mount(): Application {
 describe("browser application owner", () => {
   it("is absent until mounted and after release", () => {
     expect(currentApplication()).toBeUndefined();
-    expect(() => requireApplication()).toThrow("No Oxytype application");
+    expect(() => requireApplication()).toThrow("No Caret application");
     const application = mount();
     expect(requireApplication()).toBe(application);
     releases.shift()?.();

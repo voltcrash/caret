@@ -124,7 +124,7 @@ describe("Start document and response policy in workerd", () => {
     );
     expect(popup.status).toBe(200);
     expect(popup.headers.get("Cache-Control")).toBe("no-store");
-    expect(await popup.text()).toContain("Sign in | Oxytype");
+    expect(await popup.text()).toContain("Sign in | Caret");
     const missing = await mf.dispatchFetch("http://localhost:3000/404.html");
     expect(missing.status).toBe(404);
     expect(await missing.text()).toContain("Ooops! Looks like this page");

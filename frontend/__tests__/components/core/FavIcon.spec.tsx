@@ -34,7 +34,7 @@ describe("FavIcon", () => {
     isDevEnvironment.mockReturnValue(false);
   });
 
-  it("draws the oxytype mark in theme colors", () => {
+  it("draws the caret mark in theme colors", () => {
     renderIcon("#323437", "#e2b714");
     const svg = iconSvg();
     expect(svg).toContain(caretMarkPath);

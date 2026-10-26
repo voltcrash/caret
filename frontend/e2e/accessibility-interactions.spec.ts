@@ -93,7 +93,7 @@ test("modifier keys leave pointer focus quiet while Tab restores control outline
       .toBe("hidden");
   }
   await page.keyboard.press("Shift+Tab");
-  const home = page.getByRole("link", { name: "Oxytype Home", exact: true });
+  const home = page.getByRole("link", { name: "Caret Home", exact: true });
   await expect(home).toBeFocused();
   await expect(home).toHaveCSS("outline-style", "solid");
   await expect(home).toHaveCSS("outline-width", "2px");

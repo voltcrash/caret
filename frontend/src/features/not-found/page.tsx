@@ -12,7 +12,7 @@ export function NotFoundPage(): JSXElement {
           <div class="place-self-center">
             <img
               src="/images/caret-404.svg"
-              alt="Oxytype typing keys"
+              alt="Caret typing keys"
               class="max-w-full rounded-xl"
             />
           </div>

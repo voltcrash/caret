@@ -5,10 +5,10 @@ import { PrivacyPolicy } from "../../../src/ts/components/standalone/PrivacyPoli
 
 afterEach(cleanup);
 
-it("shows Oxytype's policy placeholder and its own contact destination", () => {
+it("shows Caret's policy placeholder and its own contact destination", () => {
   const { container } = render(() => <PrivacyPolicy />);
   expect(container).toHaveTextContent(
-    "Oxytype is preparing a privacy policy for its own hosting and services",
+    "Caret is preparing a privacy policy for its own hosting and services",
   );
   expect(container.querySelector("main h1")).toHaveTextContent(
     "Privacy Policy",

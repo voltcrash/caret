@@ -27,7 +27,7 @@ describe("server-function transport", () => {
   it("marks the tab stale on an unknown-function conflict without retrying", async () => {
     const fetch = vi.fn(
       async () =>
-        new Response("Oxytype was updated. Refresh the page to continue.", {
+        new Response("Caret was updated. Refresh the page to continue.", {
           status: 409,
           headers: { "X-Caret-Stale-Client": "1" },
         }),

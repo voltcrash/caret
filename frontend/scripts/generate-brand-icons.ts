@@ -53,7 +53,7 @@ const socialCard = `<!doctype html>
 </style>
 <main>
   <svg viewBox="${caretMarkViewBox}"><path d="${caretMarkPath}"/></svg>
-  <div><h1>oxytype</h1><p>a minimalistic, customizable typing test</p></div>
+  <div><h1>caret</h1><p>a minimalistic, customizable typing test</p></div>
 </main>`;
 
 async function main(): Promise<void> {

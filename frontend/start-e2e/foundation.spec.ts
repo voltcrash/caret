@@ -51,7 +51,7 @@ test("startup covers the app with the saved theme until browser setup finishes",
   }
   await expect(page.locator("#startupScreen")).toBeHidden();
   await expect(page.locator("#app")).toHaveCSS("opacity", "1");
-  await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
+  await page.getByRole("link", { name: "Caret Home", exact: true }).click();
   await expect(page).toHaveURL(/\/$/);
   await page.waitForLoadState("networkidle");
   expect(history).toEqual([]);
@@ -81,7 +81,7 @@ test("SSR hydrates Query once and keeps native navigation and refresh working", 
   await expect(page.getByText("fixture-profile public bio")).toBeVisible();
   await expect(page.locator("#nocss")).toBeHidden();
   expect(rpc.filter((url) => url.includes(rpcPath("getProfile")))).toEqual([]);
-  await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
+  await page.getByRole("link", { name: "Caret Home", exact: true }).click();
   await expect(page).toHaveURL(/\/$/);
   await page.goBack();
   await expect(page).toHaveURL(/\/profile\/fixture-profile$/);
@@ -143,7 +143,7 @@ test("unknown URLs retain HTTP 404 and popup validation retains its URL", async 
   const missing = await page.goto("/unknown-route");
   expect(missing?.status()).toBe(404);
   await expect(page.getByRole("heading", { name: "404" })).toBeVisible();
-  await expect(page).toHaveTitle("404 | Oxytype");
+  await expect(page).toHaveTitle("404 | Caret");
   await page.getByRole("link", { name: "Go Home" }).click();
   await expect(page).toHaveURL(/\/$/);
   const popup = await page.goto("/oauth-callback.html");

@@ -18,8 +18,8 @@ type WebManifest = {
 /** Installed-app identity; `/manifest.json` keeps the former PWA's id and scope. */
 const webManifest: Readonly<WebManifest> = {
   id: "/",
-  short_name: "Oxytype",
-  name: "Oxytype",
+  short_name: "Caret",
+  name: "Caret",
   description: "A minimalistic, customizable typing test",
   start_url: "/",
   scope: "/",

@@ -19,7 +19,7 @@ export function Logo(): JSXElement {
       <Link
         href="/"
         class="-m-2 flex h-6 items-center gap-2 rounded-[0.8rem] p-2"
-        aria-label="Oxytype Home"
+        aria-label="Caret Home"
         style={{ "box-sizing": "content-box" }}
         onClick={() => {
           if (typing()) restartTestEvent.dispatch();
@@ -40,7 +40,7 @@ export function Logo(): JSXElement {
             })}
             data-ui-element="logoText"
           >
-            oxytype
+            caret
           </h1>
         </div>
       </Link>

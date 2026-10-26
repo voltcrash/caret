@@ -43,7 +43,7 @@ test("background URL saves on blur and Enter without freezing", async ({
     await page.reload();
     await expect(input).toHaveValue(url);
   }
-  await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
+  await page.getByRole("link", { name: "Caret Home", exact: true }).click();
   await expect(page.locator("#words .word").first()).toBeVisible();
 });
 
@@ -85,7 +85,7 @@ test("animation FPS saves on blur and Enter, persists and returns to native", as
       async () => await page.evaluate(() => localStorage.getItem("fpsLimit")),
     )
     .toBe("1000");
-  await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
+  await page.getByRole("link", { name: "Caret Home", exact: true }).click();
   await expect(page.locator("#words .word").first()).toBeVisible();
 });
 
@@ -109,7 +109,7 @@ test("enabling Tab quick restart works immediately and after reload", async ({
   await page.getByRole("link", { name: "Settings", exact: true }).click();
   const setting = page.locator('[data-setting-key="quickRestart"]');
   await setting.getByRole("button", { name: "tab", exact: true }).click();
-  await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
+  await page.getByRole("link", { name: "Caret Home", exact: true }).click();
 
   for (const input of ["x", "y"]) {
     await expect(page.locator("#typingTest")).toHaveCSS("opacity", "1");
@@ -124,7 +124,7 @@ test("enabling Tab quick restart works immediately and after reload", async ({
 
   await page.getByRole("link", { name: "Settings", exact: true }).click();
   await setting.getByRole("button", { name: "off", exact: true }).click();
-  await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
+  await page.getByRole("link", { name: "Caret Home", exact: true }).click();
   await expect(page.locator("#typingTest")).toHaveCSS("opacity", "1");
   await page.locator("#words").click();
   await page.keyboard.type("z");

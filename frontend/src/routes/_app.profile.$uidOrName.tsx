@@ -49,7 +49,7 @@ export const Route = createFileRoute("/_app/profile/$uidOrName")({
     }
   },
   head: ({ params }) => {
-    const title = `${params.uidOrName} | Oxytype`;
+    const title = `${params.uidOrName} | Caret`;
     const url = `${publicEnv.origin}/profile/${encodeURIComponent(params.uidOrName)}`;
     return {
       links: [{ rel: "canonical", href: url }],
@@ -59,7 +59,7 @@ export const Route = createFileRoute("/_app/profile/$uidOrName")({
         { property: "og:url", content: url },
         {
           name: "description",
-          content: `${params.uidOrName}'s Oxytype profile and personal bests.`,
+          content: `${params.uidOrName}'s Caret profile and personal bests.`,
         },
       ],
     };

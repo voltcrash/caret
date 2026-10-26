@@ -32,7 +32,7 @@ export function StartupScreen(props: {
       }}
     >
       <TypingLoader />
-      <span class="sr-only">Loading Oxytype</span>
+      <span class="sr-only">Loading Caret</span>
     </div>
   );
 }

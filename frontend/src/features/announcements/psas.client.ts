@@ -55,7 +55,7 @@ async function getLatest(): Promise<PSA[] | null> {
             }
           : {
               level: "error",
-              text: "The Oxytype server is currently unavailable.",
+              text: "The Caret server is currently unavailable.",
               icon: "fas fa-exclamation-triangle",
             },
       );
@@ -63,7 +63,7 @@ async function getLatest(): Promise<PSA[] | null> {
       addBanner({
         level: "error",
         icon: "fas fa-bullhorn",
-        text: "The Oxytype server is currently under maintenance.",
+        text: "The Caret server is currently under maintenance.",
       });
     }
     return null;

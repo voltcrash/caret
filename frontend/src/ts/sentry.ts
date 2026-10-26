@@ -113,7 +113,7 @@ export async function activateSentry(): Promise<void> {
       //       console.log(exception);
       //       const frames = exception.stacktrace.frames;
       //       for (const frame of frames ?? []) {
-      //         if (frame.filename && frame.filename.includes("oxytype")) {
+      //         if (frame.filename && frame.filename.includes("caret")) {
       //           // return event;
       //         }
       //       }

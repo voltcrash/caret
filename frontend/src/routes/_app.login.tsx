@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_app/login")({
         : undefined,
   }),
   loader: async () => await getSessionState(),
-  head: () => ({ meta: [{ title: "Sign in | Oxytype" }] }),
+  head: () => ({ meta: [{ title: "Sign in | Caret" }] }),
   component: Login,
 });
 function Login() {

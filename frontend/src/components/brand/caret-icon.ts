@@ -1,5 +1,5 @@
 /**
- * Oxytype mark: an I-beam text cursor with curled serifs. Every stroke is
+ * Caret mark: an I-beam text cursor with curled serifs. Every stroke is
  * outlined in the same winding, so the default nonzero fill unions them into
  * one shape on a 48-unit grid.
  */

@@ -319,7 +319,7 @@ test("a removed result function shows refresh/retry UI without replaying the sav
   await page.keyboard.type(words.join(" "), { delay: 90 });
   await expect(page.locator("#result")).toHaveCSS("opacity", "1");
   await expect(
-    page.getByText("Oxytype was updated and this page is out of date.", {
+    page.getByText("Caret was updated and this page is out of date.", {
       exact: false,
     }),
   ).toBeVisible();

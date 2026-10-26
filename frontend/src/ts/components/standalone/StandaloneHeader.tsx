@@ -13,7 +13,7 @@ function LogoContent(props: { label?: string; focus?: boolean }): JSXElement {
         )}
       />
       <div class="text relative -mt-[0.23em] [font-family:'Lexend_Deca',sans-serif] text-[1.5rem] leading-[1.5rem] font-normal transition-colors sm:text-[2rem] sm:leading-[2rem]">
-        oxytype
+        caret
         <Show when={props.label}>
           {" "}
           <span class="text-main">{props.label}</span>

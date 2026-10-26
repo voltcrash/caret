@@ -3,7 +3,7 @@ import { dashClient } from "@better-auth/infra/client";
 import { envConfig } from "virtual:env-config";
 import { createAppOwned } from "../../app/application";
 // oxlint-disable-next-line typescript/explicit-function-return-type -- Better Auth must infer plugin-specific client methods from these options.
-const createOxytypeAuthClient = () => {
+const createCaretAuthClient = () => {
   const authURL = new URL(
     `${envConfig.backendUrl.replace(/\/$/, "")}/auth`,
     window.location.origin,
@@ -29,9 +29,9 @@ const createOxytypeAuthClient = () => {
     plugins: [dashClient()],
   });
 };
-type OxytypeAuthClient = ReturnType<typeof createOxytypeAuthClient>;
-const authClient = createAppOwned(createOxytypeAuthClient);
+type CaretAuthClient = ReturnType<typeof createCaretAuthClient>;
+const authClient = createAppOwned(createCaretAuthClient);
 /** Built on first browser use, never while the module is evaluated. */
-export function getAuthClient(): OxytypeAuthClient {
+export function getAuthClient(): CaretAuthClient {
   return authClient();
 }

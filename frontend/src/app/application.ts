@@ -50,7 +50,7 @@ export function mountApplication(application: Application): () => void {
     throw new Error("Browser application state cannot mount during SSR");
   }
   if (untrack(mounted) !== undefined) {
-    throw new Error("An Oxytype application is already mounted");
+    throw new Error("A Caret application is already mounted");
   }
   setMounted(() => application);
   return () => {
@@ -69,7 +69,7 @@ export function requireApplication(): Application {
     throw new Error(
       isServer
         ? "Browser application state is unavailable during SSR"
-        : "No Oxytype application is mounted",
+        : "No Caret application is mounted",
     );
   }
   return application;

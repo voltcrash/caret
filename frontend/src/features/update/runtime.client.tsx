@@ -55,9 +55,9 @@ async function deployedBuild(): Promise<string | undefined> {
 }
 
 const bannerText = {
-  deployed: "A new version of Oxytype is available.",
-  function: "Oxytype was updated and this page is out of date.",
-  chunk: "Oxytype was updated and this page is out of date.",
+  deployed: "A new version of Caret is available.",
+  function: "Caret was updated and this page is out of date.",
+  chunk: "Caret was updated and this page is out of date.",
 } as const;
 
 /**

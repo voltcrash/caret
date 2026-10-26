@@ -164,7 +164,7 @@ test("browser Back restores manual scrolling instead of jumping to the URL tab",
         exact: true,
       }),
   ).toHaveAttribute("aria-current", "location");
-  await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
+  await page.getByRole("link", { name: "Caret Home", exact: true }).click();
   await expect(page.locator("#typingTest")).toBeVisible();
   await page.goBack();
   await expect(page).toHaveURL(/\/settings\?tab=theme$/);

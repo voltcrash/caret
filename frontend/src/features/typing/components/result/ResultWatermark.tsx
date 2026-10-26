@@ -22,7 +22,7 @@ export function ResultWatermark(): JSXElement {
           </Show>
           <span>{watermark().date}</span>
           <span class="pipe">|</span>
-          <span>oxytype</span>
+          <span>caret</span>
         </div>
       )}
     </Show>

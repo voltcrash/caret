@@ -126,7 +126,7 @@ for (const [path, token] of [
       await expect(page.locator("#words letter.correct")).toHaveCount(1);
     }
     await expect(page.getByText(/Failed to get user data/)).toHaveCount(0);
-    await expect(page.getByText("Unable to load Oxytype")).toHaveCount(0);
+    await expect(page.getByText("Unable to load Caret")).toHaveCount(0);
     expect(await (await page.request.get("/api/auth/get-session")).text()).toBe(
       "null",
     );

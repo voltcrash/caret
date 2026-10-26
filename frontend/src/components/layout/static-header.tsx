@@ -41,12 +41,12 @@ export function StaticHeader(props: { fixed: boolean }): JSXElement {
         <Link
           href="/"
           class="-m-2 flex h-6 items-center gap-2 rounded-[0.8rem] p-2"
-          aria-label="Oxytype Home"
+          aria-label="Caret Home"
           style={{ "box-sizing": "content-box" }}
         >
           <CaretMark class="h-full w-auto shrink-0 fill-current text-main" />
           <div class="hidden h-6 place-content-center text-[2rem] leading-0 sm:grid">
-            <h1 class="-mt-[0.11em] text-text">oxytype</h1>
+            <h1 class="-mt-[0.11em] text-text">caret</h1>
           </div>
         </Link>
       </div>

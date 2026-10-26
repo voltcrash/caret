@@ -31,14 +31,14 @@ export const Route = createFileRoute("/_app/")({
           ]),
     ],
     meta: [
-      { title: "Oxytype | A minimalistic, customizable typing test" },
+      { title: "Caret | A minimalistic, customizable typing test" },
       {
         name: "description",
         content: "A minimalistic, customizable typing test.",
       },
       {
         property: "og:title",
-        content: "Oxytype | A minimalistic, customizable typing test",
+        content: "Caret | A minimalistic, customizable typing test",
       },
     ],
   }),

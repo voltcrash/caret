@@ -131,7 +131,7 @@ export const updateSafetyRequest = "caret:update-safety";
 
 /** Script-free, user-independent fallback for documents other than `/`. */
 export function offlinePage(stylesheets: string[]): string {
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Offline | Oxytype</title>${stylesheets.map((href) => `<link rel="stylesheet" href="${href}">`).join("")}</head><body class="m-0 grid min-h-screen place-content-center gap-4 bg-bg p-8 text-center font-mono text-text"><h1>You're offline</h1><p>This page needs a connection. The typing test is available offline.</p><p><a class="text-main underline" href="/">Start typing</a></p></body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Offline | Caret</title>${stylesheets.map((href) => `<link rel="stylesheet" href="${href}">`).join("")}</head><body class="m-0 grid min-h-screen place-content-center gap-4 bg-bg p-8 text-center font-mono text-text"><h1>You're offline</h1><p>This page needs a connection. The typing test is available offline.</p><p><a class="text-main underline" href="/">Start typing</a></p></body></html>`;
 }
 
 export const offlinePageHeaders = {

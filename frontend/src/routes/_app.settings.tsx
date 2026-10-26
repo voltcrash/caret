@@ -20,8 +20,8 @@ export const Route = createFileRoute("/_app/settings")({
   head: () => ({
     links: [{ rel: "canonical", href: `${publicEnv.origin}/settings` }],
     meta: [
-      { title: "Settings | Oxytype" },
-      { property: "og:title", content: "Settings | Oxytype" },
+      { title: "Settings | Caret" },
+      { property: "og:title", content: "Settings | Caret" },
     ],
   }),
   component: Settings,

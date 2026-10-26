@@ -39,8 +39,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           title: matches.some(
             (match) => match.status === "notFound" || match._notFound === true,
           )
-            ? "404 | Oxytype"
-            : "Oxytype",
+            ? "404 | Caret"
+            : "Caret",
         },
         {
           name: "description",
@@ -48,20 +48,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         },
         { name: "format-detection", content: "telephone=no" },
         { name: "theme-color", content: "#0b0d1c" },
-        { name: "author", content: "Oxytype contributors" },
+        { name: "author", content: "Caret contributors" },
         { name: "mobile-web-app-capable", content: "yes" },
-        { name: "apple-mobile-web-app-title", content: "Oxytype" },
+        { name: "apple-mobile-web-app-title", content: "Caret" },
         {
           name: "apple-mobile-web-app-status-bar-style",
           content: "black-translucent",
         },
         { name: "twitter:card", content: "summary_large_image" },
         { property: "og:type", content: "website" },
-        { property: "og:site_name", content: "Oxytype" },
+        { property: "og:site_name", content: "Caret" },
         { property: "og:image", content: socialImage },
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },
-        { property: "og:image:alt", content: "Oxytype logo" },
+        { property: "og:image:alt", content: "Caret logo" },
         { name: "twitter:image", content: socialImage },
         { name: "darkreader-lock", content: "" },
       ],

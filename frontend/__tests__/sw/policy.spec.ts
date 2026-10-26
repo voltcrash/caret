@@ -53,7 +53,7 @@ describe("service-worker request policy", () => {
     "/assets/index-Cf0kvvmC.js",
     "/assets/app-Dk3s.css",
     "/languages/english.json?v=0123456789abcdef",
-    "/js/oxytype.0a1b2c3d.js",
+    "/js/caret.0a1b2c3d.js",
     "/css/vendor.0a1b2c3d.css",
     "/webfonts/RobotoMono-Regular.0a1b2c3d.woff2",
   ])("serves content-addressed %s cache-first", (path) => {
