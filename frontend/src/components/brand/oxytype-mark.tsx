@@ -17,7 +17,7 @@ export function OxytypeMark(props: { class?: string }): JSXElement {
       aria-hidden="true"
       class={props.class}
     >
-      <path fill-rule="evenodd" d={oxytypeMarkPath}></path>
+      <path d={oxytypeMarkPath}></path>
     </svg>
   );
 }
