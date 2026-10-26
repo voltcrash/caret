@@ -186,6 +186,7 @@ fn completion_blocks_new_observations_but_preserves_outstanding_key_releases() {
             ("keydown", json!({"code":"KeyA"})),
             ("keyup", json!({"code":"KeyA"})),
             ("composition", json!({"event":"start"})),
+            ("timer", json!({"event":"step","timer":16})),
         ] {
             let ignored = command(
                 &mut session,
