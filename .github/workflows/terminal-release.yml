@@ -10,14 +10,26 @@ on:
       - "rust-toolchain.toml"
       - ".cargo/**"
       - ".node-version"
-      - "package.json"
-      - "pnpm-workspace.yaml"
-      - "pnpm-lock.yaml"
       - "scripts/terminal*"
       - "docs/rust-engine/terminal*"
       - "docs/rust-engine/third-party/**"
+      - ".github/actions/apt-install/**"
       - ".github/workflows/terminal-release.yml"
+  # Main and tags build every platform; pull requests check Linux x64 only.
   push:
+    branches: [main]
+    paths:
+      - "crates/typing-engine/**"
+      - "crates/caret-tui/**"
+      - "Cargo.*"
+      - "rust-toolchain.toml"
+      - ".cargo/**"
+      - ".node-version"
+      - "scripts/terminal*"
+      - "docs/rust-engine/terminal*"
+      - "docs/rust-engine/third-party/**"
+      - ".github/actions/apt-install/**"
+      - ".github/workflows/terminal-release.yml"
     tags: ["terminal-v*"]
   workflow_dispatch:
 
@@ -33,6 +45,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  # Linux x64 also drives the real emulators, so pull requests need just this one job.
   binaries:
     name: native (${{ matrix.target }})
     timeout-minutes: 30
@@ -40,13 +53,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - { os: ubuntu-24.04, target: x86_64-unknown-linux-gnu }
-          - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu }
-          - { os: macos-15-intel, target: x86_64-apple-darwin }
-          - { os: macos-15, target: aarch64-apple-darwin }
+        include: ${{ fromJSON(github.event_name == 'pull_request' && '[{"os":"ubuntu-24.04","target":"x86_64-unknown-linux-gnu"}]' || '[{"os":"ubuntu-24.04","target":"x86_64-unknown-linux-gnu"},{"os":"ubuntu-24.04-arm","target":"aarch64-unknown-linux-gnu"},{"os":"macos-15-intel","target":"x86_64-apple-darwin"},{"os":"macos-15","target":"aarch64-apple-darwin"}]') }}
     env:
       MACOSX_DEPLOYMENT_TARGET: "15.0"
+      LIBGL_ALWAYS_SOFTWARE: "true"
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -73,11 +83,36 @@ jobs:
         run: vp run terminal:test
       - name: POSIX terminal lifecycle and persistence
         run: vp run terminal:test:pty
+      - name: Install distribution emulators and isolated display tools
+        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        uses: ./.github/actions/apt-install
+        with:
+          name: terminal-emulators
+          packages: kitty alacritty xvfb xdotool libxkbcommon-x11-0 fonts-dejavu-core fonts-noto-cjk fonts-noto-color-emoji
+      - name: Real key encoding, Unicode, resize, history and cleanup (kitty)
+        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        run: vp run terminal:test:emulator -- --emulator kitty --command /usr/bin/kitty --evidence target/terminal-emulator-evidence
+      # Runs even when kitty fails, so one run reports both emulators.
+      - name: Real key encoding, Unicode, resize, history and cleanup (alacritty)
+        if: ${{ !cancelled() && matrix.target == 'x86_64-unknown-linux-gnu' }}
+        run: vp run terminal:test:emulator -- --emulator alacritty --command /usr/bin/alacritty --evidence target/terminal-emulator-evidence
+      - name: Retain exact emulator versions and test traces
+        if: always() && matrix.target == 'x86_64-unknown-linux-gnu'
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: emulator-evidence
+          path: target/terminal-emulator-evidence
+          retention-days: 14
+          if-no-files-found: warn
+      # Archives only feed tagged releases, so pull requests skip packaging.
       - name: Build licensed versioned archive
+        if: github.event_name != 'pull_request'
         run: vp run terminal:package -- --target ${{ matrix.target }}
       - name: Verify extracted binary without runtime tools or checkout files
+        if: github.event_name != 'pull_request'
         run: vp run terminal:archive-smoke -- --target ${{ matrix.target }}
       - name: Upload candidate archives and checksums
+        if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@v7.0.2
         with:
           name: terminal-${{ matrix.target }}
@@ -87,47 +122,9 @@ jobs:
           retention-days: 14
           if-no-files-found: error
 
-  emulators:
-    name: Linux emulator (${{ matrix.emulator }})
-    runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    strategy:
-      fail-fast: false
-      matrix:
-        emulator: [kitty, alacritty]
-    env:
-      LIBGL_ALWAYS_SOFTWARE: "true"
-    steps:
-      - uses: actions/checkout@v7.0.1
-        with:
-          persist-credentials: false
-      - uses: voidzero-dev/setup-vp@v1.22.0
-        with:
-          node-version-file: .node-version
-          run-install: false
-      - uses: actions/cache@v6.1.0
-        with:
-          path: |
-            ~/.cargo/registry
-            target
-          key: terminal-emulator-${{ matrix.emulator }}-${{ hashFiles('Cargo.lock', 'rust-toolchain.toml') }}
-      - name: Install distribution emulator and isolated display tools
-        run: |
-          vp exec sudo apt-get update
-          vp exec sudo apt-get install --no-install-recommends -y ${{ matrix.emulator }} xvfb xdotool libxkbcommon-x11-0 fonts-dejavu-core fonts-noto-cjk fonts-noto-color-emoji
-      - name: Real key encoding, Unicode, resize, history and cleanup
-        run: vp run terminal:test:emulator -- --emulator ${{ matrix.emulator }} --command /usr/bin/${{ matrix.emulator }} --evidence target/terminal-emulator-evidence
-      - name: Retain exact emulator versions and test traces
-        if: always()
-        uses: actions/upload-artifact@v7.0.2
-        with:
-          name: emulator-${{ matrix.emulator }}
-          path: target/terminal-emulator-evidence
-          retention-days: 14
-          if-no-files-found: warn
-
   source:
     name: corresponding source
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -152,7 +149,7 @@ jobs:
   publish:
     name: authorized tagged release
     if: github.event_name == 'push' && github.ref_type == 'tag' && github.repository == 'voltcrash/caret'
-    needs: [binaries, emulators, source]
+    needs: [binaries, source]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:

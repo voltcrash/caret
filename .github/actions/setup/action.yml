@@ -5,6 +5,9 @@ inputs:
   save-cache:
     description: Save the dependency cache when the job ends. Enable in one job per run to avoid racing uploads.
     default: "false"
+  rust:
+    description: Restore the Rust build cache, for jobs that run cargo themselves.
+    default: "false"
 
 runs:
   using: composite
@@ -17,3 +20,5 @@ runs:
         cache-save: ${{ inputs.save-cache }}
     - name: Prepare generated engine bindings
       uses: ./.github/actions/setup-engine
+      with:
+        rust: ${{ inputs.rust }}

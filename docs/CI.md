@@ -12,11 +12,16 @@ deployment must not rely on a diff whose earlier commits' CI was cancelled.
 
 Every job installs through
 [`.github/actions/setup`](../.github/actions/setup/action.yml), which restores
-the dependency cache (`quality` saves it).
+the dependency cache (`quality` saves it) and the generated engine bindings;
+only a binding cache miss (or the `engine` job) restores Rust and runs cargo.
+Browser jobs use [`setup-chromium`](../.github/actions/setup-chromium/action.yml),
+which caches the headless shell and installs missing system libraries through
+[`apt-install`](../.github/actions/apt-install/action.yml): cached downloads,
+and bounded retries on a stalled mirror.
 
 | Job | Runs | Checks |
 | --- | --- | --- |
-| `quality` | Every change | Whole-repo format check; Knip unless docs/assets-only |
+| `quality` | Every change | Whole-repo format check; Knip unless docs/assets-only; Stylelint and asset validation when `frontend/static`, CSS, runtime packages or asset validator inputs change |
 | `ci-be` | Backend, its tests, runtime packages, lint config | Lint, unit and D1 tests |
 | `ci-fe` | Frontend, any frontend tests, backend, runtime packages, lint config | Lint, circular imports |
 | `ci-fe-test` (2 shards) | Frontend, unit or Start tests, backend, runtime packages | Vitest |
@@ -25,7 +30,6 @@ the dependency cache (`quality` saves it).
 | `start-browser` (4 shards) | Same, plus `e2e`/`start-e2e` | Playwright suites using shared Worker |
 | `start-updates` | Same, plus `update-e2e` | Service-worker update and rollback suites |
 | `start-delivery` | Frontend, backend, runtime packages | Staging and production builds + dry-runs |
-| `ci-assets` | `frontend/static`, CSS, runtime packages, asset validator inputs and constants | Stylelint and asset validation |
 | `ci-pkg` | `packages/**` | Lint config audits, package lint and tests |
 | `ci-ok` | Always | Fails if any selected job failed |
 
