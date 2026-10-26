@@ -127,7 +127,7 @@ export function startServiceWorker(options: {
   let precache: string[] = [];
   let outDir = "";
   return {
-    name: "oxytype-service-worker",
+    name: "caret-service-worker",
     apply: "build",
     applyToEnvironment: (environment) => environment.name === "client",
     generateBundle(_options, bundle) {

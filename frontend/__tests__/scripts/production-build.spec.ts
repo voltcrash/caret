@@ -65,7 +65,7 @@ describe("production build command", () => {
   }
 
   beforeEach(() => {
-    root = mkdtempSync(resolve(tmpdir(), "oxytype-production-build-"));
+    root = mkdtempSync(resolve(tmpdir(), "caret-production-build-"));
     mkdirSync(resolve(root, "frontend/scripts"), { recursive: true });
     mkdirSync(resolve(root, "frontend/vite-plugins"));
     mkdirSync(resolve(root, "node_modules/.bin"), { recursive: true });

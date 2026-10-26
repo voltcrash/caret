@@ -62,7 +62,7 @@ const webManifestPath = "/manifest.json";
 export function startWebManifest(): Plugin {
   const source = JSON.stringify(webManifest);
   return {
-    name: "oxytype-web-manifest",
+    name: "caret-web-manifest",
     applyToEnvironment: (environment) => environment.name === "client",
     generateBundle() {
       this.emitFile({

@@ -16,7 +16,7 @@ describe("task consumer retirement command", () => {
     stdout: string;
     stderr: string;
   } {
-    const directory = mkdtempSync(join(tmpdir(), "oxytype-retire-consumer-"));
+    const directory = mkdtempSync(join(tmpdir(), "caret-retire-consumer-"));
     const fixture = join(directory, "fetch.mjs");
     writeFileSync(
       fixture,

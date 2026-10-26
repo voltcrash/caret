@@ -49,8 +49,8 @@ export default {
         // Vite+ resolves the shared lint config at runtime.
         "@caret/oxlint-config",
         // font-styles.ts provides these CSS modules through its Vite plugin.
-        "oxytype-fontawesome.css",
-        "oxytype-fonts.css",
+        "caret-fontawesome.css",
+        "caret-fonts.css",
       ],
     },
     "frontend/storybook": {

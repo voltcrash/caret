@@ -13,7 +13,7 @@ export type ServiceWorkerConfig = {
 /** Offline document for `/`: a guest render, never a signed-in response. */
 export const shellPath = "/";
 
-const startCachePrefix = "oxytype-start-";
+const startCachePrefix = "caret-start-";
 
 /** One cache per build: shell, precache and runtime-cached public files. */
 export function buildCacheName(buildId: string): string {
@@ -92,9 +92,9 @@ export function servesShell(url: string): boolean {
 const legacyCaches = [
   /^workbox-precache/,
   /^workbox-runtime/,
-  /^oxytype-languages$/,
+  /^caret-languages$/,
 ];
-const legacyAssetCache = "oxytype-build-assets";
+const legacyAssetCache = "caret-build-assets";
 
 /**
  * Caches to delete when `buildId` activates. `names` is CacheStorage key order
@@ -125,9 +125,9 @@ export function activatesImmediately(hasActiveWorker: boolean): boolean {
 }
 
 /** Message a page posts to let a waiting worker take over. */
-export const skipWaitingMessage = "oxytype:skip-waiting";
+export const skipWaitingMessage = "caret:skip-waiting";
 /** Waiting workers ask every open tab before taking over the shared scope. */
-export const updateSafetyRequest = "oxytype:update-safety";
+export const updateSafetyRequest = "caret:update-safety";
 
 /** Script-free, user-independent fallback for documents other than `/`. */
 export function offlinePage(stylesheets: string[]): string {

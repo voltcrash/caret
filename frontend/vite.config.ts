@@ -158,7 +158,7 @@ export default defineConfig(async ({ mode, command }) => {
             org: env["SENTRY_ORG"],
             project: env["SENTRY_PROJECT"],
             release: { name: buildId },
-            applicationKey: "oxytype-frontend",
+            applicationKey: "caret-frontend",
             telemetry: false,
             sourcemaps: { disable: (env["SENTRY_AUTH_TOKEN"] ?? "") === "" },
           }).map((plugin) => ({

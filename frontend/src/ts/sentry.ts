@@ -52,7 +52,7 @@ export async function activateSentry(): Promise<void> {
       // //   // ignore: ["#wordsInput"],
       // }),
       Sentry.thirdPartyErrorFilterIntegration({
-        filterKeys: ["oxytype-frontend"],
+        filterKeys: ["caret-frontend"],
         // Defines how to handle errors that contain third party stack frames.
         // Possible values are:
         // - 'drop-error-if-contains-third-party-frames'

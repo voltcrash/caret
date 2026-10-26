@@ -40,7 +40,7 @@ async function update(page: Page, deployment: "a" | "b"): Promise<void> {
 
 async function cachedEngine(page: Page, build: string): Promise<void> {
   const assets = await page.evaluate(async (name) => {
-    const cache = await caches.open(`oxytype-start-${name}`);
+    const cache = await caches.open(`caret-start-${name}`);
     const requests = await cache.keys();
     return await Promise.all(
       requests
@@ -112,7 +112,7 @@ test("a new build and rollback wait for idle and refresh the complete offline sh
     const state = window as unknown as { updateQueries: number };
     state.updateQueries = 0;
     navigator.serviceWorker.addEventListener("message", (event) => {
-      if (event.data === "oxytype:update-safety") state.updateQueries++;
+      if (event.data === "caret:update-safety") state.updateQueries++;
     });
   });
   const otherWord = other.locator("#words .word").first();
@@ -169,8 +169,8 @@ test("a new build and rollback wait for idle and refresh the complete offline sh
   await cachedEngine(page, "update-b");
   expect(await page.evaluate(async () => await caches.keys())).toEqual(
     expect.arrayContaining([
-      "oxytype-start-update-a",
-      "oxytype-start-update-b",
+      "caret-start-update-a",
+      "caret-start-update-b",
     ]),
   );
 

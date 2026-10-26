@@ -20,7 +20,7 @@ function inject(environment: string, importer: string, target: string): Plugin {
 }
 
 async function buildWith(plugin: Plugin): Promise<unknown> {
-  const outDir = await mkdtemp(join(tmpdir(), "oxytype-protection-"));
+  const outDir = await mkdtemp(join(tmpdir(), "caret-protection-"));
   try {
     const builder = await createBuilder({
       root,

@@ -28,7 +28,7 @@ export function versionJson(buildId: string): string {
 export function startVersionFile(buildId: string): Plugin {
   const source = versionJson(buildId);
   return {
-    name: "oxytype-version-file",
+    name: "caret-version-file",
     applyToEnvironment: (environment) => environment.name === "client",
     generateBundle() {
       this.emitFile({ type: "asset", fileName: "version.json", source });

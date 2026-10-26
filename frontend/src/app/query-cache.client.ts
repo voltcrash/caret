@@ -38,7 +38,7 @@ export type QueryCacheStorage = {
 /** One actor per database. Open lazily; denied/unavailable storage is optional. */
 function createIndexedDbStorage(): QueryCacheStorage {
   const database = async (): Promise<IDBPDatabase> =>
-    await openDB("oxytype-query-cache", 1, {
+    await openDB("caret-query-cache", 1, {
       upgrade: (db) => db.createObjectStore("cache"),
     });
   const run = async <T>(

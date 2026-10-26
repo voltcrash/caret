@@ -89,22 +89,22 @@ describe("service-worker cache generations", () => {
   it("waits for legacy tabs and keeps their hashed assets one generation", () => {
     const names = [
       "workbox-precache-v2-https://oxytype.voltcrash.com/",
-      "oxytype-build-assets",
-      "oxytype-languages",
+      "caret-build-assets",
+      "caret-languages",
       "workbox-runtime-https://oxytype.voltcrash.com/",
       current,
     ];
     expect(activatesImmediately(true)).toBe(false);
     expect(obsoleteCaches(names, "b3")).toEqual([
       "workbox-precache-v2-https://oxytype.voltcrash.com/",
-      "oxytype-languages",
+      "caret-languages",
       "workbox-runtime-https://oxytype.voltcrash.com/",
     ]);
   });
 
   it("waits behind another Start build and keeps only the previous build", () => {
     const names = [
-      "oxytype-build-assets",
+      "caret-build-assets",
       buildCacheName("b1"),
       buildCacheName("b2"),
       current,
@@ -112,7 +112,7 @@ describe("service-worker cache generations", () => {
     ];
     expect(activatesImmediately(true)).toBe(false);
     expect(obsoleteCaches(names, "b3")).toEqual([
-      "oxytype-build-assets",
+      "caret-build-assets",
       buildCacheName("b1"),
     ]);
   });

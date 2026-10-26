@@ -39,7 +39,7 @@ test("one online visit installs guest typing; private documents and RPCs stay un
   const cached = await page.evaluate(async () => {
     const names = await caches.keys();
     const cache = await caches.open(
-      names.find((name) => name.startsWith("oxytype-start-")) ?? "missing",
+      names.find((name) => name.startsWith("caret-start-")) ?? "missing",
     );
     const keys = (await cache.keys()).map(
       (request) => new URL(request.url).pathname,

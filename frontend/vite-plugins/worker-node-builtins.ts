@@ -1,12 +1,12 @@
 import { isBuiltin } from "node:module";
 import type { Plugin } from "vite-plus";
 
-const prefix = "\0oxytype:worker-node-require:";
+const prefix = "\0caret:worker-node-require:";
 
 /** Static ESM facades for CJS built-ins; workerd has no runtime require. */
 export function workerNodeBuiltins(): Plugin {
   return {
-    name: "oxytype:worker-node-builtins",
+    name: "caret:worker-node-builtins",
     enforce: "pre",
     applyToEnvironment: (environment) => environment.name === "ssr",
     resolveId: {

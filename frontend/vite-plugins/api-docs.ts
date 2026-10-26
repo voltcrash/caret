@@ -34,7 +34,7 @@ export function apiDocs(): Plugin {
     "public.json": JSON.stringify(publicApi),
   };
   return {
-    name: "oxytype-api-docs",
+    name: "caret-api-docs",
     applyToEnvironment: (environment) => environment.name === "client",
     generateBundle() {
       for (const [name, source] of Object.entries(assets)) {

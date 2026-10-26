@@ -53,7 +53,7 @@ test("cold startup across CPU, viewport and network conditions", async ({
               document.querySelector("#words .word") !== null &&
               document.getElementById("startupScreen") === null
             ) {
-              performance.mark("oxytype-ready");
+              performance.mark("caret-ready");
               observer.disconnect();
             }
           });
@@ -73,7 +73,7 @@ test("cold startup across CPU, viewport and network conditions", async ({
             ) as PerformanceResourceTiming[];
           return {
             readyMs:
-              performance.getEntriesByName("oxytype-ready")[0]?.startTime,
+              performance.getEntriesByName("caret-ready")[0]?.startTime,
             jsRequests: scripts.length,
             jsBytes: scripts.reduce(
               (total, entry) => total + entry.decodedBodySize,
