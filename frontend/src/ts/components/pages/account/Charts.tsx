@@ -1,4 +1,4 @@
-import { ResultFilters, ResultFiltersKeys } from "@oxytype/schemas/users";
+import { ResultFilters, ResultFiltersKeys } from "@caret/schemas/users";
 import { useLiveQuery } from "@tanstack/solid-db";
 import { Accessor, createMemo, JSXElement } from "solid-js";
 

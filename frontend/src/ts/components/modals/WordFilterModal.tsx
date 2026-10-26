@@ -1,7 +1,7 @@
-import type { Language } from "@oxytype/schemas/languages";
-import type { LayoutObject } from "@oxytype/schemas/layouts";
+import type { Language } from "@caret/schemas/languages";
+import type { LayoutObject } from "@caret/schemas/layouts";
 
-import { tryCatch } from "@oxytype/util/trycatch";
+import { tryCatch } from "@caret/util/trycatch";
 import { createForm } from "@tanstack/solid-form";
 import {
   createMemo,

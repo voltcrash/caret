@@ -1,4 +1,4 @@
-import { UserNameSchema } from "@oxytype/schemas/users";
+import { UserNameSchema } from "@caret/schemas/users";
 import { createSignal, For, JSXElement } from "solid-js";
 import { z } from "zod";
 

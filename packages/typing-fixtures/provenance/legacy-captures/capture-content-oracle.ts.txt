@@ -2,7 +2,7 @@ import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { getPoem } from "../src/poetry";
 import { getSection } from "../src/wikipedia";
-import type { LanguageObject } from "@oxytype/schemas/languages";
+import type { LanguageObject } from "@caret/schemas/languages";
 import { units } from "./rust-oracle";
 const cases = [];
 for (const lines of [

@@ -3,7 +3,7 @@ import {
   TwitterProfileSchema,
   UserProfileDetailsSchema,
   WebsiteSchema,
-} from "@oxytype/schemas/users";
+} from "@caret/schemas/users";
 import { createForm } from "@tanstack/solid-form";
 import { For } from "solid-js";
 

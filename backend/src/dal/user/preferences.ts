@@ -9,7 +9,7 @@ import type {
   UserProfileDetails,
   UserQuoteRatings,
   ResultFilters,
-} from "@oxytype/schemas/users";
+} from "@caret/schemas/users";
 
 import type { DBUser, DBCustomTheme } from "./types";
 

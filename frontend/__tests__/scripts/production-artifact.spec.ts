@@ -15,7 +15,7 @@ const settings = {
   providers: "github",
 };
 beforeEach(async () => {
-  directory = await mkdtemp(resolve(tmpdir(), "oxytype-artifact-"));
+  directory = await mkdtemp(resolve(tmpdir(), "caret-artifact-"));
   config = JSON.parse(
     await readFile(
       resolve(import.meta.dirname, "../../wrangler.production.json"),

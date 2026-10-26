@@ -1,15 +1,15 @@
-# Oxytype deployment helpers
+# Caret deployment helpers
 
 ## Website production deployments
 
 The **Production deployment** [workflow](../../.github/workflows/production-release.yml)
-runs automatically after **Oxytype CI** completes successfully for a push to `main`.
+runs automatically after **Caret CI** completes successfully for a push to `main`.
 It checks out and deploys that CI run's exact commit, even if `main` has advanced.
 Failed, cancelled and pull-request CI runs cannot deploy. Manual dispatch from
 `main` remains available, including another deployment of an unchanged commit. It
 creates no GitHub release, tag, changelog, release snapshot or package-version edit.
 
-`production-validation.js` requires the latest **Oxytype CI** main-push run for
+`production-validation.js` requires the latest **Caret CI** main-push run for
 that exact commit to finish successfully before credentials are prepared. Missing,
 pending, failed or cancelled CI blocks deployment; retry after CI succeeds.
 The workflow token has only Contents and Actions read permissions.

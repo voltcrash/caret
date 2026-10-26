@@ -21,7 +21,7 @@ export function AccountRuntime(): null {
   const session = useQuery(() => sessionOptions());
   const settled = useSessionSettled();
   createEffect(() => {
-    if (session.isSuccess) setAuthAvailable(!import.meta.env.OXYTYPE_OFFLINE);
+    if (session.isSuccess) setAuthAvailable(!import.meta.env.CARET_OFFLINE);
   });
   const registered = () => {
     const user = session.data?.user;

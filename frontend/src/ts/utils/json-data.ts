@@ -1,12 +1,12 @@
-import { Language, LanguageObject } from "@oxytype/schemas/languages";
-import { LayoutObject } from "@oxytype/schemas/layouts";
+import { Language, LanguageObject } from "@caret/schemas/languages";
+import { LayoutObject } from "@caret/schemas/layouts";
 import { languageHashes } from "virtual:language-hashes";
 import { isDevEnvironment } from "./env";
 import { toHex } from "./strings";
 import {
   createLanguageLoader,
   memoizeAsync,
-} from "@oxytype/web-shared/languages";
+} from "@caret/web-shared/languages";
 
 //pin implementation
 const fetch = window.fetch;

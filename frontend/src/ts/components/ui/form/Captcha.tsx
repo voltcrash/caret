@@ -1,4 +1,4 @@
-import type { CaptchaAction } from "@oxytype/contracts/captcha";
+import type { CaptchaAction } from "@caret/contracts/captcha";
 
 import { AnyFieldApi } from "@tanstack/solid-form";
 import {

@@ -1,1 +1,1 @@
-export { matchCommands } from "@oxytype/web-shared/command-matching";
+export { matchCommands } from "@caret/web-shared/command-matching";

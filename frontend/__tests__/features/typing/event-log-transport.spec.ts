@@ -2,9 +2,9 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { gunzipSync } from "node:zlib";
 import { expect, it } from "vite-plus/test";
-import { serverAudit } from "@oxytype/typing-engine/audit.server";
-import { toEngineLog, type WebLog } from "@oxytype/typing-engine/text";
-import { versions } from "@oxytype/typing-engine/versions";
+import { serverAudit } from "@caret/typing-engine/audit.server";
+import { toEngineLog, type WebLog } from "@caret/typing-engine/text";
+import { versions } from "@caret/typing-engine/versions";
 import { encodeEventLog } from "../../../src/features/typing/runtime/event-log-transport";
 
 const recording = JSON.parse(

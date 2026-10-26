@@ -1,5 +1,5 @@
 import { CommandlineConfigMetadataObject } from "./types";
-import * as ConfigSchemas from "@oxytype/schemas/configs";
+import * as ConfigSchemas from "@caret/schemas/configs";
 import * as TestLogic from "../../../features/typing/runtime/test-logic";
 import { getMutableConfig } from "../../config/store";
 import { get as getTypingSpeedUnit } from "../../utils/typing-speed-units";

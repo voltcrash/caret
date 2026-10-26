@@ -2,9 +2,9 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { gzipSync } from "node:zlib";
 import { describe, expect, it } from "vite-plus/test";
-import type { ResultEventLog } from "@oxytype/contracts/results";
-import type { CompletedEvent } from "@oxytype/schemas/results";
-import { versions } from "@oxytype/typing-engine/versions";
+import type { ResultEventLog } from "@caret/contracts/results";
+import type { CompletedEvent } from "@caret/schemas/results";
+import { versions } from "@caret/typing-engine/versions";
 import { verifyEventLog } from "../../src/anticheat/event-log";
 
 const keystrokes = resolve(

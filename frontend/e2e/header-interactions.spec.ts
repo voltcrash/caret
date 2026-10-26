@@ -14,7 +14,7 @@ for (const theme of ["aether", "serika"] as const) {
         (element) => getComputedStyle(element).color,
       );
       const accent = await page
-        .locator('[data-ui-element="logo"] svg')
+        .locator('[data-ui-element="logoText"] svg')
         .evaluate((element) => getComputedStyle(element).color);
       expect(accent).not.toBe(normal);
       await indicator.hover();
@@ -38,7 +38,7 @@ test("the wordmark navigates home from settings without a document reload", asyn
       documentRequests++;
     }
   });
-  await page.getByRole("heading", { name: "oxytype", exact: true }).click();
+  await page.getByRole("heading", { name: "caret", exact: true }).click();
   await expect(page).toHaveURL(/\/$/);
   await expect(page.locator("#words")).toBeVisible();
   await expect(page.locator("#commandLine")).toBeHidden();
@@ -51,7 +51,7 @@ test("the wordmark restarts typing while the theme name alone opens the picker",
   await openTest(page);
   await page.locator("#words .word").first().click();
   await page.keyboard.type("x");
-  await page.getByRole("heading", { name: "oxytype", exact: true }).click();
+  await page.getByRole("heading", { name: "caret", exact: true }).click();
   await assertRestarted(page);
   await expect(page.locator("#commandLine")).toBeHidden();
   await page.locator('[data-ui-element="themeIndicator"]').click();

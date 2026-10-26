@@ -1,4 +1,4 @@
-import { Mode2, Mode, PersonalBest } from "@oxytype/schemas/shared";
+import { Mode2, Mode, PersonalBest } from "@caret/schemas/shared";
 import { format as formatDate } from "date-fns/format";
 import { createMemo, createSignal, JSXElement } from "solid-js";
 

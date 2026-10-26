@@ -1,6 +1,6 @@
 import { writeFileSync } from "node:fs";
-import { createEventRecorder } from "@oxytype/typing-core/events/data";
-import { createLiveCache } from "@oxytype/typing-core/events/live-cache";
+import { createEventRecorder } from "@caret/typing-core/events/data";
+import { createLiveCache } from "@caret/typing-core/events/live-cache";
 const recorder = createEventRecorder({
   getActiveWordIndex: () => 4999,
   liveCache: createLiveCache(),

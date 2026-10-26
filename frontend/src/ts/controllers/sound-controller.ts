@@ -7,7 +7,7 @@ import { onCleanup, runWithOwner } from "solid-js";
 import type {
   PlaySoundOnClick,
   PlaySoundOnError,
-} from "@oxytype/schemas/configs";
+} from "@caret/schemas/configs";
 import { getMutableConfig } from "../config/store";
 import { configEvent } from "../events/config";
 

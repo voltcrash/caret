@@ -1,6 +1,6 @@
-import { Config } from "@oxytype/schemas/configs";
-import { CustomTextLimitMode } from "@oxytype/schemas/util";
-import { secondsToString } from "@oxytype/util/date-and-time";
+import { Config } from "@caret/schemas/configs";
+import { CustomTextLimitMode } from "@caret/schemas/util";
+import { secondsToString } from "@caret/util/date-and-time";
 import { Formatting } from "./format";
 
 export type LiveStatsValues = {

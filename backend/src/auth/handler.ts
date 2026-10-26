@@ -18,7 +18,7 @@ async function dispatchAuthRequest(
   const path = `/auth${new URL(request.url).pathname.slice(base.pathname.replace(/\/$/, "").length)}`;
   await enforceAuthLimit(path, ip);
   // Resolve through the API's proxy policy; never trust this caller-supplied header.
-  request.headers.set("x-oxytype-auth-ip", ip);
+  request.headers.set("x-caret-auth-ip", ip);
   // Dashboard server requests use the plugin's signed JWT, rather than cookies.
   const dashboardRequest =
     path.startsWith("/auth/dash/") &&

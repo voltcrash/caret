@@ -8,7 +8,7 @@ import { createAppSignal } from "../../app/state";
 import { Quote } from "../controllers/quotes-controller";
 import { showErrorNotification } from "./notifications";
 import { showModal } from "./modals";
-import { isSafeNumber } from "@oxytype/util/numbers";
+import { isSafeNumber } from "@caret/util/numbers";
 
 const [selectedQuote, setSelectedQuote] = createAppSignal<Quote | null>(null);
 export { selectedQuote };

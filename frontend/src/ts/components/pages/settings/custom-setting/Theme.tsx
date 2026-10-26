@@ -1,5 +1,5 @@
-import { CustomTheme, CustomThemeNameSchema } from "@oxytype/schemas/users";
-import { debounce } from "@oxytype/util/timing";
+import { CustomTheme, CustomThemeNameSchema } from "@caret/schemas/users";
+import { debounce } from "@caret/util/timing";
 import { For, JSXElement, onCleanup, Show, untrack } from "solid-js";
 import { z } from "zod";
 

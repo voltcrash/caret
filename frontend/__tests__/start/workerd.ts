@@ -6,9 +6,9 @@ import {
 } from "miniflare";
 import { readdirSync, readFileSync } from "node:fs";
 import { resolve, relative } from "node:path";
-import { withRuntime, type WorkerEnv } from "@oxytype/backend/runtime";
-import { getAuth } from "@oxytype/backend/auth/session";
-import { bindingName, requiredTiers } from "@oxytype/backend/rate-counter";
+import { withRuntime, type WorkerEnv } from "@caret/backend/runtime";
+import { getAuth } from "@caret/backend/auth/session";
+import { bindingName, requiredTiers } from "@caret/backend/rate-counter";
 
 const root = resolve(import.meta.dirname, "../../..");
 const testSecret = "stage-one-local-only-secret-at-least-32-characters";
@@ -255,7 +255,7 @@ export async function seedSession(
     return {
       uid: user.id,
       token: session.token,
-      cookie: `oxytype.session_token=${encodeURIComponent(`${session.token}.${createHmac("sha256", testSecret).update(session.token).digest("base64")}`)}`,
+      cookie: `caret.session_token=${encodeURIComponent(`${session.token}.${createHmac("sha256", testSecret).update(session.token).digest("base64")}`)}`,
     };
   });
 }

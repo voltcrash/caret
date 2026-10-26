@@ -1,5 +1,5 @@
-import { Client } from "@oxytype/schemas/shared";
-import { TestActivity } from "@oxytype/schemas/users";
+import { Client } from "@caret/schemas/shared";
+import { TestActivity } from "@caret/schemas/users";
 import {
   createEffect,
   createSignal,

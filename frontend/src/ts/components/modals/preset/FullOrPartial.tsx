@@ -1,5 +1,5 @@
-import { ConfigGroupNameSchema } from "@oxytype/schemas/configs";
-import { PresetType } from "@oxytype/schemas/presets";
+import { ConfigGroupNameSchema } from "@caret/schemas/configs";
+import { PresetType } from "@caret/schemas/presets";
 import { For, JSXElement, Show } from "solid-js";
 
 import { camelCaseToWords } from "../../../utils/strings";

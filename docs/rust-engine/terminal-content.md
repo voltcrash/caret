@@ -1,10 +1,10 @@
 # Offline terminal content
 
-The binary embeds the existing 200-word English asset and eight original Oxytype
+The binary embeds the existing 200-word English asset and eight original Caret
 practice passages. Both are GPL-3.0-only; attribution and the English source hash
-are in `crates/oxytype-tui/assets/ATTRIBUTION.md`. Nothing downloads at startup.
+are in `crates/caret-tui/assets/ATTRIBUTION.md`. Nothing downloads at startup.
 
-`oxytype --mode words --words 25 --seed 42` uses the shared native generator.
+`caret --mode words --words 25 --seed 42` uses the shared native generator.
 Other modes: `time`, `quote`, `custom`, `zen`. Defaults come from core Config.
 `--punctuation`, `--numbers`, `--difficulty`, `--stop-on-error`,
 `--delete-on-error`, `--confidence`, `--freedom`, `--strict-space` project into

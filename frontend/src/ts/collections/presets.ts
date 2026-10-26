@@ -1,5 +1,5 @@
 import { operation } from "../../data/operations";
-import { Preset } from "@oxytype/schemas/presets";
+import { Preset } from "@caret/schemas/presets";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import {
   createCollection,
@@ -9,7 +9,7 @@ import {
 import { getQueryClient } from "../queries";
 import { defineCollection } from "./utils/scope";
 import { baseKey } from "../queries/utils/keys";
-import { ConfigGroupName } from "@oxytype/schemas/configs";
+import { ConfigGroupName } from "@caret/schemas/configs";
 import { applyIdWorkaround, tempId } from "./utils/misc";
 import { createCollectionReader } from "./utils/reader";
 import { isAuthenticated } from "../states/core";

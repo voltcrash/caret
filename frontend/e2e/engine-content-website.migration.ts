@@ -1,5 +1,5 @@
 import type { Route } from "playwright/test";
-import type { WebLog } from "@oxytype/typing-engine/text";
+import type { WebLog } from "@caret/typing-engine/text";
 import { expect, openTest, test } from "./fixtures";
 test.use({
   config: { mode: "time", time: 600, funbox: ["poetry"], smoothCaret: "off" },

@@ -2,7 +2,7 @@ import { applyPendingLocalConfig } from "../../../ts/config/lifecycle";
 import { captureTypingRoute, isTypingRouteActive } from "../scope";
 import { getBrowserEngine } from "../engine.client";
 import { getContentHost } from "./content.client";
-import { EngineFailure } from "@oxytype/typing-engine/failure";
+import { EngineFailure } from "@caret/typing-engine/failure";
 import {
   applyEngineRecovery,
   generationFailureIsNotice,
@@ -46,7 +46,7 @@ import {
   isFunboxActiveWithProperty,
 } from "./funbox/list";
 
-import { tryCatch } from "@oxytype/util/trycatch";
+import { tryCatch } from "@caret/util/trycatch";
 import * as Sentry from "../../../ts/sentry";
 import { showLoaderBar, hideLoaderBar } from "../../../ts/states/loader-bar";
 
@@ -56,7 +56,7 @@ import { getMutableConfig } from "../../../ts/config/store";
 import { setQuoteLengthAll, setConfig } from "../../../ts/config/setters";
 
 import { nthElementFromArray } from "../../../ts/utils/arrays";
-import { hasKoreanCharacters } from "@oxytype/web-shared/strings";
+import { hasKoreanCharacters } from "@caret/web-shared/strings";
 
 import { testLogicState } from "./logic-state";
 export async function init(lease = captureTypingRoute()): Promise<boolean> {

@@ -1,8 +1,8 @@
 import { createAppOwned } from "../../app/application";
 import { getBrowserEngine } from "./engine.client";
-import { decodeText, toEngineLog } from "@oxytype/typing-engine/text";
-import type { WebLog } from "@oxytype/typing-engine/text";
-import type { Query, Response } from "@oxytype/typing-engine/browser.client";
+import { decodeText, toEngineLog } from "@caret/typing-engine/text";
+import type { WebLog } from "@caret/typing-engine/text";
+import type { Query, Response } from "@caret/typing-engine/browser.client";
 
 type Stats = Extract<Response, { op: "stats" }>["stats"];
 type Inspection = Extract<Response, { op: "inspect" }>["inspection"];

@@ -1,35 +1,28 @@
-import { projectEngineConfig } from "@oxytype/typing-engine/config";
-import type { Config as EngineConfig } from "@oxytype/typing-engine/config";
+import { projectEngineConfig } from "@caret/typing-engine/config";
+import type { Config as EngineConfig } from "@caret/typing-engine/config";
 import {
   Config,
   ConfigSchema,
   CustomThemeColors,
-  ThemeName,
-} from "@oxytype/schemas/configs";
-
-/** Flagship themes. Each browser gets one of these, picked at random, as its default. */
-export const defaultThemes = [
-  "rust",
-  "azure",
-] as const satisfies readonly ThemeName[];
+} from "@caret/schemas/configs";
 
 const obj: Omit<Config, keyof EngineConfig> = {
-  theme: "rust",
+  theme: "azure",
   themeLight: "serika",
-  themeDark: "rust",
+  themeDark: "azure",
   autoSwitchTheme: false,
   customTheme: false,
   customThemeColors: [
-    "#180d0d",
-    "#e8692e",
-    "#e8692e",
-    "#9c867a",
-    "#271616",
-    "#f3e7dc",
-    "#ff4d6d",
-    "#b8344f",
-    "#ff4d6d",
-    "#b8344f",
+    "#0b0d1c",
+    "#4ea8ff",
+    "#4ea8ff",
+    "#8290b4",
+    "#151a30",
+    "#e4ebff",
+    "#ff6b5e",
+    "#b8423a",
+    "#ff6b5e",
+    "#b8423a",
   ] as CustomThemeColors,
   favThemes: [],
   showKeyTips: false,

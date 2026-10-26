@@ -1,4 +1,4 @@
-import { isSafeNumber } from "@oxytype/util/numbers";
+import { isSafeNumber } from "@caret/util/numbers";
 import { JSXElement, createSignal, For } from "solid-js";
 
 import { operation } from "../../../data/operations";

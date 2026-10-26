@@ -1,6 +1,7 @@
 import { JSXElement } from "solid-js";
 
-import { OxytypeMark } from "../../../../components/brand/oxytype-mark";
+import { CaretMark } from "../../../../components/brand/caret-mark";
+import { CaretWordmark } from "../../../../components/brand/caret-wordmark";
 import { useTypingRoute } from "../../../../components/typing-route-host";
 import { restartTestEvent } from "../../../events/test";
 import { getFocus } from "../../../states/test";
@@ -19,15 +20,15 @@ export function Logo(): JSXElement {
       <Link
         href="/"
         class="-m-2 flex h-6 items-center gap-2 rounded-[0.8rem] p-2"
-        aria-label="Oxytype Home"
+        aria-label="Caret Home"
         style={{ "box-sizing": "content-box" }}
         onClick={() => {
           if (typing()) restartTestEvent.dispatch();
         }}
       >
-        <OxytypeMark
+        <CaretMark
           class={cn(
-            "h-full w-auto shrink-0 fill-current text-main transition-colors",
+            "h-full w-auto shrink-0 fill-current text-main transition-colors sm:hidden",
             {
               "text-text": getFocus(),
             },
@@ -40,7 +41,11 @@ export function Logo(): JSXElement {
             })}
             data-ui-element="logoText"
           >
-            oxytype
+            <CaretWordmark
+              markClass={cn("transition-colors", {
+                "text-text": getFocus(),
+              })}
+            />
           </h1>
         </div>
       </Link>

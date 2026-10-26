@@ -1,5 +1,5 @@
 import recording from "../../../../packages/typing-fixtures/reference/keystrokes/words-10-errors.json";
-import type { EventLog } from "@oxytype/web-shared/events/types";
+import type { EventLog } from "@caret/web-shared/events/types";
 import {
   afterEach,
   beforeEach,
@@ -21,11 +21,8 @@ import { getMutableConfig } from "../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../src/ts/constants/default-config";
 import { resultState, setResultState } from "../../../src/ts/states/result";
 import "../../__harness__/native-engine";
-import {
-  analyzeLog,
-  BrowserReplay,
-} from "@oxytype/typing-engine/browser.client";
-import { toEngineLog } from "@oxytype/typing-engine/text";
+import { analyzeLog, BrowserReplay } from "@caret/typing-engine/browser.client";
+import { toEngineLog } from "@caret/typing-engine/text";
 const recorded = vi.hoisted(() => ({ log: undefined as EventLog | undefined }));
 vi.mock("../../../src/features/typing/engine.client", () => ({
   getBrowserEngine: () => ({

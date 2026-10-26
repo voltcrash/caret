@@ -9,7 +9,7 @@ import {
 import {
   COMPATIBILITY_CHECK,
   COMPATIBILITY_CHECK_HEADER,
-} from "@oxytype/contracts";
+} from "@caret/contracts";
 
 import { BASE_CONFIGURATION } from "../../src/constants/base-configuration";
 import * as UserDal from "../../src/dal/user";

@@ -1,4 +1,4 @@
-import type { EventLog } from "@oxytype/web-shared/events/types";
+import type { EventLog } from "@caret/web-shared/events/types";
 
 import { cleanup, fireEvent, render } from "@solidjs/testing-library";
 import {
@@ -32,11 +32,8 @@ vi.mock("../../../../../src/ts/controllers/sound-controller", () => ({
   playError: vi.fn(),
 }));
 import "../../../../__harness__/native-engine";
-import {
-  analyzeLog,
-  BrowserReplay,
-} from "@oxytype/typing-engine/browser.client";
-import { toEngineLog } from "@oxytype/typing-engine/text";
+import { analyzeLog, BrowserReplay } from "@caret/typing-engine/browser.client";
+import { toEngineLog } from "@caret/typing-engine/text";
 function log(): EventLog {
   return {
     version: 1,

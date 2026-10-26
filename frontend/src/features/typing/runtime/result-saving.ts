@@ -18,8 +18,8 @@ import { getResultVisible } from "../../../ts/states/test";
 
 import { hashResult } from "../../../ts/utils/result-hash";
 
-import { CompletedEvent } from "@oxytype/schemas/results";
-import type { WebLog } from "@oxytype/typing-engine/text";
+import { CompletedEvent } from "@caret/schemas/results";
+import type { WebLog } from "@caret/typing-engine/text";
 import { encodeEventLog } from "./event-log-transport";
 
 import { SavedResult } from "../../../ts/constants/default-snapshot";

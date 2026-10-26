@@ -1,4 +1,4 @@
-import { FunboxName } from "@oxytype/schemas/configs";
+import { FunboxName } from "@caret/schemas/configs";
 
 type FunboxForcedConfig = Record<string, string[] | boolean[]>;
 

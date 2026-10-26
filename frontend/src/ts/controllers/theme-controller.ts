@@ -11,9 +11,9 @@ import { setConfig } from "../config/setters";
 import { configEvent } from "../events/config";
 import * as CustomThemes from "../states/custom-themes";
 import { showNoticeNotification } from "../states/notifications";
-import { debounce } from "@oxytype/util/timing";
+import { debounce } from "@caret/util/timing";
 import { untrack } from "solid-js";
-import { CustomThemeColors, ThemeName } from "@oxytype/schemas/configs";
+import { CustomThemeColors, ThemeName } from "@caret/schemas/configs";
 import {
   convertCustomColorsToTheme,
   themes,

@@ -1,7 +1,7 @@
 import { initContract } from "@ts-rest/core";
 import { z } from "zod";
 import { CommonResponses, meta, responseWithData } from "./util/api";
-import { UidSchema } from "@oxytype/schemas/util";
+import { UidSchema } from "@caret/schemas/util";
 
 export const GenerateDataRequestSchema = z.object({
   username: z.string(),

@@ -9,7 +9,7 @@ import * as Users from "../../src/dal/user";
 import * as Results from "../../src/dal/result";
 import Worker from "../__testData__/http-worker";
 import { completedEvent } from "../__testData__/completed-event";
-import type { CompletedEvent } from "@oxytype/schemas/results";
+import type { CompletedEvent } from "@caret/schemas/results";
 import { consistency } from "../../src/anticheat/result";
 
 describe("web and offline result submissions", () => {

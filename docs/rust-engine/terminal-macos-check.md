@@ -12,7 +12,7 @@ Kitty-compatible emulator (Kitty, Ghostty or Alacritty).
 
 ```sh
 vp run terminal:dev -- --version
-vp run terminal:dev -- --config-dir /tmp/oxytype-mac-check/config --data-dir /tmp/oxytype-mac-check/data --mode custom --text 'one two'
+vp run terminal:dev -- --config-dir /tmp/caret-mac-check/config --data-dir /tmp/caret-mac-check/data --mode custom --text 'one two'
 ```
 
 - Type `one twx`, Backspace, then `o`. Result accuracy should be 87.5%; duration

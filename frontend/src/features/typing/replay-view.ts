@@ -1,4 +1,4 @@
-import type { PlaybackSnapshot } from "@oxytype/typing-engine/browser.client";
+import type { PlaybackSnapshot } from "@caret/typing-engine/browser.client";
 
 type Word = PlaybackSnapshot["words"][number];
 export type ReplayLetter = Omit<Word["letters"][number], "char"> & {

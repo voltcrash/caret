@@ -1,5 +1,5 @@
-import { debounce, type Cancelable } from "@oxytype/util/timing";
-import "@oxytype/util/zod-messages";
+import { debounce, type Cancelable } from "@caret/util/timing";
+import "@caret/util/zod-messages";
 import type { Validation, ValidationResult } from "../types/validation";
 
 function debounceIfNeeded<A extends unknown[], R>(

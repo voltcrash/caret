@@ -3,13 +3,13 @@ import { mutateUser, stage } from "../../db/mutation";
 
 import { getDayOfYear } from "date-fns";
 import { UTCDate } from "@date-fns/utc";
-import type { UserStreak } from "@oxytype/schemas/users";
-import type { Client } from "@oxytype/schemas/shared";
+import type { UserStreak } from "@caret/schemas/users";
+import type { Client } from "@caret/schemas/shared";
 
 import {
   getStartOfDayTimestamp,
   MILLISECONDS_IN_DAY,
-} from "@oxytype/util/date-and-time";
+} from "@caret/util/date-and-time";
 import { addImportantLog } from ".././logs";
 
 import type { DBUser } from "./types";

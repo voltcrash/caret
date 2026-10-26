@@ -1,9 +1,9 @@
 import "../../__harness__/native-engine";
-import { evaluatePolicy } from "@oxytype/typing-engine/browser.client";
+import { evaluatePolicy } from "@caret/typing-engine/browser.client";
 import { describe, it, expect, vi } from "vite-plus/test";
 import { canSetConfigWithCurrentFunboxes } from "../../../src/ts/config/funbox-validation";
 
-import { FunboxName } from "@oxytype/schemas/configs";
+import { FunboxName } from "@caret/schemas/configs";
 describe("funbox-validation", () => {
   describe("canSetConfigWithCurrentFunboxes", () => {
     const testCases = [

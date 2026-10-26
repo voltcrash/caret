@@ -3,13 +3,8 @@ import { canFunboxGetPb, checkAndUpdatePb } from "../../utils/pb";
 import { statement, encode } from "../../db/client";
 import { mutateUser, stage } from "../../db/mutation";
 
-import type {
-  Client,
-  Mode,
-  Mode2,
-  PersonalBest,
-} from "@oxytype/schemas/shared";
-import type { Result as ResultType } from "@oxytype/schemas/results";
+import type { Client, Mode, Mode2, PersonalBest } from "@caret/schemas/shared";
+import type { Result as ResultType } from "@caret/schemas/results";
 
 import type { DBUser } from "./types";
 import { emptyPb } from "./empty-pb";

@@ -4,7 +4,7 @@ import { scoreEvent } from "./result-support";
 import { withRuntime } from "../../src/runtime/env";
 import { statement } from "../../src/db/client";
 import * as Users from "../../src/dal/user";
-import type { CompletedEvent } from "@oxytype/schemas/results";
+import type { CompletedEvent } from "@caret/schemas/results";
 
 describe("D1 personal-best and progression policies", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;

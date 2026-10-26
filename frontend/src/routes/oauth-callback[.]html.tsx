@@ -5,8 +5,8 @@ import { OAuthCallback } from "../features/auth/callback";
 export const Route = createFileRoute("/oauth-callback.html")({
   head: () => ({
     meta: [
-      { title: "Sign in | Oxytype" },
-      { name: "description", content: "Sign in on Oxytype." },
+      { title: "Sign in | Caret" },
+      { name: "description", content: "Sign in on Caret." },
     ],
   }),
   component: OAuthCallback,

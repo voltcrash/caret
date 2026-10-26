@@ -27,8 +27,8 @@ describe("native public routes in workerd", () => {
     expect(response.status).toBe(200);
     expect(response.headers.get("Cache-Control")).toBe("no-store");
     const html = await response.text();
-    expect(html).toContain("ssr-profile | Oxytype");
-    expect(html).toContain("https://oxytype.voltcrash.com/profile/ssr-profile");
+    expect(html).toContain("ssr-profile | Caret");
+    expect(html).toContain("https://caret.voltcrash.com/profile/ssr-profile");
     expect(html).toContain("ssr-profile public bio");
     expect(html).toContain('aria-label="Profile summary"');
     // Only the public DTO is serialized; never account credentials.
@@ -57,7 +57,7 @@ describe("native public routes in workerd", () => {
     const response = await mf.dispatchFetch(`${origin}/profile`);
     expect(response.status).toBe(200);
     const html = await response.text();
-    expect(html).toContain("Profile Search | Oxytype");
+    expect(html).toContain("Profile Search | Caret");
     expect(html).toContain("Profile lookup");
   });
 
@@ -66,7 +66,7 @@ describe("native public routes in workerd", () => {
     const first = await worker.fetch(`${origin}/leaderboards`);
     expect(first.status).toBe(200);
     const html = await first.text();
-    expect(html).toContain("Leaderboards | Oxytype");
+    expect(html).toContain("Leaderboards | Caret");
     expect(html).toContain("All-time english time 15 leaderboard");
     expect(html).toContain("racer-1<");
     expect(html).not.toContain("racer-51<");
@@ -149,7 +149,7 @@ describe("native public routes in workerd", () => {
     expect(account.status).toBe(200);
     expect(account.headers.get("Cache-Control")).toBe("no-store");
     const html = await account.text();
-    expect(html).toContain("Account | Oxytype");
+    expect(html).toContain("Account | Caret");
     expect(html).not.toContain(session.token);
     expect(html).not.toContain("never-serialize-history");
     const alias = await worker.fetch(`${origin}/account-settings?source=mail`, {

@@ -1,4 +1,4 @@
-import { debounce } from "@oxytype/util/timing";
+import { debounce } from "@caret/util/timing";
 import { For, JSXElement, onCleanup, onMount, Show } from "solid-js";
 
 import { createEffectOn } from "../../../hooks/effects";

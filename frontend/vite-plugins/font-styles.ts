@@ -19,11 +19,11 @@ export function fontStyles(): Plugin {
     "src/styles/generated",
   );
   const imports = {
-    "oxytype-fonts.css": path.join(output, "fonts.css"),
-    "oxytype-fontawesome.css": path.join(output, "fontawesome.css"),
+    "caret-fonts.css": path.join(output, "fonts.css"),
+    "caret-fontawesome.css": path.join(output, "fontawesome.css"),
   };
   return {
-    name: "oxytype-font-styles",
+    name: "caret-font-styles",
     config() {
       return { resolve: { alias: imports } };
     },
@@ -48,7 +48,7 @@ export function fontStyles(): Plugin {
           face(`${family} Preview`, `/webfonts/${font.fileName}`, font.weight),
         );
       }
-      writeIfChanged(imports["oxytype-fonts.css"], faces.join("\n"));
+      writeIfChanged(imports["caret-fonts.css"], faces.join("\n"));
 
       const require = createRequire(import.meta.url);
       const styles = ["fontawesome", "solid", "regular", "brands"].map(
@@ -60,7 +60,7 @@ export function fontStyles(): Plugin {
           return readFileSync(file, "utf8").replaceAll("../webfonts/", fonts);
         },
       );
-      writeIfChanged(imports["oxytype-fontawesome.css"], styles.join("\n"));
+      writeIfChanged(imports["caret-fontawesome.css"], styles.join("\n"));
     },
   };
 }

@@ -1,4 +1,4 @@
-# Oxytype architecture
+# Caret architecture
 
 Package versions come from the workspace manifests and lockfile.
 
@@ -20,7 +20,7 @@ Package versions come from the workspace manifests and lockfile.
 | `.github/workflows/` | [CI](CI.md), automatic production deployments after successful main CI, manual retries, labeling, and repository automation |
 
 The root is a private pnpm workspace. Vite+ (`vp run`) runs workspace tasks.
-TypeScript packages use the `@oxytype` scope and export source. Vite, Vitest,
+TypeScript packages use the `@caret` scope and export source. Vite, Vitest,
 wrangler and `vpx` compile it. Rust/Wasm and declarations build automatically before
 development, production, tests and typechecks; see the [engine SDK](../packages/typing-engine/README.md).
 
@@ -68,7 +68,7 @@ never add `hidden` imperatively, or a closed dialog can intercept clicks.
 
 ## Backend and data
 
-`@oxytype/backend` exports narrow server-only subpaths (runtime, services,
+`@caret/backend` exports narrow server-only subpaths (runtime, services,
 policies, auth, http, jobs). Start handlers call services directly; there is no
 internal HTTP hop. Shared ts-rest contracts and Zod schemas define the retained
 external HTTP API. Drizzle describes D1 tables; Better Auth uses database-backed
@@ -120,7 +120,7 @@ flowchart LR
 ## Development and delivery
 
 `vp run dev` starts Start on port 3000 with local workerd and D1
-(`vp run --filter @oxytype/frontend db:migrate` first). Vitest covers web
+(`vp run --filter @caret/frontend db:migrate` first). Vitest covers web
 units, Start SSR/workerd suites, backend services and real D1 behaviour;
 Playwright covers the built Start Worker.
 
@@ -130,12 +130,12 @@ only binds D1 for local migrations. See [production setup](PRODUCTION_SETUP.md),
 [staging setup](STAGING_SETUP.md) and [operations](CLOUDFLARE_OPERATIONS.md).
 Built-in [anticheat](ANTICHEAT.md) checks scores and telemetry in all modes.
 
-## Oxytype ownership boundaries
+## Caret ownership boundaries
 
 The fork uses its own production auth secret, GitHub OAuth app, Turnstile widget
-and API endpoint at [oxytype.voltcrash.com](https://oxytype.voltcrash.com). Other
+and API endpoint at [caret.voltcrash.com](https://caret.voltcrash.com). Other
 optional integrations need deployment-owned credentials before enabling them.
-Public contact and security reporting use the Oxytype repository and its security
+Public contact and security reporting use the Caret repository and its security
 policy. The
 original GPL license and contributor attribution remain in place.
 

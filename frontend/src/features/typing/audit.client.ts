@@ -1,6 +1,6 @@
 import { createSignal, onCleanup } from "solid-js";
 import { createAppOwned } from "../../app/application";
-import type { Audit } from "@oxytype/typing-engine/audit";
+import type { Audit } from "@caret/typing-engine/audit";
 
 /**
  * Result audit module (timing statistics, challenge rules) for one app. Loaded
@@ -15,7 +15,7 @@ export const getBrowserAudit = createAppOwned(() => {
   );
   // oxlint-disable-next-line typescript/promise-function-async -- Share the exact in-flight initialization promise.
   const load = (): Promise<Audit> =>
-    (pending ??= import("@oxytype/typing-engine/audit.client")
+    (pending ??= import("@caret/typing-engine/audit.client")
       .then(async ({ loadAudit }) => loadAudit(controller.signal))
       .then((audit) => {
         setCurrent(audit);

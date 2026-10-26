@@ -1,9 +1,9 @@
-import type { Config as ConfigSchema } from "@oxytype/schemas/configs";
+import type { Config as ConfigSchema } from "@caret/schemas/configs";
 import {
   migrateConfig,
   supportedConfigSchema,
-} from "@oxytype/web-shared/config/migrate";
-import { setProperty, typedKeys } from "@oxytype/util/objects";
+} from "@caret/web-shared/config/migrate";
+import { setProperty, typedKeys } from "@caret/util/objects";
 import { getDefaultConfig } from "../constants/default-config";
 import { getMutableConfig } from "./store";
 

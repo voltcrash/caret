@@ -1,1 +1,1 @@
-export * from "@oxytype/web-shared/input/input-type";
+export * from "@caret/web-shared/input/input-type";

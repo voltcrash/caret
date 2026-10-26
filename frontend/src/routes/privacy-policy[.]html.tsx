@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/solid-router";
 import { publicEnv } from "../app/public-env";
 import { PrivacyPolicy } from "../ts/components/standalone/PrivacyPolicy";
 
-const title = "Privacy Policy | Oxytype";
+const title = "Privacy Policy | Caret";
 
 /** Static policy at its published URL; fully server-rendered. */
 export const Route = createFileRoute("/privacy-policy.html")({

@@ -1,7 +1,7 @@
 import { mockHttpFixture } from "../__harness__/operations";
 import { expect, it, vi } from "vite-plus/test";
-import type { FunboxName } from "@oxytype/schemas/configs";
-import type { ResultMinified } from "@oxytype/schemas/results";
+import type { FunboxName } from "@caret/schemas/configs";
+import type { ResultMinified } from "@caret/schemas/results";
 
 const { get, updateTagsApi } = vi.hoisted(() => ({
   get: vi.fn(),
@@ -47,7 +47,7 @@ import {
 } from "../../src/ts/collections/results";
 import defaultResultFilters from "../../src/ts/constants/default-result-filters";
 import type { SnapshotResult } from "../../src/ts/constants/default-snapshot";
-import type { Mode } from "@oxytype/schemas/shared";
+import type { Mode } from "@caret/schemas/shared";
 
 function result(
   _id: string,

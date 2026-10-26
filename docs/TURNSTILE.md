@@ -12,7 +12,7 @@ Allow the **frontend** hostname, then set:
 - Backend private `TURNSTILE_SECRET_KEY`; `FRONTEND_URL` must match the frontend.
 - Frontend build `TURNSTILE_SITE_KEY` (public).
 
-Staging allows `localhost` and `oxytype-api-staging.voltcrash.workers.dev` for the
+Staging allows `localhost` and `caret-api-staging.voltcrash.workers.dev` for the
 hosted frontend. Production should allow only its deployed frontend hostname.
 Keys must belong to the same widget.
 See [staging setup](STAGING_SETUP.md) for ignored files and deployment commands.

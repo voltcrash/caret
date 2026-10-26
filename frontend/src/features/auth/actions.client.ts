@@ -1,5 +1,5 @@
 import type { QueryClient } from "@tanstack/solid-query";
-import type { UiSession } from "@oxytype/schemas/auth-session";
+import type { UiSession } from "@caret/schemas/auth-session";
 import { getAuthClient } from "./client.client";
 import { setUserState } from "./state.client";
 import { checkAuthResult } from "./result";

@@ -1,5 +1,5 @@
 import { isNoQuitActive } from "../../features/typing/runtime/session.client";
-import * as ConfigSchemas from "@oxytype/schemas/configs";
+import * as ConfigSchemas from "@caret/schemas/configs";
 import { ZodType as ZodSchema } from "zod";
 import { saveToLocalStorage } from "../config/persistence";
 import { configEvent, type ConfigEventData } from "../events/config";
@@ -12,8 +12,8 @@ import { camelCaseToWords, capitalizeFirstLetter } from "../utils/strings";
 import { configMetadata } from "./metadata";
 import { getMutableConfig, setConfigStore } from "./store";
 import { isConfigValueValid } from "./validation";
-import { FunboxName } from "@oxytype/schemas/configs";
-import { typedKeys } from "@oxytype/util/objects";
+import { FunboxName } from "@caret/schemas/configs";
+import { typedKeys } from "@caret/util/objects";
 import { isTestActive } from "../states/test";
 
 export function setConfig<T extends keyof ConfigSchemas.Config>(

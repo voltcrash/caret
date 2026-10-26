@@ -5,7 +5,7 @@ import {
   ConfigurationSchemaResponse,
   GetConfigurationResponse,
   PatchConfigurationRequest,
-} from "@oxytype/contracts/configuration";
+} from "@caret/contracts/configuration";
 import MonkeyError from "../../utils/error";
 import type { ServiceContext, OperationInput } from "../context";
 

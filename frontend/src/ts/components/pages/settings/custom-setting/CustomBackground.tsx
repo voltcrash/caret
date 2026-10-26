@@ -1,4 +1,4 @@
-import { ConfigSchema, CustomBackgroundSchema } from "@oxytype/schemas/configs";
+import { ConfigSchema, CustomBackgroundSchema } from "@caret/schemas/configs";
 import { createForm } from "@tanstack/solid-form";
 import { createResource, JSXElement, For, Show } from "solid-js";
 

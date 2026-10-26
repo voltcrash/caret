@@ -122,7 +122,7 @@ describe("service-worker precache", () => {
       "/webfonts/RobotoMono-Regular.woff2",
       "/webfonts/LexendDeca-Regular.woff2",
       "/manifest.json",
-      "/images/favicon/oxytype.svg",
+      "/images/favicon/caret.svg",
     ]);
   });
 });

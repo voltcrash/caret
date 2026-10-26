@@ -4,8 +4,8 @@ import {
   runHttpAuxiliary,
   runHttpOperation,
   type HttpInvocation,
-} from "@oxytype/backend/http";
-import type { OperationId } from "@oxytype/backend/policies/operations";
+} from "@caret/backend/http";
+import type { OperationId } from "@caret/backend/policies/operations";
 import { createServiceContext } from "./context.server";
 import editorHtml from "../../../backend/private/index.html?raw";
 import editorScript from "../../../backend/private/script.js?raw";
@@ -79,7 +79,7 @@ export async function serveDocs(
       const root = `/api${prefix === undefined ? "" : `/${encodeURIComponent(prefix)}`}/docs`;
       const spec = selected === "internal" ? "internal.json" : "public.json";
       return new Response(
-        `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Oxytype API</title></head><body><redoc spec-url="${root}/${spec}"></redoc><script src="https://cdn.redocly.com/redoc/v2.5.4/bundles/redoc.standalone.js" integrity="sha384-w447zOpYfw/1Tv/5AK9NfHTlQIqE3RVR6KY62jCyy9zNDgO64cMwGGP1Fj0zJVf5" crossorigin="anonymous"></script></body></html>`,
+        `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Caret API</title></head><body><redoc spec-url="${root}/${spec}"></redoc><script src="https://cdn.redocly.com/redoc/v2.5.4/bundles/redoc.standalone.js" integrity="sha384-w447zOpYfw/1Tv/5AK9NfHTlQIqE3RVR6KY62jCyy9zNDgO64cMwGGP1Fj0zJVf5" crossorigin="anonymous"></script></body></html>`,
         {
           headers: {
             "content-type": "text/html; charset=utf-8",

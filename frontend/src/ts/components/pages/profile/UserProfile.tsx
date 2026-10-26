@@ -1,8 +1,8 @@
-import { Client, PersonalBest, PersonalBests } from "@oxytype/schemas/shared";
+import { Client, PersonalBest, PersonalBests } from "@caret/schemas/shared";
 import {
   RankAndCount,
   UserProfile as UserProfileType,
-} from "@oxytype/schemas/users";
+} from "@caret/schemas/users";
 import { formatDate } from "date-fns/format";
 import { createMemo, For, JSXElement, Show } from "solid-js";
 

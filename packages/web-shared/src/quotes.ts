@@ -1,5 +1,5 @@
-import { Language } from "@oxytype/schemas/languages";
-import { QuoteDataQuote } from "@oxytype/schemas/quotes";
+import { Language } from "@caret/schemas/languages";
+import { QuoteDataQuote } from "@caret/schemas/quotes";
 
 export type Quote = QuoteDataQuote & {
   group: number;

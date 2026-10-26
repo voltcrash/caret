@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/solid-start";
-import { CreateUserRequestSchema } from "@oxytype/contracts/users";
+import { CreateUserRequestSchema } from "@caret/contracts/users";
 import { completeSignUp as complete } from "../server/signup.server";
 export const completeSignUp = createServerFn({ method: "POST" })
   .validator((input: unknown) => CreateUserRequestSchema.parse(input))

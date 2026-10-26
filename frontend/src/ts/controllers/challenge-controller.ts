@@ -13,8 +13,8 @@ import { setConfig } from "../config/setters";
 import { getMutableConfig } from "../config/store";
 import { configEvent } from "../events/config";
 
-import { ChallengeName } from "@oxytype/schemas/challenges";
-import { CompletedEvent } from "@oxytype/schemas/results";
+import { ChallengeName } from "@caret/schemas/challenges";
+import { CompletedEvent } from "@caret/schemas/results";
 import { hideLoaderBar, showLoaderBar } from "../states/loader-bar";
 import {
   isTestRestarting,
@@ -82,7 +82,7 @@ export async function setup(challengeName: ChallengeName): Promise<boolean> {
 
   setConfig("funbox", []);
 
-  const { getChallenge } = await import("@oxytype/challenges");
+  const { getChallenge } = await import("@caret/challenges");
   if (!isCurrent()) {
     if (state.sequence === sequence) state.loading = false;
     return false;

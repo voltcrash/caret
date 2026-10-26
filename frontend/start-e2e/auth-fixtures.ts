@@ -6,7 +6,7 @@ export function authCookie(token: string): string {
   )
     .update(token)
     .digest("base64");
-  return `oxytype.session_token=${encodeURIComponent(`${token}.${signature}`)}; Path=/; HttpOnly; SameSite=Lax`;
+  return `caret.session_token=${encodeURIComponent(`${token}.${signature}`)}; Path=/; HttpOnly; SameSite=Lax`;
 }
 
 /** Independent local edge clients keep browser tests from sharing production rate buckets. */

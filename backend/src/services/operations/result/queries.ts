@@ -1,4 +1,4 @@
-import type { ClientQuery } from "@oxytype/schemas/shared";
+import type { ClientQuery } from "@caret/schemas/shared";
 
 import { atomicUser } from "../../../db/mutation";
 import * as ResultDAL from "../../../dal/result";
@@ -17,7 +17,7 @@ import {
   GetResultsResponse,
   UpdateResultTagsRequest,
   UpdateResultTagsResponse,
-} from "@oxytype/contracts/results";
+} from "@caret/contracts/results";
 
 import type { ServiceContext, OperationInput } from "../../context";
 

@@ -1,7 +1,7 @@
-import { Config } from "@oxytype/schemas/configs";
+import { Config } from "@caret/schemas/configs";
 import { Keycode } from "../keys";
 import { DeleteInputType, InsertInputType } from "../input/input-type";
-import { CustomTextLimitMode } from "@oxytype/schemas/util";
+import { CustomTextLimitMode } from "@caret/schemas/util";
 import { getMode2 } from "../mode";
 
 export type TestEventType =
@@ -89,7 +89,7 @@ type BaseInputEventData = {
   charIndex: number;
   wordIndex: number;
   inputValue: string;
-  // true when oxytype produced this input itself instead of the user
+  // true when caret produced this input itself instead of the user
   // pressing a key - delete on error, code mode auto indentation. There is no
   // keydown behind these, and they share the timestamp of the keypress that
   // triggered them.

@@ -1,6 +1,6 @@
-import { ResultFilters } from "@oxytype/schemas/users";
+import { ResultFilters } from "@caret/schemas/users";
 import { LanguageList } from "./languages";
-import { getFunboxNames } from "@oxytype/funbox";
+import { getFunboxNames } from "@caret/funbox";
 
 const object: ResultFilters = {
   _id: "default",

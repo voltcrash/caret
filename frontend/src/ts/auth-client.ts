@@ -1,7 +1,7 @@
 import { captureAccount } from "../app/account-scope";
 import { onCleanup } from "solid-js";
 import { createAppOwned } from "../app/application";
-import type { SessionState } from "@oxytype/schemas/auth-session";
+import type { SessionState } from "@caret/schemas/auth-session";
 import { sessionKey, sessionOptions } from "../features/auth/session";
 import { getQueryClient } from "./queries";
 

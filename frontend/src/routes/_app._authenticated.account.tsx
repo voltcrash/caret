@@ -1,6 +1,6 @@
 import type { JSXElement } from "solid-js";
 
-import { ClientSchema } from "@oxytype/schemas/shared";
+import { ClientSchema } from "@caret/schemas/shared";
 import { createFileRoute } from "@tanstack/solid-router";
 import { z } from "zod";
 
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/_app/_authenticated/account")({
     urlSearch(SearchSchema)(search),
   head: () => ({
     meta: [
-      { title: "Account | Oxytype" },
+      { title: "Account | Caret" },
       { name: "robots", content: "noindex" },
     ],
   }),

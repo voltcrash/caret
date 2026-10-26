@@ -1,4 +1,4 @@
-import type { Client } from "@oxytype/schemas/shared";
+import type { Client } from "@caret/schemas/shared";
 import { and, desc, eq, gte, inArray, sql } from "drizzle-orm";
 import MonkeyError from "../utils/error";
 import { database, encode, statement } from "../db/client";

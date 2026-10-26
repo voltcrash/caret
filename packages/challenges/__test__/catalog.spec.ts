@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vite-plus/test";
-import { ChallengeNameSchema } from "@oxytype/schemas/challenges";
+import { ChallengeNameSchema } from "@caret/schemas/challenges";
 import { getChallenge, getChallenges } from "../src/index";
 
 describe("challenge catalog", () => {

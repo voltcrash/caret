@@ -1,4 +1,4 @@
-import { getChallenges } from "@oxytype/challenges";
+import { getChallenges } from "@caret/challenges";
 import * as ChallengeController from "../../controllers/challenge-controller";
 import { navigate } from "../../../app/navigate";
 import * as TestLogic from "../../../features/typing/runtime/test-logic";

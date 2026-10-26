@@ -42,7 +42,7 @@ export function TypingRuntime(): null {
           Result.toggleSmoothedBurst();
         },
         lastEventLog: getLastEventLog,
-        ...(import.meta.env.OXYTYPE_ENGINE_PROOF
+        ...(import.meta.env.CARET_ENGINE_PROOF
           ? {
               engineMigrationMemory: () =>
                 getBrowserEngine().api().memoryBytes(),

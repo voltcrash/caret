@@ -12,10 +12,10 @@ import { canFunboxGetPb } from "../../../utils/pb";
 import { buildDbResult } from "../../../utils/result";
 
 import { addLog } from "../../../dal/logs";
-import { AddResultResponse } from "@oxytype/contracts/results";
-import { PostResultResponse } from "@oxytype/schemas/results";
+import { AddResultResponse } from "@caret/contracts/results";
+import { PostResultResponse } from "@caret/schemas/results";
 
-import { getCurrentDayTimestamp } from "@oxytype/util/date-and-time";
+import { getCurrentDayTimestamp } from "@caret/util/date-and-time";
 
 import { getCachedConfiguration } from "../../../init/configuration";
 

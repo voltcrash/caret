@@ -1,6 +1,6 @@
 import { createAppSignal } from "../../app/state";
 
-import { Mode, PersonalBests } from "@oxytype/schemas/shared";
+import { Mode, PersonalBests } from "@caret/schemas/shared";
 
 import { showModal } from "./modals";
 

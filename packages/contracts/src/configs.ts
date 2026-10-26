@@ -1,6 +1,6 @@
 import { initContract } from "@ts-rest/core";
 import { z } from "zod";
-import { PartialConfigSchema } from "@oxytype/schemas/configs";
+import { PartialConfigSchema } from "@caret/schemas/configs";
 import {
   CommonResponses,
   meta,

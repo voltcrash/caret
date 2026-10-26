@@ -1,6 +1,6 @@
 # Cloudflare operations
 
-For local contributors and maintainers operating Oxytype staging and production.
+For local contributors and maintainers operating Caret staging and production.
 
 Backend runtime: one Worker, D1 and Cron. Node is used for builds only.
 Local workerd uses local D1 without a Cloudflare login.
@@ -12,7 +12,7 @@ The [production setup](PRODUCTION_SETUP.md) uses an isolated database and
 ```sh
 vp install --frozen-lockfile
 vp exec cp frontend/.dev.vars.example frontend/.dev.vars
-vp run --filter @oxytype/frontend db:migrate
+vp run --filter @caret/frontend db:migrate
 vp run dev
 ```
 
@@ -34,10 +34,10 @@ Verification:
 
 ```sh
 vp lint --type-aware --type-check --format agent backend
-vp run --filter @oxytype/backend test
-vp run --filter @oxytype/backend integration-test
+vp run --filter @caret/backend test
+vp run --filter @caret/backend integration-test
 vp -C backend test run __tests__/d1/http.spec.ts
-vp run --filter @oxytype/frontend test:start
+vp run --filter @caret/frontend test:start
 ```
 
 Start generates retained API docs and uses curated frontend/static assets.
@@ -48,16 +48,16 @@ Start mounts under `/api`.
 ## Staging deployment
 
 Dedicated account: Lakshmi Tanmay, `eb2679ce4f23ae7db4e6c4e3fcf8c3c1`.
-Worker: [oxytype-api-staging](https://oxytype-api-staging.voltcrash.workers.dev).
-Auth URL: `https://oxytype-api-staging.voltcrash.workers.dev/api/auth`. D1: `oxytype-staging`,
+Worker: [caret-api-staging](https://caret-api-staging.voltcrash.workers.dev).
+Auth URL: `https://caret-api-staging.voltcrash.workers.dev/api/auth`. D1: `caret-staging`,
 `17b0ae8b-92bf-4d7e-a29e-0ac4cc6f2b59`, APAC placement hint.
 Start delivery uses frontend/wrangler.staging.json; production uses its separate
 frontend/wrangler.production.json. Preserve existing remote auth/OAuth secrets.
 
 ```sh
-vp run --filter @oxytype/frontend build:staging-site
-vp run --filter @oxytype/frontend db:migrate:staging
-vp run --filter @oxytype/frontend deploy:staging-site
+vp run --filter @caret/frontend build:staging-site
+vp run --filter @caret/frontend db:migrate:staging
+vp run --filter @caret/frontend deploy:staging-site
 ```
 
 Generate the secret privately (`openssl rand -base64 32`); preserve it across
@@ -87,7 +87,7 @@ proxy is preferable for end-to-end OAuth testing.
 Every POST supplies `Idempotency-Key`; successful replies must be JSON.
 
 - `quotes/approve`: payload from `dal/new-quotes.ts`, including the allowed
-  repository and quote. Restrict repository/origin to deployment-owned Oxytype
+  repository and quote. Restrict repository/origin to deployment-owned Caret
   repos; reject upstream repositories. Commit/publish quote assets externally.
   Persist the approval ID so HTTP retries cannot append a quote twice.
 
@@ -148,7 +148,7 @@ always read the session row. Cached hits skip rate limits.
 ## Request metrics
 
 Every request writes one data point to the `METRICS` Analytics Engine dataset
-(`oxytype_requests` production, `oxytype_staging_requests` staging).
+(`caret_requests` production, `caret_staging_requests` staging).
 Columns are append-only:
 
 | Column | Value |
@@ -164,7 +164,7 @@ p95 latency per operation over the last hour (SQL API):
 SELECT blob1 AS operation,
   quantileExactWeighted(0.95)(double1, _sample_interval) AS p95_ms,
   sum(_sample_interval * double3) / sum(_sample_interval) AS d1_per_request
-FROM oxytype_requests
+FROM caret_requests
 WHERE timestamp > NOW() - INTERVAL '1' HOUR
 GROUP BY operation ORDER BY p95_ms DESC
 ```
@@ -183,9 +183,9 @@ API errors or failed verification stop deployment.
 To enable or verify independently with `CLOUDFLARE_API_TOKEN` configured:
 
 ```sh
-vp run --filter @oxytype/frontend db:replication:staging
-vp run --filter @oxytype/frontend db:replication:production
-vp exec wrangler d1 info oxytype-production --config frontend/wrangler.production.json --json
+vp run --filter @caret/frontend db:replication:staging
+vp run --filter @caret/frontend db:replication:production
+vp exec wrangler d1 info caret-production --config frontend/wrangler.production.json --json
 ```
 
 No schema migration is needed. Enabling the database setting alone does not
@@ -225,9 +225,9 @@ It does not run on the request path or during deployment dry runs. To run it
 independently:
 
 ```sh
-vp run --filter @oxytype/frontend db:optimize
-vp run --filter @oxytype/frontend db:optimize:staging
-vp run --filter @oxytype/frontend db:optimize:production
+vp run --filter @caret/frontend db:optimize
+vp run --filter @caret/frontend db:optimize:staging
+vp run --filter @caret/frontend db:optimize:production
 ```
 
 ### Query Insights reports
@@ -251,8 +251,8 @@ approval rules, if configured, also apply to these reporting jobs. It never
 deploys, changes schema or writes application data.
 
 ```sh
-vp run --filter @oxytype/frontend db:insights:production
-vp run --filter @oxytype/frontend db:insights:staging
+vp run --filter @caret/frontend db:insights:production
+vp run --filter @caret/frontend db:insights:staging
 ```
 
 Local reports go to ignored `frontend/.reports/d1/`. Persisted reports and
@@ -306,7 +306,7 @@ up to 15 minutes and needs consistent traffic from multiple locations.
 Production request logs include `placementMode: smart` and a validated
 `placement` value from Cloudflare's `cf-placement` header when available
 (`local-BOM`, `remote-SIN`, etc.). Responses expose that validated value as
-`X-Oxytype-Placement`. Missing values mean unreported placement. Logs' `durationMs`
+`X-Caret-Placement`. Missing values mean unreported placement. Logs' `durationMs`
 measure Worker handling, not full forwarding latency; use Cloudflare's request
 duration analytics for total request performance. Placement does not change
 D1's primary/replica consistency rules, move static assets served directly by

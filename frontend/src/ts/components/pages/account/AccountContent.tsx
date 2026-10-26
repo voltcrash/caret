@@ -1,4 +1,4 @@
-import { Client, Mode } from "@oxytype/schemas/shared";
+import { Client, Mode } from "@caret/schemas/shared";
 import { createMemo, createSignal, JSXElement, Show } from "solid-js";
 
 import {

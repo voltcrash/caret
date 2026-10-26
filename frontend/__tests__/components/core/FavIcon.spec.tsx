@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
 import type { Theme } from "../../../src/ts/constants/themes";
 
-import { oxytypeMarkPath } from "../../../src/components/brand/oxytype-icon";
+import { caretMarkPath } from "../../../src/components/brand/caret-icon";
 import { FavIcon } from "../../../src/ts/components/core/FavIcon";
 
 const { isDevEnvironment } = vi.hoisted(() => ({
@@ -34,10 +34,10 @@ describe("FavIcon", () => {
     isDevEnvironment.mockReturnValue(false);
   });
 
-  it("draws the oxytype mark in theme colors", () => {
+  it("draws the caret mark in theme colors", () => {
     renderIcon("#323437", "#e2b714");
     const svg = iconSvg();
-    expect(svg).toContain(oxytypeMarkPath);
+    expect(svg).toContain(caretMarkPath);
     expect(svg).toContain('fill="#323437"');
     expect(svg).toContain('fill="#e2b714"');
   });

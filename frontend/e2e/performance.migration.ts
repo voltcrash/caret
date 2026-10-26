@@ -12,8 +12,8 @@ test("cold startup across CPU, viewport and network conditions", async ({
   baseURL,
 }) => {
   test.setTimeout(240_000);
-  const output = process.env["OXYTYPE_PERFORMANCE_OUTPUT"];
-  if (output === undefined) throw new Error("Set OXYTYPE_PERFORMANCE_OUTPUT");
+  const output = process.env["CARET_PERFORMANCE_OUTPUT"];
+  if (output === undefined) throw new Error("Set CARET_PERFORMANCE_OUTPUT");
   const measurements = [];
   for (const profile of profiles) {
     const samples = [];
@@ -53,7 +53,7 @@ test("cold startup across CPU, viewport and network conditions", async ({
               document.querySelector("#words .word") !== null &&
               document.getElementById("startupScreen") === null
             ) {
-              performance.mark("oxytype-ready");
+              performance.mark("caret-ready");
               observer.disconnect();
             }
           });
@@ -72,8 +72,7 @@ test("cold startup across CPU, viewport and network conditions", async ({
               entry.name.endsWith(".js"),
             ) as PerformanceResourceTiming[];
           return {
-            readyMs:
-              performance.getEntriesByName("oxytype-ready")[0]?.startTime,
+            readyMs: performance.getEntriesByName("caret-ready")[0]?.startTime,
             jsRequests: scripts.length,
             jsBytes: scripts.reduce(
               (total, entry) => total + entry.decodedBodySize,

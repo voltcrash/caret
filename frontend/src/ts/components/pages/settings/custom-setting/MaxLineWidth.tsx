@@ -1,4 +1,4 @@
-import { MaxLineWidthSchema } from "@oxytype/schemas/configs";
+import { MaxLineWidthSchema } from "@caret/schemas/configs";
 import { createForm } from "@tanstack/solid-form";
 import { JSXElement } from "solid-js";
 

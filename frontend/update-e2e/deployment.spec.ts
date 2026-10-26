@@ -40,7 +40,7 @@ async function update(page: Page, deployment: "a" | "b"): Promise<void> {
 
 async function cachedEngine(page: Page, build: string): Promise<void> {
   const assets = await page.evaluate(async (name) => {
-    const cache = await caches.open(`oxytype-start-${name}`);
+    const cache = await caches.open(`caret-start-${name}`);
     const requests = await cache.keys();
     return await Promise.all(
       requests
@@ -91,7 +91,7 @@ test("a new build and rollback wait for idle and refresh the complete offline sh
       response.request().isNavigationRequest() &&
       response.frame() === page.mainFrame()
     ) {
-      documents.push(response.headers()["x-oxytype-build"] ?? "missing");
+      documents.push(response.headers()["x-caret-build"] ?? "missing");
     }
   });
   await page.goto("/");
@@ -112,7 +112,7 @@ test("a new build and rollback wait for idle and refresh the complete offline sh
     const state = window as unknown as { updateQueries: number };
     state.updateQueries = 0;
     navigator.serviceWorker.addEventListener("message", (event) => {
-      if (event.data === "oxytype:update-safety") state.updateQueries++;
+      if (event.data === "caret:update-safety") state.updateQueries++;
     });
   });
   const otherWord = other.locator("#words .word").first();
@@ -168,10 +168,7 @@ test("a new build and rollback wait for idle and refresh the complete offline sh
   await controlled(page);
   await cachedEngine(page, "update-b");
   expect(await page.evaluate(async () => await caches.keys())).toEqual(
-    expect.arrayContaining([
-      "oxytype-start-update-a",
-      "oxytype-start-update-b",
-    ]),
+    expect.arrayContaining(["caret-start-update-a", "caret-start-update-b"]),
   );
 
   // Rollback swaps the same complete server/client artifact, with the same
@@ -207,7 +204,7 @@ test("a pending real save holds an update; refresh and rollback never submit it 
     .parse(await (await page.request.get("/__fixture/session")).json());
   await context.addCookies([
     {
-      name: "oxytype.session_token",
+      name: "caret.session_token",
       value: session.cookie.split("=").slice(1).join("="),
       url: baseURL ?? "",
     },
@@ -261,7 +258,7 @@ test("a pending real save holds an update; refresh and rollback never submit it 
   const refreshed = page.waitForResponse(
     (response) =>
       response.request().isNavigationRequest() &&
-      response.headers()["x-oxytype-build"] === "update-b",
+      response.headers()["x-caret-build"] === "update-b",
   );
   await reload.click();
   await refreshed;
@@ -293,7 +290,7 @@ test("a removed result function shows refresh/retry UI without replaying the sav
     .parse(await (await page.request.get("/__fixture/session")).json());
   await context.addCookies([
     {
-      name: "oxytype.session_token",
+      name: "caret.session_token",
       value: session.cookie.split("=").slice(1).join("="),
       url: baseURL ?? "",
     },
@@ -308,7 +305,7 @@ test("a removed result function shows refresh/retry UI without replaying the sav
       url: `${baseURL}/_serverFn/${"0".repeat(64)}`,
     });
     expect(response.status()).toBe(409);
-    expect(response.headers()["x-oxytype-stale-client"]).toBe("1");
+    expect(response.headers()["x-caret-stale-client"]).toBe("1");
     await route.fulfill({ response });
   });
   await page.goto("/");
@@ -319,7 +316,7 @@ test("a removed result function shows refresh/retry UI without replaying the sav
   await page.keyboard.type(words.join(" "), { delay: 90 });
   await expect(page.locator("#result")).toHaveCSS("opacity", "1");
   await expect(
-    page.getByText("Oxytype was updated and this page is out of date.", {
+    page.getByText("Caret was updated and this page is out of date.", {
       exact: false,
     }),
   ).toBeVisible();

@@ -1,5 +1,5 @@
 import { replaceHomoglyphs } from "./homoglyphs";
-import { sanitizeString } from "@oxytype/util/strings";
+import { sanitizeString } from "@caret/util/strings";
 import { z } from "zod";
 
 // Sorry for the bad words

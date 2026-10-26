@@ -22,7 +22,7 @@ async function main(): Promise<void> {
   }
   const buildId = resolveBuildId(false);
   const previous = await snapshotAssets(
-    "https://oxytype-api-staging.voltcrash.workers.dev",
+    "https://caret-api-staging.voltcrash.workers.dev",
   );
   const result = spawnSync("vp", ["run", "--no-cache", "build:start:staging"], {
     cwd: root,
@@ -31,7 +31,7 @@ async function main(): Promise<void> {
       ...process.env,
       ...settings,
       SENTRY_DSN: settings["SENTRY_DSN"] ?? "",
-      OXYTYPE_BUILD_ID: buildId,
+      CARET_BUILD_ID: buildId,
     },
   });
   if (result.error !== undefined || result.status !== 0) {

@@ -2,7 +2,7 @@ import { currentApplication } from "./application";
 import { createAppSignal } from "./state";
 
 /** This tab's build; the Worker and `/version.json` report the deployed one. */
-export const clientBuildId = import.meta.env.OXYTYPE_BUILD_ID;
+export const clientBuildId = import.meta.env.CARET_BUILD_ID;
 
 /**
  * Why this tab is out of date: a server function or code-split chunk from its

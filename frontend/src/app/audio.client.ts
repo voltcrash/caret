@@ -6,7 +6,7 @@ import { randomElementFromArray } from "../ts/utils/arrays";
 import { isCapsLockOn } from "@leonabcd123/modern-caps-lock";
 import { showErrorNotification } from "../ts/states/notifications";
 import type { Howl } from "howler";
-import { PlaySoundOnClick, PlaySoundOnError } from "@oxytype/schemas/configs";
+import { PlaySoundOnClick, PlaySoundOnError } from "@caret/schemas/configs";
 import {
   clickSoundConfig,
   ScaleSoundConfig,

@@ -1,6 +1,6 @@
 import { mockHttpFixture } from "../__harness__/operations";
 import { expect, it, vi } from "vite-plus/test";
-import type { ResultMinified } from "@oxytype/schemas/results";
+import type { ResultMinified } from "@caret/schemas/results";
 
 const { get } = vi.hoisted(() => ({ get: vi.fn() }));
 vi.mock("../../src/ts/states/core", async (original) => ({

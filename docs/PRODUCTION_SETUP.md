@@ -1,8 +1,8 @@
 # Production setup
 
-For Oxytype maintainers operating the official production site.
+For Caret maintainers operating the official production site.
 
-One Worker serves the frontend and `/api` on `https://oxytype.voltcrash.com`.
+One Worker serves the frontend and `/api` on `https://caret.voltcrash.com`.
 Use `frontend/wrangler.production.json` explicitly. The default Wrangler config
 targets staging; the production release workflow uses the production config.
 
@@ -10,10 +10,10 @@ targets staging; the production release workflow uses the production config.
 
 | Resource | Production |
 | --- | --- |
-| Worker/custom domain | `oxytype` / `oxytype.voltcrash.com` |
-| D1 | `oxytype-production`, `43d104e9-2fef-43db-95d7-c64a08310714` |
-| Turnstile | Managed **Oxytype production**, hostname `oxytype.voltcrash.com` |
-| GitHub OAuth | **Oxytype**, separate from local/staging apps |
+| Worker/custom domain | `caret` / `caret.voltcrash.com` |
+| D1 | `caret-production`, `43d104e9-2fef-43db-95d7-c64a08310714` |
+| Turnstile | Managed **Caret production**, hostname `caret.voltcrash.com` |
+| GitHub OAuth | **Caret**, separate from local/staging apps |
 
 Workers.dev and preview URLs are disabled. Cloudflare manages the custom domain's
 DNS record and TLS certificate through the [Workers custom-domain route](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/).
@@ -35,8 +35,8 @@ Keep this file private (mode `0600`). Preserve the production auth secret across
 redeployments; never copy staging/local secrets into it. The OAuth application's
 display name does not affect authentication. Its URLs must be:
 
-- Homepage: `https://oxytype.voltcrash.com`
-- Callback: `https://oxytype.voltcrash.com/api/auth/callback/github`
+- Homepage: `https://caret.voltcrash.com`
+- Callback: `https://caret.voltcrash.com/api/auth/callback/github`
 
 Save public build settings in ignored `frontend/.env.production.local`:
 
@@ -62,7 +62,7 @@ credentials; this API key does not replace `BETTER_AUTH_SECRET`.
 
 In the dashboard's **Connect Your App** form, use:
 
-- Base URL: `https://oxytype.voltcrash.com`
+- Base URL: `https://caret.voltcrash.com`
 - Base Path: `/api/auth`
 
 Deploy the integration before verifying the connection. Dashboard endpoints use
@@ -76,8 +76,8 @@ basic dashboard connection requires no database migration.
 On a **new, empty** production D1 only:
 
 ```sh
-vp run --filter @oxytype/frontend db:migrate:production
-vp run --filter @oxytype/backend db:bootstrap:production
+vp run --filter @caret/frontend db:migrate:production
+vp run --filter @caret/backend db:bootstrap:production
 ```
 
 The atomic bootstrap refuses any existing application data. It enables signup,
@@ -92,13 +92,13 @@ From the repo root, with Node/pnpm versions in `package.json`:
 
 ```sh
 vp install --frozen-lockfile
-vp run --filter @oxytype/frontend build:production-site
-vp run --filter @oxytype/frontend deploy:production-dry-run
+vp run --filter @caret/frontend build:production-site
+vp run --filter @caret/frontend deploy:production-dry-run
 # Detach the retired task consumer before migrations remove its tables.
-vp run --filter @oxytype/frontend retire:production-task-consumer
+vp run --filter @caret/frontend retire:production-task-consumer
 # Apply any newly added migrations before compatible code is deployed.
-vp run --filter @oxytype/frontend db:migrate:production
-vp run --filter @oxytype/frontend deploy:production-site
+vp run --filter @caret/frontend db:migrate:production
+vp run --filter @caret/frontend deploy:production-site
 ```
 
 Production builds invoke one uncached Start compiler for matching client/Worker assets.
@@ -110,7 +110,7 @@ private file; local preview variables are removed from the archived artifact.
 Production deployments start automatically after successful main-push CI and use
 that exact snapshot. Complete staging acceptance before the first Start cutover.
 
-The retired `oxytype-production-tasks` consumer must be detached before uploading
+The retired `caret-production-tasks` consumer must be detached before uploading
 the Worker without a queue handler. Removing `queues` from Wrangler configuration
 does not detach an existing Cloudflare consumer; upload otherwise fails with
 `Queue handler is missing` (11001). The retirement command uses
@@ -129,11 +129,11 @@ Roll back the Worker version; never rebuild or redeploy client assets alone.
 A Worker version carries its own asset manifest, so both move together:
 
 ```sh
-vp exec --filter @oxytype/frontend -- wrangler deployments list --config wrangler.production.json
-vp exec --filter @oxytype/frontend -- wrangler rollback <version-id> --config wrangler.production.json
+vp exec --filter @caret/frontend -- wrangler deployments list --config wrangler.production.json
+vp exec --filter @caret/frontend -- wrangler rollback <version-id> --config wrangler.production.json
 ```
 
-Confirm `/version.json` and the `X-Oxytype-Build` response header report the
+Confirm `/version.json` and the `X-Caret-Build` response header report the
 same build. Rollback restores no bound resources: D1 writes, queues and secrets
 stay. Open tabs keep working: service workers for the rolled-back build install
 and wait until no tab is typing or saving; another build's server-function IDs
@@ -143,7 +143,7 @@ legacy → Start → legacy and Start → Start rollbacks this way in Stage 7.
 ## Production deployments
 
 The **Production deployment** [Actions workflow](../.github/workflows/production-release.yml)
-runs automatically when **Oxytype CI** finishes successfully for each push to
+runs automatically when **Caret CI** finishes successfully for each push to
 `main`. Deployment checks out the completed CI run's exact commit, even if `main`
 has advanced. Failed, cancelled, skipped and pull-request CI runs cannot deploy.
 No manual trigger is needed after merging a change.
@@ -155,7 +155,7 @@ complete frontend/API site with the production Wrangler config, including a
 repeat deployment of the same commit. It creates no GitHub release, tag,
 changelog, release snapshot or package-version change.
 
-The latest **Oxytype CI** main-push run for the exact snapshot must pass first.
+The latest **Caret CI** main-push run for the exact snapshot must pass first.
 Runs are serialized; the deployment validates the matched client/Worker artifact,
 detaches the retired task consumer, applies pending compatible D1 migrations and
 uploads it with Wrangler.
@@ -188,7 +188,7 @@ Rerunning an old failed run retains its original snapshot and cannot pick up the
 
 ## Browser verification and monitoring
 
-Open `https://oxytype.voltcrash.com/login` in a regular browser. Sign in with
+Open `https://caret.voltcrash.com/login` in a regular browser. Sign in with
 GitHub, choose a username, complete Turnstile and a typing test. Refresh, then
 sign out/sign in and confirm the result remains. The popup returns to the
 standalone `/oauth-callback.html` page; frontend and API cookies share one HTTPS origin.

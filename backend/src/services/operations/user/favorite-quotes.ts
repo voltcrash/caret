@@ -4,7 +4,7 @@ import {
   AddFavoriteQuoteRequest,
   GetFavoriteQuotesResponse,
   RemoveFavoriteQuoteRequest,
-} from "@oxytype/contracts/users";
+} from "@caret/contracts/users";
 import type { ServiceContext, OperationInput } from "../../context";
 
 export async function getFavoriteQuotes(

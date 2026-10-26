@@ -4,16 +4,16 @@ import * as UserDAL from "../../../dal/user";
 import MonkeyError from "../../../utils/error";
 import { MonkeyResponse } from "../../../utils/monkey-response";
 import { sanitizeString } from "../../../utils/misc";
-import { UserProfile, UserProfileDetails } from "@oxytype/schemas/users";
+import { UserProfile, UserProfileDetails } from "@caret/schemas/users";
 import {
   GetProfilePathParams,
   GetProfileQuery,
   GetProfileResponse,
   UpdateUserProfileRequest,
   UpdateUserProfileResponse,
-} from "@oxytype/contracts/users";
+} from "@caret/contracts/users";
 import type { ServiceContext, OperationInput } from "../../context";
-import { PersonalBest } from "@oxytype/schemas/shared";
+import { PersonalBest } from "@caret/schemas/shared";
 
 export async function getProfile(
   _context: ServiceContext,

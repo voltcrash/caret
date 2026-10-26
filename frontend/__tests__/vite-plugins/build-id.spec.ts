@@ -10,7 +10,7 @@ import {
 import { resolveBuildId, versionJson } from "../../vite-plugins/build-id";
 
 describe("build identity", () => {
-  beforeEach(() => vi.stubEnv("OXYTYPE_BUILD_ID", undefined));
+  beforeEach(() => vi.stubEnv("CARET_BUILD_ID", undefined));
   afterEach(() => vi.unstubAllEnvs());
   it("uses the release-supplied build ID unchanged", () => {
     expect(resolveBuildId(false, " 26.10.16_0817_abc1234 ")).toBe(
@@ -32,7 +32,7 @@ describe("build identity", () => {
   it.each(["has space", "../escape", "a".repeat(65), 'quote"'])(
     "rejects unsafe build ID %s",
     (value) => {
-      expect(() => resolveBuildId(false, value)).toThrow(/OXYTYPE_BUILD_ID/);
+      expect(() => resolveBuildId(false, value)).toThrow(/CARET_BUILD_ID/);
     },
   );
 

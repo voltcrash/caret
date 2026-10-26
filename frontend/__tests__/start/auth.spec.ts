@@ -3,7 +3,7 @@ import { createWorkerd, seedSession } from "./workerd";
 import { rpcPath } from "./rpc";
 import { z } from "zod";
 import { fromCrossJSON, toJSONAsync } from "seroval";
-import { SessionStateSchema } from "@oxytype/schemas/auth-session";
+import { SessionStateSchema } from "@caret/schemas/auth-session";
 let mf: Awaited<ReturnType<typeof createWorkerd>>;
 beforeAll(async () => {
   mf = await createWorkerd(false, undefined, true);
@@ -48,7 +48,7 @@ it("preserves existing cookie identity and sends only safe session UI data", asy
       .getSetCookie()
       .some(
         (cookie) =>
-          cookie.includes("oxytype.session_token=") &&
+          cookie.includes("caret.session_token=") &&
           cookie.includes("Max-Age=0"),
       ),
   ).toBe(true);

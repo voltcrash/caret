@@ -1,5 +1,5 @@
-import { contract } from "@oxytype/contracts";
-import type { EndpointMetadata } from "@oxytype/contracts/util/api";
+import { contract } from "@caret/contracts";
+import type { EndpointMetadata } from "@caret/contracts/util/api";
 import { isAppRoute, type AppRoute, type AppRouter } from "@ts-rest/core";
 
 type Ids<T, P extends string = ""> = {

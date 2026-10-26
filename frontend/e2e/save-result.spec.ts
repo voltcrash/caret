@@ -1,6 +1,6 @@
 import { fulfillOperation, rpcInput, rpcPath } from "../start-e2e/rpc-fixtures";
-import { AddResultResponseSchema } from "@oxytype/contracts/results";
-import { CompletedEventSchema } from "@oxytype/schemas/results";
+import { AddResultResponseSchema } from "@caret/contracts/results";
+import { CompletedEventSchema } from "@caret/schemas/results";
 import {
   completeWords,
   expect,

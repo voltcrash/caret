@@ -12,7 +12,7 @@ import type { Actor } from "../../src/services/context";
 import { AuthenticatedSession } from "../../src/utils/auth";
 import MonkeyError from "../../src/utils/error";
 import * as Misc from "../../src/utils/misc";
-import { RequestAuthenticationOptions } from "@oxytype/contracts/util/api";
+import { RequestAuthenticationOptions } from "@caret/contracts/util/api";
 import { enableMonkeyErrorExpects } from "../__testData__/monkey-error";
 
 enableMonkeyErrorExpects();
@@ -70,7 +70,7 @@ describe("policies/authentication", () => {
               {
                 headers: {
                   authorization: "ApeKey retired-key",
-                  cookie: "oxytype.session_token=valid-session",
+                  cookie: "caret.session_token=valid-session",
                 },
               },
               options,
@@ -127,7 +127,7 @@ describe("policies/authentication", () => {
     });
     it("authenticates browser session cookies", async () => {
       const result = await authenticate(
-        { headers: { cookie: "oxytype.session_token=signed-token" } },
+        { headers: { cookie: "caret.session_token=signed-token" } },
         {},
       );
       expect(result.decodedToken).toMatchObject({
@@ -149,7 +149,7 @@ describe("policies/authentication", () => {
       });
       await expect(
         authenticate(
-          { headers: { cookie: "oxytype.session_token=stale" } },
+          { headers: { cookie: "caret.session_token=stale" } },
           { requireFreshToken: true },
         ),
       ).rejects.toThrow("This endpoint requires a fresh token");

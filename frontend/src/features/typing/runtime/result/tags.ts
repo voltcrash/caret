@@ -2,7 +2,7 @@ import { captureTypingRoute } from "../../scope";
 import { resultCanGetPb } from "./crown";
 import { result, resultAnnotation } from "./context";
 import { getMutableConfig } from "../../../../ts/config/store";
-import * as Numbers from "@oxytype/util/numbers";
+import * as Numbers from "@caret/util/numbers";
 import { get as getTypingSpeedUnit } from "../../../../ts/utils/typing-speed-units";
 import type { LabelPosition } from "chartjs-plugin-annotation";
 import {

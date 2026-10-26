@@ -1,8 +1,8 @@
 import { isRetainedHttpOperation } from "./retention";
 import type { OperationId } from "../policies/operations";
 import { generateOpenApi } from "@ts-rest/open-api";
-import { COMPATIBILITY_CHECK, contract } from "@oxytype/contracts/index";
-import { EndpointMetadata, PermissionId } from "@oxytype/contracts/util/api";
+import { COMPATIBILITY_CHECK, contract } from "@caret/contracts/index";
+import { EndpointMetadata, PermissionId } from "@caret/contracts/util/api";
 type OpenAPIObject = ReturnType<typeof generateOpenApi>;
 type OperationObject = Parameters<
   NonNullable<
@@ -13,7 +13,7 @@ import {
   limits,
   RateLimiterId,
   Window,
-} from "@oxytype/contracts/rate-limit/index";
+} from "@caret/contracts/rate-limit/index";
 import { formatDuration } from "date-fns";
 
 type SecurityRequirementObject = {
@@ -36,13 +36,13 @@ export function getOpenApi(basePath = "/"): OpenAPIObject {
     {
       openapi: "3.1.0",
       info: {
-        title: "Oxytype API",
+        title: "Caret API",
         description:
-          "Documentation for the endpoints provided by the Oxytype API server.\n\nPrivate endpoints require an authenticated browser session or a Bearer session token. Rate limits are documented per operation.",
+          "Documentation for the endpoints provided by the Caret API server.\n\nPrivate endpoints require an authenticated browser session or a Bearer session token. Rate limits are documented per operation.",
         version: `2.${COMPATIBILITY_CHECK}.0`,
         contact: {
-          name: "Oxytype repository",
-          url: "https://github.com/voltcrash/oxytype",
+          name: "Caret repository",
+          url: "https://github.com/voltcrash/caret",
         },
         license: {
           name: "GPL-3.0",

@@ -1,25 +1,25 @@
-# Oxytype offline terminal
+# Caret offline terminal
 
 First native release: Linux/macOS offline typing and local history, using the same
 Rust engine as the website. No account login, cloud sync, telemetry or first-run download.
 
-Download the matching `oxytype-vVERSION-TARGET` archive from the repository's
+Download the matching `caret-vVERSION-TARGET` archive from the repository's
 GitHub Releases when a maintainer publishes one. Verify its SHA-256 against
-`SHA256SUMS`, extract, and put `oxytype` on PATH.
+`SHA256SUMS`, extract, and put `caret` on PATH.
 Users need no Rust, Node, vp, source checkout or network access. Keep LICENSE,
 attribution and third-party notices with redistributed copies.
 
 ```sh
-oxytype --help
-oxytype --mode words --words 25
-oxytype --mode time --time 60 --punctuation --numbers
-oxytype --mode quote --quote-length 0,1
-oxytype --text 'Your private practice text.'
-oxytype --file practice.txt --custom-order shuffle --custom-limit word --custom-length 50
-oxytype --mode zen
-oxytype --paths
-oxytype --diagnostics
-oxytype --export history.json
+caret --help
+caret --mode words --words 25
+caret --mode time --time 60 --punctuation --numbers
+caret --mode quote --quote-length 0,1
+caret --text 'Your private practice text.'
+caret --file practice.txt --custom-order shuffle --custom-limit word --custom-length 50
+caret --mode zen
+caret --paths
+caret --diagnostics
+caret --export history.json
 ```
 
 Binary invocation above is for installed users. Repository development commands:

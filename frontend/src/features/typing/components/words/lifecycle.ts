@@ -9,7 +9,7 @@ import { lineState } from "./line-state";
 import { focusWords } from "./focus";
 import { scrollToCenterOrTop } from "./dimensions";
 import { setClass } from "./elements";
-import * as Numbers from "@oxytype/util/numbers";
+import * as Numbers from "@caret/util/numbers";
 import { animateAsync } from "../../../../ts/anim";
 import { getMutableConfig } from "../../../../ts/config/store";
 import * as SoundController from "../../../../ts/controllers/sound-controller";

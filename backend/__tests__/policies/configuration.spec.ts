@@ -1,5 +1,5 @@
-import { RequireConfiguration } from "@oxytype/contracts/require-configuration/index";
-import { Configuration } from "@oxytype/schemas/configuration";
+import { RequireConfiguration } from "@caret/contracts/require-configuration/index";
+import { Configuration } from "@caret/schemas/configuration";
 import {
   afterEach,
   beforeEach,
@@ -8,7 +8,7 @@ import {
   it,
   vi,
 } from "vite-plus/test";
-import type { EndpointMetadata } from "@oxytype/contracts/util/api";
+import type { EndpointMetadata } from "@caret/contracts/util/api";
 import { verifyConfiguration } from "../../src/policies/configuration";
 import MonkeyError from "../../src/utils/error";
 import { enableMonkeyErrorExpects } from "../__testData__/monkey-error";

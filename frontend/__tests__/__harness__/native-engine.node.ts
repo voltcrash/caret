@@ -1,9 +1,9 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { initSync } from "../../../packages/typing-engine/generated/engine.js";
-import { BrowserSession } from "@oxytype/typing-engine/browser.client";
-import { encodeText } from "@oxytype/typing-engine/text";
-import { projectEngineConfig } from "@oxytype/typing-engine/config";
+import { BrowserSession } from "@caret/typing-engine/browser.client";
+import { encodeText } from "@caret/typing-engine/text";
+import { projectEngineConfig } from "@caret/typing-engine/config";
 
 // Contract tests combine the client Wasm SDK with Node-only server validation.
 initSync({

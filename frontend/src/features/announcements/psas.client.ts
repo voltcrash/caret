@@ -1,6 +1,6 @@
-import { PSA } from "@oxytype/schemas/psas";
-import { IdSchema } from "@oxytype/schemas/util";
-import { isSafeNumber } from "@oxytype/util/numbers";
+import { PSA } from "@caret/schemas/psas";
+import { IdSchema } from "@caret/schemas/util";
+import { isSafeNumber } from "@caret/util/numbers";
 import { format } from "date-fns/format";
 import { envConfig } from "virtual:env-config";
 import { z } from "zod";
@@ -55,7 +55,7 @@ async function getLatest(): Promise<PSA[] | null> {
             }
           : {
               level: "error",
-              text: "The Oxytype server is currently unavailable.",
+              text: "The Caret server is currently unavailable.",
               icon: "fas fa-exclamation-triangle",
             },
       );
@@ -63,7 +63,7 @@ async function getLatest(): Promise<PSA[] | null> {
       addBanner({
         level: "error",
         icon: "fas fa-bullhorn",
-        text: "The Oxytype server is currently under maintenance.",
+        text: "The Caret server is currently under maintenance.",
       });
     }
     return null;

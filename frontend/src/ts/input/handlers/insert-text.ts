@@ -1,5 +1,5 @@
-import { EngineFailure } from "@oxytype/typing-engine/failure";
-import { decodeText, encodeText } from "@oxytype/typing-engine/text";
+import { EngineFailure } from "@caret/typing-engine/failure";
+import { decodeText, encodeText } from "@caret/typing-engine/text";
 import { getBrowserEngine } from "../../../features/typing/engine.client";
 import { getEngineSession } from "../../../features/typing/runtime/session.client";
 import { getContentHost } from "../../../features/typing/runtime/content.client";

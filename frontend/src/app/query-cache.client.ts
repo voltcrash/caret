@@ -38,7 +38,7 @@ export type QueryCacheStorage = {
 /** One actor per database. Open lazily; denied/unavailable storage is optional. */
 function createIndexedDbStorage(): QueryCacheStorage {
   const database = async (): Promise<IDBPDatabase> =>
-    await openDB("oxytype-query-cache", 1, {
+    await openDB("caret-query-cache", 1, {
       upgrade: (db) => db.createObjectStore("cache"),
     });
   const run = async <T>(
@@ -271,7 +271,7 @@ export const accountQueryCache = createAppOwned(() => {
     account: app.accountData,
     queryClient: app.queryClient,
     storage: createIndexedDbStorage(),
-    buster: `${import.meta.env.OXYTYPE_BUILD_ID}:account-cache-v1`,
+    buster: `${import.meta.env.CARET_BUILD_ID}:account-cache-v1`,
   });
   const flush = (): void => {
     void cache.save();

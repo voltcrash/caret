@@ -4,16 +4,16 @@ import { createEffect, onCleanup } from "solid-js";
 import { z } from "zod";
 import { getConfig } from "../config/store";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-import { EventLog } from "@oxytype/web-shared/events/types";
+import { EventLog } from "@caret/web-shared/events/types";
 
-import type { Challenge } from "@oxytype/challenges";
-import { LayoutObject } from "@oxytype/schemas/layouts";
-import { CompletedEvent, IncompleteTest } from "@oxytype/schemas/results";
+import type { Challenge } from "@caret/challenges";
+import { LayoutObject } from "@caret/schemas/layouts";
+import { CompletedEvent, IncompleteTest } from "@caret/schemas/results";
 
 import { keymapEvent } from "../events/keymap";
 import { createAppSignalWithSetters } from "../hooks/createSignalWithSetters";
 import * as CustomText from "../../features/typing/runtime/custom-text";
-import { QuoteWithTextSplit } from "@oxytype/web-shared/quotes";
+import { QuoteWithTextSplit } from "@caret/web-shared/quotes";
 import { getLayout } from "../utils/json-data";
 import { mirrorLayoutKeys } from "../utils/key-converter";
 import { canQuickRestart } from "../utils/quick-restart";

@@ -3,8 +3,8 @@ import { animateAsync } from "../../src/ts/anim";
 import { requireApplication } from "../../src/app/application";
 import { bindTypingActivity } from "../../src/features/typing/scope";
 import { createRoot, onCleanup } from "solid-js";
-import type { QuoteWithTextSplit } from "@oxytype/web-shared/quotes";
-import type { LanguageObject } from "@oxytype/schemas/languages";
+import type { QuoteWithTextSplit } from "@caret/web-shared/quotes";
+import type { LanguageObject } from "@caret/schemas/languages";
 import {
   afterEach,
   beforeEach,

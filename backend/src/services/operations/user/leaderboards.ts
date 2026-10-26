@@ -1,12 +1,12 @@
-import type { Client, ClientQuery } from "@oxytype/schemas/shared";
+import type { Client, ClientQuery } from "@caret/schemas/shared";
 import * as UserDAL from "../../../dal/user";
 import { MonkeyResponse } from "../../../utils/monkey-response";
 import * as LeaderboardsDAL from "../../../dal/leaderboards";
 import { purgeUserFromDailyLeaderboards } from "../../../utils/daily-leaderboards";
 import { purgeUserFromXpLeaderboards } from "../../../services/weekly-xp-leaderboard";
-import { AllTimeLbs } from "@oxytype/schemas/users";
+import { AllTimeLbs } from "@caret/schemas/users";
 import { addImportantLog } from "../../../dal/logs";
-import { UpdateLeaderboardMemoryRequest } from "@oxytype/contracts/users";
+import { UpdateLeaderboardMemoryRequest } from "@caret/contracts/users";
 import type { ServiceContext, OperationInput } from "../../context";
 
 export async function clearPb(

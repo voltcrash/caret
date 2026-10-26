@@ -3,7 +3,7 @@ import { navigate } from "../../../app/navigate";
 import { isAuthenticated } from "../../states/core";
 import { Command, withValidation } from "../types";
 import { remoteValidation } from "../../utils/remote-validation";
-import { UserNameWithoutFilterSchema } from "@oxytype/schemas/users";
+import { UserNameWithoutFilterSchema } from "@caret/schemas/users";
 
 const commands: Command[] = [
   {

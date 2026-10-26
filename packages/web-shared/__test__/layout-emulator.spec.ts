@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vite-plus/test";
-import { LayoutObjectSchema } from "@oxytype/schemas/layouts";
+import { LayoutObjectSchema } from "@caret/schemas/layouts";
 import { getCharFromLayout } from "../src/layout-emulator";
 
 describe("shared layout mapping", () => {

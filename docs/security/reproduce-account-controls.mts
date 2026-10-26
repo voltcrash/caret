@@ -14,8 +14,8 @@ import { dispatchApi } from "../../backend/__tests__/__testData__/http-worker";
 const test = await createTestRuntime();
 Object.assign(test.env, {
   MODE: "production",
-  FRONTEND_URL: "https://oxytype.test",
-  BETTER_AUTH_URL: "https://oxytype.test/api/auth",
+  FRONTEND_URL: "https://caret.test",
+  BETTER_AUTH_URL: "https://caret.test/api/auth",
   BETTER_AUTH_SECRET: "local-audit-fixture-secret-at-least-32-characters",
 });
 const execution = {
@@ -56,13 +56,13 @@ try {
         test.env,
         async () =>
           await dispatchApi(
-            new Request(`https://oxytype.test${path}`, {
+            new Request(`https://caret.test${path}`, {
               method,
               headers: {
                 ...(typeof credential === "string"
                   ? { authorization: credential }
                   : credential),
-                origin: "https://oxytype.test",
+                origin: "https://caret.test",
                 "content-type": "application/json",
               },
               ...(body === undefined ? {} : { body: JSON.stringify(body) }),
@@ -126,7 +126,7 @@ try {
     const signature = createHmac("sha256", test.env.BETTER_AUTH_SECRET ?? "")
       .update(cookieSession.token)
       .digest("base64");
-    const cookie = `__Secure-oxytype.session_token=${encodeURIComponent(`${cookieSession.token}.${signature}`)}`;
+    const cookie = `__Secure-caret.session_token=${encodeURIComponent(`${cookieSession.token}.${signature}`)}`;
     const disabledCookieSession = await request("/api/users/stats", { cookie });
     const disabledCookieMutation = await request(
       "/api/auth/update-user",

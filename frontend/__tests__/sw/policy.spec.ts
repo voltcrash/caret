@@ -8,7 +8,7 @@ import {
   servesShell,
 } from "../../src/sw/policy";
 
-const origin = "https://oxytype.voltcrash.com";
+const origin = "https://caret.voltcrash.com";
 function request(
   path: string,
   options: { method?: string; mode?: string; origin?: string } = {},
@@ -53,7 +53,7 @@ describe("service-worker request policy", () => {
     "/assets/index-Cf0kvvmC.js",
     "/assets/app-Dk3s.css",
     "/languages/english.json?v=0123456789abcdef",
-    "/js/oxytype.0a1b2c3d.js",
+    "/js/caret.0a1b2c3d.js",
     "/css/vendor.0a1b2c3d.css",
     "/webfonts/RobotoMono-Regular.0a1b2c3d.woff2",
   ])("serves content-addressed %s cache-first", (path) => {
@@ -69,7 +69,7 @@ describe("service-worker request policy", () => {
     "/challenges/list.json",
     "/sounds/click1/click1_1.wav",
     "/quotes/english.json",
-    "/images/favicon/oxytype.svg",
+    "/images/favicon/caret.svg",
     "/manifest.json",
   ])("revalidates public static %s", (path) => {
     expect(classify(request(path), origin)).toBe("static");
@@ -88,23 +88,23 @@ describe("service-worker cache generations", () => {
 
   it("waits for legacy tabs and keeps their hashed assets one generation", () => {
     const names = [
-      "workbox-precache-v2-https://oxytype.voltcrash.com/",
-      "oxytype-build-assets",
-      "oxytype-languages",
-      "workbox-runtime-https://oxytype.voltcrash.com/",
+      "workbox-precache-v2-https://caret.voltcrash.com/",
+      "caret-build-assets",
+      "caret-languages",
+      "workbox-runtime-https://caret.voltcrash.com/",
       current,
     ];
     expect(activatesImmediately(true)).toBe(false);
     expect(obsoleteCaches(names, "b3")).toEqual([
-      "workbox-precache-v2-https://oxytype.voltcrash.com/",
-      "oxytype-languages",
-      "workbox-runtime-https://oxytype.voltcrash.com/",
+      "workbox-precache-v2-https://caret.voltcrash.com/",
+      "caret-languages",
+      "workbox-runtime-https://caret.voltcrash.com/",
     ]);
   });
 
   it("waits behind another Start build and keeps only the previous build", () => {
     const names = [
-      "oxytype-build-assets",
+      "caret-build-assets",
       buildCacheName("b1"),
       buildCacheName("b2"),
       current,
@@ -112,7 +112,7 @@ describe("service-worker cache generations", () => {
     ];
     expect(activatesImmediately(true)).toBe(false);
     expect(obsoleteCaches(names, "b3")).toEqual([
-      "oxytype-build-assets",
+      "caret-build-assets",
       buildCacheName("b1"),
     ]);
   });

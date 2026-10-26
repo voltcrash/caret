@@ -1,7 +1,7 @@
 import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { getSection } from "../src/wikipedia";
-import type { LanguageObject } from "@oxytype/schemas/languages";
+import type { LanguageObject } from "@caret/schemas/languages";
 const extracts = ["[1]\u200bÅ", "A [2] useful word."];
 const requests: string[] = [];
 let page = 0;

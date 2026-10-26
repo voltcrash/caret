@@ -2,11 +2,8 @@ import {
   loadEngine,
   EngineFailure,
   encodeText,
-} from "@oxytype/typing-engine/browser.client";
-import type {
-  Command,
-  LiveMetrics,
-} from "@oxytype/typing-engine/browser.client";
+} from "@caret/typing-engine/browser.client";
+import type { Command, LiveMetrics } from "@caret/typing-engine/browser.client";
 
 export type LifecycleProof = {
   initializationMs: number;

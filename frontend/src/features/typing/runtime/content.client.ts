@@ -2,22 +2,22 @@ import { createAppOwned } from "../../../app/application";
 import { getBrowserEngine } from "../engine.client";
 import { getEngineSession } from "./session.client";
 import { captureTypingRoute } from "../scope";
-import { projectEngineConfig } from "@oxytype/typing-engine/config";
-import { EngineFailure } from "@oxytype/typing-engine/failure";
-import { decodeText, encodeText } from "@oxytype/typing-engine/text";
+import { projectEngineConfig } from "@caret/typing-engine/config";
+import { EngineFailure } from "@caret/typing-engine/failure";
+import { decodeText, encodeText } from "@caret/typing-engine/text";
 import type {
   ContentRequest,
   Prepare,
   Quote,
   Random,
   Source,
-} from "@oxytype/typing-engine/browser.client";
+} from "@caret/typing-engine/browser.client";
 import {
   LanguageSchema,
   type LanguageObject,
   type Language,
-} from "@oxytype/schemas/languages";
-import { QuoteDataSchema } from "@oxytype/schemas/quotes";
+} from "@caret/schemas/languages";
+import { QuoteDataSchema } from "@caret/schemas/quotes";
 import { getMutableConfig } from "../../../ts/config/store";
 import { cachedFetchJson, getLanguage } from "../../../ts/utils/json-data";
 import { removeLanguageSize } from "../../../ts/utils/strings";

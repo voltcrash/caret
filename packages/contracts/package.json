@@ -1,5 +1,5 @@
 {
-  "name": "@oxytype/contracts",
+  "name": "@caret/contracts",
   "private": true,
   "exports": {
     ".": "./src/index.ts",
@@ -12,10 +12,10 @@
     "lint-fast": "vp lint . --format agent"
   },
   "dependencies": {
-    "@oxytype/schemas": "workspace:*"
+    "@caret/schemas": "workspace:*"
   },
   "devDependencies": {
-    "@oxytype/typescript-config": "workspace:*",
+    "@caret/typescript-config": "workspace:*",
     "@types/node": "24.19.2",
     "typescript": "7.0.2",
     "vite-plus": "catalog:"

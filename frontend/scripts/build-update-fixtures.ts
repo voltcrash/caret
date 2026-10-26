@@ -9,12 +9,12 @@ async function main(): Promise<void> {
   for (const build of ["update-a", "update-b"]) {
     const env: NodeJS.ProcessEnv = {
       ...process.env,
-      OXYTYPE_BUILD_ID: build,
+      CARET_BUILD_ID: build,
       TURNSTILE_SITE_KEY: "1x00000000000000000000AA",
       AUTH_PROVIDERS: "github",
       SENTRY_DSN: "",
     };
-    delete env["OXYTYPE_DEPLOY_ENV"];
+    delete env["CARET_DEPLOY_ENV"];
     const result = spawnSync("vp", ["run", "--no-cache", "build:start"], {
       cwd: root,
       env,

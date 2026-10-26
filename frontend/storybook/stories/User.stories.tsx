@@ -29,7 +29,7 @@ export const Default = meta.story({
   render: () => {
     const data = {
       uid: "user123",
-      name: "oxytyper",
+      name: "typist",
       isPremium: true,
       banned: true,
     };
@@ -70,7 +70,7 @@ export const WithBadge = meta.story({
     <User
       user={{
         uid: "user123",
-        name: "oxytyper",
+        name: "typist",
         badgeId: 1,
       }}
     />
@@ -82,7 +82,7 @@ export const Premium = meta.story({
     <User
       user={{
         uid: "user123",
-        name: "oxytyper",
+        name: "typist",
         badgeId: 6,
         isPremium: true,
       }}
@@ -95,7 +95,7 @@ export const Banned = meta.story({
     <User
       user={{
         uid: "user123",
-        name: "oxytyper",
+        name: "typist",
         banned: true,
       }}
     />
@@ -107,7 +107,7 @@ export const NoAvatar = meta.story({
     <User
       user={{
         uid: "user123",
-        name: "oxytyper",
+        name: "typist",
         badgeId: 13,
         isPremium: true,
       }}
@@ -121,7 +121,7 @@ export const FullyLoaded = meta.story({
     <User
       user={{
         uid: "user123",
-        name: "oxytyper",
+        name: "typist",
         badgeId: 1,
         isPremium: true,
       }}

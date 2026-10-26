@@ -1,6 +1,6 @@
-import { Mode, PersonalBest, PersonalBests } from "@oxytype/schemas/shared";
-import { Result as ResultType } from "@oxytype/schemas/results";
-import { getFunbox } from "@oxytype/funbox";
+import { Mode, PersonalBest, PersonalBests } from "@caret/schemas/shared";
+import { Result as ResultType } from "@caret/schemas/results";
+import { getFunbox } from "@caret/funbox";
 
 export type LbPersonalBests = {
   time: Record<number, Record<string, PersonalBest>>;

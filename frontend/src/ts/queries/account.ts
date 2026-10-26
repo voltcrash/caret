@@ -1,5 +1,5 @@
-import type { GetUserResponse } from "@oxytype/contracts/users";
-import { Client, PersonalBests } from "@oxytype/schemas/shared";
+import type { GetUserResponse } from "@caret/contracts/users";
+import { Client, PersonalBests } from "@caret/schemas/shared";
 import { queryOptions } from "@tanstack/solid-query";
 
 import { captureAccount } from "../../app/account-scope";

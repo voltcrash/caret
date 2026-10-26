@@ -1,8 +1,5 @@
-import {
-  ConfigGroupName,
-  ConfigGroupNameSchema,
-} from "@oxytype/schemas/configs";
-import { PresetNameSchema, PresetType } from "@oxytype/schemas/presets";
+import { ConfigGroupName, ConfigGroupNameSchema } from "@caret/schemas/configs";
+import { PresetNameSchema, PresetType } from "@caret/schemas/presets";
 import { createForm } from "@tanstack/solid-form";
 import { createSignal, JSXElement, Show } from "solid-js";
 

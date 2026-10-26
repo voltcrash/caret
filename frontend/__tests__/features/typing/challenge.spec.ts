@@ -13,8 +13,8 @@ import {
   setLoadedChallenge,
 } from "../../../src/ts/states/test";
 import { browserAudit } from "../../__harness__/browser-audit";
-import type { Challenge } from "@oxytype/challenges";
-import type { CompletedEvent } from "@oxytype/schemas/results";
+import type { Challenge } from "@caret/challenges";
+import type { CompletedEvent } from "@caret/schemas/results";
 
 vi.mock("../../../src/ts/config/setters", async (original) => ({
   ...(await original<typeof import("../../../src/ts/config/setters")>()),
@@ -24,7 +24,7 @@ vi.mock("../../../src/ts/config/setters", async (original) => ({
 vi.mock("../../../src/features/typing/audit.client", () => ({
   getBrowserAudit: () => ({ load: async () => browserAudit }),
 }));
-vi.mock("@oxytype/challenges", () => ({
+vi.mock("@caret/challenges", () => ({
   getChallenge: () => ({
     name: "oneHourWarrior",
     display: "Fixture",

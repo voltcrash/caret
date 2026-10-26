@@ -9,7 +9,7 @@ import { expect, it } from "vite-plus/test";
 import { workerNodeBuiltins } from "../../vite-plugins/worker-node-builtins";
 
 it("bundles legacy CJS built-ins as static imports with native identity in workerd", async () => {
-  const root = await mkdtemp(join(tmpdir(), "oxytype-worker-builtins-"));
+  const root = await mkdtemp(join(tmpdir(), "caret-worker-builtins-"));
   let mf: Miniflare | undefined;
   try {
     await writeFile(

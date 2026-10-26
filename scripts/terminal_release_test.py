@@ -15,14 +15,14 @@ class ArchiveTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             directory=pathlib.Path(temporary) / "candidate"
             directory.mkdir()
-            source=directory / "oxytype"
+            source=directory / "caret"
             content=b"Binary bytes\n\x00\xff"
             source.write_bytes(content)
             source.chmod(0o755)
             os.utime(source,(1,1))
             archive=terminal_release.archive(directory)
             with tarfile.open(archive) as package:
-                member=package.getmember("candidate/oxytype")
+                member=package.getmember("candidate/caret")
                 self.assertEqual(package.extractfile(member).read(),content)
                 self.assertEqual(member.mode,0o755)
                 self.assertEqual(member.mtime,1)
@@ -44,7 +44,7 @@ class ArchiveTest(unittest.TestCase):
         })
         with tempfile.TemporaryDirectory() as temporary:
             root=pathlib.Path(temporary)
-            names=[f"oxytype-v{terminal_release.version()}-{target}.tar.gz" for target in (*terminal_release.TARGETS,"source")]
+            names=[f"caret-v{terminal_release.version()}-{target}.tar.gz" for target in (*terminal_release.TARGETS,"source")]
             for name in names:
                 path=root / name
                 path.write_bytes(name.encode())

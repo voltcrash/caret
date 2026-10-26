@@ -29,8 +29,8 @@ This bounds one 1,000-word zen run; longer soak verification still required at 1
 
 ```sh
 vp install --frozen-lockfile
-vp run --filter @oxytype/frontend build:start
-MIGRATION_BASELINE_OUTPUT="$PWD/docs/rust-engine/candidate-readiness.json" ENGINE_PERFORMANCE_OUTPUT="$PWD/docs/rust-engine/candidate-input.json" vp run --filter @oxytype/frontend benchmark-migration readiness.migration.ts engine-performance.migration.ts
+vp run --filter @caret/frontend build:start
+MIGRATION_BASELINE_OUTPUT="$PWD/docs/rust-engine/candidate-readiness.json" ENGINE_PERFORMANCE_OUTPUT="$PWD/docs/rust-engine/candidate-input.json" vp run --filter @caret/frontend benchmark-migration readiness.migration.ts engine-performance.migration.ts
 ```
 
 The fixture server expects `dist/start`, not the `dist/start-test` runtime-entry build.

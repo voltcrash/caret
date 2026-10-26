@@ -4,7 +4,7 @@ import { serverBuildId } from "./observability.server";
 // The only permitted inline event is the static fallback's cache recovery action.
 // SHA-256 of the exact warnings.html onclick body, checked by the boundary suite.
 const recoveryHash = "iiia5AKJZAREDabTiAT6lsvuOYHKDHC9Rnk0lyzkrZo=";
-const sentryOrigin = import.meta.env.OXYTYPE_SENTRY_ORIGIN ?? "";
+const sentryOrigin = import.meta.env.CARET_SENTRY_ORIGIN ?? "";
 
 export function applyResponsePolicy(
   response: Response,
@@ -19,7 +19,7 @@ export function applyResponsePolicy(
   }
   result.headers.set("X-Request-Id", requestId);
   // Public, like /version.json: correlates a response with its client assets.
-  result.headers.set("X-Oxytype-Build", serverBuildId);
+  result.headers.set("X-Caret-Build", serverBuildId);
   result.headers.set("X-Content-Type-Options", "nosniff");
   result.headers.set("X-Frame-Options", "SAMEORIGIN");
   result.headers.set("Referrer-Policy", "same-origin");

@@ -19,13 +19,13 @@ import * as UserDAL from "../../../dal/user";
 import * as WeeklyXpLeaderboard from "../../../services/weekly-xp-leaderboard";
 
 import { addImportantLog, addLog } from "../../../dal/logs";
-import { AddResultRequest } from "@oxytype/contracts/results";
-import { KeyStats } from "@oxytype/schemas/results";
-import { isSafeNumber, roundTo2, stdDev } from "@oxytype/util/numbers";
+import { AddResultRequest } from "@caret/contracts/results";
+import { KeyStats } from "@caret/schemas/results";
+import { isSafeNumber, roundTo2, stdDev } from "@caret/util/numbers";
 
 import type { ServiceContext, OperationInput } from "../../context";
-import { serverAudit } from "@oxytype/typing-engine/audit.server";
-import { tryCatch } from "@oxytype/util/trycatch";
+import { serverAudit } from "@caret/typing-engine/audit.server";
+import { tryCatch } from "@caret/util/trycatch";
 
 import type { ValidatedSubmission } from "./context";
 export async function validateSubmission(

@@ -1,4 +1,4 @@
-import { PersonalBest } from "@oxytype/schemas/shared";
+import { PersonalBest } from "@caret/schemas/shared";
 
 export function pb(
   wpm: number,

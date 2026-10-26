@@ -1,14 +1,14 @@
 <p align="center">
-  <img src="./frontend/static/images/og/oxytype.png" alt="Oxytype" width="600" />
+  <img src="./frontend/static/images/og/caret.png" alt="Caret" width="600" />
 </p>
 
-# Oxytype
+# Caret
 
-Oxytype is an independent, open-source typing test. It offers multiple test modes, languages, themes, live speed and accuracy feedback, and account-based result history.
+Caret is an independent, open-source typing test. It offers multiple test modes, languages, themes, live speed and accuracy feedback, and account-based result history.
 
-This project began from the Monkeytype codebase and now has its own roadmap. We retain the original contributors' work and attribution in the Git history. Oxytype is licensed under [GPL-3.0](./LICENSE).
+This project began from the Monkeytype codebase and now has its own roadmap. We retain the original contributors' work and attribution in the Git history. Caret is licensed under [GPL-3.0](./LICENSE).
 
-Oxytype does not support self-hosting. For self-hosting, use [Monkeytype](https://github.com/monkeytypegame/monkeytype).
+Caret does not support self-hosting. For self-hosting, use [Monkeytype](https://github.com/monkeytypegame/monkeytype).
 
 ## Development
 
@@ -17,7 +17,7 @@ Use Node 24.22.1 and [Vite+](https://viteplus.dev/guide/) (`vp`) for every comma
 ```sh
 vp install
 vp exec cp frontend/.dev.vars.example frontend/.dev.vars
-vp run --filter @oxytype/frontend db:migrate
+vp run --filter @caret/frontend db:migrate
 vp run dev
 ```
 
@@ -48,10 +48,10 @@ for tested platforms and pending real-terminal checks; no release published yet.
 
 ## Contributing
 
-See [CONTRIBUTING.md](./docs/CONTRIBUTING.md) and the [code of conduct](./docs/CODE_OF_CONDUCT.md). Report bugs in the [Oxytype repository](https://github.com/voltcrash/oxytype/issues).
+See [CONTRIBUTING.md](./docs/CONTRIBUTING.md) and the [code of conduct](./docs/CODE_OF_CONDUCT.md). Report bugs in the [Caret repository](https://github.com/voltcrash/caret/issues).
 
 ## Contact and security
 
-Public site: [oxytype.voltcrash.com](https://oxytype.voltcrash.com). Maintainers use [production operations](./docs/PRODUCTION_SETUP.md) for the official site's deployment and updates.
+Public site: [caret.voltcrash.com](https://caret.voltcrash.com). Maintainers use [production operations](./docs/PRODUCTION_SETUP.md) for the official site's deployment and updates.
 
-Use [GitHub discussions](https://github.com/voltcrash/oxytype/discussions) for general questions and feature ideas, and [the security policy](./docs/SECURITY.md) for private vulnerability reports.
+Use [GitHub discussions](https://github.com/voltcrash/caret/discussions) for general questions and feature ideas, and [the security policy](./docs/SECURITY.md) for private vulnerability reports.

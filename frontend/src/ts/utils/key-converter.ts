@@ -1,4 +1,4 @@
-import { LayoutObject } from "@oxytype/schemas/layouts";
+import { LayoutObject } from "@caret/schemas/layouts";
 import {
   Keycode,
   leftSideKeys,

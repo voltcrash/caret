@@ -1,4 +1,4 @@
-import { KeymapLayout as KeymapLayoutSchema } from "@oxytype/schemas/configs";
+import { KeymapLayout as KeymapLayoutSchema } from "@caret/schemas/configs";
 import { JSXElement } from "solid-js";
 
 import { configMetadata } from "../../../../config/metadata";

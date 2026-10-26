@@ -145,7 +145,7 @@ The calibration runner exercises the fixed-timing signature, replay fingerprint
 and every review signal using the production detector functions. From the root:
 
 ```sh
-vp run --filter @oxytype/backend anticheat:calibrate
+vp run --filter @caret/backend anticheat:calibrate
 ```
 
 The default inputs are the eight scripted web recordings and the seeded bot/model fixtures in
@@ -157,7 +157,7 @@ bot false-negative rates.
 To calibrate on reviewed human web samples and known bots:
 
 ```sh
-vp run --filter @oxytype/backend anticheat:calibrate \
+vp run --filter @caret/backend anticheat:calibrate \
   human-web=/path/to/reviewed-web \
   bot=/path/to/known-bots
 ```

@@ -112,7 +112,7 @@ export function offlineStaticFiles(englishHash: string): string[] {
     "/webfonts/RobotoMono-Regular.woff2",
     "/webfonts/LexendDeca-Regular.woff2",
     "/manifest.json",
-    "/images/favicon/oxytype.svg",
+    "/images/favicon/caret.svg",
   ];
 }
 
@@ -127,7 +127,7 @@ export function startServiceWorker(options: {
   let precache: string[] = [];
   let outDir = "";
   return {
-    name: "oxytype-service-worker",
+    name: "caret-service-worker",
     apply: "build",
     applyToEnvironment: (environment) => environment.name === "client",
     generateBundle(_options, bundle) {
@@ -162,7 +162,7 @@ export function startServiceWorker(options: {
               format: "iife",
               entryFileNames: "sw.js",
               // This build's configuration, read by the worker as a global.
-              banner: `var __OXYTYPE_SW__ = ${JSON.stringify(config)};`,
+              banner: `var __CARET_SW__ = ${JSON.stringify(config)};`,
             },
           },
         },

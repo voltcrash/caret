@@ -1,5 +1,5 @@
-import { XpBreakdown } from "@oxytype/schemas/results";
-import { isSafeNumber } from "@oxytype/util/numbers";
+import { XpBreakdown } from "@caret/schemas/results";
+import { isSafeNumber } from "@caret/util/numbers";
 import {
   createSignal,
   For,

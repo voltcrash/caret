@@ -1,4 +1,4 @@
-import type { XpBreakdown } from "@oxytype/schemas/results";
+import type { XpBreakdown } from "@caret/schemas/results";
 
 import { onMount } from "solid-js";
 

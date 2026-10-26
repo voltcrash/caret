@@ -1,6 +1,6 @@
 import { applyReducedMotion } from "../../../../ts/utils/misc";
 import { updateClassNames } from "../../../../ts/utils/cn";
-import { CaretStyle } from "@oxytype/schemas/configs";
+import { CaretStyle } from "@caret/schemas/configs";
 import { getMutableConfig } from "../../../../ts/config/store";
 import { isWordRightToLeft } from "../../../../ts/utils/strings";
 import { requestDebouncedAnimationFrame } from "../../../../ts/utils/debounced-animation-frame";

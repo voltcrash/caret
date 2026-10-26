@@ -99,7 +99,7 @@ for (const [path, token] of [
     const value =
       authCookie(token).split(";")[0]?.split("=").slice(1).join("=") ?? "";
     await context.addCookies([
-      { name: "oxytype.session_token", value, url: "http://127.0.0.1:4185" },
+      { name: "caret.session_token", value, url: "http://127.0.0.1:4185" },
     ]);
     await page.goto(path);
     if (path === "/account") {
@@ -126,7 +126,7 @@ for (const [path, token] of [
       await expect(page.locator("#words letter.correct")).toHaveCount(1);
     }
     await expect(page.getByText(/Failed to get user data/)).toHaveCount(0);
-    await expect(page.getByText("Unable to load Oxytype")).toHaveCount(0);
+    await expect(page.getByText("Unable to load Caret")).toHaveCount(0);
     expect(await (await page.request.get("/api/auth/get-session")).text()).toBe(
       "null",
     );
@@ -148,7 +148,7 @@ test("session expiry removes private controls while the current document stays m
     authCookie("browser-expiry").split(";")[0]?.split("=").slice(1).join("=") ??
     "";
   await context.addCookies([
-    { name: "oxytype.session_token", value, url: "http://127.0.0.1:4185" },
+    { name: "caret.session_token", value, url: "http://127.0.0.1:4185" },
   ]);
   await page.goto("/login");
   await expect(
@@ -179,7 +179,7 @@ test("unfinished signup cancellation preserves the native login flow", async ({
       .slice(1)
       .join("=") ?? "";
   await context.addCookies([
-    { name: "oxytype.session_token", value, url: "http://127.0.0.1:4185" },
+    { name: "caret.session_token", value, url: "http://127.0.0.1:4185" },
   ]);
   await page.goto("/login");
   await page.getByRole("button", { name: "cancel sign up" }).click();
@@ -199,7 +199,7 @@ test("leaving incomplete signup cancels its session without changing the documen
       .slice(1)
       .join("=") ?? "";
   await context.addCookies([
-    { name: "oxytype.session_token", value, url: "http://127.0.0.1:4185" },
+    { name: "caret.session_token", value, url: "http://127.0.0.1:4185" },
   ]);
   await page.goto("/login");
   await expect(

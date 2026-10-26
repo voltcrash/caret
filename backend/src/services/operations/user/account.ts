@@ -12,8 +12,8 @@ import {
   CheckNameResponse,
   CreateUserRequest,
   UpdateUserNameRequest,
-} from "@oxytype/contracts/users";
-import { MILLISECONDS_IN_DAY } from "@oxytype/util/date-and-time";
+} from "@caret/contracts/users";
+import { MILLISECONDS_IN_DAY } from "@caret/util/date-and-time";
 import type { ServiceContext, OperationInput } from "../../context";
 
 export async function createNewUser(

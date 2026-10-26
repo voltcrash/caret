@@ -1,4 +1,4 @@
-import type { EventLog } from "@oxytype/web-shared/events/types";
+import type { EventLog } from "@caret/web-shared/events/types";
 
 import { createMemo, JSXElement, Show } from "solid-js";
 

@@ -1,7 +1,7 @@
 import {
   LeaderboardEntry,
   XpLeaderboardEntry,
-} from "@oxytype/schemas/leaderboards";
+} from "@caret/schemas/leaderboards";
 import { formatDuration, intervalToDuration } from "date-fns";
 import { JSXElement, Match, Show, Switch } from "solid-js";
 

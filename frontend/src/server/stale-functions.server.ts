@@ -5,8 +5,7 @@ import { staleClientHeader } from "../features/update/contract";
 const unknownFunction =
   /^Server function (?:info not found|module not resolved|module export not resolved)/;
 
-const staleFunctionMessage =
-  "Oxytype was updated. Refresh the page to continue.";
+const staleFunctionMessage = "Caret was updated. Refresh the page to continue.";
 
 /**
  * A tab from another build may call a server function this Worker no longer

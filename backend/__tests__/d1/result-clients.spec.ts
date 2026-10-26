@@ -4,7 +4,7 @@ import { withRuntime } from "../../src/runtime/env";
 import * as Results from "../../src/dal/result";
 import { buildDbResult } from "../../src/utils/result";
 import { completedEvent } from "../__testData__/completed-event";
-import { CompletedEventSchema } from "@oxytype/schemas/results";
+import { CompletedEventSchema } from "@caret/schemas/results";
 
 describe("web result history", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;

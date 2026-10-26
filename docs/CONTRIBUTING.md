@@ -1,6 +1,6 @@
 # Contributing
 
-Oxytype uses TypeScript, TanStack Start with SolidJS, Tailwind CSS and backend
+Caret uses TypeScript, TanStack Start with SolidJS, Tailwind CSS and backend
 services on one Cloudflare Worker with D1 and Queues. See [architecture](ARCHITECTURE.md).
 
 For asset or documentation edits, follow [basic contributions](CONTRIBUTING_BASIC.md).
@@ -60,5 +60,5 @@ Use WOFF2 files, valid font names and matching schema/constants entries. See
 
 ## Questions
 
-Open an [issue](https://github.com/voltcrash/oxytype/issues) for bugs or a
-[discussion](https://github.com/voltcrash/oxytype/discussions) for questions and ideas.
+Open an [issue](https://github.com/voltcrash/caret/issues) for bugs or a
+[discussion](https://github.com/voltcrash/caret/discussions) for questions and ideas.

@@ -18,8 +18,8 @@ type WebManifest = {
 /** Installed-app identity; `/manifest.json` keeps the former PWA's id and scope. */
 const webManifest: Readonly<WebManifest> = {
   id: "/",
-  short_name: "Oxytype",
-  name: "Oxytype",
+  short_name: "Caret",
+  name: "Caret",
   description: "A minimalistic, customizable typing test",
   start_url: "/",
   scope: "/",
@@ -27,25 +27,25 @@ const webManifest: Readonly<WebManifest> = {
   categories: ["education", "productivity"],
   icons: [
     {
-      src: "/images/icons/oxytype-192.png",
+      src: "/images/icons/caret-192.png",
       sizes: "192x192",
       type: "image/png",
       purpose: "any",
     },
     {
-      src: "/images/icons/oxytype-512.png",
+      src: "/images/icons/caret-512.png",
       sizes: "512x512",
       type: "image/png",
       purpose: "any",
     },
     {
-      src: "/images/icons/oxytype-maskable-192.png",
+      src: "/images/icons/caret-maskable-192.png",
       sizes: "192x192",
       type: "image/png",
       purpose: "maskable",
     },
     {
-      src: "/images/icons/oxytype-maskable-512.png",
+      src: "/images/icons/caret-maskable-512.png",
       sizes: "512x512",
       type: "image/png",
       purpose: "maskable",
@@ -62,7 +62,7 @@ const webManifestPath = "/manifest.json";
 export function startWebManifest(): Plugin {
   const source = JSON.stringify(webManifest);
   return {
-    name: "oxytype-web-manifest",
+    name: "caret-web-manifest",
     applyToEnvironment: (environment) => environment.name === "client",
     generateBundle() {
       this.emitFile({

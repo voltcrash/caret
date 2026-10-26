@@ -1,4 +1,4 @@
-import { isSafeNumber } from "@oxytype/util/numbers";
+import { isSafeNumber } from "@caret/util/numbers";
 import { JSXElement, onCleanup, onMount } from "solid-js";
 
 import { getMutableConfig } from "../../../ts/config/store";

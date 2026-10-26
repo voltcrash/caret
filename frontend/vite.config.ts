@@ -48,20 +48,20 @@ export default defineConfig(async ({ mode, command }) => {
     // Vite evaluates this config once per environment. Pin the generated
     // timestamp so the client, Worker and /version.json share one build ID
     // even when a build crosses a minute boundary.
-    process.env["OXYTYPE_BUILD_ID"] = buildId;
+    process.env["CARET_BUILD_ID"] = buildId;
   }
   const sentryDsn = env["SENTRY_DSN"] ?? "";
   const sentryOrigin = sentryDsn === "" ? "" : new URL(sentryDsn).origin;
   if (sentryOrigin !== "" && !sentryOrigin.startsWith("https://")) {
     throw new Error("SENTRY_DSN must use HTTPS");
   }
-  const deployment = process.env["OXYTYPE_DEPLOY_ENV"];
+  const deployment = process.env["CARET_DEPLOY_ENV"];
   if (
     deployment !== undefined &&
     deployment !== "production" &&
     deployment !== "staging"
   ) {
-    throw new Error("OXYTYPE_DEPLOY_ENV must be production or staging");
+    throw new Error("CARET_DEPLOY_ENV must be production or staging");
   }
   return {
     lint: { ...frontendLint },
@@ -136,7 +136,7 @@ export default defineConfig(async ({ mode, command }) => {
         importProtection: {
           behavior: "error",
           client: {
-            specifiers: [/^@oxytype\/backend/],
+            specifiers: [/^@caret\/backend/],
             // User file lists replace Start's defaults; keep `.server` denied.
             files: ["**/backend/src/**", "**/*.server.*"],
           },
@@ -158,7 +158,7 @@ export default defineConfig(async ({ mode, command }) => {
             org: env["SENTRY_ORG"],
             project: env["SENTRY_PROJECT"],
             release: { name: buildId },
-            applicationKey: "oxytype-frontend",
+            applicationKey: "caret-frontend",
             telemetry: false,
             sourcemaps: { disable: (env["SENTRY_AUTH_TOKEN"] ?? "") === "" },
           }).map((plugin) => ({
@@ -169,13 +169,13 @@ export default defineConfig(async ({ mode, command }) => {
       ...(command === "serve" ? await devPlugins(env) : []),
     ],
     define: {
-      "import.meta.env.OXYTYPE_ENGINE_PROOF": JSON.stringify(
-        process.env["OXYTYPE_ENGINE_PROOF"] === "true",
+      "import.meta.env.CARET_ENGINE_PROOF": JSON.stringify(
+        process.env["CARET_ENGINE_PROOF"] === "true",
       ),
-      "import.meta.env.OXYTYPE_OFFLINE": JSON.stringify(mode === "offline"),
+      "import.meta.env.CARET_OFFLINE": JSON.stringify(mode === "offline"),
       // Client and Worker share it; logs and error reports join on this ID.
-      "import.meta.env.OXYTYPE_BUILD_ID": JSON.stringify(buildId),
-      "import.meta.env.OXYTYPE_SENTRY_ORIGIN": JSON.stringify(sentryOrigin),
+      "import.meta.env.CARET_BUILD_ID": JSON.stringify(buildId),
+      "import.meta.env.CARET_SENTRY_ORIGIN": JSON.stringify(sentryOrigin),
     },
     build: {
       outDir: mode === "runtime-test" ? "dist/start-test" : "dist/start",

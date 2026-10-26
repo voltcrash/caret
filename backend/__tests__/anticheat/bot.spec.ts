@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vite-plus/test";
 import { completedEvent } from "../__testData__/completed-event";
 import { getBotFailure } from "../../src/anticheat/bot";
-import type { CompletedEvent } from "@oxytype/schemas/results";
+import type { CompletedEvent } from "@caret/schemas/results";
 
 describe("fixed timing signature", () => {
   const fixed = (): CompletedEvent =>

@@ -1,4 +1,4 @@
-import { Mode } from "@oxytype/schemas/shared";
+import { Mode } from "@caret/schemas/shared";
 import { createMemo, JSXElement } from "solid-js";
 
 import { SnapshotResult } from "../../../constants/default-snapshot";

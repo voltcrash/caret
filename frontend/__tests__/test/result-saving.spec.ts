@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
-import type { CompletedEvent } from "@oxytype/schemas/results";
+import type { CompletedEvent } from "@caret/schemas/results";
 import { bindTypingActivity } from "../../src/features/typing/scope";
 import { saveResult } from "../../src/features/typing/runtime/result-saving";
 import { showConfetti } from "../../src/features/typing/runtime/result";

@@ -1,11 +1,11 @@
 import { gunzipSync } from "node:zlib";
-import type { ResultEventLog } from "@oxytype/contracts/results";
-import type { CompletedEvent } from "@oxytype/schemas/results";
+import type { ResultEventLog } from "@caret/contracts/results";
+import type { CompletedEvent } from "@caret/schemas/results";
 import {
   serverAudit,
   type Verification,
-} from "@oxytype/typing-engine/audit.server";
-import { toEngineLog, type WebLog } from "@oxytype/typing-engine/text";
+} from "@caret/typing-engine/audit.server";
+import { toEngineLog, type WebLog } from "@caret/typing-engine/text";
 
 // Keystroke logs compress about tenfold; this bounds a forged decompression bomb.
 const MAX_DECODED_BYTES = 4 * 1024 * 1024;

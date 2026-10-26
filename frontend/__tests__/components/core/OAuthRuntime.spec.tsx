@@ -74,7 +74,7 @@ it("opens synchronously and starts social sign-in", async () => {
   start();
   expect(window.open).toHaveBeenCalledWith(
     "about:blank",
-    "oxytype-auth",
+    "caret-auth",
     expect.any(String),
   );
   await waitFor(() =>
@@ -116,16 +116,16 @@ it("accepts only matching callback source, origin, and request ID", async () => 
   const requestId = new URL(args?.callbackURL ?? "").searchParams.get(
     "requestId",
   );
-  sendMessage({ type: "oxytype-auth", requestId }, "https://attacker.example");
-  sendMessage({ type: "oxytype-auth", requestId: "wrong" });
+  sendMessage({ type: "caret-auth", requestId }, "https://attacker.example");
+  sendMessage({ type: "caret-auth", requestId: "wrong" });
   window.dispatchEvent(
     new MessageEvent("message", {
       origin: window.location.origin,
-      data: { type: "oxytype-auth", requestId },
+      data: { type: "caret-auth", requestId },
     }),
   );
   expect(request.resolve).not.toHaveBeenCalled();
-  sendMessage({ type: "oxytype-auth", requestId });
+  sendMessage({ type: "caret-auth", requestId });
   expect(request.resolve).toHaveBeenCalledOnce();
   expect(popup.close).toHaveBeenCalledOnce();
 });

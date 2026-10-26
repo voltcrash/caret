@@ -1,6 +1,6 @@
 import { createAppSignal } from "../../app/state";
 
-import type { EventLog, TestEventType } from "@oxytype/web-shared/events/types";
+import type { EventLog, TestEventType } from "@caret/web-shared/events/types";
 
 /**
  * State for the dev event log viewer, deliberately kept outside the component.

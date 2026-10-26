@@ -57,19 +57,19 @@ export function createAuth(
     throw new Error("BETTER_AUTH_URL must be configured for production");
   }
   const options: BetterAuthOptions = {
-    appName: "Oxytype",
+    appName: "Caret",
     // Better Auth accepts adapter factories through its database option.
     // oxlint-disable-next-line typescript/no-unsafe-assignment -- Better Auth's database option includes untyped drivers; this value uses its adapter API.
     database: adapter,
     baseURL,
     basePath: new URL(baseURL).pathname,
-    secret: secret ?? "oxytype-local-development-secret-only",
+    secret: secret ?? "caret-local-development-secret-only",
     trustedOrigins: [new URL(frontendUrl).origin],
     socialProviders,
     advanced: {
       backgroundTasks: { handler: background },
       database: { generateId: () => randomUUID() },
-      cookiePrefix: "oxytype",
+      cookiePrefix: "caret",
       ...(new URL(baseURL).protocol === "https:" &&
       new URL(baseURL).hostname !== new URL(frontendUrl).hostname
         ? {
@@ -79,7 +79,7 @@ export function createAuth(
             },
           }
         : {}),
-      ipAddress: { ipAddressHeaders: ["x-oxytype-auth-ip"] },
+      ipAddress: { ipAddressHeaders: ["x-caret-auth-ip"] },
     },
     user: {
       modelName: "authUsers",

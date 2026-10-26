@@ -34,7 +34,7 @@ vi.mock("../../src/ts/utils/misc", async (original) => ({
 }));
 
 import type { SnapshotResult } from "../../src/ts/constants/default-snapshot";
-import type { Mode } from "@oxytype/schemas/shared";
+import type { Mode } from "@caret/schemas/shared";
 import { isResultsReady, updateTags } from "../../src/ts/collections/results";
 import { setLastResult } from "../../src/ts/states/snapshot";
 

@@ -1,4 +1,4 @@
-import { UserNameWithoutFilterSchema } from "@oxytype/schemas/users";
+import { UserNameWithoutFilterSchema } from "@caret/schemas/users";
 import { createForm } from "@tanstack/solid-form";
 import { useQueryClient } from "@tanstack/solid-query";
 import { useNavigate } from "@tanstack/solid-router";

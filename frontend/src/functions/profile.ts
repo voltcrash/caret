@@ -1,4 +1,4 @@
-import { ClientSchema } from "@oxytype/schemas/shared";
+import { ClientSchema } from "@caret/schemas/shared";
 import { createServerFn } from "@tanstack/solid-start";
 import { z } from "zod";
 import { readProfile } from "../server/profile.server";

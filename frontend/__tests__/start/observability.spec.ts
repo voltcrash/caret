@@ -8,7 +8,7 @@ import {
 } from "../../src/server/observability.server";
 
 function request(path: string, headers: Record<string, string> = {}): Request {
-  return new Request(`https://oxytype.test${path}`, {
+  return new Request(`https://caret.test${path}`, {
     method: "POST",
     headers,
   });
@@ -57,7 +57,7 @@ describe("request observability", () => {
     const log = requestLog({
       request: request("/_serverFn/f00d/extra?payload=secret-result", {
         "X-Client-Version": "2026.10.16_08.17_abc1234",
-        cookie: "oxytype.session_token=secret",
+        cookie: "caret.session_token=secret",
       }),
       requestId: "request-1",
       status: 200,

@@ -1,5 +1,5 @@
 import { createAppSignal } from "../../app/state";
-import { FunboxName } from "@oxytype/schemas/configs";
+import { FunboxName } from "@caret/schemas/configs";
 
 export const [getFunboxBodyClasses, setFunboxBodyClasses] = createAppSignal<
   string[]

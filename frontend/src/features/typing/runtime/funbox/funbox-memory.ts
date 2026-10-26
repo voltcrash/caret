@@ -1,4 +1,4 @@
-import { Config, ConfigKey, ConfigValue } from "@oxytype/schemas/configs";
+import { Config, ConfigKey, ConfigValue } from "@caret/schemas/configs";
 
 import { setConfig } from "../../../../ts/config/setters";
 

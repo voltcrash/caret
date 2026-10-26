@@ -1,5 +1,5 @@
 import { createAppSignal } from "../../app/state";
-import type { CustomTheme } from "@oxytype/schemas/users";
+import type { CustomTheme } from "@caret/schemas/users";
 
 const [getReader, setReader] = createAppSignal<
   (() => CustomTheme[]) | undefined

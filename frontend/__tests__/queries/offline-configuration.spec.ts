@@ -1,4 +1,4 @@
-import { ConfigurationSchema } from "@oxytype/schemas/configuration";
+import { ConfigurationSchema } from "@caret/schemas/configuration";
 import { QueryClient } from "@tanstack/solid-query";
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 import {

@@ -1,4 +1,4 @@
-import type { LeaderboardEntry } from "@oxytype/schemas/leaderboards";
+import type { LeaderboardEntry } from "@caret/schemas/leaderboards";
 
 import { useQuery } from "@tanstack/solid-query";
 import { ClientOnly } from "@tanstack/solid-router";

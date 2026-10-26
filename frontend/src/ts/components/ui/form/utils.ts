@@ -1,6 +1,6 @@
 import { AnyFieldApi } from "@tanstack/solid-form";
 import type { z } from "zod";
-import "@oxytype/util/zod-messages";
+import "@caret/util/zod-messages";
 
 export type ValidationResult = { type: "error" | "warning"; message: string };
 export function fromSchema<T, Input = T>(

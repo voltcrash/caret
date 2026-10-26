@@ -6,7 +6,7 @@ import { ProfileSearchPage } from "../features/profile/search";
 export const Route = createFileRoute("/_app/profile/")({
   head: () => ({
     links: [{ rel: "canonical", href: `${publicEnv.origin}/profile` }],
-    meta: [{ title: "Profile Search | Oxytype" }],
+    meta: [{ title: "Profile Search | Caret" }],
   }),
   component: () => (
     <div class="page pageProfileSearch" id="pageProfileSearch">

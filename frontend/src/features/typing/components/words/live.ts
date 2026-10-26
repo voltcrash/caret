@@ -1,4 +1,4 @@
-import type { Config } from "@oxytype/schemas/configs";
+import type { Config } from "@caret/schemas/configs";
 import { splitIntoCharacters } from "../../../../ts/utils/strings";
 import { createLetter, displayTypedChar, WordNodeRenderer } from "./letters";
 

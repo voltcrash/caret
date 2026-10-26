@@ -69,7 +69,7 @@ describe("Start document and response policy in workerd", () => {
     const version = await mf.dispatchFetch(
       "http://localhost:3000/version.json",
     );
-    expect(response.headers.get("X-Oxytype-Build")).toBe(
+    expect(response.headers.get("X-Caret-Build")).toBe(
       ((await version.json()) as { version: string }).version,
     );
     expect(html).toContain("<noscript data-nosnippet>");
@@ -106,7 +106,7 @@ describe("Start document and response policy in workerd", () => {
       css,
       "/webfonts/RobotoMono-Regular.woff2",
       "/webfonts/LexendDeca-Regular.woff2",
-      "/images/favicon/oxytype.svg",
+      "/images/favicon/caret.svg",
       "/manifest.json",
     ]) {
       const asset = await mf.dispatchFetch(`http://localhost:3000${path}`);
@@ -124,7 +124,7 @@ describe("Start document and response policy in workerd", () => {
     );
     expect(popup.status).toBe(200);
     expect(popup.headers.get("Cache-Control")).toBe("no-store");
-    expect(await popup.text()).toContain("Sign in | Oxytype");
+    expect(await popup.text()).toContain("Sign in | Caret");
     const missing = await mf.dispatchFetch("http://localhost:3000/404.html");
     expect(missing.status).toBe(404);
     expect(await missing.text()).toContain("Ooops! Looks like this page");

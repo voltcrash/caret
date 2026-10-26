@@ -27,8 +27,8 @@ function staticValueImports(source: string): string[] {
 }
 
 const lazyOnly: Record<string, RegExp> = {
-  contracts: /^@oxytype\/contracts(?:\/(?!compatibility$|util\/api$).+)?$/,
-  challenges: /^@oxytype\/challenges$/,
+  contracts: /^@caret\/contracts(?:\/(?!compatibility$|util\/api$).+)?$/,
+  challenges: /^@caret\/challenges$/,
   "ts-rest adapter": /ape\/adapters\/ts-rest-adapter$/,
 };
 

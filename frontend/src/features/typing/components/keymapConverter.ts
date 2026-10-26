@@ -1,5 +1,5 @@
-import { KeymapStyle } from "@oxytype/schemas/configs";
-import { KeyLegends, LayoutObject } from "@oxytype/schemas/layouts";
+import { KeymapStyle } from "@caret/schemas/configs";
+import { KeyLegends, LayoutObject } from "@caret/schemas/layouts";
 
 import {
   KeyboardDefinition,

@@ -1,4 +1,4 @@
-import type { Audit } from "@oxytype/typing-engine/audit";
+import type { Audit } from "@caret/typing-engine/audit";
 
 import type { MetricKind } from "./stat-notes";
 

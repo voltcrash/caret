@@ -2,7 +2,7 @@ import { OperationError } from "../../data/operation-result";
 import { getQueryClient } from "../queries";
 import { getRemotePreferencesQueryOptions } from "../queries/preferences";
 import { captureAccount } from "../../app/account-scope";
-import * as ConfigSchemas from "@oxytype/schemas/configs";
+import * as ConfigSchemas from "@caret/schemas/configs";
 
 import { migrateConfig } from "./utils";
 import { applyConfig } from "./lifecycle";

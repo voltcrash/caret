@@ -1,4 +1,4 @@
-import { UserNameSchema } from "@oxytype/schemas/users";
+import { UserNameSchema } from "@caret/schemas/users";
 import { z } from "zod";
 
 import { operation } from "../../../../data/operations";

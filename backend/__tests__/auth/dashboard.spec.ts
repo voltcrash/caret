@@ -121,7 +121,7 @@ describe("Better Auth dashboard", () => {
       const path = "/auth/dash/sessions/revoke";
       const browser = await app.request(path, {
         method: "POST",
-        headers: { authorization, cookie: "oxytype.session_token=fixture" },
+        headers: { authorization, cookie: "caret.session_token=fixture" },
       });
       expect(browser.status).toBe(403);
       const invalid = await app.request(path, {

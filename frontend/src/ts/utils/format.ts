@@ -1,1 +1,1 @@
-export { Formatting } from "@oxytype/web-shared/format";
+export { Formatting } from "@caret/web-shared/format";

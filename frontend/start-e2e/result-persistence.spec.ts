@@ -1,8 +1,8 @@
 import { fromCrossJSON, toJSONAsync } from "seroval";
 import type { SerovalNode } from "seroval";
 import { z } from "zod";
-import { AddResultResponseSchema } from "@oxytype/contracts/results";
-import { GetUserResponseSchema } from "@oxytype/contracts/users";
+import { AddResultResponseSchema } from "@caret/contracts/results";
+import { GetUserResponseSchema } from "@caret/contracts/users";
 import { authCookie } from "./auth-fixtures";
 import { expect, test } from "./fixtures";
 import { rpcPath } from "./rpc-fixtures";
@@ -19,7 +19,7 @@ test("a real browser completion persists through Start/D1 and updates the accoun
       .slice(1)
       .join("=") ?? "";
   await context.addCookies([
-    { name: "oxytype.session_token", value, url: baseURL ?? "" },
+    { name: "caret.session_token", value, url: baseURL ?? "" },
   ]);
   const legacyWrites: string[] = [];
   page.on("request", (request) => {

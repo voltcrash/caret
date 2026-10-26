@@ -1,12 +1,12 @@
 import { onCleanup } from "solid-js";
 import { createTypingOwned } from "../scope";
 import { getBrowserEngine } from "../engine.client";
-import { decodeText, toEngineLog } from "@oxytype/typing-engine/text";
+import { decodeText, toEngineLog } from "@caret/typing-engine/text";
 import type {
   BrowserReplay,
   Cursor,
   PlaybackSnapshot,
-} from "@oxytype/typing-engine/browser.client";
+} from "@caret/typing-engine/browser.client";
 import type { ReplayWord } from "../replay-view";
 import { getWpmHistory } from "../analysis.client";
 import * as Sound from "../../../ts/controllers/sound-controller";

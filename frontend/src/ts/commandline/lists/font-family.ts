@@ -1,5 +1,5 @@
 import { openFilePicker } from "../../components/common/FilePicker";
-import { FontNameSchema } from "@oxytype/schemas/fonts";
+import { FontNameSchema } from "@caret/schemas/fonts";
 import { Command, withValidation } from "../types";
 import { buildCommandForConfigKey } from "../util";
 import FileStorage from "../../utils/file-storage";

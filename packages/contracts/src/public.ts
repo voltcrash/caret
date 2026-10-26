@@ -1,17 +1,14 @@
 import { initContract } from "@ts-rest/core";
 import { z } from "zod";
 import { CommonResponses, meta, responseWithData } from "./util/api";
-import {
-  SpeedHistogramSchema,
-  TypingStatsSchema,
-} from "@oxytype/schemas/public";
+import { SpeedHistogramSchema, TypingStatsSchema } from "@caret/schemas/public";
 import {
   ClientQuerySchema,
   ClientSchema,
   Mode2Schema,
   ModeSchema,
-} from "@oxytype/schemas/shared";
-import { LanguageSchema } from "@oxytype/schemas/languages";
+} from "@caret/schemas/shared";
+import { LanguageSchema } from "@caret/schemas/languages";
 
 export const GetSpeedHistogramQuerySchema = z
   .object({

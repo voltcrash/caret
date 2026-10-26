@@ -11,7 +11,7 @@ export function OAuthRuntime(): null {
     const unsubscribe = oauthRequestEvent.subscribe((request) => {
       const popup = window.open(
         "about:blank",
-        "oxytype-auth",
+        "caret-auth",
         "popup,width=600,height=750",
       );
       if (!popup) {
@@ -45,7 +45,7 @@ export function OAuthRuntime(): null {
           event.origin !== window.location.origin ||
           event.source !== popup ||
           event.data?.requestId !== requestId ||
-          event.data?.type !== "oxytype-auth"
+          event.data?.type !== "caret-auth"
         ) {
           return;
         }

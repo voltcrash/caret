@@ -1,5 +1,5 @@
-import { CompletedEvent } from "@oxytype/schemas/results";
-import * as Numbers from "@oxytype/util/numbers";
+import { CompletedEvent } from "@caret/schemas/results";
+import * as Numbers from "@caret/util/numbers";
 import { getMutableConfig } from "../../../ts/config/store";
 import type { Theme } from "../../../ts/constants/themes";
 import Format from "../../../ts/singletons/format";

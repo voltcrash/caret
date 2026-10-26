@@ -7,11 +7,8 @@ import {
   MonkeyResponseSchema,
   responseWithData,
 } from "./util/api";
-import {
-  EditPresetRequestSchema,
-  PresetSchema,
-} from "@oxytype/schemas/presets";
-import { IdSchema } from "@oxytype/schemas/util";
+import { EditPresetRequestSchema, PresetSchema } from "@caret/schemas/presets";
+import { IdSchema } from "@caret/schemas/util";
 
 export const GetPresetResponseSchema = responseWithData(z.array(PresetSchema));
 export type GetPresetResponse = z.infer<typeof GetPresetResponseSchema>;

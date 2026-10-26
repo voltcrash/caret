@@ -1,9 +1,9 @@
 import "@tanstack/solid-start/server-only";
 import type { AnalyticsEngineDataPoint } from "@cloudflare/workers-types";
-import type { InvocationMetrics } from "@oxytype/backend/runtime";
+import type { InvocationMetrics } from "@caret/backend/runtime";
 
 /** Build of this Worker; the browser reports the same ID to Sentry. */
-export const serverBuildId = import.meta.env.OXYTYPE_BUILD_ID;
+export const serverBuildId = import.meta.env.CARET_BUILD_ID;
 
 const clientBuildPattern = /^[\w.-]{1,64}$/;
 const serverFnPrefix = "/_serverFn/";

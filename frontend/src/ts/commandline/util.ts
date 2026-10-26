@@ -13,7 +13,7 @@ import {
   SubgroupProps,
 } from "./commandline-metadata";
 import { Command } from "./types";
-import * as ConfigSchemas from "@oxytype/schemas/configs";
+import * as ConfigSchemas from "@caret/schemas/configs";
 import type { z } from "zod";
 import { getOptions } from "../utils/zod";
 import type { Validation } from "../types/validation";

@@ -1,6 +1,6 @@
 import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import type { Config } from "@oxytype/schemas/configs";
+import type { Config } from "@caret/schemas/configs";
 import type { WordsGeneratorDeps } from "../src/words-generator/types";
 const units = (text: string): number[] =>
   Array.from({ length: text.length }, (_, index) => text.charCodeAt(index));

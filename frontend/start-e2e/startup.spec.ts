@@ -127,7 +127,7 @@ test.describe("startup with signed-in summaries", () => {
     await expect(page).toHaveURL(/\/settings$/);
     await expect(page.locator("#startupScreen")).toHaveCount(0);
     await expect(page.locator("#app")).toHaveCSS("opacity", "1");
-    await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
+    await page.getByRole("link", { name: "Caret Home", exact: true }).click();
     await expect(page.locator("#words .word").first()).toBeVisible();
     await expect(page.locator("#startupScreen")).toHaveCount(0);
     await expect(page.locator("#app")).toHaveCSS("opacity", "1");

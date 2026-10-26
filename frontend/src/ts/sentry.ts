@@ -52,7 +52,7 @@ export async function activateSentry(): Promise<void> {
       // //   // ignore: ["#wordsInput"],
       // }),
       Sentry.thirdPartyErrorFilterIntegration({
-        filterKeys: ["oxytype-frontend"],
+        filterKeys: ["caret-frontend"],
         // Defines how to handle errors that contain third party stack frames.
         // Possible values are:
         // - 'drop-error-if-contains-third-party-frames'
@@ -113,7 +113,7 @@ export async function activateSentry(): Promise<void> {
       //       console.log(exception);
       //       const frames = exception.stacktrace.frames;
       //       for (const frame of frames ?? []) {
-      //         if (frame.filename && frame.filename.includes("oxytype")) {
+      //         if (frame.filename && frame.filename.includes("caret")) {
       //           // return event;
       //         }
       //       }

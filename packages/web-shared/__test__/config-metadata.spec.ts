@@ -1,4 +1,4 @@
-import { ConfigSchema } from "@oxytype/schemas/configs";
+import { ConfigSchema } from "@caret/schemas/configs";
 import { describe, expect, it } from "vite-plus/test";
 
 import { getDefaultConfig } from "../src/config/default-config";

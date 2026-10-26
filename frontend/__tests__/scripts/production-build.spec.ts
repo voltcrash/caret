@@ -46,7 +46,7 @@ describe("production build command", () => {
         env: {
           ...process.env,
           CI: "true",
-          OXYTYPE_BUILD_ID: "fixture-build",
+          CARET_BUILD_ID: "fixture-build",
           ...env,
         },
         encoding: "utf8",
@@ -65,7 +65,7 @@ describe("production build command", () => {
   }
 
   beforeEach(() => {
-    root = mkdtempSync(resolve(tmpdir(), "oxytype-production-build-"));
+    root = mkdtempSync(resolve(tmpdir(), "caret-production-build-"));
     mkdirSync(resolve(root, "frontend/scripts"), { recursive: true });
     mkdirSync(resolve(root, "frontend/vite-plugins"));
     mkdirSync(resolve(root, "node_modules/.bin"), { recursive: true });
@@ -116,7 +116,7 @@ describe("production build command", () => {
         name: "production-build-fixture",
         private: true,
         scripts: {
-          "build-fe": "vp run --filter @oxytype/frontend build",
+          "build-fe": "vp run --filter @caret/frontend build",
         },
       }),
     );
@@ -126,7 +126,7 @@ describe("production build command", () => {
       write(
         `${target}/package.json`,
         JSON.stringify({
-          name: `@oxytype/${target}`,
+          name: `@caret/${target}`,
           private: true,
           scripts: { "build:start": `node ../fixture-build.mjs ${target}` },
         }),

@@ -1,7 +1,7 @@
 import type {
   TestEventNoMs,
   TestEventType,
-} from "@oxytype/web-shared/events/types";
+} from "@caret/web-shared/events/types";
 
 import { createEffect, For, JSXElement } from "solid-js";
 

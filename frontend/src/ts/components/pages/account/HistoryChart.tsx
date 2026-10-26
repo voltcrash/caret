@@ -1,5 +1,5 @@
-import { AccountChart } from "@oxytype/schemas/configs";
-import { Mode } from "@oxytype/schemas/shared";
+import { AccountChart } from "@caret/schemas/configs";
+import { Mode } from "@caret/schemas/shared";
 import { format as dateFormat } from "date-fns/format";
 import { createMemo, JSXElement, Show } from "solid-js";
 

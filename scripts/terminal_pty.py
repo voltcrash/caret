@@ -24,7 +24,7 @@ def dimensions(slave, columns=100, rows=24):
 
 class Child:
     def __init__(self, binary, failure=None, args=(), enhanced=False, keyboard=None, term="xterm-256color"):
-        self.profile = tempfile.TemporaryDirectory(prefix="oxytype-pty-")
+        self.profile = tempfile.TemporaryDirectory(prefix="caret-pty-")
         self.enhanced = enhanced
         self.queries_replied = 0
         self.master, self.slave = pty.openpty()
@@ -32,9 +32,9 @@ class Child:
         self.original = termios.tcgetattr(self.slave)
         self.output = bytearray()
         self.status_path = pathlib.Path(self.profile.name) / "exit-status"
-        env = dict(os.environ, TERM=term, OXYTYPE_PTY_STATUS=str(self.status_path))
+        env = dict(os.environ, TERM=term, CARET_PTY_STATUS=str(self.status_path))
         if failure:
-            env["OXYTYPE_TERMINAL_TEST_FAILURE"] = failure
+            env["CARET_TERMINAL_TEST_FAILURE"] = failure
 
         def controlling_terminal():
             os.setsid()
@@ -164,7 +164,7 @@ def screen_text(output):
 def run(binary, release=False):
     child = Child(binary)
     try:
-        child.until(b"oxytype")
+        child.until(b"caret")
         assert termios.tcgetattr(child.slave)[3] & termios.ICANON == 0
         child.send(b"one ")
         time.sleep(0.15)
@@ -208,7 +208,7 @@ def run(binary, release=False):
             args += ["--text", "one two three"]
         child = Child(binary, args=args)
         try:
-            child.until(b"oxytype")
+            child.until(b"caret")
             child.send(b"one ")
             time.sleep(0.15)
             child.send(b"\x1b[19~")
@@ -221,7 +221,7 @@ def run(binary, release=False):
 
     child = Child(binary)
     try:
-        child.until(b"oxytype")
+        child.until(b"caret")
         child.send(b"\x1bOQ")  # F2: settings
         child.until(b"select")
         child.send(b"\x1bOS")  # F4: private editor
@@ -267,7 +267,7 @@ def run(binary, release=False):
 
     child = Child(binary, args=["--mode", "zen"], enhanced=True)
     try:
-        child.until(b"oxytype")
+        child.until(b"caret")
         assert b"\x1b[>1u" in child.output, "enhanced flags not pushed"
         child.send(b"\x1b[97;1u\x1b[97;1:2u\x1b[97;1:3u")  # press/repeat/release
         child.until(b"aa")
@@ -345,7 +345,7 @@ def run(binary, release=False):
             if failure in ("error", "panic"):
                 assert child.wait_exit() != 0
             else:
-                child.until(b"oxytype")
+                child.until(b"caret")
                 if failure == "signal":
                     os.kill(child.process.pid, signal.SIGTERM)
                 else:
@@ -361,7 +361,7 @@ def run(binary, release=False):
                         raise AssertionError("Did not suspend")
                     child.restored()
                     os.killpg(child.process.pid, signal.SIGCONT)
-                    child.until(b"oxytype", fresh=True)
+                    child.until(b"caret", fresh=True)
                     child.send(b"\x11")
                 assert child.wait_exit() == 0
             child.restored()
@@ -381,7 +381,7 @@ def keep_session(binary_args):
     for signum in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP, signal.SIGTSTP):
         signal.signal(signum, forward)
     status = child.wait()
-    status_path=pathlib.Path(os.environ["OXYTYPE_PTY_STATUS"])
+    status_path=pathlib.Path(os.environ["CARET_PTY_STATUS"])
     temporary=status_path.with_suffix(".tmp")
     temporary.write_text(str(status))
     temporary.replace(status_path)

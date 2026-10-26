@@ -1,5 +1,5 @@
-import type { CustomTextSettings } from "@oxytype/schemas/results";
-import { projectEngineConfig } from "@oxytype/typing-engine/config";
+import type { CustomTextSettings } from "@caret/schemas/results";
+import { projectEngineConfig } from "@caret/typing-engine/config";
 import {
   enginePolicy,
   enginePolicyReady,

@@ -29,7 +29,7 @@ const workflow = parse(
 const successfulCI = {
   event: "push",
   head_branch: "main",
-  head_repository: { full_name: "voltcrash/oxytype" },
+  head_repository: { full_name: "voltcrash/caret" },
   conclusion: "success",
 };
 
@@ -45,10 +45,10 @@ it.each([
   { name: "other branch", run: { head_branch: "feature" }, allowed: false },
   {
     name: "fork main CI",
-    run: { head_repository: { full_name: "fork/oxytype" } },
+    run: { head_repository: { full_name: "fork/caret" } },
     allowed: false,
   },
-  { name: "fork repository", repository: "fork/oxytype", allowed: false },
+  { name: "fork repository", repository: "fork/caret", allowed: false },
   { name: "unsequenced push", event: "push", allowed: false },
   { name: "manual main retry", event: "workflow_dispatch", allowed: true },
   {
@@ -60,7 +60,7 @@ it.each([
 ])("gates production deployment: $name", ({ allowed, ...scenario }) => {
   // These conditions use only the equality/boolean subset shared by Actions and JS.
   const github = {
-    repository: scenario.repository ?? "voltcrash/oxytype",
+    repository: scenario.repository ?? "voltcrash/caret",
     ref: scenario.ref ?? "refs/heads/main",
     event_name: scenario.event ?? "workflow_run",
     event: { workflow_run: { ...successfulCI, ...scenario.run } },
@@ -71,7 +71,7 @@ it.each([
 it("deploys after main CI or manual retry without creating a release or version", () => {
   const ci = parse(
     readFileSync(
-      new URL("../../../.github/workflows/oxytype-ci.yml", import.meta.url),
+      new URL("../../../.github/workflows/caret-ci.yml", import.meta.url),
       "utf8",
     ),
   );
@@ -130,17 +130,17 @@ it("validates the exact deployment snapshot before building and applying migrati
   expect(retire).toBeGreaterThan(check);
   expect(migrate).toBeGreaterThan(retire);
   expect(deploy).toBeGreaterThan(migrate);
-  expect(steps[build].env.OXYTYPE_BUILD_ID).toBe(
+  expect(steps[build].env.CARET_BUILD_ID).toBe(
     "${{ env.DEPLOYMENT_SHA }}-${{ github.run_id }}-${{ github.run_attempt }}",
   );
   expect(steps[deploy].run).toContain(
-    "--filter @oxytype/frontend deploy:production-site",
+    "--filter @caret/frontend deploy:production-site",
   );
   expect(steps[retire].env.CLOUDFLARE_API_TOKEN).toBe(
     "${{ secrets.CLOUDFLARE_API_TOKEN }}",
   );
   expect(steps[retire].run).toBe(
-    "vp run --filter @oxytype/frontend retire:production-task-consumer",
+    "vp run --filter @caret/frontend retire:production-task-consumer",
   );
 });
 
@@ -170,7 +170,7 @@ it.each(["workflow_run", "workflow_dispatch"])(
     const build = workflow.jobs.deploy.steps.find(
       (step) => step.name === "Build production frontend and Worker",
     );
-    expect(resolve(build.env.OXYTYPE_BUILD_ID)).toBe(`${expectedSha}-100-2`);
+    expect(resolve(build.env.CARET_BUILD_ID)).toBe(`${expectedSha}-100-2`);
     const run = {
       ...successfulCI,
       head_sha: expectedSha,
@@ -191,7 +191,7 @@ it.each(["workflow_run", "workflow_dispatch"])(
         },
         context: {
           eventName,
-          repo: { owner: "voltcrash", repo: "oxytype" },
+          repo: { owner: "voltcrash", repo: "caret" },
           sha: github.sha,
           payload: github.event,
         },
@@ -239,7 +239,7 @@ it.each(["", "ba_dashboard_workflow_fixture"])(
     if (script === undefined) {
       throw new Error("Missing deployment settings script");
     }
-    const directory = mkdtempSync(join(tmpdir(), "oxytype-deploy-settings-"));
+    const directory = mkdtempSync(join(tmpdir(), "caret-deploy-settings-"));
     const manifest = '{"name":"fixture","private":true}\n';
     try {
       mkdirSync(join(directory, "frontend"));

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vite-plus/test";
-import type { CompletedEvent } from "@oxytype/schemas/results";
-import type { Config as ConfigType } from "@oxytype/schemas/configs";
+import type { CompletedEvent } from "@caret/schemas/results";
+import type { Config as ConfigType } from "@caret/schemas/configs";
 import { __testing } from "../../src/ts/config/testing";
 import {
   buildBurstHeatmap,

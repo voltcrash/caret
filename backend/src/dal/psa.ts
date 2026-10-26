@@ -1,4 +1,4 @@
-import type { PSA } from "@oxytype/schemas/psas";
+import type { PSA } from "@caret/schemas/psas";
 import { database } from "../db/client";
 import { psas } from "../db/schema";
 export type DBPSA = PSA;

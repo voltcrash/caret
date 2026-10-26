@@ -1,4 +1,4 @@
-import { CustomTextSettings } from "@oxytype/schemas/results";
+import { CustomTextSettings } from "@caret/schemas/results";
 
 /** Custom text used until the user saves their own. */
 export const defaultCustomTextSettings: CustomTextSettings = {

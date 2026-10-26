@@ -4,7 +4,8 @@ import type { FaSolidIcon } from "../../ts/types/font-awesome";
 
 import { Button } from "../../ts/components/common/Button";
 import { Link } from "../../ts/components/common/Link";
-import { OxytypeMark } from "../brand/oxytype-mark";
+import { CaretMark } from "../brand/caret-mark";
+import { CaretWordmark } from "../brand/caret-wordmark";
 
 const navButton =
   "aspect-square pointer-coarse:relative pointer-coarse:before:absolute pointer-coarse:before:-inset-1 pointer-coarse:before:content-['']";
@@ -41,12 +42,14 @@ export function StaticHeader(props: { fixed: boolean }): JSXElement {
         <Link
           href="/"
           class="-m-2 flex h-6 items-center gap-2 rounded-[0.8rem] p-2"
-          aria-label="Oxytype Home"
+          aria-label="Caret Home"
           style={{ "box-sizing": "content-box" }}
         >
-          <OxytypeMark class="h-full w-auto shrink-0 fill-current text-main" />
+          <CaretMark class="h-full w-auto shrink-0 fill-current text-main sm:hidden" />
           <div class="hidden h-6 place-content-center text-[2rem] leading-0 sm:grid">
-            <h1 class="-mt-[0.11em] text-text">oxytype</h1>
+            <h1 class="-mt-[0.11em] text-text">
+              <CaretWordmark />
+            </h1>
           </div>
         </Link>
       </div>
@@ -58,7 +61,7 @@ export function StaticHeader(props: { fixed: boolean }): JSXElement {
         <Button
           variant="text"
           fa={{ icon: "fa-github", variant: "brand", fixedWidth: true }}
-          href="https://github.com/voltcrash/oxytype"
+          href="https://github.com/voltcrash/caret"
           class={navButton}
           dataset={{ "data-nav-item": "github", "aria-label": "GitHub" }}
         />

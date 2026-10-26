@@ -1,4 +1,4 @@
-import type { CompletedEvent } from "@oxytype/schemas/results";
+import type { CompletedEvent } from "@caret/schemas/results";
 import {
   consistency,
   SCORE_TOLERANCE,

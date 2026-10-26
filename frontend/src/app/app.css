@@ -2,7 +2,7 @@
 @import "tailwindcss" source(none);
 @import "../styles/vendor.css";
 @import "../styles/theme.css";
-@import "oxytype-fonts.css" layer(custom-styles);
+@import "caret-fonts.css" layer(custom-styles);
 @import "../styles/standalone-theme.css" layer(custom-styles);
 @import "../styles/buttons.css" layer(custom-styles);
 @import "../styles/caret.css" layer(custom-styles);

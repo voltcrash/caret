@@ -1,7 +1,7 @@
-import { contract } from "@oxytype/contracts";
+import { contract } from "@caret/contracts";
 import { isRetainedHttpOperation } from "../src/http/retention";
 import type { OperationId } from "../src/policies/operations";
-import type { EndpointMetadata } from "@oxytype/contracts/util/api";
+import type { EndpointMetadata } from "@caret/contracts/util/api";
 import { isAppRoute, type AppRouter } from "@ts-rest/core";
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { resolve, relative, dirname } from "node:path";

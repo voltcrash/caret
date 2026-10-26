@@ -5,7 +5,7 @@ import * as TestUI from "./test-ui";
 import * as Strings from "../../../ts/utils/strings";
 
 import * as JSONData from "../../../ts/utils/json-data";
-import * as Numbers from "@oxytype/util/numbers";
+import * as Numbers from "@caret/util/numbers";
 import { showNoticeNotification } from "../../../ts/states/notifications";
 import * as CustomText from "./custom-text";
 import * as PractiseWords from "./practise-words";
@@ -51,7 +51,7 @@ import { getActiveFunboxesWithFunction } from "./funbox/list";
 import * as CompositionState from "../../../ts/states/composition";
 
 import { setInputElementValue } from "../../../ts/input/input-element";
-import { debounce } from "@oxytype/util/timing";
+import { debounce } from "@caret/util/timing";
 
 import { getMutableConfig } from "../../../ts/config/store";
 import { setConfig } from "../../../ts/config/setters";

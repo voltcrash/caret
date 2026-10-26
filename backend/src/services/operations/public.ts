@@ -1,9 +1,9 @@
-import type { ClientQuery } from "@oxytype/schemas/shared";
+import type { ClientQuery } from "@caret/schemas/shared";
 import {
   GetSpeedHistogramQuery,
   GetSpeedHistogramResponse,
   GetTypingStatsResponse,
-} from "@oxytype/contracts/public";
+} from "@caret/contracts/public";
 import * as PublicDAL from "../../dal/public";
 import { MonkeyResponse } from "../../utils/monkey-response";
 import { type ServiceContext, type OperationInput } from "../context";

@@ -16,9 +16,9 @@ import {
   QuoteReportReasonSchema,
   QuoteSchema,
   QuoteTextSchema,
-} from "@oxytype/schemas/quotes";
-import { IdSchema, NullableStringSchema } from "@oxytype/schemas/util";
-import { LanguageSchema } from "@oxytype/schemas/languages";
+} from "@caret/schemas/quotes";
+import { IdSchema, NullableStringSchema } from "@caret/schemas/util";
+import { LanguageSchema } from "@caret/schemas/languages";
 
 export const GetQuotesResponseSchema = responseWithData(z.array(QuoteSchema));
 export type GetQuotesResponse = z.infer<typeof GetQuotesResponseSchema>;

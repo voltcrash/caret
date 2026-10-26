@@ -2,7 +2,7 @@ import { describe, it, expect, afterAll } from "vite-plus/test";
 import { configMetadata } from "../../src/ts/config/metadata";
 import { __testing } from "../../src/ts/config/testing";
 import { setConfig } from "../../src/ts/config/setters";
-import { ConfigKey, Config as ConfigType } from "@oxytype/schemas/configs";
+import { ConfigKey, Config as ConfigType } from "@caret/schemas/configs";
 
 const { replaceConfig, getConfig } = __testing;
 

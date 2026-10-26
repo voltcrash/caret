@@ -1,6 +1,6 @@
-import { ValidModeRule } from "@oxytype/schemas/configuration";
-import { Language } from "@oxytype/schemas/languages";
-import { Mode } from "@oxytype/schemas/shared";
+import { ValidModeRule } from "@caret/schemas/configuration";
+import { Language } from "@caret/schemas/languages";
+import { Mode } from "@caret/schemas/shared";
 import { Accessor, For, JSXElement, Show } from "solid-js";
 
 import { Selection } from "../../../states/leaderboard-selection";

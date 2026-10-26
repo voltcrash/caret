@@ -3,15 +3,15 @@ import { retireTaskConsumer } from "../../scripts/retired-task-consumer";
 
 const target = {
   accountId: "account-fixture",
-  queueName: "oxytype-production-tasks",
-  workerName: "oxytype",
+  queueName: "caret-production-tasks",
+  workerName: "caret",
   apiToken: "token-fixture",
 };
 const base = `https://api.cloudflare.com/client/v4/accounts/${target.accountId}/queues`;
 const worker = {
   consumer_id: "retired-consumer",
   type: "worker",
-  script: "oxytype",
+  script: "caret",
 };
 
 function result(value: unknown): Response {
@@ -30,10 +30,10 @@ function queues(consumers: unknown[]): Response {
 
 describe("retired task consumer", () => {
   it.each([
-    { script: "oxytype" },
-    { script_name: "oxytype" },
-    { script: null, script_name: "oxytype", environment: null },
-    { service: "oxytype", environment: "production" },
+    { script: "caret" },
+    { script_name: "caret" },
+    { script: null, script_name: "caret", environment: null },
+    { service: "caret", environment: "production" },
   ])("detaches the old Worker consumer (%j)", async (identity) => {
     const request = vi
       .fn<typeof fetch>()
@@ -83,14 +83,14 @@ describe("retired task consumer", () => {
       [
         {
           queue_id: "dlq",
-          queue_name: "oxytype-production-dlq",
+          queue_name: "caret-production-dlq",
           consumers: [worker],
         },
       ],
       [
         {
           queue_id: "staging",
-          queue_name: "oxytype-staging-tasks",
+          queue_name: "caret-staging-tasks",
           consumers: [worker],
         },
       ],

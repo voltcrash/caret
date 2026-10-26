@@ -7,10 +7,10 @@ export function PrivacyPolicy() {
       <main class="grid min-w-0 gap-6 wrap-break-word">
         <h1 class="text-3xl text-main">Privacy Policy</h1>
         <p>
-          Oxytype is preparing a privacy policy for its own hosting and
-          services. The policy inherited from Monkeytype does not describe this
-          independent project. A complete Oxytype policy must be published
-          before public accounts are offered.
+          Caret is preparing a privacy policy for its own hosting and services.
+          The policy inherited from Monkeytype does not describe this
+          independent project. A complete Caret policy must be published before
+          public accounts are offered.
         </p>
         <p>
           For questions about project data practices, use the repository
@@ -19,13 +19,13 @@ export function PrivacyPolicy() {
         <p>
           <a
             class="text-main underline"
-            href="https://github.com/voltcrash/oxytype/discussions"
+            href="https://github.com/voltcrash/caret/discussions"
           >
             Visit project discussions
           </a>
         </p>
         <a class="text-sub underline" href="/">
-          Back to Oxytype
+          Back to Caret
         </a>
       </main>
     </>

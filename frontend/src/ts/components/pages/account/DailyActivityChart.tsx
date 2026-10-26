@@ -1,4 +1,4 @@
-import { roundTo2 } from "@oxytype/util/numbers";
+import { roundTo2 } from "@caret/util/numbers";
 import { TooltipItem } from "chart.js";
 import { format as dateFormat } from "date-fns/format";
 import { Accessor, JSXElement } from "solid-js";

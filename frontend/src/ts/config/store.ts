@@ -1,4 +1,4 @@
-import type { Config as ConfigSchema } from "@oxytype/schemas/configs";
+import type { Config as ConfigSchema } from "@caret/schemas/configs";
 import { getDefaultConfig } from "../constants/default-config";
 import { reconcile } from "solid-js/store";
 import { createAppOwned } from "../../app/application";

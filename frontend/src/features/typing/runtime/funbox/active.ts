@@ -1,6 +1,6 @@
 import { getMutableConfig } from "../../../../ts/config/store";
-import { FunboxProperty, getFunboxObject } from "@oxytype/funbox";
-import { FunboxName } from "@oxytype/schemas/configs";
+import { FunboxProperty, getFunboxObject } from "@caret/funbox";
+import { FunboxName } from "@caret/schemas/configs";
 
 const metadata = getFunboxObject();
 

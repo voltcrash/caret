@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 import { QueryClient } from "@tanstack/solid-query";
-import type { SessionState } from "@oxytype/schemas/auth-session";
+import type { SessionState } from "@caret/schemas/auth-session";
 const mocks = vi.hoisted(() => ({
   session: vi.fn(),
   popup: vi.fn(),

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, Mock } from "vite-plus/test";
-import { LanguageObject } from "@oxytype/schemas/languages";
+import { LanguageObject } from "@caret/schemas/languages";
 import {
   createLanguageLoader,
   FetchJson,

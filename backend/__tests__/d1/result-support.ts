@@ -1,5 +1,5 @@
 import type { ExecutionContext } from "@cloudflare/workers-types";
-import type { CompletedEvent } from "@oxytype/schemas/results";
+import type { CompletedEvent } from "@caret/schemas/results";
 import objectHash from "object-hash";
 import { createTestRuntime } from "./helpers";
 import { withRuntime } from "../../src/runtime/env";

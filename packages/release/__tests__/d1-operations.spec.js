@@ -47,7 +47,7 @@ it("collects daily Insights only on main, with no write permissions or deploymen
     "${{ secrets.CLOUDFLARE_API_TOKEN }}",
   );
   expect(collect.run).toBe(
-    "vp run --filter @oxytype/frontend db:insights:${{ matrix.target }}",
+    "vp run --filter @caret/frontend db:insights:${{ matrix.target }}",
   );
   const artifact = job.steps.find(
     (step) => step.name === "Retain sanitized reports",

@@ -28,7 +28,7 @@ export const Route = createFileRoute("/_app/leaderboards")({
   },
   // Public first page only; private rank loads separately in the browser.
   loader: async ({ context, deps }) => {
-    if (import.meta.env.OXYTYPE_OFFLINE) return;
+    if (import.meta.env.CARET_OFFLINE) return;
     await prefetch(
       context.queryClient,
       leaderboardOptions(deps.selection, deps.page),
@@ -46,11 +46,11 @@ export const Route = createFileRoute("/_app/leaderboards")({
   head: () => ({
     links: [{ rel: "canonical", href: `${publicEnv.origin}/leaderboards` }],
     meta: [
-      { title: "Leaderboards | Oxytype" },
-      { property: "og:title", content: "Leaderboards | Oxytype" },
+      { title: "Leaderboards | Caret" },
+      { property: "og:title", content: "Leaderboards | Caret" },
       {
         name: "description",
-        content: "All-time, daily and weekly XP Oxytype leaderboards.",
+        content: "All-time, daily and weekly XP Caret leaderboards.",
       },
     ],
   }),

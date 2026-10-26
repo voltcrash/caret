@@ -1,8 +1,8 @@
 import {
   Configuration,
   ConfigurationFormObjectOf,
-} from "@oxytype/schemas/configuration";
-export { BASE_CONFIGURATION } from "@oxytype/schemas/default-configuration";
+} from "@caret/schemas/configuration";
+export { BASE_CONFIGURATION } from "@caret/schemas/default-configuration";
 
 type FormSchema = ConfigurationFormObjectOf<Configuration>;
 

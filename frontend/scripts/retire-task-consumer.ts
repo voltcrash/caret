@@ -16,7 +16,7 @@ async function main(): Promise<void> {
     );
   const removed = await retireTaskConsumer({
     accountId: config.account_id,
-    queueName: `oxytype-${environment}-tasks`,
+    queueName: `caret-${environment}-tasks`,
     workerName: config.name,
     apiToken: process.env["CLOUDFLARE_API_TOKEN"] ?? "",
   });

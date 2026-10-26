@@ -1,6 +1,6 @@
 import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import type { Language } from "@oxytype/schemas/languages";
+import type { Language } from "@caret/schemas/languages";
 import { getDefaultConfig } from "../src/config/default-config";
 import {
   evaluateInsert,

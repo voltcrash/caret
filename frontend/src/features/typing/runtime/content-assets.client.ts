@@ -1,12 +1,12 @@
 import { z } from "zod";
-import type { LanguageObject } from "@oxytype/schemas/languages";
-import type { QuoteData } from "@oxytype/schemas/quotes";
+import type { LanguageObject } from "@caret/schemas/languages";
+import type { QuoteData } from "@caret/schemas/quotes";
 import type {
   Prepare,
   Source,
   ContentRequest,
-} from "@oxytype/typing-engine/browser.client";
-import { encodeText } from "@oxytype/typing-engine/text";
+} from "@caret/typing-engine/browser.client";
+import { encodeText } from "@caret/typing-engine/text";
 
 /** Mechanical asset conversion; text cleanup, grouping and transforms stay in Rust. */
 export function engineLanguage(input: LanguageObject): Prepare["language"] {

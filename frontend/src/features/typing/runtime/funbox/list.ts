@@ -1,11 +1,7 @@
-import {
-  FunboxMetadata,
-  getFunboxObject,
-  FunboxProperty,
-} from "@oxytype/funbox";
+import { FunboxMetadata, getFunboxObject, FunboxProperty } from "@caret/funbox";
 
 import { FunboxFunctions, getFunboxFunctions } from "./funbox-functions";
-import { FunboxName } from "@oxytype/schemas/configs";
+import { FunboxName } from "@caret/schemas/configs";
 import { getActiveFunboxNames, isFunboxActiveWithProperty } from "./active";
 
 export { getActiveFunboxNames, isFunboxActiveWithProperty };

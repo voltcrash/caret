@@ -1,4 +1,4 @@
-import { Config, ConfigKey, ConfigSchema } from "@oxytype/schemas/configs";
+import { Config, ConfigKey, ConfigSchema } from "@caret/schemas/configs";
 import { createForm } from "@tanstack/solid-form";
 import { For, JSXElement } from "solid-js";
 

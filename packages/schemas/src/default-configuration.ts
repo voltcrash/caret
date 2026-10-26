@@ -1,4 +1,4 @@
-import type { Configuration } from "@oxytype/schemas/configuration";
+import type { Configuration } from "@caret/schemas/configuration";
 
 /**
  * This is the base schema for the configuration of the API backend.

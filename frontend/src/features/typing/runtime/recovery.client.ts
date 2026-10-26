@@ -1,7 +1,7 @@
-import { EngineFailure } from "@oxytype/typing-engine/failure";
-import { FunboxNameSchema } from "@oxytype/schemas/configs";
-import { LanguageSchema } from "@oxytype/schemas/languages";
-import { ModeSchema } from "@oxytype/schemas/shared";
+import { EngineFailure } from "@caret/typing-engine/failure";
+import { FunboxNameSchema } from "@caret/schemas/configs";
+import { LanguageSchema } from "@caret/schemas/languages";
+import { ModeSchema } from "@caret/schemas/shared";
 import {
   setConfig,
   setQuoteLengthAll,

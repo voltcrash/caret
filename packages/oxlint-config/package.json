@@ -1,5 +1,5 @@
 {
-  "name": "@oxytype/oxlint-config",
+  "name": "@caret/oxlint-config",
   "private": true,
   "type": "module",
   "exports": {

@@ -1,5 +1,5 @@
-import { ResultMinified } from "@oxytype/schemas/results";
-import { Mode } from "@oxytype/schemas/shared";
+import { ResultMinified } from "@caret/schemas/results";
+import { Mode } from "@caret/schemas/shared";
 
 import { SnapshotResult } from "../../constants/default-snapshot";
 

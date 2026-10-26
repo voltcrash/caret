@@ -1,4 +1,4 @@
-import type { ThemeName } from "@oxytype/schemas/configs";
+import type { ThemeName } from "@caret/schemas/configs";
 import type { JSXElement } from "solid-js";
 
 import { ThemesList, ThemeWithName } from "../../src/ts/constants/themes";

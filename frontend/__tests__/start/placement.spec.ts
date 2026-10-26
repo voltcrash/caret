@@ -15,7 +15,7 @@ describe("production placement response metadata", () => {
       headers: { "cf-placement": "remote-SIN" },
     });
     expect(response.status).toBe(200);
-    expect(response.headers.get("X-Oxytype-Placement")).toBe("remote-SIN");
+    expect(response.headers.get("X-Caret-Placement")).toBe("remote-SIN");
     expect(response.headers.get("Cache-Control")).toBe("no-store");
     expect(response.headers.get("X-Request-Id")).not.toBeNull();
   });
@@ -27,7 +27,7 @@ describe("production placement response metadata", () => {
         headers: placement === undefined ? {} : { "cf-placement": placement },
       });
       expect(response.status).toBe(200);
-      expect(response.headers.has("X-Oxytype-Placement")).toBe(false);
+      expect(response.headers.has("X-Caret-Placement")).toBe(false);
     },
   );
 });

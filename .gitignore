@@ -70,7 +70,7 @@ backend/imports/
 .vscode/*
 .vscode/.*
 *.code-workspace
-!oxytype.code-workspace
+!caret.code-workspace
 
 
 .idea

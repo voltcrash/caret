@@ -6,7 +6,7 @@ import { verifySession } from "../../src/utils/auth";
 import { patchConfiguration } from "../../src/init/configuration";
 import * as UserDAL from "../../src/dal/user";
 import Worker from "../__testData__/http-worker";
-import { GetUserResponseSchema } from "@oxytype/contracts/users";
+import { GetUserResponseSchema } from "@caret/contracts/users";
 import type { ExecutionContext } from "@cloudflare/workers-types";
 
 describe("Better Auth D1 adapter", () => {

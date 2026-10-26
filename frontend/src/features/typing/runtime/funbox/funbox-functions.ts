@@ -19,7 +19,7 @@ import * as LayoutfluidFunboxTimer from "./layoutfluid-funbox-timer";
 import { highlight } from "../../../../ts/events/keymap";
 import * as MemoryTimer from "./memory-funbox-timer";
 import { getActiveWordIndex } from "../../../../ts/states/test";
-import { FunboxName, KeymapLayout, Layout } from "@oxytype/schemas/configs";
+import { FunboxName, KeymapLayout, Layout } from "@caret/schemas/configs";
 
 export type FunboxFunctions = {
   applyConfig?: () => void;

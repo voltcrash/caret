@@ -11,7 +11,7 @@ async function signIn(context: BrowserContext): Promise<void> {
     authCookie("browser-typing").split(";")[0]?.split("=").slice(1).join("=") ??
     "";
   await context.addCookies([
-    { name: "oxytype.session_token", value, url: "http://127.0.0.1:4185" },
+    { name: "caret.session_token", value, url: "http://127.0.0.1:4185" },
   ]);
 }
 
@@ -226,7 +226,7 @@ test("an in-flight save neither blocks navigation nor submits twice", async ({
   await expect(page).toHaveURL(/\/settings$/);
   release();
   await page.waitForLoadState("networkidle");
-  await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
+  await page.getByRole("link", { name: "Caret Home", exact: true }).click();
   await expect(page.locator("#words .word.active")).toHaveCount(1);
   await expect(page.locator("#result")).toBeHidden();
   expect(submissions).toHaveLength(1);

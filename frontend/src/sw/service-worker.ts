@@ -17,7 +17,7 @@ import {
   type Strategy,
 } from "./policy";
 
-declare const __OXYTYPE_SW__: ServiceWorkerConfig;
+declare const __CARET_SW__: ServiceWorkerConfig;
 
 // The DOM lib types `self` as a Window; declare the worker surface used here.
 type ExtendableEvent = Event & { waitUntil: (work: Promise<unknown>) => void };
@@ -51,7 +51,7 @@ type WorkerScope = {
 };
 
 const worker = globalThis as unknown as WorkerScope;
-const config = __OXYTYPE_SW__;
+const config = __CARET_SW__;
 const cacheName = buildCacheName(config.buildId);
 const origin = worker.location.origin;
 
@@ -82,7 +82,7 @@ async function precache(): Promise<void> {
     cache: "no-store",
     headers: { Accept: "text/html" },
   });
-  if (!shell.ok || shell.headers.get("X-Oxytype-Build") !== config.buildId) {
+  if (!shell.ok || shell.headers.get("X-Caret-Build") !== config.buildId) {
     // Mid-deployment mismatch: fail install; the browser retries later.
     throw new Error("Offline shell does not belong to this build");
   }

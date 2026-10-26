@@ -87,9 +87,7 @@ it("fails closed for a missing dependency and for non-public history entries", a
 });
 
 it("retains previous files in the artifact and rejects conflicting content-addressed URLs", async () => {
-  const directory = await mkdtemp(
-    resolve(tmpdir(), "oxytype-previous-assets-"),
-  );
+  const directory = await mkdtemp(resolve(tmpdir(), "caret-previous-assets-"));
   try {
     await mkdir(resolve(directory, "assets"));
     await writeFile(resolve(directory, "assets/new-anyhash.js"), "new build");
@@ -137,7 +135,7 @@ it("retains matched Wasm/glue from the public graph and verifies their bytes", a
     "/assets/engine-oldhash.js",
     "/assets/engine-oldhash.wasm",
   ]);
-  const directory = await mkdtemp(resolve(tmpdir(), "oxytype-wasm-history-"));
+  const directory = await mkdtemp(resolve(tmpdir(), "caret-wasm-history-"));
   try {
     await mkdir(resolve(directory, "assets"));
     await writeFile(

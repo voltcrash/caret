@@ -1,4 +1,4 @@
-import { Configuration } from "@oxytype/schemas/configuration";
+import { Configuration } from "@caret/schemas/configuration";
 
 type BooleanPaths<T, P extends string = ""> = {
   [K in keyof T]: T[K] extends boolean

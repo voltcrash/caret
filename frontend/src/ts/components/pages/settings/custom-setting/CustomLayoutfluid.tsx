@@ -1,4 +1,4 @@
-import { CustomLayoutFluid } from "@oxytype/schemas/configs";
+import { CustomLayoutFluid } from "@caret/schemas/configs";
 import { JSXElement } from "solid-js";
 
 import { configMetadata } from "../../../../config/metadata";

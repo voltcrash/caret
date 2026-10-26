@@ -1,8 +1,8 @@
 import { fulfillOperation, rpcPath } from "../start-e2e/rpc-fixtures";
-import type { Config } from "@oxytype/schemas/configs";
-import type { CustomTheme, UserTag } from "@oxytype/schemas/users";
-import { GetUserResponseSchema } from "@oxytype/contracts/users";
-import { BASE_CONFIGURATION } from "@oxytype/schemas/default-configuration";
+import type { Config } from "@caret/schemas/configs";
+import type { CustomTheme, UserTag } from "@caret/schemas/users";
+import { GetUserResponseSchema } from "@caret/contracts/users";
+import { BASE_CONFIGURATION } from "@caret/schemas/default-configuration";
 import { expect, Page, test as base } from "playwright/test";
 
 import { authCookie, fixtureClientIp } from "../start-e2e/auth-fixtures";
@@ -56,7 +56,7 @@ export const test = base.extend<{
         authCookie(startSession).split(";")[0]?.split("=").slice(1).join("=") ??
         "";
       await context.addCookies([
-        { name: "oxytype.session_token", value, url: baseURL ?? "" },
+        { name: "caret.session_token", value, url: baseURL ?? "" },
       ]);
     }
     const user = GetUserResponseSchema.parse({

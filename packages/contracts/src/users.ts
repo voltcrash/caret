@@ -27,17 +27,17 @@ import {
   UserEmailSchema,
   UserNameSchema,
   ReportUserCommentSchema,
-} from "@oxytype/schemas/users";
+} from "@caret/schemas/users";
 import {
   ClientSchema,
   ClientQuerySchema,
   Mode2Schema,
   ModeSchema,
   PersonalBestSchema,
-} from "@oxytype/schemas/shared";
-import { IdSchema, StringNumberSchema } from "@oxytype/schemas/util";
-import { LanguageSchema } from "@oxytype/schemas/languages";
-import { CustomThemeColorsSchema } from "@oxytype/schemas/configs";
+} from "@caret/schemas/shared";
+import { IdSchema, StringNumberSchema } from "@caret/schemas/util";
+import { LanguageSchema } from "@caret/schemas/languages";
+import { CustomThemeColorsSchema } from "@caret/schemas/configs";
 
 export const GetUserResponseSchema = responseWithData(UserSchema);
 export type GetUserResponse = z.infer<typeof GetUserResponseSchema>;

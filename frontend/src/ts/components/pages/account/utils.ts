@@ -1,8 +1,8 @@
-import { ResultFilters, ResultFiltersSchema } from "@oxytype/schemas/users";
+import { ResultFilters, ResultFiltersSchema } from "@caret/schemas/users";
 
 import defaultResultFilters from "../../../constants/default-result-filters";
-import { sanitize } from "@oxytype/util/sanitize";
-import { typedKeys } from "@oxytype/util/objects";
+import { sanitize } from "@caret/util/sanitize";
+import { typedKeys } from "@caret/util/objects";
 
 export function mergeWithDefaultFilters(
   filters: Partial<ResultFilters>,

@@ -1,4 +1,4 @@
-import type { ResultMinified } from "@oxytype/schemas/results";
+import type { ResultMinified } from "@caret/schemas/results";
 
 import { cleanup, render, waitFor } from "@solidjs/testing-library";
 import { Suspense, type JSXElement } from "solid-js";

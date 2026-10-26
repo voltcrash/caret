@@ -21,8 +21,8 @@ import * as LeaderboardDal from "../../../src/dal/leaderboards";
 import * as Captcha from "../../../src/utils/captcha";
 import * as LogDal from "../../../src/dal/logs";
 import { newId } from "../../../src/utils/id";
-import { PersonalBest } from "@oxytype/schemas/shared";
-import { UserStreak } from "@oxytype/schemas/users";
+import { PersonalBest } from "@caret/schemas/shared";
+import { UserStreak } from "@caret/schemas/users";
 import { pb } from "../../__testData__/users";
 
 const { mockApp, uid, mockAuth } = setup();

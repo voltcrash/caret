@@ -14,7 +14,7 @@ import {
   RejectReportsRequest,
   ToggleBanRequest,
   ToggleBanResponse,
-} from "@oxytype/contracts/admin";
+} from "@caret/contracts/admin";
 import MonkeyError from "../../utils/error";
 import { addImportantLog, countLogs, getLogs } from "../../dal/logs";
 import type { ServiceContext, OperationInput } from "../context";

@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { allOperations } from "@oxytype/backend/policies/operations";
+import { allOperations } from "@caret/backend/policies/operations";
 
 /** Explicit Start declarations, derived from the frozen contracts, with no runtime matcher. */
 export function generateHttpRoutes(check = false): void {

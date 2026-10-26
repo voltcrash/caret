@@ -49,7 +49,7 @@ export type Runtime = {
    */
   sessionConstraint: "first-primary" | "first-unconstrained";
   auth?: ReturnType<typeof import("../init/auth").createAuth>;
-  configuration?: import("@oxytype/schemas/configuration").Configuration;
+  configuration?: import("@caret/schemas/configuration").Configuration;
   env: WorkerEnv;
   db: ReturnType<typeof drizzle>;
   session: D1DatabaseSession;

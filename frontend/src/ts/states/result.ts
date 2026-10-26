@@ -3,8 +3,8 @@ import { createTypingOwned } from "../../features/typing/scope";
 import { createAppStore, createAppSignal } from "../../app/state";
 import type { CartesianScaleOptions, Chart, ChartDataset } from "chart.js";
 
-import { Language } from "@oxytype/schemas/languages";
-import { TypingSpeedUnit } from "@oxytype/schemas/configs";
+import { Language } from "@caret/schemas/languages";
+import { TypingSpeedUnit } from "@caret/schemas/configs";
 import type { WordsHistoryItem } from "../../features/typing/runtime/word-markup";
 import { createEvent } from "../hooks/createEvent";
 import type { ReplayWord } from "../../features/typing/replay-view";

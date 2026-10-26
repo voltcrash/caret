@@ -1,19 +1,19 @@
 import "@tanstack/solid-start/server-only";
-import { readUiSession } from "@oxytype/backend/auth/ui-session";
-import { getCachedConfiguration } from "@oxytype/backend/configuration";
+import { readUiSession } from "@caret/backend/auth/ui-session";
+import { getCachedConfiguration } from "@caret/backend/configuration";
 import {
   assertGoodAuthentication,
   badAuthenticationPoints,
   enforceLimit,
-} from "@oxytype/backend/policies/rate-limit";
-import { ROOT_LIMIT, SESSION_LIMIT } from "@oxytype/backend/rate-counter";
-import { GUEST } from "@oxytype/backend/services/context";
+} from "@caret/backend/policies/rate-limit";
+import { ROOT_LIMIT, SESSION_LIMIT } from "@caret/backend/rate-counter";
+import { GUEST } from "@caret/backend/services/context";
 import {
   setResponseHeader,
   setResponseStatus,
 } from "@tanstack/solid-start/server";
-import MonkeyError from "@oxytype/backend/errors";
-import type { SessionState } from "@oxytype/schemas/auth-session";
+import MonkeyError from "@caret/backend/errors";
+import type { SessionState } from "@caret/schemas/auth-session";
 import type { ServiceContext } from "./context.server";
 
 export async function readSessionState(

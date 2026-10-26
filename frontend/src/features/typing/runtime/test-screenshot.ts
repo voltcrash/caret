@@ -272,7 +272,7 @@ async function getBlob(): Promise<Blob | null> {
 
 function getFilename(): string {
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-  return `oxytype-result-${timestamp}.png`;
+  return `caret-result-${timestamp}.png`;
 }
 
 /**

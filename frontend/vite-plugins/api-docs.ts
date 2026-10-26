@@ -1,5 +1,5 @@
 import type { Plugin } from "vite-plus";
-import type { getOpenApi } from "@oxytype/backend/http/openapi";
+import type { getOpenApi } from "@caret/backend/http/openapi";
 import { execFileSync } from "node:child_process";
 import { resolve } from "node:path";
 
@@ -34,7 +34,7 @@ export function apiDocs(): Plugin {
     "public.json": JSON.stringify(publicApi),
   };
   return {
-    name: "oxytype-api-docs",
+    name: "caret-api-docs",
     applyToEnvironment: (environment) => environment.name === "client",
     generateBundle() {
       for (const [name, source] of Object.entries(assets)) {

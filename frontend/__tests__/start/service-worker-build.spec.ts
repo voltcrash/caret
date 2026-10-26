@@ -9,13 +9,13 @@ const client = resolve(import.meta.dirname, "../../dist/start/client");
 /** Evaluates only the leading configuration statement of the built worker. */
 function builtConfig(): { buildId: string; precache: string[] } {
   const source = readFileSync(resolve(client, "sw.js"), "utf8");
-  const statement = /^var __OXYTYPE_SW__\s*=\s*[^;]+;/.exec(source)?.[0];
+  const statement = /^var __CARET_SW__\s*=\s*[^;]+;/.exec(source)?.[0];
   if (statement === undefined) throw new Error("Missing worker configuration");
-  const context: { __OXYTYPE_SW__?: { buildId: string; precache: string[] } } =
+  const context: { __CARET_SW__?: { buildId: string; precache: string[] } } =
     {};
   runInNewContext(statement, context);
-  if (context.__OXYTYPE_SW__ === undefined) throw new Error("Not evaluated");
-  return context.__OXYTYPE_SW__;
+  if (context.__CARET_SW__ === undefined) throw new Error("Not evaluated");
+  return context.__CARET_SW__;
 }
 
 describe("built Start service worker", () => {
@@ -31,7 +31,7 @@ describe("built Start service worker", () => {
     const source = readFileSync(resolve(client, "sw.js"), "utf8");
     runInNewContext(source, {
       URL,
-      location: { origin: "https://oxytype.test" },
+      location: { origin: "https://caret.test" },
       registration: { active: null },
       caches: {
         open: async () => ({ put }),
@@ -43,7 +43,7 @@ describe("built Start service worker", () => {
           pending.push(() =>
             resolve(
               new Response("fixture", {
-                headers: { "X-Oxytype-Build": config.buildId },
+                headers: { "X-Caret-Build": config.buildId },
               }),
             ),
           );

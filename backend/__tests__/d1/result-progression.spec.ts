@@ -6,7 +6,7 @@ import * as Users from "../../src/dal/user";
 import {
   AddResultResponseSchema,
   UpdateResultTagsResponseSchema,
-} from "@oxytype/contracts/results";
+} from "@caret/contracts/results";
 
 describe("result PBs, rankings and progression with D1", () => {
   let test: Awaited<ReturnType<typeof resultRuntime>>;

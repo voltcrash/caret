@@ -13,7 +13,7 @@ export type ServiceWorkerConfig = {
 /** Offline document for `/`: a guest render, never a signed-in response. */
 export const shellPath = "/";
 
-const startCachePrefix = "oxytype-start-";
+const startCachePrefix = "caret-start-";
 
 /** One cache per build: shell, precache and runtime-cached public files. */
 export function buildCacheName(buildId: string): string {
@@ -92,9 +92,9 @@ export function servesShell(url: string): boolean {
 const legacyCaches = [
   /^workbox-precache/,
   /^workbox-runtime/,
-  /^oxytype-languages$/,
+  /^caret-languages$/,
 ];
-const legacyAssetCache = "oxytype-build-assets";
+const legacyAssetCache = "caret-build-assets";
 
 /**
  * Caches to delete when `buildId` activates. `names` is CacheStorage key order
@@ -125,13 +125,13 @@ export function activatesImmediately(hasActiveWorker: boolean): boolean {
 }
 
 /** Message a page posts to let a waiting worker take over. */
-export const skipWaitingMessage = "oxytype:skip-waiting";
+export const skipWaitingMessage = "caret:skip-waiting";
 /** Waiting workers ask every open tab before taking over the shared scope. */
-export const updateSafetyRequest = "oxytype:update-safety";
+export const updateSafetyRequest = "caret:update-safety";
 
 /** Script-free, user-independent fallback for documents other than `/`. */
 export function offlinePage(stylesheets: string[]): string {
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Offline | Oxytype</title>${stylesheets.map((href) => `<link rel="stylesheet" href="${href}">`).join("")}</head><body class="m-0 grid min-h-screen place-content-center gap-4 bg-bg p-8 text-center font-mono text-text"><h1>You're offline</h1><p>This page needs a connection. The typing test is available offline.</p><p><a class="text-main underline" href="/">Start typing</a></p></body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Offline | Caret</title>${stylesheets.map((href) => `<link rel="stylesheet" href="${href}">`).join("")}</head><body class="m-0 grid min-h-screen place-content-center gap-4 bg-bg p-8 text-center font-mono text-text"><h1>You're offline</h1><p>This page needs a connection. The typing test is available offline.</p><p><a class="text-main underline" href="/">Start typing</a></p></body></html>`;
 }
 
 export const offlinePageHeaders = {

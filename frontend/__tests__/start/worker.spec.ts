@@ -46,11 +46,7 @@ describe("built Start application in workerd", () => {
     );
     // The Worker stores the copy in waitUntil; it may land after the response.
     let shared = await worker.fetch(url, { headers });
-    for (
-      let tries = 0;
-      shared.headers.get("x-oxytype-cache") === null;
-      tries++
-    ) {
+    for (let tries = 0; shared.headers.get("x-caret-cache") === null; tries++) {
       if (tries === 20) throw new Error("Public read was never cached");
       await shared.arrayBuffer();
       await new Promise((resolve) => setTimeout(resolve, 25));
@@ -87,10 +83,10 @@ describe("built Start application in workerd", () => {
         ...(method === "POST" ? { body: "{}" } : {}),
       });
       expect(response.status).toBe(409);
-      expect(response.headers.get("X-Oxytype-Stale-Client")).toBe("1");
+      expect(response.headers.get("X-Caret-Stale-Client")).toBe("1");
       expect(response.headers.get("Cache-Control")).toBe("no-store");
       expect(await response.text()).toBe(
-        "Oxytype was updated. Refresh the page to continue.",
+        "Caret was updated. Refresh the page to continue.",
       );
     }
     // Same-origin protection still applies before function lookup.
@@ -100,7 +96,7 @@ describe("built Start application in workerd", () => {
       headers: { ...headers, origin: "https://attacker.test" },
     });
     expect(crossSite.status).toBe(403);
-    expect(crossSite.headers.has("X-Oxytype-Stale-Client")).toBe(false);
+    expect(crossSite.headers.has("X-Caret-Stale-Client")).toBe(false);
   });
 
   it("SSR reads real D1 through the function and keeps binding-specific caches isolated", async () => {
@@ -115,7 +111,7 @@ describe("built Start application in workerd", () => {
     for (const [i, response] of responses.entries()) {
       expect(response.status).toBe(200);
       const html = await response.text();
-      expect(html).toContain("Leaderboards | Oxytype");
+      expect(html).toContain("Leaderboards | Caret");
       expect(html).toContain("racer-1<");
       if (i % 2) expect(html).toContain("racer-2<");
       else expect(html).not.toContain("racer-2<");
@@ -160,7 +156,7 @@ describe("built Start application in workerd", () => {
       const response = await mf.dispatchFetch(`http://localhost:3000${path}`);
       expect(response.status).toBe(404);
       const html = await response.text();
-      expect(html).toContain("404 | Oxytype");
+      expect(html).toContain("404 | Caret");
       expect(html).toContain("Ooops! Looks like this page");
       expect(html).toContain('aria-label="Main navigation"');
     }
@@ -190,7 +186,7 @@ describe("built Start application in workerd", () => {
     );
     expect(response.status).toBe(200);
     const html = await response.text();
-    expect(html).toContain("Privacy Policy | Oxytype");
+    expect(html).toContain("Privacy Policy | Caret");
     expect(html).toContain('content="noindex"');
     expect(html).toContain("Visit project discussions");
   });

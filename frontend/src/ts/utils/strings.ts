@@ -1,12 +1,12 @@
-import { Language } from "@oxytype/schemas/languages";
-import { removeLanguageSize } from "@oxytype/web-shared/strings";
+import { Language } from "@caret/schemas/languages";
+import { removeLanguageSize } from "@caret/web-shared/strings";
 import { escapeRegExp } from "./misc";
 
 export {
   capitalizeFirstLetterOfEachWord,
   removeLanguageSize,
   splitIntoCharacters,
-} from "@oxytype/web-shared/strings";
+} from "@caret/web-shared/strings";
 
 /**
  * Converts a camelCase string to words separated by spaces.
@@ -100,7 +100,7 @@ export function getLanguageDisplayString(
  * @param textToClean
  * @returns Cleaned text.
  */
-export { cleanTypographySymbols } from "@oxytype/web-shared/strings";
+export { cleanTypographySymbols } from "@caret/web-shared/strings";
 
 /**
  * Replaces escaped control characters with their literal equivalents.

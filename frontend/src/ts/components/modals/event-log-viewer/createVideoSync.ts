@@ -6,7 +6,7 @@ import {
   Setter,
 } from "solid-js";
 
-import type { TestEventNoMs } from "@oxytype/web-shared/events/types";
+import type { TestEventNoMs } from "@caret/web-shared/events/types";
 import type { TimelineMark, VideoBar } from "./timeline-lanes";
 
 import {

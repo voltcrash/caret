@@ -3,7 +3,7 @@ import { newId } from "../../utils/id";
 
 import { mutateUser } from "../../db/mutation";
 
-import type { Client } from "@oxytype/schemas/shared";
+import type { Client } from "@caret/schemas/shared";
 
 import type { DBUser, DBUserTag } from "./types";
 import { emptyPb } from "./empty-pb";

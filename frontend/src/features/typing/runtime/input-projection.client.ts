@@ -1,7 +1,7 @@
 import { batch, createEffect, createSignal, onCleanup } from "solid-js";
-import type { ContentRequest } from "@oxytype/typing-engine/browser.client";
-import { EngineFailure } from "@oxytype/typing-engine/failure";
-import { decodeText } from "@oxytype/typing-engine/text";
+import type { ContentRequest } from "@caret/typing-engine/browser.client";
+import { EngineFailure } from "@caret/typing-engine/failure";
+import { decodeText } from "@caret/typing-engine/text";
 import { getBrowserEngine } from "../engine.client";
 import { captureTypingRoute } from "../scope";
 import { getEngineSession } from "./session.client";

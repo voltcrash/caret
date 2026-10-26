@@ -1,5 +1,5 @@
 import type { BrowserContext, Page } from "playwright/test";
-import { SessionStateSchema } from "@oxytype/schemas/auth-session";
+import { SessionStateSchema } from "@caret/schemas/auth-session";
 import { fromCrossJSON, type SerovalNode } from "seroval";
 import { z } from "zod";
 import type { StoredQueryCache } from "../src/app/query-cache.client";
@@ -13,7 +13,7 @@ async function signIn(context: BrowserContext, token: string): Promise<void> {
   const value =
     authCookie(token).split(";")[0]?.split("=").slice(1).join("=") ?? "";
   await context.addCookies([
-    { name: "oxytype.session_token", value, url: "http://127.0.0.1:4185" },
+    { name: "caret.session_token", value, url: "http://127.0.0.1:4185" },
   ]);
 }
 
@@ -21,7 +21,7 @@ async function cached(page: Page): Promise<StoredQueryCache | undefined> {
   return await page.evaluate(
     async () =>
       await new Promise<StoredQueryCache | undefined>((resolve, reject) => {
-        const request = indexedDB.open("oxytype-query-cache", 1);
+        const request = indexedDB.open("caret-query-cache", 1);
         // SSR content can appear before the app initializes storage. Inspection
         // must never create an empty database that prevents its schema upgrade.
         request.onupgradeneeded = () => request.transaction?.abort();

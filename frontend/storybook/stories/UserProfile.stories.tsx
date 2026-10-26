@@ -1,4 +1,4 @@
-import { UserProfile as UserProfileType } from "@oxytype/schemas/users";
+import { UserProfile as UserProfileType } from "@caret/schemas/users";
 
 import preview from "#.storybook/preview";
 
@@ -8,7 +8,7 @@ import { setSnapshot } from "../../src/ts/db";
 
 const baseProfile: UserProfileType = {
   uid: "user123",
-  name: "oxytyper",
+  name: "typist",
   addedAt: 1700000000000,
   xp: 42000,
   streak: 15,
@@ -109,8 +109,8 @@ const baseProfile: UserProfileType = {
     bio: "Practicing my typing",
     keyboard: "Custom 65%",
     socialProfiles: {
-      twitter: "oxytyper",
-      github: "oxytyper",
+      twitter: "typist",
+      github: "typist",
       website: "https://example.com",
     },
   },

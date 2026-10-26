@@ -1,4 +1,4 @@
-import type { PersonalBests } from "@oxytype/schemas/shared";
+import type { PersonalBests } from "@caret/schemas/shared";
 
 export const emptyPb = (): PersonalBests => ({
   time: {},

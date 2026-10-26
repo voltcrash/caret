@@ -47,7 +47,7 @@ describe("production deployment inputs", () => {
       `${key} must be separate from staging`,
     );
   });
-  it.each(["short", "oxytype-local-development-secret-only"])(
+  it.each(["short", "caret-local-development-secret-only"])(
     "rejects development or weak auth secrets",
     (secret) => {
       const input = inputs();
@@ -73,11 +73,11 @@ describe("production deployment inputs", () => {
       d1_databases: { database_id: string }[];
       vars: { BETTER_AUTH_URL: string };
     };
-    config.name = "oxytype-api-staging";
+    config.name = "caret-api-staging";
     expect(() => validateProductionInputs(input)).toThrow(
       "isolated production",
     );
-    config.name = "oxytype";
+    config.name = "caret";
     const database = config.d1_databases[0];
     if (database === undefined) throw new Error("Missing database fixture");
     database.database_id = "17b0ae8b-92bf-4d7e-a29e-0ac4cc6f2b59";

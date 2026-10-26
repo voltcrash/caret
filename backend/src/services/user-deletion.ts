@@ -1,4 +1,4 @@
-import type { Configuration } from "@oxytype/schemas/configuration";
+import type { Configuration } from "@caret/schemas/configuration";
 import { statement } from "../db/client";
 import { commitBatch } from "../db/commit";
 import { hash } from "../dal/blocklist";

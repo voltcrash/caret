@@ -198,7 +198,7 @@ describe("Better Auth social-only HTTP flow", () => {
   });
   it("serves cookie sessions from the signed cache for at most a minute", async () => {
     const { cookie } = await signInWithOAuth(auth, app);
-    expect(cookie).toContain("oxytype.session_data=");
+    expect(cookie).toContain("caret.session_data=");
     const headers = new Headers({ cookie });
     const session = await AuthUtils.verifySession(headers, {});
     await AuthUtils.revokeTokensByUid(session.uid);
@@ -254,7 +254,7 @@ describe("Better Auth social-only HTTP flow", () => {
     const { cookie } = await signInWithOAuth(auth, app, {
       headers: {
         "x-forwarded-for": "198.51.100.4, 203.0.113.5",
-        "x-oxytype-auth-ip": "192.0.2.1",
+        "x-caret-auth-ip": "192.0.2.1",
       },
     });
     const session = await request("/get-session", undefined, cookie);

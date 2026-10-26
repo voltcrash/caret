@@ -2,10 +2,10 @@ import { getTimingReview } from "../../../anticheat/index";
 
 import * as UserDAL from "../../../dal/user";
 
-import { Configuration } from "@oxytype/schemas/configuration";
+import { Configuration } from "@caret/schemas/configuration";
 import { addImportantLog, addLog, countUserLogs } from "../../../dal/logs";
 
-import { CompletedEvent } from "@oxytype/schemas/results";
+import { CompletedEvent } from "@caret/schemas/results";
 
 /**
  * Log-only review of a saved result. Signals are uncalibrated, so they are

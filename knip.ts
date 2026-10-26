@@ -21,7 +21,7 @@ export default {
       entry: ["scripts/*.ts"],
       project: ["src/**/*.ts", "scripts/**/*.ts", "__tests__/**/*.ts"],
       // Shared lint config is consumed through Vite+ rather than application imports.
-      ignoreDependencies: ["@oxytype/oxlint-config"],
+      ignoreDependencies: ["@caret/oxlint-config"],
     },
     frontend: {
       entry: [
@@ -47,10 +47,10 @@ export default {
       ],
       ignoreDependencies: [
         // Vite+ resolves the shared lint config at runtime.
-        "@oxytype/oxlint-config",
+        "@caret/oxlint-config",
         // font-styles.ts provides these CSS modules through its Vite plugin.
-        "oxytype-fontawesome.css",
-        "oxytype-fonts.css",
+        "caret-fontawesome.css",
+        "caret-fonts.css",
       ],
     },
     "frontend/storybook": {
@@ -66,12 +66,12 @@ export default {
     },
     "packages/web-shared": {
       // Base config is consumed through tsconfig extends, like the SDK package.
-      ignoreDependencies: ["@oxytype/typescript-config"],
+      ignoreDependencies: ["@caret/typescript-config"],
     },
     "packages/typing-engine": {
       // This package's browser-only declarations use the workspace TS base;
       // Knip's default entry analysis does not inspect this tsconfig reference.
-      ignoreDependencies: ["@oxytype/typescript-config"],
+      ignoreDependencies: ["@caret/typescript-config"],
     },
     "packages/oxlint-config": {
       entry: ["plugins/*.js"],

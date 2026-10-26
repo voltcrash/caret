@@ -1,4 +1,4 @@
-import type { CustomTextMode } from "@oxytype/schemas/util";
+import type { CustomTextMode } from "@caret/schemas/util";
 
 export type CustomTextIncomingData =
   | ({ set?: boolean; long?: boolean } & (

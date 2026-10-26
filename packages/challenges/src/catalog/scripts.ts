@@ -1,4 +1,4 @@
-import type { ChallengeName } from "@oxytype/schemas/challenges";
+import type { ChallengeName } from "@caret/schemas/challenges";
 import type { Challenge } from "../types";
 
 export const scriptChallenges = {

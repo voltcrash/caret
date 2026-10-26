@@ -1,5 +1,5 @@
 import { operation } from "../../data/operations";
-import { ResultFilters } from "@oxytype/schemas/users";
+import { ResultFilters } from "@caret/schemas/users";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import {
   createCollection,

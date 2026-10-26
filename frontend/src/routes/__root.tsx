@@ -16,7 +16,7 @@ import { publicEnv } from "../app/public-env";
 import { AppError } from "../components/app-error";
 import { NotFoundPage } from "../features/not-found/page";
 
-const socialImage = `${publicEnv.origin}/images/og/oxytype.png`;
+const socialImage = `${publicEnv.origin}/images/og/caret.png`;
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -39,29 +39,29 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           title: matches.some(
             (match) => match.status === "notFound" || match._notFound === true,
           )
-            ? "404 | Oxytype"
-            : "Oxytype",
+            ? "404 | Caret"
+            : "Caret",
         },
         {
           name: "description",
           content: "A minimalistic, customizable typing test.",
         },
         { name: "format-detection", content: "telephone=no" },
-        { name: "theme-color", content: "#180d0d" },
-        { name: "author", content: "Oxytype contributors" },
+        { name: "theme-color", content: "#0b0d1c" },
+        { name: "author", content: "Caret contributors" },
         { name: "mobile-web-app-capable", content: "yes" },
-        { name: "apple-mobile-web-app-title", content: "Oxytype" },
+        { name: "apple-mobile-web-app-title", content: "Caret" },
         {
           name: "apple-mobile-web-app-status-bar-style",
           content: "black-translucent",
         },
         { name: "twitter:card", content: "summary_large_image" },
         { property: "og:type", content: "website" },
-        { property: "og:site_name", content: "Oxytype" },
+        { property: "og:site_name", content: "Caret" },
         { property: "og:image", content: socialImage },
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },
-        { property: "og:image:alt", content: "Oxytype logo" },
+        { property: "og:image:alt", content: "Caret logo" },
         { name: "twitter:image", content: socialImage },
         { name: "darkreader-lock", content: "" },
       ],
@@ -70,12 +70,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         {
           rel: "icon",
           type: "image/svg+xml",
-          href: "/images/favicon/oxytype.svg",
+          href: "/images/favicon/caret.svg",
         },
         {
           rel: "apple-touch-icon",
           sizes: "180x180",
-          href: "/images/icons/oxytype-180.png",
+          href: "/images/icons/caret-180.png",
         },
         { rel: "manifest", href: "/manifest.json" },
         ...["RobotoMono-Regular", "LexendDeca-Regular"].map((font) => ({

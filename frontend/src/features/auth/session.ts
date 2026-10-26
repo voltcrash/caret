@@ -1,4 +1,4 @@
-import type { SessionState } from "@oxytype/schemas/auth-session";
+import type { SessionState } from "@caret/schemas/auth-session";
 import {
   queryOptions,
   type UndefinedInitialDataOptions,
@@ -16,7 +16,7 @@ export const sessionOptions = (): ReturnType<
   return queryOptions({
     queryKey: sessionKey,
     queryFn: async ({ signal }) =>
-      import.meta.env.OXYTYPE_OFFLINE
+      import.meta.env.CARET_OFFLINE
         ? { user: null, signUpEnabled: false }
         : await getSessionState({ signal }),
     staleTime: 30_000,

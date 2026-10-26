@@ -12,7 +12,7 @@ test("one online visit installs guest typing; private documents and RPCs stay un
       .slice(1)
       .join("=") ?? "";
   await context.addCookies([
-    { name: "oxytype.session_token", value, url: "http://127.0.0.1:4185" },
+    { name: "caret.session_token", value, url: "http://127.0.0.1:4185" },
   ]);
   const signOuts: string[] = [];
   context.on("request", (request) => {
@@ -39,7 +39,7 @@ test("one online visit installs guest typing; private documents and RPCs stay un
   const cached = await page.evaluate(async () => {
     const names = await caches.keys();
     const cache = await caches.open(
-      names.find((name) => name.startsWith("oxytype-start-")) ?? "missing",
+      names.find((name) => name.startsWith("caret-start-")) ?? "missing",
     );
     const keys = (await cache.keys()).map(
       (request) => new URL(request.url).pathname,
@@ -62,15 +62,15 @@ test("one online visit installs guest typing; private documents and RPCs stay un
   await expect(
     page.getByRole("heading", { name: "You're offline" }),
   ).toBeVisible();
-  // The script-free fallback uses the standalone rust palette.
+  // The script-free fallback uses the standalone azure palette.
   await expect(page.locator("body")).toHaveCSS(
     "background-color",
-    "rgb(24, 13, 13)",
+    "rgb(11, 13, 28)",
   );
-  await expect(page.locator("body")).toHaveCSS("color", "rgb(243, 231, 220)");
+  await expect(page.locator("body")).toHaveCSS("color", "rgb(228, 235, 255)");
   await expect(page.getByRole("link", { name: "Start typing" })).toHaveCSS(
     "color",
-    "rgb(232, 105, 46)",
+    "rgb(78, 168, 255)",
   );
   await page.getByRole("link", { name: "Start typing" }).click();
   await expect(page.locator("#words .word").first()).toBeVisible();

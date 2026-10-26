@@ -1,5 +1,5 @@
 {
-  "name": "@oxytype/frontend-storybook",
+  "name": "@caret/frontend-storybook",
   "version": "0.0.0",
   "private": true,
   "imports": {

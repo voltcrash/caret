@@ -34,4 +34,4 @@ export function unwrapSchema(schema: z.ZodType): z.ZodType {
   return current;
 }
 
-export { getOptions } from "@oxytype/util/zod";
+export { getOptions } from "@caret/util/zod";

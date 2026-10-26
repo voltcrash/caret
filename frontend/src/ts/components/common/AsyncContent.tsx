@@ -1,4 +1,4 @@
-import { typedKeys } from "@oxytype/util/objects";
+import { typedKeys } from "@caret/util/objects";
 import { UseQueryResult } from "@tanstack/solid-query";
 import {
   untrack,

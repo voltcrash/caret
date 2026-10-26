@@ -1,6 +1,6 @@
-import type { TestEventNoMs } from "@oxytype/web-shared/events/types";
+import type { TestEventNoMs } from "@caret/web-shared/events/types";
 
-import type { Audit } from "@oxytype/typing-engine/audit";
+import type { Audit } from "@caret/typing-engine/audit";
 
 export type ScatterPoint = { x: number; y: number };
 

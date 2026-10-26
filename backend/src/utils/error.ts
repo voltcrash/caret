@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { isDevEnvironment } from "./misc";
-import { MonkeyServerErrorType } from "@oxytype/contracts/util/api";
+import { MonkeyServerErrorType } from "@caret/contracts/util/api";
 
 class MonkeyError extends Error implements MonkeyServerErrorType {
   status: number;

@@ -1,4 +1,4 @@
-import type { contract } from "@oxytype/contracts";
+import type { contract } from "@caret/contracts";
 import type {
   AppRoute,
   ClientInferRequest,

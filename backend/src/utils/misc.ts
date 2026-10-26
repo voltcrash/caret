@@ -1,7 +1,7 @@
 import { envValue } from "../runtime/env";
-import { MILLISECONDS_IN_DAY } from "@oxytype/util/date-and-time";
-import { roundTo2 } from "@oxytype/util/numbers";
-export { sanitizeString } from "@oxytype/util/strings";
+import { MILLISECONDS_IN_DAY } from "@caret/util/date-and-time";
+import { roundTo2 } from "@caret/util/numbers";
+export { sanitizeString } from "@caret/util/strings";
 import type { ServiceContext } from "../services/context";
 
 //todo split this file into smaller util files (grouped by functionality)

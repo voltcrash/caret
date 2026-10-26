@@ -1,5 +1,5 @@
 import { isCapsLockOn } from "@leonabcd123/modern-caps-lock";
-import { getCharFromLayout } from "@oxytype/web-shared/layout-emulator";
+import { getCharFromLayout } from "@caret/web-shared/layout-emulator";
 import { showErrorNotification } from "../../../ts/states/notifications";
 import { waitForInputLayout } from "../../../ts/states/test";
 

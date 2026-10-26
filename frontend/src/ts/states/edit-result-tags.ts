@@ -1,6 +1,6 @@
 import { createAppSignal } from "../../app/state";
-import { Result } from "@oxytype/schemas/results";
-import { Mode } from "@oxytype/schemas/shared";
+import { Result } from "@caret/schemas/results";
+import { Mode } from "@caret/schemas/shared";
 
 import { showModal } from "./modals";
 import { showErrorNotification } from "./notifications";

@@ -3,7 +3,7 @@ import { MonkeyResponse } from "../../../utils/monkey-response";
 import { randomUUID } from "node:crypto";
 import { newId } from "../../../utils/id";
 import * as ReportDAL from "../../../dal/report";
-import { ReportUserRequest } from "@oxytype/contracts/users";
+import { ReportUserRequest } from "@caret/contracts/users";
 import type { ServiceContext, OperationInput } from "../../context";
 
 export async function reportUser(

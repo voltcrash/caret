@@ -1,9 +1,9 @@
 import { CommandlineConfigMetadataObject } from "./types";
 
 import { Fonts } from "../../constants/fonts";
-import { KnownFontName } from "@oxytype/schemas/fonts";
+import { KnownFontName } from "@caret/schemas/fonts";
 import * as UI from "../../ui";
-import { typedKeys } from "@oxytype/util/objects";
+import { typedKeys } from "@caret/util/objects";
 
 export const appearanceMetadata = {
   liveSpeedStyle: {

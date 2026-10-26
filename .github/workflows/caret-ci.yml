@@ -1,0 +1,527 @@
+name: Caret CI
+
+env:
+  TURNSTILE_SITE_KEY: "1x00000000000000000000AA"
+
+permissions:
+  contents: read
+  pull-requests: read
+
+on:
+  pull_request:
+    branches: [main, "stack/**", "t3/rust-engine-migration"]
+    types: [opened, reopened, synchronize, ready_for_review]
+  push:
+    branches: [main]
+  # Manual runs check everything; they never trigger a production deployment.
+  workflow_dispatch:
+
+concurrency:
+  # The event keeps manual runs from cancelling the main-push run a deploy waits for.
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Decides which jobs run. Draft PRs skip CI unless labelled force-ci or
+  # force-full-ci; every other job needs this one, so they skip with it.
+  changes:
+    name: changes
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false || contains(github.event.pull_request.labels.*.name, 'force-ci') || contains(github.event.pull_request.labels.*.name, 'force-full-ci')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      backend-lint: ${{ steps.select.outputs.backend-lint }}
+      backend-test: ${{ steps.select.outputs.backend-test }}
+      frontend-lint: ${{ steps.select.outputs.frontend-lint }}
+      frontend-test: ${{ steps.select.outputs.frontend-test }}
+      start-ssr: ${{ steps.select.outputs.start-ssr }}
+      start-browser: ${{ steps.select.outputs.start-browser }}
+      start-updates: ${{ steps.select.outputs.start-updates }}
+      start-delivery: ${{ steps.select.outputs.start-delivery }}
+      packages: ${{ steps.select.outputs.packages }}
+      assets: ${{ steps.select.outputs.assets }}
+      code: ${{ steps.select.outputs.code }}
+      engine: ${{ steps.select.outputs.engine }}
+
+    steps:
+      # PRs read changed files from the API, so no checkout is needed.
+      - name: Detect changes
+        if: github.event_name == 'pull_request'
+        uses: dorny/paths-filter@v4.0.3
+        id: filter
+        with:
+          # A file counts when it matches a pattern and none of the filter's exclusions.
+          predicate-quantifier: some-with-excludes
+          filters: |
+            # Inputs every job depends on.
+            shared:
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+              - 'pnpm-workspace.yaml'
+              - '.npmrc'
+              - '.node-version'
+              - '.nvmrc'
+              - 'patches/**'
+              - 'packages/typescript-config/**'
+              - '.github/actions/**'
+              - '.github/workflows/caret-ci.yml'
+              # Deploys run the production build and release helpers.
+              - '.github/workflows/production-release.yml'
+            lint-config:
+              - 'vite.config.ts'
+              - 'vitest.config.ts'
+              - 'packages/oxlint-config/**'
+            # Workspace packages bundled into the backend and frontend.
+            runtime-packages:
+              - 'packages/{challenges,contracts,funbox,schemas,typing-engine,typing-fixtures,util,web-shared}/**'
+              - 'crates/{typing-engine,typing-engine-wasm,typing-audit-wasm}/**'
+              - 'Cargo.{toml,lock}'
+              - 'rust-toolchain.toml'
+              - 'scripts/{engine,prepare-engine}.ts'
+              - '!packages/*/{__test__,__tests__,__fixtures__}/**'
+              - '!**/*.md'
+            packages:
+              - 'packages/**'
+              - '!**/*.md'
+            engine:
+              - 'crates/{typing-engine,typing-engine-wasm,typing-audit-wasm}/**'
+              - 'Cargo.{toml,lock}'
+              - 'rust-toolchain.toml'
+              - 'scripts/{engine,prepare-engine}.ts'
+              - 'packages/typing-{engine,fixtures}/**'
+            backend:
+              - 'backend/**'
+              - '!backend/__tests__/**'
+              - '!**/*.md'
+            backend-tests:
+              - 'backend/__tests__/**'
+              # Anticheat specs replay the immutable engine reference fixtures.
+              - 'packages/typing-fixtures/reference/**'
+            # Backend test data and D1 helpers the frontend unit and SSR suites import.
+            backend-test-support:
+              - 'backend/__tests__/{__testData__/**,d1/helpers.ts,d1/result-support.ts}'
+            frontend:
+              - 'frontend/**'
+              - '!frontend/static/**'
+              - '!frontend/{__tests__,e2e,start-e2e,update-e2e,staging-e2e,storybook}/**'
+              - '!frontend/{vitest,playwright}.*config.ts'
+              - '!frontend/vitest.node-tests.ts'
+              - '!**/*.md'
+            frontend-tests:
+              - 'frontend/__tests__/**'
+              - 'frontend/vitest.config.ts'
+              - 'frontend/vitest.browser.config.ts'
+              - 'frontend/vitest.node-tests.ts'
+              # Parity specs replay the immutable engine reference fixtures.
+              - 'packages/typing-fixtures/reference/**'
+              - '!frontend/__tests__/start/**'
+            # Start harness: SSR suites, and the workerd fixture the browser suites serve.
+            start-tests:
+              - 'frontend/__tests__/start/**'
+              - 'frontend/vitest.start.config.ts'
+            browser-tests:
+              - 'frontend/{e2e,start-e2e}/**'
+              - 'frontend/playwright.start.config.ts'
+            update-tests:
+              - 'frontend/update-e2e/**'
+              - 'frontend/playwright.update.config.ts'
+              # Fixtures the update suite shares with the browser suite.
+              - 'frontend/start-e2e/*fixtures.ts'
+            # Linted, but not run in CI.
+            frontend-lint-only:
+              - 'frontend/{staging-e2e,storybook}/**'
+              - 'frontend/playwright.{benchmark,migration,staging}.config.ts'
+            # Served as-is by the Worker (e.g. _headers), so the Start suites cover them.
+            static-delivery:
+              - 'frontend/static/*'
+            # Fixtures read by frontend unit and package tests.
+            static-layouts:
+              - 'frontend/static/layouts/**'
+            static-challenges:
+              - 'frontend/static/challenges/**'
+            assets:
+              - 'frontend/static/**'
+              - '**/*.{css,scss}'
+              - 'stylelint.config.mjs'
+              # The validator, its helpers, and the constants it checks assets against.
+              - 'frontend/scripts/{check-assets.ts,json-lint.ts,short-quotes.json}'
+              - 'frontend/src/ts/constants/**'
+            # Anything Knip reads: everything but docs, static assets and repo metadata.
+            code:
+              - '**'
+              - '!**/*.md'
+              - '!docs/**'
+              - '!LICENSE'
+              - '!frontend/static/**'
+              - '!.github/{ISSUE_TEMPLATE/**,dependabot.yml,labeler.yml,workflows/labeler.yml}'
+              - '!.{claude,vite-hooks}/**'
+
+      - name: Select jobs
+        id: select
+        env:
+          # Main pushes deploy, so they check everything: a push's diff alone would
+          # miss commits whose CI run a newer push cancelled.
+          FULL: ${{ github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'force-full-ci') }}
+          CHANGED: ${{ steps.filter.outputs.changes }}
+        run: |
+          # Parse once; each job then matches whole filter names in Bash.
+          changed=$(jq -r 'join(" ")' <<<"${CHANGED:-[]}")
+          enable() {
+            local job=$1 filter result=false
+            shift
+            for filter in shared "$@"; do
+              if [[ $FULL == true || " $changed " == *" $filter "* ]]; then
+                result=true
+                break
+              fi
+            done
+            echo "$job=$result" | tee -a "$GITHUB_OUTPUT"
+          }
+          runtime=(backend runtime-packages)
+          enable backend-lint "${runtime[@]}" backend-tests lint-config
+          # The migration inventory spec reads frontend sources.
+          enable backend-test "${runtime[@]}" backend-tests frontend
+          enable frontend-lint "${runtime[@]}" frontend frontend-tests start-tests browser-tests update-tests frontend-lint-only lint-config backend-test-support
+          enable frontend-test "${runtime[@]}" frontend frontend-tests start-tests backend-test-support static-layouts
+          enable start-ssr "${runtime[@]}" frontend start-tests backend-test-support static-delivery
+          enable start-browser "${runtime[@]}" frontend start-tests browser-tests static-delivery
+          enable start-updates "${runtime[@]}" frontend start-tests update-tests static-delivery
+          enable start-delivery "${runtime[@]}" frontend static-delivery
+          enable packages packages lint-config static-layouts static-challenges engine
+          enable assets assets runtime-packages
+          enable code code
+          enable engine engine runtime-packages
+
+  engine:
+    name: engine
+    needs: [changes]
+    if: needs.changes.outputs.engine == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+      - name: Native formatting, lint and parity
+        run: vp run engine:fmt && vp run engine:lint && vp run engine:test
+      - name: Install Chromium
+        run: vp -C frontend exec playwright install --with-deps --only-shell chromium
+      - name: Browser Wasm parity
+        run: vp run engine:test:wasm
+
+  quality:
+    name: quality
+    needs: [changes]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Set up Vite+ and install dependencies
+        uses: ./.github/actions/setup
+        with:
+          # Runs on every change, so it is the one job that uploads caches.
+          save-cache: "true"
+
+      # The whole repository formats in about a second, so check it all:
+      # formatter or config changes are caught, and no history is fetched.
+      - name: Check formatting
+        run: vp fmt . --check
+
+      - name: Find unused code and dependencies
+        if: needs.changes.outputs.code == 'true'
+        run: vp run knip
+
+  ci-be:
+    name: ci-be
+    needs: [changes]
+    if: needs.changes.outputs.backend-lint == 'true' || needs.changes.outputs.backend-test == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Set up Vite+ and install dependencies
+        uses: ./.github/actions/setup
+
+      - name: Check lint
+        if: needs.changes.outputs.backend-lint == 'true'
+        run: vp run lint-be
+
+      - name: Test
+        if: needs.changes.outputs.backend-test == 'true'
+        run: vp run test-be
+
+  ci-fe:
+    name: ci-fe
+    needs: [changes]
+    if: needs.changes.outputs.frontend-lint == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Set up Vite+ and install dependencies
+        uses: ./.github/actions/setup
+
+      - name: Check lint
+        run: vp run lint-fe
+
+  ci-fe-test:
+    name: ci-fe-test (${{ matrix.shard }}/2)
+    needs: [changes]
+    if: needs.changes.outputs.frontend-test == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Set up Vite+ and install dependencies
+        uses: ./.github/actions/setup
+
+      - name: Install Chromium for frontend component tests
+        run: vp -C frontend exec playwright install --with-deps --only-shell chromium
+
+      - name: Test
+        working-directory: frontend
+        run: vp test run --shard=${{ matrix.shard }}/2
+
+      - name: Upload frontend browser failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: frontend-browser-failures-${{ matrix.shard }}
+          path: frontend/.vitest/attachments
+          retention-days: 7
+          if-no-files-found: ignore
+
+  # SSR and browser shards consume the exact same production Worker.
+  start-build:
+    name: start-build
+    needs: [changes]
+    if: needs.changes.outputs.start-ssr == 'true' || needs.changes.outputs.start-browser == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Set up Vite+ and install dependencies
+        uses: ./.github/actions/setup
+
+      - name: Build Start Worker
+        run: vp run --filter @caret/frontend build:start
+
+      - name: Worker dry-run
+        run: vp run --filter @caret/frontend dry-run:start
+
+      - name: Share Start Worker
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: start-worker
+          path: frontend/dist/start
+          include-hidden-files: true
+          retention-days: 1
+          if-no-files-found: error
+
+  start-ssr:
+    name: start-ssr
+    needs: [changes, start-build]
+    if: needs.changes.outputs.start-ssr == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Set up Vite+ and install dependencies
+        uses: ./.github/actions/setup
+
+      - name: Check operation ownership and declared HTTP routes
+        run: vp -C backend exec vpx ./scripts/migration-inventory.ts --check && vp -C frontend exec vpx ./scripts/generate-http-routes.ts --check
+
+      - name: Download Start Worker
+        uses: actions/download-artifact@v8.0.2
+        with:
+          name: start-worker
+          path: frontend/dist/start
+
+      - name: Build runtime-test entry
+        run: vp run --filter @caret/frontend build:start:test
+
+      - name: SSR, workerd and bundle-boundary suites
+        run: vp run --filter @caret/frontend test:start
+
+  start-browser:
+    name: start-browser (${{ matrix.shard }}/4)
+    needs: [changes, start-build]
+    if: needs.changes.outputs.start-browser == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Set up Vite+ and install dependencies
+        uses: ./.github/actions/setup
+
+      - name: Download Start Worker
+        uses: actions/download-artifact@v8.0.2
+        with:
+          name: start-worker
+          path: frontend/dist/start
+
+      # Suites run headless, so the small headless shell is enough.
+      - name: Install Chromium and its system dependencies
+        run: vp -C frontend exec playwright install --with-deps --only-shell chromium
+
+      # Each shard serves its own fixture Worker, so shards share no state.
+      - name: Production-Worker browser checks
+        working-directory: frontend
+        run: vp exec playwright test --config playwright.start.config.ts --shard=${{ matrix.shard }}/4
+
+      - name: Upload browser traces
+        if: failure()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: start-browser-traces-${{ matrix.shard }}
+          path: frontend/test-results
+          retention-days: 7
+          if-no-files-found: ignore
+
+  start-updates:
+    name: start-updates
+    needs: [changes]
+    if: needs.changes.outputs.start-updates == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Set up Vite+ and install dependencies
+        uses: ./.github/actions/setup
+
+      - name: Install Chromium and its system dependencies
+        run: vp -C frontend exec playwright install --with-deps --only-shell chromium
+
+      - name: Multi-build service worker, real save and rollback checks
+        run: vp run --filter @caret/frontend test:updates
+
+      - name: Upload update traces
+        if: failure()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: start-update-traces
+          path: frontend/test-results
+          retention-days: 7
+          if-no-files-found: ignore
+
+  start-delivery:
+    name: start-delivery
+    needs: [changes]
+    if: needs.changes.outputs.start-delivery == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Set up Vite+ and install dependencies
+        uses: ./.github/actions/setup
+
+      - name: Staging build and dry-run
+        run: vp run --filter @caret/frontend build:start:staging && vp run --filter @caret/frontend dry-run:start
+
+      - name: Production configuration build and dry-run (fixture public settings)
+        env:
+          CARET_DEPLOY_ENV: production
+          CARET_BUILD_ID: ci-${{ github.sha }}
+        run: vp run --filter @caret/frontend build:start && vp run --filter @caret/frontend dry-run:start
+
+  ci-assets:
+    name: ci-assets
+    needs: [changes]
+    if: needs.changes.outputs.assets == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Set up Vite+ and install dependencies
+        uses: ./.github/actions/setup
+
+      # Each check takes a few seconds, so run them all whenever assets change.
+      - name: Lint styles
+        run: vp run lint-styles
+
+      - name: Lint JSON
+        run: vp run check-assets-json
+
+      - name: Validate language assets
+        run: vp run check-assets-languages
+
+      - name: Validate quote assets
+        run: vp run check-assets-quotes
+
+      - name: Validate other assets
+        run: vp run check-assets-others
+
+  ci-pkg:
+    name: ci-pkg
+    needs: [changes]
+    if: needs.changes.outputs.packages == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Set up Vite+ and install dependencies
+        uses: ./.github/actions/setup
+
+      - name: Check shared lint configuration
+        run: vp run lint-check-config
+
+      - name: Check lint suppression reasons
+        run: vp run lint-suppressions
+
+      - name: Check lint
+        run: vp run lint-pkg
+
+      - name: Check workspace root lint
+        run: vp lint *.{ts,cjs,mjs} --type-aware --type-check --format agent
+
+      - name: Test
+        run: vp run test-pkg
+
+  # One stable check to require in branch protection, whichever jobs ran.
+  ci-ok:
+    name: ci-ok
+    if: ${{ !cancelled() && needs.changes.result != 'skipped' }}
+    needs:
+      [
+        changes,
+        quality,
+        ci-be,
+        ci-fe,
+        ci-fe-test,
+        start-build,
+        start-ssr,
+        start-browser,
+        start-updates,
+        start-delivery,
+        ci-assets,
+        ci-pkg,
+        engine,
+      ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Require every selected job to pass
+        env:
+          RESULTS: ${{ toJSON(needs.*.result) }}
+        run: |
+          echo "$RESULTS"
+          jq -e 'all(. == "success" or . == "skipped")' <<<"$RESULTS"

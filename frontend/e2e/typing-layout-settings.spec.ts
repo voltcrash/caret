@@ -1,4 +1,4 @@
-import type { Config } from "@oxytype/schemas/configs";
+import type { Config } from "@caret/schemas/configs";
 import type { Page } from "playwright/test";
 
 import { assertRestarted, expect, openTest, test } from "./fixtures";
@@ -151,7 +151,7 @@ test("font, line width and tape changes apply through settings", async ({
       await input.fill(value);
       await input.press("Enter");
     }
-    await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
+    await page.getByRole("link", { name: "Caret Home", exact: true }).click();
     await expect(page.locator("#typingTest")).toHaveCSS("opacity", "1");
     await expectOrderedLayout(page);
     await expect
@@ -203,9 +203,7 @@ test.describe("numeric textbox controls", () => {
           )
           .toBe(nextValue);
       }
-      await page
-        .getByRole("link", { name: "Oxytype Home", exact: true })
-        .click();
+      await page.getByRole("link", { name: "Caret Home", exact: true }).click();
       await expect(page.locator("#words .word").first()).toBeVisible();
     });
   }
@@ -224,7 +222,7 @@ test.describe("numeric textbox controls", () => {
     await slider.focus();
     await slider.press("ArrowRight");
     await expect(slider).toHaveValue("1.1");
-    await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
+    await page.getByRole("link", { name: "Caret Home", exact: true }).click();
     await expect(page.locator("#typingTest")).toHaveCSS("opacity", "1");
     const after = await page
       .locator('[data-ui-element="keymap"]')
@@ -257,9 +255,7 @@ test.describe("numeric textbox controls", () => {
       expect(saved).toBe(config[key]);
       await input.fill(String(valid));
       await input.press("Tab");
-      await page
-        .getByRole("link", { name: "Oxytype Home", exact: true })
-        .click();
+      await page.getByRole("link", { name: "Caret Home", exact: true }).click();
       await expect(page.locator("#words .word").first()).toBeVisible();
     });
   }

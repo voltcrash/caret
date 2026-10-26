@@ -1,1 +1,1 @@
-export * from "@oxytype/web-shared/result-hash";
+export * from "@caret/web-shared/result-hash";

@@ -3,8 +3,8 @@ import {
   ConfigGroupNameSchema,
   ConfigKey,
   Config as ConfigType,
-} from "@oxytype/schemas/configs";
-import { PresetType } from "@oxytype/schemas/presets";
+} from "@caret/schemas/configs";
+import { PresetType } from "@caret/schemas/presets";
 
 import { untrack } from "solid-js";
 
@@ -12,7 +12,7 @@ import { getActiveTags } from "../../../collections/tags";
 import { configMetadata } from "../../../config/metadata";
 import { getConfigChanges as getConfigChangesFromConfig } from "../../../config/utils";
 import { getDefaultConfig } from "../../../constants/default-config";
-import { setProperty } from "@oxytype/util/objects";
+import { setProperty } from "@caret/util/objects";
 
 function getSettingGroup(configFieldName: ConfigKey): ConfigGroupName {
   return configMetadata[configFieldName].group;

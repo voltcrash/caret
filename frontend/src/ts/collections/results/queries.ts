@@ -2,7 +2,7 @@ import { operation } from "../../../data/operations";
 import { resultsByClient } from "./store";
 import { queryKeys } from "./keys";
 import { ResultsQueryState } from "./types";
-import { Mode } from "@oxytype/schemas/shared";
+import { Mode } from "@caret/schemas/shared";
 import {
   eq,
   gte,

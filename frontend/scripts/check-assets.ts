@@ -10,15 +10,15 @@ import {
   Language,
   LanguageObject,
   LanguageObjectSchema,
-} from "@oxytype/schemas/languages";
-import { Layout, ThemeName } from "@oxytype/schemas/configs";
+} from "@caret/schemas/languages";
+import { Layout, ThemeName } from "@caret/schemas/configs";
 import { LayoutsList } from "../src/ts/constants/layouts";
-import { KnownFontName } from "@oxytype/schemas/fonts";
+import { KnownFontName } from "@caret/schemas/fonts";
 import { Fonts } from "../src/ts/constants/fonts";
 import { themes, ThemeSchema, ThemesList } from "../src/ts/constants/themes";
 import { z } from "zod";
-import { LayoutObject, LayoutObjectSchema } from "@oxytype/schemas/layouts";
-import { QuoteDataSchema, QuoteData } from "@oxytype/schemas/quotes";
+import { LayoutObject, LayoutObjectSchema } from "@caret/schemas/layouts";
+import { QuoteDataSchema, QuoteData } from "@caret/schemas/quotes";
 import { clickSoundConfig } from "../src/ts/constants/sounds";
 import { lintJson } from "./json-lint";
 

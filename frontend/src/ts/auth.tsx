@@ -1,4 +1,4 @@
-import { typedKeys } from "@oxytype/util/objects";
+import { typedKeys } from "@caret/util/objects";
 
 import { captureAccount } from "../app/account-scope";
 import { createAppMemo } from "../app/application";

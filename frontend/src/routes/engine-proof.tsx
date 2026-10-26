@@ -12,8 +12,8 @@ import type {
   Cursor,
   PaceCommand,
   PolicyQuery,
-} from "@oxytype/typing-engine/browser.client";
-import type { WebLog } from "@oxytype/typing-engine/text";
+} from "@caret/typing-engine/browser.client";
+import type { WebLog } from "@caret/typing-engine/text";
 
 import { createFileRoute } from "@tanstack/solid-router";
 import { createSignal, onCleanup, Show } from "solid-js";
@@ -53,7 +53,7 @@ function EngineProof() {
       };
       const started = performance.now();
       const { loadEngine, benchmarkBoundary, encodeText } =
-        await import("@oxytype/typing-engine/browser.client");
+        await import("@caret/typing-engine/browser.client");
       const engine = await loadEngine();
       if (disposed) return;
       const initializationMs = performance.now() - started;
@@ -109,7 +109,7 @@ function EngineProof() {
     setResult("");
     setFailure("");
     const { createEngineLoader, loadEngine, encodeText } =
-      await import("@oxytype/typing-engine/browser.client");
+      await import("@caret/typing-engine/browser.client");
     const loader = createEngineLoader();
     const sessions: BrowserSession[] = [];
     loaders.add(loader);
@@ -177,7 +177,7 @@ function EngineProof() {
         learning: Prepare;
       };
       const { loadEngine, encodeText } =
-        await import("@oxytype/typing-engine/browser.client");
+        await import("@caret/typing-engine/browser.client");
       const engine = await loadEngine();
       if (disposed) return;
       const pace = engine.createSession(
@@ -269,7 +269,7 @@ function EngineProof() {
         sections: Prepare;
       };
       const { loadEngine } =
-        await import("@oxytype/typing-engine/browser.client");
+        await import("@caret/typing-engine/browser.client");
       const engine = await loadEngine();
       if (disposed) return;
       const owners = Array.from({ length: 3 }, () => engine.createContent());
@@ -379,7 +379,7 @@ function EngineProof() {
         quotePreparation: Prepare;
       };
       const { loadEngine } =
-        await import("@oxytype/typing-engine/browser.client");
+        await import("@caret/typing-engine/browser.client");
       const engine = await loadEngine();
       if (disposed) return;
       const quick = input.quick.map((item) => {
@@ -431,7 +431,7 @@ function EngineProof() {
     const started = performance.now();
     try {
       const { loadEngine } =
-        await import("@oxytype/typing-engine/browser.client");
+        await import("@caret/typing-engine/browser.client");
       const engine = await loadEngine();
       if (disposed) return;
       const session = engine.createSession({ mode: "words", words: 1 }, [[97]]);
@@ -484,7 +484,7 @@ function EngineProof() {
     setFailure("");
     try {
       const { loadEngine, EngineFailure, encodeText } =
-        await import("@oxytype/typing-engine/browser.client");
+        await import("@caret/typing-engine/browser.client");
       const engine = await loadEngine();
       if (disposed) return;
       const refs = JSON.parse(fixture()) as { kind: string }[];
@@ -622,7 +622,7 @@ function EngineProof() {
     try {
       const inputs = JSON.parse(fixture()) as { input: Prepare }[];
       const { loadEngine, EngineFailure } =
-        await import("@oxytype/typing-engine/browser.client");
+        await import("@caret/typing-engine/browser.client");
       const engine = await loadEngine();
       if (disposed) return;
       const results = inputs.map(({ input }) => {
@@ -705,7 +705,7 @@ function EngineProof() {
         stages: { british: boolean }[];
       };
       const { loadEngine } =
-        await import("@oxytype/typing-engine/browser.client");
+        await import("@caret/typing-engine/browser.client");
       const engine = await loadEngine();
       if (disposed) return;
       const content = engine.createContent();
@@ -757,7 +757,7 @@ function EngineProof() {
         cycles: { lengths: number[]; selected: unknown[] }[];
       };
       const { loadEngine, encodeText } =
-        await import("@oxytype/typing-engine/browser.client");
+        await import("@caret/typing-engine/browser.client");
       const engine = await loadEngine();
       if (disposed) return;
       const content = engine.createContent();
@@ -810,7 +810,7 @@ function EngineProof() {
         }[];
       };
       const { loadEngine } =
-        await import("@oxytype/typing-engine/browser.client");
+        await import("@caret/typing-engine/browser.client");
       const engine = await loadEngine();
       if (disposed) return;
       setResult(
@@ -837,7 +837,7 @@ function EngineProof() {
         steps: { config: Config; extra: unknown[] }[];
       };
       const { loadEngine } =
-        await import("@oxytype/typing-engine/browser.client");
+        await import("@caret/typing-engine/browser.client");
       const engine = await loadEngine();
       if (disposed) return;
       const content = engine.createContent();
@@ -882,7 +882,7 @@ function EngineProof() {
         extraWords?: number;
       }[];
       const { loadEngine } =
-        await import("@oxytype/typing-engine/browser.client");
+        await import("@caret/typing-engine/browser.client");
       const engine = await loadEngine();
       if (disposed) return;
       const content = engine.createContent();
@@ -942,7 +942,7 @@ function EngineProof() {
         playback?: { zen: boolean; targets: Cursor[] }[];
       }[];
       const { loadEngine, analyzeLog, toEngineLog, toWebLog } =
-        await import("@oxytype/typing-engine/browser.client");
+        await import("@caret/typing-engine/browser.client");
       const engine = await loadEngine();
       if (disposed) return;
       setResult(
@@ -1018,7 +1018,7 @@ function EngineProof() {
         )[];
       };
       const { loadEngine } =
-        await import("@oxytype/typing-engine/browser.client");
+        await import("@caret/typing-engine/browser.client");
       const engine = await loadEngine();
       if (disposed) return;
       const content = engine.createContent();
@@ -1083,7 +1083,7 @@ function EngineProof() {
   };
   return (
     <Show
-      when={import.meta.env.OXYTYPE_ENGINE_PROOF}
+      when={import.meta.env.CARET_ENGINE_PROOF}
       fallback={<p>Unavailable</p>}
     >
       <main class="p-4">

@@ -1,4 +1,4 @@
-import { CustomThemeColors, ThemeName } from "@oxytype/schemas/configs";
+import { CustomThemeColors, ThemeName } from "@caret/schemas/configs";
 import { z } from "zod";
 
 const hexColorSchema = z

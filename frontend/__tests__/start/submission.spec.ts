@@ -2,9 +2,9 @@ import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
 import { fromCrossJSON, toJSONAsync, type SerovalNode } from "seroval";
 import objectHash from "object-hash";
 import { z } from "zod";
-import type { CompletedEvent } from "@oxytype/schemas/results";
-import { AddResultResponseSchema } from "@oxytype/contracts/results";
-import { GetUserResponseSchema } from "@oxytype/contracts/users";
+import type { CompletedEvent } from "@caret/schemas/results";
+import { AddResultResponseSchema } from "@caret/contracts/results";
+import { GetUserResponseSchema } from "@caret/contracts/users";
 import { scoreEvent } from "../../../backend/__tests__/d1/result-support";
 import {
   createWorkerd,

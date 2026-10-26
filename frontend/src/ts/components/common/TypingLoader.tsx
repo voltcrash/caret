@@ -3,7 +3,7 @@ import { JSXElement } from "solid-js";
 import { cn } from "../../utils/cn";
 
 // theme.css keyframes assume one monospace column per letter of this word.
-export const LOADER_WORD = "oxytype";
+export const LOADER_WORD = "caret";
 
 /**
  * Loading feedback styled as the typing test: untyped letters turn to text

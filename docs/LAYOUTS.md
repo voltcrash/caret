@@ -23,5 +23,5 @@ Follow [layout guidelines](CONTRIBUTING.md#layout-guidelines). For local validat
 follow [development setup](CONTRIBUTING_ADVANCED.md), then run from the repository root:
 
 ```sh
-vp run --filter @oxytype/frontend check-assets layouts json
+vp run --filter @caret/frontend check-assets layouts json
 ```

@@ -33,7 +33,7 @@ test("key tips toggle without moving the desktop words", async ({ page }) => {
       .getByRole("button", { name: state, exact: true });
     await button.click();
     await expect(button).toHaveClass(/active/);
-    await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
+    await page.getByRole("link", { name: "Caret Home", exact: true }).click();
     await expect(page.locator("#typingTest")).toHaveCSS("opacity", "1");
     const after = await page.locator("#wordsWrapper").boundingBox();
     if (!after) throw new Error("Words have no layout");

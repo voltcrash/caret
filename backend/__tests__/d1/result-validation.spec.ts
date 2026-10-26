@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
 import { resultRuntime, scoreEvent } from "./result-support";
 import { withRuntime } from "../../src/runtime/env";
 import * as Users from "../../src/dal/user";
-import type { CompletedEvent } from "@oxytype/schemas/results";
+import type { CompletedEvent } from "@caret/schemas/results";
 
 describe("result submission validation with D1", () => {
   let test: Awaited<ReturnType<typeof resultRuntime>>;

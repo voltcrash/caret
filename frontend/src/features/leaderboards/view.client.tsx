@@ -1,7 +1,7 @@
 import type {
   LeaderboardEntry,
   XpLeaderboardEntry,
-} from "@oxytype/schemas/leaderboards";
+} from "@caret/schemas/leaderboards";
 
 import { queryOptions, useQuery, useQueryClient } from "@tanstack/solid-query";
 import {

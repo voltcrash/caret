@@ -1,10 +1,10 @@
 import type {
   Config as ConfigSchema,
   PartialConfig,
-} from "@oxytype/schemas/configs";
-import * as ConfigSchemas from "@oxytype/schemas/configs";
-import { typedKeys } from "@oxytype/util/objects";
-import { sanitize } from "@oxytype/util/sanitize";
+} from "@caret/schemas/configs";
+import * as ConfigSchemas from "@caret/schemas/configs";
+import { typedKeys } from "@caret/util/objects";
+import { sanitize } from "@caret/util/sanitize";
 import { getDefaultConfig } from "./default-config";
 
 type LegacyValues = {

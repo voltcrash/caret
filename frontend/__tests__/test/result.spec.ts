@@ -1,5 +1,5 @@
 import "../__harness__/native-engine";
-import { evaluatePolicy } from "@oxytype/typing-engine/browser.client";
+import { evaluatePolicy } from "@caret/typing-engine/browser.client";
 import { describe, it, expect, beforeEach, vi } from "vite-plus/test";
 
 // Baseline for what test/result.ts#update shows on the result screen (stat
@@ -116,8 +116,8 @@ import {
 } from "../../src/ts/states/result";
 import { __testing } from "../../src/ts/config/testing";
 import { getMutableConfig } from "../../src/ts/config/store";
-import type { CompletedEvent } from "@oxytype/schemas/results";
-import type { Config as ConfigType } from "@oxytype/schemas/configs";
+import type { CompletedEvent } from "@caret/schemas/results";
+import type { Config as ConfigType } from "@caret/schemas/configs";
 import type { Quote } from "../../src/ts/controllers/quotes-controller";
 
 const { replaceConfig } = __testing;

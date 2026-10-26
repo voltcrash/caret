@@ -1,6 +1,6 @@
-import { ConfigSchema, type ConfigKey } from "@oxytype/schemas/configs";
-import { getOptions } from "@oxytype/util/zod";
-import { typedKeys } from "@oxytype/util/objects";
+import { ConfigSchema, type ConfigKey } from "@caret/schemas/configs";
+import { getOptions } from "@caret/util/zod";
+import { typedKeys } from "@caret/util/objects";
 import { Fonts } from "../constants/fonts";
 import { LanguageList } from "../constants/languages";
 import {

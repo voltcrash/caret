@@ -12,7 +12,7 @@ import * as LeaderboardDal from "../../../src/dal/leaderboards";
 import * as DailyLeaderboards from "../../../src/utils/daily-leaderboards";
 import * as WeeklyXpLeaderboard from "../../../src/services/weekly-xp-leaderboard";
 import * as Configuration from "../../../src/init/configuration";
-import { XpLeaderboardEntry } from "@oxytype/schemas/leaderboards";
+import { XpLeaderboardEntry } from "@caret/schemas/leaderboards";
 
 const { mockApp, uid } = setup();
 const configuration = Configuration.getCachedConfiguration();

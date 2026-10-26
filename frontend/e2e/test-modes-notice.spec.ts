@@ -23,7 +23,7 @@ test.describe("test mode notices", () => {
       .locator('[data-setting-key="showTestModesNotice"]')
       .getByRole("button", { name: "show", exact: true })
       .click();
-    await page.getByRole("link", { name: "Oxytype Home", exact: true }).click();
+    await page.getByRole("link", { name: "Caret Home", exact: true }).click();
     await expect(page.locator("#words .word").first()).toBeVisible();
     await expect(
       page.getByRole("button", { name: "english", exact: true }),
@@ -35,7 +35,7 @@ test.describe("test mode notices", () => {
       page.getByRole("button", { name: "no average", exact: true }),
     ).toBeVisible();
     await expect(
-      page.getByText("Unable to load Oxytype", { exact: true }),
+      page.getByText("Unable to load Caret", { exact: true }),
     ).toHaveCount(0);
     expect(errors).toEqual([]);
   });
@@ -74,7 +74,7 @@ test.describe("test mode notices", () => {
         if (showAverage !== "off") await expect(average).toBeVisible();
         else await expect(average).toHaveCount(0);
         await expect(
-          page.getByText("Unable to load Oxytype", { exact: true }),
+          page.getByText("Unable to load Caret", { exact: true }),
         ).toHaveCount(0);
         expect(errors).toEqual([]);
       });

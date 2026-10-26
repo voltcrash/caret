@@ -1,4 +1,4 @@
-import { Language as LanguageSchema } from "@oxytype/schemas/languages";
+import { Language as LanguageSchema } from "@caret/schemas/languages";
 import { JSXElement } from "solid-js";
 
 import { configMetadata } from "../../../../config/metadata";

@@ -1,4 +1,4 @@
-import { ConfigKey, ConfigKeySchema } from "@oxytype/schemas/configs";
+import { ConfigKey, ConfigKeySchema } from "@caret/schemas/configs";
 import { untrack, createMemo, JSXElement, useContext } from "solid-js";
 
 import {

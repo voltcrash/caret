@@ -1,7 +1,7 @@
 import {
   ConfigSchema,
   PaceCaretCustomSpeedSchema,
-} from "@oxytype/schemas/configs";
+} from "@caret/schemas/configs";
 import { createForm } from "@tanstack/solid-form";
 import { For, JSXElement } from "solid-js";
 

@@ -10,10 +10,7 @@ import { getDailyLeaderboard } from "../../../utils/daily-leaderboards";
 
 import * as WeeklyXpLeaderboard from "../../../services/weekly-xp-leaderboard";
 
-import {
-  AddResultRequest,
-  AddResultResponse,
-} from "@oxytype/contracts/results";
+import { AddResultRequest, AddResultResponse } from "@caret/contracts/results";
 
 import type { ServiceContext, OperationInput } from "../../context";
 

@@ -1,6 +1,6 @@
 import "@tanstack/solid-start/server-only";
-import { runtime } from "@oxytype/backend/runtime";
-import { clientIp } from "@oxytype/backend/client-ip";
+import { runtime } from "@caret/backend/runtime";
+import { clientIp } from "@caret/backend/client-ip";
 
 export type ServiceContext = {
   runtime: ReturnType<typeof runtime>;

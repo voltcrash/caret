@@ -1,4 +1,4 @@
-import { Quote } from "@oxytype/schemas/quotes";
+import { Quote } from "@caret/schemas/quotes";
 import { createForm } from "@tanstack/solid-form";
 import { useQuery } from "@tanstack/solid-query";
 import { format } from "date-fns/format";

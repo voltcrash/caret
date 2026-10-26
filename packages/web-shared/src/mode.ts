@@ -1,5 +1,5 @@
-import { Config } from "@oxytype/schemas/configs";
-import { Mode2, PersonalBests } from "@oxytype/schemas/shared";
+import { Config } from "@caret/schemas/configs";
+import { Mode2, PersonalBests } from "@caret/schemas/shared";
 export function getMode2<M extends keyof PersonalBests>(
   config: Pick<Config, "mode" | "time" | "words">,
   randomQuote: { id: number } | null,

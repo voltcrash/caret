@@ -5,19 +5,19 @@ import {
   encodeText,
   type BrowserSession,
   type Log,
-} from "@oxytype/typing-engine/browser.client";
-import { projectEngineConfig } from "@oxytype/typing-engine/config";
+} from "@caret/typing-engine/browser.client";
+import { projectEngineConfig } from "@caret/typing-engine/config";
 import {
   CompletedEventSchema,
   type CompletedEvent,
-} from "@oxytype/schemas/results";
+} from "@caret/schemas/results";
 import { getDefaultConfig } from "../../../src/ts/constants/default-config";
 import {
   getResultFailure,
   getKeyDataFailure,
   verifyEventLog,
 } from "../../../../backend/src/anticheat";
-import { toWebLog } from "@oxytype/typing-engine/text";
+import { toWebLog } from "@caret/typing-engine/text";
 import { encodeEventLog } from "../../../src/features/typing/runtime/event-log-transport";
 
 function completedResult(

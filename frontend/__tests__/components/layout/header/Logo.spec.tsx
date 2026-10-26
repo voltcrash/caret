@@ -36,7 +36,7 @@ describe("Logo", () => {
     ));
     // Observe the anchor click without navigating the test runner iframe.
     view
-      .getByRole("link", { name: "Oxytype Home" })
+      .getByRole("link", { name: "Caret Home" })
       .addEventListener("click", (event) => event.preventDefault());
     return view;
   }
@@ -48,9 +48,9 @@ describe("Logo", () => {
 
   it("links the icon and wordmark home without nesting the theme button", () => {
     const view = renderLogo();
-    const home = view.getByRole("link", { name: "Oxytype Home" });
+    const home = view.getByRole("link", { name: "Caret Home" });
     expect(home).toHaveAttribute("href", "/");
-    expect(home).toHaveTextContent("oxytype");
+    expect(home).toHaveTextContent("caret");
     expect(home.querySelector("svg")).not.toBeNull();
     expect(home.querySelector("button")).toBeNull();
   });
@@ -63,11 +63,11 @@ describe("Logo", () => {
       const unsubscribe = restartTestEvent.subscribe(restart);
       try {
         const view = renderLogo();
-        const home = view.getByRole("link", { name: "Oxytype Home" });
+        const home = view.getByRole("link", { name: "Caret Home" });
         const element =
           target === "icon"
             ? home.querySelector("svg")
-            : view.getByText("oxytype");
+            : view.getByText("caret");
         if (element === null) throw new Error("Logo icon missing");
         fireEvent.click(element);
         expect(restart).toHaveBeenCalledOnce();
@@ -84,7 +84,7 @@ describe("Logo", () => {
     const unsubscribe = restartTestEvent.subscribe(restart);
     try {
       const view = renderLogo();
-      fireEvent.click(view.getByText("oxytype"));
+      fireEvent.click(view.getByText("caret"));
       expect(restart).not.toHaveBeenCalled();
       expect(showModal).not.toHaveBeenCalled();
     } finally {

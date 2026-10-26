@@ -32,11 +32,11 @@ if (
   process.exit(result.status ?? 1);
 }
 const tasks: Record<string, string[]> = {
-  dev: ["run", "--locked", "-p", "oxytype-tui", "--", ...args],
-  build: ["build", "--locked", "--release", "-p", "oxytype-tui", ...args],
-  test: ["test", "--locked", "-p", "oxytype-tui", ...args],
-  pty: ["build", "--locked", "-p", "oxytype-tui"],
-  emulator: ["build", "--locked", "-p", "oxytype-tui"],
+  dev: ["run", "--locked", "-p", "caret-tui", "--", ...args],
+  build: ["build", "--locked", "--release", "-p", "caret-tui", ...args],
+  test: ["test", "--locked", "-p", "caret-tui", ...args],
+  pty: ["build", "--locked", "-p", "caret-tui"],
+  emulator: ["build", "--locked", "-p", "caret-tui"],
 };
 if (command === undefined || tasks[command] === undefined) {
   throw new Error(
@@ -52,7 +52,7 @@ if ((command === "pty" || command === "emulator") && result.status === 0) {
   const check = spawnSync(
     "python3",
     command === "pty"
-      ? ["scripts/terminal_pty.py", "target/debug/oxytype"]
+      ? ["scripts/terminal_pty.py", "target/debug/caret"]
       : ["scripts/terminal_emulator.py", ...args],
     {
       cwd: resolve(import.meta.dirname, ".."),
