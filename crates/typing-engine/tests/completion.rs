@@ -198,5 +198,12 @@ fn completion_blocks_new_observations_but_preserves_outstanding_key_releases() {
         }
         command(&mut session, json!({"op":"finalize","now":16000})).unwrap();
         assert_eq!(session.log(), finished);
+        command(&mut session, json!({"op":"reset","now":17000})).unwrap();
+        let fresh = command(
+            &mut session,
+            json!({"op":"observe","eventType":"keydown","eventData":{"code":"KeyA"},"now":17001}),
+        )
+        .unwrap();
+        assert_eq!(fresh.events.len(), 1);
     }
 }
