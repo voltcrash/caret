@@ -6,7 +6,7 @@
 export const caretMarkPath =
   "M16.5 4A10.5 10.5 0 0 1 27 14.5A3 3 0 0 1 21 14.5A4.5 4.5 0 0 0 16.5 10A3 3 0 0 1 16.5 4ZM21 14.5A10.5 10.5 0 0 1 31.5 4A3 3 0 0 1 31.5 10A4.5 4.5 0 0 0 27 14.5A3 3 0 0 1 21 14.5ZM21 14.5A3 3 0 0 1 27 14.5L27 33.5A3 3 0 0 1 21 33.5L21 14.5ZM27 33.5A10.5 10.5 0 0 1 16.5 44A3 3 0 0 1 16.5 38A4.5 4.5 0 0 0 21 33.5A3 3 0 0 1 27 33.5ZM31.5 44A10.5 10.5 0 0 1 21 33.5A3 3 0 0 1 27 33.5A4.5 4.5 0 0 0 31.5 38A3 3 0 0 1 31.5 44Z";
 
-export const caretMarkViewBox = "0 0 48 48";
+const caretMarkViewBox = "0 0 48 48";
 
 /** The mark's ink bounds, for inline use without side padding. */
 export const caretMarkInkViewBox = "13.5 4 21 40";
