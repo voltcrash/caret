@@ -1,6 +1,7 @@
 import { JSXElement } from "solid-js";
 
 import { CaretMark } from "../../../../components/brand/caret-mark";
+import { CaretWordmark } from "../../../../components/brand/caret-wordmark";
 import { useTypingRoute } from "../../../../components/typing-route-host";
 import { restartTestEvent } from "../../../events/test";
 import { getFocus } from "../../../states/test";
@@ -27,7 +28,7 @@ export function Logo(): JSXElement {
       >
         <CaretMark
           class={cn(
-            "h-full w-auto shrink-0 fill-current text-main transition-colors",
+            "h-full w-auto shrink-0 fill-current text-main transition-colors sm:hidden",
             {
               "text-text": getFocus(),
             },
@@ -40,7 +41,11 @@ export function Logo(): JSXElement {
             })}
             data-ui-element="logoText"
           >
-            caret
+            <CaretWordmark
+              markClass={cn("transition-colors", {
+                "text-text": getFocus(),
+              })}
+            />
           </h1>
         </div>
       </Link>

@@ -5,6 +5,7 @@ import type { FaSolidIcon } from "../../ts/types/font-awesome";
 import { Button } from "../../ts/components/common/Button";
 import { Link } from "../../ts/components/common/Link";
 import { CaretMark } from "../brand/caret-mark";
+import { CaretWordmark } from "../brand/caret-wordmark";
 
 const navButton =
   "aspect-square pointer-coarse:relative pointer-coarse:before:absolute pointer-coarse:before:-inset-1 pointer-coarse:before:content-['']";
@@ -44,9 +45,11 @@ export function StaticHeader(props: { fixed: boolean }): JSXElement {
           aria-label="Caret Home"
           style={{ "box-sizing": "content-box" }}
         >
-          <CaretMark class="h-full w-auto shrink-0 fill-current text-main" />
+          <CaretMark class="h-full w-auto shrink-0 fill-current text-main sm:hidden" />
           <div class="hidden h-6 place-content-center text-[2rem] leading-0 sm:grid">
-            <h1 class="-mt-[0.11em] text-text">caret</h1>
+            <h1 class="-mt-[0.11em] text-text">
+              <CaretWordmark />
+            </h1>
           </div>
         </Link>
       </div>
