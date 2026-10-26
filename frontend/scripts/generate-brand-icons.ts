@@ -46,7 +46,7 @@ const socialCard = `<!doctype html>
   @font-face { font-family: Lexend; src: url(data:font/woff2;base64,${lexend}); }
   body { margin: 0; width: 1200px; height: 630px; display: grid; place-items: center;
     background: ${oxytypeBrandColors.bg}; font-family: Lexend; }
-  main { display: flex; align-items: center; gap: 44px; }
+  main { display: flex; align-items: center; gap: 56px; }
   svg { width: 200px; height: 200px; fill: ${oxytypeBrandColors.main}; }
   h1 { margin: 0; font-weight: 400; font-size: 136px; line-height: 1; color: #d1d0c5; }
   p { margin: 18px 0 0 6px; font-size: 34px; color: #646669; }
@@ -71,6 +71,17 @@ async function main(): Promise<void> {
     }
     await page.setViewportSize({ width: 1200, height: 630 });
     await page.setContent(socialCard);
+    // Crop the mark to its ink so the wordmark spacing follows its shape.
+    await page.evaluate(() => {
+      const svg = document.querySelector("svg");
+      const box = svg?.getBBox();
+      if (svg === null || box === undefined) return;
+      svg.setAttribute(
+        "viewBox",
+        `${box.x} ${box.y} ${box.width} ${box.height}`,
+      );
+      svg.style.width = `${(box.width / box.height) * 200}px`;
+    });
     await page.evaluate(async () => document.fonts.ready);
     await page.screenshot({ path: out("images/og/oxytype.png").pathname });
   } finally {
