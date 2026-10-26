@@ -1,10 +1,10 @@
 import preview from "#.storybook/preview";
 
-import { OxytypeMark } from "../../src/components/brand/oxytype-mark";
+import { CaretMark } from "../../src/components/brand/caret-mark";
 
 const meta = preview.meta({
-  title: "Brand/OxytypeMark",
-  component: OxytypeMark,
+  title: "Brand/CaretMark",
+  component: CaretMark,
   parameters: {
     layout: "centered",
   },
@@ -20,9 +20,9 @@ export const Default = meta.story({
 
 export const Sizes = meta.story(() => (
   <div class="flex items-end gap-4 text-main">
-    <OxytypeMark class="h-4 fill-current" />
-    <OxytypeMark class="h-6 fill-current" />
-    <OxytypeMark class="h-12 fill-current" />
-    <OxytypeMark class="h-24 fill-current" />
+    <CaretMark class="h-4 fill-current" />
+    <CaretMark class="h-6 fill-current" />
+    <CaretMark class="h-12 fill-current" />
+    <CaretMark class="h-24 fill-current" />
   </div>
 ));

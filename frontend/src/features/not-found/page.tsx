@@ -11,7 +11,7 @@ export function NotFoundPage(): JSXElement {
         <div class="flex flex-col gap-8 md:flex-row md:gap-16">
           <div class="place-self-center">
             <img
-              src="/images/oxytype-404.svg"
+              src="/images/caret-404.svg"
               alt="Oxytype typing keys"
               class="max-w-full rounded-xl"
             />

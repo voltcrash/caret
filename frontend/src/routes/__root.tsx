@@ -16,7 +16,7 @@ import { publicEnv } from "../app/public-env";
 import { AppError } from "../components/app-error";
 import { NotFoundPage } from "../features/not-found/page";
 
-const socialImage = `${publicEnv.origin}/images/og/oxytype.png`;
+const socialImage = `${publicEnv.origin}/images/og/caret.png`;
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -70,12 +70,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         {
           rel: "icon",
           type: "image/svg+xml",
-          href: "/images/favicon/oxytype.svg",
+          href: "/images/favicon/caret.svg",
         },
         {
           rel: "apple-touch-icon",
           sizes: "180x180",
-          href: "/images/icons/oxytype-180.png",
+          href: "/images/icons/caret-180.png",
         },
         { rel: "manifest", href: "/manifest.json" },
         ...["RobotoMono-Regular", "LexendDeca-Regular"].map((font) => ({

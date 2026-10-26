@@ -1,12 +1,12 @@
 import { JSXElement, Show } from "solid-js";
 
-import { OxytypeMark } from "../../../components/brand/oxytype-mark";
+import { CaretMark } from "../../../components/brand/caret-mark";
 import { cn } from "../../utils/cn";
 
 function LogoContent(props: { label?: string; focus?: boolean }): JSXElement {
   return (
     <>
-      <OxytypeMark
+      <CaretMark
         class={cn(
           "h-10 w-auto self-center transition-[fill]",
           props.focus ? "fill-sub" : "fill-main",

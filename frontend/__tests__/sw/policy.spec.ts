@@ -69,7 +69,7 @@ describe("service-worker request policy", () => {
     "/challenges/list.json",
     "/sounds/click1/click1_1.wav",
     "/quotes/english.json",
-    "/images/favicon/oxytype.svg",
+    "/images/favicon/caret.svg",
     "/manifest.json",
   ])("revalidates public static %s", (path) => {
     expect(classify(request(path), origin)).toBe("static");

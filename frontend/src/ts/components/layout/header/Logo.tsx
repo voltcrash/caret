@@ -1,6 +1,6 @@
 import { JSXElement } from "solid-js";
 
-import { OxytypeMark } from "../../../../components/brand/oxytype-mark";
+import { CaretMark } from "../../../../components/brand/caret-mark";
 import { useTypingRoute } from "../../../../components/typing-route-host";
 import { restartTestEvent } from "../../../events/test";
 import { getFocus } from "../../../states/test";
@@ -25,7 +25,7 @@ export function Logo(): JSXElement {
           if (typing()) restartTestEvent.dispatch();
         }}
       >
-        <OxytypeMark
+        <CaretMark
           class={cn(
             "h-full w-auto shrink-0 fill-current text-main transition-colors",
             {

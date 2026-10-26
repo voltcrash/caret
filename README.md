@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./frontend/static/images/og/oxytype.png" alt="Oxytype" width="600" />
+  <img src="./frontend/static/images/og/caret.png" alt="Oxytype" width="600" />
 </p>
 
 # Oxytype

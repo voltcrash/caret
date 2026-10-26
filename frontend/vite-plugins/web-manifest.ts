@@ -27,25 +27,25 @@ const webManifest: Readonly<WebManifest> = {
   categories: ["education", "productivity"],
   icons: [
     {
-      src: "/images/icons/oxytype-192.png",
+      src: "/images/icons/caret-192.png",
       sizes: "192x192",
       type: "image/png",
       purpose: "any",
     },
     {
-      src: "/images/icons/oxytype-512.png",
+      src: "/images/icons/caret-512.png",
       sizes: "512x512",
       type: "image/png",
       purpose: "any",
     },
     {
-      src: "/images/icons/oxytype-maskable-192.png",
+      src: "/images/icons/caret-maskable-192.png",
       sizes: "192x192",
       type: "image/png",
       purpose: "maskable",
     },
     {
-      src: "/images/icons/oxytype-maskable-512.png",
+      src: "/images/icons/caret-maskable-512.png",
       sizes: "512x512",
       type: "image/png",
       purpose: "maskable",

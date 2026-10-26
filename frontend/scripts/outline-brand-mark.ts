@@ -1,7 +1,7 @@
 /**
- * Prints `oxytypeMarkPath`: the mark's strokes outlined as filled shapes, all
+ * Prints `caretMarkPath`: the mark's strokes outlined as filled shapes, all
  * wound clockwise so nonzero fill unions them. Edit the strokes below, paste
- * the output into `src/components/brand/oxytype-icon.ts`, then run
+ * the output into `src/components/brand/caret-icon.ts`, then run
  * `vp run generate-brand-icons`.
  * vpx ./scripts/outline-brand-mark.ts
  */
