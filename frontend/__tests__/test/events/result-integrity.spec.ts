@@ -138,6 +138,18 @@ it.each([1000, 3_600_000, 86_400_000])(
       Array.from({ length: 80 }, () => "abc "),
     );
     try {
+      session.command({
+        op: "observe",
+        eventType: "keydown",
+        eventData: { code: "Enter" },
+        now: 0,
+      });
+      session.command({
+        op: "observe",
+        eventType: "keyup",
+        eventData: { code: "Enter" },
+        now: 40,
+      });
       for (let i = 0; i < 144; i++) {
         const now = origin + i * 104;
         const data = "abc ".charAt(i % 4);
