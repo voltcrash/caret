@@ -8,7 +8,7 @@ import {
   servesShell,
 } from "../../src/sw/policy";
 
-const origin = "https://oxytype.voltcrash.com";
+const origin = "https://caret.voltcrash.com";
 function request(
   path: string,
   options: { method?: string; mode?: string; origin?: string } = {},
@@ -88,17 +88,17 @@ describe("service-worker cache generations", () => {
 
   it("waits for legacy tabs and keeps their hashed assets one generation", () => {
     const names = [
-      "workbox-precache-v2-https://oxytype.voltcrash.com/",
+      "workbox-precache-v2-https://caret.voltcrash.com/",
       "caret-build-assets",
       "caret-languages",
-      "workbox-runtime-https://oxytype.voltcrash.com/",
+      "workbox-runtime-https://caret.voltcrash.com/",
       current,
     ];
     expect(activatesImmediately(true)).toBe(false);
     expect(obsoleteCaches(names, "b3")).toEqual([
-      "workbox-precache-v2-https://oxytype.voltcrash.com/",
+      "workbox-precache-v2-https://caret.voltcrash.com/",
       "caret-languages",
-      "workbox-runtime-https://oxytype.voltcrash.com/",
+      "workbox-runtime-https://caret.voltcrash.com/",
     ]);
   });
 

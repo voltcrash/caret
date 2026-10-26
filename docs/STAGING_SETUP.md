@@ -2,7 +2,7 @@
 
 For Oxytype maintainers testing the official staging site.
 
-Host frontend and API together at `https://oxytype-api-staging.voltcrash.workers.dev`
+Host frontend and API together at `https://caret-api-staging.voltcrash.workers.dev`
 to keep OAuth state/session cookies on one origin. The steps below configure
 credentials, deploy the site and enable browser testing.
 See [Turnstile](TURNSTILE.md) for local test keys and policy.
@@ -15,8 +15,8 @@ Create an **Oxytype Staging** OAuth app in
 
 | Field | Value |
 | --- | --- |
-| Homepage URL | `https://oxytype-api-staging.voltcrash.workers.dev` |
-| Callback URL | `https://oxytype-api-staging.voltcrash.workers.dev/api/auth/callback/github` |
+| Homepage URL | `https://caret-api-staging.voltcrash.workers.dev` |
+| Callback URL | `https://caret-api-staging.voltcrash.workers.dev/api/auth/callback/github` |
 
 Save its client ID and generated client secret in `frontend/.dev.vars.staging`:
 
@@ -33,7 +33,7 @@ do not copy local development vars or paste secrets into chat.
 
 Create a separate **managed** staging widget in the
 [Cloudflare Turnstile dashboard](https://dash.cloudflare.com/?to=/:account/turnstile).
-Allow `oxytype-api-staging.voltcrash.workers.dev` for the hosted staging frontend.
+Allow `caret-api-staging.voltcrash.workers.dev` for the hosted staging frontend.
 Allow `localhost` only when testing a local frontend.
 The worker checks that hostname and each form's action through
 [Siteverify](https://developers.cloudflare.com/turnstile/get-started/server-side-validation/).
@@ -68,7 +68,7 @@ or any changed file. Documents are rendered by native routes with no SPA fallbac
 D1 migrations keep their existing history; never bootstrap/reset retained data.
 
 Consumer retirement requires `CLOUDFLARE_API_TOKEN` with **Queues Write**. It
-detaches only `oxytype-api-staging` from `oxytype-staging-tasks`, using the staging
+detaches only `caret-api-staging` from `caret-staging-tasks`, using the staging
 account/Worker config. Queues, DLQ and messages remain subject to normal retention.
 Missing consumers/queues are a no-op; API failures stop deployment. The deploy
 command repeats retirement after artifact validation, preventing Cloudflare's
@@ -76,7 +76,7 @@ command repeats retirement after artifact validation, preventing Cloudflare's
 
 ## 4. Test the browser
 
-Open `https://oxytype-api-staging.voltcrash.workers.dev/login` in your regular browser.
+Open `https://caret-api-staging.voltcrash.workers.dev/login` in your regular browser.
 Sign in with GitHub, choose a username, complete Turnstile,
 complete a test, refresh, then sign out/sign in and confirm the result remains.
 Verify the browser requests the staging host. Use an ordinary typing sample to

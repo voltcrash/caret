@@ -2,7 +2,7 @@
 
 For Oxytype maintainers operating the official production site.
 
-One Worker serves the frontend and `/api` on `https://oxytype.voltcrash.com`.
+One Worker serves the frontend and `/api` on `https://caret.voltcrash.com`.
 Use `frontend/wrangler.production.json` explicitly. The default Wrangler config
 targets staging; the production release workflow uses the production config.
 
@@ -10,9 +10,9 @@ targets staging; the production release workflow uses the production config.
 
 | Resource | Production |
 | --- | --- |
-| Worker/custom domain | `oxytype` / `oxytype.voltcrash.com` |
-| D1 | `oxytype-production`, `43d104e9-2fef-43db-95d7-c64a08310714` |
-| Turnstile | Managed **Oxytype production**, hostname `oxytype.voltcrash.com` |
+| Worker/custom domain | `oxytype` / `caret.voltcrash.com` |
+| D1 | `caret-production`, `43d104e9-2fef-43db-95d7-c64a08310714` |
+| Turnstile | Managed **Oxytype production**, hostname `caret.voltcrash.com` |
 | GitHub OAuth | **Oxytype**, separate from local/staging apps |
 
 Workers.dev and preview URLs are disabled. Cloudflare manages the custom domain's
@@ -35,8 +35,8 @@ Keep this file private (mode `0600`). Preserve the production auth secret across
 redeployments; never copy staging/local secrets into it. The OAuth application's
 display name does not affect authentication. Its URLs must be:
 
-- Homepage: `https://oxytype.voltcrash.com`
-- Callback: `https://oxytype.voltcrash.com/api/auth/callback/github`
+- Homepage: `https://caret.voltcrash.com`
+- Callback: `https://caret.voltcrash.com/api/auth/callback/github`
 
 Save public build settings in ignored `frontend/.env.production.local`:
 
@@ -62,7 +62,7 @@ credentials; this API key does not replace `BETTER_AUTH_SECRET`.
 
 In the dashboard's **Connect Your App** form, use:
 
-- Base URL: `https://oxytype.voltcrash.com`
+- Base URL: `https://caret.voltcrash.com`
 - Base Path: `/api/auth`
 
 Deploy the integration before verifying the connection. Dashboard endpoints use
@@ -110,7 +110,7 @@ private file; local preview variables are removed from the archived artifact.
 Production deployments start automatically after successful main-push CI and use
 that exact snapshot. Complete staging acceptance before the first Start cutover.
 
-The retired `oxytype-production-tasks` consumer must be detached before uploading
+The retired `caret-production-tasks` consumer must be detached before uploading
 the Worker without a queue handler. Removing `queues` from Wrangler configuration
 does not detach an existing Cloudflare consumer; upload otherwise fails with
 `Queue handler is missing` (11001). The retirement command uses
@@ -188,7 +188,7 @@ Rerunning an old failed run retains its original snapshot and cannot pick up the
 
 ## Browser verification and monitoring
 
-Open `https://oxytype.voltcrash.com/login` in a regular browser. Sign in with
+Open `https://caret.voltcrash.com/login` in a regular browser. Sign in with
 GitHub, choose a username, complete Turnstile and a typing test. Refresh, then
 sign out/sign in and confirm the result remains. The popup returns to the
 standalone `/oauth-callback.html` page; frontend and API cookies share one HTTPS origin.

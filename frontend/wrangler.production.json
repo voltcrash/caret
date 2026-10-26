@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "oxytype",
+  "name": "caret",
   "main": "src/worker.ts",
   "account_id": "eb2679ce4f23ae7db4e6c4e3fcf8c3c1",
   "compatibility_date": "2026-10-02",
@@ -8,7 +8,7 @@
   "preview_urls": false,
   "routes": [
     {
-      "pattern": "oxytype.voltcrash.com",
+      "pattern": "caret.voltcrash.com",
       "custom_domain": true
     }
   ],
@@ -29,8 +29,8 @@
   },
   "vars": {
     "MODE": "production",
-    "FRONTEND_URL": "https://oxytype.voltcrash.com",
-    "BETTER_AUTH_URL": "https://oxytype.voltcrash.com/api/auth",
+    "FRONTEND_URL": "https://caret.voltcrash.com",
+    "BETTER_AUTH_URL": "https://caret.voltcrash.com/api/auth",
     "VERSION": "production",
     "PLACEMENT_MODE": "smart"
   },
@@ -133,12 +133,12 @@
     }
   ],
   "analytics_engine_datasets": [
-    { "binding": "METRICS", "dataset": "oxytype_requests" }
+    { "binding": "METRICS", "dataset": "caret_requests" }
   ],
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "oxytype-production",
+      "database_name": "caret-production",
       "database_id": "43d104e9-2fef-43db-95d7-c64a08310714",
       "migrations_dir": "../backend/migrations"
     }

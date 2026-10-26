@@ -8,7 +8,7 @@ import {
 } from "../../src/server/observability.server";
 
 function request(path: string, headers: Record<string, string> = {}): Request {
-  return new Request(`https://oxytype.test${path}`, {
+  return new Request(`https://caret.test${path}`, {
     method: "POST",
     headers,
   });

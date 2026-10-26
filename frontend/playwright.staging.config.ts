@@ -6,7 +6,7 @@ export default defineConfig({
   retries: 0,
   use: {
     ...devices["Desktop Chrome"],
-    baseURL: "https://oxytype-api-staging.voltcrash.workers.dev",
+    baseURL: "https://caret-api-staging.voltcrash.workers.dev",
     trace: "retain-on-failure",
   },
 });

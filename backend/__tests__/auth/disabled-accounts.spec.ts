@@ -5,7 +5,7 @@ import { unitApi, unitRuntime } from "../setup-tests";
 import { createAuth } from "../../src/init/auth";
 import * as AuthInit from "../../src/init/auth";
 
-const origin = "https://oxytype.test";
+const origin = "https://caret.test";
 const secret = "disabled-account-test-secret-at-least-32-characters";
 let auth: ReturnType<typeof createAuth>;
 

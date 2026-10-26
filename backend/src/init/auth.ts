@@ -63,7 +63,7 @@ export function createAuth(
     database: adapter,
     baseURL,
     basePath: new URL(baseURL).pathname,
-    secret: secret ?? "oxytype-local-development-secret-only",
+    secret: secret ?? "caret-local-development-secret-only",
     trustedOrigins: [new URL(frontendUrl).origin],
     socialProviders,
     advanced: {

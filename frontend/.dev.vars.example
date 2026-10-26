@@ -1,7 +1,7 @@
 MODE=dev
 FRONTEND_URL=http://localhost:3000
 BETTER_AUTH_URL=http://localhost:3000/api/auth
-BETTER_AUTH_SECRET=oxytype-local-development-secret-only
+BETTER_AUTH_SECRET=caret-local-development-secret-only
 # Cloudflare dummy key, accepted only in MODE=dev. Use a real secret on staging/production.
 TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
 # Google/GitHub callbacks: BETTER_AUTH_URL/callback/google (or /github)

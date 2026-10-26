@@ -25,11 +25,11 @@ describe("task consumer retirement command", () => {
         if (init.headers.Authorization !== 'Bearer cli-token-fixture') throw new Error('Wrong credentials');
         if (process.env.FIXTURE_DENIED === 'true') return new Response('denied', {status:403});
         if (init.method === 'DELETE') return Response.json({success:true,result:null});
-        const staging = url.includes('oxytype-staging-tasks');
+        const staging = url.includes('caret-staging-tasks');
         return Response.json({success:true,result:[{
           queue_id:'queue-fixture',
-          queue_name:staging?'oxytype-staging-tasks':'oxytype-production-tasks',
-          consumers:[{consumer_id:'consumer-fixture',type:'worker',script:staging?'oxytype-api-staging':'oxytype'}]
+          queue_name:staging?'caret-staging-tasks':'caret-production-tasks',
+          consumers:[{consumer_id:'consumer-fixture',type:'worker',script:staging?'caret-api-staging':'caret'}]
         }]});
       };`,
     );
@@ -55,7 +55,7 @@ describe("task consumer retirement command", () => {
       const outcome = run(environment);
       expect(outcome.status, outcome.stderr).toBe(0);
       expect(outcome.stdout).toContain(
-        `/accounts/eb2679ce4f23ae7db4e6c4e3fcf8c3c1/queues?name=oxytype-${environment}-tasks`,
+        `/accounts/eb2679ce4f23ae7db4e6c4e3fcf8c3c1/queues?name=caret-${environment}-tasks`,
       );
       expect(outcome.stdout).toContain(
         '/queues/queue-fixture/consumers/consumer-fixture","method":"DELETE"',

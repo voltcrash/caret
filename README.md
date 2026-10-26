@@ -52,6 +52,6 @@ See [CONTRIBUTING.md](./docs/CONTRIBUTING.md) and the [code of conduct](./docs/C
 
 ## Contact and security
 
-Public site: [oxytype.voltcrash.com](https://oxytype.voltcrash.com). Maintainers use [production operations](./docs/PRODUCTION_SETUP.md) for the official site's deployment and updates.
+Public site: [caret.voltcrash.com](https://caret.voltcrash.com). Maintainers use [production operations](./docs/PRODUCTION_SETUP.md) for the official site's deployment and updates.
 
 Use [GitHub discussions](https://github.com/voltcrash/oxytype/discussions) for general questions and feature ideas, and [the security policy](./docs/SECURITY.md) for private vulnerability reports.

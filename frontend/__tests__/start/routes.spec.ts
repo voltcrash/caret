@@ -28,7 +28,7 @@ describe("native public routes in workerd", () => {
     expect(response.headers.get("Cache-Control")).toBe("no-store");
     const html = await response.text();
     expect(html).toContain("ssr-profile | Oxytype");
-    expect(html).toContain("https://oxytype.voltcrash.com/profile/ssr-profile");
+    expect(html).toContain("https://caret.voltcrash.com/profile/ssr-profile");
     expect(html).toContain("ssr-profile public bio");
     expect(html).toContain('aria-label="Profile summary"');
     // Only the public DTO is serialized; never account credentials.

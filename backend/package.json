@@ -42,9 +42,9 @@
     "test-coverage": "vp test run --config coverage.config.ts --coverage",
     "anticheat:calibrate": "vpx ./scripts/anticheat-calibrate.ts",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "wrangler d1 migrations apply oxytype-staging --local && vp run db:optimize",
-    "db:optimize": "wrangler d1 execute oxytype-staging --local --command 'PRAGMA optimize'",
-    "db:bootstrap:production": "wrangler d1 execute oxytype-production --remote --config ../frontend/wrangler.production.json --file bootstrap/production.sql",
+    "db:migrate": "wrangler d1 migrations apply caret-staging --local && vp run db:optimize",
+    "db:optimize": "wrangler d1 execute caret-staging --local --command 'PRAGMA optimize'",
+    "db:bootstrap:production": "wrangler d1 execute caret-production --remote --config ../frontend/wrangler.production.json --file bootstrap/production.sql",
     "migration-inventory": "vpx ./scripts/migration-inventory.ts"
   },
   "dependencies": {

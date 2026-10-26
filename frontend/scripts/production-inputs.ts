@@ -7,7 +7,7 @@ const requiredSecrets = [
   "GITHUB_CLIENT_SECRET",
 ] as const;
 const configSchema = z.object({
-  name: z.literal("oxytype"),
+  name: z.literal("caret"),
   workers_dev: z.literal(false),
   vars: z.object({
     MODE: z.literal("production"),
@@ -22,7 +22,7 @@ const configSchema = z.object({
     .array(
       z.object({
         binding: z.literal("DB"),
-        database_name: z.literal("oxytype-production"),
+        database_name: z.literal("caret-production"),
         database_id: z.literal("43d104e9-2fef-43db-95d7-c64a08310714"),
         migrations_dir: z.literal("../backend/migrations"),
       }),
@@ -75,7 +75,7 @@ export function validateProductionInputs(inputs: {
   const authSecret = inputs.backend["BETTER_AUTH_SECRET"] as string;
   if (
     authSecret.length < 32 ||
-    authSecret === "oxytype-local-development-secret-only"
+    authSecret === "caret-local-development-secret-only"
   ) {
     throw new Error(
       "Use a new production BETTER_AUTH_SECRET with at least 32 characters",

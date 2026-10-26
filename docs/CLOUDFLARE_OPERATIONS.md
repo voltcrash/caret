@@ -48,8 +48,8 @@ Start mounts under `/api`.
 ## Staging deployment
 
 Dedicated account: Lakshmi Tanmay, `eb2679ce4f23ae7db4e6c4e3fcf8c3c1`.
-Worker: [oxytype-api-staging](https://oxytype-api-staging.voltcrash.workers.dev).
-Auth URL: `https://oxytype-api-staging.voltcrash.workers.dev/api/auth`. D1: `oxytype-staging`,
+Worker: [caret-api-staging](https://caret-api-staging.voltcrash.workers.dev).
+Auth URL: `https://caret-api-staging.voltcrash.workers.dev/api/auth`. D1: `caret-staging`,
 `17b0ae8b-92bf-4d7e-a29e-0ac4cc6f2b59`, APAC placement hint.
 Start delivery uses frontend/wrangler.staging.json; production uses its separate
 frontend/wrangler.production.json. Preserve existing remote auth/OAuth secrets.
@@ -148,7 +148,7 @@ always read the session row. Cached hits skip rate limits.
 ## Request metrics
 
 Every request writes one data point to the `METRICS` Analytics Engine dataset
-(`oxytype_requests` production, `oxytype_staging_requests` staging).
+(`caret_requests` production, `caret_staging_requests` staging).
 Columns are append-only:
 
 | Column | Value |
@@ -164,7 +164,7 @@ p95 latency per operation over the last hour (SQL API):
 SELECT blob1 AS operation,
   quantileExactWeighted(0.95)(double1, _sample_interval) AS p95_ms,
   sum(_sample_interval * double3) / sum(_sample_interval) AS d1_per_request
-FROM oxytype_requests
+FROM caret_requests
 WHERE timestamp > NOW() - INTERVAL '1' HOUR
 GROUP BY operation ORDER BY p95_ms DESC
 ```
@@ -185,7 +185,7 @@ To enable or verify independently with `CLOUDFLARE_API_TOKEN` configured:
 ```sh
 vp run --filter @caret/frontend db:replication:staging
 vp run --filter @caret/frontend db:replication:production
-vp exec wrangler d1 info oxytype-production --config frontend/wrangler.production.json --json
+vp exec wrangler d1 info caret-production --config frontend/wrangler.production.json --json
 ```
 
 No schema migration is needed. Enabling the database setting alone does not

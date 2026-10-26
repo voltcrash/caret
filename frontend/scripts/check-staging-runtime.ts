@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { writeFile } from "node:fs/promises";
 import { z } from "zod";
 
-const origin = "https://oxytype-api-staging.voltcrash.workers.dev";
+const origin = "https://caret-api-staging.voltcrash.workers.dev";
 const historySchema = z.object({
   files: z.record(
     z

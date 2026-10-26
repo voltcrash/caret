@@ -133,7 +133,7 @@ Built-in [anticheat](ANTICHEAT.md) checks scores and telemetry in all modes.
 ## Oxytype ownership boundaries
 
 The fork uses its own production auth secret, GitHub OAuth app, Turnstile widget
-and API endpoint at [oxytype.voltcrash.com](https://oxytype.voltcrash.com). Other
+and API endpoint at [caret.voltcrash.com](https://caret.voltcrash.com). Other
 optional integrations need deployment-owned credentials before enabling them.
 Public contact and security reporting use the Oxytype repository and its security
 policy. The

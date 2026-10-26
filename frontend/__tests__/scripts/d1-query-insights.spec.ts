@@ -24,7 +24,7 @@ describe("D1 Insights reports", () => {
       warnings: ["slow-query", "high-row-scan"],
       totalRowsRead: 40000,
     });
-    const markdown = insightSummary("oxytype-production", {
+    const markdown = insightSummary("caret-production", {
       "total-time": report,
     });
     for (const text of [JSON.stringify(report), markdown]) {
@@ -47,7 +47,7 @@ describe("D1 Insights reports", () => {
 
   it("keeps an empty sampling window explicit", () => {
     expect(
-      insightSummary("oxytype-staging", {
+      insightSummary("caret-staging", {
         "total-time": summarizeInsights([]),
       }),
     ).toContain("No query samples returned");

@@ -31,7 +31,7 @@ describe("built Start service worker", () => {
     const source = readFileSync(resolve(client, "sw.js"), "utf8");
     runInNewContext(source, {
       URL,
-      location: { origin: "https://oxytype.test" },
+      location: { origin: "https://caret.test" },
       registration: { active: null },
       caches: {
         open: async () => ({ put }),

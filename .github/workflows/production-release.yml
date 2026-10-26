@@ -13,7 +13,7 @@ permissions:
   actions: read
 
 concurrency:
-  group: oxytype-production-release
+  group: caret-production-release
   cancel-in-progress: false
 
 env:
@@ -41,7 +41,7 @@ jobs:
       DEPLOYMENT_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
     environment:
       name: production
-      url: https://oxytype.voltcrash.com
+      url: https://caret.voltcrash.com
     steps:
       - name: Check out the run's main snapshot
         uses: actions/checkout@v7.0.1
