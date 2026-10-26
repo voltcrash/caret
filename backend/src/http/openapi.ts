@@ -36,12 +36,12 @@ export function getOpenApi(basePath = "/"): OpenAPIObject {
     {
       openapi: "3.1.0",
       info: {
-        title: "Oxytype API",
+        title: "Caret API",
         description:
-          "Documentation for the endpoints provided by the Oxytype API server.\n\nPrivate endpoints require an authenticated browser session or a Bearer session token. Rate limits are documented per operation.",
+          "Documentation for the endpoints provided by the Caret API server.\n\nPrivate endpoints require an authenticated browser session or a Bearer session token. Rate limits are documented per operation.",
         version: `2.${COMPATIBILITY_CHECK}.0`,
         contact: {
-          name: "Oxytype repository",
+          name: "Caret repository",
           url: "https://github.com/voltcrash/caret",
         },
         license: {

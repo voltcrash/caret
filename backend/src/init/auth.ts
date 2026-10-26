@@ -57,7 +57,7 @@ export function createAuth(
     throw new Error("BETTER_AUTH_URL must be configured for production");
   }
   const options: BetterAuthOptions = {
-    appName: "Oxytype",
+    appName: "Caret",
     // Better Auth accepts adapter factories through its database option.
     // oxlint-disable-next-line typescript/no-unsafe-assignment -- Better Auth's database option includes untyped drivers; this value uses its adapter API.
     database: adapter,

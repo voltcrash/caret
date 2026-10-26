@@ -239,7 +239,7 @@ it.each(["", "ba_dashboard_workflow_fixture"])(
     if (script === undefined) {
       throw new Error("Missing deployment settings script");
     }
-    const directory = mkdtempSync(join(tmpdir(), "oxytype-deploy-settings-"));
+    const directory = mkdtempSync(join(tmpdir(), "caret-deploy-settings-"));
     const manifest = '{"name":"fixture","private":true}\n';
     try {
       mkdirSync(join(directory, "frontend"));

@@ -1,4 +1,4 @@
-# Oxytype deployment helpers
+# Caret deployment helpers
 
 ## Website production deployments
 

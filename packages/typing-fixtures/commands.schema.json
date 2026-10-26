@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "caret:engine-command-fixture:1",
-  "title": "Oxytype deterministic command fixture v1",
+  "title": "Caret deterministic command fixture v1",
   "type": "object",
   "required": ["name", "config", "words", "commands"],
   "additionalProperties": false,
