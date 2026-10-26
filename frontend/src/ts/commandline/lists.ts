@@ -321,7 +321,7 @@ const getCommands = createAccountOwned<CommandsSubgroup>(() => ({
       display: "Open project discussions",
       icon: "fa-users",
       exec: (): void => {
-        window.open("https://github.com/voltcrash/oxytype/discussions");
+        window.open("https://github.com/voltcrash/caret/discussions");
       },
     },
     {

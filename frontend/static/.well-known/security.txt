@@ -1,4 +1,4 @@
-Contact: https://github.com/voltcrash/oxytype/security/policy
+Contact: https://github.com/voltcrash/caret/security/policy
 Expires: 2026-12-31T23:59:59.999Z
 Preferred-Languages: en
 Canonical: https://caret.voltcrash.com/.well-known/security.txt

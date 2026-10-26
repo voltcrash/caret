@@ -12,7 +12,7 @@ export async function requireSuccessfulProductionCI({ github, context, sha }) {
   }
   const { data } = await github.rest.actions.listWorkflowRuns({
     ...context.repo,
-    workflow_id: "oxytype-ci.yml",
+    workflow_id: "caret-ci.yml",
     branch: "main",
     event: "push",
     head_sha: sha,
@@ -28,12 +28,12 @@ export async function requireSuccessfulProductionCI({ github, context, sha }) {
     .sort((a, b) => b.id - a.id)[0];
   if (run === undefined) {
     throw new Error(
-      `No main-push Oxytype CI run for ${sha}; retry after CI succeeds`,
+      `No main-push Caret CI run for ${sha}; retry after CI succeeds`,
     );
   }
   if (run.status !== "completed" || run.conclusion !== "success") {
     throw new Error(
-      `Oxytype CI ${run.id} is ${run.status}/${run.conclusion ?? "pending"} for ${sha}; retry after CI succeeds`,
+      `Caret CI ${run.id} is ${run.status}/${run.conclusion ?? "pending"} for ${sha}; retry after CI succeeds`,
     );
   }
   return run;

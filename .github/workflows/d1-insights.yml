@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   report:
-    if: github.repository == 'voltcrash/oxytype' && github.ref == 'refs/heads/main'
+    if: github.repository == 'voltcrash/caret' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: production

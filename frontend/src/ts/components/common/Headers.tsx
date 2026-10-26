@@ -25,7 +25,7 @@ export function H2(props: {
   );
 }
 
-// oxlint-disable-next-line oxytype-rules/one-component-per-file -- Keep related heading levels together with their shared presentation.
+// oxlint-disable-next-line caret-rules/one-component-per-file -- Keep related heading levels together with their shared presentation.
 export function H3(props: {
   id?: string;
   class?: string;

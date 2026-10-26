@@ -102,7 +102,7 @@ export function Nav(): JSXElement {
           "data-nav-item": "github",
           "aria-label": "GitHub",
         }}
-        href="https://github.com/voltcrash/oxytype"
+        href="https://github.com/voltcrash/caret"
       />
       <Button
         variant="text"

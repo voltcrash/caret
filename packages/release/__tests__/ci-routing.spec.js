@@ -8,7 +8,7 @@ import { parse } from "yaml";
 
 const workflow = parse(
   readFileSync(
-    new URL("../../../.github/workflows/oxytype-ci.yml", import.meta.url),
+    new URL("../../../.github/workflows/caret-ci.yml", import.meta.url),
     "utf8",
   ),
 );
@@ -32,7 +32,7 @@ function selected(files, { full = false } = {}) {
   const changed = Object.entries(filters)
     .filter(([, patterns]) => files.some((file) => matches(file, patterns)))
     .map(([name]) => name);
-  const directory = mkdtempSync(join(tmpdir(), "oxytype-ci-routing-"));
+  const directory = mkdtempSync(join(tmpdir(), "caret-ci-routing-"));
   const output = join(directory, "outputs");
   try {
     execFileSync("bash", ["-e"], {
@@ -99,7 +99,7 @@ it.each([
   "patches/dependency.patch",
   "packages/typescript-config/base.json",
   ".github/actions/setup/action.yml",
-  ".github/workflows/oxytype-ci.yml",
+  ".github/workflows/caret-ci.yml",
   ".github/workflows/production-release.yml",
 ])("runs every job for shared input %s", (file) => {
   expect(selected([file])).toEqual(allJobs);

@@ -9,25 +9,25 @@
     "restriction": "off",
     "nursery": "off",
   },
-  "jsPlugins": ["./plugins/oxytype-rules.js"],
+  "jsPlugins": ["./plugins/caret-rules.js"],
   "rules": {
-    "oxytype-rules/no-testing-access": "error",
-    "oxytype-rules/no-mixed-nullish-coalescing": "error",
+    "caret-rules/no-testing-access": "error",
+    "caret-rules/no-mixed-nullish-coalescing": "error",
   },
   "overrides": [
     {
       "files": ["**/__tests__/**/*.ts"],
       "rules": {
-        "oxytype-rules/no-testing-access": "off",
+        "caret-rules/no-testing-access": "off",
       },
     },
     {
       "files": ["**/*.tsx"],
       "rules": {
-        "oxytype-rules/no-non-reactive-access-in-components": "error",
-        "oxytype-rules/prefer-arrow-in-component": "error",
-        "oxytype-rules/one-component-per-file": "error",
-        "oxytype-rules/component-pascal-case": "error",
+        "caret-rules/no-non-reactive-access-in-components": "error",
+        "caret-rules/prefer-arrow-in-component": "error",
+        "caret-rules/one-component-per-file": "error",
+        "caret-rules/component-pascal-case": "error",
       },
     },
   ],

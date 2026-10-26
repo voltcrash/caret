@@ -15,7 +15,7 @@ it("shows Oxytype's policy placeholder and its own contact destination", () => {
   );
   expect(container.querySelector("main a")).toHaveAttribute(
     "href",
-    "https://github.com/voltcrash/oxytype/discussions",
+    "https://github.com/voltcrash/caret/discussions",
   );
   expect(container.querySelector('a[href="#opt-out"]')).toBeNull();
   expect(container.querySelector('a[href*="monkeytype.com"]')).toBeNull();

@@ -60,5 +60,5 @@ Use WOFF2 files, valid font names and matching schema/constants entries. See
 
 ## Questions
 
-Open an [issue](https://github.com/voltcrash/oxytype/issues) for bugs or a
-[discussion](https://github.com/voltcrash/oxytype/discussions) for questions and ideas.
+Open an [issue](https://github.com/voltcrash/caret/issues) for bugs or a
+[discussion](https://github.com/voltcrash/caret/discussions) for questions and ideas.

@@ -2,7 +2,7 @@ import { expect, it, vi } from "vite-plus/test";
 import { requireSuccessfulProductionCI } from "../src/production-validation.js";
 
 const context = {
-  repo: { owner: "voltcrash", repo: "oxytype" },
+  repo: { owner: "voltcrash", repo: "caret" },
   sha: "deployment-sha",
 };
 function run(fields = {}) {
@@ -13,7 +13,7 @@ function run(fields = {}) {
     event: "push",
     status: "completed",
     conclusion: "success",
-    html_url: "https://github.com/voltcrash/oxytype/actions/runs/42",
+    html_url: "https://github.com/voltcrash/caret/actions/runs/42",
     ...fields,
   };
 }
@@ -32,7 +32,7 @@ it("requires successful CI for the exact main-push snapshot", async () => {
   expect(await requireSuccessfulProductionCI(options)).toEqual(run());
   expect(options.github.rest.actions.listWorkflowRuns).toHaveBeenCalledWith({
     ...context.repo,
-    workflow_id: "oxytype-ci.yml",
+    workflow_id: "caret-ci.yml",
     branch: "main",
     event: "push",
     head_sha: context.sha,

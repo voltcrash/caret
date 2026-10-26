@@ -66,7 +66,7 @@ function containsJSXReturn(node) {
 
 const plugin = {
   meta: {
-    name: "oxytype-rules",
+    name: "caret-rules",
   },
   rules: {
     "no-testing-access": defineRule({

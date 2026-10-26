@@ -1,6 +1,6 @@
 if [ "$(git symbolic-ref --short HEAD)" = "master" ]; then
   case "$(git remote get-url origin)" in
-    https://github.com/voltcrash/oxytype|https://github.com/voltcrash/oxytype.git|git@github.com:voltcrash/oxytype.git) ;;
+    https://github.com/voltcrash/caret|https://github.com/voltcrash/caret.git|git@github.com:voltcrash/caret.git) ;;
     *) exit 0 ;;
   esac
   vp exec commitlint --edit "${1}"

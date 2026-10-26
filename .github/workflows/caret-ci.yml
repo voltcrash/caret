@@ -1,4 +1,4 @@
-name: Oxytype CI
+name: Caret CI
 
 env:
   TURNSTILE_SITE_KEY: "1x00000000000000000000AA"
@@ -64,7 +64,7 @@ jobs:
               - 'patches/**'
               - 'packages/typescript-config/**'
               - '.github/actions/**'
-              - '.github/workflows/oxytype-ci.yml'
+              - '.github/workflows/caret-ci.yml'
               # Deploys run the production build and release helpers.
               - '.github/workflows/production-release.yml'
             lint-config:

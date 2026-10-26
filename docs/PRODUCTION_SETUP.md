@@ -143,7 +143,7 @@ legacy → Start → legacy and Start → Start rollbacks this way in Stage 7.
 ## Production deployments
 
 The **Production deployment** [Actions workflow](../.github/workflows/production-release.yml)
-runs automatically when **Oxytype CI** finishes successfully for each push to
+runs automatically when **Caret CI** finishes successfully for each push to
 `main`. Deployment checks out the completed CI run's exact commit, even if `main`
 has advanced. Failed, cancelled, skipped and pull-request CI runs cannot deploy.
 No manual trigger is needed after merging a change.
@@ -155,7 +155,7 @@ complete frontend/API site with the production Wrangler config, including a
 repeat deployment of the same commit. It creates no GitHub release, tag,
 changelog, release snapshot or package-version change.
 
-The latest **Oxytype CI** main-push run for the exact snapshot must pass first.
+The latest **Caret CI** main-push run for the exact snapshot must pass first.
 Runs are serialized; the deployment validates the matched client/Worker artifact,
 detaches the retired task consumer, applies pending compatible D1 migrations and
 uploads it with Wrangler.

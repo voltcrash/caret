@@ -1,6 +1,6 @@
 # Continuous integration
 
-[Oxytype CI](../.github/workflows/oxytype-ci.yml) runs on pull requests to
+[Caret CI](../.github/workflows/caret-ci.yml) runs on pull requests to
 `main`/`stack/**`, pushes to `main` and manual dispatch. Successful main-push
 runs trigger the [production deployment](PRODUCTION_SETUP.md).
 
@@ -47,7 +47,7 @@ covers these rules.
 
 - Draft PRs skip CI; add the `force-ci` label to run it anyway.
 - `force-full-ci` runs every job regardless of paths.
-- **Run workflow** (`gh workflow run oxytype-ci.yml --ref <branch>`) runs every
+- **Run workflow** (`gh workflow run caret-ci.yml --ref <branch>`) runs every
   job. Manual runs never deploy.
 
 ## Changing CI

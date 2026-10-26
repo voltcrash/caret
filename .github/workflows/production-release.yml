@@ -3,7 +3,7 @@ name: Production deployment
 # Deploy successful main-push CI snapshots automatically; allow manual retries.
 on:
   workflow_run:
-    workflows: [Oxytype CI]
+    workflows: [Caret CI]
     types: [completed]
     branches: [main]
   workflow_dispatch:
@@ -22,7 +22,7 @@ env:
 jobs:
   deploy:
     if: >-
-      github.repository == 'voltcrash/oxytype' &&
+      github.repository == 'voltcrash/caret' &&
       (
         (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
         (
@@ -56,7 +56,7 @@ jobs:
           script: |
             const { requireSuccessfulProductionCI } = await import(`${process.env.GITHUB_WORKSPACE}/packages/release/src/production-validation.js`);
             const run = await requireSuccessfulProductionCI({ github, context, sha: process.env.DEPLOYMENT_SHA });
-            await core.summary.addLink('Validated Oxytype CI', run.html_url).write();
+            await core.summary.addLink('Validated Caret CI', run.html_url).write();
 
       - name: Set up Vite+
         uses: voidzero-dev/setup-vp@v1.22.0

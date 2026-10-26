@@ -20,7 +20,7 @@ private Xvfb displays, retaining exact versions and input/output/cleanup evidenc
 | aarch64-apple-darwin | macOS 15 Apple Silicon; deployment target explicitly 15.0 | Pass |
 
 All four native candidates, both real Linux emulator jobs and corresponding
-source passed [run 40085257392](https://github.com/voltcrash/oxytype/actions/runs/40085257392)
+source passed [run 40085257392](https://github.com/voltcrash/caret/actions/runs/40085257392)
 for source head `6f6b25f7f4c2dc63958b3c3ccfa84d47676a4f1f`.
 [terminal-artifacts.json](terminal-artifacts.json) records exact downloaded sizes
 and SHA-256 hashes. All five checksums and binary/source revision pairs were

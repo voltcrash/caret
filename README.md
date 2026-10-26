@@ -48,10 +48,10 @@ for tested platforms and pending real-terminal checks; no release published yet.
 
 ## Contributing
 
-See [CONTRIBUTING.md](./docs/CONTRIBUTING.md) and the [code of conduct](./docs/CODE_OF_CONDUCT.md). Report bugs in the [Oxytype repository](https://github.com/voltcrash/oxytype/issues).
+See [CONTRIBUTING.md](./docs/CONTRIBUTING.md) and the [code of conduct](./docs/CODE_OF_CONDUCT.md). Report bugs in the [Oxytype repository](https://github.com/voltcrash/caret/issues).
 
 ## Contact and security
 
 Public site: [caret.voltcrash.com](https://caret.voltcrash.com). Maintainers use [production operations](./docs/PRODUCTION_SETUP.md) for the official site's deployment and updates.
 
-Use [GitHub discussions](https://github.com/voltcrash/oxytype/discussions) for general questions and feature ideas, and [the security policy](./docs/SECURITY.md) for private vulnerability reports.
+Use [GitHub discussions](https://github.com/voltcrash/caret/discussions) for general questions and feature ideas, and [the security policy](./docs/SECURITY.md) for private vulnerability reports.

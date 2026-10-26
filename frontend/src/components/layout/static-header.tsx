@@ -58,7 +58,7 @@ export function StaticHeader(props: { fixed: boolean }): JSXElement {
         <Button
           variant="text"
           fa={{ icon: "fa-github", variant: "brand", fixedWidth: true }}
-          href="https://github.com/voltcrash/oxytype"
+          href="https://github.com/voltcrash/caret"
           class={navButton}
           dataset={{ "data-nav-item": "github", "aria-label": "GitHub" }}
         />

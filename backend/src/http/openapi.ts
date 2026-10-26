@@ -42,7 +42,7 @@ export function getOpenApi(basePath = "/"): OpenAPIObject {
         version: `2.${COMPATIBILITY_CHECK}.0`,
         contact: {
           name: "Oxytype repository",
-          url: "https://github.com/voltcrash/oxytype",
+          url: "https://github.com/voltcrash/caret",
         },
         license: {
           name: "GPL-3.0",

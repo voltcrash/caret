@@ -19,7 +19,7 @@ export function PrivacyPolicy() {
         <p>
           <a
             class="text-main underline"
-            href="https://github.com/voltcrash/oxytype/discussions"
+            href="https://github.com/voltcrash/caret/discussions"
           >
             Visit project discussions
           </a>
