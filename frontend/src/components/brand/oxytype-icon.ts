@@ -12,20 +12,19 @@ export const oxytypeMarkViewBox = "0 0 48 48";
 export const oxytypeBrandColors = { bg: "#323437", main: "#e2b714" } as const;
 
 /**
- * App icon: the mark on a rounded tile. `maskable` drops the corner radius
- * and shrinks the mark into the safe zone, for launchers that crop.
+ * App icon: the mark on a tile. Defaults suit favicons; launcher icons that
+ * get cropped pass `radius: 0` and a smaller `scale` to stay in the safe zone.
  */
 export function oxytypeIconSvg(
   colors: { bg: string; main: string } = oxytypeBrandColors,
-  options: { maskable?: boolean } = {},
+  options: { radius?: number; scale?: number } = {},
 ): string {
-  const scale = options.maskable === true ? 0.62 : 0.8;
-  const offset = 24 * (1 - scale);
-  const radius = options.maskable === true ? 0 : 11;
+  const { radius = 11, scale = 0.8 } = options;
+  const offset = +(24 * (1 - scale)).toFixed(2);
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${oxytypeMarkViewBox}">` +
     `<rect width="48" height="48" rx="${radius}" fill="${colors.bg}"/>` +
-    `<path transform="translate(${offset.toFixed(2)} ${offset.toFixed(2)}) scale(${scale})" fill="${colors.main}" d="${oxytypeMarkPath}"/>` +
+    `<path transform="translate(${offset} ${offset}) scale(${scale})" fill="${colors.main}" d="${oxytypeMarkPath}"/>` +
     `</svg>`
   );
 }
