@@ -1,18 +1,17 @@
 import { JSXElement, Show } from "solid-js";
 
+import { OxytypeMark } from "../../../components/brand/oxytype-mark";
 import { cn } from "../../utils/cn";
 
 function LogoContent(props: { label?: string; focus?: boolean }): JSXElement {
   return (
     <>
-      <div
+      <OxytypeMark
         class={cn(
-          "icon grid w-10 items-center bg-transparent [&_svg_path]:transition-[fill]",
-          props.focus ? "[&_svg_path]:fill-sub" : "[&_svg_path]:fill-main",
+          "w-10 self-center transition-[fill]",
+          props.focus ? "fill-sub" : "fill-main",
         )}
-      >
-        <img src="/images/favicon/oxytype.svg" alt="" width="40" height="40" />
-      </div>
+      />
       <div class="text relative -mt-[0.23em] [font-family:'Lexend_Deca',sans-serif] text-[1.5rem] leading-[1.5rem] font-normal transition-colors sm:text-[2rem] sm:leading-[2rem]">
         oxytype
         <Show when={props.label}>
