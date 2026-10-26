@@ -1,13 +1,52 @@
 import { expect, it } from "vite-plus/test";
 import { nativeSession } from "../../__harness__/native-engine.node";
-import { analyzeLog, encodeText } from "@oxytype/typing-engine/browser.client";
+import {
+  analyzeLog,
+  encodeText,
+  type BrowserSession,
+  type Log,
+} from "@oxytype/typing-engine/browser.client";
 import { projectEngineConfig } from "@oxytype/typing-engine/config";
-import { CompletedEventSchema } from "@oxytype/schemas/results";
+import {
+  CompletedEventSchema,
+  type CompletedEvent,
+} from "@oxytype/schemas/results";
 import { getDefaultConfig } from "../../../src/ts/constants/default-config";
 import {
   getResultFailure,
   getKeyDataFailure,
 } from "../../../../backend/src/anticheat";
+
+function completedResult(
+  session: BrowserSession,
+  config: Parameters<typeof projectEngineConfig>[0],
+): { log: Log; result: CompletedEvent } {
+  const log = session.log();
+  const completed = analyzeLog(log, {
+    op: "completed",
+    context: {
+      config: projectEngineConfig(config),
+      client: null,
+      offline: null,
+      currentQuote: null,
+      customText: null,
+      tags: [],
+      bailedOut: false,
+      restartCount: 0,
+      incompleteTests: [],
+      incompleteSeconds: 0,
+      timestamp: 1700000000000,
+    },
+  }).result;
+  return {
+    log,
+    result: CompletedEventSchema.parse({
+      ...completed,
+      uid: "test-user",
+      hash: "hash",
+    }),
+  };
+}
 
 it.each(["physical", "input-only", "single-prestart"])(
   "accepts completed native sessions with %s keyboard telemetry",
@@ -70,28 +109,7 @@ it.each(["physical", "input-only", "single-prestart"])(
       session.command({ op: "advance", now: 16001, date: 16001 });
       session.command({ op: "finalize", now: 16002 });
       session.command({ op: "finalize", now: 16003 });
-      const log = session.log();
-      const completed = analyzeLog(log, {
-        op: "completed",
-        context: {
-          config: projectEngineConfig(config),
-          client: null,
-          offline: null,
-          currentQuote: null,
-          customText: null,
-          tags: [],
-          bailedOut: false,
-          restartCount: 0,
-          incompleteTests: [],
-          incompleteSeconds: 0,
-          timestamp: 1700000000000,
-        },
-      }).result;
-      const result = CompletedEventSchema.parse({
-        ...completed,
-        uid: "test-user",
-        hash: "hash",
-      });
+      const { result } = completedResult(session, config);
       expect(result).toMatchObject({
         wpm: 123.2,
         rawWpm: 123.2,
