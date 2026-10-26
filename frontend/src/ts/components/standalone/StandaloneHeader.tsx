@@ -8,7 +8,7 @@ function LogoContent(props: { label?: string; focus?: boolean }): JSXElement {
     <>
       <OxytypeMark
         class={cn(
-          "w-10 self-center transition-[fill]",
+          "h-10 w-auto self-center transition-[fill]",
           props.focus ? "fill-sub" : "fill-main",
         )}
       />
