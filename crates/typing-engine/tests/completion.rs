@@ -182,5 +182,17 @@ fn completion_blocks_new_observations_but_preserves_outstanding_key_releases() {
         let log = serde_json::from_value(finished.clone()).unwrap();
         let summary = typing_engine::stats::typed_summary(&log).unwrap();
         assert_eq!(summary.key_duration, vec![40.0, 40.0]);
+        for (kind, data) in [
+            ("keydown", json!({"code":"KeyA"})),
+            ("keyup", json!({"code":"KeyA"})),
+        ] {
+            let ignored = command(
+                &mut session,
+                json!({"op":"observe","eventType":kind,"eventData":data,"now":15182.7}),
+            )
+            .unwrap();
+            assert!(ignored.events.is_empty());
+            assert_eq!(session.log(), finished);
+        }
     }
 }
