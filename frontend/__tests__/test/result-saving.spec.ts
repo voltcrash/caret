@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
 import type { CompletedEvent } from "@oxytype/schemas/results";
+import { bindTypingActivity } from "../../src/features/typing/scope";
 import { saveResult } from "../../src/features/typing/runtime/result-saving";
 import { showConfetti } from "../../src/features/typing/runtime/result";
 import { __testing } from "../../src/ts/config/testing";
@@ -106,4 +107,19 @@ describe.each(presets)("PB confetti: %s %s", (mode, mode2) => {
     await saveResult(result(mode, mode2), false);
     expect(showConfetti).not.toHaveBeenCalled();
   });
+});
+
+it("does not celebrate a PB after leaving the typing route", async () => {
+  let active = true;
+  const unbind = bindTypingActivity(() => active);
+  mockOperation("results.add", () => {
+    active = false;
+    return ok({ insertedId: "saved", isPb: true });
+  });
+  try {
+    await saveResult(result("time", "15"), false);
+    expect(showConfetti).not.toHaveBeenCalled();
+  } finally {
+    unbind();
+  }
 });
