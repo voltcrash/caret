@@ -1,6 +1,6 @@
 import { and, eq, asc } from "drizzle-orm";
-import type { ApproveQuote, Quote } from "@oxytype/schemas/quotes";
-import type { Language } from "@oxytype/schemas/languages";
+import type { ApproveQuote, Quote } from "@caret/schemas/quotes";
+import type { Language } from "@caret/schemas/languages";
 import { compareTwoStrings } from "../utils/string-similarity";
 import { database, statement, encode } from "../db/client";
 import { quoteSubmissions } from "../db/schema";

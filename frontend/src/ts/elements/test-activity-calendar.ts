@@ -1,5 +1,5 @@
 import { UTCDateMini } from "@date-fns/utc/date/mini";
-import { safeNumber } from "@oxytype/util/numbers";
+import { safeNumber } from "@caret/util/numbers";
 import {
   format,
   endOfMonth,

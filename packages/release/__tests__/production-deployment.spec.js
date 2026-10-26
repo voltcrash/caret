@@ -134,13 +134,13 @@ it("validates the exact deployment snapshot before building and applying migrati
     "${{ env.DEPLOYMENT_SHA }}-${{ github.run_id }}-${{ github.run_attempt }}",
   );
   expect(steps[deploy].run).toContain(
-    "--filter @oxytype/frontend deploy:production-site",
+    "--filter @caret/frontend deploy:production-site",
   );
   expect(steps[retire].env.CLOUDFLARE_API_TOKEN).toBe(
     "${{ secrets.CLOUDFLARE_API_TOKEN }}",
   );
   expect(steps[retire].run).toBe(
-    "vp run --filter @oxytype/frontend retire:production-task-consumer",
+    "vp run --filter @caret/frontend retire:production-task-consumer",
   );
 });
 

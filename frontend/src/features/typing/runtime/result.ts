@@ -56,7 +56,7 @@ import * as Focus from "./focus";
 import * as CustomText from "./custom-text";
 import * as Funbox from "./funbox/funbox";
 import type { AnnotationOptions } from "chartjs-plugin-annotation";
-import { CompletedEvent } from "@oxytype/schemas/results";
+import { CompletedEvent } from "@caret/schemas/results";
 
 import { canQuickRestart as canQuickRestartFn } from "../../../ts/utils/quick-restart";
 

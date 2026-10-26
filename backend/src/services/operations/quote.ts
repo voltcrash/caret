@@ -1,5 +1,5 @@
-import { tryCatch } from "@oxytype/util/trycatch";
-import type { CaptchaAction } from "@oxytype/contracts/captcha";
+import { tryCatch } from "@caret/util/trycatch";
+import type { CaptchaAction } from "@caret/contracts/captcha";
 import { atomicUser } from "../../db/mutation";
 import { randomUUID } from "node:crypto";
 import { getPartialUser, updateQuoteRatings } from "../../dal/user";
@@ -22,9 +22,9 @@ import {
   IsSubmissionEnabledResponse,
   RejectQuoteRequest,
   ReportQuoteRequest,
-} from "@oxytype/contracts/quotes";
+} from "@caret/contracts/quotes";
 import type { ServiceContext, OperationInput } from "../context";
-import { Language } from "@oxytype/schemas/languages";
+import { Language } from "@caret/schemas/languages";
 
 async function verifyCaptcha(
   captcha: string,

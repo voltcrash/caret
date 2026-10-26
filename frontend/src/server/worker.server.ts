@@ -3,8 +3,8 @@ import type {
   ExecutionContext,
   ScheduledController,
 } from "@cloudflare/workers-types";
-import { runtime, withRuntime, type WorkerEnv } from "@oxytype/backend/runtime";
-import { scheduled } from "@oxytype/backend/jobs";
+import { runtime, withRuntime, type WorkerEnv } from "@caret/backend/runtime";
+import { scheduled } from "@caret/backend/jobs";
 import { boundedRequest } from "./request-body.server";
 import {
   EDGE_CACHE_HIT,

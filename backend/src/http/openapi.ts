@@ -1,8 +1,8 @@
 import { isRetainedHttpOperation } from "./retention";
 import type { OperationId } from "../policies/operations";
 import { generateOpenApi } from "@ts-rest/open-api";
-import { COMPATIBILITY_CHECK, contract } from "@oxytype/contracts/index";
-import { EndpointMetadata, PermissionId } from "@oxytype/contracts/util/api";
+import { COMPATIBILITY_CHECK, contract } from "@caret/contracts/index";
+import { EndpointMetadata, PermissionId } from "@caret/contracts/util/api";
 type OpenAPIObject = ReturnType<typeof generateOpenApi>;
 type OperationObject = Parameters<
   NonNullable<
@@ -13,7 +13,7 @@ import {
   limits,
   RateLimiterId,
   Window,
-} from "@oxytype/contracts/rate-limit/index";
+} from "@caret/contracts/rate-limit/index";
 import { formatDuration } from "date-fns";
 
 type SecurityRequirementObject = {

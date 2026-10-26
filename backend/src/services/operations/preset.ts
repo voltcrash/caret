@@ -3,10 +3,10 @@ import {
   AddPresetResponse,
   DeletePresetsParams,
   GetPresetResponse,
-} from "@oxytype/contracts/presets";
+} from "@caret/contracts/presets";
 import * as PresetDAL from "../../dal/preset";
 import { MonkeyResponse } from "../../utils/monkey-response";
-import { EditPresetRequest } from "@oxytype/schemas/presets";
+import { EditPresetRequest } from "@caret/schemas/presets";
 import type { ServiceContext, OperationInput } from "../context";
 
 export async function getPresets(

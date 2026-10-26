@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { and, eq, or } from "drizzle-orm";
-import type { User } from "@oxytype/schemas/users";
+import type { User } from "@caret/schemas/users";
 import { database } from "../db/client";
 import { blocklist } from "../db/schema";
 type Properties = Pick<User, "name" | "email">;

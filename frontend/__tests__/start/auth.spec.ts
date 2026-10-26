@@ -3,7 +3,7 @@ import { createWorkerd, seedSession } from "./workerd";
 import { rpcPath } from "./rpc";
 import { z } from "zod";
 import { fromCrossJSON, toJSONAsync } from "seroval";
-import { SessionStateSchema } from "@oxytype/schemas/auth-session";
+import { SessionStateSchema } from "@caret/schemas/auth-session";
 let mf: Awaited<ReturnType<typeof createWorkerd>>;
 beforeAll(async () => {
   mf = await createWorkerd(false, undefined, true);

@@ -1,4 +1,4 @@
-import { ConfigKey } from "@oxytype/schemas/configs";
+import { ConfigKey } from "@caret/schemas/configs";
 import { createMemo, createSignal, JSXElement, Show } from "solid-js";
 
 import { setConfig } from "../../../config/setters";

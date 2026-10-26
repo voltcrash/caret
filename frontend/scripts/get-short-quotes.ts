@@ -1,4 +1,4 @@
-import { QuoteData } from "@oxytype/schemas/quotes";
+import { QuoteData } from "@caret/schemas/quotes";
 import * as fs from "fs";
 
 import path, { dirname } from "path";

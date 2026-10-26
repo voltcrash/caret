@@ -1,4 +1,4 @@
-import { encodeText } from "@oxytype/typing-engine/text";
+import { encodeText } from "@caret/typing-engine/text";
 import { getEngineSession } from "../../../features/typing/runtime/session.client";
 import { getInputElementValue } from "../input-element";
 import type { DeleteInputType } from "../helpers/input-type";

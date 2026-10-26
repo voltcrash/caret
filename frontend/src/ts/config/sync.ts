@@ -1,4 +1,4 @@
-import { Config } from "@oxytype/schemas/configs";
+import { Config } from "@caret/schemas/configs";
 import { isAuthenticated } from "../states/core";
 import { showErrorNotification } from "../states/notifications";
 import { operation } from "../../data/operations";

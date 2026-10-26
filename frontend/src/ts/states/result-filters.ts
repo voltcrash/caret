@@ -1,10 +1,10 @@
 import { appStore } from "../../app/state";
-import { ResultFilters, ResultFiltersSchema } from "@oxytype/schemas/users";
+import { ResultFilters, ResultFiltersSchema } from "@caret/schemas/users";
 import { mergeWithDefaultFilters } from "../components/pages/account/utils";
 import defaultResultFilters from "../constants/default-result-filters";
 import { useLocalStorageStore } from "../hooks/useLocalStorageStore";
 import { isObject } from "../utils/misc";
-import { sanitize } from "@oxytype/util/sanitize";
+import { sanitize } from "@caret/util/sanitize";
 
 export const [filters, setFilters] = appStore(() =>
   useLocalStorageStore({

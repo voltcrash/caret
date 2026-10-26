@@ -1,4 +1,4 @@
-import { FontName } from "@oxytype/schemas/fonts";
+import { FontName } from "@caret/schemas/fonts";
 
 import { getMutableConfig } from "./config/store";
 import {

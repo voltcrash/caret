@@ -1,4 +1,4 @@
-import { StreakHourOffsetSchema } from "@oxytype/schemas/users";
+import { StreakHourOffsetSchema } from "@caret/schemas/users";
 import { createForm } from "@tanstack/solid-form";
 
 import { operation } from "../../../data/operations";

@@ -1,5 +1,5 @@
 import "../__harness__/native-engine";
-import { evaluatePolicy } from "@oxytype/typing-engine/browser.client";
+import { evaluatePolicy } from "@caret/typing-engine/browser.client";
 import { describe, it, expect, beforeEach, afterAll, vi } from "vite-plus/test";
 import * as Config from "../../src/ts/config/setters";
 import * as Lifecycle from "../../src/ts/config/lifecycle";
@@ -9,7 +9,7 @@ import {
   ConfigKey,
   Config as ConfigType,
   CaretStyleSchema,
-} from "@oxytype/schemas/configs";
+} from "@caret/schemas/configs";
 import * as FunboxValidation from "../../src/ts/config/funbox-validation";
 import * as ConfigValidation from "../../src/ts/config/validation";
 import { configEvent } from "../../src/ts/events/config";

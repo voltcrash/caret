@@ -6,7 +6,7 @@ import { database } from "../../db/client";
 import { readUser } from "../../db/mutation";
 import { users } from "../../db/schema";
 
-import type { Client } from "@oxytype/schemas/shared";
+import type { Client } from "@caret/schemas/shared";
 
 import type { DBUser } from "./types";
 import { emptyPb } from "./empty-pb";

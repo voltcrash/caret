@@ -1,6 +1,6 @@
-import type { Difficulty, FunboxName } from "@oxytype/schemas/configs";
-import type { CustomTextSettings } from "@oxytype/schemas/results";
-import type { Mode, Mode2 } from "@oxytype/schemas/shared";
+import type { Difficulty, FunboxName } from "@caret/schemas/configs";
+import type { CustomTextSettings } from "@caret/schemas/results";
+import type { Mode, Mode2 } from "@caret/schemas/shared";
 
 import { createForm } from "@tanstack/solid-form";
 import { compressToURI } from "lz-ts";

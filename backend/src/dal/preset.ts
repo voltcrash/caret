@@ -1,5 +1,5 @@
 import { and, desc, eq } from "drizzle-orm";
-import type { EditPresetRequest, Preset } from "@oxytype/schemas/presets";
+import type { EditPresetRequest, Preset } from "@caret/schemas/presets";
 import { database, encode, statement } from "../db/client";
 import { presets } from "../db/schema";
 import { atomicUser, stage } from "../db/mutation";

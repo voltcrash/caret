@@ -1,4 +1,4 @@
-import { UiSessionSchema, type UiSession } from "@oxytype/schemas/auth-session";
+import { UiSessionSchema, type UiSession } from "@caret/schemas/auth-session";
 import { getAuth } from "../init/auth";
 import { exists } from "../dal/user";
 

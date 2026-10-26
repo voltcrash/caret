@@ -1,15 +1,15 @@
-import { Client } from "@oxytype/schemas/shared";
+import { Client } from "@caret/schemas/shared";
 import {
   TypingStats as TypingStatsType,
   UserProfile,
   UserProfileDetails,
-} from "@oxytype/schemas/users";
+} from "@caret/schemas/users";
 import {
   isToday as dateIsToday,
   isYesterday as dateIsYesterday,
   getCurrentDayTimestamp,
-} from "@oxytype/util/date-and-time";
-import { isSafeNumber } from "@oxytype/util/numbers";
+} from "@caret/util/date-and-time";
+import { isSafeNumber } from "@caret/util/numbers";
 import { differenceInDays } from "date-fns/differenceInDays";
 import { formatDate } from "date-fns/format";
 import { formatDistanceToNowStrict } from "date-fns/formatDistanceToNowStrict";

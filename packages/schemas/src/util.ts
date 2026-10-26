@@ -1,5 +1,5 @@
 import { z, ZodString } from "zod";
-import "@oxytype/util/zod-messages";
+import "@caret/util/zod-messages";
 
 export const StringNumberSchema = z
   .string()

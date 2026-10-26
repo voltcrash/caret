@@ -4,7 +4,7 @@ import {
   ConfigKeySchema,
   CustomBackgroundSchema,
   PartialConfigSchema,
-} from "@oxytype/schemas/configs";
+} from "@caret/schemas/configs";
 
 describe("config schema", () => {
   it.for(["off", "result", "on", "sellout"])(

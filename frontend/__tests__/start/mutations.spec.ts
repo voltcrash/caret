@@ -4,8 +4,8 @@ import { z } from "zod";
 import {
   AddPresetResponseSchemna,
   GetPresetResponseSchema,
-} from "@oxytype/contracts/presets";
-import { GetConfigResponseSchema } from "@oxytype/contracts/configs";
+} from "@caret/contracts/presets";
+import { GetConfigResponseSchema } from "@caret/contracts/configs";
 import { createWorkerd, seedSession } from "./workerd";
 import { rpcPath } from "./rpc";
 

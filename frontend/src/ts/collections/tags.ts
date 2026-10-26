@@ -1,5 +1,5 @@
 import { operation } from "../../data/operations";
-import { UserTag } from "@oxytype/schemas/users";
+import { UserTag } from "@caret/schemas/users";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import {
   createCollection,
@@ -14,11 +14,11 @@ import { getQueryClient } from "../queries";
 import { defineCollection } from "./utils/scope";
 import { baseKey } from "../queries/utils/keys";
 import { LocalStorageWithSchema } from "../utils/local-storage-with-schema";
-import { IdSchema } from "@oxytype/schemas/util";
+import { IdSchema } from "@caret/schemas/util";
 import { SnapshotResult } from "../constants/default-snapshot";
-import { Mode, Mode2, PersonalBest } from "@oxytype/schemas/shared";
-import { Difficulty } from "@oxytype/schemas/configs";
-import { Language } from "@oxytype/schemas/languages";
+import { Mode, Mode2, PersonalBest } from "@caret/schemas/shared";
+import { Difficulty } from "@caret/schemas/configs";
+import { Language } from "@caret/schemas/languages";
 import { applyIdWorkaround, isTempId, tempId } from "./utils/misc";
 import { createCollectionReader } from "./utils/reader";
 import { loadAccountData } from "../queries/account";

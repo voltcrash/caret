@@ -4,7 +4,7 @@ import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 const captured = vi.hoisted(() => new Map<string, unknown>());
-vi.mock("@oxytype/typing-core/events/stats", async (importOriginal) => {
+vi.mock("@caret/typing-core/events/stats", async (importOriginal) => {
   const original = await importOriginal<Record<string, unknown>>();
   return Object.fromEntries(Object.entries(original).map(([name, value]) => [
     name,

@@ -1,4 +1,4 @@
-import type { Language } from "@oxytype/schemas/languages";
+import type { Language } from "@caret/schemas/languages";
 import { queryOptions } from "@tanstack/solid-query";
 import { operationData } from "../../data/operations";
 import { baseKey } from "./utils/keys";

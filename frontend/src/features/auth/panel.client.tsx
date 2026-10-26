@@ -1,4 +1,4 @@
-import type { SessionState } from "@oxytype/schemas/auth-session";
+import type { SessionState } from "@caret/schemas/auth-session";
 
 import { createForm } from "@tanstack/solid-form";
 import { useQuery, useQueryClient } from "@tanstack/solid-query";

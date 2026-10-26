@@ -4,14 +4,14 @@ import { CommonResponses, meta, responseWithData } from "./util/api";
 import {
   SpeedHistogramSchema,
   TypingStatsSchema,
-} from "@oxytype/schemas/public";
+} from "@caret/schemas/public";
 import {
   ClientQuerySchema,
   ClientSchema,
   Mode2Schema,
   ModeSchema,
-} from "@oxytype/schemas/shared";
-import { LanguageSchema } from "@oxytype/schemas/languages";
+} from "@caret/schemas/shared";
+import { LanguageSchema } from "@caret/schemas/languages";
 
 export const GetSpeedHistogramQuerySchema = z
   .object({

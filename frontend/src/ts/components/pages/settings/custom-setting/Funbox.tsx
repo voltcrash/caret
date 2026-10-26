@@ -1,4 +1,4 @@
-import { getAllFunboxes } from "@oxytype/funbox";
+import { getAllFunboxes } from "@caret/funbox";
 import { For, JSXElement, type JSX } from "solid-js";
 
 import {

@@ -1,8 +1,8 @@
 import { lastElementFromArray } from "./arrays";
-import { Mode } from "@oxytype/schemas/shared";
-import { Result } from "@oxytype/schemas/results";
-import { RankAndCount } from "@oxytype/schemas/users";
-import { roundTo2 } from "@oxytype/util/numbers";
+import { Mode } from "@caret/schemas/shared";
+import { Result } from "@caret/schemas/results";
+import { RankAndCount } from "@caret/schemas/users";
+import { roundTo2 } from "@caret/util/numbers";
 import { download } from "../components/common/Download";
 
 export function findGetParameter(
@@ -69,7 +69,7 @@ type LastIndex = {
   return match ? this.lastIndexOf(lastElementFromArray(match) as string) : -1;
 };
 
-export { getMode2 } from "@oxytype/web-shared/mode";
+export { getMode2 } from "@caret/web-shared/mode";
 
 export async function downloadResultsCSV(array: Result<Mode>[]): Promise<void> {
   const csvString = [

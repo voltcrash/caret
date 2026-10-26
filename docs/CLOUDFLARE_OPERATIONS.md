@@ -12,7 +12,7 @@ The [production setup](PRODUCTION_SETUP.md) uses an isolated database and
 ```sh
 vp install --frozen-lockfile
 vp exec cp frontend/.dev.vars.example frontend/.dev.vars
-vp run --filter @oxytype/frontend db:migrate
+vp run --filter @caret/frontend db:migrate
 vp run dev
 ```
 
@@ -34,10 +34,10 @@ Verification:
 
 ```sh
 vp lint --type-aware --type-check --format agent backend
-vp run --filter @oxytype/backend test
-vp run --filter @oxytype/backend integration-test
+vp run --filter @caret/backend test
+vp run --filter @caret/backend integration-test
 vp -C backend test run __tests__/d1/http.spec.ts
-vp run --filter @oxytype/frontend test:start
+vp run --filter @caret/frontend test:start
 ```
 
 Start generates retained API docs and uses curated frontend/static assets.
@@ -55,9 +55,9 @@ Start delivery uses frontend/wrangler.staging.json; production uses its separate
 frontend/wrangler.production.json. Preserve existing remote auth/OAuth secrets.
 
 ```sh
-vp run --filter @oxytype/frontend build:staging-site
-vp run --filter @oxytype/frontend db:migrate:staging
-vp run --filter @oxytype/frontend deploy:staging-site
+vp run --filter @caret/frontend build:staging-site
+vp run --filter @caret/frontend db:migrate:staging
+vp run --filter @caret/frontend deploy:staging-site
 ```
 
 Generate the secret privately (`openssl rand -base64 32`); preserve it across
@@ -183,8 +183,8 @@ API errors or failed verification stop deployment.
 To enable or verify independently with `CLOUDFLARE_API_TOKEN` configured:
 
 ```sh
-vp run --filter @oxytype/frontend db:replication:staging
-vp run --filter @oxytype/frontend db:replication:production
+vp run --filter @caret/frontend db:replication:staging
+vp run --filter @caret/frontend db:replication:production
 vp exec wrangler d1 info oxytype-production --config frontend/wrangler.production.json --json
 ```
 
@@ -225,9 +225,9 @@ It does not run on the request path or during deployment dry runs. To run it
 independently:
 
 ```sh
-vp run --filter @oxytype/frontend db:optimize
-vp run --filter @oxytype/frontend db:optimize:staging
-vp run --filter @oxytype/frontend db:optimize:production
+vp run --filter @caret/frontend db:optimize
+vp run --filter @caret/frontend db:optimize:staging
+vp run --filter @caret/frontend db:optimize:production
 ```
 
 ### Query Insights reports
@@ -251,8 +251,8 @@ approval rules, if configured, also apply to these reporting jobs. It never
 deploys, changes schema or writes application data.
 
 ```sh
-vp run --filter @oxytype/frontend db:insights:production
-vp run --filter @oxytype/frontend db:insights:staging
+vp run --filter @caret/frontend db:insights:production
+vp run --filter @caret/frontend db:insights:staging
 ```
 
 Local reports go to ignored `frontend/.reports/d1/`. Persisted reports and

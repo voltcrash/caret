@@ -5,7 +5,7 @@ import type {
   TooltipItem,
 } from "chart.js";
 
-import { typedKeys } from "@oxytype/util/objects";
+import { typedKeys } from "@caret/util/objects";
 import { For, JSXElement, onCleanup, Show } from "solid-js";
 
 import { ChartJs } from "../../../../ts/components/common/ChartJs";

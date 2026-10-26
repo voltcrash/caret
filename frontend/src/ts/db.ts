@@ -5,18 +5,18 @@ import { isAuthenticated } from "./states/core";
 import * as Dates from "date-fns";
 import { TestActivityCalendar } from "./elements/test-activity-calendar";
 import { showLoaderBar, hideLoaderBar } from "./states/loader-bar";
-import type { GetTestActivityResponse } from "@oxytype/contracts/users";
-import { Difficulty } from "@oxytype/schemas/configs";
-import { Mode, Mode2, PersonalBest } from "@oxytype/schemas/shared";
+import type { GetTestActivityResponse } from "@caret/contracts/users";
+import { Difficulty } from "@caret/schemas/configs";
+import { Mode, Mode2, PersonalBest } from "@caret/schemas/shared";
 import { Snapshot, SavedResult } from "./constants/default-snapshot";
 import { getFirstDayOfTheWeek } from "./utils/date-and-time";
-import { Language } from "@oxytype/schemas/languages";
+import { Language } from "@caret/schemas/languages";
 import { authEvent } from "./events/auth";
 import { sync as syncServerConfiguration } from "./states/server-configuration";
 import { setLastResult } from "./states/snapshot";
-import { XpBreakdown } from "@oxytype/schemas/results";
+import { XpBreakdown } from "@caret/schemas/results";
 import { setXpBarData } from "./states/header";
-import { FunboxMetadata } from "@oxytype/funbox";
+import { FunboxMetadata } from "@caret/funbox";
 import { getQueryClient } from "./queries";
 import {
   type AccountData,

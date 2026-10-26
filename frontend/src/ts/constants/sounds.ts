@@ -1,4 +1,4 @@
-import { PlaySoundOnClick } from "@oxytype/schemas/configs";
+import { PlaySoundOnClick } from "@caret/schemas/configs";
 
 export const soundsConfig: SoundConfigType = {
   1: { numberOfSounds: 3 },

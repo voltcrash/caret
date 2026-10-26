@@ -14,18 +14,18 @@ import {
   type PolicyScope,
   type RawOperationInput,
   routeSharedRead,
-} from "@oxytype/backend/policies/operation-runner";
-import type { OperationId } from "@oxytype/backend/policies/operations";
-import { edgeCacheControl } from "@oxytype/backend/policies/edge-cache";
+} from "@caret/backend/policies/operation-runner";
+import type { OperationId } from "@caret/backend/policies/operations";
+import { edgeCacheControl } from "@caret/backend/policies/edge-cache";
 import type { OperationResult } from "../data/operation-result";
 import type { ServiceContext as RequestContext } from "./context.server";
-import { migrateConfig } from "@oxytype/web-shared/config/migrate";
-import { PartialConfigSchema } from "@oxytype/schemas/configs";
-import MonkeyError from "@oxytype/backend/errors";
+import { migrateConfig } from "@caret/web-shared/config/migrate";
+import { PartialConfigSchema } from "@caret/schemas/configs";
+import MonkeyError from "@caret/backend/errors";
 import {
   GetPresetResponseSchema,
   type GetPresetResponse,
-} from "@oxytype/contracts/presets";
+} from "@caret/contracts/presets";
 
 function invocation(request: RequestContext): Invocation {
   // SSR documents carry a nonce and the viewer's state; never share them.

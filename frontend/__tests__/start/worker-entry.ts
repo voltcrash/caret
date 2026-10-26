@@ -1,6 +1,6 @@
 // Test-only entry. Never imported by the deployable application.
-import { runtime } from "@oxytype/backend/runtime";
-import { getAuth } from "@oxytype/backend/auth/session";
+import { runtime } from "@caret/backend/runtime";
+import { getAuth } from "@caret/backend/auth/session";
 import { createServiceContext } from "../../src/server/context.server";
 import { createApplicationWorker } from "../../src/server/worker.server";
 import server from "../../src/server";

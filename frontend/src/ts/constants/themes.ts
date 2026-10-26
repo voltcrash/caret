@@ -1,1 +1,1 @@
-export * from "@oxytype/web-shared/themes";
+export * from "@caret/web-shared/themes";

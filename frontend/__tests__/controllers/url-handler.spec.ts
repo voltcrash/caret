@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach, vi } from "vite-plus/test";
-import { Difficulty, Mode, Mode2 } from "@oxytype/schemas/shared";
+import { Difficulty, Mode, Mode2 } from "@caret/schemas/shared";
 import { compressToURI } from "lz-ts";
 import * as UpdateConfig from "../../src/ts/config/setters";
 import * as Notifications from "../../src/ts/states/notifications";
 import * as TestLogic from "../../src/features/typing/runtime/test-logic";
 import * as TestState from "../../src/ts/states/test";
 import * as Misc from "../../src/ts/utils/misc";
-import { FunboxName } from "@oxytype/schemas/configs";
-import { CustomTextSettings } from "@oxytype/schemas/results";
+import { FunboxName } from "@caret/schemas/configs";
+import { CustomTextSettings } from "@caret/schemas/results";
 import { loadTestSettingsFromUrl } from "../../src/ts/controllers/url-handler";
 
 //mock modules to avoid dependencies

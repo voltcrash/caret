@@ -20,7 +20,7 @@ import { newId } from "../../../src/utils/id";
 import { enableRateLimitExpects } from "../../__testData__/rate-limit";
 import { DBResult } from "../../../src/utils/result";
 import { omit } from "../../../src/utils/misc";
-import { CompletedEvent } from "@oxytype/schemas/results";
+import { CompletedEvent } from "@caret/schemas/results";
 import MonkeyError from "../../../src/utils/error";
 import objectHash from "object-hash";
 import { BASE_CONFIGURATION } from "../../../src/constants/base-configuration";
@@ -30,8 +30,8 @@ import { completedEvent as typedEvent } from "../../__testData__/completed-event
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { gzipSync } from "node:zlib";
-import { versions } from "@oxytype/typing-engine/versions";
-import type { ResultEventLog } from "@oxytype/contracts/results";
+import { versions } from "@caret/typing-engine/versions";
+import type { ResultEventLog } from "@caret/contracts/results";
 
 const { mockApp, uid } = setup();
 const configuration = Configuration.getCachedConfiguration();

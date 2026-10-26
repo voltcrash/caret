@@ -1,5 +1,5 @@
 import reference from "../../packages/typing-fixtures/oracle/browser-final-word-batch.json" with { type: "json" };
-import type { EventLog } from "@oxytype/web-shared/events/types";
+import type { EventLog } from "@caret/web-shared/events/types";
 import { expect, openTest, test } from "./fixtures";
 
 test.use({

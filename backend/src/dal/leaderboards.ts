@@ -1,5 +1,5 @@
-import type { Client } from "@oxytype/schemas/shared";
-import type { LeaderboardEntry } from "@oxytype/schemas/leaderboards";
+import type { Client } from "@caret/schemas/shared";
+import type { LeaderboardEntry } from "@caret/schemas/leaderboards";
 import { newId } from "../utils/id";
 import { statement } from "../db/client";
 import { commitBatch } from "../db/commit";

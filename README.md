@@ -17,7 +17,7 @@ Use Node 24.22.1 and [Vite+](https://viteplus.dev/guide/) (`vp`) for every comma
 ```sh
 vp install
 vp exec cp frontend/.dev.vars.example frontend/.dev.vars
-vp run --filter @oxytype/frontend db:migrate
+vp run --filter @caret/frontend db:migrate
 vp run dev
 ```
 

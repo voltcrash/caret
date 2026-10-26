@@ -2,7 +2,7 @@ import type { SyncKind } from "../../../states/event-log-viewer";
 import type {
   TestEventNoMs,
   TestEventType,
-} from "@oxytype/web-shared/events/types";
+} from "@caret/web-shared/events/types";
 
 import { EVENT_TYPES } from "../../../states/event-log-viewer";
 

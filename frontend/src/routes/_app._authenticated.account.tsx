@@ -1,6 +1,6 @@
 import type { JSXElement } from "solid-js";
 
-import { ClientSchema } from "@oxytype/schemas/shared";
+import { ClientSchema } from "@caret/schemas/shared";
 import { createFileRoute } from "@tanstack/solid-router";
 import { z } from "zod";
 

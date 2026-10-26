@@ -1,10 +1,10 @@
-import type { CompletedEvent } from "@oxytype/schemas/results";
-import { serverAudit } from "@oxytype/typing-engine/audit.server";
+import type { CompletedEvent } from "@caret/schemas/results";
+import { serverAudit } from "@caret/typing-engine/audit.server";
 import type {
   ReviewSignal,
   TimingFeatures,
   TimingReview,
-} from "@oxytype/typing-engine/audit";
+} from "@caret/typing-engine/audit";
 
 /**
  * Statistical review signals, computed by the Rust engine. Unlike the checks

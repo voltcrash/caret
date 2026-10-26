@@ -9,11 +9,11 @@ import {
 import {
   LeaderboardEntrySchema,
   XpLeaderboardEntrySchema,
-} from "@oxytype/schemas/leaderboards";
-import { ClientSchema, Mode2Schema, ModeSchema } from "@oxytype/schemas/shared";
+} from "@caret/schemas/leaderboards";
+import { ClientSchema, Mode2Schema, ModeSchema } from "@caret/schemas/shared";
 import { initContract } from "@ts-rest/core";
-import { LanguageSchema } from "@oxytype/schemas/languages";
-import { PageNumberSchema } from "@oxytype/schemas/util";
+import { LanguageSchema } from "@caret/schemas/languages";
+import { PageNumberSchema } from "@caret/schemas/util";
 
 const LanguageAndModeQuerySchema = z.object({
   client: ClientSchema.optional(),

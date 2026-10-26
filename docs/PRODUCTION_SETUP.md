@@ -76,8 +76,8 @@ basic dashboard connection requires no database migration.
 On a **new, empty** production D1 only:
 
 ```sh
-vp run --filter @oxytype/frontend db:migrate:production
-vp run --filter @oxytype/backend db:bootstrap:production
+vp run --filter @caret/frontend db:migrate:production
+vp run --filter @caret/backend db:bootstrap:production
 ```
 
 The atomic bootstrap refuses any existing application data. It enables signup,
@@ -92,13 +92,13 @@ From the repo root, with Node/pnpm versions in `package.json`:
 
 ```sh
 vp install --frozen-lockfile
-vp run --filter @oxytype/frontend build:production-site
-vp run --filter @oxytype/frontend deploy:production-dry-run
+vp run --filter @caret/frontend build:production-site
+vp run --filter @caret/frontend deploy:production-dry-run
 # Detach the retired task consumer before migrations remove its tables.
-vp run --filter @oxytype/frontend retire:production-task-consumer
+vp run --filter @caret/frontend retire:production-task-consumer
 # Apply any newly added migrations before compatible code is deployed.
-vp run --filter @oxytype/frontend db:migrate:production
-vp run --filter @oxytype/frontend deploy:production-site
+vp run --filter @caret/frontend db:migrate:production
+vp run --filter @caret/frontend deploy:production-site
 ```
 
 Production builds invoke one uncached Start compiler for matching client/Worker assets.
@@ -129,8 +129,8 @@ Roll back the Worker version; never rebuild or redeploy client assets alone.
 A Worker version carries its own asset manifest, so both move together:
 
 ```sh
-vp exec --filter @oxytype/frontend -- wrangler deployments list --config wrangler.production.json
-vp exec --filter @oxytype/frontend -- wrangler rollback <version-id> --config wrangler.production.json
+vp exec --filter @caret/frontend -- wrangler deployments list --config wrangler.production.json
+vp exec --filter @caret/frontend -- wrangler rollback <version-id> --config wrangler.production.json
 ```
 
 Confirm `/version.json` and the `X-Oxytype-Build` response header report the

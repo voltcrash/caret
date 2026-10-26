@@ -59,9 +59,9 @@ Run the same benchmark files on the baseline and implementation. These scripts
 are added by this PR; copy them into a baseline checkout before measuring it.
 
 ```sh
-vp run --filter @oxytype/frontend build:start
+vp run --filter @caret/frontend build:start
 OXYTYPE_PERFORMANCE_OUTPUT=/tmp/startup.json vp -C frontend exec playwright test --config playwright.migration.config.ts performance.migration.ts
-WORD_RENDERING_BENCHMARK_OUTPUT=/tmp/words.json vp run --filter @oxytype/frontend benchmark-word-rendering
+WORD_RENDERING_BENCHMARK_OUTPUT=/tmp/words.json vp run --filter @caret/frontend benchmark-word-rendering
 vp -C frontend exec vpx ./scripts/measure-input-snapshots.ts /tmp/input.json
 ```
 

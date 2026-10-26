@@ -1,11 +1,11 @@
-import { CustomTextLimitMode, CustomTextMode } from "@oxytype/schemas/util";
+import { CustomTextLimitMode, CustomTextMode } from "@caret/schemas/util";
 import { LocalStorageWithSchema } from "../../../ts/utils/local-storage-with-schema";
 import { z } from "zod";
 import {
   CustomTextSettings,
   CustomTextSettingsSchema,
-} from "@oxytype/schemas/results";
-import { defaultCustomTextSettings } from "@oxytype/web-shared/custom-text";
+} from "@caret/schemas/results";
+import { defaultCustomTextSettings } from "@caret/web-shared/custom-text";
 
 const CustomTextObjectSchema = z.record(z.string(), z.string());
 type CustomTextObject = z.infer<typeof CustomTextObjectSchema>;

@@ -1,4 +1,4 @@
-import type { SessionState } from "@oxytype/schemas/auth-session";
+import type { SessionState } from "@caret/schemas/auth-session";
 
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 

@@ -11,9 +11,9 @@ import {
   PostResultResponseSchema,
   ResultMinifiedSchema,
   ResultSchema,
-} from "@oxytype/schemas/results";
-import { ClientSchema, ClientQuerySchema } from "@oxytype/schemas/shared";
-import { IdSchema } from "@oxytype/schemas/util";
+} from "@caret/schemas/results";
+import { ClientSchema, ClientQuerySchema } from "@caret/schemas/shared";
+import { IdSchema } from "@caret/schemas/util";
 
 export const GetResultsQuerySchema = z.object({
   client: ClientSchema.optional(),

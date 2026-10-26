@@ -1,4 +1,4 @@
-import { CustomPolyglot as CustomPolyglotType } from "@oxytype/schemas/configs";
+import { CustomPolyglot as CustomPolyglotType } from "@caret/schemas/configs";
 import { JSXElement } from "solid-js";
 
 import { configMetadata } from "../../../../config/metadata";

@@ -16,7 +16,7 @@ export const getServerConfigurationQueryOptions = () =>
     queryFn: async () => {
       if (envConfig.devOffline) {
         const { BASE_CONFIGURATION } =
-          await import("@oxytype/schemas/default-configuration");
+          await import("@caret/schemas/default-configuration");
         return {
           ...BASE_CONFIGURATION,
           dailyLeaderboards: {

@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { COMPATIBILITY_CHECK } from "@oxytype/contracts";
+import { COMPATIBILITY_CHECK } from "@caret/contracts";
 
 /**
  * create etag generator, matching the `etag` package used by express https://github.com/jshttp/etag/blob/v1.8.1/index.js#L39

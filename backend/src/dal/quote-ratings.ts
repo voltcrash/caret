@@ -1,7 +1,7 @@
 import { stage } from "../db/mutation";
 import { and, eq } from "drizzle-orm";
-import type { QuoteRating } from "@oxytype/schemas/quotes";
-import type { Language } from "@oxytype/schemas/languages";
+import type { QuoteRating } from "@caret/schemas/quotes";
+import type { Language } from "@caret/schemas/languages";
 import { database, statement } from "../db/client";
 import { quoteRatings } from "../db/schema";
 import { newId } from "../utils/id";

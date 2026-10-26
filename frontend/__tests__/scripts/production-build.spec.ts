@@ -116,7 +116,7 @@ describe("production build command", () => {
         name: "production-build-fixture",
         private: true,
         scripts: {
-          "build-fe": "vp run --filter @oxytype/frontend build",
+          "build-fe": "vp run --filter @caret/frontend build",
         },
       }),
     );
@@ -126,7 +126,7 @@ describe("production build command", () => {
       write(
         `${target}/package.json`,
         JSON.stringify({
-          name: `@oxytype/${target}`,
+          name: `@caret/${target}`,
           private: true,
           scripts: { "build:start": `node ../fixture-build.mjs ${target}` },
         }),

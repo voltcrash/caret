@@ -1,4 +1,4 @@
-import type { CaptchaAction } from "@oxytype/contracts/captcha";
+import type { CaptchaAction } from "@caret/contracts/captcha";
 
 import { envValue } from "../runtime/env";
 import { getFrontendUrl, isDevEnvironment } from "./misc";

@@ -1,10 +1,10 @@
-import type { Client } from "@oxytype/schemas/shared";
+import type { Client } from "@caret/schemas/shared";
 import { eq } from "drizzle-orm";
-import { roundTo2 } from "@oxytype/util/numbers";
+import { roundTo2 } from "@caret/util/numbers";
 import { database, statement } from "../db/client";
 import { stage } from "../db/mutation";
 import { publicStats, speedHistograms } from "../db/schema";
-import type { TypingStats, SpeedHistogram } from "@oxytype/schemas/public";
+import type { TypingStats, SpeedHistogram } from "@caret/schemas/public";
 export type PublicTypingStatsDB = TypingStats & { _id: "stats" };
 export async function updateStats(
   restartCount: number,

@@ -1,4 +1,4 @@
-import type { Client } from "@oxytype/schemas/shared";
+import type { Client } from "@caret/schemas/shared";
 
 import { createResource, type JSXElement, Match, Switch } from "solid-js";
 

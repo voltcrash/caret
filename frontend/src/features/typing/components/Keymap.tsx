@@ -1,4 +1,4 @@
-import { LayoutObject } from "@oxytype/schemas/layouts";
+import { LayoutObject } from "@caret/schemas/layouts";
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 
 import { Anime } from "../../../ts/components/common/anime";

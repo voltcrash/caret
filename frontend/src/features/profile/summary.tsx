@@ -1,4 +1,4 @@
-import type { UserProfile } from "@oxytype/schemas/users";
+import type { UserProfile } from "@caret/schemas/users";
 
 import { formatDate } from "date-fns/format";
 import { For, type JSXElement, Show } from "solid-js";

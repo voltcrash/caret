@@ -4,7 +4,7 @@ import { z } from "zod";
 import {
   ConfigurationFormObjectSchema,
   ConfigurationSchema,
-} from "@oxytype/schemas/configuration";
+} from "@caret/schemas/configuration";
 import {
   CommonResponses,
   meta,

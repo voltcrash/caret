@@ -2,13 +2,13 @@ import { matchesAPattern, kogascore, omit } from "./misc";
 import type {
   Configuration,
   ValidModeRule,
-} from "@oxytype/schemas/configuration";
+} from "@caret/schemas/configuration";
 import type {
   LeaderboardEntry,
   DailyLeaderboardEntry,
-} from "@oxytype/schemas/leaderboards";
-import type { Client, Mode, Mode2 } from "@oxytype/schemas/shared";
-import { getCurrentDayTimestamp } from "@oxytype/util/date-and-time";
+} from "@caret/schemas/leaderboards";
+import type { Client, Mode, Mode2 } from "@caret/schemas/shared";
+import { getCurrentDayTimestamp } from "@caret/util/date-and-time";
 import { statement, encode } from "../db/client";
 import { stage } from "../db/mutation";
 import type { D1PreparedStatement } from "@cloudflare/workers-types";

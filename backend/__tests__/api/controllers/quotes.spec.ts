@@ -9,7 +9,7 @@ import * as ReportDal from "../../../src/dal/report";
 import * as LogsDal from "../../../src/dal/logs";
 import * as Captcha from "../../../src/utils/captcha";
 import { newId } from "../../../src/utils/id";
-import { ApproveQuote } from "@oxytype/schemas/quotes";
+import { ApproveQuote } from "@caret/schemas/quotes";
 
 const { mockApp, uid } = setup();
 const configuration = Configuration.getCachedConfiguration();

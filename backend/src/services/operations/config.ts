@@ -1,7 +1,7 @@
-import { PartialConfig } from "@oxytype/schemas/configs";
+import { PartialConfig } from "@caret/schemas/configs";
 import * as ConfigDAL from "../../dal/config";
 import { MonkeyResponse } from "../../utils/monkey-response";
-import { GetConfigResponse } from "@oxytype/contracts/configs";
+import { GetConfigResponse } from "@caret/contracts/configs";
 import type { ServiceContext, OperationInput } from "../context";
 
 export async function getConfig(

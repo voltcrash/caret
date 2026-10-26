@@ -1,13 +1,13 @@
-import { User, UserProfileDetails } from "@oxytype/schemas/users";
+import { User, UserProfileDetails } from "@caret/schemas/users";
 import { getDefaultConfig } from "./default-config";
-import { Mode } from "@oxytype/schemas/shared";
-import { Result, CompletedEvent } from "@oxytype/schemas/results";
-import { Difficulty, FunboxName } from "@oxytype/schemas/configs";
+import { Mode } from "@caret/schemas/shared";
+import { Result, CompletedEvent } from "@caret/schemas/results";
+import { Difficulty, FunboxName } from "@caret/schemas/configs";
 import {
   ModifiableTestActivityCalendar,
   TestActivityCalendar,
 } from "../elements/test-activity-calendar";
-import { Language } from "@oxytype/schemas/languages";
+import { Language } from "@caret/schemas/languages";
 
 // Saving supplies a server ID; collection normalization computes snapshot fields later.
 export type SavedResult = CompletedEvent & { _id: string; isPb?: boolean };

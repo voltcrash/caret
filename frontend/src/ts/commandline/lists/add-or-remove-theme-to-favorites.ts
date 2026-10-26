@@ -1,4 +1,4 @@
-import { ThemeName } from "@oxytype/schemas/configs";
+import { ThemeName } from "@caret/schemas/configs";
 import { getMutableConfig } from "../../config/store";
 import { setConfig } from "../../config/setters";
 import { randomTheme } from "../../controllers/theme-controller";

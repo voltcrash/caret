@@ -1,4 +1,4 @@
-import { Config, ConfigKey } from "@oxytype/schemas/configs";
+import { Config, ConfigKey } from "@caret/schemas/configs";
 import { Validation } from "../types/validation";
 
 // this file is needed becauase otherwise it would produce a circular dependency

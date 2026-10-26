@@ -2,8 +2,8 @@ import { getBrowserEngine } from "./engine.client";
 import type {
   PolicyQuery,
   PolicyResponse,
-} from "@oxytype/typing-engine/browser.client";
-import type { ConfigValue, FunboxName, Config } from "@oxytype/schemas/configs";
+} from "@caret/typing-engine/browser.client";
+import type { ConfigValue, FunboxName, Config } from "@caret/schemas/configs";
 
 export function enginePolicy<Q extends PolicyQuery>(
   query: Q,

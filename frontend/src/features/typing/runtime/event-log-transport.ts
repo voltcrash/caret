@@ -1,9 +1,9 @@
 import {
   MAX_RESULT_EVENT_LOG_CHARS,
   type ResultEventLog,
-} from "@oxytype/contracts/results";
-import type { WebLog } from "@oxytype/typing-engine/text";
-import { versions } from "@oxytype/typing-engine/versions";
+} from "@caret/contracts/results";
+import type { WebLog } from "@caret/typing-engine/text";
+import { versions } from "@caret/typing-engine/versions";
 
 // Results and their logs share the server's 100 KiB request ceiling.
 const MAX_REQUEST_CHARS = 96 * 1024;

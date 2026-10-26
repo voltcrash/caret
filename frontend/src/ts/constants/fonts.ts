@@ -1,4 +1,4 @@
-import { KnownFontName } from "@oxytype/schemas/fonts";
+import { KnownFontName } from "@caret/schemas/fonts";
 
 export type FontConfig = {
   display?: string;

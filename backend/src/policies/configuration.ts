@@ -1,10 +1,10 @@
-import type { EndpointMetadata } from "@oxytype/contracts/util/api";
+import type { EndpointMetadata } from "@caret/contracts/util/api";
 import MonkeyError from "../utils/error";
-import type { Configuration } from "@oxytype/schemas/configuration";
+import type { Configuration } from "@caret/schemas/configuration";
 import type {
   ConfigurationPath,
   RequireConfiguration,
-} from "@oxytype/contracts/require-configuration/index";
+} from "@caret/contracts/require-configuration/index";
 export function verifyConfiguration(
   configuration: Configuration,
   metadata: EndpointMetadata,

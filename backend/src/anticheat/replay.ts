@@ -1,4 +1,4 @@
-import type { CompletedEvent } from "@oxytype/schemas/results";
+import type { CompletedEvent } from "@caret/schemas/results";
 import objectHash from "object-hash";
 
 // Short or nearly constant sequences can repeat by chance, especially on

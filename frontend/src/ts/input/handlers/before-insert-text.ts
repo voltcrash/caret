@@ -1,5 +1,5 @@
-import type { InsertionLayout } from "@oxytype/typing-engine/browser.client";
-import { decodeText } from "@oxytype/typing-engine/text";
+import type { InsertionLayout } from "@caret/typing-engine/browser.client";
+import { decodeText } from "@caret/typing-engine/text";
 import { getEngineSession } from "../../../features/typing/runtime/session.client";
 import * as TestUI from "../../../features/typing/runtime/test-ui";
 import { getInputElementValue } from "../input-element";

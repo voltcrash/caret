@@ -18,7 +18,7 @@ Pinned Rust/tool versions are in `rust-toolchain.toml`, Cargo manifests/lockfile
 
 ## Browser ownership
 
-Dynamically import `@oxytype/typing-engine/browser.client` inside the browser lifecycle. Create `createEngineLoader()` under the app/route owner; register cleanup before awaiting `loader.load()`. The loader shares concurrent initialization within that owner, aborts pending loading on disposal and permits retry after download failure. Initialization checks the binding version before returning a usable engine.
+Dynamically import `@caret/typing-engine/browser.client` inside the browser lifecycle. Create `createEngineLoader()` under the app/route owner; register cleanup before awaiting `loader.load()`. The loader shares concurrent initialization within that owner, aborts pending loading on disposal and permits retry after download failure. Initialization checks the binding version before returning a usable engine.
 
 `Engine` creates independent `BrowserContent`, `BrowserSession` and `BrowserReplay` handles. Dispose every handle on replacement/route cleanup; `dispose()` is idempotent and subsequent operations reject with `EngineFailure.code === "disposed"`. `Content.recycleSession(session)` consumes the session and retains only generator repetition, quote identity, weak-spot learning and remembered pace. Independent content owners retain independent state.
 
@@ -41,7 +41,7 @@ Consume `Update.state`, changed words and ordered events. Read `snapshot()`/`log
 
 ## Text, historical logs and results
 
-`Text` is an array of UTF-16 units, including isolated surrogates. `encodeText`/`decodeText` preserve JavaScript positions; Unicode scalars/graphemes/terminal columns are different units. SSR-safe `@oxytype/typing-engine/text` converts legacy logs and preserves optional/extra metadata. Rust validates log shapes/versions/bounds at analysis/playback entry points.
+`Text` is an array of UTF-16 units, including isolated surrogates. `encodeText`/`decodeText` preserve JavaScript positions; Unicode scalars/graphemes/terminal columns are different units. SSR-safe `@caret/typing-engine/text` converts legacy logs and preserves optional/extra metadata. Rust validates log shapes/versions/bounds at analysis/playback entry points.
 
 Generated events discriminate input/key/timer/composition payloads. Result/chart/custom/incomplete DTOs are generated from Rust; web Zod schemas remain authoritative for submissions. Add account/tags/challenge/transport fields and hash with the existing object-hash helper at the transport boundary. Backend auth/integrity/anticheat remains independent. Native offline history uses its own capability-aware local envelope rather than a web account submission.
 
@@ -51,7 +51,7 @@ See `docs/rust-engine/contract.md`, `features.md` and `performance-budgets.md` f
 
 ## Result audit
 
-`crates/typing-audit-wasm` is a second, separately budgeted module for hosts that judge results instead of running tests. `createAudit(module)` (`@oxytype/typing-engine/audit`) wraps it with synchronous typed queries: replay `verify`, timing `review`, `distribution`/`bellness`/`cross`/`probit` statistics, `challenge` requirements and funbox `compatible`.
+`crates/typing-audit-wasm` is a second, separately budgeted module for hosts that judge results instead of running tests. `createAudit(module)` (`@caret/typing-engine/audit`) wraps it with synchronous typed queries: replay `verify`, timing `review`, `distribution`/`bellness`/`cross`/`probit` statistics, `challenge` requirements and funbox `compatible`.
 
 - Server: `serverAudit()` from `audit.server`. The `#audit-module` import resolves to a precompiled `.wasm?module` under the `workerd` condition and to a synchronous Node compile elsewhere (tests, calibration scripts).
 - Browser: `loadAudit(signal)` from `audit.client` fetches the module on demand. The caller's owner retains the returned audit; the typing payload never includes it.

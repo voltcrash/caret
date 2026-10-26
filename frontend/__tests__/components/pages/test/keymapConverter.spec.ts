@@ -4,7 +4,7 @@ import { convertLayoutToKeymap } from "../../../../src/features/typing/component
 import qwertyLayout from "../../../../static/layouts/qwerty.json";
 import qwertzLayout from "../../../../static/layouts/qwertz.json";
 
-import { LayoutObject } from "@oxytype/schemas/layouts";
+import { LayoutObject } from "@caret/schemas/layouts";
 import {
   Alt,
   BackspaceShort,

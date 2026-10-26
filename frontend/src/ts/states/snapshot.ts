@@ -10,7 +10,7 @@ import {
 import { getQueryClient } from "../queries";
 import { getAccountQueryOptions } from "../queries/account";
 
-import { Mode } from "@oxytype/schemas/shared";
+import { Mode } from "@caret/schemas/shared";
 
 /** A reactive view of the actor's query-owned account; never a second copy. */
 const accountView = createAccountOwned(() => {

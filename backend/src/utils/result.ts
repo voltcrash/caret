@@ -3,10 +3,10 @@ import {
   CompletedEvent,
   OldChartData,
   Result,
-} from "@oxytype/schemas/results";
-import { Mode } from "@oxytype/schemas/shared";
+} from "@caret/schemas/results";
+import { Mode } from "@caret/schemas/shared";
 import { newId } from "./id";
-import { FunboxName } from "@oxytype/schemas/configs";
+import { FunboxName } from "@caret/schemas/configs";
 
 export type DBResult = Result<Mode> & {
   //legacy values

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 import retry from "../../../../packages/typing-fixtures/oracle/wikipedia-retry.json" with { type: "json" };
-import { EngineFailure } from "@oxytype/typing-engine/failure";
-import { decodeText } from "@oxytype/typing-engine/text";
+import { EngineFailure } from "@caret/typing-engine/failure";
+import { decodeText } from "@caret/typing-engine/text";
 const mocks = vi.hoisted(() => ({
   controller: new AbortController(),
   prepare: vi.fn(),

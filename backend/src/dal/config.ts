@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { configs } from "../db/schema";
 import { database, statement } from "../db/client";
 import { newId } from "../utils/id";
-import type { Config, PartialConfig } from "@oxytype/schemas/configs";
+import type { Config, PartialConfig } from "@caret/schemas/configs";
 
 type UpdateResult = {
   acknowledged: boolean;

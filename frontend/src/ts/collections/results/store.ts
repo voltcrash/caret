@@ -2,7 +2,7 @@ import { operation } from "../../../data/operations";
 import { captureAccount } from "../../../app/account-scope";
 import { queryKeys } from "./keys";
 import { normalizeResult } from "./normalize";
-import { Client, Mode } from "@oxytype/schemas/shared";
+import { Client, Mode } from "@caret/schemas/shared";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import { BTreeIndex, createCollection } from "@tanstack/solid-db";
 import { SnapshotResult } from "../../constants/default-snapshot";

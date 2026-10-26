@@ -1,7 +1,7 @@
-import type * as ConfigSchemas from "@oxytype/schemas/configs";
-import { ConfigSchema } from "@oxytype/schemas/configs";
-import { roundTo1 } from "@oxytype/util/numbers";
-import { getOptions } from "@oxytype/util/zod";
+import type * as ConfigSchemas from "@caret/schemas/configs";
+import { ConfigSchema } from "@caret/schemas/configs";
+import { roundTo1 } from "@caret/util/numbers";
+import { getOptions } from "@caret/util/zod";
 
 import { getDefaultConfig } from "./default-config";
 

@@ -1,4 +1,4 @@
-import type { UiSession } from "@oxytype/schemas/auth-session";
+import type { UiSession } from "@caret/schemas/auth-session";
 
 import { useQuery } from "@tanstack/solid-query";
 import { useRouter } from "@tanstack/solid-router";

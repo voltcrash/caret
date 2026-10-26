@@ -1,4 +1,4 @@
-import type { Client } from "@oxytype/schemas/shared";
+import type { Client } from "@caret/schemas/shared";
 
 import { ClientOnly } from "@tanstack/solid-router";
 import { createClientOnlyFn } from "@tanstack/solid-start";

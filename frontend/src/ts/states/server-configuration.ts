@@ -1,5 +1,5 @@
 import { configurationReadiness } from "../../app/readiness";
-import { Configuration } from "@oxytype/schemas/configuration";
+import { Configuration } from "@caret/schemas/configuration";
 import { getQueryClient } from "../queries";
 import { getServerConfigurationQueryOptions } from "../queries/server-configuration";
 

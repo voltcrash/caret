@@ -17,5 +17,5 @@ Follow [font guidelines](CONTRIBUTING.md#font-guidelines). For local validation,
 follow [development setup](CONTRIBUTING_ADVANCED.md), then run from the repository root:
 
 ```sh
-vp run --filter @oxytype/frontend check-assets fonts
+vp run --filter @caret/frontend check-assets fonts
 ```

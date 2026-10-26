@@ -4,8 +4,8 @@ import {
   runHttpAuxiliary,
   runHttpOperation,
   type HttpInvocation,
-} from "@oxytype/backend/http";
-import type { OperationId } from "@oxytype/backend/policies/operations";
+} from "@caret/backend/http";
+import type { OperationId } from "@caret/backend/policies/operations";
 import { createServiceContext } from "./context.server";
 import editorHtml from "../../../backend/private/index.html?raw";
 import editorScript from "../../../backend/private/script.js?raw";

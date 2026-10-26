@@ -2,7 +2,7 @@ import { operation } from "../../../data/operations";
 import { resultsByClient, getResults } from "./store";
 import { normalizeResult } from "./normalize";
 import { UpdateTagsResult, ActionType } from "./types";
-import { Client } from "@oxytype/schemas/shared";
+import { Client } from "@caret/schemas/shared";
 import { createOptimisticAction } from "@tanstack/solid-db";
 import { getLastResult } from "../../states/snapshot";
 import { reconcileLocalTagPB, saveLocalTagPB } from "../tags";

@@ -1,4 +1,4 @@
-import type { SessionState } from "@oxytype/schemas/auth-session";
+import type { SessionState } from "@caret/schemas/auth-session";
 
 import { ClientOnly } from "@tanstack/solid-router";
 import { createClientOnlyFn } from "@tanstack/solid-start";

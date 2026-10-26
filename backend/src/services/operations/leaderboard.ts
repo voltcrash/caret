@@ -1,4 +1,4 @@
-import type { Client } from "@oxytype/schemas/shared";
+import type { Client } from "@caret/schemas/shared";
 import { MonkeyResponse } from "../../utils/monkey-response";
 import * as LeaderboardsDAL from "../../dal/leaderboards";
 import MonkeyError from "../../utils/error";
@@ -18,13 +18,13 @@ import {
   GetWeeklyXpLeaderboardRankQuery,
   GetWeeklyXpLeaderboardRankResponse,
   GetWeeklyXpLeaderboardResponse,
-} from "@oxytype/contracts/leaderboards";
-import { Configuration } from "@oxytype/schemas/configuration";
+} from "@caret/contracts/leaderboards";
+import { Configuration } from "@caret/schemas/configuration";
 import {
   getCurrentDayTimestamp,
   getCurrentWeekTimestamp,
   MILLISECONDS_IN_DAY,
-} from "@oxytype/util/date-and-time";
+} from "@caret/util/date-and-time";
 import type { ServiceContext, OperationInput } from "../context";
 import { omit } from "../../utils/misc";
 

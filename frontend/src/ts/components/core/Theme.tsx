@@ -1,4 +1,4 @@
-import { debounce } from "@oxytype/util/timing";
+import { debounce } from "@caret/util/timing";
 import { Link, Meta, MetaProvider, Style } from "@solidjs/meta";
 import {
   createEffect,

@@ -1,5 +1,5 @@
 import { onCleanup, onMount } from "solid-js";
-import { debounce } from "@oxytype/util/timing";
+import { debounce } from "@caret/util/timing";
 import { createAppOwned } from "../../app/application";
 import { createAppSignal } from "../../app/state";
 import { showSuccessNotification } from "./notifications";

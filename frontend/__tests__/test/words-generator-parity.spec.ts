@@ -1,17 +1,17 @@
 import { afterAll, describe, expect, it } from "vite-plus/test";
 import "../__harness__/native-engine";
-import { BrowserContent } from "@oxytype/typing-engine/browser.client";
-import type { Prepare } from "@oxytype/typing-engine/browser.client";
-import { projectEngineConfig } from "@oxytype/typing-engine/config";
-import { encodeText, decodeText } from "@oxytype/typing-engine/text";
+import { BrowserContent } from "@caret/typing-engine/browser.client";
+import type { Prepare } from "@caret/typing-engine/browser.client";
+import { projectEngineConfig } from "@caret/typing-engine/config";
+import { encodeText, decodeText } from "@caret/typing-engine/text";
 import {
   engineLanguage,
   engineQuotes,
 } from "../../src/features/typing/runtime/content-assets.client";
-import type { Config } from "@oxytype/schemas/configs";
-import type { CustomTextSettings } from "@oxytype/schemas/results";
-import type { LanguageObject } from "@oxytype/schemas/languages";
-import type { QuoteData } from "@oxytype/schemas/quotes";
+import type { Config } from "@caret/schemas/configs";
+import type { CustomTextSettings } from "@caret/schemas/results";
+import type { LanguageObject } from "@caret/schemas/languages";
+import type { QuoteData } from "@caret/schemas/quotes";
 import { getDefaultConfig } from "../../src/ts/constants/default-config";
 
 // The original snapshots are independent, immutable references. Test the actual

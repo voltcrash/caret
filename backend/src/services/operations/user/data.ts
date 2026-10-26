@@ -1,17 +1,17 @@
 import { generateCurrentTestActivity } from "./activity";
 import { getAllTimeLbs } from "./leaderboards";
-import type { ClientQuery } from "@oxytype/schemas/shared";
+import type { ClientQuery } from "@caret/schemas/shared";
 import * as UserDAL from "../../../dal/user";
 import { MonkeyResponse } from "../../../utils/monkey-response";
 import { buildAgentLog, omit } from "../../../utils/misc";
-import { ResultFilters, User } from "@oxytype/schemas/users";
+import { ResultFilters, User } from "@caret/schemas/users";
 import { addLog } from "../../../dal/logs";
 import {
   GetPersonalBestsQuery,
   GetPersonalBestsResponse,
   GetStatsResponse,
   GetUserResponse,
-} from "@oxytype/contracts/users";
+} from "@caret/contracts/users";
 import { type ServiceContext, type OperationInput } from "../../context";
 
 type RelevantUserInfo = Omit<

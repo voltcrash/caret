@@ -1,4 +1,4 @@
-import { FunboxName } from "@oxytype/schemas/configs";
+import { FunboxName } from "@caret/schemas/configs";
 import { getList, getFunbox, getObject, getFunboxNames } from "./list";
 import { FunboxMetadata, FunboxProperty } from "./types";
 

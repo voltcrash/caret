@@ -1,4 +1,4 @@
-import { Client } from "@oxytype/schemas/shared";
+import { Client } from "@caret/schemas/shared";
 import { baseKey } from "../../queries/utils/keys";
 
 export const queryKeys = {

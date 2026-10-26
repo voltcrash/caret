@@ -1,5 +1,5 @@
-import type { QuoteLength, QuoteLengthConfig } from "@oxytype/schemas/configs";
-import type { Mode } from "@oxytype/schemas/shared";
+import type { QuoteLength, QuoteLengthConfig } from "@caret/schemas/configs";
+import type { Mode } from "@caret/schemas/shared";
 
 import { For, JSXElement, ParentProps, Show } from "solid-js";
 

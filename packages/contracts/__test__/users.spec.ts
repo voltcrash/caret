@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vite-plus/test";
-import { GetProfileQuerySchema } from "@oxytype/contracts/users";
+import { GetProfileQuerySchema } from "@caret/contracts/users";
 
 describe("GetProfileQuerySchema", () => {
   it.for([

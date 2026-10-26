@@ -1,5 +1,5 @@
 import type { Plugin } from "vite-plus";
-import type { getOpenApi } from "@oxytype/backend/http/openapi";
+import type { getOpenApi } from "@caret/backend/http/openapi";
 import { execFileSync } from "node:child_process";
 import { resolve } from "node:path";
 

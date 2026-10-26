@@ -1,8 +1,8 @@
 import {
   limits,
   type RateLimitOptions,
-} from "@oxytype/contracts/rate-limit/index";
-import type { EndpointMetadata } from "@oxytype/contracts/util/api";
+} from "@caret/contracts/rate-limit/index";
+import type { EndpointMetadata } from "@caret/contracts/util/api";
 import { GUEST, type ServiceContext } from "../services/context";
 import {
   AUTH_LIMIT,

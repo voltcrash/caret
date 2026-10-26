@@ -1,4 +1,4 @@
-import { ChallengeNameSchema } from "@oxytype/schemas/challenges";
+import { ChallengeNameSchema } from "@caret/schemas/challenges";
 import {
   CustomBackgroundFilter,
   CustomBackgroundFilterSchema,
@@ -8,16 +8,16 @@ import {
   CustomThemeColorsSchema,
   FunboxName,
   FunboxSchema,
-} from "@oxytype/schemas/configs";
-import { Language } from "@oxytype/schemas/languages";
-import { CustomTextSettingsSchema } from "@oxytype/schemas/results";
+} from "@caret/schemas/configs";
+import { Language } from "@caret/schemas/languages";
+import { CustomTextSettingsSchema } from "@caret/schemas/results";
 import {
   DifficultySchema,
   Mode2Schema,
   ModeSchema,
-} from "@oxytype/schemas/shared";
-import { parseWithSchema as parseJsonWithSchema } from "@oxytype/util/json";
-import { tryCatchSync } from "@oxytype/util/trycatch";
+} from "@caret/schemas/shared";
+import { parseWithSchema as parseJsonWithSchema } from "@caret/util/json";
+import { tryCatchSync } from "@caret/util/trycatch";
 import { decompressFromURI } from "lz-ts";
 import { z } from "zod";
 

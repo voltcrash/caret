@@ -16,7 +16,7 @@ const mocks = vi.hoisted(() => {
     createLoader: vi.fn(),
   };
 });
-vi.mock("@oxytype/typing-engine/browser.client", () => ({
+vi.mock("@caret/typing-engine/browser.client", () => ({
   createEngineLoader: () => {
     mocks.createLoader();
     return { load: mocks.load, dispose: mocks.disposeLoader };

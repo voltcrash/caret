@@ -26,7 +26,7 @@ const mocks = vi.hoisted(() => ({
   goTo: [] as GoTo[],
   localPb: undefined as { wpm: number } | undefined,
   session: undefined as
-    | import("@oxytype/typing-engine/browser.client").BrowserSession
+    | import("@caret/typing-engine/browser.client").BrowserSession
     | undefined,
 }));
 
@@ -84,7 +84,7 @@ vi.mock("../../../src/features/typing/runtime/funbox/list", () => ({
 
 import { nativeSession } from "../../__harness__/native-engine";
 import { getEngineSession } from "../../../src/features/typing/runtime/session.client";
-import { encodeText } from "@oxytype/typing-engine/text";
+import { encodeText } from "@caret/typing-engine/text";
 import { getMutableConfig } from "../../../src/ts/config/store";
 import { getDefaultConfig } from "../../../src/ts/constants/default-config";
 import * as PaceCaret from "../../../src/features/typing/runtime/pace-caret";

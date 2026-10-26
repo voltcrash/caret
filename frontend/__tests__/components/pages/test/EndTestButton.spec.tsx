@@ -1,5 +1,5 @@
 import "../../../__harness__/native-engine";
-import { evaluatePolicy } from "@oxytype/typing-engine/browser.client";
+import { evaluatePolicy } from "@caret/typing-engine/browser.client";
 import { cleanup, fireEvent, render, screen } from "@solidjs/testing-library";
 import {
   afterEach,

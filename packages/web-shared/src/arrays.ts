@@ -1,4 +1,4 @@
-import { randomIntFromRange } from "@oxytype/util/numbers";
+import { randomIntFromRange } from "@caret/util/numbers";
 
 /**
  * Shuffle an array of elements using the Fisher–Yates algorithm.

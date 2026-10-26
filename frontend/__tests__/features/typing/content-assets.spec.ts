@@ -1,5 +1,5 @@
 import { afterEach, expect, it, vi } from "vite-plus/test";
-import { decodeText } from "@oxytype/typing-engine/text";
+import { decodeText } from "@caret/typing-engine/text";
 import {
   engineLanguage,
   engineQuotes,

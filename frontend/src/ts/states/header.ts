@@ -1,7 +1,7 @@
 import { createAccountSignal } from "../../app/state";
 
 import { createEvent } from "../hooks/createEvent";
-import { XpBreakdown } from "@oxytype/schemas/results";
+import { XpBreakdown } from "@caret/schemas/results";
 
 export type XpBarData = {
   addedXp: number;

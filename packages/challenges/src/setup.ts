@@ -1,6 +1,6 @@
 import type { Challenge } from "./types";
-import type { CustomTextSettings } from "@oxytype/schemas/results";
-import { Config } from "@oxytype/schemas/configs";
+import type { CustomTextSettings } from "@caret/schemas/results";
+import { Config } from "@caret/schemas/configs";
 
 export function challengeSetup(challenge: Challenge): {
   config: Partial<Config>;

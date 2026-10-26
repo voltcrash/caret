@@ -1,4 +1,4 @@
-import { Config } from "@oxytype/schemas/configs";
+import { Config } from "@caret/schemas/configs";
 import { createEvent } from "../hooks/createEvent";
 
 type ConfigEventKey =

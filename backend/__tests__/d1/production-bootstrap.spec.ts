@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vite-plus/test";
-import { ConfigurationSchema } from "@oxytype/schemas/configuration";
+import { ConfigurationSchema } from "@caret/schemas/configuration";
 import { getLiveConfiguration } from "../../src/init/configuration";
 import { withRuntime } from "../../src/runtime/env";
 import { createTestRuntime, seedUser } from "./helpers";

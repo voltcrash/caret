@@ -8,9 +8,9 @@ import {
 
 releaseTestApplication();
 import { getBrowserEngine } from "../../src/features/typing/engine.client";
-import { projectEngineConfig } from "@oxytype/typing-engine/config";
+import { projectEngineConfig } from "@caret/typing-engine/config";
 import { getMutableConfig } from "../../src/ts/config/store";
-import { encodeText } from "@oxytype/typing-engine/text";
+import { encodeText } from "@caret/typing-engine/text";
 
 it("imports typing adapters without a mounted app, then recreates and stops each session on remount", async () => {
   const { getTestSession } =

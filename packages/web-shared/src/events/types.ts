@@ -1,7 +1,7 @@
-import { Config } from "@oxytype/schemas/configs";
+import { Config } from "@caret/schemas/configs";
 import { Keycode } from "../keys";
 import { DeleteInputType, InsertInputType } from "../input/input-type";
-import { CustomTextLimitMode } from "@oxytype/schemas/util";
+import { CustomTextLimitMode } from "@caret/schemas/util";
 import { getMode2 } from "../mode";
 
 export type TestEventType =

@@ -1,6 +1,6 @@
 import { createAppOwned } from "../../../app/application";
 import { appObject } from "../../../app/state";
-import { encodeText, decodeText } from "@oxytype/typing-engine/text";
+import { encodeText, decodeText } from "@caret/typing-engine/text";
 import { getEngineSession } from "./session.client";
 import * as TestWords from "./test-words";
 import { showNoticeNotification } from "../../../ts/states/notifications";
@@ -9,8 +9,8 @@ import { getMutableConfig } from "../../../ts/config/store";
 import { setConfig } from "../../../ts/config/setters";
 import * as CustomText from "./custom-text";
 import { configEvent } from "../../../ts/events/config";
-import { Mode } from "@oxytype/schemas/shared";
-import { CustomTextSettings } from "@oxytype/schemas/results";
+import { Mode } from "@caret/schemas/shared";
+import { CustomTextSettings } from "@caret/schemas/results";
 import { setCustomTextIndicator } from "../../../ts/states/core";
 import { getLastEventLog } from "../../../ts/states/test";
 

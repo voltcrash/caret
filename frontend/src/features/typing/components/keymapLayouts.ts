@@ -1,5 +1,5 @@
-import { KeymapStyle } from "@oxytype/schemas/configs";
-import { LayoutObject } from "@oxytype/schemas/layouts";
+import { KeymapStyle } from "@caret/schemas/configs";
+import { LayoutObject } from "@caret/schemas/layouts";
 import {
   FormatDisplayOptions,
   formatForDisplay,

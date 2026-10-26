@@ -1,5 +1,5 @@
 import type { BrowserContext, Page } from "playwright/test";
-import { SessionStateSchema } from "@oxytype/schemas/auth-session";
+import { SessionStateSchema } from "@caret/schemas/auth-session";
 import { fromCrossJSON, type SerovalNode } from "seroval";
 import { z } from "zod";
 import type { StoredQueryCache } from "../src/app/query-cache.client";

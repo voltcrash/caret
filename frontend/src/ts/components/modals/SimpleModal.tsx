@@ -1,4 +1,4 @@
-import { typedEntries } from "@oxytype/util/objects";
+import { typedEntries } from "@caret/util/objects";
 import { AnyFieldApi, createForm } from "@tanstack/solid-form";
 import {
   Accessor,

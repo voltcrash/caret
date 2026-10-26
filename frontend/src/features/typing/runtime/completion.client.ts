@@ -43,7 +43,7 @@ import { getAuthenticatedUser } from "../../../ts/auth-client";
 import {
   CompletedEvent,
   CompletedEventCustomText,
-} from "@oxytype/schemas/results";
+} from "@caret/schemas/results";
 
 import { getMutableConfig } from "../../../ts/config/store";
 
@@ -67,7 +67,7 @@ type InvalidResultReason =
 
 import { isDevEnvironment } from "../../../ts/utils/env";
 
-import { countInvalidResultFields } from "@oxytype/web-shared/result-fields";
+import { countInvalidResultFields } from "@caret/web-shared/result-fields";
 
 import { saveResult } from "./result-saving";
 const invalidMessages: Record<

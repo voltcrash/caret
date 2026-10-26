@@ -1,10 +1,10 @@
-import { projectEngineConfig } from "@oxytype/typing-engine/config";
-import type { Config as EngineConfig } from "@oxytype/typing-engine/config";
+import { projectEngineConfig } from "@caret/typing-engine/config";
+import type { Config as EngineConfig } from "@caret/typing-engine/config";
 import {
   Config,
   ConfigSchema,
   CustomThemeColors,
-} from "@oxytype/schemas/configs";
+} from "@caret/schemas/configs";
 
 const obj: Omit<Config, keyof EngineConfig> = {
   theme: "azure",

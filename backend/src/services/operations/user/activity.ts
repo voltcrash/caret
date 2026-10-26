@@ -1,17 +1,17 @@
-import type { ClientQuery } from "@oxytype/schemas/shared";
+import type { ClientQuery } from "@caret/schemas/shared";
 import * as UserDAL from "../../../dal/user";
 import MonkeyError from "../../../utils/error";
 import { MonkeyResponse } from "../../../utils/monkey-response";
 import * as Dates from "date-fns";
 import { UTCDateMini } from "@date-fns/utc";
-import { CountByYearAndDay, TestActivity } from "@oxytype/schemas/users";
+import { CountByYearAndDay, TestActivity } from "@caret/schemas/users";
 import { addImportantLog } from "../../../dal/logs";
 import {
   GetCurrentTestActivityResponse,
   GetStreakResponse,
   GetTestActivityResponse,
   SetStreakHourOffsetRequest,
-} from "@oxytype/contracts/users";
+} from "@caret/contracts/users";
 import type { ServiceContext, OperationInput } from "../../context";
 
 export async function setStreakHourOffset(

@@ -1,6 +1,6 @@
 import { appObject } from "../../app/state";
 import { createAppMemo } from "../../app/application";
-import { QuickRestart } from "@oxytype/schemas/configs";
+import { QuickRestart } from "@caret/schemas/configs";
 import { HotkeyChord } from "@tanstack/solid-hotkeys";
 
 import { getConfig } from "../config/store";

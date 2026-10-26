@@ -1,4 +1,4 @@
-import { wasmUrl } from "@oxytype/typing-engine/asset";
+import { wasmUrl } from "@caret/typing-engine/asset";
 import { createFileRoute } from "@tanstack/solid-router";
 import { englishHash } from "virtual:language-hashes";
 

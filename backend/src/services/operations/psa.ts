@@ -1,8 +1,8 @@
-import { GetPsaResponse } from "@oxytype/contracts/psas";
+import { GetPsaResponse } from "@caret/contracts/psas";
 import * as PsaDAL from "../../dal/psa";
 import { MonkeyResponse } from "../../utils/monkey-response";
 import type { ServiceContext, OperationInput } from "../context";
-import { PSA } from "@oxytype/schemas/psas";
+import { PSA } from "@caret/schemas/psas";
 import { cacheWithTTL } from "../../utils/ttl-cache";
 
 //cache for one minute

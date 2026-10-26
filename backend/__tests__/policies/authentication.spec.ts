@@ -12,7 +12,7 @@ import type { Actor } from "../../src/services/context";
 import { AuthenticatedSession } from "../../src/utils/auth";
 import MonkeyError from "../../src/utils/error";
 import * as Misc from "../../src/utils/misc";
-import { RequestAuthenticationOptions } from "@oxytype/contracts/util/api";
+import { RequestAuthenticationOptions } from "@caret/contracts/util/api";
 import { enableMonkeyErrorExpects } from "../__testData__/monkey-error";
 
 enableMonkeyErrorExpects();

@@ -1,4 +1,4 @@
-import type { Config } from "@oxytype/schemas/configs";
+import type { Config } from "@caret/schemas/configs";
 import type { Page } from "playwright/test";
 
 import { assertRestarted, expect, openTest, test } from "./fixtures";

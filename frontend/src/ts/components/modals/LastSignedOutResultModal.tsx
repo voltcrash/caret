@@ -1,4 +1,4 @@
-import { CompletedEvent } from "@oxytype/schemas/results";
+import { CompletedEvent } from "@caret/schemas/results";
 import objectHash from "object-hash";
 import { createMemo, JSX } from "solid-js";
 

@@ -13,7 +13,7 @@ import * as WeeklyXpLeaderboard from "../../../services/weekly-xp-leaderboard";
 import {
   AddResultRequest,
   AddResultResponse,
-} from "@oxytype/contracts/results";
+} from "@caret/contracts/results";
 
 import type { ServiceContext, OperationInput } from "../../context";
 

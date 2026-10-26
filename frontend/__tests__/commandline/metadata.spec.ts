@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vite-plus/test";
-import { typedKeys } from "@oxytype/util/objects";
+import { typedKeys } from "@caret/util/objects";
 
 vi.mock("../../src/features/typing/runtime/test-logic", () => ({
   restart: vi.fn(),

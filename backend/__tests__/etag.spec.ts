@@ -1,4 +1,4 @@
-import { COMPATIBILITY_CHECK } from "@oxytype/contracts";
+import { COMPATIBILITY_CHECK } from "@caret/contracts";
 import { expect, it } from "vite-plus/test";
 import { createETagGenerator } from "../src/utils/etag";
 

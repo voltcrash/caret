@@ -1,5 +1,5 @@
-import { Difficulty } from "@oxytype/schemas/configs";
-import { Mode } from "@oxytype/schemas/shared";
+import { Difficulty } from "@caret/schemas/configs";
+import { Mode } from "@caret/schemas/shared";
 import { format as dateFormat } from "date-fns/format";
 import { Accessor, createMemo, createSignal, JSXElement, Show } from "solid-js";
 

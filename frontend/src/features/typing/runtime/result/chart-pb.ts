@@ -2,9 +2,9 @@ import { captureTypingRoute } from "../../scope";
 import { result, resultAnnotation } from "./context";
 import { getMutableConfig } from "../../../../ts/config/store";
 import * as DB from "../../../../ts/db";
-import * as Numbers from "@oxytype/util/numbers";
+import * as Numbers from "@caret/util/numbers";
 import { get as getTypingSpeedUnit } from "../../../../ts/utils/typing-speed-units";
-import { getFunbox } from "@oxytype/funbox";
+import { getFunbox } from "@caret/funbox";
 import { getTheme } from "../../../../ts/states/theme";
 
 export async function updateChartPBLine(): Promise<void> {

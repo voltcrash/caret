@@ -1,4 +1,4 @@
-import { debounce, throttle } from "@oxytype/util/timing";
+import { debounce, throttle } from "@caret/util/timing";
 import { onCleanup, onMount } from "solid-js";
 
 import { getMutableConfig } from "../../../ts/config/store";

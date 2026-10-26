@@ -6,7 +6,7 @@ import type {
   UserTag,
   User,
   CountByYearAndDay,
-} from "@oxytype/schemas/users";
+} from "@caret/schemas/users";
 
 export type DBUserTag = UserTag;
 

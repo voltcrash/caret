@@ -1,10 +1,10 @@
-import { QuoteLength } from "@oxytype/schemas/configs";
-import { PresetNameSchema } from "@oxytype/schemas/presets";
+import { QuoteLength } from "@caret/schemas/configs";
+import { PresetNameSchema } from "@caret/schemas/presets";
 import {
   ResultFilters,
   ResultFiltersGroupItem,
   ResultFiltersKeys,
-} from "@oxytype/schemas/users";
+} from "@caret/schemas/users";
 import { createMemo, createSignal, For, JSXElement, Show } from "solid-js";
 import { SetStoreFunction, unwrap } from "solid-js/store";
 import { z } from "zod";

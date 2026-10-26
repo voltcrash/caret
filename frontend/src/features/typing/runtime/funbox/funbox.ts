@@ -18,8 +18,8 @@ import {
 } from "../../../../ts/config/setters";
 import * as MemoryTimer from "./memory-funbox-timer";
 import * as FunboxMemory from "./funbox-memory";
-import { HighlightMode, FunboxName } from "@oxytype/schemas/configs";
-import { Mode } from "@oxytype/schemas/shared";
+import { HighlightMode, FunboxName } from "@caret/schemas/configs";
+import { Mode } from "@caret/schemas/shared";
 import { checkCompatibility, checkForcedConfig } from "../../policy.client";
 import {
   getAllFunboxes,
@@ -28,7 +28,7 @@ import {
   isFunboxActiveWithProperty,
   getActiveFunboxesWithProperty,
 } from "./list";
-import { tryCatch } from "@oxytype/util/trycatch";
+import { tryCatch } from "@caret/util/trycatch";
 import { configEvent } from "../../../../ts/events/config";
 
 export function toggleScript(...params: string[]): void {

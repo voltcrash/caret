@@ -9,8 +9,8 @@ import {
   type Configuration as ConfigurationType,
   type ConfigurationFormField,
   ConfigurationFormObjectSchema,
-} from "@oxytype/schemas/configuration";
-import { ConfigurationSchemaResponseSchema } from "@oxytype/contracts/configuration";
+} from "@caret/schemas/configuration";
+import { ConfigurationSchemaResponseSchema } from "@caret/contracts/configuration";
 import * as Misc from "../../../src/utils/misc";
 import * as AdminUuids from "../../../src/dal/admin-uids";
 

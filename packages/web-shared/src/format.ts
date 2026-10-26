@@ -1,9 +1,9 @@
 import { get as getTypingSpeedUnit } from "./typing-speed-units";
-import * as Numbers from "@oxytype/util/numbers";
+import * as Numbers from "@caret/util/numbers";
 import {
   Config as ConfigType,
   TypingSpeedUnit,
-} from "@oxytype/schemas/configs";
+} from "@caret/schemas/configs";
 
 export type FormatOptions = {
   showDecimalPlaces?: boolean;

@@ -1,6 +1,6 @@
 import { setMaxChartValue } from "./chart-bounds";
 import { getMutableConfig } from "../../../../ts/config/store";
-import * as Numbers from "@oxytype/util/numbers";
+import * as Numbers from "@caret/util/numbers";
 import { get as getTypingSpeedUnit } from "../../../../ts/utils/typing-speed-units";
 import {
   getResultChart,

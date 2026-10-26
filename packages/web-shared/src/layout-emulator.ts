@@ -1,4 +1,4 @@
-import type { LayoutObject } from "@oxytype/schemas/layouts";
+import type { LayoutObject } from "@caret/schemas/layouts";
 export type LayoutModifiers = {
   code: string;
   shift: boolean;

@@ -1,9 +1,9 @@
 import type {
   LeaderboardEntry,
   XpLeaderboardEntry,
-} from "@oxytype/schemas/leaderboards";
-import { LanguageSchema } from "@oxytype/schemas/languages";
-import { ClientSchema, ModeSchema } from "@oxytype/schemas/shared";
+} from "@caret/schemas/leaderboards";
+import { LanguageSchema } from "@caret/schemas/languages";
+import { ClientSchema, ModeSchema } from "@caret/schemas/shared";
 import { z } from "zod";
 
 export const pageSize = 50;

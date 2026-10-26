@@ -1,4 +1,4 @@
-import { EndpointMetadata } from "@oxytype/contracts/util/api";
+import { EndpointMetadata } from "@caret/contracts/util/api";
 import {
   afterEach,
   beforeEach,

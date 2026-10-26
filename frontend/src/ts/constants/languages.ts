@@ -1,4 +1,4 @@
-import { Language, LanguageSchema } from "@oxytype/schemas/languages";
+import { Language, LanguageSchema } from "@caret/schemas/languages";
 
 export const LanguageList: Language[] = LanguageSchema.options;
 

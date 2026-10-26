@@ -1,5 +1,5 @@
 import "@tanstack/solid-start/server-only";
-import { handleAuthRequest } from "@oxytype/backend/auth";
+import { handleAuthRequest } from "@caret/backend/auth";
 import { createServiceContext } from "./context.server";
 
 export async function authHandler(request: Request): Promise<Response> {

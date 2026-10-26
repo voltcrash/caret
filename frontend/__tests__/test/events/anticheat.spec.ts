@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vite-plus/test";
-import type { CompletedEvent } from "@oxytype/schemas/results";
+import type { CompletedEvent } from "@caret/schemas/results";
 import { completedEvent } from "../../../../backend/__tests__/__testData__/completed-event";
 import { humanTimings } from "../../../../backend/__tests__/__testData__/key-timings";
 import {
@@ -9,10 +9,10 @@ import {
   getTimingFingerprint,
   getTimingReview,
 } from "../../../../backend/src/anticheat";
-import type { EventLog, TestEventNoMs } from "@oxytype/web-shared/events/types";
+import type { EventLog, TestEventNoMs } from "@caret/web-shared/events/types";
 import "../../__harness__/native-engine.node";
-import { analyzeLog } from "@oxytype/typing-engine/browser.client";
-import { toEngineLog } from "@oxytype/typing-engine/text";
+import { analyzeLog } from "@caret/typing-engine/browser.client";
+import { toEngineLog } from "@caret/typing-engine/text";
 
 vi.mock("../../../src/ts/config/store", () => ({
   getMutableConfig: (() => {

@@ -88,7 +88,7 @@ function resolveSpecifier(
   }
 
   // @oxytype packages are treated as leaf nodes (no recursion into them)
-  if (specifier.startsWith("@oxytype/")) return specifier;
+  if (specifier.startsWith("@caret/")) return specifier;
 
   return null; // third-party / virtual
 }
@@ -135,7 +135,7 @@ function walk(
     reachable.add(resolved);
 
     // @oxytype packages are leaf nodes — don't recurse
-    if (resolved.startsWith("@oxytype/")) {
+    if (resolved.startsWith("@caret/")) {
       maxDepth = Math.max(maxDepth, 1);
       continue;
     }
@@ -199,7 +199,7 @@ function depthColor(depth: number): string {
 
 function leavesFolder(filePath: string): boolean {
   if (boundary === null) return false;
-  if (filePath.startsWith("@oxytype/")) return true;
+  if (filePath.startsWith("@caret/")) return true;
   return !filePath.startsWith(`${boundary}/`);
 }
 

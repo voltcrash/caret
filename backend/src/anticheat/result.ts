@@ -1,5 +1,5 @@
-import type { CompletedEvent } from "@oxytype/schemas/results";
-import { kogasa, mean, roundTo2, stdDev } from "@oxytype/util/numbers";
+import type { CompletedEvent } from "@caret/schemas/results";
+import { kogasa, mean, roundTo2, stdDev } from "@caret/util/numbers";
 
 export type ResultFailure =
   | "invalid-number"

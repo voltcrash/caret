@@ -3,7 +3,7 @@ import { parseJsonQueryObject } from "@ts-rest/core";
 import {
   COMPATIBILITY_CHECK,
   COMPATIBILITY_CHECK_HEADER,
-} from "@oxytype/contracts";
+} from "@caret/contracts";
 import qs from "qs";
 import {
   admit,

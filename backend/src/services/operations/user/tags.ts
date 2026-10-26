@@ -1,4 +1,4 @@
-import type { ClientQuery } from "@oxytype/schemas/shared";
+import type { ClientQuery } from "@caret/schemas/shared";
 import * as UserDAL from "../../../dal/user";
 import { MonkeyResponse } from "../../../utils/monkey-response";
 import {
@@ -7,7 +7,7 @@ import {
   EditTagRequest,
   GetTagsResponse,
   TagIdPathParams,
-} from "@oxytype/contracts/users";
+} from "@caret/contracts/users";
 import type { ServiceContext, OperationInput } from "../../context";
 
 export async function addTag(

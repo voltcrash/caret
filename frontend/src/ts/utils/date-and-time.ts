@@ -1,4 +1,4 @@
-export { secondsToString } from "@oxytype/util/date-and-time";
+export { secondsToString } from "@caret/util/date-and-time";
 import { Day } from "date-fns";
 
 /*

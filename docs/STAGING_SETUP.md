@@ -55,11 +55,11 @@ Cloudflare's test widget. Test secrets are rejected by production-mode Workers.
 Once all placeholders are replaced, run from the repo root:
 
 ```sh
-vp run --filter @oxytype/frontend build:staging-site
-vp run --filter @oxytype/frontend check:staging
-vp run --filter @oxytype/frontend retire:staging-task-consumer
-vp run --filter @oxytype/frontend db:migrate:staging
-vp run --filter @oxytype/frontend deploy:staging-site
+vp run --filter @caret/frontend build:staging-site
+vp run --filter @caret/frontend check:staging
+vp run --filter @caret/frontend retire:staging-task-consumer
+vp run --filter @caret/frontend db:migrate:staging
+vp run --filter @caret/frontend deploy:staging-site
 ```
 
 Secret upload retains the existing auth secret. Build and deploy use Start's

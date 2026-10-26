@@ -1,4 +1,4 @@
-import type { Config } from "@oxytype/schemas/configs";
+import type { Config } from "@caret/schemas/configs";
 export const lastConfigsToApply: ReadonlySet<keyof Config> = new Set<
   keyof Config
 >([

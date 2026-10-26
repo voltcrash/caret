@@ -1,7 +1,7 @@
 import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import type { Config } from "@oxytype/schemas/configs";
-import type { LanguageObject } from "@oxytype/schemas/languages";
+import type { Config } from "@caret/schemas/configs";
+import type { LanguageObject } from "@caret/schemas/languages";
 import { getDefaultConfig } from "../src/config/default-config";
 import { QuotesController } from "../src/quote-source";
 import { getQuoteWordList } from "../src/words-generator/quotes";

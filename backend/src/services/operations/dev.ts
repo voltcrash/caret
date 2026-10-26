@@ -10,16 +10,16 @@ import { newId } from "../../utils/id";
 import * as LeaderboardDal from "../../dal/leaderboards";
 import MonkeyError from "../../utils/error";
 
-import { Mode, PersonalBest, PersonalBests } from "@oxytype/schemas/shared";
+import { Mode, PersonalBest, PersonalBests } from "@caret/schemas/shared";
 import {
   GenerateDataRequest,
   GenerateDataResponse,
-} from "@oxytype/contracts/dev";
-import { roundTo2 } from "@oxytype/util/numbers";
+} from "@caret/contracts/dev";
+import { roundTo2 } from "@caret/util/numbers";
 import type { ServiceContext, OperationInput } from "../context";
 import { DBResult } from "../../utils/result";
 import { LbPersonalBests } from "../../utils/pb";
-import { Language } from "@oxytype/schemas/languages";
+import { Language } from "@caret/schemas/languages";
 
 const CREATE_RESULT_DEFAULT_OPTIONS = {
   firstTestTimestamp: DateUtils.startOfDay(new UTCDate(Date.now())).valueOf(),

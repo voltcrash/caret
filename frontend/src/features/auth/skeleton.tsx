@@ -1,4 +1,4 @@
-import type { SessionState } from "@oxytype/schemas/auth-session";
+import type { SessionState } from "@caret/schemas/auth-session";
 
 import { For, type JSXElement, Show } from "solid-js";
 import { envConfig } from "virtual:env-config";

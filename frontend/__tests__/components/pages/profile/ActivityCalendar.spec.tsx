@@ -1,4 +1,4 @@
-import type { TestActivity } from "@oxytype/schemas/users";
+import type { TestActivity } from "@caret/schemas/users";
 
 import { cleanup, render } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";

@@ -8,8 +8,8 @@ import type {
   Mode,
   Mode2,
   PersonalBest,
-} from "@oxytype/schemas/shared";
-import type { Result as ResultType } from "@oxytype/schemas/results";
+} from "@caret/schemas/shared";
+import type { Result as ResultType } from "@caret/schemas/results";
 
 import type { DBUser } from "./types";
 import { emptyPb } from "./empty-pb";

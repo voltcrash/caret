@@ -1,9 +1,9 @@
 import "../../__harness__/native-engine";
 import { describe, expect, it } from "vite-plus/test";
-import { analyzeLog } from "@oxytype/typing-engine/browser.client";
-import { decodeText } from "@oxytype/typing-engine/text";
+import { analyzeLog } from "@caret/typing-engine/browser.client";
+import { decodeText } from "@caret/typing-engine/text";
 import cases from "../../../../packages/typing-fixtures/oracle/inspection.json" with { type: "json" };
-import type { Log } from "@oxytype/typing-engine/browser.client";
+import type { Log } from "@caret/typing-engine/browser.client";
 
 describe("historical log inspection through optimized browser Wasm", () => {
   it.for(cases)("$name", (reference) => {

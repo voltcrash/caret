@@ -1,6 +1,6 @@
 import { ResultsQueryState } from "./types";
-import { Client } from "@oxytype/schemas/shared";
-import { ResultFilters } from "@oxytype/schemas/users";
+import { Client } from "@caret/schemas/shared";
+import { ResultFilters } from "@caret/schemas/users";
 
 export function createResultsQueryState(
   filters: ResultFilters,

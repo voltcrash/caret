@@ -13,7 +13,7 @@ import * as Caret from "./caret";
 import * as SlowTimer from "../../../ts/states/slow-timer";
 import { highlight } from "../../../ts/events/keymap";
 import * as LayoutfluidFunboxTimer from "./funbox/layoutfluid-funbox-timer";
-import { KeymapLayout, Layout } from "@oxytype/schemas/configs";
+import { KeymapLayout, Layout } from "@caret/schemas/configs";
 import * as SoundController from "../../../ts/controllers/sound-controller";
 import { clearLowFpsMode } from "../../../ts/anim";
 import { createTimerScheduler } from "./timer-scheduler";

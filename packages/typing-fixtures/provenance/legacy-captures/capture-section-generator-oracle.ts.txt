@@ -1,7 +1,7 @@
 import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import type { Config, FunboxName } from "@oxytype/schemas/configs";
-import type { LanguageObject } from "@oxytype/schemas/languages";
+import type { Config, FunboxName } from "@caret/schemas/configs";
+import type { LanguageObject } from "@caret/schemas/languages";
 const units = (value: string): number[] =>
   Array.from({ length: value.length }, (_, i) => value.charCodeAt(i));
 const seeded =

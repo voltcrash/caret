@@ -245,14 +245,14 @@ switch (process.argv[2]) {
     break;
   }
   case "browser":
-    run("vp", ["run", "--filter", "@oxytype/frontend", "build:start"], {
+    run("vp", ["run", "--filter", "@caret/frontend", "build:start"], {
       ...process.env,
       OXYTYPE_ENGINE_PROOF: "true",
     });
     run("vp", [
       "run",
       "--filter",
-      "@oxytype/frontend",
+      "@caret/frontend",
       "benchmark-migration",
       "engine-proof.migration.ts",
       "engine-input-contract.migration.ts",

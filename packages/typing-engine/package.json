@@ -1,5 +1,5 @@
 {
-  "name": "@oxytype/typing-engine",
+  "name": "@caret/typing-engine",
   "private": true,
   "license": "GPL-3.0",
   "type": "module",
@@ -26,7 +26,7 @@
     "lint-fast": "vp lint . --format agent"
   },
   "devDependencies": {
-    "@oxytype/typescript-config": "workspace:*",
+    "@caret/typescript-config": "workspace:*",
     "vite-plus": "catalog:"
   }
 }

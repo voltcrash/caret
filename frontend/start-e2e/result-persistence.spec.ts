@@ -1,8 +1,8 @@
 import { fromCrossJSON, toJSONAsync } from "seroval";
 import type { SerovalNode } from "seroval";
 import { z } from "zod";
-import { AddResultResponseSchema } from "@oxytype/contracts/results";
-import { GetUserResponseSchema } from "@oxytype/contracts/users";
+import { AddResultResponseSchema } from "@caret/contracts/results";
+import { GetUserResponseSchema } from "@caret/contracts/users";
 import { authCookie } from "./auth-fixtures";
 import { expect, test } from "./fixtures";
 import { rpcPath } from "./rpc-fixtures";

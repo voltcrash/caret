@@ -1,4 +1,4 @@
-import type { Client } from "@oxytype/schemas/shared";
+import type { Client } from "@caret/schemas/shared";
 import type { D1PreparedStatement } from "@cloudflare/workers-types";
 import { statement } from "./client";
 export type RankingRow = {

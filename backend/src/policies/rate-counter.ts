@@ -1,7 +1,7 @@
 import {
   limits,
   type RateLimitOptions,
-} from "@oxytype/contracts/rate-limit/index";
+} from "@caret/contracts/rate-limit/index";
 import { runtime } from "../runtime/env";
 
 /**

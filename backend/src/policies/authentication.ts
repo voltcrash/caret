@@ -1,5 +1,5 @@
 import { getSessionCookie } from "better-auth/cookies";
-import type { RequestAuthenticationOptions } from "@oxytype/contracts/util/api";
+import type { RequestAuthenticationOptions } from "@caret/contracts/util/api";
 import MonkeyError from "../utils/error";
 import { verifySession, type SessionLookup } from "../utils/auth";
 import { isDevEnvironment } from "../utils/misc";

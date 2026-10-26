@@ -1,4 +1,4 @@
-import * as ConfigSchemas from "@oxytype/schemas/configs";
+import * as ConfigSchemas from "@caret/schemas/configs";
 
 import { Validation } from "../../types/validation";
 

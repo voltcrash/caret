@@ -4,7 +4,7 @@ import {
   AddResultFilterPresetRequest,
   AddResultFilterPresetResponse,
   RemoveResultFilterPresetPathParams,
-} from "@oxytype/contracts/users";
+} from "@caret/contracts/users";
 import type { ServiceContext, OperationInput } from "../../context";
 
 export async function addResultFilterPreset(

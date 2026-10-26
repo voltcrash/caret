@@ -3,7 +3,7 @@ import { result } from "./context";
 import { getMutableConfig } from "../../../../ts/config/store";
 import * as DB from "../../../../ts/db";
 import { getActiveFunboxes } from "../funbox/list";
-import { getFunbox } from "@oxytype/funbox";
+import { getFunbox } from "@caret/funbox";
 import {
   resultState,
   setResultState,

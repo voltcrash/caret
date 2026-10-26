@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
-import type { Update } from "@oxytype/typing-engine/browser.client";
+import type { Update } from "@caret/typing-engine/browser.client";
 const mocks = vi.hoisted(() => {
   const empty: Update = {
     state: { wordIndex: 0, inputValue: [], active: false, ended: false },

@@ -6,7 +6,7 @@ import {
   EndpointMetadata,
   RequestAuthenticationOptions,
   PermissionId,
-} from "@oxytype/contracts/util/api";
+} from "@caret/contracts/util/api";
 import { isDevEnvironment } from "../utils/misc";
 
 type RequestPermissionCheck = {

@@ -1,5 +1,5 @@
 import { createEffect, on, onCleanup } from "solid-js";
-import { debounce } from "@oxytype/util/timing";
+import { debounce } from "@caret/util/timing";
 import type { AccessorArray } from "solid-js";
 
 type Accessor<T = unknown> = () => T;

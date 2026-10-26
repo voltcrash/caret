@@ -9,7 +9,7 @@ need no build.
 `vp run dev` starts TanStack Start on port 3000: document, assets, server
 functions and `/api` run in local workerd with local D1. First copy
 `frontend/.dev.vars.example` to `frontend/.dev.vars` and apply migrations with
-`vp run --filter @oxytype/frontend db:migrate`. Stop servers with Ctrl+C.
+`vp run --filter @caret/frontend db:migrate`. Stop servers with Ctrl+C.
 
 ### Lightweight frontend development
 
@@ -19,7 +19,7 @@ and the event-log viewer load when first opened. Router intent preloading stays
 on.
 
 For UI/typing work without a backend, run
-`vp run --filter @oxytype/frontend dev:offline`.
+`vp run --filter @caret/frontend dev:offline`.
 This uses shared local configuration defaults, skips auth/session subscriptions,
 blocks API requests and disables query retries. A banner identifies this mode.
 Login, saved results, account data and server features require normal development
@@ -50,7 +50,7 @@ DEV_PREFETCH=true vp run dev
 
 Use one server per actively edited checkout. Additional tabs on that server share
 its transform cache; separate worktrees need separate servers. For a reference
-checkout, build once and run `vp run --filter @oxytype/frontend start`; rebuilding
+checkout, build once and run `vp run --filter @caret/frontend start`; rebuilding
 is required to see subsequent changes.
 For a separate preview port, run `vp preview --port 3101` from `frontend` after
 `vp run build` completes at the repository root; preview runs the built Worker

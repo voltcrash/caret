@@ -1,13 +1,13 @@
-import { Configuration } from "@oxytype/schemas/configuration";
+import { Configuration } from "@caret/schemas/configuration";
 
-import { CompletedEvent, XpBreakdown } from "@oxytype/schemas/results";
-import { isSafeNumber, mapRange } from "@oxytype/util/numbers";
+import { CompletedEvent, XpBreakdown } from "@caret/schemas/results";
+import { isSafeNumber, mapRange } from "@caret/util/numbers";
 import {
   getCurrentDayTimestamp,
   getStartOfDayTimestamp,
-} from "@oxytype/util/date-and-time";
+} from "@caret/util/date-and-time";
 
-import { getFunbox } from "@oxytype/funbox";
+import { getFunbox } from "@caret/funbox";
 
 export type XpResult = {
   xp: number;

@@ -1,12 +1,12 @@
-import * as ConfigSchemas from "@oxytype/schemas/configs";
-import { typedKeys } from "@oxytype/util/objects";
+import * as ConfigSchemas from "@caret/schemas/configs";
+import { typedKeys } from "@caret/util/objects";
 import {
   getOptionLabel,
   getOptionSearchKeywords,
   getVisibleOptions,
   sharedConfigMetadata,
   type ConfigOptionMetadata,
-} from "@oxytype/web-shared/config/metadata";
+} from "@caret/web-shared/config/metadata";
 import { JSXElement, untrack } from "solid-js";
 
 import {

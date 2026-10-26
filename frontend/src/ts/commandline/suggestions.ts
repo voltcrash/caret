@@ -10,7 +10,7 @@ import { clearFontPreview } from "../ui";
 import { Command, CommandsSubgroup } from "./types";
 import { areUnsortedArraysEqual } from "../utils/arrays";
 
-import { intersect } from "@oxytype/util/arrays";
+import { intersect } from "@caret/util/arrays";
 
 import { isInputElementFocused } from "../input/input-element";
 

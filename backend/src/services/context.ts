@@ -1,5 +1,5 @@
 import type { Runtime } from "../runtime/env";
-import type { Configuration } from "@oxytype/schemas/configuration";
+import type { Configuration } from "@caret/schemas/configuration";
 
 /** Who an operation acts for; established by the authentication policy. */
 export type Actor = {

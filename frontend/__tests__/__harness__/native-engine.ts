@@ -1,7 +1,7 @@
 import init from "../../../packages/typing-engine/generated/engine.js";
-import { BrowserSession } from "@oxytype/typing-engine/browser.client";
-import { encodeText } from "@oxytype/typing-engine/text";
-import { projectEngineConfig } from "@oxytype/typing-engine/config";
+import { BrowserSession } from "@caret/typing-engine/browser.client";
+import { encodeText } from "@caret/typing-engine/text";
+import { projectEngineConfig } from "@caret/typing-engine/config";
 
 // Exercise the same generated/optimized Wasm and SDK used by the website.
 await init({

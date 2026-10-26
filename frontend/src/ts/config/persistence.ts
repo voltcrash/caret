@@ -1,16 +1,16 @@
 import { onCleanup } from "solid-js";
 import { createAccountOwned, captureAccount } from "../../app/account-scope";
-import { Config as ConfigSchema } from "@oxytype/schemas/configs";
+import { Config as ConfigSchema } from "@caret/schemas/configs";
 import { saveConfig } from "./sync";
 import { setAccountButtonSpinner } from "../states/header";
 import { getMutableConfig } from "./store";
-import * as ConfigSchemas from "@oxytype/schemas/configs";
+import * as ConfigSchemas from "@caret/schemas/configs";
 import { getDefaultConfig } from "../constants/default-config";
 import { migrateConfig } from "./utils";
 import { LocalStorageWithSchema } from "../utils/local-storage-with-schema";
 import { isObject } from "../utils/misc";
-import { debounce } from "@oxytype/util/timing";
-import { setProperty } from "@oxytype/util/objects";
+import { debounce } from "@caret/util/timing";
+import { setProperty } from "@caret/util/objects";
 
 const pendingSync = createAccountOwned(() => {
   const current = {

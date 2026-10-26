@@ -1,5 +1,5 @@
-import type { Client } from "@oxytype/schemas/shared";
-import type { UserProfile } from "@oxytype/schemas/users";
+import type { Client } from "@caret/schemas/shared";
+import type { UserProfile } from "@caret/schemas/users";
 import { queryOptions } from "@tanstack/solid-query";
 import { isServer } from "solid-js/web";
 import { getProfile } from "../functions/profile";

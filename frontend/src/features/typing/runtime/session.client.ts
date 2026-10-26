@@ -4,7 +4,7 @@ import { getBrowserEngine } from "../engine.client";
 import {
   engineConfigMatches,
   projectEngineConfig,
-} from "@oxytype/typing-engine/config";
+} from "@caret/typing-engine/config";
 import {
   decodeText,
   encodeText,
@@ -12,12 +12,12 @@ import {
   toEngineLog,
   toWebEvent,
   toWebLog,
-} from "@oxytype/typing-engine/text";
+} from "@caret/typing-engine/text";
 import type {
   WebLog,
   WebEvent,
   TransportEvent,
-} from "@oxytype/typing-engine/text";
+} from "@caret/typing-engine/text";
 import type {
   Command,
   Update,
@@ -31,10 +31,10 @@ import type {
   LiveMetrics,
   InsertionLayout,
   RestartOptions,
-} from "@oxytype/typing-engine/browser.client";
+} from "@caret/typing-engine/browser.client";
 import { getMutableConfig } from "../../../ts/config/store";
 import * as CustomText from "./custom-text";
-import type { CompletedEvent } from "@oxytype/schemas/results";
+import type { CompletedEvent } from "@caret/schemas/results";
 
 type NativeCompletion = Extract<Query, { op: "completed" }>["context"];
 type CompletedEventContext = Omit<

@@ -3,7 +3,7 @@ import { applyFakeChartData } from "./fake-chart";
 import { result, resultAnnotation } from "./context";
 import { getMutableConfig } from "../../../../ts/config/store";
 import { showSuccessNotification } from "../../../../ts/states/notifications";
-import * as Numbers from "@oxytype/util/numbers";
+import * as Numbers from "@caret/util/numbers";
 import * as Arrays from "../../../../ts/utils/arrays";
 import { get as getTypingSpeedUnit } from "../../../../ts/utils/typing-speed-units";
 import { getActiveFunboxes } from "../funbox/list";

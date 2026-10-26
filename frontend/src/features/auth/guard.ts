@@ -1,5 +1,5 @@
 import type { QueryClient } from "@tanstack/solid-query";
-import type { UiSession } from "@oxytype/schemas/auth-session";
+import type { UiSession } from "@caret/schemas/auth-session";
 import { redirect } from "@tanstack/solid-router";
 import { authRedirect, sessionOptions } from "./session";
 

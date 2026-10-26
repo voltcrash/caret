@@ -1,6 +1,6 @@
 import { initContract } from "@ts-rest/core";
 import { z } from "zod";
-import { UidSchema } from "@oxytype/schemas/util";
+import { UidSchema } from "@caret/schemas/util";
 import {
   CommonResponses,
   meta,

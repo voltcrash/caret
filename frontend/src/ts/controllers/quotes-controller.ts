@@ -2,12 +2,12 @@ import { getContentHost } from "../../features/typing/runtime/content.client";
 import { operation } from "../../data/operations";
 import { createAppOwned } from "../../app/application";
 import { appObject } from "../../app/state";
-import { Quote } from "@oxytype/web-shared/quotes";
-export type { Quote } from "@oxytype/web-shared/quotes";
+import { Quote } from "@caret/web-shared/quotes";
+export type { Quote } from "@caret/web-shared/quotes";
 import { removeLanguageSize } from "../utils/strings";
 import { configEvent } from "../events/config";
 import * as DB from "../db";
-import { Language } from "@oxytype/schemas/languages";
+import { Language } from "@caret/schemas/languages";
 
 class QuotesController {
   async getQuotes(

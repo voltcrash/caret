@@ -30,7 +30,7 @@ import { COMMAND_SEPARATOR_HTML, buildCommandForConfigKey } from "./util";
 import { CommandlineConfigMetadataObject } from "./commandline-metadata";
 import { isAuthAvailable, signOut } from "../auth-client";
 import { isAuthenticated } from "../states/core";
-import { ConfigKey } from "@oxytype/schemas/configs";
+import { ConfigKey } from "@caret/schemas/configs";
 import {
   hideFpsCounter,
   showFpsCounter,

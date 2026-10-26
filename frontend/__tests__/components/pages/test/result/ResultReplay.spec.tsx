@@ -1,4 +1,4 @@
-import type { EventLog } from "@oxytype/web-shared/events/types";
+import type { EventLog } from "@caret/web-shared/events/types";
 
 import { cleanup, fireEvent, render } from "@solidjs/testing-library";
 import {
@@ -35,8 +35,8 @@ import "../../../../__harness__/native-engine";
 import {
   analyzeLog,
   BrowserReplay,
-} from "@oxytype/typing-engine/browser.client";
-import { toEngineLog } from "@oxytype/typing-engine/text";
+} from "@caret/typing-engine/browser.client";
+import { toEngineLog } from "@caret/typing-engine/text";
 function log(): EventLog {
   return {
     version: 1,

@@ -1,12 +1,12 @@
-import { ChallengeName } from "@oxytype/schemas/challenges";
+import { ChallengeName } from "@caret/schemas/challenges";
 import {
   Config,
   Difficulty,
   FunboxName,
   ThemeName,
-} from "@oxytype/schemas/configs";
-import { Mode } from "@oxytype/schemas/shared";
-import { CustomTextLimitMode, CustomTextMode } from "@oxytype/schemas/util";
+} from "@caret/schemas/configs";
+import { Mode } from "@caret/schemas/shared";
+import { CustomTextLimitMode, CustomTextMode } from "@caret/schemas/util";
 
 export type Challenge = {
   name: ChallengeName;

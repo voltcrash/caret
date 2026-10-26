@@ -68,7 +68,7 @@ never add `hidden` imperatively, or a closed dialog can intercept clicks.
 
 ## Backend and data
 
-`@oxytype/backend` exports narrow server-only subpaths (runtime, services,
+`@caret/backend` exports narrow server-only subpaths (runtime, services,
 policies, auth, http, jobs). Start handlers call services directly; there is no
 internal HTTP hop. Shared ts-rest contracts and Zod schemas define the retained
 external HTTP API. Drizzle describes D1 tables; Better Auth uses database-backed
@@ -120,7 +120,7 @@ flowchart LR
 ## Development and delivery
 
 `vp run dev` starts Start on port 3000 with local workerd and D1
-(`vp run --filter @oxytype/frontend db:migrate` first). Vitest covers web
+(`vp run --filter @caret/frontend db:migrate` first). Vitest covers web
 units, Start SSR/workerd suites, backend services and real D1 behaviour;
 Playwright covers the built Start Worker.
 

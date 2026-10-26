@@ -1,6 +1,6 @@
-import type { EventLog } from "@oxytype/web-shared/events/types";
+import type { EventLog } from "@caret/web-shared/events/types";
 
-import { decodeText } from "@oxytype/typing-engine/text";
+import { decodeText } from "@caret/typing-engine/text";
 import {
   createDeferred,
   createMemo,

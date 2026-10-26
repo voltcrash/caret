@@ -1,6 +1,6 @@
 import "@tanstack/solid-start/server-only";
-import type { Client } from "@oxytype/schemas/shared";
-import type { OperationData } from "@oxytype/backend/policies/operation-runner";
+import type { Client } from "@caret/schemas/shared";
+import type { OperationData } from "@caret/backend/policies/operation-runner";
 import { runOperation } from "./operation.server";
 import type { ServiceContext } from "./context.server";
 

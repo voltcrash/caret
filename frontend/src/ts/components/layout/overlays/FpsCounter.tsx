@@ -1,4 +1,4 @@
-import { roundTo2 } from "@oxytype/util/numbers";
+import { roundTo2 } from "@caret/util/numbers";
 import { JSX, createSignal, createEffect, onCleanup, Show } from "solid-js";
 
 const [isVisible, setVisible] = createSignal(false);

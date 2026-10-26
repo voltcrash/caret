@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vite-plus/test";
 import { getDefaultConfig } from "../src/config/default-config";
 import { migrateConfig } from "../src/config/migrate";
-import { PartialConfig } from "@oxytype/schemas/configs";
+import { PartialConfig } from "@caret/schemas/configs";
 
 const defaultConfig = getDefaultConfig();
 

@@ -1,4 +1,4 @@
-import { Layout as LayoutSchema } from "@oxytype/schemas/configs";
+import { Layout as LayoutSchema } from "@caret/schemas/configs";
 import { JSXElement } from "solid-js";
 
 import { configMetadata } from "../../../../config/metadata";

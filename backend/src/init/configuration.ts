@@ -4,9 +4,9 @@ import { configuration as configurationTable } from "../db/schema";
 import { runtime } from "../runtime/env";
 import { identity, isPlainObject } from "../utils/misc";
 import { BASE_CONFIGURATION } from "../constants/base-configuration";
-import type { Configuration } from "@oxytype/schemas/configuration";
-import type { PartialConfiguration } from "@oxytype/contracts/configuration";
-import { intersect } from "@oxytype/util/arrays";
+import type { Configuration } from "@caret/schemas/configuration";
+import type { PartialConfiguration } from "@caret/contracts/configuration";
+import { intersect } from "@caret/util/arrays";
 
 function mergeConfigurations(
   baseConfiguration: Configuration,

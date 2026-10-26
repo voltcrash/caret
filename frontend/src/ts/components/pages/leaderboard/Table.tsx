@@ -1,7 +1,7 @@
 import {
   LeaderboardEntry,
   XpLeaderboardEntry,
-} from "@oxytype/schemas/leaderboards";
+} from "@caret/schemas/leaderboards";
 import { format as dateFormat } from "date-fns/format";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { Accessor, createMemo, JSXElement, Show } from "solid-js";

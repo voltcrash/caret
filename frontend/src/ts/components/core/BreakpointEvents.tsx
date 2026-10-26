@@ -1,4 +1,4 @@
-import { debounce } from "@oxytype/util/timing";
+import { debounce } from "@caret/util/timing";
 import { onCleanup, onMount } from "solid-js";
 
 import { Breakpoints, setBreakpoints } from "../../states/breakpoints";

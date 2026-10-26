@@ -1,6 +1,6 @@
-import type { EventLog, TestEventNoMs } from "@oxytype/web-shared/events/types";
+import type { EventLog, TestEventNoMs } from "@caret/web-shared/events/types";
 
-import { EVENT_LOG_VERSION } from "@oxytype/web-shared/events/types";
+import { EVENT_LOG_VERSION } from "@caret/web-shared/events/types";
 
 export function parseContext(raw: string): EventLog {
   const parsed = JSON.parse(raw) as unknown;

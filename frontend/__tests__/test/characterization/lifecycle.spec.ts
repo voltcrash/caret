@@ -1,6 +1,6 @@
 import { createRoot, onCleanup } from "solid-js";
-import type { LanguageObject } from "@oxytype/schemas/languages";
-import type { EventLog } from "@oxytype/web-shared/events/types";
+import type { LanguageObject } from "@caret/schemas/languages";
+import type { EventLog } from "@caret/web-shared/events/types";
 import {
   afterEach,
   beforeEach,
@@ -36,7 +36,7 @@ const mocks = vi.hoisted(() => ({
   todaySeconds: vi.fn(),
   lowFps: vi.fn(),
   session: undefined as
-    | import("@oxytype/typing-engine/browser.client").BrowserSession
+    | import("@caret/typing-engine/browser.client").BrowserSession
     | undefined,
   generation: 0,
 }));
@@ -256,8 +256,8 @@ import {
 } from "../../../src/features/typing/runtime/events/data";
 import { nativeSession } from "../../__harness__/native-engine";
 import { getEngineSession } from "../../../src/features/typing/runtime/session.client";
-import { analyzeLog } from "@oxytype/typing-engine/browser.client";
-import { encodeText } from "@oxytype/typing-engine/text";
+import { analyzeLog } from "@caret/typing-engine/browser.client";
+import { encodeText } from "@caret/typing-engine/text";
 import * as SlowTimer from "../../../src/ts/states/slow-timer";
 import * as CustomText from "../../../src/features/typing/runtime/custom-text";
 import {

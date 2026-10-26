@@ -1,4 +1,4 @@
-import type { SessionState } from "@oxytype/schemas/auth-session";
+import type { SessionState } from "@caret/schemas/auth-session";
 
 import { currentApplication } from "../../app/application";
 import { accountQueryCache } from "../../app/query-cache.client";

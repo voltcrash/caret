@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { expect, it } from "vite-plus/test";
-import { getAllFunboxes } from "@oxytype/funbox";
+import { getAllFunboxes } from "@caret/funbox";
 import { getDefaultConfig } from "../src/config/default-config";
 
 const root = resolve(import.meta.dirname, "../../..");

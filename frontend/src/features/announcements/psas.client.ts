@@ -1,6 +1,6 @@
-import { PSA } from "@oxytype/schemas/psas";
-import { IdSchema } from "@oxytype/schemas/util";
-import { isSafeNumber } from "@oxytype/util/numbers";
+import { PSA } from "@caret/schemas/psas";
+import { IdSchema } from "@caret/schemas/util";
+import { isSafeNumber } from "@caret/util/numbers";
 import { format } from "date-fns/format";
 import { envConfig } from "virtual:env-config";
 import { z } from "zod";

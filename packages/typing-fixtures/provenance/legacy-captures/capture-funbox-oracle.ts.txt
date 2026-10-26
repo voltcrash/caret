@@ -4,9 +4,9 @@ import {
   getAllFunboxes,
   checkCompatibility,
   checkForcedConfig,
-} from "@oxytype/funbox";
+} from "@caret/funbox";
 import { canSetConfigWithCurrentFunboxes } from "../src/config/funbox-validation";
-import type { ConfigValue } from "@oxytype/schemas/configs";
+import type { ConfigValue } from "@caret/schemas/configs";
 const source = getAllFunboxes();
 const metadata = source.map(
   ({

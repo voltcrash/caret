@@ -1,9 +1,9 @@
 import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
-import { allOperations } from "@oxytype/backend/policies/operations";
+import { allOperations } from "@caret/backend/policies/operations";
 import {
   COMPATIBILITY_CHECK,
   COMPATIBILITY_CHECK_HEADER,
-} from "@oxytype/contracts";
+} from "@caret/contracts";
 import { createWorkerd, seedSession } from "./workerd";
 
 describe("declared Start HTTP protocols without Hono", () => {

@@ -1,6 +1,6 @@
 import { challenges } from "./catalog";
 import type { Challenge } from "./types";
-import { ChallengeName } from "@oxytype/schemas/challenges";
+import { ChallengeName } from "@caret/schemas/challenges";
 
 const map: Record<ChallengeName, Challenge> = Object.fromEntries(
   Object.entries(challenges).map(([name, def]) => [name, { ...def, name }]),

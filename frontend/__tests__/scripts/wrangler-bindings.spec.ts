@@ -1,8 +1,8 @@
 import { resolve } from "node:path";
 import { describe, expect, it } from "vite-plus/test";
 import { unstable_readConfig } from "wrangler";
-import { bindingName, requiredTiers } from "@oxytype/backend/rate-counter";
-import { LEADERBOARD_CRON, MAINTENANCE_CRON } from "@oxytype/backend/jobs";
+import { bindingName, requiredTiers } from "@caret/backend/rate-counter";
+import { LEADERBOARD_CRON, MAINTENANCE_CRON } from "@caret/backend/jobs";
 
 const files = [
   "wrangler.jsonc",

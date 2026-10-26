@@ -2,7 +2,7 @@ import "@tanstack/solid-start/server-only";
 import type {
   LeaderboardEntry,
   XpLeaderboardEntry,
-} from "@oxytype/schemas/leaderboards";
+} from "@caret/schemas/leaderboards";
 import {
   type LeaderboardPage,
   pageSize,

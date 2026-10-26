@@ -1,4 +1,4 @@
-import { contract } from "@oxytype/contracts";
+import { contract } from "@caret/contracts";
 import { isAppRoute, type AppRoute } from "@ts-rest/core";
 import { readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";

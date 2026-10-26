@@ -1,14 +1,14 @@
 import { createSignal, onCleanup } from "solid-js";
 import { createAppOwned } from "../../app/application";
-import { EngineFailure } from "@oxytype/typing-engine/failure";
+import { EngineFailure } from "@caret/typing-engine/failure";
 import type {
   BrowserContent,
   BrowserSession,
   Engine,
-} from "@oxytype/typing-engine/browser.client";
+} from "@caret/typing-engine/browser.client";
 
 type Loader = ReturnType<
-  typeof import("@oxytype/typing-engine/browser.client").createEngineLoader
+  typeof import("@caret/typing-engine/browser.client").createEngineLoader
 >;
 type EngineStatus =
   | { state: "idle" | "loading" | "ready" | "disposed" }
@@ -48,7 +48,7 @@ export const getBrowserEngine = createAppOwned(() => {
     if (engine !== undefined) return Promise.resolve(engine);
     if (pending !== undefined) return pending;
     setStatus({ state: "loading" });
-    pending = import("@oxytype/typing-engine/browser.client")
+    pending = import("@caret/typing-engine/browser.client")
       .then(async (module) => {
         assertLive();
         loader ??= module.createEngineLoader();

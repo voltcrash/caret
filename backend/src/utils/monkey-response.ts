@@ -1,4 +1,4 @@
-import { MonkeyResponseType } from "@oxytype/contracts/util/api";
+import { MonkeyResponseType } from "@caret/contracts/util/api";
 
 type MonkeyDataAware<T> = {
   data: T | null;

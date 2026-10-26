@@ -40,7 +40,7 @@ const mockState = vi.hoisted(() => ({
 
 const native = vi.hoisted(() => ({
   session: undefined as
-    | import("@oxytype/typing-engine/browser.client").BrowserSession
+    | import("@caret/typing-engine/browser.client").BrowserSession
     | undefined,
 }));
 vi.mock("../../../src/features/typing/engine.client", () => ({
@@ -137,13 +137,13 @@ import {
   getAllTestEvents,
 } from "../../../src/features/typing/runtime/events/data";
 
-import type { InputEventNoMs } from "@oxytype/web-shared/events/types";
+import type { InputEventNoMs } from "@caret/web-shared/events/types";
 import { words as TestWords } from "../../../src/features/typing/runtime/test-words";
 import { __testing } from "../../../src/ts/config/testing";
 import { nativeSession } from "../../__harness__/native-engine";
 import { getEngineSession } from "../../../src/features/typing/runtime/session.client";
 import { getMutableConfig } from "../../../src/ts/config/store";
-import { decodeText } from "@oxytype/typing-engine/text";
+import { decodeText } from "@caret/typing-engine/text";
 let unsubscribe: (() => void) | undefined;
 afterEach(() => {
   unsubscribe?.();

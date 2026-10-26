@@ -1,4 +1,4 @@
-import { QuickRestart } from "@oxytype/schemas/configs";
+import { QuickRestart } from "@caret/schemas/configs";
 import {
   detectPlatform,
   HotkeyChord,

@@ -3,9 +3,9 @@ import { resolve } from "node:path";
 import { gzipSync } from "node:zlib";
 import budgets from "../../docs/rust-engine/performance-budgets.json" with { type: "json" };
 import { expect, test } from "playwright/test";
-import { toWebLog } from "@oxytype/typing-engine/text";
-import { CompletedEventSchema } from "@oxytype/schemas/results";
-import { hashResult } from "@oxytype/web-shared/result-hash";
+import { toWebLog } from "@caret/typing-engine/text";
+import { CompletedEventSchema } from "@caret/schemas/results";
+import { hashResult } from "@caret/web-shared/result-hash";
 import { getResultFailure } from "../../backend/src/anticheat/result";
 
 const root = resolve(import.meta.dirname, "../../packages/typing-fixtures");

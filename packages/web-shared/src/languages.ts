@@ -1,4 +1,4 @@
-import { Language, LanguageObject } from "@oxytype/schemas/languages";
+import { Language, LanguageObject } from "@caret/schemas/languages";
 
 /**
  * Fetches and parses JSON. Each client brings its own (browser fetch, cached

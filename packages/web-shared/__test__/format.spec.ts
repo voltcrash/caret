@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vite-plus/test";
 import { getDefaultConfig } from "../src/config/default-config";
 import { Formatting } from "../src/format";
-import { Config } from "@oxytype/schemas/configs";
+import { Config } from "@caret/schemas/configs";
 
 describe("format.ts", () => {
   describe("typingsSpeed", () => {

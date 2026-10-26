@@ -1,4 +1,4 @@
-import type { CompletedEvent } from "@oxytype/schemas/results";
+import type { CompletedEvent } from "@caret/schemas/results";
 
 export type BotFailure = "uniform-key-timing";
 export const MIN_BOT_TIMING_SAMPLES = 100;

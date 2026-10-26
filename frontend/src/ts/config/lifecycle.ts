@@ -2,8 +2,8 @@ import { createAppOwned } from "../../app/application";
 import { getBrowserEngine } from "../../features/typing/engine.client";
 import { batch } from "solid-js";
 import { preferencesReadiness } from "../../app/readiness";
-import * as ConfigSchemas from "@oxytype/schemas/configs";
-import { parseWithSchema as parseJsonWithSchema } from "@oxytype/util/json";
+import * as ConfigSchemas from "@caret/schemas/configs";
+import { parseWithSchema as parseJsonWithSchema } from "@caret/util/json";
 import {
   showSuccessNotification,
   showErrorNotification,
@@ -20,8 +20,8 @@ import { migrateConfig } from "./utils";
 import { isObject } from "../utils/misc";
 import { setConfig } from "./setters";
 import { deleteConfig } from "./sync";
-import { setProperty, typedKeys } from "@oxytype/util/objects";
-import { lastConfigsToApply } from "@oxytype/web-shared/config/apply-order";
+import { setProperty, typedKeys } from "@caret/util/objects";
+import { lastConfigsToApply } from "@caret/web-shared/config/apply-order";
 
 export async function applyConfigFromJson(json: string): Promise<boolean> {
   try {

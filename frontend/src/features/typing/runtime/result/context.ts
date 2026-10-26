@@ -1,4 +1,4 @@
-import type { CompletedEvent } from "@oxytype/schemas/results";
+import type { CompletedEvent } from "@caret/schemas/results";
 import type { AnnotationOptions } from "chartjs-plugin-annotation";
 
 export let result: CompletedEvent;

@@ -1,7 +1,7 @@
 import { createAppSignal } from "../../app/state";
 
 import { ColorName, Theme } from "../constants/themes";
-import { ThemeName } from "@oxytype/schemas/configs";
+import { ThemeName } from "@caret/schemas/configs";
 
 export type ThemeIdentifier = ThemeName | "custom";
 const defaultTheme: Theme & { name: ThemeIdentifier } = {

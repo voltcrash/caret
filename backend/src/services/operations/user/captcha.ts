@@ -1,7 +1,7 @@
-import type { CaptchaAction } from "@oxytype/contracts/captcha";
+import type { CaptchaAction } from "@caret/contracts/captcha";
 import MonkeyError from "../../../utils/error";
 import { verify } from "../../../utils/captcha";
-import { tryCatch } from "@oxytype/util/trycatch";
+import { tryCatch } from "@caret/util/trycatch";
 
 export async function verifyCaptcha(
   captcha: string,

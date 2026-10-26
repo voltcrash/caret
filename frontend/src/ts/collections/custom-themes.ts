@@ -1,5 +1,5 @@
 import { operation } from "../../data/operations";
-import { CustomTheme } from "@oxytype/schemas/users";
+import { CustomTheme } from "@caret/schemas/users";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import {
   createCollection,

@@ -1,4 +1,4 @@
-import { TagNameSchema } from "@oxytype/schemas/users";
+import { TagNameSchema } from "@caret/schemas/users";
 import { For, JSXElement } from "solid-js";
 import { z } from "zod";
 
