@@ -9,8 +9,8 @@ import { chromium } from "playwright";
 import {
   caretBrandColors,
   caretIconSvg,
+  caretMarkInkViewBox,
   caretMarkPath,
-  caretMarkViewBox,
 } from "../src/components/brand/caret-icon";
 
 const statics = new URL("../static/", import.meta.url);
@@ -46,14 +46,14 @@ const socialCard = `<!doctype html>
   @font-face { font-family: Lexend; src: url(data:font/woff2;base64,${lexend}); }
   body { margin: 0; width: 1200px; height: 630px; display: grid; place-items: center;
     background: ${caretBrandColors.bg}; font-family: Lexend; }
-  main { display: flex; align-items: center; gap: 56px; }
-  svg { width: 200px; height: 200px; fill: ${caretBrandColors.main}; }
-  h1 { margin: 0; font-weight: 400; font-size: 136px; line-height: 1; color: #d1d0c5; }
-  p { margin: 18px 0 0 6px; font-size: 34px; color: #646669; }
+  h1 { display: flex; align-items: baseline; margin: 0; font-weight: 400; font-size: 160px;
+    line-height: 1; color: #d1d0c5; }
+  svg { position: relative; top: 0.2em; height: 0.95em; margin-left: 0.04em; fill: ${caretBrandColors.main}; }
+  p { margin: 28px 0 0 6px; font-size: 34px; color: #646669; }
 </style>
 <main>
-  <svg viewBox="${caretMarkViewBox}"><path d="${caretMarkPath}"/></svg>
-  <div><h1>caret</h1><p>a minimalistic, customizable typing test</p></div>
+  <h1>care<svg viewBox="${caretMarkInkViewBox}"><path d="${caretMarkPath}"/></svg></h1>
+  <p>a minimalistic, customizable typing test</p>
 </main>`;
 
 async function main(): Promise<void> {
@@ -71,17 +71,6 @@ async function main(): Promise<void> {
     }
     await page.setViewportSize({ width: 1200, height: 630 });
     await page.setContent(socialCard);
-    // Crop the mark to its ink so the wordmark spacing follows its shape.
-    await page.evaluate(() => {
-      const svg = document.querySelector("svg");
-      const box = svg?.getBBox();
-      if (svg === null || box === undefined) return;
-      svg.setAttribute(
-        "viewBox",
-        `${box.x} ${box.y} ${box.width} ${box.height}`,
-      );
-      svg.style.width = `${(box.width / box.height) * 200}px`;
-    });
     await page.evaluate(async () => document.fonts.ready);
     await page.screenshot({ path: out("images/og/caret.png").pathname });
   } finally {
