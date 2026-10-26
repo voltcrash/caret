@@ -133,7 +133,7 @@ vp exec --filter @caret/frontend -- wrangler deployments list --config wrangler.
 vp exec --filter @caret/frontend -- wrangler rollback <version-id> --config wrangler.production.json
 ```
 
-Confirm `/version.json` and the `X-Oxytype-Build` response header report the
+Confirm `/version.json` and the `X-Caret-Build` response header report the
 same build. Rollback restores no bound resources: D1 writes, queues and secrets
 stay. Open tabs keep working: service workers for the rolled-back build install
 and wait until no tab is typing or saving; another build's server-function IDs

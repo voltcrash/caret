@@ -91,7 +91,7 @@ test("a new build and rollback wait for idle and refresh the complete offline sh
       response.request().isNavigationRequest() &&
       response.frame() === page.mainFrame()
     ) {
-      documents.push(response.headers()["x-oxytype-build"] ?? "missing");
+      documents.push(response.headers()["x-caret-build"] ?? "missing");
     }
   });
   await page.goto("/");
@@ -261,7 +261,7 @@ test("a pending real save holds an update; refresh and rollback never submit it 
   const refreshed = page.waitForResponse(
     (response) =>
       response.request().isNavigationRequest() &&
-      response.headers()["x-oxytype-build"] === "update-b",
+      response.headers()["x-caret-build"] === "update-b",
   );
   await reload.click();
   await refreshed;
@@ -308,7 +308,7 @@ test("a removed result function shows refresh/retry UI without replaying the sav
       url: `${baseURL}/_serverFn/${"0".repeat(64)}`,
     });
     expect(response.status()).toBe(409);
-    expect(response.headers()["x-oxytype-stale-client"]).toBe("1");
+    expect(response.headers()["x-caret-stale-client"]).toBe("1");
     await route.fulfill({ response });
   });
   await page.goto("/");

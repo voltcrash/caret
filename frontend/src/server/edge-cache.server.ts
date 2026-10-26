@@ -32,7 +32,7 @@ export function edgeCacheKey(request: Request): Request | undefined {
   return new Request(url.toString(), { method: "GET" });
 }
 
-export const EDGE_CACHE_HIT = "X-Oxytype-Cache";
+export const EDGE_CACHE_HIT = "X-Caret-Cache";
 
 export async function matchEdgeCache(
   request: Request,

@@ -51,7 +51,7 @@ async function main(): Promise<void> {
       `${path}: ${response.status}, expected ${expected}`,
     );
     requireCheck(
-      response.headers.get("X-Oxytype-Build") === version,
+      response.headers.get("X-Caret-Build") === version,
       `${path}: wrong Worker build`,
     );
     requireCheck(
@@ -88,7 +88,7 @@ async function main(): Promise<void> {
   });
   requireCheck(
     missing.status === 409 &&
-      missing.headers.get("X-Oxytype-Stale-Client") === "1",
+      missing.headers.get("X-Caret-Stale-Client") === "1",
     "Stale function did not give the controlled refresh signal",
   );
   await missing.text();
@@ -103,7 +103,7 @@ async function main(): Promise<void> {
   });
   requireCheck(
     crossSite.status === 403 &&
-      !crossSite.headers.has("X-Oxytype-Stale-Client"),
+      !crossSite.headers.has("X-Caret-Stale-Client"),
     "Direct function CSRF failed",
   );
   await crossSite.text();

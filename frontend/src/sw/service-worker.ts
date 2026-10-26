@@ -82,7 +82,7 @@ async function precache(): Promise<void> {
     cache: "no-store",
     headers: { Accept: "text/html" },
   });
-  if (!shell.ok || shell.headers.get("X-Oxytype-Build") !== config.buildId) {
+  if (!shell.ok || shell.headers.get("X-Caret-Build") !== config.buildId) {
     // Mid-deployment mismatch: fail install; the browser retries later.
     throw new Error("Offline shell does not belong to this build");
   }

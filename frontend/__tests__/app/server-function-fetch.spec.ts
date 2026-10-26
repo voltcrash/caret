@@ -29,7 +29,7 @@ describe("server-function transport", () => {
       async () =>
         new Response("Oxytype was updated. Refresh the page to continue.", {
           status: 409,
-          headers: { "X-Oxytype-Stale-Client": "1" },
+          headers: { "X-Caret-Stale-Client": "1" },
         }),
     );
     vi.stubGlobal("fetch", fetch);

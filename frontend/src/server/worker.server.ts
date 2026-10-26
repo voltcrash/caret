@@ -110,7 +110,7 @@ export function createApplicationWorker(
             status: response.status,
             durationMs: Date.now() - started,
             release: env.VERSION,
-            staleClient: response.headers.has("X-Oxytype-Stale-Client"),
+            staleClient: response.headers.has("X-Caret-Stale-Client"),
             placementMode: env.PLACEMENT_MODE,
           });
           console.info(JSON.stringify(log));
@@ -134,7 +134,7 @@ export function createApplicationWorker(
           if (env.PLACEMENT_MODE === "smart") {
             const placement = placementOf(request.headers);
             if (placement !== undefined) {
-              final.headers.set("X-Oxytype-Placement", placement);
+              final.headers.set("X-Caret-Placement", placement);
             }
           }
           return final;

@@ -48,7 +48,7 @@ describe("built Start application in workerd", () => {
     let shared = await worker.fetch(url, { headers });
     for (
       let tries = 0;
-      shared.headers.get("x-oxytype-cache") === null;
+      shared.headers.get("x-caret-cache") === null;
       tries++
     ) {
       if (tries === 20) throw new Error("Public read was never cached");
@@ -87,7 +87,7 @@ describe("built Start application in workerd", () => {
         ...(method === "POST" ? { body: "{}" } : {}),
       });
       expect(response.status).toBe(409);
-      expect(response.headers.get("X-Oxytype-Stale-Client")).toBe("1");
+      expect(response.headers.get("X-Caret-Stale-Client")).toBe("1");
       expect(response.headers.get("Cache-Control")).toBe("no-store");
       expect(await response.text()).toBe(
         "Oxytype was updated. Refresh the page to continue.",
@@ -100,7 +100,7 @@ describe("built Start application in workerd", () => {
       headers: { ...headers, origin: "https://attacker.test" },
     });
     expect(crossSite.status).toBe(403);
-    expect(crossSite.headers.has("X-Oxytype-Stale-Client")).toBe(false);
+    expect(crossSite.headers.has("X-Caret-Stale-Client")).toBe(false);
   });
 
   it("SSR reads real D1 through the function and keeps binding-specific caches isolated", async () => {

@@ -254,7 +254,7 @@ describe("Better Auth social-only HTTP flow", () => {
     const { cookie } = await signInWithOAuth(auth, app, {
       headers: {
         "x-forwarded-for": "198.51.100.4, 203.0.113.5",
-        "x-oxytype-auth-ip": "192.0.2.1",
+        "x-caret-auth-ip": "192.0.2.1",
       },
     });
     const session = await request("/get-session", undefined, cookie);

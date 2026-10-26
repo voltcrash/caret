@@ -306,7 +306,7 @@ up to 15 minutes and needs consistent traffic from multiple locations.
 Production request logs include `placementMode: smart` and a validated
 `placement` value from Cloudflare's `cf-placement` header when available
 (`local-BOM`, `remote-SIN`, etc.). Responses expose that validated value as
-`X-Oxytype-Placement`. Missing values mean unreported placement. Logs' `durationMs`
+`X-Caret-Placement`. Missing values mean unreported placement. Logs' `durationMs`
 measure Worker handling, not full forwarding latency; use Cloudflare's request
 duration analytics for total request performance. Placement does not change
 D1's primary/replica consistency rules, move static assets served directly by

@@ -43,7 +43,7 @@ describe("built Start service worker", () => {
           pending.push(() =>
             resolve(
               new Response("fixture", {
-                headers: { "X-Oxytype-Build": config.buildId },
+                headers: { "X-Caret-Build": config.buildId },
               }),
             ),
           );

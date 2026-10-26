@@ -79,7 +79,7 @@ export function createAuth(
             },
           }
         : {}),
-      ipAddress: { ipAddressHeaders: ["x-oxytype-auth-ip"] },
+      ipAddress: { ipAddressHeaders: ["x-caret-auth-ip"] },
     },
     user: {
       modelName: "authUsers",

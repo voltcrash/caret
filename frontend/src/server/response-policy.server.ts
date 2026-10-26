@@ -19,7 +19,7 @@ export function applyResponsePolicy(
   }
   result.headers.set("X-Request-Id", requestId);
   // Public, like /version.json: correlates a response with its client assets.
-  result.headers.set("X-Oxytype-Build", serverBuildId);
+  result.headers.set("X-Caret-Build", serverBuildId);
   result.headers.set("X-Content-Type-Options", "nosniff");
   result.headers.set("X-Frame-Options", "SAMEORIGIN");
   result.headers.set("Referrer-Policy", "same-origin");

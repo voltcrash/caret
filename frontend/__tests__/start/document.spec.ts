@@ -69,7 +69,7 @@ describe("Start document and response policy in workerd", () => {
     const version = await mf.dispatchFetch(
       "http://localhost:3000/version.json",
     );
-    expect(response.headers.get("X-Oxytype-Build")).toBe(
+    expect(response.headers.get("X-Caret-Build")).toBe(
       ((await version.json()) as { version: string }).version,
     );
     expect(html).toContain("<noscript data-nosnippet>");
