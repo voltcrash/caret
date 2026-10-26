@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./frontend/static/images/og/oxytype.png" alt="Oxytype" width="600" />
+</p>
+
 # Oxytype
 
 Oxytype is an independent, open-source typing test. It offers multiple test modes, languages, themes, live speed and accuracy feedback, and account-based result history.
