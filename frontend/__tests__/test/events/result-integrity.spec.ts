@@ -124,7 +124,7 @@ it.each(["physical", "input-only", "single-prestart"])(
   },
 );
 
-it.each([1000, 3_600_000])(
+it.each([1000, 3_600_000, 86_400_000])(
   "keeps results valid when typing continues during result loading, clock origin %i",
   async (origin) => {
     const config = {
