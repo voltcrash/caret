@@ -1,14 +1,14 @@
 <p align="center">
-  <img src="./frontend/static/images/og/caret.png" alt="Oxytype" width="600" />
+  <img src="./frontend/static/images/og/caret.png" alt="Caret" width="600" />
 </p>
 
-# Oxytype
+# Caret
 
-Oxytype is an independent, open-source typing test. It offers multiple test modes, languages, themes, live speed and accuracy feedback, and account-based result history.
+Caret is an independent, open-source typing test. It offers multiple test modes, languages, themes, live speed and accuracy feedback, and account-based result history.
 
-This project began from the Monkeytype codebase and now has its own roadmap. We retain the original contributors' work and attribution in the Git history. Oxytype is licensed under [GPL-3.0](./LICENSE).
+This project began from the Monkeytype codebase and now has its own roadmap. We retain the original contributors' work and attribution in the Git history. Caret is licensed under [GPL-3.0](./LICENSE).
 
-Oxytype does not support self-hosting. For self-hosting, use [Monkeytype](https://github.com/monkeytypegame/monkeytype).
+Caret does not support self-hosting. For self-hosting, use [Monkeytype](https://github.com/monkeytypegame/monkeytype).
 
 ## Development
 
@@ -48,7 +48,7 @@ for tested platforms and pending real-terminal checks; no release published yet.
 
 ## Contributing
 
-See [CONTRIBUTING.md](./docs/CONTRIBUTING.md) and the [code of conduct](./docs/CODE_OF_CONDUCT.md). Report bugs in the [Oxytype repository](https://github.com/voltcrash/caret/issues).
+See [CONTRIBUTING.md](./docs/CONTRIBUTING.md) and the [code of conduct](./docs/CODE_OF_CONDUCT.md). Report bugs in the [Caret repository](https://github.com/voltcrash/caret/issues).
 
 ## Contact and security
 

@@ -1,6 +1,6 @@
 # Contributing
 
-Oxytype uses TypeScript, TanStack Start with SolidJS, Tailwind CSS and backend
+Caret uses TypeScript, TanStack Start with SolidJS, Tailwind CSS and backend
 services on one Cloudflare Worker with D1 and Queues. See [architecture](ARCHITECTURE.md).
 
 For asset or documentation edits, follow [basic contributions](CONTRIBUTING_BASIC.md).

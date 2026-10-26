@@ -1,6 +1,6 @@
 # Basic contributions
 
-You can improve Oxytype themes, languages, quotes, layouts, and documentation through GitHub without running the app locally.
+You can improve Caret themes, languages, quotes, layouts, and documentation through GitHub without running the app locally.
 
 1. Fork [voltcrash/caret](https://github.com/voltcrash/caret) to your GitHub account.
 2. Edit the relevant file in your fork. GitHub's web editor works for small changes.

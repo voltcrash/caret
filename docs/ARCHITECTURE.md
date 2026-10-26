@@ -1,4 +1,4 @@
-# Oxytype architecture
+# Caret architecture
 
 Package versions come from the workspace manifests and lockfile.
 
@@ -130,12 +130,12 @@ only binds D1 for local migrations. See [production setup](PRODUCTION_SETUP.md),
 [staging setup](STAGING_SETUP.md) and [operations](CLOUDFLARE_OPERATIONS.md).
 Built-in [anticheat](ANTICHEAT.md) checks scores and telemetry in all modes.
 
-## Oxytype ownership boundaries
+## Caret ownership boundaries
 
 The fork uses its own production auth secret, GitHub OAuth app, Turnstile widget
 and API endpoint at [caret.voltcrash.com](https://caret.voltcrash.com). Other
 optional integrations need deployment-owned credentials before enabling them.
-Public contact and security reporting use the Oxytype repository and its security
+Public contact and security reporting use the Caret repository and its security
 policy. The
 original GPL license and contributor attribution remain in place.
 

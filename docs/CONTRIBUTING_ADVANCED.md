@@ -70,7 +70,7 @@ Email/password/reset flows remain disabled. See
 [Cloudflare operations](CLOUDFLARE_OPERATIONS.md) for authentication, configuration,
 Worker bindings, local data, integration setup and deployment.
 
-For browser checks against the official Oxytype staging site, follow
+For browser checks against the official Caret staging site, follow
 [staging setup](STAGING_SETUP.md). Use its hosted URL for OAuth testing.
 
 Use `vp lint --type-aware --type-check --format agent` for type checking;

@@ -1,6 +1,6 @@
 # Production setup
 
-For Oxytype maintainers operating the official production site.
+For Caret maintainers operating the official production site.
 
 One Worker serves the frontend and `/api` on `https://caret.voltcrash.com`.
 Use `frontend/wrangler.production.json` explicitly. The default Wrangler config
@@ -10,10 +10,10 @@ targets staging; the production release workflow uses the production config.
 
 | Resource | Production |
 | --- | --- |
-| Worker/custom domain | `oxytype` / `caret.voltcrash.com` |
+| Worker/custom domain | `caret` / `caret.voltcrash.com` |
 | D1 | `caret-production`, `43d104e9-2fef-43db-95d7-c64a08310714` |
-| Turnstile | Managed **Oxytype production**, hostname `caret.voltcrash.com` |
-| GitHub OAuth | **Oxytype**, separate from local/staging apps |
+| Turnstile | Managed **Caret production**, hostname `caret.voltcrash.com` |
+| GitHub OAuth | **Caret**, separate from local/staging apps |
 
 Workers.dev and preview URLs are disabled. Cloudflare manages the custom domain's
 DNS record and TLS certificate through the [Workers custom-domain route](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/).

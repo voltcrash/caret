@@ -1,6 +1,6 @@
 # Staging browser setup
 
-For Oxytype maintainers testing the official staging site.
+For Caret maintainers testing the official staging site.
 
 Host frontend and API together at `https://caret-api-staging.voltcrash.workers.dev`
 to keep OAuth state/session cookies on one origin. The steps below configure
@@ -9,7 +9,7 @@ See [Turnstile](TURNSTILE.md) for local test keys and policy.
 
 ## 1. GitHub credentials
 
-Create an **Oxytype Staging** OAuth app in
+Create an **Caret Staging** OAuth app in
 [GitHub developer settings](https://github.com/settings/developers), following
 [GitHub's registration guide](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app).
 

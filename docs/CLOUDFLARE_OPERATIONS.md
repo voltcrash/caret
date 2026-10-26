@@ -1,6 +1,6 @@
 # Cloudflare operations
 
-For local contributors and maintainers operating Oxytype staging and production.
+For local contributors and maintainers operating Caret staging and production.
 
 Backend runtime: one Worker, D1 and Cron. Node is used for builds only.
 Local workerd uses local D1 without a Cloudflare login.
@@ -87,7 +87,7 @@ proxy is preferable for end-to-end OAuth testing.
 Every POST supplies `Idempotency-Key`; successful replies must be JSON.
 
 - `quotes/approve`: payload from `dal/new-quotes.ts`, including the allowed
-  repository and quote. Restrict repository/origin to deployment-owned Oxytype
+  repository and quote. Restrict repository/origin to deployment-owned Caret
   repos; reject upstream repositories. Commit/publish quote assets externally.
   Persist the approval ID so HTTP retries cannot append a quote twice.
 
