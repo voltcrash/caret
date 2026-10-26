@@ -92,8 +92,9 @@ jobs:
       - name: Real key encoding, Unicode, resize, history and cleanup (kitty)
         if: matrix.target == 'x86_64-unknown-linux-gnu'
         run: vp run terminal:test:emulator -- --emulator kitty --command /usr/bin/kitty --evidence target/terminal-emulator-evidence
+      # Runs even when kitty fails, so one run reports both emulators.
       - name: Real key encoding, Unicode, resize, history and cleanup (alacritty)
-        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        if: ${{ !cancelled() && matrix.target == 'x86_64-unknown-linux-gnu' }}
         run: vp run terminal:test:emulator -- --emulator alacritty --command /usr/bin/alacritty --evidence target/terminal-emulator-evidence
       - name: Retain exact emulator versions and test traces
         if: always() && matrix.target == 'x86_64-unknown-linux-gnu'
