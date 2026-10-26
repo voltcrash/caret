@@ -1,4 +1,4 @@
-# Oxytype AI coding instructions
+# Caret AI coding instructions
 
 Be extremely concise. Follow [AGENTS.md](../AGENTS.md) for repository conventions.
 

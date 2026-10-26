@@ -7,7 +7,7 @@ body:
       value: |
         # Welcome
         ```
-        Thanks for taking the time to report a bug in Oxytype.
+        Thanks for taking the time to report a bug in Caret.
         ```
 
   - type: checkboxes
@@ -65,7 +65,7 @@ body:
   - type: textarea
     attributes:
       label: Account name
-      description: Your Oxytype account name.
+      description: Your Caret account name.
       placeholder: |
         Your username
     validations:
