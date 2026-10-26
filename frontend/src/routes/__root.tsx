@@ -47,7 +47,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           content: "A minimalistic, customizable typing test.",
         },
         { name: "format-detection", content: "telephone=no" },
-        { name: "theme-color", content: "#180d0d" },
+        { name: "theme-color", content: "#0b0d1c" },
         { name: "author", content: "Oxytype contributors" },
         { name: "mobile-web-app-capable", content: "yes" },
         { name: "apple-mobile-web-app-title", content: "Oxytype" },
