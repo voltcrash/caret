@@ -93,7 +93,9 @@ for (const { authenticated, mobile } of [
     const boxes = async (): Promise<
       Record<"heading" | "item" | "search" | "sidebar", Box>
     > => ({
-      heading: await page.getByRole("heading", { name: section }).boundingBox(),
+      heading: await loading
+        .getByRole("heading", { name: section })
+        .boundingBox(),
       item: await loading
         .locator('[data-settings-section-skeleton="appearance"] > :last-child')
         .boundingBox(),

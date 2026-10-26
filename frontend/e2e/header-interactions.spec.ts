@@ -14,7 +14,7 @@ for (const theme of ["aether", "serika"] as const) {
         (element) => getComputedStyle(element).color,
       );
       const accent = await page
-        .locator('[data-ui-element="logo"] svg')
+        .locator('[data-ui-element="logoText"] svg')
         .evaluate((element) => getComputedStyle(element).color);
       expect(accent).not.toBe(normal);
       await indicator.hover();
