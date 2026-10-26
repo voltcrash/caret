@@ -4,6 +4,7 @@ import type { FaSolidIcon } from "../../ts/types/font-awesome";
 
 import { Button } from "../../ts/components/common/Button";
 import { Link } from "../../ts/components/common/Link";
+import { OxytypeMark } from "../brand/oxytype-mark";
 
 const navButton =
   "aspect-square pointer-coarse:relative pointer-coarse:before:absolute pointer-coarse:before:-inset-1 pointer-coarse:before:content-['']";
@@ -43,15 +44,7 @@ export function StaticHeader(props: { fixed: boolean }): JSXElement {
           aria-label="Oxytype Home"
           style={{ "box-sizing": "content-box" }}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 48 48"
-            aria-hidden="true"
-            class="h-full w-6 shrink-0 fill-none stroke-current stroke-[6] text-main"
-          >
-            <circle cx="24" cy="24" r="16"></circle>
-            <path d="M24 5v13" class="[stroke-linecap:round]"></path>
-          </svg>
+          <OxytypeMark class="h-full w-auto shrink-0 fill-current text-main" />
           <div class="hidden h-6 place-content-center text-[2rem] leading-0 sm:grid">
             <h1 class="-mt-[0.11em] text-text">oxytype</h1>
           </div>

@@ -1,5 +1,6 @@
 import { JSXElement } from "solid-js";
 
+import { OxytypeMark } from "../../../../components/brand/oxytype-mark";
 import { useTypingRoute } from "../../../../components/typing-route-host";
 import { restartTestEvent } from "../../../events/test";
 import { getFocus } from "../../../states/test";
@@ -24,20 +25,14 @@ export function Logo(): JSXElement {
           if (typing()) restartTestEvent.dispatch();
         }}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 48 48"
-          aria-hidden="true"
+        <OxytypeMark
           class={cn(
-            "h-full w-6 shrink-0 fill-none stroke-current stroke-[6] text-main transition-colors",
+            "h-full w-auto shrink-0 fill-current text-main transition-colors",
             {
               "text-text": getFocus(),
             },
           )}
-        >
-          <circle cx="24" cy="24" r="16"></circle>
-          <path d="M24 5v13" class="[stroke-linecap:round]"></path>
-        </svg>
+        />
         <div class="hidden h-6 place-content-center text-[2rem] leading-0 sm:grid">
           <h1
             class={cn("-mt-[0.11em] text-text transition-colors duration-250", {

@@ -12,8 +12,11 @@ import { BrowserRuntime } from "../app/browser-runtime";
 import { Document } from "../app/document";
 import { AppLayout } from "../app/layout";
 import { AppProviders } from "../app/providers";
+import { publicEnv } from "../app/public-env";
 import { AppError } from "../components/app-error";
 import { NotFoundPage } from "../features/not-found/page";
+
+const socialImage = `${publicEnv.origin}/images/og/oxytype.png`;
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -52,8 +55,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           name: "apple-mobile-web-app-status-bar-style",
           content: "black-translucent",
         },
-        { name: "twitter:card", content: "summary" },
+        { name: "twitter:card", content: "summary_large_image" },
         { property: "og:type", content: "website" },
+        { property: "og:site_name", content: "Oxytype" },
+        { property: "og:image", content: socialImage },
+        { property: "og:image:width", content: "1200" },
+        { property: "og:image:height", content: "630" },
+        { property: "og:image:alt", content: "Oxytype logo" },
+        { name: "twitter:image", content: socialImage },
         { name: "darkreader-lock", content: "" },
       ],
       links: [

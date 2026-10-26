@@ -197,8 +197,9 @@ fn header(
     let [_, top, below] = Layout::vertical([Constraint::Length(1); 3]).areas(area);
     let mut logo = vec![
         Span::styled(
-            "◉ ",
-            Palette::fg(if focus { palette.text } else { palette.main }),
+            "I ",
+            Palette::fg(if focus { palette.text } else { palette.main })
+                .add_modifier(Modifier::BOLD),
         ),
         Span::styled(
             "oxytype",
