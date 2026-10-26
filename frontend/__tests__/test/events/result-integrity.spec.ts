@@ -139,6 +139,13 @@ it.each([1000, 3_600_000, 86_400_000])(
     );
     try {
       session.command({
+        op: "view",
+        now: 0,
+        earliestVisibleWord: 0,
+        deferAutomatic: true,
+        deferFinish: true,
+      });
+      session.command({
         op: "observe",
         eventType: "keydown",
         eventData: { code: "Enter" },
@@ -178,6 +185,11 @@ it.each([1000, 3_600_000, 86_400_000])(
       }
       session.command({
         op: "advance",
+        now: origin + 15011,
+        date: origin + 15011,
+      });
+      session.command({
+        op: "acknowledgeFinish",
         now: origin + 15011,
         date: origin + 15011,
       });
