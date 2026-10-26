@@ -131,3 +131,50 @@ fn failure_and_timer_completion_keep_their_engine_reason_until_acknowledged() {
         );
     }
 }
+
+#[test]
+fn completion_blocks_new_observations_but_preserves_outstanding_key_releases() {
+    for deferred in [false, true] {
+        let mut session = Session::new(
+            Config {
+                time: 15.0,
+                ..Config::default()
+            },
+            vec![Text::from("abc")],
+        )
+        .unwrap();
+        command(
+            &mut session,
+            json!({"op":"view","now":0,"deferFinish":deferred}),
+        )
+        .unwrap();
+        command(&mut session, json!({"op":"insert","data":[97],"now":0})).unwrap();
+        command(
+            &mut session,
+            json!({"op":"observe","eventType":"keydown","eventData":{"code":"KeyB"},"now":14990}),
+        )
+        .unwrap();
+        command(&mut session, json!({"op":"advance","now":15010})).unwrap();
+        // A duplicate must not synthesize a release or replace the held key.
+        let ignored = command(
+            &mut session,
+            json!({"op":"observe","eventType":"keydown","eventData":{"code":"KeyB"},"now":15020}),
+        )
+        .unwrap();
+        assert!(ignored.events.is_empty());
+        let release = command(
+            &mut session,
+            json!({"op":"observe","eventType":"keyup","eventData":{"code":"KeyB"},"now":15030}),
+        )
+        .unwrap();
+        assert_eq!(release.events.len(), 1);
+        if deferred {
+            command(&mut session, json!({"op":"acknowledgeFinish","now":15010})).unwrap();
+        }
+        command(&mut session, json!({"op":"finalize","now":15040})).unwrap();
+        let finished = session.log();
+        let log = serde_json::from_value(finished.clone()).unwrap();
+        let summary = typing_engine::stats::typed_summary(&log).unwrap();
+        assert_eq!(summary.key_duration, vec![40.0]);
+    }
+}
