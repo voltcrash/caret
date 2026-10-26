@@ -66,25 +66,3 @@ body.crtmode {
     box-shadow: none;
   }
 }
-/* color individual parts of the mt logo */
-
-[data-ui-element="logo"] svg path {
-  &:nth-child(2),
-  &:nth-child(8) {
-    fill: var(--text-color);
-  }
-  &:nth-child(1),
-  &:nth-child(6),
-  &:nth-child(7) {
-    fill: var(--sub-color);
-  }
-  &:nth-child(3),
-  &:nth-child(4),
-  &:nth-child(5) {
-    fill: var(--main-color);
-  }
-
-  &:nth-child(9) {
-    fill: #9a7a61;
-  }
-}
