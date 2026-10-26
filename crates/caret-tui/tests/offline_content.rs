@@ -1,9 +1,9 @@
-use clap::Parser;
 use caret_tui::{
     content::OfflineContent,
     engine::EngineHost,
     options::{Cli, FUNBOXES, custom_text},
 };
+use clap::Parser;
 use typing_engine::{Command, Config};
 
 #[test]

@@ -196,10 +196,7 @@ fn abrupt_process_interruption_keeps_committed_history() {
     let ready = temp.path().join("writer-ready");
     let mut child = std::process::Command::new(std::env::current_exe().unwrap())
         .args(["--ignored", "--exact", "interrupted_writer_process"])
-        .env(
-            "CARET_INTERRUPTION_DB",
-            paths.data.join("history.sqlite3"),
-        )
+        .env("CARET_INTERRUPTION_DB", paths.data.join("history.sqlite3"))
         .env("CARET_INTERRUPTION_READY", &ready)
         .spawn()
         .unwrap();

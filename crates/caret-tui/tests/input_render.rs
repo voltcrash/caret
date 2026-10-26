@@ -1,10 +1,10 @@
-use crossterm::event::{KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
 use caret_tui::{
     content::OfflineContent,
     engine::EngineHost,
     input::{self, Capabilities},
     render::text_view,
 };
+use crossterm::event::{KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
 use ratatui::{Terminal, backend::TestBackend, widgets::Paragraph};
 use typing_engine::{Config, Text};
 

@@ -1,5 +1,3 @@
-use clap::Parser;
-use crossterm::event::{self, Event, KeyCode, KeyEventKind, KeyModifiers};
 use caret_tui::{Result, engine::EngineHost, terminal::TerminalGuard};
 use caret_tui::{
     local::Local,
@@ -10,6 +8,8 @@ use caret_tui::{
     setup::Setup,
     ui::{Screen, View, draw},
 };
+use clap::Parser;
+use crossterm::event::{self, Event, KeyCode, KeyEventKind, KeyModifiers};
 use std::{
     sync::atomic::Ordering,
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
@@ -100,9 +100,7 @@ fn run() -> Result<()> {
         }
         if caret_theme != local.preferences.theme {
             caret_theme.clone_from(&local.preferences.theme);
-            caret_tui::terminal::caret_color(
-                caret_tui::theme::Palette::named(&caret_theme).caret,
-            )?;
+            caret_tui::terminal::caret_color(caret_tui::theme::Palette::named(&caret_theme).caret)?;
         }
         let now = origin.elapsed().as_secs_f64() * 1000.0;
         if host.state().active {
