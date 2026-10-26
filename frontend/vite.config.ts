@@ -136,7 +136,7 @@ export default defineConfig(async ({ mode, command }) => {
         importProtection: {
           behavior: "error",
           client: {
-            specifiers: [/^@oxytype\/backend/],
+            specifiers: [/^@caret\/backend/],
             // User file lists replace Start's defaults; keep `.server` denied.
             files: ["**/backend/src/**", "**/*.server.*"],
           },

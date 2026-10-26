@@ -20,7 +20,7 @@ Package versions come from the workspace manifests and lockfile.
 | `.github/workflows/` | [CI](CI.md), automatic production deployments after successful main CI, manual retries, labeling, and repository automation |
 
 The root is a private pnpm workspace. Vite+ (`vp run`) runs workspace tasks.
-TypeScript packages use the `@oxytype` scope and export source. Vite, Vitest,
+TypeScript packages use the `@caret` scope and export source. Vite, Vitest,
 wrangler and `vpx` compile it. Rust/Wasm and declarations build automatically before
 development, production, tests and typechecks; see the [engine SDK](../packages/typing-engine/README.md).
 
