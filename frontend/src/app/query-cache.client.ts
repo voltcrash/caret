@@ -271,7 +271,7 @@ export const accountQueryCache = createAppOwned(() => {
     account: app.accountData,
     queryClient: app.queryClient,
     storage: createIndexedDbStorage(),
-    buster: `${import.meta.env.OXYTYPE_BUILD_ID}:account-cache-v1`,
+    buster: `${import.meta.env.CARET_BUILD_ID}:account-cache-v1`,
   });
   const flush = (): void => {
     void cache.save();

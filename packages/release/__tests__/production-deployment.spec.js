@@ -130,7 +130,7 @@ it("validates the exact deployment snapshot before building and applying migrati
   expect(retire).toBeGreaterThan(check);
   expect(migrate).toBeGreaterThan(retire);
   expect(deploy).toBeGreaterThan(migrate);
-  expect(steps[build].env.OXYTYPE_BUILD_ID).toBe(
+  expect(steps[build].env.CARET_BUILD_ID).toBe(
     "${{ env.DEPLOYMENT_SHA }}-${{ github.run_id }}-${{ github.run_attempt }}",
   );
   expect(steps[deploy].run).toContain(
@@ -170,7 +170,7 @@ it.each(["workflow_run", "workflow_dispatch"])(
     const build = workflow.jobs.deploy.steps.find(
       (step) => step.name === "Build production frontend and Worker",
     );
-    expect(resolve(build.env.OXYTYPE_BUILD_ID)).toBe(`${expectedSha}-100-2`);
+    expect(resolve(build.env.CARET_BUILD_ID)).toBe(`${expectedSha}-100-2`);
     const run = {
       ...successfulCI,
       head_sha: expectedSha,

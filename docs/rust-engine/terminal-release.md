@@ -62,7 +62,7 @@ checked against cargo VCS metadata. Missing notices stop packaging.
 adds SOURCE_REVISION, and proves `cargo check --offline --locked` from that tree
 with a separate target directory. The resulting corresponding-source archive is
 published beside binaries. Its `.cargo/config.toml` uses a relative vendor path.
-Source builds use the pinned toolchain; set OXYTYPE_BUILD_REV from SOURCE_REVISION
+Source builds use the pinned toolchain; set CARET_BUILD_REV from SOURCE_REVISION
 to retain provenance. No source registry access is needed once tools are installed.
 
 After all four native jobs, emulator jobs, source build and the release matrix pass, review

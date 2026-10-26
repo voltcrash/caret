@@ -30,7 +30,7 @@ for (const name of ["profile", "leaderboards", "account"]) {
 export const browserProject = {
   extends: false,
   root,
-  define: { "import.meta.env.OXYTYPE_BUILD_ID": JSON.stringify("TESTING") },
+  define: { "import.meta.env.CARET_BUILD_ID": JSON.stringify("TESTING") },
   resolve: {
     alias: [
       {

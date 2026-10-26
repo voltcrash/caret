@@ -46,7 +46,7 @@ describe("production build command", () => {
         env: {
           ...process.env,
           CI: "true",
-          OXYTYPE_BUILD_ID: "fixture-build",
+          CARET_BUILD_ID: "fixture-build",
           ...env,
         },
         encoding: "utf8",

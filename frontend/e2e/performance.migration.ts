@@ -12,8 +12,8 @@ test("cold startup across CPU, viewport and network conditions", async ({
   baseURL,
 }) => {
   test.setTimeout(240_000);
-  const output = process.env["OXYTYPE_PERFORMANCE_OUTPUT"];
-  if (output === undefined) throw new Error("Set OXYTYPE_PERFORMANCE_OUTPUT");
+  const output = process.env["CARET_PERFORMANCE_OUTPUT"];
+  if (output === undefined) throw new Error("Set CARET_PERFORMANCE_OUTPUT");
   const measurements = [];
   for (const profile of profiles) {
     const samples = [];

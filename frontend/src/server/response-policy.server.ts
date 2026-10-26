@@ -4,7 +4,7 @@ import { serverBuildId } from "./observability.server";
 // The only permitted inline event is the static fallback's cache recovery action.
 // SHA-256 of the exact warnings.html onclick body, checked by the boundary suite.
 const recoveryHash = "iiia5AKJZAREDabTiAT6lsvuOYHKDHC9Rnk0lyzkrZo=";
-const sentryOrigin = import.meta.env.OXYTYPE_SENTRY_ORIGIN ?? "";
+const sentryOrigin = import.meta.env.CARET_SENTRY_ORIGIN ?? "";
 
 export function applyResponsePolicy(
   response: Response,

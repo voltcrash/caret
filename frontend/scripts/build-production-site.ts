@@ -30,8 +30,8 @@ async function main(): Promise<void> {
     TURNSTILE_SITE_KEY: frontend["TURNSTILE_SITE_KEY"],
     AUTH_PROVIDERS: frontend["AUTH_PROVIDERS"],
     SENTRY_DSN: frontend["SENTRY_DSN"] ?? "",
-    OXYTYPE_DEPLOY_ENV: "production",
-    OXYTYPE_BUILD_ID: resolveBuildId(false),
+    CARET_DEPLOY_ENV: "production",
+    CARET_BUILD_ID: resolveBuildId(false),
   };
   // One compiler invocation owns the matching server and client; never a cached
   // frontend followed by an independently built backend.
@@ -45,7 +45,7 @@ async function main(): Promise<void> {
   }
   await preserveAssets(resolve(frontendRoot, "dist/start/client"), previous);
   await writeArtifact(resolve(frontendRoot, "dist/start"), {
-    buildId: env.OXYTYPE_BUILD_ID,
+    buildId: env.CARET_BUILD_ID,
     siteKey: frontend["TURNSTILE_SITE_KEY"] as string,
     providers: frontend["AUTH_PROVIDERS"] as string,
   });

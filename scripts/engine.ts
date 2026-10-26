@@ -247,7 +247,7 @@ switch (process.argv[2]) {
   case "browser":
     run("vp", ["run", "--filter", "@caret/frontend", "build:start"], {
       ...process.env,
-      OXYTYPE_ENGINE_PROOF: "true",
+      CARET_ENGINE_PROOF: "true",
     });
     run("vp", [
       "run",

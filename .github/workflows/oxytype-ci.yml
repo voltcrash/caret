@@ -437,8 +437,8 @@ jobs:
 
       - name: Production configuration build and dry-run (fixture public settings)
         env:
-          OXYTYPE_DEPLOY_ENV: production
-          OXYTYPE_BUILD_ID: ci-${{ github.sha }}
+          CARET_DEPLOY_ENV: production
+          CARET_BUILD_ID: ci-${{ github.sha }}
         run: vp run --filter @caret/frontend build:start && vp run --filter @caret/frontend dry-run:start
 
   ci-assets:

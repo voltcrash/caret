@@ -162,7 +162,7 @@ export function startServiceWorker(options: {
               format: "iife",
               entryFileNames: "sw.js",
               // This build's configuration, read by the worker as a global.
-              banner: `var __OXYTYPE_SW__ = ${JSON.stringify(config)};`,
+              banner: `var __CARET_SW__ = ${JSON.stringify(config)};`,
             },
           },
         },

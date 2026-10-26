@@ -28,7 +28,7 @@ export const Route = createFileRoute("/_app/leaderboards")({
   },
   // Public first page only; private rank loads separately in the browser.
   loader: async ({ context, deps }) => {
-    if (import.meta.env.OXYTYPE_OFFLINE) return;
+    if (import.meta.env.CARET_OFFLINE) return;
     await prefetch(
       context.queryClient,
       leaderboardOptions(deps.selection, deps.page),

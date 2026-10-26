@@ -90,7 +90,7 @@ jobs:
 
       - name: Build production frontend and Worker
         env:
-          OXYTYPE_BUILD_ID: ${{ env.DEPLOYMENT_SHA }}-${{ github.run_id }}-${{ github.run_attempt }}
+          CARET_BUILD_ID: ${{ env.DEPLOYMENT_SHA }}-${{ github.run_id }}-${{ github.run_attempt }}
         run: vp run --filter @caret/frontend build:production-site
 
       - name: Check production deployment

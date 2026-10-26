@@ -31,7 +31,7 @@ async function main(): Promise<void> {
       ...process.env,
       ...settings,
       SENTRY_DSN: settings["SENTRY_DSN"] ?? "",
-      OXYTYPE_BUILD_ID: buildId,
+      CARET_BUILD_ID: buildId,
     },
   });
   if (result.error !== undefined || result.status !== 0) {

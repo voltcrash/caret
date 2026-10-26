@@ -44,7 +44,7 @@ Longer soaks must demonstrate bounded growth per recorded event and no per-resta
 vp run engine:test
 vp run engine:fmt
 vp run engine:lint
-OXYTYPE_ENGINE_PROOF=true vp run --filter @caret/frontend build:start
+CARET_ENGINE_PROOF=true vp run --filter @caret/frontend build:start
 ENGINE_PROOF_OUTPUT="$PWD/docs/rust-engine/candidate-proof.json" vp run --filter @caret/frontend benchmark-migration engine-proof.migration.ts
 vp -C frontend test run --config vitest.start.config.ts __tests__/start/document.spec.ts
 ```

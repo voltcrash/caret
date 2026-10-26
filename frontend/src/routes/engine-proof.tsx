@@ -1083,7 +1083,7 @@ function EngineProof() {
   };
   return (
     <Show
-      when={import.meta.env.OXYTYPE_ENGINE_PROOF}
+      when={import.meta.env.CARET_ENGINE_PROOF}
       fallback={<p>Unavailable</p>}
     >
       <main class="p-4">

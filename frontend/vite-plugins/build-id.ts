@@ -6,16 +6,16 @@ const buildIdPattern = /^[\w.-]{1,64}$/;
 /**
  * One identifier for every file of a build: client bundles, the Worker,
  * `/version.json`, service-worker caches and error reports. Deployment tooling
- * may supply `OXYTYPE_BUILD_ID`; otherwise the existing timestamp+commit stamp.
+ * may supply `CARET_BUILD_ID`; otherwise the existing timestamp+commit stamp.
  */
 export function resolveBuildId(
   isDevelopment: boolean,
-  override = process.env["OXYTYPE_BUILD_ID"],
+  override = process.env["CARET_BUILD_ID"],
 ): string {
   const supplied = override?.trim() ?? "";
   const buildId = supplied === "" ? getClientVersion(isDevelopment) : supplied;
   if (!buildIdPattern.test(buildId)) {
-    throw new Error("OXYTYPE_BUILD_ID must be 1-64 letters, digits, . _ or -");
+    throw new Error("CARET_BUILD_ID must be 1-64 letters, digits, . _ or -");
   }
   return buildId;
 }

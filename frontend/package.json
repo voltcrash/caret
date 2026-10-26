@@ -31,7 +31,7 @@
     "test:start": "vp test run --config vitest.start.config.ts",
     "test:start:browser": "playwright test --config playwright.start.config.ts",
     "dry-run:start": "wrangler deploy --config dist/start/server/wrangler.json --dry-run --outdir dist/start-dry-run",
-    "build:start:staging": "OXYTYPE_DEPLOY_ENV=staging vp build",
+    "build:start:staging": "CARET_DEPLOY_ENV=staging vp build",
     "check:production": "vpx ./scripts/check-production.ts",
     "build:production-site": "vpx ./scripts/build-production-site.ts",
     "deploy:production-site": "vp run check:production && vp run retire:production-task-consumer && vp run db:replication:production && wrangler deploy --config dist/start/server/wrangler.json --secrets-file .dev.vars.production",
