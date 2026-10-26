@@ -68,7 +68,7 @@ published beside binaries. Its `.cargo/config.toml` uses a relative vendor path.
 Source builds use the pinned toolchain; set CARET_BUILD_REV from SOURCE_REVISION
 to retain provenance. No source registry access is needed once tools are installed.
 
-After all four native jobs, emulator jobs, source build and the release matrix pass, review
+After all four native jobs, Linux x64 emulator checks, source build and the release matrix pass, review
 the PR and final source commit. Follow maintainer authorization, update the Cargo
 workspace version/release notes, then push the matching `terminal-vVERSION` tag.
 Tag mismatch fails. The tag rebuilds all artifacts, and publication additionally
