@@ -122,7 +122,7 @@ function arc(
 }
 
 // I-beam cursor with curled serifs, centred on the grid.
-const beam = 5;
+const beam = 6;
 const serif = 7.5;
 const stem = 24;
 const [left, right] = [stem - serif, stem + serif];
