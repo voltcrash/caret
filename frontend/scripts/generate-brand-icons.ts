@@ -56,22 +56,26 @@ const socialCard = `<!doctype html>
   <div><h1>oxytype</h1><p>a minimalistic, customizable typing test</p></div>
 </main>`;
 
-writeFileSync(out("images/favicon/oxytype.svg"), `${oxytypeIconSvg()}\n`);
+async function main(): Promise<void> {
+  writeFileSync(out("images/favicon/oxytype.svg"), `${oxytypeIconSvg()}\n`);
 
-const browser = await chromium.launch();
-try {
-  const page = await browser.newPage();
-  for (const { file, size, svg } of pngs) {
-    await page.setViewportSize({ width: size, height: size });
-    await page.setContent(
-      `<style>body{margin:0}svg{display:block;width:100vw;height:100vh}</style>${svg}`,
-    );
-    await page.screenshot({ path: out(file).pathname, omitBackground: true });
+  const browser = await chromium.launch();
+  try {
+    const page = await browser.newPage();
+    for (const { file, size, svg } of pngs) {
+      await page.setViewportSize({ width: size, height: size });
+      await page.setContent(
+        `<style>body{margin:0}svg{display:block;width:100vw;height:100vh}</style>${svg}`,
+      );
+      await page.screenshot({ path: out(file).pathname, omitBackground: true });
+    }
+    await page.setViewportSize({ width: 1200, height: 630 });
+    await page.setContent(socialCard);
+    await page.evaluate(async () => document.fonts.ready);
+    await page.screenshot({ path: out("images/og/oxytype.png").pathname });
+  } finally {
+    await browser.close();
   }
-  await page.setViewportSize({ width: 1200, height: 630 });
-  await page.setContent(socialCard);
-  await page.evaluate(async () => document.fonts.ready);
-  await page.screenshot({ path: out("images/og/oxytype.png").pathname });
-} finally {
-  await browser.close();
 }
+
+void main();
