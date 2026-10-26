@@ -131,3 +131,79 @@ fn failure_and_timer_completion_keep_their_engine_reason_until_acknowledged() {
         );
     }
 }
+
+#[test]
+fn completion_blocks_new_observations_but_preserves_outstanding_key_releases() {
+    for deferred in [false, true] {
+        let mut session = Session::new(
+            Config {
+                time: 15.0,
+                ..Config::default()
+            },
+            vec![Text::from("abc")],
+        )
+        .unwrap();
+        command(
+            &mut session,
+            json!({"op":"view","now":0,"deferFinish":deferred}),
+        )
+        .unwrap();
+        command(&mut session, json!({"op":"insert","data":[97],"now":0})).unwrap();
+        command(
+            &mut session,
+            json!({"op":"observe","eventType":"keydown","eventData":{"code":"KeyB"},"now":14990}),
+        )
+        .unwrap();
+        // Leave another hold unreleased to exercise estimated cleanup.
+        command(
+            &mut session,
+            json!({"op":"observe","eventType":"keydown","eventData":{"code":"KeyC"},"now":14995}),
+        )
+        .unwrap();
+        command(&mut session, json!({"op":"advance","now":15010})).unwrap();
+        // A duplicate must not synthesize a release or replace the held key.
+        let ignored = command(
+            &mut session,
+            json!({"op":"observe","eventType":"keydown","eventData":{"code":"KeyB"},"now":15020}),
+        )
+        .unwrap();
+        assert!(ignored.events.is_empty());
+        let release = command(
+            &mut session,
+            json!({"op":"observe","eventType":"keyup","eventData":{"code":"KeyB"},"now":15030}),
+        )
+        .unwrap();
+        assert_eq!(release.events.len(), 1);
+        if deferred {
+            command(&mut session, json!({"op":"acknowledgeFinish","now":15010})).unwrap();
+        }
+        command(&mut session, json!({"op":"finalize","now":15040})).unwrap();
+        let finished = session.log();
+        let log = serde_json::from_value(finished.clone()).unwrap();
+        let summary = typing_engine::stats::typed_summary(&log).unwrap();
+        assert_eq!(summary.key_duration, vec![40.0, 40.0]);
+        for (kind, data) in [
+            ("keydown", json!({"code":"KeyA"})),
+            ("keyup", json!({"code":"KeyA"})),
+            ("composition", json!({"event":"start"})),
+            ("timer", json!({"event":"step","timer":16})),
+        ] {
+            let ignored = command(
+                &mut session,
+                json!({"op":"observe","eventType":kind,"eventData":data,"now":15182.7}),
+            )
+            .unwrap();
+            assert!(ignored.events.is_empty());
+            assert_eq!(session.log(), finished);
+        }
+        command(&mut session, json!({"op":"finalize","now":16000})).unwrap();
+        assert_eq!(session.log(), finished);
+        command(&mut session, json!({"op":"reset","now":17000})).unwrap();
+        let fresh = command(
+            &mut session,
+            json!({"op":"observe","eventType":"keydown","eventData":{"code":"KeyA"},"now":17001}),
+        )
+        .unwrap();
+        assert_eq!(fresh.events.len(), 1);
+    }
+}

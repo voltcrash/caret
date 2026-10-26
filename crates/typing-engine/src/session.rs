@@ -1787,6 +1787,12 @@ impl Session {
         now: f64,
         mut data: Value,
     ) -> Result<(), crate::error::EngineError> {
+        // Result loading may yield after finalization. New observations must
+        // not extend a finished test's keyboard timeline. Still allow releases
+        // of already-held keys, including finalize()'s estimated releases.
+        if (self.ended || self.pending_finish.is_some()) && kind != "keyup" {
+            return Ok(());
+        }
         if !data.is_object() {
             return Err("Observation data must be an object".into());
         }
