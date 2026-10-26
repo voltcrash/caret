@@ -2,7 +2,7 @@
 
 Settings use `settings.sqlite3` under the OS config directory. History uses
 `history.sqlite3` under the OS local data directory. Paths are resolved with
-`directories::ProjectDirs("com", "Oxytype", "Oxytype")`; explicit `--config-dir`
+`directories::ProjectDirs("com", "Caret", "Caret")`; explicit `--config-dir`
 and `--data-dir` overrides support portable installs/testing. No account, tokens,
 telemetry or transport. Data remains until the user removes these directories.
 
