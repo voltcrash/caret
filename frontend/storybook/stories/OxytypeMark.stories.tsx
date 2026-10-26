@@ -15,14 +15,14 @@ const meta = preview.meta({
 });
 
 export const Default = meta.story({
-  args: { class: "w-24 fill-current text-main" },
+  args: { class: "h-24 fill-current text-main" },
 });
 
 export const Sizes = meta.story(() => (
   <div class="flex items-end gap-4 text-main">
-    <OxytypeMark class="w-4 fill-current" />
-    <OxytypeMark class="w-6 fill-current" />
-    <OxytypeMark class="w-12 fill-current" />
-    <OxytypeMark class="w-24 fill-current" />
+    <OxytypeMark class="h-4 fill-current" />
+    <OxytypeMark class="h-6 fill-current" />
+    <OxytypeMark class="h-12 fill-current" />
+    <OxytypeMark class="h-24 fill-current" />
   </div>
 ));
