@@ -2,13 +2,14 @@
 
 ## Mark
 
-A sharp-cornered "O" whose counter is a text caret. "Oxy" is Greek for sharp; the caret is where typing happens.
+An I-beam text cursor with curled serifs, followed by a subscript 2. The cursor is where typing happens, and the subscript reads like O₂, the "oxy" in oxytype.
 
 - Source of truth: `frontend/src/components/brand/oxytype-icon.ts` (one path on a 48-unit grid).
+- The path is outlined from strokes in `frontend/scripts/outline-brand-mark.ts`. Edit the strokes there, then paste the output of `vp run outline-brand-mark` into `oxytype-icon.ts`.
 - In UI: `<OxytypeMark class="fill-current text-main" />` from `frontend/src/components/brand/oxytype-mark.tsx`. It inherits `currentColor`, so themes recolor it.
 - Wordmark: lowercase `oxytype` in Lexend Deca, `text` color, beside the mark.
 
-Don't rotate, outline, stretch or recolor parts of the mark separately.
+Don't rotate, outline, stretch, or recolor the cursor and the 2 separately.
 
 ## Colors
 
