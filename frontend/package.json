@@ -20,6 +20,7 @@
     "storybook": "vp run @oxytype/frontend-storybook#storybook",
     "import-tree": "vpx ./scripts/import-tree.ts",
     "generate-icon-types": "vpx ./scripts/generate-fontawesome-types.ts",
+    "generate-brand-icons": "vpx ./scripts/generate-brand-icons.ts",
     "benchmark-word-rendering": "playwright test --config playwright.benchmark.config.ts",
     "benchmark-migration": "playwright test --config playwright.migration.config.ts",
     "migration-performance": "vpx ./scripts/migration-performance.ts",
