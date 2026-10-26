@@ -47,13 +47,18 @@ runs:
         Acquire::Retries "3";
         Acquire::http::Timeout "20";
         Acquire::https::Timeout "20";
+        DPkg::Lock::Timeout "120";
         EOF
         install=${COMMAND:-"sudo apt-get update && sudo apt-get install --no-install-recommends -y $PACKAGES"}
         # A mirror can trickle at a few kB/s for many minutes without timing out,
         # so bound each attempt and move the slow mirror to the back before retrying.
+        # Finished downloads stay in the archive directory, so a retry resumes.
         for attempt in 1 2 3; do
           timeout --kill-after=15 240 bash -c "$install" && exit 0
           echo "::warning::apt install attempt $attempt failed or stalled"
+          # timeout cannot signal apt-get through sudo, so stop it as root.
+          sudo pkill -x apt-get || true
+          sudo dpkg --configure -a || true
           [[ $(wc -l </etc/apt/apt-mirrors.txt 2>/dev/null) -gt 1 ]] && sudo sed -i '1{h;d};${G}' /etc/apt/apt-mirrors.txt
         done
         exit 1
