@@ -1,5 +1,5 @@
 //! Actual native terminal event decoding on the supported Linux/macOS PTYs.
-use oxytype_tui::storage::{Paths, Store};
+use caret_tui::storage::{Paths, Store};
 use portable_pty::{CommandBuilder, PtySize, native_pty_system};
 use std::{
     io::{Read, Write},
@@ -138,7 +138,7 @@ fn native_terminal_decodes_edits_and_persists_actual_input_without_physical_tele
             }
         }
     });
-    let mut command = CommandBuilder::new(env!("CARGO_BIN_EXE_oxytype"));
+    let mut command = CommandBuilder::new(env!("CARGO_BIN_EXE_caret"));
     command.args([
         "--keyboard",
         "basic",

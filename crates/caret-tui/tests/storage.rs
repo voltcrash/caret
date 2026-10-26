@@ -1,4 +1,4 @@
-use oxytype_tui::{
+use caret_tui::{
     content::OfflineContent,
     engine::EngineHost,
     input::Capabilities,
@@ -172,8 +172,8 @@ fn malformed_future_and_interrupted_storage_preserve_prior_data() {
 #[test]
 #[ignore = "Helper launched and terminated by abrupt_process_interruption_keeps_committed_history"]
 fn interrupted_writer_process() {
-    let path = std::env::var_os("OXYTYPE_INTERRUPTION_DB").expect("Test database path");
-    let ready = std::env::var_os("OXYTYPE_INTERRUPTION_READY").expect("Test readiness path");
+    let path = std::env::var_os("CARET_INTERRUPTION_DB").expect("Test database path");
+    let ready = std::env::var_os("CARET_INTERRUPTION_READY").expect("Test readiness path");
     let db = rusqlite::Connection::open(path).unwrap();
     db.execute_batch(
         "BEGIN IMMEDIATE; INSERT INTO results VALUES('interrupted-process',1,'words','{}');",
@@ -197,10 +197,10 @@ fn abrupt_process_interruption_keeps_committed_history() {
     let mut child = std::process::Command::new(std::env::current_exe().unwrap())
         .args(["--ignored", "--exact", "interrupted_writer_process"])
         .env(
-            "OXYTYPE_INTERRUPTION_DB",
+            "CARET_INTERRUPTION_DB",
             paths.data.join("history.sqlite3"),
         )
-        .env("OXYTYPE_INTERRUPTION_READY", &ready)
+        .env("CARET_INTERRUPTION_READY", &ready)
         .spawn()
         .unwrap();
     let deadline = std::time::Instant::now() + std::time::Duration::from_secs(10);

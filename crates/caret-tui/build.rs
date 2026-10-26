@@ -7,7 +7,7 @@ fn git(args: &[&str]) -> Option<String> {
         .then(|| String::from_utf8_lossy(&result.stdout).trim().to_string())
 }
 fn main() {
-    println!("cargo:rerun-if-env-changed=OXYTYPE_BUILD_REV");
+    println!("cargo:rerun-if-env-changed=CARET_BUILD_REV");
     if let Some(path) = git(&["rev-parse", "--git-path", "HEAD"]) {
         println!("cargo:rerun-if-changed={path}");
     }
@@ -16,7 +16,7 @@ fn main() {
     {
         println!("cargo:rerun-if-changed={path}");
     }
-    let revision = std::env::var("OXYTYPE_BUILD_REV")
+    let revision = std::env::var("CARET_BUILD_REV")
         .ok()
         .filter(|s| !s.is_empty())
         .or_else(|| git(&["rev-parse", "HEAD"]))
@@ -25,7 +25,7 @@ fn main() {
         revision
             .bytes()
             .all(|c| c.is_ascii_alphanumeric() || c == b'-'),
-        "Invalid OXYTYPE_BUILD_REV"
+        "Invalid CARET_BUILD_REV"
     );
-    println!("cargo:rustc-env=OXYTYPE_BUILD_REV={revision}");
+    println!("cargo:rustc-env=CARET_BUILD_REV={revision}");
 }

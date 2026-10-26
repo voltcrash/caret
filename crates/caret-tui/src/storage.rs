@@ -23,7 +23,7 @@ pub struct Paths {
 }
 impl Paths {
     pub fn resolve(config: Option<&Path>, data: Option<&Path>) -> Result<Self> {
-        let dirs = ProjectDirs::from("com", "Oxytype", "Oxytype");
+        let dirs = ProjectDirs::from("com", "Caret", "Caret");
         Ok(Self {
             config: config
                 .map(Path::to_path_buf)

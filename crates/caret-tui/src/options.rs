@@ -12,7 +12,7 @@ use typing_engine::{
 
 pub const FUNBOXES: &[&str] = &["capitals", "rAnDoMcAsE", "backwards", "IPv4", "IPv6"];
 #[derive(Parser, Default)]
-#[command(name="oxytype", version=crate::version(), about="Offline typing with the shared Oxytype Rust engine")]
+#[command(name="caret", version=crate::version(), about="Offline typing with the shared Caret Rust engine")]
 pub struct Cli {
     /// Deterministic synthetic smoke; no terminal or saved data.
     #[arg(long)]

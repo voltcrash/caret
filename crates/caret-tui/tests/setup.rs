@@ -1,4 +1,4 @@
-use oxytype_tui::{content::OfflineContent, setup::Setup};
+use caret_tui::{content::OfflineContent, setup::Setup};
 use typing_engine::Config;
 
 #[test]

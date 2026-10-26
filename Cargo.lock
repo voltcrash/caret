@@ -119,6 +119,29 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "64fa3c856b712db6612c019f14756e64e4bcea13337a6b33b696333a9eaa2d06"
 
 [[package]]
+name = "caret-tui"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "crossterm",
+ "directories",
+ "nix 0.30.1",
+ "portable-pty",
+ "ratatui",
+ "rusqlite",
+ "serde",
+ "serde_json",
+ "sha2",
+ "signal-hook 0.4.5",
+ "tempfile",
+ "typing-engine",
+ "unicode-segmentation",
+ "unicode-width",
+ "uuid",
+ "vt100",
+]
+
+[[package]]
 name = "castaway"
 version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -765,29 +788,6 @@ name = "option-ext"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "04744f49eae99ab78e0d5c0b603ab218f515ea8cfe5a456d7629ad883a3b6e7d"
-
-[[package]]
-name = "oxytype-tui"
-version = "0.1.0"
-dependencies = [
- "clap",
- "crossterm",
- "directories",
- "nix 0.30.1",
- "portable-pty",
- "ratatui",
- "rusqlite",
- "serde",
- "serde_json",
- "sha2",
- "signal-hook 0.4.5",
- "tempfile",
- "typing-engine",
- "unicode-segmentation",
- "unicode-width",
- "uuid",
- "vt100",
-]
 
 [[package]]
 name = "palette"

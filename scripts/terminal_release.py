@@ -79,19 +79,19 @@ def package(target):
     tag = os.environ.get("GITHUB_REF_NAME", "")
     if os.environ.get("GITHUB_REF_TYPE") == "tag" and tag != f"terminal-v{version()}":
         raise RuntimeError("Terminal tag must match Cargo workspace version")
-    revision = os.environ.get("OXYTYPE_BUILD_REV") or capture(["git","rev-parse","HEAD"]).strip()
+    revision = os.environ.get("CARET_BUILD_REV") or capture(["git","rev-parse","HEAD"]).strip()
     if revision != capture(["git","rev-parse","HEAD"]).strip(): raise RuntimeError("Archive build revision must match checked-out source")
     run(["git","diff","--quiet","HEAD","--"])
-    run(["cargo", "build", "--locked", "--release", "-p", "oxytype-tui", "--target", target],env=dict(os.environ,OXYTYPE_BUILD_REV=revision))
-    name = f"oxytype-v{version()}-{target}"
+    run(["cargo", "build", "--locked", "--release", "-p", "caret-tui", "--target", target],env=dict(os.environ,CARET_BUILD_REV=revision))
+    name = f"caret-v{version()}-{target}"
     directory = OUT / name
     if directory.exists(): shutil.rmtree(directory)
     directory.mkdir(parents=True)
-    binary = "oxytype"
+    binary = "caret"
     shutil.copy2(ROOT / "target" / target / "release" / binary, directory / binary)
-    for source, dest in [("LICENSE","LICENSE"),("crates/oxytype-tui/assets/ATTRIBUTION.md","ATTRIBUTION.md"),("docs/rust-engine/terminal.md","README.md"),("docs/rust-engine/terminal-content.md","terminal-content.md"),("docs/rust-engine/terminal-storage.md","terminal-storage.md")]:
+    for source, dest in [("LICENSE","LICENSE"),("crates/caret-tui/assets/ATTRIBUTION.md","ATTRIBUTION.md"),("docs/rust-engine/terminal.md","README.md"),("docs/rust-engine/terminal-content.md","terminal-content.md"),("docs/rust-engine/terminal-storage.md","terminal-storage.md")]:
         shutil.copy2(ROOT / source,directory / dest)
-    (directory / "SOURCE.md").write_text(f"Source revision: {revision}\n\nGPL-3.0-only corresponding source is the matching oxytype-v{version()}-source.tar.gz release asset, including locked vendored dependencies.\n\nRepository: https://github.com/voltcrash/oxytype/tree/{revision}\n")
+    (directory / "SOURCE.md").write_text(f"Source revision: {revision}\n\nGPL-3.0-only corresponding source is the matching caret-v{version()}-source.tar.gz release asset, including locked vendored dependencies.\n\nRepository: https://github.com/voltcrash/caret/tree/{revision}\n")
     licenses(directory,target)
     output = archive(directory)
     print(f"Archive: {output}")
@@ -101,10 +101,10 @@ def package(target):
 def smoke(path):
     expected=path.with_name(path.name+".sha256").read_text().split()[0]
     assert hashlib.sha256(path.read_bytes()).hexdigest()==expected, "Archive checksum mismatch"
-    with tempfile.TemporaryDirectory(prefix="oxytype-install-") as temporary:
+    with tempfile.TemporaryDirectory(prefix="caret-install-") as temporary:
         directory=pathlib.Path(temporary)
         with tarfile.open(path) as package: package.extractall(directory,filter="data")
-        binaries = list(directory.rglob("oxytype"))
+        binaries = list(directory.rglob("caret"))
         if len(binaries)!=1: raise RuntimeError("Expected one installed executable")
         binary=binaries[0]
         isolated=directory / "empty";isolated.mkdir()
@@ -125,7 +125,7 @@ def smoke(path):
 
 def source():
     OUT.mkdir(parents=True,exist_ok=True)
-    directory=OUT / f"oxytype-v{version()}-source"
+    directory=OUT / f"caret-v{version()}-source"
     if directory.exists(): shutil.rmtree(directory)
     directory.mkdir()
     snapshot=run(["git","archive","--format=tar","HEAD"],stdout=subprocess.PIPE).stdout
@@ -134,10 +134,10 @@ def source():
     config=subprocess.run(["cargo","vendor","--locked","--versioned-dirs","vendor"],cwd=directory,check=True,stdout=subprocess.PIPE,text=True).stdout
     cargo=directory / ".cargo";cargo.mkdir(exist_ok=True)
     with (cargo / "config.toml").open("a") as output: output.write("\n"+config)
-    revision=os.environ.get("OXYTYPE_BUILD_REV") or capture(["git","rev-parse","HEAD"]).strip()
+    revision=os.environ.get("CARET_BUILD_REV") or capture(["git","rev-parse","HEAD"]).strip()
     (directory / "SOURCE_REVISION").write_text(revision+"\n")
     # Prove corresponding source can build without registry/network access.
-    subprocess.run(["cargo","check","--offline","--locked","-p","oxytype-tui","--target-dir",str(ROOT / "target/terminal-source-check")],cwd=directory,env=dict(os.environ,OXYTYPE_BUILD_REV=revision),check=True)
+    subprocess.run(["cargo","check","--offline","--locked","-p","caret-tui","--target-dir",str(ROOT / "target/terminal-source-check")],cwd=directory,env=dict(os.environ,CARET_BUILD_REV=revision),check=True)
     print(f"Corresponding source: {archive(directory)}")
 
 
@@ -150,7 +150,7 @@ def gate():
 
 
 def checksums(directory):
-    expected=[f"oxytype-v{version()}-{target}.tar.gz" for target in TARGETS]+[f"oxytype-v{version()}-source.tar.gz"]
+    expected=[f"caret-v{version()}-{target}.tar.gz" for target in TARGETS]+[f"caret-v{version()}-source.tar.gz"]
     rows=[]
     for name in expected:
         path=directory / name
@@ -173,5 +173,5 @@ if __name__=="__main__":
     else:
         if args.archive is None:
             if args.target not in TARGETS: parser.error("--archive or a supported --target required")
-            args.archive=OUT / f"oxytype-v{version()}-{args.target}.tar.gz"
+            args.archive=OUT / f"caret-v{version()}-{args.target}.tar.gz"
         smoke(args.archive.resolve())

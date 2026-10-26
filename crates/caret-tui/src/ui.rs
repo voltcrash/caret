@@ -202,7 +202,7 @@ fn header(
                 .add_modifier(Modifier::BOLD),
         ),
         Span::styled(
-            "oxytype",
+            "caret",
             Palette::fg(palette.text).add_modifier(Modifier::BOLD),
         ),
     ];

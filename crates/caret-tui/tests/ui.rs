@@ -1,4 +1,4 @@
-use oxytype_tui::{
+use caret_tui::{
     content::OfflineContent,
     engine::EngineHost,
     input::Capabilities,
@@ -77,11 +77,11 @@ fn find(buffer: &Buffer, needle: &str) -> Option<(u16, u16)> {
 fn header_shows_logo_theme_and_nav_until_typing_starts() {
     let mut fixture = fixture(Config::default());
     let buffer = render(&fixture, Screen::Test, 100, 30);
-    if std::env::var("OXYTYPE_UI_DUMP").is_ok() {
+    if std::env::var("CARET_UI_DUMP").is_ok() {
         println!("{}", text(&buffer));
     }
-    let (x, y) = find(&buffer, "oxytype").unwrap();
-    let palette = oxytype_tui::theme::Palette::named(oxytype_tui::theme::DEFAULT);
+    let (x, y) = find(&buffer, "caret").unwrap();
+    let palette = caret_tui::theme::Palette::named(caret_tui::theme::DEFAULT);
     assert_eq!(buffer[(x, y)].fg, palette.text);
     assert_eq!(buffer[(x - 2, y)].fg, palette.main);
     assert!(find(&buffer, "settings").is_some());
@@ -99,7 +99,7 @@ fn idle_test_shows_config_bar_with_active_mode_and_untyped_words() {
         words: 25,
         ..Default::default()
     });
-    let palette = oxytype_tui::theme::Palette::named(oxytype_tui::theme::DEFAULT);
+    let palette = caret_tui::theme::Palette::named(caret_tui::theme::DEFAULT);
     let buffer = render(&fixture, Screen::Test, 100, 30);
     let (x, y) = find(&buffer, "words  quote").unwrap();
     assert_eq!(buffer[(x, y)].fg, palette.main);
@@ -120,7 +120,7 @@ fn active_test_hides_config_and_counts_words_in_main_color() {
         words: 25,
         ..Default::default()
     });
-    let palette = oxytype_tui::theme::Palette::named(oxytype_tui::theme::DEFAULT);
+    let palette = caret_tui::theme::Palette::named(caret_tui::theme::DEFAULT);
     let word = fixture.host.words[0].display_lossy();
     fixture.host.insert(&word, 100.0, 1000.0).unwrap();
     let buffer = render(&fixture, Screen::Test, 100, 30);
@@ -147,10 +147,10 @@ fn result_shows_big_wpm_acc_chart_and_stat_groups() {
     }
     assert!(fixture.host.state().ended);
     let buffer = render(&fixture, Screen::Test, 100, 30);
-    if std::env::var("OXYTYPE_UI_DUMP").is_ok() {
+    if std::env::var("CARET_UI_DUMP").is_ok() {
         println!("{}", text(&buffer));
     }
-    let palette = oxytype_tui::theme::Palette::named(oxytype_tui::theme::DEFAULT);
+    let palette = caret_tui::theme::Palette::named(caret_tui::theme::DEFAULT);
     for label in [
         "wpm",
         "acc",
@@ -174,10 +174,10 @@ fn settings_render_button_groups_with_active_choice_in_main() {
     let mut fixture = fixture(Config::default());
     fixture.setup.selected = 3;
     let buffer = render(&fixture, Screen::Settings, 100, 30);
-    if std::env::var("OXYTYPE_UI_DUMP").is_ok() {
+    if std::env::var("CARET_UI_DUMP").is_ok() {
         println!("{}", text(&buffer));
     }
-    let palette = oxytype_tui::theme::Palette::named(oxytype_tui::theme::DEFAULT);
+    let palette = caret_tui::theme::Palette::named(caret_tui::theme::DEFAULT);
     let (x, y) = find(&buffer, " time ").unwrap();
     assert_eq!(buffer[(x + 1, y)].bg, palette.main);
     let (x, y) = find(&buffer, " words ").unwrap();
@@ -209,10 +209,10 @@ fn history_lists_saved_results_in_a_table_with_pb_crown() {
     );
     fixture.local.history.refresh(&fixture.local.store).unwrap();
     let buffer = render(&fixture, Screen::History, 110, 30);
-    if std::env::var("OXYTYPE_UI_DUMP").is_ok() {
+    if std::env::var("CARET_UI_DUMP").is_ok() {
         println!("{}", text(&buffer));
     }
-    let palette = oxytype_tui::theme::Palette::named(oxytype_tui::theme::DEFAULT);
+    let palette = caret_tui::theme::Palette::named(caret_tui::theme::DEFAULT);
     assert!(find(&buffer, "Local history").is_some());
     let (x, y) = find(&buffer, "accuracy").unwrap();
     assert_eq!(buffer[(x, y)].fg, palette.sub);
@@ -227,10 +227,10 @@ fn history_lists_saved_results_in_a_table_with_pb_crown() {
 fn help_groups_keybinds_as_key_chips() {
     let fixture = fixture(Config::default());
     let buffer = render(&fixture, Screen::Help, 100, 30);
-    if std::env::var("OXYTYPE_UI_DUMP").is_ok() {
+    if std::env::var("CARET_UI_DUMP").is_ok() {
         println!("{}", text(&buffer));
     }
-    let palette = oxytype_tui::theme::Palette::named(oxytype_tui::theme::DEFAULT);
+    let palette = caret_tui::theme::Palette::named(caret_tui::theme::DEFAULT);
     let (x, y) = find(&buffer, " F6 ").unwrap();
     assert_eq!(buffer[(x + 1, y)].bg, palette.sub_alt);
     assert!(find(&buffer, "- repeat test").is_some());
@@ -243,10 +243,10 @@ fn editor_shows_option_buttons_and_text_area() {
     let mut fixture = fixture(Config::default());
     fixture.setup.text = "hello world".into();
     let buffer = render(&fixture, Screen::Editor, 100, 30);
-    if std::env::var("OXYTYPE_UI_DUMP").is_ok() {
+    if std::env::var("CARET_UI_DUMP").is_ok() {
         println!("{}", text(&buffer));
     }
-    let palette = oxytype_tui::theme::Palette::named(oxytype_tui::theme::DEFAULT);
+    let palette = caret_tui::theme::Palette::named(caret_tui::theme::DEFAULT);
     let (x, y) = find(&buffer, " repeat ").unwrap();
     assert_eq!(buffer[(x + 1, y)].bg, palette.main);
     let (x, y) = find(&buffer, "hello world").unwrap();
@@ -258,7 +258,7 @@ fn editor_shows_option_buttons_and_text_area() {
 fn tiny_terminals_get_a_centred_resize_notice() {
     let fixture = fixture(Config::default());
     let buffer = render(&fixture, Screen::Test, 40, 10);
-    let palette = oxytype_tui::theme::Palette::named(oxytype_tui::theme::DEFAULT);
+    let palette = caret_tui::theme::Palette::named(caret_tui::theme::DEFAULT);
     let (x, y) = find(&buffer, "terminal too small").unwrap();
     assert_eq!(buffer[(x, y)].fg, palette.main);
     assert!(find(&buffer, "now 40×10").is_some());
@@ -280,10 +280,10 @@ fn every_screen_fits_the_minimum_terminal() {
         Screen::Replay,
     ] {
         let buffer = render(&fixture, screen, 60, 18);
-        assert!(find(&buffer, "oxytype").is_some());
+        assert!(find(&buffer, "caret").is_some());
     }
     let buffer = render(&fixture, Screen::Test, 60, 18);
-    if std::env::var("OXYTYPE_UI_DUMP").is_ok() {
+    if std::env::var("CARET_UI_DUMP").is_ok() {
         println!("{}", text(&buffer));
     }
     assert!(find(&buffer, "words").is_some());
@@ -295,7 +295,7 @@ fn every_screen_fits_the_minimum_terminal() {
             .unwrap();
     }
     let buffer = render(&fixture, Screen::Test, 60, 18);
-    if std::env::var("OXYTYPE_UI_DUMP").is_ok() {
+    if std::env::var("CARET_UI_DUMP").is_ok() {
         println!("{}", text(&buffer));
     }
     assert!(find(&buffer, "wpm").is_some());

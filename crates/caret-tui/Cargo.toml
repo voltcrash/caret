@@ -1,14 +1,14 @@
 [package]
-name = "oxytype-tui"
+name = "caret-tui"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "Offline Oxytype terminal client using the shared Rust typing engine"
+description = "Offline Caret terminal client using the shared Rust typing engine"
 
 [[bin]]
-name = "oxytype"
+name = "caret"
 path = "src/main.rs"
 
 [dependencies]

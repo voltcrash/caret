@@ -23,6 +23,6 @@ pub fn version() -> String {
         env!("CARGO_PKG_VERSION"),
         typing_engine::BEHAVIOR_VERSION,
         typing_engine::EVENT_LOG_VERSION,
-        env!("OXYTYPE_BUILD_REV")
+        env!("CARET_BUILD_REV")
     )
 }

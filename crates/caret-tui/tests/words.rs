@@ -1,4 +1,4 @@
-use oxytype_tui::{
+use caret_tui::{
     theme::Palette,
     words::{Letter, Stream, letters, view},
 };

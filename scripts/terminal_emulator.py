@@ -99,7 +99,7 @@ def record(binary, profile, keyboard):
 
 def check(args):
     # Own the entire X server: no user windows, focus or keyboard map is touched.
-    with tempfile.TemporaryDirectory(prefix="oxytype-xserver-") as temporary:
+    with tempfile.TemporaryDirectory(prefix="caret-xserver-") as temporary:
         reader,writer=os.pipe()
         with (pathlib.Path(temporary) / "xserver.log").open("w") as log:
             server=subprocess.Popen([args.xvfb,"-displayfd",str(writer),"-noreset","-screen","0","1280x800x24","-nolisten","tcp"],
@@ -146,9 +146,9 @@ def exercise(args):
     output=pathlib.Path(args.evidence).resolve() if args.evidence else None
     if output: output.mkdir(parents=True,exist_ok=True)
     for keyboard in ("auto","basic"):
-        with tempfile.TemporaryDirectory(prefix="oxytype-emulator-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="caret-emulator-") as temporary:
             profile=pathlib.Path(temporary)
-            title="oxytype-check-"+profile.name
+            title="caret-check-"+profile.name
             child=[sys.executable,str(pathlib.Path(__file__).resolve()),"--record",binary,str(profile),keyboard]
             if args.emulator=="kitty":
                 command=[emulator,"--config","NONE","--override","linux_display_server=x11",
@@ -308,7 +308,7 @@ if __name__=="__main__":
         parser=argparse.ArgumentParser(description=__doc__)
         parser.add_argument("--emulator",choices=["kitty","alacritty","ghostty"],required=True)
         parser.add_argument("--command",required=True)
-        parser.add_argument("--binary",default="target/debug/oxytype")
+        parser.add_argument("--binary",default="target/debug/caret")
         parser.add_argument("--xdotool",default="xdotool")
         parser.add_argument("--xvfb",default="Xvfb")
         parser.add_argument("--evidence")

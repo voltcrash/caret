@@ -1,11 +1,11 @@
 use clap::Parser;
 use crossterm::event::{self, Event, KeyCode, KeyEventKind, KeyModifiers};
-use oxytype_tui::{Result, engine::EngineHost, terminal::TerminalGuard};
-use oxytype_tui::{
+use caret_tui::{Result, engine::EngineHost, terminal::TerminalGuard};
+use caret_tui::{
     local::Local,
     storage::{Paths, Store},
 };
-use oxytype_tui::{
+use caret_tui::{
     options::Cli,
     setup::Setup,
     ui::{Screen, View, draw},
@@ -24,23 +24,23 @@ fn date() -> f64 {
 }
 fn main() {
     if let Err(error) = run() {
-        eprintln!("oxytype: {error}");
+        eprintln!("caret: {error}");
         std::process::exit(1);
     }
 }
 fn run() -> Result<()> {
     let cli = Cli::parse();
     if cli.smoke_test {
-        return oxytype_tui::engine::smoke();
+        return caret_tui::engine::smoke();
     }
     if cli.capabilities {
-        println!("{}", oxytype_tui::options::capabilities());
+        println!("{}", caret_tui::options::capabilities());
         return Ok(());
     }
     if cli.diagnostics {
         println!(
             "{}",
-            serde_json::json!({"version":oxytype_tui::version(),"os":std::env::consts::OS,"architecture":std::env::consts::ARCH,"bindingVersion":typing_engine::BINDING_VERSION,"offlinePackVersion":1,"keyboard":"Inspect F1 after terminal negotiation","physicalKeyTiming":null})
+            serde_json::json!({"version":caret_tui::version(),"os":std::env::consts::OS,"architecture":std::env::consts::ARCH,"bindingVersion":typing_engine::BINDING_VERSION,"offlinePackVersion":1,"keyboard":"Inspect F1 after terminal negotiation","physicalKeyTiming":null})
         );
         return Ok(());
     }
@@ -76,12 +76,12 @@ fn run() -> Result<()> {
     )?;
     let (guard, mut terminal) = TerminalGuard::enter(cli.keyboard != "basic")?;
     #[cfg(debug_assertions)]
-    match std::env::var("OXYTYPE_TERMINAL_TEST_FAILURE").as_deref() {
+    match std::env::var("CARET_TERMINAL_TEST_FAILURE").as_deref() {
         Ok("panic") => panic!("Injected terminal cleanup test panic"),
         Ok("error") => return Err("Injected terminal cleanup test error".into()),
         _ => {}
     }
-    let mut capabilities = oxytype_tui::input::Capabilities {
+    let mut capabilities = caret_tui::input::Capabilities {
         enhanced_keyboard_negotiated: guard.enhanced.load(Ordering::SeqCst),
         ..Default::default()
     };
@@ -91,7 +91,7 @@ fn run() -> Result<()> {
     let mut last_draw = Instant::now();
     let mut dirty = true;
     let mut caret_theme = String::new();
-    let truecolor = oxytype_tui::theme::truecolor();
+    let truecolor = caret_tui::theme::truecolor();
     loop {
         if guard.resume_if_requested(&mut terminal)? {
             capabilities.enhanced_keyboard_negotiated = guard.enhanced.load(Ordering::SeqCst);
@@ -100,8 +100,8 @@ fn run() -> Result<()> {
         }
         if caret_theme != local.preferences.theme {
             caret_theme.clone_from(&local.preferences.theme);
-            oxytype_tui::terminal::caret_color(
-                oxytype_tui::theme::Palette::named(&caret_theme).caret,
+            caret_tui::terminal::caret_color(
+                caret_tui::theme::Palette::named(&caret_theme).caret,
             )?;
         }
         let now = origin.elapsed().as_secs_f64() * 1000.0;
@@ -168,8 +168,8 @@ fn run() -> Result<()> {
             // clear queries cursor position, which basic terminals need not report.
             Event::Resize(_, _) => {}
             Event::Paste(text) if screen == Screen::Editor => {
-                let text = oxytype_tui::content::line_endings(&text);
-                match oxytype_tui::content::safe_text(&text) {
+                let text = caret_tui::content::line_endings(&text);
+                match caret_tui::content::safe_text(&text) {
                     Ok(()) if setup.text.len() + text.len() <= 8 * 1024 * 1024 => {
                         setup.text.push_str(&text)
                     }
@@ -236,7 +236,7 @@ fn run() -> Result<()> {
                         }
                     }
                     KeyCode::Backspace if screen == Screen::Editor => {
-                        oxytype_tui::input::pop_grapheme(&mut setup.text);
+                        caret_tui::input::pop_grapheme(&mut setup.text);
                     }
                     KeyCode::Enter if screen == Screen::Editor => setup.text.push('\n'),
                     KeyCode::Tab if screen == Screen::Editor => setup.text.push('\t'),
@@ -274,7 +274,7 @@ fn run() -> Result<()> {
                     }
                     KeyCode::F(8) if screen == Screen::History => {
                         if let Some(record) = local.history.current() {
-                            match oxytype_tui::replay::Replay::new(record) {
+                            match caret_tui::replay::Replay::new(record) {
                                 Ok(replay) => {
                                     local.replay = Some(replay);
                                     screen = Screen::Replay;
@@ -359,7 +359,7 @@ fn run() -> Result<()> {
                     _ if screen == Screen::Test && !host.state().ended => {
                         let (columns, rows) = crossterm::terminal::size()?;
                         if columns >= 60 && rows >= 18 {
-                            oxytype_tui::input::apply(&mut host, key, now, date())?;
+                            caret_tui::input::apply(&mut host, key, now, date())?;
                         }
                     }
                     _ => {}

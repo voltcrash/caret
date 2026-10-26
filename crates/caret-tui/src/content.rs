@@ -81,7 +81,7 @@ impl OfflineContent {
         Self::convert(
             serde_json::from_str(include_str!("../assets/english.json"))?,
             serde_json::from_str(include_str!("../assets/quotes.json"))?,
-            "Oxytype / Monkeytype English words; original Oxytype prose; GPL-3.0-only".into(),
+            "Caret / Monkeytype English words; original Caret prose; GPL-3.0-only".into(),
         )
     }
     pub fn load(path: &Path) -> Result<Self> {

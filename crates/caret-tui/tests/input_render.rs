@@ -1,5 +1,5 @@
 use crossterm::event::{KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
-use oxytype_tui::{
+use caret_tui::{
     content::OfflineContent,
     engine::EngineHost,
     input::{self, Capabilities},

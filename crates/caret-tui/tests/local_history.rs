@@ -1,4 +1,4 @@
-use oxytype_tui::{
+use caret_tui::{
     content::OfflineContent,
     engine::EngineHost,
     input::Capabilities,
@@ -68,9 +68,9 @@ fn failed_write_queue_retries_the_same_uuid_once_and_history_filters_page() {
 fn replay_requires_opt_in_and_compatible_versions_and_uses_native_steps_and_seek() {
     let host = finished();
     let cap = Capabilities::default();
-    let summary_only = oxytype_tui::storage::record(&host, &cap, false, 10000.0).unwrap();
+    let summary_only = caret_tui::storage::record(&host, &cap, false, 10000.0).unwrap();
     assert!(Replay::new(&summary_only).is_err());
-    let record = oxytype_tui::storage::record(&host, &cap, true, 10000.0).unwrap();
+    let record = caret_tui::storage::record(&host, &cap, true, 10000.0).unwrap();
     let mut replay = Replay::new(&record).unwrap();
     let mut steps = 0;
     while replay.frame.next_time.is_some() {

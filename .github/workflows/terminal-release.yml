@@ -5,7 +5,7 @@ on:
     branches: [main, "stack/**", "t3/rust-engine-migration"]
     paths:
       - "crates/typing-engine/**"
-      - "crates/oxytype-tui/**"
+      - "crates/caret-tui/**"
       - "Cargo.*"
       - "rust-toolchain.toml"
       - ".cargo/**"
@@ -29,7 +29,7 @@ concurrency:
   cancel-in-progress: ${{ github.ref_type != 'tag' }}
 
 env:
-  OXYTYPE_BUILD_REV: ${{ github.sha }}
+  CARET_BUILD_REV: ${{ github.sha }}
   CARGO_TERM_COLOR: always
 
 jobs:
@@ -66,7 +66,7 @@ jobs:
       - name: Archive portability regressions
         run: vp run terminal:test:release-tools
       - name: Native lint
-        run: vp exec cargo clippy --locked -p typing-engine -p oxytype-tui --all-targets -- -D warnings
+        run: vp exec cargo clippy --locked -p typing-engine -p caret-tui --all-targets -- -D warnings
       - name: Shared engine fixtures
         run: vp exec cargo test --locked -p typing-engine
       - name: Native terminal input and durable history
@@ -151,7 +151,7 @@ jobs:
 
   publish:
     name: authorized tagged release
-    if: github.event_name == 'push' && github.ref_type == 'tag' && github.repository == 'voltcrash/oxytype'
+    if: github.event_name == 'push' && github.ref_type == 'tag' && github.repository == 'voltcrash/caret'
     needs: [binaries, emulators, source]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -177,4 +177,4 @@ jobs:
       - name: Publish the explicitly pushed terminal tag
         env:
           GH_TOKEN: ${{ github.token }}
-        run: vp exec gh release create "$GITHUB_REF_NAME" release/*.tar.gz release/SHA256SUMS --verify-tag --title "Oxytype terminal ${GITHUB_REF_NAME#terminal-v}" --notes-file docs/rust-engine/terminal-release-notes.md
+        run: vp exec gh release create "$GITHUB_REF_NAME" release/*.tar.gz release/SHA256SUMS --verify-tag --title "Caret terminal ${GITHUB_REF_NAME#terminal-v}" --notes-file docs/rust-engine/terminal-release-notes.md

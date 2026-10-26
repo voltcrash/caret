@@ -341,8 +341,8 @@ it("installs Chromium before frontend tests and preserves browser failure eviden
 
 // Native UI changes belong to the separate terminal matrix, not web deployments.
 it.each([
-  "crates/oxytype-tui/src/main.rs",
-  "crates/oxytype-tui/tests/storage.rs",
+  "crates/caret-tui/src/main.rs",
+  "crates/caret-tui/tests/storage.rs",
   "scripts/terminal_release.py",
   ".github/workflows/terminal-release.yml",
 ])("keeps terminal-only %s independent from web consumers", (file) => {

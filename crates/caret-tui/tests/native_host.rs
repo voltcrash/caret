@@ -1,4 +1,4 @@
-use oxytype_tui::engine::EngineHost;
+use caret_tui::engine::EngineHost;
 use typing_engine::{Config, Text, generation::Language};
 
 #[test]

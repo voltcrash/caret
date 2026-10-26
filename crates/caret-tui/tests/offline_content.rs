@@ -1,5 +1,5 @@
 use clap::Parser;
-use oxytype_tui::{
+use caret_tui::{
     content::OfflineContent,
     engine::EngineHost,
     options::{Cli, FUNBOXES, custom_text},
@@ -102,7 +102,7 @@ fn all_bundled_quote_groups_and_advertised_transforms_prepare() {
 }
 #[test]
 fn cli_uses_core_defaults_and_rejects_unavailable_features() {
-    let (config, _, _) = Cli::parse_from(["oxytype"])
+    let (config, _, _) = Cli::parse_from(["caret"])
         .prepare(Config::default())
         .unwrap();
     assert_eq!(
@@ -110,17 +110,17 @@ fn cli_uses_core_defaults_and_rejects_unavailable_features() {
         serde_json::to_value(Config::default()).unwrap()
     );
     for args in [
-        vec!["oxytype", "--language", "missing"],
-        vec!["oxytype", "--mode", "custom"],
-        vec!["oxytype", "--funbox", "tts"],
-        vec!["oxytype", "--time", "NaN"],
-        vec!["oxytype", "--quote-length", "-2"],
+        vec!["caret", "--language", "missing"],
+        vec!["caret", "--mode", "custom"],
+        vec!["caret", "--funbox", "tts"],
+        vec!["caret", "--time", "NaN"],
+        vec!["caret", "--quote-length", "-2"],
     ] {
         let parsed = Cli::try_parse_from(args);
         assert!(parsed.is_err() || parsed.unwrap().prepare(Config::default()).is_err());
     }
     let (config, _, custom) = Cli::parse_from([
-        "oxytype",
+        "caret",
         "--text",
         "one two",
         "--custom-order",
@@ -158,7 +158,7 @@ fn local_pack_validation_is_lossless_utf16_and_bounded() {
 #[test]
 fn custom_crlf_newline_tab_and_non_bmp_text_remain_typable() {
     let custom =
-        oxytype_tui::options::custom_text_auto("one\r\n\t界😀", "repeat", "word", None).unwrap();
+        caret_tui::options::custom_text_auto("one\r\n\t界😀", "repeat", "word", None).unwrap();
     let mut host = EngineHost::offline(
         Config {
             mode: "custom".into(),
@@ -180,7 +180,7 @@ fn custom_crlf_newline_tab_and_non_bmp_text_remain_typable() {
 
 #[test]
 fn default_custom_uses_the_whole_passage_and_explicit_zero_stays_infinite() {
-    let (config, content, custom) = Cli::parse_from(["oxytype", "--text", "one two three"])
+    let (config, content, custom) = Cli::parse_from(["caret", "--text", "one two three"])
         .prepare(Config::default())
         .unwrap();
     assert_eq!(custom.as_ref().unwrap().limit.value, 3.0);
@@ -191,7 +191,7 @@ fn default_custom_uses_the_whole_passage_and_explicit_zero_stays_infinite() {
             .len(),
         3
     );
-    let (_, _, custom) = Cli::parse_from(["oxytype", "--text", "one two", "--custom-length", "0"])
+    let (_, _, custom) = Cli::parse_from(["caret", "--text", "one two", "--custom-length", "0"])
         .prepare(Config::default())
         .unwrap();
     assert_eq!(custom.unwrap().limit.value, 0.0);
@@ -199,7 +199,7 @@ fn default_custom_uses_the_whole_passage_and_explicit_zero_stays_infinite() {
 
 #[test]
 fn plain_text_separators_and_bom_do_not_truncate_non_bmp_units() {
-    let custom = oxytype_tui::options::custom_text_auto(
+    let custom = caret_tui::options::custom_text_auto(
         "\u{feff}one\u{a0}two\u{200b}\u{12000}",
         "repeat",
         "word",

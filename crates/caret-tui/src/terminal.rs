@@ -76,12 +76,12 @@ impl TerminalGuard {
     pub fn enter(auto_keyboard: bool) -> Result<(Self, DefaultTerminal)> {
         if !io::stdin().is_terminal() || !io::stdout().is_terminal() {
             return Err(
-                "Oxytype requires an interactive terminal; use --help or --smoke-test without one"
+                "Caret requires an interactive terminal; use --help or --smoke-test without one"
                     .into(),
             );
         }
         if std::env::var("TERM").is_ok_and(|term| term == "dumb") {
-            return Err("TERM=dumb cannot render Oxytype".into());
+            return Err("TERM=dumb cannot render Caret".into());
         }
         let enhanced = Arc::new(AtomicBool::new(false));
         let cleanup_enhanced = enhanced.clone();
