@@ -27,6 +27,10 @@ const presets = [
   ["time", "30"],
   ["time", "60"],
   ["time", "120"],
+  ["words", "10"],
+  ["words", "25"],
+  ["words", "50"],
+  ["words", "100"],
 ] as const;
 
 function result(mode: "time" | "words", mode2: string): CompletedEvent {
