@@ -1,9 +1,24 @@
 name: Set up Rust typing engine
 description: Bootstrap pinned Rust, Wasm target/tooling and ignored browser bindings.
+
+inputs:
+  rust:
+    description: Restore the Rust build cache even when the bindings are cached, for jobs that run cargo themselves.
+    default: "false"
+
 runs:
   using: composite
   steps:
+    # The builder re-verifies this against its own fingerprint, so a stale
+    # restore only costs a rebuild. A hit skips the toolchain, cargo and wasm-opt.
+    - name: Restore generated bindings
+      id: bindings
+      uses: actions/cache@v6.1.0
+      with:
+        path: packages/typing-engine/generated
+        key: engine-bindings-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Cargo.toml', 'Cargo.lock', 'rust-toolchain.toml', 'package.json', 'scripts/engine.ts', '.cargo/**', 'crates/typing-engine/Cargo.toml', 'crates/typing-engine/build.rs', 'crates/typing-engine/src/**', 'crates/typing-engine/data/**', 'crates/typing-engine-wasm/**', 'crates/typing-audit-wasm/**') }}
     - name: Restore Rust build cache
+      if: steps.bindings.outputs.cache-hit != 'true' || inputs.rust == 'true'
       uses: actions/cache@v6.1.0
       with:
         path: |

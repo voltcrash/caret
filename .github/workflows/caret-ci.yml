@@ -201,10 +201,11 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: ./.github/actions/setup
+        with:
+          rust: "true"
       - name: Native formatting, lint and parity
         run: vp run engine:fmt && vp run engine:lint && vp run engine:test
-      - name: Install Chromium
-        run: vp -C frontend exec playwright install --with-deps --only-shell chromium
+      - uses: ./.github/actions/setup-chromium
       - name: Browser Wasm parity
         run: vp run engine:test:wasm
 
@@ -230,6 +231,27 @@ jobs:
       - name: Find unused code and dependencies
         if: needs.changes.outputs.code == 'true'
         run: vp run knip
+
+      # Each asset check takes a few seconds, so run them all whenever assets change.
+      - name: Lint styles
+        if: needs.changes.outputs.assets == 'true'
+        run: vp run lint-styles
+
+      - name: Lint JSON
+        if: needs.changes.outputs.assets == 'true'
+        run: vp run check-assets-json
+
+      - name: Validate language assets
+        if: needs.changes.outputs.assets == 'true'
+        run: vp run check-assets-languages
+
+      - name: Validate quote assets
+        if: needs.changes.outputs.assets == 'true'
+        run: vp run check-assets-quotes
+
+      - name: Validate other assets
+        if: needs.changes.outputs.assets == 'true'
+        run: vp run check-assets-others
 
   ci-be:
     name: ci-be
@@ -282,8 +304,7 @@ jobs:
       - name: Set up Vite+ and install dependencies
         uses: ./.github/actions/setup
 
-      - name: Install Chromium for frontend component tests
-        run: vp -C frontend exec playwright install --with-deps --only-shell chromium
+      - uses: ./.github/actions/setup-chromium
 
       - name: Test
         working-directory: frontend
@@ -376,8 +397,7 @@ jobs:
           path: frontend/dist/start
 
       # Suites run headless, so the small headless shell is enough.
-      - name: Install Chromium and its system dependencies
-        run: vp -C frontend exec playwright install --with-deps --only-shell chromium
+      - uses: ./.github/actions/setup-chromium
 
       # Each shard serves its own fixture Worker, so shards share no state.
       - name: Production-Worker browser checks
@@ -405,8 +425,7 @@ jobs:
       - name: Set up Vite+ and install dependencies
         uses: ./.github/actions/setup
 
-      - name: Install Chromium and its system dependencies
-        run: vp -C frontend exec playwright install --with-deps --only-shell chromium
+      - uses: ./.github/actions/setup-chromium
 
       - name: Multi-build service worker, real save and rollback checks
         run: vp run --filter @caret/frontend test:updates
@@ -440,34 +459,6 @@ jobs:
           CARET_DEPLOY_ENV: production
           CARET_BUILD_ID: ci-${{ github.sha }}
         run: vp run --filter @caret/frontend build:start && vp run --filter @caret/frontend dry-run:start
-
-  ci-assets:
-    name: ci-assets
-    needs: [changes]
-    if: needs.changes.outputs.assets == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v7.0.1
-
-      - name: Set up Vite+ and install dependencies
-        uses: ./.github/actions/setup
-
-      # Each check takes a few seconds, so run them all whenever assets change.
-      - name: Lint styles
-        run: vp run lint-styles
-
-      - name: Lint JSON
-        run: vp run check-assets-json
-
-      - name: Validate language assets
-        run: vp run check-assets-languages
-
-      - name: Validate quote assets
-        run: vp run check-assets-quotes
-
-      - name: Validate other assets
-        run: vp run check-assets-others
 
   ci-pkg:
     name: ci-pkg
@@ -512,7 +503,6 @@ jobs:
         start-browser,
         start-updates,
         start-delivery,
-        ci-assets,
         ci-pkg,
         engine,
       ]

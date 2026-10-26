@@ -4,13 +4,15 @@ No terminal release has been published by this migration. Candidate archives and
 their build/smoke evidence must pass review before a maintainer creates a release
 tag. Website production authorization/workflow remains separate.
 
-`terminal-release.yml` builds/test/smokes four native candidates on PRs touching
-native/core/build inputs. It does not run for unrelated website edits. Each job
-uses pinned Rust 1.99.1, the lockfile, vp tasks and a native runner. Core fixtures,
-Clippy and terminal tests run before release compilation. Every native job also
-tests debug lifecycle and extracted release binaries in a real PTY. Separate
-Linux emulator jobs exercise Kitty and Alacritty through actual XTest events in
-private Xvfb displays, retaining exact versions and input/output/cleanup evidence.
+`terminal-release.yml` runs when native/core/build inputs change. It does not run
+for unrelated website edits. Pull requests run one Linux x64 job; main pushes,
+tags and manual runs build/test/smoke all four native candidates plus
+corresponding source. Each job uses pinned Rust 1.99.1, the lockfile, vp tasks
+and a native runner. Core fixtures, Clippy and terminal tests run before release
+compilation. Every native job also tests the debug lifecycle in a real PTY, and
+outside pull requests the extracted release binary too. The Linux x64 job also
+exercises Kitty and Alacritty through actual XTest events in private Xvfb
+displays, retaining exact versions and input/output/cleanup evidence.
 
 | Candidate target | Runner / conservative requirements | Build/smoke status |
 | --- | --- | --- |
@@ -36,10 +38,11 @@ is archived unchanged for provenance and is not the supported target list.
 
 Do not claim lower OS/libc versions or untested terminals supported. Runner labels
 were checked against [GitHub's runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners).
-Linux emulator checks plus four native/archive jobs govern merge readiness.
+The Linux x64 job (with both emulators) governs merge readiness; the full
+matrix on main and tags catches macOS/ARM and archive regressions before release.
 The owner will perform [macOS manual verification](terminal-macos-check.md) after
 merge; that remains the sole manual publication record in terminal-verification.json.
-Linux automated emulator jobs replace the former external-contributor requirement.
+Linux automated emulator checks replace the former external-contributor requirement.
 Unperformed physical IME/font checks remain explicit. This does not block PR
 review/merge under the owner's revised scope; publication remains a separate gate.
 

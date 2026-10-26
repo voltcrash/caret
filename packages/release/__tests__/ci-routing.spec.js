@@ -324,13 +324,12 @@ it("builds the production Worker once and shares it with SSR and browser shards"
 
 it("installs Chromium before frontend tests and preserves browser failure evidence", () => {
   const job = workflow.jobs["ci-fe-test"];
-  const install = job.steps.findIndex((step) =>
-    step.run?.includes("playwright install"),
+  const install = job.steps.findIndex(
+    (step) => step.uses === "./.github/actions/setup-chromium",
   );
   const test = job.steps.findIndex((step) => step.name === "Test");
   expect(install).toBeGreaterThan(0);
   expect(install).toBeLessThan(test);
-  expect(job.steps[install].run).toContain("--with-deps --only-shell chromium");
   const evidence = job.steps.find(
     (step) => step.name === "Upload frontend browser failure evidence",
   );

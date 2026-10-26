@@ -144,7 +144,7 @@ def source():
 def gate():
     matrix=json.loads((ROOT / "docs/rust-engine/terminal-verification.json").read_text())
     if matrix.get("formatVersion")!=1 or set(matrix.get("manualTerminals",{}))!={"macOS"}:
-        raise RuntimeError("Release verification requires the current macOS manual record; Linux emulator CI is a separate required job")
+        raise RuntimeError("Release verification requires the current macOS manual record; Linux emulator CI runs in the Linux x64 native job")
     pending=[name for name,record in matrix["manualTerminals"].items() if record.get("status")!="pass" or not isinstance(record.get("evidence"),str) or not record["evidence"].strip()]
     if pending: raise RuntimeError("Release manual terminal gate pending: "+", ".join(pending))
 

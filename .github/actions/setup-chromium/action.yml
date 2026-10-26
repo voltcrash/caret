@@ -1,0 +1,38 @@
+name: Set up Chromium
+description: Install Playwright's headless Chromium shell and its system libraries from caches.
+
+runs:
+  using: composite
+  steps:
+    - name: Read Playwright version
+      id: version
+      shell: bash
+      run: echo "playwright=$(vp -C frontend exec playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+
+    - name: Check system libraries
+      id: deps
+      shell: bash
+      # The runner image usually ships them; apt then only runs for what is missing.
+      run: |
+        if vp -C frontend exec playwright install-deps --dry-run chromium-headless-shell; then
+          echo "missing=false" >> "$GITHUB_OUTPUT"
+        else
+          echo "missing=true" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Install system libraries
+      if: steps.deps.outputs.missing == 'true'
+      uses: ./.github/actions/apt-install
+      with:
+        name: chromium-${{ steps.version.outputs.playwright }}
+        command: vp -C frontend exec playwright install-deps chromium-headless-shell
+
+    - name: Restore Chromium
+      uses: actions/cache@v6.1.0
+      with:
+        path: ~/.cache/ms-playwright
+        key: playwright-${{ runner.os }}-${{ runner.arch }}-${{ steps.version.outputs.playwright }}
+
+    - name: Install Chromium
+      shell: bash
+      run: vp -C frontend exec playwright install --only-shell chromium
