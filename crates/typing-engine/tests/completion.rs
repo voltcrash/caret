@@ -154,6 +154,12 @@ fn completion_blocks_new_observations_but_preserves_outstanding_key_releases() {
             json!({"op":"observe","eventType":"keydown","eventData":{"code":"KeyB"},"now":14990}),
         )
         .unwrap();
+        // Leave another hold unreleased to exercise estimated cleanup.
+        command(
+            &mut session,
+            json!({"op":"observe","eventType":"keydown","eventData":{"code":"KeyC"},"now":14995}),
+        )
+        .unwrap();
         command(&mut session, json!({"op":"advance","now":15010})).unwrap();
         // A duplicate must not synthesize a release or replace the held key.
         let ignored = command(
@@ -175,6 +181,6 @@ fn completion_blocks_new_observations_but_preserves_outstanding_key_releases() {
         let finished = session.log();
         let log = serde_json::from_value(finished.clone()).unwrap();
         let summary = typing_engine::stats::typed_summary(&log).unwrap();
-        assert_eq!(summary.key_duration, vec![40.0]);
+        assert_eq!(summary.key_duration, vec![40.0, 40.0]);
     }
 }
