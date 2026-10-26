@@ -15,7 +15,10 @@ import { getDefaultConfig } from "../../../src/ts/constants/default-config";
 import {
   getResultFailure,
   getKeyDataFailure,
+  verifyEventLog,
 } from "../../../../backend/src/anticheat";
+import { toWebLog } from "@oxytype/typing-engine/text";
+import { encodeEventLog } from "../../../src/features/typing/runtime/event-log-transport";
 
 function completedResult(
   session: BrowserSession,
@@ -218,6 +221,9 @@ it.each([1000, 3_600_000, 86_400_000])(
       expect(getResultFailure(result)).toBeUndefined();
       expect(getKeyDataFailure(result)).toBeUndefined();
       expect(log).toEqual(finished);
+      const encoded = await encodeEventLog(toWebLog(log), result);
+      if (encoded === undefined) throw new Error("Missing encoded event log");
+      expect(verifyEventLog(result, encoded)).toEqual({ kind: "verified" });
     } finally {
       session.dispose();
     }
