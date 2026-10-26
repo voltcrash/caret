@@ -1,8 +1,4 @@
-import {
-  FunboxMetadata,
-  getFunboxObject,
-  FunboxProperty,
-} from "@caret/funbox";
+import { FunboxMetadata, getFunboxObject, FunboxProperty } from "@caret/funbox";
 
 import { FunboxFunctions, getFunboxFunctions } from "./funbox-functions";
 import { FunboxName } from "@caret/schemas/configs";

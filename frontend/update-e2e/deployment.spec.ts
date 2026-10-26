@@ -168,10 +168,7 @@ test("a new build and rollback wait for idle and refresh the complete offline sh
   await controlled(page);
   await cachedEngine(page, "update-b");
   expect(await page.evaluate(async () => await caches.keys())).toEqual(
-    expect.arrayContaining([
-      "caret-start-update-a",
-      "caret-start-update-b",
-    ]),
+    expect.arrayContaining(["caret-start-update-a", "caret-start-update-b"]),
   );
 
   // Rollback swaps the same complete server/client artifact, with the same

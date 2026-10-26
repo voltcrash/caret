@@ -1,8 +1,4 @@
-import type {
-  Mode,
-  PersonalBest,
-  PersonalBests,
-} from "@caret/schemas/shared";
+import type { Mode, PersonalBest, PersonalBests } from "@caret/schemas/shared";
 
 export function emptyPersonalBests(): PersonalBests {
   return { time: {}, words: {}, quote: {}, zen: {}, custom: {} };

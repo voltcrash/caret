@@ -203,9 +203,7 @@ test.describe("numeric textbox controls", () => {
           )
           .toBe(nextValue);
       }
-      await page
-        .getByRole("link", { name: "Caret Home", exact: true })
-        .click();
+      await page.getByRole("link", { name: "Caret Home", exact: true }).click();
       await expect(page.locator("#words .word").first()).toBeVisible();
     });
   }
@@ -257,9 +255,7 @@ test.describe("numeric textbox controls", () => {
       expect(saved).toBe(config[key]);
       await input.fill(String(valid));
       await input.press("Tab");
-      await page
-        .getByRole("link", { name: "Caret Home", exact: true })
-        .click();
+      await page.getByRole("link", { name: "Caret Home", exact: true }).click();
       await expect(page.locator("#words .word").first()).toBeVisible();
     });
   }

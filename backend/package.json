@@ -50,12 +50,12 @@
   "dependencies": {
     "@better-auth/drizzle-adapter": "1.7.12",
     "@better-auth/infra": "0.4.22",
-    "@date-fns/utc": "2.1.1",
     "@caret/contracts": "workspace:*",
     "@caret/funbox": "workspace:*",
     "@caret/schemas": "workspace:*",
     "@caret/typing-engine": "workspace:*",
     "@caret/util": "workspace:*",
+    "@date-fns/utc": "2.1.1",
     "@ts-rest/core": "3.52.1",
     "@ts-rest/open-api": "3.52.1",
     "better-auth": "1.7.12",
@@ -66,9 +66,9 @@
     "zod": "4.6.7"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "5.20261023.1",
     "@caret/oxlint-config": "workspace:*",
     "@caret/typescript-config": "workspace:*",
+    "@cloudflare/workers-types": "5.20261023.1",
     "@types/node": "24.19.2",
     "@types/object-hash": "3.0.6",
     "@types/qs": "6.15.1",

@@ -7,10 +7,7 @@ import {
   MonkeyResponseSchema,
   responseWithData,
 } from "./util/api";
-import {
-  EditPresetRequestSchema,
-  PresetSchema,
-} from "@caret/schemas/presets";
+import { EditPresetRequestSchema, PresetSchema } from "@caret/schemas/presets";
 import { IdSchema } from "@caret/schemas/util";
 
 export const GetPresetResponseSchema = responseWithData(z.array(PresetSchema));

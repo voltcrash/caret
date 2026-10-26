@@ -3,10 +3,7 @@ import {
   EngineFailure,
   encodeText,
 } from "@caret/typing-engine/browser.client";
-import type {
-  Command,
-  LiveMetrics,
-} from "@caret/typing-engine/browser.client";
+import type { Command, LiveMetrics } from "@caret/typing-engine/browser.client";
 
 export type LifecycleProof = {
   initializationMs: number;

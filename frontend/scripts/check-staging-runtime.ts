@@ -102,8 +102,7 @@ async function main(): Promise<void> {
     body: "{}",
   });
   requireCheck(
-    crossSite.status === 403 &&
-      !crossSite.headers.has("X-Caret-Stale-Client"),
+    crossSite.status === 403 && !crossSite.headers.has("X-Caret-Stale-Client"),
     "Direct function CSRF failed",
   );
   await crossSite.text();

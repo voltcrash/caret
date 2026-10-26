@@ -87,9 +87,7 @@ it("fails closed for a missing dependency and for non-public history entries", a
 });
 
 it("retains previous files in the artifact and rejects conflicting content-addressed URLs", async () => {
-  const directory = await mkdtemp(
-    resolve(tmpdir(), "caret-previous-assets-"),
-  );
+  const directory = await mkdtemp(resolve(tmpdir(), "caret-previous-assets-"));
   try {
     await mkdir(resolve(directory, "assets"));
     await writeFile(resolve(directory, "assets/new-anyhash.js"), "new build");

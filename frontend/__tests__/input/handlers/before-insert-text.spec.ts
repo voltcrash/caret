@@ -39,9 +39,8 @@ const native = vi.hoisted(() => ({
 vi.mock("../../../src/features/typing/runtime/session.client", () => ({
   getEngineSession: () => ({
     isPrepared: () => native.session !== undefined,
-    command: (
-      command: import("@caret/typing-engine/browser.client").Command,
-    ) => native.session?.command(command),
+    command: (command: import("@caret/typing-engine/browser.client").Command) =>
+      native.session?.command(command),
     preflight: (
       data: string,
       layout: import("@caret/typing-engine/browser.client").InsertionLayout,

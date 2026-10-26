@@ -1,10 +1,7 @@
 import { initContract } from "@ts-rest/core";
 import { z } from "zod";
 import { CommonResponses, meta, responseWithData } from "./util/api";
-import {
-  SpeedHistogramSchema,
-  TypingStatsSchema,
-} from "@caret/schemas/public";
+import { SpeedHistogramSchema, TypingStatsSchema } from "@caret/schemas/public";
 import {
   ClientQuerySchema,
   ClientSchema,

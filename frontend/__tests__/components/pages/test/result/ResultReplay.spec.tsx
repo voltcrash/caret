@@ -32,10 +32,7 @@ vi.mock("../../../../../src/ts/controllers/sound-controller", () => ({
   playError: vi.fn(),
 }));
 import "../../../../__harness__/native-engine";
-import {
-  analyzeLog,
-  BrowserReplay,
-} from "@caret/typing-engine/browser.client";
+import { analyzeLog, BrowserReplay } from "@caret/typing-engine/browser.client";
 import { toEngineLog } from "@caret/typing-engine/text";
 function log(): EventLog {
   return {

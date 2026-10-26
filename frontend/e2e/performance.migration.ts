@@ -72,8 +72,7 @@ test("cold startup across CPU, viewport and network conditions", async ({
               entry.name.endsWith(".js"),
             ) as PerformanceResourceTiming[];
           return {
-            readyMs:
-              performance.getEntriesByName("caret-ready")[0]?.startTime,
+            readyMs: performance.getEntriesByName("caret-ready")[0]?.startTime,
             jsRequests: scripts.length,
             jsBytes: scripts.reduce(
               (total, entry) => total + entry.decodedBodySize,

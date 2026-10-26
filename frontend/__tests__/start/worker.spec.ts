@@ -46,11 +46,7 @@ describe("built Start application in workerd", () => {
     );
     // The Worker stores the copy in waitUntil; it may land after the response.
     let shared = await worker.fetch(url, { headers });
-    for (
-      let tries = 0;
-      shared.headers.get("x-caret-cache") === null;
-      tries++
-    ) {
+    for (let tries = 0; shared.headers.get("x-caret-cache") === null; tries++) {
       if (tries === 20) throw new Error("Public read was never cached");
       await shared.arrayBuffer();
       await new Promise((resolve) => setTimeout(resolve, 25));
