@@ -44,7 +44,7 @@ export function StaticHeader(props: { fixed: boolean }): JSXElement {
           aria-label="Oxytype Home"
           style={{ "box-sizing": "content-box" }}
         >
-          <OxytypeMark class="h-full w-6 shrink-0 fill-current text-main" />
+          <OxytypeMark class="h-full w-auto shrink-0 fill-current text-main" />
           <div class="hidden h-6 place-content-center text-[2rem] leading-0 sm:grid">
             <h1 class="-mt-[0.11em] text-text">oxytype</h1>
           </div>

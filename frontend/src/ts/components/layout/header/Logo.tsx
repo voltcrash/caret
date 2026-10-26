@@ -27,7 +27,7 @@ export function Logo(): JSXElement {
       >
         <OxytypeMark
           class={cn(
-            "h-full w-6 shrink-0 fill-current text-main transition-colors",
+            "h-full w-auto shrink-0 fill-current text-main transition-colors",
             {
               "text-text": getFocus(),
             },
