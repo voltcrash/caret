@@ -11,6 +11,8 @@ it("draws the mark as the t and reads as caret", () => {
   ));
   expect(view.getByRole("heading", { name: "caret" })).toBeInTheDocument();
   const visual = view.container.querySelector('[aria-hidden="true"]');
-  expect(visual?.textContent).toBe("care");
+  // CSS draws "care" so axe sees no partial word beside link names.
+  expect(visual?.textContent).toBe("");
+  expect(visual?.classList).toContain("before:content-['care']");
   expect(visual?.lastElementChild?.tagName.toLowerCase()).toBe("svg");
 });
