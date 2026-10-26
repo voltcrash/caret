@@ -185,6 +185,7 @@ fn completion_blocks_new_observations_but_preserves_outstanding_key_releases() {
         for (kind, data) in [
             ("keydown", json!({"code":"KeyA"})),
             ("keyup", json!({"code":"KeyA"})),
+            ("composition", json!({"event":"start"})),
         ] {
             let ignored = command(
                 &mut session,
