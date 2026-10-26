@@ -196,5 +196,7 @@ fn completion_blocks_new_observations_but_preserves_outstanding_key_releases() {
             assert!(ignored.events.is_empty());
             assert_eq!(session.log(), finished);
         }
+        command(&mut session, json!({"op":"finalize","now":16000})).unwrap();
+        assert_eq!(session.log(), finished);
     }
 }
