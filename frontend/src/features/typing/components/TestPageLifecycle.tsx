@@ -3,13 +3,8 @@ import { onCleanup, onMount } from "solid-js";
 import { getMutableConfig } from "../../../ts/config/store";
 import { isInputElementFocused } from "../../../ts/input/input-element";
 import { bindInputListenersTo } from "../../../ts/input/listeners";
-import {
-  getResultVisible,
-  isTestActive,
-  setTestFocusState,
-} from "../../../ts/states/test";
+import { getResultVisible, setTestFocusState } from "../../../ts/states/test";
 import * as Caret from "../runtime/caret";
-import { restart } from "../runtime/test-logic";
 
 export function TestPageLifecycle(props: { input: HTMLTextAreaElement }): null {
   onMount(() => {
@@ -26,14 +21,9 @@ export function TestPageLifecycle(props: { input: HTMLTextAreaElement }): null {
     };
     const windowBlur = (): void => setTestFocusState("unfocusedWindow");
     const windowFocus = (): void => {
-      if (
-        !isTestActive() &&
-        !getResultVisible() &&
-        (getMutableConfig().mode === "time" ||
-          getMutableConfig().mode === "words")
-      ) {
-        void restart({ noAnim: true });
-      }
+      // Browser focus can arrive after startup; keep the displayed wordset.
+      setTestFocusState(isInputElementFocused() ? "focused" : "unfocused");
+      if (isInputElementFocused()) Caret.show(true);
     };
     const visibilityChange = (): void => {
       if (document.visibilityState === "hidden") windowBlur();
