@@ -66,6 +66,10 @@ export function createAuth(
     secret: secret ?? "caret-local-development-secret-only",
     trustedOrigins: [new URL(frontendUrl).origin],
     socialProviders,
+    // OAuth errors without a request-scoped callback (e.g. unknown state).
+    onAPIError: {
+      errorURL: new URL("/oauth-callback.html", frontendUrl).href,
+    },
     advanced: {
       backgroundTasks: { handler: background },
       database: { generateId: () => randomUUID() },
