@@ -4,6 +4,7 @@ import type { Language } from "@caret/schemas/languages";
 import { compareTwoStrings } from "../utils/string-similarity";
 import { database, statement, encode } from "../db/client";
 import { quoteSubmissions } from "../db/schema";
+import { commitBatch } from "../db/commit";
 import { newId } from "../utils/id";
 import { envValue, runtime } from "../runtime/env";
 import { integration } from "../utils/integration";
@@ -52,7 +53,9 @@ export async function add(
   }
   const id = newId(),
     timestamp = Date.now();
-  const result = await statement(
+  const committed = await commitBatch([
+      statement("SELECT pg_advisory_xact_lock(hashtextextended(?,0))", `quote-submissions:${language}`),
+      statement(
     "INSERT INTO quote_submissions(id,language,submitted_by,timestamp,approved,data) SELECT ?,?,?,?,false,? WHERE (SELECT count(*) FROM quote_submissions WHERE language=?) < 100",
     id,
     language,
@@ -68,8 +71,10 @@ export async function add(
       approved: false,
     }),
     language,
-  ).run();
-  if (result.rowCount === 0) {
+  ),
+  ]);
+  const inserted = committed?.[1]?.rowCount ?? (await statement("SELECT id FROM quote_submissions WHERE id=?", id).first() === null ? 0 : 1);
+  if (inserted === 0) {
     throw new MonkeyError(
       409,
       "There are already 100 quotes in the queue for this language.",

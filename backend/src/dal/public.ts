@@ -13,7 +13,7 @@ export async function updateStats(
 ): Promise<boolean> {
   await stage(
     statement(
-      "INSERT INTO public_stats(id,tests_completed,tests_started,time_typing) VALUES(?,1,?,?) ON CONFLICT(id) DO UPDATE SET tests_completed=tests_completed+1,tests_started=tests_started+excluded.tests_started,time_typing=time_typing+excluded.time_typing",
+      "INSERT INTO public_stats(id,tests_completed,tests_started,time_typing) VALUES(?,1,?,?) ON CONFLICT(id) DO UPDATE SET tests_completed=public_stats.tests_completed+1,tests_started=public_stats.tests_started+excluded.tests_started,time_typing=public_stats.time_typing+excluded.time_typing",
       "stats",
       restartCount + 1,
       roundTo2(time),

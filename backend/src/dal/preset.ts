@@ -19,17 +19,12 @@ export async function addPreset(
   uid: string,
   preset: Omit<Preset, "_id">,
 ): Promise<{ presetId: string }> {
-  const id = newId();
-  const result = await statement(
-    "INSERT INTO presets(id,uid,timestamp,data) SELECT ?,?,?,? WHERE (SELECT count(*) FROM presets WHERE uid=?) < 10",
-    id,
-    uid,
-    Date.now(),
-    encode(preset),
-    uid,
-  ).run();
-  if (!result.rowCount) throw new MonkeyError(409, "Too many presets");
-  return { presetId: id };
+  return await atomicUser(uid, async () => {
+    if ((await getPresets(uid)).length >= 10) throw new MonkeyError(409, "Too many presets");
+    const id = newId();
+    await stage(statement("INSERT INTO presets(id,uid,timestamp,data) VALUES(?,?,?,?)", id, uid, Date.now(), encode(preset)));
+    return { presetId: id };
+  });
 }
 export async function editPreset(
   uid: string,

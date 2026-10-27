@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import { neon } from "@neondatabase/serverless";
 import { readMigrationFiles } from "drizzle-orm/migrator";
 import { fileURLToPath } from "node:url";
@@ -17,6 +18,10 @@ async function main(): Promise<void> {
     queries.push(sql.query('INSERT INTO drizzle.__drizzle_migrations(hash,created_at) VALUES($1,$2)', [migration.hash, migration.folderMillis]));
     await sql.transaction(queries);
   }
-  console.log("PostgreSQL migrations applied");
+  const configuration = await sql.query("SELECT id FROM configuration WHERE id='main'");
+  if (configuration.length === 0) {
+    await sql.query(await readFile(new URL("../bootstrap/production.sql", import.meta.url), "utf8"));
+  }
+  console.log("PostgreSQL migrations applied; fresh databases initialized");
 }
 void main().catch(() => { console.error("PostgreSQL migration failed; check DATABASE_URL and database access"); process.exitCode = 1; });

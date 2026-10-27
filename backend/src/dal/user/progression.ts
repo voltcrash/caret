@@ -91,7 +91,7 @@ export async function incrementTestActivity(
     days[index] = (days[index] ?? 0) + 1;
     await stage(
       statement(
-        "INSERT INTO user_activity(uid,client,day,count) VALUES(?,?,?,1) ON CONFLICT(uid,client,day) DO UPDATE SET count=count+1",
+        "INSERT INTO user_activity(uid,client,day,count) VALUES(?,?,?,1) ON CONFLICT(uid,client,day) DO UPDATE SET count=user_activity.count+1",
         user.uid,
         client,
         Math.floor(timestamp / 86400000),

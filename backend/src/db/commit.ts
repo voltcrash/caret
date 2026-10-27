@@ -11,7 +11,9 @@ export async function commitBatch(queries: PreparedQuery[]): Promise<QueryResult
   return await retryIdempotentWrite(async () => {
     try {
       const sql = runtime().sql;
-      const results = await sql.transaction(batch.map((query) => sql.query(query.sql, query.values, { types: queryTypes })));
+      const results = await sql.transaction(batch.map(
+        // oxlint-disable-next-line typescript/promise-function-async -- Neon transactions require deferred query promises, not async wrappers.
+        (query) => sql.query(query.sql, query.values, { types: queryTypes })));
       return results.slice(1).map((result) => ({ results: result.rows, rowCount: result.rowCount ?? 0 }));
     } catch (error) {
       const pg = postgresError(error);

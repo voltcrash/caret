@@ -14,7 +14,7 @@ export async function submit(
 ): Promise<void> {
   await stage(
     statement(
-      "INSERT INTO quote_ratings(id,language,quote_id,ratings,total_rating) VALUES(?,?,?,?,?) ON CONFLICT(language,quote_id) DO UPDATE SET ratings=ratings+excluded.ratings,total_rating=total_rating+excluded.total_rating",
+      "INSERT INTO quote_ratings(id,language,quote_id,ratings,total_rating) VALUES(?,?,?,?,?) ON CONFLICT(language,quote_id) DO UPDATE SET ratings=quote_ratings.ratings+excluded.ratings,total_rating=quote_ratings.total_rating+excluded.total_rating",
       newId(),
       language,
       quoteId,
