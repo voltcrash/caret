@@ -47,9 +47,9 @@ export function StaticHeader(props: { fixed: boolean }): JSXElement {
         >
           <CaretMark class="h-full w-auto shrink-0 fill-current text-main sm:hidden" />
           <div class="hidden h-6 place-content-center text-[2rem] leading-0 sm:grid">
-            <h1 class="-mt-[0.11em] text-text">
+            <div class="-mt-[0.11em] text-text">
               <CaretWordmark />
-            </h1>
+            </div>
           </div>
         </Link>
       </div>
