@@ -17,6 +17,7 @@ async function main(): Promise<void> {
     "browser-expiry",
     "browser-pending",
     "browser-dismissal",
+    "browser-verification",
     "browser-private",
     "browser-typing",
     "browser-result-persistence",
