@@ -1,2 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /_serverFn/
+
+Sitemap: https://caret.voltcrash.com/sitemap.xml
