@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "1.7.14",
-    "@better-auth/infra": "0.4.22",
+    "@better-auth/infra": "0.4.23",
     "@caret/contracts": "workspace:*",
     "@caret/funbox": "workspace:*",
     "@caret/schemas": "workspace:*",
