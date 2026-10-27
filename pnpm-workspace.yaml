@@ -82,6 +82,13 @@ minimumReleaseAgeExclude:
   - vitest@5.0.5
   - "@vitest/browser-preview@5.0.5"
   - "@tanstack/router-utils@1.162.4"
+  - "@better-auth/core@1.7.14"
+  - "@better-auth/drizzle-adapter@1.7.14"
+  - "@better-auth/kysely-adapter@1.7.14"
+  - "@better-auth/memory-adapter@1.7.14"
+  - "@better-auth/prisma-adapter@1.7.14"
+  - "@better-auth/telemetry@1.7.14"
+  - better-auth@1.7.14
 patchedDependencies:
   "@anatine/zod-openapi@1.14.2": patches/@anatine__zod-openapi@1.14.2.patch
   "@ts-rest/core@3.52.1": patches/@ts-rest__core@3.52.1.patch
