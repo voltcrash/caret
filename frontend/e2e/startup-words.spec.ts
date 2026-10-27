@@ -86,12 +86,21 @@ for (const authenticated of [false, true]) {
         const theme = await page
           .locator('[data-ui-element="themeIndicator"]')
           .boundingBox();
+        const text = await page
+          .locator('[data-ui-element="logoText"]')
+          .boundingBox();
         expect(mark).not.toBeNull();
         expect(theme).not.toBeNull();
+        // The mark leads the word instead of standing in for its "t".
+        expect(Math.abs((mark?.x ?? 0) - (text?.x ?? Infinity))).toBeLessThan(
+          1,
+        );
         expect((mark?.height ?? Infinity) / 32).toBeLessThan(0.75);
-        expect(
-          (theme?.y ?? 0) - ((mark?.y ?? 0) + (mark?.height ?? 0)),
-        ).toBeGreaterThan(4);
+        // The theme name tucks under the word without touching it.
+        const themeGap =
+          (theme?.y ?? 0) - ((mark?.y ?? 0) + (mark?.height ?? 0));
+        expect(themeGap).toBeGreaterThan(4);
+        expect(themeGap).toBeLessThan(8);
         await page.screenshot({ path: info.outputPath("startup-desktop.png") });
         await page.evaluate(() => {
           window.dispatchEvent(new Event("focus"));
