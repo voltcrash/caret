@@ -76,6 +76,18 @@ describe("Better Auth social-only HTTP flow", () => {
     expect(store["authUsers"]).toHaveLength(0);
     expect(store["authSessions"]).toHaveLength(0);
   });
+  it("sends OAuth callbacks with unknown state to the frontend error page", async () => {
+    const response = await request(
+      "/callback/github?code=test-code&state=unknown",
+    );
+    expect(response.status).toBe(302);
+    const redirect = new URL(response.headers.get("location") ?? "");
+    expect(redirect.origin + redirect.pathname).toBe(
+      "http://localhost:3000/oauth-callback.html",
+    );
+    expect(redirect.searchParams.get("error")).toBeTruthy();
+    expect(store["authSessions"]).toHaveLength(0);
+  });
   it("completes same-origin HTTPS GitHub OAuth with a secure first-party session", async () => {
     const frontendUrl = "https://staging.example";
     vi.stubEnv("MODE", "production");
