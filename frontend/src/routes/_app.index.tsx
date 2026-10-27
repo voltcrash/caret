@@ -3,11 +3,16 @@ import { createFileRoute } from "@tanstack/solid-router";
 import { englishHash } from "virtual:language-hashes";
 
 import { homeDescription, homeTitle, pageHead } from "../app/seo";
+import {
+  homeStructuredData,
+  structuredDataScript,
+} from "../app/structured-data";
 import { TypingLeaf } from "../features/typing/page";
 
 export const Route = createFileRoute("/_app/")({
   head: () => ({
     ...pageHead(homeTitle, homeDescription, "/"),
+    scripts: [structuredDataScript(homeStructuredData())],
     links: [
       ...pageHead(homeTitle, homeDescription, "/").links,
       {
