@@ -51,7 +51,7 @@ export function Logo(): JSXElement {
       </Link>
       <ThemeIndicator
         class={cn(
-          "absolute top-full right-0 mt-1 hidden transition-[color,opacity] sm:inline-flex",
+          "absolute top-full right-0 mt-2 hidden transition-[color,opacity] sm:inline-flex",
           getFocus() && "pointer-events-none opacity-0",
         )}
       />

@@ -52,6 +52,8 @@ import * as CompositionState from "../../../ts/states/composition";
 
 import { setInputElementValue } from "../../../ts/input/input-element";
 import { debounce } from "@caret/util/timing";
+import { typedKeys } from "@caret/util/objects";
+import { sharedConfigMetadata } from "@caret/web-shared/config/metadata";
 
 import { getMutableConfig } from "../../../ts/config/store";
 import { setConfig } from "../../../ts/config/setters";
@@ -314,6 +316,13 @@ const zipfCheck = createAppOwned(() => {
 
 // Time limits, timer failures and fail() all end the session first.
 export function useTestLogicEvents(): void {
+  const restartSettings = (): string =>
+    JSON.stringify(
+      typedKeys(sharedConfigMetadata)
+        .filter((key) => sharedConfigMetadata[key].changeRequiresRestart)
+        .map((key) => getMutableConfig()[key]),
+    );
+  let beforeFullConfig: string | undefined;
   onCleanup(
     getTestSession().on("finish", ({ reason }) => {
       void finish(reason !== undefined);
@@ -321,7 +330,21 @@ export function useTestLogicEvents(): void {
   );
 
   restartTestEvent.useListener((event) => void restart(event));
-  configEvent.useListener(({ key, newValue, nosave }) => {
+  configEvent.useListener(({ key, newValue, previousValue, nosave }) => {
+    // Account sync reapplies every setter, including unchanged language values.
+    // Compare the settled batch, never its temporary reset to defaults.
+    if (key === "fullConfigChange") {
+      beforeFullConfig = restartSettings();
+      return;
+    }
+    if (key === "fullConfigChangeFinished") {
+      const changed =
+        beforeFullConfig !== undefined &&
+        beforeFullConfig !== restartSettings();
+      beforeFullConfig = undefined;
+      if (changed && isTypingRouteActive()) void restart();
+      return;
+    }
     if (isTypingRouteActive()) {
       if (key === "language") {
         //automatically enable lazy mode for arabic
@@ -333,11 +356,16 @@ export function useTestLogicEvents(): void {
             nosave: true,
           });
         }
+        if (beforeFullConfig === undefined && newValue !== previousValue) {
+          void restart();
+        }
+      }
+      if (key === "difficulty" && !nosave && beforeFullConfig === undefined) {
         void restart();
       }
-      if (key === "difficulty" && !nosave) void restart();
       if (
         key === "customLayoutfluid" &&
+        beforeFullConfig === undefined &&
         getMutableConfig().funbox.includes("layoutfluid")
       ) {
         void restart();

@@ -26,7 +26,7 @@ export function CaretWordmark(props: {
       >
         <CaretMark
           class={cn(
-            "relative top-[0.2em] ml-[0.04em] h-[0.95em] w-auto shrink-0 fill-current text-main",
+            "ml-[0.04em] h-[0.65em] w-auto shrink-0 fill-current text-main",
             props.markClass,
           )}
         />
