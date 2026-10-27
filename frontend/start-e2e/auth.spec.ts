@@ -214,3 +214,49 @@ test("leaving incomplete signup cancels its session without changing the documen
     )
     .toBe("null");
 });
+
+test("signup blocks empty-token submissions when verification is unavailable", async ({
+  page,
+  context,
+}, info) => {
+  const value =
+    authCookie("browser-verification")
+      .split(";")[0]
+      ?.split("=")
+      .slice(1)
+      .join("=") ?? "";
+  await context.addCookies([
+    { name: "caret.session_token", value, url: "http://127.0.0.1:4185" },
+  ]);
+  await page.route(
+    "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit",
+    async (route) => await route.abort(),
+  );
+  let submissions = 0;
+  await page.route("**/_serverFn/**", async (route) => {
+    if (route.request().method() !== "POST") {
+      await route.continue();
+      return;
+    }
+    submissions++;
+    await route.abort();
+  });
+  await page.goto("/login");
+  const input = page.getByRole("textbox", { name: "username" });
+  const button = page.getByRole("button", { name: "continue", exact: true });
+  await input.fill("voltcrash");
+  await expect(page.getByRole("alert")).toContainText(
+    "Turnstile verification unavailable",
+  );
+  await expect(button).toBeDisabled();
+  await input.evaluate((element) =>
+    (element as HTMLInputElement).form?.requestSubmit(),
+  );
+  await expect(page.getByText("Invalid operation input")).toHaveCount(0);
+  await expect(input).toHaveValue("voltcrash");
+  expect(submissions).toBe(0);
+  await info.attach("signup-verification-unavailable", {
+    body: await page.screenshot(),
+    contentType: "image/png",
+  });
+});

@@ -10,6 +10,8 @@ import { currentApplication, requireApplication } from "../../app/application";
 import { Button } from "../../ts/components/common/Button";
 import { Fa } from "../../ts/components/common/Fa";
 import { Captcha } from "../../ts/components/ui/form/Captcha";
+import { SubmitButton } from "../../ts/components/ui/form/SubmitButton";
+import { allFieldsMandatory } from "../../ts/components/ui/form/utils";
 import { createAuthActions } from "./actions.client";
 import { sessionOptions, authRedirect } from "./session";
 
@@ -77,6 +79,7 @@ export function AuthPanel(props: { initial: SessionState; redirect?: string }) {
   };
   const form = createForm(() => ({
     defaultValues: { name: "", captcha: "" },
+    validators: { onChange: allFieldsMandatory() },
     onSubmit: async ({ value }) => {
       try {
         await perform(
@@ -248,8 +251,8 @@ export function AuthPanel(props: { initial: SessionState; redirect?: string }) {
                     disabled={busy()}
                     onClick={() => void perform(actions.cancel)}
                   />
-                  <Button
-                    type="submit"
+                  <SubmitButton
+                    form={form}
                     text="continue"
                     class="p-3"
                     disabled={busy()}
