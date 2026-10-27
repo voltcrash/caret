@@ -17,11 +17,12 @@ Use Node 24.22.1 and [Vite+](https://viteplus.dev/guide/) (`vp`) for every comma
 ```sh
 vp install
 vp exec cp frontend/.dev.vars.example frontend/.dev.vars
+# Set DATABASE_URL in frontend/.dev.vars to a development Neon branch first.
 vp run --filter @caret/frontend db:migrate
 vp run dev
 ```
 
-The TanStack Start app, its API and local D1 run at `http://localhost:3000`.
+The TanStack Start app, its API and a development Neon branch run at `http://localhost:3000`.
 
 Typing rules run in the platform-independent [Rust engine](./crates/typing-engine).
 The website loads its [Wasm SDK](./packages/typing-engine/README.md) only in the

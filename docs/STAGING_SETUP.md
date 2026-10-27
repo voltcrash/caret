@@ -21,6 +21,7 @@ Create an **Caret Staging** OAuth app in
 Save its client ID and generated client secret in `frontend/.dev.vars.staging`:
 
 ```dotenv
+DATABASE_URL=postgresql://user:password@ep-staging.neon.tech/neondb?sslmode=require
 GITHUB_CLIENT_ID=your-staging-client-id
 GITHUB_CLIENT_SECRET=your-staging-client-secret
 TURNSTILE_SECRET_KEY=your-staging-turnstile-secret
@@ -65,7 +66,8 @@ vp run --filter @caret/frontend deploy:staging-site
 Secret upload retains the existing auth secret. Build and deploy use Start's
 generated client/server artifact; the staging check rejects a production build
 or any changed file. Documents are rendered by native routes with no SPA fallback.
-D1 migrations keep their existing history; never bootstrap/reset retained data.
+Use an isolated Neon branch. PostgreSQL migrations initialize a fresh database
+and preserve configuration on later runs. D1 data is not imported or deleted.
 
 Consumer retirement requires `CLOUDFLARE_API_TOKEN` with **Queues Write**. It
 detaches only `caret-api-staging` from `caret-staging-tasks`, using the staging

@@ -10,14 +10,14 @@ and [operations](../CLOUDFLARE_OPERATIONS.md) for commands and configuration.
 ## Deployment and rollback
 
 - Build the client and Worker together, validate the artifact, dry-run, apply
-  compatible D1 migrations and deploy the matched bundle.
-- Preserve the production origin, Worker/D1 identities, auth/OAuth/Turnstile
+  compatible PostgreSQL migrations and deploy the matched bundle.
+- Preserve the production origin, Worker/PostgreSQL identities, auth/OAuth/Turnstile
   secrets, session cookie identity and compatible storage formats.
 - Before deployment, record the current Cloudflare Worker version with its
   matching assets and verify rollback availability. Dated migration anchors
   are historical evidence, not a current rollback target.
 - Roll back Worker and matching assets together. Never rebuild client assets
-  independently or restore D1 for a code-only rollback. Cloudflare version
+  independently or restore PostgreSQL for a code-only rollback. Cloudflare version
   rollback does not restore connected resources, secrets or data writes.
 - Observe input readiness, auth/session failures, save success and duplicates,
   Worker errors/CPU, scheduled work, route errors and version skew.
@@ -81,7 +81,7 @@ guide above. Rehearse on the authorized staging deployment, including stale tabs
 settings, authenticated save retry, IME, historical replay and engine download
 failure. This implementation has local workerd/matched-build update/rollback
 evidence; it does not assert hosted staging/production verification. Rollback uses
-the retained deployment artifact, without restoring D1 or rebuilding its client.
+the retained deployment artifact, without restoring PostgreSQL or rebuilding its client.
 New and old tabs keep their own engine version throughout a test. Idle update
 activation and pending-save protection are unchanged.
 

@@ -11,7 +11,7 @@ targets staging; the production release workflow uses the production config.
 | Resource | Production |
 | --- | --- |
 | Worker/custom domain | `caret` / `caret.voltcrash.com` |
-| D1 | `caret-production`, `43d104e9-2fef-43db-95d7-c64a08310714` |
+| PostgreSQL | Fresh Neon database, private DATABASE_URL |
 | Turnstile | Managed **Caret production**, hostname `caret.voltcrash.com` |
 | GitHub OAuth | **Caret**, separate from local/staging apps |
 
@@ -73,11 +73,12 @@ basic dashboard connection requires no database migration.
 
 ## First database setup
 
-On a **new, empty** production D1 only:
+Set DATABASE_URL in frontend/.dev.vars.production (and GitHub Actions secret DATABASE_URL)
+to a fresh Neon database with sslmode=require. No D1 data is imported or deleted.
+The migration command initializes fresh databases automatically:
 
 ```sh
 vp run --filter @caret/frontend db:migrate:production
-vp run --filter @caret/backend db:bootstrap:production
 ```
 
 The atomic bootstrap refuses any existing application data. It enables signup,
@@ -134,7 +135,7 @@ vp exec --filter @caret/frontend -- wrangler rollback <version-id> --config wran
 ```
 
 Confirm `/version.json` and the `X-Caret-Build` response header report the
-same build. Rollback restores no bound resources: D1 writes, queues and secrets
+same build. Rollback restores no bound resources: PostgreSQL writes, queues and secrets
 stay. Open tabs keep working: service workers for the rolled-back build install
 and wait until no tab is typing or saving; another build's server-function IDs
 answer 409 and prompt a refresh instead of resubmitting. Staging exercised
@@ -157,7 +158,7 @@ changelog, release snapshot or package-version change.
 
 The latest **Caret CI** main-push run for the exact snapshot must pass first.
 Runs are serialized; the deployment validates the matched client/Worker artifact,
-detaches the retired task consumer, applies pending compatible D1 migrations and
+detaches the retired task consumer, applies pending compatible PostgreSQL migrations and
 uploads it with Wrangler.
 
 Configure these Actions inputs in repository settings or the `production`
@@ -165,7 +166,8 @@ environment before the first run:
 
 | Type | Name | Value |
 | --- | --- | --- |
-| Secret | `CLOUDFLARE_API_TOKEN` | Cloudflare token scoped to the production account, with Worker deployment, D1 migration, queue and custom-domain access. |
+| Secret | `DATABASE_URL` | Neon PostgreSQL connection URL with sslmode=require; also uploaded as a Worker secret. |
+| Secret | `CLOUDFLARE_API_TOKEN` | Cloudflare token scoped to the production account, with Worker deployment, queue and custom-domain access. |
 | Secret | `PRODUCTION_BACKEND_ENV` | Full contents of the existing private `frontend/.dev.vars.production` file, preserving the deployed auth/OAuth/Turnstile credentials. |
 | Secret (optional) | `BETTER_AUTH_API_KEY` | Private Better Auth dashboard project key. Overrides the same key in `PRODUCTION_BACKEND_ENV`; uploaded only to the backend Worker. |
 | Variable | `PRODUCTION_FRONTEND_ENV` | Full contents of `frontend/.env.production.local`: real production site key, `BACKEND_URL=/api`, and enabled auth providers. |
@@ -193,10 +195,12 @@ GitHub, choose a username, complete Turnstile and a typing test. Refresh, then
 sign out/sign in and confirm the result remains. The popup returns to the
 standalone `/oauth-callback.html` page; frontend and API cookies share one HTTPS origin.
 
-Monitor Workers logs and D1 size/query latency. Review rejected
+Monitor Workers logs and PostgreSQL size/query latency. Review rejected
 and flagged results (`/admin/anticheat/summary`) and calibrate on captured
 typing samples before enabling automatic bans; see [anticheat](ANTICHEAT.md).
 Cron refreshes rankings and purges expired records; see [operations](CLOUDFLARE_OPERATIONS.md).
-Before future schema changes, capture a D1 backup and check code/schema rollback
-compatibility. A Worker rollback retains D1 writes; never reset this database to
+Before future schema changes, capture a PostgreSQL backup and check code/schema rollback
+compatibility. A Worker rollback retains PostgreSQL writes; never reset this database to
 retry a deployment. Keep the production auth secret and credential files.
+
+Pre-Neon Worker versions depend on D1; do not roll back to them without planning a database cutback.

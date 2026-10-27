@@ -1,7 +1,7 @@
 # Root scripts
 
 Start owns root build/dev/start and browser checks. The backend is a
-server-only package: it has lint, tests and D1 schema commands but no build or
+server-only package: it has lint, tests and PostgreSQL schema commands but no build or
 dev server. Production/staging build, artifact checks and deployment commands
 live in @caret/frontend.
 

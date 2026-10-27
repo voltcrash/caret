@@ -42,7 +42,7 @@ for the operation inventory, remaining compatibility rules and archived evidence
 | `frontend/src/data/` | Query options and browser operation client |
 | `frontend/src/ts/` | Shared UI components, state, typing runtime helpers |
 | `frontend/src/sw/` | Service worker generated per build |
-| `backend/src/` | Services, policies, DAL, Drizzle/D1, Better Auth, jobs (server-only package) |
+| `backend/src/` | Services, policies, DAL, Drizzle/Neon PostgreSQL, Better Auth, jobs (server-only package) |
 
 Rendering: SSR renders the document, shared layout and public content; the
 typing engine and browser integrations mount as client-only leaves
@@ -71,62 +71,53 @@ never add `hidden` imperatively, or a closed dialog can intercept clicks.
 `@caret/backend` exports narrow server-only subpaths (runtime, services,
 policies, auth, http, jobs). Start handlers call services directly; there is no
 internal HTTP hop. Shared ts-rest contracts and Zod schemas define the retained
-external HTTP API. Drizzle describes D1 tables; Better Auth uses database-backed
+external HTTP API. Drizzle describes Neon PostgreSQL tables; Better Auth uses database-backed
 sessions for Google/GitHub accounts. Private operations require a session cookie
 or Bearer session token. External API keys are unsupported.
 
-D1 owns data, result progression and rankings. User JSON writes use
+Neon PostgreSQL owns data, result progression and rankings. User JSON writes use
 optimistic version guards inside atomic batches. Cron refreshes rankings and
 purges expired records. Structured logs carry the build ID and feed Workers
-observability; server errors never write to D1. Each request also writes one
+observability; server errors never write to Neon PostgreSQL. Each request also writes one
 Analytics Engine data point (`METRICS`).
 
-Hot paths avoid D1 where staleness is bounded:
+Hot paths avoid Neon PostgreSQL where staleness is bounded:
 
 - Rate limits: Workers rate limiting bindings, per location and approximate
   (`policies/rate-counter.ts`). Bad-authentication points: Cache API.
 - Configuration: cached per isolate for 30s (`init/configuration.ts`).
 - Cookie sessions: Better Auth's signed cookie cache, at most 60s old.
-  Admin, fresh-token, auth-handler, UI-session and Bearer lookups read D1.
+  Admin, fresh-token, auth-handler, UI-session and Bearer lookups read Neon PostgreSQL.
 - Public reads: operations in `policies/edge-cache.ts` are stored in the
   location's Cache API for 30–300s. SSR documents stay `no-store`.
 
-Each invocation owns one D1 session (`first-primary`), shared by Drizzle,
-raw statements and batches. Its first query reads current primary state;
-subsequent reads can use sequentially consistent replicas. Auth reads and
-optimistic mutation snapshots use the primary directly to preserve
-revocation (subject to the cookie cache above) and fresh conflict retries. Deployment enables and verifies global
-read replication for its configured database; see [operations](CLOUDFLARE_OPERATIONS.md#read-replication).
-
-Atomic write batches include a durable commit receipt, allowing bounded
-transport retries without replaying application callbacks or duplicating
-progression. Cron expires receipts after seven days. Migration commands run
-`PRAGMA optimize` after successful schema updates; daily Actions reports
-surface expensive D1 query patterns using sanitized query IDs and metrics.
-Production uses Smart Placement; staging keeps default placement. Request
-logs record validated placement decisions without changing database consistency.
+Each invocation owns a lazy Neon HTTP client shared by Drizzle and raw queries.
+Reads use the primary. User writes lock a versioned user row and assert its
+version inside a PostgreSQL transaction. Durable receipts recover lost commit
+acknowledgements without duplicate progression. Cron expires receipts after
+seven days. Production keeps Smart Placement. Database monitoring uses Neon.
 
 ```mermaid
 flowchart LR
   Browser[Start/Solid client] --> Worker[Start Worker]
   Worker --> Services[Backend services + policies]
   Worker --> Auth[Better Auth]
-  Auth --> D1[(D1 / Drizzle)]
-  Services --> D1
+  Auth --> Postgres[(Neon PostgreSQL / Drizzle)]
+  Services --> Postgres
   Cron[Cron] --> Worker
   Services --> Bridge[External quote automation]
 ```
 
 ## Development and delivery
 
-`vp run dev` starts Start on port 3000 with local workerd and D1
+`vp run dev` starts Start on port 3000 with local workerd and a development Neon branch
 (`vp run --filter @caret/frontend db:migrate` first). Vitest covers web
-units, Start SSR/workerd suites, backend services and real D1 behaviour;
+units, Start SSR/workerd suites, backend services and real Neon PostgreSQL behaviour;
 Playwright covers the built Start Worker.
 
 `frontend/wrangler.staging.json` and `wrangler.production.json` own deployment
-with isolated D1, OAuth and Turnstile credentials; `backend/wrangler.jsonc`
-only binds D1 for local migrations. See [production setup](PRODUCTION_SETUP.md),
+with isolated Neon PostgreSQL, OAuth and Turnstile credentials. Migrations read
+DATABASE_URL from the corresponding private frontend/.dev.vars file. See [production setup](PRODUCTION_SETUP.md),
 [staging setup](STAGING_SETUP.md) and [operations](CLOUDFLARE_OPERATIONS.md).
 Built-in [anticheat](ANTICHEAT.md) checks scores and telemetry in all modes.
 
