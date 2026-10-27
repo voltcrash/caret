@@ -269,6 +269,7 @@ vi.mock("../../src/features/typing/analysis.client", () => ({
 }));
 
 import { getMutableConfig } from "../../src/ts/config/store";
+import { configEvent } from "../../src/ts/events/config";
 import { getDefaultConfig } from "../../src/ts/constants/default-config";
 import {
   fail,
@@ -347,6 +348,54 @@ beforeEach(() => {
 });
 
 describe("test lifecycle state", () => {
+  it.each(["english", "spanish"] as const)(
+    "keeps %s words when an account config batch changes only appearance",
+    async (language) => {
+      getMutableConfig().language = language;
+      configEvent.dispatch({ key: "fullConfigChange" });
+      // Full config application resets defaults before calling every setter.
+      getMutableConfig().language = "english";
+      getMutableConfig().theme = "serika";
+      getMutableConfig().language = language;
+      configEvent.dispatch({
+        key: "language",
+        previousValue: "english",
+        newValue: language,
+        nosave: true,
+      });
+      configEvent.dispatch({ key: "fullConfigChangeFinished" });
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(mocks.engineLoad).not.toHaveBeenCalled();
+      expect(mocks.generate).not.toHaveBeenCalled();
+    },
+  );
+
+  it("restarts once with the settled settings when an account config changes the test", async () => {
+    configEvent.dispatch({ key: "fullConfigChange" });
+    configEvent.dispatch({
+      key: "language",
+      previousValue: "english",
+      newValue: "english",
+      nosave: true,
+    });
+    expect(mocks.engineLoad).not.toHaveBeenCalled();
+    getMutableConfig().words = 25;
+    configEvent.dispatch({ key: "fullConfigChangeFinished" });
+    await vi.waitFor(() => expect(mocks.uiRestart).toHaveBeenCalledOnce());
+    expect(mocks.generate).toHaveBeenCalledOnce();
+  });
+
+  it("does not restart for an unchanged language event", async () => {
+    configEvent.dispatch({
+      key: "language",
+      previousValue: "english",
+      newValue: "english",
+      nosave: true,
+    });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(mocks.engineLoad).not.toHaveBeenCalled();
+  });
+
   it("saves the completed payload with its server ID before collection normalization", async () => {
     mocks.user = { uid: "user" };
     mocks.active = true;
