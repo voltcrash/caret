@@ -3,11 +3,12 @@ import { createFileRoute } from "@tanstack/solid-router";
 import { Guide, guideHead } from "../features/discover/guide";
 
 const title = "Typing speed test: WPM and accuracy";
+const updated = "2026-10-27";
 const description =
   "Measure typing speed with Caret's free online test. Understand words per minute (WPM), raw speed and accuracy, and compare results with consistent settings.";
 
 export const Route = createFileRoute("/_app/typing-speed-test")({
-  head: () => guideHead(title, description, "/typing-speed-test"),
+  head: () => guideHead(title, description, "/typing-speed-test", updated),
   component: TypingSpeedTest,
 });
 
@@ -15,7 +16,8 @@ function TypingSpeedTest() {
   return (
     <Guide
       title={title}
-      intro="Caret measures typing speed in words per minute and reports accuracy alongside it. Use a timed test for a quick check, or a word-count test to finish a fixed amount of material."
+      updated={updated}
+      intro="To test your typing speed, choose time mode in Caret and start typing. Read WPM and accuracy when the test ends. WPM means words per minute, with five counted characters treated as one word. Compare scores using the same duration, language and difficulty."
     >
       <section>
         <h2>How to take a typing speed test</h2>

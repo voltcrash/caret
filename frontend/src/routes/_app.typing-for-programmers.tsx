@@ -3,11 +3,12 @@ import { createFileRoute } from "@tanstack/solid-router";
 import { Guide, guideHead } from "../features/discover/guide";
 
 const title = "Typing practice for programmers";
+const updated = "2026-10-27";
 const description =
   "Practice code typing with Caret's programming language word lists and custom text. Work on symbols, capitalization and accuracy alongside regular typing tests.";
 
 export const Route = createFileRoute("/_app/typing-for-programmers")({
-  head: () => guideHead(title, description, "/typing-for-programmers"),
+  head: () => guideHead(title, description, "/typing-for-programmers", updated),
   component: TypingForProgrammers,
 });
 
@@ -15,7 +16,8 @@ function TypingForProgrammers() {
   return (
     <Guide
       title={title}
-      intro="Caret offers code word lists and custom text for programmers who want to practice typing technical material. Use them alongside ordinary words and quotes to vary your practice."
+      updated={updated}
+      intro="For code typing practice in Caret, select a code word list such as code_javascript or code_python, or use custom mode for a sample passage with symbols and identifiers. Track accuracy alongside WPM. These tests measure transcription, not programming ability."
     >
       <section>
         <h2>Practice a programming language word list</h2>

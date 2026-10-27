@@ -3,11 +3,13 @@ import { createFileRoute, Link } from "@tanstack/solid-router";
 import { Guide, guideHead } from "../features/discover/guide";
 
 const title = "How to practice typing";
+// Editorial update date, never the current request/build date.
+const updated = "2026-10-27";
 const description =
   "Build typing accuracy with a repeatable practice routine in Caret. Learn how to choose word lists, use quotes and custom text, and compare your progress.";
 
 export const Route = createFileRoute("/_app/typing-practice")({
-  head: () => guideHead(title, description, "/typing-practice"),
+  head: () => guideHead(title, description, "/typing-practice", updated),
   component: TypingPractice,
 });
 
@@ -15,7 +17,8 @@ function TypingPractice() {
   return (
     <Guide
       title={title}
-      intro="Use Caret for free online typing practice with immediate speed and accuracy feedback. Start with a pace you can control, then make the material more varied as you become comfortable."
+      updated={updated}
+      intro="To practice typing with Caret, start with a 60-second test at a comfortable pace. Review accuracy and WPM, practice the sequences you miss in custom mode, then repeat the same test settings to compare progress. No account is needed."
     >
       <section>
         <h2>Start with a repeatable baseline</h2>

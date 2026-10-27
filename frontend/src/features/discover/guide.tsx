@@ -6,25 +6,45 @@ import { publicEnv } from "../../app/public-env";
 import { pageHead } from "../../app/seo";
 import { structuredDataScript } from "../../app/structured-data";
 
-export function guideHead(title: string, description: string, path: string) {
+export function guideHead(
+  title: string,
+  description: string,
+  path: string,
+  updated: string,
+) {
+  const url = `${publicEnv.origin}${path}`;
   return {
     ...pageHead(`${title} | Caret`, description, path),
     scripts: [
       structuredDataScript({
         "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        itemListElement: [
+        "@graph": [
           {
-            "@type": "ListItem",
-            position: 1,
-            name: "Caret",
-            item: `${publicEnv.origin}/`,
+            "@type": "WebPage",
+            "@id": url,
+            url,
+            name: title,
+            description,
+            dateModified: updated,
+            breadcrumb: { "@id": `${url}#breadcrumb` },
           },
           {
-            "@type": "ListItem",
-            position: 2,
-            name: title,
-            item: `${publicEnv.origin}${path}`,
+            "@type": "BreadcrumbList",
+            "@id": `${url}#breadcrumb`,
+            itemListElement: [
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "Caret",
+                item: `${publicEnv.origin}/`,
+              },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: title,
+                item: url,
+              },
+            ],
           },
         ],
       }),
@@ -32,7 +52,9 @@ export function guideHead(title: string, description: string, path: string) {
   };
 }
 
-export function Guide(props: ParentProps<{ title: string; intro: string }>) {
+export function Guide(
+  props: ParentProps<{ title: string; intro: string; updated: string }>,
+) {
   return (
     <article class="mx-auto grid w-full max-w-3xl content-start gap-8 py-8 leading-relaxed text-text [&_h2]:text-xl [&_h2]:text-main [&_section]:grid [&_section]:gap-4">
       <nav aria-label="Breadcrumb" class="text-sm">
@@ -44,7 +66,13 @@ export function Guide(props: ParentProps<{ title: string; intro: string }>) {
       </nav>
       <header class="grid gap-4">
         <h1 class="text-2xl text-main sm:text-3xl">{props.title}</h1>
-        <p>{props.intro}</p>
+        <p class="text-sm text-sub">
+          Last updated: <time dateTime={props.updated}>{props.updated}</time>
+        </p>
+        <section aria-label="Quick answer" class="rounded bg-sub-alt p-4">
+          <h2>Quick answer</h2>
+          <p>{props.intro}</p>
+        </section>
         <Link to="/" class="w-fit rounded bg-sub-alt px-5 py-3 text-main">
           Start a free typing test
         </Link>
