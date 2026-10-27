@@ -74,7 +74,7 @@ it("cancels only unfinished signup and maps expired cancellation to 401", async 
     });
   expect((await cancel()).status).toBe(200);
   expect((await cancel()).status).toBe(401);
-  const db = await mf.getD1Database("DB", "b");
+  const db = await mf.getDatabase("b");
   expect(
     await db
       .prepare("SELECT id FROM auth_users WHERE id=?")
@@ -119,7 +119,7 @@ it("completes signup through real RPC/D1 and protects completed registration fro
     },
   );
   expect(response.status).toBe(200);
-  const db = await mf.getD1Database("DB", "b");
+  const db = await mf.getDatabase("b");
   expect(
     await db
       .prepare("SELECT name FROM users WHERE uid=?")
@@ -144,9 +144,9 @@ it.each(["cookie", "bearer"] as const)(
   async (credential) => {
     const identity = await seedSession(mf, "a");
     const worker = await mf.getWorker("a");
-    const db = await mf.getD1Database("DB", "a");
+    const db = await mf.getDatabase("a");
     await db
-      .prepare("UPDATE auth_users SET disabled=1 WHERE id=?")
+      .prepare("UPDATE auth_users SET disabled=true WHERE id=?")
       .bind(identity.uid)
       .run();
     const headers =
@@ -200,7 +200,7 @@ it.each(["cookie", "bearer"] as const)(
 
 it("redacts configuration failures on direct session and operation RPCs", async () => {
   const worker = await mf.getWorker("b");
-  const db = await mf.getD1Database("DB", "b");
+  const db = await mf.getDatabase("b");
   await db.prepare("DROP TABLE configuration").run();
   const payload = encodeURIComponent(
     JSON.stringify(await toJSONAsync({ data: { query: { client: "web" } } })),

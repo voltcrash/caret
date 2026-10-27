@@ -104,7 +104,7 @@ describe("request observability", () => {
     });
     const point = requestMetrics(
       log,
-      { operations: ["leaderboards.get"], d1Statements: 3 },
+      { operations: ["leaderboards.get"], dbStatements: 3 },
       true,
     );
     expect(point).toEqual({
@@ -131,7 +131,7 @@ describe("request observability", () => {
     expect(
       requestMetrics(
         document,
-        { operations: ["leaderboards.get"], d1Statements: 2 },
+        { operations: ["leaderboards.get"], dbStatements: 2 },
         false,
       ).indexes,
     ).toEqual(["document"]);

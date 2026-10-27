@@ -26,7 +26,7 @@ describe("pilot shared services in workerd", () => {
     };
     expect((await worker.fetch(url, { headers })).status).toBe(401);
     const session = await seedSession(mf, "a");
-    const db = await mf.getD1Database("DB", "a");
+    const db = await mf.getDatabase("a");
     await db
       .prepare(
         "INSERT INTO users(uid,id,name,name_key,email,added_at,data) VALUES(?,?,?,?,?,0,?)",
@@ -65,7 +65,7 @@ describe("pilot shared services in workerd", () => {
   });
   it("enforces fresh sessions and admin/config gates without a layout visit", async () => {
     const worker = await mf.getWorker("b");
-    const db = await mf.getD1Database("DB", "b");
+    const db = await mf.getDatabase("b");
     const session = await seedSession(mf, "b");
     const headers = {
       origin: "http://localhost:3000",
@@ -84,14 +84,14 @@ describe("pilot shared services in workerd", () => {
     };
     await db
       .prepare(
-        "UPDATE configuration SET data=json_set(data,'$.admin.endpointsEnabled',json('true')) WHERE id='main'",
+        "UPDATE configuration SET data=jsonb_merge_patch(data,'{\"admin\":{\"endpointsEnabled\":true}}'::jsonb) WHERE id='main'",
       )
       .run();
     // Ensure a configuration row exists before mutating it.
     await worker.fetch("http://localhost:3000/leaderboards");
     await db
       .prepare(
-        "UPDATE configuration SET data=json_set(data,'$.admin.endpointsEnabled',json('true')) WHERE id='main'",
+        "UPDATE configuration SET data=jsonb_merge_patch(data,'{\"admin\":{\"endpointsEnabled\":true}}'::jsonb) WHERE id='main'",
       )
       .run();
     expect((await call("admin")).status).toBe(403);
@@ -102,18 +102,18 @@ describe("pilot shared services in workerd", () => {
     expect((await call("admin")).status).toBe(200);
     await db
       .prepare(
-        "UPDATE configuration SET data=json_set(data,'$.admin.endpointsEnabled',json('false')) WHERE id='main'",
+        "UPDATE configuration SET data=jsonb_merge_patch(data,'{\"admin\":{\"endpointsEnabled\":false}}'::jsonb) WHERE id='main'",
       )
       .run();
     expect((await call("admin")).status).toBe(503);
     await db
       .prepare("UPDATE auth_sessions SET created_at=? WHERE token=?")
-      .bind(Date.now() - 120_000, session.token)
+      .bind(new Date(Date.now() - 120_000), session.token)
       .run();
     expect((await call("fresh")).status).toBe(401);
     await db
       .prepare("UPDATE auth_sessions SET created_at=? WHERE token=?")
-      .bind(Date.now(), session.token)
+      .bind(new Date(), session.token)
       .run();
     expect((await call("fresh")).status).toBe(200);
     expect((await call("fresh")).status).toBe(401);
@@ -161,7 +161,7 @@ describe("pilot shared services in workerd", () => {
   });
   it("uses trusted IP, rejects expired sessions and applies bad-auth/root/maintenance gates", async () => {
     const worker = await mf.getWorker("a");
-    const db = await mf.getD1Database("DB", "a");
+    const db = await mf.getDatabase("a");
     const session = await seedSession(mf, "a");
     const url = "http://localhost:3000/__test/account";
     const headers = {
@@ -172,7 +172,7 @@ describe("pilot shared services in workerd", () => {
       "x-forwarded-for": "1.2.3.4",
     };
     await db
-      .prepare("UPDATE auth_sessions SET expires_at=0 WHERE token=?")
+      .prepare("UPDATE auth_sessions SET expires_at='1970-01-01' WHERE token=?")
       .bind(session.token)
       .run();
     expect((await worker.fetch(url, { headers })).status).toBe(401);
@@ -189,19 +189,19 @@ describe("pilot shared services in workerd", () => {
     const fresh = { ...headers, "cf-connecting-ip": "192.0.2.84" };
     await db
       .prepare(
-        "UPDATE configuration SET data=json_set(data,'$.rateLimiting.badAuthentication.enabled',json('true'),'$.rateLimiting.badAuthentication.penalty',30,'$.rateLimiting.badAuthentication.flaggedStatusCodes',json('[401]')) WHERE id='main'",
+        "UPDATE configuration SET data=jsonb_merge_patch(data,'{\"rateLimiting\":{\"badAuthentication\":{\"enabled\":true,\"penalty\":30,\"flaggedStatusCodes\":[401]}}}'::jsonb) WHERE id='main'",
       )
       .run();
     expect((await worker.fetch(url, { headers: fresh })).status).toBe(401);
     expect((await worker.fetch(url, { headers: fresh })).status).toBe(429);
     await db
       .prepare(
-        "UPDATE configuration SET data=json_set(data,'$.rateLimiting.badAuthentication.enabled',json('false')) WHERE id='main'",
+        "UPDATE configuration SET data=jsonb_set(data,'{rateLimiting,badAuthentication,enabled}','false'::jsonb) WHERE id='main'",
       )
       .run();
     await db
       .prepare(
-        "UPDATE configuration SET data=json_set(data,'$.maintenance',json('true')) WHERE id='main'",
+        "UPDATE configuration SET data=jsonb_set(data,'{maintenance}','true'::jsonb) WHERE id='main'",
       )
       .run();
     expect(
@@ -213,7 +213,7 @@ describe("pilot shared services in workerd", () => {
     ).toBe(503);
     await db
       .prepare(
-        "UPDATE configuration SET data=json_set(data,'$.maintenance',json('false')) WHERE id='main'",
+        "UPDATE configuration SET data=jsonb_set(data,'{maintenance}','false'::jsonb) WHERE id='main'",
       )
       .run();
   });

@@ -173,7 +173,7 @@ describe("declared Start HTTP protocols without Hono", () => {
 
   it("preserves session authentication and cookie origin checks on old-tab mutations", async () => {
     const session = await seedSession(mf, "a");
-    const db = await mf.getD1Database("DB", "a");
+    const db = await mf.getDatabase("a");
     const data = {
       uid: session.uid,
       name: "HttpFixture",
@@ -228,7 +228,7 @@ describe("declared Start HTTP protocols without Hono", () => {
     expect(
       await db
         .prepare(
-          "SELECT json_extract(data,'$.theme') AS theme FROM configs WHERE uid=?",
+          "SELECT data->>'theme' AS theme FROM configs WHERE uid=?",
         )
         .bind(session.uid)
         .first("theme"),

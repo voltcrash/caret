@@ -25,7 +25,7 @@ async function main(): Promise<void> {
   if (active === undefined) throw new Error("Missing initial deployment");
   await builds[1]?.dispose();
   const session = await seedSession(active, "a");
-  const db = await active.getD1Database("DB", "a");
+  const db = await active.getDatabase("a");
   await enableConfiguration(active, "a", "$.results", {
     savingEnabled: true,
     objectHashCheckEnabled: true,
@@ -72,6 +72,11 @@ async function main(): Promise<void> {
           if (config === undefined) {
             throw new Error("Missing deployment configuration");
           }
+          for (const worker of "workers" in config ? config.workers : []) {
+            const fixture = worker as { config: { name: string; env: Record<string, unknown> } };
+            const db = await active.getDatabase(fixture.config.name);
+            fixture.config.env["DATABASE_URL"] = { type: "text", value: db.url };
+          }
           await active.setOptions(config);
           selected = next;
         }
@@ -84,7 +89,7 @@ async function main(): Promise<void> {
         return;
       }
       if (url.pathname === "/__fixture/results") {
-        const current = await active.getD1Database("DB", "a");
+        const current = await active.getDatabase("a");
         response.setHeader("content-type", "application/json");
         response.end(
           JSON.stringify({

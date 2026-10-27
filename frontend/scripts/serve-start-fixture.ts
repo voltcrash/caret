@@ -11,7 +11,7 @@ async function main(): Promise<void> {
     GITHUB_CLIENT_ID: "browser-fixture-client",
     GITHUB_CLIENT_SECRET: "browser-fixture-secret",
   });
-  const db = await mf.getD1Database("DB", "a");
+  const db = await mf.getDatabase("a");
   for (const token of [
     "browser-login",
     "browser-expiry",

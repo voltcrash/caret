@@ -147,7 +147,7 @@ describe("Start document and response policy in workerd", () => {
   });
 
   it("degrades public reads inline without exposing database details", async () => {
-    const db = await mf.getD1Database("DB", "b");
+    const db = await mf.getDatabase("b");
     await db.prepare("DROP TABLE leaderboard_snapshots").run();
     await db.prepare("DROP TABLE leaderboard_generations").run();
     const worker = await mf.getWorker("b");
