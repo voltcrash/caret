@@ -73,9 +73,14 @@ async function main(): Promise<void> {
             throw new Error("Missing deployment configuration");
           }
           for (const worker of "workers" in config ? config.workers : []) {
-            const fixture = worker as { config: { name: string; env: Record<string, unknown> } };
+            const fixture = worker as {
+              config: { name: string; env: Record<string, unknown> };
+            };
             const db = await active.getDatabase(fixture.config.name);
-            fixture.config.env["DATABASE_URL"] = { type: "text", value: db.url };
+            fixture.config.env["DATABASE_URL"] = {
+              type: "text",
+              value: db.url,
+            };
           }
           await active.setOptions(config);
           selected = next;

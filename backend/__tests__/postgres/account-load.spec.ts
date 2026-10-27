@@ -9,9 +9,11 @@ afterAll(async () => await test?.dispose());
 
 it("loads a registered account after the inbox-removal migration", async () => {
   expect(
-    await test.db.prepare(
-      "SELECT tablename AS name FROM pg_tables WHERE schemaname='public' AND tablename='inbox'",
-    ).first(),
+    await test.db
+      .prepare(
+        "SELECT tablename AS name FROM pg_tables WHERE schemaname='public' AND tablename='inbox'",
+      )
+      .first(),
   ).toBeNull();
   const account = await test.account();
   const response = await test.request(account, "/users?client=web");

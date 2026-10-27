@@ -22,7 +22,6 @@ describe("web result history", () => {
     expect(
       CompletedEventSchema.safeParse({ ...legacy, client: "tui" }).success,
     ).toBe(false);
-
   });
   it("paginates web results and tracks the latest timestamp", async () => {
     await withRuntime(test.env, async () => {
@@ -61,6 +60,12 @@ describe("web result history", () => {
     });
   });
   it("rejects retired clients at the database boundary", async () => {
-    await expect(test.db.prepare("INSERT INTO results(id,uid,timestamp,mode,mode2,language,wpm,acc,client,data) VALUES('retired-result','client-history',6000,'time','30','english',80,95,'tui','{}')").run()).rejects.toThrow("results_client");
+    await expect(
+      test.db
+        .prepare(
+          "INSERT INTO results(id,uid,timestamp,mode,mode2,language,wpm,acc,client,data) VALUES('retired-result','client-history',6000,'time','30','english',80,95,'tui','{}')",
+        )
+        .run(),
+    ).rejects.toThrow("results_client");
   });
 });

@@ -21,11 +21,15 @@ export async function hasSubmissionHash(
   hashes: string[],
 ): Promise<boolean> {
   return (
-    ((await database()
-      .select({ id: results.id })
-      .from(results)
-      .where(and(eq(results.uid, uid), inArray(results.submissionHash, hashes)))
-      .limit(1))[0]) !== undefined
+    (
+      await database()
+        .select({ id: results.id })
+        .from(results)
+        .where(
+          and(eq(results.uid, uid), inArray(results.submissionHash, hashes)),
+        )
+        .limit(1)
+    )[0] !== undefined
   );
 }
 export async function addResult(
@@ -80,13 +84,19 @@ export async function updateTags(
   return { acknowledged: true, matchedCount: 1, modifiedCount: 1 };
 }
 export async function getResult(uid: string, id: string): Promise<DBResult> {
-  const row = (await database()
-    .select()
-    .from(results)
-    .where(
-      and(eq(results.id, id), eq(results.uid, uid), eq(results.client, "web")),
-    )
-    .limit(1))[0];
+  const row = (
+    await database()
+      .select()
+      .from(results)
+      .where(
+        and(
+          eq(results.id, id),
+          eq(results.uid, uid),
+          eq(results.client, "web"),
+        ),
+      )
+      .limit(1)
+  )[0];
   if (!row) throw new MonkeyError(404, "Result not found");
   return unpack(row);
 }
@@ -94,12 +104,14 @@ export async function getLastResult(
   uid: string,
   client: Client = "web",
 ): Promise<DBResult> {
-  const row = (await database()
-    .select()
-    .from(results)
-    .where(and(eq(results.uid, uid), eq(results.client, client)))
-    .orderBy(desc(results.timestamp), desc(results.id))
-    .limit(1))[0];
+  const row = (
+    await database()
+      .select()
+      .from(results)
+      .where(and(eq(results.uid, uid), eq(results.client, client)))
+      .orderBy(desc(results.timestamp), desc(results.id))
+      .limit(1)
+  )[0];
   if (!row) throw new MonkeyError(404, "No last result found");
   return unpack(row);
 }
@@ -107,12 +119,14 @@ export async function getLastResultTimestamp(
   uid: string,
   client: Client = "web",
 ): Promise<number> {
-  const row = (await database()
-    .select({ timestamp: results.timestamp })
-    .from(results)
-    .where(and(eq(results.uid, uid), eq(results.client, client)))
-    .orderBy(desc(results.timestamp), desc(results.id))
-    .limit(1))[0];
+  const row = (
+    await database()
+      .select({ timestamp: results.timestamp })
+      .from(results)
+      .where(and(eq(results.uid, uid), eq(results.client, client)))
+      .orderBy(desc(results.timestamp), desc(results.id))
+      .limit(1)
+  )[0];
   if (!row) throw new MonkeyError(404, "No last result found");
   return row.timestamp;
 }
@@ -133,7 +147,9 @@ export async function getResults(
       id: results.id,
       uid: results.uid,
       client: results.client,
-      data: sql<typeof results.$inferSelect.data>`${results.data} - ARRAY['chartData','keySpacingStats','keyDurationStats','name']`,
+      data: sql<
+        typeof results.$inferSelect.data
+      >`${results.data} - ARRAY['chartData','keySpacingStats','keyDurationStats','name']`,
     })
     .from(results)
     .where(

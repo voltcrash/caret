@@ -54,26 +54,36 @@ export async function add(
   const id = newId(),
     timestamp = Date.now();
   const committed = await commitBatch([
-      statement("SELECT pg_advisory_xact_lock(hashtextextended(?,0))", `quote-submissions:${language}`),
-      statement(
-    "INSERT INTO quote_submissions(id,language,submitted_by,timestamp,approved,data) SELECT ?,?,?,?,false,? WHERE (SELECT count(*) FROM quote_submissions WHERE language=?) < 100",
-    id,
-    language,
-    uid,
-    timestamp,
-    encode({
-      _id: id,
-      text,
-      source,
+    statement(
+      "SELECT pg_advisory_xact_lock(hashtextextended(?,0))",
+      `quote-submissions:${language}`,
+    ),
+    statement(
+      "INSERT INTO quote_submissions(id,language,submitted_by,timestamp,approved,data) SELECT ?,?,?,?,false,? WHERE (SELECT count(*) FROM quote_submissions WHERE language=?) < 100",
+      id,
       language,
-      submittedBy: uid,
+      uid,
       timestamp,
-      approved: false,
-    }),
-    language,
-  ),
+      encode({
+        _id: id,
+        text,
+        source,
+        language,
+        submittedBy: uid,
+        timestamp,
+        approved: false,
+      }),
+      language,
+    ),
   ]);
-  const inserted = committed?.[1]?.rowCount ?? (await statement("SELECT id FROM quote_submissions WHERE id=?", id).first() === null ? 0 : 1);
+  const inserted =
+    committed?.[1]?.rowCount ??
+    ((await statement(
+      "SELECT id FROM quote_submissions WHERE id=?",
+      id,
+    ).first()) === null
+      ? 0
+      : 1);
   if (inserted === 0) {
     throw new MonkeyError(
       409,
@@ -106,11 +116,13 @@ export async function approve(
   editSource: string | undefined,
   name: string,
 ): Promise<{ quote: ApproveQuote; message: string }> {
-  const row = (await database()
-    .select()
-    .from(quoteSubmissions)
-    .where(eq(quoteSubmissions.id, quoteId))
-    .limit(1))[0];
+  const row = (
+    await database()
+      .select()
+      .from(quoteSubmissions)
+      .where(eq(quoteSubmissions.id, quoteId))
+      .limit(1)
+  )[0];
   if (!row) {
     throw new MonkeyError(
       404,

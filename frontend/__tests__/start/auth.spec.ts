@@ -170,7 +170,7 @@ it.each(["cookie", "bearer"] as const)(
         .prepare("SELECT name,disabled FROM auth_users WHERE id=?")
         .bind(identity.uid)
         .first(),
-    ).toMatchObject({ name: "a", disabled: 1 });
+    ).toMatchObject({ name: "a", disabled: true });
     expect(
       await db
         .prepare("SELECT id FROM auth_sessions WHERE user_id=?")

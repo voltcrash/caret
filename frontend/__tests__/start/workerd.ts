@@ -8,7 +8,10 @@ import { readdirSync, readFileSync } from "node:fs";
 import { resolve, relative } from "node:path";
 import { withRuntime, type WorkerEnv } from "@caret/backend/runtime";
 import { getAuth } from "@caret/backend/auth/session";
-import { TestDatabase, postgresFetch } from "../../../backend/__tests__/postgres/database";
+import {
+  TestDatabase,
+  postgresFetch,
+} from "../../../backend/__tests__/postgres/database";
 import { bindingName, requiredTiers } from "@caret/backend/rate-counter";
 
 const root = resolve(import.meta.dirname, "../../..");
@@ -52,7 +55,10 @@ export async function exhaustRootLimit(
 
 export class FixtureWorker extends Miniflare {
   readonly databases: Map<string, TestDatabase>;
-  constructor(options: MiniflareOptions, databases: Map<string, TestDatabase>) { super(options); this.databases = databases; }
+  constructor(options: MiniflareOptions, databases: Map<string, TestDatabase>) {
+    super(options);
+    this.databases = databases;
+  }
   async getDatabase(name = "a"): Promise<TestDatabase> {
     const database = this.databases.get(name);
     if (!database) throw new Error("Missing PostgreSQL fixture");
@@ -119,7 +125,11 @@ export async function createWorkerd(
     modules["instrument.js"] = { type: "esm", contents: fixture.instrument };
   }
   const databases = new Map<string, TestDatabase>();
-  for (const name of ["a", "b"]) { const db = new TestDatabase(); await db.migrate(); databases.set(name, db); }
+  for (const name of ["a", "b"]) {
+    const db = new TestDatabase();
+    await db.migrate();
+    databases.set(name, db);
+  }
   const started = performance.now();
   const options: MiniflareOptions = {
     ...(port === undefined ? {} : { port, host: "127.0.0.1" }),
@@ -141,7 +151,10 @@ export async function createWorkerd(
           modules,
         },
         env: {
-          DATABASE_URL: { type: "text" as const, value: databases.get(name)?.url ?? "" },
+          DATABASE_URL: {
+            type: "text" as const,
+            value: databases.get(name)?.url ?? "",
+          },
           ASSETS: { type: "assets" as const },
           METRICS: {
             type: "analytics-engine-dataset" as const,
@@ -191,8 +204,19 @@ export async function createWorkerd(
         outboundService: {
           type: "fetcher" as const,
           handler: async (request: import("miniflare").Request) => {
-            const pg = await postgresFetch(new Request(request.url, { method: request.method, headers: [...request.headers], body: request.body === null ? undefined : await request.text() }));
-            if (pg) return new FixtureResponse(await pg.text(), { status: pg.status, headers: pg.headers });
+            const pg = await postgresFetch(
+              new Request(request.url, {
+                method: request.method,
+                headers: [...request.headers],
+                body: request.body === null ? undefined : await request.text(),
+              }),
+            );
+            if (pg) {
+              return new FixtureResponse(await pg.text(), {
+                status: pg.status,
+                headers: pg.headers,
+              });
+            }
             if (
               captcha &&
               request.url ===
@@ -327,8 +351,15 @@ export async function enableConfiguration(
 ): Promise<void> {
   const db = await mf.getDatabase(worker);
   let patch: unknown = value;
-  for (const key of path.replace(/^\$\./, "").split(".").reverse()) patch = { [key]: patch };
-  await db.prepare("UPDATE configuration SET data=jsonb_merge_patch(data,?::jsonb) WHERE id='main'").bind(JSON.stringify(patch)).run();
+  for (const key of path.replace(/^\$\./, "").split(".").reverse()) {
+    patch = { [key]: patch };
+  }
+  await db
+    .prepare(
+      "UPDATE configuration SET data=jsonb_merge_patch(data,?::jsonb) WHERE id='main'",
+    )
+    .bind(JSON.stringify(patch))
+    .run();
 }
 
 /** All-time English time 15 board with `count` ranked entries. */

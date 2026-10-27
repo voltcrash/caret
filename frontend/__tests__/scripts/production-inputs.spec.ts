@@ -10,7 +10,8 @@ function inputs(): Parameters<typeof validateProductionInputs>[0] {
   return {
     config,
     backend: {
-      DATABASE_URL: "postgresql://user:password@ep-production.neon.tech/neondb?sslmode=require",
+      DATABASE_URL:
+        "postgresql://user:password@ep-production.neon.tech/neondb?sslmode=require",
       BETTER_AUTH_SECRET: "production-auth-secret-fixture-32-characters",
       TURNSTILE_SECRET_KEY: "production-turnstile-secret-fixture",
       GITHUB_CLIENT_ID: "production-client-id",

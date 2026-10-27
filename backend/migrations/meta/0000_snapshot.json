@@ -149,12 +149,8 @@
           "name": "auth_accounts_user_id_auth_users_id_fk",
           "tableFrom": "auth_accounts",
           "tableTo": "auth_users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -255,12 +251,8 @@
           "name": "auth_sessions_user_id_auth_users_id_fk",
           "tableFrom": "auth_sessions",
           "tableTo": "auth_users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -270,9 +262,7 @@
         "auth_sessions_token_unique": {
           "name": "auth_sessions_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -341,9 +331,7 @@
         "auth_users_email_unique": {
           "name": "auth_users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -458,10 +446,7 @@
       "compositePrimaryKeys": {
         "blocklist_kind_hash_pk": {
           "name": "blocklist_kind_hash_pk",
-          "columns": [
-            "kind",
-            "hash"
-          ]
+          "columns": ["kind", "hash"]
         }
       },
       "uniqueConstraints": {},
@@ -498,12 +483,8 @@
           "name": "configs_uid_users_uid_fk",
           "tableFrom": "configs",
           "tableTo": "users",
-          "columnsFrom": [
-            "uid"
-          ],
-          "columnsTo": [
-            "uid"
-          ],
+          "columnsFrom": ["uid"],
+          "columnsTo": ["uid"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -684,12 +665,8 @@
           "name": "daily_entries_uid_users_uid_fk",
           "tableFrom": "daily_entries",
           "tableTo": "users",
-          "columnsFrom": [
-            "uid"
-          ],
-          "columnsTo": [
-            "uid"
-          ],
+          "columnsFrom": ["uid"],
+          "columnsTo": ["uid"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -697,11 +674,7 @@
       "compositePrimaryKeys": {
         "daily_entries_board_period_uid_pk": {
           "name": "daily_entries_board_period_uid_pk",
-          "columns": [
-            "board",
-            "period",
-            "uid"
-          ]
+          "columns": ["board", "period", "uid"]
         }
       },
       "uniqueConstraints": {},
@@ -805,12 +778,8 @@
           "name": "leaderboard_bests_uid_users_uid_fk",
           "tableFrom": "leaderboard_bests",
           "tableTo": "users",
-          "columnsFrom": [
-            "uid"
-          ],
-          "columnsTo": [
-            "uid"
-          ],
+          "columnsFrom": ["uid"],
+          "columnsTo": ["uid"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -818,10 +787,7 @@
       "compositePrimaryKeys": {
         "leaderboard_bests_board_uid_pk": {
           "name": "leaderboard_bests_board_uid_pk",
-          "columns": [
-            "board",
-            "uid"
-          ]
+          "columns": ["board", "uid"]
         }
       },
       "uniqueConstraints": {},
@@ -950,12 +916,8 @@
           "name": "leaderboard_snapshots_uid_users_uid_fk",
           "tableFrom": "leaderboard_snapshots",
           "tableTo": "users",
-          "columnsFrom": [
-            "uid"
-          ],
-          "columnsTo": [
-            "uid"
-          ],
+          "columnsFrom": ["uid"],
+          "columnsTo": ["uid"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -963,11 +925,7 @@
       "compositePrimaryKeys": {
         "leaderboard_snapshots_generation_board_uid_pk": {
           "name": "leaderboard_snapshots_generation_board_uid_pk",
-          "columns": [
-            "generation",
-            "board",
-            "uid"
-          ]
+          "columns": ["generation", "board", "uid"]
         }
       },
       "uniqueConstraints": {},
@@ -1176,12 +1134,8 @@
           "name": "presets_uid_users_uid_fk",
           "tableFrom": "presets",
           "tableTo": "users",
-          "columnsFrom": [
-            "uid"
-          ],
-          "columnsTo": [
-            "uid"
-          ],
+          "columnsFrom": ["uid"],
+          "columnsTo": ["uid"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1299,10 +1253,7 @@
       "compositePrimaryKeys": {
         "quote_ratings_language_quote_id_pk": {
           "name": "quote_ratings_language_quote_id_pk",
-          "columns": [
-            "language",
-            "quote_id"
-          ]
+          "columns": ["language", "quote_id"]
         }
       },
       "uniqueConstraints": {},
@@ -1479,9 +1430,7 @@
         "reports_report_id_unique": {
           "name": "reports_report_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "report_id"
-          ]
+          "columns": ["report_id"]
         }
       },
       "policies": {},
@@ -1621,12 +1570,8 @@
           "name": "results_uid_users_uid_fk",
           "tableFrom": "results",
           "tableTo": "users",
-          "columnsFrom": [
-            "uid"
-          ],
-          "columnsTo": [
-            "uid"
-          ],
+          "columnsFrom": ["uid"],
+          "columnsTo": ["uid"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1670,10 +1615,7 @@
       "compositePrimaryKeys": {
         "speed_histograms_board_bucket_pk": {
           "name": "speed_histograms_board_bucket_pk",
-          "columns": [
-            "board",
-            "bucket"
-          ]
+          "columns": ["board", "bucket"]
         }
       },
       "uniqueConstraints": {},
@@ -1717,12 +1659,8 @@
           "name": "user_activity_uid_users_uid_fk",
           "tableFrom": "user_activity",
           "tableTo": "users",
-          "columnsFrom": [
-            "uid"
-          ],
-          "columnsTo": [
-            "uid"
-          ],
+          "columnsFrom": ["uid"],
+          "columnsTo": ["uid"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1730,11 +1668,7 @@
       "compositePrimaryKeys": {
         "user_activity_uid_client_day_pk": {
           "name": "user_activity_uid_client_day_pk",
-          "columns": [
-            "uid",
-            "client",
-            "day"
-          ]
+          "columns": ["uid", "client", "day"]
         }
       },
       "uniqueConstraints": {},
@@ -1777,12 +1711,8 @@
           "name": "user_quote_ratings_uid_users_uid_fk",
           "tableFrom": "user_quote_ratings",
           "tableTo": "users",
-          "columnsFrom": [
-            "uid"
-          ],
-          "columnsTo": [
-            "uid"
-          ],
+          "columnsFrom": ["uid"],
+          "columnsTo": ["uid"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1790,11 +1720,7 @@
       "compositePrimaryKeys": {
         "user_quote_ratings_uid_language_quote_id_pk": {
           "name": "user_quote_ratings_uid_language_quote_id_pk",
-          "columns": [
-            "uid",
-            "language",
-            "quote_id"
-          ]
+          "columns": ["uid", "language", "quote_id"]
         }
       },
       "uniqueConstraints": {},
@@ -1912,16 +1838,12 @@
         "users_id_unique": {
           "name": "users_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         },
         "users_name_key_unique": {
           "name": "users_name_key_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "name_key"
-          ]
+          "columns": ["name_key"]
         }
       },
       "policies": {},
@@ -2046,12 +1968,8 @@
           "name": "weekly_entries_uid_users_uid_fk",
           "tableFrom": "weekly_entries",
           "tableTo": "users",
-          "columnsFrom": [
-            "uid"
-          ],
-          "columnsTo": [
-            "uid"
-          ],
+          "columnsFrom": ["uid"],
+          "columnsTo": ["uid"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2059,11 +1977,7 @@
       "compositePrimaryKeys": {
         "weekly_entries_client_period_uid_pk": {
           "name": "weekly_entries_client_period_uid_pk",
-          "columns": [
-            "client",
-            "period",
-            "uid"
-          ]
+          "columns": ["client", "period", "uid"]
         }
       },
       "uniqueConstraints": {},

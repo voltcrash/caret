@@ -29,7 +29,7 @@ export async function rankingPage(
   // the whole board on every page.
   const [rows, summary] = await Promise.all([
     statement(
-      `SELECT uid,data::text AS data,${score} AS score${table === "weekly_entries" ? ',time_typed_seconds AS "timeTypedSeconds"'  : ""} FROM ${table} WHERE ${scope} ORDER BY ${score} DESC,uid DESC LIMIT ? OFFSET ?`,
+      `SELECT uid,data::text AS data,${score} AS score${table === "weekly_entries" ? ',time_typed_seconds AS "timeTypedSeconds"' : ""} FROM ${table} WHERE ${scope} ORDER BY ${score} DESC,uid DESC LIMIT ? OFFSET ?`,
       ...values,
       Math.min(pageSize, 1000),
       offset,
@@ -81,7 +81,7 @@ export function rankingUserStatement(
   // Read one profile, then count higher scores using the ranking index.
   const ahead = `SELECT count(*)::integer FROM ${table} WHERE ${scope} AND (${score},uid)>(me.score,me.uid)`;
   return statement(
-    `WITH me AS (SELECT uid,data::text AS data,${score} AS score${table === "weekly_entries" ? ',time_typed_seconds AS "timeTypedSeconds"'  : ""} FROM ${table} WHERE ${scope} AND uid=?) SELECT me.*,(1+(${ahead})) AS rank FROM me`,
+    `WITH me AS (SELECT uid,data::text AS data,${score} AS score${table === "weekly_entries" ? ',time_typed_seconds AS "timeTypedSeconds"' : ""} FROM ${table} WHERE ${scope} AND uid=?) SELECT me.*,(1+(${ahead})) AS rank FROM me`,
     ...scopeValues,
     uid,
     ...scopeValues,

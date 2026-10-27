@@ -77,7 +77,13 @@ export function withRuntime<T>(
       return sql;
     },
     get db(): Runtime["db"] {
-      db ??= drizzle(scope.sql, { logger: { logQuery: () => { metrics.dbStatements++; } } });
+      db ??= drizzle(scope.sql, {
+        logger: {
+          logQuery: () => {
+            metrics.dbStatements++;
+          },
+        },
+      });
       return db;
     },
     execution,

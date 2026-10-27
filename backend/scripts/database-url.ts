@@ -7,8 +7,9 @@ export async function databaseUrl(
   if (
     environment !== undefined &&
     !["production", "staging"].includes(environment)
-  )
-    {throw new Error("Expected production or staging");}
+  ) {
+    throw new Error("Expected production or staging");
+  }
   let url = process.env["DATABASE_URL"];
   if (url === undefined || url === "") {
     const file =
@@ -20,8 +21,9 @@ export async function databaseUrl(
       ),
     )["DATABASE_URL"];
   }
-  if (url === undefined || url === "")
-    {throw new Error("DATABASE_URL is required");}
+  if (url === undefined || url === "") {
+    throw new Error("DATABASE_URL is required");
+  }
   const parsed = new URL(url);
   if (
     !["postgres:", "postgresql:"].includes(parsed.protocol) ||
@@ -29,9 +31,10 @@ export async function databaseUrl(
     !parsed.username ||
     !parsed.password ||
     parsed.searchParams.get("sslmode") !== "require"
-  )
-    {throw new Error(
+  ) {
+    throw new Error(
       "DATABASE_URL must use Neon PostgreSQL with sslmode=require",
-    );}
+    );
+  }
   return url;
 }

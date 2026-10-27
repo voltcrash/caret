@@ -50,9 +50,8 @@ describe("result PBs, rankings and progression with PostgreSQL", () => {
             .dailyLeaderboardRank,
         ).toBe(1);
       }
-      await test.db.prepare(
-        "UPDATE results SET timestamp=timestamp-120000 WHERE uid=?",
-      )
+      await test.db
+        .prepare("UPDATE results SET timestamp=timestamp-120000 WHERE uid=?")
         .bind(account.uid)
         .run();
     }

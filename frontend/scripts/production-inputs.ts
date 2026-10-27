@@ -19,8 +19,11 @@ const configSchema = z.object({
   routes: z
     .array(z.object({ pattern: z.string(), custom_domain: z.literal(true) }))
     .length(1),
-  secrets: z.object({ required: z.array(z.string()).refine((keys) => keys.includes("DATABASE_URL")) }),
-
+  secrets: z.object({
+    required: z
+      .array(z.string())
+      .refine((keys) => keys.includes("DATABASE_URL")),
+  }),
 });
 
 function configured(value: string | undefined): value is string {
@@ -66,10 +69,21 @@ export function validateProductionInputs(inputs: {
     }
   }
   let databaseUrl: URL;
-  try { databaseUrl = new URL(inputs.backend["DATABASE_URL"] as string); }
-  catch { throw new Error("DATABASE_URL must be a Neon PostgreSQL connection URL"); }
-  if (!["postgres:", "postgresql:"].includes(databaseUrl.protocol) || !databaseUrl.hostname.endsWith(".neon.tech") || !databaseUrl.username || !databaseUrl.password || databaseUrl.searchParams.get("sslmode") !== "require") {
-    throw new Error("DATABASE_URL must use Neon PostgreSQL with sslmode=require");
+  try {
+    databaseUrl = new URL(inputs.backend["DATABASE_URL"] as string);
+  } catch {
+    throw new Error("DATABASE_URL must be a Neon PostgreSQL connection URL");
+  }
+  if (
+    !["postgres:", "postgresql:"].includes(databaseUrl.protocol) ||
+    !databaseUrl.hostname.endsWith(".neon.tech") ||
+    !databaseUrl.username ||
+    !databaseUrl.password ||
+    databaseUrl.searchParams.get("sslmode") !== "require"
+  ) {
+    throw new Error(
+      "DATABASE_URL must use Neon PostgreSQL with sslmode=require",
+    );
   }
   const authSecret = inputs.backend["BETTER_AUTH_SECRET"] as string;
   if (

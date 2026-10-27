@@ -54,9 +54,10 @@ describe("production anticheat with PostgreSQL", () => {
       );
       await Users.addUser(user.name, user.email, user.id);
       const createdAt = Date.now() - ageSeconds * 1000;
-      await test.db.prepare(
-        "UPDATE users SET added_at=?,data=jsonb_set(data,'{addedAt}',to_jsonb(?::bigint)) WHERE uid=?",
-      )
+      await test.db
+        .prepare(
+          "UPDATE users SET added_at=?,data=jsonb_set(data,'{addedAt}',to_jsonb(?::bigint)) WHERE uid=?",
+        )
         .bind(createdAt, createdAt, user.id)
         .run();
       const session = await auth.internalAdapter.createSession(user.id, false);
@@ -97,23 +98,20 @@ describe("production anticheat with PostgreSQL", () => {
       expect(user.timeTyping ?? 0).toBe(0);
       expect(user.personalBests.time).toEqual({});
       expect(
-        await test.db.prepare(
-          "SELECT count(*) AS count FROM results WHERE uid=?",
-        )
+        await test.db
+          .prepare("SELECT count(*) AS count FROM results WHERE uid=?")
           .bind(uid)
           .first("count"),
       ).toBe(0);
       expect(
-        await test.db.prepare(
-          "SELECT count(*) AS count FROM daily_entries WHERE uid=?",
-        )
+        await test.db
+          .prepare("SELECT count(*) AS count FROM daily_entries WHERE uid=?")
           .bind(uid)
           .first("count"),
       ).toBe(0);
       expect(
-        await test.db.prepare(
-          "SELECT count(*) AS count FROM weekly_entries WHERE uid=?",
-        )
+        await test.db
+          .prepare("SELECT count(*) AS count FROM weekly_entries WHERE uid=?")
           .bind(uid)
           .first("count"),
       ).toBe(0);
@@ -165,9 +163,8 @@ describe("production anticheat with PostgreSQL", () => {
     uid: string,
     event: string,
   ): Promise<{ message: Record<string, unknown> }[]> {
-    const { results } = await test.db.prepare(
-      "SELECT data FROM audit_logs WHERE uid=? AND event=?",
-    )
+    const { results } = await test.db
+      .prepare("SELECT data FROM audit_logs WHERE uid=? AND event=?")
       .bind(uid, event)
       .all<{ data: string }>();
     return results.map(
@@ -176,9 +173,8 @@ describe("production anticheat with PostgreSQL", () => {
   }
   // results must be spaced by their duration; age earlier saves instead of waiting
   async function ageResults(uid: string): Promise<void> {
-    await test.db.prepare(
-      "UPDATE results SET timestamp=timestamp-120000 WHERE uid=?",
-    )
+    await test.db
+      .prepare("UPDATE results SET timestamp=timestamp-120000 WHERE uid=?")
       .bind(uid)
       .run();
   }
@@ -222,9 +218,8 @@ describe("production anticheat with PostgreSQL", () => {
       expect(profile.timeTyping).toBe(30);
       expect(profile.xp).toBeGreaterThan(0);
       expect(
-        await test.db.prepare(
-          "SELECT count(*) AS count FROM results WHERE uid=?",
-        )
+        await test.db
+          .prepare("SELECT count(*) AS count FROM results WHERE uid=?")
           .bind(user.uid)
           .first("count"),
       ).toBe(1);
@@ -235,9 +230,10 @@ describe("production anticheat with PostgreSQL", () => {
     expect((await submit(user, { timestamp: 1 })).status).toBe(462);
     await assertNoProgress(user.uid);
     expect(
-      await test.db.prepare(
-        "SELECT count(*) AS count FROM audit_logs WHERE uid=? AND event='invalid_result_spacing'",
-      )
+      await test.db
+        .prepare(
+          "SELECT count(*) AS count FROM audit_logs WHERE uid=? AND event='invalid_result_spacing'",
+        )
         .bind(user.uid)
         .first("count"),
     ).toBe(1);
@@ -250,9 +246,10 @@ describe("production anticheat with PostgreSQL", () => {
       expect((await submit(user, { wpm: 120 }, path)).status).toBe(463);
       await assertNoProgress(user.uid);
       expect(
-        await test.db.prepare(
-          "SELECT count(*) AS count FROM audit_logs WHERE uid=? AND event='anticheat_rejected'",
-        )
+        await test.db
+          .prepare(
+            "SELECT count(*) AS count FROM audit_logs WHERE uid=? AND event='anticheat_rejected'",
+          )
           .bind(user.uid)
           .first("count"),
       ).toBe(1);
@@ -500,9 +497,8 @@ describe("production anticheat with PostgreSQL", () => {
           expect(profile.personalBests).toEqual(saved.personalBests);
         });
         expect(
-          await test.db.prepare(
-            "SELECT count(*) AS count FROM results WHERE uid=?",
-          )
+          await test.db
+            .prepare("SELECT count(*) AS count FROM results WHERE uid=?")
             .bind(user.uid)
             .first("count"),
         ).toBe(1);
@@ -566,9 +562,10 @@ describe("production anticheat with PostgreSQL", () => {
       });
       await assertNoProgress(user.uid);
       expect(
-        await test.db.prepare(
-          "SELECT count(*) AS count FROM audit_logs WHERE uid=? AND event='anticheat_rejected'",
-        )
+        await test.db
+          .prepare(
+            "SELECT count(*) AS count FROM audit_logs WHERE uid=? AND event='anticheat_rejected'",
+          )
           .bind(user.uid)
           .first("count"),
       ).toBe(2);
@@ -604,9 +601,10 @@ describe("production anticheat with PostgreSQL", () => {
         expect(await Public.getTypingStats()).toEqual(before);
       });
       expect(
-        await test.db.prepare(
-          "SELECT count(*) AS count FROM audit_logs WHERE uid=? AND event='anticheat_rejected'",
-        )
+        await test.db
+          .prepare(
+            "SELECT count(*) AS count FROM audit_logs WHERE uid=? AND event='anticheat_rejected'",
+          )
           .bind(user.uid)
           .first("count"),
       ).toBe(2);

@@ -36,9 +36,10 @@ describe("web and offline result submissions", () => {
       );
       uid = user.id;
       await Users.addUser(user.name, user.email, uid);
-      await test.db.prepare(
-        "UPDATE users SET added_at=0,data=jsonb_set(data,'{addedAt}',to_jsonb(0::bigint)) WHERE uid=?",
-      )
+      await test.db
+        .prepare(
+          "UPDATE users SET added_at=0,data=jsonb_set(data,'{addedAt}',to_jsonb(0::bigint)) WHERE uid=?",
+        )
         .bind(uid)
         .run();
       const session = await auth.internalAdapter.createSession(uid, false);
@@ -107,9 +108,11 @@ describe("web and offline result submissions", () => {
       test.env,
       async () => await Users.getUser(uid, "test", "web"),
     );
-    const counts = await test.db.prepare(
-      "SELECT (SELECT count(*) FROM daily_entries) AS daily,(SELECT count(*) FROM weekly_entries) AS weekly",
-    ).first();
+    const counts = await test.db
+      .prepare(
+        "SELECT (SELECT count(*) FROM daily_entries) AS daily,(SELECT count(*) FROM weekly_entries) AS weekly",
+      )
+      .first();
     const timestamp = Date.now() - 2 * 86400000;
     const response = await submit(
       event(
@@ -152,9 +155,11 @@ describe("web and offline result submissions", () => {
       ).toEqual([]);
     });
     expect(
-      await test.db.prepare(
-        "SELECT (SELECT count(*) FROM daily_entries) AS daily,(SELECT count(*) FROM weekly_entries) AS weekly",
-      ).first(),
+      await test.db
+        .prepare(
+          "SELECT (SELECT count(*) FROM daily_entries) AS daily,(SELECT count(*) FROM weekly_entries) AS weekly",
+        )
+        .first(),
     ).toEqual(counts);
   });
   it("rejects expired/future offline uploads, forged scores and duplicate saves", async () => {
@@ -189,9 +194,8 @@ describe("web and offline result submissions", () => {
   it.each([false, true])(
     "deduplicates lost-response offline retries (legacy hash: %s)",
     async (legacyHash) => {
-      await test.db.prepare(
-        "UPDATE results SET timestamp=timestamp-120000 WHERE uid=?",
-      )
+      await test.db
+        .prepare("UPDATE results SET timestamp=timestamp-120000 WHERE uid=?")
         .bind(uid)
         .run();
       const result = event(
@@ -205,9 +209,8 @@ describe("web and offline result submissions", () => {
       };
       if (legacyHash) {
         const { hash: _hash, ...payload } = result;
-        await test.db.prepare(
-          "UPDATE results SET submission_hash=? WHERE id=?",
-        )
+        await test.db
+          .prepare("UPDATE results SET submission_hash=? WHERE id=?")
           .bind(objectHash(payload), data.insertedId)
           .run();
       }
@@ -215,17 +218,15 @@ describe("web and offline result submissions", () => {
         test.env,
         async () => await Users.getUser(uid, "before retry", "web"),
       );
-      const count = await test.db.prepare(
-        "SELECT count(*) AS n FROM results WHERE uid=?",
-      )
+      const count = await test.db
+        .prepare("SELECT count(*) AS n FROM results WHERE uid=?")
         .bind(uid)
         .first("n");
       const retry = await submit({ ...result, offline: true });
       expect(retry.status, await retry.clone().text()).toBe(466);
       expect(
-        await test.db.prepare(
-          "SELECT count(*) AS n FROM results WHERE uid=?",
-        )
+        await test.db
+          .prepare("SELECT count(*) AS n FROM results WHERE uid=?")
           .bind(uid)
           .first("n"),
       ).toBe(count);

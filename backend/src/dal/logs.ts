@@ -42,13 +42,19 @@ export async function countUserLogs(
   event: string,
   since: number,
 ): Promise<number> {
-  const row = (await database()
-    .select({ count: count() })
-    .from(logs)
-    .where(
-      and(eq(logs.uid, uid), eq(logs.event, event), gte(logs.timestamp, since)),
-    )
-    .limit(1))[0];
+  const row = (
+    await database()
+      .select({ count: count() })
+      .from(logs)
+      .where(
+        and(
+          eq(logs.uid, uid),
+          eq(logs.event, event),
+          gte(logs.timestamp, since),
+        ),
+      )
+      .limit(1)
+  )[0];
   return row?.count ?? 0;
 }
 export type AuditLog = {
@@ -107,7 +113,12 @@ export async function countLogs(
        WHERE l.event=? AND l.timestamp>=? GROUP BY j.value ORDER BY count DESC`
     : `SELECT data #>> ?::text[] AS key, count(*)::integer AS count, count(DISTINCT uid)::integer AS users
        FROM audit_logs WHERE event=? AND timestamp>=? GROUP BY key ORDER BY count DESC`;
-  const { results } = await statement(query, `{${path.replace(/^\$\./, "").split(".").join(",")}}`, event, since).all<{
+  const { results } = await statement(
+    query,
+    `{${path.replace(/^\$\./, "").split(".").join(",")}}`,
+    event,
+    since,
+  ).all<{
     key: string | null;
     count: number;
     users: number;

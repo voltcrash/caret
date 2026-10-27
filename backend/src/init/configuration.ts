@@ -48,7 +48,7 @@ function cacheTtl(): number {
 }
 
 /**
- * Request-stable configuration. Within an isolate, D1 is read at most once per
+ * Request-stable configuration. Within an isolate, PostgreSQL is read at most once per
  * TTL per database; other isolates converge within the TTL after a patch.
  */
 export async function getCachedConfiguration(
@@ -81,11 +81,13 @@ export async function getLiveConfiguration(): Promise<Configuration> {
   return scope.configuration;
 }
 async function loadConfiguration(): Promise<Configuration> {
-  const row = (await database()
-    .select()
-    .from(configurationTable)
-    .where(eq(configurationTable.id, "main"))
-    .limit(1))[0];
+  const row = (
+    await database()
+      .select()
+      .from(configurationTable)
+      .where(eq(configurationTable.id, "main"))
+      .limit(1)
+  )[0];
   const configuration = structuredClone(BASE_CONFIGURATION);
   if (row) {
     mergeConfigurations(configuration, row.data);

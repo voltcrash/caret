@@ -178,11 +178,11 @@ describe("ordinary server-function mutations with real PostgreSQL", () => {
       },
     ]);
     expect(
-      await db
+      JSON.parse((await db
         .prepare("SELECT data FROM presets WHERE uid=?")
         .bind(actor.uid)
-        .first("data"),
-    ).toBe(JSON.stringify(legacy));
+        .first<string>("data")) ?? "{}"),
+    ).toEqual(legacy);
   });
 
   it("keeps malformed wrapped preferences visible instead of replacing them with defaults", async () => {

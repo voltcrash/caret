@@ -309,7 +309,9 @@ describe("result server function in the built Worker with real PostgreSQL", () =
         expect(await rows(session.uid, table)).toBe(0);
       }
     } finally {
-      await db.exec("DROP TRIGGER reject_sample ON audit_logs; DROP FUNCTION reject_sample()");
+      await db.exec(
+        "DROP TRIGGER reject_sample ON audit_logs; DROP FUNCTION reject_sample()",
+      );
     }
     expect((await call(session.token, result)).status).toBe(200);
     expect(await rows(session.uid)).toBe(1);

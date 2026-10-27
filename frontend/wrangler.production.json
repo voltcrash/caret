@@ -25,10 +25,7 @@
     "not_found_handling": "none"
   },
   "triggers": {
-    "crons": [
-      "*/15 * * * *",
-      "0 * * * *"
-    ]
+    "crons": ["*/15 * * * *", "0 * * * *"]
   },
   "vars": {
     "MODE": "production",
@@ -142,8 +139,6 @@
       "dataset": "caret_requests"
     }
   ],
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
+  "compatibility_flags": ["nodejs_compat"],
   "upload_source_maps": true
 }

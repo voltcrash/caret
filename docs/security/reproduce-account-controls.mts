@@ -41,9 +41,8 @@ try {
     });
     const session = await auth.internalAdapter.createSession(user.id, false);
     assert.notEqual(session, null);
-    await test.db.prepare(
-      "UPDATE auth_sessions SET created_at=? WHERE user_id=?",
-    )
+    await test.db
+      .prepare("UPDATE auth_sessions SET created_at=? WHERE user_id=?")
       .bind(new Date(Date.now() - 300_000), user.id)
       .run();
     const request = async (
@@ -93,7 +92,8 @@ try {
       }),
     );
 
-    await test.db.prepare("UPDATE auth_users SET disabled=true WHERE id=?")
+    await test.db
+      .prepare("UPDATE auth_users SET disabled=true WHERE id=?")
       .bind(user.id)
       .run();
     const disabledSession = await request(
@@ -112,7 +112,8 @@ try {
     assert.equal(disabledAuthMutation.status, 403);
     // The bearer rejection revoked every old session. Use a new session for
     // independent cookie coverage, then simulate a direct database disable.
-    await test.db.prepare("UPDATE auth_users SET disabled=false WHERE id=?")
+    await test.db
+      .prepare("UPDATE auth_users SET disabled=false WHERE id=?")
       .bind(user.id)
       .run();
     const cookieSession = await auth.internalAdapter.createSession(
@@ -120,7 +121,8 @@ try {
       false,
     );
     assert.notEqual(cookieSession, null);
-    await test.db.prepare("UPDATE auth_users SET disabled=true WHERE id=?")
+    await test.db
+      .prepare("UPDATE auth_users SET disabled=true WHERE id=?")
       .bind(user.id)
       .run();
     const signature = createHmac("sha256", test.env.BETTER_AUTH_SECRET ?? "")
@@ -136,16 +138,14 @@ try {
     );
     assert.equal(disabledCookieSession.status, 403);
     assert.equal(disabledCookieMutation.status, 403);
-    const stored = await test.db.prepare(
-      "SELECT name,disabled FROM auth_users WHERE id=?",
-    )
+    const stored = await test.db
+      .prepare("SELECT name,disabled FROM auth_users WHERE id=?")
       .bind(user.id)
       .first<{ name: string; disabled: boolean }>();
     assert.equal(stored?.name, "Audit");
     assert.equal(stored.disabled, true);
-    const sessionsRemaining = await test.db.prepare(
-      "SELECT count(*) AS count FROM auth_sessions WHERE user_id=?",
-    )
+    const sessionsRemaining = await test.db
+      .prepare("SELECT count(*) AS count FROM auth_sessions WHERE user_id=?")
       .bind(user.id)
       .first<number>("count");
     assert.equal(sessionsRemaining, 0);
@@ -164,9 +164,8 @@ try {
       }),
     );
 
-    const token = await test.db.prepare(
-      "SELECT access_token FROM auth_accounts WHERE user_id=?",
-    )
+    const token = await test.db
+      .prepare("SELECT access_token FROM auth_accounts WHERE user_id=?")
       .bind(user.id)
       .first<string>("access_token");
     assert.equal(token, "local-audit-oauth-token");

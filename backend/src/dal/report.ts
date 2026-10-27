@@ -37,22 +37,32 @@ export async function createReport(
   }
   try {
     const committed = await commitBatch([
-      statement("SELECT pg_advisory_xact_lock(hashtextextended(?,0))", `reports`),
       statement(
-      "INSERT INTO reports(id,report_id,uid,content_id,type,timestamp,data) SELECT ?,?,?,?,?,?,? WHERE (SELECT count(*) FROM reports) < ? AND (SELECT count(*) FROM reports WHERE content_id=?) < ?",
-      report._id,
-      report.id,
-      report.uid,
-      report.contentId,
-      report.type,
-      report.timestamp,
-      encode(report),
-      maxReports,
-      report.contentId,
-      contentReportLimit,
-    ),
+        "SELECT pg_advisory_xact_lock(hashtextextended(?,0))",
+        `reports`,
+      ),
+      statement(
+        "INSERT INTO reports(id,report_id,uid,content_id,type,timestamp,data) SELECT ?,?,?,?,?,?,? WHERE (SELECT count(*) FROM reports) < ? AND (SELECT count(*) FROM reports WHERE content_id=?) < ?",
+        report._id,
+        report.id,
+        report.uid,
+        report.contentId,
+        report.type,
+        report.timestamp,
+        encode(report),
+        maxReports,
+        report.contentId,
+        contentReportLimit,
+      ),
     ]);
-    const inserted = committed?.[1]?.rowCount ?? (await statement("SELECT id FROM reports WHERE id=?", report._id).first() === null ? 0 : 1);
+    const inserted =
+      committed?.[1]?.rowCount ??
+      ((await statement(
+        "SELECT id FROM reports WHERE id=?",
+        report._id,
+      ).first()) === null
+        ? 0
+        : 1);
     if (inserted === 0) {
       const count = await statement(
         "SELECT count(*) AS count FROM reports",

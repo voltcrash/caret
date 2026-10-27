@@ -189,7 +189,7 @@ describe("pilot shared services in workerd", () => {
     const fresh = { ...headers, "cf-connecting-ip": "192.0.2.84" };
     await db
       .prepare(
-        "UPDATE configuration SET data=jsonb_merge_patch(data,'{\"rateLimiting\":{\"badAuthentication\":{\"enabled\":true,\"penalty\":30,\"flaggedStatusCodes\":[401]}}}'::jsonb) WHERE id='main'",
+        'UPDATE configuration SET data=jsonb_merge_patch(data,\'{"rateLimiting":{"badAuthentication":{"enabled":true,"penalty":30,"flaggedStatusCodes":[401]}}}\'::jsonb) WHERE id=\'main\'',
       )
       .run();
     expect((await worker.fetch(url, { headers: fresh })).status).toBe(401);

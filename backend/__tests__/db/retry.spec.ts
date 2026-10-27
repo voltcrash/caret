@@ -11,9 +11,18 @@ afterEach(() => {
 });
 
 describe("PostgreSQL transient write retry", () => {
-  it.each(["08006", "40001", "40P01", "57P01"])("recognizes wrapped PostgreSQL %s", (code) => {
-    expect(isTransientDatabaseError(new Error("Failed query", { cause: Object.assign(new Error("unavailable"), { code }) }))).toBe(true);
-  });
+  it.each(["08006", "40001", "40P01", "57P01"])(
+    "recognizes wrapped PostgreSQL %s",
+    (code) => {
+      expect(
+        isTransientDatabaseError(
+          new Error("Failed query", {
+            cause: Object.assign(new Error("unavailable"), { code }),
+          }),
+        ),
+      ).toBe(true);
+    },
+  );
 
   it("bounds retries and uses exponential jitter", async () => {
     vi.useFakeTimers();

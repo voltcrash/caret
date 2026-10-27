@@ -30,9 +30,10 @@ describe("Worker HTTP with PostgreSQL", () => {
       if (session === null) throw new Error("Missing session");
       token = session.token;
       await Users.addUser("Http", user.email, uid);
-      await test.db.prepare(
-        "UPDATE users SET added_at=0,data=jsonb_set(data,'{addedAt}',to_jsonb(0::bigint)) WHERE uid=?",
-      )
+      await test.db
+        .prepare(
+          "UPDATE users SET added_at=0,data=jsonb_set(data,'{addedAt}',to_jsonb(0::bigint)) WHERE uid=?",
+        )
         .bind(uid)
         .run();
     });

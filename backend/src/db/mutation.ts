@@ -77,11 +77,7 @@ export async function atomicUserWithReads<T>(
   for (let attempt = 0; attempt < 8; attempt++) {
     // Reload committed primary state after a version conflict.
     const row = (
-      await database()
-        .select()
-        .from(users)
-        .where(eq(users.uid, uid))
-        .limit(1)
+      await database().select().from(users).where(eq(users.uid, uid)).limit(1)
     )[0];
     if (!row) throw new MonkeyError(404, "User not found");
     const user = row.data;
@@ -115,8 +111,9 @@ export async function atomicUserWithReads<T>(
       };
     } catch (error) {
       const pg = postgresError(error);
-      if (pg?.code !== "23514" || pg.constraint !== "mutation_version")
-        {throw error;}
+      if (pg?.code !== "23514" || pg.constraint !== "mutation_version") {
+        throw error;
+      }
     }
   }
   throw new MonkeyError(409, "Concurrent update; please retry");

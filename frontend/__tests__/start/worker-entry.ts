@@ -53,7 +53,12 @@ export default createApplicationWorker(async (request, options) => {
       services.background(
         (async () => {
           await new Promise((resolve) => setTimeout(resolve, 5));
-          await statement("INSERT INTO probe(actor,version,isolated) VALUES(?,?,?)", id, runtime().env.VERSION ?? "", Number(runtime() === services.runtime)).run();
+          await statement(
+            "INSERT INTO probe(actor,version,isolated) VALUES(?,?,?)",
+            id,
+            runtime().env.VERSION ?? "",
+            Number(runtime() === services.runtime),
+          ).run();
         })(),
       );
       controller.close();

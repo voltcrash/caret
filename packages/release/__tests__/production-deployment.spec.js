@@ -253,7 +253,8 @@ it.each(["", "ba_dashboard_workflow_fixture"])(
           PRODUCTION_BACKEND_ENV:
             "BETTER_AUTH_SECRET=auth-secret-fixture\nBETTER_AUTH_API_KEY=existing-dashboard-key\n",
           BETTER_AUTH_API_KEY: apiKey,
-          DATABASE_URL: "postgresql://user:password@ep-fixture.neon.tech/neondb?sslmode=require",
+          DATABASE_URL:
+            "postgresql://user:password@ep-fixture.neon.tech/neondb?sslmode=require",
           PRODUCTION_FRONTEND_ENV: frontend,
         },
       });

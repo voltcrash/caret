@@ -161,7 +161,8 @@ describe("Better Auth PostgreSQL adapter", () => {
       expect((await verifySession(headers)).uid).toBe(user.id);
       await context.internalAdapter.deleteSession(session?.token ?? "");
       await expect(verifySession(headers)).rejects.toThrow();
-      await test.db.prepare("UPDATE auth_users SET disabled=true WHERE id=?")
+      await test.db
+        .prepare("UPDATE auth_users SET disabled=true WHERE id=?")
         .bind(user.id)
         .run();
       await expect(

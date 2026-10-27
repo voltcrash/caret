@@ -135,7 +135,7 @@ async function updateUser(uid: string): Promise<void> {
   //update timetyping and completedTests
   const stats = (
     await statement(
-      "SELECT language,mode,mode2,sum((data->>'testDuration')::double precision) AS \"timeTyping\",count(*)::integer AS \"completedTests\" FROM results WHERE uid=? GROUP BY language,mode,mode2",
+      'SELECT language,mode,mode2,sum((data->>\'testDuration\')::double precision) AS "timeTyping",count(*)::integer AS "completedTests" FROM results WHERE uid=? GROUP BY language,mode,mode2',
       uid,
     ).all<{
       language: Language;

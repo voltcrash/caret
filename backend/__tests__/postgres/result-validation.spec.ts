@@ -47,9 +47,10 @@ describe("result submission validation with PostgreSQL", () => {
     const account = await test.account();
     const response = await test.submit(account, { lastKeyToEnd: 0 });
     expect(response.status, await response.clone().text()).toBe(463);
-    const data = await test.db.prepare(
-      "SELECT data FROM audit_logs WHERE uid=? AND event='anticheat_rejected'",
-    )
+    const data = await test.db
+      .prepare(
+        "SELECT data FROM audit_logs WHERE uid=? AND event='anticheat_rejected'",
+      )
       .bind(account.uid)
       .first<string>("data");
     const result = scoreEvent(account.uid, 80);
@@ -109,9 +110,8 @@ describe("result submission validation with PostgreSQL", () => {
       );
       expect(profile.completedTests ?? 0).toBe(accepted ? 1 : 0);
       expect(
-        await test.db.prepare(
-          "SELECT count(*) AS n FROM results WHERE uid=?",
-        )
+        await test.db
+          .prepare("SELECT count(*) AS n FROM results WHERE uid=?")
           .bind(account.uid)
           .first("n"),
       ).toBe(accepted ? 1 : 0);
@@ -137,17 +137,17 @@ describe("result submission validation with PostgreSQL", () => {
         expect(user.completedTests).toBeUndefined();
         for (const table of ["results", "daily_entries", "weekly_entries"]) {
           expect(
-            await test.db.prepare(
-              `SELECT count(*) AS n FROM ${table} WHERE uid=?`,
-            )
+            await test.db
+              .prepare(`SELECT count(*) AS n FROM ${table} WHERE uid=?`)
               .bind(account.uid)
               .first("n"),
           ).toBe(0);
         }
         expect(
-          await test.db.prepare(
-            "SELECT count(*) AS n FROM audit_logs WHERE uid=? AND event='anticheat_rejected'",
-          )
+          await test.db
+            .prepare(
+              "SELECT count(*) AS n FROM audit_logs WHERE uid=? AND event='anticheat_rejected'",
+            )
             .bind(account.uid)
             .first("n"),
         ).toBe(1);

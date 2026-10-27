@@ -22,10 +22,24 @@ export async function addPreset(
 ): Promise<{ presetId: string }> {
   const id = newId();
   const committed = await commitBatch([
-    statement("SELECT pg_advisory_xact_lock(hashtextextended(?,0))", `presets:${uid}`),
-    statement("INSERT INTO presets(id,uid,timestamp,data) SELECT ?,?,?,? WHERE (SELECT count(*) FROM presets WHERE uid=?) < 10", id, uid, Date.now(), encode(preset), uid),
+    statement(
+      "SELECT pg_advisory_xact_lock(hashtextextended(?,0))",
+      `presets:${uid}`,
+    ),
+    statement(
+      "INSERT INTO presets(id,uid,timestamp,data) SELECT ?,?,?,? WHERE (SELECT count(*) FROM presets WHERE uid=?) < 10",
+      id,
+      uid,
+      Date.now(),
+      encode(preset),
+      uid,
+    ),
   ]);
-  const inserted = committed?.[1]?.rowCount ?? (await statement("SELECT id FROM presets WHERE id=?", id).first() === null ? 0 : 1);
+  const inserted =
+    committed?.[1]?.rowCount ??
+    ((await statement("SELECT id FROM presets WHERE id=?", id).first()) === null
+      ? 0
+      : 1);
   if (inserted === 0) throw new MonkeyError(409, "Too many presets");
   return { presetId: id };
 }

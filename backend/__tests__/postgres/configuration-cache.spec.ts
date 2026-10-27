@@ -19,9 +19,10 @@ describe("isolate configuration cache", () => {
       async () => (await getCachedConfiguration()).maintenance,
     );
   const setMaintenance = async (value: boolean): Promise<void> => {
-    await test.db.prepare(
-      "UPDATE configuration SET data=jsonb_set(data,'{maintenance}',?::jsonb) WHERE id='main'",
-    )
+    await test.db
+      .prepare(
+        "UPDATE configuration SET data=jsonb_set(data,'{maintenance}',?::jsonb) WHERE id='main'",
+      )
       .bind(String(value))
       .run();
   };

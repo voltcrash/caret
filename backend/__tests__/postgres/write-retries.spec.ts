@@ -23,13 +23,19 @@ describe("receipt-protected PostgreSQL commits", () => {
         const sql = scope.sql;
         const original = sql.transaction.bind(sql);
         let batches = 0;
-        const mock = vi.spyOn(sql, "transaction").mockImplementation(async (...args) => {
-          batches++;
-          if (batches === 1 && failure === "before") throw new Error("Network connection lost");
-          const result = await original(...args);
-          if (batches === 1 && failure === "after") throw new Error("Network connection lost");
-          return result;
-        });
+        const mock = vi
+          .spyOn(sql, "transaction")
+          .mockImplementation(async (...args) => {
+            batches++;
+            if (batches === 1 && failure === "before") {
+              throw new Error("Network connection lost");
+            }
+            const result = await original(...args);
+            if (batches === 1 && failure === "after") {
+              throw new Error("Network connection lost");
+            }
+            return result;
+          });
         let callbacks = 0;
         const result = await atomicUser(uid, async () => {
           callbacks++;
@@ -47,7 +53,7 @@ describe("receipt-protected PostgreSQL commits", () => {
         mock.mockRestore();
         expect(result).toBe("saved");
         mock.mockRestore();
-      expect(callbacks).toBe(1);
+        expect(callbacks).toBe(1);
         expect(batches).toBe(failure === "before" ? 2 : 1);
         expect(
           await statement(
@@ -101,12 +107,20 @@ describe("receipt-protected PostgreSQL commits", () => {
       const original = sql.transaction.bind(sql);
       let pending: Parameters<typeof original> | undefined;
       let batches = 0;
-      const mock = vi.spyOn(sql, "transaction").mockImplementation(async (...args) => {
-        batches++;
-        if (batches === 1) { pending = args; throw new Error("Network connection lost"); }
-        if (pending !== undefined) { await original(...pending); pending = undefined; }
-        return await original(...args);
-      });
+      const mock = vi
+        .spyOn(sql, "transaction")
+        .mockImplementation(async (...args) => {
+          batches++;
+          if (batches === 1) {
+            pending = args;
+            throw new Error("Network connection lost");
+          }
+          if (pending !== undefined) {
+            await original(...pending);
+            pending = undefined;
+          }
+          return await original(...args);
+        });
       let callbacks = 0;
       await atomicUser("delayed-commit", async () => {
         callbacks++;
@@ -129,9 +143,12 @@ describe("receipt-protected PostgreSQL commits", () => {
     await seedUser(test.env, "retry-exhausted");
     await withRuntime(test.env, async () => {
       let batches = 0;
-      const mock = vi.spyOn(runtime().sql, "transaction").mockImplementation(async () => {
-        batches++; throw new Error("Network connection lost");
-      });
+      const mock = vi
+        .spyOn(runtime().sql, "transaction")
+        .mockImplementation(async () => {
+          batches++;
+          throw new Error("Network connection lost");
+        });
       let callbacks = 0;
       await expect(
         atomicUser("retry-exhausted", async () => {
@@ -153,9 +170,11 @@ describe("receipt-protected PostgreSQL commits", () => {
   });
 
   it("purges expired receipts while retaining recent commits", async () => {
-    await test.db.prepare(
-      "INSERT INTO write_receipts(id,created_at) VALUES('expired-receipt',0)",
-    ).run();
+    await test.db
+      .prepare(
+        "INSERT INTO write_receipts(id,created_at) VALUES('expired-receipt',0)",
+      )
+      .run();
     await withRuntime(test.env, async () => {
       await commitBatch([
         statement("INSERT INTO public_stats(id) VALUES('recent-receipt')"),

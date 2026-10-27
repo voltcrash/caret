@@ -27,16 +27,18 @@ export async function get(
   quoteId: number,
   language: Language,
 ): Promise<DBQuoteRating | null> {
-  const row = (await database()
-    .select()
-    .from(quoteRatings)
-    .where(
-      and(
-        eq(quoteRatings.quoteId, quoteId),
-        eq(quoteRatings.language, language),
-      ),
-    )
-    .limit(1))[0];
+  const row = (
+    await database()
+      .select()
+      .from(quoteRatings)
+      .where(
+        and(
+          eq(quoteRatings.quoteId, quoteId),
+          eq(quoteRatings.language, language),
+        ),
+      )
+      .limit(1)
+  )[0];
   return row
     ? ({
         ...row,

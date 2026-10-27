@@ -204,7 +204,10 @@ describe("test-only changes", () => {
       "frontend/update-e2e/deployment.spec.ts",
       ["frontend-lint", "start-updates"],
     ],
-    ["backend/__tests__/postgres/users.spec.ts", ["backend-lint", "backend-test"]],
+    [
+      "backend/__tests__/postgres/users.spec.ts",
+      ["backend-lint", "backend-test"],
+    ],
     ["packages/schemas/__tests__/results.spec.ts", ["packages"]],
     ["packages/funbox/__test__/list.spec.ts", ["packages"]],
   ])("%s runs only its own suite", (file, expected) => {

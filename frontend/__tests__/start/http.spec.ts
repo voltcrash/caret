@@ -227,9 +227,7 @@ describe("declared Start HTTP protocols without Hono", () => {
     expect(saved.status, await saved.clone().text()).toBe(200);
     expect(
       await db
-        .prepare(
-          "SELECT data->>'theme' AS theme FROM configs WHERE uid=?",
-        )
+        .prepare("SELECT data->>'theme' AS theme FROM configs WHERE uid=?")
         .bind(session.uid)
         .first("theme"),
     ).toBe("nord");

@@ -27,9 +27,7 @@ export const authUsers = pgTable("auth_users", {
   id: id(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  emailVerified: boolean("email_verified")
-    .notNull()
-    .default(false),
+  emailVerified: boolean("email_verified").notNull().default(false),
   image: text("image"),
   disabled: boolean("disabled").notNull().default(false),
   createdAt: date("created_at"),
@@ -66,8 +64,16 @@ export const authAccounts = pgTable(
     accessToken: text("access_token"),
     refreshToken: text("refresh_token"),
     idToken: text("id_token"),
-    accessTokenExpiresAt: timestamp("access_token_expires_at", { withTimezone: true, mode: "date", precision: 3 }),
-    refreshTokenExpiresAt: timestamp("refresh_token_expires_at", { withTimezone: true, mode: "date", precision: 3 }),
+    accessTokenExpiresAt: timestamp("access_token_expires_at", {
+      withTimezone: true,
+      mode: "date",
+      precision: 3,
+    }),
+    refreshTokenExpiresAt: timestamp("refresh_token_expires_at", {
+      withTimezone: true,
+      mode: "date",
+      precision: 3,
+    }),
     scope: text("scope"),
     password: text("password"),
     createdAt: date("created_at"),
@@ -107,9 +113,7 @@ export const users = pgTable("users", {
   startedTests: integer("started_tests").notNull().default(0),
   banned: boolean("banned").notNull().default(false),
   lbOptOut: boolean("lb_opt_out").notNull().default(false),
-  needsToChangeName: boolean("needs_to_change_name")
-    .notNull()
-    .default(false),
+  needsToChangeName: boolean("needs_to_change_name").notNull().default(false),
   version: integer("version").notNull().default(0),
   data: json<DBUser>(),
 });
@@ -249,9 +253,7 @@ export const logs = pgTable(
     uid: text("uid").notNull(),
     event: text("event").notNull(),
     timestamp: integer("timestamp").notNull(),
-    important: boolean("important")
-      .notNull()
-      .default(false),
+    important: boolean("important").notNull().default(false),
     data: json(),
   },
   (t) => [
@@ -281,7 +283,7 @@ export const leaderboardGenerations = pgTable("leaderboard_generations", {
   board: text("board").primaryKey(),
   generation: text("generation").notNull(),
   updatedAt: integer("updated_at").notNull(),
-  /** Snapshot rows in `generation`; NULL for generations before 0019. */
+  /** Published snapshot size; nullable for manually seeded snapshots. */
   entries: integer("entries"),
 });
 export const leaderboardSnapshots = pgTable(
@@ -316,7 +318,11 @@ export const dailyEntries = pgTable(
   (t) => [
     primaryKey({ columns: [t.board, t.period, t.uid] }),
     index("daily_entries_rank_idx").on(t.board, t.period, t.score, t.uid),
-    index("daily_entries_summary_idx").on(t.board, t.period, sql`((${t.data}->>'wpm')::double precision)`),
+    index("daily_entries_summary_idx").on(
+      t.board,
+      t.period,
+      sql`((${t.data}->>'wpm')::double precision)`,
+    ),
     index("daily_entries_expiry_idx").on(t.expiresAt),
     index("daily_entries_owner_idx").on(t.uid),
   ],
