@@ -34,7 +34,10 @@ THEN NULL ELSE '{
   "users": {
     "signUp": true,
     "profiles": {"enabled": true},
-    "autoBan": {"enabled": false}
+    "autoBan": {"enabled": false},
+    "xp": {"enabled": true, "gainMultiplier": 1}
   },
+  "dailyLeaderboards": {"enabled": true},
+  "leaderboards": {"weeklyXp": {"enabled": true}},
   "results": {"savingEnabled": true, "objectHashCheckEnabled": true}
 }'::jsonb END;

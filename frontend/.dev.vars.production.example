@@ -1,3 +1,5 @@
+# Neon PostgreSQL connection URL; use a separate branch/database per environment.
+DATABASE_URL=postgresql://user:password@ep-replace.neon.tech/neondb?sslmode=require
 # Copy to .dev.vars.production, chmod 600; never commit actual secrets.
 # Generate once, preserve across redeployments. Do not reuse staging/local secrets.
 BETTER_AUTH_SECRET=replace-with-a-random-secret-at-least-32-characters

@@ -25,7 +25,10 @@
     "not_found_handling": "none"
   },
   "triggers": {
-    "crons": ["*/15 * * * *", "0 * * * *"]
+    "crons": [
+      "*/15 * * * *",
+      "0 * * * *"
+    ]
   },
   "vars": {
     "MODE": "production",
@@ -36,6 +39,7 @@
   },
   "secrets": {
     "required": [
+      "DATABASE_URL",
       "BETTER_AUTH_SECRET",
       "TURNSTILE_SECRET_KEY",
       "GITHUB_CLIENT_ID",
@@ -133,16 +137,13 @@
     }
   ],
   "analytics_engine_datasets": [
-    { "binding": "METRICS", "dataset": "caret_requests" }
-  ],
-  "d1_databases": [
     {
-      "binding": "DB",
-      "database_name": "caret-production",
-      "database_id": "43d104e9-2fef-43db-95d7-c64a08310714",
-      "migrations_dir": "../backend/migrations"
+      "binding": "METRICS",
+      "dataset": "caret_requests"
     }
   ],
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
   "upload_source_maps": true
 }

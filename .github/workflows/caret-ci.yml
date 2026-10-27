@@ -97,9 +97,9 @@ jobs:
               - 'backend/__tests__/**'
               # Anticheat specs replay the immutable engine reference fixtures.
               - 'packages/typing-fixtures/reference/**'
-            # Backend test data and D1 helpers the frontend unit and SSR suites import.
+            # Backend test data and PostgreSQL helpers the frontend unit and SSR suites import.
             backend-test-support:
-              - 'backend/__tests__/{__testData__/**,d1/helpers.ts,d1/result-support.ts}'
+              - 'backend/__tests__/{__testData__/**,postgres/**}'
             frontend:
               - 'frontend/**'
               - '!frontend/static/**'

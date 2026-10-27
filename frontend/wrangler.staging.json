@@ -16,7 +16,10 @@
     "not_found_handling": "none"
   },
   "triggers": {
-    "crons": ["*/15 * * * *", "0 * * * *"]
+    "crons": [
+      "*/15 * * * *",
+      "0 * * * *"
+    ]
   },
   "vars": {
     "MODE": "production",
@@ -115,16 +118,18 @@
     }
   ],
   "analytics_engine_datasets": [
-    { "binding": "METRICS", "dataset": "caret_staging_requests" }
-  ],
-  "d1_databases": [
     {
-      "binding": "DB",
-      "database_name": "caret-staging",
-      "database_id": "17b0ae8b-92bf-4d7e-a29e-0ac4cc6f2b59",
-      "migrations_dir": "../backend/migrations"
+      "binding": "METRICS",
+      "dataset": "caret_staging_requests"
     }
   ],
-  "compatibility_flags": ["nodejs_compat"],
-  "upload_source_maps": true
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "upload_source_maps": true,
+  "secrets": {
+    "required": [
+      "DATABASE_URL"
+    ]
+  }
 }
