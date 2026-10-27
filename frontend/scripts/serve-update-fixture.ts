@@ -11,13 +11,18 @@ async function main(): Promise<void> {
   const options: MiniflareOptions[] = [];
   const builds = await Promise.all(
     ["update-a", "update-b"].map(
-      async (build) =>
+      async (build, index) =>
         await createWorkerd(
           false,
           undefined,
           false,
           { FRONTEND_URL: origin, BETTER_AUTH_URL: `${origin}/api/auth` },
-          { build, onOptions: (config) => options.push(config) },
+          {
+            build,
+            onOptions: (config) => {
+              options[index] = config;
+            },
+          },
         ),
     ),
   );
