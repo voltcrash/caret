@@ -1,5 +1,28 @@
 import { expect, test } from "./fixtures";
 
+test("keyboard scrolling can read the overview without refocusing the typing test", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#startupScreen")).toBeHidden();
+  const input = page.locator("#wordsInput");
+  await expect(input).toBeFocused();
+  await page.locator("#about-caret").click();
+  await expect(input).not.toBeFocused();
+  for (const key of ["ArrowDown", "PageDown"]) {
+    const scrollY = await page.evaluate(() => window.scrollY);
+    await page.keyboard.press(key);
+    await expect(input).not.toBeFocused();
+    await expect
+      .poll(async () => await page.evaluate(() => window.scrollY))
+      .toBeGreaterThan(scrollY);
+  }
+  await page.getByRole("link", { name: "Caret Home", exact: true }).click();
+  await page.locator("#wordsInput").evaluate((element) => element.blur());
+  await page.keyboard.press("a");
+  await expect(input).toBeFocused();
+});
+
 test("typing guides preserve the test layout and update metadata on client navigation", async ({
   page,
 }) => {

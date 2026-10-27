@@ -52,7 +52,22 @@ export function TypingEvents(): null {
         // Keep the expensive popup check outside the focused keystroke path.
         if (
           !isAnyPopupVisible() &&
-          !["Enter", " ", "Escape", "Tab", ...ModifierKeys].includes(e.key) &&
+          // Navigation keys must keep scrolling readable content below the test.
+          ![
+            "Enter",
+            " ",
+            "Escape",
+            "Tab",
+            "ArrowUp",
+            "ArrowDown",
+            "ArrowLeft",
+            "ArrowRight",
+            "PageUp",
+            "PageDown",
+            "Home",
+            "End",
+            ...ModifierKeys,
+          ].includes(e.key) &&
           !e.metaKey &&
           !e.ctrlKey
         ) {
