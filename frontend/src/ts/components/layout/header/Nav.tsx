@@ -118,6 +118,17 @@ export function Nav(): JSXElement {
         }}
         router-link
       />
+      <Button
+        variant="text"
+        fa={{ icon: "fa-circle-info", fixedWidth: true }}
+        class={buttonClass()}
+        href="/about"
+        dataset={{
+          "data-nav-item": "about",
+          "aria-label": "About Caret",
+        }}
+        router-link
+      />
       {/* touch has no ctrl+shift+p or esc, so the palette gets a nav button */}
       <Button
         variant="text"

@@ -66,6 +66,14 @@ export function StaticHeader(props: { fixed: boolean }): JSXElement {
           dataset={{ "data-nav-item": "github", "aria-label": "GitHub" }}
         />
         {item("/settings", "fa-cog", "Settings")}
+        <Button
+          variant="text"
+          fa={{ icon: "fa-circle-info", fixedWidth: true }}
+          router-link
+          href="/about"
+          class={navButton}
+          dataset={{ "data-nav-item": "about", "aria-label": "About Caret" }}
+        />
         <div class="grow"></div>
         {item("/login", "fa-user", "Account")}
       </nav>

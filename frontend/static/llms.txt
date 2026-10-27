@@ -17,10 +17,12 @@ Caret began from the Monkeytype codebase and is now an independent project.
 
 ## Public pages
 
-- [Typing test](https://caret.voltcrash.com/): Start a free test; product overview and common questions below the test.
-- [Typing practice](https://caret.voltcrash.com/typing-practice): A practice routine, accuracy, modes and consistent comparisons.
-- [Typing speed test](https://caret.voltcrash.com/typing-speed-test): Taking a test and understanding WPM, raw speed and accuracy.
-- [Typing for programmers](https://caret.voltcrash.com/typing-for-programmers): Code word lists, custom text and practice limits.
+- [Typing test](https://caret.voltcrash.com/): Start a free typing test.
+- [About Caret](https://caret.voltcrash.com/about): Product overview, practice guides and common questions.
+- [Typing guides](https://caret.voltcrash.com/guide): Browse all typing practice guides.
+- [Typing practice](https://caret.voltcrash.com/guide/typing-practice): A practice routine, accuracy, modes and consistent comparisons.
+- [Typing speed test](https://caret.voltcrash.com/guide/typing-speed-test): Taking a test and understanding WPM, raw speed and accuracy.
+- [Typing for programmers](https://caret.voltcrash.com/guide/typing-for-programmers): Code word lists, custom text and practice limits.
 - [Leaderboards](https://caret.voltcrash.com/leaderboards): Public typing and XP rankings.
 - [Privacy policy](https://caret.voltcrash.com/privacy-policy.html): Data handling and privacy information.
 
