@@ -3,8 +3,8 @@ import type { JSXElement } from "solid-js";
 import { useQuery } from "@tanstack/solid-query";
 import { createFileRoute } from "@tanstack/solid-router";
 
-import { pageHead } from "../app/seo";
 import { urlSearch } from "../app/search";
+import { pageHead } from "../app/seo";
 import { onlyCachedOnServer } from "../data/prefetch";
 import { sessionOptions } from "../features/auth/session";
 import { SettingsPage } from "../features/settings/page";

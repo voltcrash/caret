@@ -13,14 +13,17 @@ export const Route = createFileRoute("/_app/typing-for-programmers")({
 
 function TypingForProgrammers() {
   return (
-    <Guide title={title} intro="Caret offers code word lists and custom text for programmers who want to practice typing technical material. Use them alongside ordinary words and quotes to vary your practice.">
+    <Guide
+      title={title}
+      intro="Caret offers code word lists and custom text for programmers who want to practice typing technical material. Use them alongside ordinary words and quotes to vary your practice."
+    >
       <section>
         <h2>Practice a programming language word list</h2>
         <p>
-          Open the typing test's language selector and look for a code list,
-          such as code_javascript or code_python. Choose time or word mode, then
-          type the displayed material. Code lists are practice vocabulary; they
-          are not complete programs or coding exercises.
+          Open the typing test language selector and look for a code list, such
+          as code_javascript or code_python. Choose time or word mode, then type
+          the displayed material. Code lists are practice vocabulary; they are
+          not complete programs or coding exercises.
         </p>
         <p>
           A code list can feel slower than a familiar English list. That is a
@@ -47,14 +50,16 @@ function TypingForProgrammers() {
         <ol class="list-decimal space-y-3 pl-6">
           <li>Warm up with ordinary words using your usual keyboard layout.</li>
           <li>Take a short test with your chosen code word list.</li>
-          <li>Notice recurring mistakes in capitals, symbols or identifiers.</li>
+          <li>
+            Notice recurring mistakes in capitals, symbols or identifiers.
+          </li>
           <li>Practice a small custom passage containing those patterns.</li>
           <li>Repeat the same code list and compare accuracy and WPM.</li>
         </ol>
         <p>
-          Adjust Caret's font, theme and caret for readability. Keep your
-          keyboard layout and test settings consistent when measuring progress.
-          Include breaks instead of continuing through fatigue.
+          Adjust the font, theme and caret for readability. Keep your keyboard
+          layout and test settings consistent when measuring progress. Include
+          breaks instead of continuing through fatigue.
         </p>
       </section>
       <section>

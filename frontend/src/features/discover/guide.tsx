@@ -1,5 +1,6 @@
-import { Link } from "@tanstack/solid-router";
 import type { ParentProps } from "solid-js";
+
+import { Link } from "@tanstack/solid-router";
 
 import { publicEnv } from "../../app/public-env";
 import { pageHead } from "../../app/seo";
@@ -35,7 +36,9 @@ export function Guide(props: ParentProps<{ title: string; intro: string }>) {
   return (
     <article class="mx-auto grid w-full max-w-3xl content-start gap-8 py-8 leading-relaxed text-text [&_h2]:text-xl [&_h2]:text-main [&_section]:grid [&_section]:gap-4">
       <nav aria-label="Breadcrumb" class="text-sm">
-        <Link to="/" class="underline underline-offset-4">Caret</Link>
+        <Link to="/" class="underline underline-offset-4">
+          Caret
+        </Link>
         <span aria-hidden="true"> / </span>
         <span>{props.title}</span>
       </nav>
@@ -47,15 +50,36 @@ export function Guide(props: ParentProps<{ title: string; intro: string }>) {
         </Link>
       </header>
       {props.children}
-      <nav aria-label="More typing guides" class="grid gap-3 border-t border-sub-alt pt-8">
+      <nav
+        aria-label="More typing guides"
+        class="grid gap-3 border-t border-sub-alt pt-8"
+      >
         <h2>Keep practicing</h2>
-        <Link to="/typing-practice" class="w-fit underline underline-offset-4">Typing practice and accuracy</Link>
-        <Link to="/typing-speed-test" class="w-fit underline underline-offset-4">Typing speed and WPM</Link>
-        <Link to="/typing-for-programmers" class="w-fit underline underline-offset-4">Typing for programmers</Link>
+        <Link to="/typing-practice" class="w-fit underline underline-offset-4">
+          Typing practice and accuracy
+        </Link>
+        <Link
+          to="/typing-speed-test"
+          class="w-fit underline underline-offset-4"
+        >
+          Typing speed and WPM
+        </Link>
+        <Link
+          to="/typing-for-programmers"
+          class="w-fit underline underline-offset-4"
+        >
+          Typing for programmers
+        </Link>
       </nav>
       <p class="text-sm text-sub">
         Written for Caret by Caret contributors. Caret is free and open source;{" "}
-        <a href="https://github.com/voltcrash/caret" class="underline underline-offset-4">view the source or suggest a correction</a>.
+        <a
+          href="https://github.com/voltcrash/caret"
+          class="underline underline-offset-4"
+        >
+          view the source or suggest a correction
+        </a>
+        .
       </p>
     </article>
   );

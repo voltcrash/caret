@@ -2,8 +2,8 @@ import type { JSXElement } from "solid-js";
 
 import { createFileRoute } from "@tanstack/solid-router";
 
-import { pageHead } from "../app/seo";
 import { stringifySearch, urlSearch } from "../app/search";
+import { pageHead } from "../app/seo";
 import { leaderboardOptions } from "../data/leaderboards";
 import { prefetch } from "../data/prefetch";
 import { LeaderboardPage } from "../features/leaderboards/page";

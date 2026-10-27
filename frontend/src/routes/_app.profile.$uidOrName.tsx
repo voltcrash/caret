@@ -5,8 +5,8 @@ import { createFileRoute, notFound } from "@tanstack/solid-router";
 import { isServer } from "solid-js/web";
 import { z } from "zod";
 
-import { pageHead } from "../app/seo";
 import { urlSearch } from "../app/search";
+import { pageHead } from "../app/seo";
 import { isUserNotFound, profileOptions } from "../data/profile";
 import { ProfileMissing } from "../features/profile/missing";
 import {

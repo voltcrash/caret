@@ -40,13 +40,22 @@ export function HomeOverview() {
         </div>
         <nav aria-label="Typing practice guides" class="grid gap-3">
           <h2 class="text-xl text-main">Typing practice guides</h2>
-          <Link to="/typing-practice" class="w-fit underline underline-offset-4">
+          <Link
+            to="/typing-practice"
+            class="w-fit underline underline-offset-4"
+          >
             How to practice typing and build accuracy
           </Link>
-          <Link to="/typing-speed-test" class="w-fit underline underline-offset-4">
+          <Link
+            to="/typing-speed-test"
+            class="w-fit underline underline-offset-4"
+          >
             How to test your typing speed and understand WPM
           </Link>
-          <Link to="/typing-for-programmers" class="w-fit underline underline-offset-4">
+          <Link
+            to="/typing-for-programmers"
+            class="w-fit underline underline-offset-4"
+          >
             Typing practice for programmers
           </Link>
         </nav>
@@ -59,14 +68,17 @@ export function HomeOverview() {
           </p>
           <h3>Can I practice with my own text?</h3>
           <p>
-            Yes. Choose custom mode to practice text you provide. Use quote
-            mode for sentences or select a language word list for word practice.
+            Yes. Choose custom mode to practice text you provide. Use quote mode
+            for sentences or select a language word list for word practice.
           </p>
           <h3>Is Caret open source?</h3>
           <p>
             Yes. Caret is an independent project that began from the Monkeytype
             codebase. Its source is available under the GPL-3.0 license on{" "}
-            <a href="https://github.com/voltcrash/caret" class="underline underline-offset-4">
+            <a
+              href="https://github.com/voltcrash/caret"
+              class="underline underline-offset-4"
+            >
               GitHub
             </a>
             .

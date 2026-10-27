@@ -2,7 +2,7 @@ import { publicEnv } from "./public-env";
 import { homeDescription, homeTitle } from "./seo";
 
 /** Only public, repository-verified facts; no invented reviews or ratings. */
-export function homeStructuredData() {
+export function homeStructuredData(): Record<string, unknown> {
   const url = `${publicEnv.origin}/`;
   return {
     "@context": "https://schema.org",
@@ -52,7 +52,10 @@ export function homeStructuredData() {
 }
 
 /** Escaping '<' keeps JSON inside its script even when text contains HTML. */
-export function structuredDataScript(data: object) {
+export function structuredDataScript(data: object): {
+  type: string;
+  children: string;
+} {
   return {
     type: "application/ld+json",
     children: JSON.stringify(data).replaceAll("<", "\\u003c"),
