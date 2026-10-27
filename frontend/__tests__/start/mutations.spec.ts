@@ -178,10 +178,12 @@ describe("ordinary server-function mutations with real PostgreSQL", () => {
       },
     ]);
     expect(
-      JSON.parse((await db
-        .prepare("SELECT data FROM presets WHERE uid=?")
-        .bind(actor.uid)
-        .first<string>("data")) ?? "{}"),
+      JSON.parse(
+        (await db
+          .prepare("SELECT data FROM presets WHERE uid=?")
+          .bind(actor.uid)
+          .first<string>("data")) ?? "{}",
+      ),
     ).toEqual(legacy);
   });
 
