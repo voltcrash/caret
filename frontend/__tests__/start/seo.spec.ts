@@ -12,7 +12,7 @@ describe("search and AI discovery in the built Worker", () => {
   });
   afterAll(async () => await mf?.dispose());
 
-  it("serves the product explanation and structured data without executing JavaScript", async () => {
+  it("serves the collapsed product explanation and structured data without executing JavaScript", async () => {
     const response = await mf.dispatchFetch(`${origin}/?utm_source=search`);
     expect(response.status).toBe(200);
     const html = await response.text();
@@ -22,11 +22,17 @@ describe("search and AI discovery in the built Worker", () => {
     expect(head).toContain('property="og:url"');
     expect(head).toContain('name="twitter:description"');
     expect(head).not.toContain("noindex");
-    expect(html).toContain('id="about-caret"');
-    expect(html).toContain("no account is needed");
-    expect(html).toContain('href="/typing-practice"');
-    expect(html).toContain('href="/typing-speed-test"');
-    expect(html).toContain('href="/typing-for-programmers"');
+    const overview = /<details\b([^>]*)>([\s\S]*?)<\/details>/.exec(html);
+    expect(overview).not.toBeNull();
+    expect(overview?.[1]).not.toMatch(/\bopen(?:\s|=|$)/);
+    expect(overview?.[2]).toMatch(
+      /<summary\b[^>]*>About Caret &amp; typing guides<\/summary>/,
+    );
+    expect(overview?.[2]).toContain('id="about-caret"');
+    expect(overview?.[2]).toContain("no account is needed");
+    expect(overview?.[2]).toContain('href="/typing-practice"');
+    expect(overview?.[2]).toContain('href="/typing-speed-test"');
+    expect(overview?.[2]).toContain('href="/typing-for-programmers"');
     expect(html).toContain("<noscript");
     expect(html).toContain('id="nocss"');
 
