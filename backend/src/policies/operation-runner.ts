@@ -15,7 +15,6 @@ import { verifyConfiguration } from "./configuration";
 import { getOperation, type OperationId } from "./operations";
 import { verifyPermissions } from "./permission";
 import { EDGE_CACHE_SECONDS } from "./edge-cache";
-import { preferReplicas } from "../runtime/env";
 import { ROOT_LIMIT } from "./rate-counter";
 import {
   assertGoodAuthentication,
@@ -204,9 +203,6 @@ export async function execute<K extends OperationId>(
  * old, so a lagging read replica is acceptable. Call before `admit` and only
  * when the invocation runs this operation alone.
  */
-export function routeSharedRead(id: OperationId): void {
-  if (EDGE_CACHE_SECONDS[id] !== undefined) preferReplicas();
-}
 
 function shareable(invocation: Invocation, id: OperationId): void {
   const seconds = EDGE_CACHE_SECONDS[id];

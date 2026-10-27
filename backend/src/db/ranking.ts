@@ -1,5 +1,5 @@
 import type { Client } from "@caret/schemas/shared";
-import type { D1PreparedStatement } from "@cloudflare/workers-types";
+import type { PreparedQuery } from "./query";
 import { statement } from "./client";
 export type RankingRow = {
   uid: string;
@@ -29,13 +29,13 @@ export async function rankingPage(
   // the whole board on every page.
   const [rows, summary] = await Promise.all([
     statement(
-      `SELECT uid,data,${score} AS score${table === "weekly_entries" ? ",time_typed_seconds AS timeTypedSeconds" : ""} FROM ${table} WHERE ${scope} ORDER BY ${score} DESC,uid DESC LIMIT ? OFFSET ?`,
+      `SELECT uid,data::text AS data,${score} AS score${table === "weekly_entries" ? ',time_typed_seconds AS "timeTypedSeconds"'  : ""} FROM ${table} WHERE ${scope} ORDER BY ${score} DESC,uid DESC LIMIT ? OFFSET ?`,
       ...values,
       Math.min(pageSize, 1000),
       offset,
     ).all<Omit<RankingRow, "rank">>(),
     statement(
-      `SELECT count(*) AS count,coalesce(min(json_extract(data,'$.wpm')),0) AS minWpm FROM ${table} WHERE ${scope}`,
+      `SELECT count(*)::integer AS count,coalesce(min((data->>'wpm')::double precision),0) AS "minWpm" FROM ${table} WHERE ${scope}`,
       ...values,
     ).first<{ count: number; minWpm: number }>(),
   ]);
@@ -71,7 +71,7 @@ export function rankingUserStatement(
   uid: string,
   board?: string,
   client: Client = "web",
-): D1PreparedStatement {
+): PreparedQuery {
   const score = table === "daily_entries" ? "score" : "xp";
   const clientScope = table === "weekly_entries" ? "AND client=?" : "";
   const scope = `period=? AND expires_at>? ${board === undefined ? "" : "AND board=?"} ${clientScope}`;
@@ -79,9 +79,9 @@ export function rankingUserStatement(
   if (board !== undefined) scopeValues.push(board);
   if (table === "weekly_entries") scopeValues.push(client);
   // Read one profile, then count higher scores using the ranking index.
-  const ahead = `SELECT count(*) FROM ${table} WHERE ${scope} AND (${score},uid)>(me.score,me.uid)`;
+  const ahead = `SELECT count(*)::integer FROM ${table} WHERE ${scope} AND (${score},uid)>(me.score,me.uid)`;
   return statement(
-    `WITH me AS (SELECT uid,data,${score} AS score${table === "weekly_entries" ? ",time_typed_seconds AS timeTypedSeconds" : ""} FROM ${table} WHERE ${scope} AND uid=?) SELECT me.*,(1+(${ahead})) AS rank FROM me`,
+    `WITH me AS (SELECT uid,data::text AS data,${score} AS score${table === "weekly_entries" ? ',time_typed_seconds AS "timeTypedSeconds"'  : ""} FROM ${table} WHERE ${scope} AND uid=?) SELECT me.*,(1+(${ahead})) AS rank FROM me`,
     ...scopeValues,
     uid,
     ...scopeValues,
