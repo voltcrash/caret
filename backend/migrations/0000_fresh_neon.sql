@@ -261,7 +261,7 @@ CREATE INDEX "auth_sessions_expiry_idx" ON "auth_sessions" USING btree ("expires
 CREATE INDEX "auth_verifications_identifier_idx" ON "auth_verifications" USING btree ("identifier");--> statement-breakpoint
 CREATE INDEX "auth_verifications_expiry_idx" ON "auth_verifications" USING btree ("expires_at");--> statement-breakpoint
 CREATE INDEX "daily_entries_rank_idx" ON "daily_entries" USING btree ("board","period","score","uid");--> statement-breakpoint
-CREATE INDEX "daily_entries_summary_idx" ON "daily_entries" USING btree ("board","period",(("data"->>'wpm')::double precision));--> statement-breakpoint
+CREATE INDEX "daily_entries_summary_idx" ON "daily_entries" USING btree ("board","period","expires_at",(("data"->>'wpm')::double precision));--> statement-breakpoint
 CREATE INDEX "daily_entries_expiry_idx" ON "daily_entries" USING btree ("expires_at");--> statement-breakpoint
 CREATE INDEX "daily_entries_owner_idx" ON "daily_entries" USING btree ("uid");--> statement-breakpoint
 CREATE INDEX "leaderboard_bests_score_idx" ON "leaderboard_bests" USING btree ("board","wpm","acc","timestamp");--> statement-breakpoint

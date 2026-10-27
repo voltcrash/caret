@@ -321,6 +321,7 @@ export const dailyEntries = pgTable(
     index("daily_entries_summary_idx").on(
       t.board,
       t.period,
+      t.expiresAt,
       sql`((${t.data}->>'wpm')::double precision)`,
     ),
     index("daily_entries_expiry_idx").on(t.expiresAt),

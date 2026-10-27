@@ -618,6 +618,12 @@
               "nulls": "last"
             },
             {
+              "expression": "expires_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
               "expression": "((\"data\"->>'wpm')::double precision)",
               "asc": true,
               "isExpression": true,
