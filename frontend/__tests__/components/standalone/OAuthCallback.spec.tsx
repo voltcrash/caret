@@ -46,6 +46,12 @@ it("rejects a callback without a request ID", () => {
   expect(postMessage).not.toHaveBeenCalled();
   expect(window.close).not.toHaveBeenCalled();
 });
+it("shows request-less OAuth errors without notifying the opener", () => {
+  const { container } = mount("error=state_invalid");
+  expect(container).toHaveTextContent("state_invalid");
+  expect(postMessage).not.toHaveBeenCalled();
+  expect(window.close).not.toHaveBeenCalled();
+});
 it("shows the result when opened without an opener", () => {
   vi.stubGlobal("opener", null);
   const { container } = mount("requestId=nonce");
