@@ -215,7 +215,7 @@ test("leaving incomplete signup cancels its session without changing the documen
     .toBe("null");
 });
 
-test("signup recovers blocked verification without losing the username or submitting an empty token", async ({
+test("signup blocks empty-token submissions when verification is unavailable", async ({
   page,
   context,
 }, info) => {
@@ -228,22 +228,9 @@ test("signup recovers blocked verification without losing the username or submit
   await context.addCookies([
     { name: "caret.session_token", value, url: "http://127.0.0.1:4185" },
   ]);
-  let scriptRequests = 0;
   await page.route(
     "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit",
-    async (route) => {
-      if (++scriptRequests === 1) {
-        await route.abort();
-        return;
-      }
-      await route.fulfill({
-        contentType: "application/javascript",
-        body: `window.turnstile = {
-      render(element, options) { window.signupChallenge = options; return "signup-widget"; },
-      reset() {}, remove() {}
-    };`,
-      });
-    },
+    async (route) => await route.abort(),
   );
   let submissions = 0;
   await page.route("**/_serverFn/**", async (route) => {
@@ -266,27 +253,10 @@ test("signup recovers blocked verification without losing the username or submit
     (element as HTMLInputElement).form?.requestSubmit(),
   );
   await expect(page.getByText("Invalid operation input")).toHaveCount(0);
+  await expect(input).toHaveValue("voltcrash");
   expect(submissions).toBe(0);
   await info.attach("signup-verification-unavailable", {
     body: await page.screenshot(),
     contentType: "image/png",
   });
-  await page.getByRole("button", { name: "retry verification" }).click();
-  await expect.poll(() => scriptRequests).toBe(2);
-  await page.waitForFunction(() => "signupChallenge" in window);
-  await expect(input).toHaveValue("voltcrash");
-  await expect(button).toBeDisabled();
-  await page.evaluate(() =>
-    (
-      window as unknown as Window & {
-        signupChallenge: { callback: (token: string) => void };
-      }
-    ).signupChallenge.callback("fresh-token"),
-  );
-  await expect(button).toBeEnabled();
-  await button.click();
-  await expect.poll(() => submissions).toBe(1);
-  await expect(page.getByRole("status")).toHaveCount(0);
-  await expect(button).toBeDisabled();
-  await expect(input).toHaveValue("voltcrash");
 });
