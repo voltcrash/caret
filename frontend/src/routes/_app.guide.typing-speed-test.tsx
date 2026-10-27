@@ -7,8 +7,9 @@ const updated = "2026-10-27";
 const description =
   "Measure typing speed with Caret's free online test. Understand words per minute (WPM), raw speed and accuracy, and compare results with consistent settings.";
 
-export const Route = createFileRoute("/_app/typing-speed-test")({
-  head: () => guideHead(title, description, "/typing-speed-test", updated),
+export const Route = createFileRoute("/_app/guide/typing-speed-test")({
+  head: () =>
+    guideHead(title, description, "/guide/typing-speed-test", updated),
   component: TypingSpeedTest,
 });
 

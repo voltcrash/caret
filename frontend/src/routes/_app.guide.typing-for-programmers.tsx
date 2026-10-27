@@ -7,8 +7,9 @@ const updated = "2026-10-27";
 const description =
   "Practice code typing with Caret's programming language word lists and custom text. Work on symbols, capitalization and accuracy alongside regular typing tests.";
 
-export const Route = createFileRoute("/_app/typing-for-programmers")({
-  head: () => guideHead(title, description, "/typing-for-programmers", updated),
+export const Route = createFileRoute("/_app/guide/typing-for-programmers")({
+  head: () =>
+    guideHead(title, description, "/guide/typing-for-programmers", updated),
   component: TypingForProgrammers,
 });
 

@@ -8,8 +8,8 @@ const updated = "2026-10-27";
 const description =
   "Build typing accuracy with a repeatable practice routine in Caret. Learn how to choose word lists, use quotes and custom text, and compare your progress.";
 
-export const Route = createFileRoute("/_app/typing-practice")({
-  head: () => guideHead(title, description, "/typing-practice", updated),
+export const Route = createFileRoute("/_app/guide/typing-practice")({
+  head: () => guideHead(title, description, "/guide/typing-practice", updated),
   component: TypingPractice,
 });
 
@@ -68,13 +68,16 @@ function TypingPractice() {
         <p>
           If you write software, try{" "}
           <Link
-            to="/typing-for-programmers"
+            to="/guide/typing-for-programmers"
             class="underline underline-offset-4"
           >
             code typing practice
           </Link>
           . If you are measuring progress, read how to{" "}
-          <Link to="/typing-speed-test" class="underline underline-offset-4">
+          <Link
+            to="/guide/typing-speed-test"
+            class="underline underline-offset-4"
+          >
             interpret WPM and accuracy
           </Link>
           .

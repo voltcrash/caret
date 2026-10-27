@@ -41,6 +41,12 @@ export function guideHead(
               {
                 "@type": "ListItem",
                 position: 2,
+                name: "Guides",
+                item: `${publicEnv.origin}/guides`,
+              },
+              {
+                "@type": "ListItem",
+                position: 3,
                 name: title,
                 item: url,
               },
@@ -60,6 +66,10 @@ export function Guide(
       <nav aria-label="Breadcrumb" class="text-sm">
         <Link to="/" class="underline underline-offset-4">
           Caret
+        </Link>
+        <span aria-hidden="true"> / </span>
+        <Link to="/guides" class="underline underline-offset-4">
+          Guides
         </Link>
         <span aria-hidden="true"> / </span>
         <span>{props.title}</span>
@@ -83,17 +93,20 @@ export function Guide(
         class="grid gap-3 border-t border-sub-alt pt-8"
       >
         <h2>Keep practicing</h2>
-        <Link to="/typing-practice" class="w-fit underline underline-offset-4">
+        <Link
+          to="/guide/typing-practice"
+          class="w-fit underline underline-offset-4"
+        >
           Typing practice and accuracy
         </Link>
         <Link
-          to="/typing-speed-test"
+          to="/guide/typing-speed-test"
           class="w-fit underline underline-offset-4"
         >
           Typing speed and WPM
         </Link>
         <Link
-          to="/typing-for-programmers"
+          to="/guide/typing-for-programmers"
           class="w-fit underline underline-offset-4"
         >
           Typing for programmers
