@@ -40,7 +40,7 @@ export async function get(
 ): Promise<DBLeaderboardEntry[]> {
   if (page < 0 || pageSize < 0) throw new Error("Invalid page or pageSize");
   const rows = await statement(
-    `SELECT s.uid,s.rank,s.data ${snapshot} ORDER BY s.rank LIMIT ? OFFSET ?`,
+    `SELECT s.uid,s.rank,s.data::text AS data ${snapshot} ORDER BY s.rank LIMIT ? OFFSET ?`,
     board(mode, mode2, language, client),
     Math.min(pageSize, 1000),
     page * pageSize,
@@ -58,7 +58,7 @@ export async function getCount(
   return (
     (await statement(
       // coalesce short-circuits: only pre-0019 generations count their rows.
-      "SELECT coalesce(g.entries,(SELECT count(*) FROM leaderboard_snapshots s WHERE s.board=g.board AND s.generation=g.generation)) AS count FROM leaderboard_generations g WHERE g.board=?",
+      "SELECT coalesce(g.entries,(SELECT count(*)::integer FROM leaderboard_snapshots s WHERE s.board=g.board AND s.generation=g.generation)) AS count FROM leaderboard_generations g WHERE g.board=?",
       board(mode, mode2, language, client),
     ).first<number>("count")) ?? 0
   );
@@ -71,7 +71,7 @@ export async function getRank(
   client: Client = "web",
 ): Promise<DBLeaderboardEntry | null> {
   const row = await statement(
-    `SELECT s.uid,s.rank,s.data ${snapshot} AND s.uid=?`,
+    `SELECT s.uid,s.rank,s.data::text AS data ${snapshot} AND s.uid=?`,
     board(mode, mode2, language, client),
     uid,
   ).first<{ uid: string; rank: number; data: string }>();
@@ -93,8 +93,8 @@ export async function update(
     statement(
       `INSERT INTO leaderboard_snapshots(generation,board,uid,rank,data)
       SELECT ?,?,u.uid,row_number() OVER(ORDER BY b.wpm DESC,b.acc DESC,b.timestamp DESC,u.uid DESC),
-      json_patch(b.data,json_object('uid',u.uid,'name',u.name,'badgeId',(SELECT json_extract(value,'$.id') FROM json_each(u.data,'$.inventory.badges') WHERE json_extract(value,'$.selected')=1 LIMIT 1),'isPremium',json(CASE WHEN json_extract(u.data,'$.premium.expirationTimestamp')=-1 OR json_extract(u.data,'$.premium.expirationTimestamp')>? THEN 'true' ELSE 'false' END)))
-      FROM leaderboard_bests b JOIN users u ON b.uid=u.uid WHERE b.board=? AND b.wpm>0 AND b.acc>0 AND b.timestamp>0 AND u.banned=0 AND u.lb_opt_out=0 AND u.needs_to_change_name=0 AND u.time_typing>?`,
+      b.data || jsonb_build_object('uid',u.uid,'name',u.name,'badgeId',(SELECT value->'id' FROM jsonb_array_elements(coalesce(u.data #> '{inventory,badges}','[]'::jsonb)) WHERE value->>'selected'='true' LIMIT 1),'isPremium',coalesce((u.data #>> '{premium,expirationTimestamp}')::bigint=-1 OR (u.data #>> '{premium,expirationTimestamp}')::bigint>?,false))
+      FROM leaderboard_bests b JOIN users u ON b.uid=u.uid WHERE b.board=? AND b.wpm>0 AND b.acc>0 AND b.timestamp>0 AND u.banned=false AND u.lb_opt_out=false AND u.needs_to_change_name=false AND u.time_typing>?`,
       generation,
       key,
       Date.now(),
@@ -102,7 +102,7 @@ export async function update(
       minimum,
     ),
     statement(
-      "INSERT INTO leaderboard_generations(board,generation,updated_at,entries) VALUES(?,?,?,(SELECT count(*) FROM leaderboard_snapshots WHERE board=? AND generation=?)) ON CONFLICT(board) DO UPDATE SET generation=excluded.generation,updated_at=excluded.updated_at,entries=excluded.entries",
+      "INSERT INTO leaderboard_generations(board,generation,updated_at,entries) VALUES(?,?,?,(SELECT count(*)::integer FROM leaderboard_snapshots WHERE board=? AND generation=?)) ON CONFLICT(board) DO UPDATE SET generation=excluded.generation,updated_at=excluded.updated_at,entries=excluded.entries",
       key,
       generation,
       Date.now(),
@@ -111,7 +111,7 @@ export async function update(
     ),
     statement("DELETE FROM speed_histograms WHERE board=?", key),
     statement(
-      "INSERT INTO speed_histograms(board,bucket,count) SELECT ?,CASE WHEN json_extract(data,'$.wpm')>=310 THEN 'Other' ELSE CAST(CAST(json_extract(data,'$.wpm')/10 AS INT)*10 AS TEXT) END,count(*) FROM leaderboard_snapshots WHERE board=? AND generation=? GROUP BY 2",
+      "INSERT INTO speed_histograms(board,bucket,count) SELECT ?,CASE WHEN (data->>'wpm')::double precision>=310 THEN 'Other' ELSE (floor((data->>'wpm')::double precision/10)*10)::integer::text END,count(*)::integer FROM leaderboard_snapshots WHERE board=? AND generation=? GROUP BY 2",
       key,
       key,
       generation,

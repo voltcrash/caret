@@ -21,12 +21,11 @@ export async function hasSubmissionHash(
   hashes: string[],
 ): Promise<boolean> {
   return (
-    (await database()
+    ((await database()
       .select({ id: results.id })
       .from(results)
       .where(and(eq(results.uid, uid), inArray(results.submissionHash, hashes)))
-      .limit(1)
-      .get()) !== undefined
+      .limit(1))[0]) !== undefined
   );
 }
 export async function addResult(
@@ -72,7 +71,7 @@ export async function updateTags(
   await getResult(uid, resultId);
   await stage(
     statement(
-      "UPDATE results SET data=json_set(data,'$.tags',json(?)) WHERE id=? AND uid=?",
+      "UPDATE results SET data=jsonb_set(data,'{tags}',?::jsonb) WHERE id=? AND uid=?",
       encode(tags),
       resultId,
       uid,
@@ -81,13 +80,13 @@ export async function updateTags(
   return { acknowledged: true, matchedCount: 1, modifiedCount: 1 };
 }
 export async function getResult(uid: string, id: string): Promise<DBResult> {
-  const row = await database()
+  const row = (await database()
     .select()
     .from(results)
     .where(
       and(eq(results.id, id), eq(results.uid, uid), eq(results.client, "web")),
     )
-    .get();
+    .limit(1))[0];
   if (!row) throw new MonkeyError(404, "Result not found");
   return unpack(row);
 }
@@ -95,12 +94,12 @@ export async function getLastResult(
   uid: string,
   client: Client = "web",
 ): Promise<DBResult> {
-  const row = await database()
+  const row = (await database()
     .select()
     .from(results)
     .where(and(eq(results.uid, uid), eq(results.client, client)))
     .orderBy(desc(results.timestamp), desc(results.id))
-    .get();
+    .limit(1))[0];
   if (!row) throw new MonkeyError(404, "No last result found");
   return unpack(row);
 }
@@ -108,12 +107,12 @@ export async function getLastResultTimestamp(
   uid: string,
   client: Client = "web",
 ): Promise<number> {
-  const row = await database()
+  const row = (await database()
     .select({ timestamp: results.timestamp })
     .from(results)
     .where(and(eq(results.uid, uid), eq(results.client, client)))
     .orderBy(desc(results.timestamp), desc(results.id))
-    .get();
+    .limit(1))[0];
   if (!row) throw new MonkeyError(404, "No last result found");
   return row.timestamp;
 }
@@ -128,13 +127,13 @@ export async function getResults(
   opts: GetResultsOpts = {},
 ): Promise<DBResult[]> {
   const timestamp = opts.onOrAfterTimestamp;
-  // Drop the bulky per-result fields in SQLite: less D1 transfer and parsing.
+  // Drop bulky result fields in PostgreSQL before transferring the history.
   const rows = await database()
     .select({
       id: results.id,
       uid: results.uid,
       client: results.client,
-      data: sql<string>`json_remove(${results.data},'$.chartData','$.keySpacingStats','$.keyDurationStats','$.name')`,
+      data: sql<typeof results.$inferSelect.data>`${results.data} - ARRAY['chartData','keySpacingStats','keyDurationStats','name']`,
     })
     .from(results)
     .where(
@@ -149,10 +148,5 @@ export async function getResults(
     .orderBy(desc(results.timestamp), desc(results.id))
     .limit(Math.min(opts.limit ?? 1000, 1000))
     .offset(opts.offset ?? 0);
-  return rows.map((row) =>
-    unpack({
-      ...row,
-      data: JSON.parse(row.data) as typeof results.$inferSelect.data,
-    }),
-  );
+  return rows.map(unpack);
 }

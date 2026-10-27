@@ -28,7 +28,7 @@ export async function addPreset(
     encode(preset),
     uid,
   ).run();
-  if (!result.meta.changes) throw new MonkeyError(409, "Too many presets");
+  if (!result.rowCount) throw new MonkeyError(409, "Too many presets");
   return { presetId: id };
 }
 export async function editPreset(
@@ -36,11 +36,11 @@ export async function editPreset(
   preset: EditPresetRequest,
 ): Promise<void> {
   await atomicUser(uid, async () => {
-    const row = await database()
+    const row = (await database()
       .select()
       .from(presets)
       .where(and(eq(presets.id, preset._id), eq(presets.uid, uid)))
-      .get();
+      .limit(1))[0];
     if (!row) return;
     const data = { ...row.data };
     if (preset.settingGroups !== undefined) {
@@ -67,5 +67,5 @@ export async function removePreset(
   const result = await database()
     .delete(presets)
     .where(and(eq(presets.id, presetId), eq(presets.uid, uid)));
-  if (!result.meta.changes) throw new MonkeyError(404, "Preset not found");
+  if (!result.rowCount) throw new MonkeyError(404, "Preset not found");
 }

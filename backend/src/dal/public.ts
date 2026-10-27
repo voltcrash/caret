@@ -36,11 +36,11 @@ export async function getSpeedHistogram(
 export async function getTypingStats(
   _client: Client = "web",
 ): Promise<PublicTypingStatsDB> {
-  const row = await database()
+  const row = (await database()
     .select()
     .from(publicStats)
     .where(eq(publicStats.id, "stats"))
-    .get();
+    .limit(1))[0];
   return {
     _id: "stats",
     testsCompleted: row?.testsCompleted ?? 0,

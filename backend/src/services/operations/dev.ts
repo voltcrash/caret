@@ -135,7 +135,7 @@ async function updateUser(uid: string): Promise<void> {
   //update timetyping and completedTests
   const stats = (
     await statement(
-      "SELECT language,mode,mode2,sum(json_extract(data,'$.testDuration')) AS timeTyping,count(*) AS completedTests FROM results WHERE uid=? GROUP BY language,mode,mode2",
+      "SELECT language,mode,mode2,sum((data->>'testDuration')::double precision) AS \"timeTyping\",count(*)::integer AS \"completedTests\" FROM results WHERE uid=? GROUP BY language,mode,mode2",
       uid,
     ).all<{
       language: Language;
@@ -166,7 +166,7 @@ async function updateUser(uid: string): Promise<void> {
   };
   for (const mode of stats) {
     const raw = await statement(
-      "SELECT data FROM results WHERE uid=? AND language=? AND mode=? AND mode2=? ORDER BY wpm DESC,timestamp ASC LIMIT 1",
+      "SELECT data::text AS data FROM results WHERE uid=? AND language=? AND mode=? AND mode2=? ORDER BY wpm DESC,timestamp ASC LIMIT 1",
       uid,
       mode.language,
       mode.mode,

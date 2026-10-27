@@ -48,7 +48,7 @@ export async function createReport(
       report.contentId,
       contentReportLimit,
     ).run();
-    if (!result.meta.changes) {
+    if (!result.rowCount) {
       const count = await statement(
         "SELECT count(*) AS count FROM reports",
       ).first<number>("count");

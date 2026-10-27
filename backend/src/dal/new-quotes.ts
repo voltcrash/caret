@@ -53,7 +53,7 @@ export async function add(
   const id = newId(),
     timestamp = Date.now();
   const result = await statement(
-    "INSERT INTO quote_submissions(id,language,submitted_by,timestamp,approved,data) SELECT ?,?,?,?,0,? WHERE (SELECT count(*) FROM quote_submissions WHERE language=?) < 100",
+    "INSERT INTO quote_submissions(id,language,submitted_by,timestamp,approved,data) SELECT ?,?,?,?,false,? WHERE (SELECT count(*) FROM quote_submissions WHERE language=?) < 100",
     id,
     language,
     uid,
@@ -69,7 +69,7 @@ export async function add(
     }),
     language,
   ).run();
-  if (result.meta.changes === 0) {
+  if (result.rowCount === 0) {
     throw new MonkeyError(
       409,
       "There are already 100 quotes in the queue for this language.",
@@ -101,11 +101,11 @@ export async function approve(
   editSource: string | undefined,
   name: string,
 ): Promise<{ quote: ApproveQuote; message: string }> {
-  const row = await database()
+  const row = (await database()
     .select()
     .from(quoteSubmissions)
     .where(eq(quoteSubmissions.id, quoteId))
-    .get();
+    .limit(1))[0];
   if (!row) {
     throw new MonkeyError(
       404,

@@ -155,11 +155,11 @@ export function createAuth(
           before: async (session, ctx) => {
             const authUser =
               ctx === null || ctx === undefined
-                ? await primaryDatabase()
+                ? (await primaryDatabase()
                     .select()
                     .from(authUsers)
                     .where(eq(authUsers.id, session.userId))
-                    .get()
+                    .limit(1))[0]
                 : await ctx.context.internalAdapter.findUserById(
                     session.userId,
                   );
@@ -229,7 +229,7 @@ export function getAuth(): ReturnType<typeof createAuth> {
       // Revocation and account disablement must observe current primary state,
       // even after unrelated application reads have established a bookmark.
       drizzleAdapter(invocationPrimary, {
-        provider: "sqlite",
+        provider: "pg",
         schema: {
           authUsers,
           authSessions,

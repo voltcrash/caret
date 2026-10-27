@@ -27,7 +27,7 @@ export async function get(
   quoteId: number,
   language: Language,
 ): Promise<DBQuoteRating | null> {
-  const row = await database()
+  const row = (await database()
     .select()
     .from(quoteRatings)
     .where(
@@ -36,7 +36,7 @@ export async function get(
         eq(quoteRatings.language, language),
       ),
     )
-    .get();
+    .limit(1))[0];
   return row
     ? ({
         ...row,

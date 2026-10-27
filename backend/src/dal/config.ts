@@ -40,9 +40,9 @@ export async function saveConfig(
       Object.entries(config).filter(([key]) => !legacy.includes(key)),
     ),
   );
-  const paths = legacy.map((key) => `$.${key}`);
+  const paths = legacy;
   await statement(
-    `INSERT INTO configs(uid,id,data) VALUES(?,?,?) ON CONFLICT(uid) DO UPDATE SET data=json_remove(json_patch(configs.data,excluded.data),${paths.map(() => "?").join(",")})`,
+    `INSERT INTO configs(uid,id,data) VALUES(?,?,?) ON CONFLICT(uid) DO UPDATE SET data=(configs.data || excluded.data) - ARRAY[${paths.map(() => "?").join(",")}]::text[]`,
     uid,
     newId(),
     patch,
@@ -56,11 +56,11 @@ export async function saveConfig(
   };
 }
 export async function getConfig(uid: string): Promise<DBConfig | null> {
-  const row = await database()
+  const row = (await database()
     .select()
     .from(configs)
     .where(eq(configs.uid, uid))
-    .get();
+    .limit(1))[0];
   return row ? { _id: row.id, uid, config: row.data } : null;
 }
 export async function deleteConfig(uid: string): Promise<void> {

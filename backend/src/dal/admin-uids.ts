@@ -3,10 +3,10 @@ import { database } from "../db/client";
 import { adminUids } from "../db/schema";
 export async function isAdmin(uid: string): Promise<boolean> {
   return (
-    (await database()
+    ((await database()
       .select()
       .from(adminUids)
       .where(eq(adminUids.uid, uid))
-      .get()) !== undefined
+      .limit(1))[0]) !== undefined
   );
 }

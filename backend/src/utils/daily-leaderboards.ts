@@ -11,7 +11,7 @@ import type { Client, Mode, Mode2 } from "@caret/schemas/shared";
 import { getCurrentDayTimestamp } from "@caret/util/date-and-time";
 import { statement, encode } from "../db/client";
 import { stage } from "../db/mutation";
-import type { D1PreparedStatement } from "@cloudflare/workers-types";
+import type { PreparedQuery } from "../db/query";
 import {
   rankingPage,
   rankingUserStatement,
@@ -132,7 +132,7 @@ export class DailyLeaderboard {
   public rankStatement(
     uid: string,
     config: Configuration["dailyLeaderboards"],
-  ): D1PreparedStatement | null {
+  ): PreparedQuery | null {
     if (!config.enabled) return null;
     return rankingUserStatement(
       "daily_entries",

@@ -8,7 +8,7 @@ import type {
 import { getCurrentWeekTimestamp } from "@caret/util/date-and-time";
 import { statement, encode } from "../db/client";
 import { stage } from "../db/mutation";
-import type { D1PreparedStatement } from "@cloudflare/workers-types";
+import type { PreparedQuery } from "../db/query";
 import {
   rankingPage,
   rankingUserStatement,
@@ -50,7 +50,7 @@ export class WeeklyXpLeaderboard {
       period = this.period();
     await stage(
       statement(
-        "INSERT INTO weekly_entries(client,period,uid,xp,time_typed_seconds,expires_at,data) VALUES(?,?,?,?,?,?,?) ON CONFLICT(client,period,uid) DO UPDATE SET xp=xp+excluded.xp,time_typed_seconds=time_typed_seconds+excluded.time_typed_seconds,data=excluded.data",
+        "INSERT INTO weekly_entries(client,period,uid,xp,time_typed_seconds,expires_at,data) VALUES(?,?,?,?,?,?,?) ON CONFLICT(client,period,uid) DO UPDATE SET xp=weekly_entries.xp+excluded.xp,time_typed_seconds=weekly_entries.time_typed_seconds+excluded.time_typed_seconds,data=excluded.data",
         this.client,
         period,
         entry.uid,
@@ -99,7 +99,7 @@ export class WeeklyXpLeaderboard {
   public rankStatement(
     uid: string,
     config: Configuration["leaderboards"]["weeklyXp"],
-  ): D1PreparedStatement | null {
+  ): PreparedQuery | null {
     if (!config.enabled) return null;
     return rankingUserStatement(
       "weekly_entries",

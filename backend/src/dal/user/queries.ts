@@ -34,11 +34,11 @@ export async function getPartialUser<K extends keyof DBUser>(
   ) as Pick<DBUser, K>;
 }
 export async function findByName(name: string): Promise<DBUser | undefined> {
-  const row = await database()
+  const row = (await database()
     .select()
     .from(users)
     .where(eq(users.nameKey, name.toLowerCase()))
-    .get();
+    .limit(1))[0];
   return row ? await readUser(row.uid) : undefined;
 }
 export async function isNameAvailable(
