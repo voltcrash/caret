@@ -66,6 +66,10 @@ export function createAuth(
     secret: secret ?? "caret-local-development-secret-only",
     trustedOrigins: [new URL(frontendUrl).origin],
     socialProviders,
+    // OAuth errors without a request-scoped callback (e.g. unknown state).
+    onAPIError: {
+      errorURL: new URL("/oauth-callback.html", frontendUrl).href,
+    },
     advanced: {
       backgroundTasks: { handler: background },
       database: { generateId: () => randomUUID() },
@@ -94,12 +98,13 @@ export function createAuth(
     session: {
       modelName: "authSessions",
       freshAge: 60,
-      // Signed (HMAC) snapshot; expiry always falls back to PostgreSQL. No stateless
-      // refresh, so a revoked session outlives revocation by at most maxAge.
+      // Encrypted (JWE) snapshot keeps profile data unreadable in the cookie;
+      // expiry always falls back to PostgreSQL. No stateless refresh, so a
+      // revoked session outlives revocation by at most maxAge.
       cookieCache: {
         enabled: true,
         maxAge: SESSION_COOKIE_CACHE_SECONDS,
-        strategy: "compact",
+        strategy: "jwe",
       },
     },
     verification: { modelName: "authVerifications" },

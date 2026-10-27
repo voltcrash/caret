@@ -47,8 +47,8 @@
     "migration-inventory": "vpx ./scripts/migration-inventory.ts"
   },
   "dependencies": {
-    "@better-auth/drizzle-adapter": "1.7.12",
-    "@better-auth/infra": "0.4.22",
+    "@better-auth/drizzle-adapter": "1.7.14",
+    "@better-auth/infra": "0.4.23",
     "@caret/contracts": "workspace:*",
     "@caret/funbox": "workspace:*",
     "@caret/schemas": "workspace:*",
@@ -58,7 +58,7 @@
     "@neondatabase/serverless": "1.2.0",
     "@ts-rest/core": "3.52.1",
     "@ts-rest/open-api": "3.52.1",
-    "better-auth": "1.7.12",
+    "better-auth": "1.7.14",
     "date-fns": "4.4.0",
     "drizzle-orm": "0.45.4",
     "object-hash": "3.0.0",

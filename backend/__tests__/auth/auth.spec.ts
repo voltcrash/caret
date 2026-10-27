@@ -76,6 +76,18 @@ describe("Better Auth social-only HTTP flow", () => {
     expect(store["authUsers"]).toHaveLength(0);
     expect(store["authSessions"]).toHaveLength(0);
   });
+  it("sends OAuth callbacks with unknown state to the frontend error page", async () => {
+    const response = await request(
+      "/callback/github?code=test-code&state=unknown",
+    );
+    expect(response.status).toBe(302);
+    const redirect = new URL(response.headers.get("location") ?? "");
+    expect(redirect.origin + redirect.pathname).toBe(
+      "http://localhost:3000/oauth-callback.html",
+    );
+    expect(redirect.searchParams.get("error")).toBeTruthy();
+    expect(store["authSessions"]).toHaveLength(0);
+  });
   it("completes same-origin HTTPS GitHub OAuth with a secure first-party session", async () => {
     const frontendUrl = "https://staging.example";
     vi.stubEnv("MODE", "production");
@@ -196,7 +208,18 @@ describe("Better Auth social-only HTTP flow", () => {
       AuthUtils.verifySession(new Headers({ cookie })),
     ).rejects.toThrow("Session expired or revoked");
   });
-  it("serves cookie sessions from the signed cache for at most a minute", async () => {
+  it("keeps profile data unreadable in the session cache cookie", async () => {
+    const { cookie } = await signInWithOAuth(auth, app);
+    const cached = /caret\.session_data=([^;]+)/.exec(cookie)?.[1] ?? "";
+    // JWE compact serialization has five segments; the email must not decode out.
+    expect(decodeURIComponent(cached).split(".")).toHaveLength(5);
+    for (const segment of decodeURIComponent(cached).split(".")) {
+      expect(Buffer.from(segment, "base64url").toString()).not.toContain(
+        "newuser@example.com",
+      );
+    }
+  });
+  it("serves cookie sessions from the encrypted cache for at most a minute", async () => {
     const { cookie } = await signInWithOAuth(auth, app);
     expect(cookie).toContain("caret.session_data=");
     const headers = new Headers({ cookie });

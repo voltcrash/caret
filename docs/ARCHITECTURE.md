@@ -86,7 +86,7 @@ Hot paths avoid Neon PostgreSQL where staleness is bounded:
 - Rate limits: Workers rate limiting bindings, per location and approximate
   (`policies/rate-counter.ts`). Bad-authentication points: Cache API.
 - Configuration: cached per isolate for 30s (`init/configuration.ts`).
-- Cookie sessions: Better Auth's signed cookie cache, at most 60s old.
+- Cookie sessions: Better Auth's encrypted (JWE) cookie cache, at most 60s old.
   Admin, fresh-token, auth-handler, UI-session and Bearer lookups read Neon PostgreSQL.
 - Public reads: operations in `policies/edge-cache.ts` are stored in the
   location's Cache API for 30–300s. SSR documents stay `no-store`.

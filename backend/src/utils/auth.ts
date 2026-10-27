@@ -8,14 +8,14 @@ export type AuthenticatedSession = {
 };
 
 export type SessionLookup = {
-  /** Skip the signed cookie cache and read the session row. */
+  /** Skip the encrypted cookie cache and read the session row. */
   fresh?: boolean;
   /** Receives refreshed session/cache cookies; omitted callers drop them. */
   setCookie?: (cookie: string) => void;
 };
 
 /**
- * By default a signed session cookie cache (≤ `SESSION_COOKIE_CACHE_SECONDS`
+ * By default an encrypted session cookie cache (≤ `SESSION_COOKIE_CACHE_SECONDS`
  * old) stands in for the PostgreSQL lookup, so revocation or disablement can take
  * that long to apply. Bearer tokens always read PostgreSQL.
  */

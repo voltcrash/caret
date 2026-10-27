@@ -9,11 +9,12 @@ export function OAuthCallback(): JSXElement {
   onMount(() => {
     const params = new URL(window.location.href).searchParams;
     const requestId = params.get("requestId");
+    const callbackError = params.get("error");
     if (requestId === null || requestId === "") {
-      setError("Sign-in request not found");
+      // Errors Better Auth cannot tie to a request arrive without a request ID.
+      setError(callbackError ?? "Sign-in request not found");
       return;
     }
-    const callbackError = params.get("error");
     setError(callbackError);
     (window.opener as Window | null)?.postMessage(
       { type: "caret-auth", requestId, error: callbackError },
