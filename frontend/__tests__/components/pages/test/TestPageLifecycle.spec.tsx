@@ -91,24 +91,29 @@ describe("Test page lifecycle", () => {
     expect(callbacks.setFocus).toHaveBeenCalledWith("unfocused");
     expect(callbacks.hideCaret).toHaveBeenCalledOnce();
   });
-  it("restarts only idle time/words tests on window focus or visible pages", () => {
-    mount();
-    window.dispatchEvent(new Event("focus"));
-    expect(callbacks.restart).toHaveBeenCalledWith({ noAnim: true });
-    state.active = true;
-    window.dispatchEvent(new Event("focus"));
-    state.active = false;
-    state.result = true;
-    window.dispatchEvent(new Event("focus"));
-    state.result = false;
-    state.mode = "quote";
-    window.dispatchEvent(new Event("focus"));
-    expect(callbacks.restart).toHaveBeenCalledOnce();
-    state.mode = "time";
-    vi.spyOn(document, "visibilityState", "get").mockReturnValue("visible");
-    document.dispatchEvent(new Event("visibilitychange"));
-    expect(callbacks.restart).toHaveBeenCalledTimes(2);
-  });
+  it.each(["time", "words", "quote"])(
+    "preserves the %s wordset on focus and visibility changes",
+    (mode) => {
+      state.mode = mode;
+      mount();
+      window.dispatchEvent(new Event("focus"));
+      expect(callbacks.setFocus).toHaveBeenLastCalledWith("unfocused");
+      state.focused = true;
+      window.dispatchEvent(new Event("focus"));
+      expect(callbacks.setFocus).toHaveBeenLastCalledWith("focused");
+      state.active = true;
+      window.dispatchEvent(new Event("focus"));
+      state.active = false;
+      state.result = true;
+      window.dispatchEvent(new Event("focus"));
+      state.result = false;
+      window.dispatchEvent(new Event("focus"));
+      vi.spyOn(document, "visibilityState", "get").mockReturnValue("visible");
+      document.dispatchEvent(new Event("visibilitychange"));
+      expect(callbacks.restart).not.toHaveBeenCalled();
+      expect(callbacks.showCaret).toHaveBeenCalledWith(true);
+    },
+  );
   it("signals hidden windows and removes every listener on disposal", () => {
     const { input, unmount } = mount();
     window.dispatchEvent(new Event("blur"));
