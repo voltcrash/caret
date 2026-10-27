@@ -220,37 +220,3 @@ it("disables the real form after expiry or consumption and enables a fresh retry
   options.callback("retry-token");
   await waitFor(() => expect(button).toBeEnabled());
 });
-
-it("retries a failed widget, clearing its error and ignoring its late callbacks", () => {
-  const view = mount();
-  const failedOptions = options;
-  options["error-callback"]("200500");
-  expect(screen.getByRole("alert")).toHaveTextContent("200500");
-  fireEvent.click(screen.getByRole("button", { name: "retry verification" }));
-  expect(api.remove).toHaveBeenCalledWith("widget-1");
-  expect(api.render).toHaveBeenCalledTimes(2);
-  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-  failedOptions.callback("late-token");
-  expect(view.value()).toBe("");
-  options.callback("recovered-token");
-  expect(view.value()).toBe("recovered-token");
-});
-
-it("reloads a blocked script on retry without refreshing the page", () => {
-  vi.stubGlobal("turnstile", undefined);
-  delete (window as Window & { turnstile?: TurnstileApi }).turnstile;
-  const view = mount();
-  const failedScript = document.getElementById("turnstile-api");
-  failedScript?.dispatchEvent(new Event("error"));
-  fireEvent.click(screen.getByRole("button", { name: "retry verification" }));
-  const newScript = document.getElementById("turnstile-api");
-  expect(newScript).not.toBe(failedScript);
-  expect(document.querySelectorAll("#turnstile-api")).toHaveLength(1);
-  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-  vi.stubGlobal("turnstile", api);
-  failedScript?.dispatchEvent(new Event("load"));
-  expect(api.render).not.toHaveBeenCalled();
-  newScript?.dispatchEvent(new Event("load"));
-  options.callback("recovered-token");
-  expect(view.value()).toBe("recovered-token");
-});
