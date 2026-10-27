@@ -12,9 +12,10 @@ import {
 import { envConfig } from "virtual:env-config";
 
 import { useRef } from "../../../hooks/useRef";
+import { Button } from "../../common/Button";
 
 const errorText =
-  "Turnstile verification unavailable. Please refresh the page and check that Cloudflare challenges are allowed by your browser.";
+  "Turnstile verification unavailable. Check that Cloudflare challenges are allowed by your browser, then retry verification.";
 const scriptId = "turnstile-api";
 
 export type TurnstileOptions = {
@@ -26,7 +27,7 @@ export type TurnstileOptions = {
   callback: (token: string) => void;
   "expired-callback": () => void;
   "timeout-callback": () => void;
-  "error-callback": () => void;
+  "error-callback": (code?: string) => void;
 };
 export type TurnstileApi = {
   render: (element: HTMLElement, options: TurnstileOptions) => string;
@@ -34,13 +35,33 @@ export type TurnstileApi = {
   remove: (widgetId: string) => void;
 };
 
-export function Captcha(props: {
+type CaptchaProps = {
   field: Accessor<AnyFieldApi>;
   action: CaptchaAction;
   class?: string;
-}) {
+};
+
+export function Captcha(props: CaptchaProps) {
+  const [attempt, setAttempt] = createSignal(1);
+  const retry = (): void => {
+    if (
+      (window as Window & { turnstile?: TurnstileApi }).turnstile === undefined
+    ) {
+      document.getElementById(scriptId)?.remove();
+    }
+    setAttempt((value) => value + 1);
+  };
+  return (
+    <Show keyed when={attempt()}>
+      {(_attempt) => <CaptchaWidget {...props} retry={retry} />}
+    </Show>
+  );
+}
+
+function CaptchaWidget(props: CaptchaProps & { retry: () => void }) {
   const [captchaRef, captchaEl] = useRef<HTMLDivElement>();
   const [error, setError] = createSignal(false);
+  const [errorCode, setErrorCode] = createSignal<string>();
   let api: TurnstileApi | undefined;
   let widget: string | undefined;
   let token: string | undefined;
@@ -93,6 +114,7 @@ export function Captcha(props: {
             if (disposed) return;
             token = value;
             setError(false);
+            setErrorCode(undefined);
             field.setValue(value);
           },
           "expired-callback": () => {
@@ -101,7 +123,11 @@ export function Captcha(props: {
           "timeout-callback": () => {
             if (!disposed) clearToken();
           },
-          "error-callback": fail,
+          "error-callback": (code) => {
+            if (disposed) return;
+            setErrorCode(code);
+            fail();
+          },
         });
         if (widget === undefined) fail();
       } catch {
@@ -141,9 +167,15 @@ export function Captcha(props: {
     <div class={props.class}>
       <div ref={captchaRef}></div>
       <Show when={error()}>
-        <p role="alert" class="text-sm text-error">
-          {errorText}
-        </p>
+        <div class="grid gap-2">
+          <p role="alert" class="text-sm text-error">
+            {errorText}
+            <Show when={errorCode()}>
+              {(code) => <> (Cloudflare error {code()})</>}
+            </Show>
+          </p>
+          <Button text="retry verification" onClick={props.retry} />
+        </div>
       </Show>
     </div>
   );
