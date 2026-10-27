@@ -1,159 +1,19 @@
 {
   "version": "7",
-  "dialect": "sqlite",
+  "dialect": "postgresql",
   "entries": [
     {
       "idx": 0,
-      "version": "6",
-      "when": 1790933073358,
-      "tag": "0000_red_wilson_fisk",
+      "version": "7",
+      "when": 1793096761643,
+      "tag": "0000_fresh_neon",
       "breakpoints": true
     },
     {
       "idx": 1,
-      "version": "6",
-      "when": 1790936221081,
-      "tag": "0001_strong_warlock",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1791008008626,
-      "tag": "0002_remove_discord",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1791100000000,
-      "tag": "0003_enable_xp",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "6",
-      "when": 1791190000000,
-      "tag": "0004_remove_ads",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "6",
-      "when": 1791280000000,
-      "tag": "0005_enable_daily_leaderboards",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "6",
-      "when": 1791280000001,
-      "tag": "0006_remove_friends",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "6",
-      "when": 1791292544126,
-      "tag": "0007_audit_log_event_index",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "6",
-      "when": 1791306000000,
-      "tag": "0008_remove_legacy_result_hashes",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "6",
-      "when": 1791477812891,
-      "tag": "0009_result_client",
-      "breakpoints": true
-    },
-    {
-      "idx": 10,
-      "version": "6",
-      "when": 1791477999673,
-      "tag": "0010_client_profiles",
-      "breakpoints": true
-    },
-    {
-      "idx": 11,
-      "version": "6",
-      "when": 1791478117851,
-      "tag": "0011_client_activity",
-      "breakpoints": true
-    },
-    {
-      "idx": 12,
-      "version": "6",
-      "when": 1791478186674,
-      "tag": "0012_client_weekly_leaderboards",
-      "breakpoints": true
-    },
-    {
-      "idx": 13,
-      "version": "6",
-      "when": 1791478441179,
-      "tag": "0013_device_authorization",
-      "breakpoints": true
-    },
-    {
-      "idx": 14,
-      "version": "6",
-      "when": 1792334335299,
-      "tag": "0014_remove_inbox",
-      "breakpoints": true
-    },
-    {
-      "idx": 15,
-      "version": "6",
-      "when": 1792610789804,
-      "tag": "0015_remove_ape_keys",
-      "breakpoints": true
-    },
-    {
-      "idx": 16,
-      "version": "6",
-      "when": 1792872000000,
-      "tag": "0016_write_receipts",
-      "breakpoints": true
-    },
-    {
-      "idx": 17,
-      "version": "6",
-      "when": 1792917563901,
-      "tag": "0017_daily_summary_index",
-      "breakpoints": true
-    },
-    {
-      "idx": 18,
-      "version": "6",
-      "when": 1792919415692,
-      "tag": "0018_drop_d1_rate_counters",
-      "breakpoints": true
-    },
-    {
-      "idx": 19,
-      "version": "6",
-      "when": 1792920415692,
-      "tag": "0019_leaderboard_generation_entries",
-      "breakpoints": true
-    },
-    {
-      "idx": 20,
-      "version": "6",
-      "when": 1792921415692,
-      "tag": "0020_drop_unused_result_indexes",
-      "breakpoints": true
-    },
-    {
-      "idx": 21,
-      "version": "6",
-      "when": 1792922415692,
-      "tag": "0021_leaderboard_bests_owner_index",
+      "version": "7",
+      "when": 1793096792390,
+      "tag": "0001_json_merge_patch",
       "breakpoints": true
     }
   ]
