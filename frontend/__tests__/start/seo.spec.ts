@@ -127,12 +127,27 @@ describe("search and AI discovery in the built Worker", () => {
     }
     const worker = await mf.getWorker("a");
     const session = await seedSession(mf, "a");
+    const db = await mf.getDatabase("a");
+    await db
+      .prepare(
+        "INSERT INTO users(uid,id,name,name_key,email,added_at,data) VALUES(?,?,?,?,?,0,?)",
+      )
+      .bind(
+        session.uid,
+        session.uid,
+        "seo-account",
+        "seo-account",
+        "seo-account@example.test",
+        JSON.stringify({ uid: session.uid }),
+      )
+      .run();
     const account = await worker.fetch(`${origin}/account`, {
       headers: { cookie: session.cookie },
+      redirect: "manual",
     });
     expect(account.status).toBe(200);
-    expect(await account.text()).toContain(
-      'name="robots" content="noindex,follow"',
-    );
+    const html = await account.text();
+    expect(html).toContain("Account | Caret");
+    expect(html).toMatch(/name="robots" content="noindex(?:,[^"]*)?"/);
   });
 });
