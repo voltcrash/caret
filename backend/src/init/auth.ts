@@ -98,12 +98,13 @@ export function createAuth(
     session: {
       modelName: "authSessions",
       freshAge: 60,
-      // Signed (HMAC) snapshot; expiry always falls back to PostgreSQL. No stateless
-      // refresh, so a revoked session outlives revocation by at most maxAge.
+      // Encrypted (JWE) snapshot keeps profile data unreadable in the cookie;
+      // expiry always falls back to PostgreSQL. No stateless refresh, so a
+      // revoked session outlives revocation by at most maxAge.
       cookieCache: {
         enabled: true,
         maxAge: SESSION_COOKIE_CACHE_SECONDS,
-        strategy: "compact",
+        strategy: "jwe",
       },
     },
     verification: { modelName: "authVerifications" },
