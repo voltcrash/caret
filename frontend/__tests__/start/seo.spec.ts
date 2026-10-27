@@ -78,6 +78,13 @@ describe("search and AI discovery in the built Worker", () => {
         expect(html).toContain("<h1");
         expect(html).toContain("Start a free typing test");
         expect(html).toContain('"@type":"BreadcrumbList"');
+        expect(html).toContain('aria-label="Quick answer"');
+        const updated = /<time\b[^>]*datetime="([^"]+)"/.exec(html)?.[1];
+        expect(updated).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+        expect(html).toContain(`"dateModified":"${updated}"`);
+        expect(sitemap).toContain(
+          `<loc>${url}</loc><lastmod>${updated}</lastmod>`,
+        );
       }
     }
     expect(titles.size).toBe(urls.length);
@@ -89,8 +96,8 @@ describe("search and AI discovery in the built Worker", () => {
   it("allows search crawlers to read the same public content as visitors", async () => {
     const robots = await mf.dispatchFetch(`${origin}/robots.txt`);
     expect(robots.status).toBe(200);
-    expect(await robots.text()).toContain(
-      `User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /_serverFn/\n\nSitemap: ${canonical}/sitemap.xml`,
+    expect(await robots.text()).toBe(
+      `User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /_serverFn/\n\nSitemap: ${canonical}/sitemap.xml\n`,
     );
     for (const agent of [
       "OAI-SearchBot",
@@ -98,6 +105,8 @@ describe("search and AI discovery in the built Worker", () => {
       "PerplexityBot",
       "Googlebot",
       "bingbot",
+      "GPTBot",
+      "ClaudeBot",
     ]) {
       const page = await mf.dispatchFetch(`${origin}/`, {
         headers: { "user-agent": agent },

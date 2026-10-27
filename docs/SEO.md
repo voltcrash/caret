@@ -10,6 +10,9 @@ metadata as visitors. The interactive typing engine still requires JavaScript.
   metadata consistent. Query variants of the typing test canonicalize to `/`.
 - The homepage includes a visible product overview below the test, common
   questions and links to three distinct typing guides. Guides render on the server.
+  Each guide opens with a short answer and a real editorial update date, matching
+  its `WebPage.dateModified` value and sitemap `lastmod`. Change a guide's date
+  only after a substantive content update; never advance it automatically on requests or builds.
 - JSON-LD identifies the website and free web application; guides include
   breadcrumbs. Facts must match visible content. Do not invent ratings, reviews,
   usage figures or dates, or promise a rich result.
@@ -22,6 +25,10 @@ metadata as visitors. The interactive typing engine still requires JavaScript.
   crawlers can fetch those documents to read that instruction.
 - `llms.txt` is an optional concise reference to real pages. Provider adoption
   varies; it is not a prerequisite for indexing or a proven ranking mechanism.
+  Google explicitly ignores these special files for ranking. An extra JSON feed
+  is not required for public text already available in server-rendered HTML.
+- Training crawlers remain allowed. Search access and training permission are
+  separate choices; blocking training bots is not an SEO requirement.
 - Existing fonts/engine preloads, social image, lazy engine loading and static
   no-JavaScript/no-CSS recovery fallbacks are retained.
 
@@ -79,6 +86,8 @@ width, client navigation and metadata/schema replacement.
   — foundational SEO and useful, crawlable content remain the starting point.
 - [Google: JavaScript SEO](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics)
   — server rendering also helps crawlers that do not execute JavaScript.
+- [Google: publication and update dates](https://developers.google.com/search/docs/appearance/publication-dates)
+  — show accurate, clearly labeled dates consistent with structured data.
 - [OpenAI: publishers and developers FAQ](https://help.openai.com/en/articles/12627856)
   — allow OAI-SearchBot for search summaries and snippets.
 - [Anthropic: web crawlers](https://privacy.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler)
