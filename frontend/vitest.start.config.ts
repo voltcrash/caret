@@ -2,7 +2,7 @@ import { defineConfig } from "vite-plus";
 
 export default defineConfig({
   test: {
-    maxWorkers: 4,
+    maxWorkers: 1,
     include: ["__tests__/start/**/*.spec.ts"],
     environment: "node",
     testTimeout: 30_000,

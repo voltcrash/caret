@@ -78,8 +78,7 @@
     "miniflare": "5.20261019.2-beta",
     "typescript": "7.0.2",
     "vite-plus": "catalog:",
-    "vitest": "catalog:",
-    "wrangler": "4.152.0"
+    "vitest": "catalog:"
   },
   "engines": {
     "node": ">=24.22.1 <25"

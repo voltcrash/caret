@@ -16,10 +16,14 @@ import {
 } from "../__tests__/start/workerd";
 import { rpcPath } from "../__tests__/start/rpc";
 
-// Query counts come from invocation metrics; this benchmark reads the response.
+// Analytics Engine's third double counts every SQL statement in the invocation.
 const probe = `import Worker from './index.js';
 export default { async fetch(request, env, ctx) {
-  return await Worker.fetch(request, env, ctx);
+  let count = 0;
+  const metrics = { writeDataPoint(data) { count = data.doubles[2]; env.METRICS?.writeDataPoint(data); } };
+  const response = await Worker.fetch(request, {...env, METRICS: metrics}, ctx);
+  const result = new Response(response.body, response);
+  result.headers.set('X-Baseline-Queries', String(count)); return result;
 }};`;
 
 function workerdPid(): number {
@@ -88,13 +92,16 @@ async function main(): Promise<void> {
         objectHashCheckEnabled: true,
       });
       const account = await seedSession(mf, "a");
-      await withRuntime({ DATABASE_URL: db.url, MODE: "production" }, async () => {
-        await Users.addUser("Baseline", "baseline@example.test", account.uid);
-        await mutateUser(account.uid, (profile) => {
-          profile.addedAt = 0;
-          profile.timeTyping = 1;
-        });
-      });
+      await withRuntime(
+        { DATABASE_URL: db.url, MODE: "production" },
+        async () => {
+          await Users.addUser("Baseline", "baseline@example.test", account.uid);
+          await mutateUser(account.uid, (profile) => {
+            profile.addedAt = 0;
+            profile.timeTyping = 1;
+          });
+        },
+      );
       const worker = await mf.getWorker("a");
       const request = async (
         name: string,
