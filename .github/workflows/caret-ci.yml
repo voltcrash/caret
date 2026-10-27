@@ -99,7 +99,7 @@ jobs:
               - 'packages/typing-fixtures/reference/**'
             # Backend test data and PostgreSQL helpers the frontend unit and SSR suites import.
             backend-test-support:
-              - 'backend/__tests__/{__testData__/**,postgres/**}'
+              - 'backend/__tests__/{__testData__/**,postgres/{helpers,database,result-support}.ts}'
             frontend:
               - 'frontend/**'
               - '!frontend/static/**'

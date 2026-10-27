@@ -10,6 +10,7 @@ function inputs(): Parameters<typeof validateProductionInputs>[0] {
   return {
     config,
     backend: {
+      DATABASE_URL: "postgresql://user:password@ep-production.neon.tech/neondb?sslmode=require",
       BETTER_AUTH_SECRET: "production-auth-secret-fixture-32-characters",
       TURNSTILE_SECRET_KEY: "production-turnstile-secret-fixture",
       GITHUB_CLIENT_ID: "production-client-id",
@@ -70,7 +71,6 @@ describe("production deployment inputs", () => {
     const input = inputs();
     const config = input.config as {
       name: string;
-      d1_databases: { database_id: string }[];
       vars: { BETTER_AUTH_URL: string };
     };
     config.name = "caret-api-staging";
@@ -78,13 +78,6 @@ describe("production deployment inputs", () => {
       "isolated production",
     );
     config.name = "caret";
-    const database = config.d1_databases[0];
-    if (database === undefined) throw new Error("Missing database fixture");
-    database.database_id = "17b0ae8b-92bf-4d7e-a29e-0ac4cc6f2b59";
-    expect(() => validateProductionInputs(input)).toThrow(
-      "isolated production",
-    );
-    database.database_id = "43d104e9-2fef-43db-95d7-c64a08310714";
     config.vars.BETTER_AUTH_URL = "https://staging.example.test/api/auth";
     expect(() => validateProductionInputs(input)).toThrow("one HTTPS origin");
   });
