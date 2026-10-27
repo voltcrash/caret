@@ -1,5 +1,31 @@
 import { expect, test } from "./fixtures";
 
+test("homepage overview stays collapsed until opened with the keyboard", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#startupScreen")).toBeHidden();
+  const overview = page.locator("#about-caret");
+  const toggle = page.locator("summary", {
+    hasText: "About Caret & typing guides",
+  });
+  await expect(overview).toBeHidden();
+  await page.screenshot({
+    path: test.info().outputPath("typing-home-collapsed.png"),
+    fullPage: true,
+  });
+  await toggle.focus();
+  await page.keyboard.press("Enter");
+  await expect(overview).toBeVisible();
+  await expect(page.locator("#wordsInput")).not.toBeFocused();
+  await page.screenshot({
+    path: test.info().outputPath("typing-home-expanded.png"),
+    fullPage: true,
+  });
+  await page.keyboard.press("Space");
+  await expect(overview).toBeHidden();
+});
+
 test("keyboard scrolling can read the overview without refocusing the typing test", async ({
   page,
 }) => {
@@ -7,6 +33,9 @@ test("keyboard scrolling can read the overview without refocusing the typing tes
   await expect(page.locator("#startupScreen")).toBeHidden();
   const input = page.locator("#wordsInput");
   await expect(input).toBeFocused();
+  await page
+    .locator("summary", { hasText: "About Caret & typing guides" })
+    .click();
   await page.locator("#about-caret").click();
   await expect(input).not.toBeFocused();
   for (const key of ["ArrowDown", "PageDown"]) {
@@ -41,9 +70,13 @@ test("typing guides preserve the test layout and update metadata on client navig
   const overview = page.getByRole("region", {
     name: "Caret: free typing test and online typing practice",
   });
-  const bounds = await overview.boundingBox();
+  const toggle = page.locator("summary", {
+    hasText: "About Caret & typing guides",
+  });
+  const bounds = await toggle.boundingBox();
   expect(bounds?.y).toBeGreaterThanOrEqual(page.viewportSize()?.height ?? 0);
-  await overview.scrollIntoViewIfNeeded();
+  await expect(page.locator("#about-caret")).toBeHidden();
+  await toggle.click();
   await expect(overview).toBeVisible();
   await overview
     .getByRole("link", { name: "How to practice typing and build accuracy" })
@@ -106,7 +139,14 @@ test("typing guides and product content fit a narrow screen", async ({
   });
   await page.getByRole("link", { name: "Start a free typing test" }).click();
   const overview = page.locator("#about-caret");
-  await overview.scrollIntoViewIfNeeded();
+  await expect(overview).toBeHidden();
+  await page.screenshot({
+    path: test.info().outputPath("typing-home-mobile-collapsed.png"),
+    fullPage: true,
+  });
+  await page
+    .locator("summary", { hasText: "About Caret & typing guides" })
+    .click();
   await expect(overview).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(
     390,
