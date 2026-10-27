@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import { betterAuth, type BetterAuthOptions } from "better-auth";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { dash } from "@better-auth/infra";
-import { primaryDatabase } from "../db/client";
+import { database } from "../db/client";
 import {
   authUsers,
   authSessions,
@@ -94,7 +94,7 @@ export function createAuth(
     session: {
       modelName: "authSessions",
       freshAge: 60,
-      // Signed (HMAC) snapshot; expiry always falls back to D1. No stateless
+      // Signed (HMAC) snapshot; expiry always falls back to PostgreSQL. No stateless
       // refresh, so a revoked session outlives revocation by at most maxAge.
       cookieCache: {
         enabled: true,
@@ -155,11 +155,13 @@ export function createAuth(
           before: async (session, ctx) => {
             const authUser =
               ctx === null || ctx === undefined
-                ? (await primaryDatabase()
-                    .select()
-                    .from(authUsers)
-                    .where(eq(authUsers.id, session.userId))
-                    .limit(1))[0]
+                ? (
+                    await database()
+                      .select()
+                      .from(authUsers)
+                      .where(eq(authUsers.id, session.userId))
+                      .limit(1)
+                  )[0]
                 : await ctx.context.internalAdapter.findUserById(
                     session.userId,
                   );
@@ -209,9 +211,9 @@ export function createAuth(
  * Resolves the invocation's primary database on every access, so one Better
  * Auth instance can serve all invocations of an isolate.
  */
-const invocationPrimary = new Proxy({} as ReturnType<typeof primaryDatabase>, {
+const invocationDatabase = new Proxy({} as ReturnType<typeof database>, {
   get(_target, property): unknown {
-    const db = primaryDatabase();
+    const db = database();
     const value: unknown = Reflect.get(db, property, db);
     return typeof value === "function" ? value.bind(db) : value;
   },
@@ -227,8 +229,8 @@ export function getAuth(): ReturnType<typeof createAuth> {
   if (auth === undefined) {
     auth = createAuth(
       // Revocation and account disablement must observe current primary state,
-      // even after unrelated application reads have established a bookmark.
-      drizzleAdapter(invocationPrimary, {
+      // All Neon HTTP queries use the primary connection.
+      drizzleAdapter(invocationDatabase, {
         provider: "pg",
         schema: {
           authUsers,

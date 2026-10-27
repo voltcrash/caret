@@ -3,6 +3,7 @@ import type { EditPresetRequest, Preset } from "@caret/schemas/presets";
 import { database, encode, statement } from "../db/client";
 import { presets } from "../db/schema";
 import { atomicUser, stage } from "../db/mutation";
+import { commitBatch } from "../db/commit";
 import { newId } from "../utils/id";
 import MonkeyError from "../utils/error";
 type DBConfigPreset = Preset & { uid: string };
@@ -19,23 +20,27 @@ export async function addPreset(
   uid: string,
   preset: Omit<Preset, "_id">,
 ): Promise<{ presetId: string }> {
-  return await atomicUser(uid, async () => {
-    if ((await getPresets(uid)).length >= 10) throw new MonkeyError(409, "Too many presets");
-    const id = newId();
-    await stage(statement("INSERT INTO presets(id,uid,timestamp,data) VALUES(?,?,?,?)", id, uid, Date.now(), encode(preset)));
-    return { presetId: id };
-  });
+  const id = newId();
+  const committed = await commitBatch([
+    statement("SELECT pg_advisory_xact_lock(hashtextextended(?,0))", `presets:${uid}`),
+    statement("INSERT INTO presets(id,uid,timestamp,data) SELECT ?,?,?,? WHERE (SELECT count(*) FROM presets WHERE uid=?) < 10", id, uid, Date.now(), encode(preset), uid),
+  ]);
+  const inserted = committed?.[1]?.rowCount ?? (await statement("SELECT id FROM presets WHERE id=?", id).first() === null ? 0 : 1);
+  if (inserted === 0) throw new MonkeyError(409, "Too many presets");
+  return { presetId: id };
 }
 export async function editPreset(
   uid: string,
   preset: EditPresetRequest,
 ): Promise<void> {
   await atomicUser(uid, async () => {
-    const row = (await database()
-      .select()
-      .from(presets)
-      .where(and(eq(presets.id, preset._id), eq(presets.uid, uid)))
-      .limit(1))[0];
+    const row = (
+      await database()
+        .select()
+        .from(presets)
+        .where(and(eq(presets.id, preset._id), eq(presets.uid, uid)))
+        .limit(1)
+    )[0];
     if (!row) return;
     const data = { ...row.data };
     if (preset.settingGroups !== undefined) {

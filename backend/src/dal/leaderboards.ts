@@ -57,7 +57,7 @@ export async function getCount(
 ): Promise<number> {
   return (
     (await statement(
-      // coalesce short-circuits: only pre-0019 generations count their rows.
+      // Manually seeded generations may omit the published entry count.
       "SELECT coalesce(g.entries,(SELECT count(*)::integer FROM leaderboard_snapshots s WHERE s.board=g.board AND s.generation=g.generation)) AS count FROM leaderboard_generations g WHERE g.board=?",
       board(mode, mode2, language, client),
     ).first<number>("count")) ?? 0
@@ -93,7 +93,7 @@ export async function update(
     statement(
       `INSERT INTO leaderboard_snapshots(generation,board,uid,rank,data)
       SELECT ?,?,u.uid,row_number() OVER(ORDER BY b.wpm DESC,b.acc DESC,b.timestamp DESC,u.uid DESC),
-      b.data || jsonb_build_object('uid',u.uid,'name',u.name,'badgeId',(SELECT value->'id' FROM jsonb_array_elements(coalesce(u.data #> '{inventory,badges}','[]'::jsonb)) WHERE value->>'selected'='true' LIMIT 1),'isPremium',coalesce((u.data #>> '{premium,expirationTimestamp}')::bigint=-1 OR (u.data #>> '{premium,expirationTimestamp}')::bigint>?,false))
+      jsonb_merge_patch(b.data,jsonb_build_object('uid',u.uid,'name',u.name,'badgeId',(SELECT value->'id' FROM jsonb_array_elements(coalesce(u.data #> '{inventory,badges}','[]'::jsonb)) WHERE value->>'selected'='true' LIMIT 1),'isPremium',coalesce((u.data #>> '{premium,expirationTimestamp}')::bigint=-1 OR (u.data #>> '{premium,expirationTimestamp}')::bigint>?,false)))
       FROM leaderboard_bests b JOIN users u ON b.uid=u.uid WHERE b.board=? AND b.wpm>0 AND b.acc>0 AND b.timestamp>0 AND u.banned=false AND u.lb_opt_out=false AND u.needs_to_change_name=false AND u.time_typing>?`,
       generation,
       key,

@@ -2,7 +2,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { eq } from "drizzle-orm";
 import type { PreparedQuery, QueryResult } from "./query";
 import { users } from "./schema";
-import { database, primaryDatabase, encode, statement } from "./client";
+import { database, encode, statement } from "./client";
 import { newId } from "../utils/id";
 import MonkeyError from "../utils/error";
 import { postgresError } from "./retry";
@@ -20,11 +20,9 @@ export function currentUserDraft(uid: string): DBUser | undefined {
 export async function readUser(uid: string): Promise<DBUser | undefined> {
   const draft = currentUserDraft(uid);
   if (draft) return structuredClone(draft);
-  const row = (await database()
-    .select()
-    .from(users)
-    .where(eq(users.uid, uid))
-    .limit(1))[0];
+  const row = (
+    await database().select().from(users).where(eq(users.uid, uid)).limit(1)
+  )[0];
   return row?.data;
 }
 
@@ -77,12 +75,14 @@ export async function atomicUserWithReads<T>(
     return { result: await action(), reads: undefined };
   }
   for (let attempt = 0; attempt < 8; attempt++) {
-    // Failed guards do not advance bookmarks; bypass lagging replicas on retry.
-    const row = (await primaryDatabase()
-      .select()
-      .from(users)
-      .where(eq(users.uid, uid))
-      .limit(1))[0];
+    // Reload committed primary state after a version conflict.
+    const row = (
+      await database()
+        .select()
+        .from(users)
+        .where(eq(users.uid, uid))
+        .limit(1)
+    )[0];
     if (!row) throw new MonkeyError(404, "User not found");
     const user = row.data;
     const draft: Draft = {
@@ -115,7 +115,8 @@ export async function atomicUserWithReads<T>(
       };
     } catch (error) {
       const pg = postgresError(error);
-      if (pg?.code !== "23514" || pg.constraint !== "mutation_version") throw error;
+      if (pg?.code !== "23514" || pg.constraint !== "mutation_version")
+        {throw error;}
     }
   }
   throw new MonkeyError(409, "Concurrent update; please retry");

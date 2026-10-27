@@ -42,7 +42,7 @@ export async function saveConfig(
   );
   const paths = legacy;
   await statement(
-    `INSERT INTO configs(uid,id,data) VALUES(?,?,?) ON CONFLICT(uid) DO UPDATE SET data=(configs.data || excluded.data) - ARRAY[${paths.map(() => "?").join(",")}]::text[]`,
+    `INSERT INTO configs(uid,id,data) VALUES(?,?,?) ON CONFLICT(uid) DO UPDATE SET data=jsonb_merge_patch(configs.data,excluded.data) - ARRAY[${paths.map(() => "?").join(",")}]::text[]`,
     uid,
     newId(),
     patch,
@@ -56,11 +56,9 @@ export async function saveConfig(
   };
 }
 export async function getConfig(uid: string): Promise<DBConfig | null> {
-  const row = (await database()
-    .select()
-    .from(configs)
-    .where(eq(configs.uid, uid))
-    .limit(1))[0];
+  const row = (
+    await database().select().from(configs).where(eq(configs.uid, uid)).limit(1)
+  )[0];
   return row ? { _id: row.id, uid, config: row.data } : null;
 }
 export async function deleteConfig(uid: string): Promise<void> {
