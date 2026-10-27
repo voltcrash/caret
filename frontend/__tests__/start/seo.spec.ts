@@ -59,12 +59,12 @@ describe("search and AI discovery in the built Worker", () => {
     expect(html).toContain("No account is needed");
     expect(html).toContain("Practice your way");
     expect(html).toContain("Questions about Caret");
-    expect(html).toContain('href="/guides"');
+    expect(html).toContain('href="/guide"');
     expect(html).toContain("Start a free typing test");
   });
 
   it("server-renders the guides index with links to all three articles", async () => {
-    const response = await mf.dispatchFetch(`${origin}/guides`);
+    const response = await mf.dispatchFetch(`${origin}/guide`);
     expect(response.status).toBe(200);
     const html = await response.text();
     expect(html).toContain("Typing Guides | Caret");
@@ -73,8 +73,9 @@ describe("search and AI discovery in the built Worker", () => {
     expect(html).toContain('href="/guide/typing-for-programmers"');
   });
 
-  it("removes the old guide URLs without redirects", async () => {
+  it("removes the old content URLs without redirects", async () => {
     for (const slug of [
+      "guides",
       "typing-practice",
       "typing-speed-test",
       "typing-for-programmers",
@@ -98,7 +99,7 @@ describe("search and AI discovery in the built Worker", () => {
     );
     expect(urls).toHaveLength(7);
     expect(urls).toContain(`${canonical}/about`);
-    expect(urls).toContain(`${canonical}/guides`);
+    expect(urls).toContain(`${canonical}/guide`);
     const titles = new Set<string>();
     const descriptions = new Set<string>();
     for (const url of urls) {
@@ -120,7 +121,7 @@ describe("search and AI discovery in the built Worker", () => {
         expect(html).toContain("Start a free typing test");
         expect(html).toContain('"@type":"BreadcrumbList"');
         expect(html).toContain('"name":"Guides"');
-        expect(html).toContain('href="/guides"');
+        expect(html).toContain('href="/guide"');
         expect(html).toContain('aria-label="Quick answer"');
         const updated = /<time\b[^>]*datetime="([^"]+)"/.exec(html)?.[1];
         expect(updated).toMatch(/^\d{4}-\d{2}-\d{2}$/);
@@ -167,7 +168,7 @@ describe("search and AI discovery in the built Worker", () => {
     expect(reference.headers.get("Content-Type")).toContain("text/plain");
     const referenceText = await reference.text();
     expect(referenceText).toContain(`${canonical}/about`);
-    expect(referenceText).toContain(`${canonical}/guides`);
+    expect(referenceText).toContain(`${canonical}/guide`);
     expect(referenceText).toContain(`${canonical}/guide/typing-practice`);
   });
 

@@ -42,7 +42,7 @@ export function guideHead(
                 "@type": "ListItem",
                 position: 2,
                 name: "Guides",
-                item: `${publicEnv.origin}/guides`,
+                item: `${publicEnv.origin}/guide`,
               },
               {
                 "@type": "ListItem",
@@ -68,7 +68,7 @@ export function Guide(
           Caret
         </Link>
         <span aria-hidden="true"> / </span>
-        <Link to="/guides" class="underline underline-offset-4">
+        <Link to="/guide" class="underline underline-offset-4">
           Guides
         </Link>
         <span aria-hidden="true"> / </span>

@@ -2,12 +2,12 @@ import { createFileRoute, Link } from "@tanstack/solid-router";
 
 import { pageHead } from "../app/seo";
 
-export const Route = createFileRoute("/_app/guides")({
+export const Route = createFileRoute("/_app/guide/")({
   head: () =>
     pageHead(
       "Typing Guides | Caret",
       "Explore Caret's typing guides: build accuracy, understand typing speed and WPM, and practice typing for programmers.",
-      "/guides",
+      "/guide",
     ),
   component: Guides,
 });

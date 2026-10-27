@@ -68,14 +68,14 @@ test("typing guides preserve the test layout and update metadata on client navig
     0,
   );
   await page.getByRole("link", { name: "Browse typing guides" }).click();
-  await expect(page).toHaveURL(/\/guides$/);
+  await expect(page).toHaveURL(/\/guide$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
     "Typing guides",
   );
   await expect(page).toHaveTitle("Typing Guides | Caret");
   await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute(
     "href",
-    "https://caret.voltcrash.com/guides",
+    "https://caret.voltcrash.com/guide",
   );
   await page.screenshot({
     path: test.info().outputPath("typing-guides.png"),
@@ -112,7 +112,7 @@ test("typing guides preserve the test layout and update metadata on client navig
     .getByRole("navigation", { name: "Breadcrumb" })
     .getByRole("link", { name: "Guides", exact: true })
     .click();
-  await expect(page).toHaveURL(/\/guides$/);
+  await expect(page).toHaveURL(/\/guide$/);
   await page
     .getByRole("link", {
       name: "How to test your typing speed and understand WPM",

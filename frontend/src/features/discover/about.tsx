@@ -42,7 +42,7 @@ export function AboutCaret() {
       </div>
       <nav aria-label="Typing practice guides" class="grid gap-3">
         <h2 class="text-xl text-main">Typing practice guides</h2>
-        <Link to="/guides" class="w-fit underline underline-offset-4">
+        <Link to="/guide" class="w-fit underline underline-offset-4">
           Browse typing guides
         </Link>
       </nav>
