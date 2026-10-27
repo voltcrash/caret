@@ -5,7 +5,7 @@ import { createFileRoute, notFound } from "@tanstack/solid-router";
 import { isServer } from "solid-js/web";
 import { z } from "zod";
 
-import { publicEnv } from "../app/public-env";
+import { pageHead } from "../app/seo";
 import { urlSearch } from "../app/search";
 import { isUserNotFound, profileOptions } from "../data/profile";
 import { ProfileMissing } from "../features/profile/missing";
@@ -48,22 +48,12 @@ export const Route = createFileRoute("/_app/profile/$uidOrName")({
       }
     }
   },
-  head: ({ params }) => {
-    const title = `${params.uidOrName} | Caret`;
-    const url = `${publicEnv.origin}/profile/${encodeURIComponent(params.uidOrName)}`;
-    return {
-      links: [{ rel: "canonical", href: url }],
-      meta: [
-        { title },
-        { property: "og:title", content: title },
-        { property: "og:url", content: url },
-        {
-          name: "description",
-          content: `${params.uidOrName}'s Caret profile and personal bests.`,
-        },
-      ],
-    };
-  },
+  head: ({ params }) =>
+    pageHead(
+      `${params.uidOrName} | Caret`,
+      `${params.uidOrName}'s Caret profile and personal bests.`,
+      `/profile/${encodeURIComponent(params.uidOrName)}`,
+    ),
   notFoundComponent: Missing,
   pendingComponent: Pending,
   component: Profile,

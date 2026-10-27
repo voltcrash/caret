@@ -3,7 +3,7 @@ import type { JSXElement } from "solid-js";
 import { useQuery } from "@tanstack/solid-query";
 import { createFileRoute } from "@tanstack/solid-router";
 
-import { publicEnv } from "../app/public-env";
+import { pageHead } from "../app/seo";
 import { urlSearch } from "../app/search";
 import { onlyCachedOnServer } from "../data/prefetch";
 import { sessionOptions } from "../features/auth/session";
@@ -17,13 +17,13 @@ export const Route = createFileRoute("/_app/settings")({
   staticData: { fixedHeader: true },
   validateSearch: (search: Record<string, unknown>) =>
     urlSearch(SettingsUrlParamsSchema)(search),
-  head: () => ({
-    links: [{ rel: "canonical", href: `${publicEnv.origin}/settings` }],
-    meta: [
-      { title: "Settings | Caret" },
-      { property: "og:title", content: "Settings | Caret" },
-    ],
-  }),
+  head: () =>
+    pageHead(
+      "Settings | Caret",
+      "Customize your Caret typing test, theme and keyboard preferences.",
+      "/settings",
+      false,
+    ),
   component: Settings,
 });
 
