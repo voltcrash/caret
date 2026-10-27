@@ -99,7 +99,7 @@ describe("built Start application in workerd", () => {
     expect(crossSite.headers.has("X-Caret-Stale-Client")).toBe(false);
   });
 
-  it("SSR reads real D1 through the function and keeps binding-specific caches isolated", async () => {
+  it("SSR reads real PostgreSQL through the function and keeps binding-specific caches isolated", async () => {
     const [a, b] = await Promise.all([mf.getWorker("a"), mf.getWorker("b")]);
     const responses = await Promise.all(
       Array.from(
@@ -228,7 +228,7 @@ describe("built Start application in workerd", () => {
 
   it("exports a working scheduled handler with D1", async () => {
     const worker = await mf.getWorker("a");
-    const db = await mf.getD1Database("DB", "a");
+    const db = await mf.getDatabase("a");
     await db
       .prepare("INSERT INTO write_receipts(id,created_at) VALUES('expired',0)")
       .run();
@@ -270,7 +270,7 @@ describe("invocation lifetime under streamed callbacks", () => {
       expect(results[i]).toBe(
         `${accounts[i]?.uid}:${name}:start\n${accounts[i]?.uid}:${name}:true:end\n`,
       );
-      const db = await mf.getD1Database("DB", name);
+      const db = await mf.getDatabase(name);
       await expect
         .poll(async () => await db.prepare("SELECT * FROM probe").all())
         .toMatchObject({

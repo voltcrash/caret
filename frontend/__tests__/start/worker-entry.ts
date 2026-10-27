@@ -1,4 +1,5 @@
 // Test-only entry. Never imported by the deployable application.
+import { statement } from "../../../backend/src/db/client";
 import { runtime } from "@caret/backend/runtime";
 import { getAuth } from "@caret/backend/auth/session";
 import { createServiceContext } from "../../src/server/context.server";
@@ -36,7 +37,6 @@ export default createApplicationWorker(async (request, options) => {
   const services = createServiceContext(request, false);
   const session = await getAuth().api.getSession({ headers: request.headers });
   const id = session?.user.id ?? "guest";
-  const db = services.runtime.env.DB;
   const encoder = new TextEncoder();
   const body = new ReadableStream<Uint8Array>({
     async start(controller) {
@@ -53,14 +53,12 @@ export default createApplicationWorker(async (request, options) => {
       services.background(
         (async () => {
           await new Promise((resolve) => setTimeout(resolve, 5));
-          await db
-            .prepare("INSERT INTO probe(actor,version,isolated) VALUES(?,?,?)")
-            .bind(
-              id,
-              runtime().env.VERSION ?? "",
-              Number(runtime() === services.runtime),
-            )
-            .run();
+          await statement(
+            "INSERT INTO probe(actor,version,isolated) VALUES(?,?,?)",
+            id,
+            runtime().env.VERSION ?? "",
+            Number(runtime() === services.runtime),
+          ).run();
         })(),
       );
       controller.close();

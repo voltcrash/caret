@@ -1,31 +1,21 @@
 import { runtime, type Runtime } from "../runtime/env";
-import type {
-  D1PreparedStatement,
-  D1DatabaseSession,
-} from "@cloudflare/workers-types";
+import { PreparedQuery, type QueryValue } from "./query";
+import { postgresError } from "./retry";
 
 export const database = (): Runtime["db"] => runtime().db;
-export const primaryDatabase = (): Runtime["primaryDb"] => runtime().primaryDb;
-export const binding = (): D1DatabaseSession => runtime().session;
 
 export function statement(
   query: string,
-  ...values: (string | number | null)[]
-): D1PreparedStatement {
-  return binding()
-    .prepare(query)
-    .bind(...values);
+  ...values: QueryValue[]
+): PreparedQuery {
+  runtime().metrics.dbStatements++;
+  return new PreparedQuery(runtime().sql, query, values);
 }
-
 export function isUniqueViolation(error: unknown): boolean {
-  const message =
-    error instanceof Error
-      ? `${error.message} ${String(error.cause)}`
-      : String(error);
-  return message.includes("UNIQUE constraint failed");
+  return postgresError(error)?.code === "23505";
 }
 
-/** Keep the compatibility payload bounded below D1's 2 MB row limit. */
+/** Bound payload size keeps large result histories out of individual rows. */
 export function encode(value: unknown): string {
   const data = JSON.stringify(value);
   if (data === undefined || new TextEncoder().encode(data).length > 1_500_000) {

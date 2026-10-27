@@ -1,5 +1,5 @@
 import { isUniqueViolation } from "../../../db/client";
-import type { D1PreparedStatement } from "@cloudflare/workers-types";
+import type { PreparedQuery } from "../../../db/query";
 import { atomicUserWithReads } from "../../../db/mutation";
 import type { RankingRow } from "../../../db/ranking";
 
@@ -17,7 +17,7 @@ import type { ServiceContext, OperationInput } from "../../context";
 import { validateSubmission } from "./validation";
 import { applyProgression } from "./progression";
 type RankRead = {
-  query: D1PreparedStatement;
+  query: PreparedQuery;
   /** Apply the batched read's row. */
   apply: (row: RankingRow | null) => void;
   /** Read and apply the rank separately. */

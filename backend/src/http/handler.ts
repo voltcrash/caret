@@ -10,7 +10,6 @@ import {
   assertAvailable,
   describeFailure,
   execute,
-  routeSharedRead,
   type Invocation,
   type PolicyScope,
 } from "../policies/operation-runner";
@@ -207,9 +206,6 @@ export async function runHttpOperation(
   id: OperationId,
   params: Record<string, string>,
 ): Promise<Response> {
-  if (request.method === "GET" || request.method === "HEAD") {
-    routeSharedRead(id);
-  }
   return await handle(invocation, request, id, async (call, scope, body) => {
     decodeURIComponent(new URL(request.url).pathname);
     const search = new URL(request.url).searchParams;

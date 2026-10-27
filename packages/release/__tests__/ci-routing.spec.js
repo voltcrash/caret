@@ -204,7 +204,10 @@ describe("test-only changes", () => {
       "frontend/update-e2e/deployment.spec.ts",
       ["frontend-lint", "start-updates"],
     ],
-    ["backend/__tests__/d1/users.spec.ts", ["backend-lint", "backend-test"]],
+    [
+      "backend/__tests__/postgres/users.spec.ts",
+      ["backend-lint", "backend-test"],
+    ],
     ["packages/schemas/__tests__/results.spec.ts", ["packages"]],
     ["packages/funbox/__test__/list.spec.ts", ["packages"]],
   ])("%s runs only its own suite", (file, expected) => {
@@ -212,7 +215,8 @@ describe("test-only changes", () => {
   });
 
   it.each([
-    "backend/__tests__/d1/result-support.ts",
+    "backend/__tests__/postgres/result-support.ts",
+    "backend/__tests__/postgres/database.ts",
     "backend/__tests__/__testData__/completed-event.ts",
   ])("runs frontend suites importing backend helper %s", (file) => {
     expect(selected([file])).toEqual([

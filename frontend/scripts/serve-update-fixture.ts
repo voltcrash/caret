@@ -11,13 +11,18 @@ async function main(): Promise<void> {
   const options: MiniflareOptions[] = [];
   const builds = await Promise.all(
     ["update-a", "update-b"].map(
-      async (build) =>
+      async (build, index) =>
         await createWorkerd(
           false,
           undefined,
           false,
           { FRONTEND_URL: origin, BETTER_AUTH_URL: `${origin}/api/auth` },
-          { build, onOptions: (config) => options.push(config) },
+          {
+            build,
+            onOptions: (config) => {
+              options[index] = config;
+            },
+          },
         ),
     ),
   );
@@ -25,7 +30,7 @@ async function main(): Promise<void> {
   if (active === undefined) throw new Error("Missing initial deployment");
   await builds[1]?.dispose();
   const session = await seedSession(active, "a");
-  const db = await active.getD1Database("DB", "a");
+  const db = await active.getDatabase("a");
   await enableConfiguration(active, "a", "$.results", {
     savingEnabled: true,
     objectHashCheckEnabled: true,
@@ -72,6 +77,16 @@ async function main(): Promise<void> {
           if (config === undefined) {
             throw new Error("Missing deployment configuration");
           }
+          for (const worker of "workers" in config ? config.workers : []) {
+            const fixture = worker as {
+              config: { name: string; env: Record<string, unknown> };
+            };
+            const db = await active.getDatabase(fixture.config.name);
+            fixture.config.env["DATABASE_URL"] = {
+              type: "text",
+              value: db.url,
+            };
+          }
           await active.setOptions(config);
           selected = next;
         }
@@ -84,7 +99,7 @@ async function main(): Promise<void> {
         return;
       }
       if (url.pathname === "/__fixture/results") {
-        const current = await active.getD1Database("DB", "a");
+        const current = await active.getDatabase("a");
         response.setHeader("content-type", "application/json");
         response.end(
           JSON.stringify({

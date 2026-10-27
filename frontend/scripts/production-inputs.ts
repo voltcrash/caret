@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 const requiredSecrets = [
+  "DATABASE_URL",
   "BETTER_AUTH_SECRET",
   "TURNSTILE_SECRET_KEY",
   "GITHUB_CLIENT_ID",
@@ -18,16 +19,11 @@ const configSchema = z.object({
   routes: z
     .array(z.object({ pattern: z.string(), custom_domain: z.literal(true) }))
     .length(1),
-  d1_databases: z
-    .array(
-      z.object({
-        binding: z.literal("DB"),
-        database_name: z.literal("caret-production"),
-        database_id: z.literal("43d104e9-2fef-43db-95d7-c64a08310714"),
-        migrations_dir: z.literal("../backend/migrations"),
-      }),
-    )
-    .length(1),
+  secrets: z.object({
+    required: z
+      .array(z.string())
+      .refine((keys) => keys.includes("DATABASE_URL")),
+  }),
 });
 
 function configured(value: string | undefined): value is string {
@@ -48,7 +44,7 @@ export function validateProductionInputs(inputs: {
   const parsed = configSchema.safeParse(inputs.config);
   if (!parsed.success) {
     throw new Error(
-      "Production config must use isolated production Worker and D1",
+      "Production config must use isolated production Worker and Neon database",
     );
   }
   const config = parsed.data;
@@ -71,6 +67,23 @@ export function validateProductionInputs(inputs: {
     if (value === inputs.staging?.[key]) {
       throw new Error(`${key} must be separate from staging`);
     }
+  }
+  let databaseUrl: URL;
+  try {
+    databaseUrl = new URL(inputs.backend["DATABASE_URL"] as string);
+  } catch {
+    throw new Error("DATABASE_URL must be a Neon PostgreSQL connection URL");
+  }
+  if (
+    !["postgres:", "postgresql:"].includes(databaseUrl.protocol) ||
+    !databaseUrl.hostname.endsWith(".neon.tech") ||
+    !databaseUrl.username ||
+    !databaseUrl.password ||
+    databaseUrl.searchParams.get("sslmode") !== "require"
+  ) {
+    throw new Error(
+      "DATABASE_URL must use Neon PostgreSQL with sslmode=require",
+    );
   }
   const authSecret = inputs.backend["BETTER_AUTH_SECRET"] as string;
   if (

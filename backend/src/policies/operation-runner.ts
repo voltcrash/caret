@@ -15,7 +15,6 @@ import { verifyConfiguration } from "./configuration";
 import { getOperation, type OperationId } from "./operations";
 import { verifyPermissions } from "./permission";
 import { EDGE_CACHE_SECONDS } from "./edge-cache";
-import { preferReplicas } from "../runtime/env";
 import { ROOT_LIMIT } from "./rate-counter";
 import {
   assertGoodAuthentication,
@@ -199,15 +198,6 @@ export async function execute<K extends OperationId>(
   return { ok: true, ...result } as OperationOutcome<K>;
 }
 
-/**
- * Edge-cached operations already serve responses up to their cache lifetime
- * old, so a lagging read replica is acceptable. Call before `admit` and only
- * when the invocation runs this operation alone.
- */
-export function routeSharedRead(id: OperationId): void {
-  if (EDGE_CACHE_SECONDS[id] !== undefined) preferReplicas();
-}
-
 function shareable(invocation: Invocation, id: OperationId): void {
   const seconds = EDGE_CACHE_SECONDS[id];
   if (seconds !== undefined) invocation.cacheFor?.(seconds);
@@ -248,7 +238,7 @@ export async function describeFailure(
   if (scope !== undefined) await recordBadAuthentication(scope, status);
   const detail = error instanceof Error ? error : new Error(String(error));
   if (!isDevEnvironment() && status >= 500 && status !== 503) {
-    // Workers Logs only: a D1 outage must not turn into D1 error writes.
+    // Workers Logs only: a PostgreSQL outage must not turn into PostgreSQL error writes.
     console.error(
       JSON.stringify({
         errorId,

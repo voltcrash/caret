@@ -30,11 +30,14 @@ SELECT 'main', CASE WHEN
   OR EXISTS (SELECT 1 FROM user_quote_ratings)
   OR EXISTS (SELECT 1 FROM users)
   OR EXISTS (SELECT 1 FROM weekly_entries)
-THEN NULL ELSE json('{
+THEN NULL ELSE '{
   "users": {
     "signUp": true,
     "profiles": {"enabled": true},
-    "autoBan": {"enabled": false}
+    "autoBan": {"enabled": false},
+    "xp": {"enabled": true, "gainMultiplier": 1}
   },
+  "dailyLeaderboards": {"enabled": true},
+  "leaderboards": {"weeklyXp": {"enabled": true}},
   "results": {"savingEnabled": true, "objectHashCheckEnabled": true}
-}') END;
+}'::jsonb END;

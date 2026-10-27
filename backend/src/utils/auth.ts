@@ -16,8 +16,8 @@ export type SessionLookup = {
 
 /**
  * By default a signed session cookie cache (≤ `SESSION_COOKIE_CACHE_SECONDS`
- * old) stands in for the D1 lookup, so revocation or disablement can take
- * that long to apply. Bearer tokens always read D1.
+ * old) stands in for the PostgreSQL lookup, so revocation or disablement can take
+ * that long to apply. Bearer tokens always read PostgreSQL.
  */
 export async function verifySession(
   headers: Headers,

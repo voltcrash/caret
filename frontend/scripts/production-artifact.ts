@@ -76,7 +76,6 @@ export async function validateArtifact(
     "name",
     "account_id",
     "routes",
-    "d1_databases",
     "triggers",
     // Missing bindings would fail open (no rate limits) or drop metrics.
     "ratelimits",
@@ -88,9 +87,6 @@ export async function validateArtifact(
     "preview_urls",
     "observability",
   ]) {
-    // Wrangler normalizes D1 migration paths and adds defaults; compare resource
-    // identities below instead of requiring identical generated configuration.
-    if (key === "d1_databases") continue;
     if (JSON.stringify(built[key]) !== JSON.stringify(source[key])) {
       throw new Error(`Production artifact has a different ${key}`);
     }
@@ -102,8 +98,6 @@ export async function validateArtifact(
   }
   const vars = built["vars"] as Record<string, string>;
   const sourceVars = source["vars"] as Record<string, string>;
-  const databases = built["d1_databases"] as { database_id: string }[];
-  const sourceDatabases = source["d1_databases"] as { database_id: string }[];
   const version = JSON.parse(
     await readFile(resolve(directory, "client/version.json"), "utf8"),
   ) as { version: string };
@@ -112,8 +106,7 @@ export async function validateArtifact(
     version.version !== receipt.buildId ||
     vars["MODE"] !== "production" ||
     vars["FRONTEND_URL"] !== sourceVars["FRONTEND_URL"] ||
-    vars["BETTER_AUTH_URL"] !== sourceVars["BETTER_AUTH_URL"] ||
-    databases[0]?.database_id !== sourceDatabases[0]?.database_id
+    vars["BETTER_AUTH_URL"] !== sourceVars["BETTER_AUTH_URL"]
   ) {
     throw new Error(
       "Production Worker, client and resources must belong to one release",

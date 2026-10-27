@@ -8,7 +8,7 @@ import { z } from "zod";
 import { withRuntime } from "@caret/backend/runtime";
 import * as Users from "../../backend/src/dal/user";
 import { mutateUser } from "../../backend/src/db/mutation";
-import { scoreEvent } from "../../backend/__tests__/d1/result-support";
+import { scoreEvent } from "../../backend/__tests__/postgres/result-support";
 import {
   createWorkerd,
   enableConfiguration,
@@ -16,20 +16,12 @@ import {
 } from "../__tests__/start/workerd";
 import { rpcPath } from "../__tests__/start/rpc";
 
-// Test-only D1 boundary instrumentation, identical counting rules to Stage 0.
+// Analytics Engine's third double counts every SQL statement in the invocation.
 const probe = `import Worker from './index.js';
 export default { async fetch(request, env, ctx) {
-  let count = 0; const originals = new WeakMap();
-  const wrap = stmt => { const proxy = new Proxy(stmt, { get(target, key) {
-    if (key === 'bind') return (...args) => wrap(target.bind(...args));
-    if (['first', 'all', 'run', 'raw'].includes(key)) return (...args) => { count++; return target[key](...args); };
-    return Reflect.get(target, key);
-  }}); originals.set(proxy, stmt); return proxy; };
-  const db = { prepare: sql => wrap(env.DB.prepare(sql)),
-    batch: stmts => { count += stmts.length; return env.DB.batch(stmts.map(s => originals.get(s) ?? s)); },
-    exec: sql => { count++; return env.DB.exec(sql); }
-  };
-  const response = await Worker.fetch(request, {...env, DB: db}, ctx);
+  let count = 0;
+  const metrics = { writeDataPoint(data) { count = data.doubles[2]; env.METRICS?.writeDataPoint(data); } };
+  const response = await Worker.fetch(request, {...env, METRICS: metrics}, ctx);
   const result = new Response(response.body, response);
   result.headers.set('X-Baseline-Queries', String(count)); return result;
 }};`;
@@ -94,19 +86,22 @@ async function main(): Promise<void> {
       { instrument: probe, onReady: (ms) => startup.push(ms) },
     );
     try {
-      const db = await mf.getD1Database("DB", "a");
+      const db = await mf.getDatabase("a");
       await enableConfiguration(mf, "a", "$.results", {
         savingEnabled: true,
         objectHashCheckEnabled: true,
       });
       const account = await seedSession(mf, "a");
-      await withRuntime({ DB: db, MODE: "production" }, async () => {
-        await Users.addUser("Baseline", "baseline@example.test", account.uid);
-        await mutateUser(account.uid, (profile) => {
-          profile.addedAt = 0;
-          profile.timeTyping = 1;
-        });
-      });
+      await withRuntime(
+        { DATABASE_URL: db.url, MODE: "production" },
+        async () => {
+          await Users.addUser("Baseline", "baseline@example.test", account.uid);
+          await mutateUser(account.uid, (profile) => {
+            profile.addedAt = 0;
+            profile.timeTyping = 1;
+          });
+        },
+      );
       const worker = await mf.getWorker("a");
       const request = async (
         name: string,

@@ -126,7 +126,7 @@ describe("native public routes in workerd", () => {
       "/login?redirect=%2Faccount%3Fclient%3Dweb",
     );
     const session = await seedSession(mf, "a");
-    const db = await mf.getD1Database("DB", "a");
+    const db = await mf.getDatabase("a");
     await db
       .prepare(
         "INSERT INTO users(uid,id,name,name_key,email,added_at,data) VALUES(?,?,?,?,?,0,?)",

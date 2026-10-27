@@ -13,7 +13,6 @@ import {
   type OperationData,
   type PolicyScope,
   type RawOperationInput,
-  routeSharedRead,
 } from "@caret/backend/policies/operation-runner";
 import type { OperationId } from "@caret/backend/policies/operations";
 import { edgeCacheControl } from "@caret/backend/policies/edge-cache";
@@ -60,7 +59,6 @@ export async function callOperation<K extends OperationId>(
 ): Promise<OperationResult<OperationData<K>>> {
   const call = invocation(request);
   // SSR documents run several operations, some reading the viewer's own data.
-  if (request.rpc) routeSharedRead(id);
   let scope: PolicyScope | undefined;
   try {
     scope = await admit(call);

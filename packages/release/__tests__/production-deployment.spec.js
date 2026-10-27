@@ -122,7 +122,7 @@ it("validates the exact deployment snapshot before building and applying migrati
   const build = index("Build production frontend and Worker");
   const check = index("Check production deployment");
   const retire = index("Retire the removed production task consumer");
-  const migrate = index("Apply production D1 migrations");
+  const migrate = index("Apply production PostgreSQL migrations");
   const deploy = index("Deploy production with Wrangler");
   expect(settings).toBeGreaterThan(validation);
   expect(build).toBeGreaterThan(settings);
@@ -201,7 +201,7 @@ it.each(["workflow_run", "workflow_dispatch"])(
   },
 );
 
-it("retires consumers and enables replicas on deployments while keeping dry-runs read-only", () => {
+it("retires consumers and deploys Neon-backed Workers on deployments while keeping dry-runs read-only", () => {
   const { scripts } = JSON.parse(
     readFileSync(
       new URL("../../../frontend/package.json", import.meta.url),
@@ -210,14 +210,12 @@ it("retires consumers and enables replicas on deployments while keeping dry-runs
   );
   for (const environment of ["production", "staging"]) {
     expect(scripts[`deploy:${environment}-site`]).toBe(
-      `vp run check:${environment} && vp run retire:${environment}-task-consumer && vp run db:replication:${environment} && wrangler deploy --config dist/start/server/wrangler.json --secrets-file .dev.vars.${environment}`,
+      `vp run check:${environment} && vp run retire:${environment}-task-consumer && wrangler deploy --config dist/start/server/wrangler.json --secrets-file .dev.vars.${environment}`,
     );
     expect(scripts[`retire:${environment}-task-consumer`]).toBe(
       `vpx ./scripts/retire-task-consumer.ts ${environment}`,
     );
-    expect(scripts[`db:replication:${environment}`]).toBe(
-      `vpx ./scripts/enable-d1-read-replication.ts ${environment}`,
-    );
+    expect(scripts[`db:replication:${environment}`]).toBeUndefined();
   }
   expect(scripts["deploy:production-dry-run"]).not.toContain("retire:");
   expect(scripts["dry-run:start"]).not.toContain("retire:");
@@ -255,12 +253,15 @@ it.each(["", "ba_dashboard_workflow_fixture"])(
           PRODUCTION_BACKEND_ENV:
             "BETTER_AUTH_SECRET=auth-secret-fixture\nBETTER_AUTH_API_KEY=existing-dashboard-key\n",
           BETTER_AUTH_API_KEY: apiKey,
+          DATABASE_URL:
+            "postgresql://user:password@ep-fixture.neon.tech/neondb?sslmode=require",
           PRODUCTION_FRONTEND_ENV: frontend,
         },
       });
       const backendPath = join(directory, "frontend/.dev.vars.production");
       const frontendPath = join(directory, "frontend/.env.production.local");
       const backend = parseEnv(readFileSync(backendPath, "utf8"));
+      expect(backend.DATABASE_URL).toContain("ep-fixture.neon.tech");
       expect(backend.BETTER_AUTH_SECRET).toBe("auth-secret-fixture");
       expect(backend.BETTER_AUTH_API_KEY).toBe(
         apiKey || "existing-dashboard-key",

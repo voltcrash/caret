@@ -1,45 +1,49 @@
-const transientMessages = [
-  "Network connection lost",
-  "storage caused object to be reset",
-  "reset because its code was updated",
-];
-
-/** Drizzle and D1 may wrap the original error in one or more causes. */
-export function d1ErrorMessage(error: unknown): string {
-  const messages: string[] = [];
+/** Drizzle can wrap PostgreSQL errors in a cause. */
+export function postgresError(
+  error: unknown,
+): { code: string; constraint?: string } | undefined {
   const seen = new Set<unknown>();
   let current = error;
-  while (current !== undefined && !seen.has(current)) {
+  while (
+    typeof current === "object" &&
+    current !== null &&
+    !seen.has(current)
+  ) {
     seen.add(current);
-    if (current instanceof Error) {
-      messages.push(current.message);
-      current = current.cause;
-    } else {
-      if (typeof current === "string") messages.push(current);
-      break;
+    if ("code" in current && typeof current.code === "string") {
+      return {
+        code: current.code,
+        ...("constraint" in current && typeof current.constraint === "string"
+          ? { constraint: current.constraint }
+          : {}),
+      };
     }
+    current = "cause" in current ? current.cause : undefined;
   }
-  return messages.join(" ");
+  return undefined;
 }
-
-export function isTransientD1Error(error: unknown): boolean {
-  const message = d1ErrorMessage(error);
-  return transientMessages.some((text) => message.includes(text));
+export function isTransientDatabaseError(error: unknown): boolean {
+  const code = postgresError(error)?.code;
+  return (
+    code?.startsWith("08") === true ||
+    ["40001", "40P01", "57P01", "57P02", "57P03"].includes(code ?? "") ||
+    (error instanceof Error &&
+      (/fetch failed|network|connection|Failed to fetch/i.test(error.message) ||
+        (error.cause !== undefined && isTransientDatabaseError(error.cause))))
+  );
 }
-
-/** Opt-in only: callers must make replay safe, including lost acknowledgements. */
-export async function retryIdempotentD1Write<T>(
+/** Callers must make replay safe, including lost acknowledgements. */
+export async function retryIdempotentWrite<T>(
   write: () => Promise<T>,
 ): Promise<T> {
   for (let attempt = 0; ; attempt++) {
     try {
       return await write();
     } catch (error) {
-      if (attempt >= 3 || !isTransientD1Error(error)) throw error;
-      // Bounded exponential full jitter: at most 100 + 200 + 400 ms waiting.
-      await new Promise<void>((resolve) => {
-        setTimeout(resolve, Math.floor(Math.random() * 100 * 2 ** attempt));
-      });
+      if (attempt >= 3 || !isTransientDatabaseError(error)) throw error;
+      await new Promise<void>((resolve) =>
+        setTimeout(resolve, Math.floor(Math.random() * 100 * 2 ** attempt)),
+      );
     }
   }
 }

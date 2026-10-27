@@ -88,9 +88,9 @@ export function requestLog(options: {
 
 /**
  * One Analytics Engine row per request, for per-operation p50/p95 latency and
- * D1 statement counts. Column order is a query contract; append only.
+ * PostgreSQL statement counts. Column order is a query contract; append only.
  * blobs: label, kind, method, status, cache, release, build
- * doubles: durationMs, status, d1Statements, operations
+ * doubles: durationMs, status, dbStatements, operations
  */
 export function requestMetrics(
   log: RequestLog,
@@ -116,7 +116,7 @@ export function requestMetrics(
     doubles: [
       log.durationMs,
       log.status,
-      metrics.d1Statements,
+      metrics.dbStatements,
       metrics.operations.length,
     ],
   };

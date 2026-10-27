@@ -4,6 +4,7 @@ import type { Language } from "@caret/schemas/languages";
 import { compareTwoStrings } from "../utils/string-similarity";
 import { database, statement, encode } from "../db/client";
 import { quoteSubmissions } from "../db/schema";
+import { commitBatch } from "../db/commit";
 import { newId } from "../utils/id";
 import { envValue, runtime } from "../runtime/env";
 import { integration } from "../utils/integration";
@@ -52,24 +53,38 @@ export async function add(
   }
   const id = newId(),
     timestamp = Date.now();
-  const result = await statement(
-    "INSERT INTO quote_submissions(id,language,submitted_by,timestamp,approved,data) SELECT ?,?,?,?,0,? WHERE (SELECT count(*) FROM quote_submissions WHERE language=?) < 100",
-    id,
-    language,
-    uid,
-    timestamp,
-    encode({
-      _id: id,
-      text,
-      source,
+  const committed = await commitBatch([
+    statement(
+      "SELECT pg_advisory_xact_lock(hashtextextended(?,0))",
+      `quote-submissions:${language}`,
+    ),
+    statement(
+      "INSERT INTO quote_submissions(id,language,submitted_by,timestamp,approved,data) SELECT ?,?,?,?,false,? WHERE (SELECT count(*) FROM quote_submissions WHERE language=?) < 100",
+      id,
       language,
-      submittedBy: uid,
+      uid,
       timestamp,
-      approved: false,
-    }),
-    language,
-  ).run();
-  if (result.meta.changes === 0) {
+      encode({
+        _id: id,
+        text,
+        source,
+        language,
+        submittedBy: uid,
+        timestamp,
+        approved: false,
+      }),
+      language,
+    ),
+  ]);
+  const inserted =
+    committed?.[1]?.rowCount ??
+    ((await statement(
+      "SELECT id FROM quote_submissions WHERE id=?",
+      id,
+    ).first()) === null
+      ? 0
+      : 1);
+  if (inserted === 0) {
     throw new MonkeyError(
       409,
       "There are already 100 quotes in the queue for this language.",
@@ -101,11 +116,13 @@ export async function approve(
   editSource: string | undefined,
   name: string,
 ): Promise<{ quote: ApproveQuote; message: string }> {
-  const row = await database()
-    .select()
-    .from(quoteSubmissions)
-    .where(eq(quoteSubmissions.id, quoteId))
-    .get();
+  const row = (
+    await database()
+      .select()
+      .from(quoteSubmissions)
+      .where(eq(quoteSubmissions.id, quoteId))
+      .limit(1)
+  )[0];
   if (!row) {
     throw new MonkeyError(
       404,

@@ -3,6 +3,7 @@ import type { EditPresetRequest, Preset } from "@caret/schemas/presets";
 import { database, encode, statement } from "../db/client";
 import { presets } from "../db/schema";
 import { atomicUser, stage } from "../db/mutation";
+import { commitBatch } from "../db/commit";
 import { newId } from "../utils/id";
 import MonkeyError from "../utils/error";
 type DBConfigPreset = Preset & { uid: string };
@@ -20,15 +21,26 @@ export async function addPreset(
   preset: Omit<Preset, "_id">,
 ): Promise<{ presetId: string }> {
   const id = newId();
-  const result = await statement(
-    "INSERT INTO presets(id,uid,timestamp,data) SELECT ?,?,?,? WHERE (SELECT count(*) FROM presets WHERE uid=?) < 10",
-    id,
-    uid,
-    Date.now(),
-    encode(preset),
-    uid,
-  ).run();
-  if (!result.meta.changes) throw new MonkeyError(409, "Too many presets");
+  const committed = await commitBatch([
+    statement(
+      "SELECT pg_advisory_xact_lock(hashtextextended(?,0))",
+      `presets:${uid}`,
+    ),
+    statement(
+      "INSERT INTO presets(id,uid,timestamp,data) SELECT ?,?,?,? WHERE (SELECT count(*) FROM presets WHERE uid=?) < 10",
+      id,
+      uid,
+      Date.now(),
+      encode(preset),
+      uid,
+    ),
+  ]);
+  const inserted =
+    committed?.[1]?.rowCount ??
+    ((await statement("SELECT id FROM presets WHERE id=?", id).first()) === null
+      ? 0
+      : 1);
+  if (inserted === 0) throw new MonkeyError(409, "Too many presets");
   return { presetId: id };
 }
 export async function editPreset(
@@ -36,11 +48,13 @@ export async function editPreset(
   preset: EditPresetRequest,
 ): Promise<void> {
   await atomicUser(uid, async () => {
-    const row = await database()
-      .select()
-      .from(presets)
-      .where(and(eq(presets.id, preset._id), eq(presets.uid, uid)))
-      .get();
+    const row = (
+      await database()
+        .select()
+        .from(presets)
+        .where(and(eq(presets.id, preset._id), eq(presets.uid, uid)))
+        .limit(1)
+    )[0];
     if (!row) return;
     const data = { ...row.data };
     if (preset.settingGroups !== undefined) {
@@ -67,5 +81,5 @@ export async function removePreset(
   const result = await database()
     .delete(presets)
     .where(and(eq(presets.id, presetId), eq(presets.uid, uid)));
-  if (!result.meta.changes) throw new MonkeyError(404, "Preset not found");
+  if (!result.rowCount) throw new MonkeyError(404, "Preset not found");
 }

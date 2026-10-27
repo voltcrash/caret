@@ -17,7 +17,7 @@ async function insert(
       uid,
       event,
       Date.now(),
-      Number(important),
+      important,
       encode({ message }),
     ),
   );
@@ -42,13 +42,19 @@ export async function countUserLogs(
   event: string,
   since: number,
 ): Promise<number> {
-  const row = await database()
-    .select({ count: count() })
-    .from(logs)
-    .where(
-      and(eq(logs.uid, uid), eq(logs.event, event), gte(logs.timestamp, since)),
-    )
-    .get();
+  const row = (
+    await database()
+      .select({ count: count() })
+      .from(logs)
+      .where(
+        and(
+          eq(logs.uid, uid),
+          eq(logs.event, event),
+          gte(logs.timestamp, since),
+        ),
+      )
+      .limit(1)
+  )[0];
   return row?.count ?? 0;
 }
 export type AuditLog = {
@@ -102,12 +108,17 @@ export async function countLogs(
 ): Promise<LogCount[]> {
   // array paths hold several keys per log, e.g. every signal of a flag
   const query = array
-    ? `SELECT j.value AS key, count(*) AS count, count(DISTINCT l.uid) AS users
-       FROM audit_logs l, json_each(l.data, ?) j
+    ? `SELECT j.value AS key, count(*)::integer AS count, count(DISTINCT l.uid)::integer AS users
+       FROM audit_logs l, jsonb_array_elements_text(l.data #> ?::text[]) j(value)
        WHERE l.event=? AND l.timestamp>=? GROUP BY j.value ORDER BY count DESC`
-    : `SELECT json_extract(data, ?) AS key, count(*) AS count, count(DISTINCT uid) AS users
+    : `SELECT data #>> ?::text[] AS key, count(*)::integer AS count, count(DISTINCT uid)::integer AS users
        FROM audit_logs WHERE event=? AND timestamp>=? GROUP BY key ORDER BY count DESC`;
-  const { results } = await statement(query, path, event, since).all<{
+  const { results } = await statement(
+    query,
+    `{${path.replace(/^\$\./, "").split(".").join(",")}}`,
+    event,
+    since,
+  ).all<{
     key: string | null;
     count: number;
     users: number;

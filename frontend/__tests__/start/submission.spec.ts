@@ -5,7 +5,7 @@ import { z } from "zod";
 import type { CompletedEvent } from "@caret/schemas/results";
 import { AddResultResponseSchema } from "@caret/contracts/results";
 import { GetUserResponseSchema } from "@caret/contracts/users";
-import { scoreEvent } from "../../../backend/__tests__/d1/result-support";
+import { scoreEvent } from "../../../backend/__tests__/postgres/result-support";
 import {
   createWorkerd,
   enableConfiguration,
@@ -22,7 +22,7 @@ const outcome = z.discriminatedUnion("ok", [
   z.object({ ok: z.literal(false), status: z.number(), message: z.string() }),
 ]);
 
-describe("result server function in the built Worker with real D1", () => {
+describe("result server function in the built Worker with real PostgreSQL", () => {
   let mf: Awaited<ReturnType<typeof createWorkerd>>;
   let index = 0;
   type RpcResponse = Awaited<
@@ -44,7 +44,7 @@ describe("result server function in the built Worker with real D1", () => {
 
   async function account(): Promise<Awaited<ReturnType<typeof seedSession>>> {
     const session = await seedSession(mf, "a");
-    const db = await mf.getD1Database("DB", "a");
+    const db = await mf.getDatabase("a");
     const name = `Submission${index++}`;
     const data = {
       _id: crypto.randomUUID().replaceAll("-", "").slice(0, 24),
@@ -106,7 +106,7 @@ describe("result server function in the built Worker with real D1", () => {
   }
 
   async function rows(uid: string, table = "results"): Promise<number | null> {
-    const db = await mf.getD1Database("DB", "a");
+    const db = await mf.getDatabase("a");
     return await db
       .prepare(`SELECT count(*) AS n FROM ${table} WHERE uid=?`)
       .bind(uid)
@@ -115,11 +115,11 @@ describe("result server function in the built Worker with real D1", () => {
 
   it("validates sparse account calendars with the same JSON semantics as the former HTTP response", async () => {
     const session = await account();
-    const db = await mf.getD1Database("DB", "a");
+    const db = await mf.getDatabase("a");
     const year = new Date().getUTCFullYear();
     await db
       .prepare(
-        "UPDATE users SET data=json_set(data,'$.testActivity',json(?),'$.personalBests',json(?)) WHERE uid=?",
+        "UPDATE users SET data=jsonb_set(jsonb_set(data,'{testActivity}',?::jsonb),'{personalBests}',?::jsonb) WHERE uid=?",
       )
       .bind(
         JSON.stringify({ [year - 1]: [1], [year]: [2] }),
@@ -183,7 +183,7 @@ describe("result server function in the built Worker with real D1", () => {
     ]) {
       expect(await rows(session.uid, table)).toBe(1);
     }
-    const db = await mf.getD1Database("DB", "a");
+    const db = await mf.getDatabase("a");
     const profile = await db
       .prepare("SELECT completed_tests,xp,data FROM users WHERE uid=?")
       .bind(session.uid)
@@ -209,7 +209,7 @@ describe("result server function in the built Worker with real D1", () => {
       message: "Duplicate result",
     });
     expect(await rows(session.uid)).toBe(1);
-    const db = await mf.getD1Database("DB", "a");
+    const db = await mf.getDatabase("a");
     expect(
       await db
         .prepare("SELECT completed_tests FROM users WHERE uid=?")
@@ -292,9 +292,9 @@ describe("result server function in the built Worker with real D1", () => {
       captureFlagged: true,
       randomRate: 1,
     });
-    const db = await mf.getD1Database("DB", "a");
+    const db = await mf.getDatabase("a");
     await db.exec(
-      "CREATE TRIGGER reject_sample BEFORE INSERT ON audit_logs WHEN NEW.event='anticheat_sample' BEGIN SELECT RAISE(ABORT,'fixture telemetry failure'); END",
+      "CREATE FUNCTION reject_sample() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.event='anticheat_sample' THEN RAISE EXCEPTION 'fixture telemetry failure'; END IF; RETURN NEW; END; $$; CREATE TRIGGER reject_sample BEFORE INSERT ON audit_logs FOR EACH ROW EXECUTE FUNCTION reject_sample();",
     );
     try {
       const failed = await call(session.token, result);
@@ -309,7 +309,9 @@ describe("result server function in the built Worker with real D1", () => {
         expect(await rows(session.uid, table)).toBe(0);
       }
     } finally {
-      await db.exec("DROP TRIGGER reject_sample");
+      await db.exec(
+        "DROP TRIGGER reject_sample ON audit_logs; DROP FUNCTION reject_sample()",
+      );
     }
     expect((await call(session.token, result)).status).toBe(200);
     expect(await rows(session.uid)).toBe(1);

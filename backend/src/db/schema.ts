@@ -1,37 +1,39 @@
 // Column-builder return types must retain Drizzle's inferred column metadata.
 import { sql } from "drizzle-orm";
 import {
-  sqliteTable,
+  pgTable,
   text,
-  integer,
-  real,
+  jsonb,
+  bigint,
+  boolean,
+  timestamp,
+  doublePrecision,
   index,
   uniqueIndex,
   primaryKey,
   check,
-} from "drizzle-orm/sqlite-core";
+} from "drizzle-orm/pg-core";
 import type { DBUser } from "../dal/user/types";
 
 const id = () => text("id").primaryKey();
 const json = <T = Record<string, unknown>>(name = "data") =>
-  text(name, { mode: "json" }).$type<T>().notNull();
+  jsonb(name).$type<T>().notNull();
 const date = (name: string) =>
-  integer(name, { mode: "timestamp_ms" }).notNull();
+  timestamp(name, { withTimezone: true, mode: "date", precision: 3 }).notNull();
+const integer = (name: string) => bigint(name, { mode: "number" });
 
 // Better Auth 1.7.7 core schema + this application's additional fields/model names.
-export const authUsers = sqliteTable("auth_users", {
+export const authUsers = pgTable("auth_users", {
   id: id(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  emailVerified: integer("email_verified", { mode: "boolean" })
-    .notNull()
-    .default(false),
+  emailVerified: boolean("email_verified").notNull().default(false),
   image: text("image"),
-  disabled: integer("disabled", { mode: "boolean" }).notNull().default(false),
+  disabled: boolean("disabled").notNull().default(false),
   createdAt: date("created_at"),
   updatedAt: date("updated_at"),
 });
-export const authSessions = sqliteTable(
+export const authSessions = pgTable(
   "auth_sessions",
   {
     id: id(),
@@ -50,7 +52,7 @@ export const authSessions = sqliteTable(
     index("auth_sessions_expiry_idx").on(t.expiresAt),
   ],
 );
-export const authAccounts = sqliteTable(
+export const authAccounts = pgTable(
   "auth_accounts",
   {
     id: id(),
@@ -62,11 +64,15 @@ export const authAccounts = sqliteTable(
     accessToken: text("access_token"),
     refreshToken: text("refresh_token"),
     idToken: text("id_token"),
-    accessTokenExpiresAt: integer("access_token_expires_at", {
-      mode: "timestamp_ms",
+    accessTokenExpiresAt: timestamp("access_token_expires_at", {
+      withTimezone: true,
+      mode: "date",
+      precision: 3,
     }),
-    refreshTokenExpiresAt: integer("refresh_token_expires_at", {
-      mode: "timestamp_ms",
+    refreshTokenExpiresAt: timestamp("refresh_token_expires_at", {
+      withTimezone: true,
+      mode: "date",
+      precision: 3,
     }),
     scope: text("scope"),
     password: text("password"),
@@ -78,7 +84,7 @@ export const authAccounts = sqliteTable(
     index("auth_accounts_user_idx").on(t.userId),
   ],
 );
-export const authVerifications = sqliteTable(
+export const authVerifications = pgTable(
   "auth_verifications",
   {
     id: id(),
@@ -94,7 +100,7 @@ export const authVerifications = sqliteTable(
   ],
 );
 // Auth can exist before application registration; do not require an app row for sessions.
-export const users = sqliteTable("users", {
+export const users = pgTable("users", {
   uid: text("uid").primaryKey(),
   id: text("id").notNull().unique(),
   name: text("name").notNull(),
@@ -102,14 +108,12 @@ export const users = sqliteTable("users", {
   email: text("email").notNull(),
   addedAt: integer("added_at").notNull(),
   xp: integer("xp").notNull().default(0),
-  timeTyping: real("time_typing").notNull().default(0),
+  timeTyping: doublePrecision("time_typing").notNull().default(0),
   completedTests: integer("completed_tests").notNull().default(0),
   startedTests: integer("started_tests").notNull().default(0),
-  banned: integer("banned", { mode: "boolean" }).notNull().default(false),
-  lbOptOut: integer("lb_opt_out", { mode: "boolean" }).notNull().default(false),
-  needsToChangeName: integer("needs_to_change_name", { mode: "boolean" })
-    .notNull()
-    .default(false),
+  banned: boolean("banned").notNull().default(false),
+  lbOptOut: boolean("lb_opt_out").notNull().default(false),
+  needsToChangeName: boolean("needs_to_change_name").notNull().default(false),
   version: integer("version").notNull().default(0),
   data: json<DBUser>(),
 });
@@ -117,12 +121,12 @@ const owner = () =>
   text("uid")
     .notNull()
     .references(() => users.uid, { onDelete: "cascade" });
-export const configs = sqliteTable("configs", {
+export const configs = pgTable("configs", {
   uid: owner().primaryKey(),
   id: text("id").notNull(),
   data: json(),
 });
-export const presets = sqliteTable(
+export const presets = pgTable(
   "presets",
   {
     id: id(),
@@ -133,7 +137,7 @@ export const presets = sqliteTable(
   (t) => [index("presets_owner_idx").on(t.uid, t.timestamp)],
 );
 
-export const results = sqliteTable(
+export const results = pgTable(
   "results",
   {
     id: id(),
@@ -142,20 +146,19 @@ export const results = sqliteTable(
     mode: text("mode").notNull(),
     mode2: text("mode2").notNull(),
     language: text("language").notNull(),
-    wpm: real("wpm").notNull(),
-    acc: real("acc").notNull(),
+    wpm: doublePrecision("wpm").notNull(),
+    acc: doublePrecision("acc").notNull(),
     client: text("client").$type<"web">().notNull().default("web"),
     submissionHash: text("submission_hash"),
     data: json(),
   },
   (t) => [
     index("results_client_time_idx").on(t.uid, t.client, t.timestamp, t.id),
-    // Existing storage can retain legacy rows; request schemas accept web only.
-    check("results_client", sql`${t.client} IN ('web','tui')`),
+    check("results_client", sql`${t.client} = 'web'`),
     uniqueIndex("results_submission_idx").on(t.uid, t.submissionHash),
   ],
 );
-export const blocklist = sqliteTable(
+export const blocklist = pgTable(
   "blocklist",
   {
     kind: text("kind").notNull(),
@@ -164,22 +167,22 @@ export const blocklist = sqliteTable(
   },
   (t) => [primaryKey({ columns: [t.kind, t.hash] })],
 );
-export const adminUids = sqliteTable("admin_uids", {
+export const adminUids = pgTable("admin_uids", {
   uid: text("uid").primaryKey(),
 });
-export const configuration = sqliteTable("configuration", {
+export const configuration = pgTable("configuration", {
   id: text("id").primaryKey(),
   version: integer("version").notNull().default(0),
   data: json(),
 });
-export const psas = sqliteTable("psas", { id: id(), data: json() });
-export const publicStats = sqliteTable("public_stats", {
+export const psas = pgTable("psas", { id: id(), data: json() });
+export const publicStats = pgTable("public_stats", {
   id: text("id").primaryKey(),
   testsCompleted: integer("tests_completed").notNull().default(0),
   testsStarted: integer("tests_started").notNull().default(0),
-  timeTyping: real("time_typing").notNull().default(0),
+  timeTyping: doublePrecision("time_typing").notNull().default(0),
 });
-export const speedHistograms = sqliteTable(
+export const speedHistograms = pgTable(
   "speed_histograms",
   {
     board: text("board").notNull(),
@@ -188,14 +191,14 @@ export const speedHistograms = sqliteTable(
   },
   (t) => [primaryKey({ columns: [t.board, t.bucket] })],
 );
-export const quoteSubmissions = sqliteTable(
+export const quoteSubmissions = pgTable(
   "quote_submissions",
   {
     id: id(),
     language: text("language").notNull(),
     submittedBy: text("submitted_by").notNull(),
     timestamp: integer("timestamp").notNull(),
-    approved: integer("approved", { mode: "boolean" }).notNull().default(false),
+    approved: boolean("approved").notNull().default(false),
     data: json(),
   },
   (t) => [
@@ -206,28 +209,28 @@ export const quoteSubmissions = sqliteTable(
     ),
   ],
 );
-export const quoteRatings = sqliteTable(
+export const quoteRatings = pgTable(
   "quote_ratings",
   {
     id: text("id").notNull(),
     language: text("language").notNull(),
     quoteId: integer("quote_id").notNull(),
     ratings: integer("ratings").notNull().default(0),
-    totalRating: real("total_rating").notNull().default(0),
+    totalRating: doublePrecision("total_rating").notNull().default(0),
   },
   (t) => [primaryKey({ columns: [t.language, t.quoteId] })],
 );
-export const userQuoteRatings = sqliteTable(
+export const userQuoteRatings = pgTable(
   "user_quote_ratings",
   {
     uid: owner(),
     language: text("language").notNull(),
     quoteId: integer("quote_id").notNull(),
-    rating: real("rating").notNull(),
+    rating: doublePrecision("rating").notNull(),
   },
   (t) => [primaryKey({ columns: [t.uid, t.language, t.quoteId] })],
 );
-export const reports = sqliteTable(
+export const reports = pgTable(
   "reports",
   {
     id: id(),
@@ -243,16 +246,14 @@ export const reports = sqliteTable(
     uniqueIndex("reports_reporter_idx").on(t.contentId, t.uid),
   ],
 );
-export const logs = sqliteTable(
+export const logs = pgTable(
   "audit_logs",
   {
     id: id(),
     uid: text("uid").notNull(),
     event: text("event").notNull(),
     timestamp: integer("timestamp").notNull(),
-    important: integer("important", { mode: "boolean" })
-      .notNull()
-      .default(false),
+    important: boolean("important").notNull().default(false),
     data: json(),
   },
   (t) => [
@@ -262,13 +263,13 @@ export const logs = sqliteTable(
   ],
 );
 
-export const leaderboardBests = sqliteTable(
+export const leaderboardBests = pgTable(
   "leaderboard_bests",
   {
     uid: owner(),
     board: text("board").notNull(),
-    wpm: real("wpm").notNull(),
-    acc: real("acc").notNull(),
+    wpm: doublePrecision("wpm").notNull(),
+    acc: doublePrecision("acc").notNull(),
     timestamp: integer("timestamp").notNull(),
     data: json(),
   },
@@ -278,14 +279,14 @@ export const leaderboardBests = sqliteTable(
     index("leaderboard_bests_owner_idx").on(t.uid),
   ],
 );
-export const leaderboardGenerations = sqliteTable("leaderboard_generations", {
+export const leaderboardGenerations = pgTable("leaderboard_generations", {
   board: text("board").primaryKey(),
   generation: text("generation").notNull(),
   updatedAt: integer("updated_at").notNull(),
-  /** Snapshot rows in `generation`; NULL for generations before 0019. */
+  /** Published snapshot size; nullable for manually seeded snapshots. */
   entries: integer("entries"),
 });
-export const leaderboardSnapshots = sqliteTable(
+export const leaderboardSnapshots = pgTable(
   "leaderboard_snapshots",
   {
     generation: text("generation").notNull(),
@@ -304,7 +305,7 @@ export const leaderboardSnapshots = sqliteTable(
     index("leaderboard_snapshots_owner_idx").on(t.uid),
   ],
 );
-export const dailyEntries = sqliteTable(
+export const dailyEntries = pgTable(
   "daily_entries",
   {
     board: text("board").notNull(),
@@ -317,20 +318,24 @@ export const dailyEntries = sqliteTable(
   (t) => [
     primaryKey({ columns: [t.board, t.period, t.uid] }),
     index("daily_entries_rank_idx").on(t.board, t.period, t.score, t.uid),
-    // daily_entries_summary_idx (expression index) lives in migration 0017
-    // only: drizzle-kit cannot emit json_extract index keys.
+    index("daily_entries_summary_idx").on(
+      t.board,
+      t.period,
+      t.expiresAt,
+      sql`((${t.data}->>'wpm')::double precision)`,
+    ),
     index("daily_entries_expiry_idx").on(t.expiresAt),
     index("daily_entries_owner_idx").on(t.uid),
   ],
 );
-export const weeklyEntries = sqliteTable(
+export const weeklyEntries = pgTable(
   "weekly_entries",
   {
     period: integer("period").notNull(),
     uid: owner(),
     client: text("client").$type<"web">().notNull().default("web"),
     xp: integer("xp").notNull(),
-    timeTypedSeconds: real("time_typed_seconds").notNull(),
+    timeTypedSeconds: doublePrecision("time_typed_seconds").notNull(),
     expiresAt: integer("expires_at").notNull(),
     data: json(),
   },
@@ -341,7 +346,7 @@ export const weeklyEntries = sqliteTable(
     index("weekly_entries_owner_idx").on(t.uid),
   ],
 );
-export const userActivity = sqliteTable(
+export const userActivity = pgTable(
   "user_activity",
   {
     uid: owner(),
@@ -351,13 +356,13 @@ export const userActivity = sqliteTable(
   },
   (t) => [primaryKey({ columns: [t.uid, t.client, t.day] })],
 );
-export const mutationGuards = sqliteTable(
+export const mutationGuards = pgTable(
   "mutation_guards",
   { id: id(), valid: integer("valid").notNull() },
   (t) => [check("mutation_version", sql`${t.valid} = 1`)],
 );
 
-export const writeReceipts = sqliteTable(
+export const writeReceipts = pgTable(
   "write_receipts",
   {
     id: id(),

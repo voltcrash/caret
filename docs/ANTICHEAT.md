@@ -219,7 +219,7 @@ authenticity. No server-issued test challenge, source-text replay or
 classifier calibrated on a labelled human corpus is provided. High speed alone
 is not evidence of cheating.
 
-Production-mode D1 tests cover saves/rejections, exemptions, concurrency, expired
+Production-mode PostgreSQL tests cover saves/rejections, exemptions, concurrency, expired
 strikes, absence of progression on rejection, replay rejection, review audits,
 sample capture, escalation and admin audit queries. Browser-reducer fixtures cover
 normal typing, coarsened clocks, IME, pre-start keys, bailouts and zen, and
@@ -231,14 +231,14 @@ save, refresh and sign-out/sign-in checks. Monitor `anticheat_rejected` audits
 by reason, `anticheat_flagged` audits by signal, `event_log_unverified` logs by
 reason and important-audit growth.
 
-Apply pending D1 migrations before deploying.
+Apply pending PostgreSQL migrations before deploying.
 Watch the summary endpoint, enable `samples.randomRate` briefly (for example
 0.05) to build a human baseline, review flagged results, then run the calibration
 command before changing thresholds or considering enforcement.
 
 ```sh
 cd backend
-vp test run __tests__/d1/anticheat.spec.ts
+vp test run __tests__/postgres/anticheat.spec.ts
 cd ../frontend
 vp test run __tests__/test/events/anticheat.spec.ts
 cd ..

@@ -22,7 +22,7 @@ and bounded retries on a stalled mirror.
 | Job | Runs | Checks |
 | --- | --- | --- |
 | `quality` | Every change | Whole-repo format check; Knip unless docs/assets-only; Stylelint and asset validation when `frontend/static`, CSS, runtime packages or asset validator inputs change |
-| `ci-be` | Backend, its tests, runtime packages, lint config | Lint, unit and D1 tests |
+| `ci-be` | Backend, its tests, runtime packages, lint config | Lint, unit and PostgreSQL tests |
 | `ci-fe` | Frontend, any frontend tests, backend, runtime packages, lint config | Lint, circular imports |
 | `ci-fe-test` (2 shards) | Frontend, unit or Start tests, backend, runtime packages | Vitest |
 | `start-build` | SSR or browser suite selected | Build and dry-run production Worker; share artifact |
@@ -40,7 +40,7 @@ everything. Markdown, `docs/` and repository metadata run only `quality`.
 `challenges`, `contracts`, `funbox`, `schemas`, `typing-core` and `util`
 (excluding their tests and fixtures, which run only `ci-pkg`).
 
-Cross-suite inputs also select their consumers: backend test data and D1
+Cross-suite inputs also select their consumers: backend test data and PostgreSQL
 helpers run the frontend unit and SSR suites, browser fixtures run the update
 suite, top-level `frontend/static` files run the Start suites, layouts run
 frontend and package tests, and typing-core fixtures run backend and frontend
@@ -57,7 +57,7 @@ covers these rules.
 ## Changing CI
 
 Add new paths to the matching `changes` filter with a routing spec case, and
-new jobs to `ci-ok`'s `needs`. Share build output before adding shards; each shard keeps its own fixture Worker and D1 databases.
+new jobs to `ci-ok`'s `needs`. Share build output before adding shards; each shard keeps its own fixture Worker and PostgreSQL databases.
 
 ## Test structure
 
@@ -66,7 +66,7 @@ new jobs to `ci-ok`'s `needs`. Share build output before adding shards; each sha
 same configuration. For one file, use `vp test run path/to/file.spec.ts`.
 
 Backend unit tests use lightweight mocks. Only HTTP/auth/controller suites
-start a migrated D1 runtime; D1 integration tests retain independent databases.
+start a migrated PostgreSQL runtime; PostgreSQL integration tests retain independent databases.
 Pure frontend suites run in Node without application mocks or DOM emulation.
 DOM logic and Solid component suites keep their respective browser environments.
 

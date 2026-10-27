@@ -48,7 +48,7 @@ function cacheTtl(): number {
 }
 
 /**
- * Request-stable configuration. Within an isolate, D1 is read at most once per
+ * Request-stable configuration. Within an isolate, PostgreSQL is read at most once per
  * TTL per database; other isolates converge within the TTL after a patch.
  */
 export async function getCachedConfiguration(
@@ -56,7 +56,7 @@ export async function getCachedConfiguration(
 ): Promise<Configuration> {
   const scope = runtime();
   if (scope.configuration !== undefined) return scope.configuration;
-  const key = scope.env.DB;
+  const key = scope.env;
   const ttl = cacheTtl();
   let entry = ttl === 0 ? undefined : isolateCache.get(key);
   if (entry === undefined || entry.expiresAt <= Date.now()) {
@@ -73,7 +73,7 @@ export async function getCachedConfiguration(
 export async function getLiveConfiguration(): Promise<Configuration> {
   const configuration = await loadConfiguration();
   const scope = runtime();
-  isolateCache.set(scope.env.DB, {
+  isolateCache.set(scope.env, {
     loaded: Promise.resolve(configuration),
     expiresAt: Date.now() + cacheTtl(),
   });
@@ -81,11 +81,13 @@ export async function getLiveConfiguration(): Promise<Configuration> {
   return scope.configuration;
 }
 async function loadConfiguration(): Promise<Configuration> {
-  const row = await database()
-    .select()
-    .from(configurationTable)
-    .where(eq(configurationTable.id, "main"))
-    .get();
+  const row = (
+    await database()
+      .select()
+      .from(configurationTable)
+      .where(eq(configurationTable.id, "main"))
+      .limit(1)
+  )[0];
   const configuration = structuredClone(BASE_CONFIGURATION);
   if (row) {
     mergeConfigurations(configuration, row.data);
@@ -102,7 +104,7 @@ export async function patchConfiguration(
 ): Promise<boolean> {
   await getCachedConfiguration();
   await statement(
-    "UPDATE configuration SET data=json_patch(data,?),version=version+1 WHERE id='main'",
+    "UPDATE configuration SET data=jsonb_merge_patch(data,?::jsonb),version=version+1 WHERE id='main'",
     encode(updates),
   ).run();
   await getLiveConfiguration();

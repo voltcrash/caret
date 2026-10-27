@@ -8,6 +8,10 @@ import { readdirSync, readFileSync } from "node:fs";
 import { resolve, relative } from "node:path";
 import { withRuntime, type WorkerEnv } from "@caret/backend/runtime";
 import { getAuth } from "@caret/backend/auth/session";
+import {
+  TestDatabase,
+  postgresFetch,
+} from "../../../backend/__tests__/postgres/database";
 import { bindingName, requiredTiers } from "@caret/backend/rate-counter";
 
 const root = resolve(import.meta.dirname, "../../..");
@@ -33,7 +37,7 @@ export function relaxRateLimits(
 
 /** Spend a client's root budget (67 per minute) on health checks. */
 export async function exhaustRootLimit(
-  mf: Miniflare,
+  mf: FixtureWorker,
   worker: string,
   ip: string,
 ): Promise<void> {
@@ -47,6 +51,23 @@ export async function exhaustRootLimit(
     if (response.status === 429) return;
   }
   throw new Error("Root limit never applied");
+}
+
+export class FixtureWorker extends Miniflare {
+  readonly databases: Map<string, TestDatabase>;
+  constructor(options: MiniflareOptions, databases: Map<string, TestDatabase>) {
+    super(options);
+    this.databases = databases;
+  }
+  async getDatabase(name = "a"): Promise<TestDatabase> {
+    const database = this.databases.get(name);
+    if (!database) throw new Error("Missing PostgreSQL fixture");
+    return database;
+  }
+  override async dispose(): Promise<void> {
+    await super.dispose();
+    for (const db of this.databases.values()) await db.close();
+  }
 }
 
 export async function createWorkerd(
@@ -71,7 +92,7 @@ export async function createWorkerd(
     onReady?: (milliseconds: number) => void;
     onOptions?: (options: MiniflareOptions) => void;
   } = {},
-): Promise<Miniflare> {
+): Promise<FixtureWorker> {
   const dir = resolve(
     root,
     `frontend/dist/${fixture.build ?? (testEntry ? "start-test" : "start")}/server`,
@@ -103,6 +124,12 @@ export async function createWorkerd(
   if (fixture.instrument !== undefined) {
     modules["instrument.js"] = { type: "esm", contents: fixture.instrument };
   }
+  const databases = new Map<string, TestDatabase>();
+  for (const name of ["a", "b"]) {
+    const db = new TestDatabase();
+    await db.migrate();
+    databases.set(name, db);
+  }
   const started = performance.now();
   const options: MiniflareOptions = {
     ...(port === undefined ? {} : { port, host: "127.0.0.1" }),
@@ -124,7 +151,10 @@ export async function createWorkerd(
           modules,
         },
         env: {
-          DB: { type: "d1" as const, name, id: name },
+          DATABASE_URL: {
+            type: "text" as const,
+            value: databases.get(name)?.url ?? "",
+          },
           ASSETS: { type: "assets" as const },
           METRICS: {
             type: "analytics-engine-dataset" as const,
@@ -173,7 +203,20 @@ export async function createWorkerd(
       dev: {
         outboundService: {
           type: "fetcher" as const,
-          handler: (request: { url: string }) => {
+          handler: async (request: import("miniflare").Request) => {
+            const pg = await postgresFetch(
+              new Request(request.url, {
+                method: request.method,
+                headers: [...request.headers],
+                body: request.body === null ? undefined : await request.text(),
+              }),
+            );
+            if (pg) {
+              return new FixtureResponse(await pg.text(), {
+                status: pg.status,
+                headers: pg.headers,
+              });
+            }
             if (
               captcha &&
               request.url ===
@@ -192,25 +235,11 @@ export async function createWorkerd(
     })),
   };
   fixture.onOptions?.(options);
-  const mf = new Miniflare(options);
+  const mf = new FixtureWorker(options, databases);
   await mf.ready;
   fixture.onReady?.(performance.now() - started);
   for (const name of ["a", "b"]) {
-    const db = await mf.getD1Database("DB", name);
-    for (const file of readdirSync(resolve(root, "backend/migrations"))
-      .filter((file) => file.endsWith(".sql"))
-      .sort()) {
-      const sql = readFileSync(
-        resolve(root, "backend/migrations", file),
-        "utf8",
-      );
-      await db.batch(
-        sql
-          .split("--> statement-breakpoint")
-          .filter((sql) => sql.trim())
-          .map((sql) => db.prepare(sql)),
-      );
-    }
+    const db = await mf.getDatabase(name);
     await db
       .prepare("INSERT INTO configuration(id,data) VALUES('main',?)")
       .bind(JSON.stringify({ users: { signUp: true } }))
@@ -229,12 +258,12 @@ export async function createWorkerd(
 }
 
 export async function seedSession(
-  mf: Miniflare,
+  mf: FixtureWorker,
   worker: string,
 ): Promise<{ uid: string; token: string; cookie: string }> {
-  const db = await mf.getD1Database("DB", worker);
+  const db = await mf.getDatabase(worker);
   const env = {
-    DB: db,
+    DATABASE_URL: db.url,
     MODE: "production",
     FRONTEND_URL: "http://localhost:3000",
     BETTER_AUTH_URL: "http://localhost:3000/api/auth",
@@ -262,11 +291,11 @@ export async function seedSession(
 
 /** A complete public user with one time 60 personal best. */
 export async function seedProfile(
-  mf: Miniflare,
+  mf: FixtureWorker,
   worker: string,
   name: string,
 ): Promise<string> {
-  const db = await mf.getD1Database("DB", worker);
+  const db = await mf.getDatabase(worker);
   const uid = `profile-${name}`;
   const pb = {
     acc: 97.5,
@@ -315,27 +344,31 @@ export async function seedProfile(
 
 /** Enables the public features a test exercises. */
 export async function enableConfiguration(
-  mf: Miniflare,
+  mf: FixtureWorker,
   worker: string,
   path: string,
   value: unknown,
 ): Promise<void> {
-  const db = await mf.getD1Database("DB", worker);
+  const db = await mf.getDatabase(worker);
+  let patch: unknown = value;
+  for (const key of path.replace(/^\$\./, "").split(".").reverse()) {
+    patch = { [key]: patch };
+  }
   await db
     .prepare(
-      "UPDATE configuration SET data=json_set(data,?,json(?)) WHERE id='main'",
+      "UPDATE configuration SET data=jsonb_merge_patch(data,?::jsonb) WHERE id='main'",
     )
-    .bind(path, JSON.stringify(value))
+    .bind(JSON.stringify(patch))
     .run();
 }
 
 /** All-time English time 15 board with `count` ranked entries. */
 export async function seedLeaderboard(
-  mf: Miniflare,
+  mf: FixtureWorker,
   worker: string,
   count: number,
 ): Promise<void> {
-  const db = await mf.getD1Database("DB", worker);
+  const db = await mf.getDatabase(worker);
   const board = "english_time_15";
   await db
     .prepare(

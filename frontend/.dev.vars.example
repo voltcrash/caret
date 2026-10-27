@@ -1,3 +1,5 @@
+# Neon PostgreSQL connection URL; use a separate branch/database per environment.
+DATABASE_URL=postgresql://user:password@ep-replace.neon.tech/neondb?sslmode=require
 MODE=dev
 FRONTEND_URL=http://localhost:3000
 BETTER_AUTH_URL=http://localhost:3000/api/auth

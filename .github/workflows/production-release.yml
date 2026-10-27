@@ -69,6 +69,7 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           PRODUCTION_BACKEND_ENV: ${{ secrets.PRODUCTION_BACKEND_ENV }}
           BETTER_AUTH_API_KEY: ${{ secrets.BETTER_AUTH_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           PRODUCTION_FRONTEND_ENV: ${{ vars.PRODUCTION_FRONTEND_ENV }}
         run: |
           node --input-type=module <<'NODE'
@@ -77,7 +78,9 @@ jobs:
             if (!process.env[key]?.trim()) throw new Error(`Configure the production Actions input ${key}`);
           }
           const dashboardApiKey = process.env.BETTER_AUTH_API_KEY?.trim();
-          const backendEnv = process.env.PRODUCTION_BACKEND_ENV + (dashboardApiKey ? `\nBETTER_AUTH_API_KEY=${JSON.stringify(dashboardApiKey)}\n` : '');
+          const databaseUrl = process.env.DATABASE_URL?.trim();
+          if (!databaseUrl) throw new Error('Missing production DATABASE_URL secret');
+          const backendEnv = process.env.PRODUCTION_BACKEND_ENV + `\nDATABASE_URL=${JSON.stringify(databaseUrl)}\n` + (dashboardApiKey ? `\nBETTER_AUTH_API_KEY=${JSON.stringify(dashboardApiKey)}\n` : '');
           writeFileSync('frontend/.dev.vars.production', backendEnv, { mode: 0o600 });
           writeFileSync('frontend/.env.production.local', process.env.PRODUCTION_FRONTEND_ENV, { mode: 0o600 });
           NODE
@@ -103,7 +106,7 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: vp run --filter @caret/frontend retire:production-task-consumer
 
-      - name: Apply production D1 migrations
+      - name: Apply production PostgreSQL migrations
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: vp run --filter @caret/frontend db:migrate:production

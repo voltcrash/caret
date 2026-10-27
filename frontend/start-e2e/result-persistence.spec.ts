@@ -7,7 +7,7 @@ import { authCookie } from "./auth-fixtures";
 import { expect, test } from "./fixtures";
 import { rpcPath } from "./rpc-fixtures";
 
-test("a real browser completion persists through Start/D1 and updates the account once", async ({
+test("a real browser completion persists through Start/PostgreSQL and updates the account once", async ({
   page,
   context,
   baseURL,

@@ -13,10 +13,5 @@
     "types": ["node"]
   },
   "files": ["vitest.d.ts"],
-  "include": [
-    "./**/*.ts",
-    "./**/*.spec.ts",
-    "./setup-tests.ts",
-    "../src/runtime/cloudflare.d.ts"
-  ]
+  "include": ["./**/*.ts", "./**/*.spec.ts", "./setup-tests.ts"]
 }

@@ -7,7 +7,7 @@ Windows, disable Git autocrlf before cloning. Install dependencies with
 need no build.
 
 `vp run dev` starts TanStack Start on port 3000: document, assets, server
-functions and `/api` run in local workerd with local D1. First copy
+functions and `/api` run in local workerd with a development Neon branch. First copy
 `frontend/.dev.vars.example` to `frontend/.dev.vars` and apply migrations with
 `vp run --filter @caret/frontend db:migrate`. Stop servers with Ctrl+C.
 
@@ -77,12 +77,12 @@ Use `vp lint --type-aware --type-check --format agent` for type checking;
 `vp fmt` formats files. Commit hooks enforce formatting and lint.
 Run a single test with `vp test run path/to/test.ts` from its package. Backend
 Backend `test` runs service/policy/HTTP-handler checks; `integration-test` runs
-workerd-backed D1 checks; frontend `test:start` runs SSR/workerd suites. Frontend imperative DOM work belongs in component refs/lifecycles; styling
+workerd-backed PostgreSQL checks; frontend `test:start` runs SSR/workerd suites. Frontend imperative DOM work belongs in component refs/lifecycles; styling
 uses Tailwind classes, `cn` and configured colors; icons use `Fa`.
 
 Run the browser suites with `vp run test-e2e` after `vp run build`. Install the browser once:
 `vp -C frontend exec playwright install chromium`. They serve the built Start
-Worker with seeded D1 fixtures on port 4185. Failed runs retain traces and
+Worker with seeded PostgreSQL fixtures on port 4185. Failed runs retain traces and
 screenshots in `frontend/test-results/`.
 
 Circular imports are rejected by oxlint's `import/no-cycle` rule.

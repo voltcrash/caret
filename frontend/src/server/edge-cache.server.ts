@@ -6,7 +6,7 @@ import type { ExecutionContext } from "@cloudflare/workers-types";
  * backend's `EDGE_CACHE_SECONDS` mark their responses with `s-maxage`; the
  * Worker stores those. Lookups run as request middleware after the CSRF
  * check, so hits keep its origin rules but skip rate limits, sessions and
- * D1. Inert on workers.dev hosts.
+ * PostgreSQL. Inert on workers.dev hosts.
  */
 const CACHE_NAME = "public-reads";
 const CACHEABLE_PATHS = ["/api/", "/_serverFn/"];

@@ -1,14 +1,15 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 import { eq } from "drizzle-orm";
-import type { D1PreparedStatement, D1Result } from "@cloudflare/workers-types";
+import type { PreparedQuery, QueryResult } from "./query";
 import { users } from "./schema";
-import { database, primaryDatabase, encode, statement } from "./client";
+import { database, encode, statement } from "./client";
 import { newId } from "../utils/id";
 import MonkeyError from "../utils/error";
+import { postgresError } from "./retry";
 import { commitBatch } from "./commit";
 import type { DBUser } from "../dal/user";
 
-type Draft = { uid: string; user: DBUser; statements: D1PreparedStatement[] };
+type Draft = { uid: string; user: DBUser; statements: PreparedQuery[] };
 const drafts = new AsyncLocalStorage<Draft>();
 
 export function currentUserDraft(uid: string): DBUser | undefined {
@@ -19,22 +20,20 @@ export function currentUserDraft(uid: string): DBUser | undefined {
 export async function readUser(uid: string): Promise<DBUser | undefined> {
   const draft = currentUserDraft(uid);
   if (draft) return structuredClone(draft);
-  const row = await database()
-    .select()
-    .from(users)
-    .where(eq(users.uid, uid))
-    .get();
+  const row = (
+    await database().select().from(users).where(eq(users.uid, uid)).limit(1)
+  )[0];
   return row?.data;
 }
 
 /** Enlist a write in the current user's atomic batch, or execute it directly. */
-export async function stage(query: D1PreparedStatement): Promise<void> {
+export async function stage(query: PreparedQuery): Promise<void> {
   const draft = drafts.getStore();
   if (draft) draft.statements.push(query);
   else await query.run();
 }
 
-function userStatement(user: DBUser, version: number): D1PreparedStatement {
+function userStatement(user: DBUser, version: number): PreparedQuery {
   return statement(
     `UPDATE users SET name=?,name_key=?,email=?,xp=?,time_typing=?,completed_tests=?,started_tests=?,banned=?,lb_opt_out=?,needs_to_change_name=?,data=?,version=version+1 WHERE uid=? AND version=?`,
     user.name,
@@ -44,16 +43,16 @@ function userStatement(user: DBUser, version: number): D1PreparedStatement {
     user.timeTyping ?? 0,
     user.completedTests ?? 0,
     user.startedTests ?? 0,
-    Number(user.banned ?? false),
-    Number(user.lbOptOut ?? false),
-    Number(user.needsToChangeName ?? false),
+    user.banned ?? false,
+    user.lbOptOut ?? false,
+    user.needsToChangeName ?? false,
     encode(user),
     user.uid,
     version,
   );
 }
 
-/** D1 batch is atomic. A CHECK guard makes stale reads roll back every write. */
+/** A Neon transaction is atomic. A CHECK guard makes stale reads roll back every write. */
 export async function atomicUser<T>(
   uid: string,
   action: () => Promise<T>,
@@ -70,18 +69,16 @@ export async function atomicUser<T>(
 export async function atomicUserWithReads<T>(
   uid: string,
   action: () => Promise<T>,
-  readsFor: (result: T) => D1PreparedStatement[],
-): Promise<{ result: T; reads: D1Result[] | undefined }> {
+  readsFor: (result: T) => PreparedQuery[],
+): Promise<{ result: T; reads: QueryResult[] | undefined }> {
   if (currentUserDraft(uid)) {
     return { result: await action(), reads: undefined };
   }
   for (let attempt = 0; attempt < 8; attempt++) {
-    // Failed guards do not advance bookmarks; bypass lagging replicas on retry.
-    const row = await primaryDatabase()
-      .select()
-      .from(users)
-      .where(eq(users.uid, uid))
-      .get();
+    // Reload committed primary state after a version conflict.
+    const row = (
+      await database().select().from(users).where(eq(users.uid, uid)).limit(1)
+    )[0];
     if (!row) throw new MonkeyError(404, "User not found");
     const user = row.data;
     const draft: Draft = {
@@ -95,7 +92,7 @@ export async function atomicUserWithReads<T>(
     try {
       const results = await commitBatch([
         statement(
-          "INSERT INTO mutation_guards(id,valid) VALUES (?,(SELECT count(*) FROM users WHERE uid=? AND version=?))",
+          "INSERT INTO mutation_guards(id,valid) VALUES (?,(SELECT count(*) FROM (SELECT uid FROM users WHERE uid=? AND version=? FOR UPDATE) AS current_user_version))",
           guard,
           uid,
           row.version,
@@ -113,11 +110,10 @@ export async function atomicUserWithReads<T>(
             : results.slice(results.length - reads.length),
       };
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? `${error.message} ${String(error.cause)}`
-          : String(error);
-      if (!message.includes("mutation_version")) throw error;
+      const pg = postgresError(error);
+      if (pg?.code !== "23514" || pg.constraint !== "mutation_version") {
+        throw error;
+      }
     }
   }
   throw new MonkeyError(409, "Concurrent update; please retry");

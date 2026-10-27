@@ -134,7 +134,8 @@ describe("production build command", () => {
     }
     write(
       "frontend/.dev.vars.production",
-      "BETTER_AUTH_SECRET=production-auth-secret-fixture-32-characters\n" +
+      "DATABASE_URL=postgresql://user:password@ep-fixture.neon.tech/neondb?sslmode=require\n" +
+        "BETTER_AUTH_SECRET=production-auth-secret-fixture-32-characters\n" +
         "TURNSTILE_SECRET_KEY=production-turnstile-secret-fixture\n" +
         "GITHUB_CLIENT_ID=production-client-id\n" +
         "GITHUB_CLIENT_SECRET=production-client-secret-fixture\n",
@@ -253,7 +254,7 @@ writeFileSync(new URL("./frontend/dist/start/server/index.js", import.meta.url),
     [
       "frontend/.dev.vars.production",
       "BETTER_AUTH_SECRET=replace-with-production-secret\n",
-      "BETTER_AUTH_SECRET",
+      "DATABASE_URL",
     ],
     [
       "frontend/.env.production.local",

@@ -9,7 +9,7 @@ import { GetConfigResponseSchema } from "@caret/contracts/configs";
 import { createWorkerd, seedSession } from "./workerd";
 import { rpcPath } from "./rpc";
 
-describe("ordinary server-function mutations with real D1", () => {
+describe("ordinary server-function mutations with real PostgreSQL", () => {
   let mf: Awaited<ReturnType<typeof createWorkerd>>;
   type Session = Awaited<ReturnType<typeof seedSession>>;
   type Reply = Awaited<
@@ -23,7 +23,7 @@ describe("ordinary server-function mutations with real D1", () => {
 
   async function account(): Promise<Session> {
     const session = await seedSession(mf, "a");
-    const db = await mf.getD1Database("DB", "a");
+    const db = await mf.getDatabase("a");
     const name = `Mutation${index++}`;
     const data = {
       uid: session.uid,
@@ -115,7 +115,7 @@ describe("ordinary server-function mutations with real D1", () => {
 
   it("preserves historical preference migrations without rewriting stored data", async () => {
     const actor = await account();
-    const db = await mf.getD1Database("DB", "a");
+    const db = await mf.getDatabase("a");
     const legacy = {
       theme: "nord",
       swapEscAndTab: true,
@@ -150,7 +150,7 @@ describe("ordinary server-function mutations with real D1", () => {
 
   it("loads saved presets containing historical settings without rewriting them", async () => {
     const actor = await account();
-    const db = await mf.getD1Database("DB", "a");
+    const db = await mf.getDatabase("a");
     const legacy = {
       name: "historical",
       config: {
@@ -178,16 +178,18 @@ describe("ordinary server-function mutations with real D1", () => {
       },
     ]);
     expect(
-      await db
-        .prepare("SELECT data FROM presets WHERE uid=?")
-        .bind(actor.uid)
-        .first("data"),
-    ).toBe(JSON.stringify(legacy));
+      JSON.parse(
+        (await db
+          .prepare("SELECT data FROM presets WHERE uid=?")
+          .bind(actor.uid)
+          .first<string>("data")) ?? "{}",
+      ),
+    ).toEqual(legacy);
   });
 
   it("keeps malformed wrapped preferences visible instead of replacing them with defaults", async () => {
     const actor = await account();
-    const db = await mf.getD1Database("DB", "a");
+    const db = await mf.getDatabase("a");
     await db
       .prepare("INSERT INTO configs(uid,id,data) VALUES(?,?,?)")
       .bind(
@@ -207,10 +209,10 @@ describe("ordinary server-function mutations with real D1", () => {
 
   it("rechecks fresh-session and moderator permissions on actual mutation/read functions", async () => {
     const actor = await account();
-    const db = await mf.getD1Database("DB", "a");
+    const db = await mf.getDatabase("a");
     await db
       .prepare("UPDATE auth_sessions SET created_at=? WHERE token=?")
-      .bind(Date.now() - 120_000, actor.token)
+      .bind(new Date(Date.now() - 120_000), actor.token)
       .run();
     expect(
       (
@@ -222,7 +224,7 @@ describe("ordinary server-function mutations with real D1", () => {
     expect((await call(actor, "quotesGet", "GET")).status).toBe(403);
     await db
       .prepare("UPDATE auth_sessions SET created_at=? WHERE token=?")
-      .bind(Date.now(), actor.token)
+      .bind(new Date(), actor.token)
       .run();
     expect(
       (
