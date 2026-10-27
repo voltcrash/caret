@@ -1,13 +1,16 @@
 import { createFileRoute } from "@tanstack/solid-router";
 
-import { publicEnv } from "../app/public-env";
+import { pageHead } from "../app/seo";
 import { ProfileSearchPage } from "../features/profile/search";
 
 export const Route = createFileRoute("/_app/profile/")({
-  head: () => ({
-    links: [{ rel: "canonical", href: `${publicEnv.origin}/profile` }],
-    meta: [{ title: "Profile Search | Caret" }],
-  }),
+  head: () =>
+    pageHead(
+      "Profile Search | Caret",
+      "Find a Caret user's public typing profile.",
+      "/profile",
+      false,
+    ),
   component: () => (
     <div class="page pageProfileSearch" id="pageProfileSearch">
       <ProfileSearchPage />

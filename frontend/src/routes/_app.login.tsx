@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/solid-router";
 
+import { pageHead } from "../app/seo";
 import { AuthPage } from "../features/auth/page";
 import { authRedirect } from "../features/auth/session";
 import { getSessionState } from "../functions/session";
@@ -11,7 +12,7 @@ export const Route = createFileRoute("/_app/login")({
         : undefined,
   }),
   loader: async () => await getSessionState(),
-  head: () => ({ meta: [{ title: "Sign in | Caret" }] }),
+  head: () => pageHead("Sign in | Caret", "Sign in on Caret.", "/login", false),
   component: Login,
 });
 function Login() {

@@ -2,13 +2,19 @@ import { wasmUrl } from "@caret/typing-engine/asset";
 import { createFileRoute } from "@tanstack/solid-router";
 import { englishHash } from "virtual:language-hashes";
 
-import { publicEnv } from "../app/public-env";
+import { homeDescription, homeTitle, pageHead } from "../app/seo";
+import {
+  homeStructuredData,
+  structuredDataScript,
+} from "../app/structured-data";
 import { TypingLeaf } from "../features/typing/page";
 
 export const Route = createFileRoute("/_app/")({
   head: () => ({
+    ...pageHead(homeTitle, homeDescription, "/"),
+    scripts: [structuredDataScript(homeStructuredData())],
     links: [
-      { rel: "canonical", href: `${publicEnv.origin}/` },
+      ...pageHead(homeTitle, homeDescription, "/").links,
       {
         rel: "preload",
         as: "fetch",
@@ -29,17 +35,6 @@ export const Route = createFileRoute("/_app/")({
               href: `/languages/english.json?v=${englishHash.slice(0, 16)}`,
             },
           ]),
-    ],
-    meta: [
-      { title: "Caret | A minimalistic, customizable typing test" },
-      {
-        name: "description",
-        content: "A minimalistic, customizable typing test.",
-      },
-      {
-        property: "og:title",
-        content: "Caret | A minimalistic, customizable typing test",
-      },
     ],
   }),
   component: TypingLeaf,

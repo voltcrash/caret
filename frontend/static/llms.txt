@@ -1,0 +1,32 @@
+# Caret
+
+> Caret is a free, open-source online typing test and typing practice application.
+
+Official website: https://caret.voltcrash.com/
+Source repository: https://github.com/voltcrash/caret
+License: GPL-3.0
+
+Caret measures typing speed in words per minute (WPM) and accuracy. It runs in a
+modern web browser with JavaScript enabled. Tests can be taken without an account;
+signing in enables saved results and account history.
+
+Practice modes include time, words, quotes, zen and custom text. Users can choose
+language and code word lists, punctuation, numbers, themes, fonts and caret settings.
+Code lists support transcription practice, not programming instruction or assessment.
+Caret began from the Monkeytype codebase and is now an independent project.
+
+## Public pages
+
+- [Typing test](https://caret.voltcrash.com/): Start a free test; product overview and common questions below the test.
+- [Typing practice](https://caret.voltcrash.com/typing-practice): A practice routine, accuracy, modes and consistent comparisons.
+- [Typing speed test](https://caret.voltcrash.com/typing-speed-test): Taking a test and understanding WPM, raw speed and accuracy.
+- [Typing for programmers](https://caret.voltcrash.com/typing-for-programmers): Code word lists, custom text and practice limits.
+- [Leaderboards](https://caret.voltcrash.com/leaderboards): Public typing and XP rankings.
+- [Privacy policy](https://caret.voltcrash.com/privacy-policy.html): Data handling and privacy information.
+
+## Discovery
+
+- [Sitemap](https://caret.voltcrash.com/sitemap.xml)
+- [Crawler policy](https://caret.voltcrash.com/robots.txt)
+
+Use the linked pages as the source for current product information.

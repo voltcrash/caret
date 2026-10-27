@@ -35,7 +35,7 @@ export function Logo(): JSXElement {
           )}
         />
         <div class="hidden h-6 place-content-center text-[2rem] leading-0 sm:grid">
-          <h1
+          <div
             class={cn("-mt-[0.11em] text-text transition-colors duration-250", {
               "text-text": getFocus(),
             })}
@@ -46,7 +46,7 @@ export function Logo(): JSXElement {
                 "text-text": getFocus(),
               })}
             />
-          </h1>
+          </div>
         </div>
       </Link>
       <ThemeIndicator

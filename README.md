@@ -6,6 +6,10 @@
 
 Caret is an independent, open-source typing test. It offers multiple test modes, languages, themes, live speed and accuracy feedback, and account-based result history.
 
+Take a [free typing test](https://caret.voltcrash.com/), learn how to
+[practice typing](https://caret.voltcrash.com/typing-practice), or explore
+[code typing practice](https://caret.voltcrash.com/typing-for-programmers).
+
 This project began from the Monkeytype codebase and now has its own roadmap. We retain the original contributors' work and attribution in the Git history. Caret is licensed under [GPL-3.0](./LICENSE).
 
 Caret does not support self-hosting. For self-hosting, use [Monkeytype](https://github.com/monkeytypegame/monkeytype).

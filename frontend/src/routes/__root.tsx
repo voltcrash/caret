@@ -13,6 +13,7 @@ import { Document } from "../app/document";
 import { AppLayout } from "../app/layout";
 import { AppProviders } from "../app/providers";
 import { publicEnv } from "../app/public-env";
+import { homeDescription } from "../app/seo";
 import { AppError } from "../components/app-error";
 import { NotFoundPage } from "../features/not-found/page";
 
@@ -44,7 +45,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         },
         {
           name: "description",
-          content: "A minimalistic, customizable typing test.",
+          content: homeDescription,
+        },
+        {
+          name: "robots",
+          content: matches.some(
+            (match) => match.status === "notFound" || match._notFound === true,
+          )
+            ? "noindex,follow"
+            : "index,follow,max-image-preview:large",
         },
         { name: "format-detection", content: "telephone=no" },
         { name: "theme-color", content: "#0b0d1c" },
@@ -61,8 +70,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { property: "og:image", content: socialImage },
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },
-        { property: "og:image:alt", content: "Caret logo" },
+        {
+          property: "og:image:alt",
+          content: "Caret — free typing test and online typing practice",
+        },
         { name: "twitter:image", content: socialImage },
+        {
+          name: "twitter:image:alt",
+          content: "Caret — free typing test and online typing practice",
+        },
         { name: "darkreader-lock", content: "" },
       ],
       links: [

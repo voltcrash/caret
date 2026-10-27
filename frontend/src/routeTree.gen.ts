@@ -19,6 +19,9 @@ import { Route as AppAuthenticatedRouteImport } from './routes/_app._authenticat
 import { Route as AppLeaderboardsRouteImport } from './routes/_app.leaderboards'
 import { Route as AppLoginRouteImport } from './routes/_app.login'
 import { Route as AppSettingsRouteImport } from './routes/_app.settings'
+import { Route as AppTypingForProgrammersRouteImport } from './routes/_app.typing-for-programmers'
+import { Route as AppTypingPracticeRouteImport } from './routes/_app.typing-practice'
+import { Route as AppTypingSpeedTestRouteImport } from './routes/_app.typing-speed-test'
 import { Route as ApiIndexRouteImport } from './routes/api.index'
 import { Route as ApiSplatRouteImport } from './routes/api.$'
 import { Route as ApiAdminRouteImport } from './routes/api.admin'
@@ -137,6 +140,21 @@ const AppLoginRoute = AppLoginRouteImport.update({
 const AppSettingsRoute = AppSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTypingForProgrammersRoute = AppTypingForProgrammersRouteImport.update({
+  id: '/typing-for-programmers',
+  path: '/typing-for-programmers',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTypingPracticeRoute = AppTypingPracticeRouteImport.update({
+  id: '/typing-practice',
+  path: '/typing-practice',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTypingSpeedTestRoute = AppTypingSpeedTestRouteImport.update({
+  id: '/typing-speed-test',
+  path: '/typing-speed-test',
   getParentRoute: () => AppRoute,
 } as any)
 const ApiIndexRoute = ApiIndexRouteImport.update({
@@ -518,6 +536,9 @@ export interface FileRoutesByFullPath {
   '/leaderboards': typeof AppLeaderboardsRoute
   '/login': typeof AppLoginRoute
   '/settings': typeof AppSettingsRoute
+  '/typing-for-programmers': typeof AppTypingForProgrammersRoute
+  '/typing-practice': typeof AppTypingPracticeRoute
+  '/typing-speed-test': typeof AppTypingSpeedTestRoute
   '/api/$': typeof ApiSplatRoute
   '/api/admin': typeof ApiAdminRouteWithChildren
   '/api/configs': typeof ApiConfigsRoute
@@ -599,6 +620,9 @@ export interface FileRoutesByTo {
   '/leaderboards': typeof AppLeaderboardsRoute
   '/login': typeof AppLoginRoute
   '/settings': typeof AppSettingsRoute
+  '/typing-for-programmers': typeof AppTypingForProgrammersRoute
+  '/typing-practice': typeof AppTypingPracticeRoute
+  '/typing-speed-test': typeof AppTypingSpeedTestRoute
   '/api/$': typeof ApiSplatRoute
   '/api/admin': typeof ApiAdminRouteWithChildren
   '/api/configs': typeof ApiConfigsRoute
@@ -682,6 +706,9 @@ export interface FileRoutesById {
   '/_app/leaderboards': typeof AppLeaderboardsRoute
   '/_app/login': typeof AppLoginRoute
   '/_app/settings': typeof AppSettingsRoute
+  '/_app/typing-for-programmers': typeof AppTypingForProgrammersRoute
+  '/_app/typing-practice': typeof AppTypingPracticeRoute
+  '/_app/typing-speed-test': typeof AppTypingSpeedTestRoute
   '/api/$': typeof ApiSplatRoute
   '/api/admin': typeof ApiAdminRouteWithChildren
   '/api/configs': typeof ApiConfigsRoute
@@ -766,6 +793,9 @@ export interface FileRouteTypes {
     | '/leaderboards'
     | '/login'
     | '/settings'
+    | '/typing-for-programmers'
+    | '/typing-practice'
+    | '/typing-speed-test'
     | '/api/$'
     | '/api/admin'
     | '/api/configs'
@@ -847,6 +877,9 @@ export interface FileRouteTypes {
     | '/leaderboards'
     | '/login'
     | '/settings'
+    | '/typing-for-programmers'
+    | '/typing-practice'
+    | '/typing-speed-test'
     | '/api/$'
     | '/api/admin'
     | '/api/configs'
@@ -929,6 +962,9 @@ export interface FileRouteTypes {
     | '/_app/leaderboards'
     | '/_app/login'
     | '/_app/settings'
+    | '/_app/typing-for-programmers'
+    | '/_app/typing-practice'
+    | '/_app/typing-speed-test'
     | '/api/$'
     | '/api/admin'
     | '/api/configs'
@@ -1099,6 +1135,27 @@ declare module '@tanstack/solid-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/typing-for-programmers': {
+      id: '/_app/typing-for-programmers'
+      path: '/typing-for-programmers'
+      fullPath: '/typing-for-programmers'
+      preLoaderRoute: typeof AppTypingForProgrammersRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/typing-practice': {
+      id: '/_app/typing-practice'
+      path: '/typing-practice'
+      fullPath: '/typing-practice'
+      preLoaderRoute: typeof AppTypingPracticeRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/typing-speed-test': {
+      id: '/_app/typing-speed-test'
+      path: '/typing-speed-test'
+      fullPath: '/typing-speed-test'
+      preLoaderRoute: typeof AppTypingSpeedTestRouteImport
       parentRoute: typeof AppRoute
     }
     '/api/': {
@@ -1619,6 +1676,9 @@ interface AppRouteChildren {
   AppLeaderboardsRoute: typeof AppLeaderboardsRoute
   AppLoginRoute: typeof AppLoginRoute
   AppSettingsRoute: typeof AppSettingsRoute
+  AppTypingForProgrammersRoute: typeof AppTypingForProgrammersRoute
+  AppTypingPracticeRoute: typeof AppTypingPracticeRoute
+  AppTypingSpeedTestRoute: typeof AppTypingSpeedTestRoute
   AppIndexRoute: typeof AppIndexRoute
   AppProfileUidOrNameRoute: typeof AppProfileUidOrNameRoute
   AppProfileIndexRoute: typeof AppProfileIndexRoute
@@ -1629,6 +1689,9 @@ const AppRouteChildren: AppRouteChildren = {
   AppLeaderboardsRoute: AppLeaderboardsRoute,
   AppLoginRoute: AppLoginRoute,
   AppSettingsRoute: AppSettingsRoute,
+  AppTypingForProgrammersRoute: AppTypingForProgrammersRoute,
+  AppTypingPracticeRoute: AppTypingPracticeRoute,
+  AppTypingSpeedTestRoute: AppTypingSpeedTestRoute,
   AppIndexRoute: AppIndexRoute,
   AppProfileUidOrNameRoute: AppProfileUidOrNameRoute,
   AppProfileIndexRoute: AppProfileIndexRoute,

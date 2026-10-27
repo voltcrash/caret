@@ -2,8 +2,8 @@ import type { JSXElement } from "solid-js";
 
 import { createFileRoute } from "@tanstack/solid-router";
 
-import { publicEnv } from "../app/public-env";
 import { stringifySearch, urlSearch } from "../app/search";
+import { pageHead } from "../app/seo";
 import { leaderboardOptions } from "../data/leaderboards";
 import { prefetch } from "../data/prefetch";
 import { LeaderboardPage } from "../features/leaderboards/page";
@@ -43,17 +43,12 @@ export const Route = createFileRoute("/_app/leaderboards")({
         ["weekly", "daily"].includes(query.queryKey[2] as string),
     });
   },
-  head: () => ({
-    links: [{ rel: "canonical", href: `${publicEnv.origin}/leaderboards` }],
-    meta: [
-      { title: "Leaderboards | Caret" },
-      { property: "og:title", content: "Leaderboards | Caret" },
-      {
-        name: "description",
-        content: "All-time, daily and weekly XP Caret leaderboards.",
-      },
-    ],
-  }),
+  head: () =>
+    pageHead(
+      "Leaderboards | Caret",
+      "Explore Caret typing leaderboards: compare all-time typing speed results and daily and weekly XP rankings.",
+      "/leaderboards",
+    ),
   component: Leaderboards,
 });
 
