@@ -9,8 +9,8 @@ afterAll(async () => await test?.dispose());
 
 it("loads a registered account after the inbox-removal migration", async () => {
   expect(
-    await test.env.DB.prepare(
-      "SELECT name FROM sqlite_master WHERE type='table' AND name='inbox'",
+    await test.db.prepare(
+      "SELECT tablename AS name FROM pg_tables WHERE schemaname='public' AND tablename='inbox'",
     ).first(),
   ).toBeNull();
   const account = await test.account();

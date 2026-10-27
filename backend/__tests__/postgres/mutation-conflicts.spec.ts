@@ -5,7 +5,7 @@ import { atomicUser, atomicUserWithReads, stage } from "../../src/db/mutation";
 import { statement } from "../../src/db/client";
 import * as Users from "../../src/dal/user";
 
-describe("D1 optimistic version guards", () => {
+describe("PostgreSQL optimistic version guards", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;
   beforeAll(async () => {
     test = await createTestRuntime();
@@ -82,7 +82,7 @@ describe("D1 optimistic version guards", () => {
             `attempt${attempts}`,
           ),
         );
-        // A separate D1 write commits after the snapshot, before the guarded batch.
+        // A separate PostgreSQL write commits after the snapshot, before the guarded batch.
         if (attempts === 1) {
           await statement(
             "UPDATE users SET version=version+1 WHERE uid='retry'",

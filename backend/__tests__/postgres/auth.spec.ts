@@ -9,7 +9,7 @@ import Worker from "../__testData__/http-worker";
 import { GetUserResponseSchema } from "@caret/contracts/users";
 import type { ExecutionContext } from "@cloudflare/workers-types";
 
-describe("Better Auth D1 adapter", () => {
+describe("Better Auth PostgreSQL adapter", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;
   const siteverify = vi.fn<typeof fetch>();
   beforeAll(async () => {
@@ -83,7 +83,7 @@ describe("Better Auth D1 adapter", () => {
       expect(await availability.json()).toMatchObject({
         data: { available: true },
       });
-      // Siteverify failure must preserve the real D1-backed onboarding session.
+      // Siteverify failure must preserve the real PostgreSQL-backed onboarding session.
       for (const data of [
         { success: false, "error-codes": ["timeout-or-duplicate"] },
         { success: true, hostname: "attacker.test", action: "signup" },
@@ -161,7 +161,7 @@ describe("Better Auth D1 adapter", () => {
       expect((await verifySession(headers)).uid).toBe(user.id);
       await context.internalAdapter.deleteSession(session?.token ?? "");
       await expect(verifySession(headers)).rejects.toThrow();
-      await test.env.DB.prepare("UPDATE auth_users SET disabled=1 WHERE id=?")
+      await test.db.prepare("UPDATE auth_users SET disabled=true WHERE id=?")
         .bind(user.id)
         .run();
       await expect(
@@ -170,7 +170,7 @@ describe("Better Auth D1 adapter", () => {
     });
   });
 
-  it("revokes D1 sessions immediately on disable and never revives them on re-enable", async () => {
+  it("revokes PostgreSQL sessions immediately on disable and never revives them on re-enable", async () => {
     await withRuntime(test.env, async () => {
       const context = await getAuth().$context;
       const user = await context.internalAdapter.createUser(

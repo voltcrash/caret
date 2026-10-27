@@ -5,5 +5,5 @@
     "moduleResolution": "Bundler"
   },
   "files": ["../vitest.d.ts"],
-  "include": ["./**/*.ts", "../../src/runtime/cloudflare.d.ts"]
+  "include": ["./**/*.ts"]
 }

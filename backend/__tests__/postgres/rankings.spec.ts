@@ -146,7 +146,7 @@ describe("SQL ranking parity", () => {
           (row) => row.uid,
         ),
       ).toEqual(["b", "a"]);
-      await statement("UPDATE users SET banned=1 WHERE uid='b'").run();
+      await statement("UPDATE users SET banned=true WHERE uid='b'").run();
       await Leaderboards.update("time", "15", "english");
       expect(
         await Leaderboards.getRank("time", "15", "english", "b"),

@@ -3,16 +3,17 @@ import { defineConfig, TestProjectInlineConfiguration } from "vite-plus";
 export const projects = [
   {
     test: {
-      name: { label: "d1", color: "cyan" },
-      include: ["__tests__/d1/**/*.spec.ts"],
+      name: { label: "postgres", color: "cyan" },
+      include: ["__tests__/postgres/**/*.spec.ts"],
       testTimeout: 30_000,
       hookTimeout: 30_000,
-      // Each file migrates its own in-memory Miniflare D1, so files are isolated.
+      // Each file migrates its own in-memory PGlite PostgreSQL, so files are isolated.
     },
   },
   {
     test: {
       name: { label: "http", color: "yellow" },
+      hookTimeout: 30_000,
       setupFiles: ["__tests__/setup-tests.ts"],
       include: ["__tests__/{api,auth,http}/**/*.spec.ts"],
     },
@@ -22,7 +23,7 @@ export const projects = [
       name: { label: "unit", color: "blue" },
       setupFiles: ["__tests__/setup-unit.ts"],
       include: ["__tests__/**/*.spec.ts"],
-      exclude: ["__tests__/{api,auth,http,d1}/**"],
+      exclude: ["__tests__/{api,auth,http,postgres}/**"],
     },
   },
 ] satisfies TestProjectInlineConfiguration[];

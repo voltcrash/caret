@@ -36,8 +36,8 @@ describe("web and offline result submissions", () => {
       );
       uid = user.id;
       await Users.addUser(user.name, user.email, uid);
-      await test.env.DB.prepare(
-        "UPDATE users SET added_at=0,data=json_set(data,'$.addedAt',0) WHERE uid=?",
+      await test.db.prepare(
+        "UPDATE users SET added_at=0,data=jsonb_set(data,'{addedAt}',to_jsonb(0::bigint)) WHERE uid=?",
       )
         .bind(uid)
         .run();
@@ -107,7 +107,7 @@ describe("web and offline result submissions", () => {
       test.env,
       async () => await Users.getUser(uid, "test", "web"),
     );
-    const counts = await test.env.DB.prepare(
+    const counts = await test.db.prepare(
       "SELECT (SELECT count(*) FROM daily_entries) AS daily,(SELECT count(*) FROM weekly_entries) AS weekly",
     ).first();
     const timestamp = Date.now() - 2 * 86400000;
@@ -152,7 +152,7 @@ describe("web and offline result submissions", () => {
       ).toEqual([]);
     });
     expect(
-      await test.env.DB.prepare(
+      await test.db.prepare(
         "SELECT (SELECT count(*) FROM daily_entries) AS daily,(SELECT count(*) FROM weekly_entries) AS weekly",
       ).first(),
     ).toEqual(counts);
@@ -189,7 +189,7 @@ describe("web and offline result submissions", () => {
   it.each([false, true])(
     "deduplicates lost-response offline retries (legacy hash: %s)",
     async (legacyHash) => {
-      await test.env.DB.prepare(
+      await test.db.prepare(
         "UPDATE results SET timestamp=timestamp-120000 WHERE uid=?",
       )
         .bind(uid)
@@ -205,7 +205,7 @@ describe("web and offline result submissions", () => {
       };
       if (legacyHash) {
         const { hash: _hash, ...payload } = result;
-        await test.env.DB.prepare(
+        await test.db.prepare(
           "UPDATE results SET submission_hash=? WHERE id=?",
         )
           .bind(objectHash(payload), data.insertedId)
@@ -215,7 +215,7 @@ describe("web and offline result submissions", () => {
         test.env,
         async () => await Users.getUser(uid, "before retry", "web"),
       );
-      const count = await test.env.DB.prepare(
+      const count = await test.db.prepare(
         "SELECT count(*) AS n FROM results WHERE uid=?",
       )
         .bind(uid)
@@ -223,7 +223,7 @@ describe("web and offline result submissions", () => {
       const retry = await submit({ ...result, offline: true });
       expect(retry.status, await retry.clone().text()).toBe(466);
       expect(
-        await test.env.DB.prepare(
+        await test.db.prepare(
           "SELECT count(*) AS n FROM results WHERE uid=?",
         )
           .bind(uid)

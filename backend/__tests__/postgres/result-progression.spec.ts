@@ -8,7 +8,7 @@ import {
   UpdateResultTagsResponseSchema,
 } from "@caret/contracts/results";
 
-describe("result PBs, rankings and progression with D1", () => {
+describe("result PBs, rankings and progression with PostgreSQL", () => {
   let test: Awaited<ReturnType<typeof resultRuntime>>;
   beforeAll(async () => {
     test = await resultRuntime();
@@ -50,7 +50,7 @@ describe("result PBs, rankings and progression with D1", () => {
             .dailyLeaderboardRank,
         ).toBe(1);
       }
-      await test.env.DB.prepare(
+      await test.db.prepare(
         "UPDATE results SET timestamp=timestamp-120000 WHERE uid=?",
       )
         .bind(account.uid)
@@ -81,10 +81,10 @@ describe("result PBs, rankings and progression with D1", () => {
       ).toBe(3);
       expect(
         await statement(
-          "SELECT json_extract(data,'$.wpm') FROM daily_entries WHERE uid=?",
+          "SELECT (data->>'wpm')::double precision AS wpm FROM daily_entries WHERE uid=?",
           account.uid,
         ).first(),
-      ).toEqual({ "json_extract(data,'$.wpm')": 96 });
+      ).toEqual({ wpm: 96 });
     });
     const stats = await test.request(account, "/users/stats");
     expect(await stats.json()).toMatchObject({

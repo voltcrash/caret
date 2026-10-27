@@ -5,7 +5,7 @@ import * as UserDAL from "../../src/dal/user";
 import { atomicUser, mutateUser, stage } from "../../src/db/mutation";
 import { statement } from "../../src/db/client";
 
-describe("D1 user mutations", () => {
+describe("PostgreSQL user mutations", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;
   beforeAll(async () => {
     test = await createTestRuntime();

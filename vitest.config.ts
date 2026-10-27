@@ -7,6 +7,8 @@ prepareTypingEngine();
 
 export default defineConfig({
   test: {
+    // PostgreSQL fixtures allocate a WASM engine per file; bound worker memory.
+    maxWorkers: 4,
     // Vitest v4 compatibility: preserve mock call history.
     // Remove after tests no longer rely on calls from setup or earlier tests.
     // https://viteplus.dev/guide/vitest-v5#remove-unneeded-compatibility-settings

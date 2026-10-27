@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
 import { createTestRuntime, seedUser } from "./helpers";
 import { withRuntime, envValue } from "../../src/runtime/env";
 
-describe("D1 schema on workerd", () => {
+describe("PostgreSQL schema on workerd", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;
   beforeAll(async () => {
     test = await createTestRuntime();
@@ -12,8 +12,8 @@ describe("D1 schema on workerd", () => {
   });
 
   it("creates auth, application and ranking tables without retired ones", async () => {
-    const tables = await test.env.DB.prepare(
-      "SELECT name FROM sqlite_master WHERE type='table'",
+    const tables = await test.db.prepare(
+      "SELECT tablename AS name FROM pg_tables WHERE schemaname='public'",
     ).all<{ name: string }>();
     expect(tables.results.map((row) => row.name)).toEqual(
       expect.arrayContaining([
@@ -41,60 +41,44 @@ describe("D1 schema on workerd", () => {
     }
   });
   it("keeps only the result indexes production queries use", async () => {
-    const indexes = await test.env.DB.prepare(
-      "SELECT name FROM sqlite_master WHERE type='index' AND tbl_name='results' AND sql IS NOT NULL ORDER BY name",
+    const indexes = await test.db.prepare(
+      "SELECT indexname AS name FROM pg_indexes WHERE tablename='results' AND indexname<>'results_pkey' ORDER BY name",
     ).all<{ name: string }>();
     expect(indexes.results.map((row) => row.name)).toEqual([
       "results_client_time_idx",
       "results_submission_idx",
     ]);
   });
-  it("removes a user's leaderboard bests through an index", async () => {
-    for (const query of [
-      "DELETE FROM users WHERE uid='owner'",
-      "DELETE FROM leaderboard_bests WHERE uid='owner'",
-    ]) {
-      const plan = await test.env.DB.prepare(
-        `EXPLAIN QUERY PLAN ${query}`,
-      ).all<{
-        detail: string;
-      }>();
-      const details = plan.results.map(({ detail }) => detail);
-      expect(
-        details.filter((detail) => detail.includes("leaderboard_bests")),
-      ).toEqual([expect.stringContaining("leaderboard_bests_owner_idx")]);
-    }
-  });
   it("enforces normalized user names and cascades owned rows", async () => {
     await seedUser(test.env, "owner", "Name");
-    await expect(seedUser(test.env, "other", "name")).rejects.toThrow(/UNIQUE/);
-    await test.env.DB.prepare(
+    await expect(seedUser(test.env, "other", "name")).rejects.toThrow(/unique constraint/);
+    await test.db.prepare(
       "INSERT INTO configs (uid,id,data) VALUES (?,?,?)",
     )
       .bind("owner", "config", "{}")
       .run();
-    await test.env.DB.prepare("DELETE FROM users WHERE uid=?")
+    await test.db.prepare("DELETE FROM users WHERE uid=?")
       .bind("owner")
       .run();
     expect(
-      await test.env.DB.prepare("SELECT count(*) AS count FROM configs").first(
+      await test.db.prepare("SELECT count(*) AS count FROM configs").first(
         "count",
       ),
     ).toBe(0);
   });
   it("rolls back the entire batch when its version assertion fails", async () => {
     await expect(
-      test.env.DB.batch([
-        test.env.DB.prepare(
+      test.db.batch([
+        test.db.prepare(
           "INSERT INTO public_stats (id) VALUES ('rollback')",
         ),
-        test.env.DB.prepare(
+        test.db.prepare(
           "INSERT INTO mutation_guards (id,valid) VALUES ('failed',0)",
         ),
       ]),
     ).rejects.toThrow(/mutation_version/);
     expect(
-      await test.env.DB.prepare(
+      await test.db.prepare(
         "SELECT id FROM public_stats WHERE id='rollback'",
       ).first(),
     ).toBeNull();

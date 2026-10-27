@@ -1,5 +1,4 @@
-import type { D1PreparedStatement } from "@cloudflare/workers-types";
-import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vite-plus/test";
 import { createTestRuntime, seedUser } from "./helpers";
 import { runtime, withRuntime } from "../../src/runtime/env";
 import { statement } from "../../src/db/client";
@@ -7,7 +6,7 @@ import { commitBatch } from "../../src/db/commit";
 import { atomicUser, mutateUser, stage } from "../../src/db/mutation";
 import { MAINTENANCE_CRON, scheduled } from "../../src/runtime/tasks";
 
-describe("receipt-protected D1 commits", () => {
+describe("receipt-protected PostgreSQL commits", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;
   beforeAll(async () => {
     test = await createTestRuntime();
@@ -21,23 +20,16 @@ describe("receipt-protected D1 commits", () => {
       await seedUser(test.env, uid);
       await withRuntime(test.env, async () => {
         const scope = runtime();
-        const session = scope.session;
+        const sql = scope.sql;
+        const original = sql.transaction.bind(sql);
         let batches = 0;
-        scope.session = {
-          prepare: (query) => session.prepare(query),
-          getBookmark: () => session.getBookmark(),
-          batch: async <T = unknown>(queries: D1PreparedStatement[]) => {
-            batches++;
-            if (batches === 1 && failure === "before") {
-              throw new Error("Network connection lost");
-            }
-            const result = await session.batch<T>(queries);
-            if (batches === 1 && failure === "after") {
-              throw new Error("Network connection lost");
-            }
-            return result;
-          },
-        };
+        const mock = vi.spyOn(sql, "transaction").mockImplementation(async (...args) => {
+          batches++;
+          if (batches === 1 && failure === "before") throw new Error("Network connection lost");
+          const result = await original(...args);
+          if (batches === 1 && failure === "after") throw new Error("Network connection lost");
+          return result;
+        });
         let callbacks = 0;
         const result = await atomicUser(uid, async () => {
           callbacks++;
@@ -52,8 +44,10 @@ describe("receipt-protected D1 commits", () => {
           );
           return "saved";
         });
+        mock.mockRestore();
         expect(result).toBe("saved");
-        expect(callbacks).toBe(1);
+        mock.mockRestore();
+      expect(callbacks).toBe(1);
         expect(batches).toBe(failure === "before" ? 2 : 1);
         expect(
           await statement(
@@ -103,25 +97,16 @@ describe("receipt-protected D1 commits", () => {
   it("handles an original commit arriving after an initially empty recovery probe", async () => {
     await seedUser(test.env, "delayed-commit");
     await withRuntime(test.env, async () => {
-      const session = runtime().session;
-      let pending: D1PreparedStatement[] | undefined;
+      const sql = runtime().sql;
+      const original = sql.transaction.bind(sql);
+      let pending: Parameters<typeof original> | undefined;
       let batches = 0;
-      runtime().session = {
-        prepare: (query) => session.prepare(query),
-        getBookmark: () => session.getBookmark(),
-        batch: async <T = unknown>(queries: D1PreparedStatement[]) => {
-          batches++;
-          if (batches === 1) {
-            pending = queries;
-            throw new Error("Network connection lost");
-          }
-          if (pending !== undefined) {
-            await session.batch(pending);
-            pending = undefined;
-          }
-          return await session.batch<T>(queries);
-        },
-      };
+      const mock = vi.spyOn(sql, "transaction").mockImplementation(async (...args) => {
+        batches++;
+        if (batches === 1) { pending = args; throw new Error("Network connection lost"); }
+        if (pending !== undefined) { await original(...pending); pending = undefined; }
+        return await original(...args);
+      });
       let callbacks = 0;
       await atomicUser("delayed-commit", async () => {
         callbacks++;
@@ -130,6 +115,7 @@ describe("receipt-protected D1 commits", () => {
         });
       });
       expect(callbacks).toBe(1);
+      mock.mockRestore();
       expect(batches).toBe(2);
       expect(
         await statement(
@@ -142,16 +128,10 @@ describe("receipt-protected D1 commits", () => {
   it("stops after four failed batch attempts without repeating callbacks or effects", async () => {
     await seedUser(test.env, "retry-exhausted");
     await withRuntime(test.env, async () => {
-      const session = runtime().session;
       let batches = 0;
-      runtime().session = {
-        prepare: (query) => session.prepare(query),
-        getBookmark: () => session.getBookmark(),
-        batch: async () => {
-          batches++;
-          throw new Error("Network connection lost");
-        },
-      };
+      const mock = vi.spyOn(runtime().sql, "transaction").mockImplementation(async () => {
+        batches++; throw new Error("Network connection lost");
+      });
       let callbacks = 0;
       await expect(
         atomicUser("retry-exhausted", async () => {
@@ -162,6 +142,7 @@ describe("receipt-protected D1 commits", () => {
         }),
       ).rejects.toThrow("Network connection lost");
       expect(callbacks).toBe(1);
+      mock.mockRestore();
       expect(batches).toBe(4);
       expect(
         await statement(
@@ -172,7 +153,7 @@ describe("receipt-protected D1 commits", () => {
   });
 
   it("purges expired receipts while retaining recent commits", async () => {
-    await test.env.DB.prepare(
+    await test.db.prepare(
       "INSERT INTO write_receipts(id,created_at) VALUES('expired-receipt',0)",
     ).run();
     await withRuntime(test.env, async () => {

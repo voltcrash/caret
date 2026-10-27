@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 import {
-  d1ErrorMessage,
-  isTransientD1Error,
-  retryIdempotentD1Write,
+  postgresError,
+  isTransientDatabaseError,
+  retryIdempotentWrite,
 } from "../../src/db/retry";
 
 afterEach(() => {
@@ -10,17 +10,9 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe("D1 transient write retry", () => {
-  it.each([
-    "Network connection lost",
-    "storage caused object to be reset",
-    "reset because its code was updated",
-  ])("recognizes wrapped %s", (message) => {
-    expect(
-      isTransientD1Error(
-        new Error("Failed query", { cause: new Error(message) }),
-      ),
-    ).toBe(true);
+describe("PostgreSQL transient write retry", () => {
+  it.each(["08006", "40001", "40P01", "57P01"])("recognizes wrapped PostgreSQL %s", (code) => {
+    expect(isTransientDatabaseError(new Error("Failed query", { cause: Object.assign(new Error("unavailable"), { code }) }))).toBe(true);
   });
 
   it("bounds retries and uses exponential jitter", async () => {
@@ -29,7 +21,7 @@ describe("D1 transient write retry", () => {
     const failure = new Error("Network connection lost");
     const write = vi.fn<() => Promise<void>>().mockRejectedValue(failure);
     const started = Date.now();
-    const check = expect(retryIdempotentD1Write(write)).rejects.toBe(failure);
+    const check = expect(retryIdempotentWrite(write)).rejects.toBe(failure);
     await vi.runAllTimersAsync();
     await check;
     expect(write).toHaveBeenCalledTimes(4);
@@ -42,7 +34,7 @@ describe("D1 transient write retry", () => {
       .fn<() => Promise<number>>()
       .mockRejectedValueOnce(new Error("Network connection lost"))
       .mockResolvedValue(42);
-    const check = expect(retryIdempotentD1Write(write)).resolves.toBe(42);
+    const check = expect(retryIdempotentWrite(write)).resolves.toBe(42);
     await vi.runAllTimersAsync();
     await check;
     expect(write).toHaveBeenCalledTimes(2);
@@ -53,19 +45,19 @@ describe("D1 transient write retry", () => {
     "mutation_version",
     "no such table",
     "SQLITE_BUSY",
-    "D1 DB exceeded its storage limit",
+    "PostgreSQL DB exceeded its storage limit",
     "overloaded",
   ])("does not retry %s", async (message) => {
     const write = vi
       .fn<() => Promise<void>>()
       .mockRejectedValue(new Error(message));
-    await expect(retryIdempotentD1Write(write)).rejects.toThrow(message);
+    await expect(retryIdempotentWrite(write)).rejects.toThrow(message);
     expect(write).toHaveBeenCalledOnce();
   });
 
   it("handles cyclic error causes without looping", () => {
     const error = new Error("Network connection lost");
     error.cause = error;
-    expect(d1ErrorMessage(error)).toBe("Network connection lost");
+    expect(postgresError(error)).toBeUndefined();
   });
 });

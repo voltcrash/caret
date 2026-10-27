@@ -11,7 +11,7 @@ import Worker from "../__testData__/http-worker";
 import { GetUserResponseSchema } from "@caret/contracts/users";
 import type { ExecutionContext } from "@cloudflare/workers-types";
 
-describe("Worker HTTP with D1", () => {
+describe("Worker HTTP with PostgreSQL", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;
   let token: string;
   let uid: string;
@@ -30,8 +30,8 @@ describe("Worker HTTP with D1", () => {
       if (session === null) throw new Error("Missing session");
       token = session.token;
       await Users.addUser("Http", user.email, uid);
-      await test.env.DB.prepare(
-        "UPDATE users SET added_at=0,data=json_set(data,'$.addedAt',0) WHERE uid=?",
+      await test.db.prepare(
+        "UPDATE users SET added_at=0,data=jsonb_set(data,'{addedAt}',to_jsonb(0::bigint)) WHERE uid=?",
       )
         .bind(uid)
         .run();
@@ -57,36 +57,6 @@ describe("Worker HTTP with D1", () => {
       context,
     );
   }
-  it("lets only edge-cached public reads start on a replica", async () => {
-    const start = vi.fn((constraint?: string) =>
-      test.env.DB.withSession(constraint),
-    );
-    const env = {
-      ...test.env,
-      DB: new Proxy(test.env.DB, {
-        get(target, key): unknown {
-          return key === "withSession" ? start : Reflect.get(target, key);
-        },
-      }),
-    };
-    const fetch = async (path: string): Promise<number> =>
-      (
-        await Worker.fetch(
-          new Request(`http://localhost:5005/api${path}`, {
-            headers: {
-              authorization: `Bearer ${token}`,
-              origin: "http://localhost:3000",
-            },
-          }),
-          env,
-          context,
-        )
-      ).status;
-    expect(await fetch("/public/typingStats")).toBe(200);
-    expect(start).toHaveBeenLastCalledWith("first-unconstrained");
-    expect(await fetch("/users")).toBe(200);
-    expect(start).toHaveBeenLastCalledWith("first-primary");
-  });
   it("routes /api and serves the schema-valid signed-in user", async () => {
     expect((await request("/")).status).toBe(200);
     const response = await request("/users");
@@ -177,7 +147,7 @@ describe("Worker HTTP with D1", () => {
       save.mockRestore();
     }
   });
-  it("rejects revoked D1 sessions on subsequent requests", async () => {
+  it("rejects revoked PostgreSQL sessions on subsequent requests", async () => {
     await withRuntime(test.env, async () => {
       await (await getAuth().$context).internalAdapter.deleteSession(token);
     });

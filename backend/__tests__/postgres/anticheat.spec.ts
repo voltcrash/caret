@@ -19,7 +19,7 @@ import {
 } from "../__testData__/key-timings";
 import { consistency } from "../../src/anticheat/result";
 
-describe("production anticheat with D1", () => {
+describe("production anticheat with PostgreSQL", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;
   let index = 0;
   const execution = {
@@ -54,8 +54,8 @@ describe("production anticheat with D1", () => {
       );
       await Users.addUser(user.name, user.email, user.id);
       const createdAt = Date.now() - ageSeconds * 1000;
-      await test.env.DB.prepare(
-        "UPDATE users SET added_at=?,data=json_set(data,'$.addedAt',?) WHERE uid=?",
+      await test.db.prepare(
+        "UPDATE users SET added_at=?,data=jsonb_set(data,'{addedAt}',to_jsonb(?::bigint)) WHERE uid=?",
       )
         .bind(createdAt, createdAt, user.id)
         .run();
@@ -97,21 +97,21 @@ describe("production anticheat with D1", () => {
       expect(user.timeTyping ?? 0).toBe(0);
       expect(user.personalBests.time).toEqual({});
       expect(
-        await test.env.DB.prepare(
+        await test.db.prepare(
           "SELECT count(*) AS count FROM results WHERE uid=?",
         )
           .bind(uid)
           .first("count"),
       ).toBe(0);
       expect(
-        await test.env.DB.prepare(
+        await test.db.prepare(
           "SELECT count(*) AS count FROM daily_entries WHERE uid=?",
         )
           .bind(uid)
           .first("count"),
       ).toBe(0);
       expect(
-        await test.env.DB.prepare(
+        await test.db.prepare(
           "SELECT count(*) AS count FROM weekly_entries WHERE uid=?",
         )
           .bind(uid)
@@ -165,7 +165,7 @@ describe("production anticheat with D1", () => {
     uid: string,
     event: string,
   ): Promise<{ message: Record<string, unknown> }[]> {
-    const { results } = await test.env.DB.prepare(
+    const { results } = await test.db.prepare(
       "SELECT data FROM audit_logs WHERE uid=? AND event=?",
     )
       .bind(uid, event)
@@ -176,7 +176,7 @@ describe("production anticheat with D1", () => {
   }
   // results must be spaced by their duration; age earlier saves instead of waiting
   async function ageResults(uid: string): Promise<void> {
-    await test.env.DB.prepare(
+    await test.db.prepare(
       "UPDATE results SET timestamp=timestamp-120000 WHERE uid=?",
     )
       .bind(uid)
@@ -222,7 +222,7 @@ describe("production anticheat with D1", () => {
       expect(profile.timeTyping).toBe(30);
       expect(profile.xp).toBeGreaterThan(0);
       expect(
-        await test.env.DB.prepare(
+        await test.db.prepare(
           "SELECT count(*) AS count FROM results WHERE uid=?",
         )
           .bind(user.uid)
@@ -235,7 +235,7 @@ describe("production anticheat with D1", () => {
     expect((await submit(user, { timestamp: 1 })).status).toBe(462);
     await assertNoProgress(user.uid);
     expect(
-      await test.env.DB.prepare(
+      await test.db.prepare(
         "SELECT count(*) AS count FROM audit_logs WHERE uid=? AND event='invalid_result_spacing'",
       )
         .bind(user.uid)
@@ -250,7 +250,7 @@ describe("production anticheat with D1", () => {
       expect((await submit(user, { wpm: 120 }, path)).status).toBe(463);
       await assertNoProgress(user.uid);
       expect(
-        await test.env.DB.prepare(
+        await test.db.prepare(
           "SELECT count(*) AS count FROM audit_logs WHERE uid=? AND event='anticheat_rejected'",
         )
           .bind(user.uid)
@@ -500,7 +500,7 @@ describe("production anticheat with D1", () => {
           expect(profile.personalBests).toEqual(saved.personalBests);
         });
         expect(
-          await test.env.DB.prepare(
+          await test.db.prepare(
             "SELECT count(*) AS count FROM results WHERE uid=?",
           )
             .bind(user.uid)
@@ -566,7 +566,7 @@ describe("production anticheat with D1", () => {
       });
       await assertNoProgress(user.uid);
       expect(
-        await test.env.DB.prepare(
+        await test.db.prepare(
           "SELECT count(*) AS count FROM audit_logs WHERE uid=? AND event='anticheat_rejected'",
         )
           .bind(user.uid)
@@ -604,7 +604,7 @@ describe("production anticheat with D1", () => {
         expect(await Public.getTypingStats()).toEqual(before);
       });
       expect(
-        await test.env.DB.prepare(
+        await test.db.prepare(
           "SELECT count(*) AS count FROM audit_logs WHERE uid=? AND event='anticheat_rejected'",
         )
           .bind(user.uid)

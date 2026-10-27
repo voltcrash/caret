@@ -6,7 +6,7 @@ import { getLiveConfiguration } from "../../src/init/configuration";
 import { withRuntime } from "../../src/runtime/env";
 import { createTestRuntime, seedUser } from "./helpers";
 
-describe("fresh production bootstrap on D1", () => {
+describe("fresh production bootstrap on PostgreSQL", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;
   let sql: string;
   beforeEach(async () => {
@@ -19,7 +19,7 @@ describe("fresh production bootstrap on D1", () => {
   afterEach(async () => await test.dispose());
 
   it("enables core flows on an empty target without creating accounts", async () => {
-    await test.env.DB.prepare(sql).run();
+    await test.db.prepare(sql).run();
     const configuration = await withRuntime(test.env, getLiveConfiguration);
     expect(ConfigurationSchema.safeParse(configuration).success).toBe(true);
     expect(configuration.users.signUp).toBe(true);
@@ -33,7 +33,7 @@ describe("fresh production bootstrap on D1", () => {
     expect(configuration.dailyLeaderboards.enabled).toBe(true);
     expect(configuration.quotes.submissionsEnabled).toBe(false);
     expect(configuration.admin.endpointsEnabled).toBe(false);
-    const counts = await test.env.DB.prepare(
+    const counts = await test.db.prepare(
       "SELECT (SELECT count(*) FROM users) AS users, (SELECT count(*) FROM auth_users) AS auth, (SELECT count(*) FROM results) AS results",
     ).first();
     expect(counts).toEqual({
@@ -44,55 +44,55 @@ describe("fresh production bootstrap on D1", () => {
   });
 
   it("refuses to replace existing configuration on a rerun", async () => {
-    await test.env.DB.prepare(sql).run();
-    await test.env.DB.prepare(
-      "UPDATE configuration SET version=7,data=json_set(data,'$.users.signUp',json('false')) WHERE id='main'",
+    await test.db.prepare(sql).run();
+    await test.db.prepare(
+      "UPDATE configuration SET version=7,data=jsonb_set(data,'{users,signUp}','false'::jsonb) WHERE id='main'",
     ).run();
-    const before = await test.env.DB.prepare(
+    const before = await test.db.prepare(
       "SELECT * FROM configuration",
     ).first();
-    await expect(test.env.DB.prepare(sql).run()).rejects.toThrow(/NOT NULL/);
+    await expect(test.db.prepare(sql).run()).rejects.toThrow(/null value/);
     expect(
-      await test.env.DB.prepare("SELECT * FROM configuration").first(),
+      await test.db.prepare("SELECT * FROM configuration").first(),
     ).toEqual(before);
   });
 
   it("refuses a target containing an application user", async () => {
     await seedUser(test.env, "existing", "Existing");
-    await expect(test.env.DB.prepare(sql).run()).rejects.toThrow(/NOT NULL/);
+    await expect(test.db.prepare(sql).run()).rejects.toThrow(/null value/);
     expect(
-      await test.env.DB.prepare("SELECT name FROM users").first("name"),
+      await test.db.prepare("SELECT name FROM users").first("name"),
     ).toBe("Existing");
     expect(
-      await test.env.DB.prepare("SELECT * FROM configuration").first(),
+      await test.db.prepare("SELECT * FROM configuration").first(),
     ).toBeNull();
   });
 
   it("refuses an unfinished OAuth signup even without an application profile", async () => {
-    await test.env.DB.prepare(
-      "INSERT INTO auth_users (id,name,email,created_at,updated_at) VALUES ('existing','Existing','existing@example.test',0,0)",
+    await test.db.prepare(
+      "INSERT INTO auth_users (id,name,email,created_at,updated_at) VALUES ('existing','Existing','existing@example.test','1970-01-01','1970-01-01')",
     ).run();
-    await expect(test.env.DB.prepare(sql).run()).rejects.toThrow(/NOT NULL/);
+    await expect(test.db.prepare(sql).run()).rejects.toThrow(/null value/);
     expect(
-      await test.env.DB.prepare(
+      await test.db.prepare(
         "SELECT count(*) AS count FROM auth_users",
       ).first("count"),
     ).toBe(1);
     expect(
-      await test.env.DB.prepare("SELECT * FROM configuration").first(),
+      await test.db.prepare("SELECT * FROM configuration").first(),
     ).toBeNull();
   });
 
   it("refuses pending quote submissions without discarding them", async () => {
-    await test.env.DB.prepare(
+    await test.db.prepare(
       "INSERT INTO quote_submissions (id,language,submitted_by,timestamp,data) VALUES ('pending','english','submitter',0,'{}')",
     ).run();
-    await expect(test.env.DB.prepare(sql).run()).rejects.toThrow(/NOT NULL/);
+    await expect(test.db.prepare(sql).run()).rejects.toThrow(/null value/);
     expect(
-      await test.env.DB.prepare("SELECT id FROM quote_submissions").first("id"),
+      await test.db.prepare("SELECT id FROM quote_submissions").first("id"),
     ).toBe("pending");
     expect(
-      await test.env.DB.prepare("SELECT * FROM configuration").first(),
+      await test.db.prepare("SELECT * FROM configuration").first(),
     ).toBeNull();
   });
 });

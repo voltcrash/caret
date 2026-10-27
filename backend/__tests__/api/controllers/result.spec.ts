@@ -658,7 +658,7 @@ describe("result controller test", () => {
       expect(body.message).toEqual("Results are not being saved at this time.");
     });
     it("fails closed when result history cannot be read", async () => {
-      resultGetLastTimestampMock.mockRejectedValue(new Error("D1 unavailable"));
+      resultGetLastTimestampMock.mockRejectedValue(new Error("PostgreSQL unavailable"));
       await mockApp
         .post("/results")
         .set("Authorization", `Bearer ${uid}`)

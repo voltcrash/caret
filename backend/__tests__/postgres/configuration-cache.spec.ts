@@ -19,14 +19,14 @@ describe("isolate configuration cache", () => {
       async () => (await getCachedConfiguration()).maintenance,
     );
   const setMaintenance = async (value: boolean): Promise<void> => {
-    await test.env.DB.prepare(
-      "UPDATE configuration SET data=json_set(data,'$.maintenance',json(?)) WHERE id='main'",
+    await test.db.prepare(
+      "UPDATE configuration SET data=jsonb_set(data,'{maintenance}',?::jsonb) WHERE id='main'",
     )
       .bind(String(value))
       .run();
   };
 
-  it("reuses one D1 read across invocations and refreshes after a patch", async () => {
+  it("reuses one PostgreSQL read across invocations and refreshes after a patch", async () => {
     expect(await read()).toBe(false);
     await setMaintenance(true);
     expect(await read()).toBe(false);
@@ -48,7 +48,7 @@ describe("isolate configuration cache", () => {
     expect(await read()).toBe(false);
   });
 
-  it("reads D1 every invocation when the TTL is zero", async () => {
+  it("reads PostgreSQL every invocation when the TTL is zero", async () => {
     const env = { ...test.env, CONFIGURATION_CACHE_TTL_MS: "0" };
     const readUncached = async (): Promise<boolean> =>
       await withRuntime(

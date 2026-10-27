@@ -4,7 +4,7 @@ import { withRuntime } from "../../src/runtime/env";
 import * as Users from "../../src/dal/user";
 import type { CompletedEvent } from "@caret/schemas/results";
 
-describe("result submission validation with D1", () => {
+describe("result submission validation with PostgreSQL", () => {
   let test: Awaited<ReturnType<typeof resultRuntime>>;
   beforeAll(async () => {
     test = await resultRuntime();
@@ -47,7 +47,7 @@ describe("result submission validation with D1", () => {
     const account = await test.account();
     const response = await test.submit(account, { lastKeyToEnd: 0 });
     expect(response.status, await response.clone().text()).toBe(463);
-    const data = await test.env.DB.prepare(
+    const data = await test.db.prepare(
       "SELECT data FROM audit_logs WHERE uid=? AND event='anticheat_rejected'",
     )
       .bind(account.uid)
@@ -109,7 +109,7 @@ describe("result submission validation with D1", () => {
       );
       expect(profile.completedTests ?? 0).toBe(accepted ? 1 : 0);
       expect(
-        await test.env.DB.prepare(
+        await test.db.prepare(
           "SELECT count(*) AS n FROM results WHERE uid=?",
         )
           .bind(account.uid)
@@ -137,7 +137,7 @@ describe("result submission validation with D1", () => {
         expect(user.completedTests).toBeUndefined();
         for (const table of ["results", "daily_entries", "weekly_entries"]) {
           expect(
-            await test.env.DB.prepare(
+            await test.db.prepare(
               `SELECT count(*) AS n FROM ${table} WHERE uid=?`,
             )
               .bind(account.uid)
@@ -145,7 +145,7 @@ describe("result submission validation with D1", () => {
           ).toBe(0);
         }
         expect(
-          await test.env.DB.prepare(
+          await test.db.prepare(
             "SELECT count(*) AS n FROM audit_logs WHERE uid=? AND event='anticheat_rejected'",
           )
             .bind(account.uid)

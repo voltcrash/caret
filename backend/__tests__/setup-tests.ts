@@ -1,6 +1,6 @@
 import { beforeAll, afterAll, afterEach, vi } from "vite-plus/test";
 import "./setup-unit";
-import { createTestRuntime } from "./d1/helpers";
+import { createTestRuntime } from "./postgres/helpers";
 import { readFile } from "node:fs/promises";
 import { createETagGenerator } from "../src/utils/etag";
 import { withRuntime, type WorkerEnv } from "../src/runtime/env";
@@ -46,7 +46,7 @@ export function unitRuntime<T>(fn: () => T): T {
   }
   return withRuntime(env as unknown as WorkerEnv, fn);
 }
-// Controller unit tests mock DAL operations. Real transactions are covered by d1/*.spec.ts.
+// Controller unit tests mock DAL operations. Real transactions are covered by postgres/*.spec.ts.
 vi.mock("../src/db/mutation", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../src/db/mutation")>()),
   atomicUser: async (_uid: string, action: () => Promise<unknown>) =>

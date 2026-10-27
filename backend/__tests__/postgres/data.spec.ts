@@ -14,7 +14,7 @@ import type { DBResult } from "../../src/utils/result";
 import { statement } from "../../src/db/client";
 import { newId } from "../../src/utils/id";
 
-describe("D1 data contracts", () => {
+describe("PostgreSQL data contracts", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;
   beforeAll(async () => {
     test = await createTestRuntime();
@@ -129,11 +129,11 @@ describe("D1 data contracts", () => {
       await mutateUser("delete", (user) => {
         user.banned = true;
       });
-      await test.env.DB.prepare(
-        "INSERT INTO auth_users(id,name,email,created_at,updated_at) VALUES('delete','delete','delete@example.com',0,0)",
+      await test.db.prepare(
+        "INSERT INTO auth_users(id,name,email,created_at,updated_at) VALUES('delete','delete','delete@example.com','1970-01-01','1970-01-01')",
       ).run();
-      await test.env.DB.prepare(
-        "INSERT INTO auth_sessions(id,token,user_id,expires_at,created_at,updated_at) VALUES('session','token','delete',9999999999999,0,0)",
+      await test.db.prepare(
+        "INSERT INTO auth_sessions(id,token,user_id,expires_at,created_at,updated_at) VALUES('session','token','delete','2099-01-01','1970-01-01','1970-01-01')",
       ).run();
       await Configs.saveConfig("delete", { theme: "serika" });
       await deleteUserAccount("delete", BASE_CONFIGURATION);
@@ -141,7 +141,7 @@ describe("D1 data contracts", () => {
       expect(await Users.exists("delete")).toBe(false);
       expect(await Configs.getConfig("delete")).toBe(null);
       expect(
-        await test.env.DB.prepare(
+        await test.db.prepare(
           "SELECT count(*) AS count FROM auth_sessions",
         ).first("count"),
       ).toBe(0);

@@ -6,7 +6,7 @@ import { statement } from "../../src/db/client";
 import * as Users from "../../src/dal/user";
 import type { CompletedEvent } from "@caret/schemas/results";
 
-describe("D1 personal-best and progression policies", () => {
+describe("PostgreSQL personal-best and progression policies", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;
   beforeAll(async () => {
     test = await createTestRuntime();
