@@ -73,7 +73,8 @@ it("blocks signup without verification, including native form submission", async
     target: { value: "voltcrash" },
   });
   expect(button).toBeDisabled();
-  fireEvent.submit(button.closest("form")!);
+  fireEvent.submit(button.closest("form") as HTMLFormElement);
+  await new Promise((resolve) => setTimeout(resolve, 0));
   await waitFor(() => expect(button).toBeDisabled());
   expect(actions.complete).not.toHaveBeenCalled();
   expect(screen.queryByText("Invalid operation input")).not.toBeInTheDocument();
@@ -100,7 +101,7 @@ it("requires a fresh token after expiry, failure and a consumed signup attempt",
   );
   await waitFor(() => expect(button).toBeDisabled());
   expect(input).toHaveValue("voltcrash");
-  expect(api.reset).toHaveBeenCalledWith("signup-widget");
+  await waitFor(() => expect(api.reset).toHaveBeenCalledWith("signup-widget"));
   options.callback("retry-token");
   await waitFor(() => expect(button).toBeEnabled());
 });
