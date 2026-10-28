@@ -48,3 +48,25 @@ describe("Hyperdrive invocation clients", () => {
     expect(second).toBe(first);
   });
 });
+
+it("closes invocation sockets once when a streamed response is cancelled during a read", async () => {
+  const test = await createTestRuntime();
+  try {
+    let pool: ReturnType<typeof runtime>["sql"] | undefined;
+    const response = await withRuntime(test.env, async () => {
+      pool = runtime().sql;
+      await statement("SELECT 1").first();
+      return new Response(
+        new ReadableStream({
+          pull() {
+            /* Remain pending until cancelled. */
+          },
+        }),
+      );
+    });
+    await response.body?.cancel();
+    expect(pool?.totalCount).toBe(0);
+  } finally {
+    await test.dispose();
+  }
+});

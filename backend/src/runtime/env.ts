@@ -98,13 +98,17 @@ export function withRuntime<T>(
     },
     metrics,
   };
+  let closing: Promise<void> | undefined;
   const close = async (): Promise<void> => {
-    while (pending.size > 0) await Promise.allSettled([...pending]);
-    await sql?.end();
+    await (closing ??= (async () => {
+      while (pending.size > 0) await Promise.allSettled([...pending]);
+      await sql?.end();
+    })());
   };
   const finish = (result: unknown): unknown => {
     if (result instanceof Response && result.body !== null) {
       const reader = result.body.getReader();
+      let cancelled = false;
       const body = new ReadableStream<Uint8Array>({
         async pull(controller) {
           await storage.run(scope, async () => {
@@ -112,17 +116,18 @@ export function withRuntime<T>(
               const chunk = await reader.read();
               if (chunk.done) {
                 await close();
-                controller.close();
-              } else {
+                if (!cancelled) controller.close();
+              } else if (!cancelled) {
                 controller.enqueue(chunk.value);
               }
             } catch (error) {
-              controller.error(error);
+              if (!cancelled) controller.error(error);
               await close();
             }
           });
         },
         async cancel(reason) {
+          cancelled = true;
           try {
             await reader.cancel(reason);
           } finally {
