@@ -1,10 +1,15 @@
-import { neon } from "@neondatabase/serverless";
+import { DatabaseClient } from "../src/db/connection";
 import { databaseUrl } from "./database-url";
 import { migrateDatabase } from "./migrations";
 
 async function main(): Promise<void> {
-  await migrateDatabase(neon(await databaseUrl()));
-  console.log("PostgreSQL migrations applied; fresh databases initialized");
+  const sql = new DatabaseClient(await databaseUrl());
+  try {
+    await migrateDatabase(sql);
+    console.log("PostgreSQL migrations applied; fresh databases initialized");
+  } finally {
+    await sql.end();
+  }
 }
 void main().catch(() => {
   console.error(
