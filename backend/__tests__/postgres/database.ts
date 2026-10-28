@@ -1,6 +1,6 @@
 import type { QueryResult as PgQueryResult } from "pg";
 import { PGlite } from "@electric-sql/pglite";
-import { PGLiteSocketServer } from "@electric-sql/pglite-socket";
+import { TestSocketServer } from "./socket-server";
 import { readFile, readdir } from "node:fs/promises";
 import { PreparedQuery, type QueryValue, queryTypes } from "../../src/db/query";
 import { DatabaseClient } from "../../src/db/connection";
@@ -14,12 +14,7 @@ export class TestQuery extends PreparedQuery {
 /** Real PostgreSQL wire protocol, shared by Node and built Worker fixtures. */
 export class TestDatabase {
   readonly pg = new PGlite();
-  readonly server = new PGLiteSocketServer({
-    db: this.pg,
-    host: "127.0.0.1",
-    port: 0,
-    maxConnections: 20,
-  });
+  readonly server = new TestSocketServer(this.pg);
   readonly ready = this.server.start();
   get url(): string {
     return `postgresql://postgres:postgres@${this.server.getServerConn()}/postgres`;
