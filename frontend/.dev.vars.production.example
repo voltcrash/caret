@@ -1,4 +1,4 @@
-# Neon PostgreSQL connection URL; use a separate branch/database per environment.
+# Direct Neon URL for migration scripts only; Worker queries use HYPERDRIVE.
 DATABASE_URL=postgresql://user:password@ep-replace.neon.tech/neondb?sslmode=require
 # Copy to .dev.vars.production, chmod 600; never commit actual secrets.
 # Generate once, preserve across redeployments. Do not reuse staging/local secrets.

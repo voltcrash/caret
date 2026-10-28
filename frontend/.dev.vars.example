@@ -1,10 +1,14 @@
-# Neon PostgreSQL connection URL; use a separate branch/database per environment.
+# Direct Neon URL for migration scripts only. Use an isolated development branch.
 DATABASE_URL=postgresql://user:password@ep-replace.neon.tech/neondb?sslmode=require
+# Local Hyperdrive TCP origin (same development branch, never production).
+CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE=postgresql://user:password@ep-replace.neon.tech/neondb?sslmode=require
 MODE=dev
 FRONTEND_URL=http://localhost:3000
 BETTER_AUTH_URL=http://localhost:3000/api/auth
 BETTER_AUTH_SECRET=caret-local-development-secret-only
-# Cloudflare dummy key, accepted only in MODE=dev. Use a real secret on staging/production.
+# Cloudflare dummy key, accepted only in # Local Hyperdrive TCP origin (same development branch, never production).
+CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE=postgresql://user:password@ep-replace.neon.tech/neondb?sslmode=require
+MODE=dev. Use a real secret on staging/production.
 TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
 # Google/GitHub callbacks: BETTER_AUTH_URL/callback/google (or /github)
 # GOOGLE_CLIENT_ID=
