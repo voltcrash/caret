@@ -4,7 +4,7 @@ import { runtime, withRuntime } from "../../src/runtime/env";
 import { database, statement } from "../../src/db/client";
 import { getAuth } from "../../src/init/auth";
 
-describe("Neon invocation clients", () => {
+describe("Hyperdrive invocation clients", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;
   beforeAll(async () => {
     test = await createTestRuntime();

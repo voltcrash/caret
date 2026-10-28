@@ -48,7 +48,7 @@ export async function createTestRuntime(): Promise<{
     caches: (await mf.getCaches()) as unknown as CacheStorage,
     env: {
       ...bindings,
-      DATABASE_URL: db.url,
+      HYPERDRIVE: { connectionString: db.url },
       MODE: "dev",
       FRONTEND_URL: "http://localhost:3000",
     },

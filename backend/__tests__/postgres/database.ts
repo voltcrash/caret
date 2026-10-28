@@ -1,73 +1,56 @@
-import {
-  PGlite,
-  type PGliteInterface,
-  type Transaction,
-} from "@electric-sql/pglite";
-import { neon, neonConfig } from "@neondatabase/serverless";
+import type { QueryResult as PgQueryResult } from "pg";
+import { PGlite } from "@electric-sql/pglite";
+import { PGLiteSocketServer } from "@electric-sql/pglite-socket";
 import { readFile, readdir } from "node:fs/promises";
 import { PreparedQuery, type QueryValue, queryTypes } from "../../src/db/query";
-
-// Test-only transport: the real Neon driver speaks its HTTP protocol to real
-// PostgreSQL (PGlite). Built Workers use the same handler via outboundService.
-const databases = new Map<string, TestDatabase>();
-const originalFetch = globalThis.fetch;
-neonConfig.fetchFunction = async (
-  url: string,
-  init: RequestInit,
-): Promise<Response> => {
-  const response = await postgresFetch(new Request(url, init));
-  return response ?? (await originalFetch(url, init));
-};
-
-export async function postgresFetch(
-  request: Request,
-): Promise<Response | undefined> {
-  const connection = request.headers.get("Neon-Connection-String");
-  if (connection === null) return undefined;
-  const db = databases.get(new URL(connection).hostname);
-  if (!db) throw new Error("Unknown test PostgreSQL database");
-  return await db.fetch(request);
-}
+import { DatabaseClient } from "../../src/db/connection";
 
 export class TestQuery extends PreparedQuery {
   bind(...values: QueryValue[]): TestQuery {
-    return new TestQuery(this.client, this.sql, values);
+    return new TestQuery(this.client, this.sql, values, this.parsers);
   }
 }
 
+/** Real PostgreSQL wire protocol, shared by Node and built Worker fixtures. */
 export class TestDatabase {
-  readonly url = `postgresql://test:test@ep-${crypto.randomUUID()}.neon.tech/test`;
   readonly pg = new PGlite();
-  readonly client = neon(this.url, { fullResults: true });
-  constructor() {
-    databases.set(new URL(this.url).hostname, this);
+  readonly server = new PGLiteSocketServer({
+    db: this.pg,
+    host: "127.0.0.1",
+    port: 0,
+    maxConnections: 20,
+  });
+  readonly ready = this.server.start();
+  get url(): string {
+    return `postgresql://postgres:postgres@${this.server.getServerConn()}/postgres`;
+  }
+  private pool: DatabaseClient | undefined;
+  get client(): DatabaseClient {
+    return (this.pool ??= new DatabaseClient(this.url));
   }
   prepare(query: string): TestQuery {
     // Fixture callers inspect JSON text; application Drizzle reads native JSONB.
-    const client = neon(this.url, { fullResults: true });
-    const queryClient = Object.assign(client, {
-      query: async (sql: string, values?: QueryValue[]) =>
-        await this.client.query(sql, values, {
-          types: {
-            getTypeParser: (oid: number) =>
-              oid === 114 || oid === 3802
-                ? String
-                : queryTypes.getTypeParser(oid),
-          },
-        }),
+    return new TestQuery(this.client, query, [], {
+      getTypeParser: (oid: number) =>
+        oid === 114 || oid === 3802 ? String : queryTypes.getTypeParser(oid),
     });
-    return new TestQuery(queryClient, query);
   }
   async batch(queries: PreparedQuery[]): Promise<unknown[]> {
-    return await this.client.transaction(
-      queries.map(
-        // oxlint-disable-next-line typescript/promise-function-async -- Neon transactions require deferred query promises, not async wrappers.
-        (query) =>
-          this.client.query(query.sql, query.values, { types: queryTypes }),
-      ),
-    );
+    return await this.client.transaction(async (client) => {
+      const results: PgQueryResult[] = [];
+      for (const query of queries)
+        {results.push(
+          await client.query({
+            text: query.sql,
+            values: query.values,
+            types: queryTypes,
+          }),
+        );}
+      return results;
+    });
   }
   async migrate(): Promise<void> {
+    await this.ready;
     const root = new URL("../../migrations/", import.meta.url);
     for (const file of (await readdir(root))
       .filter((name) => name.endsWith(".sql"))
@@ -79,64 +62,8 @@ export class TestDatabase {
     await this.pg.exec(sql);
   }
   async close(): Promise<void> {
-    databases.delete(new URL(this.url).hostname);
+    await this.pool?.end();
+    await this.server.stop();
     await this.pg.close();
-  }
-  async fetch(request: Request): Promise<Response> {
-    const body = (await request.json()) as {
-      query?: string;
-      params?: string[];
-      queries?: { query: string; params: string[] }[];
-    };
-    const query = async (
-      pg: PGliteInterface | Transaction,
-      item: { query: string; params?: string[] },
-    ): Promise<unknown> => {
-      const result = await pg.query<unknown[]>(item.query, item.params, {
-        rowMode: "array",
-        parsers: Object.fromEntries(
-          [
-            16, 20, 21, 23, 25, 26, 700, 701, 1043, 1082, 1114, 1184, 114, 3802,
-            1700,
-          ].map((oid) => [oid, (value: string) => value]),
-        ),
-      });
-      return {
-        ...result,
-        rowCount: result.rowCount ?? result.affectedRows ?? result.rows.length,
-      };
-    };
-    try {
-      const result = body.queries
-        ? {
-            results: await this.pg.transaction(async (tx) => {
-              const results: unknown[] = [];
-              for (const item of body.queries ?? []) {
-                results.push(await query(tx, item));
-              }
-              return results;
-            }),
-          }
-        : await query(this.pg, {
-            query: body.query ?? "",
-            params: body.params,
-          });
-      return Response.json(result);
-    } catch (error) {
-      const pg = error as Error & {
-        code?: string;
-        constraint?: string;
-        detail?: string;
-      };
-      return Response.json(
-        {
-          message: pg.message,
-          code: pg.code,
-          constraint: pg.constraint,
-          detail: pg.detail,
-        },
-        { status: 400 },
-      );
-    }
   }
 }
