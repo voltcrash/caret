@@ -10,6 +10,8 @@ const files = [
   "wrangler.production.json",
 ];
 type Deployment = {
+  hyperdrive: { binding: string; id: string }[];
+  secrets?: { required: string[] };
   ratelimits: {
     name: string;
     namespace_id: string;
@@ -25,6 +27,11 @@ const configs = files.map((file) => ({
 }));
 
 describe.each(configs)("$file", ({ config }) => {
+  it("routes database queries through Hyperdrive instead of a URL secret", () => {
+    expect(config.hyperdrive).toHaveLength(1);
+    expect(config.hyperdrive[0]?.binding).toBe("HYPERDRIVE");
+    expect(config.secrets?.required ?? []).not.toContain("DATABASE_URL");
+  });
   it("declares every Workers rate limiting budget", () => {
     const declared = new Map(
       config.ratelimits.map((binding) => [binding.name, binding.simple]),
