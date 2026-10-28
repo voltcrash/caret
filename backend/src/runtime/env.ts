@@ -69,11 +69,13 @@ export function withRuntime<T>(
   const metrics: InvocationMetrics = { operations: [], dbStatements: 0 };
   let sql: Runtime["sql"] | undefined;
   let db: Runtime["db"] | undefined;
+  const pending = new Set<Promise<unknown>>();
   const scope: Runtime = {
     env,
     get sql(): Runtime["sql"] {
-      if (!env.HYPERDRIVE?.connectionString)
-        {throw new Error("HYPERDRIVE is required");}
+      if (!env.HYPERDRIVE?.connectionString) {
+        throw new Error("HYPERDRIVE is required");
+      }
       sql ??= new DatabaseClient(env.HYPERDRIVE.connectionString);
       return sql;
     },
@@ -87,15 +89,59 @@ export function withRuntime<T>(
       });
       return db;
     },
-    execution,
+    execution: {
+      waitUntil(task) {
+        const tracked = task.finally(() => pending.delete(tracked));
+        pending.add(tracked);
+        execution?.waitUntil(tracked);
+      },
+    },
     metrics,
   };
   const close = async (): Promise<void> => {
+    while (pending.size > 0) await Promise.allSettled([...pending]);
     await sql?.end();
+  };
+  const finish = (result: unknown): unknown => {
+    if (result instanceof Response && result.body !== null) {
+      const reader = result.body.getReader();
+      const body = new ReadableStream<Uint8Array>({
+        async pull(controller) {
+          await storage.run(scope, async () => {
+            try {
+              const chunk = await reader.read();
+              if (chunk.done) {
+                await close();
+                controller.close();
+              } else {
+                controller.enqueue(chunk.value);
+              }
+            } catch (error) {
+              controller.error(error);
+              await close();
+            }
+          });
+        },
+        async cancel(reason) {
+          try {
+            await reader.cancel(reason);
+          } finally {
+            await close();
+          }
+        },
+      });
+      return new Response(body, result);
+    }
+    return close().then(() => result);
   };
   try {
     const result = storage.run(scope, fn);
-    if (result instanceof Promise) return result.finally(close) as T;
+    if (result instanceof Promise) {
+      return result.then(finish, async (error: unknown) => {
+        await close();
+        throw error;
+      }) as T;
+    }
     void close();
     return result;
   } catch (error) {
