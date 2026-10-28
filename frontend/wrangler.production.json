@@ -36,7 +36,6 @@
   },
   "secrets": {
     "required": [
-      "DATABASE_URL",
       "BETTER_AUTH_SECRET",
       "TURNSTILE_SECRET_KEY",
       "GITHUB_CLIENT_ID",
@@ -140,5 +139,11 @@
     }
   ],
   "compatibility_flags": ["nodejs_compat"],
-  "upload_source_maps": true
+  "upload_source_maps": true,
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "replace-with-production-hyperdrive-id"
+    }
+  ]
 }
