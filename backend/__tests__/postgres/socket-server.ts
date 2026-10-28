@@ -77,8 +77,9 @@ class ProtocolQueue {
   clearQueueForHandler(id: number): void {
     this.fragments.delete(id);
     for (let index = this.jobs.length - 1; index >= 0; index--) {
-      if (this.jobs[index]?.id === id)
+      if (this.jobs[index]?.id === id) {
         this.jobs.splice(index, 1)[0]?.reject(new Error("Client disconnected"));
+      }
     }
   }
   async clearTransactionIfNeeded(id: number): Promise<void> {
@@ -121,8 +122,9 @@ export class TestSocketServer {
   }
   getServerConn(): string {
     const address = this.server.address();
-    if (address === null || typeof address === "string")
+    if (address === null || typeof address === "string") {
       throw new Error("Socket server not ready");
+    }
     return `127.0.0.1:${address.port}`;
   }
   async stop(): Promise<void> {
