@@ -105,6 +105,11 @@ export function withRuntime<T>(
       await sql?.end();
     })());
   };
+  const releaseResponse = async (): Promise<void> => {
+    const cleanup = close();
+    if (execution !== undefined) execution.waitUntil(cleanup);
+    else await cleanup;
+  };
   const finish = (result: unknown): unknown => {
     if (result instanceof Response && result.body !== null) {
       const reader = result.body.getReader();
@@ -115,14 +120,14 @@ export function withRuntime<T>(
             try {
               const chunk = await reader.read();
               if (chunk.done) {
-                await close();
                 if (!cancelled) controller.close();
+                await releaseResponse();
               } else if (!cancelled) {
                 controller.enqueue(chunk.value);
               }
             } catch (error) {
               if (!cancelled) controller.error(error);
-              await close();
+              await releaseResponse();
             }
           });
         },
@@ -131,13 +136,15 @@ export function withRuntime<T>(
           try {
             await reader.cancel(reason);
           } finally {
-            await close();
+            await releaseResponse();
           }
         },
       });
       return new Response(body, result);
     }
-    return close().then(() => result);
+    return (result instanceof Response ? releaseResponse() : close()).then(
+      () => result,
+    );
   };
   try {
     const result = storage.run(scope, fn);
