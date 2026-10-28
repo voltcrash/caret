@@ -93,7 +93,7 @@ async function main(): Promise<void> {
       });
       const account = await seedSession(mf, "a");
       await withRuntime(
-        { DATABASE_URL: db.url, MODE: "production" },
+        { HYPERDRIVE: { connectionString: db.url }, MODE: "production" },
         async () => {
           await Users.addUser("Baseline", "baseline@example.test", account.uid);
           await mutateUser(account.uid, (profile) => {

@@ -10,7 +10,6 @@ import { withRuntime, type WorkerEnv } from "@caret/backend/runtime";
 import { getAuth } from "@caret/backend/auth/session";
 import {
   TestDatabase,
-  postgresFetch,
 } from "../../../backend/__tests__/postgres/database";
 import { bindingName, requiredTiers } from "@caret/backend/rate-counter";
 
@@ -151,9 +150,10 @@ export async function createWorkerd(
           modules,
         },
         env: {
-          DATABASE_URL: {
-            type: "text" as const,
-            value: databases.get(name)?.url ?? "",
+          HYPERDRIVE: {
+            type: "hyperdrive" as const,
+            id: "00000000000000000000000000000000",
+            dev: { connectionString: databases.get(name)?.url ?? "" },
           },
           ASSETS: { type: "assets" as const },
           METRICS: {
@@ -204,19 +204,6 @@ export async function createWorkerd(
         outboundService: {
           type: "fetcher" as const,
           handler: async (request: import("miniflare").Request) => {
-            const pg = await postgresFetch(
-              new Request(request.url, {
-                method: request.method,
-                headers: [...request.headers],
-                body: request.body === null ? undefined : await request.text(),
-              }),
-            );
-            if (pg) {
-              return new FixtureResponse(await pg.text(), {
-                status: pg.status,
-                headers: pg.headers,
-              });
-            }
             if (
               captcha &&
               request.url ===
@@ -263,7 +250,7 @@ export async function seedSession(
 ): Promise<{ uid: string; token: string; cookie: string }> {
   const db = await mf.getDatabase(worker);
   const env = {
-    DATABASE_URL: db.url,
+    HYPERDRIVE: { connectionString: db.url },
     MODE: "production",
     FRONTEND_URL: "http://localhost:3000",
     BETTER_AUTH_URL: "http://localhost:3000/api/auth",
