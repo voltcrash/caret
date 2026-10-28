@@ -79,6 +79,7 @@ export async function validateArtifact(
     "triggers",
     // Missing bindings would fail open (no rate limits) or drop metrics.
     "ratelimits",
+    "hyperdrive",
     "analytics_engine_datasets",
     "compatibility_date",
     "compatibility_flags",
