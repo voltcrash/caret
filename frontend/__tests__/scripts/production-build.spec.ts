@@ -106,7 +106,10 @@ describe("production build command", () => {
       );
     }
     const deployment = JSON.parse(
-      readFileSync(resolve(repoRoot, "frontend/wrangler.production.json"), "utf8"),
+      readFileSync(
+        resolve(repoRoot, "frontend/wrangler.production.json"),
+        "utf8",
+      ),
     ) as Record<string, unknown>;
     // This build-command fixture uses no Cloudflare account resources.
     deployment["hyperdrive"] = [{ binding: "HYPERDRIVE", id: "a".repeat(32) }];

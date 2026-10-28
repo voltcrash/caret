@@ -8,9 +8,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { resolve, relative } from "node:path";
 import { withRuntime, type WorkerEnv } from "@caret/backend/runtime";
 import { getAuth } from "@caret/backend/auth/session";
-import {
-  TestDatabase,
-} from "../../../backend/__tests__/postgres/database";
+import { TestDatabase } from "../../../backend/__tests__/postgres/database";
 import { bindingName, requiredTiers } from "@caret/backend/rate-counter";
 
 const root = resolve(import.meta.dirname, "../../..");
