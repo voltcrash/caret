@@ -38,14 +38,15 @@ export class TestDatabase {
   async batch(queries: PreparedQuery[]): Promise<unknown[]> {
     return await this.client.transaction(async (client) => {
       const results: PgQueryResult[] = [];
-      for (const query of queries)
-        {results.push(
+      for (const query of queries) {
+        results.push(
           await client.query({
             text: query.sql,
             values: query.values,
             types: queryTypes,
           }),
-        );}
+        );
+      }
       return results;
     });
   }
