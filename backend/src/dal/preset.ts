@@ -81,6 +81,7 @@ export async function removePreset(
   const result = await database()
     .delete(presets)
     .where(and(eq(presets.id, presetId), eq(presets.uid, uid)));
-  if ((result.rowCount ?? 0) === 0)
+  if ((result.rowCount ?? 0) === 0) {
     throw new MonkeyError(404, "Preset not found");
+  }
 }
