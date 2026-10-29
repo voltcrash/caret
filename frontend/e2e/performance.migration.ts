@@ -51,7 +51,7 @@ test("cold startup across CPU, viewport and network conditions", async ({
           const observer = new MutationObserver(() => {
             if (
               document.querySelector("#words .word") !== null &&
-              document.querySelector("[data-typing-placeholder]") === null &&
+              document.querySelector("[data-initial-typing]") === null &&
               document.querySelector<HTMLTextAreaElement>("#wordsInput")
                 ?.disabled === false
             ) {
@@ -66,7 +66,7 @@ test("cold startup across CPU, viewport and network conditions", async ({
           });
         });
         await page.goto("/", { waitUntil: "domcontentloaded" });
-        await expect(page.locator("[data-typing-placeholder]")).toHaveCount(0, {
+        await expect(page.locator("[data-initial-typing]")).toHaveCount(0, {
           timeout: 60_000,
         });
         const word = page.locator("#words .word").first();

@@ -1,3 +1,4 @@
+import { initialTyping } from "./vite-plugins/initial-typing";
 import { envConfig } from "./vite-plugins/env-config";
 import { languageHash, languageHashes } from "./vite-plugins/language-hashes";
 import { resolveBuildId, startVersionFile } from "./vite-plugins/build-id";
@@ -112,6 +113,7 @@ export default defineConfig(async ({ mode, command }) => {
         },
       }),
       languageHashes({ skip: false }),
+      initialTyping(),
       cloudflare({
         configPath:
           deployment === undefined

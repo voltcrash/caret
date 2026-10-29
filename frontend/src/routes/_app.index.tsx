@@ -1,5 +1,6 @@
 import { wasmUrl } from "@caret/typing-engine/asset";
 import { createFileRoute } from "@tanstack/solid-router";
+import { createIsomorphicFn } from "@tanstack/solid-start";
 import { englishHash } from "virtual:language-hashes";
 
 import { homeDescription, homeTitle, pageHead } from "../app/seo";
@@ -7,9 +8,21 @@ import {
   homeStructuredData,
   structuredDataScript,
 } from "../app/structured-data";
+import { defaultInitialTyping } from "../features/typing/initial-default";
+import { readTypingPreview } from "../features/typing/initial-snapshot";
 import { TypingLeaf } from "../features/typing/page";
+import { initialTypingSnapshot } from "../server/initial-typing.server";
+
+const initialSnapshot = createIsomorphicFn()
+  .server(initialTypingSnapshot)
+  .client(() => {
+    const fallback = defaultInitialTyping();
+    const cached = readTypingPreview(document.cookie);
+    return cached?.engineHash === fallback.engineHash ? cached : fallback;
+  });
 
 export const Route = createFileRoute("/_app/")({
+  loader: () => initialSnapshot(),
   head: () => ({
     ...pageHead(homeTitle, homeDescription, "/"),
     scripts: [structuredDataScript(homeStructuredData())],
@@ -37,5 +50,10 @@ export const Route = createFileRoute("/_app/")({
           ]),
     ],
   }),
-  component: TypingLeaf,
+  component: Home,
 });
+
+function Home() {
+  const initial = Route.useLoaderData();
+  return <TypingLeaf initial={initial()} />;
+}

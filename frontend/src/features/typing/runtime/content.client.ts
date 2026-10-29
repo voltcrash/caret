@@ -1,3 +1,9 @@
+import { languageHashes } from "virtual:language-hashes";
+import {
+  initialTypingState,
+  initialContentKey,
+  saveTypingPreview,
+} from "../initial-snapshot.client";
 import { createAppOwned } from "../../../app/application";
 import { getBrowserEngine } from "../engine.client";
 import { getEngineSession } from "./session.client";
@@ -191,6 +197,20 @@ export const getContentHost = createAppOwned(() => {
       setCurrentQuote(null);
       const config = projectEngineConfig(getMutableConfig());
       const repeated = isRepeated();
+      const engineHash = initialTypingState().engineHash();
+      const contentKey =
+        engineHash === ""
+          ? ""
+          : await initialContentKey(
+              getMutableConfig(),
+              languageHashes[language.name] ?? "",
+              engineHash,
+            );
+      lease.signal.throwIfAborted();
+      const seed =
+        (!repeated ? initialTypingState().seed(contentKey) : undefined) ??
+        crypto.getRandomValues(new Uint32Array(1))[0] ??
+        0;
       let quotes: Prepare["quotes"] = null;
       if (config.mode === "quote" && !repeated) {
         const name = language.name.startsWith("swiss_german")
@@ -235,7 +255,7 @@ export const getContentHost = createAppOwned(() => {
         {
           config,
           language: engineLanguage(language),
-          random: random(),
+          random: { kind: "seeded", state: seed },
           quotes,
           polyglot,
           selectedQuoteId: getSelectedQuoteId(),
@@ -280,6 +300,14 @@ export const getContentHost = createAppOwned(() => {
       );
       owner.createPreparedSession(repeated);
       const snapshot = getEngineSession().attach();
+      if (engineHash !== "" && !repeated) {
+        saveTypingPreview(
+          getMutableConfig(),
+          seed,
+          contentKey,
+          snapshot.words.map(decodeText),
+        );
+      }
       return {
         ...generated,
         words: snapshot.words.map(decodeText),
