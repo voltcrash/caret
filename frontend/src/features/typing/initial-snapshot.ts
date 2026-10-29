@@ -2,7 +2,7 @@ import { z } from "zod";
 import { ConfigSchema, type Config } from "@caret/schemas/configs";
 
 export const initialTypingCookie = "caret_typing_preview";
-export const previewKeys = [
+const previewKeys = [
   "mode",
   "time",
   "words",
@@ -30,7 +30,7 @@ const settingsSchema = ConfigSchema.pick(
   },
 );
 export type PreviewSettings = Pick<Config, (typeof previewKeys)[number]>;
-export const snapshotSchema = z.object({
+const snapshotSchema = z.object({
   version: z.literal(1),
   seed: z.number().int().min(0).max(0xffffffff),
   key: z.string().regex(/^[a-f0-9]{64}$/),
