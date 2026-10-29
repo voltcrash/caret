@@ -24,7 +24,9 @@ for (const showTestModesNotice of [false, true]) {
       { name: "typing code", pattern: "**/assets/page.client-*.js" },
       { name: "test language", pattern: "**/languages/english.json*" },
     ]) {
-      test(`keeps the logo until ${target.name} is ready`, async ({ page }) => {
+      test(`shows a stable shell while ${target.name} is pending`, async ({
+        page,
+      }) => {
         const pending = Promise.withResolvers<undefined>();
         let blocked = false;
         const errors: string[] = [];
@@ -37,17 +39,19 @@ for (const showTestModesNotice of [false, true]) {
         try {
           await page.goto("/", { waitUntil: "domcontentloaded" });
           await expect.poll(() => blocked).toBe(true);
-          await expect(page.locator("#solidmodals")).toHaveCount(1);
-          await page.waitForFunction(() => {
-            const config = (
-              window as unknown as { config?: { showAverage: string } }
-            ).config;
-            return config?.showAverage === "both";
-          });
-          // A premature reveal would finish its 150ms exit fade during this hold.
-          await page.waitForTimeout(300);
-          await expect(page.locator("#startupScreen")).toBeVisible();
-          await expect(page.locator("#app")).toHaveCSS("opacity", "0");
+          await expect(
+            page.locator('[data-ui-element="header"]'),
+          ).toBeVisible();
+          await expect(
+            page.getByRole("navigation", { name: "Main navigation" }),
+          ).toBeVisible();
+          await expect(page.locator("#solidmodals")).toHaveCount(0);
+          await expect(page.locator("#startupScreen")).toHaveCount(0);
+          await expect(page.locator("#app")).toHaveCSS("opacity", "1");
+          await expect(page.locator("[data-typing-placeholder]")).toBeVisible();
+          await expect(
+            page.getByRole("textbox", { name: "Typing input" }),
+          ).not.toBeVisible();
         } finally {
           pending.resolve(undefined);
         }
@@ -57,6 +61,10 @@ for (const showTestModesNotice of [false, true]) {
         await expect(
           page.getByText("Loading typing test…", { exact: true }),
         ).toHaveCount(0);
+        await expect(page.locator("[data-typing-placeholder]")).toHaveCount(0);
+        await expect(
+          page.getByRole("textbox", { name: "Typing input" }),
+        ).toBeEnabled();
         expect(errors).toEqual([]);
       });
     }
@@ -132,4 +140,48 @@ test.describe("startup with signed-in summaries", () => {
     await expect(page.locator("#startupScreen")).toHaveCount(0);
     await expect(page.locator("#app")).toHaveCSS("opacity", "1");
   });
+});
+
+test("typing becomes usable while all backend requests are held", async ({
+  page,
+}, info) => {
+  const pending = Promise.withResolvers<void>();
+  const requests: string[] = [];
+  await page.route("**/_serverFn/**", async (route) => {
+    requests.push(route.request().url());
+    await pending.promise;
+    await route.continue();
+  });
+  try {
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    const word = page.locator("#words .word").first();
+    await expect(word).toBeVisible();
+    await expect(page.locator("[data-typing-placeholder]")).toHaveCount(0);
+    await expect.poll(() => requests.length).toBeGreaterThan(0);
+    const first = (await word.textContent())?.[0];
+    if (first === undefined) throw new Error("Missing test word");
+    await word.click();
+    await page.keyboard.type(first);
+    await expect(word.locator("letter.correct")).toHaveCount(1);
+    await page.screenshot({
+      path: info.outputPath("typing-with-backend-pending.png"),
+    });
+  } finally {
+    pending.resolve();
+  }
+});
+
+test("server shell remains visible when JavaScript cannot download", async ({
+  page,
+}, info) => {
+  await page.route("**/assets/*.js", async (route) => await route.abort());
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await expect(page.locator('[data-ui-element="header"]')).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Settings", exact: true }),
+  ).toBeVisible();
+  await expect(page.locator("#app")).toHaveCSS("opacity", "1");
+  await expect(page.locator("#startupScreen")).toHaveCount(0);
+  await expect(page.locator("[data-typing-placeholder]")).toBeVisible();
+  await page.screenshot({ path: info.outputPath("server-shell.png") });
 });
