@@ -25,6 +25,7 @@ export function InitialTypingView(props: {
     text: string | undefined,
     icon?: FaSolidIcon,
     active = false,
+    label = text,
   ) => (
     <Button
       variant="text"
@@ -32,6 +33,7 @@ export function InitialTypingView(props: {
       fa={icon === undefined ? undefined : { icon, fixedWidth: true }}
       class={cn(buttonClass, "pointer-events-none")}
       active={active}
+      aria-label={label}
       tabIndex={-1}
       dataset={{ "aria-disabled": "true" }}
     />
@@ -88,6 +90,9 @@ export function InitialTypingView(props: {
                     undefined,
                     "fa-tools",
                     !countOptions().includes(count()),
+                    config().mode === "time"
+                      ? "Custom test duration"
+                      : "Custom word count",
                   )}
                 </Show>
                 <Show when={config().mode === "quote"}>
@@ -111,7 +116,7 @@ export function InitialTypingView(props: {
                       )
                     }
                   </For>
-                  {control(undefined, "fa-search")}
+                  {control(undefined, "fa-search", false, "Search quotes")}
                 </Show>
                 <Show when={config().mode === "custom"}>
                   {control("change")}
@@ -185,6 +190,7 @@ export function InitialTypingView(props: {
             config().quickRestart !== "off" && "hidden",
             "pointer-coarse:max-[778px]:block!",
           )}
+          aria-label="Restart Test"
           fa={{ icon: "fa-redo-alt", fixedWidth: true }}
           tabIndex={-1}
           dataset={{ "aria-disabled": "true" }}
