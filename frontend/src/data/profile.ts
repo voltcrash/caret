@@ -2,11 +2,12 @@ import type { Client } from "@caret/schemas/shared";
 import type { UserProfile } from "@caret/schemas/users";
 import { queryOptions } from "@tanstack/solid-query";
 import { isServer } from "solid-js/web";
+import { OperationError } from "./operation-result";
 import { getProfile } from "../functions/profile";
 
-/** The service's 404 message, preserved across SSR calls and RPC. */
+/** Only a missing user is a missing profile; outages remain retryable. */
 export function isUserNotFound(error: unknown): boolean {
-  return error instanceof Error && error.message.includes("User not found");
+  return error instanceof OperationError && error.status === 404;
 }
 
 export const profileOptions = (
@@ -15,11 +16,16 @@ export const profileOptions = (
 ): ReturnType<typeof queryOptions<UserProfile>> =>
   queryOptions<UserProfile>({
     queryKey: ["public", "profile", uidOrName, client],
-    queryFn: async ({ signal }) =>
-      await getProfile({ data: { uidOrName, client }, signal }),
+    queryFn: async ({ signal }) => {
+      const result = await getProfile({ data: { uidOrName, client }, signal });
+      if (!result.ok) throw new OperationError(result);
+      return result.data;
+    },
     staleTime: 3_600_000,
-    // SSR answers once; the browser retries transient failures.
+    // One browser retry for transient errors; never retry policy rejections.
     retry: (failures, error) =>
-      !isServer && !isUserNotFound(error) && failures < 3,
+      !isServer &&
+      !(error instanceof OperationError && error.status < 500) &&
+      failures < 1,
     meta: { ssrSafe: true },
   });
