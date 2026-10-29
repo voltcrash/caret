@@ -1,11 +1,6 @@
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import type { Plugin } from "vite";
-import {
-  initSync,
-  WasmContent,
-} from "../../packages/typing-engine/generated/engine.js";
-import { projectEngineConfig } from "@caret/typing-engine/config";
 import { encodeText, decodeText } from "@caret/typing-engine/text";
 import type { Snapshot } from "../../packages/typing-engine/generated/types/Snapshot";
 
@@ -17,8 +12,17 @@ export function initialTyping(): Plugin {
       if (id === "virtual:initial-typing") return "\0virtual:initial-typing";
       return undefined;
     },
-    load(id) {
+    async load(id) {
       if (id !== "\0virtual:initial-typing") return;
+      // Config evaluation runs before prepareTypingEngine; load generated files
+      // only when Vite requests the virtual module, after preparation finishes.
+      const bindingsUrl = new URL(
+        "../../packages/typing-engine/generated/engine.js",
+        import.meta.url,
+      ).href;
+      const { initSync, WasmContent } = (await import(
+        bindingsUrl
+      )) as typeof import("../../packages/typing-engine/generated/engine.js");
       const bytes = readFileSync(
         new URL(
           "../../packages/typing-engine/generated/engine_bg.wasm",
@@ -32,7 +36,15 @@ export function initialTyping(): Plugin {
           "utf8",
         ),
       ) as { name: string; words: string[]; bcp47?: string };
-      const config = projectEngineConfig({});
+      const config = JSON.parse(
+        readFileSync(
+          new URL(
+            "../../packages/typing-engine/generated/defaults.json",
+            import.meta.url,
+          ),
+          "utf8",
+        ),
+      ) as import("@caret/typing-engine/config").Config;
       const seed = 185374211;
       const content = new WasmContent(1);
       try {

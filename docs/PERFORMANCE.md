@@ -81,38 +81,35 @@ No timing thresholds were added to CI.
   checks.
 
 
-## Progressive startup — October 29, 2026
+## Real first paint — October 29, 2026
 
-The document now paints its navigation and reserved test layout immediately,
-without a fullscreen logo or app entry fade. The test area uses a static
-“Preparing typing test…” status until real words, preferences and input are ready;
-it never displays a fake wordset. This improves first paint, but does not make
-cold JavaScript/Wasm downloads instantaneous.
+The document includes actual test controls and words. There is no fullscreen
+cover, blank settings bar or “Preparing typing test…” screen. Rust generates the
+first-visit wordset during the build; serving it requires no database read,
+authentication, runtime Wasm compilation or asset fetch. The browser reproduces
+that seed when initializing its first session, preserving the visible words.
 
-Saved theme and validated typography are applied in the head before paint.
-The browser header/footer replace their static counterparts only after local
-preferences settle. The typing page mounts invisibly in the same grid cell so
-its DOM can be measured, then becomes visible and enables input in one handoff.
-Later restarts retain the visible page. Desktop input focuses after that
-handoff; touch devices still require a tap.
+Ordinary time/word tests save a bounded, validated presentation snapshot in a
+same-site cookie. Returning documents can render their last wordset, mode,
+duration/count and appearance before application JavaScript downloads. The
+snapshot's hash selects the seed only when the actual local engine configuration
+and language asset match. Cookie words are never used as authoritative engine
+input. The engine still generates and verifies its own content.
 
-Authentication, account loading, announcements, modals and other chrome
-integrations load after first-route readiness. The header's configuration query
-also waits. The engine bindings preload during hydration, while the selected
-language and Wasm initialize concurrently. Account-derived pace modes (average,
-daily and tag PB) are omitted from the first test and available on later restarts.
-Local PB, custom speed and last-test pace keep their existing behavior.
+Custom text and provider/adaptive content are not copied into cookies. Unsupported
+or invalid snapshots use the built-in first-visit content while local settings
+initialize. Existing local settings that predate this feature also initialize
+normally, then produce the preview for subsequent visits. The first-visit starter
+wordset is shared for a build; subsequent tests retain random generation.
 
-Late server preferences wait until typing, restart and result calculation are
-idle; an account switch cancels the wait. Offline precaching includes the split
-runtime modules and still starts after readiness. Static no-JS/no-CSS recovery
-remains in `src/html/warnings.html`.
+Saved theme/typography still apply before paint. The live test mounts invisibly
+in the same layout cell, then takes over once its input is ready. Controls in the
+initial HTML are presentation until that handoff. Authentication, account history,
+announcements, optional chrome and offline installation remain deferred. Late
+preferences and consent still wait for an idle test.
 
-`start-e2e/startup.spec.ts` holds real code/language downloads, holds all backend
-RPCs while entering a correct character, blocks JavaScript entirely, checks error
-recovery/navigation, and verifies touch focus/header geometry. The offline test
-checks repeat visits. `e2e/startup-words.spec.ts` verifies that painted words survive
-focus and late preferences, and that account preferences apply after test finish.
-The readiness benchmark now checks the real input and test handoff rather than
-removal of the retired cover. Historical measurements above describe the earlier
-implementation; rerun the benchmark before making new timing claims.
+`start-e2e/first-paint.spec.ts` holds Wasm while checking visible actual words and
+controls, then checks identical engine words and layout. A returning-visit check
+holds all application JavaScript and verifies the saved wordset before and after
+handoff. Startup, offline, navigation and touch tests retain their earlier checks.
+The static no-JS/no-CSS recovery in `src/html/warnings.html` is unchanged.
