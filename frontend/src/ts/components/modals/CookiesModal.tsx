@@ -1,5 +1,7 @@
 import { createEffect, createSignal, JSXElement } from "solid-js";
 
+import { captureApplication } from "../../../app/application";
+import { waitForTestIdle } from "../../../app/test-idle.client";
 import { getAcceptedCookies, setAcceptedCookies } from "../../cookies";
 import { hideModal, isModalOpen } from "../../states/modals";
 import { cn } from "../../utils/cn";
@@ -10,6 +12,7 @@ import { Button } from "../common/Button";
 import { H3 } from "../common/Headers";
 
 export function CookiesModal(): JSXElement {
+  const signal = captureApplication().signal;
   const [showSettings, setShowSettings] = createSignal(false);
   const [accepted, setAccepted] = createSignal(
     getAcceptedCookies() ?? {
@@ -35,6 +38,10 @@ export function CookiesModal(): JSXElement {
       id="Cookies"
       modalClass="max-w-[500px]"
       wrapperClass="justify-end items-end"
+      beforeShow={async () => {
+        // Loading this lazy dialog may outlive the idle moment that requested it.
+        await waitForTestIdle(signal).catch(() => undefined);
+      }}
       closeOnEscape={false}
       closeOnWrapperClick={false}
     >

@@ -27,6 +27,11 @@ import { showModal } from "../ts/states/modals";
 import { getHeaderBottom } from "../ts/states/page-layout";
 import * as ServerConfiguration from "../ts/states/server-configuration";
 import { isFixingSkillIssue } from "../ts/states/skill-issue";
+import {
+  isTestActive,
+  isTestRestarting,
+  isResultCalculating,
+} from "../ts/states/test";
 import { RouterNavigation } from "./navigation.client";
 import { isChromeReady, isStartupFinished } from "./startup";
 
@@ -83,7 +88,14 @@ function ChromeRuntime(props: {
   });
   let cookiePrompted = false;
   createEffect(() => {
-    if (cookiePrompted || !isStartupFinished()) return;
+    if (
+      cookiePrompted ||
+      !isStartupFinished() ||
+      isTestActive() ||
+      isTestRestarting() ||
+      isResultCalculating()
+    )
+      return;
     cookiePrompted = true;
     if (getAcceptedCookies() === null) showModal("Cookies");
   });
