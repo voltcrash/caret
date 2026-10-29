@@ -62,3 +62,24 @@ test("a bare leaderboard URL restores the stored selection", async ({
   await expect(page).toHaveURL(/type=weekly/);
   await expect(page).toHaveURL(/lastWeek=t/);
 });
+
+test("profile lookup allows recovery after an unavailable request", async ({
+  page,
+}) => {
+  await page.goto("/profile");
+  await page.route("**/_serverFn/**", async (route) => {
+    await route.abort("failed");
+  });
+  await page.getByPlaceholder("username").fill("fixture-profile");
+  const submit = page.locator("form button[type=submit]");
+  await expect(submit).toBeEnabled({ timeout: 10_000 });
+  await submit.click();
+  await expect(page).toHaveURL(/\/profile\/fixture-profile$/);
+  await expect(page.getByRole("alert")).toContainText(
+    "Could not load this profile",
+  );
+  await expect(page.getByText("User fixture-profile not found")).toHaveCount(0);
+  await page.unroute("**/_serverFn/**");
+  await page.getByRole("button", { name: "Try again", exact: true }).click();
+  await expect(page.getByText("fixture-profile public bio")).toBeVisible();
+});
