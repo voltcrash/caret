@@ -1,3 +1,8 @@
+import { getDefaultConfig } from "@caret/web-shared/config/default-config";
+import {
+  initialTypingCookie,
+  previewSettings,
+} from "../src/features/typing/initial-snapshot";
 import { expect, test } from "../e2e/fixtures";
 
 test.use({ config: {}, serviceWorkers: "block" });
@@ -98,4 +103,57 @@ test.describe("returning visit", () => {
       pending.resolve(undefined);
     }
   });
+});
+
+test("client navigation rejects a preview from an obsolete engine build", async ({
+  page,
+}) => {
+  const pending = Promise.withResolvers<undefined>();
+  let blocked = false;
+  let documents = 0;
+  page.on("request", (request) => {
+    if (request.isNavigationRequest() && request.frame() === page.mainFrame()) {
+      documents++;
+    }
+  });
+  await page.route("**/assets/*.wasm", async (route) => {
+    blocked = true;
+    await pending.promise;
+    await route.continue();
+  });
+  try {
+    await page.goto("/profile/fixture-profile", {
+      waitUntil: "domcontentloaded",
+    });
+    await expect.poll(() => blocked).toBe(true);
+    await expect(page.locator('[data-ui-element="logoText"]')).toBeVisible();
+    const value = encodeURIComponent(
+      JSON.stringify({
+        version: 1,
+        seed: 1,
+        key: "a".repeat(64),
+        engineHash: "0".repeat(64),
+        words: ["obsolete-preview"],
+        settings: previewSettings(getDefaultConfig()),
+      }),
+    );
+    await page.evaluate(
+      ({ name, value }) => {
+        document.cookie = `${name}=${value}; Path=/; SameSite=Lax`;
+      },
+      { name: initialTypingCookie, value },
+    );
+    await page.getByRole("link", { name: "Caret Home", exact: true }).click();
+    await expect(
+      page.locator("[data-initial-words] .word").first(),
+    ).toBeVisible();
+    await expect(
+      page.getByText("obsolete-preview", { exact: true }),
+    ).toHaveCount(0);
+    expect(documents).toBe(1);
+    pending.resolve(undefined);
+    await expect(page.locator("#words .word").first()).toBeVisible();
+  } finally {
+    pending.resolve(undefined);
+  }
 });
