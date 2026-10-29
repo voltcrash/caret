@@ -16,9 +16,11 @@ export { setLoadedAccount };
  * account load settle; then whether a registered account is signed in.
  * Session refetches that keep the same actor do not change the value.
  */
-export function useAccountSettled(): () => boolean | undefined {
-  const session = useQuery(() => sessionOptions());
-  const settled = useSessionSettled();
+export function useAccountSettled(
+  enabled: () => boolean = () => true,
+): () => boolean | undefined {
+  const session = useQuery(() => ({ ...sessionOptions(), enabled: enabled() }));
+  const settled = useSessionSettled(enabled);
   return createMemo(() => {
     if (!settled()) return undefined;
     const user = session.data?.user;

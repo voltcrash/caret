@@ -11,12 +11,16 @@ import { accountQueryCache } from "../../app/query-cache.client";
  * create actor-scoped collections wait for it, so they never start under the
  * guest scope and get disposed by the sign-in switch moments later.
  */
-export function useSessionSettled(): () => boolean {
+export function useSessionSettled(
+  enabled: () => boolean = () => true,
+): () => boolean {
   const account = requireApplication().accountData;
-  const session = useQuery(() => sessionOptions());
+  const session = useQuery(() => ({ ...sessionOptions(), enabled: enabled() }));
   const cache = accountQueryCache();
   const matches = (): boolean =>
-    session.isSuccess && account.actor() === (session.data.user?.uid ?? null);
+    enabled() &&
+    session.isSuccess &&
+    account.actor() === (session.data.user?.uid ?? null);
   createEffect(
     on(
       () =>
