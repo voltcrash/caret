@@ -79,3 +79,40 @@ No timing thresholds were added to CI.
   removed server function.
 - Production/runtime-test builds, import boundaries, type-aware lint and format
   checks.
+
+
+## Progressive startup — October 29, 2026
+
+The document now paints its navigation and reserved test layout immediately,
+without a fullscreen logo or app entry fade. The test area uses a static
+“Preparing typing test…” status until real words, preferences and input are ready;
+it never displays a fake wordset. This improves first paint, but does not make
+cold JavaScript/Wasm downloads instantaneous.
+
+Saved theme and validated typography are applied in the head before paint.
+The browser header/footer replace their static counterparts only after local
+preferences settle. The typing page mounts invisibly in the same grid cell so
+its DOM can be measured, then becomes visible and enables input in one handoff.
+Later restarts retain the visible page. Desktop input focuses after that
+handoff; touch devices still require a tap.
+
+Authentication, account loading, announcements, modals and other chrome
+integrations load after first-route readiness. The header's configuration query
+also waits. The engine bindings preload during hydration, while the selected
+language and Wasm initialize concurrently. Account-derived pace modes (average,
+daily and tag PB) are omitted from the first test and available on later restarts.
+Local PB, custom speed and last-test pace keep their existing behavior.
+
+Late server preferences wait until typing, restart and result calculation are
+idle; an account switch cancels the wait. Offline precaching includes the split
+runtime modules and still starts after readiness. Static no-JS/no-CSS recovery
+remains in `src/html/warnings.html`.
+
+`start-e2e/startup.spec.ts` holds real code/language downloads, holds all backend
+RPCs while entering a correct character, blocks JavaScript entirely, checks error
+recovery/navigation, and verifies touch focus/header geometry. The offline test
+checks repeat visits. `e2e/startup-words.spec.ts` verifies that painted words survive
+focus and late preferences, and that account preferences apply after test finish.
+The readiness benchmark now checks the real input and test handoff rather than
+removal of the retired cover. Historical measurements above describe the earlier
+implementation; rerun the benchmark before making new timing claims.
