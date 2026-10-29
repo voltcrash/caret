@@ -28,6 +28,7 @@ import { TypingRouteHost } from "../components/typing-route-host";
 import {
   createStartupReveal,
   isStartupFinished,
+  isChromeReady,
   setStartupFinished,
 } from "./startup";
 
@@ -78,6 +79,7 @@ export function AppLayout(props: ParentProps): JSXElement {
   const staticHeader = () => <StaticHeader fixed={fixed()} />;
   // Readiness schedules background work; server-rendered content is always visible.
   const ready = createStartupReveal(typing);
+  const chromeReady = () => !isServer && isChromeReady();
   const finished = () => !isServer && isStartupFinished();
   createEffect(() => {
     if (ready()) setStartupFinished(true);
@@ -100,9 +102,11 @@ export function AppLayout(props: ParentProps): JSXElement {
             style={appStyle(offsetTop(), hidden())}
           >
             <ClientOnly fallback={staticHeader()}>
-              <Suspense fallback={staticHeader()}>
-                <Header fixed={fixed()} />
-              </Suspense>
+              <Show when={chromeReady()} fallback={staticHeader()}>
+                <Suspense fallback={staticHeader()}>
+                  <Header fixed={fixed()} />
+                </Suspense>
+              </Show>
             </ClientOnly>
             <div
               ref={setScroller}
@@ -119,9 +123,11 @@ export function AppLayout(props: ParentProps): JSXElement {
               </main>
               <Show when={!fixed()}>
                 <ClientOnly fallback={<StaticFooter />}>
-                  <Suspense fallback={<StaticFooter />}>
-                    <Footer />
-                  </Suspense>
+                  <Show when={chromeReady()} fallback={<StaticFooter />}>
+                    <Suspense fallback={<StaticFooter />}>
+                      <Footer />
+                    </Suspense>
+                  </Show>
                 </ClientOnly>
               </Show>
             </div>
