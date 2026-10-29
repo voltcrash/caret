@@ -1,3 +1,4 @@
+import { isStartupFinished } from "../../../app/startup";
 import { createAppOwned } from "../../../app/application";
 import { onCleanup } from "solid-js";
 import { captureTypingRoute } from "../scope";
@@ -76,6 +77,12 @@ export async function init(): Promise<void> {
   if (!lease.isCurrent()) return;
   clearTimeout(state().timeout);
   getCaret().hide();
+  // Account-derived pace is optional on the first test. Later restarts use
+  // the settled account data; never download history to reveal the page.
+  if (!isStartupFinished() && ["tagPb", "average", "daily"].includes(getMutableConfig().paceCaret)) {
+    setPaceCaretWpm(undefined);
+    return;
+  }
   const mode2 = Misc.getMode2(getMutableConfig(), getCurrentQuote());
   let wpm = 0;
   if (getMutableConfig().paceCaret === "pb") {
