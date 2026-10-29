@@ -51,16 +51,22 @@ test("cold startup across CPU, viewport and network conditions", async ({
           const observer = new MutationObserver(() => {
             if (
               document.querySelector("#words .word") !== null &&
-              document.getElementById("startupScreen") === null
+              document.querySelector("[data-typing-placeholder]") === null &&
+              document.querySelector<HTMLTextAreaElement>("#wordsInput")
+                ?.disabled === false
             ) {
               performance.mark("caret-ready");
               observer.disconnect();
             }
           });
-          observer.observe(document, { subtree: true, childList: true });
+          observer.observe(document, {
+            subtree: true,
+            childList: true,
+            attributes: true,
+          });
         });
         await page.goto("/", { waitUntil: "domcontentloaded" });
-        await expect(page.locator("#startupScreen")).toHaveCount(0, {
+        await expect(page.locator("[data-typing-placeholder]")).toHaveCount(0, {
           timeout: 60_000,
         });
         const word = page.locator("#words .word").first();
