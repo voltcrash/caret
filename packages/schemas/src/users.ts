@@ -317,7 +317,7 @@ export type ResultFiltersGroupItem<T extends ResultFiltersGroup> =
 export const TypingStatsSchema = z.object({
   completedTests: z.number().int().nonnegative().optional(),
   startedTests: z.number().int().nonnegative().optional(),
-  timeTyping: z.number().int().nonnegative().optional(),
+  timeTyping: z.number().nonnegative().optional(),
 });
 export type TypingStats = z.infer<typeof TypingStatsSchema>;
 
