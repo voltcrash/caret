@@ -1,3 +1,4 @@
+import { isStartupFinished } from "../../../../app/startup";
 import { useQuery } from "@tanstack/solid-query";
 import {
   createSignal,
@@ -66,7 +67,10 @@ export function Nav(): JSXElement {
     setAnimatedLevel(getLevelFromTotalXp(snapshot.xp ?? 0));
   });
 
-  const serverConfig = useQuery(() => getServerConfigurationQueryOptions());
+  const serverConfig = useQuery(() => ({
+    ...getServerConfigurationQueryOptions(),
+    enabled: isStartupFinished(),
+  }));
   const showLoginButton = (): boolean =>
     serverConfig.data?.users.signUp ?? true;
 

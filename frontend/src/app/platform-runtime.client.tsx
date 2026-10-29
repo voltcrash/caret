@@ -16,6 +16,7 @@ import { enable as glarsesMode } from "../ts/states/glarses-mode";
 import { installLogger, toggleDebugLogs } from "../ts/utils/logger";
 import { addToGlobal } from "../ts/utils/misc";
 import { lockMath } from "./browser-integrity";
+import { setChromeReady } from "./startup";
 import { FontRuntime } from "./font-runtime.client";
 
 /** Platform/preferences only. Never waits for authentication or account history. */
@@ -45,10 +46,14 @@ export default function BrowserRuntime(): JSXElement {
         .load()
         .catch(() => undefined);
     }
-    void loadFromLocalStorage().catch((error: unknown) =>
-      console.error("Failed to load preferences", error),
-    );
+    let disposed = false;
+    void loadFromLocalStorage()
+      .catch((error: unknown) => console.error("Failed to load preferences", error))
+      .finally(() => {
+        if (!disposed) setChromeReady(true);
+      });
     onCleanup(() => {
+      disposed = true;
       deactivateAnalytics();
       disposeSentry();
     });
