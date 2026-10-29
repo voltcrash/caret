@@ -29,6 +29,8 @@ const shellRoutes = new Set(["_app", "_app.index"]);
 const offlineTypingModules = [
   "packages/typing-engine/src/browser.client.ts",
   "src/app/browser-runtime.client.tsx",
+  "src/app/background-runtime.client.tsx",
+  "src/app/critical-chrome.client.tsx",
   "src/app/chrome.client.tsx",
   "src/features/typing/page.client.tsx",
   "src/features/typing/components/result/Result.tsx",

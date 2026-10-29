@@ -117,7 +117,7 @@ export function UpdateRuntime(props: { reload?: () => void }): JSXElement {
     }
   });
   // Installing precaches offline chunks. Let the first test use the connection
-  // and CPU first; the readiness cover still waits for the same work as before.
+  // and CPU first; readiness is independent of the visible document shell.
   createEffect(() => {
     if (
       isDevEnvironment() ||

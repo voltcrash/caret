@@ -22,7 +22,7 @@ export function useUrlSettings(entered: () => boolean): void {
     select: (location) =>
       location.pathname === "/" ? location.searchStr : undefined,
   });
-  const signedIn = useAccountSettled();
+  const signedIn = useAccountSettled(entered);
   createEffect(() => {
     const key = search();
     const registered = signedIn();

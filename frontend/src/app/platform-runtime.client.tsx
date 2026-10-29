@@ -17,6 +17,7 @@ import { installLogger, toggleDebugLogs } from "../ts/utils/logger";
 import { addToGlobal } from "../ts/utils/misc";
 import { lockMath } from "./browser-integrity";
 import { FontRuntime } from "./font-runtime.client";
+import { setChromeReady } from "./startup";
 
 /** Platform/preferences only. Never waits for authentication or account history. */
 export default function BrowserRuntime(): JSXElement {
@@ -45,10 +46,16 @@ export default function BrowserRuntime(): JSXElement {
         .load()
         .catch(() => undefined);
     }
-    void loadFromLocalStorage().catch((error: unknown) =>
-      console.error("Failed to load preferences", error),
-    );
+    let disposed = false;
+    void loadFromLocalStorage()
+      .catch((error: unknown) =>
+        console.error("Failed to load preferences", error),
+      )
+      .finally(() => {
+        if (!disposed) setChromeReady(true);
+      });
     onCleanup(() => {
+      disposed = true;
       deactivateAnalytics();
       disposeSentry();
     });

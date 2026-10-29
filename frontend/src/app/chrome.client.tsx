@@ -17,8 +17,6 @@ import { GlobalEvents } from "../ts/components/core/GlobalEvents";
 import { HotkeyEvents } from "../ts/components/core/HotkeyEvents";
 import { SkillIssue } from "../ts/components/core/SkillIssue";
 import { DevTools } from "../ts/components/dev/DevTools";
-import { Footer } from "../ts/components/layout/footer/Footer";
-import { Header } from "../ts/components/layout/header/Header";
 import { Overlays } from "../ts/components/layout/overlays/Overlays";
 import { usePageScroller } from "../ts/components/layout/PageScroller";
 import { Modals } from "../ts/components/modals/Modals";
@@ -29,9 +27,13 @@ import { showModal } from "../ts/states/modals";
 import { getHeaderBottom } from "../ts/states/page-layout";
 import * as ServerConfiguration from "../ts/states/server-configuration";
 import { isFixingSkillIssue } from "../ts/states/skill-issue";
+import {
+  isTestActive,
+  isTestRestarting,
+  isResultCalculating,
+} from "../ts/states/test";
 import { RouterNavigation } from "./navigation.client";
-import { preferencesReadiness } from "./readiness";
-import { isChromeReady, isStartupFinished, setChromeReady } from "./startup";
+import { isChromeReady, isStartupFinished } from "./startup";
 
 /**
  * Browser half of the common layout: overlays, global hotkeys, body classes,
@@ -79,25 +81,22 @@ function ChromeRuntime(props: {
     onCleanup(() => removeBanner(banner));
   });
   onMount(() => {
-    let disposed = false;
-    onCleanup(() => {
-      disposed = true;
-    });
     // Server configuration and authentication are independent startup requests.
     void ServerConfiguration.sync().catch((error: unknown) =>
       console.error("Failed to synchronize server configuration", error),
     );
-    // Reveal the app even if preferences fail; a stuck cover hides the error.
-    void preferencesReadiness()
-      .wait()
-      .catch(() => undefined)
-      .then(() => {
-        if (!disposed) setChromeReady(true);
-      });
   });
   let cookiePrompted = false;
   createEffect(() => {
-    if (cookiePrompted || !isStartupFinished()) return;
+    if (
+      cookiePrompted ||
+      !isStartupFinished() ||
+      isTestActive() ||
+      isTestRestarting() ||
+      isResultCalculating()
+    ) {
+      return;
+    }
     cookiePrompted = true;
     if (getAcceptedCookies() === null) showModal("Cookies");
   });
@@ -125,4 +124,4 @@ function ChromeRuntime(props: {
 }
 
 /** Browser modules of the common layout, loaded together after hydration. */
-export const chrome = { Header, Footer, Runtime: ChromeRuntime };
+export const chrome = { Runtime: ChromeRuntime };

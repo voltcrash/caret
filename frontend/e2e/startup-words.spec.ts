@@ -46,7 +46,7 @@ for (const authenticated of [false, true]) {
         let started: number | undefined;
         const sample = (now: number): void => {
           const app = document.querySelector("#app");
-          const cover = document.querySelector("#startupScreen");
+          const pending = document.querySelector("[data-typing-placeholder]");
           const words = [...document.querySelectorAll("#words .word")].map(
             (word) => word.textContent ?? "",
           );
@@ -54,7 +54,7 @@ for (const authenticated of [false, true]) {
             words.length > 0 &&
             app !== null &&
             getComputedStyle(app).opacity !== "0" &&
-            (cover === null || getComputedStyle(cover).pointerEvents === "none")
+            pending === null
           ) {
             started ??= now;
             if (now - started >= (intervals[samples.length] ?? Infinity)) {
@@ -110,7 +110,25 @@ for (const authenticated of [false, true]) {
         await page.keyboard.type(first[0]?.[0] ?? "a");
         releaseConfig();
         await expect(page.locator("#words letter.correct")).toHaveCount(1);
+        await expect.poll(async () => (await samples()).length).toBe(4);
+        const proof = await samples();
+        for (const sample of proof) expect(sample.words).toEqual(first);
+        await expect(page.locator("#words letter.correct")).toHaveCount(1);
+        expect(generations).toBe(1);
+        expect(errors).toEqual([]);
         if (authenticated) {
+          expect(
+            await page.evaluate(
+              () =>
+                (
+                  JSON.parse(localStorage.getItem("config") ?? "{}") as {
+                    showKeyTips?: boolean;
+                  }
+                ).showKeyTips,
+            ),
+          ).toBe(true);
+          await page.keyboard.type(first.join(" ").slice(1), { delay: 10 });
+          await expect(page.locator("#result")).toBeVisible();
           await expect
             .poll(
               async () =>
@@ -125,12 +143,7 @@ for (const authenticated of [false, true]) {
             )
             .toBe(false);
         }
-        await expect.poll(async () => (await samples()).length).toBe(4);
-        const proof = await samples();
-        for (const sample of proof) expect(sample.words).toEqual(first);
-        await expect(page.locator("#words letter.correct")).toHaveCount(1);
-        expect(generations).toBe(1);
-        expect(errors).toEqual([]);
+
         console.log(
           JSON.stringify({
             authenticated,

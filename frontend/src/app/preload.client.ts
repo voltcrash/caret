@@ -3,8 +3,13 @@ export async function preloadStartup(pathname: string): Promise<void> {
   if (pathname.endsWith(".html")) return;
   const pending: Promise<unknown>[] = [
     import("./browser-runtime.client"),
-    import("./chrome.client"),
+    import("./critical-chrome.client"),
   ];
-  if (pathname === "/") pending.push(import("../features/typing/page.client"));
+  if (pathname === "/") {
+    pending.push(
+      import("../features/typing/page.client"),
+      import("@caret/typing-engine/browser.client"),
+    );
+  }
   await Promise.all(pending);
 }

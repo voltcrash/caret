@@ -11,8 +11,12 @@ const state = vi.hoisted(() => {
     get: vi.fn(),
     apply: vi.fn(),
     save: vi.fn(),
+    idle: vi.fn(async () => undefined),
   };
 });
+vi.mock("../../src/app/test-idle.client", () => ({
+  waitForTestIdle: state.idle,
+}));
 vi.mock("../../src/ts/config/lifecycle", () => ({
   applyConfig: state.apply,
 }));
@@ -68,3 +72,24 @@ it("does not apply prefetched settings when account initialization fails", async
 });
 
 mockHttpFixture("configs.get", async (input) => await state.get(input));
+
+it("waits for an active test before applying late server preferences", async () => {
+  state.get.mockResolvedValue({
+    status: 200,
+    body: { data: { theme: "remote" } },
+  });
+  state.finishLocal();
+  const idle = Promise.withResolvers<undefined>();
+  state.idle.mockReturnValueOnce(idle.promise);
+  try {
+    const { updateFromServer } = await import("../../src/ts/config/remote");
+    const updating = updateFromServer();
+    await vi.waitFor(() => expect(state.idle).toHaveBeenCalledOnce());
+    expect(state.apply).not.toHaveBeenCalled();
+    idle.resolve(undefined);
+    await updating;
+    expect(state.apply).toHaveBeenCalledExactlyOnceWith({ theme: "remote" });
+  } finally {
+    idle.resolve(undefined);
+  }
+});

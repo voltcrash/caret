@@ -8,6 +8,7 @@ import {
   Show,
 } from "solid-js";
 
+import { isStartupFinished } from "../../../../app/startup";
 import { createEffectOn } from "../../../hooks/effects";
 import { useRef } from "../../../hooks/useRef";
 import { getServerConfigurationQueryOptions } from "../../../queries/server-configuration";
@@ -66,7 +67,10 @@ export function Nav(): JSXElement {
     setAnimatedLevel(getLevelFromTotalXp(snapshot.xp ?? 0));
   });
 
-  const serverConfig = useQuery(() => getServerConfigurationQueryOptions());
+  const serverConfig = useQuery(() => ({
+    ...getServerConfigurationQueryOptions(),
+    enabled: isStartupFinished(),
+  }));
   const showLoginButton = (): boolean =>
     serverConfig.data?.users.signUp ?? true;
 

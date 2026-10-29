@@ -1,6 +1,7 @@
 import { ClientOnly, useMatches, useRouter } from "@tanstack/solid-router";
 import { createClientOnlyFn } from "@tanstack/solid-start";
 import {
+  createEffect,
   createSignal,
   lazy,
   onCleanup,
@@ -15,29 +16,30 @@ import { isServer } from "solid-js/web";
 
 import {
   appClass,
-  appRevealClass,
   appStyle,
   scrollerClass,
   scrollerStyle,
 } from "../components/layout/scroller";
-import { StartupScreen } from "../components/layout/startup-screen";
+import { StaticFooter } from "../components/layout/static-footer";
 import { StaticHeader } from "../components/layout/static-header";
 import { LinkHost, RouterLink } from "../components/link-host";
 import { PageScrollHost } from "../components/page-scroll";
 import { TypingRouteHost } from "../components/typing-route-host";
-import { cn } from "../ts/utils/cn";
 import {
   createStartupReveal,
   isStartupFinished,
+  isChromeReady,
   setStartupFinished,
 } from "./startup";
 
 const load = createClientOnlyFn(
-  async () => (await import("./chrome.client")).chrome,
+  async () => (await import("./critical-chrome.client")).chrome,
 );
 const Header = lazy(async () => ({ default: (await load()).Header }));
 const Footer = lazy(async () => ({ default: (await load()).Footer }));
-const ChromeRuntime = lazy(async () => ({ default: (await load()).Runtime }));
+const ChromeRuntime = lazy(async () => ({
+  default: (await import("./chrome.client")).chrome.Runtime,
+}));
 
 declare module "@tanstack/solid-router" {
   // oxlint-disable-next-line typescript/consistent-type-definitions -- Router static data uses declaration merging.
@@ -75,9 +77,13 @@ export function AppLayout(props: ParentProps): JSXElement {
   const [offsetTop, setOffsetTop] = createSignal(0);
   const [hidden, setHidden] = createSignal(false);
   const staticHeader = () => <StaticHeader fixed={fixed()} />;
-  // Keep the cover until the initial route is ready, including its first test.
+  // Readiness schedules background work; server-rendered content is always visible.
   const ready = createStartupReveal(typing);
+  const chromeReady = () => !isServer && isChromeReady();
   const finished = () => !isServer && isStartupFinished();
+  createEffect(() => {
+    if (ready()) setStartupFinished(true);
+  });
   return (
     <PageScrollHost.Provider
       value={(position) => {
@@ -92,13 +98,15 @@ export function AppLayout(props: ParentProps): JSXElement {
         <LinkHost.Provider value={RouterLink}>
           <div
             id="app"
-            class={cn(appClass, appRevealClass(ready()))}
+            class={appClass}
             style={appStyle(offsetTop(), hidden())}
           >
             <ClientOnly fallback={staticHeader()}>
-              <Suspense fallback={staticHeader()}>
-                <Header fixed={fixed()} />
-              </Suspense>
+              <Show when={chromeReady()} fallback={staticHeader()}>
+                <Suspense fallback={staticHeader()}>
+                  <Header fixed={fixed()} />
+                </Suspense>
+              </Show>
             </ClientOnly>
             <div
               ref={setScroller}
@@ -114,31 +122,29 @@ export function AppLayout(props: ParentProps): JSXElement {
                 {props.children}
               </main>
               <Show when={!fixed()}>
-                <ClientOnly>
-                  <Suspense>
-                    <Footer />
-                  </Suspense>
+                <ClientOnly fallback={<StaticFooter />}>
+                  <Show when={chromeReady()} fallback={<StaticFooter />}>
+                    <Suspense fallback={<StaticFooter />}>
+                      <Footer />
+                    </Suspense>
+                  </Show>
                 </ClientOnly>
               </Show>
             </div>
           </div>
-          <Show when={!finished()}>
-            <StartupScreen
-              leaving={ready()}
-              onFinished={() => setStartupFinished(true)}
-            />
+          <Show when={finished()}>
+            <ClientOnly>
+              <Suspense>
+                <ChromeRuntime
+                  fixed={fixed()}
+                  scroller={scroller()}
+                  onHeaderBottom={setHeaderBottom}
+                  onOffsetTop={setOffsetTop}
+                  onHidden={setHidden}
+                />
+              </Suspense>
+            </ClientOnly>
           </Show>
-          <ClientOnly>
-            <Suspense>
-              <ChromeRuntime
-                fixed={fixed()}
-                scroller={scroller()}
-                onHeaderBottom={setHeaderBottom}
-                onOffsetTop={setOffsetTop}
-                onHidden={setHidden}
-              />
-            </Suspense>
-          </ClientOnly>
         </LinkHost.Provider>
       </TypingRouteHost.Provider>
     </PageScrollHost.Provider>

@@ -1,6 +1,7 @@
 import { OperationError } from "../../data/operation-result";
 import { getQueryClient } from "../queries";
 import { getRemotePreferencesQueryOptions } from "../queries/preferences";
+import { waitForTestIdle } from "../../app/test-idle.client";
 import { captureAccount } from "../../app/account-scope";
 import * as ConfigSchemas from "@caret/schemas/configs";
 
@@ -23,6 +24,7 @@ export async function updateFromServer(
   // Fetch remotely in parallel, but local settings must finish applying first.
   await Promise.all([preferencesReadiness().wait(), accountReady]);
 
+  await waitForTestIdle(lease.signal);
   lease.assertCurrent();
   const areConfigsEqual =
     JSON.stringify(getMutableConfig()) === JSON.stringify(remoteConfig);

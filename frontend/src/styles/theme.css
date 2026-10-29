@@ -43,7 +43,6 @@
   --radius: var(--roundness);
 
   /* First paint of the server-rendered app; hydration keeps the element. */
-  --animate-app-enter: fadeIn 0.25s ease-out;
 
   --animate-typing-loader-typed: typing-loader-typed 2s infinite;
   --animate-typing-loader-caret: typing-loader-caret 2s infinite;

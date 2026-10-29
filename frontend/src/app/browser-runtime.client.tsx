@@ -1,17 +1,22 @@
-import { AccountRuntime } from "../features/account/runtime.client";
-import { AnnouncementsRuntime } from "../features/announcements/runtime.client";
-import { AuthRuntime } from "../features/auth/runtime.client";
-import { UpdateRuntime } from "../features/update/runtime.client";
+import { lazy, Show, Suspense } from "solid-js";
+
 import PlatformRuntime from "./platform-runtime.client";
-/** Browser integrations owned by the application root; removed with it. */
+import { isStartupFinished } from "./startup";
+
+const BackgroundRuntime = lazy(
+  async () => import("./background-runtime.client"),
+);
+
+/** Preferences and the engine get the connection before account integrations. */
 export default function BrowserRuntime() {
   return (
     <>
       <PlatformRuntime />
-      <AuthRuntime />
-      <AccountRuntime />
-      <UpdateRuntime />
-      <AnnouncementsRuntime />
+      <Show when={isStartupFinished()}>
+        <Suspense>
+          <BackgroundRuntime />
+        </Suspense>
+      </Show>
     </>
   );
 }

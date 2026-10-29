@@ -82,6 +82,9 @@ export async function init(lease = captureTypingRoute()): Promise<boolean> {
     return false;
   }
 
+  const languageRequest = tryCatch(
+    JSONData.getLanguage(getMutableConfig().language),
+  );
   showLoaderBar();
   try {
     await getBrowserEngine().load();
@@ -102,9 +105,7 @@ export async function init(lease = captureTypingRoute()): Promise<boolean> {
   resetActiveWordIndex();
 
   showLoaderBar();
-  const { data: language, error } = await tryCatch(
-    JSONData.getLanguage(getMutableConfig().language),
-  );
+  const { data: language, error } = await languageRequest;
   if (!lease.isCurrent()) return false;
   hideLoaderBar();
 
