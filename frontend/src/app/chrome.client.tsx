@@ -94,8 +94,9 @@ function ChromeRuntime(props: {
       isTestActive() ||
       isTestRestarting() ||
       isResultCalculating()
-    )
+    ) {
       return;
+    }
     cookiePrompted = true;
     if (getAcceptedCookies() === null) showModal("Cookies");
   });

@@ -255,8 +255,9 @@ for (const target of ["chrome.client", "CookiesModal"]) {
       pending.resolve(undefined);
       await (await response).finished();
       await expect(page.locator("#solidmodals")).toHaveCount(1);
-      if (target === "CookiesModal")
+      if (target === "CookiesModal") {
         await expect(page.locator("#CookiesModal")).toHaveCount(1);
+      }
       await expect(page.locator("#CookiesModal")).not.toBeVisible();
       await expect(page.locator("#wordsInput")).toBeFocused();
       await page.keyboard.type(text.slice(1), { delay: 10 });
