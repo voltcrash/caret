@@ -145,7 +145,7 @@ test.describe("startup with signed-in summaries", () => {
 test("typing becomes usable while all backend requests are held", async ({
   page,
 }, info) => {
-  const pending = Promise.withResolvers<void>();
+  const pending = Promise.withResolvers<undefined>();
   const requests: string[] = [];
   await page.route("**/_serverFn/**", async (route) => {
     requests.push(route.request().url());
@@ -167,7 +167,7 @@ test("typing becomes usable while all backend requests are held", async ({
       path: info.outputPath("typing-with-backend-pending.png"),
     });
   } finally {
-    pending.resolve();
+    pending.resolve(undefined);
   }
 });
 

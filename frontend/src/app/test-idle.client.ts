@@ -20,8 +20,9 @@ export async function waitForTestIdle(signal: AbortSignal): Promise<void> {
       signal.addEventListener("abort", abort, { once: true });
       onCleanup(() => signal.removeEventListener("abort", abort));
       createEffect(() => {
-        if (isTestActive() || isTestRestarting() || isResultCalculating())
+        if (isTestActive() || isTestRestarting() || isResultCalculating()) {
           return;
+        }
         dispose();
         resolve();
       });

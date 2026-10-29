@@ -1,8 +1,6 @@
 import { mockHttpFixture } from "../__harness__/operations";
 import { beforeEach, expect, it, vi } from "vite-plus/test";
 
-import { setTestActive } from "../../src/ts/states/test";
-
 const state = vi.hoisted(() => {
   let finishLocal!: () => void;
   return {
@@ -13,8 +11,12 @@ const state = vi.hoisted(() => {
     get: vi.fn(),
     apply: vi.fn(),
     save: vi.fn(),
+    idle: vi.fn(async () => undefined),
   };
 });
+vi.mock("../../src/app/test-idle.client", () => ({
+  waitForTestIdle: state.idle,
+}));
 vi.mock("../../src/ts/config/lifecycle", () => ({
   applyConfig: state.apply,
 }));
@@ -77,16 +79,17 @@ it("waits for an active test before applying late server preferences", async () 
     body: { data: { theme: "remote" } },
   });
   state.finishLocal();
-  setTestActive(true);
+  const idle = Promise.withResolvers<undefined>();
+  state.idle.mockReturnValueOnce(idle.promise);
   try {
     const { updateFromServer } = await import("../../src/ts/config/remote");
     const updating = updateFromServer();
-    await vi.waitFor(() => expect(state.get).toHaveBeenCalledOnce());
+    await vi.waitFor(() => expect(state.idle).toHaveBeenCalledOnce());
     expect(state.apply).not.toHaveBeenCalled();
-    setTestActive(false);
+    idle.resolve(undefined);
     await updating;
     expect(state.apply).toHaveBeenCalledExactlyOnceWith({ theme: "remote" });
   } finally {
-    setTestActive(false);
+    idle.resolve(undefined);
   }
 });
