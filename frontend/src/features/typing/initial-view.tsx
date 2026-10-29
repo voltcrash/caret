@@ -144,15 +144,14 @@ export function InitialTypingView(props: {
       >
         <Show when={config().showTestModesNotice}>
           <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-base text-sub select-none sm:gap-y-0">
-            <span class="inline-flex items-center gap-2 py-2 pointer-coarse:min-h-11">
+            <span class="inline-flex items-center gap-2 py-2 leading-[1.25] pointer-coarse:min-h-11">
               <Fa icon="fa-globe-americas" />
               {config().language.replaceAll("_", " ")}
             </span>
           </div>
         </Show>
         <div
-          class="full-width relative overflow-hidden"
-          style={{ height: "calc(4.5em + 6px)" }}
+          class="full-width relative h-[calc((1.5em+2px+round(down,0.05em,1px))*3)] overflow-hidden"
           translate="no"
         >
           <div
@@ -168,9 +167,9 @@ export function InitialTypingView(props: {
                 <div class="word">
                   <For each={Array.from(word)}>
                     {(letter) => (
-                      <span class="inline-block border-b-[0.05em] border-b-transparent">
+                      <letter class="inline-block border-b-[0.05em] [border-bottom-style:solid] border-b-transparent">
                         {letter}
-                      </span>
+                      </letter>
                     )}
                   </For>
                 </div>

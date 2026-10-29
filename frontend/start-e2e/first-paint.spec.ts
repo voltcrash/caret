@@ -28,11 +28,18 @@ test("first visit paints actual words and controls before engine downloads", asy
     await expect(
       page.locator("[data-initial-words] .word").first(),
     ).toBeVisible();
+    const initialBox = await page
+      .locator("[data-initial-words] .word")
+      .first()
+      .boundingBox();
     await page.screenshot({
       path: info.outputPath("first-paint-before-wasm.png"),
     });
     pending.resolve(undefined);
     await expect(page.locator("#words .word").first()).toBeVisible();
+    const actualBox = await page.locator("#words .word").first().boundingBox();
+    expect(actualBox?.y).toBeCloseTo(initialBox?.y ?? 0, 0);
+    expect(actualBox?.height).toBeCloseTo(initialBox?.height ?? 0, 0);
     const actual = await page.locator("#words .word").allTextContents();
     expect(actual.slice(0, initial.length)).toEqual(initial);
     const first = actual[0]?.[0];

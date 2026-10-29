@@ -51,7 +51,9 @@ export function saveTypingPreview(
     config.funbox.length !== 0 ||
     words.length === 0
   ) {
-    document.cookie = `${initialTypingCookie}=; Path=/; Max-Age=0; SameSite=Lax`;
+    writePreviewCookie(
+      `${initialTypingCookie}=; Path=/; Max-Age=0; SameSite=Lax`,
+    );
     return;
   }
   const preview: InitialTypingSnapshot = {
@@ -68,8 +70,14 @@ export function saveTypingPreview(
     value = encodeURIComponent(JSON.stringify(preview));
   }
   if (value.length > 3800) return;
+  writePreviewCookie(
+    `${initialTypingCookie}=${value}; Path=/; Max-Age=31536000; SameSite=Lax${location.protocol === "https:" ? "; Secure" : ""}`,
+  );
+}
+
+function writePreviewCookie(value: string): void {
   try {
-    document.cookie = `${initialTypingCookie}=${value}; Path=/; Max-Age=31536000; SameSite=Lax${location.protocol === "https:" ? "; Secure" : ""}`;
+    document.cookie = value;
   } catch {
     // Disabled cookie storage must not prevent the real test from starting.
   }
