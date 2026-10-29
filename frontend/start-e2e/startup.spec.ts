@@ -33,8 +33,9 @@ for (const showTestModesNotice of [false, true]) {
         const backendRequests: string[] = [];
         page.on("request", (request) => {
           const path = new URL(request.url()).pathname;
-          if (path.startsWith("/_serverFn/") || path.startsWith("/api/"))
+          if (path.startsWith("/_serverFn/") || path.startsWith("/api/")) {
             backendRequests.push(path);
+          }
         });
         page.on("pageerror", (error) => errors.push(error.message));
         await page.route(target.pattern, async (route) => {

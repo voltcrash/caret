@@ -13,6 +13,10 @@ import { H3 } from "../common/Headers";
 
 export function CookiesModal(): JSXElement {
   const signal = captureApplication().signal;
+  const beforeShow = async (): Promise<void> => {
+    // Loading this lazy dialog may outlive the idle moment that requested it.
+    await waitForTestIdle(signal).catch(() => undefined);
+  };
   const [showSettings, setShowSettings] = createSignal(false);
   const [accepted, setAccepted] = createSignal(
     getAcceptedCookies() ?? {
@@ -38,8 +42,7 @@ export function CookiesModal(): JSXElement {
       id="Cookies"
       modalClass="max-w-[500px]"
       wrapperClass="justify-end items-end"
-      // Loading this lazy dialog may outlive the idle moment that requested it.
-      beforeShow={() => waitForTestIdle(signal).catch(() => undefined)}
+      beforeShow={beforeShow}
       closeOnEscape={false}
       closeOnWrapperClick={false}
     >
