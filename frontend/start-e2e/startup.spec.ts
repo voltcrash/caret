@@ -56,7 +56,10 @@ for (const showTestModesNotice of [false, true]) {
           expect(backendRequests).toEqual([]);
           await expect(page.locator("#startupScreen")).toHaveCount(0);
           await expect(page.locator("#app")).toHaveCSS("opacity", "1");
-          await expect(page.locator("[data-typing-placeholder]")).toBeVisible();
+          await expect(page.locator("[data-initial-typing]")).toBeVisible();
+          await expect(
+            page.locator("[data-initial-words] .word").first(),
+          ).toBeVisible();
           await expect(
             page.getByRole("textbox", { name: "Typing input" }),
           ).not.toBeVisible();
@@ -69,7 +72,7 @@ for (const showTestModesNotice of [false, true]) {
         await expect(
           page.getByText("Loading typing test…", { exact: true }),
         ).toHaveCount(0);
-        await expect(page.locator("[data-typing-placeholder]")).toHaveCount(0);
+        await expect(page.locator("[data-initial-typing]")).toHaveCount(0);
         await expect(
           page.getByRole("textbox", { name: "Typing input" }),
         ).toBeEnabled();
@@ -164,7 +167,7 @@ test("typing becomes usable while all backend requests are held", async ({
     await page.goto("/", { waitUntil: "domcontentloaded" });
     const word = page.locator("#words .word").first();
     await expect(word).toBeVisible();
-    await expect(page.locator("[data-typing-placeholder]")).toHaveCount(0);
+    await expect(page.locator("[data-initial-typing]")).toHaveCount(0);
     await expect.poll(() => requests.length).toBeGreaterThan(0);
     const first = (await word.textContent())?.[0];
     if (first === undefined) throw new Error("Missing test word");
@@ -190,7 +193,11 @@ test("server shell remains visible when JavaScript cannot download", async ({
   ).toBeVisible();
   await expect(page.locator("#app")).toHaveCSS("opacity", "1");
   await expect(page.locator("#startupScreen")).toHaveCount(0);
-  await expect(page.locator("[data-typing-placeholder]")).toBeVisible();
+  await expect(page.locator("[data-initial-typing]")).toBeVisible();
+  await expect(
+    page.locator("[data-initial-words] .word").first(),
+  ).toBeVisible();
+  await expect(page.getByText("Preparing typing test…")).toHaveCount(0);
   await page.screenshot({ path: info.outputPath("server-shell.png") });
 });
 
@@ -210,7 +217,7 @@ test.describe("touch startup", () => {
     });
     try {
       await page.goto("/", { waitUntil: "domcontentloaded" });
-      await expect(page.locator("[data-typing-placeholder]")).toBeVisible();
+      await expect(page.locator("[data-initial-typing]")).toBeVisible();
       const header = page.locator('[data-ui-element="header"]');
       let initialHeight = 0;
       await expect

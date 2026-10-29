@@ -46,7 +46,7 @@ for (const authenticated of [false, true]) {
         let started: number | undefined;
         const sample = (now: number): void => {
           const app = document.querySelector("#app");
-          const pending = document.querySelector("[data-typing-placeholder]");
+          const pending = document.querySelector("[data-initial-typing]");
           const words = [...document.querySelectorAll("#words .word")].map(
             (word) => word.textContent ?? "",
           );
