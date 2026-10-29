@@ -1,4 +1,3 @@
-import { isStartupFinished } from "../../../../app/startup";
 import { useQuery } from "@tanstack/solid-query";
 import {
   createSignal,
@@ -9,6 +8,7 @@ import {
   Show,
 } from "solid-js";
 
+import { isStartupFinished } from "../../../../app/startup";
 import { createEffectOn } from "../../../hooks/effects";
 import { useRef } from "../../../hooks/useRef";
 import { getServerConfigurationQueryOptions } from "../../../queries/server-configuration";

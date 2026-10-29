@@ -79,7 +79,10 @@ export async function init(): Promise<void> {
   getCaret().hide();
   // Account-derived pace is optional on the first test. Later restarts use
   // the settled account data; never download history to reveal the page.
-  if (!isStartupFinished() && ["tagPb", "average", "daily"].includes(getMutableConfig().paceCaret)) {
+  if (
+    !isStartupFinished() &&
+    ["tagPb", "average", "daily"].includes(getMutableConfig().paceCaret)
+  ) {
     setPaceCaretWpm(undefined);
     return;
   }

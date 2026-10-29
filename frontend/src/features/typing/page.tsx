@@ -1,7 +1,6 @@
 import { ClientOnly } from "@tanstack/solid-router";
 import { createClientOnlyFn } from "@tanstack/solid-start";
 import { createMemo, lazy, Show, Suspense, type JSXElement } from "solid-js";
-
 import { isServer } from "solid-js/web";
 
 import { isTypingReady } from "../../app/startup";
@@ -17,13 +16,22 @@ if (!import.meta.env.SSR) void TypingPage.preload();
 /** Document and common shell stay SSR-capable; the engine only mounts in a browser. */
 export function TypingLeaf(): JSXElement {
   // Preserve the displayed page during later restarts; only a new mount waits.
-  const ready = createMemo((previous) => previous || (!isServer && isTypingReady()), false);
+  const ready = createMemo<boolean>(
+    (previous) => previous || (!isServer && isTypingReady()),
+    false,
+  );
   return (
     <div class="full-width grid h-full min-w-0 grid-cols-1 grid-rows-1">
       <Show when={!ready()}>
-        <div class="col-start-1 row-start-1"><TypingPlaceholder /></div>
+        <div class="col-start-1 row-start-1">
+          <TypingPlaceholder />
+        </div>
       </Show>
-      <div class={cn("col-start-1 row-start-1 min-w-0", !ready() && "invisible")} inert={!ready()} aria-hidden={!ready()}>
+      <div
+        class={cn("col-start-1 row-start-1 min-w-0", !ready() && "invisible")}
+        inert={!ready()}
+        aria-hidden={!ready()}
+      >
         <ClientOnly>
           <Suspense>
             <TypingPage />

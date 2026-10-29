@@ -127,17 +127,17 @@ export function AppLayout(props: ParentProps): JSXElement {
             </div>
           </div>
           <Show when={finished()}>
-          <ClientOnly>
-            <Suspense>
-              <ChromeRuntime
-                fixed={fixed()}
-                scroller={scroller()}
-                onHeaderBottom={setHeaderBottom}
-                onOffsetTop={setOffsetTop}
-                onHidden={setHidden}
-              />
-            </Suspense>
-          </ClientOnly>
+            <ClientOnly>
+              <Suspense>
+                <ChromeRuntime
+                  fixed={fixed()}
+                  scroller={scroller()}
+                  onHeaderBottom={setHeaderBottom}
+                  onOffsetTop={setOffsetTop}
+                  onHidden={setHidden}
+                />
+              </Suspense>
+            </ClientOnly>
           </Show>
         </LinkHost.Provider>
       </TypingRouteHost.Provider>

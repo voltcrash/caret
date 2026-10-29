@@ -19,7 +19,10 @@ export function Document(props: { children: JSX.Element }): JSX.Element {
       <head>
         <HydrationScript />
         {/* oxlint-disable-next-line solid/no-innerhtml -- Trusted static head script; validates stored preference values and uses the response nonce. */}
-        <script nonce={nonce()} innerHTML={themeBootstrap + appearanceBootstrap}></script>
+        <script
+          nonce={nonce()}
+          innerHTML={themeBootstrap + appearanceBootstrap}
+        ></script>
       </head>
       <body>
         <HeadContent />

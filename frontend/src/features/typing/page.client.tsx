@@ -9,16 +9,15 @@ import { Portal } from "solid-js/web";
 
 import { FunboxEffects } from "../../ts/components/core/FunboxEffects";
 import { getConfig } from "../../ts/config/store";
-import { isTestRestarting } from "../../ts/states/test";
+import { isTestRestarting, getTestInitError } from "../../ts/states/test";
+import { isCoarsePointer } from "../../ts/utils/pointer";
 import { BarTimerProgress } from "./components/live-stats/BarTimerProgress";
 import { MonkeyPower } from "./components/MonkeyPower";
 import { TestPage } from "./components/TestPage";
 import { enterTypingRoute, exitTypingRoute } from "./lifecycle";
 import { TypingRuntime } from "./runtime.client";
-import { mountTypingScope } from "./scope";
 import { focusWords } from "./runtime/test-ui";
-import { isCoarsePointer } from "../../ts/utils/pointer";
-import { getTestInitError } from "../../ts/states/test";
+import { mountTypingScope } from "./scope";
 import { useUrlSettings } from "./url-settings.client";
 
 export default function TypingPage(): JSXElement {

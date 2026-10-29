@@ -80,7 +80,6 @@ function ChromeRuntime(props: {
     void ServerConfiguration.sync().catch((error: unknown) =>
       console.error("Failed to synchronize server configuration", error),
     );
-
   });
   let cookiePrompted = false;
   createEffect(() => {

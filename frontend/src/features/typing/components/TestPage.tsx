@@ -1,6 +1,7 @@
 import { JSXElement, onCleanup, onMount } from "solid-js";
 import { spread } from "solid-js/web";
 
+import { isTypingReady } from "../../../app/startup";
 import { useWordsInputScroll } from "../../../ts/hooks/useWordsInputScroll";
 import { isInputElementFocused } from "../../../ts/input/input-element";
 import { isWordsWrapperVisible } from "../../../ts/states/funbox";
