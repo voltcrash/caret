@@ -185,3 +185,40 @@ test("server shell remains visible when JavaScript cannot download", async ({
   await expect(page.locator("[data-typing-placeholder]")).toBeVisible();
   await page.screenshot({ path: info.outputPath("server-shell.png") });
 });
+
+test.describe("touch startup", () => {
+  test.use({
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+  });
+  test("keeps navigation stable and opens the keyboard only after a tap", async ({
+    page,
+  }, info) => {
+    const pending = Promise.withResolvers<undefined>();
+    await page.route("**/languages/english.json*", async (route) => {
+      await pending.promise;
+      await route.continue();
+    });
+    try {
+      await page.goto("/", { waitUntil: "domcontentloaded" });
+      await expect(page.locator("[data-typing-placeholder]")).toBeVisible();
+      const initial = await page
+        .locator('[data-ui-element="header"]')
+        .boundingBox();
+      await page.screenshot({ path: info.outputPath("touch-shell.png") });
+      pending.resolve(undefined);
+      await expect(page.locator("#words .word").first()).toBeVisible();
+      await expect(page.locator("#wordsInput")).not.toBeFocused();
+      const ready = await page
+        .locator('[data-ui-element="header"]')
+        .boundingBox();
+      expect(ready?.height).toBe(initial?.height);
+      await page.locator("#words .word").first().tap();
+      await expect(page.locator("#wordsInput")).toBeFocused();
+      await page.screenshot({ path: info.outputPath("touch-ready.png") });
+    } finally {
+      pending.resolve(undefined);
+    }
+  });
+});
