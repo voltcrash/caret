@@ -15,7 +15,11 @@ import { initialTypingSnapshot } from "../server/initial-typing.server";
 
 const initialSnapshot = createIsomorphicFn()
   .server(initialTypingSnapshot)
-  .client(() => readTypingPreview(document.cookie) ?? defaultInitialTyping());
+  .client(() => {
+    const fallback = defaultInitialTyping();
+    const cached = readTypingPreview(document.cookie);
+    return cached?.engineHash === fallback.engineHash ? cached : fallback;
+  });
 
 export const Route = createFileRoute("/_app/")({
   loader: () => initialSnapshot(),
