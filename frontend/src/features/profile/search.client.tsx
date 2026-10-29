@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/solid-query";
 import { useNavigate } from "@tanstack/solid-router";
 import { createSignal, type JSXElement, onMount } from "solid-js";
 
-import { profileOptions } from "../../data/profile";
+import { isUserNotFound, profileOptions } from "../../data/profile";
 import { H2 } from "../../ts/components/common/Headers";
 import { InputField } from "../../ts/components/ui/form/InputField";
 import { SubmitButton } from "../../ts/components/ui/form/SubmitButton";
@@ -70,8 +70,8 @@ export function ProfileSearch(): JSXElement {
                   try {
                     await queryClient.query(profileOptions(field.value, "web"));
                     return undefined;
-                  } catch {
-                    return "Unknown user";
+                  } catch (error) {
+                    return isUserNotFound(error) ? "Unknown user" : undefined;
                   }
                 },
               }}

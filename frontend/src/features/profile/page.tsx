@@ -6,8 +6,10 @@ import { createClientOnlyFn } from "@tanstack/solid-start";
 import { lazy, Show, Suspense, type JSXElement } from "solid-js";
 
 import { onlyCachedOnServer } from "../../data/prefetch";
-import { profileOptions } from "../../data/profile";
+import { isUserNotFound, profileOptions } from "../../data/profile";
+import { Button } from "../../ts/components/common/Button";
 import { ProfileMissing } from "./missing";
+import { ProfileSkeleton } from "./skeleton";
 import { ProfileSummary } from "./summary";
 
 const UserProfile = lazy(
@@ -38,6 +40,9 @@ export function ProfilePage(props: {
   }));
   return (
     <div class={profileFrame}>
+      <Show when={profile.isPending}>
+        <ProfileSkeleton />
+      </Show>
       <Show when={profile.data}>
         {(data) => (
           <ClientOnly fallback={<ProfileSummary profile={data()} />}>
@@ -48,7 +53,17 @@ export function ProfilePage(props: {
         )}
       </Show>
       <Show when={profile.isError && profile.data === undefined}>
-        <ProfileMissing name={props.uidOrName} />
+        <Show
+          when={isUserNotFound(profile.error)}
+          fallback={
+            <div role="alert" class="flex flex-col items-start gap-4">
+              <span>Could not load this profile. Please try again.</span>
+              <Button onClick={() => void profile.refetch()}>Try again</Button>
+            </div>
+          }
+        >
+          <ProfileMissing name={props.uidOrName} />
+        </Show>
       </Show>
     </div>
   );

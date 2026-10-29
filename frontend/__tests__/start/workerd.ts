@@ -306,7 +306,7 @@ export async function seedProfile(
     },
     completedTests: 5,
     startedTests: 9,
-    timeTyping: 600,
+    timeTyping: 600.125,
     profileDetails: { bio: `${name} public bio` },
     testActivity: {},
   };
