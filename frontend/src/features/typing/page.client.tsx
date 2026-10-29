@@ -22,7 +22,9 @@ import { useUrlSettings } from "./url-settings.client";
 
 export default function TypingPage(): JSXElement {
   const release = mountTypingScope();
+  let disposed = false;
   onCleanup(() => {
+    disposed = true;
     exitTypingRoute();
     release();
   });
@@ -32,6 +34,7 @@ export default function TypingPage(): JSXElement {
   onMount(() => {
     void enterTypingRoute()
       .then(() => {
+        if (disposed) return;
         setEntered(true);
         if (!isCoarsePointer() && getTestInitError() === null) focusWords();
       })
