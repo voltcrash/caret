@@ -45,6 +45,15 @@ export function saveTypingPreview(
   key: string,
   words: string[],
 ): void {
+  // Local/custom text and adaptive/provider content must not be sent in cookies.
+  if (
+    !["time", "words"].includes(config.mode) ||
+    config.funbox.length !== 0 ||
+    words.length === 0
+  ) {
+    document.cookie = `${initialTypingCookie}=; Path=/; Max-Age=0; SameSite=Lax`;
+    return;
+  }
   const preview: InitialTypingSnapshot = {
     version: 1,
     seed,
@@ -59,5 +68,9 @@ export function saveTypingPreview(
     value = encodeURIComponent(JSON.stringify(preview));
   }
   if (value.length > 3800) return;
-  document.cookie = `${initialTypingCookie}=${value}; Path=/; Max-Age=31536000; SameSite=Lax${location.protocol === "https:" ? "; Secure" : ""}`;
+  try {
+    document.cookie = `${initialTypingCookie}=${value}; Path=/; Max-Age=31536000; SameSite=Lax${location.protocol === "https:" ? "; Secure" : ""}`;
+  } catch {
+    // Disabled cookie storage must not prevent the real test from starting.
+  }
 }

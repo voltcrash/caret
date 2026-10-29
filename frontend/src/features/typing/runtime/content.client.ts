@@ -300,7 +300,7 @@ export const getContentHost = createAppOwned(() => {
       );
       owner.createPreparedSession(repeated);
       const snapshot = getEngineSession().attach();
-      if (engineHash !== "" && !repeated && snapshot.words.length > 0) {
+      if (engineHash !== "" && !repeated) {
         saveTypingPreview(
           getMutableConfig(),
           seed,

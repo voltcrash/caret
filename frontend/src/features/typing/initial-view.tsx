@@ -159,7 +159,11 @@ export function InitialTypingView(props: {
             data-initial-words
             class="full-width flex h-fit w-full flex-wrap content-start pb-[0.5em] text-sub select-none"
           >
-            <For each={props.snapshot.words}>
+            <For
+              each={props.snapshot.words.map((word) =>
+                word.endsWith(" ") ? word.slice(0, -1) : word,
+              )}
+            >
               {(word) => (
                 <div class="word">
                   <For each={Array.from(word)}>
