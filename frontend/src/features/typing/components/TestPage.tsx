@@ -115,6 +115,7 @@ export function TestPage(
             id="wordsInput"
             aria-label="Typing input"
             disabled={
+              !isTypingReady() ||
               getBrowserEngine().status().state !== "ready" ||
               getTestInitError() !== null
             }

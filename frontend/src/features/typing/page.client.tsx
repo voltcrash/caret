@@ -16,6 +16,9 @@ import { TestPage } from "./components/TestPage";
 import { enterTypingRoute, exitTypingRoute } from "./lifecycle";
 import { TypingRuntime } from "./runtime.client";
 import { mountTypingScope } from "./scope";
+import { focusWords } from "./runtime/test-ui";
+import { isCoarsePointer } from "../../ts/utils/pointer";
+import { getTestInitError } from "../../ts/states/test";
 import { useUrlSettings } from "./url-settings.client";
 
 export default function TypingPage(): JSXElement {
@@ -29,7 +32,10 @@ export default function TypingPage(): JSXElement {
   useUrlSettings(() => entered() && !isTestRestarting());
   onMount(() => {
     void enterTypingRoute()
-      .then(() => setEntered(true))
+      .then(() => {
+        setEntered(true);
+        if (!isCoarsePointer() && getTestInitError() === null) focusWords();
+      })
       .catch((error: unknown) =>
         console.error("Typing initialization failed", error),
       );
