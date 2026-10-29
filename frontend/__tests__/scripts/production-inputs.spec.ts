@@ -8,10 +8,7 @@ function inputs(): Parameters<typeof validateProductionInputs>[0] {
     readFileSync(resolve(__dirname, "../../wrangler.production.json"), "utf8"),
   );
   return {
-    config: {
-      ...(config as object),
-      hyperdrive: [{ binding: "HYPERDRIVE", id: "a".repeat(32) }],
-    },
+    config,
     backend: {
       DATABASE_URL:
         "postgresql://user:password@ep-production.neon.tech/neondb?sslmode=require",
