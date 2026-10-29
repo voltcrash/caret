@@ -210,17 +210,17 @@ test.describe("touch startup", () => {
     try {
       await page.goto("/", { waitUntil: "domcontentloaded" });
       await expect(page.locator("[data-typing-placeholder]")).toBeVisible();
-      const initial = await page
+      const initialHeight = await page
         .locator('[data-ui-element="header"]')
-        .boundingBox();
+        .evaluate((element) => element.getBoundingClientRect().height);
       await page.screenshot({ path: info.outputPath("touch-shell.png") });
       pending.resolve(undefined);
       await expect(page.locator("#words .word").first()).toBeVisible();
       await expect(page.locator("#wordsInput")).not.toBeFocused();
-      const ready = await page
+      const readyHeight = await page
         .locator('[data-ui-element="header"]')
-        .boundingBox();
-      expect(ready?.height).toBe(initial?.height);
+        .evaluate((element) => element.getBoundingClientRect().height);
+      expect(readyHeight).toBe(initialHeight);
       await page.locator("#words .word").first().tap();
       await expect(page.locator("#wordsInput")).toBeFocused();
       await page.screenshot({ path: info.outputPath("touch-ready.png") });
