@@ -219,8 +219,11 @@ Store each returned configuration ID in the corresponding Wrangler config before
 Local development requires both `DATABASE_URL` (migrations) and
 `CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE` (Worker queries) pointing at the same dev branch.
 
-Production Hyperdrive is provisioned with query caching disabled. Staging currently has no database.
-`deploy:staging-site` fails in `check:staging` before retiring consumers or uploading a Worker until
-an isolated staging database and its own Hyperdrive ID are configured. Staging builds and dry-runs
-remain available for CI; they do not provision or deploy a database. Never reuse the production
-Hyperdrive ID or database URL for staging.
+Production and staging Hyperdrive resources are provisioned against separate Neon primary endpoints,
+with query caching disabled. Staging was initialized with the application migrations and baseline
+configuration, without production users or data. The staging Worker is created by its first deployment;
+its public settings and auth/Turnstile credentials must be configured separately.
+`deploy:staging-site` checks that staging has its own valid Hyperdrive ID before retiring consumers
+or uploading a Worker. Missing, placeholder and production-shared IDs block deployment. Staging builds
+and dry-runs remain available for CI; they do not provision or deploy a database. Never reuse the
+production Hyperdrive ID or database URL for staging.
