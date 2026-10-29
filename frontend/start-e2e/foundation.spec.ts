@@ -1,7 +1,7 @@
 import { rpcPath } from "../__tests__/start/rpc";
 import { expect, test } from "./fixtures";
 
-test("startup covers the app with the saved theme until browser setup finishes", async ({
+test("startup shows the saved-theme document while browser setup is pending", async ({
   page,
 }) => {
   let release!: () => void;
@@ -38,8 +38,12 @@ test("startup covers the app with the saved theme until browser setup finishes",
     });
     await expect.poll(() => blocked).toBe(true);
     await expect(page.getByText("fixture-profile public bio")).toHaveCount(1);
-    await expect(page.locator("#startupScreen")).toBeVisible();
-    await expect(page.locator("#app")).toHaveCSS("opacity", "0");
+    await expect(page.locator("#startupScreen")).toHaveCount(0);
+    await expect(page.locator("#app")).toHaveCSS("opacity", "1");
+    await expect(page.getByText("fixture-profile public bio")).toBeVisible();
+    await expect(
+      page.getByRole("navigation", { name: "Main navigation" }),
+    ).toBeVisible();
     expect(
       await page
         .locator("html")
