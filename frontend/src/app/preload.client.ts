@@ -5,6 +5,11 @@ export async function preloadStartup(pathname: string): Promise<void> {
     import("./browser-runtime.client"),
     import("./critical-chrome.client"),
   ];
-  if (pathname === "/") pending.push(import("../features/typing/page.client"));
+  if (pathname === "/") {
+    pending.push(
+      import("../features/typing/page.client"),
+      import("@caret/typing-engine/browser.client"),
+    );
+  }
   await Promise.all(pending);
 }
