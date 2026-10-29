@@ -123,6 +123,12 @@
   "compatibility_flags": ["nodejs_compat"],
   "upload_source_maps": true,
   "secrets": {
-    "required": ["DATABASE_URL"]
-  }
+    "required": []
+  },
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "10ff634665f34934a1e807bd69910541"
+    }
+  ]
 }

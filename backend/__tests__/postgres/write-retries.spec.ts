@@ -13,10 +13,14 @@ describe("receipt-protected PostgreSQL commits", () => {
   });
   afterAll(async () => await test?.dispose());
 
-  it.each(["before", "after"])(
-    "does not double-apply progression when the connection fails %s commit",
-    async (failure) => {
-      const uid = `retry-${failure}`;
+  it.each(
+    ["before", "after"].flatMap((failure) =>
+      ["ECONNRESET", "EPIPE", "ETIMEDOUT"].map((code) => ({ failure, code })),
+    ),
+  )(
+    "does not double-apply progression on $code $failure commit",
+    async ({ failure, code }) => {
+      const uid = `retry-${failure}-${code}`;
       await seedUser(test.env, uid);
       await withRuntime(test.env, async () => {
         const scope = runtime();
@@ -28,11 +32,11 @@ describe("receipt-protected PostgreSQL commits", () => {
           .mockImplementation(async (...args) => {
             batches++;
             if (batches === 1 && failure === "before") {
-              throw new Error("Network connection lost");
+              throw Object.assign(new Error(`read ${code}`), { code });
             }
             const result = await original(...args);
             if (batches === 1 && failure === "after") {
-              throw new Error("Network connection lost");
+              throw Object.assign(new Error(`read ${code}`), { code });
             }
             return result;
           });

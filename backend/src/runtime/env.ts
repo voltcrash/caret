@@ -1,6 +1,6 @@
 import { AsyncLocalStorage } from "node:async_hooks";
-import { drizzle } from "drizzle-orm/neon-http";
-import { neon, type NeonQueryFunction } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { DatabaseClient } from "../db/connection";
 import type {
   AnalyticsEngineDataset,
   ExecutionContext,
@@ -10,7 +10,7 @@ import type {
 } from "@cloudflare/workers-types";
 
 export type WorkerEnv = {
-  DATABASE_URL: string;
+  HYPERDRIVE: { connectionString: string };
   ASSETS?: Fetcher;
   CACHE?: KVNamespace;
   /** Per-request latency and database usage; see docs/CLOUDFLARE_OPERATIONS.md. */
@@ -46,7 +46,7 @@ export type Runtime = {
   configuration?: import("@caret/schemas/configuration").Configuration;
   env: WorkerEnv;
   db: ReturnType<typeof drizzle>;
-  sql: NeonQueryFunction<false, true>;
+  sql: DatabaseClient;
   execution?: Pick<ExecutionContext, "waitUntil">;
   metrics: InvocationMetrics;
 };
@@ -69,11 +69,14 @@ export function withRuntime<T>(
   const metrics: InvocationMetrics = { operations: [], dbStatements: 0 };
   let sql: Runtime["sql"] | undefined;
   let db: Runtime["db"] | undefined;
+  const pending = new Set<Promise<unknown>>();
   const scope: Runtime = {
     env,
     get sql(): Runtime["sql"] {
-      if (!env.DATABASE_URL) throw new Error("DATABASE_URL is required");
-      sql ??= neon(env.DATABASE_URL, { fullResults: true });
+      if (!env.HYPERDRIVE?.connectionString) {
+        throw new Error("HYPERDRIVE is required");
+      }
+      sql ??= new DatabaseClient(env.HYPERDRIVE.connectionString);
       return sql;
     },
     get db(): Runtime["db"] {
@@ -86,10 +89,77 @@ export function withRuntime<T>(
       });
       return db;
     },
-    execution,
+    execution: {
+      waitUntil(task) {
+        const tracked = task.finally(() => pending.delete(tracked));
+        pending.add(tracked);
+        execution?.waitUntil(tracked);
+      },
+    },
     metrics,
   };
-  return storage.run(scope, fn);
+  let closing: Promise<void> | undefined;
+  const close = async (): Promise<void> => {
+    await (closing ??= (async () => {
+      while (pending.size > 0) await Promise.allSettled([...pending]);
+      await sql?.end();
+    })());
+  };
+  const releaseResponse = async (): Promise<void> => {
+    const cleanup = close();
+    if (execution !== undefined) execution.waitUntil(cleanup);
+    else await cleanup;
+  };
+  const finish = (result: unknown): unknown => {
+    if (result instanceof Response && result.body !== null) {
+      const reader = result.body.getReader();
+      let cancelled = false;
+      const body = new ReadableStream<Uint8Array>({
+        async pull(controller) {
+          await storage.run(scope, async () => {
+            try {
+              const chunk = await reader.read();
+              if (chunk.done) {
+                if (!cancelled) controller.close();
+                await releaseResponse();
+              } else if (!cancelled) {
+                controller.enqueue(chunk.value);
+              }
+            } catch (error) {
+              if (!cancelled) controller.error(error);
+              await releaseResponse();
+            }
+          });
+        },
+        async cancel(reason) {
+          cancelled = true;
+          try {
+            await reader.cancel(reason);
+          } finally {
+            await releaseResponse();
+          }
+        },
+      });
+      return new Response(body, result);
+    }
+    return (result instanceof Response ? releaseResponse() : close()).then(
+      () => result,
+    );
+  };
+  try {
+    const result = storage.run(scope, fn);
+    if (result instanceof Promise) {
+      return result.then(finish, async (error: unknown) => {
+        await close();
+        throw error;
+      }) as T;
+    }
+    void close();
+    return result;
+  } catch (error) {
+    void close();
+    throw error;
+  }
 }
 
 export function runtime(): Runtime {

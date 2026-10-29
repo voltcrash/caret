@@ -1,15 +1,15 @@
 import { afterAll, beforeAll, expect, it } from "vite-plus/test";
-import { neon } from "@neondatabase/serverless";
 import { TestDatabase } from "./database";
 import { migrateDatabase } from "../../scripts/migrations";
 
 let db: TestDatabase;
-beforeAll(() => {
+beforeAll(async () => {
   db = new TestDatabase();
+  await db.ready;
 });
 afterAll(async () => await db?.close());
 it("applies and journals PostgreSQL migrations, initializes fresh config, and preserves updates on rerun", async () => {
-  const sql = neon(db.url);
+  const sql = db.client;
   await migrateDatabase(sql);
   expect(
     await db

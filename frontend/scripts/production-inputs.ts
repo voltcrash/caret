@@ -19,11 +19,15 @@ const configSchema = z.object({
   routes: z
     .array(z.object({ pattern: z.string(), custom_domain: z.literal(true) }))
     .length(1),
-  secrets: z.object({
-    required: z
-      .array(z.string())
-      .refine((keys) => keys.includes("DATABASE_URL")),
-  }),
+  hyperdrive: z
+    .array(
+      z.object({
+        binding: z.literal("HYPERDRIVE"),
+        id: z.string().regex(/^[a-f0-9]{32}$/),
+      }),
+    )
+    .length(1),
+  secrets: z.object({ required: z.array(z.string()) }),
 });
 
 function configured(value: string | undefined): value is string {

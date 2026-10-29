@@ -2,11 +2,18 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { parseEnv } from "node:util";
 import { validateArtifact } from "./production-artifact";
+import { requireStagingDatabase } from "./staging-database";
 
 async function main(): Promise<void> {
   const root = resolve(import.meta.dirname, "..");
   const config: unknown = JSON.parse(
     await readFile(resolve(root, "wrangler.staging.json"), "utf8"),
+  );
+  requireStagingDatabase(
+    config,
+    JSON.parse(
+      await readFile(resolve(root, "wrangler.production.json"), "utf8"),
+    ),
   );
   const settings = parseEnv(
     await readFile(resolve(root, ".env.staging.local"), "utf8"),

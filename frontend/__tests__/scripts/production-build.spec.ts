@@ -105,10 +105,15 @@ describe("production build command", () => {
         resolve(root, "frontend/vite-plugins", name),
       );
     }
-    copyFileSync(
-      resolve(repoRoot, "frontend/wrangler.production.json"),
-      resolve(root, "frontend/wrangler.production.json"),
-    );
+    const deployment = JSON.parse(
+      readFileSync(
+        resolve(repoRoot, "frontend/wrangler.production.json"),
+        "utf8",
+      ),
+    ) as Record<string, unknown>;
+    // This build-command fixture uses no Cloudflare account resources.
+    deployment["hyperdrive"] = [{ binding: "HYPERDRIVE", id: "a".repeat(32) }];
+    write("frontend/wrangler.production.json", JSON.stringify(deployment));
     write("pnpm-workspace.yaml", "packages:\n  - frontend\n  - backend\n");
     write(
       "package.json",

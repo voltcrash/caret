@@ -21,7 +21,8 @@ Use Node 24.22.1 and [Vite+](https://viteplus.dev/guide/) (`vp`) for every comma
 ```sh
 vp install
 vp exec cp frontend/.dev.vars.example frontend/.dev.vars
-# Set DATABASE_URL in frontend/.dev.vars to a development Neon branch first.
+# Set DATABASE_URL and CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE
+# in frontend/.dev.vars to the same development Neon branch first.
 vp run --filter @caret/frontend db:migrate
 vp run dev
 ```

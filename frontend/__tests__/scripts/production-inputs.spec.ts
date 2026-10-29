@@ -106,3 +106,9 @@ describe("production deployment inputs", () => {
     );
   });
 });
+
+it("requires a configured Hyperdrive binding", () => {
+  const input = inputs();
+  (input.config as Record<string, unknown>)["hyperdrive"] = [];
+  expect(() => validateProductionInputs(input)).toThrow("isolated production");
+});

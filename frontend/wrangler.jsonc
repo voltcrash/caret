@@ -4,6 +4,9 @@
   "main": "src/worker.ts",
   "compatibility_date": "2026-10-02",
   "compatibility_flags": ["nodejs_compat"],
+  "hyperdrive": [
+    { "binding": "HYPERDRIVE", "id": "00000000000000000000000000000000" },
+  ],
   "workers_dev": true,
   "preview_urls": false,
   "observability": { "enabled": true },

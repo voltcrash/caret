@@ -26,7 +26,20 @@ export function isTransientDatabaseError(error: unknown): boolean {
   const code = postgresError(error)?.code;
   return (
     code?.startsWith("08") === true ||
-    ["40001", "40P01", "57P01", "57P02", "57P03"].includes(code ?? "") ||
+    [
+      "40001",
+      "40P01",
+      "57P01",
+      "57P02",
+      "57P03",
+      "ECONNRESET",
+      "EPIPE",
+      "ETIMEDOUT",
+      "ECONNREFUSED",
+      "ENETUNREACH",
+      "EHOSTUNREACH",
+      "EAI_AGAIN",
+    ].includes(code ?? "") ||
     (error instanceof Error &&
       (/fetch failed|network|connection|Failed to fetch/i.test(error.message) ||
         (error.cause !== undefined && isTransientDatabaseError(error.cause))))

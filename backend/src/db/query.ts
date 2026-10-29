@@ -1,4 +1,4 @@
-import { types, type NeonQueryFunction } from "@neondatabase/serverless";
+import { types, type Pool, type PoolClient } from "pg";
 
 export const queryTypes = {
   getTypeParser: (
@@ -16,24 +16,29 @@ export type QueryResult<T = Record<string, unknown>> = {
   rowCount: number;
 };
 
-/** A deferred PostgreSQL query, also usable in one Neon HTTP transaction. */
+/** A deferred PostgreSQL query, also usable in one PostgreSQL transaction. */
 export class PreparedQuery {
   readonly sql: string;
-  readonly client: NeonQueryFunction<false, true>;
+  readonly client: Pool | PoolClient;
   readonly values: QueryValue[];
+  readonly parsers: typeof queryTypes;
   constructor(
-    client: NeonQueryFunction<false, true>,
+    client: Pool | PoolClient,
     query: string,
     values: QueryValue[] = [],
+    parsers = queryTypes,
   ) {
+    this.parsers = parsers;
     this.client = client;
     this.values = values;
     let index = 0;
     this.sql = query.replace(/\?/g, () => `$${++index}`);
   }
   async all<T = Record<string, unknown>>(): Promise<QueryResult<T>> {
-    const result = await this.client.query(this.sql, this.values, {
-      types: queryTypes,
+    const result = await this.client.query({
+      text: this.sql,
+      values: this.values,
+      types: this.parsers,
     });
     return { results: result.rows as T[], rowCount: result.rowCount ?? 0 };
   }

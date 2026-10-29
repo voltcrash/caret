@@ -1,3 +1,4 @@
+import type { QueryResult as PgQueryResult } from "pg";
 import { queryTypes, type PreparedQuery, type QueryResult } from "./query";
 import { statement } from "./client";
 import { runtime } from "../runtime/env";
@@ -24,12 +25,19 @@ export async function commitBatch(
   return await retryIdempotentWrite(async () => {
     try {
       const sql = runtime().sql;
-      const results = await sql.transaction(
-        batch.map(
-          // oxlint-disable-next-line typescript/promise-function-async -- Neon transactions require deferred query promises, not async wrappers.
-          (query) => sql.query(query.sql, query.values, { types: queryTypes }),
-        ),
-      );
+      const results = await sql.transaction(async (client) => {
+        const results: PgQueryResult[] = [];
+        for (const query of batch) {
+          results.push(
+            await client.query({
+              text: query.sql,
+              values: query.values,
+              types: queryTypes,
+            }),
+          );
+        }
+        return results;
+      });
       return results.slice(1).map((result) => ({
         results: result.rows,
         rowCount: result.rowCount ?? 0,

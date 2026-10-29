@@ -82,9 +82,10 @@ async function main(): Promise<void> {
               config: { name: string; env: Record<string, unknown> };
             };
             const db = await active.getDatabase(fixture.config.name);
-            fixture.config.env["DATABASE_URL"] = {
-              type: "text",
-              value: db.url,
+            fixture.config.env["HYPERDRIVE"] = {
+              type: "hyperdrive",
+              id: "00000000000000000000000000000000",
+              dev: { connectionString: db.url },
             };
           }
           await active.setOptions(config);

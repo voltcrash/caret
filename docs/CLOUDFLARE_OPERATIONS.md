@@ -2,8 +2,8 @@
 
 For local contributors and maintainers operating Caret staging and production.
 
-Backend runtime: one Worker, Neon PostgreSQL over HTTP, and Cron.
-Local development uses a separate Neon branch via DATABASE_URL. Tests run PostgreSQL in PGlite without external credentials.
+Backend runtime: one Worker, Neon PostgreSQL through Cloudflare Hyperdrive (TCP), and Cron.
+Local development uses a separate Neon branch through the local Hyperdrive binding. Set `CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE` in `frontend/.dev.vars`. Tests run PostgreSQL in PGlite over TCP without external credentials.
 The [production setup](PRODUCTION_SETUP.md) uses an isolated database and
 `frontend/wrangler.production.json`.
 
@@ -42,7 +42,7 @@ vp run --filter @caret/frontend test:start
 
 Start generates retained API docs and uses curated frontend/static assets.
 Private backend editor/config assets never enter the public asset directory.
-The PostgreSQL suite runs actual PostgreSQL in PGlite through the Neon HTTP driver.
+The PostgreSQL suite runs actual PostgreSQL in PGlite through the `pg` driver and PGlite socket server.
 Start workerd fixtures intercept the same HTTP protocol and execute PostgreSQL.
 
 ## Staging deployment
@@ -177,7 +177,7 @@ Worker name is caret; it has no D1 binding. GitHub Actions reads the DATABASE_UR
 secret, writes it into private Worker settings, applies migrations, then deploys.
 
 Migrations live in backend/migrations and use Drizzle PostgreSQL schemas. Each
-migration and its journal entry commit in one Neon HTTP transaction. A fresh,
+migration and its journal entry commit in one PostgreSQL transaction. A fresh,
 empty database is initialized from backend/bootstrap/production.sql; existing
 configuration is preserved. No D1 data is imported or deleted.
 
@@ -186,7 +186,7 @@ vp run --filter @caret/backend db:generate
 vp run --filter @caret/frontend db:migrate:production
 ```
 
-All reads use the Neon primary. Each invocation owns a lazy Neon HTTP client,
+All reads use the Neon primary. Each invocation owns a lazy `pg` pool, closed when its work completes,
 shared with Drizzle. User writes lock the versioned user row, assert its version,
 and commit progression, history, ranking changes and receipts atomically. A
 conflict retries from a fresh user snapshot. Retryable transport/transaction
@@ -204,5 +204,26 @@ restore or branching tools, and check schema compatibility before Worker rollbac
 A Worker rollback retains PostgreSQL writes and secrets. Pre-Neon Workers require
 D1, so they cannot be used for a code-only rollback after this cutover.
 
-See [Neon HTTP driver](https://neon.com/docs/serverless/serverless-driver) and
-[Drizzle Neon support](https://orm.drizzle.team/docs/connect-neon).
+See [Hyperdrive with Neon](https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-database-providers/neon/) and
+[Drizzle node-postgres support](https://orm.drizzle.team/docs/connect-node-postgres).
+
+### Hyperdrive configuration
+
+Worker database access requires the `HYPERDRIVE` binding in all three Wrangler configs.
+Create separate staging and production configurations against their direct Neon primary endpoints,
+with **query caching disabled** (`--caching-disabled` when creating/updating through Wrangler).
+Cached reads would break auth revocation, configuration freshness, optimistic writes and receipt recovery.
+Never point Hyperdrive at Neon's `-pooler` endpoint; Hyperdrive owns connection pooling.
+Store each returned configuration ID in the corresponding Wrangler config before building/deploying.
+`DATABASE_URL` remains a private input for Node migration/bootstrap scripts only; Workers never read it.
+Local development requires both `DATABASE_URL` (migrations) and
+`CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE` (Worker queries) pointing at the same dev branch.
+
+Production and staging Hyperdrive resources are provisioned against separate Neon primary endpoints,
+with query caching disabled. Staging was initialized with the application migrations and baseline
+configuration, without production users or data. The staging Worker is created by its first deployment;
+its public settings and auth/Turnstile credentials must be configured separately.
+`deploy:staging-site` checks that staging has its own valid Hyperdrive ID before retiring consumers
+or uploading a Worker. Missing, placeholder and production-shared IDs block deployment. Staging builds
+and dry-runs remain available for CI; they do not provision or deploy a database. Never reuse the
+production Hyperdrive ID or database URL for staging.

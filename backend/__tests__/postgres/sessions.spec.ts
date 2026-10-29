@@ -4,7 +4,7 @@ import { runtime, withRuntime } from "../../src/runtime/env";
 import { database, statement } from "../../src/db/client";
 import { getAuth } from "../../src/init/auth";
 
-describe("Neon invocation clients", () => {
+describe("Hyperdrive invocation clients", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;
   beforeAll(async () => {
     test = await createTestRuntime();
@@ -47,4 +47,78 @@ describe("Neon invocation clients", () => {
     });
     expect(second).toBe(first);
   });
+});
+
+it("closes invocation sockets once when a streamed response is cancelled during a read", async () => {
+  const test = await createTestRuntime();
+  try {
+    let pool: ReturnType<typeof runtime>["sql"] | undefined;
+    const response = await withRuntime(test.env, async () => {
+      pool = runtime().sql;
+      await statement("SELECT 1").first();
+      return new Response(
+        new ReadableStream({
+          pull() {
+            /* Remain pending until cancelled. */
+          },
+        }),
+      );
+    });
+    await response.body?.cancel();
+    expect(pool?.totalCount).toBe(0);
+  } finally {
+    await test.dispose();
+  }
+});
+
+it("finishes the response before background writes, keeping sockets until waitUntil settles", async () => {
+  const test = await createTestRuntime();
+  let release = (): void => {
+    /* Assigned synchronously by the gate. */
+  };
+  const gate = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const tasks: Promise<unknown>[] = [];
+  let pool: ReturnType<typeof runtime>["sql"] | undefined;
+  let wrote = false;
+  try {
+    const response = await withRuntime(
+      test.env,
+      async () => {
+        pool = runtime().sql;
+        await statement("SELECT 1").first();
+        runtime().execution?.waitUntil(
+          (async () => {
+            await gate;
+            await statement("SELECT 1").first();
+            wrote = true;
+          })(),
+        );
+        return Response.json({ ok: true });
+      },
+      {
+        waitUntil(task) {
+          tasks.push(task);
+        },
+      },
+    );
+    let body: unknown;
+    const read = response.json().then((value: unknown) => {
+      body = value;
+      return value;
+    });
+    await expect.poll(() => body).toEqual({ ok: true });
+    await read;
+    expect(wrote).toBe(false);
+    expect(pool?.totalCount).toBeGreaterThan(0);
+    release();
+    await Promise.all(tasks);
+    expect(wrote).toBe(true);
+    expect(pool?.totalCount).toBe(0);
+  } finally {
+    release();
+    await Promise.allSettled(tasks);
+    await test.dispose();
+  }
 });

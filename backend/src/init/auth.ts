@@ -234,7 +234,7 @@ export function getAuth(): ReturnType<typeof createAuth> {
   if (auth === undefined) {
     auth = createAuth(
       // Revocation and account disablement must observe current primary state,
-      // All Neon HTTP queries use the primary connection.
+      // Hyperdrive connects to the primary with query caching disabled.
       drizzleAdapter(invocationDatabase, {
         provider: "pg",
         schema: {

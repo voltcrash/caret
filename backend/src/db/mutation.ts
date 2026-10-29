@@ -52,7 +52,7 @@ function userStatement(user: DBUser, version: number): PreparedQuery {
   );
 }
 
-/** A Neon transaction is atomic. A CHECK guard makes stale reads roll back every write. */
+/** A PostgreSQL transaction is atomic. A CHECK guard makes stale reads roll back every write. */
 export async function atomicUser<T>(
   uid: string,
   action: () => Promise<T>,

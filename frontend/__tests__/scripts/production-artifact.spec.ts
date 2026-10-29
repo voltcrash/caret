@@ -102,7 +102,7 @@ it("rejects a sealed artifact for a different Worker or release", async () => {
   ).rejects.toThrow("one release");
 });
 
-it.each(["ratelimits", "analytics_engine_datasets"])(
+it.each(["ratelimits", "analytics_engine_datasets", "hyperdrive"])(
   "rejects a built Worker whose %s differ from the source config",
   async (key) => {
     await expect(
