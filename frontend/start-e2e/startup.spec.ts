@@ -30,6 +30,12 @@ for (const showTestModesNotice of [false, true]) {
         const pending = Promise.withResolvers<undefined>();
         let blocked = false;
         const errors: string[] = [];
+        const backendRequests: string[] = [];
+        page.on("request", (request) => {
+          const path = new URL(request.url()).pathname;
+          if (path.startsWith("/_serverFn/") || path.startsWith("/api/"))
+            backendRequests.push(path);
+        });
         page.on("pageerror", (error) => errors.push(error.message));
         await page.route(target.pattern, async (route) => {
           blocked = true;
@@ -46,6 +52,7 @@ for (const showTestModesNotice of [false, true]) {
             page.getByRole("navigation", { name: "Main navigation" }),
           ).toBeVisible();
           await expect(page.locator("#solidmodals")).toHaveCount(0);
+          expect(backendRequests).toEqual([]);
           await expect(page.locator("#startupScreen")).toHaveCount(0);
           await expect(page.locator("#app")).toHaveCSS("opacity", "1");
           await expect(page.locator("[data-typing-placeholder]")).toBeVisible();
@@ -222,3 +229,41 @@ test.describe("touch startup", () => {
     }
   });
 });
+
+for (const target of ["chrome.client", "CookiesModal"]) {
+  test(`a delayed ${target} download cannot open consent over an active test`, async ({
+    page,
+  }) => {
+    await page.addInitScript(() => localStorage.removeItem("acceptedCookies"));
+    const pending = Promise.withResolvers<undefined>();
+    let blocked = false;
+    const pattern = `**/assets/${target}-*.js`;
+    await page.route(pattern, async (route) => {
+      blocked = true;
+      await pending.promise;
+      await route.continue();
+    });
+    try {
+      await page.goto("/", { waitUntil: "domcontentloaded" });
+      await expect.poll(() => blocked).toBe(true);
+      const words = await page.locator("#words .word").allTextContents();
+      const text = words.join(" ");
+      await page.locator("#words .word").first().click();
+      await page.keyboard.type(text.slice(0, 1));
+      await expect(page.locator("#words letter.correct")).toHaveCount(1);
+      const response = page.waitForResponse(pattern);
+      pending.resolve(undefined);
+      await (await response).finished();
+      await expect(page.locator("#solidmodals")).toHaveCount(1);
+      if (target === "CookiesModal")
+        await expect(page.locator("#CookiesModal")).toHaveCount(1);
+      await expect(page.locator("#CookiesModal")).not.toBeVisible();
+      await expect(page.locator("#wordsInput")).toBeFocused();
+      await page.keyboard.type(text.slice(1), { delay: 10 });
+      await expect(page.locator("#result")).toBeVisible();
+      await expect(page.locator("#CookiesModal")).toBeVisible();
+    } finally {
+      pending.resolve(undefined);
+    }
+  });
+}
