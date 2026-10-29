@@ -218,3 +218,9 @@ Store each returned configuration ID in the corresponding Wrangler config before
 `DATABASE_URL` remains a private input for Node migration/bootstrap scripts only; Workers never read it.
 Local development requires both `DATABASE_URL` (migrations) and
 `CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE` (Worker queries) pointing at the same dev branch.
+
+Production Hyperdrive is provisioned with query caching disabled. Staging currently has no database.
+`deploy:staging-site` fails in `check:staging` before retiring consumers or uploading a Worker until
+an isolated staging database and its own Hyperdrive ID are configured. Staging builds and dry-runs
+remain available for CI; they do not provision or deploy a database. Never reuse the production
+Hyperdrive ID or database URL for staging.
