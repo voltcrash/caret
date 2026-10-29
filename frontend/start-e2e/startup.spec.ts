@@ -211,17 +211,28 @@ test.describe("touch startup", () => {
     try {
       await page.goto("/", { waitUntil: "domcontentloaded" });
       await expect(page.locator("[data-typing-placeholder]")).toBeVisible();
-      const initialHeight = await page
-        .locator('[data-ui-element="header"]')
-        .evaluate((element) => element.getBoundingClientRect().height);
+      const header = page.locator('[data-ui-element="header"]');
+      let initialHeight = 0;
+      await expect
+        .poll(async () => {
+          initialHeight = await header.evaluate(
+            (element) => element.getBoundingClientRect().height,
+          );
+          return initialHeight;
+        })
+        .toBeGreaterThan(0);
       await page.screenshot({ path: info.outputPath("touch-shell.png") });
       pending.resolve(undefined);
       await expect(page.locator("#words .word").first()).toBeVisible();
       await expect(page.locator("#wordsInput")).not.toBeFocused();
-      const readyHeight = await page
-        .locator('[data-ui-element="header"]')
-        .evaluate((element) => element.getBoundingClientRect().height);
-      expect(readyHeight).toBe(initialHeight);
+      await expect
+        .poll(
+          async () =>
+            await header.evaluate(
+              (element) => element.getBoundingClientRect().height,
+            ),
+        )
+        .toBe(initialHeight);
       await page.locator("#words .word").first().tap();
       await expect(page.locator("#wordsInput")).toBeFocused();
       await page.screenshot({ path: info.outputPath("touch-ready.png") });
