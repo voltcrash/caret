@@ -1,6 +1,8 @@
 import { mockHttpFixture } from "../__harness__/operations";
 import { beforeEach, expect, it, vi } from "vite-plus/test";
 
+import { setTestActive } from "../../src/ts/states/test";
+
 const state = vi.hoisted(() => {
   let finishLocal!: () => void;
   return {
@@ -68,3 +70,23 @@ it("does not apply prefetched settings when account initialization fails", async
 });
 
 mockHttpFixture("configs.get", async (input) => await state.get(input));
+
+it("waits for an active test before applying late server preferences", async () => {
+  state.get.mockResolvedValue({
+    status: 200,
+    body: { data: { theme: "remote" } },
+  });
+  state.finishLocal();
+  setTestActive(true);
+  try {
+    const { updateFromServer } = await import("../../src/ts/config/remote");
+    const updating = updateFromServer();
+    await vi.waitFor(() => expect(state.get).toHaveBeenCalledOnce());
+    expect(state.apply).not.toHaveBeenCalled();
+    setTestActive(false);
+    await updating;
+    expect(state.apply).toHaveBeenCalledExactlyOnceWith({ theme: "remote" });
+  } finally {
+    setTestActive(false);
+  }
+});
