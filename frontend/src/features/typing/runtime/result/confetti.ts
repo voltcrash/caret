@@ -2,7 +2,9 @@ import * as SlowTimer from "../../../../ts/states/slow-timer";
 
 export async function showConfetti(): Promise<void> {
   if (SlowTimer.get()) return;
-  const { default: confetti } = await import("canvas-confetti");
+  const { create } = await import("canvas-confetti");
+  // The default renderer creates a blob worker, blocked by our script-src CSP.
+  const confetti = create(undefined, { resize: true, useWorker: false });
   const style = getComputedStyle(document.body);
   const colors = [
     style.getPropertyValue("--main-color"),
