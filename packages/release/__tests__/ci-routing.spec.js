@@ -72,7 +72,6 @@ const allJobs = [
   "engine",
 ];
 const appJobs = [
-  "backend-test",
   "frontend-lint",
   "frontend-test",
   "start-ssr",
@@ -161,6 +160,7 @@ describe("application sources", () => {
   it("rebuilds the application Worker when backend services change", () => {
     expect(selected(["backend/src/services/operations/results.ts"])).toEqual([
       "backend-lint",
+      "backend-test",
       ...appJobs,
     ]);
   });
