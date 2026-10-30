@@ -58,6 +58,8 @@ export default defineConfig({
         command: "vp build",
         cwd: "frontend",
         cache: {
+          // Vite reports loadEnv probes too; runner metadata must not invalidate builds.
+          untrackedEnv: ["CODEX_*", "GITHUB_*", "RUNNER_*", "ACTIONS_*"],
           env: [
             "CARET_*",
             "AUTH_PROVIDERS",
