@@ -4,7 +4,10 @@ import { Link } from "@tanstack/solid-router";
 
 import { publicEnv } from "../../app/public-env";
 import { pageHead } from "../../app/seo";
-import { structuredDataScript } from "../../app/structured-data";
+import {
+  organizationStructuredData,
+  structuredDataScript,
+} from "../../app/structured-data";
 
 export function guideHead(
   title: string,
@@ -19,6 +22,7 @@ export function guideHead(
       structuredDataScript({
         "@context": "https://schema.org",
         "@graph": [
+          organizationStructuredData(),
           {
             "@type": "WebPage",
             "@id": url,
@@ -27,6 +31,23 @@ export function guideHead(
             description,
             dateModified: updated,
             breadcrumb: { "@id": `${url}#breadcrumb` },
+            mainEntity: { "@id": `${url}#article` },
+          },
+          {
+            "@type": "Article",
+            "@id": `${url}#article`,
+            url,
+            headline: title,
+            description,
+            dateModified: updated,
+            inLanguage: "en",
+            mainEntityOfPage: { "@id": url },
+            author: {
+              "@type": "Organization",
+              name: "Caret contributors",
+              url: "https://github.com/voltcrash/caret",
+            },
+            publisher: { "@id": `${publicEnv.origin}/#organization` },
           },
           {
             "@type": "BreadcrumbList",
