@@ -91,7 +91,7 @@ minimumReleaseAgeExclude:
   - "@better-auth/prisma-adapter@1.7.14"
   - "@better-auth/telemetry@1.7.14"
   - better-auth@1.7.14
-  - "@better-auth/infra@0.4.23"
+  - "@better-auth/infra@0.4.25"
 patchedDependencies:
   "@anatine/zod-openapi@1.14.2": patches/@anatine__zod-openapi@1.14.2.patch
   "@ts-rest/core@3.52.1": patches/@ts-rest__core@3.52.1.patch

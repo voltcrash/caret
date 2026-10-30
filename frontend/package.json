@@ -49,7 +49,7 @@
     "check:staging:runtime": "vpx ./scripts/check-staging-runtime.ts"
   },
   "dependencies": {
-    "@better-auth/infra": "0.4.23",
+    "@better-auth/infra": "0.4.25",
     "@caret/backend": "workspace:*",
     "@caret/challenges": "workspace:*",
     "@caret/contracts": "workspace:*",
