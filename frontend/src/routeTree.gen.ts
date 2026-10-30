@@ -37,9 +37,12 @@ import { Route as ApiUsersRouteImport } from './routes/api.users'
 import { Route as AppAuthenticatedAccountRouteImport } from './routes/_app._authenticated.account'
 import { Route as AppAuthenticatedAccountSettingsRouteImport } from './routes/_app._authenticated.account-settings'
 import { Route as AppGuideIndexRouteImport } from './routes/_app.guide.index'
+import { Route as AppGuideAverageTypingSpeedRouteImport } from './routes/_app.guide.average-typing-speed'
+import { Route as AppGuideHowToTypeFasterRouteImport } from './routes/_app.guide.how-to-type-faster'
 import { Route as AppGuideTypingForProgrammersRouteImport } from './routes/_app.guide.typing-for-programmers'
 import { Route as AppGuideTypingPracticeRouteImport } from './routes/_app.guide.typing-practice'
 import { Route as AppGuideTypingSpeedTestRouteImport } from './routes/_app.guide.typing-speed-test'
+import { Route as AppGuideWpmCalculatorRouteImport } from './routes/_app.guide.wpm-calculator'
 import { Route as AppProfileIndexRouteImport } from './routes/_app.profile.index'
 import { Route as AppProfileUidOrNameRouteImport } from './routes/_app.profile.$uidOrName'
 import { Route as ApiPrefixDocsRouteImport } from './routes/api.$prefix.docs'
@@ -236,6 +239,17 @@ const AppGuideIndexRoute = AppGuideIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppGuideRoute,
 } as any)
+const AppGuideAverageTypingSpeedRoute =
+  AppGuideAverageTypingSpeedRouteImport.update({
+    id: '/average-typing-speed',
+    path: '/average-typing-speed',
+    getParentRoute: () => AppGuideRoute,
+  } as any)
+const AppGuideHowToTypeFasterRoute = AppGuideHowToTypeFasterRouteImport.update({
+  id: '/how-to-type-faster',
+  path: '/how-to-type-faster',
+  getParentRoute: () => AppGuideRoute,
+} as any)
 const AppGuideTypingForProgrammersRoute =
   AppGuideTypingForProgrammersRouteImport.update({
     id: '/typing-for-programmers',
@@ -250,6 +264,11 @@ const AppGuideTypingPracticeRoute = AppGuideTypingPracticeRouteImport.update({
 const AppGuideTypingSpeedTestRoute = AppGuideTypingSpeedTestRouteImport.update({
   id: '/typing-speed-test',
   path: '/typing-speed-test',
+  getParentRoute: () => AppGuideRoute,
+} as any)
+const AppGuideWpmCalculatorRoute = AppGuideWpmCalculatorRouteImport.update({
+  id: '/wpm-calculator',
+  path: '/wpm-calculator',
   getParentRoute: () => AppGuideRoute,
 } as any)
 const AppProfileIndexRoute = AppProfileIndexRouteImport.update({
@@ -572,9 +591,12 @@ export interface FileRoutesByFullPath {
   '/api/': typeof ApiIndexRoute
   '/account': typeof AppAuthenticatedAccountRoute
   '/account-settings': typeof AppAuthenticatedAccountSettingsRoute
+  '/guide/average-typing-speed': typeof AppGuideAverageTypingSpeedRoute
+  '/guide/how-to-type-faster': typeof AppGuideHowToTypeFasterRoute
   '/guide/typing-for-programmers': typeof AppGuideTypingForProgrammersRoute
   '/guide/typing-practice': typeof AppGuideTypingPracticeRoute
   '/guide/typing-speed-test': typeof AppGuideTypingSpeedTestRoute
+  '/guide/wpm-calculator': typeof AppGuideWpmCalculatorRoute
   '/profile/$uidOrName': typeof AppProfileUidOrNameRoute
   '/api/$prefix/docs': typeof ApiPrefixDocsRouteWithChildren
   '/api/admin/clearStreakHourOffset': typeof ApiAdminClearStreakHourOffsetRoute
@@ -658,9 +680,12 @@ export interface FileRoutesByTo {
   '/api': typeof ApiIndexRoute
   '/account': typeof AppAuthenticatedAccountRoute
   '/account-settings': typeof AppAuthenticatedAccountSettingsRoute
+  '/guide/average-typing-speed': typeof AppGuideAverageTypingSpeedRoute
+  '/guide/how-to-type-faster': typeof AppGuideHowToTypeFasterRoute
   '/guide/typing-for-programmers': typeof AppGuideTypingForProgrammersRoute
   '/guide/typing-practice': typeof AppGuideTypingPracticeRoute
   '/guide/typing-speed-test': typeof AppGuideTypingSpeedTestRoute
+  '/guide/wpm-calculator': typeof AppGuideWpmCalculatorRoute
   '/profile/$uidOrName': typeof AppProfileUidOrNameRoute
   '/api/$prefix/docs': typeof ApiPrefixDocsRouteWithChildren
   '/api/admin/clearStreakHourOffset': typeof ApiAdminClearStreakHourOffsetRoute
@@ -748,9 +773,12 @@ export interface FileRoutesById {
   '/api/': typeof ApiIndexRoute
   '/_app/_authenticated/account': typeof AppAuthenticatedAccountRoute
   '/_app/_authenticated/account-settings': typeof AppAuthenticatedAccountSettingsRoute
+  '/_app/guide/average-typing-speed': typeof AppGuideAverageTypingSpeedRoute
+  '/_app/guide/how-to-type-faster': typeof AppGuideHowToTypeFasterRoute
   '/_app/guide/typing-for-programmers': typeof AppGuideTypingForProgrammersRoute
   '/_app/guide/typing-practice': typeof AppGuideTypingPracticeRoute
   '/_app/guide/typing-speed-test': typeof AppGuideTypingSpeedTestRoute
+  '/_app/guide/wpm-calculator': typeof AppGuideWpmCalculatorRoute
   '/_app/profile/$uidOrName': typeof AppProfileUidOrNameRoute
   '/api/$prefix/docs': typeof ApiPrefixDocsRouteWithChildren
   '/api/admin/clearStreakHourOffset': typeof ApiAdminClearStreakHourOffsetRoute
@@ -837,9 +865,12 @@ export interface FileRouteTypes {
     | '/api/'
     | '/account'
     | '/account-settings'
+    | '/guide/average-typing-speed'
+    | '/guide/how-to-type-faster'
     | '/guide/typing-for-programmers'
     | '/guide/typing-practice'
     | '/guide/typing-speed-test'
+    | '/guide/wpm-calculator'
     | '/profile/$uidOrName'
     | '/api/$prefix/docs'
     | '/api/admin/clearStreakHourOffset'
@@ -923,9 +954,12 @@ export interface FileRouteTypes {
     | '/api'
     | '/account'
     | '/account-settings'
+    | '/guide/average-typing-speed'
+    | '/guide/how-to-type-faster'
     | '/guide/typing-for-programmers'
     | '/guide/typing-practice'
     | '/guide/typing-speed-test'
+    | '/guide/wpm-calculator'
     | '/profile/$uidOrName'
     | '/api/$prefix/docs'
     | '/api/admin/clearStreakHourOffset'
@@ -1012,9 +1046,12 @@ export interface FileRouteTypes {
     | '/api/'
     | '/_app/_authenticated/account'
     | '/_app/_authenticated/account-settings'
+    | '/_app/guide/average-typing-speed'
+    | '/_app/guide/how-to-type-faster'
     | '/_app/guide/typing-for-programmers'
     | '/_app/guide/typing-practice'
     | '/_app/guide/typing-speed-test'
+    | '/_app/guide/wpm-calculator'
     | '/_app/profile/$uidOrName'
     | '/api/$prefix/docs'
     | '/api/admin/clearStreakHourOffset'
@@ -1298,6 +1335,20 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof AppGuideIndexRouteImport
       parentRoute: typeof AppGuideRoute
     }
+    '/_app/guide/average-typing-speed': {
+      id: '/_app/guide/average-typing-speed'
+      path: '/average-typing-speed'
+      fullPath: '/guide/average-typing-speed'
+      preLoaderRoute: typeof AppGuideAverageTypingSpeedRouteImport
+      parentRoute: typeof AppGuideRoute
+    }
+    '/_app/guide/how-to-type-faster': {
+      id: '/_app/guide/how-to-type-faster'
+      path: '/how-to-type-faster'
+      fullPath: '/guide/how-to-type-faster'
+      preLoaderRoute: typeof AppGuideHowToTypeFasterRouteImport
+      parentRoute: typeof AppGuideRoute
+    }
     '/_app/guide/typing-for-programmers': {
       id: '/_app/guide/typing-for-programmers'
       path: '/typing-for-programmers'
@@ -1317,6 +1368,13 @@ declare module '@tanstack/solid-router' {
       path: '/typing-speed-test'
       fullPath: '/guide/typing-speed-test'
       preLoaderRoute: typeof AppGuideTypingSpeedTestRouteImport
+      parentRoute: typeof AppGuideRoute
+    }
+    '/_app/guide/wpm-calculator': {
+      id: '/_app/guide/wpm-calculator'
+      path: '/wpm-calculator'
+      fullPath: '/guide/wpm-calculator'
+      preLoaderRoute: typeof AppGuideWpmCalculatorRouteImport
       parentRoute: typeof AppGuideRoute
     }
     '/_app/profile/': {
@@ -1728,16 +1786,22 @@ const AppAuthenticatedRouteWithChildren =
   AppAuthenticatedRoute._addFileChildren(AppAuthenticatedRouteChildren)
 
 interface AppGuideRouteChildren {
+  AppGuideAverageTypingSpeedRoute: typeof AppGuideAverageTypingSpeedRoute
+  AppGuideHowToTypeFasterRoute: typeof AppGuideHowToTypeFasterRoute
   AppGuideTypingForProgrammersRoute: typeof AppGuideTypingForProgrammersRoute
   AppGuideTypingPracticeRoute: typeof AppGuideTypingPracticeRoute
   AppGuideTypingSpeedTestRoute: typeof AppGuideTypingSpeedTestRoute
+  AppGuideWpmCalculatorRoute: typeof AppGuideWpmCalculatorRoute
   AppGuideIndexRoute: typeof AppGuideIndexRoute
 }
 
 const AppGuideRouteChildren: AppGuideRouteChildren = {
+  AppGuideAverageTypingSpeedRoute: AppGuideAverageTypingSpeedRoute,
+  AppGuideHowToTypeFasterRoute: AppGuideHowToTypeFasterRoute,
   AppGuideTypingForProgrammersRoute: AppGuideTypingForProgrammersRoute,
   AppGuideTypingPracticeRoute: AppGuideTypingPracticeRoute,
   AppGuideTypingSpeedTestRoute: AppGuideTypingSpeedTestRoute,
+  AppGuideWpmCalculatorRoute: AppGuideWpmCalculatorRoute,
   AppGuideIndexRoute: AppGuideIndexRoute,
 }
 
