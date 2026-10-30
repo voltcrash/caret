@@ -24,7 +24,6 @@ Caret began from the Monkeytype codebase and is now an independent project.
 - [Typing speed test](https://caret.voltcrash.com/guide/typing-speed-test): Taking a test and understanding WPM, raw speed and accuracy.
 - [Typing for programmers](https://caret.voltcrash.com/guide/typing-for-programmers): Code word lists, custom text and practice limits.
 - [Leaderboards](https://caret.voltcrash.com/leaderboards): Public typing and XP rankings.
-- [Privacy policy](https://caret.voltcrash.com/privacy-policy.html): Data handling and privacy information.
 
 ## Discovery
 
