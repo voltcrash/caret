@@ -71,9 +71,12 @@ test("typing guides preserve the test layout and update metadata on client navig
   await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(
     1,
   );
-  await expect(
-    page.locator('script[type="application/ld+json"]'),
-  ).toContainText("FAQPage");
+  await expect
+    .poll(
+      async () =>
+        await page.locator('script[type="application/ld+json"]').textContent(),
+    )
+    .toContain("FAQPage");
   await page.getByRole("link", { name: "Browse typing guides" }).click();
   await expect(page).toHaveURL(/\/guide$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
@@ -118,9 +121,12 @@ test("typing guides preserve the test layout and update metadata on client navig
         await page.locator('script[type="application/ld+json"]').textContent(),
     )
     .toContain("BreadcrumbList");
-  await expect(
-    page.locator('script[type="application/ld+json"]'),
-  ).toContainText('"@type":"Article"');
+  await expect
+    .poll(
+      async () =>
+        await page.locator('script[type="application/ld+json"]').textContent(),
+    )
+    .toContain('"@type":"Article"');
   await page
     .getByRole("navigation", { name: "Breadcrumb" })
     .getByRole("link", { name: "Guides", exact: true })
@@ -234,9 +240,14 @@ test("new guides load through client navigation with matching Article metadata",
       "href",
       `https://caret.voltcrash.com/guide/${guide.slug}`,
     );
-    await expect(
-      page.locator('script[type="application/ld+json"]'),
-    ).toContainText('"@type":"Article"');
+    await expect
+      .poll(
+        async () =>
+          await page
+            .locator('script[type="application/ld+json"]')
+            .textContent(),
+      )
+      .toContain('"@type":"Article"');
     await page
       .getByRole("navigation", { name: "Breadcrumb" })
       .getByRole("link", { name: "Guides", exact: true })

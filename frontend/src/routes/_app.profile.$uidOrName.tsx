@@ -1,7 +1,7 @@
+import type { UserProfile } from "@caret/schemas/users";
 import type { JSXElement } from "solid-js";
 
 import { ClientSchema } from "@caret/schemas/shared";
-import type { UserProfile } from "@caret/schemas/users";
 import { createFileRoute, notFound } from "@tanstack/solid-router";
 import { isServer } from "solid-js/web";
 import { z } from "zod";
