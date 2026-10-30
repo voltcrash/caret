@@ -16,7 +16,7 @@ Caret does not support self-hosting. For self-hosting, use [Monkeytype](https://
 
 ## Development
 
-Use Node 24.22.1 and [Vite+](https://viteplus.dev/guide/) (`vp`) for every command; pnpm 12.15.0 is the package manager under the hood. Follow [the development setup guide](./docs/CONTRIBUTING_ADVANCED.md) for Better Auth and backend configuration. See [the architecture overview](./docs/ARCHITECTURE.md) for the codebase and stack.
+Use Node 26.13.0 and [Vite+](https://viteplus.dev/guide/) (`vp`) for every command; pnpm 12.15.0 is the package manager under the hood. Follow [the development setup guide](./docs/CONTRIBUTING_ADVANCED.md) for Better Auth and backend configuration. See [the architecture overview](./docs/ARCHITECTURE.md) for the codebase and stack.
 
 ```sh
 vp install
