@@ -1,0 +1,141 @@
+{
+  "baselineRevision": "7699fef52",
+  "nodeVersion": "v26.13.0",
+  "systemFontFixture": "/tmp/caret-font-system/fonts.conf",
+  "browser": "156.0.8078.4",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "dpr": 1,
+  "os": "linux",
+  "arch": "arm64",
+  "locale": "en-US",
+  "timezone": "UTC",
+  "theme": "serika_dark",
+  "seed": 4242,
+  "preloads": [
+    "/webfonts/RobotoMono-Regular.core.woff2",
+    "/webfonts/LexendDeca-Regular.core.woff2"
+  ],
+  "fonts": [
+    {
+      "url": "/webfonts/RobotoMono-Regular.core.woff2",
+      "decodedBodyBytes": 7476,
+      "encodedBodyBytes": 7476,
+      "transferBytes": 7658
+    },
+    {
+      "url": "/webfonts/LexendDeca-Regular.core.woff2",
+      "decodedBodyBytes": 8456,
+      "encodedBodyBytes": 8456,
+      "transferBytes": 8638
+    },
+    {
+      "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+      "decodedBodyBytes": 115420,
+      "encodedBodyBytes": 115420,
+      "transferBytes": 115638
+    },
+    {
+      "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+      "decodedBodyBytes": 119488,
+      "encodedBodyBytes": 119488,
+      "transferBytes": 119706
+    },
+    {
+      "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+      "decodedBodyBytes": 19512,
+      "encodedBodyBytes": 19512,
+      "transferBytes": 19729
+    },
+    {
+      "url": "/webfonts/NotoSansLao-Regular.extended.woff2",
+      "decodedBodyBytes": 18888,
+      "encodedBodyBytes": 18888,
+      "transferBytes": 19071
+    }
+  ],
+  "faces": [
+    {
+      "family": "Font Awesome 7 Free",
+      "weight": "900",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Font Awesome 7 Free",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Font Awesome 7 Brands",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Lexend Deca",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Noto Sans Lao",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0, U+D, U+A1-A3, U+A5, U+A7-AB, U+AE-B0, U+B4, U+B6-B8, U+BA-BB, U+BF-107, U+10A-113, U+116-11B, U+11E-123, U+126-127, U+12A-12B, U+12E-133, U+136-137, U+139-13E, U+141-148, U+14A-14D, U+150-15B, U+15E-161, U+164-165, U+16A-17E, U+218-21B, U+237, U+2C6-2C7, U+2C9, U+2D8-2DD, U+300-304, U+306-308, U+30A-30C, U+312, U+326-328, U+E81-E82, U+E84, U+E86-E8A, U+E8C-EA3, U+EA5, U+EA7-EBD, U+EC0-EC4, U+EC6, U+EC8-ECE, U+ED0-ED9, U+EDC-EDF, U+1E80-1E85, U+1E9E, U+1EF2-1EF3, U+200B-200D, U+201A, U+201E, U+2022, U+2039-203A, U+20AC-20AD, U+2122, U+2212, U+25CC"
+    },
+    {
+      "family": "Roboto Mono",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Roboto Mono",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Lexend Deca",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    }
+  ],
+  "text": "caret\nserika dark\npunctuation\nnumbers\ntime\nwords\nquote\nzen\ncustom\nchange\nlao\nພາສາລາວ\nສະບາຍດີ\nນ້ຳ\nເມືອງ",
+  "words": "ພາສາລາວສະບາຍດີນ້ຳເມືອງ",
+  "stack": "\"Roboto Mono\", \"Noto Sans Lao\", \"Roboto Mono\", Vazirharf, monospace",
+  "rendered": [
+    {
+      "selector": "#words .word",
+      "fonts": [
+        {
+          "familyName": "CaretSubset0431aa7789f7Extended",
+          "postScriptName": "CaretSubset0431aa7789f7Extended",
+          "isCustomFont": true,
+          "glyphCount": 7
+        }
+      ]
+    },
+    {
+      "selector": "[data-ui-element=\"logoText\"]",
+      "fonts": []
+    },
+    {
+      "selector": "body",
+      "fonts": []
+    }
+  ]
+}

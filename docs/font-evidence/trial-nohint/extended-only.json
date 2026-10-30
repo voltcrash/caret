@@ -1,0 +1,50 @@
+{
+  "baselineRevision": "7699fef52",
+  "nodeVersion": "v26.13.0",
+  "systemFontFixture": "/tmp/caret-font-system/fonts.conf",
+  "browser": "156.0.8078.4",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "dpr": 1,
+  "os": "linux",
+  "arch": "arm64",
+  "locale": "en-US",
+  "timezone": "UTC",
+  "theme": "browser-default",
+  "seed": null,
+  "preloads": [],
+  "fonts": [
+    {
+      "url": "/webfonts/RobotoMono-Regular.woff2",
+      "decodedBodyBytes": 37588,
+      "encodedBodyBytes": 37582,
+      "transferBytes": 37650
+    }
+  ],
+  "faces": [
+    {
+      "family": "Roboto Mono",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    }
+  ],
+  "text": "Ω",
+  "stack": "\"Roboto Mono\"",
+  "rendered": [
+    {
+      "selector": "body",
+      "fonts": [
+        {
+          "familyName": "CaretSubset577c8dee4506Full",
+          "postScriptName": "CaretSubset577c8dee4506Full",
+          "isCustomFont": true,
+          "glyphCount": 1
+        }
+      ]
+    }
+  ]
+}

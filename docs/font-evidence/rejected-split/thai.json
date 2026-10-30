@@ -1,0 +1,128 @@
+{
+  "baselineRevision": "7699fef52",
+  "nodeVersion": "v26.13.0",
+  "systemFontFixture": "/tmp/caret-font-system/fonts.conf",
+  "browser": "156.0.8078.4",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "dpr": 1,
+  "os": "linux",
+  "arch": "arm64",
+  "locale": "en-US",
+  "timezone": "UTC",
+  "theme": "serika_dark",
+  "seed": 4242,
+  "preloads": [
+    "/webfonts/RobotoMono-Regular.core.woff2",
+    "/webfonts/LexendDeca-Regular.core.woff2"
+  ],
+  "fonts": [
+    {
+      "url": "/webfonts/RobotoMono-Regular.core.woff2",
+      "decodedBodyBytes": 7476,
+      "encodedBodyBytes": 7476,
+      "transferBytes": 7658
+    },
+    {
+      "url": "/webfonts/LexendDeca-Regular.core.woff2",
+      "decodedBodyBytes": 8456,
+      "encodedBodyBytes": 8456,
+      "transferBytes": 8638
+    },
+    {
+      "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+      "decodedBodyBytes": 115420,
+      "encodedBodyBytes": 115420,
+      "transferBytes": 115638
+    },
+    {
+      "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+      "decodedBodyBytes": 119488,
+      "encodedBodyBytes": 119488,
+      "transferBytes": 119706
+    },
+    {
+      "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+      "decodedBodyBytes": 19512,
+      "encodedBodyBytes": 19512,
+      "transferBytes": 19729
+    }
+  ],
+  "faces": [
+    {
+      "family": "Font Awesome 7 Free",
+      "weight": "900",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Font Awesome 7 Free",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Font Awesome 7 Brands",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Lexend Deca",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Roboto Mono",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Roboto Mono",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Lexend Deca",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    }
+  ],
+  "text": "caret\nserika dark\npunctuation\nnumbers\ntime\nwords\nquote\nzen\ncustom\nchange\nthai\nภาษาไทย\nน้ำ\nกิ\nกี่\nผู้ใหญ่\nสวัสดี",
+  "words": "ภาษาไทยน้ำกิกี่ผู้ใหญ่สวัสดี",
+  "stack": "\"Roboto Mono\", \"Roboto Mono\", Vazirharf, monospace",
+  "rendered": [
+    {
+      "selector": "#words .word",
+      "fonts": [
+        {
+          "familyName": "Adwaita Mono",
+          "postScriptName": "Adwaita-Mono",
+          "isCustomFont": false,
+          "glyphCount": 7
+        }
+      ]
+    },
+    {
+      "selector": "[data-ui-element=\"logoText\"]",
+      "fonts": []
+    },
+    {
+      "selector": "body",
+      "fonts": []
+    }
+  ]
+}

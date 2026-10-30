@@ -1,0 +1,651 @@
+{
+  "baselineRevision": "7699fef52",
+  "nodeVersion": "v26.13.0",
+  "systemFontFixture": "/tmp/caret-font-system/fonts.conf",
+  "browser": "156.0.8078.4",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "dpr": 1,
+  "os": "linux",
+  "arch": "arm64",
+  "locale": "en-US",
+  "timezone": "UTC",
+  "theme": "serika_dark",
+  "seed": 4242,
+  "preloads": [
+    "/webfonts/RobotoMono-Regular.core.woff2",
+    "/webfonts/LexendDeca-Regular.core.woff2"
+  ],
+  "fonts": [
+    {
+      "url": "/webfonts/LexendDeca-Regular.core.woff2",
+      "decodedBodyBytes": 8456,
+      "encodedBodyBytes": 8456,
+      "transferBytes": 8638
+    },
+    {
+      "url": "/webfonts/RobotoMono-Regular.core.woff2",
+      "decodedBodyBytes": 7476,
+      "encodedBodyBytes": 7476,
+      "transferBytes": 7658
+    },
+    {
+      "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+      "decodedBodyBytes": 115420,
+      "encodedBodyBytes": 115420,
+      "transferBytes": 115638
+    },
+    {
+      "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+      "decodedBodyBytes": 119488,
+      "encodedBodyBytes": 119488,
+      "transferBytes": 119706
+    },
+    {
+      "url": "/webfonts/Comfortaa-Regular.core.woff2",
+      "decodedBodyBytes": 9952,
+      "encodedBodyBytes": 9952,
+      "transferBytes": 10134
+    },
+    {
+      "url": "/webfonts/AdwaitaMono-Regular.core.woff2",
+      "decodedBodyBytes": 14864,
+      "encodedBodyBytes": 14864,
+      "transferBytes": 15047
+    },
+    {
+      "url": "/webfonts/RobotoMono-Regular.extended.woff2",
+      "decodedBodyBytes": 34484,
+      "encodedBodyBytes": 34484,
+      "transferBytes": 34667
+    },
+    {
+      "url": "/webfonts/AtkinsonHyperlegible-Regular.core.woff2",
+      "decodedBodyBytes": 11508,
+      "encodedBodyBytes": 11508,
+      "transferBytes": 11691
+    },
+    {
+      "url": "/webfonts/Boon-Regular.core.woff2",
+      "decodedBodyBytes": 10900,
+      "encodedBodyBytes": 10900,
+      "transferBytes": 11083
+    },
+    {
+      "url": "/webfonts/CascadiaMono-Regular.core.woff2",
+      "decodedBodyBytes": 20768,
+      "encodedBodyBytes": 20768,
+      "transferBytes": 20951
+    },
+    {
+      "url": "/webfonts/ComingSoon-Regular.core.woff2",
+      "decodedBodyBytes": 13616,
+      "encodedBodyBytes": 13616,
+      "transferBytes": 13799
+    },
+    {
+      "url": "/webfonts/CommitMono-Regular.core.woff2",
+      "decodedBodyBytes": 9824,
+      "encodedBodyBytes": 9824,
+      "transferBytes": 10006
+    },
+    {
+      "url": "/webfonts/GeistMono-Medium.core.woff2",
+      "decodedBodyBytes": 19788,
+      "encodedBodyBytes": 19788,
+      "transferBytes": 19971
+    },
+    {
+      "url": "/webfonts/Hack-Regular.core.woff2",
+      "decodedBodyBytes": 15608,
+      "encodedBodyBytes": 15608,
+      "transferBytes": 15791
+    },
+    {
+      "url": "/webfonts/FiraCode-Regular.core.woff2",
+      "decodedBodyBytes": 32852,
+      "encodedBodyBytes": 32852,
+      "transferBytes": 33035
+    },
+    {
+      "url": "/webfonts/Geist-Medium.core.woff2",
+      "decodedBodyBytes": 15264,
+      "encodedBodyBytes": 15264,
+      "transferBytes": 15447
+    },
+    {
+      "url": "/webfonts/IBMPlexSans-SemiBold.core.woff2",
+      "decodedBodyBytes": 15620,
+      "encodedBodyBytes": 15620,
+      "transferBytes": 15803
+    },
+    {
+      "url": "/webfonts/IBMPlexMono-Regular.core.woff2",
+      "decodedBodyBytes": 12232,
+      "encodedBodyBytes": 12232,
+      "transferBytes": 12415
+    },
+    {
+      "url": "/webfonts/InterTight-Regular.core.woff2",
+      "decodedBodyBytes": 16760,
+      "encodedBodyBytes": 16760,
+      "transferBytes": 16943
+    },
+    {
+      "url": "/webfonts/Inconsolata-Regular.core.woff2",
+      "decodedBodyBytes": 12256,
+      "encodedBodyBytes": 12256,
+      "transferBytes": 12439
+    },
+    {
+      "url": "/webfonts/Itim-Regular.core.woff2",
+      "decodedBodyBytes": 32624,
+      "encodedBodyBytes": 32624,
+      "transferBytes": 32807
+    },
+    {
+      "url": "/webfonts/Kanit-Regular.core.woff2",
+      "decodedBodyBytes": 15808,
+      "encodedBodyBytes": 15808,
+      "transferBytes": 15991
+    },
+    {
+      "url": "/webfonts/JetBrainsMono-Regular.core.woff2",
+      "decodedBodyBytes": 26392,
+      "encodedBodyBytes": 26392,
+      "transferBytes": 26575
+    },
+    {
+      "url": "/webfonts/Iosevka-Regular.core.woff2",
+      "decodedBodyBytes": 42644,
+      "encodedBodyBytes": 42644,
+      "transferBytes": 42827
+    },
+    {
+      "url": "/webfonts/Mononoki-Regular.core.woff2",
+      "decodedBodyBytes": 6936,
+      "encodedBodyBytes": 6936,
+      "transferBytes": 7118
+    },
+    {
+      "url": "/webfonts/Lalezar-Regular.core.woff2",
+      "decodedBodyBytes": 11360,
+      "encodedBodyBytes": 11360,
+      "transferBytes": 11543
+    },
+    {
+      "url": "/webfonts/Lato-Regular.core.woff2",
+      "decodedBodyBytes": 22616,
+      "encodedBodyBytes": 22616,
+      "transferBytes": 22799
+    },
+    {
+      "url": "/webfonts/Montserrat-Regular.core.woff2",
+      "decodedBodyBytes": 22996,
+      "encodedBodyBytes": 22996,
+      "transferBytes": 23179
+    },
+    {
+      "url": "/webfonts/NotoNaskhArabic-Regular.core.woff2",
+      "decodedBodyBytes": 7228,
+      "encodedBodyBytes": 7228,
+      "transferBytes": 7410
+    },
+    {
+      "url": "/webfonts/NotoSansLao-Regular.core.woff2",
+      "decodedBodyBytes": 6792,
+      "encodedBodyBytes": 6792,
+      "transferBytes": 6974
+    },
+    {
+      "url": "/webfonts/Oxygen-Regular.core.woff2",
+      "decodedBodyBytes": 10632,
+      "encodedBodyBytes": 10632,
+      "transferBytes": 10815
+    },
+    {
+      "url": "/webfonts/OverpassMono-Regular.core.woff2",
+      "decodedBodyBytes": 17764,
+      "encodedBodyBytes": 17764,
+      "transferBytes": 17947
+    },
+    {
+      "url": "/webfonts/Nunito-Bold.core.woff2",
+      "decodedBodyBytes": 9416,
+      "encodedBodyBytes": 9416,
+      "transferBytes": 9598
+    },
+    {
+      "url": "/webfonts/OpenDyslexic-Regular.core.woff2",
+      "decodedBodyBytes": 24084,
+      "encodedBodyBytes": 24084,
+      "transferBytes": 24267
+    },
+    {
+      "url": "/webfonts/Parkinsans-Regular.core.woff2",
+      "decodedBodyBytes": 8208,
+      "encodedBodyBytes": 8208,
+      "transferBytes": 8390
+    },
+    {
+      "url": "/webfonts/0xProto-Regular.core.woff2",
+      "decodedBodyBytes": 19228,
+      "encodedBodyBytes": 19228,
+      "transferBytes": 19411
+    },
+    {
+      "url": "/webfonts/SpaceGrotesk-Regular.core.woff2",
+      "decodedBodyBytes": 10652,
+      "encodedBodyBytes": 10652,
+      "transferBytes": 10835
+    },
+    {
+      "url": "/webfonts/Roboto-Regular.core.woff2",
+      "decodedBodyBytes": 10476,
+      "encodedBodyBytes": 10476,
+      "transferBytes": 10659
+    },
+    {
+      "url": "/webfonts/TitilliumWeb-Regular.core.woff2",
+      "decodedBodyBytes": 7380,
+      "encodedBodyBytes": 7380,
+      "transferBytes": 7562
+    },
+    {
+      "url": "/webfonts/Sarabun-Bold.core.woff2",
+      "decodedBodyBytes": 13696,
+      "encodedBodyBytes": 13696,
+      "transferBytes": 13879
+    },
+    {
+      "url": "/webfonts/SourceCodePro-Regular.core.woff2",
+      "decodedBodyBytes": 14140,
+      "encodedBodyBytes": 14140,
+      "transferBytes": 14323
+    },
+    {
+      "url": "/webfonts/Ubuntu-Regular.core.woff2",
+      "decodedBodyBytes": 24552,
+      "encodedBodyBytes": 24552,
+      "transferBytes": 24735
+    },
+    {
+      "url": "/webfonts/UbuntuMono-Regular.core.woff2",
+      "decodedBodyBytes": 20488,
+      "encodedBodyBytes": 20488,
+      "transferBytes": 20671
+    },
+    {
+      "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+      "decodedBodyBytes": 19512,
+      "encodedBodyBytes": 19512,
+      "transferBytes": 19729
+    }
+  ],
+  "faces": [
+    {
+      "family": "Font Awesome 7 Free",
+      "weight": "900",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Font Awesome 7 Free",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Font Awesome 7 Brands",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Adwaita Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Atkinson Hyperlegible Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Boon Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Cascadia Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Comfortaa Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Coming Soon Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "CommitMono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Fira Code Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Geist Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Geist Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Hack Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "IBM Plex Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "IBM Plex Sans Preview",
+      "weight": "600",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Inconsolata Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Inter Tight Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Iosevka Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Itim Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "JetBrains Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Kanit Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Lalezar Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Lato Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Lexend Deca",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Lexend Deca Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Mononoki Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Montserrat Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Noto Naskh Arabic Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Noto Sans Lao Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Nunito Preview",
+      "weight": "700",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Open Dyslexic Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Overpass Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Oxygen Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Parkinsans Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Proto Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Roboto Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Roboto Mono",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Roboto Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Roboto Mono",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+D, U+A1-AC, U+AE-17F, U+192, U+1A0-1A1, U+1AF-1B0, U+1F0, U+1FA-1FF, U+218-21B, U+237, U+259, U+2BC, U+2C6-2C7, U+2C9, U+2D8-2DD, U+2F3, U+300-301, U+303, U+309, U+30F, U+323, U+384-38A, U+38C, U+38E-3A1, U+3A3-3CE, U+3D1-3D2, U+3D6, U+400-486, U+488-513, U+1E00-1E01, U+1E3E-1E3F, U+1E80-1E85, U+1EA0-1EF9, U+1F4D, U+2000-200B, U+2015, U+2017, U+201A-201B, U+201E, U+2020-2022, U+2025, U+2030, U+2032-2033, U+2039-203A, U+203C, U+2044, U+2074, U+207F, U+20A3-20A4, U+20A7, U+20AB-20AC, U+2105, U+2113, U+2116, U+2122, U+2126, U+212E, U+215B-215E, U+2202, U+2206, U+220F, U+2211-2212, U+2215, U+221A, U+221E, U+222B, U+2248, U+2260, U+2264-2265, U+25CA, U+F6C3, U+FEFF, U+FFFC-FFFD"
+    },
+    {
+      "family": "Roboto Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+D, U+A1-AC, U+AE-17F, U+192, U+1A0-1A1, U+1AF-1B0, U+1F0, U+1FA-1FF, U+218-21B, U+237, U+259, U+2BC, U+2C6-2C7, U+2C9, U+2D8-2DD, U+2F3, U+300-301, U+303, U+309, U+30F, U+323, U+384-38A, U+38C, U+38E-3A1, U+3A3-3CE, U+3D1-3D2, U+3D6, U+400-486, U+488-513, U+1E00-1E01, U+1E3E-1E3F, U+1E80-1E85, U+1EA0-1EF9, U+1F4D, U+2000-200B, U+2015, U+2017, U+201A-201B, U+201E, U+2020-2022, U+2025, U+2030, U+2032-2033, U+2039-203A, U+203C, U+2044, U+2074, U+207F, U+20A3-20A4, U+20A7, U+20AB-20AC, U+2105, U+2113, U+2116, U+2122, U+2126, U+212E, U+215B-215E, U+2202, U+2206, U+220F, U+2211-2212, U+2215, U+221A, U+221E, U+222B, U+2248, U+2260, U+2264-2265, U+25CA, U+F6C3, U+FEFF, U+FFFC-FFFD"
+    },
+    {
+      "family": "Sarabun Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Source Code Pro Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Space Grotesk Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Titillium Web Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Ubuntu Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Ubuntu Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Roboto Mono",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Roboto Mono",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+D, U+A1-AC, U+AE-17F, U+192, U+1A0-1A1, U+1AF-1B0, U+1F0, U+1FA-1FF, U+218-21B, U+237, U+259, U+2BC, U+2C6-2C7, U+2C9, U+2D8-2DD, U+2F3, U+300-301, U+303, U+309, U+30F, U+323, U+384-38A, U+38C, U+38E-3A1, U+3A3-3CE, U+3D1-3D2, U+3D6, U+400-486, U+488-513, U+1E00-1E01, U+1E3E-1E3F, U+1E80-1E85, U+1EA0-1EF9, U+1F4D, U+2000-200B, U+2015, U+2017, U+201A-201B, U+201E, U+2020-2022, U+2025, U+2030, U+2032-2033, U+2039-203A, U+203C, U+2044, U+2074, U+207F, U+20A3-20A4, U+20A7, U+20AB-20AC, U+2105, U+2113, U+2116, U+2122, U+2126, U+212E, U+215B-215E, U+2202, U+2206, U+220F, U+2211-2212, U+2215, U+221A, U+221E, U+222B, U+2248, U+2260, U+2264-2265, U+25CA, U+F6C3, U+FEFF, U+FFFC-FFFD"
+    },
+    {
+      "family": "Lexend Deca",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    }
+  ],
+  "text": "caret\nserika dark\nbehavior\ninput\nsound\ncaret\nappearance\ntheme\nhide elements\nadvanced\nbehavior\ntest behavior\ndifficulty\nNormal is the classic typing test experience. Expert fails the test if you submit (press space) an incorrect word. Master fails if you press a single incorrect key (meaning you have to achieve 100% accuracy).\nnormal\nexpert\nmaster\nquick restart\nPress tab, esc or enter to quickly restart the test, or to quickly jump to the test page. These options disable tab navigation on most parts of the website.\noff\nesc\ntab\nenter\nrepeat quotes\nThis setting changes the restarting behavior when typing in quote mode. Changing it to 'typing' will repeat the quote if you restart while typing.\noff\ntyping\nblind mode\nNo errors or incorrect words are highlighted. Helps you to focus on raw speed. If enabled, quick end is recommended.\noff\n \nalways show words history\nThis option will automatically show the words history at the end of the test. Can cause slight lag with a lot of words.\noff\non\nsingle list command palette\nWhen enabled, it will show the command palette with all commands in a single list instead of submenu arrangements. Selecting 'manual' will expose all commands only after typing >.\nmanual\non\ncommand palette shortcut\nKeyboard shortcut that opens the command palette. Shortcuts used by the browser, the operating system or quick restart are not allowed.\nctrl + k\nescape\ntab\nrecord custom shortcut\nspeed & accuracy\nmin speed\nAutomatically fails a test if your speed falls below a threshold.\noff\ncustom\nmin accuracy\nAutomatically fails a test if your accuracy falls below a threshold.\noff\ncustom\nmin word burst\nAutomatically fails a test if your raw for a single word falls below this threshold. Selecting 'flex' allows for this threshold to automatically decrease for longer words.\noff\nfixed\nflex\nlanguage\nlanguage\nChange in which language you want to type.\nbritish english\nWhen enabled, the website will use the British spelling instead of American. Note that this might not replace all words correctly. If you find any issues, please let us know.\noff\non\nfunbox\nfunbox\nThese are special modes that change the website in some special way (by altering the word generation, behavior of the website or the looks). Give each one of them a try!\n58008\nmirror\nupside down\nnausea\nround round baby\nsimon says\ntts\nchoo choo\narrows\nrAnDoMcAsE\nsPoNgEcAsE\ncapitals\nlayout mirror\nlayoutfluid\nearthquake\nspace balls\ngibberish\nascii\nspecials\nplus zero\nplus one\nplus two\nplus three\nread ahead easy\nread ahead\nread ahead hard\nmemory\nnospace\npoetry\nwikipedia\nweakspot\npseudolang\nIPv4\nIPv6\nbinary\nhexadecimal\nzipf\nmorse\ncrt\nbackwards\nddoouubblleedd\ninstant messaging\nunderscore_spaces\nALL CAPS\npolyglot\nasl\nrot13\nno quit\ncustom layoutfluid\nSelect which layouts you want the layoutfluid funbox to cycle through.\nclear\npolyglot languages\nSelect which languages you want the polyglot funbox to use.\nclear\ninput\nediting\nfreedom mode\nAllows you to delete any word, even if it was typed correctly.\noff\non\nstrict space\nPressing space at the beginning of a word will insert a space character when this mode is enabled.\noff\non\nconfidence mode\nWhen enabled, you will not be able to go back to previous words to fix mistakes. When turned up to the max, you won't be able to backspace at all.\noff\non\nmax\ncode unindent on backspace\nAutomatically go back to the previous line when deleting line leading tab characters. Only works in code languages.\noff\non\nerrors & corrections\nstop on error\nLetter mode will stop input when pressing any incorrect letters. Word mode will not allow you to continue to the next word until you correct all mistakes.\noff\nword\nletter\ndelete on error\nLetter deletes the incorrect character and the character before it. Word deletes the current word. The hard modes also go back to the previous word if the first character is incorrect.\noff\nletter\nletter hard\nword\nword hard\nquick end\nThis only applies to the words mode - when enabled, the test will end as soon as the last word has been typed, even if it's incorrect. When disabled, you need to manually confirm the last incorrect entry with a space.\noff\non\nindicate typos\nShows typos that you've made. \"Below\" shows what you typed below the letters, \"replace\" will replace the letters with the ones you typed and \"both\" will do the same as replace and below, but it will show the correct letters below your mistakes.\noff\nbelow\nreplace\nboth\nhide extra letters\nHides extra letters. This will completely avoid words jumping lines (due to changing width), but might feel a bit confusing when you press a key and nothing happens.\noff\non\nkeyboard & composition\nlayout\nWith this setting you can emulate other layouts. This setting is best kept off, as it can break things like dead keys and alt layers.\nopposite shift mode\nThis mode will force you to use opposite shift keys for shifting. Using an incorrect one will count as an error. This feature ignores keys in locations B, Y, and ^ because many people use the other hand for those keys. If you're using external software to emulate your layout (including QMK), you should use the \"keymap\" mode - the standard \"on\" will not work. This will enforce opposite shift based on the \"keymap layout\" setting.\noff\non\nkeymap\ncomposition display\nChange how composition is displayed. \"off\" will just underline the letter if composition is active. \"below\" will show the composed character below the test. \"replace\" will replace the letter in the test with the composed character.\noff\nbelow\nreplace\nlazy mode\nReplaces accents / diacritics / special characters with their normal letter equivalents.\noff\non\nsound\nsound effects\nsound volume\nChange the volume of the sound effects.\n0.5\nplay sound on click\nPlays a short sound when you press a key.\noff\nclick\nbeep\npop\nnk creams\ntypewriter\nosu\nhitmarker\nsine\nsawtooth\nsquare\ntriangle\npentatonic\nwholetone\nfist fight\nrubber keys\nfart\nakko lavenders\ncherrymx black abs\ncherrymx black pbt\ncherrymx blue abs\ncherrymx blue pbt\ncherrymx brown pbt\nkalih box white\nrazer green\ntealios v2\ntrust gxt\nplay sound on error\nPlays a short sound if you press an incorrect key or press space too early.\noff\ndamage\ntriangle\nsquare\nmissed punch\nplay time warning\nPlay a short warning sound if you are close to the end of a timed test.\noff\n1 second\n3 seconds\n5 seconds\n10 seconds\ncaret\ntyping caret\nsmooth caret\nThe caret will move smoothly between letters and words.\noff\nslow\nmedium\nfast\ncaret style\nChange the style of the caret during the test.\noff\ndefault\nblock\noutline\nunderline\npace caret\npace caret\nDisplays a second caret that moves at constant speed. The 'average' option averages the speed of last 10 results. The 'tag pb' option takes the highest PB of any active tag. The 'daily' option takes the highest speed of the last 24 hours.\noff\naverage\npb\ntag pb\nlast\ncustom\ndaily\nrepeated pace\nWhen repeating a test, a pace caret will automatically be enabled for one test with the speed of your previous test. It does not override the pace caret if it's already enabled.\noff\non\npace caret style\nChange the style of the pace caret during the test.\noff\ndefault\nblock\noutline\nunderline\nappearance\ntimer\nlive progress style\nChange the style of the timer/word count during a test. \"Flash\" styles will briefly show the timer in timed modes every 15 seconds.\noff\nbar\ntext\nmini\nflash text\nflash mini\ntimer color\nChange the color of the progress, live speed, accuracy and burst text.\nblack\nsub\ntext\nmain\ntimer opacity\nChange the opacity of the progress, live speed, burst and accuracy text.\n0.25\n0.5\n0.75\n1\nspeed\nlive speed style\nChange the style of the live speed displayed during the test.\noff\ntext\nmini\nlive accuracy style\nChange the style of the live accuracy displayed during the test.\noff\ntext\nmini\nlive word burst style\nChange the style of the live burst speed displayed during the test.\noff\ntext\nmini\ntyping speed unit\nDisplay typing speed in the specified unit.\nwpm\ncpm\nwps\ncps\nwph\nstats\nalways show decimal places\nAlways shows decimal places for values on the result page, without the need to hover over the stats.\noff\non\nstart graphs at zero\nForce graph axis to always start at zero, no matter what the data is. Turning this off may exaggerate the value changes.\noff\non\ntext\nfont size\nChange the font size of the test words.\nfont family\nChange the font family used by the website. Using a local font will override your choice.\n\nNote: Local fonts are not sent to the server and will not persist across devices.\nuse local font\nor\nAdwaita Mono\nAtkinson Hyperlegible\nBoon\nCascadia Mono\nComfortaa\nHelvetica\nComing Soon\nCommitMono\nCourier\nFira Code\nGeist\nGeist Mono\nGeorgia\nHack\nIBM Plex Mono\nIBM Plex Sans\nInconsolata\nInter Tight\nIosevka\nItim\nJetBrains Mono\nKanit\nLalezar\nLato\nLexend Deca\nMononoki\nMontserrat\nNoto Naskh Arabic\nNoto Sans Lao\nNunito\nOpen Dyslexic\nOverpass Mono\nOxygen\nParkinsans\nProto\nRoboto\nRoboto Mono\nSarabun\nSource Code Pro\nSpace Grotesk\nTitillium Web\nUbuntu\nUbuntu Mono\ncustom\nhighlight mode\nChange what is highlighted during the test.\noff\nletter\nword\nnext word\nnext two words\nnext three words\ntyped effect\nChange how typed words are shown.\nkeep\nhide\nfade\ndots\nlayout\ntape mode\nOnly shows one line which scrolls horizontally. Setting this to 'word' will make it scroll after every word and 'letter' will scroll after every keypress. Works best with smooth line scroll enabled and a monospace font.\noff\nletter\nword\ntape margin\nWhen in tape mode, set the carets position from the left edge of the typing test as a percentage (for example, 50% centers it).\nsmooth line scroll\nWhen enabled, the line transition will be animated.\noff\non\nshow all lines\nWhen enabled, the website will show all lines for word, custom and quote mode tests - otherwise the lines will be limited to 3, and will automatically scroll. Using this could cause the timer text and live speed to not be visible.\noff\non\nmax line width\nChange the maximum width of the typing test, measured in characters. Setting this to 0 will align the words to the edges of the content area.\nkeymap\nkeymap mode\nDisplays your current layout while taking a test. React shows what you pressed and Next shows what you need to press next.\noff\nstatic\nreact\nnext\ntheme\ncolors\nflip test colors\nBy default, typed text is brighter than the future text. When enabled, the colors will be flipped and the future text will be brighter than the already typed text.\noff\non\ncolorful mode\nWhen enabled, the test words will use the main color, instead of the text color, making the website more colorful.\noff\non\nbackground\ncustom background\nSet an image url or local image to be a custom background image. Local image always take priority over the image url. Cover fits the image to cover the screen. Contain fits the image to be fully visible. Max fits the image corner to corner.\n\nNote: The local image is stored in your browser's local storage and will not be uploaded to the server. This means that if you clear your browser's local storage or use a different browser, the local image will be lost.\nuse local image\nor\ncover\ncontain\nmax\nautomatic themes\nauto switch theme\nEnabling this will automatically switch the theme between light and dark depending on the system theme.\noff\non\nrandom theme\nAfter completing a test, the theme will be set to a random one. The random themes are not saved to your config. If set to 'favorite' only favorite themes will be randomized. If set to 'light' or 'dark', only presets with light or dark background colors will be randomized, respectively. If set to 'auto' dark or light themes are used, depending on your system theme. If set to 'custom', custom themes will be randomized.\noff\non\nfavorite\nlight\ndark\ncustom\nauto\npreset & custom themes\ntheme\nCompletely change the look and feel of the website by picking one of the presets, or by creating your own completely custom theme.\npreset\ncustom\nhusqy\nmatrix\nshadow\nstealth\nfire\nphantom\nhammerhead\niv spade\nsolarized osaka\ntrance\nincognito\nterra\narch\nmidnight\nmountain\nvoc\nvesper\ndark\nrgb\nred dragon\nrust\nspiderman\naurora\nazure\nterror below\ntron orange\nfloret\nanti hero\nryujinscales\naether\npulse\ndots\neverblush\nmiami nights\nchaos theory\njoker\ncyberspace\nterminal\ndark magic girl\nsolarized dark\niceberg dark\nalduin\nolivia\nmetropolis\nvscode\ndark note\ndrowning\ngrape\nishtar\nmoonlight\nhorizon\nnight runner\nsunset\ndev\nrose pine\nmetaverse\nnorse\nearthsong\nmonokai\nnautilus\nwavez\ncatppuccin\nbliss\nblue dolphin\ngruvbox dark\npurpleish\n80s after dark\ngithub\nluna\npeach blossom\nbouquet\nnebula\nbushido\nmashu\nnord\nrudy\nsuperuser\nmodern dolch\ndracula\nmaterial\nlaser\nviridescent\nmint\nsonokai\nfuture funk\ncarbon\nblueberry dark\noblivion\nwatermelon\nrose pine moon\nrepose dark\ncherry blossom\ndiscord\nserika dark\ngraen\ncopper\nonedark\nfledgling\nmatcha moccha\n8008\nbento\nsewing tin\nretrocast\npale nimbus\nhedge\ndeku\ngrand prix\ncy red\nstriker\npassion fruit\nsuisei\nsweden\nmuted\nred samurai\ntrackday\ncomfy\nmenthol\nevil eye\nez mode\nour theme\ndualshot\nfundamentals\nalpine\ndiner\nleather\nhoney\nlime\nbotanical\nmexican\niv clover\nmiami\nfleuriste\ncafe\nbingsu\ncreamsicle\nlavender\nstrawberry\nsnes\nmacroblank\npink lemonade\ntiramisu\nmizu\nfrozen llama\nvaporwave\npastel\nhanok\nretro\npeaches\nfruit chew\nmr sleeves\nbeach\nbreeze\nfroyo\nshoko\ntaro\nolive\ndmg\nmodern dolch light\ndollar\ngodspeed\nrepose light\ngruvbox light\nserika\ndarling\nterrazzo\nwitch girl\nblueberry light\n9009\nlil dragon\ncheesecake\ndesert oasis\niceberg light\npaper\nslambook\ncamping\ntangerine\nnord light\nsolarized light\nrainbow trail\nsoaring skies\nrose pine dawn\nlilac mist\ndino\nmagic girl\nmilkshake\nmodern ink\nms cupcakes\nsewing tin light\nvesper light\nhide elements\ninterface visibility\nshow key tips\nShows the keybind tips at the bottom of the page.\nhide\nshow\nshow out of focus warning\nShows an out of focus reminder after 1 second of being 'out of focus' (not being able to type).\nhide\nshow\nshow test modes notice\nShows the active test settings above the words, such as language, pace caret and funbox.\nhide\nshow\ncaps lock warning\nDisplays a warning when caps lock is on.\nhide\nshow\nshow average\nDisplays your average speed and/or accuracy over the last 10 tests.\noff\nspeed\nacc\nboth\nadvanced\nprivacy\nupdate cookie preferences\nIf you changed your mind about which cookies you consent to, you can change your preferences here.\nopen\nperformance\nanimation fps limit\nLimit the maximum fps for animations. Setting this to \"native\" will run the animations as fast as possible (at your monitor's refresh rate). Setting this above your monitor's refresh rate will have no effect.\nnative\nor\nsettings data\nimport/export settings\nImport JSON, or export to clipboard and then download a file. Unsupported settings are automatically removed.\nimport\nexport\nreset settings\nResets settings to the default (but doesn't touch your tags and presets).\n\nYou can't undo this!\nreset settings",
+  "stack": "\"Roboto Mono\", \"Roboto Mono\", Vazirharf, monospace",
+  "rendered": [
+    {
+      "selector": "[data-ui-element=\"logoText\"]",
+      "fonts": []
+    },
+    {
+      "selector": "body",
+      "fonts": []
+    }
+  ]
+}

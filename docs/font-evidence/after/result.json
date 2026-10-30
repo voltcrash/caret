@@ -1,0 +1,125 @@
+{
+  "baselineRevision": "7699fef52",
+  "nodeVersion": "v26.13.0",
+  "systemFontFixture": "/tmp/caret-font-system/fonts.conf",
+  "browser": "156.0.8078.4",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "dpr": 1,
+  "os": "linux",
+  "arch": "arm64",
+  "locale": "en-US",
+  "timezone": "UTC",
+  "theme": "serika_dark",
+  "seed": 4242,
+  "preloads": [
+    "/webfonts/RobotoMono-Regular.woff2",
+    "/webfonts/LexendDeca-Regular.woff2"
+  ],
+  "fonts": [
+    {
+      "url": "/webfonts/RobotoMono-Regular.woff2",
+      "decodedBodyBytes": 37632,
+      "encodedBodyBytes": 37632,
+      "transferBytes": 37815
+    },
+    {
+      "url": "/webfonts/LexendDeca-Regular.woff2",
+      "decodedBodyBytes": 25888,
+      "encodedBodyBytes": 25888,
+      "transferBytes": 26071
+    },
+    {
+      "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+      "decodedBodyBytes": 115420,
+      "encodedBodyBytes": 115420,
+      "transferBytes": 115638
+    },
+    {
+      "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+      "decodedBodyBytes": 119488,
+      "encodedBodyBytes": 119488,
+      "transferBytes": 119706
+    },
+    {
+      "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+      "decodedBodyBytes": 19512,
+      "encodedBodyBytes": 19512,
+      "transferBytes": 19729
+    }
+  ],
+  "faces": [
+    {
+      "family": "Font Awesome 7 Free",
+      "weight": "900",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Font Awesome 7 Free",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Font Awesome 7 Brands",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Lexend Deca",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Roboto Mono",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Roboto Mono",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Lexend Deca",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    }
+  ],
+  "text": "caret\nserika dark\npunctuation\nnumbers\ntime\nwords\nquote\nzen\ncustom\n10\n25\n50\n100\nTest complete. 122 wpm. Accuracy 100%. Time 8s.\nwpm\n122\nacc\n100%\ntest type\nwords 15\nenglish\nraw\n122\ncharacters\n76/0/0/0\nconsistency\n97%\ntime\n8s\n00:00:08 session\nscale\nraw\nburst\nerrors\nSign in to save your result",
+  "words": "",
+  "stack": "\"Roboto Mono\", \"Roboto Mono\", Vazirharf, monospace",
+  "rendered": [
+    {
+      "selector": "#result",
+      "fonts": []
+    },
+    {
+      "selector": "p",
+      "fonts": []
+    },
+    {
+      "selector": "[data-ui-element=\"logoText\"]",
+      "fonts": []
+    },
+    {
+      "selector": "body",
+      "fonts": []
+    }
+  ]
+}

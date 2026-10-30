@@ -1,0 +1,112 @@
+{
+  "baselineRevision": "7699fef5239c2082baa1ef1b2be8014ff3d02714",
+  "candidateFontBytes": 3339780,
+  "checks": [
+    {
+      "command": "vp exec /tmp/caret-font-tools/bin/python scripts/fonts/generate.py --check",
+      "result": "pass",
+      "fontFiles": 42
+    },
+    {
+      "command": "vp exec /tmp/caret-font-tools/bin/python scripts/fonts/validate.py",
+      "result": "pass",
+      "mappedGlyphs": 54207,
+      "variationSequences": 2,
+      "also": "unencoded closure, missing glyphs, exact metrics/outlines/instructions, global hints, axes, notices"
+    },
+    {
+      "command": "vp exec node frontend/scripts/ci-build.ts",
+      "result": "pass"
+    },
+    {
+      "command": "vp lint --type-aware --type-check --format agent frontend",
+      "result": "pass"
+    },
+    {
+      "command": "vp run check-assets",
+      "result": "pass"
+    },
+    {
+      "command": "vp run lint-styles",
+      "result": "pass"
+    },
+    {
+      "command": "vp fmt . --check",
+      "result": "pass"
+    },
+    {
+      "command": "vp test run frontend/__tests__/vite-plugins/font-styles.spec.ts",
+      "result": "pass",
+      "tests": 4
+    },
+    {
+      "command": "vp test run frontend/__tests__/app/fonts.spec.ts",
+      "result": "pass",
+      "tests": 2
+    },
+    {
+      "command": "vp test run frontend/__tests__/vite-plugins/font-subsets.spec.ts",
+      "result": "pass",
+      "tests": 1
+    },
+    {
+      "command": "vp test run __tests__/start/document.spec.ts --config vitest.start.config.ts",
+      "cwd": "frontend",
+      "result": "pass",
+      "tests": 6
+    },
+    {
+      "command": "FONT_PROOF=after ... playwright.start.config.ts --project=start font-proof.spec.ts",
+      "result": "pass",
+      "tests": 18,
+      "screenshots": 62,
+      "exactChangedPixels": 0
+    },
+    {
+      "command": "playwright.start.config.ts --project=start startup.spec.ts offline.spec.ts",
+      "result": "pass",
+      "tests": 13
+    },
+    {
+      "command": "vp run test-fe",
+      "result": "failed",
+      "passedTestsBeforeBail": 2095,
+      "passedFilesBeforeBail": 197,
+      "failure": "production-build.spec.ts: fails closed when vp cannot start, expected 1 received 127",
+      "also": "Vitest browser connection closed while bailing"
+    },
+    {
+      "command": "vp test run frontend/__tests__/scripts/production-build.spec.ts",
+      "result": "same failure with exact original font bytes restored",
+      "passed": 9,
+      "failed": 1,
+      "log": "/tmp/caret-font-production-test-baseline.log",
+      "optimizedFontsRestored": true
+    },
+    {
+      "command": "vp test run --project=*-frontend --exclude='**/scripts/production-build.spec.ts'",
+      "result": "pass",
+      "files": 256,
+      "tests": 2254,
+      "limitation": "Known pre-existing production build command test is excluded, not fixed or claimed green."
+    },
+    {
+      "command": "vp run --filter @caret/frontend-storybook build-storybook --output-dir /tmp/caret-font-storybook",
+      "result": "failed",
+      "failure": "Missing \"#tanstack-start-entry\" specifier in \"@tanstack/start-server-core\" package",
+      "originalFontControl": "same error, exit 1",
+      "originalFontLog": "/tmp/caret-font-storybook-baseline.log",
+      "candidateLog": "/tmp/caret-font-storybook-optimized.log",
+      "staticFontCopiesExact": true,
+      "fontFilesCopied": 42
+    },
+    {
+      "command": "vp exec /tmp/caret-font-tools/bin/python scripts/fonts/test_compare.py",
+      "result": "pass",
+      "tests": 6,
+      "preFixControl": "4 failures against pre-S1 comparator; fixed comparator passes all 6",
+      "scope": "reject missing/empty baseline, missing after case and after-only case; preserve exact zero/nonzero pixel behavior"
+    }
+  ],
+  "mergeGate": "BLOCKED: original exact-cmap split/core-preload acceptance unresolved; remote CI/reviews pending"
+}

@@ -1,0 +1,92 @@
+{
+  "browser": "156.0.8078.4",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "dpr": 1,
+  "os": "linux",
+  "arch": "arm64",
+  "locale": "en-US",
+  "timezone": "UTC",
+  "theme": "serika_dark",
+  "seed": 4242,
+  "preloads": [
+    "/webfonts/RobotoMono-Regular.woff2",
+    "/webfonts/LexendDeca-Regular.woff2"
+  ],
+  "fonts": [
+    {
+      "url": "/webfonts/RobotoMono-Regular.woff2",
+      "decodedBodyBytes": 37632,
+      "encodedBodyBytes": 37632,
+      "transferBytes": 37815
+    },
+    {
+      "url": "/webfonts/LexendDeca-Regular.woff2",
+      "decodedBodyBytes": 25888,
+      "encodedBodyBytes": 25888,
+      "transferBytes": 26071
+    }
+  ],
+  "faces": [
+    {
+      "family": "Lexend Deca",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Roboto Mono",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Roboto Mono",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Lexend Deca",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    }
+  ],
+  "text": "caret Privacy Policy\nPrivacy Policy\n\nCaret is preparing a privacy policy for its own hosting and services. The policy inherited from Monkeytype does not describe this independent project. A complete Caret policy must be published before public accounts are offered.\n\nFor questions about project data practices, use the repository discussions.\n\nVisit project discussions\n\nBack to Caret",
+  "stack": "\"Roboto Mono\", \"Roboto Mono\", Vazirharf, monospace",
+  "rendered": [
+    {
+      "selector": "p",
+      "fonts": [
+        {
+          "familyName": "Roboto Mono",
+          "postScriptName": "RobotoMono-Regular",
+          "isCustomFont": true,
+          "glyphCount": 227
+        }
+      ]
+    },
+    {
+      "selector": "h1",
+      "fonts": [
+        {
+          "familyName": "Roboto Mono",
+          "postScriptName": "RobotoMono-Regular",
+          "isCustomFont": true,
+          "glyphCount": 14
+        }
+      ]
+    },
+    {
+      "selector": "body",
+      "fonts": []
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "baselineRevision": "7699fef52",
+  "nodeVersion": "v26.13.0",
+  "systemFontFixture": "/tmp/caret-font-system/fonts.conf",
+  "browser": "156.0.8078.4",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "dpr": 1,
+  "os": "linux",
+  "arch": "arm64",
+  "locale": "en-US",
+  "timezone": "UTC",
+  "theme": "serika_dark",
+  "seed": 4242,
+  "preloads": [
+    "/webfonts/RobotoMono-Regular.woff2",
+    "/webfonts/LexendDeca-Regular.woff2"
+  ],
+  "fonts": [
+    {
+      "url": "/webfonts/LexendDeca-Regular.woff2",
+      "decodedBodyBytes": 25888,
+      "encodedBodyBytes": 25888,
+      "transferBytes": 26071
+    },
+    {
+      "url": "/webfonts/RobotoMono-Regular.woff2",
+      "decodedBodyBytes": 37632,
+      "encodedBodyBytes": 37632,
+      "transferBytes": 37815
+    },
+    {
+      "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+      "decodedBodyBytes": 119488,
+      "encodedBodyBytes": 119488,
+      "transferBytes": 119706
+    },
+    {
+      "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+      "decodedBodyBytes": 115420,
+      "encodedBodyBytes": 115420,
+      "transferBytes": 115638
+    },
+    {
+      "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+      "decodedBodyBytes": 19512,
+      "encodedBodyBytes": 19512,
+      "transferBytes": 19729
+    }
+  ],
+  "faces": [
+    {
+      "family": "Font Awesome 7 Free",
+      "weight": "900",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Font Awesome 7 Free",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Font Awesome 7 Brands",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Lexend Deca",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Roboto Mono",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Roboto Mono",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Lexend Deca",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    }
+  ],
+  "text": "caret\nserika dark\nAbout Caret\n\nThe Caret typing test is free and open source. Measure your typing speed in words per minute (WPM) and practice to improve accuracy. Type in your browser with timed tests, word counts, quotes or your own text. No account is needed to take a test.\n\nStart a free typing test\nPractice your way\n\nChoose different languages, code word lists, punctuation and numbers. Adjust themes, fonts, caret style and keyboard settings to make practice comfortable. Sign in to save results and follow your progress over time.\n\nBuild speed through accuracy\n\nUse a comfortable pace first, then compare WPM and accuracy across tests with the same settings. Quotes and custom text add practice with sentences, capitalization and the material you actually type.\n\nTyping practice guides\nBrowse typing guides\nQuestions about Caret\nIs Caret free? Do I need an account?\n\nCaret is free to use. You can take typing tests without signing in. An account lets you save results and view your typing history.\n\nCan I practice with my own text?\n\nYes. Choose custom mode to practice text you provide. Use quote mode for sentences or select a language word list for word practice.\n\nIs Caret open source?\n\nYes. Caret is an independent project that began from the Monkeytype codebase. Its source is available under the GPL-3.0 license on GitHub.\n\nView Caret on GitHub",
+  "stack": "\"Roboto Mono\", \"Roboto Mono\", Vazirharf, monospace",
+  "rendered": [
+    {
+      "selector": "p",
+      "fonts": [
+        {
+          "familyName": "Roboto Mono",
+          "postScriptName": "RobotoMono-Regular",
+          "isCustomFont": true,
+          "glyphCount": 244
+        }
+      ]
+    },
+    {
+      "selector": "h1",
+      "fonts": [
+        {
+          "familyName": "Roboto Mono",
+          "postScriptName": "RobotoMono-Regular",
+          "isCustomFont": true,
+          "glyphCount": 11
+        }
+      ]
+    },
+    {
+      "selector": "[data-ui-element=\"logoText\"]",
+      "fonts": []
+    },
+    {
+      "selector": "body",
+      "fonts": []
+    }
+  ]
+}

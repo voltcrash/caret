@@ -1,0 +1,52 @@
+{
+  "sourceRevision": "7699fef5239c2082baa1ef1b2be8014ff3d02714",
+  "tools": {
+    "fonttools": "4.61.1",
+    "brotli": "1.2.0"
+  },
+  "command": [
+    "vp",
+    "exec",
+    "/tmp/caret-font-tools/bin/python",
+    "scripts/fonts/generate.py",
+    "--out",
+    "/tmp/caret-font-full-weight",
+    "--fix-weight",
+    "--only",
+    "CascadiaMono-Regular.woff2"
+  ],
+  "files": {
+    "CascadiaMono-Regular.woff2": {
+      "bytes": 114064,
+      "sha256": "796f95b44ad312b446c810f607edf30d304067894d979088aa4ae14219a37402",
+      "axes": [],
+      "features": {
+        "GSUB": [
+          "aalt",
+          "calt",
+          "case",
+          "ccmp",
+          "dnom",
+          "fina",
+          "frac",
+          "init",
+          "locl",
+          "medi",
+          "numr",
+          "ordn",
+          "rclt",
+          "rlig",
+          "rvrn",
+          "sinf",
+          "subs",
+          "sups",
+          "zero"
+        ],
+        "GPOS": ["mark", "mkmk"]
+      },
+      "glyphs": 3920,
+      "cmapCount": 2426,
+      "unicodeRange": "U+D,U+20-7E,U+A0-17F,U+186,U+189,U+18E-192,U+194,U+196,U+19A-19B,U+19D,U+1A0-1A1,U+1A9,U+1AF-1B2,U+1B7,U+1CD-1CE,U+1DD,U+1E4-1E7,U+1EA-1EB,U+1F0,U+1FA-1FF,U+218-21B,U+21E-21F,U+232-233,U+237,U+23A-23B,U+23D-23E,U+245,U+251,U+254,U+256,U+259,U+25B,U+262-263,U+269-26C,U+272,U+283,U+28A-28C,U+292,U+294-295,U+29F,U+2A7,U+2B7-2B8,U+2BB-2BC,U+2C0,U+2C6-2C7,U+2C9,U+2D0,U+2D8-2DD,U+300-304,U+306-30C,U+312-313,U+315,U+31B,U+323,U+325-328,U+331-332,U+340-342,U+374-375,U+37E,U+384-38A,U+38C,U+38E-3A1,U+3A3-3CF,U+3D7,U+400-45F,U+490-493,U+496-497,U+49A-49B,U+4A2-4A3,U+4AE-4B3,U+4B6-4B7,U+4BA-4BB,U+4C0,U+4CF,U+4D8-4D9,U+4E2-4E3,U+4E8-4E9,U+4EE-4EF,U+5B7-5BA,U+5BC,U+5BE,U+5C0-5C2,U+5C7,U+5D0-5EA,U+5F3-5F4,U+600-609,U+60B-60F,U+61B,U+61E-656,U+658,U+65A-65B,U+65F-6D5,U+6DD-6DE,U+6E2,U+6E8,U+6EE-6FF,U+750-77F,U+8A0-8AC,U+8AE-8B4,U+8B6-8B8,U+8BA,U+8BC-8BD,U+E3F,U+1D00,U+1DBB,U+1DBF,U+1E24-1E25,U+1E30,U+1E32-1E37,U+1E3A-1E3B,U+1E48-1E49,U+1E50-1E53,U+1E5A-1E5B,U+1E62-1E63,U+1E6E,U+1E80-1E85,U+1E9E,U+1EA0-1EF9,U+2008,U+2010-2011,U+2013-2015,U+2017-201E,U+2020-2022,U+2024,U+2026,U+2028,U+2030,U+2032-2033,U+2039-203A,U+203C,U+203E,U+2044,U+2070,U+2074-2079,U+207F-2089,U+20A0-20A1,U+20A3-20A4,U+20A6-20AE,U+20B1-20B2,U+20B4-20B5,U+20B8-20BA,U+20BC-20BF,U+2105,U+2113,U+2116-2117,U+211E,U+2122,U+2126,U+212E,U+215B-215E,U+2190-2195,U+21A8,U+21B2,U+21E1,U+21E3,U+2202,U+2206,U+220F,U+2211-2212,U+2215,U+2219-221A,U+221E-221F,U+2229,U+222B,U+2236,U+2248,U+2260-2265,U+2302,U+2310,U+2320-2321,U+23AF,U+23CE,U+2400-2429,U+2500-25FF,U+2619,U+263A-263C,U+2640,U+2642,U+2660,U+2663,U+2665-2666,U+266A-266B,U+2713,U+2767,U+276C-2771,U+2800-28FF,U+2A2F,U+2B12-2B2F,U+2BC5-2BC8,U+2BCA-2BCB,U+2C62,U+2C6D,U+FB01-FB02,U+FB2A-FB36,U+FB38-FB3C,U+FB3E,U+FB40-FB41,U+FB43-FB44,U+FB46-FB4B,U+FBBC,U+FBC0,U+FC5B-FC5D,U+FC90,U+FCD9,U+FD3C-FD3F,U+FDF2,U+FFFD,U+1CC21-1CC2F,U+1CD00-1CDE5,U+1CE1A-1CEAF,U+1FB00-1FB80,U+1FB82-1FB8B,U+1FB95-1FB97,U+1FB9A-1FB9B,U+1FBCE-1FBCF,U+1FBE4-1FBF9"
+    }
+  }
+}
