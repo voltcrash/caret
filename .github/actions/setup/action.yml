@@ -8,6 +8,9 @@ inputs:
   rust:
     description: Restore the Rust build cache, for jobs that run cargo themselves.
     default: "false"
+  task-cache:
+    description: Isolated task-cache namespace; empty disables task caching.
+    default: ""
 
 runs:
   using: composite
@@ -23,3 +26,12 @@ runs:
       uses: ./.github/actions/setup-engine
       with:
         rust: ${{ inputs.rust }}
+    # Install first: package installation may recreate node_modules.
+    # Vite Task validates file, argument and environment fingerprints itself.
+    - name: Restore and save Vite Task results
+      if: inputs.task-cache != ''
+      uses: actions/cache@v6.1.0
+      with:
+        path: node_modules/.vite/task-cache
+        key: vite-task-v1-${{ runner.os }}-${{ runner.arch }}-${{ inputs.task-cache }}-${{ github.run_id }}-${{ github.run_attempt }}
+        restore-keys: vite-task-v1-${{ runner.os }}-${{ runner.arch }}-${{ inputs.task-cache }}-

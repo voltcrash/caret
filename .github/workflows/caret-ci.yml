@@ -283,10 +283,12 @@ jobs:
 
       - name: Set up Vite+ and install dependencies
         uses: ./.github/actions/setup
+        with:
+          task-cache: backend-lint
 
       - name: Check lint
         if: needs.changes.outputs.backend-lint == 'true'
-        run: vp run lint-be
+        run: vp run ci:lint:be
 
       - name: Test
         if: needs.changes.outputs.backend-test == 'true'
@@ -303,9 +305,11 @@ jobs:
 
       - name: Set up Vite+ and install dependencies
         uses: ./.github/actions/setup
+        with:
+          task-cache: frontend-lint
 
       - name: Check lint
-        run: vp run lint-fe
+        run: vp run ci:lint:fe
 
   ci-fe-test:
     name: ci-fe-test (${{ matrix.shard }}/2)
@@ -350,9 +354,14 @@ jobs:
 
       - name: Set up Vite+ and install dependencies
         uses: ./.github/actions/setup
+        with:
+          task-cache: start-build
 
       - name: Build Start Worker
-        run: vp run --filter @caret/frontend build:start
+        env:
+          # Stable identifier for test fixtures; real releases use their own build ID.
+          CARET_BUILD_ID: ci-fixture
+        run: vp run ci:build:start
 
       - name: Worker dry-run
         run: vp run --filter @caret/frontend dry-run:start
