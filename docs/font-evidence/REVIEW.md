@@ -13,4 +13,7 @@ Diff command for every round:
 
 | Round | State | Findings | Usage |
 |---|---|---|---|
-| 1 | Pending | Not approval | Not returned |
+| 1 | CHANGES | S1 should: missing/after-only cases could falsely pass. Fixed: require nonempty matching PNG sets before comparison. Six CLI tests pass, four fail before fix; both real 62-case comparisons rerun. | Not returned |
+| 2 | Pending | S1 recheck and changed code only | Not returned |
+
+Round 1 diff: 1,063 files / 70,542 insertions. No push or PR; original acceptance gate stays blocked.

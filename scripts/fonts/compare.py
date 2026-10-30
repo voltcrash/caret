@@ -1,4 +1,4 @@
-"""Exact RGBA pixel comparison; no masks or tolerance."""
+"""Exact RGB comparison of opaque screenshots; no masks or tolerance."""
 import json
 from pathlib import Path
 import sys
@@ -8,6 +8,14 @@ from inventory import ROOT
 
 before = ROOT / "docs/font-evidence" / (sys.argv[1] if len(sys.argv) > 1 else "before")
 after = ROOT / "docs/font-evidence" / (sys.argv[2] if len(sys.argv) > 2 else "after")
+before_cases = {path.name for path in before.glob("*.png")}
+after_cases = {path.name for path in after.glob("*.png")}
+if not before_cases or not after_cases or before_cases != after_cases:
+    print(json.dumps({"error": "Nonempty, matching PNG case sets required",
+                      "beforeCount": len(before_cases), "afterCount": len(after_cases),
+                      "beforeOnly": sorted(before_cases - after_cases),
+                      "afterOnly": sorted(after_cases - before_cases)}), file=sys.stderr)
+    raise SystemExit(2)
 out = ROOT / "docs/font-evidence" / (before.name + "-vs-" + after.name)
 out.mkdir(exist_ok=True)
 for stale in out.glob("*.png"):

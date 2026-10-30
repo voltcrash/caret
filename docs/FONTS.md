@@ -68,7 +68,7 @@ The manual Playwright suite uses the **built production Start Worker** and
 existing PostgreSQL/auth fixture. Actual routes and all text-font specimens use
 built CSS and real downloads. Fixed seeds include the crypto RNG; relevant
 clocks, locale, theme, viewport, DPR and installed fallback fonts match. It waits
-for requested fonts and records CDP rendered faces. No masks or pixel tolerance.
+for requested fonts and records CDP rendered faces. No masks or pixel tolerance. Comparison requires nonempty, matching PNG case sets.
 
 ```sh
 vp exec node frontend/scripts/ci-build.ts
@@ -102,4 +102,10 @@ follow [development setup](CONTRIBUTING_ADVANCED.md), then run from the reposito
 
 ```sh
 vp run --filter @caret/frontend check-assets fonts
+```
+
+Comparator regression checks (manual, pinned environment):
+
+```sh
+vp exec /tmp/caret-font-tools/bin/python scripts/fonts/test_compare.py
 ```

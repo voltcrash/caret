@@ -151,9 +151,13 @@ vp exec /tmp/caret-font-tools/bin/python scripts/fonts/compare.py before repeat
 vp exec /tmp/caret-font-tools/bin/python scripts/fonts/report.py
 ```
 
-Comparison exits nonzero for any changed/missing case. Each comparison saves
+Comparison requires nonempty, identical PNG case sets and exits nonzero for any changed or incomplete proof. Each comparison saves
 real diff PNGs; different dimensions are padded, never cropped or masked.
-Experimental generator commands/hashes: `experiments/*.json`. Use
+Experimental generator commands/hashes: `experiments/*.json`. For a targeted
+specimen-only experiment, first copy its matching original baseline PNGs into
+an explicitly named temporary baseline directory, then compare those two equal
+sets. Historical experiment summaries retain their explicit not-run rows; do
+not pass a partial set to the strict comparator or count those rows as passes. Use
 `FONT_PROOF_ASSETS=<output-directory>` plus `--grep='all font'` for specimens.
 `FONT_PROOF_VARIATIONS_ONLY=1` captures the added UVS cases from an archived
 baseline without replacing the existing specimens. Preserve the same tool,
@@ -187,3 +191,5 @@ browsers/OSes and an actual local-font upload were not browser-tested; existing
 font runtime tests cover uploaded/preferred-font logic, which is unchanged.
 Required remote CI/review states are pending PR creation. Even green CI does
 not remove the unresolved original split/core-preload acceptance gate.
+
+Comparator fail-closed checks: six manual CLI tests pass; four fail against the pre-S1 comparator. Both complete 62-image comparisons were rerun after S1.

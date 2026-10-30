@@ -99,6 +99,13 @@
       "candidateLog": "/tmp/caret-font-storybook-optimized.log",
       "staticFontCopiesExact": true,
       "fontFilesCopied": 42
+    },
+    {
+      "command": "vp exec /tmp/caret-font-tools/bin/python scripts/fonts/test_compare.py",
+      "result": "pass",
+      "tests": 6,
+      "preFixControl": "4 failures against pre-S1 comparator; fixed comparator passes all 6",
+      "scope": "reject missing/empty baseline, missing after case and after-only case; preserve exact zero/nonzero pixel behavior"
     }
   ],
   "mergeGate": "BLOCKED: original exact-cmap split/core-preload acceptance unresolved; remote CI/reviews pending"
