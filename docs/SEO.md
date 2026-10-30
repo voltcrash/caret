@@ -8,14 +8,19 @@ metadata as visitors. The interactive typing engine still requires JavaScript.
 
 - `frontend/src/app/seo.ts` keeps canonical, description, Open Graph and Twitter
   metadata consistent. Query variants of the typing test canonicalize to `/`.
-- The homepage includes a visible product overview below the test, common
-  questions and links to three distinct typing guides. Guides render on the server.
+- The homepage has a short visible heading and description above the typing test.
+  `/about` contains the full product overview and FAQ; `/guide` links to six
+  server-rendered guides, including WPM calculations, improving speed and fair
+  average-speed comparisons.
   Each guide opens with a short answer and a real editorial update date, matching
   its `WebPage.dateModified` value and sitemap `lastmod`. Change a guide's date
   only after a substantive content update; never advance it automatically on requests or builds.
-- JSON-LD identifies the website and free web application; guides include
-  breadcrumbs. Facts must match visible content. Do not invent ratings, reviews,
-  usage figures or dates, or promise a rich result.
+- JSON-LD identifies the website, free web application and Caret organization with
+  its real logo and GitHub identity. `/about` has `FAQPage` data sourced from the
+  same answers as the visible FAQ. Guides have `Article` data with Caret
+  contributors as author, Caret as publisher, and breadcrumbs. Facts must match
+  visible content. Do not invent ratings, reviews, usage figures, publication dates
+  or social profiles, or promise a rich result or AI recommendation.
 - `frontend/static/sitemap.xml` lists maintained, indexable public pages. Add new
   editorial pages there and link them from relevant existing pages. Do not list
   search filters, private accounts, missing profiles or utility pages.
@@ -23,6 +28,13 @@ metadata as visitors. The interactive typing engine still requires JavaScript.
   Claude-SearchBot, PerplexityBot, Googlebot and Bingbot. API/RPC paths are excluded.
   Login, account, settings, profile lookup and callback documents use `noindex`;
   crawlers can fetch those documents to read that instruction.
+- Public profiles are indexable when the fetched public data has a nonempty bio
+  or a time-15/time-60 personal best shown in the server summary. Name-only,
+  banned, missing and unavailable profiles use `noindex`. They remain accessible
+  through their existing links and lookup flow.
+- Populated leaderboards already render their requested page of ranks on the
+  server. Empty databases and failed public reads cannot supply ranking rows;
+  do not replace them with fabricated entries for crawlers.
 - `llms.txt` is an optional concise reference to real pages. Provider adoption
   varies; it is not a prerequisite for indexing or a proven ranking mechanism.
   Google explicitly ignores these special files for ranking. An extra JSON feed
@@ -30,7 +42,24 @@ metadata as visitors. The interactive typing engine still requires JavaScript.
 - Training crawlers remain allowed. Search access and training permission are
   separate choices; blocking training bots is not an SEO requirement.
 - Existing fonts/engine preloads, social image, lazy engine loading and static
-  no-JavaScript/no-CSS recovery fallbacks are retained.
+  no-JavaScript/no-CSS recovery fallbacks are retained. The static warnings follow
+  page content in document order, so raw-text readers encounter the content first.
+  Their fixed overlays and service-worker recovery action still work.
+- The installed-app manifest shares the homepage description and default theme
+  color with document metadata. Its existing app ID, scope and icon URLs remain.
+
+## Editorial data and remaining discovery work
+
+The speed histogram is derived from all-time leaderboard personal bests in
+`backend/src/dal/leaderboards.ts`, not every completed test. Do not turn it into
+"average WPM from N Caret tests" or a population benchmark. The average-speed
+guide explains the sample limitation and labels its arithmetic as examples.
+Publishing a measured aggregate later needs a documented sample, collection
+period, exclusions and calculation method.
+
+Repository fixes do not establish indexing or outside mentions. No search account
+verification, sitemap submission, IndexNow notification or community post is
+performed by these changes. Follow the owner checklist after deployment.
 
 ## After deployment: owner-controlled work
 
@@ -41,6 +70,11 @@ change cannot register properties, obtain search analytics or guarantee recommen
    and [Bing Webmaster Tools](https://www.bing.com/webmasters/). Submit
    `https://caret.voltcrash.com/sitemap.xml` in both. Inspect `/` and each guide for
    successful indexing, the selected canonical and rendered content.
+   For Bing, also use its URL Submission tools or configure
+   [IndexNow](https://www.indexnow.org/documentation): publish the site's ownership
+   key first, verify it is accessible, then submit changed canonical URLs. Keep
+   account credentials out of this repository. Submission requests crawling;
+   it does not guarantee inclusion.
 2. Check the deployed sitemap, robots file, guides and social image return HTTP 200
    with their correct content types. Use Google's
    [Rich Results Test](https://search.google.com/test/rich-results) for JSON-LD
@@ -58,6 +92,10 @@ change cannot register properties, obtain search analytics or guarantee recommen
 6. Keep guides accurate as features change. Link to Caret from the public project
    README and legitimate community resources; avoid purchased links, copied pages,
    keyword stuffing and mass-generated doorway pages.
+   Suitable owner-led outreach includes Show HN, typing communities and relevant
+   open-source tool lists. Use the name "Caret typing test" to disambiguate the
+   project. Add new `sameAs` profiles only after they really exist and are owned
+   by the project.
 
 ## Verification
 
@@ -71,14 +109,15 @@ vp run --filter @caret/frontend lint
 From `frontend/`, after that build finishes:
 
 ```sh
-vp test run --config vitest.start.config.ts __tests__/start/seo.spec.ts
+vp test run --config vitest.start.config.ts __tests__/start/seo.spec.ts __tests__/start/routes.spec.ts __tests__/start/document.spec.ts
 vp exec playwright test --config playwright.start.config.ts start-e2e/seo.spec.ts
 ```
 
 The Worker tests fetch every sitemap page without running JavaScript, parse the
-homepage JSON-LD, check canonical/metadata uniqueness, exercise crawler User-Agents
-and verify utility-page indexing directives. Browser tests check layout, mobile
-width, client navigation and metadata/schema replacement.
+homepage, FAQ and Article JSON-LD, check canonical/metadata uniqueness and manifest
+consistency, exercise crawler User-Agents, and verify profile/utility indexing
+directives and populated leaderboard rows. Browser tests check layout, mobile
+width, client navigation, metadata/schema replacement and CSS-failure recovery.
 
 ## Provider guidance
 
