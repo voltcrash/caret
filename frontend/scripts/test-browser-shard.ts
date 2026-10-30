@@ -54,11 +54,12 @@ for (const [number, shard] of shards.entries()) {
   );
 }
 const selected = shards[index - 1];
-if (selected === undefined || selected.files.length === 0)
+if (selected === undefined || selected.files.length === 0) {
   throw new Error("Empty browser shard");
+}
 mkdirSync(resolve(root, ".reports"), { recursive: true });
 const list = resolve(root, `.reports/browser-shard-${index}.txt`);
-writeFileSync(list, selected.files.join("\n") + "\n");
+writeFileSync(list, `${selected.files.join("\n")}\n`);
 const result = spawnSync(
   "vp",
   [...args, "--test-list", list, ...process.argv.slice(3)],

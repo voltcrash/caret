@@ -4,8 +4,9 @@ export function balanceBrowserFiles(
   durations: Record<string, number>,
   count: number,
 ): { files: string[]; seconds: number }[] {
-  if (!Number.isInteger(count) || count < 1)
+  if (!Number.isInteger(count) || count < 1) {
     throw new Error("Invalid shard count");
+  }
   const recorded = Object.values(durations).filter((value) => value > 0);
   const fallback =
     recorded.length === 0
