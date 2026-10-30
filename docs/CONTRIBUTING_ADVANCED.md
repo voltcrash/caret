@@ -1,6 +1,6 @@
 # Advanced development setup
 
-Use Git, Node 26.13.0 and Vite+ (`vp`); pnpm 12.15.0 is the package manager
+Use Git, Node 26.13.0 and Vite+ (`vp`); pnpm 12.16.1 is the package manager
 under the hood (pins in `.node-version`/`.nvmrc`/`packageManager`). On
 Windows, disable Git autocrlf before cloning. Install dependencies with
 `vp install --frozen-lockfile`. Shared packages export TypeScript source and
