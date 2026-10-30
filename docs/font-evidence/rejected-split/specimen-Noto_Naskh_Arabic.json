@@ -1,0 +1,121 @@
+{
+  "baselineRevision": "7699fef52",
+  "nodeVersion": "v26.13.0",
+  "systemFontFixture": "/tmp/caret-font-system/fonts.conf",
+  "browser": "156.0.8078.4",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "dpr": 1,
+  "os": "linux",
+  "arch": "arm64",
+  "locale": "en-US",
+  "timezone": "UTC",
+  "theme": "specimen-gray",
+  "seed": null,
+  "preloads": [],
+  "fonts": [
+    {
+      "url": "/webfonts/NotoNaskhArabic-Regular.core.woff2",
+      "decodedBodyBytes": 7228,
+      "encodedBodyBytes": 7228,
+      "transferBytes": 7410
+    },
+    {
+      "url": "/webfonts/NotoNaskhArabic-Regular.extended.woff2",
+      "decodedBodyBytes": 65268,
+      "encodedBodyBytes": 65268,
+      "transferBytes": 65451
+    }
+  ],
+  "faces": [
+    {
+      "family": "Noto Naskh Arabic",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Noto Naskh Arabic",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0, U+D, U+A1-A3, U+A5, U+A7-AB, U+AE-B0, U+B4, U+B6-B8, U+BA-BB, U+BF-107, U+10A-113, U+116-11B, U+11E-123, U+126-127, U+12A-12B, U+12E-131, U+136-137, U+139-13E, U+141-148, U+14A-14D, U+150-15B, U+15E-161, U+164-165, U+16A-17E, U+218-21B, U+237, U+2C6-2C7, U+2C9, U+2D8-2DD, U+300-304, U+306-308, U+30A-30C, U+312, U+326-328, U+600-6FF, U+750-77F, U+870-88E, U+890-891, U+898-8FF, U+1E80-1E85, U+1E9E, U+1EF2-1EF3, U+2009, U+200B-200F, U+201A, U+201E, U+2022, U+202F, U+2039-203A, U+204F, U+20AC, U+2122, U+2212, U+221A, U+25CC, U+2E41, U+FB50-FBC2, U+FBD3-FD8F, U+FD92-FDC7, U+FDCF, U+FDF0-FDFF, U+FE70-FE74, U+FE76-FEFC, U+FEFF, U+10EFD-10EFF"
+    }
+  ],
+  "text": "Noto Naskh Arabic\n\nAV To Té Tě Tø VÁ AŠ Ťo Příliš fi ffi -> => !== === <= 0123456789 café Ő Ł é é Å ā ạ “quotes”—… ‐ ­   Ελληνικά Русский لا لأ لإ السَّلَامُ فارسی می‌روم น้ำ กิ กี่ ນ້ຳ 中文 日本語 한국어\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\nAV To Té Tě Tø VÁ AŠ Ťo Příliš fi ffi -> => !== === <= 0123456789 café Ő Ł é é Å ā ạ “quotes”—… ‐ ­   Ελληνικά Русский لا لأ لإ السَّلَامُ فارسی می‌روم น้ำ กิ กี่ ນ້ຳ 中文 日本語 한국어\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\nAV To Té Tě Tø VÁ AŠ Ťo Příliš fi ffi -> => !== === <= 0123456789 café Ő Ł é é Å ā ạ “quotes”—… ‐ ­   Ελληνικά Русский لا لأ لإ السَّلَامُ فارسی می‌روم น้ำ กิ กี่ ນ້ຳ 中文 日本語 한국어\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\nAV To Té Tě Tø VÁ AŠ Ťo Příliš fi ffi -> => !== === <= 0123456789 café Ő Ł é é Å ā ạ “quotes”—… ‐ ­   Ελληνικά Русский لا لأ لإ السَّلَامُ فارسی می‌روم น้ำ กิ กี่ ນ້ຳ 中文 日本語 한국어\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\nAV To Té Tě Tø VÁ AŠ Ťo Příliš fi ffi -> => !== === <= 0123456789 café Ő Ł é é Å ā ạ “quotes”—… ‐ ­   Ελληνικά Русский لا لأ لإ السَّلَامُ فارسی می‌روم น้ำ กิ กี่ ນ້ຳ 中文 日本語 한국어\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\nAV To Té Tě Tø VÁ AŠ Ťo Příliš fi ffi -> => !== === <= 0123456789 café Ő Ł é é Å ā ạ “quotes”—… ‐ ­   Ελληνικά Русский لا لأ لإ السَّلَامُ فارسی می‌روم น้ำ กิ กี่ ນ້ຳ 中文 日本語 한국어\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\nAV To Té Tě Tø VÁ AŠ Ťo Příliš fi ffi -> => !== === <= 0123456789 café Ő Ł é é Å ā ạ “quotes”—… ‐ ­   Ελληνικά Русский لا لأ لإ السَّلَامُ فارسی می‌روم น้ำ กิ กี่ ນ້ຳ 中文 日本語 한국어\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\nAV To Té Tě Tø VÁ AŠ Ťo Příliš fi ffi -> => !== === <= 0123456789 café Ő Ł é é Å ā ạ “quotes”—… ‐ ­   Ελληνικά Русский لا لأ لإ السَّلَامُ فارسی می‌روم น้ำ กิ กี่ ນ້ຳ 中文 日本語 한국어\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi",
+  "stack": "\"Noto Naskh Arabic\", monospace",
+  "rendered": [
+    {
+      "selector": "p",
+      "fonts": [
+        {
+          "familyName": "CaretSubsetd9fe0d39a2adExtended",
+          "postScriptName": "CaretSubsetd9fe0d39a2adExtended",
+          "isCustomFont": true,
+          "glyphCount": 56
+        },
+        {
+          "familyName": "Noto Sans CJK SC",
+          "postScriptName": "NotoSansCJKsc-Regular",
+          "isCustomFont": false,
+          "glyphCount": 8
+        },
+        {
+          "familyName": "CaretSubsetd9fe0d39a2adCore",
+          "postScriptName": "CaretSubsetd9fe0d39a2adCore",
+          "isCustomFont": true,
+          "glyphCount": 200
+        },
+        {
+          "familyName": "Adwaita Mono",
+          "postScriptName": "Adwaita-Mono",
+          "isCustomFont": false,
+          "glyphCount": 16
+        }
+      ]
+    },
+    {
+      "selector": "h1",
+      "fonts": [
+        {
+          "familyName": "CaretSubsetd9fe0d39a2adCore",
+          "postScriptName": "CaretSubsetd9fe0d39a2adCore",
+          "isCustomFont": true,
+          "glyphCount": 17
+        }
+      ]
+    },
+    {
+      "selector": "body",
+      "fonts": [
+        {
+          "familyName": "CaretSubsetd9fe0d39a2adExtended",
+          "postScriptName": "CaretSubsetd9fe0d39a2adExtended",
+          "isCustomFont": true,
+          "glyphCount": 360
+        },
+        {
+          "familyName": "Noto Sans CJK SC",
+          "postScriptName": "NotoSansCJKsc-Regular",
+          "isCustomFont": false,
+          "glyphCount": 64
+        },
+        {
+          "familyName": "CaretSubsetd9fe0d39a2adCore",
+          "postScriptName": "CaretSubsetd9fe0d39a2adCore",
+          "isCustomFont": true,
+          "glyphCount": 932
+        },
+        {
+          "familyName": "Adwaita Mono",
+          "postScriptName": "Adwaita-Mono",
+          "isCustomFont": false,
+          "glyphCount": 128
+        }
+      ]
+    }
+  ]
+}

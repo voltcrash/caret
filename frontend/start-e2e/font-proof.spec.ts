@@ -131,8 +131,16 @@ async function capture(page: Page, name: string, idle = true): Promise<void> {
         arch: process.arch,
         locale: "en-US",
         timezone: "UTC",
-        theme: "serika_dark",
-        seed: 4242,
+        theme: name.startsWith("specimen-")
+          ? "specimen-gray"
+          : ["core-only", "extended-only"].includes(name)
+            ? "browser-default"
+            : "serika_dark",
+        seed:
+          name.startsWith("specimen-") ||
+          ["core-only", "extended-only"].includes(name)
+            ? null
+            : 4242,
         ...data,
         fonts: await Promise.all(networks.get(page) ?? []),
         rendered,
@@ -211,6 +219,27 @@ for (const scenario of [
     name: "cjk",
     route: "/",
     text: "中文 漢字 日本語 ひらがな カタカナ 한국어",
+  },
+  {
+    name: "thai-boon",
+    route: "/",
+    fontFamily: "Boon",
+    language: "thai",
+    text: "ภาษาไทย น้ำ กิ กี่ ผู้ใหญ่ สวัสดี",
+  },
+  {
+    name: "lao-noto",
+    route: "/",
+    fontFamily: "Noto_Sans_Lao",
+    language: "lao",
+    text: "ພາສາລາວ ສະບາຍດີ ນ້ຳ ເມືອງ",
+  },
+  {
+    name: "arabic-naskh",
+    route: "/",
+    fontFamily: "Noto_Naskh_Arabic",
+    language: "arabic",
+    text: "السَّلَامُ عَلَيْكُمْ لا لأ لإ آ فارسی می‌روم",
   },
   { name: "settings", route: "/settings#group_appearance" },
   { name: "commands", route: "/" },
@@ -330,7 +359,10 @@ test("all font specimens and core/extended network isolation", async ({
   if (trial !== undefined) {
     const meta = JSON.parse(
       readFileSync(resolve(trial, "metadata.json"), "utf8"),
-    ) as Record<string, { file: string; unicodeRange: string }[]>;
+    ) as Record<
+      string,
+      { file: string; unicodeRange: string; split?: boolean }[]
+    >;
     const entries = [
       ...Object.entries(Fonts).flatMap(([name, f]) =>
         f.systemFont
@@ -353,12 +385,12 @@ test("all font specimens and core/extended network isolation", async ({
       .flatMap((font) =>
         (meta[font.source] ?? []).map(
           (part) =>
-            `@font-face{font-family:'${font.family}';font-weight:${font.weight};font-style:normal;font-display:swap;src:url('/webfonts/${part.file}') format('woff2');unicode-range:${part.unicodeRange}}`,
+            `@font-face{font-family:'${font.family}';font-weight:${font.weight};font-style:normal;font-display:swap;src:url('/webfonts/${part.file}') format('woff2');${part.split === false ? "" : `unicode-range:${part.unicodeRange};`}}`,
         ),
       )
       .join("\n");
   }
-  const fonts = [
+  const fonts: { family: string; weight: number; variation?: true }[] = [
     ...Object.entries(Fonts)
       .filter(([, f]) => !f.systemFont)
       .map(([name, f]) => ({
@@ -366,12 +398,20 @@ test("all font specimens and core/extended network isolation", async ({
         weight: f.weight ?? 400,
       })),
     { family: "Vazirharf", weight: 400 },
+    { family: "Adwaita Mono", weight: 400, variation: true },
+    { family: "Iosevka", weight: 400, variation: true },
   ];
-  const sample =
+  const standardSample =
     "AV To Té Tě Tø VÁ AŠ Ťo Příliš fi ffi -> => !== === <= 0123456789 café Ő Ł é é Å ā ạ “quotes”—… \u2010 \u00ad \u00a0 Ελληνικά Русский لا لأ لإ السَّلَامُ فارسی می‌روم น้ำ กิ กี่ ນ້ຳ 中文 日本語 한국어";
   const browser = page.context().browser();
   if (browser === null) throw new Error("Browser required for font proof");
   for (const font of fonts) {
+    if (process.env["FONT_PROOF_VARIATIONS_ONLY"] === "1" && !font.variation) {
+      continue;
+    }
+    const sample = font.variation
+      ? "0123456789 0 0\uFE00 00 0\uFE000\uFE00 AV To café é"
+      : standardSample;
     if (trial !== undefined) {
       const metadata = readFileSync(resolve(trial, "metadata.json"), "utf8");
       const source =
@@ -420,8 +460,17 @@ test("all font specimens and core/extended network isolation", async ({
       },
       { ...font, sample },
     );
-    await capture(specimen, `specimen-${font.family.replaceAll(" ", "_")}`);
+    await capture(
+      specimen,
+      `specimen-${font.family.replaceAll(" ", "_")}${font.variation ? "-variation" : ""}`,
+    );
     await context.close();
+  }
+  if (trial !== undefined) {
+    const metadata = JSON.parse(
+      readFileSync(resolve(trial, "metadata.json"), "utf8"),
+    ) as Record<string, unknown>;
+    if (!("RobotoMono-Regular.woff2" in metadata)) return;
   }
   for (const [name, text] of [
     ["core-only", "ASCII AV To -> != 123"],

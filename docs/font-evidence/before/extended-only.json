@@ -12,8 +12,8 @@
   "arch": "arm64",
   "locale": "en-US",
   "timezone": "UTC",
-  "theme": "serika_dark",
-  "seed": 4242,
+  "theme": "browser-default",
+  "seed": null,
   "preloads": [],
   "fonts": [
     {

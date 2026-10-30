@@ -1,0 +1,257 @@
+[
+  {
+    "case": "accents",
+    "missing": true
+  },
+  {
+    "case": "arabic-naskh",
+    "missing": true
+  },
+  {
+    "case": "arabic",
+    "missing": true
+  },
+  {
+    "case": "cjk",
+    "missing": true
+  },
+  {
+    "case": "code",
+    "missing": true
+  },
+  {
+    "case": "commands",
+    "missing": true
+  },
+  {
+    "case": "core-only",
+    "missing": true
+  },
+  {
+    "case": "default",
+    "missing": true
+  },
+  {
+    "case": "extended-only",
+    "missing": true
+  },
+  {
+    "case": "lao-noto",
+    "missing": true
+  },
+  {
+    "case": "lao",
+    "missing": true
+  },
+  {
+    "case": "loader",
+    "missing": true
+  },
+  {
+    "case": "not-found",
+    "missing": true
+  },
+  {
+    "case": "privacy",
+    "missing": true
+  },
+  {
+    "case": "public",
+    "missing": true
+  },
+  {
+    "case": "result",
+    "missing": true
+  },
+  {
+    "case": "settings",
+    "missing": true
+  },
+  {
+    "case": "specimen-Adwaita_Mono-variation",
+    "missing": true
+  },
+  {
+    "case": "specimen-Adwaita_Mono",
+    "missing": true
+  },
+  {
+    "case": "specimen-Atkinson_Hyperlegible",
+    "missing": true
+  },
+  {
+    "case": "specimen-Boon",
+    "missing": true
+  },
+  {
+    "case": "specimen-Cascadia_Mono",
+    "dimensions": [1440, 1839],
+    "beforeSize": [1440, 1839],
+    "afterSize": [1440, 1839],
+    "dimensionsDiffer": false,
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Comfortaa",
+    "missing": true
+  },
+  {
+    "case": "specimen-Coming_Soon",
+    "missing": true
+  },
+  {
+    "case": "specimen-CommitMono",
+    "missing": true
+  },
+  {
+    "case": "specimen-Fira_Code",
+    "missing": true
+  },
+  {
+    "case": "specimen-Geist",
+    "missing": true
+  },
+  {
+    "case": "specimen-Geist_Mono",
+    "missing": true
+  },
+  {
+    "case": "specimen-Hack",
+    "missing": true
+  },
+  {
+    "case": "specimen-IBM_Plex_Mono",
+    "missing": true
+  },
+  {
+    "case": "specimen-IBM_Plex_Sans",
+    "missing": true
+  },
+  {
+    "case": "specimen-Inconsolata",
+    "missing": true
+  },
+  {
+    "case": "specimen-Inter_Tight",
+    "missing": true
+  },
+  {
+    "case": "specimen-Iosevka-variation",
+    "missing": true
+  },
+  {
+    "case": "specimen-Iosevka",
+    "missing": true
+  },
+  {
+    "case": "specimen-Itim",
+    "missing": true
+  },
+  {
+    "case": "specimen-JetBrains_Mono",
+    "missing": true
+  },
+  {
+    "case": "specimen-Kanit",
+    "missing": true
+  },
+  {
+    "case": "specimen-Lalezar",
+    "missing": true
+  },
+  {
+    "case": "specimen-Lato",
+    "missing": true
+  },
+  {
+    "case": "specimen-Lexend_Deca",
+    "missing": true
+  },
+  {
+    "case": "specimen-Mononoki",
+    "missing": true
+  },
+  {
+    "case": "specimen-Montserrat",
+    "missing": true
+  },
+  {
+    "case": "specimen-Noto_Naskh_Arabic",
+    "missing": true
+  },
+  {
+    "case": "specimen-Noto_Sans_Lao",
+    "missing": true
+  },
+  {
+    "case": "specimen-Nunito",
+    "missing": true
+  },
+  {
+    "case": "specimen-Open_Dyslexic",
+    "missing": true
+  },
+  {
+    "case": "specimen-Overpass_Mono",
+    "missing": true
+  },
+  {
+    "case": "specimen-Oxygen",
+    "missing": true
+  },
+  {
+    "case": "specimen-Parkinsans",
+    "missing": true
+  },
+  {
+    "case": "specimen-Proto",
+    "missing": true
+  },
+  {
+    "case": "specimen-Roboto",
+    "missing": true
+  },
+  {
+    "case": "specimen-Roboto_Mono",
+    "missing": true
+  },
+  {
+    "case": "specimen-Sarabun",
+    "missing": true
+  },
+  {
+    "case": "specimen-Source_Code_Pro",
+    "missing": true
+  },
+  {
+    "case": "specimen-Space_Grotesk",
+    "missing": true
+  },
+  {
+    "case": "specimen-Titillium_Web",
+    "missing": true
+  },
+  {
+    "case": "specimen-Ubuntu",
+    "missing": true
+  },
+  {
+    "case": "specimen-Ubuntu_Mono",
+    "missing": true
+  },
+  {
+    "case": "specimen-Vazirharf",
+    "missing": true
+  },
+  {
+    "case": "thai-boon",
+    "missing": true
+  },
+  {
+    "case": "thai",
+    "missing": true
+  }
+]

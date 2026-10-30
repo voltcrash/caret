@@ -1,0 +1,565 @@
+[
+  {
+    "case": "accents",
+    "missing": true
+  },
+  {
+    "case": "arabic-naskh",
+    "missing": true
+  },
+  {
+    "case": "arabic",
+    "missing": true
+  },
+  {
+    "case": "cjk",
+    "missing": true
+  },
+  {
+    "case": "code",
+    "missing": true
+  },
+  {
+    "case": "commands",
+    "missing": true
+  },
+  {
+    "case": "core-only",
+    "dimensions": [1440, 1000],
+    "beforeSize": [1440, 1000],
+    "afterSize": [1440, 1000],
+    "dimensionsDiffer": false,
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "default",
+    "missing": true
+  },
+  {
+    "case": "extended-only",
+    "dimensions": [1440, 1000],
+    "beforeSize": [1440, 1000],
+    "afterSize": [1440, 1000],
+    "dimensionsDiffer": false,
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "lao-noto",
+    "missing": true
+  },
+  {
+    "case": "lao",
+    "missing": true
+  },
+  {
+    "case": "loader",
+    "missing": true
+  },
+  {
+    "case": "not-found",
+    "missing": true
+  },
+  {
+    "case": "privacy",
+    "missing": true
+  },
+  {
+    "case": "public",
+    "missing": true
+  },
+  {
+    "case": "result",
+    "missing": true
+  },
+  {
+    "case": "settings",
+    "missing": true
+  },
+  {
+    "case": "specimen-Adwaita_Mono-variation",
+    "dimensions": [1440, 1301],
+    "beforeSize": [1440, 1301],
+    "afterSize": [1440, 1205],
+    "dimensionsDiffer": true,
+    "changedPixels": 171622,
+    "changedPercent": 9.160795114868904,
+    "maxChannelDelta": 221,
+    "bounds": [0, 110, 1440, 1301]
+  },
+  {
+    "case": "specimen-Adwaita_Mono",
+    "dimensions": [1440, 1937],
+    "beforeSize": [1440, 1937],
+    "afterSize": [1440, 1841],
+    "dimensionsDiffer": true,
+    "changedPixels": 235609,
+    "changedPercent": 8.446946882349566,
+    "maxChannelDelta": 221,
+    "bounds": [0, 75, 1440, 1937]
+  },
+  {
+    "case": "specimen-Atkinson_Hyperlegible",
+    "dimensions": [1440, 1672],
+    "beforeSize": [1440, 1672],
+    "afterSize": [1440, 1672],
+    "dimensionsDiffer": false,
+    "changedPixels": 285806,
+    "changedPercent": 11.870597421584264,
+    "maxChannelDelta": 189,
+    "bounds": [26, 30, 1413, 1623]
+  },
+  {
+    "case": "specimen-Boon",
+    "dimensions": [1440, 1571],
+    "beforeSize": [1440, 1571],
+    "afterSize": [1440, 1571],
+    "dimensionsDiffer": false,
+    "changedPixels": 238909,
+    "changedPercent": 10.56072742060966,
+    "maxChannelDelta": 189,
+    "bounds": [26, 74, 1413, 1520]
+  },
+  {
+    "case": "specimen-Cascadia_Mono",
+    "dimensions": [1440, 1839],
+    "beforeSize": [1440, 1839],
+    "afterSize": [1440, 1839],
+    "dimensionsDiffer": false,
+    "changedPixels": 121030,
+    "changedPercent": 4.570343181680865,
+    "maxChannelDelta": 189,
+    "bounds": [26, 82, 1409, 1802]
+  },
+  {
+    "case": "specimen-Comfortaa",
+    "dimensions": [1440, 1717],
+    "beforeSize": [1440, 1717],
+    "afterSize": [1440, 1717],
+    "dimensionsDiffer": false,
+    "changedPixels": 274663,
+    "changedPercent": 11.108805733514528,
+    "maxChannelDelta": 189,
+    "bounds": [25, 31, 1415, 1663]
+  },
+  {
+    "case": "specimen-Coming_Soon",
+    "dimensions": [1440, 1587],
+    "beforeSize": [1440, 1587],
+    "afterSize": [1440, 1587],
+    "dimensionsDiffer": false,
+    "changedPixels": 147123,
+    "changedPercent": 6.437854442344046,
+    "maxChannelDelta": 189,
+    "bounds": [23, 203, 1415, 1440]
+  },
+  {
+    "case": "specimen-CommitMono",
+    "dimensions": [1440, 1932],
+    "beforeSize": [1440, 1932],
+    "afterSize": [1440, 1836],
+    "dimensionsDiffer": true,
+    "changedPixels": 266146,
+    "changedPercent": 9.566439498504716,
+    "maxChannelDelta": 221,
+    "bounds": [0, 26, 1440, 1932]
+  },
+  {
+    "case": "specimen-Fira_Code",
+    "dimensions": [1440, 1973],
+    "beforeSize": [1440, 1973],
+    "afterSize": [1440, 1841],
+    "dimensionsDiffer": true,
+    "changedPixels": 603272,
+    "changedPercent": 21.233598017683168,
+    "maxChannelDelta": 221,
+    "bounds": [0, 72, 1440, 1973]
+  },
+  {
+    "case": "specimen-Geist",
+    "dimensions": [1440, 1746],
+    "beforeSize": [1440, 1746],
+    "afterSize": [1440, 1722],
+    "dimensionsDiffer": true,
+    "changedPixels": 514110,
+    "changedPercent": 20.447928598701793,
+    "maxChannelDelta": 189,
+    "bounds": [0, 34, 1440, 1746]
+  },
+  {
+    "case": "specimen-Geist_Mono",
+    "dimensions": [1440, 1842],
+    "beforeSize": [1440, 1842],
+    "afterSize": [1440, 1746],
+    "dimensionsDiffer": true,
+    "changedPixels": 331586,
+    "changedPercent": 12.50098021474243,
+    "maxChannelDelta": 221,
+    "bounds": [0, 71, 1440, 1842]
+  },
+  {
+    "case": "specimen-Hack",
+    "dimensions": [1440, 1839],
+    "beforeSize": [1440, 1839],
+    "afterSize": [1440, 1839],
+    "dimensionsDiffer": false,
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-IBM_Plex_Mono",
+    "dimensions": [1440, 1939],
+    "beforeSize": [1440, 1939],
+    "afterSize": [1440, 1843],
+    "dimensionsDiffer": true,
+    "changedPixels": 224898,
+    "changedPercent": 8.054624376826544,
+    "maxChannelDelta": 221,
+    "bounds": [0, 74, 1440, 1939]
+  },
+  {
+    "case": "specimen-IBM_Plex_Sans",
+    "dimensions": [1440, 1723],
+    "beforeSize": [1440, 1723],
+    "afterSize": [1440, 1579],
+    "dimensionsDiffer": true,
+    "changedPixels": 665013,
+    "changedPercent": 26.802935770942156,
+    "maxChannelDelta": 221,
+    "bounds": [0, 74, 1440, 1723]
+  },
+  {
+    "case": "specimen-Inconsolata",
+    "dimensions": [1440, 1738],
+    "beforeSize": [1440, 1738],
+    "afterSize": [1440, 1738],
+    "dimensionsDiffer": false,
+    "changedPixels": 50691,
+    "changedPercent": 2.0254363252780974,
+    "maxChannelDelta": 189,
+    "bounds": [24, 78, 1407, 1689]
+  },
+  {
+    "case": "specimen-Inter_Tight",
+    "dimensions": [1440, 1576],
+    "beforeSize": [1440, 1576],
+    "afterSize": [1440, 1576],
+    "dimensionsDiffer": false,
+    "changedPixels": 221083,
+    "changedPercent": 9.741742456288776,
+    "maxChannelDelta": 189,
+    "bounds": [26, 85, 1413, 1529]
+  },
+  {
+    "case": "specimen-Iosevka-variation",
+    "dimensions": [1440, 1205],
+    "beforeSize": [1440, 1205],
+    "afterSize": [1440, 1205],
+    "dimensionsDiffer": false,
+    "changedPixels": 31995,
+    "changedPercent": 1.8438796680497926,
+    "maxChannelDelta": 189,
+    "bounds": [26, 110, 1127, 1157]
+  },
+  {
+    "case": "specimen-Iosevka",
+    "dimensions": [1440, 1745],
+    "beforeSize": [1440, 1745],
+    "afterSize": [1440, 1745],
+    "dimensionsDiffer": false,
+    "changedPixels": 94264,
+    "changedPercent": 3.7513530722699775,
+    "maxChannelDelta": 189,
+    "bounds": [25, 75, 1413, 1697]
+  },
+  {
+    "case": "specimen-Itim",
+    "dimensions": [1440, 1575],
+    "beforeSize": [1440, 1575],
+    "afterSize": [1440, 1575],
+    "dimensionsDiffer": false,
+    "changedPixels": 214179,
+    "changedPercent": 9.443518518518518,
+    "maxChannelDelta": 189,
+    "bounds": [28, 39, 1367, 1526]
+  },
+  {
+    "case": "specimen-JetBrains_Mono",
+    "dimensions": [1440, 1940],
+    "beforeSize": [1440, 1940],
+    "afterSize": [1440, 1844],
+    "dimensionsDiffer": true,
+    "changedPixels": 241949,
+    "changedPercent": 8.660831901489118,
+    "maxChannelDelta": 221,
+    "bounds": [0, 78, 1440, 1940]
+  },
+  {
+    "case": "specimen-Kanit",
+    "dimensions": [1440, 1729],
+    "beforeSize": [1440, 1729],
+    "afterSize": [1440, 1729],
+    "dimensionsDiffer": false,
+    "changedPixels": 294709,
+    "changedPercent": 11.836843711843711,
+    "maxChannelDelta": 189,
+    "bounds": [25, 36, 1412, 1681]
+  },
+  {
+    "case": "specimen-Lalezar",
+    "dimensions": [1440, 1587],
+    "beforeSize": [1440, 1587],
+    "afterSize": [1440, 1587],
+    "dimensionsDiffer": false,
+    "changedPixels": 193253,
+    "changedPercent": 8.45642547083946,
+    "maxChannelDelta": 189,
+    "bounds": [24, 93, 1408, 1529]
+  },
+  {
+    "case": "specimen-Lato",
+    "dimensions": [1440, 1575],
+    "beforeSize": [1440, 1575],
+    "afterSize": [1440, 1575],
+    "dimensionsDiffer": false,
+    "changedPixels": 292402,
+    "changedPercent": 12.892504409171076,
+    "maxChannelDelta": 189,
+    "bounds": [26, 72, 1415, 1525]
+  },
+  {
+    "case": "specimen-Lexend_Deca",
+    "dimensions": [1440, 1745],
+    "beforeSize": [1440, 1745],
+    "afterSize": [1440, 1721],
+    "dimensionsDiffer": true,
+    "changedPixels": 473207,
+    "changedPercent": 18.831860872333653,
+    "maxChannelDelta": 189,
+    "bounds": [0, 31, 1440, 1745]
+  },
+  {
+    "case": "specimen-Mononoki",
+    "dimensions": [1440, 1837],
+    "beforeSize": [1440, 1837],
+    "afterSize": [1440, 1741],
+    "dimensionsDiffer": true,
+    "changedPixels": 298397,
+    "changedPercent": 11.280355954757152,
+    "maxChannelDelta": 221,
+    "bounds": [0, 70, 1440, 1837]
+  },
+  {
+    "case": "specimen-Montserrat",
+    "dimensions": [1440, 1744],
+    "beforeSize": [1440, 1744],
+    "afterSize": [1440, 1720],
+    "dimensionsDiffer": true,
+    "changedPixels": 419652,
+    "changedPercent": 16.710149082568808,
+    "maxChannelDelta": 189,
+    "bounds": [0, 34, 1440, 1744]
+  },
+  {
+    "case": "specimen-Noto_Naskh_Arabic",
+    "dimensions": [1440, 1687],
+    "beforeSize": [1440, 1687],
+    "afterSize": [1440, 1591],
+    "dimensionsDiffer": true,
+    "changedPixels": 451008,
+    "changedPercent": 18.565500889152343,
+    "maxChannelDelta": 221,
+    "bounds": [0, 33, 1440, 1687]
+  },
+  {
+    "case": "specimen-Noto_Sans_Lao",
+    "dimensions": [1440, 1686],
+    "beforeSize": [1440, 1686],
+    "afterSize": [1440, 1590],
+    "dimensionsDiffer": true,
+    "changedPixels": 426602,
+    "changedPercent": 17.571256754975614,
+    "maxChannelDelta": 221,
+    "bounds": [0, 87, 1440, 1686]
+  },
+  {
+    "case": "specimen-Nunito",
+    "dimensions": [1440, 1724],
+    "beforeSize": [1440, 1724],
+    "afterSize": [1440, 1580],
+    "dimensionsDiffer": true,
+    "changedPixels": 641456,
+    "changedPercent": 25.83848930136633,
+    "maxChannelDelta": 221,
+    "bounds": [0, 73, 1440, 1724]
+  },
+  {
+    "case": "specimen-Open_Dyslexic",
+    "dimensions": [1440, 2459],
+    "beforeSize": [1440, 2328],
+    "afterSize": [1440, 2459],
+    "dimensionsDiffer": true,
+    "changedPixels": 1103911,
+    "changedPercent": 31.175472188333107,
+    "maxChannelDelta": 221,
+    "bounds": [0, 38, 1440, 2459]
+  },
+  {
+    "case": "specimen-Overpass_Mono",
+    "dimensions": [1440, 1841],
+    "beforeSize": [1440, 1841],
+    "afterSize": [1440, 1841],
+    "dimensionsDiffer": false,
+    "changedPixels": 223594,
+    "changedPercent": 8.43419940853401,
+    "maxChannelDelta": 189,
+    "bounds": [25, 74, 1395, 1786]
+  },
+  {
+    "case": "specimen-Oxygen",
+    "dimensions": [1440, 1578],
+    "beforeSize": [1440, 1578],
+    "afterSize": [1440, 1578],
+    "dimensionsDiffer": false,
+    "changedPixels": 181716,
+    "changedPercent": 7.996937051119561,
+    "maxChannelDelta": 189,
+    "bounds": [22, 79, 1411, 1533]
+  },
+  {
+    "case": "specimen-Parkinsans",
+    "dimensions": [1440, 1750],
+    "beforeSize": [1440, 1750],
+    "afterSize": [1440, 1726],
+    "dimensionsDiffer": true,
+    "changedPixels": 473111,
+    "changedPercent": 18.77424603174603,
+    "maxChannelDelta": 189,
+    "bounds": [0, 79, 1440, 1750]
+  },
+  {
+    "case": "specimen-Proto",
+    "dimensions": [1440, 1935],
+    "beforeSize": [1440, 1935],
+    "afterSize": [1440, 1743],
+    "dimensionsDiffer": true,
+    "changedPixels": 469864,
+    "changedPercent": 16.862761986792993,
+    "maxChannelDelta": 221,
+    "bounds": [0, 66, 1440, 1935]
+  },
+  {
+    "case": "specimen-Roboto",
+    "dimensions": [1440, 1575],
+    "beforeSize": [1440, 1575],
+    "afterSize": [1440, 1575],
+    "dimensionsDiffer": false,
+    "changedPixels": 266286,
+    "changedPercent": 11.74100529100529,
+    "maxChannelDelta": 189,
+    "bounds": [23, 72, 1413, 1526]
+  },
+  {
+    "case": "specimen-Roboto_Mono",
+    "dimensions": [1440, 1844],
+    "beforeSize": [1440, 1844],
+    "afterSize": [1440, 1844],
+    "dimensionsDiffer": false,
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Sarabun",
+    "dimensions": [1440, 1698],
+    "beforeSize": [1440, 1698],
+    "afterSize": [1440, 1674],
+    "dimensionsDiffer": true,
+    "changedPixels": 459806,
+    "changedPercent": 18.805048422981287,
+    "maxChannelDelta": 189,
+    "bounds": [0, 76, 1440, 1698]
+  },
+  {
+    "case": "specimen-Source_Code_Pro",
+    "dimensions": [1440, 1937],
+    "beforeSize": [1440, 1937],
+    "afterSize": [1440, 1841],
+    "dimensionsDiffer": true,
+    "changedPixels": 236268,
+    "changedPercent": 8.470573051109964,
+    "maxChannelDelta": 221,
+    "bounds": [0, 75, 1440, 1937]
+  },
+  {
+    "case": "specimen-Space_Grotesk",
+    "dimensions": [1440, 1745],
+    "beforeSize": [1440, 1745],
+    "afterSize": [1440, 1745],
+    "dimensionsDiffer": false,
+    "changedPixels": 248543,
+    "changedPercent": 9.891077682266793,
+    "maxChannelDelta": 189,
+    "bounds": [24, 32, 1406, 1697]
+  },
+  {
+    "case": "specimen-Titillium_Web",
+    "dimensions": [1440, 1585],
+    "beforeSize": [1440, 1585],
+    "afterSize": [1440, 1585],
+    "dimensionsDiffer": false,
+    "changedPixels": 187818,
+    "changedPercent": 8.228969505783386,
+    "maxChannelDelta": 189,
+    "bounds": [26, 36, 1403, 1539]
+  },
+  {
+    "case": "specimen-Ubuntu",
+    "dimensions": [1440, 1577],
+    "beforeSize": [1440, 1577],
+    "afterSize": [1440, 1577],
+    "dimensionsDiffer": false,
+    "changedPixels": 255537,
+    "changedPercent": 11.252774254914394,
+    "maxChannelDelta": 189,
+    "bounds": [23, 76, 1417, 1531]
+  },
+  {
+    "case": "specimen-Ubuntu_Mono",
+    "dimensions": [1440, 1738],
+    "beforeSize": [1440, 1738],
+    "afterSize": [1440, 1738],
+    "dimensionsDiffer": false,
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Vazirharf",
+    "dimensions": [1440, 1731],
+    "beforeSize": [1440, 1731],
+    "afterSize": [1440, 1587],
+    "dimensionsDiffer": true,
+    "changedPixels": 493123,
+    "changedPercent": 19.78316162783234,
+    "maxChannelDelta": 221,
+    "bounds": [0, 94, 1440, 1731]
+  },
+  {
+    "case": "thai-boon",
+    "missing": true
+  },
+  {
+    "case": "thai",
+    "missing": true
+  }
+]

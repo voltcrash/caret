@@ -1,0 +1,133 @@
+{
+  "baselineRevision": "7699fef52",
+  "nodeVersion": "v26.13.0",
+  "systemFontFixture": "/tmp/caret-font-system/fonts.conf",
+  "browser": "156.0.8078.4",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "dpr": 1,
+  "os": "linux",
+  "arch": "arm64",
+  "locale": "en-US",
+  "timezone": "UTC",
+  "theme": "specimen-gray",
+  "seed": null,
+  "preloads": [],
+  "fonts": [
+    {
+      "url": "/webfonts/Mononoki-Regular.core.woff2",
+      "decodedBodyBytes": 6936,
+      "encodedBodyBytes": 6936,
+      "transferBytes": 7118
+    },
+    {
+      "url": "/webfonts/Mononoki-Regular.extended.woff2",
+      "decodedBodyBytes": 24404,
+      "encodedBodyBytes": 24404,
+      "transferBytes": 24587
+    }
+  ],
+  "faces": [
+    {
+      "family": "Mononoki",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Mononoki",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+A1-AC, U+AE-109, U+10C-113, U+116-11F, U+124-125, U+128-12B, U+12E-135, U+139-13A, U+13D-144, U+147-148, U+14C-14D, U+150-155, U+158-17E, U+192, U+19B, U+1A0-1A1, U+1AF-1B0, U+237, U+2B3, U+2C6-2C7, U+2D8-2DD, U+2E1, U+323, U+374-375, U+37E, U+384-38A, U+38C, U+38E-3A1, U+3A3-3CE, U+401, U+403, U+405-408, U+40C, U+410-44F, U+451, U+453, U+455-456, U+458, U+45C, U+4BB, U+4C0, U+4E2-4E3, U+4EE-4EF, U+180E, U+1D47, U+1D62, U+1D9C, U+1E80-1E85, U+1E9E, U+1EA0-1EF9, U+2000-200B, U+201A-201B, U+201E, U+2020-2022, U+2024-2025, U+202F-2030, U+2032-2033, U+2039-203A, U+203C, U+205F, U+2070, U+2074-208E, U+20AC, U+2102, U+210D, U+2113, U+2115, U+2119-211A, U+211D, U+2122, U+2124, U+2150-215F, U+2189, U+2190-2199, U+219E, U+21A0, U+21D0, U+21D2, U+21D4, U+2200, U+2202-2206, U+2208-2209, U+220B-220C, U+220E-220F, U+2211-2212, U+2215, U+2218-221A, U+221E, U+2225, U+2227-222B, U+2234, U+2237-2238, U+2243-2244, U+2248, U+2250, U+225F-2262, U+2264-2265, U+2272-2273, U+2282-228B, U+228E, U+2294-2295, U+2297, U+22A2-22A5, U+2308-230B, U+2500-259F, U+2605, U+2665, U+27E8-27E9, U+2982, U+E0A0-E0A3, U+E0B0-E0BF, U+FEFF"
+    }
+  ],
+  "text": "Mononoki\n\nAV To Té Tě Tø VÁ AŠ Ťo Příliš fi ffi -> => !== === <= 0123456789 café Ő Ł é é Å ā ạ “quotes”—… ‐ ­   Ελληνικά Русский لا لأ لإ السَّلَامُ فارسی می‌روم น้ำ กิ กี่ ນ້ຳ 中文 日本語 한국어\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\nAV To Té Tě Tø VÁ AŠ Ťo Příliš fi ffi -> => !== === <= 0123456789 café Ő Ł é é Å ā ạ “quotes”—… ‐ ­   Ελληνικά Русский لا لأ لإ السَّلَامُ فارسی می‌روم น้ำ กิ กี่ ນ້ຳ 中文 日本語 한국어\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\nAV To Té Tě Tø VÁ AŠ Ťo Příliš fi ffi -> => !== === <= 0123456789 café Ő Ł é é Å ā ạ “quotes”—… ‐ ­   Ελληνικά Русский لا لأ لإ السَّلَامُ فارسی می‌روم น้ำ กิ กี่ ນ້ຳ 中文 日本語 한국어\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\nAV To Té Tě Tø VÁ AŠ Ťo Příliš fi ffi -> => !== === <= 0123456789 café Ő Ł é é Å ā ạ “quotes”—… ‐ ­   Ελληνικά Русский لا لأ لإ السَّلَامُ فارسی می‌روم น้ำ กิ กี่ ນ້ຳ 中文 日本語 한국어\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\nAV To Té Tě Tø VÁ AŠ Ťo Příliš fi ffi -> => !== === <= 0123456789 café Ő Ł é é Å ā ạ “quotes”—… ‐ ­   Ελληνικά Русский لا لأ لإ السَّلَامُ فارسی می‌روم น้ำ กิ กี่ ນ້ຳ 中文 日本語 한국어\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\nAV To Té Tě Tø VÁ AŠ Ťo Příliš fi ffi -> => !== === <= 0123456789 café Ő Ł é é Å ā ạ “quotes”—… ‐ ­   Ελληνικά Русский لا لأ لإ السَّلَامُ فارسی می‌روم น้ำ กิ กี่ ນ້ຳ 中文 日本語 한국어\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\nAV To Té Tě Tø VÁ AŠ Ťo Příliš fi ffi -> => !== === <= 0123456789 café Ő Ł é é Å ā ạ “quotes”—… ‐ ­   Ελληνικά Русский لا لأ لإ السَّلَامُ فارسی می‌روم น้ำ กิ กี่ ນ້ຳ 中文 日本語 한국어\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\nAV To Té Tě Tø VÁ AŠ Ťo Příliš fi ffi -> => !== === <= 0123456789 café Ő Ł é é Å ā ạ “quotes”—… ‐ ­   Ελληνικά Русский لا لأ لإ السَّلَامُ فارسی می‌روم น้ำ กิ กี่ ນ້ຳ 中文 日本語 한국어\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi",
+  "stack": "Mononoki, monospace",
+  "rendered": [
+    {
+      "selector": "p",
+      "fonts": [
+        {
+          "familyName": "Noto Sans CJK SC",
+          "postScriptName": "NotoSansCJKsc-Regular",
+          "isCustomFont": false,
+          "glyphCount": 8
+        },
+        {
+          "familyName": "CaretSubset09dfbda96a5aExtended",
+          "postScriptName": "CaretSubset09dfbda96a5aExtended",
+          "isCustomFont": true,
+          "glyphCount": 39
+        },
+        {
+          "familyName": "Adwaita Mono",
+          "postScriptName": "Adwaita-Mono-Italic",
+          "isCustomFont": false,
+          "glyphCount": 2
+        },
+        {
+          "familyName": "Adwaita Mono",
+          "postScriptName": "Adwaita-Mono-Bold",
+          "isCustomFont": false,
+          "glyphCount": 2
+        },
+        {
+          "familyName": "Adwaita Mono",
+          "postScriptName": "Adwaita-Mono",
+          "isCustomFont": false,
+          "glyphCount": 1
+        },
+        {
+          "familyName": "CaretSubset09dfbda96a5aCore",
+          "postScriptName": "CaretSubset09dfbda96a5aCore",
+          "isCustomFont": true,
+          "glyphCount": 226
+        }
+      ]
+    },
+    {
+      "selector": "h1",
+      "fonts": [
+        {
+          "familyName": "CaretSubset09dfbda96a5aCore",
+          "postScriptName": "CaretSubset09dfbda96a5aCore",
+          "isCustomFont": true,
+          "glyphCount": 8
+        }
+      ]
+    },
+    {
+      "selector": "body",
+      "fonts": [
+        {
+          "familyName": "Noto Sans CJK SC",
+          "postScriptName": "NotoSansCJKsc-Regular",
+          "isCustomFont": false,
+          "glyphCount": 64
+        },
+        {
+          "familyName": "CaretSubset09dfbda96a5aExtended",
+          "postScriptName": "CaretSubset09dfbda96a5aExtended",
+          "isCustomFont": true,
+          "glyphCount": 256
+        },
+        {
+          "familyName": "Adwaita Mono",
+          "postScriptName": "Adwaita-Mono",
+          "isCustomFont": false,
+          "glyphCount": 8
+        },
+        {
+          "familyName": "CaretSubset09dfbda96a5aCore",
+          "postScriptName": "CaretSubset09dfbda96a5aCore",
+          "isCustomFont": true,
+          "glyphCount": 1127
+        }
+      ]
+    }
+  ]
+}

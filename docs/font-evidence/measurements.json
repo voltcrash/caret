@@ -1,0 +1,5671 @@
+{
+  "baselineRevision": "7699fef5239c2082baa1ef1b2be8014ff3d02714",
+  "tools": {
+    "fonttools": "4.61.1",
+    "brotli": "1.2.0"
+  },
+  "fonts": [
+    {
+      "file": "0xProto-Regular.woff2",
+      "beforeBytes": 56732,
+      "afterBytes": 55196,
+      "savedBytes": 1536,
+      "rejectedCoreBytes": 19228,
+      "rejectedExtendedBytes": 42456,
+      "rejectedSplitTotal": 61684,
+      "noHintBytes": 26984,
+      "noLayoutBytes": 45024,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "AdwaitaMono-Regular.woff2",
+      "beforeBytes": 361248,
+      "afterBytes": 357832,
+      "savedBytes": 3416,
+      "rejectedCoreBytes": 14864,
+      "rejectedExtendedBytes": 353912,
+      "rejectedSplitTotal": 368776,
+      "noHintBytes": 238312,
+      "noLayoutBytes": 317804,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "AtkinsonHyperlegible-Regular.woff2",
+      "beforeBytes": 23196,
+      "afterBytes": 23020,
+      "savedBytes": 176,
+      "rejectedCoreBytes": 11508,
+      "rejectedExtendedBytes": 17168,
+      "rejectedSplitTotal": 28676,
+      "noHintBytes": 16080,
+      "noLayoutBytes": 18708,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "Boon-Regular.woff2",
+      "beforeBytes": 52228,
+      "afterBytes": 46328,
+      "savedBytes": 5900,
+      "rejectedCoreBytes": 10900,
+      "rejectedExtendedBytes": 40832,
+      "rejectedSplitTotal": 51732,
+      "noHintBytes": 36416,
+      "noLayoutBytes": 40208,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "CascadiaMono-Regular.woff2",
+      "beforeBytes": 211268,
+      "afterBytes": 186908,
+      "savedBytes": 24360,
+      "rejectedCoreBytes": 20768,
+      "rejectedExtendedBytes": 181188,
+      "rejectedSplitTotal": 201956,
+      "noHintBytes": 169652,
+      "noLayoutBytes": 133540,
+      "fixedAxisBytes": 114064,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "Comfortaa-Regular.woff2",
+      "beforeBytes": 51212,
+      "afterBytes": 51212,
+      "savedBytes": 0,
+      "rejectedCoreBytes": 9952,
+      "rejectedExtendedBytes": 42028,
+      "rejectedSplitTotal": 51980,
+      "noHintBytes": 37288,
+      "noLayoutBytes": 31596,
+      "fixedAxisBytes": null,
+      "retainedOriginal": true,
+      "reason": "generated file is not smaller"
+    },
+    {
+      "file": "ComingSoon-Regular.woff2",
+      "beforeBytes": 21432,
+      "afterBytes": 21384,
+      "savedBytes": 48,
+      "rejectedCoreBytes": 13616,
+      "rejectedExtendedBytes": 11048,
+      "rejectedSplitTotal": 24664,
+      "noHintBytes": 21144,
+      "noLayoutBytes": 20328,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "CommitMono-Regular.woff2",
+      "beforeBytes": 39992,
+      "afterBytes": 39992,
+      "savedBytes": 0,
+      "rejectedCoreBytes": 9824,
+      "rejectedExtendedBytes": 25500,
+      "rejectedSplitTotal": 35324,
+      "noHintBytes": 38132,
+      "noLayoutBytes": 26476,
+      "fixedAxisBytes": null,
+      "retainedOriginal": true,
+      "reason": "full-face reserialization changed pixels"
+    },
+    {
+      "file": "FiraCode-Regular.woff2",
+      "beforeBytes": 103240,
+      "afterBytes": 101184,
+      "savedBytes": 2056,
+      "rejectedCoreBytes": 32852,
+      "rejectedExtendedBytes": 80092,
+      "rejectedSplitTotal": 112944,
+      "noHintBytes": 74376,
+      "noLayoutBytes": 76676,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "GallaudetRegular.woff2",
+      "beforeBytes": 30648,
+      "afterBytes": 30648,
+      "savedBytes": 0,
+      "rejectedCoreBytes": null,
+      "rejectedExtendedBytes": null,
+      "rejectedSplitTotal": null,
+      "noHintBytes": 30648,
+      "noLayoutBytes": 30648,
+      "fixedAxisBytes": null,
+      "retainedOriginal": true,
+      "reason": "unmodified ASL; no modification grant found"
+    },
+    {
+      "file": "Geist-Medium.woff2",
+      "beforeBytes": 42132,
+      "afterBytes": 41272,
+      "savedBytes": 860,
+      "rejectedCoreBytes": 15264,
+      "rejectedExtendedBytes": 35292,
+      "rejectedSplitTotal": 50556,
+      "noHintBytes": 29000,
+      "noLayoutBytes": 31016,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "GeistMono-Medium.woff2",
+      "beforeBytes": 44108,
+      "afterBytes": 43212,
+      "savedBytes": 896,
+      "rejectedCoreBytes": 19788,
+      "rejectedExtendedBytes": 32016,
+      "rejectedSplitTotal": 51804,
+      "noHintBytes": 29248,
+      "noLayoutBytes": 30864,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "Hack-Regular.woff2",
+      "beforeBytes": 106236,
+      "afterBytes": 104140,
+      "savedBytes": 2096,
+      "rejectedCoreBytes": 15608,
+      "rejectedExtendedBytes": 96892,
+      "rejectedSplitTotal": 112500,
+      "noHintBytes": 64728,
+      "noLayoutBytes": 103092,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "IBMPlexMono-Regular.woff2",
+      "beforeBytes": 45640,
+      "afterBytes": 44528,
+      "savedBytes": 1112,
+      "rejectedCoreBytes": 12232,
+      "rejectedExtendedBytes": 40032,
+      "rejectedSplitTotal": 52264,
+      "noHintBytes": 30908,
+      "noLayoutBytes": 38716,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "IBMPlexSans-SemiBold.woff2",
+      "beforeBytes": 67060,
+      "afterBytes": 65608,
+      "savedBytes": 1452,
+      "rejectedCoreBytes": 15620,
+      "rejectedExtendedBytes": 57472,
+      "rejectedSplitTotal": 73092,
+      "noHintBytes": 51612,
+      "noLayoutBytes": 40588,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "Inconsolata-Regular.woff2",
+      "beforeBytes": 38772,
+      "afterBytes": 38028,
+      "savedBytes": 744,
+      "rejectedCoreBytes": 12256,
+      "rejectedExtendedBytes": 33940,
+      "rejectedSplitTotal": 46196,
+      "noHintBytes": 26820,
+      "noLayoutBytes": 34056,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "InterTight-Regular.woff2",
+      "beforeBytes": 99132,
+      "afterBytes": 98140,
+      "savedBytes": 992,
+      "rejectedCoreBytes": 16760,
+      "rejectedExtendedBytes": 90316,
+      "rejectedSplitTotal": 107076,
+      "noHintBytes": 97940,
+      "noLayoutBytes": 71828,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "Iosevka-Regular.woff2",
+      "beforeBytes": 1494892,
+      "afterBytes": 530748,
+      "savedBytes": 964144,
+      "rejectedCoreBytes": 42644,
+      "rejectedExtendedBytes": 503436,
+      "rejectedSplitTotal": 546080,
+      "noHintBytes": 377472,
+      "noLayoutBytes": 310476,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "Itim-Regular.woff2",
+      "beforeBytes": 100780,
+      "afterBytes": 100780,
+      "savedBytes": 0,
+      "rejectedCoreBytes": 32624,
+      "rejectedExtendedBytes": 79100,
+      "rejectedSplitTotal": 111724,
+      "noHintBytes": 64068,
+      "noLayoutBytes": 81388,
+      "fixedAxisBytes": null,
+      "retainedOriginal": true,
+      "reason": "generated file is not smaller"
+    },
+    {
+      "file": "JetBrainsMono-Regular.woff2",
+      "beforeBytes": 92164,
+      "afterBytes": 83772,
+      "savedBytes": 8392,
+      "rejectedCoreBytes": 26392,
+      "rejectedExtendedBytes": 65520,
+      "rejectedSplitTotal": 91912,
+      "noHintBytes": 58908,
+      "noLayoutBytes": 64492,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "Kanit-Regular.woff2",
+      "beforeBytes": 53656,
+      "afterBytes": 51728,
+      "savedBytes": 1928,
+      "rejectedCoreBytes": 15808,
+      "rejectedExtendedBytes": 46420,
+      "rejectedSplitTotal": 62228,
+      "noHintBytes": 31304,
+      "noLayoutBytes": 46756,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "Lalezar-Regular.woff2",
+      "beforeBytes": 85748,
+      "afterBytes": 76336,
+      "savedBytes": 9412,
+      "rejectedCoreBytes": 11360,
+      "rejectedExtendedBytes": 72352,
+      "rejectedSplitTotal": 83712,
+      "noHintBytes": 47660,
+      "noLayoutBytes": 53596,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "Lato-Regular.woff2",
+      "beforeBytes": 182708,
+      "afterBytes": 166064,
+      "savedBytes": 16644,
+      "rejectedCoreBytes": 22616,
+      "rejectedExtendedBytes": 136780,
+      "rejectedSplitTotal": 159396,
+      "noHintBytes": 164868,
+      "noLayoutBytes": 87560,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "LexendDeca-Regular.woff2",
+      "beforeBytes": 25888,
+      "afterBytes": 25888,
+      "savedBytes": 0,
+      "rejectedCoreBytes": 8456,
+      "rejectedExtendedBytes": 21108,
+      "rejectedSplitTotal": 29564,
+      "noHintBytes": 25936,
+      "noLayoutBytes": 18824,
+      "fixedAxisBytes": null,
+      "retainedOriginal": true,
+      "reason": "generated file is not smaller"
+    },
+    {
+      "file": "Mononoki-Regular.woff2",
+      "beforeBytes": 28860,
+      "afterBytes": 27056,
+      "savedBytes": 1804,
+      "rejectedCoreBytes": 6936,
+      "rejectedExtendedBytes": 24404,
+      "rejectedSplitTotal": 31340,
+      "noHintBytes": 27164,
+      "noLayoutBytes": 26500,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "Montserrat-Regular.woff2",
+      "beforeBytes": 86900,
+      "afterBytes": 81964,
+      "savedBytes": 4936,
+      "rejectedCoreBytes": 22996,
+      "rejectedExtendedBytes": 71052,
+      "rejectedSplitTotal": 94048,
+      "noHintBytes": 64020,
+      "noLayoutBytes": 39340,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "NotoNaskhArabic-Regular.woff2",
+      "beforeBytes": 71592,
+      "afterBytes": 71484,
+      "savedBytes": 108,
+      "rejectedCoreBytes": 7228,
+      "rejectedExtendedBytes": 65268,
+      "rejectedSplitTotal": 72496,
+      "noHintBytes": 71568,
+      "noLayoutBytes": 55264,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "NotoSansLao-Regular.woff2",
+      "beforeBytes": 23008,
+      "afterBytes": 22604,
+      "savedBytes": 404,
+      "rejectedCoreBytes": 6792,
+      "rejectedExtendedBytes": 18888,
+      "rejectedSplitTotal": 25680,
+      "noHintBytes": 22612,
+      "noLayoutBytes": 17100,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "Nunito-Bold.woff2",
+      "beforeBytes": 41676,
+      "afterBytes": 41676,
+      "savedBytes": 0,
+      "rejectedCoreBytes": 9416,
+      "rejectedExtendedBytes": 37424,
+      "rejectedSplitTotal": 46840,
+      "noHintBytes": 41796,
+      "noLayoutBytes": 32320,
+      "fixedAxisBytes": null,
+      "retainedOriginal": true,
+      "reason": "generated file is not smaller"
+    },
+    {
+      "file": "OpenDyslexic-Regular.woff2",
+      "beforeBytes": 117196,
+      "afterBytes": 112604,
+      "savedBytes": 4592,
+      "rejectedCoreBytes": 24084,
+      "rejectedExtendedBytes": 100360,
+      "rejectedSplitTotal": 124444,
+      "noHintBytes": 87160,
+      "noLayoutBytes": 91516,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "OverpassMono-Regular.woff2",
+      "beforeBytes": 97068,
+      "afterBytes": 96500,
+      "savedBytes": 568,
+      "rejectedCoreBytes": 17764,
+      "rejectedExtendedBytes": 91804,
+      "rejectedSplitTotal": 109568,
+      "noHintBytes": 69092,
+      "noLayoutBytes": 86316,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "Oxygen-Regular.woff2",
+      "beforeBytes": 19804,
+      "afterBytes": 19764,
+      "savedBytes": 40,
+      "rejectedCoreBytes": 10632,
+      "rejectedExtendedBytes": 15536,
+      "rejectedSplitTotal": 26168,
+      "noHintBytes": 12996,
+      "noLayoutBytes": 18516,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "Parkinsans-Regular.woff2",
+      "beforeBytes": 17740,
+      "afterBytes": 17648,
+      "savedBytes": 92,
+      "rejectedCoreBytes": 8208,
+      "rejectedExtendedBytes": 12780,
+      "rejectedSplitTotal": 20988,
+      "noHintBytes": 17672,
+      "noLayoutBytes": 13000,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "Roboto-Regular.woff2",
+      "beforeBytes": 50476,
+      "afterBytes": 50272,
+      "savedBytes": 204,
+      "rejectedCoreBytes": 10476,
+      "rejectedExtendedBytes": 43760,
+      "rejectedSplitTotal": 54236,
+      "noHintBytes": 36872,
+      "noLayoutBytes": 39624,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "RobotoMono-Regular.woff2",
+      "beforeBytes": 37632,
+      "afterBytes": 37632,
+      "savedBytes": 0,
+      "rejectedCoreBytes": 7476,
+      "rejectedExtendedBytes": 34484,
+      "rejectedSplitTotal": 41960,
+      "noHintBytes": 37588,
+      "noLayoutBytes": 37588,
+      "fixedAxisBytes": null,
+      "retainedOriginal": true,
+      "reason": "generated file is not smaller"
+    },
+    {
+      "file": "Sarabun-Bold.woff2",
+      "beforeBytes": 59236,
+      "afterBytes": 46708,
+      "savedBytes": 12528,
+      "rejectedCoreBytes": 13696,
+      "rejectedExtendedBytes": 41328,
+      "rejectedSplitTotal": 55024,
+      "noHintBytes": 31496,
+      "noLayoutBytes": 38620,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "SourceCodePro-Regular.woff2",
+      "beforeBytes": 76348,
+      "afterBytes": 70288,
+      "savedBytes": 6060,
+      "rejectedCoreBytes": 14140,
+      "rejectedExtendedBytes": 64248,
+      "rejectedSplitTotal": 78388,
+      "noHintBytes": 55732,
+      "noLayoutBytes": 62964,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "SpaceGrotesk-Regular.woff2",
+      "beforeBytes": 28560,
+      "afterBytes": 28436,
+      "savedBytes": 124,
+      "rejectedCoreBytes": 10652,
+      "rejectedExtendedBytes": 20532,
+      "rejectedSplitTotal": 31184,
+      "noHintBytes": 28432,
+      "noLayoutBytes": 16440,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "TitilliumWeb-Regular.woff2",
+      "beforeBytes": 18136,
+      "afterBytes": 18128,
+      "savedBytes": 8,
+      "rejectedCoreBytes": 7380,
+      "rejectedExtendedBytes": 11244,
+      "rejectedSplitTotal": 18624,
+      "noHintBytes": 18224,
+      "noLayoutBytes": 11336,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "Ubuntu-Regular.woff2",
+      "beforeBytes": 111604,
+      "afterBytes": 111328,
+      "savedBytes": 276,
+      "rejectedCoreBytes": 24552,
+      "rejectedExtendedBytes": 103960,
+      "rejectedSplitTotal": 128512,
+      "noHintBytes": 46656,
+      "noLayoutBytes": 99092,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "UbuntuMono-Regular.woff2",
+      "beforeBytes": 79680,
+      "afterBytes": 79624,
+      "savedBytes": 56,
+      "rejectedCoreBytes": 20488,
+      "rejectedExtendedBytes": 74972,
+      "rejectedSplitTotal": 95460,
+      "noHintBytes": 38664,
+      "noLayoutBytes": 78916,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    },
+    {
+      "file": "Vazirharf-NL-Regular.woff2",
+      "beforeBytes": 22196,
+      "afterBytes": 22116,
+      "savedBytes": 80,
+      "rejectedCoreBytes": 1512,
+      "rejectedExtendedBytes": 21632,
+      "rejectedSplitTotal": 23144,
+      "noHintBytes": 22116,
+      "noLayoutBytes": 13668,
+      "fixedAxisBytes": null,
+      "retainedOriginal": false,
+      "reason": null
+    }
+  ],
+  "routes": [
+    {
+      "case": "accents",
+      "before": {
+        "decodedBodyBytes": 340136,
+        "encodedBodyBytes": 340136,
+        "transferBytes": 341338
+      },
+      "after": {
+        "decodedBodyBytes": 340056,
+        "encodedBodyBytes": 340056,
+        "transferBytes": 341258
+      },
+      "beforePreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "afterPreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "beforeRequests": [
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        },
+        {
+          "url": "/webfonts/Vazirharf-NL-Regular.woff2",
+          "decodedBodyBytes": 22196,
+          "encodedBodyBytes": 22196,
+          "transferBytes": 22379
+        }
+      ],
+      "afterRequests": [
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        },
+        {
+          "url": "/webfonts/Vazirharf-NL-Regular.woff2",
+          "decodedBodyBytes": 22116,
+          "encodedBodyBytes": 22116,
+          "transferBytes": 22299
+        }
+      ],
+      "renderedBefore": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "Roboto Mono",
+              "postScriptName": "RobotoMono-Regular",
+              "isCustomFont": true,
+              "glyphCount": 4
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "renderedAfter": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "Roboto Mono",
+              "postScriptName": "RobotoMono-Regular",
+              "isCustomFont": true,
+              "glyphCount": 4
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "rejectedSplit": {
+        "decodedBodyBytes": 304836,
+        "encodedBodyBytes": 304836,
+        "transferBytes": 306036
+      }
+    },
+    {
+      "case": "arabic-naskh",
+      "before": {
+        "decodedBodyBytes": 389532,
+        "encodedBodyBytes": 389532,
+        "transferBytes": 390734
+      },
+      "after": {
+        "decodedBodyBytes": 389424,
+        "encodedBodyBytes": 389424,
+        "transferBytes": 390626
+      },
+      "beforePreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "afterPreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "beforeRequests": [
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/webfonts/NotoNaskhArabic-Regular.woff2",
+          "decodedBodyBytes": 71592,
+          "encodedBodyBytes": 71592,
+          "transferBytes": 71775
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        }
+      ],
+      "afterRequests": [
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/webfonts/NotoNaskhArabic-Regular.woff2",
+          "decodedBodyBytes": 71484,
+          "encodedBodyBytes": 71484,
+          "transferBytes": 71667
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        }
+      ],
+      "renderedBefore": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "Noto Naskh Arabic",
+              "postScriptName": "NotoNaskhArabic-Regular",
+              "isCustomFont": true,
+              "glyphCount": 10
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "renderedAfter": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "CaretSubsetd9fe0d39a2adFull",
+              "postScriptName": "CaretSubsetd9fe0d39a2adFull",
+              "isCustomFont": true,
+              "glyphCount": 10
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "rejectedSplit": null
+    },
+    {
+      "case": "arabic",
+      "before": {
+        "decodedBodyBytes": 340136,
+        "encodedBodyBytes": 340136,
+        "transferBytes": 341338
+      },
+      "after": {
+        "decodedBodyBytes": 340056,
+        "encodedBodyBytes": 340056,
+        "transferBytes": 341258
+      },
+      "beforePreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "afterPreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "beforeRequests": [
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        },
+        {
+          "url": "/webfonts/Vazirharf-NL-Regular.woff2",
+          "decodedBodyBytes": 22196,
+          "encodedBodyBytes": 22196,
+          "transferBytes": 22379
+        }
+      ],
+      "afterRequests": [
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        },
+        {
+          "url": "/webfonts/Vazirharf-NL-Regular.woff2",
+          "decodedBodyBytes": 22116,
+          "encodedBodyBytes": 22116,
+          "transferBytes": 22299
+        }
+      ],
+      "renderedBefore": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "Vazirharf NL",
+              "postScriptName": "Vazirharf-NL-Regular",
+              "isCustomFont": true,
+              "glyphCount": 9
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "renderedAfter": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "CaretSubset3214dd9dfb0dFull",
+              "postScriptName": "CaretSubset3214dd9dfb0dFull",
+              "isCustomFont": true,
+              "glyphCount": 9
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "rejectedSplit": {
+        "decodedBodyBytes": 291984,
+        "encodedBodyBytes": 291984,
+        "transferBytes": 293184
+      }
+    },
+    {
+      "case": "cjk",
+      "before": {
+        "decodedBodyBytes": 340136,
+        "encodedBodyBytes": 340136,
+        "transferBytes": 341338
+      },
+      "after": {
+        "decodedBodyBytes": 340056,
+        "encodedBodyBytes": 340056,
+        "transferBytes": 341258
+      },
+      "beforePreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "afterPreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "beforeRequests": [
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        },
+        {
+          "url": "/webfonts/Vazirharf-NL-Regular.woff2",
+          "decodedBodyBytes": 22196,
+          "encodedBodyBytes": 22196,
+          "transferBytes": 22379
+        }
+      ],
+      "afterRequests": [
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        },
+        {
+          "url": "/webfonts/Vazirharf-NL-Regular.woff2",
+          "decodedBodyBytes": 22116,
+          "encodedBodyBytes": 22116,
+          "transferBytes": 22299
+        }
+      ],
+      "renderedBefore": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "Noto Sans CJK SC",
+              "postScriptName": "NotoSansCJKsc-Regular",
+              "isCustomFont": false,
+              "glyphCount": 2
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "renderedAfter": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "Noto Sans CJK SC",
+              "postScriptName": "NotoSansCJKsc-Regular",
+              "isCustomFont": false,
+              "glyphCount": 2
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "rejectedSplit": {
+        "decodedBodyBytes": 270352,
+        "encodedBodyBytes": 270352,
+        "transferBytes": 271369
+      }
+    },
+    {
+      "case": "code",
+      "before": {
+        "decodedBodyBytes": 421180,
+        "encodedBodyBytes": 421180,
+        "transferBytes": 422383
+      },
+      "after": {
+        "decodedBodyBytes": 419124,
+        "encodedBodyBytes": 419124,
+        "transferBytes": 420327
+      },
+      "beforePreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "afterPreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "beforeRequests": [
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/webfonts/FiraCode-Regular.woff2",
+          "decodedBodyBytes": 103240,
+          "encodedBodyBytes": 103240,
+          "transferBytes": 103424
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        }
+      ],
+      "afterRequests": [
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/webfonts/FiraCode-Regular.woff2",
+          "decodedBodyBytes": 101184,
+          "encodedBodyBytes": 101184,
+          "transferBytes": 101368
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        }
+      ],
+      "renderedBefore": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "Fira Code",
+              "postScriptName": "FiraCode-Regular",
+              "isCustomFont": true,
+              "glyphCount": 5
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "renderedAfter": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "CaretSubset0133c7fcfd99Full",
+              "postScriptName": "CaretSubset0133c7fcfd99Full",
+              "isCustomFont": true,
+              "glyphCount": 5
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "rejectedSplit": {
+        "decodedBodyBytes": 303204,
+        "encodedBodyBytes": 303204,
+        "transferBytes": 304404
+      }
+    },
+    {
+      "case": "commands",
+      "before": {
+        "decodedBodyBytes": 4619400,
+        "encodedBodyBytes": 4619400,
+        "transferBytes": 4627383
+      },
+      "after": {
+        "decodedBodyBytes": 3541436,
+        "encodedBodyBytes": 3541436,
+        "transferBytes": 3549418
+      },
+      "beforePreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "afterPreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "beforeRequests": [
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        },
+        {
+          "url": "/webfonts/UbuntuMono-Regular.woff2",
+          "decodedBodyBytes": 79680,
+          "encodedBodyBytes": 79680,
+          "transferBytes": 79863
+        },
+        {
+          "url": "/webfonts/Ubuntu-Regular.woff2",
+          "decodedBodyBytes": 111604,
+          "encodedBodyBytes": 111604,
+          "transferBytes": 111788
+        },
+        {
+          "url": "/webfonts/TitilliumWeb-Regular.woff2",
+          "decodedBodyBytes": 18136,
+          "encodedBodyBytes": 18136,
+          "transferBytes": 18319
+        },
+        {
+          "url": "/webfonts/Sarabun-Bold.woff2",
+          "decodedBodyBytes": 59236,
+          "encodedBodyBytes": 59236,
+          "transferBytes": 59419
+        },
+        {
+          "url": "/webfonts/SpaceGrotesk-Regular.woff2",
+          "decodedBodyBytes": 28560,
+          "encodedBodyBytes": 28560,
+          "transferBytes": 28743
+        },
+        {
+          "url": "/webfonts/SourceCodePro-Regular.woff2",
+          "decodedBodyBytes": 76348,
+          "encodedBodyBytes": 76348,
+          "transferBytes": 76531
+        },
+        {
+          "url": "/webfonts/Parkinsans-Regular.woff2",
+          "decodedBodyBytes": 17740,
+          "encodedBodyBytes": 17740,
+          "transferBytes": 17923
+        },
+        {
+          "url": "/webfonts/Roboto-Regular.woff2",
+          "decodedBodyBytes": 50476,
+          "encodedBodyBytes": 50476,
+          "transferBytes": 50659
+        },
+        {
+          "url": "/webfonts/NotoSansLao-Regular.woff2",
+          "decodedBodyBytes": 23008,
+          "encodedBodyBytes": 23008,
+          "transferBytes": 23191
+        },
+        {
+          "url": "/webfonts/Nunito-Bold.woff2",
+          "decodedBodyBytes": 41676,
+          "encodedBodyBytes": 41676,
+          "transferBytes": 41859
+        },
+        {
+          "url": "/webfonts/Oxygen-Regular.woff2",
+          "decodedBodyBytes": 19804,
+          "encodedBodyBytes": 19804,
+          "transferBytes": 19987
+        },
+        {
+          "url": "/webfonts/Mononoki-Regular.woff2",
+          "decodedBodyBytes": 28860,
+          "encodedBodyBytes": 28860,
+          "transferBytes": 29043
+        },
+        {
+          "url": "/webfonts/Montserrat-Regular.woff2",
+          "decodedBodyBytes": 86900,
+          "encodedBodyBytes": 86900,
+          "transferBytes": 87083
+        },
+        {
+          "url": "/webfonts/NotoNaskhArabic-Regular.woff2",
+          "decodedBodyBytes": 71592,
+          "encodedBodyBytes": 71592,
+          "transferBytes": 71775
+        },
+        {
+          "url": "/webfonts/OpenDyslexic-Regular.woff2",
+          "decodedBodyBytes": 117196,
+          "encodedBodyBytes": 117196,
+          "transferBytes": 117380
+        },
+        {
+          "url": "/webfonts/OverpassMono-Regular.woff2",
+          "decodedBodyBytes": 97068,
+          "encodedBodyBytes": 97068,
+          "transferBytes": 97251
+        },
+        {
+          "url": "/webfonts/Kanit-Regular.woff2",
+          "decodedBodyBytes": 53656,
+          "encodedBodyBytes": 53656,
+          "transferBytes": 53839
+        },
+        {
+          "url": "/webfonts/Lalezar-Regular.woff2",
+          "decodedBodyBytes": 85748,
+          "encodedBodyBytes": 85748,
+          "transferBytes": 85931
+        },
+        {
+          "url": "/webfonts/Inconsolata-Regular.woff2",
+          "decodedBodyBytes": 38772,
+          "encodedBodyBytes": 38772,
+          "transferBytes": 38955
+        },
+        {
+          "url": "/webfonts/Lato-Regular.woff2",
+          "decodedBodyBytes": 182708,
+          "encodedBodyBytes": 182708,
+          "transferBytes": 182892
+        },
+        {
+          "url": "/webfonts/JetBrainsMono-Regular.woff2",
+          "decodedBodyBytes": 92164,
+          "encodedBodyBytes": 92164,
+          "transferBytes": 92347
+        },
+        {
+          "url": "/webfonts/IBMPlexSans-SemiBold.woff2",
+          "decodedBodyBytes": 67060,
+          "encodedBodyBytes": 67060,
+          "transferBytes": 67243
+        },
+        {
+          "url": "/webfonts/Itim-Regular.woff2",
+          "decodedBodyBytes": 100780,
+          "encodedBodyBytes": 100780,
+          "transferBytes": 100964
+        },
+        {
+          "url": "/webfonts/IBMPlexMono-Regular.woff2",
+          "decodedBodyBytes": 45640,
+          "encodedBodyBytes": 45640,
+          "transferBytes": 45823
+        },
+        {
+          "url": "/webfonts/Hack-Regular.woff2",
+          "decodedBodyBytes": 106236,
+          "encodedBodyBytes": 106236,
+          "transferBytes": 106420
+        },
+        {
+          "url": "/webfonts/InterTight-Regular.woff2",
+          "decodedBodyBytes": 99132,
+          "encodedBodyBytes": 99132,
+          "transferBytes": 99315
+        },
+        {
+          "url": "/webfonts/GeistMono-Medium.woff2",
+          "decodedBodyBytes": 44108,
+          "encodedBodyBytes": 44108,
+          "transferBytes": 44291
+        },
+        {
+          "url": "/webfonts/Geist-Medium.woff2",
+          "decodedBodyBytes": 42132,
+          "encodedBodyBytes": 42132,
+          "transferBytes": 42315
+        },
+        {
+          "url": "/webfonts/ComingSoon-Regular.woff2",
+          "decodedBodyBytes": 21432,
+          "encodedBodyBytes": 21432,
+          "transferBytes": 21615
+        },
+        {
+          "url": "/webfonts/FiraCode-Regular.woff2",
+          "decodedBodyBytes": 103240,
+          "encodedBodyBytes": 103240,
+          "transferBytes": 103424
+        },
+        {
+          "url": "/webfonts/Comfortaa-Regular.woff2",
+          "decodedBodyBytes": 51212,
+          "encodedBodyBytes": 51212,
+          "transferBytes": 51395
+        },
+        {
+          "url": "/webfonts/CommitMono-Regular.woff2",
+          "decodedBodyBytes": 39992,
+          "encodedBodyBytes": 39992,
+          "transferBytes": 40175
+        },
+        {
+          "url": "/webfonts/AtkinsonHyperlegible-Regular.woff2",
+          "decodedBodyBytes": 23196,
+          "encodedBodyBytes": 23196,
+          "transferBytes": 23379
+        },
+        {
+          "url": "/webfonts/0xProto-Regular.woff2",
+          "decodedBodyBytes": 56732,
+          "encodedBodyBytes": 56732,
+          "transferBytes": 56915
+        },
+        {
+          "url": "/webfonts/Boon-Regular.woff2",
+          "decodedBodyBytes": 52228,
+          "encodedBodyBytes": 52228,
+          "transferBytes": 52411
+        },
+        {
+          "url": "/webfonts/CascadiaMono-Regular.woff2",
+          "decodedBodyBytes": 211268,
+          "encodedBodyBytes": 211268,
+          "transferBytes": 211452
+        },
+        {
+          "url": "/webfonts/AdwaitaMono-Regular.woff2",
+          "decodedBodyBytes": 361248,
+          "encodedBodyBytes": 361248,
+          "transferBytes": 361432
+        },
+        {
+          "url": "/webfonts/Iosevka-Regular.woff2",
+          "decodedBodyBytes": 1494892,
+          "encodedBodyBytes": 1494892,
+          "transferBytes": 1495077
+        }
+      ],
+      "afterRequests": [
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        },
+        {
+          "url": "/webfonts/UbuntuMono-Regular.woff2",
+          "decodedBodyBytes": 79624,
+          "encodedBodyBytes": 79624,
+          "transferBytes": 79807
+        },
+        {
+          "url": "/webfonts/TitilliumWeb-Regular.woff2",
+          "decodedBodyBytes": 18128,
+          "encodedBodyBytes": 18128,
+          "transferBytes": 18311
+        },
+        {
+          "url": "/webfonts/SpaceGrotesk-Regular.woff2",
+          "decodedBodyBytes": 28436,
+          "encodedBodyBytes": 28436,
+          "transferBytes": 28619
+        },
+        {
+          "url": "/webfonts/SourceCodePro-Regular.woff2",
+          "decodedBodyBytes": 70288,
+          "encodedBodyBytes": 70288,
+          "transferBytes": 70471
+        },
+        {
+          "url": "/webfonts/Ubuntu-Regular.woff2",
+          "decodedBodyBytes": 111328,
+          "encodedBodyBytes": 111328,
+          "transferBytes": 111512
+        },
+        {
+          "url": "/webfonts/Sarabun-Bold.woff2",
+          "decodedBodyBytes": 46708,
+          "encodedBodyBytes": 46708,
+          "transferBytes": 46891
+        },
+        {
+          "url": "/webfonts/Roboto-Regular.woff2",
+          "decodedBodyBytes": 50272,
+          "encodedBodyBytes": 50272,
+          "transferBytes": 50455
+        },
+        {
+          "url": "/webfonts/Parkinsans-Regular.woff2",
+          "decodedBodyBytes": 17648,
+          "encodedBodyBytes": 17648,
+          "transferBytes": 17831
+        },
+        {
+          "url": "/webfonts/OverpassMono-Regular.woff2",
+          "decodedBodyBytes": 96500,
+          "encodedBodyBytes": 96500,
+          "transferBytes": 96683
+        },
+        {
+          "url": "/webfonts/Oxygen-Regular.woff2",
+          "decodedBodyBytes": 19764,
+          "encodedBodyBytes": 19764,
+          "transferBytes": 19947
+        },
+        {
+          "url": "/webfonts/Nunito-Bold.woff2",
+          "decodedBodyBytes": 41676,
+          "encodedBodyBytes": 41676,
+          "transferBytes": 41859
+        },
+        {
+          "url": "/webfonts/NotoSansLao-Regular.woff2",
+          "decodedBodyBytes": 22604,
+          "encodedBodyBytes": 22604,
+          "transferBytes": 22787
+        },
+        {
+          "url": "/webfonts/NotoNaskhArabic-Regular.woff2",
+          "decodedBodyBytes": 71484,
+          "encodedBodyBytes": 71484,
+          "transferBytes": 71667
+        },
+        {
+          "url": "/webfonts/OpenDyslexic-Regular.woff2",
+          "decodedBodyBytes": 112604,
+          "encodedBodyBytes": 112604,
+          "transferBytes": 112788
+        },
+        {
+          "url": "/webfonts/Mononoki-Regular.woff2",
+          "decodedBodyBytes": 27056,
+          "encodedBodyBytes": 27056,
+          "transferBytes": 27239
+        },
+        {
+          "url": "/webfonts/Montserrat-Regular.woff2",
+          "decodedBodyBytes": 81964,
+          "encodedBodyBytes": 81964,
+          "transferBytes": 82147
+        },
+        {
+          "url": "/webfonts/Lato-Regular.woff2",
+          "decodedBodyBytes": 166064,
+          "encodedBodyBytes": 166064,
+          "transferBytes": 166248
+        },
+        {
+          "url": "/webfonts/Kanit-Regular.woff2",
+          "decodedBodyBytes": 51728,
+          "encodedBodyBytes": 51728,
+          "transferBytes": 51911
+        },
+        {
+          "url": "/webfonts/Lalezar-Regular.woff2",
+          "decodedBodyBytes": 76336,
+          "encodedBodyBytes": 76336,
+          "transferBytes": 76519
+        },
+        {
+          "url": "/webfonts/Itim-Regular.woff2",
+          "decodedBodyBytes": 100780,
+          "encodedBodyBytes": 100780,
+          "transferBytes": 100964
+        },
+        {
+          "url": "/webfonts/JetBrainsMono-Regular.woff2",
+          "decodedBodyBytes": 83772,
+          "encodedBodyBytes": 83772,
+          "transferBytes": 83955
+        },
+        {
+          "url": "/webfonts/InterTight-Regular.woff2",
+          "decodedBodyBytes": 98140,
+          "encodedBodyBytes": 98140,
+          "transferBytes": 98323
+        },
+        {
+          "url": "/webfonts/Inconsolata-Regular.woff2",
+          "decodedBodyBytes": 38028,
+          "encodedBodyBytes": 38028,
+          "transferBytes": 38211
+        },
+        {
+          "url": "/webfonts/IBMPlexSans-SemiBold.woff2",
+          "decodedBodyBytes": 65608,
+          "encodedBodyBytes": 65608,
+          "transferBytes": 65791
+        },
+        {
+          "url": "/webfonts/IBMPlexMono-Regular.woff2",
+          "decodedBodyBytes": 44528,
+          "encodedBodyBytes": 44528,
+          "transferBytes": 44711
+        },
+        {
+          "url": "/webfonts/Hack-Regular.woff2",
+          "decodedBodyBytes": 104140,
+          "encodedBodyBytes": 104140,
+          "transferBytes": 104324
+        },
+        {
+          "url": "/webfonts/GeistMono-Medium.woff2",
+          "decodedBodyBytes": 43212,
+          "encodedBodyBytes": 43212,
+          "transferBytes": 43395
+        },
+        {
+          "url": "/webfonts/Geist-Medium.woff2",
+          "decodedBodyBytes": 41272,
+          "encodedBodyBytes": 41272,
+          "transferBytes": 41455
+        },
+        {
+          "url": "/webfonts/ComingSoon-Regular.woff2",
+          "decodedBodyBytes": 21384,
+          "encodedBodyBytes": 21384,
+          "transferBytes": 21567
+        },
+        {
+          "url": "/webfonts/FiraCode-Regular.woff2",
+          "decodedBodyBytes": 101184,
+          "encodedBodyBytes": 101184,
+          "transferBytes": 101368
+        },
+        {
+          "url": "/webfonts/CommitMono-Regular.woff2",
+          "decodedBodyBytes": 39992,
+          "encodedBodyBytes": 39992,
+          "transferBytes": 40175
+        },
+        {
+          "url": "/webfonts/Comfortaa-Regular.woff2",
+          "decodedBodyBytes": 51212,
+          "encodedBodyBytes": 51212,
+          "transferBytes": 51395
+        },
+        {
+          "url": "/webfonts/Boon-Regular.woff2",
+          "decodedBodyBytes": 46328,
+          "encodedBodyBytes": 46328,
+          "transferBytes": 46511
+        },
+        {
+          "url": "/webfonts/AtkinsonHyperlegible-Regular.woff2",
+          "decodedBodyBytes": 23020,
+          "encodedBodyBytes": 23020,
+          "transferBytes": 23203
+        },
+        {
+          "url": "/webfonts/0xProto-Regular.woff2",
+          "decodedBodyBytes": 55196,
+          "encodedBodyBytes": 55196,
+          "transferBytes": 55379
+        },
+        {
+          "url": "/webfonts/CascadiaMono-Regular.woff2",
+          "decodedBodyBytes": 186908,
+          "encodedBodyBytes": 186908,
+          "transferBytes": 187092
+        },
+        {
+          "url": "/webfonts/AdwaitaMono-Regular.woff2",
+          "decodedBodyBytes": 357832,
+          "encodedBodyBytes": 357832,
+          "transferBytes": 358016
+        },
+        {
+          "url": "/webfonts/Iosevka-Regular.woff2",
+          "decodedBodyBytes": 530748,
+          "encodedBodyBytes": 530748,
+          "transferBytes": 530932
+        }
+      ],
+      "renderedBefore": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "0xProto",
+              "postScriptName": "0xProto-Regular",
+              "isCustomFont": true,
+              "glyphCount": 5
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "#commandLine",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "renderedAfter": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "CaretSubset33b1232298a5Full",
+              "postScriptName": "CaretSubset33b1232298a5Full",
+              "isCustomFont": true,
+              "glyphCount": 5
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "#commandLine",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "rejectedSplit": {
+        "decodedBodyBytes": 947996,
+        "encodedBodyBytes": 947996,
+        "transferBytes": 956325
+      }
+    },
+    {
+      "case": "core-only",
+      "before": {
+        "decodedBodyBytes": 37632,
+        "encodedBodyBytes": 37632,
+        "transferBytes": 37815
+      },
+      "after": {
+        "decodedBodyBytes": 37632,
+        "encodedBodyBytes": 37632,
+        "transferBytes": 37815
+      },
+      "beforePreloads": [],
+      "afterPreloads": [],
+      "beforeRequests": [
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        }
+      ],
+      "afterRequests": [
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        }
+      ],
+      "renderedBefore": [
+        {
+          "selector": "body",
+          "fonts": [
+            {
+              "familyName": "Roboto Mono",
+              "postScriptName": "RobotoMono-Regular",
+              "isCustomFont": true,
+              "glyphCount": 21
+            }
+          ]
+        }
+      ],
+      "renderedAfter": [
+        {
+          "selector": "body",
+          "fonts": [
+            {
+              "familyName": "Roboto Mono",
+              "postScriptName": "RobotoMono-Regular",
+              "isCustomFont": true,
+              "glyphCount": 21
+            }
+          ]
+        }
+      ],
+      "rejectedSplit": {
+        "decodedBodyBytes": 7476,
+        "encodedBodyBytes": 7476,
+        "transferBytes": 7658
+      }
+    },
+    {
+      "case": "default",
+      "before": {
+        "decodedBodyBytes": 317940,
+        "encodedBodyBytes": 317940,
+        "transferBytes": 318959
+      },
+      "after": {
+        "decodedBodyBytes": 317940,
+        "encodedBodyBytes": 317940,
+        "transferBytes": 318959
+      },
+      "beforePreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "afterPreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "beforeRequests": [
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        }
+      ],
+      "afterRequests": [
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        }
+      ],
+      "renderedBefore": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "Roboto Mono",
+              "postScriptName": "RobotoMono-Regular",
+              "isCustomFont": true,
+              "glyphCount": 5
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "renderedAfter": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "Roboto Mono",
+              "postScriptName": "RobotoMono-Regular",
+              "isCustomFont": true,
+              "glyphCount": 5
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "rejectedSplit": {
+        "decodedBodyBytes": 270352,
+        "encodedBodyBytes": 270352,
+        "transferBytes": 271369
+      }
+    },
+    {
+      "case": "extended-only",
+      "before": {
+        "decodedBodyBytes": 37632,
+        "encodedBodyBytes": 37632,
+        "transferBytes": 37815
+      },
+      "after": {
+        "decodedBodyBytes": 37632,
+        "encodedBodyBytes": 37632,
+        "transferBytes": 37815
+      },
+      "beforePreloads": [],
+      "afterPreloads": [],
+      "beforeRequests": [
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        }
+      ],
+      "afterRequests": [
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        }
+      ],
+      "renderedBefore": [
+        {
+          "selector": "body",
+          "fonts": [
+            {
+              "familyName": "Roboto Mono",
+              "postScriptName": "RobotoMono-Regular",
+              "isCustomFont": true,
+              "glyphCount": 1
+            }
+          ]
+        }
+      ],
+      "renderedAfter": [
+        {
+          "selector": "body",
+          "fonts": [
+            {
+              "familyName": "Roboto Mono",
+              "postScriptName": "RobotoMono-Regular",
+              "isCustomFont": true,
+              "glyphCount": 1
+            }
+          ]
+        }
+      ],
+      "rejectedSplit": {
+        "decodedBodyBytes": 34484,
+        "encodedBodyBytes": 34484,
+        "transferBytes": 34667
+      }
+    },
+    {
+      "case": "lao-noto",
+      "before": {
+        "decodedBodyBytes": 340948,
+        "encodedBodyBytes": 340948,
+        "transferBytes": 342150
+      },
+      "after": {
+        "decodedBodyBytes": 340544,
+        "encodedBodyBytes": 340544,
+        "transferBytes": 341746
+      },
+      "beforePreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "afterPreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "beforeRequests": [
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/webfonts/NotoSansLao-Regular.woff2",
+          "decodedBodyBytes": 23008,
+          "encodedBodyBytes": 23008,
+          "transferBytes": 23191
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        }
+      ],
+      "afterRequests": [
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/webfonts/NotoSansLao-Regular.woff2",
+          "decodedBodyBytes": 22604,
+          "encodedBodyBytes": 22604,
+          "transferBytes": 22787
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        }
+      ],
+      "renderedBefore": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "Noto Sans Lao",
+              "postScriptName": "NotoSansLao-Regular",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "renderedAfter": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "CaretSubset0431aa7789f7Full",
+              "postScriptName": "CaretSubset0431aa7789f7Full",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "rejectedSplit": null
+    },
+    {
+      "case": "lao",
+      "before": {
+        "decodedBodyBytes": 340948,
+        "encodedBodyBytes": 340948,
+        "transferBytes": 342150
+      },
+      "after": {
+        "decodedBodyBytes": 340544,
+        "encodedBodyBytes": 340544,
+        "transferBytes": 341746
+      },
+      "beforePreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "afterPreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "beforeRequests": [
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        },
+        {
+          "url": "/webfonts/NotoSansLao-Regular.woff2",
+          "decodedBodyBytes": 23008,
+          "encodedBodyBytes": 23008,
+          "transferBytes": 23191
+        }
+      ],
+      "afterRequests": [
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        },
+        {
+          "url": "/webfonts/NotoSansLao-Regular.woff2",
+          "decodedBodyBytes": 22604,
+          "encodedBodyBytes": 22604,
+          "transferBytes": 22787
+        }
+      ],
+      "renderedBefore": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "Noto Sans Lao",
+              "postScriptName": "NotoSansLao-Regular",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "renderedAfter": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "CaretSubset0431aa7789f7Full",
+              "postScriptName": "CaretSubset0431aa7789f7Full",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "rejectedSplit": {
+        "decodedBodyBytes": 289240,
+        "encodedBodyBytes": 289240,
+        "transferBytes": 290440
+      }
+    },
+    {
+      "case": "loader",
+      "before": {
+        "decodedBodyBytes": 317940,
+        "encodedBodyBytes": 317940,
+        "transferBytes": 318959
+      },
+      "after": {
+        "decodedBodyBytes": 317940,
+        "encodedBodyBytes": 317940,
+        "transferBytes": 318959
+      },
+      "beforePreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "afterPreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "beforeRequests": [
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        }
+      ],
+      "afterRequests": [
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        }
+      ],
+      "renderedBefore": [
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "renderedAfter": [
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "rejectedSplit": {
+        "decodedBodyBytes": 270352,
+        "encodedBodyBytes": 270352,
+        "transferBytes": 271369
+      }
+    },
+    {
+      "case": "not-found",
+      "before": {
+        "decodedBodyBytes": 317940,
+        "encodedBodyBytes": 317940,
+        "transferBytes": 318959
+      },
+      "after": {
+        "decodedBodyBytes": 317940,
+        "encodedBodyBytes": 317940,
+        "transferBytes": 318959
+      },
+      "beforePreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "afterPreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "beforeRequests": [
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        }
+      ],
+      "afterRequests": [
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        }
+      ],
+      "renderedBefore": [
+        {
+          "selector": "p",
+          "fonts": [
+            {
+              "familyName": "Roboto Mono",
+              "postScriptName": "RobotoMono-Regular",
+              "isCustomFont": true,
+              "glyphCount": 53
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "renderedAfter": [
+        {
+          "selector": "p",
+          "fonts": [
+            {
+              "familyName": "Roboto Mono",
+              "postScriptName": "RobotoMono-Regular",
+              "isCustomFont": true,
+              "glyphCount": 53
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "rejectedSplit": {
+        "decodedBodyBytes": 270352,
+        "encodedBodyBytes": 270352,
+        "transferBytes": 271369
+      }
+    },
+    {
+      "case": "privacy",
+      "before": {
+        "decodedBodyBytes": 63520,
+        "encodedBodyBytes": 63520,
+        "transferBytes": 63886
+      },
+      "after": {
+        "decodedBodyBytes": 63520,
+        "encodedBodyBytes": 63520,
+        "transferBytes": 63886
+      },
+      "beforePreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "afterPreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "beforeRequests": [
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        }
+      ],
+      "afterRequests": [
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        }
+      ],
+      "renderedBefore": [
+        {
+          "selector": "p",
+          "fonts": [
+            {
+              "familyName": "Roboto Mono",
+              "postScriptName": "RobotoMono-Regular",
+              "isCustomFont": true,
+              "glyphCount": 227
+            }
+          ]
+        },
+        {
+          "selector": "h1",
+          "fonts": [
+            {
+              "familyName": "Roboto Mono",
+              "postScriptName": "RobotoMono-Regular",
+              "isCustomFont": true,
+              "glyphCount": 14
+            }
+          ]
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "renderedAfter": [
+        {
+          "selector": "p",
+          "fonts": [
+            {
+              "familyName": "Roboto Mono",
+              "postScriptName": "RobotoMono-Regular",
+              "isCustomFont": true,
+              "glyphCount": 227
+            }
+          ]
+        },
+        {
+          "selector": "h1",
+          "fonts": [
+            {
+              "familyName": "Roboto Mono",
+              "postScriptName": "RobotoMono-Regular",
+              "isCustomFont": true,
+              "glyphCount": 14
+            }
+          ]
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "rejectedSplit": {
+        "decodedBodyBytes": 15932,
+        "encodedBodyBytes": 15932,
+        "transferBytes": 16296
+      }
+    },
+    {
+      "case": "public",
+      "before": {
+        "decodedBodyBytes": 317940,
+        "encodedBodyBytes": 317940,
+        "transferBytes": 318959
+      },
+      "after": {
+        "decodedBodyBytes": 317940,
+        "encodedBodyBytes": 317940,
+        "transferBytes": 318959
+      },
+      "beforePreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "afterPreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "beforeRequests": [
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        }
+      ],
+      "afterRequests": [
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        }
+      ],
+      "renderedBefore": [
+        {
+          "selector": "p",
+          "fonts": [
+            {
+              "familyName": "Roboto Mono",
+              "postScriptName": "RobotoMono-Regular",
+              "isCustomFont": true,
+              "glyphCount": 244
+            }
+          ]
+        },
+        {
+          "selector": "h1",
+          "fonts": [
+            {
+              "familyName": "Roboto Mono",
+              "postScriptName": "RobotoMono-Regular",
+              "isCustomFont": true,
+              "glyphCount": 11
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "renderedAfter": [
+        {
+          "selector": "p",
+          "fonts": [
+            {
+              "familyName": "Roboto Mono",
+              "postScriptName": "RobotoMono-Regular",
+              "isCustomFont": true,
+              "glyphCount": 244
+            }
+          ]
+        },
+        {
+          "selector": "h1",
+          "fonts": [
+            {
+              "familyName": "Roboto Mono",
+              "postScriptName": "RobotoMono-Regular",
+              "isCustomFont": true,
+              "glyphCount": 11
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "rejectedSplit": {
+        "decodedBodyBytes": 270352,
+        "encodedBodyBytes": 270352,
+        "transferBytes": 271369
+      }
+    },
+    {
+      "case": "result",
+      "before": {
+        "decodedBodyBytes": 317940,
+        "encodedBodyBytes": 317940,
+        "transferBytes": 318959
+      },
+      "after": {
+        "decodedBodyBytes": 317940,
+        "encodedBodyBytes": 317940,
+        "transferBytes": 318959
+      },
+      "beforePreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "afterPreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "beforeRequests": [
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        }
+      ],
+      "afterRequests": [
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        }
+      ],
+      "renderedBefore": [
+        {
+          "selector": "#result",
+          "fonts": []
+        },
+        {
+          "selector": "p",
+          "fonts": []
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "renderedAfter": [
+        {
+          "selector": "#result",
+          "fonts": []
+        },
+        {
+          "selector": "p",
+          "fonts": []
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "rejectedSplit": {
+        "decodedBodyBytes": 270352,
+        "encodedBodyBytes": 270352,
+        "transferBytes": 271369
+      }
+    },
+    {
+      "case": "settings",
+      "before": {
+        "decodedBodyBytes": 4619400,
+        "encodedBodyBytes": 4619400,
+        "transferBytes": 4627383
+      },
+      "after": {
+        "decodedBodyBytes": 3541436,
+        "encodedBodyBytes": 3541436,
+        "transferBytes": 3549418
+      },
+      "beforePreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "afterPreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "beforeRequests": [
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/webfonts/AtkinsonHyperlegible-Regular.woff2",
+          "decodedBodyBytes": 23196,
+          "encodedBodyBytes": 23196,
+          "transferBytes": 23379
+        },
+        {
+          "url": "/webfonts/ComingSoon-Regular.woff2",
+          "decodedBodyBytes": 21432,
+          "encodedBodyBytes": 21432,
+          "transferBytes": 21615
+        },
+        {
+          "url": "/webfonts/Boon-Regular.woff2",
+          "decodedBodyBytes": 52228,
+          "encodedBodyBytes": 52228,
+          "transferBytes": 52411
+        },
+        {
+          "url": "/webfonts/Comfortaa-Regular.woff2",
+          "decodedBodyBytes": 51212,
+          "encodedBodyBytes": 51212,
+          "transferBytes": 51395
+        },
+        {
+          "url": "/webfonts/CommitMono-Regular.woff2",
+          "decodedBodyBytes": 39992,
+          "encodedBodyBytes": 39992,
+          "transferBytes": 40175
+        },
+        {
+          "url": "/webfonts/IBMPlexMono-Regular.woff2",
+          "decodedBodyBytes": 45640,
+          "encodedBodyBytes": 45640,
+          "transferBytes": 45823
+        },
+        {
+          "url": "/webfonts/CascadiaMono-Regular.woff2",
+          "decodedBodyBytes": 211268,
+          "encodedBodyBytes": 211268,
+          "transferBytes": 211452
+        },
+        {
+          "url": "/webfonts/Geist-Medium.woff2",
+          "decodedBodyBytes": 42132,
+          "encodedBodyBytes": 42132,
+          "transferBytes": 42315
+        },
+        {
+          "url": "/webfonts/Hack-Regular.woff2",
+          "decodedBodyBytes": 106236,
+          "encodedBodyBytes": 106236,
+          "transferBytes": 106420
+        },
+        {
+          "url": "/webfonts/GeistMono-Medium.woff2",
+          "decodedBodyBytes": 44108,
+          "encodedBodyBytes": 44108,
+          "transferBytes": 44291
+        },
+        {
+          "url": "/webfonts/FiraCode-Regular.woff2",
+          "decodedBodyBytes": 103240,
+          "encodedBodyBytes": 103240,
+          "transferBytes": 103424
+        },
+        {
+          "url": "/webfonts/IBMPlexSans-SemiBold.woff2",
+          "decodedBodyBytes": 67060,
+          "encodedBodyBytes": 67060,
+          "transferBytes": 67243
+        },
+        {
+          "url": "/webfonts/Inconsolata-Regular.woff2",
+          "decodedBodyBytes": 38772,
+          "encodedBodyBytes": 38772,
+          "transferBytes": 38955
+        },
+        {
+          "url": "/webfonts/InterTight-Regular.woff2",
+          "decodedBodyBytes": 99132,
+          "encodedBodyBytes": 99132,
+          "transferBytes": 99315
+        },
+        {
+          "url": "/webfonts/AdwaitaMono-Regular.woff2",
+          "decodedBodyBytes": 361248,
+          "encodedBodyBytes": 361248,
+          "transferBytes": 361432
+        },
+        {
+          "url": "/webfonts/Kanit-Regular.woff2",
+          "decodedBodyBytes": 53656,
+          "encodedBodyBytes": 53656,
+          "transferBytes": 53839
+        },
+        {
+          "url": "/webfonts/Itim-Regular.woff2",
+          "decodedBodyBytes": 100780,
+          "encodedBodyBytes": 100780,
+          "transferBytes": 100964
+        },
+        {
+          "url": "/webfonts/Mononoki-Regular.woff2",
+          "decodedBodyBytes": 28860,
+          "encodedBodyBytes": 28860,
+          "transferBytes": 29043
+        },
+        {
+          "url": "/webfonts/JetBrainsMono-Regular.woff2",
+          "decodedBodyBytes": 92164,
+          "encodedBodyBytes": 92164,
+          "transferBytes": 92347
+        },
+        {
+          "url": "/webfonts/Montserrat-Regular.woff2",
+          "decodedBodyBytes": 86900,
+          "encodedBodyBytes": 86900,
+          "transferBytes": 87083
+        },
+        {
+          "url": "/webfonts/Lalezar-Regular.woff2",
+          "decodedBodyBytes": 85748,
+          "encodedBodyBytes": 85748,
+          "transferBytes": 85931
+        },
+        {
+          "url": "/webfonts/NotoNaskhArabic-Regular.woff2",
+          "decodedBodyBytes": 71592,
+          "encodedBodyBytes": 71592,
+          "transferBytes": 71775
+        },
+        {
+          "url": "/webfonts/NotoSansLao-Regular.woff2",
+          "decodedBodyBytes": 23008,
+          "encodedBodyBytes": 23008,
+          "transferBytes": 23191
+        },
+        {
+          "url": "/webfonts/Nunito-Bold.woff2",
+          "decodedBodyBytes": 41676,
+          "encodedBodyBytes": 41676,
+          "transferBytes": 41859
+        },
+        {
+          "url": "/webfonts/Oxygen-Regular.woff2",
+          "decodedBodyBytes": 19804,
+          "encodedBodyBytes": 19804,
+          "transferBytes": 19987
+        },
+        {
+          "url": "/webfonts/Parkinsans-Regular.woff2",
+          "decodedBodyBytes": 17740,
+          "encodedBodyBytes": 17740,
+          "transferBytes": 17923
+        },
+        {
+          "url": "/webfonts/0xProto-Regular.woff2",
+          "decodedBodyBytes": 56732,
+          "encodedBodyBytes": 56732,
+          "transferBytes": 56915
+        },
+        {
+          "url": "/webfonts/Roboto-Regular.woff2",
+          "decodedBodyBytes": 50476,
+          "encodedBodyBytes": 50476,
+          "transferBytes": 50659
+        },
+        {
+          "url": "/webfonts/OpenDyslexic-Regular.woff2",
+          "decodedBodyBytes": 117196,
+          "encodedBodyBytes": 117196,
+          "transferBytes": 117380
+        },
+        {
+          "url": "/webfonts/Lato-Regular.woff2",
+          "decodedBodyBytes": 182708,
+          "encodedBodyBytes": 182708,
+          "transferBytes": 182892
+        },
+        {
+          "url": "/webfonts/OverpassMono-Regular.woff2",
+          "decodedBodyBytes": 97068,
+          "encodedBodyBytes": 97068,
+          "transferBytes": 97251
+        },
+        {
+          "url": "/webfonts/Sarabun-Bold.woff2",
+          "decodedBodyBytes": 59236,
+          "encodedBodyBytes": 59236,
+          "transferBytes": 59419
+        },
+        {
+          "url": "/webfonts/TitilliumWeb-Regular.woff2",
+          "decodedBodyBytes": 18136,
+          "encodedBodyBytes": 18136,
+          "transferBytes": 18319
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        },
+        {
+          "url": "/webfonts/SpaceGrotesk-Regular.woff2",
+          "decodedBodyBytes": 28560,
+          "encodedBodyBytes": 28560,
+          "transferBytes": 28743
+        },
+        {
+          "url": "/webfonts/SourceCodePro-Regular.woff2",
+          "decodedBodyBytes": 76348,
+          "encodedBodyBytes": 76348,
+          "transferBytes": 76531
+        },
+        {
+          "url": "/webfonts/UbuntuMono-Regular.woff2",
+          "decodedBodyBytes": 79680,
+          "encodedBodyBytes": 79680,
+          "transferBytes": 79863
+        },
+        {
+          "url": "/webfonts/Ubuntu-Regular.woff2",
+          "decodedBodyBytes": 111604,
+          "encodedBodyBytes": 111604,
+          "transferBytes": 111788
+        },
+        {
+          "url": "/webfonts/Iosevka-Regular.woff2",
+          "decodedBodyBytes": 1494892,
+          "encodedBodyBytes": 1494892,
+          "transferBytes": 1495077
+        }
+      ],
+      "afterRequests": [
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/webfonts/AtkinsonHyperlegible-Regular.woff2",
+          "decodedBodyBytes": 23020,
+          "encodedBodyBytes": 23020,
+          "transferBytes": 23203
+        },
+        {
+          "url": "/webfonts/ComingSoon-Regular.woff2",
+          "decodedBodyBytes": 21384,
+          "encodedBodyBytes": 21384,
+          "transferBytes": 21567
+        },
+        {
+          "url": "/webfonts/Comfortaa-Regular.woff2",
+          "decodedBodyBytes": 51212,
+          "encodedBodyBytes": 51212,
+          "transferBytes": 51395
+        },
+        {
+          "url": "/webfonts/Boon-Regular.woff2",
+          "decodedBodyBytes": 46328,
+          "encodedBodyBytes": 46328,
+          "transferBytes": 46511
+        },
+        {
+          "url": "/webfonts/CommitMono-Regular.woff2",
+          "decodedBodyBytes": 39992,
+          "encodedBodyBytes": 39992,
+          "transferBytes": 40175
+        },
+        {
+          "url": "/webfonts/AdwaitaMono-Regular.woff2",
+          "decodedBodyBytes": 357832,
+          "encodedBodyBytes": 357832,
+          "transferBytes": 358016
+        },
+        {
+          "url": "/webfonts/Geist-Medium.woff2",
+          "decodedBodyBytes": 41272,
+          "encodedBodyBytes": 41272,
+          "transferBytes": 41455
+        },
+        {
+          "url": "/webfonts/FiraCode-Regular.woff2",
+          "decodedBodyBytes": 101184,
+          "encodedBodyBytes": 101184,
+          "transferBytes": 101368
+        },
+        {
+          "url": "/webfonts/CascadiaMono-Regular.woff2",
+          "decodedBodyBytes": 186908,
+          "encodedBodyBytes": 186908,
+          "transferBytes": 187092
+        },
+        {
+          "url": "/webfonts/GeistMono-Medium.woff2",
+          "decodedBodyBytes": 43212,
+          "encodedBodyBytes": 43212,
+          "transferBytes": 43395
+        },
+        {
+          "url": "/webfonts/IBMPlexMono-Regular.woff2",
+          "decodedBodyBytes": 44528,
+          "encodedBodyBytes": 44528,
+          "transferBytes": 44711
+        },
+        {
+          "url": "/webfonts/Hack-Regular.woff2",
+          "decodedBodyBytes": 104140,
+          "encodedBodyBytes": 104140,
+          "transferBytes": 104324
+        },
+        {
+          "url": "/webfonts/Inconsolata-Regular.woff2",
+          "decodedBodyBytes": 38028,
+          "encodedBodyBytes": 38028,
+          "transferBytes": 38211
+        },
+        {
+          "url": "/webfonts/IBMPlexSans-SemiBold.woff2",
+          "decodedBodyBytes": 65608,
+          "encodedBodyBytes": 65608,
+          "transferBytes": 65791
+        },
+        {
+          "url": "/webfonts/InterTight-Regular.woff2",
+          "decodedBodyBytes": 98140,
+          "encodedBodyBytes": 98140,
+          "transferBytes": 98323
+        },
+        {
+          "url": "/webfonts/Itim-Regular.woff2",
+          "decodedBodyBytes": 100780,
+          "encodedBodyBytes": 100780,
+          "transferBytes": 100964
+        },
+        {
+          "url": "/webfonts/JetBrainsMono-Regular.woff2",
+          "decodedBodyBytes": 83772,
+          "encodedBodyBytes": 83772,
+          "transferBytes": 83955
+        },
+        {
+          "url": "/webfonts/Kanit-Regular.woff2",
+          "decodedBodyBytes": 51728,
+          "encodedBodyBytes": 51728,
+          "transferBytes": 51911
+        },
+        {
+          "url": "/webfonts/Lalezar-Regular.woff2",
+          "decodedBodyBytes": 76336,
+          "encodedBodyBytes": 76336,
+          "transferBytes": 76519
+        },
+        {
+          "url": "/webfonts/Mononoki-Regular.woff2",
+          "decodedBodyBytes": 27056,
+          "encodedBodyBytes": 27056,
+          "transferBytes": 27239
+        },
+        {
+          "url": "/webfonts/Montserrat-Regular.woff2",
+          "decodedBodyBytes": 81964,
+          "encodedBodyBytes": 81964,
+          "transferBytes": 82147
+        },
+        {
+          "url": "/webfonts/NotoNaskhArabic-Regular.woff2",
+          "decodedBodyBytes": 71484,
+          "encodedBodyBytes": 71484,
+          "transferBytes": 71667
+        },
+        {
+          "url": "/webfonts/Lato-Regular.woff2",
+          "decodedBodyBytes": 166064,
+          "encodedBodyBytes": 166064,
+          "transferBytes": 166248
+        },
+        {
+          "url": "/webfonts/NotoSansLao-Regular.woff2",
+          "decodedBodyBytes": 22604,
+          "encodedBodyBytes": 22604,
+          "transferBytes": 22787
+        },
+        {
+          "url": "/webfonts/Nunito-Bold.woff2",
+          "decodedBodyBytes": 41676,
+          "encodedBodyBytes": 41676,
+          "transferBytes": 41859
+        },
+        {
+          "url": "/webfonts/OverpassMono-Regular.woff2",
+          "decodedBodyBytes": 96500,
+          "encodedBodyBytes": 96500,
+          "transferBytes": 96683
+        },
+        {
+          "url": "/webfonts/Parkinsans-Regular.woff2",
+          "decodedBodyBytes": 17648,
+          "encodedBodyBytes": 17648,
+          "transferBytes": 17831
+        },
+        {
+          "url": "/webfonts/0xProto-Regular.woff2",
+          "decodedBodyBytes": 55196,
+          "encodedBodyBytes": 55196,
+          "transferBytes": 55379
+        },
+        {
+          "url": "/webfonts/Oxygen-Regular.woff2",
+          "decodedBodyBytes": 19764,
+          "encodedBodyBytes": 19764,
+          "transferBytes": 19947
+        },
+        {
+          "url": "/webfonts/Roboto-Regular.woff2",
+          "decodedBodyBytes": 50272,
+          "encodedBodyBytes": 50272,
+          "transferBytes": 50455
+        },
+        {
+          "url": "/webfonts/OpenDyslexic-Regular.woff2",
+          "decodedBodyBytes": 112604,
+          "encodedBodyBytes": 112604,
+          "transferBytes": 112788
+        },
+        {
+          "url": "/webfonts/Sarabun-Bold.woff2",
+          "decodedBodyBytes": 46708,
+          "encodedBodyBytes": 46708,
+          "transferBytes": 46891
+        },
+        {
+          "url": "/webfonts/SourceCodePro-Regular.woff2",
+          "decodedBodyBytes": 70288,
+          "encodedBodyBytes": 70288,
+          "transferBytes": 70471
+        },
+        {
+          "url": "/webfonts/SpaceGrotesk-Regular.woff2",
+          "decodedBodyBytes": 28436,
+          "encodedBodyBytes": 28436,
+          "transferBytes": 28619
+        },
+        {
+          "url": "/webfonts/Iosevka-Regular.woff2",
+          "decodedBodyBytes": 530748,
+          "encodedBodyBytes": 530748,
+          "transferBytes": 530932
+        },
+        {
+          "url": "/webfonts/TitilliumWeb-Regular.woff2",
+          "decodedBodyBytes": 18128,
+          "encodedBodyBytes": 18128,
+          "transferBytes": 18311
+        },
+        {
+          "url": "/webfonts/Ubuntu-Regular.woff2",
+          "decodedBodyBytes": 111328,
+          "encodedBodyBytes": 111328,
+          "transferBytes": 111512
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        },
+        {
+          "url": "/webfonts/UbuntuMono-Regular.woff2",
+          "decodedBodyBytes": 79624,
+          "encodedBodyBytes": 79624,
+          "transferBytes": 79807
+        }
+      ],
+      "renderedBefore": [
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "renderedAfter": [
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "rejectedSplit": {
+        "decodedBodyBytes": 922760,
+        "encodedBodyBytes": 922760,
+        "transferBytes": 930906
+      }
+    },
+    {
+      "case": "thai-boon",
+      "before": {
+        "decodedBodyBytes": 370168,
+        "encodedBodyBytes": 370168,
+        "transferBytes": 371370
+      },
+      "after": {
+        "decodedBodyBytes": 364268,
+        "encodedBodyBytes": 364268,
+        "transferBytes": 365470
+      },
+      "beforePreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "afterPreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "beforeRequests": [
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/webfonts/Boon-Regular.woff2",
+          "decodedBodyBytes": 52228,
+          "encodedBodyBytes": 52228,
+          "transferBytes": 52411
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        }
+      ],
+      "afterRequests": [
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/webfonts/Boon-Regular.woff2",
+          "decodedBodyBytes": 46328,
+          "encodedBodyBytes": 46328,
+          "transferBytes": 46511
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        }
+      ],
+      "renderedBefore": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "Boon",
+              "postScriptName": "Boon-400",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "renderedAfter": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "CaretSubset14d9f2e87b0fFull",
+              "postScriptName": "CaretSubset14d9f2e87b0fFull",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "rejectedSplit": null
+    },
+    {
+      "case": "thai",
+      "before": {
+        "decodedBodyBytes": 340136,
+        "encodedBodyBytes": 340136,
+        "transferBytes": 341338
+      },
+      "after": {
+        "decodedBodyBytes": 340056,
+        "encodedBodyBytes": 340056,
+        "transferBytes": 341258
+      },
+      "beforePreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "afterPreloads": [
+        "/webfonts/RobotoMono-Regular.woff2",
+        "/webfonts/LexendDeca-Regular.woff2"
+      ],
+      "beforeRequests": [
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        },
+        {
+          "url": "/webfonts/Vazirharf-NL-Regular.woff2",
+          "decodedBodyBytes": 22196,
+          "encodedBodyBytes": 22196,
+          "transferBytes": 22379
+        }
+      ],
+      "afterRequests": [
+        {
+          "url": "/webfonts/RobotoMono-Regular.woff2",
+          "decodedBodyBytes": 37632,
+          "encodedBodyBytes": 37632,
+          "transferBytes": 37815
+        },
+        {
+          "url": "/webfonts/LexendDeca-Regular.woff2",
+          "decodedBodyBytes": 25888,
+          "encodedBodyBytes": 25888,
+          "transferBytes": 26071
+        },
+        {
+          "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+          "decodedBodyBytes": 119488,
+          "encodedBodyBytes": 119488,
+          "transferBytes": 119706
+        },
+        {
+          "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+          "decodedBodyBytes": 115420,
+          "encodedBodyBytes": 115420,
+          "transferBytes": 115638
+        },
+        {
+          "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+          "decodedBodyBytes": 19512,
+          "encodedBodyBytes": 19512,
+          "transferBytes": 19729
+        },
+        {
+          "url": "/webfonts/Vazirharf-NL-Regular.woff2",
+          "decodedBodyBytes": 22116,
+          "encodedBodyBytes": 22116,
+          "transferBytes": 22299
+        }
+      ],
+      "renderedBefore": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "Roboto Mono",
+              "postScriptName": "RobotoMono-Regular",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "renderedAfter": [
+        {
+          "selector": "#words .word",
+          "fonts": [
+            {
+              "familyName": "Roboto Mono",
+              "postScriptName": "RobotoMono-Regular",
+              "isCustomFont": true,
+              "glyphCount": 7
+            }
+          ]
+        },
+        {
+          "selector": "[data-ui-element=\"logoText\"]",
+          "fonts": []
+        },
+        {
+          "selector": "body",
+          "fonts": []
+        }
+      ],
+      "rejectedSplit": {
+        "decodedBodyBytes": 270352,
+        "encodedBodyBytes": 270352,
+        "transferBytes": 271369
+      }
+    }
+  ],
+  "comparisons": {
+    "before-vs-after": {
+      "availableCases": 62,
+      "notRunCases": 0,
+      "nonzeroCases": 0,
+      "changedPixels": 0,
+      "maxChannelDelta": 0
+    },
+    "before-vs-rejected-feature-trim": {
+      "availableCases": 1,
+      "notRunCases": 61,
+      "nonzeroCases": 1,
+      "changedPixels": 232167,
+      "maxChannelDelta": 221
+    },
+    "before-vs-rejected-split": {
+      "availableCases": 57,
+      "notRunCases": 5,
+      "nonzeroCases": 43,
+      "changedPixels": 5071571,
+      "maxChannelDelta": 221
+    },
+    "before-vs-repeat": {
+      "availableCases": 62,
+      "notRunCases": 0,
+      "nonzeroCases": 0,
+      "changedPixels": 0,
+      "maxChannelDelta": 0
+    },
+    "before-vs-trial-axis": {
+      "availableCases": 1,
+      "notRunCases": 61,
+      "nonzeroCases": 0,
+      "changedPixels": 0,
+      "maxChannelDelta": 0
+    },
+    "before-vs-trial-commit-keep": {
+      "availableCases": 1,
+      "notRunCases": 61,
+      "nonzeroCases": 1,
+      "changedPixels": 232167,
+      "maxChannelDelta": 221
+    },
+    "before-vs-trial-no-layout": {
+      "availableCases": 45,
+      "notRunCases": 17,
+      "nonzeroCases": 40,
+      "changedPixels": 13024211,
+      "maxChannelDelta": 221
+    },
+    "before-vs-trial-nohint": {
+      "availableCases": 45,
+      "notRunCases": 17,
+      "nonzeroCases": 44,
+      "changedPixels": 7453558,
+      "maxChannelDelta": 221
+    }
+  },
+  "nonzeroAdjudications": [
+    {
+      "comparison": "before-vs-rejected-feature-trim",
+      "case": "specimen-CommitMono",
+      "dimensions": [1440, 1932],
+      "beforeSize": [1440, 1932],
+      "afterSize": [1440, 1836],
+      "dimensionsDiffer": true,
+      "changedPixels": 232167,
+      "changedPercent": 8.345087129054521,
+      "maxChannelDelta": 221,
+      "bounds": [0, 80, 1440, 1932],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "accents",
+      "dimensions": [1440, 1000],
+      "beforeSize": [1440, 1000],
+      "afterSize": [1440, 1000],
+      "dimensionsDiffer": false,
+      "changedPixels": 3991,
+      "changedPercent": 0.2771527777777778,
+      "maxChannelDelta": 50,
+      "bounds": [719, 388, 1326, 427],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Adwaita_Mono",
+      "dimensions": [1440, 1937],
+      "beforeSize": [1440, 1937],
+      "afterSize": [1440, 1937],
+      "dimensionsDiffer": false,
+      "changedPixels": 38046,
+      "changedPercent": 1.3640079160213388,
+      "maxChannelDelta": 189,
+      "bounds": [109, 110, 1335, 1793],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Atkinson_Hyperlegible",
+      "dimensions": [1440, 1672],
+      "beforeSize": [1440, 1672],
+      "afterSize": [1440, 1672],
+      "dimensionsDiffer": false,
+      "changedPixels": 232823,
+      "changedPercent": 9.670014287612972,
+      "maxChannelDelta": 189,
+      "bounds": [26, 85, 1407, 1623],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Boon",
+      "dimensions": [1440, 1571],
+      "beforeSize": [1440, 1571],
+      "afterSize": [1440, 1571],
+      "dimensionsDiffer": false,
+      "changedPixels": 139737,
+      "changedPercent": 6.1769308296202,
+      "maxChannelDelta": 189,
+      "bounds": [47, 79, 1406, 1520],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Cascadia_Mono",
+      "dimensions": [1440, 1839],
+      "beforeSize": [1440, 1839],
+      "afterSize": [1440, 1839],
+      "dimensionsDiffer": false,
+      "changedPixels": 22211,
+      "changedPercent": 0.8387333091656093,
+      "maxChannelDelta": 189,
+      "bounds": [234, 108, 1392, 1791],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Comfortaa",
+      "dimensions": [1440, 1717],
+      "beforeSize": [1440, 1717],
+      "afterSize": [1440, 1717],
+      "dimensionsDiffer": false,
+      "changedPixels": 129389,
+      "changedPercent": 5.233166699022844,
+      "maxChannelDelta": 189,
+      "bounds": [49, 80, 1407, 1663],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Coming_Soon",
+      "dimensions": [1440, 1587],
+      "beforeSize": [1440, 1587],
+      "afterSize": [1440, 1587],
+      "dimensionsDiffer": false,
+      "changedPixels": 118917,
+      "changedPercent": 5.203607435412729,
+      "maxChannelDelta": 189,
+      "bounds": [23, 120, 1415, 1536],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-CommitMono",
+      "dimensions": [1440, 1932],
+      "beforeSize": [1440, 1932],
+      "afterSize": [1440, 1932],
+      "dimensionsDiffer": false,
+      "changedPixels": 113236,
+      "changedPercent": 4.0701920864964345,
+      "maxChannelDelta": 189,
+      "bounds": [24, 79, 1410, 1793],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Fira_Code",
+      "dimensions": [1440, 1973],
+      "beforeSize": [1440, 1973],
+      "afterSize": [1440, 1973],
+      "dimensionsDiffer": false,
+      "changedPixels": 47108,
+      "changedPercent": 1.6580785042518444,
+      "maxChannelDelta": 189,
+      "bounds": [109, 109, 1402, 1829],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Geist",
+      "dimensions": [1440, 1746],
+      "beforeSize": [1440, 1746],
+      "afterSize": [1440, 1746],
+      "dimensionsDiffer": false,
+      "changedPixels": 195739,
+      "changedPercent": 7.785215413007509,
+      "maxChannelDelta": 189,
+      "bounds": [25, 87, 1414, 1698],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Geist_Mono",
+      "dimensions": [1440, 1938],
+      "beforeSize": [1440, 1842],
+      "afterSize": [1440, 1938],
+      "dimensionsDiffer": true,
+      "changedPixels": 211359,
+      "changedPercent": 7.573636910904713,
+      "maxChannelDelta": 221,
+      "bounds": [0, 111, 1440, 1938],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Hack",
+      "dimensions": [1440, 1935],
+      "beforeSize": [1440, 1839],
+      "afterSize": [1440, 1935],
+      "dimensionsDiffer": true,
+      "changedPixels": 189776,
+      "changedPercent": 6.810795291415446,
+      "maxChannelDelta": 221,
+      "bounds": [0, 86, 1440, 1935],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-IBM_Plex_Mono",
+      "dimensions": [1440, 1939],
+      "beforeSize": [1440, 1939],
+      "afterSize": [1440, 1939],
+      "dimensionsDiffer": false,
+      "changedPixels": 35830,
+      "changedPercent": 1.283235917712452,
+      "maxChannelDelta": 189,
+      "bounds": [109, 113, 1336, 1797],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-IBM_Plex_Sans",
+      "dimensions": [1440, 1723],
+      "beforeSize": [1440, 1723],
+      "afterSize": [1440, 1723],
+      "dimensionsDiffer": false,
+      "changedPixels": 138046,
+      "changedPercent": 5.563858257561101,
+      "maxChannelDelta": 189,
+      "bounds": [25, 88, 1406, 1676],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Inconsolata",
+      "dimensions": [1440, 1738],
+      "beforeSize": [1440, 1738],
+      "afterSize": [1440, 1738],
+      "dimensionsDiffer": false,
+      "changedPixels": 58066,
+      "changedPercent": 2.3201157141030557,
+      "maxChannelDelta": 189,
+      "bounds": [28, 103, 1379, 1689],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Inter_Tight",
+      "dimensions": [1440, 1576],
+      "beforeSize": [1440, 1576],
+      "afterSize": [1440, 1576],
+      "dimensionsDiffer": false,
+      "changedPixels": 163888,
+      "changedPercent": 7.221517202481669,
+      "maxChannelDelta": 189,
+      "bounds": [22, 85, 1412, 1529],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Iosevka",
+      "dimensions": [1440, 1745],
+      "beforeSize": [1440, 1745],
+      "afterSize": [1440, 1745],
+      "dimensionsDiffer": false,
+      "changedPixels": 75158,
+      "changedPercent": 2.9910060490289716,
+      "maxChannelDelta": 189,
+      "bounds": [26, 110, 1382, 1697],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Itim",
+      "dimensions": [1440, 1575],
+      "beforeSize": [1440, 1575],
+      "afterSize": [1440, 1575],
+      "dimensionsDiffer": false,
+      "changedPixels": 92758,
+      "changedPercent": 4.089858906525573,
+      "maxChannelDelta": 189,
+      "bounds": [59, 83, 1371, 1526],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-JetBrains_Mono",
+      "dimensions": [1440, 1940],
+      "beforeSize": [1440, 1940],
+      "afterSize": [1440, 1940],
+      "dimensionsDiffer": false,
+      "changedPixels": 36223,
+      "changedPercent": 1.2966423253150057,
+      "maxChannelDelta": 189,
+      "bounds": [109, 113, 1337, 1797],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Kanit",
+      "dimensions": [1440, 1729],
+      "beforeSize": [1440, 1729],
+      "afterSize": [1440, 1729],
+      "dimensionsDiffer": false,
+      "changedPixels": 160096,
+      "changedPercent": 6.4301780091253775,
+      "maxChannelDelta": 189,
+      "bounds": [54, 93, 1412, 1681],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Lalezar",
+      "dimensions": [1440, 1587],
+      "beforeSize": [1440, 1587],
+      "afterSize": [1440, 1587],
+      "dimensionsDiffer": false,
+      "changedPixels": 19212,
+      "changedPercent": 0.8406847300987188,
+      "maxChannelDelta": 189,
+      "bounds": [140, 120, 1338, 1448],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Lato",
+      "dimensions": [1440, 1575],
+      "beforeSize": [1440, 1575],
+      "afterSize": [1440, 1575],
+      "dimensionsDiffer": false,
+      "changedPixels": 232821,
+      "changedPercent": 10.26547619047619,
+      "maxChannelDelta": 189,
+      "bounds": [22, 83, 1415, 1525],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Lexend_Deca",
+      "dimensions": [1440, 1745],
+      "beforeSize": [1440, 1745],
+      "afterSize": [1440, 1745],
+      "dimensionsDiffer": false,
+      "changedPixels": 142848,
+      "changedPercent": 5.684813753581662,
+      "maxChannelDelta": 189,
+      "bounds": [52, 86, 1413, 1699],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Mononoki",
+      "dimensions": [1440, 1837],
+      "beforeSize": [1440, 1837],
+      "afterSize": [1440, 1837],
+      "dimensionsDiffer": false,
+      "changedPixels": 74091,
+      "changedPercent": 2.800875521683905,
+      "maxChannelDelta": 189,
+      "bounds": [26, 81, 1400, 1787],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Montserrat",
+      "dimensions": [1440, 1744],
+      "beforeSize": [1440, 1744],
+      "afterSize": [1440, 1744],
+      "dimensionsDiffer": false,
+      "changedPixels": 105803,
+      "changedPercent": 4.21297623598369,
+      "maxChannelDelta": 189,
+      "bounds": [63, 109, 1412, 1696],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Noto_Naskh_Arabic",
+      "dimensions": [1440, 1687],
+      "beforeSize": [1440, 1687],
+      "afterSize": [1440, 1687],
+      "dimensionsDiffer": false,
+      "changedPixels": 128749,
+      "changedPercent": 5.299883092932886,
+      "maxChannelDelta": 189,
+      "bounds": [23, 98, 1415, 1630],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Noto_Sans_Lao",
+      "dimensions": [1440, 1686],
+      "beforeSize": [1440, 1686],
+      "afterSize": [1440, 1686],
+      "dimensionsDiffer": false,
+      "changedPixels": 159443,
+      "changedPercent": 6.56727790958218,
+      "maxChannelDelta": 189,
+      "bounds": [22, 97, 1411, 1639],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Nunito",
+      "dimensions": [1440, 1724],
+      "beforeSize": [1440, 1724],
+      "afterSize": [1440, 1724],
+      "dimensionsDiffer": false,
+      "changedPixels": 148187,
+      "changedPercent": 5.969120585202372,
+      "maxChannelDelta": 189,
+      "bounds": [53, 88, 1411, 1685],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Open_Dyslexic",
+      "dimensions": [1440, 2328],
+      "beforeSize": [1440, 2328],
+      "afterSize": [1440, 2328],
+      "dimensionsDiffer": false,
+      "changedPixels": 141126,
+      "changedPercent": 4.209800973654066,
+      "maxChannelDelta": 189,
+      "bounds": [25, 128, 1404, 2296],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Overpass_Mono",
+      "dimensions": [1440, 1841],
+      "beforeSize": [1440, 1841],
+      "afterSize": [1440, 1841],
+      "dimensionsDiffer": false,
+      "changedPixels": 44462,
+      "changedPercent": 1.6771531172671856,
+      "maxChannelDelta": 189,
+      "bounds": [109, 109, 1325, 1787],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Oxygen",
+      "dimensions": [1440, 1578],
+      "beforeSize": [1440, 1578],
+      "afterSize": [1440, 1578],
+      "dimensionsDiffer": false,
+      "changedPixels": 108057,
+      "changedPercent": 4.755360160540769,
+      "maxChannelDelta": 189,
+      "bounds": [78, 111, 1410, 1532],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Parkinsans",
+      "dimensions": [1440, 1750],
+      "beforeSize": [1440, 1750],
+      "afterSize": [1440, 1750],
+      "dimensionsDiffer": false,
+      "changedPixels": 110700,
+      "changedPercent": 4.392857142857143,
+      "maxChannelDelta": 189,
+      "bounds": [48, 90, 1408, 1701],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Proto",
+      "dimensions": [1440, 1935],
+      "beforeSize": [1440, 1935],
+      "afterSize": [1440, 1935],
+      "dimensionsDiffer": false,
+      "changedPixels": 75391,
+      "changedPercent": 2.705677576801608,
+      "maxChannelDelta": 189,
+      "bounds": [108, 108, 1396, 1806],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Roboto",
+      "dimensions": [1440, 1575],
+      "beforeSize": [1440, 1575],
+      "afterSize": [1440, 1575],
+      "dimensionsDiffer": false,
+      "changedPixels": 142397,
+      "changedPercent": 6.27852733686067,
+      "maxChannelDelta": 189,
+      "bounds": [62, 108, 1401, 1526],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Roboto_Mono",
+      "dimensions": [1440, 1940],
+      "beforeSize": [1440, 1844],
+      "afterSize": [1440, 1940],
+      "dimensionsDiffer": true,
+      "changedPixels": 178156,
+      "changedPercent": 6.377290950744559,
+      "maxChannelDelta": 221,
+      "bounds": [0, 114, 1440, 1940],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Sarabun",
+      "dimensions": [1440, 1746],
+      "beforeSize": [1440, 1698],
+      "afterSize": [1440, 1746],
+      "dimensionsDiffer": true,
+      "changedPixels": 493465,
+      "changedPercent": 19.626805714649358,
+      "maxChannelDelta": 221,
+      "bounds": [0, 85, 1440, 1746],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Source_Code_Pro",
+      "dimensions": [1440, 1937],
+      "beforeSize": [1440, 1937],
+      "afterSize": [1440, 1937],
+      "dimensionsDiffer": false,
+      "changedPixels": 36508,
+      "changedPercent": 1.3088682383984398,
+      "maxChannelDelta": 189,
+      "bounds": [109, 111, 1332, 1794],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Space_Grotesk",
+      "dimensions": [1440, 1745],
+      "beforeSize": [1440, 1745],
+      "afterSize": [1440, 1745],
+      "dimensionsDiffer": false,
+      "changedPixels": 158817,
+      "changedPercent": 6.320319961795606,
+      "maxChannelDelta": 189,
+      "bounds": [28, 86, 1367, 1697],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Titillium_Web",
+      "dimensions": [1440, 1585],
+      "beforeSize": [1440, 1585],
+      "afterSize": [1440, 1585],
+      "dimensionsDiffer": false,
+      "changedPixels": 131808,
+      "changedPercent": 5.774973711882229,
+      "maxChannelDelta": 189,
+      "bounds": [26, 94, 1409, 1539],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Ubuntu",
+      "dimensions": [1440, 1577],
+      "beforeSize": [1440, 1577],
+      "afterSize": [1440, 1577],
+      "dimensionsDiffer": false,
+      "changedPixels": 135324,
+      "changedPercent": 5.959099556119214,
+      "maxChannelDelta": 189,
+      "bounds": [26, 111, 1414, 1531],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Ubuntu_Mono",
+      "dimensions": [1440, 1738],
+      "beforeSize": [1440, 1738],
+      "afterSize": [1440, 1738],
+      "dimensionsDiffer": false,
+      "changedPixels": 65439,
+      "changedPercent": 2.6147151898734178,
+      "maxChannelDelta": 189,
+      "bounds": [26, 103, 1380, 1689],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "specimen-Vazirharf",
+      "dimensions": [1440, 1731],
+      "beforeSize": [1440, 1731],
+      "afterSize": [1440, 1731],
+      "dimensionsDiffer": false,
+      "changedPixels": 28628,
+      "changedPercent": 1.1485011874959883,
+      "maxChannelDelta": 189,
+      "bounds": [160, 121, 1154, 1676],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-rejected-split",
+      "case": "thai",
+      "dimensions": [1440, 1000],
+      "beforeSize": [1440, 1000],
+      "afterSize": [1440, 1000],
+      "dimensionsDiffer": false,
+      "changedPixels": 7742,
+      "changedPercent": 0.5376388888888889,
+      "maxChannelDelta": 50,
+      "bounds": [92, 396, 740, 420],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-commit-keep",
+      "case": "specimen-CommitMono",
+      "dimensions": [1440, 1932],
+      "beforeSize": [1440, 1932],
+      "afterSize": [1440, 1836],
+      "dimensionsDiffer": true,
+      "changedPixels": 232167,
+      "changedPercent": 8.345087129054521,
+      "maxChannelDelta": 221,
+      "bounds": [0, 80, 1440, 1932],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Adwaita_Mono-variation",
+      "dimensions": [1440, 1301],
+      "beforeSize": [1440, 1301],
+      "afterSize": [1440, 1205],
+      "dimensionsDiffer": true,
+      "changedPixels": 171622,
+      "changedPercent": 9.160795114868904,
+      "maxChannelDelta": 221,
+      "bounds": [0, 110, 1440, 1301],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Adwaita_Mono",
+      "dimensions": [1440, 1937],
+      "beforeSize": [1440, 1937],
+      "afterSize": [1440, 1841],
+      "dimensionsDiffer": true,
+      "changedPixels": 235609,
+      "changedPercent": 8.446946882349566,
+      "maxChannelDelta": 221,
+      "bounds": [0, 75, 1440, 1937],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Atkinson_Hyperlegible",
+      "dimensions": [1440, 1672],
+      "beforeSize": [1440, 1672],
+      "afterSize": [1440, 1672],
+      "dimensionsDiffer": false,
+      "changedPixels": 285806,
+      "changedPercent": 11.870597421584264,
+      "maxChannelDelta": 189,
+      "bounds": [26, 30, 1413, 1623],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Boon",
+      "dimensions": [1440, 1571],
+      "beforeSize": [1440, 1571],
+      "afterSize": [1440, 1571],
+      "dimensionsDiffer": false,
+      "changedPixels": 238909,
+      "changedPercent": 10.56072742060966,
+      "maxChannelDelta": 189,
+      "bounds": [26, 74, 1413, 1520],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Cascadia_Mono",
+      "dimensions": [1440, 1839],
+      "beforeSize": [1440, 1839],
+      "afterSize": [1440, 1839],
+      "dimensionsDiffer": false,
+      "changedPixels": 121030,
+      "changedPercent": 4.570343181680865,
+      "maxChannelDelta": 189,
+      "bounds": [26, 82, 1409, 1802],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Comfortaa",
+      "dimensions": [1440, 1717],
+      "beforeSize": [1440, 1717],
+      "afterSize": [1440, 1717],
+      "dimensionsDiffer": false,
+      "changedPixels": 274663,
+      "changedPercent": 11.108805733514528,
+      "maxChannelDelta": 189,
+      "bounds": [25, 31, 1415, 1663],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Coming_Soon",
+      "dimensions": [1440, 1587],
+      "beforeSize": [1440, 1587],
+      "afterSize": [1440, 1587],
+      "dimensionsDiffer": false,
+      "changedPixels": 147123,
+      "changedPercent": 6.437854442344046,
+      "maxChannelDelta": 189,
+      "bounds": [23, 203, 1415, 1440],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-CommitMono",
+      "dimensions": [1440, 1932],
+      "beforeSize": [1440, 1932],
+      "afterSize": [1440, 1836],
+      "dimensionsDiffer": true,
+      "changedPixels": 266146,
+      "changedPercent": 9.566439498504716,
+      "maxChannelDelta": 221,
+      "bounds": [0, 26, 1440, 1932],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Fira_Code",
+      "dimensions": [1440, 1973],
+      "beforeSize": [1440, 1973],
+      "afterSize": [1440, 1841],
+      "dimensionsDiffer": true,
+      "changedPixels": 603272,
+      "changedPercent": 21.233598017683168,
+      "maxChannelDelta": 221,
+      "bounds": [0, 72, 1440, 1973],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Geist",
+      "dimensions": [1440, 1746],
+      "beforeSize": [1440, 1746],
+      "afterSize": [1440, 1722],
+      "dimensionsDiffer": true,
+      "changedPixels": 514110,
+      "changedPercent": 20.447928598701793,
+      "maxChannelDelta": 189,
+      "bounds": [0, 34, 1440, 1746],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Geist_Mono",
+      "dimensions": [1440, 1842],
+      "beforeSize": [1440, 1842],
+      "afterSize": [1440, 1746],
+      "dimensionsDiffer": true,
+      "changedPixels": 331586,
+      "changedPercent": 12.50098021474243,
+      "maxChannelDelta": 221,
+      "bounds": [0, 71, 1440, 1842],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-IBM_Plex_Mono",
+      "dimensions": [1440, 1939],
+      "beforeSize": [1440, 1939],
+      "afterSize": [1440, 1843],
+      "dimensionsDiffer": true,
+      "changedPixels": 224898,
+      "changedPercent": 8.054624376826544,
+      "maxChannelDelta": 221,
+      "bounds": [0, 74, 1440, 1939],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-IBM_Plex_Sans",
+      "dimensions": [1440, 1723],
+      "beforeSize": [1440, 1723],
+      "afterSize": [1440, 1579],
+      "dimensionsDiffer": true,
+      "changedPixels": 665013,
+      "changedPercent": 26.802935770942156,
+      "maxChannelDelta": 221,
+      "bounds": [0, 74, 1440, 1723],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Inconsolata",
+      "dimensions": [1440, 1738],
+      "beforeSize": [1440, 1738],
+      "afterSize": [1440, 1738],
+      "dimensionsDiffer": false,
+      "changedPixels": 50691,
+      "changedPercent": 2.0254363252780974,
+      "maxChannelDelta": 189,
+      "bounds": [24, 78, 1407, 1689],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Inter_Tight",
+      "dimensions": [1440, 1576],
+      "beforeSize": [1440, 1576],
+      "afterSize": [1440, 1576],
+      "dimensionsDiffer": false,
+      "changedPixels": 221083,
+      "changedPercent": 9.741742456288776,
+      "maxChannelDelta": 189,
+      "bounds": [26, 85, 1413, 1529],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Iosevka-variation",
+      "dimensions": [1440, 1205],
+      "beforeSize": [1440, 1205],
+      "afterSize": [1440, 1205],
+      "dimensionsDiffer": false,
+      "changedPixels": 31995,
+      "changedPercent": 1.8438796680497926,
+      "maxChannelDelta": 189,
+      "bounds": [26, 110, 1127, 1157],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Iosevka",
+      "dimensions": [1440, 1745],
+      "beforeSize": [1440, 1745],
+      "afterSize": [1440, 1745],
+      "dimensionsDiffer": false,
+      "changedPixels": 94264,
+      "changedPercent": 3.7513530722699775,
+      "maxChannelDelta": 189,
+      "bounds": [25, 75, 1413, 1697],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Itim",
+      "dimensions": [1440, 1575],
+      "beforeSize": [1440, 1575],
+      "afterSize": [1440, 1575],
+      "dimensionsDiffer": false,
+      "changedPixels": 214179,
+      "changedPercent": 9.443518518518518,
+      "maxChannelDelta": 189,
+      "bounds": [28, 39, 1367, 1526],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-JetBrains_Mono",
+      "dimensions": [1440, 1940],
+      "beforeSize": [1440, 1940],
+      "afterSize": [1440, 1844],
+      "dimensionsDiffer": true,
+      "changedPixels": 241949,
+      "changedPercent": 8.660831901489118,
+      "maxChannelDelta": 221,
+      "bounds": [0, 78, 1440, 1940],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Kanit",
+      "dimensions": [1440, 1729],
+      "beforeSize": [1440, 1729],
+      "afterSize": [1440, 1729],
+      "dimensionsDiffer": false,
+      "changedPixels": 294709,
+      "changedPercent": 11.836843711843711,
+      "maxChannelDelta": 189,
+      "bounds": [25, 36, 1412, 1681],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Lalezar",
+      "dimensions": [1440, 1587],
+      "beforeSize": [1440, 1587],
+      "afterSize": [1440, 1587],
+      "dimensionsDiffer": false,
+      "changedPixels": 193253,
+      "changedPercent": 8.45642547083946,
+      "maxChannelDelta": 189,
+      "bounds": [24, 93, 1408, 1529],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Lato",
+      "dimensions": [1440, 1575],
+      "beforeSize": [1440, 1575],
+      "afterSize": [1440, 1575],
+      "dimensionsDiffer": false,
+      "changedPixels": 292402,
+      "changedPercent": 12.892504409171076,
+      "maxChannelDelta": 189,
+      "bounds": [26, 72, 1415, 1525],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Lexend_Deca",
+      "dimensions": [1440, 1745],
+      "beforeSize": [1440, 1745],
+      "afterSize": [1440, 1721],
+      "dimensionsDiffer": true,
+      "changedPixels": 473207,
+      "changedPercent": 18.831860872333653,
+      "maxChannelDelta": 189,
+      "bounds": [0, 31, 1440, 1745],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Mononoki",
+      "dimensions": [1440, 1837],
+      "beforeSize": [1440, 1837],
+      "afterSize": [1440, 1741],
+      "dimensionsDiffer": true,
+      "changedPixels": 298397,
+      "changedPercent": 11.280355954757152,
+      "maxChannelDelta": 221,
+      "bounds": [0, 70, 1440, 1837],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Montserrat",
+      "dimensions": [1440, 1744],
+      "beforeSize": [1440, 1744],
+      "afterSize": [1440, 1720],
+      "dimensionsDiffer": true,
+      "changedPixels": 419652,
+      "changedPercent": 16.710149082568808,
+      "maxChannelDelta": 189,
+      "bounds": [0, 34, 1440, 1744],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Noto_Naskh_Arabic",
+      "dimensions": [1440, 1687],
+      "beforeSize": [1440, 1687],
+      "afterSize": [1440, 1591],
+      "dimensionsDiffer": true,
+      "changedPixels": 451008,
+      "changedPercent": 18.565500889152343,
+      "maxChannelDelta": 221,
+      "bounds": [0, 33, 1440, 1687],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Noto_Sans_Lao",
+      "dimensions": [1440, 1686],
+      "beforeSize": [1440, 1686],
+      "afterSize": [1440, 1590],
+      "dimensionsDiffer": true,
+      "changedPixels": 426602,
+      "changedPercent": 17.571256754975614,
+      "maxChannelDelta": 221,
+      "bounds": [0, 87, 1440, 1686],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Nunito",
+      "dimensions": [1440, 1724],
+      "beforeSize": [1440, 1724],
+      "afterSize": [1440, 1580],
+      "dimensionsDiffer": true,
+      "changedPixels": 641456,
+      "changedPercent": 25.83848930136633,
+      "maxChannelDelta": 221,
+      "bounds": [0, 73, 1440, 1724],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Open_Dyslexic",
+      "dimensions": [1440, 2459],
+      "beforeSize": [1440, 2328],
+      "afterSize": [1440, 2459],
+      "dimensionsDiffer": true,
+      "changedPixels": 1103911,
+      "changedPercent": 31.175472188333107,
+      "maxChannelDelta": 221,
+      "bounds": [0, 38, 1440, 2459],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Overpass_Mono",
+      "dimensions": [1440, 1841],
+      "beforeSize": [1440, 1841],
+      "afterSize": [1440, 1841],
+      "dimensionsDiffer": false,
+      "changedPixels": 223594,
+      "changedPercent": 8.43419940853401,
+      "maxChannelDelta": 189,
+      "bounds": [25, 74, 1395, 1786],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Oxygen",
+      "dimensions": [1440, 1578],
+      "beforeSize": [1440, 1578],
+      "afterSize": [1440, 1578],
+      "dimensionsDiffer": false,
+      "changedPixels": 181716,
+      "changedPercent": 7.996937051119561,
+      "maxChannelDelta": 189,
+      "bounds": [22, 79, 1411, 1533],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Parkinsans",
+      "dimensions": [1440, 1750],
+      "beforeSize": [1440, 1750],
+      "afterSize": [1440, 1726],
+      "dimensionsDiffer": true,
+      "changedPixels": 473111,
+      "changedPercent": 18.77424603174603,
+      "maxChannelDelta": 189,
+      "bounds": [0, 79, 1440, 1750],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Proto",
+      "dimensions": [1440, 1935],
+      "beforeSize": [1440, 1935],
+      "afterSize": [1440, 1743],
+      "dimensionsDiffer": true,
+      "changedPixels": 469864,
+      "changedPercent": 16.862761986792993,
+      "maxChannelDelta": 221,
+      "bounds": [0, 66, 1440, 1935],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Roboto",
+      "dimensions": [1440, 1575],
+      "beforeSize": [1440, 1575],
+      "afterSize": [1440, 1575],
+      "dimensionsDiffer": false,
+      "changedPixels": 266286,
+      "changedPercent": 11.74100529100529,
+      "maxChannelDelta": 189,
+      "bounds": [23, 72, 1413, 1526],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Sarabun",
+      "dimensions": [1440, 1698],
+      "beforeSize": [1440, 1698],
+      "afterSize": [1440, 1674],
+      "dimensionsDiffer": true,
+      "changedPixels": 459806,
+      "changedPercent": 18.805048422981287,
+      "maxChannelDelta": 189,
+      "bounds": [0, 76, 1440, 1698],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Source_Code_Pro",
+      "dimensions": [1440, 1937],
+      "beforeSize": [1440, 1937],
+      "afterSize": [1440, 1841],
+      "dimensionsDiffer": true,
+      "changedPixels": 236268,
+      "changedPercent": 8.470573051109964,
+      "maxChannelDelta": 221,
+      "bounds": [0, 75, 1440, 1937],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Space_Grotesk",
+      "dimensions": [1440, 1745],
+      "beforeSize": [1440, 1745],
+      "afterSize": [1440, 1745],
+      "dimensionsDiffer": false,
+      "changedPixels": 248543,
+      "changedPercent": 9.891077682266793,
+      "maxChannelDelta": 189,
+      "bounds": [24, 32, 1406, 1697],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Titillium_Web",
+      "dimensions": [1440, 1585],
+      "beforeSize": [1440, 1585],
+      "afterSize": [1440, 1585],
+      "dimensionsDiffer": false,
+      "changedPixels": 187818,
+      "changedPercent": 8.228969505783386,
+      "maxChannelDelta": 189,
+      "bounds": [26, 36, 1403, 1539],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Ubuntu",
+      "dimensions": [1440, 1577],
+      "beforeSize": [1440, 1577],
+      "afterSize": [1440, 1577],
+      "dimensionsDiffer": false,
+      "changedPixels": 255537,
+      "changedPercent": 11.252774254914394,
+      "maxChannelDelta": 189,
+      "bounds": [23, 76, 1417, 1531],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-no-layout",
+      "case": "specimen-Vazirharf",
+      "dimensions": [1440, 1731],
+      "beforeSize": [1440, 1731],
+      "afterSize": [1440, 1587],
+      "dimensionsDiffer": true,
+      "changedPixels": 493123,
+      "changedPercent": 19.78316162783234,
+      "maxChannelDelta": 221,
+      "bounds": [0, 94, 1440, 1731],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "core-only",
+      "dimensions": [1440, 1000],
+      "beforeSize": [1440, 1000],
+      "afterSize": [1440, 1000],
+      "dimensionsDiffer": false,
+      "changedPixels": 762,
+      "changedPercent": 0.05291666666666667,
+      "maxChannelDelta": 214,
+      "bounds": [8, 13, 217, 26],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "extended-only",
+      "dimensions": [1440, 1000],
+      "beforeSize": [1440, 1000],
+      "afterSize": [1440, 1000],
+      "dimensionsDiffer": false,
+      "changedPixels": 65,
+      "changedPercent": 0.0045138888888888885,
+      "maxChannelDelta": 130,
+      "bounds": [8, 13, 17, 25],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Adwaita_Mono-variation",
+      "dimensions": [1440, 1301],
+      "beforeSize": [1440, 1301],
+      "afterSize": [1440, 1301],
+      "dimensionsDiffer": false,
+      "changedPixels": 45694,
+      "changedPercent": 2.439042616790503,
+      "maxChannelDelta": 189,
+      "bounds": [24, 30, 1387, 1252],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Adwaita_Mono",
+      "dimensions": [1440, 1937],
+      "beforeSize": [1440, 1937],
+      "afterSize": [1440, 1937],
+      "dimensionsDiffer": false,
+      "changedPixels": 113564,
+      "changedPercent": 4.071444960706706,
+      "maxChannelDelta": 189,
+      "bounds": [24, 30, 1409, 1888],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Atkinson_Hyperlegible",
+      "dimensions": [1440, 1672],
+      "beforeSize": [1440, 1672],
+      "afterSize": [1440, 1672],
+      "dimensionsDiffer": false,
+      "changedPixels": 193484,
+      "changedPercent": 8.036117756512493,
+      "maxChannelDelta": 189,
+      "bounds": [23, 30, 1407, 1623],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Boon",
+      "dimensions": [1440, 1571],
+      "beforeSize": [1440, 1571],
+      "afterSize": [1440, 1571],
+      "dimensionsDiffer": false,
+      "changedPixels": 44382,
+      "changedPercent": 1.9618608105240822,
+      "maxChannelDelta": 189,
+      "bounds": [24, 32, 1396, 1520],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Cascadia_Mono",
+      "dimensions": [1440, 1839],
+      "beforeSize": [1440, 1839],
+      "afterSize": [1440, 1839],
+      "dimensionsDiffer": false,
+      "changedPixels": 91803,
+      "changedPercent": 3.4666711981149176,
+      "maxChannelDelta": 189,
+      "bounds": [23, 29, 1409, 1791],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Comfortaa",
+      "dimensions": [1440, 1717],
+      "beforeSize": [1440, 1717],
+      "afterSize": [1440, 1669],
+      "dimensionsDiffer": true,
+      "changedPixels": 484457,
+      "changedPercent": 19.593970426454412,
+      "maxChannelDelta": 189,
+      "bounds": [0, 23, 1440, 1717],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Coming_Soon",
+      "dimensions": [1440, 1587],
+      "beforeSize": [1440, 1587],
+      "afterSize": [1440, 1587],
+      "dimensionsDiffer": false,
+      "changedPixels": 137198,
+      "changedPercent": 6.00355317510327,
+      "maxChannelDelta": 189,
+      "bounds": [23, 32, 1415, 1536],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-CommitMono",
+      "dimensions": [1440, 1932],
+      "beforeSize": [1440, 1932],
+      "afterSize": [1440, 1836],
+      "dimensionsDiffer": true,
+      "changedPixels": 232167,
+      "changedPercent": 8.345087129054521,
+      "maxChannelDelta": 221,
+      "bounds": [0, 80, 1440, 1932],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Fira_Code",
+      "dimensions": [1440, 1973],
+      "beforeSize": [1440, 1973],
+      "afterSize": [1440, 1973],
+      "dimensionsDiffer": false,
+      "changedPixels": 103923,
+      "changedPercent": 3.657818043588444,
+      "maxChannelDelta": 189,
+      "bounds": [24, 27, 1402, 1921],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Geist",
+      "dimensions": [1440, 1746],
+      "beforeSize": [1440, 1746],
+      "afterSize": [1440, 1746],
+      "dimensionsDiffer": false,
+      "changedPixels": 206233,
+      "changedPercent": 8.202598001781851,
+      "maxChannelDelta": 189,
+      "bounds": [24, 31, 1414, 1698],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Geist_Mono",
+      "dimensions": [1440, 1842],
+      "beforeSize": [1440, 1842],
+      "afterSize": [1440, 1842],
+      "dimensionsDiffer": false,
+      "changedPixels": 95442,
+      "changedPercent": 3.5982175171914585,
+      "maxChannelDelta": 189,
+      "bounds": [24, 31, 1409, 1803],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Hack",
+      "dimensions": [1440, 1839],
+      "beforeSize": [1440, 1839],
+      "afterSize": [1440, 1839],
+      "dimensionsDiffer": false,
+      "changedPixels": 95522,
+      "changedPercent": 3.6071083318228507,
+      "maxChannelDelta": 189,
+      "bounds": [23, 29, 1413, 1802],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-IBM_Plex_Mono",
+      "dimensions": [1440, 1939],
+      "beforeSize": [1440, 1939],
+      "afterSize": [1440, 1939],
+      "dimensionsDiffer": false,
+      "changedPixels": 97252,
+      "changedPercent": 3.483038221305369,
+      "maxChannelDelta": 189,
+      "bounds": [24, 32, 1407, 1892],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-IBM_Plex_Sans",
+      "dimensions": [1440, 1723],
+      "beforeSize": [1440, 1723],
+      "afterSize": [1440, 1723],
+      "dimensionsDiffer": false,
+      "changedPixels": 193015,
+      "changedPercent": 7.779349648545818,
+      "maxChannelDelta": 189,
+      "bounds": [24, 33, 1414, 1676],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Inconsolata",
+      "dimensions": [1440, 1738],
+      "beforeSize": [1440, 1738],
+      "afterSize": [1440, 1738],
+      "dimensionsDiffer": false,
+      "changedPixels": 51743,
+      "changedPercent": 2.0674705919959084,
+      "maxChannelDelta": 189,
+      "bounds": [24, 29, 1399, 1689],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Inter_Tight",
+      "dimensions": [1440, 1576],
+      "beforeSize": [1440, 1576],
+      "afterSize": [1440, 1576],
+      "dimensionsDiffer": false,
+      "changedPixels": 149111,
+      "changedPercent": 6.570387408347433,
+      "maxChannelDelta": 189,
+      "bounds": [23, 30, 1411, 1529],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Iosevka-variation",
+      "dimensions": [1440, 1205],
+      "beforeSize": [1440, 1205],
+      "afterSize": [1440, 1205],
+      "dimensionsDiffer": false,
+      "changedPixels": 44182,
+      "changedPercent": 2.546219455970493,
+      "maxChannelDelta": 189,
+      "bounds": [24, 30, 1172, 1157],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Iosevka",
+      "dimensions": [1440, 1745],
+      "beforeSize": [1440, 1745],
+      "afterSize": [1440, 1745],
+      "dimensionsDiffer": false,
+      "changedPixels": 108539,
+      "changedPercent": 4.319444444444445,
+      "maxChannelDelta": 189,
+      "bounds": [24, 30, 1396, 1697],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Itim",
+      "dimensions": [1440, 1575],
+      "beforeSize": [1440, 1575],
+      "afterSize": [1440, 1575],
+      "dimensionsDiffer": false,
+      "changedPixels": 148104,
+      "changedPercent": 6.53015873015873,
+      "maxChannelDelta": 189,
+      "bounds": [24, 32, 1382, 1526],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-JetBrains_Mono",
+      "dimensions": [1440, 1940],
+      "beforeSize": [1440, 1940],
+      "afterSize": [1440, 1940],
+      "dimensionsDiffer": false,
+      "changedPixels": 95622,
+      "changedPercent": 3.4228951890034365,
+      "maxChannelDelta": 189,
+      "bounds": [23, 31, 1408, 1892],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Kanit",
+      "dimensions": [1440, 1729],
+      "beforeSize": [1440, 1729],
+      "afterSize": [1440, 1705],
+      "dimensionsDiffer": true,
+      "changedPixels": 427297,
+      "changedPercent": 17.16217627401838,
+      "maxChannelDelta": 189,
+      "bounds": [0, 36, 1440, 1729],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Lalezar",
+      "dimensions": [1440, 1587],
+      "beforeSize": [1440, 1587],
+      "afterSize": [1440, 1587],
+      "dimensionsDiffer": false,
+      "changedPixels": 153662,
+      "changedPercent": 6.723990058111041,
+      "maxChannelDelta": 189,
+      "bounds": [23, 35, 1406, 1529],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Lato",
+      "dimensions": [1440, 1575],
+      "beforeSize": [1440, 1575],
+      "afterSize": [1440, 1575],
+      "dimensionsDiffer": false,
+      "changedPixels": 197199,
+      "changedPercent": 8.69484126984127,
+      "maxChannelDelta": 189,
+      "bounds": [24, 28, 1415, 1525],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Lexend_Deca",
+      "dimensions": [1440, 1745],
+      "beforeSize": [1440, 1745],
+      "afterSize": [1440, 1745],
+      "dimensionsDiffer": false,
+      "changedPixels": 168505,
+      "changedPercent": 6.7058659662527855,
+      "maxChannelDelta": 189,
+      "bounds": [24, 31, 1413, 1699],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Montserrat",
+      "dimensions": [1440, 1744],
+      "beforeSize": [1440, 1744],
+      "afterSize": [1440, 1744],
+      "dimensionsDiffer": false,
+      "changedPixels": 163462,
+      "changedPercent": 6.508903542303772,
+      "maxChannelDelta": 189,
+      "bounds": [24, 32, 1412, 1696],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Noto_Naskh_Arabic",
+      "dimensions": [1440, 1687],
+      "beforeSize": [1440, 1687],
+      "afterSize": [1440, 1639],
+      "dimensionsDiffer": true,
+      "changedPixels": 488067,
+      "changedPercent": 20.09101462161628,
+      "maxChannelDelta": 189,
+      "bounds": [0, 32, 1440, 1687],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Noto_Sans_Lao",
+      "dimensions": [1440, 1734],
+      "beforeSize": [1440, 1686],
+      "afterSize": [1440, 1734],
+      "dimensionsDiffer": true,
+      "changedPixels": 464838,
+      "changedPercent": 18.61615724721261,
+      "maxChannelDelta": 189,
+      "bounds": [0, 37, 1440, 1734],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Nunito",
+      "dimensions": [1440, 1748],
+      "beforeSize": [1440, 1724],
+      "afterSize": [1440, 1748],
+      "dimensionsDiffer": true,
+      "changedPixels": 465781,
+      "changedPercent": 18.504521039918636,
+      "maxChannelDelta": 189,
+      "bounds": [0, 33, 1440, 1748],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Open_Dyslexic",
+      "dimensions": [1440, 2328],
+      "beforeSize": [1440, 2328],
+      "afterSize": [1440, 2328],
+      "dimensionsDiffer": false,
+      "changedPixels": 91887,
+      "changedPercent": 2.740997279495991,
+      "maxChannelDelta": 189,
+      "bounds": [24, 38, 1405, 2296],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Overpass_Mono",
+      "dimensions": [1440, 1841],
+      "beforeSize": [1440, 1841],
+      "afterSize": [1440, 1841],
+      "dimensionsDiffer": false,
+      "changedPixels": 101325,
+      "changedPercent": 3.822084917617237,
+      "maxChannelDelta": 189,
+      "bounds": [24, 28, 1410, 1787],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Oxygen",
+      "dimensions": [1440, 1578],
+      "beforeSize": [1440, 1578],
+      "afterSize": [1440, 1578],
+      "dimensionsDiffer": false,
+      "changedPixels": 151346,
+      "changedPercent": 6.660417546824391,
+      "maxChannelDelta": 189,
+      "bounds": [22, 32, 1413, 1533],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Parkinsans",
+      "dimensions": [1440, 1750],
+      "beforeSize": [1440, 1750],
+      "afterSize": [1440, 1750],
+      "dimensionsDiffer": false,
+      "changedPixels": 203829,
+      "changedPercent": 8.088452380952381,
+      "maxChannelDelta": 189,
+      "bounds": [24, 32, 1405, 1702],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Proto",
+      "dimensions": [1440, 1935],
+      "beforeSize": [1440, 1935],
+      "afterSize": [1440, 1935],
+      "dimensionsDiffer": false,
+      "changedPixels": 90200,
+      "changedPercent": 3.2371518805627333,
+      "maxChannelDelta": 189,
+      "bounds": [24, 30, 1406, 1899],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Roboto",
+      "dimensions": [1440, 1575],
+      "beforeSize": [1440, 1575],
+      "afterSize": [1440, 1575],
+      "dimensionsDiffer": false,
+      "changedPixels": 168988,
+      "changedPercent": 7.450970017636684,
+      "maxChannelDelta": 189,
+      "bounds": [24, 29, 1388, 1526],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Roboto_Mono",
+      "dimensions": [1440, 1844],
+      "beforeSize": [1440, 1844],
+      "afterSize": [1440, 1844],
+      "dimensionsDiffer": false,
+      "changedPixels": 81778,
+      "changedPercent": 3.0797330682092072,
+      "maxChannelDelta": 189,
+      "bounds": [24, 33, 1408, 1799],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Sarabun",
+      "dimensions": [1440, 1746],
+      "beforeSize": [1440, 1698],
+      "afterSize": [1440, 1746],
+      "dimensionsDiffer": true,
+      "changedPixels": 485179,
+      "changedPercent": 19.297242904416443,
+      "maxChannelDelta": 221,
+      "bounds": [0, 35, 1440, 1746],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Source_Code_Pro",
+      "dimensions": [1440, 1937],
+      "beforeSize": [1440, 1937],
+      "afterSize": [1440, 1937],
+      "dimensionsDiffer": false,
+      "changedPixels": 64055,
+      "changedPercent": 2.296470773819767,
+      "maxChannelDelta": 184,
+      "bounds": [24, 31, 1409, 1855],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Space_Grotesk",
+      "dimensions": [1440, 1745],
+      "beforeSize": [1440, 1745],
+      "afterSize": [1440, 1745],
+      "dimensionsDiffer": false,
+      "changedPixels": 135146,
+      "changedPercent": 5.378303088188475,
+      "maxChannelDelta": 189,
+      "bounds": [24, 31, 1367, 1698],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Titillium_Web",
+      "dimensions": [1440, 1585],
+      "beforeSize": [1440, 1585],
+      "afterSize": [1440, 1585],
+      "dimensionsDiffer": false,
+      "changedPixels": 125713,
+      "changedPercent": 5.507930248860848,
+      "maxChannelDelta": 189,
+      "bounds": [23, 36, 1383, 1539],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Ubuntu",
+      "dimensions": [1440, 1577],
+      "beforeSize": [1440, 1577],
+      "afterSize": [1440, 1574],
+      "dimensionsDiffer": true,
+      "changedPixels": 289365,
+      "changedPercent": 12.742417036567321,
+      "maxChannelDelta": 189,
+      "bounds": [0, 28, 1440, 1577],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Ubuntu_Mono",
+      "dimensions": [1440, 1738],
+      "beforeSize": [1440, 1738],
+      "afterSize": [1440, 1737],
+      "dimensionsDiffer": true,
+      "changedPixels": 178324,
+      "changedPercent": 7.125207773941951,
+      "maxChannelDelta": 189,
+      "bounds": [0, 28, 1440, 1738],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    },
+    {
+      "comparison": "before-vs-trial-nohint",
+      "case": "specimen-Vazirharf",
+      "dimensions": [1440, 1731],
+      "beforeSize": [1440, 1731],
+      "afterSize": [1440, 1731],
+      "dimensionsDiffer": false,
+      "changedPixels": 25348,
+      "changedPercent": 1.0169137942101547,
+      "maxChannelDelta": 189,
+      "bounds": [27, 95, 1404, 1676],
+      "decision": "Rendering regression: alternative disabled; no masks or tolerance."
+    }
+  ],
+  "strictAcceptanceGate": "BLOCKED: exact-cmap splitting changes rendering; full faces retained."
+}

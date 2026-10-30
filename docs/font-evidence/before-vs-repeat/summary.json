@@ -1,10 +1,21 @@
 [
   {
     "case": "accents",
-    "dimensions": [
-      1440,
-      1000
-    ],
+    "dimensions": [1440, 1000],
+    "beforeSize": [1440, 1000],
+    "afterSize": [1440, 1000],
+    "dimensionsDiffer": false,
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "arabic-naskh",
+    "dimensions": [1440, 1000],
+    "beforeSize": [1440, 1000],
+    "afterSize": [1440, 1000],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -12,10 +23,10 @@
   },
   {
     "case": "arabic",
-    "dimensions": [
-      1440,
-      1000
-    ],
+    "dimensions": [1440, 1000],
+    "beforeSize": [1440, 1000],
+    "afterSize": [1440, 1000],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -23,10 +34,10 @@
   },
   {
     "case": "cjk",
-    "dimensions": [
-      1440,
-      1000
-    ],
+    "dimensions": [1440, 1000],
+    "beforeSize": [1440, 1000],
+    "afterSize": [1440, 1000],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -34,10 +45,10 @@
   },
   {
     "case": "code",
-    "dimensions": [
-      1440,
-      1000
-    ],
+    "dimensions": [1440, 1000],
+    "beforeSize": [1440, 1000],
+    "afterSize": [1440, 1000],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -45,10 +56,10 @@
   },
   {
     "case": "commands",
-    "dimensions": [
-      1440,
-      1000
-    ],
+    "dimensions": [1440, 1000],
+    "beforeSize": [1440, 1000],
+    "afterSize": [1440, 1000],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -56,10 +67,10 @@
   },
   {
     "case": "core-only",
-    "dimensions": [
-      1440,
-      1000
-    ],
+    "dimensions": [1440, 1000],
+    "beforeSize": [1440, 1000],
+    "afterSize": [1440, 1000],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -67,10 +78,10 @@
   },
   {
     "case": "default",
-    "dimensions": [
-      1440,
-      1000
-    ],
+    "dimensions": [1440, 1000],
+    "beforeSize": [1440, 1000],
+    "afterSize": [1440, 1000],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -78,10 +89,21 @@
   },
   {
     "case": "extended-only",
-    "dimensions": [
-      1440,
-      1000
-    ],
+    "dimensions": [1440, 1000],
+    "beforeSize": [1440, 1000],
+    "afterSize": [1440, 1000],
+    "dimensionsDiffer": false,
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "lao-noto",
+    "dimensions": [1440, 1000],
+    "beforeSize": [1440, 1000],
+    "afterSize": [1440, 1000],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -89,10 +111,10 @@
   },
   {
     "case": "lao",
-    "dimensions": [
-      1440,
-      1000
-    ],
+    "dimensions": [1440, 1000],
+    "beforeSize": [1440, 1000],
+    "afterSize": [1440, 1000],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -100,10 +122,10 @@
   },
   {
     "case": "loader",
-    "dimensions": [
-      1440,
-      1000
-    ],
+    "dimensions": [1440, 1000],
+    "beforeSize": [1440, 1000],
+    "afterSize": [1440, 1000],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -111,10 +133,10 @@
   },
   {
     "case": "not-found",
-    "dimensions": [
-      1440,
-      1000
-    ],
+    "dimensions": [1440, 1000],
+    "beforeSize": [1440, 1000],
+    "afterSize": [1440, 1000],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -122,10 +144,10 @@
   },
   {
     "case": "privacy",
-    "dimensions": [
-      1440,
-      1000
-    ],
+    "dimensions": [1440, 1000],
+    "beforeSize": [1440, 1000],
+    "afterSize": [1440, 1000],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -133,10 +155,10 @@
   },
   {
     "case": "public",
-    "dimensions": [
-      1440,
-      1182
-    ],
+    "dimensions": [1440, 1182],
+    "beforeSize": [1440, 1182],
+    "afterSize": [1440, 1182],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -144,10 +166,10 @@
   },
   {
     "case": "result",
-    "dimensions": [
-      1440,
-      1000
-    ],
+    "dimensions": [1440, 1000],
+    "beforeSize": [1440, 1000],
+    "afterSize": [1440, 1000],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -155,10 +177,21 @@
   },
   {
     "case": "settings",
-    "dimensions": [
-      1440,
-      1000
-    ],
+    "dimensions": [1440, 1000],
+    "beforeSize": [1440, 1000],
+    "afterSize": [1440, 1000],
+    "dimensionsDiffer": false,
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Adwaita_Mono-variation",
+    "dimensions": [1440, 1301],
+    "beforeSize": [1440, 1301],
+    "afterSize": [1440, 1301],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -166,10 +199,10 @@
   },
   {
     "case": "specimen-Adwaita_Mono",
-    "dimensions": [
-      1440,
-      1937
-    ],
+    "dimensions": [1440, 1937],
+    "beforeSize": [1440, 1937],
+    "afterSize": [1440, 1937],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -177,10 +210,10 @@
   },
   {
     "case": "specimen-Atkinson_Hyperlegible",
-    "dimensions": [
-      1440,
-      1672
-    ],
+    "dimensions": [1440, 1672],
+    "beforeSize": [1440, 1672],
+    "afterSize": [1440, 1672],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -188,10 +221,10 @@
   },
   {
     "case": "specimen-Boon",
-    "dimensions": [
-      1440,
-      1571
-    ],
+    "dimensions": [1440, 1571],
+    "beforeSize": [1440, 1571],
+    "afterSize": [1440, 1571],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -199,10 +232,10 @@
   },
   {
     "case": "specimen-Cascadia_Mono",
-    "dimensions": [
-      1440,
-      1839
-    ],
+    "dimensions": [1440, 1839],
+    "beforeSize": [1440, 1839],
+    "afterSize": [1440, 1839],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -210,10 +243,10 @@
   },
   {
     "case": "specimen-Comfortaa",
-    "dimensions": [
-      1440,
-      1717
-    ],
+    "dimensions": [1440, 1717],
+    "beforeSize": [1440, 1717],
+    "afterSize": [1440, 1717],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -221,10 +254,10 @@
   },
   {
     "case": "specimen-Coming_Soon",
-    "dimensions": [
-      1440,
-      1587
-    ],
+    "dimensions": [1440, 1587],
+    "beforeSize": [1440, 1587],
+    "afterSize": [1440, 1587],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -232,10 +265,10 @@
   },
   {
     "case": "specimen-CommitMono",
-    "dimensions": [
-      1440,
-      1932
-    ],
+    "dimensions": [1440, 1932],
+    "beforeSize": [1440, 1932],
+    "afterSize": [1440, 1932],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -243,10 +276,10 @@
   },
   {
     "case": "specimen-Fira_Code",
-    "dimensions": [
-      1440,
-      1973
-    ],
+    "dimensions": [1440, 1973],
+    "beforeSize": [1440, 1973],
+    "afterSize": [1440, 1973],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -254,10 +287,10 @@
   },
   {
     "case": "specimen-Geist",
-    "dimensions": [
-      1440,
-      1746
-    ],
+    "dimensions": [1440, 1746],
+    "beforeSize": [1440, 1746],
+    "afterSize": [1440, 1746],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -265,10 +298,10 @@
   },
   {
     "case": "specimen-Geist_Mono",
-    "dimensions": [
-      1440,
-      1842
-    ],
+    "dimensions": [1440, 1842],
+    "beforeSize": [1440, 1842],
+    "afterSize": [1440, 1842],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -276,10 +309,10 @@
   },
   {
     "case": "specimen-Hack",
-    "dimensions": [
-      1440,
-      1839
-    ],
+    "dimensions": [1440, 1839],
+    "beforeSize": [1440, 1839],
+    "afterSize": [1440, 1839],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -287,10 +320,10 @@
   },
   {
     "case": "specimen-IBM_Plex_Mono",
-    "dimensions": [
-      1440,
-      1939
-    ],
+    "dimensions": [1440, 1939],
+    "beforeSize": [1440, 1939],
+    "afterSize": [1440, 1939],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -298,10 +331,10 @@
   },
   {
     "case": "specimen-IBM_Plex_Sans",
-    "dimensions": [
-      1440,
-      1723
-    ],
+    "dimensions": [1440, 1723],
+    "beforeSize": [1440, 1723],
+    "afterSize": [1440, 1723],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -309,10 +342,10 @@
   },
   {
     "case": "specimen-Inconsolata",
-    "dimensions": [
-      1440,
-      1738
-    ],
+    "dimensions": [1440, 1738],
+    "beforeSize": [1440, 1738],
+    "afterSize": [1440, 1738],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -320,10 +353,21 @@
   },
   {
     "case": "specimen-Inter_Tight",
-    "dimensions": [
-      1440,
-      1576
-    ],
+    "dimensions": [1440, 1576],
+    "beforeSize": [1440, 1576],
+    "afterSize": [1440, 1576],
+    "dimensionsDiffer": false,
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Iosevka-variation",
+    "dimensions": [1440, 1205],
+    "beforeSize": [1440, 1205],
+    "afterSize": [1440, 1205],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -331,10 +375,10 @@
   },
   {
     "case": "specimen-Iosevka",
-    "dimensions": [
-      1440,
-      1745
-    ],
+    "dimensions": [1440, 1745],
+    "beforeSize": [1440, 1745],
+    "afterSize": [1440, 1745],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -342,10 +386,10 @@
   },
   {
     "case": "specimen-Itim",
-    "dimensions": [
-      1440,
-      1575
-    ],
+    "dimensions": [1440, 1575],
+    "beforeSize": [1440, 1575],
+    "afterSize": [1440, 1575],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -353,10 +397,10 @@
   },
   {
     "case": "specimen-JetBrains_Mono",
-    "dimensions": [
-      1440,
-      1940
-    ],
+    "dimensions": [1440, 1940],
+    "beforeSize": [1440, 1940],
+    "afterSize": [1440, 1940],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -364,10 +408,10 @@
   },
   {
     "case": "specimen-Kanit",
-    "dimensions": [
-      1440,
-      1729
-    ],
+    "dimensions": [1440, 1729],
+    "beforeSize": [1440, 1729],
+    "afterSize": [1440, 1729],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -375,10 +419,10 @@
   },
   {
     "case": "specimen-Lalezar",
-    "dimensions": [
-      1440,
-      1587
-    ],
+    "dimensions": [1440, 1587],
+    "beforeSize": [1440, 1587],
+    "afterSize": [1440, 1587],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -386,10 +430,10 @@
   },
   {
     "case": "specimen-Lato",
-    "dimensions": [
-      1440,
-      1575
-    ],
+    "dimensions": [1440, 1575],
+    "beforeSize": [1440, 1575],
+    "afterSize": [1440, 1575],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -397,10 +441,10 @@
   },
   {
     "case": "specimen-Lexend_Deca",
-    "dimensions": [
-      1440,
-      1745
-    ],
+    "dimensions": [1440, 1745],
+    "beforeSize": [1440, 1745],
+    "afterSize": [1440, 1745],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -408,10 +452,10 @@
   },
   {
     "case": "specimen-Mononoki",
-    "dimensions": [
-      1440,
-      1837
-    ],
+    "dimensions": [1440, 1837],
+    "beforeSize": [1440, 1837],
+    "afterSize": [1440, 1837],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -419,10 +463,10 @@
   },
   {
     "case": "specimen-Montserrat",
-    "dimensions": [
-      1440,
-      1744
-    ],
+    "dimensions": [1440, 1744],
+    "beforeSize": [1440, 1744],
+    "afterSize": [1440, 1744],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -430,10 +474,10 @@
   },
   {
     "case": "specimen-Noto_Naskh_Arabic",
-    "dimensions": [
-      1440,
-      1687
-    ],
+    "dimensions": [1440, 1687],
+    "beforeSize": [1440, 1687],
+    "afterSize": [1440, 1687],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -441,10 +485,10 @@
   },
   {
     "case": "specimen-Noto_Sans_Lao",
-    "dimensions": [
-      1440,
-      1686
-    ],
+    "dimensions": [1440, 1686],
+    "beforeSize": [1440, 1686],
+    "afterSize": [1440, 1686],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -452,10 +496,10 @@
   },
   {
     "case": "specimen-Nunito",
-    "dimensions": [
-      1440,
-      1724
-    ],
+    "dimensions": [1440, 1724],
+    "beforeSize": [1440, 1724],
+    "afterSize": [1440, 1724],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -463,10 +507,10 @@
   },
   {
     "case": "specimen-Open_Dyslexic",
-    "dimensions": [
-      1440,
-      2328
-    ],
+    "dimensions": [1440, 2328],
+    "beforeSize": [1440, 2328],
+    "afterSize": [1440, 2328],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -474,10 +518,10 @@
   },
   {
     "case": "specimen-Overpass_Mono",
-    "dimensions": [
-      1440,
-      1841
-    ],
+    "dimensions": [1440, 1841],
+    "beforeSize": [1440, 1841],
+    "afterSize": [1440, 1841],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -485,10 +529,10 @@
   },
   {
     "case": "specimen-Oxygen",
-    "dimensions": [
-      1440,
-      1578
-    ],
+    "dimensions": [1440, 1578],
+    "beforeSize": [1440, 1578],
+    "afterSize": [1440, 1578],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -496,10 +540,10 @@
   },
   {
     "case": "specimen-Parkinsans",
-    "dimensions": [
-      1440,
-      1750
-    ],
+    "dimensions": [1440, 1750],
+    "beforeSize": [1440, 1750],
+    "afterSize": [1440, 1750],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -507,10 +551,10 @@
   },
   {
     "case": "specimen-Proto",
-    "dimensions": [
-      1440,
-      1935
-    ],
+    "dimensions": [1440, 1935],
+    "beforeSize": [1440, 1935],
+    "afterSize": [1440, 1935],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -518,10 +562,10 @@
   },
   {
     "case": "specimen-Roboto",
-    "dimensions": [
-      1440,
-      1575
-    ],
+    "dimensions": [1440, 1575],
+    "beforeSize": [1440, 1575],
+    "afterSize": [1440, 1575],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -529,10 +573,10 @@
   },
   {
     "case": "specimen-Roboto_Mono",
-    "dimensions": [
-      1440,
-      1844
-    ],
+    "dimensions": [1440, 1844],
+    "beforeSize": [1440, 1844],
+    "afterSize": [1440, 1844],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -540,10 +584,10 @@
   },
   {
     "case": "specimen-Sarabun",
-    "dimensions": [
-      1440,
-      1698
-    ],
+    "dimensions": [1440, 1698],
+    "beforeSize": [1440, 1698],
+    "afterSize": [1440, 1698],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -551,10 +595,10 @@
   },
   {
     "case": "specimen-Source_Code_Pro",
-    "dimensions": [
-      1440,
-      1937
-    ],
+    "dimensions": [1440, 1937],
+    "beforeSize": [1440, 1937],
+    "afterSize": [1440, 1937],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -562,10 +606,10 @@
   },
   {
     "case": "specimen-Space_Grotesk",
-    "dimensions": [
-      1440,
-      1745
-    ],
+    "dimensions": [1440, 1745],
+    "beforeSize": [1440, 1745],
+    "afterSize": [1440, 1745],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -573,10 +617,10 @@
   },
   {
     "case": "specimen-Titillium_Web",
-    "dimensions": [
-      1440,
-      1585
-    ],
+    "dimensions": [1440, 1585],
+    "beforeSize": [1440, 1585],
+    "afterSize": [1440, 1585],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -584,10 +628,10 @@
   },
   {
     "case": "specimen-Ubuntu",
-    "dimensions": [
-      1440,
-      1577
-    ],
+    "dimensions": [1440, 1577],
+    "beforeSize": [1440, 1577],
+    "afterSize": [1440, 1577],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -595,10 +639,10 @@
   },
   {
     "case": "specimen-Ubuntu_Mono",
-    "dimensions": [
-      1440,
-      1738
-    ],
+    "dimensions": [1440, 1738],
+    "beforeSize": [1440, 1738],
+    "afterSize": [1440, 1738],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -606,10 +650,21 @@
   },
   {
     "case": "specimen-Vazirharf",
-    "dimensions": [
-      1440,
-      1731
-    ],
+    "dimensions": [1440, 1731],
+    "beforeSize": [1440, 1731],
+    "afterSize": [1440, 1731],
+    "dimensionsDiffer": false,
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "thai-boon",
+    "dimensions": [1440, 1000],
+    "beforeSize": [1440, 1000],
+    "afterSize": [1440, 1000],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,
@@ -617,10 +672,10 @@
   },
   {
     "case": "thai",
-    "dimensions": [
-      1440,
-      1000
-    ],
+    "dimensions": [1440, 1000],
+    "beforeSize": [1440, 1000],
+    "afterSize": [1440, 1000],
+    "dimensionsDiffer": false,
     "changedPixels": 0,
     "changedPercent": 0.0,
     "maxChannelDelta": 0,

@@ -1,0 +1,673 @@
+{
+  "baselineRevision": "7699fef52",
+  "nodeVersion": "v26.13.0",
+  "systemFontFixture": "/tmp/caret-font-system/fonts.conf",
+  "browser": "156.0.8078.4",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "dpr": 1,
+  "os": "linux",
+  "arch": "arm64",
+  "locale": "en-US",
+  "timezone": "UTC",
+  "theme": "serika_dark",
+  "seed": 4242,
+  "preloads": [
+    "/webfonts/RobotoMono-Regular.core.woff2",
+    "/webfonts/LexendDeca-Regular.core.woff2"
+  ],
+  "fonts": [
+    {
+      "url": "/webfonts/LexendDeca-Regular.core.woff2",
+      "decodedBodyBytes": 8456,
+      "encodedBodyBytes": 8456,
+      "transferBytes": 8638
+    },
+    {
+      "url": "/webfonts/RobotoMono-Regular.core.woff2",
+      "decodedBodyBytes": 7476,
+      "encodedBodyBytes": 7476,
+      "transferBytes": 7658
+    },
+    {
+      "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+      "decodedBodyBytes": 115420,
+      "encodedBodyBytes": 115420,
+      "transferBytes": 115638
+    },
+    {
+      "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+      "decodedBodyBytes": 119488,
+      "encodedBodyBytes": 119488,
+      "transferBytes": 119706
+    },
+    {
+      "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+      "decodedBodyBytes": 19512,
+      "encodedBodyBytes": 19512,
+      "transferBytes": 19729
+    },
+    {
+      "url": "/webfonts/UbuntuMono-Regular.core.woff2",
+      "decodedBodyBytes": 20488,
+      "encodedBodyBytes": 20488,
+      "transferBytes": 20671
+    },
+    {
+      "url": "/webfonts/Ubuntu-Regular.core.woff2",
+      "decodedBodyBytes": 24552,
+      "encodedBodyBytes": 24552,
+      "transferBytes": 24735
+    },
+    {
+      "url": "/webfonts/Roboto-Regular.core.woff2",
+      "decodedBodyBytes": 10476,
+      "encodedBodyBytes": 10476,
+      "transferBytes": 10659
+    },
+    {
+      "url": "/webfonts/Sarabun-Bold.core.woff2",
+      "decodedBodyBytes": 13696,
+      "encodedBodyBytes": 13696,
+      "transferBytes": 13879
+    },
+    {
+      "url": "/webfonts/TitilliumWeb-Regular.core.woff2",
+      "decodedBodyBytes": 7380,
+      "encodedBodyBytes": 7380,
+      "transferBytes": 7562
+    },
+    {
+      "url": "/webfonts/SpaceGrotesk-Regular.core.woff2",
+      "decodedBodyBytes": 10652,
+      "encodedBodyBytes": 10652,
+      "transferBytes": 10835
+    },
+    {
+      "url": "/webfonts/Oxygen-Regular.core.woff2",
+      "decodedBodyBytes": 10632,
+      "encodedBodyBytes": 10632,
+      "transferBytes": 10815
+    },
+    {
+      "url": "/webfonts/SourceCodePro-Regular.core.woff2",
+      "decodedBodyBytes": 14140,
+      "encodedBodyBytes": 14140,
+      "transferBytes": 14323
+    },
+    {
+      "url": "/webfonts/Parkinsans-Regular.core.woff2",
+      "decodedBodyBytes": 8208,
+      "encodedBodyBytes": 8208,
+      "transferBytes": 8390
+    },
+    {
+      "url": "/webfonts/OverpassMono-Regular.core.woff2",
+      "decodedBodyBytes": 17764,
+      "encodedBodyBytes": 17764,
+      "transferBytes": 17947
+    },
+    {
+      "url": "/webfonts/NotoSansLao-Regular.core.woff2",
+      "decodedBodyBytes": 6792,
+      "encodedBodyBytes": 6792,
+      "transferBytes": 6974
+    },
+    {
+      "url": "/webfonts/NotoNaskhArabic-Regular.core.woff2",
+      "decodedBodyBytes": 7228,
+      "encodedBodyBytes": 7228,
+      "transferBytes": 7410
+    },
+    {
+      "url": "/webfonts/Nunito-Bold.core.woff2",
+      "decodedBodyBytes": 9416,
+      "encodedBodyBytes": 9416,
+      "transferBytes": 9598
+    },
+    {
+      "url": "/webfonts/OpenDyslexic-Regular.core.woff2",
+      "decodedBodyBytes": 24084,
+      "encodedBodyBytes": 24084,
+      "transferBytes": 24267
+    },
+    {
+      "url": "/webfonts/Mononoki-Regular.core.woff2",
+      "decodedBodyBytes": 6936,
+      "encodedBodyBytes": 6936,
+      "transferBytes": 7118
+    },
+    {
+      "url": "/webfonts/Montserrat-Regular.core.woff2",
+      "decodedBodyBytes": 22996,
+      "encodedBodyBytes": 22996,
+      "transferBytes": 23179
+    },
+    {
+      "url": "/webfonts/Lalezar-Regular.core.woff2",
+      "decodedBodyBytes": 11360,
+      "encodedBodyBytes": 11360,
+      "transferBytes": 11543
+    },
+    {
+      "url": "/webfonts/Kanit-Regular.core.woff2",
+      "decodedBodyBytes": 15808,
+      "encodedBodyBytes": 15808,
+      "transferBytes": 15991
+    },
+    {
+      "url": "/webfonts/Lato-Regular.core.woff2",
+      "decodedBodyBytes": 22616,
+      "encodedBodyBytes": 22616,
+      "transferBytes": 22799
+    },
+    {
+      "url": "/webfonts/JetBrainsMono-Regular.core.woff2",
+      "decodedBodyBytes": 26392,
+      "encodedBodyBytes": 26392,
+      "transferBytes": 26575
+    },
+    {
+      "url": "/webfonts/Itim-Regular.core.woff2",
+      "decodedBodyBytes": 32624,
+      "encodedBodyBytes": 32624,
+      "transferBytes": 32807
+    },
+    {
+      "url": "/webfonts/Iosevka-Regular.core.woff2",
+      "decodedBodyBytes": 42644,
+      "encodedBodyBytes": 42644,
+      "transferBytes": 42827
+    },
+    {
+      "url": "/webfonts/IBMPlexMono-Regular.core.woff2",
+      "decodedBodyBytes": 12232,
+      "encodedBodyBytes": 12232,
+      "transferBytes": 12415
+    },
+    {
+      "url": "/webfonts/IBMPlexSans-SemiBold.core.woff2",
+      "decodedBodyBytes": 15620,
+      "encodedBodyBytes": 15620,
+      "transferBytes": 15803
+    },
+    {
+      "url": "/webfonts/Inconsolata-Regular.core.woff2",
+      "decodedBodyBytes": 12256,
+      "encodedBodyBytes": 12256,
+      "transferBytes": 12439
+    },
+    {
+      "url": "/webfonts/InterTight-Regular.core.woff2",
+      "decodedBodyBytes": 16760,
+      "encodedBodyBytes": 16760,
+      "transferBytes": 16943
+    },
+    {
+      "url": "/webfonts/Hack-Regular.core.woff2",
+      "decodedBodyBytes": 15608,
+      "encodedBodyBytes": 15608,
+      "transferBytes": 15791
+    },
+    {
+      "url": "/webfonts/GeistMono-Medium.core.woff2",
+      "decodedBodyBytes": 19788,
+      "encodedBodyBytes": 19788,
+      "transferBytes": 19971
+    },
+    {
+      "url": "/webfonts/ComingSoon-Regular.core.woff2",
+      "decodedBodyBytes": 13616,
+      "encodedBodyBytes": 13616,
+      "transferBytes": 13799
+    },
+    {
+      "url": "/webfonts/CommitMono-Regular.core.woff2",
+      "decodedBodyBytes": 9824,
+      "encodedBodyBytes": 9824,
+      "transferBytes": 10006
+    },
+    {
+      "url": "/webfonts/Geist-Medium.core.woff2",
+      "decodedBodyBytes": 15264,
+      "encodedBodyBytes": 15264,
+      "transferBytes": 15447
+    },
+    {
+      "url": "/webfonts/FiraCode-Regular.core.woff2",
+      "decodedBodyBytes": 32852,
+      "encodedBodyBytes": 32852,
+      "transferBytes": 33035
+    },
+    {
+      "url": "/webfonts/Comfortaa-Regular.core.woff2",
+      "decodedBodyBytes": 9952,
+      "encodedBodyBytes": 9952,
+      "transferBytes": 10134
+    },
+    {
+      "url": "/webfonts/CascadiaMono-Regular.core.woff2",
+      "decodedBodyBytes": 20768,
+      "encodedBodyBytes": 20768,
+      "transferBytes": 20951
+    },
+    {
+      "url": "/webfonts/Boon-Regular.core.woff2",
+      "decodedBodyBytes": 10900,
+      "encodedBodyBytes": 10900,
+      "transferBytes": 11083
+    },
+    {
+      "url": "/webfonts/AdwaitaMono-Regular.core.woff2",
+      "decodedBodyBytes": 14864,
+      "encodedBodyBytes": 14864,
+      "transferBytes": 15047
+    },
+    {
+      "url": "/webfonts/0xProto-Regular.core.woff2",
+      "decodedBodyBytes": 19228,
+      "encodedBodyBytes": 19228,
+      "transferBytes": 19411
+    },
+    {
+      "url": "/webfonts/AtkinsonHyperlegible-Regular.core.woff2",
+      "decodedBodyBytes": 11508,
+      "encodedBodyBytes": 11508,
+      "transferBytes": 11691
+    },
+    {
+      "url": "/webfonts/Boon-Regular.extended.woff2",
+      "decodedBodyBytes": 40832,
+      "encodedBodyBytes": 40832,
+      "transferBytes": 41015
+    },
+    {
+      "url": "/webfonts/NotoSansLao-Regular.extended.woff2",
+      "decodedBodyBytes": 18888,
+      "encodedBodyBytes": 18888,
+      "transferBytes": 19071
+    }
+  ],
+  "faces": [
+    {
+      "family": "Font Awesome 7 Free",
+      "weight": "900",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Font Awesome 7 Free",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Font Awesome 7 Brands",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Adwaita Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Atkinson Hyperlegible Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Boon Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Boon Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0, U+9, U+D, U+A1-AC, U+AE-131, U+134-149, U+14C-165, U+168-17E, U+18F, U+192, U+1A0-1A1, U+1AF-1B0, U+1CD-1DC, U+1E6-1E7, U+1EA-1EB, U+218-21B, U+237, U+251, U+259, U+261, U+2BB-2BF, U+2C6-2CC, U+2D7-2DD, U+300-30F, U+311-315, U+31B, U+323-324, U+326-329, U+32E, U+331-332, U+34F, U+351, U+357-358, U+3C0, U+E01-E3A, U+E3F-E5B, U+E81-E82, U+E84, U+E87-E88, U+E8A, U+E8D, U+E94-E97, U+E99-E9F, U+EA1-EA3, U+EA5, U+EA7, U+EAA-EAB, U+EAD-EB9, U+EBB-EBD, U+EC0-EC4, U+EC6, U+EC8-ECD, U+ED0-ED9, U+EDC-EDF, U+1E0C-1E0F, U+1E20-1E21, U+1E24-1E25, U+1E2A-1E2B, U+1E36-1E3B, U+1E42-1E49, U+1E5A-1E63, U+1E6C-1E6F, U+1E80-1E85, U+1E8E-1E8F, U+1E92-1E93, U+1E97, U+1E9E, U+1EA0-1EF9, U+2007-200F, U+2012, U+2015, U+201E-2023, U+202F-2030, U+2032-2033, U+2039-203A, U+2044, U+2060, U+2070, U+2074-2079, U+207D-2089, U+208D-208E, U+20A1, U+20A4, U+20A6-20A7, U+20AB-20AD, U+20B1-20B2, U+20B5, U+20B9-20BA, U+20BD, U+2113, U+2117, U+2120, U+2122, U+2126, U+212E, U+2153-2154, U+215B-215E, U+2190-2193, U+2202, U+2206, U+220F, U+2211, U+2215, U+2219-221A, U+221E, U+222B, U+2248, U+2260, U+2264-2265, U+25A0-25A1, U+25B2-25B3, U+25B6-25B7, U+25BC-25BD, U+25C0-25C1, U+25C6-25C7, U+25CA, U+25CC, U+F880-F882, U+F885-F888, U+F88B, U+F88E, U+F891, U+F894, U+F897, U+F89A, U+F89E, U+F8A0, U+F8A2, U+F8A6-F8A9, U+FB01-FB02, U+FEFF"
+    },
+    {
+      "family": "Cascadia Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Comfortaa Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Coming Soon Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "CommitMono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Fira Code Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Geist Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Geist Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Hack Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "IBM Plex Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "IBM Plex Sans Preview",
+      "weight": "600",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Inconsolata Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Inter Tight Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Iosevka Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Itim Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "JetBrains Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Kanit Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Lalezar Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Lato Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Lexend Deca",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Lexend Deca Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Mononoki Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Montserrat Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Noto Naskh Arabic Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Noto Sans Lao Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Noto Sans Lao Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0, U+D, U+A1-A3, U+A5, U+A7-AB, U+AE-B0, U+B4, U+B6-B8, U+BA-BB, U+BF-107, U+10A-113, U+116-11B, U+11E-123, U+126-127, U+12A-12B, U+12E-133, U+136-137, U+139-13E, U+141-148, U+14A-14D, U+150-15B, U+15E-161, U+164-165, U+16A-17E, U+218-21B, U+237, U+2C6-2C7, U+2C9, U+2D8-2DD, U+300-304, U+306-308, U+30A-30C, U+312, U+326-328, U+E81-E82, U+E84, U+E86-E8A, U+E8C-EA3, U+EA5, U+EA7-EBD, U+EC0-EC4, U+EC6, U+EC8-ECE, U+ED0-ED9, U+EDC-EDF, U+1E80-1E85, U+1E9E, U+1EF2-1EF3, U+200B-200D, U+201A, U+201E, U+2022, U+2039-203A, U+20AC-20AD, U+2122, U+2212, U+25CC"
+    },
+    {
+      "family": "Nunito Preview",
+      "weight": "700",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Open Dyslexic Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Overpass Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Oxygen Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Parkinsans Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Proto",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Proto Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Roboto Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010-2011, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Roboto Mono",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Roboto Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Sarabun Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Source Code Pro Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Space Grotesk Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Titillium Web Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Ubuntu Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Ubuntu Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Roboto Mono",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    },
+    {
+      "family": "Lexend Deca",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+20-7E, U+A0, U+AD, U+2010, U+2013-2014, U+2018-2019, U+201C-201D, U+2026"
+    }
+  ],
+  "text": "caret\nserika dark\npunctuation\nnumbers\ntime\nwords\nquote\nzen\ncustom\n10\n25\n50\n100\nenglish\nClick here or press any key to focus\nplace\nonly\nplan\ngood\nmove\nyear\nthan\nday\nfirst\nlife\nleave\nform\nhere\nhelp\nthen\nFont family0xProto\nFont familyAdwaita Mono\nFont familyAtkinson Hyperlegible\nFont familyBoon (ไทย)\nFont familyCascadia Mono\nFont familyComfortaa\nFont familyComing Soon\nFont familyCommitMono\nFont familyCourier\nFont familyFira Code\nFont familyGeist\nFont familyGeist Mono\nFont familyGeorgia\nFont familyHack\nFont familyHelvetica\nFont familyIBM Plex Mono\nFont familyIBM Plex Sans\nFont familyInconsolata\nFont familyInter Tight\nFont familyIosevka\nFont familyItim\nFont familyJetBrains Mono\nFont familyKanit\nFont familyLalezar\nFont familyLato\nFont familyLexend Deca\nFont familyMononoki\nFont familyMontserrat\nFont familyNoto Naskh Arabic\nFont familyNoto Sans Lao (ລາວ)\nFont familyNunito\nFont familyOpen Dyslexic\nFont familyOverpass Mono\nFont familyOxygen\nFont familyParkinsans\nFont familyRoboto\nFont familyRoboto Mono\nFont familySarabun\nFont familySource Code Pro\nFont familySpace Grotesk\nFont familyTitillium Web\nFont familyUbuntu\nFont familyUbuntu Mono",
+  "words": "placeonlyplangoodmoveyearthandayfirstlifeleaveformherehelpthen",
+  "stack": "Proto, \"Roboto Mono\", Vazirharf, \"monospace\"",
+  "rendered": [
+    {
+      "selector": "#words .word",
+      "fonts": [
+        {
+          "familyName": "CaretSubset33b1232298a5Core",
+          "postScriptName": "CaretSubset33b1232298a5Core",
+          "isCustomFont": true,
+          "glyphCount": 5
+        }
+      ]
+    },
+    {
+      "selector": "[data-ui-element=\"logoText\"]",
+      "fonts": []
+    },
+    {
+      "selector": "#commandLine",
+      "fonts": []
+    },
+    {
+      "selector": "body",
+      "fonts": []
+    }
+  ]
+}

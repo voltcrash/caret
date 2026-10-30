@@ -1,0 +1,72 @@
+{
+  "baselineRevision": "7699fef52",
+  "nodeVersion": "v26.13.0",
+  "systemFontFixture": "/tmp/caret-font-system/fonts.conf",
+  "browser": "156.0.8078.4",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "dpr": 1,
+  "os": "linux",
+  "arch": "arm64",
+  "locale": "en-US",
+  "timezone": "UTC",
+  "theme": "specimen-gray",
+  "seed": null,
+  "preloads": [],
+  "fonts": [
+    {
+      "url": "/webfonts/AdwaitaMono-Regular.woff2",
+      "decodedBodyBytes": 317804,
+      "encodedBodyBytes": 317798,
+      "transferBytes": 317867
+    }
+  ],
+  "faces": [
+    {
+      "family": "Adwaita Mono",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    }
+  ],
+  "text": "Adwaita Mono\n\n0123456789 0 0︀ 00 0︀0︀ AV To café é\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\n0123456789 0 0︀ 00 0︀0︀ AV To café é\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\n0123456789 0 0︀ 00 0︀0︀ AV To café é\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\n0123456789 0 0︀ 00 0︀0︀ AV To café é\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\n0123456789 0 0︀ 00 0︀0︀ AV To café é\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\n0123456789 0 0︀ 00 0︀0︀ AV To café é\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\n0123456789 0 0︀ 00 0︀0︀ AV To café é\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi\n\n0123456789 0 0︀ 00 0︀0︀ AV To café é\nlight AV café ffi medium AV café ffi semibold AV café ffi\nitalic AV café é لا bold inside italic ffi น้ำ bold AV café é لا ffi",
+  "stack": "\"Adwaita Mono\", monospace",
+  "rendered": [
+    {
+      "selector": "p",
+      "fonts": [
+        {
+          "familyName": "CaretSubset8be5d0e34d64Full",
+          "postScriptName": "CaretSubset8be5d0e34d64Full",
+          "isCustomFont": true,
+          "glyphCount": 132
+        }
+      ]
+    },
+    {
+      "selector": "h1",
+      "fonts": [
+        {
+          "familyName": "CaretSubset8be5d0e34d64Full",
+          "postScriptName": "CaretSubset8be5d0e34d64Full",
+          "isCustomFont": true,
+          "glyphCount": 12
+        }
+      ]
+    },
+    {
+      "selector": "body",
+      "fonts": [
+        {
+          "familyName": "CaretSubset8be5d0e34d64Full",
+          "postScriptName": "CaretSubset8be5d0e34d64Full",
+          "isCustomFont": true,
+          "glyphCount": 299
+        }
+      ]
+    }
+  ]
+}
