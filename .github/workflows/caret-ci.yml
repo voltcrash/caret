@@ -361,7 +361,7 @@ jobs:
         env:
           # Stable identifier for test fixtures; real releases use their own build ID.
           CARET_BUILD_ID: ci-fixture
-        run: vp run ci:build:start
+        run: vp -C frontend exec vpx ./scripts/ci-build.ts
 
       - name: Worker dry-run
         run: vp run --filter @caret/frontend dry-run:start
@@ -389,7 +389,7 @@ jobs:
       - name: Build runtime-test entry
         env:
           CARET_BUILD_ID: ci-fixture
-        run: vp run ci:build:start --mode runtime-test
+        run: vp -C frontend exec vpx ./scripts/ci-build.ts --mode runtime-test
       - name: Share runtime-test Worker
         uses: actions/upload-artifact@v7.0.2
         with:

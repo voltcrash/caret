@@ -16,7 +16,7 @@ vp -C frontend exec vpx ./scripts/test-browser-shard.ts 1/4 --list
 
 ## Task results
 
-Only the explicit `ci:lint:be`, `ci:lint:fe`, and `ci:build:start` tasks cache results. Vite Task tracks file reads, missing-file probes, directory listings and arguments. The build task also fingerprints the environment consumed by our plugins. Tests and deployments remain uncached.
+Only the explicit `ci:lint:be`, `ci:lint:fe`, and `ci:build:start` tasks cache results. Vite Task tracks file reads, missing-file probes, directory listings and arguments. The build task also fingerprints the environment consumed by our plugins. CI invokes it through `frontend/scripts/ci-build.ts`, which keeps an explicit environment allowlist before starting the task runner: Start internally loads every variable, so otherwise run IDs would invalidate the cache. Add any new build environment input to both the wrapper and task configuration. Tests and deployments remain uncached.
 
 Each job restores its own task-cache namespace after dependencies and engine bindings are ready. A successful job saves a new immutable snapshot; Vite Task validates individual fingerprints before reusing results. Fixture builds use the stable `ci-fixture` build ID. The update suite still builds two distinct versions without caching.
 

@@ -43,14 +43,7 @@ async function devPlugins(env: Record<string, string>): Promise<Plugin[]> {
 
 export default defineConfig(async ({ mode, command }) => {
   prepareTypingEngine();
-  // Only expose build inputs: loading every CI variable makes cache fingerprints
-  // change with run IDs, temporary paths and unrelated credentials.
-  const env = loadEnv(mode, process.cwd(), [
-    "AUTH_PROVIDERS",
-    "TURNSTILE_SITE_KEY",
-    "SENTRY_",
-    "DEV_",
-  ]);
+  const env = loadEnv(mode, process.cwd(), "");
   const buildId = resolveBuildId(mode !== "production");
   if (mode === "production") {
     // Vite evaluates this config once per environment. Pin the generated
