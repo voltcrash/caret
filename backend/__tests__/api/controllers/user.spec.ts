@@ -1679,8 +1679,10 @@ describe("user controller test", () => {
     const getUserMock = vi.spyOn(UserDal, "getUser");
     const getUserByNameMock = vi.spyOn(UserDal, "getUserByName");
     const checkIfUserIsPremiumMock = vi.spyOn(UserDal, "checkIfUserIsPremium");
-    const leaderboardGetRankMock = vi.spyOn(LeaderboardDal, "getRank");
-    const leaderboardGetCountMock = vi.spyOn(LeaderboardDal, "getCount");
+    const leaderboardGetUserRanksMock = vi.spyOn(
+      LeaderboardDal,
+      "getUserRanks",
+    );
 
     const foundUser: Partial<UserDal.DBUser> = {
       _id: newId(),
@@ -1732,8 +1734,10 @@ describe("user controller test", () => {
       getUserMock.mockClear();
       getUserByNameMock.mockClear();
       checkIfUserIsPremiumMock.mockClear().mockResolvedValue(true);
-      leaderboardGetRankMock.mockClear();
-      leaderboardGetCountMock.mockClear();
+      leaderboardGetUserRanksMock.mockClear().mockResolvedValue({
+        english_time_15: { rank: 24, count: 100 },
+        english_time_60: { rank: 24, count: 100 },
+      });
       await enableProfiles(true);
     });
 
@@ -1741,10 +1745,6 @@ describe("user controller test", () => {
       //GIVEN
 
       getUserByNameMock.mockResolvedValue(foundUser as any);
-
-      const rank = { rank: 24 } as LeaderboardDal.DBLeaderboardEntry;
-      leaderboardGetRankMock.mockResolvedValue(rank);
-      leaderboardGetCountMock.mockResolvedValue(100);
 
       //WHEN
       const { body } = await mockApp.get("/users/bob/profile").expect(200);
@@ -1806,9 +1806,6 @@ describe("user controller test", () => {
         ...foundUser,
         profileDetails: { showActivityOnPublicProfile: true },
       } as any);
-      const rank = { rank: 24 } as LeaderboardDal.DBLeaderboardEntry;
-      leaderboardGetRankMock.mockResolvedValue(rank);
-      leaderboardGetCountMock.mockResolvedValue(100);
 
       //WHEN
       const { body } = await mockApp.get("/users/bob/profile").expect(200);
@@ -1828,9 +1825,6 @@ describe("user controller test", () => {
         ...foundUser,
         profileDetails: { showActivityOnPublicProfile: false },
       } as any);
-      const rank = { rank: 24 } as LeaderboardDal.DBLeaderboardEntry;
-      leaderboardGetRankMock.mockResolvedValue(rank);
-      leaderboardGetCountMock.mockResolvedValue(100);
 
       //WHEN
       const { body } = await mockApp.get("/users/bob/profile").expect(200);
@@ -1845,10 +1839,6 @@ describe("user controller test", () => {
         ...foundUser,
         banned: true,
       } as any);
-
-      const rank = { rank: 24 } as LeaderboardDal.DBLeaderboardEntry;
-      leaderboardGetRankMock.mockResolvedValue(rank);
-      leaderboardGetCountMock.mockResolvedValue(100);
 
       //WHEN
       const { body } = await mockApp.get("/users/bob/profile").expect(200);
@@ -1899,10 +1889,6 @@ describe("user controller test", () => {
       const uid = foundUser.uid;
       getUserMock.mockResolvedValue(foundUser as any);
 
-      const rank = { rank: 24 } as LeaderboardDal.DBLeaderboardEntry;
-      leaderboardGetRankMock.mockResolvedValue(rank);
-      leaderboardGetCountMock.mockResolvedValue(100);
-
       //WHEN
       const { body } = await mockApp
         .get(`/users/${uid}/profile`)
@@ -1927,10 +1913,6 @@ describe("user controller test", () => {
       //GIVEN
       const uid = foundUser.uid;
       getUserMock.mockResolvedValue(foundUser as any);
-      leaderboardGetRankMock.mockResolvedValue({
-        rank: 24,
-      } as LeaderboardDal.DBLeaderboardEntry);
-      leaderboardGetCountMock.mockResolvedValue(100);
 
       //WHEN
       await mockApp

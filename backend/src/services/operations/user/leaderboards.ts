@@ -64,61 +64,20 @@ export async function updateLbMemory(
 }
 export async function getAllTimeLbs(
   uid: string,
-  client: Client = "web",
+  _client: Client = "web",
 ): Promise<AllTimeLbs> {
-  const allTime15English = await LeaderboardsDAL.getRank(
-    "time",
-    "15",
-    "english",
-    uid,
-    client,
-  );
-
-  const allTime15EnglishCount = await LeaderboardsDAL.getCount(
-    "time",
-    "15",
-    "english",
-    client,
-  );
-
-  const allTime60English = await LeaderboardsDAL.getRank(
-    "time",
-    "60",
-    "english",
-    uid,
-    client,
-  );
-
-  const allTime60EnglishCount = await LeaderboardsDAL.getCount(
-    "time",
-    "60",
-    "english",
-    client,
-  );
-
-  const english15 =
-    allTime15English === null
-      ? undefined
-      : {
-          rank: allTime15English.rank,
-          count: allTime15EnglishCount,
-        };
-
-  const english60 =
-    allTime60English === null
-      ? undefined
-      : {
-          rank: allTime60English.rank,
-          count: allTime60EnglishCount,
-        };
+  const ranks = await LeaderboardsDAL.getUserRanks(uid, [
+    "english_time_15",
+    "english_time_60",
+  ]);
 
   return {
     time: {
       "15": {
-        english: english15,
+        english: ranks["english_time_15"],
       },
       "60": {
-        english: english60,
+        english: ranks["english_time_60"],
       },
     },
   };
