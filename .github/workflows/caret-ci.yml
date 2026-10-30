@@ -348,11 +348,15 @@ jobs:
           if-no-files-found: error
 
   start-ssr:
-    name: start-ssr
+    name: start-ssr (${{ matrix.shard }}/3)
     needs: [changes, start-build]
     if: needs.changes.outputs.start-ssr == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -372,7 +376,7 @@ jobs:
         run: vp run --filter @caret/frontend build:start:test
 
       - name: SSR, workerd and bundle-boundary suites
-        run: vp run --filter @caret/frontend test:start
+        run: vp run --filter @caret/frontend test:start --shard=${{ matrix.shard }}/3
 
   start-browser:
     name: start-browser (${{ matrix.shard }}/4)
