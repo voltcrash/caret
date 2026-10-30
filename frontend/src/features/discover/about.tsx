@@ -16,9 +16,9 @@ export function AboutCaret() {
         </h1>
         <p>
           The Caret typing test is free and open source. Measure your typing
-          speed in words per minute (WPM) and practice to improve accuracy. Type in
-          your browser with timed tests, word counts, quotes or your own text.
-          No account is needed to take a test.
+          speed in words per minute (WPM) and practice to improve accuracy. Type
+          in your browser with timed tests, word counts, quotes or your own
+          text. No account is needed to take a test.
         </p>
         <Link to="/" class="w-fit rounded bg-sub-alt px-5 py-3 text-main">
           Start a free typing test

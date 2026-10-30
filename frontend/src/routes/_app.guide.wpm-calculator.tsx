@@ -45,11 +45,11 @@ function WpmCalculator() {
       <section>
         <h2>Why the result may differ from Caret WPM</h2>
         <p>
-          This calculation is a basic rate, not a recreation of Caret's result
-          scoring. Caret distinguishes correctly typed text from raw input.
-          Incorrect input, corrections, unfinished words and test settings can
-          affect the score. Counting every key press, including backspace, as a
-          character does not reproduce scored WPM.
+          This calculation is a basic rate, not a recreation of Caret&apos;s
+          result scoring. Caret distinguishes correctly typed text from raw
+          input. Incorrect input, corrections, unfinished words and test
+          settings can affect the score. Counting every key press, including
+          backspace, as a character does not reproduce scored WPM.
         </p>
         <p>
           Use the WPM and accuracy shown by the Caret typing test when tracking

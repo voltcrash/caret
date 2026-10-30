@@ -1,7 +1,7 @@
 import { publicEnv } from "./public-env";
 import { homeDescription, homeTitle } from "./seo";
 
-export function organizationStructuredData() {
+export function organizationStructuredData(): Record<string, unknown> {
   return {
     "@type": "Organization",
     "@id": `${publicEnv.origin}/#organization`,

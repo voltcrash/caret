@@ -246,7 +246,7 @@ test("new guides load through client navigation with matching Article metadata",
 });
 
 test("static CSS recovery still works after the content", async ({ page }) => {
-  await page.route("**/*.css", (route) => route.abort());
+  await page.route("**/*.css", async (route) => await route.abort());
   await page.goto("/about");
   await expect(page.locator("#nocss")).toBeVisible();
   await expect(page.locator("#nocss")).toContainText(

@@ -53,9 +53,9 @@ function AverageTypingSpeed() {
       <section>
         <h2>Why leaderboards do not establish a population average</h2>
         <p>
-          Caret's all-time speed boards rank personal bests for specific test
-          settings. Its speed histogram is built from those ranked records, not
-          every completed test or a representative sample of all typists. It
+          Caret&apos;s all-time speed boards rank personal bests for specific
+          test settings. Its speed histogram is built from those ranked records,
+          not every completed test or a representative sample of all typists. It
           cannot establish the average typing speed of the general population.
         </p>
         <p>
