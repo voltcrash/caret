@@ -115,6 +115,20 @@ for (const { authenticated, mobile } of [
       await expect(
         loading.locator("[data-settings-section-skeleton]"),
       ).toHaveCount(authenticated ? 9 : 8);
+      // Isolate settings replacement from the independently lazy header's
+      // ResizeObserver, which establishes the content's scroll offset.
+      await expect(
+        page.locator('[data-ui-element="themeIndicator"]'),
+      ).toBeAttached();
+      await expect
+        .poll(async () => {
+          const header = await page.getByRole("banner").boundingBox();
+          const main = await page.getByRole("main").boundingBox();
+          return Math.round(
+            (main?.y ?? 0) - (header?.y ?? 0) - (header?.height ?? 0),
+          );
+        })
+        .toBe(16);
       before = await boxes();
       await page.screenshot({
         path: test.info().outputPath(`settings-loading-${name}.png`),

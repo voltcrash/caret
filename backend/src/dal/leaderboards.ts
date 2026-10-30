@@ -77,6 +77,26 @@ export async function getRank(
   ).first<{ uid: string; rank: number; data: string }>();
   return row ? unpack(row) : null;
 }
+
+/** Account summaries need no entry payload; rank and count share one generation. */
+export async function getUserRanks(
+  uid: string,
+  boards: string[],
+): Promise<Record<string, { rank: number; count: number }>> {
+  if (boards.length === 0) return {};
+  const { results } = await statement(
+    `SELECT g.board,s.rank,
+      coalesce(g.entries,(SELECT count(*)::integer FROM leaderboard_snapshots all_entries WHERE all_entries.board=g.board AND all_entries.generation=g.generation)) AS count
+      FROM leaderboard_generations g
+      JOIN leaderboard_snapshots s ON s.board=g.board AND s.generation=g.generation AND s.uid=?
+      WHERE g.board IN (${boards.map(() => "?").join(",")})`,
+    uid,
+    ...boards,
+  ).all<{ board: string; rank: number; count: number }>();
+  return Object.fromEntries(
+    results.map(({ board, rank, count }) => [board, { rank, count }]),
+  );
+}
 export async function update(
   mode: string,
   mode2: string,

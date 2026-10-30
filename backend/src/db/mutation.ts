@@ -21,7 +21,11 @@ export async function readUser(uid: string): Promise<DBUser | undefined> {
   const draft = currentUserDraft(uid);
   if (draft) return structuredClone(draft);
   const row = (
-    await database().select().from(users).where(eq(users.uid, uid)).limit(1)
+    await database()
+      .select({ data: users.data })
+      .from(users)
+      .where(eq(users.uid, uid))
+      .limit(1)
   )[0];
   return row?.data;
 }
@@ -77,7 +81,11 @@ export async function atomicUserWithReads<T>(
   for (let attempt = 0; attempt < 8; attempt++) {
     // Reload committed primary state after a version conflict.
     const row = (
-      await database().select().from(users).where(eq(users.uid, uid)).limit(1)
+      await database()
+        .select({ data: users.data, version: users.version })
+        .from(users)
+        .where(eq(users.uid, uid))
+        .limit(1)
     )[0];
     if (!row) throw new MonkeyError(404, "User not found");
     const user = row.data;

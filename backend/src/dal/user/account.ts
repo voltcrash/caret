@@ -136,8 +136,11 @@ export async function checkIfUserIsPremium(
 export async function logIpAddress(
   uid: string,
   ip: string,
-  _override?: Pick<DBUser, "ips">,
+  override?: Pick<DBUser, "ips">,
 ): Promise<void> {
+  // Account loads already have a snapshot. Repeated requests from the same IP
+  // need no profile rewrite, receipt or version conflict with result saves.
+  if ((currentUserDraft(uid) ?? override)?.ips?.[0] === ip) return;
   await mutateUser(uid, (user) => {
     user.ips = [
       ip,

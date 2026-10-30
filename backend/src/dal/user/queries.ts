@@ -1,9 +1,9 @@
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 import MonkeyError from "../../utils/error";
 
 import { database } from "../../db/client";
-import { readUser } from "../../db/mutation";
+import { currentUserDraft, readUser } from "../../db/mutation";
 import { users } from "../../db/schema";
 
 import type { Client } from "@caret/schemas/shared";
@@ -24,24 +24,54 @@ export async function getPartialUser<K extends keyof DBUser>(
   uid: string,
   stack: string,
   fields: K[],
-  client: Client = "web",
+  _client: Client = "web",
 ): Promise<Pick<DBUser, K>> {
-  const user = await getUser(uid, stack, client);
+  let user: Partial<DBUser> | undefined = currentUserDraft(uid);
+  if (user === undefined) {
+    // Project only requested keys before crossing Hyperdrive; profiles include
+    // potentially large PBs, activity histories and custom themes.
+    const data =
+      fields.length === 0
+        ? sql<Partial<DBUser>>`'{}'::jsonb`
+        : sql<
+            Partial<DBUser>
+          >`(SELECT coalesce(jsonb_object_agg(field, ${users.data}->field), '{}'::jsonb)
+          FROM (VALUES ${sql.join(
+            fields.map((field) => sql`(${field}::text)`),
+            sql`, `,
+          )}) AS requested(field)
+          WHERE ${users.data}->field IS NOT NULL)`;
+    user = (
+      await database()
+        .select({ data })
+        .from(users)
+        .where(eq(users.uid, uid))
+        .limit(1)
+    )[0]?.data;
+  }
+  if (user === undefined) throw new MonkeyError(404, "User not found", stack);
   return Object.fromEntries(
     fields
-      .filter((key) => user[key] !== undefined)
-      .map((key) => [key, user[key]]),
+      .filter((key) => key === "personalBests" || user[key] !== undefined)
+      .map((key) => [
+        key,
+        structuredClone(
+          key === "personalBests" ? (user[key] ?? emptyPb()) : user[key],
+        ),
+      ]),
   ) as Pick<DBUser, K>;
 }
 export async function findByName(name: string): Promise<DBUser | undefined> {
   const row = (
     await database()
-      .select()
+      .select({ uid: users.uid, data: users.data })
       .from(users)
       .where(eq(users.nameKey, name.toLowerCase()))
       .limit(1)
   )[0];
-  return row ? await readUser(row.uid) : undefined;
+  if (row === undefined) return undefined;
+  const draft = currentUserDraft(row.uid);
+  return draft === undefined ? row.data : structuredClone(draft);
 }
 export async function isNameAvailable(
   name: string,
