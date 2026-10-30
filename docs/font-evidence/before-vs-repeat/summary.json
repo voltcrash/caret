@@ -1,0 +1,629 @@
+[
+  {
+    "case": "accents",
+    "dimensions": [
+      1440,
+      1000
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "arabic",
+    "dimensions": [
+      1440,
+      1000
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "cjk",
+    "dimensions": [
+      1440,
+      1000
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "code",
+    "dimensions": [
+      1440,
+      1000
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "commands",
+    "dimensions": [
+      1440,
+      1000
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "core-only",
+    "dimensions": [
+      1440,
+      1000
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "default",
+    "dimensions": [
+      1440,
+      1000
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "extended-only",
+    "dimensions": [
+      1440,
+      1000
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "lao",
+    "dimensions": [
+      1440,
+      1000
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "loader",
+    "dimensions": [
+      1440,
+      1000
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "not-found",
+    "dimensions": [
+      1440,
+      1000
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "privacy",
+    "dimensions": [
+      1440,
+      1000
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "public",
+    "dimensions": [
+      1440,
+      1182
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "result",
+    "dimensions": [
+      1440,
+      1000
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "settings",
+    "dimensions": [
+      1440,
+      1000
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Adwaita_Mono",
+    "dimensions": [
+      1440,
+      1937
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Atkinson_Hyperlegible",
+    "dimensions": [
+      1440,
+      1672
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Boon",
+    "dimensions": [
+      1440,
+      1571
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Cascadia_Mono",
+    "dimensions": [
+      1440,
+      1839
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Comfortaa",
+    "dimensions": [
+      1440,
+      1717
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Coming_Soon",
+    "dimensions": [
+      1440,
+      1587
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-CommitMono",
+    "dimensions": [
+      1440,
+      1932
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Fira_Code",
+    "dimensions": [
+      1440,
+      1973
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Geist",
+    "dimensions": [
+      1440,
+      1746
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Geist_Mono",
+    "dimensions": [
+      1440,
+      1842
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Hack",
+    "dimensions": [
+      1440,
+      1839
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-IBM_Plex_Mono",
+    "dimensions": [
+      1440,
+      1939
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-IBM_Plex_Sans",
+    "dimensions": [
+      1440,
+      1723
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Inconsolata",
+    "dimensions": [
+      1440,
+      1738
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Inter_Tight",
+    "dimensions": [
+      1440,
+      1576
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Iosevka",
+    "dimensions": [
+      1440,
+      1745
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Itim",
+    "dimensions": [
+      1440,
+      1575
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-JetBrains_Mono",
+    "dimensions": [
+      1440,
+      1940
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Kanit",
+    "dimensions": [
+      1440,
+      1729
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Lalezar",
+    "dimensions": [
+      1440,
+      1587
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Lato",
+    "dimensions": [
+      1440,
+      1575
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Lexend_Deca",
+    "dimensions": [
+      1440,
+      1745
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Mononoki",
+    "dimensions": [
+      1440,
+      1837
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Montserrat",
+    "dimensions": [
+      1440,
+      1744
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Noto_Naskh_Arabic",
+    "dimensions": [
+      1440,
+      1687
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Noto_Sans_Lao",
+    "dimensions": [
+      1440,
+      1686
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Nunito",
+    "dimensions": [
+      1440,
+      1724
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Open_Dyslexic",
+    "dimensions": [
+      1440,
+      2328
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Overpass_Mono",
+    "dimensions": [
+      1440,
+      1841
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Oxygen",
+    "dimensions": [
+      1440,
+      1578
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Parkinsans",
+    "dimensions": [
+      1440,
+      1750
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Proto",
+    "dimensions": [
+      1440,
+      1935
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Roboto",
+    "dimensions": [
+      1440,
+      1575
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Roboto_Mono",
+    "dimensions": [
+      1440,
+      1844
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Sarabun",
+    "dimensions": [
+      1440,
+      1698
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Source_Code_Pro",
+    "dimensions": [
+      1440,
+      1937
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Space_Grotesk",
+    "dimensions": [
+      1440,
+      1745
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Titillium_Web",
+    "dimensions": [
+      1440,
+      1585
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Ubuntu",
+    "dimensions": [
+      1440,
+      1577
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Ubuntu_Mono",
+    "dimensions": [
+      1440,
+      1738
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "specimen-Vazirharf",
+    "dimensions": [
+      1440,
+      1731
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  },
+  {
+    "case": "thai",
+    "dimensions": [
+      1440,
+      1000
+    ],
+    "changedPixels": 0,
+    "changedPercent": 0.0,
+    "maxChannelDelta": 0,
+    "bounds": null
+  }
+]

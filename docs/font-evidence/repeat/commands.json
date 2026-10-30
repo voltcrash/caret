@@ -1,0 +1,644 @@
+{
+  "browser": "156.0.8078.4",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "dpr": 1,
+  "os": "linux",
+  "arch": "arm64",
+  "locale": "en-US",
+  "timezone": "UTC",
+  "theme": "serika_dark",
+  "seed": 4242,
+  "preloads": [
+    "/webfonts/RobotoMono-Regular.woff2",
+    "/webfonts/LexendDeca-Regular.woff2"
+  ],
+  "fonts": [
+    {
+      "url": "/webfonts/RobotoMono-Regular.woff2",
+      "decodedBodyBytes": 37632,
+      "encodedBodyBytes": 37632,
+      "transferBytes": 37815
+    },
+    {
+      "url": "/webfonts/LexendDeca-Regular.woff2",
+      "decodedBodyBytes": 25888,
+      "encodedBodyBytes": 25888,
+      "transferBytes": 26071
+    },
+    {
+      "url": "/assets/fa-solid-900-IAB4Droh.woff2",
+      "decodedBodyBytes": 119488,
+      "encodedBodyBytes": 119488,
+      "transferBytes": 119706
+    },
+    {
+      "url": "/assets/fa-brands-400-Bs6tcqqs.woff2",
+      "decodedBodyBytes": 115420,
+      "encodedBodyBytes": 115420,
+      "transferBytes": 115638
+    },
+    {
+      "url": "/assets/fa-regular-400-DRN8N0d1.woff2",
+      "decodedBodyBytes": 19512,
+      "encodedBodyBytes": 19512,
+      "transferBytes": 19729
+    },
+    {
+      "url": "/webfonts/TitilliumWeb-Regular.woff2",
+      "decodedBodyBytes": 18136,
+      "encodedBodyBytes": 18136,
+      "transferBytes": 18319
+    },
+    {
+      "url": "/webfonts/UbuntuMono-Regular.woff2",
+      "decodedBodyBytes": 79680,
+      "encodedBodyBytes": 79680,
+      "transferBytes": 79863
+    },
+    {
+      "url": "/webfonts/Ubuntu-Regular.woff2",
+      "decodedBodyBytes": 111604,
+      "encodedBodyBytes": 111604,
+      "transferBytes": 111788
+    },
+    {
+      "url": "/webfonts/Sarabun-Bold.woff2",
+      "decodedBodyBytes": 59236,
+      "encodedBodyBytes": 59236,
+      "transferBytes": 59419
+    },
+    {
+      "url": "/webfonts/SpaceGrotesk-Regular.woff2",
+      "decodedBodyBytes": 28560,
+      "encodedBodyBytes": 28560,
+      "transferBytes": 28743
+    },
+    {
+      "url": "/webfonts/Roboto-Regular.woff2",
+      "decodedBodyBytes": 50476,
+      "encodedBodyBytes": 50476,
+      "transferBytes": 50659
+    },
+    {
+      "url": "/webfonts/Parkinsans-Regular.woff2",
+      "decodedBodyBytes": 17740,
+      "encodedBodyBytes": 17740,
+      "transferBytes": 17923
+    },
+    {
+      "url": "/webfonts/SourceCodePro-Regular.woff2",
+      "decodedBodyBytes": 76348,
+      "encodedBodyBytes": 76348,
+      "transferBytes": 76531
+    },
+    {
+      "url": "/webfonts/Oxygen-Regular.woff2",
+      "decodedBodyBytes": 19804,
+      "encodedBodyBytes": 19804,
+      "transferBytes": 19987
+    },
+    {
+      "url": "/webfonts/NotoSansLao-Regular.woff2",
+      "decodedBodyBytes": 23008,
+      "encodedBodyBytes": 23008,
+      "transferBytes": 23191
+    },
+    {
+      "url": "/webfonts/Nunito-Bold.woff2",
+      "decodedBodyBytes": 41676,
+      "encodedBodyBytes": 41676,
+      "transferBytes": 41859
+    },
+    {
+      "url": "/webfonts/Mononoki-Regular.woff2",
+      "decodedBodyBytes": 28860,
+      "encodedBodyBytes": 28860,
+      "transferBytes": 29043
+    },
+    {
+      "url": "/webfonts/OverpassMono-Regular.woff2",
+      "decodedBodyBytes": 97068,
+      "encodedBodyBytes": 97068,
+      "transferBytes": 97251
+    },
+    {
+      "url": "/webfonts/Montserrat-Regular.woff2",
+      "decodedBodyBytes": 86900,
+      "encodedBodyBytes": 86900,
+      "transferBytes": 87083
+    },
+    {
+      "url": "/webfonts/Lalezar-Regular.woff2",
+      "decodedBodyBytes": 85748,
+      "encodedBodyBytes": 85748,
+      "transferBytes": 85931
+    },
+    {
+      "url": "/webfonts/OpenDyslexic-Regular.woff2",
+      "decodedBodyBytes": 117196,
+      "encodedBodyBytes": 117196,
+      "transferBytes": 117380
+    },
+    {
+      "url": "/webfonts/NotoNaskhArabic-Regular.woff2",
+      "decodedBodyBytes": 71592,
+      "encodedBodyBytes": 71592,
+      "transferBytes": 71775
+    },
+    {
+      "url": "/webfonts/Kanit-Regular.woff2",
+      "decodedBodyBytes": 53656,
+      "encodedBodyBytes": 53656,
+      "transferBytes": 53839
+    },
+    {
+      "url": "/webfonts/JetBrainsMono-Regular.woff2",
+      "decodedBodyBytes": 92164,
+      "encodedBodyBytes": 92164,
+      "transferBytes": 92347
+    },
+    {
+      "url": "/webfonts/Lato-Regular.woff2",
+      "decodedBodyBytes": 182708,
+      "encodedBodyBytes": 182708,
+      "transferBytes": 182892
+    },
+    {
+      "url": "/webfonts/Itim-Regular.woff2",
+      "decodedBodyBytes": 100780,
+      "encodedBodyBytes": 100780,
+      "transferBytes": 100964
+    },
+    {
+      "url": "/webfonts/Inconsolata-Regular.woff2",
+      "decodedBodyBytes": 38772,
+      "encodedBodyBytes": 38772,
+      "transferBytes": 38955
+    },
+    {
+      "url": "/webfonts/InterTight-Regular.woff2",
+      "decodedBodyBytes": 99132,
+      "encodedBodyBytes": 99132,
+      "transferBytes": 99315
+    },
+    {
+      "url": "/webfonts/IBMPlexSans-SemiBold.woff2",
+      "decodedBodyBytes": 67060,
+      "encodedBodyBytes": 67060,
+      "transferBytes": 67243
+    },
+    {
+      "url": "/webfonts/IBMPlexMono-Regular.woff2",
+      "decodedBodyBytes": 45640,
+      "encodedBodyBytes": 45640,
+      "transferBytes": 45823
+    },
+    {
+      "url": "/webfonts/GeistMono-Medium.woff2",
+      "decodedBodyBytes": 44108,
+      "encodedBodyBytes": 44108,
+      "transferBytes": 44291
+    },
+    {
+      "url": "/webfonts/Geist-Medium.woff2",
+      "decodedBodyBytes": 42132,
+      "encodedBodyBytes": 42132,
+      "transferBytes": 42315
+    },
+    {
+      "url": "/webfonts/Hack-Regular.woff2",
+      "decodedBodyBytes": 106236,
+      "encodedBodyBytes": 106236,
+      "transferBytes": 106420
+    },
+    {
+      "url": "/webfonts/ComingSoon-Regular.woff2",
+      "decodedBodyBytes": 21432,
+      "encodedBodyBytes": 21432,
+      "transferBytes": 21615
+    },
+    {
+      "url": "/webfonts/FiraCode-Regular.woff2",
+      "decodedBodyBytes": 103240,
+      "encodedBodyBytes": 103240,
+      "transferBytes": 103424
+    },
+    {
+      "url": "/webfonts/Comfortaa-Regular.woff2",
+      "decodedBodyBytes": 51212,
+      "encodedBodyBytes": 51212,
+      "transferBytes": 51395
+    },
+    {
+      "url": "/webfonts/CascadiaMono-Regular.woff2",
+      "decodedBodyBytes": 211268,
+      "encodedBodyBytes": 211268,
+      "transferBytes": 211452
+    },
+    {
+      "url": "/webfonts/CommitMono-Regular.woff2",
+      "decodedBodyBytes": 39992,
+      "encodedBodyBytes": 39992,
+      "transferBytes": 40175
+    },
+    {
+      "url": "/webfonts/AtkinsonHyperlegible-Regular.woff2",
+      "decodedBodyBytes": 23196,
+      "encodedBodyBytes": 23196,
+      "transferBytes": 23379
+    },
+    {
+      "url": "/webfonts/0xProto-Regular.woff2",
+      "decodedBodyBytes": 56732,
+      "encodedBodyBytes": 56732,
+      "transferBytes": 56915
+    },
+    {
+      "url": "/webfonts/Boon-Regular.woff2",
+      "decodedBodyBytes": 52228,
+      "encodedBodyBytes": 52228,
+      "transferBytes": 52411
+    },
+    {
+      "url": "/webfonts/AdwaitaMono-Regular.woff2",
+      "decodedBodyBytes": 361248,
+      "encodedBodyBytes": 361248,
+      "transferBytes": 361432
+    },
+    {
+      "url": "/webfonts/Iosevka-Regular.woff2",
+      "decodedBodyBytes": 1494892,
+      "encodedBodyBytes": 1494892,
+      "transferBytes": 1495077
+    }
+  ],
+  "faces": [
+    {
+      "family": "Font Awesome 7 Free",
+      "weight": "900",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Font Awesome 7 Free",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Font Awesome 7 Brands",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Adwaita Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Atkinson Hyperlegible Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Boon Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Cascadia Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Comfortaa Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Coming Soon Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "CommitMono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Fira Code Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Geist Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Geist Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Hack Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "IBM Plex Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "IBM Plex Sans Preview",
+      "weight": "600",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Inconsolata Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Inter Tight Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Iosevka Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Itim Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "JetBrains Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Kanit Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Lalezar Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Lato Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Lexend Deca",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Lexend Deca Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Mononoki Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Montserrat Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Noto Naskh Arabic Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Noto Sans Lao Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Nunito Preview",
+      "weight": "700",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Open Dyslexic Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Overpass Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Oxygen Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Parkinsans Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Proto",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Proto Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Roboto Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Roboto Mono",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Roboto Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Sarabun Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Source Code Pro Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Space Grotesk Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Titillium Web Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Ubuntu Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Ubuntu Mono Preview",
+      "weight": "400",
+      "style": "normal",
+      "display": "swap",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Roboto Mono",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    },
+    {
+      "family": "Lexend Deca",
+      "weight": "400",
+      "style": "normal",
+      "display": "block",
+      "unicodeRange": "U+0-10FFFF"
+    }
+  ],
+  "text": "caret\nserika dark\npunctuation\nnumbers\ntime\nwords\nquote\nzen\ncustom\n10\n25\n50\n100\nenglish\nClick here or press any key to focus\nplace\nonly\nplan\ngood\nmove\nyear\nthan\nday\nfirst\nlife\nleave\nform\nhere\nhelp\nthen\nFont family0xProto\nFont familyAdwaita Mono\nFont familyAtkinson Hyperlegible\nFont familyBoon (ไทย)\nFont familyCascadia Mono\nFont familyComfortaa\nFont familyComing Soon\nFont familyCommitMono\nFont familyCourier\nFont familyFira Code\nFont familyGeist\nFont familyGeist Mono\nFont familyGeorgia\nFont familyHack\nFont familyHelvetica\nFont familyIBM Plex Mono\nFont familyIBM Plex Sans\nFont familyInconsolata\nFont familyInter Tight\nFont familyIosevka\nFont familyItim\nFont familyJetBrains Mono\nFont familyKanit\nFont familyLalezar\nFont familyLato\nFont familyLexend Deca\nFont familyMononoki\nFont familyMontserrat\nFont familyNoto Naskh Arabic\nFont familyNoto Sans Lao (ລາວ)\nFont familyNunito\nFont familyOpen Dyslexic\nFont familyOverpass Mono\nFont familyOxygen\nFont familyParkinsans\nFont familyRoboto\nFont familyRoboto Mono\nFont familySarabun\nFont familySource Code Pro\nFont familySpace Grotesk\nFont familyTitillium Web\nFont familyUbuntu\nFont familyUbuntu Mono",
+  "words": "placeonlyplangoodmoveyearthandayfirstlifeleaveformherehelpthen",
+  "stack": "Proto, \"Roboto Mono\", Vazirharf, \"monospace\"",
+  "rendered": [
+    {
+      "selector": "#words .word",
+      "fonts": [
+        {
+          "familyName": "0xProto",
+          "postScriptName": "0xProto-Regular",
+          "isCustomFont": true,
+          "glyphCount": 5
+        }
+      ]
+    },
+    {
+      "selector": "[data-ui-element=\"logoText\"]",
+      "fonts": []
+    },
+    {
+      "selector": "#commandLine",
+      "fonts": []
+    },
+    {
+      "selector": "body",
+      "fonts": []
+    }
+  ]
+}
