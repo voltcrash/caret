@@ -15,14 +15,26 @@ import { initialTypingSnapshot } from "../server/initial-typing.server";
 
 const initialSnapshot = createIsomorphicFn()
   .server(initialTypingSnapshot)
-  .client(() => {
+  .client(async () => {
     const fallback = defaultInitialTyping();
     const cached = readTypingPreview(document.cookie);
-    return cached?.engineHash === fallback.engineHash ? cached : fallback;
+    const snapshot =
+      cached?.engineHash === fallback.engineHash ? cached : fallback;
+    if (snapshot.settings.keymapMode !== "off") {
+      const { getLayout } = await import("../ts/utils/json-data");
+      const raw =
+        snapshot.settings.keymapLayout === "overrideSync"
+          ? snapshot.settings.layout
+          : snapshot.settings.keymapLayout;
+      snapshot.keymapLayout = await getLayout(
+        raw === "default" ? "qwerty" : raw,
+      );
+    }
+    return snapshot;
   });
 
 export const Route = createFileRoute("/_app/")({
-  loader: () => initialSnapshot(),
+  loader: async () => initialSnapshot(),
   head: () => ({
     ...pageHead(homeTitle, homeDescription, "/"),
     scripts: [structuredDataScript(homeStructuredData())],

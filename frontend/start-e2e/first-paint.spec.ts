@@ -60,7 +60,18 @@ test("first visit paints actual words and controls before engine downloads", asy
 
 test.describe("returning visit", () => {
   test.use({
-    config: { mode: "words", words: 25, fontSize: 3, punctuation: true },
+    viewport: { width: 1600, height: 1000 },
+    config: {
+      mode: "words",
+      words: 25,
+      fontSize: 3,
+      punctuation: true,
+      maxLineWidth: 40,
+      keymapMode: "react",
+      keymapLegendStyle: "blank",
+      keymapKeys: "minimal",
+      keymapSize: 1,
+    },
   });
   test("renders saved words and settings with all JavaScript blocked", async ({
     page,
@@ -68,6 +79,7 @@ test.describe("returning visit", () => {
     await page.goto("/");
     await expect(page.locator("#words .word").first()).toBeVisible();
     const words = await page.locator("#words .word").allTextContents();
+    await expect(page.locator('[data-ui-element="keymap"]')).toBeVisible();
     await expect
       .poll(async () =>
         (await page.context().cookies()).some(
@@ -75,6 +87,12 @@ test.describe("returning visit", () => {
         ),
       )
       .toBe(true);
+    const previewCookie = (await page.context().cookies()).find(
+      (cookie) => cookie.name === initialTypingCookie,
+    );
+    expect(
+      JSON.parse(decodeURIComponent(previewCookie?.value ?? "{}")),
+    ).toMatchObject({ settings: { keymapMode: "react", maxLineWidth: 40 } });
     const pending = Promise.withResolvers<undefined>();
     await page.route("**/assets/*.js", async (route) => {
       await pending.promise;
@@ -92,12 +110,46 @@ test.describe("returning visit", () => {
         page.locator('[data-ui-element="initialTestConfig"]'),
       ).toBeVisible();
       await expect(page.getByText("Preparing typing test…")).toHaveCount(0);
+      await expect(page.locator("[data-initial-keymap]")).toBeVisible();
+      const beforeWords = await page
+        .locator("[data-initial-words] .word")
+        .evaluateAll((elements) =>
+          elements.map((el) => {
+            const { x, y, width, height } = el.getBoundingClientRect();
+            return { x, y, width, height };
+          }),
+        );
+      const beforeKeyboard = await page
+        .locator("[data-initial-keymap]")
+        .boundingBox();
       await page.screenshot({
         path: info.outputPath("returning-before-js.png"),
       });
       pending.resolve(undefined);
       await expect(page.locator("#words .word").first()).toBeVisible();
       await expect(page.locator("#words .word")).toHaveText(words);
+      const afterWords = await page
+        .locator("#words .word")
+        .evaluateAll((elements) =>
+          elements.map((el) => {
+            const { x, y, width, height } = el.getBoundingClientRect();
+            return { x, y, width, height };
+          }),
+        );
+      for (let i = 0; i < beforeWords.length; i++) {
+        for (const key of ["x", "y", "width", "height"] as const) {
+          expect(afterWords[i]?.[key]).toBeCloseTo(
+            beforeWords[i]?.[key] ?? 0,
+            0,
+          );
+        }
+      }
+      const afterKeyboard = await page
+        .locator('[data-ui-element="keymap"]')
+        .boundingBox();
+      for (const key of ["x", "y", "width", "height"] as const) {
+        expect(afterKeyboard?.[key]).toBeCloseTo(beforeKeyboard?.[key] ?? 0, 0);
+      }
       await page.screenshot({ path: info.outputPath("returning-ready.png") });
     } finally {
       pending.resolve(undefined);

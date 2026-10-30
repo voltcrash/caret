@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { ConfigSchema, type Config } from "@caret/schemas/configs";
+import type { LayoutObject } from "@caret/schemas/layouts";
+import { getDefaultConfig } from "@caret/web-shared/config/default-config";
 
 export const initialTypingCookie = "caret_typing_preview";
 const previewKeys = [
@@ -23,6 +25,13 @@ const previewKeys = [
   "flipTestColors",
   "colorfulMode",
   "showAllLines",
+  "keymapMode",
+  "keymapLayout",
+  "keymapStyle",
+  "keymapLegendStyle",
+  "keymapKeys",
+  "keymapSize",
+  "layout",
 ] as const;
 const settingsSchema = ConfigSchema.pick(
   Object.fromEntries(previewKeys.map((key) => [key, true])) as {
@@ -36,9 +45,34 @@ const snapshotSchema = z.object({
   key: z.string().regex(/^[a-f0-9]{64}$/),
   engineHash: z.string().regex(/^[a-f0-9]{64}$/),
   words: z.array(z.string().max(256)).min(1).max(60),
-  settings: settingsSchema,
+  // Older previews predate keyboard preferences; keep their wordset usable.
+  settings: settingsSchema.extend({
+    keymapMode: ConfigSchema.shape.keymapMode.default("off"),
+    keymapLayout: ConfigSchema.shape.keymapLayout.default(
+      getDefaultConfig().keymapLayout,
+    ),
+    keymapStyle: ConfigSchema.shape.keymapStyle.default(
+      getDefaultConfig().keymapStyle,
+    ),
+    keymapLegendStyle: ConfigSchema.shape.keymapLegendStyle.default(
+      getDefaultConfig().keymapLegendStyle,
+    ),
+    keymapKeys: ConfigSchema.shape.keymapKeys.default(
+      getDefaultConfig().keymapKeys,
+    ),
+    keymapSize: ConfigSchema.shape.keymapSize.default(
+      getDefaultConfig().keymapSize,
+    ),
+    layout: ConfigSchema.shape.layout.default("default"),
+  }),
 });
-export type InitialTypingSnapshot = z.infer<typeof snapshotSchema>;
+export type InitialTypingSnapshot = Omit<
+  z.infer<typeof snapshotSchema>,
+  "settings"
+> & {
+  settings: PreviewSettings;
+  keymapLayout?: LayoutObject;
+};
 
 export function previewSettings(config: Config): PreviewSettings {
   return Object.fromEntries(

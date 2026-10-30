@@ -4,6 +4,7 @@ import type { Config } from "@caret/schemas/configs";
 import {
   initialTypingCookie,
   previewSettings,
+  readTypingPreview,
   type InitialTypingSnapshot,
 } from "./initial-snapshot";
 
@@ -23,6 +24,41 @@ export const initialTypingState = createAppOwned(() => {
     engineHash: () => initial?.engineHash ?? "",
   };
 });
+
+/** Presentation changes do not restart content generation. Save them immediately. */
+export function refreshTypingPreviewSettings(config: Config): void {
+  let cookie: string;
+  try {
+    cookie = document.cookie;
+  } catch {
+    return;
+  }
+  const previous = readTypingPreview(cookie);
+  if (previous === undefined) return;
+  const appearance = Object.fromEntries(
+    Object.entries(previewSettings(config)).filter(
+      ([key]) =>
+        ![
+          "mode",
+          "time",
+          "words",
+          "quoteLength",
+          "punctuation",
+          "numbers",
+          "language",
+        ].includes(key),
+    ),
+  );
+  saveTypingPreview(
+    ["time", "words"].includes(config.mode)
+      ? { ...config, ...previous.settings, ...appearance }
+      : config,
+    previous.seed,
+    previous.key,
+    previous.words,
+    previous.engineHash,
+  );
+}
 
 export async function initialContentKey(
   config: Config,
@@ -44,6 +80,7 @@ export function saveTypingPreview(
   seed: number,
   key: string,
   words: string[],
+  engineHash = initialTypingState().engineHash(),
 ): void {
   // Local/custom text and adaptive/provider content must not be sent in cookies.
   if (
@@ -60,7 +97,7 @@ export function saveTypingPreview(
     version: 1,
     seed,
     key,
-    engineHash: initialTypingState().engineHash(),
+    engineHash,
     settings: previewSettings(config),
     words: words.slice(0, 60),
   };
