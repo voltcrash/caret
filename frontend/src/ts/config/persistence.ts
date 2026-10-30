@@ -11,6 +11,7 @@ import { LocalStorageWithSchema } from "../utils/local-storage-with-schema";
 import { isObject } from "../utils/misc";
 import { debounce } from "@caret/util/timing";
 import { setProperty } from "@caret/util/objects";
+import { refreshTypingPreviewSettings } from "../../features/typing/initial-snapshot.client";
 
 const pendingSync = createAccountOwned(() => {
   const current = {
@@ -57,6 +58,7 @@ export function saveToLocalStorage(
 ): void {
   if (nosave) return;
   configLS.set(getMutableConfig());
+  refreshTypingPreviewSettings(getMutableConfig());
   if (!noDbCheck) {
     setProperty(pendingSync().config, key, getMutableConfig()[key]);
     pendingSync().save();
@@ -66,6 +68,7 @@ export function saveToLocalStorage(
 export function saveFullConfigToLocalStorage(noDbCheck = false): void {
   console.log("saving full config to localStorage");
   configLS.set(getMutableConfig());
+  refreshTypingPreviewSettings(getMutableConfig());
   if (!noDbCheck) {
     persist(structuredClone(getMutableConfig()));
   }

@@ -9,6 +9,7 @@ import {
 import {
   initialTypingState,
   saveTypingPreview,
+  refreshTypingPreviewSettings,
 } from "../../../src/features/typing/initial-snapshot.client";
 
 const config = { ...getDefaultConfig(), mode: "words" as const, words: 25 };
@@ -71,4 +72,41 @@ it("never sends local custom text to the server in a preview cookie", () => {
   ]);
   expect(readTypingPreview(document.cookie)).toBeUndefined();
   expect(document.cookie).not.toContain("private-local-text");
+});
+
+it("saves layout preferences without generating another wordset", () => {
+  saveTypingPreview(config, 7, snapshot.key, ["same", "words"]);
+  refreshTypingPreviewSettings({
+    ...config,
+    maxLineWidth: 40,
+    keymapMode: "react",
+    keymapLegendStyle: "blank",
+  });
+  const restored = readTypingPreview(document.cookie);
+  expect(restored?.settings.maxLineWidth).toBe(40);
+  expect(restored?.settings.keymapMode).toBe("react");
+  expect(restored?.settings.keymapLegendStyle).toBe("blank");
+  expect(restored?.words).toEqual(["same", "words"]);
+  expect(restored?.seed).toBe(7);
+  expect(restored?.key).toBe(snapshot.key);
+});
+
+it("reads previews written before keyboard preferences were included", () => {
+  const added = [
+    "keymapMode",
+    "keymapLayout",
+    "keymapStyle",
+    "keymapLegendStyle",
+    "keymapKeys",
+    "keymapSize",
+    "layout",
+  ];
+  const settings = Object.fromEntries(
+    Object.entries(snapshot.settings).filter(([key]) => !added.includes(key)),
+  );
+  expect(
+    readTypingPreview(
+      `${initialTypingCookie}=${encodeURIComponent(JSON.stringify({ ...snapshot, settings }))}`,
+    )?.words,
+  ).toEqual(snapshot.words);
 });
