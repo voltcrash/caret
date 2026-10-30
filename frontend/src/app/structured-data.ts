@@ -1,12 +1,25 @@
 import { publicEnv } from "./public-env";
 import { homeDescription, homeTitle } from "./seo";
 
+export function organizationStructuredData() {
+  return {
+    "@type": "Organization",
+    "@id": `${publicEnv.origin}/#organization`,
+    name: "Caret",
+    alternateName: "Caret typing test",
+    url: `${publicEnv.origin}/`,
+    logo: `${publicEnv.origin}/images/icons/caret-512.png`,
+    sameAs: ["https://github.com/voltcrash/caret"],
+  };
+}
+
 /** Only public, repository-verified facts; no invented reviews or ratings. */
 export function homeStructuredData(): Record<string, unknown> {
   const url = `${publicEnv.origin}/`;
   return {
     "@context": "https://schema.org",
     "@graph": [
+      organizationStructuredData(),
       {
         "@type": "WebSite",
         "@id": `${url}#website`,
@@ -14,11 +27,14 @@ export function homeStructuredData(): Record<string, unknown> {
         alternateName: "Caret Typing Test",
         url,
         inLanguage: "en",
+        publisher: { "@id": `${url}#organization` },
       },
       {
         "@type": "WebApplication",
         "@id": `${url}#application`,
         name: "Caret",
+        alternateName: "Caret typing test",
+        creator: { "@id": `${url}#organization` },
         url,
         description: homeDescription,
         applicationCategory: "EducationalApplication",
