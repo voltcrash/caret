@@ -80,4 +80,48 @@ describe("account queries through PostgreSQL", () => {
     });
   });
 
+  it("skips repeat-IP transactions and preserves bounded history for new IPs", async () => {
+    await withRuntime(test.env, async () => {
+      await mutateUser("ips", (user) => {
+        user.ips = Array.from({ length: 10 }, (_, index) => `ip-${index}`);
+      });
+      const profile = await Users.getUser("ips", "test");
+      const before = runtime().metrics.dbStatements;
+      await Users.logIpAddress("ips", "ip-0", profile);
+      expect(runtime().metrics.dbStatements).toBe(before);
+      await Users.logIpAddress("ips", "ip-5", profile);
+      expect((await Users.getUser("ips", "test")).ips).toEqual([
+        "ip-5",
+        "ip-0",
+        "ip-1",
+        "ip-2",
+        "ip-3",
+        "ip-4",
+        "ip-6",
+        "ip-7",
+        "ip-8",
+        "ip-9",
+      ]);
+      await Users.logIpAddress("ips", "new-ip");
+      expect((await Users.getUser("ips", "test")).ips).toEqual([
+        "new-ip",
+        "ip-5",
+        "ip-0",
+        "ip-1",
+        "ip-2",
+        "ip-3",
+        "ip-4",
+        "ip-6",
+        "ip-7",
+        "ip-8",
+      ]);
+      await atomicUser("ips", async () => {
+        await Users.logIpAddress("ips", "draft-ip");
+        const start = runtime().metrics.dbStatements;
+        await Users.logIpAddress("ips", "draft-ip", profile);
+        expect(runtime().metrics.dbStatements).toBe(start);
+      });
+    });
+  });
+
 });
