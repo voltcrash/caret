@@ -64,12 +64,14 @@ export async function getPartialUser<K extends keyof DBUser>(
 export async function findByName(name: string): Promise<DBUser | undefined> {
   const row = (
     await database()
-      .select()
+      .select({ uid: users.uid, data: users.data })
       .from(users)
       .where(eq(users.nameKey, name.toLowerCase()))
       .limit(1)
   )[0];
-  return row ? await readUser(row.uid) : undefined;
+  if (row === undefined) return undefined;
+  const draft = currentUserDraft(row.uid);
+  return draft === undefined ? row.data : structuredClone(draft);
 }
 export async function isNameAvailable(
   name: string,
