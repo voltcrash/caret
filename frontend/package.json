@@ -102,7 +102,7 @@
     "@cloudflare/vite-plugin": "1.66.0",
     "@cloudflare/workers-types": "5.20261029.1",
     "@fortawesome/fontawesome-free": "7.3.1",
-    "@sentry/vite-plugin": "11.9.0",
+    "@sentry/vite-plugin": "11.10.0",
     "@solid-devtools/overlay": "0.33.5",
     "@solidjs/testing-library": "0.8.10",
     "@tailwindcss/vite": "4.3.3",
