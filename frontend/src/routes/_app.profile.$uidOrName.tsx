@@ -1,6 +1,7 @@
 import type { JSXElement } from "solid-js";
 
 import { ClientSchema } from "@caret/schemas/shared";
+import type { UserProfile } from "@caret/schemas/users";
 import { createFileRoute, notFound } from "@tanstack/solid-router";
 import { isServer } from "solid-js/web";
 import { z } from "zod";
@@ -18,6 +19,17 @@ import { ProfileSkeleton } from "../features/profile/skeleton";
 
 const SearchSchema = z.object({ client: ClientSchema.optional() }).partial();
 
+/** Index profiles with authored text or a personal best visible in the SSR summary. */
+function hasProfileContent(profile: UserProfile): boolean {
+  return (
+    profile.banned !== true &&
+    (Boolean(profile.details?.bio?.trim()) ||
+      ["15", "60"].some(
+        (duration) => (profile.personalBests.time[duration]?.length ?? 0) > 0,
+      ))
+  );
+}
+
 export const Route = createFileRoute("/_app/profile/$uidOrName")({
   validateSearch: (search: Record<string, unknown>) =>
     urlSearch(SearchSchema)(search),
@@ -26,13 +38,15 @@ export const Route = createFileRoute("/_app/profile/$uidOrName")({
     const options = profileOptions(params.uidOrName, deps.client);
     if (!isServer) {
       void preloadProfile().catch(() => undefined);
-      if (context.queryClient.getQueryData(options.queryKey) !== undefined) {
+      const cached = context.queryClient.getQueryData(options.queryKey);
+      if (cached !== undefined) {
         void context.queryClient.query(options).catch(() => undefined);
-        return;
+        return { indexable: hasProfileContent(cached) };
       }
     }
     try {
-      await context.queryClient.query(options);
+      const profile = await context.queryClient.query(options);
+      return { indexable: hasProfileContent(profile) };
     } catch (error) {
       if (isUserNotFound(error)) {
         // oxlint-disable-next-line typescript/only-throw-error -- Router's not-found control signal.
@@ -46,13 +60,15 @@ export const Route = createFileRoute("/_app/profile/$uidOrName")({
           exact: true,
         });
       }
+      return { indexable: false };
     }
   },
-  head: ({ params }) =>
+  head: ({ params, loaderData }) =>
     pageHead(
       `${params.uidOrName} | Caret`,
       `${params.uidOrName}'s Caret profile and personal bests.`,
       `/profile/${encodeURIComponent(params.uidOrName)}`,
+      loaderData?.indexable === true,
     ),
   notFoundComponent: Missing,
   pendingComponent: Pending,
