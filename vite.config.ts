@@ -41,6 +41,37 @@ if (
 }
 
 export default defineConfig({
+  run: {
+    tasks: {
+      "ci:lint:be": {
+        command: "vp lint . --type-aware --type-check --format agent",
+        cwd: "backend",
+        cache: { output: [] },
+      },
+      "ci:lint:fe": {
+        command: "vp lint . --type-aware --type-check --format agent",
+        cwd: "frontend",
+        cache: { output: [] },
+      },
+      // Fixture builds only. Deployment tasks retain their existing behavior.
+      "ci:build:start": {
+        command: "vp build",
+        cwd: "frontend",
+        cache: {
+          env: [
+            "CARET_*",
+            "AUTH_PROVIDERS",
+            "TURNSTILE_SITE_KEY",
+            "SENTRY_*",
+            "DEV_TOOLS",
+            "DEV_PREFETCH",
+            "NODE_ENV",
+            "TZ",
+          ],
+        },
+      },
+    },
+  },
   staged: {
     "*": "vp fmt --no-error-on-unmatched-pattern",
     "*.{ts,tsx,js}": "vp lint --type-aware --type-check --format agent",

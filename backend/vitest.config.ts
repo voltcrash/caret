@@ -3,6 +3,12 @@ import { defineConfig, TestProjectInlineConfiguration } from "vite-plus";
 export const projects = [
   {
     test: {
+      name: { label: "inventory", color: "cyan" },
+      include: ["__tests__/migration-inventory.spec.ts"],
+    },
+  },
+  {
+    test: {
       name: { label: "postgres", color: "cyan" },
       include: ["__tests__/postgres/**/*.spec.ts"],
       testTimeout: 30_000,
@@ -23,7 +29,10 @@ export const projects = [
       name: { label: "unit", color: "blue" },
       setupFiles: ["__tests__/setup-unit.ts"],
       include: ["__tests__/**/*.spec.ts"],
-      exclude: ["__tests__/{api,auth,http,postgres}/**"],
+      exclude: [
+        "__tests__/{api,auth,http,postgres}/**",
+        "__tests__/migration-inventory.spec.ts",
+      ],
     },
   },
 ] satisfies TestProjectInlineConfiguration[];

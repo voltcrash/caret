@@ -8,7 +8,13 @@ export default defineConfig<{ startSession: string | undefined }>({
   // just that test, and the report still marks it flaky.
   retries: Boolean(process.env["CI"]) ? 1 : 0,
   // CI adds inline annotations on the pull request diff.
-  reporter: Boolean(process.env["CI"]) ? [["list"], ["github"]] : "list",
+  reporter: Boolean(process.env["CI"])
+    ? [
+        ["list"],
+        ["github"],
+        ["json", { outputFile: ".reports/start-browser.json" }],
+      ]
+    : "list",
   use: {
     ...devices["Desktop Chrome"],
     baseURL: "http://127.0.0.1:4185",

@@ -21,7 +21,7 @@
     "build": "vp run --filter @caret/frontend build",
     "build-fe": "vp run --filter @caret/frontend build",
     "test": "vp test run",
-    "test-be": "vp test run --project=*-backend",
+    "test-be": "vp test run --project=*-backend --project=!inventory-backend",
     "test-fe": "vp test run --project=*-frontend",
     "test-e2e": "vp run --filter @caret/frontend test-e2e",
     "test-pkg": "vp test run --project=@caret/*",

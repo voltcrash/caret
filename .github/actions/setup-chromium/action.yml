@@ -28,11 +28,13 @@ runs:
         command: vp -C frontend exec playwright install-deps chromium-headless-shell
 
     - name: Restore Chromium
+      id: chromium
       uses: actions/cache@v6.1.0
       with:
         path: ~/.cache/ms-playwright
         key: playwright-${{ runner.os }}-${{ runner.arch }}-${{ steps.version.outputs.playwright }}
 
     - name: Install Chromium
+      if: steps.chromium.outputs.cache-hit != 'true'
       shell: bash
       run: vp -C frontend exec playwright install --only-shell chromium
