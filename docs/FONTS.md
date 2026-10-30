@@ -59,8 +59,8 @@ vp exec /tmp/caret-font-tools/bin/python scripts/fonts/generate.py --split --out
 See [evidence and merge gate](font-evidence/REPORT.md). The candidate retains
 full faces, original CSS descriptors, preloads, fallbacks, loading gates and
 service-worker behavior. No runtime integration change is needed. No new idle
-precache or CSS embedding. The strict split/core-preload acceptance contract
-is unresolved; do not treat this candidate as completing it.
+precache or CSS embedding. The user accepted this narrower full-face reduction
+on 2026-10-31; it does not complete the original split/core-preload requirement.
 
 ## Visual/network proof
 

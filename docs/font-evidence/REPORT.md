@@ -1,10 +1,10 @@
-# Font optimization evidence and merge gate
+# Font optimization evidence and accepted scope
 
-**The original acceptance contract is BLOCKED.** Exact-cmap core/extended
-splitting changed rendering in the real production fixture. The retained
-full-face candidate is a reviewable partial result, not completion of the
-split/core-preload requirement. Parent owns the scope decision, CI monitoring
-and merge. No production/deploy changes were made.
+**The user accepted the safe full-face reduction on 2026-10-31 and authorized
+merge after CI.** Exact-cmap core/extended splitting changed rendering in the
+real production fixture and remains excluded. This result does not complete
+the original split/core-preload requirement or improve default-page downloads.
+No production/deploy configuration changes were made.
 
 ## Retained result
 
@@ -189,7 +189,8 @@ or dependency fix is included. Logs were retained locally under
 Only the recorded Chromium/Linux environment has direct pixel proof. Other
 browsers/OSes and an actual local-font upload were not browser-tested; existing
 font runtime tests cover uploaded/preferred-font logic, which is unchanged.
-Required remote CI/review states are pending PR creation. Even green CI does
-not remove the unresolved original split/core-preload acceptance gate.
+Remote CI passed on `f82fa7146`; the Sol ledger records approval of the safe
+full-face scope. The user subsequently accepted that narrower result. Splitting
+remains a rejected experiment, not a feature delivered by this PR.
 
 Comparator fail-closed checks: six manual CLI tests pass; four fail against the pre-S1 comparator. Both complete 62-image comparisons were rerun after S1.

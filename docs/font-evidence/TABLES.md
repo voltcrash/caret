@@ -1,6 +1,6 @@
 # Font byte measurements
 
-Exact WOFF2 file bytes. The rendering-preserving candidate retains full faces; the original strict acceptance gate remains blocked. Core/extended columns are the **rejected**, pixel-changing split, not shipped downloads.
+Exact WOFF2 file bytes. The user accepted the rendering-preserving full-face reduction on 2026-10-31. Core/extended columns are the **rejected**, pixel-changing split, not shipped downloads; the original split/core-preload requirement is not delivered.
 
 | Font | Original | Trial core | Trial extended | Trial total | Candidate full | Saved |
 |---|---:|---:|---:|---:|---:|---:|

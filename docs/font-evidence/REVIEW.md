@@ -22,6 +22,8 @@ file plus the fail-closed guard and documentation. No font bytes changed in the
 review loop. No findings declined; no review blocker/should remains open for
 the reviewed partial candidate. Usage was not exposed in either round.
 
-Original strict split/core-preload acceptance and merge gate **remain BLOCKED**.
-Parent owns monitoring, scope acceptance and any eventual merge. No child watch
-or merge is authorized.
+At review time the original strict split/core-preload acceptance gate remained
+blocked. On 2026-10-31 the user accepted the safe full-face reduction and
+authorized merge after CI. This scope decision does not approve any rendering
+change or claim successful splitting. Parent owns CI monitoring and merge;
+no child watch or merge was performed.
