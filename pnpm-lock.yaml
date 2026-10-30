@@ -427,8 +427,8 @@ importers:
         specifier: 1.33.5
         version: 1.33.5(solid-js@1.9.17)
       '@tanstack/solid-hotkeys':
-        specifier: 0.16.0
-        version: 0.16.0(solid-js@1.9.17)
+        specifier: 0.17.0
+        version: 0.17.0(solid-js@1.9.17)
       '@tanstack/solid-query':
         specifier: 5.104.5
         version: 5.104.5(solid-js@1.9.17)
@@ -3214,10 +3214,6 @@ packages:
     peerDependencies:
       '@tanstack/hotkeys': 0.18.0
 
-  '@tanstack/hotkeys@0.17.0':
-    resolution: {integrity: sha512-HhgfF+Wqz3ofCQaDHXSkItRbLXmigoHsxJsQGbGc3Kgu/gunwcFLqVubfoUmdRK/YN7fuZYN2vEOk3oMGxSWTg==}
-    engines: {node: '>=20'}
-
   '@tanstack/hotkeys@0.18.0':
     resolution: {integrity: sha512-QQjRgnpz0xrTbhKiuia+ACGzO4PsxEsTVH2ls01fM2LJ8uISrWVq/9ILB3bd4eFdWzj9I6K7qZM6swoDDiKcRQ==}
     engines: {node: '>=20'}
@@ -3308,8 +3304,8 @@ packages:
     peerDependencies:
       solid-js: '>=1.7.0'
 
-  '@tanstack/solid-hotkeys@0.16.0':
-    resolution: {integrity: sha512-LjFZ1/yybHXUUgubEAYnO/yih4iAVduRqpdtJf51KFYU3+jF0atixeweDtEoCn9Sc08zict/6Ou7QeIz//O5VQ==}
+  '@tanstack/solid-hotkeys@0.17.0':
+    resolution: {integrity: sha512-iV0x3TmJwSwFe7zXkijvlFs+TlosdFhSwobbSjVr2wPJO9UO/zPfa1NOf42fyPJkNTZyGA2MkZSto0SvztAPNQ==}
     engines: {node: '>=20'}
     peerDependencies:
       solid-js: '>=1.7.0'
@@ -8137,10 +8133,6 @@ snapshots:
       - svelte
       - vue
 
-  '@tanstack/hotkeys@0.17.0':
-    dependencies:
-      '@tanstack/store': 0.11.2
-
   '@tanstack/hotkeys@0.18.0':
     dependencies:
       '@tanstack/store': 0.11.2
@@ -8278,9 +8270,9 @@ snapshots:
       - svelte
       - vue
 
-  '@tanstack/solid-hotkeys@0.16.0(solid-js@1.9.17)':
+  '@tanstack/solid-hotkeys@0.17.0(solid-js@1.9.17)':
     dependencies:
-      '@tanstack/hotkeys': 0.17.0
+      '@tanstack/hotkeys': 0.18.0
       '@tanstack/solid-store': 0.11.2(solid-js@1.9.17)
       solid-js: 1.9.17
 
