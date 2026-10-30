@@ -4,6 +4,7 @@ import { runtime, withRuntime } from "../../src/runtime/env";
 import { statement } from "../../src/db/client";
 import { atomicUser, mutateUser } from "../../src/db/mutation";
 import * as Users from "../../src/dal/user";
+import { getAllTimeLbs } from "../../src/services/operations/user/leaderboards";
 
 describe("account queries through PostgreSQL", () => {
   let test: Awaited<ReturnType<typeof createTestRuntime>>;
@@ -124,4 +125,51 @@ describe("account queries through PostgreSQL", () => {
     });
   });
 
+  it("reads both ranks and their published counts in one statement, ignoring old generations", async () => {
+    await withRuntime(test.env, async () => {
+      for (const [mode, entries] of [
+        ["15", 50],
+        ["60", null],
+      ] as const) {
+        const board = `english_time_${mode}`;
+        await statement(
+          "INSERT INTO leaderboard_generations(board,generation,updated_at,entries) VALUES(?,'current',0,?)",
+          board,
+          entries,
+        ).run();
+        for (const [generation, rank] of [
+          ["old", 99],
+          ["current", 2],
+        ] as const) {
+          await statement(
+            "INSERT INTO leaderboard_snapshots(generation,board,uid,rank,data) VALUES(?,?,'ranked',?,'{}')",
+            generation,
+            board,
+            rank,
+          ).run();
+        }
+      }
+      const before = runtime().metrics.dbStatements;
+      expect(await getAllTimeLbs("ranked")).toEqual({
+        time: {
+          "15": { english: { rank: 2, count: 50 } },
+          "60": { english: { rank: 2, count: 1 } },
+        },
+      });
+      expect(runtime().metrics.dbStatements - before).toBe(1);
+      expect(await getAllTimeLbs("unranked")).toEqual({
+        time: {
+          "15": { english: undefined },
+          "60": { english: undefined },
+        },
+      });
+      await statement("DELETE FROM leaderboard_generations").run();
+      expect(await getAllTimeLbs("ranked")).toEqual({
+        time: {
+          "15": { english: undefined },
+          "60": { english: undefined },
+        },
+      });
+    });
+  });
 });
