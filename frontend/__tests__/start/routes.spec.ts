@@ -31,8 +31,37 @@ describe("native public routes in workerd", () => {
     expect(html).toContain("https://caret.voltcrash.com/profile/ssr-profile");
     expect(html).toContain("ssr-profile public bio");
     expect(html).toContain('aria-label="Profile summary"');
+    expect(html).not.toContain("noindex");
     // Only the public DTO is serialized; never account credentials.
     expect(html).not.toContain("profile-ssr-profile@example.test");
+  });
+
+  it("keeps name-only profiles out of search while allowing authored bios and visible bests", async () => {
+    const uid = await seedProfile(mf, "a", "empty-profile");
+    const db = await mf.getDatabase("a");
+    await db
+      .prepare(
+        "UPDATE users SET data=jsonb_set(jsonb_set(data,'{profileDetails,bio}',?::jsonb),'{personalBests,time}',?::jsonb) WHERE uid=?",
+      )
+      .bind(JSON.stringify(""), JSON.stringify({}), uid)
+      .run();
+    const worker = await mf.getWorker("a");
+    const empty = await worker.fetch(`${origin}/profile/empty-profile`);
+    expect(empty.status).toBe(200);
+    expect(await empty.text()).toContain(
+      'name="robots" content="noindex,follow"',
+    );
+    const bioUid = await seedProfile(mf, "a", "bio-profile");
+    await db
+      .prepare(
+        "UPDATE users SET data=jsonb_set(data,'{personalBests,time}',?::jsonb) WHERE uid=?",
+      )
+      .bind(JSON.stringify({}), bioUid)
+      .run();
+    const bio = await worker.fetch(`${origin}/profile/bio-profile`);
+    const html = await bio.text();
+    expect(html).toContain("bio-profile public bio");
+    expect(html).not.toContain("noindex");
   });
 
   it("returns 404 for unknown profiles and renders the missing message", async () => {
@@ -51,6 +80,7 @@ describe("native public routes in workerd", () => {
     const html = await response.text();
     expect(html).not.toContain("Profile summary");
     expect(html).not.toContain("Profiles are not available");
+    expect(html).toContain('name="robots" content="noindex,follow"');
   });
 
   it("renders the profile lookup shell", async () => {

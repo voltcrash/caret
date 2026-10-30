@@ -1,9 +1,21 @@
 import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
 
+import { aboutFaq } from "../../src/features/discover/about-faq";
 import { createWorkerd, seedSession } from "./workerd";
 
 const origin = "http://localhost:3000";
 const canonical = "https://caret.voltcrash.com";
+
+function structuredGraph(html: string): Record<string, unknown>[] {
+  const script =
+    /<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/.exec(
+      html,
+    );
+  expect(script).not.toBeNull();
+  return (
+    JSON.parse(script?.[1] ?? "null") as { "@graph": Record<string, unknown>[] }
+  )["@graph"];
+}
 
 describe("search and AI discovery in the built Worker", () => {
   let mf: Awaited<ReturnType<typeof createWorkerd>>;
@@ -12,7 +24,7 @@ describe("search and AI discovery in the built Worker", () => {
   });
   afterAll(async () => await mf?.dispose());
 
-  it("keeps homepage metadata and an about link without the product overview", async () => {
+  it("server-renders a homepage heading and description without the full product overview", async () => {
     const response = await mf.dispatchFetch(`${origin}/?utm_source=search`);
     expect(response.status).toBe(200);
     const html = await response.text();
@@ -23,6 +35,8 @@ describe("search and AI discovery in the built Worker", () => {
     expect(head).toContain('name="twitter:description"');
     expect(head).not.toContain("noindex");
     expect(html).toContain('href="/about"');
+    expect(html).toMatch(/<h1\b[^>]*>Caret typing test<\/h1>/);
+    expect(html).toContain("Measure your typing speed and accuracy");
     expect(html).not.toContain('id="about-caret"');
     expect(html).not.toContain("Practice your way");
     expect(html).toContain("<noscript");
@@ -38,6 +52,14 @@ describe("search and AI discovery in the built Worker", () => {
       "@graph": expect.arrayContaining([
         expect.objectContaining({ "@type": "WebSite", name: "Caret" }),
         expect.objectContaining({
+          "@type": "Organization",
+          "@id": `${canonical}/#organization`,
+          name: "Caret",
+          alternateName: "Caret typing test",
+          logo: `${canonical}/images/icons/caret-512.png`,
+          sameAs: ["https://github.com/voltcrash/caret"],
+        }),
+        expect.objectContaining({
           "@type": "WebApplication",
           url: `${canonical}/`,
           isAccessibleForFree: true,
@@ -45,6 +67,18 @@ describe("search and AI discovery in the built Worker", () => {
         }),
       ]),
     });
+  });
+
+  it("places static recovery warnings after the main content", async () => {
+    for (const path of ["/", "/about", "/guide/typing-speed-test"]) {
+      const response = await mf.dispatchFetch(`${origin}${path}`);
+      const html = await response.text();
+      const mainEnd = html.indexOf("</main>");
+      expect(mainEnd).toBeGreaterThan(0);
+      expect(html.indexOf("<noscript")).toBeGreaterThan(mainEnd);
+      expect(html.indexOf('id="nocss"')).toBeGreaterThan(mainEnd);
+      expect(html).toContain("reinstallServiceWorker()");
+    }
   });
 
   it("serves the product overview and guide links on /about without executing JavaScript", async () => {
@@ -61,9 +95,24 @@ describe("search and AI discovery in the built Worker", () => {
     expect(html).toContain("Questions about Caret");
     expect(html).toContain('href="/guide"');
     expect(html).toContain("Start a free typing test");
+    expect(structuredGraph(html)).toContainEqual(
+      expect.objectContaining({
+        "@type": "FAQPage",
+        url: `${canonical}/about`,
+        mainEntity: aboutFaq.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: { "@type": "Answer", text: faq.answer },
+        })),
+      }),
+    );
+    for (const faq of aboutFaq) {
+      expect(html).toContain(faq.question);
+      expect(html).toContain(faq.answer);
+    }
   });
 
-  it("server-renders the guides index with links to all three articles", async () => {
+  it("server-renders the guides index with links to all six articles", async () => {
     const response = await mf.dispatchFetch(`${origin}/guide`);
     expect(response.status).toBe(200);
     const html = await response.text();
@@ -71,6 +120,9 @@ describe("search and AI discovery in the built Worker", () => {
     expect(html).toContain('href="/guide/typing-practice"');
     expect(html).toContain('href="/guide/typing-speed-test"');
     expect(html).toContain('href="/guide/typing-for-programmers"');
+    expect(html).toContain('href="/guide/wpm-calculator"');
+    expect(html).toContain('href="/guide/how-to-type-faster"');
+    expect(html).toContain('href="/guide/average-typing-speed"');
   });
 
   it("removes the old content URLs without redirects", async () => {
@@ -97,7 +149,7 @@ describe("search and AI discovery in the built Worker", () => {
     const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(
       (match) => match[1] ?? "",
     );
-    expect(urls).toHaveLength(7);
+    expect(urls).toHaveLength(10);
     expect(urls).toContain(`${canonical}/about`);
     expect(urls).toContain(`${canonical}/guide`);
     const titles = new Set<string>();
@@ -126,6 +178,20 @@ describe("search and AI discovery in the built Worker", () => {
         const updated = /<time\b[^>]*datetime="([^"]+)"/.exec(html)?.[1];
         expect(updated).toMatch(/^\d{4}-\d{2}-\d{2}$/);
         expect(html).toContain(`"dateModified":"${updated}"`);
+        expect(structuredGraph(html)).toContainEqual(
+          expect.objectContaining({
+            "@type": "Article",
+            url,
+            dateModified: updated,
+            author: {
+              "@type": "Organization",
+              name: "Caret contributors",
+              url: "https://github.com/voltcrash/caret",
+            },
+            publisher: { "@id": `${canonical}/#organization` },
+            mainEntityOfPage: { "@id": url },
+          }),
+        );
         expect(sitemap).toContain(
           `<loc>${url}</loc><lastmod>${updated}</lastmod>`,
         );
@@ -170,6 +236,37 @@ describe("search and AI discovery in the built Worker", () => {
     expect(referenceText).toContain(`${canonical}/about`);
     expect(referenceText).toContain(`${canonical}/guide`);
     expect(referenceText).toContain(`${canonical}/guide/typing-practice`);
+    expect(referenceText).not.toContain("privacy-policy.html");
+    for (const slug of [
+      "wpm-calculator",
+      "how-to-type-faster",
+      "average-typing-speed",
+    ]) {
+      expect(referenceText).toContain(`${canonical}/guide/${slug}`);
+    }
+  });
+
+  it("matches installed-app metadata to the homepage and serves the organization logo", async () => {
+    const response = await mf.dispatchFetch(`${origin}/`);
+    const head = (await response.text()).split("</head>")[0] ?? "";
+    const manifestResponse = await mf.dispatchFetch(`${origin}/manifest.json`);
+    expect(manifestResponse.status).toBe(200);
+    const manifest = (await manifestResponse.json()) as {
+      description: string;
+      theme_color: string;
+      background_color: string;
+    };
+    expect(head).toContain(
+      `name="description" content="${manifest.description}"`,
+    );
+    expect(head).toContain(
+      `name="theme-color" content="${manifest.theme_color}"`,
+    );
+    expect(manifest.background_color).toBe(manifest.theme_color);
+    const logo = await mf.dispatchFetch(`${origin}/images/icons/caret-512.png`);
+    expect(logo.status).toBe(200);
+    expect(logo.headers.get("Content-Type")).toContain("image/png");
+    await logo.arrayBuffer();
   });
 
   it("keeps utility pages and missing documents out of search", async () => {
