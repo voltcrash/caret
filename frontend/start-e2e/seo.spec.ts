@@ -1,20 +1,31 @@
 import { expect, test } from "./fixtures";
 
-test("homepage links to the about page without showing the product overview", async ({
+test("homepage starts with typing and keeps explanatory content on the about page", async ({
   page,
 }) => {
   await page.goto("/");
   await expect(page.locator("#startupScreen")).toBeHidden();
   await expect(page.locator("#about-caret")).toHaveCount(0);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    "Caret typing test",
-  );
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Caret typing test",
+      includeHidden: true,
+    }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByText("Measure your typing speed and accuracy", { exact: false }),
+  ).toHaveCount(0);
   await expect(page.locator("#wordsInput")).toBeFocused();
   await page.screenshot({
     path: test.info().outputPath("typing-home.png"),
     fullPage: true,
   });
+  const firstWord = await page.locator("#words .word").first().textContent();
+  expect(firstWord).toBeTruthy();
+  await page.keyboard.type(firstWord ?? "");
+  await expect(page.locator("#words letter.correct")).toHaveCount(
+    firstWord?.length ?? 0,
+  );
   const about = page
     .getByRole("navigation", { name: "Main navigation" })
     .getByRole("link", { name: "About Caret", exact: true });
@@ -33,6 +44,12 @@ test("homepage links to the about page without showing the product overview", as
   });
   await page.getByRole("link", { name: "Start a free typing test" }).click();
   await expect(page.locator("#wordsInput")).toBeFocused();
+  await expect(
+    page.getByRole("heading", {
+      name: "Caret typing test",
+      includeHidden: true,
+    }),
+  ).toHaveCount(0);
   await page.locator("#wordsInput").evaluate((element) => element.blur());
   await page.keyboard.press("a");
   await expect(page.locator("#wordsInput")).toBeFocused();
@@ -175,9 +192,15 @@ test("typing guides and product content fit a narrow screen", async ({
   });
   await page.getByRole("link", { name: "Start a free typing test" }).click();
   await expect(page.locator("#about-caret")).toHaveCount(0);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    "Caret typing test",
-  );
+  await expect(
+    page.getByRole("heading", {
+      name: "Caret typing test",
+      includeHidden: true,
+    }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByText("Measure your typing speed and accuracy", { exact: false }),
+  ).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(
     390,
   );
