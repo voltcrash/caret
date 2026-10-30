@@ -50,3 +50,5 @@ Revision: `7699fef5239c2082baa1ef1b2be8014ff3d02714`. Exact cmap ranges, names, 
 | fa-regular-400.woff2 | 19512 | 170 | 362 | [] | 0 |
 | fa-solid-900.woff2 | 119488 | 1423 | 2009 | [] | 0 |
 | fa-v4compatibility.woff2 | 4168 | 39 | 38 | [] | 0 |
+
+Adwaita Mono and Iosevka also support `U+0030 U+FE00` variation sequences; these are recorded separately from ordinary cmap codepoints. Font Awesome v4compatibility is dependency-only and is not emitted by the production build.

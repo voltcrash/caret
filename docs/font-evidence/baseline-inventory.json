@@ -19,20 +19,11 @@
       "glyphs": 860,
       "cmapCount": 719,
       "unicodeRange": "U+D,U+20-7E,U+A0-A3,U+A5-AB,U+AE-B1,U+B4,U+B6-B8,U+BA-BB,U+BF-131,U+134-137,U+139-148,U+14A-17E,U+18F,U+1A0-1A1,U+1AF-1B0,U+1CD-1DC,U+1E6-1E7,U+1EA-1EB,U+1F0,U+1F8-1F9,U+218-21B,U+226-227,U+22E-22F,U+232-233,U+237,U+259,U+2B9-2BC,U+2BE-2BF,U+2C6-2C8,U+2CC-2CD,U+2D8-2DD,U+300-304,U+306-30C,U+312,U+31B,U+323-324,U+326-328,U+32D-32E,U+331,U+3BC,U+E3F,U+1E06-1E07,U+1E0C-1E0F,U+1E12-1E13,U+1E20-1E21,U+1E24-1E25,U+1E28-1E2B,U+1E32-1E4B,U+1E58-1E5F,U+1E62-1E63,U+1E6C-1E71,U+1E7E-1E85,U+1E8C-1E96,U+1E9E,U+1EA0-1EF9,U+2007-2008,U+200B,U+2013-2014,U+2018-201A,U+201C-201E,U+2020-2022,U+2025-2026,U+2039-203A,U+2060,U+20A6,U+20A9,U+20AB-20AC,U+20B1,U+20B9-20BA,U+20BD,U+2117,U+2120,U+2122,U+2212,U+2248,U+2260,U+2264-2265,U+2500-257F,U+A788,U+FEFF",
+      "variationSequences": {},
       "axes": [],
       "features": {
-        "GSUB": [
-          "aalt",
-          "calt",
-          "case",
-          "ccmp",
-          "locl",
-          "ordn"
-        ],
-        "GPOS": [
-          "mark",
-          "mkmk"
-        ]
+        "GSUB": ["aalt", "calt", "case", "ccmp", "locl", "ordn"],
+        "GPOS": ["mark", "mkmk"]
       },
       "hintTables": {
         "cvt ": 70,
@@ -62,30 +53,14 @@
         "prep"
       ],
       "names": {
-        "0": [
-          "0xType Project Authors (https://github.com/0xType)"
-        ],
-        "1": [
-          "0xProto"
-        ],
-        "11": [
-          "https://0xtype.dev/"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "2.500;0x;0xProto-Regular"
-        ],
-        "4": [
-          "0xProto Regular"
-        ],
-        "5": [
-          "Version 2.500; ttfautohint (v1.8.4.7-5d5b)"
-        ],
-        "6": [
-          "0xProto-Regular"
-        ]
+        "0": ["0xType Project Authors (https://github.com/0xType)"],
+        "1": ["0xProto"],
+        "11": ["https://0xtype.dev/"],
+        "2": ["Regular"],
+        "3": ["2.500;0x;0xProto-Regular"],
+        "4": ["0xProto Regular"],
+        "5": ["Version 2.500; ttfautohint (v1.8.4.7-5d5b)"],
+        "6": ["0xProto-Regular"]
       }
     },
     "frontend/static/webfonts/AdwaitaMono-Regular.woff2": {
@@ -94,6 +69,9 @@
       "glyphs": 8693,
       "cmapCount": 7498,
       "unicodeRange": "U+D,U+20-7E,U+A0-377,U+37A-37F,U+384-38A,U+38C,U+38E-3A1,U+3A3-3E1,U+3F0-487,U+48A-52F,U+531-556,U+559-58A,U+58D-58F,U+E3F,U+10FB,U+1AB0-1AB5,U+1ABB-1ABD,U+1ABF-1ACE,U+1C80-1C8A,U+1D00-1DBF,U+1DC3-1DC7,U+1DCA-1DCF,U+1DD3-1DD5,U+1DD7-1F15,U+1F18-1F1D,U+1F20-1F45,U+1F48-1F4D,U+1F50-1F57,U+1F59,U+1F5B,U+1F5D,U+1F5F-1F7D,U+1F80-1FB4,U+1FB6-1FC4,U+1FC6-1FD3,U+1FD6-1FDB,U+1FDD-1FEF,U+1FF2-1FF4,U+1FF6-1FFE,U+2000-200D,U+2010-2029,U+202F-2064,U+2070-2071,U+2074-208E,U+2090-209C,U+20A1,U+20A3-20AF,U+20B1-20B5,U+20B8-20BA,U+20BC-20C0,U+20D2-20D3,U+20D6-20D8,U+20DB-20DC,U+20E1,U+20E5-20E6,U+20E8-20E9,U+20EB,U+20EE-20F0,U+2100-2103,U+2105-2109,U+210C-210F,U+2111,U+2113,U+2115-211A,U+211C-211D,U+2120-2122,U+2124,U+2126-212B,U+212D-212E,U+2132,U+2135-2149,U+214B,U+214D-218B,U+2190-232B,U+232D-237B,U+237D-237F,U+2384-238B,U+238D,U+2394-2395,U+239B-23AE,U+23B0-23B3,U+23B8-23CC,U+23CE-23CF,U+23DA-23DB,U+23E2,U+23E4-23E5,U+23E8-2429,U+2440-2445,U+2460-2600,U+2605-2607,U+2610-2613,U+261C-261F,U+2626,U+2628,U+2630-2637,U+2639-263C,U+263F-2642,U+2660-2667,U+2669-266F,U+2680-2687,U+268A-2691,U+2699,U+269B,U+26A1,U+26AA-26AF,U+26B2,U+26CB,U+26DA,U+26DD-26DE,U+26ED-26EF,U+26F6,U+2713-2718,U+271A-271D,U+2720-2727,U+2731-2734,U+2736-274C,U+2756,U+2758-275A,U+2761,U+2764,U+276C-2771,U+2776-2794,U+279C-279E,U+27A1-27A7,U+27B0,U+27BF,U+27C2,U+27CA-27CB,U+27CD,U+27D2-27DC,U+27DF-27E1,U+27E6-27EB,U+27EE-27F4,U+2800-2926,U+2940-2941,U+2947-2948,U+294A-2965,U+296E-296F,U+2980-2984,U+2987-298A,U+2999-299A,U+29A2-29A3,U+29B0-29BF,U+29C4-29CB,U+29CD-29CE,U+29D1-29DB,U+29DF,U+29E2-29E9,U+29EB,U+29F4-29FB,U+2A00-2A02,U+2A05-2A06,U+2A09,U+2A11-2A16,U+2A1D-2A1F,U+2A22-2A26,U+2A2A-2A32,U+2A34-2A36,U+2A38,U+2A3C-2A43,U+2A4C-2A4F,U+2A53-2A54,U+2A57-2A58,U+2A5A-2A5B,U+2A5E-2A73,U+2A7D-2A80,U+2A85-2A8A,U+2A8D-2A8E,U+2A95-2A9A,U+2A9D-2A9E,U+2AAA-2ABA,U+2ABD-2ABE,U+2ACF-2AD2,U+2AD9-2AE0,U+2AE2-2AF6,U+2AFC-2AFD,U+2B00-2B32,U+2B34-2B3E,U+2B45-2B46,U+2B4D,U+2B50-2B55,U+2B58-2B59,U+2B60-2B73,U+2B7A-2B87,U+2B8C-2B95,U+2BA0-2BA7,U+2BB8-2BC8,U+2BCA-2BD0,U+2BD2,U+2BE8-2BEF,U+2BFA-2BFF,U+2C60-2C7F,U+2DE0-2DFF,U+2E0B-2E0D,U+2E12-2E13,U+2E18,U+2E1A-2E25,U+2E28-2E38,U+2E3D-2E3E,U+2E40-2E4B,U+2E52,U+2E59-2E5C,U+3251-325F,U+32B1-32BF,U+4DC0-4DFF,U+A640-A66F,U+A674-A67F,U+A682-A68D,U+A692-A695,U+A698-A69F,U+A700-A727,U+A730-A737,U+A73E-A745,U+A748-A74B,U+A74E-A751,U+A75A-A75B,U+A764-A767,U+A779-A795,U+A798-A7C1,U+A7C4-A7CD,U+A7DA-A7DC,U+A7F2-A7FF,U+A92E,U+AB30-AB33,U+AB35-AB42,U+AB45-AB46,U+AB4B-AB4F,U+AB52-AB53,U+AB5B-AB6B,U+E0A0-E0A3,U+E0AE-E0BF,U+EE00-EE0B,U+EF01-EF02,U+EF06-EF12,U+FB00-FB06,U+FB29,U+FEFF,U+FFFC-FFFD,U+10780-10785,U+10787-107B0,U+107B2-107BA,U+1CC00-1CC45,U+1CC56-1CC63,U+1CC65-1CC91,U+1CC97-1CC9D,U+1CCA6-1CCB9,U+1CCD2-1CCF9,U+1CD00-1CDE5,U+1CDF0-1CDF7,U+1CDFB-1CDFC,U+1CE00-1CEB1,U+1CEB3,U+1D110-1D111,U+1D12A-1D133,U+1D18C-1D191,U+1D300-1D356,U+1D360-1D371,U+1D377-1D378,U+1D400-1D454,U+1D456-1D49B,U+1D504-1D505,U+1D507-1D50A,U+1D50D-1D514,U+1D516-1D51C,U+1D51E-1D539,U+1D53B-1D53E,U+1D540-1D544,U+1D546,U+1D54A-1D550,U+1D552-1D6A5,U+1D6A8-1D7CB,U+1D7CE-1D7FF,U+1DF01-1DF10,U+1DF12-1DF1E,U+1E030-1E06D,U+1E08F,U+1F0A0-1F0AE,U+1F0B1-1F0BF,U+1F0C1-1F0CF,U+1F0D1-1F0F5,U+1F100-1F1AD,U+1F1E6-1F1FF,U+1F311-1F318,U+1F377,U+1F514,U+1F547-1F548,U+1F550-1F567,U+1F5A4,U+1F5C0,U+1F610,U+1F636,U+1F641-1F643,U+1F780-1F7BF,U+1F800-1F80B,U+1F810-1F847,U+1F850-1F859,U+1F860-1F887,U+1F8B0-1F8BB,U+1F8C0-1F8C1,U+1F907,U+1F90D,U+1FB00-1FB92,U+1FB94-1FBCA,U+1FBCC,U+1FBCE-1FBF9",
+      "variationSequences": {
+        "65024": [[48, "glyph05507"]]
+      },
       "axes": [],
       "features": {
         "GSUB": [
@@ -109,10 +87,7 @@
           "onum",
           "zero"
         ],
-        "GPOS": [
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["mark", "mkmk"]
       },
       "hintTables": {
         "cvt ": 240,
@@ -145,51 +120,25 @@
         "0": [
           "Copyright 2015-2025, Renzhi Li (aka. Belleve Invis, belleve@typeof.net)."
         ],
-        "1": [
-          "Adwaita Mono"
-        ],
+        "1": ["Adwaita Mono"],
         "10": [
           "Spatial efficient monospace font family for programming. Built from code. http://be5invis.github.io/Iosevka"
         ],
         "13": [
           "This font software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL. This font software is distributed on an 'AS IS' basis, without warranties or conditions of any kind, either express or implied. See the SIL Open Font license for the specific language, permissions and limitations governing your use of this font software."
         ],
-        "14": [
-          "https://openfontlicense.org/"
-        ],
-        "16": [
-          "Adwaita Mono"
-        ],
-        "17": [
-          "Regular"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "21": [
-          "Adwaita Mono"
-        ],
-        "22": [
-          "Regular"
-        ],
-        "3": [
-          "Adwaita Mono Regular 33.2.5"
-        ],
-        "4": [
-          "Adwaita Mono"
-        ],
-        "5": [
-          "Version 33.2.5; ttfautohint (v1.8.4)"
-        ],
-        "6": [
-          "Adwaita-Mono"
-        ],
-        "8": [
-          "Belleve Invis"
-        ],
-        "9": [
-          "Belleve Invis"
-        ]
+        "14": ["https://openfontlicense.org/"],
+        "16": ["Adwaita Mono"],
+        "17": ["Regular"],
+        "2": ["Regular"],
+        "21": ["Adwaita Mono"],
+        "22": ["Regular"],
+        "3": ["Adwaita Mono Regular 33.2.5"],
+        "4": ["Adwaita Mono"],
+        "5": ["Version 33.2.5; ttfautohint (v1.8.4)"],
+        "6": ["Adwaita-Mono"],
+        "8": ["Belleve Invis"],
+        "9": ["Belleve Invis"]
       }
     },
     "frontend/static/webfonts/AtkinsonHyperlegible-Regular.woff2": {
@@ -198,6 +147,7 @@
       "glyphs": 369,
       "cmapCount": 342,
       "unicodeRange": "U+D,U+20-7E,U+A0-107,U+10A-113,U+116-11B,U+11E-123,U+126-127,U+12A-12B,U+12E-12F,U+131,U+136-137,U+13B-13E,U+141-148,U+150-155,U+158-15B,U+15E-165,U+16A-16B,U+16E-173,U+178-17E,U+192,U+218-21B,U+2C6-2C7,U+2D8-2DD,U+300-304,U+306-308,U+30A-30C,U+326-328,U+394,U+3A9,U+3BC,U+3C0,U+2013-2014,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2039-203A,U+2044,U+2074,U+20AC,U+2113,U+2122,U+212E,U+2202,U+220F,U+2211-2212,U+2215,U+2219-221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+25CA",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -211,11 +161,7 @@
           "sups",
           "tnum"
         ],
-        "GPOS": [
-          "kern",
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["kern", "mark", "mkmk"]
       },
       "hintTables": {
         "cvt ": 108,
@@ -245,45 +191,21 @@
         "prep"
       ],
       "names": {
-        "0": [
-          "Copyright 2020 Braille Institute of America, Inc."
-        ],
-        "1": [
-          "Atkinson Hyperlegible"
-        ],
-        "11": [
-          "https://www.BrailleInstitute.org/"
-        ],
-        "12": [
-          "http://helloapplied.com"
-        ],
+        "0": ["Copyright 2020 Braille Institute of America, Inc."],
+        "1": ["Atkinson Hyperlegible"],
+        "11": ["https://www.BrailleInstitute.org/"],
+        "12": ["http://helloapplied.com"],
         "13": [
           "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL"
         ],
-        "14": [
-          "https://scripts.sil.org/OFL"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "1.006;NONE;AtkinsonHyperlegible-Regular"
-        ],
-        "4": [
-          "Atkinson Hyperlegible Regular"
-        ],
-        "5": [
-          "Version 1.006; ttfautohint (v1.8.3)"
-        ],
-        "6": [
-          "AtkinsonHyperlegible-Regular"
-        ],
-        "8": [
-          "Braille Institute"
-        ],
-        "9": [
-          "Elliott Scott, Megan Eiswerth, Linus Boman, Theodore Petrosky"
-        ]
+        "14": ["https://scripts.sil.org/OFL"],
+        "2": ["Regular"],
+        "3": ["1.006;NONE;AtkinsonHyperlegible-Regular"],
+        "4": ["Atkinson Hyperlegible Regular"],
+        "5": ["Version 1.006; ttfautohint (v1.8.3)"],
+        "6": ["AtkinsonHyperlegible-Regular"],
+        "8": ["Braille Institute"],
+        "9": ["Elliott Scott, Megan Eiswerth, Linus Boman, Theodore Petrosky"]
       }
     },
     "frontend/static/webfonts/Boon-Regular.woff2": {
@@ -292,6 +214,7 @@
       "glyphs": 877,
       "cmapCount": 833,
       "unicodeRange": "U+0,U+9,U+D,U+20-7E,U+A0-131,U+134-149,U+14C-165,U+168-17E,U+18F,U+192,U+1A0-1A1,U+1AF-1B0,U+1CD-1DC,U+1E6-1E7,U+1EA-1EB,U+218-21B,U+237,U+251,U+259,U+261,U+2BB-2BF,U+2C6-2CC,U+2D7-2DD,U+300-30F,U+311-315,U+31B,U+323-324,U+326-329,U+32E,U+331-332,U+34F,U+351,U+357-358,U+3C0,U+E01-E3A,U+E3F-E5B,U+E81-E82,U+E84,U+E87-E88,U+E8A,U+E8D,U+E94-E97,U+E99-E9F,U+EA1-EA3,U+EA5,U+EA7,U+EAA-EAB,U+EAD-EB9,U+EBB-EBD,U+EC0-EC4,U+EC6,U+EC8-ECD,U+ED0-ED9,U+EDC-EDF,U+1E0C-1E0F,U+1E20-1E21,U+1E24-1E25,U+1E2A-1E2B,U+1E36-1E3B,U+1E42-1E49,U+1E5A-1E63,U+1E6C-1E6F,U+1E80-1E85,U+1E8E-1E8F,U+1E92-1E93,U+1E97,U+1E9E,U+1EA0-1EF9,U+2007-2015,U+2018-2019,U+201C-2023,U+2026,U+202F-2030,U+2032-2033,U+2039-203A,U+2044,U+2060,U+2070,U+2074-2079,U+207D-2089,U+208D-208E,U+20A1,U+20A4,U+20A6-20A7,U+20AB-20AD,U+20B1-20B2,U+20B5,U+20B9-20BA,U+20BD,U+2113,U+2117,U+2120,U+2122,U+2126,U+212E,U+2153-2154,U+215B-215E,U+2190-2193,U+2202,U+2206,U+220F,U+2211,U+2215,U+2219-221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+25A0-25A1,U+25B2-25B3,U+25B6-25B7,U+25BC-25BD,U+25C0-25C1,U+25C6-25C7,U+25CA,U+25CC,U+F880-F882,U+F885-F888,U+F88B,U+F88E,U+F891,U+F894,U+F897,U+F89A,U+F89E,U+F8A0,U+F8A2,U+F8A6-F8A9,U+FB01-FB02,U+FEFF",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -315,11 +238,7 @@
           "sups",
           "tnum"
         ],
-        "GPOS": [
-          "kern",
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["kern", "mark", "mkmk"]
       },
       "hintTables": {},
       "glyphInstructionBytes": 0,
@@ -344,45 +263,19 @@
         "0": [
           "Copyright 2013-2017, Sungsit Sawaiwan (https://fontuni.com | uni@fontuni.com). This Font Software is licensed under the SIL Open Font License, Version 1.1 (http://scripts.sil.org/OFL)."
         ],
-        "1": [
-          "Boon"
-        ],
-        "11": [
-          "https://fontuni.com/"
-        ],
-        "12": [
-          "https://sungsit.com/"
-        ],
-        "14": [
-          "http://scripts.sil.org/OFL"
-        ],
-        "16": [
-          "Boon"
-        ],
-        "17": [
-          "Regular"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "FontUni : Boon Regular 3.0 : 2017-02-03 19:59:13"
-        ],
-        "4": [
-          "Boon Regular"
-        ],
-        "5": [
-          "Version 3.0 "
-        ],
-        "6": [
-          "Boon-400"
-        ],
-        "8": [
-          "FontUni"
-        ],
-        "9": [
-          "Sungsit Sawaiwan"
-        ]
+        "1": ["Boon"],
+        "11": ["https://fontuni.com/"],
+        "12": ["https://sungsit.com/"],
+        "14": ["http://scripts.sil.org/OFL"],
+        "16": ["Boon"],
+        "17": ["Regular"],
+        "2": ["Regular"],
+        "3": ["FontUni : Boon Regular 3.0 : 2017-02-03 19:59:13"],
+        "4": ["Boon Regular"],
+        "5": ["Version 3.0 "],
+        "6": ["Boon-400"],
+        "8": ["FontUni"],
+        "9": ["Sungsit Sawaiwan"]
       }
     },
     "frontend/static/webfonts/CascadiaMono-Regular.woff2": {
@@ -391,6 +284,7 @@
       "glyphs": 4319,
       "cmapCount": 2426,
       "unicodeRange": "U+D,U+20-7E,U+A0-17F,U+186,U+189,U+18E-192,U+194,U+196,U+19A-19B,U+19D,U+1A0-1A1,U+1A9,U+1AF-1B2,U+1B7,U+1CD-1CE,U+1DD,U+1E4-1E7,U+1EA-1EB,U+1F0,U+1FA-1FF,U+218-21B,U+21E-21F,U+232-233,U+237,U+23A-23B,U+23D-23E,U+245,U+251,U+254,U+256,U+259,U+25B,U+262-263,U+269-26C,U+272,U+283,U+28A-28C,U+292,U+294-295,U+29F,U+2A7,U+2B7-2B8,U+2BB-2BC,U+2C0,U+2C6-2C7,U+2C9,U+2D0,U+2D8-2DD,U+300-304,U+306-30C,U+312-313,U+315,U+31B,U+323,U+325-328,U+331-332,U+340-342,U+374-375,U+37E,U+384-38A,U+38C,U+38E-3A1,U+3A3-3CF,U+3D7,U+400-45F,U+490-493,U+496-497,U+49A-49B,U+4A2-4A3,U+4AE-4B3,U+4B6-4B7,U+4BA-4BB,U+4C0,U+4CF,U+4D8-4D9,U+4E2-4E3,U+4E8-4E9,U+4EE-4EF,U+5B7-5BA,U+5BC,U+5BE,U+5C0-5C2,U+5C7,U+5D0-5EA,U+5F3-5F4,U+600-609,U+60B-60F,U+61B,U+61E-656,U+658,U+65A-65B,U+65F-6D5,U+6DD-6DE,U+6E2,U+6E8,U+6EE-6FF,U+750-77F,U+8A0-8AC,U+8AE-8B4,U+8B6-8B8,U+8BA,U+8BC-8BD,U+E3F,U+1D00,U+1DBB,U+1DBF,U+1E24-1E25,U+1E30,U+1E32-1E37,U+1E3A-1E3B,U+1E48-1E49,U+1E50-1E53,U+1E5A-1E5B,U+1E62-1E63,U+1E6E,U+1E80-1E85,U+1E9E,U+1EA0-1EF9,U+2008,U+2010-2011,U+2013-2015,U+2017-201E,U+2020-2022,U+2024,U+2026,U+2028,U+2030,U+2032-2033,U+2039-203A,U+203C,U+203E,U+2044,U+2070,U+2074-2079,U+207F-2089,U+20A0-20A1,U+20A3-20A4,U+20A6-20AE,U+20B1-20B2,U+20B4-20B5,U+20B8-20BA,U+20BC-20BF,U+2105,U+2113,U+2116-2117,U+211E,U+2122,U+2126,U+212E,U+215B-215E,U+2190-2195,U+21A8,U+21B2,U+21E1,U+21E3,U+2202,U+2206,U+220F,U+2211-2212,U+2215,U+2219-221A,U+221E-221F,U+2229,U+222B,U+2236,U+2248,U+2260-2265,U+2302,U+2310,U+2320-2321,U+23AF,U+23CE,U+2400-2429,U+2500-25FF,U+2619,U+263A-263C,U+2640,U+2642,U+2660,U+2663,U+2665-2666,U+266A-266B,U+2713,U+2767,U+276C-2771,U+2800-28FF,U+2A2F,U+2B12-2B2F,U+2BC5-2BC8,U+2BCA-2BCB,U+2C62,U+2C6D,U+FB01-FB02,U+FB2A-FB36,U+FB38-FB3C,U+FB3E,U+FB40-FB41,U+FB43-FB44,U+FB46-FB4B,U+FBBC,U+FBC0,U+FC5B-FC5D,U+FC90,U+FCD9,U+FD3C-FD3F,U+FDF2,U+FFFD,U+1CC21-1CC2F,U+1CD00-1CDE5,U+1CE1A-1CEAF,U+1FB00-1FB80,U+1FB82-1FB8B,U+1FB95-1FB97,U+1FB9A-1FB9B,U+1FBCE-1FBCF,U+1FBE4-1FBF9",
+      "variationSequences": {},
       "axes": [
         {
           "tag": "wght",
@@ -424,10 +318,7 @@
           "sups",
           "zero"
         ],
-        "GPOS": [
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["mark", "mkmk"]
       },
       "hintTables": {
         "cvt ": 322,
@@ -463,78 +354,34 @@
         "prep"
       ],
       "names": {
-        "0": [
-          "\u00a9 2021 Microsoft Corporation. All Rights Reserved."
-        ],
-        "1": [
-          "Cascadia Mono"
-        ],
-        "11": [
-          "http://sajatypeworks.com"
-        ],
-        "12": [
-          "http://sajatypeworks.com"
-        ],
+        "0": ["\u00a9 2021 Microsoft Corporation. All Rights Reserved."],
+        "1": ["Cascadia Mono"],
+        "11": ["http://sajatypeworks.com"],
+        "12": ["http://sajatypeworks.com"],
         "13": [
           "Microsoft supplied font. You may use this font to create, display, and print content as permitted by the license terms or terms of use, of the Microsoft product, service, or content in which this font was included. You may only (i) embed this font in content as permitted by the embedding restrictions included in this font; and (ii) temporarily download this font to a printer or other output device to help print content. Any other use is prohibited.\n \nThe following license, based on the SIL Open Font license (https://scripts.sil.org/OFL), applies to this font. Additional license terms may be found on the GitHub repository for this font (https://github.com/microsoft/cascadia-code/blob/main/LICENSE).\n \nPermission is hereby granted, free of charge, to any person obtaining a copy of the Font Software, to use, study, copy, merge, embed, modify, redistribute, and sell modified and unmodified copies of the Font Software, subject to the following conditions:\n \n1) Neither the Font Software nor any of its individual components, in Original or Modified Versions, may be sold by itself.\n \n2) Original or Modified Versions of the Font Software may be bundled, redistributed and/or sold with any software, provided that each copy contains the above copyright notice and this license. These can be included either as stand-alone text files, human-readable headers or in the appropriate machine-readable metadata fields within text or binary files as long as those fields can be easily viewed by the user.\n \n3) No Modified Version of the Font Software may use the Reserved Font Name(s) unless explicit written permission is granted by the corresponding Copyright Holder. This restriction only applies to the primary font name as presented to the users.\n \n4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font Software shall not be used to promote, endorse or advertise any Modified Version, except to acknowledge the contribution(s) of the Copyright Holder(s) and the Author(s) or with their explicit written permission.\n \n5) The Font Software, modified or unmodified, in part or in whole, must be distributed entirely under this license, and must not be distributed under any other license. The requirement for fonts to remain under this license does not apply to any document created using the Font Software.\n \nTHE FONT SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS IN THE FONT SOFTWARE."
         ],
-        "14": [
-          "https://scripts.sil.org/OFL"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "25": [
-          "CascadiaMonoRoman"
-        ],
-        "256": [
-          "Weight"
-        ],
-        "257": [
-          "ExtraLight"
-        ],
-        "258": [
-          "Light"
-        ],
-        "259": [
-          "SemiLight"
-        ],
-        "260": [
-          "Regular"
-        ],
-        "261": [
-          "SemiBold"
-        ],
-        "262": [
-          "Bold"
-        ],
-        "263": [
-          "Italic"
-        ],
-        "264": [
-          "Roman"
-        ],
-        "3": [
-          "2404.023;SAJA;CascadiaMono-Regular"
-        ],
-        "4": [
-          "Cascadia Mono Regular"
-        ],
-        "5": [
-          "Version 2404.023"
-        ],
-        "6": [
-          "CascadiaMono-Regular"
-        ],
+        "14": ["https://scripts.sil.org/OFL"],
+        "2": ["Regular"],
+        "25": ["CascadiaMonoRoman"],
+        "256": ["Weight"],
+        "257": ["ExtraLight"],
+        "258": ["Light"],
+        "259": ["SemiLight"],
+        "260": ["Regular"],
+        "261": ["SemiBold"],
+        "262": ["Bold"],
+        "263": ["Italic"],
+        "264": ["Roman"],
+        "3": ["2404.023;SAJA;CascadiaMono-Regular"],
+        "4": ["Cascadia Mono Regular"],
+        "5": ["Version 2404.023"],
+        "6": ["CascadiaMono-Regular"],
         "7": [
           "Cascadia Code is a trademark of the Microsoft group of companies."
         ],
-        "8": [
-          "Saja Typeworks"
-        ],
-        "9": [
-          "Aaron Bell"
-        ]
+        "8": ["Saja Typeworks"],
+        "9": ["Aaron Bell"]
       }
     },
     "frontend/static/webfonts/Comfortaa-Regular.woff2": {
@@ -543,11 +390,10 @@
       "glyphs": 599,
       "cmapCount": 601,
       "unicodeRange": "U+20-7E,U+A0-17F,U+192,U+1FA-1FF,U+259,U+2C6-2C7,U+2C9,U+2D8-2DD,U+37E,U+384-38A,U+38C,U+38E-3A1,U+3A3-3CE,U+401-40C,U+40E-44F,U+451-45C,U+45E-45F,U+490-493,U+496-497,U+49A-49D,U+4A2-4A3,U+4AE-4B3,U+4B8-4BB,U+4D8-4D9,U+4E8-4E9,U+1E80-1E85,U+1EF2-1EF3,U+2013-2015,U+2017-201E,U+2020-2022,U+2026,U+2030,U+2032-2033,U+2039-203A,U+203C,U+203E,U+2044,U+207F,U+20A3-20A4,U+20A7,U+20AC,U+2105,U+2113,U+2116,U+2122,U+2126,U+212E,U+215B-215E,U+2190-2195,U+21A8,U+2202,U+2206,U+220F,U+2211-2212,U+2215,U+2219-221A,U+221E-221F,U+2229,U+222B,U+2248,U+2260-2261,U+2264-2265,U+F001-F002,U+FB01-FB02",
+      "variationSequences": {},
       "axes": [],
       "features": {
-        "GPOS": [
-          "kern"
-        ]
+        "GPOS": ["kern"]
       },
       "hintTables": {
         "cvt ": 146,
@@ -579,42 +425,20 @@
         "0": [
           "Copyright (c) 26.12.2011, Johan Aakerlund (aajohan@gmail.com), with Reserved Font Name \"Comfortaa\". This Font Software is licensed under the SIL Open Font License, Version 1.1. http://scripts.sil.org/OFL"
         ],
-        "1": [
-          "Comfortaa"
-        ],
+        "1": ["Comfortaa"],
         "13": [
           "This Font Software is licensed under the SIL Open Font License, Version 1.1."
         ],
-        "14": [
-          "http://scripts.sil.org/OFL"
-        ],
-        "18": [
-          "Comfortaa"
-        ],
-        "19": [
-          "Comfortaa"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "JohanAakerlund: Comfortaa Regular: 2011"
-        ],
-        "4": [
-          "Comfortaa"
-        ],
-        "5": [
-          "Version 2.004 2013; ttfautohint (v1.3)"
-        ],
-        "6": [
-          "Comfortaa"
-        ],
-        "8": [
-          "Johan Aakerlund"
-        ],
-        "9": [
-          "Johan Aakerlund - aajohan"
-        ]
+        "14": ["http://scripts.sil.org/OFL"],
+        "18": ["Comfortaa"],
+        "19": ["Comfortaa"],
+        "2": ["Regular"],
+        "3": ["JohanAakerlund: Comfortaa Regular: 2011"],
+        "4": ["Comfortaa"],
+        "5": ["Version 2.004 2013; ttfautohint (v1.3)"],
+        "6": ["Comfortaa"],
+        "8": ["Johan Aakerlund"],
+        "9": ["Johan Aakerlund - aajohan"]
       }
     },
     "frontend/static/webfonts/ComingSoon-Regular.woff2": {
@@ -623,11 +447,10 @@
       "glyphs": 215,
       "cmapCount": 212,
       "unicodeRange": "U+20-7E,U+A0-FF,U+131,U+152-153,U+2C6,U+2DA,U+2DC,U+2013-2014,U+2018-201A,U+201C-201E,U+2022,U+2026,U+2039-203A,U+2044,U+20AC,U+2212",
+      "variationSequences": {},
       "axes": [],
       "features": {
-        "GPOS": [
-          "kern"
-        ]
+        "GPOS": ["kern"]
       },
       "hintTables": {
         "cvt ": 2,
@@ -655,30 +478,14 @@
         "prep"
       ],
       "names": {
-        "0": [
-          "Copyright (c) 2010 by Open Window. All rights reserved."
-        ],
-        "1": [
-          "Coming Soon"
-        ],
-        "14": [
-          "http://www.apache.org/licenses/LICENSE-2.0"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "1.002;BROS;ComingSoon-Regular"
-        ],
-        "4": [
-          "Coming Soon Regular"
-        ],
-        "5": [
-          "Version 1.002"
-        ],
-        "6": [
-          "ComingSoon-Regular"
-        ]
+        "0": ["Copyright (c) 2010 by Open Window. All rights reserved."],
+        "1": ["Coming Soon"],
+        "14": ["http://www.apache.org/licenses/LICENSE-2.0"],
+        "2": ["Regular"],
+        "3": ["1.002;BROS;ComingSoon-Regular"],
+        "4": ["Coming Soon Regular"],
+        "5": ["Version 1.002"],
+        "6": ["ComingSoon-Regular"]
       }
     },
     "frontend/static/webfonts/CommitMono-Regular.woff2": {
@@ -687,6 +494,7 @@
       "glyphs": 1926,
       "cmapCount": 1175,
       "unicodeRange": "U+0,U+9,U+D,U+20-7E,U+A0-17F,U+192,U+1FA-1FF,U+218-21B,U+237,U+2C6-2C7,U+2C9,U+2D8-2DD,U+300-301,U+308,U+30A,U+326,U+384-386,U+388-38A,U+38C,U+38E-3A1,U+3A3-3CE,U+3D5,U+1E80-1E85,U+1EF2-1EF3,U+2010-201E,U+2020-2022,U+2026,U+2030,U+2032-2033,U+2039-203A,U+203C,U+203E,U+2044,U+204A,U+2070,U+2074-208E,U+20A3-20A4,U+20A7,U+20AC,U+2105,U+2113,U+2116-2117,U+2122,U+2126,U+212E,U+2153-215F,U+218A-218B,U+2190-2195,U+21A8,U+21B9,U+21D2,U+21DE-21DF,U+21E4-21E5,U+21E7-21E8,U+21EA,U+2200,U+2202-220F,U+2211-2212,U+2215,U+2217,U+2219-221A,U+221E-221F,U+2227-222B,U+2234-2237,U+2241-224B,U+2260-2262,U+2264-2265,U+2282-228B,U+22B8,U+22C5,U+22EE-22EF,U+22F1,U+2302,U+2318,U+2320-2321,U+2324-2326,U+2328,U+232B,U+2387,U+238B,U+239B-23AD,U+23CE,U+23FB-23FE,U+2400-2426,U+2500-252C,U+252E-25AF,U+25B2,U+25B6,U+25BC,U+25C0,U+25C4,U+25C6-25C7,U+25C9-25CB,U+25CE-25D3,U+25D5-25D7,U+25D9-25E5,U+25E7-25EB,U+25EF-25F7,U+2605,U+2713-2715,U+2717,U+279C,U+27E6-27E7,U+2800-28FF,U+2919-291C,U+2987-2988,U+2B58,U+E0A0-E0A2,U+E0B0-E0B3,U+EE00-EE09,U+F8FF,U+FEFF,U+FFFD",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -735,45 +543,23 @@
         "0": [
           "Copyright 2023 Commit Mono authors (https://github.com/eigilnikolajsen/commit-mono)"
         ],
-        "1": [
-          "CommitMono"
-        ],
+        "1": ["CommitMono"],
         "10": [
           "Commit Mono is an anonymous and neutral programming typeface focused on creating a better reading experience."
         ],
-        "11": [
-          "https://commitmono.com"
-        ],
-        "12": [
-          "https://eigilnikolajsen.dk"
-        ],
+        "11": ["https://commitmono.com"],
+        "12": ["https://eigilnikolajsen.dk"],
         "13": [
           "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL"
         ],
-        "14": [
-          "https://scripts.sil.org/OFL"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "Version 1.142;;CommitMono-Regular;2023;FL820"
-        ],
-        "4": [
-          "CommitMono Regular"
-        ],
-        "5": [
-          "Version 1.142"
-        ],
-        "6": [
-          "CommitMono-Regular"
-        ],
-        "8": [
-          "Eigil Nikolajsen"
-        ],
-        "9": [
-          "Eigil Nikolajsen"
-        ]
+        "14": ["https://scripts.sil.org/OFL"],
+        "2": ["Regular"],
+        "3": ["Version 1.142;;CommitMono-Regular;2023;FL820"],
+        "4": ["CommitMono Regular"],
+        "5": ["Version 1.142"],
+        "6": ["CommitMono-Regular"],
+        "8": ["Eigil Nikolajsen"],
+        "9": ["Eigil Nikolajsen"]
       }
     },
     "frontend/static/webfonts/FiraCode-Regular.woff2": {
@@ -782,6 +568,7 @@
       "glyphs": 2030,
       "cmapCount": 1586,
       "unicodeRange": "U+D,U+20-7E,U+A0-17E,U+192,U+1FC-1FF,U+218-21B,U+237,U+2B9-2BA,U+2BC,U+2C6-2C7,U+2C9,U+2D8-2DD,U+300-308,U+30A-30C,U+30F,U+313-314,U+326-327,U+335-336,U+342,U+345,U+370-377,U+37A-37F,U+384-38A,U+38C,U+38E-3A1,U+3A3-3E1,U+3F0-479,U+48A-52F,U+1405,U+140A,U+1E80-1E85,U+1E9E,U+1EF2-1EF3,U+1F00-1F15,U+1F18-1F1D,U+1F20-1F45,U+1F48-1F4D,U+1F50-1F57,U+1F59,U+1F5B,U+1F5D,U+1F5F-1F7D,U+1F80-1FB4,U+1FB6-1FC4,U+1FC6-1FD3,U+1FD6-1FDB,U+1FDD-1FEF,U+1FF2-1FF4,U+1FF6-1FFE,U+2007-2008,U+200B,U+2012-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2039-203A,U+2044,U+204A,U+2070,U+2074-208E,U+20AC,U+20AF,U+20B9-20BA,U+20BD,U+2102,U+210D,U+2113,U+2115-2116,U+2119-211A,U+211D,U+2122,U+2124,U+212E,U+2153-215F,U+218A-218B,U+2190-2199,U+21A9-21AA,U+21B0-21B3,U+21DE-21DF,U+21E4-21EA,U+2200,U+2202-220F,U+2211-2212,U+2215,U+2217,U+2219-221A,U+221E,U+2227-222B,U+2234-2237,U+2241-224B,U+2260-2262,U+2264-2265,U+2282-228B,U+229C,U+22A2-22AF,U+2300,U+2302-2306,U+2310,U+2318,U+2320-2321,U+2324-2328,U+232B,U+2387-2388,U+238B,U+239B-23AD,U+23CE-23CF,U+2400-2426,U+2500-25AF,U+25B2,U+25B6,U+25BA,U+25BC,U+25C0,U+25C4,U+25C6-25C7,U+25C9-25CB,U+25CE-25D3,U+25D5-25D7,U+25D9-25E5,U+25E7-25EB,U+25EF-25F7,U+2610-2612,U+2620,U+2630-2637,U+2639-263C,U+2640,U+2642,U+2660,U+2663,U+2665-2666,U+266A-266B,U+2713,U+2770-2771,U+27A1,U+27E8-27E9,U+27F0-27FF,U+2B05-2B07,U+2E3A-2E3B,U+300C-300D,U+E000-E003,U+E0A0-E0A2,U+E0B0-E0B3,U+EE00-EE0B,U+FEFF,U+FF62-FF63,U+FFFD,U+1D539,U+1F10D-1F10F,U+1F16D-1F16F,U+1F1AD,U+1F310",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -845,10 +632,7 @@
           "tnum",
           "zero"
         ],
-        "GPOS": [
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["mark", "mkmk"]
       },
       "hintTables": {
         "cvt ": 168,
@@ -881,45 +665,21 @@
         "0": [
           "Copyright 2014-2021 The Fira Code Project Authors (https://github.com/tonsky/FiraCode)"
         ],
-        "1": [
-          "Fira Code"
-        ],
-        "11": [
-          "https://tonsky.me"
-        ],
-        "12": [
-          "https://tonsky.me"
-        ],
+        "1": ["Fira Code"],
+        "11": ["https://tonsky.me"],
+        "12": ["https://tonsky.me"],
         "13": [
           "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL"
         ],
-        "14": [
-          "http://scripts.sil.org/OFL"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "6.002;CTDB;FiraCode-Regular"
-        ],
-        "4": [
-          "Fira Code Regular"
-        ],
-        "5": [
-          "Version 6.002"
-        ],
-        "6": [
-          "FiraCode-Regular"
-        ],
-        "7": [
-          "Fira Mono is a trademark of The Mozilla Corporation."
-        ],
-        "8": [
-          "Carrois Corporate, Edenspiekermann AG, Nikita Prokopov"
-        ],
-        "9": [
-          "Carrois Corporate, Edenspiekermann AG, Nikita Prokopov"
-        ]
+        "14": ["http://scripts.sil.org/OFL"],
+        "2": ["Regular"],
+        "3": ["6.002;CTDB;FiraCode-Regular"],
+        "4": ["Fira Code Regular"],
+        "5": ["Version 6.002"],
+        "6": ["FiraCode-Regular"],
+        "7": ["Fira Mono is a trademark of The Mozilla Corporation."],
+        "8": ["Carrois Corporate, Edenspiekermann AG, Nikita Prokopov"],
+        "9": ["Carrois Corporate, Edenspiekermann AG, Nikita Prokopov"]
       }
     },
     "frontend/static/webfonts/GallaudetRegular.woff2": {
@@ -928,6 +688,7 @@
       "glyphs": 84,
       "cmapCount": 82,
       "unicodeRange": "U+20,U+2D,U+30-39,U+41-5A,U+61-7A,U+A0,U+B1,U+B5,U+F7,U+3A3,U+3A9,U+3C0,U+2202,U+2206,U+220F,U+221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+25CA",
+      "variationSequences": {},
       "axes": [],
       "features": {},
       "hintTables": {
@@ -959,24 +720,12 @@
           "Gallaudet font \u00a9 1991 by D. Rakowski. All Rights Reserved.",
           "Gallaudet font \uffff 1991 by D. Rakowski. All Rights Reserved."
         ],
-        "1": [
-          "Gallaudet"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "Altsys Metamorphosis:Gallaudet Regular"
-        ],
-        "4": [
-          "Gallaudet Regular"
-        ],
-        "5": [
-          "Altsys Metamorphosis:3/6/92"
-        ],
-        "6": [
-          "Gallaudet Regular"
-        ]
+        "1": ["Gallaudet"],
+        "2": ["Regular"],
+        "3": ["Altsys Metamorphosis:Gallaudet Regular"],
+        "4": ["Gallaudet Regular"],
+        "5": ["Altsys Metamorphosis:3/6/92"],
+        "6": ["Gallaudet Regular"]
       }
     },
     "frontend/static/webfonts/Geist-Medium.woff2": {
@@ -985,6 +734,7 @@
       "glyphs": 825,
       "cmapCount": 649,
       "unicodeRange": "U+20-7E,U+A0-AC,U+AE-113,U+116-12B,U+12E-137,U+139-13E,U+141-148,U+14A-14D,U+150-17E,U+18F,U+192,U+1CD-1CE,U+1E4-1E9,U+218-21B,U+237,U+259,U+2B9,U+2BC,U+2C6-2C8,U+2D8-2DD,U+300-304,U+306-308,U+30A-30C,U+312,U+326-328,U+335-338,U+39B,U+3A9,U+3BB,U+3C0,U+400-45F,U+462-463,U+46A-46B,U+472-475,U+490-493,U+496-497,U+49A-49B,U+4A2-4A3,U+4AE-4B3,U+4B6-4B7,U+4BA-4BB,U+4C0,U+4CF,U+4D8-4D9,U+4E2-4E3,U+4E8-4E9,U+4EE-4EF,U+E3F,U+1E20-1E21,U+1E80-1E85,U+1E9E,U+1EBC-1EBD,U+1EF2-1EF3,U+1EF8-1EF9,U+2013-2014,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2032-2033,U+2039-203A,U+2044,U+2070,U+2074-2079,U+2080-2089,U+20AA,U+20AC,U+20B4,U+20B9,U+20BD,U+2107,U+2116-2117,U+2122,U+2153-2155,U+215B-215E,U+2190-2199,U+219D,U+21A9-21AA,U+21B0-21B1,U+21B3-21B5,U+21E4-21E5,U+21E7,U+2202,U+2206,U+220F,U+2211-2212,U+221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+23CE,U+240B-240C,U+2460-2468,U+24EA,U+24FF,U+25B2-25B3,U+25B6-25B7,U+25BC-25BD,U+25C0-25C1,U+25CA-25CC,U+25CF,U+2639-263A,U+2776-277E,U+3003,U+3008-3011,U+3014-3017,U+301C,U+A78B-A78C,U+F8FF,U+FB01-FB02",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -1013,11 +763,7 @@
           "sups",
           "tnum"
         ],
-        "GPOS": [
-          "kern",
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["kern", "mark", "mkmk"]
       },
       "hintTables": {
         "cvt ": 160,
@@ -1051,75 +797,33 @@
         "0": [
           "Copyright 2024 The Geist Project Authors (https://github.com/vercel/geist-font.git)"
         ],
-        "1": [
-          "Geist Medium"
-        ],
-        "11": [
-          "https://basement.studio/"
-        ],
-        "12": [
-          "https://basement.studio/"
-        ],
+        "1": ["Geist Medium"],
+        "11": ["https://basement.studio/"],
+        "12": ["https://basement.studio/"],
         "13": [
           "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://openfontlicense.org"
         ],
-        "14": [
-          "https://openfontlicense.org"
-        ],
-        "16": [
-          "Geist"
-        ],
-        "17": [
-          "Medium"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "256": [
-          "No tail a"
-        ],
-        "257": [
-          "Alt a"
-        ],
-        "258": [
-          "Alt l"
-        ],
-        "259": [
-          "Alt R"
-        ],
-        "260": [
-          "Alt I"
-        ],
-        "261": [
-          "Alt G"
-        ],
-        "262": [
-          "Alt arrows"
-        ],
-        "263": [
-          "Rounded dot"
-        ],
-        "264": [
-          "Alt numbers"
-        ],
-        "3": [
-          "1.401;VRCL;Geist-Medium"
-        ],
-        "4": [
-          "Geist Medium"
-        ],
-        "5": [
-          "Version 1.401; ttfautohint (v1.8.4.7-5d5b)"
-        ],
-        "6": [
-          "Geist-Medium"
-        ],
+        "14": ["https://openfontlicense.org"],
+        "16": ["Geist"],
+        "17": ["Medium"],
+        "2": ["Regular"],
+        "256": ["No tail a"],
+        "257": ["Alt a"],
+        "258": ["Alt l"],
+        "259": ["Alt R"],
+        "260": ["Alt I"],
+        "261": ["Alt G"],
+        "262": ["Alt arrows"],
+        "263": ["Rounded dot"],
+        "264": ["Alt numbers"],
+        "3": ["1.401;VRCL;Geist-Medium"],
+        "4": ["Geist Medium"],
+        "5": ["Version 1.401; ttfautohint (v1.8.4.7-5d5b)"],
+        "6": ["Geist-Medium"],
         "8": [
           "Basement.studio, Vercel, Andr\u00e9s Briganti, Guido Ferreyra, Mateo Zaragoza"
         ],
-        "9": [
-          "Basement.studio, Andr\u00e9s Briganti, Mateo Zaragoza"
-        ]
+        "9": ["Basement.studio, Andr\u00e9s Briganti, Mateo Zaragoza"]
       }
     },
     "frontend/static/webfonts/GeistMono-Medium.woff2": {
@@ -1128,6 +832,7 @@
       "glyphs": 849,
       "cmapCount": 652,
       "unicodeRange": "U+20-7E,U+A0-AC,U+AE-113,U+116-12B,U+12E-131,U+134-137,U+139-13E,U+141-148,U+14A-14D,U+150-17E,U+18F,U+192,U+1CD-1CE,U+1E4-1E9,U+218-21B,U+237,U+259,U+2B9,U+2BC,U+2C6-2C8,U+2D8-2DD,U+300-304,U+306-308,U+30A-30C,U+312,U+326-328,U+335-338,U+39B,U+3A9,U+3BB,U+3C0,U+400-45F,U+462-463,U+46A-46B,U+472-475,U+490-493,U+496-497,U+49A-49B,U+4A2-4A3,U+4AE-4B3,U+4B6-4B7,U+4BA-4BB,U+4C0,U+4CF,U+4D8-4D9,U+4E2-4E3,U+4E8-4E9,U+4EE-4EF,U+E3F,U+1E20-1E21,U+1E80-1E85,U+1E9E,U+1EBC-1EBD,U+1EF2-1EF3,U+1EF8-1EF9,U+2013-2014,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2032-2033,U+2039-203A,U+2044,U+2070,U+2074-2079,U+2080-2089,U+20AA,U+20AC,U+20B4,U+20B9,U+20BD,U+2107,U+2116-2117,U+2122,U+2153-2155,U+215B-215E,U+2190-2199,U+219D,U+21A9-21AA,U+21B0-21B1,U+21B3-21B5,U+21E4-21E5,U+21E7,U+2202,U+2206,U+220F,U+2211-2212,U+221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+2326-2327,U+232B,U+23CE,U+240B-240C,U+2423,U+2460-2468,U+24EA,U+24FF-2500,U+2502,U+250C,U+2514,U+251C,U+25B2-25B3,U+25B6-25B7,U+25BC-25BD,U+25C0-25C1,U+25CA-25CC,U+25CF,U+2776-277E,U+3003,U+3008-3011,U+3014-3017,U+301C,U+A78B-A78C,U+F8FF",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -1152,10 +857,7 @@
           "subs",
           "sups"
         ],
-        "GPOS": [
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["mark", "mkmk"]
       },
       "hintTables": {
         "cvt ": 160,
@@ -1189,72 +891,32 @@
         "0": [
           "Copyright 2024 The Geist Project Authors (https://github.com/vercel/geist-font.git)"
         ],
-        "1": [
-          "Geist Mono Medium"
-        ],
-        "11": [
-          "https://basement.studio/"
-        ],
-        "12": [
-          "https://basement.studio/"
-        ],
+        "1": ["Geist Mono Medium"],
+        "11": ["https://basement.studio/"],
+        "12": ["https://basement.studio/"],
         "13": [
           "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://openfontlicense.org"
         ],
-        "14": [
-          "https://openfontlicense.org"
-        ],
-        "16": [
-          "Geist Mono"
-        ],
-        "17": [
-          "Medium"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "256": [
-          "No tail a"
-        ],
-        "257": [
-          "Alt a"
-        ],
-        "258": [
-          "Alt l"
-        ],
-        "259": [
-          "Alt R"
-        ],
-        "260": [
-          "Alt G"
-        ],
-        "261": [
-          "Alt arrows"
-        ],
-        "262": [
-          "Rounded dot"
-        ],
-        "263": [
-          "Slashed zero"
-        ],
-        "3": [
-          "1.401;VRCL;GeistMono-Medium"
-        ],
-        "4": [
-          "Geist Mono Medium"
-        ],
-        "5": [
-          "Version 1.401; ttfautohint (v1.8.4.7-5d5b)"
-        ],
-        "6": [
-          "GeistMono-Medium"
-        ],
+        "14": ["https://openfontlicense.org"],
+        "16": ["Geist Mono"],
+        "17": ["Medium"],
+        "2": ["Regular"],
+        "256": ["No tail a"],
+        "257": ["Alt a"],
+        "258": ["Alt l"],
+        "259": ["Alt R"],
+        "260": ["Alt G"],
+        "261": ["Alt arrows"],
+        "262": ["Rounded dot"],
+        "263": ["Slashed zero"],
+        "3": ["1.401;VRCL;GeistMono-Medium"],
+        "4": ["Geist Mono Medium"],
+        "5": ["Version 1.401; ttfautohint (v1.8.4.7-5d5b)"],
+        "6": ["GeistMono-Medium"],
         "8": [
           "Basement.studio, Vercel, Andr\u00e9s Briganti, Guido Ferreyra, Mateo Zaragoza"
         ],
-        "9": [
-          "Basement.studio, Andr\u00e9s Briganti, Mateo Zaragoza"
-        ]
+        "9": ["Basement.studio, Andr\u00e9s Briganti, Mateo Zaragoza"]
       }
     },
     "frontend/static/webfonts/Hack-Regular.woff2": {
@@ -1263,17 +925,10 @@
       "glyphs": 1573,
       "cmapCount": 1548,
       "unicodeRange": "U+0,U+D,U+20-7E,U+A0-17F,U+192,U+1A0-1A1,U+1A4,U+1AF-1B0,U+1E6-1E7,U+1FE-1FF,U+218-21B,U+2C6-2C7,U+2D8-2DD,U+300-301,U+303,U+309,U+323,U+384-386,U+388-38A,U+38C,U+38E-3A1,U+3A3-3CE,U+3F4,U+3F6,U+400-45F,U+462-463,U+472-473,U+490-49B,U+4A2-4A5,U+4AA-4B3,U+4BA-4BB,U+4C0-4C4,U+4C7-4C8,U+4CB-4CC,U+4CF-4F9,U+510-511,U+51A-51D,U+531-556,U+559-55F,U+561-587,U+589-58A,U+E3F,U+10D0-10FC,U+1E80-1E85,U+1EBC-1EBD,U+1EF2-1EF3,U+1EF8-1EF9,U+2000-200A,U+2010-2027,U+202F-2037,U+2039-203A,U+203C-203F,U+2044-2049,U+204B,U+205F,U+2070,U+2074-207E,U+208A-208E,U+20A0-20B5,U+20B7-20B9,U+2116,U+2122,U+2126,U+2150-2151,U+2153-215F,U+2190-21DD,U+21E0-21E9,U+21EB-2213,U+2215,U+2217-2220,U+2223,U+2227-222D,U+2234-223D,U+2241-2269,U+226D-228B,U+228D-22A4,U+22B2-22B5,U+22B8,U+22C2-22C6,U+22CD-22D1,U+22DA-22E9,U+22EF,U+2304,U+2308-230B,U+2310,U+2320-2321,U+239B-23AE,U+2500-25FF,U+266A,U+2756,U+2768-2775,U+2794,U+2798-27AF,U+27B1-27BE,U+27C2,U+27C5-27C6,U+27DC,U+27E0,U+27E6-27EB,U+27F5-27F7,U+2987-2988,U+2997-2998,U+29EB,U+29FA-29FB,U+2A00,U+2A2F,U+2A6A-2A6B,U+2B05-2B0D,U+2B16-2B1A,U+2E18,U+2E1F,U+2E22-2E25,U+2E2E,U+E0A0-E0A2,U+E0B0-E0B3,U+FEFF",
+      "variationSequences": {},
       "axes": [],
       "features": {
-        "GSUB": [
-          "aalt",
-          "frac",
-          "locl",
-          "ordn",
-          "sinf",
-          "subs",
-          "sups"
-        ]
+        "GSUB": ["aalt", "frac", "locl", "ordn", "sinf", "subs", "sups"]
       },
       "hintTables": {
         "cvt ": 268,
@@ -1305,42 +960,22 @@
         "0": [
           "Copyright (c) 2018 Source Foundry Authors / Copyright (c) 2003 by Bitstream, Inc. All Rights Reserved."
         ],
-        "1": [
-          "Hack"
-        ],
-        "11": [
-          "https://github.com/source-foundry"
-        ],
-        "12": [
-          "https://github.com/source-foundry/Hack"
-        ],
+        "1": ["Hack"],
+        "11": ["https://github.com/source-foundry"],
+        "12": ["https://github.com/source-foundry/Hack"],
         "13": [
           "The work in the Hack project is Copyright 2018 Source Foundry Authors and licensed under the MIT License\n\nThe work in the DejaVu project was committed to the public domain.\n\nBitstream Vera Sans Mono Copyright 2003 Bitstream Inc. and licensed under the Bitstream Vera License with Reserved Font Names \"Bitstream\" and \"Vera\"\n\nMIT License\n\nCopyright (c) 2018 Source Foundry Authors\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n\nBITSTREAM VERA LICENSE\n\nCopyright (c) 2003 by Bitstream, Inc. All Rights Reserved. Bitstream Vera is a trademark of Bitstream, Inc.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of the fonts accompanying this license (\"Fonts\") and associated documentation files (the \"Font Software\"), to reproduce and distribute the Font Software, including without limitation the rights to use, copy, merge, publish, distribute, and/or sell copies of the Font Software, and to permit persons to whom the Font Software is furnished to do so, subject to the following conditions:\n\nThe above copyright and trademark notices and this permission notice shall be included in all copies of one or more of the Font Software typefaces.\n\nThe Font Software may be modified, altered, or added to, and in particular the designs of glyphs or characters in the Fonts may be modified and additional glyphs or characters may be added to the Fonts, only if the fonts are renamed to names not containing either the words \"Bitstream\" or the word \"Vera\".\n\nThis License becomes null and void to the extent applicable to Fonts or Font Software that has been modified and is distributed under the \"Bitstream Vera\" names.\n\nThe Font Software may be sold as part of a larger software package but no copy of one or more of the Font Software typefaces may be sold by itself.\n\nTHE FONT SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL BITSTREAM OR THE GNOME FOUNDATION BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS IN THE FONT SOFTWARE.\n\nExcept as contained in this notice, the names of Gnome, the Gnome Foundation, and Bitstream Inc., shall not be used in advertising or otherwise to promote the sale, use or other dealings in this Font Software without prior written authorization from the Gnome Foundation or Bitstream Inc., respectively. For further information, contact: fonts at gnome dot org."
         ],
-        "14": [
-          "https://github.com/source-foundry/Hack/blob/master/LICENSE.md"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "SourceFoundry: Hack: 2018"
-        ],
-        "4": [
-          "Hack Regular"
-        ],
+        "14": ["https://github.com/source-foundry/Hack/blob/master/LICENSE.md"],
+        "2": ["Regular"],
+        "3": ["SourceFoundry: Hack: 2018"],
+        "4": ["Hack Regular"],
         "5": [
           "Version 3.003; ttfautohint (v1.7) -l 6 -r 50 -G 200 -x 10 -H 181 -D latn -f latn -m \"Hack-Regular-TA.txt\" -w G -W -t -X \"\""
         ],
-        "6": [
-          "Hack-Regular"
-        ],
-        "8": [
-          "Source Foundry"
-        ],
-        "9": [
-          "Source Foundry Authors"
-        ]
+        "6": ["Hack-Regular"],
+        "8": ["Source Foundry"],
+        "9": ["Source Foundry Authors"]
       }
     },
     "frontend/static/webfonts/IBMPlexMono-Regular.woff2": {
@@ -1349,6 +984,7 @@
       "glyphs": 1125,
       "cmapCount": 983,
       "unicodeRange": "U+0,U+D,U+20-7E,U+A0-17F,U+18F,U+192,U+1A0-1A1,U+1AF-1B0,U+1CD-1DC,U+1FA-1FF,U+218-21B,U+237,U+259,U+2BB-2BC,U+2C6-2C7,U+2D8-2DD,U+300-304,U+306-30C,U+312,U+315,U+31B,U+323,U+326-328,U+3C0,U+400-45F,U+462-463,U+46A-46B,U+472-475,U+490-4C2,U+4CF-4D9,U+4DC-4E9,U+4EE-4F9,U+524-525,U+E3F,U+1E80-1E85,U+1E9E,U+1EA0-1EF9,U+2000-200D,U+2010-2015,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2028-2029,U+202F-2030,U+2032-2033,U+2039-203A,U+2044,U+205F,U+2070,U+2074-2079,U+2080-2089,U+20A1,U+20A4,U+20A6,U+20A8-20AE,U+20B1-20B2,U+20B4-20B5,U+20B8-20BA,U+20BD,U+20BF,U+2113,U+2116,U+2122,U+2126,U+212E,U+2150-2151,U+2153-215E,U+2190-2199,U+21A9-21AA,U+21B0-21B3,U+21B6-21B7,U+21BA-21BB,U+21C4,U+21C6,U+2202,U+2206,U+220F,U+2211-2212,U+2215,U+2219-221A,U+221E,U+222B,U+2236,U+2248,U+2260,U+2264-2265,U+2500-259F,U+25CA,U+2713,U+274C,U+2B0E-2B11,U+3000,U+F6D7-F6D8,U+FB01-FB02,U+FEFF,U+FFFD",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -1374,9 +1010,7 @@
           "sups",
           "zero"
         ],
-        "GPOS": [
-          "mark"
-        ]
+        "GPOS": ["mark"]
       },
       "hintTables": {
         "cvt ": 70,
@@ -1406,72 +1040,32 @@
         "prep"
       ],
       "names": {
-        "0": [
-          "Copyright 2017 IBM Corp. All rights reserved."
-        ],
-        "1": [
-          "IBM Plex Mono"
-        ],
-        "11": [
-          "http://www.boldmonday.com"
-        ],
-        "12": [
-          "http://www.ibm.com"
-        ],
+        "0": ["Copyright 2017 IBM Corp. All rights reserved."],
+        "1": ["IBM Plex Mono"],
+        "11": ["http://www.boldmonday.com"],
+        "12": ["http://www.ibm.com"],
         "13": [
           "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL"
         ],
-        "14": [
-          "http://scripts.sil.org/OFL"
-        ],
-        "19": [
-          "How razorback-jumping frogs can level six piqued gymnasts!"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "256": [
-          "simple lowercase a"
-        ],
-        "257": [
-          "simple lowercase g"
-        ],
-        "258": [
-          "slashed number zero"
-        ],
-        "259": [
-          "plain number zero"
-        ],
-        "260": [
-          "alternate lowercase eszett"
-        ],
-        "261": [
-          "alternate number sign"
-        ],
-        "262": [
-          "Bulgarian Cyrillic forms"
-        ],
-        "3": [
-          "2.004;IBM ;IBMPlexMono-Regular"
-        ],
-        "4": [
-          "IBM Plex Mono"
-        ],
-        "5": [
-          "Version 2.004"
-        ],
-        "6": [
-          "IBMPlexMono"
-        ],
+        "14": ["http://scripts.sil.org/OFL"],
+        "19": ["How razorback-jumping frogs can level six piqued gymnasts!"],
+        "2": ["Regular"],
+        "256": ["simple lowercase a"],
+        "257": ["simple lowercase g"],
+        "258": ["slashed number zero"],
+        "259": ["plain number zero"],
+        "260": ["alternate lowercase eszett"],
+        "261": ["alternate number sign"],
+        "262": ["Bulgarian Cyrillic forms"],
+        "3": ["2.004;IBM ;IBMPlexMono-Regular"],
+        "4": ["IBM Plex Mono"],
+        "5": ["Version 2.004"],
+        "6": ["IBMPlexMono"],
         "7": [
           "IBM Plex\u00ae is a trademark of IBM Corp, registered in many jurisdictions worldwide."
         ],
-        "8": [
-          "Bold Monday"
-        ],
-        "9": [
-          "Mike Abbink, Paul van der Laan, Pieter van Rosmalen"
-        ]
+        "8": ["Bold Monday"],
+        "9": ["Mike Abbink, Paul van der Laan, Pieter van Rosmalen"]
       }
     },
     "frontend/static/webfonts/IBMPlexSans-SemiBold.woff2": {
@@ -1480,6 +1074,7 @@
       "glyphs": 1019,
       "cmapCount": 895,
       "unicodeRange": "U+0,U+D,U+20-7E,U+A0-17F,U+18F,U+192,U+1A0-1A1,U+1AF-1B0,U+1CD-1DC,U+1FA-1FF,U+218-21B,U+237,U+259,U+2BB-2BC,U+2C6-2C7,U+2D8-2DD,U+300-304,U+306-30C,U+312,U+315,U+31B,U+323,U+326-328,U+37E,U+384-38A,U+38C,U+38E-3A1,U+3A3-3CE,U+400-45F,U+462-463,U+46A-46B,U+472-475,U+490-4C2,U+4CF-4D9,U+4DC-4E9,U+4EE-4F9,U+524-525,U+E3F,U+1E80-1E85,U+1E9E,U+1EA0-1EF9,U+2000-200D,U+2010-2015,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2028-2029,U+202F-2030,U+2032-2033,U+2039-203A,U+2044,U+2070,U+2074-2079,U+2080-2089,U+20A1,U+20A4,U+20A6,U+20A8-20AE,U+20B1-20B2,U+20B4-20B5,U+20B8-20BA,U+20BD,U+20BF,U+2113,U+2116,U+2122,U+2126,U+212E,U+2150-2151,U+2153-215E,U+2190-2199,U+21A9-21AA,U+21B0-21B3,U+21B6-21B7,U+21BA-21BB,U+21C4,U+21C6,U+2202,U+2206,U+220F,U+2211-2212,U+2215,U+2219-221A,U+221E,U+222B,U+2236,U+2248,U+2260,U+2264-2265,U+25CA,U+2713,U+274C,U+2B0E-2B11,U+ECE0,U+EFCC,U+F6D7-F6D8,U+FB01-FB02,U+FEFF,U+FFFD",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -1505,10 +1100,7 @@
           "sups",
           "zero"
         ],
-        "GPOS": [
-          "kern",
-          "mark"
-        ]
+        "GPOS": ["kern", "mark"]
       },
       "hintTables": {
         "cvt ": 70,
@@ -1538,75 +1130,33 @@
         "prep"
       ],
       "names": {
-        "0": [
-          "Copyright 2018 IBM Corp. All rights reserved."
-        ],
-        "1": [
-          "IBM Plex Sans SmBld"
-        ],
-        "11": [
-          "http://www.boldmonday.com"
-        ],
-        "12": [
-          "http://www.ibm.com"
-        ],
+        "0": ["Copyright 2018 IBM Corp. All rights reserved."],
+        "1": ["IBM Plex Sans SmBld"],
+        "11": ["http://www.boldmonday.com"],
+        "12": ["http://www.ibm.com"],
         "13": [
           "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL"
         ],
-        "14": [
-          "http://scripts.sil.org/OFL"
-        ],
-        "16": [
-          "IBM Plex Sans"
-        ],
-        "17": [
-          "SemiBold"
-        ],
-        "19": [
-          "How razorback-jumping frogs can level six piqued gymnasts!"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "256": [
-          "simple lowercase a"
-        ],
-        "257": [
-          "simple lowercase g"
-        ],
-        "258": [
-          "slashed number zero"
-        ],
-        "259": [
-          "dotted number zero"
-        ],
-        "260": [
-          "alternate lowercase eszett"
-        ],
-        "261": [
-          "Bulgarian Cyrillic forms"
-        ],
-        "3": [
-          "3.005;IBM ;IBMPlexSans-SmBld"
-        ],
-        "4": [
-          "IBM Plex Sans SmBld"
-        ],
-        "5": [
-          "Version 3.005"
-        ],
-        "6": [
-          "IBMPlexSans-SmBld"
-        ],
+        "14": ["http://scripts.sil.org/OFL"],
+        "16": ["IBM Plex Sans"],
+        "17": ["SemiBold"],
+        "19": ["How razorback-jumping frogs can level six piqued gymnasts!"],
+        "2": ["Regular"],
+        "256": ["simple lowercase a"],
+        "257": ["simple lowercase g"],
+        "258": ["slashed number zero"],
+        "259": ["dotted number zero"],
+        "260": ["alternate lowercase eszett"],
+        "261": ["Bulgarian Cyrillic forms"],
+        "3": ["3.005;IBM ;IBMPlexSans-SmBld"],
+        "4": ["IBM Plex Sans SmBld"],
+        "5": ["Version 3.005"],
+        "6": ["IBMPlexSans-SmBld"],
         "7": [
           "IBM Plex\u00ae is a trademark of IBM Corp, registered in many jurisdictions worldwide."
         ],
-        "8": [
-          "Bold Monday"
-        ],
-        "9": [
-          "Mike Abbink, Paul van der Laan, Pieter van Rosmalen"
-        ]
+        "8": ["Bold Monday"],
+        "9": ["Mike Abbink, Paul van der Laan, Pieter van Rosmalen"]
       }
     },
     "frontend/static/webfonts/Inconsolata-Regular.woff2": {
@@ -1615,6 +1165,7 @@
       "glyphs": 964,
       "cmapCount": 882,
       "unicodeRange": "U+0,U+D,U+20-7E,U+A0-131,U+134-148,U+14A-17E,U+18F,U+192,U+198,U+1A0-1A1,U+1AF-1B0,U+1B8-1B9,U+1C7-1C9,U+1E6-1E7,U+1EA-1EB,U+1FA-21B,U+22A-22D,U+230-233,U+237,U+24D,U+259,U+27B,U+298,U+29A,U+2B9-2BC,U+2BE-2BF,U+2C6-2CC,U+2D8-2DD,U+300-304,U+306-30C,U+30F,U+311-312,U+31B,U+323-324,U+326-328,U+32E,U+331,U+335-336,U+375,U+1E08-1E09,U+1E0C-1E0F,U+1E14-1E17,U+1E1C-1E1D,U+1E20-1E21,U+1E24-1E25,U+1E2A-1E2B,U+1E2E-1E2F,U+1E36-1E37,U+1E3A-1E3B,U+1E42-1E49,U+1E4C-1E53,U+1E5A-1E5B,U+1E5E-1E69,U+1E6C-1E6F,U+1E78-1E7B,U+1E80-1E85,U+1E8E-1E8F,U+1E92-1E93,U+1E97,U+1E9E,U+1EA0-1EF9,U+2007-200B,U+2010,U+2012-2015,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2032-2033,U+2039-203A,U+2044,U+2070,U+2074-2079,U+207B,U+207F-2089,U+20A1,U+20A3-20A4,U+20A6-20A7,U+20A9,U+20AB-20AD,U+20B1-20B2,U+20B5,U+20B9-20BA,U+20BC-20BD,U+2113,U+2116,U+2122,U+2124,U+2126,U+212E,U+2190-2199,U+21E6-21EA,U+2202,U+2205-2206,U+2208,U+220F,U+2211-2212,U+2215,U+2217,U+2219-221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+2295,U+2302,U+2318,U+2325-2327,U+232B,U+238B,U+23CE,U+2423,U+2500-259F,U+25C6-25C7,U+25CA-25CB,U+25CF,U+2639-263B,U+2660,U+2663,U+2665-2666,U+2713-2715,U+2717-2718,U+2B05-2B07,U+2B95,U+2E12,U+FFFD",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -1635,10 +1186,7 @@
           "sups",
           "zero"
         ],
-        "GPOS": [
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["mark", "mkmk"]
       },
       "hintTables": {
         "cvt ": 96,
@@ -1671,9 +1219,7 @@
         "0": [
           "Copyright 2006 The Inconsolata Project Authors (https://github.com/cyrealtype/Inconsolata)"
         ],
-        "1": [
-          "Inconsolata"
-        ],
+        "1": ["Inconsolata"],
         "11": [
           "http://www.levien.com | http://www.cyreal.org | http://fonts.google.com"
         ],
@@ -1683,30 +1229,14 @@
         "13": [
           "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL"
         ],
-        "14": [
-          "http://scripts.sil.org/OFL"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "3.100;CYRE;Inconsolata-Regular"
-        ],
-        "4": [
-          "Inconsolata Regular"
-        ],
-        "5": [
-          "Version 3.100; ttfautohint (v1.8.4.7-5d5b)"
-        ],
-        "6": [
-          "Inconsolata-Regular"
-        ],
-        "8": [
-          "Raph Levien, Cyreal, Google"
-        ],
-        "9": [
-          "Raph Levien, Cyreal, Brenton Simpson"
-        ]
+        "14": ["http://scripts.sil.org/OFL"],
+        "2": ["Regular"],
+        "3": ["3.100;CYRE;Inconsolata-Regular"],
+        "4": ["Inconsolata Regular"],
+        "5": ["Version 3.100; ttfautohint (v1.8.4.7-5d5b)"],
+        "6": ["Inconsolata-Regular"],
+        "8": ["Raph Levien, Cyreal, Google"],
+        "9": ["Raph Levien, Cyreal, Brenton Simpson"]
       }
     },
     "frontend/static/webfonts/InterTight-Regular.woff2": {
@@ -1715,6 +1245,7 @@
       "glyphs": 2542,
       "cmapCount": 2504,
       "unicodeRange": "U+20-7E,U+A0-148,U+14A-1C3,U+1C5-308,U+30A-31E,U+321-377,U+37A-37F,U+384-38A,U+38C,U+38E-3A1,U+3A3-3E1,U+3F0-49D,U+4A0-4FF,U+52F,U+E3F,U+1D43,U+1D47-1D49,U+1D4D,U+1D4F-1D50,U+1D52,U+1D56-1D58,U+1D5B,U+1D62-1D65,U+1D9C,U+1DA0,U+1DBB,U+1DBF-1DF5,U+1DFC-1F15,U+1F18-1F1D,U+1F20-1F45,U+1F48-1F4D,U+1F50-1F57,U+1F59,U+1F5B,U+1F5D,U+1F5F-1F7D,U+1F80-1FB4,U+1FB6-1FC4,U+1FC6-1FD3,U+1FD6-1FDB,U+1FDD-1FEF,U+1FF2-1FF4,U+1FF6-1FFE,U+2000-200B,U+2010-2027,U+202F-205F,U+2070-2071,U+2074-208E,U+2090-209C,U+20A0-20BF,U+20DB-20DE,U+20E8,U+20F0,U+2100-2101,U+2103,U+2105-2106,U+2109,U+2113,U+2116-2117,U+211E-2123,U+2126,U+212A-212B,U+212E,U+2132,U+213B,U+214D,U+214F,U+2153,U+215A-2188,U+2190-2199,U+21A9-21AA,U+21B0-21B1,U+21B3-21B5,U+21BA-21BB,U+21D0,U+21D2,U+21D4,U+21DE-21DF,U+21E4-21E5,U+21E7,U+21EA,U+2202,U+2205-2206,U+220F,U+2211-2212,U+221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+2303,U+2305,U+2318,U+2325-2327,U+232B,U+2380,U+2387,U+238B,U+23CE-23CF,U+2423,U+2460-2468,U+24B6-24CF,U+24EA,U+25A0-25A2,U+25AA,U+25B2-25B3,U+25B6-25B7,U+25BA-25BD,U+25C0-25C1,U+25C4-25C7,U+25CA-25CB,U+25CF,U+25E6,U+25EF,U+2600,U+2605-2606,U+263C,U+2661,U+2665,U+26A0,U+2713,U+2717,U+2756,U+2764,U+2780-2788,U+27EF,U+27F5-27FA,U+2B06,U+2B12-2B13,U+2B1C,U+2C7C,U+2C7F,U+2DFF,U+2E18,U+A69F,U+A7FF,U+A92E,U+E000,U+E002-E080,U+E093-E096,U+E0A5-E0E6,U+E0F3-E11C,U+E11E-E164,U+EE01-EE05,U+F6C3,U+FE20-FE2D,U+FEFF,U+1F12F-1F149,U+1F16A-1F16B,U+1F850,U+1F852",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -1752,12 +1283,7 @@
           "tnum",
           "zero"
         ],
-        "GPOS": [
-          "cpsp",
-          "kern",
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["cpsp", "kern", "mark", "mkmk"]
       },
       "hintTables": {
         "prep": 7,
@@ -1787,81 +1313,31 @@
         "0": [
           "Copyright 2022 The Inter Project Authors (https://github.com/rsms/inter-tight)"
         ],
-        "1": [
-          "Inter Tight"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "256": [
-          "Open digits"
-        ],
-        "257": [
-          "Disambiguation"
-        ],
-        "258": [
-          "Curved r into rounds"
-        ],
-        "259": [
-          "Disambiguation (no slashed zero)"
-        ],
-        "260": [
-          "tt ligatures"
-        ],
-        "261": [
-          "Alternate one"
-        ],
-        "262": [
-          "Open four"
-        ],
-        "263": [
-          "Open six"
-        ],
-        "264": [
-          "Open nine"
-        ],
-        "265": [
-          "Lower-case L with tail"
-        ],
-        "266": [
-          "r with curved tail"
-        ],
-        "267": [
-          "Alternate German double s"
-        ],
-        "268": [
-          "Upper-case i with serif"
-        ],
-        "269": [
-          "Flat-top three"
-        ],
-        "270": [
-          "Capital G with spur"
-        ],
-        "271": [
-          "Single-storey a"
-        ],
-        "272": [
-          "Weight"
-        ],
-        "282": [
-          "Italic"
-        ],
-        "283": [
-          "Roman"
-        ],
-        "3": [
-          "3.004;RSMS;InterTight-Regular"
-        ],
-        "4": [
-          "Inter Tight Regular"
-        ],
-        "5": [
-          "Version 3.004"
-        ],
-        "6": [
-          "InterTight-Regular"
-        ]
+        "1": ["Inter Tight"],
+        "2": ["Regular"],
+        "256": ["Open digits"],
+        "257": ["Disambiguation"],
+        "258": ["Curved r into rounds"],
+        "259": ["Disambiguation (no slashed zero)"],
+        "260": ["tt ligatures"],
+        "261": ["Alternate one"],
+        "262": ["Open four"],
+        "263": ["Open six"],
+        "264": ["Open nine"],
+        "265": ["Lower-case L with tail"],
+        "266": ["r with curved tail"],
+        "267": ["Alternate German double s"],
+        "268": ["Upper-case i with serif"],
+        "269": ["Flat-top three"],
+        "270": ["Capital G with spur"],
+        "271": ["Single-storey a"],
+        "272": ["Weight"],
+        "282": ["Italic"],
+        "283": ["Roman"],
+        "3": ["3.004;RSMS;InterTight-Regular"],
+        "4": ["Inter Tight Regular"],
+        "5": ["Version 3.004"],
+        "6": ["InterTight-Regular"]
       }
     },
     "frontend/static/webfonts/Iosevka-Regular.woff2": {
@@ -1870,6 +1346,9 @@
       "glyphs": 42613,
       "cmapCount": 7512,
       "unicodeRange": "U+D,U+20-7E,U+A0-377,U+37A-37F,U+384-38A,U+38C,U+38E-3A1,U+3A3-3E1,U+3F0-487,U+48A-52F,U+531-556,U+559-58A,U+58D-58F,U+E3F,U+10FB,U+1AB0-1AB5,U+1ABB-1ABD,U+1ABF-1ACE,U+1C80-1C8A,U+1D00-1DBF,U+1DC3-1DC7,U+1DCA-1DCF,U+1DD3-1DD5,U+1DD7-1F15,U+1F18-1F1D,U+1F20-1F45,U+1F48-1F4D,U+1F50-1F57,U+1F59,U+1F5B,U+1F5D,U+1F5F-1F7D,U+1F80-1FB4,U+1FB6-1FC4,U+1FC6-1FD3,U+1FD6-1FDB,U+1FDD-1FEF,U+1FF2-1FF4,U+1FF6-1FFE,U+2000-200D,U+2010-2029,U+202F-2064,U+2070-2071,U+2074-208E,U+2090-209C,U+20A1,U+20A3-20AF,U+20B1-20B5,U+20B8-20BA,U+20BC-20C0,U+20D2-20D3,U+20D6-20D8,U+20DB-20DC,U+20E1,U+20E5-20E6,U+20E8-20E9,U+20EB,U+20EE-20F0,U+2100-2103,U+2105-2109,U+210C-210F,U+2111,U+2113,U+2115-211A,U+211C-211D,U+2120-2122,U+2124,U+2126-212B,U+212D-212E,U+2132,U+2135-2149,U+214B,U+214D-218B,U+2190-232B,U+232D-237B,U+237D-237F,U+2384-238B,U+238D,U+2394-2395,U+239B-23AE,U+23B0-23B3,U+23B8-23CC,U+23CE-23CF,U+23DA-23DB,U+23E2,U+23E4-23E5,U+23E8-2429,U+2440-2445,U+2460-2600,U+2605-2607,U+2610-2613,U+261C-261F,U+2626,U+2628,U+2630-2637,U+2639-263C,U+263F-2642,U+2660-2667,U+2669-266F,U+2680-2687,U+268A-2691,U+2699,U+269B,U+26A1,U+26AA-26AF,U+26B2,U+26CB,U+26DA,U+26DD-26DE,U+26ED-26EF,U+26F6,U+2713-2718,U+271A-271D,U+2720-2727,U+2731-2734,U+2736-274C,U+2756,U+2758-275A,U+2761,U+2764,U+276C-2771,U+2776-2794,U+279C-279E,U+27A1-27A7,U+27B0,U+27BF,U+27C2,U+27CA-27CB,U+27CD,U+27D2-27E1,U+27E6-27EB,U+27EE-2926,U+2940-2941,U+2947-2948,U+294A-2965,U+296E-296F,U+2980-2984,U+2987-298A,U+2999-299A,U+29A2-29A3,U+29B0-29BF,U+29C4-29CB,U+29CD-29CE,U+29D1-29DB,U+29DF,U+29E2-29E9,U+29EB,U+29F4-29FB,U+2A00-2A02,U+2A05-2A06,U+2A09,U+2A11-2A16,U+2A1D-2A1F,U+2A22-2A26,U+2A2A-2A32,U+2A34-2A36,U+2A38,U+2A3C-2A43,U+2A4C-2A4F,U+2A53-2A54,U+2A57-2A58,U+2A5A-2A5B,U+2A5E-2A73,U+2A7D-2A80,U+2A85-2A8A,U+2A8D-2A8E,U+2A95-2A9A,U+2A9D-2A9E,U+2AAA-2ABA,U+2ABD-2ABE,U+2ACF-2AD2,U+2AD9-2AE0,U+2AE2-2AF6,U+2AFC-2AFD,U+2B00-2B3E,U+2B45-2B46,U+2B4D,U+2B50-2B55,U+2B58-2B59,U+2B60-2B73,U+2B7A-2B87,U+2B8C-2B95,U+2BA0-2BA7,U+2BB8-2BC8,U+2BCA-2BD0,U+2BD2,U+2BE8-2BEF,U+2BFA-2BFF,U+2C60-2C7F,U+2DE0-2DFF,U+2E0B-2E0D,U+2E12-2E13,U+2E18,U+2E1A-2E25,U+2E28-2E38,U+2E3D-2E3E,U+2E40-2E4B,U+2E52,U+2E59-2E5C,U+3251-325F,U+32B1-32BF,U+4DC0-4DFF,U+A640-A66F,U+A674-A67F,U+A682-A68D,U+A692-A695,U+A698-A69F,U+A700-A727,U+A730-A737,U+A73E-A745,U+A748-A74B,U+A74E-A751,U+A75A-A75B,U+A764-A767,U+A779-A795,U+A798-A7C1,U+A7C4-A7CD,U+A7DA-A7DC,U+A7F2-A7FF,U+A92E,U+AB30-AB33,U+AB35-AB42,U+AB45-AB46,U+AB4B-AB4F,U+AB52-AB53,U+AB5B-AB6B,U+E0A0-E0A3,U+E0AE-E0BF,U+EE00-EE0B,U+EF01-EF02,U+EF06-EF12,U+FB00-FB06,U+FB29,U+FEFF,U+FFFC-FFFD,U+10780-10785,U+10787-107B0,U+107B2-107BA,U+1CC00-1CC45,U+1CC56-1CC63,U+1CC65-1CC91,U+1CC97-1CC9D,U+1CCA6-1CCB9,U+1CCD2-1CCF9,U+1CD00-1CDE5,U+1CDF0-1CDF7,U+1CDFB-1CDFC,U+1CE00-1CEB1,U+1CEB3,U+1D110-1D111,U+1D12A-1D133,U+1D18C-1D191,U+1D300-1D356,U+1D360-1D371,U+1D377-1D378,U+1D400-1D454,U+1D456-1D49B,U+1D504-1D505,U+1D507-1D50A,U+1D50D-1D514,U+1D516-1D51C,U+1D51E-1D539,U+1D53B-1D53E,U+1D540-1D544,U+1D546,U+1D54A-1D550,U+1D552-1D6A5,U+1D6A8-1D7CB,U+1D7CE-1D7FF,U+1DF01-1DF10,U+1DF12-1DF1E,U+1E030-1E06D,U+1E08F,U+1F0A0-1F0AE,U+1F0B1-1F0BF,U+1F0C1-1F0CF,U+1F0D1-1F0F5,U+1F100-1F1AD,U+1F1E6-1F1FF,U+1F311-1F318,U+1F377,U+1F514,U+1F547-1F548,U+1F550-1F567,U+1F5A4,U+1F5C0,U+1F610,U+1F636,U+1F641-1F643,U+1F780-1F7BF,U+1F800-1F80B,U+1F810-1F847,U+1F850-1F859,U+1F860-1F887,U+1F8B0-1F8BB,U+1F8C0-1F8C1,U+1F907,U+1F90D,U+1FB00-1FB92,U+1FB94-1FBCA,U+1FBCC,U+1FBCE-1FBF9",
+      "variationSequences": {
+        "65024": [[48, "zero.VS01"]]
+      },
       "axes": [],
       "features": {
         "GSUB": [
@@ -2069,10 +1548,7 @@
           "ss20",
           "zero"
         ],
-        "GPOS": [
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["mark", "mkmk"]
       },
       "hintTables": {
         "cvt ": 240,
@@ -2105,108 +1581,44 @@
         "0": [
           "Copyright 2015-2025, Renzhi Li (aka. Belleve Invis, belleve@typeof.net)."
         ],
-        "1": [
-          "Iosevka"
-        ],
+        "1": ["Iosevka"],
         "10": [
           "Spatial efficient monospace font family for programming. Built from code. http://be5invis.github.io/Iosevka"
         ],
         "13": [
           "This font software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL. This font software is distributed on an 'AS IS' basis, without warranties or conditions of any kind, either express or implied. See the SIL Open Font license for the specific language, permissions and limitations governing your use of this font software."
         ],
-        "14": [
-          "https://openfontlicense.org/"
-        ],
-        "16": [
-          "Iosevka"
-        ],
-        "17": [
-          "Regular"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "21": [
-          "Iosevka"
-        ],
-        "22": [
-          "Regular"
-        ],
-        "257": [
-          "Andale Mono Style"
-        ],
-        "258": [
-          "Anonymous Pro Style"
-        ],
-        "259": [
-          "Consolas Style"
-        ],
-        "260": [
-          "Menlo Style"
-        ],
-        "261": [
-          "Fira Mono Style"
-        ],
-        "262": [
-          "Liberation Mono Style"
-        ],
-        "263": [
-          "Monaco Style"
-        ],
-        "264": [
-          "Pragmata Pro Style"
-        ],
-        "265": [
-          "Source Code Pro Style"
-        ],
-        "266": [
-          "Envy Code R Style"
-        ],
-        "267": [
-          "X Window Style"
-        ],
-        "268": [
-          "Ubuntu Mono Style"
-        ],
-        "269": [
-          "Lucida Style"
-        ],
-        "270": [
-          "JetBrains Mono Style"
-        ],
-        "271": [
-          "IBM Plex Mono Style"
-        ],
-        "272": [
-          "PT Mono Style"
-        ],
-        "273": [
-          "Recursive Mono Style"
-        ],
-        "274": [
-          "Input Mono Style"
-        ],
-        "275": [
-          "Curly Style"
-        ],
-        "3": [
-          "Iosevka Regular 33.2.6"
-        ],
-        "4": [
-          "Iosevka"
-        ],
-        "5": [
-          "Version 33.2.6; ttfautohint (v1.8.4)"
-        ],
-        "6": [
-          "Iosevka"
-        ],
-        "8": [
-          "Belleve Invis"
-        ],
-        "9": [
-          "Belleve Invis"
-        ]
+        "14": ["https://openfontlicense.org/"],
+        "16": ["Iosevka"],
+        "17": ["Regular"],
+        "2": ["Regular"],
+        "21": ["Iosevka"],
+        "22": ["Regular"],
+        "257": ["Andale Mono Style"],
+        "258": ["Anonymous Pro Style"],
+        "259": ["Consolas Style"],
+        "260": ["Menlo Style"],
+        "261": ["Fira Mono Style"],
+        "262": ["Liberation Mono Style"],
+        "263": ["Monaco Style"],
+        "264": ["Pragmata Pro Style"],
+        "265": ["Source Code Pro Style"],
+        "266": ["Envy Code R Style"],
+        "267": ["X Window Style"],
+        "268": ["Ubuntu Mono Style"],
+        "269": ["Lucida Style"],
+        "270": ["JetBrains Mono Style"],
+        "271": ["IBM Plex Mono Style"],
+        "272": ["PT Mono Style"],
+        "273": ["Recursive Mono Style"],
+        "274": ["Input Mono Style"],
+        "275": ["Curly Style"],
+        "3": ["Iosevka Regular 33.2.6"],
+        "4": ["Iosevka"],
+        "5": ["Version 33.2.6; ttfautohint (v1.8.4)"],
+        "6": ["Iosevka"],
+        "8": ["Belleve Invis"],
+        "9": ["Belleve Invis"]
       }
     },
     "frontend/static/webfonts/Itim-Regular.woff2": {
@@ -2215,21 +1627,11 @@
       "glyphs": 928,
       "cmapCount": 773,
       "unicodeRange": "U+D,U+20-7E,U+A0-17E,U+18F,U+192,U+1A0-1A1,U+1AF-1B0,U+1C4-1DC,U+1E6-1E7,U+1EA-1EB,U+1F1-1F5,U+1FA-21B,U+237,U+251,U+259,U+2BB-2BC,U+2BE-2BF,U+2C6-2CC,U+2D8-2DD,U+300-304,U+306-30C,U+30F,U+311,U+31B,U+323-324,U+326-328,U+32E,U+331,U+394,U+3A9,U+3BC,U+3C0,U+E01-E3A,U+E3F-E5B,U+1E0C-1E0F,U+1E20-1E21,U+1E24-1E25,U+1E2A-1E2B,U+1E36-1E3B,U+1E42-1E49,U+1E5A-1E63,U+1E6C-1E6F,U+1E80-1E85,U+1E8E-1E8F,U+1E92-1E93,U+1E97,U+1E9E,U+1EA0-1EF9,U+2007,U+2010,U+2012-2015,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2032-2033,U+2039-203A,U+2044,U+2070,U+2074-2079,U+207D-2089,U+208D-208E,U+20A1,U+20A3-20A4,U+20A6-20A7,U+20A9,U+20AB-20AC,U+20B1-20B2,U+20B5,U+20B9-20BA,U+20BD,U+210A,U+2113,U+2116-2117,U+2120,U+2122,U+212E,U+2153-2154,U+215B-215E,U+2190-2193,U+2202,U+220F,U+2211-2212,U+2215,U+2219-221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+25A0,U+25B2-25B3,U+25B6-25B7,U+25BC-25BD,U+25C0-25C1,U+25C6,U+25CA,U+F6D7-F6D8,U+F8FF,U+FB00-FB04",
+      "variationSequences": {},
       "axes": [],
       "features": {
-        "GSUB": [
-          "ccmp",
-          "dnom",
-          "frac",
-          "liga",
-          "locl",
-          "numr"
-        ],
-        "GPOS": [
-          "kern",
-          "mark",
-          "mkmk"
-        ]
+        "GSUB": ["ccmp", "dnom", "frac", "liga", "locl", "numr"],
+        "GPOS": ["kern", "mark", "mkmk"]
       },
       "hintTables": {
         "cvt ": 56,
@@ -2262,27 +1664,13 @@
         "0": [
           "Copyright (c) 2015, Cadson Demak (info@cadsondemak.com), Copyright (c) 2014, Pablo Impallari (www.impallari.com|impallari@gmail.com)"
         ],
-        "1": [
-          "Itim"
-        ],
-        "14": [
-          "http://scripts.sil.org/OFL"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "1.002;GOOG;Itim-Regular"
-        ],
-        "4": [
-          "Itim"
-        ],
-        "5": [
-          "Version 1.002g"
-        ],
-        "6": [
-          "Itim-Regular"
-        ]
+        "1": ["Itim"],
+        "14": ["http://scripts.sil.org/OFL"],
+        "2": ["Regular"],
+        "3": ["1.002;GOOG;Itim-Regular"],
+        "4": ["Itim"],
+        "5": ["Version 1.002g"],
+        "6": ["Itim-Regular"]
       }
     },
     "frontend/static/webfonts/JetBrainsMono-Regular.woff2": {
@@ -2291,6 +1679,7 @@
       "glyphs": 1743,
       "cmapCount": 1363,
       "unicodeRange": "U+D,U+20-7E,U+A0-131,U+134-17F,U+18F-190,U+192,U+19B,U+1A0-1A1,U+1AF-1B0,U+1CD-1CE,U+1D0,U+1D2,U+1D4,U+1D6,U+1D8,U+1DA,U+1DC,U+1E6-1E7,U+1EA-1EB,U+1F4-1F5,U+1FC-1FF,U+218-21B,U+232-233,U+237,U+259,U+2B9-2BA,U+2BC,U+2C6-2C7,U+2C9,U+2D8-2DD,U+2F3,U+2F7,U+300-304,U+306-30C,U+30F,U+312,U+31B,U+323,U+325-328,U+336-338,U+374-375,U+37E,U+384-38A,U+38C,U+38E-3A1,U+3A3-3CF,U+3D5-3D7,U+401-40C,U+40E-44F,U+451-45C,U+45E-45F,U+490-493,U+49A-49B,U+4A2-4A3,U+4AE-4B1,U+4B6-4B7,U+4BA-4BB,U+4D8-4D9,U+4DC-4DF,U+4E4-4E9,U+4F4-4F5,U+AEA,U+1E80-1E85,U+1E9E,U+1EA0-1EF9,U+2001,U+200B,U+2010,U+2013-2014,U+2016,U+2018-2022,U+2024,U+2026,U+2030,U+2032-2034,U+2039-203A,U+203C-203F,U+2044-2046,U+2070,U+2074-207A,U+207C,U+2080-2089,U+20AB-20AC,U+20AE,U+20B4,U+20BD,U+20BF,U+2102,U+210D,U+2113,U+2115-2116,U+2119-211A,U+211D,U+2122,U+2124,U+212E,U+2140,U+218A-218B,U+2190-2199,U+219D-219E,U+21A0,U+21A2-21A3,U+21A5-21A7,U+21A9-21AA,U+21AD,U+21BE,U+21C9,U+21D0-21D4,U+21DB,U+21DE-21DF,U+21E5,U+21E7-21E8,U+21EA,U+2200-220C,U+220E-2213,U+2215,U+2218-221A,U+221E,U+2223-2225,U+2227-222B,U+2234-2239,U+223C,U+223E,U+2243,U+2245,U+2247-2249,U+224B,U+224D,U+2254,U+2257,U+225F-2265,U+226A-2273,U+227A-227C,U+2282-2289,U+228E-2299,U+229B-22A5,U+22B4,U+22B8,U+22BB-22BD,U+22C2-22C4,U+22C6,U+22C8-22CA,U+22CE,U+22D0,U+22E2,U+22EE-22F1,U+2302-2305,U+2308-230B,U+2318,U+231C-231F,U+2324-2326,U+2328,U+232B,U+2336-237A,U+2389-238B,U+2395,U+239B-23AD,U+23CE,U+23FB-23FE,U+2400-2421,U+2423-2424,U+2500-25A1,U+25AA-25AB,U+25B2-25CC,U+25CE-25CF,U+25D4-25D5,U+25E6-25EB,U+25EF,U+25F6,U+266D,U+266F,U+2687,U+26A0-26A1,U+2713,U+2715,U+2717,U+2736,U+276E-2771,U+2794,U+279C-279E,U+27C5-27C6,U+27DC,U+27E6-27EB,U+27F5-27F7,U+2916,U+294A,U+2987-2988,U+2A00,U+2A05-2A06,U+2B58,U+E0A0-E0A2,U+E0B0-E0B3,U+FE62,U+FEFF,U+FF5B,U+FF5D,U+FFFD,U+16910,U+1D538-1D539,U+1D53B-1D53E,U+1D540-1D544,U+1D546,U+1D54A-1D550,U+1D552-1D56B",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -2330,10 +1719,7 @@
           "sups",
           "zero"
         ],
-        "GPOS": [
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["mark", "mkmk"]
       },
       "hintTables": {
         "cvt ": 168,
@@ -2366,57 +1752,25 @@
         "0": [
           "Copyright 2020 The JetBrains Mono Project Authors (https://github.com/JetBrains/JetBrainsMono)"
         ],
-        "1": [
-          "JetBrains Mono"
-        ],
-        "11": [
-          "https://www.jetbrains.com"
-        ],
-        "12": [
-          "https://www.jetbrains.com"
-        ],
+        "1": ["JetBrains Mono"],
+        "11": ["https://www.jetbrains.com"],
+        "12": ["https://www.jetbrains.com"],
         "13": [
           "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL"
         ],
-        "14": [
-          "https://scripts.sil.org/OFL"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "256": [
-          "Classic construction"
-        ],
-        "257": [
-          "Closed construction"
-        ],
-        "258": [
-          "Broken equals ligatures"
-        ],
-        "259": [
-          "Rased bar f"
-        ],
-        "3": [
-          "2.304;JB;JetBrainsMono-Regular"
-        ],
-        "4": [
-          "JetBrains Mono Regular"
-        ],
-        "5": [
-          "Version 2.304; ttfautohint (v1.8.4.7-5d5b)"
-        ],
-        "6": [
-          "JetBrainsMono-Regular"
-        ],
-        "7": [
-          "JetBrains Mono is a trademark of JetBrains s.r.o."
-        ],
-        "8": [
-          "JetBrains"
-        ],
-        "9": [
-          "Philipp Nurullin, Konstantin Bulenkov"
-        ]
+        "14": ["https://scripts.sil.org/OFL"],
+        "2": ["Regular"],
+        "256": ["Classic construction"],
+        "257": ["Closed construction"],
+        "258": ["Broken equals ligatures"],
+        "259": ["Rased bar f"],
+        "3": ["2.304;JB;JetBrainsMono-Regular"],
+        "4": ["JetBrains Mono Regular"],
+        "5": ["Version 2.304; ttfautohint (v1.8.4.7-5d5b)"],
+        "6": ["JetBrainsMono-Regular"],
+        "7": ["JetBrains Mono is a trademark of JetBrains s.r.o."],
+        "8": ["JetBrains"],
+        "9": ["Philipp Nurullin, Konstantin Bulenkov"]
       }
     },
     "frontend/static/webfonts/Kanit-Regular.woff2": {
@@ -2425,6 +1779,7 @@
       "glyphs": 765,
       "cmapCount": 725,
       "unicodeRange": "U+D,U+20-7E,U+A0-B4,U+B6-17E,U+18F,U+192,U+1A0-1A1,U+1AF-1B0,U+1CD-1DC,U+1E6-1E7,U+1FA-1FF,U+218-21B,U+237,U+251,U+259,U+2BB-2BC,U+2BE-2BF,U+2C6-2CC,U+2D8-2DD,U+300-304,U+306-30C,U+31B,U+323-324,U+326-328,U+32E,U+331,U+394,U+3A9,U+3BC,U+3C0,U+E01-E3A,U+E3F-E5B,U+1E0C-1E0F,U+1E20-1E21,U+1E24-1E25,U+1E2A-1E2B,U+1E36-1E3B,U+1E42-1E49,U+1E5A-1E63,U+1E6C-1E6F,U+1E80-1E85,U+1E8E-1E8F,U+1E92-1E93,U+1E97,U+1E9E,U+1EA0-1EF9,U+2007,U+2010,U+2012-2015,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2032-2033,U+2039-203A,U+2044,U+2070,U+2074-2079,U+207D-2089,U+208D-208E,U+20A1,U+20A4,U+20A6-20A7,U+20AB-20AC,U+20B1-20B2,U+20B5,U+20B9-20BA,U+20BD,U+210A,U+2113,U+2117,U+2120,U+2122,U+2126,U+212E,U+2153-2154,U+215B-215E,U+2190-2193,U+2202,U+220F,U+2211-2212,U+2215,U+2219-221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+25A0,U+25B2-25B3,U+25B6-25B7,U+25BC-25BD,U+25C0-25C1,U+25C6,U+25CA,U+F6D7-F6D8,U+F8FF,U+FB01-FB02",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -2437,11 +1792,7 @@
           "subs",
           "sups"
         ],
-        "GPOS": [
-          "kern",
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["kern", "mark", "mkmk"]
       },
       "hintTables": {
         "cvt ": 170,
@@ -2471,49 +1822,22 @@
         "prep"
       ],
       "names": {
-        "0": [
-          "Copyright (c) 2015, Cadson Demak (info@cadsondemak.com)"
-        ],
-        "1": [
-          "Kanit"
-        ],
-        "10": [
-          "Copyright (c) 2015, Cadson Demak (info@cadsondemak.com)"
-        ],
-        "11": [
-          "www.cadsondemak.com"
-        ],
-        "12": [
-          "www.katatrad.com"
-        ],
+        "0": ["Copyright (c) 2015, Cadson Demak (info@cadsondemak.com)"],
+        "1": ["Kanit"],
+        "10": ["Copyright (c) 2015, Cadson Demak (info@cadsondemak.com)"],
+        "11": ["www.cadsondemak.com"],
+        "12": ["www.katatrad.com"],
         "13": [
           "Copyright (c) 2015, Cadson Demak (info@cadsondemak.com)\n\nThis Font Software is licensed under the SIL Open Font License, Version 1.1.\nThis license is copied below, and is also available with a FAQ at:\nhttp://scripts.sil.org/OFL\n\n\n-----------------------------------------------------------\nSIL OPEN FONT LICENSE Version 1.1 - 26 February 2007\n-----------------------------------------------------------\n\nPREAMBLE\nThe goals of the Open Font License (OFL) are to stimulate worldwide\ndevelopment of collaborative font projects, to support the font creation\nefforts of academic and linguistic communities, and to provide a free and\nopen framework in which fonts may be shared and improved in partnership\nwith others.\n\nThe OFL allows the licensed fonts to be used, studied, modified and\nredistributed freely as long as they are not sold by themselves. The\nfonts, including any derivative works, can be bundled, embedded, \nredistributed and/or sold with any software provided that any reserved\nnames are not used by derivative works. The fonts and derivatives,\nhowever, cannot be released under any other type of license. The\nrequirement for fonts to remain under this license does not apply\nto any document created using the fonts or their derivatives.\n\nDEFINITIONS\n\"Font Software\" refers to the set of files released by the Copyright\nHolder(s) under this license and clearly marked as such. This may\ninclude source files, build scripts and documentation.\n\n\"Reserved Font Name\" refers to any names specified as such after the\ncopyright statement(s).\n\n\"Original Version\" refers to the collection of Font Software components as\ndistributed by the Copyright Holder(s).\n\n\"Modified Version\" refers to any derivative made by adding to, deleting,\nor substituting -- in part or in whole -- any of the components of the\nOriginal Version, by changing formats or by porting the Font Software to a\nnew environment.\n\n\"Author\" refers to any designer, engineer, programmer, technical\nwriter or other person who contributed to the Font Software.\n\nPERMISSION & CONDITIONS\nPermission is hereby granted, free of charge, to any person obtaining\na copy of the Font Software, to use, study, copy, merge, embed, modify,\nredistribute, and sell modified and unmodified copies of the Font\nSoftware, subject to the following conditions:\n\n1) Neither the Font Software nor any of its individual components,\nin Original or Modified Versions, may be sold by itself.\n\n2) Original or Modified Versions of the Font Software may be bundled,\nredistributed and/or sold with any software, provided that each copy\ncontains the above copyright notice and this license. These can be\nincluded either as stand-alone text files, human-readable headers or\nin the appropriate machine-readable metadata fields within text or\nbinary files as long as those fields can be easily viewed by the user.\n\n3) No Modified Version of the Font Software may use the Reserved Font\nName(s) unless explicit written permission is granted by the corresponding\nCopyright Holder. This restriction only applies to the primary font name as\npresented to the users.\n\n4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font\nSoftware shall not be used to promote, endorse or advertise any\nModified Version, except to acknowledge the contribution(s) of the\nCopyright Holder(s) and the Author(s) or with their explicit written\npermission.\n\n5) The Font Software, modified or unmodified, in part or in whole,\nmust be distributed entirely under this license, and must not be\ndistributed under any other license. The requirement for fonts to\nremain under this license does not apply to any document created\nusing the Font Software.\n\nTERMINATION\nThis license becomes null and void if any of the above conditions are\nnot met.\n\nDISCLAIMER\nTHE FONT SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT\nOF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE\nCOPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\nINCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL\nDAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM\nOTHER DEALINGS IN THE FONT SOFTWARE."
         ],
-        "14": [
-          "http://scripts.sil.org/OFL"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "1.000;CDK ;Kanit-Regular"
-        ],
-        "4": [
-          "Kanit",
-          "Kanit-Regular"
-        ],
-        "5": [
-          "Version 1.030"
-        ],
-        "6": [
-          "Kanit-Regular"
-        ],
-        "8": [
-          "CadsonDemak"
-        ],
-        "9": [
-          "Katatrad Team"
-        ]
+        "14": ["http://scripts.sil.org/OFL"],
+        "2": ["Regular"],
+        "3": ["1.000;CDK ;Kanit-Regular"],
+        "4": ["Kanit", "Kanit-Regular"],
+        "5": ["Version 1.030"],
+        "6": ["Kanit-Regular"],
+        "8": ["CadsonDemak"],
+        "9": ["Katatrad Team"]
       }
     },
     "frontend/static/webfonts/Lalezar-Regular.woff2": {
@@ -2522,6 +1846,7 @@
       "glyphs": 1221,
       "cmapCount": 908,
       "unicodeRange": "U+0,U+D,U+20-7E,U+A0-A9,U+AB-AC,U+AE-B1,U+B4,U+B6-B8,U+BB,U+BF-107,U+10A-113,U+116-11B,U+11E-123,U+126-12B,U+12E-131,U+136-137,U+139-13E,U+141-148,U+14A-14D,U+150-15B,U+15E-16B,U+16E-17E,U+189,U+1A0-1A1,U+1AF-1B0,U+1CD-1DC,U+1DE-1DF,U+1E6-1E7,U+1FE-1FF,U+218-21B,U+229-22B,U+243-244,U+24C,U+268,U+289,U+2C6-2C7,U+2D8-2DD,U+300-304,U+306-30C,U+312,U+31B,U+323,U+326-328,U+32D,U+335-338,U+601,U+603,U+60B-60C,U+615,U+61B,U+61F,U+621-63A,U+640-656,U+658,U+660-673,U+679,U+67E,U+686,U+688,U+691,U+698,U+6A1,U+6A4,U+6A9,U+6AF,U+6BA,U+6BE,U+6C0-6C3,U+6CC,U+6D2-6D4,U+6D6,U+6F0-6F9,U+1E04-1E05,U+1E0C-1E0F,U+1E12-1E13,U+1E24-1E25,U+1E2E-1E2F,U+1E36-1E37,U+1E3C-1E3F,U+1E44-1E47,U+1E4A-1E4D,U+1E50-1E53,U+1E62-1E63,U+1E6C-1E71,U+1E80-1E85,U+1E92-1E93,U+1EA0-1EF9,U+2002-2003,U+2009,U+2013-2014,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2039-203A,U+2044,U+20AC,U+2122,U+2202,U+2205,U+220F,U+2211-2212,U+221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+25CA,U+25CC,U+FB01-FB02,U+FB51,U+FB57-FB59,U+FB67-FB69,U+FB6B-FB6D,U+FB7B-FB7D,U+FB89,U+FB8B,U+FB8D,U+FB8F-FB91,U+FB93-FB95,U+FB9F,U+FBA5,U+FBA7-FBA9,U+FBAB-FBAD,U+FBAF,U+FBB1-FBB9,U+FBBD-FBBE,U+FBF9-FBFA,U+FBFD-FBFF,U+FC02-FC04,U+FC08-FC0A,U+FC0E-FC10,U+FC12-FC14,U+FC1F,U+FC21,U+FC25,U+FC31-FC32,U+FC35-FC36,U+FC3D-FC3E,U+FC42-FC44,U+FC4E-FC50,U+FC58,U+FC64-FC6E,U+FC70-FC7C,U+FC7E,U+FC83-FC84,U+FC86-FC87,U+FC8A-FC8F,U+FC91-FC94,U+FC9A-FC9B,U+FC9F-FCA0,U+FCA4-FCA6,U+FCB0,U+FCB3,U+FCB7,U+FCCC,U+FCD5-FCD6,U+FCDD-FCEA,U+FCEE-FCF1,U+FCFB-FCFF,U+FD03,U+FD05-FD08,U+FD0C-FD10,U+FD17-FD1A,U+FD1F-FD20,U+FD22-FD24,U+FD28-FD2C,U+FD30-FD32,U+FD3E-FD3F,U+FDF2,U+FDFA,U+FDFC,U+FE82,U+FE84,U+FE86,U+FE88,U+FE8A-FE8C,U+FE8E,U+FE90-FE92,U+FE94,U+FE96-FE98,U+FE9A-FE9C,U+FE9E-FEA0,U+FEA2-FEA4,U+FEA6-FEA8,U+FEAA,U+FEAC,U+FEAE,U+FEB0,U+FEB2-FEB4,U+FEB6-FEB8,U+FEBA-FEBC,U+FEBE-FEC0,U+FEC2-FEC4,U+FEC6-FEC8,U+FECA-FECC,U+FECE-FED0,U+FED2-FED4,U+FED6-FED8,U+FEDA-FEDC,U+FEDE-FEE0,U+FEE2-FEE4,U+FEE6-FEE8,U+FEEA-FEEC,U+FEEE,U+FEF0,U+FEF2-FEFC",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -2535,11 +1860,7 @@
           "medi",
           "rlig"
         ],
-        "GPOS": [
-          "kern",
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["kern", "mark", "mkmk"]
       },
       "hintTables": {
         "cvt ": 96,
@@ -2572,45 +1893,21 @@
         "0": [
           "Copyright 2015 The Lalezar Project Authors (https://github.com/BornaIz/Lalezar)"
         ],
-        "1": [
-          "Lalezar"
-        ],
-        "11": [
-          "http://www.borna.design"
-        ],
-        "12": [
-          "http://www.borna.design"
-        ],
+        "1": ["Lalezar"],
+        "11": ["http://www.borna.design"],
+        "12": ["http://www.borna.design"],
         "13": [
           "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL"
         ],
-        "14": [
-          "http://scripts.sil.org/OFL"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "1.004;UKWN;Lalezar-Regular"
-        ],
-        "4": [
-          "Lalezar Regular"
-        ],
-        "5": [
-          "Version 1.004"
-        ],
-        "6": [
-          "Lalezar-Regular"
-        ],
-        "7": [
-          "Lalezar is a trademark of Borna Izadpanah"
-        ],
-        "8": [
-          "Borna Izadpanah"
-        ],
-        "9": [
-          "Borna Izadpanah"
-        ]
+        "14": ["http://scripts.sil.org/OFL"],
+        "2": ["Regular"],
+        "3": ["1.004;UKWN;Lalezar-Regular"],
+        "4": ["Lalezar Regular"],
+        "5": ["Version 1.004"],
+        "6": ["Lalezar-Regular"],
+        "7": ["Lalezar is a trademark of Borna Izadpanah"],
+        "8": ["Borna Izadpanah"],
+        "9": ["Borna Izadpanah"]
       }
     },
     "frontend/static/webfonts/Lato-Regular.woff2": {
@@ -2619,6 +1916,7 @@
       "glyphs": 3023,
       "cmapCount": 2164,
       "unicodeRange": "U+0,U+20-7E,U+A0-36F,U+374-375,U+37A-37E,U+384-38A,U+38C,U+38E-3A1,U+3A3-3CE,U+3D0-486,U+488-513,U+E3F,U+1D00-1DCA,U+1DFE-1E9B,U+1E9E,U+1EA0-1EF9,U+1F00-1F15,U+1F18-1F1D,U+1F20-1F45,U+1F48-1F4D,U+1F50-1F57,U+1F59,U+1F5B,U+1F5D,U+1F5F-1F7D,U+1F80-1FB4,U+1FB6-1FC4,U+1FC6-1FD3,U+1FD6-1FDB,U+1FDD-1FEF,U+1FF2-1FF4,U+1FF6-1FFE,U+2000-2010,U+2012-2022,U+2026,U+202F-2030,U+2032-2034,U+2039-203A,U+203C-203E,U+2044,U+205E-205F,U+2070-2071,U+2074-2094,U+20A0-20B5,U+20B8-20BA,U+20DD,U+2105,U+2113,U+2116-2117,U+2120,U+2122,U+2126,U+212E,U+2132,U+214D-214E,U+2153-215F,U+2183-2184,U+2190-2199,U+21A8,U+2202,U+220F,U+2211-2212,U+2215,U+2219-221A,U+221E-221F,U+2229,U+222B,U+2248,U+2260-2261,U+2264-2265,U+2302,U+2310,U+2320-2321,U+2460-2473,U+24EA-24F4,U+24FF-2500,U+2502,U+250C,U+2510,U+2514,U+2518,U+25A1,U+25AA-25AB,U+25CA-25CC,U+25CF,U+25E6,U+2600,U+263C,U+2669,U+2776-277F,U+2C60-2C6C,U+2C74-2C77,U+2E17,U+A717-A71A,U+A720-A721,U+F8FF,U+FB00-FB04,U+FE20-FE23,U+FEFF",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -2643,10 +1941,7 @@
           "sups",
           "tnum"
         ],
-        "GPOS": [
-          "kern",
-          "mark"
-        ]
+        "GPOS": ["kern", "mark"]
       },
       "hintTables": {
         "cvt ": 230,
@@ -2679,48 +1974,24 @@
         "0": [
           "Copyright (c) 2011-2015 by tyPoland Lukasz Dziedzic (http://www.typoland.com/) with Reserved Font Name \"Lato\". Licensed under the SIL Open Font License, Version 1.1 (http://scripts.sil.org/OFL). "
         ],
-        "1": [
-          "Lato"
-        ],
+        "1": ["Lato"],
         "10": [
           "Lato is a sanserif typeface family designed in the Summer 2010 and extended in the Summer 2013 by Warsaw-based designer Lukasz Dziedzic (\"Lato\" means \"Summer\" in Polish). It tries to carefully balance some potentially conflicting priorities: it should seem quite \"transparent\" when used in body text but would display some original traits when used in larger sizes. The classical proportions, particularly visible in the uppercase, give the letterforms familiar harmony and elegance. At the same time, its sleek sanserif look makes evident the fact that Lato was designed in the 2010s, even though it does not follow any current trend. The semi-rounded details of the letters give Lato a feeling of warmth, while the strong structure provides stability and seriousness. In 2013-2014, the family was greatly extended (with the help of Adam Twardoch and Botio Nikoltchev) to cover 3000+ glyphs over nine weights with italics. It now supports 100+ Latin-based languages, 50+ Cyrillic-based languages as well as Greek and IPA phonetics. The Lato fonts are available free of charge under the SIL Open Font License from http://www.latofonts.com/"
         ],
-        "11": [
-          "http://www.typoland.com/"
-        ],
-        "12": [
-          "http://www.latofonts.com/"
-        ],
+        "11": ["http://www.typoland.com/"],
+        "12": ["http://www.latofonts.com/"],
         "13": [
           "Copyright (c) 2011-2015 by tyPoland Lukasz Dziedzic (http://www.typoland.com/) with Reserved Font Name \"Lato\". Licensed under the SIL Open Font License, Version 1.1 (http://scripts.sil.org/OFL). "
         ],
-        "14": [
-          "http://scripts.sil.org/OFL"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "2.015;tyPL;Lato-Regular;2015;TR4-4.0.2.5571"
-        ],
-        "4": [
-          "Lato Regular"
-        ],
-        "5": [
-          "Version 2.015; 2015-08-06; http://www.latofonts.com/"
-        ],
-        "6": [
-          "Lato-Regular"
-        ],
-        "7": [
-          "Lato is a trademark of tyPoland Lukasz Dziedzic."
-        ],
-        "8": [
-          "tyPoland Lukasz Dziedzic"
-        ],
-        "9": [
-          "Lukasz Dziedzic with Adam Twardoch and Botio Nikoltchev"
-        ]
+        "14": ["http://scripts.sil.org/OFL"],
+        "2": ["Regular"],
+        "3": ["2.015;tyPL;Lato-Regular;2015;TR4-4.0.2.5571"],
+        "4": ["Lato Regular"],
+        "5": ["Version 2.015; 2015-08-06; http://www.latofonts.com/"],
+        "6": ["Lato-Regular"],
+        "7": ["Lato is a trademark of tyPoland Lukasz Dziedzic."],
+        "8": ["tyPoland Lukasz Dziedzic"],
+        "9": ["Lukasz Dziedzic with Adam Twardoch and Botio Nikoltchev"]
       }
     },
     "frontend/static/webfonts/LexendDeca-Regular.woff2": {
@@ -2729,21 +2000,11 @@
       "glyphs": 770,
       "cmapCount": 685,
       "unicodeRange": "U+D,U+20-7E,U+A0-17E,U+18F,U+192,U+19D,U+1A0-1A1,U+1AF-1B0,U+1C4-1D4,U+1E6-1E7,U+1EA-1EB,U+1F1-1F2,U+1FA-21B,U+22A-22D,U+230-233,U+237,U+259,U+272,U+2BB-2BC,U+2BE-2BF,U+2C6-2C8,U+2CC,U+2D8-2DD,U+300-304,U+306-30C,U+30F,U+311-312,U+31B,U+323-324,U+326-328,U+32E,U+331,U+335,U+394,U+3A9,U+3BC,U+3C0,U+1E08-1E09,U+1E0C-1E0F,U+1E14-1E17,U+1E1C-1E1D,U+1E20-1E21,U+1E24-1E25,U+1E2A-1E2B,U+1E2E-1E2F,U+1E36-1E37,U+1E3A-1E3B,U+1E42-1E49,U+1E4C-1E53,U+1E5A-1E5B,U+1E5E-1E69,U+1E6C-1E6F,U+1E78-1E7B,U+1E80-1E85,U+1E8E-1E8F,U+1E92-1E93,U+1E97,U+1E9E,U+1EA0-1EF9,U+2007-200B,U+2010,U+2012-2015,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2033,U+2039-203A,U+2044,U+2070,U+2074-2079,U+2080-2089,U+20A1,U+20A3-20A4,U+20A6-20A7,U+20A9,U+20AB-20AD,U+20B1-20B2,U+20B5,U+20B9-20BA,U+20BC-20BD,U+2113,U+2116,U+2122,U+2126,U+212E,U+215B-215E,U+2202,U+2205-2206,U+220F,U+2211-2212,U+2215,U+2219-221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+25CA,U+FB01-FB02",
+      "variationSequences": {},
       "axes": [],
       "features": {
-        "GSUB": [
-          "ccmp",
-          "dnom",
-          "frac",
-          "liga",
-          "locl",
-          "numr"
-        ],
-        "GPOS": [
-          "kern",
-          "mark",
-          "mkmk"
-        ]
+        "GSUB": ["ccmp", "dnom", "frac", "liga", "locl", "numr"],
+        "GPOS": ["kern", "mark", "mkmk"]
       },
       "hintTables": {
         "prep": 7,
@@ -2773,33 +2034,15 @@
         "0": [
           "Copyright 2019 The Lexend Project Authors (https://github.com/googlefonts/lexend)"
         ],
-        "1": [
-          "Lexend Deca"
-        ],
-        "14": [
-          "https://scripts.sil.org/OFL"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "256": [
-          "Weight"
-        ],
-        "261": [
-          "Regular"
-        ],
-        "3": [
-          "1.007;NONE;LexendDeca-Regular"
-        ],
-        "4": [
-          "Lexend Deca Regular"
-        ],
-        "5": [
-          "Version 1.007"
-        ],
-        "6": [
-          "LexendDeca-Regular"
-        ]
+        "1": ["Lexend Deca"],
+        "14": ["https://scripts.sil.org/OFL"],
+        "2": ["Regular"],
+        "256": ["Weight"],
+        "261": ["Regular"],
+        "3": ["1.007;NONE;LexendDeca-Regular"],
+        "4": ["Lexend Deca Regular"],
+        "5": ["Version 1.007"],
+        "6": ["LexendDeca-Regular"]
       }
     },
     "frontend/static/webfonts/Mononoki-Regular.woff2": {
@@ -2808,6 +2051,7 @@
       "glyphs": 934,
       "cmapCount": 921,
       "unicodeRange": "U+20-7E,U+A0-AC,U+AE-109,U+10C-113,U+116-11F,U+124-125,U+128-12B,U+12E-135,U+139-13A,U+13D-144,U+147-148,U+14C-14D,U+150-155,U+158-17E,U+192,U+19B,U+1A0-1A1,U+1AF-1B0,U+237,U+2B3,U+2C6-2C7,U+2D8-2DD,U+2E1,U+323,U+374-375,U+37E,U+384-38A,U+38C,U+38E-3A1,U+3A3-3CE,U+401,U+403,U+405-408,U+40C,U+410-44F,U+451,U+453,U+455-456,U+458,U+45C,U+4BB,U+4C0,U+4E2-4E3,U+4EE-4EF,U+180E,U+1D47,U+1D62,U+1D9C,U+1E80-1E85,U+1E9E,U+1EA0-1EF9,U+2000-200B,U+2013-2014,U+2018-201E,U+2020-2022,U+2024-2026,U+202F-2030,U+2032-2033,U+2039-203A,U+203C,U+205F,U+2070,U+2074-208E,U+20AC,U+2102,U+210D,U+2113,U+2115,U+2119-211A,U+211D,U+2122,U+2124,U+2150-215F,U+2189,U+2190-2199,U+219E,U+21A0,U+21D0,U+21D2,U+21D4,U+2200,U+2202-2206,U+2208-2209,U+220B-220C,U+220E-220F,U+2211-2212,U+2215,U+2218-221A,U+221E,U+2225,U+2227-222B,U+2234,U+2237-2238,U+2243-2244,U+2248,U+2250,U+225F-2262,U+2264-2265,U+2272-2273,U+2282-228B,U+228E,U+2294-2295,U+2297,U+22A2-22A5,U+2308-230B,U+2500-259F,U+2605,U+2665,U+27E8-27E9,U+2982,U+E0A0-E0A3,U+E0B0-E0BF,U+FEFF",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -2820,10 +2064,7 @@
           "subs",
           "sups"
         ],
-        "GPOS": [
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["mark", "mkmk"]
       },
       "hintTables": {
         "gasp": 8
@@ -2848,39 +2089,17 @@
         "post"
       ],
       "names": {
-        "0": [
-          "copyright missing"
-        ],
-        "1": [
-          "mononoki"
-        ],
-        "16": [
-          "mononoki"
-        ],
-        "17": [
-          "Regular"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "256": [
-          "Dotted Zero"
-        ],
-        "3": [
-          "1.006;UKWN;mononoki-Regular"
-        ],
-        "4": [
-          "mononoki Regular"
-        ],
-        "5": [
-          "Version 1.006;FEAKit 1.0"
-        ],
-        "6": [
-          "mononoki-Regular"
-        ],
-        "9": [
-          "Matthias Tellen"
-        ]
+        "0": ["copyright missing"],
+        "1": ["mononoki"],
+        "16": ["mononoki"],
+        "17": ["Regular"],
+        "2": ["Regular"],
+        "256": ["Dotted Zero"],
+        "3": ["1.006;UKWN;mononoki-Regular"],
+        "4": ["mononoki Regular"],
+        "5": ["Version 1.006;FEAKit 1.0"],
+        "6": ["mononoki-Regular"],
+        "9": ["Matthias Tellen"]
       }
     },
     "frontend/static/webfonts/Montserrat-Regular.woff2": {
@@ -2889,6 +2108,7 @@
       "glyphs": 1961,
       "cmapCount": 970,
       "unicodeRange": "U+0,U+D,U+20-7E,U+A0-17F,U+18F,U+192,U+1A0-1A1,U+1AF-1B0,U+1B7,U+1C4-1CE,U+1D3-1D4,U+1E4-1EB,U+1EE-1EF,U+1FA-21B,U+21E-21F,U+22A-22D,U+230-233,U+237,U+259,U+292,U+2B9-2BC,U+2BE-2BF,U+2C6-2CC,U+2D8-2DD,U+300-304,U+306-30C,U+30F,U+311-312,U+31B,U+323-324,U+326-328,U+32E,U+331,U+335-338,U+394,U+3A9,U+3BC,U+3C0,U+400-45F,U+462-463,U+46A-46B,U+472-475,U+48A-4A5,U+4A8-4C4,U+4C6-4FF,U+510-513,U+51A-51D,U+524-529,U+52E-52F,U+1E08-1E09,U+1E0C-1E0F,U+1E14-1E17,U+1E1C-1E1D,U+1E20-1E21,U+1E24-1E25,U+1E2A-1E2B,U+1E2E-1E2F,U+1E36-1E37,U+1E3A-1E3B,U+1E42-1E53,U+1E5A-1E5B,U+1E5E-1E69,U+1E6C-1E6F,U+1E78-1E7B,U+1E80-1E85,U+1E8E-1E8F,U+1E92-1E93,U+1E97,U+1E9E,U+1EA0-1EF9,U+2007-200B,U+2010,U+2012-2015,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2032-2033,U+2039-203A,U+2044,U+2052,U+2070,U+2074-2079,U+2080-2089,U+20A1,U+20A3-20A4,U+20A6-20A7,U+20A9,U+20AB-20AE,U+20B1-20B2,U+20B4-20B5,U+20B8-20BA,U+20BC-20BD,U+20BF,U+2113,U+2116,U+2122,U+2126,U+212A-212B,U+212E,U+2153-2154,U+215B-215E,U+2190-2199,U+2202,U+2205-2206,U+220F,U+2211-2212,U+2215,U+2219-221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+25A0-25A1,U+25B2-25B3,U+25B6-25B7,U+25BC-25BD,U+25C0-25C1,U+25C6-25C7,U+25CA,U+27E8-27E9,U+A78B-A78C,U+FB01-FB02",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -2914,11 +2134,7 @@
           "sups",
           "tnum"
         ],
-        "GPOS": [
-          "kern",
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["kern", "mark", "mkmk"]
       },
       "hintTables": {
         "cvt ": 216,
@@ -2951,42 +2167,20 @@
         "0": [
           "Copyright 2011 The Montserrat Project Authors (https://github.com/JulietaUla/Montserrat)"
         ],
-        "1": [
-          "Montserrat"
-        ],
-        "11": [
-          "http://www.zkysky.com.ar/"
-        ],
-        "12": [
-          "http://www.zkysky.com.ar/"
-        ],
+        "1": ["Montserrat"],
+        "11": ["http://www.zkysky.com.ar/"],
+        "12": ["http://www.zkysky.com.ar/"],
         "13": [
           "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL"
         ],
-        "14": [
-          "http://scripts.sil.org/OFL"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "7.222;ULA ;Montserrat-Regular"
-        ],
-        "4": [
-          "Montserrat Regular"
-        ],
-        "5": [
-          "Version 7.222"
-        ],
-        "6": [
-          "Montserrat-Regular"
-        ],
-        "8": [
-          "Julieta Ulanovsky"
-        ],
-        "9": [
-          "Julieta Ulanovsky"
-        ]
+        "14": ["http://scripts.sil.org/OFL"],
+        "2": ["Regular"],
+        "3": ["7.222;ULA ;Montserrat-Regular"],
+        "4": ["Montserrat Regular"],
+        "5": ["Version 7.222"],
+        "6": ["Montserrat-Regular"],
+        "8": ["Julieta Ulanovsky"],
+        "9": ["Julieta Ulanovsky"]
       }
     },
     "frontend/static/webfonts/NotoNaskhArabic-Regular.woff2": {
@@ -2995,6 +2189,7 @@
       "glyphs": 1719,
       "cmapCount": 1560,
       "unicodeRange": "U+0,U+D,U+20-7E,U+A0-A3,U+A5,U+A7-AB,U+AE-B0,U+B4,U+B6-B8,U+BA-BB,U+BF-107,U+10A-113,U+116-11B,U+11E-123,U+126-127,U+12A-12B,U+12E-131,U+136-137,U+139-13E,U+141-148,U+14A-14D,U+150-15B,U+15E-161,U+164-165,U+16A-17E,U+218-21B,U+237,U+2C6-2C7,U+2C9,U+2D8-2DD,U+300-304,U+306-308,U+30A-30C,U+312,U+326-328,U+600-6FF,U+750-77F,U+870-88E,U+890-891,U+898-8FF,U+1E80-1E85,U+1E9E,U+1EF2-1EF3,U+2009,U+200B-2011,U+2013-2014,U+2018-201A,U+201C-201E,U+2022,U+2026,U+202F,U+2039-203A,U+204F,U+20AC,U+2122,U+2212,U+221A,U+25CC,U+2E41,U+FB50-FBC2,U+FBD3-FD8F,U+FD92-FDC7,U+FDCF,U+FDF0-FDFF,U+FE70-FE74,U+FE76-FEFC,U+FEFF,U+10EFD-10EFF",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -3009,11 +2204,7 @@
           "rtlm",
           "tnum"
         ],
-        "GPOS": [
-          "kern",
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["kern", "mark", "mkmk"]
       },
       "hintTables": {
         "prep": 7,
@@ -3043,30 +2234,14 @@
         "0": [
           "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/arabic)"
         ],
-        "1": [
-          "Noto Naskh Arabic"
-        ],
-        "14": [
-          "https://scripts.sil.org/OFL"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "259": [
-          "Weight"
-        ],
-        "3": [
-          "2.018;GOOG;NotoNaskhArabic-Regular"
-        ],
-        "4": [
-          "Noto Naskh Arabic Regular"
-        ],
-        "5": [
-          "Version 2.018"
-        ],
-        "6": [
-          "NotoNaskhArabic-Regular"
-        ]
+        "1": ["Noto Naskh Arabic"],
+        "14": ["https://scripts.sil.org/OFL"],
+        "2": ["Regular"],
+        "259": ["Weight"],
+        "3": ["2.018;GOOG;NotoNaskhArabic-Regular"],
+        "4": ["Noto Naskh Arabic Regular"],
+        "5": ["Version 2.018"],
+        "6": ["NotoNaskhArabic-Regular"]
       }
     },
     "frontend/static/webfonts/NotoSansLao-Regular.woff2": {
@@ -3075,20 +2250,11 @@
       "glyphs": 464,
       "cmapCount": 421,
       "unicodeRange": "U+0,U+D,U+20-7E,U+A0-A3,U+A5,U+A7-AB,U+AE-B0,U+B4,U+B6-B8,U+BA-BB,U+BF-107,U+10A-113,U+116-11B,U+11E-123,U+126-127,U+12A-12B,U+12E-133,U+136-137,U+139-13E,U+141-148,U+14A-14D,U+150-15B,U+15E-161,U+164-165,U+16A-17E,U+218-21B,U+237,U+2C6-2C7,U+2C9,U+2D8-2DD,U+300-304,U+306-308,U+30A-30C,U+312,U+326-328,U+E81-E82,U+E84,U+E86-E8A,U+E8C-EA3,U+EA5,U+EA7-EBD,U+EC0-EC4,U+EC6,U+EC8-ECE,U+ED0-ED9,U+EDC-EDF,U+1E80-1E85,U+1E9E,U+1EF2-1EF3,U+200B-200D,U+2013-2014,U+2018-201A,U+201C-201E,U+2022,U+2026,U+2039-203A,U+20AC-20AD,U+2122,U+2212,U+25CC",
+      "variationSequences": {},
       "axes": [],
       "features": {
-        "GSUB": [
-          "aalt",
-          "ccmp",
-          "locl",
-          "ordn",
-          "ss01"
-        ],
-        "GPOS": [
-          "kern",
-          "mark",
-          "mkmk"
-        ]
+        "GSUB": ["aalt", "ccmp", "locl", "ordn", "ss01"],
+        "GPOS": ["kern", "mark", "mkmk"]
       },
       "hintTables": {
         "prep": 7,
@@ -3118,135 +2284,51 @@
         "0": [
           "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/lao)"
         ],
-        "1": [
-          "Noto Sans Lao"
-        ],
-        "10": [
-          "Designed by Monotype design team."
-        ],
-        "11": [
-          "http://www.google.com/get/noto/"
-        ],
-        "12": [
-          "http://www.monotype.com/studio"
-        ],
+        "1": ["Noto Sans Lao"],
+        "10": ["Designed by Monotype design team."],
+        "11": ["http://www.google.com/get/noto/"],
+        "12": ["http://www.monotype.com/studio"],
         "13": [
           "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL"
         ],
-        "14": [
-          "https://scripts.sil.org/OFL"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "25": [
-          "NotoSansLao"
-        ],
-        "256": [
-          "Alternate Pali Lla"
-        ],
-        "257": [
-          "florin symbol"
-        ],
-        "258": [
-          "Titling Alternates I and J for titling and all cap settings"
-        ],
-        "259": [
-          "Accented Greek SC"
-        ],
-        "260": [
-          "iota adscript"
-        ],
-        "261": [
-          "Weight"
-        ],
-        "262": [
-          "Width"
-        ],
-        "263": [
-          "Thin"
-        ],
-        "264": [
-          "ExtraLight"
-        ],
-        "265": [
-          "Light"
-        ],
-        "267": [
-          "Medium"
-        ],
-        "268": [
-          "SemiBold"
-        ],
-        "269": [
-          "Bold"
-        ],
-        "270": [
-          "ExtraBold"
-        ],
-        "271": [
-          "Black"
-        ],
-        "272": [
-          "ExtraCondensed"
-        ],
-        "273": [
-          "Condensed"
-        ],
-        "274": [
-          "SemiCondensed"
-        ],
-        "275": [
-          "Normal"
-        ],
-        "276": [
-          "Thin"
-        ],
-        "277": [
-          "ExtraLight"
-        ],
-        "278": [
-          "Light"
-        ],
-        "279": [
-          "Regular"
-        ],
-        "280": [
-          "Medium"
-        ],
-        "281": [
-          "SemiBold"
-        ],
-        "282": [
-          "Bold"
-        ],
-        "283": [
-          "ExtraBold"
-        ],
-        "284": [
-          "Black"
-        ],
-        "3": [
-          "2.003;GOOG;NotoSansLao-Regular"
-        ],
-        "4": [
-          "Noto Sans Lao Regular"
-        ],
-        "5": [
-          "Version 2.003"
-        ],
-        "6": [
-          "NotoSansLao-Regular"
-        ],
-        "7": [
-          "Noto is a trademark of Google Inc."
-        ],
-        "8": [
-          "Monotype Imaging Inc."
-        ],
-        "9": [
-          "Monotype Design Team"
-        ]
+        "14": ["https://scripts.sil.org/OFL"],
+        "2": ["Regular"],
+        "25": ["NotoSansLao"],
+        "256": ["Alternate Pali Lla"],
+        "257": ["florin symbol"],
+        "258": ["Titling Alternates I and J for titling and all cap settings"],
+        "259": ["Accented Greek SC"],
+        "260": ["iota adscript"],
+        "261": ["Weight"],
+        "262": ["Width"],
+        "263": ["Thin"],
+        "264": ["ExtraLight"],
+        "265": ["Light"],
+        "267": ["Medium"],
+        "268": ["SemiBold"],
+        "269": ["Bold"],
+        "270": ["ExtraBold"],
+        "271": ["Black"],
+        "272": ["ExtraCondensed"],
+        "273": ["Condensed"],
+        "274": ["SemiCondensed"],
+        "275": ["Normal"],
+        "276": ["Thin"],
+        "277": ["ExtraLight"],
+        "278": ["Light"],
+        "279": ["Regular"],
+        "280": ["Medium"],
+        "281": ["SemiBold"],
+        "282": ["Bold"],
+        "283": ["ExtraBold"],
+        "284": ["Black"],
+        "3": ["2.003;GOOG;NotoSansLao-Regular"],
+        "4": ["Noto Sans Lao Regular"],
+        "5": ["Version 2.003"],
+        "6": ["NotoSansLao-Regular"],
+        "7": ["Noto is a trademark of Google Inc."],
+        "8": ["Monotype Imaging Inc."],
+        "9": ["Monotype Design Team"]
       }
     },
     "frontend/static/webfonts/Nunito-Bold.woff2": {
@@ -3255,22 +2337,11 @@
       "glyphs": 1050,
       "cmapCount": 938,
       "unicodeRange": "U+0,U+D,U+20-7E,U+A0-132,U+134-17E,U+181,U+18A,U+18F,U+192,U+1A0-1A1,U+1AF-1B0,U+1B3-1B4,U+1C4-1CE,U+1D4,U+1E5-1E7,U+1E9-1EB,U+1EF,U+1FA-21B,U+21F,U+226-228,U+22A-22D,U+230-233,U+237,U+253,U+257,U+259,U+292,U+2B9-2BC,U+2BE-2BF,U+2C6-2CC,U+2D8-2DD,U+300-304,U+306-30C,U+30F,U+311-312,U+31B,U+323-324,U+326-328,U+32E,U+331,U+335,U+337-338,U+394,U+3A3,U+3A9,U+3BC,U+3C0,U+400-45F,U+462-463,U+46A-46B,U+472-475,U+48A-4A5,U+4A8-4FF,U+510-513,U+51A-51D,U+524-529,U+52E-52F,U+1E08-1E09,U+1E0C-1E0F,U+1E14-1E17,U+1E1C-1E1D,U+1E20-1E21,U+1E24-1E25,U+1E2A-1E2B,U+1E2E-1E2F,U+1E36-1E37,U+1E3A-1E3B,U+1E42-1E49,U+1E4C-1E53,U+1E5A-1E5B,U+1E5E-1E69,U+1E6C-1E6F,U+1E78-1E7B,U+1E80-1E85,U+1E8E-1E8F,U+1E92-1E93,U+1E97,U+1E9E,U+1EA0-1EF9,U+2007-200B,U+2010,U+2012-2015,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2032-2033,U+2039-203A,U+2044,U+2052,U+2070,U+2074-2079,U+2080-2089,U+20A1,U+20A3-20A4,U+20A6-20A7,U+20A9,U+20AB-20AE,U+20B1-20B2,U+20B4-20B5,U+20B8-20BA,U+20BC-20BD,U+2113,U+2116,U+2122,U+2126,U+212E,U+2202,U+2205-2206,U+220F,U+2211-2212,U+2215,U+2219-221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+25CA,U+27E8-27E9,U+F8FF,U+FB01-FB02",
+      "variationSequences": {},
       "axes": [],
       "features": {
-        "GSUB": [
-          "calt",
-          "ccmp",
-          "dnom",
-          "frac",
-          "liga",
-          "locl",
-          "numr"
-        ],
-        "GPOS": [
-          "kern",
-          "mark",
-          "mkmk"
-        ]
+        "GSUB": ["calt", "ccmp", "dnom", "frac", "liga", "locl", "numr"],
+        "GPOS": ["kern", "mark", "mkmk"]
       },
       "hintTables": {
         "prep": 7,
@@ -3300,39 +2371,17 @@
         "0": [
           "Copyright 2014 The Nunito Project Authors (https://github.com/googlefonts/nunito)"
         ],
-        "1": [
-          "Nunito"
-        ],
-        "14": [
-          "https://scripts.sil.org/OFL"
-        ],
-        "2": [
-          "Bold"
-        ],
-        "256": [
-          "Weight"
-        ],
-        "257": [
-          "Italic"
-        ],
-        "263": [
-          "Bold"
-        ],
-        "289": [
-          "Roman"
-        ],
-        "3": [
-          "3.602;NONE;Nunito-Bold"
-        ],
-        "4": [
-          "Nunito Bold"
-        ],
-        "5": [
-          "Version 3.602"
-        ],
-        "6": [
-          "Nunito-Bold"
-        ]
+        "1": ["Nunito"],
+        "14": ["https://scripts.sil.org/OFL"],
+        "2": ["Bold"],
+        "256": ["Weight"],
+        "257": ["Italic"],
+        "263": ["Bold"],
+        "289": ["Roman"],
+        "3": ["3.602;NONE;Nunito-Bold"],
+        "4": ["Nunito Bold"],
+        "5": ["Version 3.602"],
+        "6": ["Nunito-Bold"]
       }
     },
     "frontend/static/webfonts/OpenDyslexic-Regular.woff2": {
@@ -3341,6 +2390,7 @@
       "glyphs": 1952,
       "cmapCount": 1614,
       "unicodeRange": "U+20-7E,U+A0-107,U+10A-11B,U+11E-123,U+125-12B,U+12E-133,U+135-16B,U+16E-17F,U+181,U+186-18A,U+18E-194,U+196-19A,U+19D,U+1A0-1A1,U+1A4-1A5,U+1A9,U+1AC-1B4,U+1B7,U+1C0-1E1,U+1E3-1E7,U+1E9-1EF,U+1F1-1F5,U+1F8-1FB,U+1FE-1FF,U+218-21B,U+21F,U+226-22B,U+237,U+23D,U+242-245,U+24B-24C,U+250-276,U+278-27B,U+27D-27E,U+280-284,U+288-292,U+294-295,U+298-299,U+29B-2AD,U+2B0,U+2B2,U+2B7,U+2B9-2BC,U+2C1,U+2C6-2C8,U+2CC,U+2D0-2D1,U+2D8-2DE,U+2E0-2E1,U+2E5-2E9,U+2EC-2ED,U+2F3,U+300-30C,U+30F,U+312-314,U+318-320,U+323-32A,U+32C-32D,U+330-332,U+334,U+339-33D,U+342-344,U+346-34E,U+35C,U+361-362,U+370-377,U+37A,U+37E,U+384-38A,U+38C,U+38E-3A1,U+3A3-3D1,U+3D5-3E1,U+3F7-3F8,U+3FA-3FB,U+400-45F,U+462-463,U+46A-46B,U+472-475,U+486,U+490-4F9,U+4FC-4FD,U+510-513,U+51C-51D,U+524-527,U+1D6C-1D76,U+1DC4-1DC9,U+1E00,U+1E03-1E05,U+1E0A-1E0F,U+1E12-1E13,U+1E15,U+1E17,U+1E1A,U+1E1E-1E1F,U+1E24-1E25,U+1E28-1E29,U+1E2E-1E2F,U+1E36-1E37,U+1E3C-1E42,U+1E44-1E47,U+1E4A-1E4D,U+1E4F-1E53,U+1E56-1E57,U+1E5A-1E5B,U+1E60-1E67,U+1E6A-1E72,U+1E74,U+1E7C-1E7D,U+1E80-1E85,U+1E90-1E93,U+1E9E,U+1EA0-1EF9,U+1F00-1F15,U+1F18-1F1D,U+1F20-1F45,U+1F48-1F4D,U+1F50-1F57,U+1F59,U+1F5B,U+1F5D,U+1F5F-1F7D,U+1F80-1FB4,U+1FB6-1FC4,U+1FC6-1FD3,U+1FD6-1FDB,U+1FDD-1FEF,U+1FF2-1FF4,U+1FF6-1FFE,U+2000-200D,U+2010-2027,U+202F-2030,U+2032-203F,U+2042,U+2044,U+2047-2049,U+2052,U+205F,U+2070,U+2074-2079,U+207F-2089,U+208D-208E,U+20A1-20A2,U+20A4,U+20A6-20A9,U+20AB-20AC,U+20AE,U+20B1-20B2,U+20B4-20B5,U+20B8-20BA,U+20BC-20BD,U+2100-2101,U+2103,U+2105-2106,U+2109,U+2113,U+2116,U+211E,U+2121-2122,U+212E,U+213B,U+2153-215E,U+2160-217F,U+2190-2199,U+21D0-21D5,U+2202,U+2205,U+220F,U+2211-2212,U+221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+2549,U+25A0-25A1,U+25AA-25AF,U+25B2-25C5,U+25CA-25CB,U+25CF,U+25D8-25D9,U+25E6,U+25EF,U+25FE,U+2605-2606,U+263A-263C,U+2640,U+2642,U+2660-2667,U+2669-266F,U+2713,U+2720,U+272A,U+273D,U+274F,U+2759,U+2794,U+27A4,U+27B2,U+27E8-27E9,U+2C62,U+2C64,U+2C6D,U+2C72-2C73,U+2E32,U+3000,U+A71B-A71C,U+A78B-A78D,U+A7AA,U+AB53,U+FB00-FB04,U+FB06",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -3367,11 +2417,7 @@
           "sups",
           "tnum"
         ],
-        "GPOS": [
-          "kern",
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["kern", "mark", "mkmk"]
       },
       "hintTables": {},
       "glyphInstructionBytes": 0,
@@ -3393,36 +2439,18 @@
         "post"
       ],
       "names": {
-        "0": [
-          "Copyright \u00a9 2019 by Abbie Gonzalez. All rights reserved."
-        ],
-        "1": [
-          "OpenDyslexic"
-        ],
-        "12": [
-          "https://abbiecod.es"
-        ],
+        "0": ["Copyright \u00a9 2019 by Abbie Gonzalez. All rights reserved."],
+        "1": ["OpenDyslexic"],
+        "12": ["https://abbiecod.es"],
         "13": [
           "Copyright (c) 2019-07-29, Abbie Gonzalez (https://abbiecod.es|support@abbiecod.es),\nwith Reserved Font Name OpenDyslexic.\nCopyright (c) 12/2012 - 2019\nThis Font Software is licensed under the SIL Open Font License, Version 1.1.\nThis license is copied below, and is also available with a FAQ at:\nhttp://scripts.sil.org/OFL\n\n\n-----------------------------------------------------------\nSIL OPEN FONT LICENSE Version 1.1 - 26 February 2007\n-----------------------------------------------------------\n\nPREAMBLE\nThe goals of the Open Font License (OFL) are to stimulate worldwide\ndevelopment of collaborative font projects, to support the font creation\nefforts of academic and linguistic communities, and to provide a free and\nopen framework in which fonts may be shared and improved in partnership\nwith others.\n\nThe OFL allows the licensed fonts to be used, studied, modified and\nredistributed freely as long as they are not sold by themselves. The\nfonts, including any derivative works, can be bundled, embedded, \nredistributed and/or sold with any software provided that any reserved\nnames are not used by derivative works. The fonts and derivatives,\nhowever, cannot be released under any other type of license. The\nrequirement for fonts to remain under this license does not apply\nto any document created using the fonts or their derivatives.\n\nDEFINITIONS\n\"Font Software\" refers to the set of files released by the Copyright\nHolder(s) under this license and clearly marked as such. This may\ninclude source files, build scripts and documentation.\n\n\"Reserved Font Name\" refers to any names specified as such after the\ncopyright statement(s).\n\n\"Original Version\" refers to the collection of Font Software components as\ndistributed by the Copyright Holder(s).\n\n\"Modified Version\" refers to any derivative made by adding to, deleting,\nor substituting -- in part or in whole -- any of the components of the\nOriginal Version, by changing formats or by porting the Font Software to a\nnew environment.\n\n\"Author\" refers to any designer, engineer, programmer, technical\nwriter or other person who contributed to the Font Software.\n\nPERMISSION & CONDITIONS\nPermission is hereby granted, free of charge, to any person obtaining\na copy of the Font Software, to use, study, copy, merge, embed, modify,\nredistribute, and sell modified and unmodified copies of the Font\nSoftware, subject to the following conditions:\n\n1) Neither the Font Software nor any of its individual components,\nin Original or Modified Versions, may be sold by itself.\n\n2) Original or Modified Versions of the Font Software may be bundled,\nredistributed and/or sold with any software, provided that each copy\ncontains the above copyright notice and this license. These can be\nincluded either as stand-alone text files, human-readable headers or\nin the appropriate machine-readable metadata fields within text or\nbinary files as long as those fields can be easily viewed by the user.\n\n3) No Modified Version of the Font Software may use the Reserved Font\nName(s) unless explicit written permission is granted by the corresponding\nCopyright Holder. This restriction only applies to the primary font name as\npresented to the users.\n\n4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font\nSoftware shall not be used to promote, endorse or advertise any\nModified Version, except to acknowledge the contribution(s) of the\nCopyright Holder(s) and the Author(s) or with their explicit written\npermission.\n\n5) The Font Software, modified or unmodified, in part or in whole,\nmust be distributed entirely under this license, and must not be\ndistributed under any other license. The requirement for fonts to\nremain under this license does not apply to any document created\nusing the Font Software.\n\nTERMINATION\nThis license becomes null and void if any of the above conditions are\nnot met.\n\nDISCLAIMER\nTHE FONT SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT\nOF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE\nCOPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\nINCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL\nDAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM\nOTHER DEALINGS IN THE FONT SOFTWARE.\n"
         ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "0.940;UKWN;OpenDyslexic-Regular"
-        ],
-        "4": [
-          "OpenDyslexic Regular"
-        ],
-        "5": [
-          "Version 0.940;hotconv 1.0.109;makeotfexe 2.5.65596"
-        ],
-        "6": [
-          "OpenDyslexic-Regular"
-        ],
-        "9": [
-          "Abbie Gonzalez"
-        ]
+        "2": ["Regular"],
+        "3": ["0.940;UKWN;OpenDyslexic-Regular"],
+        "4": ["OpenDyslexic Regular"],
+        "5": ["Version 0.940;hotconv 1.0.109;makeotfexe 2.5.65596"],
+        "6": ["OpenDyslexic-Regular"],
+        "9": ["Abbie Gonzalez"]
       }
     },
     "frontend/static/webfonts/OverpassMono-Regular.woff2": {
@@ -3431,6 +2459,7 @@
       "glyphs": 1801,
       "cmapCount": 1642,
       "unicodeRange": "U+D,U+20-7E,U+A0-17F,U+181,U+186-18A,U+18E-194,U+196-199,U+19D,U+1A0-1A1,U+1A4-1A5,U+1A9,U+1AC-1B4,U+1B7,U+1C0-1F5,U+1F8-21B,U+21E-21F,U+226-233,U+237,U+242-245,U+24B-24C,U+250-254,U+256-257,U+259,U+25B,U+25F-261,U+263,U+265-266,U+268-269,U+26E-26F,U+272,U+279,U+27D-27E,U+283,U+288-28E,U+292,U+294-295,U+29E,U+2A1-2A4,U+2A6-2A7,U+2A9-2AC,U+2B0,U+2B2,U+2B7-2BA,U+2BC,U+2C6-2C7,U+2C9,U+2D6,U+2D8-2DD,U+2E1-2E3,U+300-304,U+306-30C,U+30F,U+311-312,U+31B,U+321,U+323-324,U+326-328,U+32D-32E,U+331,U+335-337,U+3A9,U+3BC,U+3C0-3C1,U+400-45F,U+462-463,U+46A-46B,U+472-477,U+490-49D,U+4A0-4A5,U+4AA-4AB,U+4AE-4B3,U+4B6-4BB,U+4C0-4C2,U+4CB-4CC,U+4CF-4DF,U+4E2-4F9,U+51A-51D,U+60B,U+E3F,U+17DB,U+1E04-1E05,U+1E0C-1E0F,U+1E12-1E13,U+1E20-1E21,U+1E24-1E25,U+1E2E-1E2F,U+1E36-1E37,U+1E3C-1E3F,U+1E44-1E47,U+1E4A-1E4D,U+1E50-1E53,U+1E62-1E63,U+1E6C-1E71,U+1E80-1E85,U+1E92-1E93,U+1E9E,U+1EA0-1EF9,U+2000-2010,U+2013-2015,U+2017-201E,U+2020-2022,U+2026,U+202F-2030,U+2032-2033,U+2039-203A,U+203C-203E,U+2044,U+2052,U+205F,U+2070-2071,U+2074-208E,U+2090-209C,U+20A1-20BF,U+20DD,U+2105,U+2113,U+2116,U+2120-2122,U+2126,U+212E,U+2150-215E,U+2189,U+2190-2199,U+21A8,U+21B3-21BA,U+21DA-21EA,U+2200-22FF,U+2302,U+2310,U+2317-2318,U+2320-2321,U+2325-2328,U+232B,U+23BD,U+23CE-23CF,U+23FB,U+2407,U+2460-2468,U+24EA,U+24FF-257F,U+25A0-25FF,U+2620,U+263A-263C,U+2640,U+2642,U+2660,U+2663,U+2665-2666,U+266A-266B,U+2776-277E,U+27A1,U+27E8-27E9,U+2B05-2B07,U+2B1B-2B1C,U+2B24,U+2B98-2B9F,U+2C64,U+2C6D,U+2C72-2C73,U+A78B-A78D,U+A7AA,U+E0A0-E0A2,U+E0B0-E0B3,U+F005,U+F6C3,U+FB01-FB02,U+FDFC,U+FFFD,U+1F310,U+1F3A9,U+1F427",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -3452,10 +2481,7 @@
           "tnum",
           "zero"
         ],
-        "GPOS": [
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["mark", "mkmk"]
       },
       "hintTables": {
         "cvt ": 232,
@@ -3488,51 +2514,27 @@
         "0": [
           "Copyright 2021 The Overpass Project Authors (https://github.com/RedHatOfficial/Overpass)"
         ],
-        "1": [
-          "Overpass Mono"
-        ],
+        "1": ["Overpass Mono"],
         "10": [
           "Overpass is a free, open source typeface is sponsored by Red Hat, Google Fonts, and created by Delve Fonts. This interpretation of Highway Gothic allows greater flexibility for modern typography."
         ],
-        "11": [
-          "https://delvefonts.com"
-        ],
-        "12": [
-          "https://delvefonts.com"
-        ],
+        "11": ["https://delvefonts.com"],
+        "12": ["https://delvefonts.com"],
         "13": [
           "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL"
         ],
-        "14": [
-          "https://scripts.sil.org/OFL"
-        ],
+        "14": ["https://scripts.sil.org/OFL"],
         "19": [
           "If I have seen further, it is by standing on the shoulders of giants. \u2014 Isaac Newton"
         ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "4.000;DELV;OverpassMono-Regular"
-        ],
-        "4": [
-          "Overpass Mono Regular"
-        ],
-        "5": [
-          "Version 4.000; ttfautohint (v1.8.3)"
-        ],
-        "6": [
-          "OverpassMono-Regular"
-        ],
-        "7": [
-          "Overpass is a registered trademark of Red Hat, Inc."
-        ],
-        "8": [
-          "Delve Fonts LLC"
-        ],
-        "9": [
-          "Delve Withrington, Dave Bailey"
-        ]
+        "2": ["Regular"],
+        "3": ["4.000;DELV;OverpassMono-Regular"],
+        "4": ["Overpass Mono Regular"],
+        "5": ["Version 4.000; ttfautohint (v1.8.3)"],
+        "6": ["OverpassMono-Regular"],
+        "7": ["Overpass is a registered trademark of Red Hat, Inc."],
+        "8": ["Delve Fonts LLC"],
+        "9": ["Delve Withrington, Dave Bailey"]
       }
     },
     "frontend/static/webfonts/Oxygen-Regular.woff2": {
@@ -3541,14 +2543,11 @@
       "glyphs": 410,
       "cmapCount": 395,
       "unicodeRange": "U+20-7E,U+A0-B4,U+B6-113,U+116-148,U+14C-15B,U+15D-165,U+168-17E,U+192,U+1C4-1CC,U+1F1-1F5,U+200-21B,U+237,U+2C6,U+2DA,U+2DC,U+1E02-1E03,U+1E0A-1E0B,U+1E1E-1E1F,U+1E40-1E41,U+1E56-1E57,U+1E60-1E61,U+1E6A-1E6B,U+1E80-1E85,U+1EF2-1EF3,U+2013-2014,U+2018-201A,U+201C-201E,U+2020,U+2022,U+2026,U+2039-203A,U+2044,U+2074,U+20AC,U+2122",
+      "variationSequences": {},
       "axes": [],
       "features": {
-        "GSUB": [
-          "liga"
-        ],
-        "GPOS": [
-          "kern"
-        ]
+        "GSUB": ["liga"],
+        "GPOS": ["kern"]
       },
       "hintTables": {
         "cvt ": 46,
@@ -3581,27 +2580,15 @@
         "0": [
           "Copyright (c) 2012, Vernon Adams (vern@newtypography.co.uk), with Reserved Font Names 'Oxygen'"
         ],
-        "1": [
-          "Oxygen"
-        ],
-        "14": [
-          "http://scripts.sil.org/OFL"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "0.2;UKWN;Oxygen-Regular"
-        ],
-        "4": [
-          "Oxygen Regular"
-        ],
+        "1": ["Oxygen"],
+        "14": ["http://scripts.sil.org/OFL"],
+        "2": ["Regular"],
+        "3": ["0.2;UKWN;Oxygen-Regular"],
+        "4": ["Oxygen Regular"],
         "5": [
           "Version Release 0.2.3 webfont; ttfautohint (v0.93.3-1d66) -l 8 -r 50 -G 200 -x 0 -w \"gGD\" -c"
         ],
-        "6": [
-          "Oxygen-Regular"
-        ]
+        "6": ["Oxygen-Regular"]
       }
     },
     "frontend/static/webfonts/Parkinsans-Regular.woff2": {
@@ -3610,6 +2597,7 @@
       "glyphs": 387,
       "cmapCount": 382,
       "unicodeRange": "U+20-7E,U+A0-AC,U+AE-107,U+10A-11B,U+11E-123,U+126-131,U+136-137,U+139-13E,U+141-148,U+14C-15B,U+15E-165,U+168-17E,U+192,U+1FC-1FD,U+218-21B,U+237,U+2C6-2C7,U+2D8-2DD,U+300-304,U+306-308,U+30A-30C,U+326-328,U+3C0,U+1E80-1E85,U+1E9E,U+1EBC-1EBD,U+1EF2-1EF3,U+1EF8-1EF9,U+2013-2014,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2039-203A,U+2044,U+20A8,U+20AC,U+20B9-20BA,U+20BD,U+2113,U+2122,U+2126,U+212E,U+2202,U+2206,U+220F,U+2211-2212,U+221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+25CA,U+25CC,U+FB01-FB02",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -3622,11 +2610,7 @@
           "ordn",
           "sups"
         ],
-        "GPOS": [
-          "kern",
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["kern", "mark", "mkmk"]
       },
       "hintTables": {
         "prep": 7,
@@ -3656,69 +2640,31 @@
         "0": [
           "Copyright 2024 The Parkinsans Project Authors (https://github.com/redstonedesign/parkinsans)"
         ],
-        "1": [
-          "Parkinsans"
-        ],
+        "1": ["Parkinsans"],
         "10": [
           "Parkinsans is derived from Indian Type Foundry's Poppins and has been created for the UK charity Parkinson's UK."
         ],
-        "11": [
-          "https://indiantypefoundry.com"
-        ],
-        "12": [
-          "https://red-stone.com/"
-        ],
+        "11": ["https://indiantypefoundry.com"],
+        "12": ["https://red-stone.com/"],
         "13": [
           "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://openfontlicense.org"
         ],
-        "14": [
-          "https://openfontlicense.org"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "25": [
-          "Parkinsans"
-        ],
-        "256": [
-          "Weight"
-        ],
-        "257": [
-          "Light"
-        ],
-        "258": [
-          "Regular"
-        ],
-        "259": [
-          "Medium"
-        ],
-        "260": [
-          "SemiBold"
-        ],
-        "261": [
-          "Bold"
-        ],
-        "262": [
-          "ExtraBold"
-        ],
-        "3": [
-          "1.000;NONE;Parkinsans-Regular"
-        ],
-        "4": [
-          "Parkinsans Regular"
-        ],
-        "5": [
-          "Version 1.000"
-        ],
-        "6": [
-          "Parkinsans-Regular"
-        ],
-        "8": [
-          "Indian Type Foundry"
-        ],
-        "9": [
-          "Red Stone, Indian Type Foundry"
-        ]
+        "14": ["https://openfontlicense.org"],
+        "2": ["Regular"],
+        "25": ["Parkinsans"],
+        "256": ["Weight"],
+        "257": ["Light"],
+        "258": ["Regular"],
+        "259": ["Medium"],
+        "260": ["SemiBold"],
+        "261": ["Bold"],
+        "262": ["ExtraBold"],
+        "3": ["1.000;NONE;Parkinsans-Regular"],
+        "4": ["Parkinsans Regular"],
+        "5": ["Version 1.000"],
+        "6": ["Parkinsans-Regular"],
+        "8": ["Indian Type Foundry"],
+        "9": ["Red Stone, Indian Type Foundry"]
       }
     },
     "frontend/static/webfonts/Roboto-Regular.woff2": {
@@ -3727,6 +2673,7 @@
       "glyphs": 1004,
       "cmapCount": 896,
       "unicodeRange": "U+0,U+2,U+D,U+20-7E,U+A0-17F,U+18F,U+192,U+1A0-1A1,U+1AF-1B0,U+1F0,U+1FA-1FF,U+218-21B,U+237,U+259,U+2BC,U+2C6-2C7,U+2C9,U+2D8-2DD,U+2F3,U+300-301,U+303,U+309,U+30F,U+323,U+384-38A,U+38C,U+38E-3A1,U+3A3-3CE,U+3D1-3D2,U+3D6,U+400-486,U+488-513,U+1E00-1E01,U+1E3E-1E3F,U+1E80-1E85,U+1EA0-1EF9,U+1F4D,U+2000-200B,U+2010-2011,U+2013-2015,U+2017-201E,U+2020-2022,U+2025-2027,U+2030,U+2032-2033,U+2039-203A,U+203C,U+2044,U+2074,U+207F,U+20A3-20A4,U+20A6-20AC,U+20B1,U+20B9-20BA,U+20BC-20BD,U+2105,U+2113,U+2116,U+2122,U+2126,U+212E,U+215B-215E,U+2202,U+2206,U+220F,U+2211-2212,U+221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+25CA,U+EE01-EE02,U+F6C3,U+FB01-FB04,U+FEFF,U+FFFC-FFFD",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -3740,9 +2687,7 @@
           "pnum",
           "tnum"
         ],
-        "GPOS": [
-          "kern"
-        ]
+        "GPOS": ["kern"]
       },
       "hintTables": {
         "cvt ": 84,
@@ -3774,30 +2719,14 @@
         "prep"
       ],
       "names": {
-        "0": [
-          "Copyright 2011 Google Inc. All Rights Reserved."
-        ],
-        "1": [
-          "Roboto"
-        ],
-        "14": [
-          "http://www.apache.org/licenses/LICENSE-2.0"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "Roboto"
-        ],
-        "4": [
-          "Roboto"
-        ],
-        "5": [
-          "Version 2.137; 2017"
-        ],
-        "6": [
-          "Roboto-Regular"
-        ]
+        "0": ["Copyright 2011 Google Inc. All Rights Reserved."],
+        "1": ["Roboto"],
+        "14": ["http://www.apache.org/licenses/LICENSE-2.0"],
+        "2": ["Regular"],
+        "3": ["Roboto"],
+        "4": ["Roboto"],
+        "5": ["Version 2.137; 2017"],
+        "6": ["Roboto-Regular"]
       }
     },
     "frontend/static/webfonts/RobotoMono-Regular.woff2": {
@@ -3806,6 +2735,7 @@
       "glyphs": 888,
       "cmapCount": 876,
       "unicodeRange": "U+D,U+20-7E,U+A0-17F,U+192,U+1A0-1A1,U+1AF-1B0,U+1F0,U+1FA-1FF,U+218-21B,U+237,U+259,U+2BC,U+2C6-2C7,U+2C9,U+2D8-2DD,U+2F3,U+300-301,U+303,U+309,U+30F,U+323,U+384-38A,U+38C,U+38E-3A1,U+3A3-3CE,U+3D1-3D2,U+3D6,U+400-486,U+488-513,U+1E00-1E01,U+1E3E-1E3F,U+1E80-1E85,U+1EA0-1EF9,U+1F4D,U+2000-200B,U+2013-2015,U+2017-201E,U+2020-2022,U+2025-2026,U+2030,U+2032-2033,U+2039-203A,U+203C,U+2044,U+2074,U+207F,U+20A3-20A4,U+20A7,U+20AB-20AC,U+2105,U+2113,U+2116,U+2122,U+2126,U+212E,U+215B-215E,U+2202,U+2206,U+220F,U+2211-2212,U+2215,U+221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+25CA,U+F6C3,U+FEFF,U+FFFC-FFFD",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": []
@@ -3836,39 +2766,17 @@
         "0": [
           "Copyright 2015 The Roboto Mono Project Authors (https://github.com/googlefonts/robotomono)"
         ],
-        "1": [
-          "Roboto Mono"
-        ],
-        "14": [
-          "http://www.apache.org/licenses/LICENSE-2.0"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "256": [
-          "Weight"
-        ],
-        "267": [
-          "Italic"
-        ],
-        "270": [
-          "Regular"
-        ],
-        "273": [
-          "Normal"
-        ],
-        "3": [
-          "3.000;GOOG;RobotoMono-Regular"
-        ],
-        "4": [
-          "Roboto Mono Regular"
-        ],
-        "5": [
-          "Version 3.000"
-        ],
-        "6": [
-          "RobotoMono-Regular"
-        ]
+        "1": ["Roboto Mono"],
+        "14": ["http://www.apache.org/licenses/LICENSE-2.0"],
+        "2": ["Regular"],
+        "256": ["Weight"],
+        "267": ["Italic"],
+        "270": ["Regular"],
+        "273": ["Normal"],
+        "3": ["3.000;GOOG;RobotoMono-Regular"],
+        "4": ["Roboto Mono Regular"],
+        "5": ["Version 3.000"],
+        "6": ["RobotoMono-Regular"]
       }
     },
     "frontend/static/webfonts/Sarabun-Bold.woff2": {
@@ -3877,6 +2785,7 @@
       "glyphs": 777,
       "cmapCount": 725,
       "unicodeRange": "U+0,U+D,U+20-7E,U+A0-17E,U+18F,U+192,U+1A0-1A1,U+1AF-1B0,U+1CD-1DC,U+1E6-1E7,U+1FA-1FF,U+218-21B,U+237,U+251,U+259,U+2BB-2BC,U+2BE-2BF,U+2C6-2CC,U+2D8-2DD,U+300-304,U+306-30C,U+31B,U+323-324,U+326-328,U+32E,U+331,U+394,U+3A9,U+3BC,U+3C0,U+E01-E3A,U+E3F-E5B,U+1E0C-1E0F,U+1E20-1E21,U+1E24-1E25,U+1E2A-1E2B,U+1E36-1E3B,U+1E42-1E49,U+1E5A-1E63,U+1E6C-1E6F,U+1E80-1E85,U+1E8E-1E8F,U+1E92-1E93,U+1E97,U+1E9E,U+1EA0-1EF9,U+2007,U+2010,U+2012-2015,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2032-2033,U+2039-203A,U+2044,U+2070,U+2074-2079,U+207D-2089,U+208D-208E,U+20A1,U+20A4,U+20A6-20A7,U+20AB-20AC,U+20B1-20B2,U+20B5,U+20B9-20BA,U+20BD,U+210A,U+2113,U+2117,U+2120,U+2122,U+212E,U+2153-2154,U+215B-215E,U+2190-2193,U+2202,U+2206,U+220F,U+2211-2212,U+2215,U+2219-221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+25A0,U+25B2-25B3,U+25B6-25B7,U+25BC-25BD,U+25C0-25C1,U+25C6,U+25CA,U+F8FF,U+FB01-FB02",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -3891,11 +2800,7 @@
           "subs",
           "sups"
         ],
-        "GPOS": [
-          "kern",
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["kern", "mark", "mkmk"]
       },
       "hintTables": {
         "cvt ": 172,
@@ -3929,42 +2834,20 @@
         "0": [
           "Copyright 2018 The Sarabun Project Authors (https://github.com/cadsondemak/Sarabun)"
         ],
-        "1": [
-          "Sarabun"
-        ],
-        "11": [
-          "http://www.cadsondemak.com"
-        ],
-        "12": [
-          "http://www.katatrad.com"
-        ],
+        "1": ["Sarabun"],
+        "11": ["http://www.cadsondemak.com"],
+        "12": ["http://www.katatrad.com"],
         "13": [
           "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL"
         ],
-        "14": [
-          "http://scripts.sil.org/OFL"
-        ],
-        "2": [
-          "Bold"
-        ],
-        "3": [
-          "1.000;CDK ;Sarabun-Bold"
-        ],
-        "4": [
-          "Sarabun Bold"
-        ],
-        "5": [
-          "Version 1.000"
-        ],
-        "6": [
-          "Sarabun-Bold"
-        ],
-        "8": [
-          "Cadson Demak Co.,Ltd."
-        ],
-        "9": [
-          "Suppakit Chalermlarp | Katatrad Co.,Ltd."
-        ]
+        "14": ["http://scripts.sil.org/OFL"],
+        "2": ["Bold"],
+        "3": ["1.000;CDK ;Sarabun-Bold"],
+        "4": ["Sarabun Bold"],
+        "5": ["Version 1.000"],
+        "6": ["Sarabun-Bold"],
+        "8": ["Cadson Demak Co.,Ltd."],
+        "9": ["Suppakit Chalermlarp | Katatrad Co.,Ltd."]
       }
     },
     "frontend/static/webfonts/SourceCodePro-Regular.woff2": {
@@ -3973,6 +2856,7 @@
       "glyphs": 1568,
       "cmapCount": 1335,
       "unicodeRange": "U+20-7E,U+A0-180,U+18A,U+18F,U+192-193,U+1A0-1A1,U+1AF-1B0,U+1C2,U+1CD-1DC,U+1E2-1E3,U+1E6-1E7,U+1EA-1EB,U+1F4-1F5,U+1F8-1FF,U+218-21B,U+237,U+243,U+250-25C,U+25E-268,U+26A-276,U+278-27B,U+27D-27E,U+280-284,U+287-292,U+294-295,U+298-299,U+29C-29F,U+2A1-2A2,U+2A4,U+2A6-2A7,U+2B0,U+2B2-2B3,U+2B7-2B9,U+2BB-2BC,U+2BE-2BF,U+2C1,U+2C6-2CC,U+2D0-2D1,U+2D8-2DE,U+2E0-2E4,U+300-30C,U+30F-313,U+318-320,U+323-32A,U+32C,U+32E-331,U+334,U+339-33D,U+340-345,U+35F,U+361,U+374-375,U+37A,U+37E,U+384-38A,U+38C,U+38E-3A1,U+3A3-3CE,U+3D0-3D1,U+3D5,U+3D7,U+3D9,U+3DB,U+3DD,U+3E1,U+400-45F,U+462-463,U+472-475,U+490-493,U+496-49B,U+4A0-4A3,U+4AA-4AB,U+4AE-4B3,U+4B6-4B7,U+4BA-4BB,U+4C0-4C2,U+4CF-4D1,U+4D4-4D9,U+4E2-4E3,U+4E6-4E9,U+4EE-4EF,U+4F2-4F3,U+1D43,U+1D47-1D49,U+1D4D,U+1D4F-1D50,U+1D52,U+1D56-1D58,U+1D5B,U+1D9C,U+1DA0,U+1DBB,U+1E06-1E07,U+1E0C-1E11,U+1E16-1E17,U+1E20-1E21,U+1E24-1E2B,U+1E32-1E3B,U+1E3E-1E49,U+1E52-1E53,U+1E58-1E63,U+1E66-1E67,U+1E6C-1E6F,U+1E7E-1E85,U+1E8E-1E97,U+1E9E,U+1EA0-1EF9,U+1FBD-1FC1,U+1FCD-1FCF,U+1FDD-1FDF,U+1FED-1FEF,U+1FFD-1FFE,U+2007,U+2010,U+2012-201E,U+2020-2022,U+2026,U+202F-2030,U+2032-2033,U+2035,U+2039-203A,U+203C-203F,U+2044,U+2047-2049,U+2070-2071,U+2074-2079,U+207D-2089,U+208D-208E,U+2094,U+20A1,U+20A3-20A4,U+20A6-20A7,U+20A9,U+20AB-20AC,U+20AE,U+20B1-20B2,U+20B4-20B5,U+20B8-20BA,U+20BD,U+2105,U+2113,U+2116-2117,U+2120,U+2122,U+2126,U+212E,U+2150-215E,U+2189,U+2190-2199,U+21A8,U+21D0-21D3,U+2200,U+2202-2203,U+2206,U+220F,U+2211-2212,U+2215,U+2219-221A,U+221E-221F,U+2229,U+222B,U+2237,U+2248,U+2260-2261,U+2264-2265,U+2302,U+2310,U+231C-2321,U+2500-25A1,U+25AA-25AC,U+25B2-25BA,U+25BC-25C4,U+25C6,U+25C9-25CC,U+25CF,U+25D8-25D9,U+25E6,U+2610-2611,U+2615,U+263A-263C,U+2640,U+2642,U+2660,U+2663,U+2665-2666,U+266A-266B,U+2713,U+2752,U+2764,U+27E6-27E7,U+2E18,U+2E22-2E25,U+E0A0-E0A2,U+E0B0-E0B3,U+FB01-FB02,U+FEFF,U+1F3B5-1F3B6,U+1F4A9,U+1F512,U+1F916",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -4011,13 +2895,7 @@
           "sups",
           "zero"
         ],
-        "GPOS": [
-          "ccmp",
-          "frac",
-          "mark",
-          "mkmk",
-          "size"
-        ]
+        "GPOS": ["ccmp", "frac", "mark", "mkmk", "size"]
       },
       "hintTables": {},
       "glyphInstructionBytes": 0,
@@ -4041,21 +2919,13 @@
         "0": [
           "\u00a9 2023 Adobe (http://www.adobe.com/), with Reserved Font Name \u2018Source\u2019"
         ],
-        "1": [
-          "Source Code Pro"
-        ],
-        "11": [
-          "http://www.adobe.com/type"
-        ],
+        "1": ["Source Code Pro"],
+        "11": ["http://www.adobe.com/type"],
         "13": [
           "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL. This Font Software is distributed on an \u2018AS IS\u2019 BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the SIL Open Font License for the specific language, permissions and limitations governing your use of this Font Software."
         ],
-        "14": [
-          "http://scripts.sil.org/OFL"
-        ],
-        "2": [
-          "Regular"
-        ],
+        "14": ["http://scripts.sil.org/OFL"],
+        "2": ["Regular"],
         "256": [
           "simple a",
           "\u03b1\u03c0\u03bb\u03cc a",
@@ -4121,9 +2991,7 @@
           "\u03c3\u03cd\u03bc\u03b2\u03bf\u03bb\u03bf \u03c4\u03bf\u03c5 \u03b4\u03bf\u03bb\u03b1\u03c1\u03af\u03bf\u03c5 \u03bc\u03b5 \u03ba\u03ac\u03b8\u03b5\u03c4\u03bf [$]",
           "\u0437\u0430\u0447\u0435\u0440\u043a\u043d\u0443\u0442\u044b\u0439 \u0437\u043d\u0430\u043a \u0434\u043e\u043b\u043b\u0430\u0440\u0430 [$]"
         ],
-        "269": [
-          "alternate numeral one [1]"
-        ],
+        "269": ["alternate numeral one [1]"],
         "270": [
           "typographic alternates [-,*]",
           "\u03c4\u03c5\u03c0\u03bf\u03b3\u03c1\u03b1\u03c6\u03b9\u03ba\u03ac \u03b5\u03bd\u03b1\u03bb\u03bb\u03b1\u03ba\u03c4\u03b9\u03ba\u03ac [-,*]",
@@ -4154,30 +3022,16 @@
           "\u03c3\u03cd\u03bc\u03b2\u03bf\u03bb\u03bf \u03c4\u03bf\u03c5 \u03b4\u03bf\u03bb\u03b1\u03c1\u03af\u03bf\u03c5 \u03bc\u03b5 \u03ba\u03ac\u03b8\u03b5\u03c4\u03bf [$]",
           "\u0437\u0430\u0447\u0435\u0440\u043a\u043d\u0443\u0442\u044b\u0439 \u0437\u043d\u0430\u043a \u0434\u043e\u043b\u043b\u0430\u0440\u0430 [$]"
         ],
-        "276": [
-          "alternate numeral one [1]"
-        ],
-        "3": [
-          "2.042;ADBO;SourceCodePro-Regular;ADOBE"
-        ],
-        "4": [
-          "Source Code Pro"
-        ],
-        "5": [
-          "Version 2.042;hotconv 1.1.0;makeotfexe 2.6.0"
-        ],
-        "6": [
-          "SourceCodePro-Regular"
-        ],
+        "276": ["alternate numeral one [1]"],
+        "3": ["2.042;ADBO;SourceCodePro-Regular;ADOBE"],
+        "4": ["Source Code Pro"],
+        "5": ["Version 2.042;hotconv 1.1.0;makeotfexe 2.6.0"],
+        "6": ["SourceCodePro-Regular"],
         "7": [
           "Source is a trademark of Adobe in the United States and/or other countries."
         ],
-        "8": [
-          "Adobe"
-        ],
-        "9": [
-          "Paul D. Hunt, Teo Tuominen"
-        ]
+        "8": ["Adobe"],
+        "9": ["Paul D. Hunt, Teo Tuominen"]
       }
     },
     "frontend/static/webfonts/SpaceGrotesk-Regular.woff2": {
@@ -4186,6 +3040,7 @@
       "glyphs": 967,
       "cmapCount": 735,
       "unicodeRange": "U+D,U+20-7E,U+A0-180,U+18F,U+192,U+1A0-1A1,U+1AF-1B0,U+1C4-1DC,U+1E6-1E7,U+1EA-1EB,U+1FA-21B,U+22A-22D,U+230-233,U+237,U+243,U+251,U+259,U+2B9-2BC,U+2BE-2BF,U+2C6-2CC,U+2D8-2DD,U+300-304,U+306-30C,U+30F,U+311-312,U+31B,U+323-324,U+326-328,U+32E,U+331,U+335-338,U+394,U+3A9,U+3C0,U+E3F,U+1E08-1E09,U+1E0C-1E0F,U+1E14-1E17,U+1E1C-1E1D,U+1E20-1E21,U+1E24-1E25,U+1E2A-1E2B,U+1E2E-1E2F,U+1E36-1E3B,U+1E42-1E49,U+1E4C-1E53,U+1E5A-1E69,U+1E6C-1E6F,U+1E78-1E7B,U+1E80-1E85,U+1E8E-1E8F,U+1E92-1E93,U+1E97,U+1E9E,U+1EA0-1EF9,U+2007-200B,U+2010,U+2012-2015,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2032-2033,U+2039-203A,U+2044,U+2052,U+2070-2071,U+2074-2079,U+207D-2089,U+208D-208E,U+2094,U+20A1,U+20A3-20A4,U+20A6-20A7,U+20A9,U+20AB-20AD,U+20B1-20B2,U+20B5,U+20B9-20BA,U+20BC-20BD,U+20BF,U+2113,U+2116,U+2120,U+2122,U+2126,U+212E,U+2153-2154,U+215B-215E,U+2190-2199,U+2202,U+2205-2206,U+220F,U+2211-2212,U+2215,U+2219-221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+25CA,U+27E8-27E9,U+E132-E133,U+FB00-FB04",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -4213,11 +3068,7 @@
           "tnum",
           "zero"
         ],
-        "GPOS": [
-          "kern",
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["kern", "mark", "mkmk"]
       },
       "hintTables": {
         "prep": 7,
@@ -4247,30 +3098,14 @@
         "0": [
           "Copyright 2020 The Space Grotesk Project Authors (https://github.com/floriankarsten/space-grotesk)"
         ],
-        "1": [
-          "Space Grotesk"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "256": [
-          "Weight"
-        ],
-        "258": [
-          "Regular"
-        ],
-        "3": [
-          "2.000;FK;SpaceGrotesk-Regular"
-        ],
-        "4": [
-          "Space Grotesk Regular"
-        ],
-        "5": [
-          "Version 2.000"
-        ],
-        "6": [
-          "SpaceGrotesk-Regular"
-        ]
+        "1": ["Space Grotesk"],
+        "2": ["Regular"],
+        "256": ["Weight"],
+        "258": ["Regular"],
+        "3": ["2.000;FK;SpaceGrotesk-Regular"],
+        "4": ["Space Grotesk Regular"],
+        "5": ["Version 2.000"],
+        "6": ["SpaceGrotesk-Regular"]
       }
     },
     "frontend/static/webfonts/TitilliumWeb-Regular.woff2": {
@@ -4279,15 +3114,11 @@
       "glyphs": 372,
       "cmapCount": 353,
       "unicodeRange": "U+20-7E,U+A0-AC,U+AE-131,U+134-137,U+139-13E,U+141-148,U+14A-17E,U+192,U+1FA-1FF,U+218-21B,U+2C6,U+2DA,U+2DC,U+1E80-1E85,U+1EF2-1EF3,U+1EF8-1EF9,U+2013-2014,U+2018-201A,U+201C-201E,U+2020,U+2022,U+2026,U+2039-203A,U+2044,U+2074,U+20AC,U+2122,U+2212",
+      "variationSequences": {},
       "axes": [],
       "features": {
-        "GSUB": [
-          "frac",
-          "locl"
-        ],
-        "GPOS": [
-          "kern"
-        ]
+        "GSUB": ["frac", "locl"],
+        "GPOS": ["kern"]
       },
       "hintTables": {
         "prep": 7,
@@ -4316,27 +3147,13 @@
         "0": [
           "Copyright (c) 2009-2011 by Accademia di Belle Arti di Urbino and students of MA course of Visual design. Some rights reserved."
         ],
-        "1": [
-          "Titillium Web"
-        ],
-        "14": [
-          "http://scripts.sil.org/OFL"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "1.002;UKWN;TitilliumWeb-Regular"
-        ],
-        "4": [
-          "Titillium Web Regular"
-        ],
-        "5": [
-          "Version 1.002;PS 57.000;hotconv 1.0.70;makeotf.lib2.5.55311"
-        ],
-        "6": [
-          "TitilliumWeb-Regular"
-        ]
+        "1": ["Titillium Web"],
+        "14": ["http://scripts.sil.org/OFL"],
+        "2": ["Regular"],
+        "3": ["1.002;UKWN;TitilliumWeb-Regular"],
+        "4": ["Titillium Web Regular"],
+        "5": ["Version 1.002;PS 57.000;hotconv 1.0.70;makeotf.lib2.5.55311"],
+        "6": ["TitilliumWeb-Regular"]
       }
     },
     "frontend/static/webfonts/Ubuntu-Regular.woff2": {
@@ -4345,20 +3162,11 @@
       "glyphs": 1214,
       "cmapCount": 1194,
       "unicodeRange": "U+0,U+8-9,U+D,U+1D,U+20-7E,U+A0-24F,U+292,U+2BC,U+2C6-2C7,U+2C9,U+2D8-2DD,U+311,U+384-386,U+388-38A,U+38C,U+38E-3A1,U+3A3-3CE,U+400-45F,U+462-463,U+472-475,U+48A-4F9,U+1E80-1E85,U+1EF2-1EF3,U+1F00-1F15,U+1F18-1F1D,U+1F20-1F45,U+1F48-1F4D,U+1F50-1F57,U+1F59,U+1F5B,U+1F5D,U+1F5F-1F7D,U+1F80-1FB4,U+1FB6-1FC4,U+1FC6-1FD3,U+1FD6-1FDB,U+1FDD-1FEF,U+1FF2-1FF4,U+1FF6-1FFE,U+2013-2015,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2039-203A,U+2044,U+2070,U+2074-2079,U+2080-2089,U+20AC,U+20AE,U+20B4,U+20B9,U+2113,U+2116,U+2122,U+2126,U+212E,U+2153-215E,U+2202,U+2206,U+220F,U+2211-2212,U+2215,U+2219-221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+25CA,U+E0FF,U+EFFD,U+F000-F002,U+F0FF,U+F200,U+F506-F511,U+F800-F81D,U+FB00-FB04",
+      "variationSequences": {},
       "axes": [],
       "features": {
-        "GSUB": [
-          "dnom",
-          "frac",
-          "liga",
-          "locl",
-          "numr",
-          "pnum",
-          "tnum"
-        ],
-        "GPOS": [
-          "kern"
-        ]
+        "GSUB": ["dnom", "frac", "liga", "locl", "numr", "pnum", "tnum"],
+        "GPOS": ["kern"]
       },
       "hintTables": {
         "cvt ": 532,
@@ -4394,24 +3202,12 @@
         "0": [
           "Copyright 2011 Canonical Ltd.  Licensed under the Ubuntu Font Licence 1.0"
         ],
-        "1": [
-          "Ubuntu"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "0.83;DAMA;Ubuntu-Regular"
-        ],
-        "4": [
-          "Ubuntu Regular"
-        ],
-        "5": [
-          "0.83"
-        ],
-        "6": [
-          "Ubuntu-Regular"
-        ]
+        "1": ["Ubuntu"],
+        "2": ["Regular"],
+        "3": ["0.83;DAMA;Ubuntu-Regular"],
+        "4": ["Ubuntu Regular"],
+        "5": ["0.83"],
+        "6": ["Ubuntu-Regular"]
       }
     },
     "frontend/static/webfonts/UbuntuMono-Regular.woff2": {
@@ -4420,14 +3216,10 @@
       "glyphs": 1241,
       "cmapCount": 1224,
       "unicodeRange": "U+0,U+8-9,U+D,U+1D,U+20-7E,U+A0-24F,U+292,U+2BC,U+2C6-2C7,U+2C9,U+2D8-2DD,U+311,U+384-386,U+388-38A,U+38C,U+38E-3A1,U+3A3-3CE,U+400-45F,U+462-463,U+472-475,U+48A-4F9,U+1E80-1E85,U+1EF2-1EF3,U+1F00-1F15,U+1F18-1F1D,U+1F20-1F45,U+1F48-1F4D,U+1F50-1F57,U+1F59,U+1F5B,U+1F5D,U+1F5F-1F7D,U+1F80-1FB4,U+1FB6-1FC4,U+1FC6-1FD3,U+1FD6-1FDB,U+1FDD-1FEF,U+1FF2-1FF4,U+1FF6-1FFE,U+2013-2015,U+2018-201A,U+201C-201E,U+2020-2022,U+2026,U+2030,U+2039-203A,U+2044,U+2070,U+2074-2079,U+2080-2089,U+20AC,U+20AE,U+20B4,U+20B9,U+2113,U+2116,U+2122,U+2126,U+212E,U+2153-215E,U+2202,U+2206,U+220F,U+2211-2212,U+2215,U+2219-221A,U+221E,U+222B,U+2248,U+2260,U+2264-2265,U+2500,U+2502,U+250C,U+2510,U+2514,U+2518,U+251C,U+2524,U+252C,U+2534,U+253C,U+2550-256C,U+2588,U+2591-2593,U+25CA,U+E0FF,U+EFFD,U+F000-F002,U+F506-F511,U+F80A-F81D,U+FB01-FB02,U+FFFD",
+      "variationSequences": {},
       "axes": [],
       "features": {
-        "GSUB": [
-          "dnom",
-          "frac",
-          "locl",
-          "numr"
-        ]
+        "GSUB": ["dnom", "frac", "locl", "numr"]
       },
       "hintTables": {
         "cvt ": 516,
@@ -4460,24 +3252,12 @@
         "0": [
           "Copyright 2011 Canonical Ltd.  Licensed under the Ubuntu Font Licence 1.0"
         ],
-        "1": [
-          "Ubuntu Mono"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "Ubuntu Mono Regular Version 0.80"
-        ],
-        "4": [
-          "Ubuntu Mono"
-        ],
-        "5": [
-          "Version 0.80"
-        ],
-        "6": [
-          "UbuntuMono-Regular"
-        ]
+        "1": ["Ubuntu Mono"],
+        "2": ["Regular"],
+        "3": ["Ubuntu Mono Regular Version 0.80"],
+        "4": ["Ubuntu Mono"],
+        "5": ["Version 0.80"],
+        "6": ["UbuntuMono-Regular"]
       }
     },
     "frontend/static/webfonts/Vazirharf-NL-Regular.woff2": {
@@ -4486,6 +3266,7 @@
       "glyphs": 570,
       "cmapCount": 391,
       "unicodeRange": "U+20-21,U+28-29,U+2B,U+2D-2F,U+3A,U+3D,U+5B,U+5D,U+A0,U+AB,U+BB,U+D7,U+F7,U+60C-60D,U+610-612,U+615,U+61B,U+61F,U+621-63A,U+63D,U+640-658,U+65A-65B,U+660-671,U+674,U+679,U+67C,U+67E,U+681,U+685-686,U+688-689,U+691,U+693,U+695-696,U+698,U+69A,U+6A0-6A1,U+6A4,U+6A9-6AD,U+6AF,U+6B5,U+6BA,U+6BC-6BE,U+6C0-6C3,U+6C6-6D0,U+6D2-6D5,U+6DC-6DE,U+6E9,U+6F0-6F9,U+762-763,U+200B-200F,U+2012-2014,U+202A-202F,U+220E,U+2212,U+2215,U+25CC,U+FB50-FB51,U+FB56-FB59,U+FB66-FB6D,U+FB7A-FB7D,U+FB88-FB95,U+FB9E-FB9F,U+FBA5,U+FBA7-FBB1,U+FBBF-FBC0,U+FBD3-FBDC,U+FBDE-FBDF,U+FBE2-FBE3,U+FBE8-FBE9,U+FBFC-FBFF,U+FD3E-FD3F,U+FDF2,U+FDFC,U+FE70-FE74,U+FE76-FEFC",
+      "variationSequences": {},
       "axes": [],
       "features": {
         "GSUB": [
@@ -4501,11 +3282,7 @@
           "ss01",
           "tnum"
         ],
-        "GPOS": [
-          "kern",
-          "mark",
-          "mkmk"
-        ]
+        "GPOS": ["kern", "mark", "mkmk"]
       },
       "hintTables": {
         "prep": 7,
@@ -4534,45 +3311,23 @@
         "0": [
           "Copyright 2015 The Vazirmatn Project Authors (https://github.com/rastikerdar/vazirmatn).\nContextual Lam-Alef modifications copyright (c) 2025 Nad Alaba <alaba.nadim@gmail.com> with Reserved Font Name \"Vazirharf\"."
         ],
-        "1": [
-          "Vazirharf NL"
-        ],
+        "1": ["Vazirharf NL"],
         "10": [
           "Vazirharf is a fork of Vazirmatn designed to split Lam-Alef required ligatures into two distinct glyphs. The first version of Vazirmatn (formerly named Vazir) was based on DejaVu 2.35 (was committed to the public domain) to begin designing and developing this new typeface. Non-Arabic (Latin) glyphs and data in the full version are imported from Roboto Variable font (version v3.004) under the Apache License, Version 2.0. https://github.com/davelab6/Roboto-Classic."
         ],
         "13": [
           "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL"
         ],
-        "14": [
-          "https://scripts.sil.org/OFL"
-        ],
-        "16": [
-          "Vazirharf NL"
-        ],
-        "17": [
-          "Regular"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "Vazirharf NL-Regular"
-        ],
-        "4": [
-          "Vazirharf NL Regular"
-        ],
-        "5": [
-          "Version 34.002"
-        ],
-        "6": [
-          "Vazirharf-NL-Regular"
-        ],
-        "8": [
-          "Nad Alaba"
-        ],
-        "9": [
-          "Saber Rastikerdar"
-        ]
+        "14": ["https://scripts.sil.org/OFL"],
+        "16": ["Vazirharf NL"],
+        "17": ["Regular"],
+        "2": ["Regular"],
+        "3": ["Vazirharf NL-Regular"],
+        "4": ["Vazirharf NL Regular"],
+        "5": ["Version 34.002"],
+        "6": ["Vazirharf-NL-Regular"],
+        "8": ["Nad Alaba"],
+        "9": ["Saber Rastikerdar"]
       }
     },
     "@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2": {
@@ -4581,6 +3336,7 @@
       "glyphs": 573,
       "cmapCount": 583,
       "unicodeRange": "U+E007,U+E013,U+E01A,U+E01E,U+E049,U+E052,U+E055-E057,U+E077-E084,U+E087-E088,U+E2D0,U+E340,U+E360,U+E3D9,U+E40F,U+E43A,U+E44A,U+E499,U+E49B,U+E4A0,U+E530-E531,U+E570,U+E5AC-E5AE,U+E5C6-E5C7,U+E60B-E60C,U+E618-E61B,U+E62B,U+E62D-E62F,U+E63B-E63D,U+E640-E641,U+E65C,U+E663,U+E671,U+E67B-E67C,U+E682-E684,U+E693-E694,U+E69F,U+E6A2-E6A3,U+E7CF-E7D0,U+E7D4-E7DE,U+E7E2-E7E4,U+E7FF,U+E812,U+E833,U+E838,U+E840,U+E844,U+E851-E861,U+E863-E86B,U+E86D-E86F,U+E879,U+E87B,U+E88A,U+E8AB-E8AE,U+E8B1-E8C2,U+E8C7,U+F081-F082,U+F08C,U+F092,U+F099-F09B,U+F0D2-F0D5,U+F0E1,U+F113,U+F136,U+F13B-F13C,U+F15A,U+F166-F16E,U+F170-F174,U+F179-F17E,U+F180-F181,U+F184,U+F189-F18D,U+F194,U+F198,U+F19A-F19B,U+F19E,U+F1A0-F1AA,U+F1B4-F1B7,U+F1BC-F1BE,U+F1CA-F1CC,U+F1D0-F1D7,U+F1E7-F1E9,U+F1ED-F1EE,U+F1F0-F1F5,U+F202-F203,U+F208-F209,U+F20D-F20E,U+F210-F216,U+F230-F232,U+F237,U+F23A-F23E,U+F24B-F24C,U+F25E,U+F260-F261,U+F263-F26B,U+F26D-F26E,U+F270,U+F27C-F27E,U+F280-F282,U+F284-F28A,U+F293-F294,U+F296-F299,U+F29B,U+F2A5-F2A6,U+F2A9-F2AE,U+F2B0-F2B4,U+F2B8,U+F2C4-F2C6,U+F2D5-F2DA,U+F2DD-F2DE,U+F2E0,U+F35C,U+F368-F375,U+F378-F37D,U+F37F-F380,U+F383-F385,U+F388,U+F38B-F38F,U+F391-F397,U+F399-F39A,U+F39D-F39F,U+F3A1-F3A4,U+F3A6-F3B2,U+F3B4-F3BD,U+F3C0,U+F3C3-F3C4,U+F3C6-F3C8,U+F3CA-F3CC,U+F3D0,U+F3D2-F3DC,U+F3DF,U+F3E1-F3E4,U+F3E6-F3EC,U+F3EE-F3EF,U+F3F3,U+F3F5-F3F9,U+F3FE,U+F402-F405,U+F407-F40D,U+F411-F417,U+F419-F421,U+F423,U+F425-F431,U+F44D,U+F452,U+F457,U+F459,U+F4D5,U+F4E4-F4F9,U+F50A-F514,U+F592,U+F59E,U+F5A3,U+F5A8,U+F5B2,U+F5B5,U+F5BE,U+F5C6,U+F5CC,U+F5CF,U+F5F1,U+F5F7,U+F5FA,U+F60F,U+F612,U+F63F,U+F642,U+F69D,U+F6C9-F6CA,U+F6CC,U+F6DC,U+F730-F731,U+F75D,U+F77A-F77B,U+F785,U+F789,U+F78D,U+F790-F791,U+F797-F799,U+F7AF-F7B1,U+F7B3,U+F7BB-F7BC,U+F7C6,U+F7D3,U+F7D6,U+F7DF-F7E1,U+F7E3,U+F834-F83D,U+F83F-F842,U+F89E,U+F8A6,U+F8CA,U+F8D2,U+F8E1,U+F8E8",
+      "variationSequences": {},
       "axes": [],
       "features": {},
       "hintTables": {},
@@ -4598,39 +3354,17 @@
         "post"
       ],
       "names": {
-        "0": [
-          "Copyright (c) Font Awesome"
-        ],
-        "1": [
-          "Font Awesome 7 Brands"
-        ],
-        "10": [
-          "The web's most popular icon set and toolkit."
-        ],
-        "11": [
-          "https://fontawesome.com"
-        ],
-        "16": [
-          "Font Awesome 7 Brands"
-        ],
-        "17": [
-          "Regular"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "Font Awesome 7 Brands Regular-7.3.1"
-        ],
-        "4": [
-          "Font Awesome 7 Brands Regular"
-        ],
-        "5": [
-          "Version 899.01171875 (Font Awesome version: 7.3.1)"
-        ],
-        "6": [
-          "FontAwesome7Brands-Regular"
-        ]
+        "0": ["Copyright (c) Font Awesome"],
+        "1": ["Font Awesome 7 Brands"],
+        "10": ["The web's most popular icon set and toolkit."],
+        "11": ["https://fontawesome.com"],
+        "16": ["Font Awesome 7 Brands"],
+        "17": ["Regular"],
+        "2": ["Regular"],
+        "3": ["Font Awesome 7 Brands Regular-7.3.1"],
+        "4": ["Font Awesome 7 Brands Regular"],
+        "5": ["Version 899.01171875 (Font Awesome version: 7.3.1)"],
+        "6": ["FontAwesome7Brands-Regular"]
       }
     },
     "@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2": {
@@ -4639,6 +3373,7 @@
       "glyphs": 170,
       "cmapCount": 362,
       "unicodeRange": "U+A9,U+AE,U+2328,U+23F0,U+23F3,U+23FE,U+25A0,U+25CF,U+25FB-25FC,U+2600-2601,U+2611,U+261D,U+2639,U+265A-265F,U+2665,U+26AA-26AB,U+26BD,U+26DF,U+2705,U+2709,U+270B-270C,U+2744,U+2746,U+2764,U+2B1B-2B1C,U+2B24,U+2B50,U+E185,U+F003-F007,U+F014-F017,U+F01A-F01B,U+F01D,U+F022,U+F024-F025,U+F02E,U+F030,U+F03E,U+F044-F046,U+F057-F059,U+F05C-F05D,U+F06E,U+F070,U+F073,U+F075,U+F07B-F07C,U+F080,U+F086-F08A,U+F094,U+F096-F097,U+F09D,U+F0A0,U+F0A2,U+F0A4-F0A7,U+F0C2,U+F0C5,U+F0C7-F0C8,U+F0D1,U+F0E0,U+F0E5-F0E6,U+F0EA-F0EB,U+F0F3,U+F0F6-F0F8,U+F0FE,U+F10C,U+F111,U+F114-F115,U+F118-F11A,U+F11C-F11D,U+F123,U+F133,U+F144,U+F146-F147,U+F14A,U+F14D-F14E,U+F150-F152,U+F15B-F15C,U+F164-F165,U+F185-F186,U+F18E,U+F190-F192,U+F196,U+F1AD,U+F1C1-F1C9,U+F1CD,U+F1D8-F1D9,U+F1DB,U+F1E3,U+F1EA,U+F1F6-F1F7,U+F1F9,U+F20A,U+F247-F24A,U+F24D,U+F250,U+F252,U+F254-F25B,U+F25D,U+F271-F274,U+F278-F27B,U+F283,U+F28B-F28E,U+F29C,U+F2B4-F2B7,U+F2B9-F2BE,U+F2C0-F2C3,U+F2D0-F2D2,U+F2D4,U+F2DC,U+F2ED,U+F302,U+F328,U+F332,U+F34E,U+F358-F35B,U+F3A5,U+F3D1,U+F406,U+F410,U+F425,U+F43A,U+F43F,U+F441,U+F443,U+F445,U+F447,U+F45C,U+F47D,U+F4AD,U+F4C6,U+F4DA,U+F4E6,U+F556,U+F567,U+F579-F57A,U+F57F-F58C,U+F58F,U+F596-F59C,U+F5A4-F5A5,U+F5B3-F5B4,U+F5B8,U+F5C0,U+F5C2,U+F5C8,U+F80A,U+F80C,U+1F319,U+1F34B,U+1F3A7,U+1F3E0,U+1F3E2,U+1F3E5,U+1F3F4,U+1F441,U+1F44D-1F44E,U+1F464,U+1F48E,U+1F499-1F49C,U+1F4A1,U+1F4AC,U+1F4B3,U+1F4BE,U+1F4C1-1F4C2,U+1F4C4-1F4C6,U+1F4CB,U+1F4F0,U+1F514-1F516,U+1F518,U+1F534-1F535,U+1F553,U+1F582,U+1F596,U+1F5A4,U+1F5AA,U+1F5B4,U+1F5B9,U+1F5BB,U+1F5BF,U+1F5C1,U+1F5CB,U+1F5CE,U+1F5D5-1F5D6,U+1F5E9-1F5EA,U+1F5FA,U+1F600-1F606,U+1F609-1F60A,U+1F60D,U+1F610,U+1F617-1F619,U+1F61B-1F61D,U+1F620,U+1F622,U+1F626,U+1F62B-1F62E,U+1F633,U+1F636,U+1F642,U+1F644,U+1F69A,U+1F7E0-1F7EB,U+1F90D-1F90E,U+1F91A,U+1F91D,U+1F923,U+1F929,U+1F9E1,U+1F9ED",
+      "variationSequences": {},
       "axes": [],
       "features": {},
       "hintTables": {},
@@ -4656,39 +3391,17 @@
         "post"
       ],
       "names": {
-        "0": [
-          "Copyright (c) Font Awesome"
-        ],
-        "1": [
-          "Font Awesome 7 Free"
-        ],
-        "10": [
-          "The web's most popular icon set and toolkit."
-        ],
-        "11": [
-          "https://fontawesome.com"
-        ],
-        "16": [
-          "Font Awesome 7 Free"
-        ],
-        "17": [
-          "Regular"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "Font Awesome 7 Free Regular-7.3.1"
-        ],
-        "4": [
-          "Font Awesome 7 Free Regular"
-        ],
-        "5": [
-          "Version 899.01171875 (Font Awesome version: 7.3.1)"
-        ],
-        "6": [
-          "FontAwesome7Free-Regular"
-        ]
+        "0": ["Copyright (c) Font Awesome"],
+        "1": ["Font Awesome 7 Free"],
+        "10": ["The web's most popular icon set and toolkit."],
+        "11": ["https://fontawesome.com"],
+        "16": ["Font Awesome 7 Free"],
+        "17": ["Regular"],
+        "2": ["Regular"],
+        "3": ["Font Awesome 7 Free Regular-7.3.1"],
+        "4": ["Font Awesome 7 Free Regular"],
+        "5": ["Version 899.01171875 (Font Awesome version: 7.3.1)"],
+        "6": ["FontAwesome7Free-Regular"]
       }
     },
     "@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2": {
@@ -4697,6 +3410,7 @@
       "glyphs": 1423,
       "cmapCount": 2009,
       "unicodeRange": "U+21,U+23-25,U+2A-2B,U+30-39,U+3C-5A,U+61-7A,U+A3,U+A5,U+A9,U+AB,U+AE,U+B6,U+BB,U+D7,U+F7,U+2013,U+201C-201D,U+2039-203A,U+20A4,U+20A8-20AA,U+20AC,U+20B4,U+20B8,U+20BD,U+2122,U+2190-2195,U+2197,U+21BA-21BB,U+21C4,U+2212,U+221E,U+2303-2304,U+231B,U+2328-232B,U+2399,U+23CF,U+23E9-23EA,U+23ED-23EE,U+23F0-23F1,U+23F3,U+23F8-23F9,U+23FB,U+23FE,U+24BD,U+25A0,U+25B6,U+25CF-25D0,U+25FB-25FC,U+2600-2601,U+2603-2604,U+2611,U+2615,U+261D,U+2620,U+2622-2623,U+2625,U+262A,U+262C,U+262E-262F,U+2638-2639,U+263F-2640,U+2642,U+265A-265F,U+2665-2666,U+2672,U+267A-267B,U+267E,U+2680-2685,U+2693,U+2696,U+2699,U+269B,U+26A0-26AB,U+26B2,U+26BD-26BE,U+26C4-26C6,U+26DF,U+26E9-26EA,U+26F7,U+26FA,U+26FD,U+2700,U+2702,U+2704-2705,U+2709-270C,U+270F,U+2711-2716,U+271D,U+2721,U+2731,U+2744,U+2746,U+274C,U+274E,U+2753-2755,U+2757,U+2764,U+2795-2797,U+2934-2935,U+2B0D,U+2B1B-2B1C,U+2B23-2B24,U+2B50,U+E005-E006,U+E00D,U+E012,U+E03F-E041,U+E059-E076,U+E085-E086,U+E097-E098,U+E09A,U+E0A9,U+E0AC,U+E0B4,U+E0B7,U+E0BB,U+E0CF,U+E0D8,U+E0DF,U+E0E3-E0E4,U+E131,U+E135,U+E139-E13C,U+E140,U+E152,U+E163,U+E169,U+E16D,U+E17B,U+E184-E185,U+E18F,U+E19A-E19B,U+E1A8,U+E1B0,U+E1BC,U+E1C4,U+E1C8,U+E1D3,U+E1D5,U+E1D7,U+E1ED,U+E1F3,U+E1F6,U+E1FE,U+E209,U+E221-E222,U+E22D,U+E23D,U+E289,U+E29C,U+E2B7,U+E2BB,U+E2C5,U+E2C7,U+E2CA,U+E2CD-E2CE,U+E2E6,U+E2EB,U+E307,U+E31E,U+E3AF,U+E3B1-E3B2,U+E3F5,U+E43C,U+E445,U+E447-E448,U+E46C,U+E473,U+E476-E477,U+E47A-E47B,U+E490,U+E494,U+E4A5,U+E4A8-E4AD,U+E4AF-E4B0,U+E4B3,U+E4B5-E4CC,U+E4CE-E4DE,U+E4E0-E4E6,U+E4E8-E4EB,U+E4ED-E503,U+E507-E525,U+E527-E52F,U+E532-E54F,U+E551-E558,U+E55A-E56F,U+E571-E574,U+E576-E587,U+E589-E58F,U+E591-E59A,U+E59C-E59D,U+E5A0-E5A1,U+E5A9-E5AA,U+E5AF,U+E5B4,U+E678,U+E67A,U+E682,U+E68F,U+E691,U+E695-E69B,U+E790,U+E807,U+E80A-E80B,U+E816,U+E81B-E81D,U+E820,U+E845-E850,U+F000-F00E,U+F010-F01E,U+F021-F03E,U+F040-F04E,U+F050-F05E,U+F060-F06E,U+F070-F07E,U+F080,U+F083-F08B,U+F08D-F08E,U+F090-F091,U+F093-F098,U+F09C-F09E,U+F0A0-F0AE,U+F0B0-F0B2,U+F0C0-F0CE,U+F0D0-F0D1,U+F0D6-F0DE,U+F0E0,U+F0E2-F0EE,U+F0F0-F0FE,U+F100-F10E,U+F110-F112,U+F114-F115,U+F118-F11E,U+F120-F12E,U+F130-F135,U+F137-F13A,U+F13D-F13E,U+F140-F14E,U+F150-F159,U+F15B-F15E,U+F160-F165,U+F175-F178,U+F182-F183,U+F185-F188,U+F18E,U+F190-F193,U+F195-F197,U+F199,U+F19C-F19D,U+F1AB-F1AE,U+F1B0-F1B3,U+F1B8-F1BB,U+F1C0-F1C9,U+F1CD-F1CE,U+F1D8-F1DE,U+F1E0-F1E6,U+F1EA-F1EC,U+F1F6-F1FE,U+F200-F201,U+F204-F207,U+F20A-F20B,U+F217-F21E,U+F221-F22D,U+F233-F236,U+F238-F239,U+F240-F24A,U+F24D-F24E,U+F250-F25D,U+F26C,U+F271-F27B,U+F283,U+F28B-F28E,U+F290-F292,U+F295,U+F29A,U+F29C-F29E,U+F2A0-F2A4,U+F2A7-F2A8,U+F2B4-F2B7,U+F2B9-F2BE,U+F2C0-F2C3,U+F2C7-F2CE,U+F2D0-F2D4,U+F2DB-F2DC,U+F2E5,U+F2E7,U+F2EA,U+F2ED,U+F2F1-F2F2,U+F2F5-F2F6,U+F2F9,U+F2FE,U+F302-F306,U+F309-F30C,U+F312,U+F31C,U+F31E,U+F328,U+F332,U+F337-F338,U+F34E,U+F358-F35B,U+F35D,U+F360,U+F362-F363,U+F381-F382,U+F386-F387,U+F390,U+F3A0,U+F3A5,U+F3BE-F3BF,U+F3C1,U+F3C5,U+F3C9,U+F3CD-F3CF,U+F3D1,U+F3DD,U+F3E0,U+F3E5,U+F3ED,U+F3FA-F3FB,U+F3FD,U+F3FF,U+F406,U+F410,U+F422,U+F424-F425,U+F432-F434,U+F436,U+F439-F43A,U+F43C,U+F43F,U+F441,U+F443,U+F445,U+F447,U+F44B,U+F44E,U+F450,U+F453,U+F458,U+F45C-F45D,U+F45F,U+F461-F462,U+F466,U+F468-F46D,U+F470-F472,U+F474,U+F477-F479,U+F47D-F47F,U+F481-F482,U+F484-F487,U+F48B,U+F48D-F48E,U+F490-F494,U+F496-F497,U+F49E,U+F4A1,U+F4AD,U+F4B3,U+F4B8-F4BA,U+F4BD-F4BE,U+F4C0-F4C2,U+F4C4,U+F4C6,U+F4CD-F4CE,U+F4D3,U+F4D6-F4DB,U+F4DE-F4DF,U+F4E2-F4E3,U+F4E6,U+F4FA-F509,U+F515-F591,U+F593-F59D,U+F59F-F5A2,U+F5A4-F5A7,U+F5AA-F5B1,U+F5B3-F5B4,U+F5B6-F5B8,U+F5BA-F5BD,U+F5BF-F5C5,U+F5C7-F5CA,U+F5CD-F5CE,U+F5D0-F5D2,U+F5D7,U+F5DA,U+F5DC,U+F5DE-F5DF,U+F5E1,U+F5E4,U+F5E7,U+F5EB,U+F5EE,U+F5FC-F5FD,U+F601,U+F604,U+F610,U+F613,U+F619,U+F61F,U+F621,U+F624-F625,U+F629-F62A,U+F62E-F630,U+F637,U+F63B-F63C,U+F641,U+F644,U+F647,U+F64A,U+F64F,U+F651,U+F653-F655,U+F658,U+F65D-F65E,U+F662,U+F664-F666,U+F669-F66B,U+F66D,U+F66F,U+F674,U+F676,U+F678-F679,U+F67B-F67C,U+F67F,U+F681-F684,U+F687-F689,U+F696,U+F698-F69B,U+F6A0-F6A1,U+F6A7-F6A9,U+F6AD,U+F6B6-F6B7,U+F6BB,U+F6BE,U+F6C0,U+F6C3-F6C4,U+F6C8,U+F6CF,U+F6D1,U+F6D3,U+F6D5,U+F6D7,U+F6D9,U+F6DD-F6DE,U+F6E2-F6E3,U+F6E6,U+F6E8,U+F6EC-F6ED,U+F6F0-F6F2,U+F6FA,U+F6FC,U+F6FF-F700,U+F70B-F70C,U+F70E,U+F714-F715,U+F717,U+F71E-F71F,U+F722,U+F728-F729,U+F72B,U+F72E-F72F,U+F73B-F73D,U+F740,U+F743,U+F747,U+F74D,U+F751-F753,U+F756,U+F75A-F75B,U+F75E-F75F,U+F769,U+F76B-F76C,U+F76F-F770,U+F772-F773,U+F77C-F77D,U+F780-F781,U+F783-F784,U+F786-F788,U+F78C,U+F793-F794,U+F796,U+F79C,U+F79F-F7A0,U+F7A2,U+F7A4-F7A6,U+F7A9-F7AB,U+F7AD-F7AE,U+F7B5-F7B6,U+F7B9-F7BA,U+F7BD,U+F7BF-F7C0,U+F7C2,U+F7C4-F7C5,U+F7C9-F7CA,U+F7CC-F7CE,U+F7D0,U+F7D2,U+F7D7-F7DA,U+F7E4-F7E6,U+F7EC,U+F7EF,U+F7F2-F7F3,U+F7F5,U+F7F7,U+F7FA-F7FB,U+F802,U+F805-F807,U+F80A-F80D,U+F80F-F810,U+F812,U+F815-F816,U+F818,U+F81D,U+F827-F82A,U+F82F,U+F83E,U+F84A,U+F84C,U+F850,U+F853,U+F85E,U+F863,U+F86D,U+F879,U+F87B-F87D,U+F881-F882,U+F884-F887,U+F891,U+F897,U+F8C0-F8C1,U+F8CC,U+F8D7,U+F8D9,U+F8E5,U+F8EF,U+F8FF,U+1F17F,U+1F308,U+1F30B,U+1F30D-1F310,U+1F319,U+1F321,U+1F326-1F327,U+1F329-1F32A,U+1F32D,U+1F331-1F332,U+1F336,U+1F34B,U+1F34E-1F34F,U+1F368,U+1F36A,U+1F374,U+1F377-1F378,U+1F381-1F382,U+1F393,U+1F397,U+1F399,U+1F39E-1F39F,U+1F3A7-1F3A8,U+1F3AD,U+1F3B2,U+1F3B5,U+1F3C0-1F3C3,U+1F3C5-1F3C6,U+1F3C8,U+1F3CA,U+1F3CD,U+1F3D0,U+1F3D3-1F3D4,U+1F3D6,U+1F3D9,U+1F3DB,U+1F3E0,U+1F3E2,U+1F3E5,U+1F3E8,U+1F3EB,U+1F3F4,U+1F3F7,U+1F404,U+1F408-1F409,U+1F40E,U+1F415,U+1F41F,U+1F441,U+1F44D-1F44E,U+1F451,U+1F455,U+1F464-1F465,U+1F47B,U+1F480,U+1F489,U+1F48E,U+1F494,U+1F499-1F49C,U+1F4A1,U+1F4A3,U+1F4A7,U+1F4A9,U+1F4AC,U+1F4B0,U+1F4B2-1F4B3,U+1F4BB-1F4BC,U+1F4BE-1F4C2,U+1F4C4-1F4C6,U+1F4CB-1F4CF,U+1F4D4,U+1F4D6,U+1F4DC-1F4E2,U+1F4E6,U+1F4F0-1F4F1,U+1F4F6-1F4F7,U+1F4FB,U+1F500-1F501,U+1F504,U+1F508-1F50D,U+1F511-1F518,U+1F525,U+1F527-1F528,U+1F52C,U+1F534-1F535,U+1F547,U+1F549-1F54E,U+1F553,U+1F56B,U+1F56E,U+1F571,U+1F575,U+1F577,U+1F57B,U+1F57D,U+1F582,U+1F588,U+1F58A-1F58C,U+1F595-1F596,U+1F5A4-1F5A5,U+1F5A8-1F5AA,U+1F5B1,U+1F5B4,U+1F5B6-1F5B9,U+1F5BB,U+1F5BF,U+1F5C1,U+1F5CB,U+1F5CE,U+1F5D5-1F5D6,U+1F5D8-1F5D9,U+1F5E9-1F5EA,U+1F5FA,U+1F600-1F606,U+1F609-1F60A,U+1F60D,U+1F610,U+1F617-1F619,U+1F61B-1F61D,U+1F620,U+1F622,U+1F626,U+1F62B-1F62E,U+1F633,U+1F636,U+1F642,U+1F644,U+1F681,U+1F686,U+1F68A,U+1F68D,U+1F690-1F691,U+1F696-1F698,U+1F69A,U+1F69C,U+1F6A1-1F6A2,U+1F6A6,U+1F6AA-1F6AD,U+1F6B0,U+1F6B2,U+1F6B4,U+1F6B6,U+1F6BD,U+1F6BF,U+1F6C1,U+1F6CC,U+1F6CE,U+1F6D0-1F6D2,U+1F6E1,U+1F6E3,U+1F6EB-1F6EC,U+1F6F0,U+1F6FB,U+1F7E0-1F7EB,U+1F90D-1F90E,U+1F916,U+1F91A,U+1F91D,U+1F923,U+1F929,U+1F941-1F944,U+1F94E,U+1F953,U+1F955,U+1F95A,U+1F977,U+1F990,U+1F99B,U+1F9A6,U+1F9B4,U+1F9B7,U+1F9CD,U+1F9E0-1F9E1,U+1F9E6,U+1F9E9-1F9EA,U+1F9EC-1F9ED,U+1F9EF-1F9F0,U+1F9F2-1F9F3,U+1F9F9,U+1F9FB-1F9FC,U+1F9FE,U+1FA79-1FA7A,U+1FA91,U+1FA9B,U+1FAB6,U+1FAC1",
+      "variationSequences": {},
       "axes": [],
       "features": {},
       "hintTables": {},
@@ -4714,39 +3428,17 @@
         "post"
       ],
       "names": {
-        "0": [
-          "Copyright (c) Font Awesome"
-        ],
-        "1": [
-          "Font Awesome 7 Free Solid"
-        ],
-        "10": [
-          "The web's most popular icon set and toolkit."
-        ],
-        "11": [
-          "https://fontawesome.com"
-        ],
-        "16": [
-          "Font Awesome 7 Free"
-        ],
-        "17": [
-          "Solid"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "Font Awesome 7 Free Solid-7.3.1"
-        ],
-        "4": [
-          "Font Awesome 7 Free Solid"
-        ],
-        "5": [
-          "Version 899.01171875 (Font Awesome version: 7.3.1)"
-        ],
-        "6": [
-          "FontAwesome7Free-Solid"
-        ]
+        "0": ["Copyright (c) Font Awesome"],
+        "1": ["Font Awesome 7 Free Solid"],
+        "10": ["The web's most popular icon set and toolkit."],
+        "11": ["https://fontawesome.com"],
+        "16": ["Font Awesome 7 Free"],
+        "17": ["Solid"],
+        "2": ["Regular"],
+        "3": ["Font Awesome 7 Free Solid-7.3.1"],
+        "4": ["Font Awesome 7 Free Solid"],
+        "5": ["Version 899.01171875 (Font Awesome version: 7.3.1)"],
+        "6": ["FontAwesome7Free-Solid"]
       }
     },
     "@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2": {
@@ -4755,6 +3447,7 @@
       "glyphs": 39,
       "cmapCount": 38,
       "unicodeRange": "U+F041,U+F047,U+F065-F066,U+F07D-F07E,U+F080,U+F08B,U+F08E,U+F090,U+F09A,U+F0AC,U+F0AE,U+F0B2,U+F0D0,U+F0D6,U+F0E4,U+F0EC,U+F10A-F10B,U+F123,U+F13E,U+F148-F149,U+F14C,U+F156,U+F15E,U+F160-F161,U+F163,U+F175-F178,U+F195,U+F1F8,U+F219,U+F27A",
+      "variationSequences": {},
       "axes": [],
       "features": {},
       "hintTables": {},
@@ -4772,39 +3465,17 @@
         "post"
       ],
       "names": {
-        "0": [
-          "Copyright (c) Font Awesome"
-        ],
-        "1": [
-          "Font Awesome v4 Compatibility"
-        ],
-        "10": [
-          "The web's most popular icon set and toolkit."
-        ],
-        "11": [
-          "https://fontawesome.com"
-        ],
-        "16": [
-          "Font Awesome v4 Compatibility"
-        ],
-        "17": [
-          "Regular"
-        ],
-        "2": [
-          "Regular"
-        ],
-        "3": [
-          "Font Awesome v4 Compatibility Regular-7.3.1"
-        ],
-        "4": [
-          "Font Awesome v4 Compatibility Regular"
-        ],
-        "5": [
-          "Version 899.01171875 (Font Awesome version: 7.3.1)"
-        ],
-        "6": [
-          "FontAwesomev4Compatibility-Regular"
-        ]
+        "0": ["Copyright (c) Font Awesome"],
+        "1": ["Font Awesome v4 Compatibility"],
+        "10": ["The web's most popular icon set and toolkit."],
+        "11": ["https://fontawesome.com"],
+        "16": ["Font Awesome v4 Compatibility"],
+        "17": ["Regular"],
+        "2": ["Regular"],
+        "3": ["Font Awesome v4 Compatibility Regular-7.3.1"],
+        "4": ["Font Awesome v4 Compatibility Regular"],
+        "5": ["Version 899.01171875 (Font Awesome version: 7.3.1)"],
+        "6": ["FontAwesomev4Compatibility-Regular"]
       }
     }
   }

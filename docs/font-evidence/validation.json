@@ -1,0 +1,248 @@
+[
+  {
+    "source": "0xProto-Regular.woff2",
+    "mappedGlyphsCompared": 719,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "AdwaitaMono-Regular.woff2",
+    "mappedGlyphsCompared": 7498,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "AtkinsonHyperlegible-Regular.woff2",
+    "mappedGlyphsCompared": 342,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "Boon-Regular.woff2",
+    "mappedGlyphsCompared": 833,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "CascadiaMono-Regular.woff2",
+    "mappedGlyphsCompared": 2426,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "Comfortaa-Regular.woff2",
+    "mappedGlyphsCompared": 601,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "ComingSoon-Regular.woff2",
+    "mappedGlyphsCompared": 212,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "CommitMono-Regular.woff2",
+    "mappedGlyphsCompared": 1175,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "FiraCode-Regular.woff2",
+    "mappedGlyphsCompared": 1586,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "Geist-Medium.woff2",
+    "mappedGlyphsCompared": 649,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "GeistMono-Medium.woff2",
+    "mappedGlyphsCompared": 652,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "Hack-Regular.woff2",
+    "mappedGlyphsCompared": 1548,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "IBMPlexMono-Regular.woff2",
+    "mappedGlyphsCompared": 983,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "IBMPlexSans-SemiBold.woff2",
+    "mappedGlyphsCompared": 895,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "Inconsolata-Regular.woff2",
+    "mappedGlyphsCompared": 882,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "InterTight-Regular.woff2",
+    "mappedGlyphsCompared": 2504,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "Iosevka-Regular.woff2",
+    "mappedGlyphsCompared": 7512,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "Itim-Regular.woff2",
+    "mappedGlyphsCompared": 773,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "JetBrainsMono-Regular.woff2",
+    "mappedGlyphsCompared": 1363,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "Kanit-Regular.woff2",
+    "mappedGlyphsCompared": 725,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "Lalezar-Regular.woff2",
+    "mappedGlyphsCompared": 908,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "Lato-Regular.woff2",
+    "mappedGlyphsCompared": 2164,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "LexendDeca-Regular.woff2",
+    "mappedGlyphsCompared": 685,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "Mononoki-Regular.woff2",
+    "mappedGlyphsCompared": 921,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "Montserrat-Regular.woff2",
+    "mappedGlyphsCompared": 970,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "NotoNaskhArabic-Regular.woff2",
+    "mappedGlyphsCompared": 1560,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "NotoSansLao-Regular.woff2",
+    "mappedGlyphsCompared": 421,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "Nunito-Bold.woff2",
+    "mappedGlyphsCompared": 938,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "OpenDyslexic-Regular.woff2",
+    "mappedGlyphsCompared": 1614,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "OverpassMono-Regular.woff2",
+    "mappedGlyphsCompared": 1642,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "Oxygen-Regular.woff2",
+    "mappedGlyphsCompared": 395,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "Parkinsans-Regular.woff2",
+    "mappedGlyphsCompared": 382,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "Roboto-Regular.woff2",
+    "mappedGlyphsCompared": 896,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "RobotoMono-Regular.woff2",
+    "mappedGlyphsCompared": 876,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "Sarabun-Bold.woff2",
+    "mappedGlyphsCompared": 725,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "SourceCodePro-Regular.woff2",
+    "mappedGlyphsCompared": 1335,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "SpaceGrotesk-Regular.woff2",
+    "mappedGlyphsCompared": 735,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "TitilliumWeb-Regular.woff2",
+    "mappedGlyphsCompared": 353,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "Ubuntu-Regular.woff2",
+    "mappedGlyphsCompared": 1194,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "UbuntuMono-Regular.woff2",
+    "mappedGlyphsCompared": 1224,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  },
+  {
+    "source": "Vazirharf-NL-Regular.woff2",
+    "mappedGlyphsCompared": 391,
+    "coverage": "exact disjoint union",
+    "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"
+  }
+]

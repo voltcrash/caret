@@ -44,6 +44,9 @@ def inspect(data):
         "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest(),
         "glyphs": len(font.getGlyphOrder()), "cmapCount": len(cmap),
         "unicodeRange": ranges(cmap),
+        "variationSequences": {str(selector): [[code, glyph] for code, glyph in entries]
+                               for table in font["cmap"].tables if table.format == 14
+                               for selector, entries in table.uvsDict.items()},
         "axes": [{"tag": a.axisTag, "min": a.minValue, "default": a.defaultValue, "max": a.maxValue}
                  for a in font["fvar"].axes] if "fvar" in font else [],
         "features": {tag: sorted({f.FeatureTag for f in font[tag].table.FeatureList.FeatureRecord})

@@ -7,7 +7,7 @@ from fontTools.pens.recordingPen import DecomposingRecordingPen
 from fontTools.ttLib import TTFont
 from inventory import ROOT, original, ranges
 
-metadata = json.loads((ROOT / "frontend/src/ts/constants/font-subsets.json").read_text())
+metadata = json.loads((ROOT / "scripts/fonts/output.json").read_text())
 results = []
 for name, parts in metadata.items():
     source = TTFont(io.BytesIO(original(name)), recalcTimestamp=False)
@@ -30,22 +30,41 @@ for name, parts in metadata.items():
         else:
             assert "fvar" not in output
         glyphs = output.getGlyphSet()
+        for tag in ["cvt ", "prep", "fpgm", "gasp", "cvar"]:
+            if tag in source:
+                assert source.getTableData(tag) == output.getTableData(tag), (name, tag, "global hinting")
+        def signature(font, glyph_set, glyph):
+            pen = DecomposingRecordingPen(glyph_set)
+            glyph_set[glyph].draw(pen)
+            instructions = bytes(getattr(getattr(font["glyf"][glyph], "program", None), "bytecode", [])) if "glyf" in font else b""
+            return tuple(pen.value), font["hmtx"][glyph], instructions
+
+        assert signature(source, source_glyphs, source.getGlyphOrder()[0]) == signature(output, glyphs, output.getGlyphOrder()[0]), (name, "missing glyph changed")
+        source_uvs = {selector: entries for table in source["cmap"].tables if table.format == 14 for selector, entries in table.uvsDict.items()}
+        output_uvs = {selector: entries for table in output["cmap"].tables if table.format == 14 for selector, entries in table.uvsDict.items()}
+        assert set(source_uvs) == set(output_uvs), (name, "variation selectors lost")
+        for selector, entries in source_uvs.items():
+            actual = dict(output_uvs[selector])
+            assert set(actual) == {code for code, _ in entries}, (name, "variation sequences lost")
+            for code, glyph in entries:
+                before_glyph = glyph or source.getBestCmap()[code]
+                after_glyph = actual[code] or output.getBestCmap()[code]
+                assert signature(source, source_glyphs, before_glyph) == signature(output, glyphs, after_glyph), (name, "variation glyph changed")
         for code, glyph in output.getBestCmap().items():
-            original_glyph = cmap[code]
-            a = DecomposingRecordingPen(source_glyphs)
-            b = DecomposingRecordingPen(glyphs)
-            source_glyphs[original_glyph].draw(a)
-            glyphs[glyph].draw(b)
-            assert a.value == b.value, (name, hex(code), "outline")
-            assert source["hmtx"][original_glyph] == output["hmtx"][glyph], (name, hex(code), "metrics")
-            if "glyf" in source:
-                a_hint = getattr(getattr(source["glyf"][original_glyph], "program", None), "bytecode", [])
-                b_hint = getattr(getattr(output["glyf"][glyph], "program", None), "bytecode", [])
-                assert a_hint == b_hint, (name, hex(code), "instructions")
+            assert signature(source, source_glyphs, cmap[code]) == signature(output, glyphs, glyph), (name, hex(code), "outline/metrics/instructions")
             count += 1
+        # Format-3 post tables assign new synthetic names after glyph renumbering.
+        # Match every unencoded closure glyph by exact decomposed geometry,
+        # metrics and instruction bytes, independent of those synthetic names.
+        encoded = set(output.getBestCmap().values())
+        closure = set(output.getGlyphOrder()) - encoded
+        if closure:
+            original_signatures = {signature(source, source_glyphs, glyph) for glyph in source.getGlyphOrder()}
+            for glyph in closure:
+                assert signature(output, glyphs, glyph) in original_signatures, (name, glyph, "closure outline/metrics/instructions")
         for name_id in [0, 13, 14]:
             assert {r.toUnicode() for r in source["name"].names if r.nameID == name_id} == {r.toUnicode() for r in output["name"].names if r.nameID == name_id}, (name, "notice")
     assert covered == set(cmap), (name, "lost coverage")
-    results.append({"source": name, "mappedGlyphsCompared": count, "coverage": "exact disjoint union", "outlinesMetricsHintsNotices": "identical"})
+    results.append({"source": name, "mappedGlyphsCompared": count, "coverage": "exact disjoint union", "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"})
 (ROOT / "docs/font-evidence/validation.json").write_text(json.dumps(results, indent=2) + "\n")
 print(f"Validated {len(results)} fonts, {sum(r['mappedGlyphsCompared'] for r in results)} mapped glyphs")
