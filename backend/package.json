@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "1.7.14",
-    "@better-auth/infra": "0.4.23",
+    "@better-auth/infra": "0.4.25",
     "@caret/contracts": "workspace:*",
     "@caret/funbox": "workspace:*",
     "@caret/schemas": "workspace:*",
@@ -62,16 +62,16 @@
     "drizzle-orm": "0.45.4",
     "object-hash": "3.0.0",
     "pg": "8.23.1",
-    "qs": "6.16.1",
+    "qs": "6.17.1",
     "zod": "4.6.7"
   },
   "devDependencies": {
     "@caret/oxlint-config": "workspace:*",
     "@caret/typescript-config": "workspace:*",
-    "@cloudflare/workers-types": "5.20261023.1",
-    "@electric-sql/pglite": "0.5.11",
-    "@electric-sql/pglite-socket": "0.2.15",
-    "@types/node": "24.19.2",
+    "@cloudflare/workers-types": "5.20261029.1",
+    "@electric-sql/pglite": "0.5.13",
+    "@electric-sql/pglite-socket": "0.2.16",
+    "@types/node": "26.6.6",
     "@types/object-hash": "3.0.6",
     "@types/pg": "8.23.1",
     "@types/qs": "6.15.1",
@@ -83,6 +83,6 @@
     "vitest": "catalog:"
   },
   "engines": {
-    "node": ">=24.22.1 <25"
+    "node": ">=26.13.0 <27"
   }
 }

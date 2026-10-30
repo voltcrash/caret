@@ -49,7 +49,7 @@
     "check:staging:runtime": "vpx ./scripts/check-staging-runtime.ts"
   },
   "dependencies": {
-    "@better-auth/infra": "0.4.23",
+    "@better-auth/infra": "0.4.25",
     "@caret/backend": "workspace:*",
     "@caret/challenges": "workspace:*",
     "@caret/contracts": "workspace:*",
@@ -60,15 +60,15 @@
     "@caret/web-shared": "workspace:*",
     "@date-fns/utc": "2.1.1",
     "@leonabcd123/modern-caps-lock": "3.1.7",
-    "@sentry/browser": "11.9.0",
+    "@sentry/browser": "11.10.0",
     "@solid-primitives/refs": "1.1.4",
     "@solid-primitives/transition-group": "1.1.2",
     "@solidjs/meta": "0.29.4",
     "@tanstack/query-db-collection": "1.4.8",
     "@tanstack/solid-db": "0.3.12",
     "@tanstack/solid-form": "1.33.5",
-    "@tanstack/solid-hotkeys": "0.16.0",
-    "@tanstack/solid-query": "5.104.5",
+    "@tanstack/solid-hotkeys": "0.17.0",
+    "@tanstack/solid-query": "5.105.0",
     "@tanstack/solid-router": "1.170.43",
     "@tanstack/solid-router-ssr-query": "1.167.3",
     "@tanstack/solid-start": "1.169.4",
@@ -99,24 +99,24 @@
     "@axe-core/playwright": "4.14.0",
     "@caret/oxlint-config": "workspace:*",
     "@caret/typescript-config": "workspace:*",
-    "@cloudflare/vite-plugin": "1.65.0",
-    "@cloudflare/workers-types": "5.20261023.1",
+    "@cloudflare/vite-plugin": "1.66.0",
+    "@cloudflare/workers-types": "5.20261029.1",
     "@fortawesome/fontawesome-free": "7.3.1",
-    "@sentry/vite-plugin": "11.9.0",
+    "@sentry/vite-plugin": "11.10.0",
     "@solid-devtools/overlay": "0.33.5",
     "@solidjs/testing-library": "0.8.10",
     "@tailwindcss/vite": "4.3.3",
-    "@tanstack/eslint-plugin-query": "5.104.5",
+    "@tanstack/eslint-plugin-query": "5.105.0",
     "@tanstack/solid-devtools": "0.8.13",
-    "@tanstack/solid-hotkeys-devtools": "0.11.0",
-    "@tanstack/solid-query-devtools": "5.104.5",
+    "@tanstack/solid-hotkeys-devtools": "0.11.1",
+    "@tanstack/solid-query-devtools": "5.105.0",
     "@testing-library/dom": "10.4.2",
     "@testing-library/jest-dom": "7.0.1",
     "@testing-library/user-event": "14.6.8",
     "@types/canvas-confetti": "1.9.0",
     "@types/damerau-levenshtein": "1.0.2",
     "@types/howler": "2.2.13",
-    "@types/node": "24.19.2",
+    "@types/node": "26.6.6",
     "@types/object-hash": "3.0.6",
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
@@ -125,7 +125,7 @@
     "eslint-plugin-solid": "0.18.1",
     "miniflare": "5.20261019.2-beta",
     "playwright": "catalog:",
-    "seroval": "1.7.1",
+    "seroval": "1.7.3",
     "solid-js": "1.9.17",
     "tailwindcss": "4.3.3",
     "typescript": "7.0.2",
@@ -134,12 +134,12 @@
     "vite-plugin-solid": "2.11.14",
     "vite-plus": "catalog:",
     "vitest": "catalog:",
-    "wrangler": "4.152.0"
+    "wrangler": "4.155.0"
   },
   "browserslist": [
     "baseline widely available and > 0.002%"
   ],
   "engines": {
-    "node": ">=24.22.1 <25"
+    "node": ">=26.13.0 <27"
   }
 }

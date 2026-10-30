@@ -22,7 +22,7 @@
   "devDependencies": {
     "@caret/funbox": "workspace:*",
     "@caret/typescript-config": "workspace:*",
-    "@types/node": "24.19.2",
+    "@types/node": "26.6.6",
     "@types/object-hash": "3.0.6",
     "vite-plus": "catalog:"
   }

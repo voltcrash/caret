@@ -60,13 +60,13 @@
   },
   "devDependencies": {
     "@commitlint/cli": "21.2.4",
-    "@types/node": "24.19.2",
+    "@types/node": "26.6.6",
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "binaryen": "132.0.0",
     "caniuse-lite": "1.0.30001819",
     "conventional-changelog-conventionalcommits": "10.4.1",
-    "knip": "6.42.1",
+    "knip": "6.43.0",
     "stylelint": "17.16.0",
     "stylelint-config-standard": "40.0.0",
     "vite-plus": "catalog:",
@@ -79,7 +79,7 @@
     }
   },
   "engines": {
-    "node": ">=24.22.1 <25"
+    "node": ">=26.13.0 <27"
   },
-  "packageManager": "pnpm@12.15.0"
+  "packageManager": "pnpm@12.16.1"
 }
