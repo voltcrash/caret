@@ -99,7 +99,7 @@
     "@axe-core/playwright": "4.14.0",
     "@caret/oxlint-config": "workspace:*",
     "@caret/typescript-config": "workspace:*",
-    "@cloudflare/vite-plugin": "1.65.0",
+    "@cloudflare/vite-plugin": "1.66.0",
     "@cloudflare/workers-types": "5.20261023.1",
     "@fortawesome/fontawesome-free": "7.3.1",
     "@sentry/vite-plugin": "11.9.0",
