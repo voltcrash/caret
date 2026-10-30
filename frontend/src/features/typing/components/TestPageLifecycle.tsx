@@ -3,11 +3,17 @@ import { onCleanup, onMount } from "solid-js";
 import { getMutableConfig } from "../../../ts/config/store";
 import { isInputElementFocused } from "../../../ts/input/input-element";
 import { bindInputListenersTo } from "../../../ts/input/listeners";
-import { getResultVisible, setTestFocusState } from "../../../ts/states/test";
+import {
+  getResultVisible,
+  isTestActive,
+  setTestFocusState,
+} from "../../../ts/states/test";
 import * as Caret from "../runtime/caret";
+import { restart } from "../runtime/test-logic";
 
 export function TestPageLifecycle(props: { input: HTMLTextAreaElement }): null {
   onMount(() => {
+    let lostWindowFocus = false;
     const focus = (): void => {
       if (!isInputElementFocused()) return;
       if (!getResultVisible() && getMutableConfig().showOutOfFocusWarning) {
@@ -19,9 +25,24 @@ export function TestPageLifecycle(props: { input: HTMLTextAreaElement }): null {
       if (!isInputElementFocused()) setTestFocusState("unfocused");
       Caret.hide();
     };
-    const windowBlur = (): void => setTestFocusState("unfocusedWindow");
+    const windowBlur = (): void => {
+      lostWindowFocus = true;
+      setTestFocusState("unfocusedWindow");
+    };
     const windowFocus = (): void => {
-      // Browser focus can arrive after startup; keep the displayed wordset.
+      if (document.visibilityState === "hidden") return;
+      // Ignore startup focus and consume paired focus/visibility events once.
+      const refreshWords = lostWindowFocus;
+      lostWindowFocus = false;
+      if (
+        refreshWords &&
+        !isTestActive() &&
+        !getResultVisible() &&
+        (getMutableConfig().mode === "time" ||
+          getMutableConfig().mode === "words")
+      ) {
+        void restart({ noAnim: true });
+      }
       setTestFocusState(isInputElementFocused() ? "focused" : "unfocused");
       if (isInputElementFocused()) Caret.show(true);
     };
