@@ -122,6 +122,7 @@ jobs:
             browser-tests:
               - 'frontend/{e2e,start-e2e}/**'
               - 'frontend/playwright.start.config.ts'
+              - 'frontend/scripts/{browser-shards.ts,test-browser-shard.ts,browser-durations.json}'
             update-tests:
               - 'frontend/update-e2e/**'
               - 'frontend/playwright.update.config.ts'
@@ -419,7 +420,16 @@ jobs:
       # Each shard serves its own fixture Worker, so shards share no state.
       - name: Production-Worker browser checks
         working-directory: frontend
-        run: vp exec playwright test --config playwright.start.config.ts --shard=${{ matrix.shard }}/4
+        run: vp exec vpx ./scripts/test-browser-shard.ts ${{ matrix.shard }}/4
+
+      - name: Upload browser timings
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: start-browser-timings-${{ matrix.shard }}
+          path: frontend/.reports/start-browser.json
+          retention-days: 7
+          if-no-files-found: ignore
 
       - name: Upload browser traces
         if: failure()
