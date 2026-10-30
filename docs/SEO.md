@@ -8,8 +8,10 @@ metadata as visitors. The interactive typing engine still requires JavaScript.
 
 - `frontend/src/app/seo.ts` keeps canonical, description, Open Graph and Twitter
   metadata consistent. Query variants of the typing test canonicalize to `/`.
-- The homepage has a short visible heading and description above the typing test.
-  `/about` contains the full product overview and FAQ; `/guide` links to six
+- Keep the homepage focused on typing: no promotional heading, description,
+  footer copy or SEO-only offscreen text. Its title, description, canonical and
+  JSON-LD stay in the document head. The existing About navigation link leads to
+  `/about`, which contains the visible product overview and FAQ; `/guide` links to six
   server-rendered guides, including WPM calculations, improving speed and fair
   average-speed comparisons.
   Each guide opens with a short answer and a real editorial update date, matching
@@ -47,6 +49,13 @@ metadata as visitors. The interactive typing engine still requires JavaScript.
   Their fixed overlays and service-worker recovery action still work.
 - The installed-app manifest shares the homepage description and default theme
   color with document metadata. Its existing app ID, scope and icon URLs remain.
+
+Product explanations belong on `/about` and useful practice articles on `/guide`.
+Both are linked and listed in the sitemap, so visitors and crawlers can find them
+without adding content to the typing screen. Do not add crawler-only markup or
+hide keyword copy with CSS. Metadata can describe the actual typing application
+without duplicating that description above the test. Search snippets and rankings
+remain provider decisions; this layout choice does not guarantee equivalent rankings.
 
 ## Editorial data and remaining discovery work
 
@@ -120,6 +129,11 @@ directives and populated leaderboard rows. Browser tests check layout, mobile
 width, client navigation, metadata/schema replacement and CSS-failure recovery.
 
 ## Provider guidance
+
+- [Google: search snippets](https://developers.google.com/search/docs/appearance/snippet)
+  — Google may use a relevant meta description for the search snippet.
+- [Google: hidden text abuse](https://developers.google.com/search/docs/essentials/spam-policies#hidden-text-and-link-abuse)
+  — do not hide text solely to manipulate search engines.
 
 - [Google: generative AI search optimization](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide)
   — foundational SEO and useful, crawlable content remain the starting point.

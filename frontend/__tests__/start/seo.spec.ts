@@ -24,7 +24,7 @@ describe("search and AI discovery in the built Worker", () => {
   });
   afterAll(async () => await mf?.dispose());
 
-  it("server-renders a homepage heading and description without the full product overview", async () => {
+  it("keeps discovery metadata in the head and explanatory copy off the typing screen", async () => {
     const response = await mf.dispatchFetch(`${origin}/?utm_source=search`);
     expect(response.status).toBe(200);
     const html = await response.text();
@@ -35,8 +35,8 @@ describe("search and AI discovery in the built Worker", () => {
     expect(head).toContain('name="twitter:description"');
     expect(head).not.toContain("noindex");
     expect(html).toContain('href="/about"');
-    expect(html).toMatch(/<h1\b[^>]*>Caret typing test<\/h1>/);
-    expect(html).toContain("Measure your typing speed and accuracy");
+    expect(html).not.toMatch(/<h1\b[^>]*>Caret typing test<\/h1>/);
+    expect(html).not.toContain("Measure your typing speed and accuracy");
     expect(html).not.toContain('id="about-caret"');
     expect(html).not.toContain("Practice your way");
     expect(html).toContain("<noscript");
