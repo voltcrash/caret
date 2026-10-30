@@ -134,7 +134,7 @@
     "vite-plugin-solid": "2.11.14",
     "vite-plus": "catalog:",
     "vitest": "catalog:",
-    "wrangler": "4.152.0"
+    "wrangler": "4.155.0"
   },
   "browserslist": [
     "baseline widely available and > 0.002%"
