@@ -1,5 +1,7 @@
 import type { Plugin } from "vite-plus";
 
+import { homeDescription, themeColor } from "../src/app/site-identity";
+
 type WebManifest = {
   id: string;
   short_name: string;
@@ -20,7 +22,7 @@ const webManifest: Readonly<WebManifest> = {
   id: "/",
   short_name: "Caret",
   name: "Caret",
-  description: "A minimalistic, customizable typing test",
+  description: homeDescription,
   start_url: "/",
   scope: "/",
   orientation: "any",
@@ -51,9 +53,9 @@ const webManifest: Readonly<WebManifest> = {
       purpose: "maskable",
     },
   ],
-  background_color: "#323437",
+  background_color: themeColor,
   display: "standalone",
-  theme_color: "#323437",
+  theme_color: themeColor,
 };
 
 /** Keeps the installed app's existing `/manifest.json` URL. */

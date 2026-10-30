@@ -24,6 +24,35 @@ function Guides() {
       </header>
       <nav aria-label="Typing guides" class="grid gap-6">
         <Link
+          to="/guide/average-typing-speed"
+          class="grid gap-2 rounded bg-sub-alt p-5"
+        >
+          <h2 class="text-xl text-main">
+            Average typing speed and fair comparisons
+          </h2>
+          <p>
+            Calculate a baseline and understand what leaderboard scores measure.
+          </p>
+        </Link>
+        <Link
+          to="/guide/how-to-type-faster"
+          class="grid gap-2 rounded bg-sub-alt p-5"
+        >
+          <h2 class="text-xl text-main">
+            How to type faster without losing accuracy
+          </h2>
+          <p>
+            Find troublesome sequences and check that practice carries over.
+          </p>
+        </Link>
+        <Link
+          to="/guide/wpm-calculator"
+          class="grid gap-2 rounded bg-sub-alt p-5"
+        >
+          <h2 class="text-xl text-main">WPM calculator and worked examples</h2>
+          <p>Convert characters and elapsed time into words per minute.</p>
+        </Link>
+        <Link
           to="/guide/typing-practice"
           class="grid gap-2 rounded bg-sub-alt p-5"
         >

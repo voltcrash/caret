@@ -1,4 +1,7 @@
 import { Link } from "@tanstack/solid-router";
+import { For } from "solid-js";
+
+import { aboutFaq } from "./about-faq";
 
 /** Product details and guide links, rendered on the server for /about. */
 export function AboutCaret() {
@@ -12,10 +15,10 @@ export function AboutCaret() {
           About Caret
         </h1>
         <p>
-          Caret is a free, open-source typing test for measuring your typing
-          speed in words per minute (WPM) and improving accuracy. Practice in
-          your browser with timed tests, word counts, quotes or your own text.
-          No account is needed to take a test.
+          The Caret typing test is free and open source. Measure your typing
+          speed in words per minute (WPM) and practice to improve accuracy. Type
+          in your browser with timed tests, word counts, quotes or your own
+          text. No account is needed to take a test.
         </p>
         <Link to="/" class="w-fit rounded bg-sub-alt px-5 py-3 text-main">
           Start a free typing test
@@ -48,28 +51,20 @@ export function AboutCaret() {
       </nav>
       <section class="grid gap-4">
         <h2 class="text-xl text-main">Questions about Caret</h2>
-        <h3>Is Caret free? Do I need an account?</h3>
-        <p>
-          Caret is free to use. You can take typing tests without signing in. An
-          account lets you save results and view your typing history.
-        </p>
-        <h3>Can I practice with my own text?</h3>
-        <p>
-          Yes. Choose custom mode to practice text you provide. Use quote mode
-          for sentences or select a language word list for word practice.
-        </p>
-        <h3>Is Caret open source?</h3>
-        <p>
-          Yes. Caret is an independent project that began from the Monkeytype
-          codebase. Its source is available under the GPL-3.0 license on{" "}
-          <a
-            href="https://github.com/voltcrash/caret"
-            class="underline underline-offset-4"
-          >
-            GitHub
-          </a>
-          .
-        </p>
+        <For each={aboutFaq}>
+          {(faq) => (
+            <div class="grid gap-4">
+              <h3>{faq.question}</h3>
+              <p>{faq.answer}</p>
+            </div>
+          )}
+        </For>
+        <a
+          href="https://github.com/voltcrash/caret"
+          class="w-fit underline underline-offset-4"
+        >
+          View Caret on GitHub
+        </a>
       </section>
     </article>
   );

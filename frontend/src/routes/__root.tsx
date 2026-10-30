@@ -14,6 +14,7 @@ import { AppLayout } from "../app/layout";
 import { AppProviders } from "../app/providers";
 import { publicEnv } from "../app/public-env";
 import { homeDescription } from "../app/seo";
+import { themeColor } from "../app/site-identity";
 import { AppError } from "../components/app-error";
 import { NotFoundPage } from "../features/not-found/page";
 
@@ -56,7 +57,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             : "index,follow,max-image-preview:large",
         },
         { name: "format-detection", content: "telephone=no" },
-        { name: "theme-color", content: "#0b0d1c" },
+        { name: "theme-color", content: themeColor },
         { name: "author", content: "Caret contributors" },
         { name: "mobile-web-app-capable", content: "yes" },
         { name: "apple-mobile-web-app-title", content: "Caret" },
