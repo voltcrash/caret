@@ -68,7 +68,7 @@
   "devDependencies": {
     "@caret/oxlint-config": "workspace:*",
     "@caret/typescript-config": "workspace:*",
-    "@cloudflare/workers-types": "5.20261023.1",
+    "@cloudflare/workers-types": "5.20261029.1",
     "@electric-sql/pglite": "0.5.13",
     "@electric-sql/pglite-socket": "0.2.16",
     "@types/node": "26.6.6",
