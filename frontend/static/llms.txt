@@ -22,6 +22,7 @@ Caret began from the Monkeytype codebase and is now an independent project.
 - [Typing guides](https://caret.voltcrash.com/guide): Browse all typing practice guides.
 - [WPM calculator](https://caret.voltcrash.com/guide/wpm-calculator): Character and time formulas with worked examples.
 - [How to type faster](https://caret.voltcrash.com/guide/how-to-type-faster): Target difficult sequences and evaluate speed alongside accuracy.
+- [Average typing speed](https://caret.voltcrash.com/guide/average-typing-speed): Means, medians, personal baselines and limits of leaderboard comparisons.
 - [Typing practice](https://caret.voltcrash.com/guide/typing-practice): A practice routine, accuracy, modes and consistent comparisons.
 - [Typing speed test](https://caret.voltcrash.com/guide/typing-speed-test): Taking a test and understanding WPM, raw speed and accuracy.
 - [Typing for programmers](https://caret.voltcrash.com/guide/typing-for-programmers): Code word lists, custom text and practice limits.

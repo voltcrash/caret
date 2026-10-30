@@ -24,6 +24,17 @@ function Guides() {
       </header>
       <nav aria-label="Typing guides" class="grid gap-6">
         <Link
+          to="/guide/average-typing-speed"
+          class="grid gap-2 rounded bg-sub-alt p-5"
+        >
+          <h2 class="text-xl text-main">
+            Average typing speed and fair comparisons
+          </h2>
+          <p>
+            Calculate a baseline and understand what leaderboard scores measure.
+          </p>
+        </Link>
+        <Link
           to="/guide/how-to-type-faster"
           class="grid gap-2 rounded bg-sub-alt p-5"
         >
