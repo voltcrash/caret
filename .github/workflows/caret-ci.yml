@@ -205,6 +205,15 @@ jobs:
           rust: "true"
       - name: Native formatting, lint and parity
         run: vp run engine:fmt && vp run engine:lint && vp run engine:test
+  engine-wasm:
+    name: engine-wasm
+    needs: [changes]
+    if: needs.changes.outputs.engine == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
       - uses: ./.github/actions/setup-chromium
       - name: Browser Wasm parity
         run: vp run engine:test:wasm
@@ -509,6 +518,7 @@ jobs:
         start-delivery,
         ci-pkg,
         engine,
+        engine-wasm,
       ]
     runs-on: ubuntu-latest
     timeout-minutes: 2
