@@ -6,6 +6,10 @@ test("homepage links to the about page without showing the product overview", as
   await page.goto("/");
   await expect(page.locator("#startupScreen")).toBeHidden();
   await expect(page.locator("#about-caret")).toHaveCount(0);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    "Caret typing test",
+  );
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await expect(page.locator("#wordsInput")).toBeFocused();
   await page.screenshot({
     path: test.info().outputPath("typing-home.png"),
@@ -65,14 +69,20 @@ test("typing guides preserve the test layout and update metadata on client navig
     "https://caret.voltcrash.com/about",
   );
   await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(
-    0,
+    1,
   );
+  await expect(
+    page.locator('script[type="application/ld+json"]'),
+  ).toContainText("FAQPage");
   await page.getByRole("link", { name: "Browse typing guides" }).click();
   await expect(page).toHaveURL(/\/guide$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
     "Typing guides",
   );
   await expect(page).toHaveTitle("Typing Guides | Caret");
+  await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(
+    0,
+  );
   await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute(
     "href",
     "https://caret.voltcrash.com/guide",
@@ -108,6 +118,9 @@ test("typing guides preserve the test layout and update metadata on client navig
         await page.locator('script[type="application/ld+json"]').textContent(),
     )
     .toContain("BreadcrumbList");
+  await expect(
+    page.locator('script[type="application/ld+json"]'),
+  ).toContainText('"@type":"Article"');
   await page
     .getByRole("navigation", { name: "Breadcrumb" })
     .getByRole("link", { name: "Guides", exact: true })
@@ -156,6 +169,12 @@ test("typing guides and product content fit a narrow screen", async ({
   });
   await page.getByRole("link", { name: "Start a free typing test" }).click();
   await expect(page.locator("#about-caret")).toHaveCount(0);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    "Caret typing test",
+  );
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(
+    390,
+  );
   await page.screenshot({
     path: test.info().outputPath("typing-home-mobile.png"),
     fullPage: true,
@@ -187,4 +206,50 @@ test("typing guides and product content fit a narrow screen", async ({
     path: test.info().outputPath("typing-guides-mobile.png"),
     fullPage: true,
   });
+});
+
+test("new guides load through client navigation with matching Article metadata", async ({
+  page,
+}) => {
+  await page.goto("/guide");
+  for (const guide of [
+    {
+      slug: "wpm-calculator",
+      title: "WPM calculator: characters, time and typing speed",
+    },
+    {
+      slug: "how-to-type-faster",
+      title: "How to type faster without losing accuracy",
+    },
+    {
+      slug: "average-typing-speed",
+      title: "Average typing speed: compare WPM fairly",
+    },
+  ]) {
+    await page.locator(`a[href="/guide/${guide.slug}"]`).click();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      guide.title,
+    );
+    await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute(
+      "href",
+      `https://caret.voltcrash.com/guide/${guide.slug}`,
+    );
+    await expect(
+      page.locator('script[type="application/ld+json"]'),
+    ).toContainText('"@type":"Article"');
+    await page
+      .getByRole("navigation", { name: "Breadcrumb" })
+      .getByRole("link", { name: "Guides", exact: true })
+      .click();
+    await expect(page).toHaveURL(/\/guide$/);
+  }
+});
+
+test("static CSS recovery still works after the content", async ({ page }) => {
+  await page.route("**/*.css", (route) => route.abort());
+  await page.goto("/about");
+  await expect(page.locator("#nocss")).toBeVisible();
+  await expect(page.locator("#nocss")).toContainText(
+    "It seems like the CSS failed to load",
+  );
 });
