@@ -35,8 +35,24 @@ export function refreshTypingPreviewSettings(config: Config): void {
   }
   const previous = readTypingPreview(cookie);
   if (previous === undefined) return;
+  const appearance = Object.fromEntries(
+    Object.entries(previewSettings(config)).filter(
+      ([key]) =>
+        ![
+          "mode",
+          "time",
+          "words",
+          "quoteLength",
+          "punctuation",
+          "numbers",
+          "language",
+        ].includes(key),
+    ),
+  );
   saveTypingPreview(
-    config,
+    ["time", "words"].includes(config.mode)
+      ? { ...config, ...previous.settings, ...appearance }
+      : config,
     previous.seed,
     previous.key,
     previous.words,

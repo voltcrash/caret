@@ -110,3 +110,19 @@ it("reads previews written before keyboard preferences were included", () => {
     )?.words,
   ).toEqual(snapshot.words);
 });
+
+it("keeps content settings paired with the saved words until regeneration", () => {
+  saveTypingPreview(config, 7, snapshot.key, ["same", "words"]);
+  refreshTypingPreviewSettings({
+    ...config,
+    mode: "time",
+    time: 60,
+    numbers: true,
+    maxLineWidth: 40,
+  });
+  const restored = readTypingPreview(document.cookie);
+  expect(restored?.settings.mode).toBe("words");
+  expect(restored?.settings.numbers).toBe(config.numbers);
+  expect(restored?.settings.maxLineWidth).toBe(40);
+  expect(restored?.words).toEqual(["same", "words"]);
+});
