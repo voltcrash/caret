@@ -29,6 +29,7 @@ type ResultRuntime = Awaited<ReturnType<typeof createTestRuntime>> & {
 
 export async function resultRuntime(): Promise<ResultRuntime> {
   const test = await createTestRuntime();
+  const background: Promise<unknown>[] = [];
   test.env.MODE = "production";
   test.env.BETTER_AUTH_URL = "http://localhost:5005/api/auth";
   test.env.BETTER_AUTH_SECRET =
@@ -82,7 +83,11 @@ export async function resultRuntime(): Promise<ResultRuntime> {
         ...(body === undefined ? {} : { body: JSON.stringify(body) }),
       }),
       test.env,
-      { waitUntil: () => undefined } as unknown as ExecutionContext,
+      {
+        waitUntil(task: Promise<unknown>) {
+          background.push(task);
+        },
+      } as unknown as ExecutionContext,
     );
   }
   async function submit(
@@ -96,7 +101,19 @@ export async function resultRuntime(): Promise<ResultRuntime> {
       result: { ...payload, hash: objectHash(payload) },
     });
   }
-  return { ...test, account, request, submit };
+  return {
+    ...test,
+    account,
+    request,
+    submit,
+    dispose: async () => {
+      try {
+        while (background.length > 0) await Promise.all(background.splice(0));
+      } finally {
+        await test.dispose();
+      }
+    },
+  };
 }
 
 export function scoreEvent(
