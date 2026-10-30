@@ -274,10 +274,10 @@ importers:
     dependencies:
       '@better-auth/drizzle-adapter':
         specifier: 1.7.14
-        version: 1.7.14(@better-auth/core@1.7.14(@better-auth/utils@0.5.1)(@better-fetch/fetch@1.3.3)(better-call@1.4.4(zod@4.6.7))(jose@6.2.13)(kysely@0.29.7)(nanostores@1.5.5))(@better-auth/utils@0.5.1)(drizzle-orm@0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.11)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1))
+        version: 1.7.14(@better-auth/core@1.7.14(@better-auth/utils@0.5.1)(@better-fetch/fetch@1.3.3)(better-call@1.4.4(zod@4.6.7))(jose@6.2.13)(kysely@0.29.7)(nanostores@1.5.5))(@better-auth/utils@0.5.1)(drizzle-orm@0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.13)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1))
       '@better-auth/infra':
         specifier: 0.4.25
-        version: 0.4.25(89c853b71c52436083135bf4a8716986)
+        version: 0.4.25(e1560c332fe3c7ddbe77a20334388f85)
       '@caret/contracts':
         specifier: workspace:*
         version: link:../packages/contracts
@@ -304,13 +304,13 @@ importers:
         version: 3.52.1(patch_hash=1b17f624fc76d19e735fd05983e021f9a23658352ab73f7823c42393e4ab6515)(@ts-rest/core@3.52.1(patch_hash=7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9)(@types/node@26.6.6)(zod@4.6.7))(zod@4.6.7)
       better-auth:
         specifier: 1.7.14
-        version: 1.7.14(@tanstack/solid-start@1.169.4(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(solid-js@1.9.17)(supports-color@10.2.2)(vite-plugin-solid@2.11.14(@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.2)(vitest@5.0.5))(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(solid-js@1.9.17)(supports-color@10.2.2)))(drizzle-kit@0.31.11)(drizzle-orm@0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.11)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1))(pg@8.23.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(solid-js@1.9.17)(vitest@5.0.5)
+        version: 1.7.14(@tanstack/solid-start@1.169.4(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(solid-js@1.9.17)(supports-color@10.2.2)(vite-plugin-solid@2.11.14(@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.2)(vitest@5.0.5))(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(solid-js@1.9.17)(supports-color@10.2.2)))(drizzle-kit@0.31.11)(drizzle-orm@0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.13)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1))(pg@8.23.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(solid-js@1.9.17)(vitest@5.0.5)
       date-fns:
         specifier: 4.4.0
         version: 4.4.0
       drizzle-orm:
         specifier: 0.45.4
-        version: 0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.11)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1)
+        version: 0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.13)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1)
       object-hash:
         specifier: 3.0.0
         version: 3.0.0
@@ -334,11 +334,11 @@ importers:
         specifier: 5.20261023.1
         version: 5.20261023.1
       '@electric-sql/pglite':
-        specifier: 0.5.11
-        version: 0.5.11
+        specifier: 0.5.13
+        version: 0.5.13
       '@electric-sql/pglite-socket':
         specifier: 0.2.15
-        version: 0.2.15(@electric-sql/pglite-age@0.0.13(@electric-sql/pglite@0.5.11))(@electric-sql/pglite-pg_hashids@0.0.13(@electric-sql/pglite@0.5.11))(@electric-sql/pglite-pg_ivm@0.0.13(@electric-sql/pglite@0.5.11))(@electric-sql/pglite-pg_textsearch@0.0.14(@electric-sql/pglite@0.5.11))(@electric-sql/pglite-pg_uuidv7@0.0.13(@electric-sql/pglite@0.5.11))(@electric-sql/pglite-pgtap@0.0.13(@electric-sql/pglite@0.5.11))(@electric-sql/pglite-pgvector@0.0.13(@electric-sql/pglite@0.5.11))(@electric-sql/pglite@0.5.11)
+        version: 0.2.15(@electric-sql/pglite-age@0.0.13(@electric-sql/pglite@0.5.13))(@electric-sql/pglite-pg_hashids@0.0.13(@electric-sql/pglite@0.5.13))(@electric-sql/pglite-pg_ivm@0.0.13(@electric-sql/pglite@0.5.13))(@electric-sql/pglite-pg_textsearch@0.0.14(@electric-sql/pglite@0.5.13))(@electric-sql/pglite-pg_uuidv7@0.0.13(@electric-sql/pglite@0.5.13))(@electric-sql/pglite-pgtap@0.0.13(@electric-sql/pglite@0.5.13))(@electric-sql/pglite-pgvector@0.0.13(@electric-sql/pglite@0.5.13))(@electric-sql/pglite@0.5.13)
       '@types/node':
         specifier: 26.6.6
         version: 26.6.6
@@ -374,7 +374,7 @@ importers:
     dependencies:
       '@better-auth/infra':
         specifier: 0.4.25
-        version: 0.4.25(89c853b71c52436083135bf4a8716986)
+        version: 0.4.25(e1560c332fe3c7ddbe77a20334388f85)
       '@caret/backend':
         specifier: workspace:*
         version: link:../backend
@@ -455,7 +455,7 @@ importers:
         version: 1.2.0
       better-auth:
         specifier: 1.7.14
-        version: 1.7.14(@tanstack/solid-start@1.169.4(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(solid-js@1.9.17)(supports-color@10.2.2)(vite-plugin-solid@2.11.14(@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.2)(vitest@5.0.5))(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(solid-js@1.9.17)(supports-color@10.2.2)))(drizzle-kit@0.31.11)(drizzle-orm@0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.11)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1))(pg@8.23.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(solid-js@1.9.17)(vitest@5.0.5)
+        version: 1.7.14(@tanstack/solid-start@1.169.4(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(solid-js@1.9.17)(supports-color@10.2.2)(vite-plugin-solid@2.11.14(@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.2)(vitest@5.0.5))(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(solid-js@1.9.17)(supports-color@10.2.2)))(drizzle-kit@0.31.11)(drizzle-orm@0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.13)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1))(pg@8.23.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(solid-js@1.9.17)(vitest@5.0.5)
       canvas-confetti:
         specifier: 1.9.4
         version: 1.9.4
@@ -1293,8 +1293,8 @@ packages:
       '@electric-sql/pglite-pgtap': 0.0.13
       '@electric-sql/pglite-pgvector': 0.0.13
 
-  '@electric-sql/pglite@0.5.11':
-    resolution: {integrity: sha512-SWuqsTjA4DDWqgZ05PC1RJaq8e00p5KACxbqaikDFQ8dIGA0SLRzuPniky7IW+q/c5RDNMdEXwv7mFBWIx9Hxw==}
+  '@electric-sql/pglite@0.5.13':
+    resolution: {integrity: sha512-4rZuxK1k07w6sSpJzjMri0B9+HuXuC7V9pxVB51pR0T9KPqXg6TD0mdaEwBA9rkcL4jdht4tGDf/wYzAiGhT7g==}
 
   '@emnapi/core@1.11.0':
     resolution: {integrity: sha512-l9Oo58x0HOP5znGzVhYW9U3e5wVuA4LAZU2AGezTmkhO1CgQRFDhDg4nneHsu/t3WniXg9QrG2nIXL/ZS8ln8Q==}
@@ -6352,21 +6352,21 @@ snapshots:
       nanostores: 1.5.5
       zod: 4.6.7
 
-  '@better-auth/drizzle-adapter@1.7.14(@better-auth/core@1.7.14(@better-auth/utils@0.5.1)(@better-fetch/fetch@1.3.3)(better-call@1.4.4(zod@4.6.7))(jose@6.2.13)(kysely@0.29.7)(nanostores@1.5.5))(@better-auth/utils@0.5.1)(drizzle-orm@0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.11)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1))':
+  '@better-auth/drizzle-adapter@1.7.14(@better-auth/core@1.7.14(@better-auth/utils@0.5.1)(@better-fetch/fetch@1.3.3)(better-call@1.4.4(zod@4.6.7))(jose@6.2.13)(kysely@0.29.7)(nanostores@1.5.5))(@better-auth/utils@0.5.1)(drizzle-orm@0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.13)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1))':
     dependencies:
       '@better-auth/core': 1.7.14(@better-auth/utils@0.5.1)(@better-fetch/fetch@1.3.3)(better-call@1.4.4(zod@4.6.7))(jose@6.2.13)(kysely@0.29.7)(nanostores@1.5.5)
       '@better-auth/utils': 0.5.1
     optionalDependencies:
-      drizzle-orm: 0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.11)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1)
+      drizzle-orm: 0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.13)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1)
 
-  '@better-auth/infra@0.4.25(89c853b71c52436083135bf4a8716986)':
+  '@better-auth/infra@0.4.25(e1560c332fe3c7ddbe77a20334388f85)':
     dependencies:
       '@better-auth/core': 1.7.14(@better-auth/utils@0.5.1)(@better-fetch/fetch@1.3.3)(better-call@1.4.4(zod@4.6.7))(jose@6.2.13)(kysely@0.29.7)(nanostores@1.5.5)
       '@better-auth/utils': 0.5.1
       '@better-fetch/fetch': 1.3.3
       '@noble/hashes': 2.4.0
       '@xmldom/xmldom': 0.9.12
-      better-auth: 1.7.14(@tanstack/solid-start@1.169.4(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(solid-js@1.9.17)(supports-color@10.2.2)(vite-plugin-solid@2.11.14(@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.2)(vitest@5.0.5))(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(solid-js@1.9.17)(supports-color@10.2.2)))(drizzle-kit@0.31.11)(drizzle-orm@0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.11)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1))(pg@8.23.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(solid-js@1.9.17)(vitest@5.0.5)
+      better-auth: 1.7.14(@tanstack/solid-start@1.169.4(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(solid-js@1.9.17)(supports-color@10.2.2)(vite-plugin-solid@2.11.14(@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.2)(vitest@5.0.5))(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(solid-js@1.9.17)(supports-color@10.2.2)))(drizzle-kit@0.31.11)(drizzle-orm@0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.13)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1))(pg@8.23.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(solid-js@1.9.17)(vitest@5.0.5)
       better-call: 1.4.4(zod@4.6.7)
       jose: 6.2.13
       libphonenumber-js: 1.13.15
@@ -6632,46 +6632,46 @@ snapshots:
 
   '@drizzle-team/brocli@0.10.2': {}
 
-  '@electric-sql/pglite-age@0.0.13(@electric-sql/pglite@0.5.11)':
+  '@electric-sql/pglite-age@0.0.13(@electric-sql/pglite@0.5.13)':
     dependencies:
-      '@electric-sql/pglite': 0.5.11
+      '@electric-sql/pglite': 0.5.13
 
-  '@electric-sql/pglite-pg_hashids@0.0.13(@electric-sql/pglite@0.5.11)':
+  '@electric-sql/pglite-pg_hashids@0.0.13(@electric-sql/pglite@0.5.13)':
     dependencies:
-      '@electric-sql/pglite': 0.5.11
+      '@electric-sql/pglite': 0.5.13
 
-  '@electric-sql/pglite-pg_ivm@0.0.13(@electric-sql/pglite@0.5.11)':
+  '@electric-sql/pglite-pg_ivm@0.0.13(@electric-sql/pglite@0.5.13)':
     dependencies:
-      '@electric-sql/pglite': 0.5.11
+      '@electric-sql/pglite': 0.5.13
 
-  '@electric-sql/pglite-pg_textsearch@0.0.14(@electric-sql/pglite@0.5.11)':
+  '@electric-sql/pglite-pg_textsearch@0.0.14(@electric-sql/pglite@0.5.13)':
     dependencies:
-      '@electric-sql/pglite': 0.5.11
+      '@electric-sql/pglite': 0.5.13
 
-  '@electric-sql/pglite-pg_uuidv7@0.0.13(@electric-sql/pglite@0.5.11)':
+  '@electric-sql/pglite-pg_uuidv7@0.0.13(@electric-sql/pglite@0.5.13)':
     dependencies:
-      '@electric-sql/pglite': 0.5.11
+      '@electric-sql/pglite': 0.5.13
 
-  '@electric-sql/pglite-pgtap@0.0.13(@electric-sql/pglite@0.5.11)':
+  '@electric-sql/pglite-pgtap@0.0.13(@electric-sql/pglite@0.5.13)':
     dependencies:
-      '@electric-sql/pglite': 0.5.11
+      '@electric-sql/pglite': 0.5.13
 
-  '@electric-sql/pglite-pgvector@0.0.13(@electric-sql/pglite@0.5.11)':
+  '@electric-sql/pglite-pgvector@0.0.13(@electric-sql/pglite@0.5.13)':
     dependencies:
-      '@electric-sql/pglite': 0.5.11
+      '@electric-sql/pglite': 0.5.13
 
-  '@electric-sql/pglite-socket@0.2.15(@electric-sql/pglite-age@0.0.13(@electric-sql/pglite@0.5.11))(@electric-sql/pglite-pg_hashids@0.0.13(@electric-sql/pglite@0.5.11))(@electric-sql/pglite-pg_ivm@0.0.13(@electric-sql/pglite@0.5.11))(@electric-sql/pglite-pg_textsearch@0.0.14(@electric-sql/pglite@0.5.11))(@electric-sql/pglite-pg_uuidv7@0.0.13(@electric-sql/pglite@0.5.11))(@electric-sql/pglite-pgtap@0.0.13(@electric-sql/pglite@0.5.11))(@electric-sql/pglite-pgvector@0.0.13(@electric-sql/pglite@0.5.11))(@electric-sql/pglite@0.5.11)':
+  '@electric-sql/pglite-socket@0.2.15(@electric-sql/pglite-age@0.0.13(@electric-sql/pglite@0.5.13))(@electric-sql/pglite-pg_hashids@0.0.13(@electric-sql/pglite@0.5.13))(@electric-sql/pglite-pg_ivm@0.0.13(@electric-sql/pglite@0.5.13))(@electric-sql/pglite-pg_textsearch@0.0.14(@electric-sql/pglite@0.5.13))(@electric-sql/pglite-pg_uuidv7@0.0.13(@electric-sql/pglite@0.5.13))(@electric-sql/pglite-pgtap@0.0.13(@electric-sql/pglite@0.5.13))(@electric-sql/pglite-pgvector@0.0.13(@electric-sql/pglite@0.5.13))(@electric-sql/pglite@0.5.13)':
     dependencies:
-      '@electric-sql/pglite': 0.5.11
-      '@electric-sql/pglite-age': 0.0.13(@electric-sql/pglite@0.5.11)
-      '@electric-sql/pglite-pg_hashids': 0.0.13(@electric-sql/pglite@0.5.11)
-      '@electric-sql/pglite-pg_ivm': 0.0.13(@electric-sql/pglite@0.5.11)
-      '@electric-sql/pglite-pg_textsearch': 0.0.14(@electric-sql/pglite@0.5.11)
-      '@electric-sql/pglite-pg_uuidv7': 0.0.13(@electric-sql/pglite@0.5.11)
-      '@electric-sql/pglite-pgtap': 0.0.13(@electric-sql/pglite@0.5.11)
-      '@electric-sql/pglite-pgvector': 0.0.13(@electric-sql/pglite@0.5.11)
+      '@electric-sql/pglite': 0.5.13
+      '@electric-sql/pglite-age': 0.0.13(@electric-sql/pglite@0.5.13)
+      '@electric-sql/pglite-pg_hashids': 0.0.13(@electric-sql/pglite@0.5.13)
+      '@electric-sql/pglite-pg_ivm': 0.0.13(@electric-sql/pglite@0.5.13)
+      '@electric-sql/pglite-pg_textsearch': 0.0.14(@electric-sql/pglite@0.5.13)
+      '@electric-sql/pglite-pg_uuidv7': 0.0.13(@electric-sql/pglite@0.5.13)
+      '@electric-sql/pglite-pgtap': 0.0.13(@electric-sql/pglite@0.5.13)
+      '@electric-sql/pglite-pgvector': 0.0.13(@electric-sql/pglite@0.5.13)
 
-  '@electric-sql/pglite@0.5.11': {}
+  '@electric-sql/pglite@0.5.13': {}
 
   '@emnapi/core@1.11.0':
     dependencies:
@@ -9196,10 +9196,10 @@ snapshots:
 
   baseline-browser-mapping@2.11.32: {}
 
-  better-auth@1.7.14(@tanstack/solid-start@1.169.4(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(solid-js@1.9.17)(supports-color@10.2.2)(vite-plugin-solid@2.11.14(@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.2)(vitest@5.0.5))(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(solid-js@1.9.17)(supports-color@10.2.2)))(drizzle-kit@0.31.11)(drizzle-orm@0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.11)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1))(pg@8.23.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(solid-js@1.9.17)(vitest@5.0.5):
+  better-auth@1.7.14(@tanstack/solid-start@1.169.4(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(solid-js@1.9.17)(supports-color@10.2.2)(vite-plugin-solid@2.11.14(@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.2)(vitest@5.0.5))(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(solid-js@1.9.17)(supports-color@10.2.2)))(drizzle-kit@0.31.11)(drizzle-orm@0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.13)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1))(pg@8.23.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(solid-js@1.9.17)(vitest@5.0.5):
     dependencies:
       '@better-auth/core': 1.7.14(@better-auth/utils@0.5.1)(@better-fetch/fetch@1.3.3)(better-call@1.4.4(zod@4.6.7))(jose@6.2.13)(kysely@0.29.7)(nanostores@1.5.5)
-      '@better-auth/drizzle-adapter': 1.7.14(@better-auth/core@1.7.14(@better-auth/utils@0.5.1)(@better-fetch/fetch@1.3.3)(better-call@1.4.4(zod@4.6.7))(jose@6.2.13)(kysely@0.29.7)(nanostores@1.5.5))(@better-auth/utils@0.5.1)(drizzle-orm@0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.11)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1))
+      '@better-auth/drizzle-adapter': 1.7.14(@better-auth/core@1.7.14(@better-auth/utils@0.5.1)(@better-fetch/fetch@1.3.3)(better-call@1.4.4(zod@4.6.7))(jose@6.2.13)(kysely@0.29.7)(nanostores@1.5.5))(@better-auth/utils@0.5.1)(drizzle-orm@0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.13)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1))
       '@better-auth/kysely-adapter': 1.7.14(@better-auth/core@1.7.14(@better-auth/utils@0.5.1)(@better-fetch/fetch@1.3.3)(better-call@1.4.4(zod@4.6.7))(jose@6.2.13)(kysely@0.29.7)(nanostores@1.5.5))(@better-auth/utils@0.5.1)(kysely@0.29.7)
       '@better-auth/memory-adapter': 1.7.14(@better-auth/core@1.7.14(@better-auth/utils@0.5.1)(@better-fetch/fetch@1.3.3)(better-call@1.4.4(zod@4.6.7))(jose@6.2.13)(kysely@0.29.7)(nanostores@1.5.5))(@better-auth/utils@0.5.1)
       '@better-auth/prisma-adapter': 1.7.14(@better-auth/core@1.7.14(@better-auth/utils@0.5.1)(@better-fetch/fetch@1.3.3)(better-call@1.4.4(zod@4.6.7))(jose@6.2.13)(kysely@0.29.7)(nanostores@1.5.5))(@better-auth/utils@0.5.1)
@@ -9217,7 +9217,7 @@ snapshots:
     optionalDependencies:
       '@tanstack/solid-start': 1.169.4(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(solid-js@1.9.17)(supports-color@10.2.2)(vite-plugin-solid@2.11.14(@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.2)(vitest@5.0.5))(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(solid-js@1.9.17)(supports-color@10.2.2))
       drizzle-kit: 0.31.11
-      drizzle-orm: 0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.11)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1)
+      drizzle-orm: 0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.13)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1)
       pg: 8.23.1
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
@@ -9445,10 +9445,10 @@ snapshots:
       esbuild: 0.28.2
       tsx: 4.23.15
 
-  drizzle-orm@0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.11)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1):
+  drizzle-orm@0.45.4(@cloudflare/workers-types@5.20261023.1)(@electric-sql/pglite@0.5.13)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1):
     optionalDependencies:
       '@cloudflare/workers-types': 5.20261023.1
-      '@electric-sql/pglite': 0.5.11
+      '@electric-sql/pglite': 0.5.13
       '@neondatabase/serverless': 1.2.0
       '@types/pg': 8.23.1
       kysely: 0.29.7
