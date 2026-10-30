@@ -67,5 +67,18 @@ export const Route = createFileRoute("/_app/")({
 
 function Home() {
   const initial = Route.useLoaderData();
-  return <TypingLeaf initial={initial()} />;
+  return (
+    <div class="full-width flex h-full min-h-0 flex-col">
+      <header class="pb-2 text-center text-xs text-sub">
+        <h1 class="text-sm">Caret typing test</h1>
+        <p>
+          Measure your typing speed and accuracy with a free, open-source test.
+          Practice words, quotes or code in your browser.
+        </p>
+      </header>
+      <div class="min-h-0 flex-1">
+        <TypingLeaf initial={initial()} />
+      </div>
+    </div>
+  );
 }
