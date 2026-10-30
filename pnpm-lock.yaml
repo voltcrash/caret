@@ -539,8 +539,8 @@ importers:
         specifier: 4.3.3
         version: 4.3.3(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))
       '@tanstack/eslint-plugin-query':
-        specifier: 5.104.5
-        version: 5.104.5(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2)
+        specifier: 5.105.0
+        version: 5.105.0(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2)
       '@tanstack/solid-devtools':
         specifier: 0.8.13
         version: 0.8.13(csstype@3.2.3)(solid-js@1.9.17)
@@ -3192,8 +3192,8 @@ packages:
     peerDependencies:
       solid-js: '>=1.9.7'
 
-  '@tanstack/eslint-plugin-query@5.104.5':
-    resolution: {integrity: sha512-rUAV00UdfhUAn5qSzsO6IaE/rMG/K+qvYbQZh8Sm1Uc71H8f3jgYXFYHPL30mz+JadwmvqEBHhG5Q6gm08o1dA==}
+  '@tanstack/eslint-plugin-query@5.105.0':
+    resolution: {integrity: sha512-nQTKJa7RMzhHAl03fVchPDDgt341Onxj7MmZTNt754awyQzjCLKLM+Ki36Y6gwq8UBz8M/xDxEg8it/JOTWifQ==}
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
       typescript: ^5.6.0 || ^6.0.0 || ^7.0.0
@@ -8102,7 +8102,7 @@ snapshots:
       - csstype
       - utf-8-validate
 
-  '@tanstack/eslint-plugin-query@5.104.5(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2)':
+  '@tanstack/eslint-plugin-query@5.105.0(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2)':
     dependencies:
       '@typescript-eslint/utils': 8.72.0(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2)
       eslint: 10.13.0(jiti@2.7.0)(supports-color@10.2.2)
