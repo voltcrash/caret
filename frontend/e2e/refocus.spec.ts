@@ -36,6 +36,33 @@ for (const mode of ["time", "words"] as const) {
       await expect(page.locator("#words letter.correct")).toHaveCount(1);
       await expect(words).toHaveText(refreshed);
     });
+
+    test("refreshes content after a hidden tab becomes visible", async ({
+      page,
+    }) => {
+      await openTest(page);
+      const words = page.locator("#words .word");
+      const initial = await words.allTextContents();
+      await page.evaluate(() => {
+        // Headless Chromium keeps background tabs visible; replay tab events.
+        Object.defineProperty(document, "visibilityState", {
+          configurable: true,
+          value: "hidden",
+        });
+        document.dispatchEvent(new Event("visibilitychange"));
+        window.dispatchEvent(new Event("focus"));
+      });
+      await expect(words).toHaveText(initial);
+      await page.evaluate(() => {
+        Reflect.deleteProperty(document, "visibilityState");
+        document.dispatchEvent(new Event("visibilitychange"));
+        window.dispatchEvent(new Event("focus"));
+      });
+      await expect
+        .poll(async () => await words.allTextContents())
+        .not.toEqual(initial);
+      await expect(page.locator("#wordsInput")).toBeFocused();
+    });
   });
 }
 
