@@ -152,6 +152,61 @@ describe("Test page lifecycle", () => {
       expect(callbacks.restart).not.toHaveBeenCalled();
     },
   );
+  it("refreshes on tab visibility alone and waits until visible", () => {
+    const visibility = vi.spyOn(document, "visibilityState", "get");
+    mount();
+    visibility.mockReturnValue("hidden");
+    document.dispatchEvent(new Event("visibilitychange"));
+    window.dispatchEvent(new Event("focus"));
+    expect(callbacks.restart).not.toHaveBeenCalled();
+    visibility.mockReturnValue("visible");
+    document.dispatchEvent(new Event("visibilitychange"));
+    expect(callbacks.restart).toHaveBeenCalledExactlyOnceWith({
+      noAnim: true,
+    });
+  });
+  it.each(["focus", "visibilitychange"])(
+    "refreshes once per tab return when %s arrives first",
+    (firstEvent) => {
+      const visibility = vi.spyOn(document, "visibilityState", "get");
+      mount();
+      for (let visit = 1; visit <= 2; visit++) {
+        window.dispatchEvent(new Event("blur"));
+        visibility.mockReturnValue("hidden");
+        document.dispatchEvent(new Event("visibilitychange"));
+        visibility.mockReturnValue("visible");
+        const focus = (): void => {
+          window.dispatchEvent(new Event("focus"));
+        };
+        const visible = (): void => {
+          document.dispatchEvent(new Event("visibilitychange"));
+        };
+        if (firstEvent === "focus") {
+          focus();
+          visible();
+        } else {
+          visible();
+          focus();
+        }
+        expect(callbacks.restart).toHaveBeenCalledTimes(visit);
+      }
+    },
+  );
+  it("refreshes even when the out-of-focus warning is disabled", () => {
+    state.warning = false;
+    mount();
+    window.dispatchEvent(new Event("blur"));
+    window.dispatchEvent(new Event("focus"));
+    expect(callbacks.restart).toHaveBeenCalledOnce();
+  });
+  it("preserves words when only the typing input loses focus", () => {
+    const { input } = mount();
+    input.dispatchEvent(new FocusEvent("focusout"));
+    state.focused = true;
+    input.dispatchEvent(new FocusEvent("focus"));
+    window.dispatchEvent(new Event("focus"));
+    expect(callbacks.restart).not.toHaveBeenCalled();
+  });
   it("signals hidden windows and removes every listener on disposal", () => {
     const { input, unmount } = mount();
     window.dispatchEvent(new Event("blur"));
