@@ -4,7 +4,7 @@ import {
   FormatDisplayOptions,
   formatForDisplay,
 } from "@tanstack/solid-hotkeys";
-import { OneOf } from "../../../ts/utils/types";
+import { OneOf } from "../../ts/utils/types";
 
 const options = { parts: false } satisfies FormatDisplayOptions;
 export const Ctrl = formatForDisplay("Ctrl", options);
