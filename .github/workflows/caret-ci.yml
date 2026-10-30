@@ -15,6 +15,11 @@ on:
     branches: [main]
   # Manual runs check everything; they never trigger a production deployment.
   workflow_dispatch:
+    inputs:
+      heavy-runner:
+        description: Runner label for an opt-in performance comparison (must already be available).
+        type: string
+        default: ubuntu-latest
 
 concurrency:
   # The event keeps manual runs from cancelling the main-push run a deploy waits for.
@@ -196,7 +201,7 @@ jobs:
     name: engine
     needs: [changes]
     if: needs.changes.outputs.engine == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.heavy-runner || 'ubuntu-latest' }}
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7.0.1
@@ -209,7 +214,7 @@ jobs:
     name: engine-wasm
     needs: [changes]
     if: needs.changes.outputs.engine == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.heavy-runner || 'ubuntu-latest' }}
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7.0.1
@@ -271,7 +276,7 @@ jobs:
     name: ci-be
     needs: [changes]
     if: needs.changes.outputs.backend-lint == 'true' || needs.changes.outputs.backend-test == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.heavy-runner || 'ubuntu-latest' }}
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7.0.1
@@ -306,7 +311,7 @@ jobs:
     name: ci-fe-test (${{ matrix.shard }}/2)
     needs: [changes]
     if: needs.changes.outputs.frontend-test == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.heavy-runner || 'ubuntu-latest' }}
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -338,7 +343,7 @@ jobs:
     name: start-build
     needs: [changes]
     if: needs.changes.outputs.start-ssr == 'true' || needs.changes.outputs.start-browser == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.heavy-runner || 'ubuntu-latest' }}
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7.0.1
@@ -365,7 +370,7 @@ jobs:
     name: start-ssr (${{ matrix.shard }}/3)
     needs: [changes, start-build]
     if: needs.changes.outputs.start-ssr == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.heavy-runner || 'ubuntu-latest' }}
     timeout-minutes: 20
     strategy:
       fail-fast: false
@@ -396,7 +401,7 @@ jobs:
     name: start-browser (${{ matrix.shard }}/4)
     needs: [changes, start-build]
     if: needs.changes.outputs.start-browser == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.heavy-runner || 'ubuntu-latest' }}
     timeout-minutes: 20
     strategy:
       fail-fast: false
@@ -444,7 +449,7 @@ jobs:
     name: start-updates
     needs: [changes]
     if: needs.changes.outputs.start-updates == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.heavy-runner || 'ubuntu-latest' }}
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7.0.1
