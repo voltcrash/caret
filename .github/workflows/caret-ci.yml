@@ -179,8 +179,7 @@ jobs:
           }
           runtime=(backend runtime-packages)
           enable backend-lint "${runtime[@]}" backend-tests lint-config
-          # The migration inventory spec reads frontend sources.
-          enable backend-test "${runtime[@]}" backend-tests frontend
+          enable backend-test "${runtime[@]}" backend-tests
           enable frontend-lint "${runtime[@]}" frontend frontend-tests start-tests browser-tests update-tests frontend-lint-only lint-config backend-test-support
           enable frontend-test "${runtime[@]}" frontend frontend-tests start-tests backend-test-support static-layouts
           enable start-ssr "${runtime[@]}" frontend start-tests backend-test-support static-delivery
@@ -236,6 +235,11 @@ jobs:
       # formatter or config changes are caught, and no history is fetched.
       - name: Check formatting
         run: vp fmt . --check
+
+      # This is the only backend spec that scans frontend callers.
+      - name: Check migration inventory
+        if: needs.changes.outputs.code == 'true'
+        run: vp test run --project=inventory-backend
 
       - name: Find unused code and dependencies
         if: needs.changes.outputs.code == 'true'
