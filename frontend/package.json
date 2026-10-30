@@ -68,7 +68,7 @@
     "@tanstack/solid-db": "0.3.12",
     "@tanstack/solid-form": "1.33.5",
     "@tanstack/solid-hotkeys": "0.17.0",
-    "@tanstack/solid-query": "5.104.5",
+    "@tanstack/solid-query": "5.105.0",
     "@tanstack/solid-router": "1.170.43",
     "@tanstack/solid-router-ssr-query": "1.167.3",
     "@tanstack/solid-start": "1.169.4",
