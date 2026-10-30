@@ -7,6 +7,7 @@ import { Button } from "../../ts/components/common/Button";
 import { Fa } from "../../ts/components/common/Fa";
 import { cn } from "../../ts/utils/cn";
 import { variables, buttonClass, cardClass } from "./config-layout";
+import { InitialKeymap } from "./initial-keymap";
 
 const modes: { value: string; icon: FaSolidIcon }[] = [
   { value: "time", icon: "fa-clock" },
@@ -142,9 +143,16 @@ export function InitialTypingView(props: {
         </Button>
       </div>
       <div
-        class="content-grid relative mx-auto w-full"
+        class={cn(
+          "content-grid relative mx-auto w-full",
+          config().maxLineWidth === 0 ? "content" : "full-width-padding",
+        )}
         style={{
           "font-size": `calc(var(--startup-font-size, ${config().fontSize}rem) * var(--words-font-scale, 1))`,
+          "max-width":
+            config().maxLineWidth === 0 || config().tapeMode !== "off"
+              ? "100%"
+              : `${config().maxLineWidth}ch`,
         }}
       >
         <Show when={config().showTestModesNotice}>
@@ -183,6 +191,7 @@ export function InitialTypingView(props: {
           </div>
           <div class="pointer-events-none absolute top-[0.25em] left-[0.3em] h-[1em] w-[0.1em] rounded bg-caret"></div>
         </div>
+        <InitialKeymap snapshot={props.snapshot} />
         <Button
           variant="text"
           class={cn(
