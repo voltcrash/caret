@@ -96,6 +96,13 @@ snapshot's hash selects the seed only when the actual local engine configuration
 and language asset match. Cookie words are never used as authoritative engine
 input. The engine still generates and verifies its own content.
 
+Saved maximum line width and keyboard visibility, layout, size and legends also
+apply to the initial document. Keyboard layout data is bundled into the server;
+rendering it needs no request-time asset fetch. Saving presentation settings
+updates the preview immediately, including changes made on the Settings page.
+The returning-visit browser test holds JavaScript and compares every word's
+bounds and the keyboard's bounds across the handoff.
+
 Custom text and provider/adaptive content are not copied into cookies. Unsupported
 or invalid snapshots use the built-in first-visit content while local settings
 initialize. Existing local settings that predate this feature also initialize
