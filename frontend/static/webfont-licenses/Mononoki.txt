@@ -1,3 +1,5 @@
+copyright missing
+
 Copyright (c) 2022, Matthias Tellen matthias.tellen@googlemail.com,
 with Reserved Font Name mononoki.
 

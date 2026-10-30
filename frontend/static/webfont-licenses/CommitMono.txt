@@ -1,3 +1,5 @@
+Copyright 2023 Commit Mono authors (https://github.com/eigilnikolajsen/commit-mono)
+
 MIT License
 
 Copyright (c) 2023 Eigil Nikolajsen

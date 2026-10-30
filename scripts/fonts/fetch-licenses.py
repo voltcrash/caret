@@ -50,8 +50,10 @@ def fetch(item):
             data = urllib.request.urlopen(url, timeout=20).read()
             if b"LICENSE" not in data.upper() and b"LICENCE" not in data.upper():
                 continue
-            (out / (name + ".txt")).write_bytes(data)
-            return path, {"url": url, "sha256": hashlib.sha256(data).hexdigest(), "file": name + ".txt"}
+            notice = "\n".join(record["names"].get("0", []))
+            distributed = (notice + "\n\n").encode() + data if notice not in data.decode() else data
+            (out / (name + ".txt")).write_bytes(distributed)
+            return path, {"url": url, "upstreamSha256": hashlib.sha256(data).hexdigest(), "distributedSha256": hashlib.sha256(distributed).hexdigest(), "file": name + ".txt"}
         except Exception:
             continue
     print("MISSING", path)

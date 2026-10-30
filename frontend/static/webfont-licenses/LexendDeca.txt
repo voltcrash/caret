@@ -1,3 +1,5 @@
+Copyright 2019 The Lexend Project Authors (https://github.com/googlefonts/lexend)
+
 Copyright 2018 The Lexend Project Authors (https://github.com/googlefonts/lexend), with Reserved Font Name “RevReading Lexend”.
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
