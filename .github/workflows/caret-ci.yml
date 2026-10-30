@@ -375,9 +375,33 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
+  start-runtime-build:
+    name: start-runtime-build
+    needs: [changes]
+    if: needs.changes.outputs.start-ssr == 'true'
+    runs-on: ${{ inputs.heavy-runner || 'ubuntu-latest' }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+        with:
+          task-cache: start-runtime-build
+      - name: Build runtime-test entry
+        env:
+          CARET_BUILD_ID: ci-fixture
+        run: vp run ci:build:start --mode runtime-test
+      - name: Share runtime-test Worker
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: start-runtime-worker
+          path: frontend/dist/start-test
+          include-hidden-files: true
+          retention-days: 1
+          if-no-files-found: error
+
   start-ssr:
     name: start-ssr (${{ matrix.shard }}/3)
-    needs: [changes, start-build]
+    needs: [changes, start-build, start-runtime-build]
     if: needs.changes.outputs.start-ssr == 'true'
     runs-on: ${{ inputs.heavy-runner || 'ubuntu-latest' }}
     timeout-minutes: 20
@@ -400,8 +424,11 @@ jobs:
           name: start-worker
           path: frontend/dist/start
 
-      - name: Build runtime-test entry
-        run: vp run --filter @caret/frontend build:start:test
+      - name: Download runtime-test Worker
+        uses: actions/download-artifact@v8.0.2
+        with:
+          name: start-runtime-worker
+          path: frontend/dist/start-test
 
       - name: SSR, workerd and bundle-boundary suites
         run: vp run --filter @caret/frontend test:start --shard=${{ matrix.shard }}/3
@@ -540,6 +567,7 @@ jobs:
         ci-fe,
         ci-fe-test,
         start-build,
+        start-runtime-build,
         start-ssr,
         start-browser,
         start-updates,
