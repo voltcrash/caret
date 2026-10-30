@@ -30,7 +30,7 @@ for name, parts in metadata.items():
         else:
             assert "fvar" not in output
         glyphs = output.getGlyphSet()
-        for tag in ["cvt ", "prep", "fpgm", "gasp", "cvar"]:
+        for tag in ["cvt ", "prep", "fpgm", "gasp", "cvar", "VDMX"]:
             if tag in source:
                 assert source.getTableData(tag) == output.getTableData(tag), (name, tag, "global hinting")
         def signature(font, glyph_set, glyph):
@@ -50,6 +50,11 @@ for name, parts in metadata.items():
                 before_glyph = glyph or source.getBestCmap()[code]
                 after_glyph = actual[code] or output.getBestCmap()[code]
                 assert signature(source, source_glyphs, before_glyph) == signature(output, glyphs, after_glyph), (name, "variation glyph changed")
+        if "hdmx" in source:
+            assert "hdmx" in output and set(source["hdmx"].hdmx) == set(output["hdmx"].hdmx), (name, "device sizes lost")
+            for code, glyph in output.getBestCmap().items():
+                for size, widths in source["hdmx"].hdmx.items():
+                    assert widths[cmap[code]] == output["hdmx"].hdmx[size][glyph], (name, "device width changed")
         for code, glyph in output.getBestCmap().items():
             assert signature(source, source_glyphs, cmap[code]) == signature(output, glyphs, glyph), (name, hex(code), "outline/metrics/instructions")
             count += 1
@@ -65,6 +70,6 @@ for name, parts in metadata.items():
         for name_id in [0, 13, 14]:
             assert {r.toUnicode() for r in source["name"].names if r.nameID == name_id} == {r.toUnicode() for r in output["name"].names if r.nameID == name_id}, (name, "notice")
     assert covered == set(cmap), (name, "lost coverage")
-    results.append({"source": name, "mappedGlyphsCompared": count, "coverage": "exact disjoint union", "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef"})
+    results.append({"source": name, "mappedGlyphsCompared": count, "coverage": "exact disjoint union", "outlinesMetricsHintsNotices": "identical, including unencoded layout closure and .notdef", "deviceMetrics": "VDMX bytes and hdmx mapped widths identical where present"})
 (ROOT / "docs/font-evidence/validation.json").write_text(json.dumps(results, indent=2) + "\n")
 print(f"Validated {len(results)} fonts, {sum(r['mappedGlyphsCompared'] for r in results)} mapped glyphs")
