@@ -24,9 +24,9 @@ export function Document(props: { children: JSX.Element }): JSX.Element {
       </head>
       <body>
         <HeadContent />
+        {props.children}
         {/* oxlint-disable-next-line solid/no-innerhtml -- Repository-owned static HTML, never request/user content; preserves no-JS/no-CSS recovery. */}
         <div innerHTML={fallback()}></div>
-        {props.children}
         <Scripts />
       </body>
     </html>
