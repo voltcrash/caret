@@ -71,7 +71,7 @@
     "@cloudflare/workers-types": "5.20261023.1",
     "@electric-sql/pglite": "0.5.11",
     "@electric-sql/pglite-socket": "0.2.15",
-    "@types/node": "24.19.2",
+    "@types/node": "26.6.6",
     "@types/object-hash": "3.0.6",
     "@types/pg": "8.23.1",
     "@types/qs": "6.15.1",

@@ -60,7 +60,7 @@
   },
   "devDependencies": {
     "@commitlint/cli": "21.2.4",
-    "@types/node": "24.19.2",
+    "@types/node": "26.6.6",
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "binaryen": "132.0.0",
