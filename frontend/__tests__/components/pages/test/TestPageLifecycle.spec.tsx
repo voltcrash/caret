@@ -92,7 +92,7 @@ describe("Test page lifecycle", () => {
     expect(callbacks.hideCaret).toHaveBeenCalledOnce();
   });
   it.each(["time", "words", "quote"])(
-    "preserves the %s wordset on focus and visibility changes",
+    "preserves the initial %s wordset without a preceding focus loss",
     (mode) => {
       state.mode = mode;
       mount();
@@ -112,6 +112,44 @@ describe("Test page lifecycle", () => {
       document.dispatchEvent(new Event("visibilitychange"));
       expect(callbacks.restart).not.toHaveBeenCalled();
       expect(callbacks.showCaret).toHaveBeenCalledWith(true);
+    },
+  );
+  it.each(["time", "words"])(
+    "refreshes an unstarted %s test after switching away and back",
+    (mode) => {
+      state.mode = mode;
+      mount();
+      window.dispatchEvent(new Event("blur"));
+      expect(callbacks.restart).not.toHaveBeenCalled();
+      window.dispatchEvent(new Event("focus"));
+      expect(callbacks.restart).toHaveBeenCalledExactlyOnceWith({
+        noAnim: true,
+      });
+      window.dispatchEvent(new Event("focus"));
+      expect(callbacks.restart).toHaveBeenCalledOnce();
+    },
+  );
+  it.each(["quote", "custom", "zen"])(
+    "preserves %s content after switching away and back",
+    (mode) => {
+      state.mode = mode;
+      mount();
+      window.dispatchEvent(new Event("blur"));
+      window.dispatchEvent(new Event("focus"));
+      expect(callbacks.restart).not.toHaveBeenCalled();
+    },
+  );
+  it.each(["active", "result"] as const)(
+    "preserves an %s test and consumes its focus loss",
+    (status) => {
+      state[status] = true;
+      mount();
+      window.dispatchEvent(new Event("blur"));
+      window.dispatchEvent(new Event("focus"));
+      expect(callbacks.restart).not.toHaveBeenCalled();
+      state[status] = false;
+      window.dispatchEvent(new Event("focus"));
+      expect(callbacks.restart).not.toHaveBeenCalled();
     },
   );
   it("signals hidden windows and removes every listener on disposal", () => {
