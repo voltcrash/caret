@@ -24,6 +24,13 @@ function Guides() {
       </header>
       <nav aria-label="Typing guides" class="grid gap-6">
         <Link
+          to="/guide/wpm-calculator"
+          class="grid gap-2 rounded bg-sub-alt p-5"
+        >
+          <h2 class="text-xl text-main">WPM calculator and worked examples</h2>
+          <p>Convert characters and elapsed time into words per minute.</p>
+        </Link>
+        <Link
           to="/guide/typing-practice"
           class="grid gap-2 rounded bg-sub-alt p-5"
         >
