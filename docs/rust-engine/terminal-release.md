@@ -80,3 +80,21 @@ The publishing job verifies all five platform/source checksums and produces
 SHA256SUMS before creating the GitHub Release. Development PRs and manual workflow
 runs upload temporary CI candidates only. They do not publish releases or deploy
 the website. Never bypass the manual gate by marking unperformed checks passed.
+
+## Release authentication
+
+Tagged macOS archives require Developer ID signing and Apple notarization before
+checksums and archives are produced. Configure repository secrets
+`MACOS_CERTIFICATE_BASE64` (Developer ID Application PKCS#12),
+`MACOS_CERTIFICATE_PASSWORD`, `MACOS_SIGNING_IDENTITY`,
+`MACOS_NOTARY_KEY_BASE64` (App Store Connect API private key),
+`MACOS_NOTARY_KEY_ID` and `MACOS_NOTARY_ISSUER_ID`. Credentials live only in a
+temporary keychain/files, removed after the signing attempt. Missing credentials
+block a tagged macOS release; development CI candidates remain unsigned.
+
+The publishing job attests all binary/source archives. Verify a downloaded archive
+with `vp exec gh attestation verify PATH --repo voltcrash/caret` (installed users
+can invoke `gh` directly). On macOS also run `codesign --verify --strict ./caret`
+after extracting. Signing/notarization must still be proven with the maintainer's
+real Apple credentials before publication; Linux CI only verifies the fail-closed
+credential gate and packaging behavior.
