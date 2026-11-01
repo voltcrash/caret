@@ -88,18 +88,22 @@ test("recovers a lost commit acknowledgement after reload without duplicate prog
   await page.reload();
   const response = await retried;
   expect(response.status()).toBe(200);
-  const saved = fromCrossJSON((await response.json()) as SerovalNode, {
-    refs: new Map(),
-  }) as { result: { data: { alreadySaved?: boolean; xp: number } } };
-  expect(saved.result.data).toMatchObject({ alreadySaved: true, xp: 0 });
+  const saved = z.object({ result: AddResultResponseSchema }).parse(
+    fromCrossJSON((await response.json()) as SerovalNode, {
+      refs: new Map(),
+    }),
+  ).result.data;
+  expect(saved).toMatchObject({ alreadySaved: true, xp: 0 });
   const read = await page.request.get(
     `${rpcPath("usersGet")}?payload=${encodeURIComponent(JSON.stringify(await toJSONAsync({ data: { query: { client: "web" } } })))}`,
     { headers: { origin: baseURL ?? "" } },
   );
-  const account = fromCrossJSON((await read.json()) as SerovalNode, {
-    refs: new Map(),
-  }) as { result: { data: { completedTests: number } } };
-  expect(account.result.data.completedTests).toBe(1);
+  const account = z.object({ result: GetUserResponseSchema }).parse(
+    fromCrossJSON((await read.json()) as SerovalNode, {
+      refs: new Map(),
+    }),
+  ).result.data;
+  expect(account.completedTests).toBe(1);
 });
 
 test("a real browser completion persists through Start/PostgreSQL and updates the account once", async ({
