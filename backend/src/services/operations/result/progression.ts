@@ -40,8 +40,11 @@ export async function applyProgression(
   } = submission;
   let isPb = false;
   let tagPbs: string[] = [];
+  const ranked =
+    !context.configuration.anticheat.logVerification.requireForRanked ||
+    submission.verification === "verified";
 
-  if (!offline && !completedEvent.bailedOut) {
+  if (!offline && !completedEvent.bailedOut && ranked) {
     [isPb, tagPbs] = await Promise.all([
       UserDAL.checkIfPb(uid, user, completedEvent),
       UserDAL.checkIfTagPb(uid, user, completedEvent),
@@ -96,6 +99,7 @@ export async function applyProgression(
     .minTimeTyping;
 
   const userEligibleForLeaderboard =
+    ranked &&
     user.banned !== true &&
     user.lbOptOut !== true &&
     (isDevEnvironment() || (profile.timeTyping ?? 0) > minTimeTyping);
@@ -211,6 +215,7 @@ export async function applyProgression(
   }
 
   const dbresult = buildDbResult(completedEvent, user.name, isPb);
+  dbresult.verification = submission.verification;
   (dbresult as typeof dbresult & { submissionHash: string }).submissionHash =
     submissionHash;
   if (keySpacingStats !== undefined) {

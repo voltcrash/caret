@@ -3,9 +3,11 @@ import type { ResultEventLog } from "@caret/contracts/results";
 import type { CompletedEvent } from "@caret/schemas/results";
 import {
   serverAudit,
+  resetServerAudit,
   type Verification,
 } from "@caret/typing-engine/audit.server";
 import { toEngineLog, type WebLog } from "@caret/typing-engine/text";
+import { EngineFailure } from "@caret/typing-engine/failure";
 
 // Keystroke logs compress about tenfold; this bounds a forged decompression bomb.
 const MAX_DECODED_BYTES = 4 * 1024 * 1024;
@@ -59,7 +61,15 @@ export function verifyEventLog(
       result,
       eventLog.behaviorVersion,
     );
-  } catch {
+  } catch (error) {
+    if (error instanceof EngineFailure && error.code === "internal") {
+      resetServerAudit();
+      console.error("Typing audit engine trapped", {
+        event: "engine_trap",
+        cause: error.cause,
+      });
+      throw error;
+    }
     return { kind: "unverifiable", reason: "invalid-log" };
   }
   if (!verdict.sameBehavior) {
