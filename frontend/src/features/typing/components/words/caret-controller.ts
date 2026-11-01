@@ -43,6 +43,11 @@ export class CaretController {
   private readyToResetMarginLeft: boolean = false;
   private isMainCaret: boolean = false;
   private cumulativeTapeMarginCorrection: number = 0;
+  private wordMargins = new WeakMap<HTMLElement, number>();
+
+  public clearGeometry(): void {
+    this.wordMargins = new WeakMap();
+  }
 
   private posAnimation: JSAnimation | null = null;
   private marginTopAnimation: JSAnimation | null = null;
@@ -470,7 +475,11 @@ export class CaretController {
       }
     }
 
-    const spaceWidth = getTotalInlineMargin(options.word);
+    let spaceWidth = this.wordMargins.get(options.word);
+    if (spaceWidth === undefined) {
+      spaceWidth = getTotalInlineMargin(options.word);
+      this.wordMargins.set(options.word, spaceWidth);
+    }
     let width = spaceWidth;
     if (this.isFullWidth() && options.side === "beforeLetter") {
       width = letter.offsetWidth;
@@ -588,11 +597,12 @@ function setClass(
   enabled: boolean,
 ): void {
   if (element) {
-    element.className = updateClassNames(
+    const next = updateClassNames(
       element.className,
       Array.isArray(names) ? names.join(" ") : names,
       enabled,
     );
+    if (element.className !== next) element.className = next;
   }
 }
 
