@@ -19,6 +19,14 @@ const mocks = vi.hoisted(() => ({
   showModal: vi.fn(),
   showNoticeNotification: vi.fn(),
 }));
+vi.mock(
+  "../../../../../src/features/typing/components/result/PendingResults",
+  () => ({ PendingResults: () => null }),
+);
+vi.mock(
+  "../../../../../src/features/typing/components/result/EngineMemoryNotice",
+  () => ({ EngineMemoryNotice: () => null }),
+);
 
 vi.mock("../../../../../src/features/typing/runtime/test-logic", () => ({
   restart: mocks.restart,
