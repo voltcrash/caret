@@ -47,6 +47,41 @@ fn honest_browser_results_replay_exactly() {
 }
 
 #[test]
+fn seeded_untrusted_audit_mutations_never_panic_or_poison_the_next_replay() {
+    let (_, log, completed) = recordings().remove(0);
+    let original = serde_json::to_value(&log).unwrap();
+    let mut random = 7_u32;
+    for seed in 0..512 {
+        random = random.wrapping_mul(1_664_525).wrapping_add(1_013_904_223);
+        let mut mutated = original.clone();
+        let events = mutated["events"].as_array_mut().unwrap();
+        let index = random as usize % events.len();
+        let value = [
+            json!(-1),
+            json!(u64::MAX),
+            json!(null),
+            json!("invalid"),
+            json!([]),
+        ][seed % 5]
+            .clone();
+        match seed % 4 {
+            0 => events[index]["timestamp"] = value,
+            1 => events[index]["data"]["wordIndex"] = value,
+            2 => events[index]["data"]["charIndex"] = value,
+            _ => events[index]["type"] = value,
+        }
+        let query = json!({"op":"verify","log":mutated,"result":completed,"behaviorVersion":BEHAVIOR_VERSION});
+        let outcome = std::panic::catch_unwind(|| {
+            if let Ok(query) = serde_json::from_value::<typing_engine::audit::Query>(query) {
+                let _ = typing_engine::audit::audit(query);
+            }
+        });
+        assert!(outcome.is_ok(), "audit mutation seed {seed}");
+    }
+    assert!(fields(&log, &completed).is_empty());
+}
+
+#[test]
 fn edited_metrics_are_reported_by_field() {
     for (name, log, completed) in recordings() {
         let mut edited = completed.clone();

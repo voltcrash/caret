@@ -1,5 +1,8 @@
 import { expect, it } from "vite-plus/test";
 import { EngineFailure, disposed, invoke } from "../src/failure";
+it("distinguishes a Wasm trap from invalid client input", () => {
+  expect(() => invoke(() => { throw new WebAssembly.RuntimeError("unreachable"); })).toThrow(expect.objectContaining({ code: "internal" }));
+});
 it("decodes the native structured error envelope without interpreting messages", () => {
   const detail = {
     code: "onePolyglotLanguage" as const,

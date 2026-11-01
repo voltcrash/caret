@@ -188,6 +188,20 @@ switch (process.argv[2]) {
         ),
       ]);
       const wasm = resolve(staging, `${name}_bg.wasm`);
+      if (name === "audit") {
+        // Audit has no retained handles. Permit replacing a trapped instance;
+        // browser session bindings must never reset beneath live handles.
+        const glue = resolve(staging, "audit.js");
+        writeFileSync(
+          glue,
+          `${readFileSync(glue, "utf8")}\nexport function resetBindings() { wasm = undefined; cachedUint8ArrayMemory0 = null; }\n`,
+        );
+        const declarations = resolve(staging, "audit.d.ts");
+        writeFileSync(
+          declarations,
+          `${readFileSync(declarations, "utf8")}\nexport function resetBindings(): void;\n`,
+        );
+      }
       run(process.execPath, [
         resolve(binaryen, "bin/wasm-opt"),
         wasm,

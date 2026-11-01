@@ -19,6 +19,17 @@ export function invoke<T>(operation: () => T): T {
     return operation();
   } catch (cause) {
     if (cause instanceof EngineFailure) throw cause;
+    if (cause instanceof WebAssembly.RuntimeError) {
+      throw new EngineFailure(
+        {
+          code: "internal",
+          message:
+            "Typing engine stopped unexpectedly. Reload the page to restart it safely.",
+          recovery: [],
+        },
+        { cause },
+      );
+    }
     if (cause instanceof Error) {
       let detail: unknown;
       try {

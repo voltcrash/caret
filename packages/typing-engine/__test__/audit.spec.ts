@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { expect, it } from "vite-plus/test";
-import { serverAudit } from "../src/audit.server";
+import { serverAudit, resetServerAudit } from "../src/audit.server";
 import { EngineFailure } from "../src/failure";
 import { toEngineLog, type WebLog } from "../src/text";
 import { versions } from "../src/versions";
@@ -15,6 +15,19 @@ const recording = JSON.parse(
     "utf8",
   ),
 ) as { eventLog: WebLog; completedEvent: Record<string, unknown> };
+
+it("replaces the audit instance without changing replay behavior", () => {
+  const first = serverAudit();
+  resetServerAudit();
+  expect(serverAudit()).not.toBe(first);
+  expect(
+    serverAudit().verify(
+      toEngineLog(recording.eventLog),
+      recording.completedEvent,
+      versions.behavior,
+    ).mismatches,
+  ).toEqual([]);
+});
 
 it("verifies a browser recording through the Node-compiled module", () => {
   const audit = serverAudit();
