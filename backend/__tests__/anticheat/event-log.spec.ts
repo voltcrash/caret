@@ -1,7 +1,9 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { gzipSync } from "node:zlib";
-import { describe, expect, it } from "vite-plus/test";
+import { describe, expect, it, vi } from "vite-plus/test";
+import * as Audit from "@caret/typing-engine/audit.server";
+import { EngineFailure } from "@caret/typing-engine/failure";
 import type { ResultEventLog } from "@caret/contracts/results";
 import type { CompletedEvent } from "@caret/schemas/results";
 import { versions } from "@caret/typing-engine/versions";
@@ -32,6 +34,39 @@ function encode(
 const time15 = recordings.find((r) => r.name === "time-15.json") as Recording;
 
 describe("event log verification", () => {
+  it.each([false, true])(
+    "retries a trapped audit once; persistent trap: %s",
+    (persistent) => {
+      const trapped = (): never => {
+        throw new EngineFailure({
+          code: "internal",
+          message: "trap",
+          recovery: [],
+        });
+      };
+      const audit = Audit.serverAudit();
+      const verify = vi.fn(audit.verify).mockImplementationOnce(trapped);
+      if (persistent) verify.mockImplementationOnce(trapped);
+      const getter = vi
+        .spyOn(Audit, "serverAudit")
+        .mockReturnValue({ ...audit, verify });
+      const reset = vi.spyOn(Audit, "resetServerAudit");
+      try {
+        expect(
+          verifyEventLog(time15.completedEvent, encode(time15.eventLog)),
+        ).toEqual(
+          persistent
+            ? { kind: "unverifiable", reason: "engine-error" }
+            : { kind: "verified" },
+        );
+        expect(verify).toHaveBeenCalledTimes(2);
+        expect(reset).toHaveBeenCalledTimes(persistent ? 2 : 1);
+      } finally {
+        getter.mockRestore();
+        reset.mockRestore();
+      }
+    },
+  );
   it.each(recordings.map((r) => [r.name, r] as const))(
     "verifies the unchanged browser recording %s",
     (_, { eventLog, completedEvent }) => {

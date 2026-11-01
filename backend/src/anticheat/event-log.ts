@@ -53,6 +53,15 @@ export function verifyEventLog(
   } catch {
     return { kind: "unverifiable", reason: "undecodable" };
   }
+  return replayEventLog(result, eventLog, log, true);
+}
+
+function replayEventLog(
+  result: CompletedEvent,
+  eventLog: ResultEventLog,
+  log: WebLog,
+  retryTrap: boolean,
+): EventLogVerdict {
   let verdict: Verification;
   try {
     // The engine validates every event; toEngineLog only re-encodes text.
@@ -68,7 +77,10 @@ export function verifyEventLog(
         event: "engine_trap",
         cause: error.cause,
       });
-      throw error;
+      if (retryTrap) return replayEventLog(result, eventLog, log, false);
+      // Keep a reproducible engine bug distinguishable from malformed input,
+      // without preventing the user's otherwise valid practice from saving.
+      return { kind: "unverifiable", reason: "engine-error" };
     }
     return { kind: "unverifiable", reason: "invalid-log" };
   }
