@@ -60,8 +60,9 @@ export async function retrySavingResult(): Promise<void> {
     for (const entry of queue.entries()) {
       if (!account.isCurrent()) return;
       // The current test keeps its original online eligibility on retry.
-      if (state.canRetry && entry.result.hash === state.completedEvent?.hash)
+      if (state.canRetry && entry.result.hash === state.completedEvent?.hash) {
         continue;
+      }
       const response = await saveResult(
         { ...entry.result, offline: true },
         true,
@@ -71,8 +72,9 @@ export async function retrySavingResult(): Promise<void> {
       if (
         response === null ||
         (!response.ok && !isPermanentFailure(response.status))
-      )
+      ) {
         return;
+      }
     }
   } finally {
     state.draining = false;

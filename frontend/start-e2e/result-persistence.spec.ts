@@ -44,13 +44,11 @@ test("an immediate retry after a network failure still earns a PB", async ({
     body: { result: { offline?: boolean } };
   };
   expect(input.body.result.offline).not.toBe(true);
-  const saved = z
-    .object({ result: AddResultResponseSchema })
-    .parse(
-      fromCrossJSON((await response.json()) as SerovalNode, {
-        refs: new Map(),
-      }),
-    ).result.data;
+  const saved = z.object({ result: AddResultResponseSchema }).parse(
+    fromCrossJSON((await response.json()) as SerovalNode, {
+      refs: new Map(),
+    }),
+  ).result.data;
   expect(saved.isPb).toBe(true);
   expect(saved.xp).toBeGreaterThan(0);
   await expect(page.locator("#result .crown")).toBeVisible();

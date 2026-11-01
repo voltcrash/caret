@@ -175,7 +175,7 @@ it("does not drain a result while its initial upload is in flight", async () => 
     Promise.withResolvers<
       ReturnType<typeof ok<{ insertedId: string; isPb: boolean }>>
     >();
-  mockOperation("results.add", () => response.promise);
+  mockOperation("results.add", async () => response.promise);
   const saving = saveResult(result("time", "15"), false);
   await vi.waitFor(() => expect(operationCalls).toHaveBeenCalledOnce());
   await retrySavingResult();
