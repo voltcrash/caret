@@ -54,7 +54,11 @@ export async function toggleBan(
     ]);
   }
 
-  void addImportantLog("user_ban_toggled", { banned: banning }, uid);
+  await addImportantLog(
+    "user_ban_toggled",
+    { banned: banning, actorUid: context.actor.uid },
+    uid,
+  );
 
   return new MonkeyResponse(`Ban toggled`, {
     banned: banning,
@@ -62,13 +66,17 @@ export async function toggleBan(
 }
 
 export async function clearStreakHourOffset(
-  _context: ServiceContext,
+  context: ServiceContext,
   input: OperationInput<undefined, ClearStreakHourOffsetRequest>,
 ): Promise<MonkeyResponse> {
   const { uid } = input.body;
 
   await UserDAL.clearStreakHourOffset(uid);
-  void addImportantLog("admin_streak_hour_offset_cleared_by", {}, uid);
+  await addImportantLog(
+    "admin_streak_hour_offset_cleared_by",
+    { actorUid: context.actor.uid },
+    uid,
+  );
 
   return new MonkeyResponse("Streak hour offset cleared", null);
 }
@@ -86,11 +94,11 @@ export async function deleteUser(
     );
   }
 
-  const userInfo = await deleteUserAccount(uid, context.configuration);
+  await deleteUserAccount(uid, context.configuration);
 
-  void addImportantLog(
+  await addImportantLog(
     "user_deleted_by_admin",
-    `${userInfo?.email} ${userInfo?.name}`,
+    { actorUid: context.actor.uid },
     uid,
   );
 
@@ -131,13 +139,17 @@ async function removeReports(reportIds: string[]): Promise<void> {
 }
 
 export async function clearSuspicious(
-  _context: ServiceContext,
+  context: ServiceContext,
   input: OperationInput<undefined, ClearSuspiciousRequest>,
 ): Promise<MonkeyResponse> {
   const { uid } = input.body;
 
   await UserDAL.clearSuspicious(uid);
-  void addImportantLog("admin_suspicious_cleared_by", {}, uid);
+  await addImportantLog(
+    "admin_suspicious_cleared_by",
+    { actorUid: context.actor.uid },
+    uid,
+  );
 
   return new MonkeyResponse("Suspicious flag cleared", null);
 }

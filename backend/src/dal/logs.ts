@@ -2,6 +2,7 @@ import { and, count, desc, eq, gte, lt } from "drizzle-orm";
 import { database, encode, statement } from "../db/client";
 import { logs } from "../db/schema";
 import { stage } from "../db/mutation";
+import { runtime } from "../runtime/env";
 import { newId } from "../utils/id";
 async function insert(
   event: string,
@@ -18,7 +19,7 @@ async function insert(
       event,
       Date.now(),
       important,
-      encode({ message }),
+      encode({ message, requestId: runtime().request?.requestId }),
     ),
   );
 }
