@@ -4,7 +4,7 @@ import type { Plugin } from "vite";
 import { encodeText, decodeText } from "@caret/typing-engine/text";
 import type { Snapshot } from "../../packages/typing-engine/generated/types/Snapshot";
 
-/** Prepare real first-visit words at build time, never in a database request. */
+/** Prepare first-visit preview words at build time, never in a database request. */
 export function initialTyping(): Plugin {
   return {
     name: "caret-initial-typing",

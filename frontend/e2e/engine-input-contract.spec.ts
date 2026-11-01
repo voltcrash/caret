@@ -30,11 +30,13 @@ test("master failure waits for the final unit of a multi-character browser commi
       .map((event) => ("data" in event.data ? event.data.data : ""))
       .join(""),
   ).toBe(batch);
-  expect(inputs.at(-1)?.data.wordIndex).toBe(0);
-  await expect(page.locator("#words .word.active")).toHaveAttribute(
-    "data-wordindex",
-    "1",
-  );
+  // The completed test's DOM caret marker can disappear before this assertion.
+  expect(inputs.at(-1)?.data).toMatchObject({
+    wordIndex: 0,
+    data: " ",
+    commitsWord: true,
+  });
+  await expect(page.locator("#result")).toContainText("failed (difficulty)");
 });
 
 test.describe("minimum burst progression", () => {

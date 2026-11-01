@@ -44,12 +44,6 @@ it.each([
   expect(readTypingPreview(`${initialTypingCookie}=${value}`)).toBeUndefined();
 });
 
-it("uses a matching generation seed only once", () => {
-  expect(initialTypingState().seed("different")).toBeUndefined();
-  expect(initialTypingState().seed(snapshot.key)).toBe(42);
-  expect(initialTypingState().seed(snapshot.key)).toBeUndefined();
-});
-
 it("bounds the cookie while retaining complete words and preferences", () => {
   saveTypingPreview(
     config,

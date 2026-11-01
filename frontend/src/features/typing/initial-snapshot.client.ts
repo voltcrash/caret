@@ -10,16 +10,9 @@ import {
 
 export const initialTypingState = createAppOwned(() => {
   let initial: InitialTypingSnapshot | undefined;
-  let consumed = false;
   return {
     initialize: (value: InitialTypingSnapshot) => {
       initial = value;
-      consumed = false;
-    },
-    seed: (key: string): number | undefined => {
-      if (consumed || initial?.key !== key) return undefined;
-      consumed = true;
-      return initial.seed;
     },
     engineHash: () => initial?.engineHash ?? "",
   };
@@ -74,7 +67,7 @@ export async function initialContentKey(
   ).join("");
 }
 
-/** Keep the next document's actual first wordset beside its visual preferences. */
+/** Cache presentation for the next document while fresh test content loads. */
 export function saveTypingPreview(
   config: Config,
   seed: number,

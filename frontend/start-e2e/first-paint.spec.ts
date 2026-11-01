@@ -7,7 +7,7 @@ import { expect, test } from "../e2e/fixtures";
 
 test.use({ config: {}, serviceWorkers: "block" });
 
-test("first visit paints actual words and controls before engine downloads", async ({
+test("first visit paints preview words and controls before fresh content loads", async ({
   page,
 }, info) => {
   const pending = Promise.withResolvers<undefined>();
@@ -46,7 +46,8 @@ test("first visit paints actual words and controls before engine downloads", asy
     expect(actualBox?.y).toBeCloseTo(initialBox?.y ?? 0, 0);
     expect(actualBox?.height).toBeCloseTo(initialBox?.height ?? 0, 0);
     const actual = await page.locator("#words .word").allTextContents();
-    expect(actual.slice(0, initial.length)).toEqual(initial);
+    expect(actual.length).toBeGreaterThan(20);
+    expect(actual.slice(0, initial.length)).not.toEqual(initial);
     const first = actual[0]?.[0];
     if (first === undefined) throw new Error("Missing word");
     await page.locator("#words .word").first().click();
@@ -73,7 +74,7 @@ test.describe("returning visit", () => {
       keymapSize: 1,
     },
   });
-  test("renders saved words and settings with all JavaScript blocked", async ({
+  test("renders saved presentation before JavaScript, then starts a fresh test", async ({
     page,
   }, info) => {
     await page.goto("/");
@@ -113,12 +114,8 @@ test.describe("returning visit", () => {
       await expect(page.locator("[data-initial-keymap]")).toBeVisible();
       const beforeWords = await page
         .locator("[data-initial-words] .word")
-        .evaluateAll((elements) =>
-          elements.map((el) => {
-            const { x, y, width, height } = el.getBoundingClientRect();
-            return { x, y, width, height };
-          }),
-        );
+        .first()
+        .boundingBox();
       const beforeKeyboard = await page
         .locator("[data-initial-keymap]")
         .boundingBox();
@@ -127,22 +124,14 @@ test.describe("returning visit", () => {
       });
       pending.resolve(undefined);
       await expect(page.locator("#words .word").first()).toBeVisible();
-      await expect(page.locator("#words .word")).toHaveText(words);
+      await expect(page.locator("#words .word")).toHaveCount(words.length);
+      await expect(page.locator("#words .word")).not.toHaveText(words);
       const afterWords = await page
         .locator("#words .word")
-        .evaluateAll((elements) =>
-          elements.map((el) => {
-            const { x, y, width, height } = el.getBoundingClientRect();
-            return { x, y, width, height };
-          }),
-        );
-      for (let i = 0; i < beforeWords.length; i++) {
-        for (const key of ["x", "y", "width", "height"] as const) {
-          expect(afterWords[i]?.[key]).toBeCloseTo(
-            beforeWords[i]?.[key] ?? 0,
-            0,
-          );
-        }
+        .first()
+        .boundingBox();
+      for (const key of ["x", "y", "height"] as const) {
+        expect(afterWords?.[key]).toBeCloseTo(beforeWords?.[key] ?? 0, 0);
       }
       const afterKeyboard = await page
         .locator('[data-ui-element="keymap"]')

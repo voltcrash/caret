@@ -55,6 +55,11 @@ import { mountApplication } from "../../../src/app/application";
 import { getMutableConfig } from "../../../src/ts/config/store";
 import { getContentHost } from "../../../src/features/typing/runtime/content.client";
 import {
+  initialContentKey,
+  initialTypingState,
+} from "../../../src/features/typing/initial-snapshot.client";
+import { previewSettings } from "../../../src/features/typing/initial-snapshot";
+import {
   createTestApplication,
   releaseTestApplication,
 } from "../../__harness__/test-application";
@@ -103,7 +108,36 @@ beforeEach(() => {
 });
 afterEach(() => {
   dispose();
+  vi.restoreAllMocks();
   vi.unstubAllGlobals();
+});
+
+it("uses fresh randomness even when a restored preview matches the test configuration", async () => {
+  const config = getMutableConfig();
+  Object.assign(config, { funbox: [] });
+  const engineHash = "b".repeat(64);
+  const preview = {
+    version: 1 as const,
+    seed: 42,
+    key: await initialContentKey(config, "", engineHash),
+    engineHash,
+    words: ["old"],
+    settings: previewSettings(config),
+  };
+  const random = vi
+    .spyOn(crypto, "getRandomValues")
+    .mockReturnValueOnce(new Uint32Array([7]))
+    .mockReturnValueOnce(new Uint32Array([8]));
+  for (const seed of [7, 8]) {
+    // A reload or a typing-page remount can restore the same loader snapshot.
+    initialTypingState().initialize(preview);
+    await getContentHost().prepare({ ...language, words: [...language.words] });
+    expect(mocks.prepare).toHaveBeenLastCalledWith(
+      expect.objectContaining({ random: { kind: "seeded", state: seed } }),
+      false,
+    );
+  }
+  expect(random).toHaveBeenCalledTimes(2);
 });
 
 it("retries the same pending native request after empty cleanup, matching original fetch ordering", async () => {
