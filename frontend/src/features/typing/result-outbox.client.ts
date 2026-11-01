@@ -19,16 +19,26 @@ export function createResultOutbox(storage: OutboxStorage): {
   clear: () => Promise<void>;
 } {
   const [entries, setEntries] = createSignal<PendingResult[]>([]);
-  let initialized: Promise<void> | undefined;
+  let initialized = false;
+  let loading: Promise<void> | undefined;
   let writes = Promise.resolve();
-  const load = async (): Promise<void> =>
-    (initialized ??= storage
+  const load = async (): Promise<void> => {
+    if (initialized) return;
+    loading ??= storage
       .read()
       .then((stored) => {
-        setEntries(stored);
+        const merged = new Map(
+          [...stored, ...entries()].map((entry) => [entry.result.hash, entry]),
+        );
+        setEntries([...merged.values()]);
+        initialized = true;
         return undefined;
       })
-      .catch(() => undefined));
+      .finally(() => {
+        loading = undefined;
+      });
+    await loading;
+  };
   const persist = async (): Promise<void> => {
     const snapshot = structuredClone(entries());
     const next = writes.then(async () => await storage.write(snapshot));
@@ -39,10 +49,19 @@ export function createResultOutbox(storage: OutboxStorage): {
     entries,
     load,
     add: async (entry: PendingResult) => {
-      await load();
+      let failed: Error | undefined;
+      try {
+        await load();
+      } catch (error) {
+        failed =
+          error instanceof Error
+            ? error
+            : new Error("Pending result storage unavailable");
+      }
       if (!entries().some((item) => item.result.hash === entry.result.hash)) {
         setEntries([...entries(), structuredClone(entry)]);
       }
+      if (failed !== undefined) throw failed;
       await persist();
     },
     remove: async (hash: string) => {
@@ -58,8 +77,8 @@ export function createResultOutbox(storage: OutboxStorage): {
   };
 }
 
-export const resultOutbox = createAccountOwned(() => {
-  const account = captureAccount();
+export function createOutboxStorage(actor: string | null): OutboxStorage {
+  let known = new Set<string>();
   const access = async <T>(
     run: (db: Awaited<ReturnType<typeof openDB>>) => Promise<T>,
   ): Promise<T> => {
@@ -74,22 +93,41 @@ export const resultOutbox = createAccountOwned(() => {
       db.close();
     }
   };
-  return createResultOutbox({
-    read: async () =>
-      account.actor === null
-        ? []
-        : await access(
-            async (db) =>
-              ((await db.get("pending", account.actor as string)) as
-                | PendingResult[]
-                | undefined) ?? [],
-          ),
-    write: async (entries) => {
-      if (account.actor !== null) {
-        await access(async (db) => {
-          await db.put("pending", entries, account.actor as string);
-        });
-      }
+  return {
+    read: async () => {
+      if (actor === null) return [];
+      const stored = await access(
+        async (db) =>
+          ((await db.get("pending", actor)) as PendingResult[] | undefined) ??
+          [],
+      );
+      known = new Set(stored.map((entry) => entry.result.hash));
+      return stored;
     },
-  });
-});
+    write: async (entries) => {
+      if (actor === null) return;
+      await access(async (db) => {
+        const transaction = db.transaction("pending", "readwrite");
+        const stored =
+          ((await transaction.store.get(actor)) as
+            | PendingResult[]
+            | undefined) ?? [];
+        // Apply this owner's delta atomically. A second tab's unrelated saves
+        // must survive even when both tabs loaded the same older snapshot.
+        const merged = new Map(
+          stored
+            .filter((entry) => !known.has(entry.result.hash))
+            .map((entry) => [entry.result.hash, entry]),
+        );
+        for (const entry of entries) merged.set(entry.result.hash, entry);
+        await transaction.store.put([...merged.values()], actor);
+        await transaction.done;
+        known = new Set(entries.map((entry) => entry.result.hash));
+      });
+    },
+  };
+}
+
+export const resultOutbox = createAccountOwned(() =>
+  createResultOutbox(createOutboxStorage(captureAccount().actor)),
+);
