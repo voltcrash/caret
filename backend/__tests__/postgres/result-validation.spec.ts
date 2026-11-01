@@ -28,9 +28,9 @@ describe("result submission validation with PostgreSQL", () => {
       const response = await test.submit(account);
       expect(response.status, await response.clone().text()).toBe(200);
       const body = (await response.json()) as { data: Record<string, unknown> };
-      expect(body.data.isPb).toBe(false);
-      expect(body.data.dailyLeaderboardRank).toBeUndefined();
-      expect(body.data.weeklyXpLeaderboardRank).toBeUndefined();
+      expect(body.data["isPb"]).toBe(false);
+      expect(body.data["dailyLeaderboardRank"]).toBeUndefined();
+      expect(body.data["weeklyXpLeaderboardRank"]).toBeUndefined();
     } finally {
       await withRuntime(
         test.env,

@@ -38,8 +38,9 @@ export const getBrowserEngine = createAppOwned(() => {
       current.state === "failed" &&
       current.error instanceof EngineFailure &&
       current.error.code === "internal"
-    )
+    ) {
       throw current.error;
+    }
   };
   // oxlint-disable-next-line typescript/promise-function-async -- Share the exact in-flight initialization promise.
   const load = (): Promise<Engine> => {
@@ -48,8 +49,9 @@ export const getBrowserEngine = createAppOwned(() => {
       current.state === "failed" &&
       current.error instanceof EngineFailure &&
       current.error.code === "internal"
-    )
+    ) {
       return Promise.reject(current.error);
+    }
     if (disposed) {
       return Promise.reject(
         new EngineFailure({

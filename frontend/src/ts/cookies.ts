@@ -44,8 +44,12 @@ export function activateWhatsAccepted(): void {
   const accepted = getAcceptedCookies();
   if (accepted?.analytics) {
     activateAnalytics();
-  } else {deactivateAnalytics();}
+  } else {
+    deactivateAnalytics();
+  }
   if (accepted?.sentry && !isProfilerMode()) {
     void activateSentry();
-  } else {disposeSentry();}
+  } else {
+    disposeSentry();
+  }
 }

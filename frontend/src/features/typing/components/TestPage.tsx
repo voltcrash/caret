@@ -6,7 +6,11 @@ import { getConfig } from "../../../ts/config/store";
 import { useWordsInputScroll } from "../../../ts/hooks/useWordsInputScroll";
 import { isInputElementFocused } from "../../../ts/input/input-element";
 import { isWordsWrapperVisible } from "../../../ts/states/funbox";
-import { getTestInitError,getActiveWordIndex,isTestRestarting } from "../../../ts/states/test";
+import {
+  getTestInitError,
+  getActiveWordIndex,
+  isTestRestarting,
+} from "../../../ts/states/test";
 import { setTestElements } from "../../../ts/states/test-dom";
 import {
   getWordsWrapperHeight,
@@ -47,8 +51,9 @@ export function TestPage(
   const refs = {} as Parameters<typeof setTestElements>[0];
   const prompt = createMemo(() => {
     if (!isTypingReady() || isTestRestarting()) return "Preparing typing test.";
-    if (getConfig.mode === "zen")
-      {return "Free typing. Type your own text, then finish the test.";}
+    if (getConfig.mode === "zen") {
+      return "Free typing. Type your own text, then finish the test.";
+    }
     const index = getActiveWordIndex();
     const current = words.get(index)?.text;
     const next = words.get(index + 1)?.text;

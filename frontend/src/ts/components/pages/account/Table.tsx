@@ -98,7 +98,17 @@ function getColumns<M extends Mode>({
   const columns = [
     defineColumn("verification", {
       header: "replay",
-      cell: (info) => <span title={info.getValue() ?? "Saved before replay status was recorded"}>{info.getValue() === "verified" ? "matched" : info.getValue() === undefined ? "legacy" : "unverified"}</span>,
+      cell: (info) => (
+        <span
+          title={info.getValue() ?? "Saved before replay status was recorded"}
+        >
+          {info.getValue() === "verified"
+            ? "matched"
+            : info.getValue() === undefined
+              ? "legacy"
+              : "unverified"}
+        </span>
+      ),
       enableSorting: false,
       meta: { breakpoint: "md" },
     }),

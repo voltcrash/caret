@@ -54,7 +54,12 @@ import {
   forceReleaseAllKeys,
   buildEventLog,
 } from "./events/data";
-import { analyze, getAnalysis,getMissedWords,getWordBurstHistory } from "../analysis.client";
+import {
+  analyze,
+  getAnalysis,
+  getMissedWords,
+  getWordBurstHistory,
+} from "../analysis.client";
 import { practiceHistory } from "../practice-history.client";
 import * as TestWords from "./test-words";
 type InvalidResultReason =
