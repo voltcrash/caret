@@ -114,9 +114,8 @@ export function CookiesModal(): JSXElement {
               title="security"
               description={
                 <div>
-                  We use Cloudflare cookies to improve security and performance
-                  of our site. They do not store any personal information and
-                  are required.
+                  Essential authentication and Cloudflare storage keep you
+                  signed in and protect the site.
                 </div>
               }
               checked={true}
@@ -124,8 +123,7 @@ export function CookiesModal(): JSXElement {
             />
             <SettingsSection
               title="analytics"
-              description="We use Google Analytics to track the overall traffic and
-            demographics of our site."
+              description="Optional host-provided Google Analytics measures site usage when configured."
               checked={accepted().analytics}
               onChange={(checked) =>
                 setAccepted({ ...accepted(), analytics: checked })
@@ -133,9 +131,7 @@ export function CookiesModal(): JSXElement {
             />
             <SettingsSection
               title="sentry"
-              description="We use Sentry to track errors and performance issues on our site, as
-            well as record anonymized user sessions to help us debug issues and
-            improve experience."
+              description="Optional Sentry reports errors and performance. Signed-in reports may include your account ID and username. Session replay is disabled."
               checked={accepted().sentry}
               onChange={(checked) =>
                 setAccepted({ ...accepted(), sentry: checked })
