@@ -154,6 +154,9 @@ fn native_terminal_decodes_edits_and_persists_actual_input_without_physical_tele
     command.arg(&paths.data);
     command.env("TERM", "xterm-256color");
     command.env("COLORTERM", "truecolor"); // Letter checks below compare RGB.
+    // This test explicitly asserts RGB, regardless of the invoking shell's
+    // optional colour suppression (including non-interactive vp commands).
+    command.env_remove("NO_COLOR");
     let mut child = ChildGuard(pair.slave.spawn_command(command).unwrap());
     drop(pair.slave);
     // Web azure palette (default): untyped letters use sub, mistakes use error.

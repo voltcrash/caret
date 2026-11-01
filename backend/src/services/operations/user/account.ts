@@ -45,7 +45,7 @@ export async function createNewUser(
   }
 
   await UserDAL.addUser(name, email, uid);
-  void addImportantLog("user_created", `${name} ${email}`, uid);
+  await addImportantLog("user_created", {}, uid);
 
   return new MonkeyResponse("User created", null);
 }
@@ -55,13 +55,9 @@ export async function deleteUser(
 ): Promise<MonkeyResponse> {
   const { uid } = context.actor;
 
-  const userInfo = await deleteUserAccount(uid, context.configuration);
+  await deleteUserAccount(uid, context.configuration);
 
-  void addImportantLog(
-    "user_deleted",
-    `${userInfo?.email} ${userInfo?.name}`,
-    uid,
-  );
+  await addImportantLog("user_deleted", {}, uid);
 
   return new MonkeyResponse("User deleted", null);
 }
@@ -71,7 +67,7 @@ export async function resetUser(
 ): Promise<MonkeyResponse> {
   const { uid } = context.actor;
 
-  const userInfo = await atomicUser(uid, async () => {
+  await atomicUser(uid, async () => {
     const user = await UserDAL.getPartialUser(uid, "reset user", [
       "banned",
       "email",
@@ -83,7 +79,7 @@ export async function resetUser(
     await UserDAL.resetUser(uid);
     return user;
   });
-  void addImportantLog("user_reset", `${userInfo.email} ${userInfo.name}`, uid);
+  await addImportantLog("user_reset", {}, uid);
 
   return new MonkeyResponse("User reset", null);
 }
@@ -119,7 +115,7 @@ export async function updateName(
 
   await UserDAL.updateName(uid, name, user.name);
 
-  void addImportantLog(
+  await addImportantLog(
     "user_name_updated",
     `changed name from ${user.name} to ${name}`,
     uid,
@@ -146,6 +142,6 @@ export async function revokeAllTokens(
 ): Promise<MonkeyResponse> {
   const { uid } = context.actor;
   await AuthUtil.revokeTokensByUid(uid);
-  void addImportantLog("user_tokens_revoked", "", uid);
+  await addImportantLog("user_tokens_revoked", "", uid);
   return new MonkeyResponse("All tokens revoked", null);
 }

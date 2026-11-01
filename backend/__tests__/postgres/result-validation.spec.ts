@@ -2,6 +2,10 @@ import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
 import { resultRuntime, scoreEvent } from "./result-support";
 import { withRuntime } from "../../src/runtime/env";
 import * as Users from "../../src/dal/user";
+import objectHash from "object-hash";
+import { buildDbResult } from "../../src/utils/result";
+import { addResult } from "../../src/dal/result";
+import { patchConfiguration } from "../../src/init/configuration";
 import type { CompletedEvent } from "@caret/schemas/results";
 
 describe("result submission validation with PostgreSQL", () => {
@@ -10,6 +14,107 @@ describe("result submission validation with PostgreSQL", () => {
     test = await resultRuntime();
   });
   afterAll(async () => await test?.dispose());
+
+  it("can retain unverified practice while excluding it from new ranked progression", async () => {
+    await withRuntime(
+      test.env,
+      async () =>
+        await patchConfiguration({
+          anticheat: { logVerification: { requireForRanked: true } },
+        }),
+    );
+    try {
+      const account = await test.account();
+      const response = await test.submit(account);
+      expect(response.status, await response.clone().text()).toBe(200);
+      const body = (await response.json()) as { data: Record<string, unknown> };
+      expect(body.data["isPb"]).toBe(false);
+      expect(body.data["dailyLeaderboardRank"]).toBeUndefined();
+      expect(body.data["weeklyXpLeaderboardRank"]).toBeUndefined();
+    } finally {
+      await withRuntime(
+        test.env,
+        async () =>
+          await patchConfiguration({
+            anticheat: { logVerification: { requireForRanked: false } },
+          }),
+      );
+    }
+  });
+
+  it("exports owned results with a stable cursor across equal timestamps", async () => {
+    const account = await test.account();
+    await withRuntime(test.env, async () => {
+      for (const suffix of ["a", "b", "c"]) {
+        const result = buildDbResult(
+          scoreEvent(account.uid, 80),
+          "Export",
+          false,
+        );
+        result._id = suffix.repeat(24);
+        await addResult(account.uid, result);
+      }
+    });
+    const response = await test.request(
+      account,
+      "/results?exportHistory=true&limit=2",
+    );
+    expect(response.status, await response.clone().text()).toBe(200);
+    const page = (await response.json()) as {
+      data: { _id: string; timestamp: number }[];
+    };
+    expect(page.data.map((result) => result._id)).toEqual([
+      "c".repeat(24),
+      "b".repeat(24),
+    ]);
+    const last = page.data[1];
+    if (last === undefined) throw new Error("Missing cursor");
+    const rest = await test.request(
+      account,
+      `/results?exportHistory=true&limit=2&beforeTimestamp=${last.timestamp}&beforeId=${last._id}`,
+    );
+    expect(rest.status, await rest.clone().text()).toBe(200);
+    expect(await rest.json()).toMatchObject({
+      data: [{ _id: "a".repeat(24) }],
+    });
+  });
+
+  it("acknowledges a committed retry without granting progression twice", async () => {
+    const account = await test.account();
+    const result = scoreEvent(account.uid, 80);
+    const { hash: _hash, ...payload } = result;
+    result.hash = objectHash(payload);
+    const first = await test.request(account, "/results", "POST", {
+      result,
+      acknowledgeDuplicate: true,
+    });
+    expect(first.status, await first.clone().text()).toBe(200);
+    const firstBody = (await first.json()) as { data: { insertedId: string } };
+    const retry = await test.request(account, "/results", "POST", {
+      result,
+      acknowledgeDuplicate: true,
+    });
+    expect(retry.status, await retry.clone().text()).toBe(200);
+    expect(await retry.json()).toMatchObject({
+      data: {
+        insertedId: firstBody.data.insertedId,
+        alreadySaved: true,
+        xp: 0,
+      },
+    });
+    const user = await withRuntime(
+      test.env,
+      async () => await Users.getUser(account.uid, "test"),
+    );
+    expect(user.completedTests).toBe(1);
+    const stored = await test.db
+      .prepare("SELECT data FROM results WHERE uid=?")
+      .bind(account.uid)
+      .first<string>("data");
+    expect(JSON.parse(stored ?? "null")).toMatchObject({
+      verification: "absent",
+    });
+  });
 
   it("rejects a malformed submission before progression", async () => {
     const account = await test.account();

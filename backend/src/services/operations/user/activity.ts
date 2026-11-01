@@ -37,7 +37,7 @@ export async function setStreakHourOffset(
 
   await UserDAL.setStreakHourOffset(uid, hourOffset, input.query?.client);
 
-  void addImportantLog("user_streak_hour_offset_set", { hourOffset }, uid);
+  await addImportantLog("user_streak_hour_offset_set", { hourOffset }, uid);
 
   return new MonkeyResponse("Streak hour offset set", null);
 }

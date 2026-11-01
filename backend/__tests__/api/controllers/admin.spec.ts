@@ -564,7 +564,7 @@ describe("AdminController", () => {
       );
       expect(logsAddImportantLog).toHaveBeenCalledWith(
         "user_deleted_by_admin",
-        "victim@example.com victim",
+        { actorUid: uid },
         victimUid,
       );
     });
@@ -648,7 +648,7 @@ describe("AdminController", () => {
       expect(clearSuspiciousMock).toHaveBeenCalledWith(victimUid);
       expect(logsAddImportantLog).toHaveBeenCalledWith(
         "admin_suspicious_cleared_by",
-        {},
+        { actorUid: uid },
         victimUid,
       );
     });

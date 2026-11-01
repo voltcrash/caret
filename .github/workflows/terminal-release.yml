@@ -108,6 +108,13 @@ jobs:
       - name: Build licensed versioned archive
         if: github.event_name != 'pull_request'
         run: vp run terminal:package -- --target ${{ matrix.target }}
+        env:
+          MACOS_CERTIFICATE_BASE64: ${{ secrets.MACOS_CERTIFICATE_BASE64 }}
+          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          MACOS_SIGNING_IDENTITY: ${{ secrets.MACOS_SIGNING_IDENTITY }}
+          MACOS_NOTARY_KEY_BASE64: ${{ secrets.MACOS_NOTARY_KEY_BASE64 }}
+          MACOS_NOTARY_KEY_ID: ${{ secrets.MACOS_NOTARY_KEY_ID }}
+          MACOS_NOTARY_ISSUER_ID: ${{ secrets.MACOS_NOTARY_ISSUER_ID }}
       - name: Verify extracted binary without runtime tools or checkout files
         if: github.event_name != 'pull_request'
         run: vp run terminal:archive-smoke -- --target ${{ matrix.target }}
@@ -154,6 +161,8 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: write
+      id-token: write
+      attestations: write
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -171,6 +180,10 @@ jobs:
           merge-multiple: true
       - name: Verify all platform/source checksums
         run: vp exec python3 scripts/terminal_release.py checksums --archive release
+      - name: Attest published binary and source archives
+        uses: actions/attest-build-provenance@v4.2.2
+        with:
+          subject-path: release/*.tar.gz
       - name: Publish the explicitly pushed terminal tag
         env:
           GH_TOKEN: ${{ github.token }}

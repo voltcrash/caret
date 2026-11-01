@@ -120,3 +120,18 @@ controls, then checks identical engine words and layout. A returning-visit check
 holds all application JavaScript and verifies the saved wordset before and after
 handoff. Startup, offline, navigation and touch tests retain their earlier checks.
 The static no-JS/no-CSS recovery in `src/html/warnings.html` is unchanged.
+
+## Ongoing interaction checks
+
+`browser-compatibility.yml` runs the full website input/restart/heap soak and
+cold startup profiles nightly, retaining JSON evidence for 30 days. Hosted-runner
+timing remains diagnostic. Set `CARET_PERFORMANCE_RUNNER` to a calibrated runner
+and `CARET_ENFORCE_PERFORMANCE=true` only after validating its baseline; frozen
+engine size limits continue to apply on every build. Firefox/WebKit and mobile
+smoke tests run separately.
+
+Caret updates skip unchanged class writes and reuse per-word margins. Config,
+resize and font-load events invalidate cached geometry. Long completed sessions
+can offer an explicit refresh to release retained Wasm memory, blocked while
+results are pending. This uses a fresh document rather than resetting shared
+bindings beneath active Wasm handles.

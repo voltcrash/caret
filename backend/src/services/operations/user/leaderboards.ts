@@ -21,7 +21,7 @@ export async function clearPb(
     context.configuration.dailyLeaderboards,
     input.query?.client ?? "web",
   );
-  void addImportantLog("user_cleared_pbs", "", uid);
+  await addImportantLog("user_cleared_pbs", "", uid);
 
   return new MonkeyResponse("User's PB cleared", null);
 }
@@ -40,7 +40,7 @@ export async function optOutOfLeaderboards(
     uid,
     context.configuration.leaderboards.weeklyXp,
   );
-  void addImportantLog("user_opted_out_of_leaderboards", "", uid);
+  await addImportantLog("user_opted_out_of_leaderboards", "", uid);
 
   return new MonkeyResponse("User opted out of leaderboards", null);
 }

@@ -69,6 +69,17 @@ database's per-user submission-hash constraint.
 The web client attaches the event log its result was scored from as
 `eventLog`: `{ behaviorVersion, log }`, where `log` is base64 of the gzipped
 web log, at most 64 KiB so result and log fit the 100 KiB request ceiling.
+Each saved result retains its server-computed `verification` verdict (`verified`,
+`absent`, `undecodable`, `invalid-log`, `other-behavior`, `engine-error` or `disabled`). The
+account table calls matching logs “matched”; this is consistency evidence, not
+proof of authentic typing. `result_verification` Worker logs include client and
+behavior version for compatibility monitoring.
+
+`anticheat.logVerification.requireForRanked` defaults false. Enable it only
+after reviewing compatibility; it requires a matching log for new PBs and
+all-time/daily/weekly ranked progression while preserving unverified practice
+saves. Existing rankings are not rewritten.
+
 Logs that do not fit, mostly from long tests, are omitted, as on clients
 without `CompressionStream`; such results save unverified, as before.
 
@@ -84,6 +95,10 @@ Clients score with this same engine, so honest results match exactly.
 - Mismatch: 463 `Result data doesn't match its event log` with an
   `anticheat_rejected` audit (`event-log-mismatch`) listing each field and its
   submitted and replayed values; arrays are logged as lengths. No strike.
+- Engine trap: reset the audit instance and retry once. A repeat trap saves as
+  `engine-error`, with explicit engine diagnostics, so an otherwise valid practice
+  result is not permanently stuck in the queue. It is ineligible for ranked
+  progression when verified logs are required.
 - Unverifiable: an `event_log_unverified` log (`undecodable`, `invalid-log`, or
   `other-behavior` for a client on other scoring rules, such as a tab open
   across a deploy), and the result is accepted.

@@ -4,6 +4,7 @@ use ts_rs::TS;
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
 pub enum ErrorCode {
+    Internal,
     InvalidInput,
     InvalidConfig,
     InvalidContent,

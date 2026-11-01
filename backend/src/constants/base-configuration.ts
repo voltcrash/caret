@@ -387,6 +387,11 @@ export const CONFIGURATION_FORM_SCHEMA: FormSchema = {
           type: "object",
           label: "Event Log Verification",
           fields: {
+            requireForRanked: {
+              type: "boolean",
+              label: "Require Verified Ranked Results",
+              hint: "Enable after reviewing client compatibility. Unverified results still save for practice.",
+            },
             enabled: {
               type: "boolean",
               label: "Enabled",

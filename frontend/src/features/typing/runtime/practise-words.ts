@@ -13,6 +13,7 @@ import { Mode } from "@caret/schemas/shared";
 import { CustomTextSettings } from "@caret/schemas/results";
 import { setCustomTextIndicator } from "../../../ts/states/core";
 import { getLastEventLog } from "../../../ts/states/test";
+import { practiceHistory } from "../practice-history.client";
 
 type Before = {
   mode: Mode | null;
@@ -28,6 +29,31 @@ const previous = createAppOwned((): Before => ({
   customText: null,
 }));
 export const before = appObject(previous);
+
+export function initFromHistory(): boolean {
+  const config = getMutableConfig();
+  const selected = practiceHistory().weakest(
+    `${config.language}:${config.layout}`,
+  );
+  if (selected.length === 0) return false;
+  const previous = {
+    mode: before.mode ?? config.mode,
+    punctuation: before.punctuation ?? config.punctuation,
+    numbers: before.numbers ?? config.numbers,
+    customText:
+      before.customText ??
+      (config.mode === "custom" ? CustomText.getData() : null),
+  };
+  setConfig("mode", "custom", { nosave: true });
+  CustomText.setPipeDelimiter(true);
+  CustomText.setText(selected.map((word) => word.word));
+  CustomText.setLimitMode("time");
+  CustomText.setMode("shuffle");
+  CustomText.setLimitValue(60);
+  setCustomTextIndicator({ name: "practice", isLong: false });
+  Object.assign(before, previous);
+  return true;
+}
 
 export function init(
   missed: "off" | "words" | "biwords",

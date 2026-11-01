@@ -198,12 +198,28 @@ export async function validateSubmission(
   }
 
   const { eventLog } = input.body;
+  let verification: ValidatedSubmission["verification"] =
+    eventLog === undefined ? "absent" : "disabled";
   if (
     eventLog !== undefined &&
     context.configuration.anticheat.logVerification.enabled
   ) {
     // The submitted payload, before server normalization touches it.
     const verdict = verifyEventLog(input.body.result, eventLog);
+    verification =
+      verdict.kind === "verified"
+        ? "verified"
+        : verdict.kind === "unverifiable"
+          ? (verdict.reason as ValidatedSubmission["verification"])
+          : "invalid-log";
+    console.info(
+      JSON.stringify({
+        event: "result_verification",
+        verdict: verification,
+        behaviorVersion: eventLog.behaviorVersion,
+        client: completedEvent.client,
+      }),
+    );
     if (verdict.kind === "mismatch") {
       await addImportantLog(
         "anticheat_rejected",
@@ -404,5 +420,6 @@ export async function validateSubmission(
     lastResultTimestamp,
     keySpacingStats,
     keyDurationStats,
+    verification,
   };
 }

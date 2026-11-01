@@ -1,11 +1,21 @@
+import { EngineFailure } from "@caret/typing-engine/failure";
 import { JSXElement, Show } from "solid-js";
 
 import { Button } from "../../../ts/components/common/Button";
 import { getTestInitError } from "../../../ts/states/test";
 import { cn } from "../../../ts/utils/cn";
+import { getBrowserEngine } from "../engine.client";
 import * as TestLogic from "../runtime/test-logic";
 
 export function TestInitFailed(): JSXElement {
+  const crashed = (): boolean => {
+    const status = getBrowserEngine().status();
+    return (
+      status.state === "failed" &&
+      status.error instanceof EngineFailure &&
+      status.error.code === "internal"
+    );
+  };
   return (
     <div
       id="testInitFailed"
@@ -26,8 +36,10 @@ export function TestInitFailed(): JSXElement {
           class="mt-8 px-8 py-4"
           active
           fa={{ icon: "fa-redo-alt", fixedWidth: true }}
-          text="Restart"
-          onClick={() => void TestLogic.restart()}
+          text={crashed() ? "Reload typing engine" : "Restart"}
+          onClick={() =>
+            crashed() ? window.location.reload() : void TestLogic.restart()
+          }
         />
       </div>
     </div>

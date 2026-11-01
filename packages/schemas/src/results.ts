@@ -101,6 +101,17 @@ const ResultBaseSchema = z.object({
 });
 
 export const ResultSchema = ResultBaseSchema.extend({
+  verification: z
+    .enum([
+      "verified",
+      "absent",
+      "undecodable",
+      "invalid-log",
+      "other-behavior",
+      "engine-error",
+      "disabled",
+    ])
+    .optional(),
   _id: IdSchema,
   keySpacingStats: KeyStatsSchema.optional(),
   keyDurationStats: KeyStatsSchema.optional(),
@@ -174,6 +185,8 @@ export const XpBreakdownSchema = z.object({
 export type XpBreakdown = z.infer<typeof XpBreakdownSchema>;
 
 export const PostResultResponseSchema = z.object({
+  verification: ResultSchema.shape.verification,
+  alreadySaved: z.boolean().optional(),
   insertedId: IdSchema,
   isPb: z.boolean(),
   tagPbs: z.array(IdSchema),

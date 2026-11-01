@@ -24,7 +24,11 @@ export function Caret(props: {
       pace ? getMutableConfig().paceCaretStyle : getMutableConfig().caretStyle,
     );
     const unregister = (pace ? setPaceCaret : setMainCaret)(controller);
+    const clearGeometry = (): void => controller.clearGeometry();
+    window.addEventListener("resize", clearGeometry);
+    document.fonts.addEventListener("loadingdone", clearGeometry);
     const unsubscribe = configEvent.subscribe(({ key }) => {
+      controller.clearGeometry();
       if (!areTestElementsMounted()) return;
       if (pace) {
         if (key === "paceCaretStyle") {
@@ -40,6 +44,8 @@ export function Caret(props: {
     });
     onCleanup(() => {
       unsubscribe();
+      window.removeEventListener("resize", clearGeometry);
+      document.fonts.removeEventListener("loadingdone", clearGeometry);
       controller.stopAllAnimations();
       cancelPendingAnimationFrame(`caret.${element.id}.goTo`);
       unregister();

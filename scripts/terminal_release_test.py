@@ -11,6 +11,11 @@ from scripts import terminal_release
 
 
 class ArchiveTest(unittest.TestCase):
+    def test_macos_signing_requires_credentials_before_running_tools(self):
+        with patch.dict(os.environ, {}, clear=True), patch.object(terminal_release, "run") as run:
+            with self.assertRaisesRegex(RuntimeError, "signing and notarization"):
+                terminal_release.sign_macos(pathlib.Path("caret"))
+            run.assert_not_called()
     def test_tar_preserves_binary_bytes_permissions_and_registry_timestamps(self):
         with tempfile.TemporaryDirectory() as temporary:
             directory=pathlib.Path(temporary) / "candidate"

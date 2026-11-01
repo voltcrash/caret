@@ -2,6 +2,7 @@ import {
   initSync,
   binding_version,
   audit as rawAudit,
+  resetBindings,
 } from "../generated/audit.js";
 import type { AuditQuery } from "../generated/types/AuditQuery";
 import type { AuditResponse } from "../generated/types/AuditResponse";
@@ -71,12 +72,23 @@ export function createAudit(module: WebAssembly.Module): Audit {
       recovery: [],
     });
   }
-  const query = <Q extends AuditQuery>(input: Q): Answer<Q["op"]> =>
-    invoke(
-      () =>
-        (JSON.parse(rawAudit(JSON.stringify(input))) as { result: unknown })
-          .result as Answer<Q["op"]>,
-    );
+  const query = <Q extends AuditQuery>(input: Q): Answer<Q["op"]> => {
+    // Audit has no retained handles. Every entry can recreate an instance
+    // after any audit operation traps, including review/statistics calls.
+    initSync({ module });
+    try {
+      return invoke(
+        () =>
+          (JSON.parse(rawAudit(JSON.stringify(input))) as { result: unknown })
+            .result as Answer<Q["op"]>,
+      );
+    } catch (error) {
+      if (error instanceof EngineFailure && error.code === "internal") {
+        resetBindings();
+      }
+      throw error;
+    }
+  };
   return {
     verify: (log, result, behaviorVersion) =>
       query({ op: "verify", log, result, behaviorVersion }),

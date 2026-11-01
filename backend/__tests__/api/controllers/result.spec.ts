@@ -576,6 +576,7 @@ describe("result controller test", () => {
 
       expect(body.message).toEqual("Result saved");
       expect(body.data).toEqual({
+        verification: "absent",
         isPb: true,
         tagPbs: [],
         xp: 177,
@@ -1324,7 +1325,9 @@ describe("result controller test", () => {
       describe("event log verification", () => {
         // the cached configuration is the shared base object; restore it
         beforeEach(async () => {
-          await setAnticheatConfig({ logVerification: { enabled: true } });
+          await setAnticheatConfig({
+            logVerification: { enabled: true, requireForRanked: false },
+          });
         });
         // an unchanged browser recording and the result it produced
         const recording = JSON.parse(
@@ -1394,7 +1397,9 @@ describe("result controller test", () => {
           expectNoProgress();
         });
         it("should not check when disabled", async () => {
-          await setAnticheatConfig({ logVerification: { enabled: false } });
+          await setAnticheatConfig({
+            logVerification: { enabled: false, requireForRanked: false },
+          });
           await mockApp
             .post("/results")
             .set("Authorization", `Bearer ${uid}`)

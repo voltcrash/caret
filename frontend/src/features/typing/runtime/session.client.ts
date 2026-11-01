@@ -1,6 +1,12 @@
 import { onCleanup } from "solid-js";
 import { createAppOwned } from "../../../app/application";
 import { getBrowserEngine } from "../engine.client";
+import { EngineFailure } from "@caret/typing-engine/failure";
+import {
+  setTestInitError,
+  setTestActive,
+  setIsTestRestarting,
+} from "../../../ts/states/test";
 import {
   engineConfigMatches,
   projectEngineConfig,
@@ -93,7 +99,9 @@ export const getEngineSession = createAppOwned(() => {
   let reason: string | undefined;
   let finishClock: { now: number; date: number } | undefined;
   let pace: PaceUpdate = { position: null, stepEnd: 0, lastWpm: 0 };
+  let failure: EngineFailure | undefined;
   const live = (): BrowserSession => {
+    if (failure !== undefined) throw failure;
     const session = owner.session();
     if (session === undefined) {
       throw new Error("Typing session is not prepared");
@@ -193,12 +201,24 @@ export const getEngineSession = createAppOwned(() => {
     }
   };
   const command = (input: Command): Update => {
-    if (input.op !== "configure" && input.op !== "reset") {
-      synchronize(input.now);
+    try {
+      if (input.op !== "configure" && input.op !== "reset") {
+        synchronize(input.now);
+      }
+      const update = consume(live().command(input), input);
+      if (input.op === "configure") configuration = input.config;
+      return update;
+    } catch (error) {
+      if (error instanceof EngineFailure && error.code === "internal") {
+        running = false;
+        failure = error;
+        owner.fail(error);
+        setTestActive(false);
+        setIsTestRestarting(false);
+        setTestInitError({ message: error.message });
+      }
+      throw error;
     }
-    const update = consume(live().command(input), input);
-    if (input.op === "configure") configuration = input.config;
-    return update;
   };
   const paceCommand = (input: PaceCommand): PaceUpdate => {
     synchronize(performance.now());

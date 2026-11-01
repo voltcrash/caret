@@ -99,7 +99,7 @@ A bridge implementation and OAuth provider credentials are not supplied here.
 Two Cron triggers: `*/15 * * * *` rebuilds indexed all-time
 snapshots/histograms; `0 * * * *` purges expired auth records/counters, 30-day
 nonimportant audits and expired daily/weekly leaderboard entries.
-Important audits and results have no automatic deletion policy; monitor their
+Important audits expire after 90 days; ordinary audits expire after 30 days. Results have no automatic deletion policy; monitor their
 growth. Inspect Workers logs for failed maintenance invocations.
 
 Quote approval calls the external bridge directly. Failed submissions remain

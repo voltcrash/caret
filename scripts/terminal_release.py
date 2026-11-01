@@ -10,6 +10,8 @@ import sys
 import tarfile
 import tempfile
 import tomllib
+import base64
+import secrets
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / "target/terminal-release"
@@ -72,6 +74,41 @@ def licenses(directory, target):
     (directory / "THIRD_PARTY.json").write_text(json.dumps({"scope":"Locked workspace dependency notices (superset of linked native crates)","packages":notices}, indent=2) + "\n")
 
 
+def sign_macos(binary):
+    """Tagged macOS releases fail closed without signing/notary credentials."""
+    names = ("MACOS_CERTIFICATE_BASE64", "MACOS_CERTIFICATE_PASSWORD", "MACOS_SIGNING_IDENTITY",
+             "MACOS_NOTARY_KEY_BASE64", "MACOS_NOTARY_KEY_ID", "MACOS_NOTARY_ISSUER_ID")
+    if any(not os.environ.get(name) for name in names):
+        raise RuntimeError("Tagged macOS releases require configured signing and notarization secrets")
+    with tempfile.TemporaryDirectory() as temporary:
+        folder = pathlib.Path(temporary)
+        certificate, key = folder / "signing.p12", folder / "notary.p8"
+        certificate.write_bytes(base64.b64decode(os.environ[names[0]], validate=True))
+        key.write_bytes(base64.b64decode(os.environ[names[3]], validate=True))
+        certificate.chmod(0o600)
+        key.chmod(0o600)
+        keychain = folder / "signing.keychain-db"
+        password = secrets.token_hex(32)
+        created = False
+        try:
+            run(["security", "create-keychain", "-p", password, str(keychain)], stdout=subprocess.DEVNULL)
+            created = True
+            run(["security", "unlock-keychain", "-p", password, str(keychain)])
+            run(["security", "import", str(certificate), "-k", str(keychain), "-P", os.environ[names[1]], "-T", "/usr/bin/codesign"], stdout=subprocess.DEVNULL)
+            run(["security", "set-key-partition-list", "-S", "apple-tool:,apple:,codesign:", "-s", "-k", password, str(keychain)], stdout=subprocess.DEVNULL)
+            run(["codesign", "--force", "--options", "runtime", "--timestamp", "--keychain", str(keychain), "--sign", os.environ[names[2]], str(binary)])
+            run(["codesign", "--verify", "--strict", "--verbose=2", str(binary)])
+            zipped = folder / "notarize.zip"
+            run(["ditto", "-c", "-k", "--keepParent", str(binary), str(zipped)])
+            run(["xcrun", "notarytool", "submit", str(zipped), "--key", str(key), "--key-id", os.environ[names[4]], "--issuer", os.environ[names[5]], "--wait"])
+        except subprocess.CalledProcessError:
+            # Never include credential-bearing subprocess arguments in a traceback.
+            raise RuntimeError("macOS signing or notarization failed") from None
+        finally:
+            if created:
+                subprocess.run(["security", "delete-keychain", str(keychain)], check=False, stdout=subprocess.DEVNULL)
+
+
 def package(target):
     if target is None:
         target = next(line.split(": ", 1)[1] for line in capture(["rustc", "-vV"]).splitlines() if line.startswith("host: "))
@@ -89,6 +126,8 @@ def package(target):
     directory.mkdir(parents=True)
     binary = "caret"
     shutil.copy2(ROOT / "target" / target / "release" / binary, directory / binary)
+    if target.endswith("apple-darwin") and os.environ.get("GITHUB_REF_TYPE") == "tag":
+        sign_macos(directory / binary)
     for source, dest in [("LICENSE","LICENSE"),("crates/caret-tui/assets/ATTRIBUTION.md","ATTRIBUTION.md"),("docs/rust-engine/terminal.md","README.md"),("docs/rust-engine/terminal-content.md","terminal-content.md"),("docs/rust-engine/terminal-storage.md","terminal-storage.md")]:
         shutil.copy2(ROOT / source,directory / dest)
     (directory / "SOURCE.md").write_text(f"Source revision: {revision}\n\nGPL-3.0-only corresponding source is the matching caret-v{version()}-source.tar.gz release asset, including locked vendored dependencies.\n\nRepository: https://github.com/voltcrash/caret/tree/{revision}\n")

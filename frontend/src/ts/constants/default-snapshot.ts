@@ -10,7 +10,11 @@ import {
 import { Language } from "@caret/schemas/languages";
 
 // Saving supplies a server ID; collection normalization computes snapshot fields later.
-export type SavedResult = CompletedEvent & { _id: string; isPb?: boolean };
+export type SavedResult = CompletedEvent & {
+  _id: string;
+  isPb?: boolean;
+  verification?: Result<Mode>["verification"];
+};
 
 export type SnapshotResult<M extends Mode> = Omit<
   Result<M>,

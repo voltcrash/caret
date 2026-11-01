@@ -16,6 +16,10 @@ import type { ServiceContext, OperationInput } from "../../context";
 
 import { validateSubmission } from "./validation";
 import { applyProgression } from "./progression";
+import { getBySubmissionHash } from "../../../dal/result";
+import objectHash from "object-hash";
+import { omit } from "../../../utils/misc";
+import { MonkeyResponse } from "../../../utils/monkey-response";
 type RankRead = {
   query: PreparedQuery;
   /** Apply the batched read's row. */
@@ -132,6 +136,28 @@ async function addResultAtomic(
   context: ServiceContext,
   input: OperationInput<undefined, AddResultRequest>,
 ): Promise<AddResultResponse | MonkeyError> {
+  if (input.body.acknowledgeDuplicate) {
+    const hash = objectHash(
+      omit({ ...input.body.result, uid: context.actor.uid }, [
+        "hash",
+        "offline",
+      ]),
+    );
+    const saved = await getBySubmissionHash(context.actor.uid, hash);
+    if (saved !== undefined) {
+      return new MonkeyResponse("Result already saved", {
+        verification: saved.verification,
+        insertedId: saved._id,
+        isPb: saved.isPb ?? false,
+        tagPbs: [],
+        xp: 0,
+        dailyXpBonus: false,
+        xpBreakdown: {},
+        streak: 0,
+        alreadySaved: true,
+      });
+    }
+  }
   const validated = await validateSubmission(context, input);
   if (validated instanceof MonkeyError) return validated;
   return await applyProgression(validated);
