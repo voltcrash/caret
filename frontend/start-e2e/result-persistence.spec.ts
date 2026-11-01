@@ -54,7 +54,7 @@ test("an immediate retry after a network failure still earns a PB", async ({
   await expect(page.locator("#result .crown")).toBeVisible();
 });
 
-test("recovers a lost commit acknowledgement after reload without duplicate progression", async ({
+test("silently recovers a lost commit acknowledgement after reload without duplicate progression", async ({
   page,
   context,
   baseURL,
@@ -80,7 +80,13 @@ test("recovers a lost commit acknowledgement after reload without duplicate prog
   await page.keyboard.type(words.join(" "), { delay: 90 });
   await lost.promise;
   await expect(page.locator("#retrySavingResultButton")).toBeVisible();
-  await expect(page.getByText(/1 result\(s\) pending upload/)).toBeVisible();
+  await expect(page.getByText(/result\(s\) pending upload/)).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "retry pending" })).toHaveCount(
+    0,
+  );
+  await expect(
+    page.getByRole("button", { name: "discard pending" }),
+  ).toHaveCount(0);
   await page.unroute(`**${rpcPath("resultsAdd")}*`);
   const retried = page.waitForResponse(
     (response) => new URL(response.url()).pathname === rpcPath("resultsAdd"),
