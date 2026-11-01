@@ -29,11 +29,13 @@ export function CookiesModal(): JSXElement {
   createEffect(() => {
     if (!isModalOpen("Cookies")) {
       setShowSettings(false);
-      setAccepted({
-        security: true,
-        analytics: false,
-        sentry: false,
-      });
+      setAccepted(
+        getAcceptedCookies() ?? {
+          security: true,
+          analytics: false,
+          sentry: false,
+        },
+      );
     }
   });
 
@@ -124,7 +126,7 @@ export function CookiesModal(): JSXElement {
               title="analytics"
               description="We use Google Analytics to track the overall traffic and
             demographics of our site."
-              checked={false}
+              checked={accepted().analytics}
               onChange={(checked) =>
                 setAccepted({ ...accepted(), analytics: checked })
               }
@@ -134,7 +136,7 @@ export function CookiesModal(): JSXElement {
               description="We use Sentry to track errors and performance issues on our site, as
             well as record anonymized user sessions to help us debug issues and
             improve experience."
-              checked={false}
+              checked={accepted().sentry}
               onChange={(checked) =>
                 setAccepted({ ...accepted(), sentry: checked })
               }
