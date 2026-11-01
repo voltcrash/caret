@@ -22,7 +22,7 @@ test("saving a guest test after popup sign-in starts a different paragraph", asy
   await page.route("**/api/auth/sign-in/social", async (route) => {
     const body = route.request().postDataJSON() as { callbackURL: string };
     await route.fulfill({
-      headers: { "set-cookie": authCookie("browser-paragraph-login") },
+      headers: { "set-cookie": authCookie("browser-text-in") },
       json: { url: body.callbackURL, redirect: false },
     });
   });
@@ -31,7 +31,10 @@ test("saving a guest test after popup sign-in starts a different paragraph", asy
   await expect(page.locator("#typingTest")).toHaveCSS("opacity", "1");
   const previous = await page.locator("#words .word").allTextContents();
   await completeWords(page);
-  await page.getByRole("link", { name: "Sign in", exact: true }).click();
+  await page
+    .locator("#result")
+    .getByRole("link", { name: "Sign in", exact: true })
+    .click();
   await page.getByRole("button", { name: "sign in with GitHub" }).click();
   const modal = page.getByRole("dialog", { name: "Last signed out result" });
   await expect(modal).toBeVisible();
