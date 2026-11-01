@@ -22,6 +22,7 @@ async function main(): Promise<void> {
     "browser-typing",
     "browser-result-persistence",
     "browser-outbox",
+    "browser-save-retry",
     "browser-logout",
     "browser-home",
     "browser-cache",
@@ -56,6 +57,7 @@ async function main(): Promise<void> {
         "browser-typing",
         "browser-result-persistence",
         "browser-outbox",
+        "browser-save-retry",
         "browser-logout",
         "browser-home",
         "browser-cache",
@@ -76,7 +78,11 @@ async function main(): Promise<void> {
             uid,
             addedAt: 0,
             name:
-              token === "browser-result-persistence" ? "persistence" : token,
+              token === "browser-result-persistence"
+                ? "persistence"
+                : token === "browser-save-retry"
+                  ? "save-retry"
+                  : token,
             email: `${token}@example.test`,
             personalBests: {
               time: {},
@@ -91,7 +97,13 @@ async function main(): Promise<void> {
           }),
         )
         .run();
-      if (["browser-result-persistence", "browser-outbox"].includes(token)) {
+      if (
+        [
+          "browser-result-persistence",
+          "browser-outbox",
+          "browser-save-retry",
+        ].includes(token)
+      ) {
         await db
           .prepare("INSERT INTO configs(uid,id,data) VALUES(?,?,?)")
           .bind(
