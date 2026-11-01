@@ -3,6 +3,7 @@ import { appObject } from "../../../app/state";
 import { captureTypingRoute } from "../scope";
 import { operation } from "../../../data/operations";
 import { trackResultSave } from "../../../app/update-safety";
+import { resultOutbox } from "../result-outbox.client";
 import type { OperationResponse } from "../../../data/operation-types";
 import type { OperationResult } from "../../../data/operation-result";
 
@@ -32,15 +33,38 @@ const retrySavingState = appObject(
     completedEvent: null,
     eventLog: null,
     canRetry: false,
+    draining: false,
   })),
 );
 type RetrySaving = {
   completedEvent: CompletedEvent | null;
   eventLog: WebLog | null;
   canRetry: boolean;
+  draining: boolean;
 };
 
 export async function retrySavingResult(): Promise<void> {
+  const account = captureAccount();
+  const queue = resultOutbox();
+  const state = retrySavingState;
+  if (state.draining) return;
+  state.draining = true;
+  try {
+    await queue.load();
+    for (const entry of queue.entries()) {
+      if (!account.isCurrent()) return;
+      const response = await saveResult(
+        { ...entry.result, offline: true },
+        true,
+        entry.eventLog,
+        entry.result.hash,
+      );
+      if (!response?.ok && response?.status !== 466) return;
+    }
+  } finally {
+    state.draining = false;
+  }
+  if (queue.entries().length === 0 && state.completedEvent === null) return;
   const { completedEvent, eventLog } = retrySavingState;
 
   if (completedEvent === null) {
@@ -73,9 +97,14 @@ export async function saveResult(
   completedEvent: CompletedEvent,
   isRetrying: boolean,
   eventLog?: WebLog,
+  queuedHash?: string,
 ): Promise<null | OperationResult<OperationResponse<"results.add">>> {
   const account = captureAccount();
-  const presentation = captureTypingRoute();
+  const presentation =
+    queuedHash === undefined
+      ? captureTypingRoute()
+      : { isCurrent: () => false };
+  const queue = resultOutbox();
   if (!getMutableConfig().resultSaving) {
     showErrorNotification("Result not saved: disabled by user", {
       durationMs: 3000,
@@ -95,6 +124,19 @@ export async function saveResult(
   const unhashed: Omit<CompletedEvent, "hash"> & { hash?: string } = result;
   delete unhashed.hash;
   result.hash = await hashResult(result);
+  const pendingHash = queuedHash ?? result.hash;
+  if (!isRetrying) {
+    try {
+      await queue.add({
+        result,
+        ...(eventLog === undefined ? {} : { eventLog }),
+      });
+    } catch {
+      showNoticeNotification(
+        "Browser storage unavailable: keep this tab open until the result saves.",
+      );
+    }
+  }
   const encodedLog =
     eventLog === undefined ? undefined : await encodeEventLog(eventLog, result);
   if (!account.isCurrent()) return null;
@@ -107,8 +149,8 @@ export async function saveResult(
       operation("results.add", {
         body:
           encodedLog === undefined
-            ? { result }
-            : { result, eventLog: encodedLog },
+            ? { result, acknowledgeDuplicate: true }
+            : { result, eventLog: encodedLog, acknowledgeDuplicate: true },
       }),
     );
   } catch (error) {
@@ -121,6 +163,12 @@ export async function saveResult(
   setAccountButtonSpinner(false);
 
   if (!response.ok) {
+    if (
+      response.status === 466 ||
+      [400, 403, 422, 460, 461, 463, 464, 465].includes(response.status)
+    ) {
+      await queue.remove(pendingHash).catch(() => undefined);
+    }
     //only allow retry if status is not in this list
     if (![460, 461, 463, 464, 465, 466].includes(response.status)) {
       retrySavingState.canRetry = true;
@@ -144,7 +192,20 @@ export async function saveResult(
   }
 
   const data = response.data;
+  await queue.remove(pendingHash).catch(() => undefined);
+  if (retrySavingState.completedEvent?.hash === pendingHash) {
+    retrySavingState.completedEvent = null;
+    retrySavingState.eventLog = null;
+    retrySavingState.canRetry = false;
+  }
   if (presentation.isCurrent()) Result.updateSavedResultId(data.insertedId);
+  if (data.alreadySaved) {
+    await Promise.all([
+      DB.initSnapshot(),
+      (await import("../../../ts/collections/results")).refetchResults(),
+    ]);
+    return response;
+  }
 
   const localDataToSave: DB.SaveLocalResultData = {};
 
@@ -190,4 +251,12 @@ export async function saveResult(
   }
   DB.saveLocalResult(localDataToSave);
   return response;
+}
+
+export async function discardPendingResults(): Promise<void> {
+  await resultOutbox().clear();
+  retrySavingState.completedEvent = null;
+  retrySavingState.eventLog = null;
+  retrySavingState.canRetry = false;
+  (await import("./result")).updateRetrySaving(false);
 }

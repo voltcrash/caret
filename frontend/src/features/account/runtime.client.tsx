@@ -42,6 +42,16 @@ export function AccountRuntime(): null {
         return;
       }
       const lease = account.capture();
+      const retryPending = (): void => {
+        void import("../typing/runtime/result-saving")
+          .then(async (saving) => {
+            if (lease.isCurrent()) await saving.retrySavingResult();
+          })
+          .catch(() => undefined);
+      };
+      retryPending();
+      window.addEventListener("online", retryPending);
+      onCleanup(() => window.removeEventListener("online", retryPending));
       const warm = (): void => {
         if (lease.isCurrent()) void preloadAccount().catch(() => undefined);
       };

@@ -21,6 +21,7 @@ async function main(): Promise<void> {
     "browser-private",
     "browser-typing",
     "browser-result-persistence",
+    "browser-outbox",
     "browser-logout",
     "browser-home",
     "browser-cache",
@@ -54,6 +55,7 @@ async function main(): Promise<void> {
         "browser-private",
         "browser-typing",
         "browser-result-persistence",
+        "browser-outbox",
         "browser-logout",
         "browser-home",
         "browser-cache",
@@ -89,12 +91,12 @@ async function main(): Promise<void> {
           }),
         )
         .run();
-      if (token === "browser-result-persistence") {
+      if (["browser-result-persistence", "browser-outbox"].includes(token)) {
         await db
           .prepare("INSERT INTO configs(uid,id,data) VALUES(?,?,?)")
           .bind(
             uid,
-            "result-persistence-config",
+            `result-persistence-config-${token}`,
             JSON.stringify({
               mode: "words",
               words: 15,
