@@ -1,11 +1,12 @@
-import { JSXElement, onCleanup, onMount } from "solid-js";
+import { createMemo, JSXElement, onCleanup, onMount } from "solid-js";
 import { spread } from "solid-js/web";
 
 import { isTypingReady } from "../../../app/startup";
+import { getConfig } from "../../../ts/config/store";
 import { useWordsInputScroll } from "../../../ts/hooks/useWordsInputScroll";
 import { isInputElementFocused } from "../../../ts/input/input-element";
 import { isWordsWrapperVisible } from "../../../ts/states/funbox";
-import { getTestInitError } from "../../../ts/states/test";
+import { getTestInitError,getActiveWordIndex,isTestRestarting } from "../../../ts/states/test";
 import { setTestElements } from "../../../ts/states/test-dom";
 import {
   getWordsWrapperHeight,
@@ -15,6 +16,7 @@ import { cn } from "../../../ts/utils/cn";
 import { isCoarsePointer } from "../../../ts/utils/pointer";
 import { getBrowserEngine } from "../engine.client";
 import { focusWords } from "../runtime/test-ui";
+import { words } from "../runtime/test-words";
 import { CapsWarning } from "./CapsWarning";
 import { CompositionDisplay } from "./CompositionDisplay";
 import { EndTestButton } from "./EndTestButton";
@@ -43,6 +45,17 @@ export function TestPage(
   props: { ref?: (el: HTMLDivElement) => void; class?: string } = {},
 ): JSXElement {
   const refs = {} as Parameters<typeof setTestElements>[0];
+  const prompt = createMemo(() => {
+    if (!isTypingReady() || isTestRestarting()) return "Preparing typing test.";
+    if (getConfig.mode === "zen")
+      {return "Free typing. Type your own text, then finish the test.";}
+    const index = getActiveWordIndex();
+    const current = words.get(index)?.text;
+    const next = words.get(index + 1)?.text;
+    return current === undefined
+      ? "Typing test."
+      : `Type: ${current}.${next === undefined ? "" : ` Next: ${next}.`} Use Space to advance and Backspace to correct.`;
+  });
 
   onMount(() => {
     onCleanup(setTestElements(refs));
@@ -115,6 +128,7 @@ export function TestPage(
           <textarea
             id="wordsInput"
             aria-label="Typing input"
+            aria-describedby="typingPrompt"
             disabled={
               !isTypingReady() ||
               getBrowserEngine().status().state !== "ready" ||
@@ -140,6 +154,14 @@ export function TestPage(
             {...{ list: "autocompleteOff" }}
             spellcheck={false}
           ></textarea>
+          <div
+            id="typingPrompt"
+            class="sr-only"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {prompt()}
+          </div>
           <OutOfFocusWarning />
           <Caret pace ref={(el) => (refs.paceCaret = el)} />
           <Caret ref={(el) => (refs.caret = el)} />
