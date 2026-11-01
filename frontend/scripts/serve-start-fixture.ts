@@ -23,6 +23,7 @@ async function main(): Promise<void> {
     "browser-result-persistence",
     "browser-outbox",
     "browser-save-retry",
+    "browser-paragraph-login",
     "browser-logout",
     "browser-home",
     "browser-cache",
@@ -58,6 +59,7 @@ async function main(): Promise<void> {
         "browser-result-persistence",
         "browser-outbox",
         "browser-save-retry",
+        "browser-paragraph-login",
         "browser-logout",
         "browser-home",
         "browser-cache",
@@ -102,6 +104,7 @@ async function main(): Promise<void> {
           "browser-result-persistence",
           "browser-outbox",
           "browser-save-retry",
+          "browser-paragraph-login",
         ].includes(token)
       ) {
         await db
