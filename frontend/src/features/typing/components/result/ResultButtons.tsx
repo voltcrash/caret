@@ -25,7 +25,6 @@ import * as TestLogic from "../../runtime/test-logic";
 import * as TestScreenshot from "../../runtime/test-screenshot";
 import { isTypingRouteActive } from "../../scope";
 import { EngineMemoryNotice } from "./EngineMemoryNotice";
-import { PendingResults } from "./PendingResults";
 
 export function ResultButtons(): JSXElement {
   // shift held: screenshot button downloads instead of copying
@@ -143,7 +142,6 @@ export function ResultButtons(): JSXElement {
 
   return (
     <>
-      <PendingResults />
       <EngineMemoryNotice />
       <Show when={resultState.retrySaving}>
         <button
