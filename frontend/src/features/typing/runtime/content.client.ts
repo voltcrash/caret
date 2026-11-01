@@ -207,10 +207,8 @@ export const getContentHost = createAppOwned(() => {
               engineHash,
             );
       lease.signal.throwIfAborted();
-      const seed =
-        (!repeated ? initialTypingState().seed(contentKey) : undefined) ??
-        crypto.getRandomValues(new Uint32Array(1))[0] ??
-        0;
+      // A preview describes the previous test, not the next test's randomness.
+      const seed = crypto.getRandomValues(new Uint32Array(1))[0] ?? 0;
       let quotes: Prepare["quotes"] = null;
       if (config.mode === "quote" && !repeated) {
         const name = language.name.startsWith("swiss_german")
