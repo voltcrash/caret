@@ -1,4 +1,4 @@
-import { expect, openTest, test } from "./fixtures";
+import { completeWords, expect, openTest, test } from "./fixtures";
 
 for (const authenticated of [false, true]) {
   test.describe(authenticated ? "signed-in reload" : "guest reload", () => {
@@ -20,14 +20,32 @@ for (const authenticated of [false, true]) {
   });
 }
 
-test("generates fresh default words even without a preview cookie", async ({
+test.describe("default startup", () => {
+  test.use({ config: {} });
+
+  test("generates fresh default words even without a preview cookie", async ({
+    page,
+    context,
+  }) => {
+    await openTest(page);
+    const previous = await page.locator("#words .word").allTextContents();
+    await context.clearCookies({ name: "caret_typing_preview" });
+    await page.reload();
+    await expect(page.locator("#words .word")).toHaveCount(previous.length);
+    await expect(page.locator("#words .word")).not.toHaveText(previous);
+  });
+});
+
+test("only the explicit repeat action reuses the previous paragraph", async ({
   page,
-  context,
 }) => {
   await openTest(page);
   const previous = await page.locator("#words .word").allTextContents();
-  await context.clearCookies({ name: "caret_typing_preview" });
-  await page.reload();
-  await expect(page.locator("#words .word")).toHaveCount(previous.length);
+  await completeWords(page);
+  await expect(page.locator("#result")).toHaveCSS("opacity", "1");
+  await page.getByRole("button", { name: "Repeat test", exact: true }).click();
+  await expect(page.locator("#words .word")).toHaveText(previous);
+  await expect(page.locator("#typingTest")).toHaveCSS("opacity", "1");
+  await page.getByRole("button", { name: "Restart Test", exact: true }).click();
   await expect(page.locator("#words .word")).not.toHaveText(previous);
 });
