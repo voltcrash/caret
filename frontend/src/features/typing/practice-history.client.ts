@@ -56,7 +56,7 @@ export function updatePracticeHistory(
   return {
     ...history,
     words: [...model.values()]
-      .sort((a, b) => b.misses / b.seen - a.misses / a.seen)
+      .sort((a, b) => b.misses / b.seen - a.misses / a.seen || b.seen - a.seen)
       .slice(0, 200),
     day,
     seconds: (history.day === day ? history.seconds : 0) + Math.max(0, seconds),

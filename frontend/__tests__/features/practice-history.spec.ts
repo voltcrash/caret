@@ -1,6 +1,32 @@
 import { expect, it } from "vite-plus/test";
 import { updatePracticeHistory } from "../../src/features/typing/practice-history.client";
 
+it("retains frequently seen correct words when the model reaches capacity", () => {
+  const initial = {
+    words: Array.from({ length: 200 }, (_, index) => ({
+      word: `word${index}`,
+      context: "english:qwerty",
+      seen: index + 1,
+      misses: 0,
+      burst: 80,
+    })),
+    day: "today",
+    seconds: 0,
+    goalMinutes: 5,
+  };
+  const next = updatePracticeHistory(
+    initial,
+    "english:qwerty",
+    ["new"],
+    {},
+    [80],
+    1,
+    "today",
+  );
+  expect(next.words).toHaveLength(200);
+  expect(next.words[0]).toMatchObject({ word: "word199", seen: 200 });
+});
+
 it("retains weaknesses by language/layout and credits practice without repeating a word's test errors", () => {
   const initial = { words: [], day: "yesterday", seconds: 100, goalMinutes: 5 };
   const next = updatePracticeHistory(
