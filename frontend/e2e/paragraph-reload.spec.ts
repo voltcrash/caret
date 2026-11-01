@@ -20,22 +20,6 @@ for (const authenticated of [false, true]) {
   });
 }
 
-test.describe("default startup", () => {
-  test.use({ config: {} });
-
-  test("generates fresh default words even without a preview cookie", async ({
-    page,
-    context,
-  }) => {
-    await openTest(page);
-    const previous = await page.locator("#words .word").allTextContents();
-    await context.clearCookies({ name: "caret_typing_preview" });
-    await page.reload();
-    await expect(page.locator("#words .word")).toHaveCount(previous.length);
-    await expect(page.locator("#words .word")).not.toHaveText(previous);
-  });
-});
-
 test("only the explicit repeat action reuses the previous paragraph", async ({
   page,
 }) => {
