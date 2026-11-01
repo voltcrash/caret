@@ -223,6 +223,7 @@ export async function saveResult(
   if (data.insertedId !== undefined) {
     const snapshotResult: SavedResult = Object.assign(structuredClone(result), {
       _id: data.insertedId,
+      verification: data.verification,
     });
     if (data.isPb !== undefined && data.isPb) {
       snapshotResult.isPb = true;

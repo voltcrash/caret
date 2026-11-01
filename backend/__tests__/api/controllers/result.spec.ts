@@ -576,6 +576,7 @@ describe("result controller test", () => {
 
       expect(body.message).toEqual("Result saved");
       expect(body.data).toEqual({
+        verification: "absent",
         isPb: true,
         tagPbs: [],
         xp: 177,

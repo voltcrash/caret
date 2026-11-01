@@ -146,6 +146,7 @@ async function addResultAtomic(
     const saved = await getBySubmissionHash(context.actor.uid, hash);
     if (saved !== undefined) {
       return new MonkeyResponse("Result already saved", {
+        verification: saved.verification,
         insertedId: saved._id,
         isPb: saved.isPb ?? false,
         tagPbs: [],

@@ -258,6 +258,7 @@ export async function applyProgression(
   }
 
   const data: PostResultResponse = {
+    verification: submission.verification,
     isPb,
     tagPbs,
     insertedId: addedResult.insertedId,

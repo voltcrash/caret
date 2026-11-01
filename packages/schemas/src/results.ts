@@ -184,6 +184,7 @@ export const XpBreakdownSchema = z.object({
 export type XpBreakdown = z.infer<typeof XpBreakdownSchema>;
 
 export const PostResultResponseSchema = z.object({
+  verification: ResultSchema.shape.verification,
   alreadySaved: z.boolean().optional(),
   insertedId: IdSchema,
   isPb: z.boolean(),
