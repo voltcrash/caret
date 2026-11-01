@@ -11,6 +11,7 @@ import { createEffectOn } from "../../../hooks/effects";
 import { useRef } from "../../../hooks/useRef";
 import { isAuthenticated } from "../../../states/core";
 import { hideLoaderBar, showLoaderBar } from "../../../states/loader-bar";
+import { showErrorNotification } from "../../../states/notifications";
 import { filters, setFilters } from "../../../states/result-filters";
 import { downloadResultsCSV } from "../../../utils/misc";
 import AsyncContent from "../../common/AsyncContent";
@@ -45,6 +46,7 @@ export function AccountContent(props: { client: Client }): JSXElement {
     null,
   );
   const [isExporting, setIsExporting] = createSignal(false);
+  const [exportedCount, setExportedCount] = createSignal(0);
   createEffectOn(client, () => {
     setLimit(10);
     setSelectedResultId(null);
@@ -59,6 +61,33 @@ export function AccountContent(props: { client: Client }): JSXElement {
   return (
     <div class="flex flex-col gap-8">
       <MyProfile />
+      <div class="grid gap-2">
+        <p class="text-sub">
+          Charts, filters and statistics below use the latest loaded results.
+          Profile totals cover the account lifetime.
+        </p>
+        <Button
+          text={
+            isExporting()
+              ? `Exporting ${exportedCount()} results…`
+              : "Export full history CSV"
+          }
+          disabled={isExporting()}
+          onClick={() => {
+            setIsExporting(true);
+            setExportedCount(0);
+            void import("../../../../features/account/export.client")
+              .then(async ({ exportAllResults }) => {
+                const results = await exportAllResults(setExportedCount);
+                await downloadResultsCSV(results);
+              })
+              .catch((error: unknown) => {
+                showErrorNotification("Could not export history", { error });
+              })
+              .finally(() => setIsExporting(false));
+          }}
+        />
+      </div>
 
       <Filters filters={filters} onChangeFilters={setFilters} />
 
@@ -94,7 +123,7 @@ export function AccountContent(props: { client: Client }): JSXElement {
 
           <div class="grid grid-cols-1 sm:grid-cols-3">
             <Button
-              text="Export CSV"
+              text="Export filtered loaded results CSV"
               fa={{ icon: "fa-file-csv" }}
               class="w-full sm:col-start-3"
               disabled={isExporting()}

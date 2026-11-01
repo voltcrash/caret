@@ -96,6 +96,12 @@ function getColumns<M extends Mode>({
 }): DataTableColumnDef<SnapshotResult<M>>[] {
   const defineColumn = createColumnHelper<SnapshotResult<M>>().accessor;
   const columns = [
+    defineColumn("verification", {
+      header: "replay",
+      cell: (info) => <span title={info.getValue() ?? "Saved before replay status was recorded"}>{info.getValue() === "verified" ? "matched" : info.getValue() === undefined ? "legacy" : "unverified"}</span>,
+      enableSorting: false,
+      meta: { breakpoint: "md" },
+    }),
     defineColumn("isPb", {
       header: "",
       cell: (info) =>

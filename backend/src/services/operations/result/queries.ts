@@ -26,6 +26,15 @@ export async function getResults(
   input: OperationInput<GetResultsQuery>,
 ): Promise<GetResultsResponse> {
   const { uid } = context.actor;
+  if (input.query.exportHistory) {
+    const data = await ResultDAL.getResults(uid, {
+      client: input.query.client,
+      limit: Math.min(input.query.limit ?? 1000, 1000),
+      beforeTimestamp: input.query.beforeTimestamp,
+      beforeId: input.query.beforeId,
+    });
+    return new MonkeyResponse("History export page retrieved", data);
+  }
   const premiumFeaturesEnabled = context.configuration.users.premium.enabled;
   const { onOrAfterTimestamp = NaN, offset = 0 } = input.query;
   const userHasPremium = await UserDAL.checkIfUserIsPremium(uid);
