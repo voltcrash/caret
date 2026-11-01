@@ -176,6 +176,11 @@ describe("receipt-protected PostgreSQL commits", () => {
   it("purges expired receipts while retaining recent commits", async () => {
     await test.db
       .prepare(
+        "INSERT INTO audit_logs(id,uid,event,timestamp,important,data) VALUES('old-important','','test',0,true,'{}')",
+      )
+      .run();
+    await test.db
+      .prepare(
         "INSERT INTO write_receipts(id,created_at) VALUES('expired-receipt',0)",
       )
       .run();
@@ -184,6 +189,11 @@ describe("receipt-protected PostgreSQL commits", () => {
         statement("INSERT INTO public_stats(id) VALUES('recent-receipt')"),
       ]);
       await scheduled(MAINTENANCE_CRON);
+      expect(
+        await statement(
+          "SELECT id FROM audit_logs WHERE id='old-important'",
+        ).first(),
+      ).toBeNull();
       expect(
         await statement(
           "SELECT id FROM write_receipts WHERE id='expired-receipt'",

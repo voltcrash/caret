@@ -15,6 +15,10 @@ export async function scheduled(cron: string): Promise<void> {
         "DELETE FROM audit_logs WHERE important=false AND timestamp<?",
         now - 30 * 86400000,
       ),
+      statement(
+        "DELETE FROM audit_logs WHERE important=true AND timestamp<?",
+        now - 90 * 86400000,
+      ),
       statement("DELETE FROM auth_sessions WHERE expires_at<=?", new Date(now)),
       statement(
         "DELETE FROM auth_verifications WHERE expires_at<=?",
