@@ -1,5 +1,5 @@
 import type { Client } from "@caret/schemas/shared";
-import { and, desc, eq, gte, inArray, sql } from "drizzle-orm";
+import { and, desc, eq, gte, inArray, sql, lt, or } from "drizzle-orm";
 import MonkeyError from "../utils/error";
 import { database, encode, statement } from "../db/client";
 import { stage } from "../db/mutation";
@@ -31,6 +31,20 @@ export async function hasSubmissionHash(
         .limit(1)
     )[0] !== undefined
   );
+}
+
+export async function getBySubmissionHash(
+  uid: string,
+  hash: string,
+): Promise<DBResult | undefined> {
+  const row = (
+    await database()
+      .select()
+      .from(results)
+      .where(and(eq(results.uid, uid), eq(results.submissionHash, hash)))
+      .limit(1)
+  )[0];
+  return row === undefined ? undefined : unpack(row);
 }
 export async function addResult(
   uid: string,
@@ -131,6 +145,8 @@ export async function getLastResultTimestamp(
   return row.timestamp;
 }
 type GetResultsOpts = {
+  beforeTimestamp?: number;
+  beforeId?: string;
   client?: Client;
   onOrAfterTimestamp?: number;
   limit?: number;
@@ -156,6 +172,15 @@ export async function getResults(
       and(
         eq(results.uid, uid),
         eq(results.client, opts.client ?? "web"),
+        opts.beforeTimestamp === undefined
+          ? undefined
+          : or(
+              lt(results.timestamp, opts.beforeTimestamp),
+              and(
+                eq(results.timestamp, opts.beforeTimestamp),
+                lt(results.id, opts.beforeId ?? ""),
+              ),
+            ),
         timestamp !== undefined && Number.isFinite(timestamp)
           ? gte(results.timestamp, timestamp)
           : undefined,
