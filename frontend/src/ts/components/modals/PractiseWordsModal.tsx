@@ -1,7 +1,9 @@
 import { For, JSXElement, ParentProps, createSignal } from "solid-js";
 
+import { practiceHistory } from "../../../features/typing/practice-history.client";
 import * as PractiseWords from "../../../features/typing/runtime/practise-words";
 import * as TestLogic from "../../../features/typing/runtime/test-logic";
+import { getConfig } from "../../config/store";
 import { hideModalAndClearChain } from "../../states/modals";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Button } from "../common/Button";
@@ -32,6 +34,13 @@ function Group(
 export function PractiseWordsModal(): JSXElement {
   const [missed, setMissed] = createSignal<Missed>("words");
   const [slow, setSlow] = createSignal(false);
+  const learning = practiceHistory();
+  const weakest = () =>
+    learning.weakest(`${getConfig.language}:${getConfig.layout}`);
+  const secondsToday = () =>
+    learning.history().day === new Date().toLocaleDateString("en-CA")
+      ? learning.history().seconds
+      : 0;
 
   const apply = (): void => {
     PractiseWords.init(missed(), slow());
@@ -47,6 +56,44 @@ export function PractiseWordsModal(): JSXElement {
       title="Practice words"
       modalClass="max-w-[400px]"
     >
+      <div class="mb-4 grid gap-2">
+        <p>
+          Today’s practice: {Math.floor(secondsToday() / 60)} /{" "}
+          {learning.history().goalMinutes} minutes.
+        </p>
+        <label>
+          Daily goal (minutes)
+          <input
+            type="number"
+            class="w-full rounded bg-sub-alt p-2 text-text"
+            min="1"
+            max="30"
+            value={learning.history().goalMinutes}
+            onChange={(event) => {
+              const value = event.currentTarget.valueAsNumber;
+              if (Number.isFinite(value)) learning.setGoal(value);
+            }}
+          />
+        </label>
+        <p class="text-sub">
+          Recommended:{" "}
+          {weakest()
+            .slice(0, 5)
+            .map((word) => word.word)
+            .join(", ") || "Complete a test to build your practice history."}
+        </p>
+        <Button
+          text="Practice weak words · 60 seconds"
+          disabled={weakest().length === 0}
+          onClick={() => {
+            if (PractiseWords.initFromHistory()) {
+              hideModalAndClearChain("PractiseWords");
+              void TestLogic.restart({ practiseMissed: true });
+            }
+          }}
+        />
+        <Button text="Clear practice history" onClick={learning.clear} />
+      </div>
       <Group
         title="missed"
         fa={{ icon: "fa-times" }}

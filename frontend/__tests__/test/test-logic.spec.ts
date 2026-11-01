@@ -265,7 +265,13 @@ vi.mock("../../src/ts/utils/result-hash", () => ({
 }));
 vi.mock("../../src/features/typing/analysis.client", () => ({
   analyze: () => ({ reason: null, afk: false }),
-  getAnalysis: () => ({ incompleteTestSeconds: 0, dateDurationMs: 0 }),
+  getAnalysis: () => ({
+    incompleteTestSeconds: 0,
+    dateDurationMs: 0,
+    inputHistory: [],
+  }),
+  getMissedWords: () => ({}),
+  getWordBurstHistory: () => [],
 }));
 
 import { getMutableConfig } from "../../src/ts/config/store";

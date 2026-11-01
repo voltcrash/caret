@@ -54,7 +54,9 @@ import {
   forceReleaseAllKeys,
   buildEventLog,
 } from "./events/data";
-import { analyze, getAnalysis } from "../analysis.client";
+import { analyze, getAnalysis,getMissedWords,getWordBurstHistory } from "../analysis.client";
+import { practiceHistory } from "../practice-history.client";
+import * as TestWords from "./test-words";
 type InvalidResultReason =
   | "inconsistent duration"
   | "failed"
@@ -203,6 +205,24 @@ export async function finish(
   }
 
   const customTextName = getCustomTextIndicator()?.name ?? "";
+  // Ordinary generated text and our own drills only: never persist arbitrary
+  // custom/zen text into the learning model.
+  if (
+    !dontSave &&
+    (["time", "words", "quote"].includes(getMutableConfig().mode) ||
+      customTextName === "practice")
+  ) {
+    practiceHistory().record(
+      `${getMutableConfig().language}:${getMutableConfig().layout}`,
+      TestWords.words
+        .get()
+        .slice(0, getAnalysis(eventLog).inputHistory.length)
+        .map((word) => word.text),
+      getMissedWords(eventLog),
+      getWordBurstHistory(eventLog),
+      completedEvent.testDuration - completedEvent.afkDuration,
+    );
+  }
   const isLong = getCustomTextIndicator()?.isLong === true;
   if (getMutableConfig().mode === "custom" && customTextName !== "" && isLong) {
     const { progress } = analyze(eventLog, {
