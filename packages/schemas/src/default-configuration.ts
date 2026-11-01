@@ -104,6 +104,7 @@ export const BASE_CONFIGURATION: Configuration = {
     },
     // Honest clients score with the same engine, so logs replay exactly.
     logVerification: {
+      requireForRanked: false,
       enabled: true,
     },
   },

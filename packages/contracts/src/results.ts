@@ -16,6 +16,12 @@ import { ClientSchema, ClientQuerySchema } from "@caret/schemas/shared";
 import { IdSchema } from "@caret/schemas/util";
 
 export const GetResultsQuerySchema = z.object({
+  exportHistory: z
+    .boolean()
+    .optional()
+    .describe("Read all owned history in bounded pages for export."),
+  beforeTimestamp: z.number().int().nonnegative().optional(),
+  beforeId: IdSchema.optional(),
   client: ClientSchema.optional(),
   onOrAfterTimestamp: z
     .number()
@@ -81,6 +87,7 @@ export const ResultEventLogSchema = z
 export type ResultEventLog = z.infer<typeof ResultEventLogSchema>;
 
 export const AddResultRequestSchema = z.object({
+  acknowledgeDuplicate: z.boolean().optional(),
   result: CompletedEventSchema,
   eventLog: ResultEventLogSchema.optional().describe(
     "The test's event log. The server replays it and rejects a result whose metrics disagree.",

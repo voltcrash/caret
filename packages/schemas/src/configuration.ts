@@ -120,6 +120,12 @@ export const ConfigurationSchema = z.object({
       maxFingerprints: z.number().int().nonnegative(),
     }),
     logVerification: z.object({
+      requireForRanked: z
+        .boolean()
+        .default(false)
+        .describe(
+          "Require a verified event log for new ranked submissions; enable only after compatibility review",
+        ),
       enabled: z
         .boolean()
         .describe(
