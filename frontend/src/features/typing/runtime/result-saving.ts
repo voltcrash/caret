@@ -2,7 +2,10 @@ import { captureAccount, createAccountOwned } from "../../../app/account-scope";
 import { appObject } from "../../../app/state";
 import { captureTypingRoute } from "../scope";
 import { operation } from "../../../data/operations";
-import { trackResultSave } from "../../../app/update-safety";
+import {
+  pendingResultSaves,
+  trackResultSave,
+} from "../../../app/update-safety";
 import { resultOutbox } from "../result-outbox.client";
 import type { OperationResponse } from "../../../data/operation-types";
 import type { OperationResult } from "../../../data/operation-result";
@@ -28,14 +31,13 @@ import { SavedResult } from "../../../ts/constants/default-snapshot";
 import { setAccountButtonSpinner } from "../../../ts/states/header";
 import { getMutableConfig } from "../../../ts/config/store";
 
-const retrySavingState = appObject(
-  createAccountOwned<RetrySaving>(() => ({
-    completedEvent: null,
-    eventLog: null,
-    canRetry: false,
-    draining: false,
-  })),
-);
+const getRetrySavingState = createAccountOwned<RetrySaving>(() => ({
+  completedEvent: null,
+  eventLog: null,
+  canRetry: false,
+  draining: false,
+}));
+const retrySavingState = appObject(getRetrySavingState);
 type RetrySaving = {
   completedEvent: CompletedEvent | null;
   eventLog: WebLog | null;
@@ -43,27 +45,39 @@ type RetrySaving = {
   draining: boolean;
 };
 
+function isPermanentFailure(status: number): boolean {
+  return [400, 422, 460, 461, 463, 464, 465, 466].includes(status);
+}
+
 export async function retrySavingResult(): Promise<void> {
   const account = captureAccount();
   const queue = resultOutbox();
-  const state = retrySavingState;
-  if (state.draining) return;
+  const state = getRetrySavingState();
+  if (state.draining || pendingResultSaves() > 0) return;
   state.draining = true;
   try {
     await queue.load();
     for (const entry of queue.entries()) {
       if (!account.isCurrent()) return;
+      // The current test keeps its original online eligibility on retry.
+      if (state.canRetry && entry.result.hash === state.completedEvent?.hash)
+        continue;
       const response = await saveResult(
         { ...entry.result, offline: true },
         true,
         entry.eventLog,
         entry.result.hash,
       );
-      if (!response?.ok && response?.status !== 466) return;
+      if (
+        response === null ||
+        (!response.ok && !isPermanentFailure(response.status))
+      )
+        return;
     }
   } finally {
     state.draining = false;
   }
+  if (!account.isCurrent()) return;
   if (queue.entries().length === 0 && state.completedEvent === null) return;
   const { completedEvent, eventLog } = retrySavingState;
 
@@ -85,6 +99,7 @@ export async function retrySavingResult(): Promise<void> {
 
   retrySavingState.canRetry = false;
   const Result = await import("./result");
+  if (!account.isCurrent()) return;
   Result.updateRetrySaving(false);
 
   showNoticeNotification("Retrying to save...");
@@ -135,8 +150,14 @@ async function saveResultInternal(
   const unhashed: Omit<CompletedEvent, "hash"> & { hash?: string } = result;
   delete unhashed.hash;
   result.hash = await hashResult(result);
+  if (!account.isCurrent()) return null;
   const pendingHash = queuedHash ?? result.hash;
   if (!isRetrying) {
+    // A newer completion owns the live retry slot; earlier work remains in
+    // the durable queue and follows historical/offline submission rules.
+    retrySavingState.completedEvent = null;
+    retrySavingState.eventLog = null;
+    retrySavingState.canRetry = false;
     try {
       await queue.add({
         result,
@@ -172,14 +193,16 @@ async function saveResultInternal(
   setAccountButtonSpinner(false);
 
   if (!response.ok) {
-    if (
-      response.status === 466 ||
-      [400, 403, 422, 460, 461, 463, 464, 465].includes(response.status)
-    ) {
+    if (isPermanentFailure(response.status)) {
       await queue.remove(pendingHash).catch(() => undefined);
+      if (retrySavingState.completedEvent?.hash === pendingHash) {
+        retrySavingState.completedEvent = null;
+        retrySavingState.eventLog = null;
+        retrySavingState.canRetry = false;
+      }
     }
     //only allow retry if status is not in this list
-    if (![460, 461, 463, 464, 465, 466].includes(response.status)) {
+    if (!isPermanentFailure(response.status)) {
       retrySavingState.canRetry = true;
       if (presentation.isCurrent()) Result.updateRetrySaving(true);
       if (!isRetrying) {

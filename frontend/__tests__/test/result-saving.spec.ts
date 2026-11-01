@@ -1,12 +1,31 @@
-import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vite-plus/test";
 import type { CompletedEvent } from "@caret/schemas/results";
 import { bindTypingActivity } from "../../src/features/typing/scope";
-import { saveResult } from "../../src/features/typing/runtime/result-saving";
+import {
+  saveResult,
+  retrySavingResult,
+  discardPendingResults,
+} from "../../src/features/typing/runtime/result-saving";
+import { resultOutbox } from "../../src/features/typing/result-outbox.client";
+import { requireApplication } from "../../src/app/application";
 import { showConfetti } from "../../src/features/typing/runtime/result";
 import { __testing } from "../../src/ts/config/testing";
 import { getDefaultSnapshot } from "../../src/ts/constants/default-snapshot";
 import * as DB from "../../src/ts/db";
-import { mockOperation, ok, resetOperations } from "../__harness__/operations";
+import {
+  mockOperation,
+  ok,
+  fail,
+  operationCalls,
+  resetOperations,
+} from "../__harness__/operations";
 
 vi.mock("../../src/features/typing/runtime/result", () => ({
   showConfetti: vi.fn(),
@@ -17,7 +36,7 @@ vi.mock("../../src/features/typing/runtime/result", () => ({
   updateRetrySaving: vi.fn(),
 }));
 vi.mock("../../src/ts/utils/result-hash", () => ({
-  hashResult: async () => "hash",
+  hashResult: async (result: CompletedEvent) => `hash-${result.timestamp}`,
 }));
 vi.mock("../../src/ts/collections/results", () => ({
   insertLocalResult: vi.fn(),
@@ -75,11 +94,103 @@ function result(mode: "time" | "words", mode2: string): CompletedEvent {
 }
 
 beforeEach(() => {
+  requireApplication().accountData.setActor(`saving-${crypto.randomUUID()}`);
   vi.clearAllMocks();
   resetOperations();
   __testing.replaceConfig({ resultSaving: true });
   DB.setSnapshot(getDefaultSnapshot(), { dispatchEvent: false });
   mockOperation("results.add", () => ok({ insertedId: "saved", isPb: true }));
+});
+
+afterEach(async () => {
+  await discardPendingResults();
+  requireApplication().accountData.setActor(null);
+});
+
+it("preserves online PB eligibility when immediately retrying a failed save", async () => {
+  mockOperation("results.add", () => fail(503, "Unavailable"));
+  await saveResult(result("time", "15"), false);
+  mockOperation("results.add", (input) => {
+    expect(input).toMatchObject({ body: { result: { mode: "time" } } });
+    expect(
+      (input["body"] as { result: CompletedEvent }).result.offline,
+    ).not.toBe(true);
+    return ok({ insertedId: "saved", isPb: true });
+  });
+  await retrySavingResult();
+  expect(showConfetti).toHaveBeenCalledOnce();
+  expect(resultOutbox().entries()).toEqual([]);
+});
+
+it("treats an earlier failed completion as historical after a newer save", async () => {
+  mockOperation("results.add", () => fail(503, "Unavailable"));
+  await saveResult({ ...result("time", "15"), timestamp: 1 }, false);
+  mockOperation("results.add", () => ok({ insertedId: "newer", isPb: false }));
+  await saveResult({ ...result("time", "15"), timestamp: 2 }, false);
+  mockOperation("results.add", (input) => {
+    expect(input).toMatchObject({
+      body: { result: { timestamp: 1, offline: true } },
+    });
+    return ok({ insertedId: "older", isPb: false });
+  });
+  await retrySavingResult();
+  expect(resultOutbox().entries()).toEqual([]);
+});
+
+it("retains a fixable 403 across an account scope reload", async () => {
+  mockOperation("results.add", () =>
+    fail(403, "Please change your name before submitting a result"),
+  );
+  await saveResult(result("time", "15"), false);
+  const account = requireApplication().accountData;
+  const actor = account.actor();
+  account.setActor(null);
+  account.setActor(actor);
+  await resultOutbox().load();
+  expect(resultOutbox().entries()).toHaveLength(1);
+});
+
+it("continues draining after a permanently rejected older result", async () => {
+  const queue = resultOutbox();
+  await queue.add({
+    result: { ...result("time", "15"), timestamp: 1, hash: "bad" },
+  });
+  await queue.add({
+    result: { ...result("time", "15"), timestamp: 2, hash: "good" },
+  });
+  mockOperation("results.add", (input) => {
+    const timestamp = (input["body"] as { result: CompletedEvent }).result
+      .timestamp;
+    return timestamp === 1
+      ? fail(463, "Rejected")
+      : ok({ insertedId: "saved", isPb: false });
+  });
+  await retrySavingResult();
+  expect(operationCalls).toHaveBeenCalledTimes(2);
+  expect(queue.entries()).toEqual([]);
+});
+
+it("does not drain a result while its initial upload is in flight", async () => {
+  const response =
+    Promise.withResolvers<
+      ReturnType<typeof ok<{ insertedId: string; isPb: boolean }>>
+    >();
+  mockOperation("results.add", () => response.promise);
+  const saving = saveResult(result("time", "15"), false);
+  await vi.waitFor(() => expect(operationCalls).toHaveBeenCalledOnce());
+  await retrySavingResult();
+  expect(operationCalls).toHaveBeenCalledOnce();
+  response.resolve(ok({ insertedId: "saved", isPb: false }));
+  await saving;
+});
+
+it("does not retry an old actor's current result after an account switch", async () => {
+  mockOperation("results.add", () => fail(503, "Unavailable"));
+  await saveResult(result("time", "15"), false);
+  const retry = retrySavingResult();
+  requireApplication().accountData.setActor(`other-${crypto.randomUUID()}`);
+  await retry;
+  expect(operationCalls).toHaveBeenCalledOnce();
 });
 
 describe.each(presets)("PB confetti: %s %s", (mode, mode2) => {
