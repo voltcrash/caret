@@ -17,7 +17,7 @@ const modes: { value: string; icon: FaSolidIcon }[] = [
   { value: "custom", icon: "fa-wrench" },
 ];
 
-/** Actual initial content; the engine later reproduces this seeded wordset. */
+/** Noninteractive preview, replaced by fresh words when the engine is ready. */
 export function InitialTypingView(props: {
   snapshot: InitialTypingSnapshot;
 }): JSXElement {
