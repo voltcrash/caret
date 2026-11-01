@@ -19,6 +19,20 @@ describe("AsyncContent", () => {
     notifyErrorMock.mockClear();
   });
 
+  it("shows collection failures even when the collection exposes no error object", () => {
+    const collection = Object.assign((): string[] => [], {
+      isLoading: false,
+      isError: true,
+    });
+    render(() => (
+      <AsyncContent collections={{ collection }}>
+        {() => <div>stale content</div>}
+      </AsyncContent>
+    ));
+    expect(screen.getByText(/Failed to load data/)).toBeVisible();
+    expect(screen.queryByText("stale content")).not.toBeInTheDocument();
+  });
+
   describe("with single query", () => {
     const queryClient = new QueryClient();
 

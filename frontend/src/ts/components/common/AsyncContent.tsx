@@ -119,10 +119,15 @@ function AsyncContent<T extends Record<string, unknown>>(
   const isLoading = (): boolean =>
     Object.values(source() as AsyncEntry<unknown>[]).some((s) => s.isLoading());
 
-  const firstError = (): unknown | undefined =>
-    Object.values(source() as AsyncEntry<unknown>[])
-      .find((s) => s.isError())
-      ?.error?.();
+  const firstError = (): unknown | undefined => {
+    const failed = Object.values(source() as AsyncEntry<unknown>[]).find((s) =>
+      s.isError(),
+    );
+    return failed === undefined
+      ? undefined
+      : (failed.error?.() ??
+          new Error("Failed to load data. Please try again."));
+  };
 
   // Keep the last resolved value so deferred children stay mounted during
   // transient loading states (e.g. navigating away and back).
