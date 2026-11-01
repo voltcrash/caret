@@ -157,7 +157,7 @@ try {
         authUpdateUserStatus: disabledAuthMutation.status,
         cookieSessionStatus: disabledCookieSession.status,
         cookieAuthUpdateUserStatus: disabledCookieMutation.status,
-        disabledFlagPreserved: stored.disabled === true,
+        disabledFlagPreserved:  stored.disabled,
         nativeMutationsBlocked: true,
         namePreserved: stored.name === "Audit",
         sessionsRemaining,
