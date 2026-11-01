@@ -53,7 +53,13 @@ export async function retrySavingResult(): Promise<void> {
   const account = captureAccount();
   const queue = resultOutbox();
   const state = getRetrySavingState();
-  if (state.draining || pendingResultSaves() > 0) return;
+  if (state.draining) return;
+  if (pendingResultSaves() > 0) {
+    showNoticeNotification(
+      "A result save is still in progress. Try again shortly.",
+    );
+    return;
+  }
   state.draining = true;
   try {
     await queue.load();
@@ -76,37 +82,37 @@ export async function retrySavingResult(): Promise<void> {
         return;
       }
     }
+    if (!account.isCurrent()) return;
+    if (queue.entries().length === 0 && state.completedEvent === null) return;
+    const { completedEvent, eventLog } = state;
+
+    if (completedEvent === null) {
+      showNoticeNotification(
+        "Could not retry saving the result as the result no longer exists.",
+        {
+          durationMs: 5000,
+          important: true,
+        },
+      );
+
+      return;
+    }
+
+    if (!state.canRetry) {
+      return;
+    }
+
+    const Result = await import("./result");
+    if (!account.isCurrent()) return;
+    state.canRetry = false;
+    Result.updateRetrySaving(false);
+
+    showNoticeNotification("Retrying to save...");
+
+    await saveResult(completedEvent, true, eventLog ?? undefined);
   } finally {
     state.draining = false;
   }
-  if (!account.isCurrent()) return;
-  if (queue.entries().length === 0 && state.completedEvent === null) return;
-  const { completedEvent, eventLog } = retrySavingState;
-
-  if (completedEvent === null) {
-    showNoticeNotification(
-      "Could not retry saving the result as the result no longer exists.",
-      {
-        durationMs: 5000,
-        important: true,
-      },
-    );
-
-    return;
-  }
-
-  if (!retrySavingState.canRetry) {
-    return;
-  }
-
-  retrySavingState.canRetry = false;
-  const Result = await import("./result");
-  if (!account.isCurrent()) return;
-  Result.updateRetrySaving(false);
-
-  showNoticeNotification("Retrying to save...");
-
-  await saveResult(completedEvent, true, eventLog ?? undefined);
 }
 
 /** `eventLog` is the log the result was scored from; the server replays it. */
@@ -152,24 +158,26 @@ async function saveResultInternal(
   const unhashed: Omit<CompletedEvent, "hash"> & { hash?: string } = result;
   delete unhashed.hash;
   result.hash = await hashResult(result);
-  if (!account.isCurrent()) return null;
   const pendingHash = queuedHash ?? result.hash;
   if (!isRetrying) {
-    // A newer completion owns the live retry slot; earlier work remains in
-    // the durable queue and follows historical/offline submission rules.
-    retrySavingState.completedEvent = null;
-    retrySavingState.eventLog = null;
-    retrySavingState.canRetry = false;
     try {
       await queue.add({
         result,
         ...(eventLog === undefined ? {} : { eventLog }),
       });
     } catch {
-      showNoticeNotification(
-        "Browser storage unavailable: keep this tab open until the result saves.",
-      );
+      if (account.isCurrent()) {
+        showNoticeNotification(
+          "Browser storage unavailable: keep this tab open until the result saves.",
+        );
+      }
     }
+    if (!account.isCurrent()) return null;
+    // A newer completion owns the live retry slot; earlier work remains in
+    // the durable queue and follows historical/offline submission rules.
+    retrySavingState.completedEvent = null;
+    retrySavingState.eventLog = null;
+    retrySavingState.canRetry = false;
   }
   const encodedLog =
     eventLog === undefined ? undefined : await encodeEventLog(eventLog, result);

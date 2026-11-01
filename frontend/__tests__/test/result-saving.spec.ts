@@ -19,6 +19,7 @@ import { showConfetti } from "../../src/features/typing/runtime/result";
 import { __testing } from "../../src/ts/config/testing";
 import { getDefaultSnapshot } from "../../src/ts/constants/default-snapshot";
 import * as DB from "../../src/ts/db";
+import { hashResult } from "../../src/ts/utils/result-hash";
 import {
   mockOperation,
   ok,
@@ -36,7 +37,9 @@ vi.mock("../../src/features/typing/runtime/result", () => ({
   updateRetrySaving: vi.fn(),
 }));
 vi.mock("../../src/ts/utils/result-hash", () => ({
-  hashResult: async (result: CompletedEvent) => `hash-${result.timestamp}`,
+  hashResult: vi.fn(
+    async (result: CompletedEvent) => `hash-${result.timestamp}`,
+  ),
 }));
 vi.mock("../../src/ts/collections/results", () => ({
   insertLocalResult: vi.fn(),
@@ -117,9 +120,28 @@ it("preserves online PB eligibility when immediately retrying a failed save", as
     ).not.toBe(true);
     return ok({ insertedId: "saved", isPb: true });
   });
-  await retrySavingResult();
+  await Promise.all([retrySavingResult(), retrySavingResult()]);
   expect(showConfetti).toHaveBeenCalledOnce();
+  expect(operationCalls).toHaveBeenCalledTimes(2);
   expect(resultOutbox().entries()).toEqual([]);
+});
+
+it("preserves a result in its captured account queue when switching during hashing", async () => {
+  const hash = Promise.withResolvers<string>();
+  vi.mocked(hashResult).mockReturnValueOnce(hash.promise);
+  const account = requireApplication().accountData;
+  const actor = account.actor();
+  const saving = saveResult(result("time", "15"), false);
+  account.setActor(`other-${crypto.randomUUID()}`);
+  hash.resolve("old-account-result");
+  await saving;
+  expect(operationCalls).not.toHaveBeenCalled();
+  expect(resultOutbox().entries()).toEqual([]);
+  account.setActor(actor);
+  await resultOutbox().load();
+  expect(resultOutbox().entries()).toMatchObject([
+    { result: { hash: "old-account-result" } },
+  ]);
 });
 
 it("treats an earlier failed completion as historical after a newer save", async () => {
