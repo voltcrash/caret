@@ -99,6 +99,17 @@ export async function saveResult(
   eventLog?: WebLog,
   queuedHash?: string,
 ): Promise<null | OperationResult<OperationResponse<"results.add">>> {
+  return await trackResultSave(
+    saveResultInternal(completedEvent, isRetrying, eventLog, queuedHash),
+  );
+}
+
+async function saveResultInternal(
+  completedEvent: CompletedEvent,
+  isRetrying: boolean,
+  eventLog?: WebLog,
+  queuedHash?: string,
+): Promise<null | OperationResult<OperationResponse<"results.add">>> {
   const account = captureAccount();
   const presentation =
     queuedHash === undefined
@@ -145,14 +156,12 @@ export async function saveResult(
 
   let response: OperationResult<OperationResponse<"results.add">>;
   try {
-    response = await trackResultSave(
-      operation("results.add", {
-        body:
-          encodedLog === undefined
-            ? { result, acknowledgeDuplicate: true }
-            : { result, eventLog: encodedLog, acknowledgeDuplicate: true },
-      }),
-    );
+    response = await operation("results.add", {
+      body:
+        encodedLog === undefined
+          ? { result, acknowledgeDuplicate: true }
+          : { result, eventLog: encodedLog, acknowledgeDuplicate: true },
+    });
   } catch (error) {
     if (!account.isCurrent()) return null;
     throw error;

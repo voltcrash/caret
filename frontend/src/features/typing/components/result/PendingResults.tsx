@@ -1,5 +1,6 @@
 import { onMount, Show, type JSXElement } from "solid-js";
 
+import { pendingResultSaves } from "../../../../app/update-safety";
 import { Button } from "../../../../ts/components/common/Button";
 import { showErrorNotification } from "../../../../ts/states/notifications";
 import { resultOutbox } from "../../result-outbox.client";
@@ -28,12 +29,14 @@ export function PendingResults(): JSXElement {
         </span>
         <Button
           text="retry pending"
+          disabled={pendingResultSaves() > 0}
           onClick={() => {
             void retrySavingResult().catch(report);
           }}
         />
         <Button
           text="discard pending"
+          disabled={pendingResultSaves() > 0}
           onClick={() => {
             void discardPendingResults().catch(report);
           }}
