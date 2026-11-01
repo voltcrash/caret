@@ -7,13 +7,23 @@ import { authCookie } from "./auth-fixtures";
 import { expect, test } from "./fixtures";
 import { rpcPath } from "./rpc-fixtures";
 
-test("recovers a lost commit acknowledgement after reload without duplicate progression", async ({ page, context, baseURL }) => {
-  const value = authCookie("browser-outbox").split(";")[0]?.split("=").slice(1).join("=") ?? "";
-  await context.addCookies([{ name: "caret.session_token", value, url: baseURL ?? "" }]);
+test("recovers a lost commit acknowledgement after reload without duplicate progression", async ({
+  page,
+  context,
+  baseURL,
+}) => {
+  const value =
+    authCookie("browser-outbox").split(";")[0]?.split("=").slice(1).join("=") ??
+    "";
+  await context.addCookies([
+    { name: "caret.session_token", value, url: baseURL ?? "" },
+  ]);
+  const lost = Promise.withResolvers<undefined>();
   await page.route(`**${rpcPath("resultsAdd")}*`, async (route) => {
     const response = await route.fetch();
     expect(response.status(), await response.text()).toBe(200);
     await route.abort("failed");
+    lost.resolve(undefined);
   });
   await page.goto("/");
   await expect(page.locator("#words .word")).toHaveCount(15);
@@ -21,16 +31,27 @@ test("recovers a lost commit acknowledgement after reload without duplicate prog
   const words = await page.locator("#words .word").allTextContents();
   await page.locator("#words .word").first().click();
   await page.keyboard.type(words.join(" "), { delay: 90 });
+  await lost.promise;
+  await expect(page.locator("#retrySavingResultButton")).toBeVisible();
   await expect(page.getByText(/1 result\(s\) pending upload/)).toBeVisible();
   await page.unroute(`**${rpcPath("resultsAdd")}*`);
-  const retried = page.waitForResponse((response) => new URL(response.url()).pathname === rpcPath("resultsAdd"));
+  const retried = page.waitForResponse(
+    (response) => new URL(response.url()).pathname === rpcPath("resultsAdd"),
+  );
   await page.reload();
   const response = await retried;
   expect(response.status()).toBe(200);
-  const saved = fromCrossJSON(await response.json() as SerovalNode, { refs: new Map() }) as { result: { data: { alreadySaved?: boolean; xp: number } } };
+  const saved = fromCrossJSON((await response.json()) as SerovalNode, {
+    refs: new Map(),
+  }) as { result: { data: { alreadySaved?: boolean; xp: number } } };
   expect(saved.result.data).toMatchObject({ alreadySaved: true, xp: 0 });
-  const read = await page.request.get(`${rpcPath("usersGet")}?payload=${encodeURIComponent(JSON.stringify(await toJSONAsync({ data: { query: { client: "web" } } })))}`, { headers: { origin: baseURL ?? "" } });
-  const account = fromCrossJSON(await read.json() as SerovalNode, { refs: new Map() }) as { result: { data: { completedTests: number } } };
+  const read = await page.request.get(
+    `${rpcPath("usersGet")}?payload=${encodeURIComponent(JSON.stringify(await toJSONAsync({ data: { query: { client: "web" } } })))}`,
+    { headers: { origin: baseURL ?? "" } },
+  );
+  const account = fromCrossJSON((await read.json()) as SerovalNode, {
+    refs: new Map(),
+  }) as { result: { data: { completedTests: number } } };
   expect(account.result.data.completedTests).toBe(1);
 });
 

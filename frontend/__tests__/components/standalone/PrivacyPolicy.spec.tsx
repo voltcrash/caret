@@ -5,11 +5,13 @@ import { PrivacyPolicy } from "../../../src/ts/components/standalone/PrivacyPoli
 
 afterEach(cleanup);
 
-it("shows Caret's policy placeholder and its own contact destination", () => {
+it("shows Caret's data policy and its own contact destination", () => {
   const { container } = render(() => <PrivacyPolicy />);
   expect(container).toHaveTextContent(
-    "Caret is preparing a privacy policy for its own hosting and services",
+    "Caret is an independent, open-source typing test",
   );
+  expect(container).toHaveTextContent("Neon");
+  expect(container).toHaveTextContent("90 days");
   expect(container.querySelector("main h1")).toHaveTextContent(
     "Privacy Policy",
   );

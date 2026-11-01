@@ -38,6 +38,9 @@ vi.mock("../../../src/features/typing/engine.client", () => ({
   }),
 }));
 vi.mock("../../../src/ts/states/test", () => ({
+  setIsTestRestarting: vi.fn(),
+  setTestInitError: vi.fn(),
+  setTestActive: vi.fn(),
   isTestActive: () => mocks.active,
   getResultVisible: () => mocks.resultVisible,
   isPaceRepeat: () => mocks.paceRepeat,

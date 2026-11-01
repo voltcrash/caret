@@ -31,12 +31,10 @@ test("master failure waits for the final unit of a multi-character browser commi
       .join(""),
   ).toBe(batch);
   expect(inputs.at(-1)?.data.wordIndex).toBe(0);
-  const state = await page.evaluate(() =>
-    (
-      window as unknown as { engineMigrationState: () => { wordIndex: number } }
-    ).engineMigrationState(),
+  await expect(page.locator("#words .word.active")).toHaveAttribute(
+    "data-wordindex",
+    "1",
   );
-  expect(state.wordIndex).toBe(1);
 });
 
 test.describe("minimum burst progression", () => {
@@ -61,14 +59,11 @@ test.describe("minimum burst progression", () => {
     await page.waitForTimeout(100);
     await page.keyboard.insertText(`${first.slice(1)} `);
     await expect(page.locator("#result")).toBeVisible();
-    const state = await page.evaluate(() =>
-      (
-        window as unknown as {
-          engineMigrationState: () => { wordIndex: number };
-        }
-      ).engineMigrationState(),
+    await expect(page.locator("#words .word.active")).toHaveAttribute(
+      "data-wordindex",
+      "1",
     );
-    expect(state.wordIndex).toBe(1);
+    await expect(page.locator("#result")).toContainText("failed (min burst)");
   });
 });
 
@@ -96,14 +91,6 @@ test.describe("web slow render policy", () => {
       }
     });
     await expect(page.locator("#result")).toBeVisible();
-    const reason = await page.evaluate(
-      () =>
-        (
-          window as unknown as {
-            engineMigrationState: () => { reason?: string };
-          }
-        ).engineMigrationState().reason,
-    );
-    expect(reason).toBe("slow timer");
+    await expect(page.locator("#result")).toContainText("failed (slow timer)");
   });
 });

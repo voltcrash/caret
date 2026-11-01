@@ -85,6 +85,9 @@ vi.mock("../../../src/features/typing/runtime/test-words", () => {
 });
 
 vi.mock("../../../src/ts/states/test", () => ({
+  setIsTestRestarting: vi.fn(),
+  setTestInitError: vi.fn(),
+  setTestActive: vi.fn(),
   getActiveWordIndex: () => mockState.activeWordIndex,
   isTestActive: () => true,
   isResultCalculating: () => false,
