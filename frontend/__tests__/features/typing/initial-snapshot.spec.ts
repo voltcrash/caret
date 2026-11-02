@@ -60,6 +60,12 @@ it("never replays a legacy cookie containing the previously played paragraph", (
   expect(initialTypingState().seed(snapshot.key)).toBeUndefined();
 });
 
+it("does not promote a legacy preview while loading local preferences", () => {
+  document.cookie = `${initialTypingCookie}=${encodeURIComponent(JSON.stringify({ ...snapshot, version: 1 }))}; Path=/`;
+  refreshTypingPreviewSettings({ ...config, maxLineWidth: 40 });
+  expect(readTypingPreview(document.cookie)?.version).toBe(1);
+});
+
 it("keeps prepared words reusable after scoring/input preferences change", async () => {
   const key = await initialContentKey(config, "language", snapshot.engineHash);
   expect(

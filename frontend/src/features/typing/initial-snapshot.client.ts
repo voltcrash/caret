@@ -37,7 +37,8 @@ export function refreshTypingPreviewSettings(config: Config): void {
     return;
   }
   const previous = readTypingPreview(cookie);
-  if (previous === undefined) return;
+  // A legacy cookie contains played words; preference sync cannot promote it.
+  if (previous?.version !== 2) return;
   const appearance = Object.fromEntries(
     Object.entries(previewSettings(config)).filter(
       ([key]) =>
