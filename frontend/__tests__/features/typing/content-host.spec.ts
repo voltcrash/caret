@@ -169,7 +169,10 @@ it("reproduces a prepared preview once, then keeps later tests fresh after remou
     );
     expect(mocks.prepareNext).toHaveBeenLastCalledWith(
       config,
-      mocks.prepare.mock.lastCall?.[0],
+      expect.objectContaining({
+        prepare: mocks.prepare,
+        generate: mocks.generate,
+      }),
       key,
       engineHash,
     );

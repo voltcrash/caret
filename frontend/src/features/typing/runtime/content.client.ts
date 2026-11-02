@@ -296,13 +296,11 @@ export const getContentHost = createAppOwned(() => {
       setCurrentQuote(
         metadata.currentQuote === null ? null : webQuote(metadata.currentQuote),
       );
-      owner.createPreparedSession(repeated);
-      const snapshot = getEngineSession().attach();
       if (engineHash !== "" && !repeated) {
         try {
           saveNextTypingPreview(
             getMutableConfig(),
-            input,
+            content,
             contentKey,
             engineHash,
           );
@@ -311,6 +309,8 @@ export const getContentHost = createAppOwned(() => {
           console.warn("Could not prepare the next typing preview", error);
         }
       }
+      owner.createPreparedSession(repeated);
+      const snapshot = getEngineSession().attach();
       return {
         ...generated,
         words: snapshot.words.map(decodeText),
