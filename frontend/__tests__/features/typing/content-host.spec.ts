@@ -177,6 +177,28 @@ it("reproduces a prepared preview once, then keeps later tests fresh after remou
   expect(random).toHaveBeenCalledOnce();
 });
 
+it("starts the current test even if preparing the next reload fails", async () => {
+  const config = getMutableConfig();
+  Object.assign(config, { funbox: [] });
+  initialTypingState().initialize({
+    version: 2,
+    seed: 42,
+    key: "a".repeat(64),
+    engineHash: "b".repeat(64),
+    words: ["prepared"],
+    settings: previewSettings(config),
+  });
+  const warning = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+  mocks.prepareNext.mockImplementationOnce(() => {
+    throw new Error("preview failed");
+  });
+  await expect(
+    getContentHost().prepare({ ...language, words: [...language.words] }),
+  ).resolves.toMatchObject({ words: ["a"] });
+  expect(mocks.createSession).toHaveBeenCalledExactlyOnceWith(false);
+  expect(warning).toHaveBeenCalledOnce();
+});
+
 it("retries the same pending native request after empty cleanup, matching original fetch ordering", async () => {
   const fetch = vi.fn<typeof globalThis.fetch>();
   for (let index = 0; index < 2; index++) {
