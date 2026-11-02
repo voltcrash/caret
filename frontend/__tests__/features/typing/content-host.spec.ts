@@ -15,6 +15,10 @@ const mocks = vi.hoisted(() => ({
   getLanguage: vi.fn(),
   cachedFetchJson: vi.fn(),
   createSession: vi.fn(),
+  prepareNext: vi.fn(),
+}));
+vi.mock("../../../src/features/typing/next-snapshot.client", () => ({
+  saveNextTypingPreview: mocks.prepareNext,
 }));
 vi.mock("../../../src/features/typing/engine.client", () => ({
   getBrowserEngine: () => ({
@@ -112,7 +116,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-it("uses fresh randomness even when a restored preview matches the test configuration", async () => {
+it("uses fresh randomness for legacy previews even when their configuration matches", async () => {
   const config = getMutableConfig();
   Object.assign(config, { funbox: [] });
   const engineHash = "b".repeat(64);
@@ -138,6 +142,39 @@ it("uses fresh randomness even when a restored preview matches the test configur
     );
   }
   expect(random).toHaveBeenCalledTimes(2);
+});
+
+it("reproduces a prepared preview once, then keeps later tests fresh after remount", async () => {
+  const config = getMutableConfig();
+  Object.assign(config, { funbox: [] });
+  const engineHash = "b".repeat(64);
+  const key = await initialContentKey(config, "", engineHash);
+  const preview = {
+    version: 2 as const,
+    seed: 42,
+    key,
+    engineHash,
+    words: ["prepared"],
+    settings: previewSettings(config),
+  };
+  const random = vi
+    .spyOn(crypto, "getRandomValues")
+    .mockReturnValue(new Uint32Array([7]));
+  for (const seed of [42, 7]) {
+    initialTypingState().initialize(preview);
+    await getContentHost().prepare({ ...language, words: [...language.words] });
+    expect(mocks.prepare).toHaveBeenLastCalledWith(
+      expect.objectContaining({ random: { kind: "seeded", state: seed } }),
+      false,
+    );
+    expect(mocks.prepareNext).toHaveBeenLastCalledWith(
+      config,
+      mocks.prepare.mock.lastCall?.[0],
+      key,
+      engineHash,
+    );
+  }
+  expect(random).toHaveBeenCalledOnce();
 });
 
 it("retries the same pending native request after empty cleanup, matching original fetch ordering", async () => {
