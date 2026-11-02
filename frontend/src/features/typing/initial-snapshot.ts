@@ -40,7 +40,8 @@ const settingsSchema = ConfigSchema.pick(
 );
 export type PreviewSettings = Pick<Config, (typeof previewKeys)[number]>;
 const snapshotSchema = z.object({
-  version: z.literal(1),
+  // v1 cached the test just played; v2 prepares an unplayed next paragraph.
+  version: z.union([z.literal(1), z.literal(2)]),
   seed: z.number().int().min(0).max(0xffffffff),
   key: z.string().regex(/^[a-f0-9]{64}$/),
   engineHash: z.string().regex(/^[a-f0-9]{64}$/),
@@ -80,7 +81,7 @@ export function previewSettings(config: Config): PreviewSettings {
   ) as PreviewSettings;
 }
 
-/** The preview is untrusted presentation data, never an engine/session input. */
+/** Untrusted display data. Only a matching v2 seed may regenerate engine words. */
 export function readTypingPreview(
   cookie: string,
 ): InitialTypingSnapshot | undefined {

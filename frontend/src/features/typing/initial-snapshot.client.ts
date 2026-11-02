@@ -10,9 +10,18 @@ import {
 
 export const initialTypingState = createAppOwned(() => {
   let initial: InitialTypingSnapshot | undefined;
+  let consumed = false;
   return {
     initialize: (value: InitialTypingSnapshot) => {
       initial = value;
+    },
+    seed: (key: string): number | undefined => {
+      if (consumed) return undefined;
+      // Remounting or later reverting settings must not replay the first test.
+      consumed = true;
+      return initial?.version === 2 && initial.key === key
+        ? initial.seed
+        : undefined;
     },
     engineHash: () => initial?.engineHash ?? "",
   };
@@ -67,7 +76,7 @@ export async function initialContentKey(
   ).join("");
 }
 
-/** Cache presentation for the next document while fresh test content loads. */
+/** Save an unplayed paragraph so the next document and engine show the same words. */
 export function saveTypingPreview(
   config: Config,
   seed: number,
@@ -87,7 +96,7 @@ export function saveTypingPreview(
     return;
   }
   const preview: InitialTypingSnapshot = {
-    version: 1,
+    version: 2,
     seed,
     key,
     engineHash,
