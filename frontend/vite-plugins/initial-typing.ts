@@ -46,7 +46,8 @@ export function initialTyping(): Plugin {
           "utf8",
         ),
       ) as import("@caret/typing-engine/config").Config;
-      const seed = 185374211;
+      const engineHash = createHash("sha256").update(bytes).digest("hex");
+      const seed = Number.parseInt(engineHash.slice(0, 8), 16);
       const content = new WasmContent(1);
       try {
         content.prepare(
@@ -83,7 +84,6 @@ export function initialTyping(): Plugin {
           session.dispose();
           session.free();
         }
-        const engineHash = createHash("sha256").update(bytes).digest("hex");
         const languageHash = createHash("sha256")
           .update(JSON.stringify(language))
           .digest("hex");
