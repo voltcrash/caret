@@ -1,6 +1,7 @@
 import { createAppOwned } from "../../app/application";
 import { projectEngineConfig } from "@caret/typing-engine/config";
 import type { Config } from "@caret/schemas/configs";
+import { initialContentConfig } from "./initial-content";
 import {
   initialTypingCookie,
   previewSettings,
@@ -68,7 +69,11 @@ export async function initialContentKey(
   engineHash: string,
 ): Promise<string> {
   const bytes = new TextEncoder().encode(
-    JSON.stringify([engineHash, languageHash, projectEngineConfig(config)]),
+    JSON.stringify([
+      engineHash,
+      languageHash,
+      initialContentConfig(projectEngineConfig(config)),
+    ]),
   );
   return Array.from(
     new Uint8Array(await crypto.subtle.digest("SHA-256", bytes)),

@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import type { Plugin } from "vite";
 import { encodeText, decodeText } from "@caret/typing-engine/text";
 import type { Snapshot } from "../../packages/typing-engine/generated/types/Snapshot";
+import { initialContentConfig } from "../src/features/typing/initial-content";
 
 /** Prepare first-visit preview words at build time, never in a database request. */
 export function initialTyping(): Plugin {
@@ -87,7 +88,13 @@ export function initialTyping(): Plugin {
           .update(JSON.stringify(language))
           .digest("hex");
         const key = createHash("sha256")
-          .update(JSON.stringify([engineHash, languageHash, config]))
+          .update(
+            JSON.stringify([
+              engineHash,
+              languageHash,
+              initialContentConfig(config),
+            ]),
+          )
           .digest("hex");
         return `export const initialTyping = ${JSON.stringify({ seed, key, words, engineHash })};`;
       } finally {
