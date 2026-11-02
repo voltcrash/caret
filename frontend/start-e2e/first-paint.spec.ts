@@ -7,7 +7,7 @@ import { expect, test } from "../e2e/fixtures";
 
 test.use({ config: {}, serviceWorkers: "block" });
 
-test("first visit paints preview words and controls before fresh content loads", async ({
+test("first visit keeps its first painted words when the engine becomes ready", async ({
   page,
 }, info) => {
   const pending = Promise.withResolvers<undefined>();
@@ -47,7 +47,7 @@ test("first visit paints preview words and controls before fresh content loads",
     expect(actualBox?.height).toBeCloseTo(initialBox?.height ?? 0, 0);
     const actual = await page.locator("#words .word").allTextContents();
     expect(actual.length).toBeGreaterThan(20);
-    expect(actual.slice(0, initial.length)).not.toEqual(initial);
+    expect(actual.slice(0, initial.length)).toEqual(initial);
     const first = actual[0]?.[0];
     if (first === undefined) throw new Error("Missing word");
     await page.locator("#words .word").first().click();
@@ -74,7 +74,7 @@ test.describe("returning visit", () => {
       keymapSize: 1,
     },
   });
-  test("renders saved presentation before JavaScript, then starts a fresh test", async ({
+  test("reload paints a different paragraph and keeps it when JavaScript starts", async ({
     page,
   }, info) => {
     await page.goto("/");
@@ -91,9 +91,18 @@ test.describe("returning visit", () => {
     const previewCookie = (await page.context().cookies()).find(
       (cookie) => cookie.name === initialTypingCookie,
     );
-    expect(
-      JSON.parse(decodeURIComponent(previewCookie?.value ?? "{}")),
-    ).toMatchObject({ settings: { keymapMode: "react", maxLineWidth: 40 } });
+    const next = JSON.parse(
+      decodeURIComponent(previewCookie?.value ?? "{}"),
+    ) as {
+      words: string[];
+    };
+    const nextWords = next.words.map((word) =>
+      word.endsWith(" ") ? word.slice(0, -1) : word,
+    );
+    expect(next).toMatchObject({
+      settings: { keymapMode: "react", maxLineWidth: 40 },
+    });
+    expect(nextWords).not.toEqual(words);
     const pending = Promise.withResolvers<undefined>();
     await page.route("**/assets/*.js", async (route) => {
       await pending.promise;
@@ -105,7 +114,7 @@ test.describe("returning visit", () => {
         page.locator("[data-initial-words] .word").first(),
       ).toBeVisible();
       await expect(page.locator("[data-initial-words] .word")).toHaveText(
-        words,
+        nextWords,
       );
       await expect(
         page.locator('[data-ui-element="initialTestConfig"]'),
@@ -125,7 +134,7 @@ test.describe("returning visit", () => {
       pending.resolve(undefined);
       await expect(page.locator("#words .word").first()).toBeVisible();
       await expect(page.locator("#words .word")).toHaveCount(words.length);
-      await expect(page.locator("#words .word")).not.toHaveText(words);
+      await expect(page.locator("#words .word")).toHaveText(nextWords);
       const afterWords = await page
         .locator("#words .word")
         .first()
@@ -140,6 +149,55 @@ test.describe("returning visit", () => {
         expect(afterKeyboard?.[key]).toBeCloseTo(beforeKeyboard?.[key] ?? 0, 0);
       }
       await page.screenshot({ path: info.outputPath("returning-ready.png") });
+    } finally {
+      pending.resolve(undefined);
+    }
+  });
+
+  test("legacy previews retain preferences without painting a previously played paragraph", async ({
+    page,
+    context,
+    baseURL,
+  }) => {
+    await page.goto("/");
+    await expect(page.locator("#words .word")).toHaveCount(25);
+    const cached = (await context.cookies()).find(
+      (cookie) => cookie.name === initialTypingCookie,
+    );
+    const previous = JSON.parse(
+      decodeURIComponent(cached?.value ?? "{}"),
+    ) as Record<string, unknown>;
+    await context.addCookies([
+      {
+        name: initialTypingCookie,
+        value: encodeURIComponent(
+          JSON.stringify({
+            ...previous,
+            version: 1,
+            words: ["already-played"],
+          }),
+        ),
+        url: baseURL ?? "",
+      },
+    ]);
+    const pending = Promise.withResolvers<undefined>();
+    await page.route("**/assets/*.js", async (route) => {
+      await pending.promise;
+      await route.continue();
+    });
+    try {
+      await page.reload({ waitUntil: "domcontentloaded" });
+      await expect(
+        page.locator('[data-ui-element="initialTestConfig"]'),
+      ).toBeVisible();
+      await expect(page.locator("[data-initial-words] .word")).toHaveCount(0);
+      await expect(page.locator("[data-initial-keymap]")).toBeVisible();
+      pending.resolve(undefined);
+      await expect(page.locator("#words .word")).toHaveCount(25);
+      await expect(page.locator("#words .word").first()).toBeVisible();
+      await expect(
+        page.getByText("already-played", { exact: true }),
+      ).toHaveCount(0);
     } finally {
       pending.resolve(undefined);
     }
@@ -185,9 +243,8 @@ test("client navigation rejects a preview from an obsolete engine build", async 
       { name: initialTypingCookie, value },
     );
     await page.getByRole("link", { name: "Caret Home", exact: true }).click();
-    await expect(
-      page.locator("[data-initial-words] .word").first(),
-    ).toBeVisible();
+    await expect(page.locator("[data-initial-typing]")).toBeVisible();
+    await expect(page.locator("[data-initial-words] .word")).toHaveCount(0);
     await expect(
       page.getByText("obsolete-preview", { exact: true }),
     ).toHaveCount(0);

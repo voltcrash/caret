@@ -15,6 +15,10 @@ const mocks = vi.hoisted(() => ({
   getLanguage: vi.fn(),
   cachedFetchJson: vi.fn(),
   createSession: vi.fn(),
+  prepareNext: vi.fn(),
+}));
+vi.mock("../../../src/features/typing/next-snapshot.client", () => ({
+  saveNextTypingPreview: mocks.prepareNext,
 }));
 vi.mock("../../../src/features/typing/engine.client", () => ({
   getBrowserEngine: () => ({
@@ -112,7 +116,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-it("uses fresh randomness even when a restored preview matches the test configuration", async () => {
+it("uses fresh randomness for legacy previews even when their configuration matches", async () => {
   const config = getMutableConfig();
   Object.assign(config, { funbox: [] });
   const engineHash = "b".repeat(64);
@@ -138,6 +142,64 @@ it("uses fresh randomness even when a restored preview matches the test configur
     );
   }
   expect(random).toHaveBeenCalledTimes(2);
+});
+
+it("reproduces a prepared preview once, then keeps later tests fresh after remount", async () => {
+  const config = getMutableConfig();
+  Object.assign(config, { funbox: [] });
+  const engineHash = "b".repeat(64);
+  const key = await initialContentKey(config, "", engineHash);
+  const preview = {
+    version: 2 as const,
+    seed: 42,
+    key,
+    engineHash,
+    words: ["prepared"],
+    settings: previewSettings(config),
+  };
+  const random = vi
+    .spyOn(crypto, "getRandomValues")
+    .mockReturnValue(new Uint32Array([7]));
+  for (const seed of [42, 7]) {
+    initialTypingState().initialize(preview);
+    await getContentHost().prepare({ ...language, words: [...language.words] });
+    expect(mocks.prepare).toHaveBeenLastCalledWith(
+      expect.objectContaining({ random: { kind: "seeded", state: seed } }),
+      false,
+    );
+    expect(mocks.prepareNext).toHaveBeenLastCalledWith(
+      config,
+      expect.objectContaining({
+        prepare: mocks.prepare,
+        generate: mocks.generate,
+      }),
+      key,
+      engineHash,
+    );
+  }
+  expect(random).toHaveBeenCalledOnce();
+});
+
+it("starts the current test even if preparing the next reload fails", async () => {
+  const config = getMutableConfig();
+  Object.assign(config, { funbox: [] });
+  initialTypingState().initialize({
+    version: 2,
+    seed: 42,
+    key: "a".repeat(64),
+    engineHash: "b".repeat(64),
+    words: ["prepared"],
+    settings: previewSettings(config),
+  });
+  const warning = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+  mocks.prepareNext.mockImplementationOnce(() => {
+    throw new Error("preview failed");
+  });
+  await expect(
+    getContentHost().prepare({ ...language, words: [...language.words] }),
+  ).resolves.toMatchObject({ words: ["a"] });
+  expect(mocks.createSession).toHaveBeenCalledExactlyOnceWith(false);
+  expect(warning).toHaveBeenCalledOnce();
 });
 
 it("retries the same pending native request after empty cleanup, matching original fetch ordering", async () => {

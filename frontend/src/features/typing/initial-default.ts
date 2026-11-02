@@ -7,7 +7,7 @@ import {
 
 export function defaultInitialTyping(): InitialTypingSnapshot {
   return {
-    version: 1,
+    version: 2,
     seed: initialTyping.seed,
     key: initialTyping.key,
     engineHash: initialTyping.engineHash,

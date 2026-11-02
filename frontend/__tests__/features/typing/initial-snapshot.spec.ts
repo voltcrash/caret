@@ -4,26 +4,98 @@ import {
   initialTypingCookie,
   previewSettings,
   readTypingPreview,
+  selectTypingPreview,
   type InitialTypingSnapshot,
 } from "../../../src/features/typing/initial-snapshot";
 import {
   initialTypingState,
   saveTypingPreview,
   refreshTypingPreviewSettings,
+  initialContentKey,
 } from "../../../src/features/typing/initial-snapshot.client";
+import { mountApplication } from "../../../src/app/application";
+import {
+  createTestApplication,
+  releaseTestApplication,
+} from "../../__harness__/test-application";
+
+releaseTestApplication();
+let dispose: () => void;
 
 const config = { ...getDefaultConfig(), mode: "words" as const, words: 25 };
 const snapshot: InitialTypingSnapshot = {
-  version: 1,
+  version: 2,
   seed: 42,
   key: "a".repeat(64),
   engineHash: "b".repeat(64),
   words: ["hello", "world"],
   settings: previewSettings(config),
 };
-beforeEach(() => initialTypingState().initialize(snapshot));
+beforeEach(() => {
+  const app = createTestApplication();
+  const release = mountApplication(app.application);
+  dispose = () => {
+    release();
+    app.dispose();
+  };
+  initialTypingState().initialize(snapshot);
+});
 afterEach(() => {
   document.cookie = `${initialTypingCookie}=; Path=/; Max-Age=0`;
+  dispose();
+});
+
+it("uses the prepared first paragraph's seed only once across remounts", () => {
+  expect(initialTypingState().seed(snapshot.key)).toBe(snapshot.seed);
+  initialTypingState().initialize(snapshot);
+  expect(initialTypingState().seed(snapshot.key)).toBeUndefined();
+});
+
+it("discards a preview seed when the first test has different content settings", () => {
+  expect(initialTypingState().seed("different")).toBeUndefined();
+  expect(initialTypingState().seed(snapshot.key)).toBeUndefined();
+});
+
+it("never replays a legacy cookie containing the previously played paragraph", () => {
+  initialTypingState().initialize({ ...snapshot, version: 1 });
+  expect(initialTypingState().seed(snapshot.key)).toBeUndefined();
+});
+
+it("does not promote a legacy preview while loading local preferences", () => {
+  document.cookie = `${initialTypingCookie}=${encodeURIComponent(JSON.stringify({ ...snapshot, version: 1 }))}; Path=/`;
+  refreshTypingPreviewSettings({ ...config, maxLineWidth: 40 });
+  expect(readTypingPreview(document.cookie)?.version).toBe(1);
+});
+
+it("preserves preferences on an engine upgrade without replaying incompatible words", () => {
+  const cached = {
+    ...snapshot,
+    engineHash: "c".repeat(64),
+    settings: { ...snapshot.settings, fontSize: 3 },
+  };
+  expect(selectTypingPreview(snapshot, cached)).toEqual({
+    ...snapshot,
+    version: 1,
+    settings: cached.settings,
+  });
+});
+
+it("keeps prepared words reusable after scoring/input preferences change", async () => {
+  const key = await initialContentKey(config, "language", snapshot.engineHash);
+  expect(
+    await initialContentKey(
+      { ...config, resultSaving: false, confidenceMode: "on" },
+      "language",
+      snapshot.engineHash,
+    ),
+  ).toBe(key);
+  expect(
+    await initialContentKey(
+      { ...config, britishEnglish: true },
+      "language",
+      snapshot.engineHash,
+    ),
+  ).not.toBe(key);
 });
 
 it("reads a bounded, validated first-view snapshot among unrelated cookies", () => {

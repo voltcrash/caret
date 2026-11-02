@@ -1,6 +1,7 @@
 import { createAppOwned } from "../../app/application";
 import { projectEngineConfig } from "@caret/typing-engine/config";
 import type { Config } from "@caret/schemas/configs";
+import { initialContentConfig } from "./initial-content";
 import {
   initialTypingCookie,
   previewSettings,
@@ -10,9 +11,18 @@ import {
 
 export const initialTypingState = createAppOwned(() => {
   let initial: InitialTypingSnapshot | undefined;
+  let consumed = false;
   return {
     initialize: (value: InitialTypingSnapshot) => {
       initial = value;
+    },
+    seed: (key: string): number | undefined => {
+      if (consumed) return undefined;
+      // Remounting or later reverting settings must not replay the first test.
+      consumed = true;
+      return initial?.version === 2 && initial.key === key
+        ? initial.seed
+        : undefined;
     },
     engineHash: () => initial?.engineHash ?? "",
   };
@@ -27,7 +37,8 @@ export function refreshTypingPreviewSettings(config: Config): void {
     return;
   }
   const previous = readTypingPreview(cookie);
-  if (previous === undefined) return;
+  // A legacy cookie contains played words; preference sync cannot promote it.
+  if (previous?.version !== 2) return;
   const appearance = Object.fromEntries(
     Object.entries(previewSettings(config)).filter(
       ([key]) =>
@@ -59,7 +70,11 @@ export async function initialContentKey(
   engineHash: string,
 ): Promise<string> {
   const bytes = new TextEncoder().encode(
-    JSON.stringify([engineHash, languageHash, projectEngineConfig(config)]),
+    JSON.stringify([
+      engineHash,
+      languageHash,
+      initialContentConfig(projectEngineConfig(config)),
+    ]),
   );
   return Array.from(
     new Uint8Array(await crypto.subtle.digest("SHA-256", bytes)),
@@ -67,7 +82,7 @@ export async function initialContentKey(
   ).join("");
 }
 
-/** Cache presentation for the next document while fresh test content loads. */
+/** Save an unplayed paragraph so the next document and engine show the same words. */
 export function saveTypingPreview(
   config: Config,
   seed: number,
@@ -87,7 +102,7 @@ export function saveTypingPreview(
     return;
   }
   const preview: InitialTypingSnapshot = {
-    version: 1,
+    version: 2,
     seed,
     key,
     engineHash,

@@ -2,8 +2,8 @@ import { languageHashes } from "virtual:language-hashes";
 import {
   initialTypingState,
   initialContentKey,
-  saveTypingPreview,
 } from "../initial-snapshot.client";
+import { saveNextTypingPreview } from "../next-snapshot.client";
 import { createAppOwned } from "../../../app/application";
 import { getBrowserEngine } from "../engine.client";
 import { getEngineSession } from "./session.client";
@@ -207,8 +207,10 @@ export const getContentHost = createAppOwned(() => {
               engineHash,
             );
       lease.signal.throwIfAborted();
-      // A preview describes the previous test, not the next test's randomness.
-      const seed = crypto.getRandomValues(new Uint32Array(1))[0] ?? 0;
+      const seed =
+        (!repeated ? initialTypingState().seed(contentKey) : undefined) ??
+        crypto.getRandomValues(new Uint32Array(1))[0] ??
+        0;
       let quotes: Prepare["quotes"] = null;
       if (config.mode === "quote" && !repeated) {
         const name = language.name.startsWith("swiss_german")
@@ -249,23 +251,21 @@ export const getContentHost = createAppOwned(() => {
         .flatMap(([, ids]) => ids ?? [])
         .map((id) => Number.parseInt(id, 10));
       const custom = CustomText.getData();
-      content.prepare(
-        {
-          config,
-          language: engineLanguage(language),
-          random: { kind: "seeded", state: seed },
-          quotes,
-          polyglot,
-          selectedQuoteId: getSelectedQuoteId(),
-          favoriteQuoteIds,
-          sections: [],
-          custom:
-            config.mode === "custom"
-              ? { ...custom, text: custom.text.map(encodeText) }
-              : null,
-        },
-        repeated,
-      );
+      const input: Prepare = {
+        config,
+        language: engineLanguage(language),
+        random: { kind: "seeded", state: seed },
+        quotes,
+        polyglot,
+        selectedQuoteId: getSelectedQuoteId(),
+        favoriteQuoteIds,
+        sections: [],
+        custom:
+          config.mode === "custom"
+            ? { ...custom, text: custom.text.map(encodeText) }
+            : null,
+      };
+      content.prepare(input, repeated);
       let generated: ReturnType<typeof content.generate>;
       for (;;) {
         try {
@@ -296,16 +296,21 @@ export const getContentHost = createAppOwned(() => {
       setCurrentQuote(
         metadata.currentQuote === null ? null : webQuote(metadata.currentQuote),
       );
+      if (engineHash !== "" && !repeated) {
+        try {
+          saveNextTypingPreview(
+            getMutableConfig(),
+            content,
+            contentKey,
+            engineHash,
+          );
+        } catch (error) {
+          // Optional precomputation must not prevent the current test starting.
+          console.warn("Could not prepare the next typing preview", error);
+        }
+      }
       owner.createPreparedSession(repeated);
       const snapshot = getEngineSession().attach();
-      if (engineHash !== "" && !repeated) {
-        saveTypingPreview(
-          getMutableConfig(),
-          seed,
-          contentKey,
-          snapshot.words.map(decodeText),
-        );
-      }
       return {
         ...generated,
         words: snapshot.words.map(decodeText),

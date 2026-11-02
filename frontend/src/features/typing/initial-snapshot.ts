@@ -40,7 +40,8 @@ const settingsSchema = ConfigSchema.pick(
 );
 export type PreviewSettings = Pick<Config, (typeof previewKeys)[number]>;
 const snapshotSchema = z.object({
-  version: z.literal(1),
+  // v1 cached the test just played; v2 prepares an unplayed next paragraph.
+  version: z.union([z.literal(1), z.literal(2)]),
   seed: z.number().int().min(0).max(0xffffffff),
   key: z.string().regex(/^[a-f0-9]{64}$/),
   engineHash: z.string().regex(/^[a-f0-9]{64}$/),
@@ -74,13 +75,23 @@ export type InitialTypingSnapshot = Omit<
   keymapLayout?: LayoutObject;
 };
 
+/** Keep preferences on engine upgrades without painting incompatible words. */
+export function selectTypingPreview(
+  fallback: InitialTypingSnapshot,
+  cached: InitialTypingSnapshot | undefined,
+): InitialTypingSnapshot {
+  if (cached === undefined) return fallback;
+  if (cached.engineHash === fallback.engineHash) return cached;
+  return { ...fallback, version: 1, settings: cached.settings };
+}
+
 export function previewSettings(config: Config): PreviewSettings {
   return Object.fromEntries(
     previewKeys.map((key) => [key, config[key]]),
   ) as PreviewSettings;
 }
 
-/** The preview is untrusted presentation data, never an engine/session input. */
+/** Untrusted display data. Only a matching v2 seed may regenerate engine words. */
 export function readTypingPreview(
   cookie: string,
 ): InitialTypingSnapshot | undefined {

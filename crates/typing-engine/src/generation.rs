@@ -671,6 +671,44 @@ impl Generator {
             all_joining_script: self.language.joining_script,
         })
     }
+    /// Sample a fresh paragraph using the prepared dictionary, without cloning
+    /// assets or changing the current generation, continuation or repeat state.
+    pub fn preview(&mut self, seed: u32) -> Result<Vec<Text>, EngineError> {
+        if !["time", "words"].contains(&self.config.mode.as_str()) || !self.config.funbox.is_empty()
+        {
+            return Err("Preview requires plain time/words content".into());
+        }
+        let random = std::mem::replace(&mut self.random, Random::seeded(seed));
+        let repeating = std::mem::replace(&mut self.repeating, false);
+        let generated = std::mem::replace(&mut self.generated, 0);
+        let section = std::mem::take(&mut self.section);
+        let section_index = std::mem::replace(&mut self.section_index, 0);
+        let section_history = std::mem::take(&mut self.section_history);
+        let previous = std::mem::take(&mut self.previous);
+        let punctuation = std::mem::take(&mut self.punctuation);
+        let result = (|| {
+            let bound = self.limit();
+            let count = (bound as usize).min(60);
+            let mut words = Vec::with_capacity(count);
+            let mut raw = Vec::with_capacity(count);
+            for index in 0..count {
+                let next =
+                    self.next_with_bound(index, bound, raw.last(), raw.get(index.wrapping_sub(2)))?;
+                words.push(next.word);
+                raw.push(next.word_raw);
+            }
+            Ok(words)
+        })();
+        self.random = random;
+        self.repeating = repeating;
+        self.generated = generated;
+        self.section = section;
+        self.section_index = section_index;
+        self.section_history = section_history;
+        self.previous = previous;
+        self.punctuation = punctuation;
+        result
+    }
     pub fn next(
         &mut self,
         index: usize,
@@ -1119,6 +1157,13 @@ impl Content {
     }
     pub fn prepared_generator(&self) -> Result<&Generator, EngineError> {
         self.generator.as_ref().ok_or("Content not prepared".into())
+    }
+    /// Unlike mutable generator access, preview sampling preserves prepared output.
+    pub fn preview(&mut self, seed: u32) -> Result<Vec<Text>, EngineError> {
+        self.generator
+            .as_mut()
+            .ok_or("Content not prepared")?
+            .preview(seed)
     }
     /// Mutable generator access invalidates any prior presentation snapshot.
     pub fn generator(&mut self) -> Result<&mut Generator, EngineError> {

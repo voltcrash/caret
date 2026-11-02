@@ -216,6 +216,15 @@ impl WasmContent {
             .map_err(bind_error)?;
         serialize(&generated)
     }
+    pub fn preview(&mut self, seed: u32) -> Result<String, JsError> {
+        let words = self
+            .content
+            .as_mut()
+            .ok_or_else(|| failure(ErrorCode::Disposed, "Content disposed"))?
+            .preview(seed)
+            .map_err(bind_error)?;
+        serialize(&words)
+    }
     pub fn next(
         &mut self,
         index: usize,
