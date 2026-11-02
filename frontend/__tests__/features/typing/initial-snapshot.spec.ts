@@ -11,19 +11,52 @@ import {
   saveTypingPreview,
   refreshTypingPreviewSettings,
 } from "../../../src/features/typing/initial-snapshot.client";
+import { mountApplication } from "../../../src/app/application";
+import {
+  createTestApplication,
+  releaseTestApplication,
+} from "../../__harness__/test-application";
+
+releaseTestApplication();
+let dispose: () => void;
 
 const config = { ...getDefaultConfig(), mode: "words" as const, words: 25 };
 const snapshot: InitialTypingSnapshot = {
-  version: 1,
+  version: 2,
   seed: 42,
   key: "a".repeat(64),
   engineHash: "b".repeat(64),
   words: ["hello", "world"],
   settings: previewSettings(config),
 };
-beforeEach(() => initialTypingState().initialize(snapshot));
+beforeEach(() => {
+  const app = createTestApplication();
+  const release = mountApplication(app.application);
+  dispose = () => {
+    release();
+    app.dispose();
+  };
+  initialTypingState().initialize(snapshot);
+});
 afterEach(() => {
   document.cookie = `${initialTypingCookie}=; Path=/; Max-Age=0`;
+  dispose();
+});
+
+it("uses the prepared first paragraph's seed only once across remounts", () => {
+  expect(initialTypingState().seed(snapshot.key)).toBe(snapshot.seed);
+  initialTypingState().initialize(snapshot);
+  expect(initialTypingState().seed(snapshot.key)).toBeUndefined();
+});
+
+it("discards a preview seed when the first test has different content settings", () => {
+  expect(initialTypingState().seed("different")).toBeUndefined();
+  expect(initialTypingState().seed(snapshot.key)).toBeUndefined();
+});
+
+it("never replays a legacy cookie containing the previously played paragraph", () => {
+  initialTypingState().initialize({ ...snapshot, version: 1 });
+  expect(initialTypingState().seed(snapshot.key)).toBeUndefined();
 });
 
 it("reads a bounded, validated first-view snapshot among unrelated cookies", () => {
