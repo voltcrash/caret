@@ -17,7 +17,7 @@ const modes: { value: string; icon: FaSolidIcon }[] = [
   { value: "custom", icon: "fa-wrench" },
 ];
 
-/** Noninteractive preview, replaced by fresh words when the engine is ready. */
+/** The engine reproduces this unplayed paragraph before accepting input. */
 export function InitialTypingView(props: {
   snapshot: InitialTypingSnapshot;
 }): JSXElement {
@@ -172,9 +172,10 @@ export function InitialTypingView(props: {
             class="full-width flex h-fit w-full flex-wrap content-start pb-[0.5em] text-sub select-none"
           >
             <For
-              each={props.snapshot.words.map((word) =>
-                word.endsWith(" ") ? word.slice(0, -1) : word,
-              )}
+              each={(props.snapshot.version === 2
+                ? props.snapshot.words
+                : []
+              ).map((word) => (word.endsWith(" ") ? word.slice(0, -1) : word))}
             >
               {(word) => (
                 <div class="word">

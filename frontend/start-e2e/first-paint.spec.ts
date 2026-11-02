@@ -153,6 +153,55 @@ test.describe("returning visit", () => {
       pending.resolve(undefined);
     }
   });
+
+  test("legacy previews retain preferences without painting a previously played paragraph", async ({
+    page,
+    context,
+    baseURL,
+  }) => {
+    await page.goto("/");
+    await expect(page.locator("#words .word")).toHaveCount(25);
+    const cached = (await context.cookies()).find(
+      (cookie) => cookie.name === initialTypingCookie,
+    );
+    const previous = JSON.parse(
+      decodeURIComponent(cached?.value ?? "{}"),
+    ) as Record<string, unknown>;
+    await context.addCookies([
+      {
+        name: initialTypingCookie,
+        value: encodeURIComponent(
+          JSON.stringify({
+            ...previous,
+            version: 1,
+            words: ["already-played"],
+          }),
+        ),
+        url: baseURL ?? "",
+      },
+    ]);
+    const pending = Promise.withResolvers<undefined>();
+    await page.route("**/assets/*.js", async (route) => {
+      await pending.promise;
+      await route.continue();
+    });
+    try {
+      await page.reload({ waitUntil: "domcontentloaded" });
+      await expect(
+        page.locator('[data-ui-element="initialTestConfig"]'),
+      ).toBeVisible();
+      await expect(page.locator("[data-initial-words] .word")).toHaveCount(0);
+      await expect(page.locator("[data-initial-keymap]")).toBeVisible();
+      pending.resolve(undefined);
+      await expect(page.locator("#words .word")).toHaveCount(25);
+      await expect(page.locator("#words .word").first()).toBeVisible();
+      await expect(
+        page.getByText("already-played", { exact: true }),
+      ).toHaveCount(0);
+    } finally {
+      pending.resolve(undefined);
+    }
+  });
 });
 
 test("client navigation rejects a preview from an obsolete engine build", async ({
