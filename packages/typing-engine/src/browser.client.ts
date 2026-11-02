@@ -327,6 +327,9 @@ export class BrowserContent {
       () => JSON.parse(this.live().generate(repeating)) as Generated,
     );
   }
+  preview(seed: number): Text[] {
+    return invoke(() => JSON.parse(this.live().preview(seed)) as Text[]);
+  }
   next(
     index: number,
     bound: number,
