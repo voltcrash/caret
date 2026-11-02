@@ -4,6 +4,7 @@ import {
   initialTypingCookie,
   previewSettings,
   readTypingPreview,
+  selectTypingPreview,
   type InitialTypingSnapshot,
 } from "../../../src/features/typing/initial-snapshot";
 import {
@@ -64,6 +65,19 @@ it("does not promote a legacy preview while loading local preferences", () => {
   document.cookie = `${initialTypingCookie}=${encodeURIComponent(JSON.stringify({ ...snapshot, version: 1 }))}; Path=/`;
   refreshTypingPreviewSettings({ ...config, maxLineWidth: 40 });
   expect(readTypingPreview(document.cookie)?.version).toBe(1);
+});
+
+it("preserves preferences on an engine upgrade without replaying incompatible words", () => {
+  const cached = {
+    ...snapshot,
+    engineHash: "c".repeat(64),
+    settings: { ...snapshot.settings, fontSize: 3 },
+  };
+  expect(selectTypingPreview(snapshot, cached)).toEqual({
+    ...snapshot,
+    version: 1,
+    settings: cached.settings,
+  });
 });
 
 it("keeps prepared words reusable after scoring/input preferences change", async () => {

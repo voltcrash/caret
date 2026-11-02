@@ -243,9 +243,8 @@ test("client navigation rejects a preview from an obsolete engine build", async 
       { name: initialTypingCookie, value },
     );
     await page.getByRole("link", { name: "Caret Home", exact: true }).click();
-    await expect(
-      page.locator("[data-initial-words] .word").first(),
-    ).toBeVisible();
+    await expect(page.locator("[data-initial-typing]")).toBeVisible();
+    await expect(page.locator("[data-initial-words] .word")).toHaveCount(0);
     await expect(
       page.getByText("obsolete-preview", { exact: true }),
     ).toHaveCount(0);

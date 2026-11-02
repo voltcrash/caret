@@ -9,7 +9,10 @@ import {
   structuredDataScript,
 } from "../app/structured-data";
 import { defaultInitialTyping } from "../features/typing/initial-default";
-import { readTypingPreview } from "../features/typing/initial-snapshot";
+import {
+  readTypingPreview,
+  selectTypingPreview,
+} from "../features/typing/initial-snapshot";
 import { TypingLeaf } from "../features/typing/page";
 import { initialTypingSnapshot } from "../server/initial-typing.server";
 
@@ -18,8 +21,7 @@ const initialSnapshot = createIsomorphicFn()
   .client(async () => {
     const fallback = defaultInitialTyping();
     const cached = readTypingPreview(document.cookie);
-    const snapshot =
-      cached?.engineHash === fallback.engineHash ? cached : fallback;
+    const snapshot = selectTypingPreview(fallback, cached);
     if (snapshot.settings.keymapMode !== "off") {
       const { getLayout } = await import("../ts/utils/json-data");
       const raw =

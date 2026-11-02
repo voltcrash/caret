@@ -4,6 +4,7 @@ import type { LayoutObject } from "@caret/schemas/layouts";
 import { defaultInitialTyping } from "../features/typing/initial-default";
 import {
   readTypingPreview,
+  selectTypingPreview,
   type InitialTypingSnapshot,
 } from "../features/typing/initial-snapshot";
 
@@ -17,8 +18,7 @@ const layouts = import.meta.glob<LayoutObject>("../../static/layouts/*.json", {
 export function initialTypingSnapshot(): InitialTypingSnapshot {
   const fallback = defaultInitialTyping();
   const cached = readTypingPreview(getRequestHeader("cookie") ?? "");
-  const snapshot =
-    cached?.engineHash === fallback.engineHash ? cached : fallback;
+  const snapshot = selectTypingPreview(fallback, cached);
   const settings = snapshot.settings;
   if (settings.keymapMode !== "off") {
     const raw =

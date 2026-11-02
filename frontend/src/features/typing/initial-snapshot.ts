@@ -75,6 +75,16 @@ export type InitialTypingSnapshot = Omit<
   keymapLayout?: LayoutObject;
 };
 
+/** Keep preferences on engine upgrades without painting incompatible words. */
+export function selectTypingPreview(
+  fallback: InitialTypingSnapshot,
+  cached: InitialTypingSnapshot | undefined,
+): InitialTypingSnapshot {
+  if (cached === undefined) return fallback;
+  if (cached.engineHash === fallback.engineHash) return cached;
+  return { ...fallback, version: 1, settings: cached.settings };
+}
+
 export function previewSettings(config: Config): PreviewSettings {
   return Object.fromEntries(
     previewKeys.map((key) => [key, config[key]]),
