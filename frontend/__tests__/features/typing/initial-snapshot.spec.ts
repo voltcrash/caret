@@ -10,6 +10,7 @@ import {
   initialTypingState,
   saveTypingPreview,
   refreshTypingPreviewSettings,
+  initialContentKey,
 } from "../../../src/features/typing/initial-snapshot.client";
 import { mountApplication } from "../../../src/app/application";
 import {
@@ -57,6 +58,24 @@ it("discards a preview seed when the first test has different content settings",
 it("never replays a legacy cookie containing the previously played paragraph", () => {
   initialTypingState().initialize({ ...snapshot, version: 1 });
   expect(initialTypingState().seed(snapshot.key)).toBeUndefined();
+});
+
+it("keeps prepared words reusable after scoring/input preferences change", async () => {
+  const key = await initialContentKey(config, "language", snapshot.engineHash);
+  expect(
+    await initialContentKey(
+      { ...config, resultSaving: false, confidenceMode: "on" },
+      "language",
+      snapshot.engineHash,
+    ),
+  ).toBe(key);
+  expect(
+    await initialContentKey(
+      { ...config, britishEnglish: true },
+      "language",
+      snapshot.engineHash,
+    ),
+  ).not.toBe(key);
 });
 
 it("reads a bounded, validated first-view snapshot among unrelated cookies", () => {
