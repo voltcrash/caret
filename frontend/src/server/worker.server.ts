@@ -41,6 +41,20 @@ async function observeScheduled(
   }
 }
 
+/**
+ * MODE=dev trusts `Uid` auth, opens admin and development operations, and
+ * reads X-Forwarded-For. Refuse any host but loopback so a misconfigured
+ * deploy cannot expose it.
+ */
+export function isLoopbackHost(hostname: string): boolean {
+  return (
+    hostname === "localhost" ||
+    hostname.endsWith(".localhost") ||
+    hostname === "[::1]" ||
+    /^127(\.\d{1,3}){3}$/.test(hostname)
+  );
+}
+
 export type ApplicationWorker = {
   fetch: (
     request: Request,
@@ -66,6 +80,14 @@ export function createApplicationWorker(
       env: WorkerEnv,
       ctx: ExecutionContext,
     ): Promise<Response> {
+      if (
+        env.MODE === "dev" &&
+        !isLoopbackHost(new URL(request.url).hostname)
+      ) {
+        return new Response("Development mode serves loopback hosts only", {
+          status: 403,
+        });
+      }
       return await withRuntime(
         env,
         async () => {
