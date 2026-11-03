@@ -7,6 +7,11 @@ to keep OAuth state/session cookies on one origin. The steps below configure
 credentials, deploy the site and enable browser testing.
 See [Turnstile](TURNSTILE.md) for local test keys and policy.
 
+`workers.dev` hosts have no Cache API, so staging does not run the
+bad-authentication lockout or the edge cache for public reads. Rate limits
+still apply. Do not treat staging as proof of those two policies; test them on
+a custom domain (production uses `caret.voltcrash.com`).
+
 ## 1. GitHub credentials
 
 Create an **Caret Staging** OAuth app in
