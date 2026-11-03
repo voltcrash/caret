@@ -200,6 +200,23 @@ describe("QuotesController", () => {
         "quote-submit",
       );
     });
+    it("should fail for banned users", async () => {
+      getPartialUserMock.mockClear().mockResolvedValue({ banned: true } as any);
+
+      const { body } = await mockApp
+        .post("/quotes")
+        .set("Authorization", `Bearer ${uid}`)
+        .send({
+          text: new Array(60).fill("a").join(""),
+          source: "Bob",
+          language: "english",
+          captcha: "captcha",
+        })
+        .expect(403);
+
+      expect(body.message).toEqual("Banned users cannot submit quotes");
+      expect(addQuoteMock).not.toHaveBeenCalled();
+    });
     it("should fail without authentication", async () => {
       await mockApp.post("/quotes").expect(401);
     });

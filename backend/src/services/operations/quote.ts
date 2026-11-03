@@ -73,6 +73,11 @@ export async function addQuote(
   const { uid } = context.actor;
   const { text, source, language, captcha } = input.body;
 
+  const { banned } = await getPartialUser(uid, "add quote", ["banned"]);
+  if (banned === true) {
+    throw new MonkeyError(403, "Banned users cannot submit quotes");
+  }
+
   await verifyCaptcha(captcha, "quote-submit");
 
   await NewQuotesDAL.add(text, source, language, uid);
