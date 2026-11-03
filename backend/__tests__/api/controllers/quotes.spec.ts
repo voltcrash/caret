@@ -8,6 +8,7 @@ import * as QuoteRatingsDal from "../../../src/dal/quote-ratings";
 import * as ReportDal from "../../../src/dal/report";
 import * as LogsDal from "../../../src/dal/logs";
 import * as Captcha from "../../../src/utils/captcha";
+import * as AuthUtils from "../../../src/utils/auth";
 import { newId } from "../../../src/utils/id";
 import { ApproveQuote } from "@caret/schemas/quotes";
 
@@ -24,6 +25,29 @@ describe("QuotesController", () => {
     const user = { quoteMod: true, name: "Bob" } as any;
     getPartialUserMock.mockClear().mockResolvedValue(user);
     logsAddLogMock.mockClear().mockResolvedValue();
+  });
+
+  describe("session freshness", () => {
+    it("reads may use the session cookie cache; writes may not", async () => {
+      vi.spyOn(NewQuotesDal, "get").mockResolvedValue([]);
+      vi.spyOn(NewQuotesDal, "refuse").mockResolvedValue();
+      const verify = vi.spyOn(AuthUtils, "verifySession");
+
+      verify.mockClear();
+      await mockApp
+        .get("/quotes")
+        .set("Authorization", `Bearer ${uid}`)
+        .expect(200);
+      expect(verify.mock.calls[0]?.[1]?.fresh).toBe(false);
+
+      verify.mockClear();
+      await mockApp
+        .post("/quotes/reject")
+        .set("Authorization", `Bearer ${uid}`)
+        .send({ quoteId: newId() })
+        .expect(200);
+      expect(verify.mock.calls[0]?.[1]?.fresh).toBe(true);
+    });
   });
 
   describe("getQuotes", () => {

@@ -132,7 +132,10 @@ export async function execute<K extends OperationId>(
     headers: invocation.headers,
     options: operation.metadata.authenticationOptions,
     endpoint: id,
-    fresh: [operation.metadata.requirePermission].flat().includes("admin"),
+    // Writes and admin reads skip the cookie cache, so revocation applies at once.
+    fresh:
+      operation.route.method !== "GET" ||
+      [operation.metadata.requirePermission].flat().includes("admin"),
     setCookie: invocation.appendCookie,
   });
   await enforceOperationLimit(operation.metadata, scope, invocation.setHeader);
