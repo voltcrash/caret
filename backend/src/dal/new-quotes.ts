@@ -110,6 +110,19 @@ export async function get(language: Language | "all"): Promise<DBNewQuote[]> {
       .limit(10)
   ).map((row) => ({ ...row.data, _id: row.id }) as DBNewQuote);
 }
+/** Language of a pending submission; undefined once it has been reviewed. */
+export async function getLanguage(
+  quoteId: string,
+): Promise<string | undefined> {
+  const row = (
+    await database()
+      .select({ language: quoteSubmissions.language })
+      .from(quoteSubmissions)
+      .where(eq(quoteSubmissions.id, quoteId))
+      .limit(1)
+  )[0];
+  return row?.language;
+}
 export async function approve(
   quoteId: string,
   editQuote: string | undefined,

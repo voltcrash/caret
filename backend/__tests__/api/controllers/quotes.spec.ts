@@ -275,11 +275,43 @@ describe("QuotesController", () => {
       expect(body.message).toEqual("Captcha check failed");
     });
   });
+  const getLanguageMock = vi.spyOn(NewQuotesDal, "getLanguage");
+  beforeEach(() => {
+    getLanguageMock.mockClear().mockResolvedValue("english");
+  });
+
   describe("approveQuote", () => {
     const approveQuoteMock = vi.spyOn(NewQuotesDal, "approve");
 
     beforeEach(() => {
       approveQuoteMock.mockClear();
+    });
+
+    it("should approve in the moderator's language", async () => {
+      getPartialUserMock
+        .mockClear()
+        .mockResolvedValue({ quoteMod: "english", name: "Bob" } as any);
+      approveQuoteMock.mockResolvedValue({ message: "ok", quote: {} as any });
+
+      await mockApp
+        .post("/quotes/approve")
+        .set("Authorization", `Bearer ${uid}`)
+        .send({ quoteId: newId() })
+        .expect(200);
+    });
+    it("should fail for another language than the moderator's", async () => {
+      getPartialUserMock
+        .mockClear()
+        .mockResolvedValue({ quoteMod: "german", name: "Bob" } as any);
+
+      const { body } = await mockApp
+        .post("/quotes/approve")
+        .set("Authorization", `Bearer ${uid}`)
+        .send({ quoteId: newId() })
+        .expect(403);
+
+      expect(body.message).toEqual("You don't have permission to do this.");
+      expect(approveQuoteMock).not.toHaveBeenCalled();
     });
 
     it("should approve", async () => {
@@ -450,6 +482,19 @@ describe("QuotesController", () => {
         data: null,
       });
       expect(refuseQuoteMock).toHaveBeenCalledWith(quoteId);
+    });
+    it("should fail for another language than the moderator's", async () => {
+      getPartialUserMock
+        .mockClear()
+        .mockResolvedValue({ quoteMod: "german" } as any);
+
+      await mockApp
+        .post("/quotes/reject")
+        .set("Authorization", `Bearer ${uid}`)
+        .send({ quoteId: newId() })
+        .expect(403);
+
+      expect(refuseQuoteMock).not.toHaveBeenCalled();
     });
     it("should fail without mandatory properties", async () => {
       //WHEN
