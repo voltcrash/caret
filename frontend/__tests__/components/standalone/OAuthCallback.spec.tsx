@@ -40,6 +40,16 @@ it("decodes callback parameters", () => {
     window.location.origin,
   );
 });
+it.each(["requestId=nonce&", ""])(
+  "never displays free text from the callback URL (%s)",
+  (prefix) => {
+    const { container } = mount(
+      `${prefix}error=${encodeURIComponent("Your account is locked, call +1 555 0100")}`,
+    );
+    expect(container).toHaveTextContent("Sign-in failed");
+    expect(container).not.toHaveTextContent("555");
+  },
+);
 it("rejects a callback without a request ID", () => {
   const { container } = mount("");
   expect(container).toHaveTextContent("Sign-in request not found");

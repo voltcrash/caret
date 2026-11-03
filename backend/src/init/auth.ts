@@ -21,7 +21,7 @@ import { bearer } from "better-auth/plugins";
 import { getFrontendUrl, isDevEnvironment } from "../utils/misc";
 import * as UserDAL from "../dal/user";
 
-/** Longest a revoked or disabled cookie session can keep working. */
+/** Longest a revoked or disabled cookie session can keep reading; writes always re-check. */
 export const SESSION_COOKIE_CACHE_SECONDS = 60;
 
 export function createAuth(

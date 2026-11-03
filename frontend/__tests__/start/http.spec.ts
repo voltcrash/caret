@@ -47,6 +47,14 @@ describe("declared Start HTTP protocols without Hono", () => {
         (await worker.fetch("http://localhost:3000/api/v1/configuration"))
           .status,
       ).toBe(404);
+      // Development mode never serves a public host.
+      const remote = await worker.fetch(
+        "https://caret.example/api/configuration",
+      );
+      expect(remote.status).toBe(403);
+      expect(
+        (await worker.fetch("http://127.0.0.1:3000/api/configuration")).status,
+      ).toBe(200);
     } finally {
       await dev.dispose();
     }

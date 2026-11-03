@@ -31,7 +31,7 @@ export async function authenticate(input: {
   headers: Headers;
   options?: RequestAuthenticationOptions;
   endpoint: string;
-  /** Bypass the session cookie cache (admin operations). */
+  /** Bypass the session cookie cache (writes and admin operations). */
   fresh?: boolean;
   setCookie?: (cookie: string) => void;
 }): Promise<Actor> {

@@ -73,10 +73,27 @@ export async function addQuote(
   const { uid } = context.actor;
   const { text, source, language, captcha } = input.body;
 
+  const { banned } = await getPartialUser(uid, "add quote", ["banned"]);
+  if (banned === true) {
+    throw new MonkeyError(403, "Banned users cannot submit quotes");
+  }
+
   await verifyCaptcha(captcha, "quote-submit");
 
   await NewQuotesDAL.add(text, source, language, uid);
   return new MonkeyResponse("Quote submission added", null);
+}
+
+/** Language-scoped moderators may only review submissions in their language. */
+async function assertQuoteModScope(
+  quoteMod: boolean | string | undefined,
+  quoteId: string,
+): Promise<void> {
+  if (quoteMod === true) return;
+  const language = await NewQuotesDAL.getLanguage(quoteId);
+  if (language !== undefined && language !== quoteMod) {
+    throw new MonkeyError(403, "You don't have permission to do this.");
+  }
 }
 
 export async function approveQuote(
@@ -86,7 +103,11 @@ export async function approveQuote(
   const { uid } = context.actor;
   const { quoteId, editText, editSource } = input.body;
 
-  const { name } = await getPartialUser(uid, "approve quote", ["name"]);
+  const { name, quoteMod } = await getPartialUser(uid, "approve quote", [
+    "name",
+    "quoteMod",
+  ]);
+  await assertQuoteModScope(quoteMod, quoteId);
 
   if (!name) {
     throw new MonkeyError(500, "Missing name field");
@@ -99,10 +120,14 @@ export async function approveQuote(
 }
 
 export async function refuseQuote(
-  _context: ServiceContext,
+  context: ServiceContext,
   input: OperationInput<undefined, RejectQuoteRequest>,
 ): Promise<MonkeyResponse> {
   const { quoteId } = input.body;
+  const { quoteMod } = await getPartialUser(context.actor.uid, "refuse quote", [
+    "quoteMod",
+  ]);
+  await assertQuoteModScope(quoteMod, quoteId);
 
   await NewQuotesDAL.refuse(quoteId);
   return new MonkeyResponse("Quote refused", null);
