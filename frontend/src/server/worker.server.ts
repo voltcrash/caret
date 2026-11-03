@@ -46,7 +46,7 @@ async function observeScheduled(
  * reads X-Forwarded-For. Refuse any host but loopback so a misconfigured
  * deploy cannot expose it.
  */
-export function isLoopbackHost(hostname: string): boolean {
+function isLoopbackHost(hostname: string): boolean {
   return (
     hostname === "localhost" ||
     hostname.endsWith(".localhost") ||
