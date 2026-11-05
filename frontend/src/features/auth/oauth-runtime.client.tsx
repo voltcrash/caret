@@ -9,6 +9,7 @@ export function OAuthRuntime(): null {
   onMount(() => {
     const pending = new Set<() => void>();
     const unsubscribe = oauthRequestEvent.subscribe((request) => {
+      for (const cancel of pending) cancel();
       const popup = window.open(
         "about:blank",
         "caret-auth",
@@ -27,6 +28,7 @@ export function OAuthRuntime(): null {
         if (done) return;
         done = true;
         clearInterval(timer);
+        clearTimeout(deadline);
         window.removeEventListener("message", message);
         pending.delete(cancel);
         popup.close();
@@ -58,6 +60,7 @@ export function OAuthRuntime(): null {
       const timer = setInterval(() => {
         if (popup.closed) cancel();
       }, 500);
+      const deadline = setTimeout(() => finish(new Error("Sign-in timed out; please retry")), 120_000);
       window.addEventListener("message", message);
       pending.add(cancel);
       void (async () => {
