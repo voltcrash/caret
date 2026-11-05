@@ -28,7 +28,7 @@ import { encodeEventLog } from "./event-log-transport";
 
 import { SavedResult } from "../../../ts/constants/default-snapshot";
 
-import { setAccountButtonSpinner } from "../../../ts/states/header";
+import { trackAccountWork } from "../../../ts/states/header";
 import { getMutableConfig } from "../../../ts/config/store";
 
 const getRetrySavingState = createAccountOwned<RetrySaving>(() => ({
@@ -125,7 +125,7 @@ export async function saveResult(
   queuedHash?: string,
 ): Promise<null | OperationResult<OperationResponse<"results.add">>> {
   return await trackResultSave(
-    saveResultInternal(completedEvent, isRetrying, eventLog, queuedHash),
+    trackAccountWork(async () => await saveResultInternal(completedEvent, isRetrying, eventLog, queuedHash)),
   );
 }
 
@@ -190,7 +190,6 @@ async function saveResultInternal(
     eventLog === undefined ? undefined : await encodeEventLog(eventLog, result);
   if (!account.isCurrent()) return null;
 
-  setAccountButtonSpinner(true);
 
   let response: OperationResult<OperationResponse<"results.add">>;
   try {
@@ -207,7 +206,6 @@ async function saveResultInternal(
   const Result = await import("./result");
   if (!account.isCurrent()) return response;
 
-  setAccountButtonSpinner(false);
 
   if (!response.ok) {
     if (isPermanentFailure(response.status)) {
