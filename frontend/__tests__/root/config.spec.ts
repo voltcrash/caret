@@ -553,6 +553,7 @@ describe("Config", () => {
           ),
         );
         expect(applied).toEqual(expected);
+        expect(getConfigStore).toEqual(config);
       });
     });
 

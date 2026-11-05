@@ -90,6 +90,7 @@ export async function loadFromLocalStorage(): Promise<void> {
 
 export async function applyConfig(
   partialConfig: Partial<ConfigSchemas.Config>,
+  lease?: { assertCurrent: () => void },
 ): Promise<void> {
   if (partialConfig === undefined || partialConfig === null) return;
 
@@ -99,11 +100,13 @@ export async function applyConfig(
   if (fullConfig.funbox.length !== 0) {
     await getBrowserEngine().load();
   }
+  lease?.assertCurrent();
 
   // Publish one settled configuration to reactive UI subscribers.
   batch(() => {
+    const previous = structuredClone(getMutableConfig());
     configEvent.dispatch({ key: "fullConfigChange" });
-
+    try {
     const defaultConfig = getDefaultConfig();
     for (const key of typedKeys(fullConfig)) {
       setProperty(getMutableConfig(), key, defaultConfig[key]);
@@ -132,8 +135,13 @@ export async function applyConfig(
       saveToLocalStorage(key);
     }
 
-    configEvent.dispatch({ key: "fullConfigChangeFinished" });
-    setFullConfigStore(fullConfig);
+    } catch (error) {
+      Object.assign(getMutableConfig(), previous);
+      throw error;
+    } finally {
+      setFullConfigStore(structuredClone(getMutableConfig()));
+      configEvent.dispatch({ key: "fullConfigChangeFinished" });
+    }
   });
 }
 
