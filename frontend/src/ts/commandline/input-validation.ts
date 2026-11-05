@@ -72,8 +72,9 @@ export function createValidationHandler(command: Command): void {
           lease.isCurrent() &&
           current.open &&
           current.inputModeParams.command?.id === command.id
-        )
+        ) {
           updateValidationResult(result);
+        }
       },
       commandWithValidation.validation,
       "inputValueConvert" in commandWithValidation

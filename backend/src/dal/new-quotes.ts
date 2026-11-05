@@ -181,6 +181,7 @@ export async function refuse(quoteId: string): Promise<void> {
     "DELETE FROM quote_submissions WHERE id=? AND approved=false",
     quoteId,
   ).run();
-  if (removed.rowCount === 0)
-    {throw new MonkeyError(409, "Quote is already being approved or reviewed");}
+  if (removed.rowCount === 0) {
+    throw new MonkeyError(409, "Quote is already being approved or reviewed");
+  }
 }

@@ -142,8 +142,9 @@ export function UpdateRuntime(props: { reload?: () => void }): JSXElement {
         void registered.waitingBuild().then((build) => {
           if (disposed) return;
           setWaiting(build === clientBuildId);
-          if (build !== undefined && build !== clientBuildId)
+          if (build !== undefined && build !== clientBuildId) {
             reportStaleClient("deployed");
+          }
           return undefined;
         });
       },

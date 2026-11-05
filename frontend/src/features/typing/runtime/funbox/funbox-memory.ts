@@ -34,6 +34,7 @@ export function load(): void {
     ] as ValueAndSetFunction<ConfigValue>;
     memory.setFunction(memory.value, true);
   });
-  for (const key of Object.keys(settingsMemory()))
+  for (const key of Object.keys(settingsMemory())) {
     Reflect.deleteProperty(settingsMemory(), key);
+  }
 }

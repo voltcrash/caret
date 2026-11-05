@@ -11,8 +11,9 @@ import { OperationError } from "../../data/operation-result";
 const synchronization = createAccountOwned(() => {
   const state = { pending: {} as Partial<Config>, queue: Promise.resolve() };
   const retry = (): void => {
-    if (Object.keys(state.pending).length > 0)
+    if (Object.keys(state.pending).length > 0) {
       void saveConfig({}).catch(() => undefined);
+    }
   };
   window.addEventListener("online", retry);
   onCleanup(() => window.removeEventListener("online", retry));

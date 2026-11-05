@@ -12,8 +12,9 @@ export async function log(
   eventName: string,
   params?: Record<string, string>,
 ): Promise<void> {
-  if (state().enabled)
+  if (state().enabled) {
     (window as AnalyticsWindow).gtag?.("event", eventName, params);
+  }
 }
 export function activateAnalytics(): void {
   state().enabled = true;

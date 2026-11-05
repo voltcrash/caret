@@ -73,7 +73,10 @@ export async function cancelRegistration(uid: string): Promise<void> {
       uid,
     ),
   ]);
-  if ((committed === undefined || committed[1]?.rowCount === 0) && (await exists(uid))) {
+  if (
+    (committed === undefined || committed[1]?.rowCount === 0) &&
+    (await exists(uid))
+  ) {
     throw new MonkeyError(409, "Account registration is already complete");
   }
 }

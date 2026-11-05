@@ -125,8 +125,9 @@ export function createOutboxStorage(actor: string | null): OutboxStorage {
           if (
             known.has(entry.result.hash) &&
             !storedHashes.has(entry.result.hash)
-          )
+          ) {
             continue;
+          }
           merged.set(entry.result.hash, entry);
         }
         await transaction.store.put([...merged.values()], actor);

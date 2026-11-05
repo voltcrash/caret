@@ -1,5 +1,6 @@
 import { For, JSXElement, Show, createEffect, on } from "solid-js";
 
+import { getCustomThemes } from "../../collections/custom-themes";
 import {
   afterHideCommandline,
   canCommandlineGoBack,
@@ -20,14 +21,13 @@ import {
   commandlineState,
   type CommandlineSuggestion,
 } from "../../states/commandline";
+import { getCommandlineState } from "../../states/commandline";
+import { isAuthenticated } from "../../states/core";
+import { isModalOpen } from "../../states/modals";
 import { cn } from "../../utils/cn";
 import { isCoarsePointer } from "../../utils/pointer";
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Fa, type FaProps } from "../common/Fa";
-import { getCommandlineState } from "../../states/commandline";
-import { isModalOpen } from "../../states/modals";
-import { isAuthenticated } from "../../states/core";
-import { getCustomThemes } from "../../collections/custom-themes";
 
 function CommandIcon(props: { command: CommandlineSuggestion }): JSXElement {
   const showConfigIcon = (): boolean =>
@@ -178,18 +178,33 @@ function Suggestion(props: {
 
 export function Commandline(): JSXElement {
   useThemeCommandEvents();
-  createEffect(on(getCommandlineState, () => {
-    if (isModalOpen("Commandline")) void prepareCommandline();
-  }, { defer: true }));
-  createEffect(on(
-    () => isModalOpen("Commandline") && isAuthenticated() ? getCustomThemes() : undefined,
-    (themes) => {
-      if (themes !== undefined && commandlineState.open && commandlineState.mode === "search") {
-        void refreshCommandlineSuggestions();
-      }
-    },
-    { defer: true },
-  ));
+  createEffect(
+    on(
+      getCommandlineState,
+      () => {
+        if (isModalOpen("Commandline")) void prepareCommandline();
+      },
+      { defer: true },
+    ),
+  );
+  createEffect(
+    on(
+      () =>
+        isModalOpen("Commandline") && isAuthenticated()
+          ? getCustomThemes()
+          : undefined,
+      (themes) => {
+        if (
+          themes !== undefined &&
+          commandlineState.open &&
+          commandlineState.mode === "search"
+        ) {
+          void refreshCommandlineSuggestions();
+        }
+      },
+      { defer: true },
+    ),
+  );
   let inputEl: HTMLInputElement | undefined;
   let suggestionsEl: HTMLDivElement | undefined;
 

@@ -192,8 +192,9 @@ async function activateWhenTabsAreSafe(): Promise<void> {
 }
 
 worker.addEventListener("message", (event) => {
-  if (event.data === workerBuildRequest)
+  if (event.data === workerBuildRequest) {
     event.ports[0]?.postMessage(config.buildId);
+  }
   if (event.data === skipWaitingMessage) {
     event.waitUntil(activateWhenTabsAreSafe());
   }

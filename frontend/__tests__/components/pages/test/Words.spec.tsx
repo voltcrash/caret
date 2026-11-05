@@ -63,7 +63,8 @@ vi.mock("../../../../src/ts/states/connection", () => ({
   showOfflineBanner: vi.fn(),
 }));
 vi.mock("../../../../src/ts/states/header", () => ({
-  trackAccountWork: async <T,>(work: () => Promise<T>): Promise<T> => await work(),
+  trackAccountWork: async <T,>(work: () => Promise<T>): Promise<T> =>
+    await work(),
   skipBreakdownEvent: { dispatch: vi.fn() },
 }));
 vi.mock("../../../../src/ts/states/slow-timer", () => ({

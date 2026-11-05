@@ -13,8 +13,9 @@ function exclusive<A extends unknown[], T>(
 ): (...args: A) => Promise<T> {
   return async (...args) => {
     const state = authOperation();
-    if (state.busy)
+    if (state.busy) {
       throw new Error("Another authentication request is in progress");
+    }
     state.busy = true;
     try {
       return await action(...args);

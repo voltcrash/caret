@@ -196,8 +196,9 @@ async function generateCanvas(): Promise<HTMLCanvasElement | null> {
   const releaseLoader = beginLoaderBar();
   const pending = renderCanvas()
     .catch((error: unknown) => {
-      if (route.isCurrent())
+      if (route.isCurrent()) {
         showErrorNotification("Error creating screenshot", { error });
+      }
       return null;
     })
     .finally(() => {
