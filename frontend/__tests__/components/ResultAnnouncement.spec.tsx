@@ -1,11 +1,5 @@
 import { cleanup, render, screen } from "@solidjs/testing-library";
-import {
-  afterEach,
-  beforeEach,
-  describe,
-  expect,
-  it,
-} from "vite-plus/test";
+import { afterEach, beforeEach, describe, expect, it } from "vite-plus/test";
 
 import { ResultAnnouncement } from "../../src/features/typing/components/result/ResultAnnouncement";
 import { setResultState, type ResultStats } from "../../src/ts/states/result";

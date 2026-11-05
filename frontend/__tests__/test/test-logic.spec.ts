@@ -408,11 +408,18 @@ describe("test lifecycle state", () => {
       expect(getTestInitError()?.message).toContain("timed out");
       await restart();
       expect(mocks.uiRestart).toHaveBeenCalledOnce();
-      stale.resolve({ words: ["stale"], sectionIndexes: [0], hasTab: false, hasNewline: false });
+      stale.resolve({
+        words: ["stale"],
+        sectionIndexes: [0],
+        hasTab: false,
+        hasNewline: false,
+      });
       await Promise.resolve();
       expect(mocks.uiRestart).toHaveBeenCalledOnce();
       expect(getTestInitError()).toBeNull();
-    } finally { vi.useRealTimers(); }
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("releases a failed restart and permits retry", async () => {
