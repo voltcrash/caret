@@ -1,6 +1,6 @@
 import { captureAccount, createAccountOwned } from "../../../app/account-scope";
 import { appObject } from "../../../app/state";
-import { captureTypingRoute } from "../scope";
+import { captureTypingResult } from "../scope";
 import { operation } from "../../../data/operations";
 import {
   pendingResultSaves,
@@ -136,7 +136,7 @@ async function saveResultInternal(
   const account = captureAccount();
   const presentation =
     queuedHash === undefined
-      ? captureTypingRoute()
+      ? captureTypingResult()
       : { isCurrent: () => false };
   const queue = resultOutbox();
   if (!getMutableConfig().resultSaving) {

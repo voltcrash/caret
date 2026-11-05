@@ -1,4 +1,4 @@
-import { captureTypingRoute } from "../../scope";
+import { captureTypingPresentation } from "../../scope";
 import { result } from "./context";
 import { getMutableConfig } from "../../../../ts/config/store";
 import * as DB from "../../../../ts/db";
@@ -25,7 +25,7 @@ export async function updateCrown(dontSave: boolean): Promise<void> {
     return;
   }
 
-  const lease = captureTypingRoute();
+  const lease = captureTypingPresentation();
   const canGetPb = await resultCanGetPb();
   if (!lease.isCurrent()) return;
 

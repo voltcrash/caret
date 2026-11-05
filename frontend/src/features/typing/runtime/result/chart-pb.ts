@@ -1,4 +1,4 @@
-import { captureTypingRoute } from "../../scope";
+import { captureTypingPresentation } from "../../scope";
 import { result, resultAnnotation } from "./context";
 import { getMutableConfig } from "../../../../ts/config/store";
 import * as DB from "../../../../ts/db";
@@ -8,7 +8,7 @@ import { getFunbox } from "@caret/funbox";
 import { getTheme } from "../../../../ts/states/theme";
 
 export async function updateChartPBLine(): Promise<void> {
-  const lease = captureTypingRoute();
+  const lease = captureTypingPresentation();
   const { Chart } = await import("chart.js");
   if (!lease.isCurrent()) return;
   const themecolors = getTheme();
