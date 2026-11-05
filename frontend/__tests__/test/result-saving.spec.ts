@@ -256,3 +256,22 @@ it("does not celebrate a PB after leaving the typing route", async () => {
     unbind();
   }
 });
+
+it("keeps late failures historical after a newer completion", async () => {
+  const old = Promise.withResolvers<ReturnType<typeof fail>>();
+  mockOperation("results.add", async (input) =>
+    (input["body"] as { result: CompletedEvent }).result.timestamp === 1
+      ? old.promise : ok({ insertedId: "new", isPb: false }),
+  );
+  const saving = saveResult({ ...result("time", "15"), timestamp: 1 }, false);
+  await vi.waitFor(() => expect(operationCalls).toHaveBeenCalledOnce());
+  await saveResult({ ...result("time", "15"), timestamp: 2 }, false);
+  old.resolve(fail(503, "Unavailable"));
+  await saving;
+  mockOperation("results.add", (input) => {
+    expect(input).toMatchObject({ body: { result: { timestamp: 1, offline: true } } });
+    return ok({ insertedId: "old", isPb: false });
+  });
+  await retrySavingResult();
+  expect(resultOutbox().entries()).toEqual([]);
+});

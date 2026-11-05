@@ -36,6 +36,7 @@ const getRetrySavingState = createAccountOwned<RetrySaving>(() => ({
   eventLog: null,
   canRetry: false,
   draining: false,
+  latestAttempt: 0,
 }));
 const retrySavingState = appObject(getRetrySavingState);
 type RetrySaving = {
@@ -43,6 +44,7 @@ type RetrySaving = {
   eventLog: WebLog | null;
   canRetry: boolean;
   draining: boolean;
+  latestAttempt: number;
 };
 
 function isPermanentFailure(status: number): boolean {
@@ -134,6 +136,9 @@ async function saveResultInternal(
   queuedHash?: string,
 ): Promise<null | OperationResult<OperationResponse<"results.add">>> {
   const account = captureAccount();
+  const state = getRetrySavingState();
+  const attempt = !isRetrying ? ++state.latestAttempt : state.latestAttempt;
+  const ownsRetry = (): boolean => queuedHash === undefined && attempt === state.latestAttempt;
   const presentation =
     queuedHash === undefined
       ? captureTypingResult()
@@ -175,9 +180,11 @@ async function saveResultInternal(
     if (!account.isCurrent()) return null;
     // A newer completion owns the live retry slot; earlier work remains in
     // the durable queue and follows historical/offline submission rules.
-    retrySavingState.completedEvent = null;
-    retrySavingState.eventLog = null;
-    retrySavingState.canRetry = false;
+    if (ownsRetry()) {
+      state.completedEvent = null;
+      state.eventLog = null;
+      state.canRetry = false;
+    }
   }
   const encodedLog =
     eventLog === undefined ? undefined : await encodeEventLog(eventLog, result);
@@ -205,19 +212,20 @@ async function saveResultInternal(
   if (!response.ok) {
     if (isPermanentFailure(response.status)) {
       await queue.remove(pendingHash).catch(() => undefined);
-      if (retrySavingState.completedEvent?.hash === pendingHash) {
-        retrySavingState.completedEvent = null;
-        retrySavingState.eventLog = null;
-        retrySavingState.canRetry = false;
+    if (!account.isCurrent()) return response;
+      if (state.completedEvent?.hash === pendingHash) {
+        state.completedEvent = null;
+        state.eventLog = null;
+        state.canRetry = false;
       }
     }
     //only allow retry if status is not in this list
-    if (!isPermanentFailure(response.status)) {
-      retrySavingState.canRetry = true;
+    if (!isPermanentFailure(response.status) && ownsRetry()) {
+      state.canRetry = true;
       if (presentation.isCurrent()) Result.updateRetrySaving(true);
       if (!isRetrying) {
-        retrySavingState.completedEvent = result;
-        retrySavingState.eventLog = eventLog ?? null;
+        state.completedEvent = result;
+        state.eventLog = eventLog ?? null;
       }
     }
     console.log("Error saving result", result);
@@ -235,10 +243,13 @@ async function saveResultInternal(
 
   const data = response.data;
   await queue.remove(pendingHash).catch(() => undefined);
-  if (retrySavingState.completedEvent?.hash === pendingHash) {
-    retrySavingState.completedEvent = null;
-    retrySavingState.eventLog = null;
-    retrySavingState.canRetry = false;
+    if (!account.isCurrent()) return response;
+  if (state.completedEvent?.hash === pendingHash) {
+    if (ownsRetry()) {
+      state.completedEvent = null;
+      state.eventLog = null;
+      state.canRetry = false;
+    }
   }
   if (presentation.isCurrent()) Result.updateSavedResultId(data.insertedId);
   if (data.alreadySaved) {
