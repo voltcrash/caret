@@ -23,6 +23,8 @@ export function navigationHref(url: string): string {
  */
 export function RouterNavigation(): null {
   const router = useRouter();
+  let navigationId = 0;
+  onCleanup(() => { navigationId++; });
   useBlocker({
     shouldBlockFn: async () => {
       await transitionSettled();
@@ -34,7 +36,9 @@ export function RouterNavigation(): null {
   onCleanup(
     bindNavigation({
       navigate: async (url, options) => {
+        const request = ++navigationId;
         if (options.force !== true) await transitionSettled();
+        if (request !== navigationId) return;
         if (!canNavigate(options)) return;
         if (url === undefined) {
           await router.invalidate();

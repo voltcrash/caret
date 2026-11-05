@@ -83,7 +83,10 @@ function createAudio(): {
       const { Howler } = await getHowlerModule();
       if (lifetime.signal.aborted) return;
       Howler.volume(getMutableConfig().soundVolume);
-    })();
+    })().catch((error: unknown) => {
+      initPromise = null;
+      throw error;
+    });
 
     await initPromise;
     if (lifetime.signal.aborted) return;

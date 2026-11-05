@@ -149,7 +149,7 @@ export async function setUser(uid: string, name: string): Promise<void> {
   if (!state.activated) return;
   const lease = captureAccount();
   const Sentry = await getSentry();
-  if (!lease.isCurrent()) return;
+  if (!lease.isCurrent() || !state.activated) return;
   Sentry.setUser({
     id: uid,
     username: name,
@@ -161,7 +161,7 @@ export async function clearUser(): Promise<void> {
   if (!state.activated) return;
   const lease = captureAccount();
   const Sentry = await getSentry();
-  if (!lease.isCurrent()) return;
+  if (!lease.isCurrent() || !state.activated) return;
   Sentry.setUser(null);
 }
 
@@ -169,6 +169,7 @@ export async function captureException(error: Error): Promise<void> {
   const state = sentryState();
   if (!state.activated) return;
   const Sentry = await getSentry();
+  if (!state.activated) return;
   Sentry.captureException(error);
 }
 

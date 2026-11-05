@@ -26,6 +26,9 @@ class FileStorage {
           db.createObjectStore("files");
         }
       },
+    }).catch((error: unknown) => {
+      this.dbPromise = undefined;
+      throw error;
     });
     const db = await this.dbPromise;
     if (this.closed) {
