@@ -143,6 +143,17 @@ export async function prepareCommandline(): Promise<void> {
   }, 1);
 }
 
+/** Account-backed lists can settle after the palette opens. Keep its current query. */
+export async function refreshCommandlineSuggestions(): Promise<void> {
+  const lease = captureAccount();
+  resetSingleSubgroup();
+  await filterSubgroup();
+  if (!lease.isCurrent()) return;
+  await showCommands();
+  if (!lease.isCurrent()) return;
+  await updateActiveCommand();
+}
+
 const getFilterInput = createAccountOwned(() => {
   const commandlineState = getCommandlineState();
   const filter = debounce(50, async (value: string) => {

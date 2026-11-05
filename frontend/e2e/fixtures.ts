@@ -234,6 +234,8 @@ export async function completeWords(page: Page): Promise<void> {
 }
 
 export async function openCommandline(page: Page): Promise<void> {
+  // Typing mounts before the lazy chrome that owns global shortcuts.
+  await expect(page.locator("#solidmodals")).toBeAttached();
   await page.keyboard.press("ControlOrMeta+k");
   await expect(page.locator("#commandLine")).toBeVisible();
   await expect(page.locator("#commandLine input")).toBeFocused();
