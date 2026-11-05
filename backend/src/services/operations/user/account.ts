@@ -1,5 +1,6 @@
 import { verifyCaptcha } from "./captcha";
 import { atomicUser } from "../../../db/mutation";
+import { isUniqueViolation } from "../../../db/client";
 import * as UserDAL from "../../../dal/user";
 import MonkeyError from "../../../utils/error";
 import { MonkeyResponse } from "../../../utils/monkey-response";
@@ -121,6 +122,10 @@ export async function updateName(
       `changed name from ${user.name} to ${name}`,
       uid,
     );
+  }).catch((error: unknown) => {
+    if (isUniqueViolation(error))
+      throw new MonkeyError(409, "Username already taken", name);
+    throw error;
   });
   return new MonkeyResponse("User's name updated", null);
 }
