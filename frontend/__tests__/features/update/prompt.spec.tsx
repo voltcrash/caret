@@ -1,3 +1,4 @@
+import { resetTypingLifecycle } from "../../__harness__/typing-lifecycle";
 vi.mock("../../../src/ts/utils/env", () => ({ isDevEnvironment: () => false }));
 import { cleanup, render, screen } from "@solidjs/testing-library";
 import {
@@ -14,7 +15,6 @@ import { trackResultSave } from "../../../src/app/update-safety";
 import { UpdateRuntime } from "../../../src/features/update/runtime.client";
 import { getBanners, removeBanner } from "../../../src/ts/states/banners";
 import { getNotifications } from "../../../src/ts/states/notifications";
-import { setTestActive } from "../../../src/ts/states/test";
 
 /** The banner overlay is not mounted here; render the banner's content. */
 function reloadButton(): HTMLButtonElement {
@@ -27,7 +27,7 @@ let cleanupBanner: (() => void) | undefined;
 
 describe("update prompt", () => {
   beforeEach(() => {
-    setTestActive(false);
+    resetTypingLifecycle();
   });
   afterEach(() => {
     cleanup();
@@ -38,20 +38,20 @@ describe("update prompt", () => {
   it("prompts after a stale function, refusing to reload mid-test or mid-save", async () => {
     const reload = vi.fn();
     render(() => <UpdateRuntime reload={reload} />);
-    setTestActive(true);
+    resetTypingLifecycle("running");
     reportStaleClient("function");
     expect(getBanners()).toHaveLength(0);
-    setTestActive(false);
+    resetTypingLifecycle();
     expect(getBanners()).toHaveLength(1);
     expect(getBanners()[0]?.level).toBe("error");
     expect(getBanners()[0]?.important).toBe(true);
 
-    setTestActive(true);
+    resetTypingLifecycle("running");
     reloadButton().click();
     expect(reload).not.toHaveBeenCalled();
     expect(getNotifications().at(-1)?.message).toContain("Finish the test");
 
-    setTestActive(false);
+    resetTypingLifecycle();
     let finish!: () => void;
     const save = trackResultSave(
       new Promise<void>((resolve) => {

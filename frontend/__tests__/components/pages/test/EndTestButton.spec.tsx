@@ -21,29 +21,30 @@ vi.mock("../../../../src/ts/config/store", () => ({
 vi.mock("../../../../src/ts/states/core", () => ({
   getCustomTextIndicator: () => undefined,
 }));
-vi.mock("../../../../src/ts/states/test", async () => {
-  const { createSignal } = await import("solid-js");
-  const [isTestActive, setTestActive] = createSignal(false);
-  return { isTestActive, setTestActive, setBailedOut: vi.fn() };
-});
+vi.mock("../../../../src/ts/states/test", async () => ({
+  ...(await import("../../../../src/features/typing/lifecycle-controller"))
+    .lifecycleSelectors,
+  setBailedOut: vi.fn(),
+}));
+
 vi.mock("../../../../src/features/typing/runtime/custom-text", () => ({
   getData: () => ({ limit: { mode: "word", value: 0 } }),
 }));
 
 import { EndTestButton } from "../../../../src/features/typing/components/EndTestButton";
-import { setTestActive } from "../../../../src/ts/states/test";
+import { resetTypingLifecycle } from "../../../__harness__/typing-lifecycle";
 
 describe("EndTestButton", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.clearAllMocks();
-    setTestActive(true);
+    resetTypingLifecycle("running");
   });
 
   afterEach(() => {
     cleanup();
     vi.useRealTimers();
-    setTestActive(false);
+    resetTypingLifecycle();
   });
 
   it("requires a second tap before ending an infinite test", () => {
@@ -67,8 +68,8 @@ describe("EndTestButton", () => {
   it("requires a fresh confirmation after restarting the test", () => {
     render(() => <EndTestButton />);
     fireEvent.click(screen.getByRole("button", { name: "end test" }));
-    setTestActive(false);
-    setTestActive(true);
+    resetTypingLifecycle();
+    resetTypingLifecycle("running");
 
     const button = screen.getByRole("button", { name: "end test" });
     fireEvent.click(button);

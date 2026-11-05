@@ -1,3 +1,4 @@
+import { resetTypingLifecycle } from "../__harness__/typing-lifecycle";
 import { beforeEach, describe, expect, it } from "vite-plus/test";
 import {
   createHintsNodes,
@@ -11,7 +12,6 @@ import {
   isLanguageRightToLeft,
   setIsLanguageRightToLeft,
   setIsDirectionReversed,
-  setResultVisible,
   resetActiveWordIndex,
 } from "../../src/ts/states/test";
 
@@ -47,7 +47,7 @@ function measureHints(word: HTMLElement): void {
 beforeEach(() => {
   setIsLanguageRightToLeft(false);
   setIsDirectionReversed(false);
-  setResultVisible(false);
+  resetTypingLifecycle();
   resetActiveWordIndex();
   getMutableConfig().indicateTypos = "below";
   TestWords.words.reset();
@@ -163,7 +163,7 @@ describe("word hints", () => {
   it("leaves hints alone when the result is visible", async () => {
     const word = attachHints(createLetters(), "abc");
     const first = word.querySelector("hint");
-    setResultVisible(true);
+    resetTypingLifecycle("result");
     await updateHintsPositionDebounced();
     expect(word.querySelector("hint")).toBe(first);
   });
