@@ -8,6 +8,7 @@ import {
   isModalChained,
   isModalOpen,
   hideModal as storeHideModal,
+  completeModalHide,
 } from "../../states/modals";
 import { registerOverlayVisibility } from "../../states/overlay-visibility";
 import { cn } from "../../utils/cn";
@@ -112,6 +113,8 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
   const [dialogRef, dialogEl] = useRef<HTMLDialogElement>();
   const [modalRef, modalEl] = useRef<HTMLDivElement>();
   let returnFocus: HTMLElement | undefined;
+  let motionId = 0;
+  let disposed = false;
   onMount(() => {
     const unregister = registerOverlayVisibility(
       () => (dialogEl()?.getClientRects().length ?? 0) > 0,
@@ -185,6 +188,8 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
         void showModal(isChained);
       } else if (dialogEl()?.open) {
         void hideModal(isChained);
+      } else if (!visible) {
+        completeModalHide(props.id);
       }
     },
     {},
@@ -198,7 +203,18 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
       returnFocus = document.activeElement;
     }
 
-    await props.beforeShow?.(isChained);
+    const token = ++motionId;
+    try {
+      await props.beforeShow?.(isChained);
+    } catch (error) {
+      console.error("Modal preparation failed", error);
+      if (!disposed && token === motionId) {
+        storeHideModal(props.id);
+        completeModalHide(props.id);
+      }
+      return;
+    }
+    if (disposed || token !== motionId) return;
 
     // After await, the element may have been removed from the DOM
     if (!dialogEl()?.isConnected || !visibility()) return;
@@ -307,7 +323,13 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
     // Guard: only hide if visible and not already animating
     if (dialogEl() === undefined || modalEl() === undefined) return;
 
-    await props.beforeHide?.();
+    const token = ++motionId;
+    try {
+      await props.beforeHide?.();
+    } catch (error) {
+      console.error("Modal dismissal failed", error);
+    }
+    if (disposed || token !== motionId) return;
 
     const sheet = usesSheetAnimation();
     // a dragged sheet slides out from where the finger let go
@@ -362,29 +384,33 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
           opacity: [1, 0],
           duration: wrapperDuration,
           onComplete: async () => {
-            await closeDialog(isChained);
+            await closeDialog(isChained, token);
           },
         });
       } else {
-        await closeDialog(isChained);
+        await closeDialog(isChained, token);
       }
     } else if (animMode === "modalOnly") {
       animateElement(modalEl(), {
         ...motion.exit,
         duration: modalAnimDuration,
         onComplete: async () => {
-          await closeDialog(isChained);
+          await closeDialog(isChained, token);
         },
       });
     }
   };
 
   const handleAfterHide = async (): Promise<void> => {
-    await props.afterHide?.();
-    storeHideModal(props.id);
+    try {
+      await props.afterHide?.();
+    } finally {
+      if (!disposed) completeModalHide(props.id);
+    }
   };
 
-  const closeDialog = async (isChained: boolean): Promise<void> => {
+  const closeDialog = async (isChained: boolean, token: number): Promise<void> => {
+    if (disposed || token !== motionId) return;
     dialogEl()?.close();
     await handleAfterHide();
     if (
@@ -483,6 +509,9 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
   };
 
   onCleanup(() => {
+    disposed = true;
+    motionId++;
+    completeModalHide(props.id);
     if (dialogEl()?.open) {
       dialogEl()?.close();
     }

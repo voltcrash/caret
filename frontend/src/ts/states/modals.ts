@@ -43,6 +43,7 @@ type ModalState = {
   modalStack: ModalId[];
   pendingModal: ModalId | null;
   pendingIsChained: boolean;
+  closingModal: ModalId | null;
 };
 
 const [modalState, setModalState] = createAppStore<ModalState>({
@@ -50,9 +51,14 @@ const [modalState, setModalState] = createAppStore<ModalState>({
   modalStack: [],
   pendingModal: null,
   pendingIsChained: false,
+  closingModal: null,
 });
 
 export function showModal(id: ModalId): void {
+  if (modalState.closingModal !== null) {
+    setModalState({ pendingModal: id, pendingIsChained: true });
+    return;
+  }
   const currentlyOpenModal = getCurrentlyOpenModal();
 
   if (currentlyOpenModal !== null && currentlyOpenModal !== id) {
@@ -61,6 +67,7 @@ export function showModal(id: ModalId): void {
       modalStack: [...state.modalStack, currentlyOpenModal],
       pendingModal: id,
       pendingIsChained: true,
+      closingModal: currentlyOpenModal,
     }));
 
     // Hide current modal with chained flag - the new modal will show after hide completes
@@ -74,24 +81,8 @@ export function showModal(id: ModalId): void {
   }
 }
 export function hideModal(id: ModalId): void {
-  // Check if there's a pending modal to show (chained show/hide)
-  if (modalState.pendingModal !== null) {
-    const nextModal = modalState.pendingModal;
-    const isChained = modalState.pendingIsChained;
-
-    setModalState({
-      pendingModal: null,
-      pendingIsChained: false,
-    });
-
-    // Don't update the current modal's state - it's already false
-    setModalState("openModals", nextModal, {
-      visible: true,
-      chained: isChained,
-    });
-    return;
-  }
-
+  if (modalState.closingModal !== null || !isModalOpen(id)) return;
+  setModalState("closingModal", id);
   // Check if this modal was part of a chain (user dismissed, go back)
   const stackCopy = [...modalState.modalStack];
   const previousModal = stackCopy.pop();
@@ -112,6 +103,15 @@ export function hideModal(id: ModalId): void {
   }
 }
 
+/** Animation acknowledgement cannot be mistaken for another close request. */
+export function completeModalHide(id: ModalId): void {
+  if (modalState.closingModal !== id) return;
+  const next = modalState.pendingModal;
+  const chained = modalState.pendingIsChained;
+  setModalState({ closingModal: null, pendingModal: null, pendingIsChained: false });
+  if (next !== null) setModalState("openModals", next, { visible: true, chained });
+}
+
 export function hideModalAndClearChain(id: ModalId): void {
   // Clear the entire chain
   setModalState({
@@ -120,8 +120,7 @@ export function hideModalAndClearChain(id: ModalId): void {
     pendingIsChained: false,
   });
 
-  // Just hide the modal normally
-  setModalState("openModals", id, { visible: false, chained: false });
+  hideModal(id);
 }
 
 export function getModalVisibility(id: ModalId): ModalVisibility | null {
