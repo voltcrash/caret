@@ -17,6 +17,7 @@ vi.mock("../../../src/ts/states/notifications", () => ({
   showNoticeNotification: vi.fn(),
 }));
 vi.mock("../../../src/ts/states/loader-bar", () => ({
+  beginLoaderBar: () => () => undefined,
   hideLoaderBar: vi.fn(),
   showLoaderBar: vi.fn(),
 }));

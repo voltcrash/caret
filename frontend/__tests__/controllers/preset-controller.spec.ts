@@ -68,7 +68,7 @@ describe("PresetController", () => {
       await PresetController.apply(preset._id);
 
       //THEN
-      expect(configApplyMock).toHaveBeenCalledWith(preset.config);
+      expect(configApplyMock).toHaveBeenCalledWith(preset.config, expect.objectContaining({ assertCurrent: expect.any(Function) }));
       expect(tagsClearMock).toHaveBeenCalled();
       expect(testRestartMock).toHaveBeenCalled();
       expect(notificationAddMock).toHaveBeenCalledWith("Preset applied", {
@@ -128,7 +128,7 @@ describe("PresetController", () => {
         ...oldConfig,
         numbers: true,
         punctuation: true,
-      });
+      }, expect.objectContaining({ assertCurrent: expect.any(Function) }));
       expect(testRestartMock).toHaveBeenCalled();
       expect(notificationAddMock).toHaveBeenCalledWith("Preset applied", {
         durationMs: 2000,
