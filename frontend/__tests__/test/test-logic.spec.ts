@@ -395,6 +395,26 @@ describe("test lifecycle state", () => {
     expect(mocks.uiRestart).not.toHaveBeenCalled();
   });
 
+  it("times out preparation, retries, and ignores the old generation reply", async () => {
+    vi.useFakeTimers();
+    try {
+      const stale = Promise.withResolvers<ReturnType<typeof mocks.generate>>();
+      mocks.generate.mockReturnValueOnce(stale.promise);
+      const first = restart();
+      await vi.waitFor(() => expect(mocks.generate).toHaveBeenCalledOnce());
+      await vi.advanceTimersByTimeAsync(30_000);
+      await first;
+      expect(isTestRestarting()).toBe(false);
+      expect(getTestInitError()?.message).toContain("timed out");
+      await restart();
+      expect(mocks.uiRestart).toHaveBeenCalledOnce();
+      stale.resolve({ words: ["stale"], sectionIndexes: [0], hasTab: false, hasNewline: false });
+      await Promise.resolve();
+      expect(mocks.uiRestart).toHaveBeenCalledOnce();
+      expect(getTestInitError()).toBeNull();
+    } finally { vi.useRealTimers(); }
+  });
+
   it("releases a failed restart and permits retry", async () => {
     vi.mocked(TestUI.fadeOutForRestart).mockRejectedValueOnce(
       new Error("fade failed"),
