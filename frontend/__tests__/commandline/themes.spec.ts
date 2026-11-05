@@ -174,7 +174,7 @@ describe("theme picker selection", () => {
       expect(getThemeIndicator().text).toBe(theme);
       expect(getMutableConfig().theme).toBe(theme);
       expect(getMutableConfig().randomTheme).toBe("fav");
-      expect(ThemeController.randomTheme).toBeNull();
+      expect(ThemeController.getRandomTheme()).toBeNull();
     },
   );
 

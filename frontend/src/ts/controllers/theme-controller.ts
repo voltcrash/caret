@@ -12,7 +12,9 @@ import { configEvent } from "../events/config";
 import * as CustomThemes from "../states/custom-themes";
 import { showNoticeNotification } from "../states/notifications";
 import { debounce } from "@caret/util/timing";
-import { untrack } from "solid-js";
+import { onCleanup, untrack } from "solid-js";
+import { createAppOwned } from "../../app/application";
+import { appObject } from "../../app/state";
 import { CustomThemeColors, ThemeName } from "@caret/schemas/configs";
 import {
   convertCustomColorsToTheme,
@@ -28,9 +30,28 @@ export {
   convertThemeToCustomColors,
 } from "../constants/themes";
 
-export let randomTheme: ThemeIdentifier | null = null;
-let isPreviewingTheme = false;
-let randomThemeIndex = 0;
+
+
+
+
+const themeState = createAppOwned(() => {
+  const value = {
+    randomTheme: null as ThemeIdentifier | null, isPreviewingTheme: false,
+    randomThemeIndex: 0, previewState: null as PreviewState,
+    themesList: [] as string[], ignoreConfigEvent: false,
+    backgroundRevision: 0, disposed: false,
+  };
+const preview = debounce(250, () => {
+  if (previewState) {
+    isPreviewingTheme = true;
+    void apply(previewState.theme, previewState.colors, true);
+  }
+});
+  onCleanup(() => { value.disposed = true; preview.cancel(); });
+  return Object.assign(value, { preview });
+});
+const state = appObject(themeState);
+export const getRandomTheme = (): ThemeIdentifier | null => state.randomTheme;
 
 async function apply(
   themeName: ThemeIdentifier,
@@ -58,7 +79,7 @@ async function apply(
 function updateThemeIndicator(nameOverride?: string): void {
   //text
   let str: string = getMutableConfig().theme;
-  if (randomTheme !== null) str = randomTheme;
+  if (state.randomTheme !== null) str = state.randomTheme;
 
   if (getMutableConfig().customTheme && nameOverride === undefined) {
     // Match current custom theme by colors since Config does not store custom theme IDs
@@ -80,7 +101,7 @@ function updateThemeIndicator(nameOverride?: string): void {
   str = str.replace(/_/g, " ");
 
   //fav icon
-  const currentTheme = nameOverride ?? randomTheme ?? getMutableConfig().theme;
+  const currentTheme = nameOverride ?? state.randomTheme ?? getMutableConfig().theme;
   const isFavorite =
     !getMutableConfig().customTheme &&
     currentTheme !== null &&
@@ -94,22 +115,17 @@ type PreviewState = {
   colors?: CustomThemeColors;
 } | null;
 
-let previewState: PreviewState = null;
+
 
 export function preview(
   themeIdentifier: ThemeIdentifier,
   customColorsOverride?: CustomThemeColors,
 ): void {
-  previewState = { theme: themeIdentifier, colors: customColorsOverride };
-  debouncedPreview();
+  state.previewState = { theme: themeIdentifier, colors: customColorsOverride };
+  themeState().preview();
 }
 
-const debouncedPreview = debounce(250, () => {
-  if (previewState) {
-    isPreviewingTheme = true;
-    void apply(previewState.theme, previewState.colors, true);
-  }
-});
+
 
 async function set(
   themeIdentifier: ThemeIdentifier,
@@ -127,13 +143,13 @@ async function set(
 }
 
 export async function clearPreview(applyTheme = true): Promise<void> {
-  previewState = null;
+  state.previewState = null;
 
-  if (isPreviewingTheme) {
-    isPreviewingTheme = false;
+  if (state.isPreviewingTheme) {
+    state.isPreviewingTheme = false;
     if (applyTheme) {
-      if (randomTheme !== null) {
-        await apply(randomTheme);
+      if (state.randomTheme !== null) {
+        await apply(state.randomTheme);
       } else if (getMutableConfig().customTheme) {
         await apply("custom");
       } else {
@@ -143,7 +159,7 @@ export async function clearPreview(applyTheme = true): Promise<void> {
   }
 }
 
-let themesList: (ThemeName | string)[] = [];
+
 
 async function changeThemeList(): Promise<void> {
   const themes = ThemesList;
@@ -151,29 +167,29 @@ async function changeThemeList(): Promise<void> {
     getMutableConfig().randomTheme === "fav" &&
     getMutableConfig().favThemes.length > 0
   ) {
-    themesList = getMutableConfig().favThemes;
+    state.themesList = getMutableConfig().favThemes;
   } else if (getMutableConfig().randomTheme === "light") {
-    themesList = themes.filter((t) => isColorLight(t.bg)).map((t) => t.name);
+    state.themesList = themes.filter((t) => isColorLight(t.bg)).map((t) => t.name);
   } else if (getMutableConfig().randomTheme === "dark") {
-    themesList = themes.filter((t) => isColorDark(t.bg)).map((t) => t.name);
+    state.themesList = themes.filter((t) => isColorDark(t.bg)).map((t) => t.name);
   } else if (
     getMutableConfig().randomTheme === "on" ||
     getMutableConfig().randomTheme === "auto"
   ) {
-    themesList = themes.map((t) => {
+    state.themesList = themes.map((t) => {
       return t.name;
     });
   } else if (getMutableConfig().randomTheme === "custom") {
-    themesList = untrack(CustomThemes.getCustomThemes).map((ct) => ct._id);
+    state.themesList = untrack(CustomThemes.getCustomThemes).map((ct) => ct._id);
   }
-  Arrays.shuffle(themesList);
-  randomThemeIndex = 0;
+  Arrays.shuffle(state.themesList);
+  state.randomThemeIndex = 0;
 }
 
 export async function randomizeTheme(): Promise<void> {
-  if (themesList.length === 0) {
+  if (state.themesList.length === 0) {
     await changeThemeList();
-    if (themesList.length === 0) return;
+    if (state.themesList.length === 0) return;
   }
 
   let filter = (_: string): boolean => true;
@@ -183,31 +199,31 @@ export async function randomizeTheme(): Promise<void> {
 
   let nextTheme = null;
   do {
-    randomTheme = themesList[randomThemeIndex] as ThemeIdentifier;
-    nextTheme = themes[themesList[randomThemeIndex] as ThemeName];
-    randomThemeIndex++;
-    if (randomThemeIndex >= themesList.length) {
-      Arrays.shuffle(themesList);
-      randomThemeIndex = 0;
+    state.randomTheme = state.themesList[state.randomThemeIndex] as ThemeIdentifier;
+    nextTheme = themes[state.themesList[state.randomThemeIndex] as ThemeName];
+    state.randomThemeIndex++;
+    if (state.randomThemeIndex >= state.themesList.length) {
+      Arrays.shuffle(state.themesList);
+      state.randomThemeIndex = 0;
     }
-  } while (!filter(nextTheme.bg));
+  } while (getMutableConfig().randomTheme !== "custom" && nextTheme !== undefined && !filter(nextTheme.bg));
 
   let colorsOverride: CustomThemeColors | undefined;
 
   if (getMutableConfig().randomTheme === "custom") {
-    const themeId = randomTheme;
+    const themeId = state.randomTheme;
     const theme = untrack(() => CustomThemes.getCustomTheme(themeId));
     colorsOverride = theme?.colors;
-    randomTheme = "custom";
+    state.randomTheme = "custom";
   }
 
   setConfig("customTheme", false, {
     nosave: true,
   });
-  await apply(randomTheme, colorsOverride);
+  await apply(state.randomTheme, colorsOverride);
 
-  if (randomThemeIndex >= themesList.length) {
-    const themeId = randomTheme;
+  if (state.randomThemeIndex >= state.themesList.length) {
+    const themeId = state.randomTheme;
     let name = themeId.replace(/_/g, " ");
     if (getMutableConfig().randomTheme === "custom") {
       name = (
@@ -219,8 +235,8 @@ export async function randomizeTheme(): Promise<void> {
 }
 
 async function clearRandom(): Promise<void> {
-  if (randomTheme === null) return;
-  randomTheme = null;
+  if (state.randomTheme === null) return;
+  state.randomTheme = null;
   if (getMutableConfig().customTheme) {
     await apply("custom");
   } else {
@@ -234,7 +250,10 @@ function applyCustomBackgroundSize(): void {
 }
 
 export async function applyCustomBackground(): Promise<void> {
+  const current = themeState();
+  const revision = ++current.backgroundRevision;
   const localBackgroundFile = await fileStorage.getFile("LocalBackgroundFile");
+  if (revision !== current.backgroundRevision || current.disposed) return;
   const url = localBackgroundFile ?? getMutableConfig().customBackground;
   setBackground({ url });
   if (url !== "") {
@@ -289,21 +308,21 @@ export function handleColorSchemeChange(event: MediaQueryListEvent): void {
   );
 }
 
-let ignoreConfigEvent = false;
+
 
 function prefersColorSchemeDark(): boolean {
   return window.matchMedia?.("(prefers-color-scheme: dark)").matches;
 }
 
-import.meta.hot?.dispose(() => debouncedPreview.cancel());
+
 
 export function useThemeEvents(): void {
   configEvent.useListener(async ({ key, newValue, nosave }) => {
     if (key === "fullConfigChange") {
-      ignoreConfigEvent = true;
+      state.ignoreConfigEvent = true;
     }
     if (key === "fullConfigChangeFinished") {
-      ignoreConfigEvent = false;
+      state.ignoreConfigEvent = false;
 
       await clearRandom();
       await clearPreview(false);
@@ -326,7 +345,7 @@ export function useThemeEvents(): void {
 
     // this is here to prevent calling set / preview multiple times during a full config loading
     // once the full config is loaded, we can apply everything once
-    if (ignoreConfigEvent) return;
+    if (state.ignoreConfigEvent) return;
 
     if (key === "randomTheme") {
       void changeThemeList();

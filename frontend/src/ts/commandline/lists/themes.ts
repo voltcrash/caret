@@ -24,7 +24,7 @@ const createThemeCommand = (theme: ThemeWithName): Command => {
     display: theme.name.replace(/_/g, " "),
     configValue: theme.name,
     active: (): boolean =>
-      (ThemeController.randomTheme ?? getMutableConfig().theme) === theme.name,
+      (ThemeController.getRandomTheme() ?? getMutableConfig().theme) === theme.name,
     // customStyle: `color:${theme.main};background:${theme.bg};`,
     customData: {
       main: theme.main,
