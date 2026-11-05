@@ -4,6 +4,7 @@ import {
   createMemo,
   createSignal,
   Setter,
+  onCleanup,
 } from "solid-js";
 
 import type { TestEventNoMs } from "@caret/web-shared/events/types";

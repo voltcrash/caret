@@ -45,7 +45,7 @@ function createAudio(): {
       lifetime.assertCurrent();
       return new Howl({ src });
     })().catch((error: unknown) => {
-      delete howlers[src];
+      Reflect.deleteProperty(howlers, src);
       throw error;
     });
 

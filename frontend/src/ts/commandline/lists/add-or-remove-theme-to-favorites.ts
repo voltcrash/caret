@@ -1,7 +1,7 @@
 import { ThemeName } from "@caret/schemas/configs";
 import { getMutableConfig } from "../../config/store";
 import { setConfig } from "../../config/setters";
-import { randomTheme } from "../../controllers/theme-controller";
+import { getRandomTheme } from "../../controllers/theme-controller";
 import { Command } from "../types";
 
 const commands: Command[] = [
@@ -13,13 +13,13 @@ const commands: Command[] = [
       return (
         !getMutableConfig().customTheme &&
         !getMutableConfig().favThemes.includes(
-          (randomTheme as ThemeName) ?? getMutableConfig().theme,
+          (getRandomTheme() as ThemeName) ?? getMutableConfig().theme,
         )
       );
     },
     exec: (): void => {
       const { theme, favThemes, customTheme } = getMutableConfig();
-      const themeToUpdate = randomTheme ?? theme;
+      const themeToUpdate = getRandomTheme() ?? theme;
       if (!customTheme && !favThemes.includes(themeToUpdate as ThemeName)) {
         setConfig("favThemes", [...favThemes, themeToUpdate as ThemeName]);
       }
@@ -34,13 +34,13 @@ const commands: Command[] = [
       return (
         !getMutableConfig().customTheme &&
         getMutableConfig().favThemes.includes(
-          (randomTheme as ThemeName) ?? getMutableConfig().theme,
+          (getRandomTheme() as ThemeName) ?? getMutableConfig().theme,
         )
       );
     },
     exec: (): void => {
       const { theme, favThemes, customTheme } = getMutableConfig();
-      const themeToUpdate = (randomTheme as ThemeName) ?? theme;
+      const themeToUpdate = (getRandomTheme() as ThemeName) ?? theme;
       if (!customTheme && favThemes.includes(themeToUpdate)) {
         setConfig("favThemes", [
           ...favThemes.filter((t) => t !== themeToUpdate),

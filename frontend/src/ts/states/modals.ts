@@ -1,4 +1,14 @@
 import { createAppStore } from "../../app/state";
+import { createAppOwned } from "../../app/application";
+const modalHosts = createAppOwned(() => new Set<ModalId>());
+export function registerModalHost(id: ModalId): () => void {
+  modalHosts().add(id);
+  return () => {
+    modalHosts().delete(id);
+    hideModalAndClearChain(id);
+    completeModalHide(id);
+  };
+}
 
 export type ModalId =
   | "Commandline"
@@ -75,6 +85,7 @@ export function showModal(id: ModalId): void {
       visible: false,
       chained: true,
     });
+    if (!modalHosts().has(currentlyOpenModal)) completeModalHide(currentlyOpenModal);
   } else {
     // No modal open, show immediately
     setModalState("openModals", id, { visible: true, chained: false });
@@ -101,6 +112,7 @@ export function hideModal(id: ModalId): void {
     // No chain, just hide normally
     setModalState("openModals", id, { visible: false, chained: false });
   }
+  if (!modalHosts().has(id)) completeModalHide(id);
 }
 
 /** Animation acknowledgement cannot be mistaken for another close request. */

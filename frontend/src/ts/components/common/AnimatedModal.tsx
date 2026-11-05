@@ -9,6 +9,7 @@ import {
   isModalOpen,
   hideModal as storeHideModal,
   completeModalHide,
+  registerModalHost,
 } from "../../states/modals";
 import { registerOverlayVisibility } from "../../states/overlay-visibility";
 import { cn } from "../../utils/cn";
@@ -109,6 +110,7 @@ function isSheetViewport(): boolean {
 }
 
 export function AnimatedModal(props: AnimatedModalProps): JSXElement {
+  onCleanup(registerModalHost(props.id));
   // Refs are assigned by SolidJS via the ref attribute
   const [dialogRef, dialogEl] = useRef<HTMLDialogElement>();
   const [modalRef, modalEl] = useRef<HTMLDivElement>();
