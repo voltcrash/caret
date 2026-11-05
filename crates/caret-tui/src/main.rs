@@ -65,7 +65,8 @@ fn run() -> Result<()> {
         preferences.theme = theme.clone();
     }
     let (config, content, custom) = cli.prepare(preferences.config.clone())?;
-    let mut local = Local::new(store, preferences);
+    let mut local = Local::new(store, preferences)?;
+    local.retry()?;
     let mut setup = Setup::new(config.clone(), custom.as_ref());
     local.configure_setup(&mut setup);
     let mut host = EngineHost::offline(
@@ -114,7 +115,7 @@ fn run() -> Result<()> {
             Ok(false) => {}
             Err(error) => {
                 notice =
-                    format!("UNSAVED result: {error}. F9 retries; quitting loses pending data.");
+                    format!("UNSAVED result: {error}. F9 retries; pending data will be retried after restart.");
                 dirty = true;
             }
         }

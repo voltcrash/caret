@@ -72,6 +72,7 @@ pub struct Store {
     config: Connection,
     history: Connection,
     pub revision: i64,
+    pending: PathBuf,
 }
 fn open(path: &Path, schema: &str) -> Result<Connection> {
     let dir = path.parent().ok_or("Missing storage directory")?;
@@ -125,6 +126,7 @@ impl Store {
                 "CREATE TABLE IF NOT EXISTS results (id TEXT PRIMARY KEY NOT NULL, created_ms REAL NOT NULL, mode TEXT NOT NULL, json TEXT NOT NULL); CREATE INDEX IF NOT EXISTS results_mode_time ON results(mode,created_ms);",
             )?,
             revision: 0,
+            pending: paths.data.join("pending"),
         })
     }
     pub fn settings(&mut self) -> Result<Settings> {
@@ -165,6 +167,25 @@ impl Store {
     pub fn save(&mut self, record: &Value) -> Result<()> {
         let id = record["id"].as_str().ok_or("Result missing ID")?;
         let json = serde_json::to_string(record)?;
+        let created = record["createdMs"].as_f64().ok_or("Missing result timestamp")?;
+        let mode = record["config"]["mode"].as_str().ok_or("Missing result mode")?;
+        fs::create_dir_all(&self.pending)?;
+        #[cfg(unix)] {
+            use std::os::unix::fs::PermissionsExt;
+            fs::set_permissions(&self.pending, fs::Permissions::from_mode(0o700))?;
+        }
+        let spool = self.pending.join(format!("{}.json", hash(&id)?));
+        if spool.exists() {
+            if fs::read_to_string(&spool)? != json { return Err("Pending result ID collision".into()); }
+        } else {
+            let mut file = tempfile::NamedTempFile::new_in(&self.pending)?;
+            file.write_all(json.as_bytes())?;
+            file.as_file().sync_all()?;
+            if let Err(error) = file.persist_noclobber(&spool) {
+                if error.error.kind() != std::io::ErrorKind::AlreadyExists || fs::read_to_string(&spool)? != json { return Err(error.error.into()); }
+            }
+            #[cfg(unix)] fs::File::open(&self.pending)?.sync_all()?;
+        }
         let transaction = self
             .history
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
@@ -180,18 +201,30 @@ impl Store {
                 "INSERT INTO results(id,created_ms,mode,json) VALUES(?1,?2,?3,?4)",
                 params![
                     id,
-                    record["createdMs"]
-                        .as_f64()
-                        .ok_or("Missing result timestamp")?,
-                    record["config"]["mode"]
-                        .as_str()
-                        .ok_or("Missing result mode")?,
+                    created,
+                    mode,
                     json
                 ],
             )?;
         }
         transaction.commit()?;
+        match fs::remove_file(spool) {
+            Ok(()) => {},
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {},
+            Err(error) => return Err(error.into()),
+        }
         Ok(())
+    }
+    pub fn pending(&self) -> Result<Vec<Value>> {
+        if !self.pending.exists() { return Ok(vec![]); }
+        let mut records = vec![];
+        for entry in fs::read_dir(&self.pending)? {
+            let path = entry?.path();
+            if path.extension().is_some_and(|extension| extension == "json") {
+                records.push(serde_json::from_slice(&fs::read(path)?)?);
+            }
+        }
+        Ok(records)
     }
     pub fn history(&self, mode: Option<&str>, limit: usize) -> Result<Vec<Value>> {
         self.history_page(mode, limit, 0)
