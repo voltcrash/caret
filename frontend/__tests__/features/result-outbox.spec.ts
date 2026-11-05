@@ -6,6 +6,20 @@ import {
 } from "../../src/features/typing/result-outbox.client";
 import type { CompletedEvent } from "@caret/schemas/results";
 
+it("does not resurrect another tab's acknowledged result", async () => {
+  const actor = `ack-${crypto.randomUUID()}`;
+  const first = createResultOutbox(createOutboxStorage(actor));
+  await first.add({ result: { hash: "a" } as CompletedEvent });
+  const second = createResultOutbox(createOutboxStorage(actor));
+  await second.load();
+  await first.remove("a");
+  await second.add({ result: { hash: "b" } as CompletedEvent });
+  const loaded = createResultOutbox(createOutboxStorage(actor));
+  await loaded.load();
+  expect(loaded.entries().map((entry) => entry.result.hash)).toEqual(["b"]);
+  await loaded.clear();
+});
+
 it("keeps unrelated pending results from another tab and isolates actors", async () => {
   const actor = `outbox-${crypto.randomUUID()}`;
   const first = createResultOutbox(createOutboxStorage(actor));
