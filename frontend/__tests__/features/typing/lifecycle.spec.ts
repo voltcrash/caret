@@ -64,7 +64,10 @@ import {
   enterTypingRoute,
   exitTypingRoute,
 } from "../../../src/features/typing/lifecycle";
-import { mountTypingScope } from "../../../src/features/typing/scope";
+import {
+  isTypingRouteActive,
+  mountTypingScope,
+} from "../../../src/features/typing/scope";
 import {
   getModifierState,
   updateModifierState,
@@ -126,6 +129,30 @@ it("keeps startup pending until the first test finishes initializing", async () 
   await entered;
   expect(isTypingReady()).toBe(true);
   release();
+});
+
+it("activates after slow preferences without expiring before restart is available", async () => {
+  vi.useFakeTimers();
+  const preferences = Promise.withResolvers<undefined>();
+  mocks.preferences.mockReturnValueOnce(preferences.promise);
+  const release = mountTypingScope();
+  const entered = enterTypingRoute().catch(() => undefined);
+  try {
+    await vi.advanceTimersByTimeAsync(31_000);
+    expect(getTestInitError()).toBeNull();
+    expect(isTypingReady()).toBe(false);
+    expect(mocks.restart).not.toHaveBeenCalled();
+    preferences.resolve(undefined);
+    await entered;
+    expect(isTypingRouteActive()).toBe(true);
+    expect(mocks.restart).toHaveBeenCalledExactlyOnceWith({ noAnim: true });
+    expect(isTypingReady()).toBe(true);
+  } finally {
+    preferences.resolve(undefined);
+    await entered;
+    release();
+    vi.useRealTimers();
+  }
 });
 
 it.each(["resolve", "reject"] as const)(
