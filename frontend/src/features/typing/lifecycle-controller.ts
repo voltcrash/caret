@@ -1,11 +1,16 @@
-import { createSignal, onCleanup } from "solid-js";
+import { createSignal, onCleanup, type Accessor } from "solid-js";
 import { createAppOwned } from "../../app/application";
 import {
   initialLifecycle,
+  isCompleting,
+  isPreparing,
+  resultLoading,
+  resultVisible,
   matchesToken,
   transitionLifecycle,
   type LifecycleEvent,
   type LifecycleToken,
+  type LifecycleState,
 } from "./lifecycle-machine";
 
 export type LifecycleOperation = {
@@ -17,7 +22,15 @@ export type LifecycleOperation = {
   wait: <T>(task: Promise<T>, timeoutMs?: number) => Promise<T>;
 };
 
-export function createLifecycleController() {
+type LifecycleController = {
+  state: Accessor<LifecycleState>;
+  send: (event: LifecycleEvent) => boolean;
+  capture: () => LifecycleOperation;
+  recoverWith: (retry: () => Promise<void>) => void;
+  retry: () => Promise<void>;
+};
+
+export function createLifecycleController(): LifecycleController {
   const [state, setState] = createSignal(initialLifecycle());
   let abort = new AbortController();
   let recovery: (() => Promise<void>) | undefined;
@@ -39,8 +52,9 @@ export function createLifecycleController() {
     const isCurrent = (): boolean =>
       !signal.aborted && matchesToken(token, state());
     const assertCurrent = (): void => {
-      if (!isCurrent())
+      if (!isCurrent()) {
         throw new DOMException("Typing operation cancelled", "AbortError");
+      }
     };
     return {
       token,
@@ -96,3 +110,30 @@ export const getTypingLifecycle = createAppOwned(() => {
   onCleanup(() => controller.send({ type: "DISPOSE" }));
   return controller;
 });
+
+export const isTestActive = (): boolean =>
+  getTypingLifecycle().state().phase === "running";
+export const isTestRestarting = (): boolean =>
+  isPreparing(getTypingLifecycle().state());
+export const isResultCalculating = (): boolean =>
+  isCompleting(getTypingLifecycle().state());
+export const isResultLoading = (): boolean =>
+  resultLoading(getTypingLifecycle().state());
+export const getResultVisible = (): boolean =>
+  resultVisible(getTypingLifecycle().state());
+export function getTestInitError(): { message: string | undefined } | null {
+  const state = getTypingLifecycle().state();
+  return "error" in state
+    ? {
+        message: state.error instanceof Error ? state.error.message : undefined,
+      }
+    : null;
+}
+export const lifecycleSelectors = {
+  isTestActive,
+  isTestRestarting,
+  isResultCalculating,
+  isResultLoading,
+  getResultVisible,
+  getTestInitError,
+};

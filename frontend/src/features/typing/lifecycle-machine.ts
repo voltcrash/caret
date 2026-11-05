@@ -52,7 +52,6 @@ export type LifecycleEvent =
   | {
       type:
         | "MOUNT"
-        | "PREFERENCES_READY"
         | "RESTART"
         | "EXIT_DONE"
         | "PREPARED"
@@ -96,8 +95,9 @@ export function transitionLifecycle(
   if (
     state.phase === "disposed" ||
     (event.token !== undefined && !matchesToken(state, event.token))
-  )
+  ) {
     return state;
+  }
   const token: LifecycleToken = {
     mountId: state.mountId,
     testId: state.testId,
@@ -105,10 +105,12 @@ export function transitionLifecycle(
   };
   const next = (phase: LifecycleState["phase"]): LifecycleState =>
     ({ ...token, phase }) as LifecycleState;
-  if (event.type === "DISPOSE")
+  if (event.type === "DISPOSE") {
     return { ...token, operationId: token.operationId + 1, phase: "disposed" };
-  if (event.type === "UNMOUNT")
+  }
+  if (event.type === "UNMOUNT") {
     return { ...token, operationId: token.operationId + 1, phase: "unmounted" };
+  }
   if (event.type === "MOUNT") {
     return state.phase === "unmounted"
       ? {
@@ -120,8 +122,9 @@ export function transitionLifecycle(
       : state;
   }
   if (event.type === "FATAL" || event.type === "FAIL") {
-    if (state.phase === "unmounted" || state.phase.startsWith("error."))
+    if (state.phase === "unmounted" || state.phase.startsWith("error.")) {
       return state;
+    }
     return {
       ...token,
       operationId: token.operationId + 1,
@@ -151,8 +154,9 @@ export function transitionLifecycle(
         "error.preparation",
         "error.completion",
       ].includes(state.phase)
-    )
+    ) {
       return state;
+    }
     return {
       ...token,
       testId: token.testId + 1,
@@ -180,8 +184,9 @@ export function transitionLifecycle(
   };
   const step = transitions[state.phase];
   if (step?.[0] !== event.type) return state;
-  if (step[1] === "completing.loading")
+  if (step[1] === "completing.loading") {
     return { ...token, phase: step[1], faded: false };
+  }
   return next(step[1]);
 }
 

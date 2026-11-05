@@ -5,7 +5,7 @@ import {
   transitionLifecycle,
 } from "../../../src/features/typing/lifecycle-machine";
 
-function ready() {
+function ready(): ReturnType<typeof createLifecycleController> {
   const controller = createLifecycleController();
   for (const type of [
     "MOUNT",
@@ -74,8 +74,9 @@ describe("typing lifecycle transitions", () => {
       "STOPPED",
       "COMPLETION_LOADED",
       "RESULT_BUILT",
-    ] as const)
+    ] as const) {
       controller.send({ type });
+    }
     const stale = controller.capture();
     controller.send({ type: "FAIL", error: new Error("chart failed") });
     expect(controller.state().phase).toBe("error.completion");
