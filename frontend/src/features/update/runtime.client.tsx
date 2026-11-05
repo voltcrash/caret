@@ -137,8 +137,11 @@ export function UpdateRuntime(props: { reload?: () => void }): JSXElement {
           return;
         }
         // Classify the waiting build before anything activates.
-        void checkDeployment("deployed").then((build) => {
-          if (!disposed) setWaiting(build === clientBuildId);
+        void registered.waitingBuild().then((build) => {
+          if (disposed) return;
+          setWaiting(build === clientBuildId);
+          if (build !== undefined && build !== clientBuildId) reportStaleClient("deployed");
+          return undefined;
         });
       },
       reload,

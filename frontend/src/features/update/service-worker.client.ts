@@ -1,6 +1,7 @@
-import { skipWaitingMessage, updateSafetyRequest } from "../../sw/policy";
+import { skipWaitingMessage, updateSafetyRequest, workerBuildRequest } from "../../sw/policy";
 
 export type ServiceWorkerUpdates = {
+  waitingBuild: () => Promise<string | undefined>;
   /** Lets a waiting worker take over; reloads afterwards when asked to. */
   activateWaiting: (reload: boolean) => boolean;
   /** Asks the browser to look for a new `/sw.js`. */
@@ -24,6 +25,7 @@ export function registerServiceWorker(options: {
   let reloadRequested = false;
   let disposed = false;
   const watched = new Set<ServiceWorker>();
+  const requests = new Set<() => void>();
   const report = (): void => {
     if (!disposed) options.onWaiting((registration?.waiting ?? null) !== null);
   };
@@ -56,6 +58,24 @@ export function registerServiceWorker(options: {
       console.error("ServiceWorker registration failed", error);
     });
   return {
+    waitingBuild: async () => {
+      const waiting = registration?.waiting;
+      if (disposed || !waiting) return undefined;
+      return await new Promise<string | undefined>((resolve) => {
+        const channel = new MessageChannel();
+        const finish = (build?: string): void => {
+          clearTimeout(timer);
+          channel.port1.close();
+          requests.delete(cancel);
+          resolve(!disposed && registration?.waiting === waiting ? build : undefined);
+        };
+        const cancel = (): void => finish();
+        const timer = setTimeout(cancel, 1000);
+        requests.add(cancel);
+        channel.port1.onmessage = (event: MessageEvent<unknown>) => finish(typeof event.data === "string" ? event.data : undefined);
+        waiting.postMessage(workerBuildRequest, [channel.port2]);
+      });
+    },
     activateWaiting: (reload) => {
       const waiting = registration?.waiting ?? null;
       if (waiting === null) return false;
@@ -68,6 +88,7 @@ export function registerServiceWorker(options: {
     },
     dispose: () => {
       disposed = true;
+      for (const cancel of requests) cancel();
       container.removeEventListener("controllerchange", onControllerChange);
       container.removeEventListener("message", onMessage);
       registration?.removeEventListener("updatefound", onUpdateFound);
