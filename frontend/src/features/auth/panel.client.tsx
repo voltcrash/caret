@@ -40,6 +40,7 @@ export function AuthPanel(props: { initial: SessionState; redirect?: string }) {
     )?.user;
     if (
       currentApplication() !== application ||
+      busy() ||
       user?.registered !== false ||
       user.uid !== signupActor
     ) {

@@ -68,14 +68,7 @@ async function dispatchAuthRequest(
   const headers = request.headers;
   if (path === "/auth/cancel-sign-up" && request.method === "POST") {
     const session = await AuthUtils.verifySession(headers);
-    const existing = await UserDAL.exists(session.uid);
-    if (existing) {
-      return Response.json(
-        { message: "Account registration is already complete" },
-        { status: 409 },
-      );
-    }
-    await AuthUtils.deleteUser(session.uid);
+    await UserDAL.cancelRegistration(session.uid);
     return Response.json({ status: true });
   }
   return auth.handler(request);
