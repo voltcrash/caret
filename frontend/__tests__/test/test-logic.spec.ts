@@ -142,7 +142,6 @@ vi.mock("../../src/features/typing/runtime/events/data", () => ({
     mocks.finishReason = undefined;
   },
   cleanupData: vi.fn(),
-  logEventsDataToTheConsoleTable: vi.fn(),
   forceReleaseAllKeys: vi.fn(),
   buildEventLog: () => ({
     events: [],

@@ -4,11 +4,11 @@ export type LifecycleToken = {
   operationId: number;
 };
 
-export type PreparationPhase =
+type PreparationPhase =
   | "preparing.exiting"
   | "preparing.loading"
   | "preparing.entering";
-export type CompletionPhase =
+type CompletionPhase =
   | "completing.stopping"
   | "completing.loading"
   | "completing.building"

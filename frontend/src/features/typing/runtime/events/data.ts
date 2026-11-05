@@ -29,9 +29,6 @@ export const cleanupData = (): void => getEngineSession().finalize();
 export const forceReleaseAllKeys = (): void => getEngineSession().finalize();
 export const getAllTestEvents = (): EventLog["events"] =>
   buildEventLog().events;
-export const logEventsDataToTheConsoleTable = (): void => {
-  console.table(getAllTestEvents());
-};
 export const resetTestEvents = (): void => getEngineSession().reset();
 export function buildEventLog(): EventLog {
   const log = getEngineSession().buildEventLog();
