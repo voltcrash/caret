@@ -57,7 +57,12 @@ import { nthElementFromArray } from "../../../ts/utils/arrays";
 import { hasKoreanCharacters } from "@caret/web-shared/strings";
 
 import { testLogicState } from "./logic-state";
-export async function init(lease = captureTypingRoute()): Promise<boolean> {
+export async function init(
+  lease: {
+    isCurrent: () => boolean;
+    signal?: AbortSignal;
+  } = captureTypingRoute(),
+): Promise<boolean> {
   if (!lease.isCurrent()) return false;
   console.debug("Initializing test");
   testLogicState.testReinitCount++;

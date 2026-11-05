@@ -251,7 +251,9 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
     await operation.wait(Funbox.rememberSettings());
     if (!current()) return;
 
-    const initResult = await operation.wait(init({ isCurrent: current }));
+    const initResult = await operation.wait(
+      init({ isCurrent: current, signal: operation.signal }),
+    );
     if (!current()) return;
 
     if (!initResult) {
