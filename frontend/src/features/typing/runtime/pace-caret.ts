@@ -72,8 +72,7 @@ export function resetCaretPosition(): void {
   });
 }
 
-export async function init(): Promise<void> {
-  const lease = captureTypingRoute();
+export async function init(lease = captureTypingRoute()): Promise<void> {
   if (!lease.isCurrent()) return;
   clearTimeout(state().timeout);
   getCaret().hide();

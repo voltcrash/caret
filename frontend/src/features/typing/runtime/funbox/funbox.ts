@@ -72,8 +72,8 @@ export async function clear(): Promise<boolean> {
 
 export async function activate(
   funbox?: FunboxName[],
+  lease = captureTypingRoute(),
 ): Promise<boolean | undefined> {
-  const lease = captureTypingRoute();
   if (!lease.isCurrent()) return false;
   if (funbox === undefined || funbox === null) {
     funbox = getMutableConfig().funbox;

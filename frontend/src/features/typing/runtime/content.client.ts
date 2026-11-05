@@ -186,8 +186,7 @@ export const getContentHost = createAppOwned(() => {
         owner.content().updateQuoteQueue(lengths, random());
       }
     },
-    prepare: async (language: LanguageObject) => {
-      const route = captureTypingRoute();
+    prepare: async (language: LanguageObject, route = captureTypingRoute()) => {
       await owner.load();
       if (!route.isCurrent()) {
         throw new DOMException("Typing route left", "AbortError");

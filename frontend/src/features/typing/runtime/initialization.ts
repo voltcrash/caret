@@ -27,13 +27,11 @@ import {
   setIsDirectionReversed,
   setIsLanguageRightToLeft,
   setKoreanStatus,
-  setIsTestRestarting,
   getCurrentQuote,
   resetActiveWordIndex,
   setWordsHaveNewline,
   setWordsHaveNumbers,
   setWordsHaveTab,
-  setTestInitError,
 } from "../../../ts/states/test";
 
 import * as TestWords from "./test-words";
@@ -67,19 +65,15 @@ export async function init(lease = captureTypingRoute()): Promise<boolean> {
     if (testLogicState.lastInitError) {
       void Sentry.captureException(testLogicState.lastInitError);
     }
-    setTestInitError({
-      message: testLogicState.lastInitError
-        ? `${testLogicState.lastInitError.name}: ${testLogicState.lastInitError.message}`
-        : undefined,
-    });
     const typingTest = getTypingTestElement();
     typingTest.className = updateClassNames(
       typingTest.className,
       "hidden",
       true,
     );
-    setIsTestRestarting(false);
-    return false;
+    throw (
+      testLogicState.lastInitError ?? new Error("Test initialization failed")
+    );
   }
 
   const languageRequest = tryCatch(
@@ -92,12 +86,7 @@ export async function init(lease = captureTypingRoute()): Promise<boolean> {
   } catch (error) {
     if (!lease.isCurrent()) return false;
     hideLoaderBar();
-    setTestInitError({
-      message:
-        error instanceof Error ? error.message : "Typing engine failed to load",
-    });
-    setIsTestRestarting(false);
-    return false;
+    throw error;
   }
   if (!lease.isCurrent()) return false;
 
@@ -118,7 +107,7 @@ export async function init(lease = captureTypingRoute()): Promise<boolean> {
   }
 
   if (isTypingRouteActive()) {
-    await Funbox.activate();
+    await Funbox.activate(undefined, lease);
     if (!lease.isCurrent()) return false;
   }
 
@@ -216,7 +205,7 @@ export async function init(lease = captureTypingRoute()): Promise<boolean> {
   let generatedWords: string[] = [];
   let generatedSectionIndexes: number[] = [];
   try {
-    const gen = await getContentHost().prepare(language);
+    const gen = await getContentHost().prepare(language, lease);
     if (!lease.isCurrent()) return false;
     generatedWords = gen.words;
     generatedSectionIndexes = gen.sectionIndexes;
