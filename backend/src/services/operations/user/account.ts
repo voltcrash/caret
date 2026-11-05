@@ -95,6 +95,7 @@ export async function updateName(
     throw new MonkeyError(409, "Username blocked");
   }
 
+  await atomicUser(uid, async () => {
   const user = await UserDAL.getPartialUser(uid, "update name", [
     "name",
     "banned",
@@ -120,7 +121,7 @@ export async function updateName(
     `changed name from ${user.name} to ${name}`,
     uid,
   );
-
+  });
   return new MonkeyResponse("User's name updated", null);
 }
 export async function checkName(

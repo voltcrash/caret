@@ -21,6 +21,7 @@ import type { ServiceContext, OperationInput } from "../context";
 import { purgeUserFromDailyLeaderboards } from "../../utils/daily-leaderboards";
 import { purgeUserFromXpLeaderboards } from "../../services/weekly-xp-leaderboard";
 import { deleteUserAccount } from "../../services/user-deletion";
+import { atomicUser } from "../../db/mutation";
 
 export async function test(
   _context: ServiceContext,
@@ -34,7 +35,7 @@ export async function toggleBan(
   input: OperationInput<undefined, ToggleBanRequest>,
 ): Promise<ToggleBanResponse> {
   const { uid } = input.body;
-
+  return await atomicUser(uid, async () => {
   const user = await UserDAL.getPartialUser(uid, "toggle ban", ["banned"]);
 
   const banning = !user.banned;
@@ -62,6 +63,7 @@ export async function toggleBan(
 
   return new MonkeyResponse(`Ban toggled`, {
     banned: banning,
+  });
   });
 }
 
