@@ -12,6 +12,7 @@ import {
   configLS,
   saveToLocalStorage,
   saveFullConfigToLocalStorage,
+  resetPendingConfigSync,
 } from "./persistence";
 import { getMutableConfig, setFullConfigStore } from "./store";
 import { getDefaultConfig } from "../constants/default-config";
@@ -146,6 +147,7 @@ export async function applyConfig(
 }
 
 export async function resetConfig(): Promise<void> {
+  resetPendingConfigSync({});
   await applyConfig(getDefaultConfig());
   await deleteConfig();
   saveFullConfigToLocalStorage(true);

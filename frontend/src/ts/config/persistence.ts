@@ -2,7 +2,7 @@ import { onCleanup } from "solid-js";
 import { createAccountOwned, captureAccount } from "../../app/account-scope";
 import { Config as ConfigSchema } from "@caret/schemas/configs";
 import { saveConfig } from "./sync";
-import { setAccountButtonSpinner } from "../states/header";
+import { trackAccountWork } from "../states/header";
 import { getMutableConfig } from "./store";
 import * as ConfigSchemas from "@caret/schemas/configs";
 import { getDefaultConfig } from "../constants/default-config";
@@ -28,13 +28,9 @@ const pendingSync = createAccountOwned(() => {
 
 function persist(config: Partial<ConfigSchemas.Config>): void {
   const lease = captureAccount();
-  setAccountButtonSpinner(true);
-  void saveConfig(config)
+  void trackAccountWork(async () => await saveConfig(config))
     .catch((error: unknown) => {
       if (lease.isCurrent()) console.error("Failed to save config", error);
-    })
-    .finally(() => {
-      if (lease.isCurrent()) setAccountButtonSpinner(false);
     });
 }
 
