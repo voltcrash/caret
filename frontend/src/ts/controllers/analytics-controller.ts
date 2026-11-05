@@ -1,5 +1,6 @@
+import { createAppOwned } from "../../app/application";
 /** Optional host-provided Google Analytics; authentication has no analytics SDK. */
-let enabled = false;
+const state = createAppOwned(() => ({ enabled: false }));
 type AnalyticsWindow = Window & {
   gtag?: (
     command: string,
@@ -11,12 +12,14 @@ export async function log(
   eventName: string,
   params?: Record<string, string>,
 ): Promise<void> {
-  if (enabled) (window as AnalyticsWindow).gtag?.("event", eventName, params);
+  if (state().enabled) {
+    (window as AnalyticsWindow).gtag?.("event", eventName, params);
+  }
 }
 export function activateAnalytics(): void {
-  enabled = true;
+  state().enabled = true;
 }
 
 export function deactivateAnalytics(): void {
-  enabled = false;
+  state().enabled = false;
 }

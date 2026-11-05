@@ -1,4 +1,5 @@
 import { operation } from "../../../data/operations";
+import { captureAccount } from "../../../app/account-scope";
 import { resultsByClient, getResults } from "./store";
 import { normalizeResult } from "./normalize";
 import { UpdateTagsResult, ActionType } from "./types";
@@ -19,9 +20,12 @@ function createActions(client: Client) {
         });
       },
       mutationFn: async ({ resultId, currentTagIds, newTagIds, persisted }) => {
+        const lease = captureAccount();
+        const collection = resultsCollection();
         const response = await operation("results.updateTags", {
           body: { resultId, tagIds: newTagIds },
         });
+        lease.assertCurrent();
         if (!response.ok) {
           throw new Error(`Failed to update result tag: ${response.message}`);
         }
@@ -52,11 +56,11 @@ function createActions(client: Client) {
           });
         }
 
-        await resultsCollection().utils.writeUpdate({
+        await collection.utils.writeUpdate({
           _id: resultId,
           tags: newTagIds,
         });
-
+        lease.assertCurrent();
         persisted.tagPbs = response.data.tagPbs;
       },
     }),
@@ -102,10 +106,12 @@ export async function updateTags(
 ): Promise<UpdateTagsResult> {
   const resultsCollection = resultsByClient[params.client ?? "web"];
   if (!resultsCollection().isReady()) {
+    const lease = captureAccount();
     // if its not ready yet, send the api request to update the tags
     const response = await operation("results.updateTags", {
       body: { resultId: params.resultId, tagIds: params.newTagIds },
     });
+    lease.assertCurrent();
 
     if (!response.ok) {
       throw new Error(`Failed to update result tag: ${response.message}`);

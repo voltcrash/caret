@@ -52,6 +52,7 @@ export function createReadiness(): Readiness {
           setState({ status: "error", error });
           for (const waiter of waiters) waiter.reject(error);
           waiters.clear();
+          running = undefined;
           throw error;
         }
       })();

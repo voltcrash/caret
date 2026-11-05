@@ -4,6 +4,7 @@ import {
   createMemo,
   createSignal,
   Setter,
+  onCleanup,
 } from "solid-js";
 
 import type { TestEventNoMs } from "@caret/web-shared/events/types";
@@ -265,12 +266,20 @@ export function createVideoSync(events: () => TestEventNoMs[]): VideoSync {
       requestVideoFrameCallback?: (
         cb: (now: number, metadata: Metadata) => void,
       ) => number;
+      cancelVideoFrameCallback?: (handle: number) => void;
     };
     const rvfcEl = el as RVFCElement;
     if (typeof rvfcEl.requestVideoFrameCallback !== "function") return;
     let lastMt = -1;
+    let disposed = false;
+    let handle: number | undefined;
+    onCleanup(() => {
+      disposed = true;
+      if (handle !== undefined) rvfcEl.cancelVideoFrameCallback?.(handle);
+    });
     const samples: number[] = [];
     const cb = (_now: number, metadata: Metadata): void => {
+      if (disposed) return;
       const mt = metadata.mediaTime;
       setVideoFrameTimeMs(mt * 1000);
       if (lastMt >= 0) {
@@ -283,9 +292,9 @@ export function createVideoSync(events: () => TestEventNoMs[]): VideoSync {
         }
       }
       lastMt = mt;
-      rvfcEl.requestVideoFrameCallback?.(cb);
+      handle = rvfcEl.requestVideoFrameCallback?.(cb);
     };
-    rvfcEl.requestVideoFrameCallback(cb);
+    handle = rvfcEl.requestVideoFrameCallback(cb);
   });
 
   const seekVideoMs = (videoMs: number): void => {

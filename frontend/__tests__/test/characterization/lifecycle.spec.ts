@@ -220,6 +220,7 @@ vi.mock("../../../src/ts/states/quote-rate", () => ({
   clearQuoteStats: vi.fn(),
 }));
 vi.mock("../../../src/ts/states/loader-bar", () => ({
+  beginLoaderBar: () => () => undefined,
   showLoaderBar: vi.fn(),
   hideLoaderBar: vi.fn(),
 }));

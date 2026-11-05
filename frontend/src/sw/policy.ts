@@ -14,6 +14,7 @@ export type ServiceWorkerConfig = {
 export const shellPath = "/";
 
 const startCachePrefix = "caret-start-";
+export const workerBuildRequest = "caret:worker-build";
 
 /** One cache per build: shell, precache and runtime-cached public files. */
 export function buildCacheName(buildId: string): string {

@@ -33,7 +33,8 @@ export async function updateFromServer(
     console.log(
       "no local config or local and db configs are different - applying db",
     );
-    await applyConfig(remoteConfig);
+    await applyConfig(remoteConfig, lease);
+    lease.assertCurrent();
     saveFullConfigToLocalStorage(true);
   }
 }

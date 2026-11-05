@@ -37,6 +37,7 @@ function clearActive(): void {
 
 export async function verify(
   result: CompletedEvent,
+  config = { ...getMutableConfig() },
 ): Promise<ChallengeName | null> {
   const loadedChallenge = getLoadedChallenge();
   if (loadedChallenge === null) return null;
@@ -52,7 +53,7 @@ export async function verify(
         testDuration: result.testDuration,
         funbox: result.funbox,
       },
-      { ...getMutableConfig() },
+      config,
       loadedChallenge.settings.requirements ?? null,
     );
     if (failReasons.length === 0) {
@@ -80,27 +81,26 @@ export async function setup(challengeName: ChallengeName): Promise<boolean> {
     lease.isCurrent() && state.sequence === sequence;
   state.loading = true;
 
-  setConfig("funbox", []);
-
-  const { getChallenge } = await import("@caret/challenges");
-  if (!isCurrent()) {
-    if (state.sequence === sequence) state.loading = false;
-    return false;
-  }
-  const challenge = getChallenge(challengeName);
-  const settings = challenge.settings;
-  // fetch the rules module now so verifying the result never waits on it;
-  // verify retries the download if this attempt fails
-  void getBrowserAudit()
-    .load()
-    .catch(() => undefined);
-
-  let notitext;
   try {
+    const { getChallenge } = await import("@caret/challenges");
+    if (!isCurrent()) {
+      if (state.sequence === sequence) state.loading = false;
+      return false;
+    }
+    const challenge = getChallenge(challengeName);
+    const settings = challenge?.settings;
+    // fetch the rules module now so verifying the result never waits on it;
+    // verify retries the download if this attempt fails
+    void getBrowserAudit()
+      .load()
+      .catch(() => undefined);
+
+    let notitext;
     if (challenge === undefined || settings === undefined) {
       showNoticeNotification("Challenge not found or missing settings");
       return false;
     }
+    setConfig("funbox", []);
     if (settings.type === "customTime") {
       setConfig("time", settings.parameters.time, {
         nosave: true,
@@ -247,7 +247,10 @@ export async function setup(challengeName: ChallengeName): Promise<boolean> {
     }
     return false;
   } finally {
-    if (state.sequence === sequence) state.loading = false;
+    if (state.sequence === sequence) {
+      state.loading = false;
+      hideLoaderBar();
+    }
   }
 }
 

@@ -1,11 +1,23 @@
+import { onCleanup } from "solid-js";
+import { createTypingOwned } from "../../scope";
+import { appObject } from "../../../../app/state";
 import { setWordsWrapperVisible } from "../../../../ts/states/funbox";
 import {
   setMemoryTimerText,
   setMemoryTimerVisibility,
 } from "../../../../ts/states/funbox-timers";
 
-let memoryTimer: number | null = null;
-let memoryInterval: NodeJS.Timeout | null = null;
+const timerState = createTypingOwned(() => {
+  const value = {
+    timer: null as number | null,
+    interval: null as ReturnType<typeof setInterval> | null,
+  };
+  onCleanup(() => {
+    if (value.interval !== null) clearInterval(value.interval);
+  });
+  return value;
+});
+const state = appObject(timerState);
 
 function show(): void {
   setMemoryTimerVisibility("shown");
@@ -16,24 +28,24 @@ function hide(): void {
 }
 
 export function reset(): void {
-  if (memoryInterval !== null) {
-    clearInterval(memoryInterval);
-    memoryInterval = null;
+  if (state.interval !== null) {
+    clearInterval(state.interval);
+    state.interval = null;
   }
-  memoryTimer = null;
+  state.timer = null;
   hide();
 }
 
 export function start(time: number): void {
   reset();
-  memoryTimer = time;
-  update(memoryTimer);
+  state.timer = time;
+  update(state.timer);
   show();
-  memoryInterval = setInterval(() => {
-    if (memoryTimer === null) return;
-    memoryTimer -= 1;
-    memoryTimer === 0 ? hide() : update(memoryTimer);
-    if (memoryTimer <= 0) {
+  state.interval = setInterval(() => {
+    if (state.timer === null) return;
+    state.timer -= 1;
+    state.timer === 0 ? hide() : update(state.timer);
+    if (state.timer <= 0) {
       reset();
       setWordsWrapperVisible(false);
     }

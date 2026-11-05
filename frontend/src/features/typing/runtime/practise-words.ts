@@ -78,8 +78,12 @@ export function init(
   const punctuation = before.punctuation ?? getMutableConfig().punctuation;
   const numbers = before.numbers ?? getMutableConfig().numbers;
 
-  let customText = null;
-  if (getMutableConfig().mode === "custom") {
+  let customText = before.customText;
+  if (
+    customText === null &&
+    getMutableConfig().mode === "custom" &&
+    before.mode === null
+  ) {
     customText = CustomText.getData();
   }
 

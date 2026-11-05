@@ -1,4 +1,4 @@
-import { onCleanup, onMount } from "solid-js";
+import { createEffect, onCleanup, onMount } from "solid-js";
 import { debounce } from "@caret/util/timing";
 import { createAppOwned } from "../../app/application";
 import { createAppSignal } from "../../app/state";
@@ -29,6 +29,9 @@ export function showOfflineBanner(): void {
 }
 export function useConnectionEvents(): void {
   const current = state();
+  createEffect(() => {
+    if (!getState() && !isTestActive()) showOfflineBanner();
+  });
   const handleState = debounce(5000, () => {
     if (getState()) {
       if (current.bannerId !== undefined) {

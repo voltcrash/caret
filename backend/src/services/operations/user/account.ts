@@ -1,5 +1,6 @@
 import { verifyCaptcha } from "./captcha";
 import { atomicUser } from "../../../db/mutation";
+import { isUniqueViolation } from "../../../db/client";
 import * as UserDAL from "../../../dal/user";
 import MonkeyError from "../../../utils/error";
 import { MonkeyResponse } from "../../../utils/monkey-response";
@@ -44,8 +45,8 @@ export async function createNewUser(
     throw new MonkeyError(409, "Username or email blocked");
   }
 
-  await UserDAL.addUser(name, email, uid);
-  await addImportantLog("user_created", {}, uid);
+  await UserDAL.addUser(name, email, uid, true);
+  context.background(addImportantLog("user_created", {}, uid));
 
   return new MonkeyResponse("User created", null);
 }
@@ -57,7 +58,7 @@ export async function deleteUser(
 
   await deleteUserAccount(uid, context.configuration);
 
-  await addImportantLog("user_deleted", {}, uid);
+  context.background(addImportantLog("user_deleted", {}, uid));
 
   return new MonkeyResponse("User deleted", null);
 }
@@ -79,7 +80,7 @@ export async function resetUser(
     await UserDAL.resetUser(uid);
     return user;
   });
-  await addImportantLog("user_reset", {}, uid);
+  context.background(addImportantLog("user_reset", {}, uid));
 
   return new MonkeyResponse("User reset", null);
 }
@@ -95,32 +96,38 @@ export async function updateName(
     throw new MonkeyError(409, "Username blocked");
   }
 
-  const user = await UserDAL.getPartialUser(uid, "update name", [
-    "name",
-    "banned",
-    "needsToChangeName",
-    "lastNameChange",
-  ]);
+  await atomicUser(uid, async () => {
+    const user = await UserDAL.getPartialUser(uid, "update name", [
+      "name",
+      "banned",
+      "needsToChangeName",
+      "lastNameChange",
+    ]);
 
-  if (user.banned) {
-    throw new MonkeyError(403, "Banned users cannot change their name");
-  }
+    if (user.banned) {
+      throw new MonkeyError(403, "Banned users cannot change their name");
+    }
 
-  if (
-    !user?.needsToChangeName &&
-    Date.now() - (user.lastNameChange ?? 0) < MILLISECONDS_IN_DAY * 30
-  ) {
-    throw new MonkeyError(409, "You can change your name once every 30 days");
-  }
+    if (
+      !user?.needsToChangeName &&
+      Date.now() - (user.lastNameChange ?? 0) < MILLISECONDS_IN_DAY * 30
+    ) {
+      throw new MonkeyError(409, "You can change your name once every 30 days");
+    }
 
-  await UserDAL.updateName(uid, name, user.name);
+    await UserDAL.updateName(uid, name, user.name);
 
-  await addImportantLog(
-    "user_name_updated",
-    `changed name from ${user.name} to ${name}`,
-    uid,
-  );
-
+    await addImportantLog(
+      "user_name_updated",
+      `changed name from ${user.name} to ${name}`,
+      uid,
+    );
+  }).catch((error: unknown) => {
+    if (isUniqueViolation(error)) {
+      throw new MonkeyError(409, "Username already taken", name);
+    }
+    throw error;
+  });
   return new MonkeyResponse("User's name updated", null);
 }
 export async function checkName(

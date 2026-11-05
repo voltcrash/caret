@@ -143,6 +143,10 @@ export function AnimePresence(props: AnimePresenceProps): JSXElement {
 
   let containerRef: HTMLDivElement | undefined;
   let observer: MutationObserver | undefined;
+  let disposed = false;
+  onCleanup(() => {
+    disposed = true;
+  });
 
   const setContainerRef = (el: HTMLDivElement): void => {
     containerRef = el;
@@ -174,6 +178,7 @@ export function AnimePresence(props: AnimePresenceProps): JSXElement {
           reinsertElement(element, mutation.target, mutation.nextSibling);
 
           void api.playExitAnimation().then(() => {
+            if (disposed) return;
             exitingElements.delete(element);
             exitRegistry.delete(element);
             element.remove();
@@ -193,6 +198,7 @@ export function AnimePresence(props: AnimePresenceProps): JSXElement {
             reinsertElement(element, mutation.target, mutation.nextSibling);
 
             void childApi.playExitAnimation().then(() => {
+              if (disposed) return;
               exitingElements.delete(childEl);
               exitRegistry.delete(childEl);
               element.remove();

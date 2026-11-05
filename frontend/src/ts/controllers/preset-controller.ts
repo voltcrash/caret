@@ -11,8 +11,10 @@ import {
 import { saveFullConfigToLocalStorage } from "../config/persistence";
 import { getPreset, type PresetItem } from "../collections/presets";
 import { untrack } from "solid-js";
+import { captureAccount } from "../../app/account-scope";
 
 export async function apply(_id: string): Promise<void> {
+  const lease = captureAccount();
   const snapshot = DB.getSnapshot();
   if (!snapshot) return;
 
@@ -22,12 +24,15 @@ export async function apply(_id: string): Promise<void> {
   }
 
   if (isPartialPreset(presetToApply)) {
-    await applyConfig({
-      ...structuredClone(getMutableConfig()),
-      ...presetToApply.config,
-    });
+    await applyConfig(
+      {
+        ...structuredClone(getMutableConfig()),
+        ...presetToApply.config,
+      },
+      lease,
+    );
   } else {
-    await applyConfig(presetToApply.config);
+    await applyConfig(presetToApply.config, lease);
   }
 
   if (
@@ -35,9 +40,11 @@ export async function apply(_id: string): Promise<void> {
     presetToApply.settingGroups?.includes("behavior")
   ) {
     await clearActiveTags({ noSave: true });
+    lease.assertCurrent();
     if (presetToApply.config.tags) {
       for (const tagId of presetToApply.config.tags) {
         await setTagActive({ tagId, active: true });
+        lease.assertCurrent();
       }
       saveActiveToLocalStorage();
     }

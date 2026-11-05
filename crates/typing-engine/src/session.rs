@@ -327,6 +327,16 @@ pub struct FinishRequest {
     #[ts(optional)]
     pub reason: Option<String>,
 }
+/// Lifecycle authority; input continuation is orthogonal to terminal completion.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum SessionPhase {
+    Ready,
+    Running,
+    AwaitingContent,
+    AwaitingRecovery,
+    FinishPending,
+    Ended,
+}
 #[derive(Clone, Debug, Serialize, Deserialize, TS)]
 #[serde(rename_all = "camelCase")]
 pub struct State {
@@ -855,7 +865,29 @@ impl Session {
         self.strip_final_separator();
         Ok(())
     }
+    pub fn phase(&self) -> SessionPhase {
+        if self.ended {
+            SessionPhase::Ended
+        } else if self.pending_finish.is_some() {
+            SessionPhase::FinishPending
+        } else if self.awaiting_recovery {
+            SessionPhase::AwaitingRecovery
+        } else if self.pending_commit.is_some() {
+            SessionPhase::AwaitingContent
+        } else if self.active {
+            SessionPhase::Running
+        } else {
+            SessionPhase::Ready
+        }
+    }
     pub fn state(&self) -> State {
+        debug_assert!(!(self.active && self.ended));
+        debug_assert!(
+            !self.ended
+                || (self.pending_finish.is_none()
+                    && self.pending_commit.is_none()
+                    && self.deferred_input.is_none())
+        );
         State {
             word_index: self.index,
             input_value: self.current(),
@@ -897,7 +929,7 @@ impl Session {
         });
     }
     fn start(&mut self, now: f64, date: f64) {
-        if self.active || self.ended {
+        if self.active || self.ended || self.awaiting_recovery {
             return;
         }
         self.active = true;
@@ -934,6 +966,9 @@ impl Session {
         self.pending_finish = None;
         self.pending_commit = None;
         self.deferred_input = None;
+        self.awaiting_recovery = false;
+        self.automatic.clear();
+        self.indent_pending = false;
         if let Some(generator) = &mut self.generator {
             generator.reset_requests(self.generation);
         }

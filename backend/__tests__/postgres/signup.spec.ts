@@ -6,6 +6,7 @@ import { createNewUser } from "../../src/services/operations/user/account";
 import { getCachedConfiguration } from "../../src/init/configuration";
 import { verifySession } from "../../src/utils/auth";
 import * as UserDAL from "../../src/dal/user";
+import { cancelRegistration } from "../../src/dal/user/account";
 
 let test: Awaited<ReturnType<typeof createTestRuntime>>;
 const siteverify = vi.fn<typeof fetch>();
@@ -119,6 +120,52 @@ it("allows username conflicts to be retried in the same auth session", async () 
     expect((await UserDAL.getUser(user.id, "signup retry")).name).toBe(
       "AvailableName",
     );
+    expect((await verifySession(headers)).uid).toBe(user.id);
+  });
+});
+
+it("rejects profile creation after cancellation wins during captcha verification", async () => {
+  await withRuntime(test.env, async () => {
+    let entered!: () => void;
+    let release!: () => void;
+    const entering = new Promise<void>((resolve) => {
+      entered = resolve;
+    });
+    const releasing = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    siteverify.mockImplementation(async () => {
+      entered();
+      await releasing;
+      return Response.json({
+        success: true,
+        hostname: "localhost",
+        action: "signup",
+      });
+    });
+    const { context, user, signup } = await onboarding(
+      "cancel-race@example.com",
+    );
+    const pending = signup("CancelledName");
+    await entering;
+    await cancelRegistration(user.id);
+    release();
+    await expect(pending).rejects.toMatchObject({ status: 401 });
+    expect(await UserDAL.exists(user.id)).toBe(false);
+    expect(await context.internalAdapter.findUserById(user.id)).toBeNull();
+  });
+});
+
+it("never cancels a completed registration", async () => {
+  await withRuntime(test.env, async () => {
+    siteverify.mockResolvedValue(
+      Response.json({ success: true, hostname: "localhost", action: "signup" }),
+    );
+    const { user, headers, signup } = await onboarding("completed@example.com");
+    await signup("CompletedName");
+    await expect(cancelRegistration(user.id)).rejects.toMatchObject({
+      status: 409,
+    });
     expect((await verifySession(headers)).uid).toBe(user.id);
   });
 });

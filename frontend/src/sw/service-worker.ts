@@ -13,6 +13,7 @@ import {
   shellPath,
   skipWaitingMessage,
   updateSafetyRequest,
+  workerBuildRequest,
   type ServiceWorkerConfig,
   type Strategy,
 } from "./policy";
@@ -26,7 +27,7 @@ type FetchEvent = ExtendableEvent & {
   preloadResponse: Promise<Response | undefined>;
   respondWith: (response: Promise<Response>) => void;
 };
-type MessageEvent = ExtendableEvent & { data: unknown };
+type MessageEvent = ExtendableEvent & { data: unknown; ports: MessagePort[] };
 type WorkerScope = {
   location: Location;
   registration: ServiceWorkerRegistration & {
@@ -191,6 +192,9 @@ async function activateWhenTabsAreSafe(): Promise<void> {
 }
 
 worker.addEventListener("message", (event) => {
+  if (event.data === workerBuildRequest) {
+    event.ports[0]?.postMessage(config.buildId);
+  }
   if (event.data === skipWaitingMessage) {
     event.waitUntil(activateWhenTabsAreSafe());
   }

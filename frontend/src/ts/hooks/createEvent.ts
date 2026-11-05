@@ -10,6 +10,7 @@ type EventArgs<T> = [T] extends [undefined]
     : [value: T];
 
 type EventBus<T> = {
+  hasListeners: () => boolean;
   dispatch: (...args: EventArgs<T>) => void;
   subscribe: (fn: Listener<T>, hot?: ModuleHotContext) => () => void;
   useListener: (fn: Listener<T>) => void;
@@ -63,5 +64,10 @@ export function createEvent<T = undefined>(): EventBus<T> {
     onCleanup(() => listeners.delete(fn));
   }
 
-  return { dispatch, subscribe, useListener };
+  return {
+    dispatch,
+    subscribe,
+    useListener,
+    hasListeners: () => listeners.size > 0,
+  };
 }

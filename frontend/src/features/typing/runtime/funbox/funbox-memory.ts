@@ -1,3 +1,4 @@
+import { createAppOwned } from "../../../../app/application";
 import { Config, ConfigKey, ConfigValue } from "@caret/schemas/configs";
 
 import { setConfig } from "../../../../ts/config/setters";
@@ -11,13 +12,13 @@ type ValueAndSetFunction<T> = {
 
 type SettingsMemory<T> = Record<string, ValueAndSetFunction<T>>;
 
-let settingsMemory: SettingsMemory<ConfigValue> = {};
+const settingsMemory = createAppOwned<SettingsMemory<ConfigValue>>(() => ({}));
 
 export function save<T extends ConfigKey>(
   settingName: T,
   value: Config[T],
 ): void {
-  settingsMemory[settingName] ??= {
+  settingsMemory()[settingName] ??= {
     value,
     setFunction: (param, noSave?) =>
       setConfig(settingName, param as Config[T], {
@@ -27,9 +28,13 @@ export function save<T extends ConfigKey>(
 }
 
 export function load(): void {
-  Object.keys(settingsMemory).forEach((setting) => {
-    const memory = settingsMemory[setting] as ValueAndSetFunction<ConfigValue>;
+  Object.keys(settingsMemory()).forEach((setting) => {
+    const memory = settingsMemory()[
+      setting
+    ] as ValueAndSetFunction<ConfigValue>;
     memory.setFunction(memory.value, true);
   });
-  settingsMemory = {};
+  for (const key of Object.keys(settingsMemory())) {
+    Reflect.deleteProperty(settingsMemory(), key);
+  }
 }

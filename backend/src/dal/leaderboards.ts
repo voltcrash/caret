@@ -111,6 +111,10 @@ export async function update(
   // Build + publish within one batch. Readers join one generation, never a partially rebuilt board.
   await commitBatch([
     statement(
+      "SELECT pg_advisory_xact_lock(hashtextextended(?,0))",
+      `leaderboard:${key}`,
+    ),
+    statement(
       `INSERT INTO leaderboard_snapshots(generation,board,uid,rank,data)
       SELECT ?,?,u.uid,row_number() OVER(ORDER BY b.wpm DESC,b.acc DESC,b.timestamp DESC,u.uid DESC),
       jsonb_merge_patch(b.data,jsonb_build_object('uid',u.uid,'name',u.name,'badgeId',(SELECT value->'id' FROM jsonb_array_elements(coalesce(u.data #> '{inventory,badges}','[]'::jsonb)) WHERE value->>'selected'='true' LIMIT 1),'isPremium',coalesce((u.data #>> '{premium,expirationTimestamp}')::bigint=-1 OR (u.data #>> '{premium,expirationTimestamp}')::bigint>?,false)))

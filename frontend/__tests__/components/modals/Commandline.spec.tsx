@@ -52,6 +52,7 @@ vi.mock("../../../src/ts/config/setters", async (original) => ({
   setConfig: vi.fn(),
 }));
 vi.mock("../../../src/ts/collections/custom-themes", () => ({
+  getCustomThemes: () => [],
   useCustomThemesLiveQuery: () => () => [],
 }));
 vi.mock("../../../src/ts/commandline/lists", () => {

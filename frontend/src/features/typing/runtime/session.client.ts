@@ -3,6 +3,7 @@ import { createAppOwned } from "../../../app/application";
 import { getBrowserEngine } from "../engine.client";
 import { EngineFailure } from "@caret/typing-engine/failure";
 import { getTypingLifecycle } from "../lifecycle-controller";
+import { isUpdateReserved } from "../../../app/update-safety";
 import {
   engineConfigMatches,
   projectEngineConfig,
@@ -198,6 +199,17 @@ export const getEngineSession = createAppOwned(() => {
   };
   const command = (input: Command): Update => {
     try {
+      if (
+        isUpdateReserved() &&
+        (input.op === "insert" || input.op === "start")
+      ) {
+        return live().command({
+          op: "view",
+          now: input.now,
+          earliestVisibleWord: null,
+          deferAutomatic: null,
+        });
+      }
       if (input.op !== "configure" && input.op !== "reset") {
         synchronize(input.now);
       }

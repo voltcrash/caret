@@ -21,6 +21,7 @@ import type { ServiceContext, OperationInput } from "../context";
 import { purgeUserFromDailyLeaderboards } from "../../utils/daily-leaderboards";
 import { purgeUserFromXpLeaderboards } from "../../services/weekly-xp-leaderboard";
 import { deleteUserAccount } from "../../services/user-deletion";
+import { atomicUser } from "../../db/mutation";
 
 export async function test(
   _context: ServiceContext,
@@ -34,34 +35,35 @@ export async function toggleBan(
   input: OperationInput<undefined, ToggleBanRequest>,
 ): Promise<ToggleBanResponse> {
   const { uid } = input.body;
+  return await atomicUser(uid, async () => {
+    const user = await UserDAL.getPartialUser(uid, "toggle ban", ["banned"]);
 
-  const user = await UserDAL.getPartialUser(uid, "toggle ban", ["banned"]);
+    const banning = input.body.banned ?? !user.banned;
 
-  const banning = !user.banned;
+    await UserDAL.setBanned(uid, banning);
 
-  await UserDAL.setBanned(uid, banning);
+    if (banning) {
+      await Promise.all([
+        purgeUserFromDailyLeaderboards(
+          uid,
+          context.configuration.dailyLeaderboards,
+        ),
+        purgeUserFromXpLeaderboards(
+          uid,
+          context.configuration.leaderboards.weeklyXp,
+        ),
+      ]);
+    }
 
-  if (banning) {
-    await Promise.all([
-      purgeUserFromDailyLeaderboards(
-        uid,
-        context.configuration.dailyLeaderboards,
-      ),
-      purgeUserFromXpLeaderboards(
-        uid,
-        context.configuration.leaderboards.weeklyXp,
-      ),
-    ]);
-  }
+    await addImportantLog(
+      "user_ban_toggled",
+      { banned: banning, actorUid: context.actor.uid },
+      uid,
+    );
 
-  await addImportantLog(
-    "user_ban_toggled",
-    { banned: banning, actorUid: context.actor.uid },
-    uid,
-  );
-
-  return new MonkeyResponse(`Ban toggled`, {
-    banned: banning,
+    return new MonkeyResponse(`Ban toggled`, {
+      banned: banning,
+    });
   });
 }
 

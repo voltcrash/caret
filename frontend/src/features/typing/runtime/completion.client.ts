@@ -88,9 +88,9 @@ export function createCompletion(
   const effects = new Set<string>();
   const once = (key: string, run: () => void): void => {
     if (effects.has(key)) return;
-    effects.add(key);
     try {
       run();
+      effects.add(key);
     } catch (error) {
       showErrorNotification("Could not update test progress", { error });
     }
@@ -264,7 +264,10 @@ export function createCompletion(
         once("resetIncomplete", resetIncompleteTests);
 
         if (!completedEvent.bailedOut) {
-          const challenge = await ChallengeContoller.verify(completedEvent);
+          const challenge = await ChallengeContoller.verify(
+            completedEvent,
+            config,
+          );
           if (!lease.isCurrent()) return;
           if (challenge !== null) completedEvent.challenge = challenge;
         }

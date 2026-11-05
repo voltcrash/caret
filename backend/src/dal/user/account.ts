@@ -1,18 +1,19 @@
 import MonkeyError from "../../utils/error";
 import { newId } from "../../utils/id";
-import { database, statement, isUniqueViolation } from "../../db/client";
+import { statement, isUniqueViolation } from "../../db/client";
 import { currentUserDraft, mutateUser, stage } from "../../db/mutation";
-import { users } from "../../db/schema";
 import { getCachedConfiguration } from "../../init/configuration";
 
 import type { DBUser } from "./types";
 import { emptyPb } from "./empty-pb";
 import { getUser } from "./queries";
+import { commitBatch } from "../../db/commit";
 
 export async function addUser(
   name: string,
   email: string,
   uid: string,
+  requireAuth = false,
 ): Promise<void> {
   const user: DBUser = {
     _id: newId(),
@@ -24,15 +25,30 @@ export async function addUser(
     testActivity: {},
   };
   try {
-    await database().insert(users).values({
-      uid,
-      id: user._id,
-      name,
-      nameKey: name.toLowerCase(),
-      email,
-      addedAt: user.addedAt,
-      data: user,
-    });
+    const committed = await commitBatch([
+      statement(
+        "SELECT pg_advisory_xact_lock(hashtextextended(?,0))",
+        `registration:${uid}`,
+      ),
+      statement(
+        "INSERT INTO users(uid,id,name,name_key,email,added_at,data) SELECT ?,?,?,?,?,?,?::jsonb WHERE (?=false OR EXISTS(SELECT 1 FROM auth_users WHERE id=?))",
+        uid,
+        user._id,
+        name,
+        name.toLowerCase(),
+        email,
+        user.addedAt ?? 0,
+        JSON.stringify(user),
+        requireAuth,
+        uid,
+      ),
+    ]);
+    if (
+      committed?.[1]?.rowCount === 0 ||
+      (committed === undefined && !(await exists(uid)))
+    ) {
+      throw new MonkeyError(401, "Sign up was cancelled; sign in again");
+    }
   } catch (error) {
     if (isUniqueViolation(error)) {
       throw new MonkeyError(
@@ -42,6 +58,26 @@ export async function addUser(
       );
     }
     throw error;
+  }
+}
+/** Registration and cancellation share a transaction lock, including first profile creation. */
+export async function cancelRegistration(uid: string): Promise<void> {
+  const committed = await commitBatch([
+    statement(
+      "SELECT pg_advisory_xact_lock(hashtextextended(?,0))",
+      `registration:${uid}`,
+    ),
+    statement(
+      "DELETE FROM auth_users WHERE id=? AND NOT EXISTS(SELECT 1 FROM users WHERE uid=?)",
+      uid,
+      uid,
+    ),
+  ]);
+  if (
+    (committed === undefined || committed[1]?.rowCount === 0) &&
+    (await exists(uid))
+  ) {
+    throw new MonkeyError(409, "Account registration is already complete");
   }
 }
 export async function exists(uid: string): Promise<boolean> {

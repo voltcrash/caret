@@ -237,11 +237,13 @@ vi.mock("../../src/ts/controllers/analytics-controller", () => ({
 }));
 vi.mock("../../src/ts/states/quote-rate", () => ({ clearQuoteStats: vi.fn() }));
 vi.mock("../../src/ts/states/loader-bar", () => ({
+  beginLoaderBar: () => () => undefined,
   showLoaderBar: vi.fn(),
   hideLoaderBar: vi.fn(),
 }));
 vi.mock("../../src/ts/states/header", () => ({
-  setAccountButtonSpinner: vi.fn(),
+  trackAccountWork: async <T>(work: () => Promise<T>): Promise<T> =>
+    await work(),
 }));
 vi.mock("../../src/ts/states/modifiers", () => ({
   resetModifierState: vi.fn(),

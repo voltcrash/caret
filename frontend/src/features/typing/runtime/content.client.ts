@@ -115,7 +115,7 @@ export const getContentHost = createAppOwned(() => {
     accept: (source: Source) => void,
     reject: () => never,
   ): Promise<void> => {
-    for (;;) {
+    for (let attempt = 0; ; attempt++) {
       lease.signal.throwIfAborted();
       let source: Source;
       try {
@@ -145,6 +145,7 @@ export const getContentHost = createAppOwned(() => {
           error instanceof EngineFailure &&
           error.code === "emptyContent"
         ) {
+          if (attempt >= 2) reject();
           continue;
         }
         if (

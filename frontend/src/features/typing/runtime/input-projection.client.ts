@@ -27,7 +27,11 @@ import {
   resetIncorrectShiftsInARow,
   getIncorrectShiftsInARow,
 } from "../../../ts/input/state";
-import { showLoaderBar, hideLoaderBar } from "../../../ts/states/loader-bar";
+import {
+  beginLoaderBar,
+  showLoaderBar,
+  hideLoaderBar,
+} from "../../../ts/states/loader-bar";
 import {
   showErrorNotification,
   showNoticeNotification,
@@ -53,7 +57,8 @@ export function useEngineInputProjection(): void {
     activeSource = key;
     const lease = owner.captureSession();
     const route = captureTypingRoute();
-    if (source.kind === "wikipedia") showLoaderBar();
+    const releaseLoader =
+      source.kind === "wikipedia" ? beginLoaderBar() : () => undefined;
     void getContentHost()
       .supplyActive(source)
       .catch((error: unknown) => {
@@ -70,12 +75,13 @@ export function useEngineInputProjection(): void {
           });
         } else {
           showErrorNotification(
-            "Error while getting section. Please try again later",
+            "Error while getting section. Restart the test to retry.",
             { error },
           );
         }
       })
       .finally(() => {
+        releaseLoader();
         if (activeSource !== key || !route.isCurrent()) return;
         activeSource = undefined;
         hideLoaderBar();

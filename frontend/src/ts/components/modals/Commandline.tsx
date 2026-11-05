@@ -1,5 +1,6 @@
 import { For, JSXElement, Show, createEffect, on } from "solid-js";
 
+import { getCustomThemes } from "../../collections/custom-themes";
 import {
   afterHideCommandline,
   canCommandlineGoBack,
@@ -12,13 +13,17 @@ import {
   onSuggestionClick,
   onSuggestionMouseMove,
   prepareCommandline,
+  refreshCommandlineSuggestions,
 } from "../../commandline/commandline";
 import { useThemeCommandEvents } from "../../commandline/lists/themes";
 import { COMMAND_SEPARATOR_HTML } from "../../commandline/util";
 import {
   commandlineState,
+  getCommandlineState,
   type CommandlineSuggestion,
 } from "../../states/commandline";
+import { isAuthenticated } from "../../states/core";
+import { isModalOpen } from "../../states/modals";
 import { cn } from "../../utils/cn";
 import { isCoarsePointer } from "../../utils/pointer";
 import { AnimatedModal } from "../common/AnimatedModal";
@@ -173,6 +178,33 @@ function Suggestion(props: {
 
 export function Commandline(): JSXElement {
   useThemeCommandEvents();
+  createEffect(
+    on(
+      getCommandlineState,
+      () => {
+        if (isModalOpen("Commandline")) void prepareCommandline();
+      },
+      { defer: true },
+    ),
+  );
+  createEffect(
+    on(
+      () =>
+        isModalOpen("Commandline") && isAuthenticated()
+          ? getCustomThemes()
+          : undefined,
+      (themes) => {
+        if (
+          themes !== undefined &&
+          commandlineState.open &&
+          commandlineState.mode === "search"
+        ) {
+          void refreshCommandlineSuggestions();
+        }
+      },
+      { defer: true },
+    ),
+  );
   let inputEl: HTMLInputElement | undefined;
   let suggestionsEl: HTMLDivElement | undefined;
 

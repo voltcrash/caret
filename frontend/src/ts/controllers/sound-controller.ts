@@ -24,8 +24,8 @@ const audio = createAppOwned(() => {
     state.disposed = true;
   });
   const load = async (): Promise<Audio | undefined> => {
-    state.pending ??= import("../../app/audio.client").then(
-      (implementation) => {
+    state.pending ??= import("../../app/audio.client")
+      .then((implementation) => {
         if (state.disposed) return undefined;
         runWithOwner(app.owner, () => {
           implementation.useSoundEvents();
@@ -33,8 +33,11 @@ const audio = createAppOwned(() => {
         });
         state.loaded = implementation;
         return implementation;
-      },
-    );
+      })
+      .catch((error: unknown) => {
+        state.pending = undefined;
+        throw error;
+      });
     return state.pending;
   };
   return { state, load };

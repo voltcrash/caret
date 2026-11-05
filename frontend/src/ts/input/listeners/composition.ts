@@ -60,12 +60,13 @@ export function bindCompositionListeners(inputEl: HTMLTextAreaElement): void {
       data: event.data,
     });
 
-    if (isTestRestarting() || isResultCalculating()) return;
+    const blocked = isTestRestarting() || isResultCalculating();
     CompositionState.setComposing(false);
     CompositionState.setData("");
     setCompositionText("");
     setLastInsertCompositionTextData("");
 
+    if (blocked) return;
     const now = performance.now();
 
     if (event.data !== "") {
