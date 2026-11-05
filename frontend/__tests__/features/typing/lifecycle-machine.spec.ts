@@ -126,4 +126,17 @@ describe("typing lifecycle transitions", () => {
       expect(transitionLifecycle(disposed, { type })).toBe(disposed);
     }
   });
+
+  it("escalates a recoverable completion error when the engine becomes fatal", () => {
+    const controller = ready();
+    controller.send({ type: "START" });
+    controller.send({ type: "FINISH" });
+    controller.send({ type: "FAIL", error: new Error("snapshot failed") });
+    controller.send({ type: "FATAL", error: new Error("engine crashed") });
+    expect(controller.state().phase).toBe("error.fatal");
+    expect(controller.send({ type: "RETRY" })).toBe(false);
+    expect(controller.send({ type: "RESTART" })).toBe(false);
+    controller.send({ type: "UNMOUNT" });
+    expect(controller.state().phase).toBe("unmounted");
+  });
 });

@@ -32,7 +32,12 @@ export type LifecycleState = LifecycleToken &
     | { phase: "preparing.exiting"; source: "testPage" | "resultPage" }
     | { phase: "completing.loading"; faded: boolean }
     | {
-        phase: "error.preparation" | "error.completion" | "error.fatal";
+        phase: "error.completion";
+        error: unknown;
+        failedPhase: CompletionPhase;
+      }
+    | {
+        phase: "error.preparation" | "error.fatal";
         error: unknown;
         failedPhase: LifecyclePhase;
       }
@@ -103,12 +108,11 @@ export function transitionLifecycle(
     testId: state.testId,
     operationId: state.operationId,
   };
-  const next = (phase: LifecycleState["phase"]): LifecycleState =>
-    ({ ...token, phase }) as LifecycleState;
   if (event.type === "DISPOSE") {
     return { ...token, operationId: token.operationId + 1, phase: "disposed" };
   }
   if (event.type === "UNMOUNT") {
+    if (state.phase === "unmounted") return state;
     return { ...token, operationId: token.operationId + 1, phase: "unmounted" };
   }
   if (event.type === "MOUNT") {
@@ -122,24 +126,32 @@ export function transitionLifecycle(
       : state;
   }
   if (event.type === "FATAL" || event.type === "FAIL") {
-    if (state.phase === "unmounted" || state.phase.startsWith("error.")) {
+    if (
+      state.phase === "unmounted" ||
+      state.phase === "error.fatal" ||
+      (event.type === "FAIL" && state.phase.startsWith("error."))
+    ) {
       return state;
+    }
+    if (event.type === "FAIL" && isCompletionPhase(state.phase)) {
+      return {
+        ...token,
+        operationId: token.operationId + 1,
+        phase: "error.completion",
+        error: event.error,
+        failedPhase: state.phase,
+      };
     }
     return {
       ...token,
       operationId: token.operationId + 1,
-      phase:
-        event.type === "FATAL"
-          ? "error.fatal"
-          : state.phase.startsWith("completing.")
-            ? "error.completion"
-            : "error.preparation",
+      phase: event.type === "FATAL" ? "error.fatal" : "error.preparation",
       error: event.error,
       failedPhase: state.phase,
     };
   }
   if (event.type === "RETRY" && state.phase === "error.completion") {
-    const phase = state.failedPhase as CompletionPhase;
+    const phase = state.failedPhase;
     return phase === "completing.loading"
       ? { ...token, operationId: token.operationId + 1, phase, faded: false }
       : { ...token, operationId: token.operationId + 1, phase };
@@ -169,7 +181,20 @@ export function transitionLifecycle(
     return { ...state, faded: true };
   }
   const transitions: Partial<
-    Record<LifecyclePhase, [LifecycleEvent["type"], LifecyclePhase]>
+    Record<
+      LifecyclePhase,
+      [
+        LifecycleEvent["type"],
+        (
+          | "preparing.loading"
+          | "preparing.entering"
+          | "ready"
+          | "running"
+          | CompletionPhase
+          | "result"
+        ),
+      ]
+    >
   > = {
     "preparing.exiting": ["EXIT_DONE", "preparing.loading"],
     "preparing.loading": ["PREPARED", "preparing.entering"],
@@ -187,7 +212,11 @@ export function transitionLifecycle(
   if (step[1] === "completing.loading") {
     return { ...token, phase: step[1], faded: false };
   }
-  return next(step[1]);
+  return { ...token, phase: step[1] };
+}
+
+function isCompletionPhase(phase: LifecyclePhase): phase is CompletionPhase {
+  return phase.startsWith("completing.");
 }
 
 export const isPreparing = (state: LifecycleState): boolean =>
