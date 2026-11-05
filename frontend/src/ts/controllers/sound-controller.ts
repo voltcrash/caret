@@ -34,7 +34,10 @@ const audio = createAppOwned(() => {
         state.loaded = implementation;
         return implementation;
       },
-    );
+    ).catch((error: unknown) => {
+      state.pending = undefined;
+      throw error;
+    });
     return state.pending;
   };
   return { state, load };

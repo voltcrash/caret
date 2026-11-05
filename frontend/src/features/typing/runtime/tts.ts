@@ -8,13 +8,15 @@ function createSpeech(): {
   useTtsEvents: typeof useTtsEvents;
 } {
   let voice: SpeechSynthesisUtterance | undefined;
+  let languageRevision = 0;
   async function setLanguage(
     lang = getMutableConfig().language,
   ): Promise<void> {
     if (!voice) return;
     const target = voice;
+    const revision = ++languageRevision;
     const language = await JSONData.getLanguage(lang);
-    if (voice !== target) return;
+    if (voice !== target || revision !== languageRevision) return;
     const bcp = language.bcp47 ?? "en-US";
     voice.lang = bcp;
   }

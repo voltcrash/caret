@@ -22,7 +22,10 @@ export async function activateSentry(): Promise<void> {
   console.log("Activating Sentry");
 
   const current = generation;
-  const Sentry = await getSentry();
+  const Sentry = await getSentry().catch((error: unknown) => {
+    if (current === generation) activated = false;
+    throw error;
+  });
   if (current !== generation) return;
   client = Sentry.init({
     release: envConfig.clientVersion,

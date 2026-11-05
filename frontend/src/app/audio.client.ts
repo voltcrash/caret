@@ -30,7 +30,10 @@ function createAudio(): {
   const lifetime = captureApplication();
   let howlerModulePromise: Promise<typeof import("howler")> | null = null;
   async function getHowlerModule(): Promise<typeof import("howler")> {
-    howlerModulePromise ??= import("howler");
+    howlerModulePromise ??= import("howler").catch((error: unknown) => {
+      howlerModulePromise = null;
+      throw error;
+    });
     return howlerModulePromise;
   }
   let initPromise: Promise<void> | null = null;
@@ -41,7 +44,10 @@ function createAudio(): {
       const { Howl } = await getHowlerModule();
       lifetime.assertCurrent();
       return new Howl({ src });
-    })();
+    })().catch((error: unknown) => {
+      delete howlers[src];
+      throw error;
+    });
 
     return howlers[src];
   }
@@ -91,13 +97,13 @@ function createAudio(): {
     if (clickId === "off") return;
 
     if (!loadedBundles.has(clickId)) {
-      loadedBundles.add(clickId);
 
       const config = clickSoundConfig[clickId];
 
       if (config === undefined) return;
 
       await Promise.all(config.flatMap(getHowl));
+      loadedBundles.add(clickId);
     }
   }
   async function previewClick(clickId: PlaySoundOnClick): Promise<void> {
