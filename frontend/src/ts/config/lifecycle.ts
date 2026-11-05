@@ -108,34 +108,33 @@ export async function applyConfig(
     const previous = structuredClone(getMutableConfig());
     configEvent.dispatch({ key: "fullConfigChange" });
     try {
-    const defaultConfig = getDefaultConfig();
-    for (const key of typedKeys(fullConfig)) {
-      setProperty(getMutableConfig(), key, defaultConfig[key]);
-    }
-
-    const configKeysToReset: (keyof ConfigSchemas.Config)[] = [];
-
-    const firstKeys = typedKeys(fullConfig).filter(
-      (key) => !lastConfigsToApply.has(key),
-    );
-
-    for (const configKey of [...firstKeys, ...lastConfigsToApply]) {
-      const configValue = fullConfig[configKey];
-
-      const set = setConfig(configKey, configValue, {
-        nosave: true,
-        partOfFullConfigChange: true,
-      });
-
-      if (!set) {
-        configKeysToReset.push(configKey);
+      const defaultConfig = getDefaultConfig();
+      for (const key of typedKeys(fullConfig)) {
+        setProperty(getMutableConfig(), key, defaultConfig[key]);
       }
-    }
 
-    for (const key of configKeysToReset) {
-      saveToLocalStorage(key);
-    }
+      const configKeysToReset: (keyof ConfigSchemas.Config)[] = [];
 
+      const firstKeys = typedKeys(fullConfig).filter(
+        (key) => !lastConfigsToApply.has(key),
+      );
+
+      for (const configKey of [...firstKeys, ...lastConfigsToApply]) {
+        const configValue = fullConfig[configKey];
+
+        const set = setConfig(configKey, configValue, {
+          nosave: true,
+          partOfFullConfigChange: true,
+        });
+
+        if (!set) {
+          configKeysToReset.push(configKey);
+        }
+      }
+
+      for (const key of configKeysToReset) {
+        saveToLocalStorage(key);
+      }
     } catch (error) {
       Object.assign(getMutableConfig(), previous);
       throw error;

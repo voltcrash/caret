@@ -24,10 +24,13 @@ export async function apply(_id: string): Promise<void> {
   }
 
   if (isPartialPreset(presetToApply)) {
-    await applyConfig({
-      ...structuredClone(getMutableConfig()),
-      ...presetToApply.config,
-    }, lease);
+    await applyConfig(
+      {
+        ...structuredClone(getMutableConfig()),
+        ...presetToApply.config,
+      },
+      lease,
+    );
   } else {
     await applyConfig(presetToApply.config, lease);
   }

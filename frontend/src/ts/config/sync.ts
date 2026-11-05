@@ -11,7 +11,8 @@ import { OperationError } from "../../data/operation-result";
 const synchronization = createAccountOwned(() => {
   const state = { pending: {} as Partial<Config>, queue: Promise.resolve() };
   const retry = (): void => {
-    if (Object.keys(state.pending).length > 0) void saveConfig({}).catch(() => undefined);
+    if (Object.keys(state.pending).length > 0)
+      void saveConfig({}).catch(() => undefined);
   };
   window.addEventListener("online", retry);
   onCleanup(() => window.removeEventListener("online", retry));
@@ -35,22 +36,22 @@ export async function saveConfig(config: Partial<Config>): Promise<void> {
     const state = synchronization();
     Object.assign(state.pending, structuredClone(config));
     await serialize(async () => {
-    const lease = captureAccount();
-    const pending = state.pending;
-    state.pending = {};
-    if (Object.keys(pending).length === 0) return;
-    const response = await operation("configs.save", { body: pending });
-    lease.assertCurrent();
-    if (!response.ok) {
-      state.pending = { ...pending, ...state.pending };
-      showErrorNotification("Failed to save config", { operation: response });
-      throw new OperationError(response);
-    } else {
-      getQueryClient().setQueryData(
-        getRemotePreferencesQueryOptions().queryKey,
-        (previous) => ({ ...previous, ...pending }),
-      );
-    }
+      const lease = captureAccount();
+      const pending = state.pending;
+      state.pending = {};
+      if (Object.keys(pending).length === 0) return;
+      const response = await operation("configs.save", { body: pending });
+      lease.assertCurrent();
+      if (!response.ok) {
+        state.pending = { ...pending, ...state.pending };
+        showErrorNotification("Failed to save config", { operation: response });
+        throw new OperationError(response);
+      } else {
+        getQueryClient().setQueryData(
+          getRemotePreferencesQueryOptions().queryKey,
+          (previous) => ({ ...previous, ...pending }),
+        );
+      }
     });
   }
 }
@@ -58,17 +59,19 @@ export async function deleteConfig(): Promise<void> {
   if (isAuthenticated()) {
     synchronization().pending = {};
     await serialize(async () => {
-    const lease = captureAccount();
-    const response = await operation("configs.delete");
-    lease.assertCurrent();
-    if (!response.ok) {
-      showErrorNotification("Failed to reset config", { operation: response });
-    } else {
-      getQueryClient().setQueryData(
-        getRemotePreferencesQueryOptions().queryKey,
-        null,
-      );
-    }
+      const lease = captureAccount();
+      const response = await operation("configs.delete");
+      lease.assertCurrent();
+      if (!response.ok) {
+        showErrorNotification("Failed to reset config", {
+          operation: response,
+        });
+      } else {
+        getQueryClient().setQueryData(
+          getRemotePreferencesQueryOptions().queryKey,
+          null,
+        );
+      }
     });
   }
 }

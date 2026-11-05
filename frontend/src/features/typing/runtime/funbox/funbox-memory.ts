@@ -29,8 +29,11 @@ export function save<T extends ConfigKey>(
 
 export function load(): void {
   Object.keys(settingsMemory()).forEach((setting) => {
-    const memory = settingsMemory()[setting] as ValueAndSetFunction<ConfigValue>;
+    const memory = settingsMemory()[
+      setting
+    ] as ValueAndSetFunction<ConfigValue>;
     memory.setFunction(memory.value, true);
   });
-  for (const key of Object.keys(settingsMemory())) Reflect.deleteProperty(settingsMemory(), key);
+  for (const key of Object.keys(settingsMemory()))
+    Reflect.deleteProperty(settingsMemory(), key);
 }

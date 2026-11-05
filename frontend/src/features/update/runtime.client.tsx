@@ -105,7 +105,9 @@ export function UpdateRuntime(props: { reload?: () => void }): JSXElement {
       // Posting a request is not activation: another tab may refuse takeover.
       fallback ??= setTimeout(() => {
         fallback = undefined;
-        showNoticeNotification("Update is waiting for other tabs. Finish their tests, then retry.");
+        showNoticeNotification(
+          "Update is waiting for other tabs. Finish their tests, then retry.",
+        );
       }, 3000);
       return;
     }
@@ -140,7 +142,8 @@ export function UpdateRuntime(props: { reload?: () => void }): JSXElement {
         void registered.waitingBuild().then((build) => {
           if (disposed) return;
           setWaiting(build === clientBuildId);
-          if (build !== undefined && build !== clientBuildId) reportStaleClient("deployed");
+          if (build !== undefined && build !== clientBuildId)
+            reportStaleClient("deployed");
           return undefined;
         });
       },

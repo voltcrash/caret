@@ -30,24 +30,27 @@ export {
   convertThemeToCustomColors,
 } from "../constants/themes";
 
-
-
-
-
 const themeState = createAppOwned(() => {
   const value = {
-    randomTheme: null as ThemeIdentifier | null, isPreviewingTheme: false,
-    randomThemeIndex: 0, previewState: null as PreviewState,
-    themesList: [] as string[], ignoreConfigEvent: false,
-    backgroundRevision: 0, disposed: false,
+    randomTheme: null as ThemeIdentifier | null,
+    isPreviewingTheme: false,
+    randomThemeIndex: 0,
+    previewState: null as PreviewState,
+    themesList: [] as string[],
+    ignoreConfigEvent: false,
+    backgroundRevision: 0,
+    disposed: false,
   };
-const preview = debounce(250, () => {
-  if (value.previewState) {
-    value.isPreviewingTheme = true;
-    void apply(value.previewState.theme, value.previewState.colors, true);
-  }
-});
-  onCleanup(() => { value.disposed = true; preview.cancel(); });
+  const preview = debounce(250, () => {
+    if (value.previewState) {
+      value.isPreviewingTheme = true;
+      void apply(value.previewState.theme, value.previewState.colors, true);
+    }
+  });
+  onCleanup(() => {
+    value.disposed = true;
+    preview.cancel();
+  });
   return Object.assign(value, { preview });
 });
 const state = appObject(themeState);
@@ -101,7 +104,8 @@ function updateThemeIndicator(nameOverride?: string): void {
   str = str.replace(/_/g, " ");
 
   //fav icon
-  const currentTheme = nameOverride ?? state.randomTheme ?? getMutableConfig().theme;
+  const currentTheme =
+    nameOverride ?? state.randomTheme ?? getMutableConfig().theme;
   const isFavorite =
     !getMutableConfig().customTheme &&
     currentTheme !== null &&
@@ -115,8 +119,6 @@ type PreviewState = {
   colors?: CustomThemeColors;
 } | null;
 
-
-
 export function preview(
   themeIdentifier: ThemeIdentifier,
   customColorsOverride?: CustomThemeColors,
@@ -124,8 +126,6 @@ export function preview(
   state.previewState = { theme: themeIdentifier, colors: customColorsOverride };
   themeState().preview();
 }
-
-
 
 async function set(
   themeIdentifier: ThemeIdentifier,
@@ -159,8 +159,6 @@ export async function clearPreview(applyTheme = true): Promise<void> {
   }
 }
 
-
-
 async function changeThemeList(): Promise<void> {
   const themes = ThemesList;
   if (
@@ -169,9 +167,13 @@ async function changeThemeList(): Promise<void> {
   ) {
     state.themesList = getMutableConfig().favThemes;
   } else if (getMutableConfig().randomTheme === "light") {
-    state.themesList = themes.filter((t) => isColorLight(t.bg)).map((t) => t.name);
+    state.themesList = themes
+      .filter((t) => isColorLight(t.bg))
+      .map((t) => t.name);
   } else if (getMutableConfig().randomTheme === "dark") {
-    state.themesList = themes.filter((t) => isColorDark(t.bg)).map((t) => t.name);
+    state.themesList = themes
+      .filter((t) => isColorDark(t.bg))
+      .map((t) => t.name);
   } else if (
     getMutableConfig().randomTheme === "on" ||
     getMutableConfig().randomTheme === "auto"
@@ -180,7 +182,9 @@ async function changeThemeList(): Promise<void> {
       return t.name;
     });
   } else if (getMutableConfig().randomTheme === "custom") {
-    state.themesList = untrack(CustomThemes.getCustomThemes).map((ct) => ct._id);
+    state.themesList = untrack(CustomThemes.getCustomThemes).map(
+      (ct) => ct._id,
+    );
   }
   Arrays.shuffle(state.themesList);
   state.randomThemeIndex = 0;
@@ -199,14 +203,20 @@ export async function randomizeTheme(): Promise<void> {
 
   let nextTheme = null;
   do {
-    state.randomTheme = state.themesList[state.randomThemeIndex] as ThemeIdentifier;
+    state.randomTheme = state.themesList[
+      state.randomThemeIndex
+    ] as ThemeIdentifier;
     nextTheme = themes[state.themesList[state.randomThemeIndex] as ThemeName];
     state.randomThemeIndex++;
     if (state.randomThemeIndex >= state.themesList.length) {
       Arrays.shuffle(state.themesList);
       state.randomThemeIndex = 0;
     }
-  } while (getMutableConfig().randomTheme !== "custom" && nextTheme !== undefined && !filter(nextTheme.bg));
+  } while (
+    getMutableConfig().randomTheme !== "custom" &&
+    nextTheme !== undefined &&
+    !filter(nextTheme.bg)
+  );
 
   let colorsOverride: CustomThemeColors | undefined;
 
@@ -308,13 +318,9 @@ export function handleColorSchemeChange(event: MediaQueryListEvent): void {
   );
 }
 
-
-
 function prefersColorSchemeDark(): boolean {
   return window.matchMedia?.("(prefers-color-scheme: dark)").matches;
 }
-
-
 
 export function useThemeEvents(): void {
   configEvent.useListener(async ({ key, newValue, nosave }) => {

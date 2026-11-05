@@ -5,7 +5,14 @@ import { captureAccount } from "../app/account-scope";
 import { envConfig } from "virtual:env-config";
 
 const sentryState = createAppOwned(() => {
-  const value = { debug: false, activated: false, generation: 0, client: undefined as ReturnType<typeof import("./sentry-sdk").init> | undefined };
+  const value = {
+    debug: false,
+    activated: false,
+    generation: 0,
+    client: undefined as
+      | ReturnType<typeof import("./sentry-sdk").init>
+      | undefined,
+  };
   onCleanup(() => {
     value.generation++;
     value.activated = false;
@@ -18,8 +25,6 @@ const state = appObject(sentryState);
 async function getSentry(): Promise<typeof import("./sentry-sdk")> {
   return await import("./sentry-sdk");
 }
-
-
 
 export async function activateSentry(): Promise<void> {
   const state = sentryState();

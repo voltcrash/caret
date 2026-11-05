@@ -68,7 +68,12 @@ export function createValidationHandler(command: Command): void {
     const handler = useInputValidation(
       (result) => {
         const current = getCommandlineState();
-        if (lease.isCurrent() && current.open && current.inputModeParams.command?.id === command.id) updateValidationResult(result);
+        if (
+          lease.isCurrent() &&
+          current.open &&
+          current.inputModeParams.command?.id === command.id
+        )
+          updateValidationResult(result);
       },
       commandWithValidation.validation,
       "inputValueConvert" in commandWithValidation

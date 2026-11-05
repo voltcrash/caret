@@ -128,14 +128,24 @@ it("rejects profile creation after cancellation wins during captcha verification
   await withRuntime(test.env, async () => {
     let entered!: () => void;
     let release!: () => void;
-    const entering = new Promise<void>((resolve) => { entered = resolve; });
-    const releasing = new Promise<void>((resolve) => { release = resolve; });
+    const entering = new Promise<void>((resolve) => {
+      entered = resolve;
+    });
+    const releasing = new Promise<void>((resolve) => {
+      release = resolve;
+    });
     siteverify.mockImplementation(async () => {
       entered();
       await releasing;
-      return Response.json({ success: true, hostname: "localhost", action: "signup" });
+      return Response.json({
+        success: true,
+        hostname: "localhost",
+        action: "signup",
+      });
     });
-    const { context, user, signup } = await onboarding("cancel-race@example.com");
+    const { context, user, signup } = await onboarding(
+      "cancel-race@example.com",
+    );
     const pending = signup("CancelledName");
     await entering;
     await cancelRegistration(user.id);
@@ -148,10 +158,14 @@ it("rejects profile creation after cancellation wins during captcha verification
 
 it("never cancels a completed registration", async () => {
   await withRuntime(test.env, async () => {
-    siteverify.mockResolvedValue(Response.json({ success: true, hostname: "localhost", action: "signup" }));
+    siteverify.mockResolvedValue(
+      Response.json({ success: true, hostname: "localhost", action: "signup" }),
+    );
     const { user, headers, signup } = await onboarding("completed@example.com");
     await signup("CompletedName");
-    await expect(cancelRegistration(user.id)).rejects.toMatchObject({ status: 409 });
+    await expect(cancelRegistration(user.id)).rejects.toMatchObject({
+      status: 409,
+    });
     expect((await verifySession(headers)).uid).toBe(user.id);
   });
 });

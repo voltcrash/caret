@@ -411,7 +411,10 @@ export function AnimatedModal(props: AnimatedModalProps): JSXElement {
     }
   };
 
-  const closeDialog = async (isChained: boolean, token: number): Promise<void> => {
+  const closeDialog = async (
+    isChained: boolean,
+    token: number,
+  ): Promise<void> => {
     if (disposed || token !== motionId) return;
     dialogEl()?.close();
     await handleAfterHide();

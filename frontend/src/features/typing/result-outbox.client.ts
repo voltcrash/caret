@@ -122,7 +122,11 @@ export function createOutboxStorage(actor: string | null): OutboxStorage {
         const storedHashes = new Set(stored.map((entry) => entry.result.hash));
         for (const entry of entries) {
           // A known entry missing from storage was acknowledged in another tab.
-          if (known.has(entry.result.hash) && !storedHashes.has(entry.result.hash)) continue;
+          if (
+            known.has(entry.result.hash) &&
+            !storedHashes.has(entry.result.hash)
+          )
+            continue;
           merged.set(entry.result.hash, entry);
         }
         await transaction.store.put([...merged.values()], actor);

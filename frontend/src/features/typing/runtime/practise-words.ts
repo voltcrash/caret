@@ -79,7 +79,11 @@ export function init(
   const numbers = before.numbers ?? getMutableConfig().numbers;
 
   let customText = before.customText;
-  if (customText === null && getMutableConfig().mode === "custom" && before.mode === null) {
+  if (
+    customText === null &&
+    getMutableConfig().mode === "custom" &&
+    before.mode === null
+  ) {
     customText = CustomText.getData();
   }
 

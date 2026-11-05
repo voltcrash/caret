@@ -1,4 +1,10 @@
-import { Accessor, createEffect, createMemo, createSignal, onCleanup } from "solid-js";
+import {
+  Accessor,
+  createEffect,
+  createMemo,
+  createSignal,
+  onCleanup,
+} from "solid-js";
 
 import type { TestEventNoMs } from "@caret/web-shared/events/types";
 import type { VideoSync } from "./createVideoSync";

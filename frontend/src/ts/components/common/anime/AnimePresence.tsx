@@ -144,7 +144,9 @@ export function AnimePresence(props: AnimePresenceProps): JSXElement {
   let containerRef: HTMLDivElement | undefined;
   let observer: MutationObserver | undefined;
   let disposed = false;
-  onCleanup(() => { disposed = true; });
+  onCleanup(() => {
+    disposed = true;
+  });
 
   const setContainerRef = (el: HTMLDivElement): void => {
     containerRef = el;

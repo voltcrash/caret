@@ -4,14 +4,23 @@ import { expect, it } from "vite-plus/test";
 import { createReadiness } from "../../src/app/readiness";
 
 it("retries failed startup work without retaining its rejected promise", async () => {
-  const { readiness, dispose } = createRoot((dispose) => ({ readiness: createReadiness(), dispose }));
+  const { readiness, dispose } = createRoot((dispose) => ({
+    readiness: createReadiness(),
+    dispose,
+  }));
   try {
-    await expect(readiness.start(async () => { throw new Error("offline"); })).rejects.toThrow("offline");
+    await expect(
+      readiness.start(async () => {
+        throw new Error("offline");
+      }),
+    ).rejects.toThrow("offline");
     expect(readiness.state().status).toBe("error");
     await readiness.start(async () => undefined);
     expect(readiness.state().status).toBe("ready");
     await readiness.wait();
-  } finally { dispose(); }
+  } finally {
+    dispose();
+  }
 });
 
 it("exposes progress, shares startup work and releases pending waiters on disposal", async () => {

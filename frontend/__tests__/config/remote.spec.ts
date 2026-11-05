@@ -47,7 +47,10 @@ it("fetches server settings immediately and applies them after local settings", 
   expect(state.apply).not.toHaveBeenCalled();
   state.finishLocal();
   await updating;
-  expect(state.apply).toHaveBeenCalledWith(config, expect.objectContaining({ assertCurrent: expect.any(Function) }));
+  expect(state.apply).toHaveBeenCalledWith(
+    config,
+    expect.objectContaining({ assertCurrent: expect.any(Function) }),
+  );
   expect(state.save).toHaveBeenCalledWith(true);
 });
 
@@ -88,7 +91,10 @@ it("waits for an active test before applying late server preferences", async () 
     expect(state.apply).not.toHaveBeenCalled();
     idle.resolve(undefined);
     await updating;
-    expect(state.apply).toHaveBeenCalledExactlyOnceWith({ theme: "remote" }, expect.objectContaining({ assertCurrent: expect.any(Function) }));
+    expect(state.apply).toHaveBeenCalledExactlyOnceWith(
+      { theme: "remote" },
+      expect.objectContaining({ assertCurrent: expect.any(Function) }),
+    );
   } finally {
     idle.resolve(undefined);
   }

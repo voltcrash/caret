@@ -27,7 +27,11 @@ import {
   resetIncorrectShiftsInARow,
   getIncorrectShiftsInARow,
 } from "../../../ts/input/state";
-import { beginLoaderBar, showLoaderBar, hideLoaderBar } from "../../../ts/states/loader-bar";
+import {
+  beginLoaderBar,
+  showLoaderBar,
+  hideLoaderBar,
+} from "../../../ts/states/loader-bar";
 import {
   showErrorNotification,
   showNoticeNotification,
@@ -53,7 +57,8 @@ export function useEngineInputProjection(): void {
     activeSource = key;
     const lease = owner.captureSession();
     const route = captureTypingRoute();
-    const releaseLoader = source.kind === "wikipedia" ? beginLoaderBar() : () => undefined;
+    const releaseLoader =
+      source.kind === "wikipedia" ? beginLoaderBar() : () => undefined;
     void getContentHost()
       .supplyActive(source)
       .catch((error: unknown) => {

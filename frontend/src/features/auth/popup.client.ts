@@ -17,7 +17,8 @@ export async function requestOAuth(
       "Authentication is unavailable in frontend-only development",
     );
   }
-  if (!oauthRequestEvent.hasListeners()) throw new Error("Authentication is not ready; retry shortly");
+  if (!oauthRequestEvent.hasListeners())
+    throw new Error("Authentication is not ready; retry shortly");
   return new Promise((resolve, reject) =>
     oauthRequestEvent.dispatch({ provider, link, resolve, reject }),
   );

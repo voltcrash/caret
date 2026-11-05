@@ -100,7 +100,6 @@ function createAudio(): {
     if (clickId === "off") return;
 
     if (!loadedBundles.has(clickId)) {
-
       const config = clickSoundConfig[clickId];
 
       if (config === undefined) return;

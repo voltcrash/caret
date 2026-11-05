@@ -144,7 +144,13 @@ export function Captcha(props: {
         <p role="alert" class="text-sm text-error">
           {errorText}
         </p>
-        <button type="button" class="text-sub underline" onClick={() => window.location.reload()}>retry verification</button>
+        <button
+          type="button"
+          class="text-sub underline"
+          onClick={() => window.location.reload()}
+        >
+          retry verification
+        </button>
       </Show>
     </div>
   );

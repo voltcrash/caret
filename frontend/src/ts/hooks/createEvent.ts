@@ -64,5 +64,10 @@ export function createEvent<T = undefined>(): EventBus<T> {
     onCleanup(() => listeners.delete(fn));
   }
 
-  return { dispatch, subscribe, useListener, hasListeners: () => listeners.size > 0 };
+  return {
+    dispatch,
+    subscribe,
+    useListener,
+    hasListeners: () => listeners.size > 0,
+  };
 }

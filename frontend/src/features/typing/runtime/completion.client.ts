@@ -264,7 +264,10 @@ export function createCompletion(
         once("resetIncomplete", resetIncompleteTests);
 
         if (!completedEvent.bailedOut) {
-          const challenge = await ChallengeContoller.verify(completedEvent, config);
+          const challenge = await ChallengeContoller.verify(
+            completedEvent,
+            config,
+          );
           if (!lease.isCurrent()) return;
           if (challenge !== null) completedEvent.challenge = challenge;
         }

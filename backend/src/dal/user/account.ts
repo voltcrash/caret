@@ -25,14 +25,26 @@ export async function addUser(
   };
   try {
     const committed = await commitBatch([
-      statement("SELECT pg_advisory_xact_lock(hashtextextended(?,0))", `registration:${uid}`),
+      statement(
+        "SELECT pg_advisory_xact_lock(hashtextextended(?,0))",
+        `registration:${uid}`,
+      ),
       statement(
         "INSERT INTO users(uid,id,name,name_key,email,added_at,data) SELECT ?,?,?,?,?,?,?::jsonb WHERE EXISTS(SELECT 1 FROM auth_users WHERE id=?)",
-        uid, user._id, name, name.toLowerCase(), email, user.addedAt ?? 0,
-        JSON.stringify(user), uid,
+        uid,
+        user._id,
+        name,
+        name.toLowerCase(),
+        email,
+        user.addedAt ?? 0,
+        JSON.stringify(user),
+        uid,
       ),
     ]);
-    if (committed?.[1]?.rowCount === 0 || (committed === undefined && !(await exists(uid)))) {
+    if (
+      committed?.[1]?.rowCount === 0 ||
+      (committed === undefined && !(await exists(uid)))
+    ) {
       throw new MonkeyError(401, "Sign up was cancelled; sign in again");
     }
   } catch (error) {
@@ -49,10 +61,17 @@ export async function addUser(
 /** Registration and cancellation share a transaction lock, including first profile creation. */
 export async function cancelRegistration(uid: string): Promise<void> {
   const committed = await commitBatch([
-    statement("SELECT pg_advisory_xact_lock(hashtextextended(?,0))", `registration:${uid}`),
-    statement("DELETE FROM auth_users WHERE id=? AND NOT EXISTS(SELECT 1 FROM users WHERE uid=?)", uid, uid),
+    statement(
+      "SELECT pg_advisory_xact_lock(hashtextextended(?,0))",
+      `registration:${uid}`,
+    ),
+    statement(
+      "DELETE FROM auth_users WHERE id=? AND NOT EXISTS(SELECT 1 FROM users WHERE uid=?)",
+      uid,
+      uid,
+    ),
   ]);
-  if (committed?.[1]?.rowCount === 0 && await exists(uid)) {
+  if (committed?.[1]?.rowCount === 0 && (await exists(uid))) {
     throw new MonkeyError(409, "Account registration is already complete");
   }
 }

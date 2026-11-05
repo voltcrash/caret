@@ -3,7 +3,13 @@ import { requireApplication } from "../../src/app/application";
 import { saveConfig } from "../../src/ts/config/sync";
 import { getQueryClient } from "../../src/ts/queries";
 import { getRemotePreferencesQueryOptions } from "../../src/ts/queries/preferences";
-import { mockOperation, ok, fail, operationCalls, resetOperations } from "../__harness__/operations";
+import {
+  mockOperation,
+  ok,
+  fail,
+  operationCalls,
+  resetOperations,
+} from "../__harness__/operations";
 
 vi.mock("../../src/ts/states/core", () => ({ isAuthenticated: () => true }));
 
@@ -14,7 +20,9 @@ beforeEach(() => {
 
 it("serializes conflicting patches and publishes the latest acknowledged value", async () => {
   const first = Promise.withResolvers<ReturnType<typeof ok<null>>>();
-  mockOperation("configs.save", async () => operationCalls.mock.calls.length === 1 ? first.promise : ok(null));
+  mockOperation("configs.save", async () =>
+    operationCalls.mock.calls.length === 1 ? first.promise : ok(null),
+  );
   const older = saveConfig({ time: 15 });
   await vi.waitFor(() => expect(operationCalls).toHaveBeenCalledOnce());
   const newer = saveConfig({ time: 30 });
@@ -23,7 +31,9 @@ it("serializes conflicting patches and publishes the latest acknowledged value",
   first.resolve(ok(null));
   await Promise.all([older, newer]);
   expect(operationCalls).toHaveBeenCalledTimes(2);
-  expect(getQueryClient().getQueryData(getRemotePreferencesQueryOptions().queryKey)).toMatchObject({ time: 30 });
+  expect(
+    getQueryClient().getQueryData(getRemotePreferencesQueryOptions().queryKey),
+  ).toMatchObject({ time: 30 });
 });
 
 it("keeps a failed patch for reconnect retry", async () => {

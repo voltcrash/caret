@@ -42,7 +42,15 @@ export function useInputValidation<T>(
             try {
               result = await validation.isValid?.(checkValue);
             } catch (error) {
-              if (!signal?.aborted && request === revision) callback({ status: "failed", success: false, errorMessage: error instanceof Error ? error.message : "Validation unavailable" });
+              if (!signal?.aborted && request === revision)
+                callback({
+                  status: "failed",
+                  success: false,
+                  errorMessage:
+                    error instanceof Error
+                      ? error.message
+                      : "Validation unavailable",
+                });
               return;
             }
             if (signal?.aborted) return;

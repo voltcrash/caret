@@ -125,7 +125,15 @@ export async function saveResult(
   queuedHash?: string,
 ): Promise<null | OperationResult<OperationResponse<"results.add">>> {
   return await trackResultSave(
-    trackAccountWork(async () => await saveResultInternal(completedEvent, isRetrying, eventLog, queuedHash)),
+    trackAccountWork(
+      async () =>
+        await saveResultInternal(
+          completedEvent,
+          isRetrying,
+          eventLog,
+          queuedHash,
+        ),
+    ),
   );
 }
 
@@ -138,7 +146,8 @@ async function saveResultInternal(
   const account = captureAccount();
   const state = getRetrySavingState();
   const attempt = !isRetrying ? ++state.latestAttempt : state.latestAttempt;
-  const ownsRetry = (): boolean => queuedHash === undefined && attempt === state.latestAttempt;
+  const ownsRetry = (): boolean =>
+    queuedHash === undefined && attempt === state.latestAttempt;
   const presentation =
     queuedHash === undefined
       ? captureTypingResult()
@@ -190,7 +199,6 @@ async function saveResultInternal(
     eventLog === undefined ? undefined : await encodeEventLog(eventLog, result);
   if (!account.isCurrent()) return null;
 
-
   let response: OperationResult<OperationResponse<"results.add">>;
   try {
     response = await operation("results.add", {
@@ -206,11 +214,10 @@ async function saveResultInternal(
   const Result = await import("./result");
   if (!account.isCurrent()) return response;
 
-
   if (!response.ok) {
     if (isPermanentFailure(response.status)) {
       await queue.remove(pendingHash).catch(() => undefined);
-    if (!account.isCurrent()) return response;
+      if (!account.isCurrent()) return response;
       if (state.completedEvent?.hash === pendingHash) {
         state.completedEvent = null;
         state.eventLog = null;
@@ -241,7 +248,7 @@ async function saveResultInternal(
 
   const data = response.data;
   await queue.remove(pendingHash).catch(() => undefined);
-    if (!account.isCurrent()) return response;
+  if (!account.isCurrent()) return response;
   if (state.completedEvent?.hash === pendingHash) {
     if (ownsRetry()) {
       state.completedEvent = null;

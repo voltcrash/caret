@@ -36,34 +36,34 @@ export async function toggleBan(
 ): Promise<ToggleBanResponse> {
   const { uid } = input.body;
   return await atomicUser(uid, async () => {
-  const user = await UserDAL.getPartialUser(uid, "toggle ban", ["banned"]);
+    const user = await UserDAL.getPartialUser(uid, "toggle ban", ["banned"]);
 
-  const banning = !user.banned;
+    const banning = !user.banned;
 
-  await UserDAL.setBanned(uid, banning);
+    await UserDAL.setBanned(uid, banning);
 
-  if (banning) {
-    await Promise.all([
-      purgeUserFromDailyLeaderboards(
-        uid,
-        context.configuration.dailyLeaderboards,
-      ),
-      purgeUserFromXpLeaderboards(
-        uid,
-        context.configuration.leaderboards.weeklyXp,
-      ),
-    ]);
-  }
+    if (banning) {
+      await Promise.all([
+        purgeUserFromDailyLeaderboards(
+          uid,
+          context.configuration.dailyLeaderboards,
+        ),
+        purgeUserFromXpLeaderboards(
+          uid,
+          context.configuration.leaderboards.weeklyXp,
+        ),
+      ]);
+    }
 
-  await addImportantLog(
-    "user_ban_toggled",
-    { banned: banning, actorUid: context.actor.uid },
-    uid,
-  );
+    await addImportantLog(
+      "user_ban_toggled",
+      { banned: banning, actorUid: context.actor.uid },
+      uid,
+    );
 
-  return new MonkeyResponse(`Ban toggled`, {
-    banned: banning,
-  });
+    return new MonkeyResponse(`Ban toggled`, {
+      banned: banning,
+    });
   });
 }
 

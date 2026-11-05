@@ -8,8 +8,13 @@ import {
 } from "../../../../ts/states/funbox-timers";
 
 const timerState = createTypingOwned(() => {
-  const value = { timer: null as number | null, interval: null as ReturnType<typeof setInterval> | null };
-  onCleanup(() => { if (value.interval !== null) clearInterval(value.interval); });
+  const value = {
+    timer: null as number | null,
+    interval: null as ReturnType<typeof setInterval> | null,
+  };
+  onCleanup(() => {
+    if (value.interval !== null) clearInterval(value.interval);
+  });
   return value;
 });
 const state = appObject(timerState);

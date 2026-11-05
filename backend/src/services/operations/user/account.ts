@@ -96,31 +96,31 @@ export async function updateName(
   }
 
   await atomicUser(uid, async () => {
-  const user = await UserDAL.getPartialUser(uid, "update name", [
-    "name",
-    "banned",
-    "needsToChangeName",
-    "lastNameChange",
-  ]);
+    const user = await UserDAL.getPartialUser(uid, "update name", [
+      "name",
+      "banned",
+      "needsToChangeName",
+      "lastNameChange",
+    ]);
 
-  if (user.banned) {
-    throw new MonkeyError(403, "Banned users cannot change their name");
-  }
+    if (user.banned) {
+      throw new MonkeyError(403, "Banned users cannot change their name");
+    }
 
-  if (
-    !user?.needsToChangeName &&
-    Date.now() - (user.lastNameChange ?? 0) < MILLISECONDS_IN_DAY * 30
-  ) {
-    throw new MonkeyError(409, "You can change your name once every 30 days");
-  }
+    if (
+      !user?.needsToChangeName &&
+      Date.now() - (user.lastNameChange ?? 0) < MILLISECONDS_IN_DAY * 30
+    ) {
+      throw new MonkeyError(409, "You can change your name once every 30 days");
+    }
 
-  await UserDAL.updateName(uid, name, user.name);
+    await UserDAL.updateName(uid, name, user.name);
 
-  await addImportantLog(
-    "user_name_updated",
-    `changed name from ${user.name} to ${name}`,
-    uid,
-  );
+    await addImportantLog(
+      "user_name_updated",
+      `changed name from ${user.name} to ${name}`,
+      uid,
+    );
   });
   return new MonkeyResponse("User's name updated", null);
 }

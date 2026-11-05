@@ -28,10 +28,11 @@ const pendingSync = createAccountOwned(() => {
 
 function persist(config: Partial<ConfigSchemas.Config>): void {
   const lease = captureAccount();
-  void trackAccountWork(async () => await saveConfig(config))
-    .catch((error: unknown) => {
+  void trackAccountWork(async () => await saveConfig(config)).catch(
+    (error: unknown) => {
       if (lease.isCurrent()) console.error("Failed to save config", error);
-    });
+    },
+  );
 }
 
 export const configLS = new LocalStorageWithSchema({

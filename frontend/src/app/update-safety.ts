@@ -6,7 +6,9 @@ const [pendingResultSaves, setPendingResultSaves] = createAppSignal(0);
 const [isUpdateReserved, setUpdateReserved] = createAppSignal(false);
 export { isUpdateReserved };
 const reservation = createAppOwned(() => {
-  const state = { timer: undefined as ReturnType<typeof setTimeout> | undefined };
+  const state = {
+    timer: undefined as ReturnType<typeof setTimeout> | undefined,
+  };
   onCleanup(() => clearTimeout(state.timer));
   return state;
 });

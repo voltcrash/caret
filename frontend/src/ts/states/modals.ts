@@ -85,7 +85,8 @@ export function showModal(id: ModalId): void {
       visible: false,
       chained: true,
     });
-    if (!modalHosts().has(currentlyOpenModal)) completeModalHide(currentlyOpenModal);
+    if (!modalHosts().has(currentlyOpenModal))
+      completeModalHide(currentlyOpenModal);
   } else {
     // No modal open, show immediately
     setModalState("openModals", id, { visible: true, chained: false });
@@ -120,8 +121,13 @@ export function completeModalHide(id: ModalId): void {
   if (modalState.closingModal !== id) return;
   const next = modalState.pendingModal;
   const chained = modalState.pendingIsChained;
-  setModalState({ closingModal: null, pendingModal: null, pendingIsChained: false });
-  if (next !== null) setModalState("openModals", next, { visible: true, chained });
+  setModalState({
+    closingModal: null,
+    pendingModal: null,
+    pendingIsChained: false,
+  });
+  if (next !== null)
+    setModalState("openModals", next, { visible: true, chained });
 }
 
 export function hideModalAndClearChain(id: ModalId): void {

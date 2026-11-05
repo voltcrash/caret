@@ -60,7 +60,10 @@ export function OAuthRuntime(): null {
       const timer = setInterval(() => {
         if (popup.closed) cancel();
       }, 500);
-      const deadline = setTimeout(() => finish(new Error("Sign-in timed out; please retry")), 120_000);
+      const deadline = setTimeout(
+        () => finish(new Error("Sign-in timed out; please retry")),
+        120_000,
+      );
       window.addEventListener("message", message);
       pending.add(cancel);
       void (async () => {

@@ -219,11 +219,15 @@ it("does not apply a save to an account switched during durable acknowledgement"
   const queue = resultOutbox();
   const remove = queue.remove;
   vi.spyOn(queue, "remove").mockImplementationOnce(async (hash) => {
-    requireApplication().accountData.setActor(`replacement-${crypto.randomUUID()}`);
+    requireApplication().accountData.setActor(
+      `replacement-${crypto.randomUUID()}`,
+    );
     DB.setSnapshot(getDefaultSnapshot(), { dispatchEvent: false });
     await remove(hash);
   });
-  mockOperation("results.add", () => ok({ insertedId: "old-actor", isPb: false, xp: 100 }));
+  mockOperation("results.add", () =>
+    ok({ insertedId: "old-actor", isPb: false, xp: 100 }),
+  );
   await saveResult(result("time", "15"), false);
   expect(DB.getSnapshot()?.xp ?? 0).toBe(0);
 });
@@ -274,7 +278,8 @@ it("keeps late failures historical after a newer completion", async () => {
   const old = Promise.withResolvers<ReturnType<typeof fail>>();
   mockOperation("results.add", async (input) =>
     (input["body"] as { result: CompletedEvent }).result.timestamp === 1
-      ? old.promise : ok({ insertedId: "new", isPb: false }),
+      ? old.promise
+      : ok({ insertedId: "new", isPb: false }),
   );
   const saving = saveResult({ ...result("time", "15"), timestamp: 1 }, false);
   await vi.waitFor(() => expect(operationCalls).toHaveBeenCalledOnce());
@@ -282,7 +287,9 @@ it("keeps late failures historical after a newer completion", async () => {
   old.resolve(fail(503, "Unavailable"));
   await saving;
   mockOperation("results.add", (input) => {
-    expect(input).toMatchObject({ body: { result: { timestamp: 1, offline: true } } });
+    expect(input).toMatchObject({
+      body: { result: { timestamp: 1, offline: true } },
+    });
     return ok({ insertedId: "old", isPb: false });
   });
   await retrySavingResult();

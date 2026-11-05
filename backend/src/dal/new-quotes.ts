@@ -132,7 +132,13 @@ export async function approve(
   // but refusal and later edits must not change its idempotent payload.
   await statement(
     "UPDATE quote_submissions SET approved=true,data=jsonb_set(data,'{approval}',?::jsonb) WHERE id=? AND approved=false",
-    encode({ editQuote, editSource, approvedBy: name, repository: envValue("QUOTES_REPOSITORY") }), quoteId,
+    encode({
+      editQuote,
+      editSource,
+      approvedBy: name,
+      repository: envValue("QUOTES_REPOSITORY"),
+    }),
+    quoteId,
   ).run();
   const row = (
     await database()
@@ -152,7 +158,16 @@ export async function approve(
     {
       quoteId,
       quote: row.data,
-      ...(row.data as { approval: { editQuote?: string; editSource?: string; approvedBy: string; repository?: string } }).approval,
+      ...(
+        row.data as {
+          approval: {
+            editQuote?: string;
+            editSource?: string;
+            approvedBy: string;
+            repository?: string;
+          };
+        }
+      ).approval,
     },
     `quote:${quoteId}`,
   );
@@ -162,6 +177,10 @@ export async function approve(
   return result;
 }
 export async function refuse(quoteId: string): Promise<void> {
-  const removed = await statement("DELETE FROM quote_submissions WHERE id=? AND approved=false", quoteId).run();
-  if (removed.rowCount === 0) throw new MonkeyError(409, "Quote is already being approved or reviewed");
+  const removed = await statement(
+    "DELETE FROM quote_submissions WHERE id=? AND approved=false",
+    quoteId,
+  ).run();
+  if (removed.rowCount === 0)
+    throw new MonkeyError(409, "Quote is already being approved or reviewed");
 }

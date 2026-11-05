@@ -1,4 +1,8 @@
-import { skipWaitingMessage, updateSafetyRequest, workerBuildRequest } from "../../sw/policy";
+import {
+  skipWaitingMessage,
+  updateSafetyRequest,
+  workerBuildRequest,
+} from "../../sw/policy";
 import { reserveUpdate } from "../../app/update-safety";
 
 export type ServiceWorkerUpdates = {
@@ -70,12 +74,15 @@ export function registerServiceWorker(options: {
           clearTimeout(timer);
           channel.port1.close();
           requests.delete(cancel);
-          resolve(!disposed && registration?.waiting === waiting ? build : undefined);
+          resolve(
+            !disposed && registration?.waiting === waiting ? build : undefined,
+          );
         };
         const cancel = (): void => finish();
         const timer = setTimeout(cancel, 1000);
         requests.add(cancel);
-        channel.port1.onmessage = (event: MessageEvent<unknown>) => finish(typeof event.data === "string" ? event.data : undefined);
+        channel.port1.onmessage = (event: MessageEvent<unknown>) =>
+          finish(typeof event.data === "string" ? event.data : undefined);
         waiting.postMessage(workerBuildRequest, [channel.port2]);
       });
     },

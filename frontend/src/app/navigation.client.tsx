@@ -24,7 +24,9 @@ export function navigationHref(url: string): string {
 export function RouterNavigation(): null {
   const router = useRouter();
   let navigationId = 0;
-  onCleanup(() => { navigationId++; });
+  onCleanup(() => {
+    navigationId++;
+  });
   useBlocker({
     shouldBlockFn: async () => {
       await transitionSettled();

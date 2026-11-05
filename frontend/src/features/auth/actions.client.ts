@@ -8,13 +8,19 @@ import { sessionOptions, sessionKey } from "./session";
 import { completeSignUp } from "../../functions/signup";
 import { createAppOwned } from "../../app/application";
 const authOperation = createAppOwned(() => ({ busy: false }));
-function exclusive<A extends unknown[], T>(action: (...args: A) => Promise<T>): (...args: A) => Promise<T> {
+function exclusive<A extends unknown[], T>(
+  action: (...args: A) => Promise<T>,
+): (...args: A) => Promise<T> {
   return async (...args) => {
     const state = authOperation();
-    if (state.busy) throw new Error("Another authentication request is in progress");
+    if (state.busy)
+      throw new Error("Another authentication request is in progress");
     state.busy = true;
-    try { return await action(...args); }
-    finally { state.busy = false; }
+    try {
+      return await action(...args);
+    } finally {
+      state.busy = false;
+    }
   };
 }
 
@@ -69,19 +75,24 @@ export const createAuthActions = (
     logout: exclusive(logout),
     login: exclusive(login),
     reauthenticate: exclusive(reauthenticate),
-    complete: exclusive(async (name: string, captcha: string): Promise<void> => {
-      try {
-        await completeSignUp({ data: { name, captcha } });
-      } catch (error) {
-        if (error instanceof Error && error.message.includes("Account already registered")) {
-          await refresh();
-          return;
+    complete: exclusive(
+      async (name: string, captcha: string): Promise<void> => {
+        try {
+          await completeSignUp({ data: { name, captcha } });
+        } catch (error) {
+          if (
+            error instanceof Error &&
+            error.message.includes("Account already registered")
+          ) {
+            await refresh();
+            return;
+          }
+          throw error;
         }
-        throw error;
-      }
-      checkAuthResult(await getAuthClient().updateUser({ name }));
-      await refresh();
-    }),
+        checkAuthResult(await getAuthClient().updateUser({ name }));
+        await refresh();
+      },
+    ),
     cancel: exclusive(async (): Promise<void> => {
       checkAuthResult(
         await getAuthClient().$fetch("/cancel-sign-up", { method: "POST" }),

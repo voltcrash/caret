@@ -15,7 +15,8 @@ const [legacyLoader, { showLoaderBar, hideLoaderBar }] =
   });
 export { showLoaderBar, hideLoaderBar };
 const [pending, setPending] = createAppSignal(0);
-export const getLoaderBarSignal = (): LoaderSignal => pending() > 0 ? { visible: true } : legacyLoader();
+export const getLoaderBarSignal = (): LoaderSignal =>
+  pending() > 0 ? { visible: true } : legacyLoader();
 export function beginLoaderBar(): () => void {
   const lease = captureApplication();
   let done = false;

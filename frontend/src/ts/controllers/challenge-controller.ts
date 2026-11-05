@@ -82,20 +82,20 @@ export async function setup(challengeName: ChallengeName): Promise<boolean> {
   state.loading = true;
 
   try {
-  const { getChallenge } = await import("@caret/challenges");
-  if (!isCurrent()) {
-    if (state.sequence === sequence) state.loading = false;
-    return false;
-  }
-  const challenge = getChallenge(challengeName);
-  const settings = challenge?.settings;
-  // fetch the rules module now so verifying the result never waits on it;
-  // verify retries the download if this attempt fails
-  void getBrowserAudit()
-    .load()
-    .catch(() => undefined);
+    const { getChallenge } = await import("@caret/challenges");
+    if (!isCurrent()) {
+      if (state.sequence === sequence) state.loading = false;
+      return false;
+    }
+    const challenge = getChallenge(challengeName);
+    const settings = challenge?.settings;
+    // fetch the rules module now so verifying the result never waits on it;
+    // verify retries the download if this attempt fails
+    void getBrowserAudit()
+      .load()
+      .catch(() => undefined);
 
-  let notitext;
+    let notitext;
     if (challenge === undefined || settings === undefined) {
       showNoticeNotification("Challenge not found or missing settings");
       return false;
