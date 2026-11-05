@@ -1,33 +1,43 @@
+import { createAppOwned } from "../app/application";
+import { appObject } from "../app/state";
+import { onCleanup } from "solid-js";
 import { captureAccount } from "../app/account-scope";
 import { envConfig } from "virtual:env-config";
+
+const sentryState = createAppOwned(() => {
+  const value = { debug: false, activated: false, generation: 0, client: undefined as ReturnType<typeof import("./sentry-sdk").init> | undefined };
+  onCleanup(() => {
+    value.generation++;
+    value.activated = false;
+    void value.client?.close(2000);
+  });
+  return value;
+});
+const state = appObject(sentryState);
 
 async function getSentry(): Promise<typeof import("./sentry-sdk")> {
   return await import("./sentry-sdk");
 }
 
-let debug = false;
 
-let activated = false;
-let generation = 0;
-let client: ReturnType<typeof import("./sentry-sdk").init> | undefined;
 
 export async function activateSentry(): Promise<void> {
   const dsn = envConfig.sentryDsn;
   if (dsn === undefined || dsn === "") return;
-  if (activated) {
-    console.warn("Sentry already activated");
+  if (state.activated) {
+    console.warn("Sentry already state.activated");
     return;
   }
-  activated = true;
+  state.activated = true;
   console.log("Activating Sentry");
 
-  const current = generation;
+  const current = state.generation;
   const Sentry = await getSentry().catch((error: unknown) => {
-    if (current === generation) activated = false;
+    if (current === state.generation) state.activated = false;
     throw error;
   });
-  if (current !== generation) return;
-  client = Sentry.init({
+  if (current !== state.generation) return;
+  state.client = Sentry.init({
     release: envConfig.clientVersion,
     dsn,
     // Preserve sendDefaultPii: false; Sentry 11 otherwise collects more data.
@@ -95,7 +105,7 @@ export async function activateSentry(): Promise<void> {
         );
         return null;
       } else {
-        if (debug) {
+        if (state.debug) {
           console.debug("Sentry beforeSend", event);
         }
       }
@@ -134,7 +144,7 @@ export async function activateSentry(): Promise<void> {
 }
 
 export async function setUser(uid: string, name: string): Promise<void> {
-  if (!activated) return;
+  if (!state.activated) return;
   const lease = captureAccount();
   const Sentry = await getSentry();
   if (!lease.isCurrent()) return;
@@ -145,7 +155,7 @@ export async function setUser(uid: string, name: string): Promise<void> {
 }
 
 export async function clearUser(): Promise<void> {
-  if (!activated) return;
+  if (!state.activated) return;
   const lease = captureAccount();
   const Sentry = await getSentry();
   if (!lease.isCurrent()) return;
@@ -153,20 +163,20 @@ export async function clearUser(): Promise<void> {
 }
 
 export async function captureException(error: Error): Promise<void> {
-  if (!activated) return;
+  if (!state.activated) return;
   const Sentry = await getSentry();
   Sentry.captureException(error);
 }
 
 export function toggleDebug(): void {
-  debug = !debug;
-  console.debug("Sentry debug mode:", debug);
+  state.debug = !state.debug;
+  console.debug("Sentry state.debug mode:", state.debug);
 }
 
 export function disposeSentry(): void {
-  generation++;
-  activated = false;
-  const previous = client;
-  client = undefined;
+  state.generation++;
+  state.activated = false;
+  const previous = state.client;
+  state.client = undefined;
   void previous?.close(2000);
 }
