@@ -38,7 +38,7 @@ export async function toggleBan(
   return await atomicUser(uid, async () => {
     const user = await UserDAL.getPartialUser(uid, "toggle ban", ["banned"]);
 
-    const banning = !user.banned;
+    const banning = input.body.banned ?? !user.banned;
 
     await UserDAL.setBanned(uid, banning);
 

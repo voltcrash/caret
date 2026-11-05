@@ -10,6 +10,8 @@ import {
 
 export const ToggleBanRequestSchema = z
   .object({
+    /** Explicit target state makes retries safe; omitted by legacy toggle callers. */
+    banned: z.boolean().optional(),
     uid: UidSchema,
   })
   .strict();
