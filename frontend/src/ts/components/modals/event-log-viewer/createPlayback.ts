@@ -1,4 +1,4 @@
-import { Accessor, createMemo, createSignal, onCleanup } from "solid-js";
+import { Accessor, createEffect, createMemo, createSignal, onCleanup } from "solid-js";
 
 import type { TestEventNoMs } from "@caret/web-shared/events/types";
 import type { VideoSync } from "./createVideoSync";
@@ -89,6 +89,11 @@ export function createPlayback(options: {
   };
 
   onCleanup(stopTimelinePlay);
+  createEffect(() => {
+    // Changing clock authority always stops the independent timeline clock.
+    isSynced();
+    stopTimelinePlay();
+  });
 
   const stopAllPlay = (): void => {
     stopTimelinePlay();

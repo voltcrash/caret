@@ -63,6 +63,7 @@ const playback = createTypingOwned(() => {
   };
   const refresh = (): void => {
     stop();
+    setResultState("replay", "playback", "start");
     replay?.dispose();
     const log = buildEventLog();
     replay = getBrowserEngine()
