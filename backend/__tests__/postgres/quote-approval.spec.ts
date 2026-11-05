@@ -41,6 +41,7 @@ describe("quote approval delivery", () => {
               "SELECT count(*) AS count FROM quote_submissions WHERE id='approval'",
             ).first("count"),
           ).toBe(1);
+          await expect(Quotes.refuse("approval")).rejects.toMatchObject({ status: 409 });
           await Quotes.approve("approval", undefined, undefined, "Moderator");
           expect(fetch).toHaveBeenCalledTimes(2);
           for (const call of fetch.mock.calls) {
