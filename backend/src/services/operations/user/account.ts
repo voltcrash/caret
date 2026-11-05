@@ -45,7 +45,7 @@ export async function createNewUser(
   }
 
   await UserDAL.addUser(name, email, uid);
-  await addImportantLog("user_created", {}, uid);
+  context.background(addImportantLog("user_created", {}, uid));
 
   return new MonkeyResponse("User created", null);
 }
@@ -57,7 +57,7 @@ export async function deleteUser(
 
   await deleteUserAccount(uid, context.configuration);
 
-  await addImportantLog("user_deleted", {}, uid);
+  context.background(addImportantLog("user_deleted", {}, uid));
 
   return new MonkeyResponse("User deleted", null);
 }
@@ -79,7 +79,7 @@ export async function resetUser(
     await UserDAL.resetUser(uid);
     return user;
   });
-  await addImportantLog("user_reset", {}, uid);
+  context.background(addImportantLog("user_reset", {}, uid));
 
   return new MonkeyResponse("User reset", null);
 }

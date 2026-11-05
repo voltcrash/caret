@@ -32,7 +32,7 @@ export async function addUser(
         JSON.stringify(user), uid,
       ),
     ]);
-    if (committed?.[1]?.rowCount === 0) {
+    if (committed?.[1]?.rowCount === 0 || (committed === undefined && !(await exists(uid)))) {
       throw new MonkeyError(401, "Sign up was cancelled; sign in again");
     }
   } catch (error) {
