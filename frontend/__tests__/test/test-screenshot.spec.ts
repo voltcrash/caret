@@ -38,6 +38,7 @@ vi.mock("../../src/ts/states/result", () => ({
 }));
 vi.mock("../../src/ts/states/core", () => ({ setIsScreenshotting: vi.fn() }));
 vi.mock("../../src/ts/states/loader-bar", () => ({
+  beginLoaderBar: () => vi.fn(),
   showLoaderBar: vi.fn(),
   hideLoaderBar: vi.fn(),
 }));

@@ -26,12 +26,14 @@ fn session() -> Session {
 #[test]
 fn host_observes_completion_time_without_deciding_completion() {
     let mut session = session();
+    assert_eq!(session.phase(), typing_engine::session::SessionPhase::Ready);
     let update = command(
         &mut session,
         json!({"op":"insert","data":[97],"now":1000,"date":1000000}),
     )
     .unwrap();
     assert!(update.finish.is_some());
+    assert_eq!(session.phase(), typing_engine::session::SessionPhase::FinishPending);
     assert!(!update.state.ended);
     assert!(
         session
@@ -65,6 +67,7 @@ fn host_observes_completion_time_without_deciding_completion() {
     )
     .unwrap();
     assert!(update.state.ended);
+    assert_eq!(session.phase(), typing_engine::session::SessionPhase::Ended);
     assert!(update.finish.is_none());
     assert_eq!(
         session.log()["events"].as_array().unwrap().last().unwrap()["testMs"].as_f64(),
