@@ -1,6 +1,6 @@
 import { captureTypingRoute, captureTypingPresentation, createTypingOwned } from "../scope";
 import { createCroppedScreenshot } from "../components/result/useScreenshotCanvas";
-import { showLoaderBar, hideLoaderBar } from "../../../ts/states/loader-bar";
+import { beginLoaderBar, showLoaderBar, hideLoaderBar } from "../../../ts/states/loader-bar";
 import * as Replay from "./replay";
 import { setIsScreenshotting } from "../../../ts/states/core";
 import { getActiveFunboxesWithFunction } from "./funbox/list";
@@ -182,10 +182,12 @@ async function generateCanvas(): Promise<HTMLCanvasElement | null> {
   const state = captureState();
   if (state.pending !== undefined) return await state.pending;
   const route = captureTypingRoute();
+  const releaseLoader = beginLoaderBar();
   const pending = renderCanvas().catch((error: unknown) => {
     if (route.isCurrent()) showErrorNotification("Error creating screenshot", { error });
     return null;
   }).finally(() => {
+    releaseLoader();
     if (state.pending === pending) state.pending = undefined;
     if (route.isCurrent()) revert();
   });
