@@ -13,6 +13,7 @@ import {
   requireApplication,
 } from "../../app/application";
 import { createOwnedScope, type OwnedScope } from "../../app/scope";
+import { getTypingLifecycle } from "./lifecycle-controller";
 
 type RouteScope = {
   owner: Owner;
@@ -69,10 +70,12 @@ export function mountTypingScope(): () => void {
     };
   });
   current.managed = true;
+  getTypingLifecycle().send({ type: "MOUNT" });
   current.generation++;
   current.setRoute(route);
   return () => {
     if (current.route() !== route) return;
+    getTypingLifecycle().send({ type: "UNMOUNT" });
     current.generation++;
     current.setRoute(undefined);
     route.dispose();
@@ -113,6 +116,26 @@ export function captureTypingRoute(): { isCurrent: () => boolean } {
       currentApplication() === application &&
       current.generation === generation &&
       isTypingRouteActive(),
+  };
+}
+
+/** Result effects cannot cross a restart, recovery attempt, or route mount. */
+export function captureTypingPresentation(): { isCurrent: () => boolean } {
+  const route = captureTypingRoute();
+  const operation = getTypingLifecycle().capture();
+  return { isCurrent: () => route.isCurrent() && operation.isCurrent() };
+}
+
+/** Save acknowledgements survive presentation retries, but never a new test. */
+export function captureTypingResult(): { isCurrent: () => boolean } {
+  const route = captureTypingRoute();
+  const controller = getTypingLifecycle();
+  const { mountId, testId } = controller.state();
+  return {
+    isCurrent: () =>
+      route.isCurrent() &&
+      controller.state().mountId === mountId &&
+      controller.state().testId === testId,
   };
 }
 
