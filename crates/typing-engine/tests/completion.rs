@@ -33,7 +33,10 @@ fn host_observes_completion_time_without_deciding_completion() {
     )
     .unwrap();
     assert!(update.finish.is_some());
-    assert_eq!(session.phase(), typing_engine::session::SessionPhase::FinishPending);
+    assert_eq!(
+        session.phase(),
+        typing_engine::session::SessionPhase::FinishPending
+    );
     assert!(!update.state.ended);
     assert!(
         session

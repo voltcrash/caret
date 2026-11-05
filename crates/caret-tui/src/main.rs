@@ -114,8 +114,9 @@ fn run() -> Result<()> {
             }
             Ok(false) => {}
             Err(error) => {
-                notice =
-                    format!("UNSAVED result: {error}. F9 retries; pending data will be retried after restart.");
+                notice = format!(
+                    "UNSAVED result: {error}. F9 retries; pending data will be retried after restart."
+                );
                 dirty = true;
             }
         }

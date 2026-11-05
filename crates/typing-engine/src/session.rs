@@ -866,16 +866,28 @@ impl Session {
         Ok(())
     }
     pub fn phase(&self) -> SessionPhase {
-        if self.ended { SessionPhase::Ended }
-        else if self.pending_finish.is_some() { SessionPhase::FinishPending }
-        else if self.awaiting_recovery { SessionPhase::AwaitingRecovery }
-        else if self.pending_commit.is_some() { SessionPhase::AwaitingContent }
-        else if self.active { SessionPhase::Running }
-        else { SessionPhase::Ready }
+        if self.ended {
+            SessionPhase::Ended
+        } else if self.pending_finish.is_some() {
+            SessionPhase::FinishPending
+        } else if self.awaiting_recovery {
+            SessionPhase::AwaitingRecovery
+        } else if self.pending_commit.is_some() {
+            SessionPhase::AwaitingContent
+        } else if self.active {
+            SessionPhase::Running
+        } else {
+            SessionPhase::Ready
+        }
     }
     pub fn state(&self) -> State {
         debug_assert!(!(self.active && self.ended));
-        debug_assert!(!self.ended || (self.pending_finish.is_none() && self.pending_commit.is_none() && self.deferred_input.is_none()));
+        debug_assert!(
+            !self.ended
+                || (self.pending_finish.is_none()
+                    && self.pending_commit.is_none()
+                    && self.deferred_input.is_none())
+        );
         State {
             word_index: self.index,
             input_value: self.current(),

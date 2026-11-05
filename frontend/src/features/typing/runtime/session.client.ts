@@ -200,7 +200,7 @@ export const getEngineSession = createAppOwned(() => {
   const command = (input: Command): Update => {
     try {
       if (isUpdateReserved() && (input.op === "insert" || input.op === "start")) {
-        return live().command({ op: "view", now: input.now });
+        return live().command({ op: "view", now: input.now, earliestVisibleWord: null, deferAutomatic: null });
       }
       if (input.op !== "configure" && input.op !== "reset") {
         synchronize(input.now);
