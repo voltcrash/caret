@@ -22,6 +22,7 @@ test("one input command can start and finish a short test", async ({
   await word.click();
   await page.keyboard.insertText(text);
   await expect(page.locator("#result")).toHaveCSS("opacity", "1");
+  await expect(page.locator("#resultSummary")).toContainText("Test complete.");
   await expect(page.locator("#testInitFailed")).toBeHidden();
 });
 
@@ -64,6 +65,7 @@ test("a timed-out chart retries the same completion and permits the next test", 
   await page.getByRole("button", { name: "Retry result", exact: true }).click();
   releaseChart.resolve(undefined);
   await expect(page.locator("#result")).toHaveCSS("opacity", "1");
+  await expect(page.locator("#resultSummary")).toContainText("Test complete.");
   await expect(
     page.getByRole("button", { name: "Retry result", exact: true }),
   ).toBeHidden();
