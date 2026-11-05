@@ -1,6 +1,6 @@
 import { beforeEach, expect, it, vi } from "vite-plus/test";
 import { requireApplication } from "../../src/app/application";
-import { saveConfig } from "../../src/ts/config/sync";
+import { deleteConfig, saveConfig } from "../../src/ts/config/sync";
 import { getQueryClient } from "../../src/ts/queries";
 import { getRemotePreferencesQueryOptions } from "../../src/ts/queries/preferences";
 import {
@@ -44,4 +44,23 @@ it("keeps a failed patch for reconnect retry", async () => {
     return ok(null);
   });
   await saveConfig({});
+});
+
+it("does not restore an old failed patch across reset", async () => {
+  const first = Promise.withResolvers<ReturnType<typeof fail>>();
+  mockOperation("configs.save", async () => first.promise);
+  mockOperation("configs.delete", () => ok(null));
+  const saving = saveConfig({ time: 60 });
+  await vi.waitFor(() => expect(operationCalls).toHaveBeenCalledOnce());
+  const resetting = deleteConfig();
+  first.resolve(fail(503, "offline"));
+  await Promise.all([saving, resetting]);
+  await saveConfig({});
+  expect(operationCalls.mock.calls.map(([id]) => id)).toEqual([
+    "configs.save",
+    "configs.delete",
+  ]);
+  expect(
+    getQueryClient().getQueryData(getRemotePreferencesQueryOptions().queryKey),
+  ).toBeNull();
 });

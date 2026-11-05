@@ -19,9 +19,9 @@ import { useThemeCommandEvents } from "../../commandline/lists/themes";
 import { COMMAND_SEPARATOR_HTML } from "../../commandline/util";
 import {
   commandlineState,
+  getCommandlineState,
   type CommandlineSuggestion,
 } from "../../states/commandline";
-import { getCommandlineState } from "../../states/commandline";
 import { isAuthenticated } from "../../states/core";
 import { isModalOpen } from "../../states/modals";
 import { cn } from "../../utils/cn";

@@ -9,7 +9,11 @@ import { onCleanup } from "solid-js";
 import { OperationError } from "../../data/operation-result";
 
 const synchronization = createAccountOwned(() => {
-  const state = { pending: {} as Partial<Config>, queue: Promise.resolve() };
+  const state = {
+    pending: {} as Partial<Config>,
+    queue: Promise.resolve(),
+    generation: 0,
+  };
   const retry = (): void => {
     if (Object.keys(state.pending).length > 0) {
       void saveConfig({}).catch(() => undefined);
@@ -35,14 +39,17 @@ async function serialize(work: () => Promise<void>): Promise<void> {
 export async function saveConfig(config: Partial<Config>): Promise<void> {
   if (isAuthenticated()) {
     const state = synchronization();
+    const generation = state.generation;
     Object.assign(state.pending, structuredClone(config));
     await serialize(async () => {
+      if (generation !== state.generation) return;
       const lease = captureAccount();
       const pending = state.pending;
       state.pending = {};
       if (Object.keys(pending).length === 0) return;
       const response = await operation("configs.save", { body: pending });
       lease.assertCurrent();
+      if (generation !== state.generation) return;
       if (!response.ok) {
         state.pending = { ...pending, ...state.pending };
         showErrorNotification("Failed to save config", { operation: response });
@@ -58,7 +65,9 @@ export async function saveConfig(config: Partial<Config>): Promise<void> {
 }
 export async function deleteConfig(): Promise<void> {
   if (isAuthenticated()) {
-    synchronization().pending = {};
+    const state = synchronization();
+    state.generation++;
+    state.pending = {};
     await serialize(async () => {
       const lease = captureAccount();
       const response = await operation("configs.delete");
