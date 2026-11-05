@@ -21,6 +21,14 @@ import { replaceUnderscoresWithSpaces } from "../utils/strings";
 import { getCustomTextIndicator } from "./core";
 import { useResourceWithPromise } from "../hooks/useResourceWithPromise";
 import { clearTimeouts } from "../utils/misc";
+export {
+  isTestActive,
+  isTestRestarting,
+  isResultCalculating,
+  isResultLoading,
+  getResultVisible,
+  getTestInitError,
+} from "../../features/typing/lifecycle-controller";
 
 export const [wordsHaveNewline, setWordsHaveNewline] = createAppSignal(false);
 export const [wordsHaveTab, setWordsHaveTab] = createAppSignal(false);
@@ -28,19 +36,8 @@ export const [wordsHaveNumbers, setWordsHaveNumbers] = createAppSignal(false);
 
 export const [getLoadedChallenge, setLoadedChallenge] =
   createAppSignal<Challenge | null>(null);
-export const [getResultVisible, setResultVisible] = createAppSignal(false);
-// True from the first line of TestLogic.finish() until the result is built, so
-// it covers the words fade-out that getResultVisible() is still false during.
-export const [isResultCalculating, setResultCalculating] =
-  createAppSignal(false);
-// Spinner between the typing test fading out and the result showing.
-export const [isResultLoading, setResultLoading] = createAppSignal(false);
 // Set when the user bails out of a test early; reset by TestLogic.restart().
 export const [getBailedOut, setBailedOut] = createAppSignal(false);
-// Set when test init fails repeatedly; message is the last init error, if any.
-export const [getTestInitError, setTestInitError] = createAppSignal<{
-  message: string | undefined;
-} | null>(null);
 export const [getFocus, setFocus] = createAppSignal(false);
 // Words blur, composition display and OutOfFocusWarning share delayed input focus.
 const focusTimeouts = createAppOwned(() => {
@@ -104,8 +101,6 @@ export const [getCurrentQuote, setCurrentQuote] =
 
 export const [getLastSignedOutResult, setLastSignedOutResult] =
   createAppSignal<CompletedEvent | null>(null);
-
-export const [isTestActive, setTestActive] = createAppSignal(false);
 
 export const [
   getActiveWordIndex,
@@ -259,7 +254,6 @@ export const [isLanguageRightToLeft, setIsLanguageRightToLeft] =
   createAppSignal(false);
 export const [isDirectionReversed, setIsDirectionReversed] =
   createAppSignal(false);
-export const [isTestRestarting, setIsTestRestarting] = createAppSignal(false);
 export const [getKoreanStatus, setKoreanStatus] = createAppSignal(false);
 export const [getLastEventLog, setLastEventLog] =
   createAppSignal<EventLog | null>(null);

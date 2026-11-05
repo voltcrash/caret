@@ -7,15 +7,9 @@ import { hideLoaderBar } from "../../ts/states/loader-bar";
 import { resetModifierState } from "../../ts/states/modifiers";
 import {
   resetIncompleteTests,
-  setTestActive,
-  setIsTestRestarting,
-  setResultCalculating,
-  setResultLoading,
-  setResultVisible,
   setFocus,
   setCompositionText,
   setTestFocusState,
-  setTestInitError,
 } from "../../ts/states/test";
 import * as Composition from "../../ts/states/composition";
 import {
@@ -33,21 +27,22 @@ import * as Replay from "./runtime/replay";
 import * as Timer from "./runtime/test-timer";
 import { restart } from "./runtime/test-logic";
 import { resetAltGrState } from "./runtime/layout-emulator";
+import { getTypingLifecycle } from "./lifecycle-controller";
 
 /** Returning always starts a new test; never resumes detached engine/DOM state. */
 export async function enterTypingRoute(): Promise<void> {
   const mount = captureTypingMount();
+  const lifecycle = getTypingLifecycle();
+  const operation = lifecycle.capture();
   try {
-    await preferencesReadiness().wait();
+    await operation.wait(preferencesReadiness().wait());
     if (!mount.activate()) return;
     resetIncompleteTests();
     await restart({ noAnim: true });
   } catch (error) {
+    if (!mount.isCurrent()) return;
     if (mount.isCurrent()) {
-      setIsTestRestarting(false);
-      setTestInitError({
-        message: error instanceof Error ? error.message : undefined,
-      });
+      lifecycle.send({ type: "FAIL", error });
     }
     throw error;
   } finally {
@@ -59,6 +54,7 @@ export async function enterTypingRoute(): Promise<void> {
 
 /** Synchronous teardown: no generation, animation or async work against detached refs. */
 export function exitTypingRoute(): void {
+  getTypingLifecycle().send({ type: "UNMOUNT" });
   setTypingReady(false);
   Timer.clear();
   PaceCaret.reset();
@@ -76,11 +72,6 @@ export function exitTypingRoute(): void {
   Composition.setComposing(false);
   Composition.setData("");
   setCompositionText("");
-  setTestActive(false);
-  setIsTestRestarting(false);
-  setResultCalculating(false);
-  setResultLoading(false);
-  setResultVisible(false);
   setIsScreenshotting(false);
   setScreenshotWatermark(undefined);
   setFocus(false);
