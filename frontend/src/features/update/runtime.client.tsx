@@ -102,8 +102,11 @@ export function UpdateRuntime(props: { reload?: () => void }): JSXElement {
       return;
     }
     if (updates?.activateWaiting(true) === true) {
-      // The new worker reloads the page on takeover; never strand the click.
-      fallback ??= setTimeout(reload, 3000);
+      // Posting a request is not activation: another tab may refuse takeover.
+      fallback ??= setTimeout(() => {
+        fallback = undefined;
+        showNoticeNotification("Update is waiting for other tabs. Finish their tests, then retry.");
+      }, 3000);
       return;
     }
     reload();
