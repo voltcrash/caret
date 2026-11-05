@@ -1,6 +1,10 @@
+import { resetTypingLifecycle } from "../__harness__/typing-lifecycle";
+import { isTestRestarting, getTestInitError } from "../../src/ts/states/test";
 import { mockHttpFixture } from "../__harness__/operations";
 import { animateAsync } from "../../src/ts/anim";
 import * as TestUI from "../../src/features/typing/runtime/test-ui";
+import * as TodayTracker from "../../src/features/typing/runtime/today-tracker";
+import { retryCompletion } from "../../src/features/typing/runtime/completion";
 import { requireApplication } from "../../src/app/application";
 import { bindTypingActivity } from "../../src/features/typing/scope";
 import { createRoot, onCleanup } from "solid-js";
@@ -61,19 +65,9 @@ vi.mock("../../src/features/typing/engine.client", () => ({
   getBrowserEngine: () => ({ load: mocks.engineLoad }),
 }));
 
-vi.mock("../../src/ts/states/test", () => ({
-  isTestActive: () => mocks.active,
-  setTestActive: (value: boolean) => {
-    mocks.active = value;
-  },
-  isTestRestarting: () => mocks.restarting,
-  setIsTestRestarting: (value: boolean) => {
-    mocks.restarting = value;
-  },
-  isResultCalculating: () => mocks.calculating,
-  setResultCalculating: (value: boolean) => {
-    mocks.calculating = value;
-  },
+vi.mock("../../src/ts/states/test", async () => ({
+  ...(await import("../../src/features/typing/lifecycle-controller"))
+    .lifecycleSelectors,
   isRepeated: () => mocks.repeated,
   setIsRepeated: (value: boolean) => {
     mocks.repeated = value;
@@ -81,7 +75,6 @@ vi.mock("../../src/ts/states/test", () => ({
   getCurrentQuote: () => mocks.quote,
   getActiveWordIndex: () => 0,
   resetActiveWordIndex: vi.fn(),
-  getResultVisible: () => false,
   getBailedOut: () => false,
   isPaceRepeat: () => false,
   getIncompleteSeconds: () => 0,
@@ -96,14 +89,11 @@ vi.mock("../../src/ts/states/test", () => ({
   setLastResult: vi.fn(),
   setBailedOut: vi.fn(),
   setLastSignedOutResult: mocks.signedOut,
-  setResultLoading: vi.fn(),
-  setResultVisible: vi.fn(),
   setWordsHaveNewline: vi.fn(),
   setWordsHaveNumbers: vi.fn(),
   setWordsHaveTab: vi.fn(),
   setIsDirectionReversed: vi.fn(),
   setIsLanguageRightToLeft: vi.fn(),
-  setTestInitError: mocks.setInitError,
 }));
 vi.mock("../../src/ts/states/core", () => ({
   getCustomTextIndicator: () => undefined,
@@ -198,6 +188,7 @@ vi.mock("../../src/features/typing/runtime/today-tracker", () => ({
 vi.mock("../../src/features/typing/runtime/result", () => ({
   update: mocks.resultUpdate,
   updateRetrySaving: mocks.retryUpdate,
+  resetResultSaveState: vi.fn(),
   updateTodayTracker: vi.fn(),
   updateSavedResultId: vi.fn(),
   updateDailyLeaderboardRank: vi.fn(),
@@ -290,6 +281,7 @@ import {
 let disposeRuntime: () => void;
 afterEach(() => disposeRuntime());
 beforeEach(() => {
+  resetTypingLifecycle();
   mocks.engineLoad.mockReset().mockResolvedValue(undefined);
   mocks.restartPolicy
     .mockReset()
@@ -355,37 +347,60 @@ beforeEach(() => {
 });
 
 describe("test lifecycle state", () => {
+  it("scores against the finalized configuration even if settings change during the fade", async () => {
+    const fade = Promise.withResolvers<undefined>();
+    vi.mocked(animateAsync).mockReturnValueOnce(fade.promise);
+    resetTypingLifecycle("running");
+    const pending = finish();
+    getMutableConfig().words = 100;
+    fade.resolve(undefined);
+    await pending;
+    expect(mocks.complete.mock.calls[0]?.[1].config.words).toBe(15);
+  });
+
+  it("retries a failed presentation without recording daily time or saving twice", async () => {
+    mocks.user = { uid: "user" };
+    mocks.resultUpdate.mockRejectedValueOnce(new Error("chart failed"));
+    resetTypingLifecycle("running");
+    await finish();
+    await retryCompletion();
+    expect(mocks.resultUpdate).toHaveBeenCalledTimes(2);
+    expect(mocks.complete).toHaveBeenCalledOnce();
+    expect(TodayTracker.addSeconds).toHaveBeenCalledOnce();
+    expect(mocks.addResult).toHaveBeenCalledOnce();
+  });
+
   it("ignores a second restart while the first fade is pending", async () => {
-    const fade = Promise.withResolvers<void>();
+    const fade = Promise.withResolvers<undefined>();
     vi.mocked(TestUI.fadeOutForRestart).mockReturnValueOnce(fade.promise);
     const first = restart();
     const event = { preventDefault: vi.fn() } as unknown as KeyboardEvent;
     await restart({ event });
     expect(event.preventDefault).toHaveBeenCalledOnce();
     expect(mocks.generate).not.toHaveBeenCalled();
-    fade.resolve();
+    fade.resolve(undefined);
     await first;
     expect(mocks.generate).toHaveBeenCalledOnce();
-    expect(mocks.restarting).toBe(false);
+    expect(isTestRestarting()).toBe(false);
   });
 
   it("drops preparation after the route leaves during its fade", async () => {
-    const fade = Promise.withResolvers<void>();
+    const fade = Promise.withResolvers<undefined>();
     vi.mocked(TestUI.fadeOutForRestart).mockReturnValueOnce(fade.promise);
     const pending = restart();
     mocks.transition = true;
-    fade.resolve();
+    fade.resolve(undefined);
     await pending;
     expect(mocks.generate).not.toHaveBeenCalled();
     expect(mocks.uiRestart).not.toHaveBeenCalled();
   });
 
-  it.fails("releases a failed restart and permits retry", async () => {
+  it("releases a failed restart and permits retry", async () => {
     vi.mocked(TestUI.fadeOutForRestart).mockRejectedValueOnce(
       new Error("fade failed"),
     );
     await restart();
-    expect(mocks.restarting).toBe(false);
+    expect(isTestRestarting()).toBe(false);
     await restart();
     expect(mocks.generate).toHaveBeenCalledOnce();
   });
@@ -440,7 +455,7 @@ describe("test lifecycle state", () => {
 
   it("saves the completed payload with its server ID before collection normalization", async () => {
     mocks.user = { uid: "user" };
-    mocks.active = true;
+    resetTypingLifecycle("running");
     mocks.addResult.mockResolvedValue({
       status: 200,
       body: { data: { insertedId: "saved-result", isPb: true } },
@@ -471,7 +486,13 @@ describe("test lifecycle state", () => {
   it.each(["restarting", "calculating", "noQuit"] as const)(
     "rejects restarts while %s",
     async (guard) => {
-      mocks[guard] = true;
+      resetTypingLifecycle(
+        guard === "restarting"
+          ? "preparing.exiting"
+          : guard === "calculating"
+            ? "completing.loading"
+            : "running",
+      );
       if (guard === "noQuit") {
         mocks.restartPolicy.mockReturnValueOnce({
           allowed: false,
@@ -482,7 +503,6 @@ describe("test lifecycle state", () => {
           repeatWithPace: false,
         });
       }
-      mocks.active = true;
       const event = { preventDefault: vi.fn() } as unknown as KeyboardEvent;
       await restart({ event });
       expect(event.preventDefault).toHaveBeenCalledOnce();
@@ -495,11 +515,11 @@ describe("test lifecycle state", () => {
       new Error("Typing engine download failed: 503"),
     );
     await restart();
-    expect(mocks.setInitError).toHaveBeenCalledWith({
+    expect(getTestInitError()).toEqual({
       message: "Typing engine download failed: 503",
     });
     expect(mocks.generate).not.toHaveBeenCalled();
-    expect(mocks.restarting).toBe(false);
+    expect(isTestRestarting()).toBe(false);
     await restart();
     expect(mocks.generate).toHaveBeenCalledOnce();
     expect(mocks.uiRestart).toHaveBeenCalledWith("testPage");
@@ -510,11 +530,11 @@ describe("test lifecycle state", () => {
     mocks.generate.mockRejectedValue(error);
     await restart();
     expect(mocks.generate).toHaveBeenCalledTimes(3);
-    expect(mocks.setInitError).toHaveBeenCalledWith({
-      message: "Error: generation failed",
+    expect(getTestInitError()).toEqual({
+      message: "generation failed",
     });
     expect(mocks.capture).toHaveBeenCalledWith(error);
-    expect(mocks.restarting).toBe(false);
+    expect(isTestRestarting()).toBe(false);
     mocks.generate.mockResolvedValue({
       words: ["ok"],
       sectionIndexes: [0],
@@ -547,20 +567,20 @@ describe("test lifecycle state", () => {
   });
 
   it("clears the failure reason on restart", async () => {
-    mocks.active = true;
+    resetTypingLifecycle("running");
     fail("min wpm");
     await vi.waitFor(() => expect(mocks.resultUpdate).toHaveBeenCalled());
     expect(mocks.resultUpdate.mock.calls[0]?.[2]).toBe("min wpm");
-    mocks.calculating = false;
+
     await restart();
-    mocks.active = true;
+    resetTypingLifecycle("running");
     await finish();
     expect(mocks.resultUpdate.mock.calls[1]?.[2]).toBe("");
   });
 
   it("allows one save retry until another retryable response arrives", async () => {
     mocks.user = { uid: "user" };
-    mocks.active = true;
+    resetTypingLifecycle("running");
     mocks.addResult.mockResolvedValueOnce({
       status: 500,
       body: { message: "Unavailable" },
@@ -606,7 +626,7 @@ describe("shared test decisions", () => {
         recordIncomplete: true,
         preventDefault: false,
       });
-      mocks.active = true;
+      resetTypingLifecycle("running");
       await restart();
       expect(mocks.repeated).toBe(repeatQuotes === "typing");
     },
@@ -616,14 +636,14 @@ describe("shared test decisions", () => {
     getMutableConfig().mode = "quote";
     getMutableConfig().repeatQuotes = "typing";
     mocks.quote = { language: "spanish", id: 1 } as QuoteWithTextSplit;
-    mocks.active = true;
+    resetTypingLifecycle("running");
     await restart();
     expect(mocks.repeated).toBe(false);
   });
 
   it("rejects undefined and NaN completed fields before saving", async () => {
     mocks.complete.mockReturnValue({ wpm: NaN, nested: [undefined] });
-    mocks.active = true;
+    resetTypingLifecycle("running");
     await finish();
     expect(mocks.error).toHaveBeenCalledWith(
       "Failed to build result object: One of the fields is undefined or NaN",
@@ -640,7 +660,7 @@ it("drops completion presentation after forced navigation during the fade", asyn
         resolve = done;
       }),
   );
-  mocks.active = true;
+  resetTypingLifecycle("running");
   const completion = finish();
   mocks.transition = true;
   resolve();
@@ -661,7 +681,7 @@ it("never applies a pending save acknowledgement to another actor", async () => 
       }),
   );
   mocks.user = { uid: "user" };
-  mocks.active = true;
+  resetTypingLifecycle("running");
   const completion = finish();
   await vi.waitFor(() => expect(mocks.addResult).toHaveBeenCalledOnce());
   requireApplication().accountData.setActor("other-actor");

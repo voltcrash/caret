@@ -1,3 +1,4 @@
+import { resetTypingLifecycle } from "../../__harness__/typing-lifecycle";
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 
 const mocks = vi.hoisted(() => {
@@ -71,9 +72,6 @@ import {
   isTestActive,
   isTestRestarting,
   setFocus,
-  setResultVisible,
-  setTestActive,
-  setIsTestRestarting,
 } from "../../../src/ts/states/test";
 import {
   createTestApplication,
@@ -117,8 +115,7 @@ it("keeps startup pending until the first test finishes initializing", async () 
   mocks.restart.mockReturnValueOnce(initialization.promise);
   const release = mountTypingScope();
   const entered = enterTypingRoute();
-  await Promise.resolve();
-  expect(mocks.restart).toHaveBeenCalledOnce();
+  await vi.waitFor(() => expect(mocks.restart).toHaveBeenCalledOnce());
   expect(isTypingReady()).toBe(false);
   initialization.resolve(undefined);
   await entered;
@@ -136,15 +133,14 @@ it.each(["resolve", "reject"] as const)(
       .mockReturnValueOnce(newTest.promise);
     const leave = mountTypingScope();
     const stale = enterTypingRoute();
-    await Promise.resolve();
+    await vi.waitFor(() => expect(mocks.restart).toHaveBeenCalledOnce());
     leave();
     const release = mountTypingScope();
     const current = enterTypingRoute();
-    await Promise.resolve();
+    await vi.waitFor(() => expect(mocks.restart).toHaveBeenCalledTimes(2));
     if (outcome === "reject") {
-      const failed = expect(stale).rejects.toThrow("stale initialization");
       oldTest.reject(new Error("stale initialization"));
-      await failed;
+      await stale;
     } else {
       oldTest.resolve(undefined);
       await stale;
@@ -163,7 +159,7 @@ it.each(["preferences", "restart"] as const)(
   async (stage) => {
     mocks[stage].mockRejectedValueOnce(new Error("startup failed"));
     const release = mountTypingScope();
-    setIsTestRestarting(true);
+
     await expect(enterTypingRoute()).rejects.toThrow("startup failed");
     expect(isTypingReady()).toBe(true);
     expect(getTestInitError()).toEqual({ message: "startup failed" });
@@ -173,8 +169,8 @@ it.each(["preferences", "restart"] as const)(
 );
 
 it("tears down timers, funboxes and incomplete state synchronously on exit", () => {
-  setTestActive(true);
-  setResultVisible(true);
+  resetTypingLifecycle("running");
+  resetTypingLifecycle("result");
   setFocus(true);
   updateModifierState({ leftShift: true });
   setTypingReady(true);

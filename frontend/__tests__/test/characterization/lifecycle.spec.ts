@@ -1,3 +1,5 @@
+import { resetTypingLifecycle } from "../../__harness__/typing-lifecycle";
+import { isTestActive } from "../../../src/ts/states/test";
 import { createRoot, onCleanup } from "solid-js";
 import type { LanguageObject } from "@caret/schemas/languages";
 import type { EventLog } from "@caret/web-shared/events/types";
@@ -53,25 +55,14 @@ vi.mock("../../../src/features/typing/engine.client", () => ({
   }),
 }));
 
-vi.mock("../../../src/ts/states/test", () => ({
-  isTestActive: () => mocks.active,
-  setTestActive: (value: boolean) => {
-    mocks.active = value;
-  },
-  isTestRestarting: () => mocks.restarting,
-  setIsTestRestarting: (value: boolean) => {
-    mocks.restarting = value;
-  },
-  isResultCalculating: () => mocks.calculating,
-  setResultCalculating: (value: boolean) => {
-    mocks.calculating = value;
-  },
+vi.mock("../../../src/ts/states/test", async () => ({
+  ...(await import("../../../src/features/typing/lifecycle-controller"))
+    .lifecycleSelectors,
   isRepeated: () => false,
   setIsRepeated: vi.fn(),
   getCurrentQuote: () => null,
   getActiveWordIndex: () => mocks.wordIndex,
   resetActiveWordIndex: vi.fn(),
-  getResultVisible: () => false,
   getBailedOut: () => mocks.bailedOut,
   getKoreanStatus: () => false,
   isPaceRepeat: () => false,
@@ -89,14 +80,11 @@ vi.mock("../../../src/ts/states/test", () => ({
   setLastResult: vi.fn(),
   setBailedOut: vi.fn(),
   setLastSignedOutResult: vi.fn(),
-  setResultLoading: vi.fn(),
-  setResultVisible: vi.fn(),
   setWordsHaveNewline: vi.fn(),
   setWordsHaveNumbers: vi.fn(),
   setWordsHaveTab: vi.fn(),
   setIsDirectionReversed: vi.fn(),
   setIsLanguageRightToLeft: vi.fn(),
-  setTestInitError: vi.fn(),
   setCurrentLiveStats: (stats: Record<string, number | undefined>) => {
     mocks.liveStats.push(stats);
   },
@@ -177,6 +165,7 @@ vi.mock("../../../src/features/typing/runtime/today-tracker", () => ({
 vi.mock("../../../src/features/typing/runtime/result", () => ({
   update: mocks.resultUpdate,
   updateRetrySaving: vi.fn(),
+  resetResultSaveState: vi.fn(),
   updateTodayTracker: vi.fn(),
   updateSavedResultId: vi.fn(),
   updateDailyLeaderboardRank: vi.fn(),
@@ -321,6 +310,7 @@ afterEach(() => {
   mocks.session = undefined;
 });
 beforeEach(async () => {
+  resetTypingLifecycle();
   vi.useFakeTimers({
     toFake: ["setTimeout", "clearTimeout", "performance", "Date"],
   });
@@ -366,7 +356,7 @@ describe("timing", () => {
   it("logs the start, one step per second and live stats from the event log", () => {
     const start = performance.now();
     expect(startTest(start)).toBe(true);
-    expect(mocks.active).toBe(true);
+    expect(isTestActive()).toBe(true);
     type(start + 100, 0, "h");
     type(start + 200, 0, "he");
     type(start + 300, 0, "hx", false);
@@ -624,7 +614,7 @@ describe("restart", () => {
     await restart();
     expect(mocks.incomplete).toHaveBeenCalledWith({ acc: 66.67, seconds: 1.5 });
     expect(getAllTestEvents()).toEqual([]);
-    expect(mocks.active).toBe(false);
+    expect(isTestActive()).toBe(false);
     vi.advanceTimersByTime(5000);
     expect(getAllTestEvents()).toEqual([]);
   });
@@ -657,7 +647,7 @@ describe("restart", () => {
     type(start + 100, 0, "x", false);
     vi.advanceTimersByTime(1000);
     await vi.waitFor(() => expect(failReason()).toBe("min accuracy"));
-    mocks.calculating = false;
+
     getMutableConfig().minAcc = "off";
     await restart();
     expect(mocks.paceReset).toHaveBeenCalled();
