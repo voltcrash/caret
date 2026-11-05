@@ -126,18 +126,20 @@ it("allows username conflicts to be retried in the same auth session", async () 
 
 it("rejects profile creation after cancellation wins during captcha verification", async () => {
   await withRuntime(test.env, async () => {
-    const entered = Promise.withResolvers<void>();
-    const release = Promise.withResolvers<void>();
+    let entered!: () => void;
+    let release!: () => void;
+    const entering = new Promise<void>((resolve) => { entered = resolve; });
+    const releasing = new Promise<void>((resolve) => { release = resolve; });
     siteverify.mockImplementation(async () => {
-      entered.resolve();
-      await release.promise;
+      entered();
+      await releasing;
       return Response.json({ success: true, hostname: "localhost", action: "signup" });
     });
     const { context, user, signup } = await onboarding("cancel-race@example.com");
     const pending = signup("CancelledName");
-    await entered.promise;
+    await entering;
     await cancelRegistration(user.id);
-    release.resolve();
+    release();
     await expect(pending).rejects.toMatchObject({ status: 401 });
     expect(await UserDAL.exists(user.id)).toBe(false);
     expect(await context.internalAdapter.findUserById(user.id)).toBeNull();

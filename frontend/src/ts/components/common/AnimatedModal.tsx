@@ -110,7 +110,7 @@ function isSheetViewport(): boolean {
 }
 
 export function AnimatedModal(props: AnimatedModalProps): JSXElement {
-  onCleanup(registerModalHost(props.id));
+  onMount(() => onCleanup(registerModalHost(props.id)));
   // Refs are assigned by SolidJS via the ref attribute
   const [dialogRef, dialogEl] = useRef<HTMLDialogElement>();
   const [modalRef, modalEl] = useRef<HTMLDivElement>();

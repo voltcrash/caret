@@ -215,6 +215,19 @@ it("does not retry an old actor's current result after an account switch", async
   expect(operationCalls).toHaveBeenCalledOnce();
 });
 
+it("does not apply a save to an account switched during durable acknowledgement", async () => {
+  const queue = resultOutbox();
+  const remove = queue.remove;
+  vi.spyOn(queue, "remove").mockImplementationOnce(async (hash) => {
+    requireApplication().accountData.setActor(`replacement-${crypto.randomUUID()}`);
+    DB.setSnapshot(getDefaultSnapshot(), { dispatchEvent: false });
+    await remove(hash);
+  });
+  mockOperation("results.add", () => ok({ insertedId: "old-actor", isPb: false, xp: 100 }));
+  await saveResult(result("time", "15"), false);
+  expect(DB.getSnapshot()?.xp ?? 0).toBe(0);
+});
+
 describe.each(presets)("PB confetti: %s %s", (mode, mode2) => {
   it("celebrates a confirmed PB with an empty local cache", async () => {
     await saveResult(result(mode, mode2), false);

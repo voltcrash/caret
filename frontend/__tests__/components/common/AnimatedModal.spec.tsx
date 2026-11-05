@@ -215,6 +215,23 @@ describe("AnimatedModal", () => {
     expect(animations).toHaveLength(0);
   });
 
+  it("queues reopening until the old exit finishes and ignores its stale callback", async () => {
+    const { dialog } = renderModal({});
+    await waitFor(() => expect(dialog.open).toBe(true));
+    await completeAnimation();
+    hideModal("QuoteRate");
+    await waitFor(() => expect(animations).toHaveLength(4));
+    const exit = animations.at(-1)?.params.onComplete;
+    showModal("QuoteRate");
+    expect(isModalOpen("QuoteRate")).toBe(false);
+    await completeAnimation();
+    await waitFor(() => expect(dialog.open).toBe(true));
+    // @ts-expect-error callback arguments unused by modal lifecycle
+    await exit?.();
+    expect(dialog.open).toBe(true);
+    expect(isModalOpen("QuoteRate")).toBe(true);
+  });
+
   it("closes an open native dialog on unmount", async () => {
     const { dialog } = renderModal({});
     await waitFor(() => expect(dialog.open).toBe(true));
