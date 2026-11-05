@@ -13,6 +13,7 @@ export async function addUser(
   name: string,
   email: string,
   uid: string,
+  requireAuth = false,
 ): Promise<void> {
   const user: DBUser = {
     _id: newId(),
@@ -30,7 +31,7 @@ export async function addUser(
         `registration:${uid}`,
       ),
       statement(
-        "INSERT INTO users(uid,id,name,name_key,email,added_at,data) SELECT ?,?,?,?,?,?,?::jsonb WHERE EXISTS(SELECT 1 FROM auth_users WHERE id=?)",
+        "INSERT INTO users(uid,id,name,name_key,email,added_at,data) SELECT ?,?,?,?,?,?,?::jsonb WHERE (?=false OR EXISTS(SELECT 1 FROM auth_users WHERE id=?))",
         uid,
         user._id,
         name,
@@ -38,6 +39,7 @@ export async function addUser(
         email,
         user.addedAt ?? 0,
         JSON.stringify(user),
+        requireAuth,
         uid,
       ),
     ]);

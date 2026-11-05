@@ -182,5 +182,5 @@ export async function refuse(quoteId: string): Promise<void> {
     quoteId,
   ).run();
   if (removed.rowCount === 0)
-    throw new MonkeyError(409, "Quote is already being approved or reviewed");
+    {throw new MonkeyError(409, "Quote is already being approved or reviewed");}
 }

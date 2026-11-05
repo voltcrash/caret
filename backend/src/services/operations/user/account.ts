@@ -44,7 +44,7 @@ export async function createNewUser(
     throw new MonkeyError(409, "Username or email blocked");
   }
 
-  await UserDAL.addUser(name, email, uid);
+  await UserDAL.addUser(name, email, uid, true);
   context.background(addImportantLog("user_created", {}, uid));
 
   return new MonkeyResponse("User created", null);
