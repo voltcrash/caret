@@ -64,17 +64,21 @@ export function AccountRuntime(): null {
       }
       let timer: ReturnType<typeof setTimeout> | undefined;
       let wake: (() => void) | undefined;
+      let cancelWait: (() => void) | undefined;
       onCleanup(() => {
         clearTimeout(timer);
         if (wake !== undefined) window.removeEventListener("online", wake);
+        cancelWait?.();
       });
       // Back online or after the delay, whichever comes first.
       const retryAfter = async (delay: number): Promise<void> =>
         new Promise((resolve) => {
+          cancelWait = resolve;
           wake = () => {
             clearTimeout(timer);
             window.removeEventListener("online", wake as () => void);
             wake = undefined;
+            cancelWait = undefined;
             resolve();
           };
           timer = setTimeout(wake, delay);
@@ -82,6 +86,7 @@ export function AccountRuntime(): null {
         });
       void (async () => {
         let result: AccountLoad = await loadUser(user);
+        // Settlement releases the UI even when account data is unavailable.
         if (lease.isCurrent()) setLoadedAccount(uid);
         for (const delay of retryDelaysMs) {
           if (result !== "unavailable" || !lease.isCurrent()) return;
