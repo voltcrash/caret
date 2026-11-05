@@ -278,6 +278,41 @@ it("does not supply or report failure after a pending source was cancelled", asy
   expect(mocks.createSession).not.toHaveBeenCalled();
 });
 
+it("cancels source loading when preparation expires before the engine session", async () => {
+  const fetch = vi.fn<typeof globalThis.fetch>();
+  vi.stubGlobal("fetch", fetch);
+  const loaded = Promise.withResolvers<{
+    name: string;
+    words: string[];
+    bcp47: string;
+  }>();
+  const operation = new AbortController();
+  mocks.getLanguage.mockReturnValueOnce(loaded.promise);
+  mocks.generate.mockImplementationOnce(() => {
+    throw new EngineFailure({
+      code: "contentRequired",
+      message: "Content required",
+      recovery: [],
+    });
+  });
+  const pending = getContentHost().prepare(
+    { ...language, words: [...language.words] },
+    {
+      signal: operation.signal,
+      isCurrent: () => !operation.signal.aborted,
+    },
+  );
+  await vi.waitFor(() => expect(mocks.getLanguage).toHaveBeenCalledOnce());
+  operation.abort();
+  loaded.resolve({ ...language, words: [...language.words] });
+  await expect(pending).rejects.toMatchObject({ name: "AbortError" });
+  expect(mocks.controller.signal.aborted).toBe(false);
+  expect(fetch).not.toHaveBeenCalled();
+  expect(mocks.supply).not.toHaveBeenCalled();
+  expect(mocks.failSource).not.toHaveBeenCalled();
+  expect(mocks.createSession).not.toHaveBeenCalled();
+});
+
 it("refreshes quote lengths after failed selection and retains the raw cached-language asset", async () => {
   Object.assign(getMutableConfig(), { mode: "quote", funbox: [] });
   mocks.prepare.mockImplementationOnce(() => {
