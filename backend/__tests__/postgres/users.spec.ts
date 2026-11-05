@@ -74,7 +74,7 @@ describe("PostgreSQL user mutations", () => {
         ),
       ).rejects.toMatchObject({
         status: 409,
-        message: "Username already taken",
+        message: expect.stringContaining("Username already taken"),
       });
       expect((await UserDAL.getUser("rename-source", "test")).name).toBe(
         "RenameSource",

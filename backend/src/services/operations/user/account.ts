@@ -123,8 +123,9 @@ export async function updateName(
       uid,
     );
   }).catch((error: unknown) => {
-    if (isUniqueViolation(error))
+    if (isUniqueViolation(error)) {
       throw new MonkeyError(409, "Username already taken", name);
+    }
     throw error;
   });
   return new MonkeyResponse("User's name updated", null);
