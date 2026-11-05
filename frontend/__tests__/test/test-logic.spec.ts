@@ -244,7 +244,6 @@ vi.mock("../../src/ts/states/loader-bar", () => ({
 vi.mock("../../src/ts/states/header", () => ({
   trackAccountWork: async <T>(work: () => Promise<T>): Promise<T> =>
     await work(),
-  setAccountButtonSpinner: vi.fn(),
 }));
 vi.mock("../../src/ts/states/modifiers", () => ({
   resetModifierState: vi.fn(),

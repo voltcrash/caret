@@ -11,11 +11,8 @@ export type XpBarData = {
 };
 
 export const [getAnimatedLevel, setAnimatedLevel] = createAccountSignal(0);
-const [legacySpinner, setAccountButtonSpinner] = createAccountSignal(false);
-export { setAccountButtonSpinner };
 const [pendingWork, setPendingWork] = createAccountSignal(0);
-export const getAccountButtonSpinner = (): boolean =>
-  legacySpinner() || pendingWork() > 0;
+export const getAccountButtonSpinner = (): boolean => pendingWork() > 0;
 export async function trackAccountWork<T>(work: () => Promise<T>): Promise<T> {
   const lease = captureAccount();
   setPendingWork((count) => count + 1);
