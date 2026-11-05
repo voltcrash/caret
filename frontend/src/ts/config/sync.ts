@@ -23,7 +23,7 @@ async function serialize(work: () => Promise<void>): Promise<void> {
   const lease = captureAccount();
   const next = state.queue.then(async () => {
     lease.assertCurrent();
-    await work();
+    return await work();
   });
   state.queue = next.catch(() => undefined);
   await next;

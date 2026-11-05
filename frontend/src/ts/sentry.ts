@@ -22,6 +22,7 @@ async function getSentry(): Promise<typeof import("./sentry-sdk")> {
 
 
 export async function activateSentry(): Promise<void> {
+  const state = sentryState();
   const dsn = envConfig.sentryDsn;
   if (dsn === undefined || dsn === "") return;
   if (state.activated) {
@@ -144,6 +145,7 @@ export async function activateSentry(): Promise<void> {
 }
 
 export async function setUser(uid: string, name: string): Promise<void> {
+  const state = sentryState();
   if (!state.activated) return;
   const lease = captureAccount();
   const Sentry = await getSentry();
@@ -155,6 +157,7 @@ export async function setUser(uid: string, name: string): Promise<void> {
 }
 
 export async function clearUser(): Promise<void> {
+  const state = sentryState();
   if (!state.activated) return;
   const lease = captureAccount();
   const Sentry = await getSentry();
@@ -163,6 +166,7 @@ export async function clearUser(): Promise<void> {
 }
 
 export async function captureException(error: Error): Promise<void> {
+  const state = sentryState();
   if (!state.activated) return;
   const Sentry = await getSentry();
   Sentry.captureException(error);

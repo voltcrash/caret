@@ -42,9 +42,9 @@ const themeState = createAppOwned(() => {
     backgroundRevision: 0, disposed: false,
   };
 const preview = debounce(250, () => {
-  if (previewState) {
-    isPreviewingTheme = true;
-    void apply(previewState.theme, previewState.colors, true);
+  if (value.previewState) {
+    value.isPreviewingTheme = true;
+    void apply(value.previewState.theme, value.previewState.colors, true);
   }
 });
   onCleanup(() => { value.disposed = true; preview.cancel(); });

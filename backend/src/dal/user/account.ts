@@ -1,8 +1,7 @@
 import MonkeyError from "../../utils/error";
 import { newId } from "../../utils/id";
-import { database, statement, isUniqueViolation } from "../../db/client";
+import { statement, isUniqueViolation } from "../../db/client";
 import { currentUserDraft, mutateUser, stage } from "../../db/mutation";
-import { users } from "../../db/schema";
 import { getCachedConfiguration } from "../../init/configuration";
 
 import type { DBUser } from "./types";
