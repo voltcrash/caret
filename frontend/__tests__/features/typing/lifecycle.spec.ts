@@ -10,6 +10,7 @@ const mocks = vi.hoisted(() => {
     pauseReplay: vi.fn(),
     sessionReset: vi.fn(),
     engineRelease: vi.fn(),
+    engineFailed: false,
     funboxClear: vi.fn(async () => undefined),
     clearGlobal: vi.fn(),
     layoutfluidHide: vi.fn(),
@@ -17,7 +18,10 @@ const mocks = vi.hoisted(() => {
   };
 });
 vi.mock("../../../src/features/typing/engine.client", () => ({
-  getBrowserEngine: () => ({ releaseSession: mocks.engineRelease }),
+  getBrowserEngine: () => ({
+    releaseSession: mocks.engineRelease,
+    status: () => ({ state: mocks.engineFailed ? "failed" : "ready" }),
+  }),
 }));
 
 vi.mock("../../../src/app/readiness", () => ({
@@ -82,6 +86,7 @@ releaseTestApplication();
 let dispose: () => void;
 beforeEach(() => {
   vi.clearAllMocks();
+  mocks.engineFailed = false;
   mocks.preferences.mockReset().mockResolvedValue(undefined);
   mocks.restart.mockReset().mockResolvedValue(undefined);
   const app = createTestApplication();
@@ -190,4 +195,15 @@ it("tears down timers, funboxes and incomplete state synchronously on exit", () 
   expect(getFocus()).toBe(false);
   expect(getModifierState().shift).toBe(false);
   expect(mocks.restart).not.toHaveBeenCalled();
+});
+
+it("releases a failed engine without attempting to reset its poisoned session", () => {
+  mocks.engineFailed = true;
+  mocks.sessionReset.mockImplementationOnce(() => {
+    throw new Error("Poisoned engine");
+  });
+  exitTypingRoute();
+  expect(mocks.sessionReset).not.toHaveBeenCalled();
+  expect(mocks.engineRelease).toHaveBeenCalledWith(false);
+  expect(mocks.clearGlobal).toHaveBeenCalledOnce();
 });

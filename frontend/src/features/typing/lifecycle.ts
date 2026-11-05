@@ -57,10 +57,12 @@ export function exitTypingRoute(): void {
   getTypingLifecycle().send({ type: "UNMOUNT" });
   setTypingReady(false);
   Timer.clear();
-  PaceCaret.reset();
+  const engine = getBrowserEngine();
+  const failed = engine.status().state === "failed";
+  if (!failed) PaceCaret.reset();
   Replay.pauseReplay();
-  getTestSession().reset();
-  getBrowserEngine().releaseSession();
+  if (!failed) getTestSession().reset();
+  engine.releaseSession(!failed);
   for (const funbox of getActiveFunboxesWithFunction("clearGlobal")) {
     funbox.functions.clearGlobal();
   }
