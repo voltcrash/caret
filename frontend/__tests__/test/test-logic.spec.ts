@@ -1,5 +1,6 @@
 import { mockHttpFixture } from "../__harness__/operations";
 import { animateAsync } from "../../src/ts/anim";
+import * as TestUI from "../../src/features/typing/runtime/test-ui";
 import { requireApplication } from "../../src/app/application";
 import { bindTypingActivity } from "../../src/features/typing/scope";
 import { createRoot, onCleanup } from "solid-js";
@@ -354,6 +355,41 @@ beforeEach(() => {
 });
 
 describe("test lifecycle state", () => {
+  it("ignores a second restart while the first fade is pending", async () => {
+    const fade = Promise.withResolvers<void>();
+    vi.mocked(TestUI.fadeOutForRestart).mockReturnValueOnce(fade.promise);
+    const first = restart();
+    const event = { preventDefault: vi.fn() } as unknown as KeyboardEvent;
+    await restart({ event });
+    expect(event.preventDefault).toHaveBeenCalledOnce();
+    expect(mocks.generate).not.toHaveBeenCalled();
+    fade.resolve();
+    await first;
+    expect(mocks.generate).toHaveBeenCalledOnce();
+    expect(mocks.restarting).toBe(false);
+  });
+
+  it("drops preparation after the route leaves during its fade", async () => {
+    const fade = Promise.withResolvers<void>();
+    vi.mocked(TestUI.fadeOutForRestart).mockReturnValueOnce(fade.promise);
+    const pending = restart();
+    mocks.transition = true;
+    fade.resolve();
+    await pending;
+    expect(mocks.generate).not.toHaveBeenCalled();
+    expect(mocks.uiRestart).not.toHaveBeenCalled();
+  });
+
+  it.fails("releases a failed restart and permits retry", async () => {
+    vi.mocked(TestUI.fadeOutForRestart).mockRejectedValueOnce(
+      new Error("fade failed"),
+    );
+    await restart();
+    expect(mocks.restarting).toBe(false);
+    await restart();
+    expect(mocks.generate).toHaveBeenCalledOnce();
+  });
+
   it.each(["english", "spanish"] as const)(
     "keeps %s words when an account config batch changes only appearance",
     async (language) => {
