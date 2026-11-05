@@ -100,7 +100,6 @@ export async function get(language: Language | "all"): Promise<DBNewQuote[]> {
       .from(quoteSubmissions)
       .where(
         and(
-          eq(quoteSubmissions.approved, false),
           language === "all"
             ? undefined
             : eq(quoteSubmissions.language, language),
@@ -129,6 +128,12 @@ export async function approve(
   editSource: string | undefined,
   name: string,
 ): Promise<{ quote: ApproveQuote; message: string }> {
+  // Claim the decision before delivery. A failed delivery remains retryable,
+  // but refusal and later edits must not change its idempotent payload.
+  await statement(
+    "UPDATE quote_submissions SET approved=true,data=jsonb_set(data,'{approval}',?::jsonb) WHERE id=? AND approved=false",
+    encode({ editQuote, editSource, approvedBy: name, repository: envValue("QUOTES_REPOSITORY") }), quoteId,
+  ).run();
   const row = (
     await database()
       .select()
@@ -147,10 +152,7 @@ export async function approve(
     {
       quoteId,
       quote: row.data,
-      editQuote,
-      editSource,
-      approvedBy: name,
-      repository: envValue("QUOTES_REPOSITORY"),
+      ...(row.data as { approval: { editQuote?: string; editSource?: string; approvedBy: string; repository?: string } }).approval,
     },
     `quote:${quoteId}`,
   );
@@ -160,7 +162,6 @@ export async function approve(
   return result;
 }
 export async function refuse(quoteId: string): Promise<void> {
-  await database()
-    .delete(quoteSubmissions)
-    .where(eq(quoteSubmissions.id, quoteId));
+  const removed = await statement("DELETE FROM quote_submissions WHERE id=? AND approved=false", quoteId).run();
+  if (removed.rowCount === 0) throw new MonkeyError(409, "Quote is already being approved or reviewed");
 }
