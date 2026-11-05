@@ -1,4 +1,4 @@
-import { captureTypingRoute } from "../scope";
+import { captureTypingRoute, captureTypingPresentation, createTypingOwned } from "../scope";
 import { createCroppedScreenshot } from "../components/result/useScreenshotCanvas";
 import { showLoaderBar, hideLoaderBar } from "../../../ts/states/loader-bar";
 import * as Replay from "./replay";
@@ -28,15 +28,15 @@ function revert(): void {
   }
 }
 
-let firefoxClipboardNotificationShown = false;
+const captureState = createTypingOwned(() => ({ pending: undefined as Promise<HTMLCanvasElement | null> | undefined, firefoxClipboardNotificationShown: false }));
 
 /**
  * Prepares UI, generates screenshot canvas using modern-screenshot, and reverts UI changes.
  * Returns the generated canvas element or null on failure.
  * Handles its own loader and basic error notifications for canvas generation.
  */
-async function generateCanvas(): Promise<HTMLCanvasElement | null> {
-  const lease = captureTypingRoute();
+async function renderCanvas(): Promise<HTMLCanvasElement | null> {
+  const lease = captureTypingPresentation();
   const { domToCanvas } = await import("modern-screenshot");
   if (!lease.isCurrent()) return null;
   showLoaderBar(true);
@@ -175,9 +175,22 @@ async function generateCanvas(): Promise<HTMLCanvasElement | null> {
   } catch (e) {
     showErrorNotification("Error creating screenshot canvas", { error: e });
     return null;
-  } finally {
-    if (lease.isCurrent()) revert(); // Route exit also resets screenshot state.
   }
+}
+
+async function generateCanvas(): Promise<HTMLCanvasElement | null> {
+  const state = captureState();
+  if (state.pending !== undefined) return await state.pending;
+  const route = captureTypingRoute();
+  const pending = renderCanvas().catch((error: unknown) => {
+    if (route.isCurrent()) showErrorNotification("Error creating screenshot", { error });
+    return null;
+  }).finally(() => {
+    if (state.pending === pending) state.pending = undefined;
+    if (route.isCurrent()) revert();
+  });
+  state.pending = pending;
+  return await pending;
 }
 
 /**
@@ -218,9 +231,9 @@ export async function copyToClipboard(): Promise<void> {
       // Firefox specific message (only show once)
       if (
         navigator.userAgent.toLowerCase().includes("firefox") &&
-        !firefoxClipboardNotificationShown
+        !captureState().firefoxClipboardNotificationShown
       ) {
-        firefoxClipboardNotificationShown = true;
+        captureState().firefoxClipboardNotificationShown = true;
         showNoticeNotification(
           "On Firefox you can enable the asyncClipboard.clipboardItem permission in about:config to enable copying straight to the clipboard",
           { durationMs: 10000 },
