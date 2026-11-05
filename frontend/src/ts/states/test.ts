@@ -53,6 +53,7 @@ export const [testFocusState, { setTestFocusState }] =
         clearTimeouts(focusTimeouts());
         set(val);
       } else {
+        clearTimeouts(focusTimeouts());
         focusTimeouts().push(
           setTimeout(() => {
             set(val);
