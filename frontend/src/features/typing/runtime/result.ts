@@ -1,4 +1,5 @@
-import { captureTypingRoute } from "../scope";
+import { captureTypingPresentation } from "../scope";
+import { getTypingLifecycle } from "../lifecycle-controller";
 import { updateTags } from "./result/tags";
 export { updateSavedResultId, updateTagsAfterEdit } from "./result/tags";
 import { updateResultChartDataVisibility } from "./result/chart-visibility";
@@ -63,15 +64,11 @@ import { canQuickRestart as canQuickRestartFn } from "../../../ts/utils/quick-re
 import { blurInputElement } from "../../../ts/input/input-element";
 import * as ConnectionState from "../../../ts/states/connection";
 
-import {
-  getCurrentQuote,
-  isTestInvalid,
-  setResultCalculating,
-  setResultLoading,
-} from "../../../ts/states/test";
+import { getCurrentQuote, isTestInvalid } from "../../../ts/states/test";
 
 import {
   getResultChart,
+  resultState,
   prepareResultChart,
   setResultState,
 } from "../../../ts/states/result";
@@ -89,6 +86,12 @@ export function updateRetrySaving(visible: boolean): void {
   setResultState("retrySaving", visible);
 }
 
+export function resetResultSaveState(): void {
+  updateRetrySaving(false);
+  updateDailyLeaderboardRank(undefined);
+  setResultState("tags", "savedResultId", undefined);
+}
+
 export async function update(
   res: CompletedEvent,
   difficultyFailed: boolean,
@@ -98,12 +101,12 @@ export async function update(
   tooShort: boolean,
   randomQuote: Quote | null,
   dontSave: boolean,
+  lease = captureTypingPresentation(),
 ): Promise<void> {
-  const lease = captureTypingRoute();
   if (!lease.isCurrent()) return;
   resetResultAnnotations();
   setCurrentResult(structuredClone(res));
-  hideCrown();
+  if (resultState.tags.savedResultId === undefined) hideCrown();
   setResultState("wordsHistory", {
     items: [],
     visible: false,
@@ -115,9 +118,6 @@ export async function update(
     stats: "",
     words: [],
   });
-  updateRetrySaving(false);
-  updateDailyLeaderboardRank(undefined);
-  setResultState("tags", "savedResultId", undefined);
   setResultState("quote", { rateVisible: false, rated: false, rating: "" });
   clearWordsBlur();
   blurInputElement();
@@ -140,7 +140,7 @@ export async function update(
     }),
   );
   updateQuoteFavorite(randomQuote);
-  await updateCrown(dontSave);
+  if (resultState.tags.savedResultId === undefined) await updateCrown(dontSave);
   if (!lease.isCurrent()) return;
   // Establish pending save UI before loading the chart. A fast acknowledgement
   // must not be overwritten by late result initialization.
@@ -225,11 +225,10 @@ export async function update(
   }
   void Funbox.clear();
 
-  setResultLoading(false);
+  getTypingLifecycle().send({ type: "RESULT_READY" });
   await showResultScreen(Misc.applyReducedMotion(125));
   if (!lease.isCurrent()) return;
 
-  setResultCalculating(false);
   clearWords();
   getResultChart().resize();
 }
