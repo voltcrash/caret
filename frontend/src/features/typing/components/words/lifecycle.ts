@@ -25,7 +25,6 @@ import {
   setCompositionText,
   setCurrentLiveStats,
   setTestFocusState,
-  setTestInitError,
 } from "../../../../ts/states/test";
 import {
   getWordsElement as getWordsEl,
@@ -258,7 +257,6 @@ export function onTestRestart(source: "testPage" | "resultPage"): void {
   }
   MonkeyPower.reset();
   Caret.resetPosition();
-  setTestInitError(null);
 
   if (!ConnectionState.get()) {
     ConnectionState.showOfflineBanner();

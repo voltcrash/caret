@@ -1,4 +1,4 @@
-import * as TestUI from "./test-ui";
+import type { CompletionSnapshot } from "./completion-snapshot";
 
 import {
   showNoticeNotification,
@@ -13,47 +13,24 @@ import * as DB from "../../../ts/db";
 import * as TodayTracker from "./today-tracker";
 import * as ChallengeContoller from "../../../ts/controllers/challenge-controller";
 
-import { prepareResultScreen } from "../../../ts/states/result";
-import {
-  getCustomTextIndicator,
-  isAuthenticated,
-} from "../../../ts/states/core";
 import {
   setLastEventLog,
-  getCurrentQuote,
-  getIncompleteSeconds,
-  getIncompleteTests,
-  getRestartCount,
-  isRepeated,
   pushIncompleteTest,
   resetIncompleteTests,
   setIsRepeated,
   setIsTestInvalid,
   setLastResult,
-  getBailedOut,
   setLastSignedOutResult,
-  setResultVisible,
-  setTestActive,
 } from "../../../ts/states/test";
 
 import * as AnalyticsController from "../../../ts/controllers/analytics-controller";
-
-import { getAuthenticatedUser } from "../../../ts/auth-client";
 
 import {
   CompletedEvent,
   CompletedEventCustomText,
 } from "@caret/schemas/results";
 
-import { getMutableConfig } from "../../../ts/config/store";
-
-import {
-  getTestSession,
-  cleanupData,
-  logEventsDataToTheConsoleTable,
-  forceReleaseAllKeys,
-  buildEventLog,
-} from "./events/data";
+import { getTestSession } from "./events/data";
 import {
   analyze,
   getAnalysis,
@@ -61,7 +38,6 @@ import {
   getWordBurstHistory,
 } from "../analysis.client";
 import { practiceHistory } from "../practice-history.client";
-import * as TestWords from "./test-words";
 type InvalidResultReason =
   | "inconsistent duration"
   | "failed"
@@ -71,8 +47,6 @@ type InvalidResultReason =
   | "wpm"
   | "raw"
   | "accuracy";
-
-import { isDevEnvironment } from "../../../ts/utils/env";
 
 import { countInvalidResultFields } from "@caret/web-shared/result-fields";
 
@@ -90,214 +64,259 @@ const invalidMessages: Record<
   accuracy: "accuracy",
 };
 
-function getCompletedEventCustomText(): CompletedEventCustomText | undefined {
-  if (getMutableConfig().mode !== "custom") return undefined;
-  const temp = CustomText.getData();
-  return {
-    textLen: temp.text.length,
-    mode: temp.mode,
-    pipeDelimiter: temp.pipeDelimiter,
-    limit: temp.limit,
-  };
-}
-
-export async function finish(
+export function createCompletion(
+  snapshot: CompletionSnapshot,
   difficultyFailed: boolean,
-  lease: { isCurrent: () => boolean },
-): Promise<void> {
-  const resultReady = Promise.all([import("./result"), prepareResultScreen()]);
-
-  TestUI.onTestFinish();
-
-  if (isRepeated() && getMutableConfig().mode === "quote") {
-    setIsRepeated(false);
-  }
-
-  forceReleaseAllKeys();
-
-  setResultVisible(true);
-  setTestActive(false);
-
-  cleanupData();
-  const [Result] = await resultReady;
-  if (!lease.isCurrent()) return;
-
-  if (isDevEnvironment()) {
-    logEventsDataToTheConsoleTable();
-  }
-
-  const eventLog = buildEventLog();
-  const tags = isAuthenticated()
-    ? (await import("../../../ts/collections/tags"))
-        .getActiveTags()
-        .map((tag) => tag._id)
-    : [];
-  if (!lease.isCurrent()) return;
-  const ce = getTestSession().complete(eventLog, {
-    config: getMutableConfig(),
-    currentQuote: getCurrentQuote(),
-    customText: getCompletedEventCustomText(),
-    tags,
-    bailedOut: getBailedOut(),
-    restartCount: getRestartCount(),
-    incompleteTests: getIncompleteTests(),
-    incompleteSeconds: getIncompleteSeconds(),
-    timestamp: Date.now(),
-  });
-  PaceCaret.setLastTestWpm(ce.wpm);
-
-  console.debug("Completed event object", ce);
-
-  let dontSave = false;
-
-  if (countInvalidResultFields(ce) > 0) {
-    console.log(ce);
-    showErrorNotification(
-      "Failed to build result object: One of the fields is undefined or NaN",
-    );
-    dontSave = true;
-  }
-
-  const completedEvent = structuredClone(ce) as CompletedEvent;
-
-  setLastEventLog(eventLog);
-  setLastResult(structuredClone(completedEvent));
-
-  ///////// completed event ready
-
-  const failReason = getTestSession().getFinishReason() ?? "";
-  const validity = analyze(eventLog, {
-    op: "validity",
-    input: {
-      result: completedEvent,
-      bailedOut: getBailedOut(),
-      failed: difficultyFailed,
-      repeated: isRepeated(),
-      lbOptOut: DB.getSnapshot()?.lbOptOut === true,
-      customLimit: CustomText.getData().limit,
-    },
-  });
-  const afkDetected = validity.afk;
-  const invalidReason = validity.reason as InvalidResultReason | null;
-  const tooShort = invalidReason === "too short";
-  if (invalidReason === "failed") {
-    showNoticeNotification(`Test failed - ${failReason}`, {
-      durationMs: 1000,
+): {
+  build: (lease: { isCurrent: () => boolean }) => Promise<void>;
+  present: (lease: { isCurrent: () => boolean }) => Promise<void>;
+  saved: () => Promise<void>;
+} {
+  let presentation:
+    | (() => [
+        CompletedEvent,
+        boolean,
+        string,
+        boolean,
+        boolean,
+        boolean,
+        CompletionSnapshot["quote"],
+        boolean,
+      ])
+    | undefined;
+  let saving: Promise<unknown> = Promise.resolve();
+  const effects = new Set<string>();
+  const once = (key: string, run: () => void): void => {
+    if (effects.has(key)) return;
+    effects.add(key);
+    try {
+      run();
+    } catch (error) {
+      showErrorNotification("Could not update test progress", { error });
+    }
+  };
+  const build = async (lease: { isCurrent: () => boolean }): Promise<void> => {
+    if (presentation !== undefined) return;
+    const {
+      eventLog,
+      config,
+      quote,
+      customText,
+      repeated,
+      bailedOut,
+      failReason,
+      words,
+      user,
+    } = snapshot;
+    const Result = await import("./result");
+    if (!lease.isCurrent()) return;
+    once("saveState", Result.resetResultSaveState);
+    const tags =
+      user !== null && snapshot.account.isCurrent()
+        ? (await import("../../../ts/collections/tags"))
+            .getActiveTags()
+            .map((tag) => tag._id)
+        : [];
+    if (!lease.isCurrent()) return;
+    const completedCustomText: CompletedEventCustomText | undefined =
+      config.mode === "custom"
+        ? {
+            textLen: customText.text.length,
+            mode: customText.mode,
+            pipeDelimiter: customText.pipeDelimiter,
+            limit: customText.limit,
+          }
+        : undefined;
+    const ce = getTestSession().complete(eventLog, {
+      config,
+      currentQuote: quote,
+      customText: completedCustomText,
+      tags,
+      bailedOut,
+      restartCount: snapshot.restartCount,
+      incompleteTests: snapshot.incompleteTests,
+      incompleteSeconds: snapshot.incompleteSeconds,
+      timestamp: snapshot.timestamp,
     });
-    dontSave = true;
-  } else if (invalidReason !== null) {
-    if (invalidReason === "inconsistent duration") {
-      console.error(
-        "Test duration inconsistent",
-        ce.testDuration,
-        getAnalysis(eventLog).dateDurationMs / 1000,
+    once("pace", () => PaceCaret.setLastTestWpm(ce.wpm));
+
+    console.debug("Completed event object", ce);
+
+    let dontSave = false;
+
+    if (countInvalidResultFields(ce) > 0) {
+      console.log(ce);
+      showErrorNotification(
+        "Failed to build result object: One of the fields is undefined or NaN",
+      );
+      dontSave = true;
+    }
+
+    const completedEvent = structuredClone(ce) as CompletedEvent;
+
+    once("lastResult", () => {
+      setLastEventLog(eventLog);
+      setLastResult(structuredClone(completedEvent));
+      setIsRepeated(repeated);
+    });
+
+    ///////// completed event ready
+
+    const validity = analyze(eventLog, {
+      op: "validity",
+      input: {
+        result: completedEvent,
+        bailedOut,
+        failed: difficultyFailed,
+        repeated: repeated,
+        lbOptOut: DB.getSnapshot()?.lbOptOut === true,
+        customLimit: customText.limit,
+      },
+    });
+    const afkDetected = validity.afk;
+    const invalidReason = validity.reason as InvalidResultReason | null;
+    const tooShort = invalidReason === "too short";
+    if (invalidReason === "failed") {
+      showNoticeNotification(`Test failed - ${failReason}`, {
+        durationMs: 1000,
+      });
+      dontSave = true;
+    } else if (invalidReason !== null) {
+      if (invalidReason === "inconsistent duration") {
+        console.error(
+          "Test duration inconsistent",
+          ce.testDuration,
+          getAnalysis(eventLog).dateDurationMs / 1000,
+        );
+      }
+      showNoticeNotification(
+        `Test invalid - ${invalidMessages[invalidReason]}`,
+      );
+      setIsTestInvalid(true);
+      dontSave = true;
+    }
+
+    // test is valid
+
+    if (repeated || difficultyFailed) {
+      if (config.resultSaving) {
+        once("incomplete", () =>
+          pushIncompleteTest({
+            acc: completedEvent.acc,
+            seconds: getAnalysis(eventLog).incompleteTestSeconds,
+          }),
+        );
+      }
+    }
+
+    const customTextName = snapshot.customIndicator?.name ?? "";
+    // Ordinary generated text and our own drills only: never persist arbitrary
+    // custom/zen text into the learning model.
+    if (
+      !dontSave &&
+      (["time", "words", "quote"].includes(config.mode) ||
+        customTextName === "practice")
+    ) {
+      once("practice", () =>
+        practiceHistory().record(
+          `${config.language}:${config.layout}`,
+          words.slice(0, getAnalysis(eventLog).inputHistory.length),
+          getMissedWords(eventLog),
+          getWordBurstHistory(eventLog),
+          completedEvent.testDuration - completedEvent.afkDuration,
+        ),
       );
     }
-    showNoticeNotification(`Test invalid - ${invalidMessages[invalidReason]}`);
-    setIsTestInvalid(true);
-    dontSave = true;
-  }
-
-  // test is valid
-
-  if (isRepeated() || difficultyFailed) {
-    if (getMutableConfig().resultSaving) {
-      pushIncompleteTest({
-        acc: completedEvent.acc,
-        seconds: getAnalysis(eventLog).incompleteTestSeconds,
+    const isLong = snapshot.customIndicator?.isLong === true;
+    if (config.mode === "custom" && customTextName !== "" && isLong) {
+      once("longText", () => {
+        const { progress } = analyze(eventLog, {
+          op: "customProgress",
+          previous: CustomText.getCustomTextLongProgress(customTextName),
+        });
+        CustomText.setCustomTextLongProgress(customTextName, progress.progress);
+        const text = CustomText.getCustomText(customTextName, true);
+        CustomText.setText(text.slice(progress.progress));
+        showSuccessNotification(
+          progress.completed
+            ? "Long custom text completed"
+            : "Long custom text progress saved",
+          {
+            durationMs: 5000,
+            important: true,
+          },
+        );
       });
     }
-  }
 
-  const customTextName = getCustomTextIndicator()?.name ?? "";
-  // Ordinary generated text and our own drills only: never persist arbitrary
-  // custom/zen text into the learning model.
-  if (
-    !dontSave &&
-    (["time", "words", "quote"].includes(getMutableConfig().mode) ||
-      customTextName === "practice")
-  ) {
-    practiceHistory().record(
-      `${getMutableConfig().language}:${getMutableConfig().layout}`,
-      TestWords.words
-        .get()
-        .slice(0, getAnalysis(eventLog).inputHistory.length)
-        .map((word) => word.text),
-      getMissedWords(eventLog),
-      getWordBurstHistory(eventLog),
-      completedEvent.testDuration - completedEvent.afkDuration,
+    once("today", () =>
+      TodayTracker.addSeconds(
+        completedEvent.testDuration - completedEvent.afkDuration,
+      ),
     );
-  }
-  const isLong = getCustomTextIndicator()?.isLong === true;
-  if (getMutableConfig().mode === "custom" && customTextName !== "" && isLong) {
-    const { progress } = analyze(eventLog, {
-      op: "customProgress",
-      previous: CustomText.getCustomTextLongProgress(customTextName),
-    });
-    CustomText.setCustomTextLongProgress(customTextName, progress.progress);
-    const text = CustomText.getCustomText(customTextName, true);
-    CustomText.setText(text.slice(progress.progress));
-    showSuccessNotification(
-      progress.completed
-        ? "Long custom text completed"
-        : "Long custom text progress saved",
-      {
-        durationMs: 5000,
-        important: true,
-      },
-    );
-  }
+    Result.updateTodayTracker();
 
-  TodayTracker.addSeconds(
-    completedEvent.testDuration - completedEvent.afkDuration,
-  );
-  Result.updateTodayTracker();
+    if (user !== null) {
+      // logged in
+      if (dontSave) {
+        void AnalyticsController.log("testCompletedInvalid");
+      } else {
+        once("resetIncomplete", resetIncompleteTests);
 
-  let savingResultPromise: ReturnType<typeof saveResult> =
-    Promise.resolve(null);
-  const user = getAuthenticatedUser();
-  if (user !== null) {
-    // logged in
-    if (dontSave) {
-      void AnalyticsController.log("testCompletedInvalid");
-    } else {
-      resetIncompleteTests();
-
-      if (!completedEvent.bailedOut) {
-        const challenge = await ChallengeContoller.verify(completedEvent);
-        if (!lease.isCurrent()) return;
-        if (challenge !== null) completedEvent.challenge = challenge;
-      }
-
-      completedEvent.uid = user.uid;
-
-      savingResultPromise = saveResult(completedEvent, false, eventLog);
-      void savingResultPromise.then((response) => {
-        if (response?.status === 200) {
-          void AnalyticsController.log("testCompleted");
+        if (!completedEvent.bailedOut) {
+          const challenge = await ChallengeContoller.verify(completedEvent);
+          if (!lease.isCurrent()) return;
+          if (challenge !== null) completedEvent.challenge = challenge;
         }
-      });
-    }
-  } else {
-    // logged out
-    void AnalyticsController.log("testCompletedNoLogin");
-    if (!dontSave) {
-      // if its valid save it for later
-      setLastSignedOutResult(completedEvent);
-    }
-    dontSave = true;
-  }
 
-  const resultUpdatePromise = Result.update(
-    completedEvent,
-    difficultyFailed,
-    failReason,
-    afkDetected,
-    isRepeated(),
-    tooShort,
-    getCurrentQuote(),
-    dontSave,
-  );
+        completedEvent.uid = user.uid;
 
-  await Promise.all([savingResultPromise, resultUpdatePromise]);
+        if (snapshot.account.isCurrent()) {
+          once("save", () => {
+            saving = saveResult(completedEvent, false, eventLog)
+              .then((response) => {
+                if (response?.status === 200) {
+                  void AnalyticsController.log("testCompleted");
+                }
+                return undefined;
+              })
+              .catch((error: unknown) =>
+                console.error("Result save failed", error),
+              );
+          });
+        }
+      }
+    } else {
+      // logged out
+      void AnalyticsController.log("testCompletedNoLogin");
+      if (!dontSave) {
+        // if its valid save it for later
+        once("signedOut", () => setLastSignedOutResult(completedEvent));
+      }
+      dontSave = true;
+    }
+
+    presentation = () => [
+      completedEvent,
+      difficultyFailed,
+      failReason,
+      afkDetected,
+      repeated,
+      tooShort,
+      quote,
+      dontSave,
+    ];
+  };
+  return {
+    build,
+    present: async (lease: { isCurrent: () => boolean }): Promise<void> => {
+      if (presentation === undefined) throw new Error("Result is not built");
+      const Result = await import("./result");
+      if (!lease.isCurrent()) return;
+      await Result.update(...presentation(), lease);
+    },
+    saved: async (): Promise<void> => {
+      await saving;
+    },
+  };
 }

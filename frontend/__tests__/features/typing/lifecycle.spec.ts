@@ -1,3 +1,4 @@
+import { resetTypingLifecycle } from "../../__harness__/typing-lifecycle";
 import { afterEach, beforeEach, expect, it, vi } from "vite-plus/test";
 
 const mocks = vi.hoisted(() => {
@@ -9,6 +10,7 @@ const mocks = vi.hoisted(() => {
     pauseReplay: vi.fn(),
     sessionReset: vi.fn(),
     engineRelease: vi.fn(),
+    engineFailed: false,
     funboxClear: vi.fn(async () => undefined),
     clearGlobal: vi.fn(),
     layoutfluidHide: vi.fn(),
@@ -16,7 +18,10 @@ const mocks = vi.hoisted(() => {
   };
 });
 vi.mock("../../../src/features/typing/engine.client", () => ({
-  getBrowserEngine: () => ({ releaseSession: mocks.engineRelease }),
+  getBrowserEngine: () => ({
+    releaseSession: mocks.engineRelease,
+    status: () => ({ state: mocks.engineFailed ? "failed" : "ready" }),
+  }),
 }));
 
 vi.mock("../../../src/app/readiness", () => ({
@@ -59,7 +64,10 @@ import {
   enterTypingRoute,
   exitTypingRoute,
 } from "../../../src/features/typing/lifecycle";
-import { mountTypingScope } from "../../../src/features/typing/scope";
+import {
+  isTypingRouteActive,
+  mountTypingScope,
+} from "../../../src/features/typing/scope";
 import {
   getModifierState,
   updateModifierState,
@@ -71,9 +79,6 @@ import {
   isTestActive,
   isTestRestarting,
   setFocus,
-  setResultVisible,
-  setTestActive,
-  setIsTestRestarting,
 } from "../../../src/ts/states/test";
 import {
   createTestApplication,
@@ -84,6 +89,7 @@ releaseTestApplication();
 let dispose: () => void;
 beforeEach(() => {
   vi.clearAllMocks();
+  mocks.engineFailed = false;
   mocks.preferences.mockReset().mockResolvedValue(undefined);
   mocks.restart.mockReset().mockResolvedValue(undefined);
   const app = createTestApplication();
@@ -117,13 +123,36 @@ it("keeps startup pending until the first test finishes initializing", async () 
   mocks.restart.mockReturnValueOnce(initialization.promise);
   const release = mountTypingScope();
   const entered = enterTypingRoute();
-  await Promise.resolve();
-  expect(mocks.restart).toHaveBeenCalledOnce();
+  await vi.waitFor(() => expect(mocks.restart).toHaveBeenCalledOnce());
   expect(isTypingReady()).toBe(false);
   initialization.resolve(undefined);
   await entered;
   expect(isTypingReady()).toBe(true);
   release();
+});
+
+it("activates after slow preferences without expiring before restart is available", async () => {
+  vi.useFakeTimers();
+  const preferences = Promise.withResolvers<undefined>();
+  mocks.preferences.mockReturnValueOnce(preferences.promise);
+  const release = mountTypingScope();
+  const entered = enterTypingRoute().catch(() => undefined);
+  try {
+    await vi.advanceTimersByTimeAsync(31_000);
+    expect(getTestInitError()).toBeNull();
+    expect(isTypingReady()).toBe(false);
+    expect(mocks.restart).not.toHaveBeenCalled();
+    preferences.resolve(undefined);
+    await entered;
+    expect(isTypingRouteActive()).toBe(true);
+    expect(mocks.restart).toHaveBeenCalledExactlyOnceWith({ noAnim: true });
+    expect(isTypingReady()).toBe(true);
+  } finally {
+    preferences.resolve(undefined);
+    await entered;
+    release();
+    vi.useRealTimers();
+  }
 });
 
 it.each(["resolve", "reject"] as const)(
@@ -136,15 +165,14 @@ it.each(["resolve", "reject"] as const)(
       .mockReturnValueOnce(newTest.promise);
     const leave = mountTypingScope();
     const stale = enterTypingRoute();
-    await Promise.resolve();
+    await vi.waitFor(() => expect(mocks.restart).toHaveBeenCalledOnce());
     leave();
     const release = mountTypingScope();
     const current = enterTypingRoute();
-    await Promise.resolve();
+    await vi.waitFor(() => expect(mocks.restart).toHaveBeenCalledTimes(2));
     if (outcome === "reject") {
-      const failed = expect(stale).rejects.toThrow("stale initialization");
       oldTest.reject(new Error("stale initialization"));
-      await failed;
+      await stale;
     } else {
       oldTest.resolve(undefined);
       await stale;
@@ -163,7 +191,7 @@ it.each(["preferences", "restart"] as const)(
   async (stage) => {
     mocks[stage].mockRejectedValueOnce(new Error("startup failed"));
     const release = mountTypingScope();
-    setIsTestRestarting(true);
+
     await expect(enterTypingRoute()).rejects.toThrow("startup failed");
     expect(isTypingReady()).toBe(true);
     expect(getTestInitError()).toEqual({ message: "startup failed" });
@@ -173,8 +201,8 @@ it.each(["preferences", "restart"] as const)(
 );
 
 it("tears down timers, funboxes and incomplete state synchronously on exit", () => {
-  setTestActive(true);
-  setResultVisible(true);
+  resetTypingLifecycle("running");
+  resetTypingLifecycle("result");
   setFocus(true);
   updateModifierState({ leftShift: true });
   setTypingReady(true);
@@ -194,4 +222,15 @@ it("tears down timers, funboxes and incomplete state synchronously on exit", () 
   expect(getFocus()).toBe(false);
   expect(getModifierState().shift).toBe(false);
   expect(mocks.restart).not.toHaveBeenCalled();
+});
+
+it("releases a failed engine without attempting to reset its poisoned session", () => {
+  mocks.engineFailed = true;
+  mocks.sessionReset.mockImplementationOnce(() => {
+    throw new Error("Poisoned engine");
+  });
+  exitTypingRoute();
+  expect(mocks.sessionReset).not.toHaveBeenCalled();
+  expect(mocks.engineRelease).toHaveBeenCalledWith(false);
+  expect(mocks.clearGlobal).toHaveBeenCalledOnce();
 });

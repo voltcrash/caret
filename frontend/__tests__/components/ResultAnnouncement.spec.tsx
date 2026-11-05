@@ -1,32 +1,9 @@
 import { cleanup, render, screen } from "@solidjs/testing-library";
-import {
-  afterEach,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vite-plus/test";
+import { afterEach, beforeEach, describe, expect, it } from "vite-plus/test";
 
 import { ResultAnnouncement } from "../../src/features/typing/components/result/ResultAnnouncement";
 import { setResultState, type ResultStats } from "../../src/ts/states/result";
-import {
-  setResultCalculating,
-  setResultVisible,
-} from "../../src/ts/states/test";
-
-vi.mock("../../src/ts/states/test", async () => {
-  const { createSignal } = await import("solid-js");
-  const [getResultVisible, setResultVisible] = createSignal(false);
-  const [isResultCalculating, setResultCalculating] = createSignal(false);
-  return {
-    getResultVisible,
-    setResultVisible,
-    isResultCalculating,
-    setResultCalculating,
-  };
-});
-
+import { resetTypingLifecycle } from "../__harness__/typing-lifecycle";
 const stats: ResultStats = {
   typingSpeedUnit: "wpm",
   wpm: { text: "80" },
@@ -40,25 +17,24 @@ const stats: ResultStats = {
   source: undefined,
 };
 beforeEach(() => {
-  setResultVisible(false);
-  setResultCalculating(false);
+  resetTypingLifecycle();
   setResultState("stats", structuredClone(stats));
   setResultState("noStress", false);
 });
 afterEach(() => {
   cleanup();
-  setResultVisible(false);
+  resetTypingLifecycle();
 });
 
 describe("result announcements", () => {
   it("waits for asynchronously prepared statistics before announcing", () => {
-    setResultCalculating(true);
+    resetTypingLifecycle("completing.loading");
     setResultState("stats", undefined);
     render(() => <ResultAnnouncement />);
-    setResultVisible(true);
+    resetTypingLifecycle("completing.building");
     expect(screen.getByRole("status").textContent).toBe("");
     setResultState("stats", structuredClone(stats));
-    setResultCalculating(false);
+    resetTypingLifecycle("result");
     expect(screen.getByRole("status")).toHaveTextContent("80 wpm");
   });
 
@@ -74,7 +50,7 @@ describe("result announcements", () => {
 
   it("announces completed speed, accuracy and elapsed time", () => {
     render(() => <ResultAnnouncement />);
-    setResultVisible(true);
+    resetTypingLifecycle("result");
     expect(screen.getByRole("status")).toHaveTextContent(
       "Test complete. 80 wpm. Accuracy 95%. Time 15s.",
     );
@@ -82,7 +58,7 @@ describe("result announcements", () => {
 
   it("does not announce live or replay speed ticks", () => {
     render(() => <ResultAnnouncement />);
-    setResultVisible(true);
+    resetTypingLifecycle("result");
     const initial = screen.getByRole("status").textContent;
     setResultState("stats", "wpm", "text", "120");
     setResultState("stats", "acc", "text", "99%");
@@ -91,25 +67,25 @@ describe("result announcements", () => {
 
   it("clears on restart and announces the next completion", () => {
     render(() => <ResultAnnouncement />);
-    setResultVisible(true);
-    setResultVisible(false);
+    resetTypingLifecycle("result");
+    resetTypingLifecycle();
     expect(screen.getByRole("status").textContent).toBe("");
     setResultState("stats", "wpm", "text", "100");
-    setResultVisible(true);
+    resetTypingLifecycle("result");
     expect(screen.getByRole("status")).toHaveTextContent("100 wpm");
   });
 
   it("respects no-stress mode by omitting numeric statistics", () => {
     render(() => <ResultAnnouncement />);
     setResultState("noStress", true);
-    setResultVisible(true);
+    resetTypingLifecycle("result");
     expect(screen.getByRole("status").textContent).toBe("Test complete.");
   });
 
   it("stays silent when no completed statistics exist", () => {
     setResultState("stats", undefined);
     render(() => <ResultAnnouncement />);
-    setResultVisible(true);
+    resetTypingLifecycle("completing.building");
     expect(screen.getByRole("status").textContent).toBe("");
   });
 });

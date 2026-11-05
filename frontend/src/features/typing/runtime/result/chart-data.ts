@@ -1,4 +1,4 @@
-import { captureTypingRoute } from "../../scope";
+import { captureTypingPresentation } from "../../scope";
 import { applyFakeChartData } from "./fake-chart";
 import { result, resultAnnotation } from "./context";
 import { getMutableConfig } from "../../../../ts/config/store";
@@ -41,7 +41,7 @@ export function toggleUserFakeChartData(): void {
 }
 
 export async function updateChartData(): Promise<void> {
-  const lease = captureTypingRoute();
+  const lease = captureTypingPresentation();
   const { Chart } = await import("chart.js");
   if (!lease.isCurrent()) return;
   const eventLog = getLastEventLog();

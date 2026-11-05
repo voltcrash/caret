@@ -186,14 +186,26 @@ export const getContentHost = createAppOwned(() => {
         owner.content().updateQuoteQueue(lengths, random());
       }
     },
-    prepare: async (language: LanguageObject) => {
-      const route = captureTypingRoute();
+    prepare: async (
+      language: LanguageObject,
+      route: {
+        isCurrent: () => boolean;
+        signal?: AbortSignal;
+      } = captureTypingRoute(),
+    ) => {
       await owner.load();
       if (!route.isCurrent()) {
         throw new DOMException("Typing route left", "AbortError");
       }
       const content = owner.beginReplacement();
-      const lease = owner.captureSession();
+      const session = owner.captureSession();
+      const lease = {
+        signal:
+          route.signal === undefined
+            ? session.signal
+            : AbortSignal.any([session.signal, route.signal]),
+        isCurrent: () => session.isCurrent() && route.isCurrent(),
+      };
       setCurrentQuote(null);
       const config = projectEngineConfig(getMutableConfig());
       const repeated = isRepeated();

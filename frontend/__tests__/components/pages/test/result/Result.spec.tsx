@@ -6,15 +6,7 @@ const { stub, environment } = vi.hoisted(() => ({
   environment: { isDevelopment: false, devPrefetch: false },
 }));
 vi.mock("virtual:env-config", () => ({ envConfig: environment }));
-vi.mock("../../../../../src/ts/states/test", async (original) => {
-  const { createSignal } = await import("solid-js");
-  const [isTestActive, setTestActive] = createSignal(false);
-  return {
-    ...(await original<typeof import("../../../../../src/ts/states/test")>()),
-    isTestActive,
-    setTestActive,
-  };
-});
+
 vi.mock(
   "../../../../../src/features/typing/components/result/ResultStats",
   () => ({
@@ -74,13 +66,13 @@ import {
   setResultChart,
   prepareResultChart,
 } from "../../../../../src/ts/states/result";
-import { setTestActive } from "../../../../../src/ts/states/test";
+import { resetTypingLifecycle } from "../../../../__harness__/typing-lifecycle";
 
 describe("Result", () => {
   afterEach(() => {
     cleanup();
     setResultState("noStress", false);
-    setTestActive(false);
+    resetTypingLifecycle();
     setResultChart(undefined);
     environment.isDevelopment = false;
     environment.devPrefetch = false;
@@ -113,13 +105,13 @@ describe("Result", () => {
   it("loads the chart during the first test and keeps it mounted afterward", async () => {
     const { container } = render(() => <Result />);
     expect(container.querySelector("[data-stub=chart]")).toBeNull();
-    setTestActive(true);
+    resetTypingLifecycle("running");
     await waitFor(() =>
       expect(container.querySelector("[data-stub=chart]")).not.toBeNull(),
     );
     await prepareResultChart();
     const chart = container.querySelector("[data-stub=chart]");
-    setTestActive(false);
+    resetTypingLifecycle();
     expect(container.querySelector("[data-stub=chart]")).toBe(chart);
   });
 
@@ -135,7 +127,7 @@ describe("Result", () => {
       environment.isDevelopment = true;
       environment.devPrefetch = enabled;
       const { container } = render(() => <Result />);
-      setTestActive(true);
+      resetTypingLifecycle("running");
       if (enabled) {
         await waitFor(() =>
           expect(container.querySelector("[data-stub=chart]")).not.toBeNull(),

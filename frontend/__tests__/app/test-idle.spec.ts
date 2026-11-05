@@ -1,40 +1,29 @@
 import { afterEach, expect, it, vi } from "vite-plus/test";
 
 import { waitForTestIdle } from "../../src/app/test-idle.client";
-import {
-  setTestActive,
-  setIsTestRestarting,
-  setResultCalculating,
-} from "../../src/ts/states/test";
-
-afterEach(() => {
-  setTestActive(false);
-  setIsTestRestarting(false);
-  setResultCalculating(false);
-});
+import { resetTypingLifecycle } from "../__harness__/typing-lifecycle";
+afterEach(() => resetTypingLifecycle());
 
 it("waits for restart, typing and result calculation to finish", async () => {
-  setIsTestRestarting(true);
+  resetTypingLifecycle("preparing.exiting");
   const done = vi.fn();
   const controller = new AbortController();
   const pending = waitForTestIdle(controller.signal).then(done);
   await Promise.resolve();
   expect(done).not.toHaveBeenCalled();
-  setTestActive(true);
-  setIsTestRestarting(false);
+  resetTypingLifecycle("running");
   await Promise.resolve();
   expect(done).not.toHaveBeenCalled();
-  setResultCalculating(true);
-  setTestActive(false);
+  resetTypingLifecycle("completing.loading");
   await Promise.resolve();
   expect(done).not.toHaveBeenCalled();
-  setResultCalculating(false);
+  resetTypingLifecycle("result");
   await pending;
   expect(done).toHaveBeenCalledOnce();
 });
 
 it("cancels pending preferences when their account lease ends", async () => {
-  setTestActive(true);
+  resetTypingLifecycle("running");
   const controller = new AbortController();
   const pending = waitForTestIdle(controller.signal);
   const rejected = expect(pending).rejects.toThrow("Account changed");

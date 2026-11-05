@@ -1,4 +1,4 @@
-import { captureTypingRoute } from "../../scope";
+import { captureTypingPresentation } from "../../scope";
 import { Accessor, createEffect, onCleanup, onMount } from "solid-js";
 
 import { animateAsync } from "../../../../ts/anim";
@@ -16,7 +16,7 @@ export function useResultScreen(
 ): void {
   onMount(() => {
     const showScreen = async (duration: number): Promise<void> => {
-      const lease = captureTypingRoute();
+      const lease = captureTypingPresentation();
       const result = element();
       if (result) {
         result.className = updateClassNames(result.className, "hidden", false);

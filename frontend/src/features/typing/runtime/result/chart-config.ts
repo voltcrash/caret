@@ -1,4 +1,4 @@
-import { captureTypingRoute } from "../../scope";
+import { captureTypingPresentation } from "../../scope";
 import { updateResultChartDataVisibility } from "./chart-visibility";
 import { updateChartPBLine } from "./chart-pb";
 import { updateChartData } from "./chart-data";
@@ -17,7 +17,7 @@ import { buildSpeedStats } from "../result-view-model";
 
 export function subscribeResultConfigChanges(): void {
   configEvent.useListener(async ({ key }) => {
-    const lease = captureTypingRoute();
+    const lease = captureTypingPresentation();
     if (
       ["typingSpeedUnit", "startGraphsAtZero"].includes(key) &&
       getResultVisible()

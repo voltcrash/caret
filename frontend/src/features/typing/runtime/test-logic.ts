@@ -1,4 +1,6 @@
+import { getTypingLifecycle } from "../lifecycle-controller";
 import { captureTypingRoute, isTypingRouteActive } from "../scope";
+import { hideLoaderBar } from "../../../ts/states/loader-bar";
 import { createAppOwned } from "../../../app/application";
 import { onCleanup } from "solid-js";
 import * as TestUI from "./test-ui";
@@ -23,7 +25,6 @@ import {
 } from "../../../ts/states/core";
 import {
   setKoreanStatus,
-  setIsTestRestarting,
   isTestRestarting,
   isPaceRepeat,
   isTestActive,
@@ -33,9 +34,6 @@ import {
   setIsTestInvalid,
   isResultCalculating,
   setBailedOut,
-  setResultVisible,
-  setTestActive,
-  getResultVisible,
 } from "../../../ts/states/test";
 import { restartTestEvent } from "../../../ts/events/test";
 import * as TestWords from "./test-words";
@@ -83,7 +81,7 @@ export function startTest(now: number): boolean {
     void AnalyticsController.log("testStartedNoLogin");
   }
 
-  setTestActive(true);
+  if (!getTypingLifecycle().send({ type: "START" })) return false;
   TestTimer.clear();
   getTestSession().start(now);
 
@@ -151,7 +149,8 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
     options.event?.preventDefault();
     return;
   }
-  if (isTestActive()) {
+  const wasActive = isTestActive();
+  if (wasActive) {
     if (options.isQuickRestart) {
       if (decision?.preventDefault) options.event?.preventDefault();
       if (decision?.reason === "longTest") {
@@ -173,107 +172,113 @@ export async function restart(options = {} as RestartOptions): Promise<void> {
         return;
       }
     }
+  }
 
-    // close out the abandoned test
-
-    if (decision?.recordIncomplete) {
-      // Abandoning logs the timer "end" event before measuring, so idle time
-      // is subtracted instead of the whole wall-clock lifetime.
+  const lifecycle = getTypingLifecycle();
+  if (!lifecycle.send({ type: "RESTART" })) return;
+  const operation = lifecycle.capture();
+  const current = (): boolean => operation.isCurrent() && lease.isCurrent();
+  try {
+    if (wasActive && decision?.recordIncomplete) {
       TestTimer.clear();
       const { acc, seconds } = getTestSession().abandon(performance.now());
       pushIncompleteTest({ acc: Numbers.roundTo2(acc), seconds });
     }
-  }
 
-  if (decision !== undefined) {
-    options.withSameWordset = decision.withSameWordset;
-  }
-
-  if (
-    PractiseWords.before.mode !== null &&
-    !options.withSameWordset &&
-    !options.practiseMissed
-  ) {
-    showNoticeNotification("Reverting to previous settings.");
-    if (PractiseWords.before.punctuation !== null) {
-      setConfig("punctuation", PractiseWords.before.punctuation);
-    }
-    if (PractiseWords.before.numbers !== null) {
-      setConfig("numbers", PractiseWords.before.numbers);
+    if (decision !== undefined) {
+      options.withSameWordset = decision.withSameWordset;
     }
 
-    if (PractiseWords.before.customText) {
-      CustomText.setText(PractiseWords.before.customText.text);
-      CustomText.setLimitMode(PractiseWords.before.customText.limit.mode);
-      CustomText.setLimitValue(PractiseWords.before.customText.limit.value);
-      CustomText.setPipeDelimiter(
-        PractiseWords.before.customText.pipeDelimiter,
-      );
+    if (
+      PractiseWords.before.mode !== null &&
+      !options.withSameWordset &&
+      !options.practiseMissed
+    ) {
+      showNoticeNotification("Reverting to previous settings.");
+      if (PractiseWords.before.punctuation !== null) {
+        setConfig("punctuation", PractiseWords.before.punctuation);
+      }
+      if (PractiseWords.before.numbers !== null) {
+        setConfig("numbers", PractiseWords.before.numbers);
+      }
+
+      if (PractiseWords.before.customText) {
+        CustomText.setText(PractiseWords.before.customText.text);
+        CustomText.setLimitMode(PractiseWords.before.customText.limit.mode);
+        CustomText.setLimitValue(PractiseWords.before.customText.limit.value);
+        CustomText.setPipeDelimiter(
+          PractiseWords.before.customText.pipeDelimiter,
+        );
+      }
+
+      setConfig("mode", PractiseWords.before.mode);
+      PractiseWords.resetBefore();
     }
 
-    setConfig("mode", PractiseWords.before.mode);
-    PractiseWords.resetBefore();
+    // reset state
+
+    resetTestEvents();
+    TestTimer.clear();
+    setIsTestInvalid(false);
+    resetModifierState();
+    Replay.pauseReplay();
+    setBailedOut(false);
+    PaceCaret.reset();
+    setKoreanStatus(false);
+    clearQuoteStats();
+    CompositionState.setComposing(false);
+    CompositionState.setData("");
+    Strings.clearWordDirectionCache();
+    testLogicState.testReinitCount = 0;
+
+    const repeatWithPace = decision?.repeatWithPace ?? false;
+    setIsRepeated(options.withSameWordset ?? false);
+    setIsPaceRepeat(repeatWithPace);
+
+    // restart
+
+    const state = lifecycle.state();
+    const source =
+      state.phase === "preparing.exiting" ? state.source : "testPage";
+    const noAnim = options.noAnim ?? false;
+
+    await operation.wait(TestUI.fadeOutForRestart(source, noAnim));
+    if (!current()) return;
+
+    operation.send("EXIT_DONE");
+    setInputElementValue("");
+
+    await operation.wait(Funbox.rememberSettings());
+    if (!current()) return;
+
+    const initResult = await operation.wait(
+      init({ isCurrent: current, signal: operation.signal }),
+    );
+    if (!current()) return;
+
+    if (!initResult) {
+      return;
+    }
+
+    await operation.wait(PaceCaret.init({ isCurrent: current }));
+    if (!current()) return;
+
+    for (const fb of getActiveFunboxesWithFunction("restart")) {
+      fb.functions.restart();
+    }
+
+    operation.send("PREPARED");
+    TestUI.onTestRestart(source);
+
+    await operation.wait(TestUI.fadeInAfterRestart(noAnim));
+    if (!current()) return;
+    operation.send("ENTER_DONE");
+  } catch (error) {
+    if (!current()) return;
+    TestTimer.clear();
+    hideLoaderBar();
+    lifecycle.send({ type: "FAIL", error, token: operation.token });
   }
-
-  // reset state
-
-  resetTestEvents();
-  TestTimer.clear();
-  setIsTestInvalid(false);
-  resetModifierState();
-  setTestActive(false);
-  Replay.pauseReplay();
-  setBailedOut(false);
-  PaceCaret.reset();
-  setKoreanStatus(false);
-  clearQuoteStats();
-  CompositionState.setComposing(false);
-  CompositionState.setData("");
-  Strings.clearWordDirectionCache();
-  testLogicState.testReinitCount = 0;
-
-  const repeatWithPace = decision?.repeatWithPace ?? false;
-  setIsRepeated(options.withSameWordset ?? false);
-  setIsPaceRepeat(repeatWithPace);
-
-  // restart
-
-  const source: "testPage" | "resultPage" = getResultVisible()
-    ? "resultPage"
-    : "testPage";
-  const noAnim = options.noAnim ?? false;
-
-  setIsTestRestarting(true);
-
-  await TestUI.fadeOutForRestart(source, noAnim);
-  if (!lease.isCurrent()) return;
-
-  setResultVisible(false);
-  setInputElementValue("");
-
-  await Funbox.rememberSettings();
-  if (!lease.isCurrent()) return;
-
-  const initResult = await init();
-  if (!lease.isCurrent()) return;
-
-  if (!initResult) {
-    setIsTestRestarting(false);
-    return;
-  }
-
-  await PaceCaret.init();
-  if (!lease.isCurrent()) return;
-
-  for (const fb of getActiveFunboxesWithFunction("restart")) {
-    fb.functions.restart();
-  }
-
-  TestUI.onTestRestart(source);
-
-  await TestUI.fadeInAfterRestart(noAnim);
-  if (!lease.isCurrent()) return;
-  setIsTestRestarting(false);
 }
 
 export function fail(reason: string): void {

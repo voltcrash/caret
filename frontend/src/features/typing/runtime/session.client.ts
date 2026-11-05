@@ -2,11 +2,7 @@ import { onCleanup } from "solid-js";
 import { createAppOwned } from "../../../app/application";
 import { getBrowserEngine } from "../engine.client";
 import { EngineFailure } from "@caret/typing-engine/failure";
-import {
-  setTestInitError,
-  setTestActive,
-  setIsTestRestarting,
-} from "../../../ts/states/test";
+import { getTypingLifecycle } from "../lifecycle-controller";
 import {
   engineConfigMatches,
   projectEngineConfig,
@@ -213,9 +209,7 @@ export const getEngineSession = createAppOwned(() => {
         running = false;
         failure = error;
         owner.fail(error);
-        setTestActive(false);
-        setIsTestRestarting(false);
-        setTestInitError({ message: error.message });
+        getTypingLifecycle().send({ type: "FATAL", error });
       }
       throw error;
     }
