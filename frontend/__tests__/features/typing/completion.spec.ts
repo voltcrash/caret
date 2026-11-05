@@ -2,6 +2,7 @@ import { beforeEach, expect, it, vi } from "vite-plus/test";
 
 const mocks = vi.hoisted(() => ({
   current: true,
+  active: true,
   calculating: false,
   clear: vi.fn(),
   end: vi.fn(),
@@ -17,7 +18,7 @@ vi.mock("../../../src/ts/states/test-dom", () => ({
   getTypingTestElement: () => document.createElement("div"),
 }));
 vi.mock("../../../src/ts/states/test", () => ({
-  isTestActive: () => true,
+  isTestActive: () => mocks.active,
   getBailedOut: () => false,
   isResultCalculating: () => mocks.calculating,
   setResultCalculating: (value: boolean) => {
@@ -40,7 +41,22 @@ import { finish } from "../../../src/features/typing/runtime/completion";
 beforeEach(() => {
   vi.clearAllMocks();
   mocks.current = true;
+  mocks.active = true;
   mocks.calculating = false;
+});
+
+it("ignores finish before a test starts", async () => {
+  mocks.active = false;
+  await finish();
+  expect(mocks.end).not.toHaveBeenCalled();
+  expect(mocks.fade).not.toHaveBeenCalled();
+  expect(mocks.calculating).toBe(false);
+});
+
+it.fails("releases the transition guard when completion rejects", async () => {
+  mocks.complete.mockRejectedValueOnce(new Error("result failed"));
+  await finish();
+  expect(mocks.calculating).toBe(false);
 });
 
 it("stops timing before any download/animation and ignores duplicate finishes", async () => {
