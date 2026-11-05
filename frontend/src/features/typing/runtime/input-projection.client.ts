@@ -70,7 +70,7 @@ export function useEngineInputProjection(): void {
           });
         } else {
           showErrorNotification(
-            "Error while getting section. Please try again later",
+            "Error while getting section. Restart the test to retry.",
             { error },
           );
         }
