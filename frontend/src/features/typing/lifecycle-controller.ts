@@ -19,7 +19,7 @@ export type LifecycleOperation = {
   isCurrent: () => boolean;
   assertCurrent: () => void;
   send: (type: Exclude<LifecycleEvent["type"], "FAIL" | "FATAL">) => boolean;
-  wait: <T>(task: Promise<T>, timeoutMs?: number) => Promise<T>;
+  wait: <T>(task: Promise<T>, timeoutMs?: number | null) => Promise<T>;
 };
 
 type LifecycleController = {
@@ -62,7 +62,10 @@ export function createLifecycleController(): LifecycleController {
       isCurrent,
       assertCurrent,
       send: (type) => send({ type, token }),
-      wait: async <T>(task: Promise<T>, timeoutMs = 30_000): Promise<T> => {
+      wait: async <T>(
+        task: Promise<T>,
+        timeoutMs: number | null = 30_000,
+      ): Promise<T> => {
         assertCurrent();
         let timer: ReturnType<typeof setTimeout> | undefined;
         let cancel: () => void = () => undefined;
@@ -72,13 +75,15 @@ export function createLifecycleController(): LifecycleController {
             new Promise<never>((_resolve, reject) => {
               cancel = () => reject(signal.reason);
               signal.addEventListener("abort", cancel, { once: true });
-              timer = setTimeout(
-                () =>
-                  reject(
-                    new Error("Typing operation timed out. Please retry."),
-                  ),
-                timeoutMs,
-              );
+              if (timeoutMs !== null) {
+                timer = setTimeout(
+                  () =>
+                    reject(
+                      new Error("Typing operation timed out. Please retry."),
+                    ),
+                  timeoutMs,
+                );
+              }
             }),
           ]);
           assertCurrent();

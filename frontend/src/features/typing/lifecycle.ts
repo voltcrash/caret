@@ -35,7 +35,8 @@ export async function enterTypingRoute(): Promise<void> {
   const lifecycle = getTypingLifecycle();
   const operation = lifecycle.capture();
   try {
-    await operation.wait(preferencesReadiness().wait());
+    // Preferences can await a slow engine download; Restart needs activation first.
+    await operation.wait(preferencesReadiness().wait(), null);
     if (!mount.activate()) return;
     resetIncompleteTests();
     await restart({ noAnim: true });
