@@ -1,4 +1,5 @@
 import { skipWaitingMessage, updateSafetyRequest, workerBuildRequest } from "../../sw/policy";
+import { reserveUpdate } from "../../app/update-safety";
 
 export type ServiceWorkerUpdates = {
   waitingBuild: () => Promise<string | undefined>;
@@ -41,7 +42,9 @@ export function registerServiceWorker(options: {
   container.addEventListener("controllerchange", onControllerChange);
   const onMessage = (event: MessageEvent): void => {
     if (event.data === updateSafetyRequest) {
-      event.ports[0]?.postMessage(!disposed && options.isSafe());
+      const safe = !disposed && options.isSafe();
+      if (safe) reserveUpdate();
+      event.ports[0]?.postMessage(safe);
     }
   };
   container.addEventListener("message", onMessage);

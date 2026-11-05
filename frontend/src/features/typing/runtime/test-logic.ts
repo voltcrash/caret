@@ -1,4 +1,5 @@
 import { getTypingLifecycle } from "../lifecycle-controller";
+import { isUpdateReserved } from "../../../app/update-safety";
 import { captureTypingRoute, isTypingRouteActive } from "../scope";
 import { hideLoaderBar } from "../../../ts/states/loader-bar";
 import { createAppOwned } from "../../../app/application";
@@ -69,7 +70,7 @@ export async function retrySavingResult(): Promise<void> {
   await saving.retrySavingResult();
 }
 export function startTest(now: number): boolean {
-  if (!isTypingRouteActive()) {
+  if (!isTypingRouteActive() || isUpdateReserved()) {
     return false;
   }
 
