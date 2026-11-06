@@ -15,7 +15,7 @@ overrides:
   "@anatine/zod-openapi>ts-deepmerge": "8.0.0"
   "shell-quote": "1.12.0"
   "sharp@^0.35": "0.35.5"
-  "baseline-browser-mapping": "2.11.32"
+  "baseline-browser-mapping": "2.11.35"
   "fast-uri": "3.1.9"
   "@humanfs/node": "0.16.8"
   "undici@^6": "6.29.1"
@@ -25,7 +25,7 @@ overrides:
   "@babel/core@^7": "7.29.7"
   "yaml@^1": "1.10.3"
   "source-map-js": "1.2.2"
-  "browserslist": "4.29.4"
+  "browserslist": "4.29.5"
   "brace-expansion@^2": "2.1.7"
   # @better-auth/infra pins the fetch client better-auth has moved past; one copy keeps plugin types assignable.
   "@better-auth/infra>@better-fetch/fetch": "1.3.3"
@@ -35,7 +35,7 @@ overrides:
   # Authentication uses Drizzle; exclude the unused adapter and optional driver.
   "better-auth>@better-auth/mongo-adapter": "-"
   "better-auth>mongodb": "-"
-  "postcss": "8.5.31"
+  "postcss": "8.5.32"
   "cssnano": "8.0.10"
   "@ts-rest/core>zod": "4.6.7"
   "@ts-rest/open-api>zod": "4.6.7"
