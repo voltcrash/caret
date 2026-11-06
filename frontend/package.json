@@ -107,7 +107,7 @@
     "@solidjs/testing-library": "0.8.10",
     "@tailwindcss/vite": "4.3.3",
     "@tanstack/eslint-plugin-query": "5.106.1",
-    "@tanstack/solid-devtools": "0.8.13",
+    "@tanstack/solid-devtools": "0.8.14",
     "@tanstack/solid-hotkeys-devtools": "0.13.1",
     "@tanstack/solid-query-devtools": "5.106.1",
     "@testing-library/dom": "10.4.2",
