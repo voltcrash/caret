@@ -7,7 +7,7 @@ import {
 import { OneOf } from "../../ts/utils/types";
 
 const options = { parts: false } satisfies FormatDisplayOptions;
-export const Ctrl = formatForDisplay("Ctrl", options);
+export const Ctrl = formatForDisplay("Control", options);
 export const Shift = formatForDisplay("Shift", { platform: "mac" });
 export const Alt = formatForDisplay("Alt", options);
 export const Hyper = "Monke";
