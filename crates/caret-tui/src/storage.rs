@@ -287,7 +287,8 @@ impl Store {
     }
 }
 pub fn hash(value: &impl Serialize) -> Result<String> {
-    Ok(format!("{:x}", Sha256::digest(serde_json::to_vec(value)?)))
+    let digest = Sha256::digest(serde_json::to_vec(value)?);
+    Ok(digest.iter().map(|byte| format!("{byte:02x}")).collect())
 }
 pub fn record(
     host: &EngineHost,

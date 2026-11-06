@@ -26,7 +26,7 @@ unicode-segmentation = "=1.13.3"
 unicode-width = "=0.2.3"
 directories = "=6.0.0"
 rusqlite = { version = "=0.41.1", features = ["bundled"] }
-sha2 = "0.10.9"
+sha2 = "0.11.1"
 uuid = { version = "1", features = ["v4"] }
 tempfile = "3"
 
