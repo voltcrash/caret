@@ -21,10 +21,6 @@ vi.mock("../../../src/ts/constants/themes", () => ({
   },
 }));
 
-vi.mock("./FavIcon", () => ({
-  FavIcon: () => <div id="favicon" />,
-}));
-
 describe("Theme component", () => {
   const darkTheme: ReturnType<typeof ThemeSignal.getTheme> = {
     name: "dark",
@@ -161,7 +157,7 @@ describe("Theme component", () => {
     const { favIcon } = renderComponent();
 
     expect(favIcon).toBeInTheDocument();
-    expect(favIcon).toBeEmptyDOMElement(); //mocked
+    expect(favIcon).toBeEmptyDOMElement();
   });
 
   function renderComponent(): {

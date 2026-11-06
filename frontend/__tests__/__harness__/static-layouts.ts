@@ -8,14 +8,23 @@ const layouts = import.meta.glob("../../static/layouts/*.json", {
 vi.mock("../../src/ts/utils/json-data", async (importOriginal) => {
   const original =
     await importOriginal<typeof import("../../src/ts/utils/json-data")>();
+  // Wrap exports in mocks so specs can vi.spyOn this already-loaded module.
+  const spied: Record<string, unknown> = Object.fromEntries(
+    Object.entries(original).map(([key, value]) => [
+      key,
+      typeof value === "function" ? vi.fn(value) : value,
+    ]),
+  );
   return {
-    ...original,
-    getLayout: async (name: string): ReturnType<typeof original.getLayout> => {
-      const load = layouts[`../../static/layouts/${name}.json`];
-      if (load === undefined) throw new Error(`Missing test layout: ${name}`);
-      return structuredClone(await load()) as Awaited<
-        ReturnType<typeof original.getLayout>
-      >;
-    },
+    ...spied,
+    getLayout: vi.fn(
+      async (name: string): ReturnType<typeof original.getLayout> => {
+        const load = layouts[`../../static/layouts/${name}.json`];
+        if (load === undefined) throw new Error(`Missing test layout: ${name}`);
+        return structuredClone(await load()) as Awaited<
+          ReturnType<typeof original.getLayout>
+        >;
+      },
+    ),
   };
 });
