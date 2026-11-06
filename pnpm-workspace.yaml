@@ -72,7 +72,6 @@ peerDependencyRules:
     vite: "*"
     vitest: "*"
 minimumReleaseAgeExclude:
-  - stylelint@17.16.0
   - "@vitest/browser-playwright@5.1.0"
   - "@vitest/browser@5.1.0"
   - "@vitest/coverage-v8@5.1.0"
