@@ -479,6 +479,7 @@ export async function playTimeWarning(): Promise<void> {
 export async function playFartReverb(): Promise<void> {
   return audio().playFartReverb();
 }
+/** @public Read through the lazily loaded module namespace (sound-controller). */
 export async function clearAllSounds(): Promise<void> {
   return audio().clearAllSounds();
 }

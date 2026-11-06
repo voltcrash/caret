@@ -1,5 +1,6 @@
 import { QuickRestart } from "@caret/schemas/configs";
 import {
+  ALL_KEYS,
   detectPlatform,
   HotkeyChord,
   normalizeHotkey,
@@ -115,6 +116,18 @@ function reserve(reason: string, hotkeys: string[]): Record<string, string> {
   return Object.fromEntries(hotkeys.map((hotkey) => [hotkey, reason]));
 }
 
+const KEYS_BY_LOWERCASE = new Map<string, string>(
+  Array.from(ALL_KEYS, (key) => [key.toLowerCase(), key]),
+);
+
+// TanStack Hotkeys key names are case-sensitive; accept saved `tab`/`f12` too.
+function canonicalizeKeyCase(hotkey: string): string {
+  return hotkey
+    .split("+")
+    .map((part) => KEYS_BY_LOWERCASE.get(part.toLowerCase()) ?? part)
+    .join("+");
+}
+
 /**
  * Canonical form (e.g. `ctrl+k` -> `Mod+K`) so configs compare and sync cleanly.
  * Invalid hotkeys are returned as is, to be rejected by validation.
@@ -123,8 +136,9 @@ export function normalizeCommandPaletteHotkey(
   hotkey: string,
   platform: Platform = detectPlatform(),
 ): string {
-  if (!validateHotkey(hotkey).valid) return hotkey;
-  return normalizeHotkey(hotkey, platform);
+  const canonical = canonicalizeKeyCase(hotkey);
+  if (!validateHotkey(canonical).valid) return hotkey;
+  return normalizeHotkey(canonical, platform);
 }
 
 /**
@@ -135,6 +149,7 @@ export function getCommandPaletteHotkeyError(
   quickRestart: QuickRestart,
   platform: Platform = detectPlatform(),
 ): string | undefined {
+  hotkey = canonicalizeKeyCase(hotkey);
   const validation = validateHotkey(hotkey);
   if (!validation.valid) {
     return validation.errors[0] ?? "Invalid shortcut";

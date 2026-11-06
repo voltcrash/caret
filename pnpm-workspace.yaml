@@ -15,7 +15,7 @@ overrides:
   "@anatine/zod-openapi>ts-deepmerge": "8.0.0"
   "shell-quote": "1.12.0"
   "sharp@^0.35": "0.35.5"
-  "baseline-browser-mapping": "2.11.32"
+  "baseline-browser-mapping": "2.11.35"
   "fast-uri": "3.1.9"
   "@humanfs/node": "0.16.8"
   "undici@^6": "6.29.1"
@@ -25,17 +25,17 @@ overrides:
   "@babel/core@^7": "7.29.7"
   "yaml@^1": "1.10.3"
   "source-map-js": "1.2.2"
-  "browserslist": "4.29.4"
+  "browserslist": "4.29.5"
   "brace-expansion@^2": "2.1.7"
   # @better-auth/infra pins the fetch client better-auth has moved past; one copy keeps plugin types assignable.
   "@better-auth/infra>@better-fetch/fetch": "1.3.3"
   "brace-expansion@^5": "5.0.12"
   "brace-expansion@^1": "1.1.21"
-  "seroval": "1.7.3"
+  "seroval": "1.7.7"
   # Authentication uses Drizzle; exclude the unused adapter and optional driver.
   "better-auth>@better-auth/mongo-adapter": "-"
   "better-auth>mongodb": "-"
-  "postcss": "8.5.31"
+  "postcss": "8.5.32"
   "cssnano": "8.0.10"
   "@ts-rest/core>zod": "4.6.7"
   "@ts-rest/open-api>zod": "4.6.7"
@@ -46,24 +46,24 @@ overrides:
   # DOM tests use Chromium; do not retain Vitest's unused optional emulators.
   "vitest>happy-dom": "-"
   "vitest>jsdom": "-"
-  "@vitest/browser-preview": "5.0.5"
-  "@vitest/browser": "5.0.5"
-  "@vitest/mocker": "5.0.5"
-  "@vitest/pretty-format": "5.0.5"
-  "@vitest/snapshot": "5.0.5"
-  "@vitest/spy": "5.0.5"
-  "@vitest/utils": "5.0.5"
+  "@vitest/browser-preview": "5.1.0"
+  "@vitest/browser": "5.1.0"
+  "@vitest/mocker": "5.1.0"
+  "@vitest/pretty-format": "5.1.0"
+  "@vitest/snapshot": "5.1.0"
+  "@vitest/spy": "5.1.0"
+  "@vitest/utils": "5.1.0"
 
 engineStrict: true
 saveExact: true
 savePrefix: ""
 catalog:
-  playwright: 1.64.1
-  vite: npm:@voidzero-dev/vite-plus-core@1.4.0
-  vitest: 5.0.5
-  vite-plus: 1.4.0
-  "@vitest/coverage-v8": 5.0.5
-  "@vitest/browser-playwright": 5.0.5
+  playwright: 1.65.0
+  vite: npm:@voidzero-dev/vite-plus-core@1.5.0
+  vitest: 5.1.0
+  vite-plus: 1.5.0
+  "@vitest/coverage-v8": 5.1.0
+  "@vitest/browser-playwright": 5.1.0
 peerDependencyRules:
   allowAny:
     - vite
@@ -72,26 +72,26 @@ peerDependencyRules:
     vite: "*"
     vitest: "*"
 minimumReleaseAgeExclude:
-  - stylelint@17.16.0
-  - "@vitest/browser-playwright@5.0.5"
-  - "@vitest/browser@5.0.5"
-  - "@vitest/coverage-v8@5.0.5"
-  - "@vitest/mocker@5.0.5"
-  - "@vitest/pretty-format@5.0.5"
-  - "@vitest/spy@5.0.5"
-  - "@vitest/ui@5.0.5"
-  - "@vitest/utils@5.0.5"
-  - vitest@5.0.5
-  - "@vitest/browser-preview@5.0.5"
+  - "@vitest/browser-playwright@5.1.0"
+  - "@vitest/browser@5.1.0"
+  - "@vitest/coverage-v8@5.1.0"
+  - "@vitest/mocker@5.1.0"
+  - "@vitest/pretty-format@5.1.0"
+  - "@vitest/spy@5.1.0"
+  - "@vitest/ui@5.1.0"
+  - "@vitest/utils@5.1.0"
+  - vitest@5.1.0
+  - "@vitest/browser-preview@5.1.0"
   - "@tanstack/router-utils@1.162.4"
-  - "@better-auth/core@1.7.14"
-  - "@better-auth/drizzle-adapter@1.7.14"
-  - "@better-auth/kysely-adapter@1.7.14"
-  - "@better-auth/memory-adapter@1.7.14"
-  - "@better-auth/prisma-adapter@1.7.14"
-  - "@better-auth/telemetry@1.7.14"
-  - better-auth@1.7.14
-  - "@better-auth/infra@0.4.25"
+  - "@better-auth/core@1.7.18"
+  - "@better-auth/drizzle-adapter@1.7.18"
+  - "@better-auth/kysely-adapter@1.7.18"
+  - "@better-auth/memory-adapter@1.7.18"
+  - "@better-auth/prisma-adapter@1.7.18"
+  - "@better-auth/telemetry@1.7.18"
+  - better-auth@1.7.18
+  - "@better-auth/infra@0.4.27"
+  - playwright-core@1.65.0
 patchedDependencies:
   "@anatine/zod-openapi@1.14.2": patches/@anatine__zod-openapi@1.14.2.patch
   "@ts-rest/core@3.52.1": patches/@ts-rest__core@3.52.1.patch

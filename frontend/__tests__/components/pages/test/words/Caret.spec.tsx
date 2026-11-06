@@ -18,9 +18,6 @@ vi.mock("../../../../../src/features/typing/runtime/caret", () => ({
   },
   updatePosition: bindings.updatePosition,
 }));
-vi.mock("../../../../../src/ts/states/test-dom", () => ({
-  areTestElementsMounted: () => true,
-}));
 vi.mock("../../../../../src/features/typing/runtime/pace-caret", () => ({
   setCaret: (controller: CaretController) => {
     bindings.pace = controller;

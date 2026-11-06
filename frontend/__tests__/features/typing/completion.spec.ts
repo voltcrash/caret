@@ -19,9 +19,6 @@ vi.mock("../../../src/features/typing/scope", () => ({
   captureTypingRoute: () => ({ isCurrent: () => mocks.current }),
 }));
 vi.mock("../../../src/ts/anim", () => ({ animateAsync: mocks.fade }));
-vi.mock("../../../src/ts/states/test-dom", () => ({
-  getTypingTestElement: () => document.createElement("div"),
-}));
 vi.mock("../../../src/ts/states/test", async () => ({
   ...(await import("../../../src/features/typing/lifecycle-controller"))
     .lifecycleSelectors,

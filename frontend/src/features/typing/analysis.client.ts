@@ -66,10 +66,7 @@ export const getWordIndexesForSecond = (
   log: WebLog,
   second: number,
 ): number[] => getAnalysis(log).wordIndexesPerSecond[second] ?? [];
-export const getTimerBoundaryLabels = (
-  log: WebLog,
-  showLag = true,
-): string[] =>
+export const getTimerBoundaryLabels = (log: WebLog, showLag = true): string[] =>
   showLag ? getAnalysis(log).boundaryLabels : getInspection(log).boundaryLabels;
 export const getAccuracy = (log: WebLog): Inspection["accuracy"] =>
   getInspection(log).accuracy;

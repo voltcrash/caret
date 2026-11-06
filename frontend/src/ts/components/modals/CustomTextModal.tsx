@@ -1,13 +1,10 @@
-import { createCustomTextController } from "./custom-text/createCustomTextController";
-import { CustomTextEditor } from "./custom-text/CustomTextEditor";
-import { CustomTextSettings } from "./custom-text/CustomTextSettings";
-
-export { type CustomTextIncomingData } from "./custom-text/types";
-
 import { JSXElement } from "solid-js";
 
 import { AnimatedModal } from "../common/AnimatedModal";
 import { Separator } from "../common/Separator";
+import { createCustomTextController } from "./custom-text/createCustomTextController";
+import { CustomTextEditor } from "./custom-text/CustomTextEditor";
+import { CustomTextSettings } from "./custom-text/CustomTextSettings";
 import { CustomGeneratorModal } from "./CustomGeneratorModal";
 import { SaveCustomTextModal } from "./SaveCustomTextModal";
 import { SavedTextsModal } from "./SavedTextsModal";

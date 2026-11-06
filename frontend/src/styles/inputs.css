@@ -47,22 +47,22 @@ input[type="range"] {
   @apply appearance-none p-0 w-full h-[1.25em] rounded;
   &::-webkit-slider-thumb {
     @apply appearance-none p-0 border-none w-1/4 h-[1.25em] rounded bg-main;
-    &:hover {
-      @apply cursor-grab;
-    }
-    &:active {
-      @apply cursor-grabbing;
-    }
+  }
+  &::-webkit-slider-thumb:hover {
+    @apply cursor-grab;
+  }
+  &::-webkit-slider-thumb:active {
+    @apply cursor-grabbing;
   }
 
   &::-moz-range-thumb {
     @apply appearance-none p-0 border-none w-1/4 h-[1.25em] rounded bg-main;
-    &:hover {
-      @apply cursor-grab;
-    }
-    &:active {
-      @apply cursor-grabbing;
-    }
+  }
+  &::-moz-range-thumb:hover {
+    @apply cursor-grab;
+  }
+  &::-moz-range-thumb:active {
+    @apply cursor-grabbing;
   }
   &:focus-visible {
     @apply shadow-control-focus;

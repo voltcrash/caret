@@ -183,4 +183,3 @@ it("does not apply a pending color-picker edit after resetting the theme", async
 
 // Browser module exports are sealed; register spies before imports run.
 vi.mock("../../../../src/ts/config/persistence", { spy: true });
-vi.mock("../../../../src/ts/utils/json-data", { spy: true });

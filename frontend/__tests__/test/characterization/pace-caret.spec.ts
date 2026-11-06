@@ -52,10 +52,6 @@ vi.mock("../../../src/ts/states/test", () => ({
     mocks.paceWpm = wpm;
   },
 }));
-vi.mock("../../../src/ts/states/test-dom", () => ({
-  areTestElementsMounted: () => false,
-  getPaceCaretElement: () => document.createElement("div"),
-}));
 vi.mock(
   "../../../src/features/typing/components/words/caret-controller",
   () => ({
