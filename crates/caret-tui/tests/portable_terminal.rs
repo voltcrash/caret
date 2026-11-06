@@ -3,6 +3,7 @@ use caret_tui::storage::{Paths, Store};
 use portable_pty::{CommandBuilder, PtySize, native_pty_system};
 use std::{
     io::{Read, Write},
+    num::NonZeroU16,
     sync::{Arc, Mutex},
     time::{Duration, Instant},
 };
@@ -37,6 +38,7 @@ fn letter_color(
     let parser = parser.lock().unwrap();
     let screen = parser.screen();
     let (rows, columns) = screen.size();
+    let (rows, columns) = (rows.get(), columns.get());
     (0..rows).find_map(|row| {
         let line = screen.contents_between(row, 0, row, columns);
         let column = line.find(needle)? as u16 + offset;
@@ -88,7 +90,11 @@ fn native_terminal_decodes_edits_and_persists_actual_input_without_physical_tele
             pixel_height: 0,
         })
         .unwrap();
-    let parser = Arc::new(Mutex::new(vt100::Parser::new(24, 100, 0)));
+    let parser = Arc::new(Mutex::new(vt100::Parser::new(
+        NonZeroU16::new(24).unwrap(),
+        NonZeroU16::new(100).unwrap(),
+        0,
+    )));
     let mut reader = pair.master.try_clone_reader().unwrap();
     let output = parser.clone();
     let trace = Arc::new(Mutex::new(Vec::new()));
