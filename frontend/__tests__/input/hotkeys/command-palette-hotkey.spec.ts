@@ -58,6 +58,9 @@ describe("getCommandPaletteHotkeyError", () => {
       expect(getCommandPaletteHotkeyError("Tab", "esc", platform)).toBe(
         undefined,
       );
+      expect(getCommandPaletteHotkeyError("tab", "tab", platform)).toBe(
+        "tab is used by quick restart",
+      );
     });
 
     it("rejects invalid hotkeys", () => {
@@ -97,6 +100,9 @@ describe("normalizeCommandPaletteHotkey", () => {
       "Mod+Shift+K",
     );
     expect(normalizeCommandPaletteHotkey("tab", "linux")).toBe("Tab");
+    expect(normalizeCommandPaletteHotkey("ctrl+pageup", "linux")).toBe(
+      "Mod+PageUp",
+    );
   });
 
   it("leaves invalid hotkeys untouched", () => {
