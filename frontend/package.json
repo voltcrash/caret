@@ -99,8 +99,8 @@
     "@axe-core/playwright": "4.14.0",
     "@caret/oxlint-config": "workspace:*",
     "@caret/typescript-config": "workspace:*",
-    "@cloudflare/vite-plugin": "1.66.0",
-    "@cloudflare/workers-types": "5.20261029.1",
+    "@cloudflare/vite-plugin": "1.67.0",
+    "@cloudflare/workers-types": "5.20261104.1",
     "@fortawesome/fontawesome-free": "7.3.1",
     "@sentry/vite-plugin": "11.10.0",
     "@solid-devtools/overlay": "0.33.5",
@@ -134,7 +134,7 @@
     "vite-plugin-solid": "2.11.15",
     "vite-plus": "catalog:",
     "vitest": "catalog:",
-    "wrangler": "4.155.0"
+    "wrangler": "4.158.0"
   },
   "browserslist": [
     "baseline widely available and > 0.002%"
