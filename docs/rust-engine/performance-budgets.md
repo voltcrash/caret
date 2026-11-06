@@ -51,7 +51,7 @@ vp -C frontend test run --config vitest.start.config.ts __tests__/start/document
 
 Generated declarations/Wasm/glue ignored; Vite bootstrap invokes pinned Cargo and
 wasm-bindgen automatically. CI and production rebuilds use the same setup action.
-Pinned candidate versions proven here: Rust 1.99.1, wasm-bindgen/CLI 0.2.129.
+Pinned candidate versions proven here: Rust 1.99.1, wasm-bindgen/CLI 0.2.130.
 Rust MSRV declared 1.99; only pinned 1.99.1 tested so far.
 
 

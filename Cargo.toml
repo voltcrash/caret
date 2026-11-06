@@ -20,7 +20,7 @@ serde_json = { version = "1.0.154", features = [
   "preserve_order",
   "float_roundtrip",
 ] }
-wasm-bindgen = "=0.2.129"
+wasm-bindgen = "=0.2.130"
 ts-rs = { version = "=12.0.1", features = ["serde-json-impl"] }
 
 [workspace.lints.rust]

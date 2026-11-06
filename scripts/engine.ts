@@ -138,7 +138,7 @@ switch (process.argv[2]) {
       );
       break;
     }
-    const bindingVersion = "0.2.129";
+    const bindingVersion = "0.2.130";
     const installed = spawnSync("wasm-bindgen", ["--version"], {
       encoding: "utf8",
     });
