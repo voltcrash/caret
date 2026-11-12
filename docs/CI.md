@@ -4,6 +4,9 @@
 `main`/`stack/**`, pushes to `main` and manual dispatch. Successful main-push
 runs trigger the [production deployment](PRODUCTION_SETUP.md).
 
+See [CI performance](CI_PERFORMANCE.md) for browser measurements, task caching
+and runner benchmarks.
+
 ## Jobs
 
 On pull requests, `changes` maps changed paths onto jobs; independent jobs start
