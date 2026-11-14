@@ -111,7 +111,6 @@
     "@testing-library/user-event": "14.6.8",
     "@types/canvas-confetti": "1.9.0",
     "@types/damerau-levenshtein": "1.0.2",
-    "@types/howler": "2.2.13",
     "@types/node": "26.6.6",
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
