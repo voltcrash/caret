@@ -28,7 +28,6 @@ declare module "@tanstack/solid-table" {
 
     /**
      * additional attributes to be set on the table cell.
-     * Can be used to define mouse-overs with `aria-label` and `data-balloon-pos`
      */
     cellMeta?:
       | JSX.HTMLAttributes<HTMLTableCellElement>
@@ -39,7 +38,6 @@ declare module "@tanstack/solid-table" {
 
     /**
      * additional attributes to be set on the header
-     * Can be used to define mouse-overs with `aria-label` and `data-balloon-pos`
      */
     headerMeta?: JSX.HTMLAttributes;
 
