@@ -35,7 +35,6 @@ overrides:
   "better-auth>mongodb": "-"
   "postcss": "8.5.32"
   "cssnano": "8.0.10"
-  "zod-urlsearchparams>zod": "4.6.7"
   vite@*: "catalog:"
   vitest@*: "catalog:"
   # DOM tests use Chromium; do not retain Vitest's unused optional emulators.
