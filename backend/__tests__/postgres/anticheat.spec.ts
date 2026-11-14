@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
-import objectHash from "object-hash";
+import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
 import type { ExecutionContext } from "@cloudflare/workers-types";
 import type { CompletedEvent } from "@caret/schemas/results";
 import { createTestRuntime } from "./helpers";
