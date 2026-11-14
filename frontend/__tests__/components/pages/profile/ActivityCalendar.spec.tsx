@@ -57,7 +57,9 @@ it("renders the calendar's day levels, labels, month spans and total, and clears
   expect(
     cells.map((cell) => ({
       level: cell.getAttribute("data-level"),
-      label: cell.getAttribute("aria-label") ?? undefined,
+      label:
+        document.getElementById(cell.getAttribute("aria-describedby") ?? "")
+          ?.textContent ?? undefined,
     })),
   ).toEqual(expected.getDays());
   expect(
