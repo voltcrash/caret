@@ -1,6 +1,10 @@
 import { contract } from "@caret/contracts";
 import type { EndpointMetadata } from "@caret/contracts/util/api";
-import { isAppRoute, type AppRoute, type AppRouter } from "@ts-rest/core";
+import {
+  isAppRoute,
+  type AppRoute,
+  type AppRouter,
+} from "@caret/contracts/contract";
 
 type Ids<T, P extends string = ""> = {
   [K in keyof T & string]: T[K] extends AppRoute
