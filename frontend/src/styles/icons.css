@@ -138,3 +138,10 @@
 .fa-rotate-90 {
   @apply rotate-90;
 }
+
+/* Keep this default below application button/layout overrides. */
+.fas,
+.far,
+.fab {
+  @apply leading-none;
+}

@@ -4,7 +4,7 @@ import { createSignal } from "solid-js";
 import { expect, it } from "vite-plus/test";
 
 import { icons } from "../../../src/components/icons/data";
-import { Fa } from "../../../src/ts/components/common/Fa";
+import { Fa, type FaProps } from "../../../src/ts/components/common/Fa";
 
 it("renders SVG immediately and updates data-selected icons and variants", () => {
   const [regular, setRegular] = createSignal(false);
@@ -56,4 +56,26 @@ it("renders checkbox marks with the owned SVG mask", () => {
   expect(style.maskImage).toContain("svg");
   expect(style.color).not.toBe("rgba(0, 0, 0, 0)");
   expect(style.fontFamily).not.toContain("Font Awesome");
+});
+
+it.each(["fas fa-exclamation-triangle", "fa fa-fw fa-bullhorn"])(
+  "renders legacy banner class strings: %s",
+  (icon) => {
+    const { container } = render(() => <Fa {...({ icon } as FaProps)} />);
+    expect(container.querySelector("path")?.getAttribute("d")).toBeTruthy();
+  },
+);
+
+it("preserves the button icon line height override", () => {
+  const { container } = render(() => (
+    <button>
+      <Fa icon="fa-crown" />
+    </button>
+  ));
+  const icon = container.querySelector("i");
+  if (!icon) throw new Error("Missing icon");
+  const style = getComputedStyle(icon);
+  expect(Number.parseFloat(style.lineHeight)).toBeCloseTo(
+    Number.parseFloat(style.fontSize) * 1.25,
+  );
 });

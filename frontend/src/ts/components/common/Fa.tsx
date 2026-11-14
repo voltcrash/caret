@@ -13,18 +13,22 @@ export type FaProps = {
 
 export function Fa(props: FaProps): JSXElement {
   const variant = (): string => props.variant ?? "solid";
-  const glyph = (): { viewBox: string; path: string } | undefined =>
-    (
-      icons[variant() as keyof typeof icons] as Record<
-        string,
-        { viewBox: string; path: string }
-      >
-    )[props.icon];
+  const glyph = (): { viewBox: string; path: string } | undefined => {
+    const selected = icons[variant() as keyof typeof icons] as Record<
+      string,
+      { viewBox: string; path: string }
+    >;
+    // Banners retain legacy class strings, including the icon name and utilities.
+    const name = props.icon
+      .split(/\s+/)
+      .find((part) => Object.hasOwn(selected, part));
+    return name === undefined ? undefined : selected[name];
+  };
   return (
     <i
       aria-hidden="true"
       class={cn(
-        "inline-block w-[1.25em] text-center leading-none not-italic",
+        "inline-block w-[1.25em] text-center not-italic",
         props.icon,
         {
           fas: variant() === "solid",
