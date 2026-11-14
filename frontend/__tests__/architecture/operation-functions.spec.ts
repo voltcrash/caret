@@ -1,5 +1,5 @@
 import { contract } from "@caret/contracts";
-import { isAppRoute, type AppRoute } from "@ts-rest/core";
+import { isAppRoute, type AppRoute } from "@caret/contracts/contract";
 import { readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vite-plus/test";
