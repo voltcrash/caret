@@ -270,7 +270,6 @@ export function ResultWordsHistory(): JSXElement {
               aria-label={button.label}
               text={button.label}
               data-balloon-pos="up"
-              tabIndex={-1}
               onClick={() => button.onClick(wordHighlight.destroy)}
             >
               <Fa icon={button.icon} fixedWidth />

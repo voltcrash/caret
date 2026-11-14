@@ -52,7 +52,6 @@ export function ResultReplay(): JSXElement {
             aria-label={playbackLabels[replay().playback]}
             text={playbackLabels[replay().playback]}
             data-balloon-pos="up"
-            tabIndex={-1}
             onClick={() => togglePlayback()}
           >
             <Fa
