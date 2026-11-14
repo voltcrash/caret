@@ -2,6 +2,7 @@ import { createRouter } from "@tanstack/solid-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/solid-router-ssr-query";
 import { createIsomorphicFn } from "@tanstack/solid-start";
 
+import { canPrefetch } from "./app/network.client";
 import { preloadStartup } from "./app/preload.client";
 import { createQueryClient } from "./app/query-client";
 import { parseSearch, stringifySearch } from "./app/search";
@@ -22,6 +23,10 @@ const preload = createIsomorphicFn()
     );
   });
 
+const intentPreload = createIsomorphicFn()
+  .server(() => false as const)
+  .client(() => (canPrefetch() ? ("intent" as const) : (false as const)));
+
 export function getRouter() {
   preload();
   const queryClient = createQueryClient();
@@ -31,7 +36,7 @@ export function getRouter() {
     defaultPendingComponent: RoutePending,
     routeTree,
     context: { queryClient },
-    defaultPreload: "intent",
+    defaultPreload: intentPreload(),
     // Query decides freshness for every intent preload and navigation.
     defaultPreloadStaleTime: 0,
     // Unknown URLs are a 404 page, never a parent route's missing-item view.

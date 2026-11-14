@@ -89,3 +89,47 @@ test("one online visit installs guest typing; private documents and RPCs stay un
   const session = await page.request.get("/api/auth/get-session");
   expect(await session.text()).not.toBe("null");
 });
+
+test("a stalled online navigation falls back to installed typing", async ({
+  page,
+  context,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("#words .word").first()).toBeVisible();
+  await page.evaluate(async () => {
+    // Playwright cannot route navigation preload; stall the worker fetch.
+    const registration = await navigator.serviceWorker.ready;
+    if (!navigator.serviceWorker.controller) {
+      await new Promise<void>((resolve) =>
+        navigator.serviceWorker.addEventListener(
+          "controllerchange",
+          () => resolve(),
+          { once: true },
+        ),
+      );
+    }
+    // Activation enables preload before claiming clients. Disable only after that.
+    await registration.navigationPreload.disable();
+  });
+  const pending = Promise.withResolvers<undefined>();
+  let stalled = false;
+  await context.route("http://127.0.0.1:4185/", async (route) => {
+    stalled = true;
+    await pending.promise;
+    await route.continue();
+  });
+  try {
+    await page.reload({ waitUntil: "domcontentloaded", timeout: 8000 });
+    expect(stalled).toBe(true);
+    const word = page.locator("#words .word").first();
+    await expect(word).toBeVisible();
+    const letter = (await word.textContent())?.[0];
+    if (letter === undefined) throw new Error("Missing word");
+    await word.click();
+    await page.keyboard.type(letter);
+    await expect(word.locator("letter.correct")).toHaveCount(1);
+  } finally {
+    pending.resolve(undefined);
+    await context.unrouteAll({ behavior: "wait" });
+  }
+});

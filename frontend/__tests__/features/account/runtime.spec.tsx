@@ -2,6 +2,7 @@ import { cleanup, render, waitFor } from "@solidjs/testing-library";
 import { QueryClientProvider } from "@tanstack/solid-query";
 import { afterEach, expect, it, vi } from "vite-plus/test";
 
+const warmAccount = vi.hoisted(() => vi.fn(async () => undefined));
 const loads = vi.hoisted(() => vi.fn(async () => undefined));
 vi.mock("../../../src/ts/auth", () => ({ loadUser: loads }));
 const clearSentryUser = vi.hoisted(() => vi.fn(async () => undefined));
@@ -9,7 +10,7 @@ vi.mock("../../../src/ts/sentry", () => ({ clearUser: clearSentryUser }));
 // Account page warmup is outside these actor/session tests. Keep its idle import
 // from continuing after the browser test frame has closed.
 vi.mock("../../../src/features/account/page", () => ({
-  preloadAccount: vi.fn(async () => undefined),
+  preloadAccount: warmAccount,
 }));
 // Session refetches stay pending; tests drive the cached session directly.
 vi.mock("../../../src/functions/session", () => ({
@@ -47,6 +48,8 @@ afterEach(() => {
   cleanup();
   setUserState(null);
   loads.mockClear();
+  warmAccount.mockClear();
+  vi.unstubAllGlobals();
   clearSentryUser.mockClear();
 });
 
@@ -201,3 +204,31 @@ it("clears the error-report identity when the account signs out", async () => {
   await tick();
   await waitFor(() => expect(clearSentryUser).toHaveBeenCalledOnce());
 });
+
+it.each([false, true])(
+  "data saver %s affects idle history warmup, not account loading",
+  async (saveData) => {
+    let warm: IdleRequestCallback | undefined;
+    vi.stubGlobal("requestIdleCallback", (callback: IdleRequestCallback) => {
+      warm = callback;
+      return 1;
+    });
+    vi.stubGlobal("cancelIdleCallback", vi.fn());
+    vi.stubGlobal("navigator", { onLine: true, connection: { saveData } });
+    const app = requireApplication();
+    app.queryClient.setQueryData(sessionKey, {
+      user: user("warm"),
+      signUpEnabled: true,
+    });
+    setUserState(user("warm"));
+    render(() => (
+      <QueryClientProvider client={app.queryClient}>
+        <AccountRuntime />
+      </QueryClientProvider>
+    ));
+    await waitFor(() => expect(loads).toHaveBeenCalledOnce());
+    expect(warm).toBeDefined();
+    warm?.({ didTimeout: false, timeRemaining: () => 50 });
+    expect(warmAccount).toHaveBeenCalledTimes(saveData ? 0 : 1);
+  },
+);

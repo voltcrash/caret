@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/solid-query";
 import { createEffect, createMemo, on, onCleanup } from "solid-js";
 
 import { requireApplication } from "../../app/application";
+import { canPrefetch } from "../../app/network.client";
 import { loadUser, type AccountLoad } from "../../ts/auth";
 import { setAuthAvailable } from "../../ts/auth-client";
 import * as Sentry from "../../ts/sentry";
@@ -53,7 +54,9 @@ export function AccountRuntime(): null {
       window.addEventListener("online", retryPending);
       onCleanup(() => window.removeEventListener("online", retryPending));
       const warm = (): void => {
-        if (lease.isCurrent()) void preloadAccount().catch(() => undefined);
+        if (lease.isCurrent() && canPrefetch()) {
+          void preloadAccount().catch(() => undefined);
+        }
       };
       if (typeof requestIdleCallback === "function") {
         const idle = requestIdleCallback(warm, { timeout: 2_000 });

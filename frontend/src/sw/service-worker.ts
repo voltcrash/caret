@@ -126,6 +126,37 @@ async function navigationResponse(event: FetchEvent): Promise<Response> {
   return (await event.preloadResponse) ?? (await fetch(event.request));
 }
 
+/** A stalled connection must not hide an already installed typing test. */
+async function typingNavigation(event: FetchEvent): Promise<Response> {
+  const network = navigationResponse(event);
+  // Keep navigation preload alive after returning the shell; never cache a
+  // personalized document or replace the page when the late response arrives.
+  event.waitUntil(
+    network.then(
+      () => undefined,
+      () => undefined,
+    ),
+  );
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    const response = await Promise.race([
+      network,
+      new Promise<Response | undefined>((resolve, reject) => {
+        timer = setTimeout(() => {
+          void caches
+            .open(cacheName)
+            .then(async (cache) => cache.match(new URL(shellPath, origin).href))
+            .then(resolve, reject);
+        }, 1500);
+      }),
+    ]);
+    // An evicted shell is not a reason to abandon a working network request.
+    return response ?? (await network);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function respond(
   event: FetchEvent,
   strategy: Strategy,
@@ -133,7 +164,9 @@ async function respond(
   const { request } = event;
   if (strategy === "navigate") {
     try {
-      return await navigationResponse(event);
+      return await (servesShell(request.url)
+        ? typingNavigation(event)
+        : navigationResponse(event));
     } catch {
       return await offlineDocument(request.url);
     }
@@ -143,18 +176,24 @@ async function respond(
     if (cached !== undefined) return cached;
     const response = await fetch(request);
     if (response.status === 200) {
-      event.waitUntil(store(request, response.clone()));
+      event.waitUntil(store(request, response.clone()).catch(() => undefined));
     }
     return response;
   }
   const cache = await caches.open(cacheName);
   const cached = await cache.match(request);
-  const refresh = fetch(request).then(async (response) => {
-    if (response.status === 200) await cache.put(request, response.clone());
-    return response;
-  });
+  const refresh = fetch(request);
+  // Cache.put consumes the entire body. Keep that work off the response path
+  // so fonts, sound and quote downloads can stream on a slow connection.
+  event.waitUntil(
+    refresh
+      .then(async (response) => {
+        if (response.status === 200) await cache.put(request, response.clone());
+        return undefined;
+      })
+      .catch(() => undefined),
+  );
   if (cached === undefined) return await refresh;
-  event.waitUntil(refresh.catch(() => undefined));
   return cached;
 }
 
