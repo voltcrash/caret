@@ -83,13 +83,6 @@
 }
 
 /* account, social and results */
-.fa-user-times,
-.fa-user-xmark {
-  scale: 1.08;
-}
-.fa-comments {
-  scale: 0.88;
-}
 .fa-download {
   scale: 1.1;
 }
