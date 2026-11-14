@@ -3,7 +3,7 @@ import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { gzipSync } from "node:zlib";
 import { fromCrossJSON, toJSONAsync, type SerovalNode } from "seroval";
-import objectHash from "object-hash";
+import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
 import { z } from "zod";
 import { withRuntime } from "@caret/backend/runtime";
 import * as Users from "../../backend/src/dal/user";
