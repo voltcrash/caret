@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vite-plus/test";
 import { z } from "zod";
-import { serialize } from "zod-urlsearchparams";
+import { serialize } from "../../src/app/url-search-params";
 
 import { parseSearch, stringifySearch, urlSearch } from "../../src/app/search";
 
