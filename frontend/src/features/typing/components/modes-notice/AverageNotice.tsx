@@ -30,7 +30,7 @@ export function AverageNotice(): JSXElement {
       });
     }
 
-    return [speed, acc].filter((it) => it !== undefined).join(" ");
+    return [speed, acc].filter((it) => it !== undefined).join("\n");
   });
 
   return (

@@ -45,7 +45,7 @@ export function Notice(
       fa={props.icon !== undefined ? { icon: props.icon } : undefined}
     >
       <Show when={props.compact} fallback={props.children ?? props.text}>
-        <span class="line-clamp-2 min-w-0 sm:block sm:truncate">
+        <span class="line-clamp-2 min-w-0 whitespace-pre-line sm:block sm:truncate sm:whitespace-normal">
           {props.children ?? props.text}
         </span>
       </Show>

@@ -258,6 +258,15 @@ for (const scenario of [
         announcements.release();
         const banner = page.getByText("A late announcement", { exact: false });
         await expect(banner).toBeVisible();
+        const card = page
+          .getByRole("region", { name: "Announcements" })
+          .locator(":scope > div")
+          .first();
+        await expect(card).toHaveCSS(
+          "animation-name",
+          scenario.reduced ? "none" : "content-in",
+        );
+        await expect(card).toHaveCSS("opacity", "1");
         await unchanged();
         await page.screenshot({ path: info.outputPath("after-arrivals.png") });
         await page.getByRole("button", { name: "Dismiss banner" }).click();

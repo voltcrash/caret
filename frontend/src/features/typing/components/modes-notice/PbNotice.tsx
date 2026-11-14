@@ -40,7 +40,7 @@ export function PbNotice() {
 
     const acc = format.accuracy(pb.acc, { suffix: ` acc` });
 
-    return `${speed} ${acc}`;
+    return `${speed}\n${acc}`;
   });
 
   return (
