@@ -22,7 +22,7 @@ import { DBResult } from "../../../src/utils/result";
 import { omit } from "../../../src/utils/misc";
 import { CompletedEvent } from "@caret/schemas/results";
 import MonkeyError from "../../../src/utils/error";
-import objectHash from "object-hash";
+import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
 import { BASE_CONFIGURATION } from "../../../src/constants/base-configuration";
 import { consistency } from "../../../src/anticheat/result";
 import { getTimingFingerprint } from "../../../src/anticheat/replay";
