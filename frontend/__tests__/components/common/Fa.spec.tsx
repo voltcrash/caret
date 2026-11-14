@@ -1,3 +1,4 @@
+import "../../../src/app/app.css";
 import { render } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
 import { expect, it } from "vite-plus/test";
@@ -20,6 +21,14 @@ it("renders SVG immediately and updates data-selected icons and variants", () =>
   const wrapper = container.querySelector("i");
   expect(wrapper).toHaveClass("fas", "fa-fw", "fa-spin", "test-icon");
   expect(wrapper?.style.fontSize).toBe("2em");
+  if (!(wrapper instanceof HTMLElement)) throw new Error("Missing icon");
+  const fontSize = Number.parseFloat(getComputedStyle(wrapper).fontSize);
+  expect(Number.parseFloat(getComputedStyle(wrapper).width)).toBeCloseTo(
+    fontSize * 1.25,
+    1,
+  );
+  expect(getComputedStyle(wrapper).animationDuration).toBe("2s");
+  expect(getComputedStyle(wrapper).fontFamily).not.toContain("Font Awesome");
   expect(container.querySelector("path")?.getAttribute("d")).toBe(
     icons.solid["fa-star"].path,
   );
