@@ -81,6 +81,77 @@ for (const scenario of [
       const tags = gate(page, "**/assets/TagsNotice-*.js");
       const user = gate(page, "**/assets/User-*.js");
       const announcements = gate(page, `**${rpcPath("psasGet")}*`);
+      // Exercise a wide identity and real values as well as empty history.
+      const populated =
+        scenario.name === "desktop" || scenario.name === "phone";
+      const pbText = populated ? "120.50 wpm 99% acc" : "no pb";
+      const averageText = populated ? "100 wpm 98% acc" : "no average";
+      await page.route(`**${rpcPath("usersGet")}*`, async (route) =>
+        fulfillOperation(route, {
+          uid: "e2e-user",
+          name: "long_account_123",
+          addedAt: 0,
+          xp: 100000,
+          verified: true,
+          tags: [
+            {
+              _id: "arrival_tag",
+              name: "long_practice",
+              personalBests: {
+                time: {},
+                words: {},
+                quote: {},
+                zen: {},
+                custom: {},
+              },
+            },
+          ],
+          personalBests: {
+            time: populated
+              ? {
+                  "30": [
+                    {
+                      wpm: 120.5,
+                      acc: 99,
+                      raw: 121,
+                      consistency: 99,
+                      timestamp: 1,
+                      language: "english",
+                      difficulty: "normal",
+                      lazyMode: false,
+                    },
+                  ],
+                }
+              : {},
+            words: {},
+            quote: {},
+            zen: {},
+            custom: {},
+          },
+        }),
+      );
+      if (populated) {
+        await page.route(`**${rpcPath("resultsGet")}*`, async (route) =>
+          fulfillOperation(route, [
+            {
+              _id: "arrival_result",
+              uid: "e2e-user",
+              wpm: 100,
+              acc: 98,
+              rawWpm: 101,
+              consistency: 99,
+              charStats: [250, 0, 0, 0],
+              mode: "time",
+              mode2: "30",
+              testDuration: 30,
+              timestamp: 1,
+              keyConsistency: 100,
+              language: "english",
+              tags: ["arrival_tag"],
+            },
+          ]),
+        );
+      }
       await page.route(`**${rpcPath("psasGet")}*`, async (route) =>
         fulfillOperation(route, [
           {
@@ -135,6 +206,9 @@ for (const scenario of [
         await expect.poll(account.requested).toBe(true);
         await expect.poll(average.requested).toBe(true);
         await expect(
+          page.getByRole("button", { name: pbText, exact: true }),
+        ).toHaveCount(0);
+        await expect(
           page.getByRole("button", { name: "no pb", exact: true }),
         ).toHaveCount(0);
         await unchanged();
@@ -142,7 +216,7 @@ for (const scenario of [
         account.release();
         await expect.poll(user.requested).toBe(true);
         await expect(
-          page.getByRole("button", { name: "no pb", exact: true }),
+          page.getByRole("button", { name: pbText, exact: true }),
         ).toBeVisible();
         await unchanged();
         user.release();
@@ -151,7 +225,7 @@ for (const scenario of [
         ).toBeVisible();
         await unchanged();
         const pbBox = await page
-          .getByRole("button", { name: "no pb", exact: true })
+          .getByRole("button", { name: pbText, exact: true })
           .boundingBox();
 
         tags.release();
@@ -166,7 +240,7 @@ for (const scenario of [
         await unchanged();
         results.release();
         const summary = page.getByRole("button", {
-          name: "no average",
+          name: averageText,
           exact: true,
         });
         await expect(summary).toBeVisible();
@@ -176,7 +250,7 @@ for (const scenario of [
         );
         expect(
           await page
-            .getByRole("button", { name: "no pb", exact: true })
+            .getByRole("button", { name: pbText, exact: true })
             .boundingBox(),
         ).toEqual(pbBox);
         await unchanged();
