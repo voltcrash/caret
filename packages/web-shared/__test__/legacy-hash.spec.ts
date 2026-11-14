@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { describe, expect, it } from "vite-plus/test";
-import objectHash from "object-hash";
+import { legacyHash } from "../src/legacy-hash";
 
 // Frozen with the real legacy package before replacing it. Include values
 // omitted by JSON as well as old-client, offline and persisted replay shapes.
@@ -47,13 +47,15 @@ function samples(): object[] {
 describe("legacy result hash", () => {
   it("retains old-client, offline, duplicate and replay digests", () => {
     const digest = createHash("sha256");
-    for (const value of samples()) digest.update(objectHash(value));
+    for (const value of samples()) {
+      digest.update(legacyHash(value));
+    }
     expect(digest.digest("hex")).toBe(
       "df6399977287ed591eb04461031b7941d4fee0148cd1f2b62cfd60912cb82061",
     );
   });
   it("keeps object keys unordered and array elements ordered", () => {
-    expect(objectHash({ a: 1, b: 2 })).toBe(objectHash({ b: 2, a: 1 }));
-    expect(objectHash([1, 2])).not.toBe(objectHash([2, 1]));
+    expect(legacyHash({ a: 1, b: 2 })).toBe(legacyHash({ b: 2, a: 1 }));
+    expect(legacyHash([1, 2])).not.toBe(legacyHash([2, 1]));
   });
 });
