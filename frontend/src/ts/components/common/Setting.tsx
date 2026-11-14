@@ -7,9 +7,9 @@ import {
   useContext,
 } from "solid-js";
 import { z } from "zod";
-import { serialize } from "zod-urlsearchparams";
 
 import { replaceUrl } from "../../../app/navigate";
+import { serialize } from "../../../app/url-search-params";
 import { useRef } from "../../hooks/useRef";
 import {
   showErrorNotification,

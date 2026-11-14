@@ -20,7 +20,7 @@
       },
     },
     {
-      // Factory inference preserves TanStack/Drizzle/ts-rest generic metadata.
+      // Factory inference preserves TanStack/Drizzle/contract generic metadata.
       // These modules expose inferred factory results, not untyped API values.
       "files": [
         "**/src/ts/collections/**/*.ts",

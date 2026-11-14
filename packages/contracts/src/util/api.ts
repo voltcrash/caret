@@ -36,7 +36,6 @@ export type EndpointMetadata = {
 /**
  *
  * @param metadata Ensure the type of metadata is `EndpointMetadata`.
- * Ts-rest does not allow to specify the type of `metadata`.
  * @returns
  */
 export function meta(metadata: EndpointMetadata): EndpointMetadata {

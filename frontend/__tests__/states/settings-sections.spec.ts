@@ -1,6 +1,5 @@
 import { afterEach, describe, expect, it } from "vite-plus/test";
-// Browser entry shares the schema's ESM Zod constructors.
-import { safeParse, serialize } from "zod-urlsearchparams/dist/index.mjs";
+import { safeParse, serialize } from "../../src/app/url-search-params";
 
 import { sectionForTab } from "../../src/features/settings/tabs";
 import { setUserId } from "../../src/ts/states/core";

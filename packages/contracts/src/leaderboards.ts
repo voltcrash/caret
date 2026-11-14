@@ -11,7 +11,7 @@ import {
   XpLeaderboardEntrySchema,
 } from "@caret/schemas/leaderboards";
 import { ClientSchema, Mode2Schema, ModeSchema } from "@caret/schemas/shared";
-import { initContract } from "@ts-rest/core";
+import { initContract } from "./contract";
 import { LanguageSchema } from "@caret/schemas/languages";
 import { PageNumberSchema } from "@caret/schemas/util";
 

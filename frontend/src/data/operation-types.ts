@@ -3,7 +3,7 @@ import type {
   AppRoute,
   ClientInferRequest,
   ClientInferResponseBody,
-} from "@ts-rest/core";
+} from "@caret/contracts/contract";
 
 type Contract = typeof contract;
 type Group = keyof Contract & string;

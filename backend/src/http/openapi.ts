@@ -1,6 +1,6 @@
 import { isRetainedHttpOperation } from "./retention";
 import type { OperationId } from "../policies/operations";
-import { generateOpenApi } from "@ts-rest/open-api";
+import { generateOpenApi } from "./openapi-generator";
 import { COMPATIBILITY_CHECK, contract } from "@caret/contracts/index";
 import { EndpointMetadata, PermissionId } from "@caret/contracts/util/api";
 type OpenAPIObject = ReturnType<typeof generateOpenApi>;

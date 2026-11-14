@@ -1,5 +1,5 @@
 import type { z } from "zod";
-import { type AppRoute, checkZodSchema } from "@ts-rest/core";
+import { type AppRoute, checkZodSchema } from "@caret/contracts/contract";
 
 type ZodIssue = z.core.$ZodIssue;
 

@@ -1,8 +1,7 @@
 import { contract } from "@caret/contracts";
 import { isRetainedHttpOperation } from "../src/http/retention";
 import type { OperationId } from "../src/policies/operations";
-import type { EndpointMetadata } from "@caret/contracts/util/api";
-import { isAppRoute, type AppRouter } from "@ts-rest/core";
+import { isAppRoute, type AppRouter } from "@caret/contracts/contract";
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { resolve, relative, dirname } from "node:path";
 import { isDeepStrictEqual } from "node:util";
@@ -105,7 +104,7 @@ export function inventory(): object[] {
         visit(route, `${id}.`);
         continue;
       }
-      const policy = (route.metadata ?? {}) as EndpointMetadata;
+      const policy = route.metadata ?? {};
       const auth = policy.authenticationOptions;
       const externalContract = auth?.isPublic === true;
       const browserCallers = [...new Set(callers.get(id) ?? [])].sort();

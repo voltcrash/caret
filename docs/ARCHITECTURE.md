@@ -70,7 +70,7 @@ never add `hidden` imperatively, or a closed dialog can intercept clicks.
 
 `@caret/backend` exports narrow server-only subpaths (runtime, services,
 policies, auth, http, jobs). Start handlers call services directly; there is no
-internal HTTP hop. Shared ts-rest contracts and Zod schemas define the retained
+internal HTTP hop. Owned route contracts and Zod schemas define the retained
 external HTTP API. Drizzle describes Neon PostgreSQL tables; Better Auth uses database-backed
 sessions for Google/GitHub accounts. Private operations require a session cookie
 or Bearer session token. External API keys are unsupported.

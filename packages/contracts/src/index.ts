@@ -1,4 +1,4 @@
-import { initContract } from "@ts-rest/core";
+import { initContract } from "./contract";
 import { adminContract } from "./admin";
 import { configsContract } from "./configs";
 import { presetsContract } from "./presets";

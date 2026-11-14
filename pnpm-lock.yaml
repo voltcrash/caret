@@ -184,7 +184,6 @@ catalogs:
       version: 5.1.0
 
 overrides:
-  '@anatine/zod-openapi>ts-deepmerge': 8.0.0
   shell-quote: 1.12.0
   sharp@^0.35: 0.35.5
   baseline-browser-mapping: 2.11.35
@@ -207,10 +206,6 @@ overrides:
   better-auth>mongodb: '-'
   postcss: 8.5.32
   cssnano: 8.0.10
-  '@ts-rest/core>zod': 4.6.7
-  '@ts-rest/open-api>zod': 4.6.7
-  '@anatine/zod-openapi>zod': 4.6.7
-  zod-urlsearchparams>zod: 4.6.7
   vite@*: npm:@voidzero-dev/vite-plus-core@1.5.0
   vitest@*: 5.1.0
   vitest>happy-dom: '-'
@@ -222,12 +217,6 @@ overrides:
   '@vitest/snapshot': 5.1.0
   '@vitest/spy': 5.1.0
   '@vitest/utils': 5.1.0
-
-patchedDependencies:
-  '@anatine/zod-openapi@1.14.2': 87ffbdb63ed393948f5f41cfb3f08de61e39089c617f0e5a657b4f059754364e
-  '@ts-rest/core@3.52.1': 7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9
-  '@ts-rest/open-api@3.52.1': 1b17f624fc76d19e735fd05983e021f9a23658352ab73f7823c42393e4ab6515
-  zod-urlsearchparams@0.0.16: 0322116a41bd32a5caa9d9181291addfe46d9b782adecdb42c9e161a9347cce4
 
 importers:
 
@@ -299,12 +288,6 @@ importers:
       '@date-fns/utc':
         specifier: 2.1.1
         version: 2.1.1
-      '@ts-rest/core':
-        specifier: 3.52.1
-        version: 3.52.1(patch_hash=7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9)(@types/node@26.6.6)(zod@4.6.7)
-      '@ts-rest/open-api':
-        specifier: 3.52.1
-        version: 3.52.1(patch_hash=1b17f624fc76d19e735fd05983e021f9a23658352ab73f7823c42393e4ab6515)(@ts-rest/core@3.52.1(patch_hash=7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9)(@types/node@26.6.6)(zod@4.6.7))(zod@4.6.7)
       better-auth:
         specifier: 1.7.18
         version: 1.7.18(@tanstack/solid-start@1.169.4(@voidzero-dev/vite-plus-core@1.5.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(solid-js@1.9.18)(supports-color@10.2.2)(vite-plugin-solid@2.11.15(@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.2)(vitest@5.1.0))(@voidzero-dev/vite-plus-core@1.5.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(solid-js@1.9.18)(supports-color@10.2.2)))(drizzle-kit@0.31.11)(drizzle-orm@0.45.4(@cloudflare/workers-types@5.20261104.1)(@electric-sql/pglite@0.5.15)(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(kysely@0.29.7)(pg@8.23.1))(pg@8.23.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(solid-js@1.9.18)(vitest@5.1.0)
@@ -444,9 +427,6 @@ importers:
       '@tanstack/solid-table':
         specifier: 9.3.1
         version: 9.3.1(solid-js@1.9.18)
-      '@ts-rest/core':
-        specifier: 3.52.1
-        version: 3.52.1(patch_hash=7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9)(@types/node@26.6.6)(zod@4.6.7)
       animejs:
         specifier: 4.5.0
         version: 4.5.0
@@ -492,9 +472,6 @@ importers:
       zod:
         specifier: 4.6.7
         version: 4.6.7
-      zod-urlsearchparams:
-        specifier: 0.0.16
-        version: 0.0.16(patch_hash=0322116a41bd32a5caa9d9181291addfe46d9b782adecdb42c9e161a9347cce4)(zod@4.6.7)
     devDependencies:
       '@axe-core/playwright':
         specifier: 4.14.0
@@ -656,9 +633,6 @@ importers:
       '@caret/schemas':
         specifier: workspace:*
         version: link:../schemas
-      '@ts-rest/core':
-        specifier: 3.52.1
-        version: 3.52.1(patch_hash=7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9)(@types/node@26.6.6)(zod@4.6.7)
       zod:
         specifier: 4.6.7
         version: 4.6.7
@@ -804,12 +778,6 @@ packages:
 
   '@adobe/css-tools@4.5.0':
     resolution: {integrity: sha512-6OzddxPio9UiWTCemp4N8cYLV2ZN1ncRnV1cVGtve7dhPOtRkleRyx32GQCYSwDYgaHU3USMm84tNsvKzRCa1Q==}
-
-  '@anatine/zod-openapi@1.14.2':
-    resolution: {integrity: sha512-q0qHfnuNYVKu0Swrnnvfj9971AEyW7c8v9jCOZGCl5ZbyGMNG4RPyJkRcMi/JC8CRfdOe0IDfNm1nNsi2avprg==}
-    peerDependencies:
-      openapi3-ts: ^2.0.0 || ^3.0.0
-      zod: 4.6.7
 
   '@axe-core/playwright@4.14.0':
     resolution: {integrity: sha512-SGUhG5PIHd2eMdpgBF2PyQLOhX+qyDR2PT4cmoS4Qk2ak+jX/rrSvst9l0PGv5WTHolKpUMvVmoHpr4cZgf1RQ==}
@@ -3433,23 +3401,6 @@ packages:
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
 
-  '@ts-rest/core@3.52.1':
-    resolution: {integrity: sha512-tAjz7Kxq/grJodcTA1Anop4AVRDlD40fkksEV5Mmal88VoZeRKAG8oMHsDwdwPZz+B/zgnz0q2sF+cm5M7Bc7g==}
-    peerDependencies:
-      '@types/node': ^18.18.7 || >=20.8.4
-      zod: 4.6.7
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      zod:
-        optional: true
-
-  '@ts-rest/open-api@3.52.1':
-    resolution: {integrity: sha512-VY91g6HFzCe1/fNgX4Y3HzaJbIdztCGHTg34drkh7bKgtNOizLJLXV0wwIkMwLGvjhRHojJxnwYxHjGMIkScwg==}
-    peerDependencies:
-      '@ts-rest/core': ~3.52.0
-      zod: 4.6.7
-
   '@tybys/wasm-util@0.10.4':
     resolution: {integrity: sha512-W3c4gRigFS0T/Ma4qIYF3GDAc5AQdHb1yL5znJT1Zv1YaD9Kitx656wBjvr19qbiosmZT8lWDM5BEMynUqX65A==}
 
@@ -5108,9 +5059,6 @@ packages:
     resolution: {integrity: sha512-++Zlftm0kVLPmzC06t6epuWmcRMDbI4z5P3NNX979WA/k23+NtSOynEGzsVfZwguKw2mi5umVgnBlJQMwRz4Pg==}
     engines: {node: '>=20'}
 
-  openapi3-ts@2.0.2:
-    resolution: {integrity: sha512-TxhYBMoqx9frXyOgnRHufjQfPXomTIHYKhSKJ6jHfj13kS8OEIhvmE8CTuQyKtjjWttAjX5DPxM1vmalEpo8Qw==}
-
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
@@ -5664,10 +5612,6 @@ packages:
     resolution: {integrity: sha512-JfJeIHke7y2egdGGgRAvpCwYFUsHlM2gPcrVOxFkznt/4uzQ7HFmvE63iFHVLBJNDuyDOQgijDK/tXH/f6Msjg==}
     engines: {node: '>=6.10'}
 
-  ts-deepmerge@8.0.0:
-    resolution: {integrity: sha512-133O+10nJmVI8w5xeVZPEv5PIrv7iaUae07wv1aH8XJH95Ur6YIhWAPhPyP1YPlbPS9fCVcNIZTu7m8urRVF0A==}
-    engines: {node: '>=14.13.1'}
-
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
@@ -5975,10 +5919,6 @@ packages:
   yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
 
-  yaml@1.10.3:
-    resolution: {integrity: sha512-vIYeF1u3CjlhAFekPPAk2h/Kv4T3mAkMox5OymRiJQB0spDP10LHvt+K7G9Ny6NuuMAb25/6n1qyUjAcGNf/AA==}
-    engines: {node: '>= 6'}
-
   yaml@2.9.1:
     resolution: {integrity: sha512-3NxN8+78OdzbT7C/WjGsyfPAtJaN3FNDsWxv7Y7mcDsT/oOmgW8BpyQQFFBnvZE3j9Y2Sdz1ULFLezL7Eb2yFw==}
     engines: {node: '>= 14.6'}
@@ -6013,23 +5953,12 @@ packages:
   zigpty@0.2.1:
     resolution: {integrity: sha512-MR9JqJx2wf5f4wz8zpx050AlqrmWeIW+1h0SO5iEyhG3HFRjY5luC3szS2ux2EGuPjE5OU9ZAuiCBeMWBTrqZw==}
 
-  zod-urlsearchparams@0.0.16:
-    resolution: {integrity: sha512-BF9RfjiMXpGgtPHkKORXqNDXkLGbV5um7Mgn4/ghAxg8RNuiLdKCKPBIzGHk7OfE52Ew103x6Lahs187hadLVg==}
-    peerDependencies:
-      zod: 4.6.7
-
   zod@4.6.7:
     resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
 
 snapshots:
 
   '@adobe/css-tools@4.5.0': {}
-
-  '@anatine/zod-openapi@1.14.2(patch_hash=87ffbdb63ed393948f5f41cfb3f08de61e39089c617f0e5a657b4f059754364e)(openapi3-ts@2.0.2)(zod@4.6.7)':
-    dependencies:
-      openapi3-ts: 2.0.2
-      ts-deepmerge: 8.0.0
-      zod: 4.6.7
 
   '@axe-core/playwright@4.14.0(playwright-core@1.65.0)':
     dependencies:
@@ -8243,18 +8172,6 @@ snapshots:
     dependencies:
       '@testing-library/dom': 10.4.2
 
-  '@ts-rest/core@3.52.1(patch_hash=7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9)(@types/node@26.6.6)(zod@4.6.7)':
-    optionalDependencies:
-      '@types/node': 26.6.6
-      zod: 4.6.7
-
-  '@ts-rest/open-api@3.52.1(patch_hash=1b17f624fc76d19e735fd05983e021f9a23658352ab73f7823c42393e4ab6515)(@ts-rest/core@3.52.1(patch_hash=7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9)(@types/node@26.6.6)(zod@4.6.7))(zod@4.6.7)':
-    dependencies:
-      '@anatine/zod-openapi': 1.14.2(patch_hash=87ffbdb63ed393948f5f41cfb3f08de61e39089c617f0e5a657b4f059754364e)(openapi3-ts@2.0.2)(zod@4.6.7)
-      '@ts-rest/core': 3.52.1(patch_hash=7a5d7e5d39a8793726eec769c132d84c2392837fe4b18ce961436027911822e9)(@types/node@26.6.6)(zod@4.6.7)
-      openapi3-ts: 2.0.2
-      zod: 4.6.7
-
   '@tybys/wasm-util@0.10.4':
     dependencies:
       tslib: 2.8.1
@@ -9729,10 +9646,6 @@ snapshots:
       powershell-utils: 0.2.1
       wsl-utils: 1.0.1
 
-  openapi3-ts@2.0.2:
-    dependencies:
-      yaml: 1.10.3
-
   optionator@0.9.4:
     dependencies:
       deep-is: 0.1.4
@@ -10448,8 +10361,6 @@ snapshots:
 
   ts-dedent@2.3.0: {}
 
-  ts-deepmerge@8.0.0: {}
-
   tslib@2.8.1: {}
 
   tsx@4.23.15:
@@ -10875,8 +10786,6 @@ snapshots:
 
   yallist@3.1.1: {}
 
-  yaml@1.10.3: {}
-
   yaml@2.9.1: {}
 
   yargs-parser@22.0.0: {}
@@ -10928,9 +10837,5 @@ snapshots:
       yuku-core: 0.19.0
 
   zigpty@0.2.1: {}
-
-  zod-urlsearchparams@0.0.16(patch_hash=0322116a41bd32a5caa9d9181291addfe46d9b782adecdb42c9e161a9347cce4)(zod@4.6.7):
-    dependencies:
-      zod: 4.6.7
 
   zod@4.6.7: {}

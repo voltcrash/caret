@@ -1,0 +1,3495 @@
+{
+  "beforeBase": "73d473e49e4e929e96c40d6704dafaaf1b9549b3",
+  "command": "vp -C backend exec vpx ./scripts/openapi.ts --start",
+  "beforeSha256": "c6e28a60209bead3f76fecbc4c7ab3770f26ff1a4c8b93d36ce119b40dcd17b6",
+  "afterSha256": "e10be5d7b07bb93ceacf0927aacfe8c7647f11afc0d5aa24eeda29ed6ca0b015",
+  "scope": "Documentation only. Zod runtime validators and retained HTTP surface unchanged. Every difference listed below; pointers use RFC 6901 escaping.",
+  "differences": [
+    {
+      "pointer": "/paths/~1admin~1anticheat~1audits/get/parameters/2/content/application~1json/schema/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1admin~1anticheat~1audits/get/responses/200/content/application~1json/schema/properties/data/items/properties/message/propertyNames",
+      "change": "added",
+      "after": {
+        "type": "string"
+      },
+      "reason": "native record schemas describe string keys explicitly"
+    },
+    {
+      "pointer": "/paths/~1admin~1anticheat~1audits/get/responses/200/content/application~1json/schema/properties/data/items/properties/timestamp/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1admin~1anticheat~1summary/get/responses/200/content/application~1json/schema/properties/data/properties/flagged/items/properties/count/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1admin~1anticheat~1summary/get/responses/200/content/application~1json/schema/properties/data/properties/flagged/items/properties/users/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1admin~1anticheat~1summary/get/responses/200/content/application~1json/schema/properties/data/properties/rejected/items/properties/count/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1admin~1anticheat~1summary/get/responses/200/content/application~1json/schema/properties/data/properties/rejected/items/properties/users/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1admin~1anticheat~1summary/get/responses/200/content/application~1json/schema/properties/data/properties/samples/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1admin~1anticheat~1summary/get/responses/200/content/application~1json/schema/properties/data/properties/since/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/get/responses/200/content/application~1json/schema/properties/data/properties/anticheat/properties/logVerification/required",
+      "change": "changed",
+      "before": ["enabled"],
+      "after": ["requireForRanked", "enabled"],
+      "reason": "response default is always present after Zod parsing"
+    },
+    {
+      "pointer": "/paths/~1configuration/get/responses/200/content/application~1json/schema/properties/data/properties/anticheat/properties/replayCheck/properties/maxFingerprints/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/get/responses/200/content/application~1json/schema/properties/data/properties/anticheat/properties/review/properties/suspiciousAfterFlags/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/get/responses/200/content/application~1json/schema/properties/data/properties/anticheat/properties/review/properties/suspiciousWindowHours/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/get/responses/200/content/application~1json/schema/properties/data/properties/dailyLeaderboards/properties/maxResults/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/get/responses/200/content/application~1json/schema/properties/data/properties/dev/properties/responseSlowdownMs/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/get/responses/200/content/application~1json/schema/properties/data/properties/quotes/properties/maxFavorites/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/get/responses/200/content/application~1json/schema/properties/data/properties/quotes/properties/reporting/properties/contentReportLimit/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/get/responses/200/content/application~1json/schema/properties/data/properties/quotes/properties/reporting/properties/maxReports/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/get/responses/200/content/application~1json/schema/properties/data/properties/rateLimiting/properties/badAuthentication/properties/flaggedStatusCodes/items/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/get/responses/200/content/application~1json/schema/properties/data/properties/results/properties/filterPresets/properties/maxPresetsPerUser/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/get/responses/200/content/application~1json/schema/properties/data/properties/results/properties/limits/properties/premiumUser/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/get/responses/200/content/application~1json/schema/properties/data/properties/results/properties/limits/properties/regularUser/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/get/responses/200/content/application~1json/schema/properties/data/properties/results/properties/maxBatchSize/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/get/responses/200/content/application~1json/schema/properties/data/properties/users/properties/autoBan/properties/maxCount/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/get/responses/200/content/application~1json/schema/properties/data/properties/users/properties/autoBan/properties/maxHours/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/patch/requestBody/content/application~1json/schema/properties/configuration/properties/anticheat/properties/replayCheck/properties/maxFingerprints/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/patch/requestBody/content/application~1json/schema/properties/configuration/properties/anticheat/properties/review/properties/suspiciousAfterFlags/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/patch/requestBody/content/application~1json/schema/properties/configuration/properties/anticheat/properties/review/properties/suspiciousWindowHours/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/patch/requestBody/content/application~1json/schema/properties/configuration/properties/dailyLeaderboards/properties/maxResults/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/patch/requestBody/content/application~1json/schema/properties/configuration/properties/dev/properties/responseSlowdownMs/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/patch/requestBody/content/application~1json/schema/properties/configuration/properties/quotes/properties/maxFavorites/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/patch/requestBody/content/application~1json/schema/properties/configuration/properties/quotes/properties/reporting/properties/contentReportLimit/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/patch/requestBody/content/application~1json/schema/properties/configuration/properties/quotes/properties/reporting/properties/maxReports/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/patch/requestBody/content/application~1json/schema/properties/configuration/properties/rateLimiting/properties/badAuthentication/properties/flaggedStatusCodes/items/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/patch/requestBody/content/application~1json/schema/properties/configuration/properties/results/properties/filterPresets/properties/maxPresetsPerUser/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/patch/requestBody/content/application~1json/schema/properties/configuration/properties/results/properties/limits/properties/premiumUser/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/patch/requestBody/content/application~1json/schema/properties/configuration/properties/results/properties/limits/properties/regularUser/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/patch/requestBody/content/application~1json/schema/properties/configuration/properties/results/properties/maxBatchSize/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/patch/requestBody/content/application~1json/schema/properties/configuration/properties/users/properties/autoBan/properties/maxCount/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration/patch/requestBody/content/application~1json/schema/properties/configuration/properties/users/properties/autoBan/properties/maxHours/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1configuration~1schema/get/responses/200/content/application~1json/schema/$defs",
+      "change": "added",
+      "after": {
+        "__schema0": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "hint": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "object"
+            },
+            "fields": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {
+                "$ref": "#/paths/~1configuration~1schema/get/responses/200/content/application~1json/schema/$defs/__schema1"
+              }
+            }
+          },
+          "required": ["type", "fields"],
+          "additionalProperties": false
+        },
+        "__schema1": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "hint": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "const": "number"
+                },
+                "min": {
+                  "type": "number"
+                }
+              },
+              "required": ["type"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "hint": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "const": "boolean"
+                }
+              },
+              "required": ["type"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "hint": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "const": "string"
+                }
+              },
+              "required": ["type"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "hint": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "const": "array"
+                },
+                "items": {
+                  "$ref": "#/paths/~1configuration~1schema/get/responses/200/content/application~1json/schema/$defs/__schema1"
+                }
+              },
+              "required": ["type", "items"],
+              "additionalProperties": false
+            },
+            {
+              "$ref": "#/paths/~1configuration~1schema/get/responses/200/content/application~1json/schema/$defs/__schema0"
+            }
+          ]
+        }
+      },
+      "reason": "recursive configuration schema now documented with resolvable JSON Schema references"
+    },
+    {
+      "pointer": "/paths/~1configuration~1schema/get/responses/200/content/application~1json/schema/properties/data/$ref",
+      "change": "added",
+      "after": "#/paths/~1configuration~1schema/get/responses/200/content/application~1json/schema/$defs/__schema0",
+      "reason": "recursive configuration schema now documented with resolvable JSON Schema references"
+    },
+    {
+      "pointer": "/paths/~1configuration~1schema/get/responses/200/content/application~1json/schema/properties/data/additionalProperties",
+      "change": "removed",
+      "before": false,
+      "reason": "recursive configuration schema now documented with resolvable JSON Schema references"
+    },
+    {
+      "pointer": "/paths/~1configuration~1schema/get/responses/200/content/application~1json/schema/properties/data/properties",
+      "change": "removed",
+      "before": {
+        "label": {
+          "type": "string"
+        },
+        "hint": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["object"]
+        },
+        "fields": {
+          "type": "object",
+          "additionalProperties": {}
+        }
+      },
+      "reason": "recursive configuration schema now documented with resolvable JSON Schema references"
+    },
+    {
+      "pointer": "/paths/~1configuration~1schema/get/responses/200/content/application~1json/schema/properties/data/required",
+      "change": "removed",
+      "before": ["type", "fields"],
+      "reason": "recursive configuration schema now documented with resolvable JSON Schema references"
+    },
+    {
+      "pointer": "/paths/~1configuration~1schema/get/responses/200/content/application~1json/schema/properties/data/type",
+      "change": "removed",
+      "before": "object",
+      "reason": "recursive configuration schema now documented with resolvable JSON Schema references"
+    },
+    {
+      "pointer": "/paths/~1leaderboards/get/parameters/0/content/application~1json/schema/const",
+      "change": "added",
+      "after": "web",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards/get/parameters/0/content/application~1json/schema/enum",
+      "change": "removed",
+      "before": ["web"],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards/get/parameters/3/content/application~1json/schema/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        {
+          "type": "string",
+          "const": "zen"
+        },
+        {
+          "type": "string",
+          "const": "custom"
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards/get/parameters/3/content/application~1json/schema/oneOf",
+      "change": "removed",
+      "before": [
+        {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        {
+          "type": "string",
+          "enum": ["zen"]
+        },
+        {
+          "type": "string",
+          "enum": ["custom"]
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards/get/parameters/5/content/application~1json/schema/exclusiveMinimum",
+      "change": "removed",
+      "before": 0,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards/get/responses/200/content/application~1json/schema/properties/data/properties/count/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards/get/responses/200/content/application~1json/schema/properties/data/properties/entries/items/properties/badgeId/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards/get/responses/200/content/application~1json/schema/properties/data/properties/entries/items/properties/badgeId/minimum",
+      "change": "added",
+      "after": -9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards/get/responses/200/content/application~1json/schema/properties/data/properties/entries/items/properties/rank/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards/get/responses/200/content/application~1json/schema/properties/data/properties/entries/items/properties/timestamp/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards/get/responses/200/content/application~1json/schema/properties/data/properties/pageSize/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards/get/responses/200/content/application~1json/schema/properties/data/properties/pageSize/minimum",
+      "change": "removed",
+      "before": 0,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1daily/get/parameters/0/content/application~1json/schema/const",
+      "change": "added",
+      "after": "web",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1daily/get/parameters/0/content/application~1json/schema/enum",
+      "change": "removed",
+      "before": ["web"],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1daily/get/parameters/3/content/application~1json/schema/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        {
+          "type": "string",
+          "const": "zen"
+        },
+        {
+          "type": "string",
+          "const": "custom"
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1daily/get/parameters/3/content/application~1json/schema/oneOf",
+      "change": "removed",
+      "before": [
+        {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        {
+          "type": "string",
+          "enum": ["zen"]
+        },
+        {
+          "type": "string",
+          "enum": ["custom"]
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1daily/get/parameters/4/content/application~1json/schema/const",
+      "change": "added",
+      "after": 1,
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1daily/get/parameters/4/content/application~1json/schema/enum",
+      "change": "removed",
+      "before": [1],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1daily/get/parameters/6/content/application~1json/schema/exclusiveMinimum",
+      "change": "removed",
+      "before": 0,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1daily/get/responses/200/content/application~1json/schema/properties/data/properties/count/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1daily/get/responses/200/content/application~1json/schema/properties/data/properties/entries/items/properties/badgeId/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1daily/get/responses/200/content/application~1json/schema/properties/data/properties/entries/items/properties/badgeId/minimum",
+      "change": "added",
+      "after": -9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1daily/get/responses/200/content/application~1json/schema/properties/data/properties/entries/items/properties/rank/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1daily/get/responses/200/content/application~1json/schema/properties/data/properties/entries/items/properties/timestamp/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1daily/get/responses/200/content/application~1json/schema/properties/data/properties/pageSize/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1daily/get/responses/200/content/application~1json/schema/properties/data/properties/pageSize/minimum",
+      "change": "removed",
+      "before": 0,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1rank/get/parameters/0/content/application~1json/schema/const",
+      "change": "added",
+      "after": "web",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1rank/get/parameters/0/content/application~1json/schema/enum",
+      "change": "removed",
+      "before": ["web"],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1rank/get/parameters/3/content/application~1json/schema/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        {
+          "type": "string",
+          "const": "zen"
+        },
+        {
+          "type": "string",
+          "const": "custom"
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1rank/get/parameters/3/content/application~1json/schema/oneOf",
+      "change": "removed",
+      "before": [
+        {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        {
+          "type": "string",
+          "enum": ["zen"]
+        },
+        {
+          "type": "string",
+          "enum": ["custom"]
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1rank/get/responses/200/content/application~1json/schema/properties/data/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "type": "object",
+          "properties": {
+            "wpm": {
+              "type": "number",
+              "minimum": 0
+            },
+            "acc": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "timestamp": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "raw": {
+              "type": "number",
+              "minimum": 0
+            },
+            "consistency": {
+              "type": "number",
+              "minimum": 0
+            },
+            "uid": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "rank": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "badgeId": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "isPremium": {
+              "type": "boolean"
+            }
+          },
+          "required": ["wpm", "acc", "timestamp", "raw", "uid", "name", "rank"]
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1rank/get/responses/200/content/application~1json/schema/properties/data/nullable",
+      "change": "removed",
+      "before": true,
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1rank/get/responses/200/content/application~1json/schema/properties/data/properties",
+      "change": "removed",
+      "before": {
+        "wpm": {
+          "type": "number",
+          "minimum": 0
+        },
+        "acc": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "timestamp": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "raw": {
+          "type": "number",
+          "minimum": 0
+        },
+        "consistency": {
+          "type": "number",
+          "minimum": 0
+        },
+        "uid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "rank": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "badgeId": {
+          "type": "integer"
+        },
+        "isPremium": {
+          "type": "boolean"
+        }
+      },
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1rank/get/responses/200/content/application~1json/schema/properties/data/required",
+      "change": "removed",
+      "before": ["wpm", "acc", "timestamp", "raw", "uid", "name", "rank"],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1rank/get/responses/200/content/application~1json/schema/properties/data/type",
+      "change": "removed",
+      "before": "object",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1xp~1weekly/get/parameters/0/content/application~1json/schema/const",
+      "change": "added",
+      "after": "web",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1xp~1weekly/get/parameters/0/content/application~1json/schema/enum",
+      "change": "removed",
+      "before": ["web"],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1xp~1weekly/get/parameters/1/content/application~1json/schema/const",
+      "change": "added",
+      "after": 1,
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1xp~1weekly/get/parameters/1/content/application~1json/schema/enum",
+      "change": "removed",
+      "before": [1],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1xp~1weekly/get/parameters/3/content/application~1json/schema/exclusiveMinimum",
+      "change": "removed",
+      "before": 0,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1xp~1weekly/get/responses/200/content/application~1json/schema/properties/data/properties/count/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1xp~1weekly/get/responses/200/content/application~1json/schema/properties/data/properties/entries/items/properties/badgeId/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1xp~1weekly/get/responses/200/content/application~1json/schema/properties/data/properties/entries/items/properties/badgeId/minimum",
+      "change": "added",
+      "after": -9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1xp~1weekly/get/responses/200/content/application~1json/schema/properties/data/properties/entries/items/properties/lastActivityTimestamp/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1xp~1weekly/get/responses/200/content/application~1json/schema/properties/data/properties/entries/items/properties/rank/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1xp~1weekly/get/responses/200/content/application~1json/schema/properties/data/properties/entries/items/properties/totalXp/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1xp~1weekly/get/responses/200/content/application~1json/schema/properties/data/properties/pageSize/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1leaderboards~1xp~1weekly/get/responses/200/content/application~1json/schema/properties/data/properties/pageSize/minimum",
+      "change": "removed",
+      "before": 0,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1psas/get/responses/200/content/application~1json/schema/properties/data/items/properties/date/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1psas/get/responses/200/content/application~1json/schema/properties/data/items/properties/level/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1psas/get/responses/200/content/application~1json/schema/properties/data/items/properties/level/minimum",
+      "change": "added",
+      "after": -9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1public~1speedHistogram/get/parameters/0/content/application~1json/schema/const",
+      "change": "added",
+      "after": "web",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1public~1speedHistogram/get/parameters/0/content/application~1json/schema/enum",
+      "change": "removed",
+      "before": ["web"],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1public~1speedHistogram/get/parameters/3/content/application~1json/schema/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        {
+          "type": "string",
+          "const": "zen"
+        },
+        {
+          "type": "string",
+          "const": "custom"
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1public~1speedHistogram/get/parameters/3/content/application~1json/schema/oneOf",
+      "change": "removed",
+      "before": [
+        {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        {
+          "type": "string",
+          "enum": ["zen"]
+        },
+        {
+          "type": "string",
+          "enum": ["custom"]
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1public~1speedHistogram/get/responses/200/content/application~1json/schema/properties/data/additionalProperties/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1public~1speedHistogram/get/responses/200/content/application~1json/schema/properties/data/additionalProperties/minimum",
+      "change": "added",
+      "after": -9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1public~1speedHistogram/get/responses/200/content/application~1json/schema/properties/data/propertyNames",
+      "change": "added",
+      "after": {
+        "anyOf": [
+          {
+            "type": "string",
+            "pattern": "^\\d+$"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "reason": "native record schemas describe string keys explicitly"
+    },
+    {
+      "pointer": "/paths/~1public~1typingStats/get/parameters/0/content/application~1json/schema/const",
+      "change": "added",
+      "after": "web",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1public~1typingStats/get/parameters/0/content/application~1json/schema/enum",
+      "change": "removed",
+      "before": ["web"],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1public~1typingStats/get/responses/200/content/application~1json/schema/properties/data/properties/testsCompleted/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1public~1typingStats/get/responses/200/content/application~1json/schema/properties/data/properties/testsStarted/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1results/get/parameters/1/content/application~1json/schema/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1results/get/parameters/3/content/application~1json/schema/const",
+      "change": "added",
+      "after": "web",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1results/get/parameters/3/content/application~1json/schema/enum",
+      "change": "removed",
+      "before": ["web"],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1results/get/parameters/4/content/application~1json/schema/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1results/get/parameters/5/content/application~1json/schema/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1results/get/responses/200/content/application~1json/schema/properties/data/items/properties/charStats/items",
+      "change": "added",
+      "after": false,
+      "reason": "native tuple positions and exact length replace the old unconstrained tuple"
+    },
+    {
+      "pointer": "/paths/~1results/get/responses/200/content/application~1json/schema/properties/data/items/properties/charStats/maxItems",
+      "change": "added",
+      "after": 4,
+      "reason": "native tuple positions and exact length replace the old unconstrained tuple"
+    },
+    {
+      "pointer": "/paths/~1results/get/responses/200/content/application~1json/schema/properties/data/items/properties/charStats/minItems",
+      "change": "added",
+      "after": 4,
+      "reason": "native tuple positions and exact length replace the old unconstrained tuple"
+    },
+    {
+      "pointer": "/paths/~1results/get/responses/200/content/application~1json/schema/properties/data/items/properties/charStats/prefixItems",
+      "change": "added",
+      "after": [
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      ],
+      "reason": "native tuple positions and exact length replace the old unconstrained tuple"
+    },
+    {
+      "pointer": "/paths/~1results/get/responses/200/content/application~1json/schema/properties/data/items/properties/charStats/type",
+      "change": "added",
+      "after": "array",
+      "reason": "native tuple positions and exact length replace the old unconstrained tuple"
+    },
+    {
+      "pointer": "/paths/~1results/get/responses/200/content/application~1json/schema/properties/data/items/properties/client/const",
+      "change": "added",
+      "after": "web",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1results/get/responses/200/content/application~1json/schema/properties/data/items/properties/client/enum",
+      "change": "removed",
+      "before": ["web"],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1results/get/responses/200/content/application~1json/schema/properties/data/items/properties/mode2/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "type": "string",
+          "const": "zen"
+        },
+        {
+          "type": "string",
+          "const": "custom"
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1results/get/responses/200/content/application~1json/schema/properties/data/items/properties/mode2/oneOf",
+      "change": "removed",
+      "before": [
+        {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "type": "string",
+          "enum": ["zen"]
+        },
+        {
+          "type": "string",
+          "enum": ["custom"]
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1results/get/responses/200/content/application~1json/schema/properties/data/items/properties/restartCount/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1results/get/responses/200/content/application~1json/schema/properties/data/items/properties/timestamp/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1results~1id~1{resultId}/get/responses/200/content/application~1json/schema/properties/data/properties/charStats/items",
+      "change": "added",
+      "after": false,
+      "reason": "native tuple positions and exact length replace the old unconstrained tuple"
+    },
+    {
+      "pointer": "/paths/~1results~1id~1{resultId}/get/responses/200/content/application~1json/schema/properties/data/properties/charStats/maxItems",
+      "change": "added",
+      "after": 4,
+      "reason": "native tuple positions and exact length replace the old unconstrained tuple"
+    },
+    {
+      "pointer": "/paths/~1results~1id~1{resultId}/get/responses/200/content/application~1json/schema/properties/data/properties/charStats/minItems",
+      "change": "added",
+      "after": 4,
+      "reason": "native tuple positions and exact length replace the old unconstrained tuple"
+    },
+    {
+      "pointer": "/paths/~1results~1id~1{resultId}/get/responses/200/content/application~1json/schema/properties/data/properties/charStats/prefixItems",
+      "change": "added",
+      "after": [
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      ],
+      "reason": "native tuple positions and exact length replace the old unconstrained tuple"
+    },
+    {
+      "pointer": "/paths/~1results~1id~1{resultId}/get/responses/200/content/application~1json/schema/properties/data/properties/charStats/type",
+      "change": "added",
+      "after": "array",
+      "reason": "native tuple positions and exact length replace the old unconstrained tuple"
+    },
+    {
+      "pointer": "/paths/~1results~1id~1{resultId}/get/responses/200/content/application~1json/schema/properties/data/properties/chartData/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "type": "object",
+          "properties": {
+            "wpm": {
+              "maxItems": 122,
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "burst": {
+              "maxItems": 122,
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "err": {
+              "maxItems": 122,
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          },
+          "required": ["wpm", "burst", "err"]
+        },
+        {
+          "type": "string",
+          "const": "toolong"
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1results~1id~1{resultId}/get/responses/200/content/application~1json/schema/properties/data/properties/chartData/oneOf",
+      "change": "removed",
+      "before": [
+        {
+          "type": "object",
+          "properties": {
+            "wpm": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": 0
+              },
+              "maxItems": 122
+            },
+            "burst": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "maxItems": 122
+            },
+            "err": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": 0
+              },
+              "maxItems": 122
+            }
+          },
+          "required": ["wpm", "burst", "err"]
+        },
+        {
+          "type": "string",
+          "enum": ["toolong"]
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1results~1id~1{resultId}/get/responses/200/content/application~1json/schema/properties/data/properties/client/const",
+      "change": "added",
+      "after": "web",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1results~1id~1{resultId}/get/responses/200/content/application~1json/schema/properties/data/properties/client/enum",
+      "change": "removed",
+      "before": ["web"],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1results~1id~1{resultId}/get/responses/200/content/application~1json/schema/properties/data/properties/mode2/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "type": "string",
+          "const": "zen"
+        },
+        {
+          "type": "string",
+          "const": "custom"
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1results~1id~1{resultId}/get/responses/200/content/application~1json/schema/properties/data/properties/mode2/oneOf",
+      "change": "removed",
+      "before": [
+        {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "type": "string",
+          "enum": ["zen"]
+        },
+        {
+          "type": "string",
+          "enum": ["custom"]
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1results~1id~1{resultId}/get/responses/200/content/application~1json/schema/properties/data/properties/restartCount/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1results~1id~1{resultId}/get/responses/200/content/application~1json/schema/properties/data/properties/timestamp/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1results~1last/get/parameters/0/content/application~1json/schema/const",
+      "change": "added",
+      "after": "web",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1results~1last/get/parameters/0/content/application~1json/schema/enum",
+      "change": "removed",
+      "before": ["web"],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1results~1last/get/responses/200/content/application~1json/schema/properties/data/properties/charStats/items",
+      "change": "added",
+      "after": false,
+      "reason": "native tuple positions and exact length replace the old unconstrained tuple"
+    },
+    {
+      "pointer": "/paths/~1results~1last/get/responses/200/content/application~1json/schema/properties/data/properties/charStats/maxItems",
+      "change": "added",
+      "after": 4,
+      "reason": "native tuple positions and exact length replace the old unconstrained tuple"
+    },
+    {
+      "pointer": "/paths/~1results~1last/get/responses/200/content/application~1json/schema/properties/data/properties/charStats/minItems",
+      "change": "added",
+      "after": 4,
+      "reason": "native tuple positions and exact length replace the old unconstrained tuple"
+    },
+    {
+      "pointer": "/paths/~1results~1last/get/responses/200/content/application~1json/schema/properties/data/properties/charStats/prefixItems",
+      "change": "added",
+      "after": [
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      ],
+      "reason": "native tuple positions and exact length replace the old unconstrained tuple"
+    },
+    {
+      "pointer": "/paths/~1results~1last/get/responses/200/content/application~1json/schema/properties/data/properties/charStats/type",
+      "change": "added",
+      "after": "array",
+      "reason": "native tuple positions and exact length replace the old unconstrained tuple"
+    },
+    {
+      "pointer": "/paths/~1results~1last/get/responses/200/content/application~1json/schema/properties/data/properties/chartData/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "type": "object",
+          "properties": {
+            "wpm": {
+              "maxItems": 122,
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "burst": {
+              "maxItems": 122,
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "err": {
+              "maxItems": 122,
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          },
+          "required": ["wpm", "burst", "err"]
+        },
+        {
+          "type": "string",
+          "const": "toolong"
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1results~1last/get/responses/200/content/application~1json/schema/properties/data/properties/chartData/oneOf",
+      "change": "removed",
+      "before": [
+        {
+          "type": "object",
+          "properties": {
+            "wpm": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": 0
+              },
+              "maxItems": 122
+            },
+            "burst": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "maxItems": 122
+            },
+            "err": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": 0
+              },
+              "maxItems": 122
+            }
+          },
+          "required": ["wpm", "burst", "err"]
+        },
+        {
+          "type": "string",
+          "enum": ["toolong"]
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1results~1last/get/responses/200/content/application~1json/schema/properties/data/properties/client/const",
+      "change": "added",
+      "after": "web",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1results~1last/get/responses/200/content/application~1json/schema/properties/data/properties/client/enum",
+      "change": "removed",
+      "before": ["web"],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1results~1last/get/responses/200/content/application~1json/schema/properties/data/properties/mode2/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "type": "string",
+          "const": "zen"
+        },
+        {
+          "type": "string",
+          "const": "custom"
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1results~1last/get/responses/200/content/application~1json/schema/properties/data/properties/mode2/oneOf",
+      "change": "removed",
+      "before": [
+        {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "type": "string",
+          "enum": ["zen"]
+        },
+        {
+          "type": "string",
+          "enum": ["custom"]
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1results~1last/get/responses/200/content/application~1json/schema/properties/data/properties/restartCount/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1results~1last/get/responses/200/content/application~1json/schema/properties/data/properties/timestamp/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1users~1checkName~1{name}/get/parameters/0/schema/allOf",
+      "change": "added",
+      "after": [
+        {
+          "pattern": "^[0-9a-zA-Z_.-]+$"
+        },
+        {
+          "pattern": "^[^.].*$"
+        }
+      ],
+      "reason": "all regex checks are retained instead of only the last regex"
+    },
+    {
+      "pointer": "/paths/~1users~1checkName~1{name}/get/parameters/0/schema/pattern",
+      "change": "removed",
+      "before": "^[^.].*$",
+      "reason": "all regex checks are retained instead of only the last regex"
+    },
+    {
+      "pointer": "/paths/~1users~1currentTestActivity/get/parameters/0/content/application~1json/schema/const",
+      "change": "added",
+      "after": "web",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1currentTestActivity/get/parameters/0/content/application~1json/schema/enum",
+      "change": "removed",
+      "before": ["web"],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1currentTestActivity/get/responses/200/content/application~1json/schema/properties/data/additionalProperties",
+      "change": "removed",
+      "before": false,
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1currentTestActivity/get/responses/200/content/application~1json/schema/properties/data/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "type": "object",
+          "properties": {
+            "testsByDays": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "description": "Number of tests by day. Last element of the array is on the date `lastDay`. `null` means no tests on that day."
+            },
+            "lastDay": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991,
+              "description": "Timestamp of the last day included in the test activity"
+            }
+          },
+          "required": ["testsByDays", "lastDay"],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1currentTestActivity/get/responses/200/content/application~1json/schema/properties/data/nullable",
+      "change": "removed",
+      "before": true,
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1currentTestActivity/get/responses/200/content/application~1json/schema/properties/data/properties",
+      "change": "removed",
+      "before": {
+        "testsByDays": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "string",
+                "format": "null",
+                "nullable": true
+              }
+            ],
+            "nullable": true
+          },
+          "description": "Number of tests by day. Last element of the array is on the date `lastDay`. `null` means no tests on that day."
+        },
+        "lastDay": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Timestamp of the last day included in the test activity"
+        }
+      },
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1currentTestActivity/get/responses/200/content/application~1json/schema/properties/data/required",
+      "change": "removed",
+      "before": ["testsByDays", "lastDay"],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1currentTestActivity/get/responses/200/content/application~1json/schema/properties/data/type",
+      "change": "removed",
+      "before": "object",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1favoriteQuotes/get/responses/200/content/application~1json/schema/properties/data/additionalProperties/items/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "type": "string",
+          "pattern": "^\\d+$"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1favoriteQuotes/get/responses/200/content/application~1json/schema/properties/data/additionalProperties/items/oneOf",
+      "change": "removed",
+      "before": [
+        {
+          "type": "string",
+          "pattern": "^\\d+$"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1favoriteQuotes/get/responses/200/content/application~1json/schema/properties/data/propertyNames",
+      "change": "added",
+      "after": {},
+      "reason": "native record schemas describe string keys explicitly"
+    },
+    {
+      "pointer": "/paths/~1users~1personalBests/get/parameters/0/content/application~1json/schema/const",
+      "change": "added",
+      "after": "web",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1personalBests/get/parameters/0/content/application~1json/schema/enum",
+      "change": "removed",
+      "before": ["web"],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1personalBests/get/parameters/2/content/application~1json/schema/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        {
+          "type": "string",
+          "const": "zen"
+        },
+        {
+          "type": "string",
+          "const": "custom"
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1personalBests/get/parameters/2/content/application~1json/schema/oneOf",
+      "change": "removed",
+      "before": [
+        {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        {
+          "type": "string",
+          "enum": ["zen"]
+        },
+        {
+          "type": "string",
+          "enum": ["custom"]
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1personalBests/get/responses/200/content/application~1json/schema/properties/data/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "type": "object",
+          "properties": {
+            "acc": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "consistency": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "difficulty": {
+              "type": "string",
+              "enum": ["normal", "expert", "master"]
+            },
+            "lazyMode": {
+              "type": "boolean"
+            },
+            "language": {
+              "type": "string",
+              "enum": [
+                "english",
+                "english_1k",
+                "english_5k",
+                "english_10k",
+                "english_25k",
+                "english_450k",
+                "english_commonly_misspelled",
+                "english_contractions",
+                "english_doubleletter",
+                "english_shakespearean",
+                "english_old",
+                "english_medical",
+                "spanish",
+                "spanish_1k",
+                "spanish_10k",
+                "spanish_650k",
+                "french",
+                "french_1k",
+                "french_2k",
+                "french_10k",
+                "french_600k",
+                "french_bitoduc",
+                "nepali",
+                "nepali_1k",
+                "nepali_romanized",
+                "sanskrit",
+                "sanskrit_roman",
+                "santali",
+                "azerbaijani",
+                "azerbaijani_1k",
+                "arabic",
+                "arabic_10k",
+                "arabic_egypt",
+                "arabic_egypt_1k",
+                "arabic_morocco",
+                "malagasy",
+                "malagasy_1k",
+                "malay",
+                "malay_1k",
+                "mongolian",
+                "mongolian_10k",
+                "kannada",
+                "korean",
+                "korean_1k",
+                "korean_5k",
+                "khmer",
+                "chinese_simplified",
+                "chinese_simplified_1k",
+                "chinese_simplified_5k",
+                "chinese_simplified_10k",
+                "chinese_simplified_50k",
+                "chinese_traditional",
+                "chinese_traditional_1k",
+                "chinese_traditional_5k",
+                "chinese_traditional_10k",
+                "chinese_traditional_50k",
+                "russian",
+                "russian_1k",
+                "russian_5k",
+                "russian_10k",
+                "russian_25k",
+                "russian_50k",
+                "russian_375k",
+                "russian_contractions",
+                "russian_contractions_1k",
+                "russian_abbreviations",
+                "ukrainian",
+                "ukrainian_1k",
+                "ukrainian_10k",
+                "ukrainian_50k",
+                "ukrainian_endings",
+                "ukrainian_latynka",
+                "ukrainian_latynka_1k",
+                "ukrainian_latynka_10k",
+                "ukrainian_latynka_50k",
+                "ukrainian_latynka_endings",
+                "portuguese",
+                "portuguese_acentos_e_cedilha",
+                "portuguese_1k",
+                "portuguese_3k",
+                "portuguese_5k",
+                "portuguese_320k",
+                "portuguese_550k",
+                "indonesian",
+                "indonesian_1k",
+                "indonesian_10k",
+                "kurdish_central",
+                "kurdish_central_2k",
+                "kurdish_central_4k",
+                "german",
+                "german_1k",
+                "german_10k",
+                "german_250k",
+                "swiss_german",
+                "swiss_german_1k",
+                "swiss_german_2k",
+                "afrikaans",
+                "afrikaans_1k",
+                "afrikaans_10k",
+                "georgian",
+                "tamil",
+                "tamil_1k",
+                "tanglish",
+                "tamil_old",
+                "telugu",
+                "telugu_1k",
+                "greek",
+                "greek_1k",
+                "greek_5k",
+                "greek_10k",
+                "greek_25k",
+                "greek_koine",
+                "greeklish",
+                "greeklish_1k",
+                "greeklish_5k",
+                "greeklish_10k",
+                "greeklish_25k",
+                "turkish",
+                "turkish_1k",
+                "turkish_5k",
+                "irish",
+                "irish_1k",
+                "italian",
+                "italian_1k",
+                "italian_7k",
+                "italian_60k",
+                "italian_280k",
+                "friulian",
+                "latin",
+                "galician",
+                "thai",
+                "thai_1k",
+                "thai_5k",
+                "thai_10k",
+                "thai_20k",
+                "thai_50k",
+                "thai_60k",
+                "polish",
+                "polish_2k",
+                "polish_5k",
+                "polish_10k",
+                "polish_20k",
+                "polish_40k",
+                "polish_200k",
+                "czech",
+                "czech_1k",
+                "czech_10k",
+                "slovak",
+                "slovak_1k",
+                "slovak_10k",
+                "slovenian",
+                "slovenian_1k",
+                "slovenian_5k",
+                "croatian",
+                "croatian_1k",
+                "dutch",
+                "dutch_1k",
+                "dutch_10k",
+                "filipino",
+                "filipino_1k",
+                "danish",
+                "danish_1k",
+                "danish_10k",
+                "hungarian",
+                "hungarian_1k",
+                "hungarian_2k",
+                "norwegian_bokmal",
+                "norwegian_bokmal_1k",
+                "norwegian_bokmal_5k",
+                "norwegian_bokmal_10k",
+                "norwegian_bokmal_150k",
+                "norwegian_bokmal_600k",
+                "norwegian_nynorsk",
+                "norwegian_nynorsk_1k",
+                "norwegian_nynorsk_5k",
+                "norwegian_nynorsk_10k",
+                "norwegian_nynorsk_100k",
+                "norwegian_nynorsk_400k",
+                "hebrew",
+                "hebrew_1k",
+                "hebrew_5k",
+                "hebrew_10k",
+                "icelandic",
+                "icelandic_1k",
+                "romanian",
+                "romanian_1k",
+                "romanian_5k",
+                "romanian_10k",
+                "romanian_25k",
+                "romanian_50k",
+                "romanian_100k",
+                "romanian_200k",
+                "lorem_ipsum",
+                "finnish",
+                "finnish_1k",
+                "finnish_10k",
+                "estonian",
+                "estonian_1k",
+                "estonian_5k",
+                "estonian_10k",
+                "udmurt",
+                "welsh",
+                "welsh_1k",
+                "persian",
+                "persian_1k",
+                "persian_5k",
+                "persian_20k",
+                "persian_romanized",
+                "marathi",
+                "kazakh",
+                "kazakh_1k",
+                "vietnamese",
+                "vietnamese_1k",
+                "vietnamese_5k",
+                "jyutping",
+                "pinyin",
+                "pinyin_1k",
+                "pinyin_10k",
+                "hausa",
+                "hausa_1k",
+                "bemba",
+                "bemba_1k",
+                "bemba_10k",
+                "swedish",
+                "swedish_1k",
+                "swedish_diacritics",
+                "serbian_latin",
+                "serbian_latin_10k",
+                "serbian",
+                "serbian_10k",
+                "yoruba_1k",
+                "swahili_1k",
+                "maori_1k",
+                "catalan",
+                "catalan_1k",
+                "lojban_gismu",
+                "lojban_cmavo",
+                "lithuanian",
+                "lithuanian_1k",
+                "lithuanian_3k",
+                "bulgarian",
+                "bulgarian_1k",
+                "bulgarian_latin",
+                "bulgarian_latin_1k",
+                "bangla",
+                "bangla_letters",
+                "bangla_10k",
+                "bosnian",
+                "bosnian_4k",
+                "toki_pona",
+                "toki_pona_ku_suli",
+                "toki_pona_ku_lili",
+                "esperanto",
+                "esperanto_1k",
+                "esperanto_10k",
+                "esperanto_25k",
+                "esperanto_36k",
+                "esperanto_x_sistemo",
+                "esperanto_x_sistemo_1k",
+                "esperanto_x_sistemo_10k",
+                "esperanto_x_sistemo_25k",
+                "esperanto_x_sistemo_36k",
+                "esperanto_h_sistemo",
+                "esperanto_h_sistemo_1k",
+                "esperanto_h_sistemo_10k",
+                "esperanto_h_sistemo_25k",
+                "esperanto_h_sistemo_36k",
+                "kyrgyz",
+                "kyrgyz_1k",
+                "urdu",
+                "urdu_1k",
+                "urdu_5k",
+                "urdu_roman",
+                "urdish",
+                "albanian",
+                "albanian_1k",
+                "shona",
+                "shona_1k",
+                "armenian",
+                "armenian_1k",
+                "armenian_western",
+                "armenian_western_1k",
+                "myanmar_burmese",
+                "japanese_hiragana",
+                "japanese_katakana",
+                "japanese_romaji",
+                "japanese_romaji_1k",
+                "sinhala",
+                "latvian",
+                "latvian_1k",
+                "maltese",
+                "maltese_1k",
+                "twitch_emotes",
+                "git",
+                "pig_latin",
+                "hindi",
+                "hindi_1k",
+                "hinglish",
+                "gujarati",
+                "gujarati_1k",
+                "macedonian",
+                "macedonian_1k",
+                "macedonian_10k",
+                "macedonian_75k",
+                "belarusian",
+                "belarusian_1k",
+                "belarusian_5k",
+                "belarusian_10k",
+                "belarusian_25k",
+                "belarusian_50k",
+                "belarusian_100k",
+                "belarusian_lacinka",
+                "belarusian_lacinka_1k",
+                "tatar",
+                "tatar_1k",
+                "tatar_5k",
+                "tatar_9k",
+                "tatar_crimean",
+                "tatar_crimean_1k",
+                "tatar_crimean_5k",
+                "tatar_crimean_10k",
+                "tatar_crimean_15k",
+                "tatar_crimean_cyrillic",
+                "tatar_crimean_cyrillic_1k",
+                "tatar_crimean_cyrillic_5k",
+                "tatar_crimean_cyrillic_10k",
+                "tatar_crimean_cyrillic_15k",
+                "uzbek",
+                "uzbek_1k",
+                "uzbek_70k",
+                "malayalam",
+                "amharic",
+                "amharic_1k",
+                "amharic_5k",
+                "oromo",
+                "oromo_1k",
+                "oromo_5k",
+                "wordle",
+                "league_of_legends",
+                "wordle_1k",
+                "typing_of_the_dead",
+                "yiddish",
+                "frisian",
+                "frisian_1k",
+                "pashto",
+                "euskera",
+                "klingon",
+                "klingon_1k",
+                "quenya",
+                "occitan",
+                "occitan_1k",
+                "occitan_2k",
+                "occitan_5k",
+                "occitan_10k",
+                "bashkir",
+                "zulu",
+                "kabyle",
+                "kabyle_1k",
+                "kabyle_2k",
+                "kabyle_5k",
+                "kabyle_10k",
+                "hawaiian",
+                "hawaiian_1k",
+                "code_python",
+                "code_python_1k",
+                "code_python_2k",
+                "code_python_5k",
+                "code_fsharp",
+                "code_c",
+                "code_csharp",
+                "code_css",
+                "code_c++",
+                "code_dart",
+                "code_brainfck",
+                "code_javascript",
+                "code_javascript_1k",
+                "code_javascript_react",
+                "code_jule",
+                "code_julia",
+                "code_haskell",
+                "code_html",
+                "code_nim",
+                "code_nix",
+                "code_pascal",
+                "code_java",
+                "code_kotlin",
+                "code_go",
+                "code_rockstar",
+                "code_rust",
+                "code_ruby",
+                "code_r",
+                "code_r_2k",
+                "code_swift",
+                "code_scala",
+                "code_bash",
+                "code_powershell",
+                "code_lua",
+                "code_luau",
+                "code_latex",
+                "code_typst",
+                "code_matlab",
+                "code_sql",
+                "code_perl",
+                "code_php",
+                "code_vim",
+                "code_vimscript",
+                "code_opencl",
+                "code_visual_basic",
+                "code_arduino",
+                "code_systemverilog",
+                "code_elixir",
+                "code_gleam",
+                "code_zig",
+                "code_gdscript",
+                "code_gdscript_2",
+                "code_assembly",
+                "code_v",
+                "code_ook",
+                "code_typescript",
+                "code_ocaml",
+                "code_odin",
+                "xhosa",
+                "xhosa_3k",
+                "tibetan",
+                "tibetan_1k",
+                "code_cobol",
+                "code_clojure",
+                "code_common_lisp",
+                "code_erlang",
+                "docker_file",
+                "code_fortran",
+                "viossa",
+                "viossa_njutro",
+                "code_abap",
+                "code_abap_1k",
+                "code_yoptascript",
+                "code_cuda",
+                "kinyarwanda",
+                "pokemon_1k",
+                "kokanu",
+                "likanu",
+                "code_vhdl",
+                "lao",
+                "code_6502_assembly",
+                "english_legal",
+                "sindhi"
+              ]
+            },
+            "punctuation": {
+              "type": "boolean"
+            },
+            "numbers": {
+              "type": "boolean"
+            },
+            "raw": {
+              "type": "number",
+              "minimum": 0
+            },
+            "wpm": {
+              "type": "number",
+              "minimum": 0
+            },
+            "timestamp": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "acc",
+            "consistency",
+            "difficulty",
+            "language",
+            "raw",
+            "wpm",
+            "timestamp"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1personalBests/get/responses/200/content/application~1json/schema/properties/data/nullable",
+      "change": "removed",
+      "before": true,
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1personalBests/get/responses/200/content/application~1json/schema/properties/data/properties",
+      "change": "removed",
+      "before": {
+        "acc": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "consistency": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "difficulty": {
+          "type": "string",
+          "enum": ["normal", "expert", "master"]
+        },
+        "lazyMode": {
+          "type": "boolean"
+        },
+        "language": {
+          "type": "string",
+          "enum": [
+            "english",
+            "english_1k",
+            "english_5k",
+            "english_10k",
+            "english_25k",
+            "english_450k",
+            "english_commonly_misspelled",
+            "english_contractions",
+            "english_doubleletter",
+            "english_shakespearean",
+            "english_old",
+            "english_medical",
+            "spanish",
+            "spanish_1k",
+            "spanish_10k",
+            "spanish_650k",
+            "french",
+            "french_1k",
+            "french_2k",
+            "french_10k",
+            "french_600k",
+            "french_bitoduc",
+            "nepali",
+            "nepali_1k",
+            "nepali_romanized",
+            "sanskrit",
+            "sanskrit_roman",
+            "santali",
+            "azerbaijani",
+            "azerbaijani_1k",
+            "arabic",
+            "arabic_10k",
+            "arabic_egypt",
+            "arabic_egypt_1k",
+            "arabic_morocco",
+            "malagasy",
+            "malagasy_1k",
+            "malay",
+            "malay_1k",
+            "mongolian",
+            "mongolian_10k",
+            "kannada",
+            "korean",
+            "korean_1k",
+            "korean_5k",
+            "khmer",
+            "chinese_simplified",
+            "chinese_simplified_1k",
+            "chinese_simplified_5k",
+            "chinese_simplified_10k",
+            "chinese_simplified_50k",
+            "chinese_traditional",
+            "chinese_traditional_1k",
+            "chinese_traditional_5k",
+            "chinese_traditional_10k",
+            "chinese_traditional_50k",
+            "russian",
+            "russian_1k",
+            "russian_5k",
+            "russian_10k",
+            "russian_25k",
+            "russian_50k",
+            "russian_375k",
+            "russian_contractions",
+            "russian_contractions_1k",
+            "russian_abbreviations",
+            "ukrainian",
+            "ukrainian_1k",
+            "ukrainian_10k",
+            "ukrainian_50k",
+            "ukrainian_endings",
+            "ukrainian_latynka",
+            "ukrainian_latynka_1k",
+            "ukrainian_latynka_10k",
+            "ukrainian_latynka_50k",
+            "ukrainian_latynka_endings",
+            "portuguese",
+            "portuguese_acentos_e_cedilha",
+            "portuguese_1k",
+            "portuguese_3k",
+            "portuguese_5k",
+            "portuguese_320k",
+            "portuguese_550k",
+            "indonesian",
+            "indonesian_1k",
+            "indonesian_10k",
+            "kurdish_central",
+            "kurdish_central_2k",
+            "kurdish_central_4k",
+            "german",
+            "german_1k",
+            "german_10k",
+            "german_250k",
+            "swiss_german",
+            "swiss_german_1k",
+            "swiss_german_2k",
+            "afrikaans",
+            "afrikaans_1k",
+            "afrikaans_10k",
+            "georgian",
+            "tamil",
+            "tamil_1k",
+            "tanglish",
+            "tamil_old",
+            "telugu",
+            "telugu_1k",
+            "greek",
+            "greek_1k",
+            "greek_5k",
+            "greek_10k",
+            "greek_25k",
+            "greek_koine",
+            "greeklish",
+            "greeklish_1k",
+            "greeklish_5k",
+            "greeklish_10k",
+            "greeklish_25k",
+            "turkish",
+            "turkish_1k",
+            "turkish_5k",
+            "irish",
+            "irish_1k",
+            "italian",
+            "italian_1k",
+            "italian_7k",
+            "italian_60k",
+            "italian_280k",
+            "friulian",
+            "latin",
+            "galician",
+            "thai",
+            "thai_1k",
+            "thai_5k",
+            "thai_10k",
+            "thai_20k",
+            "thai_50k",
+            "thai_60k",
+            "polish",
+            "polish_2k",
+            "polish_5k",
+            "polish_10k",
+            "polish_20k",
+            "polish_40k",
+            "polish_200k",
+            "czech",
+            "czech_1k",
+            "czech_10k",
+            "slovak",
+            "slovak_1k",
+            "slovak_10k",
+            "slovenian",
+            "slovenian_1k",
+            "slovenian_5k",
+            "croatian",
+            "croatian_1k",
+            "dutch",
+            "dutch_1k",
+            "dutch_10k",
+            "filipino",
+            "filipino_1k",
+            "danish",
+            "danish_1k",
+            "danish_10k",
+            "hungarian",
+            "hungarian_1k",
+            "hungarian_2k",
+            "norwegian_bokmal",
+            "norwegian_bokmal_1k",
+            "norwegian_bokmal_5k",
+            "norwegian_bokmal_10k",
+            "norwegian_bokmal_150k",
+            "norwegian_bokmal_600k",
+            "norwegian_nynorsk",
+            "norwegian_nynorsk_1k",
+            "norwegian_nynorsk_5k",
+            "norwegian_nynorsk_10k",
+            "norwegian_nynorsk_100k",
+            "norwegian_nynorsk_400k",
+            "hebrew",
+            "hebrew_1k",
+            "hebrew_5k",
+            "hebrew_10k",
+            "icelandic",
+            "icelandic_1k",
+            "romanian",
+            "romanian_1k",
+            "romanian_5k",
+            "romanian_10k",
+            "romanian_25k",
+            "romanian_50k",
+            "romanian_100k",
+            "romanian_200k",
+            "lorem_ipsum",
+            "finnish",
+            "finnish_1k",
+            "finnish_10k",
+            "estonian",
+            "estonian_1k",
+            "estonian_5k",
+            "estonian_10k",
+            "udmurt",
+            "welsh",
+            "welsh_1k",
+            "persian",
+            "persian_1k",
+            "persian_5k",
+            "persian_20k",
+            "persian_romanized",
+            "marathi",
+            "kazakh",
+            "kazakh_1k",
+            "vietnamese",
+            "vietnamese_1k",
+            "vietnamese_5k",
+            "jyutping",
+            "pinyin",
+            "pinyin_1k",
+            "pinyin_10k",
+            "hausa",
+            "hausa_1k",
+            "bemba",
+            "bemba_1k",
+            "bemba_10k",
+            "swedish",
+            "swedish_1k",
+            "swedish_diacritics",
+            "serbian_latin",
+            "serbian_latin_10k",
+            "serbian",
+            "serbian_10k",
+            "yoruba_1k",
+            "swahili_1k",
+            "maori_1k",
+            "catalan",
+            "catalan_1k",
+            "lojban_gismu",
+            "lojban_cmavo",
+            "lithuanian",
+            "lithuanian_1k",
+            "lithuanian_3k",
+            "bulgarian",
+            "bulgarian_1k",
+            "bulgarian_latin",
+            "bulgarian_latin_1k",
+            "bangla",
+            "bangla_letters",
+            "bangla_10k",
+            "bosnian",
+            "bosnian_4k",
+            "toki_pona",
+            "toki_pona_ku_suli",
+            "toki_pona_ku_lili",
+            "esperanto",
+            "esperanto_1k",
+            "esperanto_10k",
+            "esperanto_25k",
+            "esperanto_36k",
+            "esperanto_x_sistemo",
+            "esperanto_x_sistemo_1k",
+            "esperanto_x_sistemo_10k",
+            "esperanto_x_sistemo_25k",
+            "esperanto_x_sistemo_36k",
+            "esperanto_h_sistemo",
+            "esperanto_h_sistemo_1k",
+            "esperanto_h_sistemo_10k",
+            "esperanto_h_sistemo_25k",
+            "esperanto_h_sistemo_36k",
+            "kyrgyz",
+            "kyrgyz_1k",
+            "urdu",
+            "urdu_1k",
+            "urdu_5k",
+            "urdu_roman",
+            "urdish",
+            "albanian",
+            "albanian_1k",
+            "shona",
+            "shona_1k",
+            "armenian",
+            "armenian_1k",
+            "armenian_western",
+            "armenian_western_1k",
+            "myanmar_burmese",
+            "japanese_hiragana",
+            "japanese_katakana",
+            "japanese_romaji",
+            "japanese_romaji_1k",
+            "sinhala",
+            "latvian",
+            "latvian_1k",
+            "maltese",
+            "maltese_1k",
+            "twitch_emotes",
+            "git",
+            "pig_latin",
+            "hindi",
+            "hindi_1k",
+            "hinglish",
+            "gujarati",
+            "gujarati_1k",
+            "macedonian",
+            "macedonian_1k",
+            "macedonian_10k",
+            "macedonian_75k",
+            "belarusian",
+            "belarusian_1k",
+            "belarusian_5k",
+            "belarusian_10k",
+            "belarusian_25k",
+            "belarusian_50k",
+            "belarusian_100k",
+            "belarusian_lacinka",
+            "belarusian_lacinka_1k",
+            "tatar",
+            "tatar_1k",
+            "tatar_5k",
+            "tatar_9k",
+            "tatar_crimean",
+            "tatar_crimean_1k",
+            "tatar_crimean_5k",
+            "tatar_crimean_10k",
+            "tatar_crimean_15k",
+            "tatar_crimean_cyrillic",
+            "tatar_crimean_cyrillic_1k",
+            "tatar_crimean_cyrillic_5k",
+            "tatar_crimean_cyrillic_10k",
+            "tatar_crimean_cyrillic_15k",
+            "uzbek",
+            "uzbek_1k",
+            "uzbek_70k",
+            "malayalam",
+            "amharic",
+            "amharic_1k",
+            "amharic_5k",
+            "oromo",
+            "oromo_1k",
+            "oromo_5k",
+            "wordle",
+            "league_of_legends",
+            "wordle_1k",
+            "typing_of_the_dead",
+            "yiddish",
+            "frisian",
+            "frisian_1k",
+            "pashto",
+            "euskera",
+            "klingon",
+            "klingon_1k",
+            "quenya",
+            "occitan",
+            "occitan_1k",
+            "occitan_2k",
+            "occitan_5k",
+            "occitan_10k",
+            "bashkir",
+            "zulu",
+            "kabyle",
+            "kabyle_1k",
+            "kabyle_2k",
+            "kabyle_5k",
+            "kabyle_10k",
+            "hawaiian",
+            "hawaiian_1k",
+            "code_python",
+            "code_python_1k",
+            "code_python_2k",
+            "code_python_5k",
+            "code_fsharp",
+            "code_c",
+            "code_csharp",
+            "code_css",
+            "code_c++",
+            "code_dart",
+            "code_brainfck",
+            "code_javascript",
+            "code_javascript_1k",
+            "code_javascript_react",
+            "code_jule",
+            "code_julia",
+            "code_haskell",
+            "code_html",
+            "code_nim",
+            "code_nix",
+            "code_pascal",
+            "code_java",
+            "code_kotlin",
+            "code_go",
+            "code_rockstar",
+            "code_rust",
+            "code_ruby",
+            "code_r",
+            "code_r_2k",
+            "code_swift",
+            "code_scala",
+            "code_bash",
+            "code_powershell",
+            "code_lua",
+            "code_luau",
+            "code_latex",
+            "code_typst",
+            "code_matlab",
+            "code_sql",
+            "code_perl",
+            "code_php",
+            "code_vim",
+            "code_vimscript",
+            "code_opencl",
+            "code_visual_basic",
+            "code_arduino",
+            "code_systemverilog",
+            "code_elixir",
+            "code_gleam",
+            "code_zig",
+            "code_gdscript",
+            "code_gdscript_2",
+            "code_assembly",
+            "code_v",
+            "code_ook",
+            "code_typescript",
+            "code_ocaml",
+            "code_odin",
+            "xhosa",
+            "xhosa_3k",
+            "tibetan",
+            "tibetan_1k",
+            "code_cobol",
+            "code_clojure",
+            "code_common_lisp",
+            "code_erlang",
+            "docker_file",
+            "code_fortran",
+            "viossa",
+            "viossa_njutro",
+            "code_abap",
+            "code_abap_1k",
+            "code_yoptascript",
+            "code_cuda",
+            "kinyarwanda",
+            "pokemon_1k",
+            "kokanu",
+            "likanu",
+            "code_vhdl",
+            "lao",
+            "code_6502_assembly",
+            "english_legal",
+            "sindhi"
+          ]
+        },
+        "punctuation": {
+          "type": "boolean"
+        },
+        "numbers": {
+          "type": "boolean"
+        },
+        "raw": {
+          "type": "number",
+          "minimum": 0
+        },
+        "wpm": {
+          "type": "number",
+          "minimum": 0
+        },
+        "timestamp": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1personalBests/get/responses/200/content/application~1json/schema/properties/data/required",
+      "change": "removed",
+      "before": [
+        "acc",
+        "consistency",
+        "difficulty",
+        "language",
+        "raw",
+        "wpm",
+        "timestamp"
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1personalBests/get/responses/200/content/application~1json/schema/properties/data/type",
+      "change": "removed",
+      "before": "object",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1stats/get/parameters/0/content/application~1json/schema/const",
+      "change": "added",
+      "after": "web",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1stats/get/parameters/0/content/application~1json/schema/enum",
+      "change": "removed",
+      "before": ["web"],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1stats/get/responses/200/content/application~1json/schema/properties/data/properties/completedTests/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1users~1stats/get/responses/200/content/application~1json/schema/properties/data/properties/startedTests/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1users~1streak/get/parameters/0/content/application~1json/schema/const",
+      "change": "added",
+      "after": "web",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1streak/get/parameters/0/content/application~1json/schema/enum",
+      "change": "removed",
+      "before": ["web"],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1streak/get/responses/200/content/application~1json/schema/properties/data/additionalProperties",
+      "change": "removed",
+      "before": false,
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1streak/get/responses/200/content/application~1json/schema/properties/data/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "type": "object",
+          "properties": {
+            "lastResultTimestamp": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "length": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "maxLength": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "hourOffset": {
+              "type": "number",
+              "minimum": -11,
+              "maximum": 12,
+              "multipleOf": 0.5
+            }
+          },
+          "required": ["lastResultTimestamp", "length", "maxLength"],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1streak/get/responses/200/content/application~1json/schema/properties/data/nullable",
+      "change": "removed",
+      "before": true,
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1streak/get/responses/200/content/application~1json/schema/properties/data/properties",
+      "change": "removed",
+      "before": {
+        "lastResultTimestamp": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxLength": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "hourOffset": {
+          "type": "number",
+          "minimum": -11,
+          "maximum": 12,
+          "multipleOf": 0.5
+        }
+      },
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1streak/get/responses/200/content/application~1json/schema/properties/data/required",
+      "change": "removed",
+      "before": ["lastResultTimestamp", "length", "maxLength"],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1streak/get/responses/200/content/application~1json/schema/properties/data/type",
+      "change": "removed",
+      "before": "object",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1tags/get/parameters/0/content/application~1json/schema/const",
+      "change": "added",
+      "after": "web",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1tags/get/parameters/0/content/application~1json/schema/enum",
+      "change": "removed",
+      "before": ["web"],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1tags/get/responses/200/content/application~1json/schema/properties/data/items/properties/name/allOf",
+      "change": "added",
+      "after": [
+        {
+          "pattern": "^[0-9a-zA-Z_-]+$"
+        },
+        {
+          "pattern": "^[a-zA-Z0-9]+(?:[_-][a-zA-Z0-9]+)*$"
+        }
+      ],
+      "reason": "all regex checks are retained instead of only the last regex"
+    },
+    {
+      "pointer": "/paths/~1users~1tags/get/responses/200/content/application~1json/schema/properties/data/items/properties/name/pattern",
+      "change": "removed",
+      "before": "^[a-zA-Z0-9]+(?:[_-][a-zA-Z0-9]+)*$",
+      "reason": "all regex checks are retained instead of only the last regex"
+    },
+    {
+      "pointer": "/paths/~1users~1tags/get/responses/200/content/application~1json/schema/properties/data/items/properties/personalBests/properties/custom/propertyNames",
+      "change": "added",
+      "after": {},
+      "reason": "native record schemas describe string keys explicitly"
+    },
+    {
+      "pointer": "/paths/~1users~1tags/get/responses/200/content/application~1json/schema/properties/data/items/properties/personalBests/properties/quote/propertyNames",
+      "change": "added",
+      "after": {
+        "anyOf": [
+          {
+            "type": "string",
+            "pattern": "^\\d+$"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "reason": "native record schemas describe string keys explicitly"
+    },
+    {
+      "pointer": "/paths/~1users~1tags/get/responses/200/content/application~1json/schema/properties/data/items/properties/personalBests/properties/time/propertyNames",
+      "change": "added",
+      "after": {
+        "anyOf": [
+          {
+            "type": "string",
+            "pattern": "^\\d+$"
+          },
+          {
+            "type": "string"
+          }
+        ],
+        "description": "Number of seconds as string"
+      },
+      "reason": "native record schemas describe string keys explicitly"
+    },
+    {
+      "pointer": "/paths/~1users~1tags/get/responses/200/content/application~1json/schema/properties/data/items/properties/personalBests/properties/words/propertyNames",
+      "change": "added",
+      "after": {
+        "anyOf": [
+          {
+            "type": "string",
+            "pattern": "^\\d+$"
+          },
+          {
+            "type": "string"
+          }
+        ],
+        "description": "Number of words as string"
+      },
+      "reason": "native record schemas describe string keys explicitly"
+    },
+    {
+      "pointer": "/paths/~1users~1tags/get/responses/200/content/application~1json/schema/properties/data/items/properties/personalBests/properties/zen/propertyNames",
+      "change": "added",
+      "after": {},
+      "reason": "native record schemas describe string keys explicitly"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/parameters/1/content/application~1json/schema/const",
+      "change": "added",
+      "after": "web",
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/parameters/1/content/application~1json/schema/enum",
+      "change": "removed",
+      "before": ["web"],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/parameters/2/content/application~1json/schema/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 0
+        },
+        {
+          "type": "boolean"
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/parameters/2/content/application~1json/schema/oneOf",
+      "change": "removed",
+      "before": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 0
+        },
+        {
+          "type": "boolean"
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/addedAt/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/allTimeLbs/properties/time/additionalProperties/additionalProperties/properties/count/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/allTimeLbs/properties/time/additionalProperties/additionalProperties/properties/rank/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/allTimeLbs/properties/time/additionalProperties/propertyNames",
+      "change": "added",
+      "after": {},
+      "reason": "native record schemas describe string keys explicitly"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/allTimeLbs/properties/time/propertyNames",
+      "change": "added",
+      "after": {
+        "anyOf": [
+          {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^\\d+$"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "type": "string",
+            "const": "zen"
+          },
+          {
+            "type": "string",
+            "const": "custom"
+          }
+        ]
+      },
+      "reason": "native record schemas describe string keys explicitly"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/details/properties/bio/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "type": "string",
+          "maxLength": 250
+        },
+        {
+          "type": "string",
+          "const": ""
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/details/properties/bio/oneOf",
+      "change": "removed",
+      "before": [
+        {
+          "type": "string",
+          "maxLength": 250
+        },
+        {
+          "type": "string",
+          "enum": [""]
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/details/properties/keyboard/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "type": "string",
+          "maxLength": 75
+        },
+        {
+          "type": "string",
+          "const": ""
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/details/properties/keyboard/oneOf",
+      "change": "removed",
+      "before": [
+        {
+          "type": "string",
+          "maxLength": 75
+        },
+        {
+          "type": "string",
+          "enum": [""]
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/details/properties/socialProfiles/properties/github/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "type": "string",
+          "maxLength": 39,
+          "allOf": [
+            {
+              "pattern": "^[0-9a-zA-Z_.-]+$"
+            },
+            {
+              "pattern": "^[^.].*$"
+            }
+          ]
+        },
+        {
+          "type": "string",
+          "const": ""
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/details/properties/socialProfiles/properties/github/oneOf",
+      "change": "removed",
+      "before": [
+        {
+          "type": "string",
+          "pattern": "^[^.].*$",
+          "maxLength": 39
+        },
+        {
+          "type": "string",
+          "enum": [""]
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/details/properties/socialProfiles/properties/twitter/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "type": "string",
+          "maxLength": 15,
+          "allOf": [
+            {
+              "pattern": "^[0-9a-zA-Z_.-]+$"
+            },
+            {
+              "pattern": "^[^.].*$"
+            }
+          ]
+        },
+        {
+          "type": "string",
+          "const": ""
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/details/properties/socialProfiles/properties/twitter/oneOf",
+      "change": "removed",
+      "before": [
+        {
+          "type": "string",
+          "pattern": "^[^.].*$",
+          "maxLength": 15
+        },
+        {
+          "type": "string",
+          "enum": [""]
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/details/properties/socialProfiles/properties/website/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "type": "string",
+          "maxLength": 200,
+          "format": "starts_with",
+          "pattern": "^https:\\/\\/.*"
+        },
+        {
+          "type": "string",
+          "const": ""
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/details/properties/socialProfiles/properties/website/oneOf",
+      "change": "removed",
+      "before": [
+        {
+          "type": "string",
+          "format": "uri",
+          "maxLength": 200
+        },
+        {
+          "type": "string",
+          "enum": [""]
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/inventory/properties/badges/items/properties/id/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/maxStreak/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/name/allOf",
+      "change": "added",
+      "after": [
+        {
+          "pattern": "^[0-9a-zA-Z_.-]+$"
+        },
+        {
+          "pattern": "^[^.].*$"
+        }
+      ],
+      "reason": "all regex checks are retained instead of only the last regex"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/name/pattern",
+      "change": "removed",
+      "before": "^[^.].*$",
+      "reason": "all regex checks are retained instead of only the last regex"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/personalBests/properties/time/propertyNames",
+      "change": "added",
+      "after": {
+        "anyOf": [
+          {
+            "type": "string",
+            "pattern": "^\\d+$"
+          },
+          {
+            "type": "string"
+          }
+        ],
+        "description": "Number of seconds as string"
+      },
+      "reason": "native record schemas describe string keys explicitly"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/personalBests/properties/words/propertyNames",
+      "change": "added",
+      "after": {
+        "anyOf": [
+          {
+            "type": "string",
+            "pattern": "^\\d+$"
+          },
+          {
+            "type": "string"
+          }
+        ],
+        "description": "Number of words as string"
+      },
+      "reason": "native record schemas describe string keys explicitly"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/streak/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/testActivity/properties/lastDay/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/testActivity/properties/testsByDays/items/anyOf",
+      "change": "added",
+      "after": [
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/testActivity/properties/testsByDays/items/nullable",
+      "change": "removed",
+      "before": true,
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/testActivity/properties/testsByDays/items/oneOf",
+      "change": "removed",
+      "before": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "string",
+          "format": "null",
+          "nullable": true
+        }
+      ],
+      "reason": "native JSON Schema union/null/literal syntax replaces oneOf, nullable and singleton enum encodings"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/typingStats/properties/completedTests/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/typingStats/properties/startedTests/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    },
+    {
+      "pointer": "/paths/~1users~1{uidOrName}~1profile/get/responses/200/content/application~1json/schema/properties/data/properties/xp/maximum",
+      "change": "added",
+      "after": 9007199254740991,
+      "reason": "native bounds describe existing Zod safe-integer and exclusive-range validation"
+    }
+  ]
+}

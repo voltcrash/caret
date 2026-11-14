@@ -1,5 +1,5 @@
 import { getSessionCookie } from "better-auth/cookies";
-import { parseJsonQueryObject } from "@ts-rest/core";
+import { parseJsonQueryObject } from "@caret/contracts/contract";
 import {
   COMPATIBILITY_CHECK,
   COMPATIBILITY_CHECK_HEADER,
