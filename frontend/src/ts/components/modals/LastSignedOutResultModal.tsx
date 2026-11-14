@@ -1,5 +1,5 @@
 import { CompletedEvent } from "@caret/schemas/results";
-import objectHash from "object-hash";
+import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
 import { createMemo, JSX } from "solid-js";
 
 import type { SavedResult } from "../../constants/default-snapshot";
