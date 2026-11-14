@@ -53,3 +53,73 @@ for (const width of [1280, 320]) {
     await expect(tooltip).toHaveCount(0);
   });
 }
+
+for (const quickRestart of ["tab", "enter"]) {
+  test(`result hints preserve keyboard navigation with ${quickRestart} quick restart`, async ({
+    page,
+  }) => {
+    await page.addInitScript((quickRestart) => {
+      localStorage.setItem(
+        "config",
+        JSON.stringify({
+          mode: "words",
+          words: 10,
+          quickRestart,
+          smoothCaret: "off",
+        }),
+      );
+    }, quickRestart);
+    await page.goto("/");
+    const words = page.locator("#words .word");
+    await expect(words.first()).toBeVisible();
+    await expect(page.locator("#typingTest")).toHaveCSS("opacity", "1");
+    const text = (await words.allTextContents()).join(" ");
+    await words.first().click();
+    await page.keyboard.type(text, { delay: 40 });
+    const result = page.locator("#result");
+    await expect(result).toHaveCSS("opacity", "1");
+    await expect(result).toBeFocused();
+
+    const speed = result.locator(".wpm [data-balloon-pos]").last();
+    const accuracy = result.locator(".acc [data-balloon-pos]");
+    await speed.focus();
+    await expect(page.getByRole("tooltip")).toBeVisible();
+    await page.keyboard.press("Enter");
+    await expect(result).toBeVisible();
+    await expect(speed).toBeFocused();
+    await page.keyboard.press("Tab");
+    await expect(accuracy).toBeFocused();
+    await page.keyboard.press("Shift+Tab");
+    await expect(speed).toBeFocused();
+
+    await page.locator("#showWordHistoryButton").click();
+    await page.locator("#watchReplayButton").click();
+    const history = page.locator("#resultWordsHistory");
+    const replay = page.locator("#resultReplay");
+    await expect(history).toBeVisible();
+    await expect(replay).toBeVisible();
+    const copy = page.locator("#copyWordsListButton");
+    // Start before the first history control so Tab must discover it.
+    await copy.focus();
+    await page.keyboard.press("Shift+Tab");
+    await expect(copy).not.toBeFocused();
+    for (const id of [
+      "copyWordsListButton",
+      "copyMissedWordsListButton",
+      "copySlowWordsListButton",
+      "toggleBurstHeatmap",
+      "playpauseReplayButton",
+    ]) {
+      await page.keyboard.press("Tab");
+      const control = page.locator(`#${id}`);
+      await expect(control).toBeFocused();
+      await expect(control).toHaveAccessibleDescription(/.+/);
+      await expect(page.getByRole("tooltip")).toBeVisible();
+    }
+    await page.keyboard.press("Enter");
+    await expect(page.locator("#playpauseReplayButton")).toHaveAccessibleName(
+      "Pause replay",
+    );
+    await expect(result).toBeVisible();
+  });
+}
