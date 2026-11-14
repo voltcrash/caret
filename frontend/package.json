@@ -88,8 +88,7 @@
     "modern-screenshot": "4.7.0",
     "stemmer": "2.0.1",
     "tailwind-merge": "3.7.0",
-    "zod": "4.6.7",
-    "zod-urlsearchparams": "0.0.16"
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",
