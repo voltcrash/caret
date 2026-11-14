@@ -28,7 +28,7 @@ export function generateIconData(): string {
       const name = `glyph${definitions.size}`;
       definitions.set(file, name);
       lines.push(
-        `const ${name} = ${JSON.stringify({ viewBox, path: paths[0] })};`,
+        `const ${name} = {\n  viewBox: ${JSON.stringify(viewBox)},\n  path: ${JSON.stringify(paths[0])},\n};`,
       );
     }
   }
