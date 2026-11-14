@@ -14,7 +14,7 @@ Original references remain immutable, byte-for-byte copies with a SHA manifest. 
 | Async source / stale generations | Native/browser initial and active failure, prefetch, reset/replacement, deferred input |
 | Timer stalls / same-time reordering | Frozen timer traces, slow-render tests, delta invalidation regression |
 | Stats / results / history / replay | Eight exact historical outputs; 1,387 live prefixes; persistent playback and seek |
-| Transport schema / hashing | Built-Wasm CompletedEventSchema, eight frozen object-hashes, unchanged backend rejection |
+| Transport schema / hashing | Built-Wasm CompletedEventSchema, eight frozen wire hashes, unchanged backend rejection |
 | Physical observations | Repeat/NoCode/synthetic and estimated-release oracles; optional capability remains explicit |
 | Shared policies / defaults | Generated Rust metadata/defaults; all funbox pairs/forced values; checked policy queries |
 | Malformed boundaries / lifecycle | Bounded config/content/log validation; 128-seed, 12,800-command stress; stale/disposed handles |
