@@ -99,7 +99,6 @@ test("a stalled online navigation falls back to installed typing", async ({
   await page.evaluate(async () => {
     // Playwright cannot route navigation preload; stall the worker fetch.
     const registration = await navigator.serviceWorker.ready;
-    await registration.navigationPreload.disable();
     if (!navigator.serviceWorker.controller) {
       await new Promise<void>((resolve) =>
         navigator.serviceWorker.addEventListener(
@@ -109,6 +108,8 @@ test("a stalled online navigation falls back to installed typing", async ({
         ),
       );
     }
+    // Activation enables preload before claiming clients. Disable only after that.
+    await registration.navigationPreload.disable();
   });
   const pending = Promise.withResolvers<undefined>();
   let stalled = false;
