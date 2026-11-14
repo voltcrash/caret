@@ -85,6 +85,16 @@ export function createAudioSample(
         const paused = voices.filter(
           (voice) => !voice.ended && voice.source === undefined,
         );
+        if (paused.length !== 1) {
+          // Drain surplus ended voices from the tail before recycling one.
+          let idle = voices.filter((voice) => voice.ended).length;
+          for (let i = voices.length - 1; i >= 0 && idle > 5; i--) {
+            if (voices[i]?.ended) {
+              voices.splice(i, 1);
+              idle--;
+            }
+          }
+        }
         let voice =
           paused.length === 1 ? paused[0] : voices.find((voice) => voice.ended);
         if (voice === undefined) {
@@ -92,11 +102,6 @@ export function createAudioSample(
           voices.push(voice);
         }
         startVoice(voice);
-        // Keep a small reusable pool once voices finish (same legacy pool size).
-        let idle = 0;
-        for (let i = voices.length - 1; i >= 0; i--) {
-          if (voices[i]?.ended && ++idle > 5) voices.splice(i, 1);
-        }
       }),
     stop: () =>
       run(() => {
