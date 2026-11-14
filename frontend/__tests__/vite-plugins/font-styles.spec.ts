@@ -61,27 +61,18 @@ it("preserves font families, weights, and preview URLs", async () => {
   }
 });
 
-it("serves the full icon fonts with every icon rule", async () => {
+it("does not emit icon font faces or the full icon stylesheet", async () => {
   const { css, files } = await generate();
-  const fontawesome = css.get("fontawesome.css") ?? "";
-  for (const file of [
-    "fa-solid-900.woff2",
-    "fa-regular-400.woff2",
-    "fa-brands-400.woff2",
-  ]) {
-    expect(fontawesome).toContain(`webfonts/${file}`);
-  }
-  expect(fontawesome).not.toContain("url(../webfonts/");
-  expect(fontawesome).toContain(".fa-keyboard");
-  expect(fontawesome).toContain(".fa-arrow-up-from-water-pump");
-  expect(files).toHaveLength(2);
+  expect(files).toHaveLength(1);
+  expect(css.has("fontawesome.css")).toBe(false);
+  expect([...css.values()].join("\n")).not.toContain("Font Awesome");
 });
 
 it("imports the generated font faces from the Start app CSS", () => {
   const read = (file: string): string =>
     readFileSync(path.join(import.meta.dirname, "../../src", file), "utf8");
   expect(read("app/app.css")).toContain('@import "caret-fonts.css"');
-  expect(read("styles/vendor.css")).toContain(
+  expect(read("styles/vendor.css")).not.toContain(
     '@import "caret-fontawesome.css"',
   );
 });
