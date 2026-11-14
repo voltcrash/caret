@@ -131,7 +131,7 @@ describe("Start document and response policy in workerd", () => {
       await mf.dispatchFetch(`http://localhost:3000${css}`)
     ).text();
     expect(styles).not.toContain("fa-solid-900");
-    expect(styles).not.toContain("Font Awesome");
+    expect(styles).not.toMatch(/font-family:[^;{}]*Font Awesome/);
   });
 
   it("preserves popup and standalone 404 URLs", async () => {

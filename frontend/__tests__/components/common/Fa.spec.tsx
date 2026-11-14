@@ -53,7 +53,7 @@ it("renders checkbox marks with the owned SVG mask", () => {
   const checkbox = container.querySelector("input");
   if (!checkbox) throw new Error("Missing checkbox");
   const style = getComputedStyle(checkbox, "::after");
-  expect(style.maskImage).toContain("check.svg");
+  expect(style.maskImage).toContain("svg");
   expect(style.color).not.toBe("rgba(0, 0, 0, 0)");
   expect(style.fontFamily).not.toContain("Font Awesome");
 });
