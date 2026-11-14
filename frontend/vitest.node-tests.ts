@@ -1,5 +1,6 @@
 // These tests read source/fixtures or exercise pure Node/server APIs.
 export const nodeTests = [
+  "__tests__/test/hangul-assembly.spec.ts",
   "__tests__/architecture/**/*.spec.ts",
   "__tests__/scripts/**/*.spec.ts",
   "__tests__/vite-plugins/**/*.spec.ts",
