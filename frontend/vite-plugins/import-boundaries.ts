@@ -8,6 +8,7 @@ export const ssrSafeLegacyFiles = [
   "src/ts/components/standalone/PrivacyPolicy.tsx",
   "src/ts/components/common/Fa.tsx",
   "src/ts/components/common/Balloon.tsx",
+  "src/ts/components/common/TooltipBubble.tsx",
   "src/ts/components/common/Button.tsx",
   "src/ts/components/common/Link.tsx",
   "src/ts/components/common/Headers.tsx",
