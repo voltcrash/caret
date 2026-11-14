@@ -24,6 +24,7 @@ import {
   getLanguageDisplayString,
   replaceUnderscoresWithSpaces,
 } from "../../../../ts/utils/strings";
+import { PersonalNotices } from "../../personal-notices";
 import { getActiveFunboxNames } from "../../runtime/funbox/list";
 import { Notice } from "./Notice";
 import { PbNotice } from "./PbNotice";
@@ -57,12 +58,6 @@ export function TestModesNotice() {
         <BlindMode />
         <LazyMode />
         <PaceCaretNotice />
-        <Show when={isAuthenticated() && getConfig.showAverage !== "off"}>
-          <Suspense>
-            <AverageNotice />
-          </Suspense>
-        </Show>
-        <PbNotice />
         <MinSpeed />
         <MinAcc />
         <MinBurst />
@@ -72,11 +67,27 @@ export function TestModesNotice() {
         <DeleteOnError />
         <Layout />
         <OppositeShift />
-        <Show when={isAuthenticated()}>
-          <Suspense>
-            <TagsNotice />
-          </Suspense>
-        </Show>
+      </div>
+      <div
+        class={cn("transition-opacity duration-125", getFocus() && "opacity-0")}
+      >
+        <PersonalNotices
+          average={
+            <Show when={isAuthenticated() && getConfig.showAverage !== "off"}>
+              <Suspense>
+                <AverageNotice />
+              </Suspense>
+            </Show>
+          }
+          pb={<PbNotice />}
+          tags={
+            <Show when={isAuthenticated()}>
+              <Suspense>
+                <TagsNotice />
+              </Suspense>
+            </Show>
+          }
+        />
       </div>
     </Show>
   );

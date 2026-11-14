@@ -45,6 +45,8 @@ export function PbNotice() {
 
   return (
     <Notice
+      compact
+      class="motion-safe:animate-content-in"
       when={isAuthenticated() && getConfig.showPb}
       icon="fa-crown"
       openCommandline="showPb"

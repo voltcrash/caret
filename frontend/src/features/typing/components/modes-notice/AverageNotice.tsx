@@ -35,6 +35,8 @@ export function AverageNotice(): JSXElement {
 
   return (
     <Notice
+      compact
+      class="motion-safe:animate-content-in"
       when={isAuthenticated() && getConfig.showAverage !== "off"}
       icon="fa-chart-bar"
       openCommandline="showAverage"
