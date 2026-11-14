@@ -43,7 +43,7 @@ Consume `Update.state`, changed words and ordered events. Read `snapshot()`/`log
 
 `Text` is an array of UTF-16 units, including isolated surrogates. `encodeText`/`decodeText` preserve JavaScript positions; Unicode scalars/graphemes/terminal columns are different units. SSR-safe `@caret/typing-engine/text` converts legacy logs and preserves optional/extra metadata. Rust validates log shapes/versions/bounds at analysis/playback entry points.
 
-Generated events discriminate input/key/timer/composition payloads. Result/chart/custom/incomplete DTOs are generated from Rust; web Zod schemas remain authoritative for submissions. Add account/tags/challenge/transport fields and hash with the existing object-hash helper at the transport boundary. Backend auth/integrity/anticheat remains independent. Native offline history uses its own capability-aware local envelope rather than a web account submission.
+Generated events discriminate input/key/timer/composition payloads. Result/chart/custom/incomplete DTOs are generated from Rust; web Zod schemas remain authoritative for submissions. Add account/tags/challenge/transport fields and hash with the owned legacy-format hash helper at the transport boundary. Backend auth/integrity/anticheat remains independent. Native offline history uses its own capability-aware local envelope rather than a web account submission.
 
 `BrowserReplay` owns playback cursor/prompt; step returns word deltas/sound/next time, seek returns a snapshot. Hosts schedule and render. Historical UTF-16 indexing quirks stay versioned and unchanged.
 
