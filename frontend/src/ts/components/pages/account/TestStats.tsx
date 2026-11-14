@@ -8,6 +8,7 @@ import {
 import { getFormatting } from "../../../states/core";
 import { secondsToString } from "../../../utils/date-and-time";
 import AsyncContent from "../../common/AsyncContent";
+import { Balloon } from "../../common/Balloon";
 import { Fa } from "../../common/Fa";
 
 export function TestStats(props: {
@@ -54,14 +55,15 @@ export function TestStats(props: {
                   <div>
                     <div class="text-sub">
                       tests completed{" "}
-                      <span
+                      <Balloon
+                        as="span"
                         data-balloon-length="xlarge"
                         data-balloon-pos="up"
-                        aria-label="Due to the increasing number of results in the database, you can now only see your last 1000 results in detail. Total time spent typing, started and completed tests stats will still be up to date at the top of the page, above the filters."
-                        role="alertdialog"
+                        text="Due to the increasing number of results in the database, you can now only see your last 1000 results in detail. Total time spent typing, started and completed tests stats will still be up to date at the top of the page, above the filters."
+                        aria-label="Result history limit"
                       >
                         <Fa icon="fa-question-circle" />
-                      </span>
+                      </Balloon>
                     </div>
                     <div class="text-2xl leading-[1.1] md:text-3xl lg:text-5xl">
                       {stats.completed}(
