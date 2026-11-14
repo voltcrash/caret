@@ -1,4 +1,4 @@
-import { safeParse, serialize } from "zod-urlsearchparams";
+import { safeParse, serialize } from "../../src/app/url-search-params";
 import { afterEach, beforeEach, describe, expect, it } from "vite-plus/test";
 import { mountApplication } from "../../src/app/application";
 import {
