@@ -74,7 +74,6 @@
     "@tanstack/solid-router-ssr-query": "1.167.3",
     "@tanstack/solid-start": "1.169.4",
     "@tanstack/solid-table": "9.3.1",
-    "@ts-rest/core": "3.52.1",
     "animejs": "4.5.0",
     "better-auth": "1.7.18",
     "canvas-confetti": "1.9.4",
