@@ -31,7 +31,7 @@ export function Notice(
       )}
       balloon={
         props.compact && props.text !== undefined
-          ? { text: props.text }
+          ? { text: props.text.replaceAll("\n", " ") }
           : undefined
       }
       variant="text"
