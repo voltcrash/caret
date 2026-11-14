@@ -34,6 +34,7 @@ export function Notice(
           ? { text: props.text.replaceAll("\n", " ") }
           : undefined
       }
+      aria-label={props.compact ? props.text?.replaceAll("\n", " ") : undefined}
       variant="text"
       onClick={
         props.onClick ??

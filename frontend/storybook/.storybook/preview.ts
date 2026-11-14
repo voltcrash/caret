@@ -5,7 +5,6 @@ import { definePreview } from "storybook-solidjs-vite";
 import "../stories/app.css";
 import "../stories/storybook-theme.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import "balloon-css/balloon.min.css";
 
 import { ThemesList } from "../../src/ts/constants/themes";
 import { AppDecorator } from "./AppDecorator";

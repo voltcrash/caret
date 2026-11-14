@@ -1,7 +1,9 @@
-import type { JSX, ParentProps } from "solid-js";
+import type { JSX, ParentProps, ValidComponent } from "solid-js";
 
-import { splitProps } from "solid-js";
+import { createSignal, createUniqueId, Show, splitProps } from "solid-js";
 import { Dynamic } from "solid-js/web";
+
+import { TooltipBubble } from "./TooltipBubble";
 
 export type BalloonProps = {
   text?: string;
@@ -10,30 +12,29 @@ export type BalloonProps = {
   length?: "small" | "medium" | "large" | "xlarge" | "fit";
 };
 
-type BalloonPosition = "up" | "down" | "left" | "right";
+export type BalloonPosition =
+  | "up"
+  | "down"
+  | "left"
+  | "right"
+  | "up-left"
+  | "up-right";
 
 type Props = ParentProps<BalloonProps> &
-  Omit<JSX.HTMLAttributes<HTMLElement>, "aria-label"> & {
+  JSX.HTMLAttributes<HTMLElement> & {
     inline?: boolean;
+    as?: ValidComponent;
+    type?: "button" | "submit" | "reset";
+    disabled?: boolean;
+    href?: string;
+    target?: string;
+    rel?: string;
+    "router-link"?: string;
+    tagid?: string;
+    "data-balloon-pos"?: BalloonPosition;
+    "data-balloon-length"?: string;
+    "data-balloon-break"?: string | boolean;
   };
-
-export function buildBalloonHtmlProperties(
-  options: BalloonProps | undefined,
-): Record<string, string> {
-  if (
-    options === undefined ||
-    options.text === undefined ||
-    options.text === ""
-  ) {
-    return {};
-  }
-  return {
-    "aria-label": options.text,
-    "data-balloon-pos": options.position ?? "up",
-    ...(options.break ? { "data-balloon-break": "" } : {}),
-    ...(options.length ? { "data-balloon-length": options.length } : {}),
-  };
-}
 
 export function Balloon(props: Props) {
   const [local, rest] = splitProps(props, [
@@ -43,13 +44,58 @@ export function Balloon(props: Props) {
     "length",
     "inline",
     "children",
+    "as",
+    "ref",
+    "tabIndex",
+    "aria-describedby",
+    "data-balloon-pos",
+    "data-balloon-length",
+    "data-balloon-break",
   ]);
-
-  const attrs = () => buildBalloonHtmlProperties(local);
+  const id = createUniqueId();
+  const [reference, setReference] = createSignal<HTMLElement>();
+  const text = () => local.text;
+  const hasText = () => (text() ?? "") !== "";
+  const position = () => local.position ?? local["data-balloon-pos"] ?? "up";
+  const length = () => local.length ?? local["data-balloon-length"];
+  const legacyBreaks = () => local["data-balloon-break"] !== undefined;
+  const breaks = () => local.break ?? legacyBreaks();
 
   return (
-    <Dynamic component={local.inline ? "span" : "div"} {...attrs()} {...rest}>
-      {local.children}
-    </Dynamic>
+    <>
+      <Dynamic
+        component={local.as ?? (local.inline ? "span" : "div")}
+        {...rest}
+        ref={(element: HTMLElement) => {
+          setReference(element);
+          if (typeof local.ref === "function") local.ref(element);
+        }}
+        tabIndex={local.tabIndex ?? (hasText() ? 0 : undefined)}
+        aria-describedby={
+          [local["aria-describedby"], hasText() ? id : undefined]
+            .filter(Boolean)
+            .join(" ") || undefined
+        }
+        data-balloon-pos={hasText() ? position() : undefined}
+        data-balloon-length={length()}
+        data-balloon-break={breaks() ? "" : undefined}
+      >
+        {local.children}
+      </Dynamic>
+      <Show when={text()}>
+        <span id={id} hidden>
+          {text()}
+        </span>
+      </Show>
+      <Show when={text()}>
+        <TooltipBubble
+          reference={reference()}
+          text={text() ?? ""}
+          position={position()}
+          length={length()}
+          breaks={breaks()}
+        />
+      </Show>
+    </>
   );
 }

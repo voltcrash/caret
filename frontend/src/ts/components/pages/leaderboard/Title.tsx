@@ -13,6 +13,7 @@ import { createMemo, JSXElement, Show } from "solid-js";
 
 import { Selection } from "../../../states/leaderboard-selection";
 import { capitalizeFirstLetter } from "../../../utils/strings";
+import { Balloon } from "../../common/Balloon";
 import { Button } from "../../common/Button";
 import { H2 } from "../../common/Headers";
 
@@ -80,14 +81,14 @@ export function Title(props: {
       />
       <Show when={subTitle() !== null}>
         <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <div
+          <Balloon
             class="text-sub"
             data-balloon-pos="down"
             data-balloon-break
-            aria-label={subTitle()?.localString}
+            text={subTitle()?.localString}
           >
             {subTitle()?.dateString}
-          </div>
+          </Balloon>
           <div class="h-[1.75em] w-[0.25em] rounded bg-sub-alt"></div>
           <Button
             text={subTitle()?.buttonText}

@@ -12,6 +12,7 @@ import { showNoticeNotification } from "../../../states/notifications";
 import { cn } from "../../../utils/cn";
 import { Formatting } from "../../../utils/format";
 import { replaceUnderscoresWithSpaces } from "../../../utils/strings";
+import { Balloon } from "../../common/Balloon";
 import { Button } from "../../common/Button";
 import { Fa, FaProps } from "../../common/Fa";
 import { DataTable, DataTableColumnDef } from "../../ui/table/DataTable";
@@ -177,56 +178,64 @@ function getColumns<M extends Mode>({
 
         return (
           <div class="flex gap-0.5">
-            <span aria-label={info.row.original.language} data-balloon-pos="up">
+            <Balloon
+              as="span"
+              text={info.row.original.language}
+              data-balloon-pos="up"
+            >
               <Fa icon="fa-globe-americas" fixedWidth={true} />
-            </span>
-            <span
-              aria-label={info.row.original.difficulty}
+            </Balloon>
+            <Balloon
+              as="span"
+              text={info.row.original.difficulty}
               data-balloon-pos="up"
             >
               <Fa {...difficultyIcon(info.row.original.difficulty)} />
-            </span>
+            </Balloon>
             <Show when={info.row.original.punctuation}>
-              <span aria-label="punctuation" data-balloon-pos="up">
+              <Balloon as="span" text="punctuation" data-balloon-pos="up">
                 <Fa icon="fa-at" fixedWidth={true} />
-              </span>
+              </Balloon>
             </Show>
             <Show when={info.row.original.numbers}>
-              <span aria-label="numbers" data-balloon-pos="up">
+              <Balloon as="span" text="numbers" data-balloon-pos="up">
                 <Fa icon="fa-hashtag" fixedWidth={true} />
-              </span>
+              </Balloon>
             </Show>
             <Show when={info.row.original.blindMode}>
-              <span aria-label="blind mode" data-balloon-pos="up">
+              <Balloon as="span" text="blind mode" data-balloon-pos="up">
                 <Fa icon="fa-eye-slash" fixedWidth={true} />
-              </span>
+              </Balloon>
             </Show>
             <Show when={info.row.original.offline}>
-              <span
-                aria-label="offline result: history and stats only"
+              <Balloon
+                as="span"
+                text="offline result: history and stats only"
                 data-balloon-pos="up"
               >
                 <Fa icon="fa-plug" fixedWidth />
-              </span>
+              </Balloon>
             </Show>
             <Show when={info.row.original.lazyMode}>
-              <span aria-label="lazy mode" data-balloon-pos="up">
+              <Balloon as="span" text="lazy mode" data-balloon-pos="up">
                 <Fa icon="fa-couch" fixedWidth={true} />
-              </span>
+              </Balloon>
             </Show>
             <Show when={(info.row.original.funbox ?? []).length > 0}>
-              <span
-                aria-label={info.row.original.funbox
+              <Balloon
+                as="span"
+                text={info.row.original.funbox
                   .map(replaceUnderscoresWithSpaces)
                   .join(", ")}
                 data-balloon-pos="up"
               >
                 <Fa icon="fa-gamepad" fixedWidth={true} />
-              </span>
+              </Balloon>
             </Show>
-            <span
+            <Balloon
+              as="span"
               data-balloon-pos="up"
-              aria-label={
+              text={
                 hasChart
                   ? "View graph"
                   : "Graph history is not available for long tests"
@@ -242,7 +251,7 @@ function getColumns<M extends Mode>({
                   onMiniResultChartSelected(info.getValue());
                 }}
               />
-            </span>
+            </Balloon>
           </div>
         );
       },

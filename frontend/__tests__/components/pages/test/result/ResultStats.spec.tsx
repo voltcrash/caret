@@ -73,12 +73,10 @@ describe("ResultStats", () => {
 
     expect(q(container, ".wpm .top .text")).toHaveTextContent("cpm");
     expect(q(container, ".wpm .bottom")).toHaveTextContent("507");
-    expect(q(container, ".wpm .bottom")).toHaveAttribute(
-      "aria-label",
+    expect(q(container, ".wpm .bottom")).toHaveAccessibleDescription(
       "507.28 cpm (101.46 wpm)",
     );
-    expect(q(container, ".acc .bottom")).toHaveAttribute(
-      "aria-label",
+    expect(q(container, ".acc .bottom")).toHaveAccessibleDescription(
       "96.54%\n150 correct\n5 incorrect",
     );
     expect(q(container, ".acc .bottom")).toHaveAttribute(
@@ -87,8 +85,7 @@ describe("ResultStats", () => {
     );
     expect(q(container, ".raw .bottom")).toHaveTextContent("554");
     expect(q(container, ".key .bottom")).toHaveTextContent("150/5/2/1");
-    expect(q(container, ".consistency .bottom")).toHaveAttribute(
-      "aria-label",
+    expect(q(container, ".consistency .bottom")).toHaveAccessibleDescription(
       "78.91% (45.67% key)",
     );
     expect(q(container, ".time .bottom .text")).toHaveTextContent("30s");
@@ -96,8 +93,7 @@ describe("ResultStats", () => {
     expect(q(container, ".time .bottom .timeToday")).toHaveTextContent(
       "00:01:00 session",
     );
-    expect(q(container, ".time .bottom")).toHaveAttribute(
-      "aria-label",
+    expect(q(container, ".time .bottom")).toHaveAccessibleDescription(
       "30.46s (3s afk 9.85%)",
     );
   });

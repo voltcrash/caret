@@ -15,6 +15,7 @@ import { get as getSeverConfiguration } from "../../../states/server-configurati
 import { cn } from "../../../utils/cn";
 import { getFirstDayOfTheWeek } from "../../../utils/date-and-time";
 import { createErrorMessage } from "../../../utils/error";
+import { Balloon } from "../../common/Balloon";
 import Select, { SelectProps } from "../../ui/Select";
 
 const firstDayOfTheWeek = getFirstDayOfTheWeek();
@@ -211,14 +212,14 @@ export function ActivityCalendar(props: {
               <div class="activity col-start-2 row-start-1 grid grid-flow-col grid-cols-[repeat(var(--weeks),minmax(0,1fr))] grid-rows-[repeat(7,minmax(0,1fr))] gap-(--gap-size)">
                 <For each={view().days}>
                   {(day, index) => (
-                    <div
+                    <Balloon
                       class={cn(
                         squareClass,
                         "hover:border-2 hover:border-solid hover:border-text data-[level=filler]:hover:border-0",
                         levelClass(day.level),
                       )}
                       data-level={day.level}
-                      aria-label={day.label}
+                      text={day.label}
                       data-balloon-length={
                         day.label !== undefined ? "large" : undefined
                       }
@@ -229,7 +230,7 @@ export function ActivityCalendar(props: {
                             ? "up-left"
                             : "up-right"
                       }
-                    ></div>
+                    />
                   )}
                 </For>
               </div>

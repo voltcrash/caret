@@ -28,9 +28,6 @@
     transparent
   );
 
-  --balloon-font-size: 1rem;
-  --balloon-border-radius: calc(var(--roundness) / 2);
-
   /* phones: fit more of each line, see getWordsFontSize */
   --words-font-scale: 1;
   @media (max-width: 480px) {
@@ -187,39 +184,6 @@ kbd {
   }
   .text {
     margin-right: calc(var(--spacing) * var(--horizontalScale));
-  }
-}
-[aria-label][data-balloon-pos]::after {
-  @apply font-(family-name:--font);
-  font-size: var(--balloon-font-size);
-  line-height: var(--balloon-font-size);
-}
-@supports selector(:focus-visible) {
-  [aria-label][data-balloon-pos]:focus:not(:focus-visible):not(:hover)::before,
-  [aria-label][data-balloon-pos]:focus:not(:focus-visible):not(:hover)::after,
-  :root[data-input-modality="pointer"]
-    [aria-label][data-balloon-pos]:focus:not(:hover)::before,
-  :root[data-input-modality="pointer"]
-    [aria-label][data-balloon-pos]:focus:not(:hover)::after {
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-  }
-}
-/* Phones: long tooltips wrap inside the screen instead of running off it. */
-@variant max-sm {
-  [aria-label][data-balloon-pos]::after {
-    max-width: calc(100vw - 2rem);
-  }
-  [aria-label][data-balloon-pos]:not([data-balloon-length])::after {
-    width: max-content;
-    max-width: min(20rem, calc(100vw - 2rem));
-    white-space: normal;
-  }
-  [aria-label][data-balloon-pos][data-balloon-break]:not(
-      [data-balloon-length]
-    )::after {
-    white-space: pre-wrap;
   }
 }
 

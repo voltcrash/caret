@@ -14,6 +14,7 @@ import { cn } from "../../../utils/cn";
 import { secondsToString } from "../../../utils/date-and-time";
 import { Formatting } from "../../../utils/format";
 import { abbreviateNumber } from "../../../utils/numbers";
+import { Balloon } from "../../common/Balloon";
 import { Fa } from "../../common/Fa";
 import { User } from "../../common/User";
 import { DataTable, DataTableColumnDef } from "../../ui/table/DataTable";
@@ -132,15 +133,15 @@ function NoEntriesFound(): JSXElement {
 
 const rankColumn = () =>
   createColumnHelper<SpeedEntry | XpEntry>().accessor("rank", {
-    header: () => <Fa icon="fa-hashtag" />,
+    header: () => (
+      <Balloon inline text="Global rank" position="down">
+        <Fa icon="fa-hashtag" />
+      </Balloon>
+    ),
     cell: (info) =>
       info.getValue() === 1 ? <Fa icon="fa-crown" /> : info.getValue(),
     meta: {
       align: "center",
-      headerMeta: {
-        "aria-label": "Global rank",
-        "data-balloon-pos": "down",
-      },
     },
   });
 
@@ -347,33 +348,34 @@ function getXpColumns({
       header: "date",
       cell: (info) =>
         info.getValue() !== undefined ? (
-          addHeader ? (
-            wrapWithHeader({
-              value: dateFormat(info.getValue(), "dd MMM yyyy HH:mm"),
-              header: "last activity",
-              enabled: true,
-            })
-          ) : (
-            <>
-              <div>{dateFormat(info.getValue(), "dd MMM yyyy")}</div>
-              <div class="text-sub">{dateFormat(info.getValue(), "HH:mm")}</div>
-            </>
-          )
+          <Balloon
+            position="left"
+            text={formatDistanceToNow(info.getValue(), { addSuffix: true })}
+          >
+            <Show
+              when={addHeader}
+              fallback={
+                <>
+                  <div>{dateFormat(info.getValue(), "dd MMM yyyy")}</div>
+                  <div class="text-sub">
+                    {dateFormat(info.getValue(), "HH:mm")}
+                  </div>
+                </>
+              }
+            >
+              {wrapWithHeader({
+                value: dateFormat(info.getValue(), "dd MMM yyyy HH:mm"),
+                header: "last activity",
+                enabled: true,
+              })}
+            </Show>
+          </Balloon>
         ) : (
           ""
         ),
       meta: {
         align: "right",
         breakpoint: "sm",
-        cellMeta: (info) =>
-          info.value !== undefined
-            ? {
-                "aria-label": formatDistanceToNow(info.value, {
-                  addSuffix: true,
-                }),
-                "data-balloon-pos": "left",
-              }
-            : {},
       },
     }),
   ];

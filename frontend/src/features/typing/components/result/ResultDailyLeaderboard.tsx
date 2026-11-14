@@ -2,6 +2,7 @@ import { animate } from "animejs";
 import { JSXElement, Show } from "solid-js";
 
 import { navigate } from "../../../../app/navigate";
+import { Balloon } from "../../../../ts/components/common/Balloon";
 import { getMutableConfig } from "../../../../ts/config/store";
 import Format from "../../../../ts/singletons/format";
 import { resultState } from "../../../../ts/states/result";
@@ -23,9 +24,12 @@ export function ResultDailyLeaderboard(props: {
         class="group dailyLeaderboard max-w-[13rem] whitespace-nowrap max-md:col-span-full max-md:whitespace-normal"
       >
         <div class={props.topClass}>daily leaderboard</div>
-        <div
+        <Balloon
+          as="button"
+          type="button"
           id="dailyLeaderboardRank"
           aria-label="Show daily leaderboard"
+          text="Show daily leaderboard"
           data-balloon-pos="up"
           class={props.bottomClass}
           onClick={() => {
@@ -38,7 +42,7 @@ export function ResultDailyLeaderboard(props: {
           }}
         >
           {Format.rank(resultState.dailyLeaderboardRank, { fallback: "" })}
-        </div>
+        </Balloon>
       </div>
     </Show>
   );

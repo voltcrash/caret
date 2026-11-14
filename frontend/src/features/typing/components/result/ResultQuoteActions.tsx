@@ -1,6 +1,7 @@
 import { JSXElement } from "solid-js";
 
 import { operation } from "../../../../data/operations";
+import { Balloon } from "../../../../ts/components/common/Balloon";
 import { Fa } from "../../../../ts/components/common/Fa";
 import * as DB from "../../../../ts/db";
 import { hideLoaderBar, showLoaderBar } from "../../../../ts/states/loader-bar";
@@ -69,13 +70,16 @@ export function ResultQuoteActions(): JSXElement {
 
   return (
     <>
-      <span
+      <Balloon
+        as="button"
+        type="button"
         id="reportQuoteButton"
         class={cn(
           "textButton px-1 py-0 max-sm:min-h-9 max-sm:min-w-9 max-sm:items-center",
           !quote().reportVisible && "hidden",
         )}
         aria-label="Report quote"
+        text="Report quote"
         data-balloon-pos="up"
         onClick={() => {
           const currentQuote = getCurrentQuote();
@@ -89,14 +93,17 @@ export function ResultQuoteActions(): JSXElement {
         }}
       >
         <Fa icon="fa-flag" fixedWidth class="icon" />
-      </span>
-      <span
+      </Balloon>
+      <Balloon
+        as="button"
+        type="button"
         id="favoriteQuoteButton"
         class={cn(
           "textButton px-1 py-0 max-sm:min-h-9 max-sm:min-w-9 max-sm:items-center",
           !quote().favoriteVisible && "hidden",
         )}
         aria-label="Favorite quote"
+        text="Favorite quote"
         data-balloon-pos="up"
         onClick={() => void toggleFavorite()}
       >
@@ -106,14 +113,17 @@ export function ResultQuoteActions(): JSXElement {
           fixedWidth
           class="icon"
         />
-      </span>
-      <span
+      </Balloon>
+      <Balloon
+        as="button"
+        type="button"
         id="rateQuoteButton"
         class={cn(
           "textButton gap-1 px-1 py-0 max-sm:min-h-9 max-sm:min-w-9 max-sm:items-center",
           !quote().rateVisible && "hidden",
         )}
         aria-label="Rate quote"
+        text="Rate quote"
         data-balloon-pos="up"
         onClick={() => {
           const currentQuote = getCurrentQuote();
@@ -133,7 +143,7 @@ export function ResultQuoteActions(): JSXElement {
           class="icon"
         />
         <span class="rating">{quote().rating}</span>
-      </span>
+      </Balloon>
     </>
   );
 }

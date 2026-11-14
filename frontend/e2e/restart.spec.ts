@@ -59,7 +59,18 @@ for (const [setting, key] of [
       await openTest(page);
       await completeWords(page);
       // restart is ignored until the result fade-in finishes
-      await expect(page.locator("#result")).toHaveCSS("opacity", "1");
+      const result = page.locator("#result");
+      await expect(result).toHaveCSS("opacity", "1");
+      await expect(result).toBeFocused();
+      if (setting === "esc") {
+        // A hovered result hint consumes the first Escape; the next restarts.
+        await result.locator(".acc [data-balloon-pos]").hover();
+        await expect(page.getByRole("tooltip")).toBeVisible();
+        await page.keyboard.press("Escape");
+        await expect(page.getByRole("tooltip")).toHaveCount(0);
+        await expect(result).toBeVisible();
+        await expect(result).toBeFocused();
+      }
       await page.keyboard.press(key);
       await assertRestarted(page);
       await expect(page.locator("#result")).toBeHidden();

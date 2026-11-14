@@ -1,8 +1,7 @@
 import { JSXElement, Show } from "solid-js";
-import { Dynamic } from "solid-js/web";
 
 import { cn } from "../../utils/cn";
-import { BalloonProps, buildBalloonHtmlProperties } from "./Balloon";
+import { Balloon, BalloonProps } from "./Balloon";
 import { Fa, FaProps } from "./Fa";
 import { Link } from "./Link";
 
@@ -59,7 +58,11 @@ export function Button(props: ButtonProps | AnchorProps): JSXElement {
     </>
   );
 
-  const balloonHtmlProps = () => buildBalloonHtmlProperties(props.balloon);
+  const fallbackName = () =>
+    props.text === undefined && props.children === undefined
+      ? props.balloon?.text
+      : undefined;
+  const accessibleName = () => props["aria-label"] ?? fallbackName();
 
   const getClasses = (): string => {
     return cn(
@@ -95,18 +98,19 @@ export function Button(props: ButtonProps | AnchorProps): JSXElement {
     <Show
       when={isAnchor()}
       fallback={
-        <button
+        <Balloon
+          as="button"
+          {...props.balloon}
           // oxlint-disable-next-line button-has-type -- Typed button props restrict type to button/submit/reset and default to button.
           type={(props as ButtonProps).type ?? "button"}
           id={props.id}
           class={getClasses()}
-          aria-label={props["aria-label"]}
+          aria-label={accessibleName()}
           aria-labelledby={props["aria-labelledby"]}
           aria-pressed={props["aria-pressed"]}
           onClick={(e: MouseEvent) => props.onClick?.(e)}
           onMouseEnter={(e) => props.onMouseEnter?.(e)}
           onMouseLeave={(e) => props.onMouseLeave?.(e)}
-          {...balloonHtmlProps()}
           {...(props["router-link"] ? { "router-link": "" } : {})}
           disabled={props.disabled ?? false}
           data-ui-variant={variant()}
@@ -115,14 +119,15 @@ export function Button(props: ButtonProps | AnchorProps): JSXElement {
           {...props.dataset}
         >
           {content}
-        </button>
+        </Balloon>
       }
     >
-      <Dynamic
-        component={props["router-link"] ? Link : "a"}
+      <Balloon
+        {...props.balloon}
+        as={props["router-link"] ? Link : "a"}
         id={props.id}
         class={getClasses()}
-        aria-label={props["aria-label"]}
+        aria-label={accessibleName()}
         aria-labelledby={props["aria-labelledby"]}
         href={props.href}
         target={
@@ -135,7 +140,6 @@ export function Button(props: ButtonProps | AnchorProps): JSXElement {
             ? undefined
             : "noreferrer noopener"
         }
-        {...balloonHtmlProps()}
         {...(props["router-link"] ? { "router-link": "" } : {})}
         onClick={(e: MouseEvent) => props.onClick?.(e)}
         onMouseEnter={(e) => props.onMouseEnter?.(e)}
@@ -145,7 +149,7 @@ export function Button(props: ButtonProps | AnchorProps): JSXElement {
         {...props.dataset}
       >
         {content}
-      </Dynamic>
+      </Balloon>
     </Show>
   );
 }

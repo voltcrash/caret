@@ -166,6 +166,7 @@ export function ResultButtons(): JSXElement {
             <Button
               variant="text"
               id={button.id}
+              aria-label={button.label}
               fa={{ ...button.icon(), fixedWidth: true }}
               class={cn(
                 "max-md:col-span-2 max-md:nth-[n+5]:col-span-3 max-md:min-h-11 max-md:min-w-11 max-md:flex-col max-md:gap-1 max-md:px-[0.25em]! max-md:py-[0.5em]! max-md:text-[0.75rem]",

@@ -84,13 +84,7 @@ test("modifier keys leave pointer focus quiet while Tab restores control outline
       /^(none|(?:rgba\(0, 0, 0, 0\) 0px 0px 0px 0px,? ?)+)$/,
     );
     await expect(page.locator("#commandLine")).toBeHidden();
-    await expect
-      .poll(async () =>
-        indicator.evaluate((element) =>
-          getComputedStyle(element, "::after").getPropertyValue("visibility"),
-        ),
-      )
-      .toBe("hidden");
+    await expect(page.getByRole("tooltip")).toHaveCount(0);
   }
   await page.keyboard.press("Shift+Tab");
   const home = page.getByRole("link", { name: "Caret Home", exact: true });
@@ -129,7 +123,21 @@ test("finishing a test focuses results without outlining the screen", async ({
   await expect(result).toHaveCSS("outline-style", "none");
   await expect(result).toHaveCSS("box-shadow", "none");
   await page.keyboard.press("Tab");
+  const speed = result.locator(".wpm [data-balloon-pos]").last();
+  await expect(speed).toBeFocused();
+  await expect(page.getByRole("tooltip")).toBeVisible();
   const next = page.getByRole("button", { name: "Next test", exact: true });
+  const tabStops = await result
+    .locator('[tabindex="0"], a[href], button:not([disabled])')
+    .count();
+  for (
+    let i = 0;
+    i < tabStops &&
+    !(await next.evaluate((element) => element === document.activeElement));
+    i++
+  ) {
+    await page.keyboard.press("Tab");
+  }
   await expect(next).toBeFocused();
   await expect(next).toHaveCSS("outline-style", "solid");
   await expect(next).toHaveCSS("outline-width", "2px");
@@ -152,8 +160,7 @@ test("result summary stays silent during typing and clears on restart", async ({
   await completeWords(page);
   await expect(summary).toContainText("Test complete.");
   await expect(summary).toContainText("Accuracy 100%");
-  await page.keyboard.press("Tab");
-  await page.keyboard.press("Enter");
+  await page.getByRole("button", { name: "Next test", exact: true }).click();
   await assertRestarted(page);
   await expect(summary).toHaveText("");
 });

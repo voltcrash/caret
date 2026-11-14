@@ -56,7 +56,9 @@ function isInteractiveElementFocused(): boolean {
     document.activeElement?.tagName === "TEXTAREA" ||
     document.activeElement?.tagName === "SELECT" ||
     document.activeElement?.tagName === "BUTTON" ||
-    document.activeElement?.matches(".button, .textButton, .modal") === true
+    document.activeElement?.matches(
+      ".button, .textButton, .modal, [data-balloon-pos]",
+    ) === true
   );
 }
 
@@ -65,7 +67,7 @@ function handleHotkeyOnInteractiveElement(
   { hotkey }: HotkeyCallbackContext,
 ): boolean {
   if (
-    (hotkey === "Tab" || hotkey === "Enter") &&
+    (hotkey === "Tab" || hotkey === "Shift+Tab" || hotkey === "Enter") &&
     isInteractiveElementFocused()
   ) {
     return true;
