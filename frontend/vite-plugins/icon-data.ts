@@ -46,7 +46,7 @@ export function generateIconData(): string {
 }
 
 export function writeIconData(): void {
-  const target = new URL("../src/ts/icons.ts", import.meta.url);
+  const target = new URL("../src/components/icons/data.ts", import.meta.url);
   const output = generateIconData();
   let current: string | undefined;
   try {

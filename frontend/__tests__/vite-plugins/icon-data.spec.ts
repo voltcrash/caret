@@ -2,11 +2,14 @@ import { readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { expect, it } from "vite-plus/test";
 import { generateIconData } from "../../vite-plugins/icon-data";
-import { icons } from "../../src/ts/icons";
+import { icons } from "../../src/components/icons/data";
 
 it("keeps generated paths identical to the owned SVG sources", () => {
   expect(generateIconData()).toBe(
-    readFileSync(new URL("../../src/ts/icons.ts", import.meta.url), "utf8"),
+    readFileSync(
+      new URL("../../src/components/icons/data.ts", import.meta.url),
+      "utf8",
+    ),
   );
 });
 
@@ -22,7 +25,7 @@ it("covers icon names in source data as well as JSX literals", () => {
     if (
       !/\.tsx?$/.test(file) ||
       file.endsWith(".d.ts") ||
-      file === "ts/icons.ts"
+      file === "components/icons/data.ts"
     ) {
       continue;
     }

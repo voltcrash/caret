@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { icons } from "../../src/ts/icons";
+import { icons } from "../../src/components/icons/data";
 import { createWorkerd } from "./workerd";
 
 describe("Start document and response policy in workerd", () => {

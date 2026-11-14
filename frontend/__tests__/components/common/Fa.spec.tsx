@@ -3,8 +3,8 @@ import { render } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
 import { expect, it } from "vite-plus/test";
 
+import { icons } from "../../../src/components/icons/data";
 import { Fa } from "../../../src/ts/components/common/Fa";
-import { icons } from "../../../src/ts/icons";
 
 it("renders SVG immediately and updates data-selected icons and variants", () => {
   const [regular, setRegular] = createSignal(false);

@@ -1,6 +1,6 @@
 import { JSXElement } from "solid-js";
 
-import { icons } from "../../icons";
+import { icons } from "../../../components/icons/data";
 import { FaObject } from "../../types/font-awesome";
 import { cn } from "../../utils/cn";
 

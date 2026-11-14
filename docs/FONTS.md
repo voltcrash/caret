@@ -122,7 +122,7 @@ Storybook uses the same generator. The static warning fallbacks need no icons.
 To add an icon, copy its attributed upstream SVG into the appropriate variant
 folder and add its `fa-` name/alias to the selection. Run
 `vp run --filter @caret/frontend generate-icon-types`, then commit the SVG,
-selection and generated `frontend/src/ts/icons.ts`. Available prop types derive
+selection and generated `frontend/src/components/icons/data.ts`. Available prop types derive
 from that registry. Builds regenerate the registry from the owned files.
 
 Font Awesome's [Free license](https://fontawesome.com/license/free) assigns

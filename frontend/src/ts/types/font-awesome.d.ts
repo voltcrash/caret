@@ -1,4 +1,4 @@
-import type { icons } from "../icons";
+import type { icons } from "../../components/icons/data";
 
 export type FaIcon = FaSolidIcon | FaRegularIcon | FaBrandIcon;
 
