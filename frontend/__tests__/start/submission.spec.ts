@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
 import { fromCrossJSON, toJSONAsync, type SerovalNode } from "seroval";
-import objectHash from "object-hash";
+import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
 import { z } from "zod";
 import type { CompletedEvent } from "@caret/schemas/results";
 import { AddResultResponseSchema } from "@caret/contracts/results";
