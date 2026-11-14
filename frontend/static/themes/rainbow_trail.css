@@ -19,8 +19,7 @@ header [data-ui-element="logoText"] {
   line-height: 1;
 }
 
-.view-account .levelAndBar .level,
-[aria-label][data-balloon-pos]::after {
+.view-account .levelAndBar .level {
   -webkit-text-fill-color: initial;
 }
 
