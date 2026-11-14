@@ -1,5 +1,5 @@
 import type { CompletedEvent } from "@caret/schemas/results";
-import objectHash from "object-hash";
+import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
 
 // Short or nearly constant sequences can repeat by chance, especially on
 // coarsened clocks. Long varied ones cannot: no hand reproduces the same

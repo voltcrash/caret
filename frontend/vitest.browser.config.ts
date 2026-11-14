@@ -49,7 +49,6 @@ export const browserProject = {
       "@testing-library/jest-dom/vitest",
       "@solidjs/testing-library",
       "@testing-library/user-event",
-      "object-hash",
       "howler",
       "damerau-levenshtein",
       "lz-ts",

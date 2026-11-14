@@ -105,7 +105,7 @@ unavailable, never invented zeros/releases. Browser synthetic releases retain th
 existing estimated marker. Native summaries distinguish unavailable from measured
 zero. Terminal stores no account credentials and submits no web results.
 
-Web host adds uid/tags/challenge/network metadata and runs the existing object-hash
+Web host adds uid/tags/challenge/network metadata and runs the owned legacy-format hash
 helper after those fields. Preserve schemas, omitted fields and backend validation.
 Hashing is transport, not a Rust JSON hash. Full historical fixtures and anticheat
 rejection tests must pass before removing TS result/replay implementations.

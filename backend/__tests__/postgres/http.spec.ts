@@ -1,4 +1,4 @@
-import objectHash from "object-hash";
+import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
 import * as Results from "../../src/dal/result";
 import { statement } from "../../src/db/client";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vite-plus/test";

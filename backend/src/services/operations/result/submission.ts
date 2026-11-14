@@ -17,7 +17,7 @@ import type { ServiceContext, OperationInput } from "../../context";
 import { validateSubmission } from "./validation";
 import { applyProgression } from "./progression";
 import { getBySubmissionHash } from "../../../dal/result";
-import objectHash from "object-hash";
+import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
 import { omit } from "../../../utils/misc";
 import { MonkeyResponse } from "../../../utils/monkey-response";
 type RankRead = {

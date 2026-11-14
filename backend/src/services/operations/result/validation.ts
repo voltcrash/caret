@@ -1,7 +1,7 @@
 import * as ResultDAL from "../../../dal/result";
 
 import { omit } from "../../../utils/misc";
-import objectHash from "object-hash";
+import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
 import Logger from "../../../utils/logger";
 
 import MonkeyError from "../../../utils/error";
