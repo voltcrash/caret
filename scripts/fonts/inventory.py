@@ -59,9 +59,6 @@ def inspect(data):
 def main():
     files = subprocess.check_output(["git", "ls-tree", "--name-only", f"{BASE}:frontend/static/webfonts"], text=True).splitlines()
     records = {f"frontend/static/webfonts/{name}": inspect(original(name)) for name in files}
-    icons = ROOT / "frontend/node_modules/@fortawesome/fontawesome-free/webfonts"
-    for path in sorted(icons.glob("*.woff2")):
-        records[f"@fortawesome/fontawesome-free/webfonts/{path.name}"] = inspect(path.read_bytes())
     output = {"revision": subprocess.check_output(["git", "rev-parse", BASE], text=True).strip(),
               "initialStatus": "only untracked docs/font-optimization-prompt.md",
               "tools": {"fonttools": fontTools.__version__, "brotli": brotli.__version__},
