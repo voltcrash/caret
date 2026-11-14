@@ -477,9 +477,6 @@ importers:
       date-fns:
         specifier: 4.4.0
         version: 4.4.0
-      hangul-js:
-        specifier: 0.2.6
-        version: 0.2.6
       howler:
         specifier: 2.2.4
         version: 2.2.4
@@ -4752,9 +4749,6 @@ packages:
         optional: true
       ocache:
         optional: true
-
-  hangul-js@0.2.6:
-    resolution: {integrity: sha512-48axU8LgjCD30FEs66Xc04/8knxMwCMQw0f67l67rlttW7VXT3qRJgQeHmhiuGwWXGvSbk6YM0fhQlcjE1JFQA==}
 
   has-flag@4.0.0:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
@@ -9445,8 +9439,6 @@ snapshots:
       srvx: 1.0.6
     optionalDependencies:
       crossws: 0.4.16(srvx@1.0.6)
-
-  hangul-js@0.2.6: {}
 
   has-flag@4.0.0: {}
 
