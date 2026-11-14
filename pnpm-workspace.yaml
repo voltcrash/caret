@@ -5,7 +5,6 @@ packages:
   - frontend/storybook
 
 allowBuilds:
-  "@fortawesome/fontawesome-free": true
   "@parcel/watcher": true
   "@sentry/cli": true
   esbuild: true

@@ -62,6 +62,23 @@ export default defineMain({
   ],
   viteFinal(config) {
     config.plugins ??= [];
+    config.plugins.push({
+      name: "storybook-server-functions",
+      enforce: "pre",
+      resolveId(source) {
+        if (source === "@tanstack/solid-start") {
+          return fileURLToPath(new URL("./start-client.ts", import.meta.url));
+        }
+        if (
+          /(?:^|\/)functions\/(session|signup|profile|leaderboards|account)$/.test(
+            source,
+          )
+        ) {
+          return fileURLToPath(new URL("./functions.ts", import.meta.url));
+        }
+        return null;
+      },
+    });
     // Stories run without a Start server; never bundle server functions.
     config.plugins.push(
       operationTransport(

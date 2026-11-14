@@ -2,6 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { icons } from "../../src/components/icons/data";
 import { createWorkerd } from "./workerd";
 
 describe("Start document and response policy in workerd", () => {
@@ -116,6 +117,21 @@ describe("Start document and response policy in workerd", () => {
       }
       await asset.arrayBuffer();
     }
+  });
+
+  it("renders icon paths in SSR without icon font downloads", async () => {
+    const response = await mf.dispatchFetch(
+      "http://localhost:3000/leaderboards",
+    );
+    const html = await response.text();
+    expect(html).toContain(icons.solid["fa-crown"].path);
+    expect(html).toContain("<svg");
+    const css = /href="([^"]+\.css)"/.exec(html)?.[1];
+    const styles = await (
+      await mf.dispatchFetch(`http://localhost:3000${css}`)
+    ).text();
+    expect(styles).not.toContain("fa-solid-900");
+    expect(styles).not.toMatch(/font-family:[^;{}]*Font Awesome/);
   });
 
   it("preserves popup and standalone 404 URLs", async () => {
