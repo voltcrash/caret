@@ -1,15 +1,12 @@
-import { debounce } from "@caret/util/timing";
-import { For, JSXElement, onCleanup, onMount, Show } from "solid-js";
+import { For, JSXElement, onMount, Show } from "solid-js";
 
 import { createEffectOn } from "../../../hooks/effects";
-import { useRef } from "../../../hooks/useRef";
 import {
   Banner as BannerType,
   addBanner,
   getBanners,
   removeBanner,
 } from "../../../states/banners";
-import { setGlobalOffsetTop } from "../../../states/core";
 import { getSnapshot } from "../../../states/snapshot";
 import { cn } from "../../../utils/cn";
 import { isProfilerMode } from "../../../utils/profiler-mode";
@@ -18,9 +15,7 @@ import { showUpdateNameModal } from "../../modals/account-settings/UpdateNameMod
 
 function Banner(props: BannerType): JSXElement {
   const remove = (): void => {
-    // document.startViewTransition(() => {
     removeBanner(props.id);
-    // });
   };
   const icon = (): string =>
     props.icon === undefined || props.icon === ""
@@ -40,7 +35,7 @@ function Banner(props: BannerType): JSXElement {
   return (
     <div
       class={cn(
-        "content-grid w-full text-bg [&_a]:text-bg [&_a]:underline [&_a]:hover:text-text",
+        "pointer-events-auto w-full rounded px-3 text-sm text-bg motion-safe:animate-content-in [&_a]:text-bg [&_a]:underline [&_a]:hover:text-text",
         {
           "bg-error": props.level === "error",
           "bg-sub": props.level === "notice",
@@ -86,8 +81,6 @@ function Banner(props: BannerType): JSXElement {
 }
 
 export function Banners(): JSXElement {
-  const [ref, element] = useRef();
-
   let nameChangeAdded = false;
   createEffectOn(
     () => getSnapshot()?.needsToChangeName,
@@ -116,15 +109,7 @@ export function Banners(): JSXElement {
     },
   );
 
-  const setGlobalOffsetSignal = (): void => {
-    const height = element()?.offsetHeight ?? 0;
-    setGlobalOffsetTop(height);
-  };
-
-  const debouncedMarginUpdate = debounce(100, setGlobalOffsetSignal);
-
   onMount(() => {
-    window.addEventListener("resize", debouncedMarginUpdate);
     if (isProfilerMode()) {
       addBanner({
         level: "error",
@@ -135,17 +120,13 @@ export function Banners(): JSXElement {
     }
   });
 
-  onCleanup(() => {
-    window.removeEventListener("resize", debouncedMarginUpdate);
-  });
-
-  createEffectOn(() => getBanners().length, setGlobalOffsetSignal);
-
   return (
-    // the first banner fills the status bar area of installed apps (notch)
+    // Announcements arrive after startup; keep them out of the app's geometry.
     <div
-      ref={ref}
-      class="fixed top-0 left-0 z-1000 w-full [&>:first-child]:pt-[env(safe-area-inset-top,0px)]"
+      role="region"
+      aria-label="Announcements"
+      aria-live="polite"
+      class="pointer-events-none fixed inset-x-0 bottom-0 z-1000 mx-auto grid max-h-[30dvh] w-full max-w-2xl gap-2 overflow-y-auto overscroll-contain p-4 pb-[max(1rem,env(safe-area-inset-bottom,0px))]"
     >
       <For each={getBanners()}>{(banner) => <Banner {...banner} />}</For>
     </div>
