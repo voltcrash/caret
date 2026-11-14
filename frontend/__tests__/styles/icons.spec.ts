@@ -1,12 +1,17 @@
 import { readFileSync } from "node:fs";
-import { createRequire } from "node:module";
 import path from "node:path";
 import { describe, expect, it } from "vite-plus/test";
 
-const require = createRequire(import.meta.url);
-const fontAwesome = readFileSync(
-  require.resolve("@fortawesome/fontawesome-free/css/fontawesome.css"),
-  "utf8",
+const selection = JSON.parse(
+  readFileSync(new URL("../../icons/selection.json", import.meta.url), "utf8"),
+) as Record<string, Record<string, string>>;
+const known = new Set(
+  Object.values(selection).flatMap((entries) => [
+    ...Object.keys(entries),
+    ...Object.values(entries).map(
+      (file) => `fa-${path.basename(file, ".svg")}`,
+    ),
+  ]),
 );
 const icons = readFileSync(
   path.join(import.meta.dirname, "../../src/styles/icons.css"),
@@ -14,16 +19,16 @@ const icons = readFileSync(
 );
 
 describe("icon size corrections", () => {
-  const selectors = [...icons.matchAll(/\.(fa-[a-z0-9-]+)/g)].map(
-    (match) => match[1] as string,
-  );
+  const selectors = [...icons.matchAll(/\.(fa-[a-z0-9-]+)/g)]
+    .map((match) => match[1] as string)
+    .filter((name) => name !== "fa-fw" && name !== "fa-rotate-90");
 
   it("has corrections", () => {
     expect(selectors.length).toBeGreaterThan(0);
   });
 
   it.each(selectors)("targets a font awesome icon (%s)", (selector) => {
-    expect(fontAwesome).toMatch(new RegExp(`\\.${selector}\\s*[{,]`));
+    expect(known.has(selector)).toBe(true);
   });
 
   it("only uses scale so layout and spin transforms are untouched", () => {
