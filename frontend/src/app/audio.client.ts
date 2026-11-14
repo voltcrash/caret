@@ -5,7 +5,7 @@ import { configEvent } from "../ts/events/config";
 import { randomElementFromArray } from "../ts/utils/arrays";
 import { isCapsLockOn } from "@leonabcd123/modern-caps-lock";
 import { showErrorNotification } from "../ts/states/notifications";
-import type { Howl } from "howler";
+import { createAudioSample, type AudioSample } from "./audio-sample.client";
 import { PlaySoundOnClick, PlaySoundOnError } from "@caret/schemas/configs";
 import {
   clickSoundConfig,
@@ -28,69 +28,50 @@ function createAudio(): {
   useSoundEvents: typeof useSoundEvents;
 } {
   const lifetime = captureApplication();
-  let howlerModulePromise: Promise<typeof import("howler")> | null = null;
-  async function getHowlerModule(): Promise<typeof import("howler")> {
-    howlerModulePromise ??= import("howler").catch((error: unknown) => {
-      howlerModulePromise = null;
-      throw error;
-    });
-    return howlerModulePromise;
-  }
-  let initPromise: Promise<void> | null = null;
   const loadedBundles: Set<PlaySoundOnClick> = new Set();
-  const howlers: Record<string, Promise<Howl>> = {};
-  async function getHowl(src: string): Promise<Howl> {
-    howlers[src] ??= (async () => {
-      const { Howl } = await getHowlerModule();
+  const samples: Record<string, Promise<AudioSample>> = {};
+  async function getSample(src: string): Promise<AudioSample> {
+    samples[src] ??= (async () => {
       lifetime.assertCurrent();
-      return new Howl({ src });
+      if (audioCtx === undefined) initAudioContext();
+      if (!audioCtx || !sampleGain) {
+        throw new Error("Audio context unavailable");
+      }
+      return createAudioSample(audioCtx, sampleGain, src, lifetime.signal);
     })().catch((error: unknown) => {
-      Reflect.deleteProperty(howlers, src);
+      Reflect.deleteProperty(samples, src);
       throw error;
     });
 
-    return howlers[src];
+    return samples[src];
   }
-  type ErrorSounds = Record<Exclude<PlaySoundOnError, "off">, Howl[]>;
+  type ErrorSounds = Record<Exclude<PlaySoundOnError, "off">, AudioSample[]>;
   let errorSounds: ErrorSounds | null = null;
-  let timeWarning: Howl | null = null;
-  let fartReverb: Howl | null = null;
+  let timeWarning: AudioSample | null = null;
+  let fartReverb: AudioSample | null = null;
   async function initTimeWarning(): Promise<void> {
     if (timeWarning !== null) return;
-    timeWarning = await getHowl("../sounds/timeWarning.wav");
+    timeWarning = await getSample("../sounds/timeWarning.wav");
   }
   async function initFartReverb(): Promise<void> {
     if (fartReverb !== null) return;
-    fartReverb = await getHowl("../sounds/fart-reverb.wav");
+    fartReverb = await getSample("../sounds/fart-reverb.wav");
   }
   async function initErrorSound(): Promise<void> {
     if (errorSounds !== null) return;
     errorSounds = {
-      1: [await getHowl("../sounds/error1/1.wav")],
-      2: [await getHowl("../sounds/error2/1.wav")],
-      3: [await getHowl("../sounds/error3/1.wav")],
+      1: [await getSample("../sounds/error1/1.wav")],
+      2: [await getSample("../sounds/error2/1.wav")],
+      3: [await getSample("../sounds/error3/1.wav")],
       4: [
-        await getHowl("../sounds/error4/1.wav"),
-        await getHowl("../sounds/error4/2.wav"),
+        await getSample("../sounds/error4/1.wav"),
+        await getSample("../sounds/error4/2.wav"),
       ],
     };
-    const { Howler } = await getHowlerModule();
     if (lifetime.signal.aborted) return;
-    Howler.volume(getMutableConfig().soundVolume);
+    setVolume(getMutableConfig().soundVolume);
   }
   async function init(): Promise<void> {
-    initPromise ??= (async () => {
-      const { Howler } = await getHowlerModule();
-      if (lifetime.signal.aborted) return;
-      Howler.volume(getMutableConfig().soundVolume);
-    })().catch((error: unknown) => {
-      initPromise = null;
-      throw error;
-    });
-
-    await initPromise;
-    if (lifetime.signal.aborted) return;
-
     //preload error sounds
     await initErrorSound();
     if (lifetime.signal.aborted) return;
@@ -104,7 +85,7 @@ function createAudio(): {
 
       if (config === undefined) return;
 
-      await Promise.all(config.flatMap(getHowl));
+      await Promise.all(config.flatMap(getSample));
       loadedBundles.add(clickId);
     }
   }
@@ -131,10 +112,10 @@ function createAudio(): {
       return;
     }
 
-    const howl = await getHowl(safeClickSounds[0]);
+    const sample = await getSample(safeClickSounds[0]);
     if (lifetime.signal.aborted) return;
-    howl.seek(0);
-    howl.play();
+    sample.seek(0);
+    sample.play();
   }
   async function previewError(val: PlaySoundOnError): Promise<void> {
     if (val === "off") return;
@@ -219,10 +200,28 @@ function createAudio(): {
     BracketRight: bindToNote(notes.G, 2),
   };
   let audioCtx: AudioContext | undefined | null;
+  let sampleGain: GainNode | undefined;
+  function resumeAudioContext(): void {
+    if (
+      audioCtx &&
+      audioCtx.state !== "running" &&
+      audioCtx.state !== "closed"
+    ) {
+      void audioCtx.resume().catch(() => undefined);
+    }
+  }
+  const unlockEvents = ["pointerdown", "touchend", "keydown"] as const;
   function initAudioContext(): void {
     if (audioCtx === null) return;
     try {
       audioCtx = new AudioContext();
+      sampleGain = audioCtx.createGain();
+      sampleGain.gain.value = getMutableConfig().soundVolume;
+      sampleGain.connect(audioCtx.destination);
+      for (const event of unlockEvents) {
+        document.addEventListener(event, resumeAudioContext, true);
+      }
+      resumeAudioContext();
     } catch (e) {
       audioCtx = null;
       console.error(e);
@@ -270,6 +269,7 @@ function createAudio(): {
       initAudioContext();
     }
     if (!audioCtx) return;
+    resumeAudioContext();
 
     if (Math.random() < 0.5) {
       scaleMeta.octave += scaleMeta.direction;
@@ -301,7 +301,7 @@ function createAudio(): {
   async function playTimeWarning(): Promise<void> {
     if (timeWarning === null) await initTimeWarning();
     if (lifetime.signal.aborted) return;
-    const soundToPlay = timeWarning as Howl;
+    const soundToPlay = timeWarning as AudioSample;
     soundToPlay.stop();
     soundToPlay.seek(0);
     soundToPlay.play();
@@ -309,15 +309,13 @@ function createAudio(): {
   async function playFartReverb(): Promise<void> {
     if (fartReverb === null) await initFartReverb();
     if (lifetime.signal.aborted) return;
-    const soundToPlay = fartReverb as Howl;
+    const soundToPlay = fartReverb as AudioSample;
     soundToPlay.stop();
     soundToPlay.seek(0);
     soundToPlay.play();
   }
   async function clearAllSounds(): Promise<void> {
-    const { Howler } = await getHowlerModule();
-    if (lifetime.signal.aborted) return;
-    Howler.stop();
+    for (const request of Object.values(samples)) (await request).stop();
   }
   function playNote(options: {
     codeOverride?: string;
@@ -327,6 +325,7 @@ function createAudio(): {
       initAudioContext();
     }
     if (!audioCtx) return;
+    resumeAudioContext();
 
     currentCode = options.codeOverride ?? currentCode;
     if (!(currentCode in codeToNote)) {
@@ -378,7 +377,7 @@ function createAudio(): {
     const sounds = clickSoundConfig[val];
     if (sounds === undefined) throw new Error("Invalid click sound ID");
     const randomSound = randomElementFromArray(sounds);
-    const soundToPlay = await getHowl(randomSound);
+    const soundToPlay = await getSample(randomSound);
     if (lifetime.signal.aborted) return;
     soundToPlay.seek(0);
     soundToPlay.play();
@@ -396,14 +395,8 @@ function createAudio(): {
     randomSound.seek(0);
     randomSound.play();
   }
-  async function setVolume(val: number): Promise<void> {
-    try {
-      const { Howler } = await getHowlerModule();
-      if (lifetime.signal.aborted) return;
-      Howler.volume(val);
-    } catch (e) {
-      //
-    }
+  function setVolume(val: number): void {
+    if (sampleGain !== undefined) sampleGain.gain.value = val;
   }
   function extractScaleSounds(
     shortConfig: SoundConfigType,
@@ -425,10 +418,13 @@ function createAudio(): {
     );
   }
   function disposeAudio(): void {
-    for (const request of Object.values(howlers)) {
+    for (const event of unlockEvents) {
+      document.removeEventListener(event, resumeAudioContext, true);
+    }
+    for (const request of Object.values(samples)) {
       void request
-        .then((howl) => {
-          howl.unload();
+        .then((sample) => {
+          sample.unload();
         })
         .catch(() => undefined);
     }
@@ -446,7 +442,7 @@ function createAudio(): {
     configEvent.useListener(({ key, newValue }) => {
       if (key === "playSoundOnClick" && newValue !== "off") preload();
       if (key === "soundVolume") {
-        void setVolume(newValue);
+        setVolume(newValue);
       }
     });
   }
