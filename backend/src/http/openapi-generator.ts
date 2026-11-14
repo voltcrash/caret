@@ -61,7 +61,8 @@ function jsonSchema(schema: z.core.$ZodType, output = false): JsonSchema {
       }
       if (output && def.type === "pipe" && def.out instanceof z.ZodTransform) {
         // Caret's output transforms are String/Number or optional-string
-        // normalization. Keep their constraints instead of emitting `{}`.
+        // normalization with nonrecursive inputs. Keep their constraints
+        // instead of emitting `{}`; recursive transform inputs are not supported.
         Object.assign(generated, jsonSchema(def.in));
         const transform = def.out._zod.def.transform;
         if (transform === String) generated.type = "string";
