@@ -92,4 +92,3 @@ minimumReleaseAgeExclude:
   - "@better-auth/infra@0.4.27"
   - playwright-core@1.65.0
 patchedDependencies:
-  zod-urlsearchparams@0.0.16: patches/zod-urlsearchparams@0.0.16.patch
