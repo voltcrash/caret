@@ -1,4 +1,3 @@
-import * as Hangul from "hangul-js";
 import { assemble } from "./hangul-assembly";
 
 import * as Strings from "../../../ts/utils/strings";
@@ -114,7 +113,7 @@ export function buildWordsHistory(options: {
     const input = inputHistory[i];
     const target = options.getTargetWord(i);
     const corrected = options.korean
-      ? Hangul.assemble((correctedHistory[i] ?? "").split(""))
+      ? assemble((correctedHistory[i] ?? "").split(""))
       : correctedHistory[i];
 
     const isIncorrectWord = input !== target;
