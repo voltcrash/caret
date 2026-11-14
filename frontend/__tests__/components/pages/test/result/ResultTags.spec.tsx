@@ -57,9 +57,9 @@ describe("ResultTags", () => {
     expect(tags).not.toHaveClass("hidden");
     expect(items).toHaveLength(3);
     expect(items[0]).toHaveTextContent("alpha");
-    expect(items[0]).toHaveAttribute("aria-label", "PB: 90");
+    expect(items[0]).toHaveAccessibleDescription("PB: 90");
     expect(items[0]?.querySelector(".fa-crown")).toBeNull();
-    expect(items[1]).toHaveAttribute("aria-label", "+11.46");
+    expect(items[1]).toHaveAccessibleDescription("+11.46");
     expect(items[1]?.querySelector(".fa-crown")).not.toBeNull();
     expect(items[2]).not.toHaveAttribute("aria-label");
     expect(items[2]).not.toHaveAttribute("data-balloon-pos");

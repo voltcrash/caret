@@ -1,5 +1,6 @@
 import { For, JSXElement, Show } from "solid-js";
 
+import { Balloon } from "../../../../ts/components/common/Balloon";
 import { resultState } from "../../../../ts/states/result";
 import { cn } from "../../../../ts/utils/cn";
 import { ResultCrown } from "./ResultCrown";
@@ -24,9 +25,6 @@ const accBigBottomClass = cn(
 );
 const smallTopClass = cn(topClass, "flex flex-wrap items-center");
 const smallBottomClass = "bottom text-[1rem] leading-[1rem] text-main";
-// balloons would overflow the screen on narrow layouts
-const moreStatsBottomClass =
-  "max-sm:after:left-0! max-sm:after:transform-none!";
 // two phone columns are ~136px wide on 320px screens
 const valueClass = "max-md:text-[1.5rem] max-md:leading-[1.5rem]";
 const subTextClass = "ml-[0.2rem] text-[0.75rem] leading-[0.75rem] text-text";
@@ -67,24 +65,24 @@ export function ResultStats(): JSXElement {
             <div class="text">{stats()?.typingSpeedUnit ?? "wpm"}</div>
             <ResultCrown />
           </div>
-          <div
+          <Balloon
             class={wpmBigBottomClass}
-            aria-label={stats()?.wpm.ariaLabel}
+            text={stats()?.wpm.ariaLabel}
             data-balloon-pos="up"
           >
             {stats()?.wpm.text ?? "-"}
-          </div>
+          </Balloon>
         </div>
         <div class="group acc max-md:text-center [grid-area:acc]">
           <div class={bigTopClass}>acc</div>
-          <div
+          <Balloon
             class={accBigBottomClass}
-            aria-label={stats()?.acc.ariaLabel}
+            text={stats()?.acc.ariaLabel}
             data-balloon-pos="up"
             data-balloon-break={stats()?.acc.balloonBreak ? "" : undefined}
           >
             {stats()?.acc.text ?? "-"}
-          </div>
+          </Balloon>
         </div>
       </div>
       <div
@@ -98,20 +96,12 @@ export function ResultStats(): JSXElement {
       >
         <div class="group testType max-md:col-span-full">
           <div class={topClass}>test type</div>
-          <div
-            class={cn(
-              "bottom text-[1rem] leading-[1.25] text-main",
-              moreStatsBottomClass,
-            )}
-          >
+          <div class={cn("bottom text-[1rem] leading-[1.25] text-main")}>
             <Lines lines={stats()?.testType} />
           </div>
           <ResultTags
             topClass={smallTopClass}
-            bottomClass={cn(
-              "bottom text-[1rem] leading-[1.25] text-main",
-              moreStatsBottomClass,
-            )}
+            bottomClass={cn("bottom text-[1rem] leading-[1.25] text-main")}
           />
         </div>
         <div
@@ -121,46 +111,46 @@ export function ResultStats(): JSXElement {
           )}
         >
           <div class={smallTopClass}>other</div>
-          <div class={cn(smallBottomClass, moreStatsBottomClass)}>
+          <div class={cn(smallBottomClass)}>
             <Lines lines={stats()?.other} />
           </div>
         </div>
         <div class="group raw">
           <div class={topClass}>raw</div>
-          <div
-            class={cn(bottomClass, moreStatsBottomClass, valueClass)}
-            aria-label={stats()?.raw.ariaLabel}
+          <Balloon
+            class={cn(bottomClass, valueClass)}
+            text={stats()?.raw.ariaLabel}
             data-balloon-pos="up"
           >
             {stats()?.raw.text ?? "-"}
-          </div>
+          </Balloon>
         </div>
         <div class="group key">
           <div class={topClass}>characters</div>
-          <div
-            class={cn(bottomClass, moreStatsBottomClass, valueClass)}
-            aria-label={"correct\nincorrect\nextra\nmissed"}
+          <Balloon
+            class={cn(bottomClass, valueClass)}
+            text={"correct\nincorrect\nextra\nmissed"}
             data-balloon-break=""
             data-balloon-pos="up"
           >
             {stats()?.characters ?? "-"}
-          </div>
+          </Balloon>
         </div>
         <div class="group consistency">
           <div class={topClass}>consistency</div>
-          <div
-            class={cn(bottomClass, moreStatsBottomClass, valueClass)}
-            aria-label={stats()?.consistency.ariaLabel}
+          <Balloon
+            class={cn(bottomClass, valueClass)}
+            text={stats()?.consistency.ariaLabel}
             data-balloon-pos="up"
           >
             {stats()?.consistency.text ?? "-"}
-          </div>
+          </Balloon>
         </div>
         <div class="group time">
           <div class={topClass}>time</div>
-          <div
-            class={cn(bottomClass, moreStatsBottomClass, valueClass)}
-            aria-label={stats()?.time.ariaLabel}
+          <Balloon
+            class={cn(bottomClass, valueClass)}
+            text={stats()?.time.ariaLabel}
             data-balloon-pos="up"
           >
             <div class="text">{stats()?.time.text ?? "-"}</div>
@@ -168,11 +158,11 @@ export function ResultStats(): JSXElement {
             <div class={cn("timeToday", subTextClass)}>
               {resultState.timeToday}
             </div>
-          </div>
+          </Balloon>
         </div>
         <ResultDailyLeaderboard
           topClass={topClass}
-          bottomClass={cn(bottomClass, moreStatsBottomClass, valueClass)}
+          bottomClass={cn(bottomClass, valueClass)}
         />
         <div
           class={cn(
@@ -184,9 +174,7 @@ export function ResultStats(): JSXElement {
             <span class="mr-[0.5em]">source</span>
             <ResultQuoteActions />
           </div>
-          <div class={cn(smallBottomClass, moreStatsBottomClass)}>
-            {stats()?.source ?? "-"}
-          </div>
+          <div class={cn(smallBottomClass)}>{stats()?.source ?? "-"}</div>
         </div>
       </div>
     </>

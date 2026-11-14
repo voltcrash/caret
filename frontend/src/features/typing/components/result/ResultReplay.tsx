@@ -2,6 +2,7 @@ import { For, JSXElement } from "solid-js";
 
 import type { ReplayLetter } from "../../replay-view";
 
+import { Balloon } from "../../../../ts/components/common/Balloon";
 import { Fa } from "../../../../ts/components/common/Fa";
 import { useRef } from "../../../../ts/hooks/useRef";
 import { useSlideAnimation } from "../../../../ts/hooks/useSlideAnimation";
@@ -43,11 +44,13 @@ export function ResultReplay(): JSXElement {
       <div id="resultReplay" class="mb-4 hidden text-sub" ref={ref}>
         <div class="title mb-1 flex flex-wrap items-center gap-y-1 select-none">
           watch replay
-          <button
+          <Balloon
+            as="button"
             type="button"
             id="playpauseReplayButton"
             class="textButton ml-[0.5em] inline-block px-[0.25em] py-0 max-sm:min-h-9 max-sm:min-w-9 max-sm:items-center"
             aria-label={playbackLabels[replay().playback]}
+            text={playbackLabels[replay().playback]}
             data-balloon-pos="up"
             tabIndex={-1}
             onClick={() => togglePlayback()}
@@ -55,7 +58,7 @@ export function ResultReplay(): JSXElement {
             <Fa
               icon={replay().playback === "playing" ? "fa-pause" : "fa-play"}
             />
-          </button>
+          </Balloon>
           <p id="replayStats" class="m-0 ml-[0.5em] inline-block text-main">
             {replay().stats}
           </p>

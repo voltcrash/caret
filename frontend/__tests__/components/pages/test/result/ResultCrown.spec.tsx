@@ -39,7 +39,7 @@ describe("ResultCrown", () => {
     const crown = renderCrown().querySelector(".crown") as HTMLElement;
 
     expect(crown).toHaveClass("warning");
-    expect(crown).toHaveAttribute("aria-label", "not eligible");
+    expect(crown).toHaveAccessibleDescription("not eligible");
     expect(crown).toHaveAttribute("data-balloon-length", "medium");
     expect(crown.querySelector(".fa-exclamation-triangle")).toHaveClass(
       "opacity-100",

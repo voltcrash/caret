@@ -1,6 +1,7 @@
 import { animate } from "animejs";
 import { JSXElement, Show } from "solid-js";
 
+import { Balloon } from "../../../../ts/components/common/Balloon";
 import { Fa } from "../../../../ts/components/common/Fa";
 import {
   resultState,
@@ -26,7 +27,7 @@ export function ResultCrown(): JSXElement {
 
   return (
     <Show when={crown().visible}>
-      <div
+      <Balloon
         ref={(el) => {
           animate(el, {
             opacity: [0, 1],
@@ -38,7 +39,7 @@ export function ResultCrown(): JSXElement {
           crown().type,
           typeClass[crown().type],
         )}
-        aria-label={crown().text}
+        text={crown().text}
         data-balloon-pos="up"
         data-balloon-length={crown().wide ? "medium" : ""}
       >
@@ -67,7 +68,7 @@ export function ResultCrown(): JSXElement {
             is("warning") && "opacity-100",
           )}
         />
-      </div>
+      </Balloon>
     </Show>
   );
 }

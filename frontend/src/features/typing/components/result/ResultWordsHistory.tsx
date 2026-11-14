@@ -11,6 +11,7 @@ import { z } from "zod";
 
 import type { WordLetter, WordsHistoryItem } from "../../runtime/word-markup";
 
+import { Balloon } from "../../../../ts/components/common/Balloon";
 import { Fa } from "../../../../ts/components/common/Fa";
 import { setConfig } from "../../../../ts/config/setters";
 import { getConfig } from "../../../../ts/config/store";
@@ -258,7 +259,8 @@ export function ResultWordsHistory(): JSXElement {
         <span>input history</span>
         <For each={titleButtons}>
           {(button) => (
-            <button
+            <Balloon
+              as="button"
               type="button"
               id={button.id}
               class={cn(
@@ -266,12 +268,13 @@ export function ResultWordsHistory(): JSXElement {
                 button.class,
               )}
               aria-label={button.label}
+              text={button.label}
               data-balloon-pos="up"
               tabIndex={-1}
               onClick={() => button.onClick(wordHighlight.destroy)}
             >
               <Fa icon={button.icon} fixedWidth />
-            </button>
+            </Balloon>
           )}
         </For>
         <div

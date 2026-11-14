@@ -1,25 +1,20 @@
 import { For, JSXElement, Show } from "solid-js";
 
 import { useTagsLiveQuery } from "../../../../ts/collections/tags";
-import { buildBalloonHtmlProperties } from "../../../../ts/components/common/Balloon";
+import { Balloon } from "../../../../ts/components/common/Balloon";
 import { Fa } from "../../../../ts/components/common/Fa";
 import { showEditResultTagsModal } from "../../../../ts/states/edit-result-tags";
 import { resultState, type ResultTag } from "../../../../ts/states/result";
 import { cn } from "../../../../ts/utils/cn";
 
 function Tag(props: { tag: ResultTag }): JSXElement {
-  const attrs = (): Record<string, string> => ({
-    tagid: props.tag.id,
-    ...buildBalloonHtmlProperties({ text: props.tag.ariaLabel }),
-  });
-
   return (
-    <div {...attrs()}>
+    <Balloon tagid={props.tag.id} text={props.tag.ariaLabel}>
       {props.tag.name}
       <Show when={props.tag.pb}>
         <Fa icon="fa-crown" class="ml-2" />
       </Show>
-    </div>
+    </Balloon>
   );
 }
 
@@ -34,12 +29,15 @@ export function ResultTags(props: {
     <div class={cn("tags mt-2", !tags().visible && "hidden")}>
       <div class={props.topClass}>
         <span>tags</span>
-        <div
+        <Balloon
+          as="button"
+          type="button"
           class={cn(
             "textButton editTagsButton ml-[0.5em] px-[0.25em] py-0 max-sm:min-h-9 max-sm:min-w-9 max-sm:items-center",
             tags().savedResultId === undefined && "invisible",
           )}
           aria-label="Edit tags"
+          text="Edit tags"
           role="button"
           data-balloon-pos="right"
           onClick={() => {
@@ -52,7 +50,7 @@ export function ResultTags(props: {
           }}
         >
           <Fa icon="fa-pen" fixedWidth />
-        </div>
+        </Balloon>
       </div>
       <div class={props.bottomClass}>
         <Show
