@@ -1,19 +1,10 @@
-type ObjectHash = typeof import("object-hash");
+type ResultHasher = typeof import("./legacy-hash").legacyHash;
 
-let hasher: Promise<ObjectHash> | undefined;
-
-/** Starts loading the result hasher so saving a result doesn't wait on it. */
-export async function preloadResultHasher(): Promise<ObjectHash> {
-  hasher ??= import("object-hash")
-    .then((module) => module.default)
-    .catch((error: unknown) => {
-      hasher = undefined;
-      throw error;
-    });
-  return await hasher;
+/** Starts loading the result hasher so saving a result does not wait on it. */
+export async function preloadResultHasher(): Promise<ResultHasher> {
+  return (await import("./legacy-hash")).legacyHash;
 }
 
 export async function hashResult(result: object): Promise<string> {
-  const objectHash = await preloadResultHasher();
-  return objectHash(result);
+  return (await preloadResultHasher())(result);
 }
