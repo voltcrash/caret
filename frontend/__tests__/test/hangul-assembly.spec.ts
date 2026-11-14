@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { describe, expect, it } from "vite-plus/test";
-import { assemble } from "hangul-js";
+import { assemble } from "../../src/features/typing/runtime/hangul-assembly";
 
 // Frozen against the real 0.2.6 package before replacing it. Array input is
 // intentional: unlike string input, existing syllables are not decomposed.
