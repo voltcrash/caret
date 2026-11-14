@@ -1,6 +1,6 @@
 import type { ExecutionContext } from "@cloudflare/workers-types";
 import type { CompletedEvent } from "@caret/schemas/results";
-import objectHash from "object-hash";
+import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
 import { createTestRuntime } from "./helpers";
 import { withRuntime } from "../../src/runtime/env";
 import { getAuth } from "../../src/init/auth";
