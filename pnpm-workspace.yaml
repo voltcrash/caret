@@ -92,5 +92,4 @@ minimumReleaseAgeExclude:
   - "@better-auth/infra@0.4.27"
   - playwright-core@1.65.0
 patchedDependencies:
-  "@anatine/zod-openapi@1.14.2": patches/@anatine__zod-openapi@1.14.2.patch
   zod-urlsearchparams@0.0.16: patches/zod-urlsearchparams@0.0.16.patch
