@@ -6,13 +6,21 @@ import {
   waitFor,
 } from "@solidjs/testing-library";
 import { createSignal } from "solid-js";
-import { afterEach, describe, expect, it, vi } from "vite-plus/test";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vite-plus/test";
 
-import "../../../src/app/app.css";
+import styles from "../../../src/app/app.css?inline";
 import { Balloon } from "../../../src/ts/components/common/Balloon";
 import { Button } from "../../../src/ts/components/common/Button";
 
 afterEach(cleanup);
+beforeEach(() => render(() => <style>{styles}</style>));
 
 describe("tooltips", () => {
   it("preserves visible button names and exposes the hint as a description", () => {
@@ -97,6 +105,26 @@ describe("tooltips", () => {
     expect(
       screen.getByRole("button", { name: "Details" }),
     ).toHaveAccessibleDescription("Required More information");
+  });
+
+  it("shows only the latest hint when hover and keyboard focus differ", async () => {
+    render(() => (
+      <>
+        <Balloon text="Keyboard hint">First</Balloon>
+        <Balloon text="Pointer hint">Second</Balloon>
+      </>
+    ));
+    screen.getByText("First").focus();
+    await screen.findByRole("tooltip");
+    fireEvent.pointerEnter(screen.getByText("Second"), {
+      pointerType: "mouse",
+    });
+    await waitFor(() => {
+      expect(screen.getAllByRole("tooltip")).toHaveLength(1);
+      expect(screen.getByRole("tooltip")).toHaveTextContent("Pointer hint");
+    });
+    fireEvent.blur(screen.getByText("First"));
+    expect(screen.getByRole("tooltip")).toHaveTextContent("Pointer hint");
   });
 
   it("flips and wraps a long hint at the viewport edge", async () => {

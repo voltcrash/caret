@@ -8,10 +8,11 @@ import {
   type Placement,
 } from "@floating-ui/dom";
 import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
-import { Portal } from "solid-js/web";
+import { isServer, Portal } from "solid-js/web";
 
 import type { BalloonPosition } from "./Balloon";
 
+import { createAppOwned } from "../../../app/application";
 import { cn } from "../../utils/cn";
 
 const placements: Record<BalloonPosition, Placement> = {
@@ -23,6 +24,8 @@ const placements: Record<BalloonPosition, Placement> = {
   "up-right": "top-end",
 };
 
+const activeTooltip = createAppOwned(() => createSignal<symbol>());
+
 /** Only the open tooltip allocates a popover and positioning observers. */
 export function TooltipBubble(props: {
   reference: HTMLElement | undefined;
@@ -31,7 +34,17 @@ export function TooltipBubble(props: {
   length: string | undefined;
   breaks: boolean;
 }) {
-  const [open, setOpen] = createSignal(false);
+  // oxlint-disable-next-line solid/components-return-once -- isServer is a build-time constant; SSR has no browser application owner.
+  if (isServer) return null;
+  const token = Symbol("tooltip");
+  // Capture this app's signal; cleanup must never write into a later app mount.
+  const [active, setActive] = activeTooltip();
+  const open = () => active() === token;
+  const setOpen = (value: boolean): void => {
+    setActive((current) =>
+      value ? token : current === token ? undefined : current,
+    );
+  };
   let closeTimer: ReturnType<typeof setTimeout> | undefined;
   let focused = false;
   const cancelClose = (): void => clearTimeout(closeTimer);
@@ -39,6 +52,7 @@ export function TooltipBubble(props: {
     cancelClose();
     setOpen(false);
   };
+  onCleanup(close);
   const scheduleClose = (): void => {
     cancelClose();
     if (!focused) closeTimer = setTimeout(close, 150);
