@@ -31,4 +31,21 @@ describe("Korean history assembly", () => {
       "b9f0dd9ddea70cc43d9f787a6afbed6a9b8f9e62cf5638a4ec41acc167d5b261",
     );
   });
+  it("preserves longer sequences through every assembly state", () => {
+    const hash = createHash("sha256");
+    const alphabet =
+      "\0ㄱㄲㄳㄴㄵㄶㄷㄸㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅃㅄㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ가a ";
+    let seed = 17;
+    for (let i = 0; i < 100000; i++) {
+      let input = "";
+      for (let j = 0; j < 12; j++) {
+        seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+        input += alphabet[seed % alphabet.length];
+      }
+      hash.update(JSON.stringify(assemble(input.split(""))));
+    }
+    expect(hash.digest("hex")).toBe(
+      "59b2515b83b98b7df8cda054464154a238b3ffb8670c2a11aa8c492c6d17d851",
+    );
+  });
 });
