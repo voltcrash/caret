@@ -30,12 +30,16 @@ export function AverageNotice(): JSXElement {
       });
     }
 
-    return [speed, acc].filter((it) => it !== undefined).join(" ");
+    return [speed, acc].filter((it) => it !== undefined).join("\n");
   });
 
   return (
     <Notice
-      when={isAuthenticated() && getConfig.showAverage !== "off"}
+      compact
+      class="motion-safe:animate-content-in"
+      when={
+        isAuthenticated() && last10.isReady && getConfig.showAverage !== "off"
+      }
       icon="fa-chart-bar"
       openCommandline="showAverage"
       text={displayText()}

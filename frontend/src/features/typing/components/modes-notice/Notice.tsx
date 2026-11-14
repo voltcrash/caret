@@ -12,6 +12,7 @@ export function Notice(
     when: boolean | undefined;
     icon?: FaSolidIcon;
     class?: string;
+    compact?: boolean;
   } & OneOf<{ children: ParentProps["children"]; text: string | undefined }> &
     Partial<
       OneOf<{ onClick: () => void; openCommandline: CommandlineSubgroupKey }>
@@ -24,8 +25,15 @@ export function Notice(
     <Button
       class={cn(
         "max-w-full gap-3 text-center [overflow-wrap:anywhere] pointer-coarse:min-h-11",
+        props.compact &&
+          "h-14 w-full min-w-0 flex-col gap-0 p-1 sm:h-11 sm:flex-row sm:gap-1.5 sm:p-2 [&>i]:shrink-0",
         props.class,
       )}
+      balloon={
+        props.compact && props.text !== undefined
+          ? { text: props.text.replaceAll("\n", " ") }
+          : undefined
+      }
       variant="text"
       onClick={
         props.onClick ??
@@ -36,7 +44,11 @@ export function Notice(
       }
       fa={props.icon !== undefined ? { icon: props.icon } : undefined}
     >
-      {props.children ?? props.text}
+      <Show when={props.compact} fallback={props.children ?? props.text}>
+        <span class="line-clamp-2 min-w-0 whitespace-pre-line sm:block sm:truncate sm:whitespace-normal">
+          {props.children ?? props.text}
+        </span>
+      </Show>
     </Button>
   );
 

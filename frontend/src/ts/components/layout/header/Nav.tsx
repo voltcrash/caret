@@ -9,6 +9,7 @@ import {
 } from "solid-js";
 
 import { isStartupFinished } from "../../../../app/startup";
+import { AccountSlot } from "../../../../components/layout/account-slot";
 import { createEffectOn } from "../../../hooks/effects";
 import { useRef } from "../../../hooks/useRef";
 import { getServerConfigurationQueryOptions } from "../../../queries/server-configuration";
@@ -23,9 +24,8 @@ import { getFocus } from "../../../states/test";
 import { cn } from "../../../utils/cn";
 import { getLevelFromTotalXp } from "../../../utils/levels";
 import { isCoarsePointer } from "../../../utils/pointer";
-import { Anime } from "../../common/anime";
-import { AnimePresence } from "../../common/anime/AnimePresence";
 import { Button } from "../../common/Button";
+import { Fa } from "../../common/Fa";
 const User = lazy(async () =>
   import("../../common/User").then((m) => ({ default: m.User })),
 );
@@ -149,16 +149,11 @@ export function Nav(): JSXElement {
           showModal("Commandline");
         }}
       />
-      <div class="grow"></div>
-      <AnimePresence exitBeforeEnter>
+      <AccountSlot>
         <Show
           when={getSnapshot()}
           fallback={
-            <Anime
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, duration: 125 }}
-              exit={{ opacity: 0, duration: 125 }}
-            >
+            <div class="min-w-0 max-w-full motion-safe:animate-content-in">
               <Show when={showLoginButton()}>
                 <Button
                   variant="text"
@@ -176,19 +171,15 @@ export function Nav(): JSXElement {
                   class={buttonClass()}
                 />
               </Show>
-            </Anime>
+            </div>
           }
         >
           {(snap) => (
-            <Anime
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, duration: 125 }}
-              exit={{ opacity: 0, duration: 125 }}
-            >
+            <div class="min-w-0 max-w-full motion-safe:animate-content-in">
               <div
                 ref={accountMenuRef}
                 class={cn(
-                  "relative",
+                  "relative min-w-0 max-w-full",
                   !getFocus() &&
                     "pointer-fine:hover:**:data-[ui-element='accountMenu']:pointer-events-auto pointer-fine:hover:**:data-[ui-element='accountMenu']:opacity-100",
                   "has-focus-visible:**:data-[ui-element='accountMenu']:pointer-events-auto has-focus-visible:**:data-[ui-element='accountMenu']:opacity-100",
@@ -210,7 +201,7 @@ export function Nav(): JSXElement {
                 <Button
                   variant="text"
                   class={cn(
-                    "h-full",
+                    "h-9 min-w-0 max-w-full",
                     touchTargetClass,
                     "hover:**:data-[ui-element='userLevel']:bg-(--themable-button-hover-text)",
                     { "opacity-(--nav-focus-opacity)": getFocus() },
@@ -222,8 +213,13 @@ export function Nav(): JSXElement {
                     "aria-label": "Account",
                   }}
                 >
-                  <Suspense fallback={null}>
+                  <Suspense
+                    fallback={
+                      <Fa icon="fa-user" variant="regular" fixedWidth />
+                    }
+                  >
                     <User
+                      class="min-w-0 max-w-full auto-cols-[minmax(0,max-content)] motion-safe:animate-content-in"
                       user={snap()}
                       showAvatar={false}
                       iconsOnly={true}
@@ -243,10 +239,10 @@ export function Nav(): JSXElement {
                   <AccountXpBar />
                 </Suspense>
               </div>
-            </Anime>
+            </div>
           )}
         </Show>
-      </AnimePresence>
+      </AccountSlot>
     </nav>
   );
 }

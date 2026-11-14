@@ -8,6 +8,7 @@ import { Fa } from "../../ts/components/common/Fa";
 import { cn } from "../../ts/utils/cn";
 import { variables, buttonClass, cardClass } from "./config-layout";
 import { InitialKeymap } from "./initial-keymap";
+import { PersonalNotices } from "./personal-notices";
 
 const modes: { value: string; icon: FaSolidIcon }[] = [
   { value: "time", icon: "fa-clock" },
@@ -162,6 +163,7 @@ export function InitialTypingView(props: {
               {config().language.replaceAll("_", " ")}
             </span>
           </div>
+          <PersonalNotices />
         </Show>
         <div
           class="full-width relative h-[calc((1.5em+2px+round(down,0.05em,1px))*3)] overflow-hidden"

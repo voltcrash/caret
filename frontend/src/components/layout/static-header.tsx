@@ -6,6 +6,7 @@ import { Button } from "../../ts/components/common/Button";
 import { Link } from "../../ts/components/common/Link";
 import { CaretMark } from "../brand/caret-mark";
 import { CaretWordmark } from "../brand/caret-wordmark";
+import { AccountSlot } from "./account-slot";
 
 const navButton =
   "aspect-square pointer-coarse:relative pointer-coarse:before:absolute pointer-coarse:before:-inset-1 pointer-coarse:before:content-['']";
@@ -81,8 +82,7 @@ export function StaticHeader(props: { fixed: boolean }): JSXElement {
           dataset={{ "aria-label": "Command palette" }}
           disabled
         />
-        <div class="grow"></div>
-        {item("/login", "fa-user", "Account")}
+        <AccountSlot>{item("/login", "fa-user", "Account")}</AccountSlot>
       </nav>
     </header>
   );

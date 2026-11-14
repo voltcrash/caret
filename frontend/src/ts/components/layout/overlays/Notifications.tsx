@@ -1,7 +1,7 @@
 import { AnimationParams } from "animejs";
 import { For, JSXElement } from "solid-js";
 
-import { getGlobalOffsetTop, getIsScreenshotting } from "../../../states/core";
+import { getIsScreenshotting } from "../../../states/core";
 import {
   Notification,
   getNotifications,
@@ -123,7 +123,6 @@ export function Notifications(): JSXElement {
         "fixed right-4 bottom-[calc(6rem+env(safe-area-inset-bottom,0px))] left-4 z-99999999 grid w-auto pt-4 transition-opacity duration-125 sm:top-0 sm:bottom-auto sm:left-auto sm:w-87.5",
         getIsScreenshotting() && "pointer-events-none opacity-0",
       )}
-      style={{ "margin-top": `${getGlobalOffsetTop()}px` }}
     >
       <AnimeShow when={stickyCount() > 1}>
         <button

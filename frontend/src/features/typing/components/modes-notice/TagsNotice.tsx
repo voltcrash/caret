@@ -7,6 +7,8 @@ export function TagsNotice(): JSXElement {
   const tags = useActiveTagsLiveQuery();
   return (
     <Notice
+      compact
+      class="motion-safe:animate-content-in"
       when={tags().length > 0}
       icon={tags().length === 1 ? "fa-tag" : "fa-tags"}
       openCommandline="tags"

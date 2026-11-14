@@ -74,7 +74,6 @@ export function AppLayout(props: ParentProps): JSXElement {
   });
   const [scroller, setScroller] = createSignal<HTMLDivElement>();
   const [headerBottom, setHeaderBottom] = createSignal(0);
-  const [offsetTop, setOffsetTop] = createSignal(0);
   const [hidden, setHidden] = createSignal(false);
   const staticHeader = () => <StaticHeader fixed={fixed()} />;
   // Readiness schedules background work; server-rendered content is always visible.
@@ -96,11 +95,7 @@ export function AppLayout(props: ParentProps): JSXElement {
     >
       <TypingRouteHost.Provider value={typing}>
         <LinkHost.Provider value={RouterLink}>
-          <div
-            id="app"
-            class={appClass}
-            style={appStyle(offsetTop(), hidden())}
-          >
+          <div id="app" class={appClass} style={appStyle(hidden())}>
             <ClientOnly fallback={staticHeader()}>
               <Show when={chromeReady()} fallback={staticHeader()}>
                 <Suspense fallback={staticHeader()}>
@@ -139,7 +134,6 @@ export function AppLayout(props: ParentProps): JSXElement {
                   fixed={fixed()}
                   scroller={scroller()}
                   onHeaderBottom={setHeaderBottom}
-                  onOffsetTop={setOffsetTop}
                   onHidden={setHidden}
                 />
               </Suspense>

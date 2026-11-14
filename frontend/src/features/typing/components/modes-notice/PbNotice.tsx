@@ -40,12 +40,16 @@ export function PbNotice() {
 
     const acc = format.accuracy(pb.acc, { suffix: ` acc` });
 
-    return `${speed} ${acc}`;
+    return `${speed}\n${acc}`;
   });
 
   return (
     <Notice
-      when={isAuthenticated() && getConfig.showPb}
+      compact
+      class="motion-safe:animate-content-in"
+      when={
+        isAuthenticated() && getSnapshot() !== undefined && getConfig.showPb
+      }
       icon="fa-crown"
       openCommandline="showPb"
       text={displayText()}
