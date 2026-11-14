@@ -22,7 +22,6 @@ import { usePageScroller } from "../ts/components/layout/PageScroller";
 import { Modals } from "../ts/components/modals/Modals";
 import { getAcceptedCookies } from "../ts/cookies";
 import { addBanner, removeBanner } from "../ts/states/banners";
-import { getGlobalOffsetTop } from "../ts/states/core";
 import { showModal } from "../ts/states/modals";
 import { getHeaderBottom } from "../ts/states/page-layout";
 import * as ServerConfiguration from "../ts/states/server-configuration";
@@ -37,14 +36,13 @@ import { isChromeReady, isStartupFinished } from "./startup";
 
 /**
  * Browser half of the common layout: overlays, global hotkeys, body classes,
- * banner offset and the page scroller registration. Owned by the layout;
+ * the page scroller registration. Owned by the layout;
  * removed with it.
  */
 function ChromeRuntime(props: {
   fixed: boolean;
   scroller: HTMLElement | undefined;
   onHeaderBottom: (bottom: number) => void;
-  onOffsetTop: (top: number) => void;
   onHidden: (hidden: boolean) => void;
 }): JSXElement {
   usePageScroller(
@@ -52,7 +50,6 @@ function ChromeRuntime(props: {
     () => props.fixed,
   );
   createEffect(() => props.onHeaderBottom(getHeaderBottom()));
-  createEffect(() => props.onOffsetTop(getGlobalOffsetTop()));
   createEffect(() => props.onHidden(isFixingSkillIssue()));
   spread(
     document.body,

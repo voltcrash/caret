@@ -2,17 +2,12 @@ import { expect, it } from "vite-plus/test";
 
 import { appStyle } from "../../../src/components/layout/scroller";
 
-it("keeps the document grid untouched without banners or the skill-issue screen", () => {
-  expect(appStyle(0, false)).toBeUndefined();
+it("keeps the document grid untouched without the skill-issue screen", () => {
+  expect(appStyle(false)).toBeUndefined();
 });
 
-it("pads the app below banners and hides it for the skill-issue screen", () => {
-  expect(appStyle(48, false)).toEqual({
-    display: undefined,
-    "padding-top": "calc(48px + 2rem)",
-  });
-  expect(appStyle(0, true)).toEqual({
+it("hides the app for the skill-issue screen", () => {
+  expect(appStyle(true)).toEqual({
     display: "none",
-    "padding-top": undefined,
   });
 });

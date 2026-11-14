@@ -34,17 +34,9 @@ export function scrollerStyle(
     : undefined;
 }
 
-/** Banners push the app below them; the skill-issue screen replaces it. */
-export function appStyle(
-  offsetTop: number,
-  hidden: boolean,
-): JSX.CSSProperties | undefined {
-  if (offsetTop <= 0 && !hidden) return undefined;
-  return {
-    display: hidden ? "none" : undefined,
-    // Banners already cover the notch.
-    "padding-top": offsetTop > 0 ? `calc(${offsetTop}px + 2rem)` : undefined,
-  };
+/** The skill-issue screen replaces the app without changing its spacing. */
+export function appStyle(hidden: boolean): JSX.CSSProperties | undefined {
+  return hidden ? { display: "none" } : undefined;
 }
 
 /** Initial `#app` grid from the legacy document. */

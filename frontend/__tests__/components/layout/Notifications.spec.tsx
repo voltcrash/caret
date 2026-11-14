@@ -14,7 +14,6 @@ vi.mock("../../../src/ts/components/common/anime/AnimeShow", () => ({
   ),
 }));
 vi.mock("../../../src/ts/states/core", () => ({
-  getGlobalOffsetTop: () => 0,
   getIsScreenshotting: () => false,
 }));
 vi.mock("../../../src/ts/states/test", () => ({ getFocus: () => false }));

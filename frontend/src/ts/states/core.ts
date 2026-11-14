@@ -21,7 +21,6 @@ export const [getCommandlineSubgroup, setCommandlineSubgroup] = createAppSignal<
   string | null
 >(null);
 
-export const [getGlobalOffsetTop, setGlobalOffsetTop] = createAppSignal(0);
 export const [getIsScreenshotting, setIsScreenshotting] =
   createAppSignal(false);
 
