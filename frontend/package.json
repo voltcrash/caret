@@ -76,7 +76,6 @@
     "@tanstack/solid-table": "9.3.1",
     "@ts-rest/core": "3.52.1",
     "animejs": "4.5.0",
-    "balloon-css": "1.2.0",
     "better-auth": "1.7.18",
     "canvas-confetti": "1.9.4",
     "chart.js": "4.6.1",
