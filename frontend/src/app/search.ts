@@ -1,11 +1,11 @@
 import type { z } from "zod";
-import { safeParse } from "zod-urlsearchparams";
+import { safeParse } from "./url-search-params";
 
 type Schema = z.ZodObject<Record<string, z.ZodType>>;
 type SearchRecord = Record<string, unknown>;
 
 /**
- * Router search codec. Keeps the existing flat `zod-urlsearchparams` URLs
+ * Router search codec. Keeps the existing flat search URLs
  * (`?page=2&yesterday=t`) instead of Router's JSON values. First value wins,
  * like `URLSearchParams.get`.
  */
