@@ -25,6 +25,7 @@ import { cn } from "../../../utils/cn";
 import { getLevelFromTotalXp } from "../../../utils/levels";
 import { isCoarsePointer } from "../../../utils/pointer";
 import { Button } from "../../common/Button";
+import { Fa } from "../../common/Fa";
 const User = lazy(async () =>
   import("../../common/User").then((m) => ({ default: m.User })),
 );
@@ -178,7 +179,7 @@ export function Nav(): JSXElement {
               <div
                 ref={accountMenuRef}
                 class={cn(
-                  "relative",
+                  "relative min-w-0 max-w-full",
                   !getFocus() &&
                     "pointer-fine:hover:**:data-[ui-element='accountMenu']:pointer-events-auto pointer-fine:hover:**:data-[ui-element='accountMenu']:opacity-100",
                   "has-focus-visible:**:data-[ui-element='accountMenu']:pointer-events-auto has-focus-visible:**:data-[ui-element='accountMenu']:opacity-100",
@@ -213,7 +214,9 @@ export function Nav(): JSXElement {
                   }}
                 >
                   <Suspense
-                    fallback={<span class="text-em-xs">{snap().name}</span>}
+                    fallback={
+                      <Fa icon="fa-user" variant="regular" fixedWidth />
+                    }
                   >
                     <User
                       class="min-w-0 max-w-full auto-cols-[minmax(0,max-content)] motion-safe:animate-content-in"

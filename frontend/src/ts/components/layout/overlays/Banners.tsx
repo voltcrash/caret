@@ -35,11 +35,11 @@ function Banner(props: BannerType): JSXElement {
   return (
     <div
       class={cn(
-        "pointer-events-auto w-full rounded px-3 text-sm text-bg motion-safe:animate-content-in [&_a]:text-bg [&_a]:underline [&_a]:hover:text-text",
+        "pointer-events-auto w-full rounded border border-solid bg-sub-alt px-3 text-sm text-text motion-safe:animate-content-in [&_a]:text-main [&_a]:underline [&_a]:hover:text-text",
         {
-          "bg-error": props.level === "error",
-          "bg-sub": props.level === "notice",
-          "bg-main": props.level === "success",
+          "border-error": props.level === "error",
+          "border-sub": props.level === "notice",
+          "border-main": props.level === "success",
         },
       )}
     >
@@ -64,7 +64,7 @@ function Banner(props: BannerType): JSXElement {
             <button
               aria-label="Dismiss banner"
               type="button"
-              class="text -mr-2 min-h-11 min-w-11 items-center self-center text-bg hover:text-text sm:min-h-0 sm:min-w-0 sm:items-baseline"
+              class="text -mr-2 min-h-11 min-w-11 items-center self-center text-sub hover:text-text sm:min-h-0 sm:min-w-0 sm:items-baseline"
               onClick={() => {
                 remove();
               }}
