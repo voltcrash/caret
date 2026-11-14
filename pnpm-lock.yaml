@@ -293,6 +293,9 @@ importers:
       '@caret/util':
         specifier: workspace:*
         version: link:../packages/util
+      '@caret/web-shared':
+        specifier: workspace:*
+        version: link:../packages/web-shared
       '@date-fns/utc':
         specifier: 2.1.1
         version: 2.1.1
