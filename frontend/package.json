@@ -59,6 +59,7 @@
     "@caret/util": "workspace:*",
     "@caret/web-shared": "workspace:*",
     "@date-fns/utc": "2.1.1",
+    "@floating-ui/dom": "1.7.6",
     "@leonabcd123/modern-caps-lock": "3.1.7",
     "@sentry/browser": "11.11.0",
     "@solid-primitives/refs": "1.1.4",
