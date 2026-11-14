@@ -1,3 +1,11 @@
+Caret distributes selected Font Awesome Free 7.3.1 SVG icons under CC BY 4.0.
+Copyright 2026 Fonticons, Inc. https://fontawesome.com
+License: https://creativecommons.org/licenses/by/4.0/
+Source: https://fontawesome.com/license/free
+SVG path artwork is unchanged; Caret selects and packages it for inline SSR.
+No Font Awesome font files are distributed. The complete upstream license
+below describes each upstream distribution format, including fonts and code.
+
 Fonticons, Inc. (https://fontawesome.com)
 
 --------------------------------------------------------------------------------
