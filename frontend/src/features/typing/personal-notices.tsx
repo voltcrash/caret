@@ -8,7 +8,7 @@ export function PersonalNotices(props: {
 }) {
   return (
     <div
-      class="mx-auto grid h-11 w-full max-w-3xl grid-cols-3 items-center gap-1 text-xs text-sub sm:text-sm"
+      class="mx-auto grid h-14 w-full max-w-3xl grid-cols-3 items-center gap-1 text-xs text-sub sm:h-11 sm:text-sm"
       data-ui-element="personalNotices"
     >
       <div class="min-w-0">{props.average}</div>

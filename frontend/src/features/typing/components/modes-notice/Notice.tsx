@@ -26,7 +26,7 @@ export function Notice(
       class={cn(
         "max-w-full gap-3 text-center [overflow-wrap:anywhere] pointer-coarse:min-h-11",
         props.compact &&
-          "w-full min-w-0 gap-1.5 whitespace-nowrap [&>i]:shrink-0",
+          "h-14 w-full min-w-0 flex-col gap-0 p-1 sm:h-11 sm:flex-row sm:gap-1.5 sm:p-2 [&>i]:shrink-0",
         props.class,
       )}
       balloon={
@@ -45,7 +45,9 @@ export function Notice(
       fa={props.icon !== undefined ? { icon: props.icon } : undefined}
     >
       <Show when={props.compact} fallback={props.children ?? props.text}>
-        <span class="min-w-0 truncate">{props.children ?? props.text}</span>
+        <span class="line-clamp-2 min-w-0 sm:block sm:truncate">
+          {props.children ?? props.text}
+        </span>
       </Show>
     </Button>
   );
