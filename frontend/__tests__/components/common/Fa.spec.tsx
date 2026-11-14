@@ -47,3 +47,13 @@ it("renders brand icons and keeps an HTMLElement for cached word icons", () => {
     icons.brand["fa-github"].path,
   );
 });
+
+it("renders checkbox marks with the owned SVG mask", () => {
+  const { container } = render(() => <input type="checkbox" checked />);
+  const checkbox = container.querySelector("input");
+  if (!checkbox) throw new Error("Missing checkbox");
+  const style = getComputedStyle(checkbox, "::after");
+  expect(style.maskImage).toContain("check.svg");
+  expect(style.color).not.toBe("rgba(0, 0, 0, 0)");
+  expect(style.fontFamily).not.toContain("Font Awesome");
+});

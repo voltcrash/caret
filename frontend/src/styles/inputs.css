@@ -74,8 +74,9 @@ input[type="checkbox"] {
   @apply transition-[background] duration-125 ease-[ease];
   @apply shrink-0;
   &::after {
-    font-family: "Font Awesome";
-    content: "\f00c";
+    content: "";
+    mask-image: url("../../icons/solid/check.svg");
+    @apply mask-center mask-no-repeat mask-size-[1em] bg-current;
     @apply top-0 left-0 w-full h-full;
     border-radius: calc((var(--roundness) / 2) - 0.1em);
     @apply font-black absolute grid justify-center content-center text-[0.75em];
