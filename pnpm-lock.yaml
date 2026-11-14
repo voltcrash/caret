@@ -486,9 +486,6 @@ importers:
       modern-screenshot:
         specifier: 4.7.0
         version: 4.7.0
-      object-hash:
-        specifier: 3.0.0
-        version: 3.0.0
       stemmer:
         specifier: 2.0.1
         version: 2.0.1
@@ -565,9 +562,6 @@ importers:
       '@types/node':
         specifier: 26.6.6
         version: 26.6.6
-      '@types/object-hash':
-        specifier: 3.0.6
-        version: 3.0.6
       '@vitest/browser-playwright':
         specifier: 'catalog:'
         version: 5.1.0(@voidzero-dev/vite-plus-core@1.5.0(@types/node@26.6.6)(@volar/typescript@2.4.30(typescript@7.0.2))(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(playwright@1.65.0)(vitest@5.1.0)
