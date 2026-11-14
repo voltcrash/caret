@@ -44,11 +44,30 @@ export type OpenApiDocument = {
   [key: string]: unknown;
 };
 
-function jsonSchema(schema: z.ZodType, output = false): JsonSchema {
+function jsonSchema(schema: z.core.$ZodType, output = false): JsonSchema {
   const result = z.toJSONSchema(schema, {
     target: "draft-2020-12",
     io: output ? "output" : "input",
     unrepresentable: "any",
+    override: ({ zodSchema, jsonSchema: generated }) => {
+      const def = zodSchema._zod.def;
+      // Keep the previous open-object documentation for stripping objects.
+      // Closing each side of an intersection would reject their merged result.
+      if (def.type === "default" && generated.default === undefined) {
+        generated.default = def.defaultValue;
+      }
+      if (def.type === "object" && def.catchall === undefined) {
+        delete generated.additionalProperties;
+      }
+      if (output && def.type === "pipe" && def.out instanceof z.ZodTransform) {
+        // Caret's output transforms are String/Number or optional-string
+        // normalization. Keep their constraints instead of emitting `{}`.
+        Object.assign(generated, jsonSchema(def.in));
+        const transform = def.out._zod.def.transform;
+        if (transform === String) generated.type = "string";
+        if (transform === Number) generated.type = "number";
+      }
+    },
   });
   delete result.$schema;
   return result;
@@ -177,5 +196,34 @@ export function generateOpenApi(
     }
   }
   visit(router, []);
-  return { openapi: "3.1.0", ...document, paths };
+  const result = { openapi: "3.1.0", ...document, paths };
+  qualifySchemaReferences(result);
+  return result;
+}
+
+/** Native recursive schemas use local refs; embedded OpenAPI schemas need full document pointers. */
+function qualifySchemaReferences(
+  value: unknown,
+  path = "",
+  schemaRoot?: string,
+): void {
+  if (value === null || typeof value !== "object") return;
+  for (const [key, child] of Object.entries(value)) {
+    if (
+      key === "$ref" &&
+      typeof child === "string" &&
+      (child === "#" || child.startsWith("#/")) &&
+      schemaRoot !== undefined
+    ) {
+      (value as Record<string, unknown>)[key] =
+        `#${schemaRoot}${child.slice(1)}`;
+      continue;
+    }
+    const pointer = `${path}/${key.replace(/~/g, "~0").replace(/\//g, "~1")}`;
+    qualifySchemaReferences(
+      child,
+      pointer,
+      schemaRoot ?? (key === "schema" ? pointer : undefined),
+    );
+  }
 }
