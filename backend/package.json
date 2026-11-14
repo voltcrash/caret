@@ -56,7 +56,6 @@
     "@caret/util": "workspace:*",
     "@caret/web-shared": "workspace:*",
     "@date-fns/utc": "2.1.1",
-    "@ts-rest/open-api": "3.52.1",
     "better-auth": "1.7.18",
     "date-fns": "4.4.0",
     "drizzle-orm": "0.45.4",
