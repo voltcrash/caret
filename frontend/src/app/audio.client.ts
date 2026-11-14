@@ -202,7 +202,11 @@ function createAudio(): {
   let audioCtx: AudioContext | undefined | null;
   let sampleGain: GainNode | undefined;
   function resumeAudioContext(): void {
-    if (audioCtx?.state === "suspended") {
+    if (
+      audioCtx &&
+      audioCtx.state !== "running" &&
+      audioCtx.state !== "closed"
+    ) {
       void audioCtx.resume().catch(() => undefined);
     }
   }

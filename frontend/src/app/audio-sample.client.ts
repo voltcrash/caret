@@ -47,7 +47,7 @@ export function createAudioSample(
     voice.source = source;
     voice.ended = false;
     source.start();
-    if (context.state === "suspended") {
+    if (context.state !== "running" && context.state !== "closed") {
       void context.resume().catch(() => undefined);
     }
   };

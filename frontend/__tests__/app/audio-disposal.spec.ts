@@ -65,6 +65,15 @@ it("resumes a suspended context on a gesture and follows volume changes", async 
   expect(context.state).toBe("suspended");
   await userEvent.keyboard("a");
   await vi.waitFor(() => expect(context.state).toBe("running"));
+  await context.suspend();
+  const state = vi
+    .spyOn(context, "state", "get")
+    .mockReturnValue("interrupted");
+  const resume = vi.spyOn(context, "resume");
+  await userEvent.keyboard("b");
+  expect(resume).toHaveBeenCalledOnce();
+  state.mockRestore();
+  await vi.waitFor(() => expect(context.state).toBe("running"));
   first.dispose();
   release();
   await vi.waitFor(() => expect(context.state).toBe("closed"));
