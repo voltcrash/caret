@@ -29,9 +29,9 @@ function createAudio(): {
 } {
   const lifetime = captureApplication();
   const loadedBundles: Set<PlaySoundOnClick> = new Set();
-  const howlers: Record<string, Promise<AudioSample>> = {};
-  async function getHowl(src: string): Promise<AudioSample> {
-    howlers[src] ??= (async () => {
+  const samples: Record<string, Promise<AudioSample>> = {};
+  async function getSample(src: string): Promise<AudioSample> {
+    samples[src] ??= (async () => {
       lifetime.assertCurrent();
       if (audioCtx === undefined) initAudioContext();
       if (!audioCtx || !sampleGain) {
@@ -39,11 +39,11 @@ function createAudio(): {
       }
       return createAudioSample(audioCtx, sampleGain, src, lifetime.signal);
     })().catch((error: unknown) => {
-      Reflect.deleteProperty(howlers, src);
+      Reflect.deleteProperty(samples, src);
       throw error;
     });
 
-    return howlers[src];
+    return samples[src];
   }
   type ErrorSounds = Record<Exclude<PlaySoundOnError, "off">, AudioSample[]>;
   let errorSounds: ErrorSounds | null = null;
@@ -51,21 +51,21 @@ function createAudio(): {
   let fartReverb: AudioSample | null = null;
   async function initTimeWarning(): Promise<void> {
     if (timeWarning !== null) return;
-    timeWarning = await getHowl("../sounds/timeWarning.wav");
+    timeWarning = await getSample("../sounds/timeWarning.wav");
   }
   async function initFartReverb(): Promise<void> {
     if (fartReverb !== null) return;
-    fartReverb = await getHowl("../sounds/fart-reverb.wav");
+    fartReverb = await getSample("../sounds/fart-reverb.wav");
   }
   async function initErrorSound(): Promise<void> {
     if (errorSounds !== null) return;
     errorSounds = {
-      1: [await getHowl("../sounds/error1/1.wav")],
-      2: [await getHowl("../sounds/error2/1.wav")],
-      3: [await getHowl("../sounds/error3/1.wav")],
+      1: [await getSample("../sounds/error1/1.wav")],
+      2: [await getSample("../sounds/error2/1.wav")],
+      3: [await getSample("../sounds/error3/1.wav")],
       4: [
-        await getHowl("../sounds/error4/1.wav"),
-        await getHowl("../sounds/error4/2.wav"),
+        await getSample("../sounds/error4/1.wav"),
+        await getSample("../sounds/error4/2.wav"),
       ],
     };
     if (lifetime.signal.aborted) return;
@@ -85,7 +85,7 @@ function createAudio(): {
 
       if (config === undefined) return;
 
-      await Promise.all(config.flatMap(getHowl));
+      await Promise.all(config.flatMap(getSample));
       loadedBundles.add(clickId);
     }
   }
@@ -112,10 +112,10 @@ function createAudio(): {
       return;
     }
 
-    const howl = await getHowl(safeClickSounds[0]);
+    const sample = await getSample(safeClickSounds[0]);
     if (lifetime.signal.aborted) return;
-    howl.seek(0);
-    howl.play();
+    sample.seek(0);
+    sample.play();
   }
   async function previewError(val: PlaySoundOnError): Promise<void> {
     if (val === "off") return;
@@ -311,7 +311,7 @@ function createAudio(): {
     soundToPlay.play();
   }
   async function clearAllSounds(): Promise<void> {
-    for (const request of Object.values(howlers)) (await request).stop();
+    for (const request of Object.values(samples)) (await request).stop();
   }
   function playNote(options: {
     codeOverride?: string;
@@ -373,7 +373,7 @@ function createAudio(): {
     const sounds = clickSoundConfig[val];
     if (sounds === undefined) throw new Error("Invalid click sound ID");
     const randomSound = randomElementFromArray(sounds);
-    const soundToPlay = await getHowl(randomSound);
+    const soundToPlay = await getSample(randomSound);
     if (lifetime.signal.aborted) return;
     soundToPlay.seek(0);
     soundToPlay.play();
@@ -417,10 +417,10 @@ function createAudio(): {
     for (const event of unlockEvents) {
       document.removeEventListener(event, resumeAudioContext, true);
     }
-    for (const request of Object.values(howlers)) {
+    for (const request of Object.values(samples)) {
       void request
-        .then((howl) => {
-          howl.unload();
+        .then((sample) => {
+          sample.unload();
         })
         .catch(() => undefined);
     }
