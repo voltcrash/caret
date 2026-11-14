@@ -50,7 +50,6 @@ export const browserProject = {
       "@solidjs/testing-library",
       "@testing-library/user-event",
       "object-hash",
-      "hangul-js",
       "howler",
       "damerau-levenshtein",
       "lz-ts",
