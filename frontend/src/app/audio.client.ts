@@ -201,6 +201,12 @@ function createAudio(): {
   };
   let audioCtx: AudioContext | undefined | null;
   let sampleGain: GainNode | undefined;
+  function resumeAudioContext(): void {
+    if (audioCtx?.state === "suspended") {
+      void audioCtx.resume().catch(() => undefined);
+    }
+  }
+  const unlockEvents = ["pointerdown", "touchend", "keydown"] as const;
   function initAudioContext(): void {
     if (audioCtx === null) return;
     try {
@@ -208,6 +214,10 @@ function createAudio(): {
       sampleGain = audioCtx.createGain();
       sampleGain.gain.value = getMutableConfig().soundVolume;
       sampleGain.connect(audioCtx.destination);
+      for (const event of unlockEvents) {
+        document.addEventListener(event, resumeAudioContext, true);
+      }
+      resumeAudioContext();
     } catch (e) {
       audioCtx = null;
       console.error(e);
@@ -255,6 +265,7 @@ function createAudio(): {
       initAudioContext();
     }
     if (!audioCtx) return;
+    resumeAudioContext();
 
     if (Math.random() < 0.5) {
       scaleMeta.octave += scaleMeta.direction;
@@ -310,6 +321,7 @@ function createAudio(): {
       initAudioContext();
     }
     if (!audioCtx) return;
+    resumeAudioContext();
 
     currentCode = options.codeOverride ?? currentCode;
     if (!(currentCode in codeToNote)) {
@@ -402,6 +414,9 @@ function createAudio(): {
     );
   }
   function disposeAudio(): void {
+    for (const event of unlockEvents) {
+      document.removeEventListener(event, resumeAudioContext, true);
+    }
     for (const request of Object.values(howlers)) {
       void request
         .then((howl) => {
