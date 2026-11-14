@@ -2,7 +2,7 @@
  * Font Awesome 7 redrew many glyphs larger or smaller than the Font Awesome 5
  * icons this layout was designed around, so neighbouring icons looked
  * mismatched. These scales restore each glyph's FA5 visual size.
- * `scale` composes with Font Awesome's spin and flip transforms.
+ * `scale` composes with the Fa component's spin and rotation transforms.
  */
 
 /* header */
@@ -136,4 +136,12 @@
 }
 .fa-vials {
   scale: 1.12;
+}
+
+/* Compatibility utilities also used by table placeholders and word icons. */
+.fa-fw {
+  @apply inline-block w-[1.25em];
+}
+.fa-rotate-90 {
+  @apply rotate-90;
 }

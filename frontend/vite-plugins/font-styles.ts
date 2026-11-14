@@ -1,8 +1,9 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath, URL as NodeURL } from "node:url";
 import type { Plugin } from "vite";
+
+import { writeIconData } from "./icon-data";
 
 import { Fonts } from "../src/ts/constants/fonts";
 
@@ -12,7 +13,7 @@ function writeIfChanged(file: string, content: string): void {
 }
 
 // Real CSS files let Tailwind resolve these imports without a Sass preprocessor.
-// Start and Storybook serve the full font and icon assets.
+// Start and Storybook share text fonts and the owned SVG icon subset.
 export function fontStyles(): Plugin {
   const output = path.join(
     fileURLToPath(new NodeURL("..", import.meta.url)),
@@ -20,7 +21,6 @@ export function fontStyles(): Plugin {
   );
   const imports = {
     "caret-fonts.css": path.join(output, "fonts.css"),
-    "caret-fontawesome.css": path.join(output, "fontawesome.css"),
   };
   return {
     name: "caret-font-styles",
@@ -50,17 +50,7 @@ export function fontStyles(): Plugin {
       }
       writeIfChanged(imports["caret-fonts.css"], faces.join("\n"));
 
-      const require = createRequire(import.meta.url);
-      const styles = ["fontawesome", "solid", "regular", "brands"].map(
-        (name) => {
-          const file = require.resolve(
-            `@fortawesome/fontawesome-free/css/${name}.css`,
-          );
-          const fonts = `${path.relative(output, path.resolve(path.dirname(file), "../webfonts")).replaceAll(path.sep, "/")}/`;
-          return readFileSync(file, "utf8").replaceAll("../webfonts/", fonts);
-        },
-      );
-      writeIfChanged(imports["caret-fontawesome.css"], styles.join("\n"));
+      writeIconData();
     },
   };
 }
