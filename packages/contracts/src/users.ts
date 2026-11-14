@@ -1,5 +1,5 @@
 import { CaptchaTokenSchema } from "./captcha";
-import { initContract } from "@ts-rest/core";
+import { initContract } from "./contract";
 import { z } from "zod";
 import {
   CommonResponses,
