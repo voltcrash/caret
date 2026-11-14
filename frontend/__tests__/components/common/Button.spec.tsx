@@ -184,7 +184,8 @@ describe("Button component", () => {
     ));
 
     const button = container.querySelector("button");
-    expect(button).toHaveAttribute("aria-label", "test");
+    expect(button).toHaveAccessibleName("Hello");
+    expect(button).toHaveAccessibleDescription("test");
     expect(button).toHaveAttribute("data-balloon-pos", "up");
   });
 
@@ -200,7 +201,8 @@ describe("Button component", () => {
     ));
 
     const button = container.querySelector("button");
-    expect(button).toHaveAttribute("aria-label", "test");
+    expect(button).toHaveAccessibleName("Hello");
+    expect(button).toHaveAccessibleDescription("test");
     expect(button).toHaveAttribute("data-balloon-pos", "down");
   });
 
@@ -229,7 +231,8 @@ describe("Button component", () => {
     ));
 
     const anchor = container.querySelector("a");
-    expect(anchor).toHaveAttribute("aria-label", "test");
+    expect(anchor).toHaveAccessibleName("Hello");
+    expect(anchor).toHaveAccessibleDescription("test");
     expect(anchor).toHaveAttribute("data-balloon-pos", "up");
   });
 
@@ -243,7 +246,8 @@ describe("Button component", () => {
     ));
 
     const anchor = container.querySelector("a");
-    expect(anchor).toHaveAttribute("aria-label", "test");
+    expect(anchor).toHaveAccessibleName("Hello");
+    expect(anchor).toHaveAccessibleDescription("test");
     expect(anchor).toHaveAttribute("data-balloon-pos", "down");
   });
 
