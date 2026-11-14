@@ -1,6 +1,7 @@
 import { JSXElement } from "solid-js";
 
 import { Anime } from "./anime";
+import { Balloon } from "./Balloon";
 
 type Props = {
   percent: number;
@@ -23,14 +24,11 @@ const fillClassMap: Record<Props["fill"], string> = {
 
 export function Bar(props: Props): JSXElement {
   return (
-    <div
+    <Balloon
       class={`h-[0.5em] flex-1 rounded ${bgClassMap[props.bg]}`}
-      {...((props.showPercentageOnHover ?? false)
-        ? {
-            "data-balloon-pos": "up",
-            "aria-label": `${props.percent.toFixed(2)}%`,
-          }
-        : {})}
+      text={
+        props.showPercentageOnHover ? `${props.percent.toFixed(2)}%` : undefined
+      }
     >
       <Anime
         animation={{
@@ -41,6 +39,6 @@ export function Bar(props: Props): JSXElement {
       >
         <div class={`h-[0.5em] rounded ${fillClassMap[props.fill]}`}></div>
       </Anime>
-    </div>
+    </Balloon>
   );
 }

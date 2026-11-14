@@ -31,29 +31,10 @@ type Props = ParentProps<BalloonProps> &
     rel?: string;
     "router-link"?: string;
     tagid?: string;
-    "data-balloon-text"?: string;
     "data-balloon-pos"?: BalloonPosition;
     "data-balloon-length"?: string;
     "data-balloon-break"?: string | boolean;
   };
-
-export function buildBalloonHtmlProperties(
-  options: BalloonProps | undefined,
-): Record<string, string> {
-  if (
-    options === undefined ||
-    options.text === undefined ||
-    options.text === ""
-  ) {
-    return {};
-  }
-  return {
-    "aria-label": options.text,
-    "data-balloon-pos": options.position ?? "up",
-    ...(options.break ? { "data-balloon-break": "" } : {}),
-    ...(options.length ? { "data-balloon-length": options.length } : {}),
-  };
-}
 
 export function Balloon(props: Props) {
   const [local, rest] = splitProps(props, [
@@ -67,14 +48,13 @@ export function Balloon(props: Props) {
     "ref",
     "tabIndex",
     "aria-describedby",
-    "data-balloon-text",
     "data-balloon-pos",
     "data-balloon-length",
     "data-balloon-break",
   ]);
   const id = createUniqueId();
   const [reference, setReference] = createSignal<HTMLElement>();
-  const text = () => local.text ?? local["data-balloon-text"];
+  const text = () => local.text;
   const hasText = () => (text() ?? "") !== "";
   const position = () => local.position ?? local["data-balloon-pos"] ?? "up";
   const length = () => local.length ?? local["data-balloon-length"];
