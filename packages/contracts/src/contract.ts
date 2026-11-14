@@ -1,10 +1,7 @@
 import { z } from "zod";
-import { initContract as legacyContract } from "@ts-rest/core";
 import type { EndpointMetadata } from "./util/api";
 
-// Temporary shared marker while routes migrate independently.
-const noBody: ReturnType<ReturnType<typeof legacyContract>["noBody"]> =
-  legacyContract().noBody();
+const noBody = Symbol("ContractNoBody");
 type Schema = z.ZodType | null | typeof noBody;
 
 type RouteFields = {
