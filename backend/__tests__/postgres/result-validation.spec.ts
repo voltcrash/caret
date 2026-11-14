@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vite-plus/test";
 import { resultRuntime, scoreEvent } from "./result-support";
 import { withRuntime } from "../../src/runtime/env";
 import * as Users from "../../src/dal/user";
-import objectHash from "object-hash";
+import { legacyHash as objectHash } from "@caret/web-shared/legacy-hash";
 import { buildDbResult } from "../../src/utils/result";
 import { addResult } from "../../src/dal/result";
 import { patchConfiguration } from "../../src/init/configuration";
