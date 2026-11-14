@@ -46,6 +46,7 @@ vi.mock("../../../src/ts/events/test", () => ({
 }));
 
 import { bindTypingActivity } from "../../../src/features/typing/scope";
+import { Balloon } from "../../../src/ts/components/common/Balloon";
 import { setConfigStore } from "../../../src/ts/config/store";
 import { useQuickRestartHotkeys } from "../../../src/ts/input/hotkeys/quickrestart";
 import {
@@ -275,3 +276,29 @@ it("jumps from settings to the test page and then restarts", () => {
     isQuickRestart: true,
   });
 });
+
+it.each([false, true])(
+  "preserves tooltip keyboard navigation in long=%s tests",
+  (long) => {
+    setIsLongTest(long);
+    const view = render(() => (
+      <>
+        <Shortcuts />
+        <Balloon text="Exact speed">Speed</Balloon>
+        <Balloon inline text="Exact accuracy">
+          Accuracy
+        </Balloon>
+      </>
+    ));
+    for (const label of ["Speed", "Accuracy"]) {
+      view.getByText(label).focus();
+      setConfigStore("quickRestart", "tab");
+      expect(press("Tab")).toBe(true);
+      expect(press("Tab", true)).toBe(true);
+      setConfigStore("quickRestart", "enter");
+      expect(press("Enter")).toBe(true);
+    }
+    expect(mocks.restart).not.toHaveBeenCalled();
+    expect(mocks.navigate).not.toHaveBeenCalled();
+  },
+);
