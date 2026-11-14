@@ -29,6 +29,7 @@ describe("tooltips", () => {
     ));
     const button = screen.getByRole("button", { name: "Save" });
     expect(button).toHaveAccessibleDescription("Save your settings");
+    expect(button.textContent).toBe("Save");
   });
 
   it("keeps explicit names and labels icon-only buttons", () => {

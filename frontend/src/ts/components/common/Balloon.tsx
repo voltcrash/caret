@@ -81,12 +81,12 @@ export function Balloon(props: Props) {
         data-balloon-break={breaks() ? "" : undefined}
       >
         {local.children}
-        <Show when={text()}>
-          <span id={id} hidden>
-            {text()}
-          </span>
-        </Show>
       </Dynamic>
+      <Show when={text()}>
+        <span id={id} hidden>
+          {text()}
+        </span>
+      </Show>
       <Show when={text()}>
         <TooltipBubble
           reference={reference()}
