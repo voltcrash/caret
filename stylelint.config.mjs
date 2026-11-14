@@ -5,11 +5,7 @@ export default {
     "font-family-no-missing-generic-family-keyword": [
       true,
       {
-        ignoreFontFamilies: [
-          "Font Awesome",
-          "Font Awesome Brands",
-          "Gallaudet",
-        ],
+        ignoreFontFamilies: ["Gallaudet"],
       },
     ], //default: true
 
