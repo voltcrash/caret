@@ -7,7 +7,7 @@ export type AudioSample = {
 };
 
 export function createAudioSample(
-  context: AudioContext,
+  context: BaseAudioContext & { resume: () => Promise<void> },
   destination: AudioNode,
   src: string,
   signal: AbortSignal,
