@@ -41,7 +41,7 @@ If the generated full face is no smaller, keep the exact original bytes.
 All original cmap mappings remain, including supported Latin-1/Extended-A and
 non-Latin scripts. System fonts and uploaded `LOCALCUSTOM` files are never
 processed. CJK keeps system fallback. Gallaudet stays byte-identical: no
-modification grant found. Font Awesome stays complete and unmodified. Primary
+modification grant found. Font Awesome icons use the selected SVG artwork described below. Primary
 internal names avoid Reserved Font Names; Ubuntu uses its required `derivative`
 naming. Public CSS/settings names stay stable. Full licenses, original copyright
 notices and source checksums ship in `frontend/static/webfont-licenses`.
@@ -109,3 +109,28 @@ Comparator regression checks (manual, pinned environment):
 ```sh
 vp exec /tmp/caret-font-tools/bin/python scripts/fonts/test_compare.py
 ```
+
+## UI icons
+
+`Fa` renders inline SVG in SSR and in the browser; no icon font is shipped.
+The audited subset is in `frontend/icons/selection.json`, with the original
+Font Awesome Free 7.3.1 SVG files beside it. Runtime choices (badges, settings,
+commands, auth providers, quote favorites/ratings) use the same registry as
+literal props. Solid, regular and brand variants are selected independently;
+Storybook uses the same generator. The static warning fallbacks need no icons.
+
+To add an icon, copy its attributed upstream SVG into the appropriate variant
+folder and add its `fa-` name/alias to the selection. Run
+`vp run --filter @caret/frontend generate-icon-types`, then commit the SVG,
+selection and generated `frontend/src/ts/icons.ts`. Available prop types derive
+from that registry. Builds regenerate the registry from the owned files.
+
+Font Awesome's [Free license](https://fontawesome.com/license/free) assigns
+SVG icons to [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), separately
+from the SIL OFL font license. Caret selects and packages unchanged paths in
+inline SVG wrappers; it does not redistribute modified font files. Copyright
+2026 Fonticons, Inc.; source https://fontawesome.com. Original attribution is
+retained in each source SVG, the generated module, rendered icon metadata, and
+`frontend/static/webfont-licenses/FontAwesome.txt`. Brand marks identify their
+respective services and imply no endorsement. Historical font-evidence files
+remain records of the previous webfont build.
