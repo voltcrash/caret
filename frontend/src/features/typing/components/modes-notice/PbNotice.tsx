@@ -47,7 +47,9 @@ export function PbNotice() {
     <Notice
       compact
       class="motion-safe:animate-content-in"
-      when={isAuthenticated() && getConfig.showPb}
+      when={
+        isAuthenticated() && getSnapshot() !== undefined && getConfig.showPb
+      }
       icon="fa-crown"
       openCommandline="showPb"
       text={displayText()}
