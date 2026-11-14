@@ -1,4 +1,4 @@
-import { checkZodSchema } from "@ts-rest/core";
+import { checkZodSchema } from "@caret/contracts/contract";
 import { getCachedConfiguration } from "../init/configuration";
 import { GUEST, type ServiceContext } from "../services/context";
 import {
