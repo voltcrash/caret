@@ -1,3 +1,4 @@
+import { createAppOwned } from "../../../../app/application";
 import { getActiveWordIndex } from "../../../../ts/states/test";
 import { getWordsElement as getWordsEl } from "../../../../ts/states/test-dom";
 import { updateClassNames } from "../../../../ts/utils/cn";
@@ -48,4 +49,3 @@ export function setClass(
     if (element.className !== next) element.className = next;
   }
 }
-import { createAppOwned } from "../../../../app/application";
