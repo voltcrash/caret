@@ -1,9 +1,9 @@
 import { onCleanup } from "solid-js";
 import { createAppOwned } from "../../app/application";
 const getFrames = createAppOwned(() => {
-  const frames = new Map<string, number>();
+  const frames = new Map<string, { id: number; callback: () => void }>();
   onCleanup(() => {
-    for (const frame of frames.values()) cancelAnimationFrame(frame);
+    for (const frame of frames.values()) cancelAnimationFrame(frame.id);
     frames.clear();
   });
   return frames;
@@ -14,10 +14,15 @@ export function requestDebouncedAnimationFrame(
   callback: () => void,
 ): void {
   const pendingFrames = getFrames();
-  cancelIfPending(frameId);
-  const frame = requestAnimationFrame(() => {
+  const pending = pendingFrames.get(frameId);
+  if (pending !== undefined) {
+    pending.callback = callback;
+    return;
+  }
+  const frame = { id: 0, callback };
+  frame.id = requestAnimationFrame(() => {
     pendingFrames.delete(frameId);
-    callback();
+    frame.callback();
   });
   pendingFrames.set(frameId, frame);
 }
@@ -26,7 +31,7 @@ function cancelIfPending(frameId: string): void {
   const pendingFrames = getFrames();
   const pending = pendingFrames.get(frameId);
   if (pending !== undefined) {
-    cancelAnimationFrame(pending);
+    cancelAnimationFrame(pending.id);
     pendingFrames.delete(frameId);
   }
 }

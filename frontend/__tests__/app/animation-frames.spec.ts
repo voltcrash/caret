@@ -72,3 +72,14 @@ it("allows a callback to schedule its next frame", () => {
   flush();
   expect(next).toHaveBeenCalledOnce();
 });
+
+it("schedules one browser frame for a burst of caret updates", () => {
+  const latest = vi.fn();
+  for (let i = 0; i < 1_000; i++) {
+    requestDebouncedAnimationFrame("caret", latest);
+  }
+  expect(requestAnimationFrame).toHaveBeenCalledOnce();
+  expect(cancelAnimationFrame).not.toHaveBeenCalled();
+  flush();
+  expect(latest).toHaveBeenCalledOnce();
+});
