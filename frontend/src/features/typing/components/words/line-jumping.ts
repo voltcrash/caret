@@ -9,6 +9,7 @@ import { getWordsElement as getWordsEl } from "../../../../ts/states/test-dom";
 import * as Caret from "../../runtime/caret";
 import * as PaceCaret from "../../runtime/pace-caret";
 import * as Misc from "../../../../ts/utils/misc";
+import { hasClassName } from "../../../../ts/utils/cn";
 
 export async function centerActiveLine(): Promise<void> {
   if (getMutableConfig().showAllLines) {
@@ -39,16 +40,10 @@ export async function centerActiveLine(): Promise<void> {
 }
 
 function removeTestElements(lastElementIndexToRemove: number): void {
-  const wordsChildren = Array.from(
-    getWordsEl().children ?? [],
-  ) as HTMLElement[];
-
-  if (wordsChildren === undefined) return;
-
+  // Removing from the end keeps lower indices of the live collection stable.
+  const wordsChildren = getWordsEl().children;
   for (let i = lastElementIndexToRemove; i >= 0; i--) {
-    const child = wordsChildren[i];
-    if (!child || !child.isConnected) continue;
-    child.remove();
+    wordsChildren[i]?.remove();
   }
 }
 
@@ -65,20 +60,22 @@ export async function lineJump(
 
     // index of the active word in all #words.children
     // (which contains .word/.newline/.beforeNewline/.afterNewline elements)
-    const wordsChildren = Array.from(
-      getWordsEl().children ?? [],
-    ) as HTMLElement[];
-    const activeWordElementIndex = wordsChildren.indexOf(activeWordEl);
+    const wordsChildren = getWordsEl()
+      .children as HTMLCollectionOf<HTMLElement>;
+    const activeWordElementIndex = Array.prototype.indexOf.call(
+      wordsChildren,
+      activeWordEl,
+    );
 
     let lastElementIndexToRemove: number | undefined = undefined;
     for (let i = activeWordElementIndex - 1; i >= 0; i--) {
       const child = wordsChildren[i] as HTMLElement;
-      if (child.className.split(/\s+/).includes("hidden")) continue;
+      if (hasClassName(child.className, "hidden")) continue;
       if (Math.floor(child.offsetTop) < hideBound) {
-        if (child.className.split(/\s+/).includes("word")) {
+        if (hasClassName(child.className, "word")) {
           lastElementIndexToRemove = i;
           break;
-        } else if (child.className.split(/\s+/).includes("beforeNewline")) {
+        } else if (hasClassName(child.className, "beforeNewline")) {
           // set it to .newline but check .beforeNewline.offsetTop
           // because it's more reliable
           lastElementIndexToRemove = i + 1;

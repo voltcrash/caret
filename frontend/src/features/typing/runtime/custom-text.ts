@@ -65,8 +65,7 @@ export function setText(txt: string[]): void {
 }
 
 export function getMode(): CustomTextMode {
-  const currentSettings = customTextSettings.get();
-  return currentSettings.mode;
+  return customTextSettings.select((settings) => settings.mode);
 }
 
 export function setMode(val: CustomTextMode): void {
@@ -81,16 +80,21 @@ export function setMode(val: CustomTextMode): void {
   });
 }
 
+// Limits are read per engine command and live-stat update; never clone the
+// stored text just to read them.
 export function getLimit(): CustomTextLimit {
-  return customTextSettings.get().limit;
+  return customTextSettings.select(({ limit }) => ({
+    value: limit.value,
+    mode: limit.mode,
+  }));
 }
 
 export function getLimitValue(): number {
-  return customTextSettings.get().limit.value;
+  return customTextSettings.select((settings) => settings.limit.value);
 }
 
 export function getLimitMode(): CustomTextLimitMode {
-  return customTextSettings.get().limit.mode;
+  return customTextSettings.select((settings) => settings.limit.mode);
 }
 
 export function setLimitValue(val: number): void {
@@ -110,7 +114,7 @@ export function setLimitMode(val: CustomTextLimitMode): void {
 }
 
 export function getPipeDelimiter(): boolean {
-  return customTextSettings.get().pipeDelimiter;
+  return customTextSettings.select((settings) => settings.pipeDelimiter);
 }
 
 export function setPipeDelimiter(val: boolean): void {

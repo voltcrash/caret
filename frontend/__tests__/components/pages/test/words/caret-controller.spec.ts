@@ -36,6 +36,7 @@ import { CaretController } from "../../../../../src/features/typing/components/w
 import { setTestElements } from "../../../../../src/ts/states/test-dom";
 
 let element: HTMLDivElement;
+let wordsElement: HTMLDivElement;
 
 function dimensions(el: HTMLElement, values: Record<string, number>): void {
   for (const [name, value] of Object.entries(values)) {
@@ -48,6 +49,7 @@ beforeEach(() => {
   config.smoothCaret = "off";
   anime.animate.mockClear();
   const words = document.createElement("div");
+  wordsElement = words;
   words.innerHTML =
     '<div class="word" data-wordindex="0"><letter>a</letter><letter>b</letter></div>';
   const word = words.children[0] as HTMLElement;
@@ -117,6 +119,26 @@ describe("native caret", () => {
     expect(element.style.left).toBe("25px");
     caret.hide();
     expect(caret.isHidden()).toBe(true);
+  });
+
+  it("reuses the cached word element across moves", () => {
+    const caret = new CaretController(element, "default");
+    caret.goTo({ ...target, letterIndex: 0 });
+    const query = vi.spyOn(wordsElement, "querySelector");
+    caret.goTo({ ...target, letterIndex: 1 });
+    caret.goTo({ ...target, letterIndex: 2 });
+    expect(query).not.toHaveBeenCalled();
+    expect(element.style.left).toBe("25px");
+  });
+
+  it("falls back to the closest visible letter and clamps past the end", () => {
+    const caret = new CaretController(element, "default");
+    const second = wordsElement.querySelectorAll("letter")[1] as HTMLElement;
+    dimensions(second, { offsetWidth: 0 });
+    caret.goTo({ ...target, letterIndex: 1 });
+    expect(element.style.left).toBe("9px");
+    caret.goTo({ ...target, letterIndex: 9 });
+    expect(element.style.left).toBe("17px");
   });
 
   it("positions full-width underlines and locked letter tape", () => {

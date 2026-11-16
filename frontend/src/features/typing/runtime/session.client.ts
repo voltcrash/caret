@@ -88,7 +88,8 @@ export const getEngineSession = createAppOwned(() => {
   let metadata: Update["metadata"];
   /** Last engine settings sent; compared per command without serializing. */
   let configuration: Config | undefined;
-  let limitConfiguration = "";
+  /** Last custom limit sent; compared by field instead of serializing. */
+  let limitConfiguration: { mode: string; value: number } | undefined;
   let lastTick = 0;
   let running = false;
   let monitorRenderDrift = true;
@@ -184,8 +185,10 @@ export const getEngineSession = createAppOwned(() => {
     }
     if (configuration.mode === "custom") {
       const limit = CustomText.getLimit();
-      const serialized = JSON.stringify(limit);
-      if (serialized !== limitConfiguration) {
+      if (
+        limitConfiguration?.mode !== limit.mode ||
+        limitConfiguration.value !== limit.value
+      ) {
         const input: Command = {
           op: "customLimit",
           now,
@@ -193,7 +196,7 @@ export const getEngineSession = createAppOwned(() => {
           value: limit.value,
         };
         consume(live().command(input), input);
-        limitConfiguration = serialized;
+        limitConfiguration = limit;
       }
     }
   };
@@ -271,7 +274,7 @@ export const getEngineSession = createAppOwned(() => {
       reason = undefined;
       finishClock = undefined;
       configuration = projectEngineConfig(getMutableConfig());
-      limitConfiguration = JSON.stringify(CustomText.getLimit());
+      limitConfiguration = CustomText.getLimit();
       paceCommand({ op: "reset", wpm: null });
       command({
         op: "view",

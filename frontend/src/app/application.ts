@@ -79,14 +79,19 @@ export function requireApplication(): Application {
  * Created on first use under the mounted application's root, so its
  * computations, listeners and cleanups end with that application.
  */
+const keepOwnedValue = (): void => undefined;
+
 export function createAppOwned<T>(create: () => T): () => T {
   const key = {};
   return () => {
     const application = requireApplication();
+    // Hot typing paths read app-owned state many times per keystroke.
+    const existing = application.state.peek(key);
+    if (existing !== undefined) return existing.value as T;
     return application.state.use(
       key,
       () => runWithOwner(application.owner, create) as T,
-      () => undefined,
+      keepOwnedValue,
     );
   };
 }

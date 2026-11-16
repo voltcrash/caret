@@ -106,9 +106,10 @@ export function updateWordsWrapperHeight(force = false): void {
   } else {
     if (getMutableConfig().tapeMode === "off") {
       //tape off, showAllLines off, non-zen mode
-      const wordElements = Array.from(
-        getWordsEl().querySelectorAll<HTMLElement>(".word"),
-      );
+      // Live collection: only the first lines are read, never every word.
+      const wordElements = getWordsEl().getElementsByClassName(
+        "word",
+      ) as HTMLCollectionOf<HTMLElement>;
       let lines = 0;
       let lastTop = 0;
       let wordIndex = 0;

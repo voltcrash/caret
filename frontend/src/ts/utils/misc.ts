@@ -153,8 +153,22 @@ export function isObject(obj: unknown): obj is Record<string, unknown> {
   return typeof obj === "object" && !Array.isArray(obj) && obj !== null;
 }
 
+// MediaQueryList.matches is live; reuse one list per matchMedia implementation
+// instead of parsing the query on every caret, tape and line animation.
+const reducedMotionQueries = new WeakMap<typeof matchMedia, MediaQueryList>();
+
 function prefersReducedMotion(): boolean {
-  return matchMedia?.("(prefers-reduced-motion)")?.matches;
+  const match = globalThis.matchMedia as typeof matchMedia | undefined;
+  if (typeof match !== "function") return false;
+  let query = reducedMotionQueries.get(match);
+  if (query === undefined) {
+    query = match.call(globalThis, "(prefers-reduced-motion)") as
+      | MediaQueryList
+      | undefined;
+    if (query === undefined || query === null) return false;
+    reducedMotionQueries.set(match, query);
+  }
+  return query.matches;
 }
 
 /**

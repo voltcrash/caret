@@ -3,6 +3,7 @@ import { applyReducedMotion } from "../../../../ts/utils/misc";
 import { lineState } from "./line-state";
 import { outerWidth } from "./dimensions";
 import { getActiveWordElement } from "./elements";
+import { hasClassName } from "../../../../ts/utils/cn";
 import { animate } from "animejs";
 import { getMutableConfig } from "../../../../ts/config/store";
 import {
@@ -34,7 +35,7 @@ function getNlCharWidth(
     );
   }
   if (!nlChar) return 0;
-  if (checkIfIncorrect && nlChar.className.split(/\s+/).includes("incorrect")) {
+  if (checkIfIncorrect && hasClassName(nlChar.className, "incorrect")) {
     return 0;
   }
   const letterComputedStyle = window.getComputedStyle(nlChar);
@@ -42,6 +43,13 @@ function getNlCharWidth(
     parseFloat(letterComputedStyle.marginLeft) +
     parseFloat(letterComputedStyle.marginRight);
   return nlChar.offsetWidth + letterMargin;
+}
+
+function indexOfChild(
+  children: HTMLCollectionOf<HTMLElement>,
+  child: HTMLElement,
+): number {
+  return Array.prototype.indexOf.call(children, child);
 }
 
 export async function scrollTape(noAnimation = false): Promise<void> {
@@ -54,14 +62,16 @@ export async function scrollTape(noAnimation = false): Promise<void> {
     : isLanguageRightToLeft();
 
   const wordsWrapperWidth = getWordsWrapperEl().offsetWidth;
-  const wordsChildrenArr = Array.from(
-    getWordsEl().children ?? [],
-  ) as HTMLElement[];
+  // Live collection: tape only reads children up to the active line, so
+  // never copy every upcoming word on each keystroke.
+  const wordsChildrenArr = getWordsEl()
+    .children as HTMLCollectionOf<HTMLElement>;
   const activeWordEl = getActiveWordElement();
   if (!activeWordEl) return;
-  const afterNewLineEls = Array.from(
-    getWordsEl().querySelectorAll<HTMLElement>(".afterNewline"),
-  );
+  // Live: removing leading spacers below shifts this collection with them.
+  const afterNewLineEls = getWordsEl().getElementsByClassName(
+    "afterNewline",
+  ) as HTMLCollectionOf<HTMLElement>;
 
   let wordsWidthBeforeActive = 0;
   let fullLineWidths = 0;
@@ -71,21 +81,19 @@ export async function scrollTape(noAnimation = false): Promise<void> {
   const widthRemovedFromLine: number[] = [];
   const afterNewlinesNewMargins: number[] = [];
   const toRemove: HTMLElement[] = [];
-  let removedAfterNewlines = 0;
 
   /* remove leading `.afterNewline` elements */
   for (const child of wordsChildrenArr) {
-    if (child.className.split(/\s+/).includes("word")) {
+    if (hasClassName(child.className, "word")) {
       // only last leading `.afterNewline` element pushes `.word`s to right
       if (lastAfterNewLineElement) {
         widthRemoved += parseFloat(lastAfterNewLineElement.style.marginLeft);
       }
       break;
-    } else if (child.className.split(/\s+/).includes("afterNewline")) {
+    } else if (hasClassName(child.className, "afterNewline")) {
       toRemove.push(child);
       leadingNewLine = true;
       lastAfterNewLineElement = child;
-      removedAfterNewlines++;
     }
   }
 
@@ -93,21 +101,25 @@ export async function scrollTape(noAnimation = false): Promise<void> {
   let lastElementIndex: number;
   // index of the active word in all #words.children
   // (which contains .word/.newline/.beforeNewline/.afterNewline elements)
-  const activeWordIndex = wordsChildrenArr.indexOf(activeWordEl);
+  const activeWordIndex = indexOfChild(wordsChildrenArr, activeWordEl);
   // this will between 0 and 2
-  const newLinesBeforeActiveWord = wordsChildrenArr
-    .slice(0, activeWordIndex)
-    .filter((child) =>
-      child.className.split(/\s+/).includes("afterNewline"),
-    ).length;
+  let newLinesBeforeActiveWord = 0;
+  for (let i = 0; i < activeWordIndex; i++) {
+    if (hasClassName(wordsChildrenArr[i]?.className ?? "", "afterNewline")) {
+      newLinesBeforeActiveWord++;
+    }
+  }
   // the second `.afterNewline` after active word is visible during line jump
   let lastVisibleAfterNewline = afterNewLineEls[newLinesBeforeActiveWord + 1];
   if (lastVisibleAfterNewline) {
-    lastElementIndex = wordsChildrenArr.indexOf(lastVisibleAfterNewline);
+    lastElementIndex = indexOfChild(wordsChildrenArr, lastVisibleAfterNewline);
   } else {
     lastVisibleAfterNewline = afterNewLineEls[newLinesBeforeActiveWord];
     if (lastVisibleAfterNewline) {
-      lastElementIndex = wordsChildrenArr.indexOf(lastVisibleAfterNewline);
+      lastElementIndex = indexOfChild(
+        wordsChildrenArr,
+        lastVisibleAfterNewline,
+      );
     } else {
       lastElementIndex = activeWordIndex - 1;
     }
@@ -120,7 +132,7 @@ export async function scrollTape(noAnimation = false): Promise<void> {
   /*calculate .afterNewline & #words new margins + determine elements to remove*/
   for (let i = 0; i <= lastElementIndex; i++) {
     const child = wordsChildrenArr[i] as HTMLElement;
-    if (child.className.split(/\s+/).includes("word")) {
+    if (hasClassName(child.className, "word")) {
       leadingNewLine = false;
       const wordOuterWidth = outerWidth(child);
       const wordLeft = Math.floor(child.offsetLeft);
@@ -135,7 +147,7 @@ export async function scrollTape(noAnimation = false): Promise<void> {
         fullLineWidths += wordOuterWidth;
         if (i < activeWordIndex) wordsWidthBeforeActive = fullLineWidths;
       }
-    } else if (child.className.split(/\s+/).includes("afterNewline")) {
+    } else if (hasClassName(child.className, "afterNewline")) {
       if (leadingNewLine) continue;
       const nlCharWidth = getNlCharWidth(wordsChildrenArr[i - 3]);
       fullLineWidths -= nlCharWidth + wordRightMargin;
@@ -165,7 +177,6 @@ export async function scrollTape(noAnimation = false): Promise<void> {
   /* remove overflown elements */
   if (toRemove.length > 0) {
     for (const el of toRemove) el.remove();
-    afterNewLineEls.splice(0, removedAfterNewlines);
     for (let i = 0; i < widthRemovedFromLine.length; i++) {
       const afterNewlineEl = afterNewLineEls[i] as HTMLElement;
       const currentLineIndent =
@@ -195,7 +206,8 @@ export async function scrollTape(noAnimation = false): Promise<void> {
       const letter = letters[i];
       if (
         (getMutableConfig().blindMode || getMutableConfig().hideExtraLetters) &&
-        letter?.className.split(/\s+/).includes("extra")
+        letter !== undefined &&
+        hasClassName(letter.className, "extra")
       ) {
         continue;
       }

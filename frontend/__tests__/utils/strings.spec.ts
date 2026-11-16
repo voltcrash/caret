@@ -9,6 +9,22 @@ import {
 import * as Strings from "../../src/ts/utils/strings";
 
 describe("string utils", () => {
+  describe("countCodePoints", () => {
+    it.each([
+      "",
+      "abc",
+      "héllo",
+      "😀a😀",
+      "👩‍💻",
+      "\uD83D",
+      "a\uDE00b",
+      "\uDE00\uD83D",
+      "𝒜𝒷",
+    ])("matches Array.from length for %j", (text) => {
+      expect(Strings.countCodePoints(text)).toBe(Array.from(text).length);
+    });
+  });
+
   describe("highlightMatches", () => {
     const shouldHighlight = [
       {
@@ -401,6 +417,23 @@ describe("string utils", () => {
         mapGetSpy.mockReset();
         mapSetSpy.mockReset();
         mapClearSpy.mockReset();
+      });
+
+      it("bounds retained directions across many distinct words", () => {
+        Strings.clearWordDirectionCache();
+        const max = Strings.__testing.maxWordDirectionCacheSize;
+        for (let i = 0; i < max + 50; i++) {
+          Strings.isWordRightToLeft(`word${i}`, false);
+        }
+        expect(Strings.__testing.getWordDirectionCacheSize()).toBe(max);
+        mapSetSpy.mockClear();
+        // Newest entries remain cached; the oldest were evicted.
+        Strings.isWordRightToLeft(`word${max + 49}`, false);
+        expect(mapSetSpy).not.toHaveBeenCalled();
+        Strings.isWordRightToLeft("word0", false);
+        expect(mapSetSpy).toHaveBeenCalledWith("word0", [false, 0]);
+        Strings.clearWordDirectionCache();
+        expect(Strings.__testing.getWordDirectionCacheSize()).toBe(0);
       });
 
       it("should use cache for repeated calls", () => {

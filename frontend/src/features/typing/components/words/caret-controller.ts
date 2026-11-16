@@ -1,8 +1,11 @@
 import { applyReducedMotion } from "../../../../ts/utils/misc";
-import { updateClassNames } from "../../../../ts/utils/cn";
+import { hasClassName, updateClassNames } from "../../../../ts/utils/cn";
 import { CaretStyle } from "@caret/schemas/configs";
 import { getMutableConfig } from "../../../../ts/config/store";
-import { isWordRightToLeft } from "../../../../ts/utils/strings";
+import {
+  countCodePoints,
+  isWordRightToLeft,
+} from "../../../../ts/utils/strings";
 import { requestDebouncedAnimationFrame } from "../../../../ts/utils/debounced-animation-frame";
 import { animate, EasingParam, JSAnimation } from "animejs";
 
@@ -11,6 +14,19 @@ import {
   getWordsWrapperElement as getWordsWrapperCache,
 } from "../../../../ts/states/test-dom";
 import * as TestWords from "../../runtime/test-words";
+import { getWordElement } from "./elements";
+
+const fullWidthStyles: ReadonlySet<CaretStyle> = new Set([
+  "block",
+  "outline",
+  "underline",
+]);
+const smoothCaretDurations: Readonly<Record<string, number>> = {
+  off: 0,
+  slow: 150,
+  medium: 100,
+  fast: 85,
+};
 
 let lockedMainCaretInTape = true;
 let caretDebug = false;
@@ -92,7 +108,7 @@ export class CaretController {
   }
 
   public isHidden(): boolean {
-    return this.element.className.split(/\s+/).includes("hidden");
+    return hasClassName(this.element.className, "hidden");
   }
 
   public getWidth(): number {
@@ -116,7 +132,7 @@ export class CaretController {
   }
 
   public isFullWidth(): boolean {
-    return ["block", "outline", "underline"].includes(this.style);
+    return fullWidthStyles.has(this.style);
   }
 
   public setPosition(options: {
@@ -261,15 +277,7 @@ export class CaretController {
     width?: number;
   }): void {
     const smoothCaretSpeed =
-      getMutableConfig().smoothCaret === "off"
-        ? 0
-        : getMutableConfig().smoothCaret === "slow"
-          ? 150
-          : getMutableConfig().smoothCaret === "medium"
-            ? 100
-            : getMutableConfig().smoothCaret === "fast"
-              ? 85
-              : 0;
+      smoothCaretDurations[getMutableConfig().smoothCaret] ?? 0;
 
     const finalDuration = applyReducedMotion(
       options.duration ?? smoothCaretSpeed,
@@ -304,11 +312,9 @@ export class CaretController {
   }): void {
     if (this.style === "off") return;
     requestDebouncedAnimationFrame(`caret.${this.id}.goTo`, () => {
-      const word = getWordsCache().querySelector<HTMLElement>(
-        `.word[data-wordindex="${options.wordIndex}"]`,
-      );
+      const word = getWordElement(options.wordIndex);
       const wordText = TestWords.words.get(options.wordIndex)?.display ?? "";
-      const wordLength = Array.from(wordText).length;
+      const wordLength = countCodePoints(wordText);
 
       // caret can be either on the left side of the target letter or the right
       // we stick to the left side unless we are on the last letter or beyond
@@ -413,9 +419,10 @@ export class CaretController {
     isLanguageRightToLeft: boolean;
     isDirectionReversed: boolean;
   }): { left: number; top: number; width: number } {
-    const letters = Array.from(
-      options.word.querySelectorAll<HTMLElement>("letter"),
-    );
+    // Live collection: indexed reads only, no per-move NodeList copy.
+    const letters = options.word.getElementsByTagName(
+      "letter",
+    ) as HTMLCollectionOf<HTMLElement>;
 
     if (letters.length === 0) {
       throw new Error(
@@ -423,7 +430,9 @@ export class CaretController {
       );
     }
 
-    let letter = letters[options.letterIndex] ?? letters[letters.length - 1];
+    // Letters may lag the target index for a frame; clamp to rendered ones.
+    const letterIndex = Math.min(options.letterIndex, letters.length - 1);
+    let letter = letters[letterIndex];
 
     if (!letter) {
       throw new Error(
@@ -461,7 +470,7 @@ export class CaretController {
     //if the letter is not visible, use the closest visible letter
     const isLetterVisible = letter.offsetWidth > 0;
     if (!isLetterVisible) {
-      for (let i = options.letterIndex - 1; i >= 0; i--) {
+      for (let i = letterIndex - 1; i >= 0; i--) {
         const loopLetter = letters[i] as HTMLElement;
 
         // find the closest visible letter before the current letter

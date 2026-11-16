@@ -127,6 +127,7 @@ vi.mock("animejs", async (original) => ({
 
 import { Words } from "../../../../src/features/typing/components/Words";
 import { getWordElement } from "../../../../src/features/typing/components/words/elements";
+import { createNewlineSpacers } from "../../../../src/features/typing/components/words/letters";
 import * as ui from "../../../../src/features/typing/runtime/test-ui";
 import { words } from "../../../../src/features/typing/runtime/test-words";
 import { bindTypingActivity } from "../../../../src/features/typing/scope";
@@ -259,6 +260,37 @@ describe("Words rendering", () => {
     await flushFrames();
     expect(getWordElement(0)).not.toBe(original);
     expect(getWordElement(0)?.textContent).toBe("hello");
+  });
+
+  it("moves the active word without scanning for it", async () => {
+    words.push("third", 0);
+    ui.onTestRestart("testPage");
+    await flushFrames();
+    const query = vi.spyOn(element, "querySelector");
+    mocks.activeIndex = 1;
+    ui.updateActiveElement({ direction: "forward" });
+    await flushFrames();
+    mocks.activeIndex = 2;
+    ui.updateActiveElement({ direction: "forward" });
+    await flushFrames();
+    expect(query).not.toHaveBeenCalledWith(".active");
+    expect(element.querySelectorAll(".active")).toHaveLength(1);
+    expect(word(2)).toHaveClass("active");
+    expect(word(1)).toHaveClass("typed");
+    expect(word(1)).not.toHaveClass("active");
+  });
+
+  it("finds the active word again after it was replaced", async () => {
+    ui.onTestRestart("testPage");
+    await flushFrames();
+    const replacement = word(0).cloneNode(true) as HTMLElement;
+    word(0).replaceWith(replacement);
+    mocks.activeIndex = 1;
+    ui.updateActiveElement({ direction: "forward" });
+    await flushFrames();
+    expect(replacement).toHaveClass("typed");
+    expect(replacement).not.toHaveClass("active");
+    expect(word(1)).toHaveClass("active");
   });
 
   it("renders initial words and activates the first on restart", async () => {
@@ -396,6 +428,15 @@ describe("Words layout", () => {
     expect(getWordsWrapperHeight()).toBe("20px");
   });
 
+  it("measures three lines without collecting every word", async () => {
+    for (let i = 0; i < 200; i++) words.push(`w${i}`, 0);
+    await layout();
+    const query = vi.spyOn(element, "querySelectorAll");
+    ui.updateWordsWrapperHeight(true);
+    expect(query).not.toHaveBeenCalledWith(".word");
+    expect(getWordsWrapperHeight()).toBe("60px");
+  });
+
   it("keeps the last height while the words have no layout", async () => {
     await layout();
     ui.updateWordsWrapperHeight(true);
@@ -448,6 +489,97 @@ describe("Words layout", () => {
     expect(element.style.marginLeft).toBe("80px");
   });
 
+  it("indents tape lines that follow newline spacers", async () => {
+    words.push("third", 0);
+    await layout();
+    const spacers = createNewlineSpacers();
+    const [before, newline, after] = [...spacers.children] as HTMLElement[];
+    word(0).after(spacers);
+    for (const spacer of [before, newline, after]) {
+      size(spacer as HTMLElement, { offsetTop: 10, offsetWidth: 0 });
+    }
+    getMutableConfig().tapeMode = "word";
+    getMutableConfig().tapeMargin = 25;
+    mocks.activeIndex = 2;
+    await ui.scrollTape(true);
+    expect(after?.style.marginLeft).toBe("100px");
+    expect(element.style.marginLeft).toBe("-100px");
+    expect(mocks.caret.handleTapeScroll).toHaveBeenLastCalledWith({
+      newValue: -200,
+      duration: 0,
+      ease: "inOut(1.25)",
+    });
+  });
+
+  it("removes words scrolled out of the tape and compensates margins", async () => {
+    words.push("third", 0);
+    await layout();
+    size(word(0), { offsetLeft: -250 });
+    getMutableConfig().tapeMode = "word";
+    getMutableConfig().tapeMargin = 25;
+    mocks.activeIndex = 2;
+    await ui.scrollTape(true);
+    expect(word(0)).toBeNull();
+    expect(word(1)).not.toBeNull();
+    expect(mocks.caret.handleTapeWordsRemoved).toHaveBeenCalledWith(100);
+    expect(element.style.marginLeft).toBe("0px");
+    expect(mocks.caret.handleTapeScroll).toHaveBeenLastCalledWith({
+      newValue: -100,
+      duration: 0,
+      ease: "inOut(1.25)",
+    });
+  });
+
+  it("drops leading newline spacers and shifts the remaining indents", async () => {
+    words.push("third", 0);
+    await layout();
+    const leading = document.createElement("div");
+    leading.className = "afterNewline";
+    leading.style.marginLeft = "30px";
+    element.prepend(leading);
+    const spacers = createNewlineSpacers();
+    const after = spacers.lastElementChild as HTMLElement;
+    after.style.marginLeft = "70px";
+    word(0).after(spacers);
+    for (const spacer of element.querySelectorAll<HTMLElement>(
+      ".beforeNewline, .newline, .afterNewline",
+    )) {
+      size(spacer, { offsetTop: 10, offsetWidth: 0 });
+    }
+    getMutableConfig().tapeMode = "word";
+    getMutableConfig().tapeMargin = 25;
+    mocks.activeIndex = 1;
+    await ui.scrollTape(true);
+    expect(leading.isConnected).toBe(false);
+    expect(after.isConnected).toBe(true);
+    expect({
+      after: after.style.marginLeft,
+      words: element.style.marginLeft,
+      removed: mocks.caret.handleTapeWordsRemoved.mock.calls,
+      scroll: mocks.caret.handleTapeScroll.mock.lastCall,
+    }).toMatchInlineSnapshot(`
+      {
+        "after": "100px",
+        "removed": [
+          [
+            30,
+          ],
+          [
+            30,
+          ],
+        ],
+        "scroll": [
+          {
+            "duration": 0,
+            "ease": "inOut(1.25)",
+            "newValue": -100,
+          },
+        ],
+        "words": "0px",
+      }
+    `);
+  });
+
   it("removes completed lines after the first line jump", async () => {
     words.push("third", 0);
     await layout();
@@ -479,6 +611,24 @@ describe("Words layout", () => {
     await ui.centerActiveLine();
     expect(word(0)).toBeNull();
     expect(word(1)).not.toBeNull();
+  });
+});
+
+describe("Words zen backtracking", () => {
+  it("removes everything after the active zen word when going back", async () => {
+    getMutableConfig().mode = "zen";
+    ui.onTestRestart("testPage");
+    await flushFrames();
+    ui.appendEmptyWordElement(1);
+    word(1).after(createNewlineSpacers());
+    ui.appendEmptyWordElement(2);
+    mocks.activeIndex = 1;
+    await ui.afterTestWordChange("back");
+    expect(
+      [...element.children].map(
+        (child) => child.getAttribute("data-wordindex") ?? child.className,
+      ),
+    ).toEqual(["0", "1"]);
   });
 });
 

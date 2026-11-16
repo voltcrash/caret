@@ -126,14 +126,16 @@ export function replaceControlCharacters(textToClear: string): string {
  * @param word the word to check for RTL characters
  * @returns true if the word contains RTL characters, false otherwise
  */
+// This covers Arabic, Farsi, Urdu, and other RTL scripts
+const rtlPattern =
+  /[\u0590-\u05FF\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]+/;
+// Leading/trailing punctuation, symbols and whitespace around a word's core.
+const directionNeutralEdges = /^[\p{P}\p{S}\s]+|[\p{P}\p{S}\s]+$/gu;
+
 function hasRTLCharacters(word: string): [boolean, number] {
   if (!word || word.length === 0) {
     return [false, 0];
   }
-
-  // This covers Arabic, Farsi, Urdu, and other RTL scripts
-  const rtlPattern =
-    /[\u0590-\u05FF\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]+/;
 
   const result = rtlPattern.exec(word);
   return [result !== null, result?.[0].length ?? 0];
@@ -143,7 +145,9 @@ function hasRTLCharacters(word: string): [boolean, number] {
  * Cache for word direction to avoid repeated calculations per word
  * Keyed by the stripped core of the word; can be manually cleared when needed
  */
-let wordDirectionCache: Map<string, [boolean, number]> = new Map();
+const wordDirectionCache: Map<string, [boolean, number]> = new Map();
+// Zen, custom text and infinite tests can produce unbounded distinct words.
+const maxWordDirectionCacheSize = 1024;
 
 export function clearWordDirectionCache(): void {
   wordDirectionCache.clear();
@@ -161,7 +165,7 @@ export function isWordRightToLeft(
   // Strip leading/trailing punctuation and whitespace so attached opposite-direction
   // punctuation like "word؟" or "،word" doesn't flip the direction detection
   // and if only punctuation/symbols/whitespace, use main language direction
-  const core = word.replace(/^[\p{P}\p{S}\s]+|[\p{P}\p{S}\s]+$/gu, "");
+  const core = word.replace(directionNeutralEdges, "");
   if (core.length === 0) {
     return reverseDirection ? [!languageRTL, false] : [languageRTL, false];
   }
@@ -175,11 +179,30 @@ export function isWordRightToLeft(
   }
 
   const result = hasRTLCharacters(core);
+  if (wordDirectionCache.size >= maxWordDirectionCacheSize) {
+    // Maps iterate in insertion order; drop the oldest entry.
+    wordDirectionCache.delete(wordDirectionCache.keys().next().value as string);
+  }
   wordDirectionCache.set(core, result);
 
   return reverseDirection
     ? [!result[0], false]
     : [result[0], result[1] === word.length];
+}
+
+/** Same as `Array.from(text).length`, without allocating the array. */
+export function countCodePoints(text: string): number {
+  let count = 0;
+  for (let i = 0; i < text.length; i++) {
+    const unit = text.charCodeAt(i);
+    // A high surrogate followed by a low surrogate is one code point.
+    if (unit >= 0xd800 && unit <= 0xdbff && i + 1 < text.length) {
+      const next = text.charCodeAt(i + 1);
+      if (next >= 0xdc00 && next <= 0xdfff) i++;
+    }
+    count++;
+  }
+  return count;
 }
 
 export function toHex(buffer: ArrayBuffer): string {
@@ -211,4 +234,6 @@ export function replaceSpacesWithUnderscores(text: string): string {
 // Export testing utilities for unit tests
 export const __testing = {
   hasRTLCharacters,
+  getWordDirectionCacheSize: (): number => wordDirectionCache.size,
+  maxWordDirectionCacheSize,
 };

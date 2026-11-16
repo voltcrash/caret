@@ -3,6 +3,8 @@ type Entry = { value: unknown; dispose: (value: unknown) => void };
 /** Lazily created values with an explicit owner-controlled lifetime. */
 export type OwnedScope = {
   use: <T>(key: object, create: () => T, dispose: (value: T) => void) => T;
+  /** Existing value only; lets hot readers skip allocating `use` callbacks. */
+  peek: (key: object) => { value: unknown } | undefined;
   release: (key: object) => void;
   dispose: () => void;
 };
@@ -22,6 +24,7 @@ export function createOwnedScope(): OwnedScope {
       });
       return value;
     },
+    peek: (key) => entries.get(key),
     release: (key) => {
       const entry = entries.get(key);
       if (entry === undefined) return;
