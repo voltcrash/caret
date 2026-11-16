@@ -241,6 +241,10 @@ export function createActorQueryCache(options: {
       if (disposed || !lease.isCurrent() || started !== revision) return;
       unsubscribe = queryClient.getQueryCache().subscribe((event) => {
         if (
+          (event.type === "removed" ||
+            (event.type === "updated" &&
+              (event.action.type === "success" ||
+                event.action.type === "setState"))) &&
           isPersisted(event.query.queryKey as QueryKey, actor, lease.generation)
         ) {
           scheduleSave();

@@ -1,4 +1,4 @@
-import { QueryClient } from "@tanstack/solid-query";
+import { QueryClient, QueryObserver } from "@tanstack/solid-query";
 import { afterEach, expect, it, vi } from "vite-plus/test";
 
 import { createAccountDataOwner } from "../../src/app/account-data";
@@ -14,6 +14,7 @@ import { ModifiableTestActivityCalendar } from "../../src/ts/elements/test-activ
 const disposals: (() => void)[] = [];
 afterEach(() => {
   for (const dispose of disposals.splice(0)) dispose();
+  vi.useRealTimers();
 });
 
 function storage(): QueryCacheStorage {
@@ -223,4 +224,28 @@ it("falls back to network readiness when IndexedDB is unavailable", async () => 
   expect(next.cache.ready()).toBe(true);
   await expect(next.cache.save()).resolves.toBeUndefined();
   await expect(next.cache.clear()).resolves.toBeUndefined();
+});
+
+it("does not persist observer churn or fetch-status changes", async () => {
+  vi.useFakeTimers();
+  const store = storage();
+  const next = app(store);
+  next.account.setActor("a");
+  await next.cache.restore();
+  next.queryClient.setQueryData(next.key("results"), []);
+  await next.cache.save();
+  vi.mocked(store.write).mockClear();
+  const observer = new QueryObserver(next.queryClient, {
+    queryKey: next.key("results"),
+    enabled: false,
+  });
+  const unsubscribe = observer.subscribe(() => undefined);
+  await next.queryClient.invalidateQueries({ queryKey: next.key("results") });
+  unsubscribe();
+  await vi.advanceTimersByTimeAsync(200);
+  expect(store.write).not.toHaveBeenCalled();
+  next.queryClient.removeQueries({ queryKey: next.key("results") });
+  await vi.advanceTimersByTimeAsync(200);
+  expect((await store.read())?.client.queries).toEqual([]);
+  expect(store.write).toHaveBeenCalledOnce();
 });
