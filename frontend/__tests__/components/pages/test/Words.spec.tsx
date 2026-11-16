@@ -499,6 +499,56 @@ describe("Words layout", () => {
     });
   });
 
+  it("drops leading newline spacers and shifts the remaining indents", async () => {
+    words.push("third", 0);
+    await layout();
+    const leading = document.createElement("div");
+    leading.className = "afterNewline";
+    leading.style.marginLeft = "30px";
+    element.prepend(leading);
+    const spacers = createNewlineSpacers();
+    const after = spacers.lastElementChild as HTMLElement;
+    after.style.marginLeft = "70px";
+    word(0).after(spacers);
+    for (const spacer of element.querySelectorAll<HTMLElement>(
+      ".beforeNewline, .newline, .afterNewline",
+    )) {
+      size(spacer, { offsetTop: 10, offsetWidth: 0 });
+    }
+    getMutableConfig().tapeMode = "word";
+    getMutableConfig().tapeMargin = 25;
+    mocks.activeIndex = 1;
+    await ui.scrollTape(true);
+    expect(leading.isConnected).toBe(false);
+    expect(after.isConnected).toBe(true);
+    expect({
+      after: after.style.marginLeft,
+      words: element.style.marginLeft,
+      removed: mocks.caret.handleTapeWordsRemoved.mock.calls,
+      scroll: mocks.caret.handleTapeScroll.mock.lastCall,
+    }).toMatchInlineSnapshot(`
+      {
+        "after": "100px",
+        "removed": [
+          [
+            30,
+          ],
+          [
+            30,
+          ],
+        ],
+        "scroll": [
+          {
+            "duration": 0,
+            "ease": "inOut(1.25)",
+            "newValue": -100,
+          },
+        ],
+        "words": "0px",
+      }
+    `);
+  });
+
   it("removes completed lines after the first line jump", async () => {
     words.push("third", 0);
     await layout();
