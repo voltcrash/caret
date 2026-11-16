@@ -1,15 +1,38 @@
 import { createAppOwned } from "../../../../app/application";
 import { getActiveWordIndex } from "../../../../ts/states/test";
 import { getWordsElement as getWordsEl } from "../../../../ts/states/test-dom";
-import { updateClassNames } from "../../../../ts/utils/cn";
+import { hasClassName, updateClassNames } from "../../../../ts/utils/cn";
 
 // Main/pace carets and input handlers repeatedly read the same few words.
 // Bound retention even during infinite tests that remove completed lines.
 const wordElements = createAppOwned(() => new Map<number, HTMLElement>());
 const maxCachedWords = 32;
 
+// The word last marked active, so word changes need not scan #words for it.
+const activeWord = createAppOwned(() => ({
+  element: undefined as HTMLElement | undefined,
+}));
+
 export function clearWordElements(): void {
   wordElements().clear();
+  activeWord().element = undefined;
+}
+
+export function rememberActiveWordElement(element: HTMLElement): void {
+  activeWord().element = element;
+}
+
+/** The rendered `.active` word; verifies the remembered node before use. */
+export function findActiveWordElement(): HTMLElement | null {
+  const container = getWordsEl();
+  const known = activeWord().element;
+  if (
+    known?.parentElement === container &&
+    hasClassName(known.className, "active")
+  ) {
+    return known;
+  }
+  return container.querySelector<HTMLElement>(".active");
 }
 
 export function getWordElement(index: number): HTMLElement | null {

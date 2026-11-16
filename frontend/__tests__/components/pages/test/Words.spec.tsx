@@ -262,6 +262,37 @@ describe("Words rendering", () => {
     expect(getWordElement(0)?.textContent).toBe("hello");
   });
 
+  it("moves the active word without scanning for it", async () => {
+    words.push("third", 0);
+    ui.onTestRestart("testPage");
+    await flushFrames();
+    const query = vi.spyOn(element, "querySelector");
+    mocks.activeIndex = 1;
+    ui.updateActiveElement({ direction: "forward" });
+    await flushFrames();
+    mocks.activeIndex = 2;
+    ui.updateActiveElement({ direction: "forward" });
+    await flushFrames();
+    expect(query).not.toHaveBeenCalledWith(".active");
+    expect(element.querySelectorAll(".active")).toHaveLength(1);
+    expect(word(2)).toHaveClass("active");
+    expect(word(1)).toHaveClass("typed");
+    expect(word(1)).not.toHaveClass("active");
+  });
+
+  it("finds the active word again after it was replaced", async () => {
+    ui.onTestRestart("testPage");
+    await flushFrames();
+    const replacement = word(0).cloneNode(true) as HTMLElement;
+    word(0).replaceWith(replacement);
+    mocks.activeIndex = 1;
+    ui.updateActiveElement({ direction: "forward" });
+    await flushFrames();
+    expect(replacement).toHaveClass("typed");
+    expect(replacement).not.toHaveClass("active");
+    expect(word(1)).toHaveClass("active");
+  });
+
   it("renders initial words and activates the first on restart", async () => {
     ui.onTestRestart("testPage");
     await flushFrames();

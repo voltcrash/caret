@@ -11,7 +11,9 @@ import { setWordJoining } from "./joining";
 import { createHintsNodes, joinOverlappingHints } from "./hints";
 import {
   clearWordElements,
+  findActiveWordElement,
   getWordElement,
+  rememberActiveWordElement,
   getActiveWordElement,
   setClass,
 } from "./elements";
@@ -38,8 +40,7 @@ export function updateActiveElement(
 
     let previousActiveWordTop: number | null = null;
     if (initial === undefined) {
-      const previousActiveWord =
-        getWordsEl().querySelector<HTMLElement>(".active");
+      const previousActiveWord = findActiveWordElement();
       // in zen mode, because of the animation frame, previousActiveWord will be removed at this point, so check for null
       if (previousActiveWord !== null) {
         if (direction === "forward") {
@@ -59,6 +60,7 @@ export function updateActiveElement(
     }
 
     setClass(newActiveWord, "active", true);
+    rememberActiveWordElement(newActiveWord);
     setClass(newActiveWord, "error", false);
     setClass(newActiveWord, "typed", false);
     setWordJoining(newActiveWord, false);
